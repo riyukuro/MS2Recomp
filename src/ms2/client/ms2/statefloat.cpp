@@ -66,7 +66,7 @@ StateFloat::~StateFloat()
 void StateFloat::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    FUN_1417c8560();
+    UpdateBand();
 }
 MS2_REPLACE_METHOD(0x1417C82D0, StateFloat, vfunc_4, 44, 0x79D77923);
 
@@ -98,7 +98,7 @@ void StateFloat::vfunc_8(double fTime)
 MS2_REPLACE_METHOD(0x1417C84B0, StateFloat, vfunc_8, 162, 0xDBB0643A);
 
 // @0x1417c8560
-void StateFloat::FUN_1417c8560()
+void StateFloat::UpdateBand()
 {
     if (m_pOwner != 0)
     {
@@ -106,7 +106,7 @@ void StateFloat::FUN_1417c8560()
     }
     m_bBandChanged = false;
 }
-MS2_REPLACE_METHOD(0x1417C8560, StateFloat, FUN_1417c8560, 100, 0xC818D17A);
+MS2_REPLACE_METHOD(0x1417C8560, StateFloat, UpdateBand, 100, 0xC818D17A);
 
 // @0x1417c85d0
 Vector3 StateFloat::FUN_1417c85d0(Vector3 kMove, double fTime)
@@ -127,7 +127,7 @@ Vector3 StateFloat::FUN_1417c85d0(Vector3 kMove, double fTime)
         if (FUN_14029d220(fMod) > fLo && FUN_14029d220(fMod) < fHi && m_bBandChanged)
         {
             fVel = 0.0f;
-            FUN_1417c8560();
+            UpdateBand();
         }
     }
     else

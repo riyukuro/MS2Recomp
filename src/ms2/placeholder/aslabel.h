@@ -27,20 +27,20 @@ public:
     virtual void vfunc_24(bool bInvalidate);                        // 24 0x1422c80c0 validateNow (invalidate() first if set)
 #endif
     // recovered with ?\aslabel.cpp (src/ms2/gfxui/aslabel.cpp): the AS Label members
-    void FUN_1422e4a00(const CString& strText);                     // set "text"
+    void SetText(const CString& strText);                     // set "text"
     void FUN_1422e4a50(const CStringW& strText);                    // set "text" (uiotherpetsystemdialog.cpp "m_title")
-    CStringW FUN_1422e4aa0();                                       // "text"
-    void FUN_1422e4b30(const CString& strText);                     // set "htmlText"
+    CStringW GetText();                                       // "text"
+    void SetHtmlText(const CString& strText);                     // set "htmlText"
     void FUN_1422e4b80(const CStringW& strText);                    // set "htmlText"
-    CStringW FUN_1422e4bd0();                                       // "htmlText"
-    void FUN_1422e4c60(const CString& strAutoSize);                 // set "autoSize" ("none", ...)
-    CString FUN_1422e4cb0();                                        // "autoSize"
-    void FUN_1422e4d40(const CString& strText);                     // appendText
+    CStringW GetHtmlText();                                       // "htmlText"
+    void SetAutoSize(const CString& strAutoSize);                 // set "autoSize" ("none", ...)
+    CString GetAutoSize();                                        // "autoSize"
+    void AppendText(const CString& strText);                     // appendText
     void FUN_1422e4d90(const CStringW& strText);                    // appendText
-    void FUN_1422e4de0(const CString& strHtml);                     // appendHtml
+    void AppendHtml(const CString& strHtml);                     // appendHtml
     void FUN_1422e4e30(const CStringW& strHtml);                    // appendHtml
-    MS2Ptr<class ASTextField> FUN_1422e4e80();                     // the label's "textField"
+    MS2Ptr<class ASTextField> GetTextField();                     // the label's "textField"
     void FUN_1422e4ef0(int nBegin, int nEnd);                       // focus the label and select the text range
-    void FUN_1422c6eb0();                                           // ASDisplayObject: remove from the parent clip
+    void RemoveFromParent();                                           // ASDisplayObject: remove from the parent clip
 };
 MS2_CHECK_SIZE(ASLabel, 0x88);

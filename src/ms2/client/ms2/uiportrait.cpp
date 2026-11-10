@@ -28,9 +28,9 @@ public:
 
 class Unk_PortraitClock;
 void FUN_14107b010();                                           // refreshes the sun direction constants
-void FUN_14107b050(efd::Point3 const&);   // C3: was FUN_14107b050
+void SetSunDirection(efd::Point3 const&);   // C3: was FUN_14107b050
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // the entity's scene graph
-void FUN_141568d80(NiAVObject* pNode);
+void SetUnlightable(NiAVObject* pNode);
 class Unk_PortraitEffectMgr;
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
@@ -52,7 +52,7 @@ UIPortrait::~UIPortrait()
 }
 
 // @0x141a90540
-UIRenderView* FUN_141a90540(int nWidth, int nHeight, GameObject* pObject, float fLightDimmer)
+UIRenderView* CreatePortrait(int nWidth, int nHeight, GameObject* pObject, float fLightDimmer)
 {
     return EE_NEW UIPortrait(nWidth, nHeight, pObject, fLightDimmer);
 }
@@ -70,7 +70,7 @@ void UIPortrait::vfunc_2()
             m_spCamera->Update(GetCurrentTime(), true);
             m_spCamera->LookAtWorldPoint(kTarget, efd::Point3::UNIT_Z);
             m_spCamera->Update(GetCurrentTime(), true);
-            FUN_14107b050(*(efd::Point3 const*)&static_cast<class NiPoint3 const&>(m_spCamera->GetWorldDirection()));
+            SetSunDirection(*(efd::Point3 const*)&static_cast<class NiPoint3 const&>(m_spCamera->GetWorldDirection()));
         }
     }
 }
@@ -111,7 +111,7 @@ void UIPortrait::vfunc_11(ATL::CAtlArray<efd::SmartPointer<NiActorManager> >& ar
                 pNode->AttachEffect(m_spAmbientLight);
                 pNode->UpdateEffects();
                 m_spClick->vfunc_12(pNode);
-                FUN_141568d80(pNode);
+                SetUnlightable(pNode);
                 ((class PostProcessingService*)(class Unk_PortraitEffectMgr*)(((class Unk_PortraitEffectMgr*)Unk_AeFeatureMgr::FUN_1409a8b20())))->RemoveMirroredScene((class NiAVObject*)(pNode));
             }
         }

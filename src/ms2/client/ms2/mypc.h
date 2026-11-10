@@ -30,9 +30,9 @@ class Unk_MyPCStateCtl : public StateLocalController
 {
 public:
     void FUN_1417b7430(PCBase* pOwner);                     // init with the owner
-    void FUN_1417b7450();                                   // drop the current and queued records
+    void ClearRecords();                                   // drop the current and queued records
     void FUN_1417b76b0(float fTime);                        // advance with the game time
-    int FUN_1417b7490();                                    // a record is due
+    int IsRecordDue();                                    // a record is due
     MS2Ptr<StateSyncObject> FUN_1417b7620();                 // copy of the current record
     void FUN_1417b7670(StateSyncObject* pRec);               // set the current record
 };
@@ -242,7 +242,7 @@ public:
     void FUN_141524a80(bool bForce);                        // stop moving for a cast
     void FUN_14152b2d0(__int64 nItemUid);                   // summon the pet of an inventory item
     MS2Ptr<CItem> FUN_14152e2f0(MS2Ptr<CItem> spItem);       // the worn item spItem would replace
-    MS2Ptr<class CStatPointManager> FUN_140c25130();        // the stat point manager handle (uihighlightgamemenu.cpp)
+    MS2Ptr<class CStatPointManager> GetStatPointManager();        // the stat point manager handle (uihighlightgamemenu.cpp)
     bool FUN_1415302e0(int nItemId);                         // the cube item is locked (housing level, achievement)
     void FUN_141523e60(CItem* pItem, int* pStatDiff, int* pSpecialDiff, int* pScoreDiff);   // the stat change of equipping pItem
     static void FUN_141531470(ATL::CAtlArray<MS2Ptr<CItem> >& aItems, int* pStats, int* pSpecials, int* pScore);   // sum the items' stats

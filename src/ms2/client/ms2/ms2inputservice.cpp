@@ -56,9 +56,9 @@ public:
 
 class Unk_SettingsHolder;                               // option flags
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
+class CFeatureManager { public: bool IsFeatureEnabled(int nFeature); };   // C3: unit-local view
 
-UIMainPlayerInfo* FUN_140931900(int nId);
+UIMainPlayerInfo* FindMainPlayerInfo(int nId);
 
 class Unk_Clock;
 
@@ -83,7 +83,7 @@ class CMsgBoxData : public CPtred
 public:
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);
 };
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* p, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_140298ea0(CStringW str);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -139,7 +139,7 @@ efd::AsyncResult MS2InputService::OnInit()
     {
         m_spKeyboard = pInput->OpenKeyboard();
         m_spMouse = pInput->OpenMouse();
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb5) == 1)
             reinterpret_cast<MS2NiInputSystemAccess*>(pInput)->SetGamePadPollEnabled(true);
     }
     ChromaSDK::GetChromaManager()->Initialize();
@@ -246,10 +246,10 @@ bool MS2InputService::IsKeyDownGated(int nKey, int bAllowGroup)
             {
                 if (nSlot != nKey)
                     return false;
-                __int64 pBinding = FUN_1409331f0()->GetKeyAction(nSlot);
+                __int64 pBinding = GetKeyTable()->GetKeyAction(nSlot);
                 if (pBinding == 0)
                     return false;
-                if (FUN_1409331f0()->FUN_141430b10(pBinding) == 0)
+                if (GetKeyTable()->FUN_141430b10(pBinding) == 0)
                     return true;
                 return false;
             }
@@ -277,22 +277,22 @@ bool MS2InputService::WasKeyPressedGated(int nKey)
                 {
                     if (m_nHeldKey != -1)
                     {
-                        UIMainPlayerInfo* pDlg = FUN_140931900(0x4e5f);
+                        UIMainPlayerInfo* pDlg = FindMainPlayerInfo(0x4e5f);
                         if (pDlg != 0)
-                            pDlg->FUN_1419f22a0(m_nHeldKey, 0);
+                            pDlg->ShowModifiedKeySelect(m_nHeldKey, 0);
                         m_nHeldKey = -1;
                     }
                     m_nHeldKey = nSlot;
-                    UIMainPlayerInfo* pDlg = FUN_140931900(0x4e5f);
+                    UIMainPlayerInfo* pDlg = FindMainPlayerInfo(0x4e5f);
                     if (pDlg != 0)
-                        pDlg->FUN_1419f22a0(m_nHeldKey, 1);
+                        pDlg->ShowModifiedKeySelect(m_nHeldKey, 1);
                 }
                 if (nSlot != nKey)
                     return false;
-                __int64 pBinding = FUN_1409331f0()->GetKeyAction(nSlot);
+                __int64 pBinding = GetKeyTable()->GetKeyAction(nSlot);
                 if (pBinding == 0)
                     return false;
-                if (FUN_1409331f0()->FUN_141430b10(pBinding) == 0)
+                if (GetKeyTable()->FUN_141430b10(pBinding) == 0)
                 {
                     if (WasKeyPressed(nSlot))
                         return true;
@@ -303,9 +303,9 @@ bool MS2InputService::WasKeyPressedGated(int nKey)
             {
                 if (m_nHeldKey == nSlot)
                 {
-                    UIMainPlayerInfo* pDlg = FUN_140931900(0x4e5f);
+                    UIMainPlayerInfo* pDlg = FindMainPlayerInfo(0x4e5f);
                     if (pDlg != 0)
-                        pDlg->FUN_1419f22a0(m_nHeldKey, 0);
+                        pDlg->ShowModifiedKeySelect(m_nHeldKey, 0);
                     m_nHeldKey = -1;
                 }
             }
@@ -408,7 +408,7 @@ MS2_REPLACE_METHOD(0x140D8B250, MS2InputService, InjectKeyRelease, 57, 0x5191D96
 // @0x140d8b290
 int MS2InputService::GetKeyboardCode(int nKey)
 {
-    if (FUN_1409331f0()->IsKeyboardKey(nKey))
+    if (GetKeyTable()->IsKeyboardKey(nKey))
         return nKey;
     return 0;
 }
@@ -417,7 +417,7 @@ MS2_REPLACE(0x140D8B290, MS2InputService::GetKeyboardCode, 42, 0x6B27C144);
 // @0x140d8b2c0
 int MS2InputService::GetMouseButtonIndex(int nKey)
 {
-    if (FUN_1409331f0()->IsMouseButtonKey(nKey))
+    if (GetKeyTable()->IsMouseButtonKey(nKey))
         return nKey - 200;
     return -1;
 }
@@ -426,7 +426,7 @@ MS2_REPLACE(0x140D8B2C0, MS2InputService::GetMouseButtonIndex, 50, 0x886E2638);
 // @0x140d8b300
 int MS2InputService::GetGamePadButtonIndex(int nKey)
 {
-    if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->IsGamepadKey(nKey) != 0 && nKey < 0xa2)
+    if (reinterpret_cast<CKeyTable*>(GetKeyTable())->IsGamepadKey(nKey) != 0 && nKey < 0xa2)
     {
         nKey = FUN_140a58540()->RemapPadButtonForDualShock(nKey);
         return nKey - 0x92;
@@ -459,7 +459,7 @@ MS2_REPLACE_METHOD(0x140D8B370, MS2InputService, HasKeyHeldOrGamePad, 106, 0xB57
 // @0x140d8b3e0
 void MS2InputService::StartRumbleFor(double dSeconds)
 {
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3) != 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xc3) != 1)
         return;
     m_nRumbleActive = 1;
     m_dRumbleStart = ((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
@@ -605,19 +605,19 @@ void MS2InputService::SetGamePadEnabled(bool bEnable, bool bNotify)
             DetectGamePad();
             if (m_spGamePad == 0 && bNotify)
             {
-                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140298ea0(L"s_gamepad_notice_search_gamepad"), 0, L"");
+                MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, FUN_140298ea0(L"s_gamepad_notice_search_gamepad"), 0, L"");
                 if (box)
                 {
                     box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &MS2InputService::OnNoGamePadMsgBoxResult));
                     FUN_140d73c60(box);
                 }
             }
-            if (FUN_1409331f0()->FindKeyByActionAndPriority(0x30d41, 2) == 0)
+            if (GetKeyTable()->FindKeyByActionAndPriority(0x30d41, 2) == 0)
             {
                 if (FUN_140a58540()->GetPadKind() == 2)
-                    FUN_1409331f0()->FUN_141429e60("./Data/Xml/Table/default/DefaultPSKey.xml");
+                    GetKeyTable()->FUN_141429e60("./Data/Xml/Table/default/DefaultPSKey.xml");
                 else
-                    FUN_1409331f0()->FUN_141429e60("./Data/Xml/Table/default/DefaultXboxKey.xml");
+                    GetKeyTable()->FUN_141429e60("./Data/Xml/Table/default/DefaultXboxKey.xml");
             }
         }
         else
@@ -635,7 +635,7 @@ MS2_REPLACE_METHOD(0x140D8B900, MS2InputService, SetGamePadEnabled, 1016, 0x66A2
 void MS2InputService::ToggleCursorMode()
 {
     m_nCursorMode = m_nCursorMode ^ 1;
-    MS2Ptr<ASMouseCursor> hud = ((class GFxManager*)FUN_14025e7a0())->GetMouseCursor(6);
+    MS2Ptr<ASMouseCursor> hud = ((class GFxManager*)GetGFxManager())->GetMouseCursor(6);
     if (hud == 0)
         return;
     if (m_nCursorMode != 0)
@@ -668,7 +668,7 @@ MS2_REPLACE_METHOD(0x140D8BE10, MS2InputService, FUN_140d8be10, 32, 0xCBEBD717);
 // @0x140d8be40
 void MS2InputService::DetectGamePad()
 {
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb5) == 1)
     {
         NiInputSystem* pInput = GetInputSystem();
         if (pInput != NULL)
@@ -715,7 +715,7 @@ MS2_REPLACE_METHOD(0x140D8BE40, MS2InputService, DetectGamePad, 600, 0x7CBF8EF8)
 // @0x140d8c0a0
 int MS2InputService::GetGamePadButtonForSetting(__int64 nSetting)
 {
-    int nKey = FUN_1409331f0()->FindKeyByActionAndPriority(nSetting, 2);
+    int nKey = GetKeyTable()->FindKeyByActionAndPriority(nSetting, 2);
     nKey = RemapPadButtonForDualShock(nKey);
     int nSlot = nKey - 0x92;
     return nSlot;
@@ -833,7 +833,7 @@ bool MS2InputService::FUN_140d8c550()
     if (m_spGamePad == 0)
         return false;
     bool bChanged = true;
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb5) == 1)
     {
         float fX = (float)m_spGamePad->GetStickAxisValue(NiInputGamePad::NIGP_STICK_LEFT | NiInputGamePad::NIGP_STICK_AXIS_H);
         float fY = (float)m_spGamePad->GetStickAxisValue(NiInputGamePad::NIGP_STICK_LEFT | NiInputGamePad::NIGP_STICK_AXIS_V);

@@ -40,30 +40,30 @@ public:
     CProxyGameObject();                                 // 0x1416c1cc0
     virtual ~CProxyGameObject();                        // slot 0, 0x1416c1f00 (??_G 0x1416c2bc0)
 
-    int FUN_1416c1ff0();                                // m_40 is the self object
+    int IsSelf();                                // m_40 is the self object
     int IsOtherPlayer();                                // m_40 is another object
     int FUN_1416c2090();                                // has a template id and no pending flag
-    int FUN_1416c20d0();                               // handle +0x18 has an object
+    int HasPortal();                               // handle +0x18 has an object
     int FUN_1416c2110();
     int FUN_1416c21c0();
     Unk_ProxyValue88* GetQuestState();
     MS2Ptr<NpcDataCli> GetNpcData();
     Vector3 GetPosition();
-    void* FUN_1416c22f0();
+    void* GetCharacterId();
     void* FUN_1416c2310();
-    unsigned short FUN_1416c2330();
-    int FUN_1416c2350();
+    unsigned short GetLevel();
+    int GetTemplateId();
     int FUN_1416c2370();
-    int FUN_1416c2390();
+    int GetJobCode();
     CStringW GetName();
-    CString FUN_1416c2520();
-    CStringW FUN_1416c2570();
+    CString GetPortraitPath();
+    CStringW GetTodayMemo();
     CStringW FUN_1416c2600();
-    int FUN_1416c2920();
-    Unk_ProxyValueD0* FUN_1416c2950();
-    int FUN_1416c2990(int nTemplateId);
+    int GetTrophyTotal();
+    Unk_ProxyValueD0* GetTally();
+    int SetTemplateId(int nTemplateId);
     void UpdateQuestState();
-    bool FUN_1416c2b30();
+    bool IsVisibleOnMinimap();
     bool FUN_1416c2b70();
 
     MS2Ptr<CPortal> m_18;                               // ctor 0x1416c2ba0, dtor 0x140964a70

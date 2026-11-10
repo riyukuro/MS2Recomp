@@ -37,7 +37,7 @@ public:
     void OnSelectAllClick(const Scaleform::GFx::FunctionHandler::Params& params);   // the radio was clicked: select all
     void FUN_140e281f0(const Scaleform::GFx::FunctionHandler::Params& params);   // OK
     void FUN_140e28280(const Scaleform::GFx::FunctionHandler::Params& params);   // a row was filled
-    void FUN_140e286a0(const Scaleform::GFx::FunctionHandler::Params& params);   // a row's tooltip
+    void OnRowTooltip(const Scaleform::GFx::FunctionHandler::Params& params);   // a row's tooltip
     void FUN_140e288f0(const Scaleform::GFx::FunctionHandler::Params& params);   // a check box was clicked
     void FUN_140e28a40(const Scaleform::GFx::FunctionHandler::Params& params);   // the radio's other state
 

@@ -28,7 +28,7 @@ class Unk_SlUIMgr : public CUIService                                       // t
 
 class Unk_SlA;  class Unk_SlB;  class Unk_SlC;  class Unk_SlD;  class Unk_SlE;
 class Unk_SlF;  class Unk_SlG;
-class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
+class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
 class CItemOptionTable   // C3: member view for the former free stand-ins
 {
 public:
@@ -42,7 +42,7 @@ public:
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class CNiStreamLoadThread;
 template<> class TSingleton<CNiStreamLoadThread> { public: static CNiStreamLoadThread* GetInstance(); };
-class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions* GetLaunchOptions();   // C3: was GetLaunchOptions
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
 public:
@@ -50,7 +50,7 @@ public:
 };
 
 
-UIIntroMovie* FUN_140e85420(int nUiId);                 // the intro movie dialog (uiscenemodeselect.cpp's static)
+UIIntroMovie* FindIntroMovie(int nUiId);                 // the intro movie dialog (uiscenemodeselect.cpp's static)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -75,7 +75,7 @@ MS2_REPLACE_METHOD(0x141AD0480, UISceneLogo, GetTypeName, 61, 0x8DD3FAEE);
 // @0x141ad04d0
 int UISceneLogo::vfunc_48(int n)
 {
-    ((class Unk_SlUIMgr*)TSingleton<CUIService>::GetInstance())->FUN_141adafd0(m_6c);
+    ((class Unk_SlUIMgr*)TSingleton<CUIService>::GetInstance())->HideWorldUI(m_6c);
     return UISceneEntity::vfunc_48(n);
 }
 MS2_REPLACE_METHOD(0x141AD04D0, UISceneLogo, vfunc_48, 53, 0x4D72E8A7);
@@ -84,14 +84,14 @@ MS2_REPLACE_METHOD(0x141AD04D0, UISceneLogo, vfunc_48, 53, 0x4D72E8A7);
 void UISceneLogo::OnLoadComplete()
 {
     UISwfEntity::OnLoadComplete();
-    UIIntroMovie* pIntro = FUN_140e85420(0x4e33);
+    UIIntroMovie* pIntro = FindIntroMovie(0x4e33);
     if (pIntro != 0)
         pIntro->vfunc_52("Common/MS2Intro.usm", 0);
     ((class StateEffectMgr*)(class Unk_SlA*)(reinterpret_cast<Unk_SlA*>(TSingleton<StateEffectMgr>::GetInstance())))->Load();
-    ((class CItemOptionTable*)(class Unk_SlB*)(((class Unk_SlB*)FUN_140166430())))->Init();
+    ((class CItemOptionTable*)(class Unk_SlB*)(((class Unk_SlB*)GetItemOptionTable())))->Init();
     CItemDefaultData::Load();
     ((class CThread*)(class Unk_SlD*)(((class Unk_SlD*)TSingleton<CNiStreamLoadThread>::GetInstance())))->Start((void*)(((class Unk_SlC*)GetFileSystem())), 0, 0, 0, (struct _SECURITY_ATTRIBUTES*)(0));
-    if (((class Unk_LaunchOptions*)(class Unk_SlE*)(((class Unk_SlE*)FUN_1406aeee0())))->IsPreloadNoThread())
+    if (((class Unk_LaunchOptions*)(class Unk_SlE*)(((class Unk_SlE*)GetLaunchOptions())))->IsPreloadNoThread())
         TSingleton<CFilePreload>::GetInstance()->SetAsynchronous(false);
     ((class CFilePreload*)(class Unk_SlF*)(reinterpret_cast<Unk_SlF*>(TSingleton<CFilePreload>::GetInstance())))->FUN_14120fcc0();
 }

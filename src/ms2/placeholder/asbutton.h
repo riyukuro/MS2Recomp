@@ -31,24 +31,24 @@ public:
 #endif
     // Registers the click callback; pUser comes back in Params.
     void FUN_1422ce240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);   // the user value lands in Params (homed as a qword by the callee)
-    void FUN_1422ce1f0(int nMode);                                  // the button mode (uidungeonroomdialog: 2)
-    void FUN_1422ce090(int bSelected);                              // set "selected"
-    bool FUN_1422ce0e0();                                           // "selected"
-    void FUN_1422cdf20(bool bVisible);                              // show the label (uidungeonsearchsettingdialog)
+    void SetVerticalAlign(int nMode);                                  // the button mode (uidungeonroomdialog: 2)
+    void SetSelected(int bSelected);                              // set "selected"
+    bool IsSelected();                                           // "selected"
+    void SetHtml(bool bVisible);                              // show the label (uidungeonsearchsettingdialog)
     void FUN_1422cdfb0(const CStringW& strText);                    // set the label text
-    MS2Ptr<class ASTextField> FUN_1422ce400();                     // the label text field (uiclosetdialog.cpp)
-    void FUN_1422cdf50(const CString& strLabel);                    // set the label from a "$key" text (uidungeonroomdialog)
+    MS2Ptr<class ASTextField> GetTextField();                     // the label text field (uiclosetdialog.cpp)
+    void SetLabel(const CString& strLabel);                    // set the label from a "$key" text (uidungeonroomdialog)
     // Registers the click callback with a pointer-sized user value (Params::pUserData).
-    void FUN_1422ce320(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);
+    void AddSelectHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick, void* pUser);
     // recovered with ?\asbutton.cpp (src/ms2/gfxui/asbutton.cpp): the remaining AS member accessors
-    void FUN_1422cde60(int bAutoRepeat);                            // set "autoRepeat"
-    int FUN_1422cdeb0();                                            // "autoRepeat" (as an int)
-    CString FUN_1422ce000();                                        // the "label" text
-    void FUN_1422ce140(int bToggle);                                // set "toggle"
-    bool FUN_1422ce190();                                           // "toggle"
+    void SetAutoRepeat(int bAutoRepeat);                            // set "autoRepeat"
+    int IsAutoRepeat();                                            // "autoRepeat" (as an int)
+    CString GetLabel();                                        // the "label" text
+    void SetToggle(int bToggle);                                // set "toggle"
+    bool IsToggle();                                           // "toggle"
     // remove the "buttonClick" / "select" listener registered by FUN_1422ce240 / FUN_1422ce320
     void FUN_1422ce2c0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onClick);
-    void FUN_1422ce3a0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onSelect);
+    void RemoveSelectHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onSelect);
 };
 MS2_CHECK_SIZE(ASButton, 0x88);
 

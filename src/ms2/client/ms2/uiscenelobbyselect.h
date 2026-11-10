@@ -43,8 +43,8 @@ public:
     virtual int vfunc_63();
     virtual void vfunc_64();
 
-    int FUN_1422e7950();                                        // 0x1422e7950 the presentation ref has changed
-    void FUN_1422e7a40(int nSceneId);                           // 0x1422e7a40
+    int GetSceneId();                                        // 0x1422e7950 the presentation ref has changed
+    void SetSubSceneId(int nSceneId);                           // 0x1422e7a40
 
 public:
     char m_pad68[4];
@@ -118,6 +118,6 @@ public:
     virtual void vfunc_60(MS2Ptr<AScript> spBackground);        // 60 0x141ace900
     virtual void vfunc_64();                                    // 64 0x141ace9a0
 
-    void FUN_141ace9e0();                                       // 0x141ace9e0
+    void ResetServerDialog();                                       // 0x141ace9e0
 };
 MS2_CHECK_SIZE(UISceneLobbyServer, 0xa8);

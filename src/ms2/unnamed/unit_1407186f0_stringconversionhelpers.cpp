@@ -39,14 +39,14 @@ CMsTime FUN_140718920(const CString& s);
 ATL::CTimeSpan FUN_140718cd0(const CString& s);
 
 // @0x1407186f0
-MS2Colors FUN_1407186f0(const CString& s) {
+MS2Colors ParseColors(const CString& s) {
     MS2Colors colors;
     FUN_140719c30(&s, &colors, ",");
     return colors;
 }
 
 // @0x140718770
-Unk_ConstColor FUN_140718770(const CStringA& s) {
+Unk_ConstColor ParseHexColor(const CStringA& s) {
     Unk_ConstColor tmp(strtoul((const char*)s, 0, 16));
     //
     //
@@ -60,7 +60,7 @@ void* FUN_1407187d0(void* ret, const CStringW& s) {
     return ret;
 }
 // @0x140718830
-void* FUN_140718830(void* ret, const CStringA& s) {
+void* ParseTick(void* ret, const CStringA& s) {
     unsigned tmp;
     reinterpret_cast<MS2Tick*>(&tmp)->MS2Tick::MS2Tick((unsigned)FUN_14028d260((float)atof((const char*)s)));
     *(unsigned*)ret = tmp;
@@ -108,7 +108,7 @@ ATL::CTimeSpan FUN_140718cd0(const CString& s) { return ATL::CTimeSpan(); }
 
 // Parses "D-h-m-s" into a CTimeSpan.
 // @0x140718d00
-ATL::CTimeSpan FUN_140718d00(const CString& s) {
+ATL::CTimeSpan ParseTimeSpan(const CString& s) {
     CAtlArray<CString> parts;
     Unk_SplitA(*const_cast<CStringA*>(&s), (ATL::CAtlArray<CStringA>*)(&parts), "-");
     int six = 6;
@@ -129,7 +129,7 @@ ATL::CTimeSpan FUN_140718d00(const CString& s) {
 }
 
 // @0x140718f90
-std::vector<int> FUN_140718f90(const CString& s) {
+std::vector<int> ParseIntList(const CString& s) {
     std::vector<int> v;
     XmlSplit(s, v, ",");
     return v;
@@ -221,7 +221,7 @@ void FUN_140719c60(const CString* s, void* arr, const char* sep) {
 }
 
 // @0x14071a1e0 ... small helpers
-// std::vector<int>(vector&&) and its helpers, emitted by FUN_140718f90's return.
+// std::vector<int>(vector&&) and its helpers, emitted by ParseIntList's return.
 // MS2-PIN: ??$move@AEAV?$allocator@H@std@@@std@@YA$$QEAV?$allocator@H@0@AEAV10@@Z 0x14071a200 ; sfb: std::move<allocator<int>&>
 // MS2-PIN: ??$move@AEAV?$vector@HV?$allocator@H@std@@@std@@@std@@YA$$QEAV?$vector@HV?$allocator@H@std@@@0@AEAV10@@Z 0x14071a210 ; sfb: std::move<vector<int>&>
 // MS2-PIN: ??0?$vector@HV?$allocator@H@std@@@std@@QEAA@$$QEAV01@@Z 0x14071a240 ; sfb: vector<int>(vector&&)

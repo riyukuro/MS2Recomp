@@ -59,7 +59,7 @@ public:
     CQuestData();
     virtual ~CQuestData();
     bool operator!=(const CQuestData& o) const;   // 0x140749090
-    Unk_SocketPtr<NavigationData> FUN_14074b380(int nKey);   // the <navi> entry of a state (null when missing)
+    Unk_SocketPtr<NavigationData> GetNavigationData(int nKey);   // the <navi> entry of a state (null when missing)
     bool Load(TiXmlElement* pElem);      // XML loader (<quest> element)
     int m_id, m_type, m_20, m_level, m_28;
     unsigned char m_2c, m_2d, m_2e, m_2f, m_30, m_31, m_flag, m_33, m_34;

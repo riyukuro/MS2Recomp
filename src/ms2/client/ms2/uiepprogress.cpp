@@ -36,7 +36,7 @@ class Unk_EpEntity : public ASGameEntity
 public:
     Scaleform::GFx::Value FUN_141931d80(const char* szMethod, int a1, int a2, int a3);
 };
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
+MS2Ptr<ASGameEntity> CreateGameEntity(int nUiId, const Scaleform::GFx::Value& root);
 void FUN_1422bcd10(Scaleform::GFx::Value*, unsigned int);
 
 // @0x141931550
@@ -44,7 +44,7 @@ UIEpProgress::UIEpProgress(Unk_PopupOwner* pOwner) : UIPopupEntity(pOwner)
 {
     m_90 = 9999999;
     m_94 = 1500.0f;
-    FUN_1422dbf00(3, 0, 0);
+    LoadSwf(3, 0, 0);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
 }
 
@@ -96,7 +96,7 @@ void UIEpProgress::vfunc_53(const NiPoint3& kPos)
                     if (reinterpret_cast<UINameTag::Entity*>(pTarget)->FUN_141a5e690() != 0)
                     {
                         reinterpret_cast<UINameTag::Entity*>(pTarget)->FUN_141a5e5d0(reinterpret_cast<Unk_NtPos*>(&pt));   // the anchor position
-                        pt.x -= reinterpret_cast<ASDisplayObject*>(static_cast<Unk_EpEntity*>(pClip.operator->()))->FUN_1422c1340() * 0.5 + 10.0;
+                        pt.x -= reinterpret_cast<ASDisplayObject*>(static_cast<Unk_EpEntity*>(pClip.operator->()))->GetWidthCeil() * 0.5 + 10.0;
                     }
                 }
             }
@@ -111,7 +111,7 @@ int UIEpProgress::vfunc_57(int nForce)
 {
     if (UIPopupEntity::vfunc_57(nForce) != 0)
         return 1;
-    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
+    if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSubSceneId() != 0x620001d)
         return 1;
     if (reinterpret_cast<Unk_EpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_141248630())->m_bEnabled == 0)
         return 1;
@@ -143,7 +143,7 @@ void UIEpProgress::vfunc_oa0_5(int a1, int a2)
 }
 
 // @0x141931bd0
-void UIEpProgress::FUN_141931bd0(int nEp, int a2)
+void UIEpProgress::SetEp(int nEp, int a2)
 {
     int nOld = m_e0;
     m_e0 = nEp;
@@ -159,7 +159,7 @@ void UIEpProgress::FUN_141931bd0(int nEp, int a2)
 // @0x141931d10
 void UIEpProgress::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 
 // @0x141931d80
@@ -182,6 +182,6 @@ MS2_REPLACE_METHOD(0x1419317B0, UIEpProgress, vfunc_53, 477, 0xA84B719B);
 MS2_REPLACE_METHOD(0x1419319A0, UIEpProgress, vfunc_57, 100, 0x8D040A68);
 MS2_REPLACE_METHOD(0x141931A10, UIEpProgress, vfunc_59, 58, 0xEA534D49);
 MS2_REPLACE_METHOD_VIA(0x141931A50, UIEpProgress, UIStatusEventListener, vfunc_oa0_5, 378, 0x33D3D48A);
-MS2_REPLACE_METHOD(0x141931BD0, UIEpProgress, FUN_141931bd0, 312, 0xB346147F);
+MS2_REPLACE_METHOD(0x141931BD0, UIEpProgress, SetEp, 312, 0xB346147F);
 MS2_REPLACE_METHOD(0x141931D10, UIEpProgress, vfunc_41, 99, 0x6F975494);
 MS2_REPLACE_METHOD(0x141931D80, Unk_EpEntity, FUN_141931d80, 207, 0x0818BD0B);

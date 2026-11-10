@@ -55,7 +55,7 @@ public:
     virtual void vfunc_87(SIZE* pSize);                             // 87 0x140e995b0
     virtual bool vfunc_90(POINT* pPos);                             // 90 0x140e99360
 
-    void FUN_140e98a50(CStringW strUrl, int nExitOnClose);          // set the page url and the exit-on-close flag
+    void SetPageUrl(CStringW strUrl, int nExitOnClose);          // set the page url and the exit-on-close flag
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -75,18 +75,18 @@ extern int g_socketClosing;                     // 0x143ab2910
 extern CStringW DAT_143ab2d78;                  // the maintenance message
 extern CStringW DAT_143abf510;                  // 0x143abf510 L"maintenanceExit" (the message box tag)
 extern int DAT_143ab2858;                       // a login value received from the server
-void FUN_1414b1980();                           // parses the launch arguments
+void ParseLaunchArguments();                           // parses the launch arguments
 DWORD GetTickCountMs2();
 __int64 GetServerTime();                        // the server time
 CStringW GetStringCommon(int nStringId);
-void FUN_1412751f0(const CStringW& text, int nA, int nB);                   // a system notice
+void ShowSystemNotice(const CStringW& text, int nA, int nB);                   // a system notice
 int FUN_141b6fcf0(const CStringW& text, const CStringW& caption, UINT nType);   // MessageBox over the game window (C3: returns int)
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 unsigned FUN_14028ba90();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 // StringFormat<CString> (the fmt "{0}" wrapper, itemdata.cpp's COMDAT). Called by address name: progress/symbols.tsv binds
 // the StringFormat<CString> name to the look-alike 0x140536a50 (Unk_SocketFormat<CString>, which calls 0x1402bf9a0).
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pUnk, CStringW strTag);   // create a message box
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pUnk, CStringW strTag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                 // show it
 // CNXMan::FUN_14160dac0 / FUN_14160e5f0 as this TU's callers see them: int results (nxman.h declares bool), and dac0
 // gets the argument the slot passes on (the callee ignores it).
@@ -191,7 +191,7 @@ void CClientPlatformNexonKorea::vfunc_6()
                 if (nNotice >= 0 && nNotice <= 2) {
                     CMsTime shutdown(g_nShutdownTime);
                     int nHour = shutdown.GetHour();
-                    FUN_1412751f0(BlockFormat<int>(0x9a5, nHour), 1, 1);
+                    ShowSystemNotice(BlockFormat<int>(0x9a5, nHour), 1, 1);
                     g_aShutdownNoticed[nNotice] = 1;
                 }
             }
@@ -256,7 +256,7 @@ void CClientPlatformNexonKorea::vfunc_26(void* a1)
             packet.Encode1(2);
             packet.Encode1(2);
             FUN_140710590(packet);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMessage, 0, DAT_143abf510);
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0, strMessage, 0, DAT_143abf510);
             if (spBox) {
                 spBox->SetTitle(GetStringCommon(0x219));
                 FUN_140d73c60(spBox);
@@ -272,13 +272,13 @@ void CClientPlatformNexonKorea::vfunc_26(void* a1)
             packet.Encode1(2);
             packet.Encode1(2);
             FUN_140710590(packet);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMessage, 0, DAT_143abf510);
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0, strMessage, 0, DAT_143abf510);
             if (spBox) {
                 spBox->SetTitle(GetStringCommon(0x8c6));
                 FUN_140d73c60(spBox);
             }
         } else {
-            FUN_1412751f0(strMessage, 3, 1);
+            ShowSystemNotice(strMessage, 3, 1);
         }
     }
 }
@@ -288,7 +288,7 @@ MS2_REPLACE_METHOD(0x140C78260, CClientPlatformNexonKorea, vfunc_26, 1297, 0x9DC
 int CClientPlatformNexonKorea::vfunc_17()
 {
     RawString rawString;
-    FUN_1414b1980();
+    ParseLaunchArguments();
     if (!g_launchBits[0]) {
         DAT_143ac2fd0 = 0x3e9;
         g_143ac2fe0 = rawString.Get(RAWSTRING_INVALID_LAUNCH);
@@ -380,7 +380,7 @@ void CClientPlatformNexonKorea::vfunc_32(void* a1)
 // @0x140c78cb0
 int CClientPlatformNexonKorea::vfunc_1()
 {
-    if (((class CFeatureManager*)FUN_140166410()) != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036e6b0() == 4)
+    if (((class CFeatureManager*)FUN_140166410()) != 0 && ((class CFeatureManager*)FUN_140166410())->GetServerType() == 4)
         return 1;
     return 0;
 }

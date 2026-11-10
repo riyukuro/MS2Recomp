@@ -50,7 +50,7 @@ class Unk_MentorFlag { public: int FUN_1402c4c90(int); };
 class Unk_MentorFlags { public: void* p0; Unk_MentorFlag flags; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 void FUN_141275260(int, int, int);
-void FUN_1412751f0(const CStringW&, int, int);
+void ShowSystemNotice(const CStringW&, int, int);
 
 
 class UICommunityQueryDialog : public UIDialog {};
@@ -60,7 +60,7 @@ UICommunityQueryDialog* FUN_140ae5a30(int);
 
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);
 void FUN_140710590(COutPacket& packet);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 unsigned __int64 FUN_140718350(const CString& str);             // string -> id
 CString FUN_140719530(unsigned __int64 n);                      // number to string
@@ -129,33 +129,33 @@ void UIInviteMentoringDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_bMentorPage)
     {
-        ((MS2Ptr<AScript>*)(&m_30))->operator->()->FUN_1422bb870().GotoAndStop("mentor");
+        ((MS2Ptr<AScript>*)(&m_30))->operator->()->GetValue().GotoAndStop("mentor");
         {
             CString strPage("mentorPage");
             m_spPage = GetChild<ASMovieClip>(strPage);
         }
-        FUN_141925fa0(CString("m_mentorDragBar"));
+        BindDragBar(CString("m_mentorDragBar"));
         CMenteeSearchParam param;
         param.m_nOption30 = reinterpret_cast<Unk_MentorSchedule*>(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring())->GetId();
         CMenteeSearchManager::GetInstance()->RequestSearch(&param);
     }
     else
     {
-        ((MS2Ptr<AScript>*)(&m_30))->operator->()->FUN_1422bb870().GotoAndStop("mentee");
+        ((MS2Ptr<AScript>*)(&m_30))->operator->()->GetValue().GotoAndStop("mentee");
         {
             CString strPage("menteePage");
             m_spPage = GetChild<ASMovieClip>(strPage);
         }
-        FUN_141925fa0(CString("m_menteeDragBar"));
+        BindDragBar(CString("m_menteeDragBar"));
         COutPacket pkt(static_cast<int>(SendOp::Mentor), 0);
         Unk_MMListPacket2 req;
-        reinterpret_cast<Unk_MentorListPacket*>(&req)->FUN_14069a010(reinterpret_cast<Unk_MentorWriter&>(pkt));
+        reinterpret_cast<Unk_MentorListPacket*>(&req)->Write(reinterpret_cast<Unk_MentorWriter&>(pkt));
         FUN_140710590(pkt);
     }
 }
 
 // @0x140c30140
-Unk_PopupMenu* FUN_140c30140(int nId)
+Unk_PopupMenu* FindPopupMenu(int nId)
 {
     if (reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
@@ -167,7 +167,7 @@ Unk_PopupMenu* FUN_140c30140(int nId)
 }
 
 // @0x140c300a0
-UIDialog* FUN_140c300a0(int nId)
+UIDialog* FindDialog(int nId)
 {
     if (reinterpret_cast<Unk_InvUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
@@ -182,7 +182,7 @@ UIDialog* FUN_140c300a0(int nId)
 void UIInviteMentoringDialog::vfunc_66()
 {
     UIDialog::vfunc_66();
-    UIDialog* pMentor = FUN_140c300a0(0x4f4b);
+    UIDialog* pMentor = FindDialog(0x4f4b);
     if (pMentor != 0)
     {
         if (pMentor->vfunc_55() == 0)
@@ -210,7 +210,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         {
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
             CStringW strName = data.FUN_1422b8f40();
-            FUN_140c2f860(nSerial, strName);
+            InviteMentor(nSerial, strName);
         }
     }
     else if (_stricmp(szMethod, "onInviteMentee") == 0)
@@ -219,7 +219,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             CStringW strName = data.FUN_1422b8f40();
-            FUN_140c2f860(0, strName);
+            InviteMentor(0, strName);
         }
         return 1;
     }
@@ -240,7 +240,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             int nMonth = tEnd.GetMonth();
             int nYear = tEnd.GetYear();
             CStringW strMsg = FUN_14028dfa0(CStringW(L"s_mentoring_mentor_accept_warn"), nYear, nMonth, nDay, strName);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->FUN_141a024a0(0);
@@ -281,7 +281,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FindByName(strName);
             if (buddy.get() != 0)
             {
-                nChar = buddy.operator->()->FUN_1401cc2f0();
+                nChar = buddy.operator->()->GetId();
                 if (buddy.operator->()->FUN_1401cc5d0() != 0)
                 {
                     FUN_140d73bc0(0x623, 0, 0, CStringW(L""));
@@ -320,7 +320,7 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             float y = data.PopFloat();
             CStringW strName = data.FUN_1422b8f40();
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
-            Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);
+            Unk_PopupMenu* pMenu = FindPopupMenu(0x4e39);
             if (pMenu != 0)
             {
                 Unk_PopupMenuInfo info(x, y, 3, 10, 0, "", NULL);
@@ -333,14 +333,14 @@ int UIInviteMentoringDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
 }
 
 // @0x140c2f010
-void UIInviteMentoringDialog::FUN_140c2f010()
+void UIInviteMentoringDialog::ShowMentorPage()
 {
     m_bMentorPage = true;
     FUN_1419246f0();
 }
 
 // @0x140c2f040
-void UIInviteMentoringDialog::FUN_140c2f040()
+void UIInviteMentoringDialog::ShowMenteePage()
 {
     m_bMentorPage = false;
     FUN_1419246f0();
@@ -361,18 +361,18 @@ void UIInviteMentoringDialog::FUN_140c2f070(const ATL::CAtlArray<Unk_MentorPtr<C
             continue;
         CStringW strInfo = FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_mentoring_invite_info"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMentor->y), spMentor->level);
         ASObj row(2);
-        row.FUN_1407cbbe0("isOnline", spMentor->online);
-        row.FUN_1407cbb20("charName", CStringW(spMentor->name));
-        row.FUN_1407cba60("mentorSN", FUN_140719530(spMentor->a));
-        row.FUN_1407cba60("charSN", FUN_140719530(spMentor->c));
-        row.FUN_1407cbb20("charInfo", CStringW(strInfo));
-        rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
+        row.SetBoolMember("isOnline", spMentor->online);
+        row.SetWStringMember("charName", CStringW(spMentor->name));
+        row.SetStringMember("mentorSN", FUN_140719530(spMentor->a));
+        row.SetStringMember("charSN", FUN_140719530(spMentor->c));
+        row.SetWStringMember("charInfo", CStringW(strInfo));
+        rows.PushValue(Scaleform::GFx::Value(row.GetValue()));
     }
-    m_spPage->FUN_140bd2cb0("buildCandidate", rows);
+    m_spPage->InvokeWithArray("buildCandidate", rows);
 }
 
 // @0x140c2f440
-void UIInviteMentoringDialog::FUN_140c2f440(const ATL::CAtlArray<Unk_MentorPtr<CMentor> >& arrMentors)
+void UIInviteMentoringDialog::SetMentorList(const ATL::CAtlArray<Unk_MentorPtr<CMentor> >& arrMentors)
 {
     m_mentors.RemoveAll();
     m_mentors.Copy(arrMentors);
@@ -394,18 +394,18 @@ void UIInviteMentoringDialog::FUN_140c2f490()
             continue;
         CStringW strInfo = FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_mentoring_invite_info"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMentor->y), spMentor->level);
         ASObj row(2);
-        row.FUN_1407cbbe0("isOnline", spMentor->online);
-        row.FUN_1407cbb20("charName", CStringW(spMentor->name));
-        row.FUN_1407cba60("mentorSN", FUN_140719530(spMentor->a));
-        row.FUN_1407cba60("charSN", FUN_140719530(spMentor->c));
-        row.FUN_1407cbb20("charInfo", CStringW(strInfo));
-        rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
+        row.SetBoolMember("isOnline", spMentor->online);
+        row.SetWStringMember("charName", CStringW(spMentor->name));
+        row.SetStringMember("mentorSN", FUN_140719530(spMentor->a));
+        row.SetStringMember("charSN", FUN_140719530(spMentor->c));
+        row.SetWStringMember("charInfo", CStringW(strInfo));
+        rows.PushValue(Scaleform::GFx::Value(row.GetValue()));
     }
-    m_spPage->FUN_140bd2cb0("buildCandidate", rows);
+    m_spPage->InvokeWithArray("buildCandidate", rows);
 }
 
 // @0x140c2f860
-void UIInviteMentoringDialog::FUN_140c2f860(__int64 nMentor, const CStringW& strName)
+void UIInviteMentoringDialog::InviteMentor(__int64 nMentor, const CStringW& strName)
 {
     if (reinterpret_cast<CContentShutdown&>(((class Unk_MentorFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x41)) != 0)
     {
@@ -417,7 +417,7 @@ void UIInviteMentoringDialog::FUN_140c2f860(__int64 nMentor, const CStringW& str
         CStringW strBad;
         if (pFilter->FUN_140225210(strName, strBad, 0) != 0)
         {
-            FUN_1412751f0(strBad, 1, 1);
+            ShowSystemNotice(strBad, 1, 1);
             return;
         }
     }

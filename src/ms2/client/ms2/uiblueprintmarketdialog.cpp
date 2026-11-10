@@ -91,21 +91,21 @@ static CStringA s_strTabIndex = "tabIndex";
 
 // ---- out-of-unit callees (UIMeratMarketCommon and the services; the same views as uimeratmarketdialog.cpp) ----
 MS2Ptr<CMeratMarketProduct> FUN_140ec2300(const Unk_MeratProductKey& key, const int& nKind, __int64 nId);   // find a product
-MS2Ptr<CItem> FUN_140ebc070(CMeratMarketProduct* pProduct);                 // the item shown for a product
-int FUN_140ebbb30(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarketProduct> spProduct, bool bMyShop, bool bFlag);
+MS2Ptr<CItem> CreateProductItem(CMeratMarketProduct* pProduct);                 // the item shown for a product
+int SetProductTooltip(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarketProduct> spProduct, bool bMyShop, bool bFlag);
 bool FUN_140ebb920(ASObj* pRow, MS2Ptr<CMeratMarketProduct> spProduct);     // the product row
 void FUN_140ec0700(ASObj* pData, int nPremium);                             // the common initData members
-void FUN_140ec1340(ASData& data);                                           // report a product
+void ReportProduct(ASData& data);                                           // report a product
 void FUN_140ec0b50(MS2Ptr<CMeratMarketProduct> spProduct);                  // the calculate (cost) dialog of a product
 void FUN_140ec0c70(const CStringA& strMovie, MS2Ptr<CMeratMarketProduct> spProduct, MS2Ptr<TMeratMarketBillDataParam> spParam,
                    Scaleform::GFx::Value& vRow, __int64 nSeller, int nCount);   // open the bill of a product
 bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& prices);   // pay the bill
 bool FUN_140ebef60(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& prices, const CStringW& strTo,
                    const CStringW& strMessage);                             // pay the bill as a gift
-bool FUN_140ebe990(Scaleform::GFx::Value* pOut, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);   // the bill's tooltip
+bool GetBillTooltip(Scaleform::GFx::Value* pOut, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);   // the bill's tooltip
 template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW GetStringCommonByKey(const CStringW& strKey);
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> callback);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> callback);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
 void FUN_1412752d0(const CStringW& key, int type);                          // a system message by string key
 void FUN_140710590(COutPacket& packet);                                     // send
@@ -117,12 +117,12 @@ int FUN_1418dd0c0();                                                        // t
 int FUN_1418dd110();
 bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
 void FUN_1418ffec0(unsigned int*, unsigned int);   // C3: was FUN_1418ffec0
-void FUN_1418ffef0(unsigned int*, unsigned int);   // C3: was FUN_1418ffef0
+void ClearFlags(unsigned int*, unsigned int);   // C3: was FUN_1418ffef0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                   // set an Int value
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);                  // set a Boolean value
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);      // set a Value from an AS object
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v); // copy a Value
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v); // copy a Value
 extern int DAT_143ab2974;                                                   // the preview cool-down (seconds; server config 34)
 
 class Unk_MeratKeyState : public CInputKeyHandler {};   // 0x1c = Enter
@@ -134,7 +134,7 @@ struct Unk_ConfigPaths
     char m_pad[0xb8];
     CStringA m_strUgcIcon;                                                  // +0xb8 the icon of a UGC item whose image is still loading
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // The row fill's record and the market banner (views of uimeratmarketdialog.cpp; the record is the product).
 class Unk_MeratEquipEntry : public CMeratMarketProduct { };
@@ -165,7 +165,7 @@ template <> TMarketBillDataParam::GiftCallback& TMarketBillDataParam::GiftCallba
 
 // The house info dialog (UI 0x4ed8) when it is open.
 // @0x140bbea00
-UIHomeInfoDialog* FUN_140bbea00(int nId)
+UIHomeInfoDialog* GetHomeInfoDialog(int nId)
 {
     if (CUIService::GetInstance() != 0) {
         MS2Ptr<UIObject> spObject = CUIService::GetInstance()->FindObject((eUIClassID)nId);
@@ -181,7 +181,7 @@ UIBlueprintMarketDialog::UIBlueprintMarketDialog()
 {
     m_88 = 1;
     FUN_1422dc3b0(1);
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x140bb9e30
@@ -210,8 +210,8 @@ void UIBlueprintMarketDialog::OnLoadComplete()
         m_search->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIBlueprintMarketDialog::OnSearch), 0);
     ASObj data(2);
     FUN_140ec0700(&data, 1);
-    data.FUN_1407cb9c0("sendUnitPageCount", 5);
-    m_30->Invoke("initData", Scaleform::GFx::Value(data.FUN_1422bb870()));
+    data.SetIntMember("sendUnitPageCount", 5);
+    m_30->Invoke("initData", Scaleform::GFx::Value(data.GetValue()));
     if (!m_saved.IsEmpty()) {
         FUN_1418ffec0((unsigned int*)(&m_nFlags), 1);
     } else {
@@ -221,7 +221,7 @@ void UIBlueprintMarketDialog::OnLoadComplete()
         ApplySearchData(spCond, searchData);
     }
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyBlindTarget", Delegate<void(NotifyObject*)>(this, &UIBlueprintMarketDialog::OnBlindTarget));
-    UIUGCEventDispatcher::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
+    UIUGCEventDispatcher::GetInstance()->AddListener(static_cast<UIUGCEventListener*>(this));
 }
 MS2_REPLACE_METHOD(0x140bb9f50, UIBlueprintMarketDialog, OnLoadComplete, 0, 0);
 
@@ -255,7 +255,7 @@ int UIBlueprintMarketDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     } else if (_stricmp("OnClickReport", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_140ec1340(data);
+            ReportProduct(data);
         return 1;
     }
     return 0;
@@ -267,7 +267,7 @@ void UIBlueprintMarketDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyBlindTarget", Delegate<void(NotifyObject*)>(this, &UIBlueprintMarketDialog::OnBlindTarget));
-    UIUGCEventDispatcher::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
+    UIUGCEventDispatcher::GetInstance()->RemoveListener(static_cast<UIUGCEventListener*>(this));
     m_spCond = 0;
     m_nFlags = 0;
     m_search = 0;
@@ -289,7 +289,7 @@ int UIBlueprintMarketDialog::vfunc_13()
     if (vfunc_55() != 0 || m_30 == 0)
         return 0;
     if (GetUISwfEntityManager()->GetTopEntity(m_e0) == this) {
-        if (((class Unk_MeratKeyState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) && (bool)m_inputSearch.get() && m_inputSearch->GetFocused() == 1) {
+        if (((class Unk_MeratKeyState*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0) && (bool)m_inputSearch.get() && m_inputSearch->GetFocused() == 1) {
             Scaleform::GFx::FunctionHandler::Params params;
             OnSearch(params);
             return 1;
@@ -323,11 +323,11 @@ void UIBlueprintMarketDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* p
         return;
     ASTooltip tip(4, 2);
     {
-        MS2Ptr<CItem> spItem = FUN_140ebc070(spProduct.get());
+        MS2Ptr<CItem> spItem = CreateProductItem(spProduct.get());
         if (((void*)((MS2Ptr<CItem>*)(void*)(&spItem))->get()) != 0)
-            FUN_140ebbb30(&tip, spItem, spProduct, false, false);
+            SetProductTooltip(&tip, spItem, spProduct, false, false);
     }
-    *pRetVal = tip.FUN_1422bb870();
+    *pRetVal = tip.GetValue();
 }
 MS2_REPLACE_METHOD(0x140bbaf20, UIBlueprintMarketDialog, vfunc_49, 0, 0);
 
@@ -343,7 +343,7 @@ bool UIBlueprintMarketDialog::vfunc_75()
 {
     if (!UIDialog::vfunc_75())
         return false;
-    return ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xec);
+    return ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xec);
 }
 MS2_REPLACE_METHOD(0x140bbb150, UIBlueprintMarketDialog, vfunc_75, 0, 0);
 
@@ -361,7 +361,7 @@ void UIBlueprintMarketDialog::vfunc_72()
         } else {
             CMeratMarketMan::GetInstance()->SendSearchCondition(m_spCond);
         }
-        FUN_1418ffef0((unsigned int*)(&m_nFlags), 1);
+        ClearFlags((unsigned int*)(&m_nFlags), 1);
     }
 }
 MS2_REPLACE_METHOD(0x140bbb190, UIBlueprintMarketDialog, vfunc_72, 0, 0);
@@ -374,9 +374,9 @@ void UIBlueprintMarketDialog::vfunc_ugc_3(void* pCallBack, void* pstrPath)
         return;
     ASObj data(2);
     Unk_MeratProductKey key(0, static_cast<const UgcItemIcon::CallBackData*>(pCallBack)->m_30);
-    data.FUN_1407cbb20("productOID", key.GetKeyString());
-    data.FUN_1407cba60("iconPath", CStringA(*static_cast<const CStringA*>(pstrPath)));
-    m_30->Invoke("updateProductIcon", Scaleform::GFx::Value(data.FUN_1422bb870()));
+    data.SetWStringMember("productOID", key.GetKeyString());
+    data.SetStringMember("iconPath", CStringA(*static_cast<const CStringA*>(pstrPath)));
+    m_30->Invoke("updateProductIcon", Scaleform::GFx::Value(data.GetValue()));
 }
 MS2_REPLACE_METHOD_VIA(0x140bbb2c0, UIBlueprintMarketDialog, UIUGCEventListener, vfunc_ugc_3, 0, 0);
 
@@ -419,21 +419,21 @@ void UIBlueprintMarketDialog::ShowSearchResult(int nPage, int nFirst, int nLast,
         if (bFirstPage && bHasText && (bool)m_spCond.get()) {
             int nLimit = m_spCond->FUN_1406a3ea0();
             if (nTotal >= nLimit) {
-                FUN_140d74390(GetStringCommonByKey(L"s_meratmarket_notice_too_many_search_result"), 0, FUN_140b240b0());
+                ShowMessageBoxWithCallback(GetStringCommonByKey(L"s_meratmarket_notice_too_many_search_result"), 0, FUN_140b240b0());
             }
         }
         ASDataProvider items(2);
         Unk_MmViewScope scope(MS2Ptr<UIMeratMarketCommon::WeaponType>(0));
         int nCount = FillPage(nFirst, nLast, items, CMeratMarketMan::GetInstance()->GetBlueprintList(), &scope);
         ASObj info(2);
-        info.FUN_1407cbbe0("isPrevList", bPrev);
-        info.FUN_1407cb9c0("curPage", nPage);
-        info.FUN_1407cbbe0("isSearchItemLink", false);
-        info.FUN_1407cbbe0("isEndPage", bEndPage);
-        m_30->FUN_140bbeb40("buildItemList", items, nCount, true, Scaleform::GFx::Value(info.FUN_1422bb870()));
+        info.SetBoolMember("isPrevList", bPrev);
+        info.SetIntMember("curPage", nPage);
+        info.SetBoolMember("isSearchItemLink", false);
+        info.SetBoolMember("isEndPage", bEndPage);
+        m_30->FUN_140bbeb40("buildItemList", items, nCount, true, Scaleform::GFx::Value(info.GetValue()));
         if (!strNotice.IsEmpty() && bFirstPage && nCount == 0)
             m_30->Invoke("updateNoticeText", CStringW(strNotice));
-        FUN_1418ffef0((unsigned int*)(&m_nFlags), 1);
+        ClearFlags((unsigned int*)(&m_nFlags), 1);
         if (!m_saved.IsEmpty()) {
             Unk_MeratProductKey key(0, m_saved.m_nId);
             Preview(key);
@@ -444,13 +444,13 @@ void UIBlueprintMarketDialog::ShowSearchResult(int nPage, int nFirst, int nLast,
 MS2_REPLACE_METHOD(0x140bbb440, UIBlueprintMarketDialog, ShowSearchResult, 0, 0);
 
 // @0x140bbbc70
-void UIBlueprintMarketDialog::FUN_140bbbc70(MS2Ptr<CMeratMarketProduct> spProduct)
+void UIBlueprintMarketDialog::OnProductChanged(MS2Ptr<CMeratMarketProduct> spProduct)
 {
     if (spProduct == 0)
         return;
     UpdateItem(spProduct);
 }
-MS2_REPLACE_METHOD(0x140bbbc70, UIBlueprintMarketDialog, FUN_140bbbc70, 0, 0);
+MS2_REPLACE_METHOD(0x140bbbc70, UIBlueprintMarketDialog, OnProductChanged, 0, 0);
 
 // @0x140bbbcf0
 void UIBlueprintMarketDialog::ClearSearchInput()
@@ -485,12 +485,12 @@ bool UIBlueprintMarketDialog::FillRow(ASMeratMarketProduct& row, MS2Ptr<CMeratMa
     UgcItemIcon::CallBackData callBack;
     callBack.FUN_14088f500(0, 0, spProduct->m_key.m_nUgcId, 0);
     ASFunction fnCalculate(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIBlueprintMarketDialog::OnClickCalculate), 0, FUN_1422db730());
-    row.FUN_1409adbe0("funcClickCalculate", Scaleform::GFx::Value(fnCalculate.FUN_1422bb870()));
+    row.FUN_1409adbe0("funcClickCalculate", Scaleform::GFx::Value(fnCalculate.GetValue()));
     ASFunction fnModelHouse(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIBlueprintMarketDialog::OnClickModelHouse), 0, FUN_1422db730());
-    row.FUN_1409adbe0("funcClickModelhouse", Scaleform::GFx::Value(fnModelHouse.FUN_1422bb870()));
+    row.FUN_1409adbe0("funcClickModelhouse", Scaleform::GFx::Value(fnModelHouse.GetValue()));
     bool bIcon = TSingleton<CUgcManager>::GetInstance()->FUN_141885d20(&spProduct->m_ugc.m_look, 3, MS2Ptr<CItem>(0), &callBack) == 1;
     if (bIcon)
-        row.FUN_1407cba60("iconPath", CStringA(((struct Unk_ConfigPaths*)FUN_1401d31f0())->m_strUgcIcon));
+        row.SetStringMember("iconPath", CStringA(((struct Unk_ConfigPaths*)GetCommonResource())->m_strUgcIcon));
     return true;
 }
 MS2_REPLACE_METHOD(0x140bbbe00, UIBlueprintMarketDialog, FillRow, 0, 0);
@@ -509,7 +509,7 @@ MS2Ptr<TMeratMarketBillDataParam> UIBlueprintMarketDialog::CreateBillParam(const
     spParam->m_dgBuy = TMarketBillDataParam::BuyCallback(&FUN_140ebded0);
     spParam->m_dgGift = TMarketBillDataParam::GiftCallback(&FUN_140ebef60);
     spParam->SetSourceKind(nSourceKind);
-    spParam->m_dgTooltip = TMarketBillDataParam::TooltipCallback(&FUN_140ebe990);
+    spParam->m_dgTooltip = TMarketBillDataParam::TooltipCallback(&GetBillTooltip);
     spParam->SetGift(true);
     return spParam;
 }
@@ -546,7 +546,7 @@ int UIBlueprintMarketDialog::FillPage(int nFirst, int nLast, ASArray& rows, Unk_
             continue;
         ASMeratMarketProduct row(FUN_1422db730());
         if (FillRow(row, spProduct, pScope))
-            rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
+            rows.PushValue(Scaleform::GFx::Value(row.GetValue()));
     }
     return (int)list.GetCount();
 }
@@ -573,9 +573,9 @@ void UIBlueprintMarketDialog::Preview(const Unk_MeratProductKey& key)
     }
     m_previewTimer.Init();
     m_nPreviewId = nBlueprint;
-    UIHomeInfoDialog* pInfo = FUN_140bbea00(0x4ed8);
+    UIHomeInfoDialog* pInfo = GetHomeInfoDialog(0x4ed8);
     if (pInfo != 0 && pInfo->vfunc_55() == 0)
-        pInfo->FUN_1412c6e70(spProduct->GetName(), spProduct->m_ugc.GetStr210());
+        pInfo->SetItemInfo(spProduct->GetName(), spProduct->m_ugc.GetStr210());
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.Encode1(0x44);
     packet.Encode8(nBlueprint);
@@ -673,7 +673,7 @@ void UIBlueprintMarketDialog::UpdateItem(MS2Ptr<CMeratMarketProduct> spProduct)
         return;
     ASObj data(2);
     if (FUN_140ebb920(&data, spProduct))
-        m_30->Invoke("updateItemData", Scaleform::GFx::Value(data.FUN_1422bb870()));
+        m_30->Invoke("updateItemData", Scaleform::GFx::Value(data.GetValue()));
 }
 MS2_REPLACE_METHOD(0x140bbd360, UIBlueprintMarketDialog, UpdateItem, 0, 0);
 
@@ -768,7 +768,7 @@ void UIBlueprintMarketDialog::OnClickBuy(const CStringA& strMovie, ASData& data)
     MS2Ptr<TMeratMarketBillDataParam> spParam = CreateBillParam(strMovie, 1, 1);
     if (spParam == 0)
         return;
-    FUN_140ec0c70(strMovie, spProduct, spParam, spRow->FUN_1422bb870(), 0, 1);
+    FUN_140ec0c70(strMovie, spProduct, spParam, spRow->GetValue(), 0, 1);
 }
 MS2_REPLACE_METHOD(0x140bbd990, UIBlueprintMarketDialog, OnClickBuy, 0, 0);
 
@@ -871,7 +871,7 @@ Scaleform::GFx::Value AScript::FUN_140bbeb40(const char* szMethod, const ASArray
     FUN_1422bce40(&args[0], a1);
     FUN_1422bccb0(&args[1], a2);
     FUN_1422bcce0(&args[2], a3);
-    FUN_1422bcc70(&args[3], a4);
+    SetValue(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -880,7 +880,7 @@ Scaleform::GFx::Value AScript::FUN_140bbec80(const char* szMethod, ASDataProvide
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bcc70(&args[0], a1.FUN_1422bb890());
+    SetValue(&args[0], a1.FUN_1422bb890());
     FUN_1422bccb0(&args[1], a2);
     FUN_1422bcce0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);

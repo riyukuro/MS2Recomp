@@ -49,13 +49,13 @@ class CInputStream;
 template <class T> CInputStream& operator>>(CInputStream& in, std::vector<T>& vec);   // C3: def in gameeventcontext
 class CInPacket { public: void* p0; Unk_OSInput stream; };   // C3: the stream is os.h's Unk_OSInput
 MS2_CHECK_OFFSET(CInPacket, stream, 8);
-class Unk_140bccd50* FUN_140bccd50();
+class Unk_140bccd50* GetPacketHandlerManager();
 class Unk_WcAvatar;
 class Unk_WcField : public WorldService { public: Unk_WcAvatar* FUN_141bd0cc0(); };
 CStringW FUN_140298ea0(CStringW);
-void FUN_1412751f0(const CStringW&, int, int);
+void ShowSystemNotice(const CStringW&, int, int);
 void FUN_140d73ff0(CStringW);
-CStringW FUN_140b8ed80(const CMsTime&);
+CStringW FormatMonthDayHourMinuteSecond(const CMsTime&);
 CStringW FUN_14083bab0(const CMsTime&, CStringW);
 // The localized-string formatter: FUN_14028dfa0(key, args) is the non-variadic back end (invented name), and the
 // FMT_VARIADIC_W wrappers are the unit's COMDATs FUN_140fecba0 (const unsigned char&) / FUN_140fecc50 (int, CStringW, CStringW).
@@ -94,8 +94,8 @@ void SetChildHtmlText(const Scaleform::GFx::Value&, CString, CStringW);
 int FUN_140bd09c0(void*);
 class CMsgBoxData : public CPtred {};
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
-MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
+MS2Ptr<CMsgBoxData> ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 
 class Unk_CadCheck; template<class T> bool FUN_140bc7a40(const Scaleform::GFx::Value& root,CString strName,unsigned nCount,std::vector<MS2Ptr<T> >& out,unsigned nStart);   // C3: was FUN_140bc7c10 (uicashattenddialog, T = Unk_CadCheck)
 void FUN_140cff840(const Scaleform::GFx::Value&, CString, int);
@@ -181,7 +181,7 @@ public:
     virtual void vfunc_77();
     virtual short vfunc_78();
 };
-void* FUN_140764030();   // TSingleton<RewardContentsTable>::GetInstance
+void* GetRewardContentsTable();   // TSingleton<RewardContentsTable>::GetInstance
 #define WC_BIND(name, member, line) do { \
     m_30->FUN_140bbe640(name, member); \
     if (member == NULL) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(line), __FUNCTION__)); \
@@ -191,12 +191,12 @@ void* FUN_140764030();   // TSingleton<RewardContentsTable>::GetInstance
 UIWorldChampionRewardDialog::UIWorldChampionRewardDialog()
     : m_season(0), m_step(0), m_maxStep(0), m_page(0), m_maxPage(0) {
     m_80 = 0;
-    FUN_141924170(1);
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x11e, Delegate<void(CInPacket&)>(this, &UIWorldChampionRewardDialog::OnPacket));
+    SetTweenEnabled(1);
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x11e, Delegate<void(CInPacket&)>(this, &UIWorldChampionRewardDialog::OnPacket));
 }
 // @0x140fe9f50
 UIWorldChampionRewardDialog::~UIWorldChampionRewardDialog() {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x11e, Delegate<void(CInPacket&)>(this, &UIWorldChampionRewardDialog::OnPacket));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x11e, Delegate<void(CInPacket&)>(this, &UIWorldChampionRewardDialog::OnPacket));
 }
 // @0x140fea0f0
 CString UIWorldChampionRewardDialog::GetTypeName() { return "WorldChampionRewardDialog"; }
@@ -204,8 +204,8 @@ MS2_REPLACE_METHOD(0x140fea0f0, UIWorldChampionRewardDialog, GetTypeName, 61, 0x
 // @0x140fea140
 void UIWorldChampionRewardDialog::OnLoadComplete() {
     UIDialog::OnLoadComplete();
-    FUN_141925fa0("m_dragBar");
-    FUN_141925ec0("m_closeButton");
+    BindDragBar("m_dragBar");
+    BindCloseButton("m_closeButton");
     FUN_1419260d0("m_webGuideButton", 0);
     FUN_140bc7a40<Unk_CadCheck>(m_30.get()->FUN_1422bb890(), "m_stepSlot", 10, reinterpret_cast<std::vector<MS2Ptr<Unk_CadCheck> >&>(m_stepSlotVecotr), 0);
     std::vector<MS2Ptr<ASMovieClip>>& slots = m_stepSlotVecotr;
@@ -245,7 +245,7 @@ void UIWorldChampionRewardDialog::OnPacket(CInPacket& packet) {
     switch (type) {
     case 8: OnSeasonRewardPacket(packet); break;
     case 10: OnNextSeasonPacket(packet); break;
-    case 11: FUN_1412751f0(FUN_140298ea0(L"s_world_champion_msg_not_found_season"), 1, 1); break;
+    case 11: ShowSystemNotice(FUN_140298ea0(L"s_world_champion_msg_not_found_season"), 1, 1); break;
     }
 }
 MS2_REPLACE_METHOD(0x140feb1b0, UIWorldChampionRewardDialog, OnPacket, 251, 0x7C1EE59C);
@@ -270,7 +270,7 @@ MS2_REPLACE_METHOD(0x140feb2c0, UIWorldChampionRewardDialog, OnSeasonRewardPacke
 void UIWorldChampionRewardDialog::OnNextSeasonPacket(CInPacket& packet) {
     __int64 nextSeason = 0;
     packet.stream.Read8(reinterpret_cast<unsigned __int64&>(nextSeason));
-    FUN_140d74390(FUN_14028dfa0<CStringW>(L"s_world_champion_msg_next_season", FUN_14083bab0(CMsTime(nextSeason), L"/")), 0, FUN_140b240b0());
+    ShowMessageBoxWithCallback(FUN_14028dfa0<CStringW>(L"s_world_champion_msg_next_season", FUN_14083bab0(CMsTime(nextSeason), L"/")), 0, FUN_140b240b0());
 }
 MS2_REPLACE_METHOD(0x140feb440, UIWorldChampionRewardDialog, OnNextSeasonPacket, 360, 0x78A910B1);
 // @0x140feb5b0
@@ -292,8 +292,8 @@ MS2_REPLACE_METHOD(0x140feb630, UIWorldChampionRewardDialog, UpdatePageFromStep,
 void UIWorldChampionRewardDialog::FUN_140feb6b0() {
     FUN_140feb870();
     FUN_140febc40();
-    CStringW season = FUN_14028dfa0(L"s_world_champion_season_info", m_season, FUN_140b8ed80(m_start), FUN_140b8ed80(m_end));
-    SetChildHtmlText(FUN_1422dbb40(), "m_curSeason", season);
+    CStringW season = FUN_14028dfa0(L"s_world_champion_season_info", m_season, FormatMonthDayHourMinuteSecond(m_start), FormatMonthDayHourMinuteSecond(m_end));
+    SetChildHtmlText(GetGFxValue(), "m_curSeason", season);
 }
 MS2_REPLACE_METHOD(0x140feb6b0, UIWorldChampionRewardDialog, FUN_140feb6b0, 429, 0xA66C5C9A);
 // @0x140feb870
@@ -304,7 +304,7 @@ void UIWorldChampionRewardDialog::FUN_140feb870() {
         if (step > m_maxStep) { m_stepSlotVecotr[i]->vfunc_4(0); continue; }
         m_stepSlotVecotr[i]->vfunc_4(1);
         reinterpret_cast<ASButton*>(m_stepSlotButtonVecotr[i].operator->())->FUN_1422cdfb0(FUN_14028dfa0(L"s_world_champion_step_button", step));
-        reinterpret_cast<ASButton*>(m_stepSlotButtonVecotr[i].operator->())->FUN_1422ce090(m_selected == step);
+        reinterpret_cast<ASButton*>(m_stepSlotButtonVecotr[i].operator->())->SetSelected(m_selected == step);
         if (step < m_step) m_stepSlotVecotr[i]->vfunc_15("finish");
         else if (step == m_step) m_stepSlotVecotr[i]->vfunc_15("process");
         else if (step > m_step) m_stepSlotVecotr[i]->vfunc_15("hold");
@@ -320,15 +320,15 @@ void UIWorldChampionRewardDialog::FUN_140febc40() {
     if (index >= m_rewardVector.size()) {
         m_title->FUN_1422e4a50(FUN_140298ea0(L"s_world_champion_clear_title"));
         m_area->vfunc_4(false);
-        FUN_140cff840(FUN_1422dbb40(), "m_clearIcon", 1);
+        FUN_140cff840(GetGFxValue(), "m_clearIcon", 1);
         return;
     }
     m_title->FUN_1422e4a50(FUN_14028dfa0(L"s_world_champion_reward_title", m_selected));
     m_area->vfunc_4(true);
-    FUN_140cff840(FUN_1422dbb40(), "m_clearIcon", 0);
+    FUN_140cff840(GetGFxValue(), "m_clearIcon", 0);
     RewardContentsTable::Result rewards;
-    if (!((RewardContentsTable*)FUN_140764030())->GetReward(m_rewardVector[index], avatar->vfunc_78(), rewards)) return;
-    FUN_140fec540(rewards.m_items.size());
+    if (!((RewardContentsTable*)GetRewardContentsTable())->GetReward(m_rewardVector[index], avatar->vfunc_78(), rewards)) return;
+    EnsureItemSlots(rewards.m_items.size());
     for (size_t i = 0; i < m_items.size(); ++i) {
         MS2Ptr<ASItemSlot> slot = m_items[i];
         if (i >= rewards.m_items.size()) {
@@ -340,8 +340,8 @@ void UIWorldChampionRewardDialog::FUN_140febc40() {
         slot->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<ItemAble&>(rewards.m_items[i])));
         reinterpret_cast<ASDisplayObject*>(slot.operator->())->SetPositionInt(static_cast<int>(i) * 70, 0);
     }
-    int x = (reinterpret_cast<ASDisplayObject*>(m_90.operator->())->FUN_1422c1340() - reinterpret_cast<ASDisplayObject*>(m_area.operator->())->FUN_1422c1340()) / 2;
-    int y = static_cast<int>(reinterpret_cast<ASDisplayObject*>(m_area.operator->())->FUN_1422c1110());
+    int x = (reinterpret_cast<ASDisplayObject*>(m_90.operator->())->GetWidthCeil() - reinterpret_cast<ASDisplayObject*>(m_area.operator->())->GetWidthCeil()) / 2;
+    int y = static_cast<int>(reinterpret_cast<ASDisplayObject*>(m_area.operator->())->GetY());
     reinterpret_cast<ASDisplayObject*>(m_area.operator->())->SetPositionInt(x, y);
 }
 
@@ -373,7 +373,7 @@ void UIWorldChampionRewardDialog::FUN_140fec310(const Scaleform::GFx::FunctionHa
         FUN_140d73ff0(L"s_world_champion_msg_current_field");
         return;
     }
-    FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldChampionRewardDialog::SendWorldChampionMode9),
+    ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWorldChampionRewardDialog::SendWorldChampionMode9),
         FUN_14028dfa0<CStringW>(L"s_world_champion_msg_move_field", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_field)));
 }
 MS2_REPLACE_METHOD(0x140fec310, UIWorldChampionRewardDialog, FUN_140fec310, 422, 0x718A91D0);
@@ -387,17 +387,17 @@ bool UIWorldChampionRewardDialog::SendWorldChampionMode9(int result, const CMsgB
 }
 MS2_REPLACE_METHOD(0x140fec4c0, UIWorldChampionRewardDialog, SendWorldChampionMode9, 107, 0xA6AB5B53);
 // @0x140fec540
-void UIWorldChampionRewardDialog::FUN_140fec540(size_t count) {
+void UIWorldChampionRewardDialog::EnsureItemSlots(size_t count) {
     if (m_items.size() >= count) return;
     if (m_area == NULL) return;
     size_t needed = count - m_items.size();
     for (size_t i = 0; i < needed; ++i) {
         MS2Ptr<ASItemSlot> slot(new ASItemSlot(CString("export_slot"), 2));
-        reinterpret_cast<ASDisplayObjectContainer*>(m_area.operator->())->FUN_1422c6900(slot.get()->FUN_1422bb890());
+        reinterpret_cast<ASDisplayObjectContainer*>(m_area.operator->())->AddChild(slot.get()->FUN_1422bb890());
         m_items.push_back(slot);
     }
 }
-MS2_REPLACE_METHOD(0x140fec540, UIWorldChampionRewardDialog, FUN_140fec540, 472, 0x92181C6C);
+MS2_REPLACE_METHOD(0x140fec540, UIWorldChampionRewardDialog, EnsureItemSlots, 472, 0x92181C6C);
 #define MS2_ASCRIPT_INL_ASSERT(line, expression) \
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\gfxlib\\ascript.inl", (unsigned)(line)), 0))
 // @0x140fecae0

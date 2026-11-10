@@ -22,7 +22,7 @@
 #include "ms2/client/ms2/avatarpc.h"
 #include "ms2/placeholder/costumesettable.h"
 
-__int64 FUN_14028d0e0();                                    // the current server time
+__int64 GenerateUniqueId();                                    // the current server time
 int FUN_141420f90(CItem* pItem, AvatarPC* pAvatar);         // 0x141420f90 the customize id of an item
 
 
@@ -60,7 +60,7 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
             continue;
         int nCustomize = FUN_141420f90(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
-        spItem->SetItemUid(FUN_14028d0e0());
+        spItem->SetItemUid(GenerateUniqueId());
         spItem->SetObjectId(m_pOwner->GetObjectId());
         spItem->FUN_14052a130(4);
         m_pOwner->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);
@@ -77,7 +77,7 @@ void CostumeManager::FUN_140b1d360(int nCostumeId)
         int nCustomize = FUN_141420f90(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), m_pOwner);
         spItem->FUN_140526c10(nCustomize);
         spItem->SetObjectId(m_pOwner->GetObjectId());
-        spItem->SetItemUid(FUN_14028d0e0());
+        spItem->SetItemUid(GenerateUniqueId());
         spItem->FUN_14052a130(4);
         m_pOwner->vfunc_127(((MS2Ptr<CItem>*)(void*)(&spItem))->get(), 0);
         m_items.AddTail(spItem);

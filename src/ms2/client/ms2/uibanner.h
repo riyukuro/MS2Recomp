@@ -41,14 +41,14 @@ public:
     UIBanner();                                         // 0x140ba87d0
     virtual ~UIBanner();                                //  0 0x140ba8990 (??_G 0x140ba9ef0)
     virtual CString GetTypeName();                          //  1 0x140ba89e0 "Banner"
-    virtual void OnLoadComplete();                      // 22 0x140ba8a30 UIObject::OnLoadComplete(); FUN_140ba8db0(m_68)
+    virtual void OnLoadComplete();                      // 22 0x140ba8a30 UIObject::OnLoadComplete(); CreateEntityCache(m_68)
     virtual int vfunc_28(const char* szName, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140ba8a60 "onClick"
     virtual int vfunc_48();                             // 48 0x140baa6b0 0x4e30
 
-    void FUN_140ba8b80(int nActorId);                   // click: the banner's listener gets the entity
-    void FUN_140ba8db0(unsigned int nCount);            // create the entity cache
-    Entity* FUN_140ba8f90(int nActorId);                // the entity of the actor (created or recycled)
-    Entity* FUN_140ba93d0(int nActorId);                // the live entity of the actor (0: none)
+    void OnClick(int nActorId);                   // click: the banner's listener gets the entity
+    void CreateEntityCache(unsigned int nCount);            // create the entity cache
+    Entity* GetOrCreateEntity(int nActorId);                // the entity of the actor (created or recycled)
+    Entity* FindEntity(int nActorId);                // the live entity of the actor (0: none)
 
     ATL::CRBMap<BannerType, MS2Ptr<class UIBannerEventListener> > m_f0;    // +0xf0 banner type -> listener
 };

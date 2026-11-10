@@ -60,7 +60,7 @@ public:
     ColorPtr GetSlotColor(unsigned nSlot) const;
     ColorPtr GetCurrentColor();
     bool AdvanceCycle();
-    int FUN_14059d130() const;
+    int GetKind() const;
     int FUN_14059d140() const;
 protected:
     int m_nIndex;                                                // +0x18 the colour slot cycling now (m_bMulti)

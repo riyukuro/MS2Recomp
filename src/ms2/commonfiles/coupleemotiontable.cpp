@@ -29,7 +29,7 @@ public:
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);      // splits into a std::vector<CString>
 
@@ -107,9 +107,9 @@ CCoupleEmotionTable::~CCoupleEmotionTable()
 // @0x1402c6f50
 int CCoupleEmotionTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "coupleEmotion.xml");
+    CString strPath = GetXmlPath("Table", "coupleEmotion.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;

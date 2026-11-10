@@ -61,12 +61,12 @@ public:
     void SetSaveButtonEnabled(int nValue);
     void SetResetButtonEnabled(int nValue);
     void UpdateFee(Unk_BSFee* pFee, unsigned* pPrice);             // show the fee
-    void FUN_1418c7180(int nItemId);                    // show the item
+    void ShowItem(int nItemId);                    // show the item
     void FUN_1418c7400(int bPreview);
-    Unk_BSFee* FUN_1418c74e0(unsigned* pPrice);         // the fee row and its price
-    void FUN_1418c76d0(int nItemId);
-    void FUN_1418c7750(int nPalette, int nColor);
-    void FUN_1418c77c0(int nA, int nB);
+    Unk_BSFee* GetFee(unsigned* pPrice);         // the fee row and its price
+    void SelectAndShowItem(int nItemId);
+    void ApplyPalette(int nPalette, int nColor);
+    void SetColors(int nA, int nB);
     void FUN_1418c7830(int nPos);
     void SetPartSize(int nIndex, float fSize);
     void FUN_1418c79f0(float fDegree);
@@ -77,41 +77,41 @@ public:
     void ApplyPreviewMode(int bPreview);
     void SendBeautyMode12(int nSlot);
     void FUN_1418c7fe0(int nSlot);
-    void FUN_1418c80b0(CInPacket& packet);              // opcode 0x31
+    void OnBeautyShopPacket(CInPacket& packet);              // opcode 0x31
     int FUN_1418c8ee0();                                // init
     bool FUN_1418c9610();
-    void FUN_1418c9780(NotifyObject* pNotify);
+    void OnGameEventChanged(NotifyObject* pNotify);
     bool FUN_1418c9960(int nResult, const CMsgBoxData& data);
     bool FUN_1418c9990(int nResult, const CMsgBoxData& data);
     bool FUN_1418c99e0(int nResult, const CMsgBoxData& data);
     bool FUN_1418c9ae0(int nResult, const CMsgBoxData& data);
-    void FUN_1418c9b20(NotifyObject* pNotify);
-    void FUN_1418c9cb0(int nPalette);
+    void OnChangeActiveMyCodiTab(NotifyObject* pNotify);
+    void SetPalette(int nPalette);
     int FUN_1418c9cd0();
-    void FUN_1418c9d80();
+    void RequestClose();
     int FUN_1418c9f20();
     int FUN_1418ca240(void* p);
     void FUN_1418ca380();
     void FUN_1418ca400();
     void OnClickReset();
-    int FUN_1418ca510(ASObj& out, unsigned* pPrice);
+    int BuildBillRows(ASObj& out, unsigned* pPrice);
     void FUN_1418cae60();
     void FUN_1418caec0();
     int FUN_1418caf20(int nItemId);
-    void FUN_1418cb000(MS2Ptr<CItem> spCur, MS2Ptr<CItem> spNew);
+    void OpenStyleSelectDialog(MS2Ptr<CItem> spCur, MS2Ptr<CItem> spNew);
     void FUN_1418cb6a0(MS2Ptr<CItem> spItem);
     void FUN_1418cb6d0();
     void EnableCustomColorDetail(int n);
-    void FUN_1418cb750(ASObj& out);
+    void SetGuideInfo(ASObj& out);
     CStringW FUN_1418cb920(int nShopKind, int nMode);
     CStringW FUN_1418cbb40(int nShopKind, int nMode);
-    int FUN_1418cbbe0();                                // the shop kind
-    bool FUN_1418cbc00(int n);
+    int GetShopKind();                                // the shop kind
+    bool IsCouponSaleActive(int n);
     bool FUN_1418cbc70();
     bool FUN_1418cbd30(int nItemId);
-    int FUN_1418cbdc0(int nItemId);
+    int GetPaletteId(int nItemId);
     MS2Ptr<Unk_BSPriceRow> CreatePriceRow(int nItemId);
-    int FUN_1418ccb40();                                // the sale event id
+    int GetSaleEventId();                                // the sale event id
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);          // text field child lookup (a UIDialog member)
     MS2Ptr<ASMovieClip> FUN_140ba7930(const CString& strName);          // movie clip child lookup (a UIDialog member)
 

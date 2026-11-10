@@ -33,8 +33,8 @@
 // ---- out-of-unit callees ----
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // util.cpp: scene root of an entity
-void FUN_141568d80(NiAVObject* pRoot);                              // marks a model tree unlightable (MS2 materials)
-extern int DAT_143ae2b34;                                           // nonzero: unlightable marking via FUN_141568d80
+void SetUnlightable(NiAVObject* pRoot);                              // marks a model tree unlightable (MS2 materials)
+extern int DAT_143ae2b34;                                           // nonzero: unlightable marking via SetUnlightable
 extern NiFixedString DAT_143ae51c0;                                 // extra data key of unlightable meshes
 
 // Breadth-first queue of scene-graph nodes (0x30 bytes; alphaanimation.cpp defines the members).
@@ -189,7 +189,7 @@ void CloneCube::FUN_1410852a0()
     if (pNode)
     {
         pNode->SetAppCulled(false);
-        FUN_141568d80(pNode);
+        SetUnlightable(pNode);
         arr.Add(pNode);
         reinterpret_cast<Unk_ModelViewVt*>(m_pModelView)->vfunc_12(arr, NiNodePtr(0));
     }
@@ -224,7 +224,7 @@ void CloneCube::FUN_141085440()
     {
         if (DAT_143ae2b34)
         {
-            FUN_141568d80(pRoot);
+            SetUnlightable(pRoot);
         }
         else
         {

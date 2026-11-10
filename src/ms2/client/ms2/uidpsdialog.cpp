@@ -63,8 +63,8 @@ UIDPSDialog::UIDPSDialog()
     m_184 = 0;
     m_188 = 0;
     m_40 = 1;
-    FUN_141925e70(2, 1);
-    FUN_141925e70(1, 1);
+    SetFlag(2, 1);
+    SetFlag(1, 1);
 }
 
 // @0x141928d50
@@ -98,7 +98,7 @@ void UIDPSDialog::vfunc_67()
     COutPacket packet(static_cast<int>(SendOp::DpsMode), 0);
     packet.WriteUInt8(0);
     FUN_140710590(packet);
-    FUN_141929700();
+    ResetMeasurement();
     UIDialog::vfunc_67();
 }
 
@@ -198,17 +198,17 @@ int UIDPSDialog::vfunc_13()
     {
         if (UIDialog::vfunc_13() != 0)
             return 1;
-        if (((class Unk_DpsKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x39, 0, 0))
+        if (((class Unk_DpsKeys*)FUN_14025e7c0())->WasKeyPressed(0x39, 0, 0))
         {
-            if (((class Unk_DpsKeys*)FUN_14025e7c0())->FUN_14116d950(0x1d, 0, 0))
-                FUN_141929b70(m_17c == 0);
+            if (((class Unk_DpsKeys*)FUN_14025e7c0())->IsKeyDown(0x1d, 0, 0))
+                InvokeStartStop(m_17c == 0);
         }
     }
     return 0;
 }
 
 // @0x141929700
-void UIDPSDialog::FUN_141929700()
+void UIDPSDialog::ResetMeasurement()
 {
     m_178 = 0;
     m_17c = 0;
@@ -218,7 +218,7 @@ void UIDPSDialog::FUN_141929700()
 }
 
 // @0x141929760
-void UIDPSDialog::FUN_141929760()
+void UIDPSDialog::AddHistoryLine()
 {
     if (m_178 == 0)
         return;
@@ -242,13 +242,13 @@ void UIDPSDialog::FUN_141929760()
 }
 
 // @0x1419299e0
-int UIDPSDialog::FUN_1419299e0()
+int UIDPSDialog::IsMeasuring()
 {
     return m_178;
 }
 
 // @0x141929a00
-void UIDPSDialog::FUN_141929a00(__int64 nDamage, int nType)
+void UIDPSDialog::AddDamage(__int64 nDamage, int nType)
 {
     if (m_178 == 0)
         return;
@@ -276,12 +276,12 @@ void UIDPSDialog::OnStop()
     if (GetToolBaseDialog() != 0)
         ((class CDPSDialog*)(class CToolBaseDialog*)(GetToolBaseDialog()))->OnStop(GetTickCountMs2());
     TSingleton<CDPSMeterSystem>::GetInstance()->StopRecord(GetTickCountMs2());
-    FUN_141929760();
-    FUN_141929700();
+    AddHistoryLine();
+    ResetMeasurement();
 }
 
 // @0x141929b70
-void UIDPSDialog::FUN_141929b70(int bStart)
+void UIDPSDialog::InvokeStartStop(int bStart)
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)

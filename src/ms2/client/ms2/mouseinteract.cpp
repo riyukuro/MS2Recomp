@@ -85,7 +85,7 @@ public:
     int IsTalkIntervalElapsed();
     void SendNpcTalkMode0();
 };
-int FUN_140855d10(int);   // C3: was FUN_140855d10
+int HasNpcTalks(int);   // C3: was HasNpcTalks
 
 
 
@@ -252,7 +252,7 @@ int CMouseInteractNpc::vfunc_1(Unk_MouseRay* pRay)
         if (pNpc->vfunc_117() != 0) {
             pRay->strCursor = FUN_14028dfa0(CStringW(L"s_mouse_interact_hold"), reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
         } else {
-            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xe, ((class CNpc*)(class PCBase*)(pNpc))->FUN_141092fa0());
+            CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xe, ((class CNpc*)(class PCBase*)(pNpc))->GetNpcId());
             if (strName.GetLength() == 0)
                 strName = GetStringCommon(0x62d);
             pRay->strCursor = FUN_14028dfa0(CStringW(L"s_mouse_interact_talk"), strName, reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
@@ -271,7 +271,7 @@ int CMouseInteractNpc::vfunc_2(Unk_MouseRay* pRay)
             m_nAction = 6;
         else
             m_nAction = 0x14;
-        m_nNpcId = ((class CNpc*)(class PCBase*)(pNpc))->FUN_141092fa0();
+        m_nNpcId = ((class CNpc*)(class PCBase*)(pNpc))->GetNpcId();
         return true;
     }
     return false;
@@ -317,7 +317,7 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
         bTalk = 0;
     if (((class PCBase*)(struct Unk_MiPlayer*)(pPlayer))->GetCurStateId() == 0x20)
         bHold = 0;
-    Unk_NpcTree* pTree = reinterpret_cast<Unk_NpcTree*>(WorldService::GetInstance()->FUN_141bd36d0());
+    Unk_NpcTree* pTree = reinterpret_cast<Unk_NpcTree*>(WorldService::GetInstance()->GetNpcMap());
     for (Unk_NpcNode* pos = pTree->Begin(); pos != 0; pTree->GetNext(pos)) {
         PCBaseRef ref(*pTree->GetAt(pos));
         if (((class GameObject*)(class PCBase*)(ref.operator->()))->FUN_14123c660() != 0)
@@ -330,9 +330,9 @@ PCBase* CMouseInteractNpc::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* p
         int bPick = 0;
         if (((class CNpc*)(class PCBase*)(ref.operator->()))->GetNpcData()->GetKind() != 0 && bTalk != 0)
             bPick = 1;
-        if (FUN_140855d10(((class CNpc*)(class PCBase*)(ref.operator->()))->FUN_141092fa0()) != 0 && bTalk != 0)
+        if (HasNpcTalks(((class CNpc*)(class PCBase*)(ref.operator->()))->GetNpcId()) != 0 && bTalk != 0)
             bPick = 1;
-        if (((class CNpc*)(class PCBase*)(ref.operator->()))->FUN_141093c60() != 4 && bTalk != 0)
+        if (((class CNpc*)(class PCBase*)(ref.operator->()))->GetQuestState() != 4 && bTalk != 0)
             bPick = 1;
         if (ref->vfunc_117() != 0 && bHold != 0)
             bPick = 1;
@@ -393,7 +393,7 @@ void CMouseInteractPortal::vfunc_5()
 MS2Ptr<CPortal> CMouseInteractPortal::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
     std::vector<int> aIds;
-    WorldService::GetInstance()->FUN_141bc2980(&aIds);
+    WorldService::GetInstance()->GetFieldObjectIds(&aIds);
     for (size_t i = 0; i < aIds.size(); i++) {
         const int& nId = aIds[i];
         MS2Ptr<CPortal> hit = WorldService::GetInstance()->FUN_141bc2800((int)nId);
@@ -476,7 +476,7 @@ void CMouseInteractObject::vfunc_5()
 MS2Ptr<CInteractObject> CMouseInteractObject::FindTarget(const Unk_Vec3* pOrigin, const Unk_Vec3* pEnd)
 {
     ATL::CAtlArray<MS2Ptr<CInteractObject> > aObjs;
-    WorldService::GetInstance()->FUN_141bc5f10(&aObjs);
+    WorldService::GetInstance()->GetInteractObjects(&aObjs);
     for (size_t i = 0; i < aObjs.GetCount(); i++) {
         MS2Ptr<CInteractObject> hit = aObjs[i];
         if (hit->vfunc_4() == 0)
@@ -606,7 +606,7 @@ int CMouseInteractTalkCancel::vfunc_1(Unk_MouseRay* pRay)
 // @0x140a7ac80
 int CMouseInteractTalkCancel::vfunc_2(Unk_MouseRay* pRay)
 {
-    if (((class GFxSceneService*)(struct Unk_TalkUi*)(((Unk_TalkUi*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x6200031)
+    if (((class GFxSceneService*)(struct Unk_TalkUi*)(((Unk_TalkUi*)CUserMail::GetGFxSceneService())))->GetSubSceneId() != 0x6200031)
         return false;
     UITalkCinematic* pUi = FindTalkCinematic(0x4e40);
     if (pUi == 0)

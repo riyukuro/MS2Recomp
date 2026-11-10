@@ -83,15 +83,15 @@ void FUN_140d42540(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem
 {
     ItemScrollSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) ItemScrollSlot(strName, nOwner, spItem);
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::RegisterBinding(strName, pSlot);
 }
 
 // @0x140d42630
 void FUN_140d42630(const CString& strName)
 {
-    ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(strName));
+    ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FindBinding(strName));
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
 }
 
 // @0x140d42670
@@ -154,7 +154,7 @@ int ItemScrollSlot::vfunc_0(void* p)
     int nOk = tip.FUN_1409e0d40(vfunc_25().get());
     if (nOk != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -170,7 +170,7 @@ int ItemScrollSlot::vfunc_8(void* p)
     int nOk = slot.FUN_1409c3860(vfunc_25().get(), pPlayer, m_nFlags);
     if (nOk != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;

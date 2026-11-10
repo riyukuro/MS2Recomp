@@ -36,10 +36,10 @@ private:
 class CMentor : public CPtred, public CInOutStreamInterface {
 public:
     CMentor(); ~CMentor();
-    void FUN_14069ae30(Unk_MentorWriter&);
-    void FUN_14069af00(Unk_MentorReader&);
-    virtual void vfunc_0(Unk_MentorWriter& stream) { FUN_14069ae30(stream); }
-    virtual void vfunc_1(Unk_MentorReader& stream) { FUN_14069af00(stream); }
+    void Write(Unk_MentorWriter&);
+    void Read(Unk_MentorReader&);
+    virtual void vfunc_0(Unk_MentorWriter& stream) { Write(stream); }
+    virtual void vfunc_1(Unk_MentorReader& stream) { Read(stream); }
     __int64 a,b,c; CStringW name; unsigned short level; CStringW guild; int x,y; bool online;
 };
 MS2_CHECK_SIZE(CMentor,0x60);
@@ -63,8 +63,8 @@ public:
 };
 MS2_CHECK_SIZE(CMentorPairModePacket::CPairMode,0x18);
 class CInputStream; class COutputStream; class Unk_PktSerializable;
-CInputStream& FUN_14070f770(CInputStream& in, Unk_PktSerializable& item);          // packet.cpp
-COutputStream& FUN_14070fc40(COutputStream& out, const Unk_PktSerializable& item);  // packet.cpp
+CInputStream& ReadSerializable(CInputStream& in, Unk_PktSerializable& item);          // packet.cpp
+COutputStream& WriteSerializable(COutputStream& out, const Unk_PktSerializable& item);  // packet.cpp
 class Unk_MentorReader {
 public:
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual unsigned int vfunc_3();
@@ -73,28 +73,28 @@ public:
     void FUN_14070f5f0(CStringW&);
     template<class T> Unk_MentorReader& ReadItems(ATL::CAtlArray<T>& output) {
         unsigned int count=vfunc_3();
-        for(unsigned int i=0;i<count;++i) { T item; ::FUN_14070f770(reinterpret_cast<CInputStream&>(*this), reinterpret_cast<Unk_PktSerializable&>(item)); output.Add(item); }
+        for(unsigned int i=0;i<count;++i) { T item; ::ReadSerializable(reinterpret_cast<CInputStream&>(*this), reinterpret_cast<Unk_PktSerializable&>(item)); output.Add(item); }
         return *this;
     }
 };
 class Unk_MentorWriter {
 public:
     virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(unsigned int);
-    void FUN_14070f820(bool); void FUN_14070f860(unsigned char); void FUN_14070f8a0(unsigned short);
-    void FUN_14070f9a0(unsigned int); void FUN_14070f9e0(__int64); void FUN_14070fae0(const CStringW&);
+    void FUN_14070f820(bool); void FUN_14070f860(unsigned char); void WriteInt16(unsigned short);
+    void FUN_14070f9a0(unsigned int); void WriteInt64(__int64); void WriteUnicodeString(const CStringW&);
     template<class T> Unk_MentorWriter& WriteItems(const ATL::CAtlArray<T>& input) {
         vfunc_3(static_cast<unsigned int>(input.GetCount()));
-        for(size_t i=0;i<input.GetCount();++i) ::FUN_14070fc40(reinterpret_cast<COutputStream&>(*this), reinterpret_cast<const Unk_PktSerializable&>(input[i]));
+        for(size_t i=0;i<input.GetCount();++i) ::WriteSerializable(reinterpret_cast<COutputStream&>(*this), reinterpret_cast<const Unk_PktSerializable&>(input[i]));
         return *this;
     }
 };
 namespace PROTOCOL_MENTORING { enum { MENTOR_LIST=2, MENTEE_LIST=3 }; }
 class Unk_MentorListPacket {
 public:
-    void FUN_14069a0b0(Unk_MentorReader& stream);
-    void FUN_14069a290(Unk_MentorReader& stream);
-    void FUN_14069a1f0(Unk_MentorWriter& stream);
-    void FUN_14069a010(Unk_MentorWriter& stream);
+    void ReadMentorList(Unk_MentorReader& stream);
+    void ReadMenteeList(Unk_MentorReader& stream);
+    void WriteMentorList(Unk_MentorWriter& stream);
+    void Write(Unk_MentorWriter& stream);
     unsigned char nProtocol; ATL::CAtlArray<Unk_MentorPtr<CMentor>> entries;
 };
 class Unk_MentorResultPacket {
@@ -147,8 +147,8 @@ public:
 };
 class Unk_MentorTwoIdPacket {
 public:
-    void FUN_14069ac30(Unk_MentorWriter& stream);
-    void FUN_14069ac90(Unk_MentorReader& stream);
+    void Write(Unk_MentorWriter& stream);
+    void Read(Unk_MentorReader& stream);
     unsigned char protocol; __int64 a,b;
 };
 MS2_CHECK_OFFSET(Unk_MentorListPacket,entries,8);

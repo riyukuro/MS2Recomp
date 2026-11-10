@@ -32,7 +32,7 @@ egmAnimation::AnimationService* FUN_141b6f910();                                
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141bd1a10(class Unk_WsC_GameObj*);
+    int GetObjectKind(class Unk_WsC_GameObj*);
     static class WorldService* GetInstance();
 };
 
@@ -49,12 +49,12 @@ namespace Client { class Constants; } template<class T> class TSingleton; templa
 
 // The actor's buff set: the movement direction and the buff tests.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
-class Unk_PCMove { public: Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool FUN_141682fe0(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The input / skill tables of the dash check.
 void* FUN_14025e7c0();   // C3: the input key handler (was declared returning CInputKeyHandler*)
 class CKeyTable { public: int IsSkillKeyDown(int); }; class Unk_SwimSkillTbl : public CKeyTable { };
-class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_SwimSkillTbl (calls cast back)
+class Unk_SoundSink* GetKeyTable();   // C3: the Unk_SwimSkillTbl (calls cast back)
 
 // The owner's vtable up to slot 68: slots 22 and 68 take their point by value (the exe passes a pointer to a copy).
 class Unk_SdOwnerSlots
@@ -85,7 +85,7 @@ StateSwimDash::StateSwimDash(PCBase* pOwner) : StateMoveSkill(pOwner)
 // @0x1417fb620
 StateSwimDash::~StateSwimDash()
 {
-    FUN_1417fbe80();
+    StopEffect();
 }
 
 // @0x1417fb670
@@ -104,7 +104,7 @@ void StateSwimDash::vfunc_5(int n)
     StateMoveSkill::vfunc_5(n);
     Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
     m_pOwner->FUN_141671960(pSpeed->m_z);
-    FUN_1417fbe80();
+    StopEffect();
 }
 
 // @0x1417fb730
@@ -148,7 +148,7 @@ void StateSwimDash::vfunc_8(double fTime)
         {
             pPC->TryUseChairOrBed(2, 0);
         }
-        else if (m_pOwner->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
+        else if (m_pOwner->FUN_141671a30() != 0 && pBuff->IsActionKeyDown(0x493e1))
         {
             m_pOwner->vfunc_59(6, 0, 0x25, 0);
         }
@@ -198,17 +198,17 @@ void StateSwimDash::vfunc_10(float a, float b, float c, float d, int e)
 // @0x1417fbe00
 int StateSwimDash::vfunc_36()
 {
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x49401, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyDown(0x49401, false, 0))
         return 1;
     if (m_spData.get() != 0)
     {
-        return reinterpret_cast<Unk_SwimSkillTbl*>(FUN_1409331f0())->IsSkillKeyDown(m_spData->m_nSkill);
+        return reinterpret_cast<Unk_SwimSkillTbl*>(GetKeyTable())->IsSkillKeyDown(m_spData->m_nSkill);
     }
     return 0;
 }
 
 // @0x1417fbe80
-void StateSwimDash::FUN_1417fbe80()
+void StateSwimDash::StopEffect()
 {
     if (m_nEffect != 0)
     {
@@ -220,13 +220,13 @@ void StateSwimDash::FUN_1417fbe80()
 // @0x1417fbec0
 void StateSwimDash::FUN_1417fbec0()
 {
-    FUN_1417fbe80();
+    StopEffect();
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
         Unk_EffectQuery query;
         query.m_strName = static_cast<PC*>(pPC)->GetSwimEffectName(0x32);
-        query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
+        query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetObjectKind((class Unk_WsC_GameObj*)(m_pOwner));
         query.SetActor(pPC->GetObjectId());
         m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     }

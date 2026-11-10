@@ -76,7 +76,7 @@ public:
     Unk_BattleState* FUN_141248630();                       // &m_battle
     Unk_CommunityStateA* FUN_14124ab20();                   // &m_communityA
     Unk_SoundState* FUN_140d13c70();                        // &m_sound
-    Unk_GoEtc* FUN_140c9b8b0();                             // &m_etc
+    Unk_GoEtc* GetEtc();                             // &m_etc
     Unk_GraphicState* GetGraphicOption();                      // &m_graphic
     Unk_GraphicState2* GetGraphicState();                     // &m_graphic2
     TiXmlDocument* FUN_1412442a0();                         // &m_docGameDefault
@@ -85,9 +85,9 @@ public:
     TiXmlDocument* GetCharacterDoc();                         // &m_docCharacter
     Unk_GoChroma* FUN_140aaaa90();                          // &m_chroma (0x140aaaa90, unit_140a93d00)
     Unk_InterfaceState* FUN_140e09150();                    // &m_interface
-    Unk_InterfaceFlag* FUN_140c58ac0();                     // &m_interfaceChar
-    Unk_StatusState* FUN_140b123b0();                       // &m_status
-    Unk_StatusFlag* FUN_140ea41a0();                        // &m_statusChar
+    Unk_InterfaceFlag* GetInterfaceChar();                     // &m_interfaceChar
+    Unk_StatusState* GetStatus();                       // &m_status
+    Unk_StatusFlag* GetStatusChar();                        // &m_statusChar
     Unk_SoundFlag* FUN_1411b1f30();                         // &m_soundChar
     Unk_GoConnect* FUN_140cfd260();                         // &m_connect (0x140cfd260, gameoptionlanguage.cpp)
     Unk_LgState* FUN_140cfd280();                           // &m_language (0x140cfd280, gameoptionlanguage.cpp)

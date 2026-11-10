@@ -61,7 +61,7 @@ public:
     virtual void vfunc_ugc_3(void* pCallBack, void* pstrPath);      // UIUGCEventListener 3 0x140bbb2c0 a product icon arrived
 
     void ShowSearchResult(int nPage, int nFirst, int nLast, int nTotal, bool bEndPage);   // 0x140bbb440
-    void FUN_140bbbc70(MS2Ptr<CMeratMarketProduct> spProduct);      // 0x140bbbc70 a product changed (CMeratMarketMan)
+    void OnProductChanged(MS2Ptr<CMeratMarketProduct> spProduct);      // 0x140bbbc70 a product changed (CMeratMarketMan)
     void ClearSearchInput();                                        // 0x140bbbcf0 a search was refused
     void SetSavedQuery(const __int64& nId, const CStringW& strText);   // 0x140bbbd70 open at a product (the merat dialog's link)
     bool FillRow(ASMeratMarketProduct& row, MS2Ptr<CMeratMarketProduct> spProduct, Unk_MmViewScope* pScope);   // 0x140bbbe00

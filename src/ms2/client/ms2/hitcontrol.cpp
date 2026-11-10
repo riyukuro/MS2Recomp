@@ -20,7 +20,7 @@ public:
     virtual float vfunc_0(float fDelta, float fTime, float fDuration, float fDistance) = 0;
 };
 
-IDistanceCalculator* FUN_14028e960(int nType);                      // commonutil: calculator for a curve kind
+IDistanceCalculator* CreateDistanceCalculator(int nType);                      // commonutil: calculator for a curve kind
 bool FUN_14028d470(float a, float b);                               // approx equal
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
@@ -141,7 +141,7 @@ void CPushControl::SetCurve(int nCurve)
 {
     if (m_pCalc != 0)
         delete m_pCalc;
-    m_pCalc = FUN_14028e960(nCurve);
+    m_pCalc = CreateDistanceCalculator(nCurve);
 }
 MS2_REPLACE_METHOD(0x1413FD050, CPushControl, SetCurve, 77, 0x85826F75);
 

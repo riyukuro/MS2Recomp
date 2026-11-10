@@ -23,7 +23,7 @@ MS2Ptr<CEquipItem> FUN_1414211a0(int nSlot, AvatarPC* pAvatar);
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);    // pop the system message nTable
 
 // @0x1414210f0
-__int64 FUN_1414210f0(int nSlot, AvatarPC* pAvatar)
+__int64 GetEquippedItemUid(int nSlot, AvatarPC* pAvatar)
 {
     {
         MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(nSlot, pAvatar);
@@ -46,7 +46,7 @@ MS2Ptr<CEquipItem> FUN_1414211a0(int nSlot, AvatarPC* pAvatar)
 }
 
 // @0x141421230
-int FUN_141421230(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond, MS2Ptr<PCInfo> spPc)
+int CanSwapEquippedItems(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond, MS2Ptr<PCInfo> spPc)
 {
     if (spFirst == 0)
         return 0;

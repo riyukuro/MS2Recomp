@@ -39,19 +39,19 @@ public:
     virtual void vfunc_72();                            // 72 0x140c1b400 tick: hand out the queued menus
     virtual int vfunc_48() { return 0x4f63; }           // 48 0x140c1d3f0 UI type id
 
-    void FUN_140c1b550();                               // fill m_menus and send "updateAlignment"
+    void UpdateAlignment();                               // fill m_menus and send "updateAlignment"
     void FUN_140c1b620();                               // send the first queued menu ("addMenuEntity")
-    void FUN_140c1ba90(int nMenu, int nEnable);         // "setMenuEnable" / remember it
-    int FUN_140c1c770() { return 1; }                   // the menu page kind
-    CString FUN_140c1bc10(int nMenu);  // menu name
-    CString FUN_140c1bcd0(int nMenu);                   // menu name (the other record flavour)
-    MS2Ptr<ASDropdownMenu> FUN_140c1bd90(int nMenu);    // button of a menu
-    MS2Ptr<ASDropdownMenu> FUN_140c1be20(const CString& strMenu);     // "m_menus.<name>.m_button"
-    int FUN_140c1bf90(int nMenu);                       // enable state (1 when unknown)
+    void SetMenuEnable(int nMenu, int nEnable);         // "setMenuEnable" / remember it
+    int GetMenuSet() { return 1; }                   // the menu page kind
+    CString GetMenuNameByUiId(int nMenu);  // menu name
+    CString GetMenuName(int nMenu);                   // menu name (the other record flavour)
+    MS2Ptr<ASDropdownMenu> GetMenuButtonByUiId(int nMenu);    // button of a menu
+    MS2Ptr<ASDropdownMenu> GetMenuButton(const CString& strMenu);     // "m_menus.<name>.m_button"
+    int IsMenuEnabled(int nMenu);                       // enable state (1 when unknown)
     void FUN_140c1bfe0(NotifyObject* pObj);             // "NotifyCompleteMyPC": forget the enable states
     void FUN_140c1c010(ATL::CAtlArray<MS2Ptr<Unk_GpNode> >& dst);   // collect the menus that can be shown
     int FUN_140c1c160(int nMenu, ASObj* pObj);          // fill the "addMenuEntity" arguments
-    void FUN_140c1c530(int nKey);                       // move the cursor
+    void MoveCursor(int nKey);                       // move the cursor
 
 private:
     MS2_LAYOUT_FRIEND;

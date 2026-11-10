@@ -28,9 +28,9 @@ public:
     float FUN_140266e10() const;            // 0x140266e10 (float)[+0x18] / divisor
     int GetValue() const;              // 0x140266e30 the value [+0x18] (itemsocketsystemutil.cpp)
     void SetValue(int nValue);         // 0x140266e90 sets the value [+0x18] (itemsocket.cpp)
-    void FUN_140266d20(Unk_EnchantWrite&) const;
-    void FUN_140266d60(Unk_EnchantRead&);
-    void FUN_140266da0(const BaseOption* pSource);   // copy
+    void Write(Unk_EnchantWrite&) const;
+    void Read(Unk_EnchantRead&);
+    void CopyFrom(const BaseOption* pSource);   // copy
     void FUN_140266dd0(const BaseOption* pSource);   // add the values (unlimitedenchantoption.cpp)
     void FUN_140266e50(float fRate);        // sets the rate (unlimitedenchantoption.cpp)
     bool FUN_140266ee0(const BaseOption* pOther) const;   // the same option (itemoptiondata.cpp)
@@ -42,8 +42,8 @@ MS2_CHECK_SIZE(BaseOption, 0x20);
 struct Unk_EnchantHistory {
     Unk_EnchantHistory() { FUN_14058c160(); }
     void FUN_14058c160();
-    void FUN_14058c1b0(Unk_EnchantWrite&) const;
-    void FUN_14058c250(Unk_EnchantRead&);
+    void Write(Unk_EnchantWrite&) const;
+    void Read(Unk_EnchantRead&);
     __int64 itemId; int attempts,failures; bool failed,enabled; int extra;
 };
 MS2_CHECK_SIZE(Unk_EnchantHistory, 0x18);
@@ -76,7 +76,7 @@ public:
     int IncrementFailureCount();
     void MarkFailed();
     bool HasFailed();
-    bool FUN_14058c9a0();
+    bool IsEnabled();
     void Write(Unk_EnchantWrite& stream) const;
     void Read(Unk_EnchantRead& stream);
     void SetDirty(bool dirty);

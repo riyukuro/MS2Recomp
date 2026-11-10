@@ -103,10 +103,10 @@ public:
     virtual ~TMarketBillDataParam();                                // 0
 
     void FUN_140eab940(bool b);                                     // 0x140eab940 m_b2c = b && feature 0x45
-    void FUN_140eab9a0(unsigned __int64 n);                         // 0x140eab9a0 fixed price sum: m_b2d = true, m_n30 = n
-    void FUN_140eab9d0(int n, unsigned __int64 v);                  // 0x140eab9d0 m_n38 = n, m_n40 = v (fixed payback)
-    MS2Ptr<ASBillData> FUN_140eaba00(int nIndex);                   // 0x140eaba00 the bill row (null when out of range)
-    bool FUN_140eacfc0() const { return m_b2d; }                    // 0x140eacfc0 (inline COMDAT, uimarketbilldialog.cpp)
+    void SetFixedPrice(unsigned __int64 n);                         // 0x140eab9a0 fixed price sum: m_b2d = true, m_n30 = n
+    void SetFixedPayback(int n, unsigned __int64 v);                  // 0x140eab9d0 m_n38 = n, m_n40 = v (fixed payback)
+    MS2Ptr<ASBillData> GetBill(int nIndex);                   // 0x140eaba00 the bill row (null when out of range)
+    bool HasFixedPrice() const { return m_b2d; }                    // 0x140eacfc0 (inline COMDAT, uimarketbilldialog.cpp)
 
 
     int m_nType;                                                    // +0x18 (set by the caller, e.g. 3)

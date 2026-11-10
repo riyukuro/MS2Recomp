@@ -6,7 +6,7 @@
 // MS2-RANGE: 0x1416fa4b0-0x141701380 .text$mn
 // MS2-RANGE: 0x1400ff140-0x1400ff2b0 .text$di
 // MS2-PINS-BEGIN tplpin
-// MS2-PIN: ?FUN_141700510@CMaid@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ 0x141700510 ; unique
+// MS2-PIN: ?GetOwnerName@CMaid@@QEAA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@XZ 0x141700510 ; unique
 // MS2-PINS-END tplpin
 // MS2-GUESS-LOOKALIKES
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\reservedwordtable.cpp"
@@ -48,7 +48,7 @@ int FUN_140718200(const CStringW& str);                                         
 int FUN_1407181a0(const CStringW& str);
 unsigned __int64 FUN_140718370(const CStringW& str);
 CStringW FUN_14016a730(const char* psz, int nCodePage);                             // utf-8 to wide
-CStringW FUN_1416e4df0(int nQuestId);                                               // the name of a quest
+CStringW GetQuestName(int nQuestId);                                               // the name of a quest
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_1401aa6a0(int nId);                                                    // an npc name by id
 CStringW FUN_141700820(int nId);                                                    // 0x141700820
@@ -74,7 +74,7 @@ class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: the definition's signature (blac
 
 // A map name with its world map entry.
 class Unk_RwMapTable { public: };
-class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
+class Unk_PcFieldTable* GetWorldMapManager();   // C3: was GetWorldMapManager
 class WorldMapManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -82,12 +82,12 @@ public:
 };
 
 class Unk_RwUIManager { public: };
-UIRouletteDialog* FUN_1416ffcb0(int nId);
+UIRouletteDialog* FindRouletteDialog(int nId);
 class CScriptTable;
 void* FUN_141371b30();   // C3: was FUN_141371b30
 
 // The view / dictionary (maview) switches.
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);             // the common npc row
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);             // the common npc row
 
 // The item data row.
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -274,7 +274,7 @@ MS2_REPLACE_METHOD(0x1416FB380, CReservedWordTable, ReplaceObjectWords, 46, 0xF2
 // @0x1416fb3c0
 int CReservedWordTable::ReplaceColorWords(CStringW& str)
 {
-    FUN_1416fc540(str, m_mapColor);
+    ReplaceColorTags(str, m_mapColor);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1416FB3C0, CReservedWordTable, ReplaceColorWords, 53, 0xA68264A1);
@@ -288,11 +288,11 @@ void CReservedWordTable::FUN_1416fb400(CStringW& str, void* pMaid)
     CStringW strEnd(L"");
     CStringW strExtend(L"");
     {
-        MS2Ptr<CMaid> spMaid = ((CNpc*)pMaid)->FUN_141093800();
+        MS2Ptr<CMaid> spMaid = ((CNpc*)pMaid)->GetMaid();
         if (spMaid.get())
         {
-            if (!spMaid->FUN_141700510().IsEmpty())
-                str.Replace(L"$OwnerName$", spMaid->FUN_141700510());
+            if (!spMaid->GetOwnerName().IsEmpty())
+                str.Replace(L"$OwnerName$", spMaid->GetOwnerName());
             else
             {
                 TPtrValue<MaidDesc> spDesc = CMaidDescTable::GetInstance()->Find(spMaid->m_nMaidId);
@@ -389,10 +389,10 @@ void CReservedWordTable::ReplaceLevelToken(CStringW& str, unsigned short nLevel)
 MS2_REPLACE_METHOD(0x1416FBF60, CReservedWordTable, ReplaceLevelToken, 115, 0x395CBD8F);
 
 // @0x1416fbfe0
-CStringW CReservedWordTable::FUN_1416fbfe0(unsigned int nMapId, CStringW strColor)
+CStringW CReservedWordTable::GetWorldMapLink(unsigned int nMapId, CStringW strColor)
 {
     CStringW strRet;
-    if (((class WorldMapManager*)(class Unk_RwMapTable*)(((class Unk_RwMapTable*)FUN_140cb17d0())))->HasFieldSearchInfo(nMapId) != 0)
+    if (((class WorldMapManager*)(class Unk_RwMapTable*)(((class Unk_RwMapTable*)GetWorldMapManager())))->HasFieldSearchInfo(nMapId) != 0)
     {
         CStringW strName = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
         CStringW strId = StringFormat(L"{0}", nMapId);
@@ -450,7 +450,7 @@ void CReservedWordTable::FUN_1416fc320(CStringW& str, WordMap& map)
 }
 
 // @0x1416fc540
-void CReservedWordTable::FUN_1416fc540(CStringW& str, TextMap& map)
+void CReservedWordTable::ReplaceColorTags(CStringW& str, TextMap& map)
 {
     int nStart = 0;
     int nEnd;
@@ -655,7 +655,7 @@ static void Rw_PenaltyPrice(CStringW& strOut, CStringW strArg, CStringW& strWhol
         return;
     }
     unsigned int nPrice = reinterpret_cast<CLua*>(FUN_1401c0db0())->CalcResolvePaneltyPrice(((Unk_RwLevelView*)pPc)->vfunc_78(), pPc->FUN_141661aa0(),
-                                                          ((class CFieldData*)(void*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->FUN_1403754f0());
+                                                          ((class CFieldData*)(void*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->GetShadowContinent());
     strOut.Format(L"%d", nPrice);
 }
 
@@ -759,17 +759,17 @@ static void Rw_Quest(CStringW& strOut, CStringW strArg, CStringW& strWhole)
     int nId = FUN_140718200(strArg);
     if (nId == 0)
         return;
-    strOut = FUN_1416e4df0(nId);
+    strOut = GetQuestName(nId);
 }
 
 // @0x1416fddc0
 static void Rw_RouletteTotal(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
     strOut.Empty();
-    UIRouletteDialog* pDlg = FUN_1416ffcb0(0x4e6d);
+    UIRouletteDialog* pDlg = FindRouletteDialog(0x4e6d);
     if (pDlg != 0)
     {
-        int nCount = pDlg->FUN_141ac5a00();
+        int nCount = pDlg->GetSpinCount();
         strOut = StringFormat(L"{0}", nCount);
     }
 }
@@ -778,7 +778,7 @@ static void Rw_RouletteTotal(CStringW& strOut, CStringW strArg, CStringW& strWho
 static void Rw_RouletteCurrent(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
     strOut.Empty();
-    UIRouletteDialog* pDlg = FUN_1416ffcb0(0x4e6d);
+    UIRouletteDialog* pDlg = FindRouletteDialog(0x4e6d);
     if (pDlg != 0)
     {
         int nIndex = pDlg->GetSpinIndex() + 1;
@@ -790,7 +790,7 @@ static void Rw_RouletteCurrent(CStringW& strOut, CStringW strArg, CStringW& strW
 static void Rw_RoulettePrev(CStringW& strOut, CStringW strArg, CStringW& strWhole)
 {
     strOut.Empty();
-    UIRouletteDialog* pDlg = FUN_1416ffcb0(0x4e6d);
+    UIRouletteDialog* pDlg = FindRouletteDialog(0x4e6d);
     if (pDlg != 0)
     {
         int nIndex = pDlg->GetSpinIndex();
@@ -930,13 +930,13 @@ static void Rw_GenderId(CStringW& strToken, int nGender)
 static void Rw_NpcLink(unsigned int nId, CStringW& strText, CStringW& strOut)
 {
     strOut.Empty();
-    MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nId);
+    MS2Ptr<CNpcData> spNpc = FindNpcData(nId);
     if ((spNpc.get() ? true : false) && spNpc->m_bBossNotifyDefault)
     {
         int bMonster = nId / 10000000 != 1;
         const char* pszKind = bMonster ? "MonsterView" : "NpcView";
         CString strUrl = Unk_SocketFormat("maview:/Encyclopedia/{0}?c={1:08d}", pszKind, nId);
-        if (CFeatureManager::GetInstance()->FUN_14036d570(0x2f) == 1)
+        if (CFeatureManager::GetInstance()->IsFeatureEnabled(0x2f) == 1)
             strOut = StringFormat(L"<u><a href='event:npcdictionary,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>", nId, strText);
         else
             strOut = StringFormat(L"<a href='event:webPage,{0}'><FONT color='#5c2b00'><u>{1}</u></FONT></a>",
@@ -1008,7 +1008,7 @@ static void Rw_ItemBold(CStringW& strOut, CStringW strArg, CStringW& strWhole)
         }
         CStringW strName = CStringTable::GetInstance()->FUN_141811980(1, nItemId);
         CString strUrl = Unk_SocketFormat("maview:/Encyclopedia/{0}?c={1:08d}", strView, nItemId);
-        if (CFeatureManager::GetInstance()->FUN_14036d570(0x2f) == 1)
+        if (CFeatureManager::GetInstance()->IsFeatureEnabled(0x2f) == 1)
             strOut = StringFormat(L"<u><a href='event:itemdictionary,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>", nItemId, strName);
         else
             strOut = StringFormat(L"<a href='event:webPage,{0}'><u><FONT color='#5c2b00'>{1}</FONT></u></a>",
@@ -1025,7 +1025,7 @@ static void Rw_MapBold(CStringW& strOut, CStringW strArg, CStringW& strWhole)
     unsigned int nMapId = _wtoi(strArg);
     if (nMapId == 0)
         return;
-    if (((class WorldMapManager*)(class Unk_RwMapTable*)(((class Unk_RwMapTable*)FUN_140cb17d0())))->HasFieldSearchInfo(nMapId) != 0)
+    if (((class WorldMapManager*)(class Unk_RwMapTable*)(((class Unk_RwMapTable*)GetWorldMapManager())))->HasFieldSearchInfo(nMapId) != 0)
     {
         CStringW strName = CStringTable::GetInstance()->FUN_141811980(3, nMapId);
         CStringW strId = StringFormat(L"{0}", nMapId);
@@ -1052,7 +1052,7 @@ static void Rw_QuestBold(CStringW& strOut, CStringW strArg, CStringW& strWhole)
     unsigned int nId = FUN_140718200(strArg);
     if (nId == 0)
         return;
-    CStringW strName = FUN_1416e4df0(nId);
+    CStringW strName = GetQuestName(nId);
     strOut = StringFormat(L"<u><a href='event:quest,{0}'><FONT color='#5c2b00'>{1}</FONT></a></u>", nId, strName);
 }
 
@@ -1143,7 +1143,7 @@ CStringW FUN_1416ff950(int nId)
 }
 
 // @0x1416ffcb0
-UIRouletteDialog* FUN_1416ffcb0(int nId)
+UIRouletteDialog* FindRouletteDialog(int nId)
 {
     if (reinterpret_cast<Unk_RwUIManager*>(TSingleton<CUIService>::GetInstance()))
     {

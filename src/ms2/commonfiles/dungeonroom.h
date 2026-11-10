@@ -319,7 +319,7 @@ struct DungeonRoomLess
 };
 typedef std::set<DungeonRoomPtr, DungeonRoomLess> DungeonRoomSet;
 
-CString FUN_14016a5c0(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
 
 // RTTI DungeonRoomTable, 0x108 bytes: TSingleton at +0 (vftable 0x142d28ab0), CValidData at +8 (0x142d28ac0).
 class DungeonRoomTable : public TSingleton<DungeonRoomTable>, public CValidData<DungeonRoomTable>
@@ -377,7 +377,7 @@ public:
         if (!s_bInit)
         {
             CStringA msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(DungeonRoomTable).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(DungeonRoomTable).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }

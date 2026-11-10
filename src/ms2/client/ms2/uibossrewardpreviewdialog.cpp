@@ -44,7 +44,7 @@ public:
 // The boss reward table (TSingleton<CRewardPreviewTable>::s_instance; rewardpreviewitem.h).
 class Unk_SingletonObj;
 
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 CStringW FUN_1401aa6a0(int nId);                        // npc name
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 
@@ -52,7 +52,7 @@ CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // s
 UIBossRewardPreviewDialog::SlotBag* FUN_140f260d0(NotifyContext::BindData* p);
 void FUN_140f250b0(const CString& strName, int nCount, int nNpcId);
 void FUN_140f25170(const CString& strName);
-Unk_SingletonObj* FUN_140f26650();
+Unk_SingletonObj* GetRewardPreviewTable();
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(UIBossRewardPreviewDialog::Slot);
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(UIBossRewardPreviewDialog::SlotBag);
@@ -90,7 +90,7 @@ int UIBossRewardPreviewDialog::Slot::vfunc_0(void* p)
     ASTooltip tip(pPlayer, 0x800, 2);
     if (((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e13a0(0, m_spItem.get()) != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -105,7 +105,7 @@ int UIBossRewardPreviewDialog::Slot::vfunc_8(void* p)
     ASSlot slot(2);
     if (slot.FUN_1409c3860(m_spItem.get(), pPlayer, 0x401) != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -121,18 +121,18 @@ void FUN_140f250b0(const CString& strName, int nCount, int nNpcId)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x140f25170 destroy the registered bag
 void FUN_140f25170(const CString& strName)
 {
-    UIBossRewardPreviewDialog::SlotBag* pBag = FUN_140f260d0(Unk_NotifyContext::FUN_1422c8e90(strName));
+    UIBossRewardPreviewDialog::SlotBag* pBag = FUN_140f260d0(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -158,7 +158,7 @@ void UIBossRewardPreviewDialog::SlotBag::FUN_140f25400()
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    MS2Ptr<RewardPreviewInfo> spReward = reinterpret_cast<CRewardPreviewTable*>(FUN_140f26650())->GetBoss(m_nNpcId);
+    MS2Ptr<RewardPreviewInfo> spReward = reinterpret_cast<CRewardPreviewTable*>(GetRewardPreviewTable())->GetBoss(m_nNpcId);
     if (spReward == 0)
         return;
     ATL::CAtlList<ItemEntity> list(10);
@@ -206,9 +206,9 @@ void UIBossRewardPreviewDialog::OnLoadComplete()
     if (pDialog != 0)
     {
         GetChildInto<ASTextField>("m_title", m_spTitle);
-        MS2Ptr<CNpcData> spNpc = FUN_1406cd330(m_nNpcId);
+        MS2Ptr<CNpcData> spNpc = FindNpcData(m_nNpcId);
         if (spNpc.get() != 0)
-            static_cast<Unk_BrmAS*>(static_cast<AScript*>(pDialog))->FUN_1407cba60(s_strIconPath, CString(spNpc->m_strPortrait));
+            static_cast<Unk_BrmAS*>(static_cast<AScript*>(pDialog))->SetStringMember(s_strIconPath, CString(spNpc->m_strPortrait));
     }
     if (MS2Ptr<ASUIComponent> spPreview = GetChild<ASUIComponent>("m_rewardPreview"))
     {
@@ -220,14 +220,14 @@ void UIBossRewardPreviewDialog::OnLoadComplete()
 }
 
 // @0x140f25ad0
-int UIBossRewardPreviewDialog::FUN_140f25ad0(int nNpcId)
+int UIBossRewardPreviewDialog::SetNpcId(int nNpcId)
 {
-    MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nNpcId);
+    MS2Ptr<CNpcData> spNpc = FindNpcData(nNpcId);
     if (spNpc == 0)
         return 0;
     if (spNpc->m_nClass != 4 && spNpc->m_nClass != 6)
         return 0;
-    MS2Ptr<RewardPreviewInfo> spReward = reinterpret_cast<CRewardPreviewTable*>(FUN_140f26650())->GetBoss(nNpcId);
+    MS2Ptr<RewardPreviewInfo> spReward = reinterpret_cast<CRewardPreviewTable*>(GetRewardPreviewTable())->GetBoss(nNpcId);
     if (spReward == 0)
         return 0;
     m_nNpcId = nNpcId;
@@ -237,7 +237,7 @@ int UIBossRewardPreviewDialog::FUN_140f25ad0(int nNpcId)
 // @0x140f25bf0
 void UIBossRewardPreviewDialog::FUN_140f25bf0()
 {
-    MS2Ptr<CNpcData> spNpc = FUN_1406cd330(m_nNpcId);
+    MS2Ptr<CNpcData> spNpc = FindNpcData(m_nNpcId);
     if (spNpc == 0)
         return;
     if (spNpc->m_nClass != 4 && spNpc->m_nClass != 6)
@@ -254,7 +254,7 @@ void UIBossRewardPreviewDialog::FUN_140f25bf0()
             m_spTitle->SetTextW(FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_worldmap_search_map_title"), FUN_1401aa6a0(m_nNpcId), nLevel));
         }
     }
-    MS2Ptr<RewardPreviewInfo> spReward = reinterpret_cast<CRewardPreviewTable*>(FUN_140f26650())->GetBoss(m_nNpcId);
+    MS2Ptr<RewardPreviewInfo> spReward = reinterpret_cast<CRewardPreviewTable*>(GetRewardPreviewTable())->GetBoss(m_nNpcId);
     if (spReward == 0)
         return;
     if (m_spExp.get() != 0)
@@ -270,7 +270,7 @@ void UIBossRewardPreviewDialog::FUN_140f25bf0()
     {
         FUN_140f25170(m_strBag);
         FUN_140f250b0(m_strBag, 0x12, m_nNpcId);
-        static_cast<Unk_BrmAS*>(m_30.operator->())->FUN_1407cba60("rewardId", GetTypeName());
+        static_cast<Unk_BrmAS*>(m_30.operator->())->SetStringMember("rewardId", GetTypeName());
     }
 }
 
@@ -285,7 +285,7 @@ UIBossRewardPreviewDialog::SlotBag* FUN_140f260d0(NotifyContext::BindData* p)
 }
 
 // @0x140f26650
-Unk_SingletonObj* FUN_140f26650()
+Unk_SingletonObj* GetRewardPreviewTable()
 {
     return (Unk_SingletonObj*)TSingleton<CRewardPreviewTable>::s_instance;
 }

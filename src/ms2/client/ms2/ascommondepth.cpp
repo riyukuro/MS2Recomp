@@ -36,9 +36,9 @@ class GFxManager
 public:
     GFxMovie* FindMovie(int nMovieId);
 };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // set Value from Value (callee destroys)
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
+Scaleform::GFx::Movie* GetMovie(int nMovieId);
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // set Value from Value (callee destroys)
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
 // ---- ASCommonDepth ----
@@ -47,7 +47,7 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 ASCommonDepth::ASCommonDepth(Scaleform::GFx::Value v, int nMovieId)
     : AScript(v, nMovieId)
 {
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(m_nMovieId);
     if (pMovie == 0)
         return;
     pMovie->CreateObject(&m_value, "scaleform.ms2.common.CommonDepth", 0, 0);
@@ -57,9 +57,9 @@ ASCommonDepth::ASCommonDepth(Scaleform::GFx::Value v, int nMovieId)
 // @0x1409b1090
 MS2Ptr<ASCommonDepth> ASCommonDepth::Create(int nMovieId)
 {
-    GFxMovie* pMovie = ((class GFxManager*)FUN_14025e7a0())->FindMovie(nMovieId);
+    GFxMovie* pMovie = ((class GFxManager*)GetGFxManager())->FindMovie(nMovieId);
     if (pMovie != 0)
-        return MS2Ptr<ASCommonDepth>(new ASCommonDepth(pMovie->FUN_1422bd120(CString("scaleform.ms2.common.CommonDepth")), nMovieId));
+        return MS2Ptr<ASCommonDepth>(new ASCommonDepth(pMovie->GetDefinitionByName(CString("scaleform.ms2.common.CommonDepth")), nMovieId));
     return MS2Ptr<ASCommonDepth>(0);
 }
 
@@ -119,7 +119,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GFx::Valu
 {
     ASArgList args;
     args.resize(1);
-    FUN_1422bcc70(&args[0], a1);
+    SetValue(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -128,7 +128,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GFx::Valu
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcc70(&args[0], a1);
+    SetValue(&args[0], a1);
     FUN_1422bccb0(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }

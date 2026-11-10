@@ -24,7 +24,7 @@ static const char* s_pszHeadSection = "=================[CRASH REPORTER LOGGER H
 static const char* s_pszBodySection = "=================[CRASH REPORTER LOGGER BODY]=================\r\n";
 
 // @0x140866b00
-tm* FUN_140866b00(const __time64_t* pTime)
+tm* GetLocalTime(const __time64_t* pTime)
 {
     return _localtime64(pTime);
 }
@@ -75,11 +75,11 @@ void CTextLogFile::FUN_140866c70()
         fprintf(pFile, "[%s] %s\r\n", FUN_1408673d0(&it->first).GetBuffer(), it->second.GetBuffer());
     }
     fclose(pFile);
-    FUN_140867220();
+    ClearTail();
 }
 
 // @0x140866f60
-void CTextLogFile::FUN_140866f60(const char* pszLine)
+void CTextLogFile::AddLine(const char* pszLine)
 {
     if (m_nLimit != -1)
         FUN_140867330(strlen(pszLine));
@@ -89,7 +89,7 @@ void CTextLogFile::FUN_140866f60(const char* pszLine)
 }
 
 // @0x140867020
-void CTextLogFile::FUN_140867020(const char* pszLine)
+void CTextLogFile::AddTailLine(const char* pszLine)
 {
     if (m_nLimit != -1)
         FUN_140867330(strlen(pszLine));
@@ -119,14 +119,14 @@ void CTextLogFile::FUN_140867180(const CString& strLine)
 }
 
 // @0x140867220
-void CTextLogFile::FUN_140867220()
+void CTextLogFile::ClearTail()
 {
     m_tail.clear();
     m_nRemain = m_nLimit;
 }
 
 // @0x140867260
-void CTextLogFile::FUN_140867260(unsigned long long nLimit)
+void CTextLogFile::SetLimit(unsigned long long nLimit)
 {
     nLimit = nLimit - (strlen(s_pszHeadSection) + strlen(s_pszBodySection));
     m_nLimit = nLimit;
@@ -154,7 +154,7 @@ CString FUN_1408673d0(const __time64_t* pTime)
 {
     CString strTime;
     char szText[1024];
-    tm* pTm = FUN_140866b00(pTime);
+    tm* pTm = GetLocalTime(pTime);
     strftime(szText, 1024, "%Y-%m-%d %H:%M:%S", pTm);
     strTime = szText;
     return strTime;

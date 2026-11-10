@@ -96,11 +96,11 @@ CStringW NiGFxLocalizeManager::GetString(const CString& strKey)
 MS2_REPLACE_METHOD(0x1422EB860, NiGFxLocalizeManager, GetString, 183, 0x8BDB7639);
 
 // @0x1422eb920
-void NiGFxLocalizeManager::FUN_1422eb920()
+void NiGFxLocalizeManager::ReloadStringTables()
 {
     LoadStringTables();
 }
-MS2_REPLACE_METHOD(0x1422EB920, NiGFxLocalizeManager, FUN_1422eb920, 24, 0x56AAF3CF);
+MS2_REPLACE_METHOD(0x1422EB920, NiGFxLocalizeManager, ReloadStringTables, 24, 0x56AAF3CF);
 
 // @0x1422eb940
 void NiGFxLocalizeManager::LoadStringTables()
@@ -135,7 +135,7 @@ MS2_REPLACE_METHOD(0x1422EB940, NiGFxLocalizeManager, LoadStringTables, 564, 0x9
 // @0x1422ebb80
 bool NiGFxLocalizeManager::SelectFontConfig(Scaleform::GFx::Loader* pLoader, const CString& strConfig)
 {
-    FontConfig* pConfig = FUN_1422ebf10(strConfig);
+    FontConfig* pConfig = FindFontConfig(strConfig);
     if (pConfig != 0)
     {
         LoadStringTables();
@@ -195,7 +195,7 @@ void NiGFxLocalizeManager::ReleaseConfigAndStrings()
 MS2_REPLACE_METHOD(0x1422EBE90, NiGFxLocalizeManager, ReleaseConfigAndStrings, 120, 0xA658EE2A);
 
 // @0x1422ebf10
-FontConfig* NiGFxLocalizeManager::FUN_1422ebf10(const CString& strConfig)
+FontConfig* NiGFxLocalizeManager::FindFontConfig(const CString& strConfig)
 {
     if (m_pConfigSet == 0)
         return 0;
@@ -209,6 +209,6 @@ FontConfig* NiGFxLocalizeManager::FUN_1422ebf10(const CString& strConfig)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422EBF10, NiGFxLocalizeManager, FUN_1422ebf10, 187, 0x7FAD41DA);
+MS2_REPLACE_METHOD(0x1422EBF10, NiGFxLocalizeManager, FindFontConfig, 187, 0x7FAD41DA);
 
 // MS2-PIN: ??_GNiGFxLocalizeManager@@UEAAPEAXI@Z 0x1422ec1a0

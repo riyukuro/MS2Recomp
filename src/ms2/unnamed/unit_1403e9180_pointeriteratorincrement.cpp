@@ -16,7 +16,7 @@ void** FUN_1403e9180(void** iterator)
 }
 
 // @0x1403e91a0
-void** FUN_1403e91a0(void** iterator, void** out, int /*unused*/)
+void** PostIncrementIterator(void** iterator, void** out, int /*unused*/)
 {
     void* current = *iterator;
     FUN_1403e91f0(iterator);

@@ -15,19 +15,19 @@ struct Unk_TradeValInt { char m_pad[0x60]; };
 int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
 
 // @0x14087d0c0
-__int64 FUN_14087d0c0()
+__int64 GetMinMesoOffer()
 {
     return reinterpret_cast<Common::Constants::Value<__int64>*>((char*)((struct Unk_TradeConst*)GetClientConstants()) + 0x5f00)->Read();
 }
 
 // @0x14087d0f0
-__int64 FUN_14087d0f0()
+__int64 GetMaxMesoOffer()
 {
     return reinterpret_cast<Common::Constants::Value<__int64>*>((char*)((struct Unk_TradeConst*)GetClientConstants()) + 0x5f60)->Read();
 }
 
 // @0x14087d120
-int FUN_14087d120()
+int GetTradeFeePercent()
 {
     return FUN_14025a620((class Unk_ConstVal*)((Unk_TradeValInt*)((char*)((struct Unk_TradeConst*)GetClientConstants()) + 0x5fc0)));
 }
@@ -37,7 +37,7 @@ __int64 FUN_14087d150(__int64 nMeso, float fRate)
 {
     if (nMeso == 0)
         return 0;
-    int nPercent = FUN_14087d120();
+    int nPercent = GetTradeFeePercent();
     __int64 nFee = nMeso * nPercent;
     nFee /= 100;
     nFee *= (1.0f - fRate);
@@ -49,7 +49,7 @@ bool FUN_14087d200(__int64 nMeso)
 {
     if (nMeso == 0)
         return true;
-    if (nMeso < FUN_14087d0c0() || FUN_14087d0f0() < nMeso)
+    if (nMeso < GetMinMesoOffer() || GetMaxMesoOffer() < nMeso)
         return false;
     return true;
 }

@@ -55,8 +55,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
+CString ToCString(const char* pszName, int nFlags);                 // undecorated class name
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, double&);   // C3: was FUN_1408733a0
 // The locale list test and the game rule block (the level limit slot at +0x5180).
@@ -94,9 +94,9 @@ CMaidGradeJockpotTable::~CMaidGradeJockpotTable()
 // @0x1406847c0
 int CMaidGradeJockpotTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table/Server", "MaidGradeInfo.xml");
+    CString strPath = GetXmlPath("Table/Server", "MaidGradeInfo.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -201,9 +201,9 @@ CMaidRecipeTable::~CMaidRecipeTable()
 // @0x140684ea0
 int CMaidRecipeTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "MaidRecipe.xml");
+    CString strPath = GetXmlPath("Table", "MaidRecipe.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -298,9 +298,9 @@ static bool Unk_RecipeLevelLess(const TPtrValue<RecipeLevel>& lhs, const TPtrVal
 // @0x140685760
 int CMaidRecipeGroupTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "MaidRecipeGroup.xml");
+    CString strPath = GetXmlPath("Table", "MaidRecipeGroup.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -389,7 +389,7 @@ void CMaidGradeJockpotTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CMaidGradeJockpotTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CMaidGradeJockpotTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -400,7 +400,7 @@ void CMaidRecipeGroupTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CMaidRecipeGroupTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CMaidRecipeGroupTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -411,7 +411,7 @@ void CMaidRecipeTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CMaidRecipeTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CMaidRecipeTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

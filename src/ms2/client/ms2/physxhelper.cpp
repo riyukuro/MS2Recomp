@@ -103,7 +103,7 @@ public:
 
 
 Unk_PhysXApp* GetPhysXApp(efd::ServiceManager* pServices);
-Unk_PhysWorldSvc* FUN_14168ab40(efd::ServiceManager* pServices);
+Unk_PhysWorldSvc* GetPhysWorldService(efd::ServiceManager* pServices);
 
 class Unk_GameContext   // C3: member view for the former free stand-ins
 {
@@ -128,11 +128,11 @@ namespace efd { template <> PCBase* DynamicCast<PCBase, GameObject>(GameObject* 
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
-    class NxActor* FUN_141240e70();
+    class NxActor* GetActor();
 };
 int FUN_1409a8f90(const float* pf);
 bool FUN_14028d470(float f, float g);
-float FUN_14028d3a0(float f);
+float FromPercent(float f);
 float FUN_140a38cd0(float f);
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 class CubeMapInformationService;
@@ -241,7 +241,7 @@ NxActor* CPhysXHelper::GetPhysicsActor(void* pObj)
         static CLockCriticalSection s_lock;     // 0x143ae3968
         NxActor* pActor = 0;
         auto pScene = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->GetServiceManager();
-        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(pScene);
+        Unk_PhysWorldSvc* pWorld = GetPhysWorldService(pScene);
         if (Unk_LockGuard guard = s_lock)
         {
         }
@@ -249,7 +249,7 @@ NxActor* CPhysXHelper::GetPhysicsActor(void* pObj)
         {
             Unk_PhysRpgActor* pRpg = reinterpret_cast<Unk_PhysRpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(reinterpret_cast<WorldService*>(pWorld)->FUN_141bd0f50(reinterpret_cast<Unk_WsC_GameObj*>(pObj)))));
             if (pRpg != 0)
-                pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->GetPhysicsBody())))->FUN_141240e70();
+                pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->GetPhysicsBody())))->GetActor();
         }
         return pActor;
     }
@@ -257,10 +257,10 @@ NxActor* CPhysXHelper::GetPhysicsActor(void* pObj)
     {
         NxActor* pActor = 0;
         auto pScene = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->GetServiceManager();
-        Unk_PhysWorldSvc* pWorld = FUN_14168ab40(pScene);
+        Unk_PhysWorldSvc* pWorld = GetPhysWorldService(pScene);
         Unk_PhysRpgActor* pRpg = reinterpret_cast<Unk_PhysRpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(reinterpret_cast<WorldService*>(pWorld)->FUN_141bd0f50(reinterpret_cast<Unk_WsC_GameObj*>(pObj)))));
         if (pRpg != 0)
-            pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->GetPhysicsBody())))->FUN_141240e70();
+            pActor = ((class GameObjectController*)(class Unk_PhysBody*)(((class Unk_PhysBody*)((class PCBase*)(class Unk_PhysRpgActor*)(pRpg))->GetPhysicsBody())))->GetActor();
         return pActor;
     }
 }
@@ -278,7 +278,7 @@ egf::Entity* CPhysXHelper::GetEntityFromActor(NxActor* pActor)
     return reinterpret_cast<egfPhysX::EntityActorData*>(pObj)->GetEntity();
 }
 // @0x141689a10
-bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
+bool CPhysXHelper::HasPhysicsProps(egf::Entity* pEntity)
 {
     if (pEntity == 0)
         return false;
@@ -293,7 +293,7 @@ bool CPhysXHelper::FUN_141689a10(egf::Entity* pEntity)
     return false;
 }
 // @0x141689ac0
-void CPhysXHelper::FUN_141689ac0(efd::SmartPointer<egfPhysX::EntityActorData> spProp)
+void CPhysXHelper::SetActorUserData(efd::SmartPointer<egfPhysX::EntityActorData> spProp)
 {
     efd::ServiceManager* pServices = ((class Unk_GameContext*)(char*)(reinterpret_cast<Unk_PhysAppHost*>(TSingleton<CMainSystem>::GetInstance())->m_manager))->GetServiceManager();
     ecrPhysX::PropService* pProps = reinterpret_cast<Unk_ServiceManager*>(pServices)->GetSystemServiceAs<ecrPhysX::PropService>();
@@ -472,7 +472,7 @@ int CPhysXHelper::RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, U
     return 0;
 }
 // @0x14168a450
-int CPhysXHelper::FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen)
+int CPhysXHelper::GetGroundDistance(const efd::Point3& ptFrom, float* pDist, float fLen)
 {
     Unk_RayCastInfo kInfo;
     kInfo.m_origin = reinterpret_cast<const Vector3&>(ptFrom);
@@ -534,13 +534,13 @@ bool CPhysXHelper::CheckCapsuleOverlap(const Vector3* pPoint)
         float fHeight = 55.0f;
         if (fHeight <= 0.0f)
             fHeight = 10.0f;
-        fHeight = FUN_14028d3a0(fHeight);
-        float fRadius = FUN_14028d3a0(25.0f);
+        fHeight = FromPercent(fHeight);
+        float fRadius = FromPercent(25.0f);
         ((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a540(0);
         NxVec3 vCenter;
-        vCenter.x = FUN_14028d3a0(pPoint->x);
-        vCenter.y = FUN_14028d3a0(pPoint->y);
-        vCenter.z = FUN_14028d3a0(pPoint->z + fFootOffset);
+        vCenter.x = FromPercent(pPoint->x);
+        vCenter.y = FromPercent(pPoint->y);
+        vCenter.z = FromPercent(pPoint->z + fFootOffset);
         NxCapsule kCapsule;
         kCapsule.p1.x = vCenter.x;
         kCapsule.p0.x = vCenter.x;
@@ -596,7 +596,7 @@ Unk_PhysXApp* GetPhysXApp(efd::ServiceManager* pServices)
     return pApp;
 }
 // @0x14168ab40
-Unk_PhysWorldSvc* FUN_14168ab40(efd::ServiceManager* pServices)
+Unk_PhysWorldSvc* GetPhysWorldService(efd::ServiceManager* pServices)
 {
     efd::ISystemService* pService = pServices->GetSystemService(Unk_PhysWorldSvc::CLASS_ID);
     Unk_PhysWorldSvc* pWorld = FUN_14168aab0(pService);
@@ -661,7 +661,7 @@ MS2_REPLACE_METHOD(0x1416892A0, CPhysXHelper, GetScene, 61, 0x19AF2D89);
 MS2_REPLACE_METHOD(0x14168A1C0, CPhysXHelper, GetNxScene, 63, 0x5C1A7CCA);
 MS2_REPLACE_METHOD(0x14168A210, CPhysXHelper, FUN_14168a210, 14, 0xE4E8D95F);
 MS2_REPLACE_METHOD(0x14168A310, CPhysXHelper, RayCastFixedDirection, 302, 0x52623978);
-MS2_REPLACE_METHOD(0x14168A450, CPhysXHelper, FUN_14168a450, 232, 0x8C3C8D12);
+MS2_REPLACE_METHOD(0x14168A450, CPhysXHelper, GetGroundDistance, 232, 0x8C3C8D12);
 MS2_REPLACE_METHOD(0x14168A540, CPhysXHelper, FUN_14168a540, 32, 0xEC94BD02);
 MS2_REPLACE_METHOD(0x14168A570, CPhysXHelper, Unlock, 28, 0xC37B47B6);
 MS2_REPLACE_METHOD(0x14168A5A0, CPhysXHelper, CacheScenes, 349, 0x880CE577);

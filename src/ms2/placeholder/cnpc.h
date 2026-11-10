@@ -17,7 +17,7 @@
 class SkillLevelData;
 class NxActor;
 class CMaid;                 // commonfiles/maid.h
-class CByteBuffer;       // commonfiles/stream.h (FUN_1410918e0)
+class CByteBuffer;       // commonfiles/stream.h (ApplySyncBlock)
 class CInPacket;        // commonfiles/skilloverlapcompare.h (+0xd70)
 class CRandomTargetEffect;   // randomtargeteffect.h (+0xf28; MS2Ptr(int) 0x140aac100, dtor 0x140aac190)
 
@@ -116,53 +116,53 @@ public:
     // non-virtual members called from other units
     MS2Ptr<NpcDataCli> GetNpcData();                     // copy of the npc row (+0xd50)
     void FUN_1410932c0(bool b);                             // forwarded to the object's UI entity
-    int FUN_141092fa0();                                    // npc id of the row (0: no row)
+    int GetNpcId();                                    // npc id of the row (0: no row)
     void SetOwnerId(int nOwnerId);                       // m_nOwnerId = nOwnerId
     int GetOwnerId();                                    // m_nOwnerId
-    PCBase* FUN_141094f60();                                // the owner actor looked up by m_nOwnerId (world FindPC; null: none)
+    PCBase* GetOwner();                                // the owner actor looked up by m_nOwnerId (world FindPC; null: none)
     int FUN_1410930a0();                                    // 0x1410930a0 (basecollision: a dead npc that still counts as a target)
-    int FUN_1410934c0();                                  // 0x1410934c0 the npc kind (bit index of a kind mask)
+    int GetNpcClass();                                  // 0x1410934c0 the npc kind (bit index of a kind mask)
     void FUN_141095140();                                   // release the owner effect handle (+0xec4)
 
     // unit_14108e1e0 internals
     void FUN_141092c50(CInPacket& packet);                  // +0xf20 update (mode byte)
     void FUN_141092d40(CString strAnim);                    // bore animation debug trace
-    int FUN_141092ff0();                                   // the row is a boss
+    int IsBoss();                                   // the row is a boss
     int FUN_141093030();                                    // class 4 or 6
     bool FUN_141093070();                                   // shown on the minimap
-    int FUN_141093160();                                    // kind 2
-    int FUN_1410931c0();                                    // kind 3
-    int FUN_141093220();                                   // shop kind
+    int IsKind2();                                    // kind 2
+    int IsKind3();                                    // kind 3
+    int IsShopKind();                                   // shop kind
     unsigned short FUN_141093510();                         // m_nDE8
     CStringA FUN_141093530();                               // the marker label (empty when inactive)
-    int FUN_141093760();                                    // npc type (0: no row)
+    int GetNpcType();                                    // npc type (0: no row)
     int FUN_1410937b0();                                    // kind (0: no row)
-    MS2Ptr<CMaid> FUN_141093800();                          // the maid behind the npc (+0xe48 uid)
+    MS2Ptr<CMaid> GetMaid();                          // the maid behind the npc (+0xe48 uid)
     void FUN_141093910();                                   // flush the accumulated damage text (+0xe60)
     void FUN_141095240(__int64 n);
-    unsigned int FUN_141093c20();                           // quest state: quest id
-    int FUN_141093c40();                                    // quest state: icon
-    int FUN_141093c60();                                    // quest state: state
-    void FUN_141093c80();                                   // refresh the quest state
+    unsigned int GetQuestId();                           // quest state: quest id
+    int GetQuestIcon();                                    // quest state: icon
+    int GetQuestState();                                    // quest state: state
+    void RefreshQuestState();                                   // refresh the quest state
     void FUN_141093e90();                                   // m_nE10 = 1
     void FUN_141093eb0();                                   // face the owner's model
-    void FUN_141093fa0();                                   // play the start sound
-    void FUN_141094050();                                   // play the end sound
-    int FUN_141094170();                                    // the ui the npc type opens
-    int FUN_141094200();                                    // open it
-    void FUN_1410942c0();                                   // close it
-    bool FUN_141094300();                                    // in talk range
+    void PlayStartSound();                                   // play the start sound
+    void PlayEndSound();                                   // play the end sound
+    int GetTalkUiId();                                    // the ui the npc type opens
+    int OpenTalkUi();                                    // open it
+    void CloseTalkUi();                                   // close it
+    bool IsInTalkRange();                                    // in talk range
     void SendInteractNpc();                                   // send packet 0x32 (talk)
     void FUN_141094790(__int64 nUid);                       // m_nE48 (maid uid)
     __int64 FUN_1410947c0();
     void FUN_141094dc0(__int64 n);                          // m_nE60 (accumulated damage)
     void FUN_141094df0(__int64 n);                          // m_nE60 += n
     __int64 FUN_141094e20();
-    void FUN_141094e40(bool b);                             // m_cEAC
+    void SetDebugMode(bool b);                             // m_cEAC
     void FUN_141094e60();                                   // portal quest visibility
     void FUN_141094f90(CString strEffect);                  // set the owner effect (by value)
-    void FUN_141094ff0(int nActor);                         // set the owner effect's actor
-    void FUN_141095050();                                   // attach the owner effect
+    void SetOwnerEffectActor(int nActor);                         // set the owner effect's actor
+    void AttachOwnerEffect();                                   // attach the owner effect
     void FUN_141095190(const CString& strKfm);              // m_strED8
     void FUN_1410951d0(const CString& strKfm);              // set and load the model
     __int64 FUN_141095270();                                // m_nEE0
@@ -174,15 +174,15 @@ public:
     void FUN_141098fb0(int nKind);                          // dead (0) / damage (1) effect
     void FUN_141099170(float fTime);                        // turn toward m_f934
     void FUN_141099370(float fTime);                        // monologue timer
-    void FUN_141099580();                                   // restart the monologue timer
-    void FUN_141096730();                                   // build the npc's collision
+    void ResetMonologueTimer();                                   // restart the monologue timer
+    void BuildCollision();                                   // build the npc's collision
     void MakeDeadPhysXActor();                              // 0x141096f00
     void NxTerrainPhsyx();                                  // 0x141099640 the terrain-only body actor
     void FUN_1410947e0();                                   // the reward item model above the npc (+0xea8)
     CStringW FUN_141093310();                               // display name from the npc table
     CStringW FUN_141093980();                               // display name (maid title / maid row / npc name)
-    void FUN_1410918e0(CByteBuffer& buf);                   // apply a sync block (scenestategame)
-    void FUN_1410979a0();
+    void ApplySyncBlock(CByteBuffer& buf);                   // apply a sync block (scenestategame)
+    void ReleaseDeadPhysXActor();
     void FUN_141099ab0();
 
     efd::Point3 m_posD40;                                   // +0xd40 (copied from the ZERO constant 0x143b01a60)
@@ -200,7 +200,7 @@ public:
     unsigned short m_nDE8;                                  // +0xde8
     unsigned short m_padDEA;
     int m_padDEC;
-    Unk_QmNpcQuestState m_questState;                       // +0xdf0 the quest icon state (FUN_141093c80)
+    Unk_QmNpcQuestState m_questState;                       // +0xdf0 the quest icon state (RefreshQuestState)
     int m_nE10;                                             // +0xe10
     int m_nE14;                                             // +0xe14
     CNpcVibrate m_vibrate;                                  // +0xe18

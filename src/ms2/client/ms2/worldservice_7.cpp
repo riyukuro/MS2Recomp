@@ -19,7 +19,7 @@
 // MS2-PIN: ?RBInsert@?$CRBTree@IV?$MS2Ptr@VUnk_WsTargetF7@@@@V?$CElementTraits@I@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsTargetF7@@@@@3@@ATL@@IEAAPEAVCNode@12@IAEBV?$MS2Ptr@VUnk_WsTargetF7@@@@@Z 0x141c129a0
 // MS2-PIN: ?RightRotate@?$CRBTree@PEAVEntity@egf@@V?$MS2Ptr@VUnk_WsMarker@@@@V?$CElementTraits@PEAVEntity@egf@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMarker@@@@@5@@ATL@@AEAAPEAVCNode@12@PEAV312@@Z 0x141c1a370
 // MS2-PIN: ?SetAt@?$CRBMap@PEAVEntity@egf@@V?$MS2Ptr@VUnk_WsMarker@@@@V?$CElementTraits@PEAVEntity@egf@@@ATL@@V?$CElementTraits@V?$MS2Ptr@VUnk_WsMarker@@@@@5@@ATL@@QEAAPEAU__POSITION@@AEBQEAVEntity@egf@@AEBV?$MS2Ptr@VUnk_WsMarker@@@@@Z 0x141c1b730
-// MS2-PIN: ?FUN_141c1bb30@MS2ActorUpdater@@QEAAXM@Z 0x141c1bb30
+// MS2-PIN: ?SetDistB@MS2ActorUpdater@@QEAAXM@Z 0x141c1bb30
 // MS2-PIN: ?SetNil@?$CRBTree@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V?$MS2Ptr@VCLiftableObject@@@@V?$CElementTraits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@V?$CElementTraits@V?$MS2Ptr@VCLiftableObject@@@@@2@@ATL@@AEAAXPEAPEAVCNode@12@@Z 0x141c1bbc0
 // MS2-PIN: ?FUN_141c1ca80@COptimizer@@QEAAXH@Z 0x141c1ca80
 // MS2-PIN: ?FUN_141c1caa0@CEffectService@@QEAAXH@Z 0x141c1caa0
@@ -501,7 +501,7 @@ void Unk_WsInst7(WorldService* w)
     NiPlane plane;                                      // FUN_141bd2170
     plane.SetNormal(NiPoint3(0.0f, 0.0f, 1.0f));        // 0x141c1c2c0
     plane.SetConstant(0.0f);                            // 0x141c1bb10
-    ((MS2ActorUpdater*)0)->FUN_141c1bb30(0.0f);         // OnTick
+    ((MS2ActorUpdater*)0)->SetDistB(0.0f);         // OnTick
     ((COptimizer*)0)->FUN_141c1ca80(0);                 // FUN_141bcda90
     ((CEffectService*)0)->FUN_141c1caa0(0);
     Unk_BmBoxPtr<ATL::CAtlList<efd::SmartPointer<egf::Entity> > > box(Unk_BmNewTag(0));   // m_208 values (TPtredDummy 0x142fff040)

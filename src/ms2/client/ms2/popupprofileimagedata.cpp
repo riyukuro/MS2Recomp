@@ -194,7 +194,7 @@ int CPopupProfileImageData::IsExpired(int nNow)
 MS2_REPLACE_METHOD(0x141697200, CPopupProfileImageData, IsExpired, 80, 0x8577550E);
 
 // @0x141697260
-int CPopupProfileImageData::FUN_141697260(int nNow)
+int CPopupProfileImageData::IsExpiredWithDelay(int nNow)
 {
     unsigned int nElapsed = nNow - m_nTime;
     unsigned int nDelay = 0;
@@ -207,7 +207,7 @@ int CPopupProfileImageData::FUN_141697260(int nNow)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x141697260, CPopupProfileImageData, FUN_141697260, 171, 0xF67CA85A);
+MS2_REPLACE_METHOD(0x141697260, CPopupProfileImageData, IsExpiredWithDelay, 171, 0xF67CA85A);
 
 // @0x141697320
 CPopupProfileImageMan::CPopupProfileImageMan()

@@ -96,6 +96,11 @@
 // MS2-PIN: ??0CNode@?$CAtlList@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@ATL@@@ATL@@QEAA@AEBV?$MS2Ptr@VUnk_FieldObjectDropContext@@@@@Z 0x140445a70 ; calls MS2Ptr<DropContext>(const&) 0x140443da0; reached from Unk_GameEventValueFieldObjectDrop::GetContexts 0x140427e60
 // MS2-PIN: ??0CNode@?$CAtlList@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@V?$CElementTraits@V?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@ATL@@@ATL@@QEAA@AEBV?$MS2Ptr@VUnk_FieldObjectDropListContext@@@@@Z 0x140445a40 ; calls MS2Ptr<DropListContext>(const&) 0x140443d10; reached from Unk_GameEventValueFieldObjectDropList::GetContexts 0x140428070
 // MS2-PINS-END tplpin
+// Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$forward@AEAU?$pair@$$CBII@std@@@std@@YAAEAU?$pair@$$CBII@0@AEAU10@@Z 0x140441da0
+// MS2-PIN: ??$forward@AEAV?$MS2Ptr@VBurningLevelupContext@@@@@std@@YAAEAV?$MS2Ptr@VBurningLevelupContext@@@@AEAV1@@Z 0x140441e70
+// MS2-PIN: ??$forward@AEBV?$MS2Ptr@VBurningLevelupContext@@@@@std@@YAAEBV?$MS2Ptr@VBurningLevelupContext@@@@AEBV1@@Z 0x140442040 ; exe callers 0x14042d6b0, 0x140430cd0, 0x140440d90
 // cf9: call-graph pins accepted by tplpin --simulate.
 // MS2-PIN: ??$_Adl_verify_range1@V?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VEventShopNpcContext@@@@@std@@@std@@@std@@V12@@std@@YAXAEBV?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VEventShopNpcContext@@@@@std@@@std@@@0@0U?$integral_constant@_N$0A@@0@@Z 0x14042ccb0
 // MS2-PIN: ??$_Adl_verify_range@V?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VEventShopNpcContext@@@@@std@@@std@@@std@@V12@@std@@YAXAEBV?$_List_const_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VEventShopNpcContext@@@@@std@@@std@@@0@0@Z 0x14042ccc0
@@ -183,7 +188,6 @@
 // MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VArcadeOpenContext@@@@@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VArcadeOpenContext@@@@@std@@@std@@@std@@@0@AEAV10@@Z 0x140441f30
 // MS2-PIN: ??$forward@AEAV?$list@V?$MS2Ptr@VEventShopNpcContext@@@@V?$allocator@V?$MS2Ptr@VEventShopNpcContext@@@@@std@@@std@@@std@@YAAEAV?$list@V?$MS2Ptr@VEventShopNpcContext@@@@V?$allocator@V?$MS2Ptr@VEventShopNpcContext@@@@@std@@@0@AEAV10@@Z 0x140442000
 // MS2-PIN: ??$forward@AEAH@std@@YAAEAHAEAH@Z 0x140442010
-// MS2-PIN: ??$forward@AEAV?$MS2Ptr@VBurningLevelupContext@@@@@std@@YAAEAV?$MS2Ptr@VBurningLevelupContext@@@@AEAV1@@Z 0x140442040
 // MS2-PIN: ??0?$MS2Ptr@VEventShopNpcContext@@@@QEAA@XZ 0x140443ae0
 // MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VArcadeOpenContext@@@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VArcadeOpenContext@@@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VArcadeOpenContext@@@@@std@@@std@@@1@@Z 0x140444650
 // MS2-PIN: ??0?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKV?$map@U?$pair@HK@std@@HU?$less@U?$pair@HK@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HK@std@@H@std@@@2@@std@@@std@@@std@@@std@@@std@@QEAA@PEAU?$_Tree_node@U?$pair@$$CBKV?$map@U?$pair@HK@std@@HU?$less@U?$pair@HK@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HK@std@@H@std@@@2@@std@@@std@@PEAX@1@PEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBKV?$map@U?$pair@HK@std@@HU?$less@U?$pair@HK@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HK@std@@H@std@@@2@@std@@@std@@@std@@@1@@Z 0x1404448d0
@@ -236,7 +240,7 @@
 // MS2-PIN: ??$construct@V?$MS2Ptr@VCollectItemGroupContext@@@@V1@@?$_Default_allocator_traits@V?$allocator@V?$MS2Ptr@VCollectItemGroupContext@@@@@std@@@std@@SAXAEAV?$allocator@V?$MS2Ptr@VCollectItemGroupContext@@@@@1@QEAV?$MS2Ptr@VCollectItemGroupContext@@@@$$QEAV3@@Z 0x140440e80
 // MS2-PIN: ??$distance@V?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@std@@@std@@YA_JV?$_Tree_const_iterator@V?$_Tree_val@U?$_Tree_simple_types@I@std@@@std@@@0@0@Z 0x140441240
 // MS2-PIN: ??$emplace_back@AEB_K@?$vector@_KV?$allocator@_K@std@@@std@@QEAAXAEB_K@Z 0x140441650
-// MS2-PIN: ??$forward@AEBV?$MS2Ptr@VCollectItemGroupContext@@@@@std@@YAAEBV?$MS2Ptr@VCollectItemGroupContext@@@@AEBV1@@Z 0x140442040
+// MS2-PIN: ??$forward@AEBV?$MS2Ptr@VCollectItemGroupContext@@@@@std@@YAAEBV?$MS2Ptr@VCollectItemGroupContext@@@@AEBV1@@Z 0x140442050
 // MS2-PIN: ??$move@AEAV?$MS2Ptr@VCollectItemGroupContext@@@@@std@@YA$$QEAV?$MS2Ptr@VCollectItemGroupContext@@@@AEAV1@@Z 0x140442690
 // MS2-PIN: ??0CNode@?$CAtlMap@I_NV?$CElementTraits@I@ATL@@V?$CElementTraits@_N@2@@ATL@@QEAA@II@Z 0x140445ae0
 // MS2-PIN: ??$?0AEAHAEAK$0A@@?$pair@HK@std@@QEAA@AEAHAEAK@Z 0x14042b7e0
@@ -300,7 +304,7 @@ public:
 void FUN_140274fc0(CStringW& text, void* ids, const wchar_t* delims);   // C3: the definer's signature (0x140274fc0, commonstruct_wc.cpp): a CAtlArray<unsigned>*
 unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault);           // unsigned attribute
 TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);  // the document's first child element
-__int64 FUN_14028d0e0();                            // the current server time
+__int64 GenerateUniqueId();                            // the current server time
 CStringW FUN_140718600(const CStringW& value);      // copy
 
 // The engine log lock (0x140203610 ctor) the sale item restriction takes.
@@ -991,7 +995,7 @@ void CGameEventValueBattlePetSpawn::AddSpawn(int eventId, const CStringW& strVal
                 m_petFields.Insert(pets[j], fieldId);
             m_spawns.SetAt(fieldId, spSpawn);
         }
-        m_time = FUN_14028d0e0();
+        m_time = GenerateUniqueId();
     }
 }
 MS2_REPLACE_METHOD(0x1404255B0, CGameEventValueBattlePetSpawn, AddSpawn, 2432, 0x3F609DD6);
@@ -1030,7 +1034,7 @@ void CGameEventValueBattlePetSpawn::RemoveSpawn(int eventId, const CStringW& str
                 }
             }
             m_spawns.RemoveKey(fieldId);
-            m_endTimes.SetAt(fieldId, FUN_14028d0e0());
+            m_endTimes.SetAt(fieldId, GenerateUniqueId());
         }
     }
 }

@@ -129,7 +129,7 @@ MS2_CHECK_OFFSET(CEmotionTable, m_strType, 0xc0);
 MS2_CHECK_OFFSET(CEmotionTable, m_idCache, 0xc8);
 MS2_CHECK_OFFSET(CEmotionTable, m_nameCache, 0x110);
 
-CString FUN_14016a5c0(const char* psz, int nCodePage);     // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);     // narrows a string (the RTTI name in CheckInit)
 
 // RTTI CEmotionManager, 0x2c0 bytes. Bases: TSingleton<CEmotionManager> at +0x0 (s_instance DAT_143ab6dc8, vftable
 // 0x142ebceb0), CValidData<CEmotionManager> at +0x8 (vftable 0x142ebcec0).
@@ -147,7 +147,7 @@ public:
         if (!s_bInit)
         {
             CStringA msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CEmotionManager).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(CEmotionManager).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }

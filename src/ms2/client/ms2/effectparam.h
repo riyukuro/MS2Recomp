@@ -58,8 +58,8 @@ public:
     void FUN_140a53190(int nObjectId);  // 0x140a53190 set the owner object id
     class GameObject* FUN_140a533b0();  // 0x140a533b0 return the GameObject* at +0x58 (the effect's owner actor)
     // ?\unit_140a52ef0.cpp getters (owner = the GameObject at +0x58; 2 = "any" for gender/job).
-    int FUN_140a53010();            // 0x140a53010 owner gender
-    int FUN_140a53050();            // 0x140a53050 owner job code
+    int GetOwnerGender();            // 0x140a53010 owner gender
+    int GetOwnerJobCode();            // 0x140a53050 owner job code
     int FUN_140a53090();            // 0x140a53090 owner object id
     bool FUN_140a530d0();           // 0x140a530d0 the target is the local player
     bool FUN_140a53110();           // 0x140a53110 the owner is optimized out (hidden)

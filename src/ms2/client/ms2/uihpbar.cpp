@@ -42,8 +42,8 @@ public:
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
+    Scaleform::GFx::Value CreateEntity(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 struct Unk_HpCfgFloat { char m_pad[0x58]; };
 struct Unk_HpCfg
@@ -53,15 +53,15 @@ struct Unk_HpCfg
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_HpUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 float FUN_1412762d0(const NiPoint3& pt);
 extern template CString StringFormat<int>(const char*, const int&);
-float FUN_140bf4fd0(float f);                                               // ceilf
+float Ceil(float f);                                               // ceilf
 bool FUN_140930110(int nActorId);
 class Unk_HpNpc : public PCBase
 {
@@ -81,8 +81,8 @@ class Unk_HpWorld;
 class Unk_HpUIMgr { public: };
 template <class T> T* Unk_SSGGetDialog(int nUiId);
 template <> bool MS2Ptr<ASGameEntity>::operator!() const;                   // 0x140ede6c0
-UITombStoneBar* FUN_141994a90(int nUiId);
-UISlimeEventBar* FUN_1419949f0(int nUiId);
+UITombStoneBar* GetTombStoneBar(int nUiId);
+UISlimeEventBar* GetSlimeEventBar(int nUiId);
 
 // @0x141991700
 UIHpBar::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActorId)
@@ -136,7 +136,7 @@ void UIHpBar::Entity::vfunc_5()
     {
         ((Unk_HpClip*)m_38.operator->())->FUN_141994c00("open", m_a0, m_a8, m_b0, m_b4);
         if (MS2Ptr<ASMovieClip> guide = m_38->FUN_1409b4560("m_guideHp"))
-            m_c0 = guide->FUN_1422c1340();
+            m_c0 = guide->GetWidthCeil();
     }
 }
 
@@ -151,7 +151,7 @@ void UIHpBar::Entity::vfunc_6(NiPoint3* pPos)
             if (m_bc != 0)
             {
                 if (0 < m_64)
-                    m_68.FUN_140868750(m_64);
+                    m_68.Start(m_64);
                 float fRate = (float)m_a0 / (float)m_a8;
                 ((Unk_HpMovie*)render.operator->())->SetWidthInt((int)(fRate * (float)m_c0));
                 m_bc = 0;
@@ -165,7 +165,7 @@ void UIHpBar::Entity::vfunc_6(NiPoint3* pPos)
                     szLabel = "hostile";
                 ((Unk_HpMovie*)render.operator->())->vfunc_15(szLabel);
             }
-            *pPos *= ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
+            *pPos *= ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)GetGFxManager())))->GetMovieScale(m_18);
             pPos->y = pPos->y + vfunc_9();
             pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
             ((Unk_HpClip*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y);
@@ -206,7 +206,7 @@ int UIHpBar::Entity::vfunc_8(int n)
         if (pHolder != 0)
         {
             MS2SvrPtr<CRideeData> spMount = pHolder->GetData();
-            bool bMounted = (bool)(CRideeData*)spMount && spMount->FUN_140784970()->m_nNameTagHide != 0;
+            bool bMounted = (bool)(CRideeData*)spMount && spMount->GetDefaultRider()->m_nNameTagHide != 0;
             if (bMounted)
                 return 1;
         }
@@ -325,7 +325,7 @@ int UIHpBar::Entity::FUN_1419923f0()
         pInfo = 0;
     if (efd::ClassInfo::IsKindOf(pInfo, 0x6200004))
     {
-        return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_a;
+        return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_a;
     }
     else
     {
@@ -333,10 +333,10 @@ int UIHpBar::Entity::FUN_1419923f0()
         if (pPc != 0)
         {
             if (pLocal->vfunc_122(pPc) != 0)
-                return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_e;
+                return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_e;
             if (reinterpret_cast<MyPC*>(pLocal)->FUN_1415278d0((void*)pPc->FUN_141656a80()) == 0)
                 return 0;
-            return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_c;
+            return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_c;
         }
         else
         {
@@ -344,8 +344,8 @@ int UIHpBar::Entity::FUN_1419923f0()
             if (pNpc != 0)
             {
                 if (pNpc->vfunc_116() == 2)
-                    return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_c;
-                return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_e;
+                    return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_c;
+                return reinterpret_cast<Unk_HpCfgData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_e;
             }
         }
     }
@@ -423,11 +423,11 @@ CString UIHpBar::GetTypeName()
 void UIHpBar::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_141993790(m_68);
+    CreateEntityCache(m_68);
 }
 
 // @0x141992920
-MS2Ptr<UIHpBar::Entity> FUN_141992920(int nActorId)
+MS2Ptr<UIHpBar::Entity> GetHpBarEntity(int nActorId)
 {
     UIHpBar* pBar = Unk_SSGGetDialog<UIHpBar>(0x4e36);
     if (pBar != 0)
@@ -441,11 +441,11 @@ MS2Ptr<UIHpBar::Entity> FUN_141992920(int nActorId)
 }
 
 // @0x1419929f0
-void FUN_1419929f0(int nActorId)
+void RefreshHpBar(int nActorId)
 {
     UIHpBar* pBar = Unk_SSGGetDialog<UIHpBar>(0x4e36);
     if (pBar)
-        pBar->FUN_140f49c00(nActorId);
+        pBar->ReleaseEntity(nActorId);
 }
 
 // @0x141992a30
@@ -466,7 +466,7 @@ void UITombStoneBar::Entity::vfunc_5()
 {
     UIHpBar::Entity::vfunc_5();
     if (m_38.get())
-        m_38->FUN_1422bb870().GotoAndPlay("start");
+        m_38->GetValue().GotoAndPlay("start");
 }
 
 // @0x141992b30
@@ -474,7 +474,7 @@ void UITombStoneBar::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (!m_38)
         return;
-    *pPos *= ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
+    *pPos *= ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)GetGFxManager())))->GetMovieScale(m_18);
     pPos->y = pPos->y + vfunc_9();
     pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
     ((Unk_HpClip*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y - 35.0f);
@@ -495,7 +495,7 @@ int UITombStoneBar::Entity::vfunc_8(int n)
         return 1;
     if (pPc->IsRevivalBlocked() != 0 || pPc->FUN_14165ca20() == 0)
         return 1;
-    if (m_60 == 0 && m_68.FUN_140868ba0() == 0)
+    if (m_60 == 0 && m_68.IsRunning() == 0)
         return 1;
     if (FUN_140f48e20() > m_54)
         return 1;
@@ -541,11 +541,11 @@ void UITombStoneBar::Entity::FUN_141992ea0(int nHit, int nMax)
         int nMaxHits = m_cc;
         int nOne = 1;
         float fStep = 5.0f / (float)std::max<int>(nOne, nMaxHits);
-        int nStage = (int)FUN_140bf4fd0(fStep * (float)m_c8);
+        int nStage = (int)Ceil(fStep * (float)m_c8);
         if (nStage >= nStages)
             return;
         CString strLabel = StringFormat("hit{0}", nStage);
-        m_38.operator->()->FUN_1422bb870().GotoAndPlay(strLabel);
+        m_38.operator->()->GetValue().GotoAndPlay(strLabel);
     }
 }
 
@@ -570,13 +570,13 @@ CString UITombStoneBar::GetTypeName()
 void UITombStoneBar::OnLoadComplete()
 {
     UIHpBar::OnLoadComplete();
-    FUN_141993b50(m_68);
+    CreateEntityCache(m_68);
 }
 
 // @0x141993100
-MS2Ptr<UITombStoneBar::Entity> FUN_141993100(int nActorId)
+MS2Ptr<UITombStoneBar::Entity> GetTombStoneBarEntity(int nActorId)
 {
-    UITombStoneBar* pBar = FUN_141994a90(0x4e64);
+    UITombStoneBar* pBar = GetTombStoneBar(0x4e64);
     if (pBar != 0)
         return MS2Ptr<UITombStoneBar::Entity>(pBar->FUN_1419945b0(nActorId));
     return MS2Ptr<UITombStoneBar::Entity>(0);
@@ -585,9 +585,9 @@ MS2Ptr<UITombStoneBar::Entity> FUN_141993100(int nActorId)
 // @0x141993180
 void FUN_141993180(int nActorId)
 {
-    UITombStoneBar* pBar = FUN_141994a90(0x4e64);
+    UITombStoneBar* pBar = GetTombStoneBar(0x4e64);
     if (pBar)
-        pBar->FUN_140f49c00(nActorId);
+        pBar->ReleaseEntity(nActorId);
 }
 
 // @0x1419931c0
@@ -612,7 +612,7 @@ void UISlimeEventBar::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get())
     {
-        *pPos *= ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
+        *pPos *= ((class GFxManager*)(class Unk_HpUIScale*)(((class Unk_HpUIScale*)GetGFxManager())))->GetMovieScale(m_18);
         pPos->y = pPos->y + vfunc_9();
         pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
         ((Unk_HpClip*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y - 35.0f);
@@ -676,13 +676,13 @@ CString UISlimeEventBar::GetTypeName()
 void UISlimeEventBar::OnLoadComplete()
 {
     UIHpBar::OnLoadComplete();
-    FUN_141993970(m_68);
+    CreateEntityCache(m_68);
 }
 
 // @0x1419936d0
-MS2Ptr<UISlimeEventBar::Entity> FUN_1419936d0(int nActorId)
+MS2Ptr<UISlimeEventBar::Entity> GetSlimeEventBarEntity(int nActorId)
 {
-    UISlimeEventBar* pBar = FUN_1419949f0(0x4e65);
+    UISlimeEventBar* pBar = GetSlimeEventBar(0x4e65);
     if (pBar != 0)
         return MS2Ptr<UISlimeEventBar::Entity>(pBar->FUN_141994170(nActorId));
     return MS2Ptr<UISlimeEventBar::Entity>(0);
@@ -691,13 +691,13 @@ MS2Ptr<UISlimeEventBar::Entity> FUN_1419936d0(int nActorId)
 // @0x141993750
 void FUN_141993750(int nActorId)
 {
-    UISlimeEventBar* pBar = FUN_1419949f0(0x4e65);
+    UISlimeEventBar* pBar = GetSlimeEventBar(0x4e65);
     if (pBar)
-        pBar->FUN_140f49c00(nActorId);
+        pBar->ReleaseEntity(nActorId);
 }
 
 // @0x141993790
-void UIHpBar::FUN_141993790(unsigned int nCount)
+void UIHpBar::CreateEntityCache(unsigned int nCount)
 {
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
@@ -719,7 +719,7 @@ void UIHpBar::FUN_141993790(unsigned int nCount)
 }
 
 // @0x141993970
-void UISlimeEventBar::FUN_141993970(unsigned int nCount)
+void UISlimeEventBar::CreateEntityCache(unsigned int nCount)
 {
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
@@ -741,7 +741,7 @@ void UISlimeEventBar::FUN_141993970(unsigned int nCount)
 }
 
 // @0x141993b50
-void UITombStoneBar::FUN_141993b50(unsigned int nCount)
+void UITombStoneBar::CreateEntityCache(unsigned int nCount)
 {
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
@@ -765,10 +765,10 @@ void UITombStoneBar::FUN_141993b50(unsigned int nCount)
 // @0x141993d30
 UIHpBar::Entity* UIHpBar::FUN_141993d30(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     {
-    FUN_140f49c00(nActorId);
+    ReleaseEntity(nActorId);
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
     {
@@ -776,7 +776,7 @@ UIHpBar::Entity* UIHpBar::FUN_141993d30(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -803,7 +803,7 @@ UIHpBar::Entity* UIHpBar::FUN_141993d30(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->UpdateEntity("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->GetValue(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);
@@ -819,10 +819,10 @@ UIHpBar::Entity* UIHpBar::FUN_141993d30(int nActorId)
 // @0x141994170
 UISlimeEventBar::Entity* UISlimeEventBar::FUN_141994170(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     {
-    FUN_140f49c00(nActorId);
+    ReleaseEntity(nActorId);
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
     {
@@ -830,7 +830,7 @@ UISlimeEventBar::Entity* UISlimeEventBar::FUN_141994170(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -857,7 +857,7 @@ UISlimeEventBar::Entity* UISlimeEventBar::FUN_141994170(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->UpdateEntity("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->GetValue(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);
@@ -873,10 +873,10 @@ UISlimeEventBar::Entity* UISlimeEventBar::FUN_141994170(int nActorId)
 // @0x1419945b0
 UITombStoneBar::Entity* UITombStoneBar::FUN_1419945b0(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     {
-    FUN_140f49c00(nActorId);
+    ReleaseEntity(nActorId);
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
     {
@@ -884,7 +884,7 @@ UITombStoneBar::Entity* UITombStoneBar::FUN_1419945b0(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -911,7 +911,7 @@ UITombStoneBar::Entity* UITombStoneBar::FUN_1419945b0(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->UpdateEntity("updateEntity", ((Unk_HpClip*)pOldClip.operator->())->GetValue(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);
@@ -925,7 +925,7 @@ UITombStoneBar::Entity* UITombStoneBar::FUN_1419945b0(int nActorId)
 }
 
 // @0x1419949f0
-UISlimeEventBar* FUN_1419949f0(int nUiId)
+UISlimeEventBar* GetSlimeEventBar(int nUiId)
 {
     if (reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -937,7 +937,7 @@ UISlimeEventBar* FUN_1419949f0(int nUiId)
 }
 
 // @0x141994a90
-UITombStoneBar* FUN_141994a90(int nUiId)
+UITombStoneBar* GetTombStoneBar(int nUiId)
 {
     if (reinterpret_cast<Unk_HpUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {

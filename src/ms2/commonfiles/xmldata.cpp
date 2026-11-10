@@ -97,11 +97,11 @@ CXmlData::~CXmlData()
 // @0x14092c2e0
 CXmlData::CXmlData(const CStringW& strValues) : m_values()
 {
-    FUN_14092c400(strValues);
+    ParseValues(strValues);
 }
 
 // @0x14092c370
-bool CXmlData::FUN_14092c370(CXmlData* pOther)
+bool CXmlData::IsDifferent(CXmlData* pOther)
 {
     if (FUN_14092c630() != pOther->FUN_14092c630())
         return true;
@@ -109,7 +109,7 @@ bool CXmlData::FUN_14092c370(CXmlData* pOther)
 }
 
 // @0x14092c400
-void CXmlData::FUN_14092c400(const CStringW& strValues)
+void CXmlData::ParseValues(const CStringW& strValues)
 {
     if (strValues.IsEmpty())
         return;
@@ -130,19 +130,19 @@ void CXmlData::FUN_14092c400(const CStringW& strValues)
 }
 
 // @0x14092c590
-void CXmlData::FUN_14092c590()
+void CXmlData::ClearValues()
 {
     reinterpret_cast<Values*>(m_unknown18)->RemoveAll();
 }
 
 // @0x14092c5c0
-bool CXmlData::FUN_14092c5c0()
+bool CXmlData::IsEmpty()
 {
     return reinterpret_cast<Values*>(m_unknown18)->IsEmpty();
 }
 
 // @0x14092c5f0
-bool CXmlData::FUN_14092c5f0(const CStringW& strKey) const
+bool CXmlData::HasKey(const CStringW& strKey) const
 {
     if (reinterpret_cast<const Values*>(m_unknown18)->Lookup(strKey) != 0)
         return true;

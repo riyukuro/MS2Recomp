@@ -124,8 +124,8 @@ public:
     virtual void vfunc_76();
     virtual CStringW vfunc_77();
 };
-// The flags of the field data row (tested by FUN_140375660).
-class CFieldData { public: int FUN_140375660(unsigned nFlags); };   // C3: member view (fielddata.h)
+// The flags of the field data row (tested by HasLimitContent).
+class CFieldData { public: int HasLimitContent(unsigned nFlags); };   // C3: member view (fielddata.h)
 // The chat window controller (+0x50 of the UI root GetState).
 class Unk_ChatUI {
 public:
@@ -157,9 +157,9 @@ CStringW GetStringCommon(int id);
 CString FUN_14016a600(const wchar_t* text, int codepage);
 CString FUN_141028be0(__int64 id, const CString& a, int b, CString c);
 void FUN_140710590(COutPacket& packet);
-Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
+Unk_MessageBoxPtr CreateMessageBox(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
-void FUN_140d73aa0(CStringW, int, void*, CStringW);
+void ShowMessageBox(CStringW, int, void*, CStringW);
 void FUN_140d73bc0(int, int, void*, CStringW);
 Unk_MessageBoxPtr FUN_14151f820();
 class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
@@ -171,7 +171,7 @@ class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
 // @0x14137b010
 CGroupChatMember::CGroupChatMember() {
     m_state = 0;
-    m_proxy.FUN_1408ebe30();
+    m_proxy.Reset();
 }
 // @0x14137b080
 CGroupChatMember::~CGroupChatMember() {}
@@ -232,7 +232,7 @@ int CGroupChat::HasMemberByName(CStringW name) {
     } else {
         for (POSITION pos = m_members.GetHeadPosition(); pos; m_members.GetNext(pos)) {
             Unk_ChatMemberPtr member = m_members.GetValueAt(pos);
-            if (member->m_proxy.FUN_1408f19e0() == name)
+            if (member->m_proxy.GetName() == name)
                 return 1;
         }
     }
@@ -248,7 +248,7 @@ int CGroupChat::AddMember(Unk_ChatMemberPtr member) {
     } else {
         if (GetMemberCount() >= 0x14)
             return 0;
-        m_members.SetAt(member->m_proxy.FUN_1408f19e0(), member);
+        m_members.SetAt(member->m_proxy.GetName(), member);
         return 1;
     }
     return 0;
@@ -484,7 +484,7 @@ MS2_REPLACE_METHOD(0x14137E820, CGroupChatManager, GetChatCount, 110, 0x8ACB80F7
 // @0x14137e8a0
 void CGroupChatManager::Create(CStringW name) {
     if (GetChatCount() >= 3) {
-        if (Unk_MessageBoxPtr box = FUN_140d73d20(0, FormatStringId<CStringW>(0x818, GetLocalPlayerName()), 0, CStringW(L"")))
+        if (Unk_MessageBoxPtr box = CreateMessageBox(0, FormatStringId<CStringW>(0x818, GetLocalPlayerName()), 0, CStringW(L"")))
             FUN_140d73c60(box);
         return;
     }
@@ -506,7 +506,7 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
     if (chat == 0)
         return;
     if (chat->HasMemberByName(name)) {
-        Unk_MessageBoxPtr box = FUN_140d73d20(0, GetStringCommon(0x816), 0, CStringW(L""));
+        Unk_MessageBoxPtr box = CreateMessageBox(0, GetStringCommon(0x816), 0, CStringW(L""));
         if (box.operator CMsgBoxData*() != 0)
             FUN_140d73c60(box);
         return;
@@ -519,7 +519,7 @@ void CGroupChatManager::Invite(unsigned oid, CStringW name) {
         {
             return;
         }
-        Unk_MessageBoxPtr box = FUN_140d73d20(0, text, 0, text);
+        Unk_MessageBoxPtr box = CreateMessageBox(0, text, 0, text);
         if (box.operator CMsgBoxData*() != 0)
             FUN_140d73c60(box);
     }
@@ -557,13 +557,13 @@ void CGroupChatManager::SendGroupChatMode10(unsigned oid, CStringW text) {
     {
         BlockPtr blocked = ((class CBlockManager*)GetBlockManager())->FindBlockedAction(2);
         if (blocked.get() != 0) {
-            CStringW msg = FUN_1401ca400(blocked, 2);
+            CStringW msg = GetBlockActionMessage(blocked, 2);
             if (((class Unk_ChatUI*)GetState())->m_messenger != 0)
                 ((class Unk_ChatUI*)GetState())->m_messenger->AddNoticeLine(oid, GetLocalPlayerName(), msg);
             return;
         }
     }
-    int nRestricted = ((CFieldData*)(void*)WorldService::GetInstance()->FUN_141bd30a0().operator->())->FUN_140375660(0x100);
+    int nRestricted = ((CFieldData*)(void*)WorldService::GetInstance()->FUN_141bd30a0().operator->())->HasLimitContent(0x100);
     if (nRestricted != 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::GroupChat), 0);
@@ -665,7 +665,7 @@ void CGroupChatManager::OnPacketAddMember(CInPacket* packet) {
     if (chat->AddMember(member) == 0)
         return;
     if (((class Unk_ChatUI*)GetState())->m_messenger != 0)
-        ((class Unk_ChatUI*)GetState())->m_messenger->OnMemberInvited(oid, name, member->m_proxy.FUN_1408f19e0());
+        ((class Unk_ChatUI*)GetState())->m_messenger->OnMemberInvited(oid, name, member->m_proxy.GetName());
 }
 MS2_REPLACE_METHOD(0x14137F9D0, CGroupChatManager, OnPacketAddMember, 576, 0xD23A1A70);
 // @0x14137fc20
@@ -741,7 +741,7 @@ void CGroupChatManager::FUN_141380320(CInPacket* packet) {
         CGroupChatMember* again = chat->FindMemberByName(name).get();
         if (again != 0) {
             if (((class Unk_ChatUI*)GetState())->m_messenger != 0)
-                ((class Unk_ChatUI*)GetState())->m_messenger->FUN_141951d80(oid, name, packet);
+                ((class Unk_ChatUI*)GetState())->m_messenger->ReadItemLinks(oid, name, packet);
         }
     }
 }
@@ -773,11 +773,11 @@ void CGroupChatManager::OnPacketResult(CInPacket* packet) {
     if (code == 3) {
         FUN_140d73bc0(0x815, 0, 0, CStringW(L""));
     } else if (code == 10) {
-        FUN_140d73aa0(FormatStringId<CStringW>(0x818, second), 0, 0, CStringW(L""));
+        ShowMessageBox(FormatStringId<CStringW>(0x818, second), 0, 0, CStringW(L""));
     } else if (code == 8) {
-        FUN_140d73aa0(FormatStringId<CStringW>(0x819, second), 0, 0, CStringW(L""));
+        ShowMessageBox(FormatStringId<CStringW>(0x819, second), 0, 0, CStringW(L""));
     } else if (code == 0xd) {
-        FUN_140d73aa0(FormatStringId<CStringW>(0x29, second), 0, 0, CStringW(L""));
+        ShowMessageBox(FormatStringId<CStringW>(0x29, second), 0, 0, CStringW(L""));
     }
 }
 MS2_REPLACE_METHOD(0x141380900, CGroupChatManager, OnPacketResult, 741, 0xFD651472);

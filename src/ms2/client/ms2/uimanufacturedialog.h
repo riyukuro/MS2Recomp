@@ -1,7 +1,7 @@
 // uimanufacturedialog.h - UIManufactureDialog (RTTI .?AVUIManufactureDialog@@, 0x220 bytes: UIDialog + the UIDialogEventListener
 // at +0x178), the maid manufacture window ("ManufactureDialog", UI type 0x4ec0): the recipe list of the maid npc, the selected
 // recipe with its ingredients and the progress of the running craft. Opened by CManufactureManager (manufacturemanager.cpp),
-// which feeds the server results back through FUN_1412e6110 / FUN_1412e6850 / FUN_1412e6af0 / FUN_1412e6c30. Recovered from
+// which feeds the server results back through OnCraftResult / OnReceiveResult / OnCancelResult / FUN_1412e6c30. Recovered from
 // MapleStory2.exe KMS2_DEV x64 (2022-04-13); the unit is `?\uimanufacturedialog.cpp` (dir client\ms2). Header/unit name assumed.
 // Member names are invented from use.
 //
@@ -35,21 +35,21 @@ public:
     virtual void vfunc_72();                                                // 72 0x1412e3010
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);               // IMessageListener 0 0x1412e2e70
 
-    void FUN_1412e3480(int nNpcId, unsigned __int64 nManufactureId);        // 0x1412e3480 show another maid
-    void FUN_1412e34c0();                                                   // 0x1412e34c0 "setTitle"
-    void FUN_1412e3990(int bSelect);                                        // 0x1412e3990 fill the recipe list
-    void FUN_1412e4240();                                                   // 0x1412e4240 "bindProgress" and the gauge
-    void FUN_1412e48a0();                                                   // 0x1412e48a0 "selectItem": the selected recipe
+    void SetNpcAndManufactureId(int nNpcId, unsigned __int64 nManufactureId);        // 0x1412e3480 show another maid
+    void SetTitle();                                                   // 0x1412e34c0 "setTitle"
+    void FillRecipeList(int bSelect);                                        // 0x1412e3990 fill the recipe list
+    void UpdateProgress();                                                   // 0x1412e4240 "bindProgress" and the gauge
+    void SelectItem();                                                   // 0x1412e48a0 "selectItem": the selected recipe
     void FUN_1412e5c90();                                                   // 0x1412e5c90 a row was selected
     void FUN_1412e5dd0(int nRow);                                           // 0x1412e5dd0 craft the recipe of a row
     void FUN_1412e5f70(int nRow);                                           // 0x1412e5f70 craft the recipe of a row (admin)
-    void FUN_1412e6110(int nResult);                                        // 0x1412e6110 result of the craft request
+    void OnCraftResult(int nResult);                                        // 0x1412e6110 result of the craft request
     void OnRecieve();                                                   // 0x1412e6250 receive the product
     void OnRecieveByMerat();                                                   // 0x1412e63b0 receive the product with merat
     void OnRecieveJackpot();                                                   // 0x1412e66f0 receive the jackpot
-    void FUN_1412e6850(int nResult);                                        // 0x1412e6850 result of the receive request
+    void OnReceiveResult(int nResult);                                        // 0x1412e6850 result of the receive request
     void FUN_1412e69a0();                                                   // 0x1412e69a0 cancel the craft
-    void FUN_1412e6af0(int nResult);                                        // 0x1412e6af0 result of the cancel request
+    void OnCancelResult(int nResult);                                        // 0x1412e6af0 result of the cancel request
     void FUN_1412e6c30(int nItemId, int nRarity, int nAmount, int nExp, int nBonus, int nJackpot, int nMerat);   // 0x1412e6c30 the reward page
     int FUN_1412e7170(int nResult);                                         // 0x1412e7170 the result is 2 or 3
 

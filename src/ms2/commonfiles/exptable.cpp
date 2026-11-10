@@ -56,8 +56,8 @@ public:
 
 
 // Unrecovered helpers.
-CString FUN_14016a5c0(const char* psz, int nCodePage);          // narrows a string (the RTTI name in CheckInit)
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
+CString ToCString(const char* psz, int nCodePage);          // narrows a string (the RTTI name in CheckInit)
+CString GetXmlPath(const CString& strDir, const CString& strFile);       // Table/<file>
 class CLogString* GetLogString();   // C3: was CLogString::GetInstance
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -191,7 +191,7 @@ void CExpTable::CheckInit()
     if (!s_bInit)
     {
         CStringA msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CExpTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CExpTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -228,9 +228,9 @@ bool CExpTable::LoadNextExp()
 {
     for (int i = 0; i < 99; ++i)
         m_nextExp[i] = 0x7fffffffffffffffLL;
-    CString strPath = FUN_14071a5b0("Table", "nextExp.xml");
+    CString strPath = GetXmlPath("Table", "nextExp.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -265,9 +265,9 @@ bool CExpTable::LoadReward()
 // @0x140352ba0
 bool CExpTable::LoadCommonExp()
 {
-    CString strPath = FUN_14071a5b0("Table", "commonExpTable.xml");
+    CString strPath = GetXmlPath("Table", "commonExpTable.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -295,9 +295,9 @@ bool CExpTable::LoadCommonExp()
 // @0x140352e90
 bool CExpTable::LoadPetExp()
 {
-    CString strPath = FUN_14071a5b0("Table", "petExp.xml");
+    CString strPath = GetXmlPath("Table", "petExp.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -333,9 +333,9 @@ bool CExpTable::LoadPetExp()
 bool CExpTable::LoadPetEvolution()
 {
     m_petEvolution.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "petEvolution.xml");
+    CString strPath = GetXmlPath("Table", "petEvolution.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -363,9 +363,9 @@ bool CExpTable::LoadPetEvolution()
 // @0x140353ae0
 bool CExpTable::ReadExpTable(const CString& strFile)
 {
-    CString strPath = FUN_14071a5b0("Table", strFile);
+    CString strPath = GetXmlPath("Table", strFile);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[file: {0}]", strPath);
         return false;

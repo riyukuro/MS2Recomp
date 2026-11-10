@@ -165,8 +165,8 @@ int FUN_140475e40(int reason);
 BOOL FUN_140475e80(int reason);
 BOOL FUN_140475f20(int reason);
 BOOL FUN_140475fa0(int reason);
-__int64 FUN_140475ff0(unsigned short value);
-CString FUN_140476020(int reason);                          // GameReason_* name
+__int64 GetNextExp(unsigned short value);
+CString GetGameReasonName(int reason);                          // GameReason_* name
 
 class CGameRule : public TSingleton<CGameRule>
 {
@@ -179,14 +179,14 @@ public:
     // @0x1403f31d0 (GameEventTransferItemBound; name invented)
     void SetTransferItemBound(bool bBound) { m_transferItemBound = bBound; }
 
-    void FUN_1404766e0();                                   // clears the events
+    void ClearEvents();                                   // clears the events
     void SetAdventureLevelBonusExpRate(int nEventId, int nRate);            // adventure level bonus exp rate
     void RemoveAdventureLevelBonusExpRate(int nEventId);                       // ... removed
     __int64 CalcAdventureLevelBonusExp(__int64 value);
     unsigned GetAdventureLevelBonusExpRate();
     void SetBeautyShopSaleEvent(int a, int b, BOOL c);               // GameEventSaleBeautyShop
     void RemoveBeautyShopSaleEvent(int a, BOOL c);
-    unsigned FUN_140476c70(int nEvent, unsigned nPrice, int nLevel);
+    unsigned GetDiscountedPrice(int nEvent, unsigned nPrice, int nLevel);
     int FUN_140476cf0(int nEvent, int nLevel);
     void FUN_140476d50(int nEvent, int nLevel, unsigned* pRate, int* pIndex);
     void FUN_140476ef0(ATL::CAtlArray<int>& out, int nLevel, unsigned nMin);
@@ -203,8 +203,8 @@ public:
     int FUN_140477640(int bPcBang);
     int FUN_1404776f0(int key);
     void FUN_1404777a0(int key, int value);
-    void FUN_140477820(COutputStream& out, int key);
-    void FUN_1404779b0(CInPacket& packet);
+    void WriteValues(COutputStream& out, int key);
+    void ReadValues(CInPacket& packet);
     void FUN_140477ab0(ATL::CAtlArray<std::pair<int, int> >& out);
     BOOL FUN_140477bb0();
     void AddMesoRevivalEvent(int eventId, MS2Ptr<MesoRevivalEventContext> spContext);
@@ -219,7 +219,7 @@ public:
     BOOL HasUserCondition(int value);
     void AddOntimeEvent(int eventId, MS2Ptr<OntimeEventContext> spContext);   // GameEventOntime
     void DeactivateOntimeEvent(int eventId);
-    MS2Ptr<const OntimeEventContext> FUN_140478280();
+    MS2Ptr<const OntimeEventContext> GetActiveOntimeEvent();
     MS2Ptr<const OntimeEventContext> GetOntimeEvent(int eventId);
     void SetUgcMapCommendationEvent(int a, __int64 b, CStringW str);     // GameEventUgcMapCommendationGM
     void RemoveUgcMapCommendationEvent(int a);
@@ -227,8 +227,8 @@ public:
     void FUN_140478770(int value, int key, int sub);
     void FUN_1404788a0(int value, int key, int sub);
     void FUN_140478960(int key, ATL::CRBMap<int, int>& out);
-    void FUN_140478a40(int value);                          // GameEventDeleteUrlCache
-    int FUN_140478a60();
+    void SetDeleteUrlCache(int value);                          // GameEventDeleteUrlCache
+    int GetDeleteUrlCache();
     void SetSaleEnchantRate(int eventId, int rate);              // GameEventSaleEnchant
     void RemoveSaleEnchantRate(int eventId);
     unsigned GetSaleEnchantRate();
@@ -248,13 +248,13 @@ public:
     bool HasTermTag(const CStringW& name);
     MS2Ptr<TermTagContext> GetTermTag(const CStringW& name);
     void SetBlackMarketFeeDiscount(int rate, __int64 beginTime, __int64 endTime);       // GameEventBlackMarketFeeDiscount
-    int FUN_140479560();
-    __int64 FUN_140479580();
-    __int64 FUN_1404795a0();
-    void FUN_1404795c0(int value);                          // GameEventEventFieldPopup
-    int FUN_1404795e0();
-    void FUN_140479600(int value);                          // GameEventUGCMapSaleCoupon
-    int FUN_140479620();
+    int GetBlackMarketFeeDiscountRate();
+    __int64 GetBlackMarketFeeDiscountBeginTime();
+    __int64 GetBlackMarketFeeDiscountEndTime();
+    void SetEventFieldPopup(int value);                          // GameEventEventFieldPopup
+    int GetEventFieldPopup();
+    void SetUgcMapSaleCoupon(int value);                          // GameEventUGCMapSaleCoupon
+    int GetUgcMapSaleCoupon();
     void SetUgcMapContractSaleRate(int eventId, int rate);              // GameEventUGCMapContractSale
     void RemoveUgcMapContractSaleRate(int eventId);
     unsigned GetUgcMapContractSaleRate();
@@ -269,7 +269,7 @@ public:
     int FUN_140479a20();
     void SetAutoPlayInstrumentName(CStringW str);
     CStringW GetAutoPlayInstrumentName();
-    bool FUN_140479b20(unsigned roomId);
+    bool IsDungeonRoomShutdown(unsigned roomId);
     bool FUN_140479bd0(Unk_DungeonGroupType group);
     void SetDungeonRoomShutdown(MS2Ptr<DungeonRoomShutdownContext> spContext);       // GameEventDungeonRoomShutdown
     bool FUN_140479cf0(unsigned roomId);
@@ -287,10 +287,10 @@ public:
     void AddNpcEventDrop(int eventId, MS2Ptr<NpcEventDropEventContext> spContext);   // GameEventNpcEventDrop
     void RemoveNpcEventDrop(int eventId);
     void GetNpcEventDrops(std::vector<MS2Ptr<NpcEventDropEventContext> >& out);
-    void FUN_14047a8c0(int type);                           // GameEventItemBuff
-    int FUN_14047a8e0();
-    void FUN_14047a900(MS2Ptr<DungeonBonusRewardCtx> spContext);
-    void FUN_14047aa00(MS2Ptr<DungeonBonusRewardCtx> spContext);
+    void SetItemBuffType(int type);                           // GameEventItemBuff
+    int GetItemBuffType();
+    void AddDungeonBonusReward(MS2Ptr<DungeonBonusRewardCtx> spContext);
+    void RemoveDungeonBonusReward(MS2Ptr<DungeonBonusRewardCtx> spContext);
     MS2Ptr<DungeonBonusRewardCtx> GetDungeonBonusRewardByGroup(Unk_DungeonGroupType group);
     MS2Ptr<DungeonBonusRewardCtx> GetDungeonBonusRewardByDungeon(unsigned dungeonId);
     MS2Ptr<DungeonBonusRewardCtx> MergeDungeonBonusRewards(const std::set<MS2Ptr<DungeonBonusRewardCtx> >& contexts);
@@ -318,16 +318,16 @@ public:
     __int64 FUN_14047bc50(Unk_SaleHousingKey key, int type, __int64 price);
     void SetSaleCubes(int eventId, ATL::CRBMultiMap<Unk_SaleHousingKey, MS2Ptr<SaleCube> >& cubes);   // GameEventSaleHousing
     void RemoveSaleCubes(int eventId);
-    void FUN_14047c020(int eventId, __int64 endTime, const CStringA& a, const CStringA& b, const CStringA& c); // GameEventEpicRestart
+    void SetEpicRestart(int eventId, __int64 endTime, const CStringA& a, const CStringA& b, const CStringA& c); // GameEventEpicRestart
     void FUN_14047c1e0();
-    int FUN_14047c240();
-    __int64 FUN_14047c2e0();
+    int GetEpicRestartEventId();
+    __int64 GetEpicRestartEndTime();
     BOOL FUN_14047c380(unsigned value);
     BOOL FUN_14047c530(unsigned value);
     int FUN_14047c600();
     int FUN_14047c6a0();
     void SetLevelUpPackage(int level, const CStringW& str);                            // GameEventLevelUpPackage
-    void FUN_14047c7c0();
+    void ClearLevelUpPackage();
     int FUN_14047c820();
     void FUN_14047c870(ATL::CAtlArray<unsigned>& out);
     void AddStampEvent(MS2Ptr<StampEventContext> spContext);                      // GameEventStampEvent

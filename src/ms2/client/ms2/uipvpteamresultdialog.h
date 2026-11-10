@@ -24,17 +24,17 @@ public:
     virtual int vfunc_48() { return 0x4ed2; }                   // 48 0x141346640
     virtual void vfunc_67();                                    // 67 0x141345200 tell the server the result was seen
 
-    void FUN_1413452c0();                                       // reset the result
-    void FUN_141345310();                                       // find the own team
-    void FUN_1413454b0();                                       // push all team members
+    void ResetResult();                                       // reset the result
+    void SetMyTeam();                                       // find the own team
+    void UpdateTeamMembers();                                       // push all team members
     void FUN_1413456a0();                                       // push the scores
-    void FUN_141345740(int nTeam, int nCount);                  // set the result: winning team, reward count
+    void SetResult(int nTeam, int nCount);                  // set the result: winning team, reward count
     void FUN_1413457f0();                                       // push the last result
     bool FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* pMember);   // one member row
     void FUN_141345de0();                                       // push everything
-    void FUN_141345e40();                                       // push the own team
-    CString FUN_141345eb0(unsigned int nItemId, int nAmount);   // bind the reward item, returns its slot name
-    void FUN_141346140();                                       // unbind the reward slots
+    void UpdateMyTeam();                                       // push the own team
+    CString BindRewardItem(unsigned int nItemId, int nAmount);   // bind the reward item, returns its slot name
+    void UnbindRewardSlots();                                       // unbind the reward slots
 
 private:
     MS2_LAYOUT_FRIEND;

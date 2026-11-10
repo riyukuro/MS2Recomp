@@ -45,7 +45,7 @@ public:
     virtual void vfunc_87();                                                    // 87 (COMDAT 0x140c5c510) open the linked window
     virtual int vfunc_48() { return 0x4f69; }                                   // 48 (COMDAT 0x140c5bd60)
 
-    void FUN_140c59210();                                                       // send the data to the movie
+    void UpdateData();                                                       // send the data to the movie
     static void FUN_140c59350();                                                // refresh every open widget
 
 protected:
@@ -95,8 +95,8 @@ public:
     virtual void vfunc_oa0_9(unsigned short nLevel);                            // 0x140c5a1f0 level changed
 
     void FUN_140c5a100(void* pEvent);                                           // 0x140c5a100 send the data to the movie (the event is unused)
-    void FUN_140c5ab30(MS2Ptr<Unk_MyPCBurningEvent> spEvent);                   // 0x140c5ab30 remember the event
-    MS2Ptr<Unk_MyPCBurningEvent> FUN_140c5ab80();                               // 0x140c5ab80 the remembered event
+    void SetEvent(MS2Ptr<Unk_MyPCBurningEvent> spEvent);                   // 0x140c5ab30 remember the event
+    MS2Ptr<Unk_MyPCBurningEvent> GetEvent();                               // 0x140c5ab80 the remembered event
 
 private:
     MS2_LAYOUT_FRIEND;

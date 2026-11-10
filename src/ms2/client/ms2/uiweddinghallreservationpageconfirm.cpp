@@ -34,15 +34,15 @@ public:
     class WeddingHallTicket const& GetTicket();
 };
 void FUN_140fdac50(int nHallId, int nSlot, __int64 nTime, bool bPrivate, ASObj* pData);
-void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
+void ShowSystemNotice(const CStringW& strText, int a, int b);                  // notice
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 int FUN_140fe2d20(UIDialog* pDialog);                                       // the selected hall id (uiweddinghallreservationpagechange.cpp)
 class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140fdbf70();
+    void SelectPreviousTab();
     void FUN_140fdc180();
-    void FUN_140fdc970();
+    void SendReservationChange();
     int GetHall();
     int GetMode();
     bool GetNight();
@@ -96,7 +96,7 @@ bool UIWeddingHallReservationPageConfirm::vfunc_1()
         Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&TSingleton<WeddingManager>::GetInstance()->GetTicket());
         __int64 nOld = TSingleton<WeddingTable>::GetInstance()->FUN_140909220(pTicket->m_nHallId, pTicket->m_nSlot);
         __int64 nNew = TSingleton<WeddingTable>::GetInstance()->FUN_140909220(FUN_140fe2d20(m_pDialog), ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall());
-        ((class AScript&)(kData)).FUN_1407cbb20("price", FormatStringId<CStringW>(0x987, FUN_1409404f0(nNew - nOld)));
+        ((class AScript&)(kData)).SetWStringMember("price", FormatStringId<CStringW>(0x987, FUN_1409404f0(nNew - nOld)));
     }
     m_pScript->Invoke("setData", kData);
     return true;
@@ -111,7 +111,7 @@ void UIWeddingHallReservationPageConfirm::vfunc_2()
 // @0x140fe3010
 void UIWeddingHallReservationPageConfirm::vfunc_5()
 {
-    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdbf70();
+    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SelectPreviousTab();
 }
 
 // @0x140fe3040
@@ -120,12 +120,12 @@ void UIWeddingHallReservationPageConfirm::vfunc_6()
     if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetTime() == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_time");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
     else if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall() == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_hall");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
     else
     {
@@ -135,7 +135,7 @@ void UIWeddingHallReservationPageConfirm::vfunc_6()
             ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc180();
             break;
         case 1:
-            ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc970();
+            ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SendReservationChange();
             break;
         }
     }

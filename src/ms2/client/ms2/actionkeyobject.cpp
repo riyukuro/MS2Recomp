@@ -244,8 +244,8 @@ class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 extern int DAT_143ab288c;                                   // the id of the last portal used
 extern __int64 DAT_143ab2820;                               // the account id
-void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot);   // highlight an entity
-void FUN_140d73aa0(CStringW strText, int nType, void* pArg, CStringW strArg);   // a system notice text
+void SetEntityHighlight(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot);   // highlight an entity
+void ShowMessageBox(CStringW strText, int nType, void* pArg, CStringW strArg);   // a system notice text
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strArg);   // a system notice
 int FUN_1408a0890(int, int, int*);   // C3: was FUN_1408a0890
 void FUN_140dff580(int nTarget, int nPortalId);             // the shop portal (type 0x10)
@@ -274,10 +274,10 @@ template <class T> T* Unk_GetUI(int nUiId)
 class UIDungeonRoomDialog : public UIDialog
 {
 public:
-    bool FUN_1412b8f00(int nPortalId);                      // the room list has the portal
-    bool FUN_1412b8ff0(int nArg);
-    void FUN_1412b90d0(int nMode);
-    void FUN_1412b90f0(int nPortalId);                      // select the portal's rooms
+    bool OpenDungeonOrRoom(int nPortalId);                      // the room list has the portal
+    bool OpenRoom(int nArg);
+    void SetGroupType(int nMode);
+    void SetPortalId(int nPortalId);                      // select the portal's rooms
 };
 // The world service's lift / prop records (WorldService::FUN_141bc5a20 / FUN_141bc66b0); a prop is an interact object.
 class Unk_WsB_Lift : public CPtred
@@ -350,7 +350,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_WsC_GameObj, m_bTalkable, 0xe50);
 // The client string tables.
-int FUN_141276980();                                        // npc talk is allowed
+int IsNpcTalkAllowed();                                        // npc talk is allowed
 
 // The world service's portal / current field lookups with their true return types (worldservice.h spells them with
 // stand-in types), and the object-of-entity lookup with its by-value id (the exe copies the id into a temporary,
@@ -362,7 +362,7 @@ public:
 };
 // The quest manager (FUN_140764020).
 void* FUN_140764020();   // C3: was FUN_140764020
-int FUN_140855d10(int nNpcId);                              // the npc has an event talk
+int HasNpcTalks(int nNpcId);                              // the npc has an event talk
 Unk_Int3 FUN_1408a1430(NiPoint3 pt);                // the cube cell of a world position
 // MyPC seen as the local player.
 class Unk_AkoPlayerView : public MyPC
@@ -370,7 +370,7 @@ class Unk_AkoPlayerView : public MyPC
 public:
 };
 int FUN_140a55d20(CFieldDataCli* pField, CStringW* pstrError);   // the field can be entered (else the reason)
-CStringW FUN_1416e4df0(int nQuestId);                       // the quest name
+CStringW GetQuestName(int nQuestId);                       // the quest name
 CStringW GetStringCommonByKey(const CStringW& strKey);             // a string by key
 // Micro-game banner (BannerAction).
 bool FUN_140b7f400(MyPC* pPlayer);                          // the player can join a micro game
@@ -386,7 +386,7 @@ public:
     enum { CLASS_ID = 0x06200004 };
 };
 float GetPlanarDistance(Vector3 a, Vector3 b);   // C3: the definition below (0x140966ea0), planar distance
-void FUN_1412751f0(const CStringW& strText, int nA, int nB);   // a center notice
+void ShowSystemNotice(const CStringW& strText, int nA, int nB);   // a center notice
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);   // a new message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                // show a message box
 
@@ -465,18 +465,18 @@ public:
 class UIGuildFlagTooltip : public UIDialog
 {
 public:
-    void FUN_1412c45a0();                                   // hide
-    void FUN_1412c4050(const CString& strObjectId);         // show for the interact object
+    void HideTooltip();                                   // hide
+    void ShowTooltip(const CString& strObjectId);         // show for the interact object
 };
 class UIRealEstateDialog : public UIDialog
 {
 public:
-    void FUN_141ab4000(int nGroup, int nMapId);             // open on a group
+    void SetGroupAndMapId(int nGroup, int nMapId);             // open on a group
 };
 class UIWorldMapDialog : public UIDialog
 {
 public:
-    void FUN_141b5af80(int nMode);                          // the taxi mode
+    void SetTaxiMode(int nMode);                          // the taxi mode
 };
 
 // The taxi station lists (CAtlArray<int>): the known stations (0x143ab3078) and the stations already reported to the
@@ -620,7 +620,7 @@ void Unk_ActionKeyManager::ActivateCurrentAction()
         return;
     spAction->vfunc_2();
     if (TSingleton<CMouseController>::GetInstance()->HasMode())
-        TSingleton<CMouseController>::GetInstance()->FUN_140ad22d0();
+        TSingleton<CMouseController>::GetInstance()->ResetToIdle();
 }
 MS2_REPLACE_METHOD(0x140953310, Unk_ActionKeyManager, ActivateCurrentAction, 248, 0x47B4C32E);
 
@@ -813,10 +813,10 @@ void TaxiStationAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return;
-    if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e42))
+    if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e42))
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e42)));
     if (UIWorldMapDialog* pDialog = Unk_GetUI<UIWorldMapDialog>(0x4e42))
-        pDialog->FUN_141b5af80(1);
+        pDialog->SetTaxiMode(1);
     ((class Unk_AkoGuide*)FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0x11, 0, 0);
 }
 MS2_REPLACE_METHOD(0x14095BEF0, TaxiStationAction, vfunc_2, 144, 0x65EC98D4);
@@ -852,7 +852,7 @@ PortalAction::~PortalAction()
 // @0x140955990
 void PortalAction::vfunc_3()
 {
-    if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4ebd))
+    if (TSingleton<CUIService>::GetInstance()->IsDialogOpen((eUIClassID)0x4ebd))
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ebd);
 }
 MS2_REPLACE_METHOD(0x140955990, PortalAction, vfunc_3, 54, 0xFD8A0CBF);
@@ -1079,9 +1079,9 @@ void PortalAction::OpenDungeonRoomDialog(int nPortalId)
     {
         if (pDialog->FUN_141924630())
             pDialog->vfunc_67();
-        if (pDialog->FUN_1412b8f00(nPortalId))
+        if (pDialog->OpenDungeonOrRoom(nPortalId))
         {
-            pDialog->FUN_1412b90f0(nPortalId);
+            pDialog->SetPortalId(nPortalId);
             pDialog->FUN_141924680();
         }
     }
@@ -1103,7 +1103,7 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
         return;
     MS2Ptr<CFieldDataCli> spCurrent = reinterpret_cast<Unk_AkoWorldView*>(WorldService::GetInstance())->FUN_141bd30a0();
     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nTarget);
-    if ((spCurrent.get() ? true : false) && (spField.get() ? true : false) && spField->FUN_1403754f0() && !spCurrent->GetPkMode()
+    if ((spCurrent.get() ? true : false) && (spField.get() ? true : false) && spField->GetShadowContinent() && !spCurrent->GetPkMode()
         && spField->GetPkMode())
     {
         FUN_140d73bc0(0x971, 1, static_cast<IMessageListener*>(pPlayer), StringFormat(L"moveportal,{0},{1}", nTarget, nPortalId));
@@ -1115,9 +1115,9 @@ void PortalAction::FUN_140956370(unsigned nTarget, unsigned nPortalId)
         return;
     }
     if ((spField.get() ? true : false) && spField->m_nRequireQuest != 0
-        && ((CQuestManager*)FUN_140764020())->FUN_140745590(spField->m_nRequireQuest) == 0)
+        && ((CQuestManager*)FUN_140764020())->IsQuestRewarded(spField->m_nRequireQuest) == 0)
     {
-        FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_quest_error_field_enter_limit", FUN_1416e4df0(spField->m_nRequireQuest)), 1, 1);
+        ShowSystemNotice(FUN_14028dfa0<CStringW>(L"s_quest_error_field_enter_limit", GetQuestName(spField->m_nRequireQuest)), 1, 1);
         return;
     }
     if (m_spPortal->m_b18c)
@@ -1154,7 +1154,7 @@ bool PortalAction::FUN_140956be0(int nButton, const CMsgBoxData& data)
         MS2Ptr<CPortal> spPortal = WorldService::GetInstance()->FUN_141bc2800(nPortalId);
         if (spPortal == 0)
         {
-            FUN_1412751f0(GetStringCommonByKey(L"s_action_portal_invalid_portal"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_action_portal_invalid_portal"), 1, 1);
             return true;
         }
         pPlayer->SendRequestMoveFieldMode0(nTarget, nPortalId, 0, 0, strPassword, L"");
@@ -1169,8 +1169,8 @@ void PortalAction::OpenDungeonRoomDialogWithMode(int nPortalId, int nMode)
     {
         if (pDialog->FUN_141924630())
             pDialog->vfunc_67();
-        pDialog->FUN_1412b90d0(nMode);
-        pDialog->FUN_1412b90f0(nPortalId);
+        pDialog->SetGroupType(nMode);
+        pDialog->SetPortalId(nPortalId);
         pDialog->FUN_141924680();
     }
 }
@@ -1182,8 +1182,8 @@ void PortalAction::FUN_140956a20(int nPortalId, int nArg)
     {
         if (pDialog->FUN_141924630())
             pDialog->vfunc_67();
-        pDialog->FUN_1412b8ff0(nArg);
-        pDialog->FUN_1412b90f0(nPortalId);
+        pDialog->OpenRoom(nArg);
+        pDialog->SetPortalId(nPortalId);
         pDialog->FUN_141924680();
     }
 }
@@ -1237,11 +1237,11 @@ void BuyCubeAction::vfunc_2()
     {
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e76)));
         if (UIRealEstateDialog* pDialog = Unk_GetUI<UIRealEstateDialog>(0x4e76))
-            pDialog->FUN_141ab4000(m_n18, WorldService::GetInstance()->FUN_141bd3060());
+            pDialog->SetGroupAndMapId(m_n18, WorldService::GetInstance()->FUN_141bd3060());
     }
     else
     {
-        FUN_140d73aa0(spHouse->GetMessageText(nError), 0, 0, L"");
+        ShowMessageBox(spHouse->GetMessageText(nError), 0, 0, L"");
     }
 }
 MS2_REPLACE_METHOD(0x140956F60, BuyCubeAction, vfunc_2, 342, 0x106CF696);
@@ -1267,7 +1267,7 @@ void BuyCubeAction::HighlightCubeEntity(egf::EntityID id, int bSelect)
     egf::EntityID idNone(0);
     if (id == idNone)
         return;
-    FUN_141b71e70(id, bSelect != 0, 1, false);
+    SetEntityHighlight(id, bSelect != 0, 1, false);
 }
 MS2_REPLACE_METHOD(0x1409571A0, BuyCubeAction, HighlightCubeEntity, 126, 0x67FAFAB3);
 
@@ -1322,7 +1322,7 @@ Unk_WsB_Lift* LiftCubeAction::FUN_140957890()
         return 0;
     efd::SmartPointer<CubeMapInformationService> spCubeMap = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
     std::vector<Unk_WsB_LiftPtr> aLifts;
-    WorldService::GetInstance()->FUN_141bc58d0(&aLifts);
+    WorldService::GetInstance()->GetLiftableObjects(&aLifts);
     if (aLifts.size() <= 0)
         return 0;
     NiPoint3 pos = pPlayer->FUN_1416767d0();
@@ -1386,18 +1386,18 @@ int TalkAction::vfunc_1()
             return 0;
         int bTalk = 0;
         Unk_QmNpcQuestState state;
-        ((CQuestManager*)FUN_140764020())->GetNpcQuestState(reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0(), &state, 1);
+        ((CQuestManager*)FUN_140764020())->GetNpcQuestState(reinterpret_cast<CNpc*>(pNpc)->GetNpcId(), &state, 1);
         if (state.m_icon != 0xb)
             bTalk = 1;
         if (reinterpret_cast<CNpc*>(pNpc)->GetNpcData()->GetKind() != 0)
             bTalk = 1;
-        if (FUN_140855d10(reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0()))
+        if (HasNpcTalks(reinterpret_cast<CNpc*>(pNpc)->GetNpcId()))
             bTalk = 1;
-        if (((CQuestManager*)FUN_140764020())->HasTalkScriptForNpc(reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0()))
+        if (((CQuestManager*)FUN_140764020())->HasTalkScriptForNpc(reinterpret_cast<CNpc*>(pNpc)->GetNpcId()))
             bTalk = 1;
         if (bTalk)
         {
-            m_n18 = reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0();
+            m_n18 = reinterpret_cast<CNpc*>(pNpc)->GetNpcId();
             m_nNpcId = reinterpret_cast<GameObject*>(pNpc)->GetObjectId();
             m_strName = reinterpret_cast<CNpc*>(pNpc)->FUN_141093310();
             return 1;
@@ -1419,9 +1419,9 @@ void TalkAction::vfunc_2()
         return;
     if (TSingleton<UITalkManager>::GetInstance()->GetTalking() != 0)
         return;
-    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x6200031)
+    if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSubSceneId() == 0x6200031)
         return;
-    if (FUN_141276980() == 0)
+    if (IsNpcTalkAllowed() == 0)
         return;
     pPlayer->FUN_141529a50(m_nNpcId);
 }
@@ -1460,7 +1460,7 @@ int InteractAction::vfunc_1()
     if (pOld && pOld != pObject)
     {
         if (UIGuildFlagTooltip* pTooltip = Unk_GetUI<UIGuildFlagTooltip>(0x4ea8))
-            pTooltip->FUN_1412c45a0();
+            pTooltip->HideTooltip();
         pOld->SetVisible(0);
     }
     if (pObject && vfunc_13(pObject) == 0)
@@ -1470,7 +1470,7 @@ int InteractAction::vfunc_1()
         pObject->SetVisible(1);
         m_strObjectId = pObject->GetName();
         if (UIGuildFlagTooltip* pTooltip = Unk_GetUI<UIGuildFlagTooltip>(0x4ea8))
-            pTooltip->FUN_1412c4050(m_strObjectId);
+            pTooltip->ShowTooltip(m_strObjectId);
         return 1;
     }
     return 0;
@@ -1548,13 +1548,13 @@ void InteractAction::vfunc_2()
     if (pObject->HasAnyRequiredItem() == 0)
     {
         if (spData->m_aReqItem.m_aItem.size() == 1)
-            FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_interact_err_additional_effect",
+            ShowSystemNotice(FUN_14028dfa0<CStringW>(L"s_interact_err_additional_effect",
                 TSingleton<CStringTable>::GetInstance()->FUN_141812290(
                     FUN_140966f40(reinterpret_cast<const Unk_AkoReqItemList&>(spData->m_aReqItem)),
                     FUN_140966f80(reinterpret_cast<const Unk_AkoReqItemList&>(spData->m_aReqItem)),
                     CString("name"))), 1, 1);
         else
-            FUN_1412751f0(GetStringCommonByKey(L"s_interact_err_additional_effect_multi"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_interact_err_additional_effect_multi"), 1, 1);
         return;
     }
     if (spData->m_room.m_nPartyPortal != 0 && !TSingleton<CPartyManager>::GetInstance()->IsLocalPlayerLeader())   // <room> "partyPortal": needs a party
@@ -1749,7 +1749,7 @@ void RegistUgcAction::vfunc_2()
 {
     if (m_spEntity == 0)
         return;
-    TSingleton<CUgcManager>::GetInstance()->FUN_14187f590(m_spEntity);
+    TSingleton<CUgcManager>::GetInstance()->OpenBannerUpload(m_spEntity);
 }
 MS2_REPLACE_METHOD(0x1409599F0, RegistUgcAction, vfunc_2, 117, 0x885DE4AF);
 // @0x140959a70
@@ -1802,7 +1802,7 @@ void RegistUgcAction::HighlightUgcEntity(egf::Entity* pEntity, int bSelect)
 {
     if (!pEntity)
         return;
-    FUN_141b71e70(pEntity->GetEntityID(), bSelect != 0, 1, false);
+    SetEntityHighlight(pEntity->GetEntityID(), bSelect != 0, 1, false);
 }
 MS2_REPLACE_METHOD(0x140959D70, RegistUgcAction, HighlightUgcEntity, 108, 0x9EED06A3);
 
@@ -1896,20 +1896,20 @@ int PullObjectWeaponAction::vfunc_1()
     {
         if (m_spCube28)
         {
-            FUN_141b71e70(m_spCube28->entity->GetEntityID(), 0, 1, 0);
+            SetEntityHighlight(m_spCube28->entity->GetEntityID(), 0, 1, 0);
             m_spCube28 = 0;
         }
         return 0;
     }
     if (!m_spCube28)
     {
-        FUN_141b71e70(m_spCube->entity->GetEntityID(), 1, 1, 0);
+        SetEntityHighlight(m_spCube->entity->GetEntityID(), 1, 1, 0);
         m_spCube28 = m_spCube;
     }
     else if (m_spCube->entity->GetEntityID() != m_spCube28->entity->GetEntityID())
     {
-        FUN_141b71e70(m_spCube28->entity->GetEntityID(), 0, 1, 0);
-        FUN_141b71e70(m_spCube->entity->GetEntityID(), 1, 1, 0);
+        SetEntityHighlight(m_spCube28->entity->GetEntityID(), 0, 1, 0);
+        SetEntityHighlight(m_spCube->entity->GetEntityID(), 1, 1, 0);
         m_spCube28 = m_spCube;
     }
     return 1;
@@ -1984,7 +1984,7 @@ int PutDownLiftableAction::vfunc_1()
     if (((CubeMapInformationService*)(spCubeMap.operator->()))->HasCubeAtPoint(ptCell))
         return 0;
     std::vector<Unk_AkoLiftTargetPtr> aTargets;
-    WorldService::GetInstance()->FUN_141bc5980(&aTargets);
+    WorldService::GetInstance()->GetLiftableTargetBoxes(&aTargets);
     for (size_t i = 0; i < aTargets.size(); ++i)
     {
         Unk_AkoLiftTargetPtr spTarget = aTargets[i];
@@ -2053,9 +2053,9 @@ int FunctionCubeAction::vfunc_1()
     if (m_id != spObject->GetEntityId())
     {
         if (m_id != egf::kENTITY_INVALID)
-            FUN_141b71e70(m_id, 0, 1, 0);
+            SetEntityHighlight(m_id, 0, 1, 0);
         m_id = spObject->GetEntityId();
-        FUN_141b71e70(m_id, 1, 1, 0);
+        SetEntityHighlight(m_id, 1, 1, 0);
     }
     return 1;
 }
@@ -2111,7 +2111,7 @@ void FunctionCubeAction::vfunc_3()
 {
     if (m_id != egf::kENTITY_INVALID)
     {
-        FUN_141b71e70(m_id, 0, 1, 0);
+        SetEntityHighlight(m_id, 0, 1, 0);
         m_id = egf::kENTITY_INVALID;
     }
     m_n20 = 0;
@@ -2139,9 +2139,9 @@ int FittingDollAction::vfunc_1()
     if (m_id != reinterpret_cast<egf::EntityID&>(id))
     {
         if (m_id != egf::kENTITY_INVALID)
-            FUN_141b71e70(m_id, 0, 1, 0);
+            SetEntityHighlight(m_id, 0, 1, 0);
         m_id = reinterpret_cast<egf::EntityID&>(id);
-        FUN_141b71e70(m_id, 1, 1, 1);
+        SetEntityHighlight(m_id, 1, 1, 1);
         m_n18 = 1;
     }
     else
@@ -2184,7 +2184,7 @@ void FittingDollAction::vfunc_3()
 {
     if (m_id != egf::kENTITY_INVALID)
     {
-        FUN_141b71e70(m_id, 0, 1, 0);
+        SetEntityHighlight(m_id, 0, 1, 0);
         m_id = egf::kENTITY_INVALID;
     }
     m_n18 = 0;
@@ -2229,9 +2229,9 @@ int HoldAction::vfunc_1()
     Unk_WsC_GameObj* pNpc = WorldService::GetInstance()->FUN_141bd1320(nTargetId);
     if (pNpc != 0)
     {
-        if (m_nNpcId != reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0())
+        if (m_nNpcId != reinterpret_cast<CNpc*>(pNpc)->GetNpcId())
         {
-            m_nNpcId = reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0();
+            m_nNpcId = reinterpret_cast<CNpc*>(pNpc)->GetNpcId();
             m_n18 = 1;
         }
     }
@@ -2467,7 +2467,7 @@ GatheringAction::~GatheringAction()
 int GatheringAction::vfunc_1()
 {
     ATL::CAtlArray<MS2Ptr<CInteractObject> > aObjects;
-    WorldService::GetInstance()->FUN_141bc5fb0(&aObjects, 6);
+    WorldService::GetInstance()->GetInteractObjectsByCategory(&aObjects, 6);
     Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
@@ -2787,7 +2787,7 @@ void BannerAction::vfunc_2()
     unsigned nNow = GetTickCountMs2();
     if (nNow - m_n1c < 300)
         return;
-    pBanner->FUN_140ba8b80(pTarget->GetObjectId());
+    pBanner->OnClick(pTarget->GetObjectId());
     m_n1c = nNow;
 }
 MS2_REPLACE_METHOD(0x14095EC70, BannerAction, vfunc_2, 132, 0xFA744602);
@@ -2894,16 +2894,16 @@ void ReactorAction::vfunc_2()
     MS2Ptr<ReactorData> spData = spReactor->GetData();
     if (!spData)
         return;
-    int nResult = FUN_140b7a3d0(pPlayer, spData->m_nId);
+    int nResult = CheckReactorGameEvent(pPlayer, spData->m_nId);
     switch (nResult)
     {
     case 0:
         break;
     case 6:
-        FUN_1412751f0(GetStringCommonByKey(L"s_reactor_action_failed_reward_count"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_reactor_action_failed_reward_count"), 1, 1);
         return;
     default:
-        FUN_1412751f0(GetStringCommonByKey(L"s_reactor_action_failed"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_reactor_action_failed"), 1, 1);
         return;
     }
     if (spData->m_nReactTimeMSec != 0)
@@ -2997,7 +2997,7 @@ int ReactorAction::vfunc_13(efd::SmartPointer<CReactor> spReactor)
 {
     if (!spReactor)
         return 0;
-    return spReactor->FUN_140b79c30();
+    return spReactor->CanUse();
 }
 MS2_REPLACE_METHOD(0x14095FC40, ReactorAction, vfunc_13, 106, 0xBDD2E157);
 
@@ -3015,7 +3015,7 @@ int QuestUserFindAction::vfunc_1()
     Unk_WsC_GameObj* pPlayer = static_cast<Unk_WsC_GameObj*>(pWorld->FUN_141bd0cc0());
     if (!pPlayer)
         return 0;
-    std::pair<unsigned, __int64> user = ((CQuestManager*)FUN_140764020())->FUN_1416d1e90();
+    std::pair<unsigned, __int64> user = ((CQuestManager*)FUN_140764020())->FindNearestQuestTarget();
     int nQuestId = user.first;
     __int64 nCharId = user.second;
     Unk_WsC_GameObj* pTarget = pWorld->FUN_141bd1530(nCharId);
@@ -3064,7 +3064,7 @@ MS2_REPLACE_METHOD(0x140960020, QuestUserFindAction, vfunc_5, 11, 0x41502B22);
 
 // ---- TreeWateringAction ----------------------------------------------------------------------------------------------
 // The game event manager singleton (class of unit_1401c0d90, unrecovered): the tree watering event's context at +0xbf0.
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 // The context pointer's out-of-line members (COMDATs of the gameevent tail; symbols-manual rows).
 template <> MS2Ptr<TreeWateringContext>::~MS2Ptr();
 template <> bool MS2Ptr<TreeWateringContext>::operator==(TreeWateringContext* p) const;
@@ -3131,10 +3131,10 @@ int TreeWateringAction::vfunc_1()
     int nState = pPlayer->GetCurStateId();
     if (nState == 0x3e || nState == 0x1e)
         return 0;
-    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetTreeWatering();
+    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)GetGameRule())->GetTreeWatering();
     if (spContext == 0)
         return 0;
-    efd::SmartPointer<egf::Entity> spTree = WorldService::GetInstance()->FUN_141bd2cd0(spContext->m_strTreeName);
+    efd::SmartPointer<egf::Entity> spTree = WorldService::GetInstance()->FindEntityByName(spContext->m_strTreeName);
     if (spTree == 0)
         return 0;
     NiPoint3 ptTree = reinterpret_cast<const NiPoint3&>(efd::Point3::ZERO);
@@ -3153,7 +3153,7 @@ int TreeWateringAction::vfunc_1()
                 return 1;
         }
         CMsTime now(GetServerTime());
-        if (spContext->FUN_1404038c0(now) == 1 && m_n1c < spContext->m_nBonusLimit
+        if (spContext->IsInEmotionDay(now) == 1 && m_n1c < spContext->m_nBonusLimit
             && m_n18 >= spContext->m_nDailyLimit)
             return 1;
     }
@@ -3166,7 +3166,7 @@ void TreeWateringAction::vfunc_2()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetTreeWatering();
+    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)GetGameRule())->GetTreeWatering();
     if (spContext == 0)
         return;
     MS2Ptr<CItem> spItem = g_143ab2a90.FUN_140a5e2e0(spContext->m_nWaterItemId);
@@ -3177,7 +3177,7 @@ void TreeWateringAction::vfunc_2()
         return;
     }
     CMsTime now(GetServerTime());
-    if (spContext->FUN_1404038c0(now) == 1 && m_n1c < spContext->m_nBonusLimit
+    if (spContext->IsInEmotionDay(now) == 1 && m_n1c < spContext->m_nBonusLimit
         && m_n18 >= spContext->m_nDailyLimit)
     {
         MS2Ptr<StateTreeWateringData> spState(new StateTreeWateringData(spContext->m_strStateBonus));
@@ -3191,7 +3191,7 @@ CStringW TreeWateringAction::vfunc_6()
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return CStringW(L"");
-    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetTreeWatering();
+    MS2Ptr<TreeWateringContext> spContext = ((class CGameRule*)GetGameRule())->GetTreeWatering();
     if (spContext == 0)
         return CStringW(L"");
     if (m_n18 < spContext->m_nDailyLimit)
@@ -3201,7 +3201,7 @@ CStringW TreeWateringAction::vfunc_6()
             return GetStringCommon(0xd19);
     }
     CMsTime now(GetServerTime());
-    if (spContext->FUN_1404038c0(now) == 1 && m_n1c < spContext->m_nBonusLimit)
+    if (spContext->IsInEmotionDay(now) == 1 && m_n1c < spContext->m_nBonusLimit)
         return GetStringCommon(0xd1a);
     return CStringW(L"");
 }

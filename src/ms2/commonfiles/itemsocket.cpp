@@ -22,9 +22,9 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 int FUN_14053feb0(int nItemId);                 // the rank of an item
 bool FUN_140635b90(unsigned nFlags, unsigned nFlag);
 template<class Map> void CopyEnchantMap(Map& to, const Map& from);   // itemoptiondata.cpp
-// The option table (CItemOptionTable; FUN_140166430 returns the singleton).
+// The option table (CItemOptionTable; GetItemOptionTable returns the singleton).
 class CItemOptionTable { public: bool ApplyConstantOptions(class MS2Ptr<class CItemOption>, int, int); }; class Unk_140166430 : public CItemOptionTable {};
-Unk_140166430* FUN_140166430();
+Unk_140166430* GetItemOptionTable();
 
 // @0x14061f540
 void TSocketGemStoneBind::Write(COutputStream& kOut)
@@ -41,14 +41,14 @@ void TSocketGemStoneBind::Read(CInputStream& kIn)
 }
 
 // @0x14061f630
-void TSocketGemStoneLock::FUN_14061f630(COutputStream& kOut)
+void TSocketGemStoneLock::WriteToStream(COutputStream& kOut)
 {
     kOut.WriteUInt8((unsigned char)m_nState);
     kOut.WriteInt64(m_nExpireTime);
 }
 
 // @0x14061f680
-void TSocketGemStoneLock::FUN_14061f680(CInputStream& kIn)
+void TSocketGemStoneLock::ReadFromStream(CInputStream& kIn)
 {
     m_nState = kIn.ReadUInt8();
     m_nExpireTime = kIn.ReadInt64();
@@ -57,9 +57,9 @@ void TSocketGemStoneLock::FUN_14061f680(CInputStream& kIn)
 // @0x14061f6d0
 bool TSocketGemStoneLock::IsLocked()
 {
-    if (FUN_140623e20() == 1)
+    if (GetState() == 1)
         return true;
-    if (FUN_140623e20() == 0 && GetServerTime() < FUN_140623e10())
+    if (GetState() == 0 && GetServerTime() < GetExpireTime())
         return true;
     return false;
 }
@@ -67,7 +67,7 @@ bool TSocketGemStoneLock::IsLocked()
 // @0x14061f730
 bool TSocketGemStoneLock::FUN_14061f730()
 {
-    if (FUN_140623e20() == 1)
+    if (GetState() == 1)
         return false;
     return true;
 }
@@ -75,7 +75,7 @@ bool TSocketGemStoneLock::FUN_14061f730()
 // @0x14061f760
 bool TSocketGemStoneLock::FUN_14061f760()
 {
-    if (FUN_140623e20() == 1)
+    if (GetState() == 1)
         return true;
     return false;
 }
@@ -105,10 +105,10 @@ void TSocketGemStoneInfo::SetFromItem(MS2Ptr<CItem> spGem)
 {
     if (spGem == 0)
         return;
-    m_nGemId = spGem->FUN_1405276c0();
+    m_nGemId = spGem->GetItemId();
     SetBindFromItem(spGem);
     SetLockFromItem(spGem);
-    if (Unk_ItemOwnerRef* pTransfer = spGem->FUN_140527930())
+    if (Unk_ItemOwnerRef* pTransfer = spGem->GetTransfer())
         m_n40 = pTransfer->GetCount();
 }
 
@@ -154,9 +154,9 @@ bool TSocketGemStoneInfo::IsLocked()
 // @0x14061fc00
 bool TSocketGemStoneInfo::SetBindFromItem(MS2Ptr<CItem> spGem)
 {
-    if (spGem == 0 || spGem->FUN_140527930() == 0 || spGem->FUN_140527930()->HasBinding() == 0)
+    if (spGem == 0 || spGem->GetTransfer() == 0 || spGem->GetTransfer()->HasBinding() == 0)
         return false;
-    CItemTransfer::CItemBinding* pBinding = spGem->FUN_140527930()->GetBinding();
+    CItemTransfer::CItemBinding* pBinding = spGem->GetTransfer()->GetBinding();
     if (pBinding != 0)
     {
         unsigned __int64 nCharacterId = pBinding->FUN_14052d1c0();
@@ -185,7 +185,7 @@ bool TSocketGemStoneInfo::SetLockFromItem(MS2Ptr<CItem> spGem)
 {
     if (spGem == 0 || !spGem->FUN_140528e20())
         return false;
-    __int64 nExpireTime = spGem->FUN_140528e00();
+    __int64 nExpireTime = spGem->GetUnlockTime();
     int nState = spGem->FUN_140528ca0();
     return TrySetLock(nState, nExpireTime);
 }
@@ -218,7 +218,7 @@ void TSocketGemStoneInfo::WriteToStream(COutputStream& kOut)
     if (m_spLock.get() != 0)
     {
         kOut.WriteBool(true);
-        m_spLock->FUN_14061f630(kOut);
+        m_spLock->WriteToStream(kOut);
     }
     else
         kOut.WriteBool(false);
@@ -238,7 +238,7 @@ void TSocketGemStoneInfo::ReadFromStream(CInputStream& kIn)
     if (bLock)
     {
         m_spLock.AssignRaw(new TSocketGemStoneLock);
-        m_spLock->FUN_14061f680(kIn);
+        m_spLock->ReadFromStream(kIn);
     }
 }
 
@@ -423,7 +423,7 @@ MS2Ptr<TSocketGemStoneInfo> CItemSocket::FindFirstBoundGem()
 }
 
 // @0x140620de0
-bool CItemSocket::FUN_140620de0() const
+bool CItemSocket::HasGemWithAdditionalEffect() const
 {
     for (unsigned i = 0; i < m_aGems.GetCount(); i++)
     {
@@ -703,7 +703,7 @@ int CItemSocket::FUN_1406220f0(CItemSocket* pSocket, CItemData* pGemData, MS2Ptr
 }
 
 // @0x1406221c0
-int CItemSocket::FUN_1406221c0(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo)
+int CItemSocket::IsGemTradeable(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo)
 {
     if (spInfo.get() != 0 && (spInfo->IsBound() || spInfo->IsLocked()))
         return false;
@@ -717,7 +717,7 @@ int CItemSocket::FUN_1406221c0(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocket
 // @0x1406222c0
 int CItemSocket::FUN_1406222c0(CItemSocket* pSocket, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo)
 {
-    return FUN_1406221c0(pSocket, pGemData, spInfo);
+    return IsGemTradeable(pSocket, pGemData, spInfo);
 }
 
 // @0x140622330
@@ -800,7 +800,7 @@ int CItemSocket::FUN_140622780()
 // @0x140622790
 int CItemSocket::FUN_140622790()
 {
-    return AllGemsPass(FUN_1406221c0);
+    return AllGemsPass(IsGemTradeable);
 }
 
 // @0x1406227c0
@@ -922,7 +922,7 @@ void CItemSocket::RebuildStats()
         if (spOption == 0)
             continue;
         int nRank = FUN_14053feb0(nGemId);
-        FUN_140166430()->ApplyConstantOptions(spOption, nGemId, nRank);
+        GetItemOptionTable()->ApplyConstantOptions(spOption, nGemId, nRank);
         AccumulateStatOptions(spOption);
         AccumulateSpecialOptions(spOption);
     }

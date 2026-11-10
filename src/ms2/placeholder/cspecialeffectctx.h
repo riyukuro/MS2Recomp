@@ -47,7 +47,7 @@ public:
     // @0x140827740
     int GetInt(CStringW strName, int* pnDefault) { return m_pParam.operator->()->GetUInt(strName, *pnDefault); }
     // @0x1408277a0
-    float GetFloat(CStringW strName, float* pfDefault) { return m_pParam.operator->()->FUN_1408276a0(strName, pfDefault); }
+    float GetFloat(CStringW strName, float* pfDefault) { return m_pParam.operator->()->GetFloat(strName, pfDefault); }
 };
 MS2_CHECK_SIZE(CSpecialEffectCtx, 0x38);
 MS2_CHECK_OFFSET(CSpecialEffectCtx, m_nKind, 0x18);

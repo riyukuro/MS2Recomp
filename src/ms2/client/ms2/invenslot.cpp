@@ -139,7 +139,7 @@ template <class T> T* Unk_BreakDialog(int nId);   // C3: was FUN_1405344f0
 class Unk_McInventoryDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140c3fe30(unsigned int);
+    void AddFlags(unsigned int);
 };
 
 // The quest event dispatcher (FUN_140bfc4b0) the slot registers with.
@@ -164,10 +164,10 @@ public:
     int FUN_140612d60();                                  // the lock window is open
     int FUN_140612e90(MS2Ptr<CItem> spItem);              // put the item into a lock slot
     int FUN_1406130e0(__int64 nItemUid);
-    int FUN_140613160(CItem* pItem);                      // the item may be used (not locked)
+    int CanUseItem(CItem* pItem);                      // the item may be used (not locked)
 };
 class Unk_BreakRules* FUN_140535310();   // C3: the definer's return type (itembreakmanager)
-class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
+class Unk_BreakSelected* GetPetManager();   // C3: was GetPetManager
 
 // The feature switches.
 
@@ -177,29 +177,29 @@ class Unk_IsKeys : public CInputKeyHandler
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
-// The key bindings (FUN_1409331f0).
+// The key bindings (GetKeyTable).
 class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); int FUN_140a700b0(); };   // C3: member view (keytable.cpp)
-class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
+class Unk_SoundSink* GetKeyTable();   // C3: was GetKeyTable
 
 
 // The names of the inventory tabs / item kinds.
 
 // The item rules (quest items, ...).
 void* FUN_140764020();   // C3: was FUN_140764020
-CStringW FUN_1416e5210(int nQuestId, CStringW strFormat);
+CStringW GetQuestNameWithLevel(int nQuestId, CStringW strFormat);
 
 // Strings and notices.
 CStringW GetStringCommonByKey(const CStringW& strKey);           // string table text by key
 CStringW GetStringCommon(int nStringId);                    // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);
 void FUN_141275260(int nStringId, int nA, int nB);        // notice by string id
-void FUN_1412751f0(const CStringW& strText, int nA, int nB);
+void ShowSystemNotice(const CStringW& strText, int nA, int nB);
 template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
 int FUN_141276180(const CString& strA, const CString& strB);
 void FUN_140d73bc0(int nId, int nType, void* p, CStringW strTag);
-void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
+void ShowMessageBox(CStringW strText, int nType, void* p, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nId, void* p, CStringW strTag);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spData);
 int FUN_1412773a0(int);   // C3: was FUN_1412773a0
 CString FUN_140719530(unsigned __int64 v);                // "%I64u"
@@ -232,7 +232,7 @@ class UIUGCItemEditDialog : public UIDialog
 public:
     void SetEditItem(MS2Ptr<CItem> spItem);             // put the UGC item into the editor
 };
-UIUGCItemEditDialog* FUN_140eeff60(int nId);
+UIUGCItemEditDialog* GetUGCItemEditDialog(int nId);
 class Unk_IsInstrumentMgr
 {
 public:
@@ -275,7 +275,7 @@ class CNpc   // C3: member view for the former free stand-ins
 public:
     __int64 FUN_1410947c0();
 };
-bool FUN_140633700(MS2Ptr<CItem> spItem);                 // the item is destroyed without a box
+bool CanDestroyItem(MS2Ptr<CItem> spItem);                 // the item is destroyed without a box
 void FUN_1409e4950(MS2Ptr<CItem> spItem, CStringW& strOut, bool* pHas);   // the warning prefix of the item
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z) // C3: was extern Vector3 DAT_143a08cf8; NiPoint3::UNIT_Z
@@ -288,14 +288,14 @@ bool FUN_140633e40(MS2Ptr<CItem> spItem, int* pReason);   // may the item be tra
 void RequestSellItem(__int64, int, void*);   // C3: was RequestSellItem
 static void ShowTradeCountInput(__int64 nUid, int nCount, int nMax);
 static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int nPrice, CStringW strName);
-CNetworkService* FUN_140714f90();
-void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount);     // sell without a box
+CNetworkService* GetNetworkService();
+void SellItem(MS2Ptr<CItem> spItem, unsigned int nCount);     // sell without a box
 static int FUN_14140d350(CItem* pItem);
 
 // The right click mode (FUN_14140d3e0).
 enum Unk_UIType {};                                       // uidialog.cpp's UI type id
 extern ATL::CAtlList<Unk_UIType> DAT_143af2258;           // the ids of the open dialogs, the latest first (uidialog.cpp)
-bool FUN_140633a20(MS2Ptr<CItem> spItem);                 // may be traded
+bool CanTradeItem(MS2Ptr<CItem> spItem);                 // may be traded
 bool FUN_140633840(MS2Ptr<CItem> spItem);                 // may be sold
 bool FUN_140633b80(MS2Ptr<CItem> spItem);                 // may be registered on the black market
 
@@ -386,7 +386,7 @@ void ShowUseStoreCountInput(__int64 nUid, int nCount, int nMax, int bTake, int n
         CStringW strCount;
         strCount.Format(L"%d", nCount);
         spBox->FUN_141a01620(nSlot);
-        spBox->FUN_141a01600(nUid);
+        spBox->SetItemUid(nUid);
         spBox->SetInput(1, strCount, FUN_1412773a0(nMax), 0, 0);
         FUN_140d73c60(spBox);
     }
@@ -405,7 +405,7 @@ void ShowSwapStoreCountInput(__int64 nUid, int nCount, int nMax, int bTake, int 
         CStringW strCount;
         strCount.Format(L"%d", nCount);
         spBox->FUN_141a01620(nSlot);
-        spBox->FUN_141a01600(nUid);
+        spBox->SetItemUid(nUid);
         spBox->SetInput(1, strCount, FUN_1412773a0(nMax), 0, 0);
         FUN_140d73c60(spBox);
     }
@@ -458,7 +458,7 @@ void AddCooldownKeys(ATL::CAtlArray<CString>* pArr, int nSkillId)
         return;
     MS2Ptr<SkillLevelData> spLevel(0);
     if (pPc->IsRiding() != 0)
-        spLevel = spSkill->FUN_1407e90a0(1);
+        spLevel = spSkill->GetLevelData(1);
     else
         spLevel = ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->GetJobSystem())->vfunc_1(nId);
     if (!spLevel)
@@ -503,7 +503,7 @@ bool NotifyCooldownStart(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Va
         return false;
     MS2Ptr<SkillLevelData> spLevel(0);
     if (pPc->IsRiding() != 0)
-        spLevel = spSkill->FUN_1407e90a0(1);
+        spLevel = spSkill->GetLevelData(1);
     else
         spLevel = ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->GetJobSystem())->vfunc_1(nSkillId);
     if (!spLevel)
@@ -526,7 +526,7 @@ bool NotifyCooldownStart(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Va
                 if (nByItem != 0)
                     fCool = fTotal;
                 else
-                    fCool = spLevel->FUN_140804660();
+                    fCool = spLevel->GetCooldown();
                 script.FUN_140e5bf20(s_strOnCooldownStart, fRemain, fCool);
                 return true;
             }
@@ -551,12 +551,12 @@ bool NotifyCooldownEnd(int nSkillId, unsigned __int64 nKey, Scaleform::GFx::Valu
         return false;
     MS2Ptr<SkillLevelData> spLevel(0);
     if (pPc->IsRiding() != 0)
-        spLevel = spSkill->FUN_1407e90a0(1);
+        spLevel = spSkill->GetLevelData(1);
     else
         spLevel = ((class Unk_IsSkillBook*)((class PC*)(class MyPC*)(pPc))->GetJobSystem())->vfunc_1(nSkillId);
     if (!spLevel)
         return false;
-    if (CFeatureManager::GetInstance()->FUN_14036d570(0xca) == false && spSkill->m_condition.m_nUseCoolDownShowUI == 0)
+    if (CFeatureManager::GetInstance()->IsFeatureEnabled(0xca) == false && spSkill->m_condition.m_nUseCoolDownShowUI == 0)
         return false;
     int nGroup = GetCooldownGroupFromKey(nKey);
     if ((nGroup != 0 && nGroup == (int)spSkill->GetCooldownGroupId()) || (nKey != 0 && nKey == spSkill->GetCooldownKey()))
@@ -604,9 +604,9 @@ int FUN_1414056b0(MS2Ptr<CItem> spItem)
     int nResult = 0;
     if (spItem->HasSkin() != 0)
     {
-        if (CFeatureManager::GetInstance()->FUN_14036d570(0x8e))
+        if (CFeatureManager::GetInstance()->IsFeatureEnabled(0x8e))
         {
-            if (((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116dcb0(0x4940d, false, 0))
+            if (((class Unk_IsKeys*)FUN_14025e7c0())->IsActionKeyDown(0x4940d, false, 0))
                 nResult = 1;
             else
                 nResult = 2;
@@ -628,13 +628,13 @@ InvenSlot::InvenSlot(const CString& strName, int nIndex, __int64 nItemUid)
 {
     m_nItemUid = nItemUid;
     SetEnabled(true);
-    FUN_140bfc4b0()->FUN_141aa87c0(this);
+    FUN_140bfc4b0()->AddListener(this);
 }
 
 // @0x141405840
 InvenSlot::~InvenSlot()
 {
-    FUN_140bfc4b0()->FUN_141aa8850(this);
+    FUN_140bfc4b0()->RemoveListener(this);
 }
 
 // @0x1414058f0
@@ -642,7 +642,7 @@ int InvenSlot::FUN_1414058f0()
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(GetItemUid());
     if (spItem.get() != 0)
-        return spItem->FUN_140527840()->FUN_14053dc20();
+        return spItem->FUN_140527840()->GetSkillId();
     return 0;
 }
 MS2_REPLACE_METHOD(0x1414058F0, InvenSlot, FUN_1414058f0, 137, 0x89645CA2);
@@ -652,7 +652,7 @@ int InvenSlot::GetItemId()
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(GetItemUid());
     if (spItem.get() != 0)
-        return spItem->FUN_1405276c0();
+        return spItem->GetItemId();
     return 0;
 }
 MS2_REPLACE_METHOD(0x141405980, InvenSlot, GetItemId, 129, 0x5B13475B);
@@ -686,7 +686,7 @@ int InvenSlot::FUN_141405a60(CItem* pItem, int nSlot)
     FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<Unk_IsNetObject*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
     if (pDoll == 0)
         return false;
-    if (nSlot != 0 && pItem->FUN_140527840()->GetModelOrEmpty()->FUN_14054b450(nSlot) == false)
+    if (nSlot != 0 && pItem->FUN_140527840()->GetModelOrEmpty()->HasGroupType(nSlot) == false)
     {
         FUN_14121b840(0x10);
         return false;
@@ -722,10 +722,10 @@ void InvenSlot::vfunc_6(void* p)
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nItemUid);
     if (spItem == 0)
         return;
-    int nItemId = spItem->FUN_1405276c0();
+    int nItemId = spItem->GetItemId();
     if (spItem->FUN_140527840()->GetType() == 2 || spItem->FUN_140527840()->GetType() == 0x18)
         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(static_cast<ATL::CAtlArray<CString>*>(p)))->Add(FUN_140719210(nItemId));
-    AddCooldownKeys(static_cast<ATL::CAtlArray<CString>*>(p), spItem->FUN_140527840()->FUN_14053dc20());
+    AddCooldownKeys(static_cast<ATL::CAtlArray<CString>*>(p), spItem->FUN_140527840()->GetSkillId());
 }
 MS2_REPLACE_METHOD(0x141405CB0, InvenSlot, vfunc_6, 360, 0xF25982D8);
 
@@ -777,7 +777,7 @@ int InvenSlot::vfunc_13()
             pCraft->ConfirmPlacement();
         return 1;
     }
-    else if (spItem->HasCubeTextureMesh() == 1 && spItem->FUN_140525f60() == 0)
+    else if (spItem->HasCubeTextureMesh() == 1 && spItem->HasUgcId() == 0)
     {
         if (spItem->FUN_140525fc0() != 0)
         {
@@ -785,7 +785,7 @@ int InvenSlot::vfunc_13()
         }
         else
         {
-            MS2Ptr<UIUGCItemEditDialog> spEdit(FUN_140eeff60(0x4e69));
+            MS2Ptr<UIUGCItemEditDialog> spEdit(GetUGCItemEditDialog(0x4e69));
             if (spEdit)
             {
                 UIUGCItemEditDialog* pEdit = spEdit.get();
@@ -800,18 +800,18 @@ int InvenSlot::vfunc_13()
     }
     else if (spItem->FUN_140525680())
     {
-        if (CFeatureManager::GetInstance()->FUN_14036d570(10) == false)
+        if (CFeatureManager::GetInstance()->IsFeatureEnabled(10) == false)
             return 0;
         if (((struct Unk_IsAccountFlags*)FUN_14025e7b0())->m_flags.Get((CContentShutdown::Content)5) != 0)
         {
             FUN_141275260(0x2f7, 1, 1);
             return 0;
         }
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4eec) != 0)
+        if (TSingleton<CUIService>::GetInstance()->IsDialogOpen((eUIClassID)0x4eec) != 0)
         {
             {
                 CStringW strKey(L"s_play_instrument_cant_while_play_instrument");
-                FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+                ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
             }
             return 0;
         }
@@ -819,7 +819,7 @@ int InvenSlot::vfunc_13()
         {
             {
                 CStringW strKey(L"s_play_instrument_cant_while_pre_listening");
-                FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+                ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
             }
             return 0;
         }
@@ -858,11 +858,11 @@ int InvenSlot::vfunc_13()
             return 0;
         if (TSingleton<CUIService>::GetInstance()->FUN_141adc7f0((eUIClassID)0x4e3b) == 0)
             return 0;
-        TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4e3b);
+        TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4e3b);
         COutPacket packet(static_cast<int>(SendOp::SystemShop), 0);
         packet.WriteUInt8(10);
         packet.WriteUInt8(1);
-        packet.WriteInt32(spItem->FUN_1405276c0());
+        packet.WriteInt32(spItem->GetItemId());
         FUN_140710590(packet);
         return 1;
     }
@@ -874,18 +874,18 @@ int InvenSlot::vfunc_13()
     {
         if (FUN_14140dea0(spItem.get(), pPC) != 0)
         {
-            CStringW strText = FormatStringId<CStringW>(0x85a, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, spItem->FUN_140527840()->FUN_14053dc20()));
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, s_strLearnEmotion);
+            CStringW strText = FormatStringId<CStringW>(0x85a, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, spItem->FUN_140527840()->GetSkillId()));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strText, 0, s_strLearnEmotion);
             if (spBox.get() != 0)
             {
-                spBox->FUN_141a01600(m_nItemUid);
+                spBox->SetItemUid(m_nItemUid);
                 FUN_140d73c60(spBox);
             }
         }
     }
     else if (spItem->FUN_140527840()->FUN_14053cbc0())
     {
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e3b) == 0)
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e3b) == 0)
         {
             int nSlot = FUN_1414056b0(spItem);
             g_143ab2a90.FUN_140a621c0(GetItemUid(), 0, nSlot);
@@ -909,7 +909,7 @@ int InvenSlot::vfunc_14()
     UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInventory != 0)
     {
-        spItem->FUN_1405268d0(0);
+        spItem->SetNew(0);
         pInventory->FUN_14199bc00();
     }
     int nMode = FUN_14140d3e0(spItem, 0);
@@ -920,14 +920,14 @@ int InvenSlot::vfunc_14()
     case 2:
         if (FUN_14140be60(spItem) != 0)
         {
-            MS2Ptr<ASMouseCursor> spHud = FUN_14025e7a0()->GetMouseCursor(6);
+            MS2Ptr<ASMouseCursor> spHud = GetGFxManager()->GetMouseCursor(6);
             if (spHud.operator ASMouseCursor*() != 0)
                 spHud.operator->()->FUN_1422cee50((Unk_MouseCursorType)0);
         }
         break;
     case 3:
     {
-        int bAll = ((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) || ((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x36, false, 0);
+        int bAll = ((class Unk_IsKeys*)FUN_14025e7c0())->IsKeyDown(0x2a, false, 0) || ((class Unk_IsKeys*)FUN_14025e7c0())->IsKeyDown(0x36, false, 0);
         int nCount = bAll ? spItem->GetCount() : 1;
         int nSlot = MS2_STORE_TABLE.AvailableSlot(spItem, nCount);
         if (nSlot == -1)
@@ -935,7 +935,7 @@ int InvenSlot::vfunc_14()
             FUN_141275260(0xf2, 1, 1);
             return 0;
         }
-        if (MS2_STORE_TABLE.Allowed(spItem->FUN_1405276c0()) == 0)
+        if (MS2_STORE_TABLE.Allowed(spItem->GetItemId()) == 0)
         {
             FUN_141275260(0xf1, 1, 0);
             return 0;
@@ -964,7 +964,7 @@ int InvenSlot::vfunc_14()
             int nSkillId = FUN_141769320(MS2Ptr<CItemData>((CItemData*)spItem->FUN_140527840()));
             if (spItem->FUN_140527840()->IsRideItem() && spItem->HasCubeTextureMesh() != 0)
             {
-                if (spItem->FUN_140525f60() == 0)
+                if (spItem->HasUgcId() == 0)
                 {
                     FUN_140d73bc0(0x2e8, 0, 0, CStringW(L""));
                     return 0;
@@ -979,8 +979,8 @@ int InvenSlot::vfunc_14()
                 nUid = 0;
             else
                 nUid = spItem->GetItemUid();
-            int nPage = ((class CKeyTable*)FUN_1409331f0())->FUN_140a700b0();
-            FUN_14092fac0(nSkillId, spItem->FUN_1405276c0(), nUid, nPage);
+            int nPage = ((class CKeyTable*)GetKeyTable())->FUN_140a700b0();
+            FUN_14092fac0(nSkillId, spItem->GetItemId(), nUid, nPage);
         }
         break;
     case 6:
@@ -1009,7 +1009,7 @@ int InvenSlot::vfunc_14()
     case 18:
     {
         UIItemExtractionScrollDialog* pScroll;
-        if (CFeatureManager::GetInstance()->FUN_14036d570(0x8f) && (pScroll = GetItemUseDialog<UIItemExtractionScrollDialog>(0x4f49)) != 0)
+        if (CFeatureManager::GetInstance()->IsFeatureEnabled(0x8f) && (pScroll = GetItemUseDialog<UIItemExtractionScrollDialog>(0x4f49)) != 0)
             pScroll->FUN_140e4a920(m_nItemUid);
         break;
     }
@@ -1039,7 +1039,7 @@ int InvenSlot::vfunc_14()
                     strError = static_cast<const CStringW&>(GetStringCommonByKey(L"s_item_err_cannot_play_instrument_empty_custom"));
                 else if (spItem->FUN_140527340() < 1)
                     strError = static_cast<const CStringW&>(GetStringCommonByKey(L"s_item_err_cannot_play_none_count"));
-                else if (pPlay->FUN_14100c8f0() == false)
+                else if (pPlay->IsScorePageShown() == false)
                     strError = static_cast<const CStringW&>(GetStringCommonByKey(L"s_item_err_cannot_play_now"));
                 else if (spItem->FUN_140528980() == false)
                     strError = static_cast<const CStringW&>(GetStringCommonByKey(L"s_item_err_cannot_invaild_item"));
@@ -1047,15 +1047,15 @@ int InvenSlot::vfunc_14()
             else
                 strError = static_cast<const CStringW&>(GetStringCommonByKey(L"s_item_err_cannot_play_instrument"));
             if (strError.IsEmpty())
-                pPlay->FUN_14100c910(spItem);
+                pPlay->AddScore(spItem);
             else
-                FUN_1412751f0(strError, 1, 1);
+                ShowSystemNotice(strError, 1, 1);
         }
         break;
     }
     case 14:
     {
-        unsigned nFree = ((class CPetManager*)FUN_140535320())->GetInventory()->FindEmptySlot();
+        unsigned nFree = ((class CPetManager*)GetPetManager())->GetInventory()->FindEmptySlot();
         if (nFree == -1 && spItem->GetSlotMax() <= 1)
         {
             FUN_141275260(0xf2, 1, 1);
@@ -1082,9 +1082,9 @@ int InvenSlot::vfunc_14()
         UIItemMergeRevertDialog* pRevert = GetItemUseDialog<UIItemMergeRevertDialog>(0x4f3d);
         if (pRevert != 0)
         {
-            int nError = pRevert->FUN_140e4d330(spItem.get());
+            int nError = pRevert->CheckItem(spItem.get());
             if (nError != 0)
-                pRevert->FUN_140e4d010(nError);
+                pRevert->ShowErrorMessage(nError);
             else
                 pRevert->FUN_140e4c7d0(spItem.get());
         }
@@ -1126,7 +1126,7 @@ int InvenSlot::vfunc_17()
                 return 1;
             }
         }
-        FUN_14140c4d0(m_nItemUid, spItem->FUN_1405276c0(), spItem->GetCount(), spItem->GetSlotMax());
+        FUN_14140c4d0(m_nItemUid, spItem->GetItemId(), spItem->GetCount(), spItem->GetSlotMax());
     }
     else if (nResult == 2)
     {
@@ -1157,7 +1157,7 @@ int InvenSlot::vfunc_18(void* p)
         if (spWorn.get() != 0)
         {
             if (static_cast<bool>(spMine.get())
-                && spMine->FUN_140527840()->GetModelOrEmpty()->FUN_14054b450(spWorn->FUN_140527a20()))
+                && spMine->FUN_140527840()->GetModelOrEmpty()->HasGroupType(spWorn->FUN_140527a20()))
             {
                 g_143ab2a90.RequestEquipItem(spMine.get(), spWorn->FUN_140527a20(), pEquip->GetKind(), 0);
             }
@@ -1178,7 +1178,7 @@ int InvenSlot::vfunc_18(void* p)
         int nSlot = g_143ab2a90.FUN_140a612b0(nTab, spItem, spItem->GetCount());
         if (nSlot == -1)
         {
-            Unk_AkoMessage<CStringW>(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nTab));
+            Unk_AkoMessage<CStringW>(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->GetInventoryTabName(nTab));
             FUN_141276180(s_strSystemNoticeErrorWarningBag, "");
             return static_cast<DragSlot*>(p)->vfunc_10();
         }
@@ -1202,8 +1202,8 @@ int InvenSlot::vfunc_18(void* p)
     }
     else if (TradeSlot* pTrade = efd::DynamicCast<TradeSlot>(static_cast<DragSlot*>(p)))
     {
-        PlayItemSoundById(pTrade->FUN_14185e530());
-        pTrade->FUN_14185e5d0();
+        PlayItemSoundById(pTrade->GetItemTemplateId());
+        pTrade->SendRemoveItem();
     }
     else if (GemSlot* pGem = efd::DynamicCast<GemSlot>(static_cast<DragSlot*>(p)))
     {
@@ -1220,7 +1220,7 @@ int InvenSlot::vfunc_18(void* p)
                 }
                 else if (pGem->GetGemType() == nKind)
                 {
-                    EquipGem(spMine, spGem->FUN_140526b50(), 0);
+                    EquipGem(spMine, spGem->GetSlot(), 0);
                 }
             }
             else
@@ -1241,7 +1241,7 @@ int InvenSlot::vfunc_18(void* p)
         if (((CItemBreakManager*)GetItemBreakManager())->CanBreakItem(spOld) != 0)
         {
             if (((CItemBreakManager*)GetItemBreakManager())->CanBreakItem(spMine) != 0)
-                ((CItemBreakManager*)GetItemBreakManager())->TryAddItem(spMine, spOld->FUN_140526b50());
+                ((CItemBreakManager*)GetItemBreakManager())->TryAddItem(spMine, spOld->GetSlot());
             else
                 ((CItemBreakManager*)GetItemBreakManager())->RequestRemoveItem(spOld);
         }
@@ -1261,7 +1261,7 @@ int InvenSlot::vfunc_18(void* p)
     else if (PetSlot* pPet = AsPetSlot(static_cast<DragSlot*>(p)))
     {
         __int64 nUid = pPet->GetPetItemUid();
-        MS2Ptr<CItem> spItem = ((class CPetManager*)FUN_140535320())->GetInventory()->GetItemByUid(nUid);
+        MS2Ptr<CItem> spItem = ((class CPetManager*)GetPetManager())->GetInventory()->GetItemByUid(nUid);
         if (spItem.get() != 0)
         {
             CPetInventory::MoveItemFromPetInventory(spItem, m_nIndex);
@@ -1304,8 +1304,8 @@ int InvenSlot::vfunc_20()
     {
         TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"),
             spItem->FUN_140527840()->GetMaterialSoundName(), CString(""), 0, 0, 1.0f, 0);
-        if (spItem->FUN_1405268f0() != 0)
-            spItem->FUN_1405268d0(0);
+        if (spItem->IsNew() != 0)
+            spItem->SetNew(0);
         UIDialogEventDispatcher::GetInstance()->vfunc_3(this);
     }
     return 1;
@@ -1354,7 +1354,7 @@ MS2_REPLACE_METHOD(0x1414090C0, InvenSlot, FUN_1414090c0, 136, 0x7DD6C7D5);
 // @0x141409150
 int InvenSlot::CanRegisterToBlackMarket(CItem* pItem)
 {
-    if (FUN_140535310() != 0 && ((CItemLockManager*)FUN_140535310())->FUN_140613160(pItem) == 0)
+    if (FUN_140535310() != 0 && ((CItemLockManager*)FUN_140535310())->CanUseItem(pItem) == 0)
         return 0;
     int nReason = 0;
     if (FUN_140633fb0(MS2Ptr<CItem>(pItem), &nReason) != false)
@@ -1368,7 +1368,7 @@ int InvenSlot::CanRegisterToBlackMarket(CItem* pItem)
             strError = GetStringCommonByKey(L"s_blackmarket_error_disable_registitem_by_gemstone");
         else
             strError = GetStringCommon(0x92c);
-        FUN_1412751f0(strError, 1, 1);
+        ShowSystemNotice(strError, 1, 1);
     }
     return 0;
 }
@@ -1407,40 +1407,40 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
         FUN_140d73bc0(0x71, 0, 0, CStringW(L""));
         return 0;
     }
-    if (FUN_140535310() != 0 && ((CItemLockManager*)FUN_140535310())->FUN_140613160(spItem.get()) == 0)
+    if (FUN_140535310() != 0 && ((CItemLockManager*)FUN_140535310())->CanUseItem(spItem.get()) == 0)
         return 0;
     CItemSocket* pSocket = spItem->GetSocket();
     if (pSocket != 0 && pSocket->FUN_140622750() == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"), 0, 0, L"");
         return 0;
     }
-    if (spItem->IsPetItem() != 0 && TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f38) != 0)
+    if (spItem->IsPetItem() != 0 && TSingleton<CUIService>::GetInstance()->IsDialogOpen((eUIClassID)0x4f38) != 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_err_cannot_destroy_petsystem_opendialog"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_err_cannot_destroy_petsystem_opendialog"), 0, 0, L"");
         return 0;
     }
-    if (spData->GetStringTag() == 0xd8 && TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f38) != 0)
+    if (spData->GetStringTag() == 0xd8 && TSingleton<CUIService>::GetInstance()->IsDialogOpen((eUIClassID)0x4f38) != 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_err_cannot_destroy_petsystem_opendialog"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_err_cannot_destroy_petsystem_opendialog"), 0, 0, L"");
         return 0;
     }
     if (spItem->FUN_140527840()->FUN_14053cd10() && FUN_140c8dab0(GetInstrumentManager()) == spItem->GetItemUid())
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_cant_destory_score"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_play_instrument_cant_destory_score"), 0, 0, L"");
         return 0;
     }
-    if (FUN_140633700(spItem) == false)
+    if (CanDestroyItem(spItem) == false)
     {
         CStringW strError;
         if (((class CQuestManager*)FUN_140764020())->IsItemUsedByQuest(spItem) != 0)
         {
             strError = FUN_14028dfa0<CStringW>(CStringW(L"s_item_err_questitem_destroy"), FUN_14140c2b0(spItem));
         }
-        else if (spItem->FUN_140527930()->HasBinding() != 0)
+        else if (spItem->GetTransfer()->HasBinding() != 0)
         {
             CStringW strOwner;
-            spItem->FUN_140527930()->GetBindingOwnerName(pPC, &strOwner);
+            spItem->GetTransfer()->GetBindingOwnerName(pPC, &strOwner);
             strError = FormatStringId<CStringW>(0xd9, strOwner);
         }
         else
@@ -1462,7 +1462,7 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
                 }
                 else
                 {
-                    strError = FormatStringId<CStringW>(0xd8, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()));
+                    strError = FormatStringId<CStringW>(0xd8, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->GetItemId()));
                 }
             }
         }
@@ -1478,10 +1478,10 @@ int InvenSlot::vfunc_26(MS2Ptr<CItem> spItem)
                 strText.Append(L"\n");
             }
             strText.Append(strError);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strText, 0, s_strDestroyItem);
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x11, strText, 0, s_strDestroyItem);
             if (spBox.get() != 0)
             {
-                spBox->FUN_141a01600(m_nItemUid);
+                spBox->SetItemUid(m_nItemUid);
                 spBox->FUN_141a024a0(0);
                 spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, spItem->GetCount(), -1, -1, 1);
                 spBox->SetButtonLabelIds(0x475, 0x476, 0);
@@ -1516,13 +1516,13 @@ int InvenSlot::vfunc_0(void* p)
     int nMode = FUN_14140d3e0(spItem, 1);
     if (nMode == 2)
     {
-        MS2Ptr<ASMouseCursor> spHud = FUN_14025e7a0()->GetMouseCursor(6);
+        MS2Ptr<ASMouseCursor> spHud = GetGFxManager()->GetMouseCursor(6);
         if (spHud.operator ASMouseCursor*() != 0)
             spHud.operator->()->FUN_1422cee50((Unk_MouseCursorType)8);
     }
     if (spItem->FUN_140527840()->function.name == L"ItemExchangeScroll")
     {
-        MS2Ptr<CExchangeItemInfo> spInfo = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(spItem->FUN_1405276c0());
+        MS2Ptr<CExchangeItemInfo> spInfo = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(spItem->GetItemId());
         if (spInfo.get() != 0)
         {
             MS2Ptr<CItem> spResult(new CItem);
@@ -1543,7 +1543,7 @@ int InvenSlot::vfunc_0(void* p)
                         CStringW strKey(L"s_word_compose_result");
                         tip.SetItemEquipBoth(GetStringCommonByKey(strKey), strEmpty);
                     }
-                    *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+                    *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
                     return 1;
                 }
             }
@@ -1580,7 +1580,7 @@ int InvenSlot::vfunc_0(void* p)
             }
             if (IsEnabled() == true)
                 tip.SetEnablePreviewBoth(MS2Ptr<CItem>(0), spItem);
-            *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+            *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
             return 1;
         }
     }
@@ -1600,8 +1600,8 @@ int InvenSlot::vfunc_8(void* p)
     ASSlot slot(2);
     if (slot.FUN_1409c3860(spItem.get(), pPC, 0x1c01f) != 0)
     {
-        slot.FUN_1407cbbe0(s_strUpdateIconSearchOn, FUN_14140c180(spItem));
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        slot.SetBoolMember(s_strUpdateIconSearchOn, FUN_14140c180(spItem));
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -1628,10 +1628,10 @@ CStringW InvenSlot::vfunc_22()
     case 7:
         return GetStringCommon(0x75a);
     case 6:
-        if (CFeatureManager::GetInstance()->FUN_14036d570(0x8e) && spItem->HasSkin() != 0)
+        if (CFeatureManager::GetInstance()->IsFeatureEnabled(0x8e) && spItem->HasSkin() != 0)
         {
             CStringW strText = GetStringCommonByKey(L"s_msg_rclick_puton_equip_to_coditab");
-            CStringW strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(0x4940d, 0);
+            CStringW strKey = reinterpret_cast<CKeyTable*>(GetKeyTable())->GetActionKeyName(0x4940d, 0);
             if (!strKey.IsEmpty())
             {
                 strText.Append(L"\n");
@@ -1679,9 +1679,9 @@ int InvenSlot::TryAddToTrade(MS2Ptr<CItem> spItem)
 {
     if (!spItem)
         return 0;
-    if (spItem->FUN_140527930() == 0)
+    if (spItem->GetTransfer() == 0)
         return 0;
-    if (FUN_140535310() != 0 && ((CItemLockManager*)FUN_140535310())->FUN_140613160(spItem.get()) == 0)
+    if (FUN_140535310() != 0 && ((CItemLockManager*)FUN_140535310())->CanUseItem(spItem.get()) == 0)
         return 0;
     int nReason = 0;
     if (FUN_140633e40(spItem, &nReason) == false)
@@ -1691,14 +1691,14 @@ int InvenSlot::TryAddToTrade(MS2Ptr<CItem> spItem)
             strError = GetStringCommonByKey(L"s_trade_tradelimit_by_gemstone");
         else
             strError = GetStringCommon(0x83f);
-        FUN_1412751f0(strError, 1, 1);
+        ShowSystemNotice(strError, 1, 1);
         return 0;
     }
     if (spItem->FUN_140527840()->FUN_14053cd10() && FUN_140c8dab0(GetInstrumentManager()) == spItem->GetItemUid())
     {
         {
             CStringW strKey(L"s_trade_tradelimit_playing_score");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
         return 0;
     }
@@ -1708,10 +1708,10 @@ int InvenSlot::TryAddToTrade(MS2Ptr<CItem> spItem)
         int nSlot = 0;
         if (pTrade->FUN_141b283f0(&nSlot) == 0)
         {
-            FUN_140d73aa0(GetStringCommon(0x82f), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommon(0x82f), 0, 0, CStringW(L""));
             return 0;
         }
-        bool bAll = ((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) || ((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x36, false, 0);
+        bool bAll = ((class Unk_IsKeys*)FUN_14025e7c0())->IsKeyDown(0x2a, false, 0) || ((class Unk_IsKeys*)FUN_14025e7c0())->IsKeyDown(0x36, false, 0);
         if (spItem->FUN_140526850() == false || bAll)
         {
             CTradeManagerEx::GetInstance()->SendTradeMode8(spItem->GetItemUid(), spItem->GetCount(), nSlot);
@@ -1757,7 +1757,7 @@ int InvenSlot::FUN_14140be60(CItem* pItem)
 {
     if (FUN_14140e3f0(MS2Ptr<CItem>(pItem)) != 0)
     {
-        int bAll = ((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) || ((class Unk_IsKeys*)FUN_14025e7c0())->FUN_14116d950(0x36, false, 0);
+        int bAll = ((class Unk_IsKeys*)FUN_14025e7c0())->IsKeyDown(0x2a, false, 0) || ((class Unk_IsKeys*)FUN_14025e7c0())->IsKeyDown(0x36, false, 0);
         if (bAll != 0 || pItem->FUN_140525c60() != 0)
         {
             RequestSellItem(pItem->GetItemUid(), pItem->GetCount(), (void*)(pItem));
@@ -1828,7 +1828,7 @@ static CStringW FUN_14140c2b0(MS2Ptr<CItem> spItem)
         {
             if (!strNames.IsEmpty())
                 strNames += L"\n";
-            strNames += FUN_1416e5210(arrQuests[i].m_questId, CStringW(L"s_msg_tooltip_quest_name"));
+            strNames += GetQuestNameWithLevel(arrQuests[i].m_questId, CStringW(L"s_msg_tooltip_quest_name"));
         }
         return strNames;
     }
@@ -1860,12 +1860,12 @@ static void FUN_14140c4d0(__int64 nUid, int nItemId, int nCount, int nMax)
         MS2Ptr<CItem> spCur = g_143ab2a90.FindItemByUid(nUid);
         if (!spCur)
             return;
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(nType, strText, 0, s_strDrop);
+        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(nType, strText, 0, s_strDrop);
         if (spBox.get() != 0)
         {
             CStringW strCount;
             strCount.Format(L"%d", nCount);
-            spBox->FUN_141a01600(nUid);
+            spBox->SetItemUid(nUid);
             spBox->SetInput(1, strCount, FUN_1412773a0(nMax), 0, 0);
             spBox->FUN_141a01ee0(spCur, spCur->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->SetButtonLabelIds(0x477, 0x478, 0);
@@ -1873,7 +1873,7 @@ static void FUN_14140c4d0(__int64 nUid, int nItemId, int nCount, int nMax)
         }
     }
     else
-        FUN_140714f90()->SendRequestItemInventoryMode4(nUid, nCount);
+        GetNetworkService()->SendRequestItemInventoryMode4(nUid, nCount);
 }
 MS2_REPLACE(0x14140C4D0, FUN_14140c4d0, 1719, 0x28342F3F);
 
@@ -1898,13 +1898,13 @@ static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int n
             nType = 0x11;
             strText = FUN_14028dfa0<CStringW>(CStringW(L"s_msg_quest_item_sell"), FUN_14140c2b0(spItem));
         }
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(nType, strText, 0, s_strSell);
+        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(nType, strText, 0, s_strSell);
         if (spBox.get() != 0)
         {
             MS2Ptr<CItem> spCur = g_143ab2a90.FindItemByUid(nUid);
             if (spCur.get() != 0)
             {
-                spBox->FUN_141a01600(nUid);
+                spBox->SetItemUid(nUid);
                 spBox->SetTitle(GetStringCommon(0x460));
                 spBox->SetButtonLabelIds(0x47e, 0x476, 0);
                 spBox->FUN_141a01ee0(spCur, strName, 1, nCount, nMax, nPrice, 1);
@@ -1913,7 +1913,7 @@ static void FUN_14140cb90(__int64 nUid, int nItemId, int nCount, int nMax, int n
         }
     }
     else
-        FUN_1419f8920(g_143ab2a90.FindItemByUid(nUid), nCount);
+        SellItem(g_143ab2a90.FindItemByUid(nUid), nCount);
 }
 MS2_REPLACE(0x14140CB90, FUN_14140cb90, 1637, 0xE0599DE8);
 
@@ -1926,7 +1926,7 @@ static void ShowTradeCountInput(__int64 nUid, int nCount, int nMax)
     {
         CStringW strCount;
         strCount.Format(L"%d", nCount);
-        spBox->FUN_141a01600(nUid);
+        spBox->SetItemUid(nUid);
         spBox->SetInput(1, strCount, FUN_1412773a0(nMax), 0, 0);
         FUN_140d73c60(spBox);
     }
@@ -1961,7 +1961,7 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
     int nDialog = DAT_143af2258.IsEmpty() ? 0 : DAT_143af2258.GetHead();
     if (nDialog == 0x4e83)
     {
-        if (FUN_140633a20(spItem))
+        if (CanTradeItem(spItem))
             return 1;
         return bHint ? 0 : 1;
     }
@@ -1973,7 +1973,7 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
     }
     else if (nDialog == 0x4e47 || nDialog == 0x4e78)
     {
-        if (MS2_STORE_TABLE.Allowed(spItem->FUN_1405276c0()) != 0)
+        if (MS2_STORE_TABLE.Allowed(spItem->GetItemId()) != 0)
             return 3;
         return bHint ? 0 : 3;
     }
@@ -2002,7 +2002,7 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
     else if (nDialog == 0x4e97)
     {
         UIBlackMarketDialog* pMarket;
-        if (FUN_140633b80(spItem) && (pMarket = FindBlackMarketDialog(0x4e97)) != 0 && pMarket->FUN_1418d0be0())
+        if (FUN_140633b80(spItem) && (pMarket = FindBlackMarketDialog(0x4e97)) != 0 && pMarket->IsRegisterPageSelected())
             return 11;
         return bHint ? 0 : 11;
     }
@@ -2018,7 +2018,7 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
         {
             if (spItem->IsPetItem() != 0)
                 return 16;
-            if (((class CPetManager*)FUN_140535320())->GetInventory()->GetSlotCount() > 0)
+            if (((class CPetManager*)GetPetManager())->GetInventory()->GetSlotCount() > 0)
                 return 14;
         }
         else if (nDialog == 0x4f3d)
@@ -2026,13 +2026,13 @@ static int FUN_14140d3e0(MS2Ptr<CItem> spItem, int bHint)
             if (bHint == 0)
                 return 17;
             UIItemMergeRevertDialog* pRevert = GetItemUseDialog<UIItemMergeRevertDialog>(0x4f3d);
-            if (pRevert != 0 && pRevert->FUN_140e4d330(spItem.get()) == 0)
+            if (pRevert != 0 && pRevert->CheckItem(spItem.get()) == 0)
                 return 17;
         }
         else if (nDialog == 0x2711)
         {
             void* pProfile;
-            if (CFeatureManager::GetInstance()->FUN_14036d570(0x8e) && spItem->FUN_140527840()->FUN_14053cbc0()
+            if (CFeatureManager::GetInstance()->IsFeatureEnabled(0x8e) && spItem->FUN_140527840()->FUN_14053cbc0()
                 && spItem->HasSkin() != 0 && (pProfile = ((void*)FindMyInfoDialog(0x2711))) != 0
                 && ((UIMyInfoDialog*)pProfile)->GetTab() == 1)
                 return 5;
@@ -2087,29 +2087,29 @@ static int FUN_14140dea0(CItem* pItem, MyPC* pPC)
             FUN_140d73bc0(0xe1, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pItem->FUN_140525ca0() != 0 && pPC->FUN_141658f30() == 0)
+    if (pItem->IsPCBangItem() != 0 && pPC->FUN_141658f30() == 0)
     {
         FUN_140d73bc0(0xe2, 0, 0, CStringW(L""));
         return 0;
     }
     if (pItem->FUN_140525db0() != 0 && pPC->IsVip() == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_vip"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_item_err_puton_vip"), 0, 0, L"");
         return 0;
     }
-    if (pItem->FUN_140525e00() != 0 && pPC->vfunc_146() == false)
+    if (pItem->HasWeddingLimit() != 0 && pPC->vfunc_146() == false)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_wedding"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_item_err_puton_wedding"), 0, 0, L"");
         return 0;
     }
     if (pItem->CanUseAtLevel(pPC->vfunc_78()) == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, L"");
         return 0;
     }
     if (pItem->IsJobAllowed(pPC->GetJobGroupId()) == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_disable_job"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_item_err_disable_job"), 0, 0, L"");
         return 0;
     }
     __int64 nCharacterId = pPC->FUN_141656a80();
@@ -2118,7 +2118,7 @@ static int FUN_14140dea0(CItem* pItem, MyPC* pPC)
         FUN_140d73bc0(0xfe, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pItem->FUN_1405267d0(pPC->GetGender()) == 0)
+    if (pItem->IsGenderAllowed(pPC->GetGender()) == 0)
     {
         FUN_140d73bc0(0x2d, 0, 0, CStringW(L""));
         return 0;
@@ -2154,7 +2154,7 @@ InventorySlotBag* CreateSlotBag(const CString& strName, int nTab, int nCount)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
     return pBag;
 }
@@ -2164,11 +2164,11 @@ MS2_REPLACE(0x14140ECA0, CreateSlotBag, 186, 0x331442C2);
 // Destroy the slot bag registered under the name.
 void FUN_14140ed60(const CString& strName)
 {
-    InventorySlotBag* pBag = efd::DynamicCast<InventorySlotBag>(Unk_NotifyContext::FUN_1422c8e90(strName));
+    InventorySlotBag* pBag = efd::DynamicCast<InventorySlotBag>(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 MS2_REPLACE(0x14140ED60, FUN_14140ed60, 65, 0xE9E644AD);
@@ -2178,14 +2178,14 @@ InventorySlotBag::InventorySlotBag(const CString& strName, int nTab)
     : DragSlotBag(strName), m_nTab(nTab), m_nPendingSlot(-1)
 {
     ((class Unk_ItemEventSystem*)(struct Unk_IsItemEvents*)(((struct Unk_IsItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(this);
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->AddListener(this);
 }
 
 // @0x14140eee0
 InventorySlotBag::~InventorySlotBag()
 {
     ((class Unk_ItemEventSystem*)(struct Unk_IsItemEvents*)(((struct Unk_IsItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(this);
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->RemoveListener(this);
 }
 
 // @0x14140efe0
@@ -2206,7 +2206,7 @@ void InventorySlotBag::vfunc_ugc_2(void* p, CString str)
         return;
     if (IsItemInTab(spItem.get()) == 0)
         return;
-    InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(FUN_1422cd070(spItem->FUN_140526b50()))));
+    InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(GetSlot(spItem->GetSlot()))));
     if (pSlot != 0)
         pSlot->vfunc_10();
 }
@@ -2217,10 +2217,10 @@ void InventorySlotBag::vfunc_2(void* p)
 {
     UIInventoryDialog* pDlg = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pDlg != 0)
-        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->FUN_140c3fe30(2);
+        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->AddFlags(2);
     if (IsItemInTab(static_cast<CItem*>(p)) != 0)
     {
-        InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50()))));
+        InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(GetSlot(static_cast<CItem*>(p)->GetSlot()))));
         if (pSlot != 0)
         {
             pSlot->SetItemUid(static_cast<CItem*>(p)->GetItemUid());
@@ -2235,10 +2235,10 @@ void InventorySlotBag::vfunc_3(void* p, bool b)
 {
     UIInventoryDialog* pDlg = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pDlg != 0)
-        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->FUN_140c3fe30(2);
+        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->AddFlags(2);
     if (IsItemInTab(static_cast<CItem*>(p)) != 0)
     {
-        DragSlot* pSlot = FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50());
+        DragSlot* pSlot = GetSlot(static_cast<CItem*>(p)->GetSlot());
         if (pSlot != 0)
             pSlot->vfunc_11();
     }
@@ -2250,7 +2250,7 @@ void InventorySlotBag::vfunc_4(void* p, int n)
 {
     if (IsItemInTab(static_cast<CItem*>(p)) != 0)
     {
-        InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50()))));
+        InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(GetSlot(static_cast<CItem*>(p)->GetSlot()))));
         if (pSlot != 0)
         {
             pSlot->SetItemUid(static_cast<CItem*>(p)->GetItemUid());
@@ -2265,14 +2265,14 @@ void InventorySlotBag::vfunc_5(void* p, int n)
 {
     UIInventoryDialog* pDlg = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pDlg != 0)
-        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->FUN_140c3fe30(1);
+        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pDlg))->AddFlags(1);
     if (IsItemInTab(static_cast<CItem*>(p)) != 0)
     {
-        InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(FUN_1422cd070(static_cast<CItem*>(p)->FUN_140526b50()))));
+        InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(GetSlot(static_cast<CItem*>(p)->GetSlot()))));
         if (pSlot != 0)
         {
             MS2Ptr<CItem> spCur = g_143ab2a90.FindItemByUid(static_cast<CItem*>(p)->GetItemUid());
-            if (spCur == 0 || spCur->FUN_140526b50() != static_cast<CItem*>(p)->FUN_140526b50())
+            if (spCur == 0 || spCur->GetSlot() != static_cast<CItem*>(p)->GetSlot())
                 return;
             pSlot->SetItemUid(static_cast<CItem*>(p)->GetItemUid());
             pSlot->vfunc_10();
@@ -2288,7 +2288,7 @@ void InventorySlotBag::vfunc_21(void* p)
         return;
     if (m_nPendingSlot < 0)
         return;
-    InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(FUN_1422cd070(m_nPendingSlot))));
+    InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(GetSlot(m_nPendingSlot))));
     if (pSlot != 0)
         pSlot->vfunc_10();
     m_nPendingSlot = -1;
@@ -2303,7 +2303,7 @@ void InventorySlotBag::vfunc_22(void* p)
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(static_cast<CItem*>(p)->GetItemUid());
     if (!spItem)
         return;
-    m_nPendingSlot = spItem->FUN_140526b50();
+    m_nPendingSlot = spItem->GetSlot();
 }
 MS2_REPLACE_METHOD_VIA(0x14140F510, InventorySlotBag, UIItemEventListener, vfunc_22, 154, 0xA639BE3E);
 
@@ -2312,7 +2312,7 @@ void InventorySlotBag::RefreshSlotForItem(CItem* pItem)
 {
     if (IsItemInTab(pItem) == 0)
         return;
-    InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(FUN_1422cd070(pItem->FUN_140526b50()))));
+    InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(GetSlot(pItem->GetSlot()))));
     if (pSlot != 0)
         pSlot->vfunc_10();
 }
@@ -2324,7 +2324,7 @@ int InventorySlotBag::FindSlotBySearch(CStringW strSearch)
     int nResult = -1;
     for (std::pair<const int, CString> entry : m_slots)
     {
-        InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(FUN_1422cd0f0(entry.second))));
+        InvenSlot* pSlot = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(GetSlotByName(entry.second))));
         if (pSlot != 0)
         {
             int nIndex = pSlot->MatchSearchName(strSearch);
@@ -2382,7 +2382,7 @@ static __int64 FindItemUidBySlotIndex(int nIndex, int nTab)
             bItem = true;
         else
             bItem = false;
-        if (bItem && spItem->FUN_140526b50() == nIndex)
+        if (bItem && spItem->GetSlot() == nIndex)
             return spItem->GetItemUid();
     }
     return 0;

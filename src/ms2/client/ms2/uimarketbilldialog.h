@@ -35,32 +35,32 @@ public:
     virtual void vfunc_67();                                        // 67 0x140ea7150 Close: forgets the parameter and the sums
     virtual void vfunc_72();                                        // 72 0x140ea7730 refreshes the fee texts when m_bDirty
 
-    void FUN_140ea7770(MS2Ptr<TMarketBillDataParam> spParam);       // 0x140ea7770 take a new parameter and its fixed sums (the callee releases spParam)
+    void SetParam(MS2Ptr<TMarketBillDataParam> spParam);       // 0x140ea7770 take a new parameter and its fixed sums (the callee releases spParam)
     void FUN_140ea7900();                                           // 0x140ea7900 write the fee / payback texts and grow the movie
-    float FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASTextField> spFeeText, const PaymentMap& mapPay);   // 0x140ea7e70 fill the fee texts; the height they gained
-    float FUN_140ea8ab0(MS2Ptr<ASTextField> spPayback, MS2Ptr<ASTextField> spPaybackText, const PaymentMap& mapPay);   // 0x140ea8ab0 the same for the random payback
+    float FillFeeTexts(MS2Ptr<ASTextField> spFee, MS2Ptr<ASTextField> spFeeText, const PaymentMap& mapPay);   // 0x140ea7e70 fill the fee texts; the height they gained
+    float FillPaybackTexts(MS2Ptr<ASTextField> spPayback, MS2Ptr<ASTextField> spPaybackText, const PaymentMap& mapPay);   // 0x140ea8ab0 the same for the random payback
     MS2Ptr<TMarketBillDataParam> GetParam();                   // 0x140ea8da0 a copy of the parameter
-    void FUN_140ea8df0();                                           // 0x140ea8df0 "initData": hand the bill rows and the texts to the movie
+    void InitData();                                           // 0x140ea8df0 "initData": hand the bill rows and the texts to the movie
     CStringW FUN_140ea9710(int nPayType, __int64 nAmount);          // 0x140ea9710 the amount as text
-    void FUN_140ea9770(int nPayType, __int64 nAmount);              // 0x140ea9770 add to the price of a pay type (and the total)
-    void FUN_140ea9880(int nPayType, __int64 nAmount);              // 0x140ea9880 add to the random payback of a pay type
-    void FUN_140ea9970(int nPayType, __int64 nAmount);              // 0x140ea9970 add to the payback of a pay type
-    bool FUN_140ea9a70();                                           // 0x140ea9a70 a row is a UGC map package
-    bool FUN_140ea9c30(const int& nItemType);                       // 0x140ea9c30 a row is an item of the type
+    void AddPrice(int nPayType, __int64 nAmount);              // 0x140ea9770 add to the price of a pay type (and the total)
+    void AddRandomPayback(int nPayType, __int64 nAmount);              // 0x140ea9880 add to the random payback of a pay type
+    void AddPayback(int nPayType, __int64 nAmount);              // 0x140ea9970 add to the payback of a pay type
+    bool HasUgcMapPackage();                                           // 0x140ea9a70 a row is a UGC map package
+    bool HasItemType(const int& nItemType);                       // 0x140ea9c30 a row is an item of the type
     bool FUN_140ea9df0();                                           // 0x140ea9df0 a row is a locked item
-    void FUN_140ea9fc0();                                           // 0x140ea9fc0 "onClickBuy" in the basket mode
-    void FUN_140eaa0b0(const char* szMethod);                       // 0x140eaa0b0 "onClickBuy"
-    void FUN_140eaa1e0(const char* szMethod, ASData* pData);        // 0x140eaa1e0 "onClickGiftOk"
-    void FUN_140eaa5e0(ASData* pData);                              // 0x140eaa5e0 "onUpdateTotalPrice"
-    void FUN_140eaa860(ASData* pData);                              // 0x140eaa860 "onChangeMode"
-    void FUN_140eaa8d0();                                           // 0x140eaa8d0 rebuild the sums from the rows
+    void Cancel();                                           // 0x140ea9fc0 "onClickBuy" in the basket mode
+    void OnClickBuy(const char* szMethod);                       // 0x140eaa0b0 "onClickBuy"
+    void OnClickGiftOk(const char* szMethod, ASData* pData);        // 0x140eaa1e0 "onClickGiftOk"
+    void OnUpdateTotalPrice(ASData* pData);                              // 0x140eaa5e0 "onUpdateTotalPrice"
+    void OnChangeMode(ASData* pData);                              // 0x140eaa860 "onChangeMode"
+    void RebuildSums();                                           // 0x140eaa8d0 rebuild the sums from the rows
     void SetMode(int nMode);                                  // 0x140eaac30 m_nMode = nMode
-    CString FUN_140eaac50(int nMode);                               // 0x140eaac50 the mode as the movie names it
+    CString GetModeName(int nMode);                               // 0x140eaac50 the mode as the movie names it
     bool FUN_140eaad30(bool* pbClose);                              // 0x140eaad30 ask before the buy (blueprint / UGC warnings)
     bool FUN_140eab330(bool* pbClose, const CStringW& strName, const CStringW& strMessage);   // 0x140eab330 ask before the gift
     bool FUN_140eab6b0(int nButton, const CMsgBoxData& box);        // 0x140eab6b0 the answer of the buy warning
     bool FUN_140eab7b0(int nButton, const CMsgBoxData& box);        // 0x140eab7b0 the answer of the gift question
-    int FUN_140eacad0() { return m_nMode; }                         // 0x140eacad0
+    int GetMode() { return m_nMode; }                         // 0x140eacad0
 
 private:
     MS2_LAYOUT_FRIEND;

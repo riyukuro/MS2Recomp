@@ -3,7 +3,7 @@
 #            data/fullexe/plain, linked into MapleStory2.exe. It never reads the original exe.
 #   MS2_EXE_BUILD=ON (preset "fullexe", maintainers): the exe-reading build (cmake/fullexe), which also checks the objs
 #            against the original exe (MS2_EXE).
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.21)
 project(ms2 NONE)
 
 # A build dir that an exe-reading configure made (it has MS2_CACHE_TAG) stays one when cmake re-runs there by itself;

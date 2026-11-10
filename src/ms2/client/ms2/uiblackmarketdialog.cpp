@@ -50,7 +50,7 @@ typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ParamsDel
 //
 //
 //
-CBlackMarketTable* FUN_1401c0d80();
+CBlackMarketTable* GetBlackMarketTable();
 class UITalkManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -63,7 +63,7 @@ struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_LocalPlayer : public PCBase { };
 class Unk_WorldSvc { public: Unk_LocalPlayer* FUN_141bd0cc0(); };
 CStringW GetStringCommonByKey(const CStringW& str);
-void FUN_1412751f0(const CStringW& str, int a, int b);
+void ShowSystemNotice(const CStringW& str, int a, int b);
 extern Unk_Inventory g_143ab2a90;
 void FUN_141275260(int nId, int a, int b);
 Unk_140166410*FUN_140166410();
@@ -100,7 +100,7 @@ UIBlackMarketDialog::UIBlackMarketDialog()
     m_pages.push_back(m_spMesoSearch.get());
     m_pages.push_back(m_spMesoRegister.get());
     m_pages.push_back(m_spMesoSearchSingle.get());
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     FUN_1422dc3b0(1);
     m_164 = 1;
     m_pCurPage = 0;
@@ -120,7 +120,7 @@ CString UIBlackMarketDialog::GetTypeName()
 // @0x1418cf620
 int UIBlackMarketDialog::vfunc_65()
 {
-    FUN_1401c0d80()->Load();
+    GetBlackMarketTable()->Load();
     if (UIDialog::vfunc_65())
     {
         TSingleton<CBlackMarketMan>::GetInstance()->SendBlackMarketMode1();
@@ -160,7 +160,7 @@ int UIBlackMarketDialog::vfunc_73()
     if (pPlayer && pPlayer->IsDead() != 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
-        FUN_1412751f0(strMsg, 1, 1);
+        ShowSystemNotice(strMsg, 1, 1);
         return 0;
     }
     return UIDialog::vfunc_73();
@@ -174,7 +174,7 @@ void UIBlackMarketDialog::vfunc_72()
     if (pPlayer && pPlayer->IsDead() != 0 && m_68 == 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_blackmarket_error_not_useable_by_dead");
-        FUN_1412751f0(strMsg, 1, 1);
+        ShowSystemNotice(strMsg, 1, 1);
         vfunc_67();
     }
 }
@@ -193,9 +193,9 @@ void UIBlackMarketDialog::vfunc_79(void* p)
             c = nSecond;
         }
         if (m_spItemRegister.get())
-            m_spItemRegister->FUN_140f133b0(c);
+            m_spItemRegister->OnReplyReceived(c);
         if (m_spItemSearch.get())
-            m_spItemSearch->FUN_140f0dfe0(c);
+            m_spItemSearch->OnReplyReceived(c);
     }
 }
 
@@ -206,8 +206,8 @@ int UIBlackMarketDialog::vfunc_74(int nMsg, void* p2, void* p3)
         return 0;
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) || m_spItemSearch == 0)
         return 0;
-    if (FUN_1418d0da0(m_spItemSearch.get()))
-        m_spItemSearch->FUN_140f0d630(nMsg, p2, p3);
+    if (IsCurrentPage(m_spItemSearch.get()))
+        m_spItemSearch->UpdateNameCandidates(nMsg, p2, p3);
     return 0;
 }
 
@@ -224,22 +224,22 @@ void UIBlackMarketDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
-    if (!reinterpret_cast<CFeatureManager *>(FUN_140166410())->FUN_14036d570(0x15))
+    if (!reinterpret_cast<CFeatureManager *>(FUN_140166410())->IsFeatureEnabled(0x15))
         FUN_140cff840((*m_30).FUN_1422bb890(), "m_radioMeso", 0);
-    if (reinterpret_cast<CFeatureManager *>(FUN_140166410())->FUN_14036d570(0xf4))
+    if (reinterpret_cast<CFeatureManager *>(FUN_140166410())->IsFeatureEnabled(0xf4))
     {
         m_30->Invoke("SetIsSingleRangeMesoMarketProductUnit", reinterpret_cast<Common::Constants::Values<__int64>*>(&reinterpret_cast<Unk_Cfg*>(GetClientConstants())->m_6078)->FUN_140f20b90() == 1);
         m_30->FUN_140bbe640<ASButton>("m_mesoMarketDetailButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton));
         if (m_spDetailButton.get())
-            reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton)->FUN_1422ce240(ParamsDelegate(this, &UIBlackMarketDialog::FUN_1418d1430), 0);
+            reinterpret_cast<MS2Ptr<ASButton>&>(m_spDetailButton)->FUN_1422ce240(ParamsDelegate(this, &UIBlackMarketDialog::OnDetailButtonClick), 0);
     }
     for (size_t i = 0; i < m_pages.size(); i++)
     {
         BlackMarketPage* pPage = m_pages[i];
         if (pPage == 0)
             continue;
-        pPage->FUN_140f0c150(m_30);
-        pPage->FUN_140f0c1a0(m_28);
+        pPage->SetRoot(m_30);
+        pPage->SetMovieId(m_28);
         pPage->OnInit();
     }
     m_30->Invoke("initData");
@@ -278,9 +278,9 @@ int UIBlackMarketDialog::vfunc_13()
     if (vfunc_55() == 0 && (m_30.get() ? true : false) && GetUISwfEntityManager()->GetTopEntity(m_e0) == this)
     {
         CString strKey = "";
-        if (((class Unk_GmKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
+        if (((class Unk_GmKeys*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
             strKey = "onEnterKey";
-        else if (((class Unk_GmKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
+        else if (((class Unk_GmKeys*)FUN_14025e7c0())->WasKeyPressed(0xf, 0, 0))
             strKey = "onTabKey";
         if (!strKey.IsEmpty())
         {
@@ -306,7 +306,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
             if (tip.FUN_1409e0d40(spItem.get()))
             {
                 tip.SetEnablePreview(spItem);
-                *pRetVal = tip.FUN_1422bb870();
+                *pRetVal = tip.GetValue();
             }
         }
     }
@@ -317,7 +317,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
         if (spEntry.get())
         {
             MS2Ptr<CItem> spItem = spEntry->m_item;
-            FUN_1413490b0(spItem, pRetVal, FUN_1418d0da0(m_spItemSearch.get()), 0x400, 0);
+            FUN_1413490b0(spItem, pRetVal, IsCurrentPage(m_spItemSearch.get()), 0x400, 0);
             ASTooltip tip(*pRetVal, 2);
             if (!tip.IsUndefinedOrNull())
                 tip.SetEnablePreviewBoth(MS2Ptr<CItem>(0), spItem);
@@ -370,7 +370,7 @@ void UIBlackMarketDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString
 }
 
 // @0x1418d0b60
-void UIBlackMarketDialog::FUN_1418d0b60(int nA, int nB, void* p)
+void UIBlackMarketDialog::OnItemSearchNotice(int nA, int nB, void* p)
 {
     if (vfunc_55() != 0 || m_spItemSearch == 0)
         return;
@@ -378,7 +378,7 @@ void UIBlackMarketDialog::FUN_1418d0b60(int nA, int nB, void* p)
 }
 
 // @0x1418d0be0
-bool UIBlackMarketDialog::FUN_1418d0be0()
+bool UIBlackMarketDialog::IsRegisterPageSelected()
 {
     if (m_pCurPage != m_spItemRegister.get())
         return false;
@@ -393,21 +393,21 @@ void UIBlackMarketDialog::FUN_1418d0c20(int nIndex)
     m_pCurPage = m_pages[nIndex];
     if (m_pCurPage)
         m_pCurPage->vfunc_3();
-    if (reinterpret_cast<CFeatureManager *>(FUN_140166410())->FUN_14036d570(0xf4))
+    if (reinterpret_cast<CFeatureManager *>(FUN_140166410())->IsFeatureEnabled(0xf4))
     {
-        if (FUN_1418d0da0(m_spMesoRegister.get()) || FUN_1418d0da0(m_spMesoSearch.get()) || FUN_1418d0da0(m_spMesoSearchSingle.get()))
+        if (IsCurrentPage(m_spMesoRegister.get()) || IsCurrentPage(m_spMesoSearch.get()) || IsCurrentPage(m_spMesoSearchSingle.get()))
             FUN_140cff840(FUN_1422dbc00(), "m_mesoMarketDetailButton", 1);
     }
 }
 
 // @0x1418d0da0
-bool UIBlackMarketDialog::FUN_1418d0da0(BlackMarketPage* pPage)
+bool UIBlackMarketDialog::IsCurrentPage(BlackMarketPage* pPage)
 {
     return m_pCurPage == pPage;
 }
 
 // @0x1418d0de0
-void UIBlackMarketDialog::FUN_1418d0de0(void* p)
+void UIBlackMarketDialog::BuildOwnerItemList(void* p)
 {
     if (m_spItemRegister == 0)
         return;
@@ -449,14 +449,14 @@ void UIBlackMarketDialog::FUN_1418d1080(MS2Ptr<Unk_BlackMarketEntry> spEntry, in
     {
         MS2Ptr<CItem> spItem = spEntry->m_item;
         MS2Ptr<CItem> spNew = new CItem();
-        static_cast<CItem*>(spNew)->InitWithCount(((class CItem*)(class CItem*)(spItem))->FUN_1405276c0(), ((class CItem*)(class CItem*)(spItem))->GetRarity(), 0, n);
+        static_cast<CItem*>(spNew)->InitWithCount(((class CItem*)(class CItem*)(spItem))->GetItemId(), ((class CItem*)(class CItem*)(spItem))->GetRarity(), 0, n);
         FUN_141349ae0(spNew, 0x945, "");
-        m_spItemSearch->FUN_140f0db00(spEntry, (int)spEntry->GetState(false));
+        m_spItemSearch->UpdateItem(spEntry, (int)spEntry->GetState(false));
     }
 }
 
 // @0x1418d1330
-void UIBlackMarketDialog::FUN_1418d1330(int nA, int nB, void* p)
+void UIBlackMarketDialog::BuildItemList(int nA, int nB, void* p)
 {
     if (m_spItemSearch == 0)
         return;
@@ -472,9 +472,9 @@ void UIBlackMarketDialog::FUN_1418d13a0(int nA, int nB, void* p)
 }
 
 // @0x1418d1430
-void UIBlackMarketDialog::FUN_1418d1430(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIBlackMarketDialog::OnDetailButtonClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (!FUN_1418d0da0(m_spMesoSearchSingle.get()) && !FUN_1418d0da0(m_spMesoRegister.get()))
+    if (!IsCurrentPage(m_spMesoSearchSingle.get()) && !IsCurrentPage(m_spMesoRegister.get()))
         return;
     const CString& strUrl = reinterpret_cast<Unk_Cfg*>(GetClientConstants())->m_6198.operator CString();
     if (strUrl.IsEmpty() == true)

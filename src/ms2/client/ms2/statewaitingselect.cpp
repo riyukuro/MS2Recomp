@@ -104,7 +104,7 @@ void StateWaitingSelect::vfunc_2(int n)
         }
         break;
     case 0x50:
-        FUN_1417ff590(&n, "Equip_Change_Hair_A");
+        PlayPartChangeAnimation(&n, "Equip_Change_Hair_A");
         break;
     case 0x54:
         m_n10 = n;
@@ -208,7 +208,7 @@ void StateWaitingSelect::EndOfSequence(NiActorManager* pkManager, unsigned int e
 }
 
 // @0x1417ff590
-void StateWaitingSelect::FUN_1417ff590(int* pnSub, const CString& strAnim)
+void StateWaitingSelect::PlayPartChangeAnimation(int* pnSub, const CString& strAnim)
 {
     if (m_n10 != *pnSub)
     {

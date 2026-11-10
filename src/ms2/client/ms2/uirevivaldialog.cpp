@@ -79,7 +79,7 @@ MS2_CHECK_OFFSET(Unk_RevConsts, m_cfe0, 0xcfe0);
 class Unk_BmPriceMgr;
 class Unk_140166410;
 Unk_BmPriceMgr* FUN_1401c0db0();
-void* FUN_1401c0d90();
+void* GetGameRule();
 Unk_140166410* FUN_140166410();
 template <typename A, typename B> CStringW FUN_14028dee0(int nId, const A& a, const B& b);
 
@@ -138,10 +138,10 @@ CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1409404f0(__int64 n);
 CStringW FUN_140cd7d20();                                       // the dungeon name
 void FUN_141275260(int nId, int a, int b);                      // system message by string id
-void FUN_1412751f0(const CStringW& str, int a, int b);          // system message
+void ShowSystemNotice(const CStringW& str, int a, int b);          // system message
 __int64 FUN_140632990(__int64 nValue, float fRate);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 typedef Delegate<bool(int, const CMsgBoxData&)> RevAnswerDelegate;
@@ -160,7 +160,7 @@ UIRevivalDialog::UIRevivalDialog() : m_180(0)
     m_1a0 = 0;
     m_1a4 = 0;
     m_1b0 = 0;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x141aba7b0
@@ -179,8 +179,8 @@ void UIRevivalDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_178 = -1;
-    FUN_141abb420();
-    FUN_141abae20();
+    UpdateButtons();
+    SetDeathMessage();
     GetClientPlatform()->vfunc_43(0xe, 0, 1000);
 }
 
@@ -318,7 +318,7 @@ bool UIRevivalDialog::SendRevivalMode0(int nResult, const CMsgBoxData& box)
 }
 
 // @0x141abae20
-void UIRevivalDialog::FUN_141abae20()
+void UIRevivalDialog::SetDeathMessage()
 {
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -372,7 +372,7 @@ void UIRevivalDialog::FUN_141abae20()
 }
 
 // @0x141abb420
-void UIRevivalDialog::FUN_141abb420()
+void UIRevivalDialog::UpdateButtons()
 {
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -380,7 +380,7 @@ void UIRevivalDialog::FUN_141abb420()
     MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (spEntity == 0)
         return;
-    reinterpret_cast<Unk_RsScript*>(spEntity.operator->())->FUN_14129cce0("setButtonLabel", 1, FUN_141abd790());
+    reinterpret_cast<Unk_RsScript*>(spEntity.operator->())->FUN_14129cce0("setButtonLabel", 1, GetFirstButtonLabel());
     FUN_141abcb90();
     if (m_1b4 == 0)
         static_cast<Unk_RevEntity*>(spEntity.operator->())->vfunc_13("btn1");
@@ -398,7 +398,7 @@ void UIRevivalDialog::FUN_141abb600()
         if (spField == 0)
             return;
         CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_room_exit_msg_default_revival_limit_dungeon"), FUN_140cd7d20());
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strMsg, static_cast<IMessageListener*>(this), CStringW(L"leaveInField"));
+        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0, strMsg, static_cast<IMessageListener*>(this), CStringW(L"leaveInField"));
         if (spBox.get() != 0)
         {
             spBox->SetButtonLabelIds(0x476, 0, 0);
@@ -440,7 +440,7 @@ void UIRevivalDialog::FUN_141abbb20()
         return;
     if (FUN_141abdab0(spField) == 0)
         return;
-    FUN_141abccb0();
+    RefreshMeratButton();
     int bHasCoupon = 0;
     int nCanPay = FUN_141abcb10(m_190);
     int nCoupon = FUN_141abc9d0();
@@ -495,7 +495,7 @@ void UIRevivalDialog::FUN_141abc080()
         return;
     if (FUN_141abdab0(spField) == 0)
         return;
-    FUN_141abd290();
+    RefreshMesoButton();
     int bHasCoupon = 0;
     int nCoupon = FUN_141abc9d0();
     if (nCoupon != 0)
@@ -553,7 +553,7 @@ int UIRevivalDialog::FUN_141abc770()
     MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField.IsNull() != 0)
         return 0;
-    return spField->FUN_1403754f0();
+    return spField->GetShadowContinent();
 }
 
 // @0x141abc7f0
@@ -563,7 +563,7 @@ int UIRevivalDialog::FUN_141abc7f0()
     if (pPc == 0)
         return 0;
     int nResult = 0;
-    if (((CGameRule*)FUN_1401c0d90())->FUN_140477d10(pPc->FUN_141658f30()) == 1)
+    if (((CGameRule*)GetGameRule())->FUN_140477d10(pPc->FUN_141658f30()) == 1)
         nResult = 1;
     else if ((unsigned int)pPc->GetMesoRevivalRemainingCount() > 0)
         nResult = 1;
@@ -571,7 +571,7 @@ int UIRevivalDialog::FUN_141abc7f0()
     {
         do
         {
-            if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x5d) == 0)
+            if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x5d) == 0)
                 break;
             int nRoom = DAT_143ab2884;
             if (nRoom == 0)
@@ -609,9 +609,9 @@ int UIRevivalDialog::FUN_141abc9d0()
     MS2Ptr<ASCheckBox> spCoupon = GetChild<ASCheckBox>("m_coupon");
     if (spCoupon == 0)
         return 0;
-    if (spCoupon->FUN_1422c2030() == 0)
+    if (spCoupon->IsEnabled() == 0)
         return 0;
-    return spCoupon->FUN_1422ce0e0();
+    return spCoupon->IsSelected();
 }
 
 // @0x141abcad0
@@ -667,17 +667,17 @@ void UIRevivalDialog::FUN_141abcc50()
     switch (m_1b4)
     {
     case 1:
-        FUN_141abccb0();
+        RefreshMeratButton();
         break;
     case 2:
-        FUN_141abd290();
+        RefreshMesoButton();
         break;
     }
     FUN_141abd640();
 }
 
 // @0x141abccb0
-void UIRevivalDialog::FUN_141abccb0()
+void UIRevivalDialog::RefreshMeratButton()
 {
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -690,7 +690,7 @@ void UIRevivalDialog::FUN_141abccb0()
     nCost = nCost < 0 ? 0 : nCost;
     if (m_190 != nCost)
     {
-        FUN_141abae20();
+        SetDeathMessage();
         CStringW strLabel;
         if (FUN_141abc740() != 0)
             strLabel = FUN_14028dfa0<CStringW>(L"s_msg_revival_merat_btn_cn", FUN_1409404f0(nCost));
@@ -712,13 +712,13 @@ void UIRevivalDialog::FUN_141abccb0()
 }
 
 // @0x141abd290
-void UIRevivalDialog::FUN_141abd290()
+void UIRevivalDialog::RefreshMesoButton()
 {
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     int nA = pPc->GetMesoRevivalRemainingCount();
-    int nB = ((CGameRule*)FUN_1401c0d90())->FUN_140477d10(pPc->FUN_141658f30());
+    int nB = ((CGameRule*)GetGameRule())->FUN_140477d10(pPc->FUN_141658f30());
     __int64 nCost = ((CLua*)FUN_1401c0db0())->CalcRevivalMeso(pPc->vfunc_78(), nA, nB);
     float fRate = reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_90f8 < reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0xa4)
         ? reinterpret_cast<Unk_RevConsts*>(GetClientConstants())->m_90f8 : reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPc)->GetEquipment())->GetAbilityRate((SAType)0xa4);
@@ -726,7 +726,7 @@ void UIRevivalDialog::FUN_141abd290()
     nCost = nCost < 0 ? 0 : nCost;
     if (CFieldData::FUN_140374410(WorldService::GetInstance()->FUN_141bd3060()) != 0)
         nCost = 0;
-    FUN_141abae20();
+    SetDeathMessage();
     CStringW strLabel;
     if (nB != 0)
     {
@@ -754,21 +754,21 @@ void UIRevivalDialog::FUN_141abd640()
     MS2Ptr<CItem> hItem = g_143ab2a90.FindItemByTag(4);
     if (m_1b4 != 0 && hItem.get() != 0)
     {
-        if (spCoupon->FUN_1422c2030() == 0)
+        if (spCoupon->IsEnabled() == 0)
         {
-            spCoupon->FUN_1422ce090(1);
-            spCoupon->FUN_1422c1fe0(1);
+            spCoupon->SetSelected(1);
+            spCoupon->SetEnabled(1);
         }
     }
     else
     {
-        spCoupon->FUN_1422ce090(0);
-        spCoupon->FUN_1422c1fe0(0);
+        spCoupon->SetSelected(0);
+        spCoupon->SetEnabled(0);
     }
 }
 
 // @0x141abd790
-CStringW UIRevivalDialog::FUN_141abd790()
+CStringW UIRevivalDialog::GetFirstButtonLabel()
 {
     m_1b0 = 0;
     CStringW strLabel = GetStringCommon(0x27e);
@@ -812,7 +812,7 @@ int UIRevivalDialog::FUN_141abdab0(MS2Ptr<CFieldDataCli> spField)
         return 0;
     if (pPc->FUN_1416749a0()->IsDisableRevivalHere() != 0)
     {
-        FUN_1412751f0(GetStringCommonByKey(L"s_msg_revival_merat_cannot_here_debuff"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_msg_revival_merat_cannot_here_debuff"), 1, 1);
         return 0;
     }
     return 1;

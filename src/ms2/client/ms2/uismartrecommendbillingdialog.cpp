@@ -54,7 +54,7 @@ class Unk_RecommendCache
 {
 public:
     // @0x14134e430
-    static Unk_RecommendCache* FUN_14134e430();
+    static Unk_RecommendCache* GetSmartRecommendShopTable();
 };
 class CSmartRecommendShopTable;
 
@@ -93,7 +93,7 @@ extern Unk_Inventory g_143ab2a90;
 extern __int64 DAT_143ab2898;
 
 // @0x14134e430
-Unk_RecommendCache* Unk_RecommendCache::FUN_14134e430()
+Unk_RecommendCache* Unk_RecommendCache::GetSmartRecommendShopTable()
 {
     return reinterpret_cast<Unk_RecommendCache*>(TSingleton<CSmartRecommendShopTable>::s_instance);
 }
@@ -154,7 +154,7 @@ void UISmartRecommendBillingDialog::vfunc_79(void* p)
             UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
             if (pNotify != 0)
                 pNotify->FUN_141abf6e0(m_item->m_nItemId, m_item->m_nItemRank);
-            if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e9e) == 0)
+            if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e9e) == 0)
                 TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e9e);
             UIDialog::vfunc_67();
         }
@@ -268,7 +268,7 @@ UISmartRecommendNotifyDialog::UISmartRecommendNotifyDialog()
     m_2c = 0x19;
     m_item = 0;
     m_nCloseTick = 0;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x14134d830
@@ -318,7 +318,7 @@ int UISmartRecommendNotifyDialog::vfunc_13()
 
 // The billing dialog by id.
 // @0x14134e160
-static UISmartRecommendBillingDialog* FUN_14134e160(int nUiId)
+static UISmartRecommendBillingDialog* FindSmartRecommendBillingDialog(int nUiId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
@@ -336,10 +336,10 @@ int UISmartRecommendNotifyDialog::vfunc_28(const char* szMethod, const Scaleform
         return 1;
     if (_stricmp(szMethod, "OnBuy") == 0)
     {
-        UISmartRecommendBillingDialog* pBilling = FUN_14134e160(0x4e9f);
+        UISmartRecommendBillingDialog* pBilling = FindSmartRecommendBillingDialog(0x4e9f);
         if (pBilling != 0)
             pBilling->SetItem(m_item);
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e9f) == 0)
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e9f) == 0)
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e9f);
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e9f)));
         if (m_item.get() != 0)
@@ -374,9 +374,9 @@ void UISmartRecommendNotifyDialog::vfunc_72()
 }
 
 // @0x14134dc50
-void UISmartRecommendNotifyDialog::FUN_14134dc50(int nRecommendId)
+void UISmartRecommendNotifyDialog::SetRecommendItem(int nRecommendId)
 {
-    m_item = reinterpret_cast<CSmartRecommendShopTable*>(Unk_RecommendCache::FUN_14134e430())->FUN_140815890(nRecommendId);
+    m_item = reinterpret_cast<CSmartRecommendShopTable*>(Unk_RecommendCache::GetSmartRecommendShopTable())->FUN_140815890(nRecommendId);
 }
 
 // @0x14134dcc0

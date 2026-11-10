@@ -34,7 +34,7 @@ class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 class Unk_DiLog { public: };
 class CLogString* GetLogString();   // C3: was FUN_140166440
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
 extern int DAT_1439ed00c;                                                     // the table cache is enabled
 
 // The id -> row cache and its lock (the exe constructs them in .text$di, the map first).
@@ -62,9 +62,9 @@ MS2Ptr<CDropItemData> CDropItemData::Get(int nId)
         else if (DAT_1439ed00c != 0 && s_mapDropItem.Lookup(nId, spData))
             return spData;
     }
-    CString strPath = FUN_14071a5b0("Table", "DropIcon.xml");
+    CString strPath = GetXmlPath("Table", "DropIcon.xml");
     TiXmlDocument doc;
-    if (((class Unk_DiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_DiLoader*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return MS2Ptr<CDropItemData>(0);
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)

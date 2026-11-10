@@ -69,11 +69,11 @@ void UISwfEntity::vfunc_3()
 MS2_REPLACE_METHOD(0x1422DB6D0, UISwfEntity, vfunc_3, 6, 0xA9AF6E37);
 
 // @0x1422db6e0
-CString UISwfEntity::FUN_1422db6e0()
+CString UISwfEntity::GetManagerKey()
 {
     return m_20;
 }
-MS2_REPLACE_METHOD(0x1422DB6E0, UISwfEntity, FUN_1422db6e0, 66, 0x851538D8);
+MS2_REPLACE_METHOD(0x1422DB6E0, UISwfEntity, GetManagerKey, 66, 0x851538D8);
 
 // @0x1422db730
 int UISwfEntity::FUN_1422db730()
@@ -97,7 +97,7 @@ int UISwfEntity::FUN_1422db770()
 MS2_REPLACE_METHOD(0x1422DB770, UISwfEntity, FUN_1422db770, 14, 0x7A15C443);
 
 // @0x1422db790
-CString UISwfEntity::FUN_1422db790()
+CString UISwfEntity::GetSwfFileName()
 {
     CString strName = vfunc_7();
     if (!s_swfNameDelegate.IsNull())
@@ -115,7 +115,7 @@ CString UISwfEntity::FUN_1422db790()
 CString UISwfEntity::FUN_1422db910(void* p)
 {
     CString strPath;
-    if (SingletonClass<UniqueSwfIDCreator>::GetInstance()->FUN_1422f6d50(strPath, FUN_1422db6e0(), *static_cast<const CString*>(p)))
+    if (SingletonClass<UniqueSwfIDCreator>::GetInstance()->FUN_1422f6d50(strPath, GetManagerKey(), *static_cast<const CString*>(p)))
         return strPath;
     return s_strNoPath;
 }
@@ -164,19 +164,19 @@ CString UISwfEntity::vfunc_7()
 MS2_REPLACE_METHOD(0x1422DBAF0, UISwfEntity, vfunc_7, 64, 0xA54AF9CB);
 
 // @0x1422dbb40
-const Scaleform::GFx::Value& UISwfEntity::FUN_1422dbb40()
+const Scaleform::GFx::Value& UISwfEntity::GetGFxValue()
 {
     static Scaleform::GFx::Value s_undefined;   // 0x143b0d308
     if (m_30 == NULL)
         return s_undefined;
-    return m_30->FUN_1422bb870();
+    return m_30->GetValue();
 }
-MS2_REPLACE_METHOD(0x1422DBB40, UISwfEntity, FUN_1422dbb40, 178, 0x0407E03B);
+MS2_REPLACE_METHOD(0x1422DBB40, UISwfEntity, GetGFxValue, 178, 0x0407E03B);
 
 // @0x1422dbc00
 const Scaleform::GFx::Value& UISwfEntity::FUN_1422dbc00()
 {
-    return FUN_1422dbb40();
+    return GetGFxValue();
 }
 MS2_REPLACE_METHOD(0x1422DBC00, UISwfEntity, FUN_1422dbc00, 24, 0xEBEE8B26);
 
@@ -200,23 +200,23 @@ int UISwfEntity::vfunc_9()
 MS2_REPLACE_METHOD(0x1422DBCC0, UISwfEntity, vfunc_9, 164, 0x6E48A992);
 
 // @0x1422dbd70
-void UISwfEntity::FUN_1422dbd70(int a1, int a2)
+void UISwfEntity::PreloadSwf(int a1, int a2)
 {
     if (GetUISwfEntityManager()) {
-        if (m_20 == s_strNoKey && !FUN_1422db790().IsEmpty()) {
+        if (m_20 == s_strNoKey && !GetSwfFileName().IsEmpty()) {
             m_2c = a1;
-            GetUISwfEntityManager()->PreloadSwf(m_28, m_20, FUN_1422db790(), a1, a2);
+            GetUISwfEntityManager()->PreloadSwf(m_28, m_20, GetSwfFileName(), a1, a2);
         }
     }
 }
-MS2_REPLACE_METHOD(0x1422DBD70, UISwfEntity, FUN_1422dbd70, 383, 0x70BEFCBE);
+MS2_REPLACE_METHOD(0x1422DBD70, UISwfEntity, PreloadSwf, 383, 0x70BEFCBE);
 
 // @0x1422dbf00
-void UISwfEntity::FUN_1422dbf00(int a1, int a2, int a3)
+void UISwfEntity::LoadSwf(int a1, int a2, int a3)
 {
-    FUN_1422dbf80(FUN_1422db790(), a1, a2, a3);
+    FUN_1422dbf80(GetSwfFileName(), a1, a2, a3);
 }
-MS2_REPLACE_METHOD(0x1422DBF00, UISwfEntity, FUN_1422dbf00, 112, 0x1885C4E6);
+MS2_REPLACE_METHOD(0x1422DBF00, UISwfEntity, LoadSwf, 112, 0x1885C4E6);
 
 // @0x1422dbf80
 void UISwfEntity::FUN_1422dbf80(const CString& strPath, int a1, int a2, int a3)
@@ -224,7 +224,7 @@ void UISwfEntity::FUN_1422dbf80(const CString& strPath, int a1, int a2, int a3)
     if (GetUISwfEntityManager() && m_20 == s_strNoKey && !strPath.IsEmpty()) {
         m_44 = a2;
         m_2c = a1;
-        GetUISwfEntityManager()->FUN_1422d1320(m_28, m_20, strPath, a1, a2, a3, this);
+        GetUISwfEntityManager()->LoadSwf(m_28, m_20, strPath, a1, a2, a3, this);
     }
 }
 MS2_REPLACE_METHOD(0x1422DBF80, UISwfEntity, FUN_1422dbf80, 243, 0x45190D1E);
@@ -242,7 +242,7 @@ void UISwfEntity::FUN_1422dc0b0()
 {
     vfunc_26();
     if (GetUISwfEntityManager())
-        m_20 = GetUISwfEntityManager()->FUN_1422d17a0(m_28, m_20, m_2c);
+        m_20 = GetUISwfEntityManager()->UnloadSwf(m_28, m_20, m_2c);
     vfunc_27();
     m_30 = 0;
     m_4c = 0;
@@ -251,18 +251,18 @@ void UISwfEntity::FUN_1422dc0b0()
 MS2_REPLACE_METHOD(0x1422DC0B0, UISwfEntity, FUN_1422dc0b0, 294, 0x77CAFA8D);
 
 // @0x1422dc1e0
-void UISwfEntity::FUN_1422dc1e0()
+void UISwfEntity::Reload()
 {
     if (FUN_1422dc310()) {
         int n = m_44;
         m_44 = 0;
         FUN_1422dc080();
-        FUN_1422dbf00(m_2c, 0, 0);
+        LoadSwf(m_2c, 0, 0);
         m_44 = n;
         vfunc_40();
     }
 }
-MS2_REPLACE_METHOD(0x1422DC1E0, UISwfEntity, FUN_1422dc1e0, 117, 0xAA232E42);
+MS2_REPLACE_METHOD(0x1422DC1E0, UISwfEntity, Reload, 117, 0xAA232E42);
 
 // @0x1422dc260
 void UISwfEntity::FUN_1422dc260(int n)
@@ -295,7 +295,7 @@ MS2_REPLACE_METHOD(0x1422DC2F0, UISwfEntity, FUN_1422dc2f0, 22, 0x55CC0123);
 // @0x1422dc310
 int UISwfEntity::FUN_1422dc310()
 {
-    if (FUN_1422db6e0() != s_strNoKey)
+    if (GetManagerKey() != s_strNoKey)
         return m_50;
     return 0;
 }
@@ -346,8 +346,8 @@ MS2_REPLACE_METHOD(0x1422DC430, UISwfEntity, FUN_1422dc430, 14, 0x5A3CA153);
 // @0x1422dc450
 void UISwfEntity::FUN_1422dc450()
 {
-    if (FUN_140e45740()->FUN_1422e6bf0(this, 0))
-        FUN_140e45740()->FUN_1422e6d00(0);
+    if (FUN_140e45740()->HasWidgetForEntity(this, 0))
+        FUN_140e45740()->RequestLayout(0);
     else
         vfunc_43();
     if (m_30.get())
@@ -418,8 +418,8 @@ MS2_REPLACE_METHOD(0x1422DC550, UISwfEntity, vfunc_18, 40, 0x17E87EC1);
 void UISwfEntity::vfunc_19()
 {
     m_60 = 1;
-    if (FUN_140e45740()->FUN_1422e6bf0(this, 1))
-        FUN_140e45740()->FUN_1422e6d00(1);
+    if (FUN_140e45740()->HasWidgetForEntity(this, 1))
+        FUN_140e45740()->RequestLayout(1);
     else
         vfunc_43();
     if (m_30.get())
@@ -589,7 +589,7 @@ void UISwfEntity::vfunc_44(int a1, int a2, int a3, int* pWidth, int* pHeight)
     MS2Ptr<ASDisplayObject> pRoot = FUN_1422dba50();
     if (pRoot.get()) {
         pRoot->vfunc_2(a1, a2, a3);
-        *pWidth = pRoot->FUN_1422c1340();
+        *pWidth = pRoot->GetWidthCeil();
         *pHeight = pRoot->GetHeightCeil();
     }
 }

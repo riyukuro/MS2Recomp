@@ -40,8 +40,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_140
 
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
+CString ToCString(const char* pszName, int nFlags);                 // undecorated class name
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 __int64 GetServerTime();                                                // the server time
@@ -98,11 +98,11 @@ int CItemEnchantTransformTable::LoadItemEnchantTransform()
 {
     m_map.RemoveAll();
     m_mapLimit.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "ItemEnchantTransform.xml");
+    CString strPath = GetXmlPath("Table", "ItemEnchantTransform.xml");
     m_spCache.AssignRaw(new CCacheData);
-    m_spCache->FUN_1401d1160(CString(strPath));
+    m_spCache->SetPath(CString(strPath));
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
@@ -202,13 +202,13 @@ int CItemEnchantTransformTable::FUN_140592110(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return 0;
-    CEnchantTransformDataPtr spData = GetInstance()->Find(spItem->FUN_1405276c0(), (EnchantTransformRank)spItem->GetRarity(),
-        spItem->GetRequiredLevel(), spItem->FUN_140526fc0(), reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetEquipSubtype());
+    CEnchantTransformDataPtr spData = GetInstance()->Find(spItem->GetItemId(), (EnchantTransformRank)spItem->GetRarity(),
+        spItem->GetRequiredLevel(), spItem->GetEnchantLevel(), reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetEquipSubtype());
     if (spData == 0)
         return 0;
     if (spItem->FUN_140528ca0() == 0)
     {
-        if (spItem->FUN_140528e00() > GetServerTime())
+        if (spItem->GetUnlockTime() > GetServerTime())
             return 0;
     }
     if (spItem->FUN_140528ca0() == 1)
@@ -246,8 +246,8 @@ CEnchantTransformDataPtr CItemEnchantTransformTable::FindByItem(MS2Ptr<CItem> sp
 {
     if (spItem == 0)
         return CEnchantTransformDataPtr(0);
-    return Find(spItem->FUN_1405276c0(), (EnchantTransformRank)spItem->GetRarity(), spItem->GetRequiredLevel(),
-                         spItem->FUN_140526fc0(), reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetEquipSubtype());
+    return Find(spItem->GetItemId(), (EnchantTransformRank)spItem->GetRarity(), spItem->GetRequiredLevel(),
+                         spItem->GetEnchantLevel(), reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetEquipSubtype());
 }
 
 // @0x140592620
@@ -273,7 +273,7 @@ void CItemEnchantTransformTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CItemEnchantTransformTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CItemEnchantTransformTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

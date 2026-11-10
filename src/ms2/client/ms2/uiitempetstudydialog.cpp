@@ -79,23 +79,23 @@ public:
     void FUN_140da5180(int nPacket, Delegate<void(CInPacket&)> fn);     // register a packet handler
     void FUN_140da51e0(int nPacket, Delegate<void(CInPacket&)> fn);     // unregister it
 };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 class CMsgBoxData : public CPtred
 {
 public:
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)> fn);
-    void FUN_141a01600(__int64 n);
+    void SetItemUid(__int64 n);
     void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);
     void SetButtonLabelIds(int nA, int nB, int nC);
 };
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_141b71910(__int64 nValue);
-void FUN_1412751f0(const CStringW& text, int nA, int nB);
+void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int n);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 #include "ms2/gfxui/notifyhandler.h"   // C3: Unk_NotifyContext::FUN_1422c8e90/f10/f70
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
@@ -112,15 +112,15 @@ public:
 UIItemPetStudyDialog::UIItemPetStudyDialog()
     : m_strSlot(), m_nOwner(0), m_spBox(0), m_spPet(0), m_bDone(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_164 = 1;
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
 }
 
 // @0x140e54cd0
 UIItemPetStudyDialog::~UIItemPetStudyDialog()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0xcc, Delegate<void(CInPacket&)>(this, &UIItemPetStudyDialog::FUN_140e55820));
 }
 
 // @0x140e54df0
@@ -148,11 +148,11 @@ void UIItemPetStudyDialog::OnLoadComplete()
         return;
     FUN_1412761e0(m_30, 1);
     ASObj obj(2);
-    obj.FUN_1407cba60("bindID", CString(m_strSlot));
-    ((class AScript&)(obj)).FUN_1407cbb20("itemName", m_spBox->FUN_140527b10());
+    obj.SetStringMember("bindID", CString(m_strSlot));
+    ((class AScript&)(obj)).SetWStringMember("itemName", m_spBox->FUN_140527b10());
     CStringW strOption;
     ATL::CAtlArray<CStringW> unused;
-    ((class AScript&)(obj)).FUN_1407cbb20("optionText", CStringW(strOption));
+    ((class AScript&)(obj)).SetWStringMember("optionText", CStringW(strOption));
     m_30->Invoke("setData", obj);
 }
 
@@ -166,15 +166,15 @@ int UIItemPetStudyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPC == 0)
             return 0;
-        if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->HasBindingRule() != 0)
+        if (reinterpret_cast<CItemTransfer*>(m_spPet->GetTransfer())->HasBindingRule() != 0)
         {
-            if (reinterpret_cast<CItemTransfer*>(m_spPet->FUN_140527930())->HasBinding() == 0)
+            if (reinterpret_cast<CItemTransfer*>(m_spPet->GetTransfer())->HasBinding() == 0)
             {
                 CStringW strMessage = FUN_14028dfa0<CStringW>(CStringW(L"s_msg_transfer_bind_pet_study"), pPC->vfunc_77());
-                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strMessage), 0, CStringW(s_strStudyBindPet));
+                MS2Ptr<CMsgBoxData> box = CreateMessageBox(0x11, CStringW(strMessage), 0, CStringW(s_strStudyBindPet));
                 if (box.get() != 0)
                 {
-                    box->FUN_141a01600(m_spPet->GetItemUid());
+                    box->SetItemUid(m_spPet->GetItemUid());
                     box->FUN_141a01ee0(m_spPet, m_spPet->FUN_140527b10(), 1, 0, -1, -1, 1);
                     box->SetButtonLabelIds(0x477, 0x478, 0);
                     FUN_140d73c60(box);
@@ -182,7 +182,7 @@ int UIItemPetStudyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                 }
             }
         }
-        FUN_140e558d0();
+        SendStudyRequest();
         return 1;
     }
     return 0;
@@ -226,7 +226,7 @@ void UIItemPetStudyDialog::FUN_140e55820(CInPacket& packet)
 }
 
 // @0x140e558d0
-void UIItemPetStudyDialog::FUN_140e558d0()
+void UIItemPetStudyDialog::SendStudyRequest()
 {
     if (m_30 == 0)
         return;
@@ -239,7 +239,7 @@ void UIItemPetStudyDialog::FUN_140e558d0()
 // @0x140e559c0
 ItemScrollSlot* UIItemPetStudyDialog::FUN_140e559c0(CString strName)
 {
-    ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(strName));
+    ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FindBinding(strName));
     if (pSlot != 0)
         return pSlot;
     return 0;
@@ -248,39 +248,39 @@ ItemScrollSlot* UIItemPetStudyDialog::FUN_140e559c0(CString strName)
 // @0x140e55a40
 int UIItemPetStudyDialog::FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage)
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x94))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x94))
         return 0;
     if (spPet == 0)
         return 0;
     if (spPet->IsPetItem() == 0)
     {
         if (bMessage != 0)
-            FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
+            ShowSystemNotice(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
     MS2Ptr<CPetData> spRow = TSingleton<CPetDataTable>::GetInstance()->Find(reinterpret_cast<CItemData*>(spPet->FUN_140527840())->GetPetId());
     if (spRow == 0)
     {
         if (bMessage != 0)
-            FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
+            ShowSystemNotice(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
     if (spRow->m_nType != 1)
     {
         if (bMessage != 0)
-            FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
+            ShowSystemNotice(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
     if (spPet->GetSocket()->GetMaxSlot() == 0)
     {
         if (bMessage != 0)
-            FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
+            ShowSystemNotice(GetStringCommonByKey(L"s_pet_study_dialog_invalid_item"), 1, 0);
         return 0;
     }
-    if (spPet->GetSocket()->HasGemId(m_spBox->FUN_1405276c0()) != 0)
+    if (spPet->GetSocket()->HasGemId(m_spBox->GetItemId()) != 0)
     {
         if (bMessage != 0)
-            FUN_1412751f0(GetStringCommonByKey(L"s_pet_study_dialog_already_option"), 1, 0);
+            ShowSystemNotice(GetStringCommonByKey(L"s_pet_study_dialog_already_option"), 1, 0);
         return 0;
     }
     return 1;
@@ -320,9 +320,9 @@ void UIItemPetStudyDialog::FUN_140e55f90(ItemScrollSlot& slot, DragSlot* pDrag)
             m_spPet = spPet;
             CStringW strName = spPet->FUN_140528160();
             ASObj obj(2);
-            ((class AScript&)(obj)).FUN_1407cbb20("petName", CStringW(strName));
-            ((class AScript&)(obj)).FUN_1407cbb20("petGUID", FUN_141b71910(spPet->GetItemUid()));
-            m_30->Invoke("selectPet", obj.FUN_1422bb870());
+            ((class AScript&)(obj)).SetWStringMember("petName", CStringW(strName));
+            ((class AScript&)(obj)).SetWStringMember("petGUID", FUN_141b71910(spPet->GetItemUid()));
+            m_30->Invoke("selectPet", obj.GetValue());
         }
     }
 }

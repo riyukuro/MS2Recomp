@@ -227,8 +227,8 @@ MS2_CHECK_OFFSET(CObjectData, m_config, 0x2d0);
 typedef MS2SvrPtr<CObjectData> CObjectDataPtr;
 
 // Per-id queries over the row cache (names invented from the compared fields).
-CObjectDataPtr FUN_140704ec0(unsigned nId);     // the row of an id; loads Data/Xml/Object/<id>.xml when it is not cached
-int FUN_1407071e0(int nId);                     // has a function cube
+CObjectDataPtr GetObjectData(unsigned nId);     // the row of an id; loads Data/Xml/Object/<id>.xml when it is not cached
+int HasFunctionCube(int nId);                     // has a function cube
 int FUN_140707260(int nId);                     // function cube uses a kfm
 int FUN_1407072e0(int nId);                     // switch with the fitting doll ui
 int FUN_1407073a0(int nId);                     // switch with the item fusion ui
@@ -236,8 +236,8 @@ int FUN_140707460(int nId);                     // skill control type
 int FUN_1407074f0(int nId);                     // bank ui
 int FUN_1407075a0(int nId);                     // spawn npc or install npc
 int FUN_140707660(int nId);                     // trigger tool ui
-int FUN_140707710(int nId);                     // trigger control enabled
-int FUN_1407077c0(int nId);                     // state change permission 1
+int IsTriggerControlEnabled(int nId);                     // trigger control enabled
+int HasStateChangePermission(int nId);                     // state change permission 1
 int FUN_140707870(int nId);                     // password ui
 int FUN_140707920(int nId);                     // forbids jump, climb, skill or instrument
 int FUN_140707a00(int nId);                     // forbidden for non owners

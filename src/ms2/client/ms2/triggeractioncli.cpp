@@ -141,7 +141,7 @@ void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873c
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // registrar of ClassObject factories, atexit helpers
-ClassObject* FUN_140de5570();
+ClassObject* CreateTriggerConditionCli();
 #include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
 struct Unk_RegMarker {};                // empty: the initializer stores nothing after the call
 
@@ -149,7 +149,7 @@ struct Unk_RegMarker {};                // empty: the initializer stores nothing
 // @0x1400d66e0
 #ifndef MS2_HOOK_DLL   // registers into the exe's ClassObject registrar at DllMain time, before the exe's CRT/locks exist (startup hang)
 static char s_dat_143ac4e79;
-static Unk_RegMarker s_dat_143ac4e79_init = (((ClassObjectRegistrar*)&s_dat_143ac4e79)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"TriggerConditionCli"), FUN_140de5570), Unk_RegMarker());
+static Unk_RegMarker s_dat_143ac4e79_init = (((ClassObjectRegistrar*)&s_dat_143ac4e79)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"TriggerConditionCli"), CreateTriggerConditionCli), Unk_RegMarker());
 #endif
 // @0x1400d6730
 static CStringA s_strSkill("skill");
@@ -246,7 +246,7 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 // ---- TriggerConditionCli ----
 
 // @0x140de5570
-ClassObject* FUN_140de5570()
+ClassObject* CreateTriggerConditionCli()
 {
     return new TriggerConditionCli;
 }
@@ -473,7 +473,7 @@ MS2Ptr<TriggerObject> TriggerObject::Create(egf::Entity* pEntity)
 
 // ---- entity / world service views ----
 void SetCachedBoolProperty(Unk_CachedEntity *, unsigned int, bool const &);  // C3: the definition's signature
-void FUN_140de8bd0(egf::Entity* e, unsigned id, efd::AssetID* v);
+void SetAssetIdProperty(egf::Entity* e, unsigned id, efd::AssetID* v);
 void* FUN_1408b6b20(void* pDst, const void* pSrc);                        // copy an entity id
 bool FUN_140de8e30(const efd::utf8string& str, const char* psz);          // == psz
 // efd::utf8string keeps its std::string at +0.
@@ -484,7 +484,7 @@ bool FUN_140de8ea0(const efd::utf8string& a, const efd::utf8string& b);
 void FUN_140de9160(std::string& s, size_t n);
 void FUN_140de91c0(std::string& s) noexcept;
 void FUN_140de91f0(std::string& s);
-int FUN_140de9210(const std::string& s, const char* psz) noexcept;
+int Compare(const std::string& s, const char* psz) noexcept;
 bool FUN_140de8e70(const efd::AssetID* a, const efd::AssetID* b);         // urn differs
 void FUN_140b60e40(egf::Entity *, bool);  // C3: the definition's signature
 void FUN_140b60e10(egf::Entity *, bool);  // C3: the definition's signature
@@ -502,7 +502,7 @@ public:
 class CSoundEventMgr   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14177c100(unsigned int, float, unsigned int, int);
+    int PlayMusic(unsigned int, float, unsigned int, int);
     void FUN_14177ce30(efd::SmartPointer<egf::Entity> spEntity, int bOn);
 };
 
@@ -514,14 +514,14 @@ NiAVObject * FUN_141b6efc0(egf::Entity *);  // C3: the definition's signature
 void FUN_141851f90(void *, float);  // C3: the definition's signature
 void FUN_141545250(egf::EntityID kId, int b);
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);
-UIMinimapDialog * FUN_140c9b540(int);  // C3: the definition's signature
+UIMinimapDialog * FindMinimapDialog(int);  // C3: the definition's signature
 class UIMinimapDialog   // C3: member view for the former free stand-ins
 {
 public:
     void SetTriggerVisible(int, int);
 };
 
-// debug trigger display (FUN_140c9b540(0x4e29))
+// debug trigger display (FindMinimapDialog(0x4e29))
 
 // ---- TriggerObjectSound ----
 
@@ -567,7 +567,7 @@ void TriggerObjectSound::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
                 int nSound = atoi(((efd::utf8string*)&static_cast<class efd::utf8string const&>(kId))->c_str());
                 if (nSound > 0)
                 {
-                    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c100(nSound, 0, 0x80, 0);
+                    TSingleton<CSoundEventMgr>::GetInstance()->PlayMusic(nSound, 0, 0x80, 0);
                     m_nHandle = nSound;
                 }
             }
@@ -576,7 +576,7 @@ void TriggerObjectSound::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
         {
             efd::utf8string kStop;
             TRIG_ENT()->GetPropertyValue<efd::utf8string>(0xcdeb811e, kStop);
-            TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c100(0, 0, 0x80, 0);
+            TSingleton<CSoundEventMgr>::GetInstance()->PlayMusic(0, 0, 0x80, 0);
             m_nHandle = 0;
         }
         break;
@@ -671,7 +671,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
                 if (FUN_140de8e70(&kCur, &kNew))
                 {
                     reinterpret_cast<Unk_CachedEntity*>(TRIG_ENT())->SetPropertyValue<float>(0x2d7cad2d, fSkin);
-                    FUN_140de8bd0(TRIG_ENT(), 0x770e5fc6, &kNew);
+                    SetAssetIdProperty(TRIG_ENT(), 0x770e5fc6, &kNew);
                 }
             }
         }
@@ -699,7 +699,7 @@ void TriggerObjectMesh::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
             kReq.m_spNode = ((NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6ef70(TRIG_ENT()->GetEntityID()))));
             TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
-        void* pUi = FUN_140c9b540(0x4e29);
+        void* pUi = FindMinimapDialog(0x4e29);
         if (pUi != 0)
             ((class UIMinimapDialog*)(void*)(pUi))->SetTriggerVisible(m_nId, bShow);
     }
@@ -722,7 +722,7 @@ void TriggerObjectActor::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
         efd::utf8string kAnim((const char*)strAnim);
         reinterpret_cast<Unk_AnimSvc*>(FUN_141b6f910())->PlayAnimation(((egf::Entity*)(void const*)(TRIG_ENT()))->GetEntityID(), kAnim, 1.0f, false);
     }
-    void* pUi = FUN_140c9b540(0x4e29);
+    void* pUi = FindMinimapDialog(0x4e29);
     if (pUi != 0)
         ((class UIMinimapDialog*)(void*)(pUi))->SetTriggerVisible(m_nId, bOn);
 }
@@ -777,9 +777,9 @@ TriggerObjectEffect::~TriggerObjectEffect()
 }
 
 efd::Point3 FUN_140b60d30(egf::Entity *);  // C3: the definition's signature
-float FUN_140b60c90(egf::Entity *);  // C3: the definition's signature
-efd::Point3 FUN_140b60cd0(egf::Entity *);  // C3: the definition's signature
-CStringA FUN_140b60bf0(egf::Entity* pObj);                          // effect name
+float GetScale(egf::Entity *);  // C3: the definition's signature
+efd::Point3 GetPosition(egf::Entity *);  // C3: the definition's signature
+CStringA GetEffectName(egf::Entity* pObj);                          // effect name
 
 // @0x140de7a00
 void TriggerObjectEffect::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
@@ -795,12 +795,12 @@ void TriggerObjectEffect::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
         NiMatrix3 kRot;
         kRot.MakeZRotation(kAngle.z);
         NiTransform kXform;
-        kXform.m_fScale = FUN_140b60c90(TRIG_ENT_RAW());
-        NiPoint3 kPos(FUN_140b60cd0(TRIG_ENT_RAW()));
+        kXform.m_fScale = GetScale(TRIG_ENT_RAW());
+        NiPoint3 kPos(GetPosition(TRIG_ENT_RAW()));
         kXform.m_Translate = static_cast<NiPoint3&&>(kPos);
         kXform.m_Rotate = kRot;
         NoticeMessage kReq;
-        kReq.m_strName = FUN_140b60bf0(TRIG_ENT_RAW());
+        kReq.m_strName = GetEffectName(TRIG_ENT_RAW());
         kReq.m_nObject = 0;
         kReq.m_p18 = &kXform;
         m_nHandle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
@@ -823,7 +823,7 @@ void TriggerObjectCube::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
 
 // ---- TriggerObjectCamera ----
 
-class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
+class Unk_McEntityRules* GetTriggerService();   // C3: was GetTriggerService
 bool FUN_14028d470(float a, float b);
 void* GetUITalkManager();
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
@@ -850,8 +850,8 @@ void TriggerObjectCamera::vfunc_2(Unk_TriggerEvent* pEvent, bool bSkipFx)
     unsigned bOn = (&pEvent->m_arg)->vfunc_1();
     if (bOn == 0 && bSkipFx)
         return;
-    ((class CTriggerService*)(void*)(((void*)FUN_140ad4b90())))->FUN_1418631c0();
-    ((class CTriggerService*)(void*)(((void*)FUN_140ad4b90())))->QueueCameraStep(m_nId, bOn);
+    ((class CTriggerService*)(void*)(((void*)GetTriggerService())))->ClearCameraSteps();
+    ((class CTriggerService*)(void*)(((void*)GetTriggerService())))->QueueCameraStep(m_nId, bOn);
 }
 
 // @0x140de7e00
@@ -948,7 +948,7 @@ void TriggerObjectCamera::vfunc_3()
         ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
     CameraMgr::GetInstance()->SetMode(nMode, 0);
     if (nMode == 4 && FUN_14028d470(fSpeed, 0.0f))
-        ((class CTriggerService*)(void*)(((void*)FUN_140ad4b90())))->FUN_141863260();
+        ((class CTriggerService*)(void*)(((void*)GetTriggerService())))->RunNextCameraStep();
 }
 
 // @0x140de86b0
@@ -1027,7 +1027,7 @@ void FUN_140de8a40(egf::Entity* pEntity, unsigned nId, void* pValue)
 }
 
 // @0x140de8bd0
-void FUN_140de8bd0(egf::Entity* pEntity, unsigned nId, efd::AssetID* pValue)
+void SetAssetIdProperty(egf::Entity* pEntity, unsigned nId, efd::AssetID* pValue)
 {
     FUN_140de8a40(pEntity, nId, pValue);
     static_cast<Unk_EntityAccess*>(pEntity)->SetPropertyValueUnsafe(nId, pValue, efd::GetClassIDFromType<efd::AssetID>());
@@ -1372,7 +1372,7 @@ void FUN_140de91f0(std::string& s)
 
 // @0x140de9210
 // basic_string::compare(const char*).
-int FUN_140de9210(const std::string& s, const char* psz) noexcept
+int Compare(const std::string& s, const char* psz) noexcept
 {
     auto& data = s._Get_data();
     return std::_Traits_compare<std::char_traits<char>>(data._Myptr(), data._Mysize, psz, std::char_traits<char>::length(psz));
@@ -1382,7 +1382,7 @@ int FUN_140de9210(const std::string& s, const char* psz) noexcept
 // efd::utf8string::compare(const char*).
 int FUN_140de9280(const std::string& s, const char* psz)
 {
-    return FUN_140de9210(reinterpret_cast<const Unk_Utf8StringBody*>(&s)->m_string, psz);
+    return Compare(reinterpret_cast<const Unk_Utf8StringBody*>(&s)->m_string, psz);
 }
 
 // @0x140de92b0

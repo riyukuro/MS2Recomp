@@ -122,7 +122,7 @@ int ItemLockSlot::vfunc_0(void* p)
     {
         if (IsEnabled())
             tip.SetEnablePreview(spItem);
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -138,7 +138,7 @@ int ItemLockSlot::vfunc_8(void* p)
     int nOk = slot.FUN_1409c3860(vfunc_25().get(), pPlayer, 0x1401f);
     if (nOk != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -162,18 +162,18 @@ void FUN_140d42050(const CString& strName)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(0x12);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x140d42100
 void FUN_140d42100(const CString& strName)
 {
-    ItemLockSlotBag* pBag = FUN_140d42380(Unk_NotifyContext::FUN_1422c8e90(strName));
+    ItemLockSlotBag* pBag = FUN_140d42380(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 

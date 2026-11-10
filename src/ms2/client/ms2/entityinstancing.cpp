@@ -198,7 +198,7 @@ namespace egf { class Entity; }
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 NiNode * FUN_1413fa030(egf::Entity *);  // C3: the definition's signature
 void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-ecr::RenderService* FUN_1413f9890();
+ecr::RenderService* GetRenderService();
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -393,7 +393,7 @@ void EntityInstancing::FUN_1411c67f0(const egf::EntityID& id) {
 MS2_REPLACE_METHOD(0x1411c67f0, EntityInstancing, FUN_1411c67f0, 215, 0x8EE47481);
 // @0x1411c68d0
 void EntityInstancing::FUN_1411c68d0() {
-    ecr::RenderService* renderer = FUN_1413f9890();
+    ecr::RenderService* renderer = GetRenderService();
     for (auto it = entries.begin(); it != entries.end(); ++it) {
         Unk_MeshInstanceEntry& entry = it->second;
         egf::Entity* entity = it->second.entity;

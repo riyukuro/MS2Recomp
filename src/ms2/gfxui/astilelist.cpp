@@ -25,7 +25,7 @@
 #include "hook/ms2hook.h"
 
 // The GFx movie of a movie id (AScript's static helper, ascript.cpp range; null if the movie is not loaded).
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);
+Scaleform::GFx::Movie* GetMovie(int nMovieId);
 
 // Every element of an AS array as a UInt appended to a container (inline COMDATs; names invented).
 template <class T> void GetAll(ASArray& arr, ATL::CAtlArray<T>& aOut);
@@ -36,7 +36,7 @@ ASTileList::ASTileList(int nMovieId)
     : ASCoreList(nMovieId)
 {
     m_nMovieId = nMovieId;
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(m_nMovieId);
     if (pMovie == NULL)
         return;
     pMovie->CreateObject(&m_value, "scaleform.clik.controls.TileList", NULL, 0);
@@ -54,45 +54,45 @@ ASTileList::~ASTileList()
 }
 
 // @0x1422cf3b0
-void ASTileList::FUN_1422cf3b0(Scaleform::GFx::Value scrollBar)
+void ASTileList::SetScrollBar(Scaleform::GFx::Value scrollBar)
 {
     FUN_1409adbe0("scrollBar", scrollBar);
 }
 
 // @0x1422cf420
-Scaleform::GFx::Value ASTileList::FUN_1422cf420()
+Scaleform::GFx::Value ASTileList::GetScrollBar()
 {
     return GetMember("scrollBar");
 }
-MS2_REPLACE_METHOD(0x1422CF420, ASTileList, FUN_1422cf420, 65, 0xCB76CB8D);
+MS2_REPLACE_METHOD(0x1422CF420, ASTileList, GetScrollBar, 65, 0xCB76CB8D);
 
 // @0x1422cf470
-void ASTileList::FUN_1422cf470(unsigned nWidth)
+void ASTileList::SetColumnWidth(unsigned nWidth)
 {
     FUN_140e06d60("columnWidth", nWidth);
 }
-MS2_REPLACE_METHOD(0x1422CF470, ASTileList, FUN_1422cf470, 47, 0xD59311EF);
+MS2_REPLACE_METHOD(0x1422CF470, ASTileList, SetColumnWidth, 47, 0xD59311EF);
 
 // @0x1422cf4b0
-void ASTileList::FUN_1422cf4b0(unsigned nHeight)
+void ASTileList::SetRowHeight(unsigned nHeight)
 {
     FUN_140e06d60("rowHeight", nHeight);
 }
-MS2_REPLACE_METHOD(0x1422CF4B0, ASTileList, FUN_1422cf4b0, 47, 0x35ABF3B4);
+MS2_REPLACE_METHOD(0x1422CF4B0, ASTileList, SetRowHeight, 47, 0x35ABF3B4);
 
 // @0x1422cf4f0
-void ASTileList::FUN_1422cf4f0(int nRow)
+void ASTileList::SetScrollPosition(int nRow)
 {
-    FUN_1407cb9c0("scrollPosition", nRow);
+    SetIntMember("scrollPosition", nRow);
 }
-MS2_REPLACE_METHOD(0x1422CF4F0, ASTileList, FUN_1422cf4f0, 40, 0x4C605C86);
+MS2_REPLACE_METHOD(0x1422CF4F0, ASTileList, SetScrollPosition, 40, 0x4C605C86);
 
 // @0x1422cf520
-int ASTileList::FUN_1422cf520()
+int ASTileList::GetScrollPosition()
 {
     return (int)GetMember("scrollPosition").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422CF520, ASTileList, FUN_1422cf520, 92, 0x3064F1C5);
+MS2_REPLACE_METHOD(0x1422CF520, ASTileList, GetScrollPosition, 92, 0x3064F1C5);
 
 // @0x1422cf590
 ASTileCacheList::ASTileCacheList(const Scaleform::GFx::Value& v, int nMovieId)
@@ -108,31 +108,31 @@ ASTileCacheList::~ASTileCacheList()
 // @0x1422cf610
 void ASTileCacheList::vfunc_25(const Scaleform::GFx::Value& data)
 {
-    FUN_1422cf720();
+    ResetRenderer();
     ASCoreList::vfunc_25(data);
 }
 MS2_REPLACE_METHOD(0x1422CF610, ASTileCacheList, vfunc_25, 44, 0x5C059142);
 
 // @0x1422cf650
-void ASTileCacheList::FUN_1422cf650(int nIndex, AScript& item)
+void ASTileCacheList::AddItemData(int nIndex, AScript& item)
 {
-    Invoke("addItemData", nIndex, item.FUN_1422bb870());
+    Invoke("addItemData", nIndex, item.GetValue());
 }
-MS2_REPLACE_METHOD(0x1422CF650, ASTileCacheList, FUN_1422cf650, 123, 0xB4855FE1);
+MS2_REPLACE_METHOD(0x1422CF650, ASTileCacheList, AddItemData, 123, 0xB4855FE1);
 
 // @0x1422cf6e0
-void ASTileCacheList::FUN_1422cf6e0(int nIndex)
+void ASTileCacheList::RemoveItemData(int nIndex)
 {
     Invoke("removeItemData", nIndex);
 }
-MS2_REPLACE_METHOD(0x1422CF6E0, ASTileCacheList, FUN_1422cf6e0, 55, 0x0768FB48);
+MS2_REPLACE_METHOD(0x1422CF6E0, ASTileCacheList, RemoveItemData, 55, 0x0768FB48);
 
 // @0x1422cf720
-void ASTileCacheList::FUN_1422cf720()
+void ASTileCacheList::ResetRenderer()
 {
     Invoke("resetRenderer");
 }
-MS2_REPLACE_METHOD(0x1422CF720, ASTileCacheList, FUN_1422cf720, 46, 0x8833EEE5);
+MS2_REPLACE_METHOD(0x1422CF720, ASTileCacheList, ResetRenderer, 46, 0x8833EEE5);
 
 // @0x1422cf760
 ASItemBag::ASItemBag(const Scaleform::GFx::Value& v, int nMovieId)
@@ -160,11 +160,11 @@ void ASItemBag::FUN_1422cf820(int nIndex)
 MS2_REPLACE_METHOD(0x1422CF820, ASItemBag, FUN_1422cf820, 55, 0xDDD4538B);
 
 // @0x1422cf860
-void ASItemBag::FUN_1422cf860()
+void ASItemBag::Update()
 {
     Invoke("update");
 }
-MS2_REPLACE_METHOD(0x1422CF860, ASItemBag, FUN_1422cf860, 46, 0x86BA5BD0);
+MS2_REPLACE_METHOD(0x1422CF860, ASItemBag, Update, 46, 0x86BA5BD0);
 
 // @0x1422cf8a0
 ASMultiSelectTileCacheList::ASMultiSelectTileCacheList(const Scaleform::GFx::Value& v, int nMovieId)
@@ -178,20 +178,20 @@ ASMultiSelectTileCacheList::~ASMultiSelectTileCacheList()
 }
 
 // @0x1422cf920
-unsigned ASMultiSelectTileCacheList::FUN_1422cf920()
+unsigned ASMultiSelectTileCacheList::GetSelectedCount()
 {
     return Invoke("getSelectedCount").GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422CF920, ASMultiSelectTileCacheList, FUN_1422cf920, 88, 0x5E98B9ED);
+MS2_REPLACE_METHOD(0x1422CF920, ASMultiSelectTileCacheList, GetSelectedCount, 88, 0x5E98B9ED);
 
 // @0x1422cf980
-void ASMultiSelectTileCacheList::FUN_1422cf980(std::vector<unsigned>& aSelected)
+void ASMultiSelectTileCacheList::GetSelectedList(std::vector<unsigned>& aSelected)
 {
     ASArray arr(m_nMovieId);
     FUN_140caf140("getSelectedList", arr);
     GetAll(arr, aSelected);
 }
-MS2_REPLACE_METHOD(0x1422CF980, ASMultiSelectTileCacheList, FUN_1422cf980, 158, 0x13EE0D5E);
+MS2_REPLACE_METHOD(0x1422CF980, ASMultiSelectTileCacheList, GetSelectedList, 158, 0x13EE0D5E);
 
 // @0x1422cfa30
 void ASMultiSelectTileCacheList::FUN_1422cfa30(ATL::CAtlArray<unsigned>& aSelected)

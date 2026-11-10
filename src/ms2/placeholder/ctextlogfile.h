@@ -20,12 +20,12 @@ public:
     virtual ~CTextLogFile();                                // 0x140866c00
 
     void FUN_140866c70();                                   // write the file next to the exe and drop the lines
-    void FUN_140866f60(const char* pszLine);                // add a line to the first list
-    void FUN_140867020(const char* pszLine);                // add a line to the second list
+    void AddLine(const char* pszLine);                // add a line to the first list
+    void AddTailLine(const char* pszLine);                // add a line to the second list
     void FUN_1408670e0(const CString& strLine);             // as 0x140866f60 for a CString
     void FUN_140867180(const CString& strLine);             // as 0x140867020 for a CString
-    void FUN_140867220();                                   // clear the second list
-    void FUN_140867260(unsigned long long nLimit);                // set the byte limit
+    void ClearTail();                                   // clear the second list
+    void SetLimit(unsigned long long nLimit);                // set the byte limit
     void FUN_140867330(__int64 nLen);                       // account a line against the budget
     const CStringW& GetName() const;                  // the file name
 

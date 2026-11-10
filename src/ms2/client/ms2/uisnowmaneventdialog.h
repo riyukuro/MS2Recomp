@@ -60,19 +60,19 @@ public:
     void FUN_140e954b0(MS2Ptr<SnowmanContext> context);
     void SendEventRewardMode12(int index);
     void SendEventRewardMode13(int index);
-    int FUN_140e95f40(int index);
-    int FUN_140e960d0(int index);
-    int FUN_140e96260(int index);
+    int GetCurSnowflakeCount(int index);
+    int GetCurDailyCompleteCount(int index);
+    int GetCurAccumCompleteCount(int index);
     bool IsAccumRewardReceived(int index);
-    CString FUN_140e96500(int itemId);
-    void FUN_140e965e0();
+    CString GetItemIconPath(int itemId);
+    void UpdateInfo();
     void FUN_140e96a90(const CStringW& path);
     int FUN_140e96c50(int type, CInPacket& packet);
     void GetDialogSize(int* width, int* height);
     void ApplyAlign();
-    void FUN_140e96ed0(GameEventVariable*);
-    void FUN_140e96f00(GameEventVariable*);
-    void FUN_140e96f30(GameEventVariable*);
+    void OnSnowflakeCountChanged(GameEventVariable*);
+    void OnDailyCompleteCountChanged(GameEventVariable*);
+    void OnAccumCompleteCountChanged(GameEventVariable*);
     void FUN_140e96f60(GameEventVariable*);
     virtual int vfunc_48();
 private:

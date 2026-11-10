@@ -31,21 +31,21 @@ public:
     virtual int vfunc_48() { return 20267; }
     void ReleaseSlotBinds();
     void OnSelectMode(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140e9c1e0(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140e9c210(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnOpenItemBreak(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnOpenStyleShop(const Scaleform::GFx::FunctionHandler::Params&);
     void SetBoxItemId(int);
     bool FUN_140e9c260(int, const CMsgBoxData&);
     bool FUN_140e9c2a0(int, const CMsgBoxData&);
     void UpdateTitle();
-    void FUN_140e9c3e0();
-    void FUN_140e9c550();
+    void UpdateAutoPay();
+    void InitSimpleBox();
     void FUN_140e9cde0(int);
     bool IsSpecialItem(const ItemEntity&);
     bool FUN_140e9d2b0();
     void FUN_140e9dc30();
     int FUN_140e9e8f0();
     void FUN_140e9ece0();
-    void FUN_140e9f540();
+    void SendOpenBox();
     void FUN_140e9f870(const CStringW&, unsigned);
     // 0x140e48d80 = UISwfEntity::GetChildInto<ASTextField> (uiswfentity.h)
     // C3: FUN_140e52700 (bind a check box) is UIItemPetBoxDialog's (uiitempetboxdialog.h), called through a view in the .cpp

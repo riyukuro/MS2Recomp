@@ -27,8 +27,8 @@ public:
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071ae20(const CString& strFile);                           // the localised string table path
-CString FUN_140651350();                                                 // the locale folder name
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetLanguageCode();                                                 // the locale folder name
+CString ToCString(const char* psz, int n);
 CString FUN_14028d3c0(CString strPath);                                  // the directory part of a path
 void FUN_1401d3700(CString& str);                                        // normalises the case
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
@@ -62,7 +62,7 @@ CScriptTable::~CScriptTable()
 void CScriptTable::Load()
 {
     ATL::CAtlArray<CString> files;
-    FUN_140399100(CString("*.xml"), FUN_14071ae20(FUN_140651350()), files, CString(""), false);
+    FindFiles(CString("*.xml"), FUN_14071ae20(GetLanguageCode()), files, CString(""), false);
     for (size_t i = 0; i < files.GetCount(); i++)
     {
         CString strDir = FUN_14028d3c0(files[i]);
@@ -70,7 +70,7 @@ void CScriptTable::Load()
         if (strDir.Find("script", 0) == 0)
         {
             TiXmlDocument doc;
-            if (GetFileSystem()->FUN_1403974b0(&doc, files[i], 0, true, false) == 0)
+            if (GetFileSystem()->LoadXmlFile(&doc, files[i], 0, true, false) == 0)
                 return;
             TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
             if (pRoot == 0)
@@ -122,7 +122,7 @@ void CScriptTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CScriptTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CScriptTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

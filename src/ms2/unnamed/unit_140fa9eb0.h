@@ -20,13 +20,13 @@ public:
     virtual int vfunc_48();                                                             // 48 0x140fac7b0 UI type id
     virtual void vfunc_79(void* p);                                                     // 79 0x140faa010
 
-    void FUN_140faa2d0();                                                               // fill the five slot entries ("setSlot")
-    void FUN_140faa6d0();                                                               // save mode
-    void FUN_140faa750();                                                               // load mode
-    bool FUN_140faa7d0(int nResult, const CMsgBoxData& data);                           // overwrite confirmed / name entered: send save
-    bool FUN_140faac30(int nResult, const CMsgBoxData& data);                           // load confirmed: send load
+    void UpdateSlots();                                                               // fill the five slot entries ("setSlot")
+    void SetSaveMode();                                                               // save mode
+    void SetLoadMode();                                                               // load mode
+    bool OnSaveNameEntered(int nResult, const CMsgBoxData& data);                           // overwrite confirmed / name entered: send save
+    bool OnLoadConfirmed(int nResult, const CMsgBoxData& data);                           // load confirmed: send load
     bool SendRequestCubeMode46(int nResult, const CMsgBoxData& data);                           // overwrite confirmed: send save
-    bool FUN_140faaeb0(int nResult, const CMsgBoxData& data);                           // blueprint: name entered, send save
+    bool OnBlueprintSaveNameEntered(int nResult, const CMsgBoxData& data);                           // blueprint: name entered, send save
     bool SendRequestCubeMode65(int nResult, const CMsgBoxData& data);                           // blueprint: load confirmed
     bool SendRequestCubeMode64(int nResult, const CMsgBoxData& data);                           // blueprint: overwrite confirmed
     void FUN_140fab520(int nSlot);                                                      // ask for a name to save the slot

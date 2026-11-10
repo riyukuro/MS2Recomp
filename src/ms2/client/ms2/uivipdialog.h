@@ -30,11 +30,11 @@ public:
     virtual void vfunc_72();                                        // 72 0x140fb7f80 re-lists when the VIP end time changed
 
     void SendPremiumClubMode1();                                           // 0x140fb8620 packet 0x8e / 1: ask the claimed benefit ids
-    int FUN_140fb8680();                                            // 0x140fb8680 the number of benefit items that can be claimed
+    int GetClaimableBenefitCount();                                            // 0x140fb8680 the number of benefit items that can be claimed
     void FUN_140fb87d0(CInPacket& packet, int nMode);               // 0x140fb87d0 packet reply: 1 = claimed ids, 2 = one claimed
     void FUN_140fb8d10();                                           // 0x140fb8d10 the remaining time text and the timer icon
-    void FUN_140fb9150();                                           // 0x140fb9150 fill the benefit list of the movie
-    int FUN_140fb9720(unsigned nBenefitId);                         // 0x140fb9720 the benefit is still claimable (VIP and not claimed)
+    void RefreshBenefitList();                                           // 0x140fb9150 fill the benefit list of the movie
+    int IsBenefitClaimable(unsigned nBenefitId);                         // 0x140fb9720 the benefit is still claimable (VIP and not claimed)
 
 
 private:

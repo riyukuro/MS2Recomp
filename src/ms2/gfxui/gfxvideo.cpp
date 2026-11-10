@@ -49,7 +49,7 @@ int GFxVideo::FUN_1422ec460(HWND hWnd, Scaleform::GFx::Loader* pLoader)
     m_spVideo = *new VideoPC(VideoVMSupportAll(), m_eDecodePriority, 3, affinityMask);
     m_spVideo->SetTextureManager((Scaleform::Render::TextureManager*)FUN_1422cf0f0());
     m_spSoundSystem = *new MS2VideoSoundSystemDX8(hWnd, Scaleform::Memory::GetGlobalHeap());
-    if (m_spSoundSystem->FUN_1422fe9e0())
+    if (m_spSoundSystem->IsInitialized())
         m_spVideo->SetSoundSystem(m_spSoundSystem);
     pLoader->SetVideo(m_spVideo);
     return 1;
@@ -71,18 +71,18 @@ void GFxVideo::FUN_1422ec670()
 MS2_REPLACE_METHOD(0x1422EC670, GFxVideo, FUN_1422ec670, 138, 0x5F9876F6);
 
 // @0x1422ec700
-bool GFxVideo::FUN_1422ec700(HWND hWnd)
+bool GFxVideo::RestoreSoundSystem(HWND hWnd)
 {
     if (!m_spSoundSystem)
         m_spSoundSystem = *new MS2VideoSoundSystemDX8(hWnd, Scaleform::Memory::GetGlobalHeap());
-    if (!m_spSoundSystem->FUN_1422fe9e0() && m_spSoundSystem->FUN_1422fea10(hWnd))
+    if (!m_spSoundSystem->IsInitialized() && m_spSoundSystem->FUN_1422fea10(hWnd))
     {
         m_spVideo->SetSoundSystem(m_spSoundSystem);
         return true;
     }
-    return m_spSoundSystem->FUN_1422fe9e0();
+    return m_spSoundSystem->IsInitialized();
 }
-MS2_REPLACE_METHOD(0x1422EC700, GFxVideo, FUN_1422ec700, 294, 0x00BAD35A);
+MS2_REPLACE_METHOD(0x1422EC700, GFxVideo, RestoreSoundSystem, 294, 0x00BAD35A);
 
 // @0x1422ec830
 Video* GFxVideo::GetVideo()
@@ -92,13 +92,13 @@ Video* GFxVideo::GetVideo()
 MS2_REPLACE_METHOD(0x1422EC830, GFxVideo, GetVideo, 31, 0xBE0AC345);
 
 // @0x1422ec860
-VideoDecoder* GFxVideo::FUN_1422ec860()
+VideoDecoder* GFxVideo::GetVideoDecoder()
 {
     if (m_spVideo)
         return m_spVideo->GetDecoder();
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422EC860, GFxVideo, FUN_1422ec860, 65, 0x48503F42);
+MS2_REPLACE_METHOD(0x1422EC860, GFxVideo, GetVideoDecoder, 65, 0x48503F42);
 
 // ---- GFxClipboard -------------------------------------------------------------------------------------------------------
 
@@ -106,7 +106,7 @@ MS2_REPLACE_METHOD(0x1422EC860, GFxVideo, FUN_1422ec860, 65, 0x48503F42);
 void GFxClipboard::OnTextStore(const wchar_t* ptext, Scaleform::UPInt len)
 {
     Scaleform::GFx::TextClipboard::OnTextStore(ptext, len);
-    if (FUN_14025e7a0()->IsWindowFocusedAndTextFieldFocused(2) == 0)
+    if (GetGFxManager()->IsWindowFocusedAndTextFieldFocused(2) == 0)
         return;
     if (OpenClipboard(NULL))
     {

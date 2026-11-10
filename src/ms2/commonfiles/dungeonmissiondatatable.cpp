@@ -30,7 +30,7 @@ public:
 };
 class CLogString* GetLogString();
 
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 // The mapped object of key, or NULL.
@@ -58,9 +58,9 @@ MS2_REPLACE_METHOD(0x140318CE0, DungeonMissionDataTable, GetMission, 75, 0x78D16
 // @0x140318d40
 BOOL DungeonMissionDataTable::ReadFromXml()
 {
-    CString strPath = FUN_14071a5b0("Table", "DungeonMission.xml");
+    CString strPath = GetXmlPath("Table", "DungeonMission.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return FALSE;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)

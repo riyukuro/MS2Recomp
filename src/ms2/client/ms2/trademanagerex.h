@@ -46,28 +46,28 @@ public:
 
     // Incoming packet (opcode 0x82): OnTrade switches on the sub-code.
     void OnTrade(CInPacket& packet);
-    void FUN_14185bec0(CInPacket& packet);          // 0  trade request from a player
-    void FUN_14185c230(CInPacket& packet);          // 2  request sent
-    void FUN_14185c2a0(CInPacket& packet);          // 1  request failed (reason code)
+    void OnTradeRequest(CInPacket& packet);          // 0  trade request from a player
+    void OnTradeRequestSent(CInPacket& packet);          // 2  request sent
+    void OnTradeRequestFailed(CInPacket& packet);          // 1  request failed (reason code)
     void FUN_14185cc60(CInPacket& packet);          // 4  request declined
-    void FUN_14185cd10(CInPacket& packet);          // 5  trade started
-    void FUN_14185cee0(CInPacket& packet);          // 6  trade finished / cancelled
-    void FUN_14185d020(CInPacket& packet);          // 8  item added
-    void FUN_14185d380(CInPacket& packet);          // 9  item removed
+    void OnTradeStarted(CInPacket& packet);          // 5  trade started
+    void OnTradeFinished(CInPacket& packet);          // 6  trade finished / cancelled
+    void OnTradeItemAdded(CInPacket& packet);          // 8  item added
+    void OnTradeItemRemoved(CInPacket& packet);          // 9  item removed
     void FUN_14185d4f0(CInPacket& packet);          // 10
-    void FUN_14185d590(CInPacket& packet);          // 11 confirm
+    void OnTradeConfirm(CInPacket& packet);          // 11 confirm
     void FUN_14185d610(CInPacket& packet);          // 12
     void FUN_14185d720(CInPacket& packet);          // 13
     void FUN_14185d750(CInPacket& packet);          // 14
 
     void FUN_14185d7b0();                           // reset the trade state
     void FUN_14185d820(__int64 uid, CStringW strName, CString strChar); // begin a trade with uid
-    int  FUN_14185d8b0();                           // can a new trade start?
+    int  CanStartTrade();                           // can a new trade start?
     __int64 GetUidLastSent();                        // m_uidLastSent
-    void FUN_14185dc90();                           // m_bConfirmed = false
+    void ClearConfirmed();                           // m_bConfirmed = false
     // Inline accessors (COMDATs first emitted in uitradedialogex.cpp).
-    __int64 FUN_141b29c10() { return m_uidPartner; }    // 0x141b29c10
-    CStringW FUN_141b29c20() { return m_strName; }      // 0x141b29c20
+    __int64 GetPartnerUid() { return m_uidPartner; }    // 0x141b29c10
+    CStringW GetPartnerName() { return m_strName; }      // 0x141b29c20
     CString FUN_141b29c70() { return m_strChar; }       // 0x141b29c70
 
 public:
@@ -93,13 +93,13 @@ class Unk_TradeItemTable
 public:
     Unk_TradeItemTable();                           // 0x14185b130 (member ctors only; the exe dynamic-init calls it)
     ~Unk_TradeItemTable();                          // 0x14185b170
-    void FUN_14185b1b0();                           // m_nSlots = 5; size the slot array; Reset()
-    void FUN_14185b200();                           // Reset: clear the map, size the slot array, clear every slot
-    int FUN_14185b2a0(CItem* pItem);                // put the item on the table (assigns a free slot if its slot is -1)
-    void FUN_14185b3d0(__int64 uid);                // take the item with this uid off the table
+    void Init();                           // m_nSlots = 5; size the slot array; Reset()
+    void Reset();                           // Reset: clear the map, size the slot array, clear every slot
+    int AddItem(CItem* pItem);                // put the item on the table (assigns a free slot if its slot is -1)
+    void RemoveItem(__int64 uid);                // take the item with this uid off the table
     MS2Ptr<CItem> FUN_14185b4a0(__int64 uid);       // find an item by uid
-    void FUN_14185b520(ATL::CAtlArray<MS2Ptr<CItem> >& out); // append every item (MS2Ptr<CItem> copies) to out
-    int FUN_14185b5c0();                            // first free slot index, -1 if none
+    void GetAllItems(ATL::CAtlArray<MS2Ptr<CItem> >& out); // append every item (MS2Ptr<CItem> copies) to out
+    int FindFreeSlot();                            // first free slot index, -1 if none
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -133,11 +133,11 @@ public:
     virtual MS2Ptr<CItem> vfunc_25();               // 25 0x14185e320 the item in the slot
     virtual int vfunc_0(void* p);                   // ITooltip 0x14185df40 build the item tooltip into p
 
-    void FUN_14185e370(MS2Ptr<CItem> spItem);       // play the item's pickup/drop sound
+    void PlayItemSound(MS2Ptr<CItem> spItem);       // play the item's pickup/drop sound
     void SetItem(MS2Ptr<CItem> spItem);       // m_spItem = spItem
-    int FUN_14185e530();                            // item template id, 0 if empty
-    __int64 FUN_14185e580();                        // item uid, 0 if empty
-    void FUN_14185e5d0();                           // send "remove item" for this slot if it is mine
+    int GetItemTemplateId();                            // item template id, 0 if empty
+    __int64 GetItemUid();                        // item uid, 0 if empty
+    void SendRemoveItem();                           // send "remove item" for this slot if it is mine
     bool IsMine();                           // return m_bMine
 
 public:

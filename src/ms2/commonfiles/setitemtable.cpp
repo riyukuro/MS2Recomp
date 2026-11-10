@@ -38,10 +38,10 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 // The two-argument log call (an FMT_VARIADIC instantiation, ?\characterability.cpp).
 template <class T1, class T2> void FUN_1401e0850(CLogString* log, int level, int category, const wchar_t* format, const T1& first,
                    const T2& second);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
+CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
-class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions* GetLaunchOptions();   // C3: was GetLaunchOptions
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
 public:
@@ -105,9 +105,9 @@ int SetItemTable::Load()
 int SetItemTable::LoadSets()
 {
     m_map.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "SetItemInfo.xml");
+    CString strPath = GetXmlPath("Table", "SetItemInfo.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -123,9 +123,9 @@ int SetItemTable::LoadSets()
         SetItemInfoPtr spInfo(new SetItemInfo);
         if (!spInfo->Load(pNode))
             return 0;
-        if (m_map.Lookup(spInfo->FUN_1407ad550()) != 0)
+        if (m_map.Lookup(spInfo->GetId()) != 0)
         {
-            unsigned nSetId = spInfo->FUN_1407ad550();
+            unsigned nSetId = spInfo->GetId();
             FUN_1401e0850<CString, unsigned>(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[<ms2> {0}] SetID is Duplicated, setID = {1}", strPath, nSetId);
             return 0;
         }
@@ -136,16 +136,16 @@ int SetItemTable::LoadSets()
             int nItemId = *it;
             m_byItem.insert(std::make_pair(nItemId, spInfo));
         }
-        m_map.SetAt(spInfo->FUN_1407ad550(), spInfo);
+        m_map.SetAt(spInfo->GetId(), spInfo);
     }
     return 1;
 }
 
 // @0x1407c5020
 // An unused pointer argument (rcx is spilled); no caller is recovered.
-int FUN_1407c5020(void* pUnused)
+int IsDisableValidate(void* pUnused)
 {
-    return ((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->IsDisableValidate();
+    return ((class Unk_LaunchOptions*)(void*)(((void*)GetLaunchOptions())))->IsDisableValidate();
 }
 
 // @0x1407c5050
@@ -167,7 +167,7 @@ void SetItemTable::FUN_1407c50e0(int nSetId, void* pOut)
 }
 
 // @0x1407c5160
-bool SetItemTable::FUN_1407c5160(int nSetId)
+bool SetItemTable::IsShowEffect(int nSetId)
 {
     SetItemInfoPtr spInfo;
     if (m_map.Lookup(nSetId, spInfo) != 0)
@@ -204,7 +204,7 @@ void SetItemTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(SetItemTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(SetItemTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

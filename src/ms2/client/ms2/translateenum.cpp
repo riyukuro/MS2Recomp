@@ -12,7 +12,7 @@
 #include "ms2/ms2recover.h"
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
-void FUN_141821bf0(CString strFirst, CString strSecond);                    // block-file modifier
+void DeleteBlockProperties(CString strFirst, CString strSecond);                    // block-file modifier
 
 IMPLEMENT_DYNAMIC(CToolBlockFileModifyDialog, CDialogEx)
 
@@ -42,7 +42,7 @@ void CToolBlockFileModifyDialog::OnBnClickedOk()
     GetDlgItemText(0x4f0, strFirst);
     CString strSecond;
     GetDlgItemText(0x470, strSecond);
-    FUN_141821bf0(strFirst, strSecond);
+    DeleteBlockProperties(strFirst, strSecond);
     CDialog::OnOK();
 }
 

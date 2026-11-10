@@ -8,7 +8,7 @@
 CStringW FUN_14016a730(const char* psz, int n);
 
 // @0x141026ab0
-CStringW FUN_141026ab0()
+CStringW GetThumbnailDirectory()
 {
     CStringW strPath = FUN_14016a730(".\\Custom\\Thumbnail", 0);
     return CStringW(strPath);
@@ -18,6 +18,6 @@ CStringW FUN_141026ab0()
 CStringW FUN_141026b20(const CStringW& strTitle)
 {
     CStringW strPath;
-    strPath.Format(L"%s/%s.png", (LPCWSTR)FUN_141026ab0(), (LPCWSTR)strTitle);
+    strPath.Format(L"%s/%s.png", (LPCWSTR)GetThumbnailDirectory(), (LPCWSTR)strTitle);
     return CStringW(strPath);
 }

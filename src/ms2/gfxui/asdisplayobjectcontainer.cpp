@@ -16,7 +16,7 @@
 #include "hook/ms2hook.h"
 
 // The typed Value setters of the Invoke argument lists (COMDATs of ASArray's obj).
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);
 
 // @0x1422c6570
@@ -31,137 +31,137 @@ ASDisplayObjectContainer::~ASDisplayObjectContainer()
 }
 
 // @0x1422c65f0
-void ASDisplayObjectContainer::FUN_1422c65f0(int bTab)
+void ASDisplayObjectContainer::SetTabChildren(int bTab)
 {
-    FUN_1407cbbe0("tabChildren", bTab != 0);
+    SetBoolMember("tabChildren", bTab != 0);
 }
-MS2_REPLACE_METHOD(0x1422C65F0, ASDisplayObjectContainer, FUN_1422c65f0, 60, 0x661F6825);
+MS2_REPLACE_METHOD(0x1422C65F0, ASDisplayObjectContainer, SetTabChildren, 60, 0x661F6825);
 
 // @0x1422c6640
-void ASDisplayObjectContainer::FUN_1422c6640(bool b)
+void ASDisplayObjectContainer::SetMouseChildren(bool b)
 {
-    FUN_1407cbbe0("mouseChildren", b);
+    SetBoolMember("mouseChildren", b);
 }
-MS2_REPLACE_METHOD(0x1422C6640, ASDisplayObjectContainer, FUN_1422c6640, 41, 0xFFB9C06B);
+MS2_REPLACE_METHOD(0x1422C6640, ASDisplayObjectContainer, SetMouseChildren, 41, 0xFFB9C06B);
 
 // @0x1422c6670
-int ASDisplayObjectContainer::FUN_1422c6670()
+int ASDisplayObjectContainer::GetNumChildren()
 {
     return GetMember("numChildren").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422C6670, ASDisplayObjectContainer, FUN_1422c6670, 88, 0x078F0851);
+MS2_REPLACE_METHOD(0x1422C6670, ASDisplayObjectContainer, GetNumChildren, 88, 0x078F0851);
 
 // @0x1422c66d0
-int ASDisplayObjectContainer::FUN_1422c66d0()
+int ASDisplayObjectContainer::GetTabChildren()
 {
     return GetMember("tabChildren").GetBool();
 }
-MS2_REPLACE_METHOD(0x1422C66D0, ASDisplayObjectContainer, FUN_1422c66d0, 91, 0x70563FC4);
+MS2_REPLACE_METHOD(0x1422C66D0, ASDisplayObjectContainer, GetTabChildren, 91, 0x70563FC4);
 
 // @0x1422c6740
-int ASDisplayObjectContainer::FUN_1422c6740()
+int ASDisplayObjectContainer::GetMouseChildren()
 {
     return GetMember("mouseChildren").GetBool();
 }
-MS2_REPLACE_METHOD(0x1422C6740, ASDisplayObjectContainer, FUN_1422c6740, 91, 0x1139B52F);
+MS2_REPLACE_METHOD(0x1422C6740, ASDisplayObjectContainer, GetMouseChildren, 91, 0x1139B52F);
 
 // @0x1422c67b0
-int ASDisplayObjectContainer::FUN_1422c67b0(MS2Ptr<ASDisplayObject> spChild)
+int ASDisplayObjectContainer::GetChildIndex(MS2Ptr<ASDisplayObject> spChild)
 {
-    return Invoke("getChildIndex", spChild->FUN_1422bb870()).GetUInt();
+    return Invoke("getChildIndex", spChild->GetValue()).GetUInt();
 }
 
 // @0x1422c6860
-int ASDisplayObjectContainer::FUN_1422c6860(const Scaleform::GFx::Value& child)
+int ASDisplayObjectContainer::Contains(const Scaleform::GFx::Value& child)
 {
     return Invoke("contains", child).GetBool();
 }
-MS2_REPLACE_METHOD(0x1422C6860, ASDisplayObjectContainer, FUN_1422c6860, 143, 0x197D5FA0);
+MS2_REPLACE_METHOD(0x1422C6860, ASDisplayObjectContainer, Contains, 143, 0x197D5FA0);
 
 // @0x1422c6900
-Scaleform::GFx::Value ASDisplayObjectContainer::FUN_1422c6900(Scaleform::GFx::Value child)
+Scaleform::GFx::Value ASDisplayObjectContainer::AddChild(Scaleform::GFx::Value child)
 {
     Invoke("addChild", child);
     return child;
 }
 
 // @0x1422c69c0
-Scaleform::GFx::Value ASDisplayObjectContainer::FUN_1422c69c0(Scaleform::GFx::Value child, int nIndex)
+Scaleform::GFx::Value ASDisplayObjectContainer::AddChildAt(Scaleform::GFx::Value child, int nIndex)
 {
     FUN_1422c6f70("addChildAt", child, (float)nIndex);
     return child;
 }
 
 // @0x1422c6aa0
-Scaleform::GFx::Value ASDisplayObjectContainer::FUN_1422c6aa0(int nIndex)
+Scaleform::GFx::Value ASDisplayObjectContainer::GetChildAt(int nIndex)
 {
     return Invoke("getChildAt", nIndex);
 }
-MS2_REPLACE_METHOD(0x1422C6AA0, ASDisplayObjectContainer, FUN_1422c6aa0, 75, 0x000D3658);
+MS2_REPLACE_METHOD(0x1422C6AA0, ASDisplayObjectContainer, GetChildAt, 75, 0x000D3658);
 
 // @0x1422c6b00
-Scaleform::GFx::Value ASDisplayObjectContainer::FUN_1422c6b00(const CString& strName)
+Scaleform::GFx::Value ASDisplayObjectContainer::GetChildByName(const CString& strName)
 {
     return Invoke("getChildByName", strName);
 }
-MS2_REPLACE_METHOD(0x1422C6B00, ASDisplayObjectContainer, FUN_1422c6b00, 106, 0x07634845);
+MS2_REPLACE_METHOD(0x1422C6B00, ASDisplayObjectContainer, GetChildByName, 106, 0x07634845);
 
 // @0x1422c6b70
-Scaleform::GFx::Value ASDisplayObjectContainer::FUN_1422c6b70(Scaleform::GFx::Value child)
+Scaleform::GFx::Value ASDisplayObjectContainer::RemoveChild(Scaleform::GFx::Value child)
 {
     return Invoke("removeChild", child);
 }
 
 // @0x1422c6c00
-Scaleform::GFx::Value ASDisplayObjectContainer::FUN_1422c6c00(int nIndex)
+Scaleform::GFx::Value ASDisplayObjectContainer::RemoveChildAt(int nIndex)
 {
     return Invoke("removeChildAt", nIndex);
 }
-MS2_REPLACE_METHOD(0x1422C6C00, ASDisplayObjectContainer, FUN_1422c6c00, 75, 0x04E81819);
+MS2_REPLACE_METHOD(0x1422C6C00, ASDisplayObjectContainer, RemoveChildAt, 75, 0x04E81819);
 
 // @0x1422c6c60
-Scaleform::GFx::Value ASDisplayObjectContainer::FUN_1422c6c60()
+Scaleform::GFx::Value ASDisplayObjectContainer::GetParent()
 {
     return GetMember("parent");
 }
-MS2_REPLACE_METHOD(0x1422C6C60, ASDisplayObjectContainer, FUN_1422c6c60, 65, 0x592F520F);
+MS2_REPLACE_METHOD(0x1422C6C60, ASDisplayObjectContainer, GetParent, 65, 0x592F520F);
 
 // @0x1422c6cb0
-void ASDisplayObjectContainer::FUN_1422c6cb0(MS2Ptr<ASDisplayObject> spChild, int nIndex)
+void ASDisplayObjectContainer::SetChildIndex(MS2Ptr<ASDisplayObject> spChild, int nIndex)
 {
-    FUN_1422c6f70("setChildIndex", spChild->FUN_1422bb870(), (float)nIndex);
+    FUN_1422c6f70("setChildIndex", spChild->GetValue(), (float)nIndex);
 }
 
 // @0x1422c6d60
-void ASDisplayObjectContainer::FUN_1422c6d60(MS2Ptr<ASDisplayObject> spChild1, MS2Ptr<ASDisplayObject> spChild2)
+void ASDisplayObjectContainer::SwapChildren(MS2Ptr<ASDisplayObject> spChild1, MS2Ptr<ASDisplayObject> spChild2)
 {
-    Invoke("swapChildren", spChild1->FUN_1422bb870(), spChild2->FUN_1422bb870());
+    Invoke("swapChildren", spChild1->GetValue(), spChild2->GetValue());
 }
 
 // @0x1422c6e50
-void ASDisplayObjectContainer::FUN_1422c6e50(int nIndex1, int nIndex2)
+void ASDisplayObjectContainer::SwapChildrenAt(int nIndex1, int nIndex2)
 {
     FUN_140e5bf20("swapChildrenAt", (float)nIndex1, (float)nIndex2);
 }
-MS2_REPLACE_METHOD(0x1422C6E50, ASDisplayObjectContainer, FUN_1422c6e50, 76, 0x9EA4565D);
+MS2_REPLACE_METHOD(0x1422C6E50, ASDisplayObjectContainer, SwapChildrenAt, 76, 0x9EA4565D);
 
 // @0x1422c6eb0
-void ASDisplayObjectContainer::FUN_1422c6eb0()
+void ASDisplayObjectContainer::RemoveFromParent()
 {
-    Scaleform::GFx::Value parent = FUN_1422c6c60();
+    Scaleform::GFx::Value parent = GetParent();
     if (parent.IsObject()) {
         ASDisplayObjectContainer container(parent, 2);
-        container.FUN_1422c6b70(m_value);
+        container.RemoveChild(m_value);
     }
 }
-MS2_REPLACE_METHOD(0x1422C6EB0, ASDisplayObjectContainer, FUN_1422c6eb0, 188, 0x95ED2739);
+MS2_REPLACE_METHOD(0x1422C6EB0, ASDisplayObjectContainer, RemoveFromParent, 188, 0x95ED2739);
 
 // @0x1422c6f70
 inline Scaleform::GFx::Value AScript::FUN_1422c6f70(const char* szMethod, Scaleform::GFx::Value a1, float a2)
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcc70(&args[0], a1);
+    SetValue(&args[0], a1);
     FUN_1422bcd70(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }

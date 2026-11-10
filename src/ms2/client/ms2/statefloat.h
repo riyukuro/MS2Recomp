@@ -22,7 +22,7 @@ public:
     void vfunc_4(StateData* pData);                                                     // 0x1417c82d0
     void vfunc_8(double fTime);                                                         // 0x1417c84b0
 
-    void FUN_1417c8560();                                                               // 0x1417c8560 band = (surface z - 200) / 150
+    void UpdateBand();                                                               // 0x1417c8560 band = (surface z - 200) / 150
     Vector3 FUN_1417c85d0(Vector3 kMove, double fTime);                                 // 0x1417c85d0 damp + clamp the z step
 
     int m_nBand;                        // +0x40 surface band the actor is in

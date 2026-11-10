@@ -28,11 +28,11 @@ public:
 float FUN_140a4e660(float fY, float fX);                    // atan2
 
 // @0x14160c230
-float FUN_14160c230(const Vector3& v)
+float LengthSquared(const Vector3& v)
 {
     return v.x * v.x + v.y * v.y + v.z * v.z;
 }
-MS2_REPLACE(0x14160C230, FUN_14160c230, 72, 0x8F023533);
+MS2_REPLACE(0x14160C230, LengthSquared, 72, 0x8F023533);
 
 // @0x14160bf90
 void Unk_ArcMover::FUN_14160bf90(float fDelta, Vector3* pPos, float* pAngle)
@@ -48,7 +48,7 @@ void Unk_ArcMover::FUN_14160bf90(float fDelta, Vector3* pPos, float* pAngle)
     *pPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(((1.0f - fT) * m_vStart))) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((fT * m_vEnd)))));
     pPos->z = pPos->z + m_fHeight * 4.0f * fT * (1.0f - fT);
     Vector3 vDir = (m_vEnd - m_vStart);
-    if (FUN_14160c230(vDir) > 0.0f)
+    if (LengthSquared(vDir) > 0.0f)
         *pAngle = 90.0f + FUN_140a4e660(vDir.y, vDir.x) * 180.0f / 3.1415927f;
 }
 

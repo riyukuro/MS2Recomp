@@ -29,14 +29,14 @@ public:
     virtual int vfunc_o178_0(void* pAvatar);            // IUIAvatarEventListener slot 0, 0x140caec50
     virtual int vfunc_o178_1(void* pAvatar);            // IUIAvatarEventListener slot 1, 0x140caec10
 
-    void FUN_140cac6a0();                               // the "collected / total" count
+    void SetTotalCount();                               // the "collected / total" count
     void FUN_140cac8a0();                               // the group tabs
     void FUN_140cacc30();                               // the pets of every group
     void FUN_140cacce0();                               // the pets of the "all" group
-    void FUN_140cad2b0(int nGroup);                     // the pets of one group
-    void FUN_140cad8a0(int nGroup);                     // go to a group (remembered while there is no UI)
-    void FUN_140caed40();                               // load the render target
-    void FUN_140caeda0();                               // unload the render target
+    void SetGroupData(int nGroup);                     // the pets of one group
+    void GotoGroup(int nGroup);                     // go to a group (remembered while there is no UI)
+    void LoadRenderTarget();                               // load the render target
+    void UnloadRenderTarget();                               // unload the render target
 
     MS2Ptr<ASUIComponent> m_ui;                         // +0x20
     MS2Ptr<UIAvatarPet> m_avatar;                       // +0x30

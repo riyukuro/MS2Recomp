@@ -24,8 +24,8 @@ public:
 
     void FUN_140f4cd90(int nItemId);                            // show the preview of that package item
     void FUN_140f4ce70(int nItemId, float fX, float fY);            // same, remembering the position for OnLoadComplete
-    void FUN_140f4d110();                                       // fill the lists (setData)
-    void FUN_140f4dac0();                                       // release the bound items
+    void SetData();                                       // fill the lists (setData)
+    void ReleaseBoundItems();                                       // release the bound items
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -69,47 +69,47 @@ public:
     virtual ~UITalkManager();                               //  0 0x141b1dd30 (??_G 0x141b22390)
     virtual const void* vfunc_1();                          //  1 0x141b223d0 the registrar record "UITalkManager"
 
-    void FUN_141b1ddd0(CInPacket& in);                      // the talk packet
+    void OnTalkPacket(CInPacket& in);                      // the talk packet
     void FUN_141b1e8a0(CInPacket& in);                      // mode 3: move the player next to the npc
-    void FUN_141b1e990(CInPacket& in);                      // mode 1: set the npc's name tag
+    void SetNpcNameTag(CInPacket& in);                      // mode 1: set the npc's name tag
     void FUN_141b1ea90(CInPacket& in);                      // mode 4: open a dialog by name
     void FUN_141b1eb90(CString strDialog, CString strArg);  // open the named dialog (by value: the callee destroys them)
-    void FUN_141b1f350(CInPacket& in);                      // mode 5: reward items
-    void FUN_141b1f620(CInPacket& in);                      // mode 6: meso
-    void FUN_141b1f6b0(CInPacket& in);                      // mode 7: merat
+    void OnRewardItems(CInPacket& in);                      // mode 5: reward items
+    void OnRewardMerat(CInPacket& in);                      // mode 6: meso
+    void OnRewardMeso(CInPacket& in);                      // mode 7: merat
     void OnRewardExp(CInPacket& in);                      // mode 8: exp
     void OnRewardAffinity(CInPacket& in);                      // mode 9: affinity exp, jackpot flag
-    void FUN_141b1f840(CInPacket& in);                      // mode 10: pop up a message
-    void FUN_141b1f920(const CString& strArgs);             // BeautyShopDialog
-    void FUN_141b1fa20(const CString& strArgs);             // BeautyStyleDialog (the argument is not read)
-    bool FUN_141b1fa60();                                   // the local player exists
-    void FUN_141b1faa0(int nMode, int nDialogId);           // open a dialog from the talk
+    void PlayCutSceneMovie(CInPacket& in);                      // mode 10: pop up a message
+    void OpenBeautyShopDialog(const CString& strArgs);             // BeautyShopDialog
+    void OpenBeautyStyleDialog(const CString& strArgs);             // BeautyStyleDialog (the argument is not read)
+    bool HasLocalPlayer();                                   // the local player exists
+    void OpenTalkDialog(int nMode, int nDialogId);           // open a dialog from the talk
     void FUN_141b1fcf0(unsigned nNpcId);                    // start the talk with an npc
     void SendNpcTalkMode0();                                   // end the talk
     void FUN_141b1ff80(unsigned nNpcId);                    // begin: quest script
     void FUN_141b200d0(unsigned nNpcId, CTalkScript* pScript);   // begin: given script
-    void FUN_141b20210();                                   // reset the talk
+    void ResetTalk();                                   // reset the talk
     int FUN_141b204d0();                                    // show the first page
-    void FUN_141b20700();                                   // look the script up again
-    void FUN_141b20790(int nNpcId, int nFriendly);          // swap to another npc
+    void ReloadScript();                                   // look the script up again
+    void ShowNpcMonologue(int nNpcId, int nFriendly);          // swap to another npc
     int FUN_141b20ac0();                                    // always 0
-    void FUN_141b20af0();                                   // end the talk when the npc is gone
-    int FUN_141b20bb0();                                    // show the current page
+    void EndTalkIfNpcGone();                                   // end the talk when the npc is gone
+    int ShowCurrentPage();                                    // show the current page
     void SendNpcTalkMode2(unsigned nNpcId);                    // ask the server to continue
     void OpenScript(MS2Ptr<CTalkScript> spScript, int nId, int nPage);   // begin at a page
-    CStringW FUN_141b20ed0();                               // the name of the current page
+    CStringW GetCurrentPageName();                               // the name of the current page
     Unk_ScriptPtr<CTalkScript> GetScript();                    // the script handle
     MS2Ptr<CCinematicContent> GetCurrentContent();              // the current page
-    void FUN_141b21190(int nFlags, int nParam, int nPage);   // set the state words
+    void SetTalkState(int nFlags, int nParam, int nPage);   // set the state words
     int IsTalkIntervalElapsed();                                    // the talk cooldown elapsed
     int GetTalking();                                    // IsTalking
-    int FUN_141b21240(int nNpcId);                          // IsTalkingWith
+    int IsTalkingWith(int nNpcId);                          // IsTalkingWith
     unsigned GetNpcId();                               // npc id (0 when not talking)
-    int FUN_141b212f0();                                    // npc id of the open talk
+    int GetTalkNpcId();                                    // npc id of the open talk
     Unk_TcNpc* GetTalkNpc();                             // the npc actor
     void FUN_141b21390();                                   // stop
     int FUN_141b213c0();                                    // the talk has no npc
-    unsigned FUN_141b213f0(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound);   // begin without an npc
+    unsigned BeginTalkWithoutNpc(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound);   // begin without an npc
     void FUN_141b215b0(int bSamePage);                      // advance to the next page
     void FUN_141b217b0();                                   // clear the id queue
     void FUN_141b217e0(unsigned nId);                       // queue an id
@@ -117,12 +117,12 @@ public:
     unsigned __int64 FUN_141b21860();                       // queue length
     unsigned FUN_141b21890();                               // m_48
     int FUN_141b218b0(Unk_TcNpc* pNpc);                     // refuse a talk (shows a notice)
-    Unk_TalkIdList* FUN_141b21a10();                        // the dialogs the talk opened
-    void FUN_141b21a30();                                   // close them
-    void FUN_141b21ae0(const CString& strDialog);           // remember or close the dialog
-    Unk_ScriptPtr<CTalkScript> FUN_141b21b90();                    // find the script of the talk
+    Unk_TalkIdList* GetOpenedDialogs();                        // the dialogs the talk opened
+    void OpenPendingDialogs();                                   // close them
+    void OpenOrQueueDialog(const CString& strDialog);           // remember or close the dialog
+    Unk_ScriptPtr<CTalkScript> FindTalkScript();                    // find the script of the talk
     unsigned FUN_141b21d70();                               // the sound of the page
-    int FUN_141b1d810() { return m_nSound; }                // 0x141b1d810 (inline)
+    int GetSound() { return m_nSound; }                // 0x141b1d810 (inline)
     CTalkRewardData* FUN_141082d60() { return &m_reward; }  // 0x141082d60 (inline) the reward block of the open talk
     unsigned char FUN_141082ec0() { return m_nFlags; }      // 0x141082ec0 (inline) the state flags
 

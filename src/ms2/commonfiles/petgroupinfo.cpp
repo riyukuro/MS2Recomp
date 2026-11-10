@@ -23,7 +23,7 @@ public:
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 // @0x140721000
@@ -59,9 +59,9 @@ CPetCollectTable::~CPetCollectTable()
 // @0x140721190
 bool CPetCollectTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "petCollectGroup.xml");
+    CString strPath = GetXmlPath("Table", "petCollectGroup.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)

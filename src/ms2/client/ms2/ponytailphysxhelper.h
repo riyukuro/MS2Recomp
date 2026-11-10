@@ -87,10 +87,10 @@ public:
     void GetPresetTransform(MS2Ptr<CEquipModel> spPart, NiNode* pRoot, int nIndex, int nSecond,
                        Vector3& kPos, Vector3& kEuler, float& fScale);   // pose: stored preset nIndex
     void FUN_141695220();                                           // puts the parts to their rest pose once
-    void FUN_1416952c0(Unk_PonyPart* pPart);                        // applies a part's rest pose to its model
+    void ApplyPartRestPose(Unk_PonyPart* pPart);                        // applies a part's rest pose to its model
     void FUN_1416955b0(int nMode, int nIndex, Unk_PonyPoseFn pFn, int nValue);   // runs the pose callback for both parts
-    void FUN_141695710(Unk_PonyPart* pPart, int nMode, int nIndex, Unk_PonyPoseFn pFn, int nValue, int bSecond);
-    Vector3 FUN_141695bc0(const Vector3& kOrigin, const Vector3& kPoint, const Vector3& kPlane);
+    void ApplyPartPose(Unk_PonyPart* pPart, int nMode, int nIndex, Unk_PonyPoseFn pFn, int nValue, int bSecond);
+    Vector3 MirrorPoint(const Vector3& kOrigin, const Vector3& kPoint, const Vector3& kPlane);
     NiTransform GetModelTransform(CEquipModel* pModel);              // the transform of a part model
 
     float m_fSensitivity;                                           // +0xb8 drag speed (client config)

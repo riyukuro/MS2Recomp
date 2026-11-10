@@ -37,42 +37,42 @@ public:
 
     void FUN_140f59230(CInPacket& packet);                      // 0x140f59230 packet 0xc9
     void FUN_140f59420(unsigned __int64 nOptionUid, int nUnk);  // 0x140f59420 remake clicked: ask for confirmation
-    void FUN_140f59ad0(unsigned __int64 nOptionUid, int nUnk);  // 0x140f59ad0 send the remake request (packet 0x76, kind 1)
+    void SendRemakeRequest(unsigned __int64 nOptionUid, int nUnk);  // 0x140f59ad0 send the remake request (packet 0x76, kind 1)
     void FUN_140f5a7e0(CInPacket& packet);                      // 0x140f5a7e0 packet type 2: the new options
     void FUN_140f5a9c0(CInPacket& packet);                      // 0x140f5a9c0 packet type 3: the options were applied
-    void FUN_140f5ab10(CInPacket& packet);                      // 0x140f5ab10 packet type 4: error code
-    void FUN_140f5acf0(ASData& data);                           // 0x140f5acf0 onClickConfirm by state
+    void OnRemakeError(CInPacket& packet);                      // 0x140f5ab10 packet type 4: error code
+    void OnClickConfirm(ASData& data);                           // 0x140f5acf0 onClickConfirm by state
     void FUN_140f5adb0();                                       // 0x140f5adb0 state 1: go to the lock option choice
     void FUN_140f5ae60(ASData& data);                           // 0x140f5ae60 state 2: ask for the lock option
-    void FUN_140f5b670(ASData& data);                           // 0x140f5b670 state 3: apply the selected option
-    void FUN_140f5bb20();                                       // 0x140f5bb20 state 4: open the dialog again
-    void FUN_140f5bb60();                                       // 0x140f5bb60 state 4: restart
-    void FUN_140f5bbb0(ASData& data);                           // 0x140f5bbb0 GetEnableLockOption
+    void ApplySelectedOption(ASData& data);                           // 0x140f5b670 state 3: apply the selected option
+    void CloseDialog();                                       // 0x140f5bb20 state 4: open the dialog again
+    void Restart();                                       // 0x140f5bb60 state 4: restart
+    void GetEnableLockOption(ASData& data);                           // 0x140f5bbb0 GetEnableLockOption
     void FUN_140f5c2e0();                                       // 0x140f5c2e0 "restart"
     void FUN_140f5c340();                                       // 0x140f5c340 "showOption"
-    void FUN_140f5c700();                                       // 0x140f5c700 "selectOption"
-    void FUN_140f5cba0(MS2Ptr<CItem> spItem);                   // 0x140f5cba0 "complete"
+    void ShowSelectOption();                                       // 0x140f5c700 "selectOption"
+    void ShowComplete(MS2Ptr<CItem> spItem);                   // 0x140f5cba0 "complete"
     void FUN_140f5d020(MS2Ptr<CItem> spItem);                   // 0x140f5d020 forget an item's lock
     void SetState(int nState);                             // 0x140f5d080 set the state
     int GetState();                                        // 0x140f5d0a0 the state
     ItemScrollSlot* FUN_140f5d0c0(CString strName);             // 0x140f5d0c0 the scroll slot of a name
     bool FUN_140f5d140(MS2Ptr<CItem> spItem);                   // 0x140f5d140 put an item in the target slot
-    bool FUN_140f5d220(MS2Ptr<CItem> spItem);                   // 0x140f5d220 put an item in the ingredient slot
-    MS2Ptr<CItemRemakeScrollData> FUN_140f5d380(MS2Ptr<CItemData> spData);  // 0x140f5d380 the table row of a scroll
-    bool FUN_140f5d460(MS2Ptr<CItemRemakeScrollData> spRow, CStringW& strNotice);   // 0x140f5d460 the limit text
-    bool FUN_140f5dd50(MS2Ptr<CItem> spItem, MS2Ptr<CItemRemakeScrollData> spRow, CStringW& strDesc);   // 0x140f5dd50 the description
-    void FUN_140f5e1f0(int nState);                             // 0x140f5e1f0 set the state and show it
+    bool SetIngredientItem(MS2Ptr<CItem> spItem);                   // 0x140f5d220 put an item in the ingredient slot
+    MS2Ptr<CItemRemakeScrollData> GetRemakeScrollData(MS2Ptr<CItemData> spData);  // 0x140f5d380 the table row of a scroll
+    bool GetScrollLimitNotice(MS2Ptr<CItemRemakeScrollData> spRow, CStringW& strNotice);   // 0x140f5d460 the limit text
+    bool GetScrollDescription(MS2Ptr<CItem> spItem, MS2Ptr<CItemRemakeScrollData> spRow, CStringW& strDesc);   // 0x140f5dd50 the description
+    void SetStateAndShow(int nState);                             // 0x140f5e1f0 set the state and show it
     CStringW FUN_140f5e240(MS2Ptr<CItem> spItem, bool bUnk);     // 0x140f5e240 (an empty text)
     bool FUN_140f5e2a0(int nError);                             // 0x140f5e2a0 notice for a check error
-    bool FUN_140f5e4c0(int nButton, const CMsgBoxData& box);    // 0x140f5e4c0 "lock option" box answered: send
-    void FUN_140f5e510();                                       // 0x140f5e510 forget the options
+    bool OnLockOptionMsgBox(int nButton, const CMsgBoxData& box);    // 0x140f5e4c0 "lock option" box answered: send
+    void ClearOptions();                                       // 0x140f5e510 forget the options
     void FUN_140f5e570(ItemScrollSlot& slot);                   // 0x140f5e570 the target was removed from the slot
-    void FUN_140f5e5f0(ItemScrollSlot& slot, DragSlot* pDrag);  // 0x140f5e5f0 an item was dropped onto the target slot
-    void FUN_140f5ed50(ItemScrollSlot& slot);                   // 0x140f5ed50 the ingredient was removed from the slot
-    void FUN_140f5ede0(ItemScrollSlot& slot, DragSlot* pDrag);  // 0x140f5ede0 an item was dropped onto the ingredient slot
-    bool FUN_140f5f250(int nButton, const CMsgBoxData& box);    // 0x140f5f250 "ask close" box answered: close
+    void OnTargetSlotDrop(ItemScrollSlot& slot, DragSlot* pDrag);  // 0x140f5e5f0 an item was dropped onto the target slot
+    void OnIngredientRemoved(ItemScrollSlot& slot);                   // 0x140f5ed50 the ingredient was removed from the slot
+    void OnIngredientSlotDrop(ItemScrollSlot& slot, DragSlot* pDrag);  // 0x140f5ede0 an item was dropped onto the ingredient slot
+    bool OnAskCloseMsgBox(int nButton, const CMsgBoxData& box);    // 0x140f5f250 "ask close" box answered: close
     bool FUN_140f5f2a0(int nButton, const CMsgBoxData& box);    // 0x140f5f2a0 "high option" box answered: send
-    void FUN_140f5f310(ATL::CAtlArray<int>& aLocked);           // 0x140f5f310 the locked option indexes
+    void GetLockedOptionIndexes(ATL::CAtlArray<int>& aLocked);           // 0x140f5f310 the locked option indexes
 
 private:
     MS2_LAYOUT_FRIEND;

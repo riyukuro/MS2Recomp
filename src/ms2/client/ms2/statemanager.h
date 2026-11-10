@@ -87,7 +87,7 @@ MS2_CHECK_OFFSET(StateSyncObject, m_nA8, 0xa8);
 MS2_CHECK_OFFSET(StateSyncObject, m_fA4, 0xa4);
 #endif
 
-// The owner state whose slots 36/37 CStateManager::FUN_1417daaa0 drives (state id 2).
+// The owner state whose slots 36/37 CStateManager::Update drives (state id 2).
 class Unk_SMStateSlots : public State
 {
 public:
@@ -117,10 +117,10 @@ public:
     CStateManager(PCBase* pOwner);                                  // 0x1417da7a0
     virtual ~CStateManager();                                       // 0x1417da950 (??_G 0x1417dd510)
 
-    void FUN_1417daa70();                                           // drop every queued request
-    void FUN_1417daaa0(double fTime);                               // per-frame update
+    void ClearRequests();                                           // drop every queued request
+    void Update(double fTime);                               // per-frame update
     void RegisterState(int nId, State* pState);                     // AddState (asserts nId == pState->vfunc_1())
-    void FUN_1417dafa0(int nState, StateData* pData, int nSub, int bForce);   // change state
+    void ChangeState(int nState, StateData* pData, int nSub, int bForce);   // change state
     State* GetState();                                         // current state
     State* FindState(int nId);                                  // state by id, or NULL
     void FUN_1417db230(int nValue);                                 // current state slot 2
@@ -137,8 +137,8 @@ public:
     void OnEndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID, NiControllerSequence* pkSeq,
         float fEventTime);                                          // slot 13
     void FUN_1417dc020(int n);                                      // slot 31
-    int FUN_1417dc070(int nState);                                  // the state allows a position correction
-    void FUN_1417dc110();                                           // flush the request queue
+    int IsPositionCorrectionAllowed(int nState);                                  // the state allows a position correction
+    void FlushRequests();                                           // flush the request queue
     MS2Ptr<StateSyncObject> FUN_1417dc230(float* pDelta);            // next due request
     void FUN_1417dc4c0(StateSyncObject* pReq);                       // apply a request's non-state parts
     MS2Ptr<StateData> FUN_1417dc9a0(int nState);                    // the state's pending data
@@ -191,7 +191,7 @@ public:
 
     void FUN_1417df370();                                           // go to the fallback state
     int GetMode();                                            // m_nMode
-    int FUN_1417df3e0();                                            // skill id of the data (0 if none)
+    int GetSkillId();                                            // skill id of the data (0 if none)
     long long FUN_1417df430();                                      // skill cooldown (0 if none)
     bool FUN_1417df6a0();                                           // keep-playing check
 
@@ -285,9 +285,9 @@ public:
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);             // 13 0x1417e1d00
 
-    void FUN_1417e1df0(egf::Entity* pRope);                         // switch the rope entity
+    void SetRope(egf::Entity* pRope);                         // switch the rope entity
     float FUN_1417e1e60();                                          // climb step + ground / rope probes
-    void FUN_1417e20d0(float fDz, float fAngle);                    // move the actor along the rope
+    void MoveAlongRope(float fDz, float fAngle);                    // move the actor along the rope
     void FUN_1417e23c0();                                           // arm the grab timer
 
     egf::Entity* m_pRope;                                           // +0x40 rope entity
@@ -331,10 +331,10 @@ public:
     virtual efd::AsyncResult OnShutdown();          // 0x1417e3200
 
     int FUN_1417e25a0(int nScene);                  // switch to a scene state (0 = none)
-    int FUN_1417e2610();                            // current scene id
+    int GetCurrentSceneId();                            // current scene id
     int FUN_1417e2670();                            // current scene slot 15
     efd::SmartPointer<CSceneStateBase> GetCurrent();       // copy of the current scene
-    efd::SmartPointer<CSceneStateBase> FUN_1417e2720(unsigned nScene);   // scene by id
+    efd::SmartPointer<CSceneStateBase> FindScene(unsigned nScene);   // scene by id
     void FUN_1417e27d0(CInPacket* pPacket);         // forward a packet to the current scene
     int FUN_1417e2830(int nScene);                  // the switch itself
 

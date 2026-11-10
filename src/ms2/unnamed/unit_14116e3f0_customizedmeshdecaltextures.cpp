@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The customised skin decal of an equipped mesh: FUN_14116e3f0 clones the
 // mesh's texturing property and adds the decal / tint shader maps plus their extra data (the four decal parameters and the three
-// tint colours); FUN_14116e7f0 bakes them back into one composed base texture through CCustomizedTextureManager, remembering the
+// tint colours); ComposeCustomizedTextures bakes them back into one composed base texture through CCustomizedTextureManager, remembering the
 // original base / control texture paths as string extra data. Types as in charactermeshmerger.cpp (which reads the same keys).
 // MS2-UNIT: unit_14116e3f0
 // MS2-RANGE: 0x14116e3f0-0x14116f6a0 .text$mn
@@ -99,7 +99,7 @@ MS2_REPLACE(0x14116E3F0, FUN_14116e3f0, 1011, 0xA177358B);
 // Bakes the customised texture: composes the base (+ control map and colours) and the decal (+ tint map and colours) into one
 // texture, keeps the original paths as extra data, and leaves only the composed base texture on the property.
 // @0x14116e7f0
-bool FUN_14116e7f0(NiAVObject* pMesh)
+bool ComposeCustomizedTextures(NiAVObject* pMesh)
 {
     NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pMesh->GetProperty(8));
     if (pTexturing == 0)
@@ -167,7 +167,7 @@ bool FUN_14116e7f0(NiAVObject* pMesh)
     pMesh->UpdateProperties();
     return true;
 }
-MS2_REPLACE(0x14116E7F0, FUN_14116e7f0, 3207, 0xE73A253A);
+MS2_REPLACE(0x14116E7F0, ComposeCustomizedTextures, 3207, 0xE73A253A);
 
 // Sets (or adds) the float array extra data kKey of the object.
 // @0x14116f480
@@ -186,7 +186,7 @@ void FUN_14116f480(NiObjectNET* pObject, const NiFixedString& kKey, unsigned int
 }
 MS2_REPLACE(0x14116F480, FUN_14116f480, 240, 0x8D7192A7);
 
-// 0x14116f570 is NiSourceTexture::GetPlatformSpecificFilename (inline SDK COMDAT, emitted by FUN_14116e7f0).
+// 0x14116f570 is NiSourceTexture::GetPlatformSpecificFilename (inline SDK COMDAT, emitted by ComposeCustomizedTextures).
 
 // @0x14116f580 - the CRT's bounds-checked memmove_s (UCRT static-inline copy, unreferenced in this TU).
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);

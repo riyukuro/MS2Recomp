@@ -56,7 +56,7 @@ void* FUN_14025e7c0();   // C3: the input key handler (was declared returning CI
 class Unk_PCMove   // C3: member view (real class not in this TU)
 {
 public:
-    bool FUN_141682fe0(int);
+    bool IsActionKeyDown(int);
 };
 class Unk_BuffContainer
 {
@@ -142,15 +142,15 @@ void CRPGCameraMode::vfunc_9()
     Unk_RpgActor* pActor = reinterpret_cast<Unk_RpgActor*>(efd::DynamicCast<PCBase, GameObject>(reinterpret_cast<GameObject*>(pTarget)));
     if (pActor)
     {
-        if (((Unk_PCMove*)(Unk_BuffContainer*)(((Unk_BuffContainer*)((PCBase*)(Unk_RpgActor*)(pActor))->FUN_14166d240())))->FUN_141682fe0(300008))
+        if (((Unk_PCMove*)(Unk_BuffContainer*)(((Unk_BuffContainer*)((PCBase*)(Unk_RpgActor*)(pActor))->FUN_14166d240())))->IsActionKeyDown(300008))
             ptMove.x = 1.0f;
-        else if (((Unk_PCMove*)(Unk_BuffContainer*)(((Unk_BuffContainer*)((PCBase*)(Unk_RpgActor*)(pActor))->FUN_14166d240())))->FUN_141682fe0(300009))
+        else if (((Unk_PCMove*)(Unk_BuffContainer*)(((Unk_BuffContainer*)((PCBase*)(Unk_RpgActor*)(pActor))->FUN_14166d240())))->IsActionKeyDown(300009))
             ptMove.x = -1.0f;
     }
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsMouseButtonDown(1, true, 0))
     {
         int nX, nY, nZ;
-        if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nZ, false, 0))
+        if (((class CInputKeyHandler*)FUN_14025e7c0())->GetMouseDelta(&nX, &nY, &nZ, false, 0))
         {
             if (abs(nY) > abs(nX))
                 ptMove.x = (float)nY * -0.05f;
@@ -158,9 +158,9 @@ void CRPGCameraMode::vfunc_9()
                 ptMove.y = (float)nX * 0.1f;
         }
     }
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x33, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x33, false, 0))
         ptMove.y = 1.0f;
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x34, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x34, false, 0))
         ptMove.y = -1.0f;
     TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(ptMove);
 }

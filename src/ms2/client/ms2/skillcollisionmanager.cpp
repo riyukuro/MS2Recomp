@@ -47,8 +47,8 @@ class Unk_ColCfg { public: char m_pad[0x1a0]; int m_n1a0; };
 class Unk_SkillSrc : public SkillLevelData
 {
 public:
-    Unk_ColInfo* FUN_1408040d0(int nLevel, int nIndex);
-    Unk_ColCfg* FUN_140803f60(int nLevel, int nIndex);
+    Unk_ColInfo* GetAttackRange(int nLevel, int nIndex);
+    Unk_ColCfg* GetAttack(int nLevel, int nIndex);
 };
 
 // Shapes whose classes live in unrecovered units: only the constructor and the touched fields.
@@ -99,7 +99,7 @@ extern unsigned DAT_1439f862c;          // display time of a shape (ms)
 extern bool DAT_143ae95e0;
 extern bool DAT_143ae95e1;
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-__int64 FUN_14028d0e0();                // next shape handle
+__int64 GenerateUniqueId();                // next shape handle
 struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_141468360
 
 typedef CSkillCollisionManager::CollisionPtr CollisionPtr;
@@ -123,12 +123,12 @@ CollisionPtr CSkillCollisionManager::GetCached(Unk_SkillSrc* pSrc, int nLevel, i
 {
     if (pSrc == 0)
         return CollisionPtr(0);
-    Unk_ColInfo* pInfo = ((class Unk_ColInfo *)((class SkillLevelData*)(pSrc))->FUN_1408040d0(nLevel, nIndex));
+    Unk_ColInfo* pInfo = ((class Unk_ColInfo *)((class SkillLevelData*)(pSrc))->GetAttackRange(nLevel, nIndex));
     if (pInfo == 0)
         return CollisionPtr(0);
     CollisionPtr spShape(0);
     CStringA strKey;
-    strKey.Format("%x,%d,%d,%d,%d", pSrc, pSrc->FUN_140803dc0(), pSrc->GetLevel(), nLevel, nIndex);
+    strKey.Format("%x,%d,%d,%d,%d", pSrc, pSrc->GetSkillId(), pSrc->GetLevel(), nLevel, nIndex);
     const int& nShape = pInfo->m_nShape;
     if (m_mapCache.Lookup(strKey, spShape))
     {
@@ -207,7 +207,7 @@ CollisionPtr CSkillCollisionManager::GetCached(Unk_SkillSrc* pSrc, int nLevel, i
     {
         spShape->m_ptSize = pInfo->m_ptOffset;
         spShape->vfunc_4();
-        Unk_ColCfg* pCfg = ((class Unk_ColCfg *)((class SkillLevelData*)(pSrc))->FUN_140803f60(nLevel, nIndex));
+        Unk_ColCfg* pCfg = ((class Unk_ColCfg *)((class SkillLevelData*)(pSrc))->GetAttack(nLevel, nIndex));
         spShape->m_n18 = pCfg->m_n1a0;
     }
     return spShape;
@@ -241,7 +241,7 @@ CollisionPtr CSkillCollisionManager::Create(Unk_SkillSrc* pSrc, int nLevel, int 
 {
     if (pSrc == 0)
         return CollisionPtr(0);
-    Unk_ColInfo* pInfo = ((class Unk_ColInfo *)((class SkillLevelData*)(pSrc))->FUN_1408040d0(nLevel, nIndex));
+    Unk_ColInfo* pInfo = ((class Unk_ColInfo *)((class SkillLevelData*)(pSrc))->GetAttackRange(nLevel, nIndex));
     if (pInfo == 0)
         return CollisionPtr(0);
     CollisionPtr spShape(0);
@@ -280,7 +280,7 @@ CollisionPtr CSkillCollisionManager::Create(Unk_SkillSrc* pSrc, int nLevel, int 
     {
         spShape->m_ptSize = pInfo->m_ptOffset;
         spShape->vfunc_4();
-        Unk_ColCfg* pCfg = ((class Unk_ColCfg *)((class SkillLevelData*)(pSrc))->FUN_140803f60(nLevel, nIndex));
+        Unk_ColCfg* pCfg = ((class Unk_ColCfg *)((class SkillLevelData*)(pSrc))->GetAttack(nLevel, nIndex));
         spShape->m_n18 = pCfg->m_n1a0;
     }
     return spShape;
@@ -336,7 +336,7 @@ __int64 CSkillCollisionManager::Add(CollisionPtr spShape)
 {
     if (spShape == 0)
         return 0;
-    __int64 nHandle = FUN_14028d0e0();
+    __int64 nHandle = GenerateUniqueId();
     m_mapActive.SetAt(nHandle, spShape);
     return nHandle;
 }

@@ -40,7 +40,7 @@ void FUN_140dff970();                                           // finish confir
 UIQuizHostDialog::UIQuizHostDialog()
 {
     m_nRound = 1;
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
 }
 
 // @0x140e7dc90
@@ -59,7 +59,7 @@ MS2_REPLACE_METHOD(0x140E7DCD0, UIQuizHostDialog, GetTypeName, 61, 0x3BE68A74);
 void UIQuizHostDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140e7df20(this, m_nRound);
+    SetRound(this, m_nRound);
 }
 MS2_REPLACE_METHOD(0x140E7DD20, UIQuizHostDialog, OnLoadComplete, 45, 0x0CAE16DD);
 
@@ -86,16 +86,16 @@ int UIQuizHostDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     if (_stricmp("OnQuestionSubmit", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_140e7e160(this, data.FUN_1422b8f40());
+            SendQuestion(this, data.FUN_1422b8f40());
         return 1;
     } else if (_stricmp("OnFinishEvent", szMethod) == 0)
-        FUN_140e7e220(this);
+        OnFinishEvent(this);
     return 0;
 }
 MS2_REPLACE_METHOD(0x140E7DDF0, UIQuizHostDialog, vfunc_28, 283, 0xA48E651D);
 
 // @0x140e7df20
-void FUN_140e7df20(UIQuizHostDialog* pDialog, int nRound)
+void SetRound(UIQuizHostDialog* pDialog, int nRound)
 {
     pDialog->m_nRound = nRound;
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)((Unk_QhDialogAS*)pDialog)->m_30);
@@ -104,7 +104,7 @@ void FUN_140e7df20(UIQuizHostDialog* pDialog, int nRound)
 }
 
 // @0x140e7dfb0
-void FUN_140e7dfb0(UIQuizHostDialog* pDialog)
+void ClearInput(UIQuizHostDialog* pDialog)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)((Unk_QhDialogAS*)pDialog)->m_30);
     if (pDlg != 0)
@@ -112,7 +112,7 @@ void FUN_140e7dfb0(UIQuizHostDialog* pDialog)
 }
 
 // @0x140e7e030
-void FUN_140e7e030(UIQuizHostDialog* pDialog, bool bEnable)
+void EnableSubmit(UIQuizHostDialog* pDialog, bool bEnable)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)((Unk_QhDialogAS*)pDialog)->m_30);
     if (pDlg != 0)
@@ -123,11 +123,11 @@ void FUN_140e7e030(UIQuizHostDialog* pDialog, bool bEnable)
 void FUN_140e7e0b0(UIQuizHostDialog* pDialog, bool bEnable)
 {
     if (MS2Ptr<ASButton> spButton = static_cast<UIDialog*>(pDialog)->GetChild<ASButton>("m_btnEventFinish"))
-        spButton->FUN_1422c1fe0(bEnable);
+        spButton->SetEnabled(bEnable);
 }
 
 // @0x140e7e160
-void FUN_140e7e160(UIQuizHostDialog* pDialog, const CStringW& strQuestion)
+void SendQuestion(UIQuizHostDialog* pDialog, const CStringW& strQuestion)
 {
     CStringW strText(strQuestion);
     strText.Trim();
@@ -141,7 +141,7 @@ void FUN_140e7e160(UIQuizHostDialog* pDialog, const CStringW& strQuestion)
 }
 
 // @0x140e7e220
-void FUN_140e7e220(UIQuizHostDialog* pDialog)
+void OnFinishEvent(UIQuizHostDialog* pDialog)
 {
     if (pDialog->m_nRound < 2) {
         CStringW strText = FUN_140298ea0(CStringW(L"s_ugcox_finish_fail_by_round"));

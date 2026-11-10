@@ -30,17 +30,17 @@ public:
     // UIServerEventListener
     virtual void Notify();                              // 0x141b13640 fill the channel list
 
-    void FUN_141b13880(const Scaleform::GFx::FunctionHandler::Params& params);   // the leave click of a normal field
-    void FUN_141b13b00(const Scaleform::GFx::FunctionHandler::Params& params);   // the leave click of a home (forwards)
-    void FUN_141b13b30();                               // leave the home: ask first when the build is not saved
-    void FUN_141b144f0(bool b);                         // set the red circle flag
+    void OnLeaveFieldClick(const Scaleform::GFx::FunctionHandler::Params& params);   // the leave click of a normal field
+    void OnLeaveHomeClick(const Scaleform::GFx::FunctionHandler::Params& params);   // the leave click of a home (forwards)
+    void LeaveHome();                               // leave the home: ask first when the build is not saved
+    void SetRedCircle(bool b);                         // set the red circle flag
     bool FUN_141b14510(int nResult, const CMsgBoxData& data);   // answer of the leave box
-    void FUN_141b14560(int nPage);                      // open the option dialog at a page
-    void FUN_141b145c0();
+    void OpenGameOptionDialog(int nPage);                      // open the option dialog at a page
+    void RequestQuit();
     void OnSelectCharacter();                               // back to the character select
-    void FUN_141b14630();                               // select the current channel in the list
-    CStringW FUN_141b146a0(int nMapType);               // the leave button text
-    CStringW FUN_141b149d0(int nMapType);               // the leave box text
+    void SelectCurrentChannel();                               // select the current channel in the list
+    CStringW GetLeaveButtonText(int nMapType);               // the leave button text
+    CStringW GetLeaveBoxText(int nMapType);               // the leave box text
 
 private:
     MS2_LAYOUT_FRIEND;

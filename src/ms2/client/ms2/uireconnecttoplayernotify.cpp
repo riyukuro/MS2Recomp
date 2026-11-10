@@ -40,7 +40,7 @@ void UIReconnectTopLayerNotify::vfunc_3() { UIHeadUpDisplay::vfunc_3(); }
 void UIReconnectTopLayerNotify::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_140e80030();
+    SetRetryCount();
 }
 
 // @0x140e7fec0
@@ -56,7 +56,7 @@ void UIReconnectTopLayerNotify::vfunc_52(int nRetry, int nMax)
 {
     m_70 = nRetry;
     m_74 = nMax;
-    FUN_140e80030();
+    SetRetryCount();
 }
 
 // @0x140e7ffa0
@@ -75,7 +75,7 @@ int UIReconnectTopLayerNotify::vfunc_28(const char* szMethod, const Scaleform::G
 }
 
 // @0x140e80030
-void UIReconnectTopLayerNotify::FUN_140e80030()
+void UIReconnectTopLayerNotify::SetRetryCount()
 {
     if (m_30.get() != 0)
         m_30->FUN_1409ba0d0("setRetryCount", m_70, m_74);

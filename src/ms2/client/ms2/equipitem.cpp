@@ -53,7 +53,7 @@ int FUN_141202940(CEquipModel* self);                              // the model 
 void FUN_141202dc0(CEquipModel* self, int nSlot);                  // RemoveEffect
 #define MODEL(sp) ((sp).operator->())
 
-CString FUN_1410280d0(int nKind, CString strName);                  // the local file of a ugc content kind
+CString GetDownloadFilePath(int nKind, CString strName);                  // the local file of a ugc content kind
 
 // @0x1411dbc70
 CEquipItem::CEquipItem()
@@ -189,7 +189,7 @@ void CEquipItem::ApplyLoadedModels()
     }
     else
     {
-        if ((m_spItem.get() ? true : false) && m_spItem->HasCubeTextureMesh() && m_spItem->FUN_140525f60() && FUN_1411ddcb0() == 1)
+        if ((m_spItem.get() ? true : false) && m_spItem->HasCubeTextureMesh() && m_spItem->HasUgcId() && FUN_1411ddcb0() == 1)
             m_bUgcPending = 1;
     }
     FUN_1411de030();
@@ -273,7 +273,7 @@ MS2_REPLACE_METHOD(0x1411DC7F0, CEquipItem, GetItemData, 39, 0x136456ED);
 int CEquipItem::FUN_1411dc820()
 {
     if (m_spItem.get() != 0)
-        return m_spItem->FUN_1405276c0();
+        return m_spItem->GetItemId();
     return 0;
 }
 MS2_REPLACE_METHOD(0x1411DC820, CEquipItem, FUN_1411dc820, 65, 0xC3F937C3);
@@ -635,7 +635,7 @@ void CEquipItem::RequestUgcDownload()
         return;
     if (m_spItem == 0)
         return;
-    if (m_spItem->HasCubeTextureMesh() && m_spItem->FUN_140525f60())
+    if (m_spItem->HasCubeTextureMesh() && m_spItem->HasUgcId())
     {
         if (TSingleton<CUgcManager>::GetInstance()->WasDownloadedThisSession(m_spItem->GetUgcInfo()->m_strName) == 0)
             TSingleton<CUgcManager>::GetInstance()->FUN_141884300(m_spItem, m_pPC->GetObjectId());
@@ -649,7 +649,7 @@ void CEquipItem::ApplyUgcImage()
 {
     if (!m_spItem->HasCubeTextureMesh())
         return;
-    if (!m_spItem->FUN_140525f60())
+    if (!m_spItem->HasUgcId())
         return;
     CString strFile = GetUgcFile();
     if (TSingleton<CUgcManager>::GetInstance()->WasDownloadedThisSession(m_spItem->GetUgcInfo()->m_strName) == 0)
@@ -665,7 +665,7 @@ int CEquipItem::FUN_1411ddcb0()
 {
     if (!m_spItem->HasCubeTextureMesh())
         return 1;
-    if (!m_spItem->FUN_140525f60())
+    if (!m_spItem->HasUgcId())
         return 1;
     return TSingleton<CUgcManager>::GetInstance()->WasDownloadedThisSession(m_spItem->GetUgcInfo()->m_strName);
 }
@@ -675,7 +675,7 @@ MS2_REPLACE_METHOD(0x1411DDCB0, CEquipItem, FUN_1411ddcb0, 141, 0x1EE2CF38);
 CString CEquipItem::GetUgcFile()
 {
     if (m_strUgcFile.IsEmpty())
-        m_strUgcFile = FUN_1410280d0(1, m_spItem->GetUgcInfo()->m_strName);
+        m_strUgcFile = GetDownloadFilePath(1, m_spItem->GetUgcInfo()->m_strName);
     return m_strUgcFile;
 }
 MS2_REPLACE_METHOD(0x1411DDD50, CEquipItem, GetUgcFile, 238, 0xBAD18CBE);

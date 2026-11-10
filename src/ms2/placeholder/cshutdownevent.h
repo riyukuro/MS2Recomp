@@ -85,7 +85,7 @@ public:
     explicit CShutdownEventInteractObject(Unk_ShutdownEventVftableTag);  // byte-match build only: emits the vftable in shutdowneventvalue.cpp
     bool FUN_1407d0420(unsigned nFieldId, int nObjectId);   // 0x1407d0420 shut an object down
     void FUN_1407d04c0(unsigned nFieldId, int nObjectId);   // 0x1407d04c0 undo one shut down
-    bool FUN_1407d05e0(unsigned nFieldId, int nObjectId);   // 0x1407d05e0 is the object shut down
+    bool IsShutdown(unsigned nFieldId, int nObjectId);   // 0x1407d05e0 is the object shut down
 private:
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x18
@@ -101,7 +101,7 @@ public:
     explicit CShutdownEventFunctionItem(Unk_ShutdownEventVftableTag);  // byte-match build only: emits the vftable in shutdowneventvalue.cpp
     bool FUN_1407d0c30(unsigned long nItemId);              // 0x1407d0c30 shut a function item down
     void FUN_1407d0cb0(unsigned long nItemId);              // 0x1407d0cb0 undo one shut down
-    bool FUN_1407d0dc0(unsigned long nItemId);              // 0x1407d0dc0 is the item shut down
+    bool IsShutdown(unsigned long nItemId);              // 0x1407d0dc0 is the item shut down
 private:
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x18
@@ -124,7 +124,7 @@ public:
     void FUN_1407d0810(int nQuestId);                       // 0x1407d0810
     int FUN_1407d0870(Unk_ShutdownQuestKey eKey);           // 0x1407d0870
     void FUN_1407d08f0(Unk_ShutdownQuestKey eKey);          // 0x1407d08f0
-    int FUN_1407d0950(int nQuestId);                        // 0x1407d0950 is the quest shut down
+    int IsQuestShutdown(int nQuestId);                        // 0x1407d0950 is the quest shut down
 private:
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x18
@@ -187,7 +187,7 @@ public:
     CShutdownEventValue();                                  // 0x1407d1080
     void FUN_1407d10e0(unsigned long nId);                            // 0x1407d10e0 count one more shut down of the id
     void FUN_1407d1160(unsigned long nId);                            // 0x1407d1160 undo one (drops the id at zero)
-    bool FUN_1407d1210(unsigned long nId);                            // 0x1407d1210 the id is shut down
+    bool IsShutdown(unsigned long nId);                            // 0x1407d1210 the id is shut down
     bool FUN_1407d12b0();                                   // 0x1407d12b0 any id is shut down
 private:
     MS2_LAYOUT_FRIEND;
@@ -201,7 +201,7 @@ class CShutdownEventGroup : public CPtred
 {
 public:
     CShutdownEventGroup();                                  // 0x1407d1300
-    CShutdownEventValue* FUN_1407d1400(int nIndex);         // the value of a kind
+    CShutdownEventValue* GetValue(int nIndex);         // the value of a kind
 private:
     MS2_LAYOUT_FRIEND;
     std::vector<MS2Ptr<CShutdownEventValue> > m_values;     // +0x18

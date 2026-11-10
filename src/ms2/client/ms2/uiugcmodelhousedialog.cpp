@@ -38,7 +38,7 @@ UIUGCModelHouseDialog::UIUGCModelHouseDialog()
 {
     m_nPlot = 0;
     m_88 = 1;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140faf410
@@ -57,7 +57,7 @@ MS2_REPLACE_METHOD(0x140FAF450, UIUGCModelHouseDialog, GetTypeName, 61, 0xBC81B7
 void UIUGCModelHouseDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140faf6b0(this, 0);
+    SetPlot(this, 0);
 }
 MS2_REPLACE_METHOD(0x140FAF4A0, UIUGCModelHouseDialog, vfunc_67, 36, 0xC7FB607C);
 
@@ -95,7 +95,7 @@ int UIUGCModelHouseDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 MS2_REPLACE_METHOD(0x140FAF4F0, UIUGCModelHouseDialog, vfunc_28, 440, 0x778F4B82);
 
 // @0x140faf6b0
-void FUN_140faf6b0(UIUGCModelHouseDialog* pDialog, int nPlot)
+void SetPlot(UIUGCModelHouseDialog* pDialog, int nPlot)
 {
     pDialog->m_nPlot = nPlot;
 }

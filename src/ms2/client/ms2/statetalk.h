@@ -33,7 +33,7 @@ public:
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime); // 13 @0x1417fc9c0 (the talk anim finished)
     int FUN_1417fca20();                                // @0x1417fca20: the phase is neither 0x47 nor 0x49
-    void FUN_1417fca60(int n);                          // @0x1417fca60: select a dialogue branch (not a slot)
+    void SelectDialogueBranch(int n);                          // @0x1417fca60: select a dialogue branch (not a slot)
     int m_n40;                                          // +0x40 the phase the last update saw
     int m_n44;                                          // +0x44 the spawned dialogue effect (0: none)
 };

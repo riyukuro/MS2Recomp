@@ -34,7 +34,7 @@ public:
     efd::SmartPointer<NiTexture> GetTexture(CString strPath, int nClass);   // 0x141552f90
 };
 Unk_ResourceMgr* GetNifLoadingService();
-CString FUN_14016a5c0(const char* psz, int n);          // path normalise
+CString ToCString(const char* psz, int n);          // path normalise
 
 // Post-processing service (singleton 0x1409a8b20): find step by id, enable step by id.
 class PostProcessingService { public: bool SetStepActive(int, bool); class PostProcessEffect * GetStep(int); }; class Unk_PostProcessSvc : public PostProcessingService {
@@ -104,7 +104,7 @@ bool PostShimmerRenderStep::vfunc_15(unsigned int a, void* b)
         return false;
     CString strPath;
     strPath.Format("%s/Image/ScreenMask/shimmer.tga", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath());
-    s_shimmerTexture = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString((const char*)FUN_14016a5c0((const char*)strPath, 0)), 5);
+    s_shimmerTexture = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString((const char*)ToCString((const char*)strPath, 0)), 5);
     NiViewRenderClick* pkClick = (NiViewRenderClick*)FUN_140c8f690(FUN_1416b4990(this, "PostShimmer", 0, this,
         FUN_140c8f680(&m_80), 0, 0, 0, "PostShimmer", (NiTexture*)s_shimmerTexture, 0, 0));
     if (pkClick == 0)

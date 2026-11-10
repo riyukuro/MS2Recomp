@@ -26,8 +26,8 @@ public:
     UIWorldShareInfoEventDispatcher();                      // 0x14135fc80
     virtual ~UIWorldShareInfoEventDispatcher();
     virtual void vfunc_1(__int64 n, int a, int b);          // 1 0x14135fe40 fan out to every listener
-    void FUN_14135fd20(UIWorldShareInfoEventListener* pListener);   // add (once)
-    void FUN_14135fdb0(UIWorldShareInfoEventListener* pListener);   // remove
+    void AddListener(UIWorldShareInfoEventListener* pListener);   // add (once)
+    void RemoveListener(UIWorldShareInfoEventListener* pListener);   // remove
 private:
     MS2_LAYOUT_FRIEND;
     // A typed element (not void*): ATL passes non-primitive elements to Add by const& (lea rdx), as the exe does.

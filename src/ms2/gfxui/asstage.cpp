@@ -25,10 +25,10 @@ ASStage::~ASStage()
 }
 
 // @0x1422cfd30
-void ASStage::FUN_1422cfd30(MS2Ptr<ASInteractiveObject> spFocus)
+void ASStage::SetFocus(MS2Ptr<ASInteractiveObject> spFocus)
 {
     if (spFocus.get() != NULL)
-        FUN_1409adbe0("focus", spFocus->FUN_1422bb870());
+        FUN_1409adbe0("focus", spFocus->GetValue());
     else
     {
         Value vNull;
@@ -36,7 +36,7 @@ void ASStage::FUN_1422cfd30(MS2Ptr<ASInteractiveObject> spFocus)
         FUN_1409adbe0("focus", vNull);
     }
 }
-MS2_REPLACE_METHOD(0x1422CFD30, ASStage, FUN_1422cfd30, 232, 0x478C3201);
+MS2_REPLACE_METHOD(0x1422CFD30, ASStage, SetFocus, 232, 0x478C3201);
 
 // @0x1422cfe20
 MS2Ptr<ASInteractiveObject> ASStage::FUN_1422cfe20()
@@ -46,32 +46,32 @@ MS2Ptr<ASInteractiveObject> ASStage::FUN_1422cfe20()
 MS2_REPLACE_METHOD(0x1422CFE20, ASStage, FUN_1422cfe20, 55, 0x0FDCBAB2);
 
 // @0x1422cfe60
-void ASStage::FUN_1422cfe60(int nWidth)
+void ASStage::SetStageWidth(int nWidth)
 {
-    FUN_1407cb9c0("stageWidth", nWidth);
+    SetIntMember("stageWidth", nWidth);
 }
-MS2_REPLACE_METHOD(0x1422CFE60, ASStage, FUN_1422cfe60, 40, 0x62C4E4F5);
+MS2_REPLACE_METHOD(0x1422CFE60, ASStage, SetStageWidth, 40, 0x62C4E4F5);
 
 // @0x1422cfe90
-void ASStage::FUN_1422cfe90(int nHeight)
+void ASStage::SetStageHeight(int nHeight)
 {
-    FUN_1407cb9c0("stageHeight", nHeight);
+    SetIntMember("stageHeight", nHeight);
 }
-MS2_REPLACE_METHOD(0x1422CFE90, ASStage, FUN_1422cfe90, 40, 0x6226BB45);
+MS2_REPLACE_METHOD(0x1422CFE90, ASStage, SetStageHeight, 40, 0x6226BB45);
 
 // @0x1422cfec0
-int ASStage::FUN_1422cfec0()
+int ASStage::GetStageWidth()
 {
     return GetMember("stageWidth").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422CFEC0, ASStage, FUN_1422cfec0, 88, 0x6AB19A62);
+MS2_REPLACE_METHOD(0x1422CFEC0, ASStage, GetStageWidth, 88, 0x6AB19A62);
 
 // @0x1422cff20
-int ASStage::FUN_1422cff20()
+int ASStage::GetStageHeight()
 {
     return GetMember("stageHeight").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422CFF20, ASStage, FUN_1422cff20, 88, 0xB85A16CE);
+MS2_REPLACE_METHOD(0x1422CFF20, ASStage, GetStageHeight, 88, 0xB85A16CE);
 
 // @0x1422cff80
 ASStage* ASStage::vfunc_5()

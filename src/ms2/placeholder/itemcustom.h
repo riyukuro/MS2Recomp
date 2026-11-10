@@ -15,8 +15,8 @@ class ItemCustom : public CPtred
 public:
     ItemCustom();                                   // 0x140266a10
     // ~ItemCustom() is implicit (0x14027e890 has no vptr store); commonstruct_2 emits it
-    void FUN_140266aa0(TiXmlElement* pElem);        // XML read
-    void FUN_140266b10(void* pElem) const;          // XML write
+    void ReadXml(TiXmlElement* pElem);        // XML read
+    void WriteXml(void* pElem) const;          // XML write
     efd::Point3 unknown18;          // +0x18
     efd::Point3 unknown24;          // +0x24
     CString name;                   // +0x30

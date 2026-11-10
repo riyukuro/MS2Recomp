@@ -60,14 +60,14 @@ public:
     void FUN_1408e3540(__int64 key, __int64 value);
     void GetMailsByKind(MailArray& out, int kind);
     void GetAllMails(MailArray& out);
-    MailArray& FUN_1408e3700();
+    MailArray& GetMails();
     MailPtr FindMailById(__int64 key);
     MailPtr GetMailAt(int index);
     MailPtr GetLastMail();
     unsigned FindMailIndexById(__int64 id);
     void AddMailIfNew(MailPtr mail);
-    int FUN_1408e3b70(__int64 id, int force, int reason);   // reason (0, 0x41) is not read
-    unsigned FUN_1408e3da0();
+    int RemoveMail(__int64 id, int force, int reason);   // reason (0, 0x41) is not read
+    unsigned GetMailCount();
     int GetMailCountByKind(int kind);
     int CountUnreadMails();
     int CountUnreadMailsByKind(int kind);
@@ -79,14 +79,14 @@ public:
     void SetSendMoney(__int64 value);
     __int64 FUN_1408e44e0();
     int FindFreeSendSlot();
-    void FUN_1408e45e0();
-    __int64 FUN_1408e4810();
+    void UpdateSendFee();
+    __int64 GetSendFee();
     __int64 CalcSendFee(__int64 amount);
     void FUN_1408e4890();
     int FUN_1408e48b0();
     void FUN_1408e48f0();
-    void FUN_1408e49d0();
-    static __int64 FUN_1408e57f0();
+    void ClearMails();
+    static __int64 GetGFxSceneService();
 private:
     MS2_LAYOUT_FRIEND;
     int m_00; int m_04;

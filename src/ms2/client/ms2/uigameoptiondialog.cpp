@@ -52,11 +52,11 @@ struct Unk_GoTipPaths
     CString m_strHdr;                                           // +0xe0
     CString m_strShimmer;                                       // +0xe8
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // The option settings object (TSingleton<CGameOption>::GetInstance).
 
-// The tables the "pending" check walks (a quest-like list, FUN_1409331f0).
+// The tables the "pending" check walks (a quest-like list, GetKeyTable).
 class CKeyTable
 {
 public:
@@ -64,7 +64,7 @@ public:
     __int64 GetQuickSlotAction(unsigned int nIndex);                 // id of the row
     int FindKeyByQuickSlot(unsigned int nIndex, int nPriority); // the row is done
 };
-class Unk_SoundSink* FUN_1409331f0();   // C3: the CKeyTable (calls cast back)
+class Unk_SoundSink* GetKeyTable();   // C3: the CKeyTable (calls cast back)
 
 // The buff-like table of the simple (reduced) mode test.
 class Unk_GoBuffs;
@@ -88,7 +88,7 @@ CStringW GetStringCommonByKey(const CStringW& str);
 CStringW GetStringCommon(int nStringId);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_141277dd0(const Scaleform::GFx::Value* pValue);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
@@ -123,7 +123,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, bool 
 UIGameOptionDialog::UIGameOptionDialog()
     : m_nTab(1), m_bSimple(false), m_nF1cc(0), m_bF1d0(false)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     int nOrder = 1;
     m_mapPages.SetAt(1, new CGameOptionCamera(1, nOrder++));
     m_mapPages.SetAt(2, new CGameOptionInterface(2, nOrder++));
@@ -132,24 +132,24 @@ UIGameOptionDialog::UIGameOptionDialog()
     m_mapPages.SetAt(5, new CGameOptionCommunity(5, nOrder++));
     m_mapPages.SetAt(6, new CGameOptionGraphicDefault(6, nOrder++));
     m_mapPages.SetAt(7, new CGameOptionSoundDefault(7, nOrder++));
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb5) == 1)
         m_mapPages.SetAt(8, new CGameOptionGamePad(8, nOrder++));
     m_mapPages.SetAt(9, new CGameOptionInputDefault(9, nOrder++));
     m_mapPages.SetAt(10, new CGameOptionInputDefault(10, nOrder++));
     m_mapPages.SetAt(11, new CGameOptionInputDefault(11, nOrder++));
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb5) == 1)
         m_mapPages.SetAt(12, new CGameOptionInputDefault(12, nOrder++));
     m_mapPages.SetAt(13, new CGameOptionInputDefault(13, nOrder++));
     m_mapPages.SetAt(14, new CGameOptionLanguage(14, nOrder++));
     m_mapPages.SetAt(16, new CGameOptionAccount(16, nOrder++));
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x117) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x117) == 1)
         m_mapPages.SetAt(15, new CGameOptionPersonalInfoAgreement(15, nOrder++));
 }
 
 // @0x141942810
 UIGameOptionDialog::~UIGameOptionDialog()
 {
-    FUN_141943a00();
+    RemoveAllPages();
 }
 
 // @0x141942880
@@ -165,11 +165,11 @@ void UIGameOptionDialog::OnLoadComplete()
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     int bNewBuild = (int)DAT_143ab2914 >= 0x32;
-    int bGamePad = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5);
+    int bGamePad = ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb5);
     FUN_141944590(bNewBuild);
     ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("initData", FUN_140651390(), bNewBuild, bGamePad);
     FUN_141943480();
-    FUN_1419436e0(m_nTab);
+    OpenTab(m_nTab);
 }
 
 // @0x141942a10
@@ -193,7 +193,7 @@ int UIGameOptionDialog::vfunc_13()
     if (vfunc_55() != 0)
         return 0;
     {
-        MS2Ptr<CBaseOption> sp = FUN_141944460(m_nTab);
+        MS2Ptr<CBaseOption> sp = GetPageByIndex(m_nTab);
         if (sp.get() != 0 && sp->vfunc_8() != 0)
             return 1;
     }
@@ -229,7 +229,7 @@ int UIGameOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     {
         ASData kArgs;
         if (kArgs.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_1419436e0(kArgs.PopUInt());
+            OpenTab(kArgs.PopUInt());
     }
     else if (_stricmp("OnCloseTab", szMethod) == 0)
         OnCloseTab(m_nTab);
@@ -251,7 +251,7 @@ int UIGameOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         if (kArgs.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nTab = kArgs.PopUInt();
-            MS2Ptr<CBaseOption> sp = FUN_141944460(nTab);
+            MS2Ptr<CBaseOption> sp = GetPageByIndex(nTab);
             if (sp.get() != 0)
                 sp->vfunc_2();
         }
@@ -263,7 +263,7 @@ int UIGameOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     else
     {
-        MS2Ptr<CBaseOption> sp = FUN_141944460(m_nTab);
+        MS2Ptr<CBaseOption> sp = GetPageByIndex(m_nTab);
         if (sp.get() != 0 && sp->vfunc_5(szMethod, const_cast<Scaleform::GFx::Value*>(pArgs), nArgs) != 0)
             return 1;
     }
@@ -283,7 +283,7 @@ int UIGameOptionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             if (nAnswer == 0)
             {
                 FUN_141943ec0();
-                FUN_141943820(0);
+                SetApplyEnabled(0);
             }
         }
         else if (operator==(strTag, L"OnSaveAndCheck"))
@@ -311,7 +311,7 @@ int UIGameOptionDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             else if (nAnswer == 1)
                 FUN_141944030(1);
             if (nAnswer != 2 && nAnswer != -1)
-                FUN_141943820(1);
+                SetApplyEnabled(1);
         }
     }
     return 1;
@@ -328,8 +328,8 @@ void UIGameOptionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         obj.FUN_1409c0dc0("optionDesc", "$s_gameoption_tooltip_hdr");
         obj.FUN_1409c0dc0("optionOn", "$s_gameoption_tooltip_hdr_on");
         obj.FUN_1409c0dc0("optionOff", "$s_gameoption_tooltip_hdr_off");
-        obj.FUN_1407cba60("imgPath", ((struct Unk_GoTipPaths*)FUN_1401d31f0())->m_strHdr);
-        *pRetVal = obj.FUN_1422bb870();
+        obj.SetStringMember("imgPath", ((struct Unk_GoTipPaths*)GetCommonResource())->m_strHdr);
+        *pRetVal = obj.GetValue();
     }
     else if ((strName == "m_shimmer"))
     {
@@ -338,8 +338,8 @@ void UIGameOptionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         obj.FUN_1409c0dc0("optionDesc", "$s_gameoption_tooltip_shimmer");
         obj.FUN_1409c0dc0("optionOn", "$s_gameoption_tooltip_shimmer_on");
         obj.FUN_1409c0dc0("optionOff", "$s_gameoption_tooltip_shimmer_off");
-        obj.FUN_1407cba60("imgPath", ((struct Unk_GoTipPaths*)FUN_1401d31f0())->m_strShimmer);
-        *pRetVal = obj.FUN_1422bb870();
+        obj.SetStringMember("imgPath", ((struct Unk_GoTipPaths*)GetCommonResource())->m_strShimmer);
+        *pRetVal = obj.GetValue();
     }
 }
 
@@ -348,7 +348,7 @@ void UIGameOptionDialog::FUN_141943480()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
-    int nMapClass = ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId();
+    int nMapClass = ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSceneId();
     m_bSimple = nMapClass == 0x620000d || nMapClass == 0x6200009 || nMapClass == 0x6200085
         || ((class CGuideManager*)(class Unk_GoBuffs*)(((class Unk_GoBuffs*)FUN_1409331e0())))->IsRestricted(1) != 0;
     if (m_bSimple)
@@ -371,12 +371,12 @@ void UIGameOptionDialog::FUN_141943480()
 }
 
 // @0x1419436e0
-void UIGameOptionDialog::FUN_1419436e0(int nTab)
+void UIGameOptionDialog::OpenTab(int nTab)
 {
     m_nTab = nTab;
     if (vfunc_55() != 0)
         return;
-    MS2Ptr<CBaseOption> sp = FUN_141944460(m_nTab);
+    MS2Ptr<CBaseOption> sp = GetPageByIndex(m_nTab);
     if (sp.get() != 0)
         sp->vfunc_3(1);
 }
@@ -386,29 +386,29 @@ void UIGameOptionDialog::OnCloseTab(int nTab)
 {
     if (vfunc_55() != 0)
         return;
-    MS2Ptr<CBaseOption> sp = FUN_141944460(nTab);
+    MS2Ptr<CBaseOption> sp = GetPageByIndex(nTab);
     if (sp.get() != 0)
         sp->vfunc_4(1);
 }
 
 // @0x141943820
-void UIGameOptionDialog::FUN_141943820(int n)
+void UIGameOptionDialog::SetApplyEnabled(int n)
 {
     MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply");
     if (spApply)
-        spApply->FUN_1422c1fe0(n);
+        spApply->SetEnabled(n);
 }
 
 // @0x1419438b0
-void UIGameOptionDialog::FUN_1419438b0()
+void UIGameOptionDialog::ReopenCurrentTab()
 {
     if (vfunc_55() != 0)
         return;
-    FUN_1419436e0(m_nTab);
+    OpenTab(m_nTab);
 }
 
 // @0x141943900
-void UIGameOptionDialog::FUN_141943900(bool b)
+void UIGameOptionDialog::SetAgreementRedCircle(bool b)
 {
     m_bF1d0 = b;
     FUN_141943940();
@@ -425,7 +425,7 @@ void UIGameOptionDialog::FUN_141943940()
 }
 
 // @0x141943a00
-void UIGameOptionDialog::FUN_141943a00()
+void UIGameOptionDialog::RemoveAllPages()
 {
     m_mapPages.RemoveAll();
 }
@@ -433,7 +433,7 @@ void UIGameOptionDialog::FUN_141943a00()
 // @0x141943a30
 void UIGameOptionDialog::FUN_141943a30()
 {
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x18, CStringW(L""), static_cast<IMessageListener*>(this), CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x18, CStringW(L""), static_cast<IMessageListener*>(this), CStringW(L""));
     if (spBox.get() != 0)
     {
         Scaleform::GFx::Value vTab = ((MS2Ptr<AScript>*)(&m_30))->operator->()->Invoke("getCurrentTabName");
@@ -493,7 +493,7 @@ void UIGameOptionDialog::FUN_141944030(int n)
     m_nF1cc = n;
     if (n != 0)
     {
-        MS2Ptr<CBaseOption> sp = FUN_141944460(m_nTab);
+        MS2Ptr<CBaseOption> sp = GetPageByIndex(m_nTab);
         if (sp.get() != 0)
             sp->vfunc_12();
     }
@@ -510,7 +510,7 @@ void UIGameOptionDialog::FUN_141944030(int n)
 // @0x141944150
 void UIGameOptionDialog::OnCloseDialog()
 {
-    if (FUN_141944330() == 0)
+    if (IsNoPageChanged() == 0)
         FUN_140d73bc0(0x84b, 1, static_cast<IMessageListener*>(this), CStringW(L"OnSaveAndCheck"));
     else if (FUN_141944250() == 0)
         FUN_140d73bc0(0x84a, 1, static_cast<IMessageListener*>(this), CStringW(L"OnSaveAndCheck"));
@@ -523,25 +523,25 @@ int UIGameOptionDialog::FUN_141944250()
 {
     if (m_bSimple)
         return 1;
-    for (size_t i = 0; i < reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotActionCount(); ++i)
+    for (size_t i = 0; i < reinterpret_cast<CKeyTable*>(GetKeyTable())->GetQuickSlotActionCount(); ++i)
     {
-        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a137)
+        if (reinterpret_cast<CKeyTable*>(GetKeyTable())->GetQuickSlotAction((unsigned)i) == 0x7a137)
             continue;
-        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a138)
+        if (reinterpret_cast<CKeyTable*>(GetKeyTable())->GetQuickSlotAction((unsigned)i) == 0x7a138)
             continue;
-        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotAction((unsigned)i) == 0x7a139)
+        if (reinterpret_cast<CKeyTable*>(GetKeyTable())->GetQuickSlotAction((unsigned)i) == 0x7a139)
             continue;
-        if (reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FindKeyByQuickSlot((unsigned)i, 0) == 0)
+        if (reinterpret_cast<CKeyTable*>(GetKeyTable())->FindKeyByQuickSlot((unsigned)i, 0) == 0)
             return 0;
     }
     return 1;
 }
 
 // @0x141944330
-int UIGameOptionDialog::FUN_141944330()
+int UIGameOptionDialog::IsNoPageChanged()
 {
     {
-        MS2Ptr<CBaseOption> spCur = FUN_141944460(m_nTab);
+        MS2Ptr<CBaseOption> spCur = GetPageByIndex(m_nTab);
         if (spCur.get() != 0)
             spCur->vfunc_7();
     }
@@ -555,7 +555,7 @@ int UIGameOptionDialog::FUN_141944330()
 }
 
 // @0x141944460
-MS2Ptr<CBaseOption> UIGameOptionDialog::FUN_141944460(int nIndex)
+MS2Ptr<CBaseOption> UIGameOptionDialog::GetPageByIndex(int nIndex)
 {
     MS2Ptr<CBaseOption> spNone(0);
     int i = 1;
@@ -573,11 +573,11 @@ MS2Ptr<CBaseOption> UIGameOptionDialog::FUN_141944460(int nIndex)
 // @0x141944590
 void UIGameOptionDialog::FUN_141944590(int n)
 {
-    FUN_1419445c0(0x10, n);
+    RemovePage(0x10, n);
 }
 
 // @0x1419445c0
-void UIGameOptionDialog::FUN_1419445c0(int nKey, int n)
+void UIGameOptionDialog::RemovePage(int nKey, int n)
 {
     if (n == 0)
     {

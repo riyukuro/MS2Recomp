@@ -59,7 +59,7 @@ CFileSystem* GetFileSystem();
 class CFileSystem   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1403974b0(class TiXmlDocument*, char const*, int, bool, bool);
+    int LoadXmlFile(class TiXmlDocument*, char const*, int, bool, bool);
 };
 // C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 // C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
@@ -72,14 +72,14 @@ public:
 
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, int nValue);      // SetAttribute
-CString FUN_1412755f0();                                                    // the character save directory
-CString FUN_141275640();                                                    // the account save directory
+CString GetCharacterFolder();                                                    // the character save directory
+CString GetAccountFolder();                                                    // the account save directory
 CString FUN_140cc2a00(const CString& strDir, const CString& strFile);       // path join
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW FUN_140719630(int n);                                              // number with thousands separators
 CStringW FUN_14083cb20(const CStringW& str);
-CStringW FUN_1416e7fb0(int nChapter);                                       // chapter name
-CStringW FUN_1416e4df0(int nQuestId);                                       // quest name
+CStringW GetChapterName(int nChapter);                                       // chapter name
+CStringW GetQuestName(int nQuestId);                                       // quest name
       // the name / profanity filter
 class CReservedWordTable;
 class Unk_LqActor : public MyPC { };
@@ -91,11 +91,11 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     int GetSubSceneId();
 };
-Unk_StatusFlag* CGameOption::FUN_140ea41a0() { return &m_statusChar; }   // 0x140ea41a0 (C3: was the Unk_LqOptions view)
+Unk_StatusFlag* CGameOption::GetStatusChar() { return &m_statusChar; }   // 0x140ea41a0 (C3: was the Unk_LqOptions view)
 bool FUN_140930b70();
 class UIStatusEventDispatcher;
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
-unsigned short FUN_14074bd10(int);  // C3: the definition's signature
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
+unsigned short GetQuestLevel(int);  // C3: the definition's signature
 #include "ms2/placeholder/asbutton.h"   // C3: the button view is ASButton (was the stand-in Unk_140acd6e0)
 //
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
@@ -113,22 +113,22 @@ UILearningQuestDialog::UILearningQuestDialog() : m_1a8(GetTypeName())
     m_7c = 1;
     m_80 = 0;
     m_188 = 0;
-    FUN_141925e70(3, 1);
-    FUN_141924170(1);
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeServer", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c00));
+    SetFlag(3, 1);
+    SetTweenEnabled(1);
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeServer", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::OnChangeServer));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c30));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1d70));
-    FUN_140bfc4b0()->FUN_141aa87c0(this);
+    FUN_140bfc4b0()->AddListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
 }
 
 // @0x140ea0da0
 UILearningQuestDialog::~UILearningQuestDialog()
 {
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeServer", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c00));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeServer", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::OnChangeServer));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1c30));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UILearningQuestDialog::FUN_140ea1d70));
-    FUN_140bfc4b0()->FUN_141aa8850(this);
+    FUN_140bfc4b0()->RemoveListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
 }
 
@@ -153,7 +153,7 @@ void UILearningQuestDialog::vfunc_67()
 void UILearningQuestDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140ea15d0(1);
+    SetQuestData(1);
 }
 
 // @0x140ea12a0
@@ -171,7 +171,7 @@ int UILearningQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             return 0;
         if (pActor->HasNoHome() != 0 && spData->m_nGotoField == 62000000)
         {
-            if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4f3f) != 0)
+            if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4f3f) != 0)
                 (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f3f)));
         }
         else
@@ -200,7 +200,7 @@ int UILearningQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                         m_18c = nId;
                         m_190 = spData->m_nCategory;
                         m_198 = spData->m_strMovie;
-                        FUN_140ea15d0(0);
+                        SetQuestData(0);
                     }
                 }
             }
@@ -221,10 +221,10 @@ void UILearningQuestDialog::vfunc_72()
 }
 
 // @0x140ea15d0
-void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
+void UILearningQuestDialog::SetQuestData(int bPickCategory)
 {
     ASObj data(2);
-    MS2Ptr<CQuestData> spQuest = FUN_14074bc40(m_194);
+    MS2Ptr<CQuestData> spQuest = GetQuestData(m_194);
     if (spQuest.get() != 0)
     {
         ASObj rewardAccept(2);
@@ -233,17 +233,17 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
         {
             const CQuestData::QuestRewardItem& item = spQuest->m_rewards[i];
             CString strBound = m_1a8.BindNewItem(item.m_itemId, item.m_count, item.m_job);
-            rewardAccept.FUN_1407cba60((const char*)StringFormat<unsigned __int64>("reward{0}", reinterpret_cast<const unsigned __int64&>(i)), strBound);
+            rewardAccept.SetStringMember((const char*)StringFormat<unsigned __int64>("reward{0}", reinterpret_cast<const unsigned __int64&>(i)), strBound);
         }
-        FUN_140ea3570(spQuest->m_complete, rewardComplete);
+        BuildCompleteReward(spQuest->m_complete, rewardComplete);
         data.FUN_1409eb270("rewardAccept", rewardAccept);
         data.FUN_1409eb270("rewardComplete", rewardComplete);
     }
     if (bPickCategory != 0)
-        FUN_140ea2e50(data);
+        BuildQuestTree(data);
     if (m_1a0 != m_198)
     {
-        data.FUN_1407cbb20("video", StringFormat<CString>(L"Common/{0}.usm", m_198));
+        data.SetWStringMember("video", StringFormat<CString>(L"Common/{0}.usm", m_198));
         m_1a0 = m_198;
     }
     static_cast<AScript*>(m_30.operator->())->Invoke("setData", static_cast<const AScript&>(data));
@@ -260,15 +260,15 @@ void UILearningQuestDialog::FUN_140ea15d0(int bPickCategory)
         LqPtr spData = CLearningQuestTable::GetInstance()->Get(m_18c);
         if (spData.get() != 0)
             nState = ((class CQuestManager*)FUN_140764020())->FUN_1416d0260(spData, 0);
-        spOk->FUN_1422c1fe0(nState);
+        spOk->SetEnabled(nState);
     }
 }
 
 // @0x140ea1c00
-void UILearningQuestDialog::FUN_140ea1c00(NotifyObject*)
+void UILearningQuestDialog::OnChangeServer(NotifyObject*)
 {
     LoadLearningQuest();
-    FUN_140ea3910();
+    MarkDirty();
 }
 
 // @0x140ea1c30
@@ -293,31 +293,31 @@ void UILearningQuestDialog::FUN_140ea1d70(NotifyObject*)
 // @0x140ea1da0
 void UILearningQuestDialog::vfunc_o178_2(void*)
 {
-    FUN_140ea3910();
+    MarkDirty();
 }
 
 // @0x140ea1dd0
 void UILearningQuestDialog::vfunc_oa0_9(unsigned short)
 {
-    FUN_140ea3910();
+    MarkDirty();
 }
 
 // @0x140ea1e00
 void UILearningQuestDialog::vfunc_12()
 {
-    FUN_140ea3910();
+    MarkDirty();
 }
 
 // @0x140ea1e20
 int UILearningQuestDialog::FUN_140ea1e20(int bNew)
 {
-    if (((class GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)CUserMail::GetGFxSceneService())->GetSubSceneId() != 0x620001d)
         return 0;
     if (FUN_141924630() != 0)
         return 0;
     if (bNew != 0)
     {
-        if (*reinterpret_cast<unsigned char*>(TSingleton<CGameOption>::GetInstance()->FUN_140ea41a0()) != 0)
+        if (*reinterpret_cast<unsigned char*>(TSingleton<CGameOption>::GetInstance()->GetStatusChar()) != 0)
             return 0;
     }
     if (FUN_140930b70() == 0)
@@ -364,7 +364,7 @@ void UILearningQuestDialog::LoadLearningQuest()
         CLearningQuestTable::GetInstance()->GetAll(all);
     for (size_t i = 0; i < all.GetCount(); i++)
         m_2c8.SetAt(all[i]->m_nId, 0);
-    int bCharacterLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->FUN_1403974b0(&m_1e8, (const char*)FUN_140cc2a00(FUN_1412755f0(), "learningQuestCharacter.xml"), 0, true, false);
+    int bCharacterLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->LoadXmlFile(&m_1e8, (const char*)FUN_140cc2a00(GetCharacterFolder(), "learningQuestCharacter.xml"), 0, true, false);
     if (bCharacterLoaded != 0)
     {
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_1e8))->FirstChild("ms2"));
@@ -386,7 +386,7 @@ void UILearningQuestDialog::LoadLearningQuest()
             }
         }
     }
-    int bAccountLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->FUN_1403974b0(&m_258, (const char*)FUN_140cc2a00(FUN_141275640(), "learningQuestAccount.xml"), 0, true, false);
+    int bAccountLoaded = ((class CFileSystem*)(class CFileSystem*)(GetFileSystem()))->LoadXmlFile(&m_258, (const char*)FUN_140cc2a00(GetAccountFolder(), "learningQuestAccount.xml"), 0, true, false);
     if (bAccountLoaded != 0)
     {
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_258))->FirstChild("ms2"));
@@ -435,7 +435,7 @@ void UILearningQuestDialog::SaveLearningQuest()
         if ((spData.get() ? true : false) && spData->m_nQuestKind == 0)
             XmlSetAttr(pList, (const char*)StringFormat<int>("learning{0}", spData->m_nId), nSeen);
     }
-    reinterpret_cast<TiXmlDocument*>(&m_1e8)->SaveFile((const char*)FUN_140cc2a00(FUN_1412755f0(), "learningQuestCharacter.xml"));
+    reinterpret_cast<TiXmlDocument*>(&m_1e8)->SaveFile((const char*)FUN_140cc2a00(GetCharacterFolder(), "learningQuestCharacter.xml"));
     TiXmlElement* pRoot2 = ((class TiXmlElement*)((class Unk_XmlNode*)(&m_258))->FirstChild("ms2"));
     if (pRoot2 == 0)
     {
@@ -458,11 +458,11 @@ void UILearningQuestDialog::SaveLearningQuest()
         if ((spData.get() ? true : false) && spData->m_nQuestKind != 0)
             XmlSetAttr(pList2, (const char*)StringFormat<int>("learning{0}", spData->m_nId), nSeen);
     }
-    reinterpret_cast<TiXmlDocument*>(&m_258)->SaveFile((const char*)FUN_140cc2a00(FUN_141275640(), "learningQuestAccount.xml"));
+    reinterpret_cast<TiXmlDocument*>(&m_258)->SaveFile((const char*)FUN_140cc2a00(GetAccountFolder(), "learningQuestAccount.xml"));
 }
 
 // @0x140ea2e50
-void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
+void UILearningQuestDialog::BuildQuestTree(ASObj& rOut)
 {
     LqArray all;
     if (CLearningQuestTable::GetInstance() != 0)
@@ -472,7 +472,7 @@ void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
     for (size_t i = 0; i < all.GetCount(); i++)
     {
         LqPtr spItem(all[i]);
-        MS2Ptr<CQuestData> spQuest = FUN_14074bc40(spItem->m_nReqQuest);
+        MS2Ptr<CQuestData> spQuest = GetQuestData(spItem->m_nReqQuest);
         if (!spQuest)
             continue;
         if (Common::FindElement<int>(chapters, spQuest->m_28) == -1)
@@ -505,20 +505,20 @@ void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
         unsigned nNew = 1;
         m_310.Lookup(nFirst, nNew);
         m_310.SetAt(nFirst, 0);
-        node.FUN_1407cbb20("label", FUN_1416e7fb0(nChapter));
-        node.FUN_1407cb9c0("type", nType);
+        node.SetWStringMember("label", GetChapterName(nChapter));
+        node.SetIntMember("type", nType);
         node.FUN_1409c0dc0("rendererClassName", "UILearningQuestDialog_renderer_category");
         node.FUN_1409eb1d0("nodes", children);
-        node.FUN_1407cb9c0("isNew", nNew);
+        node.SetIntMember("isNew", nNew);
         nNode++;
         for (size_t k = 0; k < quests.GetCount(); k++)
         {
-            if (((class CQuestManager*)FUN_140764020())->FUN_140745590(quests[k]) != 0)
+            if (((class CQuestManager*)FUN_140764020())->IsQuestRewarded(quests[k]) != 0)
                 continue;
             ASObj leaf(2);
             leaf.SetMemberUInt("id", quests[k]);
-            leaf.FUN_1407cb9c0("guide", nFirst);
-            leaf.FUN_1407cbb20("label", FUN_1416e4df0(quests[k]));
+            leaf.SetIntMember("guide", nFirst);
+            leaf.SetWStringMember("label", GetQuestName(quests[k]));
             leaf.FUN_1409c0dc0("rendererClassName", "UILearningQuestDialog_renderer_contents");
             children.PushObj(leaf);
             if ((int)quests[k] == m_194)
@@ -531,36 +531,36 @@ void UILearningQuestDialog::FUN_140ea2e50(ASObj& rOut)
     root.FUN_140e35d00("type", 1);
     root.FUN_1409eb1d0("nodes", nodes);
     rOut.FUN_1409eb270("list", root);
-    rOut.FUN_1407cb9c0("selectedIndex", nSelected);
+    rOut.SetIntMember("selectedIndex", nSelected);
 }
 
 // @0x140ea3570
-void UILearningQuestDialog::FUN_140ea3570(const CQuestData::CompleteReward& rReward, ASObj& rOut)
+void UILearningQuestDialog::BuildCompleteReward(const CQuestData::CompleteReward& rReward, ASObj& rOut)
 {
     if (rReward.m_exp != 0)
     {
         CStringW strExp = FUN_14028dfa0<CStringW>(CStringW(L"s_learning_quest_exp"), FUN_14083cb20(FUN_140719630(rReward.m_exp)));
-        rOut.FUN_1407cbb20("exp", strExp);
+        rOut.SetWStringMember("exp", strExp);
     }
     if (rReward.m_money != 0)
     {
         CStringW strMeso = FUN_14028dfa0<CStringW>(CStringW(L"s_learning_quest_meso"), FUN_14083cb20(FUN_140719630(rReward.m_money)));
-        rOut.FUN_1407cbb20("meso", strMeso);
+        rOut.SetWStringMember("meso", strMeso);
     }
     for (__int64 i = 0; (size_t)i < rReward.m_choiceRewards.GetCount(); ++i)
     {
         const CQuestData::QuestRewardItem& item = rReward.m_choiceRewards[i];
         CString strBound = m_1a8.BindNewItem(item.m_itemId, item.m_count, item.m_job);
-        rOut.FUN_1407cba60((const char*)StringFormat<unsigned __int64>("reward{0}", reinterpret_cast<const unsigned __int64&>(i)), strBound);
+        rOut.SetStringMember((const char*)StringFormat<unsigned __int64>("reward{0}", reinterpret_cast<const unsigned __int64&>(i)), strBound);
     }
 }
 
 // @0x140ea3910
-void UILearningQuestDialog::FUN_140ea3910()
+void UILearningQuestDialog::MarkDirty()
 {
     if (((Unk_LqActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()) == 0)
         return;
-    if (((class GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)CUserMail::GetGFxSceneService())->GetSubSceneId() != 0x620001d)
         return;
     if (m_2c8.GetCount() == 0)
         return;
@@ -578,8 +578,8 @@ static int FUN_140ea3980(const void* pA, const void* pB)
     TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(*pChapterB, questsB);
     if (questsA.GetCount() == 0 || questsB.GetCount() == 0)
         return 0;
-    unsigned short nKeyA = FUN_14074bd10(questsA[0]);
-    unsigned short nKeyB = FUN_14074bd10(questsB[0]);
+    unsigned short nKeyA = GetQuestLevel(questsA[0]);
+    unsigned short nKeyB = GetQuestLevel(questsB[0]);
     return nKeyA > nKeyB ? 1 : -1;
 }
 
@@ -588,8 +588,8 @@ MS2_REPLACE_METHOD(0x140EA11B0, UILearningQuestDialog, GetTypeName, 61, 0x440B3F
 MS2_REPLACE_METHOD(0x140EA1200, UILearningQuestDialog, vfunc_65, 24, 0xD85237DC);
 MS2_REPLACE_METHOD(0x140EA1220, UILearningQuestDialog, vfunc_67, 63, 0x5082B5DD);
 MS2_REPLACE_METHOD(0x140EA1E00, UILearningQuestDialog, vfunc_12, 24, 0xBB2FC109);
-MS2_REPLACE_METHOD(0x140EA3570, UILearningQuestDialog, FUN_140ea3570, 922, 0x583AF749);
-MS2_REPLACE_METHOD(0x140EA3910, UILearningQuestDialog, FUN_140ea3910, 97, 0xE2A0E4D1);
+MS2_REPLACE_METHOD(0x140EA3570, UILearningQuestDialog, BuildCompleteReward, 922, 0x583AF749);
+MS2_REPLACE_METHOD(0x140EA3910, UILearningQuestDialog, MarkDirty, 97, 0xE2A0E4D1);
 MS2_REPLACE_METHOD(0x140EA1D70, UILearningQuestDialog, FUN_140ea1d70, 38, 0xCFBD6CB7);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca7f60-0x142ca7ff0 .text$yd

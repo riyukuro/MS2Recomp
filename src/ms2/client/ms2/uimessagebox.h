@@ -36,23 +36,23 @@ public:
     void CloseAll(int nResult);                                // close all
     void ShowIfIdle(MS2Ptr<CMsgBoxData> spData);                 // show when idle
     int FUN_1419f8270();                                            // no box shown
-    void FUN_1419f82b0(const CStringW& strText);                    // error text
+    void UpdateErrorMessage(const CStringW& strText);                    // error text
     void UpdateMessage(const CStringW& strText);                    // message text
-    MS2Ptr<CMsgBoxData> FUN_1419f8470();                            // the current box
-    int FUN_1419f84c0(MS2Ptr<CMsgBoxData> spData);                  // same box (tag or callback) as the current one
+    MS2Ptr<CMsgBoxData> GetCurrentBox();                            // the current box
+    int IsSameBox(MS2Ptr<CMsgBoxData> spData);                  // same box (tag or callback) as the current one
     void FUN_1419f88e0(int bBlock);
     void AttachToLayer();                                           // bring the layer to the top
     void PlayMessageSound(MS2Ptr<CMsgBoxData> spData);                 // play the open sound
     void FUN_1419f8ec0(MS2Ptr<CMsgBoxData> spData);                 // open
-    void FUN_1419f9110();                                           // reset after closing
+    void ResetAfterClose();                                           // reset after closing
     void FUN_1419f9250(int nResult);                                // close the current box with a result
     void FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra);   // OnClick
     int FUN_1419f97a0(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra);
-    int FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra);   // plain tags
+    int HandlePlainTag(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra);   // plain tags
     int FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra);   // "tag,arg" tags
 
     // Tag handlers (nButton 0 = OK / yes). Non-zero: the result was consumed.
-    int FUN_1419fb3c0();                                            // forcelogin
+    int HandleForceloginButton();                                            // forcelogin
     int HandleGameexitButton(int nButton);                                 // gameexit
     int HandleStartbypassButton(int nButton);                                 // startbypass
     int FUN_1419fb630(int nButton);
@@ -60,9 +60,9 @@ public:
     int HandleUnlockcashButton(int nButton);                                 // unlockcash
     int HandlePartyinviteButton(int nButton);                                 // partyinvite
     int HandleGuildinviteButton(int nButton);                                 // guildinvite
-    int FUN_1419fba50(int nButton);                                 // destroy_item
-    int FUN_1419fbd40(int nButton, CStringW strTag);                // destroy_store_item
-    int FUN_1419fc140(int nButton, CStringW strTag);                // destroy_doll_item
+    int HandleDestroyItemButton(int nButton);                                 // destroy_item
+    int HandleDestroyStoreItemButton(int nButton, CStringW strTag);                // destroy_store_item
+    int HandleDestroyDollItemButton(int nButton, CStringW strTag);                // destroy_doll_item
     int HandleLearnEmotionButton(int nButton);                                 // learn_emotion
     int HandleRecallconfirmButton(int nButton);                                 // recallconfirm
     int SendRequestCube(int nButton);                                 // confirmCommend
@@ -77,32 +77,32 @@ public:
     int HandleRecallscrollconfirmButton(int nButton);                                 // recallscrollconfirm
     int HandleItemlockConfirmButton(int nButton);                                 // itemlock_confirm
     int HandleSummonBindPetButton(int nButton);                                 // summonBindPet
-    int FUN_1419fd260(int nButton);                                 // composeBindPet
-    int FUN_1419fd4a0(int nButton);                                 // evolutionBindPet
+    int HandleComposeBindPetButton(int nButton);                                 // composeBindPet
+    int HandleEvolutionBindPetButton(int nButton);                                 // evolutionBindPet
     int HandleTrainingBindPetButton(int nButton);                                 // trainingBindPet
-    int FUN_1419fd830(int nButton);                                 // studyBindPet / remakeOptionBindPet
+    int HandleStudyBindPetButton(int nButton);                                 // studyBindPet / remakeOptionBindPet
     int HandleRemakeOptionScrollBindPetButton(int nButton);                                 // remakeOptionScrollBindPet
-    int FUN_1419fdbe0(int nButton);                                 // useBindItemSkill
+    int HandleUseBindItemSkillButton(int nButton);                                 // useBindItemSkill
     int HandleUseBindFuncItemButton(int nButton);                                 // useBindFuncItem
     int HandleUseBindEquipItemButton(int nButton);                                 // useBindEquipItem
     int HandleUseBindGemEquipItemButton(int nButton);                                 // useBindGemEquipItem
-    int FUN_1419fe240(int nButton, int nCount);                     // usestorein
-    int FUN_1419fe310(int nButton, int nCount);                     // usestoreout
-    int FUN_1419fe590(int nButton, int nCount);                     // swapstorein-
-    int FUN_1419fe690(int nButton, int nCount);                     // swapstoreout-
+    int HandleUseStoreInButton(int nButton, int nCount);                     // usestorein
+    int HandleUseStoreOutButton(int nButton, int nCount);                     // usestoreout
+    int HandleSwapStoreInButton(int nButton, int nCount);                     // swapstorein-
+    int HandleSwapStoreOutButton(int nButton, int nCount);                     // swapstoreout-
     int HandleDropButton(int nButton, int nCount);                     // drop
     int HandleSellButton(int nButton, int nCount);                     // sell
-    int FUN_1419fe900(int nButton, int nCount);                     // tradein
-    int FUN_1419fea00(int nButton, int nCount);                     // sellconfirm
-    int FUN_1419feae0(int nButton, const CStringW& strName);        // changeCharName
-    int FUN_1419fecc0(int nButton, const CStringW& strName);        // changeInvalidCharName
-    int FUN_1419feeb0(int nButton, const CStringW& strName);        // changeGuildName
-    int FUN_1419ff130(int nButton, const CStringW& strName);        // openMassive
+    int HandleTradeInButton(int nButton, int nCount);                     // tradein
+    int HandleSellConfirmButton(int nButton, int nCount);                     // sellconfirm
+    int HandleChangeCharNameButton(int nButton, const CStringW& strName);        // changeCharName
+    int HandleChangeInvalidCharNameButton(int nButton, const CStringW& strName);        // changeInvalidCharName
+    int HandleChangeGuildNameButton(int nButton, const CStringW& strName);        // changeGuildName
+    int HandleOpenMassiveButton(int nButton, const CStringW& strName);        // openMassive
     int HandleBannerCloseButton(int nButton);                                 // bannerClose
-    int FUN_1419ff870(int nButton);                                 // coupleEmotion
-    int FUN_1419ffb20(int nButton);                                 // rpsGameRequest
-    int FUN_1419ffe20(int nButton);                                 // currency_overflow_ask
-    int FUN_1419fff10(int nButton);                                 // coupleDanceRequest
+    int HandleCoupleEmotionButton(int nButton);                                 // coupleEmotion
+    int HandleRpsGameRequestButton(int nButton);                                 // rpsGameRequest
+    int HandleCurrencyOverflowAskButton(int nButton);                                 // currency_overflow_ask
+    int HandleCoupleDanceRequestButton(int nButton);                                 // coupleDanceRequest
 
 private:
     MS2_LAYOUT_FRIEND;

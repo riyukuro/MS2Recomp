@@ -57,14 +57,14 @@ static const CString s_lapenSortNames[] = {"None", "Buy", "Like", "PriceLow", "P
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int FUN_1408733e0(Unk_XmlNode* pElem, const char* pszName, CStringA& strOut);
-class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions* GetLaunchOptions();   // C3: was GetLaunchOptions
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
 public:
@@ -187,10 +187,10 @@ void CItemLapenshardTable::AddEquipPart(Kind part, Slot index)
 // @0x1405b4880
 int CItemLapenshardTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "itemLapenshardUpgrade.xml");
-    FUN_1401d1160(strPath);
+    CString strPath = GetXmlPath("Table", "itemLapenshardUpgrade.xml");
+    SetPath(strPath);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 1;
     Unk_XmlNode* pRoot = (Unk_XmlNode*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
@@ -225,7 +225,7 @@ int CItemLapenshardTable::Load()
         XmlGetAttr((class TiXmlElement*)(pNode), strNext, (unsigned&)data->m_nNext);
         XmlGetAttr((class TiXmlElement*)(pNode), strMinCount, (unsigned&)data->m_nMinCount);
         XmlGetAttr((class TiXmlElement*)(pNode), strMeso, data->m_nMeso);
-        if (!((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->IsDisableValidate())
+        if (!((class Unk_LaunchOptions*)(void*)(((void*)GetLaunchOptions())))->IsDisableValidate())
         {
             int nTransfer = 0;
             {
@@ -242,7 +242,7 @@ int CItemLapenshardTable::Load()
                               nItemId, nNextId, strPath);
             }
         }
-        data->m_spIngredients->FUN_14026bfa0(4);
+        data->m_spIngredients->Reserve(4);
         for (unsigned i = 0; i < 4; i++)
         {
             CString strNumber = FUN_140719210(i + 1);
@@ -588,7 +588,7 @@ void CItemLapenshardTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CItemLapenshardTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CItemLapenshardTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

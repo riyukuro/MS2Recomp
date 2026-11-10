@@ -110,7 +110,7 @@ int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& rOut);
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 // The string splitters (commonstringtable.cpp / chapterbooktable.cpp).
 void FUN_14025a680(CStringW& text, ATL::CAtlArray<CStringW>& tokens, const wchar_t* pszDelims);
-void FUN_1401d9a30(CStringW& text, ATL::CAtlArray<int>& values, const wchar_t* pszDelims);
+void ParseIntArray(CStringW& text, ATL::CAtlArray<int>& values, const wchar_t* pszDelims);
 
 // @0x1402e1b80
 GameEvent::GameEvent()
@@ -304,18 +304,18 @@ bool GameEvent::vfunc_9(void* other)
 MS2_REPLACE_METHOD(0x1402E2580, GameEvent, vfunc_9, 347, 0xD456B33B);
 
 // @0x1402e26f0
-CMsTime GameEvent::FUN_1402e26f0()
+CMsTime GameEvent::GetBeginTime()
 {
     return m_28;
 }
-MS2_REPLACE_METHOD(0x1402E26F0, GameEvent, FUN_1402e26f0, 46, 0xCED5C19B);
+MS2_REPLACE_METHOD(0x1402E26F0, GameEvent, GetBeginTime, 46, 0xCED5C19B);
 
 // @0x1402e2730
-CMsTime GameEvent::FUN_1402e2730()
+CMsTime GameEvent::GetEndTime()
 {
     return m_38;
 }
-MS2_REPLACE_METHOD(0x1402E2730, GameEvent, FUN_1402e2730, 46, 0xDA54068B);
+MS2_REPLACE_METHOD(0x1402E2730, GameEvent, GetEndTime, 46, 0xDA54068B);
 
 // @0x1402e2770
 void GameEvent::UpdatePeriod(const CMsTime& now)
@@ -325,8 +325,8 @@ void GameEvent::UpdatePeriod(const CMsTime& now)
     if (IsInPeriodRange(now) == true)
         return;
     if (!HasTimeRestriction()) {
-        m_48 = FUN_1402e26f0();
-        m_58 = FUN_1402e2730();
+        m_48 = GetBeginTime();
+        m_58 = GetEndTime();
         return;
     }
     if (now < m_48)
@@ -408,8 +408,8 @@ void GameEvent::SetPeriod(const CMsTime& start, const CMsTime& end)
     if (start > end) {
         MS2_ASSERT_AT(316, FALSE);
     } else {
-        m_48 = (std::max)(start.Get(), FUN_1402e26f0().Get());
-        m_58 = (std::min)(end.Get(), FUN_1402e2730().Get());
+        m_48 = (std::max)(start.Get(), GetBeginTime().Get());
+        m_58 = (std::min)(end.Get(), GetEndTime().Get());
     }
 }
 MS2_REPLACE_METHOD(0x1402E32B0, GameEvent, SetPeriod, 241, 0x88082BDD);
@@ -437,11 +437,11 @@ void GameEvent::SetEventRange(const CMsTime& start, const CMsTime& end)
 MS2_REPLACE_METHOD(0x1402E3430, GameEvent, SetEventRange, 68, 0x92925337);
 
 // @0x1402e3480
-void GameEvent::FUN_1402e3480(int kind)
+void GameEvent::SetFlag(int kind)
 {
     m_flags[kind] = true;
 }
-MS2_REPLACE_METHOD(0x1402E3480, GameEvent, FUN_1402e3480, 57, 0x049C4D57);
+MS2_REPLACE_METHOD(0x1402E3480, GameEvent, SetFlag, 57, 0x049C4D57);
 
 // @0x1402e34c0
 CStringW GameEvent::GetValuesText()
@@ -496,7 +496,7 @@ bool GameEvent::ParseDayOfWeek(const CStringW& text, std::set<int>& days)
         return true;
     {
         ATL::CAtlArray<int> values;
-        FUN_1401d9a30(const_cast<CStringW&>(text), values, L",");
+        ParseIntArray(const_cast<CStringW&>(text), values, L",");
         for (int i = 0; i < (int)values.GetCount(); i++) {
             int day = values[i];
             if (day < 1 || 7 < day) {

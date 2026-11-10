@@ -28,8 +28,8 @@
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); Unk_XmlNode* NextSibling(const char*); };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 class TiXmlElement { public: const char* Attribute(const char* name) const; const char* Attribute(const char* name, int* i) const; };   // view (tinyxml)
 CString FUN_140188f50(const char* psz, int nCodePage);      // string from an attribute value
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);
@@ -72,9 +72,9 @@ void CWeaponActionTable::ClearAll()
 // @0x141b74720
 int CWeaponActionTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "weaponAction.xml");
+    CString strPath = GetXmlPath("Table", "weaponAction.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
@@ -136,7 +136,7 @@ void CWeaponActionTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CWeaponActionTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CWeaponActionTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

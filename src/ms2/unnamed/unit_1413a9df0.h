@@ -99,7 +99,7 @@ class CFieldDataCli;
 
 // An object reference found in the world.
 #include "ms2/placeholder/cptred.h"   // CInteractObject's base (MS2Ptr<CInteractObject> releases through it)
-class CInteractObject : public CPtred { public: Vector3 GetPos(); int FUN_1413b5600(); };
+class CInteractObject : public CPtred { public: Vector3 GetPos(); int GetState(); };
 
 class WorldService   // C3: member view
 {
@@ -125,16 +125,16 @@ public:
 };
 class Unk_AkoHouseSvc { public: static Unk_AkoHouseSvc* GetInstance(); };
 class Unk_SingletonObj* GetMeratMarketMan();                // the ugc market
-class Unk_NametagTrophy* FUN_1406c7600();               // the trophy manager
+class Unk_NametagTrophy* GetAchieveManager();               // the trophy manager
 class Unk_G9ItemRec { public: void* m_p[0x38]; int m_n1c0; int m_nValue; };                          // +0x1c4
 MS2_CHECK_SIZE(Unk_G9ItemRec, 0x1c8);
 
-class Unk_SoundSink* FUN_1409331f0();   // the key binds (C3: was void*)
+class Unk_SoundSink* GetKeyTable();   // the key binds (C3: was void*)
 void* FUN_1413b1c60(const CStringA& strName);           // the dialog of a name
 void* FUN_1413b1b20(unsigned nUIId);                    // the chat emoticon dialog
 void* FUN_1413b1bc0(unsigned nUIId);                    // the enchant dialog
 int FUN_1413b1f30(TiXmlElement* pElem, const char* pszName, int& nOut);
-void* FUN_14136f3e0(int nUIId);                    // the dialog of a ui id
+void* FindGuideEvent(int nUIId);                    // the dialog of a ui id
 CStringA StringFormat(const char* format);
 
 extern ATL::CAtlArray<unsigned int> DAT_143ab3268;         // the owned titles

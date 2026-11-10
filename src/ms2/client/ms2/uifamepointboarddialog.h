@@ -24,8 +24,8 @@ public:
     virtual void vfunc_67();                                    // 67 0x140c15560
 
     int FUN_140c156d0();                                        // any alliance of the table is open to the player
-    void FUN_140c15780();                                       // rebuild the tabs
-    void FUN_140c15a10(int nAlliance);                          // send the alliance's data to the movie
+    void RebuildTabs();                                       // rebuild the tabs
+    void SetAllianceData(int nAlliance);                          // send the alliance's data to the movie
 
 };
 MS2_CHECK_SIZE(UIFamePointBoardDialog, 0x178);

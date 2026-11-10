@@ -71,7 +71,7 @@ int ReadSlotAttr(TiXmlElement* pElem, const char* pszName, int* pnOut);    // ba
 void Unk_CoupleEmotionSplit(CString& strText, std::vector<CString>& out, const char* pszSep);   // C3: was FUN_1402c8940
 int Parse_14021bdc0(const CStringA& strName);    // slot name -> slot type (commonenum)
 CString Name_14021c050(int nType);      // slot type -> slot name
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 int FUN_1402227e0(int, int);  // C3: the definition's signature
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 
@@ -93,14 +93,14 @@ CString FUN_140188f50(const char* psz, int nCodePage);                     // st
 efd::Point3 FUN_14028f060(CString str);                                    // "x, y, z" -> point (ZERO when malformed)
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned short);   // C3: was FUN_140873c60
-int FUN_14053fa40(int nItemId);            // itemdata.cpp (written there as bool; the callers test eax)
+int HasMaidId(int nItemId);            // itemdata.cpp (written there as bool; the callers test eax)
 int FUN_141901d20(int, __int64, __int64);  // C3: the definition's signature
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 
 // The item price table (commonfiles\pricetable.cpp).
 class CPriceTable;
 // @0x140552df0
-inline CPriceTable* FUN_140552df0()
+inline CPriceTable* GetPriceTable()
 {
     return TSingleton<CPriceTable>::s_instance;
 }
@@ -209,7 +209,7 @@ DropNifData::DropNifData()
 }
 
 // @0x1405434f0
-void DropNifData::FUN_1405434f0(TiXmlElement* pElem)
+void DropNifData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "typeID", reinterpret_cast<unsigned&>(m_nTypeId));
     XmlGetAttr((class TiXmlElement*)(pElem), "min", m_nUnk1c);
@@ -316,7 +316,7 @@ int ModelPart::Load(TiXmlElement* pElem)
          pCustom = ((class TiXmlElement*)((class Unk_XmlNode*)(pCustom))->NextSibling("custom")))
     {
         MS2Ptr<ItemCustom> spCustom(new ItemCustom);
-        spCustom->FUN_140266aa0(pCustom);
+        spCustom->ReadXml(pCustom);
         customs.push_back(spCustom);
     }
     for (TiXmlElement* pRotation = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("userrotation")); pRotation != 0;
@@ -453,7 +453,7 @@ int ModelFloatList::FUN_140544c00(void* pParent)
 }
 
 // @0x140544c20
-float ModelFloatList::FUN_140544c20() const
+float ModelFloatList::GetRandomValue() const
 {
     if (values.empty())
         return 1.0f;
@@ -467,7 +467,7 @@ ModelGroup::ModelGroup()
 }
 
 // @0x140544cf0
-void ModelGroup::FUN_140544cf0(TiXmlElement* pElem)
+void ModelGroup::Load(TiXmlElement* pElem)
 {
     ReadSlotAttr(pElem, "name", &type);
     int nPony = 0;
@@ -504,7 +504,7 @@ const ModelFloatList* ModelGroup::FUN_140544f20(size_t nIndex) const
 }
 
 // @0x140544fe0
-const ModelPart* ModelGroup::FUN_140544fe0(size_t nIndex) const
+const ModelPart* ModelGroup::GetPart(size_t nIndex) const
 {
     static ModelPart s_empty;
     if (nIndex < parts.size())
@@ -519,7 +519,7 @@ size_t ModelGroup::FUN_140545090() const
 }
 
 // @0x1405450c0
-size_t ModelGroup::FUN_1405450c0() const
+size_t ModelGroup::GetPartCount() const
 {
     return parts.size();
 }
@@ -527,7 +527,7 @@ size_t ModelGroup::FUN_1405450c0() const
 // @0x1405450f0
 float ModelGroup::FUN_1405450f0(int nIndex) const
 {
-    return FUN_140544f20(nIndex)->FUN_140544c20();
+    return FUN_140544f20(nIndex)->GetRandomValue();
 }
 
 // @0x140545130
@@ -538,7 +538,7 @@ void ModelGroup::FUN_140545130(const CString& strName)
 }
 
 // @0x1405451a0
-int ModelGroup::FUN_1405451a0() const
+int ModelGroup::GetType() const
 {
     return type;
 }
@@ -573,7 +573,7 @@ int ItemLimit::Load(TiXmlElement* pElem)
         XmlGetAttr((class TiXmlElement*)(pLimit), "levelLimit", levelLimit);
         XmlValue(pLimit, "transferType", transferType);
         XmlGetAttr((class TiXmlElement*)(pLimit), "transferTypeVersion", reinterpret_cast<int&>(transferTypeVersion));
-        if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pLimit))->Attribute("globalTransferType") != 0)
+        if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pLimit))->Attribute("globalTransferType") != 0)
             XmlValue(pLimit, "globalTransferType", transferType);
         XmlGetAttr((class TiXmlElement*)(pLimit), "shopSell", reinterpret_cast<bool&>(shopSell));
         XmlValue(pLimit, "enableBreak", enableBreak);
@@ -593,7 +593,7 @@ int ItemLimit::Load(TiXmlElement* pElem)
 int ItemLimit::Save(void* pParent)
 {
     static ItemLimit s_default;
-    if (FUN_140545a80(&s_default))
+    if (IsEqual(&s_default))
         return 1;
     TiXmlElement elem("limit");
     if (jobLimit.GetCount() > 0)
@@ -618,7 +618,7 @@ int ItemLimit::Save(void* pParent)
         for (std::set<int>::iterator it = recommendJobs.begin(); it != recommendJobs.end(); ++it)
             str.AppendFormat(",%d", *it);
         TrimCommas(str);
-        XmlSetAttr((class TiXmlElement*)(&elem), "recommendJobs", FUN_14016a5c0(str, 0));
+        XmlSetAttr((class TiXmlElement*)(&elem), "recommendJobs", ToCString(str, 0));
     }
     if (levelLimit != 1)
         XmlSetAttr((class TiXmlElement*)(&elem), "levelLimit", levelLimit);
@@ -647,7 +647,7 @@ int ItemLimit::Save(void* pParent)
 }
 
 // @0x140545a80
-bool ItemLimit::FUN_140545a80(const ItemLimit* pOther)
+bool ItemLimit::IsEqual(const ItemLimit* pOther)
 {
     return !FUN_140545ad0(pOther);
 }
@@ -772,7 +772,7 @@ unsigned ItemLimit::GetRecommendJobMask()
 }
 
 // @0x140546030
-unsigned ItemLimit::FUN_140546030()
+unsigned ItemLimit::GetJobLimitMask()
 {
     if (jobLimit.IsEmpty())
         return 0;
@@ -880,7 +880,7 @@ int ItemSkill::LoadXml(TiXmlElement* pElem)
 }
 
 // @0x1405467f0
-int ItemSkill::FUN_1405467f0(void* pParent)
+int ItemSkill::Save(void* pParent)
 {
     return 1;
 }
@@ -1064,13 +1064,13 @@ int ItemModelHead::FUN_1405472d0(int nIndex) const
 }
 
 // @0x140547330
-size_t ItemModelHead::FUN_140547330()
+size_t ItemModelHead::GetIdCount()
 {
     return ids.size();
 }
 
 // @0x140547360
-MsTransform* ItemModelHead::FUN_140547360()
+MsTransform* ItemModelHead::GetCapTransform()
 {
     return handle.get();
 }
@@ -1095,7 +1095,7 @@ int ItemMaterial::FUN_1405473c0(TiXmlElement* pElem)
 }
 
 // @0x140547440
-int ItemMaterial::FUN_140547440(void* pParent)
+int ItemMaterial::Save(void* pParent)
 {
     return 1;
 }
@@ -1139,15 +1139,15 @@ void ItemProperty::Load(TiXmlElement* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "unlimitedEnchantMaxGrade", reinterpret_cast<int&>(unlimitedEnchantMaxGrade));
     XmlGetAttr((class TiXmlElement*)(pElem), "rePackingLimitCount", reinterpret_cast<int&>(rePackingLimitCount));
     XmlGetAttr((class TiXmlElement*)(pElem), "rePackingItemConsumeCount", reinterpret_cast<int&>(rePackingItemConsumeCount));
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("globalRePackingLimitCount") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("globalRePackingLimitCount") != 0)
         XmlGetAttr((class TiXmlElement*)(pElem), "globalRePackingLimitCount", reinterpret_cast<int&>(rePackingLimitCount));
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("globalRePackingItemConsumeCount") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("globalRePackingItemConsumeCount") != 0)
         XmlGetAttr((class TiXmlElement*)(pElem), "globalRePackingItemConsumeCount", reinterpret_cast<int&>(rePackingItemConsumeCount));
     CString strScrollIds;
     XmlGetAttr((class TiXmlElement*)(pElem), "rePackingScrollID", strScrollIds);
     if (!strScrollIds.IsEmpty())
         XmlSplit(strScrollIds, rePackingScrollID, ",");
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("globalRePackingScrollID") != 0)
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x84) && ((class TiXmlElement*)(class TiXmlElement*)(pElem))->Attribute("globalRePackingScrollID") != 0)
     {
         CString strGlobalScrollIds;
         XmlGetAttr((class TiXmlElement*)(pElem), "globalRePackingScrollID", strGlobalScrollIds);
@@ -1260,7 +1260,7 @@ bool ItemProperty::FUN_140547ec0(const ItemProperty* pOther)
 }
 
 // @0x1405480f0
-__int64 ItemProperty::FUN_1405480f0(int nRarity)
+__int64 ItemProperty::GetSellPrice(int nRarity)
 {
     if (sellPrice.empty())
         return 0;
@@ -1273,7 +1273,7 @@ __int64 ItemProperty::FUN_1405480f0(int nRarity)
 }
 
 // @0x1405481d0
-CString* ItemProperty::FUN_1405481d0()
+CString* ItemProperty::GetSlotIcon()
 {
     return &slotIcon;
 }
@@ -1320,7 +1320,7 @@ int ItemInstallData::Load(TiXmlElement* pElem)
 int ItemInstallData::Save(void* pParent)
 {
     static ItemInstallData s_default;
-    if (FUN_140548a50(&s_default))
+    if (IsEqual(&s_default))
         return 1;
     TiXmlElement elem("install");
     if (placeable != 0)
@@ -1368,7 +1368,7 @@ int ItemInstallData::Save(void* pParent)
 }
 
 // @0x140548a50
-bool ItemInstallData::FUN_140548a50(const ItemInstallData* pOther)
+bool ItemInstallData::IsEqual(const ItemInstallData* pOther)
 {
     return !FUN_140548aa0(pOther);
 }
@@ -1416,7 +1416,7 @@ bool ItemInstallData::FUN_140548aa0(const ItemInstallData* pOther)
 }
 
 // @0x140548cb0
-int ItemInstallData::FUN_140548cb0()
+int ItemInstallData::GetStackable()
 {
     return stackable;
 }
@@ -1462,7 +1462,7 @@ int ItemHousing::LoadXml(TiXmlElement* pElem, int nItemId)
         XmlGetAttr((class TiXmlElement*)(pHousing), "trophyID", trophyID);
         XmlGetAttr((class TiXmlElement*)(pHousing), "trophyLevel", trophyLevel);
         XmlGetAttr((class TiXmlElement*)(pHousing), "interiorLevel", reinterpret_cast<unsigned short&>(interiorLevel));
-        FUN_140552df0()->GetHousing(nItemId, &hasPrice, &price, &priceCount);
+        GetPriceTable()->GetHousing(nItemId, &hasPrice, &price, &priceCount);
         XmlGetAttr((class TiXmlElement*)(pHousing), "setItemID", setItemID);
         XmlQuery((class TiXmlElement*)(pHousing), "doNotInstallBlueprint", doNotInstallBlueprint);
     }
@@ -1479,8 +1479,8 @@ void ItemHousing::LoadElement(TiXmlElement* pElem, int nItemId)
     XmlGetAttr((class TiXmlElement*)(pElem), "trophyID", trophyID);
     XmlGetAttr((class TiXmlElement*)(pElem), "trophyLevel", trophyLevel);
     XmlGetAttr((class TiXmlElement*)(pElem), "interiorLevel", reinterpret_cast<unsigned short&>(interiorLevel));
-    if (FUN_140552df0() != 0)
-        FUN_140552df0()->GetHousing(nItemId, &hasPrice, &price, &priceCount);
+    if (GetPriceTable() != 0)
+        GetPriceTable()->GetHousing(nItemId, &hasPrice, &price, &priceCount);
     XmlGetAttr((class TiXmlElement*)(pElem), "setItemID", setItemID);
     XmlQuery((class TiXmlElement*)(pElem), "doNotInstallBlueprint", doNotInstallBlueprint);
 }
@@ -1538,7 +1538,7 @@ int ItemHousing::FUN_140549470(int nItemId, __int64 nUid, __int64 nUgc)
 {
     if (!hasPrice)
         return 0;
-    if (FUN_14053fa40(nItemId))
+    if (HasMaidId(nItemId))
     {
         unsigned nCount = FUN_141901d20(nItemId, nUid, nUgc);
         if (nCount > 0)
@@ -1548,7 +1548,7 @@ int ItemHousing::FUN_140549470(int nItemId, __int64 nUid, __int64 nUgc)
 }
 
 // @0x1405494e0
-int ItemHousing::FUN_1405494e0()
+int ItemHousing::GetItemId()
 {
     return itemId;
 }
@@ -1569,7 +1569,7 @@ int ItemFusion::LoadXml(TiXmlElement* pElem)
 }
 
 // @0x140549580
-int ItemFusion::FUN_140549580(void* pParent)
+int ItemFusion::Save(void* pParent)
 {
     return 1;
 }
@@ -1699,7 +1699,7 @@ int ItemAdditionalEffect::FUN_140549c00(TiXmlElement* pElem)
 }
 
 // @0x140549d40
-int ItemAdditionalEffect::FUN_140549d40(void* pParent)
+int ItemAdditionalEffect::Save(void* pParent)
 {
     return 1;
 }
@@ -1717,7 +1717,7 @@ bool ItemAdditionalEffect::FUN_140549d60(const ItemAdditionalEffect* pOther)
 }
 
 // @0x140549de0
-unsigned ItemAdditionalEffect::FUN_140549de0()
+unsigned ItemAdditionalEffect::GetFirstId()
 {
     if (ids.IsEmpty())
         return 0;
@@ -1725,7 +1725,7 @@ unsigned ItemAdditionalEffect::FUN_140549de0()
 }
 
 // @0x140549e20
-unsigned short ItemAdditionalEffect::FUN_140549e20()
+unsigned short ItemAdditionalEffect::GetFirstLevel()
 {
     if (levels.IsEmpty())
         return 0;
@@ -1765,7 +1765,7 @@ int ItemFunction::Load(TiXmlElement* pElem)
         // "<key=value,...>" is parsed as xml values, anything else as a comma separated argument list
         bool bXml = name2.GetLength() > 1 && name2.Left(1) == L"<" && name2.Right(1) == L">";
         if (bXml)
-            xml.FUN_14092c400(name2);
+            xml.ParseValues(name2);
         else
             parameter.FUN_1408d1e00(name2, L",");
         if (FUN_14054a350() == 0)
@@ -1806,7 +1806,7 @@ int ItemFunction::FUN_14054a350()
 }
 
 // @0x14054a3d0
-bool ItemFunction::FUN_14054a3d0()
+bool ItemFunction::HasName()
 {
     return name.GetLength() > 0;
 }
@@ -1814,7 +1814,7 @@ bool ItemFunction::FUN_14054a3d0()
 // @0x14054a410
 bool ItemFunction::FUN_14054a410()
 {
-    return !xml.FUN_14092c5c0();
+    return !xml.IsEmpty();
 }
 
 // @0x14054a460
@@ -1831,7 +1831,7 @@ int ItemFunction::FUN_14054a460()
         else
             return parameter.FUN_1408d1fd0(5, 0);
     }
-    else if ((name == L"OpenItemBoxLullu" || name == L"OpenItemBoxLulluSimple") && !xml.FUN_14092c5c0())
+    else if ((name == L"OpenItemBoxLullu" || name == L"OpenItemBoxLulluSimple") && !xml.IsEmpty())
     {
         return xml.GetInt(L"commonBoxId", 0);
     }
@@ -1939,25 +1939,25 @@ bool ItemMusicScore::FUN_14054abd0(const ItemMusicScore* pOther)
 }
 
 // @0x14054aca0
-bool ItemMusicScore::FUN_14054aca0()
+bool ItemMusicScore::IsCustomNote()
 {
     return isCustomNote;
 }
 
 // @0x14054acc0
-int ItemMusicScore::FUN_14054acc0()
+int ItemMusicScore::GetNoteLengthMax()
 {
     return noteLengthMax;
 }
 
 // @0x14054ace0
-int ItemMusicScore::FUN_14054ace0()
+int ItemMusicScore::GetPlayTime()
 {
     return playTime;
 }
 
 // @0x14054ad00
-int ItemMusicScore::FUN_14054ad00()
+int ItemMusicScore::GetPlayCount()
 {
     return playCount;
 }
@@ -1972,7 +1972,7 @@ CStringW ItemMusicScore::FUN_14054ad20()
 }
 
 // @0x14054ade0
-int ItemMusicScore::FUN_14054ade0()
+int ItemMusicScore::GetMasteryValueMax()
 {
     return masteryValueMax;
 }
@@ -2007,8 +2007,8 @@ void ItemModelData::FUN_14054af00(TiXmlElement* pElem)
         {
             groups.push_back(ModelGroup());
             ModelGroup& group = groups[groups.size() - 1];
-            group.FUN_140544cf0(pSlot);
-            if (group.FUN_1405451a0() == 3)
+            group.Load(pSlot);
+            if (group.GetType() == 3)
             {
                 resource.AssignRaw(new CharacterDecalData);
                 resource->FUN_1401e4090(pSlot);
@@ -2047,7 +2047,7 @@ void ItemModelData::FUN_14054b250(const CString& strName)
 }
 
 // @0x14054b2c0
-std::vector<CString>* ItemModelData::FUN_14054b2c0(int nGender)
+std::vector<CString>* ItemModelData::GetCuttingNames(int nGender)
 {
     if (nGender == 0)
         return &names98;
@@ -2070,27 +2070,27 @@ int ItemModelData::FUN_14054b3b0()
 }
 
 // @0x14054b3d0
-size_t ItemModelData::FUN_14054b3d0()
+size_t ItemModelData::GetGroupCount()
 {
     return groups.size();
 }
 
 // @0x14054b400
-int ItemModelData::FUN_14054b400() const
+int ItemModelData::GetFirstGroupType() const
 {
     if (groups.empty())
         return 0;
-    return groups[0].FUN_1405451a0();
+    return groups[0].GetType();
 }
 
 // @0x14054b450
-bool ItemModelData::FUN_14054b450(int nType) const
+bool ItemModelData::HasGroupType(int nType) const
 {
     for (size_t i = 0; i < groups.size(); ++i)
     {
-        if (groups[i].FUN_1405451a0() == 19)
+        if (groups[i].GetType() == 19)
             return nType == 5 || nType == 4;
-        else if (groups[i].FUN_1405451a0() == nType)
+        else if (groups[i].GetType() == nType)
             return true;
     }
     return false;
@@ -2129,7 +2129,7 @@ int ItemModelData::FUN_14054b5e0(int nIndex)
 // @0x14054b610
 size_t ItemModelData::FUN_14054b610()
 {
-    return head.FUN_140547330();
+    return head.GetIdCount();
 }
 
 // @0x14054b640
@@ -2139,7 +2139,7 @@ bool ItemModelData::FUN_14054b640()
 }
 
 // @0x14054b670
-ItemModelHead* ItemModelData::FUN_14054b670()
+ItemModelHead* ItemModelData::GetHead()
 {
     return &head;
 }

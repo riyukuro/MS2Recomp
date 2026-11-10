@@ -60,8 +60,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 enum Unk_InteractMasteryType { Unk_InteractMasteryType_None = 0 }; template <class E> int XmlValue(TiXmlElement*, const char*, E&);     // enum value (mastery type)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringA FUN_140cc2ad0(const CString& strCategory, const CString& strFile);   // icon file path in a category
@@ -115,7 +115,7 @@ int CMasteryReceipe::Load(TiXmlElement* pNode)
     {
         if (m_strHabitat.GetLength() != 0)
             m_strHabitat += L", ";
-        m_strHabitat += TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->FUN_1416fbfe0(habitats[i], CStringW(L"#909090"));
+        m_strHabitat += TSingleton<CReservedWordTable>::GetInstance()/*C3:TSingleton<CReservedWordTable>::GetInstance*/->GetWorldMapLink(habitats[i], CStringW(L"#909090"));
     }
     for (size_t i = 1; i <= 5; i++)
     {
@@ -172,9 +172,9 @@ int CMasteryTable::Load()
 // MS2-FUNCTIONAL: exe builds the two literal CString temps and the path before the TiXmlDocument with a different EH state layout (precedent continentregiontable); not reproduced
 int CMasteryTable::LoadMastery()
 {
-    CString strPath = FUN_14071a5b0("Table", "mastery.xml");
+    CString strPath = GetXmlPath("Table", "mastery.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -223,9 +223,9 @@ int CMasteryTable::LoadMastery()
 // MS2-FUNCTIONAL: exe builds the two literal CString temps and the path before the TiXmlDocument with a different EH state layout (precedent continentregiontable); not reproduced
 int CMasteryTable::LoadReceipes()
 {
-    CString strPath = FUN_14071a5b0("Table", "masteryReceipe.xml");
+    CString strPath = GetXmlPath("Table", "masteryReceipe.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -247,10 +247,10 @@ int CMasteryTable::LoadReceipes()
             {
                 Unk_IngRef ref = spReceipe->m_ingredients.FUN_14026bdc0(i);
                 IngredientListPtr spList(0);
-                if (!m_ingredientReceipes.Lookup(ref->FUN_14026b500(), spList))
+                if (!m_ingredientReceipes.Lookup(ref->GetItemId(), spList))
                 {
                     spList = Unk_GrNewTag(0);
-                    m_ingredientReceipes.SetAt(ref->FUN_14026b500(), spList);
+                    m_ingredientReceipes.SetAt(ref->GetItemId(), spList);
                 }
                 spList->Add(std::make_pair(spReceipe->m_nId, reinterpret_cast<unsigned&>(ref->m_c)));
             }
@@ -262,9 +262,9 @@ int CMasteryTable::LoadReceipes()
 // @0x14066a740
 int CMasteryTable::LoadDifferentials()
 {
-    CString strPath = FUN_14071a5b0("Table", "masteryDifferentialFactor.xml");
+    CString strPath = GetXmlPath("Table", "masteryDifferentialFactor.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -537,7 +537,7 @@ int CMasteryTable::HasIngredient(int nReceipeId, int nItemId)
         Unk_IngRef ref = spReceipe->m_ingredients.FUN_14026bdc0(i);
         if (ref->m_b != 0 && spItem->HasStringTag(ref->m_b))
             return 1;
-        if (ref->FUN_14026b500() == nItemId)
+        if (ref->GetItemId() == nItemId)
             return 1;
     }
     return 0;
@@ -711,7 +711,7 @@ void CMasteryTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CMasteryTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CMasteryTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

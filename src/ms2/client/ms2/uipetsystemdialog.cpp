@@ -52,7 +52,7 @@ struct Unk_PsConfig { char m_0[8]; CContentShutdown m_8; };                   //
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
-class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
+class Unk_BreakSelected* GetPetManager();   // C3: was GetPetManager
 extern Unk_Inventory g_143ab2a90;                                           // the player's inventory
 
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
@@ -78,7 +78,7 @@ UIPetSystemDialog::UIPetSystemDialog()
     : m_180(0), m_188(0)
 {
     m_164 = 1;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140e73540
@@ -133,7 +133,7 @@ void UIPetSystemDialog::vfunc_67()
 void UIPetSystemDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    int nSel = FUN_140e74790();
+    int nSel = GetCollectTabIndex();
     if (MS2Ptr<ASButtonBar> spBar = GetChild<ASButtonBar>("m_buttonBar"))
     {
         for (POSITION pos = m_198.GetStartPosition(); pos != NULL; m_198.GetNext(pos))
@@ -145,8 +145,8 @@ void UIPetSystemDialog::OnLoadComplete()
             if (spTab->m_28 == 0)
                 continue;
             ASObj obj(2);
-            obj.FUN_1407cbb20("label", GetStringCommon(spTab->m_18));
-            obj.FUN_1407cba60("frame", strFrame);
+            obj.SetWStringMember("label", GetStringCommon(spTab->m_18));
+            obj.SetStringMember("frame", strFrame);
             spBar->AddItem(obj);
         }
         spBar->vfunc_24(true);
@@ -186,7 +186,7 @@ int UIPetSystemDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
     {
         CString strName = data.FUN_1422b8d30();
         Scaleform::GFx::Value root = data.PopValue();
-        FUN_140e74970(strName, root);
+        ShowTab(strName, root);
         return 1;
     }
     return 0;
@@ -223,12 +223,12 @@ void UIPetSystemDialog::vfunc_3(void* pItem, bool b)
 
 // @0x140e74550
 // MS2-FUNCTIONAL: the GetChild / CStringW temporaries keep different stack slots than the exe
-void UIPetSystemDialog::FUN_140e74550(int nGroup)
+void UIPetSystemDialog::OpenCollectTab(int nGroup)
 {
     if (MS2Ptr<ASButtonBar> spBar = GetChild<ASButtonBar>("m_buttonBar"))
     {
         m_180 = nGroup;
-        int nTab = FUN_140e74790();
+        int nTab = GetCollectTabIndex();
         if (spBar->GetSelectedIndex() != nTab)
             spBar->SetSelectedIndex(nTab);
     }
@@ -249,7 +249,7 @@ void UIPetSystemDialog::FUN_140e74640(int nEvent)
 }
 
 // @0x140e746c0
-MS2Ptr<PetSystemTabContents> UIPetSystemDialog::FUN_140e746c0()
+MS2Ptr<PetSystemTabContents> UIPetSystemDialog::GetShownPage()
 {
     return m_188;
 }
@@ -263,12 +263,12 @@ int UIPetSystemDialog::vfunc_84()
 // @0x140e74730
 MS2Ptr<CItem> UIPetSystemDialog::vfunc_85()
 {
-    return g_143ab2a90.FindItemByUid(((class CPetManager*)FUN_140535320())->GetSummonUid());
+    return g_143ab2a90.FindItemByUid(((class CPetManager*)GetPetManager())->GetSummonUid());
 }
 
 // @0x140e74790
 // MS2-FUNCTIONAL: the loop temporaries keep different stack slots than the exe
-int UIPetSystemDialog::FUN_140e74790()
+int UIPetSystemDialog::GetCollectTabIndex()
 {
     if (m_180 == 0)
         return 0;
@@ -284,7 +284,7 @@ int UIPetSystemDialog::FUN_140e74790()
         if (strName == "petCollect")
         {
             TabContentsPetCollect* pCollect = static_cast<TabContentsPetCollect*>(spTab->m_28.get());
-            pCollect->FUN_140cad8a0(m_180);
+            pCollect->GotoGroup(m_180);
             return nIndex;
         }
         ++nIndex;
@@ -300,7 +300,7 @@ void UIPetSystemDialog::OnRemoveTab()
 }
 
 // @0x140e74970
-void UIPetSystemDialog::FUN_140e74970(CString strName, const Scaleform::GFx::Value& root)
+void UIPetSystemDialog::ShowTab(CString strName, const Scaleform::GFx::Value& root)
 {
     MS2Ptr<TabInfo> spFound(0);
     for (POSITION pos = m_198.GetStartPosition(); pos != NULL; m_198.GetNext(pos))
@@ -336,7 +336,7 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74be0(int nPages)
         return MS2Ptr<PetSystemTabContents>(0);
     if (((struct Unk_PsConfig*)FUN_14025e7b0())->m_8.Get((CContentShutdown::Content)0x37) != 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8d))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x8d))
         return MS2Ptr<PetSystemTabContents>(new TabContentsPetCompose());   // ctor 0x140cb3db0 (tabcontentspetcompose.cpp)
     return MS2Ptr<PetSystemTabContents>(0);
 }
@@ -346,7 +346,7 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74d00(int nPages)
 {
     if (nPages == 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8d))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x8d))
         return MS2Ptr<PetSystemTabContents>(new TabContentsPetCollect());
     return MS2Ptr<PetSystemTabContents>(0);
 }
@@ -356,7 +356,7 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74df0(int nPages)
 {
     if (nPages == 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x9a))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x9a))
         return MS2Ptr<PetSystemTabContents>(new TabContentsPetRemakeOption());
     return MS2Ptr<PetSystemTabContents>(0);
 }
@@ -366,7 +366,7 @@ static MS2Ptr<PetSystemTabContents> FUN_140e74ee0(int nPages)
 {
     if (nPages == 0)
         return MS2Ptr<PetSystemTabContents>(0);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xeb))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xeb))
         return MS2Ptr<PetSystemTabContents>(new TabContentsPetEvolution());
     return MS2Ptr<PetSystemTabContents>(0);
 }

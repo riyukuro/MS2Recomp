@@ -19,7 +19,7 @@ public:
     void OnScreenshot();                                                  // "OnScreenshot"
     void OnFreeCamera();                                                  // "OnFreeCamera": toggle the free camera
     void FUN_140e761b0();                                                  // sync the free-camera check box
-    void FUN_140e76270(bool bFreeCamera);                                  // switch the free camera
+    void SetFreeCamera(bool bFreeCamera);                                  // switch the free camera
 
 private:
     MS2_LAYOUT_FRIEND;

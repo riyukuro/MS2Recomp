@@ -62,7 +62,7 @@ Unk_GsSetting::Unk_GsSetting()
 // @0x141946030
 UIGemSettingDialog::UIGemSettingDialog()
 {
-    FUN_141924170(0);
+    SetTweenEnabled(0);
 }
 
 // @0x141946090
@@ -83,7 +83,7 @@ void UIGemSettingDialog::vfunc_67()
 }
 
 // @0x1419469b0
-CGemTransparency* UIGemSettingDialog::FUN_1419469b0()
+CGemTransparency* UIGemSettingDialog::GetTransparencyGem()
 {
     if (DAT_1439f9284 == -1)
         return 0;
@@ -102,22 +102,22 @@ CGemTransparency* UIGemSettingDialog::FUN_1419469b0()
 void UIGemSettingDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    CGemTransparency* pGem = FUN_1419469b0();
+    CGemTransparency* pGem = GetTransparencyGem();
     if (pGem == 0)
     {
         vfunc_67();
         return;
     }
-    FUN_141946b10("m_cp", pGem->IsSlotHidden(0));
-    FUN_141946b10("m_ey", pGem->IsSlotHidden(1));
-    FUN_141946b10("m_cl", pGem->IsSlotHidden(2));
-    FUN_141946b10("m_pa", pGem->IsSlotHidden(3));
-    FUN_141946b10("m_mt", pGem->IsSlotHidden(4));
-    FUN_141946b10("m_ea", pGem->IsSlotHidden(5));
-    FUN_141946b10("m_fh", pGem->IsSlotHidden(6));
-    FUN_141946b10("m_gl", pGem->IsSlotHidden(7));
-    FUN_141946b10("m_ri", pGem->IsSlotHidden(8));
-    FUN_141946b10("m_sh", pGem->IsSlotHidden(9));
+    SetCheckBoxValue("m_cp", pGem->IsSlotHidden(0));
+    SetCheckBoxValue("m_ey", pGem->IsSlotHidden(1));
+    SetCheckBoxValue("m_cl", pGem->IsSlotHidden(2));
+    SetCheckBoxValue("m_pa", pGem->IsSlotHidden(3));
+    SetCheckBoxValue("m_mt", pGem->IsSlotHidden(4));
+    SetCheckBoxValue("m_ea", pGem->IsSlotHidden(5));
+    SetCheckBoxValue("m_fh", pGem->IsSlotHidden(6));
+    SetCheckBoxValue("m_gl", pGem->IsSlotHidden(7));
+    SetCheckBoxValue("m_ri", pGem->IsSlotHidden(8));
+    SetCheckBoxValue("m_sh", pGem->IsSlotHidden(9));
 }
 
 // @0x141946510
@@ -137,20 +137,20 @@ int UIGemSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     {
         if (DAT_1439f9284 == -1)
             return 1;
-        if (FUN_1419469b0() == 0)
+        if (GetTransparencyGem() == 0)
             return 1;
         Unk_GsSetting setting;
         setting.m_nType = (unsigned char)DAT_1439f9284;
-        setting.m_aHidden[0] = FUN_141946a70("m_cp");
-        setting.m_aHidden[1] = FUN_141946a70("m_ey");
-        setting.m_aHidden[2] = FUN_141946a70("m_cl");
-        setting.m_aHidden[3] = FUN_141946a70("m_pa");
-        setting.m_aHidden[4] = FUN_141946a70("m_mt");
-        setting.m_aHidden[5] = FUN_141946a70("m_ea");
-        setting.m_aHidden[6] = FUN_141946a70("m_fh");
-        setting.m_aHidden[7] = FUN_141946a70("m_gl");
-        setting.m_aHidden[8] = FUN_141946a70("m_ri");
-        setting.m_aHidden[9] = FUN_141946a70("m_sh");
+        setting.m_aHidden[0] = GetCheckBoxValue("m_cp");
+        setting.m_aHidden[1] = GetCheckBoxValue("m_ey");
+        setting.m_aHidden[2] = GetCheckBoxValue("m_cl");
+        setting.m_aHidden[3] = GetCheckBoxValue("m_pa");
+        setting.m_aHidden[4] = GetCheckBoxValue("m_mt");
+        setting.m_aHidden[5] = GetCheckBoxValue("m_ea");
+        setting.m_aHidden[6] = GetCheckBoxValue("m_fh");
+        setting.m_aHidden[7] = GetCheckBoxValue("m_gl");
+        setting.m_aHidden[8] = GetCheckBoxValue("m_ri");
+        setting.m_aHidden[9] = GetCheckBoxValue("m_sh");
         COutPacket packet(static_cast<int>(SendOp::BadgeEquip), 0);
         packet.WriteUInt8(3);
         FUN_1401fd2e0((unsigned char*)&setting, packet);
@@ -160,24 +160,24 @@ int UIGemSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     return 0;
 }
 
-// MS2-FUNCTIONAL: op-identical; the frame is 16 bytes larger than the exe (the 24-byte handle FUN_141946b10 needs leaves a dead slot here)
+// MS2-FUNCTIONAL: op-identical; the frame is 16 bytes larger than the exe (the 24-byte handle SetCheckBoxValue needs leaves a dead slot here)
 // @0x141946a70
-int UIGemSettingDialog::FUN_141946a70(CString strName)
+int UIGemSettingDialog::GetCheckBoxValue(CString strName)
 {
     {
         MS2Ptr<ASCheckBox> hCheck = GetChild<ASCheckBox>(strName);
         if ((ASCheckBox*)hCheck != 0)
-            return reinterpret_cast<Unk_GsCheck*>(hCheck.operator->())->FUN_1422ce0e0();
+            return reinterpret_cast<Unk_GsCheck*>(hCheck.operator->())->IsSelected();
     }
     return 0;
 }
 
 // @0x141946b10
-void UIGemSettingDialog::FUN_141946b10(CString strName, int nValue)
+void UIGemSettingDialog::SetCheckBoxValue(CString strName, int nValue)
 {
     MS2Ptr<ASCheckBox> hCheck = GetChild<ASCheckBox>(strName);
     if ((ASCheckBox*)hCheck != 0)
-        reinterpret_cast<Unk_GsCheck*>(hCheck.operator->())->FUN_1422ce090(nValue);
+        reinterpret_cast<Unk_GsCheck*>(hCheck.operator->())->SetSelected(nValue);
 }
 
 // ---- hooks ----

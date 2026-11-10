@@ -30,7 +30,7 @@
 #include "ms2/client/ms2/uidungeonroomdialog.h"   // C3: UIDungeonRoomDialog::FUN_1412b8ff0
 #include "ms2/placeholder/cstringtable.h"
 #include "ms2/client/ms2/uiservice.h"
-#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FindNpcData)
 
 static UICommon::CMyPCKeyInputController s_keyInputController;     // header static (origin unknown), 0x143ad7930
 
@@ -48,14 +48,14 @@ extern int g_nDebugUI;                  // 0x143ae0fc0 (name invented): debug UI
 void FUN_141901420(int n, int nUIType);
 CStringW FUN_140718650(const CString& str);                 // CString -> CStringW
 void FUN_1412751b0(const CStringW& strText, int nType);     // system message
-void FUN_1412751f0(const CStringW& strText, int a1, int a2);
+void ShowSystemNotice(const CStringW& strText, int a1, int a2);
 CStringW GetStringCommonByKey(const CStringW& strKey);             // localised string
 int FUN_141276180(const CString& strSound, const CString& strArg);    // play a system sound
 unsigned int FUN_1407181d0(const CString& str);
 int FUN_140718170(const CString& str);
 void FUN_1418fe1c0(const CString& strUrl);
 
-class UIWebBrowser* FUN_140c43790(int nUIType);
+class UIWebBrowser* FindWebBrowser(int nUIType);
 template <class T> T* Unk_GetUI(int nUiType);
 template <class T> T* Unk_PetGetDialog(int nId);
 CStringW FUN_1401aa6a0(int nId);                                    // the dictionary key of an id
@@ -63,7 +63,7 @@ CStringW FUN_1401aa6a0(int nId);                                    // the dicti
 class UIGameDictionaryDialog : public UIDialog
 {
 public:
-    void FUN_140f46ea0(int nTab, CStringW key, int n);
+    void OpenTabWithSearch(int nTab, CStringW key, int n);
 };
 class UIQuestDialog : public UIDialog
 {
@@ -72,7 +72,7 @@ public:
     void FocusQuest(int nQuestId);
 };
 
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 
 class Unk_1403ed2b0 { public: };
 
@@ -121,7 +121,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
 
     if (strMethod == "webPage") {
         CString strUrl = pArgs->FUN_1422b8d30();
-        UIWebBrowserBase* p = (UIWebBrowserBase*)FUN_140c43790(0x4e6a);
+        UIWebBrowserBase* p = (UIWebBrowserBase*)FindWebBrowser(0x4e6a);
         if (p == NULL)
             return;
         p->FUN_14135ec00(strUrl, true);
@@ -141,7 +141,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         if (p == NULL)
             return;
         if (p->HasAvailable(nQuestId) == 0) {
-            FUN_1412751f0(GetStringCommonByKey(L"s_quest_dialog_unknown_quest"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_quest_dialog_unknown_quest"), 1, 1);
             return;
         }
         p->FocusQuest(nQuestId);
@@ -151,27 +151,27 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
         UIGameDictionaryDialog* p = GetDialog<UIGameDictionaryDialog>(0x4f0b);
         if (p == NULL)
             return;
-        p->FUN_140f46ea0(3, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId), 1);
+        p->OpenTabWithSearch(3, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId), 1);
         p->FUN_141924680();
     } else if (strMethod == "npcdictionary") {
         int nNpcId = FUN_1407181d0(pArgs->FUN_1422b8d30());
         UIGameDictionaryDialog* p = GetDialog<UIGameDictionaryDialog>(0x4f0b);
         if (p == NULL)
             return;
-        MS2Ptr<CNpcData> pNpc = FUN_1406cd330(nNpcId);
+        MS2Ptr<CNpcData> pNpc = FindNpcData(nNpcId);
         if (pNpc == NULL)
             return;
         if (pNpc->GetFriendly() > 0)
-            p->FUN_140f46ea0(1, FUN_1401aa6a0(nNpcId), 1);
+            p->OpenTabWithSearch(1, FUN_1401aa6a0(nNpcId), 1);
         else
-            p->FUN_140f46ea0(2, FUN_1401aa6a0(nNpcId), 1);
+            p->OpenTabWithSearch(2, FUN_1401aa6a0(nNpcId), 1);
         p->FUN_141924680();
     } else if (strMethod == "petCollectGroup") {
         int nGroupId = FUN_140718170(pArgs->FUN_1422b8d30());
         UIPetSystemDialog* p = Unk_PetGetDialog<UIPetSystemDialog>(0x4f38);
         if (p == NULL)
             return;
-        p->FUN_140e74550(nGroupId);
+        p->OpenCollectTab(nGroupId);
     } else if (strMethod == "dungeon") {
         int nDungeonId = FUN_1407181d0(pArgs->FUN_1422b8d30());
         UIDungeonRoomDialog* p = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd);
@@ -179,7 +179,7 @@ void UIObject::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod
             return;
         if (p->FUN_141924630())
             p->vfunc_68();
-        p->FUN_1412b8ff0(nDungeonId);
+        p->OpenRoom(nDungeonId);
         p->FUN_141924680();
     } else if (strMethod == "isEnableLocale") {
         CStringW strLocale = pArgs->FUN_1422b8f40();
@@ -221,7 +221,7 @@ void UIObject::OnLoadComplete()
         ASUIComponent* p = dynamic_cast<ASUIComponent*>((AScript*)m_30);
         if (p) {
             p->SetGetTooltipFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIObject::vfunc_51), 0);
-            FUN_1422c6380(p->FUN_1422bb870(), nGroup);
+            FUN_1422c6380(p->GetValue(), nGroup);
         }
     }
 }
@@ -236,7 +236,7 @@ void UIObject::vfunc_26()
     if (nGroup == 2) {
         ASUIComponent* p = dynamic_cast<ASUIComponent*>((AScript*)m_30);
         if (p)
-            FUN_1422c63f0(p->FUN_1422bb870(), FUN_1422db730());
+            FUN_1422c63f0(p->GetValue(), FUN_1422db730());
     }
 }
 MS2_REPLACE_METHOD(0x14131ED10, UIObject, vfunc_26, 145, 0xF503749B);
@@ -281,7 +281,7 @@ void UIObject::vfunc_51(const Scaleform::GFx::FunctionHandler::Params& params)
         tooltip.SetTooltipAlign(5);
         tooltip.SetOffsetY(0x14);
         if (tooltip.ApplyTextTooltip(strText))
-            *params.pRetVal = tooltip.FUN_1422bb870();
+            *params.pRetVal = tooltip.GetValue();
     }
 }
 MS2_REPLACE_METHOD(0x14131EEE0, UIObject, vfunc_51, 280, 0x46F4F902);

@@ -107,7 +107,7 @@ class Unk_WsProxyMgr
 {
 public:
     // @0x141c05780
-    int FUN_141c05780() { return m_nEnabled; }
+    int GetEnabledCount() { return m_nEnabled; }
 
     ATL::CRBMap<egf::EntityID, efd::SmartPointer<CProxyObject> > m_proxies;   // +0x00
     int m_nEnabled;                                                 // +0x30

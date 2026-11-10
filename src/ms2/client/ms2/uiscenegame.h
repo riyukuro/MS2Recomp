@@ -51,8 +51,8 @@ public:
     virtual int vfunc_63();
     virtual void vfunc_64();
 
-    int FUN_1422e7950();                                        // 0x1422e7950 the presentation ref has changed
-    void FUN_1422e7a40(int nSceneId);                           // 0x1422e7a40
+    int GetSceneId();                                        // 0x1422e7950 the presentation ref has changed
+    void SetSubSceneId(int nSceneId);                           // 0x1422e7a40
     UISceneEntity* FUN_1422e7a70(int nSceneId);                 // 0x1422e7a70 the child scene of the id
 
 public:
@@ -94,12 +94,12 @@ public:
     virtual void vfunc_52();                                    // 52 0x141ac8310
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141ac84a0
 
-    void FUN_141ac8660();                                       // 0x141ac8660 camera: back to the follow mode
+    void RestoreFollowCamera();                                       // 0x141ac8660 camera: back to the follow mode
     void FUN_141ac8710();                                       // 0x141ac8710
-    void FUN_141ac87b0();                                       // 0x141ac87b0 camera: beauty shop view
+    void SetBeautyShopCamera();                                       // 0x141ac87b0 camera: beauty shop view
     void FUN_141ac8900();                                       // 0x141ac8900
     void FUN_141ac8b00(Vector3* pPos, Vector3* pLook, Vector3* pOut);   // 0x141ac8b00
-    void FUN_141ac8e70(int nDialogMode);                        // 0x141ac8e70 m_a8 = n
+    void SetDialogMode(int nDialogMode);                        // 0x141ac8e70 m_a8 = n
     void FUN_141ac8e90();                                       // 0x141ac8e90
     void FUN_141ac9270();                                       // 0x141ac9270
 
@@ -170,9 +170,9 @@ public:
     virtual void vfunc_56();                                    // 56 0x141aca500
     virtual void vfunc_58();                                    // 58 0x141aca570
 
-    int FUN_141aca870();                                        // 0x141aca870 debug hotkeys
+    int HandleDebugHotkeys();                                        // 0x141aca870 debug hotkeys
     void FUN_141aca840(int nUiId);                              // 0x141aca840 remember a dialog to close on the next show
-    void FUN_141acc510(NotifyObject* pNotify);                  // 0x141acc510 NotifyChangeEnableFeature handler
+    void OnNotifyChangeEnableFeature(NotifyObject* pNotify);                  // 0x141acc510 NotifyChangeEnableFeature handler
 
 private:
     MS2_LAYOUT_FRIEND;

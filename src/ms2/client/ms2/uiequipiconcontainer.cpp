@@ -20,7 +20,7 @@
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
 
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n (UInt)
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // Value = v (callee destroys)
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // Value = v (callee destroys)
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);           // Value = string
 CString FUN_140719210(long n);
 
@@ -48,13 +48,13 @@ UIEquipIconContainer::~UIEquipIconContainer()
 }
 
 // @0x140e2a090
-MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a090(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc, MS2Ptr<Customize> pOutfit)
+MS2Ptr<ASEquipIcon> UIEquipIconContainer::EquipItem(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc, MS2Ptr<Customize> pOutfit)
 {
-    MS2Ptr<ASEquipIcon> pIcon = FUN_140e2a740(nSlot);
+    MS2Ptr<ASEquipIcon> pIcon = GetEquipIcon(nSlot);
     if (pIcon == 0)
-        pIcon = FUN_140e2a990(nSlot, pItem, pSrc);
+        pIcon = CreateEquipIcon(nSlot, pItem, pSrc);
     else
-        pIcon = FUN_140e2ad70(pIcon, nSlot, pItem, pSrc);
+        pIcon = ChangeEquipIcon(pIcon, nSlot, pItem, pSrc);
     if (nSlot == 8 || nSlot == 9 || nSlot == 4 || nSlot == 5)
     {
         if (pOutfit == 0)
@@ -68,7 +68,7 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a090(int nSlot, MS2Ptr<CItem>
             nOther = 5;
         else if (nSlot == 5)
             nOther = 4;
-        MS2Ptr<ASEquipIcon> pOther = FUN_140e2a740(nOther);
+        MS2Ptr<ASEquipIcon> pOther = GetEquipIcon(nOther);
         if (pOther.get() != 0)
         {
             Customize::ItemMap mapItems(17, 0.75f, 0.25f, 2.25f, 10);
@@ -79,7 +79,7 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a090(int nSlot, MS2Ptr<CItem>
                 MS2Ptr<CItem> pOne = mapItems.GetValueAt(pos);
                 if (pOne == 0)
                     continue;
-                if (((CItem*)pOne)->FUN_1405276c0() == pOther->GetItemId())
+                if (((CItem*)pOne)->GetItemId() == pOther->GetItemId())
                     bRemove = false;
             }
             if (bRemove)
@@ -94,7 +94,7 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a090(int nSlot, MS2Ptr<CItem>
     return pIcon;
 }
 
-MS2_REPLACE_METHOD(0x140E2A090, UIEquipIconContainer, FUN_140e2a090, 1436, 0xC34A9A15);
+MS2_REPLACE_METHOD(0x140E2A090, UIEquipIconContainer, EquipItem, 1436, 0xC34A9A15);
 // @0x140e2a640
 void UIEquipIconContainer::FUN_140e2a640(int nSlot)
 {
@@ -112,15 +112,15 @@ void UIEquipIconContainer::UnEquipAll()
 
 MS2_REPLACE_METHOD(0x140E2A670, UIEquipIconContainer, UnEquipAll, 100, 0x7661BBFA);
 // @0x140e2a6e0
-void UIEquipIconContainer::FUN_140e2a6e0(int nVisible)
+void UIEquipIconContainer::SetVisible(int nVisible)
 {
     if (m_18.get() != 0)
         m_18->vfunc_3(nVisible);
 }
 
-MS2_REPLACE_METHOD(0x140E2A6E0, UIEquipIconContainer, FUN_140e2a6e0, 82, 0xF786E9B1);
+MS2_REPLACE_METHOD(0x140E2A6E0, UIEquipIconContainer, SetVisible, 82, 0xF786E9B1);
 // @0x140e2a740
-MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a740(int nSlot)
+MS2Ptr<ASEquipIcon> UIEquipIconContainer::GetEquipIcon(int nSlot)
 {
     MS2Ptr<ASEquipIcon> pIcon(0);
     if (!m_28.IsEmpty())
@@ -128,14 +128,14 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a740(int nSlot)
     return pIcon;
 }
 
-MS2_REPLACE_METHOD(0x140E2A740, UIEquipIconContainer, FUN_140e2a740, 145, 0xCB8B754A);
+MS2_REPLACE_METHOD(0x140E2A740, UIEquipIconContainer, GetEquipIcon, 145, 0xCB8B754A);
 // @0x140e2a7e0
-int UIEquipIconContainer::FUN_140e2a7e0(MS2Ptr<CItemData> pItem)
+int UIEquipIconContainer::GetHandSlot(MS2Ptr<CItemData> pItem)
 {
     if (!reinterpret_cast<Unk_ItemEquipData*>(pItem.operator->())->FUN_14053d510())
         return 0;
-    MS2Ptr<ASEquipIcon> pA = FUN_140e2a740(4);
-    MS2Ptr<ASEquipIcon> pB = FUN_140e2a740(5);
+    MS2Ptr<ASEquipIcon> pA = GetEquipIcon(4);
+    MS2Ptr<ASEquipIcon> pB = GetEquipIcon(5);
     if (pA == 0 && pB == 0)
         return 5;
     if (pA == 0)
@@ -146,7 +146,7 @@ int UIEquipIconContainer::FUN_140e2a7e0(MS2Ptr<CItemData> pItem)
 }
 
 // @0x140e2a990
-MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a990(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc)
+MS2Ptr<ASEquipIcon> UIEquipIconContainer::CreateEquipIcon(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc)
 {
     if (pSrc == 0)
         return MS2Ptr<ASEquipIcon>(0);
@@ -158,16 +158,16 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2a990(int nSlot, MS2Ptr<CItem>
     m_28.SetAt(nSlot, pIcon);
     if (m_18.get() != 0)
     {
-        Scaleform::GFx::Value vInfo = m_18->Invoke("equipItem", (unsigned int)nSlot, Scaleform::GFx::Value(pSrc->FUN_1422bb870()));
+        Scaleform::GFx::Value vInfo = m_18->Invoke("equipItem", (unsigned int)nSlot, Scaleform::GFx::Value(pSrc->GetValue()));
         MS2Ptr<ASUIComponent> pComp(new ASUIComponent(vInfo, 2));
         pIcon->FUN_1409b91a0(pComp);
     }
     return pIcon;
 }
 
-MS2_REPLACE_METHOD(0x140E2A990, UIEquipIconContainer, FUN_140e2a990, 976, 0x1FEF0C2F);
+MS2_REPLACE_METHOD(0x140E2A990, UIEquipIconContainer, CreateEquipIcon, 976, 0x1FEF0C2F);
 // @0x140e2ad70
-MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2ad70(MS2Ptr<ASEquipIcon> pIcon, int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc)
+MS2Ptr<ASEquipIcon> UIEquipIconContainer::ChangeEquipIcon(MS2Ptr<ASEquipIcon> pIcon, int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc)
 {
     if (pIcon == 0)
         return MS2Ptr<ASEquipIcon>(0);
@@ -175,12 +175,12 @@ MS2Ptr<ASEquipIcon> UIEquipIconContainer::FUN_140e2ad70(MS2Ptr<ASEquipIcon> pIco
     pIcon->SetItem(pItem);
     if ((bool)m_18.get() && (bool)pIcon->FUN_1409b92e0().get())
     {
-        m_18->Invoke("changeEquipItem", Scaleform::GFx::Value(pIcon->FUN_1409b92e0()->FUN_1422bb870()), FUN_140719210(nSlot), Scaleform::GFx::Value(pSrc->FUN_1422bb870()));
+        m_18->Invoke("changeEquipItem", Scaleform::GFx::Value(pIcon->FUN_1409b92e0()->GetValue()), FUN_140719210(nSlot), Scaleform::GFx::Value(pSrc->GetValue()));
     }
     return pIcon;
 }
 
-MS2_REPLACE_METHOD(0x140E2AD70, UIEquipIconContainer, FUN_140e2ad70, 962, 0x0958F663);
+MS2_REPLACE_METHOD(0x140E2AD70, UIEquipIconContainer, ChangeEquipIcon, 962, 0x0958F663);
 // @0x140e2b140
 void UIEquipIconContainer::UnEquipItem(int nSlot)
 {
@@ -191,7 +191,7 @@ void UIEquipIconContainer::UnEquipItem(int nSlot)
     {
         MS2Ptr<ASUIComponent> pComp = pIcon->FUN_1409b92e0();
         if ((bool)m_18.get() && (bool)pComp.get())
-            m_18->Invoke("unEquipItem", Scaleform::GFx::Value(pComp->FUN_1422bb870()));
+            m_18->Invoke("unEquipItem", Scaleform::GFx::Value(pComp->GetValue()));
         m_28.RemoveKey(nSlot);
     }
 }
@@ -204,7 +204,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, unsigned int 
     ASArgList args;
     args.resize(2);
     FUN_1422bcd10(&args[0], a1);
-    FUN_1422bcc70(&args[1], a2);
+    SetValue(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -214,9 +214,9 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GF
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bcc70(&args[0], a1);
+    SetValue(&args[0], a1);
     FUN_1422bce70(&args[1], a2);
-    FUN_1422bcc70(&args[2], a3);
+    SetValue(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 

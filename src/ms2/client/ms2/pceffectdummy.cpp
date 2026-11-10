@@ -25,7 +25,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 
 // Unrecovered helpers (same ones the other xml table units use).
 class Unk_140166420 : public CFileSystem { };
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_1403a1280
 
@@ -57,7 +57,7 @@ CPCEffectDummy::CPCEffectDummy()
 // @0x1416841f0
 int CPCEffectDummy::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "pcEffectDummy.xml");
+    CString strPath = GetXmlPath("Table", "pcEffectDummy.xml");
     return LoadFile(strPath);
 }
 
@@ -65,7 +65,7 @@ int CPCEffectDummy::Load()
 int CPCEffectDummy::LoadFile(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, pszPath, 0, true, false) == 0)
         return 0;
     Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)

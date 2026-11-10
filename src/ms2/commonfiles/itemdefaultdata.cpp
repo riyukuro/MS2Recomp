@@ -40,7 +40,7 @@ public:
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
@@ -84,9 +84,9 @@ void CItemDefaultData::Load()
     if (!ms_mapJobItems.IsEmpty())
         return;
     CString strPath;
-    strPath = FUN_14071a5b0("Table", "defaultItems.xml");
+    strPath = GetXmlPath("Table", "defaultItems.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0) {
@@ -128,7 +128,7 @@ void CItemDefaultData::Load()
                 if (!spItemData)
                     continue;
                 if (!bBase) {
-                    Unk_ItemDefaultKind eItemSlot = (Unk_ItemDefaultKind)spItemData->GetModelOrEmpty()->FUN_14054b400();
+                    Unk_ItemDefaultKind eItemSlot = (Unk_ItemDefaultKind)spItemData->GetModelOrEmpty()->GetFirstGroupType();
                     if (eItemSlot != eSlot) {
                         Unk_ItemDefaultLog(GetLogString(), 1, 0x13, L"<{0}> \xc640 <{1}>\xac00 \xac19\xc9c0 \xc54a\xc2b5\xb2c8\xb2e4.", eItemSlot, eSlot);
                         continue;
@@ -162,7 +162,7 @@ int CItemDefaultData::IsDefaultItem(int nJobCode, int nGender, int nItemId)
     CheckInit();
     if (nJobCode == 0)
         return 0;
-    if (FUN_140583f70(nGender) == 0)
+    if (IsValidTableIndex(nGender) == 0)
         return 0;
     MS2Ptr<TDefaultItems> spCommon(0);
     if (ms_mapJobItems.Lookup(0, spCommon) && spCommon->HasItem(nGender, nItemId))
@@ -180,7 +180,7 @@ int CItemDefaultData::GetItems(int nJobCode, int nGender, Unk_DefaultItemArray& 
     CheckInit();
     if (nJobCode == 0)
         return 0;
-    if (FUN_140583f70(nGender) == 0)
+    if (IsValidTableIndex(nGender) == 0)
         return 0;
     MS2Ptr<TDefaultItems> spCommon;
     if (ms_mapJobItems.Lookup(0, spCommon))
@@ -198,7 +198,7 @@ int CItemDefaultData::GetSlotItems(int nJobCode, int nGender, Unk_ItemDefaultKin
     CheckInit();
     if (nJobCode == 0)
         return 0;
-    if (FUN_140583f70(nGender) == 0)
+    if (IsValidTableIndex(nGender) == 0)
         return 0;
     MS2Ptr<TDefaultItems> spCommon(0);
     if (ms_mapJobItems.Lookup(0, spCommon))
@@ -215,7 +215,7 @@ void CItemDefaultData::GetRandomItems(int nJobCode, int nGender, ATL::CAtlArray<
 {
     CheckInit();
     aItemIds.RemoveAll();
-    if (FUN_140583f70(nGender) == 0)
+    if (IsValidTableIndex(nGender) == 0)
         return;
     if (nJobCode == 0)
         return;
@@ -269,7 +269,7 @@ void CItemDefaultData::GetCreateItems(TCreateCharInfo* pInfo, ATL::CAtlArray<uns
     aItemIds.RemoveAll();
     int nGender = pInfo->m_nGender;
     int nJobCode = pInfo->m_nJobCode;
-    if (FUN_140583f70(nGender) == 0)
+    if (IsValidTableIndex(nGender) == 0)
         return;
     if (nJobCode == 0)
         return;
@@ -375,7 +375,7 @@ void CItemDefaultData::TDefaultItems::Init()
 // @0x140585970
 void CItemDefaultData::TDefaultItems::AddItem(int nGender, MS2Ptr<DefaultItemData> spItem)
 {
-    if (FUN_140583f70(nGender) == 0)
+    if (IsValidTableIndex(nGender) == 0)
         return;
     m_mapItems[nGender].SetAt(spItem->m_nItemId, spItem);
 }
@@ -383,7 +383,7 @@ void CItemDefaultData::TDefaultItems::AddItem(int nGender, MS2Ptr<DefaultItemDat
 // @0x1405859f0
 void CItemDefaultData::TDefaultItems::AddSlotItem(int nGender, Unk_ItemDefaultKind eSlot, MS2Ptr<DefaultItemData> spItem)
 {
-    if (FUN_140583f70(nGender) == 0)
+    if (IsValidTableIndex(nGender) == 0)
         return;
     ATL::CAtlMap<Unk_ItemDefaultKind, TPtrValue<Unk_DefaultItemArray> >* pSlotItems = &m_mapSlotItems[nGender];
     ATL::CAtlMap<Unk_ItemDefaultKind, MS2Ptr<DefaultItemData> >* pSelected = &m_mapSelected[nGender];
@@ -409,7 +409,7 @@ void CItemDefaultData::TDefaultItems::Add(int nGender, Unk_ItemDefaultKind eSlot
         AddSlotItem(0, eSlot, spItem);
         AddSlotItem(1, eSlot, spItem);
     } else {
-        if (FUN_140583f70(nGender) == 0)
+        if (IsValidTableIndex(nGender) == 0)
             return;
         AddItem(nGender, spItem);
         AddSlotItem(nGender, eSlot, spItem);
@@ -419,7 +419,7 @@ void CItemDefaultData::TDefaultItems::Add(int nGender, Unk_ItemDefaultKind eSlot
 // @0x140585e30
 int CItemDefaultData::TDefaultItems::HasItem(int nGender, int nItemId)
 {
-    if (FUN_140583f70(nGender) == 0)
+    if (IsValidTableIndex(nGender) == 0)
         return 0;
     MS2Ptr<DefaultItemData> spItem;
     if (m_mapItems[nGender].Lookup(nItemId, spItem))
@@ -431,7 +431,7 @@ MS2_REPLACE_METHOD(0x140585E30, CItemDefaultData::TDefaultItems, HasItem, 152, 0
 // @0x140585ed0
 int CItemDefaultData::TDefaultItems::GetItems(int nGender, Unk_DefaultItemArray& aItems)
 {
-    if (FUN_140583f70(nGender) == 0)
+    if (IsValidTableIndex(nGender) == 0)
         return 0;
     ATL::CAtlMap<int, MS2Ptr<DefaultItemData> >* pItems = &m_mapItems[nGender];
     for (POSITION pos = pItems->GetStartPosition(); pos != 0; pItems->GetNext(pos)) {
@@ -445,7 +445,7 @@ MS2_REPLACE_METHOD(0x140585ED0, CItemDefaultData::TDefaultItems, GetItems, 181, 
 // @0x140585f90
 int CItemDefaultData::TDefaultItems::GetSlotItems(int nGender, Unk_ItemDefaultKind eSlot, Unk_DefaultItemArray& aItems)
 {
-    if (FUN_140583f70(nGender) == 0)
+    if (IsValidTableIndex(nGender) == 0)
         return 0;
     ATL::CAtlMap<Unk_ItemDefaultKind, TPtrValue<Unk_DefaultItemArray> >* pSlotItems = &m_mapSlotItems[nGender];
     TPtrValue<Unk_DefaultItemArray> spList(0);
@@ -458,7 +458,7 @@ MS2_REPLACE_METHOD(0x140585F90, CItemDefaultData::TDefaultItems, GetSlotItems, 1
 // @0x140586040
 MS2Ptr<DefaultItemData> CItemDefaultData::TDefaultItems::GetSelected(int nGender, Unk_ItemDefaultKind eSlot)
 {
-    if (FUN_140583f70(nGender) == 0)
+    if (IsValidTableIndex(nGender) == 0)
         return MS2Ptr<DefaultItemData>(0);
     ATL::CAtlMap<Unk_ItemDefaultKind, MS2Ptr<DefaultItemData> >* pSelected = &m_mapSelected[nGender];
     MS2Ptr<DefaultItemData> spItem(0);

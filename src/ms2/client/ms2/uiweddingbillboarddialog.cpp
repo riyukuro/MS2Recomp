@@ -63,7 +63,7 @@ public:
     void FUN_140da5180(int nOpcode, Delegate<void(CInPacket&)> handler);   // register
     void FUN_140da51e0(int nOpcode, Delegate<void(CInPacket&)> handler);   // unregister
 };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 
 class WeddingManager;
 class WeddingManager   // C3: member view for the former free stand-ins
@@ -73,7 +73,7 @@ public:
 };
 unsigned __int64 FUN_140718370(const CStringW& text);                // text -> number
 bool FUN_140900f30(__int64 nTime);                              // the time is at night
-CStringW FUN_140b8e850(const CMsTime& kTime);                   // the date text
+CStringW FormatYearMonthDayHour(const CMsTime& kTime);                   // the date text
 CStringW FUN_141b71910(__int64 nValue);                         // the number as text
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
@@ -120,7 +120,7 @@ UIWeddingBillboardDialog::UIWeddingBillboardDialog()
 {
     m_2c = 0x19;
     FUN_1422dc3b0(1);
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140fc2cf0
@@ -146,14 +146,14 @@ int UIWeddingBillboardDialog::vfunc_65()
 void UIWeddingBillboardDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
 }
 
 // @0x140fc2e70
 void UIWeddingBillboardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x12a, Delegate<void(CInPacket&)>(this, &UIWeddingBillboardDialog::FUN_140fc3300));
     COutPacket packet(static_cast<int>(SendOp::WeddingBillboard), 0);
     packet.Encode1(4);
     packet.Encode4(0);
@@ -236,10 +236,10 @@ bool FUN_140fc3500(const UIWeddingBillboardDialog::Entry& a, const UIWeddingBill
 {
     if (a.second.m_nTime == b.second.m_nTime)
     {
-        MS2Ptr<WeddingPackage> spPackageA = WeddingTable::GetInstance()->FUN_140908b80(a.second.m_nPackageId);
-        MS2Ptr<WeddingPackage> spPackageB = WeddingTable::GetInstance()->FUN_140908b80(b.second.m_nPackageId);
-        MS2Ptr<WeddingHallData> spHallA = spPackageA->FUN_140907110(a.second.m_nHallId);
-        MS2Ptr<WeddingHallData> spHallB = spPackageB->FUN_140907110(b.second.m_nHallId);
+        MS2Ptr<WeddingPackage> spPackageA = WeddingTable::GetInstance()->FindPackage(a.second.m_nPackageId);
+        MS2Ptr<WeddingPackage> spPackageB = WeddingTable::GetInstance()->FindPackage(b.second.m_nPackageId);
+        MS2Ptr<WeddingHallData> spHallA = spPackageA->FindHall(a.second.m_nHallId);
+        MS2Ptr<WeddingHallData> spHallB = spPackageB->FindHall(b.second.m_nHallId);
         return spHallA->m_nMerat > spHallB->m_nMerat;
     }
     return a.second.m_nTime < b.second.m_nTime;
@@ -256,9 +256,9 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
     if (nEnd > (int)m_tickets.size())
         nEnd = (int)m_tickets.size();
     if (MS2Ptr<ASButton> spNext = GetChild<ASButton>("m_nextPage"))
-        spNext->FUN_1422c1fe0(nEnd == (int)m_tickets.size());
+        spNext->SetEnabled(nEnd == (int)m_tickets.size());
     if (MS2Ptr<ASButton> spPrev = GetChild<ASButton>("m_prevPage"))
-        spPrev->FUN_1422c1fe0(nFirst == 0);
+        spPrev->SetEnabled(nFirst == 0);
     if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
         spPage->SetTextW(StringFormat<int>(L"{0}", m_nPage));
     bool bEmpty = true;
@@ -279,11 +279,11 @@ void UIWeddingBillboardDialog::FUN_140fc3680()
             unsigned int nHallText = WeddingTable::GetInstance()->FUN_140908d50(ticket.m_nPackageId, ticket.m_nHallId,
                                                                                 FUN_140900f30(ticket.m_nTime));
             ASObj row(2);
-            row.FUN_1407cbb20("weddingSN", FUN_141b71910(nSN));
-            row.FUN_1407cbb20("date", FUN_140b8e850(CMsTime(ticket.m_nTime)));
-            row.FUN_1407cbb20("groomName", ticket.m_strGroom);
-            row.FUN_1407cbb20("brideName", ticket.m_strBride);
-            row.FUN_1407cbb20("weddingHall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nHallText));
+            row.SetWStringMember("weddingSN", FUN_141b71910(nSN));
+            row.SetWStringMember("date", FormatYearMonthDayHour(CMsTime(ticket.m_nTime)));
+            row.SetWStringMember("groomName", ticket.m_strGroom);
+            row.SetWStringMember("brideName", ticket.m_strBride);
+            row.SetWStringMember("weddingHall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nHallText));
             spList->AddItem(row);
             bEmpty = false;
         }

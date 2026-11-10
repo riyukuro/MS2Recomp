@@ -25,7 +25,7 @@ class ASDialog : public ASDisplayObject
 {
 };
 
-// FUN_140e78380 is a free function, so it reaches the dialog's protected AS pointer (UISwfEntity::m_30 at +0x30)
+// UpdatePrizeMoney is a free function, so it reaches the dialog's protected AS pointer (UISwfEntity::m_30 at +0x30)
 // through this layout view.
 struct Unk_PrizeDialogAS { char m_pad_00[0x30]; MS2Ptr<AScript> m_30; };
 
@@ -34,7 +34,7 @@ UIPrizeMoneyDialog::UIPrizeMoneyDialog()
 {
     m_nPrize1 = 0;
     m_nPrize2 = 0;
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
 }
 
 // @0x140e781e0
@@ -53,7 +53,7 @@ MS2_REPLACE_METHOD(0x140E78220, UIPrizeMoneyDialog, GetTypeName, 61, 0xFDED4435)
 void UIPrizeMoneyDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140e78380(this);
+    UpdatePrizeMoney(this);
 }
 MS2_REPLACE_METHOD(0x140E78270, UIPrizeMoneyDialog, OnLoadComplete, 34, 0x3E014E21);
 
@@ -72,22 +72,22 @@ void UIPrizeMoneyDialog::vfunc_72()
 }
 
 // @0x140e78330
-void FUN_140e78330(UIPrizeMoneyDialog* pDialog, __int64 nPrize1, __int64 nPrize2)
+void SetPrizeMoney(UIPrizeMoneyDialog* pDialog, __int64 nPrize1, __int64 nPrize2)
 {
     pDialog->m_nPrize1 = nPrize1;
     pDialog->m_nPrize2 = nPrize2;
-    FUN_140e78380(pDialog);
+    UpdatePrizeMoney(pDialog);
 }
-MS2_REPLACE(0x140e78330, FUN_140e78330, 68, 0x24D0EEB5);
+MS2_REPLACE(0x140e78330, SetPrizeMoney, 68, 0x24D0EEB5);
 
 // @0x140e78380
-void FUN_140e78380(UIPrizeMoneyDialog* pDialog)
+void UpdatePrizeMoney(UIPrizeMoneyDialog* pDialog)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)((Unk_PrizeDialogAS*)pDialog)->m_30);
     if (pDlg != 0)
         pDlg->Invoke("setPrizeMoney", FUN_1409404f0(pDialog->m_nPrize1), FUN_1409404f0(pDialog->m_nPrize2));
 }
-MS2_REPLACE(0x140e78380, FUN_140e78380, 235, 0xB1158841);
+MS2_REPLACE(0x140e78380, UpdatePrizeMoney, 235, 0xB1158841);
 
 // @0x140e78470
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, CStringW a2)   // C3: ascript.h's Invoke (was ASDialog::FUN_140e78470)

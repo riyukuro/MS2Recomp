@@ -57,11 +57,11 @@ public:
     void CollectDependentQuests(int nQuestId, ATL::CAtlMap<unsigned, int>& visited);
     void CollectChainQuestIds(int nChain, IdsPtr spIds, MS2Ptr<CQuestData> spData, int nDepth);   // collects the chain of following quests
     void SortQuestChains();                                   // sorts m_378 by level
-    void FUN_14074fee0();                                   // chapter -> field values
+    void BuildChapterFieldCodes();                                   // chapter -> field values
     void LoadQuestGroupTable();                                   // loads QuestGroupTable.xml
     void FUN_1407503f0();                                   // reverse require links and chapter order
     void SortNpcQuestIds();                                   // sorts the npc quest lists
-    void FUN_140750ea0();                                   // sorts m_1d8
+    void SortQuestIdsByLevel();                                   // sorts m_1d8
     void FUN_140750f30();
     void FUN_14074f160();                                   // builds every index from m_quests
     void FUN_14074ee30();                                   // scales every reward by the level rate   // the quest and every quest that requires it

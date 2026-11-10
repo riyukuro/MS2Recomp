@@ -56,7 +56,7 @@ class Unk_ItemPreview* GetItemPreviewMgr();   // C3: was GetItemPreviewMgr
 CStringW GetStringCommon(int nStringId);
 bool FUN_141b487f0(MS2Ptr<CItemData> spData);
 void FUN_1418bee30(ASObj* pObj, int n);
-void FUN_1419235d0();
+void SetTopMostLayer();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -78,7 +78,7 @@ MS2_REPLACE_METHOD(0x1412D5990, UIItemPreviewDialog, GetTypeName, 61, 0xB27CF424
 void UIItemPreviewDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_1412d62d0();
+    UnloadRenderTarget();
     m_equip = 0;
 }
 MS2_REPLACE_METHOD(0x1412D59E0, UIItemPreviewDialog, vfunc_26, 55, 0x01783B9C);
@@ -94,7 +94,7 @@ MS2_REPLACE_METHOD(0x1412D5A20, UIItemPreviewDialog, vfunc_67, 37, 0x2ACBE4B5);
 // @0x1412d5a50
 int UIItemPreviewDialog::vfunc_65()
 {
-    if (!vfunc_55()) FUN_1419235d0();
+    if (!vfunc_55()) SetTopMostLayer();
     return UIDialog::vfunc_65();
 }
 MS2_REPLACE_METHOD(0x1412D5A50, UIItemPreviewDialog, vfunc_65, 57, 0xE7CB367A);
@@ -109,7 +109,7 @@ void UIItemPreviewDialog::OnLoadComplete()
         m_equip.AssignRaw(new UIEquipIconContainer);
         if (m_equip.get() != 0) {
             MS2Ptr<ASMovieClip> spClip = GetChild<ASMovieClip>("m_equipContainer");
-            if (spClip.get() != 0) m_equip->FUN_1412d6ca0(spClip);
+            if (spClip.get() != 0) m_equip->SetClip(spClip);
         }
     }
 }
@@ -158,7 +158,7 @@ MS2_REPLACE_METHOD(0x1412D5CB0, UIItemPreviewDialog, vfunc_25, 812, 0xFCF1276D);
 void UIItemPreviewDialog::vfunc_16()
 {
     UISwfEntity::vfunc_16();
-    FUN_1412d62d0();
+    UnloadRenderTarget();
 }
 MS2_REPLACE_METHOD(0x1412D5FF0, UIItemPreviewDialog, vfunc_16, 34, 0xA6A2E29F);
 
@@ -166,7 +166,7 @@ MS2_REPLACE_METHOD(0x1412D5FF0, UIItemPreviewDialog, vfunc_16, 34, 0xA6A2E29F);
 bool UIItemPreviewDialog::vfunc_17()
 {
     if (!UIDialog::vfunc_17()) return false;
-    FUN_1412d6270();
+    LoadRenderTarget();
     return true;
 }
 MS2_REPLACE_METHOD(0x1412D6020, UIItemPreviewDialog, vfunc_17, 47, 0x70D57397);
@@ -175,7 +175,7 @@ MS2_REPLACE_METHOD(0x1412D6020, UIItemPreviewDialog, vfunc_17, 47, 0x70D57397);
 int UIItemPreviewDialog::vfunc_o178_1(void* pAvatar)
 {
     if (pAvatar == 0) return 0;
-    FUN_1412d6270();
+    LoadRenderTarget();
     ASObj data(2);
     AvatarPC* pPc = efd::DynamicCast<AvatarPC, GameObject>(reinterpret_cast<GameObject*>(static_cast<Unk_IpAvatar*>(pAvatar)->vfunc_24()));
     if (pPc != 0) {
@@ -183,9 +183,9 @@ int UIItemPreviewDialog::vfunc_o178_1(void* pAvatar)
         bool bShowActions = true;
         MS2Ptr<CItemData> spData = ((class Unk_IpPreview*)GetItemPreviewMgr())->GetPreviewData();
         if (spData.get() != 0) bShowActions = FUN_141b487f0(spData);
-        data.FUN_1407cbbe0("showActionList", bShowActions);
+        data.SetBoolMember("showActionList", bShowActions);
     }
-    m_30->Invoke("initData", data.FUN_1422bb870());
+    m_30->Invoke("initData", data.GetValue());
     return 1;
 }
 MS2_REPLACE_METHOD_VIA(0x1412D6060, UIItemPreviewDialog, IUIAvatarEventListener, vfunc_o178_1, 427, 0x20F573FA);
@@ -203,18 +203,18 @@ int UIItemPreviewDialog::vfunc_o178_2(void*) { return 1; }
 MS2_REPLACE_METHOD_VIA(0x1412D6250, UIItemPreviewDialog, IUIAvatarEventListener, vfunc_o178_2, 16, 0x32804D89);
 
 // @0x1412d6270
-void UIItemPreviewDialog::FUN_1412d6270()
+void UIItemPreviewDialog::LoadRenderTarget()
 {
     if (m_30.get()) m_30->Invoke("loadRenderTarget");
 }
-MS2_REPLACE_METHOD(0x1412D6270, UIItemPreviewDialog, FUN_1412d6270, 83, 0x7EF90741);
+MS2_REPLACE_METHOD(0x1412D6270, UIItemPreviewDialog, LoadRenderTarget, 83, 0x7EF90741);
 
 // @0x1412d62d0
-void UIItemPreviewDialog::FUN_1412d62d0()
+void UIItemPreviewDialog::UnloadRenderTarget()
 {
     if (m_30.get()) m_30->Invoke("unloadRenderTarget");
 }
-MS2_REPLACE_METHOD(0x1412D62D0, UIItemPreviewDialog, FUN_1412d62d0, 83, 0x87029718);
+MS2_REPLACE_METHOD(0x1412D62D0, UIItemPreviewDialog, UnloadRenderTarget, 83, 0x87029718);
 
 
 // @0x1412d6330
@@ -229,15 +229,15 @@ void UIItemPreviewDialog::FUN_1412d6330(MS2Ptr<CItem> spItem)
         void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
         spSlot->FUN_1409c3860(spItem.get(), pPlayer, 0xd01);
     }
-    MS2Ptr<ASEquipIcon> spIcon = m_equip->FUN_140e2a090(0x81, spItem, MS2Ptr<AScript>(spSlot.operator ASSlot*()), MS2Ptr<Customize>(0));
+    MS2Ptr<ASEquipIcon> spIcon = m_equip->EquipItem(0x81, spItem, MS2Ptr<AScript>(spSlot.operator ASSlot*()), MS2Ptr<Customize>(0));
     if (spIcon.get() != 0) {
-        spIcon->FUN_1409b9240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPreviewDialog::FUN_1412d66e0), 0);
+        spIcon->FUN_1409b9240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPreviewDialog::GetItemTooltip), 0);
     }
 }
 MS2_REPLACE_METHOD(0x1412D6330, UIItemPreviewDialog, FUN_1412d6330, 930, 0x67B5456D);
 
 // @0x1412d66e0
-void UIItemPreviewDialog::FUN_1412d66e0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIItemPreviewDialog::GetItemTooltip(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_equip == 0) return;
     MS2Ptr<CItem> spItem = ((class Unk_IpPreview*)GetItemPreviewMgr())->GetSourceItem();
@@ -247,12 +247,12 @@ void UIItemPreviewDialog::FUN_1412d66e0(const Scaleform::GFx::FunctionHandler::P
     ASTooltip tip(pPlayer, 2, 2);
     tip.FUN_1409e0d40(spItem.get());
     tip.SetTooltipAlign(5);
-    *params.pRetVal = tip.FUN_1422bb870();
+    *params.pRetVal = tip.GetValue();
 }
-MS2_REPLACE_METHOD(0x1412D66E0, UIItemPreviewDialog, FUN_1412d66e0, 278, 0xD8650525);
+MS2_REPLACE_METHOD(0x1412D66E0, UIItemPreviewDialog, GetItemTooltip, 278, 0xD8650525);
 
 // @0x1412d6ca0
-void UIEquipIconContainer::FUN_1412d6ca0(MS2Ptr<ASMovieClip> pClip)
+void UIEquipIconContainer::SetClip(MS2Ptr<ASMovieClip> pClip)
 {
     m_18 = pClip;
 }

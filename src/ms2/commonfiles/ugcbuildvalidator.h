@@ -65,7 +65,7 @@ public:
     virtual int vfunc_42(unsigned* pErr);                                       // 0x140881440 mode 6
 
     int FUN_140880890();                    // the item must exist unless mode is 4 or 5
-    int FUN_1408808d0();                    // loads the item data of the item; fails when it has none
+    int LoadItemData();                    // loads the item data of the item; fails when it has none
     int FUN_140880990();                    // the neighbour cube exists and has a non-zero +0x68
     int GetMode();                    // m_nMode
 

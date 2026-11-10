@@ -60,7 +60,7 @@ CString FUN_140695130(const unsigned char* pDigest)
 }
 
 // @0x140695240
-CString FUN_140695240(const char* pszText)
+CString GetMd5HexString(const char* pszText)
 {
     unsigned nLen = (unsigned)strlen(pszText);
     Unk_Md5 md5;

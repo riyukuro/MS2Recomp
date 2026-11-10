@@ -24,7 +24,7 @@ class ASDialog : public ASDisplayObject
 
 void FUN_140710590(COutPacket& packet);                         // 0x140710590 send the packet
 
-// FUN_140e7f110 is a free function, so it reaches the dialog's protected AS pointer (UISwfEntity::m_30 at +0x30)
+// SetHost is a free function, so it reaches the dialog's protected AS pointer (UISwfEntity::m_30 at +0x30)
 // through this layout view.
 struct Unk_QuizDialogAS { char m_pad_00[0x30]; MS2Ptr<AScript> m_30; };
 
@@ -32,7 +32,7 @@ struct Unk_QuizDialogAS { char m_pad_00[0x30]; MS2Ptr<AScript> m_30; };
 UIQuizOXWelcomeDialog::UIQuizOXWelcomeDialog()
 {
     m_bHost = 0;
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
 }
 
 // @0x140e7efb0
@@ -51,7 +51,7 @@ MS2_REPLACE_METHOD(0x140E7EFF0, UIQuizOXWelcomeDialog, GetTypeName, 61, 0x747A94
 void UIQuizOXWelcomeDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140e7f110(this, m_bHost);
+    SetHost(this, m_bHost);
 }
 MS2_REPLACE_METHOD(0x140E7F040, UIQuizOXWelcomeDialog, OnLoadComplete, 46, 0x4379CDD0);
 
@@ -70,7 +70,7 @@ void UIQuizOXWelcomeDialog::vfunc_72()
 }
 
 // @0x140e7f110
-void FUN_140e7f110(UIQuizOXWelcomeDialog* pDialog, bool bHost)
+void SetHost(UIQuizOXWelcomeDialog* pDialog, bool bHost)
 {
     pDialog->m_bHost = bHost;
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)((Unk_QuizDialogAS*)pDialog)->m_30);
@@ -84,7 +84,7 @@ int UIQuizOXWelcomeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     if (UIDialog::vfunc_28(szMethod, pArgs, nArgs) != 0)
         return 1;
     if (_stricmp("OnClickStart", szMethod) == 0) {
-        FUN_140e7f230(this);
+        SendStartQuiz(this);
         return 1;
     }
     return 0;
@@ -92,14 +92,14 @@ int UIQuizOXWelcomeDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 MS2_REPLACE_METHOD(0x140E7F1C0, UIQuizOXWelcomeDialog, vfunc_28, 105, 0xAC452B05);
 
 // @0x140e7f230
-void FUN_140e7f230(UIQuizOXWelcomeDialog* pDialog)
+void SendStartQuiz(UIQuizOXWelcomeDialog* pDialog)
 {
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.WriteUInt8(10);
     packet.WriteUInt8(7);
     FUN_140710590(packet);
 }
-MS2_REPLACE(0x140e7f230, FUN_140e7f230, 87, 0xE6DE65FD);
+MS2_REPLACE(0x140e7f230, SendStartQuiz, 87, 0xE6DE65FD);
 
 // @0x140e7f2d0
 int UIQuizOXWelcomeDialog::vfunc_48()

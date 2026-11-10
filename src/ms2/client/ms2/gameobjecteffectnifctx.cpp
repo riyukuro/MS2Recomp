@@ -24,9 +24,9 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 class Unk_OSInput { public: class Unk_OSInput & Read0(bool &); class Unk_OSInput & Read10(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &); class Unk_OSInput & Read6(unsigned int &); class Unk_OSInput & Read9(float &); };
 
 COutputStream& FUN_14070f9a0(COutputStream& out, unsigned n);
-COutputStream& FUN_14070faa0(COutputStream& out, const CString& str);
+COutputStream& WriteString(COutputStream& out, const CString& str);
 COutputStream& FUN_14070f820(COutputStream& out, bool b);
-COutputStream& FUN_14070fa60(COutputStream& out, float f);
+COutputStream& WriteFloat(COutputStream& out, float f);
 
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
@@ -57,10 +57,10 @@ MS2_REPLACE_METHOD(0x140474740, GameObjectEffectNifCtx, LoadXml, 164, 0x6F31E288
 void GameObjectEffectNifCtx::Write(COutputStream& out) const
 {
     FUN_14070f9a0(out, m_nGameOID);
-    FUN_14070faa0(out, m_strNifPath);
+    WriteString(out, m_strNifPath);
     FUN_14070f820(out, m_bOutline);
-    FUN_14070fa60(out, m_fScale);
-    FUN_14070fa60(out, m_fRotateZ);
+    WriteFloat(out, m_fScale);
+    WriteFloat(out, m_fRotateZ);
 }
 MS2_REPLACE_METHOD(0x1404747f0, GameObjectEffectNifCtx, Write, 118, 0x43FEDBFD);
 

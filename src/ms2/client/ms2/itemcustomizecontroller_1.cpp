@@ -86,7 +86,7 @@ void FUN_141414180(NiPointer<CItemCustomizeController> spController);   // unreg
 
 struct Unk_ICCCursor : public CWindowService { };      // cursor position in pixels
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
-class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
+class Ni3DRenderView* FindRenderView();   // C3: was FindRenderView
 class Ni3DRenderView   // C3: member view for the former free stand-ins
 {
 public:
@@ -405,7 +405,7 @@ void CItemCustomizeController::BeginDrag(const NiPoint3& kPos)
     {
         if (!((struct Unk_ICCCursor*)FUN_140aadf80())->GetCursorClientPos(&m_kCursorStart.x, &m_kCursorStart.y))
             return;
-        void* pCameraManager = ((void*)FUN_1413f9a70());
+        void* pCameraManager = ((void*)FindRenderView());
         Unk_ICCPlayer* pPlayer = ((Unk_ICCPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return;
@@ -451,7 +451,7 @@ void CItemCustomizeController::UpdateDrag()
     void* pScene = reinterpret_cast<egmAnimation::AnimationService*>(pLoader)->GetActorManager(pPlayer->GetEntityID());
     if (pScene == 0)
         return;
-    void* pCameraManager = ((void*)FUN_1413f9a70());
+    void* pCameraManager = ((void*)FindRenderView());
     if (pCameraManager == 0)
         return;
     for (unsigned j = 0; j < aMeshes.GetCount(); j++)

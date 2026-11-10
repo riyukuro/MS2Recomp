@@ -80,23 +80,23 @@ public:
 };
 void FUN_14151f200();                                               // close the message box on top / show the next
 MS2Ptr<CMsgBoxData> FUN_14151f820();                                // the message box on top
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* nUnk, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show the box
 CStringW GetStringCommon(int nStringId);
 CStringW BlockFormat(int nStringId);
 CStringW FUN_140298ea0(CStringW strKey);
 #include "ms2/placeholder/formatstringid.h"
-void FUN_1412751f0(const CStringW& text, int nA, int nB);
+void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_1412752d0(const CStringW& strKey, int nType);
 void FUN_140710590(COutPacket& packet);                             // send
 CStringW FUN_140b887d0(__int64 nActorId, int nWhy);                 // statemicrogame.cpp
-CStringW FUN_140b8b0b0(__int64 nActorId, int nWhy);
+CStringW GetCoupleDanceFailMessage(__int64 nActorId, int nWhy);
 UIRewardNotify* FindRewardNotify(int nUiType);
 
-bool FUN_140bac700(int nButton, const CMsgBoxData& data);           // the rps waiting box result
-bool FUN_140bacda0(int nButton, const CMsgBoxData& data);           // the couple dance waiting box result
+bool OnRpsWaitingBoxResult(int nButton, const CMsgBoxData& data);           // the rps waiting box result
+bool OnCoupleDanceWaitingBoxResult(int nButton, const CMsgBoxData& data);           // the couple dance waiting box result
 
 // ---- the singleton ----
 
@@ -168,7 +168,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(0x78, 0);
                 break;
             }
-            if (pBanner->FUN_140b7f3b0() != 1)
+            if (pBanner->GetBannerId() != 1)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(6);
@@ -205,7 +205,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 FUN_140710590(kPacket);
                 break;
             }
-            if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
+            if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x620001f)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(6);
@@ -219,7 +219,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             kPacket.Encode8(nTargetId);
             FUN_140710590(kPacket);
             const CStringW& strName = pTarget->vfunc_77();
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FormatStringId<CStringW>(0xd0e, strName), 0, s_strRpsRequest);
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, FormatStringId<CStringW>(0xd0e, strName), 0, s_strRpsRequest);
             if (spBox == 0)
             {
                 MS2_ASSERT_AT(0xba, 0);
@@ -248,7 +248,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             }
             spBox->SetExtra(s_strRpsWaiting);
             spBox->SetTimer(FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_McConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_boxSeconds)), 1, GetStringCommon(0x2b8));
-            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140bac700));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(OnRpsWaitingBoxResult));
             spBox->FUN_141a024a0(0);
             spBox->SetButtonLabelIds(0x476, 0, 0);
             FUN_140d73c60(spBox);
@@ -272,7 +272,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             }
             if (pMyPC->FUN_14166cc80() != 0x99)
                 break;
-            if (pState->FUN_140b872c0() != pTarget->GetObjectId())
+            if (pState->GetPartnerActorId() != pTarget->GetObjectId())
                 break;
             FUN_141275260(0xd10, 1, 1);
         }
@@ -293,11 +293,11 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(0x111, 0);
                 break;
             }
-            if (pState->FUN_140b872c0() != pTarget->GetObjectId())
+            if (pState->GetPartnerActorId() != pTarget->GetObjectId())
                 break;
             pMyPC->vfunc_59(1, 0, 0, 0);
             CStringW strText = FormatStringId<CStringW>(0xd0f, pTarget->vfunc_77());
-            FUN_1412751f0(strText, 1, 1);
+            ShowSystemNotice(strText, 1, 1);
         }
         break;
     case 4:
@@ -338,7 +338,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
             __int64 nActorId = packet.ReadInt64();
             unsigned int nWhy = packet.ReadUInt8();
             CStringW strMessage = FUN_140b887d0(nActorId, nWhy);
-            FUN_1412751f0(strMessage, 1, 1);
+            ShowSystemNotice(strMessage, 1, 1);
             if (FUN_140b768a0(s_strRpsWaiting) == 1)
                 FUN_14151f200();
             if (FUN_140b768a0(s_strRpsRequest) == 1)
@@ -369,7 +369,7 @@ bool FUN_140b73d60(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(0x174, 0);
                 break;
             }
-            pState->FUN_140b87310(nMode, nCard, nPick);
+            pState->PlayCard(nMode, nCard, nPick);
         }
         break;
     case 10:
@@ -431,7 +431,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(0x1ba, 0);
                 break;
             }
-            if (pBanner->FUN_140b7f3b0() != 2)
+            if (pBanner->GetBannerId() != 2)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(0x14);
@@ -472,7 +472,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 FUN_140710590(kPacket);
                 break;
             }
-            if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
+            if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x620001f)
             {
                 COutPacket kPacket(static_cast<int>(SendOp::Microgame), 0);
                 kPacket.Encode2(0x14);
@@ -488,7 +488,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             kPacket.Encode8(nTargetId);
             FUN_140710590(kPacket);
             const CStringW& strName = pTarget->vfunc_77();
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_14028dfa0<CStringW>(L"s_microgame_couple_dance_request_recv", strName), 0, s_strCoupleDanceRequest);
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, FUN_14028dfa0<CStringW>(L"s_microgame_couple_dance_request_recv", strName), 0, s_strCoupleDanceRequest);
             if (spBox == 0)
             {
                 MS2_ASSERT_AT(0x202, 0);
@@ -517,7 +517,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             }
             spBox->SetExtra(s_strCoupleDanceWaiting);
             spBox->SetTimer(FUN_14025a620(reinterpret_cast<Unk_ConstVal*>(&((class Unk_McConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_boxSeconds)), 1, GetStringCommon(0x2b8));
-            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140bacda0));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(OnCoupleDanceWaitingBoxResult));
             spBox->FUN_141a024a0(0);
             spBox->SetButtonLabelIds(0x476, 0, 0);
             FUN_140d73c60(spBox);
@@ -541,7 +541,7 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
             }
             if (pMyPC->FUN_14166cc80() != 0xa9)
                 break;
-            if (pState->FUN_140b894c0() != pTarget->GetObjectId())
+            if (pState->GetPartnerActorId() != pTarget->GetObjectId())
                 break;
             FUN_1412752d0(L"s_microgame_couple_dance_response_accept", 1);
         }
@@ -562,10 +562,10 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
                 MS2_ASSERT_AT(600, 0);
                 break;
             }
-            if (pState->FUN_140b894c0() != pTarget->GetObjectId())
+            if (pState->GetPartnerActorId() != pTarget->GetObjectId())
                 break;
             pMyPC->vfunc_59(1, 0, 0, 0);
-            FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_microgame_couple_dance_response_decline", pTarget->vfunc_77()), 1, 1);
+            ShowSystemNotice(FUN_14028dfa0<CStringW>(L"s_microgame_couple_dance_response_decline", pTarget->vfunc_77()), 1, 1);
         }
         break;
     case 0x13:
@@ -641,8 +641,8 @@ bool FUN_140b751b0(void* pThis, int nType, CInPacket& packet)
         {
             __int64 nActorId = packet.ReadInt64();
             unsigned int nWhy = packet.ReadUInt8();
-            CStringW strMessage = FUN_140b8b0b0(nActorId, nWhy);
-            FUN_1412751f0(strMessage, 1, 1);
+            CStringW strMessage = GetCoupleDanceFailMessage(nActorId, nWhy);
+            ShowSystemNotice(strMessage, 1, 1);
             if (FUN_140b768a0(s_strCoupleDanceWaiting) == 1)
                 FUN_14151f200();
             if (FUN_140b768a0(s_strCoupleDanceRequest) == 1)

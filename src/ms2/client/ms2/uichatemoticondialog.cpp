@@ -96,7 +96,7 @@ class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x14093
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 // The per-user client state: the chat emoticon pack state is an MS2Ptr<CChatEmoticonCli> at +0x80.
-CMyCharacter* FUN_140931510();
+CMyCharacter* GetMyCharacter();
 
 __int64 GetServerTime();                                            // server time
 int FUN_140bd5bd0();                                                // the ui id of the Merat market dialog
@@ -117,14 +117,14 @@ NotifyChatEmoticonSelected::NotifyChatEmoticonSelected(const CStringW& strTarget
 }
 
 // @0x140bd2cb0
-Scaleform::GFx::Value AScript::FUN_140bd2cb0(const char* szMethod, const ASArray& a1)
+Scaleform::GFx::Value AScript::InvokeWithArray(const char* szMethod, const ASArray& a1)
 {
     ASArgList args;
     args.resize(1);
     FUN_1422bce40(&args[0], a1);
     return FUN_1422bb8f0(szMethod, args);
 }
-MS2_REPLACE_METHOD(0x140BD2CB0, AScript, FUN_140bd2cb0, 148, 0x01016A6F);
+MS2_REPLACE_METHOD(0x140BD2CB0, AScript, InvokeWithArray, 148, 0x01016A6F);
 
 // @0x140bd2c00
 UIMeratMarketDialog* FUN_140bd2c00()
@@ -148,7 +148,7 @@ void UIChatEmoticonDialog::OnClickShopButton()
         int nPage = 0x9dd0;
         int nTab = 1;
         pMerat->SearchByCategory(nTab, nPage);
-        static_cast<UIDialog*>(pMerat)->FUN_1419235d0();
+        static_cast<UIDialog*>(pMerat)->SetTopMostLayer();
     }
 }
 MS2_REPLACE_METHOD(0x140BD2990, UIChatEmoticonDialog, OnClickShopButton, 78, 0x28A8C0DF);
@@ -158,7 +158,7 @@ UIChatEmoticonDialog::UIChatEmoticonDialog()
 {
     m_nSelTab = -1;
     m_nNextExpire = 0;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140bd0f60
@@ -201,7 +201,7 @@ MS2_REPLACE_METHOD(0x140BD1000, UIChatEmoticonDialog, vfunc_72, 113, 0x36F391CA)
 void UIChatEmoticonDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
+    MS2Ptr<CChatEmoticonCli> spCli = GetMyCharacter()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x4e, 0);
@@ -236,7 +236,7 @@ MS2_REPLACE_METHOD(0x140BD11A0, UIChatEmoticonDialog, vfunc_13, 51, 0xC446B2C6);
 // @0x140bd11e0
 void UIChatEmoticonDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 {
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
+    MS2Ptr<CChatEmoticonCli> spCli = GetMyCharacter()->GetChatEmoticon();
     if (spCli.IsNull())
         return;
     int nEmoticonId = pArgs->PopUInt();
@@ -263,7 +263,7 @@ void UIChatEmoticonDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     tooltip.SetTooltipAlign(4);
     if (tooltip.ApplyTextTooltip(strText) == 0)
         return;
-    *pRetVal = tooltip.FUN_1422bb870();
+    *pRetVal = tooltip.GetValue();
 }
 MS2_REPLACE_METHOD(0x140BD11E0, UIChatEmoticonDialog, vfunc_49, 845, 0x47E5F6B8);
 
@@ -307,9 +307,9 @@ void UIChatEmoticonDialog::FUN_140bd1720()
     ASArray tabs(2);
     {
         ASObj tabInfo(2);
-        tabInfo.FUN_1407cb9c0("id", -1);
-        tabInfo.FUN_1407cbb20("imgPath", s_strCategoryPath);
-        tabInfo.FUN_1407cbbe0("newIcon", false);
+        tabInfo.SetIntMember("id", -1);
+        tabInfo.SetWStringMember("imgPath", s_strCategoryPath);
+        tabInfo.SetBoolMember("newIcon", false);
         tabs.PushObj(tabInfo);
     }
     std::list<UIChatEmoticonTab>& tabList = m_tabs;
@@ -322,12 +322,12 @@ void UIChatEmoticonDialog::FUN_140bd1720()
             continue;
         bool bNew = m_setNewTabs.find(nCategoryId) != m_setNewTabs.end();
         ASObj info(2);
-        info.FUN_1407cb9c0("id", spCategory->m_nId);
-        info.FUN_1407cbb20("imgPath", spCategory->m_strIconPath);
-        info.FUN_1407cbbe0("newIcon", bNew);
+        info.SetIntMember("id", spCategory->m_nId);
+        info.SetWStringMember("imgPath", spCategory->m_strIconPath);
+        info.SetBoolMember("newIcon", bNew);
         tabs.PushObj(info);
     }
-    pDialog->FUN_140bd2cb0("buildTab", tabs);
+    pDialog->InvokeWithArray("buildTab", tabs);
 }
 MS2_REPLACE_METHOD(0x140BD1720, UIChatEmoticonDialog, FUN_140bd1720, 824, 0xF2D1AA76);
 
@@ -337,7 +337,7 @@ void UIChatEmoticonDialog::FUN_140bd1a60()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog == 0)
         return;
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
+    MS2Ptr<CChatEmoticonCli> spCli = GetMyCharacter()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0xcb, 0);
@@ -368,9 +368,9 @@ void UIChatEmoticonDialog::FUN_140bd1a60()
         bool bEnable = !spCli->IsGroupExpired(spEmo->m_nGroupId) ? true : false;
         ASObj item(2);
         item.SetMemberUInt("id", spEmo->m_nId);
-        item.FUN_1407cbb20("imgPath", spEmo->m_strImagePath);
-        item.FUN_1407cbbe0("enable", bEnable);
-        item.FUN_1407cbbe0("newIcon", spInfo->m_bNew);
+        item.SetWStringMember("imgPath", spEmo->m_strImagePath);
+        item.SetBoolMember("enable", bEnable);
+        item.SetBoolMember("newIcon", spInfo->m_bNew);
         items.PushObj(item);
         if (bEnable)
         {
@@ -379,14 +379,14 @@ void UIChatEmoticonDialog::FUN_140bd1a60()
                 m_nNextExpire = (std::min)(m_nNextExpire, spGroup->m_nExpire);
         }
     }
-    pDialog->FUN_140bd2cb0("buildItem", items);
+    pDialog->InvokeWithArray("buildItem", items);
 }
 MS2_REPLACE_METHOD(0x140BD1A60, UIChatEmoticonDialog, FUN_140bd1a60, 1361, 0x0914FB66);
 
 // @0x140bd1fc0
 void UIChatEmoticonDialog::FUN_140bd1fc0()
 {
-    MS2Ptr<CChatEmoticonCli> spCli = FUN_140931510()->GetChatEmoticon();
+    MS2Ptr<CChatEmoticonCli> spCli = GetMyCharacter()->GetChatEmoticon();
     if (spCli.IsNull())
     {
         MS2_ASSERT_AT(0x68, 0);
@@ -395,7 +395,7 @@ void UIChatEmoticonDialog::FUN_140bd1fc0()
     m_tabs.clear();
     m_setNewTabs.clear();
     m_emoticons.clear();
-    const std::list<MS2Ptr<ChatEmoticonGroupInfo> >& groups = spCli->FUN_140bd5bb0();
+    const std::list<MS2Ptr<ChatEmoticonGroupInfo> >& groups = spCli->GetGroups();
     const std::list<MS2Ptr<ChatEmoticonGroupInfo> >& groupList = groups;
     std::list<MS2Ptr<ChatEmoticonGroupInfo> >::const_iterator itGroupEnd = groupList.end();
     for (std::list<MS2Ptr<ChatEmoticonGroupInfo> >::const_iterator itGroup = groupList.begin(); itGroup != itGroupEnd; ++itGroup)
@@ -424,7 +424,7 @@ void UIChatEmoticonDialog::FUN_140bd1fc0()
         }
     }
     std::list<MS2Ptr<UIChatEmoticonInfo> >& favourites = m_emoticons[s_nFavouriteTab];
-    const std::list<unsigned>& ids = spCli->FUN_140bd5ba0();
+    const std::list<unsigned>& ids = spCli->GetIds();
     for (std::list<unsigned>::const_iterator itId = ids.begin(); itId != ids.end(); ++itId)
     {
         int nEmoticonId = *itId;
@@ -531,7 +531,7 @@ Unk_EdNode** FUN_140bd4b60(Unk_EdNode** p);
 Unk_EdIter* FUN_140bd4dd0(Unk_EdIter* pIt, Unk_EdNode* pNode, const Unk_EdListVal* pList);
 void* FUN_140bd6850(void* p);
 void* FUN_140bd6960(void* p);
-size_t* FUN_140bd6e60(Unk_EdListVal* pList);
+size_t* GetSizePtr(Unk_EdListVal* pList);
 void FUN_140bd67b0(Unk_EdListVal* pList, Unk_EdNode* pNode);
 void* FUN_140bd69b0(void* p);
 // (0x140bd4cc0 is the _List_alloc<..MS2Ptr<UIChatEmoticonInfo>..> default ctor)
@@ -668,7 +668,7 @@ Unk_EdListVal* FUN_140bd5710(void* pTree, const int* pKey)
 }
 
 // @0x140bd5750
-size_t FUN_140bd5750(const Unk_EdListVal* pList)
+size_t GetSize(const Unk_EdListVal* pList)
 {
     return pList->m_nSize;
 }
@@ -811,7 +811,7 @@ Unk_EdIter* FUN_140bd71c0(Unk_EdListVal* pList, Unk_EdIter* pOut)
 }
 
 // @0x140bd7230
-void* FUN_140bd7230(Unk_EdAlc* pAlc, size_t nCount)
+void* Allocate(Unk_EdAlc* pAlc, size_t nCount)
 {
     return std::_Allocate<16>(std::_Get_size_of_n<32>(nCount));
 }
@@ -890,7 +890,7 @@ bool FUN_140bd5560(const Unk_EdRef* pRef)
 }
 
 // @0x140bd5760
-CPtred* FUN_140bd5760(const Unk_EdRef* pRef)
+CPtred* GetPtr(const Unk_EdRef* pRef)
 {
     return pRef->m_p;
 }
@@ -938,7 +938,7 @@ Unk_EdNode** FUN_140bd6e40(Unk_EdListVal* pList)
 }
 
 // @0x140bd6e60
-size_t* FUN_140bd6e60(Unk_EdListVal* pList)
+size_t* GetSizePtr(Unk_EdListVal* pList)
 {
     return &static_cast<Unk_EdListVal*>(FUN_140bd6850(pList))->m_nSize;
 }
@@ -951,7 +951,7 @@ void FUN_140bd7520(Unk_EdListVal* pList) noexcept
     (*FUN_140bd6dc0(pList))->m_pNext = *ppHead;
     Unk_EdNode** ppHead2 = FUN_140bd6dc0(pList);
     (*FUN_140bd6dc0(pList))->m_pPrev = *ppHead2;
-    *FUN_140bd6e60(pList) = 0;
+    *GetSizePtr(pList) = 0;
     Unk_EdNode* pNext;
     for (; pNode != *FUN_140bd6dc0(pList); pNode = pNext)
     {

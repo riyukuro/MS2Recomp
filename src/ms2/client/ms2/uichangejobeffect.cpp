@@ -85,8 +85,8 @@ void FUN_140bd0bb0(UIChangeJobEffect* pEffect)
     CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_changejob_effect_text"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, nJob));
     ASObj obj(2);
     obj.FUN_140bd0d90("jobCode", nJob);
-    obj.FUN_1407cbb20("text", CStringW(strText));
-    ((Unk_CjAS*)pEffect)->m_30->Invoke("setData", obj.FUN_1422bb870());
+    obj.SetWStringMember("text", CStringW(strText));
+    ((Unk_CjAS*)pEffect)->m_30->Invoke("setData", obj.GetValue());
 }
 MS2_REPLACE(0x140BD0BB0, FUN_140bd0bb0, 474, 0x84C58FA1);
 

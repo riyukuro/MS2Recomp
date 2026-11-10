@@ -18,7 +18,7 @@ public:
     virtual bool Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatTransform& kValue);   // 0x140dc9c80
     virtual bool AlwaysUpdate() const;                          // 0x140dca080
 
-    void FUN_140dc9e40(efd::Point3* pRotation);                // set the euler offset (degrees), rebuild the matrix
+    void SetRotation(efd::Point3* pRotation);                // set the euler offset (degrees), rebuild the matrix
     void SetAxis(const efd::Point3* pValue);             // set the raw point at +0x50
 
 private:

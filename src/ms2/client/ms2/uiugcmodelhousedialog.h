@@ -32,4 +32,4 @@ MS2_CHECK_SIZE(UIUGCModelHouseDialog, 0x180);
 MS2_CHECK_OFFSET(UIUGCModelHouseDialog, m_nPlot, 0x178);
 
 // Set the plot (0x140faf6b0).
-void FUN_140faf6b0(UIUGCModelHouseDialog* pDialog, int nPlot);
+void SetPlot(UIUGCModelHouseDialog* pDialog, int nPlot);

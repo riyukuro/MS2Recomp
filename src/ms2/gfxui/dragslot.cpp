@@ -34,7 +34,7 @@ int DragSlot::GetIndex()
 // @0x1422cc430
 int DragSlot::vfunc_10()
 {
-    FUN_1422c8be0();
+    PushBinding();
     return 1;
 }
 MS2_REPLACE_METHOD(0x1422CC430, DragSlot, vfunc_10, 29, 0x31838FF1);
@@ -42,7 +42,7 @@ MS2_REPLACE_METHOD(0x1422CC430, DragSlot, vfunc_10, 29, 0x31838FF1);
 // @0x1422cc460
 int DragSlot::vfunc_11()
 {
-    FUN_1422c8b50();
+    ClearBinding();
     return 1;
 }
 MS2_REPLACE_METHOD(0x1422CC460, DragSlot, vfunc_11, 29, 0xCB1A51CE);

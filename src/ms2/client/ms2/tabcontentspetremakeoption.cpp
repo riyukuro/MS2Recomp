@@ -89,7 +89,7 @@ static CStringW s_remakeOptionBindPet(L"remakeOptionBindPet");
 static UICommon::CMyPCKeyInputController s_keyInput;
 
 #ifdef __clang__
-// FUN_140b97c90 passes the address of the temporary CString from FUN_140b9ad20 (an MSVC extension).
+// OnRemakeResult passes the address of the temporary CString from FUN_140b9ad20 (an MSVC extension).
 #pragma clang diagnostic ignored "-Waddress-of-temporary"
 #endif
 
@@ -151,7 +151,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 
 // Locale/build switches (debug buttons).
@@ -163,7 +163,7 @@ public:
     bool IsDebugMode();
 };
 
-class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
+class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
 
 // The pet system dialog (window 0x4f38) and the pet socket page (0x2711).
 class UIPetSystemDialog : public UIDialog { public: void FUN_140e73590(int bEnable); };
@@ -186,28 +186,28 @@ class Unk_ItemOwnerRef : public CItemTransfer {};
 
 // Chat/system notices and message boxes.
 void FUN_141275260(int nMsgId, int a1, int a2);
-void FUN_1412751f0(const CStringW& strText, int a1, int a2);
+void ShowSystemNotice(const CStringW& strText, int a1, int a2);
 void FUN_1412751b0(const CStringW& strText, int nType);
-void FUN_140d73aa0(CStringW strText, int a1, void* pListener, CStringW strTitle);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strKey);
+void ShowMessageBox(CStringW strText, int a1, void* pListener, CStringW strTitle);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strKey);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();                // the do-nothing callback
 void FUN_14151f200();                                                   // close the remake popups
 
 // Item bag registry (the section's bag ids).
 void FUN_140b77500(const CString& strBag);                              // release a card bag
-void FUN_140b773a0(const CString& strBag, const CAtlArray<unsigned __int64>& ids);
+void CreatePetCardSlotBag(const CString& strBag, const CAtlArray<unsigned __int64>& ids);
 void FUN_140b77e50(const CString& strBag);                              // release an ingredient bag
-void FUN_140b77cf0(const CString& strBag, const CAtlArray<IdCount>& items);
+void CreatePetConsumeSlotBag(const CString& strBag, const CAtlArray<IdCount>& items);
 void DestroyItemInfoSlot(const CString& strKey);                              // release an item slot
 void CreateItemInfoSlot(const CString& strKey, ItemPtr item, int a, int b, int c);
 
 // Strings.
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text
 CStringW FUN_140298ea0(CStringW strKey);
-CStringW FUN_1419021b0(unsigned int, unsigned int);                           // "have/need"
+CStringW GetIngredientCountText(unsigned int, unsigned int);                           // "have/need"
 CStringW FUN_1409404f0(__int64 n);                                      // number with separators
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
@@ -253,7 +253,7 @@ inline CItemRemakeOptionIngredient::CItemRemakeOptionIngredient()
 }
 
 // @0x140b9b080
-inline void PetRemakeOptionBase::FUN_140b9b080(MS2Ptr<ASUIComponent> ui)
+inline void PetRemakeOptionBase::SetUI(MS2Ptr<ASUIComponent> ui)
 {
     m_ui = ui;
 }
@@ -292,9 +292,9 @@ void PetRemakeOptionPetCard::vfunc_4()
     {
         CAtlArray<unsigned __int64> ids;
         m_pOwner->FUN_140b95220(ids);
-        FUN_140b773a0(m_strBag, ids);
+        CreatePetCardSlotBag(m_strBag, ids);
         reinterpret_cast<MS2Ptr<ASCoreList>&>(bag)->FUN_1422dd1d0();
-        reinterpret_cast<MS2Ptr<AScript>&>(bag)->FUN_1407cba60("bagId", m_strBag);
+        reinterpret_cast<MS2Ptr<AScript>&>(bag)->SetStringMember("bagId", m_strBag);
         bag->vfunc_24(true);
     }
 }
@@ -340,15 +340,15 @@ void PetRemakeOptionPetIngredient::vfunc_4()
         if (MS2Ptr<ASTileList> bag = ingredient->FUN_140accef0<ASTileList>("m_itemBag"))
         {
             CAtlArray<IdCount> items;
-            m_pOwner->FUN_140b95250(items);
+            m_pOwner->GetIngredients(items);
             FUN_140b77e50(m_strBag);
-            FUN_140b77cf0(m_strBag, items);
+            CreatePetConsumeSlotBag(m_strBag, items);
             reinterpret_cast<MS2Ptr<ASCoreList>&>(bag)->FUN_1422dd1d0();
-            reinterpret_cast<MS2Ptr<AScript>&>(bag)->FUN_1407cba60("bagId", m_strBag);
+            reinterpret_cast<MS2Ptr<AScript>&>(bag)->SetStringMember("bagId", m_strBag);
             bag->vfunc_24(true);
         }
     }
-    ingredient->Invoke("updateBag", m_pOwner->FUN_140b9ad70());
+    ingredient->Invoke("updateBag", m_pOwner->GetIngredientIndex());
     m_pOwner->FUN_140b96560();
 }
 
@@ -428,7 +428,7 @@ void PetRemakeOptionBoard::vfunc_4()
         return;
     {
         if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
-            reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->FUN_1422c1fe0(0);
+            reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->SetEnabled(0);
     }
     board->Invoke("ClearData");
 }
@@ -455,19 +455,19 @@ void PetRemakeOptionBoard::vfunc_6(MS2Ptr<CItem> cur, MS2Ptr<CItem> next)
     if (board == 0)
         return;
     ASObj obj(2);
-    obj.FUN_1407cbb20("itemName", cur->FUN_140528160());
-    int nRemakeCount = cur->FUN_140527300();
+    obj.SetWStringMember("itemName", cur->FUN_140528160());
+    int nRemakeCount = cur->GetRemakeCount();
     CStringW strCount = FUN_14028dfa0(CStringW(L"s_pet_remake_option_count"), nRemakeCount);
-    obj.FUN_1407cbb20("remakeCount", strCount);
+    obj.SetWStringMember("remakeCount", strCount);
     CStringW strCurKey(L"s_pet_remake_cur_random_option");
     CStringW strNewKey(L"s_pet_remake_new_random_option");
     Unk_RemakeStat stat(2, ItemPtr(cur), true);
-    obj.FUN_1407cbb20("remakeStat0", FUN_140617e50(strCurKey, stat, 0));
+    obj.SetWStringMember("remakeStat0", FUN_140617e50(strCurKey, stat, 0));
     stat.m_item = next;
-    obj.FUN_1407cbb20("remakeStat1", FUN_140617e50(strNewKey, stat, 0));
+    obj.SetWStringMember("remakeStat1", FUN_140617e50(strNewKey, stat, 0));
     int nSelected = 0;
-    obj.FUN_1407cb9c0("selectedStatIndex", nSelected);
-    board->Invoke("setRemakeResult", obj.FUN_1422bb870());
+    obj.SetIntMember("selectedStatIndex", nSelected);
+    board->Invoke("setRemakeResult", obj.GetValue());
     {
         if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
         {
@@ -503,14 +503,14 @@ void PetRemakeOptionBoard::vfunc_7(int nSelect)
         FUN_140710590(pkt);
     }
     Unk_RemakeStat stat(2, ItemPtr(picked), true);
-    CStringW strFinal = FUN_140617ef0(stat, 0);
+    CStringW strFinal = GetOptionText(stat, 0);
     ASObj obj(2);
-    obj.FUN_1407cbb20("remakeStatFinal", strFinal);
-    int nRemakeCount = picked->FUN_140527300();
+    obj.SetWStringMember("remakeStatFinal", strFinal);
+    int nRemakeCount = picked->GetRemakeCount();
     CStringW strCount = FUN_14028dfa0(CStringW(L"s_pet_remake_option_count"), nRemakeCount);
-    obj.FUN_1407cbb20("remakeCount", strCount);
-    board->Invoke("selectComplete", obj.FUN_1422bb870());
-    m_pOwner->FUN_140b96960(ItemPtr(picked));
+    obj.SetWStringMember("remakeCount", strCount);
+    board->Invoke("selectComplete", obj.GetValue());
+    m_pOwner->ApplyRemadeItem(ItemPtr(picked));
     {
         if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
         {
@@ -546,29 +546,29 @@ void PetRemakeOptionBoard::FUN_140b92da0()
     }
     CAtlArray<unsigned __int64> ids;
     ids.Add(m_pOwner->GetUidPet());
-    FUN_140b773a0(m_strBag, ids);
+    CreatePetCardSlotBag(m_strBag, ids);
     ASObj obj(2);
-    obj.FUN_1407cbb20(s_itemName, pet->FUN_140527b10());
-    obj.FUN_1409c48f0(s_itemLevel, pet->FUN_140528c20());
-    reinterpret_cast<AScript*>(&obj)->FUN_1407cba60("bagId", m_strBag);
-    int nRemakeCount = pet->FUN_140527300();
+    obj.SetWStringMember(s_itemName, pet->FUN_140527b10());
+    obj.FUN_1409c48f0(s_itemLevel, pet->GetPetLevel());
+    reinterpret_cast<AScript*>(&obj)->SetStringMember("bagId", m_strBag);
+    int nRemakeCount = pet->GetRemakeCount();
     CStringW strCount = FUN_14028dfa0(CStringW(L"s_pet_remake_option_count"), nRemakeCount);
-    obj.FUN_1407cbb20("remakeCount", strCount);
-    unsigned nFrame = (FUN_140b937c0(obj, ItemPtr(pet)) != 0 || ((class CInputKeyHandler*)(class Unk_PetLocale*)(((class Unk_PetLocale*)FUN_14025e7c0())))->IsDebugMode() != 0) ? 1 : 0;
+    obj.SetWStringMember("remakeCount", strCount);
+    unsigned nFrame = (FillIngredientList(obj, ItemPtr(pet)) != 0 || ((class CInputKeyHandler*)(class Unk_PetLocale*)(((class Unk_PetLocale*)FUN_14025e7c0())))->IsDebugMode() != 0) ? 1 : 0;
     {
         if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
-            reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->FUN_1422c1fe0(nFrame);
+            reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->SetEnabled(nFrame);
     }
     unsigned nOptionCount = 0;
     Unk_RemakeStat stat(2, ItemPtr(pet), true);
-    CStringW strOption = FUN_140617ef0(stat, &nOptionCount);
+    CStringW strOption = GetOptionText(stat, &nOptionCount);
     nMaxLock = (std::min)(nOptionCount - 1, nMaxLock);
-    bool bLock = FUN_140616fd0(ItemPtr(pet));
-    obj.FUN_1407cbb20("currentOption", strOption);
+    bool bLock = CanLockOptions(ItemPtr(pet));
+    obj.SetWStringMember("currentOption", strOption);
     obj.SetMemberUInt("currentOptionCount", nOptionCount);
-    obj.FUN_1407cbbe0("enableLock", bLock);
+    obj.SetBoolMember("enableLock", bLock);
     obj.SetMemberUInt("maxOptionLockCount", nMaxLock);
-    board->Invoke("selectPetCard", obj.FUN_1422bb870());
+    board->Invoke("selectPetCard", obj.GetValue());
 }
 
 // @0x140b93460
@@ -591,25 +591,25 @@ void PetRemakeOptionBoard::FUN_140b93460()
     if (pet == 0)
         return;
     unsigned nMaxLock = data->function.parameter.FUN_1408d1f60(0, 0);
-    unsigned nOptions = FUN_1406191e0(2, ItemPtr(pet));
+    unsigned nOptions = GetOptionCount(2, ItemPtr(pet));
     nMaxLock = (std::min)(nOptions - 1, nMaxLock);
     ASObj obj(2);
     obj.SetMemberUInt("maxOptionLockCount", nMaxLock);
-    board->Invoke("selectIngredientItem", obj.FUN_1422bb870());
+    board->Invoke("selectIngredientItem", obj.GetValue());
 }
 
 // @0x140b937c0
-int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
+int PetRemakeOptionBoard::FillIngredientList(ASObj& obj, MS2Ptr<CItem> item)
 {
     if (item == 0 || item->FUN_140527840() == 0)
         return 0;
-    int nRemakeCount = item->FUN_140527300();
+    int nRemakeCount = item->GetRemakeCount();
     CItemRemakeOptionIngredient ingredient;
     MS2Ptr<CItemData> data(item->FUN_140527840());
     MS2Ptr<CPetData> pet = TSingleton<CPetDataTable>::GetInstance()->Find(item->FUN_140527840()->GetPetId());
     if (pet == 0)
         return 0;
-    ((class CItemOptionTable*)FUN_140166430())->CalcPetRemakeCost(nRemakeCount, item->GetRarity(), ingredient);
+    ((class CItemOptionTable*)GetItemOptionTable())->CalcPetRemakeCost(nRemakeCount, item->GetRarity(), ingredient);
     MS2SvrPtr<CIngredientContainer> container(
         static_cast<const MS2SvrPtr<CIngredientContainer>&>(ingredient.m_spContainer));
     if (container == 0)
@@ -632,7 +632,7 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
         if (ref == 0 || ref->IsEmpty())
             continue;
         ASObj entry(2);
-        unsigned nItemId = ref->FUN_14026b500();
+        unsigned nItemId = ref->GetItemId();
         int nNeed = ref->m_c;
         int nType = ref->m_b;
         int nRank = FUN_14053feb0(nItemId);
@@ -640,19 +640,19 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
         if (pIngredient->InitWithCount(nItemId, nRank, 0, nNeed) != 0)
         {
             CString strKey = StringFormat("{0}.ingredient.{1}", m_strBag, i);
-            reinterpret_cast<AScript*>(&entry)->FUN_1407cba60("binding", FUN_140b94260(pIngredient, CString(strKey), m_names));
+            reinterpret_cast<AScript*>(&entry)->SetStringMember("binding", BindItemToSlot(pIngredient, CString(strKey), m_names));
             int nHave = FUN_140b94340(ItemPtr(pIngredient));
-            int nCount = nSale != 0 ? FUN_140616d40(nNeed, nDiscount) : nNeed;
+            int nCount = nSale != 0 ? GetDiscountedIngredientCount(nNeed, nDiscount) : nNeed;
             if (nType != 0x60 && nHave < nCount)
                 bEnough = 0;
             if (nType == 0x60 && nCount > nHave && DAT_143ab2898 < (nFee = (__int64)((nCount - nHave) * 1000)))
                 bEnough = 0;
-            entry.FUN_1407cbb20("countText", FUN_1419021b0(nHave, nCount));
+            entry.SetWStringMember("countText", GetIngredientCountText(nHave, nCount));
             list.PushObj(entry);
         }
     }
     obj.FUN_1409eb1d0("ingredient", list);
-    obj.FUN_1407cbb20("remakeFee", FUN_14028dfa0(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(nFee)));
+    obj.SetWStringMember("remakeFee", FUN_14028dfa0(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(nFee)));
     MS2Ptr<ASUIComponent> board = m_ui->FUN_140accfb0<ASUIComponent>("m_petRemakeOptionBoard");
     if (board)
     {
@@ -677,7 +677,7 @@ int PetRemakeOptionBoard::FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item)
 }
 
 // @0x140b94260
-CString PetRemakeOptionBoard::FUN_140b94260(CItem* pItem, CString strKey, CAtlArray<CString>& names)
+CString PetRemakeOptionBoard::BindItemToSlot(CItem* pItem, CString strKey, CAtlArray<CString>& names)
 {
     DestroyItemInfoSlot(strKey);
     int nFlags = 0x2020;
@@ -706,7 +706,7 @@ TabContentsPetRemakeOption::TabContentsPetRemakeOption()
       m_nState(0), m_ui(0)
 {
     m_parts.AddTail(new PetRemakeOptionPetCard(this));
-    if (((class CFeatureManager*)(class Unk_PetFeatures*)(((class Unk_PetFeatures*)FUN_140166410())))->FUN_14036d570(0x9b) == true)
+    if (((class CFeatureManager*)(class Unk_PetFeatures*)(((class Unk_PetFeatures*)FUN_140166410())))->IsFeatureEnabled(0x9b) == true)
         m_parts.AddTail(new PetRemakeOptionPetIngredient(this));
     m_board.AssignRaw(new PetRemakeOptionBoard(this));
     m_parts.AddTail(m_board);
@@ -735,7 +735,7 @@ void TabContentsPetRemakeOption::vfunc_1()
 // @0x140b94860
 void TabContentsPetRemakeOption::vfunc_4()
 {
-    FUN_140b96520(0);
+    SetState(0);
     m_uidPet = 0;
     m_uidIngredient = 0;
     m_petCards.RemoveAll();
@@ -758,8 +758,8 @@ void TabContentsPetRemakeOption::vfunc_2(int nEvent)
     {
     case 1:
     case 2:
-        FUN_140b96ca0();
-        FUN_140b96e60();
+        RebuildPetCards();
+        RebuildIngredients();
         break;
     }
     for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
@@ -775,18 +775,18 @@ void TabContentsPetRemakeOption::vfunc_2(int nEvent)
 void TabContentsPetRemakeOption::vfunc_3(MS2Ptr<ASUIComponent> ui)
 {
     m_ui = ui;
-    FUN_140b96ca0();
-    FUN_140b96e60();
+    RebuildPetCards();
+    RebuildIngredients();
     for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
         MS2Ptr<PetRemakeOptionBase> p = m_parts.GetAt(pos);
         if (p == 0)
             continue;
-        p->FUN_140b9b080(MS2Ptr<ASUIComponent>(ui));
+        p->SetUI(MS2Ptr<ASUIComponent>(ui));
         p->vfunc_4();
         p->vfunc_3();
     }
-    FUN_140b96520(0);
+    SetState(0);
     FUN_140b967c0(0);
     COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
     pkt.Encode1(6);
@@ -826,13 +826,13 @@ int TabContentsPetRemakeOption::vfunc_6(const char* szEvent, const Scaleform::GF
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_140b973b0(&data);
+            OnGetEnableLockOption(&data);
     }
     else if (_stricmp("OnClickApply", szEvent) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_140b97870(&data);
+            OnClickApply(&data);
     }
     else if (_stricmp("OnClickRetry", szEvent) == 0)
     {
@@ -868,13 +868,13 @@ void TabContentsPetRemakeOption::vfunc_9(void* pPacket)
     FUN_140b967c0(1);
     int nKind = ((CInPacket*)pPacket)->ReadUInt8();
     if (nKind == 6)
-        FUN_140b97c90((CInPacket*)pPacket);
+        OnRemakeResult((CInPacket*)pPacket);
     else if (nKind == 1)
-        FUN_140b98430((CInPacket*)pPacket);
+        OnRemakePreview((CInPacket*)pPacket);
     else if (nKind == 2)
-        FUN_140b98520((CInPacket*)pPacket);
+        OnRemakeApplied((CInPacket*)pPacket);
     else if (nKind == 5)
-        FUN_140b98610((CInPacket*)pPacket);
+        OnRemakeError((CInPacket*)pPacket);
 }
 
 // @0x140b950b0
@@ -884,10 +884,10 @@ void TabContentsPetRemakeOption::vfunc_10(void* pItem, bool b)
         return;
     if (!((CItem*)pItem)->IsPetItem())
         return;
-    FUN_140b96520(1);
+    SetState(1);
     m_uidPet = 0;
     m_pet = 0;
-    FUN_140b96ca0();
+    RebuildPetCards();
     vfunc_2(10);
 }
 
@@ -927,11 +927,11 @@ void TabContentsPetRemakeOption::FUN_140b95220(CAtlArray<unsigned __int64>& out)
 MS2_REPLACE_METHOD(0x140B95220, TabContentsPetRemakeOption, FUN_140b95220, 41, 0x8114B4A9);
 
 // @0x140b95250
-void TabContentsPetRemakeOption::FUN_140b95250(CAtlArray<IdCount>& out)
+void TabContentsPetRemakeOption::GetIngredients(CAtlArray<IdCount>& out)
 {
     out.Copy(m_ingredients);
 }
-MS2_REPLACE_METHOD(0x140B95250, TabContentsPetRemakeOption, FUN_140b95250, 41, 0xDBAB1BE9);
+MS2_REPLACE_METHOD(0x140B95250, TabContentsPetRemakeOption, GetIngredients, 41, 0xDBAB1BE9);
 
 // @0x140b95280
 void TabContentsPetRemakeOption::FUN_140b95280(int bUsePoint)
@@ -950,13 +950,13 @@ void TabContentsPetRemakeOption::FUN_140b95280(int bUsePoint)
     {
         if (bUsePoint == 0)
         {
-            if (pet->FUN_140527930()->HasBindingRule() != 0 && pet->FUN_140527930()->HasBinding() == 0)
+            if (pet->GetTransfer()->HasBindingRule() != 0 && pet->GetTransfer()->HasBinding() == 0)
             {
                 CStringW strMsg = FUN_14028dfa0(CStringW(L"s_msg_transfer_bind_pet_remakeoption"), player->vfunc_77());
-                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, strMsg, 0, s_remakeOptionBindPet);
+                MS2Ptr<CMsgBoxData> box = CreateMessageBox(0x11, strMsg, 0, s_remakeOptionBindPet);
                 if (box.get() != 0)
                 {
-                    box->FUN_141a01600(pet->GetItemUid());
+                    box->SetItemUid(pet->GetItemUid());
                     box->FUN_141a01ee0(ItemPtr(pet), pet->FUN_140527b10(), 1, 0, -1, -1, 1);
                     box->SetButtonLabelIds(0x477, 0x478, 0);
                     FUN_140d73c60(box);
@@ -974,32 +974,32 @@ void TabContentsPetRemakeOption::FUN_140b95280(int bUsePoint)
                 if (ingredient == 0)
                     return;
                 CStringW strAsk = FUN_14028dfa0(CStringW(L"s_pet_remake_ask_have_not_lock"), ingredient->FUN_140528160());
-                FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &TabContentsPetRemakeOption::FUN_140b964c0), strAsk);
+                ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)>(this, &TabContentsPetRemakeOption::FUN_140b964c0), strAsk);
                 return;
             }
-            FUN_140b95f90();
+            SendRemakeRequest();
         }
         else
         {
             ItemPtr ingredient = g_143ab2a90.FindItemByUid(m_uidIngredient);
             if (ingredient == 0)
                 return;
-            int bOk = FUN_140616dd0(ItemPtr(pet));
+            int bOk = GetLockItemId(ItemPtr(pet));
             if (bOk == 0)
                 return;
             if (bUsePoint != 0)
                 FUN_14151f200();
-            MS2Ptr<CItemOption> option(pet->FUN_1405278a0()->m_spOption);
+            MS2Ptr<CItemOption> option(pet->GetStatus()->m_spOption);
             if (option == 0)
                 return;
             Unk_RemakeStat stat(2, ItemPtr(pet), false);
-            CStringW strLocked = FUN_140619070(stat, aLocked);
+            CStringW strLocked = GetLockedOptionText(stat, aLocked);
             CStringW strName = ingredient->FUN_140528160();
             unsigned nMaxLock = ingredient->FUN_140527840()->function.parameter.FUN_1408d1f60(0, 0);
             size_t nLocked = aLocked.GetCount();
             CStringW strAsk = FUN_14028dfa0(CStringW(L"s_pet_remake_ask_lock_item_option"), nLocked, nMaxLock, strLocked,
                                             strName, nMaxLock);
-            FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &TabContentsPetRemakeOption::FUN_140b964f0), strAsk);
+            ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)>(this, &TabContentsPetRemakeOption::FUN_140b964f0), strAsk);
         }
     }
 }
@@ -1022,7 +1022,7 @@ void TabContentsPetRemakeOption::SendChangeAttributesMode7()
     {
         if (DAT_143ab2914 < 0x32)
             return;
-        FUN_140b96520(4);
+        SetState(4);
         CCItemRemakeOptionPacket::RemakeOptionDebug debug;
         debug.m_18 = m_uidPet;
         COutPacket pkt(static_cast<int>(SendOp::ChangeAttributes), 0);
@@ -1049,7 +1049,7 @@ void TabContentsPetRemakeOption::FUN_140b95db0(ASData* pData)
     {
         if (DAT_143ab2914 < 0x32)
             return;
-        FUN_140b96520(4);
+        SetState(4);
         CString strValue = pData->FUN_1422b8d30();
         strValue.Replace(",", "");
         int nValue = FUN_1407181d0(strValue);
@@ -1067,7 +1067,7 @@ void TabContentsPetRemakeOption::FUN_140b95db0(ASData* pData)
 }
 
 // @0x140b95f90
-void TabContentsPetRemakeOption::FUN_140b95f90()
+void TabContentsPetRemakeOption::SendRemakeRequest()
 {
     ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
@@ -1075,7 +1075,7 @@ void TabContentsPetRemakeOption::FUN_140b95f90()
     if (pet.operator->()->FUN_140526470(2) == 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_pet_remake_error_server_impossible");
-        FUN_1412751f0(strMsg, 1, 1);
+        ShowSystemNotice(strMsg, 1, 1);
         return;
     }
     CAtlArray<int> aLocked;
@@ -1086,21 +1086,21 @@ void TabContentsPetRemakeOption::FUN_140b95f90()
     Unk_RemakeLockOpt lockOpt;
     if (aLocked.GetCount() > 0)
     {
-        int nLockId = FUN_140616dd0(ItemPtr(pet));
+        int nLockId = GetLockItemId(ItemPtr(pet));
         if (nLockId == 0)
         {
             CStringW strKey(L"s_pet_remake_error_server_impossible");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
             return;
         }
-        unsigned nLockLevel = FUN_140616f10(ItemPtr(pet));
+        unsigned nLockLevel = GetLockItemLevel(ItemPtr(pet));
         int nHave = g_143ab2a90.FUN_140a5f7b0(nLockId, nLockLevel);
         if (nHave <= 0)
         {
             CStringW strLock = FUN_140619760(nLockId, nLockLevel);
             CStringW strNotice = FUN_14028dfa0(
                 CStringW(L"s_itemremake_notice_disable_lock_item_option_when_click_remake"), strLock);
-            FUN_140d74390(strNotice, 0, FUN_140b240b0());
+            ShowMessageBoxWithCallback(strNotice, 0, FUN_140b240b0());
             return;
         }
         Unk_RemakeStat stat(2, ItemPtr(pet), false);
@@ -1114,7 +1114,7 @@ void TabContentsPetRemakeOption::FUN_140b95f90()
     pkt.Encode1(0);
     remake.vfunc_1(pkt);
     FUN_140710590(pkt);
-    FUN_140b96520(4);
+    SetState(4);
     FUN_140b967c0(0);
 }
 
@@ -1122,7 +1122,7 @@ void TabContentsPetRemakeOption::FUN_140b95f90()
 bool TabContentsPetRemakeOption::FUN_140b964c0(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
-        FUN_140b95f90();
+        SendRemakeRequest();
     return true;
 }
 MS2_REPLACE_METHOD(0x140B964C0, TabContentsPetRemakeOption, FUN_140b964c0, 42, 0x09E39FF4);
@@ -1131,18 +1131,18 @@ MS2_REPLACE_METHOD(0x140B964C0, TabContentsPetRemakeOption, FUN_140b964c0, 42, 0
 bool TabContentsPetRemakeOption::FUN_140b964f0(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
-        FUN_140b95f90();
+        SendRemakeRequest();
     return true;
 }
 MS2_REPLACE_METHOD(0x140B964F0, TabContentsPetRemakeOption, FUN_140b964f0, 42, 0x92ECD424);
 
 // @0x140b96520
-void TabContentsPetRemakeOption::FUN_140b96520(int nState)
+void TabContentsPetRemakeOption::SetState(int nState)
 {
     m_nState = nState;
     FUN_140b96560();
 }
-MS2_REPLACE_METHOD(0x140B96520, TabContentsPetRemakeOption, FUN_140b96520, 43, 0x4279C4C8);
+MS2_REPLACE_METHOD(0x140B96520, TabContentsPetRemakeOption, SetState, 43, 0x4279C4C8);
 
 // @0x140b96560
 void TabContentsPetRemakeOption::FUN_140b96560()
@@ -1153,7 +1153,7 @@ void TabContentsPetRemakeOption::FUN_140b96560()
         if (ingredient)
         {
             if (MS2Ptr<ASTileList> bag = ingredient->FUN_140accef0<ASTileList>("m_itemBag"))
-                reinterpret_cast<MS2Ptr<ASMovieClip>&>(bag)->FUN_1422c1fe0(1);
+                reinterpret_cast<MS2Ptr<ASMovieClip>&>(bag)->SetEnabled(1);
         }
     }
     else
@@ -1162,7 +1162,7 @@ void TabContentsPetRemakeOption::FUN_140b96560()
         if (ingredient)
         {
             if (MS2Ptr<ASTileList> bag = ingredient->FUN_140accef0<ASTileList>("m_itemBag"))
-                reinterpret_cast<MS2Ptr<ASMovieClip>&>(bag)->FUN_1422c1fe0(0);
+                reinterpret_cast<MS2Ptr<ASMovieClip>&>(bag)->SetEnabled(0);
         }
     }
 }
@@ -1184,7 +1184,7 @@ void TabContentsPetRemakeOption::FUN_140b967c0(int bEnable)
 MS2_REPLACE_METHOD(0x140B967C0, TabContentsPetRemakeOption, FUN_140b967c0, 55, 0xF135DC7C);
 
 // @0x140b96800
-void TabContentsPetRemakeOption::FUN_140b96800(MS2Ptr<CItem> cur, MS2Ptr<CItem> next)
+void TabContentsPetRemakeOption::NotifyRemakeResult(MS2Ptr<CItem> cur, MS2Ptr<CItem> next)
 {
     for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
     {
@@ -1196,7 +1196,7 @@ void TabContentsPetRemakeOption::FUN_140b96800(MS2Ptr<CItem> cur, MS2Ptr<CItem> 
 }
 
 // @0x140b96960
-void TabContentsPetRemakeOption::FUN_140b96960(MS2Ptr<CItem> item)
+void TabContentsPetRemakeOption::ApplyRemadeItem(MS2Ptr<CItem> item)
 {
     if (item == 0)
         return;
@@ -1219,7 +1219,7 @@ void TabContentsPetRemakeOption::FUN_140b96960(MS2Ptr<CItem> item)
     if (page != 0)
         ((class UIMyInfoDialog*)(class Unk_PetSocketPage*)(page))->MarkDirty();
 }
-MS2_REPLACE_METHOD(0x140B96960, TabContentsPetRemakeOption, FUN_140b96960, 491, 0x387E2EE7);
+MS2_REPLACE_METHOD(0x140B96960, TabContentsPetRemakeOption, ApplyRemadeItem, 491, 0x387E2EE7);
 
 // @0x140b96b60
 void TabContentsPetRemakeOption::FUN_140b96b60(CAtlArray<int>& out)
@@ -1238,7 +1238,7 @@ void TabContentsPetRemakeOption::FUN_140b96b60(CAtlArray<int>& out)
 }
 
 // @0x140b96ca0
-void TabContentsPetRemakeOption::FUN_140b96ca0()
+void TabContentsPetRemakeOption::RebuildPetCards()
 {
     m_petCards.RemoveAll();
     CAtlArray<unsigned __int64> ids;
@@ -1258,7 +1258,7 @@ void TabContentsPetRemakeOption::FUN_140b96ca0()
 }
 
 // @0x140b96e60
-void TabContentsPetRemakeOption::FUN_140b96e60()
+void TabContentsPetRemakeOption::RebuildIngredients()
 {
     m_ingredients.RemoveAll();
     CAtlArray<unsigned __int64> ids;
@@ -1315,7 +1315,7 @@ void TabContentsPetRemakeOption::FUN_140b97170(int nIndex)
     m_pet = item;
     m_nPetIndex = nIndex;
     m_uidPet = m_petCards[nIndex];
-    FUN_140b96520(2);
+    SetState(2);
     vfunc_2(0xe);
 }
 
@@ -1329,16 +1329,16 @@ void TabContentsPetRemakeOption::FUN_140b972f0(int nIndex)
     m_nIngredientIndex = nIndex;
     IdCount entry = m_ingredients[nIndex];
     m_uidIngredient = entry.first;
-    FUN_140b96520(3);
+    SetState(3);
     vfunc_2(0xb);
 }
 
 // @0x140b973b0
-void TabContentsPetRemakeOption::FUN_140b973b0(ASData* pData)
+void TabContentsPetRemakeOption::OnGetEnableLockOption(ASData* pData)
 {
     if (m_uidPet == 0)
         return;
-    if (!((class CFeatureManager*)(class Unk_PetFeatures*)(((class Unk_PetFeatures*)FUN_140166410())))->FUN_14036d570(0x9b))
+    if (!((class CFeatureManager*)(class Unk_PetFeatures*)(((class Unk_PetFeatures*)FUN_140166410())))->IsFeatureEnabled(0x9b))
         return;
     ItemPtr pet = g_143ab2a90.FindItemByUid(m_uidPet);
     if (pet == 0)
@@ -1349,7 +1349,7 @@ void TabContentsPetRemakeOption::FUN_140b973b0(ASData* pData)
     {
         CStringW strNotice = FUN_140298ea0(CStringW(L"s_pet_remake_notice_disable_lock_item_option"));
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strNotice);
-        FUN_140d73aa0(strNotice, 0, 0, CStringW(L""));
+        ShowMessageBox(strNotice, 0, 0, CStringW(L""));
     }
     else if (nMax <= nLocked)
     {
@@ -1363,24 +1363,24 @@ void TabContentsPetRemakeOption::FUN_140b973b0(ASData* pData)
             return;
         unsigned nLimit = data->function.parameter.FUN_1408d1f60(0, 0);
         if (nLimit == nMax)
-            FUN_140d73aa0(FUN_14028dfa0(CStringW(L"s_pet_remake_notice_lock_item_option_limit"),
+            ShowMessageBox(FUN_14028dfa0(CStringW(L"s_pet_remake_notice_lock_item_option_limit"),
                                         ingredient->FUN_140528160(), nLimit), 0, 0, CStringW(L""));
         else
-            FUN_140d73aa0(FUN_140298ea0(CStringW(L"s_pet_remake_notice_lock_item_option_max_count")), 0, 0,
+            ShowMessageBox(FUN_140298ea0(CStringW(L"s_pet_remake_notice_lock_item_option_max_count")), 0, 0,
                           CStringW(L""));
     }
 }
-MS2_REPLACE_METHOD(0x140B973B0, TabContentsPetRemakeOption, FUN_140b973b0, 1208, 0x6BE52EC5);
+MS2_REPLACE_METHOD(0x140B973B0, TabContentsPetRemakeOption, OnGetEnableLockOption, 1208, 0x6BE52EC5);
 
 // @0x140b97870
-void TabContentsPetRemakeOption::FUN_140b97870(ASData* pData)
+void TabContentsPetRemakeOption::OnClickApply(ASData* pData)
 {
-    FUN_140b96520(5);
+    SetState(5);
     int nSelect = pData->PopInt();
     if (nSelect == -1)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_pet_remake_error_server_fail_apply_option");
-        FUN_1412751f0(strMsg, 1, 1);
+        ShowSystemNotice(strMsg, 1, 1);
         return;
     }
     for (POSITION pos = m_parts.GetHeadPosition(); pos != 0; m_parts.GetNext(pos))
@@ -1401,7 +1401,7 @@ void TabContentsPetRemakeOption::OnClickRetry()
         if (MS2Ptr<ASTileList> bag = card->FUN_140accef0<ASTileList>("m_itemBag"))
             bag->SetSelectedIndex(m_nPetIndex);
     }
-    FUN_140b96520(2);
+    SetState(2);
     vfunc_2(0xe);
 }
 
@@ -1447,19 +1447,19 @@ void TabContentsPetRemakeOption::FUN_140b97bf0(CAtlArray<unsigned __int64>& arr,
 MS2_REPLACE_METHOD(0x140B97BF0, TabContentsPetRemakeOption, FUN_140b97bf0, 141, 0x428153B5);
 
 // @0x140b97c90
-void TabContentsPetRemakeOption::FUN_140b97c90(CInPacket* pPacket)
+void TabContentsPetRemakeOption::OnRemakeResult(CInPacket* pPacket)
 {
     int nResult = pPacket->ReadUInt8();
     if (nResult == 0)
     {
-        FUN_140b96520(1);
+        SetState(1);
         return;
     }
     size_t nItemId = (unsigned)pPacket->ReadInt32();
     if (nResult == 2)
     {
         FUN_140b98ad0((int)nItemId);
-        FUN_140b96520(1);
+        SetState(1);
         return;
     }
     __int64 uid = pPacket->ReadInt64();
@@ -1467,17 +1467,17 @@ void TabContentsPetRemakeOption::FUN_140b97c90(CInPacket* pPacket)
     if (item == 0)
     {
         FUN_140b98ad0((int)nItemId);
-        FUN_140b96520(1);
+        SetState(1);
         return;
     }
     if (item.operator->()->FUN_140526470(2) == 0)
     {
         CStringW strError = FUN_140298ea0(CStringW(L"s_itemremake_error_server_impossible"));
-        FUN_1412751f0(strError, 1, 1);
-        FUN_140b96520(1);
+        ShowSystemNotice(strError, 1, 1);
+        SetState(1);
         return;
     }
-    FUN_140b96520(4);
+    SetState(4);
     m_pet = item;
     m_uidPet = uid;
     size_t nCards = m_petCards.GetCount();
@@ -1499,24 +1499,24 @@ void TabContentsPetRemakeOption::FUN_140b97c90(CInPacket* pPacket)
     {
         {
             if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
-                reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->FUN_1422c1fe0(1);
+                reinterpret_cast<MS2Ptr<ASMovieClip>&>(submit)->SetEnabled(1);
         }
         CAtlArray<unsigned __int64> ids;
         ids.Add(m_uidPet);
-        FUN_140b773a0(m_board->FUN_140b9ad20(), ids);
+        CreatePetCardSlotBag(m_board->GetBagName(), ids);
         ASObj obj(2);
-        obj.FUN_1407cbb20(s_itemName, m_pet->FUN_140527b10());
-        obj.FUN_1409c48f0(s_itemLevel, m_pet->FUN_140528c20());
-        reinterpret_cast<AScript*>(&obj)->FUN_1407cba60("bagId", m_board->FUN_140b9ad20());
-        int nRemakeCount = m_pet->FUN_140527300();
+        obj.SetWStringMember(s_itemName, m_pet->FUN_140527b10());
+        obj.FUN_1409c48f0(s_itemLevel, m_pet->GetPetLevel());
+        reinterpret_cast<AScript*>(&obj)->SetStringMember("bagId", m_board->GetBagName());
+        int nRemakeCount = m_pet->GetRemakeCount();
         CStringW strCount = FUN_14028dfa0(CStringW(L"s_pet_remake_option_count"), nRemakeCount);
-        obj.FUN_1407cbb20("remakeCount", strCount);
-        board->Invoke("SetBasicInfo", obj.FUN_1422bb870());
+        obj.SetWStringMember("remakeCount", strCount);
+        board->Invoke("SetBasicInfo", obj.GetValue());
     }
 }
 
 // @0x140b98430
-void TabContentsPetRemakeOption::FUN_140b98430(CInPacket* pPacket)
+void TabContentsPetRemakeOption::OnRemakePreview(CInPacket* pPacket)
 {
     if (m_pet == 0)
         return;
@@ -1526,10 +1526,10 @@ void TabContentsPetRemakeOption::FUN_140b98430(CInPacket* pPacket)
     apply.vfunc_2(*pPacket);
     FUN_140b988d0(apply.m_uid);
 }
-MS2_REPLACE_METHOD(0x140B98430, TabContentsPetRemakeOption, FUN_140b98430, 229, 0xB20D8B32);
+MS2_REPLACE_METHOD(0x140B98430, TabContentsPetRemakeOption, OnRemakePreview, 229, 0xB20D8B32);
 
 // @0x140b98520
-void TabContentsPetRemakeOption::FUN_140b98520(CInPacket* pPacket)
+void TabContentsPetRemakeOption::OnRemakeApplied(CInPacket* pPacket)
 {
     if (m_petNext == 0)
         return;
@@ -1538,16 +1538,16 @@ void TabContentsPetRemakeOption::FUN_140b98520(CInPacket* pPacket)
     apply.vfunc_2(*pPacket);
     if (apply.m_uid != m_petNext->GetItemUid())
         return;
-    FUN_140b96960(ItemPtr(m_petNext));
+    ApplyRemadeItem(ItemPtr(m_petNext));
 }
 
 // @0x140b98610
-void TabContentsPetRemakeOption::FUN_140b98610(CInPacket* pPacket)
+void TabContentsPetRemakeOption::OnRemakeError(CInPacket* pPacket)
 {
     int nKind = pPacket->ReadUInt8();
     Unk_RemakeError eError = (Unk_RemakeError)pPacket->ReadInt32();
     if (GetState() == 4 && nKind == 0)
-        FUN_140b96520(2);
+        SetState(2);
     CStringW strKey;
     bool bMsgBox = false;
     switch (eError)
@@ -1582,26 +1582,26 @@ void TabContentsPetRemakeOption::FUN_140b98610(CInPacket* pPacket)
     if (!bMsgBox)
     {
         CStringW strMsg = FUN_14028dfa0(CStringW(strKey), nKind, eError);
-        FUN_1412751f0(strMsg, 1, 1);
+        ShowSystemNotice(strMsg, 1, 1);
     }
     else
-        FUN_140d74390(strKey, 0, FUN_140b240b0());
+        ShowMessageBoxWithCallback(strKey, 0, FUN_140b240b0());
 }
 
 // @0x140b988d0
 void TabContentsPetRemakeOption::FUN_140b988d0(unsigned __int64 uidIngredient)
 {
-    m_pet->FUN_1405272e0(m_petNext->FUN_140527300());
+    m_pet->SetRemakeCount(m_petNext->GetRemakeCount());
     m_pet->FUN_14052b760(ItemPtr(m_petNext));
     ItemPtr ingredient = g_143ab2a90.FindItemByUid(uidIngredient);
     if (ingredient == 0)
     {
         CStringW strMsg = GetStringCommonByKey(L"s_itemremake_error_server_not_in_inven");
-        FUN_1412751f0(strMsg, 1, 1);
+        ShowSystemNotice(strMsg, 1, 1);
         return;
     }
-    FUN_140b96800(ItemPtr(m_pet), ItemPtr(m_petNext));
-    FUN_140b96e60();
+    NotifyRemakeResult(ItemPtr(m_pet), ItemPtr(m_petNext));
+    RebuildIngredients();
     vfunc_2(0xb);
 }
 
@@ -1610,7 +1610,7 @@ void TabContentsPetRemakeOption::FUN_140b98ad0(int nItemId)
 {
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_itemremake_error_prev_option_item_not_exist"), strName);
-    FUN_140d73aa0(strMsg, 0, 0, CStringW(L""));
+    ShowMessageBox(strMsg, 0, 0, CStringW(L""));
     FUN_1412751b0(strMsg, 0x14);
 }
 MS2_REPLACE_METHOD(0x140B98AD0, TabContentsPetRemakeOption, FUN_140b98ad0, 256, 0x0184AC03);

@@ -20,8 +20,8 @@ class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, 
 // @0x140e05260
 UICameraModeHelpDialog::UICameraModeHelpDialog()
 {
-    FUN_141924170(1);
-    FUN_141925e70(0, 1);
+    SetTweenEnabled(1);
+    SetFlag(0, 1);
 }
 
 // @0x140e052d0

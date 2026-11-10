@@ -45,8 +45,8 @@ class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
 class Unk_CommonLog { public: };
 class CLogString* GetLogString();   // C3: was FUN_140166440
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
+CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 struct Unk_XmlElement;
 void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_XmlElement*>& arrOut);   // C3: the definition's signature (commonutil.cpp)
 CString FUN_14028d1f0(const char* pszText);                 // "" when null
@@ -90,9 +90,9 @@ CStoryBookTable::~CStoryBookTable()
 // @0x14180bd40
 void CStoryBookTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "storybook.xml");
+    CString strPath = GetXmlPath("Table", "storybook.xml");
     TiXmlDocument doc;
-    if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -170,7 +170,7 @@ void CStoryBookTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CStoryBookTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CStoryBookTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

@@ -43,7 +43,7 @@ static CString s_stun5 = "stun";
 #include "ms2/placeholder/uiheadupdisplay.h"
 #include "ms2/client/ms2/uiserverlistdialog.h"   // C3 type identity: UIServerListDialog
 #include "ms2/commonfiles/os.h"
-class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
+class CUserMail { public: static __int64 GetGFxSceneService(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // ---- unit-local views of exe types (unrecovered helpers) ----
 
@@ -143,7 +143,7 @@ typedef UIMsg Unk_LsUIMsg;
 class CUIService;
 class WorldService { public: static WorldService* GetInstance(); void* FUN_141bd0cc0(); int FUN_141bcfbd0(); };   // C3: worldservice.h would add the efd ID statics
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
+class Unk_SoundSink* GetKeyTable();   // C3: was GetKeyTable
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class CBuddyManager;
 class Unk_InventoryStateManager* GetBlockManager();   // C3: the real function (0x140a6a830, inventory.cpp): the CBlockManager singleton
@@ -155,8 +155,8 @@ int FUN_141b712e0();
 extern int DAT_143ab0248;
 extern int DAT_143ab2914;
 int FUN_141acdeb0();
-class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
-void* FUN_14136f520(int);   // C3: was FUN_14136f520
+class UIDialog* FindDialog(int);   // C3: was FindDialog
+void* FindServerListDialog(int);   // C3: was FindServerListDialog
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -205,7 +205,7 @@ MS2_REPLACE_METHOD(0x141ACDAA0, UISceneLobby, GetTypeName, 61, 0xA1D151FD);
 int UISceneLobby::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
-    if (n == 0x6200009) FUN_1422e7a40(0x620001a);
+    if (n == 0x6200009) SetSubSceneId(0x620001a);
     TSingleton<CUIService>::GetInstance()->FUN_141adbe00(1.0f, 0);
     TSingleton<CUIService>::GetInstance()->FUN_141adbcd0(0);
     TSingleton<CUIService>::GetInstance()->FUN_141adbf00();
@@ -220,7 +220,7 @@ int UISceneLobby::vfunc_48(int n)
             if (spTutorial->FUN_141986d30() == 0) TSingleton<CUIService>::GetInstance()->FUN_141add040((eUIClassID)0x4e32);
         }
     }
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ACDAF0, UISceneLobby, vfunc_48, 296, 0x894BC46E);
 
@@ -229,7 +229,7 @@ int UISceneLobby::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     TSingleton<CUIService>::GetInstance()->FUN_141adad20(m_6c);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ACDC20, UISceneLobby, vfunc_49, 63, 0x0F698270);
 
@@ -244,9 +244,9 @@ int UISceneLobby::vfunc_13()
         FUN_140930150(0x32);
         ((class Unk_LsLogin*)FUN_14025e7c0())->SetDebugMode(((class Unk_LsLogin*)FUN_14025e7c0())->IsDebugMode() == 0);
     } else {
-        if (((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116d950(0x1d, 0, 0)) {
-            if (((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x16, 1, 0)) {
-                if (((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116d950(0x38, 1, 0)) {
+        if (((class Unk_LsLogin*)FUN_14025e7c0())->IsKeyDown(0x1d, 0, 0)) {
+            if (((class Unk_LsLogin*)FUN_14025e7c0())->WasKeyPressed(0x16, 1, 0)) {
+                if (((class Unk_LsLogin*)FUN_14025e7c0())->IsKeyDown(0x38, 1, 0)) {
                     if (FUN_140aadf80() != 0) {
                         FUN_141b91b20((FUN_140aadf80(), FUN_141b712e0()) == 1);
                     }
@@ -287,7 +287,7 @@ MS2_REPLACE_METHOD(0x141ACDE60, UISceneLobby, vfunc_28, 67, 0x774DFD16);
 // @0x141acdeb0
 int FUN_141acdeb0()
 {
-    if (FUN_140e85580((class Unk_SmPlayerState*)(((class Unk_LsPlayerState*)FUN_1409331f0()))) == 0) return ((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x75, 0, 0);
+    if (FUN_140e85580((class Unk_SmPlayerState*)(((class Unk_LsPlayerState*)GetKeyTable()))) == 0) return ((class Unk_LsLogin*)FUN_14025e7c0())->WasKeyPressed(0x75, 0, 0);
     return ((class Unk_LsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x493ef, 0, 0);
 }
 MS2_REPLACE(0x141ACDEB0, FUN_141acdeb0, 82, 0xD9098B92);
@@ -316,7 +316,7 @@ void UISceneLobbyCreate::OnLoadComplete()
     UISwfEntity::OnLoadComplete();
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != 0) {
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e26) != 0) {
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e26) != 0) {
             (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4e26)));
             (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4ef2)));
         }
@@ -328,7 +328,7 @@ MS2_REPLACE_METHOD(0x141ACE030, UISceneLobbyCreate, OnLoadComplete, 108, 0xAE336
 int UISceneLobbyCreate::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ACE0B0, UISceneLobbyCreate, vfunc_48, 42, 0x00235EB3);
 
@@ -346,7 +346,7 @@ int UISceneLobbyCreate::vfunc_49(int n)
             TSingleton<CameraMgr>::GetInstance()->SetMode(4, 1);
         }
     }
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ACE0E0, UISceneLobbyCreate, vfunc_49, 187, 0x95E5AF8B);
 
@@ -354,7 +354,7 @@ MS2_REPLACE_METHOD(0x141ACE0E0, UISceneLobbyCreate, vfunc_49, 187, 0x95E5AF8B);
 void UISceneLobbyCreate::vfunc_12()
 {
     UISwfEntity::vfunc_12();
-    if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e26) != 0) {
+    if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e26) != 0) {
         (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4e26)));
         (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4ef2)));
     }
@@ -433,7 +433,7 @@ void UISceneLobbySelect::OnLoadInit()
     if (m_a8 == 0) {
         MS2_ASSERT_AT(71, 0);
     } else {
-        if (((class GFxSceneService*)CUserMail::FUN_1408e57f0())->GetPrevSubSceneId() == 0x620001a && m_a8->FUN_1418f1c20() == 0 && m_a8->FUN_1418ed650() == 0) {
+        if (((class GFxSceneService*)CUserMail::GetGFxSceneService())->GetPrevSubSceneId() == 0x620001a && m_a8->GetCharacterCount() == 0 && m_a8->IsBurningLevelupEventRunning() == 0) {
             (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4ef1)));
             (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4eea)));
         } else {
@@ -496,7 +496,7 @@ MS2_REPLACE_METHOD(0x141ACE7C0, UISceneLobbyServer, GetTypeName, 61, 0x87DB86F3)
 int UISceneLobbyServer::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ACE810, UISceneLobbyServer, vfunc_48, 42, 0xCE0DE2F6);
 
@@ -504,11 +504,11 @@ MS2_REPLACE_METHOD(0x141ACE810, UISceneLobbyServer, vfunc_48, 42, 0xCE0DE2F6);
 int UISceneLobbyServer::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
-    if (n == 0) FUN_141ace9e0();
+    if (n == 0) ResetServerDialog();
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ef0);
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ef3);
     FUN_14151f460(1);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ACE840, UISceneLobbyServer, vfunc_49, 105, 0xF2D63327);
 
@@ -539,21 +539,21 @@ MS2_REPLACE_METHOD(0x141ACE970, UISceneLobbyServer, vfunc_55, 32, 0x8489FABA);
 // @0x141ace9a0
 void UISceneLobbyServer::vfunc_64()
 {
-    Unk_LsServerDlg* pDlg = ((Unk_LsServerDlg*)FUN_14136f520(0x4ef0));
+    Unk_LsServerDlg* pDlg = ((Unk_LsServerDlg*)FindServerListDialog(0x4ef0));
     if (pDlg != 0) pDlg->FUN_141ad2ef0();
 }
 MS2_REPLACE_METHOD(0x141ACE9A0, UISceneLobbyServer, vfunc_64, 47, 0x6342EA2F);
 
 // @0x141ace9e0
-void UISceneLobbyServer::FUN_141ace9e0()
+void UISceneLobbyServer::ResetServerDialog()
 {
-    Unk_LsServerDlg* pDlg = ((Unk_LsServerDlg*)FUN_140c300a0(0x4ef0));
+    Unk_LsServerDlg* pDlg = ((Unk_LsServerDlg*)FindDialog(0x4ef0));
     if (pDlg != 0) {
         Unk_LsUIMsg msg;
         msg.AddString("OnReset");
         pDlg->OnMessage(this, &msg);
     }
 }
-MS2_REPLACE_METHOD(0x141ACE9E0, UISceneLobbyServer, FUN_141ace9e0, 137, 0xB3007A1B);
+MS2_REPLACE_METHOD(0x141ACE9E0, UISceneLobbyServer, ResetServerDialog, 137, 0xB3007A1B);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc23d0-0x142cc25c0 .text$yd

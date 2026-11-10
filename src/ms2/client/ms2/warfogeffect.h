@@ -19,7 +19,7 @@ struct Unk_WarFogParam
     // @0x140381320
     bool FUN_140381320() const { return m_flag28; }
     // @0x140381340
-    float FUN_140381340() const { return m_alpha * 0.01f; }
+    float GetAlpha() const { return m_alpha * 0.01f; }
     // @0x140381370
     bool FUN_140381370() const { return m_flag2a; }
 
@@ -59,7 +59,7 @@ public:
     virtual ~CWarFogEffect();                                   // 0x141b73360
 
     void FUN_141b733c0();                                       // detach the ring mesh from its parent and drop it
-    void FUN_141b734a0(bool bVisible);                          // show/hide the ring
+    void SetVisible(bool bVisible);                          // show/hide the ring
     void FUN_141b73530(const Unk_WarFogParam* pParam, const efd::Point3& ptCenter);   // rebuild if needed, then refit
     bool FUN_141b739e0(const Unk_WarFogParam* pParam);          // true when the ring has to be rebuilt
     void FUN_141b73ab0(const Unk_WarFogParam* pParam);          // build the annulus mesh and attach it to the scene

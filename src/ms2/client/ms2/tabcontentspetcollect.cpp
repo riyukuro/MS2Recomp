@@ -74,7 +74,7 @@
 #include "ms2/placeholder/header_statics_a.h"
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
-#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FindNpcData)
 #include "ms2/client/ms2/fielddatacli.h"
 #include "ms2/client/ms2/uirenderview.h"
 #include "ms2/guess/worldmapmanager.h"
@@ -90,21 +90,21 @@ extern template class MS2Ptr<CItemData>;
 class Unk_PcComp : public ASUIComponent
 {
 public:
-    Scaleform::GFx::Value FUN_140caf030(const char* szMethod, int a1, AScript a2);      // Invoke(int, AS object)
+    Scaleform::GFx::Value Invoke(const char* szMethod, int a1, AScript a2);      // Invoke(int, AS object)
     Scaleform::GFx::Value FUN_140caf230(const char* szMethod, int a1);                  // Invoke(int)
 };
 #define PC(p) static_cast<Unk_PcComp*>((p).operator->())
 
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 
 // The pet table singleton and the pet collect table inside it.
 class Unk_BreakSelected : public CPetManager { };
-Unk_BreakSelected* FUN_140535320();
+Unk_BreakSelected* GetPetManager();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW FUN_14183e9c0(CStringW str, int n);
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                 // the npc table row of an id
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);                 // the npc table row of an id
 
 // The map record behind a field id: the flag at +0x9c is cleared for fields that are not shown.
 struct Unk_PcMapData
@@ -117,7 +117,7 @@ MS2_CHECK_OFFSET(Unk_PcMapData, m_b9c, 0x9c);
 // The field record (the table behind DAT_143abfb18 hands them out by key).
 class Unk_PcFieldTable : public WorldMapManager { };
 class WorldMapManager;
-Unk_PcFieldTable* FUN_140cb17d0();
+Unk_PcFieldTable* GetWorldMapManager();
 
 // The event value manager's battle pet spawn table.
 class Unk_PcBattleSpawn : public CGameEventValueBattlePetSpawn { };
@@ -180,7 +180,7 @@ void TabContentsPetCollect::vfunc_3(MS2Ptr<ASUIComponent> ui)
     m_ui = ui;
     FUN_140cac8a0();
     FUN_140cacc30();
-    FUN_140cac6a0();
+    SetTotalCount();
     m_ui->Invoke("gotoIndexFromGroupId", m_nGroup);
 }
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -196,7 +196,7 @@ void TabContentsPetCollect::vfunc_1()
 MS2_REPLACE_METHOD(0x140cac660, TabContentsPetCollect, vfunc_1, 45, 0x6E5BA69C);
 
 // @0x140cac6a0
-void TabContentsPetCollect::FUN_140cac6a0()
+void TabContentsPetCollect::SetTotalCount()
 {
     if (m_ui == 0)
         return;
@@ -205,18 +205,18 @@ void TabContentsPetCollect::FUN_140cac6a0()
         int nCount = 0;
         for (std::map<DWORD, int>::iterator it = rPets.begin(), itEnd = rPets.end(); it != itEnd; ++it)
         {
-            int nGrade = FUN_140535320()->GetCountByKey(it->first);
+            int nGrade = GetPetManager()->GetCountByKey(it->first);
             if (nGrade == 0)
                 continue;
             nCount = nCount + 1;
         }
         CStringW strTotal = FUN_14028dfa0<int>(CStringW(L"s_pet_collect_collect_total_cout"), nCount);
         ASObj obj(2);
-        obj.FUN_1407cbb20("total", strTotal);
+        obj.SetWStringMember("total", strTotal);
         m_ui->FUN_140acd1f0("setTotalCount", AScript(obj));
     }
 }
-MS2_REPLACE_METHOD(0x140cac6a0, TabContentsPetCollect, FUN_140cac6a0, 499, 0x720B4B54);
+MS2_REPLACE_METHOD(0x140cac6a0, TabContentsPetCollect, SetTotalCount, 499, 0x720B4B54);
 
 // @0x140cac8a0
 void TabContentsPetCollect::FUN_140cac8a0()
@@ -226,9 +226,9 @@ void TabContentsPetCollect::FUN_140cac8a0()
     {
         ASArray arrTabs(2);
         ASObj objAll(2);
-        objAll.FUN_1407cbb20("tabName", GetStringCommonByKey(L"s_pet_collect_total_category"));
-        objAll.FUN_1407cb9c0("groupId", 0);
-        arrTabs.PushValue(Scaleform::GFx::Value(objAll.FUN_1422bb870()));
+        objAll.SetWStringMember("tabName", GetStringCommonByKey(L"s_pet_collect_total_category"));
+        objAll.SetIntMember("groupId", 0);
+        arrTabs.PushValue(Scaleform::GFx::Value(objAll.GetValue()));
         std::map<int, std::vector<unsigned> >& rGroups = TSingleton<CPetDataTable>::GetInstance()->GetCollect()->GroupPets();
         for (std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin(), itEnd = rGroups.end(); it != itEnd; ++it)
         {
@@ -237,9 +237,9 @@ void TabContentsPetCollect::FUN_140cac8a0()
                 continue;
             ASObj objTab(2);
             CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x41, it->first);
-            objTab.FUN_1407cbb20("tabName", strName);
-            objTab.FUN_1407cb9c0("groupId", it->first);
-            arrTabs.PushValue(Scaleform::GFx::Value(objTab.FUN_1422bb870()));
+            objTab.SetWStringMember("tabName", strName);
+            objTab.SetIntMember("groupId", it->first);
+            arrTabs.PushValue(Scaleform::GFx::Value(objTab.GetValue()));
         }
         PC(m_ui)->FUN_140caf140("setupGroup", ASArray(arrTabs));
     }
@@ -256,7 +256,7 @@ void TabContentsPetCollect::FUN_140cacc30()
         std::map<int, std::vector<unsigned> >& rGroups = TSingleton<CPetDataTable>::GetInstance()->GetCollect()->GroupPets();
         for (std::map<int, std::vector<unsigned> >::iterator it = rGroups.begin(), itEnd = rGroups.end(); it != itEnd; ++it)
         {
-            FUN_140cad2b0(it->first);
+            SetGroupData(it->first);
         }
     }
 }
@@ -270,20 +270,20 @@ MS2_REPLACE_METHOD(0x140cacc30, TabContentsPetCollect, FUN_140cacc30, 166, 0xC8B
         MS2Ptr<CPetData> spPet = TSingleton<CPetDataTable>::GetInstance()->Find(*pPet); \
         if (spPet == 0) \
             continue; \
-        MS2Ptr<CNpcData> spNpc = FUN_1406cd330(spPet->GetId()); \
+        MS2Ptr<CNpcData> spNpc = FindNpcData(spPet->GetId()); \
         if (spNpc == 0) \
             continue; \
-        int nGrade = FUN_140535320()->GetCountByKey(*pPet); \
+        int nGrade = GetPetManager()->GetCountByKey(*pPet); \
         if (nGrade <= 0 && !spPet->m_bCollectPreview) \
             continue; \
         CString strIcon; \
         MS2Ptr<CItemData> spData = FUN_14053f870(spPet->GetItemId(1)); \
         if (spData.get() != 0) \
             strIcon = spData->GetIconPath(); \
-        objPet.FUN_1407cba60("iconPath", strIcon); \
+        objPet.SetStringMember("iconPath", strIcon); \
         objPet.SetMemberUInt("petID", *pPet); \
-        objPet.FUN_1407cb9c0("grade", nGrade); \
-        arrPets.PushValue(Scaleform::GFx::Value(objPet.FUN_1422bb870()));
+        objPet.SetIntMember("grade", nGrade); \
+        arrPets.PushValue(Scaleform::GFx::Value(objPet.GetValue()));
 
 // @0x140cacce0
 void TabContentsPetCollect::FUN_140cacce0()
@@ -296,8 +296,8 @@ void TabContentsPetCollect::FUN_140cacce0()
     if (it == itEnd)
         return;
     ASObj objData(2);
-    objData.FUN_1407cb9c0("groupId", 0);
-    objData.FUN_1407cbb20("name", GetStringCommonByKey(L"s_pet_collect_total_category"));
+    objData.SetIntMember("groupId", 0);
+    objData.SetWStringMember("name", GetStringCommonByKey(L"s_pet_collect_total_category"));
     ASArray arrPets(2);
     for (; it != itEnd; ++it)
     {
@@ -309,12 +309,12 @@ void TabContentsPetCollect::FUN_140cacce0()
         }
     }
     objData.FUN_140c16160("petArray", ASArray(arrPets));
-    PC(m_ui)->FUN_140caf030("setGroupData", 0, AScript(objData));
+    PC(m_ui)->Invoke("setGroupData", 0, AScript(objData));
 }
 MS2_REPLACE_METHOD(0x140cacce0, TabContentsPetCollect, FUN_140cacce0, 1482, 0xE2EFEB51);
 
 // @0x140cad2b0
-void TabContentsPetCollect::FUN_140cad2b0(int nGroup)
+void TabContentsPetCollect::SetGroupData(int nGroup)
 {
     if (m_ui == 0)
         return;
@@ -327,33 +327,33 @@ void TabContentsPetCollect::FUN_140cad2b0(int nGroup)
     std::vector<unsigned> vecPets(it->second);
     std::stable_sort(vecPets.begin(), vecPets.end());
     ASObj objData(2);
-    objData.FUN_1407cb9c0("groupId", nGroup);
+    objData.SetIntMember("groupId", nGroup);
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x41, it->first);
-    objData.FUN_1407cbb20("name", strName);
+    objData.SetWStringMember("name", strName);
     ASArray arrPets(2);
     for (size_t i = 0; i < vecPets.size(); i++)
     {
         PC_PET_ROW(vecPets, i, arrPets)
     }
     objData.FUN_140c16160("petArray", ASArray(arrPets));
-    PC(m_ui)->FUN_140caf030("setGroupData", nGroup, AScript(objData));
+    PC(m_ui)->Invoke("setGroupData", nGroup, AScript(objData));
 }
-MS2_REPLACE_METHOD(0x140cad2b0, TabContentsPetCollect, FUN_140cad2b0, 1499, 0x426002DC);
+MS2_REPLACE_METHOD(0x140cad2b0, TabContentsPetCollect, SetGroupData, 1499, 0x426002DC);
 
 // @0x140cad8a0
-void TabContentsPetCollect::FUN_140cad8a0(int nGroup)
+void TabContentsPetCollect::GotoGroup(int nGroup)
 {
     if (m_ui.get() != 0)
         m_ui->Invoke("gotoIndexFromGroupId", nGroup);
     else
         m_nGroup = nGroup;
 }
-MS2_REPLACE_METHOD(0x140cad8a0, TabContentsPetCollect, FUN_140cad8a0, 106, 0x791F2E75);
+MS2_REPLACE_METHOD(0x140cad8a0, TabContentsPetCollect, GotoGroup, 106, 0x791F2E75);
 
 // @0x140cad910
 void TabContentsPetCollect::vfunc_4()
 {
-    FUN_140caeda0();
+    UnloadRenderTarget();
     m_avatar = 0;
     if (m_ui.get() != 0)
         m_ui->Invoke("OnLeaveTap");
@@ -377,7 +377,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         MS2Ptr<CItemData> spData = FUN_14053f870(spPet->GetItemId(1));
         if (spData == 0)
             return;
-        int nGrade = FUN_140535320()->GetCountByKey(nPet);
+        int nGrade = GetPetManager()->GetCountByKey(nPet);
         int nShown = nGrade;
         if (nShown == 0)
             nShown = 1;
@@ -393,7 +393,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         {
             CStringW strPlace;
             ATL::CAtlArray<unsigned> arrFields;
-            TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb060(nPet, arrFields);
+            TSingleton<CFieldMetaTable>::GetInstance()->GetPetFields(nPet, arrFields);
             for (size_t i = 0; i < arrFields.GetCount(); i++)
             {
                 const unsigned* pField = &arrFields[i];
@@ -406,7 +406,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                 unsigned nKey = *pField;
                 if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(*pField, &nOut) != 0)
                     nKey = nOut;
-                MS2Ptr<UIWorldMap::MapTile> spField = FUN_140cb17d0()->FindMapTileByKey(nKey);
+                MS2Ptr<UIWorldMap::MapTile> spField = GetWorldMapManager()->FindMapTileByKey(nKey);
                 if (spField == 0)
                     continue;
                 if (!strPlace.IsEmpty())
@@ -432,7 +432,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
                 unsigned nKey = *pField;
                 if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fc110(*pField, &nOut) != 0)
                     nKey = nOut;
-                MS2Ptr<UIWorldMap::MapTile> spField = FUN_140cb17d0()->FindMapTileByKey(nKey);
+                MS2Ptr<UIWorldMap::MapTile> spField = GetWorldMapManager()->FindMapTileByKey(nKey);
                 if (spField == 0)
                     continue;
                 if (!strPlace.IsEmpty())
@@ -447,7 +447,7 @@ void TabContentsPetCollect::vfunc_5(void* pOut, void* pName, void* pData)
         ASTooltip tip(1, 2);
         tip.SetTooltipAlign(5);
         if (tip.ApplyTextTooltip(strTip) != 0)
-            *static_cast<Scaleform::GFx::Value*>(pOut) = tip.FUN_1422bb870();
+            *static_cast<Scaleform::GFx::Value*>(pOut) = tip.GetValue();
     }
 }
 }
@@ -477,9 +477,9 @@ int TabContentsPetCollect::vfunc_6(const char* szEvent, const Scaleform::GFx::Va
                     }
                     else
                     {
-                        m_avatar->FUN_1418bebd0(spData.get());
+                        m_avatar->SetItemData(spData.get());
                     }
-                    int nGrade = FUN_140535320()->GetCountByKey(nPet);
+                    int nGrade = GetPetManager()->GetCountByKey(nPet);
                     PC(m_ui)->FUN_140caf230("setAvatarGrade", nGrade);
                 }
             }
@@ -532,7 +532,7 @@ int TabContentsPetCollect::vfunc_o178_1(void* pAvatar)
 {
     if (pAvatar == 0)
         return 0;
-    FUN_140caed40();
+    LoadRenderTarget();
     return 1;
 }
 
@@ -558,7 +558,7 @@ int TabContentsPetCollect::vfunc_8()
 }
 
 // @0x140caed40
-void TabContentsPetCollect::FUN_140caed40()
+void TabContentsPetCollect::LoadRenderTarget()
 {
     if (m_ui == 0)
         return;
@@ -566,7 +566,7 @@ void TabContentsPetCollect::FUN_140caed40()
 }
 
 // @0x140caeda0
-void TabContentsPetCollect::FUN_140caeda0()
+void TabContentsPetCollect::UnloadRenderTarget()
 {
     if (m_ui == 0)
         return;
@@ -576,12 +576,12 @@ void TabContentsPetCollect::FUN_140caeda0()
 // ---- Invoke helpers (COMDATs of this unit) ----
 
 // @0x140caf030 Invoke(name, int, AS object): the by-value object is destroyed by the callee
-inline Scaleform::GFx::Value Unk_PcComp::FUN_140caf030(const char* szMethod, int a1, AScript a2)
+inline Scaleform::GFx::Value Unk_PcComp::Invoke(const char* szMethod, int a1, AScript a2)
 {
     ASArgList args;
     args.resize(2);
     FUN_1422bccb0(&args[0], a1);
-    FUN_1422bcc70(&args[1], Scaleform::GFx::Value(a2.FUN_1422bb890()));
+    SetValue(&args[1], Scaleform::GFx::Value(a2.FUN_1422bb890()));
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -590,7 +590,7 @@ inline Scaleform::GFx::Value AScript::FUN_140caf140(const char* szMethod, ASArra
 {
     ASArgList args;
     args.resize(1);
-    FUN_1422bcc70(&args[0], Scaleform::GFx::Value(a1.FUN_1422bb890()));
+    SetValue(&args[0], Scaleform::GFx::Value(a1.FUN_1422bb890()));
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -636,7 +636,7 @@ int IUIAvatarEventListener::vfunc_o178_3(void*) { return 1; }
 int IUIAvatarEventListener::vfunc_o178_1(void*) { return 1; }
 
 // @0x140cb17d0
-Unk_PcFieldTable* FUN_140cb17d0()
+Unk_PcFieldTable* GetWorldMapManager()
 {
     return reinterpret_cast<Unk_PcFieldTable*>(TSingleton<WorldMapManager>::s_instance);
 }
@@ -644,3 +644,7 @@ Unk_PcFieldTable* FUN_140cb17d0()
 
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca3c20-0x142ca3cb0 .text$yd
+// Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$addressof@U?$pair@$$CBKH@std@@@std@@YAPEAU?$pair@$$CBKH@0@AEAU10@@Z 0x140cb0f60
+// MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$vector@IV?$allocator@I@std@@@std@@@std@@@std@@@0@AEAV10@@Z 0x140cb0f70

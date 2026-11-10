@@ -10,13 +10,13 @@
 #include "hook/ms2hook.h"
 
 CStringA FUN_140188f50(const char* s, int n);
-CStringA FUN_14071a5b0(const CStringA& dir, const CStringA& file);
+CStringA GetXmlPath(const CStringA& dir, const CStringA& file);
 CStringA FUN_14071a520(const CStringA& s);
 CStringA FUN_14071ae20(const CStringA& file);
 void FUN_14071a7e0(unsigned int id, unsigned int* hi, unsigned int* lo);
 
 // @0x14071a5b0
-CStringA FUN_14071a5b0(const CStringA& dir, const CStringA& file)
+CStringA GetXmlPath(const CStringA& dir, const CStringA& file)
 {
     CStringA s;
     s.Format("%s%s/%s", "./Data/Xml/", (const char*)dir, (const char*)file);
@@ -32,7 +32,7 @@ CStringA FUN_14071a660(const CStringA& file)
 }
 
 // @0x14071a6f0
-CStringA FUN_14071a6f0(const CStringA& file)
+CStringA GetXmlDebugPath(const CStringA& file)
 {
     CStringA s;
     s.Format("%s%s", "./Data/XmlDebug/", (const char*)file);
@@ -54,7 +54,7 @@ CStringA GetItemPresetPath(const CStringA& dir, const CStringA& name)
     s.Format("%s%s.xml", (const char*)dir, (const char*)name);
     {
         CStringA sub("ItemPreset");
-        s = FUN_14071a5b0(sub, s);
+        s = GetXmlPath(sub, s);
     }
     return s;
 }
@@ -62,7 +62,7 @@ CStringA GetItemPresetPath(const CStringA& dir, const CStringA& name)
 // @0x14071a940
 CStringA GetItemModelPath(unsigned int id)
 {
-    CStringA r = FUN_14071a5b0("ItemModel", Unk_SocketFormat("{0:03d}.xml", id));
+    CStringA r = GetXmlPath("ItemModel", Unk_SocketFormat("{0:03d}.xml", id));
     return r;
 }
 
@@ -75,7 +75,7 @@ CStringA GetNpcPath(unsigned int id)
     s.Format("%02d/%02d/%08d.xml", hi, lo, id);
     {
         CStringA sub("npc");
-        s = FUN_14071a5b0(sub, s);
+        s = GetXmlPath(sub, s);
     }
     return s;
 }
@@ -87,7 +87,7 @@ CStringA GetPetPath(unsigned int id)
     s.Format("%08d.xml", id);
     {
         CStringA sub("pet");
-        s = FUN_14071a5b0(sub, s);
+        s = GetXmlPath(sub, s);
     }
     return s;
 }
@@ -101,7 +101,7 @@ CStringA FUN_14071abf0(unsigned int id)
     s.Format("%02d/%02d", hi, lo);
     {
         CStringA sub("npc");
-        s = FUN_14071a5b0(sub, s);
+        s = GetXmlPath(sub, s);
     }
     return s;
 }
@@ -113,7 +113,7 @@ CStringA GetAniKeyInfoPath(const CStringA& name)
     CStringA s;
     {
         CStringA sub("AniKeyInfo");
-        s = FUN_14071a5b0(sub, n);
+        s = GetXmlPath(sub, n);
     }
     s.Append(".xml");
     return s;
@@ -129,7 +129,7 @@ CStringA FUN_14071ade0()
 CStringA FUN_14071ae20(const CStringA& file)
 {
     CStringA sub("String");
-    return FUN_14071a5b0(sub, file);
+    return GetXmlPath(sub, file);
 }
 
 // @0x14071ae90

@@ -117,7 +117,7 @@ CVibrateEffect::~CVibrateEffect()
 }
 
 // @0x141b72910
-CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectParam* pParam)
+CVibrateEffect* Unk_VibrateEffectFactory::CreateVibrateEffect(const CVibrateEffectParam* pParam)
 {
     if (pParam != NULL)
     {
@@ -132,7 +132,7 @@ CVibrateEffect* Unk_VibrateEffectFactory::FUN_141b72910(const CVibrateEffectPara
                 pEffect->m_dStartTime + pParam->m_fDampingTime, 1);
             TSingleton<CameraMgr>::GetInstance()->AddEffect(MS2Ptr<CCameraEffect>(pCamera));
         }
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xc3))
         {
             if (reinterpret_cast<Unk_PadOption*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < pEffect->m_fDuration)
                 FUN_140a58540()->StartRumbleFor(pEffect->m_fDuration * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_ClientConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_90a0)->Get());
@@ -156,7 +156,7 @@ bool CVibrateEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarg
             pVibrate->m_fFreq, pVibrate->m_fAmp, pVibrate->m_fDamping, m_dStartTime + pVibrate->m_fDampingTime, 1);
         TSingleton<CameraMgr>::GetInstance()->AddEffect(MS2Ptr<CCameraEffect>(pCamera));
     }
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xc3))
     {
         if (reinterpret_cast<Unk_PadOption*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())))->m_bVibration && 0.0f < m_fDuration)
             FUN_140a58540()->StartRumbleFor(m_fDuration * *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_ClientConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_90a0)->Get());

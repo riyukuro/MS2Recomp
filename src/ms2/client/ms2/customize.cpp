@@ -67,7 +67,7 @@ class Unk_CustomizeColorTable : public CItemDataTable
 {
 public:
 };
-MS2Ptr<ItemColorEx> FUN_140f022f0(int nPalette, unsigned nIndex);   // a colour of a palette (uibeautyshopstyledialog.cpp)
+MS2Ptr<ItemColorEx> GetPaletteColor(int nPalette, unsigned nIndex);   // a colour of a palette (uibeautyshopstyledialog.cpp)
 int FUN_140f02bc0();                                                // the hair palette id
 
 // The avatar colour / equip helpers (unit_14142xxxx).
@@ -84,7 +84,7 @@ int FUN_141424230(__int64, struct Unk_UgcPlayer*);   // C3: was FUN_141424230
 int FUN_141424760(MS2Ptr<CItem> spItem, unsigned int* pnColor, int nSlot, struct Unk_UgcPlayer* pPlayer);   // itemugcmesh.cpp's signature
 NiPointer<CItemCustomizeController> FUN_1414131e0(MS2Ptr<CEquipItem> spEquip, PC* pPc, IItemCustomizeEventListener* pListener);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // CItemData of an item id
-__int64 FUN_14028d0e0();                                            // a new uid
+__int64 GenerateUniqueId();                                            // a new uid
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // @0x140ccac60 a copy of the item that keeps its +0x24 variant
@@ -113,7 +113,7 @@ inline int FUN_140cd4310(MS2Ptr<CItem> spA, MS2Ptr<CItem> spB)
 {
     if (spA == 0 || spB == 0 || spA->FUN_140527870() == 0 || spB->FUN_140527870() == 0)
         return 0;
-    if (spA->FUN_1405276c0() != spB->FUN_1405276c0())
+    if (spA->GetItemId() != spB->GetItemId())
         return 0;
     CItemExtraData* pB = static_cast<CItemExtraData*>(static_cast<CPtred*>(spB->FUN_140527870()));
     CItemExtraData* pA = static_cast<CItemExtraData*>(static_cast<CPtred*>(spA->FUN_140527870()));
@@ -215,7 +215,7 @@ inline bool MarkPreviewItem(MS2Ptr<CItem> spItem, bool bPreview)
     if (bPreview && FUN_141421690(spItem.get()) == 0) {
         spItem->FUN_14052a130(FUN_140cd3e40());
         spItem->FUN_14052a210(1);
-        spItem->FUN_14052b630();
+        spItem->ClearBinding();
     }
     return true;
 }
@@ -270,7 +270,7 @@ Customize::EditItems::~EditItems()
 unsigned Customize::EditItems::GetItemId()
 {
     if (m_spItem.get())
-        return m_spItem->FUN_1405276c0();
+        return m_spItem->GetItemId();
     if (m_spData.get())
         return m_spData->GetItemId();
     return 0;
@@ -427,7 +427,7 @@ int Customize::EditItems::ApplyColor(int nIndex, int n)
     int nPalette = m_spData->FUN_14053e260();
     if (m_pOwner && m_pOwner->GetPalette() > 0)
         nPalette = m_pOwner->GetPalette();
-    MS2Ptr<ItemColorEx> spColor = FUN_140f022f0(nPalette, nIndex);
+    MS2Ptr<ItemColorEx> spColor = GetPaletteColor(nPalette, nIndex);
     if (spColor == 0)
         return 0;
     if (m_spData->IsAvatarColorItem())
@@ -691,7 +691,7 @@ void Customize::CloneItems::Apply(MS2Ptr<CItem> spItem, Unk_InventoryEquipSlot e
             }
         } else {
             MS2Ptr<CEquipItem> spEquip = pPc->GetEquipByUid(spCur->GetItemUid());
-            if ((spEquip.get() ? true : false) && spEquip->FUN_1411dc820() == spCur->FUN_1405276c0())
+            if ((spEquip.get() ? true : false) && spEquip->FUN_1411dc820() == spCur->GetItemId())
                 bEquip = false;
         }
         if (bEquip) {
@@ -783,7 +783,7 @@ bool Customize::CloneItems::IsSameUid(__int64 nUid, unsigned* pnFlags)
             MS2Ptr<CItem> spItem = m_mapItems.GetNextValue(pos);
             if (spItem == 0)
                 continue;
-            if (((CItem*)spCur)->FUN_1405276c0() != ((CItem*)spItem)->FUN_1405276c0())
+            if (((CItem*)spCur)->GetItemId() != ((CItem*)spItem)->GetItemId())
                 continue;
             if (((CItem*)spCur)->FUN_140526c30() != ((CItem*)spItem)->FUN_140526c30())
                 continue;
@@ -997,7 +997,7 @@ MS2Ptr<CItem> Customize::CloneItems::CreateItem(int nItemId)
         MS2Ptr<CItem> spClone = m_mapItems.GetValueAt(pos);
         if (spClone == 0)
             continue;
-        if (spClone->FUN_1405276c0() == nItemId)
+        if (spClone->GetItemId() == nItemId)
             return FUN_140cd4650(spClone);
     }
     if (spItem == 0) {
@@ -1008,7 +1008,7 @@ MS2Ptr<CItem> Customize::CloneItems::CreateItem(int nItemId)
         }
     }
     if (spItem.get()) {
-        spItem->SetItemUid(FUN_14028d0e0());
+        spItem->SetItemUid(GenerateUniqueId());
         spItem->SetObjectId(((class GameObject*)(class PCBase*)(pPc))->GetObjectId());
         if (m_pOwner)
             MarkPreviewItem(spItem, m_pOwner->IsPreview());
@@ -1459,7 +1459,7 @@ void Customize::Equipment::SendAdded(MS2Ptr<CItem> spItem)
     packet.WriteUInt8(3);
     packet.WriteUInt8(m_pListener->GetShopId());
     packet.WriteUInt8(m_pListener->UseFreeTry());
-    packet.WriteInt32(spItem->FUN_1405276c0());
+    packet.WriteInt32(spItem->GetItemId());
     packet.WriteInt64(nContext);
     spItem->WriteItemBody(reinterpret_cast<__int64>(&packet));     // writes the item's extra data (citem.h types it __int64)
     FUN_140710590(packet);

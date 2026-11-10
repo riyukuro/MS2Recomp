@@ -68,8 +68,8 @@ public:
     bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);                  // closest ray cast
     NxActor* GetPhysicsActor(void* pObj);                                                      // the actor of a game object
     egf::Entity* GetEntityFromActor(NxActor* pActor);
-    bool FUN_141689a10(egf::Entity* pEntity);
-    void FUN_141689ac0(efd::SmartPointer<egfPhysX::EntityActorData> spProp);
+    bool HasPhysicsProps(egf::Entity* pEntity);
+    void SetActorUserData(efd::SmartPointer<egfPhysX::EntityActorData> spProp);
     void FUN_141689d00(NxActor* pActor, unsigned short nGroup, const NxGroupsMask* pMask);
     void SetEntityCollisionGroup(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
     NxScene* GetNxScene();
@@ -77,7 +77,7 @@ public:
     int RayCastFromPoint(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);
     int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, Unk_RayCastInfo* pInfo, float fLen,
                       Vector3* pNormal, int nMask);
-    int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen);   // no exe caller copies
+    int GetGroundDistance(const efd::Point3& ptFrom, float* pDist, float fLen);   // no exe caller copies
     void FUN_14168a540(int);
     void Unlock();
     void CacheScenes();

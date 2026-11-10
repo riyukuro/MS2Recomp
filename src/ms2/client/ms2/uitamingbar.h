@@ -37,10 +37,10 @@ public:
     UITamingBar();                                      // 0x140e97e50
     virtual ~UITamingBar();                             //  0 0x140e97ec0 (??_G 0x140e98850)
     virtual CString GetTypeName();                          //  1 0x140e97f00 "TamingBar"
-    virtual void OnLoadComplete();                      // 22 0x140e97f50 UIObject::OnLoadComplete(); FUN_140e98040(m_68)
+    virtual void OnLoadComplete();                      // 22 0x140e97f50 UIObject::OnLoadComplete(); CreateEntityCache(m_68)
     virtual int vfunc_48() { return 0x4f3b; }           // 48 0x140e98890
 
-    void FUN_140e98040(unsigned int nCount);            // create the entity cache
+    void CreateEntityCache(unsigned int nCount);            // create the entity cache
     Entity* FUN_140e98220(int nActorId);                // the entity of the actor (created or recycled)
 };
 MS2_CHECK_SIZE(UITamingBar::Entity, 0xc0);

@@ -15,7 +15,7 @@
 // Unrecovered callees (real types unknown).
    // path provider singleton (resource root)
 class CMainSystem;
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 struct Unk_SMMgr;   // texture/resource manager
 class CNifLoadingService   // C3: member view (nifeffectparam.h)
 {
@@ -64,7 +64,7 @@ bool ScreenMaskingRenderStep::vfunc_15(unsigned int a, void* b)
         return false;
     CString path;
     path.Format("%s/Image/ScreenMask/title_make_ch.tga", (const char*)TSingleton<CMainSystem>::GetInstance()->GetDataPath());
-    s_screenMaskTexture = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString((const char*)FUN_14016a5c0((const char*)path, 0)), 5);
+    s_screenMaskTexture = ((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString((const char*)ToCString((const char*)path, 0)), 5);
     void* res = 0;
     res = FUN_140c8f690(FUN_1416b4990(this, "ScreenMasking", (void*)FUN_1416ba620, this, FUN_140c8f680(&m_80), 0, 0, 0, "ScreenMasking", (NiTexture*)s_screenMaskTexture, 0, 0));
     if (res == 0) {

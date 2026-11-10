@@ -17,13 +17,13 @@
 extern int g_nDebugUI;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 class Unk_UIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
+MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
 // @0x1418ce5e0
 UIBirdHead::UIBirdHead()
@@ -31,7 +31,7 @@ UIBirdHead::UIBirdHead()
 {
     m_28 = FUN_141277f40();
     m_58 = 0;
-    FUN_1422dbf00(2, 0, 0);
+    LoadSwf(2, 0, 0);
 }
 
 // @0x1418ce710
@@ -47,34 +47,34 @@ CString UIBirdHead::GetTypeName()
 MS2_REPLACE_METHOD(0x1418CE790, UIBirdHead, GetTypeName, 61, 0xF8542D70);
 
 // @0x1418ce7e0
-int UIBirdHead::FUN_1418ce7e0()
+int UIBirdHead::IsShown()
 {
     return m_78;
 }
-MS2_REPLACE_METHOD(0x1418CE7E0, UIBirdHead, FUN_1418ce7e0, 14, 0xB1F80757);
+MS2_REPLACE_METHOD(0x1418CE7E0, UIBirdHead, IsShown, 14, 0xB1F80757);
 
 // @0x1418ce800
-void UIBirdHead::FUN_1418ce800()
+void UIBirdHead::Show()
 {
     m_7c = 1;
     m_78 = 1;
 }
-MS2_REPLACE_METHOD(0x1418CE800, UIBirdHead, FUN_1418ce800, 30, 0x3D58469B);
+MS2_REPLACE_METHOD(0x1418CE800, UIBirdHead, Show, 30, 0x3D58469B);
 
 // @0x1418ce830
 void UIBirdHead::FUN_1418ce830()
 {
-    GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
+    GetUISwfEntityManager()->RemoveEntity(MS2Ptr<UISwfEntity>(this));
 }
 MS2_REPLACE_METHOD(0x1418CE830, UIBirdHead, FUN_1418ce830, 82, 0x099CC8F3);
 
 // @0x1418ce890
-void UIBirdHead::FUN_1418ce890()
+void UIBirdHead::Hide()
 {
     m_7c = 0;
     m_78 = 0;
 }
-MS2_REPLACE_METHOD(0x1418CE890, UIBirdHead, FUN_1418ce890, 30, 0xA515CB4B);
+MS2_REPLACE_METHOD(0x1418CE890, UIBirdHead, Hide, 30, 0xA515CB4B);
 
 // @0x1418ce8c0
 void UIBirdHead::FUN_1418ce8c0(const Vector3& pt)
@@ -93,15 +93,15 @@ void UIBirdHead::FUN_1418ce8f0(CStringW strMain, CStringW strExtra)
 MS2_REPLACE_METHOD(0x1418CE8F0, UIBirdHead, FUN_1418ce8f0, 119, 0x3596772E);
 
 // @0x1418ce970
-void UIBirdHead::FUN_1418ce970(CStringW strAdditional)
+void UIBirdHead::SetAdditionalText(CStringW strAdditional)
 {
     m_7c = 1;
     m_90 = strAdditional;
 }
-MS2_REPLACE_METHOD(0x1418CE970, UIBirdHead, FUN_1418ce970, 77, 0xB29FF3CF);
+MS2_REPLACE_METHOD(0x1418CE970, UIBirdHead, SetAdditionalText, 77, 0xB29FF3CF);
 
 // @0x1418ce9d0
-void UIBirdHead::FUN_1418ce9d0()
+void UIBirdHead::ToggleAdditionalText()
 {
     if (m_30.IsNull())
         return;
@@ -120,7 +120,7 @@ void UIBirdHead::FUN_1418ce9d0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x1418CE9D0, UIBirdHead, FUN_1418ce9d0, 300, 0x6075389F);
+MS2_REPLACE_METHOD(0x1418CE9D0, UIBirdHead, ToggleAdditionalText, 300, 0x6075389F);
 
 // @0x1418ceb10
 void UIBirdHead::vfunc_52()
@@ -149,8 +149,8 @@ void UIBirdHead::vfunc_15()
         return;
     if (m_7c != 0)
         vfunc_52();
-    if (FUN_1418ce7e0())
-        FUN_1418cee70();
+    if (IsShown())
+        UpdateScreenPosition();
     else
         vfunc_8(0);
 }
@@ -166,7 +166,7 @@ int UIBirdHead::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArg
 MS2_REPLACE_METHOD(0x1418CEE20, UIBirdHead, vfunc_28, 67, 0xFC04CE34);
 
 // @0x1418cee70
-void UIBirdHead::FUN_1418cee70()
+void UIBirdHead::UpdateScreenPosition()
 {
     Vector3 screen;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_6c), reinterpret_cast<NiPoint3&>(screen)))
@@ -175,18 +175,18 @@ void UIBirdHead::FUN_1418cee70()
         if (pEntity.get())
         {
             vfunc_8(1);
-            reinterpret_cast<efd::Point3&>(screen) *= ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
+            reinterpret_cast<efd::Point3&>(screen) *= ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)GetGFxManager())))->GetMovieScale(m_28);
             ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->SetPositionFloat(screen.x, screen.y + m_a0);
         }
     }
     else
         vfunc_8(0);
 }
-MS2_REPLACE_METHOD(0x1418CEE70, UIBirdHead, FUN_1418cee70, 330, 0x050CB4DE);
+MS2_REPLACE_METHOD(0x1418CEE70, UIBirdHead, UpdateScreenPosition, 330, 0x050CB4DE);
 
 // @0x1418cefc0
 void UIBirdHead::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 MS2_REPLACE_METHOD(0x1418CEFC0, UIBirdHead, vfunc_41, 99, 0xFBAD23FE);

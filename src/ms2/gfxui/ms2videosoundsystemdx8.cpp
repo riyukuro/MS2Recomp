@@ -245,11 +245,11 @@ VideoSound* MS2VideoSoundSystemDX8::Create()
 MS2_REPLACE_METHOD(0x1422FE920, MS2VideoSoundSystemDX8, Create, 172, 0x28F60E3A);
 
 // @0x1422fe9e0
-bool MS2VideoSoundSystemDX8::FUN_1422fe9e0()
+bool MS2VideoSoundSystemDX8::IsInitialized()
 {
     return pImpl->IsInitialized();
 }
-MS2_REPLACE_METHOD(0x1422FE9E0, MS2VideoSoundSystemDX8, FUN_1422fe9e0, 28, 0x2753C1AE);
+MS2_REPLACE_METHOD(0x1422FE9E0, MS2VideoSoundSystemDX8, IsInitialized, 28, 0x2753C1AE);
 
 // @0x1422fea10
 bool MS2VideoSoundSystemDX8::FUN_1422fea10(HWND hWnd)

@@ -80,7 +80,7 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 // The ui text service (singleton): the text of a "$s_..." key.
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
+class Unk_AltStringMgr* GetGFxManager();   // C3: the GFxManager (calls cast back)
 
 // The game object of an object id (WorldService::FUN_141bd1180 / FUN_141bd1320 result).
 class Unk_CtlObj;
@@ -93,7 +93,7 @@ CStringW FUN_1401aa6a0(int nNpc);                  // the name text of an npc id
 
 // The key of a command group: str == psz.
 
-class UIDailyMissionDialog { public: MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName); };
+class UIDailyMissionDialog { public: MS2Ptr<ASScrollingList> GetScrollingList(const CString& strName); };
 
 // The main window.
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
@@ -106,7 +106,7 @@ __int64 FUN_140718320(const CStringW& str);
 int FUN_140718200(const CStringW& str);
 unsigned FUN_140718140(const CStringW& str);
 unsigned long FUN_1407182c0(const CStringW& str);
-CStringW FUN_1418fe4e0(const CStringW& strDir);
+CStringW GetFullPath(const CStringW& strDir);
 CStringW FUN_141b6e360(const CStringW& strDir, const wchar_t* szFilter, const CStringW& strDefault);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,7 +127,7 @@ static __inline errno_t ms2_nc_memcpy_s(void* const d, size_t const dsz, void co
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnNcMemcpyS)(void*, size_t, const void*, size_t) = &ms2_nc_memcpy_s;
 
 // @0x141a65420
-static bool FUN_141a65420(const std::vector<int>& v, int i)
+static bool IsValidIndex(const std::vector<int>& v, int i)
 {
     int n = (int)v.size();
     if (i < 0 || i > n - 1)
@@ -254,7 +254,7 @@ void UINpcControlDialog::vfunc_79(void* p)
 void UINpcControlDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_141a63770();
+    UpdateNpcName();
 }
 
 // @0x141a632b0
@@ -264,7 +264,7 @@ void UINpcControlDialog::OnLoadComplete()
     if (m_30.IsNull())
         return;
     ASObj obj(2);
-    m_30->Invoke("initData", obj.FUN_1422bb870());
+    m_30->Invoke("initData", obj.GetValue());
 }
 
 // @0x141a63390
@@ -272,11 +272,11 @@ int UINpcControlDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class Unk_CtlKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0)) {
+    if (((class Unk_CtlKeys*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onEnterKey");
         return 1;
-    } else if (((class Unk_CtlKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0)) {
+    } else if (((class Unk_CtlKeys*)FUN_14025e7c0())->WasKeyPressed(0xf, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onTabKey");
         return 1;
@@ -319,13 +319,13 @@ int UINpcControlDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 }
 
 // @0x141a63770
-void UINpcControlDialog::FUN_141a63770()
+void UINpcControlDialog::UpdateNpcName()
 {
     PCBase* pActor = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pActor == 0)
         return;
-    CStringW strName = FUN_1401aa6a0(((class CNpc*)(class PCBase*)(pActor))->FUN_141092fa0());
-    int nNpc = ((class CNpc*)(class PCBase*)(pActor))->FUN_141092fa0();
+    CStringW strName = FUN_1401aa6a0(((class CNpc*)(class PCBase*)(pActor))->GetNpcId());
+    int nNpc = ((class CNpc*)(class PCBase*)(pActor))->GetNpcId();
     CStringW strTitle = StringFormat<CStringW, unsigned, unsigned>(L"[{0}] [GameOID : {1}] [npcID : {2}]", strName, reinterpret_cast<const unsigned&>(m_nNpcId), reinterpret_cast<const unsigned&>(nNpc));
     if (MS2Ptr<ASTextField> spName = GetChild<ASTextField>("m_npcName"))
         spName->SetTextW(strTitle);
@@ -338,7 +338,7 @@ void UINpcControlDialog::SetNpcId(int nNpcId)
 }
 
 // @0x141a638e0
-int UINpcControlDialog::FUN_141a638e0()
+int UINpcControlDialog::GetLoopCount()
 {
     if (m_30.IsNull())
         return 0;
@@ -346,7 +346,7 @@ int UINpcControlDialog::FUN_141a638e0()
 }
 
 // @0x141a63970
-void UINpcControlDialog::FUN_141a63970(int nCmd, __int64 nValue)
+void UINpcControlDialog::SendNpcCommand(int nCmd, __int64 nValue)
 {
     if (m_nNpcId == 0)
         return;
@@ -361,7 +361,7 @@ void UINpcControlDialog::FUN_141a63970(int nCmd, __int64 nValue)
 // @0x141a63a10
 void UINpcControlDialog::FUN_141a63a10(int nCmd, const CStringW& strArgs)
 {
-    int nLoop = FUN_141a638e0();
+    int nLoop = GetLoopCount();
     if (nLoop <= 0)
         return;
     std::vector<int> args;
@@ -376,9 +376,9 @@ void UINpcControlDialog::FUN_141a63a10(int nCmd, const CStringW& strArgs)
             break;
         }
         for (int i = 0; i < nArgs; i += 2) {
-            if (!FUN_141a65420(args, i))
+            if (!IsValidIndex(args, i))
                 break;
-            if (!FUN_141a65420(args, i + 1))
+            if (!IsValidIndex(args, i + 1))
                 break;
             int nId = args[i];
             unsigned short nLevel = *(unsigned short*)&args[i + 1];
@@ -407,73 +407,73 @@ void UINpcControlDialog::FUN_141a63a10(int nCmd, const CStringW& strArgs)
 // @0x141a63ce0
 void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
 {
-    MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->GetScrollingList("m_items");
     if (spList.IsNull())
         return;
     spList->FUN_1422dd1d0();
     if ((strGroup == "ALL") || (strGroup == "STAT")) {
         ASObj itemHpPercent(2);
-        itemHpPercent.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_hp_percent_apply"));
+        itemHpPercent.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_hp_percent_apply"));
         itemHpPercent.FUN_141a65c70("commandId", 1);
         spList->AddItem(itemHpPercent);
         ASObj itemHp(2);
-        itemHp.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_hp_apply"));
+        itemHp.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_hp_apply"));
         itemHp.FUN_141a65c70("commandId", 2);
         spList->AddItem(itemHp);
         ASObj itemDamage(2);
-        itemDamage.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_fix_damage"));
+        itemDamage.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_fix_damage"));
         itemDamage.FUN_141a65c70("commandId", 10);
         spList->AddItem(itemDamage);
     }
     if ((strGroup == "ALL") || (strGroup == "AI")) {
         {
             ASObj itemAiOn(2);
-            itemAiOn.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_ai_on"));
+            itemAiOn.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_ai_on"));
             itemAiOn.FUN_141a65c70("commandId", 3);
             spList->AddItem(itemAiOn);
         }
         {
             ASObj itemAiOff(2);
-            itemAiOff.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_ai_off"));
+            itemAiOff.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_ai_off"));
             itemAiOff.FUN_141a65c70("commandId", 4);
             spList->AddItem(itemAiOff);
         }
         {
             ASObj itemTrace(2);
-            itemTrace.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_trace_ai"));
+            itemTrace.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_trace_ai"));
             itemTrace.FUN_141a65c70("commandId", 5);
             spList->AddItem(itemTrace);
         }
         {
             ASObj itemTraceClient(2);
-            itemTraceClient.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_trace_ai_client"));
+            itemTraceClient.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_trace_ai_client"));
             itemTraceClient.FUN_141a65c70("commandId", 6);
             spList->AddItem(itemTraceClient);
         }
         {
             ASObj itemBattle(2);
-            itemBattle.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_battle_setting"));
+            itemBattle.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_battle_setting"));
             itemBattle.FUN_141a65c70("commandId", 7);
             spList->AddItem(itemBattle);
         }
         {
             ASObj itemFile(2);
-            itemFile.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_change_ai_file"));
+            itemFile.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_change_ai_file"));
             itemFile.FUN_141a65c70("commandId", 0xb);
             spList->AddItem(itemFile);
         }
     }
     if ((strGroup == "ALL") || (strGroup == "ADDITIONAL")) {
         ASObj itemAdd(2);
-        itemAdd.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_add_additional"));
+        itemAdd.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_add_additional"));
         itemAdd.FUN_141a65c70("commandId", 0xc);
         spList->AddItem(itemAdd);
         ASObj itemRemove(2);
-        itemRemove.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_remove_additional"));
+        itemRemove.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_remove_additional"));
         itemRemove.FUN_141a65c70("commandId", 0xd);
         spList->AddItem(itemRemove);
         ASObj itemCurrent(2);
-        itemCurrent.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_current_additional"));
+        itemCurrent.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_current_additional"));
         itemCurrent.FUN_141a65c70("commandId", 0xe);
         spList->AddItem(itemCurrent);
     }
@@ -487,18 +487,18 @@ void UINpcControlDialog::FUN_141a63ce0(const CString& strGroup)
             strLabel.Format(L"[%d] [Lv. %d] [%s]", pSkill->nId, pSkill->nLevel,
                             (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, pSkill->nId));
             ASObj itemSkill(2);
-            itemSkill.FUN_1407cbb20("label", strLabel);
-            itemSkill.FUN_1407cb9c0("commandId", nCommand);
+            itemSkill.SetWStringMember("label", strLabel);
+            itemSkill.SetIntMember("commandId", nCommand);
             spList->AddItem(itemSkill);
         }
     }
     if ((strGroup == "ALL") || (strGroup == "ETC")) {
         ASObj itemAssist(2);
-        itemAssist.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_assist"));
+        itemAssist.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_assist"));
         itemAssist.FUN_141a65c70("commandId", 8);
         spList->AddItem(itemAssist);
         ASObj itemExtra(2);
-        itemExtra.FUN_1407cbb20("label", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_npccontrol_dialog_msg_extra"));
+        itemExtra.SetWStringMember("label", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_npccontrol_dialog_msg_extra"));
         itemExtra.FUN_141a65c70("commandId", 9);
         spList->AddItem(itemExtra);
     }
@@ -511,29 +511,29 @@ void UINpcControlDialog::FUN_141a64ba0(int nCommand, const CStringW& strArg)
     __int64 nArg = FUN_140718320(strArg);
     if (nCommand == 1) {
         if (0 < nArg && nArg <= 0x64)
-            FUN_141a63970(1, nArg);
+            SendNpcCommand(1, nArg);
     } else if (nCommand == 2) {
         if (0 < nArg)
-            FUN_141a63970(2, nArg);
+            SendNpcCommand(2, nArg);
     } else if (nCommand == 3) {
-        FUN_141a63970(4, 0);
+        SendNpcCommand(4, 0);
     } else if (nCommand == 4) {
-        FUN_141a63970(5, 0);
+        SendNpcCommand(5, 0);
     } else if (nCommand == 5) {
-        FUN_141a63970(6, 0);
+        SendNpcCommand(6, 0);
     } else if (nCommand == 6) {
         if (m_spAi) {
             m_spAi->RequestTrace();
             SendMessageA(m_spAi->GetSafeHwnd(), 0x10, 0, 0);
             m_spAi.AssignRaw(0);
         }
-        FUN_141a63970(7, 1);
+        SendNpcCommand(7, 1);
     } else if (nCommand == 7) {
-        FUN_141a63970(3, nArg);
+        SendNpcCommand(3, nArg);
     } else if (nCommand == 8) {
-        FUN_141a63970(10, 0);
+        SendNpcCommand(10, 0);
     } else if (nCommand == 9) {
-        FUN_141a63970(0xb, 0);
+        SendNpcCommand(0xb, 0);
     } else if (nCommand == 10) {
     } else if (nCommand == 0xc) {
         if (m_nNpcId == 0)
@@ -563,9 +563,9 @@ void UINpcControlDialog::FUN_141a64ba0(int nCommand, const CStringW& strArg)
         pkt.WriteInt32(nExtra);
         FUN_140710590(pkt);
     } else if (nCommand == 0xd) {
-        FUN_141a63970(0xf, nArg);
+        SendNpcCommand(0xf, nArg);
     } else if (nCommand == 0xe) {
-        FUN_141a63970(0x10, 0);
+        SendNpcCommand(0x10, 0);
     } else if (nCommand == 0xb) {
         FUN_141a65000();
     } else if (nCommand / 1000 == 1) {
@@ -578,7 +578,7 @@ void UINpcControlDialog::FUN_141a65000()
 {
     if (PathIsDirectoryW(L"./Data/Xml/AI") == 0)
         CreateDirectoryW(L"./Data/Xml/AI", 0);
-    CStringW strFile = FUN_141b6e360(FUN_1418fe4e0(L"./Data/Xml/AI"), L"xml Files (*.xml)", L"");
+    CStringW strFile = FUN_141b6e360(GetFullPath(L"./Data/Xml/AI"), L"xml Files (*.xml)", L"");
     if (strFile.IsEmpty())
         return;
     if (m_nNpcId == 0)

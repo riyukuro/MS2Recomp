@@ -55,7 +55,7 @@ public:
     bool FUN_1418bfa00(class UIAvatarPC* pOwner);                   // 0x1418bfa00 equips every item on the customize
     bool FUN_1418bfb00(class UIAvatarPC* pOwner);                   // 0x1418bfb00 equips every item on the avatar
     MS2Ptr<CItem> FUN_1418bfc00(Unk_InventoryEquipSlot nSlot);                // 0x1418bfc00 the item of a slot (null if none)
-    bool FUN_1418bfcc0();                                           // 0x1418bfcc0 no slot is set
+    bool IsEmpty();                                           // 0x1418bfcc0 no slot is set
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -121,7 +121,7 @@ public:
     int SetModeFromButton(int nButton);                         // 0x1418ba160 m_nMode = GetModeForButton(nButton)
     int GetModeForButton(int nButton);                         // 0x1418ba1a0 button -> drag mode
     void SetVector3(Vector3* pDst, float x, float y, float z);       // 0x1418ba200
-    void FUN_1418ba250(Vector3* pDst, const Vector3* pSrc);     // 0x1418ba250
+    void CopyVector3(Vector3* pDst, const Vector3* pSrc);     // 0x1418ba250
     void ApplyPosition(int bUpdate);                        // 0x1418ba280 back to the stored position
     void FUN_1418ba340(int bUpdate);                        // 0x1418ba340 back to the stored angle
     void SetLocked(int n);                              // 0x1418ba3f0 m_nLocked = n
@@ -180,8 +180,8 @@ public:
 
     virtual int vfunc_0(GameObject* pObj);                  // o18 slot 0 0x1418bae00 creates the customize
 
-    void FUN_1418baef0(int nValue);                         // 0x1418baef0
-    void FUN_1418baf40(CItem* pItem);                       // 0x1418baf40
+    void EquipItemId(int nValue);                         // 0x1418baef0
+    void EquipItem(CItem* pItem);                       // 0x1418baf40
     void FUN_1418bafa0(CItem* pItem, int nEffect);          // 0x1418bafa0
     bool FUN_1418bb0c0(CItem* pItem);                       // 0x1418bb0c0
     bool FUN_1418bb0f0(CItem* pItem, int nEffect);          // 0x1418bb0f0 equips a cube-type item set
@@ -190,8 +190,8 @@ public:
     void FUN_1418bbc20(int nValue);                         // 0x1418bbc20
     void FUN_1418bbc70(CItem* pItem);                       // 0x1418bbc70
     void FUN_1418bbcd0(CItem* pItem);                       // 0x1418bbcd0
-    void FUN_1418bbd30(int nSlot);                          // 0x1418bbd30
-    void FUN_1418bbe40();                                   // 0x1418bbe40
+    void UnequipSlot(int nSlot);                          // 0x1418bbd30
+    void ClearPreview();                                   // 0x1418bbe40
     bool FUN_1418bbea0(Unk_AvPackageKey* pKey);             // 0x1418bbea0 drops one equip set
     bool FUN_1418bbfe0();                                   // 0x1418bbfe0 drops every equip set
     void FUN_1418bc110(MS2Ptr<CItem> spItem);               // 0x1418bc110
@@ -199,10 +199,10 @@ public:
     void FUN_1418bc380(CItem* pItem);                       // 0x1418bc380
     void FUN_1418bc500(Unk_AvPackageKey* pKey);             // 0x1418bc500
     void FUN_1418bc630();                                   // 0x1418bc630
-    int FUN_1418bc740();                                    // 0x1418bc740
+    int GetGender();                                    // 0x1418bc740
     void FUN_1418bc790(int nState, int nParam);             // 0x1418bc790
     void FUN_1418bc860(int nParam);                         // 0x1418bc860
-    void FUN_1418bc8c0(int nSkin, int nUnused);             // 0x1418bc8c0 (the second arg is unused)
+    void SetSkinColor(int nSkin, int nUnused);             // 0x1418bc8c0 (the second arg is unused)
     void FUN_1418bca10(Unk_CharEquip kColor0, Unk_CharEquip kColor1);   // 0x1418bca10
     void FUN_1418bca60(int nState, int nParam);             // 0x1418bca60
     bool SetPoseIndex(int nPose);                          // 0x1418bcd20
@@ -213,17 +213,17 @@ public:
     void FUN_1418bcfc0(MS2Ptr<CItemData> spData);           // 0x1418bcfc0
     void FUN_1418bd050(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem);   // 0x1418bd050
     void FUN_1418bd150(unsigned int a, unsigned int b);     // 0x1418bd150
-    AvatarPC* FUN_1418bd1d0();                              // 0x1418bd1d0 the avatar object
+    AvatarPC* GetAvatarPC();                              // 0x1418bd1d0 the avatar object
     MS2Ptr<CAvatarPackageEquip> FUN_1418bd200(Unk_AvPackageKey* pKey);   // 0x1418bd200 the equip set of a key
-    bool FUN_1418bd300();                                   // 0x1418bd300 has equip sets
+    bool HasPackages();                                   // 0x1418bd300 has equip sets
     bool FUN_1418bd350(Unk_AvPackageKey* pKeyOut, int nItemId);   // 0x1418bd350
     MS2Ptr<CItem> FUN_1418bd510(int nItemId);               // 0x1418bd510
     MS2Ptr<Customize> GetCustomize();                      // 0x1418bd710 copy of the customize
     int GetPose();                                    // 0x1418bd760 m_nPose
     void FUN_1418bd780(PC* pSource, AvatarPC* pAvatar);     // 0x1418bd780
-    void FUN_1418bd7f0(bool bEnabled);                      // 0x1418bd7f0
-    void FUN_1418bd830();                                   // 0x1418bd830 re-applies m_nPose
-    void FUN_1418bd860(int nPose);                          // 0x1418bd860 sets the pose
+    void SetEnabled(bool bEnabled);                      // 0x1418bd7f0
+    void ReapplyPose();                                   // 0x1418bd830 re-applies m_nPose
+    void SetPose(int nPose);                          // 0x1418bd860 sets the pose
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -251,8 +251,8 @@ public:
     virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused);   // 28 0x1418bdd30
 
     void FUN_1418bdae0(void* pUnused);                                   // 0x1418bdae0
-    void FUN_1418bdc00(CItemData* pData);                   // 0x1418bdc00
-    AvatarCube* FUN_1418bde80();                            // 0x1418bde80
+    void SetItemData(CItemData* pData);                   // 0x1418bdc00
+    AvatarCube* GetAvatarCube();                            // 0x1418bde80
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -278,9 +278,9 @@ public:
     virtual int vfunc_4(GameObject* pObj);                  // o18 slot 4 0x1418be860
 
     void FUN_1418be340(void* pUnused);                                   // 0x1418be340
-    void FUN_1418be460(CItemData* pData);                   // 0x1418be460
-    void FUN_1418be580(MS2SvrPtr<CRideeData> spRow);                 // 0x1418be580
-    AvatarRidee* FUN_1418be7e0();                           // 0x1418be7e0
+    void SetItemData(CItemData* pData);                   // 0x1418be460
+    void SetRow(MS2SvrPtr<CRideeData> spRow);                 // 0x1418be580
+    AvatarRidee* GetAvatarRidee();                           // 0x1418be7e0
     MS2SvrPtr<CRideeData> GetRow();                           // 0x1418be810 copy of the row
 
 public:
@@ -305,8 +305,8 @@ public:
     virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pUnused);   // 28 0x1418becb0
 
     void FUN_1418beaf0(void* pUnused);                                   // 0x1418beaf0
-    void FUN_1418bebd0(CItemData* pData);                   // 0x1418bebd0
-    AvatarPet* FUN_1418bee00();                             // 0x1418bee00
+    void SetItemData(CItemData* pData);                   // 0x1418bebd0
+    AvatarPet* GetAvatarPet();                             // 0x1418bee00
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -317,10 +317,10 @@ MS2_CHECK_SIZE(UIAvatarPet, 0xc8);
 // ---- free functions of the unit -----------------------------------------------------------------------------------
 
 void FUN_1418bee30(ASObj* pObj, int nSkinTable);           // 0x1418bee30 skinColors of the skin colour table
-void FUN_1418bf1e0(Vector3* pAngles);               // 0x1418bf1e0 wraps the three angles (degrees)
+void NormalizeAngles(Vector3* pAngles);               // 0x1418bf1e0 wraps the three angles (degrees)
 void FUN_1418bf230(float* pX, float* pY, float* pZ);        // 0x1418bf230
-void FUN_1418bf270(float* pAngle);                          // 0x1418bf270 wraps an angle into 0..360
-void FUN_1418bf2e0(int* pAngle);                            // 0x1418bf2e0
+void NormalizeAngle(float* pAngle);                          // 0x1418bf270 wraps an angle into 0..360
+void NormalizeAngleInt(int* pAngle);                            // 0x1418bf2e0
 void FUN_1418bf330(Vector3* pAngles);               // 0x1418bf330 wraps the three angles (radians)
 void FUN_1418bf380(float* pX, float* pY, float* pZ);        // 0x1418bf380
-void FUN_1418bf3c0(float* pAngle);                          // 0x1418bf3c0 wraps an angle into 0..2pi
+void WrapAngleRadians(float* pAngle);                          // 0x1418bf3c0 wraps an angle into 0..2pi

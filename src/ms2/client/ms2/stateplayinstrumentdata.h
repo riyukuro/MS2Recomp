@@ -29,7 +29,7 @@ public:
     StatePlayInstrumentData(MS2Ptr<CItemData> spItem, __int64 n);   // 0x140dde0b0
     virtual void vfunc_1(Unk_StateDataArg* p);                  // 1 0x140dde130 (item id into the state-sync record)
     virtual void vfunc_2(Unk_StateDataArg* p);                  // 2 0x140dde180 (item from the record)
-    int FUN_140dde200();                                        // the instrument id of the item (0 without an item)
+    int GetInstrumentId();                                        // the instrument id of the item (0 without an item)
 
     MS2Ptr<CItemData> m_spItem;                                 // +0x18
     __int64 m_n28;                                              // +0x28
@@ -58,11 +58,11 @@ public:
     virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x140ddfb10 (a request of another sub state replaces this)
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x140de0c00: an empty StatePlayInstrumentData
 
-    int FUN_140ddfbb0();                                    // the instrument id of the data (0 without data)
+    int GetInstrumentId();                                    // the instrument id of the data (0 without data)
     void FUN_140ddfc00();                                   // (re)starts the two effects of the sub state
     void FUN_140de0410(int nLevel);                         // plays the animation of a play level (ensemble sub states)
-    void FUN_140de04a0();                                   // plays the animation of the sub state
-    void FUN_140de05a0(int nLevel);                         // plays the animation of a play level
+    void PlayStateAnimation();                                   // plays the animation of the sub state
+    void PlayLevelAnimation(int nLevel);                         // plays the animation of a play level
     void FUN_140de0780(const CString& strAnim);             // plays an animation on the owner (and on the instrument entity)
 
     MS2Ptr<StatePlayInstrumentData> m_spInstrumentData;     // +0x40

@@ -29,9 +29,9 @@ CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strSep, CString
 CStringW FUN_14083bab0(CMsTime const &, CStringW);  // C3: the definition's signature
 CStringW FUN_140b8f230(int nDay);                               // the name of a week day
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);   // message box
 __int64 GetServerTime();                                        // the server time
-bool FUN_1406a5930();                                           // the star point event runs
+bool IsStarPointEventActive();                                           // the star point event runs
 int FUN_14053feb0(int nItemId);                                 // the fixed rank of an item (0: none)
 __int64 FUN_141349ef0(int nKind, int nA, unsigned nB);          // the amount of a currency
 bool FUN_14134a030(int, int, unsigned int);   // C3: was FUN_14134a030
@@ -80,7 +80,7 @@ CStringW CNpcShopProductBase::GetItemName()
 int CNpcShopProductBase::GetItemId()
 {
     if (m_40.get() != 0)
-        return m_40->FUN_1405276c0();
+        return m_40->GetItemId();
     return 0;
 }
 
@@ -171,8 +171,8 @@ void CNpcShopProductCli::ReadPacket(CInPacket& in, int nMode)
         if (bPeriod)
         {
             m_c8 = new CNpcShopBuyPeriod();
-            m_c8->FUN_1406dcb40(in);
-            m_c8->FUN_1406dc810();
+            m_c8->Read(in);
+            m_c8->UpdateWindow();
         }
         bool bLife = in.ReadBool();
         if (bLife)
@@ -184,8 +184,8 @@ void CNpcShopProductCli::ReadPacket(CInPacket& in, int nMode)
         SetBuyItemCount(nBought);
         m_40.AssignRaw(new CItem());
         m_40->FUN_140523c40(nItemId, nRarity, nCount);
-        m_40->FUN_140524eb0(in);
-        m_40->FUN_14052b340(m_b8);
+        m_40->ReadFromStream(in);
+        m_40->SetCount(m_b8);
         m_40->FUN_14052b870(m_d8);
     }
     else if (nMode == 7)
@@ -196,7 +196,7 @@ void CNpcShopProductCli::ReadPacket(CInPacket& in, int nMode)
         __int64 nPrice = in.ReadInt64();
         m_40.AssignRaw(new CItem());
         if (m_40->FUN_140523c40(nItemId, nRarity, 0))
-            m_40->FUN_140524eb0(in);
+            m_40->ReadFromStream(in);
         m_54 = m_40->GetCount();
         m_a0 = nPrice;
     }
@@ -206,7 +206,7 @@ void CNpcShopProductCli::ReadPacket(CInPacket& in, int nMode)
 void CNpcShopProductCli::FUN_140db6db0(int nIndex)
 {
     if (m_40.get() != 0)
-        m_40->FUN_140526b70(nIndex);
+        m_40->SetSlot(nIndex);
 }
 
 // @0x140db6e00
@@ -443,7 +443,7 @@ int CNpcShopProductCli::FUN_140db8210()
         {
             if ((spItem.get() ? true : false) && spItem->HasCubeTextureMesh() != 0 && spItem->GetSlotMax() == 1)
                 return g_143ab2a90.GetEmptySlotCount(0);
-            int bStackable = static_cast<Unk_ItemEquipData*>(spItem->FUN_140527840())->FUN_14053c7c0();
+            int bStackable = static_cast<Unk_ItemEquipData*>(spItem->FUN_140527840())->IsStackable();
             if (bStackable)
             {
                 bool bLimit = GetLimitCount() > 0;
@@ -503,9 +503,9 @@ int CNpcShopProductCli::FUN_140db8580(int nCount)
 // @0x140db8600
 bool CNpcShopProductCli::CheckStarPointEvent()
 {
-    if (m_88 == 0xd && !FUN_1406a5930())
+    if (m_88 == 0xd && !IsStarPointEventActive())
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_shop_no_star_point_event"), 0, 0, CStringW(L""));
         return false;
     }
     return true;
@@ -516,7 +516,7 @@ CString CNpcShopProductCli::ToLogString()
 {
     CString str;
     str.Format("OnShop [ITEM_LIST] : nSerialID = %d, itemID = %u, price = %I64u, randomSeed = %u, nSellCount = %d, nBuyCount = %d, category=%s",
-        m_18, m_40->FUN_1405276c0(), m_a0, m_50, m_5c, m_58, (const char*)m_b0);
+        m_18, m_40->GetItemId(), m_a0, m_50, m_5c, m_58, (const char*)m_b0);
     return str;
 }
 
@@ -532,7 +532,7 @@ CNpcShopProductNewCli::CNpcShopProductNewCli()
 // @0x140db8840
 void CNpcShopProductNewCli::ReadFromPacket(CInPacket& in)
 {
-    m_item.FUN_1406de840(in);
+    m_item.Read(in);
     Unk_SplitA(*reinterpret_cast<CString*>(&m_item.m_strName), &m_20, ",");
     m_40.AssignRaw(new CItem());
     m_40->FUN_140523c40(m_item.m_nItemId, m_item.m_nRarity, 0);

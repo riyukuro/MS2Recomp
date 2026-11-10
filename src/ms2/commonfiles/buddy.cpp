@@ -74,11 +74,11 @@ CString CBuddy::FUN_1401cc0d0() {
 }
 MS2_REPLACE_METHOD(0x1401CC0D0, CBuddy, FUN_1401cc0d0, 220, 0xE20574BB);
 // @0x1401cc1c0
-CStringW CBuddy::FUN_1401cc1c0() { return name; }
-MS2_REPLACE_METHOD(0x1401CC1C0, CBuddy, FUN_1401cc1c0, 66, 0x28B2A44D);
+CStringW CBuddy::GetName() { return name; }
+MS2_REPLACE_METHOD(0x1401CC1C0, CBuddy, GetName, 66, 0x28B2A44D);
 // @0x1401cc210
-int CBuddy::FUN_1401cc210() { return m_98; }
-MS2_REPLACE_METHOD(0x1401CC210, CBuddy, FUN_1401cc210, 18, 0x0DBE6A62);
+int CBuddy::GetLevel() { return m_98; }
+MS2_REPLACE_METHOD(0x1401CC210, CBuddy, GetLevel, 18, 0x0DBE6A62);
 // @0x1401cc230
 __int64 CBuddy::FUN_1401cc230() { return account; }
 MS2_REPLACE_METHOD(0x1401CC230, CBuddy, FUN_1401cc230, 15, 0x8B0075C1);
@@ -86,23 +86,23 @@ MS2_REPLACE_METHOD(0x1401CC230, CBuddy, FUN_1401cc230, 15, 0x8B0075C1);
 __int64 CBuddy::FUN_1401cc250() { return m_48; }
 MS2_REPLACE_METHOD(0x1401CC250, CBuddy, FUN_1401cc250, 15, 0x5AEB0F79);
 // @0x1401cc270
-int CBuddy::FUN_1401cc270() { return m_9c; }
-MS2_REPLACE_METHOD(0x1401CC270, CBuddy, FUN_1401cc270, 17, 0x444DCEE7);
+int CBuddy::GetMapId() { return m_9c; }
+MS2_REPLACE_METHOD(0x1401CC270, CBuddy, GetMapId, 17, 0x444DCEE7);
 // @0x1401cc290
 int CBuddy::FUN_1401cc290() { return m_a0; }
 MS2_REPLACE_METHOD(0x1401CC290, CBuddy, FUN_1401cc290, 17, 0xB518FD33);
 // @0x1401cc2b0
-int CBuddy::FUN_1401cc2b0() {
+int CBuddy::GetJobCode() {
     if (m_a4 == 0) return m_a0 * 10;
     return m_a4;
 }
-MS2_REPLACE_METHOD(0x1401CC2B0, CBuddy, FUN_1401cc2b0, 45, 0x905EA3AC);
+MS2_REPLACE_METHOD(0x1401CC2B0, CBuddy, GetJobCode, 45, 0x905EA3AC);
 // @0x1401cc2f0
-__int64 CBuddy::FUN_1401cc2f0() { return id; }
-MS2_REPLACE_METHOD(0x1401CC2F0, CBuddy, FUN_1401cc2f0, 15, 0x7BFFD3E9);
+__int64 CBuddy::GetId() { return id; }
+MS2_REPLACE_METHOD(0x1401CC2F0, CBuddy, GetId, 15, 0x7BFFD3E9);
 // @0x1401cc310
-int CBuddy::FUN_1401cc310() { return m_a8; }
-MS2_REPLACE_METHOD(0x1401CC310, CBuddy, FUN_1401cc310, 17, 0xEA51A84B);
+int CBuddy::GetChannel() { return m_a8; }
+MS2_REPLACE_METHOD(0x1401CC310, CBuddy, GetChannel, 17, 0xEA51A84B);
 // @0x1401cc330
 Unk_UserProxyColor* CBuddy::FUN_1401cc330() { return &m_ac; }
 MS2_REPLACE_METHOD(0x1401CC330, CBuddy, FUN_1401cc330, 17, 0x3090C907);
@@ -148,11 +148,11 @@ MS2_REPLACE_METHOD(0x1401CC530, CBuddy, FUN_1401cc530, 15, 0x874435E1);
 CStringW* CBuddy::FUN_1401cc550() { return &m_30; }
 MS2_REPLACE_METHOD(0x1401CC550, CBuddy, FUN_1401cc550, 15, 0x3758D2A9);
 // @0x1401cc570
-CStringW* CBuddy::FUN_1401cc570() { return &m_60; }
-MS2_REPLACE_METHOD(0x1401CC570, CBuddy, FUN_1401cc570, 15, 0x57D15959);
+CStringW* CBuddy::GetTodayMemo() { return &m_60; }
+MS2_REPLACE_METHOD(0x1401CC570, CBuddy, GetTodayMemo, 15, 0x57D15959);
 // @0x1401cc590
-CStringW* CBuddy::FUN_1401cc590() { return &memo; }
-MS2_REPLACE_METHOD(0x1401CC590, CBuddy, FUN_1401cc590, 15, 0x87E399A1);
+CStringW* CBuddy::GetMemo() { return &memo; }
+MS2_REPLACE_METHOD(0x1401CC590, CBuddy, GetMemo, 15, 0x87E399A1);
 // @0x1401cc5b0
 unsigned CBuddy::FUN_1401cc5b0() { return f2; }
 MS2_REPLACE_METHOD(0x1401CC5B0, CBuddy, FUN_1401cc5b0, 23, 0x758D9D8C);
@@ -170,22 +170,22 @@ MS2_REPLACE_METHOD(0x1401CC5F0, CBuddy, FUN_1401cc5f0, 92, 0x5BD7EE38);
 int CBuddy::FUN_1401cc660() { return f1; }
 MS2_REPLACE_METHOD(0x1401CC660, CBuddy, FUN_1401cc660, 22, 0xD4BC6A24);
 // @0x1401cc680
-int CBuddy::FUN_1401cc680() { return f5; }
-MS2_REPLACE_METHOD(0x1401CC680, CBuddy, FUN_1401cc680, 23, 0x895787C5);
+int CBuddy::IsOnline() { return f5; }
+MS2_REPLACE_METHOD(0x1401CC680, CBuddy, IsOnline, 23, 0x895787C5);
 // @0x1401cc6a0
 unsigned CBuddy::FUN_1401cc6a0() { return f7; }
 MS2_REPLACE_METHOD(0x1401CC6A0, CBuddy, FUN_1401cc6a0, 23, 0x1F6D3937);
 // @0x1401cc6c0
-void CBuddy::FUN_1401cc6c0() { f6 = 0; f5 = 1; }
-MS2_REPLACE_METHOD(0x1401CC6C0, CBuddy, FUN_1401cc6c0, 56, 0x0510611C);
+void CBuddy::SetOnline() { f6 = 0; f5 = 1; }
+MS2_REPLACE_METHOD(0x1401CC6C0, CBuddy, SetOnline, 56, 0x0510611C);
 // @0x1401cc700
-void CBuddy::FUN_1401cc700() { f6 = 0; f5 = 0; }
-MS2_REPLACE_METHOD(0x1401CC700, CBuddy, FUN_1401cc700, 56, 0x30A4A651);
+void CBuddy::SetOffline() { f6 = 0; f5 = 0; }
+MS2_REPLACE_METHOD(0x1401CC700, CBuddy, SetOffline, 56, 0x30A4A651);
 // @0x1401cc740
-void CBuddy::FUN_1401cc740() { f5 = 1; f6 = 1; }
-MS2_REPLACE_METHOD(0x1401CC740, CBuddy, FUN_1401cc740, 56, 0x4CEA9C6F);
+void CBuddy::SetAway() { f5 = 1; f6 = 1; }
+MS2_REPLACE_METHOD(0x1401CC740, CBuddy, SetAway, 56, 0x4CEA9C6F);
 // @0x1401cc7c0
-void CBuddy::FUN_1401cc7c0(Unk_BuddyInput& input) {
+void CBuddy::ReadFromPacket(Unk_BuddyInput& input) {
     id = (&input.stream)->ReadInt64();
     account = (&input.stream)->ReadInt64();
     m_48 = (&input.stream)->ReadInt64();
@@ -214,7 +214,7 @@ void CBuddy::FUN_1401cc7c0(Unk_BuddyInput& input) {
     ((class Unk_IntTriple&)(m_ac)).ReadFrom(input.stream);
     flags |= 0x80;
 }
-MS2_REPLACE_METHOD(0x1401CC7C0, CBuddy, FUN_1401cc7c0, 2087, 0x6A3E5EB7);
+MS2_REPLACE_METHOD(0x1401CC7C0, CBuddy, ReadFromPacket, 2087, 0x6A3E5EB7);
 // @0x1401cd040
 template <> CubeMapInformationService* egf::ScriptContext::GetSystemServiceAs<CubeMapInformationService>() const {
     return m_spManager->GetSystemServiceAs<CubeMapInformationService>();

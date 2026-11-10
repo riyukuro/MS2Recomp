@@ -28,7 +28,7 @@ static CString s_sortNamesB[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh",
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
             // loads every table
-class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
+class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
 
 // @0x14192a2e0
 UIItemDropSimulatorDialog::UIItemDropSimulatorDialog()
@@ -46,7 +46,7 @@ CString UIItemDropSimulatorDialog::GetTypeName()
 void UIItemDropSimulatorDialog::OnLoadInit()
 {
     UIDialog::OnLoadInit();
-    ((class CItemOptionTable*)FUN_140166430())->Init();
+    ((class CItemOptionTable*)GetItemOptionTable())->Init();
 }
 
 // @0x14192a3b0
@@ -108,14 +108,14 @@ void UIItemDropSimulatorDialog::FUN_14192a940(CString strA, CString strB, int nA
 }
 
 // @0x14192a9a0
-void UIItemDropSimulatorDialog::FUN_14192a9a0(CStringW strText)
+void UIItemDropSimulatorDialog::SetSimulateResultText(CStringW strText)
 {
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_simulateResult"))
         spText->SetTextW(strText);
 }
 
 // @0x14192aa50
-CStringW UIItemDropSimulatorDialog::FUN_14192aa50(int nId)
+CStringW UIItemDropSimulatorDialog::GetRankName(int nId)
 {
     return TSingleton<CStringTable>::GetInstance()->GetRankName(nId);
 }

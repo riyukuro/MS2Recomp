@@ -28,10 +28,10 @@ public:
     virtual void vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs);   // 45 0x141ac1fa0
     virtual int vfunc_48();                                                             // 48 0x141ac3fb0
 
-    void FUN_141abea10(NotifyObject* pNotice);                                          // "NotifyLearnEmotion"
-    void FUN_141abea50(NotifyObject* pNotice);                                          // "NotifyChangedTokenMoney"
-    void FUN_141abf1f0();                                                               // block the toasts
-    void FUN_141abf210();                                                               // unblock the toasts
+    void OnNotifyLearnEmotion(NotifyObject* pNotice);                                          // "NotifyLearnEmotion"
+    void OnNotifyChangedTokenMoney(NotifyObject* pNotice);                                          // "NotifyChangedTokenMoney"
+    void BlockToasts();                                                               // block the toasts
+    void UnblockToasts();                                                               // unblock the toasts
     void FUN_141abf230(__int64 nExp, __int64 nBonus);                                   // exp
     void FUN_141abf450(__int64 nMoney, __int64 nBonus);                                 // meso
     void FUN_141abf6e0(int nItemId, int nGrade);                                        // item by id
@@ -48,7 +48,7 @@ public:
     void FUN_141ac11b0(int nFishId, unsigned nLength);                                       // fishing fail
     void ShowSkillLevelUpNotice();                                                               // "skillLevelUp"
     void FUN_141ac1580(const CStringW& strIcon, const CStringW& strMsg, int nEffect);   // message + icon + effect
-    void FUN_141ac1730(const CStringW& strMsg, int nSpecial, const CStringW& strTag);   // stamp
+    void ShowStampNotice(const CStringW& strMsg, int nSpecial, const CStringW& strTag);   // stamp
     void NotifySkillBookDialog(bool bOpen);                                                     // "OnSkillBookDialog"
     void FUN_141ac1950(int nPoint, int nKind);                                          // skill point
     void FUN_141ac1b50(int nPoint);                                                     // stat point
@@ -78,9 +78,9 @@ public:
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141ac2510
     virtual int vfunc_48();                                                             // 48 0x141ac3fa0
 
-    void FUN_141ac25b0(int nQuestId);                                                   // queue an opening banner
-    void FUN_141ac26a0(int nQuestId);                                                   // queue an ending banner
-    void FUN_141ac2790(NotifyObject* pNotice);                                          // "NotifyFadeInComplete"
+    void QueueOpeningBanner(int nQuestId);                                                   // queue an opening banner
+    void QueueEndingBanner(int nQuestId);                                                   // queue an ending banner
+    void OnFadeInComplete(NotifyObject* pNotice);                                          // "NotifyFadeInComplete"
     int FUN_141ac27d0();                                                                // show the front banner; 0 if none
 
 private:
@@ -116,9 +116,9 @@ public:
     virtual void vfunc_67();                                                            // 67 0x141ac4c50
 
     int GetSpinIndex();                                                                // spin index
-    int FUN_141ac5a00();                                                                // spin count
+    int GetSpinCount();                                                                // spin count
     void FUN_141ac5a30();                                                               // fill the 12 slots into the movie
-    void FUN_141ac5e70(CInPacket& pkt);                                                 // packet 0x7c
+    void OnRoulettePacket(CInPacket& pkt);                                                 // packet 0x7c
 
 private:
     MS2_LAYOUT_FRIEND;

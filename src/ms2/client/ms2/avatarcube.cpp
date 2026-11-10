@@ -46,7 +46,7 @@ CString FUN_1409a2360(const char* psz, int n);
 class Unk_UgcCubeMgr : public CUgcManager
 {
 };
-CString FUN_1410280d0(int nKind, CString strName);
+CString GetDownloadFilePath(int nKind, CString strName);
 
 // The avatar-attend manager (singleton behind FUN_1403ed2d0): the avatar object registered under an id.
 
@@ -109,17 +109,17 @@ void AvatarCube::vfunc_59(MS2Ptr<CItem> spItem)
     {
         if (spItem->GetUgcInfo())
         {
-            CString strFile = FUN_1410280d0(2, spItem->GetUgcInfo()->m_strName);
+            CString strFile = GetDownloadFilePath(2, spItem->GetUgcInfo()->m_strName);
             if (_access(strFile, 0))
             {
-                ((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141883df0(spItem, GetEntityID());
+                ((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->DownloadItemLook(spItem, GetEntityID());
             }
             else
             {
                 CUgcItemCube kCube(spItem.get(), GetEntityID());
                 if (((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->ApplyImageToCube(&kCube, CString(strFile), spItem->GetUgcUid()) == 0)
                 {
-                    ((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141883df0(spItem, GetEntityID());
+                    ((class Unk_UgcCubeMgr*)TSingleton<CUgcManager>::GetInstance())->DownloadItemLook(spItem, GetEntityID());
                 }
             }
         }

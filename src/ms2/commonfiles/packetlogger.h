@@ -15,7 +15,7 @@ struct Unk_LogInPacket {
 MS2_CHECK_OFFSET(Unk_LogInPacket,flags,0x10);
 MS2_CHECK_OFFSET(Unk_LogInPacket,length,0x44);
 MS2_CHECK_OFFSET(Unk_LogInPacket,sequence,0x4c);
-class Unk_LogOutPacket { public: int FUN_14020b9f0() const;int FUN_14020ba00() const;int FUN_14020bc40() const; };
+class Unk_LogOutPacket { public: int GetLength() const;int GetSequence() const;int IsLoopback() const; };
 class CPacketLogger : public CPtred {
 public:
     CPacketLogger(); virtual ~CPacketLogger();

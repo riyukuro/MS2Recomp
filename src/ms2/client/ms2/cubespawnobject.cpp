@@ -45,7 +45,7 @@ template <> MS2Ptr<NpcDataCli>::~MS2Ptr();                               // 0x14
 template <> NpcDataCli* MS2Ptr<NpcDataCli>::operator->() const;         // 0x140965990
 template <> bool MS2Ptr<NpcDataCli>::operator==(NpcDataCli* p) const;   // 0x1409f90f0
 
-#include "ms2/client/ms2/uichatballoon.h"   // the chat balloon component (FUN_1418fbdb0(object id))
+#include "ms2/client/ms2/uichatballoon.h"   // the chat balloon component (GetChatBalloonEntity(object id))
 class Unk_PCBaseComp_aa8 : public CPtred
 {
 public:
@@ -58,7 +58,7 @@ public:
     virtual void vfunc_7();
     virtual int vfunc_8(int n);                                     // can show a balloon
 };
-MS2Ptr<UIChatBalloon::Entity> FUN_1418fbdb0(int nObjectId);
+MS2Ptr<UIChatBalloon::Entity> GetChatBalloonEntity(int nObjectId);
 template <> void MS2Ptr<Unk_PCBaseComp_aa8>::Reference(Unk_PCBaseComp_aa8* p);   // 0x1405aaca0
 template <> void MS2Ptr<Unk_PCBaseComp_aa8>::Release();                          // 0x1405ab4d0
 template <> MS2Ptr<Unk_PCBaseComp_aa8>::~MS2Ptr();                               // 0x1405a8980
@@ -69,7 +69,7 @@ template <> Unk_PCBaseComp_aa8* MS2Ptr<Unk_PCBaseComp_aa8>::operator->() const; 
 class Unk_HpBarFx : public CPtred
 {
 };
-MS2Ptr<UISlimeEventBar::Entity> FUN_1419936d0(int nObjectId);   // C3: the real return type (uihpbar.h)
+MS2Ptr<UISlimeEventBar::Entity> GetSlimeEventBarEntity(int nObjectId);   // C3: the real return type (uihpbar.h)
 void FUN_141993750(int nObjectId);
 
 class Unk_Entity
@@ -117,7 +117,7 @@ template <> inline CStringW* Common::Constants::Value<CStringW>::Get()
 }
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
-void* FUN_1401c0d90();
+void* GetGameRule();
 
 class COptimizer   // C3: member view (coptimizer.h)
 {
@@ -239,7 +239,7 @@ MS2Ptr<Unk_PCBaseComp_aa8> CubeSpawnObject::vfunc_85()
     if (((class COptimizer*)GetOptimizer())->FUN_1409f7ea0() && !FUN_14123dbd0())
         return MS2Ptr<Unk_PCBaseComp_aa8>(0);
     if (m_spAA8 == NULL)
-        m_spAA8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_aa8>&>(static_cast<const MS2Ptr<UIChatBalloon::Entity>&>(FUN_1418fbdb0(m_unk_70)));
+        m_spAA8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_aa8>&>(static_cast<const MS2Ptr<UIChatBalloon::Entity>&>(GetChatBalloonEntity(m_unk_70)));
     return m_spAA8;
 }
 MS2_REPLACE_METHOD(0x140a4f0b0, CubeSpawnObject, vfunc_85, 236, 0x2B063CFF);
@@ -312,7 +312,7 @@ int CubeSpawnObject::FUN_140a4f690()
 {
     if (m_strOwner != *reinterpret_cast<Common::Constants*>(GetClientConstants())->NurturingQuestTag.Get())
         return false;
-    return ((CGameRule*)FUN_1401c0d90())->HasTermTag(*reinterpret_cast<Common::Constants*>(GetClientConstants())->NurturingQuestTag.Get());
+    return ((CGameRule*)GetGameRule())->HasTermTag(*reinterpret_cast<Common::Constants*>(GetClientConstants())->NurturingQuestTag.Get());
 }
 MS2_REPLACE_METHOD(0x140a4f690, CubeSpawnObject, FUN_140a4f690, 112, 0x1E480BE2);
 
@@ -332,7 +332,7 @@ void CubeSpawnObject::vfunc_9(void* p)
         vfunc_59(1, NULL, 0, 0);
         if (FUN_140a4f690())
         {
-            if ((m_spFx = reinterpret_cast<const MS2Ptr<Unk_HpBarFx>&>(static_cast<const MS2Ptr<UISlimeEventBar::Entity>&>(FUN_1419936d0(GetObjectId())))).get())
+            if ((m_spFx = reinterpret_cast<const MS2Ptr<Unk_HpBarFx>&>(static_cast<const MS2Ptr<UISlimeEventBar::Entity>&>(GetSlimeEventBarEntity(GetObjectId())))).get())
             {
                 reinterpret_cast<UISlimeEventBar::Entity*>(m_spFx.operator->())->FUN_1419933e0();
                 reinterpret_cast<UIHpBar::Entity*>(m_spFx.operator->())->FUN_141992140(FUN_140a4f690());

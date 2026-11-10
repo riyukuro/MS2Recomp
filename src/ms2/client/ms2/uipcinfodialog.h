@@ -65,26 +65,26 @@ public:
     virtual int vfunc_48() { return 0x4ec8; }                           // 48 (COMDAT 0x141339190)
 
     int TryBeginRequest(__int64 nCharacterId);                            // 0x14132c080 request the record (0 sent, 1 cached, 2 shown)
-    void FUN_14132c130(PC* pPC);                                        // 0x14132c130 show a pc of the field
+    void ShowFieldPC(PC* pPC);                                        // 0x14132c130 show a pc of the field
     void FUN_14132c330(CPCDataPack* pPack);                             // 0x14132c330 build the record from the packet
-    void FUN_14132ed50(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x14132ed50 "m_myNews" click
+    void OnClickMyNews(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x14132ed50 "m_myNews" click
     bool OnResetStatPointsAnswer(int nResult, const CMsgBoxData& data);           // 0x14132ee90 reset stat points answer
     void FUN_14132eed0(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x14132eed0 stat tooltip
     void FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x14132f020 remaining point tooltip
-    void FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x14132f5d0 wedding tooltip
+    void GetWeddingTooltip(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x14132f5d0 wedding tooltip
     void FUN_14132fa50(const CStringW& strAddress);                     // 0x14132fa50
     void RefreshProfileImage();                                               // 0x14132fa90 refresh the profile image
     void ShowProfileImage(const CStringW& strProfile);                     // 0x14132faf0
     void ClearProfile();                                               // 0x141333090 clear
-    __int64 FUN_141334890();                                            // 0x141334890 offense score
-    __int64 FUN_141335290();                                            // 0x141335290 defense score
+    __int64 GetOffenseScore();                                            // 0x141334890 offense score
+    __int64 GetDefenseScore();                                            // 0x141335290 defense score
     __int64 GetAverageStat();                                            // 0x141335780 mean attack
-    __int64 FUN_141335830(int nStat);                                   // 0x141335830 bonus of a stat
-    float FUN_141335940(int nStat, float* pfBase, float* pfBonus, float* pfTotal);   // 0x141335940 basic stat
-    float FUN_141335d20(int nStat, bool bTenth, float* pfBase, float* pfBonus, float* pfTotal);   // 0x141335d20 special stat
-    Scaleform::GFx::Value FUN_141335e00(int nStat, int nContainer, int nLabel);    // 0x141335e00 basic stat row
-    Scaleform::GFx::Value FUN_1413363d0(int nStat, int nContainer, int nLabel);    // 0x1413363d0 special stat row
-    Scaleform::GFx::Value FUN_1413369a0(unsigned int nContainer, int nLabel);      // 0x1413369a0 shield row
+    __int64 GetStatBonus(int nStat);                                   // 0x141335830 bonus of a stat
+    float GetBasicStat(int nStat, float* pfBase, float* pfBonus, float* pfTotal);   // 0x141335940 basic stat
+    float GetSpecialStat(int nStat, bool bTenth, float* pfBase, float* pfBonus, float* pfTotal);   // 0x141335d20 special stat
+    Scaleform::GFx::Value BuildBasicStatRow(int nStat, int nContainer, int nLabel);    // 0x141335e00 basic stat row
+    Scaleform::GFx::Value BuildSpecialStatRow(int nStat, int nContainer, int nLabel);    // 0x1413363d0 special stat row
+    Scaleform::GFx::Value BuildShieldRow(unsigned int nContainer, int nLabel);      // 0x1413369a0 shield row
     CStringW GetProfileImagePath();                                           // 0x141336c90 profile image path
     int GetEquipBagKindForTab(int nTab);                                        // 0x141336de0 tab -> equip kind (6 = none)
     void FUN_141336e40(ASArray& aTabs, int nTab, const CStringW& strLabel, const CStringW& strFrame,

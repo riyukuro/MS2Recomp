@@ -19,7 +19,7 @@ public:
 
     UnlimitedEnchantInfo(int nItemId, int nRarity);                 // 0x1408bb9d0
     ~UnlimitedEnchantInfo() = default;                              // 0x1408c0020 (implicit; defined where the vftable is)
-    MS2Ptr<UnlimitedEnchantInfo> FUN_1408bba60();                   // 0x1408bba60 copy
+    MS2Ptr<UnlimitedEnchantInfo> Clone();                   // 0x1408bba60 copy
     void Reset();                                           // 0x1408bbc00 reset
     int GetLevel();                                            // 0x1408bbc50 the level
     int IncrementLevel();                                            // 0x1408bbc70 level up
@@ -29,9 +29,9 @@ public:
     void SetChanged(bool bChanged);                              // 0x1408bc1d0
     bool IsChanged();                                           // 0x1408bc1f0
     MS2Ptr<BaseOption> FindOption(unsigned nType);       // 0x1408bc210 the option of a stat type
-    OptionMap& FUN_1408bc2d0();                                     // 0x1408bc2d0
+    OptionMap& GetOptions();                                     // 0x1408bc2d0
     MS2Ptr<BaseOption> FindSecondaryOption(unsigned nType);       // 0x1408bc2f0
-    SecondaryMap& FUN_1408bc3b0();                                  // 0x1408bc3b0
+    SecondaryMap& GetSecondaryOptions();                                  // 0x1408bc3b0
     void FUN_1408bc3d0();                                           // 0x1408bc3d0 (empty)
 private:
     MS2_LAYOUT_FRIEND;

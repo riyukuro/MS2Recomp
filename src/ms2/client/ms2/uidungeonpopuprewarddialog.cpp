@@ -26,7 +26,7 @@ public:
     void FUN_140da5180(int opcode, Delegate<void(CInPacket&)> handler);
     void FUN_140da51e0(int opcode, Delegate<void(CInPacket&)> handler);
 };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 // Reward helper is CPtred-derived (ctor starts with the 0x18-byte reference-counted base).
 class UIDungeonSearchUnitedReward : public CPtred
 {
@@ -48,7 +48,7 @@ void FUN_1412751b0(const CStringW& text, int flags);
 UIDungeonPopupRewardDialog::UIDungeonPopupRewardDialog()
 {
     m_80 = 0;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140c0ed10
@@ -67,9 +67,9 @@ MS2_REPLACE_METHOD(0x140C0ED60, UIDungeonPopupRewardDialog, GetTypeName, 61, 0x3
 void UIDungeonPopupRewardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
-    FUN_141925fa0("m_dragBar");
-    FUN_141925ec0("m_closeButton");
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
+    BindDragBar("m_dragBar");
+    BindCloseButton("m_closeButton");
     m_reward = new UIDungeonSearchUnitedReward;
     if (!m_reward->Init(GetChild<ASMovieClip>("m_unitedReward"))) {
             throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
@@ -84,7 +84,7 @@ MS2_REPLACE_METHOD(0x140C0EDB0, UIDungeonPopupRewardDialog, OnLoadComplete, 873,
 void UIDungeonPopupRewardDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonPopupRewardDialog::FUN_140c0f210));
     m_reward = 0;
 }
 MS2_REPLACE_METHOD(0x140C0F140, UIDungeonPopupRewardDialog, vfunc_26, 189, 0xCE47389B);

@@ -71,7 +71,7 @@ struct Unk_DeadTexts
     CString m_strDeathEffect;                            // +0x280
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // The npc table row: the corpse effect name at +0x448.
 class Unk_DeadNpcData { public: char m_pad_00[0x448]; CString m_strCorpseEffect; };
@@ -119,7 +119,7 @@ void StateDead::vfunc_4(StateData* pData)
         }
         else
         {
-            if (reinterpret_cast<Unk_DeadField*>(kField.operator->())->FUN_140375570() != 0)
+            if (reinterpret_cast<Unk_DeadField*>(kField.operator->())->HasAutoRevivalType1() != 0)
             {
                 bRevive = true;
                 nAnimId = *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_DeadConsts*)GetClientConstants())->m_reviveAnim)->Get();
@@ -155,7 +155,7 @@ void StateDead::vfunc_4(StateData* pData)
         if (bRevive == true)
         {
             NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-            ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_DeadTexts*)FUN_1401d31f0())->m_strReviveEffect;
+            ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_DeadTexts*)GetCommonResource())->m_strReviveEffect;
             ((Unk_EffectTarget&)(kTarget)).m_nKind = 1;
             ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
             m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
@@ -163,7 +163,7 @@ void StateDead::vfunc_4(StateData* pData)
         else
         {
             NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-            ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_DeadTexts*)FUN_1401d31f0())->m_strDeathEffect;
+            ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_DeadTexts*)GetCommonResource())->m_strDeathEffect;
             ((Unk_EffectTarget&)(kTarget)).m_nKind = 1;
             ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
             TSingleton<CEffectService>::GetInstance()->InsertEffect(((Unk_EffectTarget&)(kTarget)));
@@ -241,11 +241,11 @@ void StateDeadNPC::vfunc_4(StateData* pData)
     {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = strEffect;
-        ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->GetObjectKind(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
         ((NoticeMessage&)(kTarget)).SetActor(m_pOwner->GetObjectId());
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     }
-    reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->FUN_14123fbf0(5);
+    reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->SetCollisionGroup(5);
     m_pOwner->PlayAnimation(efd::utf8string((const char*)FUN_1409a2360(m_strAnim, 0)), 1.0f, false, false);
 }
 

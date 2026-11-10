@@ -216,10 +216,10 @@ public:
     Unk_QdActor* FUN_141bd0cc0();                       // the local player
 };
 class Unk_QdUIMgr { public: void FUN_141adc530(int nUIType); };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 UIQuestEventDispatcher* FUN_140bfc4b0();
 void* FUN_140764020();   // C3: was FUN_140764020
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 int FUN_14074bc90(int nQuestId);                                // the quest type
 int FUN_1416e8060(int nChapter);                                // the chapter is hidden
 int FUN_14074b030(CQuestData* pData);                           // the quest id
@@ -232,16 +232,16 @@ bool FUN_14074b090(CQuestData* pData);
 int FUN_14074b790(int nQuestId);
 CString SelectStringByQuestId(int nQuestId, const CString& strEpic, const CString& strSatisfied, const CString& strRepeat, const CString& strEvent);
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_MsgBoxCallback;
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);                          // common string by id
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);      // common string by id, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
-CStringW FUN_1416e4df0(int nQuestId);                           // the quest name
-CStringW FUN_1416e5450(int nQuestId);                      // the quest's end text
-CStringW FUN_1416e57d0(int nQuestId, int nCondition);
-CString FUN_14016a5c0(const char* psz, int n);
+CStringW GetQuestName(int nQuestId);                           // the quest name
+CStringW GetQuestDesc(int nQuestId);                      // the quest's end text
+CStringW GetQuestConditionText(int nQuestId, int nCondition);
+CString ToCString(const char* psz, int n);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
 int FUN_141276180(const CString& strSound, const CString& strExtra);
@@ -282,10 +282,10 @@ class Unk_QdPane : public UIDialog { public: };
 class Unk_QdGuide : public UIWorldMapDialog { public: int IsFloating(); };
 class Unk_QdMap : public UIMinimapDialog { public: int IsFloating(); };
 template <class T> T* Unk_GetUI(int nUiId);   // C3: was FUN_140961730 (<UIWorldMapDialog>, actionkeyobject.cpp)
-class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
+class UIMinimapDialog* FindMinimapDialog(int);   // C3: was FindMinimapDialog
 class UIQuestGuideDialog;
 template <class T> T* Unk_SptGetUI(int nId);   // C3: was FUN_140e888d0
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);                                // the movie of a UI layer
+Scaleform::GFx::Movie* GetMovie(int nMovieId);                                // the movie of a UI layer
 
 // @0x141a993a0
 UIQuestDialog::UIQuestDialog()
@@ -294,17 +294,17 @@ UIQuestDialog::UIQuestDialog()
     m_184 = 1;
     m_7c = 1;
     m_188 = 0;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     ResetFilters();
-    FUN_140bfc4b0()->FUN_141aa87c0(this);
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestDialog::OnPacketParty));
+    FUN_140bfc4b0()->AddListener(this);
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestDialog::OnPacketParty));
 }
 
 // @0x141a99600
 UIQuestDialog::~UIQuestDialog()
 {
-    FUN_140bfc4b0()->FUN_141aa8850(this);
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestDialog::OnPacketParty));
+    FUN_140bfc4b0()->RemoveListener(this);
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestDialog::OnPacketParty));
 }
 
 // @0x141a997b0
@@ -332,9 +332,9 @@ void UIQuestDialog::OnLoadInit()
     m_188 = 0;
     if (m_30.get() != 0)
     {
-        m_30->Invoke("initializeSetting", "epic", reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_20);
-        m_30->Invoke("initializeSetting", "world", reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_21);
-        m_30->Invoke("initializeSetting", "repeat", reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_22);
+        m_30->Invoke("initializeSetting", "epic", reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->GetEtc())->m_20);
+        m_30->Invoke("initializeSetting", "world", reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->GetEtc())->m_21);
+        m_30->Invoke("initializeSetting", "repeat", reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->GetEtc())->m_22);
     }
 }
 
@@ -408,7 +408,7 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             UIQuestGuideDialog* pGuide = Unk_SptGetUI<UIQuestGuideDialog>(0x4e43);
             if (pGuide == 0)
                 return 0;
-            FUN_1422bb8b0(m_28)->SetExternalInterfaceRetVal(Scaleform::GFx::Value(((class UIQuestGuideDialog*)(class UIQuestGuideDialog*)(pGuide))->FUN_141aacd70()));
+            GetMovie(m_28)->SetExternalInterfaceRetVal(Scaleform::GFx::Value(((class UIQuestGuideDialog*)(class UIQuestGuideDialog*)(pGuide))->CanAdd()));
             return 1;
         }
         else if (_stricmp("ShowLimitMessage", szMethod) == 0)
@@ -445,15 +445,15 @@ int UIQuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
             ASData dataSetting;
             if (dataSetting.SetArgsIfAny(pArgs, nArgs) != 0)
             {
-                reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_20 = dataSetting.PopBool();
-                reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_21 = dataSetting.PopBool();
-                reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_22 = dataSetting.PopBool();
+                reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->GetEtc())->m_20 = dataSetting.PopBool();
+                reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->GetEtc())->m_21 = dataSetting.PopBool();
+                reinterpret_cast<Unk_QdFlags*>(TSingleton<CGameOption>::GetInstance()->GetEtc())->m_22 = dataSetting.PopBool();
                 Unk_QdGuide* pGuide = static_cast<Unk_QdGuide*>(Unk_GetUI<UIWorldMapDialog>(0x4e42));
                 if (pGuide != 0 && pGuide->FUN_141924630() != 0)
                     pGuide->FUN_141b5bd30();
-                Unk_QdMap* pMap = ((class Unk_QdMap*)FUN_140c9b540(0x4e29));
+                Unk_QdMap* pMap = ((class Unk_QdMap*)FindMinimapDialog(0x4e29));
                 if (pMap != 0 && pMap->FUN_141924630() != 0)
-                    pMap->FUN_141a3add0();
+                    pMap->RefreshQuestIconChecks();
                 reinterpret_cast<Unk_QdWorld*>(WorldService::GetInstance())->FUN_141bd3880();
                 reinterpret_cast<Unk_QdOptions*>(TSingleton<CGameOption>::GetInstance())->SaveCharacterSettings();
             }
@@ -585,7 +585,7 @@ int UIQuestDialog::vfunc_54(void* pCfg)
 // @0x141a9aa90
 void UIQuestDialog::vfunc_o178_1(void* pQuest)
 {
-    m_pinned.Add(static_cast<CQuest*>(pQuest)->FUN_140bfc580());
+    m_pinned.Add(static_cast<CQuest*>(pQuest)->GetQuestId());
     if (vfunc_55() == 0)
         RefreshTab();
 }
@@ -702,7 +702,7 @@ void UIQuestDialog::RefreshList()
             if (strContinent.GetLength() != 0)
             {
                 ASObj node(2);
-                node.FUN_1407cbb20("label", strContinent);
+                node.SetWStringMember("label", strContinent);
                 node.FUN_140e35d00("type", 0);
                 node.FUN_1409c0dc0("rendererClassName", "qd_renderer_continent");
                 nodes.PushObj(node);
@@ -719,8 +719,8 @@ void UIQuestDialog::RefreshList()
                 {
                     unsigned nCode = TSingleton<QuestDataTable>::GetInstance()->GetChapterContinentCode((*spIds.operator->())[0]);
                     ASObj node(2);
-                    node.FUN_1407cbb20("code", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1a, nCode));
-                    node.FUN_1407cbb20("field", strRegion);
+                    node.SetWStringMember("code", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1a, nCode));
+                    node.SetWStringMember("field", strRegion);
                     node.FUN_140e35d00("type", 0);
                     node.FUN_1409c0dc0("rendererClassName", "qd_renderer_region");
                     nodes.PushObj(node);
@@ -757,9 +757,9 @@ void UIQuestDialog::RefreshCompleted()
                 continue;
             ASObj node(2);
             ASArray children(2);
-            node.FUN_1407cb9c0("chapter", nChapter);
-            node.FUN_1407cbb20("level", LevelRange(nChapter));
-            node.FUN_1407cbb20("label", spText->m_strName);
+            node.SetIntMember("chapter", nChapter);
+            node.SetWStringMember("level", LevelRange(nChapter));
+            node.SetWStringMember("label", spText->m_strName);
             node.FUN_140e35d00("type", IsChapterOpen(nChapter) != 0 ? 1 : 2);
             node.FUN_1409c0dc0("rendererClassName", "qd_renderer_chapter");
             node.FUN_1409eb1d0("nodes", children);
@@ -776,7 +776,7 @@ void UIQuestDialog::RefreshCompleted()
 // @0x141a9bb30
 void UIQuestDialog::SelectQuest(int nQuestId)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return;
     ClearOpened();
@@ -784,24 +784,24 @@ void UIQuestDialog::SelectQuest(int nQuestId)
     {
         ASObj info(2);
         info.SetMemberUInt("id", nQuestId);
-        info.FUN_1407cbb20("title", QuestTitle(nQuestId));
-        info.FUN_1407cbb20("level", BlockFormat(0x459, spData->m_level));
-        info.FUN_1407cb9c0("hideReward", 0);
-        info.FUN_1407cbbe0("main", FUN_14074b050(spData.operator->()) == 0);
+        info.SetWStringMember("title", QuestTitle(nQuestId));
+        info.SetWStringMember("level", BlockFormat(0x459, spData->m_level));
+        info.SetIntMember("hideReward", 0);
+        info.SetBoolMember("main", FUN_14074b050(spData.operator->()) == 0);
         if (GetSubTabFilter() == 0)
         {
             info.FUN_1409c0e60("date", L"");
-            info.FUN_1407cbb20("story", QuestStory(nQuestId));
-            info.FUN_1407cb9c0("progress", 0);
+            info.SetWStringMember("story", QuestStory(nQuestId));
+            info.SetIntMember("progress", 0);
         }
         else
         {
             MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
             if (spQuest.IsNull())
                 return;
-            info.FUN_1407cbb20("date", QuestDate(FUN_141aa4980(spQuest.operator->())));
-            info.FUN_1407cbb20("story", QuestProgressStory(spQuest.get()));
-            info.FUN_1407cbbe0("progress", spQuest->IsRewarded() == 0);
+            info.SetWStringMember("date", QuestDate(FUN_141aa4980(spQuest.operator->())));
+            info.SetWStringMember("story", QuestProgressStory(spQuest.get()));
+            info.SetBoolMember("progress", spQuest->IsRewarded() == 0);
             AddButtons(MS2Ptr<CQuest>(spQuest), info);
             AddConditions(nQuestId, info);
         }
@@ -856,9 +856,9 @@ int UIQuestDialog::HasAvailable(int nQuestId)
 {
     if (((class CQuestManager*)FUN_140764020())->IsQuestActive(nQuestId) != 0)
         return 1;
-    if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuestId) != 0)
+    if (((class CQuestManager*)FUN_140764020())->IsQuestRewarded(nQuestId) != 0)
         return 1;
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return 0;
     CAtlArray<unsigned> chapterQuests;
@@ -904,9 +904,9 @@ void UIQuestDialog::CollectQuests(CAtlArray<MS2Ptr<CQuest> >& rOut, unsigned nCh
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
         MS2Ptr<CQuest> spQuest(quests[i]);
-        if (IsInCurrentTab(spQuest->FUN_140bfc580()) == 0)
+        if (IsInCurrentTab(spQuest->GetQuestId()) == 0)
             continue;
-        if (spQuest->FUN_1407447c0() != 0)
+        if (spQuest->IsExpired() != 0)
             continue;
         rOut.Add(spQuest);
     }
@@ -915,7 +915,7 @@ void UIQuestDialog::CollectQuests(CAtlArray<MS2Ptr<CQuest> >& rOut, unsigned nCh
 // @0x141a9c6d0
 int UIQuestDialog::GetTab()
 {
-    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar("m_tab"))
         return spTab.operator->()->GetSelectedIndex();
     return 4;
 }
@@ -923,7 +923,7 @@ int UIQuestDialog::GetTab()
 // @0x141a9c780
 int UIQuestDialog::GetSubTab()
 {
-    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_subTab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar("m_subTab"))
         return spTab.operator->()->GetSelectedIndex();
     return 3;
 }
@@ -984,7 +984,7 @@ CString UIQuestDialog::RewardIconName(int nItemId, int nRarity, int nCount, CStr
     {
         pItem->SetCountClamped(nCount);
         CString strIcon;
-        strIcon.Format("%s_%s", (const char*)GetTypeName(), (const char*)FUN_14016a5c0((const char*)strBindName, 0));
+        strIcon.Format("%s_%s", (const char*)GetTypeName(), (const char*)ToCString((const char*)strBindName, 0));
         CreateItemInfoSlot(strIcon, MS2Ptr<CItem>(pItem), 0, 0x11, 0x800);
         return strIcon;
     }
@@ -994,13 +994,13 @@ CString UIQuestDialog::RewardIconName(int nItemId, int nRarity, int nCount, CStr
 // @0x141a9cd30
 CStringW UIQuestDialog::ConditionText(int nQuestId, int nIndex)
 {
-    return FUN_1416e57d0(nQuestId, nIndex);
+    return GetQuestConditionText(nQuestId, nIndex);
 }
 
 // @0x141a9cd80
 CString UIQuestDialog::QuestStateName(CQuest* pQuest)
 {
-    if (pQuest->FUN_1407447c0() != 0)
+    if (pQuest->IsExpired() != 0)
         return "fail";
     if (pQuest->IsComplete() != 0)
     {
@@ -1008,7 +1008,7 @@ CString UIQuestDialog::QuestStateName(CQuest* pQuest)
         CString strRepeat("satisfied_repeat");
         CString strSatisfied("satisfied");
         CString strEpic("satisfied_epic");
-        return SelectStringByQuestId(pQuest->FUN_140bfc580(), strEpic, strSatisfied, strRepeat, strEvent);
+        return SelectStringByQuestId(pQuest->GetQuestId(), strEpic, strSatisfied, strRepeat, strEvent);
     }
     else if (pQuest->IsRewarded() != 0)
         return "complete";
@@ -1032,42 +1032,42 @@ CStringW UIQuestDialog::QuestProgressStory(CQuest* pQuest)
     if (FUN_14074b090(pQuest->GetData().operator->()))
     {
         CStringW strEnd;
-        __int64 nEndTime = pQuest->FUN_1407448a0();
+        __int64 nEndTime = pQuest->GetEndTime();
         if (nEndTime != 0)
         {
-            CMsTime time(pQuest->FUN_1407448a0());
+            CMsTime time(pQuest->GetEndTime());
             int nYear = time.GetYear();
             int nMonth = time.GetMonth();
             int nDay = time.GetDay();
             int nHour = time.GetHour();
             int nMinute = time.GetMinute();
-            if (pQuest->FUN_1407447c0() != 0)
+            if (pQuest->IsExpired() != 0)
                 strEnd = FUN_14028dfa0(CStringW(L"s_quest_dialog_end_time_expired"), nYear, nMonth, nDay, nHour, nMinute);
             else
                 strEnd = FUN_14028dfa0(CStringW(L"s_quest_dialog_end_time"), nYear, nMonth, nDay, nHour, nMinute);
             strResult = strEnd;
             strResult += L"\n";
         }
-        else if (pQuest->FUN_1407447c0() != 0)
+        else if (pQuest->IsExpired() != 0)
         {
             strEnd = GetStringCommonByKey(L"s_quest_end_time_expired");
             strResult = strEnd;
             strResult += L"\n";
         }
     }
-    strResult += FUN_1416e5450(pQuest->FUN_140bfc580());
+    strResult += GetQuestDesc(pQuest->GetQuestId());
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strResult);
     return strResult;
 }
 
 // The field meta table: which maps a field is made of; the map picker.
-class CQuestNavigationMap* FUN_140c9b8e0();   // C3: was FUN_140c9b8e0
+class CQuestNavigationMap* GetQuestNavigationMap();   // C3: was GetQuestNavigationMap
 
 // MS2-FUNCTIONAL: behaviour-equivalent; temporaries of the string building differ from the exe
 // @0x141a9d690
 CStringW UIQuestDialog::QuestStory(unsigned nQuestId)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return L"";
     if (((class CQuestManager*)FUN_140764020())->vfunc_1(nQuestId, 0) != 0)
@@ -1077,8 +1077,8 @@ CStringW UIQuestDialog::QuestStory(unsigned nQuestId)
         if (nField == 0)
             return QuestTitle(nQuestId);
         CAtlArray<unsigned> maps;
-        TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb2a0(nField, maps);
-        nMap = FUN_140c9b8e0()->NearestMap(maps);
+        TSingleton<CFieldMetaTable>::GetInstance()->GetNpcFields(nField, maps);
+        nMap = GetQuestNavigationMap()->NearestMap(maps);
         if (nMap == 0)
             nMap = spData->m_320.m_4;
         CStringW strText;
@@ -1128,7 +1128,7 @@ CStringW UIQuestDialog::LevelRange(int nChapter)
         return L"";
     for (size_t i = 0; i < quests.GetCount(); i++)
     {
-        MS2Ptr<CQuestData> spData = FUN_14074bc40(quests[i]);
+        MS2Ptr<CQuestData> spData = GetQuestData(quests[i]);
         int nLevel = spData->m_level;
         if (nMin > nLevel)
             nMin = nLevel;
@@ -1163,7 +1163,7 @@ CStringW UIQuestDialog::QuestTitle(unsigned nQuestId)
     default:
         spText.operator->();
     }
-    strTitle = FUN_1416e4df0(nQuestId);
+    strTitle = GetQuestName(nQuestId);
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strTitle);
     return strTitle;
 }
@@ -1171,7 +1171,7 @@ CStringW UIQuestDialog::QuestTitle(unsigned nQuestId)
 // @0x141a9e250
 CStringW UIQuestDialog::QuestListLabel(unsigned nQuestId)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return L"";
     return FUN_14028dfa0(CStringW(L"s_quest_list_quest_name"), QuestTitle(nQuestId), spData->m_level);
@@ -1182,7 +1182,7 @@ void UIQuestDialog::SetTab(int nTab)
 {
     if (nTab == 4)
         return;
-    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar("m_tab"))
         spTab.operator->()->SetSelectedIndex(nTab);
     if (m_30.get() != 0)
         m_30->Invoke("updateSubTab");
@@ -1193,7 +1193,7 @@ void UIQuestDialog::SetSubTab(int nTab)
 {
     if (nTab == 3)
         return;
-    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_subTab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar("m_subTab"))
         spTab.operator->()->SetSelectedIndex(nTab);
     if (m_30.get() != 0)
         m_30->Invoke("updateSubTab");
@@ -1231,13 +1231,13 @@ void UIQuestDialog::RefreshDetail()
     if (MS2Ptr<ASUIComponent> spInfo = GetChild<ASUIComponent>("m_questInfo"))
     {
         ASObj info(2);
-        info.FUN_1407cb9c0("id", 0);
+        info.SetIntMember("id", 0);
         info.FUN_1409c0dc0("title", "");
         info.FUN_1409c0dc0("level", "");
         info.FUN_1409c0dc0("date", "");
         info.FUN_1409c0dc0("story", "");
-        info.FUN_1407cb9c0("disableGiveup", 1);
-        info.FUN_1407cbbe0("main", GetTab() == 0);
+        info.SetIntMember("disableGiveup", 1);
+        info.SetBoolMember("main", GetTab() == 0);
         spInfo->Invoke("setData", info);
     }
 }
@@ -1261,7 +1261,7 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
     if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_progressOnly"))
     {
         if (spCheck->GetVisible())
-            bProgressOnly = spCheck->FUN_1422ce0e0();
+            bProgressOnly = spCheck->IsSelected();
     }
     int nAdded = 0;
     ASObj chapter(2);
@@ -1291,13 +1291,13 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
                 continue;
         }
         ASObj node(2);
-        node.SetMemberUInt("id", spQuest->FUN_140bfc580());
-        node.FUN_1407cb9c0("regist", spQuest->GetTrackingState());
-        node.FUN_1407cb9c0("forceRegist", FUN_14074b790(spQuest->FUN_140bfc580()));
-        node.FUN_1407cbbe0("progress", spQuest->GetState() == 1);
-        node.FUN_1407cbb20("label", QuestListLabel(spQuest->FUN_140bfc580()));
-        node.FUN_1407cb9c0("isNew", HasPinned(spQuest->FUN_140bfc580()));
-        node.FUN_1407cba60("icon", QuestStateName(spQuest.get()));
+        node.SetMemberUInt("id", spQuest->GetQuestId());
+        node.SetIntMember("regist", spQuest->GetTrackingState());
+        node.SetIntMember("forceRegist", FUN_14074b790(spQuest->GetQuestId()));
+        node.SetBoolMember("progress", spQuest->GetState() == 1);
+        node.SetWStringMember("label", QuestListLabel(spQuest->GetQuestId()));
+        node.SetIntMember("isNew", HasPinned(spQuest->GetQuestId()));
+        node.SetStringMember("icon", QuestStateName(spQuest.get()));
         node.FUN_1409c0dc0("rendererClassName", "qd_renderer_questList");
         children.PushObj(node);
         nAdded = 1;
@@ -1307,9 +1307,9 @@ int UIQuestDialog::AddQuestNode(int nChapter, ASArray& rNodes)
         MS2Ptr<CChapterUIData> spText = FUN_1416e7f30(nChapter);
         if (spText.get() != 0)
         {
-            chapter.FUN_1407cb9c0("chapter", nChapter);
-            chapter.FUN_1407cbb20("level", LevelRange(nChapter));
-            chapter.FUN_1407cbb20("label", spText.get() != 0 ? spText->m_strName : CStringW(L""));
+            chapter.SetIntMember("chapter", nChapter);
+            chapter.SetWStringMember("level", LevelRange(nChapter));
+            chapter.SetWStringMember("label", spText.get() != 0 ? spText->m_strName : CStringW(L""));
             chapter.FUN_140e35d00("type", IsChapterOpen(nChapter) != 0 ? 1 : 2);
             chapter.FUN_1409c0dc0("rendererClassName", "qd_renderer_chapter");
             chapter.FUN_1409eb1d0("nodes", children);
@@ -1329,15 +1329,15 @@ __int64 FUN_140761d20(int nQuestId, int nKind);                 // guild fund
 int FUN_140761ea0(int nQuestId, int nKind);                     // fame point
 int FUN_140761c60(int nQuestId, int nKind);                     // guild coin
     // the exp a level needs
-void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
-float FUN_14028aed0(float f);                                   // floor
+void* GetExpTable();   // C3: was GetExpTable
+float Floor(float f);                                   // floor
 int FUN_14053feb0(int nItemId);                                 // default rank of an item
 int FUN_140748050(CQuestData::QuestRewardItem* pItem, int nJob);
 
 // @0x141a9f3c0
 void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return;
     Unk_QdActor* pPlayer = ((Unk_QdActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -1346,21 +1346,21 @@ void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
     __int64 nExp = FUN_140761ba0(nQuestId, 1);
     ASObj reward(2);
     reward.FUN_1409c1180("meso", FUN_140761cc0(nQuestId, 1));
-    reward.FUN_1407cbb20("exp", StringFormat(L"{0}", nExp));
+    reward.SetWStringMember("exp", StringFormat(L"{0}", nExp));
     reward.FUN_1409c1180("karma", FUN_140761d80(nQuestId, 1));
     reward.FUN_1409c1180("lu", FUN_140761de0(nQuestId, 1));
     reward.FUN_1409c1180("guildExp", FUN_140761c00(nQuestId, 1));
     reward.FUN_1409c1180("guildFund", FUN_140761d20(nQuestId, 1));
-    reward.FUN_1407cb9c0("famePoint", FUN_140761ea0(nQuestId, 1));
+    reward.SetIntMember("famePoint", FUN_140761ea0(nQuestId, 1));
     if (pPlayer->vfunc_78() < 0x32)
     {
         if (GetSubTabFilter() != 2)
         {
-            __int64 nNeed = ((class CExpTable*)FUN_1404a1bb0())->GetNextExp(pPlayer->vfunc_78());
+            __int64 nNeed = ((class CExpTable*)GetExpTable())->GetNextExp(pPlayer->vfunc_78());
             float fRate = ((float)nExp / (float)nNeed) * 100.0f;
-            fRate = FUN_14028aed0(fRate * 100.0f + 0.5f) / 100.0f;
+            fRate = Floor(fRate * 100.0f + 0.5f) / 100.0f;
             if (0.0f < fRate)
-                reward.FUN_1407cbb20("expRate", FUN_14028dfa0(CStringW(L"s_quest_reward_exp_percent"), fRate));
+                reward.SetWStringMember("expRate", FUN_14028dfa0(CStringW(L"s_quest_reward_exp_percent"), fRate));
         }
     }
     ASArray items(2);
@@ -1389,14 +1389,14 @@ void UIQuestDialog::AddRewardInfo(int nQuestId, ASObj& rOut)
         items.PushString((const char*)strIcon);
         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&(m_opened))->Add(strIcon);
     }
-    reward.FUN_1409adbe0("items", items.FUN_1422bb870());
-    rOut.FUN_1409adbe0("reward", reward.FUN_1422bb870());
+    reward.FUN_1409adbe0("items", items.GetValue());
+    rOut.FUN_1409adbe0("reward", reward.GetValue());
 }
 
 // @0x141a9fab0
 void UIQuestDialog::AddConditions(int nQuestId, ASObj& rOut)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return;
     ASArray summary(2);
@@ -1413,11 +1413,11 @@ void UIQuestDialog::AddConditions(int nQuestId, ASObj& rOut)
             strBind = RewardIconName(nItemId, FUN_14053feb0(nItemId), 1, strTag);
             ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&(m_opened))->Add(strBind);
         }
-        cond.FUN_1407cbb20("condition", ConditionText(nQuestId, (int)i));
-        cond.FUN_1407cba60("binding", strBind);
-        summary.PushValue(cond.FUN_1422bb870());
+        cond.SetWStringMember("condition", ConditionText(nQuestId, (int)i));
+        cond.SetStringMember("binding", strBind);
+        summary.PushValue(cond.GetValue());
     }
-    rOut.FUN_1409adbe0("summary", summary.FUN_1422bb870());
+    rOut.FUN_1409adbe0("summary", summary.GetValue());
 }
 
 // MS2-FUNCTIONAL: behaviour-equivalent; control flow of the nested early outs differs from the exe
@@ -1438,7 +1438,7 @@ int UIQuestDialog::AddChapterQuests(MS2Ptr<CQuestData> spData, ASArray& rNodes)
             bBefore = 0;
         if (bBefore)
             continue;
-        MS2Ptr<CQuestData> spItem = FUN_14074bc40(nId);
+        MS2Ptr<CQuestData> spItem = GetQuestData(nId);
         if (spItem->m_28 != spData->m_28)
             continue;
         if (spItem->m_30)
@@ -1459,15 +1459,15 @@ int UIQuestDialog::AddChapterQuests(MS2Ptr<CQuestData> spData, ASArray& rNodes)
         {
             if (((class CQuestManager*)FUN_140764020())->IsQuestActive(FUN_14074b030(spData.operator->())) != 0)
                 continue;
-            if (((class CQuestManager*)FUN_140764020())->FUN_140745590(FUN_14074b030(spData.operator->())) != 0)
+            if (((class CQuestManager*)FUN_140764020())->IsQuestRewarded(FUN_14074b030(spData.operator->())) != 0)
                 continue;
         }
         ASObj node(2);
         node.SetMemberUInt("id", nId);
-        node.FUN_1407cb9c0("regist", 0);
-        node.FUN_1407cb9c0("progress", 0);
-        node.FUN_1407cbb20("label", QuestTitle(nId));
-        node.FUN_1407cb9c0("isNew", 0);
+        node.SetIntMember("regist", 0);
+        node.SetIntMember("progress", 0);
+        node.SetWStringMember("label", QuestTitle(nId));
+        node.SetIntMember("isNew", 0);
         node.FUN_1409c0dc0("icon", "");
         node.FUN_1409c0dc0("rendererClassName", "qd_renderer_questList");
         rNodes.PushObj(node);
@@ -1581,7 +1581,7 @@ void UIQuestDialog::GroupChapters(QuestGroups& rOut)
     if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_progressOnly"))
     {
         if (spCheck->GetVisible())
-            bProgressOnly = spCheck->FUN_1422ce0e0();
+            bProgressOnly = spCheck->IsSelected();
     }
     for (size_t i = 0; i < chapters.GetCount(); i++)
     {
@@ -1637,11 +1637,11 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
     CAtlArray<int> chapters;
     CRBMultiMap<int, MS2Ptr<CQuestData> > sorted(10);
     if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_properLevel"))
-        bProperLevel = spCheck->FUN_1422ce0e0();
+        bProperLevel = spCheck->IsSelected();
     int nFocusChapter = 0;
     if (m_188 != 0)
     {
-        MS2Ptr<CQuestData> spFocus = FUN_14074bc40(m_188);
+        MS2Ptr<CQuestData> spFocus = GetQuestData(m_188);
         if (spFocus.get() != 0)
             nFocusChapter = spFocus->m_28;
     }
@@ -1658,7 +1658,7 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
         TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(nChapter, chapterQuests);
         for (size_t j = 0; j < chapterQuests.GetCount(); j++)
         {
-            MS2Ptr<CQuestData> spData = FUN_14074bc40(chapterQuests[j]);
+            MS2Ptr<CQuestData> spData = GetQuestData(chapterQuests[j]);
             if (((class CQuestManager*)FUN_140764020())->vfunc_1(chapterQuests[j], 0) != 0)
             {
                 // an available quest of the chapter is itself the recommendation
@@ -1684,7 +1684,7 @@ void UIQuestDialog::CollectRecommended(CAtlArray<MS2Ptr<CQuestData> >& rOut)
                 int bFound = 0;
                 for (size_t k = 0; k < spData->m_require.m_followingQuests.GetCount(); k++)
                 {
-                    MS2Ptr<CQuestData> spNext = FUN_14074bc40(spData->m_require.m_followingQuests[k]);
+                    MS2Ptr<CQuestData> spNext = GetQuestData(spData->m_require.m_followingQuests[k]);
                     if (!spNext)
                         continue;
                     if (FUN_1416e8060(spNext->m_28) != 0)
@@ -1739,7 +1739,7 @@ void UIQuestDialog::FocusQuestSubTab(int nQuestId)
 {
     int nSubTab = -1;
     int nState = 0;
-    if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuestId) != 0)
+    if (((class CQuestManager*)FUN_140764020())->IsQuestRewarded(nQuestId) != 0)
         nState = 2;
     else if (((class CQuestManager*)FUN_140764020())->IsQuestActive(nQuestId) != 0)
         nState = 1;
@@ -1766,7 +1766,7 @@ void UIQuestDialog::FocusQuestSubTab(int nQuestId)
 // @0x141aa1990
 int UIQuestDialog::TabOfQuest(int nQuestId)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return -1;
     if (spData->m_48 != -1)
@@ -1798,10 +1798,10 @@ void UIQuestDialog::GiveUpQuest(int nQuestId)
         return;
     if (spQuest->GetState() != 1)
         return;
-    bool bConfirm = FUN_14074b090(spQuest->GetData().operator->()) && spQuest->FUN_1407447c0() == 0;
+    bool bConfirm = FUN_14074b090(spQuest->GetData().operator->()) && spQuest->IsExpired() == 0;
     if (bConfirm)
     {
-        if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_quest_giveup_warning"), 0, L""))
+        if (MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, GetStringCommonByKey(L"s_quest_giveup_warning"), 0, L""))
         {
             box.operator->()->Append<unsigned int>(nQuestId);
             box->SetCallback(Unk_MsgBoxCallback(this, &UIQuestDialog::OnGiveUpConfirm));
@@ -1851,12 +1851,12 @@ void UIQuestDialog::ChangeTab(int nTab)
     if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_properLevel"))
     {
         if (nTab != 4)
-            spCheck->FUN_1422ce090(m_filterA[nTab]);
+            spCheck->SetSelected(m_filterA[nTab]);
     }
     if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_progressOnly"))
     {
         if (nTab != 4)
-            spCheck->FUN_1422ce090(m_filterB[nTab]);
+            spCheck->SetSelected(m_filterB[nTab]);
     }
 }
 
@@ -1878,7 +1878,7 @@ void UIQuestDialog::OnPacketParty(CInPacket& rPacket)
 int UIQuestDialog::IsChapterOpen(int nChapter)
 {
     {
-        MS2Ptr<CQuestData> spFocus = FUN_14074bc40(m_188);
+        MS2Ptr<CQuestData> spFocus = GetQuestData(m_188);
         if (spFocus.get() != 0 && spFocus->m_28 == nChapter)
             return 1;
     }

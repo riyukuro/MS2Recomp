@@ -38,15 +38,15 @@ public:
 
     void FUN_140e80620();                                       // OK: keep the chosen region and close
     void FUN_140e80740();                                       // forget the chosen region (Nexon platform)
-    Unk_RlPtr FUN_140e807c0();                                  // the region saved in the settings
+    Unk_RlPtr GetSavedRegion();                                  // the region saved in the settings
     void FUN_140e808b0();                                       // the movie's "popdown"
     void FUN_140e80910();                                       // the movie's "popup"
-    Unk_RlPtr FUN_140e809b0(int nUnused);                       // the first region (the int is ignored)
-    void FUN_140e80a40();                                       // move the saved region to the front
-    void FUN_140e80c30();                                       // hand the list to the movie ("buildRegionList")
-    bool FUN_140e80f10(CStringW strRegion);                     // choose a region; false when it is unknown
-    Unk_RlPtr FUN_140e810d0(CStringW strRegion);                // find a region by id
-    void FUN_140e811d0();                                       // a region was selected in the movie
+    Unk_RlPtr GetFirstRegion(int nUnused);                       // the first region (the int is ignored)
+    void MoveSavedRegionToFront();                                       // move the saved region to the front
+    void BuildRegionList();                                       // hand the list to the movie ("buildRegionList")
+    bool SelectRegion(CStringW strRegion);                     // choose a region; false when it is unknown
+    Unk_RlPtr FindRegion(CStringW strRegion);                // find a region by id
+    void OnRegionSelected();                                       // a region was selected in the movie
     void OnEndPopdown();                                       // the pop-down ended
     void FUN_140e812e0(const CStringW& strRegion);              // pick the region (or the first one) as the setting
 

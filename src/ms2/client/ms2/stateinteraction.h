@@ -42,9 +42,9 @@ public:
     void SendInteractObjectMode11();                                   // send the objects in reach (kind 0xb)
     void SendInteractObjectMode12();                                   // send the objects the player may use (kind 0xc)
     void FUN_1417d2230(CInteractObject* pObject);           // the use has finished
-    void FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow); // create the reaction effect
+    void CreateReactionEffect(MS2Ptr<CInteractObjectData> spRow); // create the reaction effect
     void FUN_1417d25e0(MS2Ptr<CInteractObjectData> spRow); // play the start animation
-    int FUN_1417d2880();                                    // the object can still be used
+    int CanUseObject();                                    // the object can still be used
 
     int m_n48;                                              // +0x48 casting finished
     int m_nEffect;                                          // +0x4c reaction effect handle

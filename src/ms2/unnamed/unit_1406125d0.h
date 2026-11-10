@@ -27,9 +27,9 @@ enum Unk_LockMode : int { LOCKMODE_LOCK = 0, LOCKMODE_UNLOCK = 1 };
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 template <class T> int Unk_BreakFind(const ATL::CAtlArray<T>& values, const T& value);   // C3: was FUN_140534480 (the index of a value, itembreakmanager)
 bool FUN_140634120(MS2Ptr<CItem> item, int* pReason);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-void FUN_1412751f0(const CStringW& text, int nA, int nB);
+void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
 void FUN_141275460(int nStringId, int nA, int nB, const fmt::ArgList& args);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -61,14 +61,14 @@ extern Unk_Inventory g_143ab2a90;
 class UIItemLockDialog : public UIDialog
 {
 public:
-    void FUN_140f56c80();
-    void FUN_140f56e00();
-    int FUN_140f56f50();
+    void BindItemBag();
+    void UpdateLockButtons();
+    int IsItemBagVisible();
 };
 class UIInventoryDialog : public UIDialog
 {
 public:
-    void FUN_14199a3f0(__int64 nItemUid);
+    void RefreshItemSlot(__int64 nItemUid);
 };
 
 class CItemLockManager : public TSingleton<CItemLockManager>
@@ -79,16 +79,16 @@ public:
     void SendRequestItemLockMode0();
     void FUN_140612780();
     MS2Ptr<CItem> FUN_1406127a0(int nSlot);
-    void FUN_140612850(CInPacket& packet);                  // item lock packet (mode 1 lock, 2 unlock, 3 list, 4 result)
+    void OnItemLockPacket(CInPacket& packet);                  // item lock packet (mode 1 lock, 2 unlock, 3 list, 4 result)
     void FUN_140612c60(__int64 nItemUid);
     int FUN_140612d60();                                    // dialog open state
     int FUN_140612da0();                                   // any slot locked
     int SendRequestItemLockMode3();
     int FUN_140612e90(MS2Ptr<CItem> item);
     int FUN_1406130e0(__int64 nItemUid);
-    int FUN_140613160(CItem* pItem);
+    int CanUseItem(CItem* pItem);
     void FUN_1406132f0();
-    int FUN_140613430(MS2Ptr<CItem> item);
+    int CanAddItem(MS2Ptr<CItem> item);
     Unk_LockMode GetMode() const { return (Unk_LockMode)m_mode; }   // 0x140614b50
 
     ATL::CAtlArray<unsigned __int64> m_locked;      // +0x08 item uids in the lock slots (0x12 slots)

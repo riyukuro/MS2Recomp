@@ -31,7 +31,7 @@ __int64 GetServerTime();
 class UIWebBrowserPopup : public UIWebBrowserBase { };
 class Unk_PopupUIManager { public: };
 // @0x140beafe0
-UIWebBrowserPopup* FUN_140beafe0(int id) {
+UIWebBrowserPopup* GetWebBrowserPopup(int id) {
     if (reinterpret_cast<Unk_PopupUIManager*>(TSingleton<CUIService>::GetInstance())) {
         MS2Ptr<UIObject> obj = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
         if (obj.get())
@@ -68,7 +68,7 @@ void UICommunityPopup::OnLoadComplete() {
     } while(0);
     if (m_movie->FUN_140beaf20<ASTextField>("textField",m_field) == NULL)
         throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(46),__FUNCTION__));
-    m_y = (int)m_field->FUN_1422c1110();
+    m_y = (int)m_field->GetY();
     m_movie->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UICommunityPopup::FUN_140bea960),(void*)0);
     FUN_140bea730();
     if (m_text.IsEmpty()) vfunc_3();
@@ -140,7 +140,7 @@ void UICommunityPopup::FUN_140bea540() {
         if (x < -m_width) { m_x = 0; x = 0; }
         m_field->SetPositionInt(x,m_y);
     } else {
-        if (x > -m_field->FUN_1422c1340()) m_field->SetPositionInt(x,m_y);
+        if (x > -m_field->GetWidthCeil()) m_field->SetPositionInt(x,m_y);
         else FUN_140bea730();
     }
 }
@@ -178,7 +178,7 @@ void UICommunityPopup::FUN_140bea730() {
 MS2_REPLACE_METHOD(0x140BEA730, UICommunityPopup, FUN_140bea730, 549, 0xBC351929);
 // @0x140bea960
 void UICommunityPopup::FUN_140bea960(const Scaleform::GFx::FunctionHandler::Params&) {
-    UIWebBrowserPopup* browser = FUN_140beafe0(0x4f40);
+    UIWebBrowserPopup* browser = GetWebBrowserPopup(0x4f40);
     if (browser) { browser->FUN_14135ec00(m_url,1); m_time = 0; }
 }
 MS2_REPLACE_METHOD(0x140BEA960, UICommunityPopup, FUN_140bea960, 85, 0x10AE4226);

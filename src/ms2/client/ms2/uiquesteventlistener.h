@@ -42,8 +42,8 @@ public:
     virtual void vfunc_6(void* p);                  // 6 0x141aa8dd0 tracking changed
     virtual void vfunc_7(int a1, int a2);           // 7 0x141aa8e60
 
-    void FUN_141aa87c0(UIQuestEventListener* pListener);    // register (once)
-    void FUN_141aa8850(UIQuestEventListener* pListener);    // unregister
+    void AddListener(UIQuestEventListener* pListener);    // register (once)
+    void RemoveListener(UIQuestEventListener* pListener);    // unregister
 
 private:
     ATL::CAtlArray<UIQuestEventListener*> m_listeners;      // +0x08
@@ -80,38 +80,38 @@ public:
     virtual void vfunc_o178_9(void* p);                                                     // 0x141aab610
 
     void FUN_141aab700(CInPacket& packet);                      // packet 0x100: field mission update
-    void FUN_141aab760(NotifyObject* pObj);                     // NotifyChangeMyLevel: refresh the recommendation
+    void OnChangeMyLevel(NotifyObject* pObj);                     // NotifyChangeMyLevel: refresh the recommendation
     void FUN_141aab840(CInPacket& packet);                      // packet 0x53: refresh the multi-user quests
-    void FUN_141aaba00();                                       // rebuild the whole list ("buildAll")
-    void FUN_141aabcb0();                                       // the field / dungeon mission ("addMission")
-    void FUN_141aabe50(CQuest* pQuest);                         // "updateEntity"
-    int FUN_141aac190(int nQuestId);                            // "addEntity"
-    void FUN_141aac360(int nQuestId);                           // "removeEntity"
-    void FUN_141aac3e0(ASObj& obj, CQuest* pQuest);             // "conditions"
-    void FUN_141aac6a0(ASObj& obj, CQuest* pQuest);             // "period" / "expired"
-    void FUN_141aac9b0(ASObj& obj, CQuest* pQuest);             // "navi" / "tracing"
-    void FUN_141aaca80(ASObj& obj, CQuest* pQuest);             // "gotoButton"
-    bool FUN_141aacd70();                                       // AS "canAdd"
+    void BuildAll();                                       // rebuild the whole list ("buildAll")
+    void AddMission();                                       // the field / dungeon mission ("addMission")
+    void UpdateQuestEntity(CQuest* pQuest);                         // "updateEntity"
+    int AddQuestEntity(int nQuestId);                            // "addEntity"
+    void RemoveQuestEntity(int nQuestId);                           // "removeEntity"
+    void SetQuestConditions(ASObj& obj, CQuest* pQuest);             // "conditions"
+    void SetQuestPeriod(ASObj& obj, CQuest* pQuest);             // "period" / "expired"
+    void SetQuestNavigationState(ASObj& obj, CQuest* pQuest);             // "navi" / "tracing"
+    void SetQuestGotoButtons(ASObj& obj, CQuest* pQuest);             // "gotoButton"
+    bool CanAdd();                                       // AS "canAdd"
     bool FUN_141aace20(int nQuestId);                           // the quest belongs to the current map
-    void FUN_141aacef0(int nQuestId);                           // queue a removal
+    void QueueQuestRemoval(int nQuestId);                           // queue a removal
     void FUN_141aacf20();                                       // request a rebuild
-    CStringW FUN_141aacf40(int nQuestId);                       // "chapterName"
-    unsigned FUN_141aad300(int nChapter);                       // quests in the chapter
-    int FUN_141aad360(int nChapter, int nQuestId);              // 1-based index of the quest in its chapter
+    CStringW GetQuestChapterName(int nQuestId);                       // "chapterName"
+    unsigned GetChapterQuestCount(int nChapter);                       // quests in the chapter
+    int GetQuestIndexInChapter(int nChapter, int nQuestId);              // 1-based index of the quest in its chapter
     CString FUN_141aad4d0(int nChapter, int nQuestId);          // "questIndex" "{0}/{1}"
-    CString FUN_141aad550(CQuest* pQuest);                      // "icon"
+    CString GetQuestIcon(CQuest* pQuest);                      // "icon"
     int FUN_141aad6b0(CQuest* pQuest, ASObj& obj);              // fill one quest entity
-    void FUN_141aadbc0();                                       // "updateMission" (dungeon)
-    void FUN_141aadc50();                                       // re-apply the alignment
-    void FUN_141aadd10(int* pnWidth, int* pnHeight);            // the dialog size
+    void UpdateDungeonMission();                                       // "updateMission" (dungeon)
+    void ApplyAlignment();                                       // re-apply the alignment
+    void GetDialogSize(int* pnWidth, int* pnHeight);            // the dialog size
     bool FUN_141aaddb0(ASObj& obj);                             // the field mission entity
-    bool FUN_141aae150(ASObj& obj);                             // the dungeon mission entity
+    bool FillDungeonMissionEntity(ASObj& obj);                             // the dungeon mission entity
     CStringW FUN_141aae4f0(MS2Ptr<DungeonMissionCli> spEntry);         // a dungeon mission goal text
-    void FUN_141aae5a0();                                       // refresh the recommended quest
+    void RefreshRecommendedQuest();                                       // refresh the recommended quest
     int FUN_141aae6d0();                                        // the recommended next quest id (ignores this)
     int FUN_141aae8d0(int nQuestId, ASObj& obj);                // fill the recommended quest entity
     CStringW FUN_141aaedd0(int nQuestId);                       // "where to start" text
-    void FUN_141aaf150(const Scaleform::GFx::FunctionHandler::Params& params);   // m_funcGetNavigation
+    void GetNavigation(const Scaleform::GFx::FunctionHandler::Params& params);   // m_funcGetNavigation
 
 private:
     MS2_LAYOUT_FRIEND;

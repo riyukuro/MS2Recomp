@@ -28,25 +28,25 @@ public:
 
     int FUN_140bf6af0(int nNpc);                                // 0x140bf6af0 the alliance of an alliance npc
     CStringW FUN_140bf6b20(int nAlliance);                      // 0x140bf6b20 "current fame grade" text
-    CStringW FUN_140bf6be0(int nAlliance);                      // 0x140bf6be0 "daily mission" text
-    CStringW FUN_140bf6c90(unsigned nQuest);                    // 0x140bf6c90 time left until the quest resets
+    CStringW GetDailyMissionText(int nAlliance);                      // 0x140bf6be0 "daily mission" text
+    CStringW GetQuestResetTimeText(unsigned nQuest);                    // 0x140bf6c90 time left until the quest resets
     void FUN_140bf6ef0();                                       // 0x140bf6ef0 send the fame header to the movie
     void FUN_140bf70f0();                                       // 0x140bf70f0 send the npc portrait and speech
     void FUN_140bf7630();                                       // 0x140bf7630 fill "m_list" with the quests
-    int FUN_140bf8800(unsigned nQuest);                         // 0x140bf8800 a completion ticket can be used
-    int FUN_140bf8900();                                        // 0x140bf8900 some quest can be accepted at once
-    int FUN_140bf8ab0();                                        // 0x140bf8ab0 some quest can be completed at once
+    int CanUseCompletionTicket(unsigned nQuest);                         // 0x140bf8800 a completion ticket can be used
+    int CanAcceptAllQuests();                                        // 0x140bf8900 some quest can be accepted at once
+    int CanCompleteAllQuests();                                        // 0x140bf8ab0 some quest can be completed at once
     void FUN_140bf8c30(unsigned nQuest);                        // 0x140bf8c30 ask to use a completion ticket
     bool SendQuestMode34(int nResult, const CMsgBoxData& rBox);   // 0x140bf9010 "accept all" confirmed
     bool SendQuestMode35(int nResult, const CMsgBoxData& rBox);   // 0x140bf9090 "complete all" confirmed
     bool SendQuestMode33(int nResult, const CMsgBoxData& rBox);   // 0x140bf9110 ticket use confirmed
-    void FUN_140bf91b0();                                       // 0x140bf91b0 collect the acceptable quests
-    void FUN_140bf9360();                                       // 0x140bf9360 collect the completable quests
+    void CollectAcceptableQuests();                                       // 0x140bf91b0 collect the acceptable quests
+    void CollectCompletableQuests();                                       // 0x140bf9360 collect the completable quests
     int FUN_140bf94e0(int nQuest);                              // 0x140bf94e0 the quest is among the collected acceptable ones
     int FUN_140bf9530(int nQuest);                              // 0x140bf9530 the quest is among the collected completable ones
     unsigned FUN_140bf9580(unsigned nQuest);                    // 0x140bf9580 the quest to act on for a row (0 = none)
-    int FUN_140bf9a40(unsigned nQuest);                         // 0x140bf9a40 the fame / required quests are met
-    CStringW FUN_140bf9bd0();                                   // 0x140bf9bd0 "requirement" text (empty when met)
+    int AreQuestRequirementsMet(unsigned nQuest);                         // 0x140bf9a40 the fame / required quests are met
+    CStringW GetRequirementText();                                   // 0x140bf9bd0 "requirement" text (empty when met)
     CStringW FUN_140bf9e10();                                   // 0x140bf9e10 "limit by other alliance fame" text
     MS2Ptr<class ASButton> FUN_140bb4b10(const CString& strName);   // 0x140bb4b10 bind a button child
     MS2Ptr<class ASTileCacheList> FUN_140bfa760(const CString& strName);      // 0x140bfa760 the list child of the movie

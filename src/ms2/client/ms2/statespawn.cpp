@@ -72,7 +72,7 @@ void StateSpawn::vfunc_4(StateData* pData)
     m_pOwner->AddHideReason(10);
     Unk_Random kRandom(m_pOwner->GetObjectId());
     int nDelay = (int)(kRandom.FUN_1407684c0() % 300) + 100;
-    m_timer.FUN_140868750(nDelay);
+    m_timer.Start(nDelay);
 }
 MS2_REPLACE_METHOD(0x1417F6140, StateSpawn, vfunc_4, 281, 0x4A452965);
 
@@ -95,7 +95,7 @@ MS2_REPLACE_METHOD(0x1417F6260, StateSpawn, vfunc_5, 138, 0xE3F2D2EC);
 void StateSpawn::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    if (m_timer.FUN_140868ba0() != 0)
+    if (m_timer.IsRunning() != 0)
         return;
 
     if (FUN_14028d470(m_fElapsed, 0))

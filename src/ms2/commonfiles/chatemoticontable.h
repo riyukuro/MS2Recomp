@@ -85,7 +85,7 @@ MS2_CHECK_OFFSET(ChatEmoticonCachedData, m_byCommand, 0x58);
 typedef MS2Ptr<ChatEmoticonCachedData> ChatEmoticonCachedDataPtr;
 
 class CChatEmoticonTable;
-CString FUN_14016a5c0(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
 
 // This instantiation stores the complete object pointer; DAT_143aac658 (getter FUN_1409eecd0).
 template <> class TSingleton<CChatEmoticonTable>
@@ -109,9 +109,9 @@ public:
     ChatEmoticonDataPtr FUN_1401e7120(unsigned int nEmoticonId);    // emoticon by id (null when missing)
     ChatEmoticonCategoryDataPtr FUN_1401e7270(int nCategoryId);     // category by id (null when missing)
     void FUN_1401e73c0(unsigned int nGroupId, std::list<ChatEmoticonDataPtr>* pOut);   // copy of the emoticons of a group
-    void FUN_1401e74c0(const CStringW& strCommand, std::list<ChatEmoticonDataPtr>* pOut);   // emoticons of a ":cmd:"
+    void GetEmoticonsByCommand(const CStringW& strCommand, std::list<ChatEmoticonDataPtr>* pOut);   // emoticons of a ":cmd:"
     int FUN_1401e75b0(unsigned int nGroupId);                       // the group has emoticons
-    ChatEmoticonCachedDataPtr FUN_1401e76a0();                      // the current cached set (reloaded when a file changed)
+    ChatEmoticonCachedDataPtr GetCachedData();                      // the current cached set (reloaded when a file changed)
 
     // @0x1401f1ef0
     static void CheckInit()
@@ -119,7 +119,7 @@ public:
         if (!s_bInit)
         {
             CStringA msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CChatEmoticonTable).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(CChatEmoticonTable).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }

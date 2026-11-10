@@ -500,10 +500,10 @@ int MessengerData::SubjectSetting::FUN_141481ab0(Unk_MdXml* pXml)
     XmlGetAttr((class TiXmlElement*)(pSubject), "party", m_nParty);
     XmlGetAttr((class TiXmlElement*)(pSubject), "guild", m_nGuild);
     XmlGetAttr((class TiXmlElement*)(pSubject), "whisper", m_nWhisper);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x56) == 1)
         XmlGetAttr((class TiXmlElement*)(pSubject), "club", m_nClub);
     XmlGetAttr((class TiXmlElement*)(pSubject), "partyInvite", m_nPartyInvite);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x93) != 0)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x93) != 0)
         XmlGetAttr((class TiXmlElement*)(pSubject), "dungeonHelp", m_nDungeonHelp);
     int nAll;
     if (m_nSuper == 0 && m_nWorld == 0 && m_nChannel == 0 && m_nSocial == 0 && m_nParty == 0 && m_nGuild == 0 && m_nWhisper == 0 && m_nClub == 0 && m_nPartyInvite == 0 && m_nDungeonHelp == 0)
@@ -530,10 +530,10 @@ int MessengerData::SubjectSetting::FUN_141481cf0(Unk_MdXml* pXml)
     XmlSetAttr((class TiXmlElement*)(pSubject), "party", m_nParty);
     XmlSetAttr((class TiXmlElement*)(pSubject), "guild", m_nGuild);
     XmlSetAttr((class TiXmlElement*)(pSubject), "whisper", m_nWhisper);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x56) == 1)
         XmlSetAttr((class TiXmlElement*)(pSubject), "club", m_nClub);
     XmlSetAttr((class TiXmlElement*)(pSubject), "partyInvite", m_nPartyInvite);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x93) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x93) == 1)
         XmlSetAttr((class TiXmlElement*)(pSubject), "dungeonHelp", m_nDungeonHelp);
         return 1;
     }
@@ -772,7 +772,7 @@ CStringW Unk_MdNames::GetValidName()
             if (GetState()->m_pChat->FUN_141a23d70(strName) != 0)
                 return strName;
         }
-        return GetState()->m_pChat->FUN_141a258a0();
+        return GetState()->m_pChat->GetFirstWindowName();
     }
     return GetCurrentName();
 }
@@ -790,7 +790,7 @@ void Unk_MdNames::SelectNextName()
     if (m_names.IsEmpty())
     {
         if (GetState()->m_pChat != 0)
-            m_strCurrent = GetState()->m_pChat->FUN_141a258a0();
+            m_strCurrent = GetState()->m_pChat->GetFirstWindowName();
     }
     else
     {
@@ -894,11 +894,11 @@ Unk_MdEntry::Unk_MdEntry(__int64 nId)
 // @0x141483300
 Unk_MdEntry::Unk_MdEntry(Unk_MdSrcA& src)
 {
-    m_nKind = src.FUN_1401cc680();
+    m_nKind = src.IsOnline();
     m_nId = src.FUN_1401cc230();
     m_strImage = (const char*)FUN_141028be0(m_nId, *src.FUN_1401cc530(), 1, "");
-    m_strName = src.FUN_1401cc1c0();
-    int nTime = src.FUN_1401cc210();
+    m_strName = src.GetName();
+    int nTime = src.GetLevel();
     m_strInfo = FUN_14028dee0<int, CStringW>(0x20, reinterpret_cast<const int&>(nTime), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.FUN_1401cc290())));
 }
 
@@ -908,7 +908,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcB& src)
     m_nKind = (reinterpret_cast<CPartyMember&>(src).IsOffline() == 0);
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
-    m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f19e0();
+    m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).GetName();
     m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
 
@@ -917,8 +917,8 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcC& src)
 {
     m_nKind = (src.m_nState == 0);
     m_nId = src.m_nId;
-    m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_GuildMemberData&>(src.m_name).FUN_1404ca980(), 1, "");
-    m_strName = reinterpret_cast<Unk_GuildMemberData&>(src.m_name).FUN_1404ca890();
+    m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_GuildMemberData&>(src.m_name).GetCode(), 1, "");
+    m_strName = reinterpret_cast<Unk_GuildMemberData&>(src.m_name).GetName();
     m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, TSingleton<JobTable>::GetInstance()->GetSubJob1(src.m_nClass)));
 }
 
@@ -928,7 +928,7 @@ Unk_MdEntry::Unk_MdEntry(Unk_MdSrcD& src)
     m_nKind = reinterpret_cast<CGroupChatMember&>(src).FUN_14137b160();
     m_nId = src.m_nId;
     m_strImage = (const char*)FUN_141028be0(m_nId, reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f1a60(), 1, "");
-    m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).FUN_1408f19e0();
+    m_strName = reinterpret_cast<Unk_UserProxy&>(src.m_name).GetName();
     m_strInfo = FormatStringId<unsigned short, CStringW>(0x20, src.m_nLevel, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, src.m_nJob));
 }
 

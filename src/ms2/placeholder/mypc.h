@@ -35,7 +35,7 @@ public:
     void SendHouseSetting(Unk_MyPCHouseSetting nKind, CStringW strValue, unsigned char bFlag);   // house setting (packet 0x37 0x18)
     class CSkillSystem* GetSkillSystem();                    // the skill slot set (skillslot.cpp, 0x141765de0 etc.)
     class StatePcGuideObjectController* GetStateController();    // the guide object controller (scenestategame 0x1417127b0)
-    MS2Ptr<class CStatPointManager> FUN_140c25130();        // the stat point manager (statpointmanager.cpp)
+    MS2Ptr<class CStatPointManager> GetStatPointManager();        // the stat point manager (statpointmanager.cpp)
     void FUN_141661370(int a, int b, int c);                // PC member (scenestategame packet 0x83)
     void FUN_141528c30(CInPacket& packet);                  // scenestategame packet 0x135
     void FUN_141662850(__int64 nValue);                     // PC member (scenestategame packet 0xe0)

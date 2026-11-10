@@ -141,7 +141,7 @@ public:
     int CheckGuildGradeName(const CStringW& str, CStringW& message);
     int FUN_1402258f0(const CStringW& str, CStringW& message);
     int FUN_1402259b0(const CStringW& str, CStringW& message);
-    int FUN_140225a70(const CStringW& str, CStringW& message);
+    int CheckMusicTitle(const CStringW& str, CStringW& message);
     int CheckMailTitleText(const CStringW& str, CStringW& message);
     int CheckContentText(const CStringW& str, CStringW& message);
     int FUN_140225f30(const CStringW& str, CStringW& message);
@@ -150,14 +150,14 @@ public:
     int CheckMarketDescription(const CStringW& str, CStringW& message);
     int CheckMarketProductName(const CStringW& str, CStringW& message);
     int FUN_1402261e0(const CStringW& str, CStringW& message);
-    int FUN_140226220(const CStringW& str, CStringW& message);
+    int CheckBuddyMemo(const CStringW& str, CStringW& message);
     int FUN_140226260(const CStringW& str, CStringW& message);
     int FUN_1402262a0(const CStringW& str, CStringW& message);
     int FUN_1402262e0(const CStringW& str, CStringW& message);
     int CheckPartySearchText(const CStringW& str, CStringW& message);
-    int FUN_140226400(const CStringW& str, CStringW& message);
-    int FUN_140226440(const CStringW& str, CStringW& message);
-    int FUN_140226590(const CStringW& str, CStringW& message);
+    int CheckClubName(const CStringW& str, CStringW& message);
+    int CheckBillboardTitle(const CStringW& str, CStringW& message);
+    int CheckBillboardDescription(const CStringW& str, CStringW& message);
     int FUN_1402266e0(const CStringW& str, CStringW& message);
     int CheckAutoDistributeEntryName(const CStringW& str, CStringW& message);
 

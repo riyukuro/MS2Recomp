@@ -91,7 +91,7 @@ public:
 // The null tests of m_30 / the holder come from other units.
 template <> bool MS2Ptr<AScript>::operator==(AScript* p) const;
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
+MS2Ptr<ASGameEntity> CreateGameEntity(int nUiId, const Scaleform::GFx::Value& root);
 struct Unk_AdvPtrView { void* m_pad_00; void* m_p; };
 
 // @0x140ba6b20
@@ -116,7 +116,7 @@ void UIAdventureLevelExpBar::vfunc_2()
 {
     if (FUN_1412755a0())
         return;
-    FUN_1422dbf00(0x10, 0, 0);
+    LoadSwf(0x10, 0, 0);
 }
 
 // @0x140ba6c90
@@ -137,35 +137,35 @@ void UIAdventureLevelExpBar::FUN_140ba6cf0(__int64 nGain)
     Unk_AdvActor* pPlayer = ((class Unk_AdvActor*)((class WorldService*)(class Unk_AdvWorld*)(reinterpret_cast<Unk_AdvWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    float fCur = (float)(FUN_140ba6fa0() * 100) / (float)FUN_140ba6fc0();
-    float fNext = (float)(FUN_140ba6ff0() * 100) / (float)FUN_140ba6fc0();
+    float fCur = (float)(GetCurrentExp() * 100) / (float)GetExpPerLevel();
+    float fNext = (float)(GetDisplayedExp() * 100) / (float)GetExpPerLevel();
     if (nGain < 0)
         nGain = 0;
-    if (nGain > FUN_140ba6fc0() - FUN_140ba6fa0())
-        nGain = FUN_140ba6fc0() - FUN_140ba6fa0();
+    if (nGain > GetExpPerLevel() - GetCurrentExp())
+        nGain = GetExpPerLevel() - GetCurrentExp();
     static_cast<Unk_AdvEntity*>(pEntity.operator->())->FUN_140ba79c0("setPoint", fCur, fNext, StringFormat(L"0", nGain), pPlayer->vfunc_78() >= FUN_140ba4b30(reinterpret_cast<class Unk_ALConstU16*>(&reinterpret_cast<Unk_AdvGlobals*>(((class Unk_AdvGlobals*)GetClientConstants()))->m_9298)));
 }
 
 // @0x140ba6fa0
-__int64 UIAdventureLevelExpBar::FUN_140ba6fa0()
+__int64 UIAdventureLevelExpBar::GetCurrentExp()
 {
     return DAT_143ab2958;
 }
 
 // @0x140ba6fc0
-__int64 UIAdventureLevelExpBar::FUN_140ba6fc0()
+__int64 UIAdventureLevelExpBar::GetExpPerLevel()
 {
     return reinterpret_cast<Unk_AdvGlobals*>(((class Unk_AdvGlobals*)GetClientConstants()))->m_91e8.FUN_140ba77c0();
 }
 
 // @0x140ba6ff0
-__int64 UIAdventureLevelExpBar::FUN_140ba6ff0()
+__int64 UIAdventureLevelExpBar::GetDisplayedExp()
 {
     Unk_AdvActor* pPlayer = ((class Unk_AdvActor*)((class WorldService*)(class Unk_AdvWorld*)(reinterpret_cast<Unk_AdvWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
     if ((unsigned int)pPlayer->vfunc_141() <= DAT_143ab2960)
-        return FUN_140ba6fc0();
+        return GetExpPerLevel();
     if (pPlayer->vfunc_141() == (int)(DAT_143ab2960 + 1))
         return DAT_143ab2968;
     return 0;
@@ -201,14 +201,14 @@ void UIAdventureLevelExpBar::FUN_140ba7130()
 void UIAdventureLevelExpBar::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbd) == false)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xbd) == false)
     {
         vfunc_3();
     }
     else
     {
         FUN_140ba6cf0(0);
-        FUN_140ba7080(reinterpret_cast<Unk_AdvCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bShowPoint);
+        FUN_140ba7080(reinterpret_cast<Unk_AdvCfgData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_bShowPoint);
         TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
         FUN_140ba7130();
     }
@@ -220,7 +220,7 @@ void UIAdventureLevelExpBar::vfunc_43()
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity.get())
     {
-        reinterpret_cast<ASDisplayObject*>(pEntity.operator->())->SetWidthFloat((float)DAT_143af62d4 * FUN_14025e7a0()->FUN_1422afec0(m_28));
+        reinterpret_cast<ASDisplayObject*>(pEntity.operator->())->SetWidthFloat((float)DAT_143af62d4 * GetGFxManager()->GetMovieScale(m_28));
         pEntity->Invoke("setExpBarHeight", (unsigned int)FUN_1418dd0c0());
         static_cast<Unk_AdvEntity*>(pEntity.operator->())->vfunc_25();
     }
@@ -231,11 +231,11 @@ void UIAdventureLevelExpBar::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStr
 {
     if ((strMethod == "getExp"))
     {
-        CStringW strText = FUN_14028dfa0<CStringW, CStringW>(L"s_tooltip_adventure_exp", FUN_1409404f0(FUN_140ba6fa0()), FUN_1409404f0(FUN_140ba6fc0()));
+        CStringW strText = FUN_14028dfa0<CStringW, CStringW>(L"s_tooltip_adventure_exp", FUN_1409404f0(GetCurrentExp()), FUN_1409404f0(GetExpPerLevel()));
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
         ASObj obj(2);
-        obj.FUN_1407cbb20("text", CStringW(strText));
-        *pRetVal = obj.FUN_1422bb870();
+        obj.SetWStringMember("text", CStringW(strText));
+        *pRetVal = obj.GetValue();
     }
 }
 
@@ -252,7 +252,7 @@ int UIAdventureLevelExpBar::vfunc_28(const char* szMethod, const Scaleform::GFx:
         return 1;
     if (_stricmp("OnClickBar", szMethod) == 0)
     {
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xfb))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xfb))
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f67)));
         else
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f87)));
@@ -264,7 +264,7 @@ int UIAdventureLevelExpBar::vfunc_28(const char* szMethod, const Scaleform::GFx:
 // @0x140ba7710
 void UIAdventureLevelExpBar::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 
 // @0x140ba77c0
@@ -274,7 +274,7 @@ __int64 Unk_AdvCfgExp::FUN_140ba77c0()
 }
 
 // @0x140ba77e0
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root)
+MS2Ptr<ASGameEntity> CreateGameEntity(int nUiId, const Scaleform::GFx::Value& root)
 {
     MS2Ptr<ASGameEntity> pEntity(new ASGameEntity(root, nUiId));
     return pEntity;
@@ -315,9 +315,9 @@ MS2_REPLACE_METHOD(0x140BA6C00, UIAdventureLevelExpBar, GetTypeName, 61, 0x03DBA
 MS2_REPLACE_METHOD(0x140BA6C50, UIAdventureLevelExpBar, vfunc_2, 46, 0x50B56EF6);
 MS2_REPLACE_METHOD(0x140BA6C90, UIAdventureLevelExpBar, vfunc_3, 86, 0x5CC41CD8);
 MS2_REPLACE_METHOD(0x140BA6CF0, UIAdventureLevelExpBar, FUN_140ba6cf0, 667, 0x4F7A655A);
-MS2_REPLACE_METHOD(0x140BA6FA0, UIAdventureLevelExpBar, FUN_140ba6fa0, 13, 0x31C12830);
-MS2_REPLACE_METHOD(0x140BA6FC0, UIAdventureLevelExpBar, FUN_140ba6fc0, 33, 0xD9472748);
-MS2_REPLACE_METHOD(0x140BA6FF0, UIAdventureLevelExpBar, FUN_140ba6ff0, 125, 0x8CB7B8DE);
+MS2_REPLACE_METHOD(0x140BA6FA0, UIAdventureLevelExpBar, GetCurrentExp, 13, 0x31C12830);
+MS2_REPLACE_METHOD(0x140BA6FC0, UIAdventureLevelExpBar, GetExpPerLevel, 33, 0xD9472748);
+MS2_REPLACE_METHOD(0x140BA6FF0, UIAdventureLevelExpBar, GetDisplayedExp, 125, 0x8CB7B8DE);
 MS2_REPLACE_METHOD(0x140BA7080, UIAdventureLevelExpBar, FUN_140ba7080, 163, 0x8CCBB6DC);
 MS2_REPLACE_METHOD(0x140BA7130, UIAdventureLevelExpBar, FUN_140ba7130, 363, 0xBB4BD534);
 MS2_REPLACE_METHOD(0x140BA72B0, UIAdventureLevelExpBar, OnLoadComplete, 169, 0x23076E24);

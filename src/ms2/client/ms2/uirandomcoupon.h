@@ -30,10 +30,10 @@ public:
     virtual void vfunc_43();                                        // 43 0x140bfe9e0 align the movie
     virtual int vfunc_48() { return 0x4f99; }                       // 48 0x140bfef30 UI type id
 
-    void FUN_140bfeae0();                                           // reset the pick
-    void FUN_140bfeb50(int nMode, int nA, int nB, CStringW strName);   // set the pick (nMode 0: nothing) and show
+    void ResetPick();                                           // reset the pick
+    void SetPick(int nMode, int nA, int nB, CStringW strName);   // set the pick (nMode 0: nothing) and show
     void SetProduct(MS2Ptr<CMeratMarketProduct> spProduct);         // 0x140bfebf0 the picked product
-    void FUN_140bfec40();                                           // play the sound of the coupon (m_78)
+    void PlayCouponSound();                                           // play the sound of the coupon (m_78)
 
 private:
     MS2_LAYOUT_FRIEND;

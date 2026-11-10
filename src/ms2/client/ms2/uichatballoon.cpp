@@ -63,7 +63,7 @@ struct Unk_CbCfg
     Unk_CbCfgInt m_8a0;
 };
 struct Unk_CbCfg2 { char m_pad[0x90]; CString m_90; };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: the real return type (cachedata); the default profile image name
+class Unk_SingletonObj* GetCommonResource();   // C3: the real return type (cachedata); the default profile image name
 class Unk_CbEntity : public ASGameEntity
 {
 public:
@@ -71,8 +71,8 @@ public:
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
+    Scaleform::GFx::Value CreateEntity(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 bool FUN_140930110(int nActorId);
 
@@ -102,7 +102,7 @@ public:
 };
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 UICutSceneMovie* FindCutSceneMovie(int nUiId);
-void* FUN_14136f3e0(int nUiId);
+void* FindGuideEvent(int nUiId);
 int FUN_141274ff0();
 int FUN_141275080();
 void FUN_141274f50();
@@ -163,9 +163,9 @@ void UIChatBalloon::Entity::vfunc_5()
             if (((PCGemEquip*)pPc->GetGemEquip())->FUN_141270740(3) == 0)
                 m_a8.Empty();
         ASObj obj(m_18);
-        obj.FUN_1407cbb20("text", m_b0);
-        obj.FUN_1407cbb20("imgPath", FUN_14016a730((const char*)FUN_1418fb7e0(), 0));
-        obj.FUN_1407cbbe0("bNpc", efd::ClassInfo::IsKindOf(pActor ? pActor->GetClassDesc() : 0, 0x6200028));
+        obj.SetWStringMember("text", m_b0);
+        obj.SetWStringMember("imgPath", FUN_14016a730((const char*)FUN_1418fb7e0(), 0));
+        obj.SetBoolMember("bNpc", efd::ClassInfo::IsKindOf(pActor ? pActor->GetClassDesc() : 0, 0x6200028));
         const char* szSkin;
         if (pActor->IsDead() != 0)
             szSkin = "dead";
@@ -181,7 +181,7 @@ void UIChatBalloon::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get() != 0)
     {
-        *pPos *= FUN_14025e7a0()->FUN_1422afec0(m_18);
+        *pPos *= GetGFxManager()->GetMovieScale(m_18);
         pPos->y = pPos->y + vfunc_9();
         m_38->SetPositionFloat(pPos->x - 110.0f, pPos->y - 90.0f);
     }
@@ -197,9 +197,9 @@ void UIChatBalloon::Entity::vfunc_7()
 // @0x1418fb5e0
 int UIChatBalloon::Entity::vfunc_8(int n)
 {
-    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
+    if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSubSceneId() != 0x620001d)
     {
-        if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9ea0() == 0)
+        if (((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9ea0() == 0)
             return 1;
     }
     PCBase* pActor = FUN_140f49330();
@@ -291,7 +291,7 @@ CString UIChatBalloon::Entity::FUN_1418fb7e0()
             }
         }
     }
-    return ((Unk_CbCfg2*)FUN_1401d31f0())->m_90;
+    return ((Unk_CbCfg2*)GetCommonResource())->m_90;
 }
 
 // @0x1418fbbf0
@@ -335,7 +335,7 @@ CString UIChatBalloon::GetTypeName()
 void UIChatBalloon::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_1418fbe70(m_68);
+    CreateEntityCache(m_68);
 }
 
 // @0x1418fc4e0
@@ -351,11 +351,11 @@ UIChatBalloon* FUN_1418fc4e0(int nUiId)
 }
 
 // @0x1418fbdb0
-MS2Ptr<UIChatBalloon::Entity> FUN_1418fbdb0(int nActorId)
+MS2Ptr<UIChatBalloon::Entity> GetChatBalloonEntity(int nActorId)
 {
     UIChatBalloon* pBalloon = FUN_1418fc4e0(0x4e2e);
     if (pBalloon != 0)
-        return MS2Ptr<UIChatBalloon::Entity>(pBalloon->FUN_1418fc050(nActorId));
+        return MS2Ptr<UIChatBalloon::Entity>(pBalloon->GetEntity(nActorId));
     return MS2Ptr<UIChatBalloon::Entity>(0);
 }
 
@@ -364,12 +364,12 @@ void FUN_1418fbe30(int nActorId)
 {
     UIChatBalloon* pBalloon = FUN_1418fc4e0(0x4e2e);
     if (pBalloon)
-        pBalloon->FUN_140f49c00(nActorId);
+        pBalloon->ReleaseEntity(nActorId);
 }
 
 
 // @0x1418fbe70
-void UIChatBalloon::FUN_1418fbe70(unsigned int nCount)
+void UIChatBalloon::CreateEntityCache(unsigned int nCount)
 {
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
@@ -392,12 +392,12 @@ void UIChatBalloon::FUN_1418fbe70(unsigned int nCount)
 
 
 // @0x1418fc050
-UIChatBalloon::Entity* UIChatBalloon::FUN_1418fc050(int nActorId)
+UIChatBalloon::Entity* UIChatBalloon::GetEntity(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     {
-    FUN_140f49c00(nActorId);
+    ReleaseEntity(nActorId);
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
     {
@@ -405,7 +405,7 @@ UIChatBalloon::Entity* UIChatBalloon::FUN_1418fc050(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -432,7 +432,7 @@ UIChatBalloon::Entity* UIChatBalloon::FUN_1418fc050(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_CbEntity*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->UpdateEntity("updateEntity", ((Unk_CbEntity*)pOldClip.operator->())->GetValue(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);
@@ -496,7 +496,7 @@ void FUN_1418fc840(MS2Ptr<ASDropdownMenu> list, int nItemId, int nSelRank)
     if (item->GetRank() != 0)
     {
         ASObj row(2);
-        row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(item->GetRank()));
+        row.SetWStringMember("label", TSingleton<CStringTable>::GetInstance()->GetRankName(item->GetRank()));
         row.FUN_1409adc90("itemRank", item->GetRank());
         list->AddItemRow(row);
         nSel = 0;
@@ -507,8 +507,8 @@ void FUN_1418fc840(MS2Ptr<ASDropdownMenu> list, int nItemId, int nSelRank)
         {
             int nRank = i;
             ASObj row(2);
-            row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(nRank));
-            row.FUN_1407cb9c0("itemRank", i);
+            row.SetWStringMember("label", TSingleton<CStringTable>::GetInstance()->GetRankName(nRank));
+            row.SetIntMember("itemRank", i);
             if (nRank == nSelRank)
                 nSel = list->GetItemCount();
             list->AddItemRow(row);
@@ -523,15 +523,15 @@ void FUN_1418fc840(MS2Ptr<ASDropdownMenu> list, int nItemId, int nSelRank)
 // @0x1418fcb70
 int FUN_1418fcb70()
 {
-    if (FUN_14025e7a0()->FUN_1422b0f10() != 0)
+    if (GetGFxManager()->CloseTooltips() != 0)
         return 1;
     UICutSceneMovie* pA = FindCutSceneMovie(0x4e7e);
     if (pA != 0 && pA->FUN_1419102c0() != 0)
         return 0;
-    UIGuideEvent* pB = (UIGuideEvent*)FUN_14136f3e0(0x4e53);
+    UIGuideEvent* pB = (UIGuideEvent*)FindGuideEvent(0x4e53);
     if (pB != 0 && pB->SkipTextTip() != 0)
         return 1;
-    if (reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
+    if (reinterpret_cast<Unk_CbUIMgr*>(TSingleton<CUIService>::GetInstance())->IsTextFieldFocused() != 0)
         return 0;
     if (FUN_141274ff0() != 0)
     {
@@ -619,9 +619,9 @@ MS2_REPLACE_METHOD(0x1418FB790, UIChatBalloon::Entity, FUN_1418fb790, 59, 0x882B
 MS2_REPLACE_METHOD(0x1418FBBF0, UIChatBalloon::Entity, FUN_1418fbbf0, 129, 0x2C48873E);
 MS2_REPLACE_METHOD(0x1418FBD30, UIChatBalloon, GetTypeName, 61, 0xCDA04F5F);
 MS2_REPLACE_METHOD(0x1418FBD80, UIChatBalloon, OnLoadComplete, 42, 0x22489B16);
-MS2_REPLACE_METHOD(0x1418FBE70, UIChatBalloon, FUN_1418fbe70, 465, 0x931A0B41);
-MS2_REPLACE_METHOD(0x1418FC050, UIChatBalloon, FUN_1418fc050, 1082, 0x633302C0);
-MS2_REPLACE(0x1418FBDB0, FUN_1418fbdb0, 122, 0xB7D52CC5);
+MS2_REPLACE_METHOD(0x1418FBE70, UIChatBalloon, CreateEntityCache, 465, 0x931A0B41);
+MS2_REPLACE_METHOD(0x1418FC050, UIChatBalloon, GetEntity, 1082, 0x633302C0);
+MS2_REPLACE(0x1418FBDB0, GetChatBalloonEntity, 122, 0xB7D52CC5);
 MS2_REPLACE(0x1418FBE30, FUN_1418fbe30, 50, 0x0CB147FD);
 MS2_REPLACE(0x1418FC4E0, FUN_1418fc4e0, 147, 0x4BF21D95);
 MS2_REPLACE(0x1418FC490, FUN_1418fc490, 73, 0xCB6B9CB0);

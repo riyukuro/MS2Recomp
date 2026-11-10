@@ -33,13 +33,13 @@ public:
     static void FUN_14107b2a0(float fYaw, float fPitch);                 // s_fYaw = fYaw, s_fPitch = fPitch
     static void FUN_14107b320(const NiPoint3& color, float fPower);      // s_sssColor = color, s_fSSSPower = fPower
     // @0x141709920
-    static float FUN_141709920() { return s_fPitch; }
+    static float GetLightPitch() { return s_fPitch; }
     // @0x141709930
-    static float FUN_141709930() { return s_fYaw; }
+    static float GetLightYaw() { return s_fYaw; }
     // @0x141709940
-    static const NiPoint3* FUN_141709940() { return &s_sssColor; }
+    static const NiPoint3* GetSssColor() { return &s_sssColor; }
     // @0x141709950
-    static float FUN_141709950() { return s_fSSSPower; }
+    static float GetSssPower() { return s_fSSSPower; }
 
     static float s_fPitch;              // 0x1439f6fec
     static float s_fYaw;                // 0x143acd4b0
@@ -74,18 +74,18 @@ void UIRimLightDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     ASObj obj(2);
-    obj.SetMemberFloat("lightYaw", Unk_RimLight::FUN_141709930() + 90.0f);
-    obj.SetMemberFloat("lightPitch", Unk_RimLight::FUN_141709920());
-    ((class AScript&)(obj)).FUN_1407cb9c0("shadowMaxHeight", 400);
+    obj.SetMemberFloat("lightYaw", Unk_RimLight::GetLightYaw() + 90.0f);
+    obj.SetMemberFloat("lightPitch", Unk_RimLight::GetLightPitch());
+    ((class AScript&)(obj)).SetIntMember("shadowMaxHeight", 400);
     obj.FUN_140e06d60("shadowMinScale", 0.5);
-    ((class AScript&)(obj)).FUN_1407cb9c0("shadowDefaultSize", 100);
-    ((class AScript&)(obj)).FUN_1407cb9c0("shadowDefaultBias", 3);
-    const NiPoint3* pColor = Unk_RimLight::FUN_141709940();
+    ((class AScript&)(obj)).SetIntMember("shadowDefaultSize", 100);
+    ((class AScript&)(obj)).SetIntMember("shadowDefaultBias", 3);
+    const NiPoint3* pColor = Unk_RimLight::GetSssColor();
     obj.SetMemberFloat("sssRed", pColor->x);
     obj.SetMemberFloat("sssGreen", pColor->y);
     obj.SetMemberFloat("sssBlue", pColor->z);
-    obj.SetMemberFloat("sssPower", Unk_RimLight::FUN_141709950());
-    m_30->Invoke("initData", obj.FUN_1422bb870());
+    obj.SetMemberFloat("sssPower", Unk_RimLight::GetSssPower());
+    m_30->Invoke("initData", obj.GetValue());
 }
 MS2_REPLACE_METHOD(0x141709400, UIRimLightDialog, OnLoadComplete, 452, 0x6611AC2D);
 
@@ -97,19 +97,19 @@ int UIRimLightDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     if (_stricmp("onChangeSliderLightAngle", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_1417097a0(data);
+            OnChangeSliderLightAngle(data);
         return 1;
     }
     else if (_stricmp("onChangeSliderShadow", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_141709800(data);
+            OnChangeSliderShadow(data);
         return 1;
     }
     else if (_stricmp("onChangeSliderSSS", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_141709870(data);
+            OnChangeSliderSSS(data);
         return 1;
     }
     return 0;
@@ -117,26 +117,26 @@ int UIRimLightDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 MS2_REPLACE_METHOD(0x1417095d0, UIRimLightDialog, vfunc_28, 445, 0x2FB16BBD);
 
 // @0x1417097a0
-void UIRimLightDialog::FUN_1417097a0(ASData& data)
+void UIRimLightDialog::OnChangeSliderLightAngle(ASData& data)
 {
     float fYaw = data.PopFloat() - 90.0f;
     float fPitch = data.PopFloat();
     Unk_RimLight::FUN_14107b2a0(fYaw, fPitch);
 }
-MS2_REPLACE_METHOD(0x1417097a0, UIRimLightDialog, FUN_1417097a0, 76, 0x1E22E413);
+MS2_REPLACE_METHOD(0x1417097a0, UIRimLightDialog, OnChangeSliderLightAngle, 76, 0x1E22E413);
 
 // @0x141709800
-void UIRimLightDialog::FUN_141709800(ASData& data)
+void UIRimLightDialog::OnChangeSliderShadow(ASData& data)
 {
     g_1439f81f4 = data.PopFloat();
     g_1439f81f8 = data.PopFloat();
     g_1439f81fc = data.PopFloat();
     g_1439f8200 = data.PopFloat();
 }
-MS2_REPLACE_METHOD(0x141709800, UIRimLightDialog, FUN_141709800, 91, 0x28CBBBB8);
+MS2_REPLACE_METHOD(0x141709800, UIRimLightDialog, OnChangeSliderShadow, 91, 0x28CBBBB8);
 
 // @0x141709870
-void UIRimLightDialog::FUN_141709870(ASData& data)
+void UIRimLightDialog::OnChangeSliderSSS(ASData& data)
 {
     NiPoint3 color;
     color.x = data.PopFloat();
@@ -145,7 +145,7 @@ void UIRimLightDialog::FUN_141709870(ASData& data)
     float fPower = data.PopFloat();
     Unk_RimLight::FUN_14107b320(color, fPower);
 }
-MS2_REPLACE_METHOD(0x141709870, UIRimLightDialog, FUN_141709870, 109, 0xE8BFE176);
+MS2_REPLACE_METHOD(0x141709870, UIRimLightDialog, OnChangeSliderSSS, 109, 0xE8BFE176);
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 

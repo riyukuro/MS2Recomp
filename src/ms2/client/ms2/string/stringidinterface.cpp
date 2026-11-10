@@ -162,7 +162,7 @@ template <class T> typename StringXmlProc<T>::ValueMap* StringXmlProc<T>::LoadDa
         CString strPath = FUN_14071ae20(m_path18);
         if (strPath.IsEmpty())
             break;
-        if (((class Unk_XmlFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        if (((class Unk_XmlFiles*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
             break;
         pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     } while (0);

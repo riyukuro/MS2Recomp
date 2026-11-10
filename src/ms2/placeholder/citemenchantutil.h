@@ -15,7 +15,7 @@ public:
     virtual ~CItemEnchantUtil();                            // 0x140594350
 
     int FUN_140594720(int nLevel);                          // the rate of the third table (forwards to FUN_1405947c0)
-    int FUN_140594750(int nLevel);                          // the rate of the first / second table (by the game mode)
+    int GetEnchantRate(int nLevel);                          // the rate of the first / second table (by the game mode)
     int FUN_1405947c0(int nLevel);                          // the rate of the third table
     int FUN_140594810(int nType);                          // 2 for the item types that enchant twice, else 1
 

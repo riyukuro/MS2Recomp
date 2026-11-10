@@ -32,7 +32,7 @@ struct Unk_KsParams { char m_pad[0x30]; void* m_pButton; };
 int FUN_140bd09c0(void* pButton);                                       // which button (2 = the mouse layout)
 
 class Unk_KsKeyBinds;                                                   // the key binding table
-class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
+class Unk_SoundSink* GetKeyTable();   // C3: was GetKeyTable
 class CKeyTable   // C3: member view for the former free stand-ins
 {
 public:
@@ -41,7 +41,7 @@ public:
 
 
 // C3: the former input-state stand-in is CGameOption (singleton at FUN_1409a8b10); its +0x30 member is
-//     CGameOption::m_interfaceChar, and 0x140c58ac0 is CGameOption::FUN_140c58ac0 (cgameoption.h)
+//     CGameOption::m_interfaceChar, and 0x140c58ac0 is CGameOption::GetInterfaceChar (cgameoption.h)
 //
 //
 //
@@ -49,13 +49,13 @@ public:
 //
 void FUN_14125bd20(struct Unk_InterfaceFlag*, bool);   // C3: was FUN_14125bd20
 class UIGameOptionDialog* FindGameOptionDialog(int);   // C3: was FindGameOptionDialog
-class UIMainPlayerInfo* FUN_140931900(int);   // C3: was FUN_140931900
+class UIMainPlayerInfo* FindMainPlayerInfo(int);   // C3: was FindMainPlayerInfo
 
 // @0x140c581a0
 UIKeySettingSelectDialog::UIKeySettingSelectDialog()
 {
     m_80 = 0;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140c58240
@@ -84,16 +84,16 @@ void UIKeySettingSelectDialog::vfunc_67()
 void UIKeySettingSelectDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    int bOn = ((class CKeyTable*)(class Unk_KsKeyBinds*)(((class Unk_KsKeyBinds*)FUN_1409331f0())))->GetLocked() == 0;
+    int bOn = ((class CKeyTable*)(class Unk_KsKeyBinds*)(((class Unk_KsKeyBinds*)GetKeyTable())))->GetLocked() == 0;
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_button1", reinterpret_cast<MS2Ptr<ASButton>&>(m_button1)))
     {
         m_button1->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)1);
-        m_button1->FUN_1422c1fe0(bOn);
+        m_button1->SetEnabled(bOn);
     }
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_button2", reinterpret_cast<MS2Ptr<ASButton>&>(m_button2)))
     {
         m_button2->FUN_1422ce240(KsClickDelegate(this, &UIKeySettingSelectDialog::FUN_140c58690), (void*)2);
-        m_button2->FUN_1422c1fe0(bOn);
+        m_button2->SetEnabled(bOn);
     }
 }
 
@@ -103,27 +103,27 @@ void UIKeySettingSelectDialog::FUN_140c58690(const Scaleform::GFx::FunctionHandl
     int nButton = FUN_140bd09c0(((Unk_KsParams*)&params)->m_pButton);
     if (nButton == 2)
     {
-        ((class CKeyTable*)FUN_1409331f0())->FUN_1414297e0("./Data/Xml/Table/default/DefaultMouseControlKey.xml", 0);
-        FUN_14125bd20((struct Unk_InterfaceFlag*)(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()), true);
+        ((class CKeyTable*)GetKeyTable())->FUN_1414297e0("./Data/Xml/Table/default/DefaultMouseControlKey.xml", 0);
+        FUN_14125bd20((struct Unk_InterfaceFlag*)(TSingleton<CGameOption>::GetInstance()->GetInterfaceChar()), true);
     }
     else
     {
-        ((class CKeyTable*)FUN_1409331f0())->FUN_1414297e0("./Data/Xml/Table/default/DefaultKey.xml", 0);
-        FUN_14125bd20((struct Unk_InterfaceFlag*)(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()), false);
+        ((class CKeyTable*)GetKeyTable())->FUN_1414297e0("./Data/Xml/Table/default/DefaultKey.xml", 0);
+        FUN_14125bd20((struct Unk_InterfaceFlag*)(TSingleton<CGameOption>::GetInstance()->GetInterfaceChar()), false);
     }
     TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     void* pDlg = ((void*)FindGameOptionDialog(0x4ef3));
     if (pDlg != 0)
-        ((class UIGameOptionDialog*)(void*)(pDlg))->FUN_1419438b0();
-    void* pInfo = ((void*)FUN_140931900(0x4e5f));
+        ((class UIGameOptionDialog*)(void*)(pDlg))->ReopenCurrentTab();
+    void* pInfo = ((void*)FindMainPlayerInfo(0x4e5f));
     if (pInfo != 0)
-        ((class UIMainPlayerInfo*)(void*)(pInfo))->FUN_1419f19c0();
+        ((class UIMainPlayerInfo*)(void*)(pInfo))->RefreshQuickSlots();
     CGameOptionInputDefault::FUN_1412533f0();
     vfunc_67();
 }
 
 // @0x140c58ac0
-Unk_InterfaceFlag* CGameOption::FUN_140c58ac0()
+Unk_InterfaceFlag* CGameOption::GetInterfaceChar()
 {
     return &m_interfaceChar;
 }

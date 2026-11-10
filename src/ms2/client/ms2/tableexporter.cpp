@@ -119,14 +119,14 @@ class Unk_ExportLog;                                            // the editor pr
 class CDebugConsole   // C3: member view for the former free stand-ins
 {
 public:
-    static class CDebugConsole* FUN_141168200();
-    bool FUN_141168270();
-    void FUN_1411682d0();
-    void FUN_141168580(int);
+    static class CDebugConsole* GetInstance();
+    bool OpenConsole();
+    void CloseConsole();
+    void SetFileLog(int);
     void FUN_1411683e0(const char* pszFormat, ...);   // append a line
 };
 int FUN_1406516c0();                                            // current language id
-CSoundService* FUN_140c9cb10();
+CSoundService* GetSoundService();
 
 class Unk_SoundMgr : public CSoundEventMgr
 {
@@ -150,17 +150,17 @@ public:
 
 
 CString FUN_140188f50(const char* psz, int n);
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 
 enum Unk_BmLanguage { Unk_BmLanguage_None = 0 };
-CLocaleLanguage* FUN_1401c0da0();
+CLocaleLanguage* GetLocaleLanguage();
 CString FUN_140390ea0(const wchar_t* psz, int n);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 unsigned int FUN_1401bd070(CStringA strCategory);                         // black market tab of a category
 unsigned int FUN_1401bd120(ATL::CAtlArray<unsigned int>* pJobs);
 unsigned int FUN_1401bd340(int nGender);
-CStringW FUN_1401bd850(Unk_BmLanguage nLanguage, unsigned int nId);       // localized item name
+CStringW GetBlackMarketItemName(Unk_BmLanguage nLanguage, unsigned int nId);       // localized item name
 
 class CNpcSpawnData;
 template <class T> class TPtr;
@@ -184,11 +184,11 @@ public:
     // Property readers: (entity element, model name, property name, out).
     int FUN_140a2a920(const CString& strModel, CString strFilter);
     int FUN_140a2aab0(TiXmlElement* pEntity, CString strModel, const char* pszProp, ATL::CAtlArray<TPtr<CNpcSpawnData> >* pOut);
-    int FUN_140a2afd0(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, efd::Point3* pOut);
+    int GetPoint3Property(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, efd::Point3* pOut);
     int FUN_140a2b270(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, int* pOut);
-    int FUN_140a2b550(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, int* pOut);
-    int FUN_140a2b9d0(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, bool* pOut);
-    int FUN_140a2bc30(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, CString* pOut);
+    int GetIntProperty(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, int* pOut);
+    int GetBoolProperty(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, bool* pOut);
+    int GetStringProperty(TiXmlElement* pEntity, const CString& strModel, const char* pszProp, CString* pOut);
 };
 MS2_CHECK_SIZE(Unk_ModelMgr, 0x98);
 
@@ -296,14 +296,14 @@ class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 void* FUN_14182fd90(Unk_Ref* pRef);
 typedef ATL::CAtlArray<MS2Ptr<CRegionSpawnProb> > Unk_ProbArray;   // CRegionSpawnResult::m_aProb
 bool FUN_1409f90f0(Unk_AvBox *, void *);  // C3: the definition's signature
-MS2Ptr<CNpcData> FUN_1406cd330(int nId);   // the npc data row
+MS2Ptr<CNpcData> FindNpcData(int nId);   // the npc data row
 
 void XmlSetAttr(class TiXmlElement*, char const*, unsigned int);   // C3: was FUN_140873ce0
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 void XmlSetAttr(class TiXmlElement*, char const*, bool);   // C3: was FUN_140873bc0
 void XmlSetAttr(class TiXmlElement*, char const*, const CStringA&);   // C3: was FUN_140874050
 void XmlSetAttr(class TiXmlElement*, char const*, const CStringW&);   // C3: was FUN_1408740a0
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 
 // @0x1418315f0
 static const Unk_SoundTagMap& Unk_GetSoundTags(CSoundService* pService)
@@ -317,29 +317,29 @@ CString FUN_141827280(const char* pszFormat, const unsigned long long& nIndex, c
 
 // Removes the named <property> children from every xblock / block entity whose model the model manager knows.
 // @0x141821bf0
-void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
+void DeleteBlockProperties(CString strModelFilter, CString strDeleteProps)
 {
-    ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::FUN_141168200())))->FUN_141168270();
-    ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::FUN_141168200())))->FUN_141168580(1);
-    CDebugConsole::FUN_141168200()->FUN_1411683e0("Export FieldMetaTable");
-    CDebugConsole::FUN_141168200()->FUN_1411683e0("Read Model....");
+    ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::GetInstance())))->OpenConsole();
+    ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::GetInstance())))->SetFileLog(1);
+    CDebugConsole::GetInstance()->FUN_1411683e0("Export FieldMetaTable");
+    CDebugConsole::GetInstance()->FUN_1411683e0("Read Model....");
     Unk_ModelMgr mgr;
     if (((class Unk_ModelMgr*)(class Unk_ModelMgr*)(&mgr))->FUN_140a2a180() == 0) {
         MessageBoxA(NULL, "Fail to initialize Model Manager.", "Error", 0);
         return;
     }
-    CDebugConsole::FUN_141168200()->FUN_1411683e0("Read Model Complete");
+    CDebugConsole::GetInstance()->FUN_1411683e0("Read Model Complete");
 
     ATL::CAtlArray<CString> props;
     Unk_SplitA(strDeleteProps, &props, ",");
 
     {
         ATL::CAtlArray<CString> xblocks;
-        FUN_140399100(".xblock", "./Data/Resource/Exported/XBlock", xblocks, "", false);
+        FindFiles(".xblock", "./Data/Resource/Exported/XBlock", xblocks, "", false);
         for (size_t i = 0; i < xblocks.GetCount(); i++) {
             TiXmlDocument doc;
             int nDeleted = 0;
-            if (GetFileSystem()->FUN_1403974b0(&doc, xblocks[i], 0, true, false) == 0)
+            if (GetFileSystem()->LoadXmlFile(&doc, xblocks[i], 0, true, false) == 0)
                 continue;
             TiXmlElement* pGame = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("game"));
             if (pGame == NULL)
@@ -347,7 +347,7 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             TiXmlElement* pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pGame))->FirstChild("entitySet"));
             if (pNode == NULL)
                 continue;
-            CDebugConsole::FUN_141168200()->FUN_1411683e0(FUN_141827280("{0} Read xblock {1}", i, xblocks[i]));
+            CDebugConsole::GetInstance()->FUN_1411683e0(FUN_141827280("{0} Read xblock {1}", i, xblocks[i]));
             for (pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("entity")); pNode != NULL;
                  pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pNode))->NextSibling("entity"))) {
                 CString strModel = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("modelName"), 0);
@@ -364,18 +364,18 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             }
             if (nDeleted > 0) {
                 doc.SaveFile();
-                CDebugConsole::FUN_141168200()->FUN_1411683e0(Unk_SocketFormat("{0} Save file. deleted {1} property ", xblocks[i], nDeleted));
+                CDebugConsole::GetInstance()->FUN_1411683e0(Unk_SocketFormat("{0} Save file. deleted {1} property ", xblocks[i], nDeleted));
             }
         }
     }
 
     {
         ATL::CAtlArray<CString> blocks;
-        FUN_140399100(".block", "./Data/Resource/Block", blocks, "", false);
+        FindFiles(".block", "./Data/Resource/Block", blocks, "", false);
         for (size_t i = 0; i < blocks.GetCount(); i++) {
             TiXmlDocument doc;
             int nDeleted = 0;
-            if (GetFileSystem()->FUN_1403974b0(&doc, blocks[i], 0, true, false) == 0)
+            if (GetFileSystem()->LoadXmlFile(&doc, blocks[i], 0, true, false) == 0)
                 continue;
             TiXmlElement* pBlock = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("block"));
             if (pBlock == NULL)
@@ -383,7 +383,7 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             TiXmlElement* pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pBlock))->FirstChild("entities"));
             if (pNode == NULL)
                 continue;
-            CDebugConsole::FUN_141168200()->FUN_1411683e0(FUN_141827280("{0} Read block {1}", i, blocks[i]));
+            CDebugConsole::GetInstance()->FUN_1411683e0(FUN_141827280("{0} Read block {1}", i, blocks[i]));
             for (pNode = ((TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("entity")); pNode != NULL;
                  pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(pNode))->NextSibling("entity"))) {
                 CString strModel = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("model-name"), 0);
@@ -403,12 +403,12 @@ void FUN_141821bf0(CString strModelFilter, CString strDeleteProps)
             }
             if (nDeleted > 0) {
                 doc.SaveFile();
-                CDebugConsole::FUN_141168200()->FUN_1411683e0(Unk_SocketFormat("{0} Save file. deleted {1} property ", blocks[i], nDeleted));
+                CDebugConsole::GetInstance()->FUN_1411683e0(Unk_SocketFormat("{0} Save file. deleted {1} property ", blocks[i], nDeleted));
             }
         }
     }
     MessageBoxA(NULL, "Complete!", "", 0);
-    ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::FUN_141168200())))->FUN_1411682d0();
+    ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::GetInstance())))->CloseConsole();
 }
 
 // index of the first string equal to str in the array, -1 if absent
@@ -424,7 +424,7 @@ int FUN_141827210(ATL::CAtlArray<CString>& rArray, const CString& str)
 
 // Event sounds of one FMOD event group, with their lengths.
 // @0x141825f60
-void FUN_141825f60(const CString& strGroup, CSoundDataTable::SoundList& rOut)
+void CollectEventSounds(const CString& strGroup, CSoundDataTable::SoundList& rOut)
 {
     FMOD::EventGroup* pGroup = reinterpret_cast<Unk_SoundMgr*>(TSingleton<CSoundEventMgr>::GetInstance())->GetEventGroup(strGroup, 1);
     if (pGroup == NULL) {
@@ -463,9 +463,9 @@ void FUN_141825f60(const CString& strGroup, CSoundDataTable::SoundList& rOut)
 
 // Programmer sounds: every tag of the sound service.
 // @0x141826260
-void FUN_141826260(CSoundDataTable::SoundList& rOut)
+void CollectProgrammerSounds(CSoundDataTable::SoundList& rOut)
 {
-    const Unk_SoundTagMap& tags = Unk_GetSoundTags(FUN_140c9cb10());
+    const Unk_SoundTagMap& tags = Unk_GetSoundTags(GetSoundService());
     const Unk_SoundTagMap& range = tags;
     Unk_SoundTagMap::const_iterator itEnd = range.end();
     for (Unk_SoundTagMap::const_iterator it = range.begin(); it != itEnd; ++it) {
@@ -482,10 +482,10 @@ void FUN_141826260(CSoundDataTable::SoundList& rOut)
 
 // Trigger voice sounds: the longest sub sound of each group.
 // @0x141826360
-void FUN_141826360(CSoundDataTable::SoundList& rOut)
+void CollectTriggerVoiceSounds(CSoundDataTable::SoundList& rOut)
 {
     Unk_VoiceGroupMap groups;
-    TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141793210(groups);
+    TSingleton<SoundPropertyMgr>::GetInstance()->CollectTriggerVoiceNames(groups);
     Unk_VoiceGroupMap& range = groups;
     Unk_VoiceGroupMap::const_iterator itEnd = range.end();
     for (Unk_VoiceGroupMap::const_iterator it = range.begin(); it != itEnd; ++it) {
@@ -498,7 +498,7 @@ void FUN_141826360(CSoundDataTable::SoundList& rOut)
         for (std::set<CString>::const_iterator itName = rangeNames.begin(); itName != itNameEnd; ++itName) {
             CString strSub = *itName;
             size_t nBank = 0;
-            int nSub = FUN_140c9cb10()->FUN_1417b04d0(strSub, &nBank);
+            int nSub = GetSoundService()->GetSoundLength(strSub, &nBank);
             nLength = (std::max)(nSub, nLength);
         }
         CSoundDataEntry entry;
@@ -518,7 +518,7 @@ bool FUN_141825610(CString strPath, bool bMessageBox)
     if (strPath.Find(".sql", 0) == -1)
         strPath.Append(".sql");
     ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> > languages;
-    FUN_1401c0da0()->GetLanguages(languages);
+    GetLocaleLanguage()->GetLanguages(languages);
     std::vector<unsigned int> ids;
     ((class CItemDataTable*)(class Unk_IngTable*)(reinterpret_cast<Unk_IngTable*>(TSingleton<CItemDataTable>::GetInstance())))->LoadItemNameIds(ids);
     ATL::CAtlFile file;
@@ -546,7 +546,7 @@ bool FUN_141825610(CString strPath, bool bMessageBox)
             int nGender = FUN_1401bd340(spItem->limit.genderLimit);
             for (size_t j = 0; j < languages.GetCount(); j++) {
                 Unk_BmLanguage nLanguage = (Unk_BmLanguage)languages[j];
-                CString strName = FUN_140390ea0(FUN_1401bd850(nLanguage, nItemId), 0);
+                CString strName = FUN_140390ea0(GetBlackMarketItemName(nLanguage, nItemId), 0);
                 if (strName.IsEmpty())
                     continue;
                 strName.Replace("'", "''");
@@ -555,7 +555,7 @@ bool FUN_141825610(CString strPath, bool bMessageBox)
                 else if (nRows > 0)
                     file.Write(strComma, strComma.GetLength(), (DWORD*)NULL);
                 strRow = StringFormat("({0}, {1}, '{2}', {3}, {4}, {5}, {6})\n", nItemId, (int)nLanguage,
-                                      FUN_14016a5c0(strName, 0), nCategory, nLevel, nJob, nGender);
+                                      ToCString(strName, 0), nCategory, nLevel, nJob, nGender);
                 file.Write(strRow, strRow.GetLength());
                 nRows++;
             }
@@ -569,25 +569,25 @@ bool FUN_141825610(CString strPath, bool bMessageBox)
 
 // Rewrites Table/soundDataTable_<language>.xml from the FMOD event groups, sound tags and trigger voices.
 // @0x141825d60
-bool FUN_141825d60(bool bMessageBox)
+bool ExportSoundDataTable(bool bMessageBox)
 {
     bool bOk = true;
     int nLanguage = FUN_1406516c0();
     TSingleton<CSoundDataTable>::GetInstance()->SetLanguage(nLanguage);
-    CDebugConsole::FUN_141168200()->FUN_1411683e0("Export SoundDataTable");
+    CDebugConsole::GetInstance()->FUN_1411683e0("Export SoundDataTable");
     {
         CSoundDataTable::SoundList events;
-        FUN_141825f60("ms2sound/sound/voice", events);
+        CollectEventSounds("ms2sound/sound/voice", events);
         TSingleton<CSoundDataTable>::GetInstance()->SetEventSounds(events);
     }
     {
         CSoundDataTable::SoundList programmer;
-        FUN_141826260(programmer);
+        CollectProgrammerSounds(programmer);
         TSingleton<CSoundDataTable>::GetInstance()->SetProgrammerSounds(programmer);
     }
     {
         CSoundDataTable::SoundList triggerVoice;
-        FUN_141826360(triggerVoice);
+        CollectTriggerVoiceSounds(triggerVoice);
         TSingleton<CSoundDataTable>::GetInstance()->SetTriggerVoiceSounds(triggerVoice);
     }
     CString strPath = TSingleton<CSoundDataTable>::GetInstance()->GetPath();
@@ -598,7 +598,7 @@ bool FUN_141825d60(bool bMessageBox)
         strResult.Format("saved [%s]", (const char*)strPath);
     else
         strResult.Format("failed to save [%s]", (const char*)strPath);
-    CDebugConsole::FUN_141168200()->FUN_1411683e0(strResult);
+    CDebugConsole::GetInstance()->FUN_1411683e0(strResult);
     if (bMessageBox)
         AfxMessageBox(strResult, 0, 0);
     return bOk;
@@ -606,7 +606,7 @@ bool FUN_141825d60(bool bMessageBox)
 
 // Adds nId to the id list of nKey (creating the list when the key is new).
 // @0x141826d00
-bool FUN_141826d00(int nKey, unsigned int nId, Unk_FieldMapB& rMap)
+bool AddInteractFieldId(int nKey, unsigned int nId, Unk_FieldMapB& rMap)
 {
     if (rMap.find(nKey) == rMap.end()) {
         Unk_FieldIdListPtr fresh(0);
@@ -637,7 +637,7 @@ bool FUN_141826e40(unsigned int nKey, unsigned int nId, Unk_FieldMapA& rMap)
 
 // Adds an npc spawn / portal to the list of a field (creating the list when the field is new).
 // @0x141826f80
-bool FUN_141826f80(unsigned int nField, PortalInfo info, Unk_PortalMap& rMap)
+bool AddPortalInfo(unsigned int nField, PortalInfo info, Unk_PortalMap& rMap)
 {
     if (rMap.find(nField) == rMap.end()) {
         Unk_PortalListPtr fresh(0);
@@ -652,7 +652,7 @@ bool FUN_141826f80(unsigned int nField, PortalInfo info, Unk_PortalMap& rMap)
 }
 
 // @0x1418270c0
-bool FUN_1418270c0(unsigned int nNpc, _NpcInfo info, Unk_NpcMap& rMap)
+bool AddNpcInfo(unsigned int nNpc, _NpcInfo info, Unk_NpcMap& rMap)
 {
     if (rMap.find(nNpc) == rMap.end()) {
         Unk_NpcListPtr fresh(0);
@@ -675,12 +675,12 @@ CString FUN_141827280(const char* pszFormat, const unsigned long long& nIndex, c
 
 // Scans fieldData.xml, every xblock and the time / game event tables, and writes Table/<language>/FieldMetaData.xml.
 // @0x1418226b0
-bool FUN_1418226b0(bool bLog)
+bool ExportFieldMetaTable(bool bLog)
 {
     if (bLog) {
-        ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::FUN_141168200())))->FUN_141168270();
-        CDebugConsole::FUN_141168200()->FUN_1411683e0("Export FieldMetaTable");
-        CDebugConsole::FUN_141168200()->FUN_1411683e0("Read Model....");
+        ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::GetInstance())))->OpenConsole();
+        CDebugConsole::GetInstance()->FUN_1411683e0("Export FieldMetaTable");
+        CDebugConsole::GetInstance()->FUN_1411683e0("Read Model....");
     }
     Unk_ModelMgr mgr;
     if (((class Unk_ModelMgr*)(class Unk_ModelMgr*)(&mgr))->FUN_140a2a180() == 0) {
@@ -688,11 +688,11 @@ bool FUN_1418226b0(bool bLog)
         return false;
     }
     if (bLog)
-        CDebugConsole::FUN_141168200()->FUN_1411683e0("Read Model Complete");
+        CDebugConsole::GetInstance()->FUN_1411683e0("Read Model Complete");
 
     std::vector<MS2Ptr<CFieldData> > blocks;
     CFieldData::LoadFieldData();
-    CFieldData::FUN_140374090(blocks);
+    CFieldData::GetAllFields(blocks);
     Unk_PortalMap mapPortals;
     ATL::CAtlMap<unsigned int, CString> mapFluid(17, 0.75f, 0.25f, 2.25f, 10);
     Unk_FieldMapB mapInteract;
@@ -701,7 +701,7 @@ bool FUN_1418226b0(bool bLog)
 
     {
         TiXmlDocument docField;
-        if (GetFileSystem()->FUN_1403974b0(&docField, "./Data/Xml/Table/fieldData.xml", 0, true, false) == 0)
+        if (GetFileSystem()->LoadXmlFile(&docField, "./Data/Xml/Table/fieldData.xml", 0, true, false) == 0)
             return false;
         TiXmlElement* pRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&docField))->FirstChild("ms2"));
         if (pRoot == NULL)
@@ -711,7 +711,7 @@ bool FUN_1418226b0(bool bLog)
             XmlGetAttr((class TiXmlElement*)(pField), "id", nFieldId);
             if (bLog) {
                 nBlock++;
-                CDebugConsole::FUN_141168200()->FUN_1411683e0("Parse blockfile : %d (%d of %d)", nFieldId, nBlock, blocks.size());
+                CDebugConsole::GetInstance()->FUN_1411683e0("Parse blockfile : %d (%d of %d)", nFieldId, nBlock, blocks.size());
             }
             if (nFieldId >= 90000000)
                 continue;
@@ -723,7 +723,7 @@ bool FUN_1418226b0(bool bLog)
                 CString strXblock;
                 strXblock.Format("./Data/Resource/Exported/XBlock/%s.xblock", ((class TiXmlElement*)(class TiXmlElement*)(pXblock))->Attribute("name"));
                 TiXmlDocument docXblock;
-                if (GetFileSystem()->FUN_1403974b0(&docXblock, strXblock, 0, true, false) == 0) {
+                if (GetFileSystem()->LoadXmlFile(&docXblock, strXblock, 0, true, false) == 0) {
                     strErrors.AppendFormat("** Not Find XBlockPath. \n: %s\n", (const char*)CString(strXblock));
                     continue;
                 }
@@ -744,21 +744,21 @@ bool FUN_1418226b0(bool bLog)
                         mgr.FUN_140a2aab0(pEntity, CString(strModel), "NpcList", (ATL::CAtlArray<TPtr<CNpcSpawnData> >*)&npcs);
                         _NpcInfo npc;
                         npc.m_nFieldId = nFieldId;
-                        mgr.FUN_140a2afd0(pEntity, strModel, "Position", (efd::Point3*)&npc.m_pos);
+                        mgr.GetPoint3Property(pEntity, strModel, "Position", (efd::Point3*)&npc.m_pos);
                         for (size_t i = 0; i < FUN_1418311c0(&npcs); i++) {
                             TPtr<CNpcSpawnData> ref(*reinterpret_cast<TPtr<CNpcSpawnData>*>(FUN_14182fc10(&npcs, i)));
-                            FUN_1418270c0(((Unk_NpcData*)ref.operator->())->m_nId, npc, g_mapNpc);
+                            AddNpcInfo(((Unk_NpcData*)ref.operator->())->m_nId, npc, g_mapNpc);
                         }
                     } else if (mgr.FUN_140a2a920(strModel, CString("MS2TaxiStation")) != 0) {
                         bool bHome;
-                        mgr.FUN_140a2b9d0(pEntity, strModel, "IsHomePrivilege", &bHome);
+                        mgr.GetBoolProperty(pEntity, strModel, "IsHomePrivilege", &bHome);
                         g_mapTaxi.SetAt(nFieldId, bHome);
                     } else if (mgr.FUN_140a2a920(strModel, CString("Portal")) != 0) {
                         PortalInfo portal;
                         int nTargetField = 0;
-                        mgr.FUN_140a2b550(pEntity, strModel, "PortalID", (int*)&portal.m_nId);
+                        mgr.GetIntProperty(pEntity, strModel, "PortalID", (int*)&portal.m_nId);
                         mgr.FUN_140a2b270(pEntity, strModel, "TargetFieldSN", &nTargetField);
-                        mgr.FUN_140a2b550(pEntity, strModel, "TargetPortalID", (int*)&portal.m_nTargetPortal);
+                        mgr.GetIntProperty(pEntity, strModel, "TargetPortalID", (int*)&portal.m_nTargetPortal);
                         mgr.FUN_140a2b270(pEntity, strModel, "PortalType", &portal.m_nType);
                         if (nTargetField == -1)
                             portal.m_nTargetField = nFieldId;
@@ -766,7 +766,7 @@ bool FUN_1418226b0(bool bLog)
                             portal.m_nTargetField = nTargetField;
                         switch (portal.m_nType) {
                         case 0:
-                            FUN_141826f80(nFieldId, portal, mapPortals);
+                            AddPortalInfo(nFieldId, portal, mapPortals);
                             break;
                         case 8:
                         {
@@ -780,7 +780,7 @@ bool FUN_1418226b0(bool bLog)
                                     copy.m_nTargetPortal = portal.m_nTargetPortal;
                                     copy.m_nType = portal.m_nType;
                                     copy.m_nTargetField = ref->m_fieldIDs[j];
-                                    FUN_141826f80(nFieldId, copy, mapPortals);
+                                    AddPortalInfo(nFieldId, copy, mapPortals);
                                 }
                             }
                             break;
@@ -805,7 +805,7 @@ bool FUN_1418226b0(bool bLog)
                                         continue;
                                     _NpcInfo npc;
                                     npc.m_nFieldId = nFieldId;
-                                    FUN_1418270c0(nNpcId, npc, g_mapNpc);
+                                    AddNpcInfo(nNpcId, npc, g_mapNpc);
                                     CPetDataTable::PetPtr model = TSingleton<CPetDataTable>::GetInstance()->Find(CString(((Unk_NpcRow*)npcRow.operator->())->m_strModel));
                                     if (model.get() != 0)
                                         FUN_141826e40(model->GetId(), nFieldId, g_mapPet);
@@ -815,17 +815,17 @@ bool FUN_1418226b0(bool bLog)
                     } else if (mgr.FUN_140a2a920(strModel, CString("MS2InteractObject")) != 0) {
                         int nInteract = 0;
                         mgr.FUN_140a2b270(pEntity, strModel, "interactID", &nInteract);
-                        FUN_141826d00(nInteract, nFieldId, mapInteract);
+                        AddInteractFieldId(nInteract, nFieldId, mapInteract);
                     } else if (mgr.FUN_140a2a920(strModel, CString("MS2Liftable")) != 0) {
                         unsigned int nItem = 0;
-                        mgr.FUN_140a2b550(pEntity, strModel, "ItemID", (int*)&nItem);
+                        mgr.GetIntProperty(pEntity, strModel, "ItemID", (int*)&nItem);
                         FUN_141826e40(nItem, nFieldId, g_mapLiftable);
                     }
                     if (mgr.FUN_140a2a920(strModel, CString("MS2MapProperties")) != 0) {
                         CString strCubeType;
                         CString strMapAttribute;
-                        mgr.FUN_140a2bc30(pEntity, strModel, "CubeType", &strCubeType);
-                        mgr.FUN_140a2bc30(pEntity, strModel, "MapAttribute", &strMapAttribute);
+                        mgr.GetStringProperty(pEntity, strModel, "CubeType", &strCubeType);
+                        mgr.GetStringProperty(pEntity, strModel, "MapAttribute", &strMapAttribute);
                         if ((strCubeType == "Fluid")) {
                             ATL::CAtlMap<unsigned int, CString>::CPair* pFluid = mapFluid.Lookup(nFieldId);
                             if (pFluid == NULL)
@@ -840,13 +840,13 @@ bool FUN_1418226b0(bool bLog)
     }
 
     if (bLog) {
-        CDebugConsole::FUN_141168200()->FUN_1411683e0("Parse blockfile Complete");
-        CDebugConsole::FUN_141168200()->FUN_1411683e0("Parse TimeEvent NpcSpawn");
+        CDebugConsole::GetInstance()->FUN_1411683e0("Parse blockfile Complete");
+        CDebugConsole::GetInstance()->FUN_1411683e0("Parse TimeEvent NpcSpawn");
     }
     {
-        CString strTimeEvent = FUN_14071a5b0("Table/Server", "timeEventData.xml");
+        CString strTimeEvent = GetXmlPath("Table/Server", "timeEventData.xml");
         TiXmlDocument docTime;
-        if (GetFileSystem()->FUN_1403974b0(&docTime, strTimeEvent, 0, true, false) == 0)
+        if (GetFileSystem()->LoadXmlFile(&docTime, strTimeEvent, 0, true, false) == 0)
             return false;
         TiXmlElement* pTimeRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&docTime))->FirstChild("ms2"));
         if (pTimeRoot == NULL)
@@ -871,7 +871,7 @@ bool FUN_1418226b0(bool bLog)
                     for (size_t j = 0; j < fieldIds.GetCount(); j++) {
                         _NpcInfo npc;
                         npc.m_nFieldId = fieldIds[j];
-                        FUN_1418270c0(npcIds[i], npc, g_mapNpc);
+                        AddNpcInfo(npcIds[i], npc, g_mapNpc);
                     }
                 }
             } else if (nType == 4) {
@@ -882,17 +882,17 @@ bool FUN_1418226b0(bool bLog)
                 ATL::CAtlArray<unsigned int> fieldIds;
                 XmlSplit(strFields, fieldIds, ",");
                 for (size_t i = 0; i < fieldIds.GetCount(); i++)
-                    FUN_141826d00(nInteract, fieldIds[i], mapInteract);
+                    AddInteractFieldId(nInteract, fieldIds[i], mapInteract);
             }
         }
     }
 
     if (bLog)
-        CDebugConsole::FUN_141168200()->FUN_1411683e0("Parse GameEvent NpcSpwan");
+        CDebugConsole::GetInstance()->FUN_1411683e0("Parse GameEvent NpcSpwan");
     {
-        CString strGameEvent = FUN_14071a5b0("Table/Server", "GameEvent.xml");
+        CString strGameEvent = GetXmlPath("Table/Server", "GameEvent.xml");
         TiXmlDocument docGame;
-        if (GetFileSystem()->FUN_1403974b0(&docGame, strGameEvent, 0, true, false) == 0)
+        if (GetFileSystem()->LoadXmlFile(&docGame, strGameEvent, 0, true, false) == 0)
             return false;
         TiXmlElement* pGameRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&docGame))->FirstChild("ms2"));
         if (pGameRoot == NULL) {
@@ -918,7 +918,7 @@ bool FUN_1418226b0(bool bLog)
                 XmlGetAttr((class TiXmlElement*)(pNpcRoot), "fieldID", npc.m_nFieldId);
                 XmlGetAttr((class TiXmlElement*)(pEvent), "eventStart", npc.m_strStart);
                 XmlGetAttr((class TiXmlElement*)(pEvent), "eventEnd", npc.m_strEnd);
-                FUN_1418270c0(nNpcId, npc, g_mapNpc);
+                AddNpcInfo(nNpcId, npc, g_mapNpc);
             }
         }
     }
@@ -929,7 +929,7 @@ bool FUN_1418226b0(bool bLog)
     }
 
     if (bLog)
-        CDebugConsole::FUN_141168200()->FUN_1411683e0("Write FieldMetaTable");
+        CDebugConsole::GetInstance()->FUN_1411683e0("Write FieldMetaTable");
     TiXmlDocument docOut;
     TiXmlDeclaration decl("1.0", "utf-8", "");
     ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(decl);
@@ -939,7 +939,7 @@ bool FUN_1418226b0(bool bLog)
     for (Unk_NpcMap::iterator it = g_mapNpc.begin(), itEnd = g_mapNpc.end(); it != itEnd; ++it) {
         const unsigned int& nNpcId = it->first;
         Unk_NpcListPtr& pList = it->second;
-        MS2Ptr<CNpcData> npcRow = FUN_1406cd330(nNpcId);
+        MS2Ptr<CNpcData> npcRow = FindNpcData(nNpcId);
         if (npcRow == 0)
             continue;
         TiXmlElement elemNpc("npc");
@@ -974,7 +974,7 @@ bool FUN_1418226b0(bool bLog)
         XmlSetAttr(&elemPortals, "field", nField);
         MS2Ptr<CFieldDataCli> field = CFieldDataCli::Find(nField);
         if (field.get() != 0)
-            XmlSetAttr(&elemPortals, "indoor", field->FUN_140375130() ? 1 : 0);
+            XmlSetAttr(&elemPortals, "indoor", field->IsIndoor() ? 1 : 0);
         else
             XmlSetAttr(&elemPortals, "indoor", 0);
         for (POSITION pos = pList->GetHeadPosition(); pos != NULL;) {
@@ -986,7 +986,7 @@ bool FUN_1418226b0(bool bLog)
             XmlSetAttr(&elemPortal, "portalType", rPortal.m_nType);
             MS2Ptr<CFieldDataCli> target = CFieldDataCli::Find(rPortal.m_nTargetField);
             if (target.get() != 0)
-                XmlSetAttr(&elemPortal, "portalIndoor", target->FUN_140375130() ? 1 : 0);
+                XmlSetAttr(&elemPortal, "portalIndoor", target->IsIndoor() ? 1 : 0);
             else
                 XmlSetAttr(&elemPortal, "portalIndoor", 0);
             elemPortals.InsertEndChild(elemPortal);
@@ -1046,13 +1046,13 @@ bool FUN_1418226b0(bool bLog)
     }
 
     if (bLog)
-        CDebugConsole::FUN_141168200()->FUN_1411683e0("Write FieldMetaTable Complete.");
+        CDebugConsole::GetInstance()->FUN_1411683e0("Write FieldMetaTable Complete.");
     ((class TiXmlNode*)(void*)(&docOut))->InsertEndChild(elemRoot);
     CString strOut = Unk_SocketFormat("./Data/Xml/Table/{0}/FieldMetaData.xml", static_cast<const CString&>(static_cast<CFeatureManager*>(((void*)FUN_140166410()))->GetLocaleName()));
     if (!docOut.SaveFile(strOut))
         return false;
-    if (bLog && ((class Unk_ExportLog*)CDebugConsole::FUN_141168200()) != NULL)
-        ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::FUN_141168200())))->FUN_1411682d0();
+    if (bLog && ((class Unk_ExportLog*)CDebugConsole::GetInstance()) != NULL)
+        ((class CDebugConsole*)(class Unk_ExportLog*)(((class Unk_ExportLog*)CDebugConsole::GetInstance())))->CloseConsole();
     if (bLog) {
         CString strDone;
         strDone.Format("Complete!\n : %s", (const char*)strOut);

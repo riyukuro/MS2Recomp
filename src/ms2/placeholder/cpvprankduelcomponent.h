@@ -20,7 +20,7 @@ class RankDuelStatisticalData : public CPtred
 public:
     RankDuelStatisticalData();                                      // 0x140dc1390
     // implicit: virtual ~RankDuelStatisticalData();                           // 0x140dc1500 (??_G 0x140dc1970)
-    void FUN_14026b250(CInPacket& packet);                          // read the record
+    void Read(CInPacket& packet);                          // read the record
 
     MS2_LAYOUT_FRIEND;
     int m_key;                                                      // +0x18 map key

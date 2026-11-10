@@ -62,9 +62,9 @@ public:
     void SetFielda0(__int64 nTargetId);
     void SetFieldb8(CStringW strTargetName);                     // by value: the callee destroys it
     void SetTitle(CStringW strReporterName);
-    void FUN_141904a90(int n);
-    void FUN_141904af0(int n);
-    void FUN_141904b10(__int64 n);
+    void SetField70(int n);
+    void SetField74(int n);
+    void SetField68(__int64 n);
     MS2_LAYOUT_FRIEND;
 private:
     void* m_pad_18; void* m_pad_20; void* m_pad_28;
@@ -99,7 +99,7 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 template <> efd::SmartPointer<CubeMapInformationService>::SmartPointer(CubeMapInformationService* pObject);   // 0x1401cd0b0
 template <> efd::SmartPointer<CubeMapInformationService>::~SmartPointer();                             // 0x1401cd150
 
-class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
+class Unk_NametagTrophy* GetAchieveManager();   // C3: was GetAchieveManager
 class Unk_Inventory;
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90); read through Unk_ReInv
 extern __int64 DAT_143ab2898;                                       // the money
@@ -109,11 +109,11 @@ extern __int64 DAT_143ab2820;                                       // my accoun
 class Unk_ReScript
 {
 public:
-    Scaleform::GFx::Value FUN_141ab5a90(const char* szMethod, int a1);
+    Scaleform::GFx::Value InvokeInt(const char* szMethod, int a1);
 };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 namespace Scaleform { namespace GFx { class Movie; } }
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);                                // the movie of a UI layer
+Scaleform::GFx::Movie* GetMovie(int nMovieId);                                // the movie of a UI layer
 class Unk_ReObj : public ASObj { public: void FUN_141ab5b30(const char* szName, int n); };
 
 bool FUN_14053f8c0(unsigned nItemId);                               // the item is meso
@@ -136,7 +136,7 @@ CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int, int, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
@@ -145,7 +145,7 @@ UIMessageBox* GetMessageBoxLayer();
 int FUN_140d74e80(CStringW& str);
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
 void FUN_140710590(COutPacket& packet);
-UIUGCModelHouseDialog* FUN_141ab59f0(int nClass);
+UIUGCModelHouseDialog* FindUGCModelHouseDialog(int nClass);
 
 // @0x14011b620
 // (the dynamic initializers of the three statics above are emitted from the statics' declarations)
@@ -154,7 +154,7 @@ UIUGCModelHouseDialog* FUN_141ab59f0(int nClass);
 UIRealEstateDialog::UIRealEstateDialog()
     : m_nGroup(0), m_nMapId(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x141ab21a0
@@ -181,7 +181,7 @@ void UIRealEstateDialog::vfunc_67()
 {
     vfunc_47(1);
     UIDialog::vfunc_67();
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->RemoveListener(static_cast<UIUGCEventListener*>(this));
 }
 
 // @0x141ab2310
@@ -189,7 +189,7 @@ void UIRealEstateDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_141ab42a0();
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->AddListener(static_cast<UIUGCEventListener*>(this));
 }
 
 // @0x141ab2370
@@ -233,13 +233,13 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         unsigned int nTrophy = group.trophyID;
         if (pPC->HasNoHome() == 0 && pPC->FUN_141527ed0() != 0)
         {
-            FUN_140d73aa0(GetStringCommon(0x7f5), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommon(0x7f5), 0, 0, CStringW(L""));
         }
-        else if (nTrophy > 0 && reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->IsCompleted(nTrophy) == 0)
+        else if (nTrophy > 0 && reinterpret_cast<CAchieveManager*>(GetAchieveManager())->IsCompleted(nTrophy) == 0)
         {
             MS2Ptr<CAchieveData> spTrophy = GetAchieveData(nTrophy);
             if (spTrophy.get() != 0)
-                FUN_140d73aa0(FormatStringId(0x7f6, FUN_14093bad0(nTrophy, spTrophy->m_nMaxGrade, CStringW(L""))), 0, 0, CStringW(L""));
+                ShowMessageBox(FormatStringId(0x7f6, FUN_14093bad0(nTrophy, spTrophy->m_nMaxGrade, CStringW(L""))), 0, 0, CStringW(L""));
         }
         else
             FUN_140d74640(static_cast<IMessageListener*>(this), 8, 0x7fb, 0x7fc);
@@ -249,10 +249,10 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     {
         MS2Ptr<CUserReportData> spReport(new CUserReportData(4));
         spReport->SetField28(1);
-        spReport->FUN_141904b10(m_nOwnerId);
+        spReport->SetField68(m_nOwnerId);
         spReport->SetTitle(m_strOwnerName);
-        spReport->FUN_141904a90(m_nMapId);
-        spReport->FUN_141904af0(m_nGroup);
+        spReport->SetField70(m_nMapId);
+        spReport->SetField74(m_nGroup);
         spReport->SetFielda0(m_nOwnerId);
         spReport->SetFieldb8(m_strOwnerName);
         FUN_140d86260()->vfunc_48(spReport);
@@ -281,8 +281,8 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         if ((target.get() ? true : false) && target->m_n30 - GetServerTime() > nNotice)
         {
             __int64 nExpire = target->m_n30 - nNotice;
-            CStringW strExpire = FUN_141ab5520(nExpire);
-            FUN_140d73aa0(FUN_14028dee0(1999, *GetClientConstants()->UgcHomeExtensionNoticeDate.Get(), strExpire), 0, 0, CStringW(L""));
+            CStringW strExpire = FormatDateTime(nExpire);
+            ShowMessageBox(FUN_14028dee0(1999, *GetClientConstants()->UgcHomeExtensionNoticeDate.Get(), strExpire), 0, 0, CStringW(L""));
         }
         else
         {
@@ -294,11 +294,11 @@ int UIRealEstateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             FUN_1408a0b80(&nItem, &nPrice, m_nMapId, m_nGroup);
             int nDays = group.extensionDate;
             if (FUN_14053f8c0(nItem))
-                FUN_140d73aa0(FUN_14028dee0(0x7d1, nDays, FUN_1409404f0(nPrice)), 1, static_cast<IMessageListener*>(this), CStringW(L"onExtension"));
+                ShowMessageBox(FUN_14028dee0(0x7d1, nDays, FUN_1409404f0(nPrice)), 1, static_cast<IMessageListener*>(this), CStringW(L"onExtension"));
             else if (FUN_14053f940(nItem))
-                FUN_140d73aa0(FUN_14028dee0(2000, nDays, FUN_1409404f0(nPrice)), 1, static_cast<IMessageListener*>(this), CStringW(L"onExtension"));
+                ShowMessageBox(FUN_14028dee0(2000, nDays, FUN_1409404f0(nPrice)), 1, static_cast<IMessageListener*>(this), CStringW(L"onExtension"));
             else
-                FUN_140d73aa0(FUN_14028dee0(0x7d2, nDays, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem), nPrice), 1, static_cast<IMessageListener*>(this), CStringW(L"onExtension"));
+                ShowMessageBox(FUN_14028dee0(0x7d2, nDays, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem), nPrice), 1, static_cast<IMessageListener*>(this), CStringW(L"onExtension"));
             return 1;
         }
     }
@@ -312,7 +312,7 @@ void UIRealEstateDialog::vfunc_ugc_5()
 {
     if (vfunc_55() != 0)
         return;
-    FUN_141ab3820();
+    SetContractEffect();
 }
 
 // @0x141ab3250
@@ -334,10 +334,10 @@ int UIRealEstateDialog::FUN_141ab3250(const CStringW& strName)
         else
         {
             if (pPC->HasNoHome() == 0)
-                FUN_141ab3760(pPC->GetHomeName());
+                SetHomeName(pPC->GetHomeName());
             UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox != 0)
-                ((class UIMessageBox*)(class UIMessageBox*)(pBox))->FUN_1419f82b0(strError);
+                ((class UIMessageBox*)(class UIMessageBox*)(pBox))->UpdateErrorMessage(strError);
             return 0;
         }
     }
@@ -354,12 +354,12 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0 && pPC->HasNoHome() == 0)
     {
-        FUN_141ab3760(pPC->GetHomeName());
+        SetHomeName(pPC->GetHomeName());
         if (bRefresh != 0 && pPC->GetUGCMapInfo() != 0)
         {
             if (pPC->FUN_141527ed0() != 0)
             {
-                FUN_141ab4040(&pPC->GetUGCMapInfo()->m_n30);
+                SetExpireDate(&pPC->GetUGCMapInfo()->m_n30);
                 m_30->Invoke("setContractEffect", bRefresh);
             }
             else
@@ -381,7 +381,7 @@ void UIRealEstateDialog::vfunc_ugc_7(int bRefresh)
 }
 
 // @0x141ab3760
-void UIRealEstateDialog::FUN_141ab3760(CStringW strName)
+void UIRealEstateDialog::SetHomeName(CStringW strName)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
@@ -389,13 +389,13 @@ void UIRealEstateDialog::FUN_141ab3760(CStringW strName)
 }
 
 // @0x141ab3820
-void UIRealEstateDialog::FUN_141ab3820()
+void UIRealEstateDialog::SetContractEffect()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
     MyPC* pPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0 && pPC->HasNoHome() == 0)
-        FUN_141ab4040(&pPC->GetUGCMapInfo()->m_n30);
+        SetExpireDate(&pPC->GetUGCMapInfo()->m_n30);
     if (m_30.get() != 0)
         m_30->Invoke("setContractEffect", 1);
 }
@@ -408,10 +408,10 @@ void UIRealEstateDialog::SendRequestCubeMode2()
         return;
     if (pPC->HasNoHome() != 0)
     {
-        UIUGCModelHouseDialog* pDlg = FUN_141ab59f0(0x4f3f);
+        UIUGCModelHouseDialog* pDlg = FindUGCModelHouseDialog(0x4f3f);
         if (pDlg != 0)
-            FUN_140faf6b0(pDlg, m_nGroup);
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4f3f) != 0)
+            SetPlot(pDlg, m_nGroup);
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4f3f) != 0)
             TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4f3f);
     }
     else
@@ -457,7 +457,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                         if (DAT_143ab2898 < nPrice)
                         {
                             efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
-                            FUN_140d73aa0(spSvc->GetMessageText(0x43), 0, 0, CStringW(L""));
+                            ShowMessageBox(spSvc->GetMessageText(0x43), 0, 0, CStringW(L""));
                             return 1;
                         }
                     }
@@ -472,7 +472,7 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     else if (g_143ab2a90.FUN_140a5f180(nItem, 0) < nPrice)
                     {
                         efd::SmartPointer<CubeMapInformationService> spSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
-                        FUN_140d73aa0(spSvc->GetMessageText(0x43), 0, 0, CStringW(L""));
+                        ShowMessageBox(spSvc->GetMessageText(0x43), 0, 0, CStringW(L""));
                         return 1;
                     }
                     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
@@ -504,14 +504,14 @@ int UIRealEstateDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x141ab4000
-void UIRealEstateDialog::FUN_141ab4000(int nGroup, int nMapId)
+void UIRealEstateDialog::SetGroupAndMapId(int nGroup, int nMapId)
 {
     m_nGroup = nGroup;
     m_nMapId = nMapId;
 }
 
 // @0x141ab4040
-void UIRealEstateDialog::FUN_141ab4040(const __int64* pnTime)
+void UIRealEstateDialog::SetExpireDate(const __int64* pnTime)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
@@ -540,7 +540,7 @@ void UIRealEstateDialog::FUN_141ab42a0()
         return;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
-    void* pMovie = FUN_1422bb8b0(m_28);
+    void* pMovie = GetMovie(m_28);
     if (pMovie == 0)
         return;
     ASObj obj(2);
@@ -564,16 +564,16 @@ void UIRealEstateDialog::FUN_141ab42a0()
     m_nOwnerId = 0;
     if (bOwn != 0)
     {
-        reinterpret_cast<Unk_ReScript*>(m_30.operator->())->FUN_141ab5a90("initMyHouse", 0);
-        FUN_141ab4040(&pPC->GetUGCMapInfo()->m_n30);
+        reinterpret_cast<Unk_ReScript*>(m_30.operator->())->InvokeInt("initMyHouse", 0);
+        SetExpireDate(&pPC->GetUGCMapInfo()->m_n30);
         m_30->Invoke("setContractEffect", 0);
-        FUN_141ab3760(pPC->GetHomeName());
+        SetHomeName(pPC->GetHomeName());
     }
     else
     {
         if (reinterpret_cast<CubeMapInformationService*>(spSvc.operator->())->FUN_1410c8470(m_nGroup, m_nMapId, &nState, &nTime) != 0)
         {
-            reinterpret_cast<Unk_ReScript*>(m_30.operator->())->FUN_141ab5a90("initMyHouse", nState == 4 ? 2 : 1);
+            reinterpret_cast<Unk_ReScript*>(m_30.operator->())->InvokeInt("initMyHouse", nState == 4 ? 2 : 1);
             if (nState == 4)
             {
                 CMsTime tWait(nTime + *GetClientConstants()->UgcHomeSaleWaitingTime.Get());
@@ -601,22 +601,22 @@ void UIRealEstateDialog::FUN_141ab42a0()
                         m_nOwnerId = spOwner->ownerID;
                     }
                 }
-                FUN_141ab3760(CStringW(strOwner));
-                FUN_141ab4040(&nTime);
+                SetHomeName(CStringW(strOwner));
+                SetExpireDate(&nTime);
                 m_30->Invoke("setContractEffect", 0);
             }
         }
         else
         {
             bContractable = 1;
-            reinterpret_cast<Unk_ReScript*>(m_30.operator->())->FUN_141ab5a90("initMyHouse", 2);
+            reinterpret_cast<Unk_ReScript*>(m_30.operator->())->InvokeInt("initMyHouse", 2);
         }
     }
     strMapName = CAddressTable::GetText(m_nMapId);
-    obj.FUN_1407cbb20("buildingName", CStringW(strMapName));
+    obj.SetWStringMember("buildingName", CStringW(strMapName));
     CStringW strContract;
     strContract = BlockFormat<int>(0x7ce, group.contractDate);
-    obj.FUN_1407cbb20("contractDate", CStringW(strContract));
+    obj.SetWStringMember("contractDate", CStringW(strContract));
     unsigned nItem = 0;
     __int64 nPrice = 0;
     FUN_1408a09d0(&nItem, &nPrice, m_nMapId, m_nGroup);
@@ -625,38 +625,38 @@ void UIRealEstateDialog::FUN_141ab42a0()
     FUN_1408a0b80(&nExtItem, &nExtPrice, m_nMapId, m_nGroup);
     __int64 nShown = nPrice;
     if (group.FUN_1408ad2c0() != 0)
-        obj.FUN_1407cb9c0("priceType", 0);
+        obj.SetIntMember("priceType", 0);
     else if (group.FUN_1408ad2f0() != 0)
-        obj.FUN_1407cb9c0("priceType", 1);
+        obj.SetIntMember("priceType", 1);
     else
     {
-        obj.FUN_1407cb9c0("priceType", 2);
+        obj.SetIntMember("priceType", 2);
         obj.SetMemberUInt("item", nItem);
         MS2Ptr<CItemData> spData = FUN_14053f870(nItem);
         if (spData.get() != 0)
         {
-            obj.FUN_1407cba60("icon", spData->GetIconPath());
-            obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem));
+            obj.SetStringMember("icon", spData->GetIconPath());
+            obj.SetWStringMember("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItem));
         }
     }
-    obj.FUN_1407cbb20("price", FUN_140719a00(nShown));
-    obj.FUN_1407cbb20("contractPrice", FUN_140719a00(nPrice));
-    obj.FUN_1407cbb20("extensionPrice", FUN_140719a00(nExtPrice));
+    obj.SetWStringMember("price", FUN_140719a00(nShown));
+    obj.SetWStringMember("contractPrice", FUN_140719a00(nPrice));
+    obj.SetWStringMember("extensionPrice", FUN_140719a00(nExtPrice));
     CStringW strDesc(L"");
     if (FUN_14053f8c0(nExtItem) || FUN_14053f940(nExtItem))
         strDesc = FUN_14028dee0(0x7df, FUN_1409404f0(nExtPrice), nExtItem);
     else
         strDesc = FUN_14028dee0(0x7e0, FUN_1409404f0(nExtPrice), nExtItem);
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strDesc);
-    obj.FUN_1407cbb20("description", FUN_14028dee0(0x7e1, group.contractDate, strDesc));
+    obj.SetWStringMember("description", FUN_14028dee0(0x7e1, group.contractDate, strDesc));
     static_cast<Unk_ReObj&>(obj).FUN_141ab5b30("buildingIcon", group.buildingType);
-    obj.FUN_1407cbb20("buildingType", GetStringCommon(group.buildingType + 0x7d3));
+    obj.SetWStringMember("buildingType", GetStringCommon(group.buildingType + 0x7d3));
     CStringW strArea;
     strArea = FormatStringId(0x7d7, group.field30, group.heightLimit);
-    obj.FUN_1407cbb20("areaSize", CStringW(strArea));
-    obj.FUN_1407cbbe0("land", 0 < group.buildingCount);
-    obj.FUN_1407cbb20("buildingCount", BlockFormat<int>(0x7d8, group.buildingCount));
-    obj.FUN_1407cbb20("preview", FUN_14016a730(group.previewIcon, 0));
+    obj.SetWStringMember("areaSize", CStringW(strArea));
+    obj.SetBoolMember("land", 0 < group.buildingCount);
+    obj.SetWStringMember("buildingCount", BlockFormat<int>(0x7d8, group.buildingCount));
+    obj.SetWStringMember("preview", FUN_14016a730(group.previewIcon, 0));
     CStringW strTrophy(L"");
     unsigned int nTrophy = group.trophyID;
     if (nTrophy > 0)
@@ -665,23 +665,23 @@ void UIRealEstateDialog::FUN_141ab42a0()
         if (spTrophy.get() != 0)
             strTrophy = FormatStringId(0x7f6, FUN_14093bad0(nTrophy, spTrophy->m_nMaxGrade, CStringW(L"")));
     }
-    obj.FUN_1407cbb20("trophy", CStringW(strTrophy));
+    obj.SetWStringMember("trophy", CStringW(strTrophy));
     if (bBlocked != 0)
     {
-        obj.FUN_1407cb9c0("contractable", 0);
-        obj.FUN_1407cbb20("contractableText", GetStringCommon(0x7f8));
-        obj.FUN_1407cbb20("trophy", GetStringCommon(0x7f9));
+        obj.SetIntMember("contractable", 0);
+        obj.SetWStringMember("contractableText", GetStringCommon(0x7f8));
+        obj.SetWStringMember("trophy", GetStringCommon(0x7f9));
     }
     else
     {
-        obj.FUN_1407cb9c0("contractable", bContractable);
-        obj.FUN_1407cbb20("contractableText", GetStringCommon(0x7fa));
+        obj.SetIntMember("contractable", bContractable);
+        obj.SetWStringMember("contractableText", GetStringCommon(0x7fa));
     }
     m_30->Invoke("initData", obj);
 }
 
 // @0x141ab5520
-CStringW UIRealEstateDialog::FUN_141ab5520(const __int64& nTime)
+CStringW UIRealEstateDialog::FormatDateTime(const __int64& nTime)
 {
     CStringW strText;
     if (nTime != 0)
@@ -698,7 +698,7 @@ CStringW UIRealEstateDialog::FUN_141ab5520(const __int64& nTime)
 }
 
 // @0x141ab59f0
-UIUGCModelHouseDialog* FUN_141ab59f0(int nClass)
+UIUGCModelHouseDialog* FindUGCModelHouseDialog(int nClass)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
@@ -710,7 +710,7 @@ UIUGCModelHouseDialog* FUN_141ab59f0(int nClass)
 }
 
 // @0x141ab5a90
-Scaleform::GFx::Value Unk_ReScript::FUN_141ab5a90(const char* szMethod, int a1)
+Scaleform::GFx::Value Unk_ReScript::InvokeInt(const char* szMethod, int a1)
 {
     ASArgList args;
     args.resize(1);

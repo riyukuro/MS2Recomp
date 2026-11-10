@@ -174,7 +174,7 @@ CGroundEffectDataManager::GroundPtr CGroundEffectDataManager::Load(const CString
     strPath += strGround;
     strPath += ".xml";
     TiXmlDocument doc;
-    if (((class Unk_GroundFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_GroundFiles*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return GroundPtr(0);
@@ -295,7 +295,7 @@ void CGroundEffectDataManager::PlayEffects(GameObject* pObject, CString strActio
     if (pNode != 0)
     {
         Unk_EffectQuery query;
-        query.m_nObject = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd1a10((class Unk_WsC_GameObj*)(pObject));
+        query.m_nObject = ((class WorldService*)(void*)(WorldService::GetInstance()))->GetObjectKind((class Unk_WsC_GameObj*)(pObject));
         query.SetActor(((class GameObject*)(class GameObject*)(pObject))->GetObjectId());
         for (unsigned int i = 0; i < files.GetCount(); i++)
         {

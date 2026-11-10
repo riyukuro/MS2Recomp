@@ -80,8 +80,8 @@ public:
     virtual int vfunc_12() { return 0xe; }                      // 12 0x141044440
     virtual void vfunc_13(TransitionData* pFrom, TransitionData* pTo, float fT);   // 13 0x141041c20
 
-    void FUN_1410420d0();                                       // 0x1410420d0 blink step
-    void FUN_1410423d0(NiAVObjectPtr spObject);                 // 0x1410423d0 add a layer per chaos-material mesh
+    void UpdateBlink();                                       // 0x1410420d0 blink step
+    void AddLayers(NiAVObjectPtr spObject);                 // 0x1410423d0 add a layer per chaos-material mesh
 public:
     MS2_LAYOUT_FRIEND;
     std::vector<NiAVObjectPtr> m_vecObjects;                    // +0x58 the effect's target objects (vfunc_3 fills it)

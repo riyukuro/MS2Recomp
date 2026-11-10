@@ -97,26 +97,26 @@ public:
     void OnChangeProfile();                                       // OnChangeProfile
     void OnChangeTodayMemo();                                       // OnChangeTodayMemo
     void OnTitleChange(int nTitle);                             // OnTitleChange
-    void FUN_141a5a9f0(int nConfig);                            // OnConfig
+    void OnConfig(int nConfig);                            // OnConfig
     void OnScreenshot(int a, int b, int c, int d);             // OnScreenshot
-    void FUN_141a5ab10(int bRefresh, int bStatLists, int bBag);    // rebuild the shown PCInfo from the player
-    void FUN_141a5ac90(unsigned short nLevel);                  // the symbol of the level
-    void FUN_141a5b080(int nStat);                              // OnAddStatPointRepeat
+    void RebuildPCInfo(int bRefresh, int bStatLists, int bBag);    // rebuild the shown PCInfo from the player
+    void SetSymbol(unsigned short nLevel);                  // the symbol of the level
+    void OnAddStatPointRepeat(int nStat);                              // OnAddStatPointRepeat
     void FUN_141a5b6c0();                                       // the remaining time of the codi tab
-    void FUN_141a5bed0();                                       // the active codi tab changed
+    void OnActiveCodiTabChanged();                                       // the active codi tab changed
     void FUN_141a5c080();                                       // first read of the active codi tab
     void OnActiveMyCodiTabNotify(NotifyObject* pNotify);                  // NotifyChangeBuff -> period
     void FUN_141a5c220(NotifyObject* pNotify);                  // NotifyActiveMyCodiTab -> active
     void FUN_141a5c2a0(NotifyObject* pNotify);                  // NotifyPcBang
     bool FUN_141a5c3a0();                                       // may the window refresh now
     void FUN_141a5c410(int nTab, int nNewTab);                  // ask whether the codi tab may change
-    bool FUN_141a5c640(int nButton, const CMsgBoxData& kData);  // the answer of the codi tab question
+    bool OnCodiTabChangeAnswer(int nButton, const CMsgBoxData& kData);  // the answer of the codi tab question
     int GetTab();                                        // the info mode
-    void FUN_141a5c7c0(int nStat);                              // show one stat point row
+    void UpdateStatPointRow(int nStat);                              // show one stat point row
     void FUN_141a5cf30(int nStat);                              // OnAddStatPointStop
     void LoadRenderTarget();                                       // loadRenderTarget
     void UnloadRenderTarget();                                       // unloadRenderTarget
-    void FUN_141a5d690(const Scaleform::GFx::FunctionHandler::Params& params);   // the closet button
+    void OnClosetButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);   // the closet button
 
     MS2_LAYOUT_FRIEND;
     int m_208;                                                  // +0x208 refresh pending

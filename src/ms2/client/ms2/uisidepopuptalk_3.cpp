@@ -33,7 +33,7 @@ public:
 
 // ---- unit-local views of unrecovered callees ------------------------------------------------------------------------
 
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // <dir>/<file> of the data files
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // <dir>/<file> of the data files
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int Parse_14021abf0(const CStringA& value);                 // the side popup ui type of a name (commonenum.cpp)
 
@@ -222,9 +222,9 @@ CSidePopupTalkTable::~CSidePopupTalkTable()
 // @0x140e8e020
 void CSidePopupTalkTable::Init()
 {
-    CString strPath = FUN_14071a5b0("Table", "SidePopupTalk.xml");
+    CString strPath = GetXmlPath("Table", "SidePopupTalk.xml");
     TiXmlDocument doc;
-    if (TSingleton<CFileSystem>::GetInstance()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (TSingleton<CFileSystem>::GetInstance()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)

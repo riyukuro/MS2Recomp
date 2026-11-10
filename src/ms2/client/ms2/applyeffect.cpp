@@ -104,8 +104,8 @@ MS2_CHECK_OFFSET(Unk_AeFieldInfo, m_fSoftParticle0, 0x224);
 void FUN_1414d0180(bool bFlag);
 void FUN_14150ccc0(int nValue);
 void FUN_14107b010();
-ecr::RenderSurface* FUN_1413f98d0();
-Ni3DRenderView* FUN_1413f9a70();                            // the main view
+ecr::RenderSurface* GetActiveRenderSurface();
+Ni3DRenderView* FindRenderView();                            // the main view
 NiColor FUN_141b6dea0(unsigned int uiColor);                // 0xRRGGBB -> color
 bool FUN_14028d470(float fA, float fB);                     // |a - b| < epsilon
 
@@ -317,7 +317,7 @@ SoftParticlesManager* ApplyEffect::GetSoftParticles()
 // @0x1409a5190
 void ApplyEffect::SetSoftParticlesEnabled(bool bEnabled)
 {
-    m_spSoftParticles->FUN_141773940(bEnabled);
+    m_spSoftParticles->SetEnabled(bEnabled);
 }
 
 // @0x1409a4e70
@@ -590,7 +590,7 @@ void ApplyEffect::SetFogRange(bool bEnabled, float fNear, float fFar, unsigned i
     m_uiFogColor = uiColor;
     float fDepth = 1.0f;
     float fScale = 1.0f;
-    Ni3DRenderView* pView = FUN_1413f9a70();
+    Ni3DRenderView* pView = FindRenderView();
     if (!pView) {
         return;
     }
@@ -667,7 +667,7 @@ void ApplyEffect::SetFogEffect(bool bEnabled, unsigned int* puiColor, float fNea
 // @0x1409a3c20
 void ApplyEffect::RestoreClickProcessors()
 {
-    NiDefaultClickRenderStep* pStep = NiDynamicCast(NiDefaultClickRenderStep, FUN_1413f98d0()->GetRenderStep());
+    NiDefaultClickRenderStep* pStep = NiDynamicCast(NiDefaultClickRenderStep, GetActiveRenderSurface()->GetRenderStep());
     if (pStep) {
         for (POSITION pos = m_clicks.GetHeadPosition(); pos; m_clicks.GetNext(pos)) {
             CStringA strName = m_clicks.GetKeyAt(pos);
@@ -696,7 +696,7 @@ void ApplyEffect::SwapClickProcessor(NiRenderListProcessor* pProcessor)
     RestoreClickProcessors();
     MS2Ptr<CFieldDataCli> field = WorldService::GetInstance()->FUN_141bd30a0();
     if (reinterpret_cast<Unk_AeFieldInfo*>(field.get()) != 0) {
-        NiDefaultClickRenderStep* pStep = NiDynamicCast(NiDefaultClickRenderStep, FUN_1413f98d0()->GetRenderStep());
+        NiDefaultClickRenderStep* pStep = NiDynamicCast(NiDefaultClickRenderStep, GetActiveRenderSurface()->GetRenderStep());
         if (pStep) {
             NiViewRenderClick* pClick;
             NiViewRenderClick* pAlias;

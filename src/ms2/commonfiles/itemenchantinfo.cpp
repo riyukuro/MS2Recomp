@@ -20,15 +20,15 @@ void Unk_EnchantHistory::FUN_14058c160() {
 MS2_REPLACE_METHOD(0x14058C160, Unk_EnchantHistory, FUN_14058c160, 72, 0x6F00E9E1);
 
 // @0x14058c1b0
-void Unk_EnchantHistory::FUN_14058c1b0(Unk_EnchantWrite& stream) const {
+void Unk_EnchantHistory::Write(Unk_EnchantWrite& stream) const {
     stream.vfunc_4(itemId); stream.vfunc_3(attempts); stream.vfunc_3(failures); stream.vfunc_0(enabled); stream.vfunc_3(extra);
 }
-MS2_REPLACE_METHOD(0x14058C1B0, Unk_EnchantHistory, FUN_14058c1b0, 139, 0xAC366D52);
+MS2_REPLACE_METHOD(0x14058C1B0, Unk_EnchantHistory, Write, 139, 0xAC366D52);
 // @0x14058c250
-void Unk_EnchantHistory::FUN_14058c250(Unk_EnchantRead& stream) {
+void Unk_EnchantHistory::Read(Unk_EnchantRead& stream) {
     itemId=stream.vfunc_4(); attempts=stream.vfunc_3(); failures=stream.vfunc_3(); enabled=stream.vfunc_0(); extra=stream.vfunc_3();
 }
-MS2_REPLACE_METHOD(0x14058C250, Unk_EnchantHistory, FUN_14058c250, 138, 0xE36FD4B5);
+MS2_REPLACE_METHOD(0x14058C250, Unk_EnchantHistory, Read, 138, 0xE36FD4B5);
 // @0x14058c2e0
 CItemEnchantInfo::CItemEnchantInfo(int id, int rarity) : m_id(id), m_rarity(rarity), m_version(0) { Reset(); }
 
@@ -171,21 +171,21 @@ bool CItemEnchantInfo::HasFailed() {
 MS2_REPLACE_METHOD(0x14058C960, CItemEnchantInfo, HasFailed, 15, 0x43A40A0D);
 
 // @0x14058c9a0
-bool CItemEnchantInfo::FUN_14058c9a0() {
+bool CItemEnchantInfo::IsEnabled() {
     return m_history.enabled;
 }
-MS2_REPLACE_METHOD(0x14058C9A0, CItemEnchantInfo, FUN_14058c9a0, 15, 0x63A4E804);
+MS2_REPLACE_METHOD(0x14058C9A0, CItemEnchantInfo, IsEnabled, 15, 0x63A4E804);
 
 // @0x14058c9c0
 void CItemEnchantInfo::Write(Unk_EnchantWrite& stream) const {
     stream.vfunc_3(m_level); stream.vfunc_3(m_charge); stream.vfunc_1(static_cast<unsigned char>(m_version));
-    m_history.FUN_14058c1b0(stream);
+    m_history.Write(stream);
     int count=static_cast<int>(m_options.GetCount());
     stream.vfunc_1(static_cast<unsigned char>(count));
     for (POSITION pos=m_options.GetStartPosition();pos;m_options.GetNext(pos)) {
         int key=m_options.GetKeyAt(pos);
         MS2Ptr<BaseOption> option=m_options.GetValueAt(pos);
-        stream.vfunc_3(key); option->FUN_140266d20(stream);
+        stream.vfunc_3(key); option->Write(stream);
     }
 }
 MS2_REPLACE_METHOD(0x14058C9C0, CItemEnchantInfo, Write, 342, 0xFD1FCBD1);
@@ -194,12 +194,12 @@ MS2_REPLACE_METHOD(0x14058C9C0, CItemEnchantInfo, Write, 342, 0xFD1FCBD1);
 void CItemEnchantInfo::Read(Unk_EnchantRead& stream) {
     Reset();
     m_level=stream.vfunc_3(); m_charge=stream.vfunc_3(); m_version=stream.vfunc_1();
-    m_history.FUN_14058c250(stream);
+    m_history.Read(stream);
     int count=stream.vfunc_1();
     for(int i=0;i<count;++i) {
         int key=stream.vfunc_3();
         MS2Ptr<BaseOption> option(new BaseOption);
-        option->FUN_140266d60(stream);
+        option->Read(stream);
         m_options.SetAt(key,option);
     }
 }

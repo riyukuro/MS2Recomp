@@ -47,7 +47,7 @@ public:
 
     void SetStoreItemId(unsigned __int64 nItemId);       // m_nStoreItemId = nItemId
     unsigned __int64 GetStoreItemId();                   // return m_nStoreItemId
-    int FUN_141808910();                                // item type of the store item (0: gone)
+    int GetStoreItemType();                                // item type of the store item (0: gone)
     int FUN_141808b10(CStringW strSearch);              // slot index when the item name contains strSearch (-1: no)
     void FUN_14180ade0();                               // re-check the store item (the listener slots)
     bool FUN_14180aea0();
@@ -76,7 +76,7 @@ public:
     virtual void vfunc_il11(void* p) override;          // 0x14180b640
     virtual void vfunc_il12() override;                 // 0x14180b6c0
 
-    int FUN_14180b3e0(CStringW strSearch);              // first slot index whose item name contains strSearch
+    int FindSlotIndexByItemName(CStringW strSearch);              // first slot index whose item name contains strSearch
 
 public:
     MS2_LAYOUT_FRIEND;

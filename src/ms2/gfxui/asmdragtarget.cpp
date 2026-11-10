@@ -22,7 +22,7 @@ ASMDragTarget::~ASMDragTarget()
 }
 
 // @0x1422e4840
-void ASMDragTarget::FUN_1422e4840(CString strBinding)
+void ASMDragTarget::SetBinding(CString strBinding)
 {
     m_value.SetMember("binding", Scaleform::GFx::Value(strBinding));
 }

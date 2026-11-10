@@ -17,10 +17,10 @@ public:
     CCrashManager();                                                    // 0x1401ce010
     virtual ~CCrashManager();                                           // 0x1401ce1d0 (??_G 0x1401d0260)
 
-    void FUN_1401ce270(const CString& strLine);                         // add a line to the log's second list
+    void AddLogLine(const CString& strLine);                         // add a line to the log's second list
     void FUN_1401ce2b0(const char* pszLine);                            // add a line to the log's second list
     void FUN_1401ce2f0(const char* pszFormat, ...);                     // printf-style line, second list
-    void FUN_1401ce3a0();                                               // flush the log file
+    void FlushLog();                                               // flush the log file
     void FUN_1401ce3d0(TFunctor<void, EmptyParam> callback);            // register a shutdown callback
     void FUN_1401ce420();                                               // drop the callbacks and mark a clean exit
     void FUN_1401ce450();                                               // no-op

@@ -89,8 +89,8 @@ void UIQuizOXCreateDialog::OnLoadComplete()
         for (std::vector<int>::const_iterator it = range.begin(); it != itEnd; ++it) {
             int nFee = *it;
             ASObj obj(2);
-            obj.FUN_1407cbb20("label", FUN_140763e10(nFee));
-            obj.FUN_1407cb9c0("data", nFee);
+            obj.SetWStringMember("label", FUN_140763e10(nFee));
+            obj.SetIntMember("data", nFee);
             spCombo->AddItemRow(obj);
         }
         spCombo->SetSelectedIndex(0);
@@ -126,7 +126,7 @@ int UIQuizOXCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     if (_stricmp("OnCreate", szMethod) == 0) {
         ASData args;
         if (args.SetArgsIfAny(pArgs, nArgs) != 0)
-            return FUN_140e7e900(this, &args);
+            return OnCreate(this, &args);
     } else if (_stricmp("OnCancel", szMethod) == 0) {
         CUIService::GetInstance()->CloseDialog((eUIClassID)0x4f47);
     }
@@ -135,7 +135,7 @@ int UIQuizOXCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 MS2_REPLACE_METHOD(0x140E7E7F0, UIQuizOXCreateDialog, vfunc_28, 254, 0x832B405C);
 
 // @0x140e7e900
-int FUN_140e7e900(UIQuizOXCreateDialog* pDialog, ASData* pArgs)
+int OnCreate(UIQuizOXCreateDialog* pDialog, ASData* pArgs)
 {
     __int64 n1 = pArgs->PopInt();
     int n2 = pArgs->PopInt();
@@ -143,7 +143,7 @@ int FUN_140e7e900(UIQuizOXCreateDialog* pDialog, ASData* pArgs)
     FUN_140dfee10(n1, n2, n3);
     return 0;
 }
-MS2_REPLACE(0x140E7E900, FUN_140e7e900, 85, 0x1C8B27D7);
+MS2_REPLACE(0x140E7E900, OnCreate, 85, 0x1C8B27D7);
 
 // @0x140e7e9a0
 int UIQuizOXCreateDialog::vfunc_48()

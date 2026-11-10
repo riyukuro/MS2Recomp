@@ -34,7 +34,7 @@ public:
     void FUN_140da5180(int nOpcode, Delegate<void(CInPacket&)> handler);       // add
     void FUN_140da51e0(int nOpcode, Delegate<void(CInPacket&)> handler);       // remove
 };
-Unk_140bccd50* FUN_140bccd50();
+Unk_140bccd50* GetPacketHandlerManager();
 
     // string table lookup
 CStringW FUN_140e14b70(MS2Ptr<DungeonRoom> pRoom);                          // dungeon name of a room
@@ -47,14 +47,14 @@ UIDungeonLobby::UIDungeonLobby()
 {
     m_2c = 0x16;
     m_80 = 0;
-    FUN_141925e70(0, 1);
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xf0, Delegate<void(CInPacket&)>(this, &UIDungeonLobby::FUN_140e17930));
+    SetFlag(0, 1);
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0xf0, Delegate<void(CInPacket&)>(this, &UIDungeonLobby::OnRoomPacket));
 }
 
 // @0x140e177e0
 UIDungeonLobby::~UIDungeonLobby()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xf0, Delegate<void(CInPacket&)>(this, &UIDungeonLobby::FUN_140e17930));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0xf0, Delegate<void(CInPacket&)>(this, &UIDungeonLobby::OnRoomPacket));
 }
 
 // @0x140e178e0
@@ -65,13 +65,13 @@ CString UIDungeonLobby::GetTypeName()
 MS2_REPLACE_METHOD(0x140E178E0, UIDungeonLobby, GetTypeName, 61, 0x141A279F);
 
 // @0x140e17930
-void UIDungeonLobby::FUN_140e17930(CInPacket& packet)
+void UIDungeonLobby::OnRoomPacket(CInPacket& packet)
 {
     packet.m_stream.Read6((unsigned&)m_nRoomId);
     packet.m_stream.Read6((unsigned&)m_n17c);
     FUN_141924680();
 }
-MS2_REPLACE_METHOD(0x140E17930, UIDungeonLobby, FUN_140e17930, 85, 0xCFBA290E);
+MS2_REPLACE_METHOD(0x140E17930, UIDungeonLobby, OnRoomPacket, 85, 0xCFBA290E);
 
 // @0x140e17990
 void UIDungeonLobby::OnLoadComplete()
@@ -100,7 +100,7 @@ void UIDungeonLobby::OnLoadComplete()
             CStringW strTitle = FUN_14028dfa0<CStringW, CStringW>(L"s_dungeonLobby_title", FUN_140e14b70(pRoom),
                                               TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->GetDungeonRoomID()));
             m_pTitle->SetTextW(strTitle);
-            SetChildText(FUN_1422dbb40(), "m_subTitle", FUN_14028dfa0<unsigned int>(L"s_dungeonLobby_subTitle", (unsigned&)m_n17c));
+            SetChildText(GetGFxValue(), "m_subTitle", FUN_14028dfa0<unsigned int>(L"s_dungeonLobby_subTitle", (unsigned&)m_n17c));
             if (pRoom->m_groupType == 2 || pRoom->m_groupType == 3) {
                 const float fOffset = 10.0f;
                 float x = 0.0f;

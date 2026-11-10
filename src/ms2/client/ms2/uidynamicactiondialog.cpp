@@ -74,7 +74,7 @@ static CString s_strStun2 = "stun";
 class ASDialog : public ASDisplayObject {};
 // "m_inputSearch": the search text input.
 class Unk_CoupleInput : public ASTextInput {};          // the MS2Ptr<T>::AssignRaw twin at 0x140bf1810 (as in uicoupleactiondialog)
-int FUN_140ad02c0(int nMin, int n);                         // max
+int Max(int nMin, int n);                         // max
 int FUN_140ad02f0(int nMax, int n);                         // min
 
 // The search keywords of an action id: CDynamicActionData::Find (dynamicactiondata.h), m_reserved at +0x38.
@@ -93,7 +93,7 @@ int FUN_1409e1b80(ASTooltip* p, int nId, int n);            // the learned skill
 void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_t* pszSep);
 void FUN_140710590(COutPacket& packet);                     // send
 template <class A> CStringW FormatStringId(int nId, const A& a);
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
@@ -116,7 +116,7 @@ UIDynamicActionDialog::UIDynamicActionDialog()
     m_5c = 1;
     m_1b0 = false;
     m_1b1 = false;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x14192ad20
@@ -213,7 +213,7 @@ int UIDynamicActionDialog::vfunc_13()
         return 0;
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((Unk_DaInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0) {
+    if (((Unk_DaInputState*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0) != 0) {
         ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
         if (pDlg != 0 && GetUISwfEntityManager() != 0) {
             if (GetUISwfEntityManager()->FUN_1422d4e20(CString(m_20)) != 0 && (ASTextInput*)m_1a0 != 0) {
@@ -229,26 +229,26 @@ int UIDynamicActionDialog::vfunc_13()
     if (m_178.m_0 != 0)
         return 0;
     if (m_178.IsSet()) {
-        int nKey = FUN_1409331f0()->FindActiveKey(0);
+        int nKey = GetKeyTable()->FindActiveKey(0);
         if (nKey != 0) {
-            if (FUN_1409331f0()->IsKeyRebindable(nKey) != 0) {
-                if (FUN_14192deb0(nKey) != 0) {
+            if (GetKeyTable()->IsKeyRebindable(nKey) != 0) {
+                if (IsKeyUnbound(nKey) != 0) {
                     unsigned __int64 nAction = (unsigned)m_178.m_4;
                     if (FUN_14192df00(nKey, nAction) != 0)
                         m_178.Clear();
                 } else {
                     m_178.m_0 = 1;
                     m_178.m_8 = nKey;
-                    unsigned __int64 nOther = FUN_1409331f0()->GetKeyAction(nKey);
+                    unsigned __int64 nOther = GetKeyTable()->GetKeyAction(nKey);
                     CStringW strOther;
-                    if (FUN_1409331f0()->IsQuickSlotAction(nOther) != 0) {
-                        strOther = StringFormat<CStringW, CStringW>(L"{0}[{1}]", TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((unsigned)FUN_1409331f0()->GetKeyAction(nKey)),
-                                                 FUN_1409331f0()->GetKeyName(nKey));
+                    if (GetKeyTable()->IsQuickSlotAction(nOther) != 0) {
+                        strOther = StringFormat<CStringW, CStringW>(L"{0}[{1}]", TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((unsigned)GetKeyTable()->GetKeyAction(nKey)),
+                                                 GetKeyTable()->GetKeyName(nKey));
                     } else {
                         strOther = TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((unsigned)nOther);
                     }
-                    if (FUN_1409331f0()->FUN_141430470(nOther) == 0) {
-                        FUN_140d73aa0(FormatStringId<CStringW>(0x84f, strOther), 1, static_cast<IMessageListener*>(this), CStringW(L""));
+                    if (GetKeyTable()->FUN_141430470(nOther) == 0) {
+                        ShowMessageBox(FormatStringId<CStringW>(0x84f, strOther), 1, static_cast<IMessageListener*>(this), CStringW(L""));
                     } else {
                         unsigned __int64 nAction = (unsigned)m_178.m_4;
                         if (FUN_14192df00(nKey, nAction) != 0)
@@ -280,10 +280,10 @@ void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
     ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
     if (FUN_1409e1b80(&tooltip, nAction, 0) != 0) {
         ASObj stat(2);
-        stat.FUN_1407cb9c0("type", 1);
+        stat.SetIntMember("type", 1);
         stat.FUN_1409c0dc0("level", "");
-        stat.FUN_1407cbb20("cooltime", GetActionKeywords(nAction));
-        tooltip.FUN_1409adbe0("statDescription", stat.FUN_1422bb870());
+        stat.SetWStringMember("cooltime", GetActionKeywords(nAction));
+        tooltip.FUN_1409adbe0("statDescription", stat.GetValue());
         tooltip.FUN_1409c0dc0("enablePuton", "");
         if (0 < nPeriod) {
             CMsTime time(nPeriod);
@@ -296,9 +296,9 @@ void UIDynamicActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
             int nMonth = time.GetMonth();
             int nYear = time.GetYear();
             CStringW strPeriod = BlockFormat<int, int, int, int, int>(nStringId, nYear, nMonth, nDay, nHour, nMinute);
-            tooltip.FUN_1407cbb20("skillPeriod", strPeriod);
+            tooltip.SetWStringMember("skillPeriod", strPeriod);
         }
-        *pRetVal = tooltip.FUN_1422bb870();
+        *pRetVal = tooltip.GetValue();
     }
 }
 MS2_REPLACE_METHOD(0x14192BB30, UIDynamicActionDialog, vfunc_49, 908, 0);
@@ -314,7 +314,7 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             int nAction = data.PopUInt();
             if (nAction == 0)
                 return 0;
-            FUN_14192c9b0(nAction);
+            UseAction(nAction);
         }
     } else if (_stricmp(szMethod, "onFocusIn") == 0) {
         ASData data;
@@ -324,7 +324,7 @@ int UIDynamicActionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 return 0;
             m_178.Clear();
             m_178.m_4 = nAction;
-            int nKey = FUN_1409331f0()->FindKeyByActionAndPriority((unsigned)m_178.m_4, 0);
+            int nKey = GetKeyTable()->FindKeyByActionAndPriority((unsigned)m_178.m_4, 0);
             m_184.Clear();
             m_184.m_8 = nKey;
             m_184.m_4 = nAction;
@@ -416,7 +416,7 @@ void UIDynamicActionDialog::FUN_14192c6b0()
     if (pPlayer == 0)
         return;
     ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
-    pPlayer->GetSkillSystem()->FUN_1417691a0(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> >&>(list));   // C3: CSkillSystem::FUN_1417691a0 (skillsystem.h)
+    pPlayer->GetSkillSystem()->GetValidEmotions(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> >&>(list));   // C3: CSkillSystem::FUN_1417691a0 (skillsystem.h)
     int nMode = pPlayer->GetSkillSystem()->SetShowError(0);
     pPlayer->GetSkillSystem()->SetShowError(nMode);
     std::map<unsigned int, Unk_Emotion> unused;
@@ -446,7 +446,7 @@ void UIDynamicActionDialog::SetFocusByEmotion(int nAction)
 MS2_REPLACE_METHOD(0x14192C930, UIDynamicActionDialog, SetFocusByEmotion, 117, 0);
 
 // @0x14192c9b0
-void UIDynamicActionDialog::FUN_14192c9b0(int nAction)
+void UIDynamicActionDialog::UseAction(int nAction)
 {
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -455,11 +455,11 @@ void UIDynamicActionDialog::FUN_14192c9b0(int nAction)
         return;
     pPlayer->FUN_141525480(nAction, 0);
 }
-MS2_REPLACE_METHOD(0x14192C9B0, UIDynamicActionDialog, FUN_14192c9b0, 79, 0);
+MS2_REPLACE_METHOD(0x14192C9B0, UIDynamicActionDialog, UseAction, 79, 0);
 
 // The skill preview dialog (UI id 0x4ec3), when it exists.
 // @0x14192e1f0
-UISkillPreviewDialog* FUN_14192e1f0(int nDialog)
+UISkillPreviewDialog* GetSkillPreviewDialog(int nDialog)
 {
     if (TSingleton<CUIService>::GetInstance() != 0) {
         MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nDialog);
@@ -472,7 +472,7 @@ UISkillPreviewDialog* FUN_14192e1f0(int nDialog)
 // @0x14192ca10
 void UIDynamicActionDialog::PreviewAction(int nAction)
 {
-    UISkillPreviewDialog* pPreview = FUN_14192e1f0(0x4ec3);
+    UISkillPreviewDialog* pPreview = GetSkillPreviewDialog(0x4ec3);
     if (pPreview == 0)
         return;
     TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4ec3);
@@ -530,19 +530,19 @@ void UIDynamicActionDialog::FUN_14192ca70()
             }
             if (nNew != 0)
                 nFocus = nId;
-            int nKey = FUN_1409331f0()->FindKeyByActionAndPriority((unsigned)nId, 0);
-            CStringW strKey = FUN_1409331f0()->GetKeyName(nKey);
+            int nKey = GetKeyTable()->FindKeyByActionAndPriority((unsigned)nId, 0);
+            CStringW strKey = GetKeyTable()->GetKeyName(nKey);
             ASObj action(2);
             action.SetMemberUInt("id", nId);
-            action.FUN_1407cbb20("key", strKey);
-            action.FUN_1407cb9c0("isNew", nNew);
-            action.FUN_1407cb9c0("isLocked", 0);
-            action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
-            action.FUN_1407cbbe0("isFavorite", bFavorite);
+            action.SetWStringMember("key", strKey);
+            action.SetIntMember("isNew", nNew);
+            action.SetIntMember("isLocked", 0);
+            action.SetStringMember("iconPath", pSkill->m_strIcon);
+            action.SetBoolMember("isFavorite", bFavorite);
             actions.PushObj(action);
         }
         PadEntriesToGrid(actions);
-        pDlg->FUN_140bd2cb0("buildActions", actions);
+        pDlg->InvokeWithArray("buildActions", actions);
         if (nFocus != 0)
             SetFocusByEmotion(nFocus);
     }
@@ -599,19 +599,19 @@ void UIDynamicActionDialog::FUN_14192d100()
             }
             if (nNew != 0)
                 nFocus = nId;
-            int nKey = FUN_1409331f0()->FindKeyByActionAndPriority((unsigned)nId, 0);
-            CStringW strKey = FUN_1409331f0()->GetKeyName(nKey);
+            int nKey = GetKeyTable()->FindKeyByActionAndPriority((unsigned)nId, 0);
+            CStringW strKey = GetKeyTable()->GetKeyName(nKey);
             ASObj action(2);
             action.SetMemberUInt("id", nId);
-            action.FUN_1407cbb20("key", strKey);
-            action.FUN_1407cb9c0("isNew", nNew);
-            action.FUN_1407cb9c0("isLocked", 0);
-            action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
-            action.FUN_1407cbbe0("isFavorite", bFavorite);
+            action.SetWStringMember("key", strKey);
+            action.SetIntMember("isNew", nNew);
+            action.SetIntMember("isLocked", 0);
+            action.SetStringMember("iconPath", pSkill->m_strIcon);
+            action.SetBoolMember("isFavorite", bFavorite);
             actions.PushObj(action);
         }
         PadEntriesToGrid(actions);
-        pDlg->FUN_140bd2cb0("buildActions", actions);
+        pDlg->InvokeWithArray("buildActions", actions);
         if (nFocus != 0)
             SetFocusByEmotion(nFocus);
     }
@@ -663,7 +663,7 @@ void UIDynamicActionDialog::FUN_14192da70(int nKey)
     if (nKey == 0x79) {
         if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = spList->GetSelectedIndex();
-            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02c0(0, nIndex - 4));
+            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(Max(0, nIndex - 4));
         }
     } else if (nKey == 0x7e) {
         if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
@@ -674,7 +674,7 @@ void UIDynamicActionDialog::FUN_14192da70(int nKey)
     } else if (nKey == 0x7b) {
         if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = spList->GetSelectedIndex();
-            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02c0(0, nIndex - 1));
+            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(Max(0, nIndex - 1));
         }
     } else if (nKey == 0x7c) {
         if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
@@ -687,18 +687,18 @@ void UIDynamicActionDialog::FUN_14192da70(int nKey)
 MS2_REPLACE_METHOD(0x14192DA70, UIDynamicActionDialog, FUN_14192da70, 1067, 0);
 
 // @0x14192deb0
-int UIDynamicActionDialog::FUN_14192deb0(int nKey)
+int UIDynamicActionDialog::IsKeyUnbound(int nKey)
 {
-    return FUN_1409331f0()->GetKeyAction(nKey) == 0;
+    return GetKeyTable()->GetKeyAction(nKey) == 0;
 }
-MS2_REPLACE_METHOD(0x14192DEB0, UIDynamicActionDialog, FUN_14192deb0, 62, 0);
+MS2_REPLACE_METHOD(0x14192DEB0, UIDynamicActionDialog, IsKeyUnbound, 62, 0);
 
 // @0x14192df00
 int UIDynamicActionDialog::FUN_14192df00(int nKey, unsigned __int64 nAction)
 {
-    if (FUN_1409331f0()->SetKeyBindingAndSync(nKey, 2, nAction, 0, 0) != 0) {
+    if (GetKeyTable()->SetKeyBindingAndSync(nKey, 2, nAction, 0, 0) != 0) {
         FUN_14192c6b0();
-        FUN_1409331f0()->FUN_14142a8b0(nAction);
+        GetKeyTable()->FUN_14142a8b0(nAction);
         return 1;
     }
     return 0;

@@ -24,7 +24,7 @@ UIBottomCenterAlignManager::~UIBottomCenterAlignManager()
 }
 
 // @0x140bc17d0
-UIHighlightGameMenu* FUN_140bc17d0(int nId)
+UIHighlightGameMenu* GetHighlightGameMenu(int nId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
@@ -36,7 +36,7 @@ UIHighlightGameMenu* FUN_140bc17d0(int nId)
 }
 
 // @0x140bc1870
-UIRecallScrollNotifyDialog* FUN_140bc1870(int nId)
+UIRecallScrollNotifyDialog* GetRecallScrollNotifyDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
@@ -51,10 +51,10 @@ UIRecallScrollNotifyDialog* FUN_140bc1870(int nId)
 void UIBottomCenterAlignManager::FUN_140bc1730()
 {
     int nOffset = 0;
-    UIHighlightGameMenu* pMenu = FUN_140bc17d0(0x4f75);
+    UIHighlightGameMenu* pMenu = GetHighlightGameMenu(0x4f75);
     if (pMenu && pMenu->IsActive())
         nOffset -= 60;
-    UIRecallScrollNotifyDialog* pRecall = FUN_140bc1870(0x4edd);
+    UIRecallScrollNotifyDialog* pRecall = GetRecallScrollNotifyDialog(0x4edd);
     if (pRecall && pRecall->IsActive())
     {
         pRecall->SetOffset(nOffset);

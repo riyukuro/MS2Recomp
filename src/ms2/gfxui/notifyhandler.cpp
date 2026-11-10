@@ -10,7 +10,7 @@
 #include "notifyhandler.h"
 #include "hook/ms2hook.h"
 
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
+Scaleform::GFx::Movie* GetMovie(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
 
 // @0x142300880
 NotifyHandler::NotifyHandler(Unk_NotifyContext* pContext)
@@ -25,7 +25,7 @@ void NotifyHandler::RegisterCallbacks(int nMovieId, Scaleform::GFx::Value& obj)
     {
         for (POSITION pos = m_callbacks.GetHeadPosition(); pos != NULL; m_callbacks.GetNext(pos))
         {
-            Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(nMovieId);
+            Scaleform::GFx::Movie* pMovie = GetMovie(nMovieId);
             if (pMovie != NULL)
             {
                 Scaleform::GFx::Value vFunc;

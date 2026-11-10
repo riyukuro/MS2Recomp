@@ -121,9 +121,9 @@ MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);   // C3: the real def (disp
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text (the callee destroys the key)
-bool FUN_140811640(int nKind);                                  // the first use is paid with red merat
+bool IsFirstUseRedMerat(int nKind);                                  // the first use is paid with red merat
 int FUN_1413499b0(int nTab);                                    // open the shop on a tab
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);   // new message box data
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strTag);   // new message box data
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                 // show it
 
 // CMsgBoxData::SetValue<T> (COMDATs of ?\smartpush.cpp): a named GFx value of the box.
@@ -198,7 +198,7 @@ Unk_MsgBoxBuff::~Unk_MsgBoxBuff()
 // @0x140fa4180
 UISystemShopDialog::UISystemShopDialog()
 {
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     m_c4 = 1;
     m_nMode = 0;
     m_80 = 1;
@@ -221,7 +221,7 @@ void UISystemShopDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     NotifySystem::GetInstance()->RegisterNotify(L"NotifyChangeBuff",
-        Delegate<void(NotifyObject*)>(this, &UISystemShopDialog::FUN_140fa69b0));
+        Delegate<void(NotifyObject*)>(this, &UISystemShopDialog::OnNotifyChangeBuff));
     if (m_nMode == 4)
         FUN_140fa5bc0();
     else if (m_nMode == 5)
@@ -234,7 +234,7 @@ void UISystemShopDialog::vfunc_67()
 {
     FUN_140d42630(GetTypeName());
     NotifySystem::GetInstance()->UnregisterNotify(L"NotifyChangeBuff",
-        Delegate<void(NotifyObject*)>(this, &UISystemShopDialog::FUN_140fa69b0));
+        Delegate<void(NotifyObject*)>(this, &UISystemShopDialog::OnNotifyChangeBuff));
     UIDialog::vfunc_67();
 }
 MS2_REPLACE_METHOD(0x140FA43C0, UISystemShopDialog, vfunc_67, 293, 0x80EE797A);
@@ -262,7 +262,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                     {
                         // an extension is running: offer to cancel it
                         CStringW strText = FUN_140298ea0(CStringW(L"s_msg_autofishing_extend_cancel_desc"));
-                        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
+                        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strText, 0, CStringW(L""));
                         if (spBox.get())
                         {
                             spBox->SetCheckbox0(GetStringCommon(0xc65), 1);
@@ -278,7 +278,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                             return 1;
                         CStringW strText = FUN_14028dfa0<unsigned int>(CStringW(L"s_msg_autofishing_extend_showcurrentduration_desc"),
                             *Client::Constants::GetInstance()->extendAutoFishMaxCount.Get());
-                        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x24, strText, 0, CStringW(L""));
+                        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x24, strText, 0, CStringW(L""));
                         if (spBox.get())
                         {
                             Unk_MsgBoxBuff buff;
@@ -298,7 +298,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                                 Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMerat{0}", i), pkg->m_nMerat);
                                 Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMeso{0}", i), pkg->m_nMeso);
                             }
-                            Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", FUN_140811640(1));
+                            Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", IsFirstUseRedMerat(1));
                             Unk_SetBoxString(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_fishing"));
                             Unk_SetBoxUInt(spBox.operator->(), "saleRate", CGameRule::GetInstance()->FUN_140479900());
                             Unk_SetBoxInt(spBox.operator->(), "packageCount", nCount);
@@ -313,7 +313,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                 {
                     // an extension is running: offer to cancel it
                     CStringW strText = FUN_140298ea0(CStringW(L"s_msg_auto_play_instrument_extend_cancel_desc"));
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
+                    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strText, 0, CStringW(L""));
                     if (spBox.get())
                     {
                         spBox->SetCheckbox0(GetStringCommonByKey(L"s_system_auto_play_instrument_extend"), 1);
@@ -330,7 +330,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                         return 1;
                     CStringW strText = FUN_14028dfa0<unsigned int>(CStringW(L"s_msg_auto_play_instrument_extend_showcurrentduration_desc"),
                         *Client::Constants::GetInstance()->extendAutoPlayInstrumentMaxCount.Get());
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x24, strText, 0, CStringW(L""));
+                    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x24, strText, 0, CStringW(L""));
                     if (spBox.get())
                     {
                         Unk_MsgBoxBuff buff;
@@ -350,7 +350,7 @@ int UISystemShopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                             Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMerat{0}", i), pkg->m_nMerat);
                             Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMeso{0}", i), pkg->m_nMeso);
                         }
-                        Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", FUN_140811640(4));
+                        Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", IsFirstUseRedMerat(4));
                         Unk_SetBoxString(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_play_instrument"));
                         Unk_SetBoxUInt(spBox.operator->(), "saleRate", CGameRule::GetInstance()->FUN_140479a20());
                         Unk_SetBoxInt(spBox.operator->(), "packageCount", nCount);
@@ -384,7 +384,7 @@ void UISystemShopDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         return;
     ASTooltip tip(1, 2);
     if (tip.ApplyTextTooltip(strTip) != 0)
-        *pRetVal = tip.FUN_1422bb870();
+        *pRetVal = tip.GetValue();
 }
 MS2_REPLACE_METHOD(0x140FA59B0, UISystemShopDialog, vfunc_49, 487, 0xFB754602);
 
@@ -410,10 +410,10 @@ void UISystemShopDialog::FUN_140fa5bc0()
             spBait = g_143ab2a90.FUN_140a5e2e0(CFishingManager::GetInstance()->GetBaitId());
         FUN_140d42630(GetTypeName());
         FUN_140d42540(GetTypeName(), 0, spBait);
-        if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(GetTypeName())))
+        if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FindBinding(GetTypeName())))
         {
-            pSlot->SetRemoveFn(SsRemoveFn(this, &UISystemShopDialog::FUN_140fa6ab0));
-            pSlot->SetDropFn(SsDropFn(this, &UISystemShopDialog::FUN_140fa6ae0));
+            pSlot->SetRemoveFn(SsRemoveFn(this, &UISystemShopDialog::OnBaitRemoved));
+            pSlot->SetDropFn(SsDropFn(this, &UISystemShopDialog::OnBaitDropped));
             pSlot->SetFlags(0x11);
         }
         int bCancel = 0;
@@ -525,7 +525,7 @@ bool UISystemShopDialog::FUN_140fa6970(int nButton, const CMsgBoxData& box)
 MS2_REPLACE_METHOD(0x140FA6970, UISystemShopDialog, FUN_140fa6970, 51, 0x046752AA);
 
 // @0x140fa69b0
-void UISystemShopDialog::FUN_140fa69b0(NotifyObject* pNotify)
+void UISystemShopDialog::OnNotifyChangeBuff(NotifyObject* pNotify)
 {
     NotifyChangeBuff* pBuff = dynamic_cast<NotifyChangeBuff*>(pNotify);
     if (pBuff != 0)
@@ -551,17 +551,17 @@ void UISystemShopDialog::FUN_140fa69b0(NotifyObject* pNotify)
         }
     }
 }
-MS2_REPLACE_METHOD(0x140FA69B0, UISystemShopDialog, FUN_140fa69b0, 244, 0x714CF929);
+MS2_REPLACE_METHOD(0x140FA69B0, UISystemShopDialog, OnNotifyChangeBuff, 244, 0x714CF929);
 
 // @0x140fa6ab0
-void UISystemShopDialog::FUN_140fa6ab0(ItemScrollSlot& slot)
+void UISystemShopDialog::OnBaitRemoved(ItemScrollSlot& slot)
 {
     CFishingManager::GetInstance()->SetBaitId(0);
 }
-MS2_REPLACE_METHOD(0x140FA6AB0, UISystemShopDialog, FUN_140fa6ab0, 34, 0xC7709242);
+MS2_REPLACE_METHOD(0x140FA6AB0, UISystemShopDialog, OnBaitRemoved, 34, 0xC7709242);
 
 // @0x140fa6ae0
-void UISystemShopDialog::FUN_140fa6ae0(ItemScrollSlot& slot, DragSlot* pDrag)
+void UISystemShopDialog::OnBaitDropped(ItemScrollSlot& slot, DragSlot* pDrag)
 {
     InvenSlot* pSrc = reinterpret_cast<InvenSlot*>(AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(pDrag)));
     if (pSrc != 0)
@@ -578,7 +578,7 @@ void UISystemShopDialog::FUN_140fa6ae0(ItemScrollSlot& slot, DragSlot* pDrag)
         CFishingManager::GetInstance()->SetBaitId(pSrc->GetItemId());
     }
 }
-MS2_REPLACE_METHOD(0x140FA6AE0, UISystemShopDialog, FUN_140fa6ae0, 371, 0x27C30815);
+MS2_REPLACE_METHOD(0x140FA6AE0, UISystemShopDialog, OnBaitDropped, 371, 0x27C30815);
 
 // @0x140fa7f30
 int UISystemShopDialog::vfunc_48()

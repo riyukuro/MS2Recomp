@@ -93,7 +93,7 @@ class GFxService;
 class WorldService;
 namespace ecrPhysX { class PropService; }
 namespace egfPhysX { class SceneService; }
-class Unk_ServiceManager* FUN_1413f9850();                   // the game's service manager
+class Unk_ServiceManager* GetServiceManager();                   // the game's service manager
 
 template <class T> struct Unk_ServiceTickId;
 template <> struct Unk_ServiceTickId<CEffectService> { enum { ID = 0x610000c }; };
@@ -108,7 +108,7 @@ class ServiceUpdate : public NiVisualTracker::GraphCallbackObject
 public:
     virtual float TakeSample(float)
     {
-        double dTime = reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetServiceLastTickTime(Unk_ServiceTickId<T>::ID);
+        double dTime = reinterpret_cast<efd::ServiceManager*>(GetServiceManager())->GetServiceLastTickTime(Unk_ServiceTickId<T>::ID);
         return (float)dTime;
     }
 };
@@ -131,7 +131,7 @@ struct Unk_VtmCount { void* m_pHead; unsigned __int64 m_nSize; unsigned __int64 
 struct Unk_VtmObjectTable { char m_pad[0x10]; Unk_VtmCount m_items; unsigned __int64 GetObjectCount() { return m_items.GetSize(); } };  // +0x10: the list whose size is shown
 struct Unk_VtmMovieStats { char m_pad[0x20]; efd::SmartPointer<Unk_VtmObjectTable> m_spObjects; };   // +0x20: the object table
 struct Unk_VtmMovieView : Unk_VtmSlots48 { virtual void vfunc_48(); virtual Unk_VtmMovieStats* vfunc_49(); };   // MS2: slot 49
-struct Unk_VtmMovie { char m_pad[0x18]; efd::SmartPointer<Unk_VtmMovieView> m_spView; };       // FUN_1422bb8b0(i): UI layer i
+struct Unk_VtmMovie { char m_pad[0x18]; efd::SmartPointer<Unk_VtmMovieView> m_spView; };       // GetMovie(i): UI layer i
 struct Unk_VtmMover : Unk_VtmSlots88 { virtual void vfunc_88(); virtual void vfunc_89(); virtual void vfunc_90(); virtual void vfunc_91();
     virtual void vfunc_92(); virtual void vfunc_93(); virtual void vfunc_94(); virtual float GetSpeed(); };       // MS2: slot 95
 struct Unk_VtmActor : Unk_VtmSlots16 { virtual void vfunc_16(); virtual void vfunc_17(); virtual void GetPosition(NiPoint3* pOut); };   // MS2: slot 18
@@ -203,11 +203,11 @@ class Unk_EmModelLoader { public: efd::utf8string GetCurrentSequenceName(const e
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 namespace Scaleform { namespace GFx { class Movie; } }
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nLayer);
-CString FUN_141277f60(int nLayer);                                      // name of UI layer nLayer
+Scaleform::GFx::Movie* GetMovie(int nLayer);
+CString GetUILayerName(int nLayer);                                      // name of UI layer nLayer
 class Unk_GoDeviceInfo { public: unsigned __int64 GetBandwidth(); };   // the memory bandwidth (gameoption.cpp)
 // (C3: FUN_141245b20 = TSingleton<GPUManager>::GetInstance, gpumanager.h)
-CNetworkService* FUN_140714f90();
+CNetworkService* GetNetworkService();
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
@@ -373,7 +373,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         // Number of objects held by the GFx movie of each UI layer.
         for (unsigned nLayer = 0; nLayer < 7; ++nLayer)
         {
-            Unk_VtmMovie* pMovie = reinterpret_cast<Unk_VtmMovie*>(FUN_1422bb8b0(nLayer));
+            Unk_VtmMovie* pMovie = reinterpret_cast<Unk_VtmMovie*>(GetMovie(nLayer));
             if (pMovie != 0)
             {
                 if ((Unk_VtmMovieView*)pMovie->m_spView != 0 ? true : false)
@@ -453,7 +453,7 @@ efd::AsyncResult MS2VisualTrackerManager::OnTick()
         m_spGpuAllocMemory->FUN_14118b9b0(nGpuUsedMb, bForce, acText);
         unsigned nPhysXKb = (unsigned)(DAT_143ae0bd0 / 0x400);
         m_spPhysXMem->FUN_14118b9b0(nPhysXKb, bForce, 0);
-        FUN_140714f90()->UpdateLogger();
+        GetNetworkService()->UpdateLogger();
     }
 
     if (m_nPage == 3)
@@ -636,7 +636,7 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
     for (unsigned i = 0; i < 7; ++i)
     {
         CString strLabel;
-        strLabel.Format("%s:", (const char*)FUN_141277f60(i));
+        strLabel.Format("%s:", (const char*)GetUILayerName(i));
         m_spSortLabel[i] = AddDebugString(m_idDebugStringPage, strLabel, 10, y, NiColorA(1.0f, 0.0f, 0.0f, 1.0f));
         y += 20;
     }
@@ -716,8 +716,8 @@ bool MS2VisualTrackerManager::CreateVisualTrackers()
     const float fMaxTraffic = 10000.0f;
     m_pPacketChart = AddChartPage("Packet Traffic", NiRect<float>(0.0f, 100.0f, fMaxTraffic, 0.0f),
         NiRect<float>(0.05f, 0.95f, 0.25f, 0.6f), 0.1f, 0, true);
-    float* pfRecvSize = (float*)FUN_140714f90()->GetSendRate();
-    float* pfSendSize = (float*)FUN_140714f90()->GetReceiveRate();
+    float* pfRecvSize = (float*)GetNetworkService()->GetSendRate();
+    float* pfSendSize = (float*)GetNetworkService()->GetReceiveRate();
     m_pPacketChart->AddGraph("RecvSize", NiNew GenericFloatUpdate(1.0f, pfRecvSize), yellow, true);
     m_pPacketChart->AddGraph("SendSize", NiNew GenericFloatUpdate(1.0f, pfSendSize), red, true);
 

@@ -24,12 +24,12 @@ public:
     UIAlignWidget();                                                    // 0x1422e64a0
     virtual ~UIAlignWidget();                                           // 0 0x1422e6510 (??_G 0x1422e70f0)
 
-    void FUN_1422e6550(int nOffsetX, int nOffsetY);                     // set the offset
+    void SetOffset(int nOffsetX, int nOffsetY);                     // set the offset
     void SetAlignType(int nAlignType);                                 // set the align type
     // The movie strName belongs to the widget and is loaded (bAny != 0) or loaded and hidden (slot 6 returns 0).
     int FUN_1422e65a0(const CString& strName, int bAny);
     void FUN_1422e6640(const CString& strName);                         // add a movie name (once)
-    void FUN_1422e66a0(int bAny);                                       // lay the widget's visible movies out
+    void LayoutEntities(int bAny);                                       // lay the widget's visible movies out
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -50,12 +50,12 @@ public:
     UIAlignWidgetManager();                                             // 0x1422e68a0
     virtual ~UIAlignWidgetManager();                                    // 0 0x1422e6910 (??_G 0x1422e7130)
 
-    void FUN_1422e6960();                                               // (re)load the widgets from the XML document
-    int FUN_1422e6bf0(UISwfEntity* pEntity, int bAny);                  // some widget holds the movie (FUN_1422e65a0)
-    void FUN_1422e6d00(int bAny);                                       // request a layout (done by FUN_1422e6d30)
-    void FUN_1422e6d30();                                               // run a requested layout
+    void LoadWidgets();                                               // (re)load the widgets from the XML document
+    int HasWidgetForEntity(UISwfEntity* pEntity, int bAny);                  // some widget holds the movie (FUN_1422e65a0)
+    void RequestLayout(int bAny);                                       // request a layout (done by ProcessPendingLayout)
+    void ProcessPendingLayout();                                               // run a requested layout
     void FUN_1422e6d80(int bAny);                                       // lay every widget out
-    static void FUN_1422e6e20(Delegate<bool(TiXmlDocument&)> loader);   // set the XML loader (by value)
+    static void SetXmlLoader(Delegate<bool(TiXmlDocument&)> loader);   // set the XML loader (by value)
 
     static Delegate<bool(TiXmlDocument&)> ms_kXmlLoader;                // 0x143b0d358 (initializer 0x14013ae70, unit_14013acc0.cpp)
 

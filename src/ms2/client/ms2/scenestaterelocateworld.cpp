@@ -13,8 +13,8 @@
 #include <NiColor.h>
 #include <efd/Helpers.h>
 
-CNetworkService* FUN_140714f90();
-void* FUN_140aae430();
+CNetworkService* GetNetworkService();
+void* GetMS2();
 extern CString DAT_143ab2a48;
 extern unsigned short DAT_143ab2848;
 extern __int64 DAT_143ab2868;
@@ -39,7 +39,7 @@ CSceneStateRelocateWorld::~CSceneStateRelocateWorld()
 // @0x141750fa0
 void CSceneStateRelocateWorld::OnEnter(int nPrevState)
 {
-    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
+    static_cast<MS2*>(GetMS2())->SetBackgroundColor(efd::ColorA::BLACK);
     m_nState = 0;
     CSceneStateBase::OnEnter(nPrevState);
 }
@@ -57,7 +57,7 @@ void CSceneStateRelocateWorld::OnUpdate(double fTime)
     if (m_nState == 1)
     {
         m_nState = 2;
-        FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
+        GetNetworkService()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
     }
 }
 

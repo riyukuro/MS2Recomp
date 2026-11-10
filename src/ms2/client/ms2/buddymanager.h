@@ -13,16 +13,16 @@ class Unk_BuddyInput;
 class CBuddy : public CPtred {
 public:
     CBuddy();
-    void FUN_1401cc7c0(Unk_BuddyInput&);
+    void ReadFromPacket(Unk_BuddyInput&);
     ~CBuddy();
-    int FUN_1401cc3e0(); int FUN_1401cc3a0(); int FUN_1401cc5d0(); int FUN_1401cc5f0(); int FUN_1401cc680(); int FUN_1401cc660();
-    void FUN_1401cc4b0(int); __int64 FUN_1401cc230(); __int64 FUN_1401cc2f0(); CStringW FUN_1401cc350();
+    int FUN_1401cc3e0(); int FUN_1401cc3a0(); int FUN_1401cc5d0(); int FUN_1401cc5f0(); int IsOnline(); int FUN_1401cc660();
+    void FUN_1401cc4b0(int); __int64 FUN_1401cc230(); __int64 GetId(); CStringW FUN_1401cc350();
     // Remaining accessors of buddy.cpp (w4s10); the packet reader above is in buddy.cpp too.
-    CString FUN_1401cc0d0(); CStringW FUN_1401cc1c0(); int FUN_1401cc210(); __int64 FUN_1401cc250(); int FUN_1401cc270(); int FUN_1401cc290();
-    int FUN_1401cc2b0(); int FUN_1401cc310(); Unk_UserProxyColor* FUN_1401cc330(); int FUN_1401cc3c0(); int FUN_1401cc400(Vector3*);
-    int FUN_1401cc4d0(); int FUN_1401cc4f0(); CStringA* FUN_1401cc530(); CStringW* FUN_1401cc550(); CStringW* FUN_1401cc570(); CStringW* FUN_1401cc590();
-    unsigned FUN_1401cc5b0(); void FUN_1401cc6c0(); void FUN_1401cc700(); unsigned FUN_1401cc6a0(); void FUN_1401cc740();
-    // Layout from ctor 0x1401cbd50, dtor 0x1401cc020 and packet reader FUN_1401cc7c0 (read order in comments).
+    CString FUN_1401cc0d0(); CStringW GetName(); int GetLevel(); __int64 FUN_1401cc250(); int GetMapId(); int FUN_1401cc290();
+    int GetJobCode(); int GetChannel(); Unk_UserProxyColor* FUN_1401cc330(); int FUN_1401cc3c0(); int FUN_1401cc400(Vector3*);
+    int FUN_1401cc4d0(); int FUN_1401cc4f0(); CStringA* FUN_1401cc530(); CStringW* FUN_1401cc550(); CStringW* GetTodayMemo(); CStringW* GetMemo();
+    unsigned FUN_1401cc5b0(); void SetOnline(); void SetOffline(); unsigned FUN_1401cc6a0(); void SetAway();
+    // Layout from ctor 0x1401cbd50, dtor 0x1401cc020 and packet reader ReadFromPacket (read order in comments).
     POSITION position;              // +0x18 node in CBuddyManager::list
     CStringW name;                  // +0x20 (4th read)
     CStringA m_28;                  // +0x28 (13th read; HomeBlockManager 0x140a47d10 copies a CStringA here)
@@ -72,12 +72,12 @@ class Unk_BuddyGuard { public: Unk_BuddyGuard(CLockCriticalSection&); ~Unk_Buddy
 MS2_CHECK_SIZE(MS2Ptr<CBuddy>,16);
 struct Unk_BuddyRequest {
     Unk_BuddyRequest() : protocol(0),id(0) {} ~Unk_BuddyRequest() {}
-    void FUN_1401fc790(COutPacket&);
+    void WriteBuddyRequest(COutPacket&);
     unsigned char protocol; __int64 id; CStringW name,memo;
 };
 struct Unk_BuddyResponse {
     Unk_BuddyResponse() : protocol(0),unknown08(0),id(0),flag(0),result(0),unknown30(0) {} ~Unk_BuddyResponse() {}
-    void FUN_1407a3cc0(Unk_BuddyInput&);
+    void ReadFrom(Unk_BuddyInput&);
     unsigned char protocol; __int64 unknown08,id; CStringW name,memo; unsigned char flag; int result; __int64 unknown30;
 };
 class CBuddyManager : public TSingleton<CBuddyManager> {

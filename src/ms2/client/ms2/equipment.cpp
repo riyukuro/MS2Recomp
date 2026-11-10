@@ -173,10 +173,10 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 // C3: FUN_1409f7ea0 is COptimizer's (coptimizer.h); GetOptimizer returns the singleton
 // (the InvokeEffectOption getters are declared in invokeeffectoption.h)
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 int FUN_14081d8a0(int nType);                       // a skill stat option type
 int FUN_14081d8e0(int nType);                       // an effect stat option type
-float FUN_14028d3a0(float f);                       // f / 100
+float FromPercent(float f);                       // f / 100
 __int64 FUN_14028d260(float fSeconds);              // seconds -> ms (C3: the exe's __int64 return, read as int)
 #define FUN_14028d260(x) ((int)FUN_14028d260(x))
 int FUN_141421690(CItem* pItem);                    // the item kind
@@ -185,7 +185,7 @@ CString Name_14021c050(int nSlot);                  // the slot name
 std::set<NiAVObjectPtr>* GetRoots(CEquipModel* pModel);      // the model's root nodes
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);    // the entity's scene graph
 NiAVObject* FUN_141b6ef70(egf::EntityID id);        // the scene node of an entity
-bool FUN_14116e080(NiAVObject* pObject);            // the skin decal is set up
+bool RestoreOriginalTextures(NiAVObject* pObject);            // the skin decal is set up
 bool FUN_14116e3f0(NiMesh* pMesh, float fA, float fB, float fC, float fD, int bFlag, const CString& strTexture,
     const NiColor& kColor0, const NiColor& kColor1, const NiColor& kColor2);   // apply the skin decal (unit_14116e3f0)
 NiColor FUN_141b6dea0(unsigned nColor);             // a colour value
@@ -196,7 +196,7 @@ CString FUN_141421ab0(MS2Ptr<CEquipItem> spItem, const CString& strSuffix);   //
 int FUN_1405451c0(CString& strName);              // the slot of a slot name
 void FUN_141049240(NiAVObject* pRoot, ATL::CAtlArray<efd::SmartPointer<NiMesh> >& aSource,
     ATL::CAtlArray<efd::SmartPointer<NiMesh> >& aMerged);   // merge the meshes (MeshOptimizer)
-void FUN_141567330(NiAVObject* pRoot, bool bShadow);    // set up the shadow casters (unit_141567000)
+void SetShadowCaster(NiAVObject* pRoot, bool bShadow);    // set up the shadow casters (unit_141567000)
 #include <efd/AssetLocatorService.h>   // the asset locator the hair variant asks (GetSystemServiceAs<efd::AssetLocatorService> 0x140998330)
 class Unk_EqAssetSvc
 {
@@ -252,7 +252,7 @@ typedef Unk_Bitset<3> Unk_SetEffectBits;   // C3: bitset.h's Unk_Bitset<3> (any 
 //
 //
 MS2_CHECK_SIZE(Unk_SetEffectBits, 1);
-int FUN_140222fb0(int nLayer);             // the set item layer of an equip layer
+int GetSetItemLayer(int nLayer);             // the set item layer of an equip layer
 int FUN_1406198a0(int nValue, float fRate);             // (int)(nValue * fRate + 1e-6)
 extern int DAT_143ae2b50;                               // the mesh optimizer is on
 #define DAT_143a08cf8 (*(const NiPoint3*)&efd::Point3::UNIT_Z)  // C3: was extern const NiPoint3 DAT_143a08cf8
@@ -264,7 +264,7 @@ class Unk_GameContext { public: efd::ServiceManager* GetServiceManager(); };   /
 egmAnimation::AnimationService* FUN_141b6f910();
 // The scene graph walker (0x30 bytes) of 0x1411eac40 / 0x1411ed270.   // C3: Unk_EqSceneDump was this walker
 class Unk_NodeQueue { public: Unk_NodeQueue(NiAVObject* pkRoot); ~Unk_NodeQueue(); NiAVObject* Next(bool bAddChildren); private: void* m_buf[6]; };   // alphaanimation.cpp
-NiObject** FUN_14107cbe0(class Unk_NodeQueue&);   // C3: was Unk_EqSceneIter::FUN_14107cbe0 (the walker's current object)
+NiObject** GetCurrentNode(class Unk_NodeQueue&);   // C3: was Unk_EqSceneIter::GetCurrentNode (the walker's current object)
 class Unk_EqSceneDump
 {
 public:
@@ -402,7 +402,7 @@ MS2_REPLACE_METHOD(0x1411DF700, CEquipmentSlotLayerInfo, FUN_1411df700, 187, 0x4
 // @0x1411df7d0
 bool CEquipmentSlotLayerInfo::FUN_1411df7d0()
 {
-    if (m_nKind == 2 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8e) == true)
+    if (m_nKind == 2 && ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x8e) == true)
         return true;
     return false;
 }
@@ -694,13 +694,13 @@ float CEquipment::FUN_1411e0f90(float f)
     float fLevel = (float)GetAbilityTotal((SAType)0x27);
     float fReduce = 0.0f;
     if (fLevel == 1.0f)
-        fReduce = FUN_14028d3a0(50.0f);
+        fReduce = FromPercent(50.0f);
     else if (fLevel == 2.0f)
-        fReduce = FUN_14028d3a0(100.0f);
+        fReduce = FromPercent(100.0f);
     else if (fLevel == 3.0f)
-        fReduce = FUN_14028d3a0(150.0f);
+        fReduce = FromPercent(150.0f);
     else if (fLevel > 4.0f)
-        fReduce = FUN_14028d3a0(200.0f);
+        fReduce = FromPercent(200.0f);
     return efd::Max(0.0f, f - fReduce);
 }
 MS2_REPLACE_METHOD(0x1411E0F90, CEquipment, FUN_1411e0f90, 219, 0xCA24EDCB);
@@ -728,7 +728,7 @@ int CEquipment::GetAbilityTotal(SAType eType)
 {
     int nValue = m_abilities[eType];
     nValue += m_pPC->FUN_1416749a0()->GetSpecialAbility(eType);
-    nValue += ((class CGameRule*)FUN_1401c0d90())->FUN_1404774a0(eType, m_pPC->FUN_141658f30());
+    nValue += ((class CGameRule*)GetGameRule())->FUN_1404774a0(eType, m_pPC->FUN_141658f30());
     nValue += m_pPC->GetSetItems()->GetSpecialAbility(eType);
     return nValue;
 }
@@ -1293,7 +1293,7 @@ void CEquipment::FUN_1411e46b0(MS2Ptr<CEquipItem> spItem)
         else
             AddVIPTag(spItem);
     }
-    for (size_t i = 0; i < spData->FUN_140527840()->GetModelOrEmpty()->FUN_14054b3d0(); i++) {
+    for (size_t i = 0; i < spData->FUN_140527840()->GetModelOrEmpty()->GetGroupCount(); i++) {
         unsigned nSlot = spData->GetEquipSlot(i);
         int bCovered = 0;
         for (int j = 5; j >= 0; j--) {
@@ -1342,7 +1342,7 @@ void CEquipment::FUN_1411e4b30(MS2Ptr<CEquipItem> spItem)
             AddVIPTag(spItem);
     }
     int nLayer = spData->FUN_14052a170();
-    for (size_t i = 0; i < pData->GetModelOrEmpty()->FUN_14054b3d0(); i++) {
+    for (size_t i = 0; i < pData->GetModelOrEmpty()->GetGroupCount(); i++) {
         unsigned nSlot = spData->GetEquipSlot(i);
         for (int j = 5; j >= 0; j--) {
             MS2Ptr<CEquipItem> spWorn = GetItemAt(nSlot, j);
@@ -1724,7 +1724,7 @@ void CEquipment::ApplySkinDecal()
         pMesh = m_meshes68[0];
     if (pMesh == NULL)
         return;
-    FUN_14116e080(pMesh);
+    RestoreOriginalTextures(pMesh);
     MS2Ptr<CEquipItem> spItem = FUN_1411e1860(3, 6, 0);
     if (!spItem)
         return;
@@ -2047,7 +2047,7 @@ void CEquipment::FUN_1411eaa00(MS2Ptr<Equipment::SetEffectInfo> spInfo)
         return;
     NoticeMessage msg;
     msg.m_strName = spInfo->m_strName;
-    msg.m_nObject = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<Unk_WsC_GameObj*>(m_pPC));
+    msg.m_nObject = WorldService::GetInstance()->GetObjectKind(reinterpret_cast<Unk_WsC_GameObj*>(m_pPC));
     msg.SetActor(m_pPC->GetObjectId());
     msg.SetCallback(Delegate<void(unsigned, CString, bool)>(this, &CEquipment::OnSetEffectNotice));
     msg.SetMode48(spInfo->m_nGroup);
@@ -2122,10 +2122,10 @@ int FUN_1411efd50(MS2Ptr<CEquipItem> spItem)
     Unk_EquipItemData* pData = spItem->GetItemData();
     if (pData == NULL)
         return 0;
-    for (size_t i = 0; i < pData->GetModelOrEmpty()->FUN_14054b3d0(); i++) {
+    for (size_t i = 0; i < pData->GetModelOrEmpty()->GetGroupCount(); i++) {
         const ModelGroup* pGroup = pData->GetModelOrEmpty()->GetGroup(i);
-        for (int j = 0; j < (int)pGroup->FUN_1405450c0(); j++) {
-            const ModelPart* pPart = pGroup->FUN_140544fe0(j);
+        for (int j = 0; j < (int)pGroup->GetPartCount(); j++) {
+            const ModelPart* pPart = pGroup->GetPart(j);
             if (pPart->name0.Find("_D.nif", 0) != -1)
                 return 1;
         }
@@ -2143,9 +2143,9 @@ void CEquipment::FUN_1411ebec0(MS2Ptr<CEquipItem> spItem, int nFlag)
     if (pData == NULL)
         return;
     int nLayer = spData->FUN_14052a170();
-    for (size_t i = 0; i < pData->GetModelOrEmpty()->FUN_14054b3d0(); i++) {
+    for (size_t i = 0; i < pData->GetModelOrEmpty()->GetGroupCount(); i++) {
         MS2Ptr<CEquipmentSlot> spSlot(0);
-        int nSlot = FUN_141420a30(spData->FUN_140527840()->GetModelOrEmpty()->GetGroup(i)->FUN_1405451a0(), spData.get(), (class AvatarPC*)(m_pPC));
+        int nSlot = FUN_141420a30(spData->FUN_140527840()->GetModelOrEmpty()->GetGroup(i)->GetType(), spData.get(), (class AvatarPC*)(m_pPC));
         if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot) && spSlot->m_items[nLayer] == spItem.get()) {
             spSlot->m_items[nLayer] = 0;
             spSlot->m_bShown[nLayer] = 0;
@@ -2167,10 +2167,10 @@ void CEquipment::FUN_1411ec190(MS2Ptr<CEquipItem> spItem, int nFlag)
     if (spItemData == 0)
         return;
     int nLayer = spData->FUN_14052a170();
-    size_t nCount = spItemData->GetModelOrEmpty()->FUN_14054b3d0();
+    size_t nCount = spItemData->GetModelOrEmpty()->GetGroupCount();
     for (size_t i = 0; i < nCount; i++) {
         MS2Ptr<CEquipmentSlot> spSlot(0);
-        int nSlot = FUN_141420990(spItemData->GetModelOrEmpty()->GetGroup(i)->FUN_1405451a0(), spData.get(), (class AvatarPC*)(m_pPC));
+        int nSlot = FUN_141420990(spItemData->GetModelOrEmpty()->GetGroup(i)->GetType(), spData.get(), (class AvatarPC*)(m_pPC));
         if (nSlot == 0)
             continue;
         if (m_slots.Lookup(reinterpret_cast<Unk_EquipSlotId&>(nSlot), spSlot)) {
@@ -2420,7 +2420,7 @@ void CEquipment::MergeMeshes()
     FUN_141049240(pRoot, m_meshes88, m_meshes68);
     for (size_t i = 0; i < m_meshes68.GetCount(); i++) {
         pNode->AttachChild(m_meshes68[i], false);
-        FUN_141567330(m_meshes68[i], true);
+        SetShadowCaster(m_meshes68[i], true);
     }
     for (size_t i = 0; i < m_meshes88.GetCount(); i++)
         ((class NiAVObject*)(class NiAVObject*)(m_meshes88[i].operator->()))->SetAppCulled(true);
@@ -2617,7 +2617,7 @@ void CEquipment::FUN_1411edbb0()
     MS2Ptr<CEquipItem> spTopBase = GetItemAt(5, 0);
     MS2Ptr<CEquipItem> spBottom = GetItemAt(4, 1);
     MS2Ptr<CEquipItem> spBottomBase = GetItemAt(4, 0);
-    bool bLayer2 = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8e);
+    bool bLayer2 = ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x8e);
     MS2Ptr<CEquipItem> spTop2(0);
     MS2Ptr<CEquipItem> spBottom2(0);
     if (bLayer2) {
@@ -2687,7 +2687,7 @@ void CEquipment::FUN_1411ec480(bool bForce)
             std::vector<SetItemInfoPtr> sets;
             SetItemTable::GetInstance()->GetSetItemInfos(pData->GetOriginOrItemId(), sets);
             for (size_t j = 0; j < sets.size(); j++) {
-                std::vector<__int64>& uids = setPieces[sets[j]->FUN_1407ad550()];
+                std::vector<__int64>& uids = setPieces[sets[j]->GetId()];
                 if (uids.capacity() < 0x14)
                     uids.reserve(0x14);
                 uids.push_back(spItem->GetItemUid());
@@ -2710,13 +2710,13 @@ void CEquipment::FUN_1411ec480(bool bForce)
             spSet->GetOptionParts((unsigned)it->second.size(), parts);
             for (unsigned j = 0; j < parts.GetCount(); j++) {
                 MS2Ptr<SetItemOptionPart> spPart = parts[j];
-                if (!spPart->FUN_1407bce90().IsEmpty())
-                    strEffect = spPart->FUN_1407bce90();
-                if (!spPart->FUN_1407bceb0().IsEmpty())
-                    strGround = spPart->FUN_1407bceb0();
-                if (!spPart->FUN_1407bce70().IsEmpty()) {
-                    strAnimation = spPart->FUN_1407bce70();
-                    bShowEffect = SetItemTable::GetInstance()->FUN_1407c5160(it->first);
+                if (!spPart->GetSetEffect().IsEmpty())
+                    strEffect = spPart->GetSetEffect();
+                if (!spPart->GetGroundAttribute().IsEmpty())
+                    strGround = spPart->GetGroundAttribute();
+                if (!spPart->GetAnimationPrefix().IsEmpty()) {
+                    strAnimation = spPart->GetAnimationPrefix();
+                    bShowEffect = SetItemTable::GetInstance()->IsShowEffect(it->first);
                 }
             }
             if (!strEffect.IsEmpty()) {
@@ -2822,7 +2822,7 @@ void CEquipment::FUN_1411e5c10()
         }
     } else {
         for (size_t i = 0; i < capModels.GetCount(); i++) {
-            MsTransform* pCapTransform = pHairData->FUN_14053ec70()->FUN_140547360();
+            MsTransform* pCapTransform = pHairData->FUN_14053ec70()->GetCapTransform();
             if (pCapTransform != NULL) {
                 NiPoint3& kCapRot = pCapTransform->rotation;
                 NiTransform kTransform;
@@ -2887,7 +2887,7 @@ void CEquipment::FUN_1411e5c10()
                         NiTransform kTransform;
                         kTransform.MakeIdentity();
                         kTransform.m_fScale = fScale;
-                        MsTransform* pCapTransform = pHairData->FUN_14053ec70()->FUN_140547360();
+                        MsTransform* pCapTransform = pHairData->FUN_14053ec70()->GetCapTransform();
                         if (pCapTransform != NULL) {
                             NiPoint3& kCapRot = pCapTransform->rotation;
                             kTransform.m_Rotate.FromEulerAnglesXYZ(kCapRot.x, kCapRot.y, kCapRot.z);
@@ -2963,19 +2963,19 @@ void CEquipment::FUN_1411e76c0(double fTime)
             }
             if (i == 2) {
                 bool bChanged = false;
-                eSetItemLayer::T nLayer = (eSetItemLayer::T)FUN_140222fb0(i);
+                eSetItemLayer::T nLayer = (eSetItemLayer::T)GetSetItemLayer(i);
                 bool bActive = (m_spLayerInfo.get() != NULL ? true : false) && m_spLayerInfo->IsActive();
                 if (m_5c) {
                     if (bActive) {
                         FUN_1411e46b0(spItem);
-                        m_pPC->GetSetItems()->AddItemCount(spCItem->FUN_1405276c0(), spCItem->GetItemUid(), nLayer, false);
+                        m_pPC->GetSetItems()->AddItemCount(spCItem->GetItemId(), spCItem->GetItemUid(), nLayer, false);
                     } else {
                         FUN_1411e4b30(spItem);
-                        m_pPC->GetSetItems()->RemoveItem(spCItem->FUN_1405276c0(), spCItem->GetItemUid(), nLayer);
+                        m_pPC->GetSetItems()->RemoveItem(spCItem->GetItemId(), spCItem->GetItemUid(), nLayer);
                     }
                     bChanged = true;
                 } else if (m_54 != 0 && m_pPC->CanUseItem(spCItem.get()) != 0 && bActive) {
-                    m_pPC->GetSetItems()->AddItemCount(spCItem->FUN_1405276c0(), spCItem->GetItemUid(), nLayer, false);
+                    m_pPC->GetSetItems()->AddItemCount(spCItem->GetItemId(), spCItem->GetItemUid(), nLayer, false);
                 }
                 if (bChanged) {
                     m_48 = 1;
@@ -2985,8 +2985,8 @@ void CEquipment::FUN_1411e76c0(double fTime)
                 }
             } else if (m_54 != 0 && m_pPC->CanUseItem(spCItem.get()) != 0) {
                 if (spCItem->CanUseAtLevel((unsigned short)m_pPC->vfunc_78())) {
-                    int nItemId = spCItem->FUN_1405276c0();
-                    eSetItemLayer::T nLayer = (eSetItemLayer::T)FUN_140222fb0(i);
+                    int nItemId = spCItem->GetItemId();
+                    eSetItemLayer::T nLayer = (eSetItemLayer::T)GetSetItemLayer(i);
                     bool bApply = true;
                     m_pPC->GetSetItems()->AddItemCount(nItemId, spCItem->GetItemUid(), nLayer, bApply);
                     if (m_pPC->FUN_1416749a0()->IsItemSlotDisabled(spCItem->FUN_140527a20()))
@@ -2999,15 +2999,15 @@ void CEquipment::FUN_1411e76c0(double fTime)
                             continue;
                         for (unsigned k = 0; k < 0x23; k++) {
                             if (bPvp)
-                                m_attrs[(Unk_EquipAttrType)k] += reinterpret_cast<CItemStatus*>(spCItem->FUN_1405278a0())->FUN_14062fea0(k);
+                                m_attrs[(Unk_EquipAttrType)k] += reinterpret_cast<CItemStatus*>(spCItem->GetStatus())->FUN_14062fea0(k);
                             else
-                                m_attrs[(Unk_EquipAttrType)k] += reinterpret_cast<CItemStatus*>(spCItem->FUN_1405278a0())->GetStatValue(k, 3, 5);
+                                m_attrs[(Unk_EquipAttrType)k] += reinterpret_cast<CItemStatus*>(spCItem->GetStatus())->GetStatValue(k, 3, 5);
                         }
                         for (unsigned k = 0; k < 0xcf; k++) {
                             if (bPvp)
-                                m_abilities[(SAType)k] += reinterpret_cast<CItemStatus*>(spCItem->FUN_1405278a0())->FUN_14062ff70(k);
+                                m_abilities[(SAType)k] += reinterpret_cast<CItemStatus*>(spCItem->GetStatus())->FUN_14062ff70(k);
                             else
-                                m_abilities[(SAType)k] += reinterpret_cast<CItemStatus*>(spCItem->FUN_1405278a0())->FUN_140630290(k, 3, 5);
+                                m_abilities[(SAType)k] += reinterpret_cast<CItemStatus*>(spCItem->GetStatus())->GetSpecialValue(k, 3, 5);
                         }
                     }
                 }
@@ -3021,17 +3021,17 @@ void CEquipment::FUN_1411e76c0(double fTime)
         float fRate = pPet->GetRow()->m_fConstantOptionFactor;
         for (unsigned k = 0; k < 0x23; k++) {
             Unk_EquipAttrType eType = (Unk_EquipAttrType)k;
-            m_attrs[eType] += reinterpret_cast<CItemStatus*>(spPetItem->FUN_1405278a0())->GetStatValue(eType, 3, 5);
-            int nBase = reinterpret_cast<CItemStatus*>(spPetItem->FUN_1405278a0())->GetStatValue(eType, 0, 0);
+            m_attrs[eType] += reinterpret_cast<CItemStatus*>(spPetItem->GetStatus())->GetStatValue(eType, 3, 5);
+            int nBase = reinterpret_cast<CItemStatus*>(spPetItem->GetStatus())->GetStatValue(eType, 0, 0);
             if (nBase != 0)
-                m_attrs[eType] += __imp_floor((double)FUN_1406198a0(nBase, fRate)) * (double)(spPetItem->FUN_140528c20() - 1);
+                m_attrs[eType] += __imp_floor((double)FUN_1406198a0(nBase, fRate)) * (double)(spPetItem->GetPetLevel() - 1);
         }
         for (unsigned k = 0; k < 0xcf; k++) {
             SAType eType = (SAType)k;
-            m_abilities[eType] += reinterpret_cast<CItemStatus*>(spPetItem->FUN_1405278a0())->FUN_140630290(eType, 3, 5);
-            int nBase = reinterpret_cast<CItemStatus*>(spPetItem->FUN_1405278a0())->FUN_140630290(eType, 0, 0);
+            m_abilities[eType] += reinterpret_cast<CItemStatus*>(spPetItem->GetStatus())->GetSpecialValue(eType, 3, 5);
+            int nBase = reinterpret_cast<CItemStatus*>(spPetItem->GetStatus())->GetSpecialValue(eType, 0, 0);
             if (nBase != 0)
-                m_abilities[eType] += __imp_floor((double)FUN_1406198a0(nBase, fRate)) * (double)(spPetItem->FUN_140528c20() - 1);
+                m_abilities[eType] += __imp_floor((double)FUN_1406198a0(nBase, fRate)) * (double)(spPetItem->GetPetLevel() - 1);
         }
     }
     // exe 0x1411e8871: the set-item refresh is the last statement of the m_54 block (je 0x1411e8892 skips it)
@@ -3100,7 +3100,7 @@ void Unk_EqSceneDump::FUN_1411f88a0(bool bCulled, NiAVObject* pObject, unsigned 
     if (pObject == NULL) {
         if (reinterpret_cast<ATL::CAtlList<NiAVObject*>*>(m_buf)->IsEmpty())
             return;
-        pObject = (NiAVObject*)*FUN_14107cbe0(*reinterpret_cast<class Unk_NodeQueue*>(m_buf));
+        pObject = (NiAVObject*)*GetCurrentNode(*reinterpret_cast<class Unk_NodeQueue*>(m_buf));
     }
     if (pObject == NULL)
         return;

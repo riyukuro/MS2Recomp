@@ -140,7 +140,7 @@ class Unk_ProxyMgr   // C3: was Unk_WsProxies; the methods are proxyobject.cpp's
 {
 public:
     Unk_ProxyMgr(); ~Unk_ProxyMgr();                    // 0x1416c3150, 0x1416c3190
-    void FUN_1416c33c0(int bEnable); void FUN_1416c3670(); void FUN_1416c3730(); efd::SmartPointer<egf::Entity> FUN_1416c37e0(efd::SmartPointer<egf::Entity> spEntity);
+    void FUN_1416c33c0(int bEnable); void RemoveAllProxies(); void FUN_1416c3730(); efd::SmartPointer<egf::Entity> FUN_1416c37e0(efd::SmartPointer<egf::Entity> spEntity);
 
     ATL::CRBMap<egf::EntityID, efd::SmartPointer<CProxyObject> > m_proxies;   // +0x00
     int m_nEnabled;                                     // +0x30
@@ -292,10 +292,10 @@ public:
     int FUN_141bc9a80();                                // return m_928
     void* FUN_141bc9fb0();                              // return &m_930
     void FUN_141bca220();                               // m_2bc = 1
-    void FUN_141bcad60(void* p, int n);                 // m_2c8 = p, m_2d0 = n
+    void SetMusicConcert(void* p, int n);                 // m_2c8 = p, m_2d0 = n
     int FUN_141bcaf60();                                // return m_2d0
-    void* FUN_141bcaf80();                              // return m_2c8
-    void FUN_141bbbd70();                               // FUN_1409a49b0(FUN_1409a8b00())
+    void* GetMusicConcertOwner();                              // return m_2c8
+    void ApplyFieldFog();                               // FUN_1409a49b0(FUN_1409a8b00())
     void FUN_141bbbda0();
     void FUN_141bbbe00();
     void FUN_141bbc4e0();
@@ -312,7 +312,7 @@ public:
     void FUN_141bc0a70(const egf::EntityLoadResult* pMsg, efd::Category targetChannel);
     void FUN_141bbf9f0(const efd::AssetLoadResponse* pMsg, efd::Category targetChannel);
     void OnActorRemoved(const egmAnimation::ActorRemovedMessage* pMsg, efd::Category targetChannel);
-    void FUN_141bc0f50(const efd::AssetLoadResponse* pMsg, efd::Category targetChannel);
+    void OnFlatModelFactoryResponse(const efd::AssetLoadResponse* pMsg, efd::Category targetChannel);
     efd::SmartPointer<egf::EntityManager> GetEntityManager();   // copy of m_268
     int FUN_141bc2b30();                                // sum of m_350 values' +0x188
     void FUN_141bc7440();
@@ -331,64 +331,64 @@ public:
     void NotifyChangeServer();                               // (unrecovered, #1)
     void FUN_141bca390(unsigned key);                   // m_1a8.RemoveKey
     void FUN_141bca630();
-    void FUN_141bc58d0(void* pOut);                     // copy m_510's pointers into *pOut
-    void FUN_141bc5980(void* pOut);                     // copy m_540's pointers into *pOut
-    void FUN_141bc5f10(void* pOut);                     // copy m_678's pointers into *pOut
+    void GetLiftableObjects(void* pOut);                     // copy m_510's pointers into *pOut
+    void GetLiftableTargetBoxes(void* pOut);                     // copy m_540's pointers into *pOut
+    void GetInteractObjects(void* pOut);                     // copy m_678's pointers into *pOut
     void FUN_141bc6a20(int n);                          // each m_678 value: vfunc 3(n), FUN_141bc6af0
     void FUN_141bc6af0(Unk_WsP16& sp);                  // (unrecovered, #1)
     void FUN_141bca6d0(void* pMsg);                     // dispatch on pMsg+8 vfunc 1 (0/1/2)
     void FUN_141bca770(class Unk_WsB_Packet* pMsg);     // read the field properties of the message
-    void FUN_141bca8c0(void* pMsg);                     // (unrecovered, #1)
-    void FUN_141bca9b0(void* pMsg);                     // (unrecovered, #1)
+    void AddFieldProperty(void* pMsg);                     // (unrecovered, #1)
+    void RemoveFieldProperty(void* pMsg);                     // (unrecovered, #1)
     int FUN_141bcfbd0();                                // m_state == 4 && m_2b4 != 0
     // per-part member declaration files (ws4 workers; folded into this header when the unit is finished)
     // ---- helper A (0x141bbaf00 .. 0x141bc3fff) ----
-    int FUN_141bbaf00(GameObject* obj, egf::EntityID id, bool bNewlyAdded);   // register a created object's entity
+    int CreateObjectEntity(GameObject* obj, egf::EntityID id, bool bNewlyAdded);   // register a created object's entity
     int FUN_141bbb1e0(GameObject* obj, int bFullInit, unsigned cameraArg);   // OnObjectCreated: register in the object maps
     void FUN_141bbb7f0(GameObject* obj, int bImmediate);                         // OnObjectDestroyed: unregister from the object maps
     void FUN_141bbbc60(egf::EntityID id, int bImmediate);                        // destroy the object registered under entity id
     void FUN_141bbbcf0(unsigned objId, int bImmediate);                          // destroy the object registered under object id
-    int FUN_141bbbe40(int mapId, int arg2, int arg3);                            // start loading map mapId
+    int LoadMap(int mapId, int arg2, int arg3);                            // start loading map mapId
     int FUN_141bbc1d0(const char* urn, int arg2);                                // begin loading the xblock urn
     void FUN_141bbd490(egf::Entity* entity, void* sceneNode);                           // track a shadow-casting entity in m_2e8
-    Vector3 FUN_141bc0ff0(GameObject* obj, void* classIds, int skipId);        // unit push-away direction from nearby objects of the given class ids
+    Vector3 GetPushAwayDirection(GameObject* obj, void* classIds, int skipId);        // unit push-away direction from nearby objects of the given class ids
     void FUN_141bc12b0();                                                              // take extra refs on the parts of every object of the active class filter
     void ClearFieldObjects();                                                              // clear the field-object registry (m_350) and destroy the entities in m_838
     MS2Ptr<CPortal> FUN_141bc2800(int id);                                             // m_350.Lookup(field object id), by value (null when absent)
     MS2Ptr<CPortal> FindPortalByDestMap(int mapType);                                        // first m_350 portal with this map type (by value)
-    void FUN_141bc2980(void* outIds);                                                  // append every field object id to the CAtlArray<int>
-    void FUN_141bc2a70(int type, void* outRefs);                                       // collect the field objects of this type into the CAtlArray of refs
-    void FUN_141bc24e0(int id);                                                        // unregister field object id (entity lists, m_838, m_350, proxy)
+    void GetFieldObjectIds(void* outIds);                                                  // append every field object id to the CAtlArray<int>
+    void GetFieldObjectsByType(int type, void* outRefs);                                       // collect the field objects of this type into the CAtlArray of refs
+    void RemoveFieldObject(int id);                                                        // unregister field object id (entity lists, m_838, m_350, proxy)
     int FUN_141bc2bc0();                                                               // number of m_930 objects with a target
     int FUN_141bc2f40();                                                               // any field object of type 6?
     void FUN_141bc3000(int id, int enabled);                                           // set the field object's enabled property
     void FUN_141bc30a0(int id, int visible);                                           // set the field object's visible property
     void FUN_141bc3140(int id, int visible, int enabled, int hidden);                  // set the field object's visible / enabled / hidden properties
     void FUN_141bc31d0(int id, Vector3 pos, Vector3 scale);            // set the field object's position / scale
-    int FUN_141bc32d0(void* obj);                                                      // register obj (id at +0x40) in m_3a0; 1 if it was new
+    int AddRegionSkillObject(void* obj);                                                      // register obj (id at +0x40) in m_3a0; 1 if it was new
     void* GetRegionSkillObject(int id);                                                       // m_3a0 lookup, or null
-    void FUN_141bc33d0(int id);                                                        // unregister id from m_3a0 after removing its effects / sounds
+    void RemoveRegionSkillObject(int id);                                                        // unregister id from m_3a0 after removing its effects / sounds
     void FUN_141bc3470(Unk_MagicValPtr value, Unk_MagicTagPtr key);                 // m_3f0.SetAt(key, value) when key is registrable (callee releases both)
     void FUN_141bc2c90(NiPoint3 pt, ATL::CAtlArray<MS2Ptr<CPortal> >* outRefs);                            // field objects containing pt appended to the ref array, sorted nearest first
     // ws4 part B member declarations (0x141bc4000..0x141bcb2ff)
     void FUN_141bc49c0(); // 0x141bc49c0
-    void FUN_141bc4b10(MS2Ptr<class Unk_WsB_Marker> marker); // 0x141bc4b10
+    void AddMarker(MS2Ptr<class Unk_WsB_Marker> marker); // 0x141bc4b10
     void FUN_141bc4bf0(CString name); // 0x141bc4bf0
-    MS2Ptr<class Unk_WsB_Marker> FUN_141bc4ca0(const Vector3& pos, float maxDist, int type); // 0x141bc4ca0
-    MS2Ptr<class Unk_WsB_Marker> FUN_141bc4e70(CString name); // 0x141bc4e70
-    MS2Ptr<class Unk_WsB_Marker> FUN_141bc4f10(egf::Entity* entity); // 0x141bc4f10
-    void FUN_141bc4fc0(float dt); // 0x141bc4fc0
-    void FUN_141bc51d0(float dt); // 0x141bc51d0
+    MS2Ptr<class Unk_WsB_Marker> FindNearestMarker(const Vector3& pos, float maxDist, int type); // 0x141bc4ca0
+    MS2Ptr<class Unk_WsB_Marker> FindMarkerByName(CString name); // 0x141bc4e70
+    MS2Ptr<class Unk_WsB_Marker> FindMarkerByEntity(egf::Entity* entity); // 0x141bc4f10
+    void UpdateAmbientLight(float dt); // 0x141bc4fc0
+    void UpdateDirectionalLight(float dt); // 0x141bc51d0
     void FUN_141bc5420(class Unk_WsB_Packet* pkt); // 0x141bc5420
     void FUN_141bc5830(CString name); // 0x141bc5830
     MS2Ptr<class Unk_WsB_Lift> FindLiftByName(CString name); // 0x141bc5a20
-    void FUN_141bc5ab0(efd::SmartPointer<class CSkillMagicControlGuide> obj); // 0x141bc5ab0
+    void AddRefObject(efd::SmartPointer<class CSkillMagicControlGuide> obj); // 0x141bc5ab0
     void RemoveRefObject(efd::SmartPointer<class CSkillMagicControlGuide> obj); // 0x141bc5b30
     efd::SmartPointer<class CSkillMagicControlGuide> FindRefObject(unsigned __int64 key); // 0x141bc5bb0
     void AddProp(MS2Ptr<class CInteractObject> prop); // 0x141bc5c40
     void FUN_141bc5d60(const CString& name); // 0x141bc5d60
     void FUN_141bc5e20(int category); // 0x141bc5e20
-    void FUN_141bc5fb0(void* out, int category); // 0x141bc5fb0
+    void GetInteractObjectsByCategory(void* out, int category); // 0x141bc5fb0
     MS2Ptr<class CInteractObject> FUN_141bc6090(Vector3 pos, int skipDisabled); // 0x141bc6090
     MS2Ptr<class CInteractObject> FUN_141bc62b0(const Vector3& pos, int category, int skipDisabled); // 0x141bc62b0
     MS2Ptr<class CInteractObject> FUN_141bc6510(Vector3 pos, int kind); // 0x141bc6510
@@ -420,13 +420,13 @@ public:
     void AddProxyObject(MS2Ptr<class CProxyGameObject> obj); // 0x141bc9aa0
     void RemoveProxyObject(unsigned id); // 0x141bc9b30
     MS2Ptr<class CProxyGameObject> FindProxyObject(unsigned id); // 0x141bc9be0
-    MS2Ptr<class CProxyGameObject> FUN_141bc9c60(void* owner); // 0x141bc9c60
-    MS2Ptr<class CProxyGameObject> FUN_141bc9d60(const CStringW& text); // 0x141bc9d60
-    MS2Ptr<class CProxyGameObject> FUN_141bc9e70(int kind); // 0x141bc9e70
+    MS2Ptr<class CProxyGameObject> FindProxyObjectByOwner(void* owner); // 0x141bc9c60
+    MS2Ptr<class CProxyGameObject> FindProxyObjectByName(const CStringW& text); // 0x141bc9d60
+    MS2Ptr<class CProxyGameObject> FindProxyObjectByKind(int kind); // 0x141bc9e70
     int FUN_141bca2e0(); // 0x141bca2e0
-    int FUN_141bca3c0(float z); // 0x141bca3c0
-    int FUN_141bca4f0(float* z); // 0x141bca4f0
-    void FUN_141bcaa80(); // 0x141bcaa80
+    int SetGravity(float z); // 0x141bca3c0
+    int GetGravity(float* z); // 0x141bca4f0
+    void ClearFieldProperties(); // 0x141bcaa80
     void FUN_141bcabf0(); // 0x141bcabf0
     bool FUN_141bcada0(__int64 id); // 0x141bcada0
     int FUN_141bcafa0(egf::Entity* entity); // 0x141bcafa0
@@ -469,10 +469,10 @@ public:
     class Unk_WsC_GameObj* FUN_141bd1530(__int64 id);
     class Unk_WsC_GameObj* FUN_141bd1640(__int64 id);
     void FUN_141bd1750(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out);
-    CStringW FUN_141bd1830(int id);
+    CStringW GetObjectName(int id);
     __int64 FUN_141bd1980(int id);
     int FUN_141bd19d0(int id);
-    int FUN_141bd1a10(class Unk_WsC_GameObj* obj);
+    int GetObjectKind(class Unk_WsC_GameObj* obj);
     class Unk_WsC_GameObj* FUN_141bd1a50(class Unk_WsC_GameObj* self);
     class Unk_WsC_GameObj* FUN_141bd1d10(int a, int b);
     void FUN_141bd1ed0(std::list<class Unk_WsC_GameObj*>* outA, std::list<class Unk_WsC_GameObj*>* outB, int skipOwned, int a, int b);
@@ -480,25 +480,25 @@ public:
     class Unk_WsC_GameObj* FUN_141bd2170(int type, float range, int useFront, int addBonus);
     class Unk_WsC_GameObj* FUN_141bd2690(const Vector3& pos, float maxDist, float up, float down, int needHp, int includeDead);
     class Unk_WsC_GameObj* FUN_141bd28d0(const Vector3& pos, float maxDist, float up, float down, int needHp, class Unk_WsC_GameObj* exclude, int includeDead);
-    class Unk_WsC_GameObj* FUN_141bd2bf0(Vector3 pos, int id);   // pos unused; by value (exe caller 0x14176b47a copies 12 bytes)
-    efd::SmartPointer<egf::Entity> FUN_141bd2cd0(CString name);
+    class Unk_WsC_GameObj* FindPetByKind(Vector3 pos, int id);   // pos unused; by value (exe caller 0x14176b47a copies 12 bytes)
+    efd::SmartPointer<egf::Entity> FindEntityByName(CString name);
     void FUN_141bd2db0(ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int (*filter)(class Unk_WsC_GameObj*));
     void FUN_141bd2ea0(void* ctx, ATL::CAtlList<efd::SmartPointer<class Unk_WsC_GameObj> >* out, int a, int b, int (*filter)(void*, class Unk_WsC_GameObj*, int, int));
     void FUN_141bd2fa0();
     CString FUN_141bd2ff0();
     void FUN_141bcda90();                                           // field-load: scan tagged entities into the object maps, then notify services
     // ---- helper D (0x141bd3000-0x141bdbfff) ----
-    int FUN_141bd3040();                                // return m_28c
+    int GetFieldKind();                                // return m_28c
     int FUN_141bd3060();                                // return m_284
     CStringW* FUN_141bd3080();                          // &m_290
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();              // copy of m_298
     void FUN_141bd30f0(char b);                         // set shadow flag on every m_2e8 entity's scene graph + hw instancing
     MS2Ptr<Unk_GoField> FUN_141bd3210(Vector3 pt);        // field object containing pt, else the nearest (m_2f8)
-    MS2Ptr<Unk_GoField> FUN_141bd3430(unsigned __int64 key);      // m_2f8 lookup
+    MS2Ptr<Unk_GoField> FindFieldById(unsigned __int64 key);      // m_2f8 lookup
     TextureLayerManager* GetTextureLayerManager();               // return m_spTextureLayerManager
     ChaosLightEffectLayerManager* GetChaosLightEffectLayerManager();      // return m_spChaosLightEffectLayerManager
-    ATL::CRBMap<unsigned, Unk_WsV118>* FUN_141bd36b0(); // &m_118
-    ATL::CRBMap<unsigned, Unk_WsV148>* FUN_141bd36d0(); // &m_148
+    ATL::CRBMap<unsigned, Unk_WsV118>* GetPlayerMap(); // &m_118
+    ATL::CRBMap<unsigned, Unk_WsV148>* GetNpcMap(); // &m_148
     int FUN_141bd36f0(Vector3 pt, Vector3* pOut);    // offset of pt outside the world bounds into *pOut; nonzero if inside
     Vector3 GetBoundsMin();                    // m_boundsMin
     Vector3 GetBoundsMax();                    // m_boundsMax
@@ -530,14 +530,14 @@ public:
     void FUN_141bd5460();                               // each m_208 value: FUN_141b948b0(list) (RemoveAll)
     void FUN_141bd5500(unsigned modelId, efd::SmartPointer<egf::Entity> spEntity);   // drop the entity from m_208[modelId]'s list
     void FUN_141bd5650();                               // player->m_250 notification (1)
-    void FUN_141bd5ff0();                               // deliver pending notifications (m_2b0/m_2ac) to the m_048 listeners
+    void DispatchPendingNotifications();                               // deliver pending notifications (m_2b0/m_2ac) to the m_048 listeners
     void FUN_141bd6170(int n1, int n2);                 // process n1 entities of m_088 and n2 of m_098
-    void FUN_141bd6240(void* entity);                   // visibility/range decision for one entity
+    void UpdateEntityVisibility(void* entity);                   // visibility/range decision for one entity
     void FUN_141bd6520();                               // rebuild m_088 from the flat model 0xe4fc9d5d entities
     void FUN_141bd6690();                               // retune m_0b4 and drain the backlog
     void FUN_141bd6810(char flag);                      // update the sight-range war fog and every npc's visibility
     void FUN_141bd6c40(void* npc, Vector3* center, class FieldPropertySightRange* range, float sight, char flag);   // fade one npc by distance
-    bool FUN_141bd7230(Vector3* pt);            // player is outside the sight range of pt
+    bool IsOutsideSightRange(Vector3* pt);            // player is outside the sight range of pt
     void FUN_141bd7350(bool enable);                    // set m_a98 and refresh the sight range
     void FUN_141bd7390();                               // refresh zone-based fading of the player and the m_118 objects
     void FUN_141bd7bf0();                               // request the preload of the resource id DAT_143ab2870
@@ -555,7 +555,7 @@ public:
     bool FUN_141bd8e30(egf::EntityID entityId, bool show, float fFade);   // fade an entity in or out over fFade seconds (id by value: every exe caller copies it)
     void FUN_141bd92c0(float scale, float scale2, float duration, int mode);   // start the time-scale change
     void FUN_141bd9380();                               // end the time-scale change
-    void FUN_141bd9410(MS2Ptr<class CInteractObject> spObj); // show a debug tooltip over an interactive object (releases spObj)
+    void ShowDebugTooltip(MS2Ptr<class CInteractObject> spObj); // show a debug tooltip over an interactive object (releases spObj)
     void FUN_141bd97a0(unsigned __int64 id);            // remove the debug tooltip of id
     int FUN_141bd9870();                                // per-class table value of the local player
     int FUN_141bd98d0();                                // m_2c0
@@ -563,7 +563,7 @@ public:
     void FUN_141bd9950(const CString& s);               // m_a60 = s
     void FUN_141bd9990(const CString& s);               // m_a68 = s
     int FUN_141bd99d0(int id);                          // count the m_678 kind-6 objects linked to record id
-    Unk_WsOptional<float>* FUN_141bd9c00();             // &m_a90
+    Unk_WsOptional<float>* GetSightRange();             // &m_a90
     void FUN_141bd9c20(struct Unk_WsD_Msg* msg);        // dispatch on the message kind
     void FUN_141bd9ca0(struct Unk_WsD_Msg* msg);        // kind 0: list of (id, flag)
     void FUN_141bd9da0(struct Unk_WsD_Msg* msg);        // kind 1: single (id, flag)
@@ -574,7 +574,7 @@ public:
     void FUN_141bda490(unsigned key, void* pOutList);   // copy the m_208[key] list into *pOutList
     void FUN_141bda580();                               // rebuild m_708 from the ugc banner objects
     MS2Ptr<UgcBannerObject> FUN_141bda6d0(unsigned key);   // m_708 lookup (by value: the callers keep it in an EH-tracked holder)
-    void FUN_141bda780();                               // expire the timed entries of m_ab0
+    void ExpireTimedEntities();                               // expire the timed entries of m_ab0
     void FUN_141bda9c0(int v);                          // m_890 operation
     int FUN_141bda9f0();                                // m_890 operation: the enabled count
     void FUN_141bdaa20();                               // m_890 operation
@@ -591,7 +591,7 @@ public:
     void FUN_141bdb6a0();                               // hide the m_ad0 tooltips
     void FUN_141bdb7a0();                               // show the m_ad0 tooltips
     void FUN_141bdb030(CStringA name, CStringW text);   // queue a (name, text) entry in m_a00
-    void FUN_141bd7dd0();                               // per-frame callback registered by OnInit (helper D owns the body)
+    void WriteCrashLog();                               // per-frame callback registered by OnInit (helper D owns the body)
     int FUN_141bc1720(MS2Ptr<class CPortal> obj);           // register a field object (CPortal) (returns 0/1); defined in worldservice_1.cpp
     void FUN_141bc3560();                               // periodic tag-range enter pass (m_3f0/m_420/m_468/m_4b0/m_5e8/m_738/m_118)
 

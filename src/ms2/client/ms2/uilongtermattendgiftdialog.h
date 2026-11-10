@@ -28,25 +28,25 @@ public:
     virtual int vfunc_65();                                                // 65 0x140c6b4f0
     virtual void vfunc_67();                                               // 67 0x140c6b520
 
-    void FUN_140c6b9d0();                                                  // refresh the reward list when the dialog is loaded
+    void RefreshRewardList();                                                  // refresh the reward list when the dialog is loaded
     void SendEventRewardMode27(NotifyObject*);                                     // "NotifyGameStart": asks the server for the event data
     void FUN_140c6bac0(int nType, CInPacket& packet);                      // server answer of packet 0x97
     bool SendEventRewardMode26(int nResult, const CMsgBoxData& data);             // "use merat to attend" confirm result
-    bool FUN_140c6bd40(int nResult, const CMsgBoxData& data);             // "lack of merat" box result
+    bool OnLackMeratResult(int nResult, const CMsgBoxData& data);             // "lack of merat" box result
     void FUN_140c6bdb0();                                                  // "setData" of the swf (header)
-    void FUN_140c6c250();                                                  // "setAttendance" of the swf (day frames)
-    void FUN_140c6c4a0();                                                  // fill the reward list
+    void SetAttendance();                                                  // "setAttendance" of the swf (day frames)
+    void FillRewardList();                                                  // fill the reward list
     void RefreshAll();                                                  // refresh everything
-    void FUN_140c6c920();                                                  // "updateAttendance" of the swf
+    void UpdateAttendance();                                                  // "updateAttendance" of the swf
     bool LoadEvent();                                                  // fetch the event record; true when there is one
     void SendEventRewardMode25(int nDay);                                          // claim the reward of a day
-    void FUN_140c6cd00();                                                  // press the attend button
+    void OnClickAttendance();                                                  // press the attend button
     int GetDayState(unsigned int nDay);                                  // 0 not yet, 1 claimable, 2 claimed
     int GetMissedDayCount();                                                   // days that can still be caught up
     CString GetDayStateFrame(unsigned int nDay, unsigned int nCur, int nCatchUp);   // state frame name of a day
     CString GetItemIconPath(int nItemId);                                    // icon path of an item
-    CString FUN_140c6d470();                                               // frame name of the event
-    int FUN_140c6d520();                                                   // table int 0xa8d (this event)
+    CString GetEventTag();                                               // frame name of the event
+    int GetAttendPoint();                                                   // table int 0xa8d (this event)
     int FUN_140c6d570();                                                   // table int 0xa8e (this event)
     CStringW GetClaimedDays();                                              // table string 0xa8c (claimed days)
 

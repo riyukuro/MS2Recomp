@@ -66,36 +66,36 @@ public:
     virtual int vfunc_4(void* p1, void* p2);
     virtual int vfunc_5(void* p1, void* p2);
 
-    void FUN_141981060();                               // refresh the transform inputs (unused copy of FUN_141983f50)
-    void FUN_1419821d0(int nDebug);                     // "eventPhysDebug": PhysX debug render
-    void FUN_141982350(int nOnly);                      // "eventOnlyPonytail"
+    void FUN_141981060();                               // refresh the transform inputs (unused copy of UpdateTransformInputs)
+    void SetPhysXDebugRender(int nDebug);                     // "eventPhysDebug": PhysX debug render
+    void SetOnlyPonytail(int nOnly);                      // "eventOnlyPonytail"
     void EventSelectModel();                               // "eventSelectModel"
     void EventSelectTransform();                               // "eventSelectTransform"
     void FUN_141982440(const CString& strJoint);        // "eventJointsList"
     void FUN_141982480(float fSoft);                    // "eventJointsSoft"
-    void FUN_141982590(float fX, float fY, float fZ);   // "eventJointsAxis"
+    void SetPonyTailOffset(float fX, float fY, float fZ);   // "eventJointsAxis"
     void FUN_1419826e0(float fX, float fY, float fZ);   // "eventTransformValue"
     void FUN_141982860(const Scaleform::GFx::FunctionHandler::Params& params);    // "m_save" (empty)
-    void FUN_141982880(const Scaleform::GFx::FunctionHandler::Params& params);    // "m_reset"
+    void ResetTransforms(const Scaleform::GFx::FunctionHandler::Params& params);    // "m_reset"
     void FUN_141982940(const Scaleform::GFx::FunctionHandler::Params& params);    // "m_mirror"
-    void FUN_141982dc0();                               // restore the joints of both models from the saved maps
-    void FUN_141983010();                               // save the joints of both models into the maps
+    void RestoreJoints();                               // restore the joints of both models from the saved maps
+    void SaveJoints();                               // save the joints of both models into the maps
     int FUN_1419833e0();                                // the edited side: 2 = "m_left" checked, else 1
-    int FUN_1419834a0();                                // the transform mode: 1 position, 2 rotation, 0 none
-    CString FUN_141983600();                            // the joint selected in "m_joints"
-    void FUN_141983730();                               // fill "m_joints"
+    int GetTransformMode();                                // the transform mode: 1 position, 2 rotation, 0 none
+    CString GetSelectedJoint();                            // the joint selected in "m_joints"
+    void FillJointList();                               // fill "m_joints"
     void FUN_141983af0();                               // refresh "m_softSlider"
     void FUN_141983c60();                               // refresh "m_x/y/zSlider"
-    void FUN_141983f50();                               // refresh "m_transformX/Y/Z"
-    void FUN_141984360();                               // print the xml lines into "m_transform"
-    int FUN_141984a10(int nSide, Unk_HpxModel** ppModel);
+    void UpdateTransformInputs();                               // refresh "m_transformX/Y/Z"
+    void UpdateTransformText();                               // print the xml lines into "m_transform"
+    int GetModelForSide(int nSide, Unk_HpxModel** ppModel);
     int FUN_141984af0(int nSide, Unk_HpxModel** ppLeft, Unk_HpxModel** ppRight);   // 0 both, 1 left, 2 right
     void FUN_141984c30(Unk_HpxModel* pModel, const CString& strJoint, float* pSoft);
-    void FUN_141984cd0(Unk_HpxModel* pModel, const CString& strJoint, float* pX, float* pY, float* pZ);
+    void GetJointOffset(Unk_HpxModel* pModel, const CString& strJoint, float* pX, float* pY, float* pZ);
     void FUN_141984da0(const NiMatrix3& kRot, efd::Point3& kDeg);           // euler angles in degrees
-    void FUN_141984e50(Unk_HpxModel* pModel, NiPoint3 kPos);            // move the model
-    void FUN_141985000(Unk_HpxModel* pModel, NiPoint3 kDeg);            // rotate the model
-    void FUN_141985210(Unk_HpxModel* pModel, const NiTransform& kXform);    // apply a whole transform
+    void SetModelPosition(Unk_HpxModel* pModel, NiPoint3 kPos);            // move the model
+    void SetModelRotation(Unk_HpxModel* pModel, NiPoint3 kDeg);            // rotate the model
+    void SetModelTransform(Unk_HpxModel* pModel, const NiTransform& kXform);    // apply a whole transform
 
 
 private:

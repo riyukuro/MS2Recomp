@@ -83,9 +83,9 @@ public:
     void RemoveBalloonGroup(NotifyObject* pNotice);                      // NotifyRemoveGameObject
     void ResetSkipState(NotifyObject* pNotice);                      // NotifyFadeInComplete
     void ClearTalks();                                           // drop the script lines
-    void FUN_141908720(float fDelta);                               // update
+    void Update(float fDelta);                               // update
     void FUN_141908750();                                           // update the script line
-    void FUN_141908c00();                                           // update the balloons
+    void UpdateBalloons();                                           // update the balloons
     void RequestSkip();                                           // skip pressed: confirm or skip
     void SkipCinematic();                                           // skip
     void SendTrigger();                                           // send the skip request
@@ -98,15 +98,15 @@ public:
     void InvokeSetIntro();                                           // setIntro
     bool IsCinematicKeyGroupActive();                                           // the cinematic key group is on
     void OnPacketKeyMode(CInPacket& packet);                          // 1 key group
-    void FUN_141909750(CInPacket& packet);                          // 2 close
+    void OnPacketClose(CInPacket& packet);                          // 2 close
     void OnPacketStartCinematic(CInPacket& packet);                          // 3 cinematic
     void FUN_141909880(CInPacket& packet);                          // 6 queue a script line
-    void FUN_141909e80(CInPacket& packet);                          // 7 drop the script lines
+    void OnPacketClearTalks(CInPacket& packet);                          // 7 drop the script lines
     void FUN_141909eb0(CInPacket& packet);                          // 8 queue a balloon line
     void OnPacketClearBalloonGroup(CInPacket& packet);                          // 9 drop the balloon lines of an actor
     void FUN_14190a4c0(CInPacket& packet);                          // 4 skip button
-    void FUN_14190a6e0(CInPacket& packet);                          // 10 caption
-    void FUN_14190ac70(CInPacket& packet);                          // 11 opening
+    void OnPacketSetCaption(CInPacket& packet);                          // 10 caption
+    void OnPacketSetOpening(CInPacket& packet);                          // 11 opening
     void OnPacketSetIntro(CInPacket& packet);                          // 12 intro
     void OnPacketResetSkip(CInPacket& packet);                          // 5 reset the skip button
 

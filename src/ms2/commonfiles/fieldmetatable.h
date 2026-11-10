@@ -164,11 +164,11 @@ public:
     static void SetInit(bool b);                            // 0x140703190
     static bool s_bInit;                                    // 0x143ab0a10
 
-    void FUN_1406fb060(unsigned int nId, ATL::CAtlArray<unsigned int>& out);        // pet fields
-    void FUN_1406fb120(unsigned int nId, ATL::CAtlArray<unsigned int>& out);        // liftable fields
+    void GetPetFields(unsigned int nId, ATL::CAtlArray<unsigned int>& out);        // pet fields
+    void GetLiftableFields(unsigned int nId, ATL::CAtlArray<unsigned int>& out);        // liftable fields
     void FUN_1406fb1e0(int nId, ATL::CAtlArray<unsigned int>& out);                 // interact object fields
-    void FUN_1406fb2a0(unsigned int nId, ATL::CAtlArray<unsigned int>& out);
-    void FUN_1406fb3a0(unsigned int nId, Unk_FieldIdList& out);
+    void GetNpcFields(unsigned int nId, ATL::CAtlArray<unsigned int>& out);
+    void GetNpcMapSearchFields(unsigned int nId, Unk_FieldIdList& out);
     void FUN_1406fb520(unsigned int nId, Unk_FieldIdList& out);
     void FUN_1406fb610(unsigned int nFieldId, Unk_FieldIdList& out);
     int FUN_1406fb700(unsigned int nId, unsigned int* pOut);
@@ -178,7 +178,7 @@ public:
     bool FUN_1406fbb50(unsigned int nNpc, unsigned int nField);
     int FUN_1406fbc10(unsigned int nField);
     unsigned int FUN_1406fbc50(unsigned int nField);
-    Unk_FieldIdListPtr FUN_1406fbca0(unsigned int nField);
+    Unk_FieldIdListPtr GetPortalTargets(unsigned int nField);
     void FUN_1406fbdf0(Unk_FieldIdListPtr pFrom, Unk_FieldIdListPtr pTo);
     int FUN_1406fc110(unsigned int nKey, unsigned int* pValue);
     int FUN_1406fc160(unsigned int nKey, Unk_FieldIdListPtr& pList);
@@ -186,15 +186,15 @@ public:
     void FUN_1406fc2f0(unsigned int nField, Unk_FieldIdList& out);
     Unk_FieldIdListPtr FUN_1406fc3c0(unsigned int nField);
     Unk_FieldIdListMap& FUN_1406fc450();
-    Unk_FieldIdListMap& FUN_140c955c0() { return m_portalTargets; }   // inline (COMDAT 0x140c955c0, questnavigation.cpp)
+    Unk_FieldIdListMap& GetPortalTargets() { return m_portalTargets; }   // inline (COMDAT 0x140c955c0, questnavigation.cpp)
     Unk_FieldIdListMap& FUN_141b69360() { return m_fieldNpcs; }       // inline (COMDAT 0x141b69360, uiworldmapdialog.cpp)
     void FUN_1406fc480(int nFieldId, int nNpcId, const CMsTime& t);
     void FUN_1406fc590(int nFieldId);
     int FUN_1406fc620(int nNpcId, CMsTime& out);
     int FUN_1406fc6d0(int nNpcId, ATL::CAtlArray<CMsTime>& out);
-    int FUN_1406fc7b0(unsigned int nField, unsigned int nId);
+    int HasPortalTarget(unsigned int nField, unsigned int nId);
     int FUN_1406fc870(unsigned nFieldId);
-    bool FUN_1406fc8a0(CString str, __int64* pTime);
+    bool ParseTimeString(CString str, __int64* pTime);
     void LoadFieldMetaData();                                   // Load
 
 private:

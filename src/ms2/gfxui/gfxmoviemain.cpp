@@ -57,7 +57,7 @@ template<class T, class U> void Unk_FileLog(CLogString* log, int level, int cate
 template <class T>
 void BindNotifyHandler(int nMovieId, Scaleform::GFx::Value& obj)
 {
-    efd::SmartPointer<Unk_NotifyContext> spContext = FUN_14025e7a0()->GetNotifyContext();
+    efd::SmartPointer<Unk_NotifyContext> spContext = GetGFxManager()->GetNotifyContext();
     if (spContext)
     {
         Scaleform::Ptr<T> spHandler = *new T(spContext);
@@ -107,9 +107,9 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
         {
             Scaleform::GFx::Value vStage(pArgs[1]);
             Scaleform::GFx::Value vLoader(pArgs[3]);
-            FUN_1422be510(CreateStage(m_18, vStage));
-            FUN_1422be5b0(CreateMovieClipLoader(m_18, vLoader));
-            FUN_14025e7a0()->FUN_1422b0790(m_18);
+            SetStage(CreateStage(m_18, vStage));
+            SetMovieClipLoader(CreateMovieClipLoader(m_18, vLoader));
+            GetGFxManager()->FUN_1422b0790(m_18);
             FUN_1422be140();
             FUN_1422be2a0();
             m_90 = true;
@@ -129,7 +129,7 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
     }
     else if (_stricmp("Tooltip", szEvent) == 0)
     {
-        GFxMovie* pTooltip = FUN_14025e7a0()->FindMovie(5);
+        GFxMovie* pTooltip = GetGFxManager()->FindMovie(5);
         if (pTooltip != 0)
         {
             const char* szMethod = pArgs[0].GetString();
@@ -138,7 +138,7 @@ void GFxMovieMain::vfunc_4(void* pMovie, const char* szEvent, const Scaleform::G
     }
     else if (_stricmp("MouseCursor", szEvent) == 0)
     {
-        GFxMovie* pCursor = FUN_14025e7a0()->FindMovie(6);
+        GFxMovie* pCursor = GetGFxManager()->FindMovie(6);
         if (pCursor != 0)
         {
             const char* szMethod = pArgs[0].GetString();
@@ -207,7 +207,7 @@ MS2_REPLACE_METHOD(0x1422EF3C0, GFxMovieMain, vfunc_4, 3030, 0xAAB4E01C);
 // @0x1422effa0
 void GFxMovieMain::vfunc_5(bool bShow)
 {
-    MS2Ptr<ASMovieClipLoader> spLoader = FUN_1422be4c0();
+    MS2Ptr<ASMovieClipLoader> spLoader = GetMovieClipLoader();
     if (spLoader.get())
         spLoader->Invoke("setVisibleStep", bShow ? 3 : 0);
 }

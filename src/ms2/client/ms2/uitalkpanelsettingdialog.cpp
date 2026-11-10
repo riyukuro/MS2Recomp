@@ -55,7 +55,7 @@ class Unk_140166410* FUN_140166410();
 class Unk_TpsKeys : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 CStringW BlockFormat(int nStringId);
-void FUN_140d73aa0(CStringW strText, int nA, void* pListener, CStringW strTag);
+void ShowMessageBox(CStringW strText, int nA, void* pListener, CStringW strTag);
 void FUN_140d73bc0(int nStringId, int nA, void* pListener, CStringW strTag);
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int n);
@@ -72,7 +72,7 @@ extern MessengerData::ScreenSetting DAT_143adda48;
 UITalkPanelSettingDialog::UITalkPanelSettingDialog()
 {
     FUN_1422dc3b0(1);
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_bApplied = 0;
 }
 
@@ -149,18 +149,18 @@ int UITalkPanelSettingDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class Unk_TpsKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class Unk_TpsKeys*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
     {
         if (MS2Ptr<ASTextInput> spTab = m_spRoot->FUN_140bbe880<ASTextInput>("m_tab"))
         {
             if (spTab->GetFocused() != 0)
             {
                 Unk_BlockList request(0x4e62);
-                request.Add("OnKeyHandler", FUN_141b23550(), false);
+                request.Add("OnKeyHandler", GetTabName(), false);
                 request.SetEnabled(true);
                 if (GetClientPlatform()->vfunc_37(&request) == 1)
                 {
-                    if (FUN_141b236c0(FUN_141b23550()) == 1)
+                    if (FUN_141b236c0(GetTabName()) == 1)
                     {
                         if (MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply"))
                             spApply->SetDisplayFocus(1);
@@ -181,11 +181,11 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     if (_stricmp("OnOk", szMethod) == 0)
     {
         Unk_BlockList request(0x4e62);
-        request.Add("OnOk", FUN_141b23550(), false);
+        request.Add("OnOk", GetTabName(), false);
         request.SetEnabled(true);
         if (GetClientPlatform()->vfunc_37(&request) == 1)
         {
-            if (FUN_141b236c0(FUN_141b23550()) == 1)
+            if (FUN_141b236c0(GetTabName()) == 1)
                 vfunc_67();
         }
         return 1;
@@ -198,11 +198,11 @@ int UITalkPanelSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     else if (_stricmp("eventApply", szMethod) == 0)
     {
         Unk_BlockList request(0x4e62);
-        request.Add("eventApply", FUN_141b23550(), false);
+        request.Add("eventApply", GetTabName(), false);
         request.SetEnabled(true);
         if (GetClientPlatform()->vfunc_37(&request) == 1)
         {
-            FUN_141b236c0(FUN_141b23550());
+            FUN_141b236c0(GetTabName());
             m_bApplied = 1;
         }
         return 1;
@@ -232,7 +232,7 @@ void UITalkPanelSettingDialog::vfunc_80(void* pRequest)
     if (request.Find("OnKeyHandler", value) == 1 && value.m_nFlags == 0)
     {
         // The key handler applies the text typed in the tab, not the request's text.
-        if (FUN_141b236c0(FUN_141b23550()) == 1)
+        if (FUN_141b236c0(GetTabName()) == 1)
         {
             if (MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply"))
                 spApply->SetDisplayFocus(1);
@@ -252,11 +252,11 @@ void UITalkPanelSettingDialog::vfunc_80(void* pRequest)
     }
     if (MS2Ptr<ASTextInput> spTab = m_spRoot->FUN_140bbe880<ASTextInput>("m_tab"))
         spTab->SetTextA("");
-    FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
+    ShowMessageBox(BlockFormat(0x8b7), 0, 0, CStringW(L""));
 }
 
 // @0x141b23550
-CStringW UITalkPanelSettingDialog::FUN_141b23550()
+CStringW UITalkPanelSettingDialog::GetTabName()
 {
     if (MS2Ptr<ASTextInput> spTab = m_spRoot->FUN_140bbe880<ASTextInput>("m_tab"))
         return reinterpret_cast<ASTextInput*>(spTab.operator->())->GetText();
@@ -293,7 +293,7 @@ int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
         {
             if (pChecker->FUN_140225f70(strName, strMessage) != 0)
             {
-                FUN_140d73aa0(CStringW(strMessage), 0, 0, CStringW(L""));
+                ShowMessageBox(CStringW(strMessage), 0, 0, CStringW(L""));
                 return 0;
             }
         }
@@ -306,8 +306,8 @@ int UITalkPanelSettingDialog::FUN_141b236c0(const CStringW& strName)
             GetState()->m_p40->ReselectCurrentTab();
             if (pTab->m_panel.FUN_141482150() != 0)
             {
-                GetState()->m_p48->FUN_141a25130(pTab->m_panel.FUN_1414821b0()->m_nFontSize);
-                GetState()->m_p48->FUN_141a25160(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
+                GetState()->m_p48->SetFontSize(pTab->m_panel.FUN_1414821b0()->m_nFontSize);
+                GetState()->m_p48->SetBackgroundAlpha(pTab->m_panel.FUN_1414821b0()->m_nBackgroundAlpha);
             }
             return 1;
         }
@@ -333,21 +333,21 @@ int UITalkPanelSettingDialog::FUN_141b23a40(const CStringW& strName)
 void UITalkPanelSettingDialog::FUN_141b23ab0(MessengerData::PanelSetting* pSetting)
 {
     if (MS2Ptr<ASCheckBox> sp = m_spRoot->FUN_140c11f50<ASCheckBox>("m_entire"))
-        s_nGlobal = sp->FUN_1422ce0e0();
+        s_nGlobal = sp->IsSelected();
     if (MS2Ptr<ASSlider> sp = m_spRoot->FUN_140fafed0<ASSlider>("m_sliderTransparent"))
     {
-        pSetting->m_screen.m_nBackgroundAlpha = (int)(__int64)sp->FUN_1422ce630();
-        DAT_143adda48.m_nBackgroundAlpha = (int)(__int64)sp->FUN_1422ce630();
+        pSetting->m_screen.m_nBackgroundAlpha = (int)(__int64)sp->GetValue();
+        DAT_143adda48.m_nBackgroundAlpha = (int)(__int64)sp->GetValue();
     }
     if (MS2Ptr<ASSlider> sp = m_spRoot->FUN_140fafed0<ASSlider>("m_sliderFontsize"))
     {
-        pSetting->m_screen.m_nFontSize = (int)(__int64)sp->FUN_1422ce630();
-        DAT_143adda48.m_nFontSize = (int)(__int64)sp->FUN_1422ce630();
+        pSetting->m_screen.m_nFontSize = (int)(__int64)sp->GetValue();
+        DAT_143adda48.m_nFontSize = (int)(__int64)sp->GetValue();
     }
     if (MS2Ptr<ASRadioButton> sp = m_spRoot->FUN_140e159f0<ASRadioButton>("m_damageShow"))
     {
-        pSetting->m_screen.m_nShowDamage = sp->FUN_1422ce0e0();
-        DAT_143adda48.m_nShowDamage = sp->FUN_1422ce0e0();
+        pSetting->m_screen.m_nShowDamage = sp->IsSelected();
+        DAT_143adda48.m_nShowDamage = sp->IsSelected();
     }
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_subjectAll", (unsigned int*)&pSetting->m_subject.m_nAll);
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_super", (unsigned int*)&pSetting->m_subject.m_nSuper);
@@ -357,10 +357,10 @@ void UITalkPanelSettingDialog::FUN_141b23ab0(MessengerData::PanelSetting* pSetti
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_party", (unsigned int*)&pSetting->m_subject.m_nParty);
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_guild", (unsigned int*)&pSetting->m_subject.m_nGuild);
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_whisper", (unsigned int*)&pSetting->m_subject.m_nWhisper);
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x56) == 1)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x56) == 1)
         FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_club", (unsigned int*)&pSetting->m_subject.m_nClub);
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_partyInvite", (unsigned int*)&pSetting->m_subject.m_nPartyInvite);
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x93) == 1)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x93) == 1)
         FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_dungeonHelp", (unsigned int*)&pSetting->m_subject.m_nDungeonHelp);
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_requireAll", (unsigned int*)&pSetting->m_require.m_nAll);
     FUN_140d00960((*m_spRoot).FUN_1422bb890(), "m_meso", (unsigned int*)&pSetting->m_require.m_nMeso);
@@ -389,13 +389,13 @@ void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetti
 {
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_entire", s_nGlobal);
     if (MS2Ptr<ASSlider> sp = m_spRoot->FUN_140fafed0<ASSlider>("m_sliderTransparent"))
-        sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nBackgroundAlpha);
+        sp->SetValue((float)(unsigned int)pSetting->FUN_1414821b0()->m_nBackgroundAlpha);
     if (MS2Ptr<ASSlider> sp = m_spRoot->FUN_140fafed0<ASSlider>("m_sliderFontsize"))
-        sp->FUN_1422ce5f0((float)(unsigned int)pSetting->FUN_1414821b0()->m_nFontSize);
+        sp->SetValue((float)(unsigned int)pSetting->FUN_1414821b0()->m_nFontSize);
     if (MS2Ptr<ASRadioButton> sp = m_spRoot->FUN_140e159f0<ASRadioButton>("m_damageShow"))
-        reinterpret_cast<ASButton*>(sp.operator->())->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage);
+        reinterpret_cast<ASButton*>(sp.operator->())->SetSelected(pSetting->FUN_1414821b0()->m_nShowDamage);
     if (MS2Ptr<ASRadioButton> sp = m_spRoot->FUN_140e159f0<ASRadioButton>("m_damageHide"))
-        reinterpret_cast<ASButton*>(sp.operator->())->FUN_1422ce090(pSetting->FUN_1414821b0()->m_nShowDamage == 0);
+        reinterpret_cast<ASButton*>(sp.operator->())->SetSelected(pSetting->FUN_1414821b0()->m_nShowDamage == 0);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_subjectAll", pSetting->FUN_141482200()->m_nAll);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_social", pSetting->FUN_141482200()->m_nSocial);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_party", pSetting->FUN_141482200()->m_nParty);
@@ -404,12 +404,12 @@ void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetti
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_super", pSetting->FUN_141482200()->m_nSuper);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_world", pSetting->FUN_141482200()->m_nWorld);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_channel", pSetting->FUN_141482200()->m_nChannel);
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x56) == 1)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x56) == 1)
         FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_club", pSetting->FUN_141482200()->m_nClub);
     else
         FUN_140cff840((*m_spRoot).FUN_1422bb890(), "m_club", 0);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_partyInvite", pSetting->FUN_141482200()->m_nPartyInvite);
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x93) == 1)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x93) == 1)
         FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_dungeonHelp", pSetting->FUN_141482200()->m_nDungeonHelp);
     else
         FUN_140cff840((*m_spRoot).FUN_1422bb890(), "m_dungeonHelp", 0);
@@ -434,7 +434,7 @@ void UITalkPanelSettingDialog::FUN_141b24ee0(MessengerData::PanelSetting* pSetti
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_event", pSetting->FUN_141482190()->m_nEvent);
     FUN_140d00860((*m_spRoot).FUN_1422bb890(), "m_notice", pSetting->FUN_141482190()->m_nNotice);
     if (MS2Ptr<ASButton> sp = GetChild<ASButton>("m_apply"))
-        sp->FUN_1422c1fe0(0);
+        sp->SetEnabled(0);
     if (m_spRoot.get() != 0)
         m_spRoot->Invoke("alignCheckBox");
 }

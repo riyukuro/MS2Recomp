@@ -41,7 +41,7 @@ public:
     static const unsigned MIN_TRAFFIC;
     CTrafficOptimizer();
     virtual ~CTrafficOptimizer();
-    unsigned FUN_14087d2f0(Unk_TOEntity* entity);
+    unsigned GetTrafficLimit(Unk_TOEntity* entity);
     unsigned FUN_14087d410(Unk_TOEntity* entity);
     unsigned FUN_14087d500(Unk_TOEntity* entity);
     unsigned FUN_14087d540(Unk_TOEntity* entity);

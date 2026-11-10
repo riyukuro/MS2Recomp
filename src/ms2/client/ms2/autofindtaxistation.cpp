@@ -157,15 +157,15 @@ public:
 public:
     void SetMode(int, int);   // C3: was free SetMode
 };
-float FUN_14029cc60(float f);
-float FUN_14029dba0(float f);
+float Cos(float f);
+float Sin(float f);
 
 // ---- inline COMDATs of this obj ----
 
 // @0x1409f2310
-float FUN_1409f2310(float f) { return FUN_14029cc60(f); }
+float FUN_1409f2310(float f) { return Cos(f); }
 // @0x1409f25a0
-float FUN_1409f25a0(float f) { return FUN_14029dba0(f); }
+float FUN_1409f25a0(float f) { return Sin(f); }
 // @0x1409f24a0
 Unk_TaxiResTable* GetTaxiManager() { return reinterpret_cast<Unk_TaxiResTable*>(TSingleton<CTaxiManager>::s_instance); }
 // @0x1409f24b0

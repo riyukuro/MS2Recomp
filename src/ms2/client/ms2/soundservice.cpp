@@ -45,10 +45,10 @@ struct Unk_SoundCfg
     CStringA m_strTarget;                                           // +0x78
     CStringA m_strSource;                                           // +0x80
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-CSoundService* FUN_140c9cb10();                                     // the sound service
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
+CSoundService* GetSoundService();                                     // the sound service
 class CGameOption;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -57,12 +57,12 @@ public:
     class GFxVideo* GetVideo();
 };
 void* FUN_140aadf80();
-class GFxVideo { public: bool FUN_1422ec700(HWND hWnd); };   // C3: view of gfxvideo.h
+class GFxVideo { public: bool RestoreSoundSystem(HWND hWnd); };   // C3: view of gfxvideo.h
 class CSoundEventMgr   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_14177ba30();
-    void FUN_14177bb70(float);
+    void Shutdown();
+    void Update(float);
     void OnLostSoundDevice();
     void FUN_14177bf20();
     void SetCategoryMute(int, unsigned int);
@@ -192,17 +192,17 @@ Unk_EventLoadInfo::Unk_EventLoadInfo()
 // @0x1417b4270
 Unk_SoundTag::Unk_SoundTag() : m_nSubSound(0), m_uLength(0), m_nBank(0) {}
 
-void FUN_1417b4a40(int nState);
+void SetReloadState(int nState);
 #ifndef MS2_HOOK_DLL
 // @0x1417b4a40
-void FUN_1417b4a40(int nState)
+void SetReloadState(int nState)
 {
     s_nReload = nState;
 }
 #endif
 
 // @0x1417b4af0
-FMOD_RESULT FUN_1417b4af0(FMOD::EventSystem** ppSystem)
+FMOD_RESULT CreateEventSystem(FMOD::EventSystem** ppSystem)
 {
     return FMOD_EventSystem_Create((FMOD_EVENTSYSTEM**)ppSystem);
 }
@@ -219,7 +219,7 @@ const char* FUN_1417b0e10(FMOD_RESULT nResult)
 
 // false (and a log line) when the FMOD call failed
 // @0x1417b1430
-int FUN_1417b1430(FMOD_RESULT nResult)
+int CheckFmodResult(FMOD_RESULT nResult)
 {
     if (nResult != FMOD_OK)
     {
@@ -235,7 +235,7 @@ int FUN_1417b1430(FMOD_RESULT nResult)
 
 // FMOD_SYSTEM_CALLBACK_DEVICELISTCHANGED: remember that the device list changed
 // @0x1417b14a0
-FMOD_RESULT F_CALLBACK FUN_1417b14a0(FMOD_SYSTEM* pSystem, FMOD_SYSTEM_CALLBACKTYPE nType, void* pData1, void* pData2)
+FMOD_RESULT F_CALLBACK OnSystemCallback(FMOD_SYSTEM* pSystem, FMOD_SYSTEM_CALLBACKTYPE nType, void* pData1, void* pData2)
 {
     switch (nType)
     {
@@ -244,7 +244,7 @@ FMOD_RESULT F_CALLBACK FUN_1417b14a0(FMOD_SYSTEM* pSystem, FMOD_SYSTEM_CALLBACKT
         int nDrivers = 0;
         FMOD_System_GetNumDrivers(pSystem, &nDrivers);
         if (nDrivers != 0)
-            FUN_1417b4a40(1);
+            SetReloadState(1);
         if (GetLogString() != 0)
             Unk_AdditionalLog(GetLogString(), 0xc, 0x12f, L"FMOD_SYSTEM_CALLBACKTYPE_DEVICELISTCHANGED");
         break;
@@ -346,7 +346,7 @@ float CSoundService::GetVolume()
 }
 
 // @0x1417ae760
-void CSoundService::FUN_1417ae760(float fVolume)
+void CSoundService::SetVolume(float fVolume)
 {
     m_fVolume = fVolume;
     if (DAT_1439f86ac != 0 && m_pSystem != 0 && m_pNetStream != 0)
@@ -355,7 +355,7 @@ void CSoundService::FUN_1417ae760(float fVolume)
 
 // Log a failed FMOD call (nothing for FMOD_OK).
 // @0x1417ae7c0
-void FUN_1417ae7c0(FMOD_RESULT nResult)
+void LogFmodError(FMOD_RESULT nResult)
 {
     if (nResult != FMOD_OK)
     {
@@ -393,15 +393,15 @@ void CSoundService::FUN_1417ae840(int nFlag)
 // @0x1417ae990
 int CSoundService::FUN_1417ae990()
 {
-    if (((void*)FUN_14025e7a0()) != 0)
+    if (((void*)GetGFxManager()) != 0)
     {
-        if (((void*)((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->GetVideo()) != 0)
+        if (((void*)((class GFxManager*)(void*)(((void*)GetGFxManager())))->GetVideo()) != 0)
         {
-            ((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->GetVideo()->FUN_1422ec700(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef());
+            ((class GFxManager*)(void*)(((void*)GetGFxManager())))->GetVideo()->RestoreSoundSystem(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef());
         }
     }
     if (GetSystem() != 0)
-        GetSystem()->setCallback(FUN_1417b14a0);
+        GetSystem()->setCallback(OnSystemCallback);
     if (FUN_1417aea70() != 0)
     {
         ((CSoundEventMgr*)TSingleton<CSoundEventMgr>::GetInstance())->FUN_14177af40(GetEventSystem(), GetSystem());
@@ -431,7 +431,7 @@ int CSoundService::FUN_1417aea70()
             pszLanguage = "Korea";
             break;
         }
-        return FUN_1417aee20(((struct Unk_SoundCfg*)FUN_1401d31f0())->m_strTarget, pszLanguage);
+        return FUN_1417aee20(((struct Unk_SoundCfg*)GetCommonResource())->m_strTarget, pszLanguage);
     }
     return 0;
 }
@@ -439,7 +439,7 @@ int CSoundService::FUN_1417aea70()
 // @0x1417aeb40
 int CSoundService::FUN_1417aeb40()
 {
-    FMOD_RESULT nResult = FUN_1417b4af0(&m_pEventSystem);
+    FMOD_RESULT nResult = CreateEventSystem(&m_pEventSystem);
     if (nResult != FMOD_OK)
         return 0;
     nResult = m_pEventSystem->getSystemObject(&m_pSystem);
@@ -566,11 +566,11 @@ int CSoundService::FUN_1417aee20(CStringA strMediaPath, const char* szLanguage)
         return 0;
     }
     m_bLoaded = true;
-    FUN_1417aff20(strMediaPath);
+    OpenVoiceStreams(strMediaPath);
     if (DAT_1439f86ac != 0)
     {
         nResult = m_pSystem->setStreamBufferSize(0x80000, FMOD_TIMEUNIT_RAWBYTES);
-        if (FUN_1417b1430(nResult) == 0)
+        if (CheckFmodResult(nResult) == 0)
             DAT_1439f86ac = 0;
     }
     return 1;
@@ -626,7 +626,7 @@ void CSoundService::FUN_1417af4f0(CStringA strUrl)
         if (!strUrl.IsEmpty())
         {
             FMOD_RESULT nResult = m_pSystem->createSound(strUrl, 0x100a8, 0, &m_pNetSound);
-            if (FUN_1417b1430(nResult) != 0)
+            if (CheckFmodResult(nResult) != 0)
                 m_pNetStream = new CNetStreamSound;
         }
     }
@@ -660,8 +660,8 @@ void FUN_1417af6e0()
         ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->OnLostSoundDevice();
     if ((void*)TSingleton<CEffectService>::GetInstance() != 0)
         ((class CEffectService*)(void*)((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6160();
-    if (FUN_140c9cb10() != 0)
-        FUN_140c9cb10()->FUN_1417af340();
+    if (GetSoundService() != 0)
+        GetSoundService()->FUN_1417af340();
 }
 
 bool FUN_1417af740(bool bFlag, void* pData);
@@ -694,11 +694,11 @@ int FUN_1417af7a0()
     ATL::CAtlArray<CStringA> aSource;
     ATL::CAtlArray<CStringA> aTarget;
     GetFileSystem();
-    FUN_140399620(CStringA("*.*"), CStringA(((struct Unk_SoundCfg*)FUN_1401d31f0())->m_strSource), aSource, CStringA(""), false);
+    FUN_140399620(CStringA("*.*"), CStringA(((struct Unk_SoundCfg*)GetCommonResource())->m_strSource), aSource, CStringA(""), false);
     for (unsigned i = 0; i < aSource.GetCount(); i++)
     {
         CStringA strFile(aSource[i]);
-        strFile.Replace(((struct Unk_SoundCfg*)FUN_1401d31f0())->m_strSource, ((struct Unk_SoundCfg*)FUN_1401d31f0())->m_strTarget);
+        strFile.Replace(((struct Unk_SoundCfg*)GetCommonResource())->m_strSource, ((struct Unk_SoundCfg*)GetCommonResource())->m_strTarget);
         aTarget.Add(strFile);
     }
     for (unsigned i = 0; i < aSource.GetCount(); i++)
@@ -711,12 +711,12 @@ int FUN_1417af7a0()
             return 0;
         }
     }
-    FUN_1417b4a40(1);
+    SetReloadState(1);
     return 1;
 }
 
 // @0x1417afad0
-void CSoundService::FUN_1417afad0(CStringW strMessage)
+void CSoundService::AddMessage(CStringW strMessage)
 {
     m_listMessages.push_back(strMessage);
 }
@@ -725,12 +725,12 @@ void CSoundService::FUN_1417afad0(CStringW strMessage)
 void FUN_1417afb20(void* pParam)
 {
     FUN_1417af6e0();
-    FUN_1417b4a40(1);
+    SetReloadState(1);
 }
 
 // Fill the tag table with the sub sounds of the opened voice banks.
 // @0x1417afb50
-void CSoundService::FUN_1417afb50()
+void CSoundService::BuildTagTable()
 {
     if (m_vecBanks.size() == 0)
         return;
@@ -747,7 +747,7 @@ void CSoundService::FUN_1417afb50()
         } while (nState != FMOD_OPENSTATE_READY);
         int nSubSounds;
         FMOD_RESULT nResult = pBank->getNumSubSounds(&nSubSounds);
-        if (FUN_1417b1430(nResult) == 0)
+        if (CheckFmodResult(nResult) == 0)
             return;
         CStringA strPrefix("");
         switch (FUN_1406516c0())
@@ -772,14 +772,14 @@ void CSoundService::FUN_1417afb50()
                 pBank->getOpenState(&nState, 0, 0, 0);
             } while (nState != FMOD_OPENSTATE_READY);
             nResult = pSub->getName(szName, 0x104);
-            if (FUN_1417b1430(nResult) == 0)
+            if (CheckFmodResult(nResult) == 0)
             {
                 m_mapTags.clear();
                 return;
             }
             unsigned uLength;
             nResult = pSub->getLength(&uLength, FMOD_TIMEUNIT_MS);
-            if (FUN_1417b1430(nResult) == 0)
+            if (CheckFmodResult(nResult) == 0)
             {
                 m_mapTags.clear();
                 return;
@@ -801,7 +801,7 @@ void CSoundService::FUN_1417afb50()
 
 // Open the voice streams of the client language.
 // @0x1417aff20
-void CSoundService::FUN_1417aff20(CStringA strMediaPath)
+void CSoundService::OpenVoiceStreams(CStringA strMediaPath)
 {
     CStringA strDir(strMediaPath);
     std::vector<CStringA> aFiles;
@@ -841,14 +841,14 @@ void CSoundService::FUN_1417aff20(CStringA strMediaPath)
             FMOD_RESULT nResult = m_pSystem->createStream(aFiles[i], 0x10048, 0, &pSound);
             if (nResult != FMOD_OK)
                 continue;
-            FUN_1417b1430(nResult);
+            CheckFmodResult(nResult);
             m_vecBanks.push_back(pSound);
         }
     }
 }
 
 // @0x1417b03d0
-bool CSoundService::FUN_1417b03d0(const CStringA& strName)
+bool CSoundService::HasTag(const CStringA& strName)
 {
     std::map<CStringA, Unk_SoundTag>::iterator it = m_mapTags.find(strName);
     if (it == m_mapTags.end())
@@ -857,7 +857,7 @@ bool CSoundService::FUN_1417b03d0(const CStringA& strName)
 }
 
 // @0x1417b0440
-int CSoundService::FUN_1417b0440(const CStringA& strName, size_t* pBank)
+int CSoundService::GetSubSoundIndex(const CStringA& strName, size_t* pBank)
 {
     std::map<CStringA, Unk_SoundTag>::iterator it = m_mapTags.find(strName);
     if (it == m_mapTags.end())
@@ -867,7 +867,7 @@ int CSoundService::FUN_1417b0440(const CStringA& strName, size_t* pBank)
 }
 
 // @0x1417b04d0
-int CSoundService::FUN_1417b04d0(const CStringA& strName, size_t* pBank)
+int CSoundService::GetSoundLength(const CStringA& strName, size_t* pBank)
 {
     std::map<CStringA, Unk_SoundTag>::iterator it = m_mapTags.find(strName);
     if (it == m_mapTags.end())
@@ -877,10 +877,10 @@ int CSoundService::FUN_1417b04d0(const CStringA& strName, size_t* pBank)
 }
 
 // @0x1417b0560
-void CSoundService::FUN_1417b0560(const CStringA& strName, FMOD::Sound** ppSound)
+void CSoundService::GetSubSound(const CStringA& strName, FMOD::Sound** ppSound)
 {
     size_t nBank = 0;
-    int nSub = FUN_1417b0440(strName, &nBank);
+    int nSub = GetSubSoundIndex(strName, &nBank);
     if (nSub == -1)
     {
         *ppSound = 0;
@@ -898,7 +898,7 @@ void CSoundService::FUN_1417b0560(const CStringA& strName, FMOD::Sound** ppSound
         return;
     }
     FMOD_RESULT nResult = pBank->getSubSound(nSub, ppSound);
-    if (FUN_1417b1430(nResult) == 0)
+    if (CheckFmodResult(nResult) == 0)
         *ppSound = 0;
 }
 
@@ -908,7 +908,7 @@ efd::SyncResult CSoundService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
     FUN_1417b1750(pRegistrar, 1);
     FUN_1417aeb40();
     FUN_1417ae990();
-    FUN_1417afb50();
+    BuildTagTable();
     return efd::SyncResult_Success;
 }
 
@@ -927,7 +927,7 @@ efd::AsyncResult CSoundService::OnInit()
 // @0x1417b0730
 efd::AsyncResult CSoundService::OnTick()
 {
-    ((class SoundPropertyMgr*)(void*)((void*)TSingleton<SoundPropertyMgr>::GetInstance()))->FUN_141793450();
+    ((class SoundPropertyMgr*)(void*)((void*)TSingleton<SoundPropertyMgr>::GetInstance()))->ReloadIfChanged();
     float fDelta = ((class CMainSystem*)(void*)((void*)TSingleton<CMainSystem>::GetInstance()))->GetLastGameTimeDelta();
     if (s_nReload != 0)
     {
@@ -938,13 +938,13 @@ efd::AsyncResult CSoundService::OnTick()
             {
                 ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->FUN_14177bf20();
                 FUN_14125fe20((struct Unk_SoundState*)(((void*)((class CGameOption*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->FUN_140d13c70())));
-                ((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->FUN_1422afe50();
+                ((class GFxManager*)(void*)(((void*)GetGFxManager())))->FUN_1422afe50();
             }
             s_nReload = 0;
         }
         else if (s_nReload == 1)
         {
-            ((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->FUN_1422afe90();
+            ((class GFxManager*)(void*)(((void*)GetGFxManager())))->FUN_1422afe90();
             FUN_1417af6e0();
             s_nReload = 2;
         }
@@ -997,16 +997,16 @@ efd::AsyncResult CSoundService::OnTick()
             vVel.y = 0;
             vVel.z = 0;
             FMOD_RESULT nResult = GetEventSystem()->set3DListenerAttributes(0, &vPos, &vVel, &vUp, &vForward);
-            FUN_1417ae7c0(nResult);
+            LogFmodError(nResult);
             nResult = GetEventSystem()->update();
-            FUN_1417ae7c0(nResult);
+            LogFmodError(nResult);
         }
-        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->FUN_14177bb70(fDelta);
+        ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->Update(fDelta);
     }
     else if (GetEventSystem() != 0)
     {
         FMOD_RESULT nResult = GetEventSystem()->update();
-        FUN_1417ae7c0(nResult);
+        LogFmodError(nResult);
     }
     if (GetSystem() != 0)
         GetSystem()->update();
@@ -1024,7 +1024,7 @@ efd::AsyncResult CSoundService::OnShutdown()
         ((NiDX9Renderer*)pObj)->RemoveLostDeviceNotificationFunc(FUN_1417af780);
     }
     ((class CEffectService*)(void*)((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a6160();
-    ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->FUN_14177ba30();
+    ((class CSoundEventMgr*)(void*)(TSingleton<CSoundEventMgr>::GetInstance()))->Shutdown();
     FUN_1417af340();
     return efd::AsyncResult_Complete;
 }
@@ -1075,17 +1075,17 @@ int CNetStreamSound::vfunc_1(CSoundService* pService)
     }
     FMOD_OPENSTATE nState;
     nResult = pSound->getOpenState(&nState, &uPercent, &bStarving, 0);
-    FUN_1417b1430(nResult);
+    CheckFmodResult(nResult);
     if (m_pChannel != 0)
     {
         nResult = m_pChannel->getPaused(&bPaused);
-        FUN_1417b1430(nResult);
+        CheckFmodResult(nResult);
         nResult = m_pChannel->isPlaying(&bPlaying);
-        FUN_1417b1430(nResult);
+        CheckFmodResult(nResult);
         nResult = m_pChannel->getPosition(&uPosition, FMOD_TIMEUNIT_MS);
-        FUN_1417b1430(nResult);
+        CheckFmodResult(nResult);
         nResult = m_pChannel->setMute(bStarving);
-        FUN_1417b1430(nResult);
+        CheckFmodResult(nResult);
     }
     if (nState == FMOD_OPENSTATE_BUFFERING)
     {
@@ -1093,7 +1093,7 @@ int CNetStreamSound::vfunc_1(CSoundService* pService)
         {
             CStringW strMessage;
             strMessage.Format(L"Buffering... (%3d%%) ", uPercent);
-            pService->FUN_1417afad0(CStringW(strMessage));
+            pService->AddMessage(CStringW(strMessage));
             m_uBuffered = uPercent;
         }
         m_nState = 2;
@@ -1102,7 +1102,7 @@ int CNetStreamSound::vfunc_1(CSoundService* pService)
     {
         CStringW strStopped;
         strStopped.Format(L"Stopped NetStream");
-        pService->FUN_1417afad0(CStringW(strStopped));
+        pService->AddMessage(CStringW(strStopped));
         m_uBuffered = 0;
         m_nState = 3;
         return -1;
@@ -1124,7 +1124,7 @@ void CNetStreamSound::FUN_1417b5000(CSoundService* pService)
     if (m_pChannel != 0)
     {
         nResult = m_pChannel->stop();
-        FUN_1417b1430(nResult);
+        CheckFmodResult(nResult);
     }
     if (1 < m_nState)
     {
@@ -1133,7 +1133,7 @@ void CNetStreamSound::FUN_1417b5000(CSoundService* pService)
             FMOD::Sound* pSound = pService->GetNetSound();
             FMOD_OPENSTATE nState;
             nResult = pSound->getOpenState(&nState, 0, 0, 0);
-            if (FUN_1417b1430(nResult) == 0)
+            if (CheckFmodResult(nResult) == 0)
                 break;
             if (nState == FMOD_OPENSTATE_READY)
                 break;
@@ -1148,7 +1148,7 @@ MS2_REPLACE_METHOD_VIA(0x1417AE6E0, CSoundService, efd::ISystemService, GetDispl
 MS2_REPLACE_METHOD(0x1417AE700, CSoundService, GetSystem, 15, 0x9BD8F6D9);
 MS2_REPLACE_METHOD(0x1417AE720, CSoundService, GetEventSystem, 15, 0xAC153A31);
 MS2_REPLACE_METHOD(0x1417AE740, CSoundService, GetNetSound, 15, 0xAB75D671);
-MS2_REPLACE_METHOD(0x1417AE760, CSoundService, FUN_1417ae760, 89, 0x76C22EF4);
+MS2_REPLACE_METHOD(0x1417AE760, CSoundService, SetVolume, 89, 0x76C22EF4);
 MS2_REPLACE_METHOD(0x1417AE840, CSoundService, FUN_1417ae840, 318, 0x243083BB);
 MS2_REPLACE_METHOD(0x1417AEA70, CSoundService, FUN_1417aea70, 192, 0x18644FC3);
 MS2_REPLACE_METHOD(0x1417AEB40, CSoundService, FUN_1417aeb40, 281, 0x6A4BB7A2);
@@ -1156,13 +1156,13 @@ MS2_REPLACE_METHOD(0x1417AEC60, CSoundService, FUN_1417aec60, 442, 0xD849C694);
 MS2_REPLACE_METHOD(0x1417AEE20, CSoundService, FUN_1417aee20, 1301, 0x7589DEB7);
 MS2_REPLACE_METHOD(0x1417AF340, CSoundService, FUN_1417af340, 416, 0xC91B5A09);
 MS2_REPLACE_METHOD(0x1417AF600, CSoundService, FUN_1417af600, 214, 0xA5FE5615);
-MS2_REPLACE_METHOD(0x1417AFAD0, CSoundService, FUN_1417afad0, 64, 0x8FC7AFB4);
-MS2_REPLACE_METHOD(0x1417AFB50, CSoundService, FUN_1417afb50, 964, 0x3C3484B2);
-MS2_REPLACE_METHOD(0x1417AFF20, CSoundService, FUN_1417aff20, 1184, 0xAE11DED1);
-MS2_REPLACE_METHOD(0x1417B03D0, CSoundService, FUN_1417b03d0, 94, 0xB5146B94);
-MS2_REPLACE_METHOD(0x1417B0440, CSoundService, FUN_1417b0440, 135, 0x078AD050);
-MS2_REPLACE_METHOD(0x1417B04D0, CSoundService, FUN_1417b04d0, 135, 0x0B935D37);
-MS2_REPLACE_METHOD(0x1417B0560, CSoundService, FUN_1417b0560, 219, 0x360C5E76);
+MS2_REPLACE_METHOD(0x1417AFAD0, CSoundService, AddMessage, 64, 0x8FC7AFB4);
+MS2_REPLACE_METHOD(0x1417AFB50, CSoundService, BuildTagTable, 964, 0x3C3484B2);
+MS2_REPLACE_METHOD(0x1417AFF20, CSoundService, OpenVoiceStreams, 1184, 0xAE11DED1);
+MS2_REPLACE_METHOD(0x1417B03D0, CSoundService, HasTag, 94, 0xB5146B94);
+MS2_REPLACE_METHOD(0x1417B0440, CSoundService, GetSubSoundIndex, 135, 0x078AD050);
+MS2_REPLACE_METHOD(0x1417B04D0, CSoundService, GetSoundLength, 135, 0x0B935D37);
+MS2_REPLACE_METHOD(0x1417B0560, CSoundService, GetSubSound, 219, 0x360C5E76);
 MS2_REPLACE_METHOD(0x1417B4B20, CSoundService, GetVolume, 16, 0x1BE201AE);
 // ISystemService subobject is at +8 (TSingleton is the primary base): the exe override receives that pointer.
 MS2_REPLACE_METHOD_VIA(0x1417B0650, CSoundService, efd::ISystemService, OnPreInit, 90, 0xF1E3BB61);
@@ -1170,9 +1170,9 @@ MS2_REPLACE_METHOD_VIA(0x1417B0D70, CSoundService, efd::ISystemService, OnShutdo
 MS2_REPLACE_METHOD(0x1417B4B70, CNetStreamSound, vfunc_1, 976, 0xF2F6A5E7);
 MS2_REPLACE_METHOD(0x1417B4F40, CNetStreamSound, FUN_1417b4f40, 52, 0xC846719B);
 MS2_REPLACE_METHOD(0x1417B5000, CNetStreamSound, FUN_1417b5000, 172, 0xD6E81C53);
-MS2_REPLACE(0x1417AE7C0, FUN_1417ae7c0, 120, 0x18D2293F);
+MS2_REPLACE(0x1417AE7C0, LogFmodError, 120, 0x18D2293F);
 MS2_REPLACE(0x1417B0E10, FUN_1417b0e10, 1170, 0xA6EF09CD);
-MS2_REPLACE(0x1417B1430, FUN_1417b1430, 104, 0xDDD2EC2D);
+MS2_REPLACE(0x1417B1430, CheckFmodResult, 104, 0xDDD2EC2D);
 MS2_REPLACE(0x1417AF6E0, FUN_1417af6e0, 78, 0x813B7838);
 MS2_REPLACE(0x1417B1750, FUN_1417b1750, 43, 0x80F9CB23);
 MS2_REPLACE(0x1417B7270, FUN_1417b7270, 34, 0x1E249CF5);

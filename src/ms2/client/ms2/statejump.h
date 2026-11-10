@@ -35,7 +35,7 @@ public:
     virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x1417d64c0
     virtual bool vfunc_28(MS2Ptr<StateSyncObject> p);        // 28 0x1417d6560
 
-    bool FUN_1417d65d0();                                   // the jump has lasted long enough (timer + m_n80 < clock)
+    bool IsJumpTimeElapsed();                                   // the jump has lasted long enough (timer + m_n80 < clock)
     int FUN_1417d6620();                                    // the object to sit / lie on (+0x58) is taken or the ride ended
 
     efd::Point3 m_vDir;                                     // +0x40 the launch direction (world)

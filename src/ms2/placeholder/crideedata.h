@@ -213,7 +213,7 @@ public:
     bool FUN_140784390(const CRideeData& o);                // differs
     CString FUN_140784880(int nLevel);                      // animation (kfm) name for the rider's level
     CString FUN_140784920(int nLevel);                      // scene graph (nif) name (nLevel unused)
-    Unk_RiderPtr FUN_140784970();                           // the default seat
+    Unk_RiderPtr GetDefaultRider();                           // the default seat
     Unk_RiderPtr FUN_1407849c0(int nIndex);                 // seat nIndex of the passengers
 
     RideeData::Basic m_basic;                               // +0x28
@@ -231,4 +231,4 @@ MS2_CHECK_OFFSET(CRideeData, m_passengers, 0x268);
 MS2_CHECK_OFFSET(CRideeData, m_effectDummies, 0x280);
 
 typedef MS2SvrPtr<CRideeData> CRideeDataPtr;
-CRideeDataPtr FUN_1407844b0(unsigned nId);                  // the riding row of an id (unit_140781d80)
+CRideeDataPtr GetRideeData(unsigned nId);                  // the riding row of an id (unit_140781d80)

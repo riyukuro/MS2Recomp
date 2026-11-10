@@ -33,9 +33,9 @@
 #include "ms2/commonfiles/itemgift.h"
 #include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<GameEventAttendGiftCli> (was Unk_DTPtr of Unk_DTEntry; Unk_DTEntry = GameEventAttendGiftCli)
 template<> inline bool MS2Ptr<ItemGift>::operator==(ItemGift* p)const{return m_p==p;}
-class Unk_BonusBar* FUN_140933220();
+class Unk_BonusBar* GetGameEventUserValueManager();
 
-class Unk_DTPackets {public:void FUN_140da5180(int,Delegate<void(CInPacket&)>);void FUN_140da51e0(int,Delegate<void(CInPacket&)>);};class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_DTPackets {public:void FUN_140da5180(int,Delegate<void(CInPacket&)>);void FUN_140da51e0(int,Delegate<void(CInPacket&)>);};class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_SingletonObj* FUN_140939a10();
 class Unk_DTInput {public:virtual bool vfunc_0();virtual unsigned char vfunc_1();};
 struct Unk_DTInputPrefix {void* p0;Unk_DTInput stream;};
@@ -45,15 +45,15 @@ template<class T> T* FindDTDialog(int id){if(reinterpret_cast<Unk_DTUIManager*>(
 
 // @0x140c032b0
 UIDTAttendPopup::UIDTAttendPopup(){
- m_2c=0x19;m_80=1;FUN_141925e70(0,1);
- ((class GameEventUserValueManager*)FUN_140933220())->RegisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIDTAttendPopup::OnEvent));
- ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x11,Delegate<void(CInPacket&)>(this,&UIDTAttendPopup::OnPacket));
+ m_2c=0x19;m_80=1;SetFlag(0,1);
+ ((class GameEventUserValueManager*)GetGameEventUserValueManager())->RegisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIDTAttendPopup::OnEvent));
+ ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x11,Delegate<void(CInPacket&)>(this,&UIDTAttendPopup::OnPacket));
  reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyOpenDialogByScene",Delegate<void(NotifyObject*)>(this,&UIDTAttendPopup::OnNotify));
 }
 // @0x140c035d0
 UIDTAttendPopup::~UIDTAttendPopup(){
- ((class GameEventUserValueManager*)FUN_140933220())->UnregisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIDTAttendPopup::OnEvent));
- ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x11,Delegate<void(CInPacket&)>(this,&UIDTAttendPopup::OnPacket));
+ ((class GameEventUserValueManager*)GetGameEventUserValueManager())->UnregisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIDTAttendPopup::OnEvent));
+ ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x11,Delegate<void(CInPacket&)>(this,&UIDTAttendPopup::OnPacket));
  reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyOpenDialogByScene",Delegate<void(NotifyObject*)>(this,&UIDTAttendPopup::OnNotify));
 }
 // @0x140c03850
@@ -64,7 +64,7 @@ int UIDTAttendPopup::vfunc_65(){if(!UIDialog::vfunc_65())return 0;return 1;}
 MS2_REPLACE_METHOD(0x140C038A0, UIDTAttendPopup, vfunc_65, 37, 0x630C43C0);
 // @0x140c038d0
 void UIDTAttendPopup::OnLoadComplete(){
- UIDialog::OnLoadComplete();FUN_141925fa0("m_dragBar");
+ UIDialog::OnLoadComplete();BindDragBar("m_dragBar");
  do{m_30->FUN_140bc71c0("m_item",m_item);if(m_item==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(49),__FUNCTION__));}while(0);
  do{m_item->FUN_140beaf20("m_time",m_time);if(m_time==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(50),__FUNCTION__));}while(0);
  do{m_item->FUN_140bc7100("m_icon",m_icon);if(m_icon==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(51),__FUNCTION__));}while(0);

@@ -46,8 +46,8 @@ egmAnimation::AnimationService* FUN_141b6f910();
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);   // C3: the real free function (def in statebannerdata)
 
 // The replay / spectator mode flag, the key-binding config and the controller input readings.
-class Unk_LaunchOptions { public: bool FUN_1406af100(); };   // replay / spectator mode (unit_1406aee80)
-class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions { public: bool IsOptimizeUserSync(); };   // replay / spectator mode (unit_1406aee80)
+class Unk_LaunchOptions* GetLaunchOptions();   // C3: was GetLaunchOptions
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 MS2InputService* FUN_140a58540();
 class Unk_WkOption { public: char m_pad[0xc]; int m_n0c; };
@@ -56,7 +56,7 @@ class CGameOption;
 
 // The actor's buff set: the movement direction and the buff tests.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
-class Unk_PCMove { public: Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool FUN_141682fe0(int nKey); bool FUN_141683200(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); bool FUN_141683200(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The owner's vtable up to slot 68, which takes the move by value (the exe passes a pointer to a copy).
 class Unk_WkOwnerSlots
@@ -102,7 +102,7 @@ void StateWalk::vfunc_4(StateData* pData)
 {
     m_fSpeed1 = m_pOwner->vfunc_96();
     m_fSpeed2 = m_pOwner->vfunc_97();
-    if (FUN_1406aeee0()->FUN_1406af100())
+    if (GetLaunchOptions()->IsOptimizeUserSync())
     {
         m_pOwner->CalcMoveDirectionNoYaw(m_pOwner->FUN_14123c360());
     }
@@ -125,7 +125,7 @@ void StateWalk::vfunc_4(StateData* pData)
             {
                 efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
                 if (spRidee)
-                    m_pOwner->FUN_141671960(spRidee->FUN_1417071d0());
+                    m_pOwner->FUN_141671960(spRidee->GetRunSpeed());
             }
             else
             {
@@ -179,7 +179,7 @@ void StateWalk::vfunc_3(double fTime)
         {
             efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
             if (spRidee)
-                m_pOwner->FUN_141671960(spRidee->FUN_1417071d0());
+                m_pOwner->FUN_141671960(spRidee->GetRunSpeed());
         }
         else
         {
@@ -231,7 +231,7 @@ void StateWalk::vfunc_8(double fTime)
     {
         m_n10 = 0x1a;
     }
-    else if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd6))
+    else if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xd6))
     {
         int nY = abs(FUN_140a58540()->GetLeftStickYPercent());
         int nX = abs(FUN_140a58540()->GetLeftStickXPercent());
@@ -264,18 +264,18 @@ void StateWalk::vfunc_8(double fTime)
         pPC->TryUseChairOrBed(2, 0);
         return;
     }
-    if (m_pOwner->FUN_141671a30() != 0 && (pBuff->FUN_141682fe0(0x493e1) || m_n28 != 0))
+    if (m_pOwner->FUN_141671a30() != 0 && (pBuff->IsActionKeyDown(0x493e1) || m_n28 != 0))
     {
         m_n28 = 0;
         m_pOwner->vfunc_59(6, 0, 0x25, 0);
         return;
     }
-    if (pBuff->FUN_141682fe0(0x493e5))
+    if (pBuff->IsActionKeyDown(0x493e5))
     {
         m_pOwner->vfunc_59(3, 0, 0, 0);
         return;
     }
-    if (m_pOwner->FUN_141676b70() == 0 && pBuff->FUN_141682fe0(0x493ea) && m_pOwner->FUN_1416749c0())
+    if (m_pOwner->FUN_141676b70() == 0 && pBuff->IsActionKeyDown(0x493ea) && m_pOwner->FUN_1416749c0())
     {
         m_n48 = 0;
         m_n10 = 0x19;
@@ -290,7 +290,7 @@ void StateWalk::vfunc_8(double fTime)
     }
     if (FUN_1417b9460())
         return;
-    if (pPC != 0 && (pBuff->FUN_141682fe0(0x30d41) || TSingleton<CMouseController>::GetInstance()->FUN_140ad2220() != 0))
+    if (pPC != 0 && (pBuff->IsActionKeyDown(0x30d41) || TSingleton<CMouseController>::GetInstance()->FUN_140ad2220() != 0))
     {
         if (reinterpret_cast<PC*>(pPC)->FUN_141659b80(1, 0xbadf0a13, 90.0f) != 0)
         {
@@ -308,7 +308,7 @@ void StateWalk::vfunc_8(double fTime)
         }
         return;
     }
-    if ((pPC != 0 && pBuff->FUN_141682fe0(0x30d42)) || TSingleton<CMouseController>::GetInstance()->FUN_140ad2260() != 0)
+    if ((pPC != 0 && pBuff->IsActionKeyDown(0x30d42)) || TSingleton<CMouseController>::GetInstance()->FUN_140ad2260() != 0)
     {
         pPC->TryUseChairOrBed(2, 0xbadf0a13);
     }
@@ -323,7 +323,7 @@ void StateWalk::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     int bFalling = m_pOwner->FUN_141675ed0();
-    static int s_nDelay = FUN_14028d260(sqrt(3.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
+    static int s_nDelay = FUN_14028d260(sqrt(3.0f / FUN_14059d930(GameObjectController::GetGravity(true))));
     if (bFalling != 0)
     {
         m_pOwner->vfunc_59(0x1b, 0, 0, 0);
@@ -362,7 +362,7 @@ void StateWalk::vfunc_9(double fTime)
         {
             efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
             if (spRidee)
-                kSpeed.m_z = spRidee->FUN_1417071d0();
+                kSpeed.m_z = spRidee->GetRunSpeed();
         }
         vfunc_10(m_pOwner->vfunc_95(), kSpeed.m_z, kSpeed.m_y, 1.0f, 0);
         m_fSpeed1 = m_pOwner->vfunc_96();

@@ -25,7 +25,7 @@ struct Unk_DpRange
 {
     // (ctor 0x1405c38a0 is Unk_MergeRange's: m_range is an Unk_MergeRange)
     void FUN_1405c6380(int nMin, int nMax);                     // set the range
-    int FUN_141291f20();                                        // 0x141291f20 a random value of the range
+    int GetRandomValue();                                        // 0x141291f20 a random value of the range
     int m_nMin;
     int m_nMax;
 };

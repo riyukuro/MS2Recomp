@@ -12,7 +12,7 @@ class BannedWordData : public CPtred {
 public:
     BannedWordData(); BannedWordData(int,int,const CStringW&,const CStringW&); BannedWordData(Unk_BanReader&);
     virtual ~BannedWordData() = default;
-    void FUN_140348e90(Unk_BanWriter&) const; void FUN_140348f30(Unk_BanReader&);
+    void Write(Unk_BanWriter&) const; void Read(Unk_BanReader&);
     bool FUN_140349010(const BannedWordData& o) const;
     bool operator==(const BannedWordData& o) const { return (id==o.id && type==o.type && word==o.word && replacement==o.replacement) ? 1 : 0; }
     int id,type; CStringW word,replacement;
@@ -20,7 +20,7 @@ public:
 MS2_CHECK_SIZE(BannedWordData,0x30);
 struct Unk_BanChange {
     Unk_BanChange() : mode(0) {} Unk_BanChange(const BannedWordData& v,int m) : data(v),mode(m) {}
-    void FUN_140349040(Unk_BanWriter&) const; void FUN_140349090(Unk_BanReader&);
+    void Write(Unk_BanWriter&) const; void Read(Unk_BanReader&);
     BannedWordData data; int mode;
 };
 MS2_CHECK_SIZE(Unk_BanChange,0x38);
@@ -51,12 +51,12 @@ public:
     typedef ATL::CAtlArray<Unk_BanChange> Changes;
     CBannedWordFilter(__int64,const Words&); CBannedWordFilter(__int64,Unk_BanReader&);
     virtual ~CBannedWordFilter() = default;
-    void FUN_140349200(Unk_BanWriter&) const;
+    void Write(Unk_BanWriter&) const;
     int FUN_140349230(const CStringW&,CStringW&);
-    const Map& FUN_1403493e0() const; __int64 FUN_140349400() const;
+    const Map& GetWords() const; __int64 GetVersion() const;
     static void DiffFilter(const Unk_BanPtr<CBannedWordFilter>&,const Unk_BanPtr<CBannedWordFilter>&,Changes&);
-    static Unk_BanPtr<CBannedWordFilter> FUN_140349800(__int64,const Unk_BanPtr<CBannedWordFilter>&,const Changes&);
-    void FUN_140349b10(Unk_BanWriter&) const; void FUN_140349bd0(Unk_BanReader&); void FUN_140349d00(const Words&);
+    static Unk_BanPtr<CBannedWordFilter> ApplyChanges(__int64,const Unk_BanPtr<CBannedWordFilter>&,const Changes&);
+    void FUN_140349b10(Unk_BanWriter&) const; void Read(Unk_BanReader&); void FUN_140349d00(const Words&);
     __int64 version; Map words; TextFilterUnit filter;
 };
 MS2_CHECK_SIZE(CBannedWordFilter,0xc8);

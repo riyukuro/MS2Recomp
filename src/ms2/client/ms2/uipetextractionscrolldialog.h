@@ -1,6 +1,6 @@
 // uipetextractionscrolldialog.h - UIPetExtractionScrollDialog (RTTI .?AVUIPetExtractionScrollDialog@@, 0x190 bytes,
 // UIDialog, UI id 0x4f4a, swf "PetExtractionScrollDialog"): the window where a pet extraction scroll turns a pet into a pet
-// skin gem. The item use handler (unit_140d1ae30.cpp, "PetExtraction") remembers the scroll (FUN_140e72860); the player
+// skin gem. The item use handler (unit_140d1ae30.cpp, "PetExtraction") remembers the scroll (SetScrollUid); the player
 // drops the pet on the first slot of the bag (Slot::vfunc_18 -> FUN_140e71d40), the dialog builds the result gem item
 // (the gemPetSkinBaseItemID constant, its CGemPetSkin set to the pet id) and on "onOk" asks for confirmation before the
 // scroll is used with the pet uid as the argument. Result packet 0x108. Slot (0xa8, id 0x620007a) and SlotBag (0xa8,
@@ -72,12 +72,12 @@ public:
     virtual void vfunc_67();                                        // 67 0x140e71290 close: drop the bag
     virtual void vfunc_79(void* pPacket);                           // 79 0x140e712e0 the result packet
 
-    bool FUN_140e71880(int nResult, const CMsgBoxData& box);        // 0x140e71880 the confirmation was answered: use the scroll
+    bool OnConfirmUseScroll(int nResult, const CMsgBoxData& box);        // 0x140e71880 the confirmation was answered: use the scroll
     void FUN_140e71d40(__int64 nItemUid);                           // 0x140e71d40 a pet was dropped: show it and the result
-    void FUN_140e72860(__int64 nScrollUid);                         // 0x140e72860 remember the scroll if the player owns it
-    void FUN_140e728e0();                                           // 0x140e728e0 refresh the inventory dialog
+    void SetScrollUid(__int64 nScrollUid);                         // 0x140e72860 remember the scroll if the player owns it
+    void RefreshInventoryDialog();                                           // 0x140e728e0 refresh the inventory dialog
     void OnOk();                                           // 0x140e72920 ask for the confirmation
-    void FUN_140e72b40(MS2Ptr<CItem> spTarget, MS2Ptr<CItem> spResult);   // 0x140e72b40 rebuild the bag
+    void RebuildSlotBag(MS2Ptr<CItem> spTarget, MS2Ptr<CItem> spResult);   // 0x140e72b40 rebuild the bag
 
 private:
     MS2_LAYOUT_FRIEND;

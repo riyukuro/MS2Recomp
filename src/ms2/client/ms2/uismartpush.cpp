@@ -62,8 +62,8 @@ public:
 class CSmartPushManager
 {
 public:
-    void FUN_140dd8620(int nId);                                // a smart push was clicked
-    void FUN_140dd8730();                                       // the strip was hidden
+    void OnPushClicked(int nId);                                // a smart push was clicked
+    void ResetPushStates();                                       // the strip was hidden
 };
 
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
@@ -117,7 +117,7 @@ int UISmartPush::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nId = data.PopInt();
-            reinterpret_cast<CSmartPushManager*>(GetSmartPushManager())->FUN_140dd8620(nId);
+            reinterpret_cast<CSmartPushManager*>(GetSmartPushManager())->OnPushClicked(nId);
         }
     }
     return 0;
@@ -134,12 +134,12 @@ void UISmartPush::vfunc_2()
 void UISmartPush::vfunc_3()
 {
     UIHeadUpDisplay::vfunc_3();
-    reinterpret_cast<CSmartPushManager*>(GetSmartPushManager())->FUN_140dd8730();
+    reinterpret_cast<CSmartPushManager*>(GetSmartPushManager())->ResetPushStates();
 }
 MS2_REPLACE_METHOD(0x140FA3DF0, UISmartPush, vfunc_3, 37, 0xAEF58F5C);
 
 // @0x140fa3e20
-int UISmartPush::FUN_140fa3e20(CSmartPush* pPush)
+int UISmartPush::AddPush(CSmartPush* pPush)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
     {
@@ -148,28 +148,28 @@ int UISmartPush::FUN_140fa3e20(CSmartPush* pPush)
         return 0;
     }
     ASObj obj(2);
-    ((class AScript&)(obj)).FUN_1407cb9c0("id", pPush->m_nId);
-    ((class AScript&)(obj)).FUN_1407cbb20("text", pPush->vfunc_7());
-    ((class AScript&)(obj)).FUN_1407cbb20("icon", reinterpret_cast<MS2SvrPtr<CSmartPushData>&>(pPush->m_pData)->m_strImgPath);
-    obj.FUN_1407cbbe0("isToggle", pPush->vfunc_11());
-    obj.FUN_1407cbbe0("active", pPush->m_nState == 2);
-    obj.FUN_1407cbbe0("isSmallActiveIcon", pPush->vfunc_12());
-    ((class AScript&)(obj)).FUN_1407cbb20("activeMovie", pPush->vfunc_8());
-    ((class AScript&)(obj)).FUN_1407cbb20("eventPopup", pPush->vfunc_10());
+    ((class AScript&)(obj)).SetIntMember("id", pPush->m_nId);
+    ((class AScript&)(obj)).SetWStringMember("text", pPush->vfunc_7());
+    ((class AScript&)(obj)).SetWStringMember("icon", reinterpret_cast<MS2SvrPtr<CSmartPushData>&>(pPush->m_pData)->m_strImgPath);
+    obj.SetBoolMember("isToggle", pPush->vfunc_11());
+    obj.SetBoolMember("active", pPush->m_nState == 2);
+    obj.SetBoolMember("isSmallActiveIcon", pPush->vfunc_12());
+    ((class AScript&)(obj)).SetWStringMember("activeMovie", pPush->vfunc_8());
+    ((class AScript&)(obj)).SetWStringMember("eventPopup", pPush->vfunc_10());
     m_30->Invoke("addPush", obj);
     return 1;
 }
-MS2_REPLACE_METHOD(0x140FA3E20, UISmartPush, FUN_140fa3e20, 652, 0x58779CBF);
+MS2_REPLACE_METHOD(0x140FA3E20, UISmartPush, AddPush, 652, 0x58779CBF);
 
 // @0x140fa40c0
-int UISmartPush::FUN_140fa40c0(int nId)
+int UISmartPush::RemovePush(int nId)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
     m_30->Invoke("removePush", nId);
     return 1;
 }
-MS2_REPLACE_METHOD(0x140FA40C0, UISmartPush, FUN_140fa40c0, 103, 0x5D5C0778);
+MS2_REPLACE_METHOD(0x140FA40C0, UISmartPush, RemovePush, 103, 0x5D5C0778);
 
 // @0x140fa4170
 int UISmartPush::vfunc_48()

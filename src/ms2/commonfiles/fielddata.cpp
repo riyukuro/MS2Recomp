@@ -305,7 +305,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 void FUN_14028fd90(struct Unk_XmlElement*,const char*,const char*,const char*,std::vector<struct Unk_XmlElement*>&);
 CStringW FUN_1401bf530(TiXmlElement*,const char*,CStringW);
-CString FUN_14071a5b0(const CString&,const CString&);
+CString GetXmlPath(const CString&,const CString&);
 void FUN_14025a680(CStringW&,ATL::CAtlArray<CStringW>&,const wchar_t*);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -345,15 +345,15 @@ static CCacheData s_spawnCache;
 static CLockCriticalSection s_fieldLock;
 static CLockCriticalSection s_spawnLock;
 void LoadMapSpawnTag();
-int FUN_1403759c0(TiXmlElement*,const char*,std::vector<short>&);
-int FUN_140375a40(TiXmlElement*,const char*,int&);
-int FUN_140375ad0(TiXmlElement*,const char*,int&);
+int XmlGetShortList(TiXmlElement*,const char*,std::vector<short>&);
+int XmlGetExploreType(TiXmlElement*,const char*,int&);
+int XmlGetTutorialType(TiXmlElement*,const char*,int&);
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 CContinentRegionTable* FUN_1403782c0();
 
@@ -411,7 +411,7 @@ void FUN_140372ab0(int mapCode,int spawnId,ATL::CAtlArray<Unk_FieldSpawnPair>& o
     }
 }
 // @0x140372c80
-void FUN_140372c80(int mapCode,CStringW tagName,ATL::CAtlArray<Unk_FieldSpawnPair>& out)
+void FindSpawnPointsByTag(int mapCode,CStringW tagName,ATL::CAtlArray<Unk_FieldSpawnPair>& out)
 {
     LoadMapSpawnTag();
     tagName.Trim();
@@ -465,7 +465,7 @@ void FUN_140372c80(int mapCode,CStringW tagName,ATL::CAtlArray<Unk_FieldSpawnPai
     }
 }
 // @0x1403731e0
-void FUN_1403731e0(ATL::CAtlArray<Unk_FieldSpawnPair>& out)
+void GetAllSpawnPoints(ATL::CAtlArray<Unk_FieldSpawnPair>& out)
 {
     LoadMapSpawnTag();
     Unk_FieldSpawnMapPtr entries;
@@ -492,8 +492,8 @@ void LoadMapSpawnTag()
             CString path;
             path.Format("./data/xml/table/mapSpawnTag.xml");
             TiXmlDocument doc;
-            if (GetFileSystem()->FUN_1403974b0(&doc,path,0,true,false)) {
-                s_spawnCache.FUN_1401d1160(path);
+            if (GetFileSystem()->LoadXmlFile(&doc,path,0,true,false)) {
+                s_spawnCache.SetPath(path);
                 TiXmlElement* root=((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
                 if (root) {
                     std::vector<TiXmlElement*> nodes;
@@ -525,7 +525,7 @@ void LoadMapSpawnTag()
 }
 #endif
 // @0x1403737a0
-void FUN_1403737a0()
+void ClearSpawnTags()
 {
     if (Unk_LockGuard guard=s_spawnLock) {} else {
         for (POSITION outer=s_spawnTags.GetHeadPosition();outer;s_spawnTags.GetNext(outer)) {
@@ -571,7 +571,7 @@ void CFieldData::LoadFieldData()
 {
     if (Unk_LockGuard guard=s_fieldLock) {} else { s_fields.RemoveAll(); }
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc,"./Data/Xml/Table/fieldData.xml",0,true,false)) return;
+    if (!GetFileSystem()->LoadXmlFile(&doc,"./Data/Xml/Table/fieldData.xml",0,true,false)) return;
     TiXmlElement* root=((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (!root) {
         Unk_FieldLog(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다[<ms2> {0}]","fieldData.xml");
@@ -585,7 +585,7 @@ void CFieldData::LoadFieldData()
         MS2Ptr<CFieldData> field(new CFieldDataCli);
         field->m_nFieldID=id;
         if (!field->vfunc_1(selected)) {
-            Unk_AchieveLog<CString>(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다Ele [{0}]",FUN_14071a5b0("Table","fieldData.xml"));
+            Unk_AchieveLog<CString>(GetLogString(),1,0x13,L"xml 형식이 잘못 되었습니다Ele [{0}]",GetXmlPath("Table","fieldData.xml"));
             continue;
         }
         if (Unk_LockGuard guard=s_fieldLock) {} else { s_fields.SetAt(id,field); }
@@ -593,7 +593,7 @@ void CFieldData::LoadFieldData()
 }
 #endif
 // @0x140374090
-void CFieldData::FUN_140374090(std::vector<MS2Ptr<CFieldData> >& out)
+void CFieldData::GetAllFields(std::vector<MS2Ptr<CFieldData> >& out)
 {
     if (Unk_LockGuard guard=s_fieldLock) {} else {
         for (POSITION pos=s_fields.GetStartPosition();pos;s_fields.GetNext(pos)) {
@@ -698,8 +698,8 @@ bool CFieldData::vfunc_1(TiXmlElement* node)
         XmlGetAttr((class TiXmlElement*)(property), "mapType", m_nMapType);
         XmlGetAttr((class TiXmlElement*)(property), "infinityMeratRevival", m_nInfinityMeratRevival);
         XmlGetAttr((class TiXmlElement*)(property), "bigCity", m_nBigCity);
-        FUN_140375a40(property,"exploreType",m_nExploreType);
-        FUN_140375ad0(property,"tutorialType",m_nTutorialType);
+        XmlGetExploreType(property,"exploreType",m_nExploreType);
+        XmlGetTutorialType(property,"tutorialType",m_nTutorialType);
         XmlGetAttr((class TiXmlElement*)(property), "requireQuest", m_nRequireQuest);
         XmlGetAttr((class TiXmlElement*)(property), "minimapPing", m_bMinimapPing);
         XmlGetAttr((class TiXmlElement*)(property), "popupMenu", m_bPopupMenu);
@@ -710,7 +710,7 @@ bool CFieldData::vfunc_1(TiXmlElement* node)
             m_nSkillUseDisableMask |= 1 << disabled[i];
         }
         XmlTokenList(property,"enteranceBuffIDs",m_enteranceBuffIds);
-        FUN_1403759c0(property,"enteranceBuffLevels",m_enteranceBuffLevels);
+        XmlGetShortList(property,"enteranceBuffLevels",m_enteranceBuffLevels);
         if (m_enteranceBuffIds.size()!=m_enteranceBuffLevels.size()) {
             reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0,0,14,L"Field Load - invalid enterance buff count");
             return false;
@@ -751,11 +751,11 @@ bool CFieldData::vfunc_1(TiXmlElement* node)
 MS2_REPLACE_METHOD(0x140374530, CFieldData, vfunc_1, 3016, 0xAF96DE19);
 
 // @0x140375100
-bool CFieldData::FUN_140375100() { if (FUN_140375130()) return false; return true; }
+bool CFieldData::FUN_140375100() { if (IsIndoor()) return false; return true; }
 MS2_REPLACE_METHOD(0x140375100, CFieldData, FUN_140375100, 37, 0xB6E5E377);
 // @0x140375130
-bool CFieldData::FUN_140375130() { if (FUN_140375170() || FUN_140375190()) return true; return false; }
-MS2_REPLACE_METHOD(0x140375130, CFieldData, FUN_140375130, 54, 0xA4C29A48);
+bool CFieldData::IsIndoor() { if (FUN_140375170() || FUN_140375190()) return true; return false; }
+MS2_REPLACE_METHOD(0x140375130, CFieldData, IsIndoor, 54, 0xA4C29A48);
 // @0x140375170
 bool CFieldData::FUN_140375170() { if (m_nIndoorMask == 2) return true; return false; }
 MS2_REPLACE_METHOD(0x140375170, CFieldData, FUN_140375170, 23, 0x3B124FEE);
@@ -814,7 +814,7 @@ MS2_REPLACE_METHOD(0x140375490, CFieldData, FUN_140375490, 47, 0x4217D80E);
 int CFieldData::GetPkMode() { return m_nPkMode; }
 MS2_REPLACE_METHOD(0x1403754d0, CFieldData, GetPkMode, 17, 0xBA29CEEF);
 // @0x1403754f0
-int CFieldData::FUN_1403754f0()
+int CFieldData::GetShadowContinent()
 {
     {
         CContinentRegionTable::InfoPtr info = CContinentRegionTable::GetInstance()->GetContinent(m_nContinentCode);
@@ -822,33 +822,33 @@ int CFieldData::FUN_1403754f0()
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1403754f0, CFieldData, FUN_1403754f0, 111, 0x770B1580);
+MS2_REPLACE_METHOD(0x1403754f0, CFieldData, GetShadowContinent, 111, 0x770B1580);
 // @0x140375570
-int CFieldData::FUN_140375570() { if (m_nAutoRevivalType == 1 && m_nAutoRevivalTime > 0) return 1; return 0; }
-MS2_REPLACE_METHOD(0x140375570, CFieldData, FUN_140375570, 37, 0xF3184D0D);
+int CFieldData::HasAutoRevivalType1() { if (m_nAutoRevivalType == 1 && m_nAutoRevivalTime > 0) return 1; return 0; }
+MS2_REPLACE_METHOD(0x140375570, CFieldData, HasAutoRevivalType1, 37, 0xF3184D0D);
 // @0x1403755a0
-int CFieldData::FUN_1403755a0() { if (m_nAutoRevivalType == 2 && m_nAutoRevivalTime > 0) return 1; return 0; }
-MS2_REPLACE_METHOD(0x1403755a0, CFieldData, FUN_1403755a0, 37, 0x1B0E46E6);
+int CFieldData::HasAutoRevivalType2() { if (m_nAutoRevivalType == 2 && m_nAutoRevivalTime > 0) return 1; return 0; }
+MS2_REPLACE_METHOD(0x1403755a0, CFieldData, HasAutoRevivalType2, 37, 0x1B0E46E6);
 // @0x1403755d0
 int CFieldData::GetOnlyDarkTomb() { return m_nOnlyDarkTomb; }
 MS2_REPLACE_METHOD(0x1403755d0, CFieldData, GetOnlyDarkTomb, 14, 0x81E2A10F);
 // @0x140375660
-int CFieldData::FUN_140375660(unsigned mask) { if ((m_nLimitContent & mask) != 0) return 1; return 0; }
-MS2_REPLACE_METHOD(0x140375660, CFieldData, FUN_140375660, 40, 0x01A67DF4);
+int CFieldData::HasLimitContent(unsigned mask) { if ((m_nLimitContent & mask) != 0) return 1; return 0; }
+MS2_REPLACE_METHOD(0x140375660, CFieldData, HasLimitContent, 40, 0x01A67DF4);
 // @0x140375690
 int CFieldData::FUN_140375690(void*) { if (m_nEnterAdminLevel > 0) return 0; return 1; }
 MS2_REPLACE_METHOD(0x140375690, CFieldData, FUN_140375690, 34, 0x55789595);
 // @0x1403756c0
-bool CFieldData::FUN_1403756c0(unsigned mask)
+bool CFieldData::HasLimitMove(unsigned mask)
 {
     if ((m_nLimitMove & mask) != 0) return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x1403756c0, CFieldData, FUN_1403756c0, 37, 0x14E627B3);
+MS2_REPLACE_METHOD(0x1403756c0, CFieldData, HasLimitMove, 37, 0x14E627B3);
 // @0x1403756f0
 bool CFieldData::FUN_1403756f0()
 {
-    if (m_nFieldID == 0x1e84c0 && ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x60) == true) return true;
+    if (m_nFieldID == 0x1e84c0 && ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x60) == true) return true;
     return false;
 }
 MS2_REPLACE_METHOD(0x1403756f0, CFieldData, FUN_1403756f0, 60, 0xBCB9D565);
@@ -867,8 +867,8 @@ MS2_REPLACE_METHOD(0x140375780, CFieldData, GetMapType, 14, 0xAA28048B);
 int CFieldData::vfunc_2() { return m_nCapacity; }
 MS2_REPLACE_METHOD(0x1403757a0, CFieldData, vfunc_2, 17, 0x93EFE35E);
 // @0x1403757c0
-int CFieldData::FUN_1403757c0() { return m_nCapacity; }
-MS2_REPLACE_METHOD(0x1403757c0, CFieldData, FUN_1403757c0, 17, 0x93EFE35E);
+int CFieldData::GetCapacity() { return m_nCapacity; }
+MS2_REPLACE_METHOD(0x1403757c0, CFieldData, GetCapacity, 17, 0x93EFE35E);
 // @0x1403757e0
 unsigned CFieldData::GetSetItemRestrainId() { return m_nSetItemRestrainId; }
 MS2_REPLACE_METHOD(0x1403757e0, CFieldData, GetSetItemRestrainId, 17, 0xF95067D2);
@@ -891,7 +891,7 @@ template<class T> void Unk_FieldSplit(const CString& text,std::vector<T>& out,co
     Unk_FieldSplitImpl(text,out,delimiter);
 }
 // @0x1403759c0
-int FUN_1403759c0(TiXmlElement* node,const char* attribute,std::vector<short>& out)
+int XmlGetShortList(TiXmlElement* node,const char* attribute,std::vector<short>& out)
 {
     CString value;
     int result=XmlGetAttr((class TiXmlElement*)(node), attribute, value);
@@ -899,7 +899,7 @@ int FUN_1403759c0(TiXmlElement* node,const char* attribute,std::vector<short>& o
     return result;
 }
 // @0x140375a40
-int FUN_140375a40(TiXmlElement* node,const char* attribute,int& out)
+int XmlGetExploreType(TiXmlElement* node,const char* attribute,int& out)
 {
     // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
     if (false)
@@ -915,7 +915,7 @@ int FUN_140375a40(TiXmlElement* node,const char* attribute,int& out)
     return result;
 }
 // @0x140375ad0
-int FUN_140375ad0(TiXmlElement* node,const char* attribute,int& out)
+int XmlGetTutorialType(TiXmlElement* node,const char* attribute,int& out)
 {
     // the tinyxmlhelper.h enum reader's compile-time-false type guard (ASSERT(FALSE) of its line 231)
     if (false)
@@ -951,7 +951,7 @@ CFieldSpawnTag::CFieldSpawnTag()
 MS2_REPLACE_METHOD(0x1403743e0, CFieldData, FUN_1403743e0, 27, 0x73D2913F);
 MS2_REPLACE(0x140374410, CFieldData::FUN_140374410, 136, 0x96B1CD82);
 MS2_REPLACE(0x1403744a0, CFieldData::FUN_1403744a0, 136, 0xECF037A7);
-MS2_REPLACE(0x1403759c0, FUN_1403759c0, 121, 0x483C9A71);
-MS2_REPLACE(0x140375a40, FUN_140375a40, 131, 0xD5C88EBF);
-MS2_REPLACE(0x140375ad0, FUN_140375ad0, 131, 0x1EA967D6);
+MS2_REPLACE(0x1403759c0, XmlGetShortList, 121, 0x483C9A71);
+MS2_REPLACE(0x140375a40, XmlGetExploreType, 131, 0xD5C88EBF);
+MS2_REPLACE(0x140375ad0, XmlGetTutorialType, 131, 0x1EA967D6);
 

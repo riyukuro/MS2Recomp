@@ -215,13 +215,13 @@ CStateManager::~CStateManager()
 }
 
 // @0x1417daa70
-void CStateManager::FUN_1417daa70()
+void CStateManager::ClearRequests()
 {
     m_requests.clear();
 }
 
 // @0x1417daaa0
-void CStateManager::FUN_1417daaa0(double fTime)
+void CStateManager::Update(double fTime)
 {
     float fDelta = (float)fTime;
     {
@@ -237,8 +237,8 @@ void CStateManager::FUN_1417daaa0(double fTime)
     if (bCheck)
     {
         CInputKeyHandler* pCtx = (CInputKeyHandler*)FUN_14025e7c0();
-        if (FUN_1417ddbf0(m_pOwner != 0 ? m_pOwner->GetClassDesc() : 0, 0x6200004) && pCtx != 0 && pCtx->FUN_14116d9c0(0x23, true, 0)
-            && pCtx->FUN_14116d950(0x1d, true, 0))
+        if (FUN_1417ddbf0(m_pOwner != 0 ? m_pOwner->GetClassDesc() : 0, 0x6200004) && pCtx != 0 && pCtx->WasKeyPressed(0x23, true, 0)
+            && pCtx->IsKeyDown(0x1d, true, 0))
         {
             Unk_SMStateSlots* pSlots = (Unk_SMStateSlots*)FindState(2);
             if (pSlots != 0)
@@ -252,11 +252,11 @@ void CStateManager::FUN_1417daaa0(double fTime)
             if (m_pOwner->vfunc_18() != m_pos)
             {
                 int bFound = 0;
-                egf::EntityID kId = reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->FUN_141240f20()->GetEntityID();
+                egf::EntityID kId = reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->GetHitReport()->GetEntityID();
                 egf::Entity* pEntity = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(kId);
                 if (pEntity != 0)
                 {
-                    MS2Ptr<Unk_WsB_Marker> spMarker = WorldService::GetInstance()->FUN_141bc4f10(pEntity);
+                    MS2Ptr<Unk_WsB_Marker> spMarker = WorldService::GetInstance()->FindMarkerByEntity(pEntity);
                     if (spMarker.get() != 0)
                     {
                         if (m_pOwner->FUN_14123c360() == efd::Point3::ZERO)
@@ -264,7 +264,7 @@ void CStateManager::FUN_1417daaa0(double fTime)
                     }
                 }
                 if (!bFound)
-                    FUN_1417dafa0(1, 0, 0, 0);
+                    ChangeState(1, 0, 0, 0);
             }
         }
     }
@@ -288,7 +288,7 @@ void CStateManager::RegisterState(int state, State* pState)
 }
 
 // @0x1417dafa0
-void CStateManager::FUN_1417dafa0(int nState, StateData* pData, int nSub, int bForce)
+void CStateManager::ChangeState(int nState, StateData* pData, int nSub, int bForce)
 {
     if (m_pOwner->FUN_14123bea0() == 0)
         return;
@@ -297,7 +297,7 @@ void CStateManager::FUN_1417dafa0(int nState, StateData* pData, int nSub, int bF
     if (nState == m_nCur && bForce == 0 && m_pState->vfunc_25(nSub, pData))
         return;
     if (nState == 0x10)
-        FUN_1417dc110();
+        FlushRequests();
     m_pState->vfunc_5(nState);
     m_states.Lookup(nState, m_pState);
     if (m_pState == 0)
@@ -306,7 +306,7 @@ void CStateManager::FUN_1417dafa0(int nState, StateData* pData, int nSub, int bF
     if (nSub != 0)
         m_pState->vfunc_2(nSub);
     if (FUN_1417ddbf0(m_pOwner != 0 ? m_pOwner->GetClassDesc() : 0, 0x6200004))
-        TSingleton<CMouseController>::GetInstance()->FUN_140ad1f30(m_nCur, nState);
+        TSingleton<CMouseController>::GetInstance()->OnActionChanged(m_nCur, nState);
     m_nCur = nState;
     m_pState->vfunc_4(pData);
     if (m_pState->vfunc_20() != 0)
@@ -342,7 +342,7 @@ int CStateManager::GetCur()
 // @0x1417db290
 int CStateManager::FUN_1417db290()
 {
-    return m_pState->FUN_1417b7e40();
+    return m_pState->GetStateId();
 }
 
 // @0x1417db2c0
@@ -521,7 +521,7 @@ void CStateManager::FUN_1417dc020(int n)
 }
 
 // @0x1417dc070
-int CStateManager::FUN_1417dc070(int nState)
+int CStateManager::IsPositionCorrectionAllowed(int nState)
 {
     switch (nState)
     {
@@ -539,7 +539,7 @@ int CStateManager::FUN_1417dc070(int nState)
 }
 
 // @0x1417dc110
-void CStateManager::FUN_1417dc110()
+void CStateManager::FlushRequests()
 {
     for (std::list<MS2Ptr<StateSyncObject> >::iterator it = m_requests.begin(); it != m_requests.end(); it++)
     {
@@ -601,7 +601,7 @@ void CStateManager::FUN_1417dc4c0(StateSyncObject* pReq)
     bool bPushed = ((Unk_SMField690*)(reinterpret_cast<PCBase*>(pActor)->GetPushControl()))->m_pos18 != efd::Point3::ZERO;
     if (!bPushed)
     {
-        if (FUN_1417dc070(GetCur()) == 1)
+        if (IsPositionCorrectionAllowed(GetCur()) == 1)
         {
             FUN_1417dbd00(pActor, pReq);
             pActor->vfunc_21(pReq->m_dir2c);
@@ -610,7 +610,7 @@ void CStateManager::FUN_1417dc4c0(StateSyncObject* pReq)
     }
     if (!pReq->m_str88.IsEmpty())
     {
-        MS2Ptr<Unk_WsB_Marker> spMarker = WorldService::GetInstance()->FUN_141bc4e70(pReq->m_str88);
+        MS2Ptr<Unk_WsB_Marker> spMarker = WorldService::GetInstance()->FindMarkerByName(pReq->m_str88);
         if (spMarker.get() != 0)
         {
             pActor->vfunc_19(spMarker->GetPtPos() + pReq->m_pos78);
@@ -729,7 +729,7 @@ int StateMoveSkill::GetMode()
 }
 
 // @0x1417df3e0
-int StateMoveSkill::FUN_1417df3e0()
+int StateMoveSkill::GetSkillId()
 {
     if (m_spData.get() != 0)
         return m_spData->m_nSkill;
@@ -748,7 +748,7 @@ long long StateMoveSkill::FUN_1417df430()
 int StateMoveSkill::vfunc_36()
 {
     if (m_spData.get() != 0)
-        return FUN_1409331f0()->IsSkillKeyDown(m_spData->m_nSkill);
+        return GetKeyTable()->IsSkillKeyDown(m_spData->m_nSkill);
     return 0;
 }
 
@@ -757,8 +757,8 @@ int StateMoveSkill::vfunc_37()
 {
     if (m_spData.get() != 0)
     {
-        if (reinterpret_cast<CUIService*>(reinterpret_cast<Unk_SMSession*>(TSingleton<CUIService>::GetInstance()))->FUN_141adbb00() == 0)
-            return FUN_1409331f0()->IsSkillKeyPressed(m_spData->m_nSkill) == 0;
+        if (reinterpret_cast<CUIService*>(reinterpret_cast<Unk_SMSession*>(TSingleton<CUIService>::GetInstance()))->IsTextFieldFocused() == 0)
+            return GetKeyTable()->IsSkillKeyPressed(m_spData->m_nSkill) == 0;
     }
     return 1;
 }
@@ -794,7 +794,7 @@ bool StateMoveSkill::FUN_1417df6a0()
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
     {
-        if (!pPC->GetSkillSystem()->FUN_141765b80(FUN_1417df3e0()))
+        if (!pPC->GetSkillSystem()->FUN_141765b80(GetSkillId()))
         {
             FUN_1417df370();
             return false;
@@ -897,7 +897,7 @@ class Unk_AnimName { public: alignas(8) char m_pad[0x20]; };   // efd::utf8strin
 void FUN_1409989e0(Unk_AnimName* p, const char* psz);
 void FUN_1408a8900(Unk_AnimName* p);
 // The same string as a real temporary (ctor 0x1409989e0, dtor 0x1408a8900).
-bool FUN_141b6fa90(const egf::EntityID& kKey, const efd::utf8string& kName);
+bool HasAnimation(const egf::EntityID& kKey, const efd::utf8string& kName);
 
 // NPC table row data (the regen / spawn flags).
 class Unk_SMNpcData : public CPtred
@@ -951,7 +951,7 @@ void StateRegen::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_pOwner->SetShadowVisible(false);
-    if (!FUN_141b6fa90(m_pOwner->GetEntityID(), "Regen_A"))
+    if (!HasAnimation(m_pOwner->GetEntityID(), "Regen_A"))
     {
         m_pOwner->vfunc_59(1, 0, 0, 0);
     }
@@ -960,20 +960,20 @@ void StateRegen::vfunc_4(StateData* pData)
         reinterpret_cast<PCBase*>(m_pOwner)->AddHideReason(9);
         Unk_Random kRandom(m_pOwner->GetObjectId());
         int nDelay = kRandom.FUN_1407684c0() % 300 + 100;
-        m_timer.FUN_140868750(nDelay);
+        m_timer.Start(nDelay);
     }
     CNpc* pNpc = reinterpret_cast<CNpc*>(FUN_1417b8480());
     if (pNpc != 0)
     {
-        if (pNpc->FUN_141093800().get())
+        if (pNpc->GetMaid().get())
         {
-            if (pNpc->FUN_141093800()->IsExpired())
+            if (pNpc->GetMaid()->IsExpired())
                 m_nSkip = 1;
-            if (reinterpret_cast<Unk_SMNpcData*>(pNpc->FUN_141093800().operator->())->FUN_1417e0590() == 0)
+            if (reinterpret_cast<Unk_SMNpcData*>(pNpc->GetMaid().operator->())->FUN_1417e0590() == 0)
             {
-                if (DAT_143ab2820 == reinterpret_cast<Unk_SMNpcData*>(pNpc->FUN_141093800().operator->())->m_n28)
+                if (DAT_143ab2820 == reinterpret_cast<Unk_SMNpcData*>(pNpc->GetMaid().operator->())->m_n28)
                     m_nSpecial = 1;
-                if (FUN_141b6fa90(m_pOwner->GetEntityID(), "Regen_B"))
+                if (HasAnimation(m_pOwner->GetEntityID(), "Regen_B"))
                     m_nVariantB = 1;
             }
         }
@@ -1001,7 +1001,7 @@ void StateRegen::vfunc_5(int n)
 void StateRegen::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
-    if (m_timer.FUN_140868ba0())
+    if (m_timer.IsRunning())
         return;
     if (m_nStarted == 0)
     {
@@ -1125,7 +1125,7 @@ void StateRide::vfunc_9(double fTime)
     MS2SvrPtr<CRideeData> spRide = pRider->GetData();
     if (spRide == 0)
         return;
-    Unk_RiderPtr spAnim = spRide->FUN_140784970();
+    Unk_RiderPtr spAnim = spRide->GetDefaultRider();
     if (spAnim == 0)
         return;
     if (reinterpret_cast<PCBase*>(pRider)->GetCurStateId() == 2 || reinterpret_cast<PCBase*>(pRider)->GetCurStateId() == 0x1b)
@@ -1193,11 +1193,11 @@ int StateRide::vfunc_1()
 // ---- StateRope ----
 
 // The key / buff state of the owner (the input query object of the PC).
-#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
 #include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
-class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141682fe0(int nKey); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool IsActionKeyDown(int nKey); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
 class Unk_AvPhysicsSvc* GetPhysXHelper();
-class CPhysXHelper { public: int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen); };
+class CPhysXHelper { public: int GetGroundDistance(const efd::Point3& ptFrom, float* pDist, float fLen); };
 float FUN_1409f25a0(float f);
 float FUN_1409f2310(float f);
 bool FUN_14028d470(float a, float b);
@@ -1222,12 +1222,12 @@ StateRope::~StateRope()
 void StateRope::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->FUN_141240730();
+    reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->StopJump();
     m_n10 = 0x38;
-    m_timerA0.FUN_1408687f0();
-    m_timerD8.FUN_1408687f0();
-    m_time110.FUN_140868750(100);
-    m_timer68.FUN_140868750((int)(200.0f / reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416713c0()));
+    m_timerA0.Reset();
+    m_timerD8.Reset();
+    m_time110.Start(100);
+    m_timer68.Start((int)(200.0f / reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416713c0()));
     m_pos48 = m_pOwner->vfunc_18();
     m_pos54 = efd::Point3::ZERO;
     m_pRope = 0;
@@ -1294,12 +1294,12 @@ void StateRope::vfunc_3(double fTime)
         kDelta *= m_timer68.FUN_140868940();
         efd::Point3 kTarget = m_pos48 + kDelta;
         efd::Point2 kExtent = m_pOwner->FUN_141671390();
-        if (!reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->FUN_1412410c0(kTarget, kExtent.y * 0.5f))
+        if (!reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->IsCapsuleOverlapping(kTarget, kExtent.y * 0.5f))
             m_pOwner->vfunc_19(kTarget);
         m_pOwner->vfunc_21(efd::Point3(0.0f, 0.0f, -((m_fAngle * 180.0f) / 3.1415927f)));
-        if (m_timer68.FUN_140868c00() != 0)
+        if (m_timer68.IsExpired() != 0)
         {
-            m_timer68.FUN_1408687f0();
+            m_timer68.Reset();
             m_n10 = 0x33;
         }
     }
@@ -1320,7 +1320,7 @@ void StateRope::vfunc_3(double fTime)
             if (FUN_14028d470(kInput.y, 0.0f))
             {
                 m_n10 = 0x37;
-                m_timerA0.FUN_1408687f0();
+                m_timerA0.Reset();
             }
         }
         else if (kInput.x > 0.0f)
@@ -1329,13 +1329,13 @@ void StateRope::vfunc_3(double fTime)
             if (FUN_14028d470(kInput.y, 0.0f))
             {
                 m_n10 = 0x37;
-                m_timerA0.FUN_1408687f0();
+                m_timerA0.Reset();
             }
         }
-        if (m_n10 == 0x36 && !reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0() && m_timerA0.FUN_140868ba0() == 0)
+        if (m_n10 == 0x36 && !reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0() && m_timerA0.IsRunning() == 0)
             m_n10 = 0x33;
     }
-    FUN_1417e20d0(FUN_1417e1e60(), kInput.x);
+    MoveAlongRope(FUN_1417e1e60(), kInput.x);
 }
 
 // @0x1417e18d0
@@ -1344,27 +1344,27 @@ void StateRope::vfunc_8(double fTime)
     State::vfunc_8(fTime);
     Unk_PCMove* pKeys = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     efd::Point3 kInput = efd::Point3::ZERO;
-    if (m_time110.FUN_140868c00() != 0)
+    if (m_time110.IsExpired() != 0)
     {
-        if (pKeys->FUN_141682fe0(0x30d41))
+        if (pKeys->IsActionKeyDown(0x30d41))
             kInput.y = 1.0f;
-        else if (pKeys->FUN_141682fe0(0x30d42))
+        else if (pKeys->IsActionKeyDown(0x30d42))
             kInput.y = -1.0f;
     }
     if (pKeys->FUN_141683100(0x30d43) || pKeys->FUN_141683100(0x30d44))
-        m_timerD8.FUN_140868750(500);
-    if (m_timerD8.FUN_140868c00() != 0)
+        m_timerD8.Start(500);
+    if (m_timerD8.IsExpired() != 0)
     {
-        if (pKeys->FUN_141682fe0(0x30d43))
+        if (pKeys->IsActionKeyDown(0x30d43))
             kInput.x = -1.0f;
-        else if (pKeys->FUN_141682fe0(0x30d44))
+        else if (pKeys->IsActionKeyDown(0x30d44))
             kInput.x = 1.0f;
     }
     m_pOwner->vfunc_22(kInput);
     if (pKeys->FUN_141683100(0x493e1))
     {
-        m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pKeys)->FUN_141683290())));
-        if (!pKeys->FUN_141682fe0(0x30d43) && !pKeys->FUN_141682fe0(0x30d44) && pKeys->FUN_141682fe0(0x30d41))
+        m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pKeys)->GetMoveDirection())));
+        if (!pKeys->IsActionKeyDown(0x30d43) && !pKeys->IsActionKeyDown(0x30d44) && pKeys->IsActionKeyDown(0x30d41))
             m_pOwner->vfunc_22(efd::Point3::ZERO);
         m_pOwner->vfunc_59(6, 0, 0, 0);
     }
@@ -1416,7 +1416,7 @@ void StateRope::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
 }
 
 // @0x1417e1df0
-void StateRope::FUN_1417e1df0(egf::Entity* pRope)
+void StateRope::SetRope(egf::Entity* pRope)
 {
     if (pRope == 0)
         return;
@@ -1441,7 +1441,7 @@ float StateRope::FUN_1417e1e60()
     if (!bOnRope)
     {
         float fGround = 0.0f;
-        if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->FUN_14168a450(reinterpret_cast<const efd::Point3&>(kPos), &fGround, 0.0f) != 0 && fGround != FLT_MAX)
+        if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->GetGroundDistance(reinterpret_cast<const efd::Point3&>(kPos), &fGround, 0.0f) != 0 && fGround != FLT_MAX)
             m_n10 = 0x39;
     }
     else if (m_n10 == 0x34)
@@ -1453,12 +1453,12 @@ float StateRope::FUN_1417e1e60()
             if (kPos.z + fStep > m_pos54.z + 50.0f)
             {
                 m_n10 = 0x33;
-                m_timerA0.FUN_1408687f0();
+                m_timerA0.Reset();
             }
         }
         else
         {
-            FUN_1417e1df0(pNext);
+            SetRope(pNext);
         }
     }
     else if (m_n10 == 0x35)
@@ -1475,14 +1475,14 @@ float StateRope::FUN_1417e1e60()
         }
         else
         {
-            FUN_1417e1df0(pNext);
+            SetRope(pNext);
         }
     }
     return fStep;
 }
 
 // @0x1417e20d0
-void StateRope::FUN_1417e20d0(float fDz, float fAngle)
+void StateRope::MoveAlongRope(float fDz, float fAngle)
 {
     NiPoint3 kTarget = m_pOwner->vfunc_18();
     if (m_n10 == 0x34 || m_n10 == 0x35)
@@ -1509,7 +1509,7 @@ void StateRope::FUN_1417e20d0(float fDz, float fAngle)
     if (m_pOwner->vfunc_18() != kTarget)
     {
         efd::Point2 kExtent = m_pOwner->FUN_141671390();
-        if (!reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->FUN_1412410c0(kTarget, kExtent.y * 0.5f))
+        if (!reinterpret_cast<GameObjectController*>(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())->IsCapsuleOverlapping(kTarget, kExtent.y * 0.5f))
             m_pOwner->vfunc_19(static_cast<efd::Point3&>(kTarget));
     }
 }
@@ -1517,7 +1517,7 @@ void StateRope::FUN_1417e20d0(float fDz, float fAngle)
 // @0x1417e23c0
 void StateRope::FUN_1417e23c0()
 {
-    m_timerA0.FUN_140868750((int)(400.0f / reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416713c0()));
+    m_timerA0.Start((int)(400.0f / reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416713c0()));
 }
 
 // @0x1417e2450
@@ -1571,7 +1571,7 @@ const char* CStateService::GetDisplayName() const
 // @0x1417e25a0
 int CStateService::FUN_1417e25a0(int nScene)
 {
-    if (FUN_1417e2610() == nScene)
+    if (GetCurrentSceneId() == nScene)
         return 0;
     FUN_14151f460(1);
     if (TSingleton<CReconnectionManagerCli>::GetInstance() != 0)
@@ -1581,7 +1581,7 @@ int CStateService::FUN_1417e25a0(int nScene)
 }
 
 // @0x1417e2610
-int CStateService::FUN_1417e2610()
+int CStateService::GetCurrentSceneId()
 {
     if (m_spCurrent == 0)
         return 0;
@@ -1603,7 +1603,7 @@ efd::SmartPointer<CSceneStateBase> CStateService::GetCurrent()
 }
 
 // @0x1417e2720
-efd::SmartPointer<CSceneStateBase> CStateService::FUN_1417e2720(unsigned nScene)
+efd::SmartPointer<CSceneStateBase> CStateService::FindScene(unsigned nScene)
 {
     efd::SmartPointer<CSceneStateBase> spScene(0);
     if (!m_mapScenes.Lookup(nScene, spScene))
@@ -1631,7 +1631,7 @@ int CStateService::FUN_1417e2830(int nScene)
         }
         return 1;
     }
-    if (FUN_1417e2610() == nScene)
+    if (GetCurrentSceneId() == nScene)
         return 0;
     efd::SmartPointer<CSceneStateBase> spNext(0);
     if (!m_mapScenes.Lookup(nScene, spNext))
@@ -1643,7 +1643,7 @@ int CStateService::FUN_1417e2830(int nScene)
         nPrev = m_spCurrent->GetClassID();
     m_spCurrent = spNext;
     m_spCurrent->OnEnter(nPrev);
-    ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9ef0(nScene);
+    ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9ef0(nScene);
     return 1;
 }
 
@@ -1656,7 +1656,7 @@ efd::SyncResult CStateService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
     efd::SmartPointer<CSceneStateBase> spScene(0);
     spScene = EE_NEW CSceneStateLogo;
     m_mapScenes.SetAt(spScene->GetClassID(), spScene);
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xd8))
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xd8))
     {
         spScene = EE_NEW CSceneStateModeSelect;
         m_mapScenes.SetAt(spScene->GetClassID(), spScene);
@@ -1681,7 +1681,7 @@ efd::AsyncResult CStateService::OnInit()
 {
     if (WorldService::GetInstance()->FUN_141bcfb70() == 0)
         return efd::AsyncResult_Pending;
-    bool bNone = FUN_1417e3620(FUN_14025e7a0()->GetStage(2));
+    bool bNone = FUN_1417e3620(GetGFxManager()->GetStage(2));
     if (bNone)
         return efd::AsyncResult_Pending;
     FUN_1417e25a0(0x620000b);

@@ -49,16 +49,16 @@ public:
     virtual void vfunc_3(void* pItem, bool b);                  // UIItemEventListener 3 0x140e744e0
 
     void FUN_140e73590(int n);                                  // FUN_1412761e0 on the movie
-    void FUN_140e74550(int nGroup);                             // open the collect tab at a group
+    void OpenCollectTab(int nGroup);                             // open the collect tab at a group
     void FUN_140e74640(int nEvent);                             // forward an event to the page (while open)
-    MS2Ptr<PetSystemTabContents> FUN_140e746c0();               // the shown page
-    int FUN_140e74790();                                        // the index of the collect tab (forwarding m_180)
+    MS2Ptr<PetSystemTabContents> GetShownPage();               // the shown page
+    int GetCollectTabIndex();                                        // the index of the collect tab (forwarding m_180)
     void OnRemoveTab();                                       // leave the shown page
-    void FUN_140e74970(CString strName, const Scaleform::GFx::Value& root);    // show a tab by frame name
+    void ShowTab(CString strName, const Scaleform::GFx::Value& root);    // show a tab by frame name
 
 protected:
     MS2_LAYOUT_FRIEND;
-    int m_180;                                                  // +0x180 the collect group to show (FUN_140e74550)
+    int m_180;                                                  // +0x180 the collect group to show (OpenCollectTab)
     MS2Ptr<PetSystemTabContents> m_188;                         // +0x188 the shown page
     ATL::CAtlMap<int, MS2Ptr<TabInfo>, ATL::CDefaultElementTraits<int> > m_198;   // +0x198 tab index -> tab (key by reference)
 };

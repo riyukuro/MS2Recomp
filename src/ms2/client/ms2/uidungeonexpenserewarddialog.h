@@ -21,10 +21,10 @@ public:
     virtual int vfunc_48() { return 0x4ef8; }                   // 48 0x140f3b230
     virtual void vfunc_67();                                    // 67 0x140f3ad00
 
-    void FUN_140f3ad50();                                       // set the text
+    void SetText();                                       // set the text
     void FUN_140f3ae40(int nRoomId, int nUnused);                            // close unless the room still qualifies
-    void FUN_140f3aee0(const Scaleform::GFx::FunctionHandler::Params& params);   // accept clicked
-    void FUN_140f3af10(const Scaleform::GFx::FunctionHandler::Params& params);   // cancel clicked
+    void OnAccept(const Scaleform::GFx::FunctionHandler::Params& params);   // accept clicked
+    void OnCancel(const Scaleform::GFx::FunctionHandler::Params& params);   // cancel clicked
 
 private:
     CStringW m_178;                                             // +0x178 the message

@@ -38,13 +38,13 @@ public:
 };
 
 class Unk_FtUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
+MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);  // Value = string
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int nValue);          // Value = Int
@@ -53,7 +53,7 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int nValue);          // Value
 class Unk_FtEntity : public ASGameEntity
 {
 public:
-    Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3);
+    Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2, int a3);
     Scaleform::GFx::Value FUN_1412c4a20(const char* szMethod, CStringW a1, int a2, int a3, int a4);
 };
 
@@ -105,7 +105,7 @@ int UIGuildFlagTooltip::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 MS2_REPLACE_METHOD(0x1412C3FC0, UIGuildFlagTooltip, vfunc_28, 129, 0x5F648DED);
 
 // @0x1412c4050
-void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
+void UIGuildFlagTooltip::ShowTooltip(const CString& strName)
 {
     if (m_70 == 1)
         return;
@@ -131,12 +131,12 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
             pEntity->vfunc_3(1);
             if (nImageType == 3)
             {
-                int nScore = reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->FUN_1404d3180()->FUN_1404c6110(nTrophy);
+                int nScore = reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->GetSeason()->FUN_1404c6110(nTrophy);
                 static_cast<Unk_FtEntity*>(pEntity.operator->())->FUN_1412c4a20("showPvp", CStringW(strCaption), nTrophy, nRank, nScore);
             }
             else if (nImageType == 4)
             {
-                static_cast<Unk_FtEntity*>(pEntity.operator->())->FUN_1412c4930("showBuilder", CStringW(strCaption), nTrophy, nRank);
+                static_cast<Unk_FtEntity*>(pEntity.operator->())->Invoke("showBuilder", CStringW(strCaption), nTrophy, nRank);
             }
             else if (nImageType == 5)
             {
@@ -145,7 +145,7 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
             }
             else
             {
-                static_cast<Unk_FtEntity*>(pEntity.operator->())->FUN_1412c4930("show", CStringW(strCaption), nTrophy, nRank);
+                static_cast<Unk_FtEntity*>(pEntity.operator->())->Invoke("show", CStringW(strCaption), nTrophy, nRank);
             }
             FUN_1412c46d0();
         }
@@ -153,7 +153,7 @@ void UIGuildFlagTooltip::FUN_1412c4050(const CString& strName)
 }
 
 // @0x1412c45a0
-void UIGuildFlagTooltip::FUN_1412c45a0()
+void UIGuildFlagTooltip::HideTooltip()
 {
     if (m_70 == 0)
         return;
@@ -165,7 +165,7 @@ void UIGuildFlagTooltip::FUN_1412c45a0()
 // @0x1412c4660
 void UIGuildFlagTooltip::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 
 // @0x1412c46d0
@@ -187,8 +187,8 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pEntity.get())
         {
-            reinterpret_cast<efd::Point3&>(kScreen) *= ((class GFxManager*)(class Unk_FtUIScale*)(((class Unk_FtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
-            kScreen.x -= pEntity->FUN_1422c1340() * 0.5;
+            reinterpret_cast<efd::Point3&>(kScreen) *= ((class GFxManager*)(class Unk_FtUIScale*)(((class Unk_FtUIScale*)GetGFxManager())))->GetMovieScale(m_28);
+            kScreen.x -= pEntity->GetWidthCeil() * 0.5;
             kScreen.y -= pEntity->GetHeightCeil() * 0.5;
             pEntity->SetPositionFloat(kScreen.x, kScreen.y);
             return true;
@@ -198,7 +198,7 @@ bool UIGuildFlagTooltip::FUN_1412c46d0()
 }
 
 // @0x1412c4930
-Scaleform::GFx::Value Unk_FtEntity::FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3)
+Scaleform::GFx::Value Unk_FtEntity::Invoke(const char* szMethod, CStringW a1, int a2, int a3)
 {
     ASArgList args;
     args.resize(3);

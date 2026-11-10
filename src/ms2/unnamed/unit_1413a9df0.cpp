@@ -232,7 +232,7 @@ void CGuideConditionAchieveExistTrophy::vfunc_2(TiXmlElement* pElem)
 // @0x1413aa680
 int CGuideConditionAchieveExistTrophy::vfunc_3()
 {
-    return ApplyNot(reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->HasCompletedOfType(*reinterpret_cast<Unk_NullableInt*>(&m_type)));
+    return ApplyNot(reinterpret_cast<CAchieveManager*>(GetAchieveManager())->HasCompletedOfType(*reinterpret_cast<Unk_NullableInt*>(&m_type)));
 }
 
 // @0x1413aa6c0
@@ -358,7 +358,7 @@ void CGuideConditionExistShortcut::vfunc_2(TiXmlElement* pElem)
 // @0x1413aadb0
 int CGuideConditionExistShortcut::vfunc_3()
 {
-    int nSkill = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetQuickSlotSkillId(m_nSlotIndex);
+    int nSkill = reinterpret_cast<CKeyTable*>(GetKeyTable())->GetQuickSlotSkillId(m_nSlotIndex);
     return ApplyNotBool(nSkill == m_nSkillId);
 }
 
@@ -628,7 +628,7 @@ int CGuideConditionInteractObject::vfunc_3()
     float fDist = (pPC->vfunc_18() - pObj->GetPos()).Length();
     if (fDist > m_fDistance)
         return ApplyNot(0);
-    if (pObj->FUN_1413b5600() != m_nState)
+    if (pObj->GetState() != m_nState)
         return ApplyNot(0);
     return ApplyNot(1);
 }
@@ -666,7 +666,7 @@ void CGuideConditionLastClosedTextTip::vfunc_2(TiXmlElement* pElem)
 // @0x1413ac290
 int CGuideConditionLastClosedTextTip::vfunc_3()
 {
-    void* pDialog = FUN_14136f3e0(0x4e53);
+    void* pDialog = FindGuideEvent(0x4e53);
     if (pDialog != 0)
         return ApplyNotBool(m_nEntityId == reinterpret_cast<UIGuideEvent*>(pDialog)->GetLastTip());
     return 0;

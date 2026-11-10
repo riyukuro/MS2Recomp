@@ -31,7 +31,7 @@ public:
     char m_pad_000[0x1d0];
     CString m_strStatIcon;                                      // +0x1d0
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 void FUN_1412751b0(const CStringW& strMsg, int nType);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -90,9 +90,9 @@ void UIChapterBook::OnLoadComplete()
             CStringW strEpilogue = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x3a, m_nEpilogue);
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strEpilogue);
             ASObj obj(2);
-            ((class AScript&)(obj)).FUN_1407cb9c0("id", spBook->m_nId);
-            ((class AScript&)(obj)).FUN_1407cbb20("chapter", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x39, m_nEpilogue));
-            ((class AScript&)(obj)).FUN_1407cbb20("epilogue", CStringW(strEpilogue));
+            ((class AScript&)(obj)).SetIntMember("id", spBook->m_nId);
+            ((class AScript&)(obj)).SetWStringMember("chapter", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x39, m_nEpilogue));
+            ((class AScript&)(obj)).SetWStringMember("epilogue", CStringW(strEpilogue));
             for (unsigned __int64 i = 0; i < spBook->m_rewards.GetCount(); i++)
             {
                 Unk_ChapterReward& reward = spBook->m_rewards[i];
@@ -102,26 +102,26 @@ void UIChapterBook::OnLoadComplete()
                     if (spItem.IsNull())
                         continue;
                     ASObj objReward(2);
-                    objReward.FUN_1407cba60("icon", spItem->GetIconPath());
-                    ((class AScript&)(objReward)).FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, reward.m_item.m_itemId));
+                    objReward.SetStringMember("icon", spItem->GetIconPath());
+                    ((class AScript&)(objReward)).SetWStringMember("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, reward.m_item.m_itemId));
                     objReward.SetMemberUInt("count", reward.m_item.m_count);
                     obj.FUN_1409eb270(StringFormat<unsigned __int64>("reward{0}", i), objReward);
                 }
                 else if (reward.m_nType == 3)
                 {
                     ASObj objReward(2);
-                    objReward.FUN_1407cba60("icon", ((class Unk_CbIcons*)FUN_1401d31f0())->GetPath(reward.m_nKind));
+                    objReward.SetStringMember("icon", ((class Unk_CbIcons*)GetCommonResource())->GetPath(reward.m_nKind));
                     CStringW strKey(L"s_chapterbook_skill_point");
                     if (reward.m_nKind == 2)
                         strKey = L"s_achieve_reward_skill_point_sub_1";
-                    ((class AScript&)(objReward)).FUN_1407cbb20("name", FUN_14028dfa0<int>(strKey, reinterpret_cast<const int&>(reward.m_nValue)));
+                    ((class AScript&)(objReward)).SetWStringMember("name", FUN_14028dfa0<int>(strKey, reinterpret_cast<const int&>(reward.m_nValue)));
                     obj.FUN_1409eb270(StringFormat<unsigned __int64>("reward{0}", i), objReward);
                 }
                 else if (reward.m_nType == 2)
                 {
                     ASObj objReward(2);
-                    objReward.FUN_1407cba60("icon", ((class Unk_CbIcons*)FUN_1401d31f0())->m_strStatIcon);
-                    ((class AScript&)(objReward)).FUN_1407cbb20("name", FUN_14028dfa0<int>(CStringW(L"s_chapterbook_stat_point"), reinterpret_cast<const int&>(reward.m_nValue)));
+                    objReward.SetStringMember("icon", ((class Unk_CbIcons*)GetCommonResource())->m_strStatIcon);
+                    ((class AScript&)(objReward)).SetWStringMember("name", FUN_14028dfa0<int>(CStringW(L"s_chapterbook_stat_point"), reinterpret_cast<const int&>(reward.m_nValue)));
                     obj.FUN_1409eb270(StringFormat<unsigned __int64>("reward{0}", i), objReward);
                 }
             }
@@ -176,7 +176,7 @@ int UIChapterBook::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         vfunc_3();
         UIRewardNotify* pNotify2 = FindRewardNotify(0x4e5d);
         if (pNotify2 != 0)
-            pNotify2->FUN_141abf210();
+            pNotify2->UnblockToasts();
         return 1;
     }
     return 0;

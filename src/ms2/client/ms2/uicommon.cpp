@@ -103,6 +103,9 @@
 // MS2-PIN: ??_GCAlignmentInfo@UICommon@@UEAAPEAXI@Z 0x1419049f0
 // MS2-PIN: ?get@?$MS2Ptr@VCItem@@@@QEBAPEAVCItem@@XZ 0x1419047b0
 // MS2-PIN: ??$StringFormat@V?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@HV12@V12@@@YA?AV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@PEB_WAEBV01@AEBH11@Z 0x141903020
+// Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@HPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@2@$00@2@$00@std@@QEBAAEBV?$_Compressed_pair@V?$allocator@U?$_Tree_node@HPEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@H@std@@@2@$00@2@XZ 0x1419054b0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uicommon.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
 #include <shellapi.h>
@@ -163,14 +166,14 @@ extern CStringW DAT_143af1bc8;
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/placeholder/formatstringid.h"
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
-class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
+class CUserMail { public: static __int64 GetGFxSceneService(); };  // C3: member view (0x1408e57f0, the scene-service global)
 #undef MS2_STATICS_A_BEFORE_CONDITION
 static UICommon::CMyPCKeyInputController s_keyInput;               // @0x140111980
 
 // ---- globals of the exe (bound by the DAT_ names) ----
 extern __int64 DAT_143ab2820;                                       // the local player's character id
 extern __int64 DAT_143ab2898;                                       // wallet: meso
-extern __int64 DAT_143ab28b0;                                       // wallet: merat / honor / treva / lu ... (see FUN_1418ff1f0)
+extern __int64 DAT_143ab28b0;                                       // wallet: merat / honor / treva / lu ... (see HasEnoughCurrency)
 extern __int64 DAT_143ab28b8;
 extern __int64 DAT_143ab28c0;
 extern __int64 DAT_143ab28c8;
@@ -200,17 +203,17 @@ template <> void CMsgBoxData::Append<int>(int);
 template <> void CMsgBoxData::Append<__int64>(__int64);
 typedef Delegate<bool(int, const CMsgBoxData&)> Unk_UcMsgCallback;
 typedef MS2Ptr<CMsgBoxData> Unk_UcMsgBoxPtr;
-Unk_UcMsgBoxPtr FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);
+Unk_UcMsgBoxPtr CreateMessageBox(int nType, CStringW text, void* p, CStringW tag);
 void FUN_140d73c60(Unk_UcMsgBoxPtr box);
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
 CStringW BlockFormat(int nStrId);                                   // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nStrId);
 CStringW FUN_1409404f0(__int64 n);                                  // the number as text
 template <class A, class B> CStringW FUN_14028dee0(int nStrId, const A& a0, const B& a1);   // FormatStringId
 void FUN_141275260(int nStrId, int a, int b);                       // system message by string id
-void FUN_1412751f0(const CStringW& strText, int a, int b);
-class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
+void ShowSystemNotice(const CStringW& strText, int a, int b);
+class UIWebBrowser* FindWebBrowser(int);   // C3: was FindWebBrowser
 
 // The wide-string formatter with a leading string id (0x14028dee0), instantiated here for <CStringW, CString>.
 
@@ -282,9 +285,9 @@ public:
     void SetFielda0(__int64 nTargetId);
     void SetFieldb8(CStringW strTargetName);                        // by value: the callee destroys it
     void SetTitle(CStringW strReporterName);
-    void FUN_141904a90(int n);                                      // @0x141904a90
-    void FUN_141904af0(int n);                                      // @0x141904af0
-    void FUN_141904b10(__int64 n);                                  // @0x141904b10
+    void SetField70(int n);                                      // @0x141904a90
+    void SetField74(int n);                                      // @0x141904af0
+    void SetField68(__int64 n);                                  // @0x141904b10
     MS2_LAYOUT_FRIEND;
 private:
     void* m_pad_18; void* m_pad_20; void* m_pad_28;
@@ -304,7 +307,7 @@ MS2_CHECK_OFFSET(CUserReportData, m_74, 0x74);
 
 // @0x1418fcee0
 // Report the owner of the plot the player stands on (type 4, kind 2).
-int FUN_1418fcee0()
+int OnReport()
 {
     __int64 nOwner = ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180();
     CStringW strOwner = ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0();
@@ -312,10 +315,10 @@ int FUN_1418fcee0()
     {
         MS2Ptr<CUserReportData> spReport(new CUserReportData(4));
         spReport->SetField28(2);
-        spReport->FUN_141904b10(nOwner);
+        spReport->SetField68(nOwner);
         spReport->SetTitle(strOwner);
-        spReport->FUN_141904a90(0);
-        spReport->FUN_141904af0(0);
+        spReport->SetField70(0);
+        spReport->SetField74(0);
         spReport->SetFielda0(nOwner);
         spReport->SetFieldb8(strOwner);
         FUN_140d86260()->vfunc_48(spReport);
@@ -323,14 +326,14 @@ int FUN_1418fcee0()
     }
     return 0;
 }
-MS2_REPLACE(0x1418fcee0, FUN_1418fcee0, 575, 0x37AB585C);
+MS2_REPLACE(0x1418fcee0, OnReport, 575, 0x37AB585C);
 
 // @0x1418fd130
-int FUN_1418fd130()
+int OnRecommend()
 {
     if (FUN_140930190() != 0)
     {
-        FUN_140d73aa0(BlockFormat(0x6df), 0, 0, CStringW(L""));
+        ShowMessageBox(BlockFormat(0x6df), 0, 0, CStringW(L""));
         return 0;
     }
     if (CFieldData::FUN_140374410(WorldService::GetInstance()->FUN_141bd3060()))
@@ -338,13 +341,13 @@ int FUN_1418fd130()
         __int64 nOwner = ((class Unk_UcCubeSvc*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3180();
         if (nOwner != 0 && nOwner != DAT_143ab2820)
         {
-            FUN_140d73aa0(BlockFormat(0xb14), 1, 0, DAT_143af1c18);
+            ShowMessageBox(BlockFormat(0xb14), 1, 0, DAT_143af1c18);
             return 1;
         }
     }
     return 0;
 }
-MS2_REPLACE(0x1418fd130, FUN_1418fd130, 321, 0xF0C00958);
+MS2_REPLACE(0x1418fd130, OnRecommend, 321, 0xF0C00958);
 
 // @0x1418fd280
 int FUN_1418fd280()
@@ -421,7 +424,7 @@ MS2_REPLACE(0x1418fd330, FUN_1418fd330, 500, 0xE1CB9F60);
 
 // @0x1418fd530
 // The four identical probes below: the local player is not the character nCharId.
-int FUN_1418fd530(__int64 nCharId)
+int IsOtherCharacter(__int64 nCharId)
 {
     MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
@@ -430,7 +433,7 @@ int FUN_1418fd530(__int64 nCharId)
         return 0;
     return 1;
 }
-MS2_REPLACE(0x1418fd530, FUN_1418fd530, 70, 0xC984AEB5);
+MS2_REPLACE(0x1418fd530, IsOtherCharacter, 70, 0xC984AEB5);
 
 // @0x1418fd580
 int FUN_1418fd580(__int64 nCharId)
@@ -491,9 +494,9 @@ int FUN_1418fd6c0(__int64 nId)
 }
 MS2_REPLACE(0x1418fd6c0, FUN_1418fd6c0, 120, 0xBFBC3BD2);
 
-inline void CUserReportData::FUN_141904a90(int n) { m_70 = n; }                // @0x141904a90
-inline void CUserReportData::FUN_141904af0(int n) { m_74 = n; }                // @0x141904af0
-inline void CUserReportData::FUN_141904b10(__int64 n) { m_68 = n; }            // @0x141904b10
+inline void CUserReportData::SetField70(int n) { m_70 = n; }                // @0x141904a90
+inline void CUserReportData::SetField74(int n) { m_74 = n; }                // @0x141904af0
+inline void CUserReportData::SetField68(__int64 n) { m_68 = n; }            // @0x141904b10
 
 // ---- the id-to-name lookups ----
 class Unk_UcGuildObj                                                // a guild record (the id sits at +0x20)
@@ -516,7 +519,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_UcGuildSvc, m_info, 8);
 __int64 FUN_141637b90(CPartyMember* p);
-class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
+class Unk_ClubManager* GetClubClientManager();   // C3: was GetClubClientManager
 UIClubDialog* FindClubDialog(int nUiId);
 struct Unk_UcProxyRef;
 Unk_UcProxyRef* FUN_140ac58f0(Unk_UcProxyRef* dst, const void* src);
@@ -578,8 +581,8 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
             UIClubDialog* pClubDlg = FindClubDialog(0x4f25);
             if (pClubDlg != 0)
             {
-                __int64 nClubId = pClubDlg->FUN_141904a70();
-                MS2Ptr<CClubMember> spMember = ((class CClubClientManager*)FUN_140e0d900())->FindMember(nClubId, nId);
+                __int64 nClubId = pClubDlg->GetClubId();
+                MS2Ptr<CClubMember> spMember = ((class CClubClientManager*)GetClubClientManager())->FindMember(nClubId, nId);
                 if (spMember)
                 {
                     pPC->SendRequestMoveFieldMode2(0, 0, 0, spMember->m_info.m_accountId, CStringW(L""));
@@ -598,7 +601,7 @@ int FUN_1418fd740(__int64 nParam, __int64 nId, int nType)
             for (void* pos = ((void*)((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetStartPosition()); pos != 0; ((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetNext(*(POSITION*)&pos))
             {
                 MS2Ptr<CProxyGameObject> spProxy(*static_cast<const MS2Ptr<CProxyGameObject>*>(((void*)&((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos)))));
-                if (spProxy.get() && reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()) == nId)
+                if (spProxy.get() && reinterpret_cast<__int64>(spProxy->GetCharacterId()) == nId)
                 {
                     pPC->SendRequestMoveFieldMode2(spProxy->m_b4, spProxy->m_b8, spProxy->m_bc,
                                   reinterpret_cast<__int64>(spProxy->FUN_1416c2310()), CStringW(L""));
@@ -615,7 +618,7 @@ MS2_REPLACE(0x1418fd740, FUN_1418fd740, 1739, 0xCB108862);
 // Open the confirmation box (string 0x879 with a1) with two ids and a number and call back with nCallback.
 void FUN_1418fde20(__int64 nId0, __int64 nId1, int nValue, const CStringW& strArg, Unk_UcMsgCallback cb)
 {
-    Unk_UcMsgBoxPtr spBox = FUN_140d73d20(1, FormatStringId<CStringW>(0x879, strArg), 0, CStringW(L""));
+    Unk_UcMsgBoxPtr spBox = CreateMessageBox(1, FormatStringId<CStringW>(0x879, strArg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         spBox->Append<__int64>(nId0);
@@ -635,8 +638,8 @@ public:
 };
 bool FUN_140930b10();
 unsigned int FUN_1409301f0();   // C3: was FUN_1409301f0
-__int64 FUN_140930240();                                            // merat balance
-__int64 FUN_140930ae0();                                            // red merat balance
+__int64 GetMeratBalance();                                            // merat balance
+__int64 GetRedMeratBalance();                                            // red merat balance
 extern Unk_Inventory g_143ab2a90;
 template <class A> CStringW BlockFormat(int nId, const A& a);
 class Unk_UcUiMgr : public CUIService
@@ -644,9 +647,9 @@ class Unk_UcUiMgr : public CUIService
 };
 
 // @0x1418fdfd0
-void FUN_1418fdfd0(__int64 nKey)
+void SendWeddingInvitation(__int64 nKey)
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x104))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x104))
         return;
     MyPC* pPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
@@ -657,7 +660,7 @@ void FUN_1418fdfd0(__int64 nKey)
         return;
     TSingleton<WeddingManager>::GetInstance()->SendInvitation(nKey);
 }
-MS2_REPLACE(0x1418fdfd0, FUN_1418fdfd0, 126, 0x943A0D11);
+MS2_REPLACE(0x1418fdfd0, SendWeddingInvitation, 126, 0x943A0D11);
 
 // @0x1418fe060
 bool FUN_1418fe060()
@@ -712,7 +715,7 @@ void FUN_1418fe220(const CString& strUrl)
 {
     if (strUrl.IsEmpty())
         return;
-    void* pBrowser = ((void*)FUN_140c43790(0x4e6a));
+    void* pBrowser = ((void*)FindWebBrowser(0x4e6a));
     if (pBrowser != 0)
         ((UIWebBrowserBase*)pBrowser)->FUN_14135ec00(strUrl, true);
 }
@@ -747,13 +750,13 @@ void FUN_1418fe280(const CString& strUrl)
 MS2_REPLACE(0x1418fe280, FUN_1418fe280, 601, 0xA7A69DF7);
 
 // @0x1418fe4e0
-CStringW FUN_1418fe4e0(const CStringW& strPath)
+CStringW GetFullPath(const CStringW& strPath)
 {
     wchar_t szFull[0x104] = {};
     _wfullpath(szFull, strPath, 0x104);
     return CStringW(szFull);
 }
-MS2_REPLACE(0x1418fe4e0, FUN_1418fe4e0, 158, 0x44154AB3);
+MS2_REPLACE(0x1418fe4e0, GetFullPath, 158, 0x44154AB3);
 
 // @0x1418fe5d0
 CStringW FUN_1418fe5d0(int nKind)
@@ -779,7 +782,7 @@ MS2_REPLACE(0x1418fe590, FUN_1418fe590, 55, 0xA41E59B9);
 
 // @0x1418fe6c0
 // Display name of a currency (1 meso, 3 merat, 9 red merat, 0xf star point).
-CStringW FUN_1418fe6c0(int nCurrency, int nKind)
+CStringW GetCurrencyName(int nCurrency, int nKind)
 {
     switch (nCurrency)
     {
@@ -808,7 +811,7 @@ CStringW FUN_1418fe6c0(int nCurrency, int nKind)
     }
     return CStringW(L"");
 }
-MS2_REPLACE(0x1418fe6c0, FUN_1418fe6c0, 423, 0xF021F7E6);
+MS2_REPLACE(0x1418fe6c0, GetCurrencyName, 423, 0xF021F7E6);
 
 // @0x1418fe870
 // Icon name of a currency; *pnVSpace gets the icon's vertical offset.
@@ -965,7 +968,7 @@ MS2_REPLACE(0x1418fef90, FUN_1418fef90, 371, 0xCF5E5E8C);
 
 // @0x1418ff1f0
 // Can the player pay nAmount of the currency (nItemId for item payments)?
-bool FUN_1418ff1f0(int nCurrency, __int64 nAmount, int nItemId)
+bool HasEnoughCurrency(int nCurrency, __int64 nAmount, int nItemId)
 {
     switch (nCurrency)
     {
@@ -1011,10 +1014,10 @@ bool FUN_1418ff1f0(int nCurrency, __int64 nAmount, int nItemId)
     }
     return false;
 }
-MS2_REPLACE(0x1418ff1f0, FUN_1418ff1f0, 853, 0x31336EBE);
+MS2_REPLACE(0x1418ff1f0, HasEnoughCurrency, 853, 0x31336EBE);
 
 // @0x1418ff5a0
-__int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId)
+__int64 GetCurrencyAmount(int nCurrency, __int64 nAmount, int nItemId)
 {
     switch (nCurrency)
     {
@@ -1024,7 +1027,7 @@ __int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId)
     case 2:
         return g_143ab2a90.FUN_140a5f180(nItemId, 0);
     case 3:
-        return FUN_140930240();
+        return GetMeratBalance();
     case 4:
         return DAT_143ab28b0;
     case 5:
@@ -1035,12 +1038,12 @@ __int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId)
         return DAT_143ab28c8;
         break;
     case 9:
-        return FUN_140930ae0();
+        return GetRedMeratBalance();
     case 10:
     {
-        __int64 nRed = FUN_140930ae0();
+        __int64 nRed = GetRedMeratBalance();
         if (nRed < nAmount)
-            return FUN_140930240();
+            return GetMeratBalance();
         return nRed;
     }
     case 0xb:
@@ -1058,11 +1061,11 @@ __int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId)
     }
     return 0;
 }
-MS2_REPLACE(0x1418ff5a0, FUN_1418ff5a0, 277, 0x8D703C29);
+MS2_REPLACE(0x1418ff5a0, GetCurrencyAmount, 277, 0x8D703C29);
 
 // @0x1418ff710
 // Tell the player which currency is lacking.
-void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
+void ShowLackCurrencyMessage(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
 {
     switch (nCurrency)
     {
@@ -1074,7 +1077,7 @@ void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
     {
         CStringW strText = BlockFormat<unsigned>(0x38, reinterpret_cast<const unsigned&>(nItemId));
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
-        FUN_1412751f0(strText, 1, 1);
+        ShowSystemNotice(strText, 1, 1);
         break;
     }
     case 3:
@@ -1100,37 +1103,37 @@ void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
     case 9:
     {
         CStringW strKey(L"s_err_lack_redmerat");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     case 0xb:
     {
         CStringW strKey(L"s_guild_err_not_enough_guild_fund");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     case 0xc:
     {
         CStringW strKey(L"s_err_lack_reverse_coin");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     case 0xd:
     {
         CStringW strKey(L"s_err_lack_mentor_token");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     case 0xe:
     {
         CStringW strKey(L"s_err_lack_mentee_token");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     case 0xf:
     {
         CStringW strKey(L"s_err_lack_star_point");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     case 0x10:
@@ -1138,15 +1141,15 @@ void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt)
         break;
     }
 }
-MS2_REPLACE(0x1418ff710, FUN_1418ff710, 1061, 0x2880CDF3);
+MS2_REPLACE(0x1418ff710, ShowLackCurrencyMessage, 1061, 0x2880CDF3);
 
 // @0x1418ff180
 bool FUN_1418ff180(int nCurrency, __int64 nAmount, int nItemId, bool bMessage, int nOpt)
 {
-    if (FUN_1418ff1f0(nCurrency, nAmount, nItemId) == 0)
+    if (HasEnoughCurrency(nCurrency, nAmount, nItemId) == 0)
     {
         if (bMessage)
-            FUN_1418ff710(nCurrency, nAmount, nItemId, nOpt);
+            ShowLackCurrencyMessage(nCurrency, nAmount, nItemId, nOpt);
         return false;
     }
     return true;
@@ -1215,20 +1218,20 @@ void FUN_1418ffec0(unsigned* pnFlags, unsigned nMask) { *pnFlags = *pnFlags | nM
 MS2_REPLACE(0x1418ffec0, FUN_1418ffec0, 30, 0x8DED35CE);
 
 // @0x1418ffef0
-void FUN_1418ffef0(unsigned* pnFlags, unsigned nMask) { *pnFlags = *pnFlags & ~nMask; }
-MS2_REPLACE(0x1418ffef0, FUN_1418ffef0, 34, 0x9A8013F9);
+void ClearFlags(unsigned* pnFlags, unsigned nMask) { *pnFlags = *pnFlags & ~nMask; }
+MS2_REPLACE(0x1418ffef0, ClearFlags, 34, 0x9A8013F9);
 
 // @0x1418fffd0
 // The tooltip record of a tab: index, label and a styled text.
 void FUN_1418fffd0(ASObj* pObj, int nTabIndex, const CStringW& strLabel, const CStringW& strText)
 {
-    pObj->FUN_1407cb9c0("tabIndex", nTabIndex);
-    pObj->FUN_1407cbb20("label", strLabel);
+    pObj->SetIntMember("tabIndex", nTabIndex);
+    pObj->SetWStringMember("label", strLabel);
     ASObj tip(2);
     tip.FUN_1409c0dc0("className", "export_common_tooltip_tooltipText");
-    tip.FUN_1407cbb20("id", strText);
+    tip.SetWStringMember("id", strText);
     tip.FUN_1409c0dc0("align", "topLeft");
-    pObj->FUN_1409adbe0("tooltipData", tip.FUN_1422bb870());
+    pObj->FUN_1409adbe0("tooltipData", tip.GetValue());
 }
 MS2_REPLACE(0x1418fffd0, FUN_1418fffd0, 327, 0xFA8703F6);
 
@@ -1237,7 +1240,7 @@ void FUN_1418fff20(ASArray* pArray, int nTabIndex, const CStringW& strLabel, con
 {
     ASObj obj(2);
     FUN_1418fffd0(&obj, nTabIndex, strLabel, strText);
-    pArray->PushValue(obj.FUN_1422bb870());
+    pArray->PushValue(obj.GetValue());
 }
 MS2_REPLACE(0x1418fff20, FUN_1418fff20, 162, 0x243A22D7);
 
@@ -1269,9 +1272,9 @@ public:
     class UISceneEntity* FUN_1422b9e50();
     int GetSubSceneId();
 };
-int FUN_141a55620();
+int IsModalDialogShown();
 MS2InputService* FUN_140a58540();
-class UICartoonDialog* FUN_140ff7030(int);   // C3: was FUN_140ff7030
+class UICartoonDialog* FindCartoonDialog(int);   // C3: was FindCartoonDialog
 class UICartoonDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -1282,7 +1285,7 @@ class CWebBrowserService;
 
 // @0x141900510
 // Current amount and cap of a currency; false for the currencies without a display.
-bool FUN_141900510(int nCurrency, __int64* pnAmount, __int64* pnCap)
+bool GetCurrencyAmountAndCap(int nCurrency, __int64* pnAmount, __int64* pnCap)
 {
     *pnCap = 0;
     switch (nCurrency)
@@ -1326,7 +1329,7 @@ bool FUN_141900510(int nCurrency, __int64* pnAmount, __int64* pnCap)
     }
     return false;
 }
-MS2_REPLACE(0x141900510, FUN_141900510, 511, 0x9B022F71);
+MS2_REPLACE(0x141900510, GetCurrencyAmountAndCap, 511, 0x9B022F71);
 
 // @0x141900120
 // "amount" or "amount / cap" of a currency, optionally with its icon and a leading line break.
@@ -1335,7 +1338,7 @@ CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline)
     int nVSpace = -4;
     __int64 nAmount = 0;
     __int64 nCap = 0;
-    if (!FUN_141900510(nCurrency, &nAmount, &nCap))
+    if (!GetCurrencyAmountAndCap(nCurrency, &nAmount, &nCap))
         return CStringW(L"");
     CStringW strFormat;
     if (bNewline)
@@ -1366,11 +1369,11 @@ bool FUN_141900a90(UIDialog* pDlg)
 {
     int nLayer = 0x19;
     int nAlign = 4;
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001f)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x620001f)
     {
         nLayer = 0xc;
     }
-    else if (FUN_141a55620() != 0)
+    else if (IsModalDialogShown() != 0)
     {
         nLayer = 0x22;
         nAlign = 0;
@@ -1381,18 +1384,18 @@ bool FUN_141900a90(UIDialog* pDlg)
     }
     if (pDlg->FUN_141924630() != 0 && pDlg->FUN_1422db750() == nLayer)
     {
-        pDlg->FUN_1419235d0();
+        pDlg->SetTopMostLayer();
         return true;
     }
-    TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)pDlg->vfunc_48());
-    pDlg->FUN_141904ad0(&nLayer);
-    pDlg->FUN_141904ab0(&nAlign);
+    TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)pDlg->vfunc_48());
+    pDlg->SetDepth(&nLayer);
+    pDlg->SetLayer(&nAlign);
     return true;
 }
 MS2_REPLACE(0x141900a90, FUN_141900a90, 213, 0xCCB33585);
 
 // @0x141900b70
-CString FUN_141900b70()
+CString GetInputDeviceName()
 {
     switch (FUN_140a58540()->GetPadFamily())
     {
@@ -1407,14 +1410,14 @@ CString FUN_141900b70()
         return CString("mouse");
     return CString("keyboard");
 }
-MS2_REPLACE(0x141900b70, FUN_141900b70, 260, 0x4B8422E3);
+MS2_REPLACE(0x141900b70, GetInputDeviceName, 260, 0x4B8422E3);
 
 // @0x141900c80
 bool FUN_141900c80(int nKind, const CMsgBoxData& box)
 {
     if (nKind == 2)
     {
-        UIDialog* pDlg = ((class UIDialog*)FUN_140ff7030(0x4e87));
+        UIDialog* pDlg = ((class UIDialog*)FindCartoonDialog(0x4e87));
         if (pDlg != 0)
         {
             int nWanted = *((struct Unk_UcCfg*)GetClientConstants())->m_d358.Get();
@@ -1425,11 +1428,11 @@ bool FUN_141900c80(int nKind, const CMsgBoxData& box)
     else if (nKind == 3)
     {
         CString strUrl;
-        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, *((struct Unk_UcCfg*)GetClientConstants())->m_d2f8.Get());
+        TSingleton<CWebBrowserService>::GetInstance()->ExpandUrlPrefix(strUrl, *((struct Unk_UcCfg*)GetClientConstants())->m_d2f8.Get());
         FUN_1418fe1c0(strUrl);
         return false;
     }
-    UIDialog* pDlg = ((class UIDialog*)FUN_140ff7030(0x4e87));
+    UIDialog* pDlg = ((class UIDialog*)FindCartoonDialog(0x4e87));
     if (pDlg != 0)
     {
         int nWanted = *((struct Unk_UcCfg*)GetClientConstants())->m_d358.Get();
@@ -1451,17 +1454,17 @@ void XmlSetAttr(class TiXmlElement*, char const*, float);   // C3: was FUN_14087
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-float FUN_140bf4fd0(float f);
+float Ceil(float f);
 
 // ---- server and region records behind the server dialogs ----
 class Unk_UcServerDlg;
-void* FUN_14136f520(int);   // C3: was FUN_14136f520
+void* FindServerListDialog(int);   // C3: was FindServerListDialog
 class UIServerListDialog   // C3: member view for the former free stand-ins
 {
 public:
     int GetServerId();
 };
-int FUN_14092f640();                                                // the current channel
+int GetCurrentChannel();                                                // the current channel
 class Unk_UcServerRec
 {
 public:
@@ -1479,7 +1482,7 @@ public:
     CString m_strEmblem;                                            // +0x18
 };
 MS2_CHECK_OFFSET(Unk_UcRegionRec, m_strEmblem, 0x18);
-class UIRegionListDialog* FUN_1418f6130(int);   // C3: was FUN_1418f6130
+class UIRegionListDialog* GetRegionListDialog(int);   // C3: was GetRegionListDialog
 
 // ---- the game and combat controllers touched by the key blocks ----
 // FUN_1409331f0 (the CKeyTable instance) is declared in ckeytable.h
@@ -1489,12 +1492,12 @@ int HasLift(class PC*);   // C3: was HasLift
 // Fill the server-info AS object: server name and icon, and the region name and icon.
 bool FUN_141900750(ASObj* pObj)
 {
-    Unk_UcServerDlg* pServerDlg = ((class Unk_UcServerDlg*)FUN_14136f520(0x4ef0));
+    Unk_UcServerDlg* pServerDlg = ((class Unk_UcServerDlg*)FindServerListDialog(0x4ef0));
     if (pServerDlg == 0)
         return false;
     if (DAT_143ab0248 != 2)
     {
-        int nChannel = FUN_14092f640() > 1 ? FUN_14092f640() : 1;
+        int nChannel = GetCurrentChannel() > 1 ? GetCurrentChannel() : 1;
         bool bShowChannel = false;
         bShowChannel = true;
         CStringW strName;
@@ -1507,19 +1510,19 @@ bool FUN_141900750(ASObj* pObj)
         }
         if (bShowChannel)
             strName.Append(StringFormat<int>(L" <font size='15'>| CH.{0}</font>", nChannel));
-        pObj->FUN_1407cbb20("name", strName);
-        pObj->FUN_1407cbb20("iconPath", strIcon);
+        pObj->SetWStringMember("name", strName);
+        pObj->SetWStringMember("iconPath", strIcon);
     }
-    UIRegionListDialog* pRegionDlg = FUN_1418f6130(0x4eef);
+    UIRegionListDialog* pRegionDlg = GetRegionListDialog(0x4eef);
     if (pRegionDlg != 0)
     {
-        Unk_RlPtr region = pRegionDlg->FUN_140e807c0();
+        Unk_RlPtr region = pRegionDlg->GetSavedRegion();
         if (region.get() != 0)
         {
-            pObj->FUN_1407cbb20("regionName", reinterpret_cast<Unk_UcRegionRec*>(region.operator->())->m_strName);
+            pObj->SetWStringMember("regionName", reinterpret_cast<Unk_UcRegionRec*>(region.operator->())->m_strName);
             CString strPath("./Data/Resource/Image/Emblem/Server/");
             strPath.Append(reinterpret_cast<Unk_UcRegionRec*>(region.operator->())->m_strEmblem);
-            pObj->FUN_1407cba60("regionIconPath", strPath);
+            pObj->SetStringMember("regionIconPath", strPath);
         }
     }
     return true;
@@ -1592,7 +1595,7 @@ void UICommon::CMyPCKeyInputController::FUN_141900ff0(int nRelease, int nLayer)
     if (FUN_141901170(nRelease, nLayer, &m_attack) == 0)
         return;
     int nBlock = FUN_141900ed0(nRelease, &m_nAttack, 1);
-    FUN_1409331f0()->SetMode(nBlock);
+    GetKeyTable()->SetMode(nBlock);
 }
 
 // @0x141901070
@@ -1734,7 +1737,7 @@ void UICommon::CAlignmentInfo::FUN_141901760(MS2Ptr<AScript> spScript)
     {
         float fW = (float)pDialog->FUN_1422c1500();
         float fH = (float)pDialog->FUN_1422c1530();
-        float fParentW = (float)pDialog->FUN_1422c1340();
+        float fParentW = (float)pDialog->GetWidthCeil();
         float fParentH = (float)pDialog->GetHeightCeil();
         FUN_141901880(spScript, fParentW, fParentH, fW, fH);
     }
@@ -1748,8 +1751,8 @@ void UICommon::CAlignmentInfo::FUN_141901880(MS2Ptr<AScript> spScript, float fPa
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)spScript);
     if (pDialog != 0)
     {
-        float fX = pDialog->FUN_1422c10a0();
-        float fY = pDialog->FUN_1422c1110();
+        float fX = pDialog->GetX();
+        float fY = pDialog->GetY();
         float fHalfW = fW * 0.5f;
         float fHalfH = fH * 0.5f;
         if (fX <= fHalfW && fY <= fHalfH)
@@ -1761,7 +1764,7 @@ void UICommon::CAlignmentInfo::FUN_141901880(MS2Ptr<AScript> spScript, float fPa
         else if (fX >= fHalfW && fY <= fHalfH)
         {
             m_align = 6;
-            float fRight = FUN_140bf4fd0((fX + fParentW) - fW);
+            float fRight = Ceil((fX + fParentW) - fW);
             float fZero = 0;
             m_x = (std::min)(fZero, fRight);
             m_y = fY;
@@ -1770,13 +1773,13 @@ void UICommon::CAlignmentInfo::FUN_141901880(MS2Ptr<AScript> spScript, float fPa
         {
             m_align = 7;
             m_x = fX;
-            m_y = FUN_140bf4fd0((fY + fParentH) - fH);
+            m_y = Ceil((fY + fParentH) - fH);
         }
         else if (fX >= fHalfW && fY >= fHalfH)
         {
             m_align = 8;
-            m_x = FUN_140bf4fd0((fX + fParentW) - fW);
-            m_y = FUN_140bf4fd0((fY + fParentH) - fH);
+            m_x = Ceil((fX + fParentW) - fW);
+            m_y = Ceil((fY + fParentH) - fH);
         }
         else
         {
@@ -1837,7 +1840,7 @@ int FUN_141901d20(int nItemId, __int64 nUid, __int64 nRank)   // nRank is 64-bit
         return 0;
     if (item->HasMaidId())
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbf90(nUid);
+        MS2Ptr<CItem> spItem = DAT_143ab2e20.FindItemByUid(nUid);
         if (spItem.get() != 0)
             return ((class CItem*)(class CItem*)(spItem.operator->()))->GetCount();
         MS2Ptr<CUGCMapItem> spStock = DAT_143ab2e50.FUN_140dfc8f0(nUid);
@@ -1894,7 +1897,7 @@ int FUN_141901f70(int nItemId, __int64 nUid, __int64 nRank)
 MS2_REPLACE(0x141901f70, FUN_141901f70, 568, 0xE13515C1);
 
 // @0x1419021b0
-CStringW FUN_1419021b0(unsigned nCur, unsigned nMax)
+CStringW GetIngredientCountText(unsigned nCur, unsigned nMax)
 {
     CStringW str;
     if (nCur < nMax)
@@ -1903,10 +1906,10 @@ CStringW FUN_1419021b0(unsigned nCur, unsigned nMax)
         str = FUN_14028dfa0<unsigned int, unsigned int>(L"s_common_cur_max_ingredient", nCur, nMax);
     return str;
 }
-MS2_REPLACE(0x1419021b0, FUN_1419021b0, 348, 0x6034DBCC);
+MS2_REPLACE(0x1419021b0, GetIngredientCountText, 348, 0x6034DBCC);
 
 // @0x141902320
-CStringW FUN_141902320(unsigned nCur, unsigned nMax)
+CStringW GetIngredientCountTextWithOverflow(unsigned nCur, unsigned nMax)
 {
     CStringW str;
     if (nCur < nMax)
@@ -1917,7 +1920,7 @@ CStringW FUN_141902320(unsigned nCur, unsigned nMax)
         str = FUN_14028dfa0<unsigned int, unsigned int>(L"s_common_cur_max_ingredient_overflow", nCur, nMax);
     return str;
 }
-MS2_REPLACE(0x141902320, FUN_141902320, 512, 0x649BF932);
+MS2_REPLACE(0x141902320, GetIngredientCountTextWithOverflow, 512, 0x649BF932);
 
 // The scene object behind the current stage (FUN_1422b9e50 picks the primary or the fallback member).
 class Unk_UcSceneObj
@@ -1937,7 +1940,7 @@ public:
 // @0x141902530
 bool FUN_141902530(int nButton, const CMsgBoxData& box)
 {
-    Unk_UcSceneObj* pScene = ((class Unk_UcSceneObj*)((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50());
+    Unk_UcSceneObj* pScene = ((class Unk_UcSceneObj*)((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50());
     if (pScene != 0)
         pScene->vfunc_64();
     return true;
@@ -1958,12 +1961,12 @@ bool FUN_141902580(bool bMessage)
             FUN_141275260(0x2f7, 1, 1);
         return false;
     }
-    return ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe9);
+    return ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xe9);
 }
 MS2_REPLACE(0x141902580, FUN_141902580, 91, 0x9349350F);
 
 // @0x1419025f0
-bool FUN_1419025f0(bool bMessage)
+bool IsBlueprintShopAvailable(bool bMessage)
 {
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_UcFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x66)))
     {
@@ -1971,9 +1974,9 @@ bool FUN_1419025f0(bool bMessage)
             FUN_141275260(0x2f7, 1, 1);
         return false;
     }
-    return ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xec);
+    return ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xec);
 }
-MS2_REPLACE(0x1419025f0, FUN_1419025f0, 91, 0xD61ABD29);
+MS2_REPLACE(0x1419025f0, IsBlueprintShopAvailable, 91, 0xD61ABD29);
 
 // The pet / enchant part of an item (FUN_1405278a0: the record at +0xf8).
 class CItemStatus { public: CItemEnchantInfo* GetEnchant(); };   // C3: member view (itemsocketsystemutil.cpp), m_spEnchant.get()
@@ -2005,13 +2008,13 @@ MS2_REPLACE(0x1419028d0, SendRequestItemEnchant, 140, 0xDDD7FCD0);
 // Ask whether to refund the enchant experience of the item.
 int FUN_141902660(MS2Ptr<CItem> spItem)
 {
-    Unk_UcItemExtra* pExtra = ((class Unk_UcItemExtra*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_1405278a0());
+    Unk_UcItemExtra* pExtra = ((class Unk_UcItemExtra*)((class CItem*)(class CItem*)(spItem.operator->()))->GetStatus());
     if (pExtra != 0)
     {
         CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(pExtra)->GetEnchant();
         if (pEnchant != 0 && pEnchant->NeedsChargeVersionUpdate() != 0)
         {
-            if (Unk_UcMsgBoxPtr spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_itemenchant_enchant_exp_refund"), 0, CStringW(L"")))
+            if (Unk_UcMsgBoxPtr spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_itemenchant_enchant_exp_refund"), 0, CStringW(L"")))
             {
                 spBox->Append<__int64>(spItem->GetItemUid());
                 spBox->FUN_141a024a0(false);
@@ -2038,7 +2041,7 @@ int FUN_141902970(MS2Ptr<UIDialog> pDlg)
     return 0;
 }
 
-int FUN_141a8a760();
+int IsPopupMenuOpen();
 UIMessageBox* GetMessageBoxLayer();
 
 // @0x141902a50
@@ -2047,7 +2050,7 @@ int FUN_141902a50()
 {
     if (TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(FUN_141902970) != 0)
         return 1;
-    if (FUN_141a8a760() != 0)
+    if (IsPopupMenuOpen() != 0)
         return 1;
     UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0 && pBox->FUN_1419f8270() == 0)
@@ -2100,7 +2103,7 @@ int FUN_141902ac0(__int64 nId, int nType)
         for (void* pos = ((void*)((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetStartPosition()); pos != 0; ((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetNext(*(POSITION*)&pos))
         {
             MS2Ptr<CProxyGameObject> spProxy(*static_cast<const MS2Ptr<CProxyGameObject>*>(((void*)&((ATL::CAtlMap<unsigned int, MS2Ptr<CProxyGameObject>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<MS2Ptr<CProxyGameObject>>>*)(void*)(pMap))->GetValueAt((struct __POSITION*)(pos)))));
-            if (spProxy.get() != 0 && reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()) == nId)
+            if (spProxy.get() != 0 && reinterpret_cast<__int64>(spProxy->GetCharacterId()) == nId)
             {
                 if (nX != spProxy->m_b4)
                     return 0;

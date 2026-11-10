@@ -117,7 +117,7 @@ extern int DAT_143bab5d0[256];
 extern int DAT_143bab1d0[256];
 extern int DAT_143bab9d0[256];
 
-int FUN_140047750(Unk_M2vCtx* pCtx);
+int SelectM2vContext(Unk_M2vCtx* pCtx);
 
 // @0x140047430
 int FUN_140047430(const unsigned char* pBuf, int nLen)
@@ -216,7 +216,7 @@ void FUN_140047580(Unk_M2vParams* p)
     p->m_64 = 0xff;
 }
 
-// The decoder table's no-op entry (LAB_140047620, stored by address in FUN_1400478a0).
+// The decoder table's no-op entry (LAB_140047620, stored by address in RegisterM2vDecoderFunctions).
 // @0x140047620
 void FUN_140047620(void)
 {
@@ -272,7 +272,7 @@ void FUN_1400476e0(int nIndex, int nValue)
     }
 }
 
-// The decoder table entry LAB_140047730 (stored by address in FUN_1400478a0): sets the +0x1a90 value and the
+// The decoder table entry LAB_140047730 (stored by address in RegisterM2vDecoderFunctions): sets the +0x1a90 value and the
 // +0x1a98/+0x1aa0 pair FUN_140047660 resets.
 // @0x140047730
 void FUN_140047730(Unk_M2vCtx* pCtx, int n1a90, unsigned long long u1a98, unsigned long long u1aa0)
@@ -283,7 +283,7 @@ void FUN_140047730(Unk_M2vCtx* pCtx, int n1a90, unsigned long long u1a98, unsign
 }
 
 // @0x140047750
-int FUN_140047750(Unk_M2vCtx* pCtx)
+int SelectM2vContext(Unk_M2vCtx* pCtx)
 {
     if (pCtx == 0)
         return -1;
@@ -319,9 +319,9 @@ Unk_M2vCtx* FUN_1400477e0(void* pUserArg)
 }
 
 // @0x140047810
-void FUN_140047810(Unk_M2vCtx* pCtx)
+void ReleaseM2vContext(Unk_M2vCtx* pCtx)
 {
-    int nRes = FUN_140047750(pCtx);
+    int nRes = SelectM2vContext(pCtx);
     if (nRes != 0)
     {
         FUN_14005af30(0, 0xff050201);
@@ -341,7 +341,7 @@ void FUN_140047840(Unk_M2vCtx* pCtx, int nIndex, int nValue)
     }
     else
     {
-        if (FUN_140047750(pCtx) != 0)
+        if (SelectM2vContext(pCtx) != 0)
         {
             FUN_14005af30(0, 0xff050202);
             return;
@@ -353,7 +353,7 @@ void FUN_140047840(Unk_M2vCtx* pCtx, int nIndex, int nValue)
 
 // @0x1400478a0
 // Fills the decoder's function table.
-void FUN_1400478a0(void)
+void RegisterM2vDecoderFunctions(void)
 {
     DAT_143e64b88 = 1;
     DAT_143e64b60 = (void*)FUN_140047420;
@@ -361,7 +361,7 @@ void FUN_1400478a0(void)
     DAT_143e64b80 = (void*)FUN_140047770;
     DAT_143e64b78 = (void*)FUN_140047620;
     DAT_143e64b58 = (void*)FUN_1400477e0;
-    DAT_143e64b50 = (void*)FUN_140047810;
+    DAT_143e64b50 = (void*)ReleaseM2vContext;
     DAT_143e64b28 = (void*)FUN_140047840;
     DAT_143e64b90 = (void*)FUN_140047730;
     DAT_143e64b08 = (void*)FUN_14005af70;

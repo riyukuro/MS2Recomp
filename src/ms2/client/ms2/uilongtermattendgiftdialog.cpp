@@ -70,7 +70,7 @@ static CString s_strSortTypeNamesLtaD[] = {"None", "Buy", "Like", "PriceLow", "P
 
 // ---- unit-local helper types ----
 
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 
 MS2Ptr<CItemData> FUN_14053f870(int);
 
@@ -82,8 +82,8 @@ __int64 GetServerTime();                         // the current time source
 class Unk_LtaValue
 {
 public:
-    int FUN_140c6da60(const int& nDefault) const;
-    CStringW FUN_140c6dac0(const CStringW& strDefault) const;
+    int GetIntValue(const int& nDefault) const;
+    CStringW GetStringValue(const CStringW& strDefault) const;
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_pad_18;
     CStringW m_20;                          // +0x20 stored text
@@ -92,8 +92,8 @@ private:
 class Unk_LtaTable
 {
 public:
-    int FUN_140c6d8d0(int nKind, int nId, const int& nDefault);
-    CStringW FUN_140c6d980(int nKind, int nId, const CStringW& strDefault);
+    int GetIntValue(int nKind, int nId, const int& nDefault);
+    CStringW GetStringValue(int nKind, int nId, const CStringW& strDefault);
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10;
     GameEventUserValue::VariableMap m_18;   // +0x18
@@ -156,19 +156,19 @@ class Unk_140166410* FUN_140166410();
 
 class Unk_SingletonObj* FUN_140939a10();
 
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73cd0();
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
 CString FUN_14016a600(const wchar_t*, int);             // narrow copy of a wide string
-void FUN_1401d9a30(CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
+void ParseIntArray(CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }
 void FUN_140710590(COutPacket&);
 
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* sz);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 
 // @0x140c6db60 (inline COMDAT)
 inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, CStringW a2, int a3, Scaleform::GFx::Value a4)
@@ -178,14 +178,14 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CStringW a1, 
     FUN_1422bcea0(&args[0], a1);
     FUN_1422bcea0(&args[1], a2);
     FUN_1422bcd10(&args[2], a3);
-    FUN_1422bcc70(&args[3], a4);
+    SetValue(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 
 // ---- table lookups (inline COMDATs of this unit) ----
 
 // @0x140c6da60
-inline int Unk_LtaValue::FUN_140c6da60(const int& nDefault) const
+inline int Unk_LtaValue::GetIntValue(const int& nDefault) const
 {
     CMsTime now(GetServerTime());
     if (m_28 <= now)
@@ -194,7 +194,7 @@ inline int Unk_LtaValue::FUN_140c6da60(const int& nDefault) const
 }
 
 // @0x140c6dac0
-inline CStringW Unk_LtaValue::FUN_140c6dac0(const CStringW& strDefault) const
+inline CStringW Unk_LtaValue::GetStringValue(const CStringW& strDefault) const
 {
     CMsTime now(GetServerTime());
     if (m_28 <= now)
@@ -203,22 +203,22 @@ inline CStringW Unk_LtaValue::FUN_140c6dac0(const CStringW& strDefault) const
 }
 
 // @0x140c6d8d0
-inline int Unk_LtaTable::FUN_140c6d8d0(int nKind, int nId, const int& nDefault)
+inline int Unk_LtaTable::GetIntValue(int nKind, int nId, const int& nDefault)
 {
     GameEventVariable::Key key(nKind, nId);
     GameEventUserValue::VariablePtr it;
     if (m_18.Lookup(key, it))
-        return reinterpret_cast<Unk_LtaValue*>(it.operator->())->FUN_140c6da60(nDefault);
+        return reinterpret_cast<Unk_LtaValue*>(it.operator->())->GetIntValue(nDefault);
     return nDefault;
 }
 
 // @0x140c6d980
-inline CStringW Unk_LtaTable::FUN_140c6d980(int nKind, int nId, const CStringW& strDefault)
+inline CStringW Unk_LtaTable::GetStringValue(int nKind, int nId, const CStringW& strDefault)
 {
     GameEventVariable::Key key(nKind, nId);
     GameEventUserValue::VariablePtr it;
     if (m_18.Lookup(key, it))
-        return reinterpret_cast<Unk_LtaValue*>(it.operator->())->FUN_140c6dac0(strDefault);
+        return reinterpret_cast<Unk_LtaValue*>(it.operator->())->GetStringValue(strDefault);
     return strDefault;
 }
 
@@ -228,7 +228,7 @@ inline CStringW Unk_LtaTable::FUN_140c6d980(int nKind, int nId, const CStringW& 
 UILongTermAttendGiftDialog::UILongTermAttendGiftDialog()
     : m_178(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     FUN_141926980(false);
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode27));
 }
@@ -292,7 +292,7 @@ void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const C
             ((class CItem*)(class CItem*)(item.operator->()))->FUN_14052b420(0);
             ASTooltip tooltip(owner, 0x20, 2);
             if (tooltip.FUN_1409e0d40(item))
-                *result = tooltip.FUN_1422bb870();
+                *result = tooltip.GetValue();
         }
     } else if ((method == "getTooltip")) {
         CString name = args->FUN_1422b8d30();
@@ -301,7 +301,7 @@ void UILongTermAttendGiftDialog::vfunc_45(Scaleform::GFx::Value* result, const C
             ASTooltip tooltip(1, 2);
             tooltip.SetTooltipAlign(1);
             if (tooltip.ApplyTextTooltip(text))
-                *result = tooltip.FUN_1422bb870();
+                *result = tooltip.GetValue();
         }
     }
 }
@@ -312,7 +312,7 @@ int UILongTermAttendGiftDialog::vfunc_28(const char* method, const Scaleform::GF
     if (UIDialog::vfunc_28(method, args, count))
         return 1;
     if (!_stricmp(method, "onClickAttendance")) {
-        FUN_140c6cd00();
+        OnClickAttendance();
         return 1;
     }
     else if (!_stricmp(method, "onClickReward")) {
@@ -327,13 +327,13 @@ int UILongTermAttendGiftDialog::vfunc_28(const char* method, const Scaleform::GF
 }
 
 // @0x140c6b9d0
-void UILongTermAttendGiftDialog::FUN_140c6b9d0()
+void UILongTermAttendGiftDialog::RefreshRewardList()
 {
     if (m_30.IsNull())
         return;
     if (!LoadEvent())
         return;
-    FUN_140c6c4a0();
+    FillRewardList();
 }
 
 // @0x140c6ba20
@@ -362,15 +362,15 @@ void UILongTermAttendGiftDialog::FUN_140c6bac0(int nType, CInPacket&)
     } else {
         switch (nType) {
         case 0x1a:
-            FUN_140c6c920();
-            FUN_140c6c4a0();
+            UpdateAttendance();
+            FillRewardList();
             FUN_140c6bdb0();
             break;
         case 0x1b:
             FUN_140c6bdb0();
             break;
         case 0x19:
-            FUN_140c6c4a0();
+            FillRewardList();
             break;
         }
     }
@@ -387,7 +387,7 @@ bool UILongTermAttendGiftDialog::SendEventRewardMode26(int nResult, const CMsgBo
             packet.Encode1(1);
             FUN_140710590(packet);
         } else {
-            FUN_140d74390(GetStringCommonByKey(L"s_err_lack_merat_ask"), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::FUN_140c6bd40));
+            ShowMessageBoxWithCallback(GetStringCommonByKey(L"s_err_lack_merat_ask"), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::OnLackMeratResult));
         }
         return true;
     }
@@ -395,10 +395,10 @@ bool UILongTermAttendGiftDialog::SendEventRewardMode26(int nResult, const CMsgBo
 }
 
 // @0x140c6bd40
-bool UILongTermAttendGiftDialog::FUN_140c6bd40(int nResult, const CMsgBoxData&)
+bool UILongTermAttendGiftDialog::OnLackMeratResult(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0) {
-        if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xc2)) {
+        if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xc2)) {
             FUN_140d73cd0();
             return true;
         }
@@ -413,22 +413,22 @@ void UILongTermAttendGiftDialog::FUN_140c6bdb0()
 {
     if (m_30.IsNull())
         return;
-    int nAttendPoint = FUN_140c6d520();
+    int nAttendPoint = GetAttendPoint();
     unsigned int nPossible = FUN_140c6d570();
     int nCatchUp = GetMissedDayCount();
     CStringW strPoint = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_point"), (unsigned&)nAttendPoint);
     CStringW strDays = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_point"), (unsigned&)nCatchUp);
     ASObj info(2);
-    info.FUN_1407cbb20("title", FUN_14028dfa0<CStringW, CStringW>(m_178->m_title, FUN_14083bab0(m_178->m_beginTime, L"."), FUN_14083bab0(m_178->m_endTime, L".")));
-    info.FUN_1407cbb20("curAttendancePoint", strPoint);
-    info.FUN_1407cbb20("possibleAttendanceDays", strDays);
-    info.FUN_1407cbbe0("enableAttendance", nPossible < m_178->m_maxAttendance);
-    info.FUN_1407cbb20("frame", m_178->m_eventTag);
-    m_30->Invoke("setData", info.FUN_1422bb870());
+    info.SetWStringMember("title", FUN_14028dfa0<CStringW, CStringW>(m_178->m_title, FUN_14083bab0(m_178->m_beginTime, L"."), FUN_14083bab0(m_178->m_endTime, L".")));
+    info.SetWStringMember("curAttendancePoint", strPoint);
+    info.SetWStringMember("possibleAttendanceDays", strDays);
+    info.SetBoolMember("enableAttendance", nPossible < m_178->m_maxAttendance);
+    info.SetWStringMember("frame", m_178->m_eventTag);
+    m_30->Invoke("setData", info.GetValue());
 }
 
 // @0x140c6c250
-void UILongTermAttendGiftDialog::FUN_140c6c250()
+void UILongTermAttendGiftDialog::SetAttendance()
 {
     if (m_30.IsNull())
         return;
@@ -438,34 +438,34 @@ void UILongTermAttendGiftDialog::FUN_140c6c250()
     unsigned __int64 nDays = m_178->m_maxAttendance;
     for (unsigned __int64 i = 1; i <= nDays; ++i) {
         ASObj row(2);
-        row.FUN_1407cba60("frame", FUN_140c6d470());
-        row.FUN_1407cba60("state", GetDayStateFrame((unsigned int)i, nCur, nCatchUp));
-        days.PushValue(row.FUN_1422bb870());
+        row.SetStringMember("frame", GetEventTag());
+        row.SetStringMember("state", GetDayStateFrame((unsigned int)i, nCur, nCatchUp));
+        days.PushValue(row.GetValue());
     }
-    m_30->Invoke("setAttendance", days.FUN_1422bb870());
+    m_30->Invoke("setAttendance", days.GetValue());
 }
 
 // @0x140c6c4a0
-void UILongTermAttendGiftDialog::FUN_140c6c4a0()
+void UILongTermAttendGiftDialog::FillRewardList()
 {
     if (m_30.IsNull())
         return;
-    if (MS2Ptr<ASScrollingList> list = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_reward")) {
+    if (MS2Ptr<ASScrollingList> list = reinterpret_cast<UIDailyMissionDialog*>(this)->GetScrollingList("m_reward")) {
         list->FUN_1422dd1d0();
-        CString strFrame = FUN_140c6d470();
+        CString strFrame = GetEventTag();
         for (size_t i = 0; i < m_178->m_rewards.GetCount(); ++i) {
             MS2Ptr<LongTermAttendGiftContext::Reward> rec = m_178->m_rewards[i];
             ASObj row(2);
-            row.FUN_1407cb9c0("count", rec->m_count);
-            row.FUN_1407cba60("frame", FUN_140c6d470());
-            row.FUN_1407cb9c0("state", GetDayState(rec->m_count));
+            row.SetIntMember("count", rec->m_count);
+            row.SetStringMember("frame", GetEventTag());
+            row.SetIntMember("state", GetDayState(rec->m_count));
             row.SetMemberUInt("slotID01", rec->m_item01.m_itemId);
             row.SetMemberUInt("slotID02", rec->m_item02.m_itemId);
             row.FUN_1409adc90("slotRank01", rec->m_item01.vfunc_o18_1());
             row.FUN_1409adc90("slotRank02", rec->m_item02.vfunc_o18_1());
             row.SetMemberUInt("slotID02", rec->m_item02.m_itemId);
-            row.FUN_1407cba60("slotIcon01", GetItemIconPath(rec->m_item01.m_itemId));
-            row.FUN_1407cba60("slotIcon02", GetItemIconPath(rec->m_item02.m_itemId));
+            row.SetStringMember("slotIcon01", GetItemIconPath(rec->m_item01.m_itemId));
+            row.SetStringMember("slotIcon02", GetItemIconPath(rec->m_item02.m_itemId));
             row.SetMemberUInt("slotItemCount01", rec->m_item01.m_count);
             row.SetMemberUInt("slotItemCount02", rec->m_item02.m_count);
             list->AddItem(row);
@@ -478,28 +478,28 @@ void UILongTermAttendGiftDialog::FUN_140c6c4a0()
 void UILongTermAttendGiftDialog::RefreshAll()
 {
     FUN_140c6bdb0();
-    FUN_140c6c250();
-    FUN_140c6c4a0();
+    SetAttendance();
+    FillRewardList();
 }
 
 // @0x140c6c920
-void UILongTermAttendGiftDialog::FUN_140c6c920()
+void UILongTermAttendGiftDialog::UpdateAttendance()
 {
-    int nAttendPoint = FUN_140c6d520();
+    int nAttendPoint = GetAttendPoint();
     int nCur = FUN_140c6d570();
     int nCatchUp = GetMissedDayCount();
     CStringW strPoint = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_point"), (unsigned&)nAttendPoint);
     CStringW strDays = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_point"), (unsigned&)nCatchUp);
     ASObj info(2);
-    info.FUN_1407cba60("frame", FUN_140c6d470());
-    info.FUN_1407cba60("state", GetDayStateFrame(nCur, nCur, nCatchUp));
-    m_30->Invoke("updateAttendance", CStringW(strPoint), CStringW(strDays), nCur - 1, info.FUN_1422bb870());
+    info.SetStringMember("frame", GetEventTag());
+    info.SetStringMember("state", GetDayStateFrame(nCur, nCur, nCatchUp));
+    m_30->Invoke("updateAttendance", CStringW(strPoint), CStringW(strDays), nCur - 1, info.GetValue());
 }
 
 // @0x140c6cbf0
 bool UILongTermAttendGiftDialog::LoadEvent()
 {
-    m_178 = ((CGameRule*)FUN_1401c0d90())->GetLongTermAttendGift();
+    m_178 = ((CGameRule*)GetGameRule())->GetLongTermAttendGift();
     return m_178.get() != 0;
 }
 
@@ -515,22 +515,22 @@ void UILongTermAttendGiftDialog::SendEventRewardMode25(int nDay)
 }
 
 // @0x140c6cd00
-void UILongTermAttendGiftDialog::FUN_140c6cd00()
+void UILongTermAttendGiftDialog::OnClickAttendance()
 {
-    int nAttendPoint = FUN_140c6d520();
+    int nAttendPoint = GetAttendPoint();
     unsigned int nCatchUp = GetMissedDayCount();
     if (nAttendPoint == 0) {
         if (nCatchUp > 0) {
             CStringW strMsg = FUN_14028dfa0<unsigned>(CStringW(L"s_longtermattendgift_dialog_use_merat"), m_178->m_merat);
-            FUN_140d74390(strMsg, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode26));
+            ShowMessageBoxWithCallback(strMsg, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILongTermAttendGiftDialog::SendEventRewardMode26));
             return;
         } else {
-            FUN_140d73aa0(GetStringCommonByKey(L"s_longtermattendgift_dialog_err_msg_empty_point"), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommonByKey(L"s_longtermattendgift_dialog_err_msg_empty_point"), 0, 0, CStringW(L""));
             return;
         }
     }
     if (nCatchUp == 0) {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_longtermattendgift_dialog_err_msg_attendance_full"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_longtermattendgift_dialog_err_msg_attendance_full"), 0, 0, CStringW(L""));
     } else {
         COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
         packet.Encode1(0x1a);
@@ -545,7 +545,7 @@ int UILongTermAttendGiftDialog::GetDayState(unsigned int nDay)
     unsigned int nCur = FUN_140c6d570();
     CStringW strDays = GetClaimedDays();
     ATL::CAtlArray<int> claimed;
-    FUN_1401d9a30(strDays, claimed, L",");
+    ParseIntArray(strDays, claimed, L",");
     if (Common::FindElement<int>(claimed, *(const int*)&nDay) != -1)
         return 2;
     if (nDay <= nCur)
@@ -606,7 +606,7 @@ CString UILongTermAttendGiftDialog::GetItemIconPath(int nItemId)
 }
 
 // @0x140c6d470
-CString UILongTermAttendGiftDialog::FUN_140c6d470()
+CString UILongTermAttendGiftDialog::GetEventTag()
 {
     if (m_178 == 0)
         return "";
@@ -614,23 +614,23 @@ CString UILongTermAttendGiftDialog::FUN_140c6d470()
 }
 
 // @0x140c6d520
-int UILongTermAttendGiftDialog::FUN_140c6d520()
+int UILongTermAttendGiftDialog::GetAttendPoint()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0xa8d, m_178->m_eventId, nDefault);
+    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).GetIntValue(0xa8d, m_178->m_eventId, nDefault);
 }
 
 // @0x140c6d570
 int UILongTermAttendGiftDialog::FUN_140c6d570()
 {
     int nDefault = 0;
-    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d8d0(0xa8e, m_178->m_eventId, nDefault);
+    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).GetIntValue(0xa8e, m_178->m_eventId, nDefault);
 }
 
 // @0x140c6d5c0
 CStringW UILongTermAttendGiftDialog::GetClaimedDays()
 {
-    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d980(0xa8c, m_178->m_eventId, (const wchar_t*)0);
+    return reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).GetStringValue(0xa8c, m_178->m_eventId, (const wchar_t*)0);
 }
 
 MS2_REPLACE_METHOD(0x140C6B4A0, UILongTermAttendGiftDialog, GetTypeName, 61, 0xE157B792);
@@ -640,25 +640,25 @@ MS2_REPLACE_METHOD(0x140C6B560, UILongTermAttendGiftDialog, OnLoadComplete, 72, 
 MS2_REPLACE_METHOD(0x140C6B5B0, UILongTermAttendGiftDialog, vfunc_13, 24, 0x8FA096B5);
 MS2_REPLACE_METHOD(0x140C6B5D0, UILongTermAttendGiftDialog, vfunc_45, 730, 0xB19047B7);
 MS2_REPLACE_METHOD(0x140C6B8B0, UILongTermAttendGiftDialog, vfunc_28, 274, 0x0945BA3B);
-MS2_REPLACE_METHOD(0x140C6B9D0, UILongTermAttendGiftDialog, FUN_140c6b9d0, 69, 0xFBAD2347);
+MS2_REPLACE_METHOD(0x140C6B9D0, UILongTermAttendGiftDialog, RefreshRewardList, 69, 0xFBAD2347);
 MS2_REPLACE_METHOD(0x140C6BA20, UILongTermAttendGiftDialog, SendEventRewardMode27, 154, 0xBA109B7F);
 MS2_REPLACE_METHOD(0x140C6BAC0, UILongTermAttendGiftDialog, FUN_140c6bac0, 181, 0x81188338);
 MS2_REPLACE_METHOD(0x140C6BB80, UILongTermAttendGiftDialog, SendEventRewardMode26, 438, 0x8E7D2C3E);
-MS2_REPLACE_METHOD(0x140C6BD40, UILongTermAttendGiftDialog, FUN_140c6bd40, 99, 0x5A2F6464);
+MS2_REPLACE_METHOD(0x140C6BD40, UILongTermAttendGiftDialog, OnLackMeratResult, 99, 0x5A2F6464);
 MS2_REPLACE_METHOD(0x140C6BDB0, UILongTermAttendGiftDialog, FUN_140c6bdb0, 1177, 0x034D4258);
-MS2_REPLACE_METHOD(0x140C6C250, UILongTermAttendGiftDialog, FUN_140c6c250, 572, 0xF5C9411B);
-MS2_REPLACE_METHOD(0x140C6C4A0, UILongTermAttendGiftDialog, FUN_140c6c4a0, 1073, 0x584D47AA);
+MS2_REPLACE_METHOD(0x140C6C250, UILongTermAttendGiftDialog, SetAttendance, 572, 0xF5C9411B);
+MS2_REPLACE_METHOD(0x140C6C4A0, UILongTermAttendGiftDialog, FillRewardList, 1073, 0x584D47AA);
 MS2_REPLACE_METHOD(0x140C6C8E0, UILongTermAttendGiftDialog, RefreshAll, 44, 0x62139651);
-MS2_REPLACE_METHOD(0x140C6C920, UILongTermAttendGiftDialog, FUN_140c6c920, 714, 0x788EDB50);
+MS2_REPLACE_METHOD(0x140C6C920, UILongTermAttendGiftDialog, UpdateAttendance, 714, 0x788EDB50);
 MS2_REPLACE_METHOD(0x140C6CBF0, UILongTermAttendGiftDialog, LoadEvent, 138, 0xF668AB87);
 MS2_REPLACE_METHOD(0x140C6CC80, UILongTermAttendGiftDialog, SendEventRewardMode25, 114, 0x30A3C2F8);
-MS2_REPLACE_METHOD(0x140C6CD00, UILongTermAttendGiftDialog, FUN_140c6cd00, 820, 0xFB296AB6);
+MS2_REPLACE_METHOD(0x140C6CD00, UILongTermAttendGiftDialog, OnClickAttendance, 820, 0xFB296AB6);
 MS2_REPLACE_METHOD(0x140C6D040, UILongTermAttendGiftDialog, GetDayState, 226, 0x5844E738);
 MS2_REPLACE_METHOD(0x140C6D130, UILongTermAttendGiftDialog, GetMissedDayCount, 202, 0xB29E3DE9);
 MS2_REPLACE_METHOD(0x140C6D200, UILongTermAttendGiftDialog, GetDayStateFrame, 385, 0x4B262771);
 MS2_REPLACE_METHOD(0x140C6D390, UILongTermAttendGiftDialog, GetItemIconPath, 211, 0xBB8C36B1);
-MS2_REPLACE_METHOD(0x140C6D470, UILongTermAttendGiftDialog, FUN_140c6d470, 155, 0x943C6B11);
-MS2_REPLACE_METHOD(0x140C6D520, UILongTermAttendGiftDialog, FUN_140c6d520, 67, 0xCDC430FA);
+MS2_REPLACE_METHOD(0x140C6D470, UILongTermAttendGiftDialog, GetEventTag, 155, 0x943C6B11);
+MS2_REPLACE_METHOD(0x140C6D520, UILongTermAttendGiftDialog, GetAttendPoint, 67, 0xCDC430FA);
 MS2_REPLACE_METHOD(0x140C6D570, UILongTermAttendGiftDialog, FUN_140c6d570, 67, 0xD9995042);
 MS2_REPLACE_METHOD(0x140C6D5C0, UILongTermAttendGiftDialog, GetClaimedDays, 133, 0xD53BE508);
 // Atexit thunks of this unit's statics (gap1 yd sweep).

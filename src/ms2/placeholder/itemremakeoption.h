@@ -30,17 +30,17 @@ public:
 };
 MS2_CHECK_SIZE(Unk_RemakeStat, 0x20);
 
-int FUN_140616dd0(MS2Ptr<CItem> item);                      // the lock item id of an item (0 = no lock possible)
-unsigned FUN_140616f10(MS2Ptr<CItem> item);                 // the lock item's level
-bool FUN_140616fd0(MS2Ptr<CItem> item);                     // options may be locked
+int GetLockItemId(MS2Ptr<CItem> item);                      // the lock item id of an item (0 = no lock possible)
+unsigned GetLockItemLevel(MS2Ptr<CItem> item);                 // the lock item's level
+bool CanLockOptions(MS2Ptr<CItem> item);                     // options may be locked
 int FUN_140616b60(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned nRate);   // item remake sale (0 none, 1, 2 = sa)
 int FUN_140616c50(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned nRate);   // pet remake sale (0 none, 1, 2 = sa)
-int FUN_140616d40(int nCount, unsigned nDiscount);          // the discounted ingredient count
-unsigned FUN_1406191e0(unsigned nMode, MS2Ptr<CItem> item); // the number of options of an item
+int GetDiscountedIngredientCount(int nCount, unsigned nDiscount);          // the discounted ingredient count
+unsigned GetOptionCount(unsigned nMode, MS2Ptr<CItem> item); // the number of options of an item
 CStringW FUN_140619760(int nItemId, unsigned nLevel);       // the lock item's name
 CStringW FUN_140617e50(const CStringW& strKey, Unk_RemakeStat& stat, unsigned* pCount);   // the option text under strKey
-CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount);                     // the option text
-CStringW FUN_140619070(Unk_RemakeStat& stat, const ATL::CAtlArray<int>& aLocked);   // the locked options' text
+CStringW GetOptionText(Unk_RemakeStat& stat, unsigned* pCount);                     // the option text
+CStringW GetLockedOptionText(Unk_RemakeStat& stat, const ATL::CAtlArray<int>& aLocked);   // the locked options' text
 
 // RTTI CItemRemakeOptionUtil::TStatInfo (0x28 bytes, base CPtred): one option of an item's group, collected by
 // FUN_140615ca0 (inline ctor 0x14061aa30, implicit dtor 0x14061ac70, ??_G 0x14061b190).

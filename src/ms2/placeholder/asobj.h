@@ -60,7 +60,7 @@ public:
     void FUN_1422bca20(unsigned nIndex, CString& strOut);
     void GetWString(unsigned nIndex, CStringW& strOut);
     // AScript::Invoke overloads called here (members of ASArray so AScript's overload set stays unchanged)
-    Scaleform::GFx::Value FUN_140e06cc0(const char* szMethod, double a1);              // 0x140e06cc0 Invoke(method, Number)
+    Scaleform::GFx::Value InvokeDouble(const char* szMethod, double a1);              // 0x140e06cc0 Invoke(method, Number)
     Scaleform::GFx::Value FUN_140cbe3a0(const char* szMethod, const wchar_t* a1);      // 0x140cbe3a0 Invoke(method, wide string)
     Scaleform::GFx::Value FUN_1422bcb00(const char* szMethod, int a1, unsigned int a2);   // 0x1422bcb00 Invoke(method, Int, UInt) (inline COMDAT, defined in asarray.cpp)
 };
@@ -77,17 +77,17 @@ public:
     ASDataProvider(Scaleform::GFx::Value& v, int nMovieId);              // 0x1422df020 wraps an existing DataProvider value
     ASDataProvider(const ASArray& arr);                                  // 0x140bbf7b0 (copies the array; invenslot slot names)
     virtual ~ASDataProvider();                                           // 0x1422df070
-    void FUN_1422df0a0();                                                // cleanUp()
-    void FUN_1422df0e0(unsigned int nIndex);                             // invalidate(index)
+    void CleanUp();                                                // cleanUp()
+    void Invalidate(unsigned int nIndex);                             // invalidate(index)
     void FUN_1422df120();                                                // remove every element: cleanUp() (asdropdownmenu.cpp)
     AScript FUN_1422df140(unsigned nIndex);                              // requestItemAt(index) as an AS object (asdropdownmenu.cpp)
     void FUN_140f1fd70(unsigned nIndex, const CString& strMember, __int64* pOut);   // 0x140f1fd70 a member of an entry (inline COMDAT, defined in uiblackmarketpagemeso.cpp)
     // The flash.events.IEventDispatcher methods (the same AS calls as ASEventDispatcher's).
-    void FUN_1422df1c0(const CString& strType, const Scaleform::GFx::Value& listener, int bUseCapture, int nPriority,
+    void AddEventListener(const CString& strType, const Scaleform::GFx::Value& listener, int bUseCapture, int nPriority,
                        int bUseWeakReference);                           // addEventListener
-    void FUN_1422df2e0(const CString& strType, const Scaleform::GFx::Value& listener, int bUseCapture);   // removeEventListener
-    int FUN_1422df3c0(const CString& strType);                           // hasEventListener
-    int FUN_1422df460(const CString& strType);                           // willTrigger
-    int FUN_1422df500(const class ASEvent& ev);                          // dispatchEvent
+    void RemoveEventListener(const CString& strType, const Scaleform::GFx::Value& listener, int bUseCapture);   // removeEventListener
+    int HasEventListener(const CString& strType);                           // hasEventListener
+    int WillTrigger(const CString& strType);                           // willTrigger
+    int DispatchEvent(const class ASEvent& ev);                          // dispatchEvent
 };
 MS2_CHECK_SIZE(ASDataProvider, 0x40);

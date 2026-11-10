@@ -25,13 +25,13 @@ public:
     bool LoadFontConfig(Scaleform::GFx::Loader* pLoader, const char* szPath, const CString& strConfig);
     void AddString(const CString& strKey, const CStringW& strText);         // add a string (and a translator mapping)
     CStringW GetString(const CString& strKey);                              // the string of a key ("" if unknown)
-    void FUN_1422eb920();                                                       // reload the XML string tables
+    void ReloadStringTables();                                                       // reload the XML string tables
     void LoadStringTables();                                                       // load the four XML string tables
     bool SelectFontConfig(Scaleform::GFx::Loader* pLoader, const CString& strConfig);   // select and apply a font config
     CString GetConfigName();                                                    // the current config's name ("Default")
     void ParseStringXml(TiXmlDocument* pDoc, CString strAttrName);               // read one XML string table (by value)
     void ReleaseConfigAndStrings();                                                       // drop the configs and strings
-    FontConfig* FUN_1422ebf10(const CString& strConfig);                        // find a font config by name (and select it)
+    FontConfig* FindFontConfig(const CString& strConfig);                        // find a font config by name (and select it)
 
     // The four XML documents (Delegate<bool(TiXmlDocument&)> statics; their dynamic initializers are in
     // unit_14013acc0.cpp, the library's shared .text$di) and the locale an XML entry must match (or be empty).

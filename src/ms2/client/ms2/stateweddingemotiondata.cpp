@@ -30,7 +30,7 @@ class WeddingEmotionTable { public: class MS2Ptr<class WeddingEmotionData> FUN_1
 public:
 
 };
-Unk_SingletonObj* FUN_140ac74e0();                          // 0x140ac74e0 (defined below)
+Unk_SingletonObj* GetWeddingEmotionTable();                          // 0x140ac74e0 (defined below)
 class WeddingEmotionTable;
 
 // MyPC / PCBase helpers (free-function form: `this` is the first argument).
@@ -129,7 +129,7 @@ void StateWeddingEmotion::vfunc_4(StateData* pData)
     m_n50 = GetTickCountMs2();
     if (m_spData.get()->m_b18 != 0)
     {
-        m_spEmotion = FUN_140ac74e0()->FUN_140903740(m_spData.get()->m_n28);
+        m_spEmotion = GetWeddingEmotionTable()->FUN_140903740(m_spData.get()->m_n28);
         if (m_spEmotion != 0)
         {
             if (m_spEmotion->m_names.size() != 0)
@@ -259,7 +259,7 @@ MS2Ptr<StateData> StateWeddingEmotion::vfunc_27()
 }
 
 // @0x140ac74e0
-Unk_SingletonObj* FUN_140ac74e0()
+Unk_SingletonObj* GetWeddingEmotionTable()
 {
     return reinterpret_cast<Unk_SingletonObj*>(TSingleton<WeddingEmotionTable>::s_instance);
 }

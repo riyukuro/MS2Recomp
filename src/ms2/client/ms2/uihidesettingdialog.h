@@ -41,8 +41,8 @@ public:
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);    // 28 0x1419874f0
     virtual int vfunc_48() { return 0x4e50; }                               // 48 0x1419897e0 (inline: emitted after ??_G)
 
-    void FUN_141987990();                                                   // sends the grouped list to AS ("buildList")
-    void FUN_141987f50(int nId, const CStringW& strLabel);                 // adds the UI nId to the list
+    void BuildList();                                                   // sends the grouped list to AS ("buildList")
+    void AddUI(int nId, const CStringW& strLabel);                 // adds the UI nId to the list
 
 protected:
     MS2_LAYOUT_FRIEND;

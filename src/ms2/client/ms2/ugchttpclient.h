@@ -38,7 +38,7 @@ public:
 
     // The URL splitter: scheme into pszProtocol, host into pszHost, port into pnPort, path into pszPath. A member in
     // the exe (rcx is the client, unused); Request passes this.
-    void FUN_140dfaf10(const char* pszUrl, char* pszProtocol, char* pszHost, long* pnPort, char* pszPath); // 0x140dfaf10
+    void ParseUrl(const char* pszUrl, char* pszProtocol, char* pszHost, long* pnPort, char* pszPath); // 0x140dfaf10
 
     void*      m_hInternet;         // +0x08 InternetOpenA handle
     void*      m_hConnect;          // +0x10 InternetConnectA handle
@@ -53,8 +53,8 @@ public:
 MS2_CHECK_SIZE(CUgcHttpClient, 0x30de0);
 
 // The base64 codec of the signed requests (the alphabet 0x143ac5488 and its initialiser are this unit's).
-std::string FUN_140dfb540(const unsigned char* pData, int nLength);          // 0x140dfb540 encode
-std::string FUN_140dfb8b0(const std::string& strText);                       // 0x140dfb8b0 decode
+std::string Base64Encode(const unsigned char* pData, int nLength);          // 0x140dfb540 encode
+std::string Base64Decode(const std::string& strText);                       // 0x140dfb8b0 decode
 
 // The fmt-style join the POST header is built with (0x140dfbc70; the three substitutions are the variadic arguments).
 CString FUN_140dfbc70(const char* pszFormat, const void* pArg0, const void* pArg1, const void* pArg2);

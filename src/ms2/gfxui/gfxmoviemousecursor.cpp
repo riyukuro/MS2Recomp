@@ -73,9 +73,9 @@ void GFxMovieMouseCursor::vfunc_4(void* pMovie, const char* szEvent, const Scale
             Scaleform::GFx::Value vRoot(pArgs[0]);
             Scaleform::GFx::Value vCursor(pArgs[1]);
             m_90 = Unk_ASCreate<ASUIComponent>(m_18, vRoot);
-            MS2Ptr<ASMouseCursor> spCursor = FUN_1422f2f30(m_18, vCursor);
+            MS2Ptr<ASMouseCursor> spCursor = CreateASMouseCursor(m_18, vCursor);
             if (spCursor)
-                FUN_1422be560(spCursor);
+                SetMouseCursor(spCursor);
         }
     }
 }
@@ -127,7 +127,7 @@ MS2_REPLACE_METHOD(0x1422F2BD0, GFxMovieMouseCursor, vfunc_14, 606, 0x49EE5E44);
 // @0x1422f2e40
 void GFxMovieMouseCursor::vfunc_5(bool b)
 {
-    GFxService* pService = FUN_1414a56c0();
+    GFxService* pService = GetGFxService();
     if (pService == 0)
         return;
     if (!pService->FUN_1422ea2a0())
@@ -139,7 +139,7 @@ MS2_REPLACE_METHOD(0x1422F2E40, GFxMovieMouseCursor, vfunc_5, 70, 0x7FD0DBD6);
 void GFxMovieMouseCursor::vfunc_19(void* hwnd)
 {
     if (m_30)
-        m_30->FUN_1422cecb0(1);
+        m_30->SetCursorMode(1);
 }
 MS2_REPLACE_METHOD(0x1422F2E90, GFxMovieMouseCursor, vfunc_19, 71, 0xC37F33BE);
 
@@ -147,12 +147,12 @@ MS2_REPLACE_METHOD(0x1422F2E90, GFxMovieMouseCursor, vfunc_19, 71, 0xC37F33BE);
 void GFxMovieMouseCursor::vfunc_20(void* hwnd)
 {
     if (m_30)
-        m_30->FUN_1422cecb0(2);
+        m_30->SetCursorMode(2);
 }
 MS2_REPLACE_METHOD(0x1422F2EE0, GFxMovieMouseCursor, vfunc_20, 71, 0x1E03A8FF);
 
 // @0x1422f2f30
-MS2Ptr<ASMouseCursor> FUN_1422f2f30(int nMovieId, const Scaleform::GFx::Value& v)
+MS2Ptr<ASMouseCursor> CreateASMouseCursor(int nMovieId, const Scaleform::GFx::Value& v)
 {
     MS2Ptr<ASMouseCursor> sp(new ASMouseCursor(v, nMovieId));
     return sp;

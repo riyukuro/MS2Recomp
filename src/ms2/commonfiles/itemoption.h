@@ -30,8 +30,8 @@ public:
     bool TrySetStatOption(int nGroup, int nStat, MS2Ptr<BaseOption> spOption);        // 0x1405cb200
     bool TrySetSpecialOption(int nGroup, unsigned nStat, MS2Ptr<BaseOption> spOption);   // 0x1405cb2a0
     unsigned GetItemId();                   // 0x1405cb340 the item id
-    void FUN_1405cb360(int nValue);             // 0x1405cb360
-    int FUN_1405cb380();                        // 0x1405cb380
+    void SetMergeId(int nValue);             // 0x1405cb360
+    int GetMergeId();                        // 0x1405cb380
     int SumStatValue(unsigned nType);          // 0x1405cb3a0 the summed value of a stat type
     int SumSpecialValue(unsigned nType);          // 0x1405cb440 the summed value of a special stat
     std::pair<Unk_StatType, int> GetFirstStat(int nGroup) const;      // 0x1405cb4e0 the first stat of a group
@@ -50,7 +50,7 @@ public:
     bool HasGroup4Options();                       // 0x1405cc410 group 4 is not empty
     bool CopyGroup2From(MS2Ptr<CItemOption> spSource);   // 0x1405cc480 copy group 2
     BOOL SetGroup(int nGroup, const Unk_EnchantMap& kStat, const Unk_SocketSpecialMap& kSpecial);   // 0x1405cc590
-    bool FUN_1405cc640(int nGroup, CItemOption* pOther) const;  // 0x1405cc640 same group options
+    bool HasSameGroupOptions(int nGroup, CItemOption* pOther) const;  // 0x1405cc640 same group options
 private:
     unsigned m_nItemId;                         // +0x18
     Unk_EnchantMap m_aStat[5];                  // +0x20

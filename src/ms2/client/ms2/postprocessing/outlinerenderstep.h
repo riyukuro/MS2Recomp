@@ -8,7 +8,7 @@
 
 NiRenderer* GetNiRenderer();   // NiRenderer::GetRenderer()
 void FUN_141475e60(void* p);
-void FUN_141626ac0(void* p);
+void ClearRenderClicks(void* p);
 
 class OutlineRenderStep : public ReloadablePostProcess {
 public:

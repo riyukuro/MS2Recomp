@@ -71,8 +71,8 @@ MS2_REPLACE_METHOD(0x140FB54A0, UIUGCPVPControlDialog, GetTypeName, 61, 0xC38978
 void UIUGCPVPControlDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925fa0("m_dragBar");
-    FUN_141925ec0("m_btnClose");
+    BindDragBar("m_dragBar");
+    BindCloseButton("m_btnClose");
     if (m_30.get() != 0) {
         reinterpret_cast<Unk_PvpAS*>(m_30.operator->())->FUN_140fb59b0("setData", m_b178, m_b179, m_b17a, m_b17b, m_b17c, m_b17d);
     }

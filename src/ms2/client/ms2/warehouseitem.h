@@ -19,8 +19,8 @@ public:
     CWarehouseItem(MS2Ptr<CItem> spItem);           // 0x1408fb8c0
     virtual ~CWarehouseItem();                      // 0x1408fb930
 
-    int FUN_1408fb990();                            // the item id (0 when empty)
-    __int64 FUN_1408fb9f0();                        // the item uid (0 when empty)
+    int GetItemId();                            // the item id (0 when empty)
+    __int64 GetItemUid();                        // the item uid (0 when empty)
 
     MS2_LAYOUT_FRIEND;
     MS2Ptr<CItem> m_spItem;                         // +0x18
@@ -39,10 +39,10 @@ public:
     void Remove(__int64 nItemUid);                  // 0x1408fbc00
     void FUN_1408fbc70(ATL::CAtlArray<MS2Ptr<CItem> >& out);                  // every item
     void FUN_1408fbd30(void* pArg, ATL::CAtlArray<MS2Ptr<CItem> >& out);      // the matching, tradable items
-    MS2Ptr<CItem> FUN_1408fbe90(int nItemId);       // the first item with this item id
-    MS2Ptr<CItem> FUN_1408fbf90(__int64 nItemUid);  // the item with this uid (Lookup, null test of the result)
+    MS2Ptr<CItem> FindItemById(int nItemId);       // the first item with this item id
+    MS2Ptr<CItem> FindItemByUid(__int64 nItemUid);  // the item with this uid (Lookup, null test of the result)
     MS2Ptr<CItem> FUN_1408fc050(__int64 nItemUid);  // the item with this uid (Lookup's return value)
-    int FUN_1408fc110();                            // number of stored items
+    int GetItemCount();                            // number of stored items
     int FUN_1408fc1b0(int nItemId);                 // total count of the items with this item id
     int FUN_1408fc2f0(int nItemId, unsigned __int64 nUgcUid);   // same, restricted to one UGC uid
 

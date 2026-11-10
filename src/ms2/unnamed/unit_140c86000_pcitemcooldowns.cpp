@@ -57,10 +57,10 @@ void Unk_PCItemCooldowns::FUN_140c860b0(CInputStream& stream, int nObjId)
         MS2Ptr<CItem> spItem(new CItem);
         if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
             return;
-        spItem->FUN_140526b70(nSlot);
+        spItem->SetSlot(nSlot);
         spItem->SetItemUid(nItemUid);
         spItem->SetObjectId(nObjId);
-        spItem->FUN_140524eb0(stream);
+        spItem->ReadFromStream(stream);
         m_items[nSlot] = spItem;
     }
 }
@@ -91,17 +91,17 @@ MS2Ptr<CItem> Unk_PCItemCooldowns::FUN_140c863c0(int nSlot)
 MS2_REPLACE_METHOD(0x140C863C0, Unk_PCItemCooldowns, FUN_140c863c0, 125, 0xB4758069);
 
 // @0x140c86450
-bool Unk_PCItemCooldowns::FUN_140c86450(MS2Ptr<CItem> spItem)
+bool Unk_PCItemCooldowns::SetItem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
-    int nSlot = spItem->FUN_140526b50();
+    int nSlot = spItem->GetSlot();
     if (nSlot >= 4 || nSlot < 0)
         return false;
     m_items[nSlot] = spItem;
     return true;
 }
-MS2_REPLACE_METHOD(0x140C86450, Unk_PCItemCooldowns, FUN_140c86450, 180, 0xD90BCC37);
+MS2_REPLACE_METHOD(0x140C86450, Unk_PCItemCooldowns, SetItem, 180, 0xD90BCC37);
 
 // @0x140c86510
 bool Unk_PCItemCooldowns::FUN_140c86510(__int64 nItemUid)

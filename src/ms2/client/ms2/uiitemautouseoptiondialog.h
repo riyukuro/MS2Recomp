@@ -84,8 +84,8 @@ public:
 
     int FUN_140f4faf0(int nItemId);                                 // 0x140f4faf0 the item id is in a row
     void FUN_140f4fc40(int nItemId);                                // 0x140f4fc40 put an item into a free row
-    void FUN_140f50090(int nState, int nIndex);                     // 0x140f50090 enable / disable / reset a row's drop-down
-    void FUN_140f50190();                                           // 0x140f50190 rebuild the bag, tell the movie
+    void SetDropdownState(int nState, int nIndex);                     // 0x140f50090 enable / disable / reset a row's drop-down
+    void RebuildSlotBag();                                           // 0x140f50190 rebuild the bag, tell the movie
     void FUN_140f50230(void* pCombo, int nIndex);                   // 0x140f50230 fill a row's drop-down
     void OnClickOk();                                           // 0x140f50480 OnClickOk: validate and send
 

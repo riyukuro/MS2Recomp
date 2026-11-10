@@ -69,7 +69,7 @@ public:
 
 // The tail table singleton accessor (0x140ad0da0).
 // @0x140ad0da0
-CTailEffectDataTable* FUN_140ad0da0()
+CTailEffectDataTable* GetTailEffectDataTable()
 {
     return static_cast<CTailEffectDataTable*>(TSingleton<CTailEffectDataTable>::s_instance);
 }
@@ -77,7 +77,7 @@ CTailEffectDataTable* FUN_140ad0da0()
 
 // in-unit helpers
 // @0x140ad02c0
-int FUN_140ad02c0(int a, int b)
+int Max(int a, int b)
 {
     return a > b ? a : b;
 }
@@ -89,9 +89,9 @@ int FUN_140ad02f0(int a, int b)
 }
 
 // @0x140ad0d60
-int FUN_140ad0d60(int n, int nMin, int nMax)
+int Clamp(int n, int nMin, int nMax)
 {
-    n = FUN_140ad02c0(n, nMin);
+    n = Max(n, nMin);
     n = FUN_140ad02f0(n, nMax);
     return n;
 }
@@ -369,7 +369,7 @@ void CTailEffectObject::FUN_140acfeb0()
 }
 
 // @0x140acffc0
-void CTailEffectObject::FUN_140acffc0(float fAlpha)
+void CTailEffectObject::SetAlpha(float fAlpha)
 {
     if (FUN_14028d470(m_fAlpha, fAlpha))
         return;
@@ -385,15 +385,15 @@ void CTailEffectObject::FUN_140acffc0(float fAlpha)
 }
 
 // @0x140ad00e0
-void CTailEffectObject::FUN_140ad00e0(int nCount)
+void CTailEffectObject::SetCount(int nCount)
 {
-    m_nCount = FUN_140ad0d60(nCount, 0, 30);
+    m_nCount = Clamp(nCount, 0, 30);
 }
 
 // @0x140ad0120
 void CTailEffectObject::FUN_140ad0120(int nTailId)
 {
-    MS2SvrPtr<TailEffectData> spNew = FUN_140ad0da0()->GetData(nTailId);
+    MS2SvrPtr<TailEffectData> spNew = GetTailEffectDataTable()->GetData(nTailId);
     if (spNew == 0)
         return;
     FUN_140acf7b0();
@@ -410,7 +410,7 @@ void CTailEffectObject::FUN_140ad01d0()
 }
 
 // @0x140ad0200
-void CTailEffectObject::FUN_140ad0200()
+void CTailEffectObject::Update()
 {
     if (vfunc_1())
         FUN_140acf7b0();
@@ -431,9 +431,9 @@ bool CTailEffectObject::vfunc_1()
     return false;
 }
 
-// MS2-PIN: ?FUN_140ad02c0@@YAHHH@Z 0x140ad02c0
+// MS2-PIN: ?Max@@YAHHH@Z 0x140ad02c0
 // MS2-PIN: ?FUN_140ad02f0@@YAHHH@Z 0x140ad02f0
-// MS2-PIN: ?FUN_140ad0d60@@YAHHHH@Z 0x140ad0d60
+// MS2-PIN: ?Clamp@@YAHHHH@Z 0x140ad0d60
 
 // The UCRT's `static __inline memmove_s` of this TU (0x140ad1740, no caller left in the exe; kept alive by the pointer below).
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pfnTailEffectMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;

@@ -56,7 +56,7 @@ int UISceneGameCinematicPlay::vfunc_48(int n)
     ((class WorldService*)(class Unk_ScpWorld*)(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance())))->FUN_141bd3c00(false);
     TSingleton<CUIService>::GetInstance()->FUN_141ad9e50(m_6c);
     TSingleton<CUIService>::GetInstance()->FUN_141ada6f0(m_6c);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 
 // @0x140e84e30
@@ -66,13 +66,13 @@ int UISceneGameCinematicPlay::vfunc_49(int n)
     ((class WorldService*)(class Unk_ScpWorld*)(reinterpret_cast<Unk_ScpWorld*>(WorldService::GetInstance())))->FUN_141bd3c00(true);
     TSingleton<CUIService>::GetInstance()->FUN_141ada610(m_6c);
     TSingleton<CUIService>::GetInstance()->FUN_141adad20(m_6c);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 
 // @0x140e84ea0
 void UISceneGameCinematicPlay::vfunc_54()
 {
-    ((class GFxSceneService*)(class Unk_ScpSceneMgr*)(((Unk_ScpSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_ScpSceneMgr*)(((Unk_ScpSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
 }
 
 // @0x140e84ed0

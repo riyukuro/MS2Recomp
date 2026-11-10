@@ -39,7 +39,7 @@ template<> inline MS2Ptr<ASGameEntity>& MS2Ptr<ASGameEntity>::operator=(const MS
 }
 
 void FUN_1422bccb0(Scaleform::GFx::Value*, int);
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);     // new ASGameEntity(root, nUiId)
+MS2Ptr<ASGameEntity> CreateGameEntity(int nUiId, const Scaleform::GFx::Value& root);     // new ASGameEntity(root, nUiId)
 class Unk_ReportScript : public CPtred {
 public:
     template<class T> Scaleform::GFx::Value Invoke(const char* method, T value) {
@@ -51,7 +51,7 @@ public:
     template<class T> MS2Ptr<T> GetChild(const CString& name) {
         Scaleform::GFx::Value child = reinterpret_cast<AScript*>(this)->GetMember(name);
         if (child.IsObject())
-            return FUN_140ba77e0(m_id, child);
+            return CreateGameEntity(m_id, child);
         return MS2Ptr<T>(0);
     }
 private:
@@ -151,7 +151,7 @@ namespace TencentUserReport {
 // @0x140edb370
 UITencentUserReportDialog::UITencentUserReportDialog()
 {
-    FUN_141924170(0);
+    SetTweenEnabled(0);
     m_page = 0;
 }
 
@@ -182,14 +182,14 @@ void UITencentUserReportDialog::OnLoadComplete()
     MS2_ASSERT_AT(40, pEntityPage);
     m_page = new UITencentUserReportPage(m_data.type, pEntityPage);
     if (m_data.type == 15)
-        m_page->FUN_140edcfd0(m_data.target);
+        m_page->SetTargetName(m_data.target);
     else
-        m_page->FUN_140edcfd0(m_data.name);
+        m_page->SetTargetName(m_data.name);
     if (m_data.type == 3)
         m_page->m_itemKind = m_data.itemKind;
-    m_page->FUN_140edd150(m_data.itemName);
-    m_page->FUN_140edd2d0(m_data.name);
-    m_page->FUN_140edd450();
+    m_page->SetTargetItemName(m_data.itemName);
+    m_page->SetTargetItemSellerName(m_data.name);
+    m_page->SetWarningText();
     m_page->FUN_140edd730();
     m_page->FUN_140edc3b0();
     m_page->FUN_140edc8c0();
@@ -201,7 +201,7 @@ void UITencentUserReportDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
     m_page = 0;
-    m_data.FUN_140200f80();
+    m_data.Reset();
 }
 MS2_REPLACE_METHOD(0x140EDB910, UITencentUserReportDialog, vfunc_26, 64, 0x7F2C392F);
 
@@ -257,35 +257,35 @@ MS2_REPLACE_METHOD(0x140EDBC00, UITencentUserReportDialog, FUN_140edbc00, 86, 0x
 // @0x140edbc60
 void UITencentUserReportDialog::FUN_140edbc60()
 {
-    if (m_page->FUN_140eddac0() == true) {
+    if (m_page->IsBlockChecked() == true) {
         switch (m_data.type) {
-        case 3: FUN_140edbcf0(); break;
-        case 4: FUN_140edbdd0(); break;
+        case 3: BlockReportedItem(); break;
+        case 4: BlockReportedGuild(); break;
         case 16: FUN_140edbf80(); break;
-        default: FUN_140edbe30(); break;
+        default: SendBuddyRequest(); break;
         }
     }
 }
 MS2_REPLACE_METHOD(0x140EDBC60, UITencentUserReportDialog, FUN_140edbc60, 133, 0x05E477DF);
 
 // @0x140edbcf0
-void UITencentUserReportDialog::FUN_140edbcf0()
+void UITencentUserReportDialog::BlockReportedItem()
 {
     if (TSingleton<BlindManager>::GetInstance()->BlockId(3, m_data.itemId) == true)
         TSingleton<NotifySystem>::GetInstance()->Post(MS2Ptr<NotifyObject>(new NotifyBlindTarget(3, reinterpret_cast<const Unk_ReportTarget&>(m_data.m_38))));
 }
-MS2_REPLACE_METHOD(0x140EDBCF0, UITencentUserReportDialog, FUN_140edbcf0, 216, 0x99A521CC);
+MS2_REPLACE_METHOD(0x140EDBCF0, UITencentUserReportDialog, BlockReportedItem, 216, 0x99A521CC);
 
 // @0x140edbdd0
-void UITencentUserReportDialog::FUN_140edbdd0()
+void UITencentUserReportDialog::BlockReportedGuild()
 {
     if (TSingleton<BlindManager>::GetInstance()->BlockId(2, m_data.guildId) == true)
         TSingleton<CUgcManager>::GetInstance()->FUN_1418885b0(m_data.guildNumber);
 }
-MS2_REPLACE_METHOD(0x140EDBDD0, UITencentUserReportDialog, FUN_140edbdd0, 76, 0x62053618);
+MS2_REPLACE_METHOD(0x140EDBDD0, UITencentUserReportDialog, BlockReportedGuild, 76, 0x62053618);
 
 // @0x140edbe30
-void UITencentUserReportDialog::FUN_140edbe30()
+void UITencentUserReportDialog::SendBuddyRequest()
 {
     CBuddyManager::Ptr contact = TSingleton<CBuddyManager>::GetInstance()->FindByName(m_data.name);
     if (contact.get() && contact->FUN_1401cc5b0() == 1)
@@ -294,10 +294,10 @@ void UITencentUserReportDialog::FUN_140edbe30()
     request.protocol = 5;
     request.name = m_data.name;
     request.memo = GetStringCommon(0x8af);
-    request.id = contact.get() ? contact->FUN_1401cc2f0() : 0;
+    request.id = contact.get() ? contact->GetId() : 0;
     TSingleton<CBuddyManager>::GetInstance()->SendBuddyRequest(request);
 }
-MS2_REPLACE_METHOD(0x140EDBE30, UITencentUserReportDialog, FUN_140edbe30, 329, 0xC76388B8);
+MS2_REPLACE_METHOD(0x140EDBE30, UITencentUserReportDialog, SendBuddyRequest, 329, 0xC76388B8);
 
 // @0x140edbf80
 void UITencentUserReportDialog::FUN_140edbf80()
@@ -310,9 +310,9 @@ MS2_REPLACE_METHOD(0x140EDBF80, UITencentUserReportDialog, FUN_140edbf80, 132, 0
 // @0x140edc010
 void UITencentUserReportDialog::SendRequestReport()
 {
-    m_data.reason = m_page->FUN_140eddc90();
-    m_data.comment = m_page->FUN_140edddd0();
-    m_data.reportComment = m_page->FUN_140edddd0();
+    m_data.reason = m_page->GetSelectedReportType();
+    m_data.comment = m_page->GetComment();
+    m_data.reportComment = m_page->GetComment();
     switch (m_data.reason) {
     case 22:
     case 36:
@@ -361,27 +361,27 @@ void UITencentUserReportPage::FUN_140edc3b0()
 MS2_REPLACE_METHOD(0x140EDC3B0, UITencentUserReportPage, FUN_140edc3b0, 462, 0xE7EEF04F);
 
 // @0x140edc590
-void UITencentUserReportPage::FUN_140edc590(int enabled)
+void UITencentUserReportPage::SetAllChecksEnabled(int enabled)
 {
     for (int i = 0; i < 16; ++i) {
         if (m_checks[i].IsNull()) {
             MS2_ASSERT_AT(277, "m_aCheckBoxReportType[nIndex]" && 0);
             continue;
         }
-        m_checks[i]->FUN_1422c1fe0(enabled);
+        m_checks[i]->SetEnabled(enabled);
     }
 }
-MS2_REPLACE_METHOD(0x140EDC590, UITencentUserReportPage, FUN_140edc590, 171, 0x54D4D610);
+MS2_REPLACE_METHOD(0x140EDC590, UITencentUserReportPage, SetAllChecksEnabled, 171, 0x54D4D610);
 
 // Variadic entry: the hook thunk cannot forward an untyped argument list.
 // @0x140edc650
 void UITencentUserReportPage::FUN_140edc650(int enabled, int count, ...)
 {
-    FUN_140edc590(0);
+    SetAllChecksEnabled(0);
     va_list args;
     va_start(args, count);
     for (int i = 0; i < count; ++i) {
-        int index = FUN_140eddc40(va_arg(args, int));
+        int index = GetReportTypeIndex(va_arg(args, int));
         if (index < 0 || index > 15) {
             MS2_ASSERT_AT(295, "CHECK_RANGE(nReportTypeIndex, 0, REPORT_TYPE_COUNT - 1)" && 0);
             continue;
@@ -390,13 +390,13 @@ void UITencentUserReportPage::FUN_140edc650(int enabled, int count, ...)
             MS2_ASSERT_AT(296, "m_aCheckBoxReportType[nReportTypeIndex]" && 0);
             continue;
         }
-        m_checks[index]->FUN_1422c1fe0(enabled);
+        m_checks[index]->SetEnabled(enabled);
     }
     va_end(args);
 }
 
 // @0x140edc7d0
-void UITencentUserReportPage::FUN_140edc7d0(int type)
+void UITencentUserReportPage::SelectReportType(int type)
 {
     for (int i = 0; i < 16; ++i) {
         if (m_checks[i].IsNull()) {
@@ -404,11 +404,11 @@ void UITencentUserReportPage::FUN_140edc7d0(int type)
             continue;
         }
         if (g_reportTypes[i] == type)
-            reinterpret_cast<ASButton*>(m_checks[i].operator->())->FUN_1422ce090(1);
-        m_checks[i]->FUN_1422c1fe0(0);
+            reinterpret_cast<ASButton*>(m_checks[i].operator->())->SetSelected(1);
+        m_checks[i]->SetEnabled(0);
     }
 }
-MS2_REPLACE_METHOD(0x140EDC7D0, UITencentUserReportPage, FUN_140edc7d0, 234, 0xC26ED4A7);
+MS2_REPLACE_METHOD(0x140EDC7D0, UITencentUserReportPage, SelectReportType, 234, 0xC26ED4A7);
 
 // @0x140edc8c0
 void UITencentUserReportPage::FUN_140edc8c0()
@@ -421,15 +421,15 @@ void UITencentUserReportPage::FUN_140edc8c0()
         else
             FUN_140edc650(1, 3, 23, 33, 25);
     } else if (m_type == 6 || m_type == 9)
-        FUN_140edc7d0(13);
+        SelectReportType(13);
     else if (m_type == 4)
-        FUN_140edc7d0(24);
+        SelectReportType(24);
     else if (m_type == 15)
-        FUN_140edc7d0(34);
+        SelectReportType(34);
     else if (m_type == 16)
-        FUN_140edc7d0(24);
+        SelectReportType(24);
     else
-        FUN_140edc590(1);
+        SetAllChecksEnabled(1);
 }
 MS2_REPLACE_METHOD(0x140EDC8C0, UITencentUserReportPage, FUN_140edc8c0, 345, 0x3377C28C);
 
@@ -478,7 +478,7 @@ bool UITencentUserReportPage::FUN_140edca20()
             FUN_141275260(0x8ac, 1, 1);
             return false;
         }
-        if (m_checks[i]->FUN_1422ce0e0() == true)
+        if (m_checks[i]->IsSelected() == true)
             ++checked;
     }
     if (checked > 1) {
@@ -494,34 +494,34 @@ bool UITencentUserReportPage::FUN_140edca20()
 MS2_REPLACE_METHOD(0x140EDCA20, UITencentUserReportPage, FUN_140edca20, 1445, 0xBBA73BF9);
 
 // @0x140edcfd0
-void UITencentUserReportPage::FUN_140edcfd0(CStringW name)
+void UITencentUserReportPage::SetTargetName(CStringW name)
 {
     MS2Ptr<ASTextField> text;
     if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldTargetName", text))
         text->SetTextW(name);
 }
-MS2_REPLACE_METHOD(0x140EDCFD0, UITencentUserReportPage, FUN_140edcfd0, 374, 0xFE5824BF);
+MS2_REPLACE_METHOD(0x140EDCFD0, UITencentUserReportPage, SetTargetName, 374, 0xFE5824BF);
 
 // @0x140edd150
-void UITencentUserReportPage::FUN_140edd150(CStringW name)
+void UITencentUserReportPage::SetTargetItemName(CStringW name)
 {
     MS2Ptr<ASTextField> text;
     if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldTargetItemName", text))
         text->SetTextW(name);
 }
-MS2_REPLACE_METHOD(0x140EDD150, UITencentUserReportPage, FUN_140edd150, 374, 0x721E8FEF);
+MS2_REPLACE_METHOD(0x140EDD150, UITencentUserReportPage, SetTargetItemName, 374, 0x721E8FEF);
 
 // @0x140edd2d0
-void UITencentUserReportPage::FUN_140edd2d0(CStringW name)
+void UITencentUserReportPage::SetTargetItemSellerName(CStringW name)
 {
     MS2Ptr<ASTextField> text;
     if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldTargetItemSellerName", text))
         text->SetTextW(name);
 }
-MS2_REPLACE_METHOD(0x140EDD2D0, UITencentUserReportPage, FUN_140edd2d0, 374, 0x8887ABE7);
+MS2_REPLACE_METHOD(0x140EDD2D0, UITencentUserReportPage, SetTargetItemSellerName, 374, 0x8887ABE7);
 
 // @0x140edd450
-void UITencentUserReportPage::FUN_140edd450()
+void UITencentUserReportPage::SetWarningText()
 {
     MS2Ptr<ASTextField> text;
     if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textFieldWarnig", text)) {
@@ -533,7 +533,7 @@ void UITencentUserReportPage::FUN_140edd450()
         }
     }
 }
-MS2_REPLACE_METHOD(0x140EDD450, UITencentUserReportPage, FUN_140edd450, 715, 0x095FCB16);
+MS2_REPLACE_METHOD(0x140EDD450, UITencentUserReportPage, SetWarningText, 715, 0x095FCB16);
 
 // @0x140edd730
 void UITencentUserReportPage::FUN_140edd730()
@@ -551,42 +551,42 @@ void UITencentUserReportPage::FUN_140edd730()
 MS2_REPLACE_METHOD(0x140EDD730, UITencentUserReportPage, FUN_140edd730, 899, 0x8E1EA5C2);
 
 // @0x140eddac0
-bool UITencentUserReportPage::FUN_140eddac0()
+bool UITencentUserReportPage::IsBlockChecked()
 {
     MS2Ptr<ASCheckBox> check;
     if ((m_entity.get() ? true : false) && m_entity->FUN_140c12010("m_checkBoxBlock", check))
-        return check->FUN_1422ce0e0();
+        return check->IsSelected();
     return false;
 }
-MS2_REPLACE_METHOD(0x140EDDAC0, UITencentUserReportPage, FUN_140eddac0, 376, 0xB7891EA5);
+MS2_REPLACE_METHOD(0x140EDDAC0, UITencentUserReportPage, IsBlockChecked, 376, 0xB7891EA5);
 
 // @0x140eddc40
-int UITencentUserReportPage::FUN_140eddc40(int type)
+int UITencentUserReportPage::GetReportTypeIndex(int type)
 {
     for (int i = 0; i < 16; ++i)
         if (g_reportTypes[i] == type)
             return i;
     return -1;
 }
-MS2_REPLACE_METHOD(0x140EDDC40, UITencentUserReportPage, FUN_140eddc40, 73, 0x3D1259CD);
+MS2_REPLACE_METHOD(0x140EDDC40, UITencentUserReportPage, GetReportTypeIndex, 73, 0x3D1259CD);
 
 // @0x140eddc90
-int UITencentUserReportPage::FUN_140eddc90()
+int UITencentUserReportPage::GetSelectedReportType()
 {
     for (int i = 0; i < 16; ++i) {
         if (m_checks[i].IsNull()) {
             MS2_ASSERT_AT(570, "m_aCheckBoxReportType[nIndex]" && 0);
             continue;
         }
-        if (m_checks[i]->FUN_1422ce0e0() == true)
-            return FUN_140eddd60(i);
+        if (m_checks[i]->IsSelected() == true)
+            return GetReportTypeAt(i);
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140EDDC90, UITencentUserReportPage, FUN_140eddc90, 193, 0x221A3BAB);
+MS2_REPLACE_METHOD(0x140EDDC90, UITencentUserReportPage, GetSelectedReportType, 193, 0x221A3BAB);
 
 // @0x140eddd60
-int UITencentUserReportPage::FUN_140eddd60(int index)
+int UITencentUserReportPage::GetReportTypeAt(int index)
 {
     if (index < 0 || index > 15) {
         MS2_ASSERT_AT(583, "CHECK_RANGE(nIndex, 0, REPORT_TYPE_COUNT - 1)" && 0);
@@ -594,16 +594,16 @@ int UITencentUserReportPage::FUN_140eddd60(int index)
     }
     return g_reportTypes[index];
 }
-MS2_REPLACE_METHOD(0x140EDDD60, UITencentUserReportPage, FUN_140eddd60, 97, 0x5A548407);
+MS2_REPLACE_METHOD(0x140EDDD60, UITencentUserReportPage, GetReportTypeAt, 97, 0x5A548407);
 
 // @0x140edddd0
-CStringW UITencentUserReportPage::FUN_140edddd0()
+CStringW UITencentUserReportPage::GetComment()
 {
     MS2Ptr<ASTextField> comment;
     if ((m_entity.get() ? true : false) && m_entity->FUN_140beaf20("m_textAreaComment", comment))
         return comment->GetTextW();
     return L"";
 }
-MS2_REPLACE_METHOD(0x140EDDDD0, UITencentUserReportPage, FUN_140edddd0, 429, 0x45919D1D);
+MS2_REPLACE_METHOD(0x140EDDDD0, UITencentUserReportPage, GetComment, 429, 0x45919D1D);
 
 } // namespace TencentUserReport

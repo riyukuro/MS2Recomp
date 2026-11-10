@@ -33,7 +33,7 @@ public:
     ASMailAdBillData() : ASBillData(2), m_nSlot(-1) {}              // 0x1419ea130
     virtual ~ASMailAdBillData() {}                                  //  0 0x1419ea3c0 (??_G 0x1419ea650)
     virtual int vfunc_5() { return m_nSlot; }                       //  5 0x1419eaab0 the ad slot of the mail
-    void FUN_1419eb8f0(int nSlot) { m_nSlot = nSlot; }              // 0x1419eb8f0
+    void SetSlot(int nSlot) { m_nSlot = nSlot; }              // 0x1419eb8f0
     int m_nSlot;                                                    // +0x50
 };
 MS2_CHECK_SIZE(ASMailAdBillData, 0x58);
@@ -63,38 +63,38 @@ public:
     virtual void vfunc_79(void* p);                                 // 79 0x1419e3750
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // IMessageListener 0 0x1419e3780
 
-    bool FUN_1419e8080(unsigned __int64 nMailId);                   // "onBuyAd": the ad bill dialog
+    bool OnBuyAd(unsigned __int64 nMailId);                   // "onBuyAd": the ad bill dialog
     MS2Ptr<TMailAdBillDataParam> FUN_1419e8620(const CStringA& strMovie);   // the ad bill dialog's argument block
     bool FUN_1419e88b0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay);   // buy
     bool FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);     // tooltip
     void FUN_1419e4ef0(void* p);                                    // empty, unreferenced
-    void FUN_1419e4f10();                                           // a mail was removed: clamp the page, refresh
-    void FUN_1419e5000(__int64 nMailId);                            // "readMail"
-    void FUN_1419e50b0(__int64 nMailId);                            // "receiveMail"
-    void FUN_1419e5150();                                           // ask for a delayed refresh
-    void FUN_1419e5190();                                           // fill the list with the current page
-    void FUN_1419e5900();                                           // "onMailCount" (unread user / system mails)
-    void FUN_1419e5a10(__int64 nMailId);                            // "setMailInfo" (the opened mail)
+    void OnMailRemoved();                                           // a mail was removed: clamp the page, refresh
+    void OnReadMail(__int64 nMailId);                            // "readMail"
+    void OnReceiveMail(__int64 nMailId);                            // "receiveMail"
+    void RequestRefresh();                                           // ask for a delayed refresh
+    void RefreshMailList();                                           // fill the list with the current page
+    void UpdateMailCount();                                           // "onMailCount" (unread user / system mails)
+    void SetMailInfo(__int64 nMailId);                            // "setMailInfo" (the opened mail)
     void SendMailMode2(__int64 nMailId);                            // mark read (packet 0x2d / 2)
     void SendMailMode11(__int64 nMailId);                            // receive the attachments (packet 0x2d / 0xb)
-    void FUN_1419e6360(__int64 nMailId);                            // reply: open the send dialog
+    void ReplyToMail(__int64 nMailId);                            // reply: open the send dialog
     void FUN_1419e6410(__int64 nMailId);                            // remove: confirm box
-    unsigned FUN_1419e67a0(CMailInfo* pMail);                       // bind the attachment tooltips, returns their count
-    void FUN_1419e6b70();                                           // drop the five attachment tooltips
+    unsigned BindAttachmentTooltips(CMailInfo* pMail);                       // bind the attachment tooltips, returns their count
+    void ClearAttachmentTooltips();                                           // drop the five attachment tooltips
     __int64 FUN_1419e6c30();                                        // "getMailID" (the opened mail)
-    int FUN_1419e6ec0(MS2Ptr<CMailInfo> spMail);               // the mail belongs to the current tab
-    int FUN_1419e6fe0(int nPage);                                   // the page exists
+    int IsMailInCurrentTab(MS2Ptr<CMailInfo> spMail);               // the mail belongs to the current tab
+    int IsPageValid(int nPage);                                   // the page exists
     int FUN_1419e70c0(CStringW strIds);                             // one of the ids has attachments
-    CStringA FUN_1419e7260(MS2Ptr<CMailInfo> spMail);          // the row state name
-    void FUN_1419e73f0();                                           // "m_page"
-    int FUN_1419e74e0(__int64 nMailId);                             // an attachment is a locked item
+    CStringA GetMailStateName(MS2Ptr<CMailInfo> spMail);          // the row state name
+    void UpdatePageText();                                           // "m_page"
+    int HasLockedAttachment(__int64 nMailId);                             // an attachment is a locked item
     bool SendMailMode18(int nButton, const CMsgBoxData& data);       // read all: packet 0x2d / 0x12
     bool SendMailMode19(int nButton, const CMsgBoxData& data);       // receive all: packet 0x2d / 0x13
     bool FUN_1419e7940(int nButton, const CMsgBoxData& data);       // remove the listed mails: packet 0x2d / 0xd
     bool SendMailMode13(int nButton, const CMsgBoxData& data);       // remove one mail
-    void FUN_1419e7ea0(CStringW strIds, ATL::CAtlArray<__int64>& aIds, int bSkipAttached);   // parse the id list
-    int FUN_1419e7fd0();                                            // the selected tab ("m_tab")
-    void FUN_1419e6d20(ATL::CAtlList<MS2Ptr<CMailInfo> >& out);   // the mails of the tab, newest first, ads last
+    void ParseMailIds(CStringW strIds, ATL::CAtlArray<__int64>& aIds, int bSkipAttached);   // parse the id list
+    int GetSelectedTab();                                            // the selected tab ("m_tab")
+    void GetTabMails(ATL::CAtlList<MS2Ptr<CMailInfo> >& out);   // the mails of the tab, newest first, ads last
     void SendMailMode0();                                           // ask the server for the list (packet 0x2d / 0)
 
     // child lookups (UIDialog COMDATs shared by many dialogs)
@@ -135,14 +135,14 @@ public:
     virtual int vfunc_74(int nMsg, void* p2, void* p3);             // 74 0x1419ec7c0 receiver name candidates while typing
     virtual void vfunc_79(void* p);                                 // 79 0x1419ec5c0 packet 0x54 (send result)
 
-    void FUN_1419ecb80();                                           // close (vfunc_67)
-    void FUN_1419ecbb0(CMailInfo* pReplyTo);                        // answer this mail
-    void FUN_1419ecbf0();                                           // "setData": the reply prefill
+    void Close();                                           // close (vfunc_67)
+    void SetReplyMail(CMailInfo* pReplyTo);                        // answer this mail
+    void SetReplyData();                                           // "setData": the reply prefill
     void FUN_1419ed010();                                           // fill "m_buddys" with the buddy names
     void OnSend();                                           // "OnSend": check and send (packet 0x2d / 1)
-    void FUN_1419ed410(CStringW& strReceiver);                      // the receiver text
-    void FUN_1419ed4e0(CStringW& strTitle);                         // the title text (reserved words filtered)
-    void FUN_1419ed6b0(CStringW& strContent);                       // the content text (reserved words filtered)
+    void GetReceiverText(CStringW& strReceiver);                      // the receiver text
+    void GetTitleText(CStringW& strTitle);                         // the title text (reserved words filtered)
+    void GetContentText(CStringW& strContent);                       // the content text (reserved words filtered)
     void FUN_1419ed7f0(ATL::CAtlMap<unsigned __int64, CStringW>& names);   // buddies and guild members by character id
 
     // child lookups (UIDialog COMDATs shared by many dialogs)

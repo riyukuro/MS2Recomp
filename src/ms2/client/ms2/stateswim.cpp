@@ -37,7 +37,7 @@ egmAnimation::AnimationService* FUN_141b6f910();                                
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141bd1a10(class Unk_WsC_GameObj*);
+    int GetObjectKind(class Unk_WsC_GameObj*);
     static class WorldService* GetInstance();
 };
 class Unk_PCBaseBody;
@@ -67,7 +67,7 @@ struct Unk_MagicRidee* FUN_141468360(struct Unk_MagicEntity*);   // C3: was FUN_
 
 // The config constants singleton: the swim speed at +0x56a8 is not read here; only the buff view below is.
 #include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683900
-class Unk_PCMove { public: Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool FUN_141682fe0(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The item a state is told about in its slots 29/30.
 class Unk_StateArg29 : public CItem { };
@@ -82,7 +82,7 @@ StateSwim::StateSwim(PCBase* pOwner) : State(pOwner)
 // @0x1417fa3d0
 StateSwim::~StateSwim()
 {
-    FUN_1417fb400();
+    StopEffect();
 }
 
 // @0x1417fa420
@@ -134,7 +134,7 @@ void StateSwim::vfunc_5(int n)
     State::vfunc_5(n);
     Unk_Vec4* pSpeed = (Unk_Vec4*)m_pOwner->FUN_141671920();
     m_pOwner->FUN_141671960(pSpeed->m_z);
-    FUN_1417fb400();
+    StopEffect();
 }
 
 // @0x1417fa660
@@ -188,7 +188,7 @@ void StateSwim::vfunc_8(double fTime)
         {
             if (m_pOwner->vfunc_99(0) != 0)
             {
-                ((Unk_SwimHitReport*)(reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->FUN_141240f20()))->FUN_140cfaf30();
+                ((Unk_SwimHitReport*)(reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->GetHitReport()))->FUN_140cfaf30();
                 m_pOwner->vfunc_59(1, 0, 0, 0);
                 return;
             }
@@ -207,7 +207,7 @@ void StateSwim::vfunc_8(double fTime)
             {
                 pPC->TryUseChairOrBed(2, 0);
             }
-            else if (m_pOwner->FUN_141671a30() != 0 && (pBuff->FUN_141682fe0(0x493e1) || m_n28 != 0))
+            else if (m_pOwner->FUN_141671a30() != 0 && (pBuff->IsActionKeyDown(0x493e1) || m_n28 != 0))
             {
                 m_n28 = 0;
                 m_pOwner->vfunc_59(6, 0, 0x25, 0);
@@ -310,7 +310,7 @@ int StateSwim::FUN_1417fb370()
 }
 
 // @0x1417fb400
-void StateSwim::FUN_1417fb400()
+void StateSwim::StopEffect()
 {
     if (m_nEffect != 0)
     {
@@ -322,13 +322,13 @@ void StateSwim::FUN_1417fb400()
 // @0x1417fb440
 void StateSwim::FUN_1417fb440()
 {
-    FUN_1417fb400();
+    StopEffect();
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
         Unk_EffectQuery query;
         query.m_strName = static_cast<PC*>(pPC)->GetSwimEffectName(0x31);
-        query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
+        query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetObjectKind((class Unk_WsC_GameObj*)(m_pOwner));
         query.SetActor(pPC->GetObjectId());
         m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     }

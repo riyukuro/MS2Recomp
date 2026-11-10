@@ -73,29 +73,29 @@ class Unk_EobPackets { public:                                              // t
     void FUN_140da5180(int, Delegate<void(CInPacket&)>);
     void FUN_140da51e0(int, Delegate<void(CInPacket&)>);
 };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
-void FUN_1412751f0(const CStringW& strText, int nType, int nFlags);         // notice message box
+void ShowSystemNotice(const CStringW& strText, int nType, int nFlags);         // notice message box
 void DestroyItemInfoSlot(const CString& strName);                                 // drop the item shown under a dialog name
 void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> item, int a, int b, int c);   // show an item under a dialog name
 int FUN_14053feb0(int nItemId);                                             // the rank of the box item
-bool FUN_1407105c0(COutPacket* packet, int key, int delay);                 // rate limited send
+bool SendPacketThrottled(COutPacket* packet, int key, int delay);                 // rate limited send
 
 // @0x140e47540
 UIItemEventOpenBoxDialog::UIItemEventOpenBoxDialog()
 {
     m_178 = 0;
     m_80 = 0;
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::OnNotifyCompleteMyPC));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
 }
 
 // @0x140e477f0
 UIItemEventOpenBoxDialog::~UIItemEventOpenBoxDialog()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::FUN_140e48020));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0xf7, Delegate<void(CInPacket&)>(this, &UIItemEventOpenBoxDialog::FUN_140e47f10));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIItemEventOpenBoxDialog::OnNotifyCompleteMyPC));
 }
 
 // @0x140e47a50
@@ -106,7 +106,7 @@ MS2_REPLACE_METHOD(0x140E47A50, UIItemEventOpenBoxDialog, GetTypeName, 61, 0xFB0
 void UIItemEventOpenBoxDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140e48990();
+    UnbindBoxItem();
     m_198 = 0;
     m_1a8 = 0;
     m_1b8 = 0;
@@ -120,8 +120,8 @@ MS2_REPLACE_METHOD(0x140E47AA0, UIItemEventOpenBoxDialog, vfunc_67, 139, 0xFFEDB
 void UIItemEventOpenBoxDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925fa0("m_dragBar");
-    FUN_141925ec0("m_close");
+    BindDragBar("m_dragBar");
+    BindCloseButton("m_close");
     GetChildInto<ASTextField>("m_title", m_198);
     GetChildInto<ASTextField>("m_eventName", m_1a8);
     GetChildInto<ASTextField>("m_eventDesc", m_1b8);
@@ -145,7 +145,7 @@ void UIItemEventOpenBoxDialog::FUN_140e47f10(CInPacket& iPacket)
         if (bOk == 0)
         {
             CStringW strFail(L"s_event_open_item_box_ui_fail");
-            FUN_1412751f0(GetStringCommonByKey(strFail), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strFail), 1, 1);
         }
         if (FUN_141924630() != 0)
             vfunc_67();
@@ -154,11 +154,11 @@ void UIItemEventOpenBoxDialog::FUN_140e47f10(CInPacket& iPacket)
 MS2_REPLACE_METHOD(0x140E47F10, UIItemEventOpenBoxDialog, FUN_140e47f10, 253, 0x060505FE);
 
 // @0x140e48020
-void UIItemEventOpenBoxDialog::FUN_140e48020(NotifyObject*)
+void UIItemEventOpenBoxDialog::OnNotifyCompleteMyPC(NotifyObject*)
 {
     FUN_140e48050();
 }
-MS2_REPLACE_METHOD(0x140E48020, UIItemEventOpenBoxDialog, FUN_140e48020, 29, 0x39B85687);
+MS2_REPLACE_METHOD(0x140E48020, UIItemEventOpenBoxDialog, OnNotifyCompleteMyPC, 29, 0x39B85687);
 
 // @0x140e48050
 void UIItemEventOpenBoxDialog::FUN_140e48050()
@@ -187,7 +187,7 @@ void UIItemEventOpenBoxDialog::FUN_140e48050()
     m_178 = spCtx->m_boxItemID;
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(m_180);
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(m_188);
-    CString strBound = FUN_140e48770(m_178);
+    CString strBound = BindBoxItem(m_178);
     FUN_141924680();
 }
 MS2_REPLACE_METHOD(0x140E48050, UIItemEventOpenBoxDialog, FUN_140e48050, 858, 0xDD4BA7E7);
@@ -203,7 +203,7 @@ void UIItemEventOpenBoxDialog::FUN_140e483b0()
     m_1a8->SetTextHTMLW(m_180);
     m_1b8->SetTextHTMLW(m_188);
     if (m_1e8.GetLength() > 0)
-        static_cast<Unk_EobSlot*>(m_1d8.operator->())->FUN_1407cba60((const char*)s_strBinding, m_1e8);
+        static_cast<Unk_EobSlot*>(m_1d8.operator->())->SetStringMember((const char*)s_strBinding, m_1e8);
     m_30->Invoke("LoadImage", m_190);
 }
 MS2_REPLACE_METHOD(0x140E483B0, UIItemEventOpenBoxDialog, FUN_140e483b0, 584, 0x6535BEA4);
@@ -218,22 +218,22 @@ void UIItemEventOpenBoxDialog::SendEventReward(const Scaleform::GFx::FunctionHan
     {
         {
             CStringW strText(L"s_event_open_item_box_ui_not_event_time");
-            FUN_1412751f0(GetStringCommonByKey(strText), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strText), 1, 1);
         }
         vfunc_67();
         return;
     }
     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.WriteUInt8(2);
-    FUN_1407105c0(&packet, 100, 1000);
+    SendPacketThrottled(&packet, 100, 1000);
 }
 MS2_REPLACE_METHOD(0x140E48600, UIItemEventOpenBoxDialog, SendEventReward, 348, 0x1E646D04);
 
 // MS2-FUNCTIONAL: behaviour-equivalent; the exe loads the rank argument of FUN_140523c40 through an extra register hop with no source form found
 // @0x140e48770
-CString UIItemEventOpenBoxDialog::FUN_140e48770(unsigned nItemId)
+CString UIItemEventOpenBoxDialog::BindBoxItem(unsigned nItemId)
 {
-    FUN_140e48990();
+    UnbindBoxItem();
     CString strKey;
     strKey.Format("%s_%d", (const char*)GetTypeName(), nItemId);
     MS2Ptr<CItem> spItem(new CItem);
@@ -243,11 +243,11 @@ CString UIItemEventOpenBoxDialog::FUN_140e48770(unsigned nItemId)
     m_1e8 = strKey;
     return strKey;
 }
-MS2_REPLACE_METHOD(0x140E48770, UIItemEventOpenBoxDialog, FUN_140e48770, 537, 0xD71CF56A);
+MS2_REPLACE_METHOD(0x140E48770, UIItemEventOpenBoxDialog, BindBoxItem, 537, 0xD71CF56A);
 
 // @0x140e48990
-void UIItemEventOpenBoxDialog::FUN_140e48990()
+void UIItemEventOpenBoxDialog::UnbindBoxItem()
 {
     DestroyItemInfoSlot(m_1e8);
 }
-MS2_REPLACE_METHOD(0x140E48990, UIItemEventOpenBoxDialog, FUN_140e48990, 33, 0xE84A5973);
+MS2_REPLACE_METHOD(0x140E48990, UIItemEventOpenBoxDialog, UnbindBoxItem, 33, 0xE84A5973);

@@ -53,7 +53,7 @@ public:
     virtual int vfunc_28(const char*, const Scaleform::GFx::Value*, unsigned int);
     virtual void vfunc_o178_10(void*);
     void FUN_140c17200(unsigned int, Unk_GalleryPacket*);
-    int FUN_140c17560();
+    int GetCompletedCardCount();
     void FUN_140c176f0(MS2Ptr<GalleryContext>);
     void FUN_140c17d20(MS2Ptr<GalleryContext>);
     void UpdateQuestState(int);
@@ -63,10 +63,10 @@ public:
     void SendEventRewardMode8(int);
     void SendEventRewardMode9();
     int FUN_140c187e0();
-    CString FUN_140c189d0(int);
-    int FUN_140c18ab0(int);
-    int FUN_140c18c60(int);
-    void FUN_140c18e10(int, int);
+    CString GetItemIconPath(int);
+    int GetCardState(int);
+    int GetQuestState(int);
+    void OpenItemPreview(int, int);
     bool CheckEventContext();
     virtual int vfunc_48() { return 20313; }
 private:

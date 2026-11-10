@@ -51,7 +51,7 @@ struct Unk_PoConfig
     char m_pad_00[0x2f0];
     CString m_strCountdownEffect;                               // +0x2f0
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: the real return type (cachedata)
+class Unk_SingletonObj* GetCommonResource();   // C3: the real return type (cachedata)
 
 class Unk_PoCameraUI : public UIDamageText                                            // the spectator camera buttons (UI 0x4e32)
 {
@@ -72,8 +72,8 @@ CStringW FUN_14016a730(const char* sz, int nCodePage);
 // @0x141a911b0
 UIPvPObserverDialog::UIPvPObserverDialog()
 {
-    FUN_141924170(0);
-    FUN_141925e70(0, 1);
+    SetTweenEnabled(0);
+    SetFlag(0, 1);
     m_1d4 = false;
     m_1c8 = 0;
 }
@@ -146,7 +146,7 @@ void UIPvPObserverDialog::vfunc_72()
         }
         else if (m_1cc == 0 && (nHour == 0 && (int)nMin <= 10)) {
             NoticeMessage kRequest;
-            kRequest.m_strName = ((Unk_PoConfig*)FUN_1401d31f0())->m_strCountdownEffect;
+            kRequest.m_strName = ((Unk_PoConfig*)GetCommonResource())->m_strCountdownEffect;
             kRequest.m_nObject = 0;
             m_1d0 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(kRequest));
             m_1cc = 1;
@@ -221,7 +221,7 @@ int UIPvPObserverDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x141a91940
-void UIPvPObserverDialog::FUN_141a91940(const Unk_PvPObsInfo& info)
+void UIPvPObserverDialog::SetNormalMatchInfo(const Unk_PvPObsInfo& info)
 {
     m_178.m_nCharId = info.m_a.m_nCharId;
     m_178.m_nHp = info.m_a.m_nHp;
@@ -237,7 +237,7 @@ void UIPvPObserverDialog::FUN_141a91940(const Unk_PvPObsInfo& info)
 }
 
 // @0x141a91a30
-void UIPvPObserverDialog::FUN_141a91a30(const Unk_PvPObsInfo& info)
+void UIPvPObserverDialog::SetDuelMatchInfo(const Unk_PvPObsInfo& info)
 {
     m_178.m_nCharId = info.m_a.m_nCharId;
     m_178.m_nHp = info.m_a.m_nHp;
@@ -306,8 +306,8 @@ void UIPvPObserverDialog::FUN_141a91b40()
     m_30->Invoke("setStatus", strStatusA, strStatusB);
     m_30->Invoke("setJob", strJobA, strJobB);
     m_30->Invoke("setProfile", strProfileA, strProfileB);
-    FUN_141a92b10(m_178.m_nCharId, m_178.m_nHp, m_178.m_nMaxHp);
-    FUN_141a92b10(m_1a0.m_nCharId, m_1a0.m_nHp, m_1a0.m_nMaxHp);
+    SetFighterHp(m_178.m_nCharId, m_178.m_nHp, m_178.m_nMaxHp);
+    SetFighterHp(m_1a0.m_nCharId, m_1a0.m_nHp, m_1a0.m_nMaxHp);
     m_1d5 = true;
     if (m_178.m_nCharId == pMe->FUN_141656a80() || m_1a0.m_nCharId == pMe->FUN_141656a80())
         m_1d5 = false;
@@ -334,7 +334,7 @@ void UIPvPObserverDialog::FUN_141a91b40()
 }
 
 // @0x141a92b10
-void UIPvPObserverDialog::FUN_141a92b10(__int64 nCharId, __int64 nHp, __int64 nMaxHp)
+void UIPvPObserverDialog::SetFighterHp(__int64 nCharId, __int64 nHp, __int64 nMaxHp)
 {
     if (m_30.IsNull())
         return;
@@ -353,7 +353,7 @@ void UIPvPObserverDialog::FUN_141a92b10(__int64 nCharId, __int64 nHp, __int64 nM
 }
 
 // @0x141a92c80
-void UIPvPObserverDialog::FUN_141a92c80()
+void UIPvPObserverDialog::StartClosingUI()
 {
     if (m_30.IsNull())
         return;
@@ -374,11 +374,11 @@ MS2_REPLACE_METHOD(0x141A91640, UIPvPObserverDialog, OnLoadComplete, 34, 0x2B174
 MS2_REPLACE_METHOD(0x141A916D0, UIPvPObserverDialog, vfunc_28, 384, 0x5B1E5705);
 MS2_REPLACE_METHOD(0x141A91860, UIPvPObserverDialog, vfunc_43, 24, 0x08A31BBC);
 MS2_REPLACE_METHOD_VIA(0x141A91880, UIPvPObserverDialog, IMessageListener, OnMessage, 182, 0xFDE2C41D);
-MS2_REPLACE_METHOD(0x141A91940, UIPvPObserverDialog, FUN_141a91940, 219, 0x224A9917);
-MS2_REPLACE_METHOD(0x141A91A30, UIPvPObserverDialog, FUN_141a91a30, 261, 0xF0809880);
+MS2_REPLACE_METHOD(0x141A91940, UIPvPObserverDialog, SetNormalMatchInfo, 219, 0x224A9917);
+MS2_REPLACE_METHOD(0x141A91A30, UIPvPObserverDialog, SetDuelMatchInfo, 261, 0xF0809880);
 MS2_REPLACE_METHOD(0x141A91B40, UIPvPObserverDialog, FUN_141a91b40, 4032, 0x28CD3BE5);
-MS2_REPLACE_METHOD(0x141A92B10, UIPvPObserverDialog, FUN_141a92b10, 350, 0xB93A02BF);
-MS2_REPLACE_METHOD(0x141A92C80, UIPvPObserverDialog, FUN_141a92c80, 87, 0x28D78CEB);
+MS2_REPLACE_METHOD(0x141A92B10, UIPvPObserverDialog, SetFighterHp, 350, 0xB93A02BF);
+MS2_REPLACE_METHOD(0x141A92C80, UIPvPObserverDialog, StartClosingUI, 87, 0x28D78CEB);
 MS2_REPLACE_METHOD(0x141A92CE0, UIPvPObserverDialog, FUN_141a92ce0, 17, 0x3B399D22);
 
 MS2_EMIT_CRT_MEMMOVE_S();

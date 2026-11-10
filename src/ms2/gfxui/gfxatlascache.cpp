@@ -27,7 +27,7 @@ GFxAtlasCache::~GFxAtlasCache()
 }
 
 // @0x1422f7840
-AtlasRecord* GFxAtlasCache::FUN_1422f7840(const Scaleform::GFx::ImageCreateInfo& info, const CString& strDir,
+AtlasRecord* GFxAtlasCache::GetAtlasRecord(const Scaleform::GFx::ImageCreateInfo& info, const CString& strDir,
     const CString& strName)
 {
     efd::SmartPointer<AtlasRecord> spRecord = NULL;
@@ -47,7 +47,7 @@ AtlasRecord* GFxAtlasCache::FUN_1422f7840(const Scaleform::GFx::ImageCreateInfo&
     }
     return spRecord;
 }
-MS2_REPLACE_METHOD(0x1422f7840, GFxAtlasCache, FUN_1422f7840, 631, 0xA374C755);
+MS2_REPLACE_METHOD(0x1422f7840, GFxAtlasCache, GetAtlasRecord, 631, 0xA374C755);
 
 // The exe calls memset in CRBTree::NewNode (no /Oi expansion): templates are instantiated at the end of the TU.
 #pragma function(memset)

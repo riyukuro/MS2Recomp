@@ -26,7 +26,7 @@ void FUN_1422bcd40(Scaleform::GFx::Value* pValue, unsigned long n);        // Va
 class Unk_TnScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_140fa8a70(const char* szMethod, CStringW a1, int a2);
+    Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2);
 };
 
 extern unsigned DAT_143af62d8;                                  // client area height
@@ -70,7 +70,7 @@ void UITopLayerNotify::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
     if (m_70.GetLength() != 0)
-        FUN_140fa8970(m_70, m_78);
+        ShowMessage(m_70, m_78);
 }
 
 // @0x140fa8820
@@ -94,10 +94,10 @@ int UITopLayerNotify::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 }
 
 // @0x140fa8970
-void UITopLayerNotify::FUN_140fa8970(const CStringW& strText, int nType)
+void UITopLayerNotify::ShowMessage(const CStringW& strText, int nType)
 {
     if (m_30.get() != 0) {
-        static_cast<Unk_TnScript*>(m_30.operator->())->FUN_140fa8a70("showMessage", CStringW(strText), nType);
+        static_cast<Unk_TnScript*>(m_30.operator->())->Invoke("showMessage", CStringW(strText), nType);
     } else {
         m_70 = strText;
         m_78 = nType;
@@ -106,7 +106,7 @@ void UITopLayerNotify::FUN_140fa8970(const CStringW& strText, int nType)
 }
 
 // @0x140fa8a70
-Scaleform::GFx::Value Unk_TnScript::FUN_140fa8a70(const char* szMethod, CStringW a1, int a2)
+Scaleform::GFx::Value Unk_TnScript::Invoke(const char* szMethod, CStringW a1, int a2)
 {
     ASArgList args;
     args.resize(2);

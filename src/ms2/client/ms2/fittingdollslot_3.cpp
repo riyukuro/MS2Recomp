@@ -35,18 +35,18 @@ void CreateSlotBag(const CString& strName, int nPcId, unsigned __int64 nDollId, 
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->GetSlotCount());
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x14121e760
 void FUN_14121e760(const CString& strName)
 {
-    FittingDollSlotBag* pBag = CastToSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
+    FittingDollSlotBag* pBag = CastToSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -95,7 +95,7 @@ FittingDollSlotBag::~FittingDollSlotBag()
 CString FittingDollSlotBag::vfunc_15(int nIndex)
 {
     Unk_InventoryEquipSlot nSlot = GetEquipSlot(nIndex);
-    CString str = StringFormat("{0}.{1}", FUN_1422c89f0(), nSlot);
+    CString str = StringFormat("{0}.{1}", GetName(), nSlot);
     return str;
 }
 MS2_REPLACE_METHOD(0x14121ecb0, FittingDollSlotBag, vfunc_15, 171, 0xE8D6C8AA);

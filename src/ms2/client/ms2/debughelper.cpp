@@ -16,7 +16,7 @@
 #include <NiDataStreamElementLock.h>
 #include "ms2/placeholder/cdebughelper.h"
 
-NiNode* FUN_1413f9f90();                                            // the node named "Scene Root"
+NiNode* FindSceneRoot();                                            // the node named "Scene Root"
 
 // @0x14116bdc0
 CDebugHelper::CDebugHelper() : m_pRoot(0), m_meshes(10)
@@ -32,7 +32,7 @@ CDebugHelper::~CDebugHelper()
 // @0x14116be80
 void CDebugHelper::FUN_14116be80()
 {
-    m_pRoot = FUN_1413f9f90();
+    m_pRoot = FindSceneRoot();
 }
 
 // @0x14116beb0

@@ -36,14 +36,14 @@ ASTextField::~ASTextField()
 // @0x1422c4c80
 void ASTextField::SetTextA(const CString& strText)
 {
-    FUN_1422bb870().SetText(strText);
+    GetValue().SetText(strText);
 }
 MS2_REPLACE_METHOD(0x1422C4C80, ASTextField, SetTextA, 61, 0xE4942A47);
 
 // @0x1422c4cd0
 void ASTextField::SetTextW(const CStringW& strText)
 {
-    FUN_1422bb870().SetText(strText);
+    GetValue().SetText(strText);
 }
 MS2_REPLACE_METHOD(0x1422C4CD0, ASTextField, SetTextW, 61, 0x9903C860);
 
@@ -58,7 +58,7 @@ MS2_REPLACE_METHOD(0x1422C4D20, ASTextField, GetTextA, 120, 0x91918A67);
 CStringW ASTextField::GetTextW()
 {
     Value v;
-    if (FUN_1422bb870().GetText(&v))
+    if (GetValue().GetText(&v))
     {
         if (v.IsString())
             return XmlWide(v.GetString());
@@ -72,14 +72,14 @@ MS2_REPLACE_METHOD(0x1422C4DA0, ASTextField, GetTextW, 264, 0x98304C6D);
 // @0x1422c4eb0
 void ASTextField::SetTextHTMLA(const CString& strText)
 {
-    FUN_1422bb870().SetTextHTML(strText);
+    GetValue().SetTextHTML(strText);
 }
 MS2_REPLACE_METHOD(0x1422C4EB0, ASTextField, SetTextHTMLA, 61, 0xAF866D5D);
 
 // @0x1422c4f00
 void ASTextField::SetTextHTMLW(const CStringW& strText)
 {
-    FUN_1422bb870().SetTextHTML(strText);
+    GetValue().SetTextHTML(strText);
 }
 MS2_REPLACE_METHOD(0x1422C4F00, ASTextField, SetTextHTMLW, 61, 0xC299544E);
 
@@ -94,7 +94,7 @@ MS2_REPLACE_METHOD(0x1422C4F50, ASTextField, GetTextHTMLA, 120, 0x34FEC111);
 CStringW ASTextField::GetTextHTMLW()
 {
     Value v;
-    if (FUN_1422bb870().GetTextHTML(&v))
+    if (GetValue().GetTextHTML(&v))
     {
         if (v.IsString())
             return XmlWide(v.GetString());
@@ -122,7 +122,7 @@ MS2_REPLACE_METHOD(0x1422C5110, ASTextField, GetTextColor, 88, 0x832C249C);
 // @0x1422c5170
 void ASTextField::SetMaxChars(int nMaxChars)
 {
-    FUN_1407cb9c0("maxChars", nMaxChars);
+    SetIntMember("maxChars", nMaxChars);
 }
 MS2_REPLACE_METHOD(0x1422C5170, ASTextField, SetMaxChars, 40, 0xAFB9804F);
 
@@ -136,7 +136,7 @@ MS2_REPLACE_METHOD(0x1422C51A0, ASTextField, GetMaxChars, 88, 0xEA80715C);
 // @0x1422c5200
 void ASTextField::SetMultiline(int bMultiline)
 {
-    FUN_1407cbbe0("multiline", bMultiline != 0);
+    SetBoolMember("multiline", bMultiline != 0);
 }
 MS2_REPLACE_METHOD(0x1422C5200, ASTextField, SetMultiline, 60, 0x195876E7);
 
@@ -150,7 +150,7 @@ MS2_REPLACE_METHOD(0x1422C5250, ASTextField, GetMultiline, 91, 0xFE82D2D3);
 // @0x1422c52c0
 void ASTextField::SetSelectable(int bSelectable)
 {
-    FUN_1407cbbe0("selectable", bSelectable != 0);
+    SetBoolMember("selectable", bSelectable != 0);
 }
 MS2_REPLACE_METHOD(0x1422C52C0, ASTextField, SetSelectable, 60, 0xA6D0D30B);
 
@@ -164,7 +164,7 @@ MS2_REPLACE_METHOD(0x1422C5310, ASTextField, GetSelectable, 91, 0xBF1D2E51);
 // @0x1422c5380
 void ASTextField::SetCaretIndex(int nIndex)
 {
-    FUN_1407cb9c0("caretIndex", nIndex);
+    SetIntMember("caretIndex", nIndex);
 }
 MS2_REPLACE_METHOD(0x1422C5380, ASTextField, SetCaretIndex, 40, 0x23842660);
 
@@ -178,7 +178,7 @@ MS2_REPLACE_METHOD(0x1422C53B0, ASTextField, GetCaretIndex, 88, 0xF2C211FC);
 // @0x1422c5410
 void ASTextField::SetEmbedFonts(int bEmbed)
 {
-    FUN_1407cbbe0("embedFonts", bEmbed != 0);
+    SetBoolMember("embedFonts", bEmbed != 0);
 }
 MS2_REPLACE_METHOD(0x1422C5410, ASTextField, SetEmbedFonts, 60, 0x719A42F7);
 
@@ -192,7 +192,7 @@ MS2_REPLACE_METHOD(0x1422C5460, ASTextField, GetEmbedFonts, 91, 0x37D62B23);
 // @0x1422c54d0
 void ASTextField::SetDisplayAsPassword(int bPassword)
 {
-    FUN_1407cbbe0("displayAsPassword", bPassword != 0);
+    SetBoolMember("displayAsPassword", bPassword != 0);
 }
 MS2_REPLACE_METHOD(0x1422C54D0, ASTextField, SetDisplayAsPassword, 60, 0xE6E1A2E3);
 
@@ -206,7 +206,7 @@ MS2_REPLACE_METHOD(0x1422C5520, ASTextField, GetDisplayAsPassword, 91, 0x44A77CE
 // @0x1422c5590
 void ASTextField::SetUseRichTextClipboard(int bRich)
 {
-    FUN_1407cbbe0("useRichTextClipboard", bRich != 0);
+    SetBoolMember("useRichTextClipboard", bRich != 0);
 }
 MS2_REPLACE_METHOD(0x1422C5590, ASTextField, SetUseRichTextClipboard, 60, 0xD6FD35D3);
 
@@ -220,7 +220,7 @@ MS2_REPLACE_METHOD(0x1422C55E0, ASTextField, GetUseRichTextClipboard, 91, 0x8799
 // @0x1422c5650
 void ASTextField::SetMouseWheelEnabled(int bEnabled)
 {
-    FUN_1407cbbe0("mouseWheelEnabled", bEnabled != 0);
+    SetBoolMember("mouseWheelEnabled", bEnabled != 0);
 }
 MS2_REPLACE_METHOD(0x1422C5650, ASTextField, SetMouseWheelEnabled, 60, 0xA757D84F);
 
@@ -234,7 +234,7 @@ MS2_REPLACE_METHOD(0x1422C56A0, ASTextField, GetMouseWheelEnabled, 91, 0x672000D
 // @0x1422c5710
 void ASTextField::SetRestrict(const CString& strRestrict)
 {
-    FUN_1407cba60("restrict", strRestrict);
+    SetStringMember("restrict", strRestrict);
 }
 MS2_REPLACE_METHOD(0x1422C5710, ASTextField, SetRestrict, 72, 0x7997D9A1);
 
@@ -269,7 +269,7 @@ MS2_REPLACE_METHOD(0x1422C58B0, ASTextField, GetMaxScrollV, 88, 0xBB9656F7);
 // @0x1422c5910
 void ASTextField::SetAutoSize(int nAutoSize)
 {
-    FUN_1407cba60("autoSize", AutoSizeToString(nAutoSize));
+    SetStringMember("autoSize", AutoSizeToString(nAutoSize));
 }
 MS2_REPLACE_METHOD(0x1422C5910, ASTextField, SetAutoSize, 75, 0x5C8AA59F);
 

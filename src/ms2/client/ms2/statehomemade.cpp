@@ -88,14 +88,14 @@ struct Unk_HmCastInfo
 };
 MS2_CHECK_SIZE(Unk_HmCastInfo, 0x38);
 
-// The casting bar dialog (RTTI UICastingBar, found through FUN_140ac2270).
+// The casting bar dialog (RTTI UICastingBar, found through GetCastingBar).
 class UICastingBar : public UIObject
 {
 public:
     void StartCasting(ICastingEventListener* pListener, const Unk_CastingParam* pInfo);   // show
     void FUN_1418e1390();                                                          // cancel
 };
-UICastingBar* FUN_140ac2270(int nId);
+UICastingBar* GetCastingBar(int nId);
 
 // The use-request of one cube (id + count), serialized by FUN_1401fc610.
 struct Unk_HmUseInfo
@@ -118,7 +118,7 @@ class Unk_MData* FUN_1409670c0();
 // The equipment of a player: the worn item of a slot.
 class Unk_HmEquip : public PCGemEquip { };
 
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_HmBuffMgr { public: };
 // vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
 class Unk_HmSlots
@@ -137,7 +137,7 @@ CFunctionCubeService* GetFunctionCubeService();
 
 // The homemade cube's data row, by value (a COMDAT at 0x140ca6580).
 // @0x140ca6580
-MS2Ptr<FunctionCubeData> CHomemadeCubeObject::FUN_140ca6580() { return m_spData; }
+MS2Ptr<FunctionCubeData> CHomemadeCubeObject::GetFunctionCubeData() { return m_spData; }
 
 // ---- StateHomemade ----
 
@@ -152,7 +152,7 @@ void StateHomemade::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_n48 = 0;
-    m_pOwner->PlayAnimation(FUN_140ca4e50(), 1.0f, false, false);
+    m_pOwner->PlayAnimation(GetActionAnimation(), 1.0f, false, false);
     m_spHarvest.AssignRaw(dynamic_cast<StateHomemadeData*>(pData));
     PCBase* pPC = FUN_1417b8370();
     if (pPC && ((void*)(reinterpret_cast<PC*>(pPC)->GetHeldItem())))
@@ -160,11 +160,11 @@ void StateHomemade::vfunc_4(StateData* pData)
     MyPC* pRider = FUN_1417b84b0();
     if (pRider && m_n10 == 0x8f)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
         {
             Unk_HmCastInfo kInfo;
-            FUN_140ca4f30(&kInfo);
+            FillCastingInfo(&kInfo);
             pBar->StartCasting((ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
         }
         m_aCubes.clear();
@@ -205,7 +205,7 @@ void StateHomemade::vfunc_5(int n)
 {
     if (FUN_1417b8560())
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
     }
@@ -231,7 +231,7 @@ void StateHomemade::vfunc_3(double fTime)
         pPC = FUN_1417b84b0();
         if (pPC)
         {
-            UICastingBar* pBar = FUN_140ac2270(0x4e72);
+            UICastingBar* pBar = GetCastingBar(0x4e72);
             if (pBar)
                 pBar->FUN_1418e1390();
             SendFunctionCubeMode5();
@@ -248,13 +248,13 @@ void StateHomemade::vfunc_8(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
         return;
-    if (m_n10 == 0x92 && FUN_140ca4fd0(1) != 0 && m_spHarvest.get() != 0)
+    if (m_n10 == 0x92 && HasCubeInReach(1) != 0 && m_spHarvest.get() != 0)
     {
         MS2Ptr<StateHomemadeData> spData(new StateHomemadeData(m_spHarvest->m_n24, CString(m_spHarvest->m_str), m_spHarvest->m_n20));
         pPC->vfunc_59(0x37, spData.get(), 0x8f, 0);
     }
     Unk_HmBuffMgr* pBuff = ((Unk_HmBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-    reinterpret_cast<Unk_HmSlots*>(pPC)->vfunc_22(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290());
+    reinterpret_cast<Unk_HmSlots*>(pPC)->vfunc_22(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection());
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
 }
@@ -269,7 +269,7 @@ void StateHomemade::EndOfSequence(NiActorManager*, unsigned int, NiControllerSeq
 {
     if (m_n10 != 0x8f)
     {
-        if (FUN_140ca4fd0(0) != 0)
+        if (HasCubeInReach(0) != 0)
         {
             m_n10 = 0x92;
             m_pOwner->PlayAnimationById(0);
@@ -285,15 +285,15 @@ bool StateHomemade::vfunc_25(int, void*) { return false; }
 MS2_REPLACE_METHOD(0x140CA4DE0, StateHomemade, vfunc_25, 17, 0xFFB1988B);
 
 // @0x140ca4e00
-int StateHomemade::FUN_140ca4e00()
+int StateHomemade::GetHarvestDuration()
 {
     unsigned nDuration = static_cast<Client::Constants*>(GetClientConstants())->HarvestDuration.Read();
     return ((Unk_HmCursorMgr*)(reinterpret_cast<CGameEventValueManager*>(((void*)TSingleton<CGameEventValueManager>::GetInstance()))->MasteryReduce()))->Apply(nDuration);
 }
-MS2_REPLACE_METHOD(0x140CA4E00, StateHomemade, FUN_140ca4e00, 62, 0xFE21669A);
+MS2_REPLACE_METHOD(0x140CA4E00, StateHomemade, GetHarvestDuration, 62, 0xFE21669A);
 
 // @0x140ca4e50
-efd::utf8string StateHomemade::FUN_140ca4e50()
+efd::utf8string StateHomemade::GetActionAnimation()
 {
     if (m_n10 == 0x8f)
         return efd::utf8string("Object_React_C");
@@ -303,19 +303,19 @@ efd::utf8string StateHomemade::FUN_140ca4e50()
         return efd::utf8string("Breed_End_B");
     return efd::utf8string("Breed_Idle_A");
 }
-MS2_REPLACE_METHOD(0x140CA4E50, StateHomemade, FUN_140ca4e50, 210, 0xF4D23BAD);
+MS2_REPLACE_METHOD(0x140CA4E50, StateHomemade, GetActionAnimation, 210, 0xF4D23BAD);
 
 // @0x140ca4f30
-void StateHomemade::FUN_140ca4f30(Unk_HmCastInfo* pInfo)
+void StateHomemade::FillCastingInfo(Unk_HmCastInfo* pInfo)
 {
-    pInfo->m_nDuration = FUN_140ca4e00();
+    pInfo->m_nDuration = GetHarvestDuration();
     CStringW strLabel(L"s_action_harvesting");
     pInfo->m_str28 = GetStringCommonByKey(strLabel);
 }
-MS2_REPLACE_METHOD(0x140CA4F30, StateHomemade, FUN_140ca4f30, 141, 0x30E1B0EA);
+MS2_REPLACE_METHOD(0x140CA4F30, StateHomemade, FillCastingInfo, 141, 0x30E1B0EA);
 
 // @0x140ca4fd0
-int StateHomemade::FUN_140ca4fd0(int nMode)
+int StateHomemade::HasCubeInReach(int nMode)
 {
     MyPC* pRider = FUN_1417b84b0();
     if (pRider == 0)
@@ -335,16 +335,16 @@ int StateHomemade::FUN_140ca4fd0(int nMode)
             continue;
         if (FUN_1408a1360(reinterpret_cast<Unk_HmPos*>(pRider)->vfunc_18(), spCube->GetPosition()) == 0)
             continue;
-        if (!static_cast<CHomemadeCubeObject*>(spCube.get())->FUN_140ca6580())
+        if (!static_cast<CHomemadeCubeObject*>(spCube.get())->GetFunctionCubeData())
             continue;
-        int nKind = static_cast<CHomemadeCubeObject*>(spCube.get())->FUN_140ca6580()->m_n100;
+        int nKind = static_cast<CHomemadeCubeObject*>(spCube.get())->GetFunctionCubeData()->m_n100;
         if (((Unk_HmGatherMgr*)FUN_1409670c0())->LimitState(nKind) == 3)
             continue;
         return 1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140CA4FD0, StateHomemade, FUN_140ca4fd0, 969, 0x67B2332E);
+MS2_REPLACE_METHOD(0x140CA4FD0, StateHomemade, HasCubeInReach, 969, 0x67B2332E);
 
 // @0x140ca53b0
 void StateHomemade::SendFunctionCubeMode4()

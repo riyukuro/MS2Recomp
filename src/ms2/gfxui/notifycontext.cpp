@@ -6,7 +6,7 @@
 // The unit name and directory are assumed (the GFx UI library 0x1422b0000-0x142304000 has no __FILE__ strings).
 // BindData is declared in src/ms2/gfxui/dragslot.h, the registry on Unk_NotifyContext (src/ms2/gfxui/notifyhandler.h:
 // the name NotifyContext is the namespace around BindData there). A binding pushes its data (vfunc_8) to an AS
-// callback (m_value38); the names in m_arr58 are the bindings that depend on it, and FUN_1422c90d0 later tells each
+// callback (m_value38); the names in m_arr58 are the bindings that depend on it, and NotifyChangedBindings later tells each
 // registered binding whose m_arr58 holds a changed name (vfunc_7). The tail is the CRBMap / std::set template code of
 // the registry.
 // MS2_THIS_FILE is only needed by ms2recover.h (MS2_FOR_EACH) and never emitted.
@@ -50,18 +50,18 @@ BindData::~BindData()
 }
 
 // @0x1422c89f0
-CString BindData::FUN_1422c89f0()
+CString BindData::GetName()
 {
     return m_strName;
 }
-MS2_REPLACE_METHOD(0x1422C89F0, BindData, FUN_1422c89f0, 66, 0xECF52CD8);
+MS2_REPLACE_METHOD(0x1422C89F0, BindData, GetName, 66, 0xECF52CD8);
 
 // @0x1422c8a40
 void BindData::FUN_1422c8a40()
 {
     for (unsigned int i = 0; i < m_arr58.GetCount(); ++i)
-        Unk_NotifyContext::FUN_1422c9380(m_arr58[i]);
-    Unk_NotifyContext::FUN_1422c93e0(m_strName);
+        Unk_NotifyContext::MarkNameChanged(m_arr58[i]);
+    Unk_NotifyContext::MarkNamePushed(m_strName);
 }
 MS2_REPLACE_METHOD(0x1422C8A40, BindData, FUN_1422c8a40, 114, 0x0B236149);
 
@@ -78,7 +78,7 @@ int BindData::FUN_1422c8ac0(const CString& strName)
 MS2_REPLACE_METHOD(0x1422C8AC0, BindData, FUN_1422c8ac0, 123, 0x9906C579);
 
 // @0x1422c8b50
-void BindData::FUN_1422c8b50()
+void BindData::ClearBinding()
 {
     if (m_value38.IsClosure())
     {
@@ -89,10 +89,10 @@ void BindData::FUN_1422c8b50()
         m_arr58.RemoveAll();
     }
 }
-MS2_REPLACE_METHOD(0x1422C8B50, BindData, FUN_1422c8b50, 136, 0xB0A6362F);
+MS2_REPLACE_METHOD(0x1422C8B50, BindData, ClearBinding, 136, 0xB0A6362F);
 
 // @0x1422c8be0
-void BindData::FUN_1422c8be0()
+void BindData::PushBinding()
 {
     if (m_value38.IsClosure())
     {
@@ -105,7 +105,7 @@ void BindData::FUN_1422c8be0()
         FUN_1422c8a40();
     }
 }
-MS2_REPLACE_METHOD(0x1422C8BE0, BindData, FUN_1422c8be0, 199, 0x29681822);
+MS2_REPLACE_METHOD(0x1422C8BE0, BindData, PushBinding, 199, 0x29681822);
 
 // @0x1422c8cb0
 void BindData::FUN_1422c8cb0(const Value& v)
@@ -117,11 +117,11 @@ void BindData::FUN_1422c8cb0(const Value& v)
 MS2_REPLACE_METHOD(0x1422C8CB0, BindData, FUN_1422c8cb0, 81, 0x3A980BB3);
 
 // @0x1422c8d10
-void BindData::FUN_1422c8d10(const Value& v)
+void BindData::SetTarget(const Value& v)
 {
     m_value38 = v;
 }
-MS2_REPLACE_METHOD(0x1422C8D10, BindData, FUN_1422c8d10, 41, 0xBCD8186A);
+MS2_REPLACE_METHOD(0x1422C8D10, BindData, SetTarget, 41, 0xBCD8186A);
 
 // @0x1422c8d40
 Value& BindData::FUN_1422c8d40()
@@ -160,7 +160,7 @@ void BindData::vfunc_9()
 // ---- the registry -------------------------------------------------------------------------------------------------------
 
 // @0x1422c8de0
-void Unk_NotifyContext::FUN_1422c8de0()
+void Unk_NotifyContext::LogAndClearBindings()
 {
     if (ms_mapBindings.GetCount() != 0)
     {
@@ -172,7 +172,7 @@ void Unk_NotifyContext::FUN_1422c8de0()
 }
 
 // @0x1422c8e90
-BindData* Unk_NotifyContext::FUN_1422c8e90(const CString& strName)
+BindData* Unk_NotifyContext::FindBinding(const CString& strName)
 {
     efd::SmartPointer<BindData> spData = NULL;
     if (ms_mapBindings.Lookup(strName, spData))
@@ -181,18 +181,18 @@ BindData* Unk_NotifyContext::FUN_1422c8e90(const CString& strName)
 }
 
 // @0x1422c8f10
-void Unk_NotifyContext::FUN_1422c8f10(const CString& strName, BindData* pData)
+void Unk_NotifyContext::RegisterBinding(const CString& strName, BindData* pData)
 {
     ms_mapBindings.SetAt(strName, pData);
 }
 
 // @0x1422c8f70
-void Unk_NotifyContext::FUN_1422c8f70(const CString& strName)
+void Unk_NotifyContext::UnregisterBinding(const CString& strName)
 {
     efd::SmartPointer<BindData> spData = NULL;
     if (ms_mapBindings.Lookup(strName, spData))
     {
-        spData->FUN_1422c8b50();
+        spData->ClearBinding();
         spData->vfunc_5();
         ms_mapBindings.RemoveKey(strName);
     }
@@ -206,7 +206,7 @@ void Unk_NotifyContext::FUN_1422c9010()
         efd::SmartPointer<BindData> spData = ms_mapBindings.GetValueAt(pos);
         if (spData)
         {
-            spData->FUN_1422c8b50();
+            spData->ClearBinding();
             spData->vfunc_5();
         }
     }
@@ -214,7 +214,7 @@ void Unk_NotifyContext::FUN_1422c9010()
 }
 
 // @0x1422c90d0
-void Unk_NotifyContext::FUN_1422c90d0()
+void Unk_NotifyContext::NotifyChangedBindings()
 {
     CRBMap<efd::SmartPointer<BindData>, CString> mapNotify;
     // a range-for over the set as const: the exe calls the const begin()/end() COMDATs 0x1422cc2c0/0x1422cc310
@@ -225,7 +225,7 @@ void Unk_NotifyContext::FUN_1422c90d0()
             efd::SmartPointer<BindData> spData = ms_mapBindings.GetValueAt(pos);
             if (!spData)
                 continue;
-            CString strName = spData->FUN_1422c89f0();
+            CString strName = spData->GetName();
             if (ms_setPushed.find(strName) != ms_setPushed.end())
                 continue;
             if (spData->FUN_1422c8ac0(strChanged))
@@ -243,7 +243,7 @@ void Unk_NotifyContext::FUN_1422c90d0()
 }
 
 // @0x1422c9380
-void Unk_NotifyContext::FUN_1422c9380(const CString& strName)
+void Unk_NotifyContext::MarkNameChanged(const CString& strName)
 {
     if (strName.IsEmpty())
         return;
@@ -253,7 +253,7 @@ void Unk_NotifyContext::FUN_1422c9380(const CString& strName)
 }
 
 // @0x1422c93e0
-void Unk_NotifyContext::FUN_1422c93e0(const CString& strName)
+void Unk_NotifyContext::MarkNamePushed(const CString& strName)
 {
     if (strName.IsEmpty())
         return;

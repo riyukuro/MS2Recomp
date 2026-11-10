@@ -20,9 +20,9 @@ public:
     static WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
     void FUN_141bbae40(void* p);
     void FUN_141bbae80(void* p);
-    int FUN_141bbbe40(int mapId, int arg2, int arg3);
+    int LoadMap(int mapId, int arg2, int arg3);
 };
-void* FUN_140aae430();
+void* GetMS2();
 class CameraMgr;
 template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // actioncameramode.cpp defines it
 class CameraMgr   // C3: member view for the former free stand-ins
@@ -59,8 +59,8 @@ void CSceneStateModeSelect::OnEnter(int nPrevState)
     CSceneStateBase::OnEnter(nPrevState);
     FUN_140930150(1);
     WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
-    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
-    WorldService::GetInstance()->FUN_141bbbe40(0x3e9, 1, 0);
+    static_cast<MS2*>(GetMS2())->SetBackgroundColor(efd::ColorA::BLACK);
+    WorldService::GetInstance()->LoadMap(0x3e9, 1, 0);
 }
 
 // @0x140aae160
@@ -112,7 +112,7 @@ void FUN_140aae2b0(void*, Unk_140aae2b0Arg* arg)
 }
 
 // @0x140aae430
-void* FUN_140aae430()
+void* GetMS2()
 {
     return TSingleton<MS2>::s_instance;   // C3: was extern void* DAT_143ab8f48
 }

@@ -70,7 +70,7 @@ public:
     void CloseBrowser(int nIndex);                                 // closes a browser
     void QueueBrowserMessage(CefRefPtr<CefV8Context> context, CefRefPtr<CefProcessMessage> message);  // queues a message
     BOOL FUN_141b78650();
-    void* FUN_141b786a0(int nIndex);                                // the browser's texture
+    void* GetBrowserTexture(int nIndex);                                // the browser's texture
     void Navigate(int nIndex, const char* pszUrl);             // navigates a browser
     void FUN_141b78760(int nIndex, int nPage);
     void ShowBrowser(int nIndex, bool bShow);
@@ -85,7 +85,7 @@ public:
     void RequestTokenWithCallback(CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Value> callback);  // the token callback
     void SendTokenToBrowser(int nIndex, const CStringA& strToken);       // sends a "token" process message
     void FUN_141b78e70(CefRefPtr<CefProcessMessage> message);       // calls the token callback
-    void FUN_141b794e0(CStringA& strOut, const char* pszUrl);       // expands the maview:/api:/search:/external: prefixes
+    void ExpandUrlPrefix(CStringA& strOut, const char* pszUrl);       // expands the maview:/api:/search:/external: prefixes
     COffscreenWebBrowser* FindBrowser(int nIndex);                  // 0x141b796e0
     bool IsValidIndex(int nIndex);                                  // 0x141b79730
     int FindBrowserIndex(CefRefPtr<CefV8Context> context);          // 0x141b79770

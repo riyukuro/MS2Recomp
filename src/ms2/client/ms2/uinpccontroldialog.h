@@ -46,10 +46,10 @@ public:
     virtual int vfunc_48() { return 0x4e81; }           // 48 0x141a68840 UI type id
     virtual void vfunc_79(void* p);                     // 79 0x141a62500 packet 0x87 from the server
 
-    void FUN_141a63770();                               // "[name] [GameOID : id] [npcID : npc]" into "m_npcName"
+    void UpdateNpcName();                               // "[name] [GameOID : id] [npcID : npc]" into "m_npcName"
     void SetNpcId(int nNpcId);                     // select the controlled npc
-    int FUN_141a638e0();                                // "GetLoopCount" of the movie (0 without a movie)
-    void FUN_141a63970(int nCmd, __int64 nValue);     // packet 0x50 / 4 / id / cmd / value
+    int GetLoopCount();                                // "GetLoopCount" of the movie (0 without a movie)
+    void SendNpcCommand(int nCmd, __int64 nValue);     // packet 0x50 / 4 / id / cmd / value
     void FUN_141a63a10(int nCmd, const CStringW& strArgs);      // packet 0x50 / 4 / id / 8: skill list with loop count
     void FUN_141a63ce0(const CString& strGroup);        // refill "m_items" with the commands of a group
     void FUN_141a64ba0(int nCommand, const CStringW& strArg);   // run a command of the list

@@ -97,22 +97,22 @@ public:
     // GetChild<T>, remembered in `out`, returns a copy (COMDATs 0x140e48d80 ASTextField / 0x140e48e10 ASUIComponent).
     template <class T> MS2Ptr<T> GetChildInto(const CString& strName, MS2Ptr<T>& out) { out = GetChild<T>(strName); return out; }
 
-    CString FUN_1422db6e0();                                // m_20 (the manager key)
+    CString GetManagerKey();                                // m_20 (the manager key)
     int FUN_1422db730();                                    // m_28
     int FUN_1422db750();                                    // m_2c
     int FUN_1422db770();                                    // m_44
-    CString FUN_1422db790();                                // swf file name: "UI{vfunc_7()}.swf" ("Debug_UI..." if m_40)
+    CString GetSwfFileName();                                // swf file name: "UI{vfunc_7()}.swf" ("Debug_UI..." if m_40)
     CString FUN_1422db910(void* p);                         // resolve a path through the GFx file system
     MS2Ptr<AScript> FUN_1422dba00();                        // m_30
     MS2Ptr<ASDisplayObject> FUN_1422dba50();                // m_30 as ASDisplayObject
-    const Scaleform::GFx::Value& FUN_1422dbb40();           // m_30's GFx value (an undefined Value when not loaded)
-    const Scaleform::GFx::Value& FUN_1422dbc00();           // FUN_1422dbb40()
-    void FUN_1422dbd70(int a1, int a2);                     // register with the manager without loading
-    void FUN_1422dbf00(int a1, int a2, int a3);             // load the swf: FUN_1422dbf80(FUN_1422db790(), ...)
+    const Scaleform::GFx::Value& GetGFxValue();           // m_30's GFx value (an undefined Value when not loaded)
+    const Scaleform::GFx::Value& FUN_1422dbc00();           // GetGFxValue()
+    void PreloadSwf(int a1, int a2);                     // register with the manager without loading
+    void LoadSwf(int a1, int a2, int a3);             // load the swf: FUN_1422dbf80(GetSwfFileName(), ...)
     void FUN_1422dbf80(const CString& strPath, int a1, int a2, int a3);    // load strPath (m_2c = a1, m_44 = a2)
     void FUN_1422dc080();                                   // vfunc_4(); FUN_1422dc0b0()
     void FUN_1422dc0b0();                                   // unload (vfunc_26, manager, vfunc_27, m_30 = NULL)
-    void FUN_1422dc1e0();                                   // reload when FUN_1422dc310()
+    void Reload();                                   // reload when FUN_1422dc310()
     void FUN_1422dc260(int n);
     void FUN_1422dc2b0(int n);                              // m_4c = n
     int FUN_1422dc2d0();                                    // m_4c
@@ -125,9 +125,9 @@ public:
     int FUN_1422dc410();                                    // m_48
     int FUN_1422dc430();                                    // m_54
     void FUN_1422dc450();                                   // after load/show: focus handling, m_60 = 0
-    void FUN_141904ad0(const int* pnDepth) { m_2c = *pnDepth; }    // 0x141904ad0 (inline, uicommon.cpp)
+    void SetDepth(const int* pnDepth) { m_2c = *pnDepth; }    // 0x141904ad0 (inline, uicommon.cpp)
 
-    // Optional override of FUN_1422db790 (set from 0x141629ed0): (name, debug) -> swf file name.
+    // Optional override of GetSwfFileName (set from 0x141629ed0): (name, debug) -> swf file name.
     static Delegate<CString(CString, bool)> s_swfNameDelegate;      // 0x143b0d2f0
     static void SetSwfNameDelegate(Delegate<CString(CString, bool)> d);  // defined in client/ms2/ms2memfile.cpp
 

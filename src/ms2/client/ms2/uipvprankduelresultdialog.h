@@ -46,7 +46,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x140f908f0 close: tell the server the result was seen
 
     void FUN_140f90b10(CInPacket* pIn);                         // the result packet
-    void FUN_140f90ec0(__int64 nCharId, bool bLeft);            // a player's profile picture
+    void SetPlayerProfile(__int64 nCharId, bool bLeft);            // a player's profile picture
     void FUN_140f91120(Unk_PrdResult* pResult);                 // push everything to the movie
 
     Unk_PrdResult m_result;                                     // +0x178

@@ -44,7 +44,7 @@ unsigned int UITimerBase::FUN_140edeba0(){unsigned int now=GetServerTick();if(m_
 MS2_REPLACE_METHOD(0x140EDEBA0, UITimerBase, FUN_140edeba0, 68, 0x45EC88D5);
 
 // @0x140edec30
-UITimerGaugeDialog::UITimerGaugeDialog(){m_2c=19;m_80=0;FUN_141925e70(0,1);}
+UITimerGaugeDialog::UITimerGaugeDialog(){m_2c=19;m_80=0;SetFlag(0,1);}
 // @0x140eded00
 UITimerGaugeDialog::~UITimerGaugeDialog(){}
 // @0x140eded70
@@ -52,13 +52,13 @@ CString UITimerGaugeDialog::GetTypeName(){return "TimerGaugeDialog";}
 MS2_REPLACE_METHOD(0x140EDED70, UITimerGaugeDialog, GetTypeName, 61, 0x19138386);
 
 // @0x140ededc0
-void UITimerGaugeDialog::vfunc_72(){UIDialog::vfunc_72();if(!Unk_TimerPlayer::Get())return;if(m_tick1.Check(500))FUN_140edf200();if(m_tick2.Check(1000))FUN_140edf2b0();}
+void UITimerGaugeDialog::vfunc_72(){UIDialog::vfunc_72();if(!Unk_TimerPlayer::Get())return;if(m_tick1.Check(500))UpdateGauge();if(m_tick2.Check(1000))UpdateLapEffects();}
 MS2_REPLACE_METHOD(0x140EDEDC0, UITimerGaugeDialog, vfunc_72, 112, 0x2BE0909E);
 
 // @0x140edee40
 void UITimerGaugeDialog::OnLoadComplete(){UIDialog::OnLoadComplete();do { static_cast<Unk_CadScript*>(m_30.operator->())->FUN_140bc6e60("m_gauge",m_gauge);
  if(m_gauge==0)throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,43,__FUNCTION__)); } while(0);
- FUN_140edf530();}
+ CreateLapIcons();}
 MS2_REPLACE_METHOD(0x140EDEE40, UITimerGaugeDialog, OnLoadComplete, 421, 0xE564040C);
 
 // @0x140edf010
@@ -68,8 +68,8 @@ MS2_REPLACE_METHOD(0x140EDF010, UITimerGaugeDialog, vfunc_26, 64, 0x6A541429);
 // @0x140edf060
 void UITimerGaugeDialog::vfunc_87(unsigned long id,unsigned int time){
  Laps::iterator it=m_laps.find(id);
- if(it!=m_laps.end()) {Lap& lap=it->second;lap.second=time;if(lap.first.get())FUN_140edf480(lap.first,lap.second);}
- else {Lap lap(0,time);m_laps.insert(std::make_pair(id,lap));FUN_140edf530();}
+ if(it!=m_laps.end()) {Lap& lap=it->second;lap.second=time;if(lap.first.get())SetLapIconPosition(lap.first,lap.second);}
+ else {Lap lap(0,time);m_laps.insert(std::make_pair(id,lap));CreateLapIcons();}
 }
 MS2_REPLACE_METHOD(0x140EDF060, UITimerGaugeDialog, vfunc_87, 386, 0xA1776F12);
 
@@ -78,11 +78,11 @@ void UITimerGaugeDialog::FUN_140edf1f0(){}
 MS2_REPLACE_METHOD(0x140EDF1F0, UITimerGaugeDialog, FUN_140edf1f0, 6, 0xA9AF6E37);
 
 // @0x140edf200
-void UITimerGaugeDialog::FUN_140edf200(){if(m_gauge==0)return;unsigned int elapsed=0;unsigned int duration=m_duration;unsigned int now=FUN_140edeba0();if(now>m_start)elapsed=now-m_start;m_gauge->SetValue(elapsed,duration);}
-MS2_REPLACE_METHOD(0x140EDF200, UITimerGaugeDialog, FUN_140edf200, 157, 0x3724050C);
+void UITimerGaugeDialog::UpdateGauge(){if(m_gauge==0)return;unsigned int elapsed=0;unsigned int duration=m_duration;unsigned int now=FUN_140edeba0();if(now>m_start)elapsed=now-m_start;m_gauge->SetValue(elapsed,duration);}
+MS2_REPLACE_METHOD(0x140EDF200, UITimerGaugeDialog, UpdateGauge, 157, 0x3724050C);
 
 // @0x140edf2b0
-void UITimerGaugeDialog::FUN_140edf2b0(){
+void UITimerGaugeDialog::UpdateLapEffects(){
  if(m_30==0)return;if(m_laps.empty())return;unsigned int now=FUN_140edeba0();if(m_start>now)return;unsigned int elapsed=now-m_start;
  for(Laps::iterator it=m_laps.begin();it!=m_laps.end();it++) {
  Lap& lap=it->second;if(lap.first==0)continue;
@@ -90,22 +90,22 @@ void UITimerGaugeDialog::FUN_140edf2b0(){
  FUN_140cff840((*lap.first).FUN_1422bb890(),"m_activateEffect",active);
  }
 }
-MS2_REPLACE_METHOD(0x140EDF2B0, UITimerGaugeDialog, FUN_140edf2b0, 450, 0xF7B3D086);
+MS2_REPLACE_METHOD(0x140EDF2B0, UITimerGaugeDialog, UpdateLapEffects, 450, 0xF7B3D086);
 
 // @0x140edf480
-void UITimerGaugeDialog::FUN_140edf480(MS2Ptr<ASMovieClip> clip,unsigned int time){if(m_duration==0)return;double ratio=static_cast<double>(time)/static_cast<double>(m_duration);double x=678.0*ratio;clip->SetPositionUInt(static_cast<unsigned int>(x),0);}
-MS2_REPLACE_METHOD(0x140EDF480, UITimerGaugeDialog, FUN_140edf480, 163, 0x31FC9BEF);
+void UITimerGaugeDialog::SetLapIconPosition(MS2Ptr<ASMovieClip> clip,unsigned int time){if(m_duration==0)return;double ratio=static_cast<double>(time)/static_cast<double>(m_duration);double x=678.0*ratio;clip->SetPositionUInt(static_cast<unsigned int>(x),0);}
+MS2_REPLACE_METHOD(0x140EDF480, UITimerGaugeDialog, SetLapIconPosition, 163, 0x31FC9BEF);
 
 // @0x140edf530
-void UITimerGaugeDialog::FUN_140edf530(){
+void UITimerGaugeDialog::CreateLapIcons(){
  if(*reinterpret_cast<MS2Ptr<ASDialog>*>(&m_90)==0)return;CString symbol="UITimerGaugeLapIcon";
  for(Laps::iterator it=m_laps.begin();it!=m_laps.end();it++) {
  Lap& lap=it->second;if(lap.first.get())continue;
- lap.first.AssignRaw(new ASMovieClip(symbol,2));reinterpret_cast<MS2Ptr<ASDialog>*>(&m_90)->operator->()->FUN_1422c6900((*lap.first).FUN_1422bb890());
- FUN_140cff840((*lap.first).FUN_1422bb890(),"m_activateEffect",false);FUN_140edf480(lap.first,lap.second);
+ lap.first.AssignRaw(new ASMovieClip(symbol,2));reinterpret_cast<MS2Ptr<ASDialog>*>(&m_90)->operator->()->AddChild((*lap.first).FUN_1422bb890());
+ FUN_140cff840((*lap.first).FUN_1422bb890(),"m_activateEffect",false);SetLapIconPosition(lap.first,lap.second);
  }
 }
-MS2_REPLACE_METHOD(0x140EDF530, UITimerGaugeDialog, FUN_140edf530, 658, 0x4E9FAE33);
+MS2_REPLACE_METHOD(0x140EDF530, UITimerGaugeDialog, CreateLapIcons, 658, 0x4E9FAE33);
 
 // @0x140ee0d20
 inline int UITimerGaugeDialog::vfunc_48(){return 20321;}

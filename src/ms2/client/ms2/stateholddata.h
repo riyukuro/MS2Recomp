@@ -33,7 +33,7 @@ public:
     virtual int vfunc_36();                            // 36 @0x1417cd120
     virtual int vfunc_37();                            // 37 @0x1417cd1b0: 1
 
-    void FUN_1417ccca0(int nState, int nSub);          // @0x1417ccca0: owner slot 59 (switch state)
+    void ChangeState(int nState, int nSub);          // @0x1417ccca0: owner slot 59 (switch state)
     void FUN_1417ccd50();                              // @0x1417ccd50: remember whether the holder rides, aim the camera
     void FUN_1417cce10();                              // @0x1417cce10: cast the hold skill at the holder
     bool FUN_1417cd060();                              // @0x1417cd060: the holder rides a mount

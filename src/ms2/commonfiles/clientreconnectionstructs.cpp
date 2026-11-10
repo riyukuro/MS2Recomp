@@ -43,21 +43,21 @@ ReconnectionOptions::ReconnectionOptions(const ReconnectionOptions& other) : CPt
 // @0x140208460
 ReconnectionOptions& ReconnectionOptions::FUN_140208460(const ReconnectionOptions& other) { m_values = other.m_values; return *this; }
 // @0x1402084a0
-void ReconnectionOptions::FUN_1402084a0(COutputStream& out) const { for (int i = 0; i < 11; ++i) out.WriteInt32(m_values.v[i]); }
+void ReconnectionOptions::Write(COutputStream& out) const { for (int i = 0; i < 11; ++i) out.WriteInt32(m_values.v[i]); }
 // @0x140208500
-void ReconnectionOptions::FUN_140208500(CInputStream& in) { for (int i = 0; i < 11; ++i) m_values.v[i] = in.ReadInt32(); }
+void ReconnectionOptions::Read(CInputStream& in) { for (int i = 0; i < 11; ++i) m_values.v[i] = in.ReadInt32(); }
 // @0x140208560
-ReconnectionContext::ReconnectionContext() { FUN_1402085c0(); }
+ReconnectionContext::ReconnectionContext() { Reset(); }
 // @0x1402085c0
-void ReconnectionContext::FUN_1402085c0() { m_18 = 0; m_20 = ""; m_28 = 0; }
+void ReconnectionContext::Reset() { m_18 = 0; m_20 = ""; m_28 = 0; }
 // @0x140208610
-void ReconnectionContext::FUN_140208610(COutputStream& out) const { out.WriteInt32(m_18); out.WriteString(m_20); out.WriteInt32(m_28); }
+void ReconnectionContext::Write(COutputStream& out) const { out.WriteInt32(m_18); out.WriteString(m_20); out.WriteInt32(m_28); }
 // @0x140208680
-void ReconnectionContext::FUN_140208680(CInputStream& in) { m_18 = in.ReadInt32(); m_20 = in.ReadString(); m_28 = in.ReadInt32(); }
+void ReconnectionContext::Read(CInputStream& in) { m_18 = in.ReadInt32(); m_20 = in.ReadString(); m_28 = in.ReadInt32(); }
 // @0x140208720
-ReconnectionContextCli::ReconnectionContextCli() { FUN_140208780(); }
+ReconnectionContextCli::ReconnectionContextCli() { Reset(); }
 // @0x140208780
-void ReconnectionContextCli::FUN_140208780()
+void ReconnectionContextCli::Reset()
 {
     m_18 = 0; m_1c = 0; m_20 = 0; m_24 = 0; m_28 = false; m_2c = 0; m_34 = 0; m_38 = 0;
     m_40 = "";
@@ -78,7 +78,7 @@ void COutPacketBuffer::FUN_140208960(CGameSocket* pSocket, COutPacket& packet)
             ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(*pending);
         }
         m_pending.RemoveAll();
-        if (packet.FUN_14020bc40() == 0) FUN_140209510(packet, false);
+        if (packet.IsLoopback() == 0) FUN_140209510(packet, false);
         ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(packet);
     }
 }
@@ -94,11 +94,11 @@ void COutPacketBuffer::RetransmitClientPackets(CGameSocket* pSocket, unsigned la
         ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(ack);
         for (POSITION pos = m_captured.GetHeadPosition(); pos != NULL; m_captured.GetNext(pos)) {
             COutPacketPtr& captured = m_captured.GetAt(pos);
-            if (captured->FUN_14020ba00() <= lastSequence) continue;
+            if (captured->GetSequence() <= lastSequence) continue;
             ++newSequence;
             static_cast<Unk_CrsLog*>(GetLogString())->Log(0, 0, 0x85, L"{0}. type={1} seqOld={2}, seqNew={3}", L"COutPacketBuffer::RetransmitClientPackets",
-                                 captured->FUN_14020ba20(), captured->FUN_14020ba00(), newSequence);
-            captured->FUN_14020c070(newSequence);
+                                 captured->FUN_14020ba20(), captured->GetSequence(), newSequence);
+            captured->SetSequence(newSequence);
             ((class CGameSocket*)(class CGameSocket*)(pSocket))->FUN_141267410(*captured);
         }
         COutPacket done(static_cast<int>(SendOp::FinalizeReconnect), 0);
@@ -135,7 +135,7 @@ void COutPacketBuffer::ShrinkCapturedPackets()
             while (m_capturedSize > shrink && !m_captured.IsEmpty()) {
                 COutPacketPtr packet = m_captured.RemoveHead();
                 MS2_ASSERT_MSG_AT(0x177, L"pPacket != NULL", packet.get() != NULL);
-                m_capturedSize -= packet->FUN_14020b9f0();
+                m_capturedSize -= packet->GetLength();
             }
         }
     }
@@ -149,11 +149,11 @@ void COutPacketBuffer::DiscardAcked(unsigned ackSequence)
             POSITION pos = posHead;
             m_captured.GetNext(pos);
             COutPacketPtr& head = m_captured.GetAt(posHead);
-            if (head->FUN_14020ba00() > ackSequence) break;
+            if (head->GetSequence() > ackSequence) break;
             if (pos == NULL) break;
             COutPacketPtr& next = m_captured.GetAt(pos);
-            if (next->FUN_14020ba00() > ackSequence) break;
-            m_capturedSize -= head->FUN_14020b9f0();
+            if (next->GetSequence() > ackSequence) break;
+            m_capturedSize -= head->GetLength();
             m_captured.RemoveHeadNoReturn();
         }
     }
@@ -163,13 +163,13 @@ void COutPacketBuffer::PushPendingPacket(COutPacket& packet)
 {
     if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
         COutPacketPtr copy = FUN_14020aaa0(packet);
-        if (packet.FUN_14020bc40() != 0) {
-            m_loopbackSize += copy->FUN_14020b9f0();
+        if (packet.IsLoopback() != 0) {
+            m_loopbackSize += copy->GetLength();
             m_loopback.AddTail(copy);
             static_cast<Unk_CrsLog*>(GetLogString())->Log(0, 0, 0x85, L"{0}[line={1}] m_pendingLoopbackPackets(type={2})", L"COutPacketBuffer::PushPendingPacket",
                                  MS2_LINE(0x219), packet.FUN_14020ba20());
         } else {
-            m_pendingSize += copy->FUN_14020b9f0();
+            m_pendingSize += copy->GetLength();
             m_pending.AddTail(copy);
         }
     }
@@ -177,12 +177,12 @@ void COutPacketBuffer::PushPendingPacket(COutPacket& packet)
 // @0x140209340
 void COutPacketBuffer::SetLimit(unsigned limit) { m_limit = limit; }
 // @0x140209360
-unsigned COutPacketBuffer::FUN_140209360()
+unsigned COutPacketBuffer::GetOldestCapturedSequence()
 {
     if (m_capturedSize == 0) return 0;
     if (Unk_LockGuard guard = m_lock) { __assume(0); } else {
         if (m_captured.IsEmpty()) return 0;
-        return m_captured.GetHead()->FUN_14020ba00();
+        return m_captured.GetHead()->GetSequence();
     }
 }
 // @0x140209430
@@ -205,11 +205,11 @@ void COutPacketBuffer::FUN_140209510(COutPacket& packet, bool bControl)
 {
     if (Unk_LockGuard guard = m_lock) { __assume(0); } else if (m_resending == 0) {
         ++m_sequence;
-        packet.FUN_14020c070(m_sequence);
+        packet.SetSequence(m_sequence);
         if (m_captureEnabled != 0) {
             if (!FUN_140209640(packet.FUN_14020ba20(), bControl)) {
                 COutPacketPtr copy = FUN_14020aaa0(packet);
-                m_capturedSize += copy->FUN_14020b9f0();
+                m_capturedSize += copy->GetLength();
                 m_captured.AddTail(copy);
             }
         }
@@ -230,21 +230,21 @@ bool COutPacketBuffer::FUN_140209640(int type, bool bControl)
 COutPacketPtr COutPacketBuffer::FUN_14020aaa0(COutPacket& packet)
 {
     COutPacketPtr copy(Unk_PktNewTag(0));
-    copy->FUN_140710740(packet.FUN_14020ba20(), packet.FUN_14020bc40(), false);
-    copy->FUN_14020c070(packet.FUN_14020ba00());
+    copy->FUN_140710740(packet.FUN_14020ba20(), packet.IsLoopback(), false);
+    copy->SetSequence(packet.GetSequence());
     copy->FUN_14020c090(packet.FUN_14020ba10());
-    copy->FUN_14020aa30(packet, 0);
+    copy->AppendPayload(packet, 0);
     return copy;
 }
 
 // Hooks (client replaces the exe bodies with these).
 MS2_REPLACE_METHOD(0x140208460, ReconnectionOptions, FUN_140208460, 45, 0x017AEA6A);
-MS2_REPLACE_METHOD(0x1402084A0, ReconnectionOptions, FUN_1402084a0, 88, 0xA22007A0);
-MS2_REPLACE_METHOD(0x140208500, ReconnectionOptions, FUN_140208500, 78, 0xDC37A21F);
-MS2_REPLACE_METHOD(0x1402085C0, ReconnectionContext, FUN_1402085c0, 63, 0xAD914FF8);
-MS2_REPLACE_METHOD(0x140208610, ReconnectionContext, FUN_140208610, 105, 0x82442E16);
-MS2_REPLACE_METHOD(0x140208680, ReconnectionContext, FUN_140208680, 147, 0x83A5348B);
-MS2_REPLACE_METHOD(0x140208780, ReconnectionContextCli, FUN_140208780, 165, 0x6B519DF5);
+MS2_REPLACE_METHOD(0x1402084A0, ReconnectionOptions, Write, 88, 0xA22007A0);
+MS2_REPLACE_METHOD(0x140208500, ReconnectionOptions, Read, 78, 0xDC37A21F);
+MS2_REPLACE_METHOD(0x1402085C0, ReconnectionContext, Reset, 63, 0xAD914FF8);
+MS2_REPLACE_METHOD(0x140208610, ReconnectionContext, Write, 105, 0x82442E16);
+MS2_REPLACE_METHOD(0x140208680, ReconnectionContext, Read, 147, 0x83A5348B);
+MS2_REPLACE_METHOD(0x140208780, ReconnectionContextCli, Reset, 165, 0x6B519DF5);
 MS2_REPLACE_METHOD(0x140208960, COutPacketBuffer, FUN_140208960, 326, 0xF5D9EE98);
 MS2_REPLACE_METHOD(0x140208AB0, COutPacketBuffer, RetransmitClientPackets, 641, 0xB1AE3AD4);
 MS2_REPLACE_METHOD(0x140208D40, COutPacketBuffer, Reset, 227, 0xA4669931);

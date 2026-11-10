@@ -111,7 +111,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 // Unrecovered helpers.
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);    // int attribute with default
 CString FUN_140651390();                                                        // the language suffix of a text table
@@ -363,7 +363,7 @@ int CSeasonDataTable::Load()
 {
     for (auto entry : m_typeNames) {
         CStringA strFile = Unk_SocketFormat<CString>("SeasonData_{0}.xml", entry.second);
-        CStringA strPath = FUN_14071a5b0("Table", strFile);
+        CStringA strPath = GetXmlPath("Table", strFile);
         if (!ReadData(entry.first, strPath)) {
             Log(Unk_SocketFormat<CString>("CSeasonDataTable read failed - {0}", entry.second));
             return 0;
@@ -507,7 +507,7 @@ CStringW CSeasonDataTable::GetContentsName(MS2Ptr<CSeasonData> spData, int nCont
 int CSeasonDataTable::ReadData(SeasonRankType type, CStringA strPath)
 {
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0) {
@@ -610,7 +610,7 @@ int CSeasonDataTable::ReadNames()
 {
     CStringA strPath = FUN_14071ae20("seasonName" + FUN_140651390() + ".xml");
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
@@ -690,9 +690,9 @@ void CSeasonDataTable::SetCurrent(SeasonRankType type, MS2Ptr<CSeasonDataCurrent
 int CSeasonDataTable::ReadRewards()
 {
     CStringA strFile("SeasonReward_mapleSurvival.xml");
-    CStringA strPath = FUN_14071a5b0("Table", strFile);
+    CStringA strPath = GetXmlPath("Table", strFile);
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0) {

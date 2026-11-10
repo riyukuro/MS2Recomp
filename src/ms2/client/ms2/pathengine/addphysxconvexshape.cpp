@@ -36,7 +36,7 @@ extern "C" float (__cdecl* __imp_sinf)(float);
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-int FUN_140291d90(float value);   // the client's round-half-away-from-zero float -> int
+int RoundToInt(float value);   // the client's round-half-away-from-zero float -> int
 
 static void GetPoints(const NxBoxShape& shape, float scale, std::vector<NxVec3>& addTo);
 static void GetPoints(const NxConvexShape& shape, float scale, std::vector<NxVec3>& addTo);
@@ -68,9 +68,9 @@ bool AddPhysXConvexShape(const NxShape& shape, float scale, cSolidObjects& addTo
     tSigned32 i;
     for (i = 0; i != static_cast<tSigned32>(vertices.size()); ++i)
     {
-        coords[i * 3 + 0] = FUN_140291d90(vertices[i].x);
-        coords[i * 3 + 1] = FUN_140291d90(vertices[i].y);
-        coords[i * 3 + 2] = FUN_140291d90(vertices[i].z);
+        coords[i * 3 + 0] = RoundToInt(vertices[i].x);
+        coords[i * 3 + 1] = RoundToInt(vertices[i].y);
+        coords[i * 3 + 2] = RoundToInt(vertices[i].z);
     }
     addTo.add(coords);
     return true;

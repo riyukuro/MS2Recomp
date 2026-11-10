@@ -57,15 +57,15 @@ public:
     void SetBoxItemId(int);
     bool FUN_140e4fc50(int, const CMsgBoxData&);
     bool IsSpecialItem(const ItemEntity&);
-    bool FUN_140e4fd60();
+    bool InitItemData();
     void FUN_140e504e0();
-    void FUN_140e511f0();
-    void FUN_140e519b0(MS2Ptr<ASMovieClip>, const ItemEntity&);
+    void ShowPetCards();
+    void SetPetCardInfo(MS2Ptr<ASMovieClip>, const ItemEntity&);
     int FUN_140e51ca0();
     void FUN_140e51e40();
-    void FUN_140e52110();
+    void SendOpenBox();
     // 0x140e52670 is UISwfEntity::GetChild<ASCheckBox> (defined in uiitempetboxdialog.cpp)
-    MS2Ptr<ASCheckBox> FUN_140e52700(const CString&, MS2Ptr<ASCheckBox>&);
+    MS2Ptr<ASCheckBox> BindCheckBox(const CString&, MS2Ptr<ASCheckBox>&);
 private:
     MS2_LAYOUT_FRIEND;
     int m_boxItemId;                            // +0x180 item id of the box that is being opened

@@ -36,7 +36,7 @@ void ReportErrorMessage(const char* title, const char* text);
 void Error(const char* errorType, const char* errorString, const char* const* attributes);
 bool HandleAssertion(const char* file, long line, const char* comment);
 
-float FUN_14147af60(float);
+float Tan(float);
 
 // The exe's assert expression strings are passed as text.
 #define MS2_PE_ASSERTD(file, line, condition, text)                                                                  \
@@ -247,7 +247,7 @@ bool BuildAndSaveGround(const NiString& fileName, NxScene* scene, std::set<NxAct
 
     const tSigned32 extrudeHeight = 128;
     const tSigned32 maxStepHeight = 145;
-    tSigned32 maxSlope = static_cast<tSigned32>(FUN_14147af60(1.553343f) * 100.f);
+    tSigned32 maxSlope = static_cast<tSigned32>(Tan(1.553343f) * 100.f);
     const char* options[] = {"method", "bsp", "excludeDownwardFacingFromGroundResult", "true", 0};
     iMesh* mesh = contentProcessing->buildGround(meshes.empty() ? 0 : &meshes[0],
                                                  static_cast<tSigned32>(meshes.size()), solids,
@@ -287,7 +287,7 @@ bool BuildAndSaveGround(std::vector<unsigned char>& buffer, NxScene* scene, std:
 
     const tSigned32 extrudeHeight = 128;
     const tSigned32 maxStepHeight = 145;
-    tSigned32 maxSlope = static_cast<tSigned32>(FUN_14147af60(1.553343f) * 100.f);
+    tSigned32 maxSlope = static_cast<tSigned32>(Tan(1.553343f) * 100.f);
     const char* options[] = {"method", "bsp", "excludeDownwardFacingFromGroundResult", "true", 0};
     iMesh* mesh = contentProcessing->buildGround(meshes.empty() ? 0 : &meshes[0],
                                                  static_cast<tSigned32>(meshes.size()), solids,

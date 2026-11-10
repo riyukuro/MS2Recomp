@@ -43,7 +43,7 @@ class ASDialog : public ASDisplayObject {};
 class Unk_UgcScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_141b36aa0(const char* szMethod, int n, ASArray& arr);
+    Scaleform::GFx::Value InvokeWithIntAndArray(const char* szMethod, int n, ASArray& arr);
 };
 
 // A row of the file list: its members as text.
@@ -57,7 +57,7 @@ int FUN_140d74e80(CStringW& tag);                               // a "terms" mes
 void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_141275260(int nStringId, int nA, int nB);
-void FUN_1412751f0(const CStringW& text, int nA, int nB);
+void ShowSystemNotice(const CStringW& text, int nA, int nB);
 CStringW FUN_140719a00(__int64 nMoney);                         // a money amount as text
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);        // set an Int value
 extern __int64 DAT_143ab2898;                                   // the money
@@ -76,7 +76,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Unk_UgcOpenTy
 // @0x141b39900
 UIUGCImageUploadDialog::UIUGCImageUploadDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_188 = Unk_UgcOpenType_None;
 }
 
@@ -97,7 +97,7 @@ int UIUGCImageUploadDialog::vfunc_65()
     if (UIDialog::vfunc_65() == 0)
         return 0;
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->AddListener(static_cast<UIUGCEventListener*>(this));
     return 1;
 }
 
@@ -105,7 +105,7 @@ int UIUGCImageUploadDialog::vfunc_65()
 void UIUGCImageUploadDialog::vfunc_67()
 {
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->RemoveListener(static_cast<UIUGCEventListener*>(this));
     UIDialog::vfunc_67();
     TSingleton<CUgcManager>::GetInstance()->OnUploadResult(vfunc_48());
     m_188 = Unk_UgcOpenType_None;
@@ -116,7 +116,7 @@ void UIUGCImageUploadDialog::vfunc_72()
 {
     if (m_18c != 0)
     {
-        FUN_141b3b1d0();
+        UpdateThumbnailImage();
         m_18c = 0;
     }
 }
@@ -143,7 +143,7 @@ void UIUGCImageUploadDialog::OnLoadComplete()
         return;
     }
     Unk_UgcOpenType nKind = (Unk_UgcOpenType)spUpload->m_nKind;
-    bool bOk = FUN_141b3a780((const int*)&nKind);
+    bool bOk = IsUploadKind((const int*)&nKind);
     if (!bOk)
     {
         vfunc_67();
@@ -151,8 +151,8 @@ void UIUGCImageUploadDialog::OnLoadComplete()
     }
     m_188 = nKind;
     m_30->Invoke("changeOpenType", m_188);
-    FUN_141b3ab90();
-    FUN_141b3b2c0();
+    BuildFileList();
+    UpdateBannerPrice();
 }
 
 // @0x141b39e30
@@ -208,7 +208,7 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nIndex = data.PopInt();
-            FUN_141b3acb0(nIndex);
+            PreviewFile(nIndex);
         }
         return 1;
     }
@@ -218,7 +218,7 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nIndex = data.PopInt();
-            FUN_141b3adc0(nIndex);
+            UploadFile(nIndex);
         }
         return 1;
     }
@@ -240,7 +240,7 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
             int nIndex = data.PopInt();
             if (nIndex == -1)
                 return 0;
-            FUN_141b3b0e0(nIndex);
+            BuildScrollPosition(nIndex);
         }
         return 1;
     }
@@ -255,7 +255,7 @@ int UIUGCImageUploadDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
                 FUN_140d73bc0(0x2e0, 0, 0, CStringW(L""));
                 return 1;
             }
-            TSingleton<CUgcManager>::GetInstance()->FUN_141882a70(nIndex, 1);
+            TSingleton<CUgcManager>::GetInstance()->OpenFileInPaint(nIndex, 1);
         }
         return 1;
     }
@@ -287,7 +287,7 @@ void UIUGCImageUploadDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pA
                 tip.SetTooltipAlign(2);
                 tip.SetOffsetX(-4);
                 tip.SetOffsetY(1);
-                *pRetVal = tip.FUN_1422bb870();
+                *pRetVal = tip.GetValue();
             }
         }
     }
@@ -302,8 +302,8 @@ int UIUGCImageUploadDialog::vfunc_82()
 // @0x141b3a600
 void UIUGCImageUploadDialog::FUN_141b3a600()
 {
-    FUN_141b3ab90();
-    FUN_141b3b4e0(-1);
+    BuildFileList();
+    SelectThumbnail(-1);
 }
 
 // @0x141b3a630
@@ -315,7 +315,7 @@ void UIUGCImageUploadDialog::vfunc_ugc_4(int nDialog)
 }
 
 // @0x141b3a690
-void UIUGCImageUploadDialog::FUN_141b3a690(int nResult)
+void UIUGCImageUploadDialog::OnUploadResult(int nResult)
 {
     if (nResult == 0)
     {
@@ -329,15 +329,15 @@ void UIUGCImageUploadDialog::FUN_141b3a690(int nResult)
     }
     else
     {
-        CStringW strText = TSingleton<CUgcManager>::GetInstance()->FUN_14187f210(nResult);
+        CStringW strText = TSingleton<CUgcManager>::GetInstance()->GetUploadResultMessage(nResult);
         if (!strText.IsEmpty())
-            FUN_1412751f0(strText, 1, 1);
+            ShowSystemNotice(strText, 1, 1);
     }
     vfunc_67();
 }
 
 // @0x141b3a780
-bool UIUGCImageUploadDialog::FUN_141b3a780(const int* pnKind)
+bool UIUGCImageUploadDialog::IsUploadKind(const int* pnKind)
 {
     MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spUpload == 0)
@@ -371,15 +371,15 @@ bool UIUGCImageUploadDialog::FUN_141b3a780(const int* pnKind)
 }
 
 // @0x141b3ab90
-void UIUGCImageUploadDialog::FUN_141b3ab90()
+void UIUGCImageUploadDialog::BuildFileList()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull() != 0)
         return;
     TSingleton<CUgcManager>::GetInstance()->RefreshLocalFiles(m_188);
     ASArray arr(2);
     TSingleton<CUgcManager>::GetInstance()->FUN_141889e20(0x10, 0, &arr);
-    int nCount = TSingleton<CUgcManager>::GetInstance()->FUN_14188a480();
-    ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildUGCFiles", nCount, arr);
+    int nCount = TSingleton<CUgcManager>::GetInstance()->GetUploadFileCount();
+    ((Unk_UgcScript*)m_30.operator->())->InvokeWithIntAndArray("buildUGCFiles", nCount, arr);
 }
 
 // @0x141b3ac80
@@ -389,7 +389,7 @@ void UIUGCImageUploadDialog::OnOpenFolder()
 }
 
 // @0x141b3acb0
-int UIUGCImageUploadDialog::FUN_141b3acb0(int nIndex)
+int UIUGCImageUploadDialog::PreviewFile(int nIndex)
 {
     if (nIndex == -1)
     {
@@ -410,7 +410,7 @@ int UIUGCImageUploadDialog::FUN_141b3acb0(int nIndex)
 }
 
 // @0x141b3adc0
-int UIUGCImageUploadDialog::FUN_141b3adc0(int nIndex)
+int UIUGCImageUploadDialog::UploadFile(int nIndex)
 {
     if (nIndex == -1)
     {
@@ -419,14 +419,14 @@ int UIUGCImageUploadDialog::FUN_141b3adc0(int nIndex)
     }
     if (m_188 == 3)
     {
-        __int64 nPrice = FUN_141b3b390();
+        __int64 nPrice = GetBannerPrice();
         if (nPrice > DAT_143ab2898)
         {
             FUN_140d73bc0(0x34, 0, 0, CStringW(L""));
             return 0;
         }
     }
-    int nExist = TSingleton<CUgcManager>::GetInstance()->FUN_141881890(nIndex);
+    int nExist = TSingleton<CUgcManager>::GetInstance()->IsCurrentUploadFile(nIndex);
     if (nExist == 0)
     {
         FUN_140d73bc0(0x2e2, 0, static_cast<IMessageListener*>(this), CStringW(L"noexist"));
@@ -461,7 +461,7 @@ int UIUGCImageUploadDialog::OnNewTemplate()
 {
     if (TSingleton<CUgcManager>::GetInstance()->HasViewerContent() == 0)
         return 0;
-    FUN_141b3ab90();
+    BuildFileList();
     return 1;
 }
 
@@ -476,7 +476,7 @@ int UIUGCImageUploadDialog::OnAddImage()
 }
 
 // @0x141b3b0e0
-int UIUGCImageUploadDialog::FUN_141b3b0e0(int nIndex)
+int UIUGCImageUploadDialog::BuildScrollPosition(int nIndex)
 {
     if (nIndex == -1)
         return 0;
@@ -485,12 +485,12 @@ int UIUGCImageUploadDialog::FUN_141b3b0e0(int nIndex)
     int nPos = nIndex << 2;
     ASArray arr(2);
     TSingleton<CUgcManager>::GetInstance()->FUN_141889e20(0x10, nPos, &arr);
-    ((Unk_UgcScript*)m_30.operator->())->FUN_141b36aa0("buildScrollPosition", nPos, arr);
+    ((Unk_UgcScript*)m_30.operator->())->InvokeWithIntAndArray("buildScrollPosition", nPos, arr);
     return 1;
 }
 
 // @0x141b3b1d0
-void UIUGCImageUploadDialog::FUN_141b3b1d0()
+void UIUGCImageUploadDialog::UpdateThumbnailImage()
 {
     MS2Ptr<CUgcUploadCtrl> spUpload = TSingleton<CUgcManager>::GetInstance()->GetCurrentUpload();
     if (spUpload == 0)
@@ -503,18 +503,18 @@ void UIUGCImageUploadDialog::FUN_141b3b1d0()
 }
 
 // @0x141b3b2c0
-void UIUGCImageUploadDialog::FUN_141b3b2c0()
+void UIUGCImageUploadDialog::UpdateBannerPrice()
 {
     if (m_188 != 3)
         return;
-    __int64 nPrice = FUN_141b3b390();
+    __int64 nPrice = GetBannerPrice();
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
         pDialog->Invoke("changePrice", FUN_140719a00(nPrice));
 }
 
 // @0x141b3b390
-__int64 UIUGCImageUploadDialog::FUN_141b3b390()
+__int64 UIUGCImageUploadDialog::GetBannerPrice()
 {
     if (m_188 != 3)
         return 0;
@@ -533,7 +533,7 @@ __int64 UIUGCImageUploadDialog::FUN_141b3b390()
 }
 
 // @0x141b3b4e0
-void UIUGCImageUploadDialog::FUN_141b3b4e0(int nIndex)
+void UIUGCImageUploadDialog::SelectThumbnail(int nIndex)
 {
     if (nIndex == -1)
     {
@@ -547,6 +547,6 @@ void UIUGCImageUploadDialog::FUN_141b3b4e0(int nIndex)
             return;
         if (m_30.get() != 0)
             m_30->Invoke("selectThumbnail", nIndex);
-        FUN_141b3acb0(nIndex);
+        PreviewFile(nIndex);
     }
 }

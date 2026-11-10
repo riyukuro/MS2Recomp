@@ -28,19 +28,19 @@ public:
     virtual void vfunc_24(bool bInvalidate);                        // 24 0x1422c80c0 validateNow (invalidate() first if set)
 #endif
     // recovered with ?\asslider.cpp (src/ms2/gfxui/asslider.cpp): the AS Slider members, read as a Number and narrowed
-    void FUN_1422ce5f0(float fValue);                               // 0x1422ce5f0 set "value"
-    float FUN_1422ce630();                                          // 0x1422ce630 "value"
-    void FUN_1422ce6a0(float fMax);                                 // 0x1422ce6a0 set "maximum"
-    float FUN_1422ce6e0();                                          // 0x1422ce6e0 "maximum"
-    void FUN_1422ce750(float fMin);                                 // 0x1422ce750 set "minimum"
-    float FUN_1422ce790();                                          // 0x1422ce790 "minimum"
-    void FUN_1422ce800(float fValue);                               // 0x1422ce800 set "position" (the current value)
-    float FUN_1422ce840();                                          // 0x1422ce840 "position" (the current value)
-    void FUN_1422ce8b0(float fInterval);                            // 0x1422ce8b0 set "snapInterval"
-    float FUN_1422ce8f0();                                          // 0x1422ce8f0 "snapInterval"
-    void FUN_1422ce960();                                           // 0x1422ce960 invalidateSettings()
+    void SetValue(float fValue);                               // 0x1422ce5f0 set "value"
+    float GetValue();                                          // 0x1422ce630 "value"
+    void SetMaximum(float fMax);                                 // 0x1422ce6a0 set "maximum"
+    float GetMaximum();                                          // 0x1422ce6e0 "maximum"
+    void SetMinimum(float fMin);                                 // 0x1422ce750 set "minimum"
+    float GetMinimum();                                          // 0x1422ce790 "minimum"
+    void SetPosition(float fValue);                               // 0x1422ce800 set "position" (the current value)
+    float GetPosition();                                          // 0x1422ce840 "position" (the current value)
+    void SetSnapInterval(float fInterval);                            // 0x1422ce8b0 set "snapInterval"
+    float GetSnapInterval();                                          // 0x1422ce8f0 "snapInterval"
+    void InvalidateSettings();                                           // 0x1422ce960 invalidateSettings()
     // registers / removes the "valueChange" callback (UIMeratMarketDialog); pUser comes back in Params::pUserData
-    void FUN_1422ce9a0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);   // 0x1422ce9a0
-    void FUN_1422cea20(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);                // 0x1422cea20
+    void AddValueChangeListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);   // 0x1422ce9a0
+    void RemoveValueChangeListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);                // 0x1422cea20
 };
 MS2_CHECK_SIZE(ASSlider, 0x88);

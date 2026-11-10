@@ -36,10 +36,10 @@ public:
     virtual void vfunc_72();                                    // 72 0x1412a5340 per frame: countdown / hide timer
 
     void FUN_1412a53e0(CInPacket& packet);                      // 0x1412a53e0 packet 0xbd: pending mail id / show a mail
-    void FUN_1412a5570(int nMailId);                            // 0x1412a5570 show the mail
+    void ShowMail(int nMailId);                            // 0x1412a5570 show the mail
     void SetOnTime(bool bOnTime);                           // 0x1412a5c50 on-time event mode
-    void FUN_1412a5c70(int nMs);                                // 0x1412a5c70 hide after nMs
-    int FUN_1412a5ca0();                                       // 0x1412a5ca0 a mail is pending
+    void SetHideTimer(int nMs);                                // 0x1412a5c70 hide after nMs
+    int HasPendingMail();                                       // 0x1412a5ca0 a mail is pending
     void FUN_1412a5ce0(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1412a5ce0 "m_btnDetail": open the page
     void FUN_1412a5d10(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1412a5d10 "m_btnShow": hide / show
     void FUN_1412a5db0(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1412a5db0 "m_btnClose"
@@ -49,8 +49,8 @@ public:
     void FUN_1412a6080();                                       // 0x1412a6080 drop the bound item
     void FUN_1412a60d0();                                       // 0x1412a60d0 play the "open" tween
     void FUN_1412a61a0();                                       // 0x1412a61a0 play the "close" tween
-    void FUN_1412a62a0();                                       // 0x1412a62a0 the hide timer ran out
-    void FUN_1412a6390();                                       // 0x1412a6390 refresh the countdown text
+    void OnHideTimerExpired();                                       // 0x1412a62a0 the hide timer ran out
+    void UpdateRemainTime();                                       // 0x1412a6390 refresh the countdown text
 
 
 private:

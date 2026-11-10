@@ -14,7 +14,7 @@
 // The class-object factory registrar (0x140316aa0, commonfiles\dungeonmissiondata.cpp); the factory is defined by the
 // TriggerActionCli code unit.
 class TriggerActionCli;
-TriggerActionCli* FUN_140de4cb0();                 // C3: was ClassObject* FUN_140de4cb0()
+TriggerActionCli* CreateTriggerActionCli();                 // C3: was ClassObject* CreateTriggerActionCli()
 
 // first TU
 static CString s_strSkill1 = "skill";
@@ -48,7 +48,7 @@ struct Unk_RegMarker {};
 // @0x1400d6690
 static char s_regTriggerAction;
 static Unk_RegMarker s_initTriggerAction =
-    (((ClassObjectRegistrar*)&s_regTriggerAction)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"TriggerActionCli"), (ClassObject* (*)())FUN_140de4cb0), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regTriggerAction)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"TriggerActionCli"), (ClassObject* (*)())CreateTriggerActionCli), Unk_RegMarker());
 #endif
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca5c90-0x142ca5ed0 .text$yd

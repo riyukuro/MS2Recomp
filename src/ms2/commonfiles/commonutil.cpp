@@ -106,7 +106,7 @@ float FUN_14029d220(float fValue);
 
 // Unrecovered helpers.
 CString FUN_140188f50(const char* psz, int n);                  // CString from a C string
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 long FUN_140298fd0(long* plValue);                              // interlocked increment
 float FUN_140768090();                                          // random float in [0, 1]
 __int64 GetServerTime();                                        // current server time
@@ -291,7 +291,7 @@ CString FUN_14028bd10(int nAddr)
 // @0x14028bdb0
 CString FUN_14028bdb0(const CString& strHost)
 {
-    hostent* pHost = gethostbyname(FUN_14016a5c0(strHost, 0));
+    hostent* pHost = gethostbyname(ToCString(strHost, 0));
     if (pHost == 0)
         return "";
     CAtlArray<CString> arrAddr;
@@ -325,7 +325,7 @@ unsigned FUN_14028c0d0(const char* pszText)
 
 // 0xffRRGGBB -> "r,g,b".
 // @0x14028c210
-CString FUN_14028c210(unsigned uColor)
+CString FormatColor(unsigned uColor)
 {
     unsigned uRed = uColor >> 16 & 0xff;
     unsigned uGreen = uColor >> 8 & 0xff;
@@ -577,7 +577,7 @@ int FUN_14028d020(const CStringW& strList)
 
 // Unique 64-bit id: server time (offset by 1e9) followed by five digits of a process-wide counter.
 // @0x14028d0e0
-__int64 FUN_14028d0e0()
+__int64 GenerateUniqueId()
 {
     __int64 nId = 0;
     int nSeq = FUN_140298fd0(&g_lUniqueSeq);
@@ -644,13 +644,13 @@ BOOL FUN_14028d310(float fChance)
 }
 
 // @0x14028d380
-float FUN_14028d380(float fValue)
+float ToPercent(float fValue)
 {
     return fValue * 100.0f;
 }
 
 // @0x14028d3a0
-float FUN_14028d3a0(float fValue)
+float FromPercent(float fValue)
 {
     return fValue * 0.01f;
 }
@@ -691,7 +691,7 @@ bool FUN_14028d530(const efd::Point3& kA, const efd::Point3& kB)
 
 // Wraps an angle in degrees into [-180, 180].
 // @0x14028d5b0
-float FUN_14028d5b0(float fDegrees)
+float NormalizeAngle(float fDegrees)
 {
     fDegrees = fmodf(fDegrees, 360.0f);
     if (180.0f < fDegrees)
@@ -973,7 +973,7 @@ bool FUN_14028e560(std::wstring& strText, int nWhich)
 }
 
 // @0x14028e7c0
-void FUN_14028e7c0(CString& strPath)
+void NormalizePath(CString& strPath)
 {
     FUN_1401d3700(strPath);
     CString strHead = strPath.Left(4);
@@ -1003,7 +1003,7 @@ int FUN_14028e900(CString strPath)
 
 // Easing calculator factory: 0 linear, 1 ease out, 2 ease in.
 // @0x14028e960
-IDistanceCalculator* FUN_14028e960(int nType)
+IDistanceCalculator* CreateDistanceCalculator(int nType)
 {
     if (nType == 0)
         return new LinearCalculator();
@@ -1075,7 +1075,7 @@ Unk_XmlElementList* FUN_14028f8d0(Unk_XmlElement* pParent)
             continue;
         if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabledByName(strFeature))
             continue;
-        pResult = reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<TiXmlElement *>(pResult), reinterpret_cast<TiXmlElement *>(pElem)));
+        pResult = reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->SelectFeatureElement(reinterpret_cast<TiXmlElement *>(pResult), reinterpret_cast<TiXmlElement *>(pElem)));
     }
     return pResult;
 }
@@ -1091,7 +1091,7 @@ void FUN_14028bfb0(CString strCaption, CString strFormat, unsigned int nCode, CS
 }
 
 // @0x14028c0b0
-void FUN_14028c0b0()
+void PostQuit()
 {
     PostQuitMessage(0);
 }
@@ -1122,7 +1122,7 @@ void FUN_14028ea70(const char* pszName, const char* pszFormat, ...)
         strFile.Format("%s_%04d%02d%02d.txt", pszName, kTime.wYear, kTime.wMonth, kTime.wDay);
         CString strDir(".\\log");
         char szFull[260];
-        _fullpath(szFull, FUN_14016a5c0(strDir, 0), 260);
+        _fullpath(szFull, ToCString(strDir, 0), 260);
         CreateDirectoryA(szFull, 0);
         mapFile.SetAt(strName, strFile);
     }
@@ -1231,7 +1231,7 @@ int FUN_14028f490(unsigned int nId, CString strError)
 
 // Escapes the angle brackets for XML text.
 // @0x14028f530
-void FUN_14028f530(CString& strText)
+void EscapeAngleBrackets(CString& strText)
 {
     strText.Replace("<", "&lt;");
     strText.Replace(">", "&gt;");
@@ -1337,7 +1337,7 @@ int CItemTabNameTable::FindIndex(std::string strName)
 }
 
 // @0x140291150
-unsigned char FUN_140291150(int nTab)
+unsigned char IsValidItemTab(int nTab)
 {
     int bValid;
     if (nTab > -1 && nTab < 15)
@@ -1352,7 +1352,7 @@ unsigned char FUN_140291150(int nTab)
 const std::string& CItemTabNameTable::GetTabName(int nTab)
 {
     static std::string s_strEmpty;
-    if (!FUN_140291150(nTab))
+    if (!IsValidItemTab(nTab))
     {
         (void)((!!(0)) || (_wassert(L"0", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\commonutil.cpp", 0x82f), 0));
         return s_strEmpty;
@@ -1383,7 +1383,7 @@ int FUN_1402912d0(CStringW strName)
 }
 
 // @0x140291340
-bool FUN_140291340(int nTab, std::string& strOut)
+bool GetItemTabName(int nTab, std::string& strOut)
 {
     CItemTabNameTable& table = g_ItemTabNames;
     strOut = table.GetTabName(nTab);
@@ -1429,10 +1429,10 @@ int FUN_1402913b0(const CString& strTab, CString& strTabOut)
     {
         nTab = FUN_140291200(strTab);
     }
-    if (FUN_140291150(nTab))
+    if (IsValidItemTab(nTab))
     {
         std::string strName;
-        FUN_140291340(nTab, strName);
+        GetItemTabName(nTab, strName);
         strTabOut = strName.c_str();
     }
     if (nTab == 0)
@@ -1580,7 +1580,7 @@ int FUN_140291dc0(float fValue, float fBias)
 int FUN_140291dc0(float fValue, float fBias);
 
 // @0x140291d90
-int FUN_140291d90(float fValue)
+int RoundToInt(float fValue)
 {
     return FUN_140291dc0(fValue, 0.5f);
 }
@@ -1593,7 +1593,7 @@ void FUN_140291e40(CStringW strUnused, char cUnused, void* pUnused)
 // @0x140291e70
 unsigned long FUN_140291e70(CString strAddr)
 {
-    return inet_addr(FUN_14016a5c0(strAddr, 0));
+    return inet_addr(ToCString(strAddr, 0));
 }
 
 // @0x140291f00
@@ -1699,7 +1699,7 @@ void FUN_1402929a0(const CStringW& strText, std::vector<int>& arrOut, const wcha
 
 // Icon name of a currency/token kind (kind 2 is the item-id icon).
 // @0x1402918a0
-CStringW FUN_1402918a0(int nKind, unsigned nItemId)
+CStringW GetIconName(int nKind, unsigned nItemId)
 {
     switch (nKind)
     {
@@ -1759,7 +1759,7 @@ void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszChild, const char* ps
         XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr, strKey);
         if (mapByKey.find(strKey) != mapByKey.end())
         {
-            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<TiXmlElement *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<TiXmlElement *>(pElem))));
+            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->SelectFeatureElement(reinterpret_cast<TiXmlElement *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<TiXmlElement *>(pElem))));
             if (pPick == pElem)
             {
                 setOrdered.erase(mapByKey[strKey]);
@@ -1797,7 +1797,7 @@ void FUN_140290150(Unk_XmlElement* pParent, const char* pszChild, const char* ps
         XmlGetAttr((class TiXmlElement*)(pSub), pszKeyAttr, strKey);
         if (mapByKey.find(strKey) != mapByKey.end())
         {
-            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<TiXmlElement *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<TiXmlElement *>(pElem))));
+            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->SelectFeatureElement(reinterpret_cast<TiXmlElement *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<TiXmlElement *>(pElem))));
             if (pPick == pElem)
             {
                 setOrdered.erase(mapByKey[strKey]);
@@ -1848,13 +1848,13 @@ bool FUN_140299100(const CAtlArray<CString>& arr)
 }
 
 // @0x14029dba0
-float FUN_14029dba0(float fAngle)
+float Sin(float fAngle)
 {
     return __imp_sinf(fAngle);
 }
 
 // @0x14029cc60
-float FUN_14029cc60(float fAngle)
+float Cos(float fAngle)
 {
     return __imp_cosf(fAngle);
 }
@@ -1868,7 +1868,7 @@ float FUN_14029d430(float fX, float fY)
 // the exe calls fabs out of line through the ucrt import (not the /Oi intrinsic)
 #pragma function(fabs)
 // @0x14029dd40
-float FUN_14029dd40(float fValue)
+float Abs(float fValue)
 {
     return (float)fabs((double)fValue);
 }
@@ -1876,7 +1876,7 @@ float FUN_14029dd40(float fValue)
 // @0x14029d220
 float FUN_14029d220(float fValue)
 {
-    return FUN_14029dd40(fValue);
+    return Abs(fValue);
 }
 
 // @0x14029dd60
@@ -1895,13 +1895,13 @@ struct Unk_BstrHolder
     BSTR m_bstr;
     char* m_pszNarrow;
     void FUN_14029b610();                                       // 0x14029b610
-    unsigned FUN_1402992b0();                                   // 0x1402992b0
+    unsigned GetLength();                                   // 0x1402992b0
 };
 
 struct Unk_BstrHolderRef
 {
     Unk_BstrHolder* m_pHolder;
-    unsigned FUN_14029d4b0();                                   // 0x14029d4b0
+    unsigned GetLength();                                   // 0x14029d4b0
 };
 
 // @0x14029b610
@@ -1920,15 +1920,15 @@ void Unk_BstrHolder::FUN_14029b610()
 }
 
 // @0x1402992b0
-unsigned Unk_BstrHolder::FUN_1402992b0()
+unsigned Unk_BstrHolder::GetLength()
 {
     return m_bstr ? SysStringLen(m_bstr) : 0;
 }
 
 // @0x14029d4b0
-unsigned Unk_BstrHolderRef::FUN_14029d4b0()
+unsigned Unk_BstrHolderRef::GetLength()
 {
-    return m_pHolder ? m_pHolder->FUN_1402992b0() : 0;
+    return m_pHolder ? m_pHolder->GetLength() : 0;
 }
 
 // Reference-counted object (count at +0x10).
@@ -1937,7 +1937,7 @@ struct Unk_BindHost
     void* m_unk00;
     void* m_unk08;
     volatile long m_nRefs;
-    long FUN_140298720();                                       // 0x140298720
+    long AddRef();                                       // 0x140298720
 };
 
 struct Unk_BindHostPtr
@@ -1948,7 +1948,7 @@ struct Unk_BindHostPtr
     Unk_BindHostPtr(const Unk_BindHostPtr& other);              // 0x140297550
     ~Unk_BindHostPtr() throw();                                 // 0x140297a20
     Unk_BindHostPtr& operator+=(const Unk_BindHostPtr& other);  // 0x140298560
-    void FUN_140299e30();                                       // 0x140299e30
+    void AddRef();                                       // 0x140299e30
 };
 
 // Releases a bind host's BSTR holder (the holder sits at the block's start).
@@ -1969,17 +1969,17 @@ void* FUN_1402986c0(void* p, unsigned nFlags)
 }
 
 // @0x140298720
-long Unk_BindHost::FUN_140298720()
+long Unk_BindHost::AddRef()
 {
     InterlockedIncrement(&m_nRefs);
     return m_nRefs;
 }
 
 // @0x140299e30
-void Unk_BindHostPtr::FUN_140299e30()
+void Unk_BindHostPtr::AddRef()
 {
     if (m_pHost)
-        m_pHost->FUN_140298720();
+        m_pHost->AddRef();
 }
 
 // BSTR-concatenation helper family (ATL CComBSTR-like holders, 0x18-byte heap blocks: BSTR, spare, refcount).
@@ -2000,7 +2000,7 @@ struct Unk_BstrBlock
 // @0x140298fc0
 void** FUN_140298fc0(void* pHolder) { return (void**)pHolder; }
 extern void FUN_14029b680(void** pp);
-void* FUN_140297d20(Unk_BstrHolderRef* p);
+void* GetWString(Unk_BstrHolderRef* p);
 
 // @0x1402969f0
 void** FUN_1402969f0(void** p, void* pVtbl, void* pArg)
@@ -2055,8 +2055,8 @@ Unk_BstrBlock::Unk_BstrBlock(Unk_BstrHolderRef* pA, Unk_BstrHolderRef* pB)
 {
     m_unk08 = NULL;
     m_nRefs = 1;
-    const unsigned nLenA = pA->FUN_14029d4b0();
-    const unsigned nLenB = pB->FUN_14029d4b0();
+    const unsigned nLenA = pA->GetLength();
+    const unsigned nLenB = pB->GetLength();
     int nNewLen;
     if (FUN_14028b840(nLenA, nLenB, &nNewLen) < 0 || FUN_14028b890(nNewLen, 2, (unsigned*)&nNewLen) < 0)
     {
@@ -2071,10 +2071,10 @@ Unk_BstrBlock::Unk_BstrBlock(Unk_BstrHolderRef* pA, Unk_BstrHolderRef* pB)
         _com_issue_error(E_OUTOFMEMORY);
         return;
     }
-    const wchar_t* pszA = (const wchar_t*)FUN_140297d20(pA);
+    const wchar_t* pszA = (const wchar_t*)GetWString(pA);
     if (pszA != NULL)
         memcpy_s(m_pData, (nLenA + nLenB + 1) * sizeof(wchar_t), pszA, (nLenA + 1) * sizeof(wchar_t));
-    const wchar_t* pszB = (const wchar_t*)FUN_140297d20(pB);
+    const wchar_t* pszB = (const wchar_t*)GetWString(pB);
     if (pszB != NULL)
         memcpy_s((wchar_t*)m_pData + nLenA, (nLenB + 1) * sizeof(wchar_t), pszB, (nLenB + 1) * sizeof(wchar_t));
 }
@@ -2083,7 +2083,7 @@ Unk_BstrBlock::Unk_BstrBlock(Unk_BstrHolderRef* pA, Unk_BstrHolderRef* pB)
 Unk_BindHostPtr::Unk_BindHostPtr(const Unk_BindHostPtr& other)
 {
     m_pHost = other.m_pHost;
-    FUN_140299e30();
+    AddRef();
 }
 
 // @0x140297590
@@ -2142,10 +2142,10 @@ void FUN_14028fd90(Unk_XmlElement* pParent, const char* pszChild, const char* ps
         CStringW strKey2;
         XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr1, strKey1);
         XmlGetAttr((class TiXmlElement*)(pElem), pszKeyAttr2, strKey2);
-        CStringW strKey = (const wchar_t*)FUN_140297d20((Unk_BstrHolderRef*)&(const Unk_BindHostPtr&)FUN_1402982e0(strKey1, "_")) + strKey2;
+        CStringW strKey = (const wchar_t*)GetWString((Unk_BstrHolderRef*)&(const Unk_BindHostPtr&)FUN_1402982e0(strKey1, "_")) + strKey2;
         if (mapByKey.find(strKey) != mapByKey.end())
         {
-            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e160(reinterpret_cast<TiXmlElement *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<TiXmlElement *>(pElem))));
+            Unk_XmlElement* pPick = reinterpret_cast<Unk_XmlElement*>(reinterpret_cast<Unk_XmlElementList *>(reinterpret_cast<CFeatureManager*>(FUN_140166410())->SelectFeatureElement(reinterpret_cast<TiXmlElement *>(reinterpret_cast<Unk_XmlElementList*>(mapByKey[strKey].second)), reinterpret_cast<TiXmlElement *>(pElem))));
             if (pPick == pElem)
             {
                 setOrdered.erase(mapByKey[strKey]);
@@ -2177,7 +2177,7 @@ Unk_BindHostPtr::~Unk_BindHostPtr() throw()
 }
 
 // @0x140297d20
-void* FUN_140297d20(Unk_BstrHolderRef* p)
+void* GetWString(Unk_BstrHolderRef* p)
 {
     return p->m_pHolder ? *FUN_140298fc0(p->m_pHolder) : NULL;
 }
@@ -2228,10 +2228,10 @@ MS2_REPLACE(0x14028B890, FUN_14028b890, 68, 0x51B88B44);
 MS2_REPLACE_IMPL(0x140298F40, ::ms2::hook::detail::MemberToVoid(static_cast<float* (Common::Constants::Value<float>::*)()>(&Common::Constants::Value<float>::Get)), "Common::Constants::Value<float>::Get", 53, 0xC651AF56);
 MS2_REPLACE_IMPL(0x140298F80, ::ms2::hook::detail::MemberToVoid(static_cast<CString* (Common::Constants::Value<CString>::*)()>(&Common::Constants::Value<CString>::Get)), "Common::Constants::Value<CString>::Get", 53, 0x8459A15E);
 MS2_REPLACE(0x140298FD0, FUN_140298fd0, 24, 0xE9DE9F2E);
-MS2_REPLACE_METHOD(0x1402992B0, Unk_BstrHolder, FUN_1402992b0, 57, 0x39A7E074);
+MS2_REPLACE_METHOD(0x1402992B0, Unk_BstrHolder, GetLength, 57, 0x39A7E074);
 MS2_REPLACE_METHOD(0x14029B610, Unk_BstrHolder, FUN_14029b610, 100, 0x78F0708C);
-MS2_REPLACE_METHOD(0x14029D4B0, Unk_BstrHolderRef, FUN_14029d4b0, 56, 0xD03F266E);
-MS2_REPLACE_METHOD(0x140298720, Unk_BindHost, FUN_140298720, 26, 0xC507010C);
-MS2_REPLACE_METHOD(0x140299E30, Unk_BindHostPtr, FUN_140299e30, 38, 0x01C0B517);
+MS2_REPLACE_METHOD(0x14029D4B0, Unk_BstrHolderRef, GetLength, 56, 0xD03F266E);
+MS2_REPLACE_METHOD(0x140298720, Unk_BindHost, AddRef, 26, 0xC507010C);
+MS2_REPLACE_METHOD(0x140299E30, Unk_BindHostPtr, AddRef, 38, 0x01C0B517);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9a480-0x142c9a4a0 .text$yd

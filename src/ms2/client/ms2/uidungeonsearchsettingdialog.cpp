@@ -53,8 +53,8 @@ int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
 void* FUN_140bd09d0(unsigned n);
 MS2Ptr<ASCheckBox> CreateCheckBox(int nMovieId, const Scaleform::GFx::Value& v);              // new ASCheckBox(v, n)
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140bc6120 (T = ASItemRendererBase; defined in uicashattenddialog.cpp)
-MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
-CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);                 // the room's list text
+MS2Ptr<ASDisplayObjectContainer> CreateDisplayObjectContainer(int nMovieId, const Scaleform::GFx::Value& v);
+CStringW GetRoomListText(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit);                 // the room's list text
 CStringW FUN_14183e930(const CStringW& str, unsigned nColor);                           // wrap in a color tag
 CStringW GetStringCommonByKey(const CStringW& strKey);                                     // the localized string
 CStringW TranslateEnumDungeonGroup(unsigned nGroup);                                        // the dungeon group's name
@@ -72,7 +72,7 @@ void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMo
                                                   MS2_THIS_FILE, MS2_LINE(line), __FUNCTION__)); \
 } while (0)
 
-UIDungeonControlCenter* FUN_140c125c0(int nUIType);
+UIDungeonControlCenter* GetDungeonControlCenter(int nUIType);
 template <> MS2Ptr<ASCheckBox> AScript::FUN_140c11f50<ASCheckBox>(const CString& strName);
 template <> MS2Ptr<ASCheckBox> AScript::FUN_140c12010<ASCheckBox>(const CString& strName, MS2Ptr<ASCheckBox>& outChild);
 template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString strName, unsigned nCount, std::vector<MS2Ptr<T> >& out, unsigned nStart);
@@ -83,7 +83,7 @@ template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString
 UIDungeonSearchSettingDialog::UIDungeonSearchSettingDialog()
     : m_nGroup(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140c0fee0
@@ -102,8 +102,8 @@ MS2_REPLACE_METHOD(0x140C0FFD0, UIDungeonSearchSettingDialog, GetTypeName, 61, 0
 void UIDungeonSearchSettingDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    FUN_141925fa0("m_dragBar");
-    FUN_141925ec0("m_closeButton");
+    BindDragBar("m_dragBar");
+    BindCloseButton("m_closeButton");
     SS_BIND(m_30->FUN_140bbe7c0<ASDropdownMenu>("m_groupDropdown", m_group), m_group, 0x27);
     SS_BIND(m_30->FUN_140bc71c0<ASMovieClip>("m_customPage", m_page), m_page, 0x28);
     SS_BIND(m_30->FUN_140bbe640<ASButton>("m_okButton", m_okButton), m_okButton, 0x29);
@@ -125,7 +125,7 @@ void UIDungeonSearchSettingDialog::OnLoadComplete()
     for (unsigned i = 0; i < m_rows.size(); ++i) {
         m_rows[i]->FUN_1422e1f50(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11420), FUN_140bd09d0(i));
         if (m_rows[i]->FUN_140c12010<ASCheckBox>("m_checkBox", m_checks[i]))
-            m_checks[i]->FUN_1422ce320(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11840), FUN_140bd09d0(i));
+            m_checks[i]->AddSelectHandler(ParamsDelegate(this, &UIDungeonSearchSettingDialog::FUN_140c11840), FUN_140bd09d0(i));
     }
     SelectGroup(m_nGroup);
     FUN_140c112e0();
@@ -202,9 +202,9 @@ MS2_REPLACE_METHOD(0x140C11370, UIDungeonSearchSettingDialog, OnGroupChanged, 74
 // @0x140c113c0
 void UIDungeonSearchSettingDialog::FUN_140c113c0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    UIDungeonControlCenter* pCenter = FUN_140c125c0(0x4f84);
+    UIDungeonControlCenter* pCenter = GetDungeonControlCenter(0x4f84);
     if (pCenter != 0)
-        pCenter->FUN_140c0ba70(m_selected);
+        pCenter->SetBookmarks(m_selected);
     vfunc_67();
 }
 MS2_REPLACE_METHOD(0x140C113C0, UIDungeonSearchSettingDialog, FUN_140c113c0, 85, 0xAFBE2F18);
@@ -229,7 +229,7 @@ void UIDungeonSearchSettingDialog::FUN_140c11420(const Scaleform::GFx::FunctionH
             return;
         }
         bool bOk = TSingleton<CPartyManager>::GetInstance()->CanEnterDungeonRoom(m_rooms[nRoom]->GetDungeonRoomID());
-        CStringW strName = FUN_140e14bd0(m_rooms[nRoom], true);
+        CStringW strName = GetRoomListText(m_rooms[nRoom], true);
         int nColor;
         if (bOk)
             nColor = 0xffffff;
@@ -238,11 +238,11 @@ void UIDungeonSearchSettingDialog::FUN_140c11420(const Scaleform::GFx::FunctionH
         strName = FUN_14183e930(strName, nColor);
         row->vfunc_3(1);
         m_roomOfRow[nRow] = nRoom;
-        row->FUN_1422c6640(true);
-        check->FUN_1422cdf20(true);
+        row->SetMouseChildren(true);
+        check->SetHtml(true);
         check->FUN_1422cdfb0(strName);
         unsigned nDungeon = m_rooms[nRoom]->GetDungeonRoomID();
-        check->FUN_1422ce090(m_selected.find(nDungeon) != m_selected.end());
+        check->SetSelected(m_selected.find(nDungeon) != m_selected.end());
     }
 }
 MS2_REPLACE_METHOD(0x140C11420, UIDungeonSearchSettingDialog, FUN_140c11420, 1039, 0xF3C3DE4F);
@@ -258,7 +258,7 @@ void UIDungeonSearchSettingDialog::FUN_140c11840(const Scaleform::GFx::FunctionH
         return;
     unsigned nRoom = m_roomOfRow[nRow];
     unsigned nDungeon = m_rooms[nRoom]->GetDungeonRoomID();
-    if (check->FUN_1422ce0e0())
+    if (check->IsSelected())
         m_selected.insert(nDungeon);
     else
         m_selected.erase(nDungeon);
@@ -293,17 +293,17 @@ template <class T> MS2Ptr<T> Unk_SsNode::FUN_140c120d0(const CString& strName)
 // @0x140c12120: getChildByName, else a depth-first search of the children
 template <class T> MS2Ptr<T> Unk_SsNode::FUN_140c12120(const Scaleform::GFx::Value& v, const CString& strName)
 {
-    MS2Ptr<ASDisplayObjectContainer> spObj = FUN_140bc5fc0(m_nMovieId, v);
+    MS2Ptr<ASDisplayObjectContainer> spObj = CreateDisplayObjectContainer(m_nMovieId, v);
     if (!spObj->HasMember("getChildByName"))
         return MS2Ptr<T>(0);
-    Scaleform::GFx::Value child = spObj->FUN_1422c6b00(strName);
+    Scaleform::GFx::Value child = spObj->GetChildByName(strName);
     if (child.IsObject())
         return Unk_ASCreate<ASItemRendererBase>(m_nMovieId, child);
     if (!spObj->HasMember("numChildren"))
         return MS2Ptr<T>(0);
-    int nCount = spObj->FUN_1422c6670();
+    int nCount = spObj->GetNumChildren();
     for (int i = 0; i < nCount; i++) {
-        Scaleform::GFx::Value sub = spObj->FUN_1422c6aa0(i);
+        Scaleform::GFx::Value sub = spObj->GetChildAt(i);
         if (!sub.IsObject())
             continue;
         MS2Ptr<T> spFound = FUN_140c12120<T>(sub, strName);
@@ -333,7 +333,7 @@ template <class T> bool FUN_140c123f0(const Scaleform::GFx::Value& root, CString
 }
 
 // @0x140c125c0
-UIDungeonControlCenter* FUN_140c125c0(int nUIType)
+UIDungeonControlCenter* GetDungeonControlCenter(int nUIType)
 {
     if (reinterpret_cast<Unk_SsUIManager*>(TSingleton<CUIService>::GetInstance())) {
         MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUIType);

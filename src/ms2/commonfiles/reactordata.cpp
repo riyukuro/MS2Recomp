@@ -56,8 +56,8 @@ public:
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140873420(TiXmlElement*, const char*, CStringW&);
@@ -70,7 +70,7 @@ template <> int XmlTokenList(TiXmlElement* pElem, const char* pszName, ATL::CAtl
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140178270 (std::vector<int>)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 TiXmlElement * FUN_140345b40(TiXmlDocument *);  // C3: the definition's signature
-int FUN_140768010(int, int);                                              // random index in [0, count)
+int GetRandomRange(int, int);                                              // random index in [0, count)
 unsigned char FUN_1401d1320(CCacheData*);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
@@ -224,7 +224,7 @@ CStringA ReactorData::GetCreateAnimation()
 {
     if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_createAnims))->GetCount() == 0)
         return "";
-    int nIndex = FUN_140768010(((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_createAnims))->GetCount(), 0);
+    int nIndex = GetRandomRange(((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_createAnims))->GetCount(), 0);
     return m_createAnims[nIndex];
 }
 
@@ -233,7 +233,7 @@ CStringA ReactorData::GetReactAnimation()
 {
     if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_reactAnims))->GetCount() == 0)
         return "";
-    int nIndex = FUN_140768010(((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_reactAnims))->GetCount(), 0);
+    int nIndex = GetRandomRange(((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_reactAnims))->GetCount(), 0);
     return m_reactAnims[nIndex];
 }
 
@@ -262,7 +262,7 @@ bool CReactorDataTable::LoadReactors()
 {
     TiXmlDocument doc;
     CString strPath(m_strReactorXml);
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -291,7 +291,7 @@ bool CReactorDataTable::LoadStates()
 {
     TiXmlDocument doc;
     CString strPath(m_strStateXml);
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -331,16 +331,16 @@ bool CReactorDataTable::Load()
         else
         {
             m_cacheFiles.RemoveAll();
-            m_strReactorXml = FUN_14071a5b0("Table", "reactor.xml");
-            m_strStateXml = FUN_14071a5b0("Table", "reactorState.xml");
+            m_strReactorXml = GetXmlPath("Table", "reactor.xml");
+            m_strStateXml = GetXmlPath("Table", "reactorState.xml");
             {
                 CachePtr reactorCache(new CCacheData);
-                reactorCache->FUN_1401d1160(CString(m_strReactorXml));
+                reactorCache->SetPath(CString(m_strReactorXml));
                 m_cacheFiles.AddHead(reactorCache);
             }
             {
                 CachePtr stateCache(new CCacheData);
-                stateCache->FUN_1401d1160(CString(m_strStateXml));
+                stateCache->SetPath(CString(m_strStateXml));
                 m_cacheFiles.AddHead(stateCache);
             }
         }
@@ -436,7 +436,7 @@ void CReactorDataTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(ReactorData).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(ReactorData).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

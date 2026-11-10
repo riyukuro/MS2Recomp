@@ -35,13 +35,13 @@ public:
     virtual void vfunc_ugc_7(int bRefresh);                         // 7 0x141ab3400 the own house changed: name and dates
 
     int FUN_141ab3250(const CStringW& strName);                     // request the rename of the home
-    void FUN_141ab3760(CStringW strName);                           // push the home name (the callee destroys it)
-    void FUN_141ab3820();                                           // push the contract effect
+    void SetHomeName(CStringW strName);                           // push the home name (the callee destroys it)
+    void SetContractEffect();                                           // push the contract effect
     void SendRequestCubeMode2();                                           // the model house (concept) dialog, or the packet 0x37 / 2
-    void FUN_141ab4000(int nGroup, int nMapId);                     // select the plot
-    void FUN_141ab4040(const __int64* pnTime);                      // push the expire date
+    void SetGroupAndMapId(int nGroup, int nMapId);                     // select the plot
+    void SetExpireDate(const __int64* pnTime);                      // push the expire date
     void FUN_141ab42a0();                                           // fill the movie ("initData")
-    CStringW FUN_141ab5520(const __int64& nTime);                   // "y-m-d h:m" text of a time (empty for 0)
+    CStringW FormatDateTime(const __int64& nTime);                   // "y-m-d h:m" text of a time (empty for 0)
 
     int m_nGroup;                                                   // +0x180 the plot group
     int m_nMapId;                                                   // +0x184 the plot map

@@ -26,8 +26,8 @@ class Unk_TamingEntity : public ASGameEntity
 class Unk_BannerClip   // C3: member view (the entity clip's create / update calls)
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
+    Scaleform::GFx::Value CreateEntity(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 struct Unk_TamingCfgFloat { char m_pad[0x58]; };
 struct Unk_AdvCfgExp { __int64 FUN_140ba77c0(); char m_pad[8]; };
@@ -40,11 +40,11 @@ struct Unk_TamingCfg
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_TamingUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 float FUN_1412762d0(const NiPoint3& pt);
 class Unk_TamingTamed : public CPet { };
@@ -124,12 +124,12 @@ void UITamingBar::Entity::vfunc_6(NiPoint3* pPos)
             if (m_b8 != 0)
             {
                 if (0 < m_64)
-                    m_68.FUN_140868750(m_64);
+                    m_68.Start(m_64);
                 float fRate = m_bc / (float)m_a8;
                 ((Unk_TamingClip*)bar.operator->())->SetWidthInt((int)(fRate * (float)m_a0));
                 m_b8 = 0;
             }
-            *pPos *= ((class GFxManager*)(class Unk_TamingUIScale*)(((class Unk_TamingUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
+            *pPos *= ((class GFxManager*)(class Unk_TamingUIScale*)(((class Unk_TamingUIScale*)GetGFxManager())))->GetMovieScale(m_18);
             pPos->y = pPos->y + vfunc_9();
             pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
             reinterpret_cast<ASDisplayObject*>(((Unk_TamingEntity*)m_38.operator->()))->SetPositionFloat(pPos->x, pPos->y);
@@ -241,31 +241,31 @@ CString UITamingBar::GetTypeName()
 void UITamingBar::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_140e98040(m_68);
+    CreateEntityCache(m_68);
 }
 
-// FUN_140e98660 is defined below; declared here for its callers.
-UITamingBar* FUN_140e98660(int nUiId);
+// FindTamingBar is defined below; declared here for its callers.
+UITamingBar* FindTamingBar(int nUiId);
 
 // @0x140e97f80
-MS2Ptr<UITamingBar::Entity> FUN_140e97f80(int nActorId)
+MS2Ptr<UITamingBar::Entity> GetTamingBarEntity(int nActorId)
 {
-    UITamingBar* pBar = FUN_140e98660(0x4f3b);
+    UITamingBar* pBar = FindTamingBar(0x4f3b);
     if (pBar != 0)
         return MS2Ptr<UITamingBar::Entity>(pBar->FUN_140e98220(nActorId));
     return MS2Ptr<UITamingBar::Entity>(0);
 }
 
 // @0x140e98000
-void FUN_140e98000(int nActorId)
+void RemoveTamingBarEntity(int nActorId)
 {
-    UITamingBar* pBar = FUN_140e98660(0x4f3b);
+    UITamingBar* pBar = FindTamingBar(0x4f3b);
     if (pBar)
-        pBar->FUN_140f49c00(nActorId);
+        pBar->ReleaseEntity(nActorId);
 }
 
 // @0x140e98040
-void UITamingBar::FUN_140e98040(unsigned int nCount)
+void UITamingBar::CreateEntityCache(unsigned int nCount)
 {
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
@@ -289,10 +289,10 @@ void UITamingBar::FUN_140e98040(unsigned int nCount)
 // @0x140e98220
 UITamingBar::Entity* UITamingBar::FUN_140e98220(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     {
-        FUN_140f49c00(nActorId);
+        ReleaseEntity(nActorId);
         MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pClip.get())
         {
@@ -300,7 +300,7 @@ UITamingBar::Entity* UITamingBar::FUN_140e98220(int nActorId)
             {
                 bool bFlag = FUN_140930110(nActorId);
                 bFlag = false;
-                Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+                Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
                 if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
                 {
                     Entity* p = new Entity(m_28, v, nActorId);
@@ -327,7 +327,7 @@ UITamingBar::Entity* UITamingBar::FUN_140e98220(int nActorId)
                         {
                             MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                             if (pOldClip.get())
-                                ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", reinterpret_cast<AScript*>(((Unk_TamingEntity*)pOldClip.operator->()))->FUN_1422bb870(), bNew);
+                                ((Unk_BannerClip*)pClip.operator->())->UpdateEntity("updateEntity", reinterpret_cast<AScript*>(((Unk_TamingEntity*)pOldClip.operator->()))->GetValue(), bNew);
                         }
                     }
                     pEntity->FUN_140f48ce0(nActorId);
@@ -341,7 +341,7 @@ UITamingBar::Entity* UITamingBar::FUN_140e98220(int nActorId)
 }
 
 // @0x140e98660
-UITamingBar* FUN_140e98660(int nUiId)
+UITamingBar* FindTamingBar(int nUiId)
 {
     if (reinterpret_cast<Unk_TamingUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -377,9 +377,9 @@ MS2_REPLACE_METHOD(0x140e97d70, UITamingBar::Entity, FUN_140e97d70, 125, 0xEB25A
 MS2_REPLACE_METHOD(0x140e97e00, UITamingBar::Entity, FUN_140e97e00, 66, 0x36E57BCA);
 MS2_REPLACE_METHOD(0x140e97f00, UITamingBar, GetTypeName, 61, 0x443B093E);
 MS2_REPLACE_METHOD(0x140e97f50, UITamingBar, OnLoadComplete, 42, 0x10016461);
-MS2_REPLACE_METHOD(0x140e98040, UITamingBar, FUN_140e98040, 465, 0x70DF7900);
+MS2_REPLACE_METHOD(0x140e98040, UITamingBar, CreateEntityCache, 465, 0x70DF7900);
 MS2_REPLACE_METHOD(0x140e98220, UITamingBar, FUN_140e98220, 1082, 0xCAA7BFCA);
-MS2_REPLACE(0x140e98000, FUN_140e98000, 50, 0xDB13BBC3);
-MS2_REPLACE(0x140e98660, FUN_140e98660, 147, 0xB9785146);
+MS2_REPLACE(0x140e98000, RemoveTamingBarEntity, 50, 0xDB13BBC3);
+MS2_REPLACE(0x140e98660, FindTamingBar, 147, 0xB9785146);
 
 MS2_EMIT_CRT_MEMMOVE_S();

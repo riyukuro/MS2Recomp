@@ -74,7 +74,7 @@ void CFileLogger::SetLogFileLimit(int nId, unsigned int nLimit)
     EnterCriticalSection(&ms_cs);
     CTextLogFile* pFile = FUN_140394b50(nId);
     if (pFile != 0)
-        pFile->FUN_140867260(nLimit);
+        pFile->SetLimit(nLimit);
     LeaveCriticalSection(&ms_cs);
 }
 
@@ -86,7 +86,7 @@ void CFileLogger::FUN_140392270(int nId)
     EnterCriticalSection(&ms_cs);
     CTextLogFile* pFile = FUN_140394b50(nId);
     if (pFile != 0)
-        pFile->FUN_140867220();
+        pFile->ClearTail();
     LeaveCriticalSection(&ms_cs);
 }
 
@@ -159,7 +159,7 @@ void CFileLogger::FUN_140392600(int nId, const char* pszLine)
     EnterCriticalSection(&ms_cs);
     CTextLogFile* pFile = FUN_140394b50(nId);
     if (pFile != 0)
-        pFile->FUN_140866f60(pszLine);
+        pFile->AddLine(pszLine);
     LeaveCriticalSection(&ms_cs);
 }
 
@@ -171,7 +171,7 @@ void CFileLogger::FUN_140392670(int nId, const char* pszLine)
     EnterCriticalSection(&ms_cs);
     CTextLogFile* pFile = FUN_140394b50(nId);
     if (pFile != 0)
-        pFile->FUN_140867020(pszLine);
+        pFile->AddTailLine(pszLine);
     LeaveCriticalSection(&ms_cs);
 }
 

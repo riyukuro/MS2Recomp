@@ -39,14 +39,14 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 class Unk_MeratLog { public: template <class T> void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* format, const T& value); };   // C3: 0x1406a6d70 = Log<unsigned int> (meratmarketbasketinfo.cpp)
 class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, double&);   // C3: was FUN_1408733a0
 bool FUN_140768040(unsigned nChance);                                   // the percent roll
-void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
+void* GetExpTable();   // C3: was GetExpTable
 
 // @0x1407790a0
-bool Unk_DcLevelRange::FUN_1407790a0() const
+bool Unk_DcLevelRange::IsEmpty() const
 {
     return (m_nLow == 0 && m_nHigh == 0) ? 1 : 0;
 }
@@ -100,7 +100,7 @@ MS2_REPLACE_METHOD(0x1407704A0, RewardContentsItemGroup, Load, 423, 0xED5D9CB7);
 // @0x140770650
 bool RewardContentsItemGroup::GetItems(unsigned short nLevel, std::vector<ItemEntity>& rItems)
 {
-    if (!m_levelRange.FUN_1407790a0() && !m_levelRange.FUN_1407790e0(nLevel))
+    if (!m_levelRange.IsEmpty() && !m_levelRange.FUN_1407790e0(nLevel))
         return false;
     for (unsigned i = 0; i < m_items.size(); i++)
     {
@@ -218,7 +218,7 @@ bool RewardContentsTable::GetReward(unsigned nRewardId, unsigned short nLevel, R
     MS2Ptr<RewardContents> spReward(it->second);
     if (spReward == static_cast<RewardContents*>(0))
         return false;
-    rResult.m_nExp = ((class CExpTable*)FUN_1404a1bb0())->GetScaledValue(nLevel, spReward->m_nExpTableId, spReward->m_dExpFactor);
+    rResult.m_nExp = ((class CExpTable*)GetExpTable())->GetScaledValue(nLevel, spReward->m_nExpTableId, spReward->m_dExpFactor);
     rResult.m_nAdventureExp = (__int64)TSingleton<CAdventureLevelTable>::GetInstance()->FindUnused2(spReward->m_nAdventureExpTableId);
     rResult.m_nMeso = GetMeso(spReward->m_nMesoTableId, spReward->m_dMesoFactor, nLevel);
     GetItems(spReward->m_nItemTableId, nLevel, rResult.m_items);
@@ -229,9 +229,9 @@ MS2_REPLACE_METHOD(0x140770E40, RewardContentsTable, GetReward, 482, 0x1CFC9067)
 // @0x140771030
 bool RewardContentsTable::ReadMesoTable(const CStringA& strFile)
 {
-    CString strPath = FUN_14071a5b0("Table", strFile);
+    CString strPath = GetXmlPath("Table", strFile);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -287,9 +287,9 @@ MS2_REPLACE_METHOD(0x140771030, RewardContentsTable, ReadMesoTable, 912, 0x4A48A
 // @0x1407713d0
 bool RewardContentsTable::ReadItemTable()
 {
-    CString strPath = FUN_14071a5b0("Table", "RewardContentItemTable.xml");
+    CString strPath = GetXmlPath("Table", "RewardContentItemTable.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -313,9 +313,9 @@ MS2_REPLACE_METHOD(0x1407713D0, RewardContentsTable, ReadItemTable, 849, 0x6DE84
 // @0x140771730
 bool RewardContentsTable::ReadContents()
 {
-    CString strPath = FUN_14071a5b0("Table", "RewardContent.xml");
+    CString strPath = GetXmlPath("Table", "RewardContent.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

@@ -18,16 +18,16 @@ public:
     UIEquipIconContainer();                                             // 0x140e29f60
     virtual ~UIEquipIconContainer();                                    //  0 0x140e2a000 (??_G 0x140e2b9d0)
 
-    MS2Ptr<ASEquipIcon> FUN_140e2a090(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc, MS2Ptr<Customize> pOutfit);   // equip an item in a slot (creating or changing its icon)
+    MS2Ptr<ASEquipIcon> EquipItem(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc, MS2Ptr<Customize> pOutfit);   // equip an item in a slot (creating or changing its icon)
     void FUN_140e2a640(int nSlot);                                      // remove the slot's icon
     void UnEquipAll();                                               // remove every icon
-    void FUN_140e2a6e0(int nVisible);                                   // show / hide the clip
-    MS2Ptr<ASEquipIcon> FUN_140e2a740(int nSlot);                       // the slot's icon (0: none)
-    int FUN_140e2a7e0(MS2Ptr<CItemData> spData);                        // 0x140e2a7e0 the hand slot (4 / 5) a weapon goes to
+    void SetVisible(int nVisible);                                   // show / hide the clip
+    MS2Ptr<ASEquipIcon> GetEquipIcon(int nSlot);                       // the slot's icon (0: none)
+    int GetHandSlot(MS2Ptr<CItemData> spData);                        // 0x140e2a7e0 the hand slot (4 / 5) a weapon goes to
     ATL::CAtlMap<int, MS2Ptr<ASEquipIcon> >* GetIconMap() { return &m_28; }   // 0x1413157e0 (inline; uimeratmarketdialog.cpp)
-    MS2Ptr<ASEquipIcon> FUN_140e2a990(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc);                         // create the slot's icon
-    MS2Ptr<ASEquipIcon> FUN_140e2ad70(MS2Ptr<ASEquipIcon> pIcon, int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc);   // change the slot's icon
-    void FUN_1412d6ca0(MS2Ptr<ASMovieClip> pClip);                      // 0x1412d6ca0 inline: m_18 = pClip (defined in uiitempreviewdialog.cpp)
+    MS2Ptr<ASEquipIcon> CreateEquipIcon(int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc);                         // create the slot's icon
+    MS2Ptr<ASEquipIcon> ChangeEquipIcon(MS2Ptr<ASEquipIcon> pIcon, int nSlot, MS2Ptr<CItem> pItem, MS2Ptr<AScript> pSrc);   // change the slot's icon
+    void SetClip(MS2Ptr<ASMovieClip> pClip);                      // 0x1412d6ca0 inline: m_18 = pClip (defined in uiitempreviewdialog.cpp)
     void UnEquipItem(int nSlot);                                      // remove the slot's icon (unEquipItem)
 
 private:

@@ -50,7 +50,7 @@ struct Unk_ClientConfig
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 // The cursor / window (FUN_140aadf80): its screen rectangle.
-class Unk_McApp { public: struct tagRECT FUN_140ad4c30(void); }; class Unk_Cursor : public Unk_McApp {
+class Unk_McApp { public: struct tagRECT GetWindowRect(void); }; class Unk_Cursor : public Unk_McApp {
 public:
 
 };
@@ -111,17 +111,17 @@ MS2_REPLACE_METHOD(0x141221480, CFPSCameraMode, vfunc_7, 75, 0xC5DEA605);
 void CFPSCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
-    unsigned int nButton = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0);
+    unsigned int nButton = ((class CInputKeyHandler*)FUN_14025e7c0())->IsMouseButtonDown(1, true, 0);
     if (m_144 != 0 && nButton == 0)
         return;
     int nX;
     int nY;
     int nZ;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nZ, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->GetMouseDelta(&nX, &nY, &nZ, false, 0))
     {
         ptMove.x = (float)nY * 0.05f;
         ptMove.y = (float)nX * 0.05f;
-        RECT rc = ((class Unk_McApp*)(((class Unk_Cursor*)FUN_140aadf80())))->FUN_140ad4c30();
+        RECT rc = ((class Unk_McApp*)(((class Unk_Cursor*)FUN_140aadf80())))->GetWindowRect();
         int nCenterX = ((rc.right - rc.left) >> 1) + rc.left;
         int nCenterY = ((rc.bottom - rc.top) >> 1) + rc.top;
         SetCursorPos(nCenterX, nCenterY);

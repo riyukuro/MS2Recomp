@@ -55,8 +55,8 @@ public:
     int UnloadDamageTextMovie();                                            // remove it
     void Render();                                           // render the movies (NiGFxOverlayClick)
     void FUN_1422ae180();                                           // per tick (GFxService::OnTick)
-    void FUN_1422ae360();                                           // shutdown (GFxService::OnShutdown)
-    void FUN_1422ae590();                                           // render device lost
+    void Shutdown();                                           // shutdown (GFxService::OnShutdown)
+    void OnDeviceLost();                                           // render device lost
     bool FUN_1422ae690();                                           // render device restored (false = failed)
     void FUN_1422ae7d0();                                           // hand the HAL and the Renderer2D to every movie
     void FUN_1422ae920(int n);                                      // m_184 =
@@ -67,7 +67,7 @@ public:
     void FUN_1422aed30(bool b);                                     // GFxMovie::vfunc_5 of every movie
     void SetFormatCallback(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&));   // m_pfnFormat =
     void SetPostInitMovieCallback(TFunctor<bool, ParamList<HWND, EmptyParam> > fn);   // m_fnIme = fn (by value)
-    void FUN_1422aeea0(void (*pfn)(AScript& kCommon, int nMovieId));        // m_pfnCommon =
+    void SetCommonCallback(void (*pfn)(AScript& kCommon, int nMovieId));        // m_pfnCommon =
     int FUN_1422aeed0(int n);                                       // input state query (NotifyDragSlot passes 2: drop outside any slot)
     void FUN_1422aef20(int nMovieId, int n);                        // GFxMovie::FUN_1422be380 of a movie
     int IsPause();                                            // m_118 (paused)
@@ -77,10 +77,10 @@ public:
     int IsTextFieldFocused(int nMovieId);                                // the movie takes text input (GFxMovieEventHandler: CharEvent, Insert)
     int FUN_1422af390(int nMovieId);                                // WM_IME_COMPOSITION handled by the manager
     int IsWindowFocusedAndTextFieldFocused(int nMovieId);                                // the window has the focus and the movie takes text input
-    CStringW FUN_1422af5f0(int nMovieId);                           // the IME composition string
+    CStringW GetImeCompositionString(int nMovieId);                           // the IME composition string
     int UpdateJapaneseImeComposition(int nMovieId);                                // input state of a movie (UISwfEntityManager::FUN_1422d1c20 passes 2)
-    unsigned FUN_1422af8a0(int nMovieId);                           // the IME conversion mode (0x1000000 if none)
-    CString FUN_1422af960(int nMovieId);                            // the IME input language ("UNKNOWN")
+    unsigned GetImeConversionMode(int nMovieId);                           // the IME conversion mode (0x1000000 if none)
+    CString GetImeInputLanguage(int nMovieId);                            // the IME input language ("UNKNOWN")
     void FUN_1422afb00();                                           // "unloadCache" of every movie clip loader
     void FUN_1422afc00();                                           // GFx::Movie slot 48 of every movie
     Ni2DBuffer* FUN_1422afcf0();                                    // the renderer's render texture buffer
@@ -88,20 +88,20 @@ public:
     void SetMasterVolume(float fVolume);                              // the UI sound volume
     void FUN_1422afe50();                                           // recreate the UI sound
     void FUN_1422afe90();                                           // drop the UI sound
-    float FUN_1422afec0(int nMovieId);                              // the scale of a movie (1.0f if not loaded)
+    float GetMovieScale(int nMovieId);                              // the scale of a movie (1.0f if not loaded)
     int FUN_1422aff10(float fScale);                                // scale every movie except the background
-    void FUN_1422b0060(float fScale);                               // the same without the viewport (if it differs from movie 2's)
+    void SetMoviesScale(float fScale);                               // the same without the viewport (if it differs from movie 2's)
     GFxMovie* FindMovie(int nMovieId);                          // the movie of a movie id (NULL if not loaded)
     GFxVideo* GetVideo();                                      // m_spVideo
     Unk_NotifyContext* GetNotifyContext();                             // the notify context (SmartPointer at +0x98)
-    Scaleform::GFx::Loader* FUN_1422b0290();                        // the loader
+    Scaleform::GFx::Loader* GetLoader();                        // the loader
     Unk_GFxUIRenderer2D* GetRenderer2D();                           // the movie renderer's Renderer2D (+0x40 member, slot 2)
     MS2Ptr<ASStage> GetStage(int nMovieId);                    // the stage of a movie (null if the movie is not loaded)
     MS2Ptr<ASMouseCursor> GetMouseCursor(int nMovieId);              // the mouse cursor of a movie
     MS2Ptr<ASMovieClipLoader> GetMovieClipLoader(int nGroup);            // the movie clip loader of a GFX_* group (by value)
-    void FUN_1422b0470(int nMovieId, int* pnWidth, int* pnHeight);  // the viewport size of a movie
-    int FUN_1422b04d0(int nMovieId);                                // its width
-    int FUN_1422b0520(int nMovieId);                                // its height
+    void GetMovieViewportSize(int nMovieId, int* pnWidth, int* pnHeight);  // the viewport size of a movie
+    int GetMovieViewportWidth(int nMovieId);                                // its width
+    int GetMovieViewportHeight(int nMovieId);                                // its height
     CStringW Localize(const CString& strKey);                  // the localized string of a key ("" without string table)
     int InvokeSoundCallback(const CString& strSound, const CString& strArg); // play a UI sound (NotifySwfEntity "playSound")
     void SetSoundCallback(TFunctor<unsigned int, ParamList<const CString&, ParamList<const CString&, EmptyParam> > > fn);
@@ -117,8 +117,8 @@ public:
     Scaleform::Ptr<Scaleform::File> FUN_1422b0d60(Scaleform::String strPath);   // the cached memory file of a path
     void FUN_1422b0e20(Scaleform::String strPath, Scaleform::Ptr<Scaleform::File> pFile);   // cache (NULL: drop) it
     void FUN_1422b0ea0(const CStringW& strText);                    // copy to the clipboard (GFxMovieMain)
-    int FUN_1422b0f10();                                            // close the tooltips (GFxMovieTooltip::FUN_1422f1020)
-    int FUN_1422b0f70(HWND hWnd);                                   // create the video
+    int CloseTooltips();                                            // close the tooltips (GFxMovieTooltip::FUN_1422f1020)
+    int CreateVideo(HWND hWnd);                                   // create the video
     int FUN_1422b1030();                                            // the loader states
     int FUN_1422b1620(CString strFontConfig, const CString& strLocale);   // the string tables / font config
     int FUN_1422b1750(NiRenderer* pRenderer);                       // create the renderer
@@ -129,7 +129,7 @@ public:
     int FUN_1422b1f30(HWND hWnd, CString strPath);                  // load GFxMovieHeadUpDisplay (id 0)
     int FUN_1422b20f0(HWND hWnd, CString strPath);                  // load GFxMoviePostDisplay (id 3)
     int FUN_1422b22b0();                                            // create the UI sound
-    void FUN_1422b24f0();                                           // reload the movies
+    void ReloadMovies();                                           // reload the movies
     bool FUN_1422b2760();                                           // GFxMovieMain::FUN_1422f0450
     bool FUN_1422b27c0();                                           // m_1e8
     void FUN_1422b27e0(bool b);                                     // m_1e8 =
@@ -185,5 +185,5 @@ MS2_CHECK_OFFSET(GFxManager, m_180, 0x180);
 MS2_CHECK_OFFSET(GFxManager, m_mapFiles, 0x1b0);
 MS2_CHECK_OFFSET(GFxManager, m_1e8, 0x1e8);
 MS2_CHECK_SIZE(GFxManager, 0x1f0);
-class Unk_AltStringMgr* FUN_14025e7a0();   // the singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
-#define FUN_14025e7a0() (reinterpret_cast<GFxManager*>(FUN_14025e7a0()))
+class Unk_AltStringMgr* GetGFxManager();   // the singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
+#define GetGFxManager() (reinterpret_cast<GFxManager*>(GetGFxManager()))

@@ -156,7 +156,7 @@ class UIAvatarPC : public Unk_ClosingAvatar
 public:
     UIAvatarPC(PC*, bool);
     void FUN_1418bc790(int, int);
-    class AvatarPC* FUN_1418bd1d0();
+    class AvatarPC* GetAvatarPC();
 private:
     void* m_18; void* m_20; void* m_28; void* m_30; void* m_38; void* m_40; void* m_48; void* m_50; void* m_58;
     void* m_60; void* m_68; void* m_70; void* m_78; void* m_80; void* m_88; void* m_90; void* m_98; void* m_a0;
@@ -201,7 +201,7 @@ int FUN_140718170(const CString&);
 // @0x140e0de40
 UIDungeonClosingPhotoDialog::UIDungeonClosingPhotoDialog() : m_1b0(0), m_1b4(0), m_1bc(0)
 {
-    FUN_141925e70(3, 1);
+    SetFlag(3, 1);
 }
 
 // @0x140e0df20
@@ -264,7 +264,7 @@ void UIDungeonClosingPhotoDialog::OnLoadComplete()
         static_cast<Unk_ClosingClip*>(e.m_clip.operator->())->SetPositionFloat((float)x, (float)y);
         static_cast<ASDisplayObject*>(static_cast<Unk_ClosingClip*>(e.m_clip.operator->()))->SetScaleInt(scale, scale);
         static_cast<Unk_ClosingClip*>(e.m_clip.operator->())->vfunc_24(1);
-        FUN_140e102b0(&e);
+        UpdateAddFriendButton(&e);
     }
     {
         std::vector<int> pending(m_pending);
@@ -326,7 +326,7 @@ void UIDungeonClosingPhotoDialog::vfunc_79(void* p)
     if (static_cast<CInPacket*>(p)->FUN_14070fe80() == 0x61) {
         unsigned pos = static_cast<Unk_BuddyInput*>(p)->vfunc_0();
         Unk_BuddyResponse r;
-        reinterpret_cast<Unk_SPDB*>(&r)->FUN_1407a3cc0(*reinterpret_cast<Unk_SPDReader*>(p));
+        reinterpret_cast<Unk_SPDB*>(&r)->ReadFrom(*reinterpret_cast<Unk_SPDReader*>(p));
         static_cast<CInPacket*>(p)->SetOffset(pos);
         FUN_140e10800(r.result, r.name);
     }
@@ -340,7 +340,7 @@ int UIDungeonClosingPhotoDialog::vfunc_28(const char* szMethod, const Scaleform:
     if (_stricmp("onAddFriend", szMethod) == 0) {
         ASData d;
         if (d.SetArgsIfAny(pArgs, nArgs))
-            FUN_140e104d0(d.PopInt());
+            OnAddFriend(d.PopInt());
         return 1;
     }
     return 0;
@@ -374,7 +374,7 @@ int UIDungeonClosingPhotoDialog::vfunc_o178_1(void* av)
 }
 
 // @0x140e0eb40
-void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
+void UIDungeonClosingPhotoDialog::OnClosingPhotoPacket(CInPacket& pkt)
 {
     m_entries.clear();
     m_pending.clear();
@@ -405,10 +405,10 @@ void UIDungeonClosingPhotoDialog::FUN_140e0eb40(CInPacket& pkt)
             if (player == 0)
                 continue;
             UIAvatarPC* av = new UIAvatarPC(reinterpret_cast<PC*>(player), false);
-            reinterpret_cast<Unk_ClosingActor*>(av->FUN_1418bd1d0())->vfunc_76(player->vfunc_77());
-            reinterpret_cast<Unk_ClosingActor*>(av->FUN_1418bd1d0())->FUN_140e11d00();
-            reinterpret_cast<ClonePC*>(av->FUN_1418bd1d0())->FUN_1410885b0(true);
-            reinterpret_cast<Unk_ClosingThing*>(reinterpret_cast<PC*>(av->FUN_1418bd1d0())->GetGemEquip())->FUN_141270610();
+            reinterpret_cast<Unk_ClosingActor*>(av->GetAvatarPC())->vfunc_76(player->vfunc_77());
+            reinterpret_cast<Unk_ClosingActor*>(av->GetAvatarPC())->FUN_140e11d00();
+            reinterpret_cast<ClonePC*>(av->GetAvatarPC())->FUN_1410885b0(true);
+            reinterpret_cast<Unk_ClosingThing*>(reinterpret_cast<PC*>(av->GetAvatarPC())->GetGemEquip())->FUN_141270610();
             av->vfunc_1(this);
             Unk_ClosingEntry entry;
             entry.m_uid = uid;
@@ -468,7 +468,7 @@ void UIDungeonClosingPhotoDialog::FUN_140e0f790()
         UIAvatarPC* av = m_entries[i].m_avatar;
         if (!av)
             continue;
-        Unk_ClosingActor* actor = reinterpret_cast<Unk_ClosingActor*>(av->FUN_1418bd1d0());
+        Unk_ClosingActor* actor = reinterpret_cast<Unk_ClosingActor*>(av->GetAvatarPC());
         if (!actor)
             continue;
         MS2Ptr<ASMovieClip> info = m_entries[i].m_clip->FUN_1409b4560("m_characterInfo");
@@ -570,13 +570,13 @@ void UIDungeonClosingPhotoDialog::FUN_140e10010(int& x, int& y, unsigned& scale,
     }
     MS2Ptr<ASMovieClip> bg = GetChild<ASMovieClip>("m_bg");
     if (bg.get()) {
-        x += bg->FUN_1422c1340() / 2;
+        x += bg->GetWidthCeil() / 2;
         y += bg->GetHeightCeil() / 2;
     }
 }
 
 // @0x140e102b0
-void UIDungeonClosingPhotoDialog::FUN_140e102b0(Unk_ClosingEntry* e)
+void UIDungeonClosingPhotoDialog::UpdateAddFriendButton(Unk_ClosingEntry* e)
 {
     if (MS2Ptr<ASMovieClip> info = e->m_clip->FUN_1409b4560("m_characterInfo")) {
         if (MS2Ptr<ASButton> btn = info->FUN_140acce30<ASButton>("m_addFriend")) {
@@ -585,13 +585,13 @@ void UIDungeonClosingPhotoDialog::FUN_140e102b0(Unk_ClosingEntry* e)
             bool buddy = TSingleton<CBuddyManager>::GetInstance()->FUN_140ae4d70(e->m_uid);
             bool show = !isSelf && !buddy;
             btn->vfunc_4(show);
-            btn->FUN_1422c1fe0(show);
+            btn->SetEnabled(show);
         }
     }
 }
 
 // @0x140e104d0
-void UIDungeonClosingPhotoDialog::FUN_140e104d0(int slot)
+void UIDungeonClosingPhotoDialog::OnAddFriend(int slot)
 {
     int idx = slot - 1;
     int valid;
@@ -610,14 +610,14 @@ void UIDungeonClosingPhotoDialog::FUN_140e104d0(int slot)
         UIAvatarPC* av = e->m_avatar.get();
         if (!av)
             return;
-        Unk_ClosingActor* actor = reinterpret_cast<Unk_ClosingActor*>(av->FUN_1418bd1d0());
+        Unk_ClosingActor* actor = reinterpret_cast<Unk_ClosingActor*>(av->GetAvatarPC());
         if (!actor)
             return;
         if (e->m_clip == 0)
             return;
         if (MS2Ptr<ASMovieClip> info = e->m_clip->FUN_1409b4560("m_characterInfo")) {
             if (MS2Ptr<ASButton> btn = info->FUN_140acce30<ASButton>("m_addFriend"))
-                btn->FUN_1422c1fe0(0);
+                btn->SetEnabled(0);
         }
         Unk_BuddyRequest req;
         req.protocol = 2;
@@ -699,8 +699,8 @@ MS2_REPLACE_METHOD(0x140E0FCF0, UIDungeonClosingPhotoDialog, FUN_140e0fcf0, 38, 
 MS2_REPLACE_METHOD(0x140E0FE40, UIDungeonClosingPhotoDialog, LoadAllRenderTargets, 251, 0x36262D83);
 MS2_REPLACE_METHOD(0x140E0FF50, UIDungeonClosingPhotoDialog, UnloadAllRenderTargets, 176, 0x39D83762);
 MS2_REPLACE_METHOD(0x140E10010, UIDungeonClosingPhotoDialog, FUN_140e10010, 666, 0xEE731CE4);
-MS2_REPLACE_METHOD(0x140E102B0, UIDungeonClosingPhotoDialog, FUN_140e102b0, 533, 0x47263C5C);
-MS2_REPLACE_METHOD(0x140E104D0, UIDungeonClosingPhotoDialog, FUN_140e104d0, 804, 0xD8A04FFD);
+MS2_REPLACE_METHOD(0x140E102B0, UIDungeonClosingPhotoDialog, UpdateAddFriendButton, 533, 0x47263C5C);
+MS2_REPLACE_METHOD(0x140E104D0, UIDungeonClosingPhotoDialog, OnAddFriend, 804, 0xD8A04FFD);
 MS2_REPLACE_METHOD(0x140E10800, UIDungeonClosingPhotoDialog, FUN_140e10800, 616, 0x3ACFF152);
 MS2_REPLACE_METHOD_VIA(0x140E0EA80, UIDungeonClosingPhotoDialog, IUIAvatarEventListener, vfunc_o178_1, 178, 0x0D4CB44B);
 MS2_REPLACE_METHOD(0x140E11D00, Unk_ClosingActor, FUN_140e11d00, 21, 0x1856F557);

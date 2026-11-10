@@ -19,16 +19,16 @@ public:
     CXmlData();                         // 0x14092c230
     CXmlData(const CStringW& strValues);    // 0x14092c2e0 parses "key=value" text (gameeventvalue.cpp)
     virtual ~CXmlData();                // 0x14092c2a0
-    bool FUN_14092c370(CXmlData* pOther);           // differs from pOther (additionalactionadditional.cpp)
-    void FUN_14092c590();                           // clears the parsed values
-    void FUN_14092c400(const CStringW& strValues);  // parses "key=value" text
+    bool IsDifferent(CXmlData* pOther);           // differs from pOther (additionalactionadditional.cpp)
+    void ClearValues();                           // clears the parsed values
+    void ParseValues(const CStringW& strValues);  // parses "key=value" text
     CString GetString(const CStringW& strKey, const CString& strDefault);     // value as an ansi string (scenestategame.cpp)
     CStringW FUN_14042cad0(const CStringW& strKey, const CStringW& strDefault);   // value as a wide string
-    bool FUN_14092c5c0();                           // no values parsed
-    float FUN_1408276a0(const CStringW& strKey, float* pfDefault);   // value as a float (0x1408276a0)
+    bool IsEmpty();                           // no values parsed
+    float GetFloat(const CStringW& strKey, float* pfDefault);   // value as a float (0x1408276a0)
     typedef ATL::CAtlMap<CStringW, CStringW, ATL::CStringElementTraits<CStringW> > Values;
     CStringW FUN_14092c630() const;                 // serializes to "<v key="value".../>"
-    bool FUN_14092c5f0(const CStringW& strKey) const;   // the key is present
+    bool HasKey(const CStringW& strKey) const;   // the key is present
     std::vector<int> GetIntArray(const CStringW& strKey, const std::vector<int>& vDefault);   // value as a comma separated int list (unit_140d1ae30)
     __int64 GetInt64(const CStringW& strKey, const __int64& nDefault);   // value as an __int64 (unit_140d1ae30)
     // The value as an int, nDefault when the key is missing. An inline (COMDAT copies 0x1403d8110 in gameevent.cpp

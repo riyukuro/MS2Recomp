@@ -56,7 +56,7 @@ extern Unk_Inventory g_143ab2a90;
 
 void FUN_141275260(int nStringId, int nA, int nB);      // notice by string id
 void FUN_140d73bc0(int nStringId, int nType, void* p, CStringW strTag);
-void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
+void ShowMessageBox(CStringW strText, int nType, void* p, CStringW strTag);
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table lookup by key
 CStringW GetStringCommon(int nStringId);                  // a string table text
 CString FUN_1405451e0(int nType);                       // the name of an equip slot type
@@ -69,7 +69,7 @@ class InvenSlot   // C3: member view for the former free stand-ins
 public:
     __int64 GetItemUid();
 };
-int FUN_141421230(MS2Ptr<CItem> spFrom, MS2Ptr<CItem> spTo, MS2Ptr<PCInfo> spPC);   // may the worn items be swapped
+int CanSwapEquippedItems(MS2Ptr<CItem> spFrom, MS2Ptr<CItem> spTo, MS2Ptr<PCInfo> spPC);   // may the worn items be swapped
 void FUN_1401fb9a0(unsigned char* payload, COutputStream& stream);
 void FUN_140710590(COutPacket& packet);                 // send the packet
 
@@ -167,7 +167,7 @@ int EquipSlot::vfunc_18(void* p)
         {
             MS2Ptr<CItem> spFrom = pFrom->vfunc_25();
             MS2Ptr<CItem> spThis = vfunc_25();
-            if (FUN_141421230(spFrom, spThis, m_spPC) != 0)
+            if (CanSwapEquippedItems(spFrom, spThis, m_spPC) != 0)
             {
                 Unk_EquipReq req;
                 req.m_nItemUid = ((CItem*)spFrom)->GetItemUid();
@@ -222,7 +222,7 @@ int EquipSlot::vfunc_0(void* p)
         tip.SetEnablePuton(vfunc_22());
         if (IsEnabled() == true)
             tip.SetEnablePreview(spItem);
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -265,7 +265,7 @@ LAB_gray_done:
             if (reinterpret_cast<Unk_EqEquipSet*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->IsLayerActive() == false)
                 slot.SetDisable(1);
         }
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -278,7 +278,7 @@ void EquipSlot::vfunc_9()
     {
         ASObj obj(m_value18, 2);
         if (obj.IsUndefinedOrNull() == 0)
-            obj.FUN_1407cba60("m_strSlotType", FUN_1405451e0(m_nSlot));
+            obj.SetStringMember("m_strSlotType", FUN_1405451e0(m_nSlot));
     }
 }
 
@@ -363,12 +363,12 @@ int EquipSlot::FUN_14120d2e0(CItem* pItem)
     if (bFlag && pItem->HasSkin() == 0)
     {
         if (m_nKind == 2)
-            FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_Invalid_slot_codi"), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommonByKey(L"s_item_err_Invalid_slot_codi"), 0, 0, CStringW(L""));
         else
             FUN_140d73bc0(0xd3, 0, 0, CStringW(L""));
         return 0;
     }
-    if (pItem->FUN_140527840()->GetModelOrEmpty()->FUN_14054b450(m_nSlot) == false)
+    if (pItem->FUN_140527840()->GetModelOrEmpty()->HasGroupType(m_nSlot) == false)
     {
         FUN_140d73bc0(0xd3, 0, 0, CStringW(L""));
         return 0;
@@ -406,18 +406,18 @@ void CreateEquipSlotBag(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, 
     {
         int nCount = pBag->GetSlotCount();
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x14120d8e0
 void DestroyEquipSlotBag(const CString& strName)
 {
-    EquipSlotBag* pBag = FUN_14120e140(Unk_NotifyContext::FUN_1422c8e90(strName));
+    EquipSlotBag* pBag = FUN_14120e140(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         pBag->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -466,7 +466,7 @@ EquipSlotBag::~EquipSlotBag()
 CString EquipSlotBag::vfunc_15(int nIndex)
 {
     Unk_InventoryEquipSlot nSlot = FUN_14120e0c0(nIndex);
-    CString str = StringFormat("{0}.{1}", FUN_1422c89f0(), nSlot);
+    CString str = StringFormat("{0}.{1}", GetName(), nSlot);
     return str;
 }
 

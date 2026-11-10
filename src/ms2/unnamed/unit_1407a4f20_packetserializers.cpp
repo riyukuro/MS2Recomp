@@ -73,10 +73,10 @@
 // ---- unrecovered neighbours -------------------------------------------------------------------------------------
 // C3: FUN_14070f440 = Unk_OSInput member (os.h)
 // 0x14070f480 = Unk_OSInput::Read6 (os.cpp)
-COutputStream& FUN_14070f960(COutputStream&, long);
+COutputStream& WriteLong(COutputStream&, long);
 COutputStream& FUN_14070f9a0(COutputStream&, unsigned int);
-COutputStream& FUN_14070f9e0(COutputStream&, __int64);
-COutputStream& FUN_14070fae0(COutputStream&, const CStringW&);
+COutputStream& WriteInt64(COutputStream&, __int64);
+COutputStream& WriteUnicodeString(COutputStream&, const CStringW&);
 CStringW GetStringCommon(int stringId);
 void FUN_14084f270(const StringIdInterfaceBase&, COutputStream&);   // serializes a StringIdInterfaceBase
 CStringW FUN_14016a730(const char*, int);                           // FormatStringId(id) without arguments
@@ -305,7 +305,7 @@ void FUN_1407a5f60(Unk_1407a5f60& v, COutputStream& out)
     out.WriteUnicodeString(v.m_10);
 }
 // @0x1407a5fd0
-void FUN_1407a5fd0(Unk_1407a5f60& v, CInputStream& in)
+void ReadCharNameResult(Unk_1407a5f60& v, CInputStream& in)
 {
     v.m_00 = in.ReadUInt8() == 1;
     v.m_08 = in.ReadInt64();
@@ -535,8 +535,8 @@ void FUN_1407a6ea0(Unk_1407a6db0& v, CInputStream& in)
 // @0x1407a6ef0
 void FUN_1407a6ef0(Unk_1407a6db0& v, COutputStream& out)
 {
-    FUN_14070f9e0(out, v.m_00);
-    FUN_14070f960(out, v.m_08);
+    WriteInt64(out, v.m_00);
+    WriteLong(out, v.m_08);
 }
 // @0x1407a6f30
 void FUN_1407a6f30(Unk_1407a6db0& v, CInputStream& in)
@@ -549,9 +549,9 @@ struct Unk_1407a6f80 { long m_00, m_04; CStringW m_08; };
 // @0x1407a6f80
 void FUN_1407a6f80(Unk_1407a6f80& v, COutputStream& out)
 {
-    FUN_14070f960(out, v.m_00);
-    FUN_14070f960(out, v.m_04);
-    FUN_14070fae0(out, v.m_08);
+    WriteLong(out, v.m_00);
+    WriteLong(out, v.m_04);
+    WriteUnicodeString(out, v.m_08);
 }
 // @0x1407a6fe0
 void FUN_1407a6fe0(Unk_1407a6f80& v, CInputStream& in)
@@ -569,8 +569,8 @@ void FUN_1407a7040(Unk_1407a7040& v, COutputStream& out)
     FUN_1407a6f80(v.m_28, out);
     int count = (int)v.m_08.GetCount();
     FUN_14070f9a0(out, v.m_00);
-    FUN_14070f960(out, count);
-    for (int i = 0; i < count; i = i + 1) FUN_14070f9e0(out, v.m_08[i]);
+    WriteLong(out, count);
+    for (int i = 0; i < count; i = i + 1) WriteInt64(out, v.m_08[i]);
 }
 // @0x1407a70f0
 void FUN_1407a70f0(Unk_1407a7040& v, CInputStream& in)
@@ -590,8 +590,8 @@ void FUN_1407a71a0(Unk_1407a71a0& v, COutputStream& out)
 {
     int count = (int)v.m_08.GetCount();
     FUN_14070f9a0(out, v.m_00);
-    FUN_14070f960(out, count);
-    for (int i = 0; i < count; i = i + 1) FUN_14070f9e0(out, v.m_08[i]);
+    WriteLong(out, count);
+    for (int i = 0; i < count; i = i + 1) WriteInt64(out, v.m_08[i]);
 }
 // @0x1407a7230
 void FUN_1407a7230(Unk_1407a71a0& v, CInputStream& in)
@@ -962,7 +962,7 @@ CSAdventureLevelMission::CSAdventureLevelMission() : m_kind(8), m_0c(0)
 // @0x1407a8db0
 CSAdventureLevelMission::~CSAdventureLevelMission()
 {
-    FUN_1407a95b0();
+    ClearMissions();
 }
 // @0x1407a8e00
 void CSAdventureLevelMission::FUN_1407a8e00(COutputStream& out) const
@@ -995,7 +995,7 @@ void CSAdventureLevelMission::FUN_1407a90e0(CInputStream& in)
     switch (m_kind) {
     case 6:
         m_0c = in.ReadUInt8();
-        FUN_1407a95b0();
+        ClearMissions();
         {
             unsigned __int64 count = (unsigned int)in.ReadInt32();
             for (unsigned __int64 i = 0; i < count; i++) {
@@ -1008,7 +1008,7 @@ void CSAdventureLevelMission::FUN_1407a90e0(CInputStream& in)
         }
         break;
     case 7:
-        FUN_1407a95b0();
+        ClearMissions();
         {
             unsigned __int64 count = (unsigned int)in.ReadInt32();
             for (unsigned __int64 i = 0; i < count; i++) {
@@ -1040,7 +1040,7 @@ void CSAdventureLevelMission::FUN_1407a9420(unsigned id, const CAdventureLevelMi
     }
 }
 // @0x1407a95b0
-void CSAdventureLevelMission::FUN_1407a95b0()
+void CSAdventureLevelMission::ClearMissions()
 {
     for (std::map<unsigned int, CAdventureLevelMissionData*>::iterator it = m_missions.begin(); it != m_missions.end(); ++it) {
         delete it->second;

@@ -61,8 +61,8 @@ public:
     unsigned int m_nFieldId;                                // +0x70 "fieldID"
     unsigned int m_nNightFieldId;                           // +0x74 "nightFieldID"
 
-    unsigned int FUN_140906e40(bool bNight);                // the field id (the night field when set and nonzero)
-    int FUN_140906e80();                                    // the reservation coupon of the grade (grade 1-3: 0xd4-0xd6, else 0)
+    unsigned int GetFieldId(bool bNight);                // the field id (the night field when set and nonzero)
+    int GetReservationCouponId();                                    // the reservation coupon of the grade (grade 1-3: 0xd4-0xd6, else 0)
 };
 MS2_CHECK_OFFSET(WeddingHallData, m_nMerat, 0x20);
 MS2_CHECK_OFFSET(WeddingHallData, m_items, 0x40);
@@ -77,7 +77,7 @@ public:
     virtual ~WeddingPackage();
     bool Read(TiXmlElement* pNode);                        // 0x140906f80
 
-    MS2Ptr<WeddingHallData> FUN_140907110(int nHallId);     // the hall of an id (null: none)
+    MS2Ptr<WeddingHallData> FindHall(int nHallId);     // the hall of an id (null: none)
 
     int m_nId;                                              // +0x18 "id"
     unsigned int m_nPlanner;                                // +0x1c "planner"

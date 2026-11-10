@@ -100,7 +100,7 @@ public:
     void AddColorBoost(float, float, float);
     NiAVObject* FUN_141675150(const CString& strNode);
 };
-__int64 FUN_14028d0e0();                                            // seed counter
+__int64 GenerateUniqueId();                                            // seed counter
 
 // The world service (0x1403ed2d0) and its object lookups.
 class Unk_AttendAvatarMgr : public WorldService
@@ -143,8 +143,8 @@ public:
 
 // Unit helpers declared elsewhere.
 // (0x140194470 is efd::Point3::operator=(const Point3&))
-efd::Point3 FUN_141b71390(Vector3 a, Vector3 b, Vector3 c, float t);   // curve point
-bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3& kCenter,
+efd::Point3 GetBezierPoint(Vector3 a, Vector3 b, Vector3 c, float t);   // curve point
+bool IntersectRaySphere(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3& kCenter,
                    float fRadius, NiPoint3* pHit);                                   // ray / sphere hit
 void DetachFromParent(NiAVObject* pNode);                                               // detach from the parent
 class Unk_Clock;
@@ -282,7 +282,7 @@ void CExpEffectInfo::UpdateMove(float fElapsed)
         else
         {
             float fT = m_fElapsed / m_fProgress;
-            efd::Point3 ptNew = FUN_141b71390(m_ptSource, m_ptPos, m_ptTarget, fT);
+            efd::Point3 ptNew = GetBezierPoint(m_ptSource, m_ptPos, m_ptTarget, fT);
             SetPosition(reinterpret_cast<Vector3&>(ptNew));
         }
     }
@@ -310,7 +310,7 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     m_fTotal = std::max<float>(DAT_1439f733c, fScaled);
     m_fProgress = fLen / m_fTotal;
     UpdateOrientation();
-    int nSeedA = (int)FUN_14028d0e0() + nObjectId;
+    int nSeedA = (int)GenerateUniqueId() + nObjectId;
     int nSeedB = (int)reinterpret_cast<GameObject*>(pPlayer)->GenerateSerialId() + nObjectId;
     int nSeedC = nSeedA * nSeedB * nObjectId;
     Unk_Random kRandom(nSeedA, nSeedB, nSeedC);
@@ -333,7 +333,7 @@ int CExpEffectInfo::Create(int nObjectId, void* pOwner)
     NoticeMessage kRequest;   // C3: was Unk_ExpTarget
     ((Unk_ExpTarget&)(kRequest)).m_spNode = (NiAVObject*)m_spNode.operator NiNode*();
     ((Unk_ExpTarget&)(kRequest)).m_strName = TSingleton<CommonResource>::GetInstance()->m_strEffectGetExp;
-    ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(pObj));
+    ((Unk_ExpTarget&)(kRequest)).m_nOwnerId = WorldService::GetInstance()->GetObjectKind(reinterpret_cast<class Unk_WsC_GameObj*>(pObj));
     kRequest.SetActor(((class GameObject*)(class Unk_ExpActor*)(pObj))->GetObjectId());
     m_hEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kRequest))));
     return 1;
@@ -370,7 +370,7 @@ void CExpEffectInfo::Finish()
     float fRadius = DAT_1439f7344 * ((class GameObject*)(class Unk_ExpActor*)(pPlayer))->GetScale();
     Vector3 ptCur = *(const Vector3*)&((NiAVObject*)m_spNode.operator->())->GetTranslate();
     NiPoint3 ptHit;
-    if (!FUN_14147aa60(reinterpret_cast<const efd::Point3&>(ptCur),
+    if (!IntersectRaySphere(reinterpret_cast<const efd::Point3&>(ptCur),
                        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((ptCur - m_ptTarget))),
                        reinterpret_cast<const efd::Point3&>(m_ptTarget), fRadius, &ptHit))
         ptHit = reinterpret_cast<const efd::Point3&>(ptCur);

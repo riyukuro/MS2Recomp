@@ -117,7 +117,7 @@ class Unk_AclSkillTable : public SkillDataTable
 
 
 bool FUN_140930110(int nObjectId);                          // 0x140930110 the object is the local player
-UIMainPlayerInfo* FUN_140931900(int nClass);                // 0x140931900 the main player info dialog
+UIMainPlayerInfo* FindMainPlayerInfo(int nClass);                // 0x140931900 the main player info dialog
 bool FUN_14028d470(float a, float b);                       // 0x14028d470 nearly equal
 __int64 FUN_140632990(__int64 nValue, float fRate);         // 0x140632990 scale and round
 float FUN_140768090();                                      // 0x140768090 random [0, 1)
@@ -210,8 +210,8 @@ int AdditionalCliList::Add(MS2Ptr<AdditionalCli> sp)
         const unsigned& nSet = sp->GetLevelData()->m_nSkillSetID;
         if (nSet)
         {
-            pMy->GetSkillSystem()->FUN_141767f80(nSet);
-            pMy->GetSkillSystem()->FUN_1417683d0();
+            pMy->GetSkillSystem()->AddSkillSet(nSet);
+            pMy->GetSkillSystem()->ApplySkillSet();
         }
         CGuildManager::GetInstance()->FUN_1413bce40(sp->GetId(), sp->GetLevel());
         int nEvent = 0xd;
@@ -224,7 +224,7 @@ int AdditionalCliList::Add(MS2Ptr<AdditionalCli> sp)
         if (pBar)
         {
             UpperHpBarEntity* pEntity = pBar->GetCurrentEntity();
-            if (pEntity && pEntity->FUN_141b4bbe0() == m_pOwner->GetObjectId())
+            if (pEntity && pEntity->GetId() == m_pOwner->GetObjectId())
             {
                 UILapenshardShieldBar* pShield = Unk_AcFindUI<UILapenshardShieldBar>((eUIClassID)0x4f73);
                 if (pShield)
@@ -260,8 +260,8 @@ void AdditionalCliList::Remove(int nKey, int nCaster)
         const unsigned& nSet = sp->GetLevelData()->m_nSkillSetID;
         if (nSet)
         {
-            pMy->GetSkillSystem()->FUN_141768100(nSet);
-            pMy->GetSkillSystem()->FUN_1417683d0();
+            pMy->GetSkillSystem()->RemoveSkillSet(nSet);
+            pMy->GetSkillSystem()->ApplySkillSet();
         }
         int nEvent = 0xd;
         FUN_1419f37f0(nEvent);
@@ -1151,8 +1151,8 @@ void AdditionalCliList::UpdateInfinitySP()
 {
     if (IsOwnerMyPC())
     {
-        if (UIMainPlayerInfo* pInfo = FUN_140931900(20063))
-            pInfo->FUN_1419f13b0(m_bInfinitySP == 0, 0);
+        if (UIMainPlayerInfo* pInfo = FindMainPlayerInfo(20063))
+            pInfo->SetInfinity(m_bInfinitySP == 0, 0);
     }
 }
 
@@ -1204,7 +1204,7 @@ bool AdditionalCliList::FUN_140973680(MS2Ptr<AdditionalCli> sp)
     }
     if (CNpc* pNpc = efd::DynamicCast<CNpc>(m_pOwner))
     {
-        if (((class CNpc*)(class PCBase*)(pNpc))->FUN_141092ff0())
+        if (((class CNpc*)(class PCBase*)(pNpc))->IsBoss())
             return true;
         if (sp && sp->GetLevelData()->GetParent()->GetCategory() == 9)
             return true;
@@ -1226,7 +1226,7 @@ void AdditionalCliList::AddBuffUI(MS2Ptr<AdditionalCli> sp)
     {
         if (IsOwnerMyPC())
         {
-            UIMainPlayerInfo* pInfo = FUN_140931900(20063);
+            UIMainPlayerInfo* pInfo = FindMainPlayerInfo(20063);
             if (pInfo)
                 pInfo->AddBuffEffect(sp);
         }
@@ -1234,10 +1234,10 @@ void AdditionalCliList::AddBuffUI(MS2Ptr<AdditionalCli> sp)
         {
             UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
             if (pBar)
-                pBar->FUN_141b4cf40(sp);
+                pBar->AddBuff(sp);
             UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
             if (pDuel)
-                pDuel->FUN_140e6c440(sp);
+                pDuel->AddBuffEffect(sp);
         }
     }
     if (!IsOwnerPortraitPC())
@@ -1259,7 +1259,7 @@ void AdditionalCliList::RemoveBuffUI(MS2Ptr<AdditionalCli> sp)
 {
     if (IsOwnerMyPC())
     {
-        UIMainPlayerInfo* pInfo = FUN_140931900(20063);
+        UIMainPlayerInfo* pInfo = FindMainPlayerInfo(20063);
         if (pInfo)
             pInfo->RemoveBuffEffect(sp->GetKey());
     }

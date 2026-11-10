@@ -20,7 +20,7 @@
 #include "ms2/client/ms2/loadingimagetable.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<unsigned int>::Get
 #include "ms2/scaleform/include/render/d3d9_texture.h"  // C3: Scaleform::Render::D3D9::Texture::Initialize
-class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
+class CUserMail { public: static __int64 GetGFxSceneService(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // ---- out-of-unit callees (bound to the exe by their FUN_<va> names / symbols) ----
           // the input service: (un)lock the mouse for the loading screen
@@ -34,9 +34,9 @@ public:
 class Unk_LpPlayer { public: virtual void vfunc_0(); };             // the local player (slot 78 = the level)
 class Unk_LpConstants;
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
-CString FUN_141900b70();
+CString GetInputDeviceName();
 class UICutSceneMovie* FindCutSceneMovie(int);   // 0x14138fd50 the cut scene movie dialog (guideentity_1b)
-class Unk_FtEntity { public: Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3); };
+class Unk_FtEntity { public: Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2, int a3); };
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);
 class Unk_LpTexture;
 // efd::SmartPointer<NiRenderedTexture>::operator-> 0x14127c9b0: smart pointer -> texture
@@ -53,7 +53,7 @@ public:
     struct IDirect3DBaseTexture9* GetD3DTexture() const;
 };
 int FUN_141277f50();                                                // next UI layer
-int FUN_1419e0b70(WorldService* pWorld);
+int GetFadeOutFlag(WorldService* pWorld);
 extern unsigned DAT_143af62d4, DAT_143af62d8; extern int DAT_143ab2874;
 
 // @0x1419df870
@@ -82,7 +82,7 @@ CString UILoadingProgress::GetTypeName()
 MS2_REPLACE_METHOD(0x1419DFA10, UILoadingProgress, GetTypeName, 61, 0xD91F5B27);
 
 // @0x1419dfa60
-void UILoadingProgress::FUN_1419dfa60(int nMap)
+void UILoadingProgress::StartProgress(int nMap)
 {
     m_74 = nMap;
     ((CInputKeyHandler*)FUN_14025e7c0())->SetModifier1(1);
@@ -97,25 +97,25 @@ void UILoadingProgress::FUN_1419dfa60(int nMap)
     {
         ASObj obj(FUN_1422db730());
         {
-            CString strPath = FUN_1419e0710();
-            obj.FUN_1407cba60("filePath", strPath);
-            obj.FUN_1407cba60("maskPath", FUN_1419e0650());
-            obj.FUN_1407cbb20("tip", TSingleton<CLoadingDescriptionTable>::GetInstance()->GetRandomTip());
-            obj.FUN_1407cb9c0("useFadeOut", FUN_1419e0600());
-            obj.FUN_1407cb9c0("showGuide", bShowGuide);
-            obj.FUN_1407cba60("showGuideType", FUN_141900b70());
-            obj.FUN_1407cb9c0("showMove", FUN_1419e0630());
-            obj.FUN_1407cbbe0("showFrame", vfunc_52());
+            CString strPath = GetLoadingImagePath();
+            obj.SetStringMember("filePath", strPath);
+            obj.SetStringMember("maskPath", GetMaskImagePath());
+            obj.SetWStringMember("tip", TSingleton<CLoadingDescriptionTable>::GetInstance()->GetRandomTip());
+            obj.SetIntMember("useFadeOut", FUN_1419e0600());
+            obj.SetIntMember("showGuide", bShowGuide);
+            obj.SetStringMember("showGuideType", GetInputDeviceName());
+            obj.SetIntMember("showMove", FUN_1419e0630());
+            obj.SetBoolMember("showFrame", vfunc_52());
         }
-        m_30->Invoke("startProgress", obj.FUN_1422bb870());
+        m_30->Invoke("startProgress", obj.GetValue());
     }
 }
 
 // @0x1419dfd90
-void UILoadingProgress::FUN_1419dfd90()
+void UILoadingProgress::StopProgress()
 {
     ((CInputKeyHandler*)FUN_14025e7c0())->SetModifier1(0);
-    m_70 = FUN_1419e04f0();
+    m_70 = GetTargetMapId();
     MS2Ptr<ASMovieClip> pClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
     if (pClip.get())
         pClip->Invoke("stopProgress", FUN_1419e0600());
@@ -124,40 +124,40 @@ void UILoadingProgress::FUN_1419dfd90()
 // @0x1419dfe70
 int UILoadingProgress::FUN_1419dfe70()
 {
-    if (TSingleton<CLoadingImageTable>::GetInstance()->HasImage(FUN_1419e04f0()) == 0)
+    if (TSingleton<CLoadingImageTable>::GetInstance()->HasImage(GetTargetMapId()) == 0)
         return 0;
     UICutSceneMovie* pCut = ((class UICutSceneMovie*)FindCutSceneMovie(0x4e7e));
-    if (pCut != 0 && ((class UICutSceneMovie*)(class UICutSceneMovie*)(pCut))->HasSceneVideo(FUN_1419e04b0()) != 0)
+    if (pCut != 0 && ((class UICutSceneMovie*)(class UICutSceneMovie*)(pCut))->HasSceneVideo(GetMapId()) != 0)
         return 0;
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x620000d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSceneId() == 0x620000d)
         return 1;
-    int nMap = FUN_1419e04f0();
-    int n = FUN_1419e04b0();
+    int nMap = GetTargetMapId();
+    int n = GetMapId();
     return TSingleton<CLoadingImageTable>::GetInstance()->IsSameImages(nMap, n) == 0;
 }
 
 // @0x1419dff50
-void UILoadingProgress::FUN_1419dff50(const CStringW& strMsg, int a, int b)
+void UILoadingProgress::SetProgress(const CStringW& strMsg, int a, int b)
 {
     MS2Ptr<ASMovieClip> pClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
     if (pClip.get())
-        reinterpret_cast<Unk_FtEntity*>(pClip.operator->())->FUN_1412c4930("progress", CStringW(strMsg), a, b);
+        reinterpret_cast<Unk_FtEntity*>(pClip.operator->())->Invoke("progress", CStringW(strMsg), a, b);
 }
-MS2_REPLACE_METHOD(0x1419DFF50, UILoadingProgress, FUN_1419dff50, 248, 0xF6585DC6);
+MS2_REPLACE_METHOD(0x1419DFF50, UILoadingProgress, SetProgress, 248, 0xF6585DC6);
 
 // @0x1419e0050
-void UILoadingProgress::FUN_1419e0050(const CStringW& strMsg)
+void UILoadingProgress::SetMoveChannelMessage(const CStringW& strMsg)
 {
     MS2Ptr<ASMovieClip> pClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
     if (pClip.get())
         pClip->Invoke("setMoveChannelMessage", CStringW(strMsg));
 }
-MS2_REPLACE_METHOD(0x1419E0050, UILoadingProgress, FUN_1419e0050, 216, 0xBC69F5B9);
+MS2_REPLACE_METHOD(0x1419E0050, UILoadingProgress, SetMoveChannelMessage, 216, 0xBC69F5B9);
 
 // @0x1419e0130
 void UILoadingProgress::vfunc_2()
 {
-    FUN_1422dbf00(FUN_1422db750(), 0, 0);
+    LoadSwf(FUN_1422db750(), 0, 0);
 }
 
 // @0x1419e0160
@@ -184,7 +184,7 @@ MS2_REPLACE_METHOD(0x1419E0280, UILoadingProgress, vfunc_16, 33, 0xBC0CEDA6);
 // @0x1419e02b0
 bool UILoadingProgress::vfunc_17()
 {
-    FUN_1419e08b0(DAT_143af62d4, DAT_143af62d8);
+    CreateBackgroundTexture(DAT_143af62d4, DAT_143af62d8);
     return true;
 }
 MS2_REPLACE_METHOD(0x1419E02B0, UILoadingProgress, vfunc_17, 39, 0xBC145410);
@@ -193,7 +193,7 @@ MS2_REPLACE_METHOD(0x1419E02B0, UILoadingProgress, vfunc_17, 39, 0xBC145410);
 void UILoadingProgress::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_1419e08b0(DAT_143af62d4, DAT_143af62d8);
+    CreateBackgroundTexture(DAT_143af62d4, DAT_143af62d8);
 }
 MS2_REPLACE_METHOD(0x1419E02E0, UILoadingProgress, OnLoadComplete, 47, 0x69214F2A);
 
@@ -204,7 +204,7 @@ int UILoadingProgress::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
         return 1;
     if (_stricmp("OnFadeInComplete", szMethod) == 0)
     {
-        ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422ba110();
+        ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422ba110();
         return 1;
     }
     return 0;
@@ -232,18 +232,18 @@ void UILoadingProgress::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3
 }
 
 // @0x1419e04b0
-int UILoadingProgress::FUN_1419e04b0()
+int UILoadingProgress::GetMapId()
 {
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x620000d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSceneId() == 0x620000d)
         return 0;
     return m_70;
 }
-MS2_REPLACE_METHOD(0x1419E04B0, UILoadingProgress, FUN_1419e04b0, 46, 0x6FE3E137);
+MS2_REPLACE_METHOD(0x1419E04B0, UILoadingProgress, GetMapId, 46, 0x6FE3E137);
 
 // @0x1419e04f0
-int UILoadingProgress::FUN_1419e04f0()
+int UILoadingProgress::GetTargetMapId()
 {
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x620000d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSceneId() == 0x620000d)
         return DAT_143ab2874;
     if (m_74 != 0)
     {
@@ -261,7 +261,7 @@ void UILoadingProgress::vfunc_41(const Scaleform::GFx::Value& root)
 // @0x1419e05c0
 bool UILoadingProgress::vfunc_52()
 {
-    int nScene = ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId();
+    int nScene = ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSceneId();
     if (nScene == 0x6200009 || nScene == 0x6200085)
         return false;
     return true;
@@ -270,7 +270,7 @@ bool UILoadingProgress::vfunc_52()
 // @0x1419e0600
 int UILoadingProgress::FUN_1419e0600()
 {
-    return FUN_1419e0b70(WorldService::GetInstance());
+    return GetFadeOutFlag(WorldService::GetInstance());
 }
 
 // @0x1419e0630
@@ -282,9 +282,9 @@ int UILoadingProgress::FUN_1419e0630()
 }
 
 // @0x1419e0650
-CString UILoadingProgress::FUN_1419e0650()
+CString UILoadingProgress::GetMaskImagePath()
 {
-    MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(FUN_1419e04b0());
+    MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(GetMapId());
     if (spField.get() != 0)
     {
         return CString(spField->m_strBgMask);
@@ -293,11 +293,11 @@ CString UILoadingProgress::FUN_1419e0650()
 }
 
 // @0x1419e0710
-CString UILoadingProgress::FUN_1419e0710()
+CString UILoadingProgress::GetLoadingImagePath()
 {
     if (FUN_1419dfe70() == 0)
         return "";
-    return TSingleton<CLoadingImageTable>::GetInstance()->GetImageFile(FUN_1419e04f0(), 1);
+    return TSingleton<CLoadingImageTable>::GetInstance()->GetImageFile(GetTargetMapId(), 1);
 }
 
 // @0x1419e07a0
@@ -326,7 +326,7 @@ void UILoadingProgress::FUN_1419e07a0()
 }
 
 // @0x1419e08b0
-void UILoadingProgress::FUN_1419e08b0(int nWidth, int nHeight)
+void UILoadingProgress::CreateBackgroundTexture(int nWidth, int nHeight)
 {
     NiTexture::FormatPrefs fmt;   // 0x140984420
     fmt.m_eAlphaFmt = NiTexture::FormatPrefs::ALPHA_DEFAULT;
@@ -366,7 +366,7 @@ bool UILoadingProgressLobby::vfunc_52()
 }
 
 // @0x1419e0b70
-int FUN_1419e0b70(WorldService* pWorld)
+int GetFadeOutFlag(WorldService* pWorld)
 {
     return *(int*)((char*)pWorld + 0x2a8);
 }

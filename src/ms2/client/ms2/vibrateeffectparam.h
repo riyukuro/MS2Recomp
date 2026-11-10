@@ -44,5 +44,5 @@ MS2_CHECK_SIZE(CVibrateEffect, 0x30);
 class Unk_VibrateEffectFactory
 {
 public:
-    CVibrateEffect* FUN_141b72910(const CVibrateEffectParam* pParam);   // create + start the shake directly (no NiPointer)
+    CVibrateEffect* CreateVibrateEffect(const CVibrateEffectParam* pParam);   // create + start the shake directly (no NiPointer)
 };

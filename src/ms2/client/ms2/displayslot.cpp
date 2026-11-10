@@ -19,7 +19,7 @@
 
 // ---- out-of-unit callees ----
 CStringW GetStringCommonByKey(const CStringW& str);            // string table lookup by key
-void FUN_1412751f0(const CStringW& str, int a, int b);  // show a notice
+void ShowSystemNotice(const CStringW& str, int a, int b);  // show a notice
 
 // The inventory singleton: the item of a uid.
 extern Unk_Inventory g_143ab2a90;
@@ -56,7 +56,7 @@ int DisplaySlot::vfunc_18(void* p)
         {
             if (!spItem->HasStringTag(m_nSlotType))
             {
-                FUN_1412751f0(GetStringCommonByKey(L"s_item_err_not_match_slot_item"), 1, 1);
+                ShowSystemNotice(GetStringCommonByKey(L"s_item_err_not_match_slot_item"), 1, 1);
                 return static_cast<DragSlot*>((DragSlot*)p)->vfunc_10();
             }
         }
@@ -89,7 +89,7 @@ int DisplaySlot::vfunc_0(void* p)
     ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x20, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()))
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -109,7 +109,7 @@ int DisplaySlot::vfunc_8(void* p)
     if (slot.FUN_1409c3860(m_spItem.get(), pPlayer, 0x415))
     {
         slot.SetUseRightClick(true);
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -128,15 +128,15 @@ void RegisterDisplaySlot(const CString& strName, MS2Ptr<CItem> spItem, int nSlot
 {
     DisplaySlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) DisplaySlot(strName, spItem, nSlotType);
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::RegisterBinding(strName, pSlot);
 }
 
 // @0x140a50ac0
 void UnregisterDisplaySlot(const CString& strName)
 {
-    DisplaySlot* pSlot = AsDisplaySlot(Unk_NotifyContext::FUN_1422c8e90(strName));
+    DisplaySlot* pSlot = AsDisplaySlot(Unk_NotifyContext::FindBinding(strName));
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
 }
 
 // @0x140a50b00

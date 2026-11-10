@@ -85,7 +85,7 @@ static CString s_shopSort[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "
 // ---- unit-local views of exe objects ----
 
 template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // the target drop down (0x140c28560)
-class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
+class Unk_PcFieldTable* GetWorldMapManager();   // C3: was GetWorldMapManager
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;              // ids already remembered
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);   // show a notice
@@ -144,8 +144,8 @@ CString UIUGCPortalDialog::GetTypeName()
 void UIUGCPortalDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925fa0("m_dragBar");
-    FUN_141925ec0("m_btnCancel");
+    BindDragBar("m_dragBar");
+    BindCloseButton("m_btnCancel");
     FUN_140fb0e30();
     m_30.operator->()->Invoke("setData", m_180, m_188, m_18c, m_190);
 }
@@ -204,7 +204,7 @@ static void FUN_140fb1930(ASDataProvider* pArray, unsigned int nIndex, const CSt
 
 // The selected row's member `strName` of a drop down.
 // @0x140fb19c0
-static void FUN_140fb19c0(ASDropdownMenu* pCombo, const CString& strName, CStringW& strOut)
+static void GetSelectedItemString(ASDropdownMenu* pCombo, const CString& strName, CStringW& strOut)
 {
     unsigned int nSel = pCombo->GetSelectedIndex();
     if ((int)nSel < 0)
@@ -234,7 +234,7 @@ void UIUGCPortalDialog::OnApply()
     CStringW strId(L"");
     if (MS2Ptr<ASDropdownMenu> spCombo = GetChild<ASDropdownMenu>("m_dropDownTarget"))
     {
-        FUN_140fb19c0(spCombo.operator->(), "id", strId);
+        GetSelectedItemString(spCombo.operator->(), "id", strId);
     }
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.WriteUInt8(6);
@@ -251,7 +251,7 @@ void UIUGCPortalDialog::OnApply()
 // @0x140fb0da0
 bool UIUGCPortalDialog::FUN_140fb0da0(CStringW& strName)
 {
-    int nId = CStringTable::GetInstance()->FUN_141812c40(3, strName);
+    int nId = CStringTable::GetInstance()->FindIdByName(3, strName);
     if (nId < 0)
         return false;
     strName = StringFormat(L"{0}", nId);
@@ -294,8 +294,8 @@ void UIUGCPortalDialog::FUN_140fb1040()
         none.FUN_1409c0dc0("label", "$s_ugcportal_label_target_list_none");
         spCombo.operator->()->AddItemRow(none);
     }
-    std::set<int>* pRemembered = reinterpret_cast<std::set<int>*>(&reinterpret_cast<WorldMapManager*>(FUN_140cb17d0())->GetPortalFields());
-    WorldMapManager::TileGroups* pEntries = &reinterpret_cast<WorldMapManager*>(FUN_140cb17d0())->GetTileGroups();   // C3: was Unk_UgcpMgr::FUN_141b978c0
+    std::set<int>* pRemembered = reinterpret_cast<std::set<int>*>(&reinterpret_cast<WorldMapManager*>(GetWorldMapManager())->GetPortalFields());
+    WorldMapManager::TileGroups* pEntries = &reinterpret_cast<WorldMapManager*>(GetWorldMapManager())->GetTileGroups();   // C3: was Unk_UgcpMgr::FUN_141b978c0
     WorldMapManager::TileGroups::iterator it;
     std::vector<int> ids;
     for (it = pEntries->begin(); it != pEntries->end(); it++)
@@ -330,8 +330,8 @@ void UIUGCPortalDialog::FUN_140fb1040()
     {
         unsigned int nId = *m;
         ASObj item(2);
-        item.FUN_1407cbb20("id", StringFormat(L"{0}", nId));
-        item.FUN_1407cbb20("label", CStringTable::GetInstance()->FUN_141811980(3, nId));
+        item.SetWStringMember("id", StringFormat(L"{0}", nId));
+        item.SetWStringMember("label", CStringTable::GetInstance()->FUN_141811980(3, nId));
         spCombo.operator->()->AddItemRow(item);
     }
     spCombo.operator->()->SetSelectedIndex(0);
@@ -359,8 +359,8 @@ void UIUGCPortalDialog::FUN_140fb15a0()
             continue;
         CStringW strId = StringFormat(L"{0}", (unsigned __int64)buddies[i].get()->FUN_1401cc250());
         ASObj item(2);
-        item.FUN_1407cbb20("id", strId);
-        item.FUN_1407cbb20("label", buddies[i].get()->FUN_1401cc1c0());
+        item.SetWStringMember("id", strId);
+        item.SetWStringMember("label", buddies[i].get()->GetName());
         spCombo.operator->()->AddItemRow(item);
     }
     spCombo.operator->()->SetSelectedIndex(0);

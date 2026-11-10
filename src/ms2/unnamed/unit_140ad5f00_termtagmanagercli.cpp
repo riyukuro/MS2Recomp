@@ -38,15 +38,15 @@ void TermTagManagerCli::OnLoad(CInPacket& packet)
     for (size_t i = 0; i < nFinished; ++i) {
         MS2Ptr<TermTagContext> spContext(new TermTagContext());
         spContext->FUN_140866900(packet);
-        m_finishedById.insert(std::make_pair(spContext->FUN_140866670(), spContext));
-        m_finishedByName.insert(std::make_pair(spContext->FUN_140866690(), spContext));
+        m_finishedById.insert(std::make_pair(spContext->GetId(), spContext));
+        m_finishedByName.insert(std::make_pair(spContext->GetName(), spContext));
     }
     for (size_t i = 0; i < nRunning; ++i) {
         MS2Ptr<TermTagContext> spContext(new TermTagContext());
         spContext->FUN_140866900(packet);
         spContext->FUN_140866780();
-        m_runningById.insert(std::make_pair(spContext->FUN_140866670(), spContext));
-        m_runningByName.insert(std::make_pair(spContext->FUN_140866690(), spContext));
+        m_runningById.insert(std::make_pair(spContext->GetId(), spContext));
+        m_runningByName.insert(std::make_pair(spContext->GetName(), spContext));
     }
 }
 MS2_REPLACE_METHOD(0x140AD5FA0, TermTagManagerCli, OnLoad, 1065, 0x44BD2D9D);
@@ -59,8 +59,8 @@ void TermTagManagerCli::OnStart(CInPacket& packet)
         MS2Ptr<TermTagContext> spContext(new TermTagContext());
         spContext->FUN_140866900(packet);
         spContext->FUN_140866780();
-        m_runningById.insert(std::make_pair(spContext->FUN_140866670(), spContext));
-        m_runningByName.insert(std::make_pair(spContext->FUN_140866690(), spContext));
+        m_runningById.insert(std::make_pair(spContext->GetId(), spContext));
+        m_runningByName.insert(std::make_pair(spContext->GetName(), spContext));
     }
 }
 MS2_REPLACE_METHOD(0x140AD63D0, TermTagManagerCli, OnStart, 527, 0xE13B2D98);
@@ -73,10 +73,10 @@ void TermTagManagerCli::OnEnd(CInPacket& packet)
         MS2Ptr<TermTagContext> spContext(new TermTagContext());
         spContext->FUN_140866900(packet);
         spContext->FUN_1408667e0();
-        m_runningById.erase(spContext->FUN_140866670());
-        m_runningByName.erase(spContext->FUN_140866690());
-        m_finishedById.insert(std::make_pair(spContext->FUN_140866670(), spContext));
-        m_finishedByName.insert(std::make_pair(spContext->FUN_140866690(), spContext));
+        m_runningById.erase(spContext->GetId());
+        m_runningByName.erase(spContext->GetName());
+        m_finishedById.insert(std::make_pair(spContext->GetId(), spContext));
+        m_finishedByName.insert(std::make_pair(spContext->GetName(), spContext));
     }
 }
 MS2_REPLACE_METHOD(0x140AD65F0, TermTagManagerCli, OnEnd, 669, 0xF9E7EEFF);
@@ -98,10 +98,10 @@ CMsTime TermTagManagerCli::GetEndTime(CStringW name)
 {
     std::unordered_map<CStringW, MS2Ptr<TermTagContext> >::iterator it = m_runningByName.find(name);
     if (it != m_runningByName.end())
-        return it->second->FUN_140866720();
+        return it->second->GetEndTime();
     std::unordered_map<CStringW, MS2Ptr<TermTagContext> >::iterator itFinished = m_finishedByName.find(name);
     if (itFinished != m_finishedByName.end())
-        return itFinished->second->FUN_140866720();
+        return itFinished->second->GetEndTime();
     return CMsTime(0);
 }
 MS2_REPLACE_METHOD(0x140AD6970, TermTagManagerCli, GetEndTime, 319, 0xA2DAF944);

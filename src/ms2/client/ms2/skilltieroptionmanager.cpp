@@ -32,7 +32,7 @@ class Unk_140166420 : public CFileSystem { };
 class CFileSystem * GetFileSystem(void);
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement* pElem);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlQuery(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
@@ -43,9 +43,9 @@ struct Unk_RegMarker {};
 
 typedef MS2Ptr<CSkillTierOption> CSkillTierOptionPtr;
 int LoadItemOptionSkillTier();
-unsigned FUN_14080c530();
+unsigned GetTierCount();
 unsigned FUN_14080c5a0(unsigned nIndex);
-int FUN_14080c1c0(unsigned nTier, ATL::CAtlArray<unsigned int>* pOut);
+int GetTierSkills(unsigned nTier, ATL::CAtlArray<unsigned int>* pOut);
 int FUN_14080c370(unsigned nTier, eJobCode eJob, ATL::CAtlArray<unsigned int>* pOut);
 
 // ---- dynamic initializers (.text$di) ----
@@ -100,7 +100,7 @@ CSkillTierOptionManager::CSkillTierOptionManager(PC* pOwner)
 int CSkillTierOptionManager::Update()
 {
     int bChanged = 0;
-    for (unsigned i = 0; i < FUN_14080c530(); i++)
+    for (unsigned i = 0; i < GetTierCount(); i++)
     {
         CSkillTierOptionManager::TierId nTier = (CSkillTierOptionManager::TierId)FUN_14080c5a0(i);
         if (nTier == 0)
@@ -153,15 +153,15 @@ void CSkillTierOptionManager::Clear()
 // @0x14080bc00
 int LoadItemOptionSkillTier()
 {
-    CString strPath = FUN_14071a5b0("Table", "itemOptionSkillTier.xml");
+    CString strPath = GetXmlPath("Table", "itemOptionSkillTier.xml");
     TiXmlDocument doc;
-    if (((class CFileSystem*)(((class Unk_140166420 *)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420 *)GetFileSystem())))->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
         s_options.RemoveAll();
         s_spCache.AssignRaw(new CCacheData);
-        s_spCache.get()->FUN_1401d1160(CString(strPath));
+        s_spCache.get()->SetPath(CString(strPath));
         if (s_tierIds.IsEmpty())
         {
             for (unsigned nTier = 0; nTier < 0xcf; nTier++)
@@ -205,7 +205,7 @@ int LoadItemOptionSkillTier()
 }
 
 // @0x14080c1c0
-int FUN_14080c1c0(unsigned nTier, ATL::CAtlArray<unsigned int>* pOut)
+int GetTierSkills(unsigned nTier, ATL::CAtlArray<unsigned int>* pOut)
 {
     TPtrValue<Unk_SkillJobMap> spMap = 0;
     if (Unk_LockGuard guard = s_lock) { __assume(0); } else
@@ -245,7 +245,7 @@ int FUN_14080c370(unsigned nTier, eJobCode eJob, ATL::CAtlArray<unsigned int>* p
 }
 
 // @0x14080c530
-unsigned FUN_14080c530()
+unsigned GetTierCount()
 {
     if (Unk_LockGuard guard = s_lock) { __assume(0); } else
         return (unsigned)s_tierIds.GetCount();

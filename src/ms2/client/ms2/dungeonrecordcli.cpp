@@ -43,24 +43,24 @@ typedef MS2Ptr<CMsgBoxData> Unk_MsgBoxPtr;
 class UIDungeonClosingPhotoDialog : public UIObject
 {
 public:
-    void FUN_140e0eb40(CInPacket& packet);
+    void OnClosingPhotoPacket(CInPacket& packet);
 };
 
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 
 // Free functions of the exe, bound by their FUN_<va> names.
 __int64 GetServerTime();
 UIGameMenuDialog* FindGameMenuDialog(int nId);
 CStringW GetStringCommonByKey(const CStringW& str);
-void FUN_1412751f0(const CStringW& text, int nA, int nB);
+void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void FUN_1412752d0(const CStringW& text, int nA);
 CStringW FUN_140298ea0(CStringW str);
 CStringW BlockFormat(int nId);
 template <class A> CStringW FormatStringId(int nId, const A& a);
-CStringW FUN_140b8e9a0(const CMsTime& t);
+CStringW FormatMonthDayWeekday(const CMsTime& t);
 void FUN_140d73ff0(CStringW text);
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
-Unk_MsgBoxPtr FUN_140d74390(CStringW text, int nType, Unk_MsgBoxCallback cb);
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
+Unk_MsgBoxPtr ShowMessageBoxWithCallback(CStringW text, int nType, Unk_MsgBoxCallback cb);
 extern __int64 DAT_143ab2828;
 
 // Methods of the commonfiles units (their link symbols are not in the committed table), bound by VA: this first.
@@ -160,7 +160,7 @@ bool DungeonRecordCli::HasCountLeft()
 // @0x140b20990
 bool DungeonRecordCli::IsExtraExhausted()
 {
-    MS2Ptr<DungeonExtraRewardCountCtx> spEvent = ((CGameRule*)FUN_1401c0d90())->GetDungeonExtraRewardCount(m_dungeonRoomID);
+    MS2Ptr<DungeonExtraRewardCountCtx> spEvent = ((CGameRule*)GetGameRule())->GetDungeonExtraRewardCount(m_dungeonRoomID);
     if (spEvent == 0)
         return false;
     return GetExtraCountNow() < spEvent->m_count;
@@ -268,16 +268,16 @@ void DungeonRecordManagerCli::OnRewardNotice(CInPacket& packet)
     switch (nKind)
     {
     case 1:
-        FUN_1412751f0(GetStringCommonByKey(L"s_room_dungeon_give_reward"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_room_dungeon_give_reward"), 1, 1);
         break;
     case 2:
-        FUN_1412751f0(GetStringCommonByKey(L"s_room_dungeon_give_dungeonHelperReward"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_room_dungeon_give_dungeonHelperReward"), 1, 1);
         break;
     case 3:
-        FUN_1412751f0(GetStringCommonByKey(L"s_room_dungeon_reward_addExtraCount"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_room_dungeon_reward_addExtraCount"), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_room_dungeon_record_notify_change_expert", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nValue)), 1, 1);
+        ShowSystemNotice(FUN_14028dfa0<CStringW>(L"s_room_dungeon_record_notify_change_expert", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, nValue)), 1, 1);
         break;
     }
 }
@@ -299,7 +299,7 @@ UIDungeonClosingPhotoDialog* FindClosingPhotoDialog(int nId)
 void DungeonRecordManagerCli::OnClosingPhoto(CInPacket& packet)
 {
     if (UIDungeonClosingPhotoDialog* pDlg = FindClosingPhotoDialog(0x4f19))
-        pDlg->FUN_140e0eb40(packet);
+        pDlg->OnClosingPhotoPacket(packet);
 }
 
 // @0x140b21190
@@ -314,7 +314,7 @@ void DungeonRecordManagerCli::OnAddRecordExtra(CInPacket& packet)
     DungeonRecordCliPtr spRecord(new DungeonRecordCli);
     packet >> *spRecord;
     m_records.SetAt(spRecord->GetDungeonRoomID(), spRecord);
-    FUN_1412751f0(GetStringCommonByKey(L"s_room_dungeon_reward_addExtraCount"), 1, 1);
+    ShowSystemNotice(GetStringCommonByKey(L"s_room_dungeon_reward_addExtraCount"), 1, 1);
     if (UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28))
         pMenu->FUN_141938ae0(0x4f1c, 0);
 }
@@ -343,7 +343,7 @@ void DungeonRecordManagerCli::OnError(CInPacket& packet)
         {
             DungeonRecordCliPtr spRecord = GetRecord(((class DungeonRoom*)(class DungeonRoom*)(spRoom.operator->()))->GetDungeonRoomID());
             if (spRecord.get())
-                FUN_140d73aa0(FormatStringId<CStringW>(0x9a2, FUN_140b8e9a0(spRecord->GetExpire())), 0, 0, L"");
+                ShowMessageBox(FormatStringId<CStringW>(0x9a2, FormatMonthDayWeekday(spRecord->GetExpire())), 0, 0, L"");
         }
         break;
     }
@@ -384,10 +384,10 @@ void DungeonRecordManagerCli::OnError(CInPacket& packet)
         FUN_140d73ff0(L"s_room_dungeon_CantEnterInDungeon");
         break;
     case 0x11:
-        FUN_140d74390(FUN_14028dfa0<int>(CStringW(L"s_room_dungeon_OverMaxUserCount"), nArg), 0, Unk_MsgBoxCallback());
+        ShowMessageBoxWithCallback(FUN_14028dfa0<int>(CStringW(L"s_room_dungeon_OverMaxUserCount"), nArg), 0, Unk_MsgBoxCallback());
         break;
     case 0x12:
-        FUN_140d74390(FUN_14028dfa0<int>(CStringW(L"s_room_dungeon_UnderMinUserCount"), nArg), 0, Unk_MsgBoxCallback());
+        ShowMessageBoxWithCallback(FUN_14028dfa0<int>(CStringW(L"s_room_dungeon_UnderMinUserCount"), nArg), 0, Unk_MsgBoxCallback());
         break;
     case 0x13:
         FUN_1412752d0(L"s_room_dungeon_noRewardDayOfWeeks", 1);
@@ -426,13 +426,13 @@ void DungeonRecordManagerCli::OnError(CInPacket& packet)
         FUN_140d73ff0(L"s_room_dungeon_cant_enter_in_partymember");
         break;
     case 0x1f:
-        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_room_dungeon_error_used_reset_united_reward")), 1, 1);
+        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_room_dungeon_error_used_reset_united_reward")), 1, 1);
         break;
     case 0x20:
-        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_room_dungeon_error_still_have_united_reawrd")), 1, 1);
+        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_room_dungeon_error_still_have_united_reawrd")), 1, 1);
         break;
     case 0x21:
-        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_room_dungeon_error_shutdown_united_reawrd_reset")), 1, 1);
+        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_room_dungeon_error_shutdown_united_reawrd_reset")), 1, 1);
         break;
     default:
         MS2_ASSERT_AT(0x15c, 0);
@@ -669,7 +669,7 @@ void DungeonRecordManagerCli::ShowLackExtraTicket(unsigned nRoomID)
         return;
     if (!((class DungeonRoom*)(class DungeonRoom*)(spRoom.operator->()))->CanBuyCouponInMeratMarket())
     {
-        FUN_1412751f0(BlockFormat(0x31), 1, 1);
+        ShowSystemNotice(BlockFormat(0x31), 1, 1);
         return;
     }
     CStringW strItem = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ((class DungeonRoom*)(class DungeonRoom*)(spRoom.operator->()))->GetCouponBaseItemID());

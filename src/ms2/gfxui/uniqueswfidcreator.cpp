@@ -60,7 +60,7 @@ int UniqueSwfIDCreator::FUN_1422f6ac0(CString& strId, const CString& strFile, in
 MS2_REPLACE_METHOD(0x1422F6AC0, UniqueSwfIDCreator, FUN_1422f6ac0, 448, 0xF6BCEC19);
 
 // @0x1422f6c90
-int UniqueSwfIDCreator::FUN_1422f6c90(CString strId)
+int UniqueSwfIDCreator::RemoveId(CString strId)
 {
     if (m_list10.IsEmpty())
         return 1;
@@ -71,7 +71,7 @@ int UniqueSwfIDCreator::FUN_1422f6c90(CString strId)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422F6C90, UniqueSwfIDCreator, FUN_1422f6c90, 176, 0xEE650437);
+MS2_REPLACE_METHOD(0x1422F6C90, UniqueSwfIDCreator, RemoveId, 176, 0xEE650437);
 
 // @0x1422f6d50
 int UniqueSwfIDCreator::FUN_1422f6d50(CString& strId, CString strName, const CString& strExt)

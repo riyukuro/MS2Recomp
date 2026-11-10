@@ -64,38 +64,38 @@ void UIStanceBar::vfunc_15()
 MS2_REPLACE_METHOD(0x140BA2380, UIStanceBar, vfunc_15, 6, 0xA9AF6E37);
 
 // @0x140ba2390
-void UIStanceBar::FUN_140ba2390(const Unk_StanceInfo* pInfo)
+void UIStanceBar::StartStance(const Unk_StanceInfo* pInfo)
 {
     FUN_140ba2520(pInfo);
 }
-MS2_REPLACE_METHOD(0x140BA2390, UIStanceBar, FUN_140ba2390, 34, 0xE319DB36);
+MS2_REPLACE_METHOD(0x140BA2390, UIStanceBar, StartStance, 34, 0xE319DB36);
 
 // @0x140ba23c0
-void UIStanceBar::FUN_140ba23c0(const Unk_StanceInfo* pInfo)
+void UIStanceBar::RestartStance(const Unk_StanceInfo* pInfo)
 {
-    FUN_140ba2400();
+    StopStance();
     FUN_140ba2520(pInfo);
 }
-MS2_REPLACE_METHOD(0x140BA23C0, UIStanceBar, FUN_140ba23c0, 44, 0x1DFB2EF1);
+MS2_REPLACE_METHOD(0x140BA23C0, UIStanceBar, RestartStance, 44, 0x1DFB2EF1);
 
 // @0x140ba2400
-void UIStanceBar::FUN_140ba2400()
+void UIStanceBar::StopStance()
 {
     FUN_140ba25c0();
 }
-MS2_REPLACE_METHOD(0x140BA2400, UIStanceBar, FUN_140ba2400, 24, 0xF925C20E);
+MS2_REPLACE_METHOD(0x140BA2400, UIStanceBar, StopStance, 24, 0xF925C20E);
 
 // @0x140ba2420
-void UIStanceBar::FUN_140ba2420(unsigned long nTime)
+void UIStanceBar::UpdateTime(unsigned long nTime)
 {
     if (m_30 == 0)
         return;
     m_30->Invoke("updateTime", nTime);
 }
-MS2_REPLACE_METHOD(0x140BA2420, UIStanceBar, FUN_140ba2420, 98, 0x22931AE7);
+MS2_REPLACE_METHOD(0x140BA2420, UIStanceBar, UpdateTime, 98, 0x22931AE7);
 
 // @0x140ba2490
-void UIStanceBar::FUN_140ba2490(int nStep)
+void UIStanceBar::UpdateStep(int nStep)
 {
     if (m_30 == 0)
         return;
@@ -104,7 +104,7 @@ void UIStanceBar::FUN_140ba2490(int nStep)
     m_80 = nStep;
     m_30->Invoke("updateStep", (unsigned int)nStep);
 }
-MS2_REPLACE_METHOD(0x140BA2490, UIStanceBar, FUN_140ba2490, 132, 0xB3D22CD9);
+MS2_REPLACE_METHOD(0x140BA2490, UIStanceBar, UpdateStep, 132, 0xB3D22CD9);
 
 // @0x140ba2520
 void UIStanceBar::FUN_140ba2520(const Unk_StanceInfo* pInfo)
@@ -121,7 +121,7 @@ MS2_REPLACE_METHOD(0x140BA2520, UIStanceBar, FUN_140ba2520, 141, 0x1BDBBEE3);
 void UIStanceBar::FUN_140ba25c0()
 {
     FUN_140ba25f0();
-    FUN_140ba2670();
+    MarkStopped();
 }
 MS2_REPLACE_METHOD(0x140BA25C0, UIStanceBar, FUN_140ba25c0, 34, 0x1FFC55D5);
 
@@ -134,13 +134,13 @@ void UIStanceBar::FUN_140ba25f0()
 MS2_REPLACE_METHOD(0x140BA25F0, UIStanceBar, FUN_140ba25f0, 120, 0x8A05DEAD);
 
 // @0x140ba2670
-void UIStanceBar::FUN_140ba2670()
+void UIStanceBar::MarkStopped()
 {
     m_84 = true;
     m_80 = 1;
     FUN_140ba26b0();
 }
-MS2_REPLACE_METHOD(0x140BA2670, UIStanceBar, FUN_140ba2670, 51, 0x416A8653);
+MS2_REPLACE_METHOD(0x140BA2670, UIStanceBar, MarkStopped, 51, 0x416A8653);
 
 // @0x140ba26c0
 void UIStanceBar::FUN_140ba26c0()

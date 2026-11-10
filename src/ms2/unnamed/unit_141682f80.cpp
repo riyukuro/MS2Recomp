@@ -100,7 +100,7 @@ public:
 };
 
 class Unk_PCTimer;      // the 0x38-byte key repeat timer at +8
-class Unk_PCBuffTable;  // FUN_1409331e0 / FUN_1409331f0 singletons (buff block / buff lookup tables)
+class Unk_PCBuffTable;  // FUN_1409331e0 / GetKeyTable singletons (buff block / buff lookup tables)
 // the mouse click-to-move state; GetMove returns its direction by value
 class CMouseController   // C3: member view for the former free stand-ins
 {
@@ -118,19 +118,19 @@ template<> class TSingleton<CameraMgr> { public: static CameraMgr* s_instance; s
 class Unk_PCMove
 {
 public:
-    bool FUN_141682f80(int nKey);
-    bool FUN_141682fe0(int nKey);
-    bool FUN_1416830b0(int nKey);
+    bool IsKeyDown(int nKey);
+    bool IsActionKeyDown(int nKey);
+    bool WasKeyPressed(int nKey);
     bool FUN_141683100(int nKey);
-    bool FUN_141683150(int nKey);
+    bool WasKeyReleased(int nKey);
     bool FUN_141683200(int nKey);
-    Vector3 FUN_141683290();
-    Vector3 FUN_1416836d0();
+    Vector3 GetMoveDirection();
+    Vector3 GetPressedMoveDirection();
     Vector3 FUN_141683900();
     bool FUN_1416839b0();
-    void FUN_141683a90();
+    void UpdateMoveDirection();
     bool FUN_141683ef0();
-    int FUN_141684060(int nKey);
+    int GetKeyAction(int nKey);
     bool FUN_1416840c0(int nKey);
     bool FUN_141684170(int nKey);
 
@@ -153,11 +153,11 @@ void* FUN_14025e7c0();
 class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14116dbf0(int*, int*, int*, bool, int);
+    bool GetMouseDelta(int*, int*, int*, bool, int);
     bool FUN_14116d7a0(unsigned nMask);
 };
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
-class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
+class Unk_SoundSink* GetKeyTable();   // C3: was GetKeyTable
 class CGuideManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -205,7 +205,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
 class CInstrumentManager   // C3: member view for the former free stand-ins
@@ -221,7 +221,7 @@ public:
 };
 
 // @0x141682f80
-bool Unk_PCMove::FUN_141682f80(int nKey)
+bool Unk_PCMove::IsKeyDown(int nKey)
 {
     if (g_bAppActive == 0)
         return false;
@@ -231,14 +231,14 @@ bool Unk_PCMove::FUN_141682f80(int nKey)
 }
 
 // @0x141682fe0
-bool Unk_PCMove::FUN_141682fe0(int nKey)
+bool Unk_PCMove::IsActionKeyDown(int nKey)
 {
     if (g_bAppActive == 0)
         return false;
     int nX;
     int nY;
     int nZ;
-    if (((class CInputKeyHandler*)(class Unk_PCServices*)(reinterpret_cast<Unk_PCServices*>(FUN_14025e7c0())))->FUN_14116dbf0(&nX, &nY, &nZ, false, 0)) {
+    if (((class CInputKeyHandler*)(class Unk_PCServices*)(reinterpret_cast<Unk_PCServices*>(FUN_14025e7c0())))->GetMouseDelta(&nX, &nY, &nZ, false, 0)) {
         if (nKey == 0x493e8 && 0 < nZ)
             return true;
         else if (nKey == 0x493e9 && nZ < 0)
@@ -246,7 +246,7 @@ bool Unk_PCMove::FUN_141682fe0(int nKey)
     }
     if (!FUN_1416840c0(nKey))
         return false;
-    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->IsActionKeyDown(nKey) != 0) {
+    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)GetKeyTable()))))->IsActionKeyDown(nKey) != 0) {
         if (((void*)WorldService::GetInstance()) != 0)
             ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->ResetIdleTimer();
         return true;
@@ -255,7 +255,7 @@ bool Unk_PCMove::FUN_141682fe0(int nKey)
 }
 
 // @0x1416830b0
-bool Unk_PCMove::FUN_1416830b0(int nKey)
+bool Unk_PCMove::WasKeyPressed(int nKey)
 {
     if (g_bAppActive == 0)
         return false;
@@ -269,22 +269,22 @@ bool Unk_PCMove::FUN_141683100(int nKey)
 {
     if (!FUN_1416840c0(nKey))
         return false;
-    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->IsActionKeyPressed(nKey) != 0)
+    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)GetKeyTable()))))->IsActionKeyPressed(nKey) != 0)
         return true;
     return false;
 }
 MS2_REPLACE_METHOD(0x141683100, Unk_PCMove, FUN_141683100, 70, 0x1110430A);
 
 // @0x141683150
-bool Unk_PCMove::FUN_141683150(int nKey)
+bool Unk_PCMove::WasKeyReleased(int nKey)
 {
     if (g_bAppActive == 0)
         return false;
     if (!FUN_141683ef0())
         return true;
-    if (FUN_14138c930(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0())), FUN_141684060(nKey)) != 0)
+    if (FUN_14138c930(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0())), GetKeyAction(nKey)) != 0)
         return false;
-    if (FUN_141684060(nKey) == 0x493e1) {
+    if (GetKeyAction(nKey) == 0x493e1) {
         if (((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bdb5e0() != 0)
             return false;
     }
@@ -304,38 +304,38 @@ bool Unk_PCMove::FUN_141683200(int nKey)
         if (((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bdb5e0() != 0)
             return false;
     }
-    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331f0()))))->IsActionKeyReleased(nKey) != 0)
+    if (((class CKeyTable*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)GetKeyTable()))))->IsActionKeyReleased(nKey) != 0)
         return true;
     return false;
 }
 
 // @0x141683290
-Vector3 Unk_PCMove::FUN_141683290()
+Vector3 Unk_PCMove::GetMoveDirection()
 {
     Vector3 kDir = DAT_143b01a60;
     if (((class CGuideManager*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0()))))->IsRestricted(0x15) != 0 || ((class CGuideManager*)(class Unk_PCBuffTable*)(reinterpret_cast<Unk_PCBuffTable*>(((class Unk_PCBuffTable*)FUN_1409331e0()))))->IsRestricted(0x14) != 0) {
         return kDir;
     }
-    if (FUN_141682fe0(0x30d43)) {
+    if (IsActionKeyDown(0x30d43)) {
         kDir.x = 1.0f;
-    } else if (FUN_141682fe0(0x30d44)) {
+    } else if (IsActionKeyDown(0x30d44)) {
         kDir.x = -1.0f;
     }
-    if (FUN_141682fe0(0x30d41)) {
+    if (IsActionKeyDown(0x30d41)) {
         kDir.y = 1.0f;
-    } else if (FUN_141682fe0(0x30d42)) {
+    } else if (IsActionKeyDown(0x30d42)) {
         kDir.y = -1.0f;
     }
-    if (FUN_141682fe0(0x30d45)) {
+    if (IsActionKeyDown(0x30d45)) {
         kDir.x = 1.0f;
         kDir.y = 1.0f;
-    } else if (FUN_141682fe0(0x30d46)) {
+    } else if (IsActionKeyDown(0x30d46)) {
         kDir.x = -1.0f;
         kDir.y = 1.0f;
-    } else if (FUN_141682fe0(0x30d47)) {
+    } else if (IsActionKeyDown(0x30d47)) {
         kDir.x = 1.0f;
         kDir.y = -1.0f;
-    } else if (FUN_141682fe0(0x30d48)) {
+    } else if (IsActionKeyDown(0x30d48)) {
         kDir.x = -1.0f;
         kDir.y = -1.0f;
     }
@@ -358,7 +358,7 @@ Vector3 Unk_PCMove::FUN_141683290()
             TSingleton<CMouseController>::GetInstance()->FUN_140ad2070();
         }
     }
-    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xb5)) {
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xb5)) {
         if (*static_cast<bool*>(((void*)GetGamepadState((class Unk_GpSettings*)(TSingleton<CGameOption>::GetInstance())))) != 0) {
             if (!FUN_141683ef0()) {
                 return DAT_143b01a60;
@@ -383,7 +383,7 @@ Vector3 Unk_PCMove::FUN_141683290()
 }
 
 // @0x1416836d0
-Vector3 Unk_PCMove::FUN_1416836d0()
+Vector3 Unk_PCMove::GetPressedMoveDirection()
 {
     Vector3 kDir = DAT_143b01a60;
     if (FUN_141683100(0x30d43)) {
@@ -428,56 +428,56 @@ Vector3 Unk_PCMove::FUN_141683900()
     if (!FUN_141683ef0()) {
         return DAT_143b01a60;
     }
-    if (!FUN_1416839b0() && (m_moving != 0 || reinterpret_cast<Timer*>(m_timer)->FUN_140868ba0() != 0)) {
+    if (!FUN_1416839b0() && (m_moving != 0 || reinterpret_cast<Timer*>(m_timer)->IsRunning() != 0)) {
         return m_dir;
     } else {
-        return FUN_141683290();
+        return GetMoveDirection();
     }
 }
 
 // @0x1416839b0
 bool Unk_PCMove::FUN_1416839b0()
 {
-    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FindKeyByActionAndPriority(0x30d41, 2)))
+    if (IsKeyDown(reinterpret_cast<CKeyTable*>(GetKeyTable())->FindKeyByActionAndPriority(0x30d41, 2)))
         return true;
-    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FindKeyByActionAndPriority(0x30d42, 2)))
+    if (IsKeyDown(reinterpret_cast<CKeyTable*>(GetKeyTable())->FindKeyByActionAndPriority(0x30d42, 2)))
         return true;
-    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FindKeyByActionAndPriority(0x30d43, 2)))
+    if (IsKeyDown(reinterpret_cast<CKeyTable*>(GetKeyTable())->FindKeyByActionAndPriority(0x30d43, 2)))
         return true;
-    if (FUN_141682f80(reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FindKeyByActionAndPriority(0x30d44, 2)))
+    if (IsKeyDown(reinterpret_cast<CKeyTable*>(GetKeyTable())->FindKeyByActionAndPriority(0x30d44, 2)))
         return true;
     return false;
 }
 MS2_REPLACE_METHOD(0x1416839B0, Unk_PCMove, FUN_1416839b0, 207, 0x4ABC09D2);
 
 // @0x141683a90
-void Unk_PCMove::FUN_141683a90()
+void Unk_PCMove::UpdateMoveDirection()
 {
     int nDelay = 0x32;
     m_moving = 0;
-    if ((FUN_141683200(0x30d43) && FUN_141682fe0(0x30d41)) || (FUN_141683200(0x30d41) && FUN_141682fe0(0x30d43))) {
+    if ((FUN_141683200(0x30d43) && IsActionKeyDown(0x30d41)) || (FUN_141683200(0x30d41) && IsActionKeyDown(0x30d43))) {
         m_dir.x = 1.0f;
         m_dir.y = 1.0f;
-        reinterpret_cast<Timer*>(m_timer)->FUN_140868750(nDelay);
-    } else if ((FUN_141683200(0x30d43) && FUN_141682fe0(0x30d42)) || (FUN_141683200(0x30d42) && FUN_141682fe0(0x30d43))) {
+        reinterpret_cast<Timer*>(m_timer)->Start(nDelay);
+    } else if ((FUN_141683200(0x30d43) && IsActionKeyDown(0x30d42)) || (FUN_141683200(0x30d42) && IsActionKeyDown(0x30d43))) {
         m_dir.x = 1.0f;
         m_dir.y = -1.0f;
-        reinterpret_cast<Timer*>(m_timer)->FUN_140868750(nDelay);
-    } else if ((FUN_141683200(0x30d44) && FUN_141682fe0(0x30d41)) || (FUN_141683200(0x30d41) && FUN_141682fe0(0x30d44))) {
+        reinterpret_cast<Timer*>(m_timer)->Start(nDelay);
+    } else if ((FUN_141683200(0x30d44) && IsActionKeyDown(0x30d41)) || (FUN_141683200(0x30d41) && IsActionKeyDown(0x30d44))) {
         m_dir.x = -1.0f;
         m_dir.y = 1.0f;
-        reinterpret_cast<Timer*>(m_timer)->FUN_140868750(nDelay);
-    } else if ((FUN_141683200(0x30d44) && FUN_141682fe0(0x30d42)) || (FUN_141683200(0x30d42) && FUN_141682fe0(0x30d44))) {
+        reinterpret_cast<Timer*>(m_timer)->Start(nDelay);
+    } else if ((FUN_141683200(0x30d44) && IsActionKeyDown(0x30d42)) || (FUN_141683200(0x30d42) && IsActionKeyDown(0x30d44))) {
         m_dir.x = -1.0f;
         m_dir.y = -1.0f;
-        reinterpret_cast<Timer*>(m_timer)->FUN_140868750(nDelay);
-    } else if ((FUN_141683200(0x30d43) || FUN_141683200(0x30d44) || FUN_141683200(0x30d41) || FUN_141683200(0x30d42)) && reinterpret_cast<Timer*>(m_timer)->FUN_140868ba0() != 0) {
-        reinterpret_cast<Timer*>(m_timer)->FUN_1408687f0();
+        reinterpret_cast<Timer*>(m_timer)->Start(nDelay);
+    } else if ((FUN_141683200(0x30d43) || FUN_141683200(0x30d44) || FUN_141683200(0x30d41) || FUN_141683200(0x30d42)) && reinterpret_cast<Timer*>(m_timer)->IsRunning() != 0) {
+        reinterpret_cast<Timer*>(m_timer)->Reset();
         m_moving = 1;
     } else if ((FUN_141683200(0x30d43) || FUN_141683200(0x30d44)) && (FUN_141683200(0x30d41) || FUN_141683200(0x30d42))) {
-        reinterpret_cast<Timer*>(m_timer)->FUN_1408687f0();
+        reinterpret_cast<Timer*>(m_timer)->Reset();
     } else if (FUN_141683100(0x30d43) || FUN_141683100(0x30d44) || FUN_141683100(0x30d41) || FUN_141683100(0x30d42)) {
-        reinterpret_cast<Timer*>(m_timer)->FUN_1408687f0();
+        reinterpret_cast<Timer*>(m_timer)->Reset();
     }
     if (m_pOwner != 0) {
         Unk_PCActor* pActor = m_pOwner;
@@ -519,12 +519,12 @@ bool Unk_PCMove::FUN_141683ef0()
 MS2_REPLACE_METHOD(0x141683EF0, Unk_PCMove, FUN_141683ef0, 361, 0xC6E837A1);
 
 // @0x141684060
-int Unk_PCMove::FUN_141684060(int nKey)
+int Unk_PCMove::GetKeyAction(int nKey)
 {
-    __int64 nAction = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetKeyAction(nKey);
+    __int64 nAction = reinterpret_cast<CKeyTable*>(GetKeyTable())->GetKeyAction(nKey);
     return (int)nAction;
 }
-MS2_REPLACE_METHOD(0x141684060, Unk_PCMove, FUN_141684060, 44, 0x77C6DB8A);
+MS2_REPLACE_METHOD(0x141684060, Unk_PCMove, GetKeyAction, 44, 0x77C6DB8A);
 
 // @0x1416840c0
 bool Unk_PCMove::FUN_1416840c0(int nKey)
@@ -548,7 +548,7 @@ MS2_REPLACE_METHOD(0x1416840C0, Unk_PCMove, FUN_1416840c0, 161, 0x5769705B);
 // @0x141684170
 bool Unk_PCMove::FUN_141684170(int nKey)
 {
-    return FUN_1416840c0(FUN_141684060(nKey));
+    return FUN_1416840c0(GetKeyAction(nKey));
 }
 MS2_REPLACE_METHOD(0x141684170, Unk_PCMove, FUN_141684170, 44, 0x56BEA03B);
 
@@ -576,7 +576,7 @@ Unk_PCBaseBuffTracker::~Unk_PCBaseBuffTracker()
 }
 
 // @0x141682f60
-void FUN_141682f60(void* tracker, PCBase* owner)
+void SetOwner(void* tracker, PCBase* owner)
 {
     static_cast<Unk_PCMove*>(tracker)->m_pOwner = reinterpret_cast<Unk_PCActor*>(owner);
 }

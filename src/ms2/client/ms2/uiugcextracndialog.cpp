@@ -104,19 +104,19 @@ public:
 class Unk_UgcUiMgr { public: void FUN_141adc530(int nId); };
 // The update list of the entity app (its count and item i; slot 1 of an item is its per-frame update).
 class Unk_UgcUpdatable { public: virtual void vfunc_0(); virtual void vfunc_1(float fTime); };
-Unk_ServiceManager*FUN_1413f9850();                           // the game's service manager
-ecr::RenderService*FUN_1413f9890();
+Unk_ServiceManager*GetServiceManager();                           // the game's service manager
+ecr::RenderService*GetRenderService();
 CStringW TakeScreenshotJpg(int a, int b);                       // the screenshot path
 void FUN_141275260(int nId, int a, int b);                      // show a notice by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* nUnk, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* nUnk, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 
 // @0x140facb20
 UIUGCExtraCNDialog::UIUGCExtraCNDialog()
 {
     m_bCameraMode = false;
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
     m_2c = 10;
 }
 
@@ -129,7 +129,7 @@ UIUGCExtraCNDialog::~UIUGCExtraCNDialog()
 void UIUGCExtraCNDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140fad4f0(false);
+    SetCameraMode(false);
 }
 
 // @0x140facc10
@@ -158,17 +158,17 @@ int UIUGCExtraCNDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     if (_stricmp("onCameraMode", szMethod) == 0)
     {
-        FUN_140fad4f0(m_bCameraMode == 0);
+        SetCameraMode(m_bCameraMode == 0);
     }
     else if (_stricmp("onScreenShot", szMethod) == 0)
     {
         Unk_UgcShot* pShot = ((class Unk_UgcShot*)((void*)GetClientPlatform()));
         if (pShot->vfunc_2() == 1)
         {
-            if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, L""))
+            if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, L""))
             {
                 reinterpret_cast<CMsgBoxData*>(spBox.get())->FUN_141a024a0(false);
-                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCExtraCNDialog::FUN_140fad0a0));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIUGCExtraCNDialog::OnScreenshotConfirm));
                 FUN_140d73c60(spBox);
             }
         }
@@ -185,9 +185,9 @@ int UIUGCExtraCNDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 void UIUGCExtraCNDialog::FUN_140facfa0(bool bCameraMode)
 {
     if (bCameraMode)
-        FUN_140fad4f0(false);
+        SetCameraMode(false);
     if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_cameraMode"))
-        spButton.operator->()->FUN_1422c1fe0(bCameraMode == 0);
+        spButton.operator->()->SetEnabled(bCameraMode == 0);
 }
 
 // @0x140fad070
@@ -197,12 +197,12 @@ void UIUGCExtraCNDialog::FUN_140fad070(bool bCameraMode)
 }
 
 // @0x140fad0a0
-bool UIUGCExtraCNDialog::FUN_140fad0a0(int nResult, const CMsgBoxData& box)
+bool UIUGCExtraCNDialog::OnScreenshotConfirm(int nResult, const CMsgBoxData& box)
 {
-    efd::ServiceManager* pManager = reinterpret_cast<efd::ServiceManager *>(FUN_1413f9850());
+    efd::ServiceManager* pManager = reinterpret_cast<efd::ServiceManager *>(GetServiceManager());
     if (pManager == 0)
         return false;
-    ecr::RenderService* pList = FUN_1413f9890();
+    ecr::RenderService* pList = GetRenderService();
     if (pList == 0)
         return false;
     float fTime = (float)pManager->GetTime(0xe001001b);
@@ -223,14 +223,14 @@ bool UIUGCExtraCNDialog::FUN_140fad0a0(int nResult, const CMsgBoxData& box)
 }
 
 // @0x140fad2b0
-void UIUGCExtraCNDialog::FUN_140fad2b0()
+void UIUGCExtraCNDialog::RefreshCameraModeButton()
 {
     if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_cameraMode"))
     {
         if (m_bCameraMode)
-            spButton.operator->()->FUN_1422cdf50("$s_camera_default");
+            spButton.operator->()->SetLabel("$s_camera_default");
         else
-            spButton.operator->()->FUN_1422cdf50("$s_camera_free");
+            spButton.operator->()->SetLabel("$s_camera_free");
         if (MS2Ptr<ASMovieClip> spIcon = spButton.operator->()->FUN_1409b4560("m_icon"))
         {
             if (m_bCameraMode)
@@ -242,7 +242,7 @@ void UIUGCExtraCNDialog::FUN_140fad2b0()
 }
 
 // @0x140fad4f0
-void UIUGCExtraCNDialog::FUN_140fad4f0(bool bCameraMode)
+void UIUGCExtraCNDialog::SetCameraMode(bool bCameraMode)
 {
     m_bCameraMode = bCameraMode;
     if (m_bCameraMode)
@@ -256,5 +256,5 @@ void UIUGCExtraCNDialog::FUN_140fad4f0(bool bCameraMode)
         TSingleton<UgcHomeOptionData>::GetInstance()->ApplyCamera(mode.c);
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f3e);
     }
-    FUN_140fad2b0();
+    RefreshCameraModeButton();
 }

@@ -25,16 +25,16 @@ public:
     bool FUN_140c48df0(int, const CMsgBoxData&);        // the swap confirm box answer: take the source gemstones off
     void FUN_140c49000(ItemInfoSlot&, ASSlot&);         // bag slot callback
     void FUN_140c49110();                               // clear everything
-    void FUN_140c49250(int);                            // a source slot was picked
-    void FUN_140c49580(int);                            // a target slot was picked
+    void SelectSourceItem(int);                            // a source slot was picked
+    void SelectTargetItem(int);                            // a target slot was picked
     void OnRetry();                               // back to the start
     void FUN_140c49990(MS2Ptr<CItem>, CString, ASArray*);   // the gemstone slots of an item
-    void FUN_140c49fc0();                               // fill the source bag
+    void RefreshSourceItems();                               // fill the source bag
     void FUN_140c4a2b0(MS2Ptr<CItem>);                  // fill the target bag for a source
-    bool FUN_140c4a620(MS2Ptr<CItem>);                  // can be a source
+    bool CanBeSource(MS2Ptr<CItem>);                  // can be a source
     bool FUN_140c4a760(MS2Ptr<CItem>, MS2Ptr<CItem>);   // the second item can take the first one's gemstones
     void FUN_140c4a9a0(CAtlArray<MS2Ptr<CItem>>&);      // the inventory and equipped items
-    bool FUN_140c4ab30(MS2Ptr<CItem>, CStringW&);       // the swap price text; false when it cannot be paid
+    bool GetSwapPriceText(MS2Ptr<CItem>, CStringW&);       // the swap price text; false when it cannot be paid
 
     CAtlArray<MS2Ptr<CItem>> m_sourceItems;             // +0x30
     CAtlArray<MS2Ptr<CItem>> m_targetItems;             // +0x50

@@ -112,7 +112,7 @@ bool CImageHttpClient::RequestKey()
             return false;
         std::wstring strUrl((const wchar_t*)StringFormat(L"{0}?WorldId={1}&CharacterSn={2}&ImageType={3}", GetUrl(), reinterpret_cast<const int&>(DAT_143ab2830), reinterpret_cast<const unsigned __int64&>(DAT_143ab2828), GetImageType()));
         const TPtrValue<CWinHttpClient> request = CreateRequest(strUrl);
-        request->FUN_140920cf0(L"GET", false);
+        request->SendRequest(L"GET", false);
         SetRequest(request);
         if (request->FUN_140922f20() != 0)
             return false;
@@ -131,8 +131,8 @@ bool CImageHttpClient::UploadTemporaryKey(std::string strKey)
         if (BuildTemporaryKey(buffer, strKey))
         {
             const TPtrValue<CWinHttpClient> request = CreateRequest(GetUrl());
-            request->FUN_140922b90(buffer.FUN_140204eb0(), buffer.GetLength());
-            request->FUN_140922d20(MakeHeaders(buffer));
+            request->SetAdditionalDataToSend(buffer.FUN_140204eb0(), buffer.GetLength());
+            request->SetAdditionalRequestHeaders(MakeHeaders(buffer));
             SetRequest(request);
             m_pUploadThread = AfxBeginThread(ResponseServer, this);
             return true;
@@ -152,8 +152,8 @@ bool CImageHttpClient::BeginImage()
         if (BuildImage(buffer))
         {
             const TPtrValue<CWinHttpClient> request = CreateRequest(GetUrl());
-            request->FUN_140922b90(buffer.FUN_140204eb0(), buffer.GetLength());
-            request->FUN_140922d20(MakeHeaders(buffer));
+            request->SetAdditionalDataToSend(buffer.FUN_140204eb0(), buffer.GetLength());
+            request->SetAdditionalRequestHeaders(MakeHeaders(buffer));
             SetRequest(request);
             m_pImageThread = AfxBeginThread(ResponseClient, this);
             return true;
@@ -166,7 +166,7 @@ bool CImageHttpClient::BeginImage()
 unsigned CImageHttpClient::SendWebScreenshot()
 {
     TPtrValue<CWinHttpClient> request = GetRequest();
-    if ((request.get() ? true : false) && request->FUN_140920cf0(L"POST", false))
+    if ((request.get() ? true : false) && request->SendRequest(L"POST", false))
     {
         if (request->FUN_140922f20() != 0)
             return 0;
@@ -188,7 +188,7 @@ unsigned CImageHttpClient::SendTemporaryKey()
         TPtrValue<CWinHttpClient> request = GetRequest();
         if (request == 0)
             return 0;
-        request->FUN_140920cf0(L"PUT", false);
+        request->SendRequest(L"PUT", false);
         ClearRequest();
     }
     return 0;
@@ -199,7 +199,7 @@ bool CImageHttpClient::CanSend()
 {
     if (!TSingleton<CFeatureManager>::GetInstance()->IsRegionJP())
         return false;
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xf7))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xf7))
         return false;
     if (m_timer.Check(3000) == 0)
         return false;

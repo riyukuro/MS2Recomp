@@ -44,7 +44,7 @@ public:
     int FUN_141bd3060();   // C3: was free FUN_141bd3060
 };
 CStringW GetStringCommon(int nId);
-void FUN_140d73aa0(CStringW text, int nA, void* pB, CStringW tag);
+void ShowMessageBox(CStringW text, int nA, void* pB, CStringW tag);
 
 // The arena table (CIndividualArenaDataTable, the TSingleton instance).
 class Unk_PvpArenaTable;
@@ -74,7 +74,7 @@ CPVPManager::~CPVPManager() noexcept
 // @0x141280c60
 void CPVPManager::Clear()
 {
-    m_timers.m_timer.FUN_141017e80();
+    m_timers.m_timer.Clear();
     m_entries.FUN_14101b7f0();
 }
 
@@ -87,8 +87,8 @@ void CPVPManager::ForwardToEntries(void* pArgument)
 // @0x141280cd0
 void CPVPManager::OnMessage(int nMessage, CInPacket& packet)
 {
-    m_timers.m_timer.FUN_141017950(nMessage, packet);
-    m_entries.FUN_14101b830(nMessage, packet);
+    m_timers.m_timer.OnMessage(nMessage, packet);
+    m_entries.OnMessage(nMessage, packet);
     m_rankDuel.OnMessage(nMessage, packet);
 }
 
@@ -104,7 +104,7 @@ void CPVPManager::SendCancelRequest()
             return;
         if (reinterpret_cast<PCBase*>(spActor.operator->())->IsDead() != 0)
         {
-            FUN_140d73aa0(GetStringCommon(0x42e), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommon(0x42e), 0, 0, CStringW(L""));
             return;
         }
         CIndividualArenaDataTable::DataPtr spRecord = reinterpret_cast<CIndividualArenaDataTable*>(GetIndividualArenaDataTable())->GetData(Selection());
@@ -112,7 +112,7 @@ void CPVPManager::SendCancelRequest()
             return;
         if (spRecord->m_nFieldID == ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd3060())
         {
-            FUN_140d73aa0(GetStringCommon(0x42f), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommon(0x42f), 0, 0, CStringW(L""));
             return;
         }
         COutPacket packet(static_cast<int>(SendOp::Pvp), 0);

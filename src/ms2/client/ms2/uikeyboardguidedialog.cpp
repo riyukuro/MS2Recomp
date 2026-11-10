@@ -9,7 +9,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/placeholder/ascript.h"
 
-CString FUN_141900b70();    // uicommon.cpp: name of the active input device ("xbox", "keyboard", ...)
+CString GetInputDeviceName();    // uicommon.cpp: name of the active input device ("xbox", "keyboard", ...)
 
 // @0x140f83ff0
 UIKeyboardGuideDialog::UIKeyboardGuideDialog()
@@ -33,7 +33,7 @@ void UIKeyboardGuideDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     if (m_30.get())
-        m_30->Invoke("guideType", FUN_141900b70());
+        m_30->Invoke("guideType", GetInputDeviceName());
 }
 
 // @0x140f84180

@@ -46,15 +46,15 @@ class TShopPaymentAttr : public CPtred
 {
 public:
     TShopPaymentAttr();                              // 0x1406dc170
-    void FUN_1406dc1e0();                            // reset
-    void FUN_1406dc230(COutputStream& out);          // write
-    void FUN_1406dc2c0(CInPacket& in);               // read
+    void Reset();                            // reset
+    void Write(COutputStream& out);          // write
+    void Read(CInPacket& in);               // read
     void FUN_1406dc3c0(TiXmlElement* pElem, const CString& strType, const CString& strItem, const CString& strIcon,
                        const CString& strPrice);     // read the four attributes (names given by the caller)
     const CString& GetIconTag() const;            // icon tag
     unsigned GetItemId() const;                  // payment item id
     __int64 GetAmount() const;                   // amount
-    ePaymentType FUN_1406dc510() const;              // payment type (a gated type falls back to 4 while its feature is off)
+    ePaymentType GetPaymentType() const;              // payment type (a gated type falls back to 4 while its feature is off)
     void SetFeature(int nFeature);                // the feature that gates types 9 and 10
 
     CString m_strIconTag;                            // +0x18
@@ -117,7 +117,7 @@ public:
     int FUN_1406df1b0();
     int FUN_1406df1d0();
     int Read(CString& strError, TiXmlElement* pElem);   // validate after reading
-    void FUN_1406e2bc0(MS2Ptr<CNpcShopItemNew> spItem);           // add a "new" item
+    void AddNewItem(MS2Ptr<CNpcShopItemNew> spItem);           // add a "new" item
 
     unsigned m_nShopId;                              // +0x18 shopID
     unsigned m_nShopVersion;                         // +0x1c shopVersion
@@ -180,12 +180,12 @@ class CBeautyShopItem : public CPtred
 {
 public:
     CBeautyShopItem();                               // 0x1406e3690
-    void FUN_1406e3740(COutputStream& out);
-    void FUN_1406e37f0(CInPacket& in);
-    int FUN_1406e3900(CString& strError);            // validate the price against the item
+    void Write(COutputStream& out);
+    void Read(CInPacket& in);
+    int ValidatePrice(CString& strError);            // validate the price against the item
     __int64 FUN_1406e3bc0();                         // price
-    ePaymentType FUN_1406e3bf0();                    // payment type
-    unsigned FUN_1406e3c20();                        // payment item id
+    ePaymentType GetPaymentType();                    // payment type
+    unsigned GetPaymentItemId();                        // payment item id
 
     unsigned m_nItemId;                              // +0x18 id
     unsigned m_nWeight;                              // +0x1c weight
@@ -203,9 +203,9 @@ class CBeautyShopDataCommon : public CPtred
 public:
     CBeautyShopDataCommon();                         // 0x1406e3c50
     virtual ~CBeautyShopDataCommon() {}              // 0x1406ef4a0
-    void FUN_1406e3d30();                            // reset
-    TShopPaymentAttr& FUN_1406e3dc0();               // the price
-    TShopPaymentAttr& FUN_1406e3de0();               // the recolor price
+    void Reset();                            // reset
+    TShopPaymentAttr& GetPayment();               // the price
+    TShopPaymentAttr& GetRecolorPayment();               // the recolor price
     const TShopPaymentAttr& FUN_1406e3e00() const;
     const TShopPaymentAttr& FUN_1406e3e20() const;
 
@@ -226,12 +226,12 @@ class CBeautyShopItemGroup : public CPtred
 {
 public:
     CBeautyShopItemGroup(__int64 nKey, const CString& strName, unsigned nValue);  // 0x1406e3e40
-    ATL::CAtlArray<MS2Ptr<CBeautyShopItem> >& FUN_1406e3f10(int nGender);
+    ATL::CAtlArray<MS2Ptr<CBeautyShopItem> >& GetItems(int nGender);
     unsigned FUN_1406e3fe0(int nGender);             // the gender's weight sum
     __int64 GetKey();                         // key (start time yyyymmddhhmmss)
-    const CString& FUN_1406e4060();
+    const CString& GetName();
     unsigned GetValue();
-    void FUN_1406e40a0(MS2Ptr<CBeautyShopItem> spItem, int nGender);
+    void AddItem(MS2Ptr<CBeautyShopItem> spItem, int nGender);
 
     __int64 m_nKey;                                  // +0x18
     CString m_strName;                               // +0x20
@@ -246,9 +246,9 @@ class CBeautyShopItemGroups : public CPtred
 {
 public:
     CBeautyShopItemGroups() {}                       // 0x1406eea20
-    MS2Ptr<CBeautyShopItemGroup> FUN_1406e4170() const;      // the group on sale now
+    MS2Ptr<CBeautyShopItemGroup> GetCurrentGroup() const;      // the group on sale now
     void FUN_1406e4260(std::vector<MS2Ptr<CBeautyShopItemGroup> >& out) const;  // the groups from now on
-    bool FUN_1406e4350(MS2Ptr<CBeautyShopItemGroup> spGroup);  // add (false: the key exists)
+    bool AddGroup(MS2Ptr<CBeautyShopItemGroup> spGroup);  // add (false: the key exists)
 
     std::map<__int64, MS2Ptr<CBeautyShopItemGroup> > m_groups;    // +0x18
 };
@@ -299,8 +299,8 @@ class CBeautyShopData : public CBeautyShopDataCommon
 public:
     CBeautyShopData();                               // 0x1406e4500
     int Read(CString& strError);            // validate the coupons
-    void FUN_1406e4770(COutputStream& out);
-    MS2Ptr<CBeautyShopItem> FUN_1406e4860(int nItemId, unsigned nGender);
+    void Write(COutputStream& out);
+    MS2Ptr<CBeautyShopItem> FindItem(int nItemId, unsigned nGender);
     void AddShopItemGroup(MS2Ptr<CBeautyShopItemGroup> spGroup);  // 0x1406e4a70 (name from its log text)
     Unk_BeautyGroupRef GetShopItemGroup();                        // 0x1406e4b80
     void GetShopItemGroupList(std::vector<MS2Ptr<CBeautyShopItemGroup> >& out);  // 0x1406e4ce0
@@ -314,6 +314,6 @@ class CBeautyShopDataCli : public CBeautyShopDataCommon
 {
 public:
     CBeautyShopDataCli();                            // 0x1406e53e0
-    void FUN_1406e5420(CInPacket& in);               // read the shop
+    void Read(CInPacket& in);               // read the shop
 };
 MS2_CHECK_SIZE(CBeautyShopDataCli, 0xa8);

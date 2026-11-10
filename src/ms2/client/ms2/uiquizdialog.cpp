@@ -59,7 +59,7 @@ template <> MS2Ptr<ASCountDownTimer> UISwfEntity::GetChild<ASCountDownTimer>(con
 }
 
 // @0x14129b5f0
-MS2Ptr<ASCountDownTimer> UIQuizDialog::FUN_14129b5f0(const CString& strName, MS2Ptr<ASCountDownTimer>& out)
+MS2Ptr<ASCountDownTimer> UIQuizDialog::BindCountDownTimer(const CString& strName, MS2Ptr<ASCountDownTimer>& out)
 {
     out = GetChild<ASCountDownTimer>(strName);
     return out;
@@ -69,7 +69,7 @@ MS2Ptr<ASCountDownTimer> UIQuizDialog::FUN_14129b5f0(const CString& strName, MS2
 UIQuizDialog::UIQuizDialog()
     : m_nMode(0), m_nDeadline(0), m_bCorrect(false)
 {
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     m_2c = 0x1e;
 }
 
@@ -90,9 +90,9 @@ void UIQuizDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_question", m_question);
     reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_answer", m_answer);
-    FUN_14129b5f0("m_countDown", m_countDown);
+    BindCountDownTimer("m_countDown", m_countDown);
     m_countDown.operator->()->SetCount(5);
-    FUN_14129ad50();
+    ShowCurrentPage();
 }
 
 // @0x14129a730
@@ -125,7 +125,7 @@ void UIQuizDialog::vfunc_72()
 }
 
 // @0x14129a930
-void UIQuizDialog::FUN_14129a930(CInPacket& packet)
+void UIQuizDialog::OnQuizPacket(CInPacket& packet)
 {
     CStringW strExtra;
     m_nMode = packet.ReadUInt8();
@@ -150,13 +150,13 @@ void UIQuizDialog::FUN_14129a930(CInPacket& packet)
         break;
     }
     if (FUN_141924630() != 0)
-        FUN_14129ad50();
+        ShowCurrentPage();
     else
         FUN_141924680();
 }
 
 // @0x14129ad50
-void UIQuizDialog::FUN_14129ad50()
+void UIQuizDialog::ShowCurrentPage()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;

@@ -47,7 +47,7 @@ public:
     // @0x140f0b710
     void FUN_140f0b710(int n) { m_0c = n; }
     // @0x141922e80
-    void FUN_141922e80(int n) { m_08 = n; }     // set the shop id (uibeautyshopdevdialog.cpp)
+    void SetShopId(int n) { m_08 = n; }     // set the shop id (uibeautyshopdevdialog.cpp)
     // Inline getters, first emitted by ?\customize.cpp (Customize::Equipment's packets).
     // @0x140cd60e0
     int GetShopId() { return m_08; }        // the shop id
@@ -90,7 +90,7 @@ public:
     const CString& FUN_1406dc4b0();             // the fee's currency name
     int FUN_1406dc4d0();                        // currency type
     __int64 FUN_1406dc4f0();                    // fee
-    int FUN_1406dc510();                        // fee type
+    int GetPaymentType();                        // fee type
 
     MS2_LAYOUT_FRIEND;
     CString m_18;                               // +0x18 currency name
@@ -108,8 +108,8 @@ public:
     CBeautyShopDataCli();
     virtual ~CBeautyShopDataCli();
     // the fee row: CBeautyShopDataCommon::FUN_1406e3dc0 (npcshopdata.h), called through the base
-    Unk_BSFee* FUN_1406e3de0();                 // the second fee row
-    void FUN_1406e5420(CInPacket& packet);      // read the shop
+    Unk_BSFee* GetRecolorPayment();                 // the second fee row
+    void Read(CInPacket& packet);      // read the shop
 
     MS2_LAYOUT_FRIEND;
     char m_pad_08[0x10];
@@ -192,31 +192,31 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);
     virtual int vfunc_84();                     // 84 (new) 1 when the dialog is closed (vfunc_55() == 0)
 
-    void FUN_140f05460(NotifyObject* pNotify);
+    void OnNotifyGameEventChanged(NotifyObject* pNotify);
     bool SendBeautyMode19(int nResult, const CMsgBoxData& data);
     bool SendBeautyMode18(int nResult, const CMsgBoxData& data);
     bool FUN_140f05820(int nResult, const CMsgBoxData& data);
     bool FUN_140f05850(int nResult, const CMsgBoxData& data);
     bool FUN_140f05880(int nResult, const CMsgBoxData& data);
     void FUN_140f05a80(CInPacket& packet);
-    bool FUN_140f06e10();
+    bool InitData();
     bool FUN_140f07310();
     void FUN_140f07520(Unk_BSFee* pFee, unsigned* pPrice);
     unsigned FUN_140f07960();
-    int FUN_140f07980();
+    int GetShopKind();
     void FUN_140f079a0();
     void FUN_140f07a00();
     int FUN_140f07a60(MS2Ptr<CItem> spItem);
     void FUN_140f07cc0();
     void FUN_140f07e20();
-    int FUN_140f08160();
-    Unk_BSFee* FUN_140f08190(unsigned* pPrice);
+    int GetFeeAmount();
+    Unk_BSFee* GetFee(unsigned* pPrice);
     int FUN_140f08220();
     void FUN_140f082d0();
     void OnClickReset();
-    int FUN_140f084e0(AScript& out, unsigned* pPrice);
+    int BuildBillRows(AScript& out, unsigned* pPrice);
     void FUN_140f08950(int bPreview);
-    void FUN_140f08a30(int bPreview);
+    void SetPreview(int bPreview);
     void FUN_140f08aa0(int bPreview);
     void FUN_140f08ae0(int nItemId, int nIndex);
     void FUN_140f08ba0();
@@ -226,9 +226,9 @@ public:
     MS2Ptr<CItem> FUN_140f09020(int nIndex);
     MS2Ptr<CItem> FUN_140f090d0(int nSlot);
     bool FUN_140f09230();
-    int FUN_140f09260();
+    int GetRemainSlotCount();
     void FUN_140f092b0();
-    void FUN_140f092e0(int b);
+    void SetExtendSlotVisible(int b);
     void FUN_140f09380(NotifyObject* pNotify);
     bool FUN_140f09520(int nResult, const CMsgBoxData& data);
     bool FUN_140f09560();

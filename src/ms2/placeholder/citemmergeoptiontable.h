@@ -26,15 +26,15 @@ public:
 
     void LoadItemMergeOptionBase();                                   // loads the xml
     DataPtr FUN_1405c00e0(int nItemId, int nMaterialId);   // the slot data of a merge pair, null when it cannot merge
-    bool FUN_1405c03d0(int nCategory, int* pNormal);          // the first normal option of an item's slot
-    bool FUN_1405c04f0(int nCategory, int* pSpecial);         // the first special option of an item's slot
+    bool GetFirstNormalOption(int nCategory, int* pNormal);          // the first normal option of an item's slot
+    bool GetFirstSpecialOption(int nCategory, int* pSpecial);         // the first special option of an item's slot
     CItemMergeOptionVariation* FUN_1405c0610(int nItemId, int nNormal);   // the whole-range variation of a normal option (null: none)
     CItemMergeOptionVariation* FUN_1405c0740(int nItemId, int nSpecial);  // the whole-range variation of a special option (null: none)
     int FUN_1405c0870(int nItemId, int nMaterialId, int nFlag, int nOption, MS2Ptr<BaseOption> spValue);
     int FUN_1405c0a70(int nItemId, int nMaterialId, int nFlag, int nOption, MS2Ptr<BaseOption> spValue);
     int FUN_1405c0c70(int nItemId, int nMaterialId, int nFlag, int nOption, MS2Ptr<BaseOption> spValue);
     int FUN_1405c0e80(int nItemId, int nMaterialId, int nFlag, int nOption, MS2Ptr<BaseOption> spValue);
-    CStringW FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag);    // the description of an item's merge options
+    CStringW GetMergeOptionDescription(MS2Ptr<CItem> spItem, int nFlag);    // the description of an item's merge options
     DataPtr FUN_1405c1d20(int nItemId, int nMaterialId);
     DataPtr FUN_1405c1f40(int nCategory);
 

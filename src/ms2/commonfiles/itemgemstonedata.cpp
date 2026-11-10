@@ -40,14 +40,14 @@ static const CString s_gemShopSortNames[] = {"None", "Buy", "Like", "PriceLow", 
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& strOut);
 int FUN_1408733e0(TiXmlElement* pElem, const char* pszName, CStringA& strOut);
-class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions* GetLaunchOptions();   // C3: was GetLaunchOptions
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
 public:
@@ -104,10 +104,10 @@ CItemGemStoneUpgradeTable::~CItemGemStoneUpgradeTable()
 // @0x1405b0dc0
 int CItemGemStoneUpgradeTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "itemGemstoneUpgrade.xml");
-    FUN_1401d1160(strPath);
+    CString strPath = GetXmlPath("Table", "itemGemstoneUpgrade.xml");
+    SetPath(strPath);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 1;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
@@ -138,7 +138,7 @@ int CItemGemStoneUpgradeTable::Load()
         XmlGetAttr((class TiXmlElement*)(pNode), strLevel, data->m_nSlot);
         XmlGetAttr((class TiXmlElement*)(pNode), strNext, (unsigned&)data->m_nLinked);
         XmlGetAttr((class TiXmlElement*)(pNode), strIcon, data->m_strName);
-        if (!((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->IsDisableValidate())
+        if (!((class Unk_LaunchOptions*)(void*)(((void*)GetLaunchOptions())))->IsDisableValidate())
         {
             int nTransfer = 0;
             {
@@ -155,7 +155,7 @@ int CItemGemStoneUpgradeTable::Load()
                            nItemId, nNextId, strPath);
             }
         }
-        data->m_ingredients.FUN_14026bfa0(4);
+        data->m_ingredients.Reserve(4);
         CIngredientContainer* pIngredients = &data->m_ingredients;
         for (unsigned i = 0; i < 4; i++)
         {
@@ -267,7 +267,7 @@ void CItemGemStoneUpgradeTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CItemGemStoneUpgradeTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CItemGemStoneUpgradeTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

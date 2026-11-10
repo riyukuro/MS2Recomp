@@ -35,7 +35,7 @@ public:
  virtual void vfunc_4(Scaleform::GFx::Value*,ASData*);virtual int vfunc_5(const char*,const Scaleform::GFx::Value*,unsigned);
  virtual CString vfunc_6()=0;virtual CStringW vfunc_7();virtual int vfunc_8();virtual void vfunc_9();
  MS2Ptr<AScript> GetScript();UIMentoringDialog* GetOwner();
- void FUN_140c6f190();void FUN_140c71ce0();void FUN_140c6f7a0(CString,Unk_MentorPtr<CMentor>);void FUN_140c71ee0(CString,Unk_MentorPtr<CMentor>,int);
+ void RefreshMenteePage();void FUN_140c71ce0();void SetMenteeData(CString,Unk_MentorPtr<CMentor>);void FUN_140c71ee0(CString,Unk_MentorPtr<CMentor>,int);
 private:friend class UIMentoringMissionPage;friend class UIMentoringBuffPage;MS2Ptr<AScript> m_script;UIMentoringDialog* m_owner;
 };
 MS2_CHECK_SIZE(UIMentoringPage,0x30);
@@ -67,7 +67,7 @@ MS2_CHECK_SIZE(UIMentoringMentorRegisterPage,0x30);
 class AScript; typedef AScript ASObj;class Unk_MentorInstance;class Unk_MentorIdArray;
 class UIMentoringMissionPage:public UIMentoringPage,public UIQuestEventListener {
 public:UIMentoringMissionPage(UIMentoringDialog*);virtual ~UIMentoringMissionPage();virtual int vfunc_1();virtual void vfunc_2();virtual void vfunc_3(Scaleform::GFx::Value*,const CString&,ASData*);virtual void vfunc_4(Scaleform::GFx::Value*,ASData*);virtual int vfunc_5(const char*,const Scaleform::GFx::Value*,unsigned);virtual CString vfunc_6();virtual CStringW vfunc_7();virtual int vfunc_8();virtual int vfunc_10(int);virtual void vfunc_o178_11(void*);
- void FUN_140c74170(ASObj&,Unk_MentorInstance*);void FUN_140c74450(int);int FUN_140c74660();__int64 FUN_140c74720();void FUN_140c74850(Unk_MentorIdArray&,int);void FUN_140c74970();
+ void SetMissionData(ASObj&,Unk_MentorInstance*);void UpdateMissionList(int);int GetSelectedDay();__int64 GetMissionStartTime();void GetMissionIds(Unk_MentorIdArray&,int);void UpdateDayCounts();
 };
 MS2_CHECK_SIZE(UIMentoringMissionPage,0x38);
 class UIMentoringDialog:public UIDialog {

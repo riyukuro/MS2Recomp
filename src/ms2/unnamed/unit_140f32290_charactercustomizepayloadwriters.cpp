@@ -116,8 +116,8 @@ int FUN_140f32290(ASObj& obj, MS2Ptr<CItemData> spItem, MS2Ptr<Customize> spCust
         ASObj kOption(2);
         unsigned nOption = 0;
         FUN_140f32a70(MS2Ptr<CItemData>(spItem), MS2Ptr<Customize>(spCustomize), kOption, &nOption);
-        obj.FUN_1409adbe0("option", Scaleform::GFx::Value(kOption.FUN_1422bb870()));
-        ((class AScript&)(obj)).FUN_1407cb9c0("optionflag", (int)nOption);
+        obj.FUN_1409adbe0("option", Scaleform::GFx::Value(kOption.GetValue()));
+        ((class AScript&)(obj)).SetIntMember("optionflag", (int)nOption);
     }
     return 1;
 }
@@ -131,15 +131,15 @@ void FUN_140f324f0(ASObj& obj, MS2Ptr<CItemData> spData, bool bMovie)
         return;
     int nId = spData->GetItemId();
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nId);
-    ((class AScript&)(obj)).FUN_1407cbb20("itemname", CStringW(strName));
-    ((class AScript&)(obj)).FUN_1407cbb20("itemid", FUN_141b71990(nId));
-    obj.FUN_1407cba60("iconpath", spData->GetIconPath());
-    obj.FUN_1407cbbe0("editable", ((CItemData*)spData)->FUN_14053ec70()->FUN_1405471d0());
-    bool bSkinBg = spData->GetModelOrEmpty()->FUN_14054b400() == 2 || spData->GetModelOrEmpty()->FUN_14054b400() == 3;
-    obj.FUN_1407cbbe0("isSkinBg", bSkinBg);
-    obj.FUN_1407cbbe0("isHideSlot", spData->IsAvatarColorItem());
+    ((class AScript&)(obj)).SetWStringMember("itemname", CStringW(strName));
+    ((class AScript&)(obj)).SetWStringMember("itemid", FUN_141b71990(nId));
+    obj.SetStringMember("iconpath", spData->GetIconPath());
+    obj.SetBoolMember("editable", ((CItemData*)spData)->FUN_14053ec70()->FUN_1405471d0());
+    bool bSkinBg = spData->GetModelOrEmpty()->GetFirstGroupType() == 2 || spData->GetModelOrEmpty()->GetFirstGroupType() == 3;
+    obj.SetBoolMember("isSkinBg", bSkinBg);
+    obj.SetBoolMember("isHideSlot", spData->IsAvatarColorItem());
     if (bMovie)
-        obj.FUN_1407cba60("itemmovie", CString(spData->property.movie));
+        obj.SetStringMember("itemmovie", CString(spData->property.movie));
     else
         obj.FUN_1409c0dc0("itemmovie", "");
 }
@@ -209,13 +209,13 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
                 }
                 ASObj kEntry(2);
                 int nIndex = i;
-                ((class AScript&)(kEntry)).FUN_1407cb9c0("id", nIndex);
+                ((class AScript&)(kEntry)).SetIntMember("id", nIndex);
                 kEntry.SetMemberFloat("cur", fCur);
                 kEntry.SetMemberFloat("min", fMin);
                 kEntry.SetMemberFloat("max", fMax);
-                kSizes.PushValue(Scaleform::GFx::Value(kEntry.FUN_1422bb870()));
+                kSizes.PushValue(Scaleform::GFx::Value(kEntry.GetValue()));
             }
-            obj.FUN_1409adbe0("sizedata", Scaleform::GFx::Value(kSizes.FUN_1422bb870()));
+            obj.FUN_1409adbe0("sizedata", Scaleform::GFx::Value(kSizes.GetValue()));
         }
     }
     if ((*pnFlags & 4) != 0)
@@ -225,7 +225,7 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
         if (fDegree < 0.0f)
             fDegree = 360.0f + fDegree;
         obj.SetMemberFloat("cur", fDegree);
-        obj.FUN_1409adbe0("degreedata", Scaleform::GFx::Value(kDegree.FUN_1422bb870()));
+        obj.FUN_1409adbe0("degreedata", Scaleform::GFx::Value(kDegree.GetValue()));
     }
     if ((*pnFlags & 8) != 0)
     {
@@ -236,14 +236,14 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
         {
             CharacterDecalData* pDecal = spData->GetModelOrEmpty()->FUN_14054b6b0();
             if (pDecal != 0)
-                pList = pDecal->FUN_1401e41c0();
+                pList = pDecal->GetCustoms();
         }
         else
         {
-            if (spData->GetModelOrEmpty()->FUN_14054b3d0() > 0)
+            if (spData->GetModelOrEmpty()->GetGroupCount() > 0)
             {
-                if (spData->GetModelOrEmpty()->GetGroup(0)->FUN_1405450c0() > 1)
-                    pList = &spData->GetModelOrEmpty()->GetGroup(0)->FUN_140544fe0(1)->customs;
+                if (spData->GetModelOrEmpty()->GetGroup(0)->GetPartCount() > 1)
+                    pList = &spData->GetModelOrEmpty()->GetGroup(0)->GetPart(1)->customs;
             }
         }
         if (pList != 0)
@@ -253,12 +253,12 @@ void FUN_140f32a70(MS2Ptr<CItemData> spData, MS2Ptr<Customize> spCustomize, ASOb
                 ASObj kEntry(2);
                 kEntry.FUN_140e846b0("id", k);
                 const MS2Ptr<ItemCustom>& spCustom = (*pList)[k];
-                kEntry.FUN_1407cba60("iconpath", spCustom->name);
+                kEntry.SetStringMember("iconpath", spCustom->name);
                 if ((int)k == nSelected)
-                    ((class AScript&)(kEntry)).FUN_1407cb9c0("selected", 1);
-                kPos.PushValue(Scaleform::GFx::Value(kEntry.FUN_1422bb870()));
+                    ((class AScript&)(kEntry)).SetIntMember("selected", 1);
+                kPos.PushValue(Scaleform::GFx::Value(kEntry.GetValue()));
             }
-            obj.FUN_1409adbe0("posdata", Scaleform::GFx::Value(kPos.FUN_1422bb870()));
+            obj.FUN_1409adbe0("posdata", Scaleform::GFx::Value(kPos.GetValue()));
         }
     }
 }
@@ -312,7 +312,7 @@ bool FUN_140f33400(ASObj& obj, MS2Ptr<ItemColorEx> spColor, int* pnColor1, int* 
         obj.FUN_1409c4990("visibleColor2", *pnColor2);
     }
     obj.FUN_1409c4990("ch2Color", *pnColor2);
-    ((class AScript&)(obj)).FUN_1407cb9c0("colorSN", spColor->m_nColor);
+    ((class AScript&)(obj)).SetIntMember("colorSN", spColor->m_nColor);
     obj.SetMemberUInt("paletteID", spColor->m_nId);
     return true;
 }
@@ -334,10 +334,10 @@ void FUN_140f33570(MS2Ptr<CItemData> spData, int* pnColor1, int* pnColor2)
     }
     else
     {
-        MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->GetModelOrEmpty()->FUN_14054b400(), (class AvatarPC*)pPc);
+        MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(spData->GetModelOrEmpty()->GetFirstGroupType(), (class AvatarPC*)pPc);
         if (spEquip.get() != 0)
         {
-            if (spEquip->GetItem()->FUN_1405276c0() == spData->GetItemId())
+            if (spEquip->GetItem()->GetItemId() == spData->GetItemId())
             {
                 FUN_141424580(MS2Ptr<CEquipItem>(spEquip), (unsigned int*)(pnColor1), 0);
                 FUN_141424580(MS2Ptr<CEquipItem>(spEquip), (unsigned int*)(pnColor2), 2);
@@ -388,7 +388,7 @@ void FUN_140f33950(ASArray& arr, int* pnIndex, int nColor1, int nColor2, MS2Ptr<
     else
         nWorn = 2;
     unsigned nIndex1 = nWorn;
-    bool bLockFeature = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb7);
+    bool bLockFeature = ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb7);
     size_t nCount = spColors->GetCount();
     int nMatch = 0;
     for (size_t i = 0; i < nCount; i++)
@@ -420,11 +420,11 @@ void FUN_140f33950(ASArray& arr, int* pnIndex, int nColor1, int nColor2, MS2Ptr<
                 if (FUN_140f026f0(MS2Ptr<ItemColorEx>(spColor), &bLocked) == true)
                 {
                     bAdd = true;
-                    kRow.FUN_1407cbbe0("colorLock", bLocked);
+                    kRow.SetBoolMember("colorLock", bLocked);
                 }
             }
             if (bAdd)
-                arr.PushValue(Scaleform::GFx::Value(kRow.FUN_1422bb870()));
+                arr.PushValue(Scaleform::GFx::Value(kRow.GetValue()));
         }
         if (bAdd)
         {
@@ -450,7 +450,7 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
     bool bLockFeature;
     bool bF8;
     int bDetail = ((CItemData*)spData)->FUN_14053ec70()->FUN_140547190();
-    int bColor2 = spData->GetModelOrEmpty()->FUN_14054b400() != 3;
+    int bColor2 = spData->GetModelOrEmpty()->GetFirstGroupType() != 3;
     ASArray kColors(2);
     int nSelected = -1;
     bBuild = (nFlags & 1) > 0 ? true : false;
@@ -459,7 +459,7 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
         FUN_140f33950(kColors, &nSelected, nColor1, nColor2, MS2Ptr<CItemData>(spData), nPalette, ColorArrayPtr(spPalette),
                       bBuild);
     bF8 = (nFlags & 8) > 0;
-    bLockFeature = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb7);
+    bLockFeature = ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb7);
     if (bLockFeature)
     {
         int nSelected2 = -1;
@@ -478,31 +478,31 @@ void FUN_140f33d80(int nColor1, int nColor2, MS2Ptr<CItemData> spData, int nPale
             nDetail = 1;
         obj.SetMemberUInt("color0", nColor1);
         obj.SetMemberUInt("color2", nColor2);
-        ((class AScript&)(obj)).FUN_1407cb9c0("colorDetail", nDetail);
-        ((class AScript&)(obj)).FUN_1407cb9c0("colorSelectedIndex", nSelected);
+        ((class AScript&)(obj)).SetIntMember("colorDetail", nDetail);
+        ((class AScript&)(obj)).SetIntMember("colorSelectedIndex", nSelected);
     }
     if ((nFlags & 4) != 0)
     {
-        ((class AScript&)(obj)).FUN_1407cb9c0("colorDetailEnable", bDetail);
-        ((class AScript&)(obj)).FUN_1407cb9c0("color2enable", bColor2);
+        ((class AScript&)(obj)).SetIntMember("colorDetailEnable", bDetail);
+        ((class AScript&)(obj)).SetIntMember("color2enable", bColor2);
     }
     if ((nFlags & 1) != 0)
     {
-        ((class AScript&)(obj)).FUN_1407cb9c0("colorSelectedIndex", nSelected);
-        obj.FUN_1409adbe0("color", Scaleform::GFx::Value(kColors.FUN_1422bb870()));
+        ((class AScript&)(obj)).SetIntMember("colorSelectedIndex", nSelected);
+        obj.FUN_1409adbe0("color", Scaleform::GFx::Value(kColors.GetValue()));
         if (spData->FUN_14053e370())
         {
             ASArray kMulti(2);
-            int nMulti = spData->FUN_14053e3c0();
+            int nMulti = spData->GetMultiColorCount();
             for (int i = 0; i < nMulti; i++)
             {
                 ASObj kEntry(2);
-                ((class AScript&)(kEntry)).FUN_1407cb9c0("label", i);
-                ((class AScript&)(kEntry)).FUN_1407cb9c0("idx", spData->FUN_14053e2b0(i));
-                kMulti.PushValue(Scaleform::GFx::Value(kEntry.FUN_1422bb870()));
+                ((class AScript&)(kEntry)).SetIntMember("label", i);
+                ((class AScript&)(kEntry)).SetIntMember("idx", spData->FUN_14053e2b0(i));
+                kMulti.PushValue(Scaleform::GFx::Value(kEntry.GetValue()));
             }
-            ((class AScript&)(obj)).FUN_1407cb9c0("multiColorCount", nMulti);
-            obj.FUN_1409adbe0("multiColorList", Scaleform::GFx::Value(kMulti.FUN_1422bb870()));
+            ((class AScript&)(obj)).SetIntMember("multiColorCount", nMulti);
+            obj.FUN_1409adbe0("multiColorList", Scaleform::GFx::Value(kMulti.GetValue()));
         }
     }
 }

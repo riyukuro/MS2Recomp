@@ -225,44 +225,44 @@ extern ATL::CAtlMap<unsigned, Unk_MagicListPtr> DAT_143adca50;   // the magicPat
 // Singleton instance pointers and instance getters (exe data/functions; bound through progress/symbols).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CFileSystem* GetFileSystem();
-class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
-class CBlackMarketTable* FUN_1401c0d80();   // C3: was FUN_1401c0d80
-void* FUN_1401c0d90();
-class CDirWatcher* FUN_1401d31e0();   // C3: was FUN_1401d31e0
+class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
+class CBlackMarketTable* GetBlackMarketTable();   // C3: was GetBlackMarketTable
+void* GetGameRule();
+class CDirWatcher* GetDirWatcher();   // C3: was GetDirWatcher
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-class AttendGiftDataTable* FUN_1403fc330();   // C3: was FUN_1403fc330
-void* FUN_1404a1bb0();
-class Unk_MusicBookTable* FUN_14052d1d0();   // C3: was FUN_14052d1d0
-class Unk_EnchantRates* FUN_14052d1e0();   // C3: was FUN_14052d1e0
-void* FUN_14052d1f0();
-void* FUN_14052d200();
-class Unk_BreakRecipes* FUN_140535300();   // C3: was FUN_140535300
+class AttendGiftDataTable* GetAttendGiftDataTable();   // C3: was GetAttendGiftDataTable
+void* GetExpTable();
+class Unk_MusicBookTable* GetInstrumentDataTable();   // C3: was GetInstrumentDataTable
+class Unk_EnchantRates* GetItemEnchantUtil();   // C3: was GetItemEnchantUtil
+void* GetItemExtractionTable();
+void* GetItemSocketTable();
+class Unk_BreakRecipes* GetItemBreakIngredientTable();   // C3: was GetItemBreakIngredientTable
 class Unk_BreakRules* FUN_140535310();   // C3: was FUN_140535310
-class CItemGemPropertyTable* FUN_1405a96f0();   // C3: was FUN_1405a96f0
-class CItemGemStoneUpgradeTable* FUN_14062c280();   // C3: was FUN_14062c280
-class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
-class Unk_EmoNpcTable* FUN_140764010();   // C3: was FUN_140764010
+class CItemGemPropertyTable* GetItemGemPropertyTable();   // C3: was FUN_1405a96f0
+class CItemGemStoneUpgradeTable* GetItemGemStoneUpgradeTable();   // C3: was GetItemGemStoneUpgradeTable
+class Unk_NametagTrophy* GetAchieveManager();   // C3: was GetAchieveManager
+class Unk_EmoNpcTable* GetFameTable();   // C3: was GetFameTable
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 class Unk_MeratBlindManager* GetBlindManager();   // C3: was GetBlindManager
 class Unk_SlotBreakManager* GetItemBreakManager();   // C3: was GetItemBreakManager
 class Unk_SlotLapenTable* GetLapenshardTable();   // C3: was GetLapenshardTable
 class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
 class CClubDataTable* GetClubDataTable();   // C3: was GetClubDataTable
-class Unk_ALCurrent* FUN_140ba4fa0();   // C3: was FUN_140ba4fa0
+class Unk_ALCurrent* GetAdventureLevelTableHelper();   // C3: was GetAdventureLevelTableHelper
 struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
-class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
-class Unk_RpTable* FUN_140f64150();   // C3: was FUN_140f64150
+class Unk_ClubManager* GetClubClientManager();   // C3: was GetClubClientManager
+class Unk_RpTable* GetItemRePackingScrollTable();   // C3: was GetItemRePackingScrollTable
 void* FUN_141371b20();
 
 void FUN_14149fe70(Unk_SceneCacheData* p);
 
 // @0x14149fd50
-void FUN_14149fd50(Unk_SceneCacheData* p)
+void ReleaseSceneCacheData(Unk_SceneCacheData* p)
 {
     if (--p->m_refCount == 0)
         FUN_14149fe70(p);
 }
-MS2_REPLACE(0x14149FD50, FUN_14149fd50, 41, 0x0E2FCD50);
+MS2_REPLACE(0x14149FD50, ReleaseSceneCacheData, 41, 0x0E2FCD50);
 
 // @0x14149fd80
 void FUN_14149fd80(Unk_Slot8Delete* p)
@@ -300,7 +300,7 @@ void FUN_14149fec0()
 MS2_REPLACE(0x14149FEC0, FUN_14149fec0, 21, 0xC697E12D);
 
 // @0x14149fee0
-void FUN_14149fee0()
+void DestroyAnimationCallbackManager()
 {
     if (TSingleton<AnimationCallbackManager>::s_instance != 0)
     {
@@ -308,10 +308,10 @@ void FUN_14149fee0()
         TSingleton<AnimationCallbackManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x14149FEE0, FUN_14149fee0, 94, 0x7F62458B);
+MS2_REPLACE(0x14149FEE0, DestroyAnimationCallbackManager, 94, 0x7F62458B);
 
 // @0x14149ff40
-void FUN_14149ff40()
+void DestroyApplyEffect()
 {
     if (TSingleton<ApplyEffect>::s_instance != 0)
     {
@@ -319,21 +319,21 @@ void FUN_14149ff40()
         TSingleton<ApplyEffect>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x14149FF40, FUN_14149ff40, 94, 0x92787D34);
+MS2_REPLACE(0x14149FF40, DestroyApplyEffect, 94, 0x92787D34);
 
 // @0x14149ffa0
-void FUN_14149ffa0()
+void DestroyAttendGiftDataTable()
 {
     if (TSingleton<AttendGiftDataTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_1403fc330());
+        delete (Unk_VirtualDtor*)((void*)GetAttendGiftDataTable());
         TSingleton<AttendGiftDataTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x14149FFA0, FUN_14149ffa0, 94, 0x5475E1A5);
+MS2_REPLACE(0x14149FFA0, DestroyAttendGiftDataTable, 94, 0x5475E1A5);
 
 // @0x1414a0000
-void FUN_1414a0000()
+void DestroyBGTransparencyMgr()
 {
     if (TSingleton<BGTransparencyMgr>::s_instance != 0)
     {
@@ -341,10 +341,10 @@ void FUN_1414a0000()
         TSingleton<BGTransparencyMgr>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0000, FUN_1414a0000, 94, 0x3E19299D);
+MS2_REPLACE(0x1414A0000, DestroyBGTransparencyMgr, 94, 0x3E19299D);
 
 // @0x1414a0060
-void FUN_1414a0060()
+void DestroyBlindManager()
 {
     if (TSingleton<BlindManager>::s_instance != 0)
     {
@@ -352,14 +352,14 @@ void FUN_1414a0060()
         TSingleton<BlindManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0060, FUN_1414a0060, 94, 0x6273A9F4);
+MS2_REPLACE(0x1414A0060, DestroyBlindManager, 94, 0x6273A9F4);
 
 // @0x1414a00c0
 void FUN_1414a00c0()
 {
     if (TSingleton<CAchieveManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_1406c7600());
+        delete (Unk_VirtualDtor*)((void*)GetAchieveManager());
         TSingleton<CAchieveManager>::s_instance = 0;
     }
 }
@@ -392,7 +392,7 @@ void FUN_1414a01e0()
 {
     if (TSingleton<CAdventureLevelTableHelper>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_140ba4fa0());
+        delete (Unk_VirtualDtor*)((void*)GetAdventureLevelTableHelper());
         TSingleton<CAdventureLevelTableHelper>::s_instance = 0;
     }
 }
@@ -432,7 +432,7 @@ void FUN_1414a0300()
 MS2_REPLACE(0x1414A0300, FUN_1414a0300, 94, 0x23417763);
 
 // @0x1414a0360
-void FUN_1414a0360()
+void DestroyBankTable()
 {
     if (TSingleton<CBankTable>::s_instance != 0)
     {
@@ -440,10 +440,10 @@ void FUN_1414a0360()
         TSingleton<CBankTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0360, FUN_1414a0360, 94, 0x1909B041);
+MS2_REPLACE(0x1414A0360, DestroyBankTable, 94, 0x1909B041);
 
 // @0x1414a03c0
-void FUN_1414a03c0()
+void DestroyBattleRecordManager()
 {
     if (TSingleton<CBattleRecordManager>::s_instance != 0)
     {
@@ -451,10 +451,10 @@ void FUN_1414a03c0()
         TSingleton<CBattleRecordManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A03C0, FUN_1414a03c0, 94, 0xC1E87E13);
+MS2_REPLACE(0x1414A03C0, DestroyBattleRecordManager, 94, 0xC1E87E13);
 
 // @0x1414a0420
-void FUN_1414a0420()
+void DestroyBigDataLogSystem()
 {
     if (TSingleton<CBigDataLogSystem>::s_instance != 0)
     {
@@ -462,10 +462,10 @@ void FUN_1414a0420()
         TSingleton<CBigDataLogSystem>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0420, FUN_1414a0420, 94, 0x739F711F);
+MS2_REPLACE(0x1414A0420, DestroyBigDataLogSystem, 94, 0x739F711F);
 
 // @0x1414a0480
-void FUN_1414a0480()
+void DestroyBlackMarketMan()
 {
     if (TSingleton<CBlackMarketMan>::s_instance != 0)
     {
@@ -473,21 +473,21 @@ void FUN_1414a0480()
         TSingleton<CBlackMarketMan>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0480, FUN_1414a0480, 94, 0x8D0D1F3E);
+MS2_REPLACE(0x1414A0480, DestroyBlackMarketMan, 94, 0x8D0D1F3E);
 
 // @0x1414a04e0
-void FUN_1414a04e0()
+void DestroyBlackMarketTable()
 {
     if (TSingleton<CBlackMarketTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_1401c0d80());
+        delete (Unk_VirtualDtor*)((void*)GetBlackMarketTable());
         TSingleton<CBlackMarketTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A04E0, FUN_1414a04e0, 94, 0x6D588353);
+MS2_REPLACE(0x1414A04E0, DestroyBlackMarketTable, 94, 0x6D588353);
 
 // @0x1414a0540
-void FUN_1414a0540()
+void DestroyBlockManager()
 {
     if (TSingleton<CBlockManager>::s_instance != 0)
     {
@@ -495,10 +495,10 @@ void FUN_1414a0540()
         TSingleton<CBlockManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0540, FUN_1414a0540, 94, 0xA92456EA);
+MS2_REPLACE(0x1414A0540, DestroyBlockManager, 94, 0xA92456EA);
 
 // @0x1414a05a0
-void FUN_1414a05a0()
+void DestroyBuddyManager()
 {
     if (TSingleton<CBuddyManager>::s_instance != 0)
     {
@@ -506,10 +506,10 @@ void FUN_1414a05a0()
         TSingleton<CBuddyManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A05A0, FUN_1414a05a0, 94, 0x9630DAEE);
+MS2_REPLACE(0x1414A05A0, DestroyBuddyManager, 94, 0x9630DAEE);
 
 // @0x1414a0600
-void FUN_1414a0600()
+void DestroyCashCallManager()
 {
     if (TSingleton<CCashCallManager>::s_instance != 0)
     {
@@ -517,10 +517,10 @@ void FUN_1414a0600()
         TSingleton<CCashCallManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0600, FUN_1414a0600, 94, 0xA03ED1FF);
+MS2_REPLACE(0x1414A0600, DestroyCashCallManager, 94, 0xA03ED1FF);
 
 // @0x1414a0660
-void FUN_1414a0660()
+void DestroyCashMarketMan()
 {
     if (TSingleton<CCashMarketMan>::s_instance != 0)
     {
@@ -528,10 +528,10 @@ void FUN_1414a0660()
         TSingleton<CCashMarketMan>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0660, FUN_1414a0660, 94, 0xD1BE3873);
+MS2_REPLACE(0x1414A0660, DestroyCashMarketMan, 94, 0xD1BE3873);
 
 // @0x1414a06c0
-void FUN_1414a06c0()
+void DestroyChapterBookTable()
 {
     if (TSingleton<CChapterBookTable>::s_instance != 0)
     {
@@ -539,10 +539,10 @@ void FUN_1414a06c0()
         TSingleton<CChapterBookTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A06C0, FUN_1414a06c0, 94, 0x1EB76F19);
+MS2_REPLACE(0x1414A06C0, DestroyChapterBookTable, 94, 0x1EB76F19);
 
 // @0x1414a0720
-void FUN_1414a0720()
+void DestroyCharacterAbilityManager()
 {
     if (TSingleton<CCharacterAbilityManager>::s_instance != 0)
     {
@@ -550,10 +550,10 @@ void FUN_1414a0720()
         TSingleton<CCharacterAbilityManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0720, FUN_1414a0720, 94, 0xA84F0957);
+MS2_REPLACE(0x1414A0720, DestroyCharacterAbilityManager, 94, 0xA84F0957);
 
 // @0x1414a0780
-void FUN_1414a0780()
+void DestroyCharacterAbilityTable()
 {
     if (TSingleton<CCharacterAbilityTable>::s_instance != 0)
     {
@@ -561,10 +561,10 @@ void FUN_1414a0780()
         TSingleton<CCharacterAbilityTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0780, FUN_1414a0780, 94, 0x609BF47E);
+MS2_REPLACE(0x1414A0780, DestroyCharacterAbilityTable, 94, 0x609BF47E);
 
 // @0x1414a07e0
-void FUN_1414a07e0()
+void DestroyChatEmoticonTable()
 {
     if (TSingleton<CChatEmoticonTable>::s_instance != 0)
     {
@@ -572,21 +572,21 @@ void FUN_1414a07e0()
         TSingleton<CChatEmoticonTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A07E0, FUN_1414a07e0, 94, 0xE9648A44);
+MS2_REPLACE(0x1414A07E0, DestroyChatEmoticonTable, 94, 0xE9648A44);
 
 // @0x1414a0840
-void FUN_1414a0840()
+void DestroyClubClientManager()
 {
     if (TSingleton<CClubClientManager>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_140e0d900());
+        delete (Unk_VirtualDtor*)((void*)GetClubClientManager());
         TSingleton<CClubClientManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0840, FUN_1414a0840, 94, 0x2EF1C062);
+MS2_REPLACE(0x1414A0840, DestroyClubClientManager, 94, 0x2EF1C062);
 
 // @0x1414a08a0
-void FUN_1414a08a0()
+void DestroyClubDataTable()
 {
     if (TSingleton<CClubDataTable>::s_instance != 0)
     {
@@ -594,10 +594,10 @@ void FUN_1414a08a0()
         TSingleton<CClubDataTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A08A0, FUN_1414a08a0, 94, 0x1C5A456E);
+MS2_REPLACE(0x1414A08A0, DestroyClubDataTable, 94, 0x1C5A456E);
 
 // @0x1414a0900
-void FUN_1414a0900()
+void DestroyContentShutdownManager()
 {
     if (TSingleton<CContentShutdownManager>::s_instance != 0)
     {
@@ -605,10 +605,10 @@ void FUN_1414a0900()
         TSingleton<CContentShutdownManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0900, FUN_1414a0900, 94, 0x710BAE1E);
+MS2_REPLACE(0x1414A0900, DestroyContentShutdownManager, 94, 0x710BAE1E);
 
 // @0x1414a0960
-void FUN_1414a0960()
+void DestroyContinentRegionTable()
 {
     if (TSingleton<CContinentRegionTable>::s_instance != 0)
     {
@@ -616,10 +616,10 @@ void FUN_1414a0960()
         TSingleton<CContinentRegionTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0960, FUN_1414a0960, 94, 0x6CD131BB);
+MS2_REPLACE(0x1414A0960, DestroyContinentRegionTable, 94, 0x6CD131BB);
 
 // @0x1414a09c0
-void FUN_1414a09c0()
+void DestroyCoupleEmotionTable()
 {
     if (TSingleton<CCoupleEmotionTable>::s_instance != 0)
     {
@@ -627,10 +627,10 @@ void FUN_1414a09c0()
         TSingleton<CCoupleEmotionTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A09C0, FUN_1414a09c0, 94, 0x0C860B3D);
+MS2_REPLACE(0x1414A09C0, DestroyCoupleEmotionTable, 94, 0x0C860B3D);
 
 // @0x1414a0a20
-void FUN_1414a0a20()
+void DestroyDPSMeterSystem()
 {
     if (TSingleton<CDPSMeterSystem>::s_instance != 0)
     {
@@ -638,21 +638,21 @@ void FUN_1414a0a20()
         TSingleton<CDPSMeterSystem>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0A20, FUN_1414a0a20, 94, 0xE0AFA01D);
+MS2_REPLACE(0x1414A0A20, DestroyDPSMeterSystem, 94, 0xE0AFA01D);
 
 // @0x1414a0a80
-void FUN_1414a0a80()
+void DestroyDirWatcher()
 {
     if (TSingleton<CDirWatcher>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_1401d31e0());
+        delete (Unk_VirtualDtor*)((void*)GetDirWatcher());
         TSingleton<CDirWatcher>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0A80, FUN_1414a0a80, 94, 0x1B9DDC8E);
+MS2_REPLACE(0x1414A0A80, DestroyDirWatcher, 94, 0x1B9DDC8E);
 
 // @0x1414a0ae0
-void FUN_1414a0ae0()
+void DestroyDynamicBanWordManager()
 {
     if (TSingleton<CDynamicBanWordManager>::s_instance != 0)
     {
@@ -660,10 +660,10 @@ void FUN_1414a0ae0()
         TSingleton<CDynamicBanWordManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0AE0, FUN_1414a0ae0, 94, 0x68B35DB4);
+MS2_REPLACE(0x1414A0AE0, DestroyDynamicBanWordManager, 94, 0x68B35DB4);
 
 // @0x1414a0b40
-void FUN_1414a0b40()
+void DestroyEnchantScrollTable()
 {
     if (TSingleton<CEnchantScrollTable>::s_instance != 0)
     {
@@ -671,32 +671,32 @@ void FUN_1414a0b40()
         TSingleton<CEnchantScrollTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0B40, FUN_1414a0b40, 94, 0x7F79D7DE);
+MS2_REPLACE(0x1414A0B40, DestroyEnchantScrollTable, 94, 0x7F79D7DE);
 
 // @0x1414a0ba0
-void FUN_1414a0ba0()
+void DestroyExpTable()
 {
     if (TSingleton<CExpTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1404a1bb0();
+        delete (Unk_VirtualDtor*)GetExpTable();
         TSingleton<CExpTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0BA0, FUN_1414a0ba0, 94, 0x79D06837);
+MS2_REPLACE(0x1414A0BA0, DestroyExpTable, 94, 0x79D06837);
 
 // @0x1414a0c00
-void FUN_1414a0c00()
+void DestroyFameTable()
 {
     if (TSingleton<CFameTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_140764010());
+        delete (Unk_VirtualDtor*)((void*)GetFameTable());
         TSingleton<CFameTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0C00, FUN_1414a0c00, 94, 0x6985980E);
+MS2_REPLACE(0x1414A0C00, DestroyFameTable, 94, 0x6985980E);
 
 // @0x1414a0c60
-void FUN_1414a0c60()
+void DestroyFeatureManager()
 {
     if (TSingleton<CFeatureManager>::s_instance != 0)
     {
@@ -704,10 +704,10 @@ void FUN_1414a0c60()
         TSingleton<CFeatureManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0C60, FUN_1414a0c60, 94, 0x39C29BB3);
+MS2_REPLACE(0x1414A0C60, DestroyFeatureManager, 94, 0x39C29BB3);
 
 // @0x1414a0cc0
-void FUN_1414a0cc0()
+void DestroyFieldMaidManager()
 {
     if (TSingleton<CFieldMaidManager>::s_instance != 0)
     {
@@ -715,10 +715,10 @@ void FUN_1414a0cc0()
         TSingleton<CFieldMaidManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0CC0, FUN_1414a0cc0, 94, 0xBD69728F);
+MS2_REPLACE(0x1414A0CC0, DestroyFieldMaidManager, 94, 0xBD69728F);
 
 // @0x1414a0d20
-void FUN_1414a0d20()
+void DestroyFieldMetaTable()
 {
     if (TSingleton<CFieldMetaTable>::s_instance != 0)
     {
@@ -726,10 +726,10 @@ void FUN_1414a0d20()
         TSingleton<CFieldMetaTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0D20, FUN_1414a0d20, 94, 0x1CA2C135);
+MS2_REPLACE(0x1414A0D20, DestroyFieldMetaTable, 94, 0x1CA2C135);
 
 // @0x1414a0d80
-void FUN_1414a0d80()
+void DestroyFieldMissionTable()
 {
     if (TSingleton<CFieldMissionTable>::s_instance != 0)
     {
@@ -737,10 +737,10 @@ void FUN_1414a0d80()
         TSingleton<CFieldMissionTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0D80, FUN_1414a0d80, 94, 0xA8361B64);
+MS2_REPLACE(0x1414A0D80, DestroyFieldMissionTable, 94, 0xA8361B64);
 
 // @0x1414a0de0
-void FUN_1414a0de0()
+void DestroyFilePreload()
 {
     if (TSingleton<CFilePreload>::s_instance != 0)
     {
@@ -748,10 +748,10 @@ void FUN_1414a0de0()
         TSingleton<CFilePreload>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0DE0, FUN_1414a0de0, 94, 0xE4E04C53);
+MS2_REPLACE(0x1414A0DE0, DestroyFilePreload, 94, 0xE4E04C53);
 
 // @0x1414a0e40
-void FUN_1414a0e40()
+void DestroyFileSystem()
 {
     if (TSingleton<CFileSystem>::s_instance != 0)
     {
@@ -759,10 +759,10 @@ void FUN_1414a0e40()
         TSingleton<CFileSystem>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0E40, FUN_1414a0e40, 94, 0x202E0165);
+MS2_REPLACE(0x1414A0E40, DestroyFileSystem, 94, 0x202E0165);
 
 // @0x1414a0ea0
-void FUN_1414a0ea0()
+void DestroyFishingManager()
 {
     if (TSingleton<CFishingManager>::s_instance != 0)
     {
@@ -770,10 +770,10 @@ void FUN_1414a0ea0()
         TSingleton<CFishingManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0EA0, FUN_1414a0ea0, 94, 0xB7401BE9);
+MS2_REPLACE(0x1414A0EA0, DestroyFishingManager, 94, 0xB7401BE9);
 
 // @0x1414a0f00
-void FUN_1414a0f00()
+void DestroyFishingTable()
 {
     if (TSingleton<CFishingTable>::s_instance != 0)
     {
@@ -781,10 +781,10 @@ void FUN_1414a0f00()
         TSingleton<CFishingTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0F00, FUN_1414a0f00, 94, 0xBDEB2E52);
+MS2_REPLACE(0x1414A0F00, DestroyFishingTable, 94, 0xBDEB2E52);
 
 // @0x1414a0f60
-void FUN_1414a0f60()
+void DestroyGFxLanguage()
 {
     if (TSingleton<CGFxLanguage>::s_instance != 0)
     {
@@ -792,10 +792,10 @@ void FUN_1414a0f60()
         TSingleton<CGFxLanguage>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0F60, FUN_1414a0f60, 94, 0x48576B5C);
+MS2_REPLACE(0x1414A0F60, DestroyGFxLanguage, 94, 0x48576B5C);
 
 // @0x1414a0fc0
-void FUN_1414a0fc0()
+void DestroyGameEventValueManager()
 {
     if (TSingleton<CGameEventValueManager>::s_instance != 0)
     {
@@ -803,10 +803,10 @@ void FUN_1414a0fc0()
         TSingleton<CGameEventValueManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A0FC0, FUN_1414a0fc0, 94, 0xE6F93524);
+MS2_REPLACE(0x1414A0FC0, DestroyGameEventValueManager, 94, 0xE6F93524);
 
 // @0x1414a1020
-void FUN_1414a1020()
+void DestroyGameOption()
 {
     if (TSingleton<CGameOption>::s_instance != 0)
     {
@@ -814,10 +814,10 @@ void FUN_1414a1020()
         TSingleton<CGameOption>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1020, FUN_1414a1020, 94, 0x9550C27E);
+MS2_REPLACE(0x1414A1020, DestroyGameOption, 94, 0x9550C27E);
 
 // @0x1414a1080
-void FUN_1414a1080()
+void DestroyGameRankingCli()
 {
     if (TSingleton<CGameRankingCli>::s_instance != 0)
     {
@@ -825,21 +825,21 @@ void FUN_1414a1080()
         TSingleton<CGameRankingCli>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1080, FUN_1414a1080, 94, 0x3ED50C0D);
+MS2_REPLACE(0x1414A1080, DestroyGameRankingCli, 94, 0x3ED50C0D);
 
 // @0x1414a10e0
-void FUN_1414a10e0()
+void DestroyGameRule()
 {
     if (TSingleton<CGameRule>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_1401c0d90();
+        delete (Unk_VirtualDtor*)GetGameRule();
         TSingleton<CGameRule>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A10E0, FUN_1414a10e0, 94, 0x369666FE);
+MS2_REPLACE(0x1414A10E0, DestroyGameRule, 94, 0x369666FE);
 
 // @0x1414a1140
-void FUN_1414a1140()
+void DestroyGloabalFactor()
 {
     if (TSingleton<CGloabalFactor>::s_instance != 0)
     {
@@ -847,10 +847,10 @@ void FUN_1414a1140()
         TSingleton<CGloabalFactor>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1140, FUN_1414a1140, 94, 0x5ABEE7B5);
+MS2_REPLACE(0x1414A1140, DestroyGloabalFactor, 94, 0x5ABEE7B5);
 
 // @0x1414a11a0
-void FUN_1414a11a0()
+void DestroyGraphicOptionTable()
 {
     if (TSingleton<CGraphicOptionTable>::s_instance != 0)
     {
@@ -858,10 +858,10 @@ void FUN_1414a11a0()
         TSingleton<CGraphicOptionTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A11A0, FUN_1414a11a0, 94, 0xCE57F242);
+MS2_REPLACE(0x1414A11A0, DestroyGraphicOptionTable, 94, 0xCE57F242);
 
 // @0x1414a1200
-void FUN_1414a1200()
+void DestroyGroupChatManager()
 {
     if (TSingleton<CGroupChatManager>::s_instance != 0)
     {
@@ -869,10 +869,10 @@ void FUN_1414a1200()
         TSingleton<CGroupChatManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1200, FUN_1414a1200, 94, 0xC35E3377);
+MS2_REPLACE(0x1414A1200, DestroyGroupChatManager, 94, 0xC35E3377);
 
 // @0x1414a1260
-void FUN_1414a1260()
+void DestroyGuideManager()
 {
     if (TSingleton<CGuideManager>::s_instance != 0)
     {
@@ -880,10 +880,10 @@ void FUN_1414a1260()
         TSingleton<CGuideManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1260, FUN_1414a1260, 94, 0x9D746BE4);
+MS2_REPLACE(0x1414A1260, DestroyGuideManager, 94, 0x9D746BE4);
 
 // @0x1414a12c0
-void FUN_1414a12c0()
+void DestroyGuildManager()
 {
     if (TSingleton<CGuildManager>::s_instance != 0)
     {
@@ -891,10 +891,10 @@ void FUN_1414a12c0()
         TSingleton<CGuildManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A12C0, FUN_1414a12c0, 94, 0x02A9F0AB);
+MS2_REPLACE(0x1414A12C0, DestroyGuildManager, 94, 0x02A9F0AB);
 
 // @0x1414a1320
-void FUN_1414a1320()
+void DestroyGuildXmlData()
 {
     if (TSingleton<CGuildXmlData>::s_instance != 0)
     {
@@ -902,10 +902,10 @@ void FUN_1414a1320()
         TSingleton<CGuildXmlData>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1320, FUN_1414a1320, 94, 0x70F05971);
+MS2_REPLACE(0x1414A1320, DestroyGuildXmlData, 94, 0x70F05971);
 
 // @0x1414a1380
-void FUN_1414a1380()
+void DestroyIgnoreFile()
 {
     if (TSingleton<CIgnoreFile>::s_instance != 0)
     {
@@ -913,10 +913,10 @@ void FUN_1414a1380()
         TSingleton<CIgnoreFile>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1380, FUN_1414a1380, 94, 0xFA35C5CC);
+MS2_REPLACE(0x1414A1380, DestroyIgnoreFile, 94, 0xFA35C5CC);
 
 // @0x1414a13e0
-void FUN_1414a13e0()
+void DestroyIndividualArenaDataTable()
 {
     if (TSingleton<CIndividualArenaDataTable>::s_instance != 0)
     {
@@ -924,21 +924,21 @@ void FUN_1414a13e0()
         TSingleton<CIndividualArenaDataTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A13E0, FUN_1414a13e0, 94, 0x8254972E);
+MS2_REPLACE(0x1414A13E0, DestroyIndividualArenaDataTable, 94, 0x8254972E);
 
 // @0x1414a1440
-void FUN_1414a1440()
+void DestroyInstrumentDataTable()
 {
     if (TSingleton<CInstrumentDataTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_14052d1d0());
+        delete (Unk_VirtualDtor*)((void*)GetInstrumentDataTable());
         TSingleton<CInstrumentDataTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1440, FUN_1414a1440, 94, 0x76043011);
+MS2_REPLACE(0x1414A1440, DestroyInstrumentDataTable, 94, 0x76043011);
 
 // @0x1414a14a0
-void FUN_1414a14a0()
+void DestroyInstrumentManager()
 {
     if (TSingleton<CInstrumentManager>::s_instance != 0)
     {
@@ -946,21 +946,21 @@ void FUN_1414a14a0()
         TSingleton<CInstrumentManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A14A0, FUN_1414a14a0, 112, 0xD1224E15);
+MS2_REPLACE(0x1414A14A0, DestroyInstrumentManager, 112, 0xD1224E15);
 
 // @0x1414a1510
-void FUN_1414a1510()
+void DestroyItemBreakIngredientTable()
 {
     if (TSingleton<CItemBreakIngredientTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_140535300());
+        delete (Unk_VirtualDtor*)((void*)GetItemBreakIngredientTable());
         TSingleton<CItemBreakIngredientTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1510, FUN_1414a1510, 94, 0x2E8D4F9A);
+MS2_REPLACE(0x1414A1510, DestroyItemBreakIngredientTable, 94, 0x2E8D4F9A);
 
 // @0x1414a1570
-void FUN_1414a1570()
+void DestroyItemBreakManager()
 {
     if (TSingleton<CItemBreakManager>::s_instance != 0)
     {
@@ -968,10 +968,10 @@ void FUN_1414a1570()
         TSingleton<CItemBreakManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1570, FUN_1414a1570, 94, 0xAD79A55F);
+MS2_REPLACE(0x1414A1570, DestroyItemBreakManager, 94, 0xAD79A55F);
 
 // @0x1414a15d0
-void FUN_1414a15d0()
+void DestroyItemDataTable()
 {
     if (TSingleton<CItemDataTable>::s_instance != 0)
     {
@@ -979,10 +979,10 @@ void FUN_1414a15d0()
         TSingleton<CItemDataTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A15D0, FUN_1414a15d0, 94, 0xFA6A5F70);
+MS2_REPLACE(0x1414A15D0, DestroyItemDataTable, 94, 0xFA6A5F70);
 
 // @0x1414a1630
-void FUN_1414a1630()
+void DestroyItemEnchantLimitTable()
 {
     if (TSingleton<CItemEnchantLimitTable>::s_instance != 0)
     {
@@ -990,10 +990,10 @@ void FUN_1414a1630()
         TSingleton<CItemEnchantLimitTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1630, FUN_1414a1630, 94, 0xF129029F);
+MS2_REPLACE(0x1414A1630, DestroyItemEnchantLimitTable, 94, 0xF129029F);
 
 // @0x1414a1690
-void FUN_1414a1690()
+void DestroyItemEnchantTransformTable()
 {
     if (TSingleton<CItemEnchantTransformTable>::s_instance != 0)
     {
@@ -1001,21 +1001,21 @@ void FUN_1414a1690()
         TSingleton<CItemEnchantTransformTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1690, FUN_1414a1690, 94, 0xE0C48CD7);
+MS2_REPLACE(0x1414A1690, DestroyItemEnchantTransformTable, 94, 0xE0C48CD7);
 
 // @0x1414a16f0
-void FUN_1414a16f0()
+void DestroyItemEnchantUtil()
 {
     if (TSingleton<CItemEnchantUtil>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_14052d1e0());
+        delete (Unk_VirtualDtor*)((void*)GetItemEnchantUtil());
         TSingleton<CItemEnchantUtil>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A16F0, FUN_1414a16f0, 94, 0x32423A9E);
+MS2_REPLACE(0x1414A16F0, DestroyItemEnchantUtil, 94, 0x32423A9E);
 
 // @0x1414a1750
-void FUN_1414a1750()
+void DestroyItemExchangeScrollTable()
 {
     if (TSingleton<CItemExchangeScrollTable>::s_instance != 0)
     {
@@ -1023,43 +1023,43 @@ void FUN_1414a1750()
         TSingleton<CItemExchangeScrollTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1750, FUN_1414a1750, 94, 0xC3EC3C3B);
+MS2_REPLACE(0x1414A1750, DestroyItemExchangeScrollTable, 94, 0xC3EC3C3B);
 
 // @0x1414a17b0
-void FUN_1414a17b0()
+void DestroyItemExtractionTable()
 {
     if (TSingleton<CItemExtractionTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_14052d1f0();
+        delete (Unk_VirtualDtor*)GetItemExtractionTable();
         TSingleton<CItemExtractionTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A17B0, FUN_1414a17b0, 94, 0x5E92DE06);
+MS2_REPLACE(0x1414A17B0, DestroyItemExtractionTable, 94, 0x5E92DE06);
 
 // @0x1414a1810
-void FUN_1414a1810()
+void DestroyItemGemPropertyTable()
 {
     if (TSingleton<CItemGemPropertyTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_1405a96f0());
+        delete (Unk_VirtualDtor*)((void*)GetItemGemPropertyTable());
         TSingleton<CItemGemPropertyTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1810, FUN_1414a1810, 94, 0x9763F4D6);
+MS2_REPLACE(0x1414A1810, DestroyItemGemPropertyTable, 94, 0x9763F4D6);
 
 // @0x1414a1870
-void FUN_1414a1870()
+void DestroyItemGemStoneUpgradeTable()
 {
     if (TSingleton<CItemGemStoneUpgradeTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_14062c280());
+        delete (Unk_VirtualDtor*)((void*)GetItemGemStoneUpgradeTable());
         TSingleton<CItemGemStoneUpgradeTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1870, FUN_1414a1870, 94, 0xFCC9E551);
+MS2_REPLACE(0x1414A1870, DestroyItemGemStoneUpgradeTable, 94, 0xFCC9E551);
 
 // @0x1414a18d0
-void FUN_1414a18d0()
+void DestroyItemLapenshardTable()
 {
     if (TSingleton<CItemLapenshardTable>::s_instance != 0)
     {
@@ -1067,10 +1067,10 @@ void FUN_1414a18d0()
         TSingleton<CItemLapenshardTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A18D0, FUN_1414a18d0, 94, 0x28B27944);
+MS2_REPLACE(0x1414A18D0, DestroyItemLapenshardTable, 94, 0x28B27944);
 
 // @0x1414a1930
-void FUN_1414a1930()
+void DestroyItemLoader()
 {
     if (TSingleton<CItemLoader>::s_instance != 0)
     {
@@ -1078,10 +1078,10 @@ void FUN_1414a1930()
         TSingleton<CItemLoader>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1930, FUN_1414a1930, 94, 0x643605B0);
+MS2_REPLACE(0x1414A1930, DestroyItemLoader, 94, 0x643605B0);
 
 // @0x1414a1990
-void FUN_1414a1990()
+void DestroyItemLockManager()
 {
     if (TSingleton<CItemLockManager>::s_instance != 0)
     {
@@ -1089,10 +1089,10 @@ void FUN_1414a1990()
         TSingleton<CItemLockManager>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1990, FUN_1414a1990, 94, 0x29EECA1E);
+MS2_REPLACE(0x1414A1990, DestroyItemLockManager, 94, 0x29EECA1E);
 
 // @0x1414a19f0
-void FUN_1414a19f0()
+void DestroyItemMergeOptionTable()
 {
     if (TSingleton<CItemMergeOptionTable>::s_instance != 0)
     {
@@ -1100,32 +1100,32 @@ void FUN_1414a19f0()
         TSingleton<CItemMergeOptionTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A19F0, FUN_1414a19f0, 94, 0x0A71209E);
+MS2_REPLACE(0x1414A19F0, DestroyItemMergeOptionTable, 94, 0x0A71209E);
 
 // @0x1414a1a50
-void FUN_1414a1a50()
+void DestroyItemOptionTable()
 {
     if (TSingleton<CItemOptionTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_140166430());
+        delete (Unk_VirtualDtor*)((void*)GetItemOptionTable());
         TSingleton<CItemOptionTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1A50, FUN_1414a1a50, 94, 0x3B2AB468);
+MS2_REPLACE(0x1414A1A50, DestroyItemOptionTable, 94, 0x3B2AB468);
 
 // @0x1414a1ab0
-void FUN_1414a1ab0()
+void DestroyItemRePackingScrollTable()
 {
     if (TSingleton<CItemRePackingScrollTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)((void*)FUN_140f64150());
+        delete (Unk_VirtualDtor*)((void*)GetItemRePackingScrollTable());
         TSingleton<CItemRePackingScrollTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1AB0, FUN_1414a1ab0, 94, 0x37F4881A);
+MS2_REPLACE(0x1414A1AB0, DestroyItemRePackingScrollTable, 94, 0x37F4881A);
 
 // @0x1414a1b10
-void FUN_1414a1b10()
+void DestroyItemRemakeScrollTable()
 {
     if (TSingleton<CItemRemakeScrollTable>::s_instance != 0)
     {
@@ -1133,10 +1133,10 @@ void FUN_1414a1b10()
         TSingleton<CItemRemakeScrollTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1B10, FUN_1414a1b10, 94, 0x164B42F5);
+MS2_REPLACE(0x1414A1B10, DestroyItemRemakeScrollTable, 94, 0x164B42F5);
 
 // @0x1414a1b70
-void FUN_1414a1b70()
+void DestroyItemSocketScrollTable()
 {
     if (TSingleton<CItemSocketScrollTable>::s_instance != 0)
     {
@@ -1144,15 +1144,15 @@ void FUN_1414a1b70()
         TSingleton<CItemSocketScrollTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1B70, FUN_1414a1b70, 94, 0xE10587C9);
+MS2_REPLACE(0x1414A1B70, DestroyItemSocketScrollTable, 94, 0xE10587C9);
 
 // @0x1414a1bd0
-void FUN_1414a1bd0()
+void DestroyItemSocketTable()
 {
     if (TSingleton<CItemSocketTable>::s_instance != 0)
     {
-        delete (Unk_VirtualDtor*)FUN_14052d200();
+        delete (Unk_VirtualDtor*)GetItemSocketTable();
         TSingleton<CItemSocketTable>::s_instance = 0;
     }
 }
-MS2_REPLACE(0x1414A1BD0, FUN_1414a1bd0, 94, 0x927F4412);
+MS2_REPLACE(0x1414A1BD0, DestroyItemSocketTable, 94, 0x927F4412);

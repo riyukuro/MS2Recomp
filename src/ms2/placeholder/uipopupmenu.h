@@ -3,7 +3,7 @@
 // The full class is being recovered in ms2/client/ms2/uipartydialog.h; this placeholder only declares the
 // non-virtual entry points other units call (same signatures, so the mangled names agree) and does NOT give the
 // class layout. Do not include it together with uipartydialog.h.
-// Callers reach the menu as (UIPopUpMenu*)FUN_140c30140(0x4e39).
+// Callers reach the menu as (UIPopUpMenu*)FindPopupMenu(0x4e39).
 #pragma once
 
 #include <afx.h>
@@ -12,7 +12,7 @@
 class UIDialog;
 template <class T> class MS2Ptr;
 
-class Unk_PopupMenu* FUN_140c30140(int nDialogId);              // the open dialog of this id
+class Unk_PopupMenu* FindPopupMenu(int nDialogId);              // the open dialog of this id
 
 // The menu request (callers build it on the stack). ctor 0x140c302f0, dtor 0x140c304c0.
 // Copied from uipartydialog.h (keep the two in sync).

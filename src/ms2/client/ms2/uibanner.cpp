@@ -32,9 +32,9 @@
 class Unk_BannerClip : public ASGameEntity
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int nActorId, CString strCache, bool bFlag);   // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value clip, bool bFlag);       // "updateEntity"
-    Scaleform::GFx::Value& FUN_1422bb870();
+    Scaleform::GFx::Value CreateEntity(const char* szMethod, int nActorId, CString strCache, bool bFlag);   // "createEntity"
+    Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value clip, bool bFlag);       // "updateEntity"
+    Scaleform::GFx::Value& GetValue();
 };
 class Unk_BannerASObj : public ASObj
 {
@@ -49,11 +49,11 @@ struct Unk_BannerCfg
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_BannerUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 class CameraMgr   // C3: member view for the former free stand-ins
 {
@@ -69,7 +69,7 @@ template <class T> T* Unk_GetUI(int nId);   // C3: was FUN_1409614b0
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);          // Value = n
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);          // Value = sz
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);                  // Value = b
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v); // Value = v (callee destroys)
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v); // Value = v (callee destroys)
 
 // @0x140ba8280
 UIBanner::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActorId)
@@ -119,7 +119,7 @@ void UIBanner::Entity::vfunc_5()
     ASObj info(m_18);
     ((Unk_BannerASObj&)info).FUN_140ba9670("type", m_60);
     info.SetMemberUInt("gameOID", pActor->GetObjectId());
-    m_38->Invoke("open", ((class AScript&)(info)).FUN_1422bb870());
+    m_38->Invoke("open", ((class AScript&)(info)).GetValue());
 }
 
 // @0x140ba8540
@@ -127,7 +127,7 @@ void UIBanner::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get() != 0)
     {
-        float fScale = ((class GFxManager*)(class Unk_BannerUIScale*)(((class Unk_BannerUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
+        float fScale = ((class GFxManager*)(class Unk_BannerUIScale*)(((class Unk_BannerUIScale*)GetGFxManager())))->GetMovieScale(m_18);
         *pPos *= fScale;
         ((Unk_BannerClip*)m_38.operator->())->SetPositionFloat(pPos->x - 110.0f, pPos->y);
     }
@@ -217,7 +217,7 @@ MS2_REPLACE_METHOD(0x140ba89e0, UIBanner, GetTypeName, 61, 0x7A49F62A);
 void UIBanner::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_140ba8db0(m_68);
+    CreateEntityCache(m_68);
 }
 MS2_REPLACE_METHOD(0x140ba8a30, UIBanner, OnLoadComplete, 42, 0x41B42FD6);
 
@@ -235,7 +235,7 @@ int UIBanner::vfunc_28(const char* szName, const Scaleform::GFx::Value* pArgs, u
             return 0;
         }
         int nActorId = data.PopUInt();
-        FUN_140ba8b80(nActorId);
+        OnClick(nActorId);
         return 1;
     }
     return 1;
@@ -243,9 +243,9 @@ int UIBanner::vfunc_28(const char* szName, const Scaleform::GFx::Value* pArgs, u
 MS2_REPLACE_METHOD(0x140ba8a60, UIBanner, vfunc_28, 282, 0x6AEAD8CB);
 
 // @0x140ba8b80
-void UIBanner::FUN_140ba8b80(int nActorId)
+void UIBanner::OnClick(int nActorId)
 {
-    MS2Ptr<UIBanner::Entity> pEntity(FUN_140ba93d0(nActorId));
+    MS2Ptr<UIBanner::Entity> pEntity(FindEntity(nActorId));
     if (pEntity == 0)
     {
         MS2_ASSERT_AT(203, 0);
@@ -260,17 +260,17 @@ void UIBanner::FUN_140ba8b80(int nActorId)
     }
     pListener->vfunc_1(pEntity);
 }
-MS2_REPLACE_METHOD(0x140ba8b80, UIBanner, FUN_140ba8b80, 352, 0x1E3BCB61);
+MS2_REPLACE_METHOD(0x140ba8b80, UIBanner, OnClick, 352, 0x1E3BCB61);
 
 // @0x140ba8cf0
-MS2Ptr<UIBanner::Entity> FUN_140ba8cf0(int nActorId)
+MS2Ptr<UIBanner::Entity> GetBannerEntity(int nActorId)
 {
     UIBanner* pBanner = Unk_GetUI<UIBanner>(0x4e30);
     if (pBanner == 0)
         return MS2Ptr<UIBanner::Entity>(0);
-    return MS2Ptr<UIBanner::Entity>(pBanner->FUN_140ba8f90(nActorId));
+    return MS2Ptr<UIBanner::Entity>(pBanner->GetOrCreateEntity(nActorId));
 }
-MS2_REPLACE(0x140ba8cf0, FUN_140ba8cf0, 122, 0x80FEF9E4);
+MS2_REPLACE(0x140ba8cf0, GetBannerEntity, 122, 0x80FEF9E4);
 
 // @0x140ba8d70
 void FUN_140ba8d70(int nActorId)
@@ -278,12 +278,12 @@ void FUN_140ba8d70(int nActorId)
     UIBanner* pBanner = Unk_GetUI<UIBanner>(0x4e30);
     if (pBanner == 0)
         return;
-    pBanner->FUN_140f49c00(nActorId);
+    pBanner->ReleaseEntity(nActorId);
 }
 MS2_REPLACE(0x140ba8d70, FUN_140ba8d70, 52, 0xD7D31162);
 
 // @0x140ba8db0
-void UIBanner::FUN_140ba8db0(unsigned int nCount)
+void UIBanner::CreateEntityCache(unsigned int nCount)
 {
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
@@ -303,15 +303,15 @@ void UIBanner::FUN_140ba8db0(unsigned int nCount)
         }
     }
 }
-MS2_REPLACE_METHOD(0x140ba8db0, UIBanner, FUN_140ba8db0, 465, 0x46BBE4C9);
+MS2_REPLACE_METHOD(0x140ba8db0, UIBanner, CreateEntityCache, 465, 0x46BBE4C9);
 
 // @0x140ba8f90
-UIBanner::Entity* UIBanner::FUN_140ba8f90(int nActorId)
+UIBanner::Entity* UIBanner::GetOrCreateEntity(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     {
-    FUN_140f49c00(nActorId);
+    ReleaseEntity(nActorId);
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
     {
@@ -319,7 +319,7 @@ UIBanner::Entity* UIBanner::FUN_140ba8f90(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -346,7 +346,7 @@ UIBanner::Entity* UIBanner::FUN_140ba8f90(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((class AScript*)(((Unk_BannerClip*)pOldClip.operator->())))->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->UpdateEntity("updateEntity", ((class AScript*)(((Unk_BannerClip*)pOldClip.operator->())))->GetValue(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);
@@ -358,22 +358,22 @@ UIBanner::Entity* UIBanner::FUN_140ba8f90(int nActorId)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140ba8f90, UIBanner, FUN_140ba8f90, 1082, 0x21E1404E);
+MS2_REPLACE_METHOD(0x140ba8f90, UIBanner, GetOrCreateEntity, 1082, 0x21E1404E);
 
 // @0x140ba93d0
-UIBanner::Entity* UIBanner::FUN_140ba93d0(int nActorId)
+UIBanner::Entity* UIBanner::FindEntity(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     MS2Ptr<UIHudEntity::Entity> p(0);
     if (!m_a8.Lookup(nActorId, p))
         return 0;
     return (Entity*)p.get();
 }
-MS2_REPLACE_METHOD(0x140ba93d0, UIBanner, FUN_140ba93d0, 153, 0x8291A101);
+MS2_REPLACE_METHOD(0x140ba93d0, UIBanner, FindEntity, 153, 0x8291A101);
 
 // @0x140ba9470
-Scaleform::GFx::Value Unk_BannerClip::FUN_140ba9470(const char* szMethod, int nActorId, CString strCache, bool bFlag)
+Scaleform::GFx::Value Unk_BannerClip::CreateEntity(const char* szMethod, int nActorId, CString strCache, bool bFlag)
 {
     ASArgList args;
     args.resize(3);
@@ -384,11 +384,11 @@ Scaleform::GFx::Value Unk_BannerClip::FUN_140ba9470(const char* szMethod, int nA
 }
 
 // @0x140ba9570
-Scaleform::GFx::Value Unk_BannerClip::FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value clip, bool bFlag)
+Scaleform::GFx::Value Unk_BannerClip::UpdateEntity(const char* szMethod, Scaleform::GFx::Value clip, bool bFlag)
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcc70(&args[0], clip);
+    SetValue(&args[0], clip);
     FUN_1422bcce0(&args[1], bFlag);
     return FUN_1422bb8f0(szMethod, args);
 }

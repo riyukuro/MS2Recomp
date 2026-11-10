@@ -30,11 +30,11 @@ public:
     // UIStatusEventListener (+0x70) override: slot 20 (the status/exp changed), 0x141932b90
     virtual void vfunc_oa0_20(int a1);
 
-    void FUN_141932080(const unsigned int& nFlags);                 // push "setExp" (bit 0: percent text)
-    __int64 FUN_1419322a0();                                        // current exp
-    __int64 FUN_1419322e0();                                        // exp of one level
-    __int64 FUN_141932340();                                        // rest exp
-    void FUN_141932380(int nVisible);                               // show/hide the "m_point" clip
+    void UpdateExp(const unsigned int& nFlags);                 // push "setExp" (bit 0: percent text)
+    __int64 GetCurrentExp();                                        // current exp
+    __int64 GetNextLevelExp();                                        // exp of one level
+    __int64 GetRestExp();                                        // rest exp
+    void SetPointVisible(int nVisible);                               // show/hide the "m_point" clip
     void FUN_141932430();                                           // show/hide the bar clip by the mount state
 };
 MS2_CHECK_SIZE(UIExpBar, 0x78);

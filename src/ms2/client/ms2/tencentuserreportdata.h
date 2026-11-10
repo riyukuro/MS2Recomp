@@ -19,7 +19,7 @@ namespace TencentUserReport {
 struct Unk_ReportData {
     Unk_ReportData();
     ~Unk_ReportData();
-    void FUN_140200f80();
+    void Reset();
     void FUN_140201790(const Unk_ReportData& other);
     int type; int reason;
     CStringW name; CStringW target; CStringW itemName;

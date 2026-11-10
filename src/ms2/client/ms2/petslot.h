@@ -42,7 +42,7 @@ public:
     virtual void vfunc_o178_5(void* p) override;        // 0x140dbbfe0
 
     float GetCooldown();                              // cooldown left of the item's skill (0: no player)
-    int FUN_140dbaf10();                                // item type of the pet item (0: gone)
+    int GetPetItemType();                                // item type of the pet item (0: gone)
     int GetPetItemId();                                // item id of the pet item (0: gone)
     unsigned __int64 GetPetItemUid();                   // return m_nPetItemUid
     void SetPetItemUid(unsigned __int64 nUid);          // m_nPetItemUid = nUid

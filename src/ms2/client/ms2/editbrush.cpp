@@ -28,7 +28,7 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 int FUN_14109a9e0();                                                // rand()
 
-float FUN_14028aed0(float f);                                       // floorf
+float Floor(float f);                                       // floorf
 NiPoint3 FUN_141198410(NiPoint3 ptCenter, float fRadius);
 extern "C" float (__cdecl* __imp_sinf)(float);                      // the exe calls the CRT import
 extern "C" float (__cdecl* __imp_cosf)(float);
@@ -83,18 +83,18 @@ void EditBrush::vfunc_8(efd::Point2) {}
 // @0x141197370
 void EditBrush::vfunc_2()
 {
-    if (m_timer.FUN_140868ba0() != 0)
+    if (m_timer.IsRunning() != 0)
         return;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(0, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x2a, false, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->IsMouseButtonDown(0, false, 0))
     {
         vfunc_4();
-        m_timer.FUN_140868750(100);
+        m_timer.Start(100);
         return;
     }
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x2a, false, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->IsMouseButtonDown(1, false, 0))
     {
         vfunc_5();
-        m_timer.FUN_140868750(100);
+        m_timer.Start(100);
     }
 }
 
@@ -163,7 +163,7 @@ DecoEditService* BrushService()
 // Stamps random instances inside the circle.
 void PaintBrush::vfunc_4()
 {
-    for (int i = 0; (float)i < FUN_14028aed0(m_fDensity); ++i)
+    for (int i = 0; (float)i < Floor(m_fDensity); ++i)
     {
         NiTransform xf;
         xf.m_fScale = 1.0f;

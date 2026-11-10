@@ -95,18 +95,18 @@ struct Unk_RxEntity;
 class Unk_RxAnimSvc
 {
 public:
-    efd::utf8string FUN_140b7cc50(const egf::EntityID& id);     // current animation name (in this unit's range)
+    efd::utf8string GetCurrentAnimation(const egf::EntityID& id);     // current animation name (in this unit's range)
 };
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
-void FUN_141b71e70(egf::EntityID id, bool bFlag, unsigned int b, bool c);
+void SetEntityHighlight(egf::EntityID id, bool bFlag, unsigned int b, bool c);
 void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 const char* FUN_1408ac310(efd::utf8string* p);
 void FUN_1409989e0(efd::utf8string* p, const char* psz);
 void FUN_1408a8900(efd::utf8string* p);
 CString FUN_1409a2360(const char* psz, int n);
 CStringW GetStringCommonByKey(const CStringW& str);                    // string table lookup
-void FUN_1412751f0(const CStringW& str, int a, int b);          // shows a notice
+void ShowSystemNotice(const CStringW& str, int a, int b);          // shows a notice
 
 // Network.
 void FUN_140710590(COutPacket& pkt);                            // sends the packet
@@ -130,7 +130,7 @@ class GameEventUserValue; extern GameEventUserValue DAT_143ab2fc0;   // userprox
 
 // Game-event record of the event manager (0x1401c0d90 -> FUN_14047d230).
 bool ContainsId(ATL::CAtlArray<unsigned>& rIds, unsigned nId);   // conditionutil.cpp
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 
 // Placement check: field grid (service behind 0x143b059e8), map data of the world, actor helpers.
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
@@ -154,7 +154,7 @@ public:
     int m_nKind;                                                // +0xc4
 };
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
-class CPhysXHelper { public: int FUN_14168a450(const efd::Point3& pPos, float* pOut, float fRange); };
+class CPhysXHelper { public: int GetGroundDistance(const efd::Point3& pPos, float* pOut, float fRange); };
 Unk_Int3 FUN_1408a14c0(NiPoint3 pt);   // C3: the definer's signature (0x1408a14c0), cell of a point
 int FUN_1408a03c0(Unk_Int3 pt);   // C3: the real signature (ugcmapdata_1)
 Unk_Int3 FUN_1408a0400(int nCellId);
@@ -218,7 +218,7 @@ void CReactor::FUN_140b78b40(bool bFlag)
 {
     if (m_unk_80 == 0)
         return;
-    FUN_141b71e70(egf::EntityID(*((class egf::EntityID const*)&((egf::Entity*)(void const*)(m_unk_80))->GetEntityID())), bFlag, 1, false);
+    SetEntityHighlight(egf::EntityID(*((class egf::EntityID const*)&((egf::Entity*)(void const*)(m_unk_80))->GetEntityID())), bFlag, 1, false);
 }
 
 // @0x140b78bb0
@@ -271,7 +271,7 @@ void CReactor::AddAnimation(const CString& strAni)
 }
 
 // @0x140b78ef0
-bool CReactor::FUN_140b78ef0(const CString& strEffect)
+bool CReactor::AddEffect(const CString& strEffect)
 {
     if (m_mapEffects.Lookup(strEffect))
         return true;
@@ -320,7 +320,7 @@ void CReactor::FUN_140b791a0()
 }
 
 // @0x140b79330
-void CReactor::FUN_140b79330()
+void CReactor::UpdateConnectedEffect()
 {
     WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
@@ -337,7 +337,7 @@ void CReactor::FUN_140b79330()
         return;
     }
     if (bFound)
-        FUN_140b78ef0(spData->m_strConnectedEffect);
+        AddEffect(spData->m_strConnectedEffect);
     else
         RemoveEffect(spData->m_strConnectedEffect);
 }
@@ -409,7 +409,7 @@ void CReactor::FUN_140b79a10(CInPacket* pPacket)
 }
 
 // @0x140b79c30
-bool CReactor::FUN_140b79c30()
+bool CReactor::CanUse()
 {
     WorldService* pWorld = WorldService::GetInstance();
     if (pWorld == 0)
@@ -501,7 +501,7 @@ void CReactor::vfunc_53(float f)
 {
     GameObject::vfunc_53(f);
     FUN_140b791a0();
-    FUN_140b79330();
+    UpdateConnectedEffect();
 }
 
 // @0x140b7a160
@@ -523,18 +523,18 @@ void CReactor::EndOfSequence(NiActorManager* pkManager, NiActorManager::Sequence
     {
         const CString& strHead = m_listAnims.GetHead();
         const egf::EntityID& id = *((class egf::EntityID const*)&((egf::Entity*)(void const*)(m_unk_80))->GetEntityID());
-        if (strHead == reinterpret_cast<Unk_RxAnimSvc*>(FUN_141b6f910())->FUN_140b7cc50(id).c_str())
+        if (strHead == reinterpret_cast<Unk_RxAnimSvc*>(FUN_141b6f910())->GetCurrentAnimation(id).c_str())
             m_listAnims.RemoveHead();
     }
 }
 
 // @0x140b7a330
-bool FUN_140b7a330(PCBase* pPc, int nReactorId)
+bool CanCreateReactor(PCBase* pPc, int nReactorId)
 {
     if (pPc == 0)
         return false;
     int nError = 1;
-    nError = FUN_140b7a3d0(pPc, nReactorId);
+    nError = CheckReactorGameEvent(pPc, nReactorId);
     if (nError != 0)
     {
         FUN_140b7b7a0(nError);
@@ -546,7 +546,7 @@ bool FUN_140b7a330(PCBase* pPc, int nReactorId)
         FUN_140b7b7a0(2);
         return false;
     }
-    nError = FUN_140b7a650(pPc);
+    nError = CheckReactorPlacement(pPc);
     if (nError != 0)
     {
         FUN_140b7b7a0(3);
@@ -556,7 +556,7 @@ bool FUN_140b7a330(PCBase* pPc, int nReactorId)
 }
 
 // @0x140b7a3d0
-int FUN_140b7a3d0(PCBase* pPc, int nReactorId)
+int CheckReactorGameEvent(PCBase* pPc, int nReactorId)
 {
     if (pPc == 0)
         return 1;
@@ -566,7 +566,7 @@ int FUN_140b7a3d0(PCBase* pPc, int nReactorId)
     int nEvent = spData->m_nGameEventId;
     if (nEvent == 0)
         return 0;
-    MS2Ptr<ReactorContext> spRec = ((class CGameRule*)FUN_1401c0d90())->GetReactor();
+    MS2Ptr<ReactorContext> spRec = ((class CGameRule*)GetGameRule())->GetReactor();
     if (spRec.IsNull())
         return 4;
     if (spRec->m_eventId != nEvent)
@@ -590,14 +590,14 @@ int FUN_140b7a5e0(PCBase* pPc)
         return 1;
     if (((class PCBase*)(class PCBase*)(pPc))->FUN_141675ed0() != 0)
         return 1;
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() != 0x620001d)
         return 1;
     return 0;
 }
 
 // @0x140b7a650
 // MS2-FUNCTIONAL: behaviour-checked against the exe (same calls, conditions, constants and vector lifetimes); the instruction sequence now matches the exe, but some locals sit in other frame slots (15 bytes longer).
-int FUN_140b7a650(PCBase* pPc)
+int CheckReactorPlacement(PCBase* pPc)
 {
     if (pPc == 0)
         return 1;
@@ -623,7 +623,7 @@ int FUN_140b7a650(PCBase* pPc)
     }
     const float fNear = 230.0f;   // folded into the compares; the exe still stores it
     ATL::CAtlArray<MS2Ptr<Unk_WsPtred298> > arrNear;
-    pWorld->FUN_141bc5f10(&arrNear);
+    pWorld->GetInteractObjects(&arrNear);
     NiPoint3 posPc = ((GameObject*)pPc)->vfunc_18();
     // the exe copies the sret cell temp into the by-value argument
     int nCellId = FUN_1408a03c0(FUN_1408a14c0(posPc));
@@ -650,7 +650,7 @@ int FUN_140b7a650(PCBase* pPc)
     if (arrField.GetCount() > 0)
         return 1;
 
-    ATL::CRBMap<unsigned, Unk_WsV148>* pActors = pWorld->FUN_141bd36d0();
+    ATL::CRBMap<unsigned, Unk_WsV148>* pActors = pWorld->GetNpcMap();
     for (POSITION pos = pActors->GetHeadPosition(); pos != 0; pActors->GetNext(pos))
     {
         // m_148 holds efd::SmartPointer<CNpc> (8 bytes, value at node+8, copy 0x140a7b390)
@@ -688,7 +688,7 @@ int FUN_140b7a650(PCBase* pPc)
         efd::Point3* pSample = &samples[i];
         pSample->z = pSample->z + 10.0f;
         float fHit = 0.0f;
-        if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450(*pSample, &fHit, 50.0f) == 0)
+        if (((class CPhysXHelper*)GetPhysXHelper())->GetGroundDistance(*pSample, &fHit, 50.0f) == 0)
             return 1;
     }
     }
@@ -748,37 +748,37 @@ void FUN_140b7b7a0(int nError)
     case 1:
     {
         CStringW strKey(L"s_reactor_failed");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     case 2:
     {
         CStringW strKey(L"s_reactor_create_failed_invalid_state");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     case 3:
     {
         CStringW strKey(L"s_reactor_create_failed_invalid_position");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     case 4:
     {
         CStringW strKey(L"s_reactor_create_failed_game_event_inactive");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     case 5:
     {
         CStringW strKey(L"s_reactor_create_failed_invalid_field");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     case 6:
     {
         CStringW strKey(L"s_reactor_create_failed_daily_reward_count");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
         break;
     }
@@ -803,7 +803,7 @@ struct Rx_ActorTree : ATL::CRBTree<unsigned, Unk_WsV148> { using ATL::CRBTree<un
 
 // @0x140b7c2a0
 // the 14.16 std::_Uninitialized_move body over the Unk_Int3 helpers; the move goes to the Point3 general-tag overload (0x140b7c370)
-Unk_Int3* FUN_140b7c2a0(Unk_Int3* pFirst, Unk_Int3* pLast, Unk_Int3* pDest, void* pAlloc)
+Unk_Int3* UninitializedMove(Unk_Int3* pFirst, Unk_Int3* pLast, Unk_Int3* pDest, void* pAlloc)
 {   const auto _UFirst = std::_Get_unwrapped(pFirst); const auto _ULast = std::_Get_unwrapped(pLast); const auto _UDest = std::_Get_unwrapped_n(pDest, std::_Idl_distance<Unk_Int3*>(_UFirst, _ULast));
     std::_Seek_wrapped(pDest, (Unk_Int3*)std::_Uninitialized_move_al_unchecked<efd::Point3*, efd::Point3*, std::allocator<efd::Point3>>((efd::Point3*)_UFirst, (efd::Point3*)_ULast, (efd::Point3*)_UDest, *(std::allocator<efd::Point3>*)pAlloc,
         static_cast<std::_General_ptr_iterator_tag>(std::_Ptr_move_cat(_UFirst, _UDest)), std::true_type()));
@@ -832,7 +832,7 @@ struct Unk_RxAnimAccess : egmAnimation::AnimationService
 };
 // @0x140b7cc50
 // MS2-FUNCTIONAL: animation-service current-name lookup (AnimationService::GetCurrentAnimation: the getters take the ActorEntry smart-pointer members, not the entry)
-efd::utf8string Unk_RxAnimSvc::FUN_140b7cc50(const egf::EntityID& id)
+efd::utf8string Unk_RxAnimSvc::GetCurrentAnimation(const egf::EntityID& id)
 {
     Unk_RxAnimRec* pRec;
     if (!reinterpret_cast<Unk_RxAnimAccess*>(this)->ContainsEntity(id, reinterpret_cast<Unk_RxAnimAccess::ActorEntry*&>(pRec)))
@@ -879,7 +879,7 @@ Unk_GlueNode* FUN_140b7d300(void* pTree, Unk_GlueNode* pNode)
 }
 
 // @0x140b7e710
-void FUN_140b7e710(void* pVec, void* pFirst, void* pLast) { std::_Destroy_range((Unk_Int3*)pFirst, (Unk_Int3*)pLast, ((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(pVec))->_Getal()); }
+void DestroyRange(void* pVec, void* pFirst, void* pLast) { std::_Destroy_range((Unk_Int3*)pFirst, (Unk_Int3*)pLast, ((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(pVec))->_Getal()); }
 
 // @0x140b7e8c0
 void FUN_140b7e8c0(void* p) { ((void*)&((const std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(p))->_Get_data()); }
@@ -888,19 +888,19 @@ void FUN_140b7e8c0(void* p) { ((void*)&((const std::_Vector_alloc<std::_Vec_base
 void* FUN_140b7e900(void* p) { return static_cast<char*>(((void*)&((const std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(p))->_Get_data())) + 8; }
 
 // @0x140b7e920
-void FUN_140b7e920(void* p) { ((std::_Container_base0*)(void*)(((void*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(p))->_Get_data())))->_Orphan_all(); }
+void OrphanAll(void* p) { ((std::_Container_base0*)(void*)(((void*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(p))->_Get_data())))->_Orphan_all(); }
 
-void FUN_140b7ec60(void* pAlloc, void* pMem, __int64 nCount);
+void Deallocate(void* pAlloc, void* pMem, __int64 nCount);
 
 // @0x140b7ea10
 // std::vector<Unk_Int3> _Tidy stand-in
 void FUN_140b7ea10(void* pVec)
 {
-    FUN_140b7e920(pVec);
+    OrphanAll(pVec);
     if (static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst() != 0)
     {
-        FUN_140b7e710(pVec, static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst(), static_cast<std::vector<Unk_Int3>*>(pVec)->_Mylast());
-        FUN_140b7ec60(((void*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(pVec))->_Getal()), static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst(), static_cast<std::vector<Unk_Int3>*>(pVec)->capacity());
+        DestroyRange(pVec, static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst(), static_cast<std::vector<Unk_Int3>*>(pVec)->_Mylast());
+        Deallocate(((void*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(pVec))->_Getal()), static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst(), static_cast<std::vector<Unk_Int3>*>(pVec)->capacity());
         static_cast<std::vector<Unk_Int3>*>(pVec)->_Myfirst() = 0;
         static_cast<std::vector<Unk_Int3>*>(pVec)->_Mylast() = 0;
         static_cast<std::vector<Unk_Int3>*>(pVec)->_Myend() = 0;
@@ -908,14 +908,14 @@ void FUN_140b7ea10(void* pVec)
 }
 
 // @0x140b7eb20
-void FUN_140b7eb20(void* pVec, Unk_Int3* pFirst, Unk_Int3* pLast, Unk_Int3* pDest) { FUN_140b7c2a0(pFirst, pLast, pDest, ((void*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(pVec))->_Getal())); }
+void FUN_140b7eb20(void* pVec, Unk_Int3* pFirst, Unk_Int3* pLast, Unk_Int3* pDest) { UninitializedMove(pFirst, pLast, pDest, ((void*)&((std::_Vector_alloc<std::_Vec_base_types<Unk_Int3, std::allocator<Unk_Int3>>>*)(void*)(pVec))->_Getal())); }
 
 // @0x140b7ec60
-void FUN_140b7ec60(void* pAlloc, void* pMem, __int64 nCount) { std::_Deallocate<16>(pMem, nCount * 0xc); }
+void Deallocate(void* pAlloc, void* pMem, __int64 nCount) { std::_Deallocate<16>(pMem, nCount * 0xc); }
 
 // @0x140b7ec90
 // std::allocator<Unk_Int3>::max_size stand-in
-unsigned __int64 FUN_140b7ec90(void* pAlloc) { return 0x1555555555555555ull; }
+unsigned __int64 GetMaxSize(void* pAlloc) { return 0x1555555555555555ull; }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca1040-0x142ca1160 .text$yd
 

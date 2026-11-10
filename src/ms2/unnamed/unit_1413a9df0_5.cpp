@@ -17,7 +17,7 @@
 #include "ms2/placeholder/cguidecondition.h"
 #undef min
 #undef max
-#include "ms2/client/ms2/interactobject.h"   // C3: CInteractObject::FUN_1413b5600
+#include "ms2/client/ms2/interactobject.h"   // C3: CInteractObject::GetState
 
 
 struct Unk_GcElem16 { void* m_p0; void* m_p1; };
@@ -28,7 +28,7 @@ size_t Unk_GcAnchorArray(ATL::CAtlArray<Unk_GcElem16>& arr, const Unk_GcElem16& 
 }
 
 // @0x1413b5600
-int CInteractObject::FUN_1413b5600()
+int CInteractObject::GetState()
 {
     return m_nState;
 }

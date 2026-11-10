@@ -54,7 +54,7 @@ public:
 
 int GetServerTick();   // C3: was GetServerTick
 bool FUN_140930110(int nObjectId);                          // 0x140930110 the object is the local player
-UIMainPlayerInfo* FUN_140931900(int nClass);                // 0x140931900 the main player info dialog
+UIMainPlayerInfo* FindMainPlayerInfo(int nClass);                // 0x140931900 the main player info dialog
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);            // 0x141b6efc0 the scene node of an entity
 
 // The stance bar argument (UIStanceBar::FUN_140ba2390); the exe zero-initializes it.
@@ -253,7 +253,7 @@ void AdditionalCli::FUN_14096c3f0()
     info.m_b = std::min<unsigned long>(GetRemainTicks(), info.m_a);
     UIStanceBar* pBar = Unk_AcFindUI<UIStanceBar>((eUIClassID)20378);
     if (pBar)
-        pBar->FUN_140ba2390(&info);
+        pBar->StartStance(&info);
 }
 
 // @0x14096c4c0
@@ -305,7 +305,7 @@ void AdditionalCli::StopEffects(int nCaster)
     {
         UIStanceBar* pBar = Unk_AcFindUI<UIStanceBar>((eUIClassID)20378);
         if (pBar)
-            pBar->FUN_140ba2400();
+            pBar->StopStance();
     }
 }
 
@@ -476,7 +476,7 @@ void AdditionalCli::UpdateStanceBarTime()
         return;
     UIStanceBar* pBar = Unk_AcFindUI<UIStanceBar>((eUIClassID)20378);
     if (pBar)
-        pBar->FUN_140ba2420(GetRemainTicks());
+        pBar->UpdateTime(GetRemainTicks());
 }
 
 // @0x14096d130
@@ -492,7 +492,7 @@ void AdditionalCli::UpdateStanceBarLevel()
         return;
     UIStanceBar* pBar = Unk_AcFindUI<UIStanceBar>((eUIClassID)20378);
     if (pBar)
-        pBar->FUN_140ba2490(spLevel->m_nLevel);
+        pBar->UpdateStep(spLevel->m_nLevel);
 }
 
 // @0x14096d260
@@ -560,13 +560,13 @@ void AdditionalCli::UpdateBuffUI()
     {
         if (efd::DynamicCast<MyPC>(m_pOwner))
         {
-            UIMainPlayerInfo* pInfo = FUN_140931900(20063);
+            UIMainPlayerInfo* pInfo = FindMainPlayerInfo(20063);
             if (pInfo)
                 pInfo->UpdateBuffEffect(MS2Ptr<AdditionalCli>(this));
         }
         else if (CNpc* pNpc = efd::DynamicCast<CNpc>(m_pOwner))
         {
-            if (((class CNpc*)(class PCBase*)(pNpc))->FUN_141092ff0())
+            if (((class CNpc*)(class PCBase*)(pNpc))->IsBoss())
             {
                 UIUpperHpBar* pBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)20029);
                 if (pBar)
@@ -574,7 +574,7 @@ void AdditionalCli::UpdateBuffUI()
             }
             UINpcDuelHPBarDialog* pDuel = Unk_AcFindUI<UINpcDuelHPBarDialog>((eUIClassID)20322);
             if (pDuel)
-                pDuel->FUN_140e6c540(MS2Ptr<AdditionalCli>(this));
+                pDuel->UpdateBuffEffect(MS2Ptr<AdditionalCli>(this));
         }
     }
 }

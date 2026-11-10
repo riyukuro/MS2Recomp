@@ -22,19 +22,19 @@ public:
     virtual void vfunc_26();
     virtual void vfunc_72();
     virtual int vfunc_48() { return 0x4f7b; }
-    void FUN_140c36b40(Unk_BpItem*);
+    void OnItemEditComplete(Unk_BpItem*);
     void OpenForItem(__int64);
-    void FUN_140c370a0(const int&, MS2Ptr<CUploadFile>);
+    void SetImage(const int&, MS2Ptr<CUploadFile>);
     void FUN_140c37360(MS2Ptr<CUploadFile>, const int&);
     void UpdateCreateButtonEnabled();
     void OnAddIconClick(const Scaleform::GFx::FunctionHandler::Params&);
     void OnAddImageClick(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140c37700(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnCreateClick(const Scaleform::GFx::FunctionHandler::Params&);
     void OnNameInputChanged(const Scaleform::GFx::FunctionHandler::Params&);
     bool FUN_140c37d50(int, const CMsgBoxData&);
     bool FUN_140c37f90(int, const CMsgBoxData&);
     CStringW GetTrimmedName();
-    void FUN_140c38150();
+    void CloseImageUploadDialog();
     void FUN_140c381b0(MS2Ptr<CUploadFile>);
     void FUN_140c38240();
     void FUN_140c38400();

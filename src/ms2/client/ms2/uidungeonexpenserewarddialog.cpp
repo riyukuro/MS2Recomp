@@ -50,8 +50,8 @@ class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 // @0x140f3a810
 UIDungeonExpenseRewardDialog::UIDungeonExpenseRewardDialog()
 {
-    FUN_141924170(1);
-    FUN_141925e70(0, 1);
+    SetTweenEnabled(1);
+    SetFlag(0, 1);
 }
 
 // @0x140f3a8c0
@@ -72,10 +72,10 @@ void UIDungeonExpenseRewardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_acceptButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_acceptButton)))
-        m_acceptButton->FUN_1422ce240(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::FUN_140f3aee0), 0);
+        m_acceptButton->FUN_1422ce240(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::OnAccept), 0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_cancelButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_cancelButton)))
-        m_cancelButton->FUN_1422ce240(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::FUN_140f3af10), 0);
-    FUN_140f3ad50();
+        m_cancelButton->FUN_1422ce240(DxClickDelegate(this, &UIDungeonExpenseRewardDialog::OnCancel), 0);
+    SetText();
     ((class Unk_DxHost*)((void*)GetClientPlatform()))->vfunc_43(2, 0, 1000);
 }
 
@@ -100,7 +100,7 @@ void UIDungeonExpenseRewardDialog::vfunc_67()
 }
 
 // @0x140f3ad50
-void UIDungeonExpenseRewardDialog::FUN_140f3ad50()
+void UIDungeonExpenseRewardDialog::SetText()
 {
     if (FUN_1422dc2d0() == 0)
         return;
@@ -119,13 +119,13 @@ void UIDungeonExpenseRewardDialog::FUN_140f3ae40(int nRoomId, int nUnused)
 }
 
 // @0x140f3aee0
-void UIDungeonExpenseRewardDialog::FUN_140f3aee0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDungeonExpenseRewardDialog::OnAccept(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     vfunc_68();
 }
 
 // @0x140f3af10
-void UIDungeonExpenseRewardDialog::FUN_140f3af10(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDungeonExpenseRewardDialog::OnCancel(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     vfunc_67();
 }

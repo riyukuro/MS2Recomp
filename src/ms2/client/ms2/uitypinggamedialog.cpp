@@ -61,7 +61,7 @@
 
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 int GetServerTick();   // C3: was GetServerTick
-int FUN_140768010(int, int);   // C3: was FUN_140768010
+int GetRandomRange(int, int);   // C3: was GetRandomRange
 int FUN_141276180(const CString& strSound, const CString& strOption);   // play a system sound
 void FUN_140710590(COutPacket& packet);                             // send
 
@@ -92,7 +92,7 @@ UITypingGameDialog::UITypingGameDialog()
     : m_nCount(4), m_nLimitMs(10000), m_nIndex(0), m_bPlaying(false)
 {
     m_answer.clear();
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
     m_keys.reserve(10);
     m_keys.push_back(std::make_pair((Unk_DIKey)0xb, (Unk_DIKey)0x52));
     m_keys.push_back(std::make_pair((Unk_DIKey)2, (Unk_DIKey)0x4f));
@@ -127,7 +127,7 @@ int UITypingGameDialog::vfunc_13()
 }
 
 // @0x140ee57b0
-void UITypingGameDialog::FUN_140ee57b0(int nCount, int nLimitMs)
+void UITypingGameDialog::SetCountAndLimit(int nCount, int nLimitMs)
 {
     m_nCount = nCount;
     m_nLimitMs = nLimitMs;
@@ -148,14 +148,14 @@ int UITypingGameDialog::vfunc_65()
 void UITypingGameDialog::vfunc_84()
 {
     FUN_141924680();
-    FUN_140ee5fc0(true);
+    SetKeyModifier(true);
 }
 
 // @0x140ee5880
 void UITypingGameDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140ee5fc0(false);
+    SetKeyModifier(false);
 }
 
 // @0x140ee58b0
@@ -164,7 +164,7 @@ void UITypingGameDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
-    FUN_140ee5a20();
+    GenerateSequence();
 }
 
 // @0x140ee5900
@@ -202,19 +202,19 @@ int UITypingGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 }
 
 // @0x140ee5a20
-void UITypingGameDialog::FUN_140ee5a20()
+void UITypingGameDialog::GenerateSequence()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     ASArray kSequence(2);
     for (unsigned i = 0; i < (unsigned)m_nCount; i++)
     {
-        unsigned nDigit = FUN_140768010(10, 0);
+        unsigned nDigit = GetRandomRange(10, 0);
         ((class ASArray*)(class ASArray*)(&kSequence))->PushUInt(nDigit);
         m_answer.push_back(nDigit);
     }
     if (m_30.get() != 0)
-        m_30->Invoke("setData", kSequence.FUN_1422bb870());
+        m_30->Invoke("setData", kSequence.GetValue());
     FUN_141276180(s_strKeyPopUp, "");
 }
 
@@ -223,8 +223,8 @@ void UITypingGameDialog::OnShowNumberComplete()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
-    m_timer.FUN_140868750(m_nLimitMs);
-    FUN_140ee6190(m_nLimitMs);
+    m_timer.Start(m_nLimitMs);
+    SetCountdown(m_nLimitMs);
     m_bPlaying = true;
 }
 
@@ -235,16 +235,16 @@ void UITypingGameDialog::FUN_140ee5c10()
         return;
     if (m_answer.size() <= m_nIndex)
     {
-        FUN_140ee6240();
+        CloseCountdown();
         FUN_141276180(s_strSuccess, "");
         m_30->Invoke("successGame");
         m_bPlaying = false;
     }
     else
     {
-        if (m_timer.FUN_140868c00() != 0)
+        if (m_timer.IsExpired() != 0)
         {
-            FUN_140ee6240();
+            CloseCountdown();
             FUN_141276180(s_strFail, "");
             m_30->Invoke("failGameTimeout");
             m_bPlaying = false;
@@ -256,7 +256,7 @@ void UITypingGameDialog::FUN_140ee5c10()
             bool bHit = false;
             for (unsigned i = 0; i < m_nKeyCount; i++)
             {
-                if (FUN_140ee5ff0(i))
+                if (IsDigitKeyPressed(i))
                 {
                     bPressed = true;
                     if (nWanted == i)
@@ -281,7 +281,7 @@ void UITypingGameDialog::FUN_140ee5c10()
             else
             {
                 FUN_141276180(s_strFail, "");
-                FUN_140ee6240();
+                CloseCountdown();
                 m_30->Invoke("failKeyInput", m_nIndex);
                 m_30->Invoke("failGame");
                 m_bPlaying = false;
@@ -291,16 +291,16 @@ void UITypingGameDialog::FUN_140ee5c10()
 }
 
 // @0x140ee5fc0
-void UITypingGameDialog::FUN_140ee5fc0(bool bOn)
+void UITypingGameDialog::SetKeyModifier(bool bOn)
 {
     ((class CInputKeyHandler*)FUN_14025e7c0())->SetModifier2(bOn);
 }
 
 // @0x140ee5ff0
-bool UITypingGameDialog::FUN_140ee5ff0(unsigned nDigit)
+bool UITypingGameDialog::IsDigitKeyPressed(unsigned nDigit)
 {
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(m_keys[nDigit].first, 0, 0) ||
-        ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(m_keys[nDigit].second, 0, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(m_keys[nDigit].first, 0, 0) ||
+        ((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(m_keys[nDigit].second, 0, 0))
         return true;
     return false;
 }
@@ -328,7 +328,7 @@ void UITypingGameDialog::FailGameProgress()
 }
 
 // @0x140ee6190
-void UITypingGameDialog::FUN_140ee6190(unsigned nLimitMs)
+void UITypingGameDialog::SetCountdown(unsigned nLimitMs)
 {
     WorldService::GetInstance()->FUN_141bc6f60(GetServerTick(), nLimitMs, 1);
     if (nLimitMs > 0)
@@ -337,8 +337,8 @@ void UITypingGameDialog::FUN_140ee6190(unsigned nLimitMs)
         UITriggerTimerDialog* pTimer = FindTimerDialog(0x4e95);
         if (pTimer != 0)
         {
-            pTimer->FUN_141b334d0(-10);
-            pTimer->FUN_141b33510(1);
+            pTimer->SetOffsetY(-10);
+            pTimer->SetAlign(1);
         }
     }
     else
@@ -348,7 +348,7 @@ void UITypingGameDialog::FUN_140ee6190(unsigned nLimitMs)
 }
 
 // @0x140ee6240
-void UITypingGameDialog::FUN_140ee6240()
+void UITypingGameDialog::CloseCountdown()
 {
     UITriggerTimerDialog* pTimer = FindTimerDialog(0x4e95);
     if (pTimer != 0)

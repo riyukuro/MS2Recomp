@@ -66,7 +66,7 @@
 #include "ms2/placeholder/applyeffect.h"
 #include "ms2/placeholder/cgraphicoptiontable.h"
 #include "ms2/client/ms2/mypc.h"
-#include "ms2/client/ms2/uiwebbrowser.h"   // C3: FUN_140c43790 returns UIWebBrowser*
+#include "ms2/client/ms2/uiwebbrowser.h"   // C3: FindWebBrowser returns UIWebBrowser*
 #include "ms2/client/ms2/ms2lightservice.h"   // C3: MS2LightService::ScaleLightIntensity
 #include "ms2/placeholder/clientconstants.h"   // C3: Common::Constants::Value<int>::Get
 #include <NiFixedString.h>   // C3: DAT_143ae53c0
@@ -123,10 +123,10 @@ struct Unk_LgDialog
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);
 
 CStringW BlockFormat(int nStringId);                              // a string table text
-void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // message box
+void ShowMessageBox(CStringW strText, int nType, void* pListener, CStringW strTag);   // message box
 void FUN_14151f200();
 template <class T> T* Unk_AcFindUI(eUIClassID nId);
-UIDamageEffect* FUN_140ac55a0(int nId);
+UIDamageEffect* GetDamageEffect(int nId);
 
 struct Unk_PmFixedItem* GetInstrumentManager();   // the CInstrumentManager instance (definer's form, petmanager.cpp)
 
@@ -205,7 +205,7 @@ void CGameOptionInterface::vfunc_3(int n)
     if (n == 0)
     {
         FUN_14125bb60(&m_state, reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()));
-        FUN_14125bd00(&m_flag, TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0());
+        FUN_14125bd00(&m_flag, TSingleton<CGameOption>::GetInstance()->GetInterfaceChar());
     }
     CBaseOption::vfunc_3(n);
 }
@@ -224,7 +224,7 @@ int CGameOptionInterface::vfunc_5(const char* pszName, void* pArg, int nArg)
     if (CBaseOption::vfunc_5(pszName, pArg, nArg))
         return 1;
     if (_stricmp("onResetUILayout", pszName) == 0)
-        FUN_140d73aa0(BlockFormat(0x852), 1, (IMessageListener*)this, CStringW(L"resetSwfLayout"));
+        ShowMessageBox(BlockFormat(0x852), 1, (IMessageListener*)this, CStringW(L"resetSwfLayout"));
     return 0;
 }
 MS2_REPLACE_METHOD(0x141255A40, CGameOptionInterface, vfunc_5, 256, 0xA70A78FA);
@@ -254,53 +254,53 @@ void CGameOptionInterface::vfunc_6()
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_enableMouseControl"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_flag.m_b);
+            sp->SetSelected(m_flag.m_b);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_closeDialogAll"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_b00);
+            sp->SetSelected(m_state.m_b00);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_autoDesc"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_b01);
+            sp->SetSelected(m_state.m_b01);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_showTipText"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_b02);
+            sp->SetSelected(m_state.m_b02);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_showDamageMeter"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
         {
-            sp->FUN_1422c1fe0(m_state.m_b14);
-            sp->FUN_1422ce090(m_state.m_b03);
+            sp->SetEnabled(m_state.m_b14);
+            sp->SetSelected(m_state.m_b03);
         }
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_showChaosDamageMeter"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
         {
-            sp->FUN_1422c1fe0(m_state.m_b15);
-            sp->FUN_1422ce090(m_state.m_b04);
+            sp->SetEnabled(m_state.m_b15);
+            sp->SetSelected(m_state.m_b04);
         }
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_sliderUI"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0(200.0f - m_state.m_f08 * 100.0f);
+            sp->SetValue(200.0f - m_state.m_f08 * 100.0f);
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_damageTextScaleStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_n10);
+            sp->SetValue((float)m_state.m_n10);
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_damageEffectAlphaStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_n0c);
+            sp->SetValue((float)m_state.m_n0c);
     }
 }
 MS2_REPLACE_METHOD(0x141255C10, CGameOptionInterface, vfunc_6, 1746, 0x6CE23490);
@@ -311,50 +311,50 @@ void CGameOptionInterface::vfunc_7()
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_enableMouseControl"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_flag.m_b = sp->FUN_1422ce0e0() ? true : false;
+            m_flag.m_b = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_closeDialogAll"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_b00 = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_b00 = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_autoDesc"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_b01 = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_b01 = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_showTipText"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_b02 = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_b02 = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_showDamageMeter"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_b03 = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_b03 = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_showChaosDamageMeter"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
         {
-            if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xbe))
-                m_state.m_b04 = sp->FUN_1422ce0e0() ? true : false;
+            if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xbe))
+                m_state.m_b04 = sp->IsSelected() ? true : false;
         }
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_sliderUI"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_f08 = (float)(200 - (int)sp->FUN_1422ce630()) / 100.0f;
+            m_state.m_f08 = (float)(200 - (int)sp->GetValue()) / 100.0f;
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_damageTextScaleStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_n10 = (int)sp->FUN_1422ce630();
+            m_state.m_n10 = (int)sp->GetValue();
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_damageEffectAlphaStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_n0c = (int)sp->FUN_1422ce630();
+            m_state.m_n0c = (int)sp->GetValue();
     }
 }
 MS2_REPLACE_METHOD(0x1412562F0, CGameOptionInterface, vfunc_7, 1691, 0x3B0C34FA);
@@ -366,7 +366,7 @@ void CGameOptionInterface::vfunc_10()
     CBaseOption::vfunc_10();
     if (IsIndividualDamageMeterOn(&m_state))
     {
-        if (reinterpret_cast<GFxSceneService*>(CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x620001d)
+        if (reinterpret_cast<GFxSceneService*>(CUserMail::GetGFxSceneService())->GetSubSceneId() == 0x620001d)
             CUIService::GetInstance()->OpenDialog((eUIClassID)0x4edf);
     }
     else if (!IsIndividualDamageMeterOn(&m_state))
@@ -384,10 +384,10 @@ void CGameOptionInterface::vfunc_10()
     }
     FUN_14125bd20(&m_flag, m_flag.m_b);
     FUN_14125bb60(reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150()), &m_state);
-    FUN_14125bd00(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0(), &m_flag);
-    UIDamageEffect* pEffect = FUN_140ac55a0(0x4e3c);
+    FUN_14125bd00(TSingleton<CGameOption>::GetInstance()->GetInterfaceChar(), &m_flag);
+    UIDamageEffect* pEffect = GetDamageEffect(0x4e3c);
     if (pEffect != 0)
-        pEffect->FUN_141910b30((float)reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150())->m_n0c);
+        pEffect->SetAlpha((float)reinterpret_cast<Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150())->m_n0c);
     TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
 }
 MS2_REPLACE_METHOD(0x1412569A0, CGameOptionInterface, vfunc_10, 415, 0x86CDC5AF);
@@ -475,74 +475,74 @@ void CGameOptionSoundDefault::vfunc_6()
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bMuteAll"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_b00);
+            sp->SetSelected(m_state.m_b00);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bPlayAll"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_b01);
+            sp->SetSelected(m_state.m_b01);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_disableJobSound"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_flag.m_b);
+            sp->SetSelected(m_flag.m_b);
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_mainSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_nMainSoundStep);
+            sp->SetValue((float)m_state.m_nMainSoundStep);
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_effectSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_nEffectSoundStep);
+            sp->SetValue((float)m_state.m_nEffectSoundStep);
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_enviromentSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_nEnviromentSoundStep);
+            sp->SetValue((float)m_state.m_nEnviromentSoundStep);
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_uiSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_nUiSoundStep);
+            sp->SetValue((float)m_state.m_nUiSoundStep);
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_npcSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_nNpcSoundStep);
+            sp->SetValue((float)m_state.m_nNpcSoundStep);
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_bossSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_nBossSoundStep);
+            sp->SetValue((float)m_state.m_nBossSoundStep);
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_bgmSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_nBgmSoundStep);
+            sp->SetValue((float)m_state.m_nBgmSoundStep);
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_systemSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_nSystemSoundStep);
+            sp->SetValue((float)m_state.m_nSystemSoundStep);
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_movieSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_nMovieSoundStep);
+            sp->SetValue((float)m_state.m_nMovieSoundStep);
     }
     {
         MS2Ptr<ASMovieClip> spClip = ((Unk_GsDialog*)GetOptionDialog())->FUN_1412587a0(CString("m_playInstrumentStep"), -1);
         if (static_cast<ASMovieClip*>(spClip) != 0)
         {
-            if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(10))
+            if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(10))
             {
                 spClip->vfunc_3(1);
                 if (MS2Ptr<ASSlider> spSlider = spClip->FUN_140fafed0<ASSlider>("m_slider"))
-                    spSlider->FUN_1422ce5f0((float)m_state.m_n2c);
+                    spSlider->SetValue((float)m_state.m_n2c);
                 if (MS2Ptr<ASCheckBox> spOff = spClip->FUN_140c11f50<ASCheckBox>("m_isOffBgm"))
-                    spOff->FUN_1422ce090(m_state.m_b30);
+                    spOff->SetSelected(m_state.m_b30);
             }
             else
             {
@@ -553,7 +553,7 @@ void CGameOptionSoundDefault::vfunc_6()
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_charSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            sp->FUN_1422ce5f0((float)m_state.m_n28);
+            sp->SetValue((float)m_state.m_n28);
     }
 }
 MS2_REPLACE_METHOD(0x141256E90, CGameOptionSoundDefault, vfunc_6, 3054, 0x71243925);
@@ -564,78 +564,78 @@ void CGameOptionSoundDefault::vfunc_7()
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bMuteAll"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_b00 = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_b00 = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bPlayAll"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_b01 = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_b01 = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_disableJobSound"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_flag.m_b = sp->FUN_1422ce0e0() ? true : false;
+            m_flag.m_b = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_mainSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_nMainSoundStep = (int)sp->FUN_1422ce630();
+            m_state.m_nMainSoundStep = (int)sp->GetValue();
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_effectSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_nEffectSoundStep = (int)sp->FUN_1422ce630();
+            m_state.m_nEffectSoundStep = (int)sp->GetValue();
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_enviromentSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_nEnviromentSoundStep = (int)sp->FUN_1422ce630();
+            m_state.m_nEnviromentSoundStep = (int)sp->GetValue();
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_uiSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_nUiSoundStep = (int)sp->FUN_1422ce630();
+            m_state.m_nUiSoundStep = (int)sp->GetValue();
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_npcSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_nNpcSoundStep = (int)sp->FUN_1422ce630();
+            m_state.m_nNpcSoundStep = (int)sp->GetValue();
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_bossSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_nBossSoundStep = (int)sp->FUN_1422ce630();
+            m_state.m_nBossSoundStep = (int)sp->GetValue();
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_bgmSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_nBgmSoundStep = (int)sp->FUN_1422ce630();
+            m_state.m_nBgmSoundStep = (int)sp->GetValue();
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_systemSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_nSystemSoundStep = (int)sp->FUN_1422ce630();
+            m_state.m_nSystemSoundStep = (int)sp->GetValue();
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_movieSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_nMovieSoundStep = (int)sp->FUN_1422ce630();
+            m_state.m_nMovieSoundStep = (int)sp->GetValue();
     }
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(10))
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(10))
     {
         MS2Ptr<ASMovieClip> spClip = ((Unk_GsDialog*)GetOptionDialog())->FUN_1412587a0(CString("m_playInstrumentStep"), -1);
         if (static_cast<ASMovieClip*>(spClip) != 0)
         {
             if (MS2Ptr<ASSlider> spSlider = spClip->FUN_140fafed0<ASSlider>("m_slider"))
-                m_state.m_n2c = (int)spSlider->FUN_1422ce630();
+                m_state.m_n2c = (int)spSlider->GetValue();
             if (MS2Ptr<ASCheckBox> spOff = spClip->FUN_140c11f50<ASCheckBox>("m_isOffBgm"))
-                m_state.m_b30 = spOff->FUN_1422ce0e0() ? true : false;
+                m_state.m_b30 = spOff->IsSelected() ? true : false;
         }
     }
     {
         MS2Ptr<ASSlider> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_charSoundStep"), -1);
         if (static_cast<ASSlider*>(sp) != 0)
-            m_state.m_n28 = (int)sp->FUN_1422ce630();
+            m_state.m_n28 = (int)sp->GetValue();
     }
 }
 MS2_REPLACE_METHOD(0x141257A90, CGameOptionSoundDefault, vfunc_7, 2817, 0x76C79C43);
@@ -719,8 +719,8 @@ void CGameOptionStatus::vfunc_3(int n)
 {
     if (n == 0)
     {
-        FUN_14125c5a0(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_140b123b0());
-        FUN_14125c950(&m_flag, TSingleton<CGameOption>::GetInstance()->FUN_140ea41a0());
+        FUN_14125c5a0(&m_state, TSingleton<CGameOption>::GetInstance()->GetStatus());
+        FUN_14125c950(&m_flag, TSingleton<CGameOption>::GetInstance()->GetStatusChar());
     }
     CBaseOption::vfunc_3(n);
 }
@@ -745,77 +745,77 @@ void CGameOptionStatus::vfunc_6()
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMyName"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayMyName);
+            sp->SetSelected(m_state.m_bDisplayMyName);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayPlayerSymbol"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayPlayerSymbol);
+            sp->SetSelected(m_state.m_bDisplayPlayerSymbol);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayFriendlyName"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayFriendlyName);
+            sp->SetSelected(m_state.m_bDisplayFriendlyName);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayEnemyName"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayEnemyName);
+            sp->SetSelected(m_state.m_bDisplayEnemyName);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayNpcName"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayNpcName);
+            sp->SetSelected(m_state.m_bDisplayNpcName);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMonsterName"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayMonsterName);
+            sp->SetSelected(m_state.m_bDisplayMonsterName);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayPcIllust"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayPcIllust);
+            sp->SetSelected(m_state.m_bDisplayPcIllust);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMonsterGaugeValue"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayMonsterGaugeValue);
+            sp->SetSelected(m_state.m_bDisplayMonsterGaugeValue);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayExpValue"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayExpValue);
+            sp->SetSelected(m_state.m_bDisplayExpValue);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayOnlyMyEffectToMonster"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayOnlyMyEffectToMonster);
+            sp->SetSelected(m_state.m_bDisplayOnlyMyEffectToMonster);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMyHpGauge"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayMyHpGauge);
+            sp->SetSelected(m_state.m_bDisplayMyHpGauge);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMyShieldGauge"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayMyShieldGauge);
+            sp->SetSelected(m_state.m_bDisplayMyShieldGauge);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayPartyHpGauge"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayPartyHpGauge);
+            sp->SetSelected(m_state.m_bDisplayPartyHpGauge);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayPartyShieldGauge"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayPartyShieldGauge);
+            sp->SetSelected(m_state.m_bDisplayPartyShieldGauge);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMonsterHpGauge"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayMonsterHpGauge);
+            sp->SetSelected(m_state.m_bDisplayMonsterHpGauge);
     }
     {
         MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_bossMonsterNotify"), -1);
@@ -825,45 +825,45 @@ void CGameOptionStatus::vfunc_6()
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayNormalChatBalloon"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayNormalChatBalloon);
+            sp->SetSelected(m_state.m_bDisplayNormalChatBalloon);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayPartyChatBalloon"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayPartyChatBalloon);
+            sp->SetSelected(m_state.m_bDisplayPartyChatBalloon);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayGuildChatBalloon"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayGuildChatBalloon);
+            sp->SetSelected(m_state.m_bDisplayGuildChatBalloon);
     }
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8c))
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x8c))
     {
         {
             MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayShowOnlyMyPet"), -1);
             if (static_cast<ASCheckBox*>(sp) != 0)
-                sp->FUN_1422ce090(m_state.m_bDisplayShowOnlyMyPet);
+                sp->SetSelected(m_state.m_bDisplayShowOnlyMyPet);
         }
         {
             MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayHideMyPet"), -1);
             if (static_cast<ASCheckBox*>(sp) != 0)
-                sp->FUN_1422ce090(m_state.m_bDisplayHideMyPet);
+                sp->SetSelected(m_state.m_bDisplayHideMyPet);
         }
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayHideSmartPush"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayHideSmartPush);
+            sp->SetSelected(m_state.m_bDisplayHideSmartPush);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayLearningQuest"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_flag.m_b);
+            sp->SetSelected(m_flag.m_b);
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayHideHighlightMenu"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            sp->FUN_1422ce090(m_state.m_bDisplayHideHighlightMenu);
+            sp->SetSelected(m_state.m_bDisplayHideHighlightMenu);
     }
 }
 MS2_REPLACE_METHOD(0x141258B10, CGameOptionStatus, vfunc_6, 4394, 0xBCEF88D7);
@@ -874,77 +874,77 @@ void CGameOptionStatus::vfunc_7()
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMyName"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayMyName = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayMyName = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayPlayerSymbol"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayPlayerSymbol = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayPlayerSymbol = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayFriendlyName"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayFriendlyName = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayFriendlyName = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayEnemyName"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayEnemyName = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayEnemyName = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayNpcName"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayNpcName = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayNpcName = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMonsterName"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayMonsterName = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayMonsterName = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayPcIllust"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayPcIllust = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayPcIllust = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMonsterGaugeValue"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayMonsterGaugeValue = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayMonsterGaugeValue = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayExpValue"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayExpValue = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayExpValue = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayOnlyMyEffectToMonster"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayOnlyMyEffectToMonster = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayOnlyMyEffectToMonster = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMyHpGauge"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayMyHpGauge = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayMyHpGauge = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMyShieldGauge"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayMyShieldGauge = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayMyShieldGauge = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayPartyHpGauge"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayPartyHpGauge = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayPartyHpGauge = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayPartyShieldGauge"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayPartyShieldGauge = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayPartyShieldGauge = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayMonsterHpGauge"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayMonsterHpGauge = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayMonsterHpGauge = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASDropdownMenu> sp = ((Unk_LgDialog*)GetOptionDialog())->FUN_140cfcf10(CString("m_bossMonsterNotify"), -1);
@@ -954,45 +954,45 @@ void CGameOptionStatus::vfunc_7()
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayNormalChatBalloon"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayNormalChatBalloon = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayNormalChatBalloon = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayPartyChatBalloon"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayPartyChatBalloon = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayPartyChatBalloon = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayGuildChatBalloon"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayGuildChatBalloon = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayGuildChatBalloon = sp->IsSelected() ? true : false;
     }
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8c))
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x8c))
     {
         {
             MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayShowOnlyMyPet"), -1);
             if (static_cast<ASCheckBox*>(sp) != 0)
-                m_state.m_bDisplayShowOnlyMyPet = sp->FUN_1422ce0e0() ? true : false;
+                m_state.m_bDisplayShowOnlyMyPet = sp->IsSelected() ? true : false;
         }
         {
             MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayHideMyPet"), -1);
             if (static_cast<ASCheckBox*>(sp) != 0)
-                m_state.m_bDisplayHideMyPet = sp->FUN_1422ce0e0() ? true : false;
+                m_state.m_bDisplayHideMyPet = sp->IsSelected() ? true : false;
         }
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayHideSmartPush"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayHideSmartPush = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayHideSmartPush = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayLearningQuest"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_flag.m_b = sp->FUN_1422ce0e0() ? true : false;
+            m_flag.m_b = sp->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> sp = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_displayHideHighlightMenu"), -1);
         if (static_cast<ASCheckBox*>(sp) != 0)
-            m_state.m_bDisplayHideHighlightMenu = sp->FUN_1422ce0e0() ? true : false;
+            m_state.m_bDisplayHideHighlightMenu = sp->IsSelected() ? true : false;
     }
 }
 MS2_REPLACE_METHOD(0x141259C40, CGameOptionStatus, vfunc_7, 4615, 0xD10475C2);
@@ -1010,16 +1010,16 @@ void CGameOptionStatus::vfunc_10()
     }
     UIExpBar* pExpBar = Unk_GsFindUI<UIExpBar>((eUIClassID)0x4e27);
     if (pExpBar != 0)
-        pExpBar->FUN_141932380(m_state.m_bDisplayExpValue);
+        pExpBar->SetPointVisible(m_state.m_bDisplayExpValue);
     UIAdventureLevelExpBar* pAdvBar = Unk_GsFindUI<UIAdventureLevelExpBar>((eUIClassID)0x4f66);
     if (pAdvBar != 0)
         pAdvBar->FUN_140ba7080(m_state.m_bDisplayExpValue);
-    if (m_state.m_bDisplayShowOnlyMyPet != TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()->m_bDisplayShowOnlyMyPet)
+    if (m_state.m_bDisplayShowOnlyMyPet != TSingleton<CGameOption>::GetInstance()->GetStatus()->m_bDisplayShowOnlyMyPet)
         FUN_14125b130(m_state.m_bDisplayShowOnlyMyPet);
-    if (m_state.m_bDisplayHideMyPet != TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()->m_bDisplayHideMyPet)
+    if (m_state.m_bDisplayHideMyPet != TSingleton<CGameOption>::GetInstance()->GetStatus()->m_bDisplayHideMyPet)
         FUN_14125b140(m_state.m_bDisplayHideMyPet);
-    FUN_14125c5a0(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0(), &m_state);
-    FUN_14125c950(TSingleton<CGameOption>::GetInstance()->FUN_140ea41a0(), &m_flag);
+    FUN_14125c5a0(TSingleton<CGameOption>::GetInstance()->GetStatus(), &m_state);
+    FUN_14125c950(TSingleton<CGameOption>::GetInstance()->GetStatusChar(), &m_flag);
     TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
 }
 MS2_REPLACE_METHOD(0x14125AE50, CGameOptionStatus, vfunc_10, 386, 0x5770892F);
@@ -1044,9 +1044,9 @@ MS2_REPLACE_METHOD(0x14125B060, CGameOptionStatus, GetTypeName, 61, 0x02CA1024);
 // @0x14125b0b0
 int CGameOptionStatus::vfunc_14()
 {
-    if (memcmp(&m_state, TSingleton<CGameOption>::GetInstance()->FUN_140b123b0(), 0x1c) != 0)
+    if (memcmp(&m_state, TSingleton<CGameOption>::GetInstance()->GetStatus(), 0x1c) != 0)
         return 1;
-    if (memcmp(&m_flag, TSingleton<CGameOption>::GetInstance()->FUN_140ea41a0(), 1) != 0)
+    if (memcmp(&m_flag, TSingleton<CGameOption>::GetInstance()->GetStatusChar(), 1) != 0)
         return 1;
     return 0;
 }
@@ -1092,7 +1092,7 @@ class Unk_GsMyPC : public MyPC
 {
 public:
 };
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                         // the npc table row
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);                         // the npc table row
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants()); the game constants
 
 // The damage-form enum strings of the battle block.
@@ -1236,7 +1236,7 @@ int LoadGameOptionInterface(Unk_InterfaceState* p, TiXmlDocument* pDoc)
         p->m_n0c = 0;
     if (p->m_n0c > 100)
         p->m_n0c = 100;
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xbe))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xbe))
         p->m_b04 = false;
     return 1;
 }
@@ -1321,7 +1321,7 @@ MS2_REPLACE(0x14125BD00, FUN_14125bd00, 26, 0x0A97A110);
 void FUN_14125bd20(Unk_InterfaceFlag* p, bool b)
 {
     p->m_b = b;
-    TSingleton<CMouseController>::GetInstance()->FUN_140ad20f0(b);
+    TSingleton<CMouseController>::GetInstance()->SetEnabled(b);
     UIUpperHudDialog* pHud = Unk_GsFindUI<UIUpperHudDialog>((eUIClassID)0x4ebe);
     if (pHud != 0)
         pHud->SetInputMode(b == false);
@@ -1362,7 +1362,7 @@ void FUN_14125bdd0(Unk_StatusState* p)
     p->m_bDisplayHideHighlightMenu = false;
     p->m_n18 = 0;
     p->m_bDisplayPcIllust = false;
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036e4c0())
+    if (TSingleton<CFeatureManager>::GetInstance()->IsRegionKR())
         p->m_bDisplayPcIllust = true;
 }
 MS2_REPLACE(0x14125BDD0, FUN_14125bdd0, 252, 0x9CBFCD59);
@@ -1443,14 +1443,14 @@ int FUN_14125c5d0(Unk_StatusState* p, int nNpcId, int* pnType, int* pnValue)
 {
     *pnType = 2;
     *pnValue = 0;
-    if (TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()->m_n18 == 1)
+    if (TSingleton<CGameOption>::GetInstance()->GetStatus()->m_n18 == 1)
     {
         if (TSingleton<CQuestManager>::GetInstance()->FUN_1416cede0(nNpcId, (unsigned*)pnValue) == 0)
             return 0;
         *pnType = 1;
         return 1;
     }
-    if (TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()->m_n18 == 0)
+    if (TSingleton<CGameOption>::GetInstance()->GetStatus()->m_n18 == 0)
     {
         if (TSingleton<CQuestManager>::GetInstance()->FUN_1416cede0(nNpcId, (unsigned*)pnValue) != 0)
         {
@@ -1460,7 +1460,7 @@ int FUN_14125c5d0(Unk_StatusState* p, int nNpcId, int* pnType, int* pnValue)
         PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
         if (pPlayer == 0)
             return 0;
-        MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nNpcId);
+        MS2Ptr<CNpcData> spNpc = FindNpcData(nNpcId);
         if (spNpc.IsNull())
             return 0;
         if (spNpc->GetLevel() >= 50)
@@ -1606,7 +1606,7 @@ int LoadGameOptionBattle(Unk_BattleState* p, TiXmlDocument* pDoc)
     }
     else
     {
-        bool bAll = TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x66);
+        bool bAll = TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x66);
         if (bAll)
         {
             p->m_n08 = 7;
@@ -1889,8 +1889,8 @@ public:
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 // MS2LightService's scene light scale (a member past ecr::LightService).
 // GetService<T>: the framework's service manager, asked for system service T (instance 0x141264100 -> 0x141264120).
-Unk_ServiceManager* FUN_1413f9850();
-template <class T> T* GetService() { return FUN_1413f9850()->GetSystemServiceAs<T>(); }
+Unk_ServiceManager* GetServiceManager();
+template <class T> T* GetService() { return GetServiceManager()->GetSystemServiceAs<T>(); }
 
 // The quality-level table: the hdr / dof / shimmer flags of a level.
 void FUN_14125eb00(Unk_GraphicState* p, int nWidth, int nHeight);
@@ -2384,11 +2384,11 @@ MS2_REPLACE(0x14125EF90, FUN_14125ef90, 248, 0xD4DDBD27);
 // ---- language / gamepad / sound / connect / auto looting / chroma / etc blocks -------------------------------------
 // The gamepad input switch (MS2InputService).
 MS2InputService* FUN_140a58540();
-UIMainPlayerInfo* FUN_140931900(int nUiId);
+UIMainPlayerInfo* FindMainPlayerInfo(int nUiId);
 extern int g_bAppActive;                                       // input enabled
 extern int DAT_143ab0248;                                       // the service region (0 Korea, 1 Japan, 2 global, 3 China)
 class Unk_ItemEquipData : public CItemData {};                  // CItem::FUN_140527840's record
-CSoundService* FUN_140c9cb10();
+CSoundService* GetSoundService();
 // The connect block's character id list (a CAtlArray<unsigned __int64>).
 class Unk_GsIdArray
 {
@@ -2444,8 +2444,8 @@ struct Unk_GsEtc
     int m_nAutoFishingLastExtendMoneyType;                      // +0x2c
     unsigned m_nTracingQuestID;                                 // +0x30
 };
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                 // the quest table row (NULL when unknown)
-bool FUN_140764040(CQuestData* pQuest);                         // epic
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);                 // the quest table row (NULL when unknown)
+bool IsEpicQuest(CQuestData* pQuest);                         // epic
 bool FUN_140764080(CQuestData* pQuest);
 bool FUN_1407640c0(CQuestData* pQuest);                         // repeat
 int FUN_14074b050(CQuestData* pQuest);                          // the quest type
@@ -2549,9 +2549,9 @@ int LoadGameOptionGamepad(Unk_GpState* p, TiXmlDocument* pDoc)
         p->m_fSensitivityV = 0.01f;
     if (p->m_fSensitivityV > 0.5f)
         p->m_fSensitivityV = 0.5f;
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xc3))
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xc3))
         ReadGameOptionBool(pDoc, "gamepad", "bVibration", &p->m_bVibration);
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd6))
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xd6))
     {
         ReadGameOptionInt(pDoc, "gamepad", "gamePadLStickMoveSensitivity", &p->m_nLStickSensitivity);
         if (p->m_nLStickSensitivity < 0)
@@ -2570,9 +2570,9 @@ void SaveGameOptionGamepad(Unk_GpState* p, TiXmlDocument* pDoc)
     WriteGameOptionBool(pDoc, "gamepad", "bShowSkillName", p->m_bShowSkillName);
     WriteGameOptionFloat(pDoc, "gamepad", "sensitivityH", p->m_fSensitivityH);
     WriteGameOptionFloat(pDoc, "gamepad", "sensitivityV", p->m_fSensitivityV);
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xc3))
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xc3))
         WriteGameOptionBool(pDoc, "gamepad", "bVibration", p->m_bVibration);
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd6))
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xd6))
         WriteGameOptionInt(pDoc, "gamepad", "gamePadLStickMoveSensitivity", p->m_nLStickSensitivity);
 }
 MS2_REPLACE(0x14125F520, SaveGameOptionGamepad, 271, 0x07E9F562);
@@ -2590,9 +2590,9 @@ void SetGamepadEnabled(Unk_GpState* p, bool bUse, bool bNotify)
 {
     p->m_bUse = bUse;
     FUN_140a58540()->SetGamePadEnabled(bUse, bNotify);
-    UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    UIMainPlayerInfo* pInfo = FindMainPlayerInfo(0x4e5f);
     if (pInfo != 0)
-        pInfo->FUN_1419f1da0(bUse);
+        pInfo->ChangeSkillSlot(bUse);
     UIUpperHudDialog* pHud = Unk_GsFindUI<UIUpperHudDialog>((eUIClassID)0x4ebe);
     if (pHud != 0)
         pHud->SetGamePadMode(bUse);
@@ -2729,17 +2729,17 @@ void FUN_14125fe20(Unk_SoundState* p)
     float fBgm = GetCategoryVolume(p, 2);
     if (p->m_b30 && GetInstrumentManager() != 0 && ((CInstrumentManager*)GetInstrumentManager())->GetRefs() > 0)
         fBgm = 0.0f;
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(0, GetCategoryVolume(p, 0));
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(9, GetCategoryVolume(p, 0));
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(1, GetCategoryVolume(p, 1));
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(2, fBgm);
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(3, GetCategoryVolume(p, 3));
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(4, GetCategoryVolume(p, 4));
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(7, GetCategoryVolume(p, 7));
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(5, GetCategoryVolume(p, 5));
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(8, GetCategoryVolume(p, 8));
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(6, GetCategoryVolume(p, 6));
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177da80(10, GetCategoryVolume(p, 10));
+    TSingleton<CSoundEventMgr>::GetInstance()->SetCategoryVolume(0, GetCategoryVolume(p, 0));
+    TSingleton<CSoundEventMgr>::GetInstance()->SetCategoryVolume(9, GetCategoryVolume(p, 0));
+    TSingleton<CSoundEventMgr>::GetInstance()->SetCategoryVolume(1, GetCategoryVolume(p, 1));
+    TSingleton<CSoundEventMgr>::GetInstance()->SetCategoryVolume(2, fBgm);
+    TSingleton<CSoundEventMgr>::GetInstance()->SetCategoryVolume(3, GetCategoryVolume(p, 3));
+    TSingleton<CSoundEventMgr>::GetInstance()->SetCategoryVolume(4, GetCategoryVolume(p, 4));
+    TSingleton<CSoundEventMgr>::GetInstance()->SetCategoryVolume(7, GetCategoryVolume(p, 7));
+    TSingleton<CSoundEventMgr>::GetInstance()->SetCategoryVolume(5, GetCategoryVolume(p, 5));
+    TSingleton<CSoundEventMgr>::GetInstance()->SetCategoryVolume(8, GetCategoryVolume(p, 8));
+    TSingleton<CSoundEventMgr>::GetInstance()->SetCategoryVolume(6, GetCategoryVolume(p, 6));
+    TSingleton<CSoundEventMgr>::GetInstance()->SetCategoryVolume(10, GetCategoryVolume(p, 10));
     TSingleton<CSoundEventMgr>::GetInstance()->SetAllMute(p->m_b00);
     if (g_bAppActive == 0 && !p->m_b01)
     {
@@ -2747,8 +2747,8 @@ void FUN_14125fe20(Unk_SoundState* p)
         if (GetInstrumentManager() != 0)
             ((CInstrumentManager*)GetInstrumentManager())->Mute();
     }
-    if (FUN_140c9cb10() != 0)
-        FUN_140c9cb10()->FUN_1417ae760((float)(p->m_nMainSoundStep * 10) / 100.0f);
+    if (GetSoundService() != 0)
+        GetSoundService()->SetVolume((float)(p->m_nMainSoundStep * 10) / 100.0f);
 }
 MS2_REPLACE(0x14125FE20, FUN_14125fe20, 732, 0x9FEE8CE2);
 
@@ -2846,7 +2846,7 @@ MS2_REPLACE(0x141260450, FUN_141260450, 26, 0x0A97A110);
 // @0x141260470
 int IsJobSoundDisabled(Unk_SoundFlag* p)
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036e4c0())
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsRegionKR())
         return 0;
     return p->m_b;
 }
@@ -3059,9 +3059,9 @@ int LoadGameOptionAutoLooting(Unk_GsAutoLoot* p, TiXmlDocument* pDoc)
     if (ReadGameOptionBool(pDoc, "autoLooting", "isEnableToken", &p->m_bToken) == 0)
         p->m_bToken = p->m_bMeso;
     ReadGameOptionBool(pDoc, "autoLooting", "isEnableOther", &p->m_bOther);
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x2e) == true)
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x2e) == true)
         ReadGameOptionBool(pDoc, "autoLooting", "IsEnableGemStone", &p->m_bGemStone);
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8c))
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x8c))
         ReadGameOptionBool(pDoc, "autoLooting", "isEnablePet", &p->m_bPet);
     p->m_nEquipGrade = nGrade;
     return 1;
@@ -3081,9 +3081,9 @@ void SaveGameOptionAutoLooting(Unk_GsAutoLoot* p, TiXmlDocument* pDoc)
         WriteGameOptionBool(pDoc, "autoLooting", "isEnableMerat", p->m_bMerat);
     WriteGameOptionBool(pDoc, "autoLooting", "isEnableToken", p->m_bToken);
     WriteGameOptionBool(pDoc, "autoLooting", "isEnableOther", p->m_bOther);
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x2e) == true)
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x2e) == true)
         WriteGameOptionBool(pDoc, "autoLooting", "IsEnableGemStone", p->m_bGemStone);
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8c))
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x8c))
         WriteGameOptionBool(pDoc, "autoLooting", "isEnablePet", p->m_bPet);
 }
 MS2_REPLACE(0x141261150, SaveGameOptionAutoLooting, 436, 0x5ADE5DCC);
@@ -3101,7 +3101,7 @@ bool FUN_141261340(Unk_GsAutoLoot* p, CItem* pItem, bool bAuto)
 {
     if (bAuto && !p->m_bOther)
         return false;
-    if (FUN_14053f900(pItem->FUN_1405276c0()))
+    if (FUN_14053f900(pItem->GetItemId()))
         return true;
     PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
@@ -3112,9 +3112,9 @@ bool FUN_141261340(Unk_GsAutoLoot* p, CItem* pItem, bool bAuto)
         return p->m_bPet;
     if (pItem->FUN_140527840()->FUN_14053d840() || pItem->FUN_140527840()->GetType() == 0xe)
         return p->m_bGemStone;
-    if (pItem->FUN_1405258f0() != 0)
+    if (pItem->IsMeso() != 0)
         return p->m_bMeso;
-    if (pItem->FUN_140525920() != 0)
+    if (pItem->IsMerat() != 0)
         return p->m_bMerat;
     if (pItem->FUN_140525950() != 0 || pItem->FUN_140527840()->GetType() == 0x14)
         return p->m_bToken;
@@ -3305,10 +3305,10 @@ MS2_REPLACE(0x1412619E0, SaveGameOptionEtc, 419, 0x9ACA52B7);
 // @0x141261b90
 int IsQuestDisplayed(Unk_GsEtc* p, int nQuestId)
 {
-    MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spQuest = GetQuestData(nQuestId);
     if (!spQuest)
         return 0;
-    if (FUN_140764040(spQuest.operator->()))
+    if (IsEpicQuest(spQuest.operator->()))
         return p->m_bDisplayEpicQuest;
     else if (FUN_140764080(spQuest.operator->()))
         return 1;
@@ -3324,17 +3324,17 @@ MS2_REPLACE(0x141261B90, IsQuestDisplayed, 323, 0x1360F8F3);
 
 // ---- CPersonalInfoAgreement: the personal information agreements (house visit) ------------------------------------
 // The UIs the agreement updates.
-class UIGameMenuDialog { public: void FUN_1419394a0(bool b); void FUN_141939320(bool b); };   // C3: unit-local view
+class UIGameMenuDialog { public: void SetNotifyRedCircle7Flag(bool b); void FUN_141939320(bool b); };   // C3: unit-local view
 class Unk_GsUiAgreeIcon : public UIGameMenuDialog { public: };   // 0x4e28
 UIGameMenuDialog* FindGameMenuDialog(int nUiId);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pUnk, CStringW tag);   // a message box
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pUnk, CStringW tag);   // a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                     // show it
 CStringW GetStringCommonByKey(const CStringW& str);                      // string table text by key
 CStringW FUN_140298ea0(CStringW str);                             // string table text by key
                                      // 0x4f7c
-UIHomeMenuDialog* FUN_140ef49b0(int nUiId);
+UIHomeMenuDialog* GetHomeMenuDialog(int nUiId);
            // 0x4e6a
-UIWebBrowser* FUN_140c43790(int nUiId);
+UIWebBrowser* FindWebBrowser(int nUiId);
 // The house service (cube map information) behind its smart pointer (see uirealestatesell.cpp).
 class CubeMapInformationService   // C3: unit-local view
 {
@@ -3504,18 +3504,18 @@ void CPersonalInfoAgreement::FUN_141262090()
 {
     if (WorldService::GetInstance()->HasTutorial())
         return;
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x117))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x117))
         return;
     bool bShow = !HasGroupAgreement(0);
     UIGameMenuDialog* pIcon = FindGameMenuDialog(0x4e28);
     if (pIcon != 0)
-        pIcon->FUN_1419394a0(bShow);
+        pIcon->SetNotifyRedCircle7Flag(bShow);
     UISystemMenuDialog* pMenu = Unk_GsFindUI<UISystemMenuDialog>((eUIClassID)0x4e21);
     if (pMenu != 0)
-        pMenu->FUN_141b144f0(bShow);
+        pMenu->SetRedCircle(bShow);
     UIGameOptionDialog* pAgreeMenu = FindGameOptionDialog(0x4ef3);
     if (pAgreeMenu != 0)
-        pAgreeMenu->FUN_141943900(bShow);
+        pAgreeMenu->SetAgreementRedCircle(bShow);
 }
 MS2_REPLACE_METHOD(0x141262090, CPersonalInfoAgreement, FUN_141262090, 229, 0xC7403854);
 
@@ -3525,7 +3525,7 @@ void CPersonalInfoAgreement::FUN_141262180()
 {
     if (WorldService::GetInstance()->HasTutorial())
         return;
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x117))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x117))
         return;
     Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
@@ -3544,7 +3544,7 @@ void CPersonalInfoAgreement::FUN_141262180()
         bool bMyHouse = reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410d2f10() != 0 && reinterpret_cast<Unk_HoService*>(spService.operator->())->FUN_1410c3180() == DAT_143ab2820;
         if (bMyHouse)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(4, FUN_140298ea0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_content")), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(4, FUN_140298ea0(CStringW(L"s_personal_infomaion_agreement_visit_myhome_content")), 0, CStringW(L""));
             if (spBox.get())
             {
                 CStringW strPublic = GetStringCommonByKey(L"s_personal_infomaion_agreement_visit_myhome_btn_public");
@@ -3569,7 +3569,7 @@ void CPersonalInfoAgreement::FUN_141262650()
 {
     if (WorldService::GetInstance()->HasTutorial())
         return;
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x117))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x117))
         return;
     Unk_GsMyPC* pPC = (Unk_GsMyPC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
@@ -3584,7 +3584,7 @@ void CPersonalInfoAgreement::FUN_141262650()
         return;
     if (m_bAnswered)
     {
-        UIHomeMenuDialog* pNotice = FUN_140ef49b0(0x4f7c);
+        UIHomeMenuDialog* pNotice = GetHomeMenuDialog(0x4f7c);
         if (pNotice != 0)
             pNotice->FUN_140c29b70();
         m_bAnswered = false;
@@ -3596,7 +3596,7 @@ MS2_REPLACE_METHOD(0x141262650, CPersonalInfoAgreement, FUN_141262650, 350, 0x37
 // @0x1412627c0
 void CPersonalInfoAgreement::OpenLink(CString strUrl)
 {
-    UIWebBrowserBase* pLink = FUN_140c43790(0x4e6a);
+    UIWebBrowserBase* pLink = FindWebBrowser(0x4e6a);
     if (pLink == 0)
         return;
     pLink->FUN_14135ec00(strUrl, true);
@@ -3620,7 +3620,7 @@ bool CPersonalInfoAgreement::FUN_141262830(int nResult, const CMsgBoxData& data)
     }
     else if (nResult == 1)
     {
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(L"s_personal_infomaion_agreement_visit_myhome_input_password"), 0, CStringW(L"")))
+        if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(10, GetStringCommonByKey(L"s_personal_infomaion_agreement_visit_myhome_input_password"), 0, CStringW(L"")))
         {
             spBox->SetInput(2, L"", 6, 0, 0);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262b70));
@@ -3648,7 +3648,7 @@ bool CPersonalInfoAgreement::FUN_141262b70(int nResult, const CMsgBoxData& data)
         CStringW strPassword = data.FUN_141a02d50().Trim(L',');
         if (strPassword.GetLength() != 6)
         {
-            if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, GetStringCommonByKey(L"s_home_password_string_error"), 0, CStringW(L"")))
+            if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0, GetStringCommonByKey(L"s_home_password_string_error"), 0, CStringW(L"")))
             {
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CPersonalInfoAgreement::FUN_141262f10));
                 FUN_140d73c60(spBox);

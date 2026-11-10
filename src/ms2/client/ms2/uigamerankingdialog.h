@@ -233,37 +233,37 @@ public:
 
     // non-virtual members (this = UIGameRankingDialog*)
     void FUN_140e2dec0(int nMsg);                                                                   // refresh result visibility after a message
-    void FUN_140e2dfc0(int nType, int nSub);                                                        // select the board of (type, sub)
-    void FUN_140e2e030(CString strUrl);                                                             // select the board of a web guide url
+    void SelectCategory(int nType, int nSub);                                                        // select the board of (type, sub)
+    void SelectCategoryByUrl(CString strUrl);                                                             // select the board of a web guide url
     void LoadGameRankingCategory();                                                                           // load gameRankingCategory.xml
-    void FUN_140e2e540();                                                                           // select the first category
+    void SelectFirstCategory();                                                                           // select the first category
     void FUN_140e2e620();                                                                           // build the season tabs of every board type
-    Unk_RankTabPtr FUN_140e304c0(CStringW strLabel, CStringW strTooltip, int nSeason);             // new tab data
-    void FUN_140e305a0(Unk_RankCatPtr spCategory);                                                  // add a category (+ its sub categories)
+    Unk_RankTabPtr CreateRankTab(CStringW strLabel, CStringW strTooltip, int nSeason);             // new tab data
+    void AddCategory(Unk_RankCatPtr spCategory);                                                  // add a category (+ its sub categories)
     void FUN_140e31140();                                                                           // push the category list to the swf
     void FUN_140e31510(Unk_RankCatPtr spCategory);                                                  // push the tabs of a category
     void FUN_140e31910(int nFlag);                                                                  // push the rank info (description, my rank)
-    void FUN_140e31b00();                                                                           // push the rows of the page
+    void UpdateRankRows();                                                                           // push the rows of the page
     void FUN_140e32a00(Unk_RankCatPtr spCategory, ASArray& arr);                                    // append the sub categories
-    int FUN_140e32c30(int nCategoryId);                                                             // has sub categories
-    void FUN_140e32d30(ATL::CAtlList<Unk_RankCatPtr>& list);                                        // collect the top level categories
+    int HasSubCategories(int nCategoryId);                                                             // has sub categories
+    void GetTopCategories(ATL::CAtlList<Unk_RankCatPtr>& list);                                        // collect the top level categories
     void FUN_140e32df0(ATL::CAtlList<Unk_RankCatPtr>& list);                                        // collect the sub categories
-    void FUN_140e32eb0();                                                                           // drop the rows, clear the swf list
-    void FUN_140e32f30(int nPush, int nForce, CStringW strSearch);                                  // request the page
-    Unk_RankTabsPtr FUN_140e33240(Unk_RankCatPtr spCategory);                                       // build the tabs of a category
-    Unk_RankTabPtr FUN_140e339e0(int nType, int nIndex);                                            // the tab of (type, index)
-    CStringW FUN_140e33ae0(Unk_RankCatPtr spCategory, MS2Ptr<CSeasonData> spSeason);                  // season label
-    void FUN_140e33e20();                                                                           // select the category in the swf list
+    void ClearRankRows();                                                                           // drop the rows, clear the swf list
+    void RequestPage(int nPush, int nForce, CStringW strSearch);                                  // request the page
+    Unk_RankTabsPtr GetCategoryTabs(Unk_RankCatPtr spCategory);                                       // build the tabs of a category
+    Unk_RankTabPtr GetRankTab(int nType, int nIndex);                                            // the tab of (type, index)
+    CStringW GetSeasonLabel(Unk_RankCatPtr spCategory, MS2Ptr<CSeasonData> spSeason);                  // season label
+    void SelectCategoryInList();                                                                           // select the category in the swf list
     void FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, int nFlag);                           // my rank text and recommender
     void FUN_140e34830(ASObj& obj, Unk_RankCatPtr spCategory);                                      // description text
     void FUN_140e34bb0(ASObj& obj, Unk_RankCatPtr spCategory);                                      // job image / icon
-    void FUN_140e34ce0(int nPage, int nPages);                                                      // "setButtonPage"
+    void SetButtonPage(int nPage, int nPages);                                                      // "setButtonPage"
     void FUN_140e34d50(CStringW strSearch);                                                         // search
     void FUN_140e34eb0(MS2Ptr<GameRanking::Page> spReply);                                                    // a page arrived
-    Unk_RankCatPtr FUN_140e350c0(int nCategoryId);                                                  // find a category
-    void FUN_140e351d0(int nCategoryId, CGameRankingParam::Key* pKey);                                         // key of a board
-    void FUN_140e35350(int nCategoryId, CGameRankingParam::Key* pKey);                                         // key of a board (second variant)
-    int FUN_140e354d0(int nType, int nSub);                                                         // category id of (type, sub)
+    Unk_RankCatPtr FindCategory(int nCategoryId);                                                  // find a category
+    void BuildRankingKey(int nCategoryId, CGameRankingParam::Key* pKey);                                         // key of a board
+    void BuildMyRankKey(int nCategoryId, CGameRankingParam::Key* pKey);                                         // key of a board (second variant)
+    int FindCategoryId(int nType, int nSub);                                                         // category id of (type, sub)
     void FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, int nType);                           // party member tooltip
     bool FUN_140e359e0(int nBtn, const CMsgBoxData& data);                                         // move-home confirm result
 

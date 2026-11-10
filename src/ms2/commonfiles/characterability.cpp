@@ -39,8 +39,8 @@ public:
 
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
+CString ToCString(const char* pszName, int nFlags);                 // undecorated class name
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
@@ -125,11 +125,11 @@ int CCharacterAbilityTable::FUN_1401df7b0()
 int CCharacterAbilityTable::LoadCharacterAbilityCategory()
 {
     m_categories.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "CharacterAbilityCategory.xml");
+    CString strPath = GetXmlPath("Table", "CharacterAbilityCategory.xml");
     m_spCategoryCache.AssignRaw(new CCacheData);
-    m_spCategoryCache->FUN_1401d1160(CString(strPath));
+    m_spCategoryCache->SetPath(CString(strPath));
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -167,11 +167,11 @@ int CCharacterAbilityTable::LoadCharacterAbility()
         MS2Ptr<CCharacterAbilityCategory> spCategory = m_categories.GetValueAt(pos);
         spCategory->m_abilities.RemoveAll();
     }
-    CString strPath = FUN_14071a5b0("Table", "CharacterAbility.xml");
+    CString strPath = GetXmlPath("Table", "CharacterAbility.xml");
     m_spAbilityCache.AssignRaw(new CCacheData);
-    m_spAbilityCache->FUN_1401d1160(CString(strPath));
+    m_spAbilityCache->SetPath(CString(strPath));
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -208,7 +208,7 @@ int CCharacterAbilityTable::LoadCharacterAbility()
 }
 
 // @0x1401e0350
-void CCharacterAbilityTable::FUN_1401e0350(ATL::CAtlList<MS2Ptr<CCharacterAbilityCategory> >* pOut)
+void CCharacterAbilityTable::GetCategories(ATL::CAtlList<MS2Ptr<CCharacterAbilityCategory> >* pOut)
 {
     CheckInit();
     if (Unk_LockGuard guard = m_lock)
@@ -225,7 +225,7 @@ void CCharacterAbilityTable::FUN_1401e0350(ATL::CAtlList<MS2Ptr<CCharacterAbilit
 }
 
 // @0x1401e0450
-void CCharacterAbilityTable::FUN_1401e0450(ATL::CAtlList<MS2Ptr<CCharacterAbility> >* pOut)
+void CCharacterAbilityTable::GetAbilities(ATL::CAtlList<MS2Ptr<CCharacterAbility> >* pOut)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -289,7 +289,7 @@ int FUN_1401e0790(unsigned short nLevel, int nPoints)
 // @0x1401e0800
 int FUN_1401e0800(unsigned short nLevel)
 {
-    if (!((class Unk_CaSwitches*)FUN_140166410())->FUN_14036d570(0x2d))
+    if (!((class Unk_CaSwitches*)FUN_140166410())->IsFeatureEnabled(0x2d))
         return 0;
     if (((unsigned short)((class CFeatureManager*)(((class Unk_CaSwitches*)FUN_140166410())))->FUN_14036de00()) > nLevel)
         return 0;
@@ -302,7 +302,7 @@ void CCharacterAbilityTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CCharacterAbilityTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CCharacterAbilityTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

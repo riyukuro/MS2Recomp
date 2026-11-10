@@ -33,16 +33,16 @@ public:
     virtual void vfunc_72();                                        // 72 0x140ee5900
     virtual void vfunc_84();                                        // 84 0x140ee5850
 
-    void FUN_140ee57b0(int nCount, int nLimitMs);                   // set the sequence length and the time limit
-    void FUN_140ee5a20();                                           // draw a new sequence and show it ("setData")
+    void SetCountAndLimit(int nCount, int nLimitMs);                   // set the sequence length and the time limit
+    void GenerateSequence();                                           // draw a new sequence and show it ("setData")
     void OnShowNumberComplete();                                           // "OnShowNumberComplete": start the countdown
     void FUN_140ee5c10();                                           // check the key presses of this frame
-    void FUN_140ee5fc0(bool bOn);                                   // the key hook modifier
-    bool FUN_140ee5ff0(unsigned nDigit);                            // one of the two keys of the digit is pressed
+    void SetKeyModifier(bool bOn);                                   // the key hook modifier
+    bool IsDigitKeyPressed(unsigned nDigit);                            // one of the two keys of the digit is pressed
     void SuccessGameProgress();                                           // report success to the server, close
     void FailGameProgress();                                           // report failure to the server, close
-    void FUN_140ee6190(unsigned nLimitMs);                               // start / stop the countdown dialog
-    void FUN_140ee6240();                                           // close the countdown dialog
+    void SetCountdown(unsigned nLimitMs);                               // start / stop the countdown dialog
+    void CloseCountdown();                                           // close the countdown dialog
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -102,13 +102,13 @@ public:
 public:
     int FUN_141405a60(class CItem*, int);   // C3: was free FUN_141405a60
 };
-int FUN_141275a10(CItem* pItem);                            // the item's lock kind
+int GetItemUsableState(CItem* pItem);                            // the item's lock kind
 void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                   // item link / popup for the item
 CStringW GetStringCommon(int nStringId);                      // a string table text
 CString FUN_1405451e0(int nType);                           // the name of an equip slot type
 template <class A> CStringW FormatStringId(int nId, const A& a);
 void FUN_140d73bc0(int nStringId, int nType, void* p, CStringW strTag);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket& packet);                     // send the packet
 void FUN_14121b840(int nResult);                            // the notice of a doll item result (fittingdollslot#1)
@@ -213,7 +213,7 @@ int FittingDollSlot::vfunc_0(void* p)
         tip.SetEnablePuton(GetStringCommon(0x75c));
         if (IsEnabled() == true)
             tip.SetEnablePreview(MS2Ptr<CItem>(pItem));
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -244,7 +244,7 @@ int FittingDollSlot::vfunc_8(void* p)
     {
         if (bOwner)
         {
-            int nLock = FUN_141275a10(vfunc_25().get());
+            int nLock = GetItemUsableState(vfunc_25().get());
             if (nLock == 1)
                 slot.SetItemLock(1);
             else if (nLock == 2)
@@ -256,7 +256,7 @@ int FittingDollSlot::vfunc_8(void* p)
             slot.SetGrayColor(1);
         else if (m_nSlot == 9 && pItem->FUN_140527840()->FUN_14053d2b0() != false)
             slot.SetGrayColor(1);
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -284,7 +284,7 @@ void FittingDollSlot::vfunc_9()
     {
         ASObj obj(m_value18, 2);
         if (obj.IsUndefinedOrNull() == 0)
-            obj.FUN_1407cba60("m_strSlotType", FUN_1405451e0(m_nSlot));
+            obj.SetStringMember("m_strSlotType", FUN_1405451e0(m_nSlot));
     }
 }
 MS2_REPLACE_METHOD(0x14121dc90, FittingDollSlot, vfunc_9, 177, 0x60A25617);
@@ -322,7 +322,7 @@ int FittingDollSlot::DestroyDollItem()
     MS2Ptr<CItem> spItem = vfunc_25();
     if (!spItem)
         return 0;
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd4))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xd4))
     {
         CStringW strName;
         int nReason;
@@ -349,10 +349,10 @@ int FittingDollSlot::DestroyDollItem()
             }
             if (!strText.IsEmpty())
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strText, 0, s_strDestroyDollItem);
+                MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x1a, strText, 0, s_strDestroyDollItem);
                 if (spBox.get() != 0)
                 {
-                    spBox->FUN_141a01600(((CItem*)spItem)->GetItemUid());
+                    spBox->SetItemUid(((CItem*)spItem)->GetItemUid());
                     spBox->FUN_141a01ee0(spItem, ((CItem*)spItem)->FUN_140527b10(), 1, ((CItem*)spItem)->GetCount(), -1, -1, 1);
                     spBox->FUN_141a01800(1);
                     spBox->SetCheckboxMust(1);

@@ -39,7 +39,7 @@ class UIWeddingHallReservationDialog : public UIDialog
 {
 public:
     void SetPackage(int nMode);
-    void FUN_140fdcaa0(const CString& strTab);   // exe: Compare on [rdx home] (a CString*)
+    void SetMode(const CString& strTab);   // exe: Compare on [rdx home] (a CString*)
 };
 
 // The movie child "UIDialogCenterDialog_btn": a clip with a label, a position and a click delegate.
@@ -49,7 +49,7 @@ MS2_CHECK_SIZE(ASButton, 0x88);
 class ASDialog : public ASDisplayObjectContainer {};
 
 // The dialog of a ui id, and the value of a movie member.
-class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
+class UIDialog* FindDialog(int);   // C3: was FindDialog
 
 // The main window of the application.
 class Unk_DcApp { public: void* m_pad; char m_svc; };
@@ -85,7 +85,7 @@ public:
 };
 
 // The movie of a ui layer and its object factory.
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);
+Scaleform::GFx::Movie* GetMovie(int nMovieId);
 void FUN_1401d3700(CString& str);
 extern const char DAT_142ed3718[];                                      // the open file filter of the xml dialog
 
@@ -127,13 +127,13 @@ static Unk_DcService* FUN_141296a60(Unk_DcService* pSvc)
 }
 
 // @0x1412976a0
-static void* FUN_1412976a0()
+static void* GetClientLogManager()
 {
     return reinterpret_cast<void*>(TSingleton<ClientLogManager>::s_instance);
 }
 
 // @0x1412976b0
-static HWND FUN_1412976b0(CWnd* pWnd)
+static HWND GetHwnd(CWnd* pWnd)
 {
     return pWnd == 0 ? 0 : pWnd->m_hWnd;
 }
@@ -147,7 +147,7 @@ Unk_DcService* FUN_141296b50(Unk_DcHost* pHost)
 }
 
 // @0x141296ab0
-UIWeddingHallReservationDialog* FUN_141296ab0(int nId)
+UIWeddingHallReservationDialog* GetWeddingHallReservationDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
@@ -159,9 +159,9 @@ UIWeddingHallReservationDialog* FUN_141296ab0(int nId)
 }
 
 // @0x1412968a0
-static MS2Ptr<ASButton> FUN_1412968a0(int nMovieId, CString strLinkage, __int64 a, int b)
+static MS2Ptr<ASButton> CreateButton(int nMovieId, CString strLinkage, __int64 a, int b)
 {
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(nMovieId);
     if (pMovie == 0)
         return MS2Ptr<ASButton>(0);
     Scaleform::GFx::Value v;
@@ -174,7 +174,7 @@ static MS2Ptr<ASButton> FUN_1412968a0(int nMovieId, CString strLinkage, __int64 
 
 // The ui text service (singleton): the text of a "$s_..." key.
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
+class Unk_AltStringMgr* GetGFxManager();   // C3: the GFxManager (calls cast back)
 
 // ---- UIDialogCenterDialog -------------------------------------------------------------------------------------------
 
@@ -203,74 +203,74 @@ void UIDialogCenterDialog::OnLoadComplete()
 {
     typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> Cb;
     UIDialog::OnLoadComplete();
-    FUN_141925fa0(CString("m_dragBar"));
-    FUN_141925ec0(CString("m_closeButton"));
+    BindDragBar(CString("m_dragBar"));
+    BindCloseButton(CString("m_closeButton"));
     int nRow = -1;
     int nColumn = 0;
     ++nRow;
     nColumn = 0;
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_npc_info"), 0x4eb0);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_develop"), 0x4eb1);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_hsl"), 0x4eab);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_npc_info"), 0x4eb0);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_develop"), 0x4eb1);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_hsl"), 0x4eab);
     ++nRow;
     nColumn = 0;
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_light"), 0x4ead);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_rimlight"), 0x4eae);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_chaoslight"), 0x4eac);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_light"), 0x4ead);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_rimlight"), 0x4eae);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_chaoslight"), 0x4eac);
     ++nRow;
     nColumn = 0;
-    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_visualtracker"), Cb(this, &UIDialogCenterDialog::FUN_141295a70));
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_visualtrackerlist"), 0x4eb2);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_visualeffect"), 0x4eb3);
+    AddCallbackButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_visualtracker"), Cb(this, &UIDialogCenterDialog::OnVisualTracker));
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_visualtrackerlist"), 0x4eb2);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_visualeffect"), 0x4eb3);
     ++nRow;
     nColumn = 0;
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_weapondummy"), 0x4eb4);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_rangepreview"), 0x4eb5);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_colorboost"), 0x4eaf);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_weapondummy"), 0x4eb4);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_rangepreview"), 0x4eb5);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_colorboost"), 0x4eaf);
     ++nRow;
     nColumn = 0;
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_camera"), 0x4eb6);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_texturedensity"), 0x4eaa);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_packet"), 0x4ecc);
-    ++nRow;
-    ++nRow;
-    nColumn = 0;
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_debug_command"), 0x4ea3);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_item"), 0x4e25);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_npc"), 0x4e46);
-    ++nRow;
-    nColumn = 0;
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_edit_deco"), 0x4e2c);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_edit_minimap"), 0x4e2b);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_graphic_option"), 0x4e34);
-    ++nRow;
-    nColumn = 0;
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_damage_meter"), 0x4e44);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_hairphysx"), 0x4e6f);
-    ++nRow;
-    nColumn = 0;
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_additional_controller"), 0x4e8f);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_stat_controller"), 0x4ea6);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_object"), 0x4ed0);
-    ++nRow;
-    nColumn = 0;
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_preview_text"), 0x4eb7);
-    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_log_dialog"), Cb(this, &UIDialogCenterDialog::FUN_141295ad0));
-    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_trigger_debug"), Cb(this, &UIDialogCenterDialog::FUN_141295cb0));
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_camera"), 0x4eb6);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_texturedensity"), 0x4eaa);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_packet"), 0x4ecc);
     ++nRow;
     ++nRow;
     nColumn = 0;
-    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_blueprint"), Cb(this, &UIDialogCenterDialog::FUN_141295b00));
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_debug_command"), 0x4ea3);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_item"), 0x4e25);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_npc"), 0x4e46);
     ++nRow;
     nColumn = 0;
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding"), 0x4f8c);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_billboard"), 0x4f90);
-    FUN_141296370(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_invitation"), 0x4f8e);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_edit_deco"), 0x4e2c);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_edit_minimap"), 0x4e2b);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_graphic_option"), 0x4e34);
     ++nRow;
     nColumn = 0;
-    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_hall"), Cb(this, &UIDialogCenterDialog::FUN_141295b30));
-    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_hall_cancel"), Cb(this, &UIDialogCenterDialog::FUN_141295c30));
-    FUN_141296500(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_hall_change"), Cb(this, &UIDialogCenterDialog::FUN_141295bb0));
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_damage_meter"), 0x4e44);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_hairphysx"), 0x4e6f);
+    ++nRow;
+    nColumn = 0;
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_additional_controller"), 0x4e8f);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_stat_controller"), 0x4ea6);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_object"), 0x4ed0);
+    ++nRow;
+    nColumn = 0;
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_preview_text"), 0x4eb7);
+    AddCallbackButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_log_dialog"), Cb(this, &UIDialogCenterDialog::OnLogDialog));
+    AddCallbackButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_trigger_debug"), Cb(this, &UIDialogCenterDialog::OnTriggerDebug));
+    ++nRow;
+    ++nRow;
+    nColumn = 0;
+    AddCallbackButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_create_blueprint"), Cb(this, &UIDialogCenterDialog::OnCreateBlueprint));
+    ++nRow;
+    nColumn = 0;
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding"), 0x4f8c);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_billboard"), 0x4f90);
+    AddDialogButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_invitation"), 0x4f8e);
+    ++nRow;
+    nColumn = 0;
+    AddCallbackButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_hall"), Cb(this, &UIDialogCenterDialog::OnWeddingHallReservation));
+    AddCallbackButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_hall_cancel"), Cb(this, &UIDialogCenterDialog::OnWeddingHallCancel));
+    AddCallbackButton(nRow, nColumn++, CString("$s_debug_ui_center_menu_wedding_hall_change"), Cb(this, &UIDialogCenterDialog::OnWeddingHallChange));
 }
 
 // @0x141295730
@@ -303,19 +303,19 @@ void UIDialogCenterDialog::vfunc_79(void* p)
 }
 
 // @0x141295930
-void UIDialogCenterDialog::FUN_141295930(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDialogCenterDialog::OnDialogButtonClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASObj evt(params.pArgs[0], 2);
     Scaleform::GFx::Value target = evt.GetMember("target");
     ASButton btn(target, m_28);
     unsigned nId = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(btn.GetMember("dialogID")))->GetUInt();
-    MS2Ptr<UIDialog> spDlg(FUN_140c300a0(nId));
+    MS2Ptr<UIDialog> spDlg(FindDialog(nId));
     if (spDlg.get() != 0)
         spDlg->FUN_1419246f0();
 }
 
 // @0x141295a70
-void UIDialogCenterDialog::FUN_141295a70(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDialogCenterDialog::OnVisualTracker(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     auto pHost = reinterpret_cast<Unk_DcHost*>(reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_DcApp*>(TSingleton<CMainSystem>::GetInstance())->m_svc)->GetServiceManager());
     Unk_DcService* pSvc = FUN_141296b50(pHost);
@@ -324,42 +324,42 @@ void UIDialogCenterDialog::FUN_141295a70(const Scaleform::GFx::FunctionHandler::
 }
 
 // @0x141295ad0
-void UIDialogCenterDialog::FUN_141295ad0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDialogCenterDialog::OnLogDialog(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (FUN_1412976a0() != 0)
-        ((class ClientLogManager*)(void*)(FUN_1412976a0()))->ToggleDialog();
+    if (GetClientLogManager() != 0)
+        ((class ClientLogManager*)(void*)(GetClientLogManager()))->ToggleDialog();
 }
 
 // @0x141295b00
-void UIDialogCenterDialog::FUN_141295b00(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDialogCenterDialog::OnCreateBlueprint(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4f7f)));
 }
 
 // @0x141295b30
-void UIDialogCenterDialog::FUN_141295b30(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDialogCenterDialog::OnWeddingHallReservation(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    UIWeddingHallReservationDialog* pDlg = FUN_141296ab0(0x4f8d);
+    UIWeddingHallReservationDialog* pDlg = GetWeddingHallReservationDialog(0x4f8d);
     pDlg->SetPackage(1);
-    pDlg->FUN_140fdcaa0("reservation");
+    pDlg->SetMode("reservation");
     pDlg->FUN_141924680();
 }
 
 // @0x141295bb0
-void UIDialogCenterDialog::FUN_141295bb0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDialogCenterDialog::OnWeddingHallChange(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    UIWeddingHallReservationDialog* pDlg = FUN_141296ab0(0x4f8d);
+    UIWeddingHallReservationDialog* pDlg = GetWeddingHallReservationDialog(0x4f8d);
     pDlg->SetPackage(1);
-    pDlg->FUN_140fdcaa0("reservationChange");
+    pDlg->SetMode("reservationChange");
     pDlg->FUN_141924680();
 }
 
 // @0x141295c30
-void UIDialogCenterDialog::FUN_141295c30(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDialogCenterDialog::OnWeddingHallCancel(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    UIWeddingHallReservationDialog* pDlg = FUN_141296ab0(0x4f8d);
+    UIWeddingHallReservationDialog* pDlg = GetWeddingHallReservationDialog(0x4f8d);
     pDlg->SetPackage(1);
-    pDlg->FUN_140fdcaa0("reservationCancel");
+    pDlg->SetMode("reservationCancel");
     pDlg->FUN_141924680();
 }
 
@@ -369,7 +369,7 @@ CString UIDialogCenterDialog::FUN_1412965f0(CString strInitialDir, const char* p
     OPENFILENAMEA ofn = { 0 };
     char szFile[MAX_PATH];
     ofn.lStructSize = sizeof(ofn);
-    ofn.hwndOwner = FUN_1412976b0(AfxGetMainWnd());
+    ofn.hwndOwner = GetHwnd(AfxGetMainWnd());
     ofn.lpstrFile = szFile;
     ofn.lpstrFile[0] = 0;
     ofn.nMaxFile = MAX_PATH;
@@ -386,7 +386,7 @@ CString UIDialogCenterDialog::FUN_1412965f0(CString strInitialDir, const char* p
 }
 
 // @0x141295cb0
-void UIDialogCenterDialog::FUN_141295cb0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIDialogCenterDialog::OnTriggerDebug(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     CString strFile = FUN_1412965f0(CString("./Data/Xml/Trigger/"), DAT_142ed3718);
     if (strFile.IsEmpty())
@@ -428,7 +428,7 @@ void UIDialogCenterDialog::SendSetDebugModeMode9(CString strPath)
 }
 
 // @0x141296150
-MS2Ptr<ASButton> UIDialogCenterDialog::FUN_141296150(int nRow, int nColumn, CStringW strLabel)
+MS2Ptr<ASButton> UIDialogCenterDialog::CreateGridButton(int nRow, int nColumn, CStringW strLabel)
 {
     const int nX = 0xc;
     const int nY = 0x4e;
@@ -437,13 +437,13 @@ MS2Ptr<ASButton> UIDialogCenterDialog::FUN_141296150(int nRow, int nColumn, CStr
     int x = nColumn * nWidth + nX;
     int y = nRow * nHeight + nY;
     {
-        MS2Ptr<ASButton> spBtn = FUN_1412968a0(m_28, CString("UIDialogCenterDialog_btn"), 0, 0);
+        MS2Ptr<ASButton> spBtn = CreateButton(m_28, CString("UIDialogCenterDialog_btn"), 0, 0);
         if (spBtn.get() != 0)
         {
             spBtn->SetPositionUInt(x, y);
             spBtn->FUN_1422cdfb0(strLabel);
             m_buttons.Add(spBtn);
-            m_90->FUN_1422c6900(spBtn->FUN_1422bb870());
+            m_90->AddChild(spBtn->GetValue());
             return spBtn;
         }
     }
@@ -451,22 +451,22 @@ MS2Ptr<ASButton> UIDialogCenterDialog::FUN_141296150(int nRow, int nColumn, CStr
 }
 
 // @0x141296370
-void UIDialogCenterDialog::FUN_141296370(int nRow, int nColumn, CString strKey, int nDialogId)
+void UIDialogCenterDialog::AddDialogButton(int nRow, int nColumn, CString strKey, int nDialogId)
 {
-    CStringW strLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(strKey);
-    MS2Ptr<ASButton> spBtn = FUN_141296150(nRow, nColumn, strLabel);
+    CStringW strLabel = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize(strKey);
+    MS2Ptr<ASButton> spBtn = CreateGridButton(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
     {
         reinterpret_cast<ASObj*>(spBtn.operator->())->SetMemberUInt("dialogID", nDialogId);
-        spBtn->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialogCenterDialog::FUN_141295930), 0);
+        spBtn->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialogCenterDialog::OnDialogButtonClick), 0);
     }
 }
 
 // @0x141296500
-void UIDialogCenterDialog::FUN_141296500(int nRow, int nColumn, CString strKey, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
+void UIDialogCenterDialog::AddCallbackButton(int nRow, int nColumn, CString strKey, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
-    CStringW strLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(strKey);
-    MS2Ptr<ASButton> spBtn = FUN_141296150(nRow, nColumn, strLabel);
+    CStringW strLabel = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize(strKey);
+    MS2Ptr<ASButton> spBtn = CreateGridButton(nRow, nColumn, strLabel);
     if (spBtn.get() != 0)
         spBtn->FUN_1422ce240(cb, 0);
 }

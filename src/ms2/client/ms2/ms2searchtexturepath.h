@@ -34,7 +34,7 @@ MS2_CHECK_SIZE(NiTextureSearchPath, 0x330);
 class Unk_STPResMgr {
 public:
     bool FUN_140398190();
-    bool FUN_14039a160(const char* referencePath, const char* filePath, char* pcPath, unsigned int len);
+    bool FindTexturePath(const char* referencePath, const char* filePath, char* pcPath, unsigned int len);
 };
 
 class MS2SearchTexturePath : public NiTextureSearchPath {

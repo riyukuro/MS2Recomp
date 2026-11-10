@@ -29,12 +29,12 @@ public:
     virtual void vfunc_72();                                                                        // 72 0x140bfcc50
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);                                       // IMessageListener 0 0x140bfd4d0
 
-    void FUN_140bfd5e0();                   // refresh the whole dialog: fills the reward steps and sends "setData"
-    void FUN_140bfdc00();                   // recount the completed reward steps (m_1c0); notifies the server UI
-    void FUN_140bfde00();                   // refresh the banner button when the open/close state changed
+    void RefreshRewardData();                   // refresh the whole dialog: fills the reward steps and sends "setData"
+    void RecountCompletedSteps();                   // recount the completed reward steps (m_1c0); notifies the server UI
+    void RefreshBannerButton();                   // refresh the banner button when the open/close state changed
     void FUN_140bfdf60(int nStep);          // request the reward of step nStep (packet 0xa8/0x19)
     int FUN_140bfe180();                    // m_1c0
-    void FUN_140bfe1a0(void* a1);                   // FUN_140bfd5e0() when the dialog is closed, else FUN_140bfdc00()
+    void FUN_140bfe1a0(void* a1);                   // RefreshRewardData() when the dialog is closed, else RecountCompletedSteps()
 
 private:
     MS2_LAYOUT_FRIEND;

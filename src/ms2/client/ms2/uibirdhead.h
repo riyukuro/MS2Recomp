@@ -18,15 +18,15 @@ public:
     virtual int vfunc_48() { return 0x4e84; }                       // 48
     virtual void vfunc_52();                                        // 52 0x1418ceb10 push the texts to the movie
 
-    int FUN_1418ce7e0();                                            // m_78 (shown)
-    void FUN_1418ce800();                                           // m_78 = m_7c = 1
-    void FUN_1418ce890();                                           // m_78 = m_7c = 0
+    int IsShown();                                            // m_78 (shown)
+    void Show();                                           // m_78 = m_7c = 1
+    void Hide();                                           // m_78 = m_7c = 0
     void FUN_1418ce830();                                           // unregister from the manager
     void FUN_1418ce8c0(const Vector3& pt);                  // m_6c = pt (the world anchor)
     void FUN_1418ce8f0(CStringW strMain, CStringW strExtra);        // m_88 = main, m_98 = extra; m_7c = 1
-    void FUN_1418ce970(CStringW strAdditional);                     // m_90 = text; m_7c = 1
-    void FUN_1418ce9d0();                                           // toggle the "additional" text
-    void FUN_1418cee70();                                           // project m_6c to the screen and move the movie
+    void SetAdditionalText(CStringW strAdditional);                     // m_90 = text; m_7c = 1
+    void ToggleAdditionalText();                                           // toggle the "additional" text
+    void UpdateScreenPosition();                                           // project m_6c to the screen and move the movie
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -38,9 +38,9 @@ public:
     CStringW FUN_1422dfe00();                                       // the selected row's "label" ("" if none)
     void SelectByIntField(const CString& strField, int nValue);        // select the first row whose strField is nValue (*)
     void SelectByUIntField(const CString& strField, unsigned nValue);   // the same with an unsigned (*)
-    void FUN_1422e0300(const CString& strField, const CStringW& strValue);   // select the first row whose strField is strValue
-    void FUN_1422e0510(int nIndex);                                 // remove the row at nIndex
-    void FUN_1422e0580(const CStringW& strLabel);                   // remove the first row labelled strLabel
+    void SelectByStringField(const CString& strField, const CStringW& strValue);   // select the first row whose strField is strValue
+    void RemoveItemAt(int nIndex);                                 // remove the row at nIndex
+    void RemoveItemByLabel(const CStringW& strLabel);                   // remove the first row labelled strLabel
     // (*) only string members are compared, as numbers (GetInt / GetUInt on a string value): what the exe does.
 };
 MS2_CHECK_SIZE(ASDropdownMenu, 0x88);

@@ -39,12 +39,12 @@ public:
     virtual int vfunc_65();                                                 // 65 0x140c31fa0
     virtual void vfunc_67();                                                // 67 0x140c31fd0 close
 
-    void FUN_140c32020(CInPacket& packet);                                  // packet 0x105: the billboard info / the install result
-    __int64 FUN_140c322b0();                                                // the owner of the shown billboard (0 when not shown)
+    void OnBillboardPacket(CInPacket& packet);                                  // packet 0x105: the billboard info / the install result
+    __int64 GetBillboardOwner();                                                // the owner of the shown billboard (0 when not shown)
     void FUN_140c32300();                                                   // close the dialog and forget the item
     void FUN_140c32360(__int64 nItemUid);                                   // show the install form for a billboard item
-    bool FUN_140c323f0();                                                   // checks that a billboard may be installed here
-    void FUN_140c337c0();                                                   // forget the movie clips and buttons
+    bool CanInstallBillboard();                                                   // checks that a billboard may be installed here
+    void ClearMovieClips();                                                   // forget the movie clips and buttons
     void FUN_140c33840(const Scaleform::GFx::FunctionHandler::Params& params);   // the install button
     void FUN_140c33fa0(const Scaleform::GFx::FunctionHandler::Params& params);   // the home button
     void SendItemBillboard(const Scaleform::GFx::FunctionHandler::Params& params);   // the remove button

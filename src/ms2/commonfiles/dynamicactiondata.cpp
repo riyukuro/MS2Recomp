@@ -47,7 +47,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 CStringW FUN_1401bf530(TiXmlElement*, const char*, CStringW);
 void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 
 // The statics are exe globals (symbols-manual.tsv); the hook DLL binds the exe's.
 #ifndef MS2_HOOK_DLL
@@ -134,7 +134,7 @@ void CDynamicActionData::Load()
 {
     TiXmlDocument doc;
     CString strPath = FUN_14071ae20("korDynamicAction.xml");
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -154,7 +154,7 @@ void CDynamicActionData::Load()
     {
         TiXmlElement* pNode = *it;
         MS2Ptr<CDynamicActionData> spRow(new CDynamicActionData);
-        spRow->FUN_1401d1160(CString(strPath));
+        spRow->SetPath(CString(strPath));
         XmlGetAttr((class TiXmlElement*)(pNode), "skillID", spRow->m_nSkillId);
         XmlGetAttr((class TiXmlElement*)(pNode), "default", spRow->m_nDefault);
         CStringW strReserved = FUN_1401bf530(pNode, "reserved", CStringW(L""));
@@ -180,7 +180,7 @@ void CDynamicActionData::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CDynamicActionData).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CDynamicActionData).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

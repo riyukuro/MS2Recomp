@@ -71,8 +71,8 @@ public:
     void* FUN_141bd0cc0();
     static class WorldService* GetInstance();
 };
-bool FUN_141568c20(NiRenderObject* pObject);
-bool FUN_141568c90(NiRenderObject* pObject);
+bool IsShimmer(NiRenderObject* pObject);
+bool IsUnlightable(NiRenderObject* pObject);
 bool FUN_141567260(class NiAVObject*);   // C3: was FUN_141567260
 float FUN_14059d930(float f);                               // fabsf
 float GetDistance2D(NiPoint3 kA, NiPoint3 kB);       // horizontal distance
@@ -99,9 +99,9 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
         NiRenderObject* pkObject = ((class NiRenderObject*)&((class NiVisibleArray*)(class NiVisibleArray const*)(pkInput))->GetAt(ui));
         if (NiDynamicCast(NiPSMeshParticleSystem, pkObject) != 0)
             continue;
-        if (!FUN_141568c20(pkObject))
+        if (!IsShimmer(pkObject))
             continue;
-        if (FUN_141568c90(pkObject))
+        if (IsUnlightable(pkObject))
             continue;
         if (DAT_143ae0dd0 == 1 && pActor != 0)
         {
@@ -156,9 +156,9 @@ void MS2ShimmerSortProcessor::PreRenderProcessList(const NiVisibleArray* pkInput
                         FUN_14150cc30(this, pkObject);
                         continue;
                     }
-                    if (FUN_141568c20(pkObject))
+                    if (IsShimmer(pkObject))
                         continue;
-                    if (FUN_141568c90(pkObject))
+                    if (IsUnlightable(pkObject))
                         continue;
                     if (pkObject->GetProperty(8) != 0)
                     {

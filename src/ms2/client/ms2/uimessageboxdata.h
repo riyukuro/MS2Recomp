@@ -52,7 +52,7 @@ class CMsgBoxDataItem : public CPtred
 public:
     CMsgBoxDataItem();                                              // 0x141a064e0
     virtual ~CMsgBoxDataItem();                                     // 0x141a06590 (??_G 0x141a07ce0)
-    void FUN_141a06630(const CStringW& strName, bool bColor, int nColor);   // set the name (optionally coloured)
+    void SetName(const CStringW& strName, bool bColor, int nColor);   // set the name (optionally coloured)
 
     int m_nCount;                                                   // +0x18 -1 ("itemCount")
     int m_nMax;                                                     // +0x1c -1
@@ -156,26 +156,26 @@ public:
     CMsgBoxData(int nType);                                         // 0x141a00db0 (uimessagebox.cpp's range)
     virtual ~CMsgBoxData();                                         // 0x141a01170 (??_G 0x141a07ca0)
 
-    int FUN_141a034d0(ASObj& obj);                                  // fill the AS object the movie shows
+    int FillObj(ASObj& obj);                                  // fill the AS object the movie shows
     int FUN_141a04900();                                            // countdown still running (or none)
-    int FUN_141a049a0() const;                                      // has a countdown
+    int HasTimer() const;                                      // has a countdown
     int IsTimerExpired() const;                                      // the countdown is over
     int FUN_141a04a30();                                            // arm the movie when it has a priority object
     const Unk_MsgBoxTimer& GetTimer() const;                   // the pressed-button record
     bool IsCheckbox0Checked();                                           // check box 0 state
     bool IsCheckbox1Checked();                                           // check box 1 state
-    CStringW FUN_141a04da0();                                 // the text input's text
-    void FUN_141a050b0();                                           // set the layout and the sound event
+    CStringW GetInputText();                                 // the text input's text
+    void SetLayoutAndSound();                                           // set the layout and the sound event
     void FillObjByType(ASObj& obj);                                 // type specific members
     void FillCharProfileObj(ASObj& obj);                                 // profile_ok
     void FillGroupObj(ASObj& obj);                                 // groupEdit
-    void FUN_141a05540(ASObj& obj);                                 // groupList
+    void FillGroupListObj(ASObj& obj);                                 // groupList
     void WriteAgreement(ASObj& obj);                                 // terms
     void WriteRetraction(ASObj& obj);                                 // market_retract
     void FillBuffObj(ASObj& obj);                                 // buffNotify
     void FillUgcNoticeObj(ASObj& obj);                                 // ugcterms
-    void FUN_141a05930(ASObj& obj);                                 // itemlock_confirm
-    void FUN_141a05bd0(ASObj& obj);                                 // itemCrafting
+    void FillItemLockConfirmObj(ASObj& obj);                                 // itemlock_confirm
+    void FillRequireItemsObj(ASObj& obj);                                 // itemCrafting
     void FUN_141a05f30(ASObj& obj);                                 // clubbuff
     void FillInputSelectList(ASObj& obj);                                 // input_reset
     void FillTwoLabelObj(ASObj& obj);                                 // input_multi
@@ -193,11 +193,11 @@ public:
     void SetButtonLabels(const CStringW& strBtn0, const CStringW& strBtn1, const CStringW& strBtn2);   // button texts
     void SetInput(int nMode, const CStringW& strDefault, unsigned int nMax, int a4, int a5);    // text input setup
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb); // result callback
-    void FUN_141a01600(__int64 n);                                  // uiugccubepalettedialog.cpp: the item uid
+    void SetItemUid(__int64 n);                                  // uiugccubepalettedialog.cpp: the item uid
     void FUN_141a01620(int n);                                      // petmanager.cpp: the inventory slot argument
     void SetTimer(int nButton, int nTime, const CStringW& strText);   // guildmanager.cpp: the auto-decline countdown
     void FUN_141a02460(int n);
-    void FUN_141a02480(int n);
+    void SetModaless(int n);
     void FUN_141a024a0(int n);
     void FUN_141a024c0();                                           // m_20f = true
     void SetAgreement(bool b);
@@ -221,7 +221,7 @@ public:
     void FUN_1405340b0(__int64 n);                                  // C3: alias of Append<__int64>, goes once its callers move
     void SetItem(MS2Ptr<CMsgBoxDataItem> spItem);             // add an item entry (the callee destroys it; uiblackmarketpage.cpp)
     void FUN_140534050(int n);                                      // appends an unsigned argument (Append<unsigned>; actionkeyobject.cpp)
-    void FUN_141a02860(void* p);                                    // unit_140dfef30: the listener of the box (leaveInField)
+    void SetListener(void* p);                                    // unit_140dfef30: the listener of the box (leaveInField)
     void FUN_140e01830(__int64 n);                                  // appends an __int64 argument as text (unit_140dfef30)
     void AddStringArg(CStringW str);                               // appends a string argument (the callee destroys it)
     void FUN_141b2fe80(const wchar_t* psz);                         // appends a string argument (inline COMDAT, uitriggereditordialog.cpp)
@@ -231,16 +231,16 @@ public:
     void SetExtra(const CStringW& strTag);                     // set the tag (the micro game request boxes)
     void FUN_141a01540(const CStringW& strTag);                     // set the tag (uirevivaldialog.cpp)
     void SetTitle(const CStringW& str);                        // quest dispatch box: the sender name argument
-    void FUN_141a02810(CStringW strTag);                            // the clicked tag (OnClick)
+    void SetClickedTag(CStringW strTag);                            // the clicked tag (OnClick)
     const CString& GetSound() const;                           // the sound event name
-    __int64 FUN_141a02c00() const;                                  // the item uid
+    __int64 GetItemUid() const;                                  // the item uid
     __int64 FUN_141a02c20() const;                                  // the first __int64 argument (item uid of the remake)
     bool FUN_141a02e10(int nIndex, bool bDefault) const;            // the nIndex-th argument as a bool
     int GetType() const;                                      // keep the box open after the result
     int FUN_141a02c60() const;                                      // the storage slot
     int FUN_141a02c80() const;                                      // the inventory slot argument (set by FUN_141a01620)
-    int FUN_141a02ca0() const;                                      // the box id
-    IMessageListener* FUN_141a02cc0() const;                        // the listener
+    int GetId() const;                                      // the box id
+    IMessageListener* GetListener() const;                        // the listener
     const CStringW& GetExtra() const;                          // the tag
     CStringW FUN_141a02b90() const;                                 // copy of the tag (messageboxqueue.cpp)
     const Delegate<bool(int, const CMsgBoxData&)>& FUN_141a02da0() const;  // the result callback
@@ -253,9 +253,9 @@ public:
     bool FUN_141a030b0() const;                                     // a type with a default button
     bool FUN_141a03100() const;                                     // the escape key closes the box
     void FUN_141a03130(UIMessageBox* pBox, int nSec);               // OnChangeTime
-    void FUN_141a03390(UIMessageBox* pBox);                         // OnPopupTimerComplete
+    void OnPopupTimerComplete(UIMessageBox* pBox);                         // OnPopupTimerComplete
     void FUN_141a03470();                                           // before closing
-    static void FUN_141a04f80(MS2Ptr<ASDialog> spBox);              // remember the modaless box position
+    static void SaveModalessPosition(MS2Ptr<ASDialog> spBox);              // remember the modaless box position
     bool GetIntArg(unsigned int nIndex, int& nOut) const;       // the nIndex-th argument (COMDATs outside the range)
     bool FUN_140b19130(unsigned int nIndex, __int64& nOut) const;
     bool FUN_140b76a70(unsigned int nIndex, CStringW& strOut) const;
@@ -270,7 +270,7 @@ public:
     void SetRetraction(int n);                                      // the retraction value
     void SetBuff(int nBuffId, short nLevel, CStringW strExtra);   // buffNotify: the buff and its description
     void FUN_141a029b0(const Unk_MsgBoxBuff& buff);                 // buffNotify: copy the buff record
-    void FUN_141a02a30(const ATL::CAtlArray<ItemEntity>& items);    // the required items
+    void SetRequiredItems(const ATL::CAtlArray<ItemEntity>& items);    // the required items
     void FUN_141a02a70(CStringW strTitle, CString strUrl);          // the hyper link
     void FUN_141a02b00(const CStringW& strDefault, ATL::CAtlList<CStringW>& list);   // the drop-down list
     CStringW FUN_141a02d00() const;                                 // the drop-down default text

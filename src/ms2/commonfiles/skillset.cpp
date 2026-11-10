@@ -31,8 +31,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
+CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 
 // The unit's init flag is an exe global; the hook DLL binds the exe's.
@@ -132,11 +132,11 @@ CSkillSetPtr CSkillSetTable::GetSkillSet(int nSetId)
 int CSkillSetTable::Load()
 {
     m_map.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "skillSet.xml");
+    CString strPath = GetXmlPath("Table", "skillSet.xml");
     m_spCache.AssignRaw(new CCacheData);
-    m_spCache->FUN_1401d1160(strPath);
+    m_spCache->SetPath(strPath);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -183,7 +183,7 @@ void CSkillSetTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CSkillSetTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CSkillSetTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

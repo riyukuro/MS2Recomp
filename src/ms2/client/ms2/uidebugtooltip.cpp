@@ -17,13 +17,13 @@
 extern int g_nDebugUI;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 class Unk_UIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
+MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
 // @0x14191a7e0
 UIDebugTooltip::UIDebugTooltip(CString strName)
@@ -32,7 +32,7 @@ UIDebugTooltip::UIDebugTooltip(CString strName)
     m_2c = 2;
     m_58 = 0;
     m_28 = FUN_141277f40();
-    FUN_1422dbf00(m_2c, 0, 0);
+    LoadSwf(m_2c, 0, 0);
 }
 
 // @0x14191a920
@@ -48,32 +48,32 @@ CString UIDebugTooltip::GetTypeName()
 MS2_REPLACE_METHOD(0x14191A9A0, UIDebugTooltip, GetTypeName, 61, 0xDCE84F5B);
 
 // @0x14191a9f0
-int UIDebugTooltip::FUN_14191a9f0()
+int UIDebugTooltip::IsShown()
 {
     return m_78;
 }
-MS2_REPLACE_METHOD(0x14191A9F0, UIDebugTooltip, FUN_14191a9f0, 14, 0xB1F80757);
+MS2_REPLACE_METHOD(0x14191A9F0, UIDebugTooltip, IsShown, 14, 0xB1F80757);
 
 // @0x14191aa10
-void UIDebugTooltip::FUN_14191aa10()
+void UIDebugTooltip::Show()
 {
     m_7c = 1;
     m_78 = 1;
 }
-MS2_REPLACE_METHOD(0x14191AA10, UIDebugTooltip, FUN_14191aa10, 30, 0x3D58469B);
+MS2_REPLACE_METHOD(0x14191AA10, UIDebugTooltip, Show, 30, 0x3D58469B);
 
 // @0x14191aa40
-void UIDebugTooltip::FUN_14191aa40()
+void UIDebugTooltip::Hide()
 {
     m_7c = 0;
     m_78 = 0;
 }
-MS2_REPLACE_METHOD(0x14191AA40, UIDebugTooltip, FUN_14191aa40, 30, 0xA515CB4B);
+MS2_REPLACE_METHOD(0x14191AA40, UIDebugTooltip, Hide, 30, 0xA515CB4B);
 
 // @0x14191aa70
 void UIDebugTooltip::FUN_14191aa70()
 {
-    GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
+    GetUISwfEntityManager()->RemoveEntity(MS2Ptr<UISwfEntity>(this));
     m_7c = 0;
     m_78 = 0;
 }
@@ -87,23 +87,23 @@ void UIDebugTooltip::FUN_14191aae0(Vector3 pt)
 MS2_REPLACE_METHOD(0x14191AAE0, UIDebugTooltip, FUN_14191aae0, 41, 0xDEA29562);
 
 // @0x14191ab10
-void UIDebugTooltip::FUN_14191ab10(CStringW strText)
+void UIDebugTooltip::SetText(CStringW strText)
 {
     m_7c = 1;
     m_88 = strText;
 }
-MS2_REPLACE_METHOD(0x14191AB10, UIDebugTooltip, FUN_14191ab10, 77, 0x4449CF6B);
+MS2_REPLACE_METHOD(0x14191AB10, UIDebugTooltip, SetText, 77, 0x4449CF6B);
 
 // @0x14191ab70
-void UIDebugTooltip::FUN_14191ab70(CStringW strAdditional)
+void UIDebugTooltip::SetAdditionalText(CStringW strAdditional)
 {
     m_7c = 1;
     m_90 = strAdditional;
 }
-MS2_REPLACE_METHOD(0x14191AB70, UIDebugTooltip, FUN_14191ab70, 77, 0x49FED853);
+MS2_REPLACE_METHOD(0x14191AB70, UIDebugTooltip, SetAdditionalText, 77, 0x49FED853);
 
 // @0x14191abd0
-void UIDebugTooltip::FUN_14191abd0()
+void UIDebugTooltip::ToggleAdditionalText()
 {
     if (m_30.IsNull())
         return;
@@ -122,14 +122,14 @@ void UIDebugTooltip::FUN_14191abd0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x14191ABD0, UIDebugTooltip, FUN_14191abd0, 300, 0xABC3CC9C);
+MS2_REPLACE_METHOD(0x14191ABD0, UIDebugTooltip, ToggleAdditionalText, 300, 0xABC3CC9C);
 
 // @0x14191ad10
 void UIDebugTooltip::vfunc_2()
 {
     UISwfEntity::vfunc_2();
-    FUN_1422dbf00(m_2c, m_44, 0);
-    FUN_14191aa10();
+    LoadSwf(m_2c, m_44, 0);
+    Show();
 }
 MS2_REPLACE_METHOD(0x14191AD10, UIDebugTooltip, vfunc_2, 64, 0xD42C3A42);
 
@@ -138,7 +138,7 @@ void UIDebugTooltip::vfunc_3()
 {
     UISwfEntity::vfunc_3();
     FUN_1422dc080();
-    FUN_14191aa40();
+    Hide();
 }
 MS2_REPLACE_METHOD(0x14191AD60, UIDebugTooltip, vfunc_3, 44, 0xCD6070CD);
 
@@ -175,8 +175,8 @@ void UIDebugTooltip::vfunc_15()
         return;
     if (m_7c != 0)
         vfunc_52();
-    if (FUN_14191a9f0())
-        FUN_14191b140();
+    if (IsShown())
+        UpdateScreenPosition();
     else
         vfunc_8(0);
 }
@@ -192,7 +192,7 @@ int UIDebugTooltip::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 MS2_REPLACE_METHOD(0x14191B0F0, UIDebugTooltip, vfunc_28, 67, 0xE589D637);
 
 // @0x14191b140
-void UIDebugTooltip::FUN_14191b140()
+void UIDebugTooltip::UpdateScreenPosition()
 {
     Vector3 screen;
     int nDebug = 0;
@@ -206,18 +206,18 @@ void UIDebugTooltip::FUN_14191b140()
                 vfunc_8(0);
             else
                 vfunc_8(1);
-            reinterpret_cast<efd::Point3&>(screen) *= ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
+            reinterpret_cast<efd::Point3&>(screen) *= ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)GetGFxManager())))->GetMovieScale(m_28);
             ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->SetPositionFloat(screen.x, screen.y);
         }
     }
     else
         vfunc_8(0);
 }
-MS2_REPLACE_METHOD(0x14191B140, UIDebugTooltip, FUN_14191b140, 368, 0x8BB371DA);
+MS2_REPLACE_METHOD(0x14191B140, UIDebugTooltip, UpdateScreenPosition, 368, 0x8BB371DA);
 
 // @0x14191b2c0
 void UIDebugTooltip::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 MS2_REPLACE_METHOD(0x14191B2C0, UIDebugTooltip, vfunc_41, 99, 0x4082510E);

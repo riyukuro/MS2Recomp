@@ -199,10 +199,10 @@ public:
 void FUN_140710590(COutPacket& packet);
 extern unsigned char DAT_143ab2856;
 int GetServerTick();
-class Unk_LaunchOptions { public: bool FUN_1406af100(); };     // replay / spectator mode
-Unk_LaunchOptions* FUN_1406aeee0();
+class Unk_LaunchOptions { public: bool IsOptimizeUserSync(); };     // replay / spectator mode
+Unk_LaunchOptions* GetLaunchOptions();
 class Unk_TOEntity;
-class CTrafficOptimizer { public: unsigned FUN_14087d2f0(Unk_TOEntity* entity); };
+class CTrafficOptimizer { public: unsigned GetTrafficLimit(Unk_TOEntity* entity); };
 
 // The field service (FUN_1403ed2d0).
 class Unk_WsB_Marker;
@@ -241,7 +241,7 @@ public:
     char m_pad_0[0x270];
     CString m_strDashEffect;                            // +0x270
 };
-Unk_SingletonObj* FUN_1401d31f0();
+Unk_SingletonObj* GetCommonResource();
 
 // Physics: the ray cast record, the PhysX helper and the entity physics service.
 struct Unk_RayCastInfo
@@ -266,7 +266,7 @@ class CPhysXHelper
 {
 public:
     bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);
-    int FUN_14168a450(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
+    int GetGroundDistance(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
 };
 class Unk_AvPhysicsSvc;
 Unk_AvPhysicsSvc* GetPhysXHelper();
@@ -306,14 +306,14 @@ class GameObjectController
 {
 public:
     void SetKVelocity(efd::Point3 kVelocity);
-    void FUN_141240730();
-    static float FUN_141240c40(bool bDefault);
-    GameObjectControllerHitReport* FUN_141240f20();
+    void StopJump();
+    static float GetGravity(bool bDefault);
+    GameObjectControllerHitReport* GetHitReport();
 };
 float FUN_14059d930(float f);                                         // fabs
 
 // The actor's buffs.
-#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
 #include "ms2/placeholder/cnpc.h"  // C3: CNpc (efd::DynamicCast<CNpc, PCBase>)
 #include "ms2/placeholder/cpet.h"
@@ -327,7 +327,7 @@ public:
     void* m_storage[14];
 };
 class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
-class Unk_PCMove { public: Vector3 FUN_141683290(); Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool FUN_141682fe0(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); Vector3 FUN_141683900(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The animation service.
 int FUN_140b7f6a0(void* pSvc, const egf::EntityID& kId);
@@ -374,7 +374,7 @@ struct Unk_MagicEntity;
 struct Unk_MagicRidee;
 Unk_MagicRidee* FUN_141468360(Unk_MagicEntity* pOwner);          // as Ridee holder
 __int64 FUN_14028d260(float f);                             // round to ms  (C3: the definition's __int64 return, read as int)
-float FUN_14028d3a0(float fDeg);
+float FromPercent(float fDeg);
 int FUN_140718170(const CStringA& str);
 
 template <> MS2Ptr<CSkillRecord>::MS2Ptr(const MS2Ptr& o);                               // 0x1409f71b0
@@ -400,27 +400,27 @@ void StatePcGuideObjectController::SetOwner(PCBase* pOwner)
 MS2_REPLACE_METHOD(0x1417b7430, StatePcGuideObjectController, SetOwner, 25, 0x4C00882B);
 
 // @0x1417b7450
-void StatePcGuideObjectController::FUN_1417b7450()
+void StatePcGuideObjectController::ClearRecords()
 {
     m_spCurrent = 0;
     m_records.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x1417b7450, StatePcGuideObjectController, FUN_1417b7450, 50, 0x96E31A32);
+MS2_REPLACE_METHOD(0x1417b7450, StatePcGuideObjectController, ClearRecords, 50, 0x96E31A32);
 
 // @0x1417b7490
-int StatePcGuideObjectController::FUN_1417b7490()
+int StatePcGuideObjectController::IsRecordDue()
 {
     if ((m_spCurrent.get() ? true : false) && m_spCurrent->m_nA8 != 0)
         return 0;
     unsigned nTotal = FUN_1417b7540();
     if (nTotal == 0)
         return 0;
-    unsigned nLimit = TSingleton<CTrafficOptimizer>::GetInstance()->FUN_14087d2f0(reinterpret_cast<Unk_TOEntity*>(m_pOwner));
+    unsigned nLimit = TSingleton<CTrafficOptimizer>::GetInstance()->GetTrafficLimit(reinterpret_cast<Unk_TOEntity*>(m_pOwner));
     if (nTotal < nLimit)
         return 0;
     return 1;
 }
-MS2_REPLACE_METHOD(0x1417b7490, StatePcGuideObjectController, FUN_1417b7490, 157, 0x119CB649);
+MS2_REPLACE_METHOD(0x1417b7490, StatePcGuideObjectController, IsRecordDue, 157, 0x119CB649);
 
 // @0x1417b7540
 int StatePcGuideObjectController::FUN_1417b7540()
@@ -461,7 +461,7 @@ MS2_REPLACE_METHOD(0x1417b76b0, StatePcGuideObjectController, FUN_1417b76b0, 96,
 // @0x1417b7720
 void StatePcGuideObjectController::FUN_1417b7720()
 {
-    if (FUN_1406aeee0()->FUN_1406af100()) {
+    if (GetLaunchOptions()->IsOptimizeUserSync()) {
         if (m_spCurrent == 0)
             return;
         if (m_spCurrent->m_nA8 == 0) {
@@ -584,11 +584,11 @@ void State::vfunc_2(int n)
 MS2_REPLACE_METHOD(0x1417b7e20, State, vfunc_2, 22, 0x566B64E3);
 
 // @0x1417b7e40
-int State::FUN_1417b7e40()
+int State::GetStateId()
 {
     return m_n10;
 }
-MS2_REPLACE_METHOD(0x1417b7e40, State, FUN_1417b7e40, 14, 0xC2D0886F);
+MS2_REPLACE_METHOD(0x1417b7e40, State, GetStateId, 14, 0xC2D0886F);
 
 // @0x1417b7e60
 void State::vfunc_3(double fTime)
@@ -800,18 +800,18 @@ PCBase* State::FUN_1417b83a0()
 MS2_REPLACE_METHOD(0x1417b83a0, State, FUN_1417b83a0, 28, 0x95CC374D);
 
 // @0x1417b83d0
-PCBase* State::FUN_1417b83d0()
+PCBase* State::GetPetOwner()
 {
     if (FUN_1417b83a0() && reinterpret_cast<CPet*>(FUN_1417b83a0())->FUN_140b10360())
         return reinterpret_cast<CPet*>(FUN_1417b83a0())->FUN_140b10360();
     if (FUN_1417b83a0()) {
-        PCBase* pOwner = reinterpret_cast<CNpc*>(FUN_1417b83a0())->FUN_141094f60();
+        PCBase* pOwner = reinterpret_cast<CNpc*>(FUN_1417b83a0())->GetOwner();
         if (pOwner && pOwner->GetClassID() == 0x6200004)
             return reinterpret_cast<PCBase*>(efd::DynamicCast<Unk_AkoMyPC, PCBase>(pOwner));
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1417b83d0, State, FUN_1417b83d0, 155, 0x10ECA9CD);
+MS2_REPLACE_METHOD(0x1417b83d0, State, GetPetOwner, 155, 0x10ECA9CD);
 
 // @0x1417b8480
 PCBase* State::FUN_1417b8480()
@@ -840,7 +840,7 @@ int State::FUN_1417b8560()
 MS2_REPLACE_METHOD(0x1417b8560, State, FUN_1417b8560, 51, 0xBBDF672C);
 
 // @0x1417b85a0
-CString FUN_1417b85a0(int nState)
+CString GetStateName(int nState)
 {
     switch (nState) {
     case 0: return "gosNone";
@@ -920,7 +920,7 @@ int FUN_1417b90f0(CString strName)
     if (s_names.empty()) {
         for (int i = 0; i < 0x48; i++) {
             int nState = i;
-            s_names.insert(std::make_pair(FUN_1417b85a0(nState), nState));
+            s_names.insert(std::make_pair(GetStateName(nState), nState));
         }
     }
     std::map<CString, int>::iterator it = s_names.find(strName);
@@ -1033,8 +1033,8 @@ void StateClimb::vfunc_4(StateData* pData)
     m_bAltSide = false;
     m_fSpeedV = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(GetClientConstants())->m_climbSpeedV)->Read();
     m_fSpeedH = reinterpret_cast<Common::Constants::Value<float>*>(&reinterpret_cast<Unk_StConsts*>(GetClientConstants())->m_climbSpeedH)->Read();
-    m_timerHit.FUN_140868750(100);
-    m_timerHang.FUN_140868750(100);
+    m_timerHit.Start(100);
+    m_timerHang.Start(100);
     m_pOwner->SetShadowVisible(false);
     if (MyPC* pMyPC = FUN_1417b84b0()) {
         if (reinterpret_cast<PC*>(pMyPC)->GetHeldItem())
@@ -1051,7 +1051,7 @@ void StateClimb::vfunc_4(StateData* pData)
                 m_n10 = 0x61;
         }
     }
-    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240730();
+    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->StopJump();
 }
 MS2_REPLACE_METHOD(0x1417bc180, StateClimb, vfunc_4, 429, 0x2DF306D0);
 
@@ -1059,7 +1059,7 @@ MS2_REPLACE_METHOD(0x1417bc180, StateClimb, vfunc_4, 429, 0x2DF306D0);
 void StateClimb::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
-    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240730();
+    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->StopJump();
     m_pOwner->SetShadowVisible(true);
 }
 MS2_REPLACE_METHOD(0x1417bc340, StateClimb, vfunc_5, 70, 0xFD7CFEDA);
@@ -1070,13 +1070,13 @@ void StateClimb::vfunc_3(double fTime)
     State::vfunc_3(fTime);
     if (!FUN_1417df6a0())
         return;
-    FUN_1417bdee0();
-    FUN_1417be120(fTime);
+    UpdatePhaseFromInput();
+    MoveByPhase(fTime);
     FUN_1417bda60();
     if (FUN_1417bd6c0())
         m_pOwner->vfunc_59(1, 0, 0, 0);
     if (((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody())))
-        ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240f20()->FUN_140cfaf30();
+        ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->GetHitReport()->FUN_140cfaf30();
 }
 MS2_REPLACE_METHOD(0x1417bc390, StateClimb, vfunc_3, 203, 0x491A3090);
 
@@ -1086,16 +1086,16 @@ void StateClimb::vfunc_8(double fTime)
     StateMoveSkill::vfunc_8(fTime);
     Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     efd::Point3 kVel = efd::Point3::ZERO;
-    if (m_timerHit.FUN_140868c00())
-        kVel = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290()));
+    if (m_timerHit.IsExpired())
+        kVel = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection()));
     efd::Point3 kFacing = m_pOwner->GetForwardDirection();
     if ((kFacing.y == -1.0f || kFacing.x == -1.0f) && kVel.y < 0.0f)
         kVel.y = 0.0f;
     reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(kVel);
     if (pBuff->FUN_141683100(0x493e1)) {
-        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
-        if (m_pOwner->FUN_1416749c0() && !pBuff->FUN_141682fe0(0x30d43) && !pBuff->FUN_141682fe0(0x30d44)
-            && pBuff->FUN_141682fe0(0x30d41))
+        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection())));
+        if (m_pOwner->FUN_1416749c0() && !pBuff->IsActionKeyDown(0x30d43) && !pBuff->IsActionKeyDown(0x30d44)
+            && pBuff->IsActionKeyDown(0x30d41))
             reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(efd::Point3::ZERO);
         m_pOwner->vfunc_59(6, 0, 0x25, 0);
     }
@@ -1172,7 +1172,7 @@ void StateClimb::EndOfSequence(NiActorManager* pkManager, unsigned int eSequence
         if (m_pOwner->FUN_14123c360().x != 0.0f)
             m_pOwner->FUN_14166e0a0();
     } else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x18, eSequenceID)) {
-        FUN_1417beb40();
+        ClimbOverTop();
     } else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x19, eSequenceID)) {
         m_n10 = 0x56;
     } else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166de90(0x1b, eSequenceID)) {
@@ -1184,7 +1184,7 @@ void StateClimb::EndOfSequence(NiActorManager* pkManager, unsigned int eSequence
 MS2_REPLACE_METHOD(0x1417bc9b0, StateClimb, EndOfSequence, 701, 0x726973E7);
 
 // @0x1417bcc80
-int StateClimb::FUN_1417bcc80()
+int StateClimb::HasClimbableWallAhead()
 {
     efd::SmartPointer<CubeMapInformationService> kSvc(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     if (kSvc.operator CubeMapInformationService*() == 0)
@@ -1210,10 +1210,10 @@ int StateClimb::FUN_1417bcc80()
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1417bcc80, StateClimb, FUN_1417bcc80, 660, 0x0B505292);
+MS2_REPLACE_METHOD(0x1417bcc80, StateClimb, HasClimbableWallAhead, 660, 0x0B505292);
 
 // @0x1417bcf20
-int StateClimb::FUN_1417bcf20()
+int StateClimb::IsWallInFront()
 {
     Unk_RayCastInfo kInfo;
     kInfo.m_origin = m_pOwner->vfunc_18() + efd::Point3(0.0f, 0.0f, 90.0f);
@@ -1224,7 +1224,7 @@ int StateClimb::FUN_1417bcf20()
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1417bcf20, StateClimb, FUN_1417bcf20, 256, 0xD1B40E82);
+MS2_REPLACE_METHOD(0x1417bcf20, StateClimb, IsWallInFront, 256, 0xD1B40E82);
 
 // @0x1417bd030
 int StateClimb::FUN_1417bd030(int bLeft)
@@ -1308,8 +1308,8 @@ int StateClimb::FUN_1417bd6c0()
     kDown.m_maxDist = 50.0f;
     kDown.m_groups = FUN_1417bc010();
     if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->CastRay(&kDown, 0) && kDown.m_hitEntity != 0) {
-        if (kDown.m_hitEntity->GetEntityID() != ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240f20()->GetEntityID()) {
-            MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10(kDown.m_hitEntity);
+        if (kDown.m_hitEntity->GetEntityID() != ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->GetHitReport()->GetEntityID()) {
+            MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FindMarkerByEntity(kDown.m_hitEntity);
             if (spObj.get()) {
                 efd::Point3 kNormal = reinterpret_cast<CBreakableObject*>(spObj.operator->())->GetPtVelocity();
                 if (0.0f < kNormal.z && kDown.m_hitDist <= 50.0f)
@@ -1323,8 +1323,8 @@ int StateClimb::FUN_1417bd6c0()
     kUp.m_maxDist = 50.0f;
     kUp.m_groups = FUN_1417bc010();
     if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->CastRay(&kUp, 0) && kUp.m_hitEntity != 0) {
-        if (kUp.m_hitEntity->GetEntityID() != ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240f20()->GetEntityID()) {
-            MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FUN_141bc4f10(kUp.m_hitEntity);
+        if (kUp.m_hitEntity->GetEntityID() != ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->GetHitReport()->GetEntityID()) {
+            MS2Ptr<Unk_WsB_Marker> spObj = WorldService::GetInstance()->FindMarkerByEntity(kUp.m_hitEntity);
             if (spObj.get()) {
                 efd::Point3 kNormal = reinterpret_cast<CBreakableObject*>(spObj.operator->())->GetPtVelocity();
                 if (kNormal.z < 0.0f && kUp.m_hitDist <= 140.0f)
@@ -1346,7 +1346,7 @@ int StateClimb::FUN_1417bda60()
         NiPoint3 kPos = m_pOwner->vfunc_18();
         float fMax = 5.0f;
         float fDist = 0.0f;
-        if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->FUN_14168a450(MS2_ST_POINT(kPos), &fDist, 5.0f) && !(fDist > 5.0f)) {
+        if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->GetGroundDistance(MS2_ST_POINT(kPos), &fDist, 5.0f) && !(fDist > 5.0f)) {
             m_n10 = 0x62;
             return 1;
         }
@@ -1355,7 +1355,7 @@ int StateClimb::FUN_1417bda60()
     case 0x57:
     case 0x58:
     case 0x59:
-        if (FUN_1417bcc80()) {
+        if (HasClimbableWallAhead()) {
             Unk_RayCastInfo kInfo;
             kInfo.m_dir = m_pOwner->GetForwardDirection();
             kInfo.m_maxDist = 50.0f;
@@ -1380,7 +1380,7 @@ int StateClimb::FUN_1417bda60()
         return 1;
     }
     if (FUN_1417bd310(MS2_ST_POINT(m_pOwner->vfunc_18())) == 0) {
-        ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240730();
+        ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->StopJump();
         m_pOwner->vfunc_59(5, 0, 0, 0);
         return 0;
     }
@@ -1389,7 +1389,7 @@ int StateClimb::FUN_1417bda60()
 MS2_REPLACE_METHOD(0x1417bda60, StateClimb, FUN_1417bda60, 1095, 0x7609E356);
 
 // @0x1417bdee0
-int StateClimb::FUN_1417bdee0()
+int StateClimb::UpdatePhaseFromInput()
 {
     if (m_n10 == 0x60)
         return 1;
@@ -1427,92 +1427,92 @@ int StateClimb::FUN_1417bdee0()
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1417bdee0, StateClimb, FUN_1417bdee0, 560, 0x7F40A0EE);
+MS2_REPLACE_METHOD(0x1417bdee0, StateClimb, UpdatePhaseFromInput, 560, 0x7F40A0EE);
 
 // @0x1417be120
-int StateClimb::FUN_1417be120(double fTime)
+int StateClimb::MoveByPhase(double fTime)
 {
     if (FUN_1417be990(fTime))
         return 1;
     switch (m_n10) {
     case 0x57:
-        FUN_1417be590(fTime);
+        MoveUp(fTime);
         break;
     case 0x5a:
-        FUN_1417be680(fTime);
+        MoveDown(fTime);
         break;
     case 0x5d:
-        FUN_1417be760(fTime);
+        MoveLeft(fTime);
         break;
     case 0x5e:
-        FUN_1417be880(fTime);
+        MoveRight(fTime);
         break;
     case 0x58:
-        FUN_1417be590(fTime);
-        FUN_1417be760(fTime);
+        MoveUp(fTime);
+        MoveLeft(fTime);
         break;
     case 0x59:
-        FUN_1417be590(fTime);
-        FUN_1417be880(fTime);
+        MoveUp(fTime);
+        MoveRight(fTime);
         break;
     case 0x5b:
-        FUN_1417be680(fTime);
-        FUN_1417be760(fTime);
+        MoveDown(fTime);
+        MoveLeft(fTime);
         break;
     case 0x5c:
-        FUN_1417be680(fTime);
-        FUN_1417be880(fTime);
+        MoveDown(fTime);
+        MoveRight(fTime);
         break;
     case 0x5f: {
         float fExtra = 20.0f;
-        efd::Point3 kUp = efd::Point3::UNIT_Z * FUN_14028d3a0(150.0f + fExtra);
-        efd::Point3 kForward = m_pOwner->GetForwardDirection() * FUN_14028d3a0(105.0f);
+        efd::Point3 kUp = efd::Point3::UNIT_Z * FromPercent(150.0f + fExtra);
+        efd::Point3 kForward = m_pOwner->GetForwardDirection() * FromPercent(105.0f);
         reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68((kUp + kForward) * (float)fTime, fTime, 0, 0, 1);
         break;
     }
     case 0x61: {
         float fExtra = 20.0f;
         efd::Point3 kDown = -efd::Point3::UNIT_Z;
-        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kDown * FUN_14028d3a0(150.0f + fExtra) * (float)fTime, fTime, 0, 0, 1);
+        reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kDown * FromPercent(150.0f + fExtra) * (float)fTime, fTime, 0, 0, 1);
         break;
     }
     case 0x56:
-        if (m_timerHang.FUN_140868c00()) {
-            if (FUN_1417bcf20() == 0) {
+        if (m_timerHang.IsExpired()) {
+            if (IsWallInFront() == 0) {
                 m_pOwner->vfunc_59(1, 0, 0, 0);
-                m_timerHang.FUN_1408687f0();
+                m_timerHang.Reset();
             } else {
-                m_timerHang.FUN_140868750(100);
+                m_timerHang.Start(100);
             }
         }
         break;
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1417be120, StateClimb, FUN_1417be120, 1068, 0xD2400617);
+MS2_REPLACE_METHOD(0x1417be120, StateClimb, MoveByPhase, 1068, 0xD2400617);
 
 // @0x1417be590
-int StateClimb::FUN_1417be590(double fTime)
+int StateClimb::MoveUp(double fTime)
 {
-    if (FUN_1417bcf20()) {
+    if (IsWallInFront()) {
         efd::Point3 kUp = efd::Point3::UNIT_Z;
         reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kUp * m_fSpeedV * (float)fTime, fTime, 0, 0, 1);
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1417be590, StateClimb, FUN_1417be590, 233, 0x59FE2165);
+MS2_REPLACE_METHOD(0x1417be590, StateClimb, MoveUp, 233, 0x59FE2165);
 
 // @0x1417be680
-int StateClimb::FUN_1417be680(double fTime)
+int StateClimb::MoveDown(double fTime)
 {
     efd::Point3 kDown = -efd::Point3::UNIT_Z;
     reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kDown * m_fSpeedV * (float)fTime, fTime, 0, 0, 1);
     return 1;
 }
-MS2_REPLACE_METHOD(0x1417be680, StateClimb, FUN_1417be680, 204, 0x1D4AF32B);
+MS2_REPLACE_METHOD(0x1417be680, StateClimb, MoveDown, 204, 0x1D4AF32B);
 
 // @0x1417be760
-int StateClimb::FUN_1417be760(double fTime)
+int StateClimb::MoveLeft(double fTime)
 {
     if (FUN_1417bd030(1)) {
         efd::Point3 kFacing = m_pOwner->GetForwardDirection();
@@ -1522,10 +1522,10 @@ int StateClimb::FUN_1417be760(double fTime)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1417be760, StateClimb, FUN_1417be760, 277, 0x525039FC);
+MS2_REPLACE_METHOD(0x1417be760, StateClimb, MoveLeft, 277, 0x525039FC);
 
 // @0x1417be880
-int StateClimb::FUN_1417be880(double fTime)
+int StateClimb::MoveRight(double fTime)
 {
     if (FUN_1417bd030(0)) {
         efd::Point3 kFacing = m_pOwner->GetForwardDirection();
@@ -1535,7 +1535,7 @@ int StateClimb::FUN_1417be880(double fTime)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1417be880, StateClimb, FUN_1417be880, 258, 0x8A0801F8);
+MS2_REPLACE_METHOD(0x1417be880, StateClimb, MoveRight, 258, 0x8A0801F8);
 
 // @0x1417be990
 int StateClimb::FUN_1417be990(double fTime)
@@ -1568,7 +1568,7 @@ int StateClimb::FUN_1417be990(double fTime)
 MS2_REPLACE_METHOD(0x1417be990, StateClimb, FUN_1417be990, 423, 0xEB583BE6);
 
 // @0x1417beb40
-void StateClimb::FUN_1417beb40()
+void StateClimb::ClimbOverTop()
 {
     const float fMargin = 2.0f;
     NiPoint3 kPos = m_pOwner->vfunc_18();
@@ -1579,7 +1579,7 @@ void StateClimb::FUN_1417beb40()
     kInfo.m_groups = FUN_1417bc010();
     efd::Point3 kTarget = kInfo.m_origin + kInfo.m_dir * 52.0f;
     float fDist = 0.0f;
-    if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->FUN_14168a450(kTarget, &fDist, 150.0f))
+    if (reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->GetGroundDistance(kTarget, &fDist, 150.0f))
         fDist = fDist - fMargin;
     kTarget.x = kPos.x;
     kTarget.y = kPos.y;
@@ -1684,7 +1684,7 @@ void StateCrawl::vfunc_8(double fTime)
     Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     Vector3 kVel = reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683900();
     reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(kVel));
-    if (!pBuff->FUN_141682fe0(0x493e5))
+    if (!pBuff->IsActionKeyDown(0x493e5))
         m_pOwner->vfunc_59(1, 0, 0, 0);
     else if (m_pOwner->FUN_1416749c0())
         m_n10 = 0x1c;
@@ -1698,7 +1698,7 @@ void StateCrawl::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     int bFalling = reinterpret_cast<PCBase*>(m_pOwner)->FUN_141675ed0();
-    static int s_nFallDelay = (int)FUN_14028d260(sqrt(3.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
+    static int s_nFallDelay = (int)FUN_14028d260(sqrt(3.0f / FUN_14059d930(GameObjectController::GetGravity(true))));
     if (bFalling) {
         m_pOwner->vfunc_59(0x1b, 0, 0, 0);
     } else if (m_pOwner->vfunc_99(s_nFallDelay)) {
@@ -1786,11 +1786,11 @@ void StateDash::vfunc_4(StateData* pData)
     m_posLast = m_pOwner->vfunc_18();
     m_dir = m_pOwner->GetForwardDirection();
     m_pOwner->FUN_141671960(20.0f);
-    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->FUN_141240730();
+    ((GameObjectController*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))->StopJump();
     m_tick.Init();
     NoticeMessage kEffect;   // C3: was Unk_ExpTarget
-    ((Unk_ExpTarget&)(kEffect)).m_strName = FUN_1401d31f0()->m_strDashEffect;
-    ((Unk_ExpTarget&)(kEffect)).m_nOwnerId = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<Unk_WsC_GameObj*>(m_pOwner));
+    ((Unk_ExpTarget&)(kEffect)).m_strName = GetCommonResource()->m_strDashEffect;
+    ((Unk_ExpTarget&)(kEffect)).m_nOwnerId = WorldService::GetInstance()->GetObjectKind(reinterpret_cast<Unk_WsC_GameObj*>(m_pOwner));
     kEffect.SetActor(m_pOwner->GetObjectId());
     TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_ExpTarget&)(kEffect))));
 }
@@ -1835,10 +1835,10 @@ void StateDash::vfunc_3(double fTime)
         }
         break;
     case 0x1f:
-        if (m_timerStop.FUN_140868b80() == 0) {
+        if (m_timerStop.IsArmed() == 0) {
             efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
             reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
-        } else if (m_timerStop.FUN_140868c00() == 0) {
+        } else if (m_timerStop.IsExpired() == 0) {
             m_pOwner->FUN_141671960(20.0f * (1.0f - m_timerStop.FUN_140868940()));
             efd::Point3 kMove = m_dir * m_pOwner->vfunc_95() * (float)fTime;
             reinterpret_cast<Unk_StOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0, 0);
@@ -1885,7 +1885,7 @@ void StateDash::AnimActivated(NiActorManager* pkManager, unsigned int eSequenceI
         float fStop = pkManager->GetNextEventTime(NiActorManager::TEXT_KEY_EVENT, eSequenceID, "stop");
         if (fStop != NiActorManager::INVALID_TIME) {
             fStop -= (float)TSingleton<CMainSystem>::GetInstance()->GetGameTime();
-            m_timerStop.FUN_140868750((int)(fStop * 1000.0f));
+            m_timerStop.Start((int)(fStop * 1000.0f));
         }
     }
 }
@@ -2251,5 +2251,16 @@ bool StateMicroGameCoupleDanceData::FUN_1417c1990(MS2Ptr<StateSyncObject> p)
 
 // MS2-PIN: ?_Freeheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@2@@Z 0x1417bb580 ; this TU's copy (called by ~_Tree_comp_alloc 0x1417ba540; 0x14139e1c0 is another TU's)
 // MS2-PIN: ?_Freenode0@?$_Tree_comp_alloc@V?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@4@$0A@@std@@@std@@QEAAXPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@2@@Z 0x1417bb5b0 ; called from _Buynode's catch(...)
+// Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$_Kfn@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@?$_Tmap_traits@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@HU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$allocator@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@4@$0A@@std@@SAAEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@AEBU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@1@@Z 0x1417b9fa0
+// MS2-PIN: ??$addressof@PEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@std@@@std@@YAPEAPEAU?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@0@AEAPEAU10@@Z 0x1417ba050
+// MS2-PIN: ??$addressof@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@YAPEAU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@0@AEAU10@@Z 0x1417ba060
+// MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@0@AEAV10@@Z 0x1417ba070
+// MS2-PIN: ??$forward@AEAU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@YAAEAU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@0@AEAU10@@Z 0x1417ba1d0
+// MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@std@@@0@AEAV10@@Z 0x1417ba1e0
+// MS2-PIN: ??$forward@U?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@YA$$QEAU?$pair@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@0@AEAU10@@Z 0x1417ba200
+// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@std@@@0@AEAV10@@Z 0x1417ba210
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@H@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@V?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@2@XZ 0x1417bb650
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb6ec0-0x142cb71b0 .text$yd

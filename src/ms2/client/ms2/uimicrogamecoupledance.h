@@ -20,13 +20,13 @@ public:
     void Hide();
     void OnCoupleEvent(int event, struct Unk_CoupleEvent* data);
     void UpdatePosition();
-    void FUN_140e64a10(int dance);
+    void SelectDance(int dance);
     void SendPlayArcade(int dance);
-    void FUN_140e64c00();
+    void SendDanceSelection();
     void FUN_140e64e70();
-    int FUN_140e64e80();
+    int ShouldHide();
     // @0x140b8be30
-    void FUN_140b8be30(int nPrevious) { m_previous = nPrevious; }
+    void SetPrevious(int nPrevious) { m_previous = nPrevious; }
 private:
     MS2_LAYOUT_FRIEND;
     int m_selected;

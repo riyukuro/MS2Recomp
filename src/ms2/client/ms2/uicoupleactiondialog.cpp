@@ -151,7 +151,7 @@
 
 class ASDialog : public ASDisplayObject {};
 class Unk_CoupleInput : public ASTextInput {};          // the MS2Ptr<T>::AssignRaw twin at 0x140bf1810
-int FUN_140ad02c0(int nMin, int n);                         // max
+int Max(int nMin, int n);                         // max
 int FUN_140ad02f0(int nMax, int n);                         // min
 
 // The skill system (emotion list, mode, reset) and the player.
@@ -171,7 +171,7 @@ UICoupleActionDialog::UICoupleActionDialog()
     : m_178(0), m_1a8()
 {
     m_5c = 1;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140bec070
@@ -254,7 +254,7 @@ int UICoupleActionDialog::vfunc_13()
         return 0;
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class Unk_CoupleInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0) {
+    if (((class Unk_CoupleInputState*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0) != 0) {
         ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
         if (pDlg != 0 && GetUISwfEntityManager() != 0) {
             if (GetUISwfEntityManager()->FUN_1422d4e20(CString(m_20)) != 0 && m_190.get() != 0) {
@@ -281,12 +281,12 @@ void UICoupleActionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
     ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
     if (FUN_1409e1b80(&tooltip, nEmotion, 0) != 0) {
         ASObj stat(2);
-        stat.FUN_1407cb9c0("type", 1);
+        stat.SetIntMember("type", 1);
         stat.FUN_1409c0dc0("level", "");
-        stat.FUN_1407cbb20("cooltime", GetEmotionKeywords(nEmotion));
-        tooltip.FUN_1409adbe0("statDescription", stat.FUN_1422bb870());
+        stat.SetWStringMember("cooltime", GetEmotionKeywords(nEmotion));
+        tooltip.FUN_1409adbe0("statDescription", stat.GetValue());
         tooltip.FUN_1409c0dc0("enablePuton", "");
-        *pRetVal = tooltip.FUN_1422bb870();
+        *pRetVal = tooltip.GetValue();
     }
 }
 MS2_REPLACE_METHOD(0x140BEC760, UICoupleActionDialog, vfunc_49, 454, 0x54F020C0);
@@ -374,7 +374,7 @@ void UICoupleActionDialog::FUN_140becef0()
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0) return;
     ATL::CAtlArray<MS2Ptr<Unk_Emotion> > list;
-    pPlayer->GetSkillSystem()->FUN_1417691a0(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> >&>(list));
+    pPlayer->GetSkillSystem()->GetValidEmotions(reinterpret_cast<ATL::CAtlArray<MS2Ptr<CSkillSystem::stEmotion> >&>(list));
     int nMode = ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->GetSkillSystem()))->SetShowError(0);
     ((class CSkillSystem*)(class CSkillSystem*)(pPlayer->GetSkillSystem()))->SetShowError(nMode);
     std::map<unsigned int, Unk_Emotion> unused;
@@ -420,11 +420,11 @@ void UICoupleActionDialog::FUN_140bed1f0(int nEmotion)
 MS2_REPLACE_METHOD(0x140BED1F0, UICoupleActionDialog, FUN_140bed1f0, 163, 0xB26B551B);
 
 // @0x140bed2a0
-void UICoupleActionDialog::FUN_140bed2a0(unsigned __int64 nSelection)
+void UICoupleActionDialog::SetSelectedCharacter(unsigned __int64 nSelection)
 {
     m_178 = nSelection;
 }
-MS2_REPLACE_METHOD(0x140BED2A0, UICoupleActionDialog, FUN_140bed2a0, 28, 0x3CC3BB9E);
+MS2_REPLACE_METHOD(0x140BED2A0, UICoupleActionDialog, SetSelectedCharacter, 28, 0x3CC3BB9E);
 
 // Sort orders of the emotion pages (the comparators live in the skill system unit).
 struct Unk_EmotionLess { bool operator()(const MS2Ptr<Unk_Emotion>& a, const MS2Ptr<Unk_Emotion>& b) const; };   // 0x141764570
@@ -481,13 +481,13 @@ void UICoupleActionDialog::FUN_140bed2d0()
             nFocus = nId;
         ASObj action(2);
         action.SetMemberUInt("id", nId);
-        action.FUN_1407cb9c0("isNew", nNew);
-        action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
-        action.FUN_1407cbbe0("isFavorite", bFavorite);
+        action.SetIntMember("isNew", nNew);
+        action.SetStringMember("iconPath", pSkill->m_strIcon);
+        action.SetBoolMember("isFavorite", bFavorite);
         actions.PushObj(action);
     }
     PadEntriesToGrid(actions);
-    pDlg->FUN_140bd2cb0("buildActions", actions);
+    pDlg->InvokeWithArray("buildActions", actions);
     if (nFocus != 0)
         SetFocusByEmotion(nFocus);
 }
@@ -544,13 +544,13 @@ void UICoupleActionDialog::FUN_140bed8a0()
             nFocus = nId;
         ASObj action(2);
         action.SetMemberUInt("id", nId);
-        action.FUN_1407cb9c0("isNew", nNew);
-        action.FUN_1407cba60("iconPath", pSkill->m_strIcon);
-        action.FUN_1407cbbe0("isFavorite", bFavorite);
+        action.SetIntMember("isNew", nNew);
+        action.SetStringMember("iconPath", pSkill->m_strIcon);
+        action.SetBoolMember("isFavorite", bFavorite);
         actions.PushObj(action);
     }
     PadEntriesToGrid(actions);
-    pDlg->FUN_140bd2cb0("buildActions", actions);
+    pDlg->InvokeWithArray("buildActions", actions);
     if (nFocus != 0)
         SetFocusByEmotion(nFocus);
 }
@@ -584,7 +584,7 @@ extern "C" float (__cdecl* __imp_ceilf)(float);   // the exe calls the IAT slot
 
 // The exe's float ceil overload.
 // @0x140bf4fd0
-float FUN_140bf4fd0(float f)
+float Ceil(float f)
 {
     return __imp_ceilf(f);
 }
@@ -592,7 +592,7 @@ float FUN_140bf4fd0(float f)
 // @0x140bee040
 void UICoupleActionDialog::PadEntriesToGrid(ASArray& arr)
 {
-    int nRounded = (int)(FUN_140bf4fd0((float)arr.GetLength() / 6.0f) * 6.0f);
+    int nRounded = (int)(Ceil((float)arr.GetLength() / 6.0f) * 6.0f);
     int nMissing = (nRounded > 0x1e ? nRounded : 0x1e) - arr.GetLength();
     if (nMissing < 0)
         return;
@@ -610,7 +610,7 @@ void UICoupleActionDialog::FUN_140bee150(int nKey)
     if (nKey == 0x79) {
         if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
-            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02c0(0, nIndex - 4));
+            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(Max(0, nIndex - 4));
         }
     } else if (nKey == 0x7e) {
         if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
@@ -621,7 +621,7 @@ void UICoupleActionDialog::FUN_140bee150(int nKey)
     } else if (nKey == 0x7b) {
         if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {
             int nIndex = reinterpret_cast<ASCoreList*>(spList.operator->())->GetSelectedIndex();
-            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(FUN_140ad02c0(0, nIndex - 1));
+            reinterpret_cast<ASCoreList*>(spList.operator->())->SetSelectedIndex(Max(0, nIndex - 1));
         }
     } else if (nKey == 0x7c) {
         if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_list")) {

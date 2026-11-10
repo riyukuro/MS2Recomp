@@ -15,6 +15,6 @@ public:
     virtual void vfunc_43();                                                                                // @0x140e65b00 size the movie to the stage
     // @0x140e65f10
     virtual int vfunc_48() { return 0x4f72; }
-    void FUN_140e65c00(CStringW strMessage, int nTime);                                                     // @0x140e65c00
-    void FUN_140e65ce0(int nType, CStringW strMessage, int nTime);                                          // @0x140e65ce0
+    void ShowMessage(CStringW strMessage, int nTime);                                                     // @0x140e65c00
+    void ShowStageMessage(int nType, CStringW strMessage, int nTime);                                          // @0x140e65ce0
 };

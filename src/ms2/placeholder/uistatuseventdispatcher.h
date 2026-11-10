@@ -18,7 +18,7 @@ public:
 
     void FUN_141b0cd00(UIStatusEventListener* pListener);   // register (once)
     void FUN_141b0cd90(UIStatusEventListener* pListener);   // unregister
-    void FUN_141b0ce20(int nEvent, int nValue);             // push one status to every active listener
+    void NotifyStatusChanged(int nEvent, int nValue);             // push one status to every active listener
     void FUN_141b0e000();                                   // push all 19 statuses (nValue 0)
     void FUN_141b0e050();                                   // listener slot 2
     void FUN_141b0e0d0();                                   // listener slot 22

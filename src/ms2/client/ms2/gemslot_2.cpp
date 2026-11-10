@@ -56,10 +56,10 @@ public:
     void* FUN_141bd0cc0();                          // the local player's actor
     MS2Ptr<CFieldDataCli> FUN_141bd30a0();          // the world's field record (m_298, viewed as Unk_WsPtred298)
 };
-bool FUN_140222e10(int nGemType);                       // the gem type is valid
-unsigned __int64 FUN_140222f50();                            // the count of the gem types
+bool IsValidGemType(int nGemType);                       // the gem type is valid
+unsigned __int64 GetGemTypeCount();                            // the count of the gem types
 void FUN_140d73bc0(int, int, void*, CStringW);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* nUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* nUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket&);
 void FUN_1401fd190(unsigned char* payload, COutputStream& stream);
@@ -68,14 +68,14 @@ void FUN_1401fd250(unsigned char* payload, COutputStream& stream);
 struct Unk_PayloadItemWire
 {
     Unk_PayloadItemWire();                              // 0x141272280
-    MS2Ptr<CItem> FUN_1401fce40(CInputStream& stream);  // read an item
+    MS2Ptr<CItem> ReadItem(CInputStream& stream);  // read an item
 };
 
 // @0x14126fce0
 PCGemEquip::PCGemEquip()
     : m_mapEffect(17, 0.75f, 0.25f, 2.25f, 10)
 {
-    m_items.SetCount(FUN_140222f50(), -1);
+    m_items.SetCount(GetGemTypeCount(), -1);
 }
 
 // @0x14126fd70
@@ -95,7 +95,7 @@ void PCGemEquip::ReadFromStream(CInputStream& stream, int nOwner)
     Unk_PayloadItemWire kWire;
     for (int i = 0; i < nCount; i++)
     {
-        MS2Ptr<CItem> spItem = kWire.FUN_1401fce40(stream);
+        MS2Ptr<CItem> spItem = kWire.ReadItem(stream);
         if (spItem == 0 || spItem->GetGem() == 0)
             continue;
         spItem->SetObjectId(nOwner);
@@ -128,7 +128,7 @@ int PCGemEquip::GetItems(ATL::CAtlArray<MS2Ptr<CItem> >& out)
 // @0x141270140
 MS2Ptr<CItem> PCGemEquip::GetItemByGemType(int nGemType)
 {
-    if (!FUN_140222e10(nGemType))
+    if (!IsValidGemType(nGemType))
         return MS2Ptr<CItem>(0);
     int nIndex = FUN_141271290(nGemType);
     MS2Ptr<CItem> spItem = GetItemAt(nIndex);
@@ -148,7 +148,7 @@ bool PCGemEquip::HasItemId(int nItemId)
         MS2Ptr<CItem> spItem = m_items.GetAt(i);
         if (spItem.get() != 0)
         {
-            if (spItem->FUN_1405276c0() == nItemId)
+            if (spItem->GetItemId() == nItemId)
                 return true;
         }
     }
@@ -420,10 +420,10 @@ void PCGemEquip::FUN_141271780(int nGemType, MS2Ptr<CItem> spItem)
 {
     if (!FUN_141271750(nGemType))
         return;
-    unsigned nId = spItem->FUN_140526b10();
+    unsigned nId = spItem->GetObjectId();
     if (nId < 10000)
         return;
-    TSingleton<CItemLoader>::GetInstance()->Request(spItem->FUN_140526b10(), spItem);
+    TSingleton<CItemLoader>::GetInstance()->Request(spItem->GetObjectId(), spItem);
 }
 
 // @0x141271870
@@ -431,10 +431,10 @@ void PCGemEquip::FUN_141271870(int nGemType, MS2Ptr<CItem> spItem)
 {
     if (!FUN_141271750(nGemType))
         return;
-    unsigned nId = spItem->FUN_140526b10();
+    unsigned nId = spItem->GetObjectId();
     if (nId < 10000)
         return;
-    TSingleton<CItemLoader>::GetInstance()->Request(spItem->FUN_140526b10(), spItem, 1);
+    TSingleton<CItemLoader>::GetInstance()->Request(spItem->GetObjectId(), spItem, 1);
 }
 
 // @0x141271960
@@ -451,15 +451,15 @@ bool EquipGem(MS2Ptr<CItem> spItem, int nSlot, int nFlag)
         return false;
     }
     if (nFlag == 0
-        && ((CItemTransfer*)spItem->FUN_140527930())->HasBindingRule() != 0
-        && ((CItemTransfer*)spItem->FUN_140527930())->HasBinding() == 0)
+        && ((CItemTransfer*)spItem->GetTransfer())->HasBindingRule() != 0
+        && ((CItemTransfer*)spItem->GetTransfer())->HasBinding() == 0)
     {
         CStringW strMsg = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_equip", pActor->vfunc_77());
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(17, strMsg, 0, s_useBindGemEquipItem);
+        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(17, strMsg, 0, s_useBindGemEquipItem);
         if (spBox)
         {
             spBox->Append<int>(nSlot);
-            spBox->FUN_141a01600(spItem->GetItemUid());
+            spBox->SetItemUid(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->SetButtonLabelIds(1143, 1144, 0);
             FUN_140d73c60(spBox);
@@ -495,7 +495,7 @@ bool UnequipGem(MS2Ptr<CItem> spItem)
         return false;
     }
     Unk_GemUnequipReq kReq;
-    kReq.m_nSlot = (unsigned char)spItem->FUN_140526b50();
+    kReq.m_nSlot = (unsigned char)spItem->GetSlot();
     COutPacket kPacket(static_cast<int>(SendOp::BadgeEquip), 0);
     kPacket.WriteUInt8(1);
     FUN_1401fd250((unsigned char*)&kReq, kPacket);

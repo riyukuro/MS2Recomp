@@ -37,8 +37,8 @@ public:
     virtual void vfunc_84();                                    // 0x1419bee10 "initData"
     virtual void vfunc_85(int nType);                           // 0x1419bee80 packet 0x22 op 4
     virtual MS2Ptr<ASMovieClip> vfunc_86();                     // 0x1412a4070 returns a copy of m_enchantAni (unit_14129cfa0)
-    int FUN_1419beef0(unsigned __int64 uid);                   // 0x1419beef0 (really a base member: UIItemRemakeOptionDialog calls it too)
-    MS2Ptr<CItem> FUN_1419bef70(unsigned __int64 uid);          // 0x1419bef70
+    int IsItemInInventory(unsigned __int64 uid);                   // 0x1419beef0 (really a base member: UIItemRemakeOptionDialog calls it too)
+    MS2Ptr<CItem> FindItemByUid(unsigned __int64 uid);          // 0x1419bef70
 protected:
     MS2_LAYOUT_FRIEND;
     int m_mode;                                                 // +0x178
@@ -67,31 +67,31 @@ public:
     void SetModeByName(CString name);                                 // 0x1419c02e0
     void SendRequestItemEnchantMode15(ASData*);                                 // 0x1419c0360
     void SendRequestItemEnchantMode19(ASData*);                                 // 0x1419c03d0
-    void FUN_1419c0440(ASData* pData);                                 // 0x1419c0440
+    void OnEnchant(ASData* pData);                                 // 0x1419c0440
     void SendRequestItemEnchantMode6(unsigned __int64 uid);                                 // 0x1419c0c70
-    void FUN_1419c0d40(ASData* pData);                                 // 0x1419c0d40
+    void OnSelectItem(ASData* pData);                                 // 0x1419c0d40
     void OnComplete();                                 // 0x1419c10e0
     void OnRetry();                                 // 0x1419c11e0
-    void FUN_1419c1220(ASData* pData);                                 // 0x1419c1220
+    void OnSelectEquipIngredient(ASData* pData);                                 // 0x1419c1220
     void OnClickFailStackUp();                                 // 0x1419c15c0
     void OnClickFailStackDown();                                 // 0x1419c1630
     unsigned __int64 GetSelectedUid();                                 // 0x1419c16a0
     void FUN_1419c16c0(unsigned __int64 uid, int flag);                                 // 0x1419c16c0
-    void FUN_1419c19d0();                                 // 0x1419c19d0
-    void FUN_1419c1a40(ATL::CAtlArray<unsigned __int64>& out);                                 // 0x1419c1a40
+    void UpdateTalkState();                                 // 0x1419c19d0
+    void GetEnchantableItemUids(ATL::CAtlArray<unsigned __int64>& out);                                 // 0x1419c1a40
     int FUN_1419c1d60();                                 // 0x1419c1d60
     unsigned FUN_1419c1e00();                                 // 0x1419c1e00
-    CString FUN_1419c1e40(CItem* item);                               // 0x1419c1e40
-    void FUN_1419c1f20(CInPacket& pkt);                                 // 0x1419c1f20
+    CString GetEnchantFrameName(CItem* item);                               // 0x1419c1e40
+    void OnEnchantInfoPacket(CInPacket& pkt);                                 // 0x1419c1f20
     void FUN_1419c2e30(CItem* item, int prevLevel, CInPacket& pkt);                                 // 0x1419c2e30
     void FUN_1419c3390(CItem* item, CEnchantOption* stat, int prevLevel);                                 // 0x1419c3390
-    void FUN_1419c37f0(unsigned __int64 uid, Unk_EnSlotArgs* slot);                                 // 0x1419c37f0
+    void UpdateItemFromPacket(unsigned __int64 uid, Unk_EnSlotArgs* slot);                                 // 0x1419c37f0
     void FUN_1419c3950(CInPacket& pkt);                                 // 0x1419c3950
     void FUN_1419c3b90(CInPacket& pkt);                                 // 0x1419c3b90
     void OnFailStackPacket(CInPacket& pkt);                                 // 0x1419c3e70
     void SendRequestItemEnchantMode1();                                                    // 0x1419c3fd0
-    void FUN_1419c4050();                                 // 0x1419c4050
-    void FUN_1419c41b0();                                 // 0x1419c41b0
+    void RestoreItem();                                 // 0x1419c4050
+    void UpdateIngredientCounts();                                 // 0x1419c41b0
     void FUN_1419c4360(unsigned __int64 uid);                                 // 0x1419c4360
     bool FUN_1419c4a50(int result, const CMsgBoxData& box);                                 // 0x1419c4a50
     bool FUN_1419c4e00(int result, const CMsgBoxData& box);                                 // 0x1419c4e00
@@ -100,22 +100,22 @@ public:
     bool OnConfirmEnchantMode6MsgBox(int result, const CMsgBoxData& box);                                 // 0x1419c5d90
     bool SendRequestItemEnchantMode2(int result, const CMsgBoxData& box);                                 // 0x1419c5de0
     bool OnConfirmEnchantMode4MsgBox(int result, const CMsgBoxData& box);                                 // 0x1419c5e90
-    bool FUN_1419c5f00(int result, const CMsgBoxData& box);                                 // 0x1419c5f00
+    bool OnConfirmOverEnchantedItemMsgBox(int result, const CMsgBoxData& box);                                 // 0x1419c5f00
     void SendRequestItemEnchantMode17(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c5f60
     void SendRequestItemEnchantMode18(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c6060
     void FUN_1419c6160(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c6160
     void FUN_1419c6270(const Scaleform::GFx::FunctionHandler::Params&);                                 // 0x1419c6270
     void OnEnchantRateEventChanged(NotifyObject* pNotify);                                 // 0x1419c6380
     void ResetState();                                 // 0x1419c6420
-    CStringW FUN_1419c65b0(MS2Ptr<CItem> item, CEnchantOption* pOption);                                 // 0x1419c65b0
-    void FUN_1419c6840(MS2Ptr<CItem> item, CEnchantOption* pOption, ASObj& dest);                                 // 0x1419c6840
+    CStringW FormatEnchantStatText(MS2Ptr<CItem> item, CEnchantOption* pOption);                                 // 0x1419c65b0
+    void WriteEnchantOptions(MS2Ptr<CItem> item, CEnchantOption* pOption, ASObj& dest);                                 // 0x1419c6840
     void WriteEnchantItem(ASObj& dest, CItem* item);                                 // 0x1419c6bb0
     void FUN_1419c6cd0(ASObj& dest, CIngredientContainer* container);                                 // 0x1419c6cd0
-    void FUN_1419c7140(ASObj& dest);                                 // 0x1419c7140
+    void WriteEquipIngredient(ASObj& dest);                                 // 0x1419c7140
     void SetExpInfo(ASObj& dest, CItem* item);                                 // 0x1419c74e0
     void SetFailStackInfo(ASObj& dest);                                 // 0x1419c7610
     void FUN_1419c77a0();                                 // 0x1419c77a0
-    CString FUN_1419c78a0(CItem* item, CString key, ATL::CAtlArray<CString>& names);                                 // 0x1419c78a0
+    CString BindItemSlot(CItem* item, CString key, ATL::CAtlArray<CString>& names);                                 // 0x1419c78a0
     CStringW FormatRateText(float rate);                                 // 0x1419c7970
     void FUN_1419c7a30(unsigned __int64 uid, int mode);                                 // 0x1419c7a30
     void SendRequestItemEnchantMode4(unsigned __int64 uid, int mode);                                 // 0x1419c7ce0
@@ -125,17 +125,17 @@ public:
     CStringW FUN_1419c8020();                                 // 0x1419c8020
     void UpdateEnchantIngredient(CItem* item);                                 // 0x1419c8070
     Unk_EnSlot* FindSlotByName(const CString& name);                                 // 0x1419c8160
-    void FUN_1419c81a0();                                 // 0x1419c81a0
+    void UpdateEnchantInfo();                                 // 0x1419c81a0
     int GetProtectorRank(int itemId);                                 // 0x1419c86b0
     int GetProtectorCount(int itemId);                                 // 0x1419c8830
     int FUN_1419c89b0(unsigned __int64 uid);                                 // 0x1419c89b0
     int IsItemOwnedByMyPC(unsigned __int64 uid);                                 // 0x1419c8b80
-    CStringW FUN_1419c8ce0(CItem* item);                                 // 0x1419c8ce0
+    CStringW FormatEnchantRateText(CItem* item);                                 // 0x1419c8ce0
     void FUN_1419c90b0(unsigned int itemId, int count, __int64 arg);                                 // 0x1419c90b0
     int FUN_1419c9260(CItem* base, CItem* other);                                 // 0x1419c9260
     int FUN_1419c93a0(CItem* base, CItem* other);                                 // 0x1419c93a0
     int FUN_1419c9490(CItem* base, CItem* other);                                  // 0x1419c9490
-    int FUN_1419c9530(CItem* base);                                 // 0x1419c9530
+    int GetFailStackCount(CItem* base);                                 // 0x1419c9530
     int FUN_1419c9630(CItem* base, CItem* other);                                 // 0x1419c9630
 private:
     MS2_LAYOUT_FRIEND;

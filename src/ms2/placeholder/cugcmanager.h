@@ -142,19 +142,19 @@ public:
     void FUN_141887dc0(int nBannerId, MS2Ptr<CUgcRegistBanner> spBanner);                  // a banner image arrived
     int ApplyBannerTexture(int nBannerId, CString strPath);                                     // a rolling banner image arrived
 
-    void FUN_14187f1c0();                                   // per-frame update
-    void FUN_14187f1f0();                                   // initialized
-    CStringW FUN_14187f210(int nResult);                    // upload result message
+    void Update();                                   // per-frame update
+    void SetInitialized();                                   // initialized
+    CStringW GetUploadResultMessage(int nResult);                    // upload result message
     CStringW GetUploadResultText(int nResult);
-    void FUN_14187f380(int nMode);
+    void SetMode(int nMode);
     int GetMode();                                    // mode (1: uploads disabled)
-    bool FUN_14187f3d0();                                    // open the equip upload
+    bool OpenEquipUpload();                                    // open the equip upload
     bool BeginUpload();
-    void FUN_14187f590(efd::SmartPointer<egf::Entity> spEntity);   // open the banner upload of a banner object
-    void FUN_14187fb30();                                   // open the profile upload
-    void FUN_14187fd80();                                   // open the wedding profile upload
-    void FUN_14187ffe0();                                   // open the guild mark upload
-    void FUN_141880230(CString strName, int nIndex);        // open a guild poster upload
+    void OpenBannerUpload(efd::SmartPointer<egf::Entity> spEntity);   // open the banner upload of a banner object
+    void OpenProfileUpload();                                   // open the profile upload
+    void OpenWeddingProfileUpload();                                   // open the wedding profile upload
+    void OpenGuildMarkUpload();                                   // open the guild mark upload
+    void OpenGuildPosterUpload(CString strName, int nIndex);        // open a guild poster upload
     bool ShowUploadInDialog(MS2Ptr<CUgcUploadCtrl> spCtrl);
     void FUN_141880600(MS2Ptr<UICharacterListDialog::CCharacterInfo> spEntry);  // upload a shot of a character as its profile image
     void FUN_141880c90(MS2Ptr<CUploadFile> spFile);         // upload a file as the profile image
@@ -163,18 +163,18 @@ public:
     int FUN_1418810c0(const CStringW& strDir, const wchar_t* szFilter);   // copy a picked design image
     int FUN_141881650(int nType, MS2Ptr<CUploadFile> spFile);   // preview a file
     int FUN_141881800(int nType, int nIndex);
-    int FUN_141881890(int nIndex);                          // the file is the one of the current upload
+    int IsCurrentUploadFile(int nIndex);                          // the file is the one of the current upload
     int DoesFileExistByIndex(int nIndex);
     int DoesFileExist(MS2Ptr<CUploadFile> spFile);          // the file exists
-    int FUN_141881b90(int nType, int nCount, CStringW strName, __int64 uid, int nFlags);   // send an item upload
+    int SendItemUpload(int nType, int nCount, CStringW strName, __int64 uid, int nFlags);   // send an item upload
     int FUN_141882020();                                    // start sending the current upload
     int LockForUpload();                                    // lock (4: locked already)
-    int FUN_1418823f0();                                    // unlock
-    void FUN_141882450(MS2Ptr<CUgcUploadCtrl> spCtrl);      // set the current upload
+    int UnlockUpload();                                    // unlock
+    void SetCurrentUpload(MS2Ptr<CUgcUploadCtrl> spCtrl);      // set the current upload
     MS2Ptr<CUgcUploadCtrl> GetCurrentUpload();                 // the current upload
-    void FUN_1418826a0(int nResult);                        // show an upload result
+    void ShowUploadResult(int nResult);                        // show an upload result
     void OpenUploadFolder(int nType);                          // open the upload directory in the explorer
-    int FUN_141882a70(int nIndex, int bImageOnly);          // open a file in Paint
+    int OpenFileInPaint(int nIndex, int bImageOnly);          // open a file in Paint
     void FUN_141882d80(MS2Ptr<CUgcUploadCtrl> spCtrl, int nResult, const CString& strPath);   // the file of an upload was sent
     void SendUGCMode1();                                   // send an item upload
     void SendUGCMode3();                                   // send the current upload
@@ -183,15 +183,15 @@ public:
     void SendUGCMode12(CString strPath);                    // a wedding profile image was uploaded
     void SendUGCMode0();                                   // the upload failed
     void FUN_141883860(CString strPath);                    // the upload is done: download it for the viewers
-    void FUN_141883df0(MS2Ptr<CItem> spItem, egf::EntityID id);  // download the UGC look of an item
+    void DownloadItemLook(MS2Ptr<CItem> spItem, egf::EntityID id);  // download the UGC look of an item
     int FUN_1418841f0(CUgcItemLook* pLook, MS2Ptr<CItem> spItem, const UgcItemIcon::CallBackData* pCallBack);   // download the icon of a look
     void FUN_141884300(MS2Ptr<CItem> spItem, int nObjectId);           // download the look of an equipped item
-    void FUN_1418845a0(CubeItemInfo* pInfo, egf::EntityID id);         // download the look of a placed cube
-    void FUN_141884830(MS2Ptr<Unk_PCBaseComp_b18> spInfo, egf::EntityID id);   // download the look of a mount
-    void FUN_141884af0(MS2Ptr<CUgcRegistBanner> spBanner);  // download a banner image
-    void FUN_141884d70(CUgcUserProxy* pUser, CString strPath);         // download a profile image
+    void DownloadCubeLook(CubeItemInfo* pInfo, egf::EntityID id);         // download the look of a placed cube
+    void DownloadRideeLook(MS2Ptr<Unk_PCBaseComp_b18> spInfo, egf::EntityID id);   // download the look of a mount
+    void DownloadBannerImage(MS2Ptr<CUgcRegistBanner> spBanner);  // download a banner image
+    void DownloadProfileImage(CUgcUserProxy* pUser, CString strPath);         // download a profile image
     void FUN_141884e30(int nType, __int64 accountId, __int64 characterId, CString strPath, CString strObjectName);
-    void FUN_141884f10(CUgcUserProxy* pUser, CString strPath);         // download a wedding profile image
+    void DownloadWeddingProfileImage(CUgcUserProxy* pUser, CString strPath);         // download a wedding profile image
     void FUN_141884fd0(int nType, __int64 accountId, __int64 characterId, CString strPath);
     void DownloadGuildMark(__int64 guildId, CString strUrl, CString strName);   // download a guild mark
     void DownloadGuildPoster(__int64 guildId, CString strUrl, int nIndex, CString strName);   // download a guild poster
@@ -203,7 +203,7 @@ public:
     void FUN_141885880(MS2Ptr<CItem> spItem);               // download the image of a blueprint item
     bool FUN_1418859f0(const CUgcItemLook* pLook, const CBlueprintItemData* pBlueprint, MS2Ptr<CItem> spItem);
     int FUN_141885d20(CUgcItemLook* pLook, const int& nObjectId, MS2Ptr<CItem> spItem, const UgcItemIcon::CallBackData* pCallBack);
-    int FUN_141885e20(CUgcItemLook* pLook, const int& nKind, const int& nObjectId, Delegate<CString(const CString&)> fnUrl,
+    int DownloadItemIcon(CUgcItemLook* pLook, const int& nKind, const int& nObjectId, Delegate<CString(const CString&)> fnUrl,
                       MS2Ptr<CItem> spItem, const UgcItemIcon::CallBackData* pCallBack);   // download an item icon
     void PushDownload(CUgcDownloadParam* pParam, IUgcProxy* pProxy);  // queue a download
     MS2Ptr<IUgcProxy> FUN_141886340(int nKind);             // a new proxy of a content kind
@@ -222,17 +222,17 @@ public:
     void RemoveReserveBanner(int nBannerId);                      // drop the reservations of a banner
     void SetReserveChanged(bool bChanged);
     bool IsReserveChanged();                                   // the reservations changed
-    void FUN_141889150();                                   // keep the images of the banner objects
+    void CacheBannerObjectTextures();                                   // keep the images of the banner objects
     void FUN_1418894d0();                                   // drop the images of the banner objects
     void CacheObjectTexture(int nObjectId, efd::SmartPointer<NiTexture> spTexture);
     void RemoveObjectTexture(int nObjectId);
     void OnUgc(CInPacket& packet);                  // the UGC packet (opcode byte first)
     int FUN_14188da70(CInPacket& packet);                   // a banner reservation answer
-    int FUN_14188dd70(CInPacket& packet);                   // the upload was accepted: send the file
+    int OnUploadAccepted(CInPacket& packet);                   // the upload was accepted: send the file
     int CheckUploadResponse(CInPacket& packet);                   // the upload was registered
-    void FUN_14188e200(CInPacket& packet);                  // a character profile image
-    void FUN_14188e5b0(CInPacket& packet, int nType);       // an item look was changed (0xd / 0xe / 0xf)
-    void FUN_14188e930(CInPacket& packet);
+    void OnCharacterProfileImage(CInPacket& packet);                  // a character profile image
+    void OnItemLookChanged(CInPacket& packet, int nType);       // an item look was changed (0xd / 0xe / 0xf)
+    void OnBlueprintLookChanged(CInPacket& packet);
     void FUN_14188eb30(CInPacket& packet);
     void OnBannerRegistration(CInPacket& packet);
     void OnReserveBannerList(CInPacket& packet);
@@ -243,12 +243,12 @@ public:
     void SetDownloadResult(CString strName, int nResult);       // the result of a running download
     int ApplyImageToPlayerItem(CUgcItemPC* pItem, CString strPath);  // an equip image (0: not worn)
     int FUN_141886a90(CUgcItemPC* pItem, NiTexture* pTexture);
-    int FUN_141886de0(CUgcItemCube* pItem, NiTexture* pTexture);
-    int FUN_141887160(CUgcItemRidee* pItem, NiTexture* pTexture);
+    int ApplyTextureToCube(CUgcItemCube* pItem, NiTexture* pTexture);
+    int ApplyTextureToRidee(CUgcItemRidee* pItem, NiTexture* pTexture);
     void RefreshLocalFiles(int nType);                          // re-read the local files of an upload kind
     void FUN_141889e20(unsigned int nCount, int nStart, ASArray* pArray);   // AS rows of the local files
     void FUN_14188a140(unsigned int nCount, unsigned int nStart, ASArray* pArray);
-    int FUN_14188a480();                                    // the number of local files
+    int GetUploadFileCount();                                    // the number of local files
     MS2Ptr<CUploadFile> GetUploadFile(int nIndex);          // the local file at nIndex
     int FindUploadFileIndex(const CStringW& strPath);             // the index of a local file (-1: none)
     void ClearReadOnlyAttribute(const CStringW& strPath);            // clear the read-only attribute
@@ -257,9 +257,9 @@ public:
     int GetImageFileInfo(const CStringW& strPath, struct _D3DXIMAGE_INFO* pInfo);   // the image size of a file
     int WasDownloadedThisSession(const CString& strName);              // 1: the file was downloaded in this session
     void FUN_14188aae0();
-    void FUN_14188aca0();                                   // create the Custom directories
+    void CreateCustomDirectories();                                   // create the Custom directories
     void DeleteThumbnails();
-    void FUN_14188b4e0();
+    void ResetDownloadDirectories();
     void DeleteMappedFiles();
     void FUN_14188bbb0();
     void FUN_14188bce0();
@@ -272,8 +272,8 @@ public:
     int FillUploadSlotRow(ASObj& obj, int nState, CStringW strName, int bSelected);   // the AS row of an upload slot
     MS2Ptr<CUgcBannerRollingImage> GetRandomRollingImage();         // a random default rolling image
     void ApplyOrDownloadRollingBanner(const CString& strUrl, const std::vector<unsigned int>& banners);   // show (or download) a rolling image
-    void FUN_14188cb10(int nType);                          // extract the bundled images of an upload kind
-    void FUN_14188d1e0(CAtlArray<MS2Ptr<CUploadFile> >& files);   // re-create the thumbnails
+    void ExtractBundledImagesOfType(int nType);                          // extract the bundled images of an upload kind
+    void RecreateThumbnails(CAtlArray<MS2Ptr<CUploadFile> >& files);   // re-create the thumbnails
     int OpenExclusiveUploadDialog(int nDialog);                         // open one upload dialog, close the others
     void SendRequestCube();                                   // request a blueprint upload
     void FUN_14188ff10(CInPacket& packet);                  // the blueprint upload was accepted

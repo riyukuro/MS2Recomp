@@ -53,8 +53,8 @@ class Unk_CadNode : public ASDisplayObjectContainer { public:
 class Unk_Finder : public ASDisplayObjectContainer
 {
 public:
-    MS2Ptr<ASDisplayObject> FUN_140d01d30(const CString& strName);                  // child display object
-    MS2Ptr<ASDisplayObjectContainer> FUN_140d01d80(const CString& strName);         // child container
+    MS2Ptr<ASDisplayObject> FindDisplayObject(const CString& strName);                  // child display object
+    MS2Ptr<ASDisplayObjectContainer> FindDisplayObjectContainer(const CString& strName);         // child container
 };
 
 // ---- dynamic initializers (.text$di) ----
@@ -77,7 +77,7 @@ void CreateGemStoneSlot(const CString& strName, MS2Ptr<CGemStoneItem> spGem, int
 {
     GemStoneSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) GemStoneSlot(strName, spGem, nIndex, nIconType, nFlags);
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::RegisterBinding(strName, pSlot);
 }
 
 GemStoneSlot* CastToGemStoneSlot(NotifyContext::BindData* p);
@@ -87,9 +87,9 @@ ItemInfoSlot* CastToItemInfoSlot(NotifyContext::BindData* p);
 // @0x140cfd800
 void FUN_140cfd800(const CString& strName)
 {
-    GemStoneSlot* pSlot = CastToGemStoneSlot(Unk_NotifyContext::FUN_1422c8e90(strName));
+    GemStoneSlot* pSlot = CastToGemStoneSlot(Unk_NotifyContext::FindBinding(strName));
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
 }
 
 // @0x140cfd840
@@ -126,7 +126,7 @@ int GemStoneSlot::vfunc_8(void* p)
         return 0;
     }
     SetSlotText(&slot, spItem, bLocked);
-    *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+    *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
     return 1;
 }
 
@@ -144,7 +144,7 @@ int GemStoneSlot::vfunc_18(void* pv)
 // @0x140cfdc70
 void GemStoneSlot::SetSlotLock(ASSlot* pSlot, bool bLocked)
 {
-    pSlot->FUN_1407cbbe0("lock", bLocked);
+    pSlot->SetBoolMember("lock", bLocked);
 }
 
 // @0x140cfdcb0
@@ -155,7 +155,7 @@ void GemStoneSlot::SetSlotText(ASSlot* pSlot, MS2Ptr<CItem> spItem, bool bLocked
         strText = FUN_14062ad80(spItem);
     else
         strText = bLocked ? L"$s_itemsocketsystem_gemstonemanage_msg_socket_lock" : L"$s_itemsocketsystem_gemstonemanage_msg_socket_empty";
-    ((class AScript*)(pSlot))->FUN_1407cbb20("text", strText);
+    ((class AScript*)(pSlot))->SetWStringMember("text", strText);
 }
 
 // @0x140cfddf0
@@ -192,18 +192,18 @@ void CreateGemStoneSlotBag(const CString& strName, int nCount, void* pSockets, G
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x140cfe1b0
 void FUN_140cfe1b0(const CString& strName)
 {
-    GemStoneSlotBag* pBag = CastToGemStoneSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
+    GemStoneSlotBag* pBag = CastToGemStoneSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -278,7 +278,7 @@ void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW s
     MS2Ptr<Unk_CadCheck> spText = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spText == 0)
         return;
-    static_cast<ASObj*>(static_cast<AScript*>(spText.get()))->FUN_1407cbb20("text", strText);
+    static_cast<ASObj*>(static_cast<AScript*>(spText.get()))->SetWStringMember("text", strText);
 }
 
 // @0x140cfefe0
@@ -287,12 +287,12 @@ void SetNestedChildText(const Scaleform::GFx::Value& root, CString strClip, CStr
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASDisplayObjectContainer> spClip = static_cast<Unk_Finder&>(node).FUN_140d01d80(strClip);
+    MS2Ptr<ASDisplayObjectContainer> spClip = static_cast<Unk_Finder&>(node).FindDisplayObjectContainer(strClip);
     if (spClip == 0)
         return;
-    MS2Ptr<ASDisplayObject> spText = static_cast<Unk_Finder*>(spClip.operator->())->FUN_140d01d30(strName);
+    MS2Ptr<ASDisplayObject> spText = static_cast<Unk_Finder*>(spClip.operator->())->FindDisplayObject(strName);
     if (spText.get() != 0)
-        static_cast<ASObj*>(static_cast<AScript*>(spText.operator->()))->FUN_1407cbb20("text", strText);
+        static_cast<ASObj*>(static_cast<AScript*>(spText.operator->()))->SetWStringMember("text", strText);
 }
 
 // @0x140cff1b0
@@ -301,10 +301,10 @@ void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStrin
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASDisplayObjectContainer> spClip = static_cast<Unk_Finder&>(node).FUN_140d01d80(strName);
+    MS2Ptr<ASDisplayObjectContainer> spClip = static_cast<Unk_Finder&>(node).FindDisplayObjectContainer(strName);
     if (spClip == 0)
         return;
-    static_cast<ASObj*>(static_cast<AScript*>(spClip.get()))->FUN_1407cbb20("htmlText", strText);
+    static_cast<ASObj*>(static_cast<AScript*>(spClip.get()))->SetWStringMember("htmlText", strText);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

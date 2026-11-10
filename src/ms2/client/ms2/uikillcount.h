@@ -26,10 +26,10 @@ public:
     virtual void vfunc_43();                                        // 43 0x1419df3a0 validate the movie's root now
     virtual int vfunc_48() { return 0x4e51; }                       // 48 0x1419df860 UI type id
 
-    void FUN_1419df220();                                           // "hide" the movie's count
-    void FUN_1419df2a0(void* pKilled);                              // a monster died: count a kill of the local player
-    void FUN_1419df580();                                           // show the count, say the combo text
-    void FUN_1419df6a0();                                           // the local player's chat balloon with the combo text
+    void Hide();                                           // "hide" the movie's count
+    void OnNpcKilled(void* pKilled);                              // a monster died: count a kill of the local player
+    void ShowKillCount();                                           // show the count, say the combo text
+    void ShowKillCountBalloon();                                           // the local player's chat balloon with the combo text
 
 private:
     MS2_LAYOUT_FRIEND;

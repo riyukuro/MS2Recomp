@@ -25,22 +25,22 @@ public:
     virtual void vfunc_67();                                    // 67 0x140f41940 close: clear the "new" mark of every fish
     virtual int vfunc_48() { return 0x4ee6; }                   // 48 0x140f43de0
 
-    void FUN_140f41a10();                                       // 0x140f41a10 "setFisher": title, grade and mastery gauge
-    void FUN_140f41e90();                                       // 0x140f41e90 "setTabNew": which tabs hold a new fish
-    void FUN_140f42100(int nFishId);                            // 0x140f42100 "setFish": the detail panel of one fish
+    void SetFisher();                                       // 0x140f41a10 "setFisher": title, grade and mastery gauge
+    void SetTabNew();                                       // 0x140f41e90 "setTabNew": which tabs hold a new fish
+    void SetFish(int nFishId);                            // 0x140f42100 "setFish": the detail panel of one fish
     void FUN_140f42790(int nTab);                               // 0x140f42790 "m_bag": fill the current page
-    void FUN_140f419e0();                                       // 0x140f419e0 refresh the current tab
-    int FUN_140f42cd0(int nPage);                               // 0x140f42cd0 is the page index valid
-    void FUN_140f42d90(FbIdArray& rIds);   // 0x140f42d90 fish ids of the current tab
-    int FUN_140f42ed0();                                        // 0x140f42ed0 the title id of the best fisher title owned
-    CStringW FUN_140f432e0(int nTitleId);                       // 0x140f432e0 title text
-    int FUN_140f43330(int nFishId);                             // 0x140f43330 fish is known
-    int FUN_140f43380(int nFishId);                             // 0x140f43380 fish (or its parent) holds a new mark
-    int FUN_140f434b0(int nFishId);                             // 0x140f434b0 parent fish id
-    int FUN_140f43540(int nFishId);                             // 0x140f43540 medal of the fish
-    int FUN_140f43610(int nFishId);                             // 0x140f43610 total catch count
-    int FUN_140f436f0(int nFishId);                             // 0x140f436f0 big-size catch count
-    int FUN_140f437d0(int nFishId);                             // 0x140f437d0 best record
+    void RefreshCurrentTab();                                       // 0x140f419e0 refresh the current tab
+    int IsValidPage(int nPage);                               // 0x140f42cd0 is the page index valid
+    void GetCurrentTabFishIds(FbIdArray& rIds);   // 0x140f42d90 fish ids of the current tab
+    int GetBestFisherTitleId();                                        // 0x140f42ed0 the title id of the best fisher title owned
+    CStringW GetGradeName(int nTitleId);                       // 0x140f432e0 title text
+    int IsFishKnown(int nFishId);                             // 0x140f43330 fish is known
+    int IsFishNew(int nFishId);                             // 0x140f43380 fish (or its parent) holds a new mark
+    int GetCompanionFishId(int nFishId);                             // 0x140f434b0 parent fish id
+    int GetFishMedal(int nFishId);                             // 0x140f43540 medal of the fish
+    int GetTotalCatchCount(int nFishId);                             // 0x140f43610 total catch count
+    int GetBigSizeCatchCount(int nFishId);                             // 0x140f436f0 big-size catch count
+    int GetBestRecord(int nFishId);                             // 0x140f437d0 best record
 
 
 private:

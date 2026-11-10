@@ -110,9 +110,9 @@ class Unk_PCBaseFlags
 {
 public:
     // (constructed through Unk_BitSet11 below)
-    Unk_PCBaseFlags& FUN_140d75120(unsigned nPos, bool bValue);   // set / clear one bit
-    bool FUN_140d75240(unsigned nPos) const;                // test one bit
-    void Reset(unsigned nPos) { FUN_140d75120(nPos, false); }     // COMDAT 0x141682e20
+    Unk_PCBaseFlags& SetBit(unsigned nPos, bool bValue);   // set / clear one bit
+    bool IsBitSet(unsigned nPos) const;                // test one bit
+    void Reset(unsigned nPos) { SetBit(nPos, false); }     // COMDAT 0x141682e20
     bool Any() const                                        // COMDAT 0x141682520
     {
         for (int i = 1; i >= 0; i--) {

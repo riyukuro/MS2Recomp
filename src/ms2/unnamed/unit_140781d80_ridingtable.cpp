@@ -697,11 +697,11 @@ CString CRideeData::FUN_140784920(int nLevel)
 MS2_REPLACE_METHOD(0x140784920, CRideeData, FUN_140784920, 71, 0xF65BB79D);
 
 // @0x140784970
-Unk_RiderPtr CRideeData::FUN_140784970()
+Unk_RiderPtr CRideeData::GetDefaultRider()
 {
     return m_basic.m_spRider;
 }
-MS2_REPLACE_METHOD(0x140784970, CRideeData, FUN_140784970, 67, 0x571C2301);
+MS2_REPLACE_METHOD(0x140784970, CRideeData, GetDefaultRider, 67, 0x571C2301);
 
 // @0x1407849c0
 Unk_RiderPtr CRideeData::FUN_1407849c0(int nIndex)
@@ -711,7 +711,7 @@ Unk_RiderPtr CRideeData::FUN_1407849c0(int nIndex)
 MS2_REPLACE_METHOD(0x1407849c0, CRideeData, FUN_1407849c0, 77, 0x44B7A6B5);
 
 // @0x1407844b0
-CRideeDataPtr FUN_1407844b0(unsigned nId)
+CRideeDataPtr GetRideeData(unsigned nId)
 {
     CRideeDataPtr spData(0);
     if (Unk_LockGuard guard = s_lock) {} else
@@ -726,7 +726,7 @@ CRideeDataPtr FUN_1407844b0(unsigned nId)
 bool FUN_1407845b0(CString strPath, std::vector<CRideeDataPtr>& rOut)
 {
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -736,7 +736,7 @@ bool FUN_1407845b0(CString strPath, std::vector<CRideeDataPtr>& rOut)
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         CRideeDataPtr spData(new CRideeData);
-        spData->FUN_1401d1160(strPath);
+        spData->SetPath(strPath);
         spData->m_basic.FUN_140782fb0(pNode);
         spData->m_collision.FUN_140783800(pNode);
         spData->m_shadow.FUN_140783980(pNode);
@@ -755,7 +755,7 @@ CRideeDataPtr LoadRiding(unsigned nId)
     CString strPath;
     strPath.Format("./Data/Xml/Riding/%08d.xml", nId);
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return CRideeDataPtr(0);
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -766,7 +766,7 @@ CRideeDataPtr LoadRiding(unsigned nId)
         if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
             continue;
         spResult = new CRideeData;
-        spResult->FUN_1401d1160(strPath);
+        spResult->SetPath(strPath);
         spResult->m_basic.FUN_140782fb0(pNode);
         spResult->m_collision.FUN_140783800(pNode);
         spResult->m_shadow.FUN_140783980(pNode);
@@ -797,7 +797,7 @@ void LoadRidingEffectDummy(CRideeDataPtr spData)
     CString strPath;
     strPath.Format("./Data/Xml/Riding/EffectDummy/%08d.xml", spData->m_basic.m_nId);
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->LoadXmlFile(&doc, strPath, 0, false, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

@@ -25,7 +25,7 @@ public:
 // C3 #8: the cast-only Unk_140168650 view removed
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 CString FUN_140188f50(const char*, int);
@@ -45,7 +45,7 @@ CString FUN_1406504c0(CString& s);
 CString FUN_140650500(CString& s);
 void FUN_140650090(CString& s);
 bool FUN_1406500b0(CString& s);
-CString FUN_140651350();
+CString GetLanguageCode();
 CString FUN_140651390();
 CString FUN_1406522f0(int);
 CString FUN_140652330(int);
@@ -210,9 +210,9 @@ void CLocaleLanguage::GetLanguageCodes(ATL::CAtlArray<CString>& out)
 // @0x14064f390
 int CLocaleLanguage::LoadGameOptionLocale()
 {
-    CString strPath = FUN_14071a5b0("Table", "gameOptionLocale.xml");
+    CString strPath = GetXmlPath("Table", "gameOptionLocale.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -275,10 +275,10 @@ void FUN_140650b50(CString strCode)
 }
 
 // @0x140650e70
-void FUN_140650e70(CString strCode)
+void SetLanguageByCode(CString strCode)
 {
     strCode.MakeUpper();
-    if (FUN_140651350() == strCode) return;
+    if (GetLanguageCode() == strCode) return;
     if (strCode == FUN_1406522f0(0)) FUN_1406507a0(0);
     else if (strCode == FUN_1406522f0(1)) FUN_1406507a0(1);
     else if (strCode == FUN_1406522f0(2)) FUN_1406507a0(2);
@@ -301,7 +301,7 @@ void FUN_140651190(CString strCode)
 }
 
 // @0x140651350
-CString FUN_140651350()
+CString GetLanguageCode()
 {
     return DAT_143ab0250;
 }
@@ -322,7 +322,7 @@ CString FUN_1406513d0(CString strFile)
 }
 
 // @0x1406514e0
-int FUN_1406514e0(int nRegion, ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out)
+int GetFallbackLanguages(int nRegion, ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& out)
 {
     switch (nRegion)
     {
@@ -403,7 +403,7 @@ int FUN_1406516c0()
 }
 
 // @0x1406516d0
-int FUN_1406516d0(int n)
+int GetDigitGroupSize(int n)
 {
     switch (n)
     {
@@ -532,7 +532,7 @@ CString FUN_140652030(int n)
 }
 
 // @0x1406521f0
-CString FUN_1406521f0(int n)
+CString GetRegionCode(int n)
 {
     switch (n)
     {
@@ -553,7 +553,7 @@ CString FUN_1406522f0(int n)
 // @0x140652330
 CString FUN_140652330(int n)
 {
-    return FUN_1406521f0(n);
+    return GetRegionCode(n);
 }
 
 // @0x140650090

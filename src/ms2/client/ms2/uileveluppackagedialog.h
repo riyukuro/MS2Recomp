@@ -37,13 +37,13 @@ public:
     virtual void vfunc_o178_10(void* pQuest);                                                   // 0x140ea4a60 a quest was updated
     virtual void vfunc_oa0_9(unsigned short nLevel);                                            // 0x140ea49e0 level changed
 
-    int FUN_140ea4b70();                                            // some package quest is still open
+    int HasOpenPackageQuest();                                            // some package quest is still open
     void FUN_140ea4d00();                                           // send the level steps to the movie
     void FUN_140ea4f10(unsigned short nLevel);                      // show the reward of the step of nLevel
     void SendQuest(int nQuest);                                 // receive the reward of a quest
     void FUN_140ea5460(ASObj& rObj, int nQuest);                    // one level step row: state, level text, reward
     void FUN_140ea57d0(ASObj& rObj, int nQuest);                    // the item reward of a level step
-    unsigned FUN_140ea5b50(unsigned short nLevel);                  // the reward item id of the step of nLevel
+    unsigned GetRewardItemId(unsigned short nLevel);                  // the reward item id of the step of nLevel
     unsigned short FUN_140ea5d10();                                 // the highest step level the player reached
 
 private:

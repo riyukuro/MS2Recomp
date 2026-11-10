@@ -40,7 +40,7 @@
 #include "ms2/client/ms2/effectservice.h"
 
 class CubeMapInformationService;
-class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
+class Unk_ServiceManager* GetServiceManager();   // C3: was GetServiceManager
 #include <efd/ServiceManager.h>   // C3: FUN_1401cd070 = efd::ServiceManager::GetSystemServiceAs<CubeMapInformationService>
 //
 
@@ -65,7 +65,7 @@ template<> inline void MS2Ptr<Unk_WsB_Vibrator>::ReleaseImpl(void*) {
     }
 }
 // @0x1410b27c0
-inline CubeMapInformationService* GetCubeMapService() { return ((efd::ServiceManager*)FUN_1413f9850())->GetSystemServiceAs<CubeMapInformationService>(); }
+inline CubeMapInformationService* GetCubeMapService() { return ((efd::ServiceManager*)GetServiceManager())->GetSystemServiceAs<CubeMapInformationService>(); }
 
 // @0x1410b2510
 void Unk_CubeHeightIndex::FUN_1410b2510(int x,int y,int z) {

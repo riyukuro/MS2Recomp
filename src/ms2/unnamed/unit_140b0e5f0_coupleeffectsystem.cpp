@@ -88,7 +88,7 @@ CoupleEffectSystem::~CoupleEffectSystem()
 }
 
 // @0x140b0e7a0
-void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
+void CoupleEffectSystem::Update(float fDelta)
 {
     if (m_bActive == 0)
         return;
@@ -113,7 +113,7 @@ void CoupleEffectSystem::FUN_140b0e7a0(float fDelta)
         {
             if (m_bInRange != 0)
             {
-                if (m_timer.FUN_140868c00() != 0)
+                if (m_timer.IsExpired() != 0)
                 {
                     float fMove = GetDistance(Vector3(reinterpret_cast<Vector3&>(m_posEffect)), Vector3(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(FUN_140b0f160()))));
                     if (fMove > 50.0f && m_nEffectId != 0)
@@ -199,7 +199,7 @@ void CoupleEffectSystem::FUN_140b0ecd0()
 }
 
 // @0x140b0ed30
-void CoupleEffectSystem::FUN_140b0ed30()
+void CoupleEffectSystem::SpawnEffect()
 {
     if (m_nEffectId != 0)
         return;
@@ -212,15 +212,15 @@ void CoupleEffectSystem::FUN_140b0ed30()
     reinterpret_cast<Unk_NiMatrix3*>(&rot)->Unk_NiMatrix3::Unk_NiMatrix3(reinterpret_cast<const Unk_EfdMatrix3&>(DAT_143a09600));
     xf.m_rotate = rot;
     NoticeMessage request;
-    request.m_strName = FUN_140b0efb0();
+    request.m_strName = GetEffectName();
     request.m_nOwnerId = 0;
     request.m_pXform = &xf;
     m_nEffectId = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(reinterpret_cast<Unk_EffectTarget&>(request));
-    m_timer.FUN_140868750(*FUN_140b0f480(&((struct Unk_CeConstTable*)GetClientConstants())->m_checkInterval));
+    m_timer.Start(*FUN_140b0f480(&((struct Unk_CeConstTable*)GetClientConstants())->m_checkInterval));
 }
 
 // @0x140b0eed0
-void CoupleEffectSystem::FUN_140b0eed0()
+void CoupleEffectSystem::RemoveEffect()
 {
     if (m_nEffectId == 0)
         return;
@@ -235,19 +235,19 @@ bool CoupleEffectSystem::FUN_140b0ef20()
     MS2Ptr<CFieldDataCli> spMap = WorldService::GetInstance()->FUN_141bd30a0();
     if (reinterpret_cast<void*>(spMap.get()) != 0)
     {
-        if (spMap->FUN_140375660(0x400) != 0)
+        if (spMap->HasLimitContent(0x400) != 0)
             return false;
     }
     return true;
 }
 
 // @0x140b0efb0
-CString CoupleEffectSystem::FUN_140b0efb0()
+CString CoupleEffectSystem::GetEffectName()
 {
     PCBase* pPartner = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(m_nPartnerId));
     if (pPartner == 0)
         return "";
-    MS2Ptr<CGemCharEffectData> spEffect(dynamic_cast<CGemCharEffectData*>(FUN_1405a96f0()->FUN_1405ac160(m_nGemId).get()));
+    MS2Ptr<CGemCharEffectData> spEffect(dynamic_cast<CGemCharEffectData*>(GetItemGemPropertyTable()->FUN_1405ac160(m_nGemId).get()));
     if (spEffect == 0)
         return "";
     return spEffect->GetCoupleEffect(reinterpret_cast<PC*>(m_pOwner)->GetGender(), reinterpret_cast<PC*>(pPartner)->GetGender());
@@ -298,9 +298,9 @@ void CoupleEffectSystem::FUN_140b0f3a0(int nMode)
     if (m_bLinked != 0)
     {
         if (nMode == 0)
-            FUN_140b0ed30();
+            SpawnEffect();
         else if (nMode == 1)
-            FUN_140b0eed0();
+            RemoveEffect();
     }
     COutPacket packet(static_cast<int>(SendOp::BuddyBadge), 0);
     packet.COutPacket::WriteUInt8((unsigned char)nMode);

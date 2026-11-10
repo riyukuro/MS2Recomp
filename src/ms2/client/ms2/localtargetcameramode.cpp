@@ -65,7 +65,7 @@ public:
 float FUN_1409f25a0(float f);                       // cos
 float FUN_1409f2310(float f);                       // sin
 Unk_CameraSetting* FUN_140947880(CCameraMode* p);           // &p->m_setting
-class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
+class Unk_McEntityRules* GetTriggerService();   // C3: was GetTriggerService
 class CTriggerService { public: bool ObjectContains(int, const Vector3&); };   // C3: member view (0x141863100)
 float FUN_141b6fe40(float t, int nInterpolator);            // easing
 
@@ -185,7 +185,7 @@ void CLocalTargetCameraMode::vfunc_8(double fTime)
         }
         else if (m_184 == 0)
         {
-            if (!reinterpret_cast<CTriggerService*>(FUN_140ad4b90())->ObjectContains(m_108.m_34, pTarget->vfunc_18()))
+            if (!reinterpret_cast<CTriggerService*>(GetTriggerService())->ObjectContains(m_108.m_34, pTarget->vfunc_18()))
                 FUN_140d4f830();
         }
     }

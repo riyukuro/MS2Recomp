@@ -53,7 +53,7 @@ void* FUN_141200a90(CEquipModel* pModel);                           // the model
 class ModelGroup   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1405451a0() const;
+    int GetType() const;
 };
 
 // The owner record's entity reference: a smart pointer to an object that carries the world id (+0x58).
@@ -78,8 +78,8 @@ public:
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 float FUN_1409f2310(float f);                                       // sin
 float FUN_1409f25a0(float f);                                       // cos
-Unk_ServiceManager* FUN_1413f9850();                                // the framework's service manager
-template <class T> T* GetService() { return FUN_1413f9850()->GetSystemServiceAs<T>(); }   // 0x14120a220
+Unk_ServiceManager* GetServiceManager();                                // the framework's service manager
+template <class T> T* GetService() { return GetServiceManager()->GetSystemServiceAs<T>(); }   // 0x14120a220
 
 // C3: the former views are SDK classes. The snapshot's array at +0x30 is NiPhysXPropDesc::m_kJoints (GetJointCount 0x14120ac30,
 // GetJointAt 0x14120abd0). The two-slot loop is NiPhysXJointDesc::GetActor(l) (0x141ef37e0, m_aspActors[2]), and the sub-object
@@ -106,7 +106,7 @@ template <class T> T* GetService() { return FUN_1413f9850()->GetSystemServiceAs<
 // @0x141209640
 IEquipModelForceApplierPtr CreateForceApplier(CEquipModel* pModel)
 {
-    if (!(pModel && FUN_141200a90(pModel) && ((class ModelGroup*)(void*)(FUN_141200a90(pModel)))->FUN_1405451a0() == 7)) {
+    if (!(pModel && FUN_141200a90(pModel) && ((class ModelGroup*)(void*)(FUN_141200a90(pModel)))->GetType() == 7)) {
         return IEquipModelForceApplierPtr(EE_NEW EquipModelNullApplier());
     }
     return IEquipModelForceApplierPtr(EE_NEW EquipModelWindApplier(pModel));
@@ -163,7 +163,7 @@ void EquipModelWindApplier::OnTick(double fDeltaTime)
     if (spOwner == (CEquipItem*)0) {
         return;
     }
-    Unk_WindObj* pObj = reinterpret_cast<Unk_WindObj*>(WorldService::GetInstance()->FindObjectById(spOwner->GetItem()->FUN_140526b10()));
+    Unk_WindObj* pObj = reinterpret_cast<Unk_WindObj*>(WorldService::GetInstance()->FindObjectById(spOwner->GetItem()->GetObjectId()));
     if (pObj == 0) {
         return;
     }

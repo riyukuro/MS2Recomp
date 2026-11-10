@@ -22,7 +22,7 @@ public:
 
     // The atlas record of strDir + strName: cached by strName, else the image is read through the info's image file
     // handler registry and cached (NULL if there is no registry; a failed read is not cached).
-    AtlasRecord* FUN_1422f7840(const Scaleform::GFx::ImageCreateInfo& info, const CString& strDir,
+    AtlasRecord* GetAtlasRecord(const Scaleform::GFx::ImageCreateInfo& info, const CString& strDir,
         const CString& strName);                                        // 0x1422f7840
 
 private:

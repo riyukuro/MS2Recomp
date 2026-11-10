@@ -37,7 +37,7 @@ int CItemEnchantUtil::FUN_140594720(int nLevel)
 }
 
 // @0x140594750
-int CItemEnchantUtil::FUN_140594750(int nLevel)
+int CItemEnchantUtil::GetEnchantRate(int nLevel)
 {
     if (nLevel < 1 || nLevel > 15)
         return 0;
@@ -78,6 +78,6 @@ int CItemEnchantUtil::FUN_140594810(int nType)
 
 // ---- hooks ----
 MS2_REPLACE_METHOD(0x140594720, CItemEnchantUtil, FUN_140594720, 32, 0x41D6ADA3);
-MS2_REPLACE_METHOD(0x140594750, CItemEnchantUtil, FUN_140594750, 95, 0xFF573FC7);
+MS2_REPLACE_METHOD(0x140594750, CItemEnchantUtil, GetEnchantRate, 95, 0xFF573FC7);
 MS2_REPLACE_METHOD(0x1405947C0, CItemEnchantUtil, FUN_1405947c0, 60, 0x39B2A6F0);
 MS2_REPLACE_METHOD(0x140594810, CItemEnchantUtil, FUN_140594810, 83, 0x690661F6);

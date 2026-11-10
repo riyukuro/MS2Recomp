@@ -38,8 +38,8 @@ public:
     bool SendRevivalMode1(int nResult, const CMsgBoxData& box);        // revive box answer (merat)
     void FUN_141abad30(int nButton);                                // "onRevival": dispatch the clicked button
     bool SendRevivalMode0(int nResult, const CMsgBoxData& box);        // town box answer
-    void FUN_141abae20();                                           // "setData": the death message
-    void FUN_141abb420();                                           // set up the button labels
+    void SetDeathMessage();                                           // "setData": the death message
+    void UpdateButtons();                                           // set up the button labels
     void FUN_141abb600();                                           // btn1 clicked: revive here / leave the field
     void FUN_141abbb20();                                           // btn1 clicked: merat revival
     void FUN_141abc080();                                           // btn2 clicked: meso revival
@@ -52,10 +52,10 @@ public:
     bool FUN_141abcb10(__int64 nCost);                              // the player can pay nCost
     void FUN_141abcb90();                                           // m_1b4 = the payment kind
     void FUN_141abcc50();                                           // refresh the labels and the coupon
-    void FUN_141abccb0();                                           // refresh the merat button
-    void FUN_141abd290();                                           // refresh the meso button
+    void RefreshMeratButton();                                           // refresh the merat button
+    void RefreshMesoButton();                                           // refresh the meso button
     void FUN_141abd640();                                           // the coupon check box state
-    CStringW FUN_141abd790();                                       // the first button label
+    CStringW GetFirstButtonLabel();                                       // the first button label
     int FUN_141abdab0(MS2Ptr<CFieldDataCli> spField);                     // the revival is allowed in this field
 
 private:

@@ -110,10 +110,10 @@ extern int DAT_1439f8208;   extern int DAT_143ae2960;
 void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float radius, float zOffset);
 void FUN_141610490();
 void FUN_1416105c0(CObjectShadow* self);
-void FUN_141611370(void* obj, bool flag);
+void SetSortObject(void* obj, bool flag);
 void FUN_1416113a0(void* mat, const Unk_Colc& color);
 int FUN_140ae1c10();                                  // current quality level
-void* FUN_1413f9870();class MS2LightService   // C3: member view for the former free stand-ins
+void* GetLightService();class MS2LightService   // C3: member view for the former free stand-ins
 {
 public:
     void UpdateLightShadows();
@@ -152,7 +152,7 @@ public:
 };
 void* FUN_141200ab0(class CEquipModel*);   // C3: was FUN_141200ab0
 class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // @0x14160fb10
 CObjectShadow::CObjectShadow(void* owner, int lodHi, int lodLo)
@@ -185,7 +185,7 @@ CObjectShadow::~CObjectShadow()
 }
 
 // @0x14160fe10
-void FUN_14160fe10(CObjectShadow* self, bool v)
+void SetEnabled(CObjectShadow* self, bool v)
 {
     if (self->m_bEnabled != v) { self->m_bEnabled = v; self->m_bDirty = true; }
 }
@@ -200,7 +200,7 @@ void FUN_14160fe70(CObjectShadow* self, bool v)
 }
 
 // @0x14160feb0   per-frame update: position/orient the shadow under the character, fade by distance, push LOD visibility to the owner's models
-void FUN_14160feb0(CObjectShadow* self, int active, const void* pos, const void* dir, float dt, bool force)
+void UpdateShadow(CObjectShadow* self, int active, const void* pos, const void* dir, float dt, bool force)
 {
     FUN_1416105c0(self);
     if (self->m_bVisible != 0 && active != 0) {
@@ -292,7 +292,7 @@ void FUN_141610490()
     int level;
     POSITION pos;
     level = FUN_140ae1c10();
-    ((class MS2LightService*)(void*)(FUN_1413f9870()))->UpdateLightShadows();
+    ((class MS2LightService*)(void*)(GetLightService()))->UpdateLightShadows();
     need = TSingleton<CGraphicOptionTable>::GetInstance()->GetShadowOption(5);
     WorldService::GetInstance()->FUN_141bd30f0(level >= need);
     ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> > list(10);
@@ -305,7 +305,7 @@ void FUN_141610490()
 }
 
 // @0x1416105a0
-void FUN_1416105a0(float v) { DAT_1439f8204 = v; }
+void SetShadowAlpha(float v) { DAT_1439f8204 = v; }
 
 // @0x1416105c0   decide shown/visible by LOD level and owner state
 void FUN_1416105c0(CObjectShadow* self)
@@ -369,7 +369,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
         self->GetMesh()->SetName(name);
     }
 
-    efd::SmartPointer<NiTexture> tex = ((CNifLoadingService*)GetNifLoadingService())->GetTexture(*(CString*)((char*)((void*)FUN_1401d31f0()) + 0xf0), 1);
+    efd::SmartPointer<NiTexture> tex = ((CNifLoadingService*)GetNifLoadingService())->GetTexture(*(CString*)((char*)((void*)GetCommonResource()) + 0xf0), 1);
     NiTexturingProperty* texProp = new (efd::MemHint(efd::MemHint::NONE)) NiTexturingProperty;
     texProp->SetBaseTexture(tex);
     self->GetMesh()->AttachProperty(texProp);
@@ -414,7 +414,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
     self->m_node->UpdateEffects();
     self->m_node->UpdateProperties();
     self->m_node->Update((float)TSingleton<CMainSystem>::GetInstance()->GetGameTime(), true);
-    FUN_141611370(((void*)self->GetMesh()), 0);
+    SetSortObject(((void*)self->GetMesh()), 0);
 }
 
 // @0x1416112d0 (scalar deleting destructor: emitted from the vftable)
@@ -423,7 +423,7 @@ void FUN_1416106e0(CObjectShadow* self, void* owner, int lodHi, int lodLo, float
 // the call below emits; pinned at the end of the file
 
 // @0x141611370
-void FUN_141611370(void* obj, bool flag) { ((Unk_NiAVObjectSortView*)obj)->SetSortObject(flag); }
+void SetSortObject(void* obj, bool flag) { ((Unk_NiAVObjectSortView*)obj)->SetSortObject(flag); }
 
 // @0x1416113a0
 void FUN_1416113a0(void* mat, const Unk_Colc& color)

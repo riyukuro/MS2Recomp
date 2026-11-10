@@ -59,7 +59,7 @@ public:
     void* m_pad[0x69];
     CString m_strBox;                                               // +0x348
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // The local player and its actor.
 class Unk_LtActor : public PC
@@ -161,7 +161,7 @@ void CLiftableTarget::DestroyEffect()
 // @0x141448970
 CString CLiftableTargetBox::vfunc_2()
 {
-    return ((class Unk_LtStrTable*)FUN_1401d31f0())->m_strBox;
+    return ((class Unk_LtStrTable*)GetCommonResource())->m_strBox;
 }
 
 // @0x1414489c0

@@ -25,7 +25,7 @@ public:
 
 CLogString* GetLogString();
 template <class T> void Unk_FeatureLog(CLogString* log, int level, int category, const wchar_t* format, const T& arg);   // C3: was FUN_14036e770
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 CStringW FUN_14016a730(const char* psz, int n);                         // narrow -> wide
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 // C3 #12: was a local TiXml view
@@ -50,7 +50,7 @@ CGraphicOptionTable::~CGraphicOptionTable()
 // @0x141375e50
 void CGraphicOptionTable::Load()
 {
-    if (GetFileSystem()->FUN_1403974b0(&m_doc, FUN_14071a5b0("Table", "graphicOption.xml"), 0, true, false))
+    if (GetFileSystem()->LoadXmlFile(&m_doc, GetXmlPath("Table", "graphicOption.xml"), 0, true, false))
     {
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&m_doc)))->FirstChild("ms2"));
         if (pRoot != 0)
@@ -100,13 +100,13 @@ void CGraphicOptionTable::Load()
         else
         {
             Unk_FeatureLog<CStringW>(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]",
-                          FUN_14016a730(FUN_14071a5b0("Table", "graphicOption.xml"), 0));
+                          FUN_14016a730(GetXmlPath("Table", "graphicOption.xml"), 0));
         }
     }
     else
     {
         Unk_FeatureLog<CStringW>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]",
-                      FUN_14016a730(FUN_14071a5b0("Table", "graphicOption.xml"), 0));
+                      FUN_14016a730(GetXmlPath("Table", "graphicOption.xml"), 0));
     }
 }
 

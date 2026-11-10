@@ -14,7 +14,7 @@
 // Unrecovered helpers.
 class UIStatusEventDispatcher;
 CStringW GetStringCommonByKey(const CStringW&);
-void FUN_1412751f0(const CStringW&, int, int);
+void ShowSystemNotice(const CStringW&, int, int);
 void FUN_140710590(COutPacket&);
 
 // @0x140ca9d50
@@ -58,7 +58,7 @@ void CStatPointManager::LoadExtra(CInPacket& packet)
         unsigned nValue = packet.ReadInt32();
         m_extra.SetAt(nKey, nValue);
     }
-    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(0x10, 0);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->NotifyStatusChanged(0x10, 0);
 }
 MS2_REPLACE_METHOD(0x140CA9F10, CStatPointManager, LoadExtra, 298, 0x04657B2B);
 
@@ -77,7 +77,7 @@ void CStatPointManager::LoadStats(CInPacket& packet)
         m_nUsed += nPoints;
     }
     m_nRemaining = m_nTotal - m_nUsed;
-    TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(0x10, 0);
+    TSingleton<UIStatusEventDispatcher>::GetInstance()->NotifyStatusChanged(0x10, 0);
 }
 MS2_REPLACE_METHOD(0x140CAA040, CStatPointManager, LoadStats, 340, 0x4D535550);
 
@@ -127,7 +127,7 @@ void CStatPointManager::RequestAdd(int nStat, int nAmount)
         return;
     if ((unsigned)(GetStatPoints((Unk_StatKey)nStat) + nAmount) > (unsigned)GetClientConstants()->StatPointLimit[nStat])
     {
-        FUN_1412751f0(GetStringCommonByKey(L"s_char_info_limit_stat_point"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_char_info_limit_stat_point"), 1, 1);
     }
     else
     {

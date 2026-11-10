@@ -164,7 +164,7 @@ struct Unk_RangeShape
     float m_f38;                        // +0x38
 
     Unk_RangeShape();                                       // 0x1408001f0
-    bool FUN_1408002b0(const Unk_RangeShape& o);            // is different
+    bool IsDifferent(const Unk_RangeShape& o);            // is different
     void Load(TiXmlElement* pElem);               // reads the shape attributes
     void FUN_140800570(void* pElem);                        // writes the shape attributes
     // Declared (0x140184190), so SpreadProperty::Clear assigns through the copy operator= 0x1401945c0 like the exe.
@@ -177,7 +177,7 @@ class Unk_RangeProperty : public Unk_RangeShape
 public:
     Unk_RangeProperty();                                                // 0x140800860
     ~Unk_RangeProperty() {}                                             // 0x140184170 (no move: copy operator= 0x1401944c0)
-    bool FUN_140800920(const Unk_RangeProperty& o);                     // is different
+    bool IsDifferent(const Unk_RangeProperty& o);                     // is different
     void LoadElement(TiXmlElement* pElem, CString strName);           // reads the named child element
     void SaveElement(void* pParent, CString strName);                 // writes the named child element
 
@@ -195,8 +195,8 @@ class Unk_CompareStat
 {
 public:
     Unk_CompareStat();                                                  // 0x1407e5db0
-    int FUN_1407e5e70(TiXmlElement* pElem);
-    bool FUN_1407e5e00(const Unk_CompareStat& o);                       // is different
+    int Load(TiXmlElement* pElem);
+    bool IsDifferent(const Unk_CompareStat& o);                       // is different
 
     float m_f0;
     int m_n4;                           // -1
@@ -211,7 +211,7 @@ class Unk_SkillOverlapCondition
 public:
     Unk_SkillOverlapCondition();                                        // 0x1407e5f80
     int Load(TiXmlElement* pElem);                                     // 0x1407e6080
-    bool FUN_1407e5fe0(const Unk_SkillOverlapCondition& o);             // is different
+    bool IsDifferent(const Unk_SkillOverlapCondition& o);             // is different
 
     bool m_b0;                       // +0x00 a range check is set
     unsigned m_nTargetCheckRange;    // +0x04

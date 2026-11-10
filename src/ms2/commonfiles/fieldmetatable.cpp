@@ -93,8 +93,8 @@ public:
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
@@ -105,7 +105,7 @@ template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& r
 
 // The npc record the table checks existence of.
 class CNpcData : public CPtred {};   // C3: local view of npcdata.h's class (that header clashes with this TU's TiXmlElement)
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 
 // The locale / feature gate: is the feature named by the field's <feature> enabled.
 
@@ -129,7 +129,7 @@ CFieldFeatureChecker::CFieldFeatureChecker()
 void CFieldFeatureChecker::BuildNameTable()
 {
     std::vector<MS2Ptr<CFieldData> > fields;
-    CFieldData::FUN_140374090(fields);
+    CFieldData::GetAllFields(fields);
     std::vector<MS2Ptr<CFieldData> >& range = fields;
     MS2Ptr<CFieldData>* it = range._Unchecked_begin();
     MS2Ptr<CFieldData>* itEnd = range._Unchecked_end();
@@ -177,9 +177,9 @@ CFieldMetaTable::~CFieldMetaTable()
 // @0x1406f9dd0
 void CFieldMetaTable::LoadFieldMetaData()
 {
-    CString strPath = FUN_14071a5b0("Table", "FieldMetaData.xml");
+    CString strPath = GetXmlPath("Table", "FieldMetaData.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
@@ -193,7 +193,7 @@ void CFieldMetaTable::LoadFieldMetaData()
     {
         unsigned nNpcId;
         XmlGetAttr((class TiXmlElement*)(pNpc), "id", nNpcId);
-        if (FUN_1406cd330(nNpcId) == 0)
+        if (FindNpcData(nNpcId) == 0)
             continue;
         for (TiXmlElement* pField = pNpc->FirstChildElement("field"); pField != 0; pField = ((class TiXmlElement*)((class Unk_XmlNode*)(pField))->NextSibling("field")))
         {
@@ -221,9 +221,9 @@ void CFieldMetaTable::LoadFieldMetaData()
                 XmlGetAttr((class TiXmlElement*)(pField), "endTime", strEnd);
                 __int64 nStart = 0;
                 __int64 nEnd = 0;
-                if (!FUN_1406fc8a0(CString(strStart), &nStart))
+                if (!ParseTimeString(CString(strStart), &nStart))
                     continue;
-                if (!FUN_1406fc8a0(CString(strEnd), &nEnd))
+                if (!ParseTimeString(CString(strEnd), &nEnd))
                     continue;
                 Unk_FieldTimeSpan span;
                 span.Set(nStart, nEnd);
@@ -386,7 +386,7 @@ void CFieldMetaTable::LoadFieldMetaData()
 }
 
 // @0x1406fb060
-void CFieldMetaTable::FUN_1406fb060(unsigned nId, ATL::CAtlArray<unsigned>& out)
+void CFieldMetaTable::GetPetFields(unsigned nId, ATL::CAtlArray<unsigned>& out)
 {
     Unk_FieldIdListPtr pFields(0);
     if (m_pet.Lookup(nId, pFields))
@@ -399,7 +399,7 @@ void CFieldMetaTable::FUN_1406fb060(unsigned nId, ATL::CAtlArray<unsigned>& out)
 }
 
 // @0x1406fb120
-void CFieldMetaTable::FUN_1406fb120(unsigned nId, ATL::CAtlArray<unsigned>& out)
+void CFieldMetaTable::GetLiftableFields(unsigned nId, ATL::CAtlArray<unsigned>& out)
 {
     Unk_FieldIdListPtr pFields(0);
     if (m_liftable.Lookup(nId, pFields))
@@ -425,7 +425,7 @@ void CFieldMetaTable::FUN_1406fb1e0(int nId, ATL::CAtlArray<unsigned>& out)
 }
 
 // @0x1406fb2a0
-void CFieldMetaTable::FUN_1406fb2a0(unsigned nId, ATL::CAtlArray<unsigned>& out)
+void CFieldMetaTable::GetNpcFields(unsigned nId, ATL::CAtlArray<unsigned>& out)
 {
     CheckInit();
     Unk_FieldIdListPtr pFields;
@@ -444,7 +444,7 @@ void CFieldMetaTable::FUN_1406fb2a0(unsigned nId, ATL::CAtlArray<unsigned>& out)
 }
 
 // @0x1406fb3a0
-void CFieldMetaTable::FUN_1406fb3a0(unsigned nId, Unk_FieldIdList& out)
+void CFieldMetaTable::GetNpcMapSearchFields(unsigned nId, Unk_FieldIdList& out)
 {
     CheckInit();
     Unk_FieldIdListPtr pFields;
@@ -542,7 +542,7 @@ void CFieldMetaTable::FUN_1406fb900(unsigned nFieldId, unsigned nGroupId, Unk_Fi
     MS2Ptr<CFieldData> field = CFieldData::FUN_140374140(nFieldId);
     if (field.IsNull())
         return;
-    if (field->FUN_140375130())
+    if (field->IsIndoor())
     {
         GetInstance()->FUN_1406fb610(nGroupId, out);
     }
@@ -603,7 +603,7 @@ unsigned CFieldMetaTable::FUN_1406fbc50(unsigned nField)
 }
 
 // @0x1406fbca0
-Unk_FieldIdListPtr CFieldMetaTable::FUN_1406fbca0(unsigned nField)
+Unk_FieldIdListPtr CFieldMetaTable::GetPortalTargets(unsigned nField)
 {
     Unk_FieldIdListPtr pTargets(0);
     return m_portalTargets.Lookup(nField, pTargets) ? Unk_FieldIdListPtr(pTargets) : Unk_FieldIdListPtr(0);
@@ -768,7 +768,7 @@ int CFieldMetaTable::FUN_1406fc6d0(int nNpcId, ATL::CAtlArray<CMsTime>& out)
 }
 
 // @0x1406fc7b0
-int CFieldMetaTable::FUN_1406fc7b0(unsigned nField, unsigned nId)
+int CFieldMetaTable::HasPortalTarget(unsigned nField, unsigned nId)
 {
     Unk_FieldIdListPtr pTargets(0);
     if (m_portalTargets2.Lookup(nField, pTargets))
@@ -784,7 +784,7 @@ int CFieldMetaTable::FUN_1406fc870(unsigned nFieldId)
 
 // @0x1406fc8a0
 // Parses "yyyy-mm-dd-hh-mm-ss"; false when any part is out of range.
-bool CFieldMetaTable::FUN_1406fc8a0(CString str, __int64* pTime)
+bool CFieldMetaTable::ParseTimeString(CString str, __int64* pTime)
 {
     int nYear = 0;
     int nMonth = 0;
@@ -813,7 +813,7 @@ void CFieldFeatureChecker::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CFieldFeatureChecker).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CFieldFeatureChecker).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -824,7 +824,7 @@ void CFieldMetaTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CFieldMetaTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CFieldMetaTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

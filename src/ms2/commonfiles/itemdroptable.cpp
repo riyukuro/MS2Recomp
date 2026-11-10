@@ -175,15 +175,15 @@ class CLogString* GetLogString();
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 struct Unk_XmlElement; void FUN_14028f5d0(Unk_XmlElement* pParent, const char* pszChild, std::vector<Unk_XmlElement*>& arrOut);
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 
-// The item option generator (FUN_140166430()): a random rank for an item.
+// The item option generator (GetItemOptionTable()): a random rank for an item.
 class CItemOptionTable { public: int GetRandomRank(int, int, unsigned short, int, bool) const; }; class Unk_OptionMgr : public CItemOptionTable { };
-class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
+class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
@@ -191,11 +191,11 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 class Unk_DropItemData : public CItemData
 {
 };
-bool FUN_14053ff30(int nItemId, int nRank);                 // the item exists in that rank
+bool HasRank(int nItemId, int nRank);                 // the item exists in that rank
 int FUN_14053feb0(int nItemId);                             // default rank of an item
-int FUN_140768010(int, int);  // C3: the definition's signature
+int GetRandomRange(int, int);  // C3: the definition's signature
 bool FUN_14028d470(float a, float b);                       // a == b (within epsilon)
-CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
+CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool ItemDropTable::s_bInit;
@@ -434,7 +434,7 @@ int ItemDropData::GetDropRank(int nArg, int nLevel, bool bAssist)
 {
     if (m_grade.Remains())
         return PickGrade();
-    int nRank = ((class Unk_OptionMgr*)FUN_140166430())->GetRandomRank(GetItemId(), nArg, nLevel, rand(), bAssist);
+    int nRank = ((class Unk_OptionMgr*)GetItemOptionTable())->GetRandomRank(GetItemId(), nArg, nLevel, rand(), bAssist);
     return nRank;
 }
 MS2_REPLACE_METHOD(0x1402E75D0, ItemDropData, GetDropRank, 149, 0xEF08F3AC);
@@ -445,7 +445,7 @@ int ItemDropData::PickGrade()
     ItemDropGrade grade;
     if (m_grade.Pick(grade))
     {
-        if (FUN_14053ff30(GetItemId(), grade))
+        if (HasRank(GetItemId(), grade))
             return grade;
     }
     return 1;
@@ -1039,7 +1039,7 @@ MS2_REPLACE_METHOD(0x1402E9840, ItemDropResult, GetProbability, 52, 0x45140BF0);
 // @0x1402e9880
 bool ItemDropResult::HasItemLife()
 {
-    if (m_itemLife && m_itemLife->FUN_14026f5d0())
+    if (m_itemLife && m_itemLife->IsValid())
         return true;
     return false;
 }
@@ -1138,7 +1138,7 @@ void ItemDropTable::DropGlobal(unsigned nBoxId, ItemDropContext& ctx, std::vecto
             if (pData == 0)
                 break;
             int nItemCount = 0;
-            float fRate = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1810(2, pBox->GetDropGroupId());
+            float fRate = TSingleton<CGloabalFactor>::GetInstance()->GetMultiControlFactor(2, pBox->GetDropGroupId());
             if (FUN_14028d470(fRate, 1.0f) == true)
                 nItemCount = pData->GetCount();
             else
@@ -1403,7 +1403,7 @@ bool ItemDropTable::HasItem(unsigned nBoxId, int nItemId, int nRank)
                 continue;
             if (pItem->HasSkinType())
             {
-                if (FUN_14053ff30(nItemId, nRank))
+                if (HasRank(nItemId, nRank))
                     return true;
             }
             else if (pItem->FUN_14053cbc0())
@@ -1413,7 +1413,7 @@ bool ItemDropTable::HasItem(unsigned nBoxId, int nItemId, int nRank)
             }
             else
             {
-                if (FUN_14053ff30(nItemId, nRank))
+                if (HasRank(nItemId, nRank))
                     return true;
             }
         }
@@ -1477,9 +1477,9 @@ MS2_REPLACE_METHOD(0x1402EC8E0, ItemDropTable, GetIndividualBox, 178, 0xF0568D42
 bool ItemDropTable::LoadGlobalBoxes()
 {
     m_globalBoxes.clear();
-    CString strPath = FUN_14071a5b0("Table/Server", "globalDropItemBox_Final.xml");
+    CString strPath = GetXmlPath("Table/Server", "globalDropItemBox_Final.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1502,9 +1502,9 @@ MS2_REPLACE_METHOD(0x1402EC9A0, ItemDropTable, LoadGlobalBoxes, 823, 0xE9E65D75)
 bool ItemDropTable::LoadGlobalGroups()
 {
     m_globalGroups.clear();
-    CString strPath = FUN_14071a5b0("Table/Server", "globalDropItemSet_Final.xml");
+    CString strPath = GetXmlPath("Table/Server", "globalDropItemSet_Final.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1530,9 +1530,9 @@ MS2_REPLACE_METHOD(0x1402ECCE0, ItemDropTable, LoadGlobalGroups, 951, 0x365C7693
 bool ItemDropTable::LoadIndividualBoxes()
 {
     m_individualBoxes.clear();
-    CString strPath = FUN_14071a5b0("Table", "individualItemDrop_Final.xml");
+    CString strPath = GetXmlPath("Table", "individualItemDrop_Final.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1568,7 +1568,7 @@ void ItemDropTable::DropIndividualGroup(ItemDropIndividualGroup* pGroup, ItemDro
     if (ctx.m_job != 0)
     {
         unsigned nSmartDropRate = pGroup->GetSmartDropRate();
-        if (FUN_140768010(100, 0) < nSmartDropRate)
+        if (GetRandomRange(100, 0) < nSmartDropRate)
             bSmartDrop = true;
     }
     {
@@ -1680,7 +1680,7 @@ void ItemDropTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(ItemDropTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(ItemDropTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

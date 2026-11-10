@@ -103,7 +103,7 @@ private:
 int FUN_1422db730();
 
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 
 UIQuestEventDispatcher* FUN_140bfc4b0();
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -118,26 +118,26 @@ struct Unk_QgCfg {
 MS2_CHECK_OFFSET(Unk_QgCfg, m_40d0, 0x40d0);
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
-CQuestNavigator* FUN_140e7c990();
-class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
+CQuestNavigator* GetQuestNavigator();
+class CMyCharacter* GetMyCharacter();   // C3: was GetMyCharacter
 
-CQuestNavigationMap* FUN_140c9b8e0();   // C3: was FUN_140c9b8e0
+CQuestNavigationMap* GetQuestNavigationMap();   // C3: was GetQuestNavigationMap
 
 class UIQuestDialog : public UIDialog { public: void FocusQuest(int nQuestId); };
 template <class T> T* GetDialog(int nId);   // C3: was FUN_14131f1e0
 template <class T> T* Unk_GetUI(int nId);   // C3: was FUN_140961730
 
 __int64 FUN_141aa4980(CQuest* pQuest);                                      // when the quest becomes available
-CStringW FUN_1416e5210(int nQuestId, CStringW strKey);
-CStringW FUN_1416e57d0(int nQuestId, int nCondition);
-CStringW FUN_1416e55b0(int nQuestId);
-CStringW FUN_1416e7fb0(int nChapter);
-CString FUN_140762e90(int nAlliance);
+CStringW GetQuestNameWithLevel(int nQuestId, CStringW strKey);
+CStringW GetQuestConditionText(int nQuestId, int nCondition);
+CStringW GetQuestCompleteText(int nQuestId);
+CStringW GetChapterName(int nChapter);
+CString GetAllianceSymbol(int nAlliance);
 bool FUN_1407640c0(CQuestData* pData);
 bool FUN_14074b090(CQuestData* pData);
 int FUN_14074b050(CQuestData* pData);
 int FUN_14074b790(int nQuestId);
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 CString SelectStringByQuestId(int nQuestId, const CString& strEpic, const CString& strSatisfied, const CString& strRepeat, const CString& strEvent);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW GetStringCommon(int nId);
@@ -151,7 +151,7 @@ public:
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
@@ -197,7 +197,7 @@ UIQuestEventDispatcher::~UIQuestEventDispatcher()
 }
 
 // @0x141aa87c0
-void UIQuestEventDispatcher::FUN_141aa87c0(UIQuestEventListener* pListener)
+void UIQuestEventDispatcher::AddListener(UIQuestEventListener* pListener)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); ++i) {
         if (pListener == m_listeners[i])
@@ -205,10 +205,10 @@ void UIQuestEventDispatcher::FUN_141aa87c0(UIQuestEventListener* pListener)
     }
     m_listeners.Add(pListener);
 }
-MS2_REPLACE_METHOD(0x141aa87c0, UIQuestEventDispatcher, FUN_141aa87c0, 125, 0xFDBEF879);
+MS2_REPLACE_METHOD(0x141aa87c0, UIQuestEventDispatcher, AddListener, 125, 0xFDBEF879);
 
 // @0x141aa8850
-void UIQuestEventDispatcher::FUN_141aa8850(UIQuestEventListener* pListener)
+void UIQuestEventDispatcher::RemoveListener(UIQuestEventListener* pListener)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); ++i) {
         if (pListener == m_listeners[i]) {
@@ -217,7 +217,7 @@ void UIQuestEventDispatcher::FUN_141aa8850(UIQuestEventListener* pListener)
         }
     }
 }
-MS2_REPLACE_METHOD(0x141aa8850, UIQuestEventDispatcher, FUN_141aa8850, 131, 0x160D2C39);
+MS2_REPLACE_METHOD(0x141aa8850, UIQuestEventDispatcher, RemoveListener, 131, 0x160D2C39);
 
 // @0x141aa88e0
 void UIQuestEventDispatcher::vfunc_1(CQuest* pQuest)
@@ -335,7 +335,7 @@ UIQuestGuideDialog::UIQuestGuideDialog()
     m_bRecommendDirty = 0;
     m_nRecommendQuest = 0;
     m_2c = 0xd;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     m_alignment = new UICommon::CAlignmentInfo(6, 0.0f, 330.0f);
 }
 
@@ -356,9 +356,9 @@ int UIQuestGuideDialog::vfunc_65()
 {
     if (!UIDialog::vfunc_65())
         return 0;
-    FUN_140bfc4b0()->FUN_141aa87c0(this);
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIQuestGuideDialog::FUN_141aab760));
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab840));
+    FUN_140bfc4b0()->AddListener(this);
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIQuestGuideDialog::OnChangeMyLevel));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab840));
     return 1;
 }
 MS2_REPLACE_METHOD(0x141aa9ae0, UIQuestGuideDialog, vfunc_65, 456, 0xAB811FEE);
@@ -371,9 +371,9 @@ void UIQuestGuideDialog::vfunc_67()
         m_pageIndex.SetAt(DAT_143ab2828, nPage);
     }
     UIDialog::vfunc_67();
-    FUN_140bfc4b0()->FUN_141aa8850(this);
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIQuestGuideDialog::FUN_141aab760));
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab840));
+    FUN_140bfc4b0()->RemoveListener(this);
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIQuestGuideDialog::OnChangeMyLevel));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab840));
 }
 MS2_REPLACE_METHOD(0x141aa9cb0, UIQuestGuideDialog, vfunc_67, 602, 0x4D96E31B);
 
@@ -383,7 +383,7 @@ void UIQuestGuideDialog::vfunc_43()
     UIDialog::vfunc_43();
     if (m_60)
         m_alignment->FUN_141901cd0();
-    FUN_141aadc50();
+    ApplyAlignment();
 }
 MS2_REPLACE_METHOD(0x141aa9f10, UIQuestGuideDialog, vfunc_43, 72, 0x2D9B0606);
 
@@ -396,18 +396,18 @@ void UIQuestGuideDialog::OnLoadComplete()
     m_30->FUN_1409ba0d0("setMaxEntity", nMax, nMax2);
     int nPage = 0;
     m_pageIndex.Lookup(DAT_143ab2828, nPage);
-    static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("m_pageIndex", nPage);
+    static_cast<ASObj*>(m_30.operator->())->SetIntMember("m_pageIndex", nPage);
     m_removeQueue.RemoveAll();
     m_addQueue.RemoveAll();
     m_bRecommendDirty = 0;
     m_nRecommendQuest = 0;
-    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x77)) {
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x77)) {
         m_navigation.AssignRaw(new AScript(m_30->GetMember("updateNavigation"), 2));
-        ASFunction fn(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIQuestGuideDialog::FUN_141aaf150), 0, FUN_1422db730());
-        static_cast<ASObj*>(m_30.operator->())->FUN_1409adbe0("m_funcGetNavigation", Scaleform::GFx::Value(fn.FUN_1422bb870()));
+        ASFunction fn(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIQuestGuideDialog::GetNavigation), 0, FUN_1422db730());
+        static_cast<ASObj*>(m_30.operator->())->FUN_1409adbe0("m_funcGetNavigation", Scaleform::GFx::Value(fn.GetValue()));
     }
-    FUN_141aaba00();
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x100, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab700));
+    BuildAll();
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x100, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab700));
 }
 MS2_REPLACE_METHOD(0x141aa9f60, UIQuestGuideDialog, OnLoadComplete, 1044, 0x27888106);
 
@@ -415,7 +415,7 @@ MS2_REPLACE_METHOD(0x141aa9f60, UIQuestGuideDialog, OnLoadComplete, 1044, 0x2788
 void UIQuestGuideDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x100, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab700));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x100, Delegate<void(CInPacket&)>(this, &UIQuestGuideDialog::FUN_141aab700));
     m_navigation = 0;
 }
 MS2_REPLACE_METHOD(0x141aaa380, UIQuestGuideDialog, vfunc_26, 189, 0x676C2762);
@@ -423,27 +423,27 @@ MS2_REPLACE_METHOD(0x141aaa380, UIQuestGuideDialog, vfunc_26, 189, 0x676C2762);
 // @0x141aaa450
 void UIQuestGuideDialog::vfunc_15()
 {
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() != 0x620001d)
         return;
     if (!m_30)
         return;
     if (m_removeQueue.GetCount()) {
         for (size_t i = 0; i < m_removeQueue.GetCount(); ++i)
-            FUN_141aac360(m_removeQueue[i]);
+            RemoveQuestEntity(m_removeQueue[i]);
         m_removeQueue.RemoveAll();
     }
     if (m_bRecommendDirty) {
         m_bRecommendDirty = 0;
-        FUN_141aae5a0();
+        RefreshRecommendedQuest();
     }
     if (m_addQueue.GetCount()) {
         for (size_t i = 0; i < m_addQueue.GetCount(); ++i)
-            FUN_141aac190(m_addQueue[i]);
+            AddQuestEntity(m_addQueue[i]);
         m_addQueue.RemoveAll();
     }
     if (m_bRebuild) {
         m_bRebuild = 0;
-        FUN_141aaba00();
+        BuildAll();
     }
     if (m_navigation.get() ? true : false) {
         if (m_navigationTick.Check(0xf0))
@@ -471,12 +471,12 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             bool bTrace = data.PopBool();
             int bChanged = 0;
             if (!bTrace) {
-                if (FUN_140e7c990()->IsSelected(nQuestId)) {
-                    FUN_140e7c990()->SelectQuest(0);
+                if (GetQuestNavigator()->IsSelected(nQuestId)) {
+                    GetQuestNavigator()->SelectQuest(0);
                     bChanged = 1;
                 }
             } else {
-                FUN_140e7c990()->SelectQuest(nQuestId);
+                GetQuestNavigator()->SelectQuest(nQuestId);
                 bChanged = 1;
             }
             if (bChanged && (m_30.get() ? true : false))
@@ -519,7 +519,7 @@ int UIQuestGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->SendQuestMode13(nQuestId);
         }
     } else if (_stricmp(szMethod, "onLinkFieldMission") == 0) {
-        if (FUN_140931510()->GetStage() == 0) {
+        if (GetMyCharacter()->GetStage() == 0) {
             if (UIWorldMapDialog* pDialog = Unk_GetUI<UIWorldMapDialog>(0x4e42))
                 pDialog->FUN_141b5c230();
         }
@@ -571,7 +571,7 @@ int UIQuestGuideDialog::vfunc_53(void* pCfg)
         if ((m_alignment.get() ? true : false) && pDialog) {
             float x = (float)pDialog->FUN_1422c1500();
             float y = (float)pDialog->FUN_1422c1530();
-            m_alignment->FUN_141901880(m_30, (float)pDialog->FUN_1422c1340(), (float)pDialog->GetHeightCeil(), x, y);
+            m_alignment->FUN_141901880(m_30, (float)pDialog->GetWidthCeil(), (float)pDialog->GetHeightCeil(), x, y);
             m_alignment->FUN_1419015e0((TiXmlElement*)pCfg);
         }
         return 1;
@@ -589,7 +589,7 @@ int UIQuestGuideDialog::vfunc_54(void* pCfg)
             if (!m_alignment->FUN_141901660((TiXmlElement*)pCfg)) {
                 float x = (float)pDialog->FUN_1422c1500();
                 float y = (float)pDialog->FUN_1422c1530();
-                m_alignment->FUN_141901880(m_30, (float)pDialog->FUN_1422c1340(), (float)pDialog->GetHeightCeil(), x, y);
+                m_alignment->FUN_141901880(m_30, (float)pDialog->GetWidthCeil(), (float)pDialog->GetHeightCeil(), x, y);
             }
         }
         return 1;
@@ -604,7 +604,7 @@ void UIQuestGuideDialog::vfunc_18()
     if ((bool)m_30.get())
     {
         if (FUN_1422dc430())
-            FUN_141aadc50();
+            ApplyAlignment();
     }
 }
 MS2_REPLACE_METHOD(0x141aab350, UIQuestGuideDialog, vfunc_18, 81, 0x2DEC7D5B);
@@ -615,7 +615,7 @@ void UIQuestGuideDialog::vfunc_o178_1(void* p)
     // The exe uses the parameter directly (no typed local).
     if (!static_cast<CQuest*>(p)->GetTrackingState())
         return;
-    m_addQueue.Add(static_cast<CQuest*>(p)->FUN_140bfc580());
+    m_addQueue.Add(static_cast<CQuest*>(p)->GetQuestId());
     if (static_cast<CQuest*>(p)->GetQuestType() == 0)
         m_bRecommendDirty = 1;
 }
@@ -624,7 +624,7 @@ MS2_REPLACE_METHOD_VIA(0x141aab3b0, UIQuestGuideDialog, UIQuestEventListener, vf
 // @0x141aab420
 void UIQuestGuideDialog::vfunc_o178_2(void* p)
 {
-    m_removeQueue.Add(static_cast<CQuest*>(p)->FUN_140bfc580());
+    m_removeQueue.Add(static_cast<CQuest*>(p)->GetQuestId());
     if (static_cast<CQuest*>(p)->GetQuestType() == 0)
         m_bRecommendDirty = 1;
 }
@@ -635,21 +635,21 @@ void UIQuestGuideDialog::vfunc_o178_3(void* p)
 {
     if (!static_cast<CQuest*>(p)->GetTrackingState())
         return;
-    FUN_141aabe50(static_cast<CQuest*>(p));
+    UpdateQuestEntity(static_cast<CQuest*>(p));
 }
 MS2_REPLACE_METHOD_VIA(0x141aab480, UIQuestGuideDialog, UIQuestEventListener, vfunc_o178_3, 65, 0x92310181);
 
 // @0x141aab4d0
 void UIQuestGuideDialog::vfunc_o178_7(int nQuestId, int a2)
 {
-    FUN_141aac190(nQuestId);
+    AddQuestEntity(nQuestId);
 }
 MS2_REPLACE_METHOD_VIA(0x141aab4d0, UIQuestGuideDialog, UIQuestEventListener, vfunc_o178_7, 46, 0x20252149);
 
 // @0x141aab510
 void UIQuestGuideDialog::vfunc_o178_5(void* p)
 {
-    FUN_141aac360(static_cast<CQuest*>(p)->FUN_140bfc580());
+    RemoveQuestEntity(static_cast<CQuest*>(p)->GetQuestId());
     if (static_cast<CQuest*>(p)->GetQuestType() == 0)
         m_bRecommendDirty = 1;
 }
@@ -661,16 +661,16 @@ void UIQuestGuideDialog::vfunc_o178_6(void* p)
     if (vfunc_55())
         return;
     if (static_cast<CQuest*>(p)->GetTrackingState())
-        FUN_141aac190(static_cast<CQuest*>(p)->FUN_140bfc580());
+        AddQuestEntity(static_cast<CQuest*>(p)->GetQuestId());
     else
-        FUN_141aac360(static_cast<CQuest*>(p)->FUN_140bfc580());
+        RemoveQuestEntity(static_cast<CQuest*>(p)->GetQuestId());
 }
 MS2_REPLACE_METHOD_VIA(0x141aab570, UIQuestGuideDialog, UIQuestEventListener, vfunc_o178_6, 147, 0xE25CA329);
 
 // @0x141aab610
 void UIQuestGuideDialog::vfunc_o178_9(void* p)
 {
-    RoomStageDungeonCli* pMission = FUN_140931510()->GetStage().get();
+    RoomStageDungeonCli* pMission = GetMyCharacter()->GetStage().get();
     if (pMission)
         return;
     ASObj obj(2);
@@ -684,12 +684,12 @@ void UIQuestGuideDialog::FUN_141aab700(CInPacket& packet)
 {
     int nType = packet.ReadUInt8();
     if (nType == 1)
-        FUN_141aadbc0();
+        UpdateDungeonMission();
 }
 MS2_REPLACE_METHOD(0x141aab700, UIQuestGuideDialog, FUN_141aab700, 77, 0x0446095D);
 
 // @0x141aab760
-void UIQuestGuideDialog::FUN_141aab760(NotifyObject* pObj)
+void UIQuestGuideDialog::OnChangeMyLevel(NotifyObject* pObj)
 {
     if (!m_30)
         return;
@@ -700,7 +700,7 @@ void UIQuestGuideDialog::FUN_141aab760(NotifyObject* pObj)
         return;
     m_30->Invoke("updateEntity", obj);
 }
-MS2_REPLACE_METHOD(0x141aab760, UIQuestGuideDialog, FUN_141aab760, 218, 0x5B988BD4);
+MS2_REPLACE_METHOD(0x141aab760, UIQuestGuideDialog, OnChangeMyLevel, 218, 0x5B988BD4);
 
 // @0x141aab840
 void UIQuestGuideDialog::FUN_141aab840(CInPacket& packet)
@@ -719,7 +719,7 @@ void UIQuestGuideDialog::FUN_141aab840(CInPacket& packet)
                 continue;
             if (!spQuest->HasMultiUserRoom(nMapId))
                 continue;
-            FUN_141aabe50(spQuest.get());
+            UpdateQuestEntity(spQuest.get());
         }
     }
     }
@@ -727,12 +727,12 @@ void UIQuestGuideDialog::FUN_141aab840(CInPacket& packet)
 MS2_REPLACE_METHOD(0x141aab840, UIQuestGuideDialog, FUN_141aab840, 442, 0xDD2CE949);
 
 // @0x141aaba00
-void UIQuestGuideDialog::FUN_141aaba00()
+void UIQuestGuideDialog::BuildAll()
 {
     if (!m_30)
         return;
     m_30->Invoke("clearAll");
-    FUN_141aabcb0();
+    AddMission();
     ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFiltered(quests, 1, 0xb, -1);
     ASArray list(2);
@@ -751,20 +751,20 @@ void UIQuestGuideDialog::FUN_141aaba00()
         if (FUN_141aae8d0(m_nRecommendQuest, obj))
             list.PushObj(obj);
     }
-    m_30->FUN_140bd2cb0("buildAll", list);
+    m_30->InvokeWithArray("buildAll", list);
 }
-MS2_REPLACE_METHOD(0x141aaba00, UIQuestGuideDialog, FUN_141aaba00, 682, 0x3B87845E);
+MS2_REPLACE_METHOD(0x141aaba00, UIQuestGuideDialog, BuildAll, 682, 0x3B87845E);
 
 // @0x141aabcb0
-void UIQuestGuideDialog::FUN_141aabcb0()
+void UIQuestGuideDialog::AddMission()
 {
     if (!m_30)
         return;
-    MS2Ptr<RoomStageDungeonCli> spMission = FUN_140931510()->GetStage();
+    MS2Ptr<RoomStageDungeonCli> spMission = GetMyCharacter()->GetStage();
     if (spMission.get()) {
-        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x71)) {
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x71)) {
             ASObj obj(2);
-            if (FUN_141aae150(obj))
+            if (FillDungeonMissionEntity(obj))
                 m_30->Invoke("addMission", obj, "dungeon");
         }
     }
@@ -774,40 +774,40 @@ void UIQuestGuideDialog::FUN_141aabcb0()
             m_30->Invoke("addMission", obj, "field");
     }
 }
-MS2_REPLACE_METHOD(0x141aabcb0, UIQuestGuideDialog, FUN_141aabcb0, 406, 0x27D2F9B2);
+MS2_REPLACE_METHOD(0x141aabcb0, UIQuestGuideDialog, AddMission, 406, 0x27D2F9B2);
 
 // @0x141aabe50
-void UIQuestGuideDialog::FUN_141aabe50(CQuest* pQuest)
+void UIQuestGuideDialog::UpdateQuestEntity(CQuest* pQuest)
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog) {
         ASObj obj(2);
-        obj.SetMemberUInt("id", pQuest->FUN_140bfc580());
-        obj.FUN_1407cb9c0("satisfied", pQuest->IsComplete());
-        obj.FUN_1407cb9c0("progress", 1);
-        obj.FUN_1407cba60("icon", FUN_141aad550(pQuest));
-        obj.FUN_1407cbb20("title", FUN_1416e5210(pQuest->FUN_140bfc580(), CStringW(L"s_quest_name_with_level")));
+        obj.SetMemberUInt("id", pQuest->GetQuestId());
+        obj.SetIntMember("satisfied", pQuest->IsComplete());
+        obj.SetIntMember("progress", 1);
+        obj.SetStringMember("icon", GetQuestIcon(pQuest));
+        obj.SetWStringMember("title", GetQuestNameWithLevel(pQuest->GetQuestId(), CStringW(L"s_quest_name_with_level")));
         int nAlliance = pQuest->GetData()->m_4c;
         if (nAlliance)
-            obj.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
-        FUN_141aaca80(obj, pQuest);
-        FUN_141aac3e0(obj, pQuest);
-        FUN_141aac6a0(obj, pQuest);
-        FUN_141aac9b0(obj, pQuest);
+            obj.SetStringMember("alliance", GetAllianceSymbol(nAlliance));
+        SetQuestGotoButtons(obj, pQuest);
+        SetQuestConditions(obj, pQuest);
+        SetQuestPeriod(obj, pQuest);
+        SetQuestNavigationState(obj, pQuest);
         pDialog->Invoke("updateEntity", obj);
     }
 }
-MS2_REPLACE_METHOD(0x141aabe50, UIQuestGuideDialog, FUN_141aabe50, 817, 0xC4BB9192);
+MS2_REPLACE_METHOD(0x141aabe50, UIQuestGuideDialog, UpdateQuestEntity, 817, 0xC4BB9192);
 
 // @0x141aac190
-int UIQuestGuideDialog::FUN_141aac190(int nQuestId)
+int UIQuestGuideDialog::AddQuestEntity(int nQuestId)
 {
     CQuest* pQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId).get();
     if (!pQuest)
         return 0;
     if (pQuest->IsRewarded())
         return 0;
-    if (!FUN_141aacd70() && !FUN_14074b790(nQuestId)) {
+    if (!CanAdd() && !FUN_14074b790(nQuestId)) {
         FUN_141275260(0x5f1, 1, 1);
         return 0;
     }
@@ -819,18 +819,18 @@ int UIQuestGuideDialog::FUN_141aac190(int nQuestId)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x141aac190, UIQuestGuideDialog, FUN_141aac190, 450, 0x21A098E1);
+MS2_REPLACE_METHOD(0x141aac190, UIQuestGuideDialog, AddQuestEntity, 450, 0x21A098E1);
 
 // @0x141aac360
-void UIQuestGuideDialog::FUN_141aac360(int nQuestId)
+void UIQuestGuideDialog::RemoveQuestEntity(int nQuestId)
 {
     if (ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30))
         pDialog->Invoke("removeEntity", (unsigned int)nQuestId);
 }
-MS2_REPLACE_METHOD(0x141aac360, UIQuestGuideDialog, FUN_141aac360, 117, 0x896E23E8);
+MS2_REPLACE_METHOD(0x141aac360, UIQuestGuideDialog, RemoveQuestEntity, 117, 0x896E23E8);
 
 // @0x141aac3e0
-void UIQuestGuideDialog::FUN_141aac3e0(ASObj& obj, CQuest* pQuest)
+void UIQuestGuideDialog::SetQuestConditions(ASObj& obj, CQuest* pQuest)
 {
     if (!pQuest)
         return;
@@ -839,33 +839,33 @@ void UIQuestGuideDialog::FUN_141aac3e0(ASObj& obj, CQuest* pQuest)
     for (size_t i = 0; i < spData->m_conditions.GetCount(); ++i) {
         MS2Ptr<CConditionCommonData> spCond(spData->m_conditions[i]);
         ASObj entry(2);
-        entry.FUN_1407cbb20("text", FUN_1416e57d0(pQuest->FUN_140bfc580(), (int)i));
-        entry.FUN_1407cbbe0("satisfied", pQuest->GetProgress((int)i) >= spCond->m_nGoal);
+        entry.SetWStringMember("text", GetQuestConditionText(pQuest->GetQuestId(), (int)i));
+        entry.SetBoolMember("satisfied", pQuest->GetProgress((int)i) >= spCond->m_nGoal);
         conditions.PushObj(entry);
     }
     if (pQuest->IsComplete()) {
         ASObj entry(2);
-        entry.FUN_1407cbb20("text", FUN_1416e55b0(pQuest->FUN_140bfc580()));
-        entry.FUN_1407cb9c0("satisfied", 0);
+        entry.SetWStringMember("text", GetQuestCompleteText(pQuest->GetQuestId()));
+        entry.SetIntMember("satisfied", 0);
         conditions.PushObj(entry);
     }
     obj.FUN_1409eb1d0("conditions", conditions);
 }
-MS2_REPLACE_METHOD(0x141aac3e0, UIQuestGuideDialog, FUN_141aac3e0, 694, 0xF5A0FD2E);
+MS2_REPLACE_METHOD(0x141aac3e0, UIQuestGuideDialog, SetQuestConditions, 694, 0xF5A0FD2E);
 
 // @0x141aac6a0
-void UIQuestGuideDialog::FUN_141aac6a0(ASObj& obj, CQuest* pQuest)
+void UIQuestGuideDialog::SetQuestPeriod(ASObj& obj, CQuest* pQuest)
 {
     if (pQuest == NULL)
         return;
     if (FUN_14074b090(pQuest->GetData().operator->())) {
         CStringW strPeriod;
-        int bExpired = pQuest->FUN_1407447c0();
+        int bExpired = pQuest->IsExpired();
         if (bExpired) {
             strPeriod = GetStringCommonByKey(L"s_quest_end_time_expired");
         }
         else {
-            CMsTime end(pQuest->FUN_1407448a0());
+            CMsTime end(pQuest->GetEndTime());
             int nYear = end.GetYear();
             int nMonth = end.GetMonth();
             int nDay = end.GetDay();
@@ -873,28 +873,28 @@ void UIQuestGuideDialog::FUN_141aac6a0(ASObj& obj, CQuest* pQuest)
             int nMinute = end.GetMinute();
             strPeriod = FUN_14028dfa0(L"s_quest_end_time", nYear, nMonth, nDay, nHour, nMinute);
         }
-        obj.FUN_1407cbb20("period", strPeriod);
-        obj.FUN_1407cb9c0("expired", bExpired);
+        obj.SetWStringMember("period", strPeriod);
+        obj.SetIntMember("expired", bExpired);
     }
 }
-MS2_REPLACE_METHOD(0x141aac6a0, UIQuestGuideDialog, FUN_141aac6a0, 768, 0x9644C89D);
+MS2_REPLACE_METHOD(0x141aac6a0, UIQuestGuideDialog, SetQuestPeriod, 768, 0x9644C89D);
 
 // @0x141aac9b0
-void UIQuestGuideDialog::FUN_141aac9b0(ASObj& obj, CQuest* pQuest)
+void UIQuestGuideDialog::SetQuestNavigationState(ASObj& obj, CQuest* pQuest)
 {
     int bNavi = 0;
     int nTracing = 0;
-    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x77)) {
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x77)) {
         bNavi = pQuest->GetFlag() != 0;
-        nTracing = FUN_140e7c990()->IsSelected(pQuest->FUN_140bfc580());
+        nTracing = GetQuestNavigator()->IsSelected(pQuest->GetQuestId());
     }
-    obj.FUN_1407cb9c0("navi", bNavi);
-    obj.FUN_1407cb9c0("tracing", nTracing);
+    obj.SetIntMember("navi", bNavi);
+    obj.SetIntMember("tracing", nTracing);
 }
-MS2_REPLACE_METHOD(0x141aac9b0, UIQuestGuideDialog, FUN_141aac9b0, 195, 0x42F7E3E5);
+MS2_REPLACE_METHOD(0x141aac9b0, UIQuestGuideDialog, SetQuestNavigationState, 195, 0x42F7E3E5);
 
 // @0x141aaca80
-void UIQuestGuideDialog::FUN_141aaca80(ASObj& obj, CQuest* pQuest)
+void UIQuestGuideDialog::SetQuestGotoButtons(ASObj& obj, CQuest* pQuest)
 {
     if (pQuest == NULL)
         return;
@@ -919,24 +919,24 @@ void UIQuestGuideDialog::FUN_141aaca80(ASObj& obj, CQuest* pQuest)
     }
     obj.FUN_1409eb1d0("gotoButton", buttons);
 }
-MS2_REPLACE_METHOD(0x141aaca80, UIQuestGuideDialog, FUN_141aaca80, 745, 0xC28CB79F);
+MS2_REPLACE_METHOD(0x141aaca80, UIQuestGuideDialog, SetQuestGotoButtons, 745, 0xC28CB79F);
 
 // @0x141aacd70
-bool UIQuestGuideDialog::FUN_141aacd70()
+bool UIQuestGuideDialog::CanAdd()
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (!pDialog)
         return false;
     return pDialog->Invoke("canAdd").GetBool();
 }
-MS2_REPLACE_METHOD(0x141aacd70, UIQuestGuideDialog, FUN_141aacd70, 164, 0xF38DCC4F);
+MS2_REPLACE_METHOD(0x141aacd70, UIQuestGuideDialog, CanAdd, 164, 0xF38DCC4F);
 
 // @0x141aace20
 bool UIQuestGuideDialog::FUN_141aace20(int nQuestId)
 {
     if (!FUN_14074b790(nQuestId))
         return false;
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return false;
     unsigned nMapId = WorldService::GetInstance()->FUN_141bd3060();
@@ -947,11 +947,11 @@ bool UIQuestGuideDialog::FUN_141aace20(int nQuestId)
 MS2_REPLACE_METHOD(0x141aace20, UIQuestGuideDialog, FUN_141aace20, 194, 0xEB892225);
 
 // @0x141aacef0
-void UIQuestGuideDialog::FUN_141aacef0(int nQuestId)
+void UIQuestGuideDialog::QueueQuestRemoval(int nQuestId)
 {
     m_removeQueue.Add(nQuestId);
 }
-MS2_REPLACE_METHOD(0x141aacef0, UIQuestGuideDialog, FUN_141aacef0, 41, 0x196C403A);
+MS2_REPLACE_METHOD(0x141aacef0, UIQuestGuideDialog, QueueQuestRemoval, 41, 0x196C403A);
 
 // @0x141aacf20
 void UIQuestGuideDialog::FUN_141aacf20()
@@ -961,9 +961,9 @@ void UIQuestGuideDialog::FUN_141aacf20()
 MS2_REPLACE_METHOD(0x141aacf20, UIQuestGuideDialog, FUN_141aacf20, 21, 0x0860DB21);
 
 // @0x141aacf40
-CStringW UIQuestGuideDialog::FUN_141aacf40(int nQuestId)
+CStringW UIQuestGuideDialog::GetQuestChapterName(int nQuestId)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return L"";
     CStringW strKind = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x50, nQuestId);
@@ -977,120 +977,120 @@ CStringW UIQuestGuideDialog::FUN_141aacf40(int nQuestId)
         case 9: strKind = GetStringCommonByKey(L"s_quest_alliance_quest");
         }
     }
-    CStringW strTitle = FUN_1416e7fb0(spData->m_28);
+    CStringW strTitle = GetChapterName(spData->m_28);
     return StringFormat<CStringW, CStringW>(L"[{0}] {1}", strKind, strTitle);
 }
-MS2_REPLACE_METHOD(0x141aacf40, UIQuestGuideDialog, FUN_141aacf40, 909, 0x310FE535);
+MS2_REPLACE_METHOD(0x141aacf40, UIQuestGuideDialog, GetQuestChapterName, 909, 0x310FE535);
 
 // @0x141aad300
-unsigned UIQuestGuideDialog::FUN_141aad300(int nChapter)
+unsigned UIQuestGuideDialog::GetChapterQuestCount(int nChapter)
 {
     ATL::CAtlArray<unsigned> quests;
     TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(nChapter, quests);
     return (unsigned)quests.GetCount();
 }
-MS2_REPLACE_METHOD(0x141aad300, UIQuestGuideDialog, FUN_141aad300, 88, 0x5AE2D51B);
+MS2_REPLACE_METHOD(0x141aad300, UIQuestGuideDialog, GetChapterQuestCount, 88, 0x5AE2D51B);
 
 // @0x141aaf410
 // The chapter sort: by start time.
-static bool FUN_141aaf410(MS2Ptr<CQuest> a, MS2Ptr<CQuest> b)
+static bool CompareQuestStartTime(MS2Ptr<CQuest> a, MS2Ptr<CQuest> b)
 {
     return a->GetStartTime() <= b->GetStartTime();
 }
 
 // @0x141aad360
-int UIQuestGuideDialog::FUN_141aad360(int nChapter, int nQuestId)
+int UIQuestGuideDialog::GetQuestIndexInChapter(int nChapter, int nQuestId)
 {
     int nIndex = 0;
     std::vector<MS2Ptr<CQuest>> quests;
     ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetQuestsFilteredVec(quests, 4, 0xb, nChapter);
-    std::sort(quests.begin(), quests.end(), FUN_141aaf410);
+    std::sort(quests.begin(), quests.end(), CompareQuestStartTime);
     for (std::vector<MS2Ptr<CQuest>>::iterator it = quests.begin(); it != quests.end(); ++it) {
         ++nIndex;
         MS2Ptr<CQuest> spQuest(*it);
-        if (spQuest->FUN_140bfc580() == nQuestId)
+        if (spQuest->GetQuestId() == nQuestId)
             return nIndex;
     }
     return -1;
 }
-MS2_REPLACE_METHOD(0x141aad360, UIQuestGuideDialog, FUN_141aad360, 360, 0x580E58D0);
+MS2_REPLACE_METHOD(0x141aad360, UIQuestGuideDialog, GetQuestIndexInChapter, 360, 0x580E58D0);
 
 // @0x141aad4d0
 CString UIQuestGuideDialog::FUN_141aad4d0(int nChapter, int nQuestId)
 {
-    unsigned nCount = FUN_141aad300(nChapter);
-    int nIndex = FUN_141aad360(nChapter, nQuestId);
+    unsigned nCount = GetChapterQuestCount(nChapter);
+    int nIndex = GetQuestIndexInChapter(nChapter, nQuestId);
     return StringFormat("{0}/{1}", nIndex, nCount);
 }
 MS2_REPLACE_METHOD(0x141aad4d0, UIQuestGuideDialog, FUN_141aad4d0, 121, 0xE571E032);
 
 // @0x141aad550
-CString UIQuestGuideDialog::FUN_141aad550(CQuest* pQuest)
+CString UIQuestGuideDialog::GetQuestIcon(CQuest* pQuest)
 {
     if (pQuest->IsComplete())
-        return SelectStringByQuestId(pQuest->FUN_140bfc580(), "epic", "satisfied", "repeat", "event");
+        return SelectStringByQuestId(pQuest->GetQuestId(), "epic", "satisfied", "repeat", "event");
     return "progress";
 }
-MS2_REPLACE_METHOD(0x141aad550, UIQuestGuideDialog, FUN_141aad550, 331, 0x02400718);
+MS2_REPLACE_METHOD(0x141aad550, UIQuestGuideDialog, GetQuestIcon, 331, 0x02400718);
 
 // @0x141aad6b0
 // Fills obj with the quest guide fields of one quest.
 int UIQuestGuideDialog::FUN_141aad6b0(CQuest* pQuest, ASObj& obj)
 {
     // The quest id is read again at each use.
-    obj.SetMemberUInt("id", pQuest->FUN_140bfc580());
+    obj.SetMemberUInt("id", pQuest->GetQuestId());
     obj.FUN_141aafcd0("type", pQuest->GetQuestType());
-    obj.FUN_1407cb9c0("repeat", FUN_1407640c0(pQuest->GetData().operator->()) != 0);
-    obj.FUN_1407cb9c0("satisfied", pQuest->IsComplete());
-    obj.FUN_1407cb9c0("progress", 1);
-    obj.FUN_1407cba60("icon", FUN_141aad550(pQuest));
-    obj.FUN_1407cbb20("title", FUN_1416e5210(pQuest->FUN_140bfc580(), CStringW(L"s_quest_name_with_level")));
-    obj.FUN_1407cbb20("chapterName", FUN_141aacf40(pQuest->FUN_140bfc580()));
-    obj.FUN_1407cba60("questIndex", FUN_141aad4d0(pQuest->GetData()->m_28, pQuest->FUN_140bfc580()));
+    obj.SetIntMember("repeat", FUN_1407640c0(pQuest->GetData().operator->()) != 0);
+    obj.SetIntMember("satisfied", pQuest->IsComplete());
+    obj.SetIntMember("progress", 1);
+    obj.SetStringMember("icon", GetQuestIcon(pQuest));
+    obj.SetWStringMember("title", GetQuestNameWithLevel(pQuest->GetQuestId(), CStringW(L"s_quest_name_with_level")));
+    obj.SetWStringMember("chapterName", GetQuestChapterName(pQuest->GetQuestId()));
+    obj.SetStringMember("questIndex", FUN_141aad4d0(pQuest->GetData()->m_28, pQuest->GetQuestId()));
     obj.FUN_1409c1180("acceptedDate", pQuest->GetStartTime());
-    obj.FUN_1407cbbe0("forceRegistGuide", FUN_141aace20(pQuest->FUN_140bfc580()));
+    obj.SetBoolMember("forceRegistGuide", FUN_141aace20(pQuest->GetQuestId()));
     int nAlliance = pQuest->GetData()->m_4c;
     if (nAlliance)
-        obj.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
-    FUN_141aaca80(obj, pQuest);
-    FUN_141aac3e0(obj, pQuest);
-    FUN_141aac6a0(obj, pQuest);
-    FUN_141aac9b0(obj, pQuest);
+        obj.SetStringMember("alliance", GetAllianceSymbol(nAlliance));
+    SetQuestGotoButtons(obj, pQuest);
+    SetQuestConditions(obj, pQuest);
+    SetQuestPeriod(obj, pQuest);
+    SetQuestNavigationState(obj, pQuest);
     return 1;
 }
 MS2_REPLACE_METHOD(0x141aad6b0, UIQuestGuideDialog, FUN_141aad6b0, 1287, 0xB67F5AA8);
 
 // @0x141aadbc0
-void UIQuestGuideDialog::FUN_141aadbc0()
+void UIQuestGuideDialog::UpdateDungeonMission()
 {
     ASObj obj(2);
-    if (FUN_141aae150(obj))
+    if (FillDungeonMissionEntity(obj))
         m_30->Invoke("updateMission", obj);
 }
-MS2_REPLACE_METHOD(0x141aadbc0, UIQuestGuideDialog, FUN_141aadbc0, 136, 0xC6517290);
+MS2_REPLACE_METHOD(0x141aadbc0, UIQuestGuideDialog, UpdateDungeonMission, 136, 0xC6517290);
 
 // @0x141aadc50
-void UIQuestGuideDialog::FUN_141aadc50()
+void UIQuestGuideDialog::ApplyAlignment()
 {
     if (m_alignment.get()) {
         int nWidth = 0, nHeight = 0;
-        FUN_141aadd10(&nWidth, &nHeight);
+        GetDialogSize(&nWidth, &nHeight);
         m_alignment->FUN_141901c10(m_30, nWidth, nHeight);
     }
 }
-MS2_REPLACE_METHOD(0x141aadc50, UIQuestGuideDialog, FUN_141aadc50, 173, 0xDF1191E2);
+MS2_REPLACE_METHOD(0x141aadc50, UIQuestGuideDialog, ApplyAlignment, 173, 0xDF1191E2);
 
 // @0x141aadd10
-void UIQuestGuideDialog::FUN_141aadd10(int* pnWidth, int* pnHeight)
+void UIQuestGuideDialog::GetDialogSize(int* pnWidth, int* pnHeight)
 {
     if (m_30 == NULL)
         return;
     if (ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30)) {
-        *pnWidth = pDialog->FUN_1422c1340();
+        *pnWidth = pDialog->GetWidthCeil();
         *pnHeight = pDialog->GetHeightCeil();
     }
 }
-MS2_REPLACE_METHOD(0x141aadd10, UIQuestGuideDialog, FUN_141aadd10, 148, 0xF2281377);
+MS2_REPLACE_METHOD(0x141aadd10, UIQuestGuideDialog, GetDialogSize, 148, 0xF2281377);
 
 // @0x141aaddb0
 bool UIQuestGuideDialog::FUN_141aaddb0(ASObj& obj)
@@ -1109,30 +1109,30 @@ bool UIQuestGuideDialog::FUN_141aaddb0(ASObj& obj)
     for (size_t i = 0; i < quests.GetCount(); ++i) {
         int nQuestId = quests[i];
         MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
-        MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+        MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
         for (size_t j = 0; j < spData->m_conditions.GetCount(); ++j) {
             MS2Ptr<CConditionCommonData> spCond(spData->m_conditions[j]);
             int bSatisfied = 0;
             if (spQuest.get())
                 bSatisfied = (spQuest->IsRewarded() || spQuest->GetProgress((int)j) >= spCond->m_nGoal) ? 1 : 0;
             ASObj entry(2);
-            entry.FUN_1407cbb20("text", FUN_1416e57d0(nQuestId, (int)j));
-            entry.FUN_1407cb9c0("satisfied", bSatisfied);
+            entry.SetWStringMember("text", GetQuestConditionText(nQuestId, (int)j));
+            entry.SetIntMember("satisfied", bSatisfied);
             conditions.PushObj(entry);
         }
     }
     obj.FUN_1409eb1d0("conditions", conditions);
-    obj.FUN_1407cb9c0("toggle", m_bMissionToggle);
+    obj.SetIntMember("toggle", m_bMissionToggle);
     return true;
 }
 MS2_REPLACE_METHOD(0x141aaddb0, UIQuestGuideDialog, FUN_141aaddb0, 910, 0x711502DA);
 
 // @0x141aae150
-bool UIQuestGuideDialog::FUN_141aae150(ASObj& obj)
+bool UIQuestGuideDialog::FillDungeonMissionEntity(ASObj& obj)
 {
     if (!m_30)
         return false;
-    MS2Ptr<RoomStageDungeonCli> spMission = FUN_140931510()->GetStage();
+    MS2Ptr<RoomStageDungeonCli> spMission = GetMyCharacter()->GetStage();
     if (spMission == 0)
         return false;
     MS2Ptr<DungeonRoom> spRoom = spMission->GetRoom();
@@ -1144,20 +1144,20 @@ bool UIQuestGuideDialog::FUN_141aae150(ASObj& obj)
         return false;
     CStringW strGoal = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x45, spRoom->GetDungeonRoomID());
     if (!strGoal.IsEmpty())
-        obj.FUN_1407cbb20("dungeonGoal", strGoal);
+        obj.SetWStringMember("dungeonGoal", strGoal);
     ASArray conditions(2);
     for (size_t i = 0; i < entries.size(); ++i) {
         MS2Ptr<DungeonMissionCli> spEntry(entries[i]);
         ASObj entry(2);
-        entry.FUN_1407cbb20("text", FUN_141aae4f0(spEntry));
-        entry.FUN_1407cbbe0("satisfied", false);
+        entry.SetWStringMember("text", FUN_141aae4f0(spEntry));
+        entry.SetBoolMember("satisfied", false);
         conditions.PushObj(entry);
     }
     obj.FUN_1409eb1d0("conditions", conditions);
-    obj.FUN_1407cb9c0("toggle", m_bMissionToggle);
+    obj.SetIntMember("toggle", m_bMissionToggle);
     return true;
 }
-MS2_REPLACE_METHOD(0x141aae150, UIQuestGuideDialog, FUN_141aae150, 913, 0x45911C36);
+MS2_REPLACE_METHOD(0x141aae150, UIQuestGuideDialog, FillDungeonMissionEntity, 913, 0x45911C36);
 
 // @0x141aae4f0
 CStringW UIQuestGuideDialog::FUN_141aae4f0(MS2Ptr<DungeonMissionCli> spEntry)
@@ -1169,7 +1169,7 @@ CStringW UIQuestGuideDialog::FUN_141aae4f0(MS2Ptr<DungeonMissionCli> spEntry)
 MS2_REPLACE_METHOD(0x141aae4f0, UIQuestGuideDialog, FUN_141aae4f0, 168, 0x5608B369);
 
 // @0x141aae5a0
-void UIQuestGuideDialog::FUN_141aae5a0()
+void UIQuestGuideDialog::RefreshRecommendedQuest()
 {
     if (!m_30)
         return;
@@ -1182,16 +1182,16 @@ void UIQuestGuideDialog::FUN_141aae5a0()
         m_nRecommendQuest = nQuestId;
     }
     else if (m_nRecommendQuest) {
-        FUN_141aac360(m_nRecommendQuest);
+        RemoveQuestEntity(m_nRecommendQuest);
         m_nRecommendQuest = 0;
     }
 }
-MS2_REPLACE_METHOD(0x141aae5a0, UIQuestGuideDialog, FUN_141aae5a0, 293, 0xF16BBB76);
+MS2_REPLACE_METHOD(0x141aae5a0, UIQuestGuideDialog, RefreshRecommendedQuest, 293, 0xF16BBB76);
 
 // @0x141aae6d0
 int UIQuestGuideDialog::FUN_141aae6d0()
 {
-    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xd0))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xd0))
         return 0;
     PCBase* pActor = ((class PCBase*)(WorldService::GetInstance())->FUN_141bd0cc0());
     if (!pActor)
@@ -1212,7 +1212,7 @@ int UIQuestGuideDialog::FUN_141aae6d0()
             continue;
         if (nTime > nBestTime) {
             nBestTime = nTime;
-            nBest = quests[i]->FUN_140bfc580();
+            nBest = quests[i]->GetQuestId();
         }
     }
     return ((class CQuestManager*)(class CQuestManager*)(((class CQuestManager*)FUN_140764020())))->GetNextQuestId(nBest, 1);
@@ -1222,7 +1222,7 @@ MS2_REPLACE_METHOD(0x141aae6d0, UIQuestGuideDialog, FUN_141aae6d0, 499, 0x25DB61
 // @0x141aae8d0
 int UIQuestGuideDialog::FUN_141aae8d0(int nQuestId, ASObj& obj)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return 0;
     PCBase* pActor = ((class PCBase*)(WorldService::GetInstance())->FUN_141bd0cc0());
@@ -1230,25 +1230,25 @@ int UIQuestGuideDialog::FUN_141aae8d0(int nQuestId, ASObj& obj)
         return 0;
     obj.SetMemberUInt("id", nQuestId);
     obj.FUN_141aafcd0("type", 0);
-    obj.FUN_1407cb9c0("repeat", FUN_1407640c0(spData.operator->()) != 0);
-    obj.FUN_1407cb9c0("satisfied", 0);
-    obj.FUN_1407cb9c0("progress", 0);
+    obj.SetIntMember("repeat", FUN_1407640c0(spData.operator->()) != 0);
+    obj.SetIntMember("satisfied", 0);
+    obj.SetIntMember("progress", 0);
     obj.FUN_1409c0dc0("icon", ((class CQuestManager*)FUN_140764020())->vfunc_1(nQuestId, 0) ? "able" : "init");
-    obj.FUN_1407cbb20("title", FUN_1416e5210(nQuestId, CStringW(L"s_quest_name_with_level")));
-    obj.FUN_1407cbb20("chapterName", FUN_141aacf40(nQuestId));
-    obj.FUN_1407cb9c0("acceptedDate", 0);
+    obj.SetWStringMember("title", GetQuestNameWithLevel(nQuestId, CStringW(L"s_quest_name_with_level")));
+    obj.SetWStringMember("chapterName", GetQuestChapterName(nQuestId));
+    obj.SetIntMember("acceptedDate", 0);
     int nAlliance = spData->m_4c;
     if (nAlliance)
-        obj.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
+        obj.SetStringMember("alliance", GetAllianceSymbol(nAlliance));
     ASArray conditions(2);
     ASObj entry(2);
-    entry.FUN_1407cbb20("text", FUN_141aaedd0(nQuestId));
-    entry.FUN_1407cb9c0("satisfied", 0);
+    entry.SetWStringMember("text", FUN_141aaedd0(nQuestId));
+    entry.SetIntMember("satisfied", 0);
     conditions.PushObj(entry);
     if ((int)(unsigned short)pActor->vfunc_78() < (int)(unsigned short)spData->m_require.m_level) {
         ASObj level(2);
-        level.FUN_1407cbb20("text", FUN_14028dfa0(CStringW(L"s_quest_condition_lack_level"), spData->m_require.m_level));
-        level.FUN_1407cb9c0("satisfied", 0);
+        level.SetWStringMember("text", FUN_14028dfa0(CStringW(L"s_quest_condition_lack_level"), spData->m_require.m_level));
+        level.SetIntMember("satisfied", 0);
         conditions.PushObj(level);
     }
     obj.FUN_1409eb1d0("conditions", conditions);
@@ -1259,16 +1259,16 @@ MS2_REPLACE_METHOD(0x141aae8d0, UIQuestGuideDialog, FUN_141aae8d0, 1263, 0x5587E
 // @0x141aaedd0
 CStringW UIQuestGuideDialog::FUN_141aaedd0(int nQuestId)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return L"";
     ATL::CAtlArray<unsigned> fields;
-    TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb2a0(spData->m_2e8, fields);
+    TSingleton<CFieldMetaTable>::GetInstance()->GetNpcFields(spData->m_2e8, fields);
     int nField = 0;
     if (fields.GetCount() == 1)
         nField = fields[0];
     else if (fields.GetCount() > 1)
-        nField = FUN_140c9b8e0()->NearestMap(fields);
+        nField = GetQuestNavigationMap()->NearestMap(fields);
     CStringW str;
     if (!nField)
         str = FUN_14028dfa0<unsigned>(CStringW(L"s_quest_desc_beginable_invalid_field"), reinterpret_cast<const unsigned&>(spData->m_2e8));
@@ -1282,7 +1282,7 @@ CStringW UIQuestGuideDialog::FUN_141aaedd0(int nQuestId)
 MS2_REPLACE_METHOD(0x141aaedd0, UIQuestGuideDialog, FUN_141aaedd0, 883, 0xB5583F38);
 
 // @0x141aaf150
-void UIQuestGuideDialog::FUN_141aaf150(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIQuestGuideDialog::GetNavigation(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_30 == NULL)
         return;
@@ -1300,19 +1300,19 @@ void UIQuestGuideDialog::FUN_141aaf150(const Scaleform::GFx::FunctionHandler::Pa
     QuestNavigation::TraceResult result;
     result.m_18 = data.PopUInt();
     ASObj obj(2);
-    if (FUN_140e7c990()->FUN_140c9a4c0(&result) != 1) {
-        obj.FUN_1407cb9c0("tracing", 1);
+    if (GetQuestNavigator()->TraceQuestTarget(&result) != 1) {
+        obj.SetIntMember("tracing", 1);
         obj.SetMemberFloat("rotation", result.m_2c.z + spMap->m_fCameraHAngle);
-        obj.FUN_1407cbb20("distance", result.m_38);
+        obj.SetWStringMember("distance", result.m_38);
     }
     else {
-        obj.FUN_1407cb9c0("tracing", 0);
+        obj.SetIntMember("tracing", 0);
         obj.SetMemberFloat("rotation", 0);
-        obj.FUN_1407cbb20("distance", GetStringCommonByKey(L"s_quest_navigation_none"));
+        obj.SetWStringMember("distance", GetStringCommonByKey(L"s_quest_navigation_none"));
     }
-    *params.pRetVal = obj.FUN_1422bb870();
+    *params.pRetVal = obj.GetValue();
 }
-MS2_REPLACE_METHOD(0x141aaf150, UIQuestGuideDialog, FUN_141aaf150, 688, 0x5A6ACE16);
+MS2_REPLACE_METHOD(0x141aaf150, UIQuestGuideDialog, GetNavigation, 688, 0x5A6ACE16);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMDATs

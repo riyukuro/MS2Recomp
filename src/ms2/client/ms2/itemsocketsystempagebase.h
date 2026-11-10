@@ -39,7 +39,7 @@ public:
     int FUN_140f6d670();
     MS2Ptr<CItem> CreateItem(int itemId, int grade);
     MS2Ptr<CItem> FUN_140f6ce00(int itemId, int grade, bool bindOwner, MS2Ptr<CItem> source);
-    MS2Ptr<CItem> FUN_140f6d050(MS2Ptr<TSocketGemStoneInfo> info, int grade, bool bindOwner);
+    MS2Ptr<CItem> CreateGemStoneItem(MS2Ptr<TSocketGemStoneInfo> info, int grade, bool bindOwner);
     ItemInfoSlot* GetItemSlot(const CString& name);
     ItemInfoSlot* SetInfoSlotItem(const CString& name, MS2Ptr<CItem> item);
     ItemInfoSlot* RefreshInfoSlot(const CString& name);
@@ -54,11 +54,11 @@ public:
     void ClearListSelection(MS2Ptr<Unk_SocketPageBag> control);
     void FUN_140f6dc70(const CString& name, CIngredientContainer& ingredients, ASObj& data, CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<CItem> excluded, __int64* price, MS2Ptr<SaleParam> sale);
     void SetSlotNew(int index, bool isNew);
-    void FUN_140f6e250(const CString& name, const CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<CItem> excluded, __int64* price, MS2Ptr<SaleParam> sale);
-    int FUN_140f6e580(MS2Ptr<CItem> item, MS2Ptr<CItem> excluded);
+    void UpdateIngredientCounts(const CString& name, const CAtlArray<MS2Ptr<CItem>>& items, MS2Ptr<CItem> excluded, __int64* price, MS2Ptr<SaleParam> sale);
+    int GetOwnedItemCount(MS2Ptr<CItem> item, MS2Ptr<CItem> excluded);
     int FUN_140f6e6e0();
     void FUN_140f6e700(__int64 uid);
-    void FUN_140f6e780();
+    void SetRestoreInventory();
 protected:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<ASMovieClip> m_root;

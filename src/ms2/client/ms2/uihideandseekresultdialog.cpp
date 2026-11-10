@@ -46,7 +46,7 @@ void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIndex
 void DestroyItemInfoSlot(const CString& strName);
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 
 // @0x140c20410 TPtr<PCBase> copy: AddRef through the pointee's slot 1
 // @0x140c206b0
@@ -76,8 +76,8 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, AScript a2, 
     ASArgList args;
     args.resize(3);
     FUN_1422bccb0(&args[0], a1);
-    FUN_1422bcc70(&args[1], Scaleform::GFx::Value(a2.FUN_1422bb890()));
-    FUN_1422bcc70(&args[2], Scaleform::GFx::Value(a3.FUN_1422bb890()));
+    SetValue(&args[1], Scaleform::GFx::Value(a2.FUN_1422bb890()));
+    SetValue(&args[2], Scaleform::GFx::Value(a3.FUN_1422bb890()));
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -89,7 +89,7 @@ UIHideAndSeekResultDialog::UIHideAndSeekResultDialog()
     m_nUnused = 0;
     m_nCount = 0;
     m_80 = 0;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140c1e7f0
@@ -111,7 +111,7 @@ void UIHideAndSeekResultDialog::vfunc_67()
     m_nItemId = 0;
     m_nUnused = 0;
     m_nCount = 0;
-    FUN_140c1f590();
+    ReleaseBoundIcons();
     UIDialog::vfunc_67();
 }
 MS2_REPLACE_METHOD(0x140C1E890, UIHideAndSeekResultDialog, vfunc_67, 94, 0xCE0B0531);
@@ -153,14 +153,14 @@ void UIHideAndSeekResultDialog::vfunc_43()
 MS2_REPLACE_METHOD(0x140C1EA10, UIHideAndSeekResultDialog, vfunc_43, 167, 0x42FBD539);
 
 // @0x140c1eac0
-void UIHideAndSeekResultDialog::FUN_140c1eac0(int nRound, int nItemId, int nUnused, int nCount)
+void UIHideAndSeekResultDialog::SetResult(int nRound, int nItemId, int nUnused, int nCount)
 {
     m_nRound = nRound;
     m_nItemId = nItemId;
     m_nUnused = nUnused;
     m_nCount = nCount;
 }
-MS2_REPLACE_METHOD(0x140C1EAC0, UIHideAndSeekResultDialog, FUN_140c1eac0, 80, 0x0B85E4B4);
+MS2_REPLACE_METHOD(0x140C1EAC0, UIHideAndSeekResultDialog, SetResult, 80, 0x0B85E4B4);
 
 // @0x140c1eb20
 void UIHideAndSeekResultDialog::FUN_140c1eb20()
@@ -169,7 +169,7 @@ void UIHideAndSeekResultDialog::FUN_140c1eb20()
         return;
     ASObj objMine(2);
     ASArray rows(2);
-    ATL::CRBMap<unsigned, Unk_WsV118>* pMap = WorldService::GetInstance()->FUN_141bd36b0();
+    ATL::CRBMap<unsigned, Unk_WsV118>* pMap = WorldService::GetInstance()->GetPlayerMap();
     for (POSITION pos = pMap->GetHeadPosition(); pos != 0; pMap->GetNext(pos))
     {
         // the map element (Unk_WsV118, one pointer) is read as the TPtr<PCBase> it holds
@@ -206,8 +206,8 @@ void UIHideAndSeekResultDialog::FUN_140c1eec0(AScript objMine, MS2Ptr<Unk_HsInfo
     const CStringW& rName = strName;
     CStringW strText = FUN_14028dfa0<CStringW, unsigned>(CStringW(L"s_hideandseek_winner_reward"), rName, reinterpret_cast<const unsigned&>(nCount));
     const CStringW& rText = strText;
-    static_cast<ASObj&>(objMine).FUN_1407cba60("binding", rIcon);
-    static_cast<ASObj&>(objMine).FUN_1407cbb20("text", rText);
+    static_cast<ASObj&>(objMine).SetStringMember("binding", rIcon);
+    static_cast<ASObj&>(objMine).SetWStringMember("text", rText);
 }
 
 // @0x140c1f120
@@ -216,12 +216,12 @@ void UIHideAndSeekResultDialog::FUN_140c1f120(ASArray& rows, MS2Ptr<Unk_HsInfo> 
     ASObj row(2);
     row.FUN_140c1f8b0("team", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a6a0());
     ((ASObj*)(ASObj*)(&row))->FUN_140bd0d90("job", ((class PC*)(class PCBase*)(pPC))->GetSubJob());
-    ((class AScript&)(row)).FUN_1407cbb20("charName", pPC->vfunc_77());
+    ((class AScript&)(row)).SetWStringMember("charName", pPC->vfunc_77());
     row.SetMemberUInt("kill", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a660());
-    ((class AScript&)(row)).FUN_1407cb9c0("death", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a4d0() != 0);
+    ((class AScript&)(row)).SetIntMember("death", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a4d0() != 0);
     row.FUN_1409c1180("exp", reinterpret_cast<HideAndSeek::Info*>(spInfo.operator->())->FUN_14050a600());
-    row.FUN_1407cbbe0("isMe", bMine);
-    rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
+    row.SetBoolMember("isMe", bMine);
+    rows.PushValue(Scaleform::GFx::Value(row.GetValue()));
 }
 
 // @0x140c1f300
@@ -243,7 +243,7 @@ CString UIHideAndSeekResultDialog::FUN_140c1f300(unsigned int nItemId, int nCoun
 MS2_REPLACE_METHOD(0x140C1F300, UIHideAndSeekResultDialog, FUN_140c1f300, 642, 0x90239FD2);
 
 // @0x140c1f590
-void UIHideAndSeekResultDialog::FUN_140c1f590()
+void UIHideAndSeekResultDialog::ReleaseBoundIcons()
 {
     std::set<CString>::iterator it = m_boundIcons.begin();
     std::set<CString>::iterator itEnd = m_boundIcons.end();
@@ -251,7 +251,7 @@ void UIHideAndSeekResultDialog::FUN_140c1f590()
         DestroyItemInfoSlot(*it);
     m_boundIcons.clear();
 }
-MS2_REPLACE_METHOD(0x140C1F590, UIHideAndSeekResultDialog, FUN_140c1f590, 135, 0x47207A4E);
+MS2_REPLACE_METHOD(0x140C1F590, UIHideAndSeekResultDialog, ReleaseBoundIcons, 135, 0x47207A4E);
 
 // @0x140c21fb0 (the UCRT header-inline memcpy_s without the memset of the newer headers, emitted here as an ordinary function)
 #define MS2_VALIDATE_RETURN_ERRCODE(expr, errorcode)                                                           \

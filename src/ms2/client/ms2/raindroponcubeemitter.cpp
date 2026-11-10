@@ -135,7 +135,7 @@ struct Unk_RainPaths
     char m_pad_0000[0x100];
     CString m_strTexture;
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 class Unk_ResourceMgr* GetNifLoadingService();   // the CNifLoadingService instance (0x140a0afd0, the definer's signature)
 
 // The scene registry: takes the list of nodes to draw, returns a handle.
@@ -374,7 +374,7 @@ void RainDropSystem::Create()
     for (unsigned int i = 0; i < 16; i++)
     {
         CString strName;
-        strName.Format("%sRainDrop%d.dds", (const char*)((struct Unk_RainPaths*)FUN_1401d31f0())->m_strTexture, i);
+        strName.Format("%sRainDrop%d.dds", (const char*)((struct Unk_RainPaths*)GetCommonResource())->m_strTexture, i);
         m_arrTexture.Add(reinterpret_cast<CNifLoadingService*>(GetNifLoadingService())->GetTexture(strName, 5));
     }
 

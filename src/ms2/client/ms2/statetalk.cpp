@@ -81,7 +81,7 @@ class Unk_PCBaseComp_aa8 : public CPtred { };
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // ---- StateTalk ----
 
@@ -181,7 +181,7 @@ void StateTalk::vfunc_9(double fTime)
         if (m_n10 == 0x4a)
         {
             NoticeMessage kReq;
-            kReq.m_strName = *(const CString*)((const char*)((void*)FUN_1401d31f0()) + 0x290);
+            kReq.m_strName = *(const CString*)((const char*)((void*)GetCommonResource()) + 0x290);
             kReq.m_nObject = 0;
             kReq.SetActor(m_pOwner->GetObjectId());
             m_n44 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
@@ -189,7 +189,7 @@ void StateTalk::vfunc_9(double fTime)
         else if (m_n10 == 0x4b)
         {
             NoticeMessage kReq;
-            kReq.m_strName = *(const CString*)((const char*)((void*)FUN_1401d31f0()) + 0x298);
+            kReq.m_strName = *(const CString*)((const char*)((void*)GetCommonResource()) + 0x298);
             kReq.m_nObject = 0;
             kReq.SetActor(m_pOwner->GetObjectId());
             m_n44 = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
@@ -217,7 +217,7 @@ void StateTalk::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
 {
     (void)pkSeq;
     (void)fEventTime;
-    if (FUN_1417b8560() && FUN_1417b7e40() == 0x47 && eSequenceID == static_cast<NiActorManager*>(pkManager)->GetTargetAnimation())
+    if (FUN_1417b8560() && GetStateId() == 0x47 && eSequenceID == static_cast<NiActorManager*>(pkManager)->GetTargetAnimation())
         m_n10 = 0x48;
 }
 
@@ -230,7 +230,7 @@ int StateTalk::FUN_1417fca20()
 
 // A dialogue branch was chosen: 1 is the first effect, 2-3 the second, anything else just shows the anim.
 // @0x1417fca60
-void StateTalk::FUN_1417fca60(int n)
+void StateTalk::SelectDialogueBranch(int n)
 {
     switch (n)
     {

@@ -36,7 +36,7 @@ static CString s_strSortNames2[] = {"None", "Buy", "Like", "PriceLow", "PriceHig
 
 // ---- externals ----
 extern Scaleform::GFx::Value DAT_143b0ae18;                     // the undefined value an effect clip starts from
-Scaleform::GFx::Movie*FUN_1422bb8b0(int);                              // the movie of a UI layer
+Scaleform::GFx::Movie*GetMovie(int);                              // the movie of a UI layer
 void FUN_1422c63f0(Scaleform::GFx::Value& value, int nGroup);   // unbind
 void FUN_1422c6380(Scaleform::GFx::Value& value, int nGroup);   // bind
 void FUN_1422bce70(Scaleform::GFx::Value*, const char*);        // Value::SetString
@@ -93,7 +93,7 @@ void ASEffect::BindChildren()
 {
     if (IsLoaded())
         return;
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(m_nMovieId);
     if (pMovie == 0)
         return;
     pMovie->CreateObject(&m_value, "export_additional_effect", 0, 0);
@@ -103,7 +103,7 @@ void ASEffect::BindChildren()
     m_b0 = FUN_1409b4560("m_buffBorder");
     m_c0 = FUN_1409b4620("m_textField");
     m_d0 = FUN_1409b4620("m_textCountField");
-    FUN_1422c3180("GetTooltipCallback", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ASEffect::GetTooltip));
+    AddMemberCallback("GetTooltipCallback", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ASEffect::GetTooltip));
     FUN_1422c6380(m_value, 2);
 }
 
@@ -124,13 +124,13 @@ void ASEffect::Update()
     if (nElapsed < 500)
     {
         unsigned nFrame = nElapsed * 60 / 1000;
-        if (m_a0->FUN_1422c2300() != nFrame)
+        if (m_a0->GetCurrentFrame() != nFrame)
             m_a0->vfunc_14(nFrame);
         return;
     }
     if (m_buff->m_nStartTick == m_buff->m_nEndTick || m_buff->GetLevelData()->IsHideBuffIcon())
     {
-        if (m_a0->FUN_1422c2300() != 0x1e)
+        if (m_a0->GetCurrentFrame() != 0x1e)
             m_a0->vfunc_14(0x1e);
         return;
     }
@@ -139,7 +139,7 @@ void ASEffect::Update()
     {
         float fTotal = FUN_14028d280(m_buff->FUN_14096d330());
         int nFrame = (int)(30.0f + (120.0f * (fTotal - fRemain)) / fTotal);
-        if (m_a0->FUN_1422c2300() != nFrame)
+        if (m_a0->GetCurrentFrame() != nFrame)
             m_a0->vfunc_14(nFrame);
         if (reinterpret_cast<Unk_IntervalTimer&>(m_94).Check(100) != 0)
             m_c0->SetTextW(FormatRemain(fRemain));
@@ -147,7 +147,7 @@ void ASEffect::Update()
     }
     m_e8 = false;
     int nEndFrame = 0x95;
-    if (m_a0->FUN_1422c2300() != nEndFrame)
+    if (m_a0->GetCurrentFrame() != nEndFrame)
         m_a0->vfunc_14(nEndFrame);
     m_c0->SetTextW(L"");
 }
@@ -229,7 +229,7 @@ void ASEffect::GetTooltip(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASTooltip tip(2);
     ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e2750((void*)(m_buff->GetLevelData()), m_e0, m_buff->GetRemainTicks());
-    *params.pRetVal = tip.FUN_1422bb870();
+    *params.pRetVal = tip.GetValue();
 }
 
 // @0x1409b3a20
@@ -329,8 +329,8 @@ ASEffectManager::ASEffectManager(const Scaleform::GFx::Value& v, int nMovieId)
 {
     m_80 = FUN_1409b6610(m_nMovieId, CString("flash.display.MovieClip"), 0, 0);
     m_90 = FUN_1409b6610(m_nMovieId, CString("flash.display.MovieClip"), 0, 0);
-    FUN_1422c6900(m_80->FUN_1422bb870());
-    FUN_1422c6900(m_90->FUN_1422bb870());
+    AddChild(m_80->GetValue());
+    AddChild(m_90->GetValue());
 }
 
 // @0x1409b5580
@@ -529,12 +529,12 @@ void ASEffectManager::Attach(MS2Ptr<ASEffect> spEffect)
     spEffect->BindChildren();
     if (spEffect->IsBuffType())
     {
-        m_80->FUN_1422c6900(spEffect->FUN_1422bb870());
+        m_80->AddChild(spEffect->GetValue());
         InsertSorted(m_100, spEffect);
     }
     else
     {
-        m_90->FUN_1422c6900(spEffect->FUN_1422bb870());
+        m_90->AddChild(spEffect->GetValue());
         InsertSorted(m_110, spEffect);
     }
     m_a8 = true;
@@ -545,12 +545,12 @@ void ASEffectManager::Detach(MS2Ptr<ASEffect> spEffect)
 {
     if (spEffect->IsBuffType())
     {
-        m_80->FUN_1422c6b70(spEffect->FUN_1422bb870());
+        m_80->RemoveChild(spEffect->GetValue());
         Remove(m_100, spEffect);
     }
     else
     {
-        m_90->FUN_1422c6b70(spEffect->FUN_1422bb870());
+        m_90->RemoveChild(spEffect->GetValue());
         Remove(m_110, spEffect);
     }
     m_a8 = true;
@@ -559,7 +559,7 @@ void ASEffectManager::Detach(MS2Ptr<ASEffect> spEffect)
 // @0x1409b6610
 MS2Ptr<ASMovieClip> FUN_1409b6610(int nMovieId, CString strClass, __int64 a1, int a2)
 {
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(nMovieId);
     if (pMovie == 0)
         return MS2Ptr<ASMovieClip>(0);
     Scaleform::GFx::Value v;

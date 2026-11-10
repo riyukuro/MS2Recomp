@@ -27,7 +27,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -84,9 +84,9 @@ void ItemGachaBoxTable::Load()
     m_map.clear();
     CString strDir;
     strDir.Format("%s", "Table");
-    CString strPath = FUN_14071a5b0(strDir, "gacha_info.xml");
+    CString strPath = GetXmlPath(strDir, "gacha_info.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)

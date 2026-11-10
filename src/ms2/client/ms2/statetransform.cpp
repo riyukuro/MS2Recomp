@@ -25,7 +25,7 @@
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141bd1a10(class Unk_WsC_GameObj*);
+    int GetObjectKind(class Unk_WsC_GameObj*);
     static class WorldService* GetInstance();
 };
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -57,7 +57,7 @@ void StateTransform::vfunc_4(StateData* pData)
     const char* pszEffect = "CH/Common/Eff_FittingDoll.xml";
     Unk_EffectQuery query;
     query.m_strName = pszEffect;
-    query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
+    query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetObjectKind((class Unk_WsC_GameObj*)(m_pOwner));
     query.SetActor(m_pOwner->GetObjectId());
     m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->PlayAnimation("Equip_Change_Mantle_A", 1.0f, false, false);
@@ -118,7 +118,7 @@ void StateTransformDoll::vfunc_4(StateData* pData)
     m_nEndTime = nNow + (int)FUN_14028d260(1.0f);
     Unk_EffectQuery query;
     query.m_strName = pszEffect;
-    query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
+    query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetObjectKind((class Unk_WsC_GameObj*)(m_pOwner));
     query.SetActor(m_pOwner->GetObjectId());
     m_nEffect = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
     m_pOwner->PlayAnimation("Equip_Change_Mantle_A", 1.0f, false, false);

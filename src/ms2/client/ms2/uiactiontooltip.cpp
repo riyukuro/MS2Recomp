@@ -27,7 +27,7 @@
 template <> template <>
 MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEntity>&);
 
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
+MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
 
 // The client's world service and the local player (worldservice.h spells the player as void*).
 struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer*);   // C3: was FUN_140a7b810
@@ -43,9 +43,9 @@ public:
 };
 
 
-// The key hint table (FUN_1409331f0) and the options flag behind FUN_1409a8b10.
-class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); };   // ckeytable.h's key table (its FUN_1409331f0 decl is aliased)
-class Unk_SoundSink* FUN_1409331f0();   // C3: the key table (calls cast back)
+// The key hint table (GetKeyTable) and the options flag behind FUN_1409a8b10.
+class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); };   // ckeytable.h's key table (its GetKeyTable decl is aliased)
+class Unk_SoundSink* GetKeyTable();   // C3: the key table (calls cast back)
 class CGameOption;
 struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: was GetGamepadState
 int FUN_141277f40();   // C3: was FUN_141277f40
@@ -97,7 +97,7 @@ CString UIActionTooltip::GetTypeName()
 void UIActionTooltip::vfunc_15()
 {
     if (FUN_1418b2140() != 0)
-        FUN_1418b1e60();
+        HideAction();
     else if (m_pAction != 0)
         FUN_1418b1ef0();
     else
@@ -121,7 +121,7 @@ void UIActionTooltip::vfunc_2()
 // @0x1418b16c0
 void UIActionTooltip::vfunc_3()
 {
-    FUN_1418b1e60();
+    HideAction();
     UIHeadUpDisplay::vfunc_3();
 }
 
@@ -129,9 +129,9 @@ void UIActionTooltip::vfunc_3()
 void UIActionTooltip::FUN_1418b16f0()
 {
     if (FUN_1418b23a0() == 0x1e || operator==(FUN_1418b1a20(), L""))
-        FUN_1418b1e60();
+        HideAction();
     else if (FUN_1418b2140() != 0)
-        FUN_1418b1e60();
+        HideAction();
     else
         FUN_1418b1ab0();
 }
@@ -157,11 +157,11 @@ CStringW UIActionTooltip::GetText()
 // @0x1418b1890
 void UIActionTooltip::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 
 // @0x1418b1900
-ActionKeyObject* UIActionTooltip::FUN_1418b1900()
+ActionKeyObject* UIActionTooltip::GetCurrentAction()
 {
     MyPC* pPlayer = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -181,17 +181,17 @@ int UIActionTooltip::FUN_1418b1950()
 }
 
 // @0x1418b1990
-CStringW UIActionTooltip::FUN_1418b1990()
+CStringW UIActionTooltip::GetKeyHintText()
 {
     int nFlag = *((unsigned char const*)GetGamepadState((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))) ? 2 : 0;
     int nId = FUN_1418b1950();
-    return reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(nId, nFlag);
+    return reinterpret_cast<CKeyTable*>(GetKeyTable())->GetActionKeyName(nId, nFlag);
 }
 
 // @0x1418b1a20
 CStringW UIActionTooltip::FUN_1418b1a20()
 {
-    ActionKeyObject* pAction = FUN_1418b1900();
+    ActionKeyObject* pAction = GetCurrentAction();
     if (pAction == 0)
         return CStringW(L"");
     return pAction->vfunc_6();
@@ -202,7 +202,7 @@ void UIActionTooltip::FUN_1418b1ab0()
 {
     if (m_30.get() != 0)
     {
-        ActionKeyObject* pAction = FUN_1418b1900();
+        ActionKeyObject* pAction = GetCurrentAction();
         if (pAction != 0 && pAction->vfunc_6() != L"")
         {
             m_pAction = pAction;
@@ -213,14 +213,14 @@ void UIActionTooltip::FUN_1418b1ab0()
             if (Unk_GcVec3HasValue((struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget)))
                 const_cast<Vector3&>(((const struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget))->GetValue()).z += fLift;
             FUN_1418b1ef0();
-            m_30->FUN_1412e80d0("show", FUN_1418b1990(), pAction->vfunc_6(), pAction->vfunc_8());
+            m_30->FUN_1412e80d0("show", GetKeyHintText(), pAction->vfunc_6(), pAction->vfunc_8());
             ChromaSDK::GetChromaManager()->OnKeySkill(FUN_1418b1950(), 0);
         }
     }
 }
 
 // @0x1418b1e60
-void UIActionTooltip::FUN_1418b1e60()
+void UIActionTooltip::HideAction()
 {
     if (m_pAction == 0)
         return;
@@ -251,7 +251,7 @@ void UIActionTooltip::FUN_1418b1ef0()
             efd::Point2 kScreen;
             FUN_140d00fb0(*((Vector3*)&((struct Unk_GcOptVec3*)(struct Unk_AkoTarget*)(&m_kTarget))->GetValue()), &kScreen);
             int nWidth = spEntity->ASDisplayObject::FUN_1422c1500();
-            float fX = ClampProxyValue<float>(kScreen.x, 0, (float)(nWidth - spEntity->FUN_1422c1340()));
+            float fX = ClampProxyValue<float>(kScreen.x, 0, (float)(nWidth - spEntity->GetWidthCeil()));
             int nHeight = spEntity->ASDisplayObject::FUN_1422c1530();
             float fY = ClampProxyValue<float>(kScreen.y, 0, (float)(nHeight - spEntity->GetHeightCeil()));
             spEntity->SetPositionFloat(fX, fY);
@@ -273,7 +273,7 @@ int UIActionTooltip::FUN_1418b2140()
     case 0x16:
         return ((class UITalkManager*)(void*)(GetUITalkManager()))->GetTalking();
     case 0x10:
-        return TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e56) == 0;
+        return TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e56) == 0;
     case 4:
     case 0x11:
     case 0x12:
@@ -284,9 +284,9 @@ int UIActionTooltip::FUN_1418b2140()
         return pMyPC->GetCurStateId() == 0x19;
     }
     case 0xe:
-        return TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e77) == 0;
+        return TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e77) == 0;
     case 0x13:
-        return TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4ebd) == 0;
+        return TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4ebd) == 0;
     case 0x1a:
     {
         MyPC* pMyPC = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());

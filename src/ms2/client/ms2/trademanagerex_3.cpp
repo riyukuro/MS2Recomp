@@ -85,13 +85,13 @@ int TradeSlotBag::FUN_14185ec70(void*)
 __int64 FUN_14185ec90(int nSlot)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > items;
-    DAT_143ab2e80.FUN_14185b520(items);
+    DAT_143ab2e80.GetAllItems(items);
     for (unsigned i = 0; i < items.GetCount(); i++)
     {
         MS2Ptr<CItem> spItem = items.GetAt(i);
         if (spItem.get() ? true : false)
         {
-            if (((CItem*)spItem)->FUN_140526b50() == nSlot)
+            if (((CItem*)spItem)->GetSlot() == nSlot)
                 return ((CItem*)spItem)->GetItemUid();
         }
     }
@@ -99,7 +99,7 @@ __int64 FUN_14185ec90(int nSlot)
 }
 
 // @0x14185edc0
-TradeSlotBag* FUN_14185edc0(NotifyContext::BindData* p)
+TradeSlotBag* GetTradeSlotBag(NotifyContext::BindData* p)
 {
     TradeSlotBag* pBag = 0;
     if (p != 0 && p->TypeCast(0x620005a, (void**)&pBag))

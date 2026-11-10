@@ -34,7 +34,7 @@ public:
     virtual bool vfunc_9();                                     // 9 0x141801400 update while running
     virtual int vfunc_12();                                     // 12 0x141802db0 return 8
 
-    void FUN_141801900(void* pUnused);                            // 0x141801900 apply the tint to every active mesh
+    void ApplyTint(void* pUnused);                            // 0x141801900 apply the tint to every active mesh
 
 public:
     int m_nKind;                    // +0x30 0 ice, 1 fire, 2 poison, 3 dark, 4 super, 7 other

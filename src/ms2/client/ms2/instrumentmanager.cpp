@@ -177,7 +177,7 @@ public:
     char m_pad[0x598];
     CString m_strEnsembleEffect;                                            // +0x598
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
           // a feature is enabled
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
@@ -195,15 +195,15 @@ public:
     class Unk_XmlNode* NextSibling(char const*);
 };
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 
 void FUN_14125fe20(Unk_SoundState* pSound);                                 // reapply the sound volumes
 int FUN_141260310(Unk_SoundState* pSound);                                  // the instrument volume
 int GetServerTick();                                                        // the server clock bias
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CStringW BlockFormat(int nId);                                              // system notice text
-void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);  // message box
-void FUN_1412751f0(const CStringW& str, int a, int b);                      // notice
+void ShowMessageBox(CStringW strText, int nType, void* p, CStringW strTag);  // message box
+void ShowSystemNotice(const CStringW& str, int a, int b);                      // notice
 void FUN_1412751b0(const CStringW& str, int nType);                         // system chat notice
 int FUN_141276180(const CString& strChannel, const CString& strArg);        // the notice log
 void Unk_CoupleEmotionSplit(CString& strText, std::vector<CString>& out, const char* pszSep);   // split
@@ -255,21 +255,21 @@ CInstrumentManager::CInstrumentManager()
     : m_flags(0), m_instrument(0), m_instrumentUid(0), m_scoreUid(0), m_ensemble(false), m_playing(false),
       m_performing(false), m_refs(0), m_remote(false), m_baseTime(0x7fffffff), m_muted(false), m_volume(0)
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(10))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(10))
         return;
     m_midi.Open();
     for (int i = 0; i < 0x10; i++)
         m_slots[i].Init();
     m_remoteVoices.clear();
     WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
-    TSingleton<UIBuddyEventDispatcher>::GetInstance()->FUN_1418d9450(this);
+    TSingleton<UIBuddyEventDispatcher>::GetInstance()->AddListener(this);
 }
 
 // @0x140d05e50
 CInstrumentManager::~CInstrumentManager()
 {
     m_midi.Close();
-    TSingleton<UIBuddyEventDispatcher>::GetInstance()->FUN_1418d94e0(this);
+    TSingleton<UIBuddyEventDispatcher>::GetInstance()->RemoveListener(this);
 }
 
 // @0x140d05f70
@@ -421,7 +421,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         // the ensemble was cancelled
         UIPlayInstrumentDialog* pDialog = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
         if (pDialog != 0)
-            pDialog->FUN_14100e9a0(1);
+            pDialog->SetMode(1);
         SetPcState(0x7d);
     }
     else if (nType == 2 || nType == 4)
@@ -447,7 +447,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
         {
-            spItem->FUN_140524eb0(packet);
+            spItem->ReadFromStream(packet);
             ((class Unk_ImItemEvents*)GetItemEventDispatcher())->vfunc_3(spItem.get(), 0);
             UIWriteMusicDialog* pDialog = Unk_ImGetDialog<UIWriteMusicDialog>(0x4eed);
             if (pDialog != 0)
@@ -489,7 +489,7 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         if (pMe == 0)
             return;
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-        ((Unk_EffectTarget&)(kTarget)).m_strName = ((class Unk_ImResource*)FUN_1401d31f0())->m_strEnsembleEffect;
+        ((Unk_EffectTarget&)(kTarget)).m_strName = ((class Unk_ImResource*)GetCommonResource())->m_strEnsembleEffect;
         ((Unk_EffectTarget&)(kTarget)).m_nKind = pActor == pMe ? 1 : 3;
         kTarget.SetActor(reinterpret_cast<GameObject*>(pActor)->GetObjectId());
         TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->InsertEffect((Unk_EffectTarget&)(kTarget));
@@ -500,10 +500,10 @@ void CInstrumentManager::OnPacket(CInPacket& packet)
         int nResult = packet.ReadUInt8();
         UIWriteMusicDialog* pWrite = Unk_ImGetDialog<UIWriteMusicDialog>(0x4eed);
         if (pWrite != 0)
-            pWrite->FUN_140ff0090(nResult);
+            pWrite->OnMakeScoreResult(nResult);
         UIPlayInstrumentDialog* pDialog = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
         if (pDialog != 0)
-            pDialog->FUN_14100e9a0(1);
+            pDialog->SetMode(1);
     }
 }
 
@@ -564,7 +564,7 @@ bool CInstrumentManager::SetPcState(int nState)
 // @0x140d07260
 void CInstrumentManager::SetEnsemble(bool bEnsemble)
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(10))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(10))
         return;
     if (m_ensemble == bEnsemble)
         return;
@@ -603,12 +603,12 @@ void CInstrumentManager::NoteOn(int nNote)
         return;
     if (!spItem->FUN_140528980())
     {
-        FUN_1412751f0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 1, 1);
         return;
     }
     if (reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bdb660(3) != 0)
     {
-        FUN_1412751f0(BlockFormat(0x62), 1, 1);
+        ShowSystemNotice(BlockFormat(0x62), 1, 1);
         FUN_141276180(s_strNotThisPlace, "");
         return;
     }
@@ -671,23 +671,23 @@ bool CInstrumentManager::PlayScore(__int64 nScoreUid)
     MS2Ptr<CItem> spScore = g_143ab2a90.FindItemByUid(nScoreUid);
     if (spScore == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
         return false;
     }
     if (!spScore->FUN_140528980())
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
         return false;
     }
     MS2Ptr<CItem> spInstrument = g_143ab2a90.FindItemByUid(m_instrumentUid);
     if (spInstrument == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
         return false;
     }
     if (!spInstrument->FUN_140528980())
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
         return false;
     }
     CItemData* pData = (CItemData*)spScore->FUN_140527840();
@@ -697,7 +697,7 @@ bool CInstrumentManager::PlayScore(__int64 nScoreUid)
         return false;
     if (reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bdb660(3) != 0)
     {
-        FUN_1412751f0(BlockFormat(0x62), 1, 1);
+        ShowSystemNotice(BlockFormat(0x62), 1, 1);
         FUN_141276180(s_strNotThisPlace, "");
         return false;
     }
@@ -718,29 +718,29 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
         return false;
     if (!reinterpret_cast<MyPC*>(pMe)->IsInParty())
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_ui_need_party_for_ensemble"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_play_instrument_ui_need_party_for_ensemble"), 0, 0, CStringW(L""));
         return false;
     }
     MS2Ptr<CItem> spInstrument = g_143ab2a90.FindItemByUid(m_instrumentUid);
     if (spInstrument == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
         return false;
     }
     if (!spInstrument->FUN_140528980())
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_play_instrument_invalid_instrument"), 0, 0, CStringW(L""));
         return false;
     }
     MS2Ptr<CItem> spScore = g_143ab2a90.FindItemByUid(nScoreUid);
     if (spScore == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
         return false;
     }
     if (!spScore->FUN_140528980())
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_play_instrument_invalid_music_score"), 0, 0, CStringW(L""));
         return false;
     }
     CItemData* pData = (CItemData*)spScore->FUN_140527840();
@@ -750,7 +750,7 @@ bool CInstrumentManager::PlayEnsemble(__int64 nScoreUid)
         return false;
     if (reinterpret_cast<Unk_ImWorld*>(WorldService::GetInstance())->FUN_141bdb660(3) != 0)
     {
-        FUN_1412751f0(BlockFormat(0x62), 1, 1);
+        ShowSystemNotice(BlockFormat(0x62), 1, 1);
         FUN_141276180(s_strNotThisPlace, "");
         return false;
     }
@@ -872,9 +872,9 @@ int CInstrumentManager::PlayScoreFile(const CString& strName, int nTime, int nPr
 {
     if (m_programOverride.HasValue())
         nProgram = m_programOverride.Value();
-    CString strPath = FUN_14071a5b0("MusicScore", strName);
+    CString strPath = GetXmlPath("MusicScore", strName);
     TiXmlDocument doc;
-    if (((class Unk_ImFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_ImFiles*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     Unk_ImXmlNode* pRoot = ((class Unk_ImXmlNode*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -985,7 +985,7 @@ void CInstrumentManager::OnPerformStart(int nOwner, int nStart, int nEnd, bool b
         }
         UIPlayInstrumentDialog* pDialog = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
         if (pDialog != 0)
-            pDialog->FUN_14100d260(nStart, nEnd);
+            pDialog->OnScorePlayStart(nStart, nEnd);
         if (m_remote)
         {
             SetPcState(0x81);
@@ -1018,7 +1018,7 @@ void CInstrumentManager::OnPerformEnd(int nOwner)
         m_scoreUid = 0;
         UIPlayInstrumentDialog* pDialog = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
         if (pDialog != 0)
-            pDialog->FUN_14100d600();
+            pDialog->OnScorePlayEnd();
         SetPcState(0x7d);
         m_remote = false;
     }
@@ -1069,7 +1069,7 @@ void CInstrumentManager::SendCompose(void* pScore)
     FUN_140710590(packet);
 }
 
-bool FUN_1407105c0(COutPacket* packet, int nCount, int nMs);                // throttled send
+bool SendPacketThrottled(COutPacket* packet, int nCount, int nMs);                // throttled send
 
 // @0x140d09c80
 void CInstrumentManager::SendScoreText(__int64 nItemUid)
@@ -1077,7 +1077,7 @@ void CInstrumentManager::SendScoreText(__int64 nItemUid)
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.Encode1(10);
     packet.Encode8(nItemUid);
-    FUN_1407105c0(&packet, 10, 3000);
+    SendPacketThrottled(&packet, 10, 3000);
 }
 
 // @0x140d09cf0
@@ -1439,7 +1439,7 @@ void CInstrumentManager::CheckPlayState()
     {
         UIPlayInstrumentDialog* pDialog = Unk_ImGetDialog<UIPlayInstrumentDialog>(0x4eec);
         if (pDialog != 0)
-            pDialog->FUN_14100e9a0(pDialog->GetMode());
+            pDialog->SetMode(pDialog->GetMode());
     }
 }
 

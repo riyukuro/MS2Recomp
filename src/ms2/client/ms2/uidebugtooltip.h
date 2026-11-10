@@ -21,15 +21,15 @@ public:
     virtual int vfunc_48() { return 0x4e71; }                       // 48
     virtual void vfunc_52();                                        // 52 0x14191ada0 push the texts to the movie
 
-    int FUN_14191a9f0();                                            // m_78 (shown)
-    void FUN_14191aa10();                                           // m_78 = m_7c = 1
-    void FUN_14191aa40();                                           // m_78 = m_7c = 0
+    int IsShown();                                            // m_78 (shown)
+    void Show();                                           // m_78 = m_7c = 1
+    void Hide();                                           // m_78 = m_7c = 0
     void FUN_14191aa70();                                           // unregister from the manager; m_78 = m_7c = 0
     void FUN_14191aae0(Vector3 pt);                         // m_6c = pt (the world anchor); by value, as the exe callers copy it
-    void FUN_14191ab10(CStringW strText);                           // m_88 = text; m_7c = 1
-    void FUN_14191ab70(CStringW strAdditional);                     // m_90 = text; m_7c = 1
-    void FUN_14191abd0();                                           // toggle the "additional" text
-    void FUN_14191b140();                                           // project m_6c to the screen and move the movie
+    void SetText(CStringW strText);                           // m_88 = text; m_7c = 1
+    void SetAdditionalText(CStringW strAdditional);                     // m_90 = text; m_7c = 1
+    void ToggleAdditionalText();                                           // toggle the "additional" text
+    void UpdateScreenPosition();                                           // project m_6c to the screen and move the movie
 
     int m_68;                           // +0x68 1: follows the world anchor (portal.cpp writes it directly)
 

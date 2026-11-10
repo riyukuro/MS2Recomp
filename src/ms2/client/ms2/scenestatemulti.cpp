@@ -64,7 +64,7 @@
 class CMsgBoxData;
 class UIServerListDialog;
 #include <egf/EntityID.h>   // B22: was class Unk_BuddyHandle (ctor 0x1401cd100 = egf::EntityID(efd::UInt64))
-void* FUN_140aae430();
+void* GetMS2();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void FUN_141275500();
 void FUN_140930fe0(CInPacket&);
@@ -73,7 +73,7 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     int FUN_1422b9fd0(int);
 };
-CNetworkService* FUN_140714f90();
+CNetworkService* GetNetworkService();
 
 // The world manager singleton (FUN_1403ed2d0): the lobby actor registry (a red-black map at +0xb8), the callback
 // list and the camera/field requests. Names inferred.
@@ -91,10 +91,10 @@ class UIServerListDialog : public UIDialog
 {
 public:
     bool FUN_141ad3260(int, const CMsgBoxData&);
-    void FUN_141ad2380();
+    void ConnectToServer();
     int GetServerId();
 };
-void* FUN_14136f520(int);   // C3: was FUN_14136f520
+void* FindServerListDialog(int);   // C3: was FindServerListDialog
 template <class T> T* Unk_MMDialog(int nId);   // C3: was FUN_140b72de0 (<UICharacterListDialog>, mentoringmanager.cpp)
 extern int DAT_1439f4a78;
 extern int DAT_143ab285c;
@@ -118,8 +118,8 @@ typedef Delegate<void(NotifyObject*)> Unk_NotifyDelegate;
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 
 // lobbyField.xml reading (as usercommandcli.cpp)
-CString FUN_14071a5b0(const CString&, const CString&);
-class CFileSystem { public: int FUN_1403974b0(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly); };   // C3: unit-local view (def in filesystem)
+CString GetXmlPath(const CString&, const CString&);
+class CFileSystem { public: int LoadXmlFile(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly); };   // C3: unit-local view (def in filesystem)
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 // C3 #8: the cast-only Unk_140168650 view removed
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
@@ -150,22 +150,22 @@ public:
 };
 CStringW FUN_14083d340(CStringW);
 void FUN_141275400(const CStringW&, int);
-void FUN_1412753b0(const CStringW&, int, int);
-void FUN_140d73aa0(CStringW, int, void*, CStringW);
+void ShowSystemText(const CStringW&, int, int);
+void ShowMessageBox(CStringW, int, void*, CStringW);
 int FUN_1406516b0();
 CStringW GetStringCommon(int);
 UIMessageBox* GetMessageBoxLayer();
-Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
+Unk_MessageBoxPtr CreateMessageBox(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
 
 class Unk_LobbyChar;
 namespace egf { class Entity; }
 class NiMesh;
-void FUN_1413fb630(egf::Entity*, efd::vector<NiMesh*>*);
+void GetEntityMeshes(egf::Entity*, efd::vector<NiMesh*>*);
 #include "ms2/placeholder/notifygameeventchanged.h"
 struct Unk_Settings { char m_pad[0xe258]; unsigned m_nLobbyMap; };
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
-void* FUN_1401c0d90();
+void* GetGameRule();
 #include "ms2/placeholder/mstime.h"
 #include "ms2/placeholder/cgameoption.h"
 #include "ms2/client/ms2/camera.h"
@@ -229,10 +229,10 @@ int LobbyFieldTable::Load()
     if (m_bLoaded)
         return 1;
     m_bLoaded = true;
-    CString strPath = FUN_14071a5b0("Table", "lobbyField.xml");
-    CCacheData::FUN_1401d1160(strPath);
+    CString strPath = GetXmlPath("Table", "lobbyField.xml");
+    CCacheData::SetPath(strPath);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) != 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) != 0)
     {
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
         if (pRoot == 0)
@@ -344,16 +344,16 @@ void CSceneStateMulti::OnEnter(int nPrevState)
     m_lobbyField.Load();
     FUN_141275500();
     WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
-    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
+    static_cast<MS2*>(GetMS2())->SetBackgroundColor(efd::ColorA::BLACK);
     if (nPrevState == 0x6200009)
         FUN_14174f4a0();
-    m_timer.FUN_1408687f0();
+    m_timer.Reset();
     m_bReconnecting = 0;
     m_nRetry = 0;
-    m_reconnectTimer.FUN_1408687f0();
+    m_reconnectTimer.Reset();
     if (reinterpret_cast<CFeatureManager*>(((void*)FUN_140166410()))->IsRegionNA())
     {
-        TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n08 = 0;
+        TSingleton<CGameOption>::GetInstance()->GetEtc()->m_n08 = 0;
         reinterpret_cast<Unk_AE6540*>(&reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings())->m_0 = true;
         reinterpret_cast<Unk_AE6540*>(&reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings())->m_1 = true;
         reinterpret_cast<Unk_AE6540*>(&reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings())->m_2 = true;
@@ -382,23 +382,23 @@ void CSceneStateMulti::OnUpdate(double fTime)
     {
         if (m_nRetry < 5)
         {
-            if (m_reconnectTimer.FUN_140868c00() != 0)
+            if (m_reconnectTimer.IsExpired() != 0)
             {
-                if (FUN_140714f90()->IsConnected() == 0)
+                if (GetNetworkService()->IsConnected() == 0)
                 {
-                    FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
+                    GetNetworkService()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
                     m_nRetry = m_nRetry + 1;
                     CStringW text = FUN_14028dfa0<int>(CStringW(L"s_reconnect_to_server"), m_nRetry);
                     void* loading = ((void*)FindUIObject(0x3ed));
                     if (loading)
-                        reinterpret_cast<UILoadingProgress*>(loading)->FUN_1419e0050(text);
+                        reinterpret_cast<UILoadingProgress*>(loading)->SetMoveChannelMessage(text);
                 }
-                m_reconnectTimer.FUN_140868750(10000);
+                m_reconnectTimer.Start(10000);
             }
         }
-        else if (m_nRetry == 5 && m_reconnectTimer.FUN_140868c00() != 0)
+        else if (m_nRetry == 5 && m_reconnectTimer.IsExpired() != 0)
         {
-            m_reconnectTimer.FUN_1408687f0();
+            m_reconnectTimer.Reset();
             m_nRetry = 6;
             if (DAT_143b03490)
                 DAT_143b03490(1, DAT_1430c3b20, efd::LogHelper(FUN_14016a600(BlockFormat<int>(0x20f, 7), 0)));
@@ -413,14 +413,14 @@ void CSceneStateMulti::OnUpdate(double fTime)
     }
     else
     {
-        if (DAT_143ab285c != 0 && m_timer.FUN_140868c00() != 0)
+        if (DAT_143ab285c != 0 && m_timer.IsExpired() != 0)
         {
-            m_timer.FUN_1408687f0();
+            m_timer.Reset();
             if (m_nMode == 0)
             {
-                UIServerListDialog* pList = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
+                UIServerListDialog* pList = ((class UIServerListDialog*)FindServerListDialog(0x4ef0));
                 if (pList != 0 && pList->FUN_1422dc2d0() != 0)
-                    pList->FUN_141ad2380();
+                    pList->ConnectToServer();
             }
             else if (m_nMode == 1 && DAT_143ab2860 == 3)
             {
@@ -440,7 +440,7 @@ void CSceneStateMulti::OnPacket(CInPacket& packet)
     switch (packet.FUN_14070fe80())
     {
     case static_cast<int>(RecvOp::Notice):
-        FUN_14174f4c0(packet);
+        OnNotice(packet);
         break;
     case static_cast<int>(RecvOp::WaitingTicketUpdate):
         OnWaitingTicketUpdate(packet);
@@ -474,7 +474,7 @@ void CSceneStateMulti::vfunc_1(int)
     {
         UICharacterListDialog* pSelect = Unk_MMDialog<UICharacterListDialog>(0x4ef1);
         if (pSelect)
-            pSelect->FUN_1418f1cb0();
+            pSelect->PreviewSelectedCharacter();
         if (DAT_143ab285c != 0 && DAT_143ab2860 != 3)
         {
             DAT_143ab285c = 0;
@@ -499,8 +499,8 @@ void CSceneStateMulti::vfunc_4(int)
     {
         m_bReconnecting = 1;
         m_nRetry = 0;
-        m_reconnectTimer.FUN_140868750(10000);
-        FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
+        m_reconnectTimer.Start(10000);
+        GetNetworkService()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
     }
 }
 
@@ -526,12 +526,12 @@ int CSceneStateMulti::HasMyPC()
 }
 
 // @0x14174eb30
-void CSceneStateMulti::FUN_14174eb30()
+void CSceneStateMulti::ExitToServerList()
 {
     ExitMapMode();
     reinterpret_cast<GameEventManagerCli*>(((void*)TSingleton<GameEventManagerCli>::GetInstance()))->Clear();
     reinterpret_cast<TermTagManagerCli*>(((void*)TSingleton<TermTagManagerCli>::GetInstance()))->Clear();
-    ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001a);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001a);
 }
 
 // @0x14174eb80
@@ -539,15 +539,15 @@ void CSceneStateMulti::SelectCreateJob(int nJobCode)
 {
     m_nJobCode = nJobCode;
     EnterCreateMode();
-    ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001c);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001c);
 }
 
 // @0x14174ebc0
-void CSceneStateMulti::FUN_14174ebc0()
+void CSceneStateMulti::EnterSelectScene()
 {
     if (m_nMode == 0)
     {
-        UIServerListDialog* pList = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
+        UIServerListDialog* pList = ((class UIServerListDialog*)FindServerListDialog(0x4ef0));
         if (pList)
             DAT_143ab2830 = (unsigned)pList->GetServerId();
     }
@@ -556,7 +556,7 @@ void CSceneStateMulti::FUN_14174ebc0()
         EnterSelectMode();
     }
     m_nMode = 1;
-    ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001b);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001b);
 }
 
 // @0x14174ec40
@@ -596,7 +596,7 @@ void CSceneStateMulti::FUN_14174ee00(BackUpCharacterInfo* pInfo)
         info.m_n30 = pInfo->m_n68;
         for (int i = 0; i < 2; i++)
             info.m_equip[i] = pInfo->m_equip[i];
-        if (info.FUN_14107b440(reinterpret_cast<PC*>(spPC.operator MyPC*())))
+        if (info.ApplyToPC(reinterpret_cast<PC*>(spPC.operator MyPC*())))
         {
             m_hPreviewPC = reinterpret_cast<GameObject*>(spPC.operator->())->GetEntityIDValue();
             ATL::CAtlList<MS2Ptr<CEquipItem> >& items = pInfo->m_items;
@@ -634,7 +634,7 @@ Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
             if (pChar == 0)
                 continue;
             efd::vector<unsigned long long> ids;
-            FUN_1413fb630(((egf::Entity*)(reinterpret_cast<GameObject*>(pActor)->GetEntity())), (efd::vector<NiMesh*>*)&ids);
+            GetEntityMeshes(((egf::Entity*)(reinterpret_cast<GameObject*>(pActor)->GetEntity())), (efd::vector<NiMesh*>*)&ids);
             for (unsigned iId = 0; iId < ids.size(); iId++)
             {
                 if ((long long)pRow->GetAVObject() == (long long)ids.at(iId))
@@ -646,7 +646,7 @@ Unk_LobbyChar* CSceneStateMulti::FUN_14174f0f0()
 }
 
 // @0x14174f390
-void CSceneStateMulti::FUN_14174f390(void* pActor, int)
+void CSceneStateMulti::SetMyPC(void* pActor, int)
 {
     WorldService::GetInstance()->SetMyPC(pActor);
 }
@@ -676,7 +676,7 @@ unsigned int CSceneStateMulti::FUN_14174f440()
 // @0x14174f470
 void CSceneStateMulti::FUN_14174f470()
 {
-    m_timer.FUN_140868750(1000);
+    m_timer.Start(1000);
 }
 
 // @0x14174f4a0
@@ -686,7 +686,7 @@ void CSceneStateMulti::FUN_14174f4a0()
 }
 
 // @0x14174f4c0
-void CSceneStateMulti::FUN_14174f4c0(CInPacket& packet)
+void CSceneStateMulti::OnNotice(CInPacket& packet)
 {
     Unk_1407a7d20 info(packet);
     int nKind = info.m_kind;
@@ -699,16 +699,16 @@ void CSceneStateMulti::FUN_14174f4c0(CInPacket& packet)
         text = FUN_14083d340(CStringW(text));
         if ((nFlags & 4) != 0 || (nFlags & 0x40) != 0)
         {
-            FUN_140d73aa0(CStringW(text), 0, 0, CStringW(L""));
+            ShowMessageBox(CStringW(text), 0, 0, CStringW(L""));
         }
         else if ((nFlags & 0x80) != 0)
         {
-            FUN_140d73aa0(CStringW(text), 0, 0, CStringW(s_maintenanceExit));
+            ShowMessageBox(CStringW(text), 0, 0, CStringW(s_maintenanceExit));
             FUN_140d86260()->vfunc_58(0x289, 0);
         }
         else if ((nFlags & 0x10) != 0)
         {
-            FUN_1412753b0(text, 9, nValue);
+            ShowSystemText(text, 9, nValue);
         }
         else if ((nFlags & 0x200) != 0)
         {
@@ -722,9 +722,9 @@ void CSceneStateMulti::FUN_14174f4c0(CInPacket& packet)
         CStringW text(info.m_text);
         if ((nFlags & 4) != 0 || (nFlags & 0x40) != 0)
         {
-            FUN_140714f90()->SendRequestQuitAndDisconnect();
+            GetNetworkService()->SendRequestQuitAndDisconnect();
             ((class CStateService*)(void*)(((void*)TSingleton<CStateService>::GetInstance())))->FUN_1417e25a0(0x6200009);
-            FUN_140d73aa0(CStringW(text), 0, 0, CStringW(L""));
+            ShowMessageBox(CStringW(text), 0, 0, CStringW(L""));
         }
     }
 }
@@ -734,7 +734,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
 {
     if (FUN_1406516b0() == 3)
     {
-        UIServerListDialog* pList = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
+        UIServerListDialog* pList = ((class UIServerListDialog*)FindServerListDialog(0x4ef0));
         if (pList != 0)
             pList->vfunc_8(1);
     }
@@ -743,7 +743,7 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
     UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0)
     {
-        Unk_MessageBoxPtr current = pBox->FUN_1419f8470();
+        Unk_MessageBoxPtr current = pBox->GetCurrentBox();
         if (current.operator CMsgBoxData*() != 0)
         {
             if (operator==(reinterpret_cast<CMsgBoxData*>(current.operator->())->GetExtra(), L"waitingticketdialog"))
@@ -753,10 +753,10 @@ void CSceneStateMulti::OnWaitingTicketUpdate(CInPacket& packet)
             }
         }
     }
-    Unk_MessageBoxPtr box = FUN_140d73d20(0, CStringW(text), 0, CStringW(L""));
+    Unk_MessageBoxPtr box = CreateMessageBox(0, CStringW(text), 0, CStringW(L""));
     reinterpret_cast<CMsgBoxData*>(box.operator->())->SetButtonLabels(GetStringCommon(0xac1), L"", L"");
     reinterpret_cast<CMsgBoxData*>(box.operator->())->SetExtra(L"waitingticketdialog");
-    UIServerListDialog* pList = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
+    UIServerListDialog* pList = ((class UIServerListDialog*)FindServerListDialog(0x4ef0));
     if (pList != 0)
         reinterpret_cast<CMsgBoxData*>(box.operator->())->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(pList, &UIServerListDialog::FUN_141ad3260));
     FUN_140d73c60(Unk_MessageBoxPtr(box));
@@ -798,7 +798,7 @@ void CSceneStateMulti::ExitMapMode()
     if (m_nMode != 0)
     {
         if (!FUN_14174fd70())
-            WorldService::GetInstance()->FUN_141bbbe40(1, 1, 0);
+            WorldService::GetInstance()->LoadMap(1, 1, 0);
     }
     m_nMode = 0;
 }
@@ -809,7 +809,7 @@ void CSceneStateMulti::EnterSelectMode()
     unsigned nMap = GetLobbyMap();
     if (nMap == 0)
         nMap = GetSelectMapForSelectedJob();
-    WorldService::GetInstance()->FUN_141bbbe40(nMap, 1, 0);
+    WorldService::GetInstance()->LoadMap(nMap, 1, 0);
     m_nMode = 1;
 }
 
@@ -820,7 +820,7 @@ void CSceneStateMulti::EnterCreateMode()
     if (nMap == 0)
         nMap = FUN_14174f440();
     m_nCreateMap = nMap;
-    WorldService::GetInstance()->FUN_141bbbe40(nMap, 1, 0);
+    WorldService::GetInstance()->LoadMap(nMap, 1, 0);
     m_nMode = 2;
 }
 
@@ -829,7 +829,7 @@ unsigned int CSceneStateMulti::GetLobbyMap()
 {
     if (IsServerTimeSameMonth())
         return ((struct Unk_Settings*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_nLobbyMap;
-    return reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047b9b0();
+    return reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047b9b0();
 }
 
 // @0x14174ffb0
@@ -855,7 +855,7 @@ void CSceneStateMulti::OnEventReward(CInPacket& packet)
     {
         UICharacterListDialog* pSelect = Unk_MMDialog<UICharacterListDialog>(0x4ef1);
         if (pSelect != 0)
-            pSelect->FUN_1418ed6b0(packet);
+            pSelect->OnBurningLevelupRewardTaken(packet);
     }
 }
 

@@ -33,23 +33,23 @@ public:
     void FUN_140f80160();                               // the action button: unlock
     void FUN_140f80d70();                               // back to the start
     void FUN_140f80f30();                               // clear everything
-    void FUN_140f810b0();
+    void ClearIngredients();
     void FUN_140f81100(ASObj&);                         // ingredient part of the select data
     void FUN_140f81a40(ASObj&, int);                    // the socket rows of the item
-    void FUN_140f81f00(CInPacket*);                     // select item result
-    void FUN_140f82340(CInPacket*);                     // unlock result
+    void OnSelectItemResult(CInPacket*);                     // select item result
+    void OnUnlockResult(CInPacket*);                     // unlock result
     void FUN_140f826b0(CInPacket* packet);              // refresh the ingredient prices (packet unused)
     void SendItemSocketSystemMode14(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: unlock
     void SendItemSocketSystemMode16(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: fill ingredients
     void FUN_140f82ba0(const Scaleform::GFx::FunctionHandler::Params&);   // multi select list change
-    void FUN_140f82d00(const Scaleform::GFx::FunctionHandler::Params&);   // action button
+    void OnActionButtonClick(const Scaleform::GFx::FunctionHandler::Params&);   // action button
     void FUN_140f82d50(const Scaleform::GFx::FunctionHandler::Params&);   // source list change
     void FUN_140f82e10(const Scaleform::GFx::FunctionHandler::Params&);   // ingredient list change
     void FUN_140f82ed0(CAtlArray<MS2Ptr<CItem>>&);
     void SendItemSocketSystemMode0(Unk_SockUidList&);               // send the unlock request
     void FUN_140f82f90();
     void FUN_140f83060(__int64);
-    void FUN_140f83170();
+    void UpdateIngredientEquipCount();
     void FUN_140f832f0();
     bool FUN_140f83440(int, const CMsgBoxData&);        // unlock ingredient in gemstone? answer
     bool FUN_140f83560(int, const CMsgBoxData&);        // high SA option? answer

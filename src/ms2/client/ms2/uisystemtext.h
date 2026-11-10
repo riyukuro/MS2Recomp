@@ -27,8 +27,8 @@ public:
     virtual void vfunc_43();                                        // 43 0x141b15ca0 place the movie below the upper hp bar
     virtual int vfunc_48() { return 0x4e41; }                       // 48 0x141b18a30 UI type id
 
-    void FUN_141b15ec0(const CStringW& strText, int nType, int nOption);   // show a message
-    void FUN_141b16270(const CStringW& strText, int nType, int nDuration);  // show a timed message
+    void ShowMessage(const CStringW& strText, int nType, int nOption);   // show a message
+    void ShowTimedMessage(const CStringW& strText, int nType, int nDuration);  // show a timed message
 
 private:
     MS2_LAYOUT_FRIEND;

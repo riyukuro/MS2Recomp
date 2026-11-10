@@ -19,7 +19,7 @@ class TiXmlNode { public: const TiXmlElement* FirstChildElement(const char* pszN
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-unsigned FUN_140540000(const CString& strTag);              // ticket tag name -> value
+unsigned GetTagByName(const CString& strTag);              // ticket tag name -> value
 
 // tinyxmlhelper.h: an attribute converted from its string form.
 // @0x14031c680
@@ -36,7 +36,7 @@ inline int ReadTicketTagAttr(TiXmlElement* pElem, const char* pszName, unsigned*
     int nRead = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRead != 0)
         return nRead;
-    *pnOut = FUN_140540000(str);
+    *pnOut = GetTagByName(str);
     return nRead;
 }
 #undef MS2_THIS_FILE

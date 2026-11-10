@@ -45,14 +45,14 @@ class CMsgBoxData : public CPtred
 {
 public:
     int FUN_141a02e50(int a, int b) const;
-    void FUN_141a01600(__int64 n);
+    void SetItemUid(__int64 n);
     void FUN_141a01ee0(MS2Ptr<CItem> item, const CStringW& name, int a, int b, int c, int d, int e);
     void SetButtonLabelIds(int a, int b, int c);
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb);
     template <class T> void Append(T v);                            // Append<int> 0x140533ff0 (inline COMDAT)
 };
 extern template class MS2Ptr<CMsgBoxData>;
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 // A button of the movie (the label and the enabled flag).
@@ -180,7 +180,7 @@ int UIItemEnchantTransformDialog::vfunc_28(const char* szMethod, const Scaleform
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             int nIndex = data.PopInt();
-            FUN_140c3d960(nIndex);
+            OnSelectTargetItem(nIndex);
         }
         return 1;
     } else if (_stricmp("OnSubmitTransform", szMethod) == 0) {
@@ -198,7 +198,7 @@ void UIItemEnchantTransformDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
     if (((CInPacket*)pPacket)->FUN_14070fe80() == 0x104)
-        FUN_140c3ead0();
+        OnTransformResult();
 }
 
 // @0x140c3d420
@@ -210,7 +210,7 @@ void UIItemEnchantTransformDialog::FUN_140c3d420()
         return;
     if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit")) {
         reinterpret_cast<ASButton*>(submit.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_submit"));
-        reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(false);
+        reinterpret_cast<ASMovieClip*>(submit.operator->())->SetEnabled(false);
     }
 }
 
@@ -237,14 +237,14 @@ void UIItemEnchantTransformDialog::FUN_140c3d5a0()
     if (MS2Ptr<ASTileList> bag = board->FUN_140accef0<ASTileList>("m_itemBag")) {
         reinterpret_cast<ASCoreList*>(bag.operator->())->SetSelectedIndex(-1);
         bag->FUN_1422dd1d0();
-        bag->FUN_1407cba60("bagId", m_strTargetBag);
+        bag->SetStringMember("bagId", m_strTargetBag);
         bag->vfunc_24(true);
     }
     board->vfunc_24(true);
 }
 
 // @0x140c3d960
-void UIItemEnchantTransformDialog::FUN_140c3d960(int nIndex)
+void UIItemEnchantTransformDialog::OnSelectTargetItem(int nIndex)
 {
     if (m_state != 0 && m_state != 1)
         return;
@@ -262,23 +262,23 @@ void UIItemEnchantTransformDialog::FUN_140c3d960(int nIndex)
         strMsg.Append(strOption);
         strMsg.Append(L"\n");
         strMsg.Append(strAsk);
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(strMsg), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(0x11, CStringW(strMsg), 0, CStringW(L""));
         if (box.get() != 0) {
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEnchantTransformDialog::FUN_140c3eda0));
-            box->FUN_141a01600(item->GetItemUid());
+            box->SetItemUid(item->GetItemUid());
             box->FUN_141a01ee0(item, item->FUN_140527b10(), 1, 0, -1, -1, 1);
             box->SetButtonLabelIds(0x475, 0x476, 0);
             box->Append<int>(nIndex);
             FUN_140d73c60(box);
         }
     } else {
-        FUN_140c3de50(nIndex);
+        SelectTargetItem(nIndex);
     }
 }
 
 // MS2-FUNCTIONAL: MS2Ptr temp / copy order and frame size differ (large function)
 // @0x140c3de50
-void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
+void UIItemEnchantTransformDialog::SelectTargetItem(int nIndex)
 {
     if (m_state != 0 && m_state != 1)
         return;
@@ -298,10 +298,10 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
     DestroyItemInfoSlot(m_strSelectBag);
     CreateItemInfoSlot(m_strSelectBag, m_selected, 0, 0x415, 8);
     ASObj obj(2);
-    obj.FUN_1407cbb20(s_strItemName, m_selected->FUN_140528160());
-    obj.FUN_1407cba60("binding", m_strSelectBag);
+    obj.SetWStringMember(s_strItemName, m_selected->FUN_140528160());
+    obj.SetStringMember("binding", m_strSelectBag);
     CStringW strFee = FUN_14028dfa0<CStringW>(L"s_item_enchant_transform_fee", FUN_1409404f0(row->m_nNeedMeso));
-    obj.FUN_1407cbb20("transformFee", strFee);
+    obj.SetWStringMember("transformFee", strFee);
     m_outputs.RemoveAll();
     for (unsigned i = 0; i < m_outputNames.GetCount(); ++i)
         DestroyItemInfoSlot(m_outputNames[i]);
@@ -313,7 +313,7 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
         int nCount = row->m_arrOutputCount[i];
         MS2Ptr<CItem> out(new CItem());
         if (out->FUN_14052b130(nId, nRank, 0) != 0) {
-            out->FUN_14052b340(nCount);
+            out->SetCount(nCount);
             m_outputs.Add(out);
         }
         CString strName = Unk_SocketFormat("{0}.{1}", m_strOutputBag, i);
@@ -321,14 +321,14 @@ void UIItemEnchantTransformDialog::FUN_140c3de50(int nIndex)
         CreateItemInfoSlot(strName, out, 0, 0x415, 0x800);
         m_outputNames.Add(strName);
         ASObj entry(2);
-        entry.FUN_1407cba60("binding", strName);
-        entry.FUN_1407cbb20(s_strItemName, out->FUN_140528160());
+        entry.SetStringMember("binding", strName);
+        entry.SetWStringMember(s_strItemName, out->FUN_140528160());
         outputs.PushObj(entry);
     }
     ((ASObj*)&(obj))->FUN_140c16160("outputItems", ASArray(outputs));
     if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
-        reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(true);
-    board->Invoke("selectItem", obj.FUN_1422bb870());
+        reinterpret_cast<ASMovieClip*>(submit.operator->())->SetEnabled(true);
+    board->Invoke("selectItem", obj.GetValue());
 }
 
 // @0x140c3e820
@@ -354,11 +354,11 @@ void UIItemEnchantTransformDialog::OnSubmitTransform()
     if (board == 0)
         return;
     if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit"))
-        reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(false);
+        reinterpret_cast<ASMovieClip*>(submit.operator->())->SetEnabled(false);
 }
 
 // @0x140c3ead0
-void UIItemEnchantTransformDialog::FUN_140c3ead0()
+void UIItemEnchantTransformDialog::OnTransformResult()
 {
     if (m_state != 1)
         return;
@@ -367,7 +367,7 @@ void UIItemEnchantTransformDialog::FUN_140c3ead0()
         return;
     if (MS2Ptr<ASButton> submit = board->FUN_140acce30<ASButton>("m_submit")) {
         reinterpret_cast<ASButton*>(submit.operator->())->FUN_1422cdfb0(GetStringCommonByKey(L"s_item_enchant_transform_retry"));
-        reinterpret_cast<ASMovieClip*>(submit.operator->())->FUN_1422c1fe0(true);
+        reinterpret_cast<ASMovieClip*>(submit.operator->())->SetEnabled(true);
     }
     FUN_140c3d5a0();
     board->Invoke("onTransformResult");
@@ -392,7 +392,7 @@ bool UIItemEnchantTransformDialog::FUN_140c3eda0(int nButton, const CMsgBoxData&
 {
     if (nButton == 0) {
         int nSlot = box.FUN_141a02e50(0, 0);
-        FUN_140c3de50(nSlot);
+        SelectTargetItem(nSlot);
     }
     else
         OnSubmitRetry();

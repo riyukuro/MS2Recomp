@@ -51,7 +51,7 @@ public:
     int FindSlotForItem(ItemPtr spItem, int nNeed);           // slot a stack of the item can go to
     void GetAllItems(ATL::CAtlArray<ItemPtr>& result);    // all items
     bool UseItemById(int nItemId);                        // use the usable item of that id
-    bool FUN_140c88050(int nItemId);                        // use the item of that data id
+    bool UseItemByDataId(int nItemId);                        // use the item of that data id
     void SendRequestPetInventoryMode7();                                   // packet 0x79 mode 7
     void SendRequestPetInventoryMode3(__int64 nUid, int nSlot);            // packet 0x79 mode 3 (move)
     void SendRequestPetInventoryMode0(__int64 nUid, int nSlot, int nCount);   // packet 0x79 mode 0 (take out)
@@ -98,7 +98,7 @@ public:
     void OnPetOptionsUpdate(CInPacket& in);                      // mode 5: options
     void FUN_140c8a4b0(CInPacket& in);                      // mode 10: pet item value
     void FUN_140c8a640(CInPacket& in);                      // mode 0x12: pet item level
-    void FUN_140c8a7a0(CInPacket& in);                      // mode 0x11: pet item data
+    void OnPetItemDataUpdate(CInPacket& in);                      // mode 0x11: pet item data
     void OnPetLevelUp(CInPacket& in);                      // mode 0xb: level up
     void FUN_140c8ab80(CInPacket& in);                      // mode 0xc: pet exp
     void OnOtherPetInfo(CInPacket& in);                      // mode 0x10: new pet item

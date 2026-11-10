@@ -46,8 +46,8 @@ static CString s_sortNames7b[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh"
 
 // Out-of-unit callees.
    // the content switches
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
+CString ToCString(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
 CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);   // wide string attribute with default
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
@@ -68,28 +68,28 @@ bool CShopCategoryTable::s_bInit;
 
 // ---- AS object writers (header-inline AScript helpers; ASObj and the unit-local AS views call the same COMDATs)
 
-void AScript::FUN_1407cb9c0(const char* pszName, int nValue)
+void AScript::SetIntMember(const char* pszName, int nValue)
 {
     ASData data;
     data.AddInt(nValue);
     m_value.SetMember(pszName, data.PopValue());
 }
 
-void AScript::FUN_1407cba60(const char* pszName, CString strValue)
+void AScript::SetStringMember(const char* pszName, CString strValue)
 {
     ASData data;
     data.AddString(strValue);
     m_value.SetMember(pszName, data.PopValue());
 }
 
-void AScript::FUN_1407cbb20(const char* pszName, CStringW strValue)
+void AScript::SetWStringMember(const char* pszName, CStringW strValue)
 {
     ASData data;
     data.AddWString(strValue);
     m_value.SetMember(pszName, data.PopValue());
 }
 
-void AScript::FUN_1407cbbe0(const char* pszName, bool bValue)
+void AScript::SetBoolMember(const char* pszName, bool bValue)
 {
     ASData data;
     data.AddBool(bValue);
@@ -138,14 +138,14 @@ bool CShopCategoryTable::TabInfo::Load(TiXmlElement* pElem, MS2Ptr<TabInfo> spPa
 void CShopCategoryTable::TabInfo::Write(Unk_AsOut* pOut)
 {
     if (m_nId != -1)
-        ((AScript*)pOut)->FUN_1407cb9c0("id", m_nId);
-    ((AScript*)pOut)->FUN_1407cba60("symbol", m_strSymbol);
-    ((AScript*)pOut)->FUN_1407cb9c0("priority", m_nPriority);
-    ((AScript*)pOut)->FUN_1407cbb20("name", GetName());
+        ((AScript*)pOut)->SetIntMember("id", m_nId);
+    ((AScript*)pOut)->SetStringMember("symbol", m_strSymbol);
+    ((AScript*)pOut)->SetIntMember("priority", m_nPriority);
+    ((AScript*)pOut)->SetWStringMember("name", GetName());
     bool bBestPage = m_nStatic == 1 && FUN_1406a5040(m_nId);
     if (bBestPage)
-        ((AScript*)pOut)->FUN_1407cbbe0("bestPage", true);
-    ((AScript*)pOut)->FUN_1407cbbe0("alwaysOpen", m_bAlwaysOpen);
+        ((AScript*)pOut)->SetBoolMember("bestPage", true);
+    ((AScript*)pOut)->SetBoolMember("alwaysOpen", m_bAlwaysOpen);
 }
 
 // @0x1407ca4e0
@@ -196,10 +196,10 @@ CShopCategoryTable::CShopCategoryTable()
     : m_tabs(17, 0.75f, 0.25f, 2.25f, 10)
 {
     MS2Ptr<CCacheData> spShop(new CCacheData);
-    spShop->FUN_1401d1160(FUN_14071a5b0("Table", "shopCategory.xml"));
+    spShop->SetPath(GetXmlPath("Table", "shopCategory.xml"));
     m_caches.Add(spShop);
     MS2Ptr<CCacheData> spMerat(new CCacheData);
-    spMerat->FUN_1401d1160(FUN_14071a5b0("Table", "meratMarketCategory.xml"));
+    spMerat->SetPath(GetXmlPath("Table", "meratMarketCategory.xml"));
     m_caches.Add(spMerat);
     Load();
 }
@@ -219,7 +219,7 @@ void CShopCategoryTable::Load()
         if (spCache == 0)
             continue;
         TiXmlDocument doc;
-        if (GetFileSystem()->FUN_1403974b0(&doc, *spCache->FUN_1401d1140(), 0, true, false) != 0)
+        if (GetFileSystem()->LoadXmlFile(&doc, *spCache->GetPath(), 0, true, false) != 0)
         {
             TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
             if (pRoot == 0)
@@ -388,7 +388,7 @@ void CShopCategoryTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CShopCategoryTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CShopCategoryTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

@@ -101,7 +101,7 @@ UISelectItemBoxDialog::UISelectItemBoxDialog()
     , m_binder("SelectItemBoxDialog")
     , m_binderSel("SelectItemBoxDialog_Sel")
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     SetIconType(&m_binder, 0x411);
     SetIconType(&m_binderSel, 0x411);
 }
@@ -121,7 +121,7 @@ CString UISelectItemBoxDialog::GetTypeName()
 void UISelectItemBoxDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925ec0("m_close");
+    BindCloseButton("m_close");
     MS2Ptr<CItem> item = g_143ab2a90.FindItemByUid(m_uItemUid);
     if (item == 0)
         return;
@@ -134,7 +134,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
     {
         ASMultiSelectTileCacheList* list = reinterpret_cast<UISelectSuperWorldChatDialog*>(this)->FUN_140e8d030("m_selectItemList", m_selectItemList).get();
         if (list != 0) {
-            reinterpret_cast<ASCoreList*>(m_selectItemList.operator->())->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectItemBoxDialog::FUN_140f9a5f0), (void*)0);
+            reinterpret_cast<ASCoreList*>(m_selectItemList.operator->())->AddItemClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectItemBoxDialog::FUN_140f9a5f0), (void*)0);
         }
     }
     m_selectedSlots.clear();
@@ -144,7 +144,7 @@ void UISelectItemBoxDialog::OnLoadComplete()
     GetChildInto<ASTextField>("m_selectedCount", m_selectedCount);
     GetChildInto<ASTextField>("m_selectNotice", m_selectNotice);
     int nDropBoxId = 0;
-    if (((class CXmlData*)&(reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_props))->FUN_14092c5c0()) {
+    if (((class CXmlData*)&(reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_props))->IsEmpty()) {
         m_nSelectCount = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(0, 0);
         nDropBoxId = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(1, 0);
     } else {
@@ -176,15 +176,15 @@ void UISelectItemBoxDialog::OnLoadComplete()
         CString strBind = m_binder.FUN_140d43510(static_cast<ItemAble*>(&m_rewards[i]));
         if (!strBind.IsEmpty()) {
             ASObj entry(2);
-            entry.FUN_1407cba60("bindID", strBind);
+            entry.SetStringMember("bindID", strBind);
             list.PushValue(entry.FUN_1422bb890());
         }
     }
     m_selectItemList->Invoke("resetRenderer");
-    m_selectItemList->vfunc_25(list.FUN_1422bb870());
+    m_selectItemList->vfunc_25(list.GetValue());
     m_selectItemList->vfunc_24(true);
     int nNext = reinterpret_cast<ItemFunctionArgs*>(&reinterpret_cast<Unk_SibItemData*>(item->FUN_140527840())->m_args)->FUN_1408d1fd0(4, 1);
-    int nHave = g_143ab2a90.FUN_140a5f180(item->FUN_1405276c0(), 0);
+    int nHave = g_143ab2a90.FUN_140a5f180(item->GetItemId(), 0);
     if (nNext == 1 && 1 < nHave)
         m_okButton->FUN_1422cdfb0(GetStringCommonByKey(L"s_selectItemBox_select_next"));
     else
@@ -241,12 +241,12 @@ void UISelectItemBoxDialog::FUN_140f9a230(const Scaleform::GFx::FunctionHandler:
 // @0x140f9a5f0
 void UISelectItemBoxDialog::FUN_140f9a5f0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    unsigned nSelected = m_selectItemList->FUN_1422cf920();
+    unsigned nSelected = m_selectItemList->GetSelectedCount();
     if (nSelected > m_nSelectCount) {
         ASListEvent evt(params);
-        Scaleform::GFx::Value value = evt.FUN_1422e27d0();
+        Scaleform::GFx::Value value = evt.GetItemRenderer();
         ASButton row(value, 2);
-        row.FUN_1422ce090(0);
+        row.SetSelected(0);
         FUN_1412752d0(L"s_selectItemBox_cant_select_more", 1);
     } else {
         FUN_140f9a700();
@@ -286,7 +286,7 @@ void UISelectItemBoxDialog::FUN_140f9a700()
             ((Unk_SibSlot*)m_selectedSlots[i])->Invoke("setData", m_binderSel.FUN_140d43510(static_cast<ItemAble*>(&m_rewards[nIdx])));
         }
     }
-    reinterpret_cast<ASMovieClip*>(m_okButton.operator->())->FUN_1422c1fe0(selected.GetCount() == m_nSelectCount);
+    reinterpret_cast<ASMovieClip*>(m_okButton.operator->())->SetEnabled(selected.GetCount() == m_nSelectCount);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142caa320-0x142caa420 .text$yd

@@ -47,7 +47,7 @@
 // MS2-PIN: ??_7CNpc@@6BIBase@efd@@@ 0x142ea8b58
 // MS2-PIN: ??_7CNpc@@6BCallbackObject@NiActorManager@@@ 0x142ea8f68
 // MS2-PIN: ??_7CNpcVibrate@@6B@ 0x142ea8b48
-// The byte-identical MS2Ptr instantiations, told apart by the exe call graph (FUN_1410918e0's hit data, the splash
+// The byte-identical MS2Ptr instantiations, told apart by the exe call graph (ApplySyncBlock's hit data, the splash
 // record of vfunc_35) and the header statics' initializer order.
 // MS2-PIN: ??0?$MS2Ptr@VStateHitData@@@@QEAA@PEAVStateHitData@@@Z 0x141099e40
 // MS2-PIN: ?AddRef@?$MS2Ptr@VStateHitData@@@@AEBAXXZ 0x14109b050
@@ -126,7 +126,7 @@ class CameraMgr;
 class Unk_NpcTableCli;
 
 class CEffectService;
-int FUN_140768010(int nMax, int nMin);                              // random integer
+int GetRandomRange(int nMax, int nMin);                              // random integer
 float FUN_140768090();                                              // random float in [0, 1)
 
 // ---- unit-local placeholders ----
@@ -143,11 +143,11 @@ class Unk_PCBaseComp_a78 : public UINameTag::Entity {};
 class Unk_PCBaseComp_a88 : public UIEmoticon::Entity {};
 class Unk_PCBaseComp_a98 : public UIBuffBalloon::Entity {};
 class Unk_PCBaseComp_aa8 : public UIChatBalloon::Entity {};
-MS2Ptr<UIHpBar::Entity> FUN_141992920(int nObjectId);           // new hp bar
-MS2Ptr<UINameTag::Entity> FUN_141a60da0(int nObjectId);           // new name tag
-MS2Ptr<UIEmoticon::Entity> FUN_14192fd40(int nObjectId);           // new emoticon (uiemoticon.cpp)
+MS2Ptr<UIHpBar::Entity> GetHpBarEntity(int nObjectId);           // new hp bar
+MS2Ptr<UINameTag::Entity> CreateNameTagEntity(int nObjectId);           // new name tag
+MS2Ptr<UIEmoticon::Entity> GetEmoticonEntity(int nObjectId);           // new emoticon (uiemoticon.cpp)
 MS2Ptr<UIBuffBalloon::Entity> FUN_14128ef70(int nObjectId);           // new buff balloon
-MS2Ptr<UIChatBalloon::Entity> FUN_1418fbdb0(int nObjectId);           // new chat balloon
+MS2Ptr<UIChatBalloon::Entity> GetChatBalloonEntity(int nObjectId);           // new chat balloon
 
 // The actor's ground shadow (GameObject +0x58; unit_14160fb10).
 class CObjectShadow : public NiRefObject
@@ -177,7 +177,7 @@ bool FUN_14028d470(float a, float b);                               // a != b (w
 
 class CFieldMaidManager { public: MS2Ptr<CMaid> GetMaid(unsigned __int64 nId); };   // the field maids (before the user's own)
 // @0x14109a700
-static CFieldMaidManager* FUN_14109a700()
+static CFieldMaidManager* GetFieldMaidManager()
 {
     return TSingleton<CFieldMaidManager>::s_instance;
 }
@@ -185,7 +185,7 @@ class Unk_ArcMover { public: bool IsMoving() const; CStringA GetName() const; vo
 CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc name of the string table
 class CQuestMaskTable { public: int HasNpcMask(void* pNpc); int CheckNpcObject(void* pNpc); };
 // @0x14109a710
-static CQuestMaskTable* FUN_14109a710()
+static CQuestMaskTable* GetQuestMaskTable()
 {
     return TSingleton<CQuestMaskTable>::s_instance;
 }
@@ -210,7 +210,7 @@ class WorldService { public: static WorldService* GetInstance(); void FUN_141bc7
 // The green / blue of the hit colour boost (npc.cpp data; the red is the npc's DamagedColorScale).
 static float DAT_1439f6ff4 = 0.1f;
 static float DAT_1439f6ff8 = 0.1f;
-float FUN_14028d3a0(float fValue);                                  // * 0.01 (game units -> PhysX)
+float FromPercent(float fValue);                                  // * 0.01 (game units -> PhysX)
 namespace egmAnimation { class AnimationService { public: NiActorManager* GetActorManager(const egf::EntityID& kId); }; }   // the actor manager of an entity's model
 egmAnimation::AnimationService* FUN_141b6f910();
 // The collision groups the dead bodies cycle through (so neighbouring corpses don't collide).
@@ -237,7 +237,7 @@ struct Unk_UmDescRow
     CStringW m_08;                                                  // +0x08
 };
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
-void FUN_141567330(NiAVObject* pObj, bool b);
+void SetShadowCaster(NiAVObject* pObj, bool b);
 void FUN_1412751b0(const CStringW& str, int nLevel);              // debug log
 void FUN_1410943b0(PCBase* pActor, int n);
 // Talk scripts (FUN_140856fa0(npc id, n), as in cubespawnobject.cpp); the pointer members are COMDATs of other objs.
@@ -302,12 +302,12 @@ public:
     virtual void vfunc_3(NiPoint3 kPos, NiPoint3 kDir, float fScale);
 };
 class Unk_EmoNpcTable { public: int FUN_14035b0a0(int nNpcType); };
-Unk_EmoNpcTable* FUN_140764010();
+Unk_EmoNpcTable* GetFameTable();
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
 #include "ms2/placeholder/cgraphicoptiontable.h"
 #include "ms2/client/ms2/skilldatatablecli.h"
 #include "ms2/placeholder/cmainsystem.h"
-class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
+class CUserMail { public: static __int64 GetGFxSceneService(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // the singleton classes whose TSingleton<T>::s_instance this unit uses (only the pointer)
 class T;
@@ -325,9 +325,9 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     int FUN_1422b9ea0();
 };
-class UITalkManager { public: int GetTalking(); void FUN_141b20790(int nObjectId, int nFriendly); };                // a talk is open
+class UITalkManager { public: int GetTalking(); void ShowNpcMonologue(int nObjectId, int nFriendly); };                // a talk is open
 __int64 FUN_14028d260(float f);                                         // float -> int (ms)
-float FUN_14028d5b0(float fAngle);                                  // normalise an angle
+float NormalizeAngle(float fAngle);                                  // normalise an angle
 float FUN_14059d930(float f);                                       // fabs
 extern int DAT_143ae2b4c;                                           // the optimizer's turn-smoothing option
 
@@ -348,7 +348,7 @@ int COptimizer::FUN_14109a9d0()
 }
 
 // @0x14109ac70
-static float FUN_14109ac70(float f)
+static float GetSign(float f)
 {
     float fSign;
     if (f > 0.0f)
@@ -375,14 +375,14 @@ class CTargetCameraMode : public CCameraMode {};
 class CBossTargetCamera : public CTargetCameraMode { public: void FUN_140a38550(int nObjectId); };
 class CameraMgr { public: int GetModeType(); CCameraMode* GetMode(); };   // (inline getters)
 class GameObjectController { public: void FUN_14123fd30(unsigned int nFlags); public:
-    void FUN_14123fbf0(unsigned short);   // C3: was free FUN_14123fbf0
+    void SetCollisionGroup(unsigned short);   // C3: was free FUN_14123fbf0
 };
 class PCBase;
 class UIUpperHpBar { public: void FUN_141b4c510(PCBase* pNpc, int nTargetId); };
 template<class T> T* Unk_AcFindUI(eUIClassID nClass);
 extern int g_upperTargetId;                                         // 0x143ab2864
 
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                         // the common npc row
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);                         // the common npc row
 class SkillDataTableCli;
 int IsPercentStat(int nStat);                                       // the stat is 64-bit
 
@@ -449,8 +449,8 @@ void CNpcVibrate::FUN_14108e300(float fTime, efd::Point3& kPos, CNpc* pOwner)
         return;
     if (fTime < m_fEnd) {
         efd::Point3 kOffset = efd::Point3::ZERO;
-        float fX = ((float)(unsigned int)FUN_140768010(2, 0) - 0.5f) * 2.0f;
-        float fY = ((float)(unsigned int)FUN_140768010(2, 0) - 0.5f) * 2.0f;
+        float fX = ((float)(unsigned int)GetRandomRange(2, 0) - 0.5f) * 2.0f;
+        float fY = ((float)(unsigned int)GetRandomRange(2, 0) - 0.5f) * 2.0f;
         kOffset.x = FUN_140768090() * fX;
         kOffset.y = FUN_140768090() * fY;
         kOffset.Unitize();
@@ -525,7 +525,7 @@ int CNpc::vfunc_10()
 {
     if (PCBase::vfunc_10() == 0)
         return 0;
-    if (FUN_141092ff0()) {
+    if (IsBoss()) {
         if (TSingleton<CameraMgr>::GetInstance()->GetModeType() == 0x12) {
             CBossTargetCamera* pCamera = dynamic_cast<CBossTargetCamera*>(TSingleton<CameraMgr>::GetInstance()->GetMode());
             if (pCamera != NULL)
@@ -541,7 +541,7 @@ int CNpc::vfunc_10()
     vfunc_126(m_unk_15c == 0, 0);
     FUN_141094e60();
     if (m_unk_15c == 0) {
-        FUN_141096730();
+        BuildCollision();
         if (!m_spNpcData->m_strKeepEffect.IsEmpty()) {
             NoticeMessage kQuery;
             kQuery.m_strName = m_spNpcData->m_strKeepEffect;
@@ -573,7 +573,7 @@ int CNpc::vfunc_10()
             pEmoticon->FUN_14192f8b0(0);
             pEmoticon->vfunc_2();
         }
-        FUN_141093c80();
+        RefreshQuestState();
     }
     UIUpperHpBar* pUpper;
     if (m_spNpcData->HasPropertyTag(4) == true && (pUpper = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)0x4e3d)) != NULL && IsDead() == 0)
@@ -609,11 +609,11 @@ void CNpc::vfunc_12()
 // @0x14108fb00
 void CNpc::vfunc_14()
 {
-    if (FUN_141092ff0() != 0) {
+    if (IsBoss() != 0) {
         WorldService::GetInstance()->FUN_141bc7f10(GetEntityID());
         ((class COptimizer*)GetOptimizer())->RemoveSuppressor(GetEntityID());
     }
-    FUN_1410979a0();
+    ReleaseDeadPhysXActor();
     FUN_141099ab0();
     PCBase::vfunc_14();
 }
@@ -698,7 +698,7 @@ MS2Ptr<Unk_PCBaseComp_a58> CNpc::vfunc_80()
     if (m_spA58 == 0) {
         bool bHpBar = GetNpcData()->m_bHpBar;
         if (bHpBar) {
-            Unk_PCBaseComp_a58* pBar = (m_spA58 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a58>&>(static_cast<const MS2Ptr<UIHpBar::Entity>&>(FUN_141992920(m_unk_70)))).get();
+            Unk_PCBaseComp_a58* pBar = (m_spA58 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a58>&>(static_cast<const MS2Ptr<UIHpBar::Entity>&>(GetHpBarEntity(m_unk_70)))).get();
             if (pBar != 0)
                 m_spA58->FUN_141992140(0);
         }
@@ -715,7 +715,7 @@ MS2Ptr<Unk_PCBaseComp_a78> CNpc::vfunc_82()
     if (m_spA78.get() != 0)
         return m_spA78;
     if (GetNpcData().operator->()->GetNametag()) {
-        Unk_PCBaseComp_a78* pTag = (m_spA78 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a78>&>(static_cast<const MS2Ptr<UINameTag::Entity>&>(FUN_141a60da0(m_unk_70)))).get();
+        Unk_PCBaseComp_a78* pTag = (m_spA78 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a78>&>(static_cast<const MS2Ptr<UINameTag::Entity>&>(CreateNameTagEntity(m_unk_70)))).get();
         if (pTag != 0) {
             m_spA78->FUN_141a5e4c0(GetNpcData()->GetUnknown12());
             m_spA78->FUN_141a5e500(((class NpcDataCli*)(class NpcDataCli*)(GetNpcData().operator->()))->GetClassConstant());
@@ -741,7 +741,7 @@ MS2Ptr<Unk_PCBaseComp_a88> CNpc::vfunc_83()
     if (((class COptimizer*)GetOptimizer())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a88>(0);
     if (m_spA88.IsNull() && vfunc_116() > 0)
-        m_spA88 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a88>&>(static_cast<const MS2Ptr<UIEmoticon::Entity>&>(FUN_14192fd40(m_unk_70)));
+        m_spA88 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a88>&>(static_cast<const MS2Ptr<UIEmoticon::Entity>&>(GetEmoticonEntity(m_unk_70)));
     return m_spA88;
 }
 
@@ -752,7 +752,7 @@ MS2Ptr<Unk_PCBaseComp_aa8> CNpc::vfunc_85()
     if (((class COptimizer*)GetOptimizer())->FUN_1409f7ea0() != 0 && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_aa8>(0);
     if (m_spAA8 == 0)
-        m_spAA8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_aa8>&>(static_cast<const MS2Ptr<UIChatBalloon::Entity>&>(FUN_1418fbdb0(m_unk_70)));
+        m_spAA8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_aa8>&>(static_cast<const MS2Ptr<UIChatBalloon::Entity>&>(GetChatBalloonEntity(m_unk_70)));
     return m_spAA8;
 }
 
@@ -849,9 +849,9 @@ void CNpc::vfunc_126(int a, int b)
     if (m_nEB8 != 0 && b == 0)
         return;
     if (a != 0 && m_spNpcData->m_capsule.m_nIgnore == 0)
-        ((class GameObjectController*)(class Unk_PCBaseBody*)(m_unk_150))->FUN_14123fbf0(4);
+        ((class GameObjectController*)(class Unk_PCBaseBody*)(m_unk_150))->SetCollisionGroup(4);
     else
-        ((class GameObjectController*)(class Unk_PCBaseBody*)(m_unk_150))->FUN_14123fbf0(5);
+        ((class GameObjectController*)(class Unk_PCBaseBody*)(m_unk_150))->SetCollisionGroup(5);
 }
 
 // @0x141091740
@@ -880,7 +880,7 @@ static int FUN_141099bd0(const ATL::CAtlArray<Unk_RequireState>& arr, const int&
 // Applies a sync block of the npc: the animation (or a jump arc), the position / rotation / velocity, then the state
 // change when the state serial moved on.
 // @0x1410918e0
-void CNpc::FUN_1410918e0(CByteBuffer& buf)
+void CNpc::ApplySyncBlock(CByteBuffer& buf)
 {
     if (m_unk_b4 == 0)
         return;
@@ -893,7 +893,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
     Vector3 ptVel = buf.ReadVector3Short();
     float fSpeed = buf.ReadShortDivScaled(100);
     int nOwnerActor = 0;
-    if (FUN_141092ff0())
+    if (IsBoss())
         nOwnerActor = buf.ReadInt32();
     int nState = buf.ReadUInt8();
     m_nDE8 = buf.ReadInt16();
@@ -956,7 +956,7 @@ void CNpc::FUN_1410918e0(CByteBuffer& buf)
             }
         }
     }
-    FUN_141094ff0(nOwnerActor);
+    SetOwnerEffectActor(nOwnerActor);
     SetEmotion(bEmotion);
     if (!reinterpret_cast<Unk_ArcMover*>(&m_unkDB0)->IsMoving() && m_pD60 == NULL) {
         if (GetCurStateId() == 0xd)
@@ -1066,7 +1066,7 @@ void CNpc::FUN_141092d40(CString strAnim)
 }
 
 // @0x141092fa0
-int CNpc::FUN_141092fa0()
+int CNpc::GetNpcId()
 {
     if (m_spNpcData.get() != 0)
         return m_spNpcData->GetId();
@@ -1074,7 +1074,7 @@ int CNpc::FUN_141092fa0()
 }
 
 // @0x141092ff0
-int CNpc::FUN_141092ff0()
+int CNpc::IsBoss()
 {
     return m_spNpcData->IsBoss();
 }
@@ -1082,7 +1082,7 @@ int CNpc::FUN_141092ff0()
 // @0x141093030
 int CNpc::FUN_141093030()
 {
-    int nKind = FUN_1410934c0();
+    int nKind = GetNpcClass();
     if (nKind == 4 || nKind == 6)
         return 1;
     return 0;
@@ -1108,7 +1108,7 @@ int CNpc::FUN_1410930a0()
 }
 
 // @0x141093160
-int CNpc::FUN_141093160()
+int CNpc::IsKind2()
 {
     if (m_spNpcData.get() != 0 && m_spNpcData->GetKind() == 2)
         return 1;
@@ -1116,7 +1116,7 @@ int CNpc::FUN_141093160()
 }
 
 // @0x1410931c0
-int CNpc::FUN_1410931c0()
+int CNpc::IsKind3()
 {
     if (m_spNpcData.get() != 0 && m_spNpcData->GetKind() == 3)
         return 1;
@@ -1124,7 +1124,7 @@ int CNpc::FUN_1410931c0()
 }
 
 // @0x141093220
-int CNpc::FUN_141093220()
+int CNpc::IsShopKind()
 {
     if (m_spNpcData.get() != 0)
         return m_spNpcData->IsShopKind();
@@ -1142,14 +1142,14 @@ void CNpc::FUN_1410932c0(bool b)
 {
     NiAVObject* pObj = FUN_141b6efc0(GetEntity());
     if (pObj != NULL)
-        FUN_141567330(pObj, b);
+        SetShadowCaster(pObj, b);
 }
 
 // @0x141093310
 CStringW CNpc::FUN_141093310()
 {
     if (vfunc_128()) {
-        MS2Ptr<CMaid> spMaid = FUN_14109a700()->GetMaid(m_nE48);
+        MS2Ptr<CMaid> spMaid = GetFieldMaidManager()->GetMaid(m_nE48);
         if (spMaid.IsNull())
             spMaid = CUserMaidManager::GetInstance()->GetMaid(m_nE48);
         if (spMaid.get() != 0) {
@@ -1157,11 +1157,11 @@ CStringW CNpc::FUN_141093310()
                 return spMaid->FUN_1409eeda0();
         }
     }
-    return FUN_1401aa6a0(FUN_141092fa0());
+    return FUN_1401aa6a0(GetNpcId());
 }
 
 // @0x1410934c0
-int CNpc::FUN_1410934c0()
+int CNpc::GetNpcClass()
 {
     if (m_spNpcData == 0)
         return 0;
@@ -1195,7 +1195,7 @@ void CNpc::vfunc_66(int n)
 }
 
 // @0x141093760
-int CNpc::FUN_141093760()
+int CNpc::GetNpcType()
 {
     if (m_spNpcData.get() != 0)
         return m_spNpcData->GetNpcType();
@@ -1211,11 +1211,11 @@ int CNpc::FUN_1410937b0()
 }
 
 // @0x141093800
-MS2Ptr<CMaid> CNpc::FUN_141093800()
+MS2Ptr<CMaid> CNpc::GetMaid()
 {
     if (!vfunc_128())
         return MS2Ptr<CMaid>(0);
-    MS2Ptr<CMaid> spMaid = FUN_14109a700()->GetMaid(m_nE48);
+    MS2Ptr<CMaid> spMaid = GetFieldMaidManager()->GetMaid(m_nE48);
     if (spMaid.IsNull())
         spMaid = CUserMaidManager::GetInstance()->GetMaid(m_nE48);
     return spMaid;
@@ -1236,37 +1236,37 @@ void CNpc::FUN_141093910()
 // @0x141093980
 CStringW CNpc::FUN_141093980()
 {
-    auto pMaid = FUN_141093800().get();
+    auto pMaid = GetMaid().get();
     if (pMaid != 0) {
-        bool bEmpty = static_cast<Unk_NpcMaid*>(FUN_141093800().operator->())->FUN_14109a730().IsEmpty();
+        bool bEmpty = static_cast<Unk_NpcMaid*>(GetMaid().operator->())->FUN_14109a730().IsEmpty();
         if (bEmpty) {
-            if (TPtrValue<MaidDesc> spDesc = TSingleton<CMaidDescTable>::GetInstance()->Find(FUN_141093800()->m_nMaidId)) return spDesc->title;
-        } else return static_cast<Unk_NpcMaid*>(FUN_141093800().operator->())->FUN_14109a730();
+            if (TPtrValue<MaidDesc> spDesc = TSingleton<CMaidDescTable>::GetInstance()->Find(GetMaid()->m_nMaidId)) return spDesc->title;
+        } else return static_cast<Unk_NpcMaid*>(GetMaid().operator->())->FUN_14109a730();
     }
-    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(10, FUN_141092fa0());
+    return TSingleton<CStringTable>::GetInstance()->FUN_141811980(10, GetNpcId());
 }
 
 // @0x141093c20
-unsigned int CNpc::FUN_141093c20()
+unsigned int CNpc::GetQuestId()
 {
     return m_questState.m_questId;
 }
 
 // @0x141093c40
-int CNpc::FUN_141093c40()
+int CNpc::GetQuestIcon()
 {
     return m_questState.m_icon;
 }
 
 // @0x141093c60
-int CNpc::FUN_141093c60()
+int CNpc::GetQuestState()
 {
     return m_questState.m_state;
 }
 
 // Refreshes the npc's quest icon state and the emoticon when it changed.
 // @0x141093c80
-void CNpc::FUN_141093c80()
+void CNpc::RefreshQuestState()
 {
     m_nE10 = 0;
     int nIcon = m_questState.m_icon;
@@ -1276,7 +1276,7 @@ void CNpc::FUN_141093c80()
     if (vfunc_116() == 0) return;
     if ((unsigned char)m_cE40 == 0) return;
     m_questState.Reset();
-    ((class CQuestManager*)(class Unk_Svc764020*)(reinterpret_cast<Unk_Svc764020*>(FUN_140764020())))->GetNpcQuestState(FUN_141092fa0(), &m_questState, 0);
+    ((class CQuestManager*)(class Unk_Svc764020*)(reinterpret_cast<Unk_Svc764020*>(FUN_140764020())))->GetNpcQuestState(GetNpcId(), &m_questState, 0);
     if (nIcon != m_questState.m_icon || nState != m_questState.m_state) {
         auto pBalloon = vfunc_83().get();
         if (pBalloon != 0)
@@ -1307,14 +1307,14 @@ void CNpc::FUN_141093eb0()
 }
 
 // @0x141093fa0
-void CNpc::FUN_141093fa0()
+void CNpc::PlayStartSound()
 {
     if (m_spNpcData.get() != 0)
         ((class CEffectService*)(class CEffectService*)(TSingleton<CEffectService>::GetInstance()))->PlayVoiceAt(m_spNpcData->m_strSoundStart, *(class NiPoint3 const*)&static_cast<class efd::Point3 const&>(vfunc_18()));
 }
 
 // @0x141094050
-void CNpc::FUN_141094050()
+void CNpc::PlayEndSound()
 {
     if (MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85())
         spBalloon->vfunc_3();
@@ -1324,9 +1324,9 @@ void CNpc::FUN_141094050()
 
 // The ui an npc type opens on talk (0: none).
 // @0x141094170
-int CNpc::FUN_141094170()
+int CNpc::GetTalkUiId()
 {
-    int nType = FUN_141093760();
+    int nType = GetNpcType();
     switch (nType)
     {
     case 3:
@@ -1340,16 +1340,16 @@ int CNpc::FUN_141094170()
     case 0x58:
         return 0x4f55;
     default:
-        if (FUN_140764010()->FUN_14035b0a0(nType) != 0)
+        if (GetFameTable()->FUN_14035b0a0(nType) != 0)
             return 0x4f50;
         return 0;
     }
 }
 
 // @0x141094200
-int CNpc::FUN_141094200()
+int CNpc::OpenTalkUi()
 {
-    int nUiId = FUN_141094170();
+    int nUiId = GetTalkUiId();
     if (nUiId == 0x4e4a) {
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e4a);
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e49);
@@ -1360,23 +1360,23 @@ int CNpc::FUN_141094200()
         }
         DAT_143ab2d80.Reset();
     } else if (nUiId == 0x4f50) {
-        DAT_143abdc30 = FUN_141092fa0();
+        DAT_143abdc30 = GetNpcId();
     }
     TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)nUiId);
     return nUiId;
 }
 
 // @0x1410942c0
-void CNpc::FUN_1410942c0()
+void CNpc::CloseTalkUi()
 {
-    int nUiId = FUN_141094170();
+    int nUiId = GetTalkUiId();
     if (nUiId != 0)
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)nUiId);
 }
 
 // In talk range of the camera (always for property tag 0x1a).
 // @0x141094300
-bool CNpc::FUN_141094300()
+bool CNpc::IsInTalkRange()
 {
     if (m_spNpcData->HasPropertyTag(0x1a))
         return true;
@@ -1393,7 +1393,7 @@ bool CNpc::FUN_141094300()
 void FUN_1410943b0(PCBase* pActor, int n)
 {
     {
-        Unk_ScriptPtr<CTalkScript> spScript = FUN_140856fa0(static_cast<CNpc*>(pActor)->FUN_141092fa0(), n);
+        Unk_ScriptPtr<CTalkScript> spScript = FUN_140856fa0(static_cast<CNpc*>(pActor)->GetNpcId(), n);
         if (spScript.get() != 0) {
             if (spScript->m_contents.GetCount() > 0) {
                 CStringW strText = static_cast<const Unk_ScriptContents&>(spScript->m_contents)[0]->m_strText;
@@ -1407,7 +1407,7 @@ void FUN_1410943b0(PCBase* pActor, int n)
             }
         }
     }
-    static_cast<CNpc*>(pActor)->FUN_141099580();
+    static_cast<CNpc*>(pActor)->ResetMonologueTimer();
 }
 
 // @0x1410945c0
@@ -1518,7 +1518,7 @@ __int64 CNpc::FUN_141094e20()
 }
 
 // @0x141094e40
-void CNpc::FUN_141094e40(bool b)
+void CNpc::SetDebugMode(bool b)
 {
     m_cEAC = b;
 }
@@ -1528,7 +1528,7 @@ void CNpc::FUN_141094e40(bool b)
 void CNpc::FUN_141094e60()
 {
     if (m_nEB8 != 0 && m_unk_b4 != 0) {
-        int nInQuest = FUN_14109a710()->CheckNpcObject(this);
+        int nInQuest = GetQuestMaskTable()->CheckNpcObject(this);
         if (nInQuest != 0)
             RemoveHideReason(5);
         else
@@ -1550,7 +1550,7 @@ int CNpc::GetOwnerId()
 }
 
 // @0x141094f60
-PCBase* CNpc::FUN_141094f60()
+PCBase* CNpc::GetOwner()
 {
     return ((class PCBase*)((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nOwnerId));
 }
@@ -1560,23 +1560,23 @@ void CNpc::FUN_141094f90(CString strEffect)
 {
     m_strEC8 = strEffect;
     FUN_141095140();
-    FUN_141095050();
+    AttachOwnerEffect();
 }
 
 // @0x141094ff0
-void CNpc::FUN_141094ff0(int nActor)
+void CNpc::SetOwnerEffectActor(int nActor)
 {
     int nOld = m_nEC0;
     m_nEC0 = nActor;
     if (m_nEC0 != nOld) {
         FUN_141095140();
-        FUN_141095050();
+        AttachOwnerEffect();
     }
 }
 
 // Attaches the +0xec8 effect to the +0xec0 actor.
 // @0x141095050
-void CNpc::FUN_141095050()
+void CNpc::AttachOwnerEffect()
 {
     PCBase* pActor = ((class PCBase*)((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bd1290(m_nEC0));
     if (pActor == NULL)
@@ -1645,7 +1645,7 @@ bool CNpc::FUN_1410952d0()
 // Builds the npc's collision: the body box ("box" shape) and one box per node collision of the npc row (green, bound
 // to model nodes) and per server node collision (orange, placed at the actor), then the terrain actor.
 // @0x141096730
-void CNpc::FUN_141096730()
+void CNpc::BuildCollision()
 {
     if (m_spNpcData->m_collision.m_strShape == "box") {
         efd::Point3 kSize(m_spNpcData->m_collision.m_fWidth, m_spNpcData->m_collision.m_fDepth * 0.5f, m_spNpcData->m_collision.m_fHeight);
@@ -1706,8 +1706,8 @@ void CNpc::MakeDeadPhysXActor()
     efd::Matrix3 kRot;
     kRot.MakeIdentity();
     if (m_spSkillRow.get() != 0) {
-        fPushUp = FUN_14028d3a0(m_spSkillRow->GetSkill()->m_block170.m_fUp) * m_spNpcData->m_push.m_fUp;
-        fPushBack = FUN_14028d3a0(m_spSkillRow->GetSkill()->m_block170.m_fBack) * m_spNpcData->m_push.m_fBack;
+        fPushUp = FromPercent(m_spSkillRow->GetSkill()->m_block170.m_fUp) * m_spNpcData->m_push.m_fUp;
+        fPushBack = FromPercent(m_spSkillRow->GetSkill()->m_block170.m_fBack) * m_spNpcData->m_push.m_fBack;
         static float s_fRate = GetClientConstants()->NPCRandomDeadPushRate.Read();
         fPushBack = fPushBack * (1.0f + FUN_14109ace0() * s_fRate);
         fPushUp = fPushUp * (1.0f + FUN_14109ace0() * s_fRate);
@@ -1740,7 +1740,7 @@ void CNpc::MakeDeadPhysXActor()
     NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
     if (pScene == NULL)
         return;
-    FUN_1410979a0();
+    ReleaseDeadPhysXActor();
     NxVec3 kGravity;
     pScene->getGravity(kGravity);
     float fGravity = -kGravity.z;
@@ -1789,7 +1789,7 @@ void CNpc::MakeDeadPhysXActor()
 
 // Releases the dead body's PhysX actor.
 // @0x1410979a0
-void CNpc::FUN_1410979a0()
+void CNpc::ReleaseDeadPhysXActor()
 {
     if (m_pD60 != NULL) {
         NxScene* pScene = ((class CPhysXHelper*)GetPhysXHelper())->GetNxScene();
@@ -1875,7 +1875,7 @@ void CNpc::vfunc_33(void* a, efd::Point3 kHit)
         if (pPlayer != NULL && static_cast<CDamageRecord*>(a)->m_nOwnerId != pPlayer->GetObjectId()) {
             Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &GetClientConstants()->VolumePcToNpc : &GetClientConstants()->VolumeMyPcToNpc;
             float fVolume = pVolume->Read();
-            TSingleton<CEffectService>::GetInstance()->PlayHitSound(static_cast<CDamageRecord*>(a)->FUN_14175ad50(),
+            TSingleton<CEffectService>::GetInstance()->PlayHitSound(static_cast<CDamageRecord*>(a)->GetAttackMaterial(),
                 m_spNpcData->m_nDefenceMaterial, nOwnerRel, vfunc_18(), fVolume);
         }
     }
@@ -1978,7 +1978,7 @@ void CNpc::vfunc_35(void* p)
         FUN_14166ccb0()->vfunc_6();
         Common::Constants::Value<float>* pVolume = nOwnerRel != 1 && nOwnerRel != 2 ? &GetClientConstants()->VolumePcToNpc : &GetClientConstants()->VolumeMyPcToNpc;
         float fVolume = pVolume->Read();
-        TSingleton<CEffectService>::GetInstance()->PlayHitSound(static_cast<CSplashDamageRecord*>(p)->FUN_14175ad50(),
+        TSingleton<CEffectService>::GetInstance()->PlayHitSound(static_cast<CSplashDamageRecord*>(p)->GetAttackMaterial(),
             m_spNpcData->m_nDefenceMaterial, nOwnerRel, vfunc_18(), fVolume);
         m_spSkillRow = static_cast<CSplashDamageRecord*>(p)->m_spLevel;
         m_nD80 = static_cast<CSplashDamageRecord*>(p)->GetAttackData()->m_nDirection;
@@ -2030,17 +2030,17 @@ void CNpc::FUN_141099170(float fTime)
     NiPoint3 kRot = vfunc_20();
     if (((class COptimizer*)GetOptimizer())->FUN_14109a9d0() != 0 && FUN_14028d470(kRot.z, m_f934))
         return;
-    SetTargetYaw(FUN_14028d5b0(m_f934));
+    SetTargetYaw(NormalizeAngle(m_f934));
     float fDelta = m_f934 - kRot.z;
-    fDelta = FUN_14028d5b0(fDelta);
+    fDelta = NormalizeAngle(fDelta);
     float fSpeed = FUN_14059d930(fDelta) / 0.1f;
     float fRate = fSpeed > m_spNpcData->m_fRotationSpeed ? m_spNpcData->m_fRotationSpeed : fSpeed;
-    float fStep = FUN_14109ac70(fDelta) * fRate * fTime;
+    float fStep = GetSign(fDelta) * fRate * fTime;
     if (FUN_14059d930(fDelta) < FUN_14059d930(fStep))
         kRot.z = m_f934;
     else
         kRot.z = kRot.z + fStep;
-    kRot.z = FUN_14028d5b0(kRot.z);
+    kRot.z = NormalizeAngle(kRot.z);
     vfunc_21(reinterpret_cast<efd::Point3&>(kRot));
 }
 
@@ -2048,7 +2048,7 @@ void CNpc::FUN_141099170(float fTime)
 // @0x141099370
 void CNpc::FUN_141099370(float fTime)
 {
-    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9ea0() != 0) return;
+    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9ea0() != 0) return;
     if (m_questState.m_state != 4) return;
     MS2Ptr<Unk_PCBaseComp_aa8> spBalloon = vfunc_85();
     if (spBalloon.IsNull()) return;
@@ -2059,25 +2059,25 @@ void CNpc::FUN_141099370(float fTime)
         m_nDE0 += (int)FUN_14028d260(fTime);
         if ((unsigned int)m_nDE0 >= (unsigned int)FUN_140a35ca0(GetClientConstants()->MonologueShowTime.Get())) {
             spBalloon->vfunc_3();
-            FUN_141099580();
+            ResetMonologueTimer();
         }
     } else {
         m_nDE0 += (int)FUN_14028d260(fTime);
         if ((unsigned int)(m_nDE0 + m_nDE4) >= (unsigned int)(FUN_140a35ca0(GetClientConstants()->MonologueInterval.Get()) + nRandom)) {
-            TSingleton<UITalkManager>::GetInstance()->FUN_141b20790(GetObjectId(), vfunc_116());
-            FUN_141099580();
+            TSingleton<UITalkManager>::GetInstance()->ShowNpcMonologue(GetObjectId(), vfunc_116());
+            ResetMonologueTimer();
         }
     }
 }
 
 // @0x141099580
-void CNpc::FUN_141099580()
+void CNpc::ResetMonologueTimer()
 {
     m_nDE0 = 0;
     unsigned int nRandom = FUN_140a35ca0(GetClientConstants()->MonologueRandom.Get());
     if (nRandom != 0) {
         int nObjectId = GetObjectId();
-        Unk_Random kRandom(nObjectId * FUN_140768010(nRandom, 0));
+        Unk_Random kRandom(nObjectId * GetRandomRange(nRandom, 0));
         m_nDE4 = kRandom.FUN_1407684c0() % nRandom;
     }
 }
@@ -2103,7 +2103,7 @@ int CNpc::vfunc_124(int nNpcId)
     m_fScaleAC = m_spNpcData->m_model.m_fScale;
     if (m_spNpcData->GetFriendly() != 0)
         m_cE40 = TSingleton<QuestDataTable>::GetInstance()->HasNpcQuests(nNpcId);
-    m_nEB8 = FUN_14109a710()->HasNpcMask(this);
+    m_nEB8 = GetQuestMaskTable()->HasNpcMask(this);
     PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != NULL) {
         NiPoint3 kPos = pPlayer->vfunc_18();
@@ -2112,8 +2112,8 @@ int CNpc::vfunc_124(int nNpcId)
             kPos = spRidee->vfunc_18();
         FUN_14123daa0(kPos);
     }
-    FUN_141099580();
-    m_timerEE8.FUN_1408687f0();
+    ResetMonologueTimer();
+    m_timerEE8.Reset();
     m_spF28.AssignRaw(new CRandomTargetEffect(this));
     return 1;
 }
@@ -2125,7 +2125,7 @@ void CNpc::vfunc_125(int bShow)
     m_unk_15c = 1;
     FUN_141099ab0();
     bool bBoss = false;
-    if (bShow == 0 && FUN_141092ff0())
+    if (bShow == 0 && IsBoss())
         bBoss = true;
     vfunc_59(0xc, new StateDeadNPCData(bBoss), 0, 0);
     if (bShow != 0) {
@@ -2146,11 +2146,11 @@ void CNpc::vfunc_125(int bShow)
         if (spTag.get() != 0)
             spTag->FUN_141a5e540("Eff_Body");
     }
-    if (FUN_141092ff0())
+    if (IsBoss())
         WorldService::GetInstance()->FUN_141bc7f10(GetEntityID());
     if (m_nEA8 != 0)
         DetachEffectUiNode();
-    m_timerEE8.FUN_140868750(Client::Constants::GetInstance()->NameColorDeadDuration.Read());
+    m_timerEE8.Start(Client::Constants::GetInstance()->NameColorDeadDuration.Read());
 }
 
 // Places the collision boxes: the model-bound boxes at their named nodes, the free boxes at the actor, and the corpse
@@ -2240,7 +2240,7 @@ void CNpc::vfunc_51(efd::Point3* pOffset)
 void CNpc::vfunc_49()
 {
     CGraphicOptionTable* pMgr = TSingleton<CGraphicOptionTable>::GetInstance();
-    int nKind = FUN_141092ff0() ? 3 : 2;
+    int nKind = IsBoss() ? 3 : 2;
     int nLodHi = pMgr->GetShadowOption(nKind);
     int nLodLo = pMgr->GetShadowOptionOffset(nKind);
     float fUnused = 1.0f;
@@ -2275,9 +2275,9 @@ void CNpc::vfunc_90(void* p)
 
 // Preloads an npc's skills and effects.
 // @0x1410917a0
-void FUN_1410917a0(unsigned int nNpcId)
+void PreloadNpcData(unsigned int nNpcId)
 {
-    MS2Ptr<CNpcData> spData = FUN_1406cd330(nNpcId);
+    MS2Ptr<CNpcData> spData = FindNpcData(nNpcId);
     if (spData.get() != 0) {
         for (unsigned __int64 i = 0; i < spData->m_skill.GetCount(); i++) {
             const std::pair<unsigned int, unsigned short>& kSkill = spData->m_skill.GetSkill(i);
@@ -2351,7 +2351,7 @@ void CNpc::vfunc_53(float fTime)
 {
     PCBase::vfunc_53(fTime);
     float fNow = (float)((class CMainSystem*)(class CMainSystem*)(reinterpret_cast<CMainSystem*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime();
-    if (FUN_141092ff0() && m_unk_15c == 0 && m_spNpcData.get() != 0) {
+    if (IsBoss() && m_unk_15c == 0 && m_spNpcData.get() != 0) {
         if (m_unk_c4 <= m_spNpcData->m_fBossSoundDistance)
             WorldService::GetInstance()->FUN_141bc7d40(GetEntityID());
         else if (m_unk_c4 >= m_spNpcData->m_fBossSoundEndDistance)
@@ -2377,15 +2377,15 @@ void CNpc::vfunc_53(float fTime)
         m_nE10 = 1;
     }
     if (m_nE10 != 0)
-        FUN_141093c80();
+        RefreshQuestState();
     if (m_spA78.get() != 0) {
         if (vfunc_116() != 2) {
             PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
             if (pPlayer != NULL) {
                 if (vfunc_122(pPlayer) != 0) {
-                    if (m_timerEE8.FUN_140868c00() != 0 && static_cast<Unk_PCBaseComp_a78*>(m_spA78.operator->())->FUN_141a5e690() != 0) {
+                    if (m_timerEE8.IsExpired() != 0 && static_cast<Unk_PCBaseComp_a78*>(m_spA78.operator->())->FUN_141a5e690() != 0) {
                         static_cast<Unk_PCBaseComp_a78*>(m_spA78.operator->())->FUN_140f48dc0(0);
-                        m_timerEE8.FUN_1408687f0();
+                        m_timerEE8.Reset();
                     } else if (IsDead() != 0) {
                         m_spA78->FUN_141a5e500(NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&Client::Constants::GetInstance()->NameTagColorDead)));
                     } else {
@@ -2395,7 +2395,7 @@ void CNpc::vfunc_53(float fTime)
                     unsigned int nColor = NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&Client::Constants::GetInstance()->NameTagColorFriendly));
                     CPet* pPet = EE_DYNAMIC_CAST(CPet, this);
                     if (pPet != NULL) {
-                        PC* pOwner = static_cast<PC*>(FUN_141094f60());
+                        PC* pOwner = static_cast<PC*>(GetOwner());
                         if (pOwner != NULL) {
                             MS2Ptr<CItem> spItem = pOwner->GetPetItem();
                             if (((MS2Ptr<CItem>*)(void*)(&spItem))->get() != NULL && ((MS2Ptr<CItem>*)(void*)(&spItem))->get() != NULL)
@@ -2408,7 +2408,7 @@ void CNpc::vfunc_53(float fTime)
         }
     } else {
         if (reinterpret_cast<unsigned char&>(GetClientConstants()->m_unk8) != 0) {
-            Unk_PCBaseComp_a78* pTag = (m_spA78 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a78>&>(static_cast<const MS2Ptr<UINameTag::Entity>&>(FUN_141a60da0(m_unk_70)))).get();
+            Unk_PCBaseComp_a78* pTag = (m_spA78 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a78>&>(static_cast<const MS2Ptr<UINameTag::Entity>&>(CreateNameTagEntity(m_unk_70)))).get();
             if (pTag != 0) {
                 m_spA78->FUN_141a5e4c0(GetNpcData()->GetUnknown12());
                 m_spA78->FUN_141a5e500(((class NpcDataCli*)(class NpcDataCli*)(GetNpcData().operator->()))->GetClassConstant());

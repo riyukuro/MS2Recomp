@@ -47,7 +47,7 @@ public:
 
     Vector3 FUN_141839600();                                // m_8c
     static bool FUN_141839640(Vector3& ptPos, Vector3& ptRot);
-    static Unk_CameraSetting FUN_1418397a0(Unk_CameraSetting setting);
+    static Unk_CameraSetting GetCameraSetting(Unk_CameraSetting setting);
     float FUN_1418398e0(float fMin, float fCur, float fMax, float fDegMin, float fDegMax);
     void FUN_1418399e0(double fTime);                               // ease the shown pose towards the wanted one
 

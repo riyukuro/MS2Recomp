@@ -56,16 +56,16 @@ public:
     int IsFixed();                                // the slot is fixed
     void SetFixed(int bFixed);
     void FUN_14175e310(int nFlags);                     // a slot of the bag: refresh the cooldown
-    void FUN_14175e350(int nFlags);
+    void AssignSkill(int nFlags);
     void FUN_14175f200();                               // stop the icon tween
     void FUN_14175f280(unsigned nFlags);                // refresh the state, the count and the recharge
     void FUN_14175f510();                               // refresh the state and the icon
-    CStringW FUN_14175fe60();                           // the text of the key binding
-    int FUN_141760190();                                // the item is a skill scroll
-    unsigned FUN_141760220(int n);                      // the item count
+    CStringW GetDisplayName();                           // the text of the key binding
+    int IsPetItem();                                // the item is a skill scroll
+    unsigned GetItemCount(int n);                      // the item count
     int GetRechargeRemainingCount();                                // the recharge count left
     int GetRechargeMaxCount();                                // the recharge max count
-    int FUN_141760590();                                // the item's data field a
+    int IsPcBangItem();                                // the item's data field a
     int FUN_141760610();                                // the item's data field b
     CString GetIconName();                            // the icon path
     CString GetSkillIconName(int* pSkillId);               // the icon path of a skill
@@ -74,12 +74,12 @@ public:
     __int64 FUN_141760a10();                            // the bind key of the slot index
     float GetCooldownDuration();                              // the cooldown total
     float FUN_141760b90();                              // the cooldown left
-    int FUN_141760c00();                                // the slot is disabled
+    int IsDisabled();                                // the slot is disabled
     int FUN_141761530(MS2Ptr<SkillData>* pOut);                      // the replacing skill (combo / change)
     int FUN_141761900();
     int FUN_141761990();                                // the slot is fixed or bound
     int HasKeyBinding();                                // the slot index has a key binding
-    int FUN_141761a10();                                // the skill (or item) is in the active set
+    int IsInSkillSet();                                // the skill (or item) is in the active set
     CStringW GetActionLabel();                           // the name of the key binding
     int GetEffectiveSkillId();                                // the effective skill id
 
@@ -122,7 +122,7 @@ public:
     virtual DragSlot* vfunc_16(int nIndex);             // 16 0x1417639b0 new SkillSlot for the quick slot entry at nIndex
     virtual void vfunc_ugc_2(void* pUid, CString str);  // UGC slot 2 0x1417638f0 use the slot of an item uid
 
-    void FUN_141763640(int nFlags);                     // refresh every slot
+    void RefreshAllSlots(int nFlags);                     // refresh every slot
     SkillSlot* FindSlotByItemId(int nItemId);              // the slot of an item id
     SkillSlot* FindSlotByItemUid(__int64 nItemUid);         // the slot of an item uid
     void FUN_141763b00(int nFlags);                     // refresh the cooldown of every slot

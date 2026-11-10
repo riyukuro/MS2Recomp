@@ -36,7 +36,7 @@ namespace Client { class Constants; } template<class T> class TSingleton; templa
 
 CStringW GetStringCommon(int nId);                    // string table
 CStringW FUN_140719630(int n);                      // "%d"
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 void FUN_14151f200();
 void FUN_140a30ad0(const BlockPtr& rec, int action, unsigned long long cb);
@@ -66,7 +66,7 @@ struct Unk_140694210
 MS2_CHECK_SIZE(Unk_140694210, 0x10);
 
 // @0x1413226d0
-UIPartySearchDialog* FUN_1413226d0(int nUiId)
+UIPartySearchDialog* GetPartySearchDialog(int nUiId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
@@ -91,7 +91,7 @@ Unk_PsRegState::~Unk_PsRegState()
 }
 
 // @0x141322970
-void Unk_PsRegState::FUN_141322970()
+void Unk_PsRegState::Reset()
 {
     m_text.Empty();
     m_flag = 1;
@@ -103,9 +103,9 @@ void Unk_PsRegState::FUN_141322970()
 UIPartySearchRegisterDialog::UIPartySearchRegisterDialog()
     : m_220(L"")
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     FUN_1422dc3b0(1);
-    FUN_141321d60();
+    BuildRandomTitleList();
 }
 
 // @0x1413207b0
@@ -123,7 +123,7 @@ CString UIPartySearchRegisterDialog::GetTypeName()
 void UIPartySearchRegisterDialog::vfunc_67()
 {
     UIModalDialog::vfunc_67();
-    m_180.FUN_141322970();
+    m_180.Reset();
 }
 
 // @0x141320940
@@ -151,10 +151,10 @@ void UIPartySearchRegisterDialog::OnLoadInit()
 void UIPartySearchRegisterDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
-    FUN_141925ec0("m_closeButton");
+    BindCloseButton("m_closeButton");
     if (m_30 == 0)
         return;
-    UIPartySearchDialog* pSearch = FUN_1413226d0(0x4eda);
+    UIPartySearchDialog* pSearch = GetPartySearchDialog(0x4eda);
     if (pSearch == 0)
     {
         vfunc_67();
@@ -179,18 +179,18 @@ void UIPartySearchRegisterDialog::OnLoadComplete()
         if (FUN_140695080((class CMatchPartyRecruit const*)(pRecruit)))
         {
             m_1c0->SetTextW(m_190.m_text);
-            m_1d0->FUN_1422ce090((unsigned int)m_190.m_flag);
+            m_1d0->SetSelected((unsigned int)m_190.m_flag);
             m_1b0->SetSelectedIndex((int)(((class Unk_PsConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e770.size() - 1));
             m_1e0->vfunc_4(1);
             m_1f0->vfunc_4(0);
         }
         else
         {
-            m_1c0->FUN_1422c1fe0(0);
-            m_1d0->FUN_1422c1fe0(0);
-            m_1b0->FUN_1422c1fe0(0);
+            m_1c0->SetEnabled(0);
+            m_1d0->SetEnabled(0);
+            m_1b0->SetEnabled(0);
             m_1c0->SetTextW(pRecruit->title);
-            m_1d0->FUN_1422ce090(pRecruit->minimumLevel);
+            m_1d0->SetSelected(pRecruit->minimumLevel);
             m_1b0->SetSelectedIndex(FindMaxUserCountIndex(pRecruit->members));
             m_1e0->vfunc_4(0);
             m_1f0->vfunc_4(1);
@@ -219,9 +219,9 @@ int UIPartySearchRegisterDialog::vfunc_13()
         if (GetUISwfEntityManager()->GetTopEntity(m_e0) == this)
         {
             CString strKey("");
-            if (((class Unk_PsKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
+            if (((class Unk_PsKeys*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
                 strKey = "onEnterKey";
-            else if (((class Unk_PsKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
+            else if (((class Unk_PsKeys*)FUN_14025e7c0())->WasKeyPressed(0xf, 0, 0))
                 strKey = "onTabKey";
             if (!strKey.IsEmpty())
             {
@@ -250,7 +250,7 @@ int UIPartySearchRegisterDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 TSingleton<CPartyManager>::GetInstance()->SendMatchPartyMode1();
                 vfunc_67();
             }
-            else if (operator==(strTag, L"modify") && FUN_1413220d0(&m_180, 1) != 0)
+            else if (operator==(strTag, L"modify") && ValidateAndSendRegistration(&m_180, 1) != 0)
             {
                 vfunc_67();
             }
@@ -269,13 +269,13 @@ void UIPartySearchRegisterDialog::ApplyTitleAndAutoJoin(CStringW* pText, unsigne
 }
 
 // @0x141321d30
-void UIPartySearchRegisterDialog::FUN_141321d30()
+void UIPartySearchRegisterDialog::ClearRegisteredTitle()
 {
     m_190.m_text.Empty();
 }
 
 // @0x141321d60
-void UIPartySearchRegisterDialog::FUN_141321d60()
+void UIPartySearchRegisterDialog::BuildRandomTitleList()
 {
     m_200.RemoveAll();
     m_200.Add(GetStringCommon(0xc48));
@@ -305,11 +305,11 @@ int UIPartySearchRegisterDialog::GetSelectedMaxUserCount()
 }
 
 // @0x1413220d0
-int UIPartySearchRegisterDialog::FUN_1413220d0(Unk_PsRegState* pState, int bSilent)
+int UIPartySearchRegisterDialog::ValidateAndSendRegistration(Unk_PsRegState* pState, int bSilent)
 {
     if (pState->m_text.GetLength() < 2)
     {
-        FUN_140d73aa0(BlockFormat<int>(0xb53, 2), 0, 0, CStringW(L""));
+        ShowMessageBox(BlockFormat<int>(0xb53, 2), 0, 0, CStringW(L""));
         return 0;
     }
     if (CBanTextChecker* pFilter = TSingleton<CommonString>::GetInstance()->GetChecker().get())
@@ -317,7 +317,7 @@ int UIPartySearchRegisterDialog::FUN_1413220d0(Unk_PsRegState* pState, int bSile
         CStringW strBad;
         if (pFilter->FUN_1402262e0(pState->m_text, strBad) != 0)
         {
-            FUN_140d73aa0(CStringW(strBad), 0, 0, CStringW(L""));
+            ShowMessageBox(CStringW(strBad), 0, 0, CStringW(L""));
             return 0;
         }
     }
@@ -351,8 +351,8 @@ void UIPartySearchRegisterDialog::OnRegisterClicked(const Scaleform::GFx::Functi
         return;
     m_180.m_text = m_1c0->GetText();
     m_180.m_text.Trim();
-    m_180.m_flag = m_1d0->FUN_1422ce0e0();
-    if (FUN_1413220d0(&m_180, 0) != 0)
+    m_180.m_flag = m_1d0->IsSelected();
+    if (ValidateAndSendRegistration(&m_180, 0) != 0)
         vfunc_67();
 }
 

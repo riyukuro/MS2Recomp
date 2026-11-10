@@ -93,22 +93,22 @@ struct Unk_LoginRequest
 };
 MS2_CHECK_SIZE(Unk_LoginRequest, 0x40);
 void FUN_1401f9020(struct Unk_LoginA*, class COutputStream*);   // C3: was FUN_1401f9020
-void* FUN_140aadf70();   // C3: was FUN_140aadf70
+void* GetMachineIDManager();   // C3: was GetMachineIDManager
 
 // The packet handler table and the message boxes.
 class Unk_LoginPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class CMsgBoxData : public CPtred
 {
 public:
     void SetCallback(Delegate<bool(int, const CMsgBoxData&)>);
 };
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pUnk, CStringW strTag);   // create a message box
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pUnk, CStringW strTag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                // show it
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nUnk, Delegate<bool(int, const CMsgBoxData&)> cb);
-class Unk_LoginNotice { public: void FUN_140d73aa0(CStringW strText, int a, int b, CStringW strTag); };
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW strText, int nUnk, Delegate<bool(int, const CMsgBoxData&)> cb);
+class Unk_LoginNotice { public: void ShowMessageBox(CStringW strText, int a, int b, CStringW strTag); };
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-void FUN_140d73aa0(CStringW strText, int a, void* b, CStringW strTag);
+void ShowMessageBox(CStringW strText, int a, void* b, CStringW strTag);
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
 class Unk_LoginKeys : public CInputKeyHandler {};
@@ -129,7 +129,7 @@ class CStateService;
 class CStateService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1417e2610();
+    int GetCurrentSceneId();
 };
 template <> class TSingleton<CStateService>   // as in statemanager.h: s_instance is defined in statemanager.cpp
 {
@@ -138,12 +138,12 @@ public:
     static CStateService* GetInstance() { return s_instance; }
 };
 class CNetworkService { public: int ConnectTo(CString strUrl, int n, int a, int b, int c); };
-class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
+class CNetworkService* GetNetworkService();   // C3: was GetNetworkService
 int FUN_1406c34c0();                                            // the platform kind
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 int FUN_1406516a0();
 int FUN_1406516b0();                                            // the language / region id
-CString FUN_1406521f0(int nRegion);
+CString GetRegionCode(int nRegion);
 CString FUN_140652030(int n);
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 class Unk_LoginMovie : public AScript
@@ -168,16 +168,16 @@ UILoginDialog::UILoginDialog()
 {
     m_80 = 0;
     FUN_1422dc3b0(1);
-    FUN_141925e70(0, 1);
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1160));
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
+    SetFlag(0, 1);
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::SendLoginRequest));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
 }
 
 // @0x1419e0e80
 UILoginDialog::~UILoginDialog()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1160));
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(9, Delegate<void(CInPacket&)>(this, &UILoginDialog::SendLoginRequest));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x134, Delegate<void(CInPacket&)>(this, &UILoginDialog::FUN_1419e1570));
 }
 
 // @0x1419e0ff0
@@ -189,21 +189,21 @@ CString UILoginDialog::GetTypeName()
 // @0x1419e1040
 void UILoginDialog::OnEndPopdown(bool bFromPopdown)
 {
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x6200009)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSceneId() == 0x6200009)
     {
-        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetScene());
-        if (pScene != 0 && pScene->FUN_141acfb40() && bFromPopdown)
+        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetScene());
+        if (pScene != 0 && pScene->IsRegionListUsed() && bFromPopdown)
             return;
     }
     CString strUrl = g_strServerAddr;
     int nFlag = g_nPort;
-    FUN_140714f90()->ConnectTo(strUrl, nFlag, 1, 1, 0);
+    GetNetworkService()->ConnectTo(strUrl, nFlag, 1, 1, 0);
 }
 
 // @0x1419e1160
-void UILoginDialog::FUN_1419e1160(CInPacket&)
+void UILoginDialog::SendLoginRequest(CInPacket&)
 {
-    int nState = ((class CStateService*)(void*)((void*)TSingleton<CStateService>::GetInstance()))->FUN_1417e2610();
+    int nState = ((class CStateService*)(void*)((void*)TSingleton<CStateService>::GetInstance()))->GetCurrentSceneId();
     if (nState != 0x6200009)
         return;
     if (m_30.get() != 0)
@@ -211,7 +211,7 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
         MS2Ptr<ASCheckBox> spLocale = static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_140c11f50<ASCheckBox>("m_chkLocaledName");
         if (spLocale)
         {
-            SetLoginByLocaleName(reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()), spLocale->FUN_1422ce0e0() == 1 ? true : false);
+            SetLoginByLocaleName(reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()), spLocale->IsSelected() == 1 ? true : false);
         }
     }
     int nLoginType = 0;
@@ -231,12 +231,12 @@ void UILoginDialog::FUN_1419e1160(CInPacket&)
         request.m_strId = DAT_143ab29d8;
         request.m_strPassword = DAT_143ab2a28;
         request.m_nLoginType = nLoginType;
-        request.m_machineId.FUN_14067c080(reinterpret_cast<const Unk_MachineId*>(((class CMachineIDManager*)FUN_140aadf70())->GetID()));
-        request.m_n2c = ((class CMachineIDManager*)FUN_140aadf70())->GetValue();
+        request.m_machineId.FUN_14067c080(reinterpret_cast<const Unk_MachineId*>(((class CMachineIDManager*)GetMachineIDManager())->GetID()));
+        request.m_n2c = ((class CMachineIDManager*)GetMachineIDManager())->GetValue();
         request.m_n30 = DAT_143ab2858;
         request.m_strRegion = FUN_140652030(FUN_1406516a0());
         if (reinterpret_cast<Unk_LoginOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bLocaledName == 1)
-            request.m_strId = DAT_143ab29d8 + FUN_1406521f0(FUN_1406516b0());
+            request.m_strId = DAT_143ab29d8 + GetRegionCode(FUN_1406516b0());
         COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
         FUN_1401f9020((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
         FUN_140710590(packet);
@@ -250,7 +250,7 @@ void UILoginDialog::FUN_1419e1570(CInPacket& iPacket)
     int nResult = iPacket.ReadInt32();
     DAT_143ab2946 = nResult == 0 ? 1 : 0;
     if (nResult != 0)
-        FUN_140d73aa0(GetStringCommonByKey(L"s_delete_account_cancel_login_fail"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_delete_account_cancel_login_fail"), 0, 0, L"");
 }
 
 // @0x1419e1670
@@ -270,7 +270,7 @@ void UILoginDialog::OnLoadComplete()
     bool bLocaledName = reinterpret_cast<Unk_LoginOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bLocaledName;
     bLocaledName = true;
     reinterpret_cast<Unk_LoginOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bSaveId = bSaveId;
-    static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_1419e2c30("initData", strId, bSaveId, bLocaledName, FUN_1406521f0(FUN_1406516b0()));
+    static_cast<Unk_LoginRoot*>(m_30.operator->())->FUN_1419e2c30("initData", strId, bSaveId, bLocaledName, GetRegionCode(FUN_1406516b0()));
     if (!DAT_143af37a0.IsEmpty())
     {
         OnConnect();
@@ -313,12 +313,12 @@ int UILoginDialog::vfunc_13()
         return 1;
     if (FUN_1419e2900() == 0)
         return 0;
-    if (((class Unk_LoginKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class Unk_LoginKeys*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
     {
         static_cast<Unk_LoginRoot*>(m_30.operator->())->Invoke("onEnterKey");
         return 1;
     }
-    else if (((class Unk_LoginKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
+    else if (((class Unk_LoginKeys*)FUN_14025e7c0())->WasKeyPressed(0xf, 0, 0))
     {
         static_cast<Unk_LoginRoot*>(m_30.operator->())->Invoke("onTabKey");
         return 1;
@@ -367,17 +367,17 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                     if (now < deadline)
                     {
                         CStringW strText(L"로케일 계정을 사용하지 않겠습니까? \n\n 2019년 2월7일부터는 로케일 계정만 사용 가능합니다.");
-                        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, L"");
+                        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strText, 0, L"");
                         if (spBox.get() != 0)
                         {
-                            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2730));
+                            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::OnLocaledNameConfirm));
                             FUN_140d73c60(spBox);
                         }
                     }
                     else
                     {
                         CStringW strText(L"로케일 계정을 사용해야 합니다.");
-                        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, strText, 0, L"");
+                        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0, strText, 0, L"");
                         if (spBox.get() != 0)
                         {
                             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e2690));
@@ -396,7 +396,7 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
 void UILoginDialog::vfunc_43()
 {
     UIDialog::vfunc_43();
-    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4eef))) != 0 || FUN_1406516b0() == 1)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4eef))) != 0 || FUN_1406516b0() == 1)
     {
         MS2Ptr<ASDisplayObject> spObj(dynamic_cast<ASDisplayObject*>((AScript*)m_30));
         if (spObj.get() != 0)
@@ -408,17 +408,17 @@ void UILoginDialog::vfunc_43()
 void UILoginDialog::FUN_1419e21e0(CStringW strMessage)
 {
     DAT_143ab284b = 1;
-    FUN_140d74390(strMessage, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::FUN_1419e22e0));
+    ShowMessageBoxWithCallback(strMessage, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UILoginDialog::OnMessageBoxResult));
 }
 
 // @0x1419e22e0
-bool UILoginDialog::FUN_1419e22e0(int nResult, const CMsgBoxData&)
+bool UILoginDialog::OnMessageBoxResult(int nResult, const CMsgBoxData&)
 {
-    return FUN_1419e2310(nResult);
+    return HandleMessageBoxResult(nResult);
 }
 
 // @0x1419e2310
-bool UILoginDialog::FUN_1419e2310(int nResult)
+bool UILoginDialog::HandleMessageBoxResult(int nResult)
 {
     DAT_143ab285c = 0;
     DAT_143ab2860 = 0;
@@ -477,12 +477,12 @@ bool UILoginDialog::FUN_1419e2690(int, const CMsgBoxData&)
 {
     MS2Ptr<ASCheckBox> spLocale;
     reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_chkLocaledName", reinterpret_cast<MS2Ptr<ASButton>&>(spLocale));
-    spLocale->FUN_1422ce090(1);
+    spLocale->SetSelected(1);
     return true;
 }
 
 // @0x1419e2730
-bool UILoginDialog::FUN_1419e2730(int nResult, const CMsgBoxData&)
+bool UILoginDialog::OnLocaledNameConfirm(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0)
     {
@@ -491,13 +491,13 @@ bool UILoginDialog::FUN_1419e2730(int nResult, const CMsgBoxData&)
     {
         MS2Ptr<ASCheckBox> spLocale;
         reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_chkLocaledName", reinterpret_cast<MS2Ptr<ASButton>&>(spLocale));
-        spLocale->FUN_1422ce090(1);
+        spLocale->SetSelected(1);
     }
     return true;
 }
 
 // @0x1419e27d0
-void UILoginDialog::FUN_1419e27d0()
+void UILoginDialog::ShowConnectFailure()
 {
     if (vfunc_55() == 0 && (m_30.get() != 0 ? true : false))
     {
@@ -522,9 +522,9 @@ int UILoginDialog::FUN_1419e2900()
 // @0x1419e2920
 void UILoginDialog::OnConnect()
 {
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x6200009)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSceneId() == 0x6200009)
     {
-        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetScene());
+        UISceneLogin* pScene = dynamic_cast<UISceneLogin*>(((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetScene());
         if (pScene != 0)
         {
             int nUiId = vfunc_48();
@@ -564,17 +564,17 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 MS2_REPLACE_METHOD(0x1419e1040, UILoginDialog, OnEndPopdown, 267, 0xF502B3E3);
-MS2_REPLACE_METHOD(0x1419e1160, UILoginDialog, FUN_1419e1160, 1031, 0x1C1ACD5D);
+MS2_REPLACE_METHOD(0x1419e1160, UILoginDialog, SendLoginRequest, 1031, 0x1C1ACD5D);
 MS2_REPLACE_METHOD(0x1419e1570, UILoginDialog, FUN_1419e1570, 245, 0xA57FD4A9);
 MS2_REPLACE_METHOD(0x1419e1670, UILoginDialog, vfunc_67, 24, 0x2021848A);
 MS2_REPLACE_METHOD_VIA(0x1419e1860, UILoginDialog, IMessageListener, OnMessage, 364, 0x8D08F749);
 MS2_REPLACE_METHOD(0x1419e19e0, UILoginDialog, vfunc_13, 231, 0x3B6354A9);
 MS2_REPLACE_METHOD(0x1419e2100, UILoginDialog, vfunc_43, 206, 0x4169F399);
-MS2_REPLACE_METHOD(0x1419e22e0, UILoginDialog, FUN_1419e22e0, 37, 0xA61F27B3);
-MS2_REPLACE_METHOD(0x1419e2310, UILoginDialog, FUN_1419e2310, 78, 0x6F0CEC7E);
+MS2_REPLACE_METHOD(0x1419e22e0, UILoginDialog, OnMessageBoxResult, 37, 0xA61F27B3);
+MS2_REPLACE_METHOD(0x1419e2310, UILoginDialog, HandleMessageBoxResult, 78, 0x6F0CEC7E);
 MS2_REPLACE_METHOD(0x1419e2690, UILoginDialog, FUN_1419e2690, 152, 0xCA2EE2B3);
-MS2_REPLACE_METHOD(0x1419e2730, UILoginDialog, FUN_1419e2730, 154, 0x085FA634);
-MS2_REPLACE_METHOD(0x1419e27d0, UILoginDialog, FUN_1419e27d0, 193, 0xD82DE7AD);
+MS2_REPLACE_METHOD(0x1419e2730, UILoginDialog, OnLocaledNameConfirm, 154, 0x085FA634);
+MS2_REPLACE_METHOD(0x1419e27d0, UILoginDialog, ShowConnectFailure, 193, 0xD82DE7AD);
 MS2_REPLACE_METHOD(0x1419e28a0, UILoginDialog, FUN_1419e28a0, 83, 0xE3486D90);
 MS2_REPLACE_METHOD(0x1419e2900, UILoginDialog, FUN_1419e2900, 19, 0x012679F4);
 MS2_REPLACE_METHOD(0x1419e2920, UILoginDialog, OnConnect, 142, 0xAEE14BC1);

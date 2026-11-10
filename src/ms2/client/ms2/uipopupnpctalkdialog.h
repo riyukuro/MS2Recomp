@@ -35,9 +35,9 @@ public:
 
     void FUN_140e770a0(NotifyObject* pNotify);                  // 0x140e770a0 "NotifyFadeInComplete": open the first field quest of the map
     void FUN_140e771b0(NotifyObject* pNotify);                  // 0x140e771b0 "NotifyChangeMyPC": forget the opened quests
-    void FUN_140e771e0(int nQuest);                             // 0x140e771e0 start the talk of a quest
-    void FUN_140e77300();                                       // 0x140e77300
-    int FUN_140e77330();                                        // 0x140e77330 show the current line; 0 no quest, 1 shown, 2 past the end
+    void StartQuestTalk(int nQuest);                             // 0x140e771e0 start the talk of a quest
+    void ClearOpenedQuests();                                       // 0x140e77300
+    int ShowCurrentLine();                                        // 0x140e77330 show the current line; 0 no quest, 1 shown, 2 past the end
     int FUN_140e77b80(int nQuest);                              // 0x140e77b80 quest is startable on this map
 
 private:

@@ -30,7 +30,7 @@ public:
     // UIStatusEventListener (+0xd8) override: slot 5 (the ep changed), 0x141931a50
     virtual void vfunc_oa0_5(int a1, int a2);
 
-    void FUN_141931bd0(int nEp, int a2);                            // set the ep value and push "setEP"
+    void SetEp(int nEp, int a2);                            // set the ep value and push "setEP"
 
 private:
     int m_e0;                                                       // +0xe0 last ep value

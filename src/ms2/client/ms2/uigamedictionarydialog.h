@@ -42,11 +42,11 @@ public:
     virtual void vfunc_80(void* pRequest);
 
     void FUN_140f45870();                                   // fill the list with the rows of the tab that match the search
-    void FUN_140f452e0();                                   // collect the rows (npcs, monsters, items), sorted by name
-    void FUN_140f45c20(int nId, int nType, CStringW strName, int nGrade);   // the detail page of a row
-    void FUN_140f46c90(CStringW strSearch);                 // search request
-    unsigned FUN_140f46e40(int nTab);                       // the row types of a tab (bit mask)
-    void FUN_140f46ea0(int nTab, CStringW strSearch, int bSelectFirst);     // open on a tab with a search text
+    void CollectEntries();                                   // collect the rows (npcs, monsters, items), sorted by name
+    void SetDetailInfo(int nId, int nType, CStringW strName, int nGrade);   // the detail page of a row
+    void Search(CStringW strSearch);                 // search request
+    unsigned GetTabTypeMask(int nTab);                       // the row types of a tab (bit mask)
+    void OpenTabWithSearch(int nTab, CStringW strSearch, int bSelectFirst);     // open on a tab with a search text
 
 
 private:

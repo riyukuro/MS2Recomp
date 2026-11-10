@@ -118,7 +118,7 @@ public:
     virtual void vfunc_6();                     // 0x14041b380: remove it again
 
     // Builds the context from the rewards ("a,b,...;..." rows of nine ids), the level limit, and two flags.
-    void FUN_14041b6e0(const CStringW& rewards, const CStringW& levels, const CStringW& flags, const CStringW& last);   // 0x14041b6e0
+    void BuildContext(const CStringW& rewards, const CStringW& levels, const CStringW& flags, const CStringW& last);   // 0x14041b6e0
 
 protected:
     MS2_LAYOUT_FRIEND;

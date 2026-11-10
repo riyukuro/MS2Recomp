@@ -189,7 +189,7 @@ void UIItemDropInfoDialog::OnLoadComplete() {
     } while (0);
     m_test->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_test.operator ASButton*());
     m_drop->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemDropInfoDialog::OnClickDropOrTestButton), m_drop.operator ASButton*());
-    FUN_140c3ad20();
+    UpdateItemDisplay();
     FUN_140c3af70();
 }
 MS2_REPLACE_METHOD(0x140C3A140, UIItemDropInfoDialog, OnLoadComplete, 2316, 0xD90D0430);
@@ -216,23 +216,23 @@ void UIItemDropInfoDialog::vfunc_49(Scaleform::GFx::Value* result, ASData* args)
     if (item == NULL) return;
     void* player = WorldService::GetInstance()->FUN_141bd0cc0();
     ASTooltip tooltip(player,0x20,2);
-    if (tooltip.FUN_1409e0d40(item.get())) *result = tooltip.FUN_1422bb870();
+    if (tooltip.FUN_1409e0d40(item.get())) *result = tooltip.GetValue();
 }
 MS2_REPLACE_METHOD(0x140C3ABB0, UIItemDropInfoDialog, vfunc_49, 355, 0xDBDBD9E1);
 // @0x140c3ad20
-void UIItemDropInfoDialog::FUN_140c3ad20() {
+void UIItemDropInfoDialog::UpdateItemDisplay() {
     if (m_item == NULL) return;
     DestroyItemInfoSlot(m_slot);
     CreateItemInfoSlot(m_slot,m_item,0,0,0);
     Unk_DropHandle<ASMDragTarget> slot = GetDropChild<ASMDragTarget>("m_itemSlot");
-    if (slot.get()) slot->FUN_1422e4840(m_slot);
+    if (slot.get()) slot->SetBinding(m_slot);
     if (m_name.get()) {
-        CStringW name = GetItemDisplayName(m_item->FUN_1405276c0());
+        CStringW name = GetItemDisplayName(m_item->GetItemId());
         CStringW label = FUN_14183e9c0(name, m_item->GetRarity());
         m_name->SetTextHTMLW(label);
     }
 }
-MS2_REPLACE_METHOD(0x140C3AD20, UIItemDropInfoDialog, FUN_140c3ad20, 578, 0x5553B0EC);
+MS2_REPLACE_METHOD(0x140C3AD20, UIItemDropInfoDialog, UpdateItemDisplay, 578, 0x5553B0EC);
 // @0x140c3af70
 void UIItemDropInfoDialog::FUN_140c3af70() {
     m_items.RemoveAll();
@@ -250,17 +250,17 @@ void UIItemDropInfoDialog::FUN_140c3af70() {
         if (!item->FUN_14052b130(entry->vfunc_o18_0(),entry->vfunc_o18_1(),0)) continue;
         ASObj obj(2);
         obj.FUN_1409c5bd0(entry.get());
-        obj.FUN_1407cb9c0(s_itemCount,0);
+        obj.SetIntMember(s_itemCount,0);
         {
             CStringW range;
             if (entry->m_count == entry->m_maxCount) range = StringFormat<CStringW>(L"{0}",FUN_1409eb450(entry->m_count));
             else range = StringFormat<CStringW, CStringW>(L"{0} ~ {1}",FUN_1409eb450(entry->m_count),FUN_1409eb450(entry->m_maxCount));
-            obj.FUN_1407cbb20("rangeCount",range);
+            obj.SetWStringMember("rangeCount",range);
         }
-        array.PushValue(obj.FUN_1422bb870());
+        array.PushValue(obj.GetValue());
         m_items.Add(item);
     }
-    reinterpret_cast<Unk_DropList*>(m_list.operator->())->vfunc_25(array.FUN_1422bb870());
+    reinterpret_cast<Unk_DropList*>(m_list.operator->())->vfunc_25(array.GetValue());
     reinterpret_cast<Unk_DropList*>(m_list.operator->())->vfunc_24(1);
 }
 MS2_REPLACE_METHOD(0x140C3AF70, UIItemDropInfoDialog, FUN_140c3af70, 1646, 0x97FF2445);
@@ -283,18 +283,18 @@ void UIItemDropInfoDialog::OnClickDropOrTestButton(const Scaleform::GFx::Functio
 }
 MS2_REPLACE_METHOD(0x140C3B6F0, UIItemDropInfoDialog, OnClickDropOrTestButton, 217, 0x7CE52B06);
 // @0x140c3b7d0
-void UIItemDropInfoDialog::FUN_140c3b7d0(int item, int box) {
-    if (m_item.get() ? true : false) { if (m_item->FUN_1405276c0() == item) return; }
+void UIItemDropInfoDialog::SetItemAndBox(int item, int box) {
+    if (m_item.get() ? true : false) { if (m_item->GetItemId() == item) return; }
     m_box = box;
     m_item.AssignRaw(new CItem);
     if (!m_item->FUN_14052b130(item,FUN_14053feb0(item),0)) vfunc_67();
-    else if (FUN_141924630()) { FUN_140c3ad20(); FUN_140c3af70(); }
+    else if (FUN_141924630()) { UpdateItemDisplay(); FUN_140c3af70(); }
 }
-MS2_REPLACE_METHOD(0x140C3B7D0, UIItemDropInfoDialog, FUN_140c3b7d0, 324, 0x271E3FA9);
+MS2_REPLACE_METHOD(0x140C3B7D0, UIItemDropInfoDialog, SetItemAndBox, 324, 0x271E3FA9);
 // @0x140c3b920
 int UIItemDropInfoDialog::GetItemId() {
     if (m_item == NULL) return 0;
-    return m_item->FUN_1405276c0();
+    return m_item->GetItemId();
 }
 MS2_REPLACE_METHOD(0x140C3B920, UIItemDropInfoDialog, GetItemId, 73, 0xAEEFD1E3);
 MS2_EMIT_CRT_MEMMOVE_S();

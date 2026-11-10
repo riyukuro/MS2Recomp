@@ -30,7 +30,7 @@ class Unk_ShaderVec4
 {
 public:
     Unk_ShaderVec4() {}                         // 0x141480230
-    float FUN_14135dd50(int nIndex) const;      // component getter
+    float GetComponent(int nIndex) const;      // component getter
     void Assign(float x, float y, float z, float w);   // 0x14135e000
 private:
     float m_f0, m_f1, m_f2, m_f3;

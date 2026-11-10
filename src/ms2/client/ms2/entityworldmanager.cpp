@@ -164,7 +164,7 @@ public:
     template <class T> egf::PropertyResult SetPropertyValue(egf::PropertyID nProp, const T& value);   // 0x1409457c0 for float
 };
 void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-void FUN_140de8bd0(egf::Entity*, egf::PropertyID, efd::AssetID*);
+void SetAssetIdProperty(egf::Entity*, egf::PropertyID, efd::AssetID*);
 class WorldService;
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -271,9 +271,9 @@ egf::EntityPtr EntityWorldManager::FUN_1411ce7c0(efd::utf8string modelName, efd:
                 asset = urn;
             }
             if (entity->GetModel()->ContainsModel("Mesh"))
-                FUN_140de8bd0(entity, 0x770e5fc6, &asset);
+                SetAssetIdProperty(entity, 0x770e5fc6, &asset);
             else if (entity->GetModel()->ContainsModel("Actor"))
-                FUN_140de8bd0(entity, 0x12383cea, &asset);
+                SetAssetIdProperty(entity, 0x12383cea, &asset);
         }
         entities->AddEntity(entity.data(), nullptr);
         worlds[currentMap].createdEntities[id] = entity.data();

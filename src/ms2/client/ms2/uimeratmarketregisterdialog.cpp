@@ -125,16 +125,16 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 bool FUN_140633d50(MS2Ptr<CItem> spItem);           // the item can be traded
 struct Unk_MeratItemOwner; bool FUN_1406a5a50(MS2Ptr<CItem> spItem, const Unk_MeratItemOwner* pOwner);   // meratmarketbasketinfo.cpp
 void FUN_1406a5480(MS2Ptr<CItemData> spItem, __int64* pMin, __int64* pMax);
-__int64 FUN_1406a5240(int nItemId);
+__int64 GetMarketRegisterFee(int nItemId);
 __int64 FUN_141b71960(const char* sz);
-MS2Ptr<CItem> FUN_140ebc070(CMeratMarketProduct* pProduct);   // the item a product shows
+MS2Ptr<CItem> CreateProductItem(CMeratMarketProduct* pProduct);   // the item a product shows
 int FUN_140ebc4a0();
-int FUN_140ebbb30(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarketProduct> spProduct, bool bMyShop, bool bFlag);
+int SetProductTooltip(ASTooltip* pTip, MS2Ptr<CItem> spItem, MS2Ptr<CMeratMarketProduct> spProduct, bool bMyShop, bool bFlag);
 
 // UI helpers.
 bool FUN_1418ffe80(unsigned int, unsigned int);   // C3: was FUN_1418ffe80
 void FUN_1418ffec0(unsigned int*, unsigned int);   // C3: was FUN_1418ffec0
-void FUN_1418ffef0(unsigned int*, unsigned int);   // C3: was FUN_1418ffef0
+void ClearFlags(unsigned int*, unsigned int);   // C3: was FUN_1418ffef0
 bool FUN_1418ff110(int nType, __int64 nValue, bool b);          // the player can pay
 CStringW FUN_1418fec00(int nType, __int64 nValue, bool b);       // money text by pay type
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -145,19 +145,19 @@ template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW FUN_1409404f0(__int64 nValue);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 CStringW FUN_14016a730(const char* sz, int n);
-void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
+void ShowMessageBox(CStringW strText, int nType, void* p, CStringW strTag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW strTag);
 class CMsgBoxData : public CPtred
 {
 };
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
-MS2Ptr<CMsgBoxData> FUN_140d748b0(int nType, const CStringW& strTitle, const CStringW& strBody, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> ShowTermsMessageBoxWithCallback(int nType, const CStringW& strTitle, const CStringW& strBody, Delegate<bool(int, const CMsgBoxData&)> cb);
 int FUN_141276180(const CString& strName, const CString& strValue);
 void DestroyItemSlotBag(const CString& str);
 void CreateItemSlotBag(const CString& strOut, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGet)(void*, int), int a, int b);
 MS2Ptr<CItem> GetItemFromArray(void* pItems, int nIndex);
 int FUN_1406516a0();
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 class Unk_MrdUiMgr { public: };
@@ -178,7 +178,7 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UISwfEntityManager* GetUISwfEntityManager();
 
 // The royalty list (charge info) and the singleton that fills it.
-class Unk_McPayback* FUN_140ec3940();   // C3: was FUN_140ec3940
+class Unk_McPayback* GetUgcGetCostTable();   // C3: was GetUgcGetCostTable
 CStringW FUN_140ebd9d0(bool a, __int64 b);
 
 // The slot bag of the movie.
@@ -204,8 +204,8 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, b
     args.resize(4);
     FUN_1422bce70(&args[0], a1);
     FUN_1422bcce0(&args[1], a2);
-    FUN_1422bcc70(&args[2], a3);
-    FUN_1422bcc70(&args[3], a4);
+    SetValue(&args[2], a3);
+    SetValue(&args[3], a4);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -215,7 +215,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, CString a1, b
 UIMeratMarketRegisterDialog::UIMeratMarketRegisterDialog()
     : m_nMode(0), m_nAlreadyIndex(-1), m_keyResale(0, 0), m_bOnlyEnabled(false), m_spRequest(0), m_nFlags(0), m_nFee(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     FUN_1422dc3b0(1);
 }
 
@@ -253,7 +253,7 @@ void UIMeratMarketRegisterDialog::vfunc_67()
 int UIMeratMarketRegisterDialog::vfunc_65()
 {
     if (vfunc_55() == 0)
-        FUN_1419235d0();
+        SetTopMostLayer();
     return UIDialog::vfunc_65();
 }
 
@@ -268,7 +268,7 @@ void UIMeratMarketRegisterDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
     if (_stricmp("m_btnRoyaltyInfo", strName) == 0)
     {
         CUgcGetCostTable::CostMap list(10);
-        reinterpret_cast<CUgcGetCostTable*>(FUN_140ec3940())->GetTable(list);
+        reinterpret_cast<CUgcGetCostTable*>(GetUgcGetCostTable())->GetTable(list);
         if (list.IsEmpty() != 0)
             return;
         CStringW strCharge = FUN_140ebd9d0(false, 0);
@@ -277,7 +277,7 @@ void UIMeratMarketRegisterDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
         if (nOk != 0)
         {
             tip.SetTooltipAlign(5);
-            *pRetVal = tip.FUN_1422bb870();
+            *pRetVal = tip.GetValue();
         }
     }
     else if (_stricmp("m_selectedItem", strName) == 0)
@@ -288,10 +288,10 @@ void UIMeratMarketRegisterDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASDat
         MS2Ptr<CItem> spItem = GetItemAt(nIndex);
         if (spItem == 0)
             return;
-        DragSlotBag* pBag = reinterpret_cast<DragSlotBag*>(FUN_140c54520(Unk_NotifyContext::FUN_1422c8e90(m_strKey)));
+        DragSlotBag* pBag = reinterpret_cast<DragSlotBag*>(FUN_140c54520(Unk_NotifyContext::FindBinding(m_strKey)));
         if (pBag != 0)
         {
-            DragSlot* pSlot = reinterpret_cast<DragSlot*>(CastToItemInfoSlot(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
+            DragSlot* pSlot = reinterpret_cast<DragSlot*>(CastToItemInfoSlot(((class DragSlotBag*)(class DragSlotBag*)(pBag))->GetSlot(nIndex)));
             if (pSlot != 0)
                 pSlot->vfunc_0(pRetVal);
         }
@@ -313,28 +313,28 @@ void UIMeratMarketRegisterDialog::OnLoadComplete()
     bool bNew = m_nMode == 0 && m_keyResale.m_nPremiumId == 0 && m_keyResale.m_nUgcId == 0;
     __int64 nAdFee = reinterpret_cast<Common::Constants::Value<__int64>*>(MrdFeeValue())->Read();
     int nSaleDay = FUN_14025a620((class Unk_ConstVal*)(MrdSaleDayValue()));
-    FUN_14131ac80(0, MS2Ptr<CItem>(0), 1);
+    GetRegisterFee(0, MS2Ptr<CItem>(0), 1);
     ASObj objData(2);
-    objData.FUN_1407cbb20("saleDay", BlockFormat<int>(0xa39, nSaleDay));
-    objData.FUN_1407cbb20("ad", FormatStringId(0xa3a, nAdFee));
-    objData.FUN_1407cbb20("royalty", GetStringCommon(0xa3b));
-    objData.FUN_1407cbbe0("onlyShowEnableDesigns", m_bOnlyEnabled);
+    objData.SetWStringMember("saleDay", BlockFormat<int>(0xa39, nSaleDay));
+    objData.SetWStringMember("ad", FormatStringId(0xa3a, nAdFee));
+    objData.SetWStringMember("royalty", GetStringCommon(0xa3b));
+    objData.SetBoolMember("onlyShowEnableDesigns", m_bOnlyEnabled);
     unsigned __int64 nMinPrice = FUN_1406a6d50(*reinterpret_cast<Common::Constants::Value<int>*>(MrdMinPriceValue()));
     unsigned __int64 nMaxPrice = FUN_1406a6d50(*reinterpret_cast<Common::Constants::Value<int>*>(MrdMaxPriceValue()));
     objData.SetMemberUInt("defaultSaleDay", nSaleDay);
     objData.SetMemberUInt("defaultMinPrice", (unsigned int)nMinPrice);
     objData.SetMemberUInt("defaultMaxPrice", (unsigned int)nMaxPrice);
-    FUN_14131b4e0(objData, 0);
-    objData.FUN_1407cbb20("errPriceMsg", FormatPriceRangeText(nMinPrice, nMaxPrice));
+    SetFeeTexts(objData, 0);
+    objData.SetWStringMember("errPriceMsg", FormatPriceRangeText(nMinPrice, nMaxPrice));
     ASObj objGrid(2);
-    m_30->Invoke("initData", m_strKey, bNew, Scaleform::GFx::Value(objData.FUN_1422bb870()),
-                 Scaleform::GFx::Value(objGrid.FUN_1422bb870()));
-    FUN_141318ef0(FUN_14131ca80());
+    m_30->Invoke("initData", m_strKey, bNew, Scaleform::GFx::Value(objData.GetValue()),
+                 Scaleform::GFx::Value(objGrid.GetValue()));
+    SetTagInputMaxChars(GetTagInputLimit());
     if (bNew)
     {
         int nRows = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(objGrid.GetMember("slotRowCount")))->GetUInt();
         int nColumns = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(objGrid.GetMember("slotColumnCount")))->GetUInt();
-        FUN_14131a880(m_strKey, nColumns, nRows);
+        BuildItemGrid(m_strKey, nColumns, nRows);
     }
     else
     {
@@ -352,7 +352,7 @@ int UIMeratMarketRegisterDialog::vfunc_28(const char* szMethod, const Scaleform:
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14131c570(data);
+            OnChangeSelectedIndex(data);
         return 1;
     }
     else if (_stricmp("GetAlreadyRegistIndex", szMethod) == 0)
@@ -366,28 +366,28 @@ int UIMeratMarketRegisterDialog::vfunc_28(const char* szMethod, const Scaleform:
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14131b810(data);
+            OnClickRegister(data);
         return 1;
     }
     else if (_stricmp("OnClickReRegister", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14131c010(data);
+            OnClickReRegister(data);
         return 1;
     }
     else if (_stricmp("OnGetFee", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14131c4e0(data);
+            OnGetFee(data);
         return 1;
     }
     else if (_stricmp("OnGetTotalFee", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14131c4e0(data);
+            OnGetFee(data);
         return 1;
     }
     return 0;
@@ -403,7 +403,7 @@ int UIMeratMarketRegisterDialog::vfunc_13()
     if (GetUISwfEntityManager()->GetTopEntity(m_e0) == this)
     {
         CString strKey("");
-        if (((class Unk_MrdKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0) != 0)
+        if (((class Unk_MrdKeys*)FUN_14025e7c0())->WasKeyPressed(0xf, 0, 0) != 0)
             strKey = "onTabKey";
         if (!strKey.IsEmpty())
         {
@@ -423,13 +423,13 @@ void UIMeratMarketRegisterDialog::vfunc_15()
         return;
     if (FUN_1418ffe80(m_nFlags, 1) != 0)
     {
-        FUN_14131ac80(0, m_spSelected, 1);
-        FUN_1418ffef0((unsigned int*)(&m_nFlags), 1);
+        GetRegisterFee(0, m_spSelected, 1);
+        ClearFlags((unsigned int*)(&m_nFlags), 1);
     }
 }
 
 // @0x141318a20
-void UIMeratMarketRegisterDialog::FUN_141318a20(MS2Ptr<CMeratMarketProduct> spProduct)
+void UIMeratMarketRegisterDialog::OnProductChanged(MS2Ptr<CMeratMarketProduct> spProduct)
 {
     if (m_30 == 0 || spProduct == 0)
         return;
@@ -464,7 +464,7 @@ void UIMeratMarketRegisterDialog::FUN_141318aa0(MS2Ptr<CMeratMarketProduct> spPr
 }
 
 // @0x141318cc0
-void UIMeratMarketRegisterDialog::FUN_141318cc0()
+void UIMeratMarketRegisterDialog::ClearTagInputs()
 {
     if (MS2Ptr<ASTextInput> spTag = GetChild<ASTextInput>("m_inputTag1"))
         spTag.operator->()->SetTextW(L"");
@@ -475,7 +475,7 @@ void UIMeratMarketRegisterDialog::FUN_141318cc0()
 }
 
 // @0x141318ef0
-void UIMeratMarketRegisterDialog::FUN_141318ef0(int nMaxChars)
+void UIMeratMarketRegisterDialog::SetTagInputMaxChars(int nMaxChars)
 {
     if (MS2Ptr<ASTextInput> spTag = GetChild<ASTextInput>("m_inputTag1"))
         spTag.operator->()->SetMaxChars(nMaxChars);
@@ -498,7 +498,7 @@ bool UIMeratMarketRegisterDialog::FUN_141319100(int nButton, const CMsgBoxData& 
     if (nButton == 0)
     {
         if (m_spRequest.get() != 0)
-            FUN_14131aa90(m_spRequest);
+            SendRegisterRequest(m_spRequest);
     }
     return true;
 }
@@ -526,14 +526,14 @@ MS2Ptr<CItem> UIMeratMarketRegisterDialog::GetItemAt(int nIndex)
 
 // The item can still be found where the player keeps it: the bag and the worn items, or the warehouse and the cube stock.
 // @0x1413192d0
-bool UIMeratMarketRegisterDialog::FUN_1413192d0(__int64 nItemUid, MS2Ptr<CItem> spHint)
+bool UIMeratMarketRegisterDialog::CanFindItem(__int64 nItemUid, MS2Ptr<CItem> spHint)
 {
     MS2Ptr<CItem> spItem(0);
     if (spHint.get() != 0)
     {
-        if (((class CItemData*)((class CItem*)(class CItem*)(spHint.operator->()))->FUN_140527840())->FUN_14053cb80())
+        if (((class CItemData*)((class CItem*)(class CItem*)(spHint.operator->()))->FUN_140527840())->IsInstallItem())
         {
-            spItem = DAT_143ab2e20.FUN_1408fbf90(nItemUid);
+            spItem = DAT_143ab2e20.FindItemByUid(nItemUid);
             if (spItem == 0)
             {
                 MS2Ptr<CUGCMapItem> spMapItem = DAT_143ab2e50.FUN_140dfc8f0(nItemUid);
@@ -570,7 +570,7 @@ bool UIMeratMarketRegisterDialog::FUN_1413192d0(__int64 nItemUid, MS2Ptr<CItem> 
         }
         if (spItem == 0)
         {
-            spItem = DAT_143ab2e20.FUN_1408fbf90(nItemUid);
+            spItem = DAT_143ab2e20.FindItemByUid(nItemUid);
             if (spItem == 0)
             {
                 MS2Ptr<CUGCMapItem> spMapItem = DAT_143ab2e50.FUN_140dfc8f0(nItemUid);
@@ -611,7 +611,7 @@ int UIMeratMarketRegisterDialog::FindItemIndex(const CUgcMarketProduct* pProduct
 // Collect the items that can be listed: the bag, the worn items, the warehouse and the cube stock; the ones that are
 // already on the market go last.
 // @0x141319920
-void UIMeratMarketRegisterDialog::FUN_141319920(ItemArray& arrItems)
+void UIMeratMarketRegisterDialog::CollectListableItems(ItemArray& arrItems)
 {
     arrItems.RemoveAll();
     m_nAlreadyIndex = -1;
@@ -627,11 +627,11 @@ void UIMeratMarketRegisterDialog::FUN_141319920(ItemArray& arrItems)
     g_143ab2a90.FUN_140a61010(0, &owner.m_nAccount, arrCandidates);
     g_143ab2a90.FUN_140a61010(1, &owner.m_nAccount, arrCandidates);
     g_143ab2a90.FUN_140a61010(2, &owner.m_nAccount, arrCandidates);
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xe9) && reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xec))
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xe9) && reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xec))
         g_143ab2a90.FUN_140a61010(7, &owner.m_nAccount, arrCandidates);
     DAT_143ab2e20.FUN_1408fbd30(&owner, arrCandidates);
     DAT_143ab2e50.FUN_140dfcd00(&owner, arrCandidates);
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xa9))
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xa9))
         g_143ab2a90.FUN_140a61010(4, &owner.m_nAccount, arrCandidates);
     ATL::CAtlList<MS2Ptr<CEquipItem> > listEquip(10);
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -663,7 +663,7 @@ void UIMeratMarketRegisterDialog::FUN_141319920(ItemArray& arrItems)
                 if (nUgcUid != 0 && m_mapUgc.Lookup(nUgcUid) == 0)
                 {
                     m_mapUgc.SetAt(nUgcUid, spItem);
-                    if (FUN_141319f10(spItem))
+                    if (IsAlreadyListed(spItem))
                     {
                         arrListed.Add(spItem);
                         --nLastUnlisted;
@@ -674,7 +674,7 @@ void UIMeratMarketRegisterDialog::FUN_141319920(ItemArray& arrItems)
             }
             else if (spItem->FUN_140525790())
             {
-                if (FUN_141319f10(spItem))
+                if (IsAlreadyListed(spItem))
                 {
                     arrListed.Add(spItem);
                     --nLastUnlisted;
@@ -691,7 +691,7 @@ void UIMeratMarketRegisterDialog::FUN_141319920(ItemArray& arrItems)
 
 // The item is already offered on the market.
 // @0x141319f10
-bool UIMeratMarketRegisterDialog::FUN_141319f10(MS2Ptr<CItem> spItem)
+bool UIMeratMarketRegisterDialog::IsAlreadyListed(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
@@ -729,39 +729,39 @@ bool UIMeratMarketRegisterDialog::FUN_14131a100(Unk_MeratProductKey key)
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer != 0)
         nGender = ((class PC*)(class PCBase*)(pPlayer))->GetGender();
-    slot.FUN_1407cbbe0("disable", spData->IsGenderAllowed(nGender) == 0);
+    slot.SetBoolMember("disable", spData->IsGenderAllowed(nGender) == 0);
     CStringW strWarning;
     if (spData->FUN_14053cd10())
         strWarning = L"$s_meratmarket_text_register_notice_warning_music_score";
-    slot.FUN_1407cbb20("warningMsg", CStringW(strWarning));
-    slot.FUN_1407cbb20("productOID", spProduct->m_key.GetKeyString());
+    slot.SetWStringMember("warningMsg", CStringW(strWarning));
+    slot.SetWStringMember("productOID", spProduct->m_key.GetKeyString());
     slot.FUN_1409c1180("salePrice", pUgc->m_n50);
-    slot.FUN_1407cbb20("itemName", spProduct->GetName());
-    MS2Ptr<CItem> spShown = FUN_140ebc070(spProduct.get());
+    slot.SetWStringMember("itemName", spProduct->GetName());
+    MS2Ptr<CItem> spShown = CreateProductItem(spProduct.get());
     if (spShown == 0)
         return false;
     m_spSelected = spShown;
     slot.FUN_1409c3860(spShown.get(), pPlayer, 0x415);
     ASTooltip tip(pPlayer, 4, 2);
-    if (FUN_140ebbb30(&tip, spShown, spProduct, false, false) != 0)
-        slot.FUN_1409adbe0("tooltip", Scaleform::GFx::Value(tip.FUN_1422bb870()));
-    slot.FUN_1407cbb20("desc", pUgc->GetStr208());
-    slot.FUN_1407cbb20("saleTags", pUgc->GetStr200Head());
+    if (SetProductTooltip(&tip, spShown, spProduct, false, false) != 0)
+        slot.FUN_1409adbe0("tooltip", Scaleform::GFx::Value(tip.GetValue()));
+    slot.SetWStringMember("desc", pUgc->GetStr208());
+    slot.SetWStringMember("saleTags", pUgc->GetStr200Head());
     __int64 nMaxPrice = 0;
     __int64 nMinPrice = 0;
     FUN_1406a5480(spData, &nMinPrice, &nMaxPrice);
     slot.SetMemberUInt("minPrice", (unsigned int)nMinPrice);
     slot.SetMemberUInt("maxPrice", (unsigned int)nMaxPrice);
-    slot.FUN_1407cbb20("errPriceMsg", FormatPriceRangeText(nMinPrice, nMaxPrice));
+    slot.SetWStringMember("errPriceMsg", FormatPriceRangeText(nMinPrice, nMaxPrice));
     FUN_1418ffec0((unsigned int*)(&m_nFlags), 1);
-    FUN_14131b4e0(slot, 0);
-    m_30->Invoke("buildReSaleProduct", Scaleform::GFx::Value(slot.FUN_1422bb870()));
+    SetFeeTexts(slot, 0);
+    m_30->Invoke("buildReSaleProduct", Scaleform::GFx::Value(slot.GetValue()));
     return true;
 }
 
 // Build the item grid.
 // @0x14131a880
-bool UIMeratMarketRegisterDialog::FUN_14131a880(CString& strItems, unsigned int nColumns, unsigned int nRows)
+bool UIMeratMarketRegisterDialog::BuildItemGrid(CString& strItems, unsigned int nColumns, unsigned int nRows)
 {
     if (m_30 == 0)
         return false;
@@ -769,7 +769,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131a880(CString& strItems, unsigned int 
         return false;
     m_items.RemoveAll();
     m_mapUgc.RemoveAll();
-    FUN_141319920(m_items);
+    CollectListableItems(m_items);
     MS2Ptr<CItem> (*pfnGet)(void*, int) = GetItemFromArray;
     DestroyItemSlotBag(strItems);
     size_t nCount = m_items.GetCount();
@@ -792,7 +792,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131a880(CString& strItems, unsigned int 
 
 // Send the request: the fee is checked once more.
 // @0x14131aa90
-void UIMeratMarketRegisterDialog::FUN_14131aa90(MS2Ptr<CMeratMarketPacket::UgcAddProductBase> spRequest)
+void UIMeratMarketRegisterDialog::SendRegisterRequest(MS2Ptr<CMeratMarketPacket::UgcAddProductBase> spRequest)
 {
     if (spRequest == 0)
         return;
@@ -810,14 +810,14 @@ void UIMeratMarketRegisterDialog::FUN_14131aa90(MS2Ptr<CMeratMarketPacket::UgcAd
 }
 
 // @0x14131ac50
-__int64 UIMeratMarketRegisterDialog::FUN_14131ac50()
+__int64 UIMeratMarketRegisterDialog::GetBaseRegisterFee()
 {
     return *reinterpret_cast<Common::Constants::Value<__int64>*>(MrdFeeValue())->Get();
 }
 
 // The register fee of an item; bRecalc refreshes the cached fee.
 // @0x14131ac80
-__int64 UIMeratMarketRegisterDialog::FUN_14131ac80(bool bAddBase, MS2Ptr<CItem> spItem, bool bRecalc)
+__int64 UIMeratMarketRegisterDialog::GetRegisterFee(bool bAddBase, MS2Ptr<CItem> spItem, bool bRecalc)
 {
     __int64 nFee = 0;
     if (bRecalc)
@@ -827,7 +827,7 @@ __int64 UIMeratMarketRegisterDialog::FUN_14131ac80(bool bAddBase, MS2Ptr<CItem> 
             if (((class CItemData*)((class CItem*)(class CItem*)(spItem.operator->()))->FUN_140527840())->FUN_14053cd10() == false)
             {
                 int nLevel = ((class Unk_MrdMarket*)GetMeratMarketMan())->GetRegisteredDesignCount();
-                nFee = FUN_1406a5240(nLevel);
+                nFee = GetMarketRegisterFee(nLevel);
             }
         }
         __int64 nOldFee = m_nFee;
@@ -835,13 +835,13 @@ __int64 UIMeratMarketRegisterDialog::FUN_14131ac80(bool bAddBase, MS2Ptr<CItem> 
         if (FUN_1418ffe80(m_nFlags, 2) != 0 && nOldFee != nFee)
         {
             m_30->Invoke("invalidateFee");
-            FUN_1418ffef0((unsigned int*)(&m_nFlags), 2);
+            ClearFlags((unsigned int*)(&m_nFlags), 2);
         }
-        FUN_1418ffef0((unsigned int*)(&m_nFlags), 1);
+        ClearFlags((unsigned int*)(&m_nFlags), 1);
     }
     else
         nFee = m_nFee;
-    return bAddBase ? nFee + FUN_14131ac50() : nFee;
+    return bAddBase ? nFee + GetBaseRegisterFee() : nFee;
 }
 
 // @0x14131ae60
@@ -850,24 +850,24 @@ bool UIMeratMarketRegisterDialog::FUN_14131ae60(bool bAddBase, bool bCheckStale,
     __int64 nFee = 0;
     if (bCheckStale)
     {
-        __int64 nCached = FUN_14131ac80(bAddBase, m_spSelected, false);
-        nFee = FUN_14131ac80(bAddBase, m_spSelected, true);
+        __int64 nCached = GetRegisterFee(bAddBase, m_spSelected, false);
+        nFee = GetRegisterFee(bAddBase, m_spSelected, true);
         if (nCached != nFee)
         {
-            FUN_140d74390(GetStringCommonByKey(L"s_ugc_itemedit_error_check_register_fee"), 0,
+            ShowMessageBoxWithCallback(GetStringCommonByKey(L"s_ugc_itemedit_error_check_register_fee"), 0,
                 Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketRegisterDialog::OnForceUpdateFeeMsgBox));
             return false;
         }
     }
     else
-        nFee = FUN_14131ac80(bAddBase, m_spSelected, false);
+        nFee = GetRegisterFee(bAddBase, m_spSelected, false);
     if (pFee != 0)
         *pFee = nFee;
     return FUN_1418ff110(3, nFee, true);
 }
 
 // @0x14131b0e0
-bool UIMeratMarketRegisterDialog::FUN_14131b0e0(const CStringW& strDescription, const CStringW& strName)
+bool UIMeratMarketRegisterDialog::ValidateTexts(const CStringW& strDescription, const CStringW& strName)
 {
     int nKind = 0x21;
     {
@@ -883,12 +883,12 @@ bool UIMeratMarketRegisterDialog::FUN_14131b0e0(const CStringW& strDescription, 
         CStringW strBad;
         if (pFilter->CheckMarketDescription(strDescription, strBad) != 0)
         {
-            FUN_140d73aa0(strBad, 0, 0, L"");
+            ShowMessageBox(strBad, 0, 0, L"");
             return false;
         }
         if (pFilter->CheckMarketProductName(strName, strBad) != 0)
         {
-            FUN_140d73aa0(strBad, 0, 0, L"");
+            ShowMessageBox(strBad, 0, 0, L"");
             return false;
         }
     }
@@ -896,7 +896,7 @@ bool UIMeratMarketRegisterDialog::FUN_14131b0e0(const CStringW& strDescription, 
     {
         int nLimit = 200;
         CStringW strText = BlockFormat<int>(0xa38, nLimit);
-        FUN_140d73aa0(strText, 0, 0, L"");
+        ShowMessageBox(strText, 0, 0, L"");
         return false;
     }
     return true;
@@ -910,13 +910,13 @@ CStringW UIMeratMarketRegisterDialog::FormatPriceRangeText(__int64 nMin, __int64
 
 // Put the fee texts into obj.
 // @0x14131b4e0
-void UIMeratMarketRegisterDialog::FUN_14131b4e0(ASObj& obj, bool bAddBase)
+void UIMeratMarketRegisterDialog::SetFeeTexts(ASObj& obj, bool bAddBase)
 {
     CStringW strFee;
     CStringW strTotalFee;
     if (m_spSelected.get() != 0)
     {
-        __int64 nTotal = FUN_14131ac80(bAddBase, m_spSelected, FUN_1418ffe80(m_nFlags, 1));
+        __int64 nTotal = GetRegisterFee(bAddBase, m_spSelected, FUN_1418ffe80(m_nFlags, 1));
         strFee = FUN_1418fec00(3, m_nFee, false);
         strTotalFee = FUN_1418fec00(3, nTotal, false);
     }
@@ -925,19 +925,19 @@ void UIMeratMarketRegisterDialog::FUN_14131b4e0(ASObj& obj, bool bAddBase)
         strFee = GetStringCommonByKey(L"s_meratmarket_register_fee_default");
         strTotalFee = GetStringCommonByKey(L"s_meratmarket_register_total_fee_default");
     }
-    obj.FUN_1407cbb20("strRegistFee", CStringW(strFee));
-    obj.FUN_1407cbb20("strTotalFee", CStringW(strTotalFee));
+    obj.SetWStringMember("strRegistFee", CStringW(strFee));
+    obj.SetWStringMember("strTotalFee", CStringW(strTotalFee));
 }
 
 // @0x14131b7e0
-void UIMeratMarketRegisterDialog::FUN_14131b7e0()
+void UIMeratMarketRegisterDialog::ClearSelectedItem()
 {
     m_spSelected = 0;
 }
 
 // "OnClickRegister"
 // @0x14131b810
-void UIMeratMarketRegisterDialog::FUN_14131b810(ASData& data)
+void UIMeratMarketRegisterDialog::OnClickRegister(ASData& data)
 {
     Scaleform::GFx::Value value = data.PopValue();
     ASObj obj(value, 2);
@@ -957,13 +957,13 @@ void UIMeratMarketRegisterDialog::FUN_14131b810(ASData& data)
         if (spItem->GetItemUid() != nItemUid)
             spItem = 0;
     }
-    bool bValid = FUN_1413192d0(nItemUid, spItem);
+    bool bValid = CanFindItem(nItemUid, spItem);
     if (!bValid)
     {
         FUN_140d73bc0(0xa3e, 0, 0, L"");
         return;
     }
-    if (FUN_141319f10(spItem))
+    if (IsAlreadyListed(spItem))
     {
         FUN_140d73bc0(0xa3f, 0, 0, L"");
         return;
@@ -977,7 +977,7 @@ void UIMeratMarketRegisterDialog::FUN_14131b810(ASData& data)
         return;
     if (!FUN_14131ae60(bAdvertise, false, 0))
         return;
-    if (!FUN_14131b0e0(strDescription, strName))
+    if (!ValidateTexts(strDescription, strName))
         return;
     if (m_spRequest)
     {
@@ -991,13 +991,13 @@ void UIMeratMarketRegisterDialog::FUN_14131b810(ASData& data)
         m_spRequest->name = strName;
         m_spRequest->description = strDescription;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d748b0(0, GetStringCommon(0x9da), GetStringCommon(0x9db),
+    MS2Ptr<CMsgBoxData> spBox = ShowTermsMessageBoxWithCallback(0, GetStringCommon(0x9da), GetStringCommon(0x9db),
         Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketRegisterDialog::FUN_141319100));
 }
 
 // "OnClickReRegister"
 // @0x14131c010
-void UIMeratMarketRegisterDialog::FUN_14131c010(ASData& data)
+void UIMeratMarketRegisterDialog::OnClickReRegister(ASData& data)
 {
     Scaleform::GFx::Value value = data.PopValue();
     ASObj obj(value, 2);
@@ -1014,7 +1014,7 @@ void UIMeratMarketRegisterDialog::FUN_14131c010(ASData& data)
     key.ParseOid(FUN_14016a730(strOid, 0));
     if (!FUN_14131ae60(bAdvertise, false, 0))
         return;
-    if (!FUN_14131b0e0(strDescription, strName))
+    if (!ValidateTexts(strDescription, strName))
         return;
     if (m_spRequest)
     {
@@ -1028,23 +1028,23 @@ void UIMeratMarketRegisterDialog::FUN_14131c010(ASData& data)
         m_spRequest->name = strName;
         m_spRequest->description = strDescription;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d748b0(0, GetStringCommon(0x9da), GetStringCommon(0x9db),
+    MS2Ptr<CMsgBoxData> spBox = ShowTermsMessageBoxWithCallback(0, GetStringCommon(0x9da), GetStringCommon(0x9db),
         Delegate<bool(int, const CMsgBoxData&)>(this, &UIMeratMarketRegisterDialog::FUN_141319100));
 }
 
 // "OnGetFee" / "OnGetTotalFee"
 // @0x14131c4e0
-void UIMeratMarketRegisterDialog::FUN_14131c4e0(ASData& data)
+void UIMeratMarketRegisterDialog::OnGetFee(ASData& data)
 {
     bool bAddBase = data.PopBool();
     Scaleform::GFx::Value value = data.PopValue();
     ASObj obj(value, 2);
-    FUN_14131b4e0(obj, bAddBase);
+    SetFeeTexts(obj, bAddBase);
 }
 
 // "OnChangeSelectedIndex"
 // @0x14131c570
-void UIMeratMarketRegisterDialog::FUN_14131c570(ASData& data)
+void UIMeratMarketRegisterDialog::OnChangeSelectedIndex(ASData& data)
 {
     int nIndex = data.PopInt();
     bool bAddBase = data.PopBool();
@@ -1057,19 +1057,19 @@ void UIMeratMarketRegisterDialog::FUN_14131c570(ASData& data)
     bool bChanged = false;
     if (m_spSelected)
     {
-        bool bListed = FUN_141319f10(m_spSelected);
+        bool bListed = IsAlreadyListed(m_spSelected);
         CStringW strWarning;
         if (bListed)
             strWarning = L"$s_meratmarket_text_register_notice_already";
         else if (m_spSelected->FUN_140525790())
             strWarning = L"$s_meratmarket_text_register_notice_warning_music_score";
-        obj.FUN_1407cbb20("warningMsg", CStringW(strWarning));
+        obj.SetWStringMember("warningMsg", CStringW(strWarning));
         __int64 nMaxPrice = 0;
         __int64 nMinPrice = 0;
         FUN_1406a5480(MS2Ptr<CItemData>(((class CItemData*)((class CItem*)(class CItem*)(m_spSelected.operator->()))->FUN_140527840())), &nMinPrice, &nMaxPrice);
         obj.SetMemberUInt("minPrice", (int)nMinPrice);
         obj.SetMemberUInt("maxPrice", (int)nMaxPrice);
-        obj.FUN_1407cbb20("errPriceMsg", FormatPriceRangeText(nMinPrice, nMaxPrice));
+        obj.SetWStringMember("errPriceMsg", FormatPriceRangeText(nMinPrice, nMaxPrice));
         FUN_141276180(s_marketItemChoice, "");
         if (spOld)
         {
@@ -1082,7 +1082,7 @@ void UIMeratMarketRegisterDialog::FUN_14131c570(ASData& data)
         bChanged = spOld ? 1 : 0;
     if (bChanged)
         FUN_1418ffec0((unsigned int*)(&m_nFlags), 1);
-    FUN_14131b4e0(obj, bAddBase);
+    SetFeeTexts(obj, bAddBase);
 }
 
 // "GetAlreadyRegistIndex"
@@ -1092,12 +1092,12 @@ void UIMeratMarketRegisterDialog::OnGetAlreadyRegistIndex(ASData& data)
     Scaleform::GFx::Value value = data.PopValue();
     bool bOnlyEnabled = data.PopBool();
     ASObj obj(value, 2);
-    obj.FUN_1407cb9c0("startIndex", m_nAlreadyIndex);
+    obj.SetIntMember("startIndex", m_nAlreadyIndex);
     m_bOnlyEnabled = bOnlyEnabled;
 }
 
 // @0x14131ca80
-int UIMeratMarketRegisterDialog::FUN_14131ca80()
+int UIMeratMarketRegisterDialog::GetTagInputLimit()
 {
     int nLimit = FUN_14025a620((class Unk_ConstVal*)(MrdTagLimitValue()));
     int nLanguage = FUN_1406516a0();
@@ -1147,21 +1147,21 @@ MS2_REPLACE_METHOD(0x141317D60, UIMeratMarketRegisterDialog, OnLoadComplete, 180
 MS2_REPLACE_METHOD(0x141318480, UIMeratMarketRegisterDialog, vfunc_28, 811, 0x70921477);
 MS2_REPLACE_METHOD(0x1413187D0, UIMeratMarketRegisterDialog, vfunc_13, 398, 0x429B90DE);
 MS2_REPLACE_METHOD(0x141318970, UIMeratMarketRegisterDialog, vfunc_15, 163, 0xB59734C4);
-MS2_REPLACE_METHOD(0x141318CC0, UIMeratMarketRegisterDialog, FUN_141318cc0, 551, 0x321E93F0);
-MS2_REPLACE_METHOD(0x141318EF0, UIMeratMarketRegisterDialog, FUN_141318ef0, 444, 0x3E58C313);
+MS2_REPLACE_METHOD(0x141318CC0, UIMeratMarketRegisterDialog, ClearTagInputs, 551, 0x321E93F0);
+MS2_REPLACE_METHOD(0x141318EF0, UIMeratMarketRegisterDialog, SetTagInputMaxChars, 444, 0x3E58C313);
 MS2_REPLACE_METHOD(0x1413191F0, UIMeratMarketRegisterDialog, GetItemAt, 204, 0x53827808);
 MS2_REPLACE_METHOD(0x1413197A0, UIMeratMarketRegisterDialog, FindItemIndex, 367, 0x9A68B28B);
-MS2_REPLACE_METHOD(0x141319920, UIMeratMarketRegisterDialog, FUN_141319920, 1500, 0x674985B1);
+MS2_REPLACE_METHOD(0x141319920, UIMeratMarketRegisterDialog, CollectListableItems, 1500, 0x674985B1);
 MS2_REPLACE_METHOD(0x14131A100, UIMeratMarketRegisterDialog, FUN_14131a100, 1905, 0xE12EBD40);
-MS2_REPLACE_METHOD(0x14131A880, UIMeratMarketRegisterDialog, FUN_14131a880, 521, 0xFC154478);
-MS2_REPLACE_METHOD(0x14131AC50, UIMeratMarketRegisterDialog, FUN_14131ac50, 36, 0xF68D1F5E);
+MS2_REPLACE_METHOD(0x14131A880, UIMeratMarketRegisterDialog, BuildItemGrid, 521, 0xFC154478);
+MS2_REPLACE_METHOD(0x14131AC50, UIMeratMarketRegisterDialog, GetBaseRegisterFee, 36, 0xF68D1F5E);
 MS2_REPLACE_METHOD(0x14131AE60, UIMeratMarketRegisterDialog, FUN_14131ae60, 622, 0x51D73AE5);
-MS2_REPLACE_METHOD(0x14131B0E0, UIMeratMarketRegisterDialog, FUN_14131b0e0, 824, 0xDC690F8B);
+MS2_REPLACE_METHOD(0x14131B0E0, UIMeratMarketRegisterDialog, ValidateTexts, 824, 0xDC690F8B);
 MS2_REPLACE_METHOD(0x14131B420, UIMeratMarketRegisterDialog, FormatPriceRangeText, 176, 0x3FAE4D71);
-MS2_REPLACE_METHOD(0x14131B4E0, UIMeratMarketRegisterDialog, FUN_14131b4e0, 750, 0x148F6202);
-MS2_REPLACE_METHOD(0x14131B810, UIMeratMarketRegisterDialog, FUN_14131b810, 2031, 0x46D6FC81);
-MS2_REPLACE_METHOD(0x14131C010, UIMeratMarketRegisterDialog, FUN_14131c010, 1211, 0x57776BC0);
-MS2_REPLACE_METHOD(0x14131C4E0, UIMeratMarketRegisterDialog, FUN_14131c4e0, 138, 0x2A2D8A17);
-MS2_REPLACE_METHOD(0x14131C570, UIMeratMarketRegisterDialog, FUN_14131c570, 1110, 0x151B536B);
+MS2_REPLACE_METHOD(0x14131B4E0, UIMeratMarketRegisterDialog, SetFeeTexts, 750, 0x148F6202);
+MS2_REPLACE_METHOD(0x14131B810, UIMeratMarketRegisterDialog, OnClickRegister, 2031, 0x46D6FC81);
+MS2_REPLACE_METHOD(0x14131C010, UIMeratMarketRegisterDialog, OnClickReRegister, 1211, 0x57776BC0);
+MS2_REPLACE_METHOD(0x14131C4E0, UIMeratMarketRegisterDialog, OnGetFee, 138, 0x2A2D8A17);
+MS2_REPLACE_METHOD(0x14131C570, UIMeratMarketRegisterDialog, OnChangeSelectedIndex, 1110, 0x151B536B);
 MS2_REPLACE_METHOD(0x14131C9D0, UIMeratMarketRegisterDialog, OnGetAlreadyRegistIndex, 164, 0xD1550D59);
-MS2_REPLACE_METHOD(0x14131CA80, UIMeratMarketRegisterDialog, FUN_14131ca80, 72, 0x0B2CCBCE);
+MS2_REPLACE_METHOD(0x14131CA80, UIMeratMarketRegisterDialog, GetTagInputLimit, 72, 0x0B2CCBCE);

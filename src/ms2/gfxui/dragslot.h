@@ -48,12 +48,12 @@ public:
     virtual int vfunc_7(void* p);                   // 7 0x1422c8d90 return 1 (p: CString*, a changed binding name)
     virtual int vfunc_8(void* p);                   // 8 0x1422c8db0 return 0 (p: Value*, the data to push)
     virtual void vfunc_9();                         // 9 0x1422c8dd0 {}
-    CString FUN_1422c89f0();                        // 0x1422c89f0 a copy of m_strName
+    CString GetName();                        // 0x1422c89f0 a copy of m_strName
     Scaleform::GFx::Value& FUN_1422c8d40();         // 0x1422c8d40 &m_value18 (the slot's AS data)
-    void FUN_1422c8be0();                           // 0x1422c8be0 push the slot to its AS binding (DragSlot::vfunc_10)
-    void FUN_1422c8b50();                           // 0x1422c8b50 clear the AS binding (DragSlot::vfunc_11)
+    void PushBinding();                           // 0x1422c8be0 push the slot to its AS binding (DragSlot::vfunc_10)
+    void ClearBinding();                           // 0x1422c8b50 clear the AS binding (DragSlot::vfunc_11)
     void FUN_1422c8cb0(const Scaleform::GFx::Value& v);   // 0x1422c8cb0 m_value18 = v; vfunc_9() unless v is null (notifybinding.cpp)
-    void FUN_1422c8d10(const Scaleform::GFx::Value& v);   // 0x1422c8d10 m_value38 = v (notifybinding.cpp)
+    void SetTarget(const Scaleform::GFx::Value& v);   // 0x1422c8d10 m_value38 = v (notifybinding.cpp)
     void FUN_1422c8a40();                           // 0x1422c8a40 mark m_arr58's names changed and m_strName pushed (NotifyContext)
     int FUN_1422c8ac0(const CString& strName);      // 0x1422c8ac0 strName is in m_arr58
 
@@ -91,8 +91,8 @@ public:
 public:
     virtual void vfunc_5();                         // 5  0x1422cc4c0 if (m_bDragging) vfunc_21()
     virtual int vfunc_7(void* p);                   // 7  0x1422cc660 return vfunc_10()
-    virtual int vfunc_10();                         // 10 0x1422cc430 FUN_1422c8be0(this); return 1
-    virtual int vfunc_11();                         // 11 0x1422cc460 FUN_1422c8b50(this); return 1
+    virtual int vfunc_10();                         // 10 0x1422cc430 PushBinding(this); return 1
+    virtual int vfunc_11();                         // 11 0x1422cc460 ClearBinding(this); return 1
     virtual int vfunc_12();                         // 12 0x1422cc490 return vfunc_10()
     virtual int vfunc_13();                         // 13 0x1422cc500 return vfunc_10()
     virtual int vfunc_14();                         // 14 0x1422cc530 return vfunc_10()
@@ -134,7 +134,7 @@ public:
     // SetupClassInfo 0x140a375e0.
     EE_DECLARE_CLASS1(DragSlotBag, 0x06202736, NotifyContext::BindData);
 public:
-    virtual void vfunc_10(int nCount);              // 10 0x1422cc990 for i < n: FUN_1422ccb50(this, i) (create slots)
+    virtual void vfunc_10(int nCount);              // 10 0x1422cc990 for i < n: AddSlot(this, i) (create slots)
     virtual void vfunc_11(void* p);                 // 11 0x1422ccd50 for each slot: slot->vfunc_23(p)
     virtual void vfunc_12(void* p);                 // 12 0x1422cce30 for each slot: slot->vfunc_24(p)
     virtual void vfunc_13(int i);                   // 13 0x1422ccf10 slot(i)->vfunc_11()
@@ -145,20 +145,20 @@ public:
     // ?\dragslotbag.cpp (src/ms2/gfxui/dragslotbag.cpp). The m_slots walks are range-for loops (copying the pair): MSVC
     // compiles them to the map's _Unchecked_begin/_Unchecked_end (0x14140fe80/0x14140fed0), not begin()/end().
     void FUN_1422cc9e0();                           // unbind every slot, then clear m_slots
-    void FUN_1422cca90();                           // push every slot to its AS binding (BindData::FUN_1422c8be0)
-    void FUN_1422ccb50(int nIndex);                 // create the slot of nIndex (vfunc_16), bind it, add it to m_slots
-    void FUN_1422ccc60(int nIndex);                 // remove the slot of nIndex
+    void FUN_1422cca90();                           // push every slot to its AS binding (BindData::PushBinding)
+    void AddSlot(int nIndex);                 // create the slot of nIndex (vfunc_16), bind it, add it to m_slots
+    void RemoveSlot(int nIndex);                 // remove the slot of nIndex
     void FUN_1422cccc0(CString strName, int nIndex);   // unbind strName, erase nIndex from m_slots
-    size_t FUN_1422ccd20();                         // m_slots.size()
-    CString FUN_1422ccfb0(int nIndex) const;        // the slot name of nIndex ("" if there is none)
-    DragSlot* FUN_1422cd070(int nIndex);            // the slot of nIndex
-    DragSlot* FUN_1422cd0f0(const CString& strName);   // the bound slot of a name (null if it is not a DragSlot)
+    size_t GetSlotCount();                         // m_slots.size()
+    CString GetSlotName(int nIndex) const;        // the slot name of nIndex ("" if there is none)
+    DragSlot* GetSlot(int nIndex);            // the slot of nIndex
+    DragSlot* GetSlotByName(const CString& strName);   // the bound slot of a name (null if it is not a DragSlot)
 
     // pRetVal = a new AS array of the slot names (m_slots order); NotifyDragSlot "getBagSlotBindings".
-    void FUN_1422cd1c0(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1422cd1c0
+    void GetBagSlotBindings(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1422cd1c0
 
 public:
-    std::map<int, CString> m_slots;                 // +0x78 slot index -> slot name ("<bag name>.<index>"); FUN_1422ccb50 inserts,
+    std::map<int, CString> m_slots;                 // +0x78 slot index -> slot name ("<bag name>.<index>"); AddSlot inserts,
                                                     // vfunc_11/12 walk it (init 0x141000090, dtor 0x1410004f0, size 0x1410083f0)
 };
 MS2_CHECK_SIZE(DragSlotBag, 0x88);

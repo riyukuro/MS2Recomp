@@ -611,8 +611,8 @@ void Unk_WsInst6Tail(PC& pc, CEntityShower& shower, MS2ActorUpdater& updater, Ca
     TSingleton<CDebugHelper>::CreateInstance();
     TSingleton<CDebugHelper>::DestroyInstance();
     // inline getters
-    pc.FUN_141bfaec0(true);
-    pc.FUN_141bfed80();
+    pc.SetFaded(true);
+    pc.GetFadeDelay();
     shower.GetAlpha();
     shower.GetEntityID();
     updater.FUN_141bfe6d0();
@@ -827,7 +827,7 @@ bool FUN_141c072e0(void* map, CString& key, MS2Ptr<Unk_WsB_Lift>& out)
 
 // GetKeyAt: ATLENSURE(pos), then the node's key (at +0).
 // MS2-FUNCTIONAL: ATL GetKeyAt written over the node layout (m_148); the exe is the member instance
-unsigned* FUN_141bfecc0(void* map, void* pos)
+unsigned* GetKeyAt(void* map, void* pos)
 {
     ATLENSURE(pos != NULL);
     return (unsigned*)pos;

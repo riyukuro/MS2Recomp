@@ -38,11 +38,11 @@ public:
     UIShieldBar();                                      // 0x140e861f0
     virtual ~UIShieldBar();                             //  0 0x140e86260 (??_G 0x140e86bb0)
     virtual CString GetTypeName();                          //  1 0x140e862a0 "ShieldBar"
-    virtual void OnLoadComplete();                      // 22 0x140e862f0 UIObject::OnLoadComplete(); FUN_140e86430(m_68)
+    virtual void OnLoadComplete();                      // 22 0x140e862f0 UIObject::OnLoadComplete(); CreateEntityCache(m_68)
     virtual int vfunc_48() { return 0x4f77; }           // 48 0x140e86bf0
 
-    void FUN_140e86430(unsigned int nCount);            // create the entity cache
-    Entity* FUN_140e86610(int nActorId);                // the entity of the actor (created or recycled)
+    void CreateEntityCache(unsigned int nCount);            // create the entity cache
+    Entity* GetOrCreateEntity(int nActorId);                // the entity of the actor (created or recycled)
 };
 MS2_CHECK_SIZE(UIShieldBar::Entity, 0xc0);
 MS2_CHECK_OFFSET(UIShieldBar::Entity, m_a0, 0xa0);

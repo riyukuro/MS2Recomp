@@ -35,7 +35,7 @@ extern Unk_Inventory g_143ab2a90;                       // the player's inventor
 class UIEnchantScrollDialog : public UIDialog
 {
 public:
-    void FUN_140f3cb10();                               // refresh after the scroll slot was cleared
+    void UpdateScrollInfo();                               // refresh after the scroll slot was cleared
 };
 
 // UI service: handle to a registered UI object.
@@ -64,15 +64,15 @@ void FUN_140cd73b0(const CString& strName, unsigned __int64 nOwner, MS2Ptr<CItem
 {
     EnchantScrollSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) EnchantScrollSlot(strName, nOwner, spItem);
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::RegisterBinding(strName, pSlot);
 }
 
 // @0x140cd74a0
 void FUN_140cd74a0(const CString& strName)
 {
-    EnchantScrollSlot* pSlot = FUN_140cd7a50(Unk_NotifyContext::FUN_1422c8e90(strName));
+    EnchantScrollSlot* pSlot = FUN_140cd7a50(Unk_NotifyContext::FindBinding(strName));
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
 }
 
 // @0x140cd74e0
@@ -87,7 +87,7 @@ int EnchantScrollSlot::vfunc_17()
     SetItem(MS2Ptr<CItem>(0));
     UIEnchantScrollDialog* pDlg = FindEnchantScrollDialog(0x4ee0);
     if (pDlg != 0)
-        pDlg->FUN_140f3cb10();
+        pDlg->UpdateScrollInfo();
     return vfunc_10();
 }
 
@@ -141,7 +141,7 @@ int EnchantScrollSlot::vfunc_0(void* p)
     int nOk = tip.FUN_1409e0d40(vfunc_25().get());
     if (nOk != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -157,7 +157,7 @@ int EnchantScrollSlot::vfunc_8(void* p)
     int nOk = slot.FUN_1409c3860(vfunc_25().get(), pPlayer, 1);
     if (nOk != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;

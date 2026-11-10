@@ -17,16 +17,16 @@ public:
     ASEvent(const Scaleform::GFx::FunctionHandler::Params& params); // 0x1422e2240 (movie id 2)
     virtual ~ASEvent();                                             // 0x1422e22a0
 
-    CString FUN_1422e22d0();                                        // type
-    Scaleform::GFx::Value FUN_1422e2360();                          // target
-    Scaleform::GFx::Value FUN_1422e23b0();                          // currentTarget
-    bool FUN_1422e2400();                                           // cancelable
+    CString GetType();                                        // type
+    Scaleform::GFx::Value GetTarget();                          // target
+    Scaleform::GFx::Value GetCurrentTarget();                          // currentTarget
+    bool IsCancelable();                                           // cancelable
     bool FUN_1422e2460();                                           // bubbles
-    bool FUN_1422e24c0();                                           // isDefaultPrevented()
-    void FUN_1422e2520();                                           // preventDefault()
-    void FUN_1422e2560();                                           // stopImmediatePropagation()
-    void FUN_1422e25a0();                                           // stopPropagation()
-    CString FUN_1422e25e0();                                        // toString()
+    bool IsDefaultPrevented();                                           // isDefaultPrevented()
+    void PreventDefault();                                           // preventDefault()
+    void StopImmediatePropagation();                                           // stopImmediatePropagation()
+    void StopPropagation();                                           // stopPropagation()
+    CString ToString();                                        // toString()
 };
 MS2_CHECK_SIZE(ASEvent, 0x40);
 
@@ -35,7 +35,7 @@ class ASTextEvent : public ASEvent
 {
 public:
     ASTextEvent(const Scaleform::GFx::FunctionHandler::Params& params); // 0x1422e2670
-    CString FUN_1422e26b0();                                        // text
+    CString GetText();                                        // text
 };
 MS2_CHECK_SIZE(ASTextEvent, 0x40);
 
@@ -44,14 +44,14 @@ class ASListEvent : public ASEvent
 {
 public:
     ASListEvent(const Scaleform::GFx::FunctionHandler::Params& params); // 0x1422e2740
-    Scaleform::GFx::Value FUN_1422e2780();                          // itemData
-    Scaleform::GFx::Value FUN_1422e27d0();                          // itemRenderer
-    int FUN_1422e2820();                                            // index
-    int FUN_1422e2880();                                            // columnIndex
-    int FUN_1422e28e0();                                            // rowIndex
+    Scaleform::GFx::Value GetItemData();                          // itemData
+    Scaleform::GFx::Value GetItemRenderer();                          // itemRenderer
+    int GetIndex();                                            // index
+    int GetColumnIndex();                                            // columnIndex
+    int GetRowIndex();                                            // rowIndex
     unsigned int FUN_1422e2940();                                   // controllerIdx
     unsigned int FUN_1422e29a0();                                   // buttonIdx
-    bool FUN_1422e2a00();                                           // isKeyboard
+    bool IsKeyboard();                                           // isKeyboard
 };
 MS2_CHECK_SIZE(ASListEvent, 0x40);
 
@@ -60,8 +60,8 @@ class ASIndexEvent : public ASEvent
 {
 public:
     ASIndexEvent(const Scaleform::GFx::FunctionHandler::Params& params); // 0x1422e2a60
-    int FUN_1422e2aa0();                                            // index
-    int FUN_1422e2b00();                                            // lastIndex
-    Scaleform::GFx::Value FUN_1422e2b60();                          // data
+    int GetIndex();                                            // index
+    int GetLastIndex();                                            // lastIndex
+    Scaleform::GFx::Value GetData();                          // data
 };
 MS2_CHECK_SIZE(ASIndexEvent, 0x40);

@@ -49,7 +49,7 @@ extern const char DAT_142e36e40[];                                              
 int FUN_140db9ca0(const char* pszBuf, size_t nCount, const char* pszFormat, ...);
 
 // @0x140db9610
-NiPoint2 FUN_140db9610(const CStringA& kText)
+NiPoint2 ParsePoint2(const CStringA& kText)
 {
     NiPoint2 kPt;
     int nParsed = FUN_140db9ca0((const char*)kText, 0x80, "%f, %f", &kPt.x, &kPt.y);
@@ -69,7 +69,7 @@ NiPoint3 FUN_140db96a0(const CStringA& kText)
 }
 
 // @0x140db9760
-Unk_DbInt4 FUN_140db9760(const CStringA& kText)
+Unk_DbInt4 ParseInt4(const CStringA& kText)
 {
     Unk_DbInt4 kRes(0, 0, 0, 0);
     CAtlArray<CStringA> arrParts;
@@ -83,7 +83,7 @@ Unk_DbInt4 FUN_140db9760(const CStringA& kText)
 }
 
 // @0x140db98a0
-NiRect<float> FUN_140db98a0(const CStringA& kText)
+NiRect<float> ParseRect(const CStringA& kText)
 {
     NiRect<float> kRes(0, 0, 0, 0);
     CAtlArray<CStringA> arrParts;
@@ -133,7 +133,7 @@ Unk_DbInt4::Unk_DbInt4(int a_, int b_, int c_, int d_)
     d = d_;
 }
 
-// 0x140db9c80 is the SDK inline NiPoint2(const efd::Point2&), emitted by FUN_140db9610 above
+// 0x140db9c80 is the SDK inline NiPoint2(const efd::Point2&), emitted by ParsePoint2 above
 //
 //
 //

@@ -27,7 +27,7 @@ public:
     virtual void vfunc_34();                                // 34 0x1417fb5a0: m_n28 = 1
 
     int FUN_1417fb370();                                    // the ridee's swim kind (0 without a ridee)
-    void FUN_1417fb400();                                   // stop the effect
+    void StopEffect();                                   // stop the effect
     void FUN_1417fb440();                                   // start the effect of the owner's swim animation
 
     int m_nEffect;                                          // +0x40 effect id (0 = none)

@@ -167,7 +167,7 @@ bool CStatusEffect::vfunc_9()
     if (m_bSuper && nNow - m_dwLastTick > DAT_1439f8244)
     {
         m_bFlag = m_bFlag ? 0 : 1;
-        FUN_141801900(0);
+        ApplyTint(0);
         m_dwLastTick = nNow;
     }
     return true;
@@ -189,7 +189,7 @@ void CStatusEffect::vfunc_4()
     ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapCount.insert(std::make_pair(m_spNode, nCount));
     ((class Unk_PostProcessSvc*)Unk_AeFeatureMgr::FUN_1409a8b20())->m_mapKind.insert(std::make_pair(m_spNode, m_nKind));
     if (m_nKind == 4)
-        FUN_141801900(0);
+        ApplyTint(0);
     m_b2e = true;
     m_bFlag = true;
 }
@@ -225,7 +225,7 @@ int CStatusEffect::vfunc_8(void* pOut)
 MS2_REPLACE_METHOD(0x1418018b0, CStatusEffect, vfunc_8, 62, 0xCE06636C);
 
 // @0x141801900
-void CStatusEffect::FUN_141801900(void* pUnused)
+void CStatusEffect::ApplyTint(void* pUnused)
 {
     Unk_SceneWalker walker((NiAVObject*)(m_spNode));
     NiAVObject* pObj;

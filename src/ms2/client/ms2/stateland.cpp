@@ -33,12 +33,12 @@
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 class GameObjectControllerHitReport;
-class GameObjectController { public: GameObjectControllerHitReport* FUN_141240f20(); };   // C3: unit-local view
+class GameObjectController { public: GameObjectControllerHitReport* GetHitReport(); };   // C3: unit-local view
 
 // The actor's buff set.
-#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
 #include <egmAnimation/AnimationService.h>
-class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141682fe0(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
 // The owner seen through its vftable where gameobject.h declares slot 22 by reference: the exe passes the point by
 // value (the caller copies it into an argument temp).
 class Unk_LandOwnerSlots
@@ -87,8 +87,8 @@ void StateLand::vfunc_4(StateData* pData)
     int nHit = reinterpret_cast<CPhysXHelper*>(GetPhysXHelper())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(kFrom), reinterpret_cast<Vector3&>(kHit), &kRay, 50.0f, reinterpret_cast<Vector3*>(&kNormal), 0);
     if (nHit != 0 && pPC != 0 && kRay.m_hitEntity != 0)
     {
-        if (reinterpret_cast<egf::Entity*>(kRay.m_hitEntity)->GetEntityID() != ((GameObjectController*)pPC->GetPhysicsBody())->FUN_141240f20()->GetEntityID())
-            ((GameObjectController*)pPC->GetPhysicsBody())->FUN_141240f20()->SetEntity(reinterpret_cast<Unk_Entity*>(kRay.m_hitEntity));
+        if (reinterpret_cast<egf::Entity*>(kRay.m_hitEntity)->GetEntityID() != ((GameObjectController*)pPC->GetPhysicsBody())->GetHitReport()->GetEntityID())
+            ((GameObjectController*)pPC->GetPhysicsBody())->GetHitReport()->SetEntity(reinterpret_cast<Unk_Entity*>(kRay.m_hitEntity));
     }
     m_pOwner->vfunc_93(true);
     reinterpret_cast<CGroundEffectDataManager*>(TSingleton<CGroundEffectDataManager>::GetInstance())->PlayEffects(m_pOwner, CString("land"));
@@ -112,10 +112,10 @@ void StateLand::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
     Unk_PCMove* pBuff = (Unk_PCMove*)m_pOwner->FUN_14166d240();
-    reinterpret_cast<Unk_LandOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+    reinterpret_cast<Unk_LandOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->GetMoveDirection())));
     if (m_pOwner->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
-    else if (m_pOwner->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
+    else if (m_pOwner->FUN_141671a30() != 0 && pBuff->IsActionKeyDown(0x493e1))
         m_pOwner->vfunc_59(6, 0, 0x25, 0);
     else if (m_pOwner->FUN_141675ed0() != 0)
         m_pOwner->vfunc_59(1, 0, 0, 0);

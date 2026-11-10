@@ -52,7 +52,7 @@ public:
 template <class A> CStringW FormatStringId(int nId, const A& a);     // formatted message
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);   // formatted message, two arguments
 CStringW GetStringCommon(int nStringId);                              // string table text
-void FUN_1412751f0(const CStringW& strText, int nType, int nFlag);  // post a notice
+void ShowSystemNotice(const CStringW& strText, int nType, int nFlag);  // post a notice
 class PC { public: int GetSubJob(); MS2Ptr<CPvPInfo> GetPvPInfo(); };   // C3: member view (pc.cpp / fittingdollpc.h); the job of a player, the PvP info
 
 bool FUN_14101c5b0(Unk_PvpEntryItem* pA, Unk_PvpEntryItem* pB);
@@ -63,27 +63,27 @@ UIPvPTeamScoreDialog* FUN_14101c8f0(int nClass);
 // @0x14101b7f0
 void Unk_PvpEntryBlock::FUN_14101b7f0()
 {
-    m_a.FUN_14101ef40();
-    m_b.FUN_14101ef40();
+    m_a.Clear();
+    m_b.Clear();
 }
 
 // @0x14101b830
-void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
+void Unk_PvpEntryBlock::OnMessage(int nMessage, CInPacket& packet)
 {
     if (nMessage == 0x6b)
     {
         UIPvPTeamResultDialog* pResult = FUN_14101c850(0x4ed2);
         if (pResult != 0)
         {
-            pResult->FUN_1413452c0();
-            pResult->FUN_141345310();
+            pResult->ResetResult();
+            pResult->SetMyTeam();
         }
     }
     else if (nMessage == 0x6c)
     {
         int nA = packet.ReadInt32();
         int nB = packet.ReadInt32();
-        FUN_14101c470(nA, nB);
+        SetTeamScores(nA, nB);
         UIPvPTeamScoreDialog* pScore = FUN_14101c8f0(0x4ed3);
         if (pScore != 0)
             FUN_141346960(pScore);
@@ -100,8 +100,8 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e95);
         UIPvPTeamResultDialog* pResult = FUN_14101c850(0x4ed2);
         if (pResult != 0)
-            pResult->FUN_141345740(nTeam, nCount);
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4ed2) != 0)
+            pResult->SetResult(nTeam, nCount);
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4ed2) != 0)
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ed2)));
     }
     else if (nMessage == 0x6d)
@@ -118,7 +118,7 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
                           info->m_nLose, info->m_nKill);
             UIPvPTeamResultDialog* pResult = FUN_14101c850(0x4ed2);
             if (pResult != 0)
-                pResult->FUN_1413454b0();
+                pResult->UpdateTeamMembers();
             return;
         }
     }
@@ -143,7 +143,7 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
         else
             return;
         CStringW strMsg = FormatStringId<CStringW, CStringW>(0xb1a, strKind, strOutcome);
-        FUN_1412751f0(strMsg, 4, 1);
+        ShowSystemNotice(strMsg, 4, 1);
         return;
     }
     else if (nMessage == 0x6f)
@@ -151,11 +151,11 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
         int nUnused = packet.ReadInt32();
         int nValue = packet.ReadInt32();
         nValue /= 10;
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4ed4) != 0)
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4ed4) != 0)
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ed4)));
         UIPvPTeamFlagGagueDialog* pGauge = FUN_14101c7b0(0x4ed4);
         if (pGauge != 0)
-            pGauge->FUN_141344d50(nValue);
+            pGauge->SetRedTeamGaugePercent(nValue);
     }
     else if (nMessage == 0x71)
     {
@@ -164,12 +164,12 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
         if (nKind == 1)
         {
             CStringW strMsg = FormatStringId<CStringW>(0xb1b, strName);
-            FUN_1412751f0(strMsg, 4, 1);
+            ShowSystemNotice(strMsg, 4, 1);
         }
         else if (nKind == 2)
         {
             CStringW strMsg = FormatStringId<CStringW>(0xb1c, strName);
-            FUN_1412751f0(strMsg, 4, 1);
+            ShowSystemNotice(strMsg, 4, 1);
         }
     }
 }
@@ -177,38 +177,38 @@ void Unk_PvpEntryBlock::FUN_14101b830(int nMessage, CInPacket& packet)
 // @0x14101c0b0
 void Unk_PvpEntryBlock::FUN_14101c0b0(void* pArgument)
 {
-    Unk_PvpEntryTable* pTable = FUN_14101c560(0xc9);
+    Unk_PvpEntryTable* pTable = GetTeamTable(0xc9);
     Unk_PvpEntryItem* pItem = pTable->FUN_14101f010((__int64)pArgument);
     if (pItem != 0)
     {
         pItem->m_bOnline = false;
-        FUN_14101c4e0(0xc9);
+        SortTeamRows(0xc9);
     }
-    Unk_PvpEntryTable* pTable2 = FUN_14101c560(0xca);
+    Unk_PvpEntryTable* pTable2 = GetTeamTable(0xca);
     Unk_PvpEntryItem* pItem2 = pTable2->FUN_14101f010((__int64)pArgument);
     if (pItem2 != 0)
     {
         pItem2->m_bOnline = false;
-        FUN_14101c4e0(0xca);
+        SortTeamRows(0xca);
     }
 }
 
 // @0x14101c160
-std::vector<Unk_PvpEntryItem*>* Unk_PvpEntryBlock::FUN_14101c160(int nTeam)
+std::vector<Unk_PvpEntryItem*>* Unk_PvpEntryBlock::GetTeamRows(int nTeam)
 {
-    Unk_PvpEntryTable* pTable = FUN_14101c560(nTeam);
+    Unk_PvpEntryTable* pTable = GetTeamTable(nTeam);
     if (pTable == 0)
         return 0;
     return &pTable->m_items;
 }
 
 // @0x14101c1a0
-void Unk_PvpEntryBlock::FUN_14101c1a0(int* pA, int* pB)
+void Unk_PvpEntryBlock::GetTeamScores(int* pA, int* pB)
 {
-    Unk_PvpEntryTable* pTableA = FUN_14101c560(0xc9);
+    Unk_PvpEntryTable* pTableA = GetTeamTable(0xc9);
     if (pTableA != 0)
         *pA = pTableA->m_4;
-    Unk_PvpEntryTable* pTableB = FUN_14101c560(0xca);
+    Unk_PvpEntryTable* pTableB = GetTeamTable(0xca);
     if (pTableB != 0)
         *pB = pTableB->m_4;
 }
@@ -216,7 +216,7 @@ void Unk_PvpEntryBlock::FUN_14101c1a0(int* pA, int* pB)
 // @0x14101c220
 void Unk_PvpEntryBlock::FUN_14101c220(int nTeam, __int64 nCharId, int nWin, int nLose, int nKill)
 {
-    Unk_PvpEntryTable* pTable = FUN_14101c560(nTeam);
+    Unk_PvpEntryTable* pTable = GetTeamTable(nTeam);
     if (pTable == 0)
         return;
     bool bAdded = false;
@@ -243,31 +243,31 @@ void Unk_PvpEntryBlock::FUN_14101c220(int nTeam, __int64 nCharId, int nWin, int 
         pItem->m_nKill = nKill;
     }
     if (bAdded)
-        FUN_14101c4e0(nTeam);
+        SortTeamRows(nTeam);
 }
 
 // @0x14101c470
-void Unk_PvpEntryBlock::FUN_14101c470(int nA, int nB)
+void Unk_PvpEntryBlock::SetTeamScores(int nA, int nB)
 {
-    Unk_PvpEntryTable* pTableA = FUN_14101c560(0xc9);
+    Unk_PvpEntryTable* pTableA = GetTeamTable(0xc9);
     if (pTableA != 0)
         pTableA->m_4 = nA;
-    Unk_PvpEntryTable* pTableB = FUN_14101c560(0xca);
+    Unk_PvpEntryTable* pTableB = GetTeamTable(0xca);
     if (pTableB != 0)
         pTableB->m_4 = nB;
 }
 
 // @0x14101c4e0
-void Unk_PvpEntryBlock::FUN_14101c4e0(int nTeam)
+void Unk_PvpEntryBlock::SortTeamRows(int nTeam)
 {
-    Unk_PvpEntryTable* pTable = FUN_14101c560(nTeam);
+    Unk_PvpEntryTable* pTable = GetTeamTable(nTeam);
     if (pTable == 0)
         return;
     std::sort(pTable->m_items.begin(), pTable->m_items.end(), FUN_14101c5b0);
 }
 
 // @0x14101c560
-Unk_PvpEntryTable* Unk_PvpEntryBlock::FUN_14101c560(int nTeam)
+Unk_PvpEntryTable* Unk_PvpEntryBlock::GetTeamTable(int nTeam)
 {
     Unk_PvpEntryTable* pTable = 0;
     if (nTeam == 0xc9)
@@ -359,7 +359,7 @@ void Unk_PvpEntryTable::FUN_14101eee0(Unk_PvpEntryItem* pItem)
 }
 
 // @0x14101ef40
-void Unk_PvpEntryTable::FUN_14101ef40()
+void Unk_PvpEntryTable::Clear()
 {
     m_0 = 0;
     m_4 = 0;

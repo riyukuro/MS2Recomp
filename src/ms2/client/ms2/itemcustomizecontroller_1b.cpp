@@ -57,7 +57,7 @@ struct Unk_FactoryPlayer : public PC
 struct Unk_FactoryWorld { Unk_FactoryPlayer* FUN_141bd0cc0(); };    // the local player
 
 // util.cpp: toggles the highlight shader under a node (its colour arg is util's Unk_Colc view of a NiColorA).
-void FUN_141b71d10(NiAVObject* pRoot, bool bEnable, const struct Unk_Colc& kColor);
+void SetHighlight(NiAVObject* pRoot, bool bEnable, const struct Unk_Colc& kColor);
 
 // ---- the controller registry (statics defined in this TU) ----
 typedef efd::SmartPointer<CItemCustomizeController> ControllerPtr;
@@ -306,7 +306,7 @@ void FUN_141414250(bool bOn)
             if (pNode == 0)
                 continue;
             NiColorA kColor(efd::ColorA::BLACK);
-            FUN_141b71d10(pNode, bOn, reinterpret_cast<const Unk_Colc&>(kColor));
+            SetHighlight(pNode, bOn, reinterpret_cast<const Unk_Colc&>(kColor));
         }
     }
 }

@@ -22,12 +22,12 @@ public:
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 
 // The <learning> children of a parent (24 bytes) with index access.
 typedef std::vector<Unk_XmlNode*> Unk_ElemArray;   // ctor 0x140163e20, dtor 0x1401644e0, size 0x14016d900, [] 0x140164a30
@@ -44,7 +44,7 @@ int CLearningQuestData::Read(TiXmlElement* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "reqField", *(unsigned int*)&static_cast<int&>(m_nReqField));
     XmlGetAttr((class TiXmlElement*)(pElem), "gotoField", *(unsigned int*)&static_cast<int&>(m_nGotoField));
     XmlGetAttr((class TiXmlElement*)(pElem), "gotoPortal", m_nGotoPortal);
-    MS2Ptr<CQuestData> quest = FUN_14074bc40(m_nReqQuest);
+    MS2Ptr<CQuestData> quest = GetQuestData(m_nReqQuest);
     if (!quest)
         return 0;
     m_nQuestKind = quest->GetKind();
@@ -67,9 +67,9 @@ CLearningQuestTable::~CLearningQuestTable()
 // MS2-FUNCTIONAL: the exe Load returns int (dword result temps); learningquesttable.h is shared (filepreload_1, questmanager_2, uilearningquestdialog), so it stays bool
 int CLearningQuestTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "learningQuest.xml");
+    CString strPath = GetXmlPath("Table", "learningQuest.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

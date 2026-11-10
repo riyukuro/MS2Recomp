@@ -16,9 +16,9 @@
 class COutputStream;
 
 // The packet writer / reader primitives (second flavours of the int / int64 / wide string helpers).
-COutputStream & FUN_14070f960(COutputStream &, long);  // C3: the definition's signature
+COutputStream & WriteLong(COutputStream &, long);  // C3: the definition's signature
 COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the definition's signature
-COutputStream & FUN_14070fae0(COutputStream &, const CStringW &);  // C3: the definition's signature
+COutputStream & WriteUnicodeString(COutputStream &, const CStringW &);  // C3: the definition's signature
 class Unk_OSInput   // C3: member view for the former free stand-ins
 {
 public:
@@ -87,13 +87,13 @@ AdBannerData::AdBannerData()
 // @0x14016db80
 void AdBannerData::Write(Unk_AbOut* pOut)
 {
-    FUN_14070f960(*(COutputStream *)pOut, m_nType);
-    FUN_14070fae0(*(COutputStream *)pOut, m_strTypeName);
-    FUN_14070fae0(*(COutputStream *)pOut, m_strName);
-    FUN_14070fae0(*(COutputStream *)pOut, m_str30);
-    FUN_14070fae0(*(COutputStream *)pOut, m_str38);
-    FUN_14070fae0(*(COutputStream *)pOut, m_str40);
-    FUN_14070f960(*(COutputStream *)pOut, m_nSlot);
+    WriteLong(*(COutputStream *)pOut, m_nType);
+    WriteUnicodeString(*(COutputStream *)pOut, m_strTypeName);
+    WriteUnicodeString(*(COutputStream *)pOut, m_strName);
+    WriteUnicodeString(*(COutputStream *)pOut, m_str30);
+    WriteUnicodeString(*(COutputStream *)pOut, m_str38);
+    WriteUnicodeString(*(COutputStream *)pOut, m_str40);
+    WriteLong(*(COutputStream *)pOut, m_nSlot);
     FUN_14070fa20(*(COutputStream *)pOut, m_nBegin);
     FUN_14070fa20(*(COutputStream *)pOut, m_nEnd);
 }
@@ -158,7 +158,7 @@ void CAdBannerManager::FUN_14016df70()
 }
 
 // @0x14016dfa0
-void CAdBannerManager::FUN_14016dfa0(const ATL::CAtlArray<Unk_AdbPtr>& src)
+void CAdBannerManager::SetBanners(const ATL::CAtlArray<Unk_AdbPtr>& src)
 {
     m_banners.FUN_14016e150(src);
 }

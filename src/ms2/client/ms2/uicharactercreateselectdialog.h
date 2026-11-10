@@ -58,10 +58,10 @@ public:
     void LoadCharacterCreateSelect();                                       // 0x140f2ef10 load characterCreateSelect.xml
     void FUN_140f2f9c0(int nJobCode);                           // 0x140f2f9c0 remember the job and pop the tab down
     void FUN_140f2fa00(int nJobCode);                           // 0x140f2fa00 create button
-    void FUN_140f2fba0(int nIndex, int nJobCode);               // 0x140f2fba0 tab changed
-    void FUN_140f2fd50();                                       // 0x140f2fd50 "popdown"
+    void OnTabChanged(int nIndex, int nJobCode);               // 0x140f2fba0 tab changed
+    void Popdown();                                       // 0x140f2fd50 "popdown"
     void OnEndPopdown();                                       // 0x140f2fdb0 end of the popdown
-    JobPtr FUN_140f2fe30(int nJobCode, int* pnIndex);           // 0x140f2fe30 the job and its tab index
+    JobPtr FindJob(int nJobCode, int* pnIndex);           // 0x140f2fe30 the job and its tab index
     void FUN_140f2ffb0(int nJobCode);                           // 0x140f2ffb0 preview sound of a job
     void FUN_140f30110();                                       // 0x140f30110 stop the preview music
     int FUN_140f30150();                                        // 0x140f30150 the job selected at the start

@@ -26,7 +26,7 @@ public:
     virtual void vfunc_43();                                         // 43 0x140ba7ed0 (centre the movie root)
     virtual int vfunc_48();                                          // 48 0x140ba8270: 0x4f82
     void FUN_140ba7fe0(int nMode, CInPacket& packet);                // 0x140ba7fe0 mode 8: the combo text
-    void FUN_140ba8160();                                            // 0x140ba8160 send m_strText to the swf
+    void ShowText();                                            // 0x140ba8160 send m_strText to the swf
 private:
     MS2_LAYOUT_FRIEND;
     CStringW m_strText;             // +0x178 the text the swf shows (empty hides it)

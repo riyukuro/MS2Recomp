@@ -1,6 +1,6 @@
 // uiquizdialog.h - UIQuizDialog (RTTI .?AVUIQuizDialog@@, 0x1d8 bytes, UIDialog, UI id 0x4ee1, swf "QuizDialog"): the
 // OX quiz screen shown to the players - a question page (question, category, count-down) and an answer page
-// (correct / incorrect mark, answer text). The server feeds it with a packet (FUN_14129a930). Owning unit:
+// (correct / incorrect mark, answer text). The server feeds it with a packet (OnQuizPacket). Owning unit:
 // unit_14129a3c0. Header name assumed from the class name; member names are invented from use.
 #pragma once
 #include <afx.h>
@@ -38,9 +38,9 @@ public:
     virtual int vfunc_48() { return 0x4ee1; }                   // 48 0x14129b820
     virtual void vfunc_72();                                    // 72 0x14129a7b0 the per-frame count-down
 
-    void FUN_14129a930(CInPacket& packet);                      // the quiz packet
-    void FUN_14129ad50();                                       // show the current page
-    MS2Ptr<ASCountDownTimer> FUN_14129b5f0(const CString& strName, MS2Ptr<ASCountDownTimer>& out);   // bind a child
+    void OnQuizPacket(CInPacket& packet);                      // the quiz packet
+    void ShowCurrentPage();                                       // show the current page
+    MS2Ptr<ASCountDownTimer> BindCountDownTimer(const CString& strName, MS2Ptr<ASCountDownTimer>& out);   // bind a child
 
     int m_nMode;                                                // +0x178 0 = question page, 1 = answer page
     CStringW m_strQuestion;                                     // +0x180

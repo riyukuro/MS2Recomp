@@ -57,9 +57,9 @@ public:
     void FUN_14183bfd0(Vector3 ptPos, Vector3 ptRot, Vector3 ptTarget, bool bClamp);
     void FUN_14183c350(int n);
     Vector3 FUN_14183c370();
-    void FUN_14183c3b0(float f);
+    void SetZoomVelocity(float f);
     static bool FUN_14183c3e0(Vector3& ptPos, Vector3& ptRot);
-    static Unk_CameraSetting FUN_14183c5b0(Unk_CameraSetting setting);
+    static Unk_CameraSetting GetCameraSetting(Unk_CameraSetting setting);
     void FUN_14183c600(float f);
     float FUN_14183c630();
     float FUN_14183c650();

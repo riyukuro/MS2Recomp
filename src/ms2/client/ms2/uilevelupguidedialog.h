@@ -63,19 +63,19 @@ public:
     virtual void vfunc_oa0_9(unsigned short nLevel);                                            // 0x140f851f0 level changed
 
     bool SendQuestMode24(int nResult, const CMsgBoxData& rBox);       // newbie warning confirmed: send the quest
-    void FUN_140f85330(unsigned short nLevel);                      // collect the level steps and select the level
-    void FUN_140f854b0(int nId);                                    // open the dialog a row links to
+    void CollectLevelSteps(unsigned short nLevel);                      // collect the level steps and select the level
+    void OpenLinkedDialog(int nId);                                    // open the dialog a row links to
     void FUN_140f857e0(int nQuest);                                 // receive an item reward (asks first when it is a newbie)
-    void FUN_140f85ba0();                                           // load recommendContents.xml
+    void LoadRecommendContents();                                           // load recommendContents.xml
     void FUN_140f85f90();                                           // send the level steps of the quests to the movie
-    void FUN_140f861c0();                                           // fill the contents list
+    void UpdateContentsList();                                           // fill the contents list
     void FUN_140f869f0();                                           // send the level steps to the event dialog
     int FUN_140f86dd0(ASObj& rObj, int nQuest);               // one level step row: state, level text, reward
     void FUN_140f87270(ASObj& rObj, int nQuest, int bName);   // the item reward of a level step
-    void FUN_140f876b0(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal);     // boss tooltip
-    void FUN_140f878e0(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal);     // plain text tooltip
+    void BuildBossTooltip(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal);     // boss tooltip
+    void BuildTextTooltip(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal);     // plain text tooltip
     int FUN_140f87a30(MS2Ptr<RecommendContnets> spRow);             // the row's level range holds the selected levels
-    void FUN_140f87af0(unsigned short nLevel);                      // pick the shown level range around nLevel
+    void SetLevelRange(unsigned short nLevel);                      // pick the shown level range around nLevel
     MS2Ptr<ASDialog> FUN_140f880c0(const CString& strName);      // the "m_eventDialog" child
     // 0x140e52670 check box child lookup = UISwfEntity::GetChild<ASCheckBox> (uiitempetboxdialog.cpp)
 

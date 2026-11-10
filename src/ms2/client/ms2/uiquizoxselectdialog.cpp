@@ -25,7 +25,7 @@ void FUN_140710590(COutPacket& packet);                         // 0x140710590 s
 // @0x140e7ead0
 UIQuizOXSelectDialog::UIQuizOXSelectDialog()
 {
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
 }
 
 // @0x140e7eb40
@@ -68,14 +68,14 @@ int UIQuizOXSelectDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_140e7ed60(this, data.PopInt());
+            SendAnswer(this, data.PopInt());
         return 1;
     }
     return 0;
 }
 
 // @0x140e7ed60
-void FUN_140e7ed60(UIQuizOXSelectDialog* pDialog, int nAnswer)
+void SendAnswer(UIQuizOXSelectDialog* pDialog, int nAnswer)
 {
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.WriteUInt8(10);

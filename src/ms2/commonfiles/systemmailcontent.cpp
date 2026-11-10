@@ -37,7 +37,7 @@ typedef ATL::CAtlMap<unsigned int, CSystemMailContent::Ptr> Unk_SystemMailMap;
 
 CString FUN_140651390();                                        // the language directory
 CString FUN_14071ae20(const CString& strFile);                  // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);         // undecorated class name
+CString ToCString(const char* pszName, int nFlags);         // undecorated class name
 class Unk_SmTextMgr;
 
 extern CLockCriticalSection g_cacheLock;                        // 0x143aac550
@@ -80,10 +80,10 @@ void LoadSystemMailContent()
 {
     TiXmlDocument doc;
     CString strPath = FUN_14071ae20("systemMailContent" + FUN_140651390() + ".xml");
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         strPath = FUN_14071ae20("systemMailContent.xml");
-        if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
             return;
     }
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
@@ -95,7 +95,7 @@ void LoadSystemMailContent()
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("mail")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("mail")))
     {
         CSystemMailContent::Ptr spMail(new CSystemMailContent);
-        spMail->FUN_1401d1160(strPath);
+        spMail->SetPath(strPath);
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(spMail->m_nId));
         XmlGetAttr((class TiXmlElement*)(pNode), "sender", spMail->m_strSender);
         XmlGetAttr((class TiXmlElement*)(pNode), "subject", spMail->m_strSubject);
@@ -171,7 +171,7 @@ void CSystemMailContent::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CSystemMailContent).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CSystemMailContent).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

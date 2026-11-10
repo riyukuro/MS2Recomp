@@ -137,13 +137,13 @@ void FUN_1413a3710(CGuideEntity* pEntity);                          // empty hoo
 class Unk_GmFileSystem : public CFileSystem { };
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 
 UICutSceneMovie* FindCutSceneMovie(int nUIId);                         // the cut scene movie dialog
 class Unk_GmPane : public UISwfEntity { };
-void* FUN_14136f3e0(int);   // C3: was FUN_14136f3e0
+void* FindGuideEvent(int);   // C3: was FindGuideEvent
 class GFxSceneService { public: int GetSceneId(); int GetSubSceneId(); };  // C3: member view (0x1422b9...)
 struct Unk_GmApp { char m_pad[0x48]; void* m_pActiveWnd; };
 struct Unk_MdState* GetState();   // C3: was GetState
@@ -158,10 +158,10 @@ public:
 class CItem   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1405276c0();
+    int GetItemId();
     bool FUN_140528980();
 };
-int FUN_14053fc10(int nItemId);                                     // item kind
+int GetIconCode(int nItemId);                                     // item kind
 class Unk_ImNullableInt   // C3: member view for the former free stand-ins
 {
 public:
@@ -182,7 +182,7 @@ CGuideManager::CGuideManager()
     : m_n20(0), m_n24(0), m_nDebug(0), m_entities(10), m_map60(10), m_map90(10), m_triggers(0x11, 0.75f, 0.25f, 2.25f, 10)
 {
     ((class Unk_ItemEventSystem*)(class Unk_GmItemEvents*)(((class Unk_GmItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    ((class UIUGCEventDispatcher*)(class Unk_GmUgcEvents*)(reinterpret_cast<Unk_GmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
+    ((class UIUGCEventDispatcher*)(class Unk_GmUgcEvents*)(reinterpret_cast<Unk_GmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->AddListener(static_cast<UIUGCEventListener*>(this));
     ((class UIStatusEventDispatcher*)(class Unk_GmStatusEvents*)(reinterpret_cast<Unk_GmStatusEvents*>(TSingleton<UIStatusEventDispatcher>::GetInstance())))->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     NotifySystem::GetInstance()->RegisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnLearnEmotion));
     NotifySystem::GetInstance()->RegisterNotify(CStringW(L"NotifyUseSKill"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnUseSkill));
@@ -194,7 +194,7 @@ CGuideManager::CGuideManager()
 CGuideManager::~CGuideManager()
 {
     ((class Unk_ItemEventSystem*)(class Unk_GmItemEvents*)(((class Unk_GmItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    ((class UIUGCEventDispatcher*)(class Unk_GmUgcEvents*)(reinterpret_cast<Unk_GmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
+    ((class UIUGCEventDispatcher*)(class Unk_GmUgcEvents*)(reinterpret_cast<Unk_GmUgcEvents*>(TSingleton<UIUGCEventDispatcher>::GetInstance())))->RemoveListener(static_cast<UIUGCEventListener*>(this));
     ((class UIStatusEventDispatcher*)(class Unk_GmStatusEvents*)(reinterpret_cast<Unk_GmStatusEvents*>(TSingleton<UIStatusEventDispatcher>::GetInstance())))->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     NotifySystem::GetInstance()->UnregisterNotify(CStringW(L"NotifyLearnEmotion"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnLearnEmotion));
     NotifySystem::GetInstance()->UnregisterNotify(CStringW(L"NotifyUseSKill"), Delegate<void(NotifyObject*)>(this, &CGuideManager::OnUseSkill));
@@ -256,7 +256,7 @@ void CGuideManager::Load()
 {
     m_entities.RemoveAll();
     m_caches.RemoveAll();
-    LoadFile(FUN_14071a5b0("Table", "guide.xml"));
+    LoadFile(GetXmlPath("Table", "guide.xml"));
     PrepareEntities();
     NotifyEntitiesLoaded();
     RefreshEntities();
@@ -268,7 +268,7 @@ void CGuideManager::Load()
 void CGuideManager::LoadFile(const CStringA& strPath)
 {
     TiXmlDocument doc;
-    if (((class Unk_GmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 1, true, false) == 0)
+    if (((class Unk_GmFileSystem*)GetFileSystem())->LoadXmlFile(&doc, strPath, 1, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -278,7 +278,7 @@ void CGuideManager::LoadFile(const CStringA& strPath)
     }
     {
         MS2Ptr<CCacheData> spCache(new CCacheData);
-        spCache->FUN_1401d1160(CStringA(strPath));
+        spCache->SetPath(CStringA(strPath));
         m_caches.Add(spCache);
     }
 
@@ -310,7 +310,7 @@ void CGuideManager::LoadFile(const CStringA& strPath)
         CStringA strName;
         XmlGetAttr((class TiXmlElement*)(pImport), "name", strName);
         CStringA strDir("Table");
-        LoadFile(FUN_14071a5b0(strDir, strName));
+        LoadFile(GetXmlPath(strDir, strName));
     }
 }
 
@@ -349,14 +349,14 @@ void CGuideManager::Tick()
 // @0x14138bb50
 void CGuideManager::UpdateEntities()
 {
-    Unk_GmPane* pPane = ((class Unk_GmPane*)FUN_14136f3e0(0x4e53));
+    Unk_GmPane* pPane = ((class Unk_GmPane*)FindGuideEvent(0x4e53));
     if (pPane == 0)
         return;
     if (pPane->FUN_1422dc2d0() == 0)
         return;
     if (FindCutSceneMovie(0x4e7e)->FUN_1419102c0() != 0)
         return;
-    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x6200031)
+    if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSubSceneId() == 0x6200031)
         return;
     if (!m_names.IsEmpty() && ((struct Unk_GmApp*)GetState())->m_pActiveWnd != 0)
     {
@@ -1004,8 +1004,8 @@ void CGuideManager::vfunc_2(void* pItem)
         return;
     if (!((class CItem*)(void*)(pItem))->FUN_140528980())
         return;
-    AddTrigger(static_cast<TriggerType>(0x12), ((class CItem*)(void*)(pItem))->FUN_1405276c0(), 0);
-    AddTrigger(static_cast<TriggerType>(0x13), FUN_14053fc10(((class CItem*)(void*)(pItem))->FUN_1405276c0()), 0);
+    AddTrigger(static_cast<TriggerType>(0x12), ((class CItem*)(void*)(pItem))->GetItemId(), 0);
+    AddTrigger(static_cast<TriggerType>(0x13), GetIconCode(((class CItem*)(void*)(pItem))->GetItemId()), 0);
     QueueOccurrence(static_cast<Occurrence>(6), 0);
     QueueOccurrence(static_cast<Occurrence>(0xc), 0);
 }
@@ -1082,7 +1082,7 @@ void CGuideManager::OnDungeonEnterState(NotifyObject*)
 // @0x14138ec70
 void CGuideManager::vfunc_oa0_7(int nMode, CStringW)
 {
-    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSceneId() != 0x620000c)
+    if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSceneId() != 0x620000c)
         return;
     QueueOccurrence(static_cast<Occurrence>(5), 0);
     if (nMode != 1)

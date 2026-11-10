@@ -163,10 +163,10 @@ UGCMapPackageDataPtr LoadExportedUGCMap(const CString& strName)
     CString strPath;
     strPath.Format("./Data/Xml/ExportedUGCMap/%s.xml", (const char*)strName);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return UGCMapPackageDataPtr(0);
     UGCMapPackageDataPtr data(new CUGCMapPackageData);
-    ((class CCacheData*)(class CCacheData*)(data.get()))->FUN_1401d1160(strPath);
+    ((class CCacheData*)(class CCacheData*)(data.get()))->SetPath(strPath);
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ugcmap"));
     if (pRoot == 0)
     {

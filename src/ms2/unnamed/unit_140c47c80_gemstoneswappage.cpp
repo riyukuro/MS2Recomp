@@ -93,11 +93,11 @@ template <class A, class B> CStringW FUN_14028dfa0(CStringW key, const A& a1, co
 template <class A> CStringW FUN_14028dfa0(CStringW key, const A& a1);
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_1409404f0(__int64 meso);
-MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140710590(COutPacket&);
 void FUN_1422bcce0(Scaleform::GFx::Value* pv, bool b);
-void FUN_1422bcc70(Scaleform::GFx::Value* pv, Scaleform::GFx::Value v);
+void SetValue(Scaleform::GFx::Value* pv, Scaleform::GFx::Value v);
 
 // The socket-system packets (layouts as commonfiles\itemsocketsystemutil.cpp; the first two have their inline
 // constructors here).
@@ -133,7 +133,7 @@ typedef std::map<Unk_GsCostTag, int> Unk_GsCosts;
 // The AS helpers of the page instantiated in this unit.
 class Unk_GsClip : public AScript {
 public:
-    MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString& strName);                        // "m_itemBag" child
+    MS2Ptr<Unk_SocketPageBag> GetItemBag(const CString& strName);                        // "m_itemBag" child
     // C3: FUN_140c4bd20 is AScript::Invoke(const char*, bool, Value) (ascript.h)
 };
 
@@ -175,18 +175,18 @@ inline void CGemStoneItem::FUN_140c4e720(MS2Ptr<CItem> equipment, MS2Ptr<CItem> 
 }
 
 // @0x140c4b8a0
-inline MS2Ptr<Unk_SocketPageBag> FUN_140c4b8a0(int nMovieId, const Scaleform::GFx::Value& v)
+inline MS2Ptr<Unk_SocketPageBag> CreateItemBag(int nMovieId, const Scaleform::GFx::Value& v)
 {
     MS2Ptr<Unk_SocketPageBag> sp(reinterpret_cast<Unk_SocketPageBag*>(new ASItemBag(v, nMovieId)));
     return sp;
 }
 
 // @0x140c4bc60
-inline MS2Ptr<Unk_SocketPageBag> Unk_GsClip::FUN_140c4bc60(const CString& strName)
+inline MS2Ptr<Unk_SocketPageBag> Unk_GsClip::GetItemBag(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
-        return FUN_140c4b8a0(m_nMovieId, v);
+        return CreateItemBag(m_nMovieId, v);
     return MS2Ptr<Unk_SocketPageBag>(0);
 }
 
@@ -196,7 +196,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, bool a1, Scal
     ASArgList args;
     args.resize(2);
     FUN_1422bcce0(&args[0], a1);
-    FUN_1422bcc70(&args[1], a2);
+    SetValue(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 
@@ -234,18 +234,18 @@ void ItemSocketSystemPageGemstoneSwap::vfunc_7(MS2Ptr<AScript> root)
     if (MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots0"))
     {
         m_sourceControl =
-            reinterpret_cast<Unk_GsClip*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
+            reinterpret_cast<Unk_GsClip*>(slots.operator->())->GetItemBag("m_itemBag");
     }
     if (MS2Ptr<ASMovieClip> slots = m_root->FUN_1409b4560("m_slots1"))
     {
         m_targetControl =
-            reinterpret_cast<Unk_GsClip*>(slots.operator->())->FUN_140c4bc60("m_itemBag");
+            reinterpret_cast<Unk_GsClip*>(slots.operator->())->GetItemBag("m_itemBag");
     }
-    FUN_140c49fc0();
+    RefreshSourceItems();
     ASObj data(2);
-    data.FUN_1407cba60("bagId0", m_slots0Name);
-    data.FUN_1407cba60("bagId1", m_slots1Name);
-    m_root->Invoke("initData", data.FUN_1422bb870());
+    data.SetStringMember("bagId0", m_slots0Name);
+    data.SetStringMember("bagId1", m_slots1Name);
+    m_root->Invoke("initData", data.GetValue());
 }
 
 // @0x140c48380
@@ -275,24 +275,24 @@ int ItemSocketSystemPageGemstoneSwap::vfunc_3(const char* event, const Scaleform
         ASData data;
         if (data.SetArgsIfAny(args, count) != 0) {
             int nIndex = data.PopInt();
-            FUN_140c49250(nIndex);
+            SelectSourceItem(nIndex);
         }
         return 1;
     } else if (_stricmp("onIndexChangeSlot1", event) == 0) {
         ASData data;
         if (data.SetArgsIfAny(args, count) != 0) {
             int nIndex = data.PopInt();
-            FUN_140c49580(nIndex);
+            SelectTargetItem(nIndex);
         }
         return 1;
     } else if (_stricmp("onGemstoneSwap", event) == 0) {
         MS2Ptr<CItem> source = FUN_141425750(m_sourceUid, 0);
         if (source.get() != 0) {
             CStringW text;
-            if (FUN_140c4ab30(source, text))
-                FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &ItemSocketSystemPageGemstoneSwap::FUN_140c48df0), CStringW(text));
+            if (GetSwapPriceText(source, text))
+                ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)>(this, &ItemSocketSystemPageGemstoneSwap::FUN_140c48df0), CStringW(text));
             else
-                FUN_140d74390(FUN_14028dfa0<CStringW>(CStringW(L"s_itemsocketsystem_error_swap_lack_price"), text), 0, Delegate<bool(int, const CMsgBoxData&)>());
+                ShowMessageBoxWithCallback(FUN_14028dfa0<CStringW>(CStringW(L"s_itemsocketsystem_error_swap_lack_price"), text), 0, Delegate<bool(int, const CMsgBoxData&)>());
         }
         return 1;
     } else if (_stricmp("onRetry", event) == 0) {
@@ -313,8 +313,8 @@ void ItemSocketSystemPageGemstoneSwap::vfunc_6()
         ASObj data(2);
         {
             ASObj obj(2);
-            obj.FUN_1407cba60("binding", m_binder.BindItem(source.get()));
-            obj.FUN_1407cbb20("itemName", static_cast<CItem*>(source)->FUN_140527b10());
+            obj.SetStringMember("binding", m_binder.BindItem(source.get()));
+            obj.SetWStringMember("itemName", static_cast<CItem*>(source)->FUN_140527b10());
             ASArray gems(2);
             FUN_140c49990(source, "GemStoneSwapPage_source_gemstone", &gems);
             obj.FUN_1409eb1d0("gemstones", gems);
@@ -322,8 +322,8 @@ void ItemSocketSystemPageGemstoneSwap::vfunc_6()
         }
         {
             ASObj obj(2);
-            obj.FUN_1407cba60("binding", m_binder.BindItem(target.get()));
-            obj.FUN_1407cbb20("itemName", static_cast<CItem*>(target)->FUN_140527b10());
+            obj.SetStringMember("binding", m_binder.BindItem(target.get()));
+            obj.SetWStringMember("itemName", static_cast<CItem*>(target)->FUN_140527b10());
             ASArray gems(2);
             FUN_140c49990(target, "GemStoneSwapPage_dest_gemstone", &gems);
             obj.FUN_1409eb1d0("gemstones", gems);
@@ -418,7 +418,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49110()
 }
 
 // @0x140c49250
-void ItemSocketSystemPageGemstoneSwap::FUN_140c49250(int index)
+void ItemSocketSystemPageGemstoneSwap::SelectSourceItem(int index)
 {
     if (index < 0 || index >= (int)m_sourceItems.GetCount())
         return;
@@ -430,16 +430,16 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49250(int index)
     m_binder.FUN_140d43990();
     FUN_140c4a2b0(MS2Ptr<CItem>(item));
     ASObj data(2);
-    data.FUN_1407cba60("binding", m_binder.BindItem(item.get()));
-    data.FUN_1407cbb20("itemName", static_cast<CItem*>(item)->FUN_140527b10());
+    data.SetStringMember("binding", m_binder.BindItem(item.get()));
+    data.SetWStringMember("itemName", static_cast<CItem*>(item)->FUN_140527b10());
     ASArray gems(2);
     FUN_140c49990(item, "GemStoneSwapPage_source_gemstone", &gems);
     data.FUN_1409eb1d0("gemstones", gems);
-    reinterpret_cast<Unk_GsClip*>(m_root.operator->())->Invoke("select", true, data.FUN_1422bb870());
+    reinterpret_cast<Unk_GsClip*>(m_root.operator->())->Invoke("select", true, data.GetValue());
 }
 
 // @0x140c49580
-void ItemSocketSystemPageGemstoneSwap::FUN_140c49580(int index)
+void ItemSocketSystemPageGemstoneSwap::SelectTargetItem(int index)
 {
     if (index < 0 || index >= (int)m_targetItems.GetCount())
         return;
@@ -448,18 +448,18 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49580(int index)
         return;
     m_targetUid = static_cast<CItem*>(item)->GetItemUid();
     ASObj data(2);
-    data.FUN_1407cba60("binding", m_binder.BindItem(item.get()));
-    data.FUN_1407cbb20("itemName", static_cast<CItem*>(item)->FUN_140527b10());
+    data.SetStringMember("binding", m_binder.BindItem(item.get()));
+    data.SetWStringMember("itemName", static_cast<CItem*>(item)->FUN_140527b10());
     ASArray gems(2);
     FUN_140c49990(item, "GemStoneSwapPage_dest_gemstone", &gems);
     data.FUN_1409eb1d0("gemstones", gems);
-    reinterpret_cast<Unk_GsClip*>(m_root.operator->())->Invoke("select", false, data.FUN_1422bb870());
+    reinterpret_cast<Unk_GsClip*>(m_root.operator->())->Invoke("select", false, data.GetValue());
 }
 
 // @0x140c49850
 void ItemSocketSystemPageGemstoneSwap::OnRetry()
 {
-    FUN_140c49fc0();
+    RefreshSourceItems();
     m_binder.FUN_140d43990();
     m_sourceUid = 0;
     m_targetUid = 0;
@@ -486,7 +486,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49990(MS2Ptr<CItem> item, CString
         MS2Ptr<CItem> gemItem(0);
         MS2Ptr<TSocketGemStoneInfo> info = socket->GetGemInfo(i);
         if ((info.get() != 0 ? true : false) && !info->IsEmpty())
-            gemItem = FUN_140f6d050(MS2Ptr<TSocketGemStoneInfo>(info), 0, false);
+            gemItem = CreateGemStoneItem(MS2Ptr<TSocketGemStoneInfo>(info), 0, false);
         gem->FUN_140c4e720(MS2Ptr<CItem>(item), MS2Ptr<CItem>(gemItem), false);
         CString strName = Unk_SocketFormat("{0}{1}", strPrefix, i);
         CreateGemStoneSlot(strName, MS2Ptr<CGemStoneItem>(gem), i, 0x415, 0x20);
@@ -506,7 +506,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49990(MS2Ptr<CItem> item, CString
 }
 
 // @0x140c49fc0
-void ItemSocketSystemPageGemstoneSwap::FUN_140c49fc0()
+void ItemSocketSystemPageGemstoneSwap::RefreshSourceItems()
 {
     m_sourceItems.RemoveAll();
     m_targetItems.RemoveAll();
@@ -514,7 +514,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c49fc0()
     FUN_140c4a9a0(items);
     for (size_t i = 0; i < items.GetCount(); ++i) {
         MS2Ptr<CItem> item(items.GetAt(i));
-        if (!FUN_140c4a620(MS2Ptr<CItem>(item)))
+        if (!CanBeSource(MS2Ptr<CItem>(item)))
             continue;
         m_sourceItems.Add(item);
     }
@@ -558,7 +558,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c4a2b0(MS2Ptr<CItem> source)
 }
 
 // @0x140c4a620
-bool ItemSocketSystemPageGemstoneSwap::FUN_140c4a620(MS2Ptr<CItem> item)
+bool ItemSocketSystemPageGemstoneSwap::CanBeSource(MS2Ptr<CItem> item)
 {
     if (item == 0)
         return false;
@@ -618,7 +618,7 @@ void ItemSocketSystemPageGemstoneSwap::FUN_140c4a9a0(CAtlArray<MS2Ptr<CItem>>& o
 }
 
 // @0x140c4ab30
-bool ItemSocketSystemPageGemstoneSwap::FUN_140c4ab30(MS2Ptr<CItem> item, CStringW& text)
+bool ItemSocketSystemPageGemstoneSwap::GetSwapPriceText(MS2Ptr<CItem> item, CStringW& text)
 {
     CItemSocket* socket = static_cast<CItem*>(item)->GetSocket();
     if (socket == 0)

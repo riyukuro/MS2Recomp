@@ -42,7 +42,7 @@ extern Unk_Inventory g_143ab2a90;
 extern unsigned DAT_1439ed000;                            // number of rows of the window
 extern int DAT_1439ed004;                                 // number of drop-down entries (the last one = off)
 
-class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
+class Unk_BreakSelected* GetPetManager();   // C3: was GetPetManager
 
 class ASDialog : public ASDisplayObject
 {
@@ -162,7 +162,7 @@ CStringW GetStringCommon(int nStringId);                              // string 
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text by key
 template <class A> CStringW BlockFormat(int nId, const A& a);
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140710590(COutPacket& packet);                             // send
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
@@ -179,7 +179,7 @@ void FUN_140d2cfc0(MS2Ptr<CItem> spItem);                           // item link
 PetSlot* AsPetSlot(DragSlot* p);
 UIItemAutoUseOptionDialog* FUN_140cbe1c0(int nId);                  // the open dialog with this UI id
 
-UIItemAutoUseOptionDialog::Slot* FUN_140f507b0(NotifyContext::BindData* p);
+UIItemAutoUseOptionDialog::Slot* CastToSlot(NotifyContext::BindData* p);
 UIItemAutoUseOptionDialog::SlotBag* FUN_140f50800(NotifyContext::BindData* p);
 DragSlotBag* FUN_140c544d0(NotifyContext::BindData* p);              // DragSlotBag cast (class id 0x6202736)
 
@@ -216,9 +216,9 @@ float UIItemAutoUseOptionDialog::Slot::FUN_140f4e080()
 // @0x140f4e0e0
 int UIItemAutoUseOptionDialog::Slot::FUN_140f4e0e0()
 {
-    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
+    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)GetPetManager())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
     if (spItem.get() != 0)
-        return spItem->FUN_140527840()->FUN_14053dc20();
+        return spItem->FUN_140527840()->GetSkillId();
     return 0;
 }
 
@@ -276,7 +276,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_14()
 // @0x140f4e340
 int UIItemAutoUseOptionDialog::Slot::vfunc_15()
 {
-    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
+    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)GetPetManager())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
     if (spItem.get() != 0)
         FUN_140d2cfc0(spItem);
     return DragSlot::vfunc_15();
@@ -294,7 +294,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
     Unk_AuPlayer* pPlayer = ((Unk_AuPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return static_cast<DragSlot*>(p)->vfunc_10();
-    Slot* pFrom = FUN_140f507b0(static_cast<DragSlot*>(p));
+    Slot* pFrom = CastToSlot(static_cast<DragSlot*>(p));
     if (pFrom != 0)
     {
         int nOld = pFrom->FUN_140f4e180();
@@ -305,10 +305,10 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
     }
     else if (PetSlot* pPet = AsPetSlot(static_cast<DragSlot*>(p)))
     {
-        MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(pPet->GetPetItemId());
+        MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)GetPetManager())->FUN_140c8b430())->FindItemById(pPet->GetPetItemId());
         if (!spItem)
             return static_cast<DragSlot*>(p)->vfunc_10();
-        if (FUN_140f4e1c0(spItem->FUN_1405276c0()) != 0)
+        if (FUN_140f4e1c0(spItem->GetItemId()) != 0)
         {
             FUN_140d73bc0(0xc1d, 0, 0, CStringW(L""));
             return static_cast<DragSlot*>(p)->vfunc_10();
@@ -320,7 +320,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
         }
         if (((class CItem*)(class CItem*)(spItem.get()))->CanUseAtLevel(AU_PLAYER_LEVEL(pPlayer)) == 0)
         {
-            FUN_140d73aa0(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, CStringW(L""));
             return 1;
         }
         m_nItemId = pPet->GetPetItemId();
@@ -329,10 +329,10 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
     }
     else if (void* pItemSlot = AsDragSlot(reinterpret_cast<NotifyContext::BindData*>(static_cast<DragSlot*>(p))))
     {
-        MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(((class InvenSlot*)(void*)(pItemSlot))->GetItemId());
+        MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)GetPetManager())->FUN_140c8b430())->FindItemById(((class InvenSlot*)(void*)(pItemSlot))->GetItemId());
         if (!spItem)
             return static_cast<DragSlot*>(p)->vfunc_10();
-        if (FUN_140f4e1c0(spItem->FUN_1405276c0()) != 0)
+        if (FUN_140f4e1c0(spItem->GetItemId()) != 0)
         {
             FUN_140d73bc0(0xc1d, 0, 0, CStringW(L""));
             return static_cast<DragSlot*>(p)->vfunc_10();
@@ -344,7 +344,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_18(void* p)
         }
         if (((class CItem*)(class CItem*)(spItem.get()))->CanUseAtLevel(AU_PLAYER_LEVEL(pPlayer)) == 0)
         {
-            FUN_140d73aa0(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, CStringW(L""));
             return 1;
         }
         m_nItemId = ((class InvenSlot*)(void*)(pItemSlot))->GetItemId();
@@ -372,7 +372,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_0(void* p)
     Unk_AuPlayer* pPlayer = ((Unk_AuPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
+    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)GetPetManager())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
     if (!spItem)
         return 0;
     MS2Ptr<CItem> spWorn = reinterpret_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
@@ -384,7 +384,7 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_0(void* p)
     ASTooltip tip(pPlayer, 0x80, 2);
     if (tip.FUN_1409e13a0(spWorn.get(), spItem.get()) != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -396,28 +396,28 @@ int UIItemAutoUseOptionDialog::Slot::vfunc_8(void* p)
     Unk_AuPlayer* pPlayer = ((Unk_AuPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
+    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)GetPetManager())->FUN_140c8b430())->FindItemById(FUN_140f4e180());
     if (spItem.get() != 0)
     {
         FUN_140f4f100(1);
         ASSlot slot(2);
         if (slot.FUN_1409c3860(spItem.get(), pPlayer, 0x1c01f) != 0)
         {
-            slot.SetItemCountValue(reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->CountItems(spItem->FUN_1405276c0(), 0));
-            *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+            slot.SetItemCountValue(reinterpret_cast<CPetManager*>(((class CPetManager*)GetPetManager())->FUN_140c8b430())->CountItems(spItem->GetItemId(), 0));
+            *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         }
     }
     else
     {
         FUN_140f4f100(0);
         Unk_PetOption opt;
-        if (((class CPetManager*)FUN_140535320())->GetInfo()->options.map.Lookup(m_nIndex, opt))
+        if (((class CPetManager*)GetPetManager())->GetInfo()->options.map.Lookup(m_nIndex, opt))
         {
             ASSlot slot(2);
             if (slot.SetItemById(opt.enabled, 1, 0) != 0)
             {
                 slot.SetItemLock(1);
-                *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+                *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
             }
         }
     }
@@ -429,10 +429,10 @@ void UIItemAutoUseOptionDialog::Slot::FUN_140f4f030(int nOtherIndex)
 {
     Unk_PetOption kThis;
     Unk_PetOption kOther;
-    ((class CPetManager*)FUN_140535320())->GetInfo()->options.map.Lookup(m_nIndex, kThis);
-    ((class CPetManager*)FUN_140535320())->GetInfo()->options.map.Lookup(nOtherIndex, kOther);
-    ((class CPetManager*)FUN_140535320())->GetInfo()->options.map.SetAt(m_nIndex, kOther);
-    ((class CPetManager*)FUN_140535320())->GetInfo()->options.map.SetAt(nOtherIndex, kThis);
+    ((class CPetManager*)GetPetManager())->GetInfo()->options.map.Lookup(m_nIndex, kThis);
+    ((class CPetManager*)GetPetManager())->GetInfo()->options.map.Lookup(nOtherIndex, kOther);
+    ((class CPetManager*)GetPetManager())->GetInfo()->options.map.SetAt(m_nIndex, kOther);
+    ((class CPetManager*)GetPetManager())->GetInfo()->options.map.SetAt(nOtherIndex, kThis);
 }
 
 // @0x140f4f100
@@ -442,7 +442,7 @@ void UIItemAutoUseOptionDialog::Slot::FUN_140f4f100(int nState)
     if (pDlg != 0)
     {
         if (pDlg->FUN_141924630() != 0)
-            pDlg->FUN_140f50090(nState, m_nIndex);
+            pDlg->SetDropdownState(nState, m_nIndex);
     }
 }
 
@@ -454,18 +454,18 @@ void FUN_140f4f160(const CString& strName, int nCount)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x140f4f210 destroy the registered bag
 void FUN_140f4f210(const CString& strName)
 {
-    UIItemAutoUseOptionDialog::SlotBag* pBag = FUN_140f50800(Unk_NotifyContext::FUN_1422c8e90(strName));
+    UIItemAutoUseOptionDialog::SlotBag* pBag = FUN_140f50800(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -485,7 +485,7 @@ DragSlot* UIItemAutoUseOptionDialog::SlotBag::vfunc_16(int nIndex)
 {
     CString strName = vfunc_15(nIndex);
     Unk_PetOption opt;
-    if (((class CPetManager*)FUN_140535320())->GetInfo()->options.map.Lookup(nIndex, opt))
+    if (((class CPetManager*)GetPetManager())->GetInfo()->options.map.Lookup(nIndex, opt))
         return new (efd::MemHint(efd::MemHint::NONE)) Slot(strName, nIndex, opt.enabled);
     return new (efd::MemHint(efd::MemHint::NONE)) Slot(strName, nIndex, 0);
 }
@@ -495,7 +495,7 @@ UIItemAutoUseOptionDialog::UIItemAutoUseOptionDialog()
     : m_strBag(GetTypeName())
 {
     m_164 = 1;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     for (int n = DAT_1439ed004 - 1; n >= 0; n--)
         m_thresholds.Add(n * 10);
 }
@@ -542,14 +542,14 @@ void UIItemAutoUseOptionDialog::OnLoadComplete()
         CString strName = Unk_SocketFormat("m_dropdownItem{0}", reinterpret_cast<const unsigned&>(nNumber));
         FUN_140f50230(((Unk_AuEntity*)this)->GetChild<ASDropdownMenu>(strName).get(), i);
     }
-    FUN_140f50190();
+    RebuildSlotBag();
 }
 
 // @0x140f4f990
 void UIItemAutoUseOptionDialog::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    FUN_1419235d0();
+    SetTopMostLayer();
 }
 
 // @0x140f4f9c0
@@ -568,7 +568,7 @@ int UIItemAutoUseOptionDialog::vfunc_28(const char* szMethod, const Scaleform::G
 // @0x140f4fa30
 void UIItemAutoUseOptionDialog::vfunc_oa0_25(void* p)
 {
-    DragSlotBag* pBag = FUN_140c544d0(Unk_NotifyContext::FUN_1422c8e90(m_strBag));        // the exe casts to the base DragSlotBag here
+    DragSlotBag* pBag = FUN_140c544d0(Unk_NotifyContext::FindBinding(m_strBag));        // the exe casts to the base DragSlotBag here
     if (pBag != 0)
         pBag->vfunc_11(p);
 }
@@ -576,7 +576,7 @@ void UIItemAutoUseOptionDialog::vfunc_oa0_25(void* p)
 // @0x140f4fa90
 void UIItemAutoUseOptionDialog::vfunc_oa0_26(void* p)
 {
-    DragSlotBag* pBag = FUN_140c544d0(Unk_NotifyContext::FUN_1422c8e90(m_strBag));        // the exe casts to the base DragSlotBag here
+    DragSlotBag* pBag = FUN_140c544d0(Unk_NotifyContext::FindBinding(m_strBag));        // the exe casts to the base DragSlotBag here
     if (pBag != 0)
         pBag->vfunc_12(p);
 }
@@ -587,18 +587,18 @@ int UIItemAutoUseOptionDialog::FUN_140f4faf0(int nItemId)
     Unk_AuPlayer* pPlayer = ((Unk_AuPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    SlotBag* pBag = FUN_140f50800(Unk_NotifyContext::FUN_1422c8e90(m_strBag));
+    SlotBag* pBag = FUN_140f50800(Unk_NotifyContext::FindBinding(m_strBag));
     if (pBag != 0)
     {
-        for (unsigned i = 0; i < (unsigned)((class DragSlotBag*)(pBag))->FUN_1422ccd20(); i++)
+        for (unsigned i = 0; i < (unsigned)((class DragSlotBag*)(pBag))->GetSlotCount(); i++)
         {
-            Slot* pSlot = FUN_140f507b0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(i));
+            Slot* pSlot = CastToSlot(((class DragSlotBag*)(class DragSlotBag*)(pBag))->GetSlot(i));
             if (pSlot == 0)
                 continue;
-            MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(pSlot->FUN_140f4e180());
+            MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)GetPetManager())->FUN_140c8b430())->FindItemById(pSlot->FUN_140f4e180());
             if (spItem == 0)
                 continue;
-            if (spItem->FUN_1405276c0() == nItemId)
+            if (spItem->GetItemId() == nItemId)
                 return 1;
         }
     }
@@ -611,7 +611,7 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
     Unk_AuPlayer* pPlayer = ((Unk_AuPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(nItemId);
+    MS2Ptr<CItem> spItem = reinterpret_cast<CPetManager*>(((class CPetManager*)GetPetManager())->FUN_140c8b430())->FindItemById(nItemId);
     if (spItem == 0)
         return;
     if (!spItem->FUN_140527840()->FUN_14053d270())
@@ -619,23 +619,23 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
         FUN_140d73bc0(0xc1c, 0, 0, CStringW(L""));
         return;
     }
-    if (FUN_140f4faf0(spItem->FUN_1405276c0()) != 0)
+    if (FUN_140f4faf0(spItem->GetItemId()) != 0)
     {
         FUN_140d73bc0(0xc1d, 0, 0, CStringW(L""));
         return;
     }
     if (((class CItem*)(class CItem*)(spItem.get()))->CanUseAtLevel(AU_PLAYER_LEVEL(pPlayer)) == 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_err_not_enough_level"), 0, 0, CStringW(L""));
         return;
     }
-    SlotBag* pBag = FUN_140f50800(Unk_NotifyContext::FUN_1422c8e90(m_strBag));
+    SlotBag* pBag = FUN_140f50800(Unk_NotifyContext::FindBinding(m_strBag));
     if (pBag != 0)
     {
-        unsigned nCount = (unsigned)((class DragSlotBag*)(pBag))->FUN_1422ccd20();
+        unsigned nCount = (unsigned)((class DragSlotBag*)(pBag))->GetSlotCount();
         for (unsigned i = 0; i < nCount; i++)
         {
-            Slot* pSlot = FUN_140f507b0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(i));
+            Slot* pSlot = CastToSlot(((class DragSlotBag*)(class DragSlotBag*)(pBag))->GetSlot(i));
             if (pSlot == 0)
                 continue;
             if (pSlot->FUN_140f4e180() == 0)
@@ -647,10 +647,10 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
         }
         for (unsigned i = 0; i < nCount; i++)
         {
-            Slot* pSlot = FUN_140f507b0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(i));
+            Slot* pSlot = CastToSlot(((class DragSlotBag*)(class DragSlotBag*)(pBag))->GetSlot(i));
             if (pSlot == 0)
                 continue;
-            MS2Ptr<CItem> spOld = reinterpret_cast<CPetManager*>(((class CPetManager*)FUN_140535320())->FUN_140c8b430())->FindItemById(pSlot->FUN_140f4e180());
+            MS2Ptr<CItem> spOld = reinterpret_cast<CPetManager*>(((class CPetManager*)GetPetManager())->FUN_140c8b430())->FindItemById(pSlot->FUN_140f4e180());
             if (spOld == 0)
             {
                 pSlot->FUN_140f4e1a0(nItemId);
@@ -658,7 +658,7 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
                 return;
             }
         }
-        Slot* pFirst = FUN_140f507b0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(0));
+        Slot* pFirst = CastToSlot(((class DragSlotBag*)(class DragSlotBag*)(pBag))->GetSlot(0));
         if (pFirst != 0)
         {
             pFirst->FUN_140f4e1a0(nItemId);
@@ -668,7 +668,7 @@ void UIItemAutoUseOptionDialog::FUN_140f4fc40(int nItemId)
 }
 
 // @0x140f50090
-void UIItemAutoUseOptionDialog::FUN_140f50090(int nState, int nIndex)
+void UIItemAutoUseOptionDialog::SetDropdownState(int nState, int nIndex)
 {
     int nNumber = nIndex + 1;
     CString strName = Unk_SocketFormat("m_dropdownItem{0}", nNumber);
@@ -676,19 +676,19 @@ void UIItemAutoUseOptionDialog::FUN_140f50090(int nState, int nIndex)
     if (spCombo)
     {
         if (nState == 0)
-            spCombo.get()->FUN_1422c1fe0(0);
+            spCombo.get()->SetEnabled(0);
         else if (nState == 1)
-            spCombo.get()->FUN_1422c1fe0(1);
+            spCombo.get()->SetEnabled(1);
         else if (nState == 2)
         {
             spCombo.get()->SetSelectedIndex(DAT_1439ed004 - 1);
-            spCombo.get()->FUN_1422c1fe0(0);
+            spCombo.get()->SetEnabled(0);
         }
     }
 }
 
 // @0x140f50190
-void UIItemAutoUseOptionDialog::FUN_140f50190()
+void UIItemAutoUseOptionDialog::RebuildSlotBag()
 {
     FUN_140f4f210(m_strBag);
     FUN_140f4f160(m_strBag, DAT_1439ed000);
@@ -710,20 +710,20 @@ void UIItemAutoUseOptionDialog::FUN_140f50230(void* pCombo, int nIndex)
         {
             ASObj entry(2);
             entry.SetMemberUInt("condition", nCond);
-            entry.FUN_1407cbb20("label", GetStringCommon(0x576));
+            entry.SetWStringMember("label", GetStringCommon(0x576));
             ((ASDropdownMenu*)pCombo)->AddItemRow(entry);
         }
         else
         {
             ASObj entry(2);
             entry.SetMemberUInt("condition", nCond);
-            entry.FUN_1407cbb20("label", BlockFormat<unsigned>(0xc09, reinterpret_cast<const unsigned&>(nCond)));
+            entry.SetWStringMember("label", BlockFormat<unsigned>(0xc09, reinterpret_cast<const unsigned&>(nCond)));
             ((ASDropdownMenu*)pCombo)->AddItemRow(entry);
         }
     }
     ((ASDropdownMenu*)pCombo)->vfunc_24(true);
     Unk_PetOption opt;
-    if (((class CPetManager*)FUN_140535320())->GetInfo()->options.map.Lookup(nIndex, opt))
+    if (((class CPetManager*)GetPetManager())->GetInfo()->options.map.Lookup(nIndex, opt))
         ((ASDropdownMenu*)pCombo)->SetSelectedIndex(opt.type);
     else
         ((ASDropdownMenu*)pCombo)->SetSelectedIndex(DAT_1439ed004 - 1);
@@ -738,7 +738,7 @@ void UIItemAutoUseOptionDialog::OnClickOk()
     void* pPet = reinterpret_cast<PCBase*>(pPlayer)->FUN_141676a10();
     if (pPet == 0)
         return;
-    SlotBag* pBag = FUN_140f50800(Unk_NotifyContext::FUN_1422c8e90(m_strBag));
+    SlotBag* pBag = FUN_140f50800(Unk_NotifyContext::FindBinding(m_strBag));
     if (pBag == 0)
         return;
     int bBlocked = 0;
@@ -752,7 +752,7 @@ void UIItemAutoUseOptionDialog::OnClickOk()
         {
             int nIdx = i;
             int nSel = spCombo->GetSelectedIndex();
-            Slot* pSlot = FUN_140f507b0(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIdx));
+            Slot* pSlot = CastToSlot(((class DragSlotBag*)(class DragSlotBag*)(pBag))->GetSlot(nIdx));
             if (pSlot != 0)
             {
                 int nItemId = pSlot->FUN_140f4e180();
@@ -775,7 +775,7 @@ void UIItemAutoUseOptionDialog::OnClickOk()
         {
             COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
             packet.WriteUInt8(5);
-            kOptions.FUN_1401ff3f0(packet);
+            kOptions.Write(packet);
             FUN_140710590(packet);
             vfunc_67();
         }
@@ -785,7 +785,7 @@ void UIItemAutoUseOptionDialog::OnClickOk()
 }
 
 // @0x140f507b0
-UIItemAutoUseOptionDialog::Slot* FUN_140f507b0(NotifyContext::BindData* p)
+UIItemAutoUseOptionDialog::Slot* CastToSlot(NotifyContext::BindData* p)
 {
     UIItemAutoUseOptionDialog::Slot* pSlot = 0;
     if (p != 0 && p->TypeCast(0x6200068, (void**)&pSlot))

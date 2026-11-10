@@ -69,8 +69,8 @@ class UIGameRankingDialog : public UIDialog
 {
 public:
     void FUN_140e31910(int nFlag);                                          // push the rank info
-    void FUN_140e32f30(int nPush, int nForce, CStringW strSearch);          // request the page
-    void FUN_140e34ce0(int nPage, int nPages);                              // "setButtonPage"
+    void RequestPage(int nPush, int nForce, CStringW strSearch);          // request the page
+    void SetButtonPage(int nPage, int nPages);                              // "setButtonPage"
     void FUN_140e34eb0(MS2Ptr<GameRanking::Page> spPage);                   // a page arrived
 };
 
@@ -311,7 +311,7 @@ CGameRankingCli::~CGameRankingCli()
 // @0x140b2a9b0
 void CGameRankingCli::Update()
 {
-    if (!CFeatureManager::GetInstance()->FUN_14036d570(0x3f))
+    if (!CFeatureManager::GetInstance()->IsFeatureEnabled(0x3f))
         return;
     DeliverRows();
     DeliverPersonal();
@@ -349,7 +349,7 @@ MS2_REPLACE_METHOD(0x140b2ab00, CGameRankingCli, ClearPersonal, 92, 0xD92C87C2);
 // @0x140b2ab70
 void CGameRankingCli::OnPacket(CByteBuffer& packet)
 {
-    if (!CFeatureManager::GetInstance()->FUN_14036d570(0x3f))
+    if (!CFeatureManager::GetInstance()->IsFeatureEnabled(0x3f))
         return;
     int nMode = packet.ReadUInt8();
     if (nMode == 0x1f) {
@@ -705,7 +705,7 @@ void CGameRankingCli::Request(const CGameRankingParam* pParam)
 {
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_GrConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x32)) == 1)
         return;
-    if (!CFeatureManager::GetInstance()->FUN_14036d570(0x3f))
+    if (!CFeatureManager::GetInstance()->IsFeatureEnabled(0x3f))
         return;
     MS2Ptr<CGameRankingParam> spParam = AddParam(pParam);
     if (spParam.get() != 0)
@@ -783,7 +783,7 @@ __int64 CGameRankingCli::OwnerId(int nBoard)
     if (nBoard == 1 || nBoard == 5) {
         if (TSingleton<CGuildManager>::GetInstance()->IsInGuild() == 0)
             return 0;
-        nId = reinterpret_cast<Unk_GrGuildManager*>(TSingleton<CGuildManager>::GetInstance())->m_8.FUN_1404ccbd0();
+        nId = reinterpret_cast<Unk_GrGuildManager*>(TSingleton<CGuildManager>::GetInstance())->m_8.GetGuildId();
     }
     else if (nBoard == 2 || nBoard == 3 || nBoard == 4 || nBoard == 7 || nBoard == 8 || nBoard == 9 || nBoard == 0xf ||
              nBoard == 0x11 || nBoard == 0xb || nBoard == 0xc || nBoard == 10 || nBoard == 0xe || nBoard == 0x10)
@@ -856,10 +856,10 @@ void CGameRankingCli::DeliverRows()
     if (pDialog != 0 && pDialog->vfunc_55() == 0) {
         MS2Ptr<GameRanking::Page> spPage = spResponse->GetPage(1);
         if (spPage.get() != 0) {
-            pDialog->FUN_140e34ce0(1, spPage->Total());
+            pDialog->SetButtonPage(1, spPage->Total());
             pDialog->FUN_140e31910(0);
             if (spPage->Total() != 0)
-                pDialog->FUN_140e32f30(1, 0, CStringW(L""));
+                pDialog->RequestPage(1, 0, CStringW(L""));
         }
     }
 }
@@ -908,7 +908,7 @@ unsigned int __cdecl CGameRankingCli::RequestWeb(void* pParam)
     if (spParam == 0)
         return 1;
     if (CSoapClient::GetInstance() != 0) {
-        MS2Ptr<CGameRankingWebResult> spResult = CSoapClient::GetInstance()->FUN_141770670(spParam);
+        MS2Ptr<CGameRankingWebResult> spResult = CSoapClient::GetInstance()->RequestGameRanking(spParam);
         if (spResult.get() != 0) {
             if (GetInstance() != 0)
                 GetInstance()->ReceiveWeb(spParam, spResult);

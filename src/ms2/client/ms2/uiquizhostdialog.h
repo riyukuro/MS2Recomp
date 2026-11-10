@@ -33,17 +33,17 @@ MS2_CHECK_SIZE(UIQuizHostDialog, 0x180);
 MS2_CHECK_OFFSET(UIQuizHostDialog, m_nRound, 0x178);
 
 // Remember the round and push it to the movie ("SetRound") (0x140e7df20).
-void FUN_140e7df20(UIQuizHostDialog* pDialog, int nRound);
+void SetRound(UIQuizHostDialog* pDialog, int nRound);
 
 // Movie calls: "ClearInput" (0x140e7dfb0), "EnableSubmit" (0x140e7e030).
-void FUN_140e7dfb0(UIQuizHostDialog* pDialog);
-void FUN_140e7e030(UIQuizHostDialog* pDialog, bool bEnable);
+void ClearInput(UIQuizHostDialog* pDialog);
+void EnableSubmit(UIQuizHostDialog* pDialog, bool bEnable);
 
 // Enable / disable the "m_btnEventFinish" button (0x140e7e0b0).
 void FUN_140e7e0b0(UIQuizHostDialog* pDialog, bool bEnable);
 
 // Send the (trimmed, non-empty) question (0x140e7e160): packet 0x90 with (10, 10, text).
-void FUN_140e7e160(UIQuizHostDialog* pDialog, const CStringW& strQuestion);
+void SendQuestion(UIQuizHostDialog* pDialog, const CStringW& strQuestion);
 
 // "OnFinishEvent" handler (0x140e7e220): before round 2 only a notice, otherwise the finish confirmation box.
-void FUN_140e7e220(UIQuizHostDialog* pDialog);
+void OnFinishEvent(UIQuizHostDialog* pDialog);

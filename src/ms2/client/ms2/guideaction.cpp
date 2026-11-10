@@ -89,7 +89,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 // The minimap dialog (ui class 0x4e29); only what the MinimapMaximize action calls.
 class CKeyTable { public: CStringW GetActionKeyName(int nAction, int nPriority); };   // C3: member view (the key name of a binding)
-class Unk_SoundSink* FUN_1409331f0();   // C3: the CKeyTable (calls cast back)
+class Unk_SoundSink* GetKeyTable();   // C3: the CKeyTable (calls cast back)
 class UIMinimapDialog : public UIDialog
 {
 public:
@@ -104,7 +104,7 @@ public:
 class UISidePopupTalk : public UIDialog
 {
 public:
-    void FUN_140e879a0(MS2Ptr<SidePopupTalkParam> spParam); // show
+    void ShowPopup(MS2Ptr<SidePopupTalkParam> spParam); // show
 };
 
 // SidePopupTalkParam as the side NPC talk fills it (the shared placeholder pads +0x20, the script id list).
@@ -134,13 +134,13 @@ public:
 struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
 class GFxSceneService { public: int FUN_1422b9fd0(int nSubSceneId); };  // C3: member view (0x1422b9...)
 
-class Unk_McEntityRules* FUN_140ad4b90();   // the trigger service (calls cast back)
-void* FUN_14136f3e0(int nId);                       // the guide event window
-void* FUN_14136f290(int nId);
-void* FUN_14136f5c0(int nId);
+class Unk_McEntityRules* GetTriggerService();   // the trigger service (calls cast back)
+void* FindGuideEvent(int nId);                       // the guide event window
+void* FindCutSceneCinematic(int nId);
+void* FindSmartRecommendNotifyDialog(int nId);
 UIGameMenuDialog* FindGameMenuDialog(int nId);
 CStringW GetStringCommon(int nId);                            // a system string
-void FUN_141a5d0a0(int bUse);                               // the tutorial weapon of the quick slots
+void SetUseOpenAnim(int bUse);                               // the tutorial weapon of the quick slots
 
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 // C3 #12: was a local TiXml view
@@ -635,8 +635,8 @@ void CGuideActionUITutorial::vfunc_3()
     m_index = 0;
     if (m_steps.IsEmpty())
         return;
-    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
-        pEvent->FUN_14195a520(m_entityId, m_steps[m_index].m_textId, 1);
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
+        pEvent->ShowTutorial(m_entityId, m_steps[m_index].m_textId, 1);
     AddLimit(0x15);
     AddLimit(0x13);
 }
@@ -646,14 +646,14 @@ void CGuideActionUITutorial::vfunc_4()
 {
     FUN_1413837e0(0x15);
     FUN_1413837e0(0x13);
-    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
         pEvent->HideTutorial(m_entityId);
 }
 
 // @0x141383ea0
 int CGuideActionUITutorial::vfunc_5()
 {
-    UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53);
+    UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53);
     if (pEvent != 0 && pEvent->IsTutorialShowing() != 0)
         return 0;
     if (m_index < m_steps.GetCount())
@@ -668,13 +668,13 @@ void CGuideActionUITutorial::FUN_141383f50()
     if (m_tick == 0)
         m_tick = GetTickCountMs2();
     if (GetTickCountMs2() - m_tick >= m_steps[m_index].m_waitTick
-        || (CUIService::GetInstance()->FUN_141adbb00() == 0 && TSingleton<CInputKeyHandler>::GetInstance()->FUN_14116dcb0(0x493e2, false, 0)))
+        || (CUIService::GetInstance()->IsTextFieldFocused() == 0 && TSingleton<CInputKeyHandler>::GetInstance()->IsActionKeyDown(0x493e2, false, 0)))
     {
         m_index++;
         m_tick = 0;
         UIGuideEvent* pEvent;
-        if (m_index < m_steps.GetCount() && (pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53)) != 0)
-            pEvent->FUN_14195a520(m_entityId, m_steps[m_index].m_textId, 0);
+        if (m_index < m_steps.GetCount() && (pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53)) != 0)
+            pEvent->ShowTutorial(m_entityId, m_steps[m_index].m_textId, 0);
     }
 }
 MS2_REPLACE_METHOD(0x141383F50, CGuideActionUITutorial, FUN_141383f50, 292, 0x7731A2D4);
@@ -754,8 +754,8 @@ void CGuideActionUISummary::vfunc_3()
 {
     if (!FUN_141384200())
         return;
-    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
-        pEvent->FUN_14195ab40(m_entityId, m_textId, 0);
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
+        pEvent->ShowSummary(m_entityId, m_textId, 0);
 }
 MS2_REPLACE_METHOD(0x141384390, CGuideActionUISummary, vfunc_3, 86, 0x962E91AC);
 
@@ -766,7 +766,7 @@ void CGuideActionUISummary::vfunc_4()
         return;
     if (m_isNotClose != 0)
         return;
-    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
         pEvent->HideSummary(m_entityId);
 }
 MS2_REPLACE_METHOD(0x1413843F0, CGuideActionUISummary, vfunc_4, 87, 0x99CAFAB3);
@@ -774,7 +774,7 @@ MS2_REPLACE_METHOD(0x1413843F0, CGuideActionUISummary, vfunc_4, 87, 0x99CAFAB3);
 // @0x141384450
 int CGuideActionUISummary::vfunc_5()
 {
-    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
         return pEvent->IsSummaryShowing() == 0;
     return true;
 }
@@ -821,8 +821,8 @@ void CGuideActionUIArrow::vfunc_3()
     spArrow->m_direction = m_direction;
     spArrow->m_align = m_align;
     spArrow->m_textId = m_textId;
-    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
-        pEvent->FUN_141959a60(spArrow);
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
+        pEvent->AddArrow(spArrow);
 }
 MS2_REPLACE_METHOD(0x141384680, CGuideActionUIArrow, vfunc_3, 351, 0x530B5AE4);
 
@@ -833,7 +833,7 @@ void CGuideActionUIArrow::vfunc_4()
         return;
     if (m_isNotClose != 0)
         return;
-    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
         pEvent->ReleaseArrow(m_entityId);
 }
 MS2_REPLACE_METHOD(0x1413847F0, CGuideActionUIArrow, vfunc_4, 87, 0x06DC8ADB);
@@ -858,7 +858,7 @@ void CGuideActionUITextTip::vfunc_3()
 {
     if (!FUN_141384200())
         return;
-    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
         pEvent->QueueOrShowTextTip(m_entityId, m_textId);
 }
 MS2_REPLACE_METHOD(0x141384900, CGuideActionUITextTip, vfunc_3, 83, 0x64D30544);
@@ -870,7 +870,7 @@ void CGuideActionUITextTip::vfunc_4()
         return;
     if (m_isNotClose != 0)
         return;
-    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
         pEvent->AdvanceTextTip(m_entityId);
 }
 MS2_REPLACE_METHOD(0x141384960, CGuideActionUITextTip, vfunc_4, 87, 0x053CEE13);
@@ -927,8 +927,8 @@ void CGuideActionUIArrowDialog::vfunc_3()
     pArrow->m_scenes.Copy(m_focusDialogName);
     pArrow->SetKindFromName(m_customPosType);
     pArrow->m_param = m_customPosValue;
-    if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
-        pEvent->FUN_141959a60(MS2Ptr<UIGuideEventArrow>(pArrow));
+    if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
+        pEvent->AddArrow(MS2Ptr<UIGuideEventArrow>(pArrow));
 }
 MS2_REPLACE_METHOD(0x141384BD0, CGuideActionUIArrowDialog, vfunc_3, 505, 0x9E3B41CF);
 
@@ -963,7 +963,7 @@ void CGuideActionUIArrowClose::vfunc_3()
 {
     if (m_isAtOpen != 0)
     {
-        if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
+        if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
             pEvent->ReleaseArrow(m_entityId);
     }
 }
@@ -974,7 +974,7 @@ void CGuideActionUIArrowClose::vfunc_4()
 {
     if (m_isAtOpen == 0)
     {
-        if (UIGuideEvent* pEvent = (UIGuideEvent*)FUN_14136f3e0(0x4e53))
+        if (UIGuideEvent* pEvent = (UIGuideEvent*)FindGuideEvent(0x4e53))
             pEvent->ReleaseArrow(m_entityId);
     }
 }
@@ -1077,16 +1077,16 @@ MS2_REPLACE_METHOD(0x141385400, CGuideActionEquipWeaponTutorial, vfunc_2, 75, 0x
 // @0x141385460
 void CGuideActionEquipWeaponTutorial::vfunc_3()
 {
-    UIInventoryDialog::FUN_141999d20(m_isUse);
-    FUN_141a5d0a0(m_isUse);
+    UIInventoryDialog::SetAlignMode(m_isUse);
+    SetUseOpenAnim(m_isUse);
 }
 MS2_REPLACE_METHOD(0x141385460, CGuideActionEquipWeaponTutorial, vfunc_3, 40, 0x95E90B84);
 
 // @0x141385490
 void CGuideActionEquipWeaponTutorial::vfunc_4()
 {
-    UIInventoryDialog::FUN_141999d20(0);
-    FUN_141a5d0a0(0);
+    UIInventoryDialog::SetAlignMode(0);
+    SetUseOpenAnim(0);
 }
 MS2_REPLACE_METHOD(0x141385490, CGuideActionEquipWeaponTutorial, vfunc_4, 28, 0x8673086D);
 
@@ -1155,17 +1155,17 @@ void CGuideActionSequenceCamera::vfunc_3()
 {
     m_skipped = 0;
     if (CameraMgr::GetInstance()->GetModeType() != 2)
-        ((CTriggerService*)FUN_140ad4b90())->FUN_141863460(0);
-    ((CTriggerService*)FUN_140ad4b90())->FUN_141863340(m_triggerCameraId, 1);
+        ((CTriggerService*)GetTriggerService())->FUN_141863460(0);
+    ((CTriggerService*)GetTriggerService())->QueueCameraSteps(m_triggerCameraId, 1);
     if (m_isUseCinematicCutScene != 0)
     {
-        ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x6200041);
+        ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9fd0(0x6200041);
         CStringW strEmpty;
-        if (UICutSceneCinematic* pCinematic = (UICutSceneCinematic*)FUN_14136f290(0x4e52))
+        if (UICutSceneCinematic* pCinematic = (UICutSceneCinematic*)FindCutSceneCinematic(0x4e52))
         {
             CStringW strKey = GetStringCommon(0x666);
             if (*reinterpret_cast<const unsigned char*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
-                strKey = reinterpret_cast<CKeyTable*>(FUN_1409331f0())->GetActionKeyName(0x49409, 2);
+                strKey = reinterpret_cast<CKeyTable*>(GetKeyTable())->GetActionKeyName(0x49409, 2);
             pCinematic->StartCinematic(3, strEmpty);
             pCinematic->FUN_141907d60(3, strKey, GetStringCommon(0x667));
             NotifySystem::GetInstance()->RegisterNotify(L"NotifyCutSceneCinematicSkip",
@@ -1180,10 +1180,10 @@ void CGuideActionSequenceCamera::vfunc_3()
 void CGuideActionSequenceCamera::vfunc_4()
 {
     if (CameraMgr::GetInstance()->GetModeType() != 2)
-        ((CTriggerService*)FUN_140ad4b90())->FUN_141863460(m_endInterpolationTime);
+        ((CTriggerService*)GetTriggerService())->FUN_141863460(m_endInterpolationTime);
     if (m_isUseCinematicCutScene != 0)
     {
-        ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
+        ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9fd0(0x620001d);
         NotifySystem::GetInstance()->UnregisterNotify(L"NotifyCutSceneCinematicSkip",
             Delegate<void(NotifyObject*)>(this, &CGuideActionSequenceCamera::OnSkip));
     }
@@ -1236,9 +1236,9 @@ MS2_REPLACE_METHOD(0x141385C70, CGuideActionSmartRecommend, vfunc_2, 75, 0xAB168
 // @0x141385cd0
 void CGuideActionSmartRecommend::vfunc_3()
 {
-    if (UISmartRecommendNotifyDialog* pDialog = (UISmartRecommendNotifyDialog*)FUN_14136f5c0(0x4e9e))
-        pDialog->FUN_14134dc50(m_recommendCode);
-    if (CUIService::GetInstance()->FUN_141adc940((eUIClassID)0x4e9e) == 0)
+    if (UISmartRecommendNotifyDialog* pDialog = (UISmartRecommendNotifyDialog*)FindSmartRecommendNotifyDialog(0x4e9e))
+        pDialog->SetRecommendItem(m_recommendCode);
+    if (CUIService::GetInstance()->IsDialogClosed((eUIClassID)0x4e9e) == 0)
         CUIService::GetInstance()->CloseDialog((eUIClassID)0x4e9e);
     CUIService::GetInstance()->OpenDialog((eUIClassID)0x4e9e);
 }
@@ -1310,7 +1310,7 @@ void CGuideActionGameMenuLimit::vfunc_3()
     if (UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28))
         pMenu->SetMenuEnable(m_menuID, m_enabled);
     if (UIGamePadMenuDialog* pPadMenu = Unk_GaGetUI<UIGamePadMenuDialog>(0x4f63))
-        pPadMenu->FUN_140c1ba90(m_menuID, m_enabled);
+        pPadMenu->SetMenuEnable(m_menuID, m_enabled);
 }
 MS2_REPLACE_METHOD(0x141385FF0, CGuideActionGameMenuLimit, vfunc_3, 114, 0x7666787D);
 
@@ -1388,7 +1388,7 @@ void CGuideActionSideNpcTalk::vfunc_3()
         GA_SIDEPOPUP(spParam)->m_nDuration = m_duration;
         GA_SIDEPOPUP(spParam)->m_strVoice = m_voice;
         GA_SIDEPOPUP(spParam)->m_strSound = m_sound;
-        pTalk->FUN_140e879a0(spParam);
+        pTalk->ShowPopup(spParam);
     }
 }
 MS2_REPLACE_METHOD(0x141386360, CGuideActionSideNpcTalk, vfunc_3, 486, 0x654D8AF9);

@@ -122,7 +122,7 @@ namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
 CString FUN_1409a2360(const char* psz, int n);
 
-CString FUN_1410280d0(int nKind, CString strName);
+CString GetDownloadFilePath(int nKind, CString strName);
 
 class Unk_PCActionTimer : public CPtred {};
 // The pc record handed to CreateAvatarFromPCRecord: +0x30 is the id of the pc it describes.
@@ -221,8 +221,8 @@ extern char DAT_143acdb20;                                  // set while the ava
 
 #include "ms2/placeholder/cpetdatatable.h"   // C3: CPetDataTable::Find (0x1407290f0)
 
-#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FindNpcData)
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 // The npc table of the pet effect (FUN_1406d6e90).
 #include "ms2/client/ms2/npcdatacli.h"   // C3: NpcDataTableCli::Find (0x140a7cab0)
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
@@ -295,7 +295,7 @@ public:
 class StatePlayInstrument   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_140ddfbb0();
+    int GetInstrumentId();
 };
 
 // Item accessors of the unrecovered item units.
@@ -317,7 +317,7 @@ public:
     void Update(int);
 };
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-void FUN_141568d80(class NiAVObject*);   // C3: was FUN_141568d80
+void SetUnlightable(class NiAVObject*);   // C3: was SetUnlightable
 class ClonePC* FUN_1405a7e30(class PC*);   // C3: was FUN_1405a7e30
 #include "ms2/placeholder/xmlattr.h"   // C3: XmlSplit (0x140177e10)
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
@@ -422,7 +422,7 @@ AvatarPC* CreatePreviewAvatar(int nGender, int nPreset)
     spAvatar->vfunc_19(reinterpret_cast<const efd::Point3&>(kPos));
     spAvatar->vfunc_21(reinterpret_cast<const efd::Point3&>(kDir));
     spAvatar->vfunc_131(kUser.m_34);
-    spAvatar->vfunc_76(kUser.FUN_1408f19e0());
+    spAvatar->vfunc_76(kUser.GetName());
     spAvatar->SetGender(nSex);
     ((JobSystem*)spAvatar->GetJobSystem())->SetJob(kUser.m_3c, kUser.m_40, kUser.m_34);
     spAvatar->AddStateFlags(4);
@@ -549,7 +549,7 @@ void AvatarPC::PlayInstrument(MS2Ptr<CItemData> spData)
     if (static_cast<PCBase*>(this)->GetCurStateId() == 0x2f)
     {
         State* pState = FUN_14166ccb0();
-        if (pState != 0 && reinterpret_cast<class StatePlayInstrument*>(pState)->FUN_140ddfbb0() == nInstrument)
+        if (pState != 0 && reinterpret_cast<class StatePlayInstrument*>(pState)->GetInstrumentId() == nInstrument)
             return;
     }
     vfunc_59(1, 0, 0, 0);
@@ -754,12 +754,12 @@ void AvatarPC::AddExternalNode(NiNodePtr spNode)
         m_spExternalRoot = new (efd::MemHint(efd::MemHint::NONE)) NiNode(0x80);
         m_spExternalRoot->SetName("UI External Root");
         AttachToModelRoot(NiNodePtr(m_spExternalRoot));
-        FUN_141568d80((class NiAVObject*)(m_spExternalRoot));
+        SetUnlightable((class NiAVObject*)(m_spExternalRoot));
     }
     if (m_spExternalRoot)
     {
         m_spExternalRoot->AttachChild(spNode, false);
-        FUN_141568d80((class NiAVObject*)(spNode));
+        SetUnlightable((class NiAVObject*)(spNode));
     }
     FUN_141087390();
 }
@@ -868,7 +868,7 @@ void AvatarPC::UpdateModelViewNodes()
             if (spMgr)
             {
                 NiNode* pRoot = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(spMgr->GetNIFRoot())));
-                FUN_141568d80((class NiAVObject*)(pRoot));
+                SetUnlightable((class NiAVObject*)(pRoot));
                 kNodes.Add(pRoot);
             }
         }
@@ -878,7 +878,7 @@ void AvatarPC::UpdateModelViewNodes()
         if (m_spExternalRoot->GetChildCount() > 0)
         {
             NiNode* pExternal = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(m_spExternalRoot)));
-            FUN_141568d80((class NiAVObject*)(pExternal));
+            SetUnlightable((class NiAVObject*)(pExternal));
             kNodes.Add(pExternal);
         }
     }
@@ -889,7 +889,7 @@ void AvatarPC::UpdateModelViewNodes()
             NiNodePtr spRideeNode(static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(m_spRidee->GetEntity())))));
             if (spRideeNode)
             {
-                FUN_141568d80((class NiAVObject*)(spRideeNode));
+                SetUnlightable((class NiAVObject*)(spRideeNode));
                 NiNode* pRidee = spRideeNode;
                 kNodes.Add(pRidee);
             }
@@ -920,7 +920,7 @@ NiNode* AvatarPC::GetEffectRoot()
     {
         m_spEffectRoot = new (efd::MemHint(efd::MemHint::NONE)) NiNode(0x80);
         m_spEffectRoot->SetName("UI Effect Root");
-        FUN_141568d80((class NiAVObject*)(m_spEffectRoot));
+        SetUnlightable((class NiAVObject*)(m_spEffectRoot));
         AttachToModelRoot(NiNodePtr(m_spEffectRoot));
         if (m_spModelView)
             FUN_141087390();
@@ -1041,7 +1041,7 @@ void AvatarPC::FUN_1409f6950(MS2Ptr<CItem> spItem)
     {
         return;
     }
-    int nRod = spItem->FUN_1405276c0();
+    int nRod = spItem->GetItemId();
     if (static_cast<PCBase*>(this)->GetCurStateId() == 0x2d)
     {
         State* pState = FUN_14166ccb0();
@@ -1156,7 +1156,7 @@ void AvatarPet::vfunc_62(MS2Ptr<CItemData> spData)
         if (kPet == 0)
             return;
         int nNpcId = kPet->GetId();
-        MS2Ptr<CNpcData> kNpc = FUN_1406cd330(nNpcId);
+        MS2Ptr<CNpcData> kNpc = FindNpcData(nNpcId);
         if (kNpc.get() != 0)
         {
             char szDir[256];
@@ -1313,7 +1313,7 @@ bool AvatarRidee::vfunc_58(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem)
     m_spRow = 0;
     if (spData.get() != 0)
     {
-        MS2SvrPtr<CRideeData> kRow = FUN_1407844b0(((class CItemData*)(spData.operator->()))->GetRideeId());
+        MS2SvrPtr<CRideeData> kRow = GetRideeData(((class CItemData*)(spData.operator->()))->GetRideeId());
         if (kRow != 0)
             FUN_1409f9ea0(MS2SvrPtr<CRideeData>(kRow));
     }
@@ -1343,7 +1343,7 @@ void AvatarRidee::vfunc_12()
     MS2SvrPtr<CRideeData> kRow(m_spRow);
     if (m_spRow == 0 && m_spItemData.get() != 0)
     {
-        m_spRow = FUN_1407844b0(((class CItemData*)(m_spItemData.operator->()))->GetRideeId());
+        m_spRow = GetRideeData(((class CItemData*)(m_spItemData.operator->()))->GetRideeId());
         kRow = m_spRow;
     }
     if (m_pRider != 0)
@@ -1353,7 +1353,7 @@ void AvatarRidee::vfunc_12()
             NiAVObject* pRoot = FUN_141b6efc0(GetEntity());
             if (pRoot != 0)
             {
-                Unk_RiderPtr kInfo = kRow->FUN_140784970();
+                Unk_RiderPtr kInfo = kRow->GetDefaultRider();
                 if (kInfo == 0)
                     return;
                 NiFixedString kSeat((const char*)kInfo->m_strRideBone);
@@ -1474,16 +1474,16 @@ void AvatarRidee::vfunc_59(MS2Ptr<CItem> spItem)
 {
     if ((spItem.get() ? true : false) && spItem->GetUgcInfo() != 0)
     {
-        CString strFile = FUN_1410280d0(7, spItem->GetUgcInfo()->m_strName);
+        CString strFile = GetDownloadFilePath(7, spItem->GetUgcInfo()->m_strName);
         if (_access(strFile, 0) != 0)
         {
-            TSingleton<CUgcManager>::GetInstance()->FUN_141883df0(MS2Ptr<CItem>(spItem), GetEntityID());
+            TSingleton<CUgcManager>::GetInstance()->DownloadItemLook(MS2Ptr<CItem>(spItem), GetEntityID());
         }
         else
         {
             CUgcItemRidee kRidee(spItem.get(), GetEntityID());
             if (TSingleton<CUgcManager>::GetInstance()->ApplyImageToRidee(&kRidee, CString(strFile), spItem->GetUgcUid()) == 0)
-                TSingleton<CUgcManager>::GetInstance()->FUN_141883df0(MS2Ptr<CItem>(spItem), GetEntityID());
+                TSingleton<CUgcManager>::GetInstance()->DownloadItemLook(MS2Ptr<CItem>(spItem), GetEntityID());
         }
     }
 }
@@ -1496,7 +1496,7 @@ void AvatarRidee::FUN_1409fa7c0()
         if ((m_spRow ? true : false) && !m_bReloading)
         {
             m_pRider->vfunc_59(0x21, 0, 0, 0);
-            m_pRider->PlayAnimation((const char*)m_spRow->FUN_140784970()->m_strAniPCIdle, 1.0f, false,
+            m_pRider->PlayAnimation((const char*)m_spRow->GetDefaultRider()->m_strAniPCIdle, 1.0f, false,
                 false);
         }
     }
@@ -1509,7 +1509,7 @@ void AvatarRidee::FUN_1409fa940()
         return;
     if (m_bReloading == true || m_pRider->GetCurStateId() != 0x21)
         return;
-    Ridee::FUN_1417083a0(m_pRider, NiAVObjectPtr(m_spAttach), m_spRow->FUN_140784970());
+    Ridee::FUN_1417083a0(m_pRider, NiAVObjectPtr(m_spAttach), m_spRow->GetDefaultRider());
 }
 
 // @0x1409faa70

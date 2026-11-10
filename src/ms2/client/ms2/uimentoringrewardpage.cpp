@@ -34,7 +34,7 @@
 class Unk_MentorInput {public:virtual bool vfunc_0();virtual unsigned char vfunc_1();};
 class CInPacket {public:void* p0;Unk_MentorInput stream;};
 class Unk_MentorPacketManager {public:void FUN_140da5180(int,Delegate<void(CInPacket&)>);void FUN_140da51e0(int,Delegate<void(CInPacket&)>);};
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_MentorUIManager {public: };
 class Unk_MentorActor : public PC { };
 class Unk_MentorWorld {public:Unk_MentorActor* FUN_141bd0cc0();};
@@ -51,14 +51,14 @@ template <class T> T Clamp(const T&,T,T);CString GetFontName(unsigned);
 void SetChildText(const Scaleform::GFx::Value&,CString,CStringW);
 // @0x140e5db70
 UIMentoringDialog::UIMentoringDialog():m_page(0),m_pages(17,0.75f,0.25f,2.25f,10) {
- FUN_141924170(1);
+ SetTweenEnabled(1);
  AddPage(new UIMentoringBuffPage(this));AddPage(new UIMentoringMenteePage(this));AddPage(new UIMentoringMentorPage(this));
  AddPage(new UIMentoringMenteeRegisterPage(this));AddPage(new UIMentoringMentorRegisterPage(this));AddPage(new UIMentoringMissionPage(this));AddPage(new UIMentoringRewardPage(this));
- ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));
- ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));
+ ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));
+ ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));
 }
 // @0x140e5e190
-UIMentoringDialog::~UIMentoringDialog(){((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));}
+UIMentoringDialog::~UIMentoringDialog(){((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x10a,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnPacket));((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x10b,Delegate<void(CInPacket&)>(this,&UIMentoringDialog::OnUpdate));}
 // @0x140e5e330
 CString UIMentoringDialog::GetTypeName(){return "MentoringDialog";}
 MS2_REPLACE_METHOD(0x140E5E330, UIMentoringDialog, GetTypeName, 61, 0x24A44C72);
@@ -97,7 +97,7 @@ MS2_REPLACE_METHOD(0x140E5E8E0, UIMentoringDialog, Refresh, 75, 0x2DBEAD0D);
 int UIMentoringDialog::Count(){ATL::CAtlArray<CString> tabs;GetTabs(tabs);int count=0;for(size_t i=0;i<tabs.GetCount();i++){Unk_MentorPtr<UIMentoringPage> page(0);if(m_pages.Lookup(tabs.GetAt(i),page))count+=page->vfunc_8();}return count;}
 MS2_REPLACE_METHOD(0x140E5E940, UIMentoringDialog, Count, 257, 0x6E1D099F);
 // @0x140e5ea50
-void UIMentoringDialog::RefreshPage(){if(m_page.IsNull())return;if(m_page->vfunc_6()=="MentorPage"){UIMentoringPage* page=m_page;page->FUN_140c71ce0();}else if(m_page->vfunc_6()=="MenteePage"){UIMentoringPage* page=m_page;page->FUN_140c6f190();}}
+void UIMentoringDialog::RefreshPage(){if(m_page.IsNull())return;if(m_page->vfunc_6()=="MentorPage"){UIMentoringPage* page=m_page;page->FUN_140c71ce0();}else if(m_page->vfunc_6()=="MenteePage"){UIMentoringPage* page=m_page;page->RefreshMenteePage();}}
 MS2_REPLACE_METHOD(0x140E5EA50, UIMentoringDialog, RefreshPage, 315, 0x575E7804);
 // @0x140e5eba0
 void UIMentoringDialog::Notify(){UpdateCounts();if(m_page.get())m_page->vfunc_9();UIGameMenuDialog* p=FindGameMenuDialog(0x4e28);if(p)p->FUN_141938ae0(0x4f4b,0);}
@@ -109,7 +109,7 @@ MS2_REPLACE_METHOD(0x140E5EC30, UIMentoringDialog, UpdateCounts, 352, 0x5ACF5D77
 int UIMentoringDialog::IsAvailable(){Unk_MentorActor* actor=((Unk_MentorActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());if(!actor)return false;if(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring()->GetId()==0)return false;if(reinterpret_cast<CContentShutdown&>(((class Unk_MentorFlags*)FUN_14025e7b0())->flags).Get((CContentShutdown::Content)(0x4a)))return false;return true;}
 MS2_REPLACE_METHOD(0x140E5EDA0, UIMentoringDialog, IsAvailable, 108, 0x0726E828);
 // @0x140e5ee20
-void UIMentoringDialog::SetTabs(ATL::CAtlArray<CString>& tabs){m_tabs.clear();if(MS2Ptr<ASButtonBar> tab=GetChild<ASButtonBar>("m_tab")){for(size_t i=0;i<tabs.GetCount();i++){Unk_MentorPtr<UIMentoringPage> page(0);if(m_pages.Lookup(tabs.GetAt(i),page)){ASObj obj(2);obj.FUN_1407cba60("page",tabs.GetAt(i));obj.FUN_1407cbb20("label",page->vfunc_7());tab->AddItem(obj);m_tabs.push_back(page);}}tab->vfunc_24(1);tab->SetSelectedIndex(0);}UpdateCounts();}
+void UIMentoringDialog::SetTabs(ATL::CAtlArray<CString>& tabs){m_tabs.clear();if(MS2Ptr<ASButtonBar> tab=GetChild<ASButtonBar>("m_tab")){for(size_t i=0;i<tabs.GetCount();i++){Unk_MentorPtr<UIMentoringPage> page(0);if(m_pages.Lookup(tabs.GetAt(i),page)){ASObj obj(2);obj.SetStringMember("page",tabs.GetAt(i));obj.SetWStringMember("label",page->vfunc_7());tab->AddItem(obj);m_tabs.push_back(page);}}tab->vfunc_24(1);tab->SetSelectedIndex(0);}UpdateCounts();}
 MS2_REPLACE_METHOD(0x140E5EE20, UIMentoringDialog, SetTabs, 634, 0x149640E6);
 // @0x140e5f0a0
 void UIMentoringDialog::GetTabs(ATL::CAtlArray<CString>& tabs){int type=TSingleton<CMentoringManager>::GetInstance()->FUN_140b71580();switch(type){case 1:tabs.Add("MenteeRegisterPage");tabs.Add("BuffPage");break;case 4:tabs.Add("MentorRegisterPage");tabs.Add("BuffPage");break;case 2:tabs.Add("MenteePage");tabs.Add("RewardPage");tabs.Add("MissionPage");tabs.Add("BuffPage");break;case 5:tabs.Add("MentorPage");tabs.Add("BuffPage");break;}}
@@ -146,7 +146,7 @@ void ASMentoringRewardPage::Refresh(){
  const size_t count=3;std::vector<unsigned> values;((class Unk_MentorRewards*)FUN_1406c7610())->GetAttendRewardCoins(values);if(values.size()!=count)return;
  SetChildText((*m_script).FUN_1422bb890(),"m_benefitDesc",FUN_14028dfa0(L"s_mentoring_reward_coin_desc",values[0],values[1],values[2]));
  bool available=TSingleton<CMentoringManager>::GetInstance()->FUN_140b71610();int level=TSingleton<CMentoringManager>::GetInstance()->FUN_140b715c0();unsigned index=Clamp<unsigned>((unsigned&)level,0,2);
- m_coin->SetTextA(GetFontName(values[index]));m_button->FUN_1422c1fe0((int)available);
+ m_coin->SetTextA(GetFontName(values[index]));m_button->SetEnabled((int)available);
  m_effect1->vfunc_4(available);m_effect2->vfunc_4(available);m_effect3->vfunc_4(available);
 }
 MS2_REPLACE_METHOD(0x140E62CC0, ASMentoringRewardPage, Refresh, 822, 0x5E175E0C);

@@ -33,12 +33,12 @@ public:
     virtual int vfunc_48() { return 0x4f2e; }                       // 48
 
     void FUN_140e39da0();                                           // show the selected theme (title, button, areas, facilities, preview)
-    bool FUN_140e3a6b0(int nButton, const CMsgBoxData& data);       // theme change confirmed
-    bool FUN_140e3a720(int nButton, const CMsgBoxData& data);       // upgrade confirmed
+    bool OnUpgradeConfirmed(int nButton, const CMsgBoxData& data);       // theme change confirmed
+    bool OnChangeThemeConfirmed(int nButton, const CMsgBoxData& data);       // upgrade confirmed
     void FUN_140e3a770();                                           // fill the tab strip / theme map from the guild xml
     void FUN_140e3a910(const Scaleform::GFx::FunctionHandler::Params& params);   // tab clicked: fill the theme list
     void FUN_140e3abc0(const Scaleform::GFx::FunctionHandler::Params& params);   // theme clicked
-    void FUN_140e3abf0(const Scaleform::GFx::FunctionHandler::Params& params);   // upgrade button clicked
+    void OnUpgradeButtonClicked(const Scaleform::GFx::FunctionHandler::Params& params);   // upgrade button clicked
 
     template <class T> MS2Ptr<T> FUN_140e3b650(const CString& strName, MS2Ptr<T>& out);   // bind the tab strip
     template <class T> MS2Ptr<T> FUN_140e3b6e0(const CString& strName, MS2Ptr<T>& out);   // bind the theme list

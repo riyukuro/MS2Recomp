@@ -23,7 +23,7 @@
 #pragma comment(lib, "shlwapi.lib")
 
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // wrap an AS object in an ASUIComponent
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);           // *pValue = v (v by value)
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);           // *pValue = v (v by value)
 
 // @0x1422f0900
 GFxMovieTooltip::GFxMovieTooltip()
@@ -283,9 +283,9 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Scaleform::GF
 {
     ASArgList args;
     args.resize(3);
-    FUN_1422bcc70(&args[0], a1);
-    FUN_1422bcc70(&args[1], a2);
-    FUN_1422bcc70(&args[2], a3);
+    SetValue(&args[0], a1);
+    SetValue(&args[1], a2);
+    SetValue(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
 

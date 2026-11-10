@@ -20,8 +20,8 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x140fa9570 message box answers
 
     void FUN_140fa97a0();                                       // push "setData" (opentype and the nine rows)
-    void FUN_140fa99b0(unsigned char nOpenType, CStringW strPassword);   // send the open type and password to the player
-    void FUN_140fa9a50(int nRow, int nValue);                   // send the permission row (flag and level)
+    void SetHomeOpenType(unsigned char nOpenType, CStringW strPassword);   // send the open type and password to the player
+    void SetPermissionRow(int nRow, int nValue);                   // send the permission row (flag and level)
     void SendRequestCubeMode42(int nRow, bool bOn);  // packet 0x37/0x2a
     void SendRequestCubeMode43(int nRow, int nLevel);   // packet 0x37/0x2b
     void SendRequestCubeMode49();                                       // packet 0x37/0x31 kick every visitor

@@ -35,8 +35,8 @@ public:
     // width: ASDisplayObject::FUN_1422c1500 (inherited)
     int FUN_1422c1530();                                    // height
     void FUN_1422c0f60(float* pX, float* pY);               // get the position
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int nActorId, CString strCache, int n);   // "createEntity" (UIHudEntity family)
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value clip, bool b);     // "updateEntity"
-    Scaleform::GFx::Value FUN_1418adea0(const char* szMethod, unsigned char nIndex, const ASObj& row);   // "setTrophy" (uiachievedialog)
+    Scaleform::GFx::Value CreateEntity(const char* szMethod, int nActorId, CString strCache, int n);   // "createEntity" (UIHudEntity family)
+    Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value clip, bool b);     // "updateEntity"
+    Scaleform::GFx::Value InvokeWithIndexAndRow(const char* szMethod, unsigned char nIndex, const ASObj& row);   // "setTrophy" (uiachievedialog)
 };
 MS2_CHECK_SIZE(ASGameEntity, 0x88);

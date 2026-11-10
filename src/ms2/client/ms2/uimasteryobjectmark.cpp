@@ -42,11 +42,11 @@ class Unk_McPc : public PC
 {
 };
 class Unk_QgUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 int FUN_141277f40();
 float FUN_1412762d0(const NiPoint3& pt);                 // the screen y offset of a world point
@@ -122,7 +122,7 @@ CString UIMasteryObjectMark::GetTypeName()
 }
 
 // @0x140e59bb0
-void UIMasteryObjectMark::FUN_140e59bb0(CInteractObject* pObject)
+void UIMasteryObjectMark::AddNodeMark(CInteractObject* pObject)
 {
     if (m_30.get() != 0)
     {
@@ -148,7 +148,7 @@ void UIMasteryObjectMark::FUN_140e59bb0(CInteractObject* pObject)
 }
 
 // @0x140e59ea0
-void UIMasteryObjectMark::FUN_140e59ea0(CFunctionCubeObject* pCube)
+void UIMasteryObjectMark::AddCubeMark(CFunctionCubeObject* pCube)
 {
     if (m_30.get() != 0)
     {
@@ -176,7 +176,7 @@ void UIMasteryObjectMark::FUN_140e59ea0(CFunctionCubeObject* pCube)
 // @0x140e5a190
 void UIMasteryObjectMark::vfunc_2()
 {
-    FUN_1422dbf00(m_2c, 0, 0);
+    LoadSwf(m_2c, 0, 0);
 }
 
 // @0x140e5a1c0
@@ -202,7 +202,7 @@ void UIMasteryObjectMark::OnLoadComplete()
             CInteractGatheringObject* pGather = dynamic_cast<CInteractGatheringObject*>(pObject);
             if (!pGather)
                 continue;
-            FUN_140e59bb0(pGather);
+            AddNodeMark(pGather);
         }
     }
     for (POSITION pos = m_cubes.GetStartPosition(); pos; m_cubes.GetNext(pos))
@@ -216,7 +216,7 @@ void UIMasteryObjectMark::OnLoadComplete()
             CHomemadeCubeObject* pHome = dynamic_cast<CHomemadeCubeObject*>(pCube);
             if (!pHome)
                 continue;
-            FUN_140e59ea0(pHome);
+            AddCubeMark(pHome);
         }
     }
 }
@@ -228,7 +228,7 @@ void UIMasteryObjectMark::vfunc_15()
     if (m_30.IsNull())
         return;
     FUN_140e5a600();
-    FUN_140e5ac30();
+    UpdateCubeMarks();
 }
 
 // @0x140e5a5b0
@@ -257,7 +257,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
         MS2Ptr<CInteractObject> spObject = WorldService::GetInstance()->FindProp(strKey);
         if (spObject.IsNull())
         {
-            FUN_140e5b450(strKey);
+            RemoveMark(strKey);
             continue;
         }
         if (CInteractGatheringObject* pGather = dynamic_cast<CInteractGatheringObject*>(spObject.operator->()))
@@ -271,7 +271,7 @@ void UIMasteryObjectMark::FUN_140e5a600()
             }
             else
             {
-                reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
+                reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)GetGFxManager())))->GetMovieScale(m_28);
                 ptScreen.y += FUN_1412762d0(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(pGather->GetPos())));
                 ptScreen.x += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_ddd0)->Get();
                 ptScreen.y += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_de28)->Get();
@@ -284,8 +284,8 @@ void UIMasteryObjectMark::FUN_140e5a600()
                     spContext->m_spEntity->Invoke("showTooltip", nShow);
                     spContext->m_nShown = nShow;
                 }
-                if (FUN_140e5b520(pGather, spContext.get()) != 0)
-                    FUN_140e5bd80(spContext.get());
+                if (UpdateNodeMarkTexts(pGather, spContext.get()) != 0)
+                    SendMarkData(spContext.get());
                 bool bVisible = nShow != 0 ? true : spContext->m_nEnabled != 0;
                 if (spContext->m_spEntity->GetVisible() != bVisible)
                     spContext->m_spEntity->vfunc_4(bVisible);
@@ -293,13 +293,13 @@ void UIMasteryObjectMark::FUN_140e5a600()
         }
         else
         {
-            FUN_140e5b450(strKey);
+            RemoveMark(strKey);
         }
     }
 }
 
 // @0x140e5ac30
-void UIMasteryObjectMark::FUN_140e5ac30()
+void UIMasteryObjectMark::UpdateCubeMarks()
 {
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPC)
@@ -318,7 +318,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
         MS2Ptr<CFunctionCubeObject> spCube = GetFunctionCubeService()->FindCube(strKey);
         if (spCube.IsNull())
         {
-            FUN_140e5b450(strKey);
+            RemoveMark(strKey);
             continue;
         }
         int nOwnerOk = 1;
@@ -345,7 +345,7 @@ void UIMasteryObjectMark::FUN_140e5ac30()
             }
             else
             {
-                reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
+                reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)GetGFxManager())))->GetMovieScale(m_28);
                 ptScreen.y += FUN_1412762d0(reinterpret_cast<const NiPoint3&>(static_cast<const Vector3&>(spHome->GetPosition())));
                 ptScreen.x += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_de80)->Get();
                 ptScreen.y += *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_AuConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_ded8)->Get();
@@ -358,8 +358,8 @@ void UIMasteryObjectMark::FUN_140e5ac30()
                     spContext->m_spEntity->Invoke("showTooltip", nShow);
                     spContext->m_nShown = nShow;
                 }
-                if (FUN_140e5b620(spHome.get(), spContext.get()) != 0)
-                    FUN_140e5bd80(spContext.get());
+                if (UpdateCubeMarkTexts(spHome.get(), spContext.get()) != 0)
+                    SendMarkData(spContext.get());
                 bool bVisible = nShow != 0 ? 1 : spContext->m_nEnabled != 0;
                 if (spContext->m_spEntity->GetVisible() != bVisible)
                     spContext->m_spEntity->vfunc_4(bVisible);
@@ -367,13 +367,13 @@ void UIMasteryObjectMark::FUN_140e5ac30()
         }
         else
         {
-            FUN_140e5b450(strKey);
+            RemoveMark(strKey);
         }
     }
 }
 
 // @0x140e5b450
-void UIMasteryObjectMark::FUN_140e5b450(const CStringA& strKey)
+void UIMasteryObjectMark::RemoveMark(const CStringA& strKey)
 {
     if (m_30.get() != 0)
     {
@@ -383,9 +383,9 @@ void UIMasteryObjectMark::FUN_140e5b450(const CStringA& strKey)
 }
 
 // @0x140e5b520
-int UIMasteryObjectMark::FUN_140e5b520(CInteractObject* pObject, EntityContext* pContext)
+int UIMasteryObjectMark::UpdateNodeMarkTexts(CInteractObject* pObject, EntityContext* pContext)
 {
-    int nChanged = FUN_140e5b720(pObject->GetRow()->m_gathering.m_nReceipeId, pContext);
+    int nChanged = UpdateRecipeMarkTexts(pObject->GetRow()->m_gathering.m_nReceipeId, pContext);
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xb, pObject->GetRowId());
     if (pContext->m_strObjName != strName)
     {
@@ -396,9 +396,9 @@ int UIMasteryObjectMark::FUN_140e5b520(CInteractObject* pObject, EntityContext* 
 }
 
 // @0x140e5b620
-int UIMasteryObjectMark::FUN_140e5b620(CFunctionCubeObject* pCube, EntityContext* pContext)
+int UIMasteryObjectMark::UpdateCubeMarkTexts(CFunctionCubeObject* pCube, EntityContext* pContext)
 {
-    int nChanged = FUN_140e5b720(static_cast<CHomemadeCubeObject*>(pCube)->FUN_140ca6580()->m_n100, pContext);
+    int nChanged = UpdateRecipeMarkTexts(static_cast<CHomemadeCubeObject*>(pCube)->GetFunctionCubeData()->m_n100, pContext);
     CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->GetItemId());
     if (pContext->m_strObjName != strName)
     {
@@ -409,7 +409,7 @@ int UIMasteryObjectMark::FUN_140e5b620(CFunctionCubeObject* pCube, EntityContext
 }
 
 // @0x140e5b720
-unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pContext)
+unsigned UIMasteryObjectMark::UpdateRecipeMarkTexts(int nReceipeId, EntityContext* pContext)
 {
     MS2Ptr<CMasteryReceipe> spReceipe = ((class CMasteryTable*)FUN_1409670c0())->Find(nReceipeId);
     if (spReceipe.IsNull())
@@ -494,13 +494,13 @@ unsigned UIMasteryObjectMark::FUN_140e5b720(int nReceipeId, EntityContext* pCont
 }
 
 // @0x140e5bd80
-void UIMasteryObjectMark::FUN_140e5bd80(EntityContext* pContext)
+void UIMasteryObjectMark::SendMarkData(EntityContext* pContext)
 {
     ASObj obj(m_28);
-    obj.FUN_1407cbb20("objName", pContext->m_strObjName);
-    obj.FUN_1407cbb20("prop", pContext->m_strProp);
-    obj.FUN_1407cbb20("status", pContext->m_strStatus);
-    obj.FUN_1407cbb20("type", pContext->m_strType);
+    obj.SetWStringMember("objName", pContext->m_strObjName);
+    obj.SetWStringMember("prop", pContext->m_strProp);
+    obj.SetWStringMember("status", pContext->m_strStatus);
+    obj.SetWStringMember("type", pContext->m_strType);
     pContext->m_spEntity->Invoke("setData", obj);
 }
 

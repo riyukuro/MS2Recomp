@@ -207,7 +207,7 @@ class Unk_WmLoader : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);       // Table/<file>
 unsigned char FUN_1401d1320(CCacheData* p);                                 // file changed since load
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
@@ -220,15 +220,15 @@ int XmlQuery(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408
 int FUN_140d01040(CString& strAlign);                                       // text alignment from its name
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 int FUN_14074b030(CQuestData* pQuest);                                      // the quest id
 int FUN_14074b050(CQuestData* pQuest);                                      // the quest type
-bool FUN_140764040(CQuestData* pQuest);
+bool IsEpicQuest(CQuestData* pQuest);
 bool FUN_140764080(CQuestData* pQuest);
 bool FUN_1407640c0(CQuestData* pQuest);
 bool IsDungeonLevelInRange(unsigned short nRequired, unsigned short nLevel); // the level suits the dungeon
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                                 // the npc table row
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);                                 // the npc table row
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 CStringW FUN_1401aa6a0(int nNpcId);                                         // the npc name
 CStringW FUN_140e14b70(MS2Ptr<DungeonRoom> spRoom);                         // the dungeon name
@@ -237,7 +237,7 @@ CStringW GetStringCommonByKey(const CStringW& strKey);                          
 CStringW GetStringCommon(int nKey);                                           // a common string by id
 //   FUN_14028dfa0 <CStringW, unsigned short, CStringW> = 0x140f02bd0 (wcformat.h)
 CStringW FUN_140f48210(int nHour, int nMinute);                             // "hh:mm"
-CStringW FUN_140b8e910(const CMsTime& time);                                // the date text of a time
+CStringW FormatMonthDay(const CMsTime& time);                                // the date text of a time
 __int64 GetServerTime();                                                    // the server time
 CStringW FUN_14016a730(const char* psz, int nCodePage);                     // widen a string
 class Unk_WmFeatures;
@@ -245,12 +245,12 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 struct Unk_WmWorld;
-class Unk_SingletonObj* FUN_140f26650();   // C3: was FUN_140f26650
+class Unk_SingletonObj* GetRewardPreviewTable();   // C3: was GetRewardPreviewTable
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-void FUN_1416e5890(int nQuestId, ATL::CAtlArray<CStringW>& out);           // the mission lines of a quest
+void GetQuestConditionTexts(int nQuestId, ATL::CAtlArray<CStringW>& out);           // the mission lines of a quest
 class Unk_WmOptions;
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class CInputKeyHandler   // C3: member view for the former free stand-ins
@@ -336,7 +336,7 @@ int UIWorldMap::DisplaySetting::FUN_141b95080(MS2Ptr<CQuestData> spQuest)
         if (abs(spQuest->m_level - (unsigned short)pPC->vfunc_78()) > 5)
             return 0;
     }
-    if (FUN_140764040(spQuest.operator->()))
+    if (IsEpicQuest(spQuest.operator->()))
         return m_18[0];
     else if (FUN_140764080(spQuest.operator->()))
         return 1;
@@ -386,7 +386,7 @@ WorldMapManager::~WorldMapManager()
 
 bool WorldMapTileLess(const MS2Ptr<UIWorldMap::MapTile>& a, const MS2Ptr<UIWorldMap::MapTile>& b);
 int FUN_141b9d850(TiXmlElement* pNode, const char* pszName, int* pOut);
-void FUN_141bb0380(UIWorldMap::MapTile* pThis, MS2Ptr<UIWorldMap::MapTile> spTile);
+void CopyMapTile(UIWorldMap::MapTile* pThis, MS2Ptr<UIWorldMap::MapTile> spTile);
 
 // @0x141b95640
 int WorldMapManager::LoadWorldMapFiles()
@@ -396,12 +396,12 @@ int WorldMapManager::LoadWorldMapFiles()
     TileGroups customWorlds;
     for (size_t i = 0; i < names.GetCount(); i++)
     {
-        CString strPath = FUN_14071a5b0("Table", names[i]);
+        CString strPath = GetXmlPath("Table", names[i]);
         MS2Ptr<CCacheData> spCache(new CCacheData);
-        spCache->FUN_1401d1160(CString(strPath));
+        spCache->SetPath(CString(strPath));
         m_d8.Add(spCache);
         TiXmlDocument doc;
-        if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
             continue;
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2worldmap"));
         if (pRoot == 0)
@@ -454,7 +454,7 @@ int WorldMapManager::LoadWorldMapFiles()
                 for (POSITION pos = spNpcs->GetHeadPosition(); pos != 0; spNpcs->GetNext(pos))
                 {
                     int nNpcId = spNpcs->GetAt(pos);
-                    MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nNpcId);
+                    MS2Ptr<CNpcData> spNpc = FindNpcData(nNpcId);
                     if (spNpc.get())
                     {
                         if (spNpc->GetKind() == 0x55)
@@ -476,9 +476,9 @@ int WorldMapManager::LoadWorldMapFiles()
             spTile->m_24 = spTile->m_24 + *reinterpret_cast<Common::Constants::Value<int>*>(((char*)GetClientConstants()) + 0x3418)->Get();
             spTile->m_28 = spTile->m_28 + *reinterpret_cast<Common::Constants::Value<int>*>(((char*)GetClientConstants()) + 0x3470)->Get();
             CString strImage;
-            strImage.Format("%s%08d.png", (const char*)*reinterpret_cast<CString*>(((char*)FUN_1401d31f0()) + 0xd0), spTile->m_34);
+            strImage.Format("%s%08d.png", (const char*)*reinterpret_cast<CString*>(((char*)GetCommonResource()) + 0xd0), spTile->m_34);
             CString strGreyImage;
-            strGreyImage.Format("%sG_%08d.png", (const char*)*reinterpret_cast<CString*>(((char*)FUN_1401d31f0()) + 0xd0), spTile->m_34);
+            strGreyImage.Format("%sG_%08d.png", (const char*)*reinterpret_cast<CString*>(((char*)GetCommonResource()) + 0xd0), spTile->m_34);
             spTile->m_40 = strImage;
             spTile->m_48 = strGreyImage;
             if (spTile->m_78.GetLength() != 0)
@@ -502,7 +502,7 @@ int WorldMapManager::LoadWorldMapFiles()
         for (size_t i = 0; i < it->second.size(); i++)
         {
             MS2Ptr<UIWorldMap::MapTile> spTile(Unk_BmNewTag(0));
-            FUN_141bb0380(spTile.operator->(), MS2Ptr<UIWorldMap::MapTile>(it->second[i]));
+            CopyMapTile(spTile.operator->(), MS2Ptr<UIWorldMap::MapTile>(it->second[i]));
             spTile->m_38 = it->first;
             m_18[it->first].push_back(spTile);
         }
@@ -527,7 +527,7 @@ int WorldMapManager::LoadWorldMapFiles()
 int WorldMapManager::LoadFieldTiles()
 {
     std::vector<MS2Ptr<CFieldData> > rows;
-    CFieldData::FUN_140374090(rows);
+    CFieldData::GetAllFields(rows);
     for (MS2Ptr<CFieldData>& spRow : rows)
     {
         MS2Ptr<UIWorldMap::FieldSearchInfo> spInfo(Unk_BmNewTag(0));
@@ -554,12 +554,12 @@ int WorldMapManager::LoadFieldNameInfo()
 {
     if (m_48.empty())
         return 1;
-    CString strPath = FUN_14071a5b0("Table", "worldMapFieldNameInfo.xml");
+    CString strPath = GetXmlPath("Table", "worldMapFieldNameInfo.xml");
     MS2Ptr<CCacheData> spCache(new CCacheData);
-    spCache->FUN_1401d1160(CString(strPath));
+    spCache->SetPath(CString(strPath));
     m_d8.Add(spCache);
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -622,9 +622,9 @@ void WorldMapManager::PollChangedFiles()
 // @0x141b96f10
 void WorldMapManager::LoadWorldMapNames(ATL::CAtlArray<CString>& names)
 {
-    CString strPath = FUN_14071a5b0("Table", "worldmap.xml");
+    CString strPath = GetXmlPath("Table", "worldmap.xml");
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_WmLoader*>(GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -670,7 +670,7 @@ void WorldMapManager::LoadSpecialNpcs(CInPacket* packet)
             for (unsigned j = 0; j < nInner; j++)
             {
                 Unk_BmBoxPtr<SpecialNPCInfo> spRecord(Unk_BmNewTag(0));
-                ((struct SpecialNPCInfo*)(struct SpecialNPCInfo*)(spRecord.operator->()))->FUN_14092c190(*packet);
+                ((struct SpecialNPCInfo*)(struct SpecialNPCInfo*)(spRecord.operator->()))->Read(*packet);
                 if (!((class CInputKeyHandler*)(class Unk_WmOptions*)(reinterpret_cast<Unk_WmOptions*>(((class Unk_WmOptions*)FUN_14025e7c0()))))->IsDebugMode())
                 {
                     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(spRecord->m_nFieldId);
@@ -700,7 +700,7 @@ void WorldMapManager::LoadSpecialNpcs(CInPacket* packet)
         MS2Ptr<UIWorldMap::IconInfo> spInfo = GetOrAddIconInfo(spRecord->m_nFieldId);
         if (!spInfo)
             continue;
-        MS2Ptr<CNpcData> spNpc = FUN_1406cd330(spRecord->m_nNpcId);
+        MS2Ptr<CNpcData> spNpc = FindNpcData(spRecord->m_nNpcId);
         if (!spNpc)
             continue;
         UIWorldMap::IconInfo::Rect* pBoss = &spInfo->m_20;
@@ -972,7 +972,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
         if (spInfo->m_28 != spInfo->m_18)
         {
             ASObj item(2);
-            item.FUN_1407cbb20("text", spInfo->m_20);
+            item.SetWStringMember("text", spInfo->m_20);
             item.SetMemberUInt("id", spInfo->m_28);
             indoors.PushObj(item);
             bFound = TRUE;
@@ -980,13 +980,13 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
         else
         {
             ASObj item(2);
-            item.FUN_1407cbb20("text", spInfo->m_20);
+            item.SetWStringMember("text", spInfo->m_20);
             item.SetMemberUInt("id", spInfo->m_18);
             item.SetMemberUInt("iconData", spInfo->m_18);
             MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(spInfo->m_18);
             if (spField)
             {
-                if (!spField->FUN_140375130() && spField->FUN_1403753d0() != 0)
+                if (!spField->IsIndoor() && spField->FUN_1403753d0() != 0)
                     item.FUN_1409c0dc0("icon", "cashTaxi");
             }
             maps.PushObj(item);
@@ -1013,7 +1013,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                 {
                     CStringW strName = FUN_140e14b70(spRoom);
                     ASObj item(2);
-                    item.FUN_1407cbb20("text", StringFormat<CStringW, CStringW>(L"[{0}] {1}", strName, strType));
+                    item.SetWStringMember("text", StringFormat<CStringW, CStringW>(L"[{0}] {1}", strName, strType));
                     item.SetMemberUInt("id", nField);
                     item.FUN_1409c0dc0("icon", spRoom->m_groupType == 2 ? "dungeon_raid" : "dungeon");
                     item.SetMemberUInt("iconData", spRoom->m_dungeonRoomID);
@@ -1065,7 +1065,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                 if (FUN_14083fec0(strLabel, search) == -1)
                     continue;
                 ASObj item(2);
-                item.FUN_1407cbb20("text", strLabel);
+                item.SetWStringMember("text", strLabel);
                 item.SetMemberUInt("id", nField);
                 gates.PushObj(item);
                 bFound = TRUE;
@@ -1078,7 +1078,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
             if (FUN_14083fec0(strName, search) == -1)
                 continue;
             ASObj item(2);
-            item.FUN_1407cbb20("text", strName);
+            item.SetWStringMember("text", strName);
             item.SetMemberUInt("id", nField);
             npcs.PushObj(item);
             bFound = TRUE;
@@ -1105,7 +1105,7 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
                 }
             }
             ASObj item(2);
-            item.FUN_1407cbb20("text", strName);
+            item.SetWStringMember("text", strName);
             item.SetMemberUInt("id", nField);
             switch (spNpc->m_nClass)
             {
@@ -1125,19 +1125,19 @@ int WorldMapManager::BuildNameSearch(CStringW search, ASObj* script)
     script->FUN_140c16160("indoor", indoors);
     script->FUN_140c16160("npc", npcs);
     if (!bFound)
-        script->FUN_1407cbb20("title", GetStringCommonByKey(L"s_err_worldmap_search_none"));
+        script->SetWStringMember("title", GetStringCommonByKey(L"s_err_worldmap_search_none"));
     return 1;
 }
 
 // @0x141b99dc0
 void WorldMapManager::BuildNpcRewardPreview(int npc, ASObj* script)
 {
-    if (!((class CFeatureManager*)(class Unk_WmFeatures*)(reinterpret_cast<Unk_WmFeatures*>(((class Unk_WmFeatures*)FUN_140166410()))))->FUN_14036d570(0x1a))
+    if (!((class CFeatureManager*)(class Unk_WmFeatures*)(reinterpret_cast<Unk_WmFeatures*>(((class Unk_WmFeatures*)FUN_140166410()))))->IsFeatureEnabled(0x1a))
         return;
     PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WmWorld*)(reinterpret_cast<Unk_WmWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    MS2Ptr<RewardPreviewInfo> spPreview = ((class CRewardPreviewTable*)FUN_140f26650())->GetBoss(npc);
+    MS2Ptr<RewardPreviewInfo> spPreview = ((class CRewardPreviewTable*)GetRewardPreviewTable())->GetBoss(npc);
     if (spPreview == 0)
         return;
     ASObj reward(2);
@@ -1155,14 +1155,14 @@ void WorldMapManager::BuildNpcRewardPreview(int npc, ASObj* script)
             {
                 ASObj item(2);
                 item.FUN_1409adc90(s_strItemGrade, static_cast<ItemAble&>(entity).vfunc_o18_1());
-                item.FUN_1407cbbe0(s_strItemSkin, spItem->HasSkinType());
-                item.FUN_1407cbb20(s_strIconPath, FUN_14016a730(spItem->GetIconPath(), 0));
-                array.PushValue(item.FUN_1422bb870());
+                item.SetBoolMember(s_strItemSkin, spItem->HasSkinType());
+                item.SetWStringMember(s_strIconPath, FUN_14016a730(spItem->GetIconPath(), 0));
+                array.PushValue(item.GetValue());
             }
         }
     }
     ((class AScript*)(ASObj*)(script))->FUN_1418adf60("reward", reward);
-    script->FUN_1407cbb20("enableLClick", GetStringCommon(0x764));
+    script->SetWStringMember("enableLClick", GetStringCommon(0x764));
 }
 
 // @0x141b9a1e0
@@ -1170,7 +1170,7 @@ void WorldMapManager::SetDungeonScript(MS2Ptr<UIWorldMap::IconInfo> info, ASObj*
 {
     if (info->m_48.m_18 == 0)
         return;
-    ((class AScript*)(script))->FUN_1407cb9c0("portalID", info->m_48.m_18);
+    ((class AScript*)(script))->SetIntMember("portalID", info->m_48.m_18);
     if (info->m_48.m_1c)
     {
         if (info->m_48.m_1d)
@@ -1205,11 +1205,11 @@ void WorldMapManager::SetEventScript(unsigned id, ASObj* script)
     if (m_c8.find(id) != m_c8.end())
     {
         MS2Ptr<EventIconInfo> spInfo = m_c8[id];
-        ((class AScript*)(script))->FUN_1407cb9c0("eventField", 1);
-        script->FUN_1407cbb20("eventIcon", spInfo->m_strIconFrame);
-        script->FUN_1407cbb20("eventStr", GetStringCommonByKey(spInfo->m_strEventStr));
-        ((class AScript*)(script))->FUN_1407cb9c0("eventTagOffsetX", spInfo->m_nOffsetX);
-        ((class AScript*)(script))->FUN_1407cb9c0("eventTagOffsetY", spInfo->m_nOffsetY);
+        ((class AScript*)(script))->SetIntMember("eventField", 1);
+        script->SetWStringMember("eventIcon", spInfo->m_strIconFrame);
+        script->SetWStringMember("eventStr", GetStringCommonByKey(spInfo->m_strEventStr));
+        ((class AScript*)(script))->SetIntMember("eventTagOffsetX", spInfo->m_nOffsetX);
+        ((class AScript*)(script))->SetIntMember("eventTagOffsetY", spInfo->m_nOffsetY);
         script->SetMemberFloat("eventTagScale", spInfo->m_fScale);
     }
 }
@@ -1218,7 +1218,7 @@ void WorldMapManager::SetEventScript(unsigned id, ASObj* script)
 CStringW WorldMapManager::NpcSearchName(int npc, int field)
 {
     CStringW strText;
-    MS2Ptr<CNpcData> spNpc = FUN_1406cd330(npc);
+    MS2Ptr<CNpcData> spNpc = FindNpcData(npc);
     if ((spNpc.get() ? true : false) && spNpc->GetFriendly() == 0)
     {
         unsigned short nLevel = spNpc->GetLevel();
@@ -1279,7 +1279,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
             CStringW strName = FUN_140e14b70(MS2Ptr<DungeonRoom>(spRoom));
             CStringW strType = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, spRoom->GetDungeonRoomID());
             ASObj item(2);
-            item.FUN_1407cbb20("text", StringFormat<CStringW, CStringW>(L"[{0}] {1}", strName, strType));
+            item.SetWStringMember("text", StringFormat<CStringW, CStringW>(L"[{0}] {1}", strName, strType));
             item.SetMemberUInt("id", field);
             item.FUN_1409c0dc0("icon", spRoom->m_groupType == 2 ? "dungeon_raid" : "dungeon");
             item.SetMemberUInt("iconData", spRoom->m_dungeonRoomID);
@@ -1320,7 +1320,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                         CStringW strLabel = FUN_14028dfa0<CStringW>(CStringW(L"s_worldmap_tooltip_shadowgate_field"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spGate->m_nMoveFieldId));
                         TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strLabel);
                         ASObj item(2);
-                        item.FUN_1407cbb20("text", strLabel);
+                        item.SetWStringMember("text", strLabel);
                         gates.PushObj(item);
                     }
                 }
@@ -1330,7 +1330,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                 if (spNpc->m_strIcon.GetLength() == 0 && spNpc->GetKind() == 0)
                     continue;
                 ASObj item(2);
-                item.FUN_1407cbb20("text", strName);
+                item.SetWStringMember("text", strName);
                 npcs.PushObj(item);
             }
             else if (spNpc->GetFriendly() == 0)
@@ -1351,7 +1351,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                         if (when.GetDay() != now.GetDay())
                             bSameDay = 0;
                         if (bSameDay == 0)
-                            strTime = FUN_140b8e910(when);
+                            strTime = FormatMonthDay(when);
                         else
                             strTime = FUN_140f48210(when.GetHour(), when.GetMinute());
                         CStringW strFormat = GetStringCommonByKey(L"s_spawnnpc_guarantee");
@@ -1359,7 +1359,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
                         strName += StringFormat<CStringW>(strFormat, strTime);
                     }
                 }
-                item.FUN_1407cbb20("text", strName);
+                item.SetWStringMember("text", strName);
                 switch (spNpc->m_nClass)
                 {
                 case 4: case 6: bosses.PushObj(item); break;
@@ -1379,15 +1379,15 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
         if (field == nConnected)
             continue;
         ASObj item(2);
-        item.FUN_1407cbb20("text", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nConnected));
+        item.SetWStringMember("text", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nConnected));
         indoors.PushObj(item);
     }
     CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, field), spData->m_nMapLevel);
     CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->GetSpotDescription(field);
     script->SetMemberUInt("fieldSN", field);
-    script->FUN_1407cbb20("title", strTitle);
-    script->FUN_1407cbb20("fishingSpot", strFishing);
-    script->FUN_1407cbb20("mapDesc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4b, field));
+    script->SetWStringMember("title", strTitle);
+    script->SetWStringMember("fishingSpot", strFishing);
+    script->SetWStringMember("mapDesc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x4b, field));
     script->FUN_140c16160("dungeon", dungeons);
     script->FUN_140c16160("monster", monsters);
     script->FUN_140c16160("bossMonster", bosses);
@@ -1395,7 +1395,7 @@ int WorldMapManager::BuildFieldDetails(unsigned field, ASObj* script)
     script->FUN_140c16160("shadowgate", gates);
     script->FUN_140c16160("indoor", indoors);
     script->FUN_140c16160("npc", npcs);
-    script->FUN_1407cbbe0("cashtaxi", !spData->FUN_140375130() && spData->FUN_1403753d0() != 0);
+    script->SetBoolMember("cashtaxi", !spData->IsIndoor() && spData->FUN_1403753d0() != 0);
     return 1;
 }
 
@@ -1412,19 +1412,19 @@ int WorldMapManager::BuildMissionSearch(unsigned field, ASObj* script)
     {
         int nQuestId = ids[i];
         ATL::CAtlArray<CStringW> lines;
-        FUN_1416e5890(nQuestId, lines);
+        GetQuestConditionTexts(nQuestId, lines);
         for (size_t j = 0; j < lines.GetCount(); j++)
         {
             ASObj item(2);
-            item.FUN_1407cbb20("text", lines[j]);
+            item.SetWStringMember("text", lines[j]);
             missions.PushObj(item);
         }
     }
     CStringW strTitle = FUN_14028dfa0<CStringW, unsigned int>(CStringW(L"s_worldmap_search_map_title"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, field), spData->m_nMapLevel);
     CStringW strFishing = TSingleton<CFishingManager>::GetInstance()->GetSpotDescription(field);
     script->SetMemberUInt("fieldSN", field);
-    script->FUN_1407cbb20("title", strTitle);
-    script->FUN_1407cbb20("fishingSpot", strFishing);
+    script->SetWStringMember("title", strTitle);
+    script->SetWStringMember("fishingSpot", strFishing);
     script->FUN_1409eb1d0("mission", missions);
     return 1;
 }
@@ -1466,7 +1466,7 @@ bool WorldMapTileLess(const MS2Ptr<UIWorldMap::MapTile>& a, const MS2Ptr<UIWorld
 // @0x141b9d650
 int WorldMapQuestTier(int nQuestId, const int& a, const int& b, const int& c, const int& d)
 {
-    MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spQuest = GetQuestData(nQuestId);
     return WorldMapQuestTier(spQuest, a, b, c, d);
 }
 
@@ -1602,7 +1602,7 @@ UIWorldMap::AddtionalInfo::IntPair::IntPair()
 
 // @0x141bb0380
 // MapTile::CopyFrom (the header declares no member): a member-wise copy of another tile.
-void FUN_141bb0380(UIWorldMap::MapTile* pThis, MS2Ptr<UIWorldMap::MapTile> spTile)
+void CopyMapTile(UIWorldMap::MapTile* pThis, MS2Ptr<UIWorldMap::MapTile> spTile)
 {
     *pThis = *spTile;
 }

@@ -40,11 +40,11 @@ class BaseOption : public CPtred
 {
 public:
     BaseOption();                                       // 0x140266c70
-    void FUN_140266cc0();                               // clear
+    void Clear();                               // clear
     bool HasValue() const;
-    void FUN_140266d20(Unk_EnchantWrite& rOut) const;
-    void FUN_140266d60(Unk_EnchantRead& rIn);
-    void FUN_140266da0(const BaseOption* pSource);      // copy
+    void Write(Unk_EnchantWrite& rOut) const;
+    void Read(Unk_EnchantRead& rIn);
+    void CopyFrom(const BaseOption* pSource);      // copy
     void FUN_140266dd0(const BaseOption* pSource);      // add
     float FUN_140266e10() const;
     int GetValue() const;
@@ -62,9 +62,9 @@ class InvokeEffectOption : public CPtred
 {
 public:
     InvokeEffectOption();                               // 0x140266f10
-    void FUN_140266f70();                               // clear
-    void FUN_140266fb0(Unk_EnchantWrite& rOut) const;
-    void FUN_140267020(Unk_EnchantRead& rIn);
+    void Clear();                               // clear
+    void Write(Unk_EnchantWrite& rOut) const;
+    void Read(Unk_EnchantRead& rIn);
 
     int m_nA;                                           // +0x18
     int m_nB;                                           // +0x1c
@@ -96,7 +96,7 @@ int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN
 void XmlSetAttr(class TiXmlElement*, char const*, const CStringA&);   // C3: was FUN_140874050
 // The exe passes a NiPoint3 built implicitly from the efd::Point3 member (0x14027dcf0): XmlSetAttr's NiPoint3 view.
 void XmlSetAttr(class TiXmlElement*, char const*, const efd::Point3&);   // C3: was FUN_140874ad0 (NiPoint3 view); callers cast it to a const NiPoint3& signature so the Point3 converts implicitly (lea of the temp, as in the exe)
-float FUN_14028aed0(float f);                           // round
+float Floor(float f);                           // round
 
 // @0x140266860
 QuestMask::QuestMask()
@@ -122,7 +122,7 @@ QuestMask& QuestMask::operator=(const QuestMask& rOther)
 
 // @0x140266970
 // MS2-FUNCTIONAL: CAtlArray<Unk_Z16i> operator[] / GetCount are the exe free functions FUN_14027f040 / FUN_1402815b0 owned by commonstruct_2
-int QuestMask::FUN_140266970() const
+int QuestMask::IsSatisfied() const
 {
     for (size_t i = 0; i < m_aRanges.GetCount(); i++)
     {
@@ -138,7 +138,7 @@ ItemCustom::ItemCustom() : unknown18(0.0f, 0.0f, 0.0f), unknown24(0.0f, 0.0f, 0.
 }
 
 // @0x140266aa0
-void ItemCustom::FUN_140266aa0(TiXmlElement* pElem)
+void ItemCustom::ReadXml(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "icon", name);
     XmlGetAttr((class TiXmlElement*)(pElem), "position", reinterpret_cast<efd::Point3&>(unknown18));
@@ -146,7 +146,7 @@ void ItemCustom::FUN_140266aa0(TiXmlElement* pElem)
 }
 
 // @0x140266b10
-void ItemCustom::FUN_140266b10(void* pElem) const
+void ItemCustom::WriteXml(void* pElem) const
 {
     if (name.GetLength() > 0)
         XmlSetAttr((class TiXmlElement*)(pElem), "icon", name);
@@ -178,7 +178,7 @@ BaseOption::BaseOption()
 }
 
 // @0x140266cc0
-void BaseOption::FUN_140266cc0()
+void BaseOption::Clear()
 {
     m_nValue = 0;
 }
@@ -190,19 +190,19 @@ bool BaseOption::HasValue() const
 }
 
 // @0x140266d20
-void BaseOption::FUN_140266d20(Unk_EnchantWrite& rOut) const
+void BaseOption::Write(Unk_EnchantWrite& rOut) const
 {
     rOut.vfunc_3(m_nValue);
 }
 
 // @0x140266d60
-void BaseOption::FUN_140266d60(Unk_EnchantRead& rIn)
+void BaseOption::Read(Unk_EnchantRead& rIn)
 {
     m_nValue = rIn.vfunc_3();
 }
 
 // @0x140266da0
-void BaseOption::FUN_140266da0(const BaseOption* pSource)
+void BaseOption::CopyFrom(const BaseOption* pSource)
 {
     if (pSource == 0)
         return;
@@ -232,7 +232,7 @@ int BaseOption::GetValue() const
 // @0x140266e50
 void BaseOption::FUN_140266e50(float fValue)
 {
-    m_nValue = (int)FUN_14028aed0(fValue * 1000.0f);
+    m_nValue = (int)Floor(fValue * 1000.0f);
 }
 
 // @0x140266e90
@@ -258,7 +258,7 @@ InvokeEffectOption::InvokeEffectOption()
 }
 
 // @0x140266f70
-void InvokeEffectOption::FUN_140266f70()
+void InvokeEffectOption::Clear()
 {
     m_fC = 0;
     m_nB = 0;
@@ -266,7 +266,7 @@ void InvokeEffectOption::FUN_140266f70()
 }
 
 // @0x140266fb0
-void InvokeEffectOption::FUN_140266fb0(Unk_EnchantWrite& rOut) const
+void InvokeEffectOption::Write(Unk_EnchantWrite& rOut) const
 {
     rOut.vfunc_3(m_nB);
     rOut.vfunc_5(m_fC);
@@ -274,7 +274,7 @@ void InvokeEffectOption::FUN_140266fb0(Unk_EnchantWrite& rOut) const
 }
 
 // @0x140267020
-void InvokeEffectOption::FUN_140267020(Unk_EnchantRead& rIn)
+void InvokeEffectOption::Read(Unk_EnchantRead& rIn)
 {
     m_nB = rIn.vfunc_3();
     m_fC = rIn.vfunc_5();

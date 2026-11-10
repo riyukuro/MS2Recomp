@@ -64,10 +64,10 @@ template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Va
 CStringW FUN_140298ea0(CStringW strKey);                        // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 CStringW FUN_1409404f0(__int64 nValue);                         // number with separators
-CStringW FUN_1416e5350(int nQuestId, int n);                    // quest title
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+CStringW GetQuestSummary(int nQuestId, int n);                    // quest title
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 void FUN_1412752d0(const CStringW& strText, int n);                    // notice
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -144,7 +144,7 @@ MS2Ptr<AScript> UIWeddingPage::GetScript() const
 }
 
 // @0x140fe7670
-UIWeddingDialog* UIWeddingPage::FUN_140fe7670() const
+UIWeddingDialog* UIWeddingPage::GetDialog() const
 {
     return m_28;
 }
@@ -193,7 +193,7 @@ bool UIWeddingPageMessage::vfunc_3(const char* szMethod, const Scaleform::GFx::V
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strMessage = data.FUN_1422b8f40();
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_wedding_dialog_couple_message_confirm")), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, FUN_140298ea0(CStringW(L"s_wedding_dialog_couple_message_confirm")), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIWeddingPageMessage::SendWedding));
@@ -244,26 +244,26 @@ bool UIWeddingPageSkill::vfunc_1()
         {
             MS2Ptr<WeddingSkillData> spPerk(it->second);
             ASObj obj(2);
-            obj.FUN_1407cb9c0("id", it->first);
+            obj.SetIntMember("id", it->first);
             obj.FUN_140fe95a0("type", spPerk->m_nType);
-            obj.FUN_1407cbb20("level", FUN_14028dfa0<int>(CStringW(L"s_wedding_dialog_wedding_grade"), spPerk->m_nRequireGrade));
-            obj.FUN_1407cbbe0("activate", nGrade >= spPerk->m_nRequireGrade);
+            obj.SetWStringMember("level", FUN_14028dfa0<int>(CStringW(L"s_wedding_dialog_wedding_grade"), spPerk->m_nRequireGrade));
+            obj.SetBoolMember("activate", nGrade >= spPerk->m_nRequireGrade);
             if (spPerk->m_nType == 0)
             {
                 unsigned short nSkillLevel = std::max<unsigned short>(spPerk->GetLevel(nGrade), 1);
                 MS2Ptr<AdditionalLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(spPerk->m_nAdditionalEffectId, nSkillLevel);
                 if (spSkill == 0)
                     continue;
-                obj.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141812290(spPerk->m_nAdditionalEffectId, nSkillLevel, CString("name")));
+                obj.SetWStringMember("name", TSingleton<CStringTable>::GetInstance()->FUN_141812290(spPerk->m_nAdditionalEffectId, nSkillLevel, CString("name")));
                 obj.SetMemberFloat("status", spPerk->GetValue(nGrade));
-                obj.FUN_1407cba60("imgPath", spSkill->GetIcon());
+                obj.SetStringMember("imgPath", spSkill->GetIcon());
             }
             else if (spPerk->m_nType == 1)
             {
                 MS2Ptr<CItemData> spItem = FUN_14053f870(static_cast<ItemAble&>(spPerk->m_item).vfunc_o18_0());
-                obj.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, static_cast<ItemAble&>(spPerk->m_item).vfunc_o18_0()));
-                obj.FUN_1407cb9c0("status", 0);
-                obj.FUN_1407cba60("imgPath", spItem->GetIconPath());
+                obj.SetWStringMember("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, static_cast<ItemAble&>(spPerk->m_item).vfunc_o18_0()));
+                obj.SetIntMember("status", 0);
+                obj.SetStringMember("imgPath", spItem->GetIconPath());
             }
             spList->AddItem(obj);
         }
@@ -355,8 +355,8 @@ bool UIWeddingPageMission::vfunc_1()
 {
     if (!UIWeddingPage::vfunc_1())
         return false;
-    FUN_140bfc4b0()->FUN_141aa87c0(static_cast<UIQuestEventListener*>(this));
-    FUN_140fe8fb0();
+    FUN_140bfc4b0()->AddListener(static_cast<UIQuestEventListener*>(this));
+    UpdateQuestList();
     return true;
 }
 
@@ -365,7 +365,7 @@ void UIWeddingPageMission::vfunc_2()
 {
     UIWeddingPage::vfunc_2();
     m_binder.FUN_140d43990();
-    FUN_140bfc4b0()->FUN_141aa8850(static_cast<UIQuestEventListener*>(this));
+    FUN_140bfc4b0()->RemoveListener(static_cast<UIQuestEventListener*>(this));
 }
 
 // @0x140fe8ad0
@@ -405,7 +405,7 @@ void UIWeddingPageMission::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         return;
     CStringW strName = pArgs->FUN_1422b8f40();
     int nQuestId = pArgs->PopUInt();
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (spData.IsNull())
         return;
     if (strName == "exp")
@@ -415,7 +415,7 @@ void UIWeddingPageMission::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         if (tip.ApplyTextTooltip(strTip) != 0)
         {
             tip.SetTooltipAlign(1);
-            *pRetVal = tip.FUN_1422bb870();
+            *pRetVal = tip.GetValue();
         }
     }
 }
@@ -423,7 +423,7 @@ void UIWeddingPageMission::vfunc_5(Scaleform::GFx::Value* pRetVal, ASData* pArgs
 // @0x140fe8e20 (the listener slot 12 thunk adjusts this by -0x30)
 void UIWeddingPageMission::vfunc_o178_12(void* pQuest)
 {
-    FUN_140fe8fb0();
+    UpdateQuestList();
 }
 
 // @0x140fe8e50
@@ -444,7 +444,7 @@ void UIWeddingPageMission::SendQuest(int nQuestId)
 }
 
 // @0x140fe8fb0
-void UIWeddingPageMission::FUN_140fe8fb0()
+void UIWeddingPageMission::UpdateQuestList()
 {
     if (MS2Ptr<ASScrollingList> spList = m_pScript.operator->()->FUN_140bc7280<ASScrollingList>("m_list"))
     {
@@ -456,18 +456,18 @@ void UIWeddingPageMission::FUN_140fe8fb0()
         {
             MS2Ptr<CQuest> spQuest(quests[i]);
             MS2Ptr<CQuestData> spData = spQuest->GetData();
-            CStringW strDesc = FUN_1416e5350(spQuest->FUN_140bfc580(), 0);
+            CStringW strDesc = GetQuestSummary(spQuest->GetQuestId(), 0);
             ASObj row(2);
-            row.SetMemberUInt("id", spQuest->FUN_140bfc580());
-            row.FUN_1407cbb20("desc", CStringW(strDesc));
-            row.FUN_1407cb9c0("satisfied", spQuest->IsComplete());
-            row.FUN_1407cb9c0("completed", spQuest->IsRewarded());
+            row.SetMemberUInt("id", spQuest->GetQuestId());
+            row.SetWStringMember("desc", CStringW(strDesc));
+            row.SetIntMember("satisfied", spQuest->IsComplete());
+            row.SetIntMember("completed", spQuest->IsRewarded());
             row.FUN_1409c1180("exp", spData->m_complete.m_weddingExp);
             const ATL::CAtlArray<CQuestData::QuestRewardItem>& rewards = spData->m_complete.m_choiceRewards;
             if (rewards.GetCount() > 0)
-                row.FUN_1407cba60("binding", m_binder.BindNewItem(rewards[0].m_itemId, rewards[0].m_count, rewards[0].m_job));
+                row.SetStringMember("binding", m_binder.BindNewItem(rewards[0].m_itemId, rewards[0].m_count, rewards[0].m_job));
             if (1 < rewards.GetCount())
-                row.FUN_1407cba60("binding2", m_binder.BindNewItem(rewards[1].m_itemId, rewards[1].m_count, rewards[1].m_job));
+                row.SetStringMember("binding2", m_binder.BindNewItem(rewards[1].m_itemId, rewards[1].m_count, rewards[1].m_job));
             spList->AddItem(row);
         }
         spList->vfunc_24(true);

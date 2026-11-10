@@ -11,7 +11,7 @@
 
 // ---- out-of-unit callees ----
 class CKeyTable { public: class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> GetActionKeyName(int, int); }; class Unk_BuildKeyTable : public CKeyTable {};
-class Unk_SoundSink* FUN_1409331f0();   // C3: the Unk_BuildKeyTable (calls cast back)
+class Unk_SoundSink* GetKeyTable();   // C3: the Unk_BuildKeyTable (calls cast back)
 
 // the slot list of ASGameEntity is not recovered: only slot 25 is called here
 class Unk_BuildBtnEntity : public ASGameEntity
@@ -69,7 +69,7 @@ void UIBuildBtnGuide::vfunc_8(int nVisible)
 }
 
 // @0x1418dcde0
-void UIBuildBtnGuide::FUN_1418dcde0(int nGuide)
+void UIBuildBtnGuide::ShowGuide(int nGuide)
 {
     if (FUN_141986d30() == 0 || ((MS2Ptr<AScript>*)&static_cast<class MS2Ptr<class AScript> const&>(m_30))->IsNull())
         return;
@@ -77,7 +77,7 @@ void UIBuildBtnGuide::FUN_1418dcde0(int nGuide)
     int nKey = vfunc_9();
     if (m_70 == nGuide)
         return;
-    m_30->Invoke("setKey", reinterpret_cast<Unk_BuildKeyTable*>(FUN_1409331f0())->GetActionKeyName(0x493ed, 0));
+    m_30->Invoke("setKey", reinterpret_cast<Unk_BuildKeyTable*>(GetKeyTable())->GetActionKeyName(0x493ed, 0));
     m_30->Invoke("showGuide", nGuide);
     m_70 = nGuide;
 }

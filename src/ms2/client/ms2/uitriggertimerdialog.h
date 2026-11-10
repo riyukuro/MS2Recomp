@@ -30,8 +30,8 @@ public:
     virtual int vfunc_65();                                         // 65 0x141b331d0
     virtual void vfunc_67();                                        // 67 0x141b33420 (stop the effect, close)
     virtual void vfunc_72();                                        // 72 0x141b33200 (push the time, low-time effect)
-    void FUN_141b334d0(int nOffsetY);                               // 0x141b334d0 set m_nOffsetY, re-place the root
-    void FUN_141b33510(int nAlign);                                 // 0x141b33510 set m_nAlign, re-place the root
+    void SetOffsetY(int nOffsetY);                               // 0x141b334d0 set m_nOffsetY, re-place the root
+    void SetAlign(int nAlign);                                 // 0x141b33510 set m_nAlign, re-place the root
 protected:
     MS2_LAYOUT_FRIEND;
     int m_nEffectRunning;           // +0x178 the low-time effect has been started

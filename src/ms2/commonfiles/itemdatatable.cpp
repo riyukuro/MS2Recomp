@@ -212,7 +212,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered helpers.
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Data/Xml/<dir>/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Data/Xml/<dir>/<file>
 CString GetItemPresetPath(const CString& strDir, const CString& strFile); // the item model path of a dir and file
 CString GetItemModelPath(unsigned nFile);                               // the item model file of a model file number
 CString FUN_14071ae20(const CString& strFile);                          // a string table file path
@@ -220,11 +220,11 @@ class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 unsigned FUN_14028c0d0(const char* psz);                                // a colour value of a "#rrggbb" style string
-Unk_ConstColor FUN_140718770(const CString& str);                       // a hex colour
+Unk_ConstColor ParseHexColor(const CString& str);                       // a hex colour
 int XmlQuery(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408736d0
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly);  // filesystem.cpp
-unsigned FUN_14053c690(unsigned nItemId);                               // the itemData file of an item id
+unsigned GetItemDataFileId(unsigned nItemId);                               // the itemData file of an item id
 
 // The client string tables (singleton at 0x143aac298): FUN_141811980(table, id) is the string of id in table.
 
@@ -436,7 +436,7 @@ float CItemDataTable::GetRevisionRatio(int nWeapon, int nIndex)
 void CItemDataTable::Load()
 {
     TiXmlDocument doc;
-    CString strPath = FUN_14071a5b0("Table", "ItemData.xml");
+    CString strPath = GetXmlPath("Table", "ItemData.xml");
     if (LoadXml(doc, strPath) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
@@ -460,9 +460,9 @@ void CItemDataTable::Load()
     LoadUnlimitedEnchant(pRoot);
     InitItemTags();
     LoadTagItemIds(pRoot);
-    FUN_1401d1160(strPath);
+    SetPath(strPath);
     LoadUiMaterialSound();
-    LoadColorPalette(FUN_14071a5b0("Table", "colorPalette.xml"));
+    LoadColorPalette(GetXmlPath("Table", "colorPalette.xml"));
     LoadMusicScore();
     LoadHousing();
     SetInit(true);
@@ -498,7 +498,7 @@ void CItemDataTable::LoadAllItemData()
 // @0x140557050
 void CItemDataTable::LoadBlackMarketSearchable()
 {
-    CString strPath = FUN_14071a5b0("Table", "blackMarketSearchableItemID.xml");
+    CString strPath = GetXmlPath("Table", "blackMarketSearchableItemID.xml");
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
@@ -642,7 +642,7 @@ bool CItemDataTable::FindItems(unsigned short nLevel, int nGender, int nJob, int
             continue;
         if (!pItem->IsLevelAllowed(nLevel))
             continue;
-        if (!pItem->GetModelOrEmpty()->FUN_14054b450(nType))
+        if (!pItem->GetModelOrEmpty()->HasGroupType(nType))
             continue;
         if (pItem->IsCashItem())
             continue;
@@ -709,7 +709,7 @@ CItemDataTable::ItemDataPtr CItemDataTable::GetItemData(int nItemId)
     ItemDataPtr spItem = FindItemData(nItemId);
     if (spItem.get() != 0)
         return spItem;
-    LoadItemDataFile(FUN_14053c690(nItemId));
+    LoadItemDataFile(GetItemDataFileId(nItemId));
     return FindItemData(nItemId);
 }
 
@@ -745,7 +745,7 @@ void CItemDataTable::LoadItemDataFile(unsigned nFile)
     Unk_CriticalSectionLock lock(m_cs, 1);
     if (m_setItemFile.find(nFile) != m_setItemFile.end())
         return;
-    CString strPath = FUN_14071a5b0("itemData", Unk_SocketFormat("{0:03d}.xml", nFile));
+    CString strPath = GetXmlPath("itemData", Unk_SocketFormat("{0:03d}.xml", nFile));
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
@@ -988,7 +988,7 @@ void CItemDataTable::LoadDropItemAsset(TiXmlElement* pRoot)
         for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pItem))->FirstChild("v")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("v")))
         {
             MS2Ptr<DropNifData> spNif(new DropNifData);
-            spNif->FUN_1405434f0(pNode);
+            spNif->Load(pNode);
             nifs.push_back(spNif);
         }
     }
@@ -1108,7 +1108,7 @@ void CItemDataTable::LoadUiMaterialSound()
 {
     Unk_CriticalSectionLock lock(m_cs, 1);
     m_mapUiMaterialSound.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "uiMaterialSound.xml");
+    CString strPath = GetXmlPath("Table", "uiMaterialSound.xml");
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
@@ -1160,22 +1160,22 @@ void CItemDataTable::LoadColorPalette(const CString& strPath)
             CString str;
             MS2Ptr<ItemColorEx> spColor(new ItemColorEx(nId));
             str = Unk_ReadString((class Unk_XmlNode*)(pColor), "ch0", CString(""));
-            spColor->m_aValues[0] = Unk_ColorValue(FUN_140718770(str));
+            spColor->m_aValues[0] = Unk_ColorValue(ParseHexColor(str));
             str = Unk_ReadString((class Unk_XmlNode*)(pColor), "ch1", CString(""));
-            spColor->m_aValues[1] = Unk_ColorValue(FUN_140718770(str));
+            spColor->m_aValues[1] = Unk_ColorValue(ParseHexColor(str));
             str = Unk_ReadString((class Unk_XmlNode*)(pColor), "ch2", CString(""));
-            spColor->m_aValues[2] = Unk_ColorValue(FUN_140718770(str));
+            spColor->m_aValues[2] = Unk_ColorValue(ParseHexColor(str));
             str = Unk_ReadString((class Unk_XmlNode*)(pColor), "palette", CString(""));
-            spColor->m_n38 = Unk_ColorValue(str.GetLength() > 0 ? FUN_140718770(str) : Unk_ConstColor(spColor->m_aValues[0]));
+            spColor->m_n38 = Unk_ColorValue(str.GetLength() > 0 ? ParseHexColor(str) : Unk_ConstColor(spColor->m_aValues[0]));
             XmlQuery((class TiXmlElement*)(pColor), "show2color", spColor->m_bFlag);
             XmlGetAttr((class TiXmlElement*)(pColor), "achieveID", reinterpret_cast<unsigned int&>(reinterpret_cast<unsigned&>(spColor->m_n24)));
             XmlGetAttr((class TiXmlElement*)(pColor), "achieveGrade", reinterpret_cast<int&>(spColor->m_n28));
             XmlGetAttr((class TiXmlElement*)(pColor), "stringKey", reinterpret_cast<unsigned int&>(reinterpret_cast<unsigned&>(spColor->m_n2c)));
             XmlGetAttr((class TiXmlElement*)(pColor), "colorSN", reinterpret_cast<int&>(spColor->m_nColor));
             str = Unk_ReadString((class Unk_XmlNode*)(pColor), "ch0_eye", CString(""));
-            spColor->m_n30 = Unk_ColorValue(FUN_140718770(str));
+            spColor->m_n30 = Unk_ColorValue(ParseHexColor(str));
             str = Unk_ReadString((class Unk_XmlNode*)(pColor), "ch2_eye", CString(""));
-            spColor->m_n34 = Unk_ColorValue(FUN_140718770(str));
+            spColor->m_n34 = Unk_ColorValue(ParseHexColor(str));
             spInfo->AddColor(spColor);
         }
         m_mapPalette.SetAt(nId, spInfo);
@@ -1187,7 +1187,7 @@ void CItemDataTable::LoadMusicScore()
 {
     Unk_CriticalSectionLock lock(m_cs, 1);
     m_mapMusicScore.clear();
-    CString strPath = FUN_14071a5b0("Table", "MusicScore.xml");
+    CString strPath = GetXmlPath("Table", "MusicScore.xml");
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
@@ -1212,7 +1212,7 @@ void CItemDataTable::LoadHousing()
 {
     Unk_CriticalSectionLock lock(m_cs, 1);
     m_mapHousing.clear();
-    CString strPath = FUN_14071a5b0("Table", "Housing.xml");
+    CString strPath = GetXmlPath("Table", "Housing.xml");
     TiXmlDocument doc;
     if (LoadXml(doc, strPath) == 0)
         return;
@@ -1556,7 +1556,7 @@ bool CItemDataTable::LoadModel(unsigned nPreset)
     }
     ModelPtr spModel(new ItemModelData);
     spModel->FUN_14054aee0(nPreset);
-    spModel->FUN_1401d1160(strPath);
+    spModel->SetPath(strPath);
     spModel->FUN_14054af00(pRoot);
     {
         Unk_CriticalSectionLock lock(m_csModel, 1);
@@ -1587,7 +1587,7 @@ bool CItemDataTable::LoadModelFile(unsigned nFile)
         unsigned nId = 0;
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<unsigned int&>(nId));
         spModel->FUN_14054aee0(nId);
-        spModel->FUN_1401d1160(strPath);
+        spModel->SetPath(strPath);
         spModel->FUN_14054af00(pNode);
         m_mapModel[nId] = spModel;
     }
@@ -1610,7 +1610,7 @@ static void FindFiles(CString strExt, CString strDir, std::vector<CString>& out)
 // @0x14055fe00
 static int LoadXml(TiXmlDocument& doc, const char* pszPath)
 {
-    return GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false);
+    return GetFileSystem()->LoadXmlFile(&doc, pszPath, 0, true, false);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9ae90-0x142c9aee0 .text$yd

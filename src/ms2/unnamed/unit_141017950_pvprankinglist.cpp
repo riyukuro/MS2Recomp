@@ -80,7 +80,7 @@ public:
 };
 
 template <class A> CStringW FormatStringId(int nId, const A& a);     // formatted message
-void FUN_1412751f0(const CStringW& strText, int nType, int nFlag);  // post a notice
+void ShowSystemNotice(const CStringW& strText, int nType, int nFlag);  // post a notice
 int FUN_141276180(const CString& strSound, const CString& strArg); // play a sound by name
 #include <atlcoll.h>   // 0x1402a9d70 = CAtlMap<unsigned, CStringA>::CAtlMap(nBins, fOptimal, fLo, fHi, nBlock) (conditionutil)
 void FUN_142cab370();                                               // the exe's atexit destructor of the marker
@@ -119,10 +119,10 @@ void FUN_142cab370() { reinterpret_cast<Unk_UIntStrMap*>(s_marker)->Unk_UIntStrM
 class Unk_PvpTimer
 {
 public:
-    void FUN_141017950(int nMessage, CInPacket& packet);            // OnMessage
-    void FUN_141017e80();                                           // clear
+    void OnMessage(int nMessage, CInPacket& packet);            // OnMessage
+    void Clear();                                           // clear
     int FUN_141017f40(__int64 nCharId);                             // the rank of a character
-    int FUN_141017f80();                                            // the row count
+    int GetRowCount();                                            // the row count
     Unk_PvpTimerItem* FUN_141017fb0(int nRank);                     // the row of a rank
     void FUN_141018010();                                           // sort the rows, rebuild the map
     void FUN_141018260(unsigned __int64 nCharId, int nScore, int nKill, int nDeath, unsigned n1c);   // add / update a row
@@ -140,7 +140,7 @@ UIPvPResultDialog* FUN_141018a80(int nClass);
 
 // MS2-FUNCTIONAL: behaviour-equivalent (frame layout / temp slots differ)
 // @0x141017950
-void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
+void Unk_PvpTimer::OnMessage(int nMessage, CInPacket& packet)
 {
     if (nMessage == 0x67)
     {
@@ -152,7 +152,7 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
         int nFrom = FUN_141017f40(nCharId);
         FUN_141018260(nCharId, nScore, nKill, nDeath, n1c);
         int nTo = FUN_141017f40(nCharId);
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e9a) != 0)
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e9a) != 0)
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e9a)));
         UIPvPRankingDialog* pRanking = FUN_1410189e0(0x4e9a);
         if (pRanking != 0)
@@ -170,18 +170,18 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
         if (pFirst != 0)
             FUN_141018260(pFirst->m_nCharId, pFirst->m_nScore, pFirst->m_nKill, pFirst->m_nDeath, pFirst->m_n1c);
         int nRank = packet.ReadInt32();
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e9b) != 0)
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e9b) != 0)
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e9b)));
         UIPvPResultDialog* pResult = FUN_141018a80(0x4e9b);
         if (pResult != 0)
-            pResult->FUN_141343da0(nRank);
+            pResult->SetLastResult(nRank);
     }
     else if (nMessage == 0x69)
     {
         int nStringId = packet.ReadInt32();
         CStringW strName = packet.ReadUnicodeString();
         CStringW strText = FormatStringId<CStringW>(nStringId, strName);
-        FUN_1412751f0(strText, 4, 1);
+        ShowSystemNotice(strText, 4, 1);
         FUN_141276180(s_killSlayer, "");
     }
     else if (nMessage == 0x6a)
@@ -201,7 +201,7 @@ void Unk_PvpTimer::FUN_141017950(int nMessage, CInPacket& packet)
 }
 
 // @0x141017e80
-void Unk_PvpTimer::FUN_141017e80()
+void Unk_PvpTimer::Clear()
 {
     for (size_t i = 0; i < m_items.size(); ++i)
     {
@@ -222,7 +222,7 @@ int Unk_PvpTimer::FUN_141017f40(__int64 nCharId)
 }
 
 // @0x141017f80
-int Unk_PvpTimer::FUN_141017f80()
+int Unk_PvpTimer::GetRowCount()
 {
     return (int)m_items.size();
 }

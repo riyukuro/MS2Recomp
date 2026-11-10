@@ -3,7 +3,7 @@
 //
 // UIPvPObserverDialog is the HUD of a spectator of a PvP match ("PvPObserverDialog", UI type 0x4e96): the two fighters
 // (name, job level, portrait, hp bar, win marks, status text), the countdown ("setTime") and the camera buttons
-// ("onObserveLeft" / "onObserveRight" / "onObserveCenter"). FUN_141a91940 feeds it a normal match, FUN_141a91a30 a duel
+// ("onObserveLeft" / "onObserveRight" / "onObserveCenter"). SetNormalMatchInfo feeds it a normal match, SetDuelMatchInfo a duel
 // match (rating instead of wins, a center camera). RTTI .?AVUIPvPObserverDialog@@, 0x1d8 bytes, vftables at +0 and
 // +0x18 (IMessageListener).
 // Names: virtuals are Ghidra's vfunc_<slot>; FUN_<va> are non-virtual members; fields are m_<offset> or invented.
@@ -75,11 +75,11 @@ public:
     virtual void vfunc_79(void* pData);                         // 79 0x141a91670
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141a91880
 
-    void FUN_141a91940(const Unk_PvPObsInfo& info);             // a normal match
-    void FUN_141a91a30(const Unk_PvPObsInfo& info);             // a duel match
+    void SetNormalMatchInfo(const Unk_PvPObsInfo& info);             // a normal match
+    void SetDuelMatchInfo(const Unk_PvPObsInfo& info);             // a duel match
     void FUN_141a91b40();                                       // send both fighters to the movie
-    void FUN_141a92b10(__int64 nCharId, __int64 nHp, __int64 nMaxHp);   // a fighter's hp bar
-    void FUN_141a92c80();                                       // "startClosingUI"
+    void SetFighterHp(__int64 nCharId, __int64 nHp, __int64 nMaxHp);   // a fighter's hp bar
+    void StartClosingUI();                                       // "startClosingUI"
     int FUN_141a92ce0();                                        // m_1c8
 
 private:

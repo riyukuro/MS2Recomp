@@ -26,9 +26,9 @@ public:
     virtual int vfunc_48() { return 0x4f04; }                   // 48 0x140f97f20
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x140f93ec0
 
-    void FUN_140f94390();                                       // the match state changed: register / unregister button
-    void FUN_140f94490();                                       // the own record changed: gauge, rating, grade mark
-    void FUN_140f94840();                                       // the records changed: the history rows
+    void UpdateRegisterButtons();                                       // the match state changed: register / unregister button
+    void UpdateOwnRecord();                                       // the own record changed: gauge, rating, grade mark
+    void UpdateHistoryRows();                                       // the records changed: the history rows
     void FUN_140f95090(const Scaleform::GFx::FunctionHandler::Params& params);   // a tab was clicked (user data = tab)
     void FUN_140f95220(const Scaleform::GFx::FunctionHandler::Params& params);   // the shop button was clicked
     void FUN_140f95260(const Scaleform::GFx::FunctionHandler::Params& params);   // the register button was clicked

@@ -41,7 +41,7 @@ class Unk_BuffContainer;
 class Unk_PCMove
 {
 public:
-    bool FUN_141682fe0(int nKey);
+    bool IsActionKeyDown(int nKey);
 };
 
 class Unk_LocalPlayer
@@ -80,8 +80,8 @@ struct Unk_ClientConfig
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
-// The scene camera (FUN_1413f9890()->GetActiveRenderSurface()->GetCamera()) and its frustum.
-ecr::RenderService* FUN_1413f9890();   // C3: the render service (was Unk_SceneRoot*)
+// The scene camera (GetRenderService()->GetActiveRenderSurface()->GetCamera()) and its frustum.
+ecr::RenderService* GetRenderService();   // C3: the render service (was Unk_SceneRoot*)
 
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: the physics service getter (real return type)
 // The collision world (0x143ab50b8).
@@ -310,22 +310,22 @@ MS2_REPLACE_METHOD(0x14183a560, CTargetCameraMode, vfunc_8, 3332, 0x40364A33);
 void CTargetCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(5, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(5, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1d, true, 0))
         ptMove.z = 1.0f;
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(6, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(6, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1d, true, 0))
         ptMove.z = -1.0f;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(7, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(7, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1d, true, 0))
         ptMove.y = -1.0f;
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(8, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(8, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1d, true, 0))
         ptMove.y = 1.0f;
     Unk_LocalPlayer* pPlayer = ((Unk_LocalPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    if (pPlayer && reinterpret_cast<Unk_PCMove*>(((PCBase*)pPlayer)->FUN_14166d240())->FUN_141682fe0(300008))
+    if (pPlayer && reinterpret_cast<Unk_PCMove*>(((PCBase*)pPlayer)->FUN_14166d240())->IsActionKeyDown(300008))
         ptMove.x = 1.0f;
-    else if (pPlayer && reinterpret_cast<Unk_PCMove*>(((PCBase*)pPlayer)->FUN_14166d240())->FUN_141682fe0(300009))
+    else if (pPlayer && reinterpret_cast<Unk_PCMove*>(((PCBase*)pPlayer)->FUN_14166d240())->IsActionKeyDown(300009))
         ptMove.x = -1.0f;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x14, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0x14, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1d, true, 0))
         vfunc_18(m_60 + 5.0f, m_64 + 5.0f);
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x15, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0x15, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1d, true, 0))
         vfunc_18(m_60 - 5.0f, m_64 - 5.0f);
     TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(ptMove);
 }
@@ -546,11 +546,11 @@ Vector3 CTargetCameraMode::FUN_14183c370()
 MS2_REPLACE_METHOD(0x14183c370, CTargetCameraMode, FUN_14183c370, 44, 0xE877299E);
 
 // @0x14183c3b0
-void CTargetCameraMode::FUN_14183c3b0(float f)
+void CTargetCameraMode::SetZoomVelocity(float f)
 {
     m_84 = f;
 }
-MS2_REPLACE_METHOD(0x14183c3b0, CTargetCameraMode, FUN_14183c3b0, 31, 0xE932FCE8);
+MS2_REPLACE_METHOD(0x14183c3b0, CTargetCameraMode, SetZoomVelocity, 31, 0xE932FCE8);
 
 // @0x14183c3e0
 bool CTargetCameraMode::FUN_14183c3e0(Vector3& ptPos, Vector3& ptRot)
@@ -575,12 +575,12 @@ bool CTargetCameraMode::FUN_14183c3e0(Vector3& ptPos, Vector3& ptRot)
 MS2_REPLACE(0x14183c3e0, CTargetCameraMode::FUN_14183c3e0, 444, 0x92C52C9E);
 
 // @0x14183c5b0
-Unk_CameraSetting CTargetCameraMode::FUN_14183c5b0(Unk_CameraSetting setting)
+Unk_CameraSetting CTargetCameraMode::GetCameraSetting(Unk_CameraSetting setting)
 {
     FUN_14183c3e0(setting.m_c, setting.m_18);
     return setting;
 }
-MS2_REPLACE(0x14183c5b0, CTargetCameraMode::FUN_14183c5b0, 65, 0x717B8B0C);
+MS2_REPLACE(0x14183c5b0, CTargetCameraMode::GetCameraSetting, 65, 0x717B8B0C);
 
 // @0x14183c600
 void CTargetCameraMode::FUN_14183c600(float f)
@@ -708,7 +708,7 @@ MS2_REPLACE_METHOD(0x14183ce10, CTargetCameraMode, FUN_14183ce10, 168, 0x8A69984
 // @0x14183cec0
 BOOL CTargetCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
 {
-    ecr::RenderSurface* pSceneCamera = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pSceneCamera = GetRenderService()->GetActiveRenderSurface();
     if (pSceneCamera)
     {
         NiCamera* pCamera = pSceneCamera->GetCamera();

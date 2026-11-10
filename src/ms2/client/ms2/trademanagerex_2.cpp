@@ -39,7 +39,7 @@ CStringW GetStringCommon(int id);                         // string table lookup
 
 // Registry of named bags/slots (GFx bind data).
 class TradeSlotBag;
-TradeSlotBag* FUN_14185edc0(NotifyContext::BindData* p);
+TradeSlotBag* GetTradeSlotBag(NotifyContext::BindData* p);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(TradeSlot);
 
@@ -62,8 +62,8 @@ int TradeSlot::vfunc_14()
 {
     if (IsMine())
     {
-        FUN_14185e370(m_spItem);
-        TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode9(FUN_14185e580(), GetIndex());
+        PlayItemSound(m_spItem);
+        TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode9(GetItemUid(), GetIndex());
     }
     return 1;
 }
@@ -122,7 +122,7 @@ int TradeSlot::vfunc_0(void* p)
         }
         if (IsEnabled() == 1)
             tip.SetEnablePreview(vfunc_25());
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -138,7 +138,7 @@ int TradeSlot::vfunc_8(void* p)
     {
         if (!IsMine())
             slot.DisableDrag();
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -148,7 +148,7 @@ int TradeSlot::vfunc_8(void* p)
 int TradeSlot::vfunc_20()
 {
     DragSlot::vfunc_20();
-    FUN_14185e370(m_spItem);
+    PlayItemSound(m_spItem);
     return 1;
 }
 
@@ -159,7 +159,7 @@ MS2Ptr<CItem> TradeSlot::vfunc_25()
 }
 
 // @0x14185e370
-void TradeSlot::FUN_14185e370(MS2Ptr<CItem> spItem)
+void TradeSlot::PlayItemSound(MS2Ptr<CItem> spItem)
 {
     if (spItem.get() ? true : false)
     {
@@ -177,15 +177,15 @@ void TradeSlot::SetItem(MS2Ptr<CItem> spItem)
 }
 
 // @0x14185e530
-int TradeSlot::FUN_14185e530()
+int TradeSlot::GetItemTemplateId()
 {
     if (m_spItem.get())
-        return m_spItem->FUN_1405276c0();
+        return m_spItem->GetItemId();
     return 0;
 }
 
 // @0x14185e580
-__int64 TradeSlot::FUN_14185e580()
+__int64 TradeSlot::GetItemUid()
 {
     if (m_spItem.get())
         return m_spItem->GetItemUid();
@@ -193,10 +193,10 @@ __int64 TradeSlot::FUN_14185e580()
 }
 
 // @0x14185e5d0
-void TradeSlot::FUN_14185e5d0()
+void TradeSlot::SendRemoveItem()
 {
     if (IsMine())
-        TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode9(FUN_14185e580(), GetIndex());
+        TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode9(GetItemUid(), GetIndex());
 }
 
 // @0x14185e630
@@ -212,25 +212,25 @@ CStringW TradeSlot::vfunc_22()
 }
 
 // @0x14185e850
-void FUN_14185e850(const CString& strName, int nCount, bool bMine)
+void CreateTradeSlotBag(const CString& strName, int nCount, bool bMine)
 {
     TradeSlotBag* pBag = new (efd::MemHint(efd::MemHint::PLATFORM_NONE)) TradeSlotBag(strName);
     if (pBag)
     {
         pBag->SetMine(bMine);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x14185e920
-void FUN_14185e920(const CString& strName)
+void DestroyTradeSlotBag(const CString& strName)
 {
-    TradeSlotBag* pBag = FUN_14185edc0(Unk_NotifyContext::FUN_1422c8e90(strName));
+    TradeSlotBag* pBag = GetTradeSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 

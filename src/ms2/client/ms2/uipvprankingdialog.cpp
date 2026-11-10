@@ -2,7 +2,7 @@
 // MS2-UNIT: ?\uipvprankingdialog.cpp
 // MS2-RANGE: 0x141342f10-0x1413439a0 .text$mn
 // MS2-PIN: ??_GUIPvPRankingDialog@@UEAAPEAXI@Z 0x1413437a0
-// MS2-PIN: ?FUN_141343860@Unk_PvPRankEntry@@QEAA_NXZ 0x141343860
+// MS2-PIN: ?HasRank@Unk_PvPRankEntry@@QEAA_NXZ 0x141343860
 //
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uipvprankingdialog.cpp"    // assumed
@@ -47,7 +47,7 @@ public:
 class Unk_PvPRankEntry
 {
 public:
-    bool FUN_141343860()                                            // 0x141343860 the player has a rank
+    bool HasRank()                                            // 0x141343860 the player has a rank
     {
         if (0 < m_nRank)
             return true;
@@ -68,7 +68,7 @@ class Unk_PvPRankService                                            // the game-
 {
 public:
     int FUN_1413437e0(__int64 nCharId) { return reinterpret_cast<Unk_PvpTimer*>(&m_table)->FUN_141017f40(nCharId); }          // 0x1413437e0
-    Unk_PvPRankEntry* FUN_141343810(int nRank) { return (Unk_PvPRankEntry*)reinterpret_cast<Unk_PvpTimer*>(&m_table)->FUN_141017fb0(nRank); }    // 0x141343810
+    Unk_PvPRankEntry* GetRankEntry(int nRank) { return (Unk_PvPRankEntry*)reinterpret_cast<Unk_PvpTimer*>(&m_table)->FUN_141017fb0(nRank); }    // 0x141343810
 private:
     void* m_pad_00;
     Unk_PvPRankTable m_table;
@@ -81,7 +81,7 @@ void FUN_14151f200();
 // @0x141342f10
 UIPvPRankingDialog::UIPvPRankingDialog()
 {
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
 }
 
 // @0x141342f80
@@ -136,13 +136,13 @@ bool UIPvPRankingDialog::FUN_1413430f0(ASObj* pObj, int nRank, Unk_PvPRankEntry*
         return false;
     {
         PCBase* pPC = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(pEntry->m_nCharId));
-        ((class AScript*)(pObj))->FUN_1407cb9c0("rank", nRank);
+        ((class AScript*)(pObj))->SetIntMember("rank", nRank);
         CStringW strRank(L"-");
-        if (pEntry->FUN_141343860())
+        if (pEntry->HasRank())
             strRank = StringFormat<int>(L"{0}", nRank);
-        ((class AScript*)(pObj))->FUN_1407cbb20("rankText", strRank);
-        ((class AScript*)(pObj))->FUN_1407cbb20("charName", pEntry->m_strName);
-        ((class AScript*)(pObj))->FUN_1407cb9c0("score", pEntry->m_nScore);
+        ((class AScript*)(pObj))->SetWStringMember("rankText", strRank);
+        ((class AScript*)(pObj))->SetWStringMember("charName", pEntry->m_strName);
+        ((class AScript*)(pObj))->SetIntMember("score", pEntry->m_nScore);
         if (pPC != 0)
             pObj->FUN_140bd0d90("job", reinterpret_cast<PC*>(pPC)->GetSubJob());
     }
@@ -158,20 +158,20 @@ void UIPvPRankingDialog::FUN_1413432b0()
     if (pPC == 0)
         return;
     for (int nRank = 1; nRank <= 3; nRank++) {
-        Unk_PvPRankEntry* pEntry = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nRank);
+        Unk_PvPRankEntry* pEntry = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->GetRankEntry(nRank);
         if (pEntry == 0)
             continue;
         ASObj obj(2);
         if (!FUN_1413430f0(&obj, nRank, pEntry))
             continue;
-        m_30->Invoke("updateMember", obj.FUN_1422bb870());
+        m_30->Invoke("updateMember", obj.GetValue());
     }
     int nMyRank = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_1413437e0(((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80());
-    Unk_PvPRankEntry* pEntry = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nMyRank);
+    Unk_PvPRankEntry* pEntry = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->GetRankEntry(nMyRank);
     if (pEntry != 0) {
         ASObj obj(2);
         if (FUN_1413430f0(&obj, nMyRank, pEntry) == true)
-            m_30->Invoke("updateMe", obj.FUN_1422bb870());
+            m_30->Invoke("updateMe", obj.GetValue());
     }
 }
 MS2_REPLACE_METHOD(0x1413432B0, UIPvPRankingDialog, FUN_1413432b0, 624, 0x8B14ECC9);
@@ -184,7 +184,7 @@ int UIPvPRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (FUN_1418fc760(szMethod, (void*)pArgs, nArgs, 0) != 0)
         return 1;
     if (_stricmp("OnShowResult", szMethod) == 0) {
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e9b) != 0)
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e9b) != 0)
             (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4e9b)));
         return 1;
     }

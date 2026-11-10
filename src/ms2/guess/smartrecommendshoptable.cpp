@@ -45,9 +45,9 @@ class Unk_RsLoader : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-Unk_140166430* FUN_140166430();
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
+Unk_140166430* GetItemOptionTable();
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
+CString ToCString(const char* pszName, int nFlags);                 // undecorated class name
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -63,7 +63,7 @@ bool CSmartRecommendShopTable::s_bInit;
 int CSmartRecommendShopTable::FUN_140815690()
 {
     m_spData.AssignRaw(new CRecommendTableCache);
-    CString strPath = FUN_14071a5b0("Table", "smartRecommendShop.xml");
+    CString strPath = GetXmlPath("Table", "smartRecommendShop.xml");
     m_bLoaded = 0;
     if (FUN_140815ac0(CString(strPath)) != 0)
         m_bLoaded = 1;
@@ -106,7 +106,7 @@ MS2Ptr<CRecommendItem> CSmartRecommendShopTable::FUN_140815890(int nCode)
     {
         if (FUN_1401d1320(m_spData.operator->()) != 0)
         {
-            if (FUN_140815ac0(CString(*m_spData->FUN_1401d1140())) == 0)
+            if (FUN_140815ac0(CString(*m_spData->GetPath())) == 0)
                 return MS2Ptr<CRecommendItem>(0);
         }
         MS2Ptr<CRecommendItem> spItem(0);
@@ -141,9 +141,9 @@ int CSmartRecommendShopTable::FUN_140815ac0(CString strPath)
     {
         m_spData->m_items.RemoveAll();
         TiXmlDocument doc;
-        if (reinterpret_cast<Unk_RsLoader*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        if (reinterpret_cast<Unk_RsLoader*>(GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
             return 0;
-        m_spData->FUN_1401d1160(CString(strPath));
+        m_spData->SetPath(CString(strPath));
         TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
         if (pRoot == 0)
         {
@@ -168,8 +168,8 @@ int CSmartRecommendShopTable::FUN_140815ac0(CString strPath)
             m_spData->m_items.SetAt(spItem->m_nCode, spItem);
             CString strCode;
             strCode.Format("code=%u", spItem->m_nCode);
-            reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f5e90(spItem->m_nItemId, spItem->m_nItemRank, CString("recommendItem smartRecommendShop.xml"), CString(strCode));
-            reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f5e90(spItem->m_nRequireItemId, spItem->m_nRequireItemRank, CString("requireItem smartRecommendShop.xml"), CString(strCode));
+            reinterpret_cast<CItemOptionTable*>(GetItemOptionTable())->FUN_1405f5e90(spItem->m_nItemId, spItem->m_nItemRank, CString("recommendItem smartRecommendShop.xml"), CString(strCode));
+            reinterpret_cast<CItemOptionTable*>(GetItemOptionTable())->FUN_1405f5e90(spItem->m_nRequireItemId, spItem->m_nRequireItemRank, CString("requireItem smartRecommendShop.xml"), CString(strCode));
         }
         return 1;
     }
@@ -195,7 +195,7 @@ void CSmartRecommendShopTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CSmartRecommendShopTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CSmartRecommendShopTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

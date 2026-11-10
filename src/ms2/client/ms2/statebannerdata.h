@@ -44,8 +44,8 @@ public:
     virtual void vfunc_8(double fTime);                // 8  @0x140b7f230 (empty)
     virtual void vfunc_9(double fTime);                // 9  @0x140b7f250
     virtual MS2Ptr<StateData> vfunc_27();              // 27 @0x140b7f610: a new StateBannerData
-    void FUN_140b7f320(int n);                         // @0x140b7f320 (enter / leave the banner anim)
-    int FUN_140b7f3b0();                               // @0x140b7f3b0: the payload's banner id, 0 without one
+    void PlayBannerAnimation(int n);                         // @0x140b7f320 (enter / leave the banner anim)
+    int GetBannerId();                               // @0x140b7f3b0: the payload's banner id, 0 without one
     MS2Ptr<StateBannerData> m_spBannerData;            // +0x40
 };
 MS2_CHECK_SIZE(StateBanner, 0x50);

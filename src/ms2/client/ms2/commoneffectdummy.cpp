@@ -12,9 +12,9 @@
 
 // Unrecovered helpers (same ones continentregiontable.cpp uses).
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 class Unk_140166420 : public CFileSystem { };
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // 0x1403a1280 for T = const char*
 
@@ -30,7 +30,7 @@ CommonEffectDummy::CommonEffectDummy()
 // @0x140a400d0
 bool CommonEffectDummy::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "defaultEffectDummy.xml");
+    CString strPath = GetXmlPath("Table", "defaultEffectDummy.xml");
     bool ok = LoadFile(strPath);
     SetInit(true);
     return ok;
@@ -60,7 +60,7 @@ bool CommonEffectDummy::Get(unsigned int idx, void* pOut)
 bool CommonEffectDummy::LoadFile(const char* path)
 {
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, path, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, path, 0, true, false) == 0)
         return false;
     Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
@@ -79,7 +79,7 @@ void CommonEffectDummy::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CommonEffectDummy).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CommonEffectDummy).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

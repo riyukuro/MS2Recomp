@@ -37,7 +37,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
 CString FUN_140188f50(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
@@ -87,7 +87,7 @@ CObjectData::~CObjectData()
 }
 
 // @0x140704ec0
-CObjectDataPtr FUN_140704ec0(unsigned nId)
+CObjectDataPtr GetObjectData(unsigned nId)
 {
     CObjectDataPtr spData(0);
     if (Unk_LockGuard guard = s_lock) {} else
@@ -99,10 +99,10 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
     spData->m_nId = nId;
     CString strFile;
     strFile.Format("%08d.xml", nId);
-    CString strPath = FUN_14071a5b0("Object", strFile);
+    CString strPath = GetXmlPath("Object", strFile);
     TiXmlDocument doc;
-    spData->FUN_1401d1160(strPath);
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    spData->SetPath(strPath);
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return CObjectDataPtr(0);
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -391,12 +391,12 @@ CObjectDataPtr FUN_140704ec0(unsigned nId)
 }
 
 // @0x1407071e0
-int FUN_1407071e0(int nId)
+int HasFunctionCube(int nId)
 {
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0 && spData->m_cube.m_bEnabled != 0)
             return 1;
     }
@@ -409,7 +409,7 @@ int FUN_140707260(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0 && spData->m_cube.m_bUseKfm != 0)
             return 1;
     }
@@ -422,7 +422,7 @@ int FUN_1407072e0(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -440,7 +440,7 @@ int FUN_1407073a0(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -458,7 +458,7 @@ int FUN_140707460(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0 && spData->m_cube.m_bEnabled != 0 && spData->m_cube.m_nControlType == 5)
             return 1;
     }
@@ -471,7 +471,7 @@ int FUN_1407074f0(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -489,7 +489,7 @@ int FUN_1407075a0(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -507,7 +507,7 @@ int FUN_140707660(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -520,12 +520,12 @@ int FUN_140707660(int nId)
 }
 
 // @0x140707710
-int FUN_140707710(int nId)
+int IsTriggerControlEnabled(int nId)
 {
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -538,12 +538,12 @@ int FUN_140707710(int nId)
 }
 
 // @0x1407077c0
-int FUN_1407077c0(int nId)
+int HasStateChangePermission(int nId)
 {
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -561,7 +561,7 @@ int FUN_140707870(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -579,7 +579,7 @@ int FUN_140707920(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -597,7 +597,7 @@ int FUN_140707a00(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -616,7 +616,7 @@ int FUN_140707ac0(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0 && spData->m_cube.m_nControlType == 6)
             return 1;
     }
@@ -629,7 +629,7 @@ int FUN_140707b40(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0 && spData->m_cube.m_nControlType == 0xc)
             return 1;
     }
@@ -642,7 +642,7 @@ int FUN_140707bc0(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_config.m_bEnabled == 0)
@@ -659,7 +659,7 @@ int FUN_140707c60(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -677,7 +677,7 @@ int FUN_140707d10(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -695,7 +695,7 @@ int FUN_140707dc0(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -713,7 +713,7 @@ int FUN_140707e70(int nId)
     if (nId == 0)
         return 0;
     {
-        CObjectDataPtr spData = FUN_140704ec0(nId);
+        CObjectDataPtr spData = GetObjectData(nId);
         if (spData != 0)
         {
             if (spData->m_cube.m_bEnabled == 0)
@@ -821,8 +821,8 @@ CObjectData::Spawner::Spawner()
 
 // ---- hooks ----
 MS2_REPLACE_METHOD(0x140704BD0, CObjectData::Nurturing, operator=, 527, 0x51C01FF1);
-MS2_REPLACE(0x140704EC0, FUN_140704ec0, 8980, 0x4441568F);
-MS2_REPLACE(0x1407071E0, FUN_1407071e0, 115, 0x9A2DF719);
+MS2_REPLACE(0x140704EC0, GetObjectData, 8980, 0x4441568F);
+MS2_REPLACE(0x1407071E0, HasFunctionCube, 115, 0x9A2DF719);
 MS2_REPLACE(0x140707260, FUN_140707260, 115, 0x18689035);
 MS2_REPLACE(0x1407072E0, FUN_1407072e0, 174, 0xC0FE9B3C);
 MS2_REPLACE(0x1407073A0, FUN_1407073a0, 174, 0xA4CD1EF6);
@@ -830,8 +830,8 @@ MS2_REPLACE(0x140707460, FUN_140707460, 131, 0x415FBB0C);
 MS2_REPLACE(0x1407074F0, FUN_1407074f0, 155, 0x6BAC4142);
 MS2_REPLACE(0x1407075A0, FUN_1407075a0, 174, 0x4ECF54E2);
 MS2_REPLACE(0x140707660, FUN_140707660, 155, 0xCE468427);
-MS2_REPLACE(0x140707710, FUN_140707710, 155, 0xAB229F07);
-MS2_REPLACE(0x1407077C0, FUN_1407077c0, 155, 0x4B81F463);
+MS2_REPLACE(0x140707710, IsTriggerControlEnabled, 155, 0xAB229F07);
+MS2_REPLACE(0x1407077C0, HasStateChangePermission, 155, 0x4B81F463);
 MS2_REPLACE(0x140707870, FUN_140707870, 155, 0xC4B3D53C);
 MS2_REPLACE(0x140707920, FUN_140707920, 210, 0x4FDA165B);
 MS2_REPLACE(0x140707A00, FUN_140707a00, 182, 0x503F0140);

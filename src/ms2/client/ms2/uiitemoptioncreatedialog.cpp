@@ -84,7 +84,7 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 template <> MS2Ptr<ASDropdownMenu> UISwfEntity::GetChild<ASDropdownMenu>(const CString& strName);   // 0x140c28560, owned by uiinventorydialog
 
 MS2Ptr<CItemData> FUN_14053f870(int);          // the item row (NULL: no such item)
-class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
+class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
 int FUN_1405451c0(CStringA&);                 // the item group index of a group name
 const CString& GetStatName(unsigned nStat);                 // the xml name of a stat (stat.cpp)
 CStringW GetStatCommonText(unsigned nStat);                 // GetStatCommonText (stat.cpp)
@@ -126,11 +126,11 @@ int UIItemOptionCreateDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class Unk_OcInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0) {
+    if (((class Unk_OcInputState*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0) != 0) {
         if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_searchInput"))
-            FUN_1412d3c10("", input->GetText());
+            UpdateItemList("", input->GetText());
         return 1;
-    } else if (((class Unk_OcInputState*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0) != 0) {
+    } else if (((class Unk_OcInputState*)FUN_14025e7c0())->WasKeyPressed(0xf, 0, 0) != 0) {
         if (m_30.get() != 0)
             m_30->Invoke("onTabKey");
         return 1;
@@ -147,8 +147,8 @@ int UIItemOptionCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             m_nItemId = data.PopUInt();
             m_nRank = data.PopUInt();
-            FUN_1412d33b0();
-            FUN_1412d3740();
+            UpdateRankCombo();
+            UpdateRandomOptionTable();
             FUN_1412d3a60();
         }
         return 1;
@@ -156,13 +156,13 @@ int UIItemOptionCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             data.PopUInt();
             m_nRank = data.PopUInt();
-            FUN_1412d3740();
+            UpdateRandomOptionTable();
             FUN_1412d3a60();
         }
         return 1;
     } else if (_stricmp("OnGroupChange", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
-            FUN_1412d3c10(data.FUN_1422b8d30(), L"");
+            UpdateItemList(data.FUN_1422b8d30(), L"");
         }
         return 1;
     } else if (_stricmp("OnCreateItem", szMethod) == 0) {
@@ -177,7 +177,7 @@ int UIItemOptionCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         return 1;
     } else if (_stricmp("OnSearchItem", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
-            FUN_1412d3c10("", data.FUN_1422b8f40());
+            UpdateItemList("", data.FUN_1422b8f40());
         }
         return 1;
     } else if (_stricmp("OnOptionInit", szMethod) == 0) {
@@ -240,7 +240,7 @@ void UIItemOptionCreateDialog::FUN_1412d2e50(unsigned nItemId, unsigned nCount, 
 
 // Fill the rank combo with the ranks of the picked item.
 // @0x1412d33b0
-void UIItemOptionCreateDialog::FUN_1412d33b0()
+void UIItemOptionCreateDialog::UpdateRankCombo()
 {
     if (MS2Ptr<ASDropdownMenu> combo = GetChild<ASDropdownMenu>("m_itemGrade")) {
         combo->ClearItems();
@@ -250,7 +250,7 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
         int nSelected = 0;
         if (item->GetRank() != 0) {
             ASObj row(2);
-            row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(item->GetRank()));
+            row.SetWStringMember("label", TSingleton<CStringTable>::GetInstance()->GetRankName(item->GetRank()));
             row.FUN_1409adc90("itemRank", item->GetRank());
             combo->AddItemRow(row);
             nSelected = 0;
@@ -259,8 +259,8 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
             for (int nRank = 1; nRank < 7; ++nRank) {
                 int nItemRank = nRank;
                 ASObj row(2);
-                row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->GetRankName(nItemRank));
-                row.FUN_1407cb9c0("itemRank", nRank);
+                row.SetWStringMember("label", TSingleton<CStringTable>::GetInstance()->GetRankName(nItemRank));
+                row.SetIntMember("itemRank", nRank);
                 if (nItemRank == m_nRank)
                     nSelected = combo->GetItemCount();
                 combo->AddItemRow(row);
@@ -280,12 +280,12 @@ void UIItemOptionCreateDialog::FUN_1412d33b0()
 
 // The unit's two row builders and the AS member setters used by the callbacks below.
 // @0x1412d4400
-static void FUN_1412d4400(ASObj& obj, int nStat)
+static void SetStatOption(ASObj& obj, int nStat)
 {
     if (nStat == 0x1b || nStat == 0x1c) {
-        obj.FUN_1407cba60("label", GetStatName(nStat));
+        obj.SetStringMember("label", GetStatName(nStat));
     } else {
-        obj.FUN_1407cbb20("label", GetStatCommonText(nStat));
+        obj.SetWStringMember("label", GetStatCommonText(nStat));
     }
     obj.FUN_1409c0dc0("type", "stat");
     obj.FUN_1412d49a0("index", nStat);
@@ -294,14 +294,14 @@ static void FUN_1412d4400(ASObj& obj, int nStat)
 // @0x1412d44d0
 static void FUN_1412d44d0(ASObj& obj, int nSpecial)
 {
-    obj.FUN_1407cbb20("label", FUN_140630e10(nSpecial));
+    obj.SetWStringMember("label", FUN_140630e10(nSpecial));
     obj.FUN_1409c0dc0("type", "specialAbility");
     obj.FUN_1412d4900("index", nSpecial);
 }
 
 // Fill the random option table of the picked item / rank.
 // @0x1412d3740
-void UIItemOptionCreateDialog::FUN_1412d3740()
+void UIItemOptionCreateDialog::UpdateRandomOptionTable()
 {
     MS2Ptr<CItemData> item = FUN_14053f870(m_nItemId);
     if (item == 0)
@@ -314,10 +314,10 @@ void UIItemOptionCreateDialog::FUN_1412d3740()
         MS2Ptr<ASUIComponent> table = sheet->FUN_140accfb0<ASUIComponent>("m_tableRandom");
         if (table == 0)
             break;
-        MS2Ptr<ItemOptionRandom> random = ((class CItemOptionTable*)FUN_140166430())->GetRandom(item->FUN_14053eff0(m_nRank));
+        MS2Ptr<ItemOptionRandom> random = ((class CItemOptionTable*)GetItemOptionTable())->GetRandom(item->FUN_14053eff0(m_nRank));
         if (random == 0)
             break;
-        int nRows = random->FUN_1405d5fe0(m_nRank);
+        int nRows = random->GetPickCount(m_nRank);
         table->Invoke("initTable", nRows, nRows, "Random", 2);
         if (nRows == 0)
             break;
@@ -325,20 +325,20 @@ void UIItemOptionCreateDialog::FUN_1412d3740()
             ASObj column(2);
             ASObj label(2);
             if (pValue->FUN_1405d2790() == 0) {
-                FUN_1412d4400(label, pValue->GetStat());
-                std::pair<int, int> range = ((class CItemOptionTable*)FUN_140166430())->GetRandomOptionRange(m_nItemId, m_nRank, pValue->GetStat());
-                column.FUN_1407cb9c0("minV", range.first);
-                column.FUN_1407cb9c0("maxV", range.second);
-                column.FUN_1407cb9c0("value", range.second);
+                SetStatOption(label, pValue->GetStat());
+                std::pair<int, int> range = ((class CItemOptionTable*)GetItemOptionTable())->GetRandomOptionRange(m_nItemId, m_nRank, pValue->GetStat());
+                column.SetIntMember("minV", range.first);
+                column.SetIntMember("maxV", range.second);
+                column.SetIntMember("value", range.second);
             } else if (pValue->FUN_1405d2790() == 1) {
                 FUN_1412d44d0(label, pValue->GetSpecial());
-                std::pair<int, int> range = ((class CItemOptionTable*)FUN_140166430())->GetRandomSpecialOptionRange(m_nItemId, m_nRank, pValue->GetSpecial());
-                column.FUN_1407cb9c0("minV", range.first);
-                column.FUN_1407cb9c0("maxV", range.second);
-                column.FUN_1407cb9c0("value", range.second);
+                std::pair<int, int> range = ((class CItemOptionTable*)GetItemOptionTable())->GetRandomSpecialOptionRange(m_nItemId, m_nRank, pValue->GetSpecial());
+                column.SetIntMember("minV", range.first);
+                column.SetIntMember("maxV", range.second);
+                column.SetIntMember("value", range.second);
             }
-            column.FUN_1409adbe0("optionName", label.FUN_1422bb870());
-            table->Invoke("createOptionColumn", column.FUN_1422bb870());
+            column.FUN_1409adbe0("optionName", label.GetValue());
+            table->Invoke("createOptionColumn", column.GetValue());
         });
     } while (0);
 }
@@ -353,30 +353,30 @@ void UIItemOptionCreateDialog::FUN_1412d3a60()
     MS2Ptr<ASUIComponent> result = GetChild<ASUIComponent>("m_optionResult");
     if (result == 0)
         return;
-    MS2Ptr<ItemOptionConstant> constant = ((class CItemOptionTable*)FUN_140166430())->FindConstantOption(item->FUN_14053efd0(), m_nRank);
+    MS2Ptr<ItemOptionConstant> constant = ((class CItemOptionTable*)GetItemOptionTable())->FindConstantOption(item->GetConstantId(), m_nRank);
     if (constant.get() != 0) {
-        constant->FUN_1405d33e0([this, &result](ItemOptionValue* pValue) {
+        constant->ForEachValue([this, &result](ItemOptionValue* pValue) {
             ASObj row(2);
             row.FUN_1412d4860("kinds", 0);
             if (pValue->FUN_1405ce470() == 0) {
-                FUN_1412d4400(row, pValue->GetStat());
+                SetStatOption(row, pValue->GetStat());
             } else if (pValue->FUN_1405ce470() == 1) {
                 FUN_1412d44d0(row, pValue->GetSpecial());
             }
             int nValue = pValue->vfunc_1(m_nItemId, m_nRank);
             if (nValue == 0)
                 return;
-            row.FUN_1407cb9c0("value", nValue);
-            result->Invoke("appendOption", row.FUN_1422bb870());
+            row.SetIntMember("value", nValue);
+            result->Invoke("appendOption", row.GetValue());
         });
     }
 }
 
 // Fill the item list with the items of the group / search text.
 // @0x1412d3c10
-void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStringW& strSearch)
+void UIItemOptionCreateDialog::UpdateItemList(const CString& strGroup, const CStringW& strSearch)
 {
-    MS2Ptr<ASScrollingList> list = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> list = reinterpret_cast<UIDailyMissionDialog*>(this)->GetScrollingList("m_items");
     if (!list)
         return;
     list->FUN_1422dd1d0();
@@ -399,7 +399,7 @@ void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStr
             strLabel.Format(strFormat, nId, L"GAME", nLevel, (LPCWSTR)TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nId));
         }
         ASObj row(2);
-        row.FUN_1407cbb20("label", strLabel);
+        row.SetWStringMember("label", strLabel);
         row.SetMemberUInt("itemId", nId);
         if (strSearch.IsEmpty()) {
             if (strGroup == "RHLH") {
@@ -421,11 +421,11 @@ void UIItemOptionCreateDialog::FUN_1412d3c10(const CString& strGroup, const CStr
                 if (item->FUN_14053cb40())
                     list->AddItem(row);
             } else if (strGroup == "INSTALL") {
-                if (item->FUN_14053cb80())
+                if (item->IsInstallItem())
                     list->AddItem(row);
             } else {
-                if (item->GetModelOrEmpty()->FUN_14054b3d0() < 2) {
-                    if (item->GetModelOrEmpty()->FUN_14054b450(FUN_1405451c0(const_cast<CStringA&>(strGroup))))
+                if (item->GetModelOrEmpty()->GetGroupCount() < 2) {
+                    if (item->GetModelOrEmpty()->HasGroupType(FUN_1405451c0(const_cast<CStringA&>(strGroup))))
                         list->AddItem(row);
                 }
             }

@@ -38,10 +38,10 @@ public:
     virtual void vfunc_oa0_30(int a1);                                                              // 0x140ba5950
     virtual void vfunc_oa0_31(void* a1);                                                            // 0x140ba59f0
 
-    void FUN_140ba5a70();                                                                           // level guide when the movie is up
-    void FUN_140ba5ab0();                                                                           // fill the level guide
+    void RefreshLevelGuide();                                                                           // level guide when the movie is up
+    void FillLevelGuide();                                                                           // fill the level guide
     void FUN_140ba5c30();                                                                           // level + experience gauge
-    void FUN_140ba5d20();                                                                           // fill the ability list
+    void FillAbilityList();                                                                           // fill the ability list
     int FUN_140ba61b0(ASObj& obj, unsigned int nLevel);                                             // level row: state, level text
     int FUN_140ba63d0(ASObj& obj, unsigned int nLevel);                                             // level row: item reward
     int FUN_140ba66a0(ASObj& obj, unsigned int nLevel);                                             // level row: stat reward

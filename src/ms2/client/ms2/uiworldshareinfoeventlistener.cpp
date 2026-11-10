@@ -46,7 +46,7 @@ class PC   // C3: member view for the former free stand-ins
 public:
     unsigned char FUN_141658fa0();
 };
-void* FUN_1401c0d90();
+void* GetGameRule();
 int FUN_140475e80(int nType);
 class CGameRule   // C3: member view for the former free stand-ins
 {
@@ -64,7 +64,7 @@ void FUN_1412751b0(const CStringW& strText, int nColor);                    // a
 UIRewardNotify* FindRewardNotify(int nId);
 bool FUN_1406a5720();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
+class CFeatureManager { public: bool IsFeatureEnabled(int nFeature); };   // C3: unit-local view
 
 // @0x14135fc40
 UIWorldShareInfoEventListener::UIWorldShareInfoEventListener()
@@ -88,7 +88,7 @@ UIWorldShareInfoEventDispatcher::~UIWorldShareInfoEventDispatcher()
 }
 
 // @0x14135fd20
-void UIWorldShareInfoEventDispatcher::FUN_14135fd20(UIWorldShareInfoEventListener* pListener)
+void UIWorldShareInfoEventDispatcher::AddListener(UIWorldShareInfoEventListener* pListener)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); i++)
     {
@@ -99,7 +99,7 @@ void UIWorldShareInfoEventDispatcher::FUN_14135fd20(UIWorldShareInfoEventListene
 }
 
 // @0x14135fdb0
-void UIWorldShareInfoEventDispatcher::FUN_14135fdb0(UIWorldShareInfoEventListener* pListener)
+void UIWorldShareInfoEventDispatcher::RemoveListener(UIWorldShareInfoEventListener* pListener)
 {
     for (size_t i = 0; i < m_listeners.GetCount(); i++)
     {
@@ -184,7 +184,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
     }
     if (bAdditional)
         strA += FUN_140298ea0(L"s_msg_take_event_additional");
-    FUN_1401c0d90();
+    GetGameRule();
     if (FUN_140475e80(nType) != 0)
     {
         PCBase* pPC = ((class PCBase*)((class WorldService*)(struct Unk_WsWorld*)(reinterpret_cast<Unk_WsWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -207,7 +207,7 @@ void FUN_1413606c0(__int64 nAmount, int nType, int nRest, bool bAdditional)
 void FUN_1413610f0(__int64 nAmount)
 {
     CStringW strText = FUN_14028dfa0<CStringW>(L"s_msg_take_adventure_level_exp", FUN_1409404f0(nAmount));
-    if (((class CGameRule*)(void*)(FUN_1401c0d90()))->GetAdventureLevelBonusExpRate() != 0)
+    if (((class CGameRule*)(void*)(GetGameRule()))->GetAdventureLevelBonusExpRate() != 0)
         strText += FUN_140298ea0(L"s_msg_take_event_additional");
     FUN_1412751b0(strText, 8);
 }
@@ -302,7 +302,7 @@ void FUN_141361990(__int64 nAmount, int nUnused)
     {
         CStringW strNum = FUN_1409404f0(-nAmount);
         strText = FormatStringId<CStringW>(0x2da, strNum);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xba) != 0)
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xba) != 0)
             FUN_1412751b0(BlockFormat(0x2db), 6);
     }
     FUN_1412751b0(strText, 6);

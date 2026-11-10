@@ -21,7 +21,7 @@ public:
     virtual int vfunc_48() { return 0x4e91; }                                  // 48 0x140e29e20
     virtual void vfunc_67();                                    // 67 0x140e29360
 
-    void FUN_140e29860(const Scaleform::GFx::FunctionHandler::Params& params);   // a button was clicked
+    void OnTypeButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);   // a button was clicked
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -47,7 +47,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_140873
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 CStringA FUN_140188f50(char const*, int);                              // node text
 namespace efd { class Point3; } typedef efd::Point3 Vector3;
-void FUN_141b6ed40(CStringA const&, Vector3*);                          // parse "x,y,z"
+void ParseVector3(CStringA const&, Vector3*);                          // parse "x,y,z"
 void FUN_14028d1a0(const CString&, int*);                                // parse int
 void FUN_14028c2d0(CStringA, efd::Point3*);
 unsigned FUN_14028c0d0(const char*);                                     // parse colour
@@ -266,7 +266,7 @@ bool CFieldDataCli::vfunc_1(TiXmlElement* node)
         XmlGetAttr((class TiXmlElement*)(pCamera), "useFileSetting", m_bUseFileSetting);
         TiXmlElement* t = (TiXmlElement*)((class TiXmlElement*)(class TiXmlElement*)(pCamera))->Attribute("dummyTargetPos");
         if (t) {
-            FUN_141b6ed40(FUN_140188f50(reinterpret_cast<char const *>(t), 0), reinterpret_cast<Vector3 *>(&m_vecDummyTargetPos));
+            ParseVector3(FUN_140188f50(reinterpret_cast<char const *>(t), 0), reinterpret_cast<Vector3 *>(&m_vecDummyTargetPos));
         }
         TiXmlElement* t2 = (TiXmlElement*)((class TiXmlElement*)(class TiXmlElement*)(pCamera))->Attribute("usedummytarget");
         if (t2) {
@@ -392,7 +392,7 @@ bool CFieldDataCli::LoadXBlock()
     CString strPath;
     strPath.Format("./Data/Xml/MapXblock/%s.xml", (const char*)m_strXBlock);
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* root = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (root == 0)

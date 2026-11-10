@@ -53,8 +53,8 @@ MS2_CHECK_SIZE(Unk_PvPGuildScore, 0x10);
 // The round state ('s' of packet 0x9a). Copy assignment 0x14133ec00, dtor 0x14133ebe0.
 struct Unk_PvPGuildRoundInfo
 {
-    Unk_PvPGuildRoundInfo() { FUN_14133f100(); }                    // 0x14133ea80
-    void FUN_14133f100()                                            // 0x14133f100 reset
+    Unk_PvPGuildRoundInfo() { Reset(); }                    // 0x14133ea80
+    void Reset()                                            // 0x14133f100 reset
     {
         m_nRound = 0;
         m_nEndTime = 0;
@@ -96,17 +96,17 @@ public:
 
     void FUN_14133a210(CInPacket* pPacket);                         // read the two guilds
     void FUN_14133a4a0(const Unk_PvPGuildTeamInfo& info);           // show the guild names and marks (own guild left)
-    void FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info);          // show a round (kept for OnLoadComplete if not loaded)
+    void ShowRound(const Unk_PvPGuildRoundInfo& info);          // show a round (kept for OnLoadComplete if not loaded)
     void FUN_14133afb0(unsigned __int64 nCharId, __int64 nHp, __int64 nMaxHp); // a player's hp bar
-    void FUN_14133b0b0();                                           // forget the observed player
-    void FUN_14133b0f0(__int64 nGuildId, const CStringW& strMark);  // a guild's mark
-    bool FUN_14133b830(CStringW strGuildName);                      // the name is the own guild's
-    bool FUN_14133b8c0(__int64 nGuildId);                           // the id is the own guild's
+    void ClearObservedPlayer();                                           // forget the observed player
+    void SetGuildMark(__int64 nGuildId, const CStringW& strMark);  // a guild's mark
+    bool IsOwnGuildName(CStringW strGuildName);                      // the name is the own guild's
+    bool IsOwnGuildId(__int64 nGuildId);                           // the id is the own guild's
     void FUN_14133b900(unsigned nEndTime);                          // the remaining time ("mmss")
-    void FUN_14133bab0(MS2Ptr<ASUIComponent> spSlot, PCBase* pPC, bool bPlaying);    // fill a player slot
-    void FUN_14133bd80(CStringW strName);                           // observe a player
-    void FUN_14133bec0();                                           // stop observing
-    void FUN_14133bf60(PCBase* pTarget);                            // check the observe button of the observed player
+    void FillPlayerSlot(MS2Ptr<ASUIComponent> spSlot, PCBase* pPC, bool bPlaying);    // fill a player slot
+    void ObservePlayer(CStringW strName);                           // observe a player
+    void StopObserving();                                           // stop observing
+    void UpdateObserveButtons(PCBase* pTarget);                            // check the observe button of the observed player
 
 private:
     MS2_LAYOUT_FRIEND;

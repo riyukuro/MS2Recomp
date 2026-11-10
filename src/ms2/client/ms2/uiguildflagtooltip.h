@@ -28,8 +28,8 @@ public:
     virtual int vfunc_48() { return 0x4ea8; }                   // 48
     // The destructor is implicit (0x1412c4b30: ~CString(m_78), ~UIHeadUpDisplay), ??_G 0x1412c4b60.
 
-    void FUN_1412c4050(const CString& strName);                 // show the tooltip of the named interact object
-    void FUN_1412c45a0();                                       // hide the tooltip movie
+    void ShowTooltip(const CString& strName);                 // show the tooltip of the named interact object
+    void HideTooltip();                                       // hide the tooltip movie
     bool FUN_1412c46d0();                                       // move the movie over the object; false = off screen
 
 private:

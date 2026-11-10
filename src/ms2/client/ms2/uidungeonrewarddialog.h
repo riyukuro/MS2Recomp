@@ -15,8 +15,8 @@ extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const
 class UIAvatarPC;
 struct ItemEntity;
 class DungeonRewardInfo {
-public: DungeonRewardInfo(); virtual ~DungeonRewardInfo(); void Clear(); void FUN_14026c900(CInPacket&);
- __int64 FUN_14026ccf0(); __int64 FUN_14026cbf0(); unsigned FUN_14026cd70(unsigned); bool FUN_14026ce30();
+public: DungeonRewardInfo(); virtual ~DungeonRewardInfo(); void Clear(); void Read(CInPacket&);
+ __int64 FUN_14026ccf0(); __int64 FUN_14026cbf0(); unsigned GetReward(unsigned); bool HasRewards();
 private:
  void* m_8;
  void* m_10;
@@ -33,21 +33,21 @@ class Unk_RewardBits {
 public:
  class Ref {
  public: Ref(Unk_RewardBits* b,int p):m_b(b),m_p(p){}
-  operator bool() const {return m_b->FUN_140e26ae0(m_p);}
+  operator bool() const {return m_b->IsBitSet(m_p);}
  private: Unk_RewardBits* m_b; int m_p;
  };
- Unk_RewardBits(){FUN_140e26b80(0);}
+ Unk_RewardBits(){SetAll(0);}
  Ref operator[](int pos){RWD_BIT_ASSERT(0x98,L"UINT(pos) < UINT(T)",(unsigned)pos<32u);return Ref(this,pos);}
  // @0x140e26ae0
- bool FUN_140e26ae0(int pos) const {
+ bool IsBitSet(int pos) const {
   if((unsigned)pos>=32u){RWD_BIT_ASSERT(0x194,L"0",0); return false;}
   return (m_d[pos/8]&(1<<(pos%8)))!=0;
  }
  // @0x140e26b80
- void FUN_140e26b80(unsigned char v){for(int i=3;i>=0;i--)m_d[i]=v; if(v)FUN_140e26be0();}
+ void SetAll(unsigned char v){for(int i=3;i>=0;i--)m_d[i]=v; if(v)FUN_140e26be0();}
  // @0x140e26be0
  void FUN_140e26be0(){if(0)return;m_d[3]&=0;}
- void FUN_140e26800(Unk_RewardStream*);
+ void Read(Unk_RewardStream*);
 private: unsigned char m_d[4];
 };
 MS2_CHECK_SIZE(Unk_RewardBits,4);
@@ -61,7 +61,7 @@ public:
  virtual void vfunc_16(); virtual bool vfunc_17(); virtual int vfunc_o178_1(void*);
  // @0x140e26850
  virtual int vfunc_48() { return 20217; }
- void OnPacket(CInPacket&); void FUN_140e22210(CInPacket&);
+ void OnPacket(CInPacket&); void OnRewardPacket(CInPacket&);
  void OnRoundPacket(CInPacket&); void FUN_140e22650(CInPacket&); void FUN_140e226b0(CInPacket&);
  void OnCloseButton(const Scaleform::GFx::FunctionHandler::Params&);
  void OnPartyLeaveButton(const Scaleform::GFx::FunctionHandler::Params&);
@@ -73,9 +73,9 @@ public:
  void UpdateMinigameStage();
  void SetMinigameRound();
  void FUN_140e24fc0();
- void FUN_140e25050();
+ void ShowMinigame();
  void FUN_140e250e0();
- void FUN_140e25170();
+ void SetCharacterInfo();
  void CreateAvatar();
  void LoadRenderTarget();
  void UnloadRenderTarget();
@@ -84,7 +84,7 @@ public:
  void SendDungeonReward();
  void FUN_140e24c50(bool);
  CStringW FUN_140e25840(int);
- void BuildRewardItems(ATL::CAtlArray<MS2Ptr<CItem> >&,DungeonRewardInfo&); void FUN_140e25dc0(size_t);
+ void BuildRewardItems(ATL::CAtlArray<MS2Ptr<CItem> >&,DungeonRewardInfo&); void CreateMissionLabels(size_t);
 private:
  MS2_LAYOUT_FRIEND;
  MS2Ptr<ASMovieClip> m_180,m_190,m_1a0,m_1b0;

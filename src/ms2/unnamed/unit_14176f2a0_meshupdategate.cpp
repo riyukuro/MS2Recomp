@@ -37,7 +37,7 @@ CMeshUpdateGate::CMeshUpdateGate()
 }
 
 // @0x14176f390
-void CMeshUpdateGate::FUN_14176f390()
+void CMeshUpdateGate::ReleaseProcess()
 {
     if (m_pProcess)
     {
@@ -45,7 +45,7 @@ void CMeshUpdateGate::FUN_14176f390()
         m_pProcess = NULL;
     }
 }
-MS2_REPLACE_METHOD(0x14176f390, CMeshUpdateGate, FUN_14176f390, 107, 0xF384864A);
+MS2_REPLACE_METHOD(0x14176f390, CMeshUpdateGate, ReleaseProcess, 107, 0xF384864A);
 
 // @0x14176f410
 bool CMeshUpdateGate::FUN_14176f410(egf::Entity* pEntity, float fInterval)
@@ -53,7 +53,7 @@ bool CMeshUpdateGate::FUN_14176f410(egf::Entity* pEntity, float fInterval)
     if (pEntity)
     {
     bool bShown = IsActive();
-    if (FUN_14176f740(fInterval) && bShown != IsActive())
+    if (IsUpdateDue(fInterval) && bShown != IsActive())
     {
         bShown = bShown ^ 1;
         efd::SmartPointer<ecr::SceneGraphService> spService(egf::g_bapiContext.GetSystemServiceAs<ecr::SceneGraphService>());
@@ -76,7 +76,7 @@ bool CMeshUpdateGate::FUN_14176f500(egf::Entity* pEntity, float fInterval, float
     bool bShown = IsActive();
     if (fTime >= GetDuration())
     {
-        if (FUN_14176f740(fInterval) && bShown != IsActive())
+        if (IsUpdateDue(fInterval) && bShown != IsActive())
         {
             bShown = bShown ^ 1;
             if (pEntity)
@@ -124,7 +124,7 @@ void CMeshUpdateGate::FUN_14176f710()
 MS2_REPLACE_METHOD(0x14176f710, CMeshUpdateGate, FUN_14176f710, 40, 0x42587A2C);
 
 // @0x14176f740
-bool CMeshUpdateGate::FUN_14176f740(float)
+bool CMeshUpdateGate::IsUpdateDue(float)
 {
     float fInterval = m_fInterval;
     float fElapsed = (float)(((class CMainSystem*)(class Unk_Clock*)(reinterpret_cast<Unk_Clock*>(TSingleton<CMainSystem>::GetInstance())))->GetGameTime() - m_fLast);
@@ -144,7 +144,7 @@ bool CMeshUpdateGate::FUN_14176f740(float)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x14176f740, CMeshUpdateGate, FUN_14176f740, 219, 0x4AF8C9A0);
+MS2_REPLACE_METHOD(0x14176f740, CMeshUpdateGate, IsUpdateDue, 219, 0x4AF8C9A0);
 
 // @0x14176fa50
 float CMeshUpdateGate::GetDuration() const { return m_fDuration; }

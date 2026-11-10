@@ -22,12 +22,12 @@ public:
     virtual int vfunc_48() { return 0x4e63; }                       // 48
     virtual void vfunc_52();                                        // 52 0x1419067d0 push the texts to the movie
 
-    int FUN_1419065f0();                                            // m_80 (shown)
-    void FUN_141906610(int nId);                                    // m_88 = nId; m_84 = m_80 = 1
+    int IsShown();                                            // m_80 (shown)
+    void Show(int nId);                                    // m_88 = nId; m_84 = m_80 = 1
     void FUN_141906650();                                           // m_84 = m_80 = 0
     void FUN_141906680();                                           // hide the movie and reset
-    int FUN_1419066c0();                                           // the label is allowed to show
-    void FUN_141906b60();                                           // project the cell to the screen and move the movie
+    int CanShowLabel();                                           // the label is allowed to show
+    void UpdateScreenPosition();                                           // project the cell to the screen and move the movie
 
 private:
     MS2_LAYOUT_FRIEND;

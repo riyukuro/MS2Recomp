@@ -60,7 +60,7 @@ UIUGCCubeBillDialog::UIUGCCubeBillDialog()
     m_80 = 0;
     m_88 = 1;
     m_58 = 1;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140ee76a0
@@ -112,11 +112,11 @@ void UIUGCCubeBillDialog::OnLoadComplete()
         CStringW strAmount = FUN_1418fec00(nPayType, nAmount, bAlt);
         if (nPayType == 1)
         {
-            ((class AScript&)(obj)).FUN_1407cbb20("meso", CStringW(strAmount));
+            ((class AScript&)(obj)).SetWStringMember("meso", CStringW(strAmount));
         }
         else if (nPayType == 3)
         {
-            ((class AScript&)(obj)).FUN_1407cbb20("bluemerat", CStringW(strAmount));
+            ((class AScript&)(obj)).SetWStringMember("bluemerat", CStringW(strAmount));
             bool bList = false;
             if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d710(0x61) || !bAlt)
             {
@@ -138,9 +138,9 @@ void UIUGCCubeBillDialog::OnLoadComplete()
                         int nType = kRow.first;
                         __int64 nMoney = kRow.second;
                         ASObj objRow(2);
-                        ((class AScript&)(objRow)).FUN_1407cbb20("name", FUN_1418fe5d0(nType));
-                        ((class AScript&)(objRow)).FUN_1407cbb20("money", FUN_1418fec00(3, nMoney, bAlt));
-                        arrMerats.PushValue(objRow.FUN_1422bb870());
+                        ((class AScript&)(objRow)).SetWStringMember("name", FUN_1418fe5d0(nType));
+                        ((class AScript&)(objRow)).SetWStringMember("money", FUN_1418fec00(3, nMoney, bAlt));
+                        arrMerats.PushValue(objRow.GetValue());
                     }
                     obj.FUN_140c16160("merats", ASArray(arrMerats));
                 }
@@ -148,7 +148,7 @@ void UIUGCCubeBillDialog::OnLoadComplete()
         }
         else if (nPayType == 9)
         {
-            ((class AScript&)(obj)).FUN_1407cbb20("redmerat", CStringW(strAmount));
+            ((class AScript&)(obj)).SetWStringMember("redmerat", CStringW(strAmount));
         }
     }
     m_30->FUN_140acd1f0("setData", AScript(obj));
@@ -185,7 +185,7 @@ void FUN_140ee8610(MS2Ptr<CItem> spItem)
     int nResult = g_143ab2a90.FUN_140a63880(spItem.get(), L"");
     if (nResult != 0)
     {
-        TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4f29);
+        TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4f29);
         UIUGCCubeBillDialog::s_pending.PendingCost::Reset();
         UIUGCCubeBillDialog::s_pending.m_nBlueprintUid = spItem->GetItemUid();
         UIUGCCubeBillDialog::s_pending.m_nKind = 3;
@@ -232,7 +232,7 @@ void UIUGCCubeBillDialog::SendRequestCube()
 // @0x140ee8190
 void FUN_140ee8190(CInPacket& packet)
 {
-    TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4f29);
+    TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_cost.Cost::Reset();
     UIUGCCubeBillDialog::s_cost.PendingCost::Assign(UIUGCCubeBillDialog::s_pending);
     UIUGCCubeBillDialog::s_cost.m_nKind = 1;
@@ -263,7 +263,7 @@ void FUN_140ee8190(CInPacket& packet)
 // @0x140ee8360
 void SendRequestCubeMode35(int nCubeId)
 {
-    TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4f29);
+    TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_pending.PendingCost::Reset();
     UIUGCCubeBillDialog::s_pending.m_nKind = 1;
     UIUGCCubeBillDialog::s_pending.m_nCubeId = nCubeId;
@@ -277,7 +277,7 @@ void SendRequestCubeMode35(int nCubeId)
 // @0x140ee83f0
 void FUN_140ee83f0(CInPacket& packet)
 {
-    TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4f29);
+    TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_cost.Cost::Reset();
     UIUGCCubeBillDialog::s_cost.PendingCost::Assign(UIUGCCubeBillDialog::s_pending);
     UIUGCCubeBillDialog::s_cost.m_nKind = 3;
@@ -310,7 +310,7 @@ void FUN_140ee83f0(CInPacket& packet)
 // @0x140ee86f0
 void SendRequestCubeMode66(void* pBlueprintUid)
 {
-    TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4f29);
+    TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4f29);
     UIUGCCubeBillDialog::s_pending.PendingCost::Reset();
     COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
     packet.WriteUInt8(0x42);

@@ -76,11 +76,11 @@ CUGCBallObject::CUGCBallObject()
 // @0x140decf50
 CUGCBallObject::~CUGCBallObject()
 {
-    FUN_140dedaf0();
+    ReleaseActor();
 }
 
 // @0x140decfc0
-int CUGCBallObject::FUN_140decfc0(__int64 nOwner, int nObjectId, Unk_UbPoint kPt, float fRadius)
+int CUGCBallObject::Init(__int64 nOwner, int nObjectId, Unk_UbPoint kPt, float fRadius)
 {
     m_nOwner = nOwner;
     m_str88 = "MS2VibrateNoPhysX";
@@ -142,7 +142,7 @@ void CUGCBallObject::FUN_140ded6d0()
 }
 
 // @0x140ded740
-void CUGCBallObject::FUN_140ded740()
+void CUGCBallObject::CreateActor()
 {
     if (m_pActor != 0)
         return;
@@ -188,7 +188,7 @@ void CUGCBallObject::FUN_140ded740()
 }
 
 // @0x140dedaf0
-void CUGCBallObject::FUN_140dedaf0()
+void CUGCBallObject::ReleaseActor()
 {
     if (((class CPhysXHelper*)GetPhysXHelper()) == 0)
         return;
@@ -216,14 +216,14 @@ void CUGCBallObject::FUN_140dedaf0()
 // @0x140dedc00
 int CUGCBallObject::vfunc_11()
 {
-    FUN_140ded740();
+    CreateActor();
     return 1;
 }
 
 // @0x140dedc30
 void CUGCBallObject::vfunc_14()
 {
-    FUN_140dedaf0();
+    ReleaseActor();
     GameObject::vfunc_14();
 }
 
@@ -326,7 +326,7 @@ void FUN_140dee4a0(CInPacket& packet)
         Unk_PayloadPoint kPos = reinterpret_cast<Unk_PayloadReader*>(&packet)->ReadPoint<Unk_PayloadPoint>();
         float fRadius = packet.ReadFloat();
         CUGCBallObject* pBall = new (efd::MemHint(efd::MemHint::NONE)) CUGCBallObject;
-        if (!pBall->FUN_140decfc0(nOwner, nObjectId, reinterpret_cast<Unk_UbPoint&>(kPos), fRadius))
+        if (!pBall->Init(nOwner, nObjectId, reinterpret_cast<Unk_UbPoint&>(kPos), fRadius))
             break;
         if (!pWorld->FUN_141bbb1e0(pBall, 0, 1))
             break;

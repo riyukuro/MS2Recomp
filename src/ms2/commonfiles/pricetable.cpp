@@ -23,7 +23,7 @@ public:
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
@@ -109,9 +109,9 @@ MS2_REPLACE_METHOD(0x140738E00, CPriceTable, IsHousingBuyable, 81, 0x4EF58335);
 // @0x140738e60
 int CPriceTable::LoadHousing(const CString& strFile)
 {
-    CString strPath = FUN_14071a5b0("Table", strFile);
+    CString strPath = GetXmlPath("Table", strFile);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -142,9 +142,9 @@ MS2_REPLACE_METHOD(0x140738E60, CPriceTable, LoadHousing, 626, 0x6696CFE3);
 // @0x1407390e0
 int CPriceTable::LoadSalary(const CString& strFile)
 {
-    CString strPath = FUN_14071a5b0("Table", strFile);
+    CString strPath = GetXmlPath("Table", strFile);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

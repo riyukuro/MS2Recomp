@@ -27,33 +27,33 @@ ASTextArea::~ASTextArea()
 }
 
 // @0x1422e45f0
-void ASTextArea::FUN_1422e45f0(int nPosition)
+void ASTextArea::SetPosition(int nPosition)
 {
-    FUN_1407cb9c0("position", nPosition);
+    SetIntMember("position", nPosition);
 }
-MS2_REPLACE_METHOD(0x1422E45F0, ASTextArea, FUN_1422e45f0, 40, 0xA9BCC004);
+MS2_REPLACE_METHOD(0x1422E45F0, ASTextArea, SetPosition, 40, 0xA9BCC004);
 
 // @0x1422e4620
-int ASTextArea::FUN_1422e4620()
+int ASTextArea::GetPosition()
 {
     return GetMember("position").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422E4620, ASTextArea, FUN_1422e4620, 88, 0xEA75B308);
+MS2_REPLACE_METHOD(0x1422E4620, ASTextArea, GetPosition, 88, 0xEA75B308);
 
 // @0x1422e4680
 int ASTextArea::FUN_1422e4680()
 {
-    if (FUN_1422e4620() == GetTextField()->GetMaxScrollV())
+    if (GetPosition() == GetTextField()->GetMaxScrollV())
         return 1;
     return 0;
 }
 MS2_REPLACE_METHOD(0x1422E4680, ASTextArea, FUN_1422e4680, 148, 0x165DC057);
 
 // @0x1422e4720
-void ASTextArea::FUN_1422e4720()
+void ASTextArea::ScrollToEnd()
 {
-    FUN_1422e45f0(GetTextField()->GetMaxScrollV());
+    SetPosition(GetTextField()->GetMaxScrollV());
 }
-MS2_REPLACE_METHOD(0x1422E4720, ASTextArea, FUN_1422e4720, 94, 0x3285D998);
+MS2_REPLACE_METHOD(0x1422E4720, ASTextArea, ScrollToEnd, 94, 0x3285D998);
 
 // MS2-PIN: ??_GASTextArea@@UEAAPEAXI@Z 0x1422e4780

@@ -47,7 +47,7 @@ class TiXmlElement;
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 CString FUN_14071ae20(const CString& strFile);                              // path of a table file
-CString FUN_14016a5c0(const char* psz, int nCodePage);                      // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);                      // narrows a string (the RTTI name in CheckInit)
 struct Unk_XmlElement;
 void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszName, const char* pszAttr, std::vector<Unk_XmlElement*>& arrOut);   // C3: the definition's signature (commonutil.cpp)
 CStringW FUN_1401bf530(TiXmlElement* pNode, const char* pszName, CStringW strDefault);   // wide attribute with default
@@ -128,7 +128,7 @@ CStringW CLoadingDescriptionTable::GetRandomTip()
     {
         if (FUN_1401d1320(m_spData) != 0)
         {
-            if (LoadXml(CString(*m_spData->FUN_1401d1140())) == 0)
+            if (LoadXml(CString(*m_spData->GetPath())) == 0)
                 return CStringW(L"");
         }
         CMsTime now(_time64(0));
@@ -169,9 +169,9 @@ int CLoadingDescriptionTable::LoadXml(CString strPath)
     {
         m_spData->m_descs.RemoveAll();
         TiXmlDocument doc;
-        if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
             return 0;
-        m_spData->FUN_1401d1160(CString(strPath));
+        m_spData->SetPath(CString(strPath));
         TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
         if (pRoot == 0)
         {
@@ -212,7 +212,7 @@ void CLoadingDescriptionTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CLoadingDescriptionTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CLoadingDescriptionTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

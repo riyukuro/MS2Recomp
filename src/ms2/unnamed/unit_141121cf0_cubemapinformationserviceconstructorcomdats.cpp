@@ -188,12 +188,12 @@ extern egf::EntityID g_cubeMapNone;
 
 // @0x141122f30
 // The mark record of tail.h (Timer + entity pointer vector): the ctor resets the timer and clears the list.
-Unk_CMISMarkRec::Unk_CMISMarkRec() { m_timer.FUN_1408687f0(); m_marks.clear(); }
+Unk_CMISMarkRec::Unk_CMISMarkRec() { m_timer.Reset(); m_marks.clear(); }
 
 // @0x141123160
 Unk_CMISCubeTimer::Unk_CMISCubeTimer()
 {
-    m_timer.FUN_1408687f0();
+    m_timer.Reset();
     m_bFlagA = false;
     m_bFlagB = false;
     m_id = reinterpret_cast<const egf::EntityID&>(DAT_143acf820);

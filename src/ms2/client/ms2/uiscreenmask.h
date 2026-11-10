@@ -25,6 +25,6 @@ public:
     virtual void vfunc_43();                                        // 43 0x141ad08c0 resize the component to the screen
     virtual int vfunc_48() { return 0x4e55; }                       // 48 0x141ad0b50 UI type id
 
-    CString FUN_141ad09e0();                                        // 0x141ad09e0 the mask's effect name (this unused)
+    CString GetBgMask();                                        // 0x141ad09e0 the mask's effect name (this unused)
 };
 MS2_CHECK_SIZE(UIScreenMask, 0x70);

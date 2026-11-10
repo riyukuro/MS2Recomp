@@ -18,9 +18,9 @@ public:
     CNpcShopItemNew();                                      // 0x1406de4d0
     // implicit dtor (COMDAT 0x1406ef7a0, ??_G 0x1406f10c0)
     bool operator!=(const CNpcShopItemNew& o) const;        // 0x1406de540
-    void FUN_1406de6b0();                                   // reset
-    void FUN_1406de710(COutputStream& out);                 // write the record
-    void FUN_1406de840(CInPacket& in);                      // read the record from a packet
+    void Reset();                                   // reset
+    void Write(COutputStream& out);                 // write the record
+    void Read(CInPacket& in);                      // read the record from a packet
     bool FUN_1406dea90();                                   // visible now (no period: always)
     bool FUN_1406deaf0();                                   // buyable now (no period: always)
 

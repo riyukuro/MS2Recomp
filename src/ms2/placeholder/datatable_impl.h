@@ -11,7 +11,7 @@
 class CLogString;
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement* pElem);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
 class Unk_CriticalSectionLock;
 class Unk_XmlNode   // C3: member view for the former element stand-ins (shared by the includers)
@@ -25,9 +25,9 @@ template <class T>
 int DataTable<T>::Load(CString strDir, CString strFile, CString strElement)
 {
     Unk_CriticalSectionLock guard(m_lock, 1);
-    CString strPath = FUN_14071a5b0(strDir, strFile);
+    CString strPath = GetXmlPath(strDir, strFile);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)

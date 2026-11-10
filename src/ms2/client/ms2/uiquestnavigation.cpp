@@ -60,13 +60,13 @@ public:
 //
 //
 class CQuestNavigator;
-CQuestNavigator* FUN_140e7c990() { return TSingleton<CQuestNavigator>::s_instance; }           // 0x140e7c990
+CQuestNavigator* GetQuestNavigator() { return TSingleton<CQuestNavigator>::s_instance; }           // 0x140e7c990
 class Unk_QgUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 int FUN_141277f40();
 float FUN_1412762d0(const NiPoint3& pt);                 // the screen y offset of a world point
@@ -127,7 +127,7 @@ int NavigationEntity::vfunc_3(AScript* pParent)
     if (!pParent)
         return 0;
     ASObj obj(FUN_141277f40());
-    obj.FUN_1407cba60("id", vfunc_1());
+    obj.SetStringMember("id", vfunc_1());
     Scaleform::GFx::Value v = pParent->Invoke("create", vfunc_2(), obj);
     if (!((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined())
     {
@@ -149,7 +149,7 @@ void NavigationEntity::vfunc_4(const TraceResult* pResult)
     Vector3 pt;
     if (reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(vfunc_7())), reinterpret_cast<NiPoint3&>(pt)))
     {
-        reinterpret_cast<efd::Point3&>(pt) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)FUN_14025e7a0())))->FUN_1422afec0(FUN_141277f40());
+        reinterpret_cast<efd::Point3&>(pt) *= ((class GFxManager*)(class Unk_QgUIScale*)(((class Unk_QgUIScale*)GetGFxManager())))->GetMovieScale(FUN_141277f40());
         pt.y += vfunc_8();
         m_20->SetPositionFloat(pt.x, pt.y);
         m_20->vfunc_3(1);
@@ -204,7 +204,7 @@ int PcHudNavigationEntity::vfunc_5(const TraceResult* pResult)
         return 0;
     if (pResult->m_1c == 0)
         return 0;
-    return FUN_140e7c990()->FUN_140c9af60();
+    return GetQuestNavigator()->CanShowBeam();
 }
 
 // @0x140e78b40
@@ -242,7 +242,7 @@ float PcHudNavigationEntity::vfunc_8()
 NpcNavigationEntity::NpcNavigationEntity(efd::SmartPointer<Unk_SSGNpc> spNpc)
 {
     m_30 = spNpc.operator->()->GetObjectId();
-    m_34 = reinterpret_cast<CNpc*>(spNpc.operator->())->FUN_141092fa0();
+    m_34 = reinterpret_cast<CNpc*>(spNpc.operator->())->GetNpcId();
 }
 
 // @0x140e78d80
@@ -502,23 +502,23 @@ UIQuestNavigation::UIQuestNavigation()
     m_2c = 0x1f;
     m_28 = FUN_141277f40();
     m_58 = 0;
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7af90));
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyRemoveNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b130));
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddInteract", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b290));
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddLiftable", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b430));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::OnAddNpc));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyRemoveNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::OnRemoveNpc));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddInteract", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::OnAddInteract));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddLiftable", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::OnAddLiftable));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b640));
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddPortal", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b720));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyAddPortal", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::OnAddPortal));
 }
 
 // @0x140e7a530
 UIQuestNavigation::~UIQuestNavigation()
 {
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7af90));
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyRemoveNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b130));
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddInteract", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b290));
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddLiftable", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b430));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::OnAddNpc));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyRemoveNpc", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::OnRemoveNpc));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddInteract", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::OnAddInteract));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddLiftable", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::OnAddLiftable));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyCompleteMyPC", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b640));
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddPortal", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::FUN_140e7b720));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyAddPortal", Delegate<void(NotifyObject*)>(this, &UIQuestNavigation::OnAddPortal));
 }
 
 // @0x140e7aa40
@@ -530,7 +530,7 @@ CString UIQuestNavigation::GetTypeName()
 // @0x140e7aa90
 void UIQuestNavigation::vfunc_2()
 {
-    FUN_1422dbf00(m_2c, 0, 0);
+    LoadSwf(m_2c, 0, 0);
 }
 
 // @0x140e7aac0
@@ -560,8 +560,8 @@ void UIQuestNavigation::vfunc_15()
     UISwfEntity::vfunc_15();
     if (m_30.IsNull())
         return;
-    TraceResult* pResult = FUN_140e7c990()->Result();
-    TraceContext* pContext = FUN_140e7c990()->Context();
+    TraceResult* pResult = GetQuestNavigator()->Result();
+    TraceContext* pContext = GetQuestNavigator()->Context();
     for (POSITION pos = m_entities.GetStartPosition(); pos != 0; m_entities.GetNext(pos))
     {
         MS2Ptr<NavigationEntity> spEntity = m_entities.GetValueAt(pos);
@@ -586,12 +586,12 @@ void UIQuestNavigation::vfunc_15()
         {
             if (nState != 0)
             {
-                if (FUN_140e7b890(spEntity))
+                if (AddChild(spEntity))
                     spEntity->m_18 = 1;
             }
             else
             {
-                if (FUN_140e7ba00(spEntity))
+                if (RemoveChild(spEntity))
                     spEntity->m_18 = 0;
             }
         }
@@ -616,7 +616,7 @@ int UIQuestNavigation::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 }
 
 // @0x140e7af90
-void UIQuestNavigation::FUN_140e7af90(NotifyObject* pNotify)
+void UIQuestNavigation::OnAddNpc(NotifyObject* pNotify)
 {
     NotifyAddNpc* pAdd = dynamic_cast<NotifyAddNpc*>(pNotify);
     if (!pAdd)
@@ -627,7 +627,7 @@ void UIQuestNavigation::FUN_140e7af90(NotifyObject* pNotify)
 }
 
 // @0x140e7b130
-void UIQuestNavigation::FUN_140e7b130(NotifyObject* pNotify)
+void UIQuestNavigation::OnRemoveNpc(NotifyObject* pNotify)
 {
     if (m_30.IsNull())
         return;
@@ -638,13 +638,13 @@ void UIQuestNavigation::FUN_140e7b130(NotifyObject* pNotify)
     MS2Ptr<NavigationEntity> spEntity(0);
     if (m_entities.Lookup(strKey, spEntity))
     {
-        FUN_140e7ba00(spEntity);
+        RemoveChild(spEntity);
         m_entities.RemoveKey(strKey);
     }
 }
 
 // @0x140e7b290
-void UIQuestNavigation::FUN_140e7b290(NotifyObject* pNotify)
+void UIQuestNavigation::OnAddInteract(NotifyObject* pNotify)
 {
     NotifyAddInteract* pAdd = dynamic_cast<NotifyAddInteract*>(pNotify);
     if (!pAdd)
@@ -657,7 +657,7 @@ void UIQuestNavigation::FUN_140e7b290(NotifyObject* pNotify)
 }
 
 // @0x140e7b430
-void UIQuestNavigation::FUN_140e7b430(NotifyObject* pNotify)
+void UIQuestNavigation::OnAddLiftable(NotifyObject* pNotify)
 {
     NotifyAddLiftable* pAdd = dynamic_cast<NotifyAddLiftable*>(pNotify);
     if (!pAdd)
@@ -679,7 +679,7 @@ void UIQuestNavigation::FUN_140e7b640(NotifyObject* pNotify)
 }
 
 // @0x140e7b720
-void UIQuestNavigation::FUN_140e7b720(NotifyObject* pNotify)
+void UIQuestNavigation::OnAddPortal(NotifyObject* pNotify)
 {
     NotifyAddPortal* pAdd = dynamic_cast<NotifyAddPortal*>(pNotify);
     if (!pAdd)
@@ -690,7 +690,7 @@ void UIQuestNavigation::FUN_140e7b720(NotifyObject* pNotify)
 }
 
 // @0x140e7b890
-int UIQuestNavigation::FUN_140e7b890(MS2Ptr<NavigationEntity> spEntity)
+int UIQuestNavigation::AddChild(MS2Ptr<NavigationEntity> spEntity)
 {
     if (m_30.IsNull())
         return 0;
@@ -698,12 +698,12 @@ int UIQuestNavigation::FUN_140e7b890(MS2Ptr<NavigationEntity> spEntity)
         return 0;
     if (spEntity->m_18 != 0)
         return 1;
-    m_30->Invoke("addChild", Scaleform::GFx::Value(spEntity->m_20->FUN_1422bb870()));
+    m_30->Invoke("addChild", Scaleform::GFx::Value(spEntity->m_20->GetValue()));
     return 1;
 }
 
 // @0x140e7ba00
-int UIQuestNavigation::FUN_140e7ba00(MS2Ptr<NavigationEntity> spEntity)
+int UIQuestNavigation::RemoveChild(MS2Ptr<NavigationEntity> spEntity)
 {
     if (m_30.IsNull())
         return 0;
@@ -711,7 +711,7 @@ int UIQuestNavigation::FUN_140e7ba00(MS2Ptr<NavigationEntity> spEntity)
         return 0;
     if (spEntity->m_18 == 0)
         return 1;
-    m_30->Invoke("removeChild", Scaleform::GFx::Value(spEntity->m_20->FUN_1422bb870()));
+    m_30->Invoke("removeChild", Scaleform::GFx::Value(spEntity->m_20->GetValue()));
     return 1;
 }
 

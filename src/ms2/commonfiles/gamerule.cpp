@@ -249,6 +249,13 @@
 // MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VUnk_ItemTagRewardContext@@@@@std@@@3@$0A@@std@@@std@@QEBA_KXZ 0x1404c0ad0 ; prop
 // MS2-PIN: ?max_size@?$_Tree@V?$_Tmap_traits@KV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@U?$less@K@2@V?$allocator@U?$pair@$$CBKV?$map@KKU?$less@K@std@@V?$allocator@U?$pair@$$CBKK@std@@@2@@std@@@std@@@2@$0A@@std@@@std@@QEBA_KXZ 0x1404c0af0 ; unique
 // MS2-PINS-END tplpin
+// Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$forward@AEAK@std@@YAAEAKAEAK@Z 0x140496880
+// MS2-PIN: ??$forward@AEAI@std@@YAAEAIAEAI@Z 0x140496890
+// MS2-PIN: ??$forward@AEBU?$less@U?$pair@HH@std@@@std@@@std@@YAAEBU?$less@U?$pair@HH@std@@@0@AEBU10@@Z 0x1404968a0
+// MS2-PIN: ??$move@AEAV?$set@IU?$less@I@std@@V?$allocator@I@2@@std@@@std@@YA$$QEAV?$set@IU?$less@I@std@@V?$allocator@I@2@@0@AEAV10@@Z 0x1404968e0
+// MS2-PIN: ??$forward@V?$tuple@AEBU?$pair@HH@std@@@std@@@std@@YA$$QEAV?$tuple@AEBU?$pair@HH@std@@@0@AEAV10@@Z 0x140496ae0
 // MS2-PIN: ?Recompute@?$Unk_GameRuleRateMap@K@@QEAAXK@Z 0x1404a6e40
 // MS2-PIN: ?erase@?$_Tree@V?$_Tset_traits@_KU?$less@_K@std@@V?$allocator@_K@2@$0A@@std@@@std@@QEAA_KAEB_K@Z 0x1404bfb40
 // the ItemTag multimap's _Insert_at (max_size 0x1404c0ad0; its map<DWORD,DWORD> look-alike is another TU's COMDAT copy) and its _Insert_nohint
@@ -281,7 +288,7 @@
 #include <functional>
 #include "hook/ms2hook.h"
 #include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
-struct Unk_FishRange { bool FUN_1403b4ef0(unsigned n) const; };   // the (lo, hi) range test 0x1403b4ef0 (fishsimultedata.h): Unk_EpicRestartRange::IsIn
+struct Unk_FishRange { bool IsInRange(unsigned n) const; };   // the (lo, hi) range test 0x1403b4ef0 (fishsimultedata.h): Unk_EpicRestartRange::IsIn
 // The ontime getters return MS2Ptr<const OntimeEventContext>: the exe converts the map's MS2Ptr<OntimeEventContext>
 // into a second pointer family (copy 0x140497ca0 reads the source through get(), AddRef 0x1404aeed0, (int) 0x140497ce0)
 // that only this TU instantiates. The CPtred helpers take a non-const pointer.
@@ -341,7 +348,7 @@ class Unk_AttendTable
 {
 public:
     // @0x1404821d0
-    bool FUN_1404821d0(int nKind, int nId, const bool& bDefault)
+    bool GetBoolValue(int nKind, int nId, const bool& bDefault)
     {
         GameEventVariable::Key key(nKind, nId);
         GameEventUserValue::VariablePtr it;
@@ -350,7 +357,7 @@ public:
         return bDefault;
     }
     // @0x140482280
-    bool FUN_140482280(int nKind, const bool& bDefault) { return FUN_1404821d0(nKind, 0, bDefault); }
+    bool FUN_140482280(int nKind, const bool& bDefault) { return GetBoolValue(nKind, 0, bDefault); }
 private:
     void* m_pad_00; void* m_pad_08; void* m_pad_10;
     GameEventUserValue::VariableMap m_18;   // +0x18
@@ -486,21 +493,21 @@ MS2_REPLACE(0x140475FA0, FUN_140475fa0, 72, 0x2FA61F89);
 
 // The pet table singleton getter (an inline TSingleton<T>::GetInstance in the exe's COMDAT tail; T is not recovered).
 // @0x1404a1bb0
-void* FUN_1404a1bb0()
+void* GetExpTable()
 {
     return reinterpret_cast<void*>(TSingleton<CExpTable>::s_instance);
 }
-MS2_REPLACE(0x1404A1BB0, FUN_1404a1bb0, 8, 0x01B1E857);
+MS2_REPLACE(0x1404A1BB0, GetExpTable, 8, 0x01B1E857);
 
 // @0x140475ff0
-__int64 FUN_140475ff0(unsigned short value)
+__int64 GetNextExp(unsigned short value)
 {
-    return ((class CExpTable*)(void*)(FUN_1404a1bb0()))->GetNextExp(value);
+    return ((class CExpTable*)(void*)(GetExpTable()))->GetNextExp(value);
 }
-MS2_REPLACE(0x140475FF0, FUN_140475ff0, 32, 0xDE57401C);
+MS2_REPLACE(0x140475FF0, GetNextExp, 32, 0xDE57401C);
 
 // @0x140476020
-CString FUN_140476020(int reason)
+CString GetGameReasonName(int reason)
 {
     CString str("");
     switch (reason) {
@@ -556,10 +563,10 @@ CString FUN_140476020(int reason)
     }
     return str;
 }
-MS2_REPLACE(0x140476020, FUN_140476020, 1409, 0x925DC80A);
+MS2_REPLACE(0x140476020, GetGameReasonName, 1409, 0x925DC80A);
 
 // @0x1404766e0
-void CGameRule::FUN_1404766e0()
+void CGameRule::ClearEvents()
 {
     {
         Unk_CriticalSectionLock lock(m_80, 1);
@@ -593,7 +600,7 @@ void CGameRule::FUN_1404766e0()
         m_888.Empty();
     }
 }
-MS2_REPLACE_METHOD(0x1404766E0, CGameRule, FUN_1404766e0, 578, 0xCCB94A4A);
+MS2_REPLACE_METHOD(0x1404766E0, CGameRule, ClearEvents, 578, 0xCCB94A4A);
 
 // @0x140476930
 void CGameRule::SetAdventureLevelBonusExpRate(int nEventId, int nRate)
@@ -656,7 +663,7 @@ void CGameRule::RemoveBeautyShopSaleEvent(int a, BOOL c)
 MS2_REPLACE_METHOD(0x140476BE0, CGameRule, RemoveBeautyShopSaleEvent, 134, 0x044EDA02);
 
 // @0x140476c70
-unsigned CGameRule::FUN_140476c70(int nEvent, unsigned nPrice, int nLevel)
+unsigned CGameRule::GetDiscountedPrice(int nEvent, unsigned nPrice, int nLevel)
 {
     unsigned nRate = 0;
     int nIndex = 2;
@@ -664,7 +671,7 @@ unsigned CGameRule::FUN_140476c70(int nEvent, unsigned nPrice, int nLevel)
     unsigned nDiscount = nPrice * nRate / 10000;
     return nPrice - nDiscount;
 }
-MS2_REPLACE_METHOD(0x140476C70, CGameRule, FUN_140476c70, 112, 0x472B0FDD);
+MS2_REPLACE_METHOD(0x140476C70, CGameRule, GetDiscountedPrice, 112, 0x472B0FDD);
 
 // @0x140476cf0
 int CGameRule::FUN_140476cf0(int nEvent, int nLevel)
@@ -862,7 +869,7 @@ void CGameRule::FUN_1404777a0(int key, int value)
 MS2_REPLACE_METHOD(0x1404777A0, CGameRule, FUN_1404777a0, 112, 0x61822B22);
 
 // @0x140477820
-void CGameRule::FUN_140477820(COutputStream& out, int key)
+void CGameRule::WriteValues(COutputStream& out, int key)
 {
     if (Unk_LockGuard guard = m_1e8) {} else
     {
@@ -883,10 +890,10 @@ void CGameRule::FUN_140477820(COutputStream& out, int key)
         }
     }
 }
-MS2_REPLACE_METHOD(0x140477820, CGameRule, FUN_140477820, 388, 0xD2380303);
+MS2_REPLACE_METHOD(0x140477820, CGameRule, WriteValues, 388, 0xD2380303);
 
 // @0x1404779b0
-void CGameRule::FUN_1404779b0(CInPacket& packet)
+void CGameRule::ReadValues(CInPacket& packet)
 {
     if (Unk_LockGuard guard = m_1e8) {} else
     {
@@ -898,7 +905,7 @@ void CGameRule::FUN_1404779b0(CInPacket& packet)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1404779B0, CGameRule, FUN_1404779b0, 250, 0xE3F15990);
+MS2_REPLACE_METHOD(0x1404779B0, CGameRule, ReadValues, 250, 0xE3F15990);
 
 // @0x140477ab0
 void CGameRule::FUN_140477ab0(ATL::CAtlArray<std::pair<int, int> >& out)
@@ -1044,7 +1051,7 @@ void CGameRule::DeactivateOntimeEvent(int eventId)
 MS2_REPLACE_METHOD(0x1404781F0, CGameRule, DeactivateOntimeEvent, 125, 0x1CF96A77);
 
 // @0x140478280
-MS2Ptr<const OntimeEventContext> CGameRule::FUN_140478280()
+MS2Ptr<const OntimeEventContext> CGameRule::GetActiveOntimeEvent()
 {
     Unk_CriticalSectionLock lock(&m_4d0, 1);
     for (POSITION pos = m_500.GetStartPosition(); pos != NULL; m_500.GetNext(pos)) {
@@ -1055,7 +1062,7 @@ MS2Ptr<const OntimeEventContext> CGameRule::FUN_140478280()
     }
     return MS2Ptr<const OntimeEventContext>(0);
 }
-MS2_REPLACE_METHOD(0x140478280, CGameRule, FUN_140478280, 336, 0x21808762);
+MS2_REPLACE_METHOD(0x140478280, CGameRule, GetActiveOntimeEvent, 336, 0x21808762);
 
 // @0x1404783e0
 MS2Ptr<const OntimeEventContext> CGameRule::GetOntimeEvent(int eventId)
@@ -1150,18 +1157,18 @@ void CGameRule::FUN_140478960(int key, ATL::CRBMap<int, int>& out)
 }
 
 // @0x140478a40
-void CGameRule::FUN_140478a40(int value)
+void CGameRule::SetDeleteUrlCache(int value)
 {
     m_a98 = value;
 }
-MS2_REPLACE_METHOD(0x140478A40, CGameRule, FUN_140478a40, 25, 0x76D49579);
+MS2_REPLACE_METHOD(0x140478A40, CGameRule, SetDeleteUrlCache, 25, 0x76D49579);
 
 // @0x140478a60
-int CGameRule::FUN_140478a60()
+int CGameRule::GetDeleteUrlCache()
 {
     return m_a98;
 }
-MS2_REPLACE_METHOD(0x140478A60, CGameRule, FUN_140478a60, 17, 0x8BF3E2FD);
+MS2_REPLACE_METHOD(0x140478A60, CGameRule, GetDeleteUrlCache, 17, 0x8BF3E2FD);
 
 // @0x140478a80
 void CGameRule::SetSaleEnchantRate(int eventId, int rate)
@@ -1299,7 +1306,7 @@ MS2_REPLACE_METHOD(0x1404791B0, CGameRule, GetEventQuest, 195, 0x3F3E5AE1);
 void CGameRule::AddTermTag(MS2Ptr<TermTagContext> spContext)
 {
     Unk_CriticalSectionLock lock(m_620, 1);
-    m_650[spContext->FUN_140866690()] = spContext;
+    m_650[spContext->GetName()] = spContext;
 }
 
 // @0x140479330
@@ -1340,53 +1347,53 @@ void CGameRule::SetBlackMarketFeeDiscount(int rate, __int64 beginTime, __int64 e
 MS2_REPLACE_METHOD(0x140479510, CGameRule, SetBlackMarketFeeDiscount, 69, 0xFB02C579);
 
 // @0x140479560
-int CGameRule::FUN_140479560()
+int CGameRule::GetBlackMarketFeeDiscountRate()
 {
     return m_690;
 }
-MS2_REPLACE_METHOD(0x140479560, CGameRule, FUN_140479560, 17, 0x176B6AA9);
+MS2_REPLACE_METHOD(0x140479560, CGameRule, GetBlackMarketFeeDiscountRate, 17, 0x176B6AA9);
 
 // @0x140479580
-__int64 CGameRule::FUN_140479580()
+__int64 CGameRule::GetBlackMarketFeeDiscountBeginTime()
 {
     return m_698;
 }
-MS2_REPLACE_METHOD(0x140479580, CGameRule, FUN_140479580, 18, 0x165E5143);
+MS2_REPLACE_METHOD(0x140479580, CGameRule, GetBlackMarketFeeDiscountBeginTime, 18, 0x165E5143);
 
 // @0x1404795a0
-__int64 CGameRule::FUN_1404795a0()
+__int64 CGameRule::GetBlackMarketFeeDiscountEndTime()
 {
     return m_6a0;
 }
-MS2_REPLACE_METHOD(0x1404795A0, CGameRule, FUN_1404795a0, 18, 0xB60B788B);
+MS2_REPLACE_METHOD(0x1404795A0, CGameRule, GetBlackMarketFeeDiscountEndTime, 18, 0xB60B788B);
 
 // @0x1404795c0
-void CGameRule::FUN_1404795c0(int value)
+void CGameRule::SetEventFieldPopup(int value)
 {
     m_6f0 = value;
 }
-MS2_REPLACE_METHOD(0x1404795C0, CGameRule, FUN_1404795c0, 25, 0x02676BCD);
+MS2_REPLACE_METHOD(0x1404795C0, CGameRule, SetEventFieldPopup, 25, 0x02676BCD);
 
 // @0x1404795e0
-int CGameRule::FUN_1404795e0()
+int CGameRule::GetEventFieldPopup()
 {
     return m_6f0;
 }
-MS2_REPLACE_METHOD(0x1404795E0, CGameRule, FUN_1404795e0, 17, 0xEC546309);
+MS2_REPLACE_METHOD(0x1404795E0, CGameRule, GetEventFieldPopup, 17, 0xEC546309);
 
 // @0x140479600
-void CGameRule::FUN_140479600(int value)
+void CGameRule::SetUgcMapSaleCoupon(int value)
 {
     m_6a8 = value;
 }
-MS2_REPLACE_METHOD(0x140479600, CGameRule, FUN_140479600, 25, 0x784691D5);
+MS2_REPLACE_METHOD(0x140479600, CGameRule, SetUgcMapSaleCoupon, 25, 0x784691D5);
 
 // @0x140479620
-int CGameRule::FUN_140479620()
+int CGameRule::GetUgcMapSaleCoupon()
 {
     return m_6a8;
 }
-MS2_REPLACE_METHOD(0x140479620, CGameRule, FUN_140479620, 17, 0x8D476AB1);
+MS2_REPLACE_METHOD(0x140479620, CGameRule, GetUgcMapSaleCoupon, 17, 0x8D476AB1);
 
 // @0x140479640
 void CGameRule::SetUgcMapContractSaleRate(int eventId, int rate)
@@ -1497,14 +1504,14 @@ CStringW CGameRule::GetAutoPlayInstrumentName()
 MS2_REPLACE_METHOD(0x140479A90, CGameRule, GetAutoPlayInstrumentName, 131, 0x5F7CA11A);
 
 // @0x140479b20
-bool CGameRule::FUN_140479b20(unsigned roomId)
+bool CGameRule::IsDungeonRoomShutdown(unsigned roomId)
 {
     Unk_CriticalSectionLock lock(m_710, 1);
     if (m_740 == 0)
         return false;
-    return m_740->FUN_1403440d0(roomId);
+    return m_740->HasRoomId(roomId);
 }
-MS2_REPLACE_METHOD(0x140479B20, CGameRule, FUN_140479b20, 158, 0xF60A8655);
+MS2_REPLACE_METHOD(0x140479B20, CGameRule, IsDungeonRoomShutdown, 158, 0xF60A8655);
 
 // @0x140479bd0
 bool CGameRule::FUN_140479bd0(Unk_DungeonGroupType group)
@@ -1529,7 +1536,7 @@ bool CGameRule::FUN_140479cf0(unsigned roomId)
     Unk_CriticalSectionLock lock(m_750, 1);
     if (m_780 == 0)
         return false;
-    return m_780->FUN_1403440d0(roomId);
+    return m_780->HasRoomId(roomId);
 }
 MS2_REPLACE_METHOD(0x140479CF0, CGameRule, FUN_140479cf0, 158, 0x22AFEA69);
 
@@ -1701,21 +1708,21 @@ void CGameRule::GetNpcEventDrops(std::vector<MS2Ptr<NpcEventDropEventContext> >&
 MS2_REPLACE_METHOD(0x14047A7A0, CGameRule, GetNpcEventDrops, 267, 0xD762404D);
 
 // @0x14047a8c0
-void CGameRule::FUN_14047a8c0(int type)
+void CGameRule::SetItemBuffType(int type)
 {
     m_3b0 = type;
 }
-MS2_REPLACE_METHOD(0x14047A8C0, CGameRule, FUN_14047a8c0, 25, 0xE2117DE8);
+MS2_REPLACE_METHOD(0x14047A8C0, CGameRule, SetItemBuffType, 25, 0xE2117DE8);
 
 // @0x14047a8e0
-int CGameRule::FUN_14047a8e0()
+int CGameRule::GetItemBuffType()
 {
     return m_3b0;
 }
-MS2_REPLACE_METHOD(0x14047A8E0, CGameRule, FUN_14047a8e0, 17, 0x4D5EDAAC);
+MS2_REPLACE_METHOD(0x14047A8E0, CGameRule, GetItemBuffType, 17, 0x4D5EDAAC);
 
 // @0x14047a900
-void CGameRule::FUN_14047a900(MS2Ptr<DungeonBonusRewardCtx> spContext)
+void CGameRule::AddDungeonBonusReward(MS2Ptr<DungeonBonusRewardCtx> spContext)
 {
     if (spContext == 0)
         return;
@@ -1727,7 +1734,7 @@ void CGameRule::FUN_14047a900(MS2Ptr<DungeonBonusRewardCtx> spContext)
 }
 
 // @0x14047aa00
-void CGameRule::FUN_14047aa00(MS2Ptr<DungeonBonusRewardCtx> spContext)
+void CGameRule::RemoveDungeonBonusReward(MS2Ptr<DungeonBonusRewardCtx> spContext)
 {
     if (spContext == 0)
         return;
@@ -2029,7 +2036,7 @@ void CGameRule::RemoveSaleCubes(int eventId)
 MS2_REPLACE_METHOD(0x14047BFC0, CGameRule, RemoveSaleCubes, 81, 0x35055367);
 
 // @0x14047c020
-void CGameRule::FUN_14047c020(int eventId, __int64 endTime, const CStringA& a, const CStringA& b, const CStringA& c)
+void CGameRule::SetEpicRestart(int eventId, __int64 endTime, const CStringA& a, const CStringA& b, const CStringA& c)
 {
     Unk_CriticalSectionLock lock(m_b00, 1);
     MS2Ptr<EpicRestartContext> spContext(new EpicRestartContext);
@@ -2044,7 +2051,7 @@ void CGameRule::FUN_14047c020(int eventId, __int64 endTime, const CStringA& a, c
         spContext->m_7c = values[1];
     m_b30 = spContext;
 }
-MS2_REPLACE_METHOD(0x14047C020, CGameRule, FUN_14047c020, 438, 0x85C8E0E1);
+MS2_REPLACE_METHOD(0x14047C020, CGameRule, SetEpicRestart, 438, 0x85C8E0E1);
 
 // @0x14047c1e0
 void CGameRule::FUN_14047c1e0()
@@ -2055,24 +2062,24 @@ void CGameRule::FUN_14047c1e0()
 MS2_REPLACE_METHOD(0x14047C1E0, CGameRule, FUN_14047c1e0, 86, 0x5AAD5FB5);
 
 // @0x14047c240
-int CGameRule::FUN_14047c240()
+int CGameRule::GetEpicRestartEventId()
 {
     Unk_CriticalSectionLock lock(m_b00, 1);
     if (m_b30 == 0)
         return 0;
     return m_b30->m_18;
 }
-MS2_REPLACE_METHOD(0x14047C240, CGameRule, FUN_14047c240, 146, 0x7FC36494);
+MS2_REPLACE_METHOD(0x14047C240, CGameRule, GetEpicRestartEventId, 146, 0x7FC36494);
 
 // @0x14047c2e0
-__int64 CGameRule::FUN_14047c2e0()
+__int64 CGameRule::GetEpicRestartEndTime()
 {
     Unk_CriticalSectionLock lock(m_b00, 1);
     if (m_b30 == 0)
         return 0;
     return m_b30->m_20;
 }
-MS2_REPLACE_METHOD(0x14047C2E0, CGameRule, FUN_14047c2e0, 151, 0xA264BA3D);
+MS2_REPLACE_METHOD(0x14047C2E0, CGameRule, GetEpicRestartEndTime, 151, 0xA264BA3D);
 
 // @0x14047c380
 BOOL CGameRule::FUN_14047c380(unsigned value)
@@ -2083,7 +2090,7 @@ BOOL CGameRule::FUN_14047c380(unsigned value)
     if (m_b30->m_28.find(value) != m_b30->m_28.end())
         return TRUE;
     for (size_t i = 0; i < m_b30->m_38.GetCount(); i++) {
-        if (reinterpret_cast<const Unk_FishRange&>(m_b30->m_38[i]).FUN_1403b4ef0(value))
+        if (reinterpret_cast<const Unk_FishRange&>(m_b30->m_38[i]).IsInRange(value))
             return TRUE;
     }
     return FALSE;
@@ -2132,13 +2139,13 @@ void CGameRule::SetLevelUpPackage(int level, const CStringW& str)
 MS2_REPLACE_METHOD(0x14047C740, CGameRule, SetLevelUpPackage, 118, 0xC30BD58F);
 
 // @0x14047c7c0
-void CGameRule::FUN_14047c7c0()
+void CGameRule::ClearLevelUpPackage()
 {
     Unk_CriticalSectionLock lock(m_8, 1);
     m_b40 = 0;
     m_b48.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x14047C7C0, CGameRule, FUN_14047c7c0, 86, 0x452A113A);
+MS2_REPLACE_METHOD(0x14047C7C0, CGameRule, ClearLevelUpPackage, 86, 0x452A113A);
 
 // @0x14047c820
 int CGameRule::FUN_14047c820()

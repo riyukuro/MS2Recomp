@@ -30,7 +30,7 @@ public:
     CItemStatus(CItemOption* pOption, CItemEnchantInfo* pEnchant, UnlimitedEnchantInfo* pUnlimited);   // 0x140631ce0
     // ~CItemStatus() is implicit: the exe dtor 0x140633280 (??_G 0x140633450) stores no vptr.
     CItemEnchantInfo* GetEnchant();           // the enchant record (null when absent)
-    Unk_ItemPlusInfo* FUN_140630d90();           // the unlimited-enchant record
+    Unk_ItemPlusInfo* GetUnlimitedEnchantInfo();           // the unlimited-enchant record
     CItemOption* GetOption();                // the option record
     void GenerateOptions(int, int, int);
     void WriteToStream(COutputStream&);
@@ -39,14 +39,14 @@ public:
     int FUN_14062fea0(unsigned nType);
     int FUN_14062ff70(unsigned nType);
     int GetStatValue(unsigned nType, int nWhich, int nSub);
-    int FUN_140630290(unsigned nType, int nWhich, int nSub);
+    int GetSpecialValue(unsigned nType, int nWhich, int nSub);
     unsigned GetEnchantLevel();   // 32-bit: the blackmarket caller 0x1401bcccf stores eax with no movzx
     float GetEnchantRatio(unsigned nType);
     int HasOptionEntry(int nSub, int nWhich, unsigned nType);
     CStringW GetSpecialStatText(int nSub, unsigned nType, void* pArg);
     bool IsRatioStat(int nType);
-    bool FUN_140630810();
-    void FUN_140630840();
+    bool HasGroup4Options();
+    void ClearGroup4Options();
     int CopyGroup4From(MS2Ptr<CItemStatus> spOther);    // 0x1406308a0 take over the options of another status
 
     MS2Ptr<CItemOption> m_spOption;             // +0x18
@@ -93,7 +93,7 @@ public:
 struct Unk_MusicNoteBlock
 {
     Unk_MusicNoteBlock();                   // 0x14052c230
-    void FUN_14052d040();                   // reset all fields
+    void Reset();                   // reset all fields
     int m_n00;
     int m_pad04;
     __int64 m_n08;
@@ -127,9 +127,9 @@ class CItemCoupleInfo : public CPtred
 public:
     CItemCoupleInfo();                      // 0x14052c140
     // implicit virtual ~CItemCoupleInfo()  // 0x14052c510 (??_G 0x14052cf80)
-    void FUN_14052d000();                   // reset
-    void FUN_14052d090(CInputStream&);      // read from a stream
-    void FUN_14052d130(COutputStream&);     // write to a stream
+    void Reset();                   // reset
+    void ReadFromStream(CInputStream&);      // read from a stream
+    void WriteToStream(COutputStream&);     // write to a stream
     CItemCoupleInfo& operator=(const CItemCoupleInfo&);   // 0x14052cae0
 
     __int64 m_n18;                          // +0x18

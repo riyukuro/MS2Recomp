@@ -16,7 +16,7 @@
 #include <algorithm>
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-int FUN_140768010(int nRange, int nBase);                               // random number in [nBase, nBase + nRange)
+int GetRandomRange(int nRange, int nBase);                               // random number in [nBase, nBase + nRange)
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410); C3: was FUN_140408410
 
 // @0x140743430
@@ -132,7 +132,7 @@ void CPvPInfo::AddLose(int nDelta)
 // @0x140743910
 void CPvPInfo::RandomizeTeam()
 {
-    m_nTeam = FUN_140768010(2, 0);
+    m_nTeam = GetRandomRange(2, 0);
 }
 
 // @0x140743940

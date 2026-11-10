@@ -31,7 +31,7 @@ extern int DAT_143ae2b34;
 extern NiFixedString DAT_143ae51b0;                                         // extra-data key
 extern bool DAT_143ae0ac0;
 bool FUN_14098dfc0(NiAVObject* pObj);
-bool FUN_141568c90(NiRenderObject* pObj);
+bool IsUnlightable(NiRenderObject* pObj);
 unsigned int FUN_141568d50(class NiAVObject*);   // C3: was FUN_141568d50
 bool FUN_141567260(NiAVObject* pObj);
 class NiTexturingProperty { public: class Map; Map* GetGlowMap(); };
@@ -99,7 +99,7 @@ void MS2MaterialSwapProcessor::FUN_1414cfce0(const NiVisibleArray* pkInput, NiVi
     if (nSwappers > 0) {
         for (unsigned i = 0; i < count; ++i) {
             NiRenderObject* pObj = &pkInput->GetAt(i);
-            if (!FUN_141568c90(pObj)) {
+            if (!IsUnlightable(pObj)) {
                 for (unsigned j = 0; j < nSwappers; ++j) {
                     NiPointer<MaterialSwapper>& sp = m_swappers[j];
                     if (!sp->IsEnabled())

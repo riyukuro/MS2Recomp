@@ -55,9 +55,9 @@ namespace Client { class Constants; } template<class T> class TSingleton; templa
 inline GameObjectController* JpBody(PCBase* p) { return reinterpret_cast<GameObjectController*>(p->GetPhysicsBody()); }
 
 // The actor's buffs.
-#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
 #include "ms2/commonfiles/hideandseek.h"   // C3: HideAndSeek::Info
-class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The hide and seek record of the actor (MS2Ptr<T> from PC::FUN_141664200).
 class Unk_HsInfo : public CPtred { };
@@ -124,8 +124,8 @@ void StateJump::vfunc_4(StateData* pData)
     float fA = m_pOwner->FUN_14166da60();
     float fSpeed = m_pOwner->vfunc_95();
     GameObjectController* pBody = JpBody(m_pOwner);
-    pBody->FUN_141240730();
-    pBody->FUN_141240610(fA, m_vDir, fSpeed);
+    pBody->StopJump();
+    pBody->StartJump(fA, m_vDir, fSpeed);
     m_tick.Init();
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
@@ -219,12 +219,12 @@ void StateJump::vfunc_8(double fTime)
     State::vfunc_8(fTime);
     MyPC* pPC = FUN_1417b84b0();
     Unk_PCMove* pBuff = (Unk_PCMove*)m_pOwner->FUN_14166d240();
-    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->GetMoveDirection())));
     if (m_pOwner->FUN_141676b70() != 0)
         m_n10 = 0x27;
     if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
     {
-        if (!FUN_1417d65d0())
+        if (!IsJumpTimeElapsed())
             return;
         egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(1);
         if (pEntity != 0)
@@ -252,7 +252,7 @@ void StateJump::vfunc_8(double fTime)
     }
     else
     {
-        if (!FUN_1417b9460() && pPC != 0 && FUN_1417d65d0() && FUN_1417d6620() == 0)
+        if (!FUN_1417b9460() && pPC != 0 && IsJumpTimeElapsed() && FUN_1417d6620() == 0)
         {
             if (pPC->GetRidee())
             {
@@ -272,17 +272,17 @@ void StateJump::vfunc_8(double fTime)
 // MS2-FUNCTIONAL: temporaries / frame layout differ from the exe
 void StateJump::vfunc_9(double fTime)
 {
-    static int s_nDelay = (int)FUN_14028d260(sqrt(12.0f / FUN_14059d930(GameObjectController::FUN_141240c40(true))));
+    static int s_nDelay = (int)FUN_14028d260(sqrt(12.0f / FUN_14059d930(GameObjectController::GetGravity(true))));
     State::vfunc_9(fTime);
     unsigned nSeq = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
     unsigned nLimit = s_nDelay;
-    nLimit += (int)FUN_14028d260(JpBody(m_pOwner)->FUN_141241090());
+    nLimit += (int)FUN_14028d260(JpBody(m_pOwner)->GetJumpApexTime());
     if (m_pOwner->FUN_141671a30() != 0)
     {
         m_pOwner->vfunc_59(4, 0, 0, 0);
         return;
     }
-    if (nLimit <= JpBody(m_pOwner)->FUN_141240ef0())
+    if (nLimit <= JpBody(m_pOwner)->GetFallTime())
     {
         m_pOwner->PlayAnimationById(5);
         return;
@@ -355,11 +355,11 @@ int StateJump::vfunc_22(MS2Ptr<StateSyncObject> p)
 // @0x1417d6560
 bool StateJump::vfunc_28(MS2Ptr<StateSyncObject> p)
 {
-    return FUN_1417b7e40() != p->m_nSub;
+    return GetStateId() != p->m_nSub;
 }
 
 // @0x1417d65d0
-bool StateJump::FUN_1417d65d0()
+bool StateJump::IsJumpTimeElapsed()
 {
     if (m_tick.GetLast() + m_n80 < GetTickCountMs2())
         return true;

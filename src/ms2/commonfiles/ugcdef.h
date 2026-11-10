@@ -87,7 +87,7 @@ public:
     virtual void Write(COutputStream& stream) const;        // 0x14088ee30
     virtual void Read(CInPacket& packet);                   // 0x14088ef20
 
-    void FUN_14088f100(CItem* pItem);                       // takes the UGC uid / name / rarity of the item (or clears)
+    void SetFromItem(CItem* pItem);                       // takes the UGC uid / name / rarity of the item (or clears)
 
     __int64 m_itemUid;                                      // +0x18
     int m_nItemId;                                          // +0x20
@@ -420,7 +420,7 @@ public:
 
     void Clear();                                           // 0x1408939f0
     void CopyFrom(const CUgcItemMusicNote* pOther);         // 0x140893aa0
-    void FUN_140893bb0(const void* pSource, __int64 nId);   // takes the music record of a CItem
+    void SetFromMusicRecord(const void* pSource, __int64 nId);   // takes the music record of a CItem
     void Write(COutputStream& stream) const;                // 0x140893cc0
     void Read(CInputStream& stream);                        // 0x140893e10
     CStringA FUN_140894060() const;                         // the title of the music book

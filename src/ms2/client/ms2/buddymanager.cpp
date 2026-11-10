@@ -81,11 +81,11 @@ CStringW BlockFormat(int);
 template <class T> void Unk_AkoMessage(int,int,int,const T&);   // C3: was FUN_140961010
 void FUN_1412751b0(const CStringW&,int);
 int FUN_141276180(const CString&,const CString&);
-void FUN_140d73aa0(CStringW,int,void*,CStringW);
+void ShowMessageBox(CStringW,int,void*,CStringW);
 #include "ms2/placeholder/uidialog.h"
 #include "ms2/client/ms2/uiservice.h"
-void FUN_1401fc790(unsigned char* pRequest, COutputStream& out);   // C3: the request encoder (was Unk_BuddyRequest::FUN_1401fc790)
-class UICommunityDialog : public UIDialog { public: int FUN_1418d6960(); void FUN_1418d6430(int); };
+void WriteBuddyRequest(unsigned char* pRequest, COutputStream& out);   // C3: the request encoder (was Unk_BuddyRequest::WriteBuddyRequest)
+class UICommunityDialog : public UIDialog { public: int GetTab(); void BuildBuddyList(int); };
 class UICommunityQueryDialog : public UIDialog {};
 class UIGameMenuDialog : public UIDialog { public: void FUN_141937e70(int); };   // C3: unit-local view
 class UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
@@ -94,14 +94,14 @@ UICommunityQueryDialog* FUN_140ae5a30(int);
 // @0x140ae2e90
 void CBuddyManager::OnBuddy(Unk_BuddyInput& input) {
     unsigned position=input.vfunc_0();
-    Unk_BuddyResponse response; reinterpret_cast<Unk_SPDB*>(&response)->FUN_1407a3cc0(reinterpret_cast<Unk_SPDReader&>(input)); reinterpret_cast<CInPacket&>(input).SetOffset(position);
+    Unk_BuddyResponse response; reinterpret_cast<Unk_SPDB*>(&response)->ReadFrom(reinterpret_cast<Unk_SPDReader&>(input)); reinterpret_cast<CInPacket&>(input).SetOffset(position);
     Ptr buddy(0); int field=0; int channel=0;
     (&input.stream)->vfunc_1();
     switch(response.protocol) {
     case 15: FUN_140ae5190(); break;
     case 1: {
         unsigned count=(&input.stream)->vfunc_3();
-        for(unsigned i=0;i<count;++i) { buddy.AssignRaw(new CBuddy); if(buddy.get()) { buddy->FUN_1401cc7c0(input); AddBuddy(buddy); } }
+        for(unsigned i=0;i<count;++i) { buddy.AssignRaw(new CBuddy); if(buddy.get()) { buddy->ReadFromPacket(input); AddBuddy(buddy); } }
         break;
     }
     case 8: case 9: {
@@ -110,13 +110,13 @@ void CBuddyManager::OnBuddy(Unk_BuddyInput& input) {
         if(buddy==0) {
             buddy.AssignRaw(new CBuddy);
             if(buddy.get()) {
-                buddy->FUN_1401cc7c0(input);
+                buddy->ReadFromPacket(input);
                 if(response.protocol==9 && reinterpret_cast<Unk_BuddyOptions*>(TSingleton<CGameOption>::GetInstance())->GetSettings().autoReject && buddy->FUN_1401cc5d0()) {
                     Unk_BuddyRequest request; request.protocol=4; request.id=id; SendBuddyRequest(request); return;
                 }
                 AddBuddy(buddy); buddy->FUN_1401cc4b0(1);
             }
-        } else { field=buddy->FUN_1401cc3e0(); channel=buddy->FUN_1401cc3a0(); buddy->FUN_1401cc7c0(input); }
+        } else { field=buddy->FUN_1401cc3e0(); channel=buddy->FUN_1401cc3a0(); buddy->ReadFromPacket(input); }
         break;
     }
     }
@@ -129,8 +129,8 @@ void CBuddyManager::OnBuddy(Unk_BuddyInput& input) {
             else if((buddy->flags>>2)&1) { Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_4(buddy->id,0); }
         } break;
     case 8:
-        if(buddy.get()) { Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_9(buddy->FUN_1401cc2f0()); }
-        if(buddy->FUN_1401cc5f0() && (field!=buddy->FUN_1401cc3e0() || channel!=buddy->FUN_1401cc3a0())) { Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_10(buddy->FUN_1401cc2f0(),field); } break;
+        if(buddy.get()) { Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_9(buddy->GetId()); }
+        if(buddy->FUN_1401cc5f0() && (field!=buddy->FUN_1401cc3e0() || channel!=buddy->FUN_1401cc3a0())) { Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_10(buddy->GetId(),field); } break;
     case 7:
         if(response.result==0) { buddy=FindById(response.id); if(buddy.get()) {
             if(buddy->FUN_1401cc660()) Unk_AkoMessage<CStringW>(0x602,1,1,buddy->name);
@@ -179,8 +179,8 @@ void CBuddyManager::OnBuddy(Unk_BuddyInput& input) {
         if(response.result==0) { buddy=FindById(response.id); if(buddy.get()) { CStringW message=FormatStringId<CStringW>(0x604,buddy->name); FUN_1412751b0(message,12); Unk_BuddyNotifications* events=reinterpret_cast<Unk_BuddyNotifications*>(TSingleton<UIBuddyEventDispatcher>::GetInstance()); events->vfunc_8(buddy->id); RemoveBuddy(buddy); } } break;
     case 18: {
         UICommunityQueryDialog* query=FUN_140ae5a30(0x4e4e); if(query && !query->vfunc_55()) query->vfunc_67();
-        UICommunityDialog* community=FUN_140ae5990(0x4e4d); if(community) community->FUN_1418d6430(community->FUN_1418d6960());
-        FUN_140d73aa0(BlockFormat(0x8ba),0,0,L""); break;
+        UICommunityDialog* community=FUN_140ae5990(0x4e4d); if(community) community->BuildBuddyList(community->GetTab());
+        ShowMessageBox(BlockFormat(0x8ba),0,0,L""); break;
     }
     case 20: SendBuddyMode20(); break;
     }
@@ -188,7 +188,7 @@ void CBuddyManager::OnBuddy(Unk_BuddyInput& input) {
 }
 
 // @0x140ae4820
-void CBuddyManager::SendBuddyRequest(Unk_BuddyRequest& request) { COutPacket packet(static_cast<int>(SendOp::Buddy),0); FUN_1401fc790(reinterpret_cast<unsigned char*>(&request), packet); FUN_140710590(packet); }
+void CBuddyManager::SendBuddyRequest(Unk_BuddyRequest& request) { COutPacket packet(static_cast<int>(SendOp::Buddy),0); WriteBuddyRequest(reinterpret_cast<unsigned char*>(&request), packet); FUN_140710590(packet); }
 MS2_REPLACE_METHOD(0x140AE4820, CBuddyManager, SendBuddyRequest, 83, 0x6E66E430);
 // @0x140ae4880
 CBuddyManager::Ptr CBuddyManager::FindByAccount(__int64 key) { if(Unk_LockGuard guard=lock) { __assume(0); } else { Ptr p; accounts.Lookup(key,p); return p; } }
@@ -219,7 +219,7 @@ MS2_REPLACE_METHOD(0x140AE4DF0, CBuddyManager, GetAllBuddies, 210, 0xDAE8B35A);
 // @0x140ae4ed0
 unsigned CBuddyManager::GetBuddyCount() { if(Unk_LockGuard guard=lock) { __assume(0); } else { return static_cast<unsigned>(list.GetCount());} }
 // @0x140ae4f50
-int CBuddyManager::FUN_140ae4f50() { int count=0; { if(Unk_LockGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if((p.get()?true:false) && p->FUN_1401cc680()) ++count; } } } return count; }
+int CBuddyManager::FUN_140ae4f50() { int count=0; { if(Unk_LockGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if((p.get()?true:false) && p->IsOnline()) ++count; } } } return count; }
 MS2_REPLACE_METHOD(0x140AE4F50, CBuddyManager, FUN_140ae4f50, 273, 0xD93331C5);
 // @0x140ae5070
 int CBuddyManager::FUN_140ae5070() { int count=0; { if(Unk_LockGuard guard=lock) {} else { Ptr p; for(POSITION pos=list.GetHeadPosition();pos;list.GetNext(pos)) { p=list.GetAt(pos); if((p.get()?true:false) && p->FUN_1401cc5d0()) ++count; } } } return count; }

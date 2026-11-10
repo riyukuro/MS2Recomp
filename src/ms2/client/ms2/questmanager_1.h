@@ -17,8 +17,8 @@ public:
     virtual int FUN_1407441f0(int field);
     virtual int FUN_1407443e0(int field);
     virtual int FUN_140744670(int field);
-    virtual int FUN_1407447c0();
-    virtual __int64 FUN_1407448a0();
+    virtual int IsExpired();
+    virtual __int64 GetEndTime();
     virtual int FUN_140744b90(int field);
     int FUN_140744cd0(int field);      // questdata.cpp: the quest's field exists
 };
@@ -67,7 +67,7 @@ public:
     void SetTrackedValue(int value);
     int HasMultiUserRoom(int field);
     int GetState() const;
-    int FUN_140bfc580();
+    int GetQuestId();
     void SetState(int state) { m_state = state; }   // COMDAT 0x1416dee60
     void SetStartTime(__int64 time) { m_startTime = time; }         // COMDAT 0x1416ded20
     void SetCompleteTime(__int64 time) { m_completeTime = time; }   // COMDAT 0x1416dedd0

@@ -115,6 +115,10 @@
 // MS2-PIN: ?size@?$_Tree@V?$_Tset_traits@PEAVEntity@egf@@U?$less@PEAVEntity@egf@@@std@@V?$CustomAllocator@PEAVEntity@egf@@@efd@@$0A@@std@@@std@@QEBA_KXZ 0x140a1f0b0 ; unique
 // MS2-PIN: ??C?$SmartPointer@VGameObject@@@efd@@QEBAPEAVGameObject@@XZ 0x140a16c30 ; unique (sfr36: exe name; mousecontroller/rpgcameramode/toolsmoothcameramode call FUN_140a16c30)
 // MS2-PINS-END tplpin
+// Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$addressof@V?$SmartPointer@VGameObject@@@efd@@@std@@YAPEAV?$SmartPointer@VGameObject@@@efd@@AEAV12@@Z 0x140a144e0
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@VEntityID@egf@@PEAX@std@@@std@@QEAA@XZ 0x140a15d00
 // BGTransparencyMgr (see bgtransparencymgr.h) and TransparencyElement. The unit is large and mostly template glue
 // of the std containers the class uses (std::set<SmartPointer<GameObject>>, two std::map<SmartPointer<Entity>,
 // TransparencyElement*>, std::list<TransparencyStandardMaterial*> ...); the class itself is below, the glue is paired
@@ -151,7 +155,7 @@ BGTransparencyMgr* TSingleton<BGTransparencyMgr>::s_instance;
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
 extern NiFixedString DAT_143ae5188;                             // render group (float extra data) key
-void * FUN_1413f98f0(void);  // C3: the definition's signature
+void * GetPickService(void);  // C3: the definition's signature
 ecr::SceneGraphService* FUN_1413f98b0();
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 NiNode* FUN_1413fa030(egf::Entity* pEntity);                    // entity -> scene root
@@ -207,8 +211,8 @@ bool BGTransparencyMgr::Init()
     WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
     m_map30.clear();
     m_map40.clear();
-    m_timer.FUN_140868750(300);
-    m_spService = (ecr::PickService*)FUN_1413f98f0();
+    m_timer.Start(300);
+    m_spService = (ecr::PickService*)GetPickService();
     m_spSceneGraph = FUN_1413f98b0();
     return true;
 }
@@ -226,10 +230,10 @@ void BGTransparencyMgr::Tick()
 {
     UpdateFadeOut();
     UpdateFadeIn();
-    if (m_timer.FUN_140868c00() != 0)
+    if (m_timer.IsExpired() != 0)
     {
         vfunc_1();
-        m_timer.FUN_140868750(300);
+        m_timer.Start(300);
     }
 }
 MS2_REPLACE_METHOD(0x140A0D000, BGTransparencyMgr, Tick, 93, 0x4B724FE6);
@@ -527,7 +531,7 @@ void BGTransparencyMgr::Apply(Unk_BGTEntitySet& kHit)
                                 }
                                 pMaterial->vfunc_2(kBound);
                                 pElement->m_materials.push_back(pMaterial);
-                                pElement->m_timer.FUN_140868750(300);
+                                pElement->m_timer.Start(300);
                             }
                         }
                     }
@@ -587,7 +591,7 @@ void BGTransparencyMgr::UpdateFadeOut()
     for (Unk_BGTElementMap::const_iterator it = m_map30.begin(), itEnd = m_map30.end(); it != itEnd; ++it)
     {
         TransparencyElement* pElement = it->second;
-        if (pElement->m_timer.FUN_140868ba0() == 0)
+        if (pElement->m_timer.IsRunning() == 0)
             continue;
         for (std::list<TransparencyStandardMaterial*>::iterator
             itMat = pElement->m_materials.begin(); itMat != pElement->m_materials.end(); ++itMat)
@@ -609,7 +613,7 @@ void BGTransparencyMgr::UpdateFadeIn()
     {
         egf::Entity* pEntity = it->first;
         TransparencyElement* pElement = it->second;
-        if (pElement->m_timer.FUN_140868ba0() == 0)
+        if (pElement->m_timer.IsRunning() == 0)
         {
             efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
             if (spInstancing)
@@ -667,7 +671,7 @@ void BGTransparencyMgr::MoveAllToFadeIn()
     for (Unk_BGTElementMap::iterator it = m_map30.begin(); it != m_map30.end(); ++it)
     {
         m_map40[it->first] = it->second;
-        it->second->m_timer.FUN_140868750(300);
+        it->second->m_timer.Start(300);
     }
     m_map30.clear();
 }
@@ -691,7 +695,7 @@ void BGTransparencyMgr::MoveMissingToFadeIn(Unk_BGTEntitySet& kHit)
             continue;
         }
         m_map40[pEntity] = pElement;
-        pElement->m_timer.FUN_140868750(300);
+        pElement->m_timer.Start(300);
         m_map30.erase(it++);
     }
 }

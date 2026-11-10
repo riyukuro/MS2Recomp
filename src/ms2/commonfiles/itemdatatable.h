@@ -24,7 +24,7 @@
 #include "ms2/placeholder/citemdata.h"
 
 class TiXmlElement;    // game TinyXML element
-CString FUN_14016a5c0(const char* psz, int n);     // the class name of a type_info name
+CString ToCString(const char* psz, int n);     // the class name of a type_info name
 
 // The key of the grade nif / grade effect / text colour maps (its own hash and compare COMDATs: an enum).
 enum ItemGradeKey {};
@@ -140,7 +140,7 @@ public:
         if (!s_bInit)
         {
             CString msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CItemDataTable).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(CItemDataTable).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }

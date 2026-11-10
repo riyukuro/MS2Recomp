@@ -28,7 +28,7 @@ public:
                                                                         // 28 0x141a55900
     virtual int vfunc_48() { return 0x4e2a; }                           // 48 0x141a57a20 UI type id
 
-    void FUN_141a55de0();                                               // FUN_141a55e30("")
-    void FUN_141a55e30(const CStringW& strFilter);                      // refill m_fieldList
+    void FUN_141a55de0();                                               // FillFieldList("")
+    void FillFieldList(const CStringW& strFilter);                      // refill m_fieldList
 };
 MS2_CHECK_SIZE(UIMoveFieldDialog, 0x178);

@@ -40,7 +40,7 @@ public:
     // cl only omits in a compiler-generated destructor.
     void AddInt(int n);                                                      // append an int argument
     void AddBool(bool b);                                                     // append a bool argument
-    void FUN_1422b8030(unsigned int n);                                             // append an unsigned argument
+    void AddUInt(unsigned int n);                                             // append an unsigned argument
     void AddULong(unsigned long n);                                            // append an unsigned long argument
     void AddFloat(float f);                                                    // append a float argument
     void AddDouble(double d);                                                   // append a number argument
@@ -73,7 +73,7 @@ public:
     __int64 PopInt64();                                                        // next argument as __int64
     unsigned __int64 PopUInt64();                                               // next argument as unsigned __int64
     Scaleform::GFx::Value PopValue();                                          // next argument
-    bool FUN_1422b9330();                                                           // no arguments left
+    bool IsEmpty();                                                           // no arguments left
     int FUN_1422b9360();                                                            // argument count
     int AppendArgsTo(ATL::CAtlList<Scaleform::GFx::Value>& dst);                  // append all arguments to a list (TRUE if any)
     int SetArgsIfAny(const Scaleform::GFx::Value* pArgs, unsigned int nArgs);    // replace the arguments

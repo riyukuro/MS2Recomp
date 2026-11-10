@@ -38,9 +38,9 @@ int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_140
 int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& rOut);
 
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 class Unk_140166420 : public CFileSystem { };
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 unsigned int FUN_1407181d0(const CString& str);                                       // string to int
@@ -102,9 +102,9 @@ inline int FUN_140811a50(TiXmlElement* pNode, const char* pszName, int* pOut)
 // @0x140810730
 void CSmartPushTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "smartPush.xml");
+    CString strPath = GetXmlPath("Table", "smartPush.xml");
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -149,9 +149,9 @@ void CSmartPushTable::Load()
 // @0x140810d30
 void CSmartPushTable::LoadPackages()
 {
-    CString strPath = FUN_14071a5b0("Table", "AutoActionPricePackage.xml");
+    CString strPath = GetXmlPath("Table", "AutoActionPricePackage.xml");
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -260,7 +260,7 @@ unsigned CSmartPushTable::GetPackageCount(const CStringW& strName)
 }
 
 // @0x140811640
-bool FUN_140811640(int n)
+bool IsFirstUseRedMerat(int n)
 {
     if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d710(0x10c))
         return false;
@@ -281,7 +281,7 @@ void CSmartPushTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CSmartPushTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CSmartPushTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

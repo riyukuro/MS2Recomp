@@ -33,30 +33,30 @@ public:
     virtual MS2Ptr<UITamingBar::Entity> vfunc_129();        // 0x140b11050 the taming bar entity (created on demand)
 
     int FUN_140b10150();                                    // the pet is unusable by its owner (hidden / forbidden)
-    void FUN_140b10210(int nPetId);                         // m_nPetId + its table row
+    void SetPetId(int nPetId);                         // m_nPetId + its table row
     int GetPetId();                                    // m_nPetId
     MS2Ptr<CPetData> GetRow();                     // copy of the row
     int FUN_140b10300();                                    // m_nF44
     PCBase* FUN_140b10320();                                // the owner as a PC (null when it is not one)
     PCBase* FUN_140b10360();                                // the owner (class 0x6200003 cast helper 0x1409613d0)
-    CCPetInfoPacket::Info* FUN_140b103a0();                 // &m_info
+    CCPetInfoPacket::Info* GetInfo();                 // &m_info
     void FUN_140b103c0(void* p);                            // m_info.FUN_1401ffd00(p)
     void FUN_140b10400();                                   // refresh the field object's drop / light state
-    void FUN_140b10510();                                   // keep the two aura effects of the taming state alive
-    void FUN_140b107f0(int nId);                            // m_nTargetId; arm the taming bar when it is the local player's pet
+    void UpdateTamingEffects();                                   // keep the two aura effects of the taming state alive
+    void SetKind(int nId);                            // m_nTargetId; arm the taming bar when it is the local player's pet
     int GetKind();                                    // m_nKind
-    void FUN_140b10a10(unsigned __int64 nPoint);            // taming point changed
+    void SetTamingPoint(unsigned __int64 nPoint);            // taming point changed
     unsigned __int64 GetTamingPoint();                       // m_nTamingPoint
-    int FUN_140b10c20();                                    // m_nTamingPoint == TamingPetMaxPoint
+    int IsTamingPointMax();                                    // m_nTamingPoint == TamingPetMaxPoint
     void FUN_140b10c80(CStringW str);                       // set the pet's display name
-    void FUN_140b10f90(unsigned short n);                   // m_nGrade + its sound/effect id
+    void SetGrade(unsigned short n);                   // m_nGrade + its sound/effect id
     unsigned short GetGrade();                         // m_nGrade
     int GetGradeFx();                                    // m_nGradeFx
     float FUN_140b11020();                                  // FUN_140291d10(m_nGradeFx)
     int FUN_140b11180();                                    // use a pet skill (returns 1: used)
     void FUN_140b11320(float fTime);                        // accumulate the idle time, finish the owner's emote
     void FUN_140b114e0(int nAnimId);                        // play a pet animation
-    void FUN_140b11760(CString strEffect);                  // spawn an effect on the pet
+    void PlayEffect(CString strEffect);                  // spawn an effect on the pet
     int FUN_140b11810(int nSkillType, unsigned nSkillId, unsigned short nLevel);   // skill may be used
 
     int m_nPetId;                                           // +0xf40

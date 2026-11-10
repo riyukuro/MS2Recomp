@@ -30,8 +30,8 @@ public:
 
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
+CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 #include "ms2/placeholder/tixmlelement.h"   // C3: was a local TiXml view; the shared reduced view has the same names
 //
 //
@@ -59,8 +59,8 @@ CObjectDataTable::~CObjectDataTable()
 // @0x14070c590
 void CObjectDataTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "ObjectData.xml");
-    if (GetFileSystem()->FUN_1403974b0(&m_doc, strPath, 0, true, false) == 0)
+    CString strPath = GetXmlPath("Table", "ObjectData.xml");
+    if (GetFileSystem()->LoadXmlFile(&m_doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return;
@@ -118,7 +118,7 @@ void CObjectDataTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CObjectDataTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CObjectDataTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

@@ -202,7 +202,7 @@ public:
 };
 class Unk_ThWorld { public: Unk_ThPc* FUN_141bd0cc0(); };
 
-class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
+class CFeatureManager { public: bool IsFeatureEnabled(int nFeature); };   // C3: unit-local view
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 struct Unk_ThFlags { char m_pad[0x30]; bool m_30; };
 struct Unk_NametagFlags* FUN_1406c7610();   // C3: was FUN_1406c7610
@@ -232,7 +232,7 @@ MS2_CHECK_SIZE(Unk_ThHallRef, 0x10);
 bool FUN_140900f30(__int64 nTime);
 // 0x1406c47a0 is CMsTime(__time64_t) (ms2/placeholder/mstime.h)
 CStringW FUN_14083bdc0(const CMsTime& t, bool bSeconds, CStringW strDateSep, CStringW strTimeSep);   // date and time text
-class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
+class Unk_ClubManager* GetClubClientManager();   // C3: was GetClubClientManager
 void FUN_14025a680(CStringW& strText, ATL::CAtlArray<CStringW>& arr, const wchar_t* pszSep);
 
 // Unrecovered string formatters whose instances live in other units.
@@ -267,13 +267,13 @@ CStringW FUN_141842130(__int64 nId);
 CStringW FUN_1418421e0(__int64 nId);
 void FUN_141842290(CStringW& str);
 CStringW FUN_141842320(const CStringW& strText);
-CStringW FUN_1418423c0(unsigned nSize, CStringW& strText);
+CStringW ReplaceFontSize(unsigned nSize, CStringW& strText);
 CStringW FUN_141842560(const CStringW& strText, unsigned nColor, unsigned nColorCmp);
 ULong FUN_141842680(int nOwnFlag, int nIsMe, ULong nColor);
 int FUN_1418426b0(const CStringW& strName);
 int FUN_141842770(const Unk_ThMsg& msg);
 void FUN_1418473a0(CStringW& str);
-bool FUN_1418473c0(CStringW& str);
+bool MakeUpper(CStringW& str);
 
 // @0x14183e640
 TextToHtml::TextToHtml()
@@ -444,7 +444,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
         CStringW strIcon(DAT_143aef3b8);
         FUN_14183eba0(nItemId, strIcon, nIconSize, nColorA, nColorB);
         strResult = FUN_14028dee0(0x67c, nIconSize);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xde))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xde))
             strResult = FUN_14028dee0(0x66e, strResult, DAT_143aef3b8, strIcon, strUser, nColorA, nSize, strName, strImg,
                                       strHome, s_strIconMoveToHouse, nColorB, nSize, strText2);
         else
@@ -456,7 +456,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     {
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color7);
         ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color19);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xde))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xde))
             strResult = FUN_14028dee0(0x66f, s_strIconMegaphone3, strUser, nColorA, nSize, strName, strImg, strHome,
                                       s_strIconMoveToHouse, nColorB, nSize, strText2);
         else
@@ -483,7 +483,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     {
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color4);
         ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color16);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xde))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xde))
             strResult = FUN_14028dee0(0x672, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
         else
             strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
@@ -501,7 +501,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     {
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color5);
         ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color17);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xde))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xde))
             strResult = FUN_14028dee0(0x673, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
         else
             strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
@@ -559,7 +559,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     {
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color5);
         ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color17);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xde))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xde))
             strResult = FUN_14028dee0(0x67e, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
         else
             strResult = FUN_14028dee0(0x671, strUser, nColorA, nSize, strName, strImg, nColorB, nSize, strText2);
@@ -568,7 +568,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
     {
         ULong nColorA = FUN_141842680(nOwnFlag, bMe, s_color9);
         ULong nColorB = FUN_141842680(nOwnFlag, bMe, s_color24);
-        CStringW strUgcName = ((CClubClientManager*)FUN_140e0d900())->GetClubName(nExtra);
+        CStringW strUgcName = ((CClubClientManager*)GetClubClientManager())->GetClubName(nExtra);
         strResult = FUN_14028dee0(0x67a, strUser, nColorA, nSize, strUgcName, strName, strImg, nColorB, nSize, strText2);
         strResult = FUN_141842560(strResult, nColorB, 0xfffffe);
     }
@@ -581,7 +581,7 @@ CStringW FUN_14183f310(const Unk_ThMsg& msg, const CStringW& strText, unsigned n
                        (LPCWSTR)arrParam[3], (LPCWSTR)arrParam[4], (LPCWSTR)arrParam[5]);
         strResult = FUN_14028dee0(0x67b, strUser, strName, strJoin, s_strIconOxQuiz, arrParam[0]);
     }
-    return FUN_1418423c0(nSize, strResult);
+    return ReplaceFontSize(nSize, strResult);
 }
 
 // The wedding hall invitation line.
@@ -615,13 +615,13 @@ CStringW FUN_141841180(const Unk_ThMsg& msg, const Unk_ThWedding& wed, const CSt
                             s_strIconMoveToHouse, nColorB, nSize, strText2);
     strBody = FUN_141842560(strBody, nColorB, 0xfffffe);
     CStringW strDate;
-    MS2Ptr<WeddingPackage> hall = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(wed.m_8);
+    MS2Ptr<WeddingPackage> hall = TSingleton<WeddingTable>::GetInstance()->FindPackage(wed.m_8);
     if (reinterpret_cast<Unk_ThHallRef*>(&hall)->FUN_141847330() != 0)
     {
-        MS2Ptr<WeddingHallData> room = hall->FUN_140907110(wed.m_c);
+        MS2Ptr<WeddingHallData> room = hall->FindHall(wed.m_c);
         if (reinterpret_cast<Unk_ThRoomRef*>(&room)->FUN_141847320() != 0)
         {
-            strDate = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, room->FUN_140906e40(FUN_140900f30(wed.m_10)));
+            strDate = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, room->GetFieldId(FUN_140900f30(wed.m_10)));
         }
     }
     CStringW strBody2 = FUN_14028dee0(0x680, nIconSize);
@@ -629,7 +629,7 @@ CStringW FUN_141841180(const Unk_ThMsg& msg, const Unk_ThWedding& wed, const CSt
                              FUN_14083bdc0(CMsTime(wed.m_10), true, CStringW(L"/"), CStringW(L":")), strDate);
     strBody2 = FUN_141842560(strBody2, nColorB, 0xfffffe);
     strBody.Append(strBody2);
-    return FUN_1418423c0(nSize, strBody);
+    return ReplaceFontSize(nSize, strBody);
 }
 
 // @0x141841a80
@@ -714,7 +714,7 @@ CStringW FUN_141842320(const CStringW& strText)
 }
 
 // @0x1418423c0
-CStringW FUN_1418423c0(unsigned nSize, CStringW& strText)
+CStringW ReplaceFontSize(unsigned nSize, CStringW& strText)
 {
     CStringW strSizeSq;
     strSizeSq.Format(L"size='%d'", nSize);
@@ -811,12 +811,12 @@ int FUN_141842770(const Unk_ThMsg& msg)
 // @0x1418473a0
 void FUN_1418473a0(CStringW& str)
 {
-    FUN_1418473c0(str);
+    MakeUpper(str);
 }
 
 // Uppercases the colour attribute (the attribute names are compared case-insensitively by the HTML).
 // @0x1418473c0
-bool FUN_1418473c0(CStringW& str)
+bool MakeUpper(CStringW& str)
 {
     try
     {

@@ -103,7 +103,7 @@ public:
     Scaleform::GFx::Value GetMember(const char* szMember);                               // child member by name
     bool TryGetWString(const char* szMember, CStringW& strOut);                             // read a string member (merat market products; false if missing)
     bool IsUndefinedOrNull();                                                                    // value is undefined
-    Scaleform::GFx::Value& FUN_1422bb870();                                                  // m_value
+    Scaleform::GFx::Value& GetValue();                                                  // m_value
     Scaleform::GFx::Value Invoke(const char* szMethod);                                     // 0x1422bb330
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2);                      // 0x140acd070
     Scaleform::GFx::Value Invoke(const char* szMethod, int a1, int a2, int a3, CStringW a4, int a5);   // 0x140f24720 (inline COMDAT, defined in uibluemarblegamedialog.cpp; a4 by value: the callee destroys it)
@@ -238,7 +238,7 @@ public:
     Scaleform::GFx::Value FUN_14190b570(const char* szMethod, bool a1, CStringW a2, CStringW a3);   // 0x14190b570 (Invoke; inline COMDAT, defined in uicutscenecinematic.cpp; a2/a3 by value: the callee destroys them)
     Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2);         // 0x14129cce0 (Invoke(int, string), defined in unit_14129ba60.cpp; a2 by value)
     Scaleform::GFx::Value FUN_1409ba0d0(const char* szMethod, int a1, int a2);               // 0x1409ba0d0 (UIQuestGuideDialog setMaxEntity)
-    Scaleform::GFx::Value FUN_140bd2cb0(const char* szMethod, const ASArray& a1);           // 0x140bd2cb0 (UIQuestGuideDialog buildAll)
+    Scaleform::GFx::Value InvokeWithArray(const char* szMethod, const ASArray& a1);           // 0x140bd2cb0 (UIQuestGuideDialog buildAll)
     Scaleform::GFx::Value FUN_140ed11b0(const char* szMethod, unsigned int a1);               // 0x140ed11b0 (inline COMDAT, defined in uiskillbookautodistributedialog.cpp; Value = UInt)
     Scaleform::GFx::Value FUN_140ed0fd0(const char* szMethod, int a1, bool a2);             // 0x140ed0fd0 (UIQuestGuideDialog setTracingEntity)
     Scaleform::GFx::Value InvokeSelf();                                                   // 0x1422bb3c0 call the AS function this object wraps
@@ -271,8 +271,8 @@ public:
     Scaleform::GFx::Value FUN_1422c5e40(const char* szMethod, int a1, int a2, CString a3);    // 0x1422c5e40 (inline COMDAT, defined in astextfield.cpp: replaceText; a3 by value: the callee destroys it)
     template <class T> MS2Ptr<T> FUN_140c436d0(const CString& strName);   // child control by name (guild championship "m_participate" as ASLabel; uiguilddialog.cpp)
     Scaleform::GFx::Value FUN_140e6b140(const char* szMethod, int a1, CString a2);          // 0x140e6b140 (a2 by value: the callee destroys it)
-    Scaleform::GFx::Value FUN_140f2c5d0(const char* szMethod, int a1, ASArray& a2);         // 0x140f2c5d0 (inline COMDAT, defined in uicharacterabilitydialog.cpp)
-    Scaleform::GFx::Value FUN_140f2c690(const char* szMethod, int a1, CStringW a2);         // 0x140f2c690 (inline COMDAT, defined in uicharacterabilitydialog.cpp; a2 by value: the callee destroys it)
+    Scaleform::GFx::Value InvokeIntArray(const char* szMethod, int a1, ASArray& a2);         // 0x140f2c5d0 (inline COMDAT, defined in uicharacterabilitydialog.cpp)
+    Scaleform::GFx::Value InvokeIntString(const char* szMethod, int a1, CStringW a2);         // 0x140f2c690 (inline COMDAT, defined in uicharacterabilitydialog.cpp; a2 by value: the callee destroys it)
     Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2);                // 0x140e0a8c0 (inline COMDAT, defined in uichapterbook.cpp; a1 by value: the callee destroys it)
     Scaleform::GFx::Value FUN_141b62c20(const char* szMethod, int a1, const AScript& a2);    // 0x141b62c20 (inline COMDAT, defined in uiworldmapdialog.cpp: Invoke with an Int and an object)
     Scaleform::GFx::Value FUN_141b62ce0(const char* szMethod, unsigned __int64 a1, unsigned int a2);   // 0x141b62ce0 (inline COMDAT, defined in uiworldmapdialog.cpp: Invoke with a UInt64 and a UInt)
@@ -321,19 +321,19 @@ public:
     Scaleform::GFx::Value FUN_140fa7540(const char* szMethod, CStringW a1, CStringW a2, CStringW a3, CString a4);   // 0x140fa7540 (inline COMDAT, defined in uisystemshopdialog.cpp: "setShop"; all by value)
 
     // AS member setters used by ASDisplayObject's width/height (asdisplayobject.cpp; ASObj declares the same COMDATs).
-    void FUN_1407cb9c0(const char* szName, int n);                       // set an int member
+    void SetIntMember(const char* szName, int n);                       // set an int member
     void SetMemberUInt(const char* szName, unsigned int n);              // set an unsigned member
     void SetMemberFloat(const char* szName, float f);                     // set a float member
     Scaleform::GFx::Value FUN_141a46b60(const char* szMethod, Scaleform::GFx::Value a1, CString a2);   // 0x141a46b60 (Invoke; inline COMDAT, first emitted in uiminimapentity.cpp; both by value: the callee destroys them; astextfieldex.cpp)
     Scaleform::GFx::Value FUN_1422c1870(const char* szMethod, float a1, float a2, bool a3);   // 0x1422c1870 (Invoke; inline COMDAT, defined in asdisplayobject.cpp: hitTestPoint)
     Scaleform::GFx::Value FUN_1422c6f70(const char* szMethod, Scaleform::GFx::Value a1, float a2);   // 0x1422c6f70 (Invoke; inline COMDAT, defined in asdisplayobjectcontainer.cpp; a1 by value: the callee destroys it)
     // AS member setters used by ASButton (asbutton.cpp; ASObj declares the same COMDATs)
-    void FUN_1407cbbe0(const char* szName, bool b);                      // set a bool member
-    void FUN_1407cba60(const char* szName, CString str);                 // set a string member
-    void FUN_1407cbb20(const char* szName, CStringW str);                // set a wide string member
+    void SetBoolMember(const char* szName, bool b);                      // set a bool member
+    void SetStringMember(const char* szName, CString str);                 // set a string member
+    void SetWStringMember(const char* szName, CStringW str);                // set a wide string member
     Scaleform::GFx::Value FUN_1422e9170(const char* szMethod, CStringW a1, Scaleform::GFx::Value a2);   // 0x1422e9170 Invoke(method, string, value) (inline COMDAT, defined in asbuttongroup.cpp; both by value)
     Scaleform::GFx::Value Invoke(const char* szMethod, Unk_MouseCursorType a1);      // 0x1422cef80 (inline COMDAT, defined in asmousecursor.cpp; an Int value)
-    void FUN_141b46a40(const char* szName, class ASFunction fn);         // set a member to an AS function (inline COMDAT, uiugcitemeditdialog.cpp; fn by value; aslistitemrenderer.cpp)
+    void SetFunction(const char* szName, class ASFunction fn);         // set a member to an AS function (inline COMDAT, uiugcitemeditdialog.cpp; fn by value; aslistitemrenderer.cpp)
     // ASUIComponent (asuicomponent.cpp)
     void FUN_1409adbe0(const char* szName, Scaleform::GFx::Value v);     // set a member to a value (v by value; asbilldata.cpp)
     Scaleform::GFx::Value FUN_140e262c0(const char* szMethod, const char* szArg);   // 0x140e262c0 Invoke with one string argument
@@ -379,7 +379,7 @@ public:   // the ASObj stand-in's members (below) were public
     // Members once declared on the ASObj stand-in (asobj.h; ASObj is a typedef of AScript). Setters by value type,
     // most of them per-unit inline COMDATs of one AScript::Set<T> template.
     // (ItemDropResult: the drop row filler FUN_1409c5bd0)
-    // The bool/CString/CStringW/int setters FUN_1407cbbe0/cba60/cbb20/cb9c0 and FUN_1422bb2b0 (a member as text) are
+    // The bool/CString/CStringW/int setters SetBoolMember/cba60/cbb20/cb9c0 and FUN_1422bb2b0 (a member as text) are
     // AScript's own (commonfiles/shopcategorytable.cpp, gfxui/ascript.cpp): calls through an ASObj bind those names.
     void FUN_1409c10e0(const char* szName, int n);                       // set an int member (uimeratmarketdialog.cpp "saleState")
     void FUN_1409c0dc0(const char* szName, const char* szValue);         // set a string member from a char*

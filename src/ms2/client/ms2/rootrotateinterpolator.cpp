@@ -69,7 +69,7 @@ bool RootRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
 }
 
 // @0x140dc9e40
-void RootRotateInterpolator::FUN_140dc9e40(efd::Point3* pRotation)
+void RootRotateInterpolator::SetRotation(efd::Point3* pRotation)
 {
     if (m_rotation != *pRotation)
     {

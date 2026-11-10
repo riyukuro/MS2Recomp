@@ -250,14 +250,14 @@ void CTargetLookCenterCameraMode::FUN_140a4d5f0(double fTime)
         {
             m_68 = m_128;
         }
-        else if (!FUN_140a4e240())
+        else if (!IsInsideAllowedRing())
         {
             m_68 = FUN_140a4e660(ptDir.x, ptDir.y);
         }
     }
-    FUN_140a4e490(&m_68);
+    WrapAngle(&m_68);
     float fEps = 0.01f;
-    if (FUN_140a4e370() && fTime != 0.0 && FUN_14059d930(m_13c - m_68) > 0.01f)
+    if (IsYawLockExpired() && fTime != 0.0 && FUN_14059d930(m_13c - m_68) > 0.01f)
     {
         float fPrev = m_13c;
         float fCur = m_68;
@@ -278,7 +278,7 @@ void CTargetLookCenterCameraMode::FUN_140a4d5f0(double fTime)
             m_68 = (float)((double)m_13c + fTime * 3.0);
         else
             m_68 = (float)((double)m_13c - fTime * 3.0);
-        FUN_140a4e490(&m_68);
+        WrapAngle(&m_68);
     }
     float fX = m_50 * FUN_1409f25a0(m_68) + m_78.x;
     float fY = m_50 * FUN_1409f2310(m_68) + m_78.y;
@@ -341,7 +341,7 @@ void CTargetLookCenterCameraMode::vfunc_39(double fTime)
                     m_a0 = m_a0 + fSpeed;
             }
             float t = (float)fTime * fDist * m_a0 + fBlend;
-            if (t > 0.5f && !FUN_140a4e370())
+            if (t > 0.5f && !IsYawLockExpired())
             {
                 m_c0 = m_d8;
             }
@@ -406,11 +406,11 @@ void CTargetLookCenterCameraMode::FUN_140a4e110(float fAngle)
 MS2_REPLACE_METHOD(0x140a4e110, CTargetLookCenterCameraMode, FUN_140a4e110, 49, 0x7BF83896);
 
 // @0x140a4e150
-void CTargetLookCenterCameraMode::FUN_140a4e150(float f)
+void CTargetLookCenterCameraMode::SetOuterRadius(float f)
 {
     m_124 = f;
 }
-MS2_REPLACE_METHOD(0x140a4e150, CTargetLookCenterCameraMode, FUN_140a4e150, 31, 0xC7953429);
+MS2_REPLACE_METHOD(0x140a4e150, CTargetLookCenterCameraMode, SetOuterRadius, 31, 0xC7953429);
 
 // @0x140a4e180
 void CTargetLookCenterCameraMode::FUN_140a4e180(bool b)
@@ -422,18 +422,18 @@ void CTargetLookCenterCameraMode::FUN_140a4e180(bool b)
 MS2_REPLACE_METHOD(0x140a4e180, CTargetLookCenterCameraMode, FUN_140a4e180, 70, 0x6F50E6D0);
 
 // @0x140a4e1d0
-void CTargetLookCenterCameraMode::FUN_140a4e1d0(float f)
+void CTargetLookCenterCameraMode::SetInnerRadius(float f)
 {
     m_120 = f;
 }
-MS2_REPLACE_METHOD(0x140a4e1d0, CTargetLookCenterCameraMode, FUN_140a4e1d0, 31, 0x623189B5);
+MS2_REPLACE_METHOD(0x140a4e1d0, CTargetLookCenterCameraMode, SetInnerRadius, 31, 0x623189B5);
 
 // @0x140a4e200
-void CTargetLookCenterCameraMode::FUN_140a4e200(bool b)
+void CTargetLookCenterCameraMode::SetUseFixedYaw(bool b)
 {
     m_12d = b;
 }
-MS2_REPLACE_METHOD(0x140a4e200, CTargetLookCenterCameraMode, FUN_140a4e200, 26, 0x9F6E2567);
+MS2_REPLACE_METHOD(0x140a4e200, CTargetLookCenterCameraMode, SetUseFixedYaw, 26, 0x9F6E2567);
 
 // @0x140a4e220
 bool CTargetLookCenterCameraMode::FUN_140a4e220()
@@ -443,7 +443,7 @@ bool CTargetLookCenterCameraMode::FUN_140a4e220()
 MS2_REPLACE_METHOD(0x140a4e220, CTargetLookCenterCameraMode, FUN_140a4e220, 18, 0xB0F2DC67);
 
 // @0x140a4e240
-bool CTargetLookCenterCameraMode::FUN_140a4e240()
+bool CTargetLookCenterCameraMode::IsInsideAllowedRing()
 {
     efd::Point2 ptEye(m_78.x, m_78.y);
     efd::Point2 ptCenter(m_114.x, m_114.y);
@@ -463,17 +463,17 @@ bool CTargetLookCenterCameraMode::FUN_140a4e240()
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140a4e240, CTargetLookCenterCameraMode, FUN_140a4e240, 286, 0x4F1A9235);
+MS2_REPLACE_METHOD(0x140a4e240, CTargetLookCenterCameraMode, IsInsideAllowedRing, 286, 0x4F1A9235);
 
 // @0x140a4e370
-bool CTargetLookCenterCameraMode::FUN_140a4e370()
+bool CTargetLookCenterCameraMode::IsYawLockExpired()
 {
     unsigned int now = GetTickCountMs2();
     if (now < m_130 + m_134)
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x140a4e370, CTargetLookCenterCameraMode, FUN_140a4e370, 57, 0x85A7E535);
+MS2_REPLACE_METHOD(0x140a4e370, CTargetLookCenterCameraMode, IsYawLockExpired, 57, 0x85A7E535);
 
 // @0x140a4e3b0
 void CTargetLookCenterCameraMode::FUN_140a4e3b0()
@@ -506,14 +506,14 @@ bool CTargetLookCenterCameraMode::FUN_140a4e3e0()
 MS2_REPLACE_METHOD(0x140a4e3e0, CTargetLookCenterCameraMode, FUN_140a4e3e0, 165, 0xC73F4930);
 
 // @0x140a4e490
-void CTargetLookCenterCameraMode::FUN_140a4e490(float* pfAngle)
+void CTargetLookCenterCameraMode::WrapAngle(float* pfAngle)
 {
     while (*pfAngle > 6.2831855f)
         *pfAngle = *pfAngle - 6.2831855f;
     while (*pfAngle < 0.0f)
         *pfAngle = *pfAngle + 6.2831855f;
 }
-MS2_REPLACE_METHOD(0x140a4e490, CTargetLookCenterCameraMode, FUN_140a4e490, 98, 0xCFFC24E1);
+MS2_REPLACE_METHOD(0x140a4e490, CTargetLookCenterCameraMode, WrapAngle, 98, 0xCFFC24E1);
 
 // @0x140a4e500
 Unk_Point2 Unk_Point2::FUN_140a4e500(const Unk_Point2& pt) const

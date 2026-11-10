@@ -37,22 +37,22 @@
 // name; the by-value CString is destroyed by the callee.
 
 // The two registrations of this file whose factory lives in a neighbouring unit.
-GameEvent* FUN_14041d460();   // ?\gameeventreturnuser.cpp: the base class takes an id, so it has no factory of its own
-GameEvent* FUN_14041e930();   // ?\gameeventstringboard.cpp
+GameEvent* CreateGameEventShutdown();   // ?\gameeventreturnuser.cpp: the base class takes an id, so it has no factory of its own
+GameEvent* CreateGameEventStringBoard();   // ?\gameeventstringboard.cpp
 
 // The factories of this unit (they are defined further down, in exe order).
-GameEvent* FUN_14041d6a0();
-GameEvent* FUN_14041d810();
-GameEvent* FUN_14041d900();
-GameEvent* FUN_14041dab0();
-GameEvent* FUN_14041dba0();
-GameEvent* FUN_14041dc90();
-GameEvent* FUN_14041dd80();
-GameEvent* FUN_14041de70();
-GameEvent* FUN_14041df60();
-GameEvent* FUN_14041e050();
-GameEvent* FUN_14041e140();
-GameEvent* FUN_14041e230();
+GameEvent* CreateGameEventShutdownNoParam();
+GameEvent* CreateGameEventShutdownShop();
+GameEvent* CreateGameEventShutdownDungeonMatch();
+GameEvent* CreateGameEventShutdownDesignersMarket();
+GameEvent* CreateGameEventShutdownMusicScoreMarket();
+GameEvent* CreateGameEventShutdownNpcTalk();
+GameEvent* CreateGameEventShutdownMastery();
+GameEvent* CreateGameEventShutdownMasteryReward();
+GameEvent* CreateGameEventShutdownEnchantScroll();
+GameEvent* CreateGameEventShutdownItemSocketTarget();
+GameEvent* CreateGameEventShutdownItemSocketTargetGemStone();
+GameEvent* CreateGameEventShutdownUGCDownload();
 
 // The per-kind shut-down value (gameeventvalue.cpp): OnStart takes a reference on an id, vfunc_6 releases it again.
 class Unk_ShutdownEventValue;
@@ -67,20 +67,20 @@ int Parse_140218e60(const CStringW& str);
 // The 14 registrations, in .text$di order (0x1400b8890..0x1400b8ca0); the two NULL factories are the classes whose
 // ctor takes the object kind (0x14041d460 is in gameeventreturnuser.cpp).
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regShutdown(L"GameEventShutdown", (ClassObjectCreateFn)FUN_14041d460);                                       // 0x143aaeec5
-static ClassObjectRegistrar s_regDesignersMarket(L"GameEventShutdownDesignersMarket", (ClassObjectCreateFn)FUN_14041dab0);                 // 0x143aaeec9
-static ClassObjectRegistrar s_regDungeonMatch(L"GameEventShutdownDungeonMatch", (ClassObjectCreateFn)FUN_14041d900);                       // 0x143aaeec8
-static ClassObjectRegistrar s_regEnchantScroll(L"GameEventShutdownEnchantScroll", (ClassObjectCreateFn)FUN_14041df60);                     // 0x143aaeece
-static ClassObjectRegistrar s_regItemSocketTarget(L"GameEventShutdownItemSocketTarget", (ClassObjectCreateFn)FUN_14041e050);               // 0x143aaeecf
-static ClassObjectRegistrar s_regItemSocketTargetGemStone(L"GameEventShutdownItemSocketTargetGemStone", (ClassObjectCreateFn)FUN_14041e140); // 0x143aaeed0
-static ClassObjectRegistrar s_regMastery(L"GameEventShutdownMastery", (ClassObjectCreateFn)FUN_14041dd80);                                 // 0x143aaeecc
-static ClassObjectRegistrar s_regMasteryReward(L"GameEventShutdownMasteryReward", (ClassObjectCreateFn)FUN_14041de70);                     // 0x143aaeecd
-static ClassObjectRegistrar s_regMusicScoreMarket(L"GameEventShutdownMusicScoreMarket", (ClassObjectCreateFn)FUN_14041dba0);               // 0x143aaeeca
-static ClassObjectRegistrar s_regNoParam(L"GameEventShutdownNoParam", (ClassObjectCreateFn)FUN_14041d6a0);                                 // 0x143aaeec6
-static ClassObjectRegistrar s_regNpcTalk(L"GameEventShutdownNpcTalk", (ClassObjectCreateFn)FUN_14041dc90);                                 // 0x143aaeecb
-static ClassObjectRegistrar s_regShop(L"GameEventShutdownShop", (ClassObjectCreateFn)FUN_14041d810);                                       // 0x143aaeec7
-static ClassObjectRegistrar s_regUGCDownload(L"GameEventShutdownUGCDownload", (ClassObjectCreateFn)FUN_14041e230);                         // 0x143aaeed1
-static ClassObjectRegistrar s_regStringBoard(L"GameEventStringBoard", (ClassObjectCreateFn)FUN_14041e930);                                 // 0x143aaeed2
+static ClassObjectRegistrar s_regShutdown(L"GameEventShutdown", (ClassObjectCreateFn)CreateGameEventShutdown);                                       // 0x143aaeec5
+static ClassObjectRegistrar s_regDesignersMarket(L"GameEventShutdownDesignersMarket", (ClassObjectCreateFn)CreateGameEventShutdownDesignersMarket);                 // 0x143aaeec9
+static ClassObjectRegistrar s_regDungeonMatch(L"GameEventShutdownDungeonMatch", (ClassObjectCreateFn)CreateGameEventShutdownDungeonMatch);                       // 0x143aaeec8
+static ClassObjectRegistrar s_regEnchantScroll(L"GameEventShutdownEnchantScroll", (ClassObjectCreateFn)CreateGameEventShutdownEnchantScroll);                     // 0x143aaeece
+static ClassObjectRegistrar s_regItemSocketTarget(L"GameEventShutdownItemSocketTarget", (ClassObjectCreateFn)CreateGameEventShutdownItemSocketTarget);               // 0x143aaeecf
+static ClassObjectRegistrar s_regItemSocketTargetGemStone(L"GameEventShutdownItemSocketTargetGemStone", (ClassObjectCreateFn)CreateGameEventShutdownItemSocketTargetGemStone); // 0x143aaeed0
+static ClassObjectRegistrar s_regMastery(L"GameEventShutdownMastery", (ClassObjectCreateFn)CreateGameEventShutdownMastery);                                 // 0x143aaeecc
+static ClassObjectRegistrar s_regMasteryReward(L"GameEventShutdownMasteryReward", (ClassObjectCreateFn)CreateGameEventShutdownMasteryReward);                     // 0x143aaeecd
+static ClassObjectRegistrar s_regMusicScoreMarket(L"GameEventShutdownMusicScoreMarket", (ClassObjectCreateFn)CreateGameEventShutdownMusicScoreMarket);               // 0x143aaeeca
+static ClassObjectRegistrar s_regNoParam(L"GameEventShutdownNoParam", (ClassObjectCreateFn)CreateGameEventShutdownNoParam);                                 // 0x143aaeec6
+static ClassObjectRegistrar s_regNpcTalk(L"GameEventShutdownNpcTalk", (ClassObjectCreateFn)CreateGameEventShutdownNpcTalk);                                 // 0x143aaeecb
+static ClassObjectRegistrar s_regShop(L"GameEventShutdownShop", (ClassObjectCreateFn)CreateGameEventShutdownShop);                                       // 0x143aaeec7
+static ClassObjectRegistrar s_regUGCDownload(L"GameEventShutdownUGCDownload", (ClassObjectCreateFn)CreateGameEventShutdownUGCDownload);                         // 0x143aaeed1
+static ClassObjectRegistrar s_regStringBoard(L"GameEventStringBoard", (ClassObjectCreateFn)CreateGameEventStringBoard);                                 // 0x143aaeed2
 #endif
 
 // ---- GameEventShutdown ----------------------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ CStringW GameEventShutdown::GetTypeName() { return CStringW(L"GameEventShutdown"
 // @0x14041d4c0
 GameEventShutdown::GameEventShutdown(int nId) : m_nId(nId)
 {
-    FUN_1402e3480(1);
+    SetFlag(1);
 }
 
 // @0x14041d540
@@ -116,7 +116,7 @@ void GameEventShutdown::vfunc_6()
 // ---- GameEventShutdownNoParam ---------------------------------------------------------------------------------------
 
 // @0x14041d6a0
-GameEvent* FUN_14041d6a0() { return 0; }
+GameEvent* CreateGameEventShutdownNoParam() { return 0; }
 
 // @0x14041d6b0
 CStringW GameEventShutdownNoParam::GetTypeName() { return CStringW(L"GameEventShutdownNoParam"); }
@@ -124,7 +124,7 @@ CStringW GameEventShutdownNoParam::GetTypeName() { return CStringW(L"GameEventSh
 // @0x14041d700
 GameEventShutdownNoParam::GameEventShutdownNoParam(int nId) : m_nId(nId)
 {
-    FUN_1402e3480(1);
+    SetFlag(1);
 }
 
 // @0x14041d780
@@ -147,7 +147,7 @@ void GameEventShutdownNoParam::vfunc_6()
 // ---- GameEventShutdownShop ------------------------------------------------------------------------------------------
 
 // @0x14041d810
-GameEvent* FUN_14041d810() { return new GameEventShutdownShop; }
+GameEvent* CreateGameEventShutdownShop() { return new GameEventShutdownShop; }
 
 // @0x14041d870
 CStringW GameEventShutdownShop::GetTypeName() { return CStringW(L"GameEventShutdownShop"); }
@@ -158,7 +158,7 @@ GameEventShutdownShop::GameEventShutdownShop() : GameEventShutdown(1) {}
 // ---- GameEventShutdownDungeonMatch ----------------------------------------------------------------------------------
 
 // @0x14041d900
-GameEvent* FUN_14041d900() { return new GameEventShutdownDungeonMatch; }
+GameEvent* CreateGameEventShutdownDungeonMatch() { return new GameEventShutdownDungeonMatch; }
 
 // @0x14041d960
 CStringW GameEventShutdownDungeonMatch::GetTypeName() { return CStringW(L"GameEventShutdownDungeonMatch"); }
@@ -183,7 +183,7 @@ void GameEventShutdownDungeonMatch::vfunc_2()
 // ---- GameEventShutdownDesignersMarket -------------------------------------------------------------------------------
 
 // @0x14041dab0
-GameEvent* FUN_14041dab0() { return new GameEventShutdownDesignersMarket; }
+GameEvent* CreateGameEventShutdownDesignersMarket() { return new GameEventShutdownDesignersMarket; }
 
 // @0x14041db10
 CStringW GameEventShutdownDesignersMarket::GetTypeName() { return CStringW(L"GameEventShutdownDesignersMarket"); }
@@ -194,7 +194,7 @@ GameEventShutdownDesignersMarket::GameEventShutdownDesignersMarket() : GameEvent
 // ---- GameEventShutdownMusicScoreMarket ------------------------------------------------------------------------------
 
 // @0x14041dba0
-GameEvent* FUN_14041dba0() { return new GameEventShutdownMusicScoreMarket; }
+GameEvent* CreateGameEventShutdownMusicScoreMarket() { return new GameEventShutdownMusicScoreMarket; }
 
 // @0x14041dc00
 CStringW GameEventShutdownMusicScoreMarket::GetTypeName() { return CStringW(L"GameEventShutdownMusicScoreMarket"); }
@@ -205,7 +205,7 @@ GameEventShutdownMusicScoreMarket::GameEventShutdownMusicScoreMarket() : GameEve
 // ---- GameEventShutdownNpcTalk ---------------------------------------------------------------------------------------
 
 // @0x14041dc90
-GameEvent* FUN_14041dc90() { return new GameEventShutdownNpcTalk; }
+GameEvent* CreateGameEventShutdownNpcTalk() { return new GameEventShutdownNpcTalk; }
 
 // @0x14041dcf0
 CStringW GameEventShutdownNpcTalk::GetTypeName() { return CStringW(L"GameEventShutdownNpcTalk"); }
@@ -216,7 +216,7 @@ GameEventShutdownNpcTalk::GameEventShutdownNpcTalk() : GameEventShutdown(5) {}
 // ---- GameEventShutdownMastery ---------------------------------------------------------------------------------------
 
 // @0x14041dd80
-GameEvent* FUN_14041dd80() { return new GameEventShutdownMastery; }
+GameEvent* CreateGameEventShutdownMastery() { return new GameEventShutdownMastery; }
 
 // @0x14041dde0
 CStringW GameEventShutdownMastery::GetTypeName() { return CStringW(L"GameEventShutdownMastery"); }
@@ -227,7 +227,7 @@ GameEventShutdownMastery::GameEventShutdownMastery() : GameEventShutdown(6) {}
 // ---- GameEventShutdownMasteryReward ---------------------------------------------------------------------------------
 
 // @0x14041de70
-GameEvent* FUN_14041de70() { return new GameEventShutdownMasteryReward; }
+GameEvent* CreateGameEventShutdownMasteryReward() { return new GameEventShutdownMasteryReward; }
 
 // @0x14041ded0
 CStringW GameEventShutdownMasteryReward::GetTypeName() { return CStringW(L"GameEventShutdownMasteryReward"); }
@@ -238,7 +238,7 @@ GameEventShutdownMasteryReward::GameEventShutdownMasteryReward() : GameEventShut
 // ---- GameEventShutdownEnchantScroll ---------------------------------------------------------------------------------
 
 // @0x14041df60
-GameEvent* FUN_14041df60() { return new GameEventShutdownEnchantScroll; }
+GameEvent* CreateGameEventShutdownEnchantScroll() { return new GameEventShutdownEnchantScroll; }
 
 // @0x14041dfc0
 CStringW GameEventShutdownEnchantScroll::GetTypeName() { return CStringW(L"GameEventShutdownEnchantScroll"); }
@@ -249,7 +249,7 @@ GameEventShutdownEnchantScroll::GameEventShutdownEnchantScroll() : GameEventShut
 // ---- GameEventShutdownItemSocketTarget ------------------------------------------------------------------------------
 
 // @0x14041e050
-GameEvent* FUN_14041e050() { return new GameEventShutdownItemSocketTarget; }
+GameEvent* CreateGameEventShutdownItemSocketTarget() { return new GameEventShutdownItemSocketTarget; }
 
 // @0x14041e0b0
 CStringW GameEventShutdownItemSocketTarget::GetTypeName() { return CStringW(L"GameEventShutdownItemSocketTarget"); }
@@ -260,7 +260,7 @@ GameEventShutdownItemSocketTarget::GameEventShutdownItemSocketTarget() : GameEve
 // ---- GameEventShutdownItemSocketTargetGemStone ----------------------------------------------------------------------
 
 // @0x14041e140
-GameEvent* FUN_14041e140() { return new GameEventShutdownItemSocketTargetGemStone; }
+GameEvent* CreateGameEventShutdownItemSocketTargetGemStone() { return new GameEventShutdownItemSocketTargetGemStone; }
 
 // @0x14041e1a0
 CStringW GameEventShutdownItemSocketTargetGemStone::GetTypeName()
@@ -274,7 +274,7 @@ GameEventShutdownItemSocketTargetGemStone::GameEventShutdownItemSocketTargetGemS
 // ---- GameEventShutdownUGCDownload -----------------------------------------------------------------------------------
 
 // @0x14041e230
-GameEvent* FUN_14041e230() { return new GameEventShutdownUGCDownload; }
+GameEvent* CreateGameEventShutdownUGCDownload() { return new GameEventShutdownUGCDownload; }
 
 // @0x14041e290
 CStringW GameEventShutdownUGCDownload::GetTypeName() { return CStringW(L"GameEventShutdownUGCDownload"); }
@@ -282,7 +282,7 @@ CStringW GameEventShutdownUGCDownload::GetTypeName() { return CStringW(L"GameEve
 // @0x14041e2e0
 GameEventShutdownUGCDownload::GameEventShutdownUGCDownload() : GameEventShutdown(0xb)
 {
-    FUN_1402e3480(3);
+    SetFlag(3);
 }
 
 // @0x14041e340

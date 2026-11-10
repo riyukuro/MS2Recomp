@@ -79,14 +79,14 @@ extern NiFixedString DAT_143ae50a0;
 float FUN_140a38cd0(float);
 class CrashManagerCli;
 MS2Ptr<CItemData> FUN_14053f870(int);
-CString FUN_1410280d0(int, CString);
+CString GetDownloadFilePath(int, CString);
 NiPointer<NiAVObject> FindMeshByName(NiPointer<NiAVObject>, const CString&);
 int FUN_1414232f0(NiPointer<NiAVObject>, NiPointer<NiTexture>);
-// CUgcManager::FUN_1418845a0 (ugcmanager_4.cpp): the entity id goes by value.
-class CUgcManager { public: void FUN_1418845a0(CubeItemInfo*, egf::EntityID id); };   // C3: member view
+// CUgcManager::DownloadCubeLook (ugcmanager_4.cpp): the entity id goes by value.
+class CUgcManager { public: void DownloadCubeLook(CubeItemInfo*, egf::EntityID id); };   // C3: member view
 FittingDollPC* GetOrCreateDoll(int, int, int);
 void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: was (const NiMatrix3&, NiPoint3&)
-void FUN_140b86230(const efd::Point3&, NiMatrix3&);
+void EulerToMatrix(const efd::Point3&, NiMatrix3&);
 int FUN_14123c660(GameObject*);
 void FUN_14123c300(GameObject*, float);
 void FUN_14121c170(GameObject*, NiFixedString);
@@ -251,11 +251,11 @@ int CNifCubeGuide::FUN_1410b0680() {
     if (data == NULL) return 0;
     CString textureName(data->cubeTextureName.mesh);
     if (textureName.GetLength() == 0) return 0;
-    CString path = FUN_1410280d0(2, item->look->m_strUrl);
+    CString path = GetDownloadFilePath(2, item->look->m_strUrl);
     if (_access(path, 4) != 0) return 1;
     NiPointer<NiTexture> texture = ((class CNifLoadingService*)GetNifLoadingService())->FindTexture(path, NULL);
     if (texture == NULL) {
-        TSingleton<CUgcManager>::GetInstance()->FUN_1418845a0(item.get(), 0);
+        TSingleton<CUgcManager>::GetInstance()->DownloadCubeLook(item.get(), 0);
         return 1;
     }
     NiPointer<NiAVObject> target = FindMeshByName(NiDynamicCast(NiAVObject, (NiNode*)node), textureName);
@@ -293,7 +293,7 @@ MS2_REPLACE_METHOD(0x1410b0cb0, CFittingDollCubeGuide, vfunc_4, 117, 0xCB7A88BE)
 NiMatrix3 CFittingDollCubeGuide::vfunc_5() {
     NiMatrix3 rotation;
     NiPoint3 angles = doll->vfunc_20();
-    FUN_140b86230(reinterpret_cast<const efd::Point3&>(angles), rotation);
+    EulerToMatrix(reinterpret_cast<const efd::Point3&>(angles), rotation);
     return rotation;
 }
 MS2_REPLACE_METHOD(0x1410b0d30, CFittingDollCubeGuide, vfunc_5, 156, 0xA46EFA4C);
@@ -385,7 +385,7 @@ NiMatrix3 CKfmCubeGuide::vfunc_5() {
     NiPoint3 angles;
     reinterpret_cast<egf::Entity*>(entity.operator->())->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(angles));
     NiMatrix3 rotation;
-    FUN_140b86230(reinterpret_cast<const efd::Point3&>(angles), rotation);
+    EulerToMatrix(reinterpret_cast<const efd::Point3&>(angles), rotation);
     return rotation;
 }
 MS2_REPLACE_METHOD(0x1410b1820, CKfmCubeGuide, vfunc_5, 155, 0xFB41EE8F);

@@ -27,7 +27,7 @@ public:
     virtual void vfunc_43();                                    // 43 0x140fa8820
     virtual int vfunc_48() { return 0x4ef5; }                   // 48 0x140fa8b90
 
-    void FUN_140fa8970(const CStringW& strText, int nType);     // show the message (now, or once the movie is loaded)
+    void ShowMessage(const CStringW& strText, int nType);     // show the message (now, or once the movie is loaded)
 
 private:
     MS2_LAYOUT_FRIEND;

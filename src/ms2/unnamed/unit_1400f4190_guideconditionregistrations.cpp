@@ -11,7 +11,7 @@
 
 // The class-object factory registrar (0x140316aa0, commonfiles\dungeonmissiondata.cpp): the by-value name is consumed
 // and destroyed by the callee. The factories below are defined by the TU's own code unit.
-ClassObject* FUN_1413ad950();
+ClassObject* CreateObject();
 
 // The initialized marker: no storage, so the dynamic initializer is the registration call and nothing else.
 struct Unk_RegMarker {};
@@ -45,7 +45,7 @@ static Unk_RegMarker s_initState =
 // @0x1400f4320
 static char s_regSubJobCode;
 static Unk_RegMarker s_initSubJobCode =
-    (((ClassObjectRegistrar*)&s_regSubJobCode)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionSubJobCode"), FUN_1413ad950), Unk_RegMarker());
+    (((ClassObjectRegistrar*)&s_regSubJobCode)->ClassObjectRegistrar::ClassObjectRegistrar(CStringW(L"CGuideConditionSubJobCode"), CreateObject), Unk_RegMarker());
 
 // @0x1400f4370
 static char s_regSummonPet;

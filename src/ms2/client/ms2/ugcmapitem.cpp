@@ -95,7 +95,7 @@ MS2Ptr<CUgcItemLook> CUGCMapItem::GetLook()
 }
 
 // @0x140dfc420
-__int64 CUGCMapItem::FUN_140dfc420()
+__int64 CUGCMapItem::GetLookId()
 {
     __int64 n;
     if (m_spLook.get() != 0)
@@ -121,7 +121,7 @@ void Unk_CubeStock::FUN_140dfc4e0()
 }
 
 // @0x140dfc4f0
-void Unk_CubeStock::FUN_140dfc4f0()
+void Unk_CubeStock::Clear()
 {
     m_map.RemoveAll();
 }
@@ -232,7 +232,7 @@ int Unk_CubeStock::FUN_140dfcbf0(int nItemId, __int64 nLookId)
             continue;
         if (spItem->GetItemId() == nItemId)
         {
-            if (spItem->FUN_140dfc420() == nLookId)
+            if (spItem->GetLookId() == nLookId)
                 n = n + spItem->FUN_140dfc350();
         }
     }

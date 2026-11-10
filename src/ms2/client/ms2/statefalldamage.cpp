@@ -21,7 +21,7 @@
 #include "ms2/client/ms2/equipment.h"
 
 // The actor's buff set: the fall-damage knock-back direction.
-class Unk_PCMove { public: Vector3 FUN_1416836d0(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetPressedMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_FallDmgBuff { public: };
 
 // PCBase vtable view: slot 22 takes the point by value (the exe copies it to a 16-aligned temp)
@@ -93,7 +93,7 @@ void StateFallDamage::vfunc_8(double fTime)
     if (m_pOwner->vfunc_63() == 0)
         return;
     Unk_FallDmgBuff* pBuff = (Unk_FallDmgBuff*)m_pOwner->FUN_14166d240();
-    reinterpret_cast<Unk_FallDmgSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_1416836d0())));
+    reinterpret_cast<Unk_FallDmgSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetPressedMoveDirection())));
     if (m_pOwner->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else

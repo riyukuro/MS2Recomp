@@ -50,27 +50,27 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);               // IMessageListener 0 0x14100b7c0
 
     void FUN_14100c1e0();                                                   // 0x14100c1e0 UIDialog::vfunc_67
-    void FUN_14100c200(int nPage);                                          // 0x14100c200 the play page / score page tab
-    void FUN_14100c2c0();                                                   // 0x14100c2c0 the mastery bar
+    void SetPage(int nPage);                                          // 0x14100c200 the play page / score page tab
+    void UpdateMasteryBar();                                                   // 0x14100c2c0 the mastery bar
     int OnPlayNote();                                                    // 0x14100c750 start the first score
     int GetSelectedTabIndex();                                                    // 0x14100c890 the selected tab
-    bool FUN_14100c8f0();                                                   // 0x14100c8f0 the score page is shown
-    void FUN_14100c910(MS2Ptr<CItem> spItem);                               // 0x14100c910 put a score into a free slot
-    void FUN_14100ca90(int nIndex, MS2Ptr<CItem> spItem);                   // 0x14100ca90 set one score slot
-    void FUN_14100d260(int nStart, int nEnd);                               // 0x14100d260 a score starts to play
-    void FUN_14100d600();                                                   // 0x14100d600 a score ended
+    bool IsScorePageShown();                                                   // 0x14100c8f0 the score page is shown
+    void AddScore(MS2Ptr<CItem> spItem);                               // 0x14100c910 put a score into a free slot
+    void SetScore(int nIndex, MS2Ptr<CItem> spItem);                   // 0x14100ca90 set one score slot
+    void OnScorePlayStart(int nStart, int nEnd);                               // 0x14100d260 a score starts to play
+    void OnScorePlayEnd();                                                   // 0x14100d600 a score ended
     bool HasAnyScore();                                                   // 0x14100d8c0 any score chosen
     void TickAutoPlay();                                                   // 0x14100d920 auto start
     int GetAutoPlay();                                                    // 0x14100d9f0 m_nAutoPlay
-    void FUN_14100da10();                                                   // 0x14100da10 the play timer text
-    void FUN_14100e060();                                                   // 0x14100e060 bind the key buttons
+    void UpdatePlayTimer();                                                   // 0x14100da10 the play timer text
+    void BindKeyButtons();                                                   // 0x14100e060 bind the key buttons
     void MapKeyButton(int nKey, MS2Ptr<ASButton> spButton, int nIndex);   // 0x14100e880
     void ClampAndApplyOctave();                                                   // 0x14100e910 apply the octave
-    void FUN_14100e9a0(int nMode);                                          // 0x14100e9a0 the play / stop buttons
+    void SetMode(int nMode);                                          // 0x14100e9a0 the play / stop buttons
     int GetMode();                                                    // inline: m_nMode (instrumentmanager.cpp)
     void SetInstrument(int nInstrument);                                    // inline: set m_nInstrument (instrumentmanager.cpp)
     void UpdateSlotCount();                                                   // 0x14100f1f0 the slot count
-    unsigned char FUN_14100f2e0();                                          // 0x14100f2e0 play the chosen score
+    unsigned char PlayCurrentScore();                                          // 0x14100f2e0 play the chosen score
 
     // the two page lookups are UISwfEntity::GetChild<ASUIComponent> (0x140c02990)
 

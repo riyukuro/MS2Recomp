@@ -27,7 +27,7 @@ int ItemGift::ValidateItem(CString& error) {
     MS2Ptr<CItemData> item=FUN_14053f870(m_itemId);
     if(item.IsNull()) { error=(const wchar_t*)StringFormat<unsigned int>(L"ItemGift::ValidateItem no item:{0}",m_itemId);return 0; }
     if(m_count>1) {
-        if(!reinterpret_cast<Unk_GiftItem*>(item.operator->())->FUN_14053c7c0()) { error=(const wchar_t*)StringFormat<unsigned int>(L"ItemGift::ValidateItem no foldable item:{0}",m_itemId);return 0; }
+        if(!reinterpret_cast<Unk_GiftItem*>(item.operator->())->IsStackable()) { error=(const wchar_t*)StringFormat<unsigned int>(L"ItemGift::ValidateItem no foldable item:{0}",m_itemId);return 0; }
     }
     return 1;
 }
@@ -45,10 +45,10 @@ ItemGiftPcBang::ItemGiftPcBang() : m_giftId(0) {}
 void ItemGiftPcBang::vfunc_4(void* xml) { ItemEntity::vfunc_2(xml);XmlGetAttr((class TiXmlElement*)(xml), "giftID", m_giftId); }
 MS2_REPLACE_METHOD(0x1405B3B70, ItemGiftPcBang, vfunc_4, 63, 0x2610ADE3);
 // @0x1405b3bc0
-void ItemGiftPcBang::vfunc_5(Unk_GiftOutput& out) { FUN_14026b030(out);FUN_14070f9a0(reinterpret_cast<COutputStream&>(out), m_giftId); }
+void ItemGiftPcBang::vfunc_5(Unk_GiftOutput& out) { Write(out);FUN_14070f9a0(reinterpret_cast<COutputStream&>(out), m_giftId); }
 MS2_REPLACE_METHOD(0x1405B3BC0, ItemGiftPcBang, vfunc_5, 52, 0x19D5B21B);
 // @0x1405b3c00
-void ItemGiftPcBang::vfunc_6(Unk_GiftInput& in) { FUN_14026b100(in);reinterpret_cast<Unk_OSInput&>(in).Read6(m_giftId); }
+void ItemGiftPcBang::vfunc_6(Unk_GiftInput& in) { Read(in);reinterpret_cast<Unk_OSInput&>(in).Read6(m_giftId); }
 MS2_REPLACE_METHOD(0x1405B3C00, ItemGiftPcBang, vfunc_6, 56, 0x5310BBA1);
 // @0x1405b3c40
 PlayBonusItemGift::PlayBonusItemGift() : m_systemMailId(0) {}

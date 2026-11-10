@@ -17,10 +17,10 @@
 #include <iomanip>
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
-#pragma intrinsic(memcpy, memset, strcmp, strlen)                       // strlen inline in FUN_14083f560
+#pragma intrinsic(memcpy, memset, strcmp, strlen)                       // strlen inline in UrlEncode
 
 void FUN_1401d3700(CStringA& str);                                      // MakeLower
-bool FUN_14025fab0(CStringW& str);                                      // MakeLower
+bool MakeLower(CStringW& str);                                      // MakeLower
 CStringA FUN_1401d4330(const wchar_t* psz, int nCodePage);              // wide -> narrow
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);              // wide -> narrow
 
@@ -29,7 +29,7 @@ CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);              // wide 
 // Lower-cases a wide string (header inline; COMDAT at 0x140841420).
 inline void FUN_140841420(CStringW& str)
 {
-    FUN_14025fab0(str);
+    MakeLower(str);
 }
 
 // @0x14083f3d0
@@ -45,17 +45,17 @@ MS2_REPLACE(0x14083F3D0, FUN_14083f3d0, 240, 0xE1C60247);
 
 // @0x14083f4d0
 // Case-insensitive compare (strcmp of the lower-cased copies).
-int FUN_14083f4d0(CStringA strA, CStringA strB)
+int CompareNoCase(CStringA strA, CStringA strB)
 {
     FUN_1401d3700(strA);
     FUN_1401d3700(strB);
     return strcmp(strA, strB);
 }
-MS2_REPLACE(0x14083F4D0, FUN_14083f4d0, 138, 0xC8811D59);
+MS2_REPLACE(0x14083F4D0, CompareNoCase, 138, 0xC8811D59);
 
 // @0x14083f560
 // URL-encodes a string: alphanumerics and @./\-_: are kept, everything else becomes %xx.
-CStringA FUN_14083f560(CStringA str)
+CStringA UrlEncode(CStringA str)
 {
     CStringA strResult;
     if (str.IsEmpty())
@@ -88,7 +88,7 @@ CStringA FUN_14083f560(CStringA str)
     strResult = pBuf;
     return strResult;
 }
-MS2_REPLACE(0x14083F560, FUN_14083f560, 788, 0x4C1BBCBB);
+MS2_REPLACE(0x14083F560, UrlEncode, 788, 0x4C1BBCBB);
 
 // @0x14083f880
 // Lower-case hex text of the bytes of a string.
@@ -107,13 +107,13 @@ std::string FUN_14083f880(std::string str)
 
 // @0x14083f9c0
 // Hex text of a number.
-std::string FUN_14083f9c0(unsigned long n)
+std::string ToHexString(unsigned long n)
 {
     std::stringstream ss;
     ss << std::hex << n;
     return ss.str();
 }
-MS2_REPLACE(0x14083F9C0, FUN_14083f9c0, 147, 0x65E7CEF7);
+MS2_REPLACE(0x14083F9C0, ToHexString, 147, 0x65E7CEF7);
 
 // @0x14083fa60
 // base64 encoding (the well-known public-domain base64_encode).
@@ -164,13 +164,13 @@ MS2_REPLACE(0x14083FA60, FUN_14083fa60, 971, 0x9886EC44);
 
 // @0x14083fe40
 // Case-insensitive find (-1 if not found).
-int FUN_14083fe40(CStringA str, CStringA strFind)
+int FindNoCase(CStringA str, CStringA strFind)
 {
     FUN_1401d3700(str);
     FUN_1401d3700(strFind);
     return str.Find(strFind, 0);
 }
-MS2_REPLACE(0x14083FE40, FUN_14083fe40, 107, 0xB4A832D8);
+MS2_REPLACE(0x14083FE40, FindNoCase, 107, 0xB4A832D8);
 
 // @0x14083fec0
 // Case-insensitive find (-1 if not found).

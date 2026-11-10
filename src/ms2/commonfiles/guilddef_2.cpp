@@ -6,9 +6,9 @@
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ??0CGuildPVPSeasonHistoryData@@QEAA@XZ 0x1404d4180 ; unique
 // MS2-PIN: ??1CGuildPVPSeasonHistoryData@@UEAA@XZ 0x1404d41f0 ; unique
-// MS2-PIN: ?FUN_1404d4250@CGuildPVPSeasonHistoryData@@QEAAXXZ 0x1404d4250 ; unique
-// MS2-PIN: ?FUN_1404d4460@CGuildPVPSeasonHistoryData@@QEAAXPEAVCOutPacket@@@Z 0x1404d4460 ; unique
-// MS2-PIN: ?FUN_1404d4490@CGuildPVPSeasonHistoryData@@QEAAXPEAVCInPacket@@@Z 0x1404d4490 ; unique
+// MS2-PIN: ?Reset@CGuildPVPSeasonHistoryData@@QEAAXXZ 0x1404d4250 ; unique
+// MS2-PIN: ?Write@CGuildPVPSeasonHistoryData@@QEAAXPEAVCOutPacket@@@Z 0x1404d4460 ; unique
+// MS2-PIN: ?Read@CGuildPVPSeasonHistoryData@@QEAAXPEAVCInPacket@@@Z 0x1404d4490 ; unique
 // MS2-PIN: ?FUN_1404d44e0@CGuildPVPSeasonHistoryData@@QEAAXAEAVCOutputStream@@@Z 0x1404d44e0 ; unique
 // MS2-PIN: ?FUN_1404d4680@CGuildPVPSeasonHistoryData@@QEAAXAEAVCInputStream@@@Z 0x1404d4680 ; unique
 // MS2-PIN: ??0GuildProperty@CGuildXmlData@@QEAA@XZ 0x1404d4870 ; unique
@@ -30,13 +30,13 @@
 // MS2-PIN: ?GetHouse@CGuildXmlData@@QEAA?AV?$MS2Ptr@UGuildHouse@CGuildXmlData@@@@HH@Z 0x1404d79b0 ; unique
 // MS2-PIN: ?GetNpc@CGuildXmlData@@QEAA?AV?$MS2Ptr@UGuildNpc@CGuildXmlData@@@@W4Unk_GuildNpcKind@@H@Z 0x1404d7b40 ; unique
 // MS2-PIN: ?GetRaid@CGuildXmlData@@QEAA?AV?$MS2Ptr@UGuildRaid@CGuildXmlData@@@@I@Z 0x1404d7cb0 ; unique
-// MS2-PIN: ?FUN_1404d7f20@CNpcShopProductProxy@@QEAAXAEAVCOutputStream@@@Z 0x1404d7f20 ; unique
-// MS2-PIN: ?FUN_1404d80a0@CGuildNpcShop@@QEAAXXZ 0x1404d80a0 ; unique
-// MS2-PIN: ?FUN_1404d80d0@CGuildNpcShop@@QEAA?AV?$MS2Ptr@VCNpcShopProductProxy@@@@HHH@Z 0x1404d80d0 ; unique
-// MS2-PIN: ?FUN_1404d86e0@CGuildNpcShopMgr@@QEAA?AV?$MS2Ptr@VCGuildNpcShop@@@@I_J@Z 0x1404d86e0 ; unique
+// MS2-PIN: ?Write@CNpcShopProductProxy@@QEAAXAEAVCOutputStream@@@Z 0x1404d7f20 ; unique
+// MS2-PIN: ?ClearProducts@CGuildNpcShop@@QEAAXXZ 0x1404d80a0 ; unique
+// MS2-PIN: ?AddProduct@CGuildNpcShop@@QEAA?AV?$MS2Ptr@VCNpcShopProductProxy@@@@HHH@Z 0x1404d80d0 ; unique
+// MS2-PIN: ?CreateShop@CGuildNpcShopMgr@@QEAA?AV?$MS2Ptr@VCGuildNpcShop@@@@I_J@Z 0x1404d86e0 ; unique
 // MS2-PIN: ?GetOrCreateShop@CGuildNpcShopMgr@@QEAA?AV?$MS2Ptr@VCGuildNpcShop@@@@I@Z 0x1404d88e0 ; unique
-// MS2-PIN: ?FUN_1404d8ff0@CGuildNpcShopMgr@@QEAAXIPEAVCInPacket@@@Z 0x1404d8ff0 ; unique
-// MS2-PIN: ?FUN_1404d91e0@Unk_GuildShopOffer@@QEAAXAEAVCOutputStream@@@Z 0x1404d91e0 ; unique
+// MS2-PIN: ?ReadShop@CGuildNpcShopMgr@@QEAAXIPEAVCInPacket@@@Z 0x1404d8ff0 ; unique
+// MS2-PIN: ?Write@Unk_GuildShopOffer@@QEAAXAEAVCOutputStream@@@Z 0x1404d91e0 ; unique
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildEvent@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d93a0 ; unique
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildProperty@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d93d0 ; unique
 // MS2-PIN: ??$?0$$V@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@UGuildRaidReward@CGuildXmlData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@UGuildRaidReward@CGuildXmlData@@@@@std@@@std@@@2@$00@std@@QEAA@U_Zero_then_variadic_args_t@1@@Z 0x1404d9400 ; unique
@@ -224,14 +224,14 @@ int Parse_140219f50(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class 
 int Parse_14021a0a0(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
 int FUN_1404da980(void*,const char*,Unk_GuildContribution*);
 int FUN_1404daa40(void*,const char*,Unk_GuildNpcKind*);
-extern CString FUN_14071a5b0(const CString&,const CString&);
+extern CString GetXmlPath(const CString&,const CString&);
 class CFileSystem;
 CFileSystem* GetFileSystem();
 class CLogString* GetLogString();
 class CFileSystem   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1403974b0(class TiXmlDocument*, char const*, int, bool, bool);
+    int LoadXmlFile(class TiXmlDocument*, char const*, int, bool, bool);
     int LoadXmlFromString(class TiXmlDocument*, const CStringW&);   // C3: was FUN_140397ab0
 };
 class Unk_XmlNode   // C3: member view for the former free stand-ins
@@ -255,17 +255,17 @@ extern void Unk_SetGuildFlag_a010(bool);
 extern void Unk_GuildXmlDataCheckInit_3460();
 extern __time64_t GetServerTime();
 // @0x1404d4180
-CGuildPVPSeasonHistoryData::CGuildPVPSeasonHistoryData(){FUN_1404d4250();}
+CGuildPVPSeasonHistoryData::CGuildPVPSeasonHistoryData(){Reset();}
 // @0x1404d41f0
 CGuildPVPSeasonHistoryData::~CGuildPVPSeasonHistoryData(){}
 // @0x1404d4250
-void CGuildPVPSeasonHistoryData::FUN_1404d4250(){
+void CGuildPVPSeasonHistoryData::Reset(){
     f18=0;f20=0;f28=0;f30.Empty();f38=0;f3c=0;f40=1;f48.Empty();
     f50=0;f54=0;f58=0;f5c=0;f60=0;f64=0;f68=0;
 }
-MS2_REPLACE_METHOD(0x1404d4250, CGuildPVPSeasonHistoryData, FUN_1404d4250, 208, 0xD5A96186);
+MS2_REPLACE_METHOD(0x1404d4250, CGuildPVPSeasonHistoryData, Reset, 208, 0xD5A96186);
 // @0x1404d4330
-void CGuildPVPSeasonHistoryData::FUN_1404d4330(const CGuildPVPSeasonHistoryData* o){
+void CGuildPVPSeasonHistoryData::CopyFrom(const CGuildPVPSeasonHistoryData* o){
     if(!o) return;
     f18=o->f18;
     f20=o->f20;
@@ -283,13 +283,13 @@ void CGuildPVPSeasonHistoryData::FUN_1404d4330(const CGuildPVPSeasonHistoryData*
     f64=o->f64;
     f68=o->f68;
 }
-MS2_REPLACE_METHOD(0x1404d4330, CGuildPVPSeasonHistoryData, FUN_1404d4330, 298, 0x9AE3696F);
+MS2_REPLACE_METHOD(0x1404d4330, CGuildPVPSeasonHistoryData, CopyFrom, 298, 0x9AE3696F);
 // @0x1404d4460
-void CGuildPVPSeasonHistoryData::FUN_1404d4460(COutPacket* out){FUN_1404d44e0(*out);}
-MS2_REPLACE_METHOD(0x1404d4460, CGuildPVPSeasonHistoryData, FUN_1404d4460, 34, 0x04FC75E7);
+void CGuildPVPSeasonHistoryData::Write(COutPacket* out){FUN_1404d44e0(*out);}
+MS2_REPLACE_METHOD(0x1404d4460, CGuildPVPSeasonHistoryData, Write, 34, 0x04FC75E7);
 // @0x1404d4490
-void CGuildPVPSeasonHistoryData::FUN_1404d4490(CInPacket* in){FUN_1404d4680(*static_cast<CInputStream*>(in));}
-MS2_REPLACE_METHOD(0x1404d4490, CGuildPVPSeasonHistoryData, FUN_1404d4490, 67, 0x8EFD56C8);
+void CGuildPVPSeasonHistoryData::Read(CInPacket* in){FUN_1404d4680(*static_cast<CInputStream*>(in));}
+MS2_REPLACE_METHOD(0x1404d4490, CGuildPVPSeasonHistoryData, Read, 67, 0x8EFD56C8);
 // @0x1404d44e0
 void CGuildPVPSeasonHistoryData::FUN_1404d44e0(COutputStream& out){
     out.WriteInt32(f18);
@@ -487,9 +487,9 @@ bool CGuildXmlData::LoadAll(){
 }
 // @0x1404d5a50
 bool CGuildXmlData::LoadGuildProperty(){
-    CString path=FUN_14071a5b0("Table","GuildProperty.xml");
+    CString path=GetXmlPath("Table","GuildProperty.xml");
     TiXmlDocument doc;
-    if(!((class CFileSystem*)(void*)(GetFileSystem()))->FUN_1403974b0(&doc, path, 0, true, 0))return false;
+    if(!((class CFileSystem*)(void*)(GetFileSystem()))->LoadXmlFile(&doc, path, 0, true, 0))return false;
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
@@ -503,9 +503,9 @@ bool CGuildXmlData::LoadGuildProperty(){
 }
 // @0x1404d5d20
 bool CGuildXmlData::LoadGuildBuff(){
-    CString path=FUN_14071a5b0("Table","GuildBuff.xml");
+    CString path=GetXmlPath("Table","GuildBuff.xml");
     TiXmlDocument doc;
-    if(!((class CFileSystem*)(void*)(GetFileSystem()))->FUN_1403974b0(&doc, path, 0, true, 0))return false;
+    if(!((class CFileSystem*)(void*)(GetFileSystem()))->LoadXmlFile(&doc, path, 0, true, 0))return false;
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     for(void* node=((void*)((class Unk_XmlNode*)(void const*)(root))->FirstChild("guildBuff"));node;node=((void*)((class Unk_XmlNode*)(void const*)(node))->NextSibling("guildBuff"))){
@@ -517,9 +517,9 @@ bool CGuildXmlData::LoadGuildBuff(){
 }
 // @0x1404d5fa0
 bool CGuildXmlData::LoadGuildEvent(){
-    CString path=FUN_14071a5b0("Table","GuildEvent.xml");
+    CString path=GetXmlPath("Table","GuildEvent.xml");
     TiXmlDocument doc;
-    if(!((class CFileSystem*)(void*)(GetFileSystem()))->FUN_1403974b0(&doc, path, 0, true, 0))return false;
+    if(!((class CFileSystem*)(void*)(GetFileSystem()))->LoadXmlFile(&doc, path, 0, true, 0))return false;
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     for(void* node=((void*)((class Unk_XmlNode*)(void const*)(root))->FirstChild("guildEvent"));node;node=((void*)((class Unk_XmlNode*)(void const*)(node))->NextSibling("guildEvent"))){
@@ -530,9 +530,9 @@ bool CGuildXmlData::LoadGuildEvent(){
 }
 // @0x1404d6210
 bool CGuildXmlData::LoadGuildHouse(){
-    CString path=FUN_14071a5b0("Table","GuildHouse.xml");
+    CString path=GetXmlPath("Table","GuildHouse.xml");
     TiXmlDocument doc;
-    if(!((class CFileSystem*)(void*)(GetFileSystem()))->FUN_1403974b0(&doc, path, 0, true, 0))return false;
+    if(!((class CFileSystem*)(void*)(GetFileSystem()))->LoadXmlFile(&doc, path, 0, true, 0))return false;
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     for(void* node=((void*)((class Unk_XmlNode*)(void const*)(root))->FirstChild("guildHouse"));node;node=((void*)((class Unk_XmlNode*)(void const*)(node))->NextSibling("guildHouse"))){
@@ -543,9 +543,9 @@ bool CGuildXmlData::LoadGuildHouse(){
 }
 // @0x1404d64c0
 bool CGuildXmlData::LoadGuildNpc(){
-    CString path=FUN_14071a5b0("Table","GuildNpc.xml");
+    CString path=GetXmlPath("Table","GuildNpc.xml");
     TiXmlDocument doc;
-    if(!((class CFileSystem*)(void*)(GetFileSystem()))->FUN_1403974b0(&doc, path, 0, true, 0))return false;
+    if(!((class CFileSystem*)(void*)(GetFileSystem()))->LoadXmlFile(&doc, path, 0, true, 0))return false;
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
@@ -560,9 +560,9 @@ bool CGuildXmlData::LoadGuildNpc(){
 }
 // @0x1404d67e0
 bool CGuildXmlData::LoadGuildRaid(){
-    CString path=FUN_14071a5b0("Table","GuildRaid.xml");
+    CString path=GetXmlPath("Table","GuildRaid.xml");
     TiXmlDocument doc;
-    if(!((class CFileSystem*)(void*)(GetFileSystem()))->FUN_1403974b0(&doc, path, 0, true, 0))return false;
+    if(!((class CFileSystem*)(void*)(GetFileSystem()))->LoadXmlFile(&doc, path, 0, true, 0))return false;
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
@@ -579,9 +579,9 @@ bool CGuildXmlData::FUN_1404d6ab0(){return true;}
 MS2_REPLACE_METHOD(0x1404d6ab0, CGuildXmlData, FUN_1404d6ab0, 8, 0x71679366);
 // @0x1404d6ac0
 bool CGuildXmlData::LoadGuildQuestRewardFactor(){
-    CString path=FUN_14071a5b0("Table","GuildQuestRewardFactor.xml");
+    CString path=GetXmlPath("Table","GuildQuestRewardFactor.xml");
     TiXmlDocument doc;
-    if(!((class CFileSystem*)(void*)(GetFileSystem()))->FUN_1403974b0(&doc, path, 0, true, 0))return false;
+    if(!((class CFileSystem*)(void*)(GetFileSystem()))->LoadXmlFile(&doc, path, 0, true, 0))return false;
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
@@ -601,9 +601,9 @@ bool CGuildXmlData::LoadGuildQuestRewardFactor(){
 }
 // @0x1404d6ec0
 bool CGuildXmlData::LoadGuildContribution(){
-    CString path=FUN_14071a5b0("Table","GuildContribution.xml");
+    CString path=GetXmlPath("Table","GuildContribution.xml");
     TiXmlDocument doc;
-    if(!((class CFileSystem*)(void*)(GetFileSystem()))->FUN_1403974b0(&doc, path, 0, true, 0))return false;
+    if(!((class CFileSystem*)(void*)(GetFileSystem()))->LoadXmlFile(&doc, path, 0, true, 0))return false;
     void* root=((void*)((class Unk_XmlNode*)(void const*)(&doc))->FirstChild("ms2"));
     if(!root){Unk_AchieveLog<CString>(GetLogString(),1,19,L"xml 형식이 잘못 되었습니다[<ms2> {0}]",path);return false;}
     std::vector<void*> nodes;
@@ -694,7 +694,7 @@ void CGuildXmlData::FUN_1404d7630(std::vector<int>& out){
 }
 MS2_REPLACE_METHOD(0x1404d7630, CGuildXmlData, FUN_1404d7630, 240, 0x7C76FF84);
 // @0x1404d7730
-void CGuildXmlData::FUN_1404d7730(std::vector<int>& out){
+void CGuildXmlData::GetPersonalSkillIds(std::vector<int>& out){
     Unk_GuildXmlDataCheckInit_3460();
     out.reserve(skill.size());
     for(auto i=skill.begin(),e=skill.end();i!=e;++i){
@@ -703,7 +703,7 @@ void CGuildXmlData::FUN_1404d7730(std::vector<int>& out){
         out.push_back(i->first);
     }
 }
-MS2_REPLACE_METHOD(0x1404d7730, CGuildXmlData, FUN_1404d7730, 240, 0xAD6C0DE5);
+MS2_REPLACE_METHOD(0x1404d7730, CGuildXmlData, GetPersonalSkillIds, 240, 0xAD6C0DE5);
 // @0x1404d7830
 MS2Ptr<CGuildXmlData::GuildEvent> CGuildXmlData::GetEvent(int id){
     Unk_GuildXmlDataCheckInit_3460();
@@ -762,38 +762,38 @@ void CGuildXmlData::GetRaidIds(std::vector<unsigned>& out){
 }
 MS2_REPLACE_METHOD(0x1404d7d80, CGuildXmlData, GetRaidIds, 157, 0xEC01BA76);
 // @0x1404d7e30
-MS2Ptr<CGuildXmlData::GuildRaidReward> CGuildXmlData::FUN_1404d7e30(int id){
+MS2Ptr<CGuildXmlData::GuildRaidReward> CGuildXmlData::GetRaidReward(int id){
     Unk_GuildXmlDataCheckInit_3460();
     if(id<0) return MS2Ptr<GuildRaidReward>(0);
     auto i=reward.lower_bound(id);
     if(i!=reward.end()) return i->second;
     return MS2Ptr<GuildRaidReward>(0);
 }
-MS2_REPLACE_METHOD(0x1404d7e30, CGuildXmlData, FUN_1404d7e30, 219, 0x2CAA611D);
+MS2_REPLACE_METHOD(0x1404d7e30, CGuildXmlData, GetRaidReward, 219, 0x2CAA611D);
 // @0x1404d7f20
-void CNpcShopProductProxy::FUN_1404d7f20(COutputStream& out){
+void CNpcShopProductProxy::Write(COutputStream& out){
     out.WriteInt32(f18);
     out.WriteUInt8((unsigned char)f1c);
     out.WriteInt32(f20);
     out.WriteInt32(f24);
 }
-MS2_REPLACE_METHOD(0x1404d7f20, CNpcShopProductProxy, FUN_1404d7f20, 116, 0xAA3F3258);
+MS2_REPLACE_METHOD(0x1404d7f20, CNpcShopProductProxy, Write, 116, 0xAA3F3258);
 // @0x1404d7fa0
-void CNpcShopProductProxy::FUN_1404d7fa0(CInPacket* packet){
+void CNpcShopProductProxy::Read(CInPacket* packet){
     f18=packet->ReadInt32();
     f1c=(unsigned char)packet->ReadUInt8();
     f20=packet->ReadInt32();
     f24=packet->ReadInt32();
 }
-MS2_REPLACE_METHOD(0x1404d7fa0, CNpcShopProductProxy, FUN_1404d7fa0, 190, 0x1BCD8DA3);
+MS2_REPLACE_METHOD(0x1404d7fa0, CNpcShopProductProxy, Read, 190, 0x1BCD8DA3);
 // @0x1404d8070
-bool CGuildNpcShop::FUN_1404d8070(__int64 now){if(now>f20) return true; return false;}
-MS2_REPLACE_METHOD(0x1404d8070, CGuildNpcShop, FUN_1404d8070, 33, 0xF2339317);
+bool CGuildNpcShop::IsExpired(__int64 now){if(now>f20) return true; return false;}
+MS2_REPLACE_METHOD(0x1404d8070, CGuildNpcShop, IsExpired, 33, 0xF2339317);
 // @0x1404d80a0
-void CGuildNpcShop::FUN_1404d80a0(){products.clear();}
-MS2_REPLACE_METHOD(0x1404d80a0, CGuildNpcShop, FUN_1404d80a0, 31, 0x053AC054);
+void CGuildNpcShop::ClearProducts(){products.clear();}
+MS2_REPLACE_METHOD(0x1404d80a0, CGuildNpcShop, ClearProducts, 31, 0x053AC054);
 // @0x1404d80d0
-MS2Ptr<CNpcShopProductProxy> CGuildNpcShop::FUN_1404d80d0(int itemId,int rank,int price){
+MS2Ptr<CNpcShopProductProxy> CGuildNpcShop::AddProduct(int itemId,int rank,int price){
     MS2Ptr<CNpcShopProductProxy> ref(new CNpcShopProductProxy);
     if(ref!=0){
         ref->f18=itemId;
@@ -804,14 +804,14 @@ MS2Ptr<CNpcShopProductProxy> CGuildNpcShop::FUN_1404d80d0(int itemId,int rank,in
     return ref;
 }
 // @0x1404d81e0
-MS2Ptr<CNpcShopProductProxy> CGuildNpcShop::FUN_1404d81e0(int itemId,int rank,int price){
-    int index=FUN_1404d82a0(itemId,rank,price);
+MS2Ptr<CNpcShopProductProxy> CGuildNpcShop::FindProduct(int itemId,int rank,int price){
+    int index=FindProductIndex(itemId,rank,price);
     if(index<0 || index>=(int)products.size()) return MS2Ptr<CNpcShopProductProxy>(0);
     return products.at(index);
 }
-MS2_REPLACE_METHOD(0x1404d81e0, CGuildNpcShop, FUN_1404d81e0, 176, 0xE05C1D52);
+MS2_REPLACE_METHOD(0x1404d81e0, CGuildNpcShop, FindProduct, 176, 0xE05C1D52);
 // @0x1404d82a0
-int CGuildNpcShop::FUN_1404d82a0(int itemId,int rank,int price){
+int CGuildNpcShop::FindProductIndex(int itemId,int rank,int price){
     if(products.empty()) return -1;
     size_t count=products.size();
     for(size_t i=0;i<count;++i){
@@ -823,9 +823,9 @@ int CGuildNpcShop::FUN_1404d82a0(int itemId,int rank,int price){
     }
     return -1;
 }
-MS2_REPLACE_METHOD(0x1404d82a0, CGuildNpcShop, FUN_1404d82a0, 308, 0x73CBF886);
+MS2_REPLACE_METHOD(0x1404d82a0, CGuildNpcShop, FindProductIndex, 308, 0x73CBF886);
 // @0x1404d83e0
-void CGuildNpcShop::FUN_1404d83e0(COutputStream& out){
+void CGuildNpcShop::Write(COutputStream& out){
     out.WriteInt16((unsigned short)f18);
     out.WriteInt64(f20);
     int n=(int)products.size();
@@ -834,12 +834,12 @@ void CGuildNpcShop::FUN_1404d83e0(COutputStream& out){
         MS2Ptr<CNpcShopProductProxy> ref=products.at(i);
         bool bValid=ref ? true : false;
         out.WriteBool(bValid);
-        if(ref) ref->FUN_1404d7f20(out);
+        if(ref) ref->Write(out);
     }
 }
-MS2_REPLACE_METHOD(0x1404d83e0, CGuildNpcShop, FUN_1404d83e0, 300, 0xFCCC2482);
+MS2_REPLACE_METHOD(0x1404d83e0, CGuildNpcShop, Write, 300, 0xFCCC2482);
 // @0x1404d8520
-void CGuildNpcShop::FUN_1404d8520(CInPacket* packet){
+void CGuildNpcShop::Read(CInPacket* packet){
     f18=(unsigned short)packet->ReadInt16();
     f20=packet->ReadInt64();
     products.clear();
@@ -848,12 +848,12 @@ void CGuildNpcShop::FUN_1404d8520(CInPacket* packet){
         bool bValid=packet->ReadBool();
         if(!bValid) continue;
         MS2Ptr<CNpcShopProductProxy> ref(new CNpcShopProductProxy);
-        ref->FUN_1404d7fa0(packet);
+        ref->Read(packet);
         products.push_back(ref);
     }
 }
 // @0x1404d86e0
-MS2Ptr<CGuildNpcShop> CGuildNpcShopMgr::FUN_1404d86e0(unsigned id,__int64 time){
+MS2Ptr<CGuildNpcShop> CGuildNpcShopMgr::CreateShop(unsigned id,__int64 time){
     MS2Ptr<CGuildNpcShop> ref(new CGuildNpcShop);
     if(ref!=0){
         ref->f18=id;
@@ -890,17 +890,17 @@ int CGuildNpcShopMgr::FUN_1404d89e0(ItemEntity* item,Unk_GuildShopOffer* offer,b
         }
     }
     if(shop==0){
-        shop=FUN_1404d86e0(offer->f20,offer->f28);
+        shop=CreateShop(offer->f20,offer->f28);
         *created=true;
     }
     if(shop==0) return 0x31;
     shop->f28=now;
-    MS2Ptr<CNpcShopProductProxy> product=shop->FUN_1404d81e0(item->m_itemId,item->vfunc_o18_1(),0);
+    MS2Ptr<CNpcShopProductProxy> product=shop->FindProduct(item->m_itemId,item->vfunc_o18_1(),0);
     unsigned total=item->m_count;
     if(product) total=total+product->f24;
     if(total>offer->f1c) return 0x33;
     if(product==0){
-        product=shop->FUN_1404d80d0(item->m_itemId,item->vfunc_o18_1(),offer->f18);
+        product=shop->AddProduct(item->m_itemId,item->vfunc_o18_1(),offer->f18);
     }
     product->f24+=item->m_count;
     return 0;
@@ -913,7 +913,7 @@ void CGuildNpcShopMgr::Write(COutputStream& out){
         MS2Ptr<CGuildNpcShop> ref=i->second;
         bool bValid=ref ? true : false;
         out.WriteBool(bValid);
-        if(ref) ref->FUN_1404d83e0(out);
+        if(ref) ref->Write(out);
     }
 }
 MS2_REPLACE_METHOD(0x1404d8d50, CGuildNpcShopMgr, Write, 288, 0x239EF7BF);
@@ -925,42 +925,42 @@ void CGuildNpcShopMgr::Read(CInPacket* packet){
         bool bValid=packet->ReadBool();
         if(!bValid) continue;
         MS2Ptr<CGuildNpcShop> ref(new CGuildNpcShop);
-        ref->FUN_1404d8520(packet);
+        ref->Read(packet);
         shops[ref->f18]=ref;
     }
 }
 // @0x1404d8ff0
-void CGuildNpcShopMgr::FUN_1404d8ff0(unsigned id,CInPacket* packet){
+void CGuildNpcShopMgr::ReadShop(unsigned id,CInPacket* packet){
     MS2Ptr<CGuildNpcShop> ref=GetOrCreateShop(id);
-    if(ref!=0) ref->FUN_1404d8520(packet);
+    if(ref!=0) ref->Read(packet);
 }
 // @0x1404d9060
 void CGuildNpcShopMgr::FUN_1404d9060(unsigned id,CInPacket* packet){
     MS2Ptr<CGuildNpcShop> ref=GetOrCreateShop(id);
     if(ref!=0){
         MS2Ptr<CNpcShopProductProxy> product(new CNpcShopProductProxy);
-        product->FUN_1404d7fa0(packet);
-        int index=ref->FUN_1404d82a0(product->f18,product->f1c,0);
+        product->Read(packet);
+        int index=ref->FindProductIndex(product->f18,product->f1c,0);
         if(index>=0) ref->products[index]=product;
         else ref->products.push_back(product);
     }
 }
 // @0x1404d91e0
-void Unk_GuildShopOffer::FUN_1404d91e0(COutputStream& out){
+void Unk_GuildShopOffer::Write(COutputStream& out){
     out.WriteInt32(f18);
     out.WriteInt32(f1c);
     out.WriteInt32(f20);
     out.WriteInt64(f28);
 }
-MS2_REPLACE_METHOD(0x1404d91e0, Unk_GuildShopOffer, FUN_1404d91e0, 116, 0x2C2A3260);
+MS2_REPLACE_METHOD(0x1404d91e0, Unk_GuildShopOffer, Write, 116, 0x2C2A3260);
 // @0x1404d9260
-void Unk_GuildShopOffer::FUN_1404d9260(CInPacket* packet){
+void Unk_GuildShopOffer::Read(CInPacket* packet){
     f18=packet->ReadInt32();
     f1c=packet->ReadInt32();
     f20=packet->ReadInt32();
     f28=packet->ReadInt64();
 }
-MS2_REPLACE_METHOD(0x1404d9260, Unk_GuildShopOffer, FUN_1404d9260, 188, 0x151E3504);
+MS2_REPLACE_METHOD(0x1404d9260, Unk_GuildShopOffer, Read, 188, 0x151E3504);
 // @0x1404d9330
 int FUN_1404d9330(const CString& text){
     if(text.CompareNoCase("exp")==0) return 1;

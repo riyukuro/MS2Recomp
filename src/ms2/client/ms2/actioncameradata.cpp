@@ -33,7 +33,7 @@ public:
 // C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
 CString FUN_140188f50(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 unsigned char FUN_1401d1320(CCacheData*);
 
 class Unk_ActionFiles : public CFileSystem { };
@@ -73,9 +73,9 @@ CActionCameraData::DataPtr CActionCameraData::Get(CString strName)
 // @0x140943890
 CActionCameraData::DataPtr CActionCameraData::Load(const CString& strName)
 {
-    CString strPath = FUN_14071a5b0("Camera", strName);
+    CString strPath = GetXmlPath("Camera", strName);
     TiXmlDocument doc;
-    if (((class Unk_ActionFiles*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_ActionFiles*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return DataPtr(0);
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -85,7 +85,7 @@ CActionCameraData::DataPtr CActionCameraData::Load(const CString& strName)
         return DataPtr(0);
     }
     DataPtr spData(new CActionCameraData);
-    spData->FUN_1401d1160(CString(strPath));
+    spData->SetPath(CString(strPath));
     ActionCameraInfo* pInfo = spData->GetInfo();
     TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("actionCamera"));
     pInfo->m_strPath = ((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("path");

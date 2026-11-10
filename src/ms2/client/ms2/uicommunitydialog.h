@@ -57,26 +57,26 @@ public:
     virtual void vfunc_4(MS2Ptr<CProxyGameObject> spActor);     // 4 0x1418d6060 an actor left
     virtual void vfunc_5(MS2Ptr<CProxyGameObject> spActor, int n);     // 5 0x1418d61d0 an actor changed
 
-    bool FUN_1418d6390(int nButton, const CMsgBoxData& data);   // 0x1418d6390 the home-visit box answer
-    void FUN_1418d6430(int nTab);                               // build the buddy list of a tab
-    void FUN_1418d6930(int nTab);                               // m_190 = nTab (0..4)
-    CBuddyManager* FUN_1418d8f90();                             // the buddy manager
+    bool OnHomeVisitConfirm(int nButton, const CMsgBoxData& data);   // 0x1418d6390 the home-visit box answer
+    void BuildBuddyList(int nTab);                               // build the buddy list of a tab
+    void SetTab(int nTab);                               // m_190 = nTab (0..4)
+    CBuddyManager* GetBuddyManager();                             // the buddy manager
     static eUIClassID GetUIClassID() { return (eUIClassID)0x4e4d; }   // COMDAT (0x141a4b220, uiminimapentity.cpp)
-    int FUN_1418d6960();                                        // m_190
-    void FUN_1418d6980();                                       // "initData"
-    void FUN_1418d69f0(int nTab);                               // change the tab
-    void FUN_1418d6a90();                                       // build the tab 0 (nearby players) list
-    void FUN_1418d6d00();                                       // build the tab 4 (home blocks) list
+    int GetTab();                                        // m_190
+    void InitData();                                       // "initData"
+    void ChangeTab(int nTab);                               // change the tab
+    void BuildNearbyPlayerList();                                       // build the tab 0 (nearby players) list
+    void BuildHomeBlockList();                                       // build the tab 4 (home blocks) list
     void FUN_1418d6ed0(int nA, int nB);                         // post UIMsg(a, b) to the query dialog 0x4e4e
-    void FUN_1418d6f80(int nTab, int nNew, int nCount);         // "setNew"
-    void FUN_1418d7000(int nTab, CBuddyManager::Ptr spBuddy);   // add a buddy row
+    void SetNew(int nTab, int nNew, int nCount);         // "setNew"
+    void AddBuddyRow(int nTab, CBuddyManager::Ptr spBuddy);   // add a buddy row
     void FUN_1418d71d0(int nTab, __int64 nId);
-    void FUN_1418d7240(__int64 nId);                            // remove a buddy row
-    void FUN_1418d73b0(int nTab, CBuddyManager::Ptr spBuddy);   // update a buddy row
-    void FUN_1418d74f0(__int64 nId);                            // update a buddy's profile image
+    void RemoveBuddyRow(__int64 nId);                            // remove a buddy row
+    void UpdateBuddyRow(int nTab, CBuddyManager::Ptr spBuddy);   // update a buddy row
+    void UpdateBuddyProfile(__int64 nId);                            // update a buddy's profile image
     int FUN_1418d76c0();                                        // count the online buddies
     void FUN_1418d77f0(int nOnline, int nTotal);                // "setOnline"
-friend void FUN_1418d6410(UICommunityDialog* pDialog);      // inlined tab reset
+friend void ResetTab(UICommunityDialog* pDialog);      // inlined tab reset
 private:
     MS2_LAYOUT_FRIEND;
     int m_190;                                                  // +0x190 tab (0 nearby, 1 buddy, 2 request, 3 ban, 4 home blocks)
@@ -89,7 +89,7 @@ MS2_CHECK_SIZE(UICommunityDialog, 0x1a8);
 MS2_CHECK_OFFSET(UICommunityDialog, m_190, 0x190);
 MS2_CHECK_OFFSET(UICommunityDialog, m_1a0, 0x1a0);
 
-void FUN_1418d6410(UICommunityDialog* pDialog);                 // 0x1418d6410 m_190 = 0
+void ResetTab(UICommunityDialog* pDialog);                 // 0x1418d6410 m_190 = 0
 
 // Modal dialog that asks for a name / memo (add buddy, add ban, edit memo, home-block name). Base UIModalDialog 0x180.
 class UICommunityQueryDialog : public UIModalDialog
@@ -107,14 +107,14 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x1418daa70
     virtual void vfunc_79(void* p);                             // 79 0x1418da6e0 buddy packet
 
-    void FUN_1418db6d0();                                       // reset the query
-    void FUN_1418db750();                                       // "initData"
-    void FUN_1418dba00(Unk_BuddyResponse& response);            // the server answered
+    void ResetQuery();                                       // reset the query
+    void InitData();                                       // "initData"
+    void OnBuddyResponse(Unk_BuddyResponse& response);            // the server answered
     void FUN_1418dbcb0(int nMode);                              // OK: validate and send
     int FUN_1418dc410(const CStringW& str);                     // empty / bad word check (true = rejected)
     int FUN_1418dc540(const CStringW& str);                     // add-buddy name check (true = rejected)
     int FUN_1418dc7f0(const CStringW& str);                     // add-ban name check (true = rejected)
-    CBuddyManager* FUN_1418dcb70();                             // the buddy manager
+    CBuddyManager* GetBuddyManager();                             // the buddy manager
 private:
     MS2_LAYOUT_FRIEND;
     int m_180;                                                  // +0x180 mode (1 add buddy, 2 add ban, 3 ..., 4 edit memo, 5 home block name)

@@ -31,10 +31,10 @@ public:
     virtual void vfunc_43();                                        // 43 0x1419f5920 scale the movie
     virtual int vfunc_48() { return 0x4e4c; }                       // 48 0x1419f6f60 UI type id
 
-    void FUN_1419f5ab0();                                           // clear the stage
-    void FUN_1419f5ae0(int nSeconds);                               // start the count-down
+    void ClearStage();                                           // clear the stage
+    void StartCountdown(int nSeconds);                               // start the count-down
     void FUN_1419f5b30();                                           // show the remaining seconds
-    void FUN_1419f5c80();                                           // play the count sound
+    void PlayCountSound();                                           // play the count sound
     void FUN_1419f5dd0();                                           // count-down step
     void FUN_1419f5e90(CInPacket* pPacket);                         // the server's massive-event packet
     void FUN_1419f5fc0(CInPacket* pPacket);                         // sub 0: set the stage
@@ -44,13 +44,13 @@ public:
     void FUN_1419f63d0(CInPacket* pPacket);                         // sub 4: string-id message with a step number
     void FUN_1419f6520(CInPacket* pPacket);                         // sub 5: message type 2
     void FUN_1419f65e0(CInPacket* pPacket);                         // sub 6: message type 1
-    void FUN_1419f66a0(CInPacket* pPacket);                         // sub 2: message with a given type
+    void OnTypedMessagePacket(CInPacket* pPacket);                         // sub 2: message with a given type
     void FUN_1419f6790(CInPacket* pPacket);                         // sub 8: fixed message
-    void FUN_1419f6810(int nSubType, CStringW& strText, int nDuration);   // show a message and play its sound
+    void ShowMessage(int nSubType, CStringW& strText, int nDuration);   // show a message and play its sound
     void FUN_1419f6a70(int nSubType, CStringW strText, int nDuration);    // push a message panel
-    void FUN_1419f6bc0(CStringW strText, int nStep, int nDuration, int nType);   // push a step message
-    void FUN_1419f6df0(int nStage, int nA, int nB, int nC);         // set the stage
-    void FUN_1419f6eb0();                                           // hide the panel
+    void ShowStepMessage(CStringW strText, int nStep, int nDuration, int nType);   // push a step message
+    void SetStage(int nStage, int nA, int nB, int nC);         // set the stage
+    void HidePanel();                                           // hide the panel
 
 private:
     MS2_LAYOUT_FRIEND;

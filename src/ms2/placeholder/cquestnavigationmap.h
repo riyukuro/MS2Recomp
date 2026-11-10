@@ -99,7 +99,7 @@ public:
     CQuestNavigationMap();                                  // 0x140c90840
     virtual ~CQuestNavigationMap();                         // 0x140c90920
     void Rebuild();                                   // BuildMapPaths, then m_8 = 1
-    int FUN_140c9b8d0() const { return m_8; }               // 0x140c9b8d0 paths built (inline COMDAT, questnavigator.cpp)
+    int IsPathsBuilt() const { return m_8; }               // 0x140c9b8d0 paths built (inline COMDAT, questnavigator.cpp)
     int BuildMapPaths();                                    // 0x140c909d0 all-pairs shortest portal paths
     int FindMapPath(int nFrom, int nTo, ATL::CAtlArray<unsigned>& path);    // 0x140c91180
     int GetNextMapOnPath(int nFrom, int nTo);                  // the next map on the path (0 = none)

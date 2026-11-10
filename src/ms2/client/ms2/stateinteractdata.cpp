@@ -97,16 +97,16 @@ struct Unk_CastInfo
 };
 MS2_CHECK_SIZE(Unk_CastInfo, 0x38);
 
-// The casting bar dialog (RTTI UICastingBar, found through FUN_140ac2270).
+// The casting bar dialog (RTTI UICastingBar, found through GetCastingBar).
 class UICastingBar : public UIObject
 {
 public:
     void StartCasting(class ICastingEventListener* pListener, const struct Unk_CastingParam* pInfo);   // show (0x1418e12b0)
     void FUN_1418e1390();                                                        // cancel
 };
-UICastingBar* FUN_140ac2270(int nId);
+UICastingBar* GetCastingBar(int nId);
 
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_SiBuffMgr { public: };
 // PCBase vtable view: slot 22 takes the position by value (the exe copies it to a 16-aligned temp)
 class Unk_SiPointSlots
@@ -256,7 +256,7 @@ void StateInteraction::vfunc_4(StateData* pData)
     MS2Ptr<CInteractObjectData> spRow = CInteractObjectData::Get(m_spInteract->m_nObjectId);
     if (m_n10 == 0x8a)
     {
-        FUN_1417d22f0(MS2Ptr<CInteractObjectData>(spRow));
+        CreateReactionEffect(MS2Ptr<CInteractObjectData>(spRow));
         FUN_1417d25e0(MS2Ptr<CInteractObjectData>(spRow));
         MyPC* pPC = FUN_1417b84b0();
         if (pPC)
@@ -274,7 +274,7 @@ void StateInteraction::vfunc_4(StateData* pData)
             {
                 m_aObjects.clear();
                 ATL::CAtlArray<MS2Ptr<CInteractObject> > aObjects;
-                reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->FUN_141bc5fb0(&aObjects, 6);
+                reinterpret_cast<Unk_SiWorld*>(WorldService::GetInstance())->GetInteractObjectsByCategory(&aObjects, 6);
                 for (size_t i = 0; i < aObjects.GetCount(); i++)
                 {
                     if (aObjects[i]->vfunc_4() == 0)
@@ -291,7 +291,7 @@ void StateInteraction::vfunc_4(StateData* pData)
             else
                 spObject->vfunc_8();
             spObject->vfunc_6(reinterpret_cast<Unk_InteractCursor*>(&kInfo));
-            UICastingBar* pBar = FUN_140ac2270(0x4e72);
+            UICastingBar* pBar = GetCastingBar(0x4e72);
             if (pBar)
                 pBar->StartCasting((ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
         }
@@ -343,7 +343,7 @@ void StateInteraction::vfunc_5(int n)
     {
         if (m_nEffect != 0)
             TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
     }
@@ -394,7 +394,7 @@ void StateInteraction::vfunc_8(double fTime)
         }
     }
     Unk_SiBuffMgr* pBuff = ((Unk_SiBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
     else
@@ -415,7 +415,7 @@ void StateInteraction::EndOfSequence(NiActorManager*, unsigned int, NiController
         return;
     if (m_n10 == 0x8b || m_n10 == 0x8c)
     {
-        if (FUN_1417d2880() != 0)
+        if (CanUseObject() != 0)
         {
             m_n10 = 0x8d;
             m_pOwner->PlayAnimationById(0);
@@ -485,7 +485,7 @@ void StateInteraction::FUN_1417d2230(CInteractObject* pObject)
 }
 
 // @0x1417d22f0
-void StateInteraction::FUN_1417d22f0(MS2Ptr<CInteractObjectData> spRow)
+void StateInteraction::CreateReactionEffect(MS2Ptr<CInteractObjectData> spRow)
 {
     if (spRow == 0)
         return;
@@ -541,7 +541,7 @@ void StateInteraction::FUN_1417d25e0(MS2Ptr<CInteractObjectData> spRow)
 }
 
 // @0x1417d2880
-int StateInteraction::FUN_1417d2880()
+int StateInteraction::CanUseObject()
 {
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
@@ -603,7 +603,7 @@ void StateInteractionNpc::vfunc_4(StateData* pData)
     {
         if (((void*)(reinterpret_cast<PC*>(pPC)->GetHeldItem())))
             reinterpret_cast<PC*>(pPC)->SendRequestCube();
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
             pBar->StartCasting((ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
     }
@@ -615,7 +615,7 @@ void StateInteractionNpc::vfunc_5(int n)
     State::vfunc_5(n);
     if (FUN_1417b8560() != 0)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
     }
@@ -652,7 +652,7 @@ void StateInteractionNpc::vfunc_8(double fTime)
         }
     }
     Unk_SiBuffMgr* pBuff = ((Unk_SiBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
     else
@@ -695,7 +695,7 @@ void StateAutoInteraction::vfunc_4(StateData* pData)
     }
     if (FUN_1417b8560() != 0)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
         {
             Unk_CastInfo kInfo;
@@ -710,7 +710,7 @@ void StateAutoInteraction::vfunc_5(int n)
 {
     if (FUN_1417b8560() != 0)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
     }
@@ -725,7 +725,7 @@ void StateAutoInteraction::vfunc_3(double fTime)
     {
         if (FUN_1417b8560() != 0)
         {
-            UICastingBar* pBar = FUN_140ac2270(0x4e72);
+            UICastingBar* pBar = GetCastingBar(0x4e72);
             if (pBar)
                 pBar->FUN_1418e1390();
             if (m_spAuto.get())
@@ -750,7 +750,7 @@ void StateAutoInteraction::vfunc_8(double fTime)
     if (pPC == 0)
         return;
     Unk_SiBuffMgr* pBuff = ((Unk_SiBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+    reinterpret_cast<Unk_SiPointSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
 }

@@ -182,7 +182,7 @@ public:
 struct Unk_SwooshTarget { char m_pad_00[0x10]; void* m_hNode; };            // +0x10 handle of the owner's scene node
 MS2_CHECK_OFFSET(Unk_SwooshTarget, m_hNode, 0x10);
 NiPoint3 FUN_141820e00(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float fT);
-int FUN_141820fa0(const Unk_EffectMgr* pMgr);
+int GetTrailMode(const Unk_EffectMgr* pMgr);
 
 #ifndef MS2_HOOK_DLL
 // File statics of this TU (initialised by the .text$di entries).
@@ -296,7 +296,7 @@ bool CSwooshEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarge
 
     unsigned nSampling = pSwoosh->m_nSampling;
     unsigned nLevel = (unsigned)TSingleton<CEffectService>::GetInstance()->FUN_1411a88c0();
-    if (FUN_141820fa0(reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())) != 0)
+    if (GetTrailMode(reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())) != 0)
     {
         float fFps = TSingleton<CMainSystem>::GetInstance()->GetFps();
         int nPenalty = 0;
@@ -662,7 +662,7 @@ int CSwooshEffect::vfunc_12()
 }
 
 // @0x141820fa0
-int FUN_141820fa0(const Unk_EffectMgr* pMgr)
+int GetTrailMode(const Unk_EffectMgr* pMgr)
 {
     return pMgr->m_nTrailMode;
 }

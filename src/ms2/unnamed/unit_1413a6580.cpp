@@ -47,14 +47,14 @@ public:
 };
 
             // CUIService
-class CInputKeyHandler { public: bool FUN_14116d950(int, bool, int); }; class Unk_GcKeyboard : public CInputKeyHandler {};
+class CInputKeyHandler { public: bool IsKeyDown(int, bool, int); }; class Unk_GcKeyboard : public CInputKeyHandler {};
 void* FUN_14025e7c0();
 class Unk_GcKeyBinds
 {
 public:
 
 };
-Unk_SoundSink* FUN_1409331f0();
+Unk_SoundSink* GetKeyTable();
 class CKeyTable   // C3: member view for the former free stand-ins
 {
 public: int GetPairKey(int nKey, int& rOut);
@@ -103,9 +103,9 @@ MS2_REPLACE_METHOD(0x1413A6670, CGuideConditionInput, vfunc_2, 63, 0x3E7F60A9);
 // @0x1413a66c0
 int CGuideConditionInput::vfunc_3()
 {
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x6200031)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x6200031)
         return 0;
-    int nHeld = (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(m_n20, false, 0) && TSingleton<CUIService>::GetInstance()->FUN_141adbb00() == 0) ? 1 : 0;
+    int nHeld = (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->IsKeyDown(m_n20, false, 0) && TSingleton<CUIService>::GetInstance()->IsTextFieldFocused() == 0) ? 1 : 0;
     if (m_nTick == 0)
         return ApplyNot(nHeld);
     if (nHeld == 0)
@@ -156,31 +156,31 @@ int CGuideConditionActionInput::vfunc_3()
 {
     int nKey = 0;
     int nAltKey0, nAltKey1, nAltKey2;
-    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FindKeyByActionAndPriority(m_n20, 0);
+    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(GetKeyTable())))->FindKeyByActionAndPriority(m_n20, 0);
     if (nKey != 0)
     {
-        if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
+        if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->IsKeyDown(nKey, false, 0))
             return ApplyNot(1);
         nAltKey0 = 0;
-        if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()))->GetPairKey(nKey, nAltKey0) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey0, false, 0))
+        if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(GetKeyTable()))->GetPairKey(nKey, nAltKey0) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->IsKeyDown(nAltKey0, false, 0))
             return ApplyNot(1);
     }
-    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FindKeyByActionAndPriority(m_n20, 1);
+    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(GetKeyTable())))->FindKeyByActionAndPriority(m_n20, 1);
     if (nKey != 0)
     {
-        if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
+        if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->IsKeyDown(nKey, false, 0))
             return ApplyNot(1);
         nAltKey1 = 0;
-        if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()))->GetPairKey(nKey, nAltKey1) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey1, false, 0))
+        if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(GetKeyTable()))->GetPairKey(nKey, nAltKey1) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->IsKeyDown(nAltKey1, false, 0))
             return ApplyNot(1);
     }
-    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0())))->FindKeyByActionAndPriority(m_n20, 2);
+    nKey = ((class CKeyTable*)(class Unk_GcKeyBinds*)(reinterpret_cast<Unk_GcKeyBinds*>(GetKeyTable())))->FindKeyByActionAndPriority(m_n20, 2);
     if (nKey != 0)
     {
-        if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nKey, false, 0))
+        if (reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->IsKeyDown(nKey, false, 0))
             return ApplyNot(1);
         nAltKey2 = 0;
-        if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(FUN_1409331f0()))->GetPairKey(nKey, nAltKey2) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->FUN_14116d950(nAltKey2, false, 0))
+        if (((class CKeyTable*)reinterpret_cast<Unk_GcKeyBinds*>(GetKeyTable()))->GetPairKey(nKey, nAltKey2) != 0 && reinterpret_cast<Unk_GcKeyboard*>(FUN_14025e7c0())->IsKeyDown(nAltKey2, false, 0))
             return ApplyNot(1);
     }
     return ApplyNot(0);

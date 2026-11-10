@@ -53,7 +53,7 @@ public:
     void SetTooltipData(const Scaleform::GFx::Value& data);          // set "_tooltipData"
     void RegisterTooltip();                                           // register the tooltip (m_bTooltip; FUN_1422c6380)
     void UnregisterTooltip();                                           // unregister the tooltip (FUN_1422c63f0)
-    void FUN_1422c8120(bool bShow);                                 // dispatch a "show" / "hide" ASEvent
+    void DispatchShowHideEvent(bool bShow);                                 // dispatch a "show" / "hide" ASEvent
 
     // Slots 3 and 16-24. Opt-in (define MS2_ASUICOMPONENT_SLOTS before including): many units derive local classes
     // from ASUIComponent and redeclare these slots themselves (asgameentity.h, asitemslot.h, local copies with other

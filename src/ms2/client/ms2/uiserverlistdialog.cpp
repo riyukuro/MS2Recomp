@@ -78,7 +78,7 @@ public:
     CStringW m_strServer;                                       // +0x08
     CString m_strChannel;                                       // +0x10 text of the channel (atoi)
     void* m_18; void* m_20;
-    __int64 m_nCharId;                                          // +0x28 the chosen character (compared in FUN_141ad2c50)
+    __int64 m_nCharId;                                          // +0x28 the chosen character (compared in EnterGame)
     char m_30;
     unsigned char m_bLocaledName;                               // +0x31
 };
@@ -86,7 +86,7 @@ public:
 
 // The packet handler table.
 class Unk_SlPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
 // The login network (a 73-slot interface; only the slots this unit calls are typed).
@@ -119,7 +119,7 @@ class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // The network, the scenes and the application objects.
 class CNetworkService { public: int ConnectTo(CString, int, int, int, int); void SendRequestQuitAndDisconnect(); };   // networkservice.h's service (its header redeclares FUN_140d86260)
-CNetworkService* FUN_140714f90();
+CNetworkService* GetNetworkService();
 class Unk_SlSceneApp { public: };
 class Unk_SlApp { public: };
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
@@ -127,9 +127,9 @@ void FUN_141bca1e0(void* pObj);
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 class NotifySystem { public: void Post(MS2Ptr<NotifyObject> spNotify); };   // the notify system (FUN_140939a10)
 int FUN_1406c34c0();                                            // the Nexon platform is active
-int FUN_14092f640();
+int GetCurrentChannel();
 CStringW GetStringCommon(int nStringId);                          // string table text by id
-void FUN_140d73aa0(CStringW strText, int a, void* pListener, CStringW strTag);
+void ShowMessageBox(CStringW strText, int a, void* pListener, CStringW strTag);
 extern CStringW DAT_143af62c0;
 extern CString DAT_143ab29d8;
 extern CString DAT_143ab2a28;
@@ -143,8 +143,8 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                // set 
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 template <class T> T* Unk_UgcGetDialog(int nId);
-CSceneStateMulti* FUN_140f30370();
-void* FUN_14136f520(int);   // C3: was FUN_14136f520
+CSceneStateMulti* GetSceneStateMulti();
+void* FindServerListDialog(int);   // C3: was FindServerListDialog
 
 // The login request (encoded by 0x1401f9020; ctor / dtor in uilogindialog.cpp).
 class Unk_MachineId   // C3: member view (unit_14067c020_machineidcodec); was the local Unk_LoginMachineId + free FUN_14067c020
@@ -168,11 +168,11 @@ struct Unk_LoginRequest
 };
 MS2_CHECK_SIZE(Unk_LoginRequest, 0x40);
 void FUN_1401f9020(struct Unk_LoginA*, class COutputStream*);   // C3: was FUN_1401f9020
-void* FUN_140aadf70();   // C3: was FUN_140aadf70
+void* GetMachineIDManager();   // C3: was GetMachineIDManager
 // C3: the Unk_MachineId member view moved up to the login request
 int FUN_1406516a0();
 int FUN_1406516b0();                                            // the language / region id
-CString FUN_1406521f0(int nRegion);
+CString GetRegionCode(int nRegion);
 CString FUN_140652030(int n);
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
@@ -247,14 +247,14 @@ UIServerListDialog::UIServerListDialog()
 {
     m_80 = 0;
     m_strServer = reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_strServer;
-    FUN_141925e70(0, 1);
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(11, Delegate<void(CInPacket&)>(this, &UIServerListDialog::ReceiveServerList));
+    SetFlag(0, 1);
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(11, Delegate<void(CInPacket&)>(this, &UIServerListDialog::ReceiveServerList));
 }
 
 // @0x141ad0e30
 UIServerListDialog::~UIServerListDialog()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(11, Delegate<void(CInPacket&)>(this, &UIServerListDialog::ReceiveServerList));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(11, Delegate<void(CInPacket&)>(this, &UIServerListDialog::ReceiveServerList));
 }
 
 // @0x141ad0f30
@@ -264,7 +264,7 @@ CString UIServerListDialog::GetTypeName()
 }
 
 // @0x141ad0f80
-size_t UIServerListDialog::FUN_141ad0f80()
+size_t UIServerListDialog::GetChannelCount()
 {
     if (ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer()))
         return pPair->m_value->m_channels.GetCount();
@@ -290,10 +290,10 @@ void UIServerListDialog::vfunc_79(void* pPacket)
     switch (static_cast<CInPacket*>(pPacket)->FUN_14070fe80())
     {
     case 9:
-        FUN_141ad28f0(pPacket);
+        SendLoginRequest(pPacket);
         break;
     case 10:
-        FUN_141ad2b50(static_cast<CInPacket*>(pPacket));
+        OnLoginResult(static_cast<CInPacket*>(pPacket));
         break;
     case 12:
         if (static_cast<CInPacket*>(pPacket)->ReadUInt8() == 3)
@@ -350,14 +350,14 @@ void UIServerListDialog::OnLoadComplete()
     int nChannel = atoi(reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_strChannel);
     int nMin = 1;
     m_nChannel = std::max<int>(nMin, nChannel);
-    FUN_141ad1d20();
+    BuildServerList();
     if (((class Unk_SlLogin*)((void*)GetClientPlatform()))->vfunc_1() == 1) {
         UIBannerAdvertisingDialog* pBanner = Unk_UgcGetDialog<UIBannerAdvertisingDialog>(0x4eca);
         if (pBanner != 0)
             pBanner->FUN_141031260();
     } else {
         if (DAT_143ab285c != 0) {
-            CSceneStateMulti* pLobby = FUN_140f30370();
+            CSceneStateMulti* pLobby = GetSceneStateMulti();
             if (pLobby != 0)
                 pLobby->FUN_14174f470();
         } else {
@@ -419,7 +419,7 @@ int UIServerListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     } else if (_stricmp("OnSelectServer", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
-            FUN_141ad25a0(data.FUN_1422b8f40());
+            OnSelectServer(data.FUN_1422b8f40());
             return 1;
         }
     } else if (_stricmp("OnConnectServer", szMethod) == 0) {
@@ -449,7 +449,7 @@ void UIServerListDialog::vfunc_67()
 }
 
 // @0x141ad1d20
-void UIServerListDialog::FUN_141ad1d20()
+void UIServerListDialog::BuildServerList()
 {
     ASArray array(2);
     int nSelectedId = -1;
@@ -477,14 +477,14 @@ void UIServerListDialog::FUN_141ad1d20()
                         info = TSingleton<CServerListTable>::GetInstance()->GetFirstServer();
                     if (info.get() != 0) {
                         ASObj row(2);
-                        row.FUN_1407cbb20("label", info->m_strName);
-                        row.FUN_1407cba60("icon", info->m_strIcon);
-                        row.FUN_1407cbb20("id", server->m_strName);
-                        row.FUN_1407cb9c0("charCnt", server->m_nCharacterCount);
-                        row.FUN_1407cb9c0("trafficPercent", server->m_nTrafficPercent);
-                        array.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
+                        row.SetWStringMember("label", info->m_strName);
+                        row.SetStringMember("icon", info->m_strIcon);
+                        row.SetWStringMember("id", server->m_strName);
+                        row.SetIntMember("charCnt", server->m_nCharacterCount);
+                        row.SetIntMember("trafficPercent", server->m_nTrafficPercent);
+                        array.PushValue(Scaleform::GFx::Value(row.GetValue()));
                     } else {
-                        FUN_140d73aa0(BlockFormat<int>(0x20e, 99999), 0, 0, DAT_143af62c0);
+                        ShowMessageBox(BlockFormat<int>(0x20e, 99999), 0, 0, DAT_143af62c0);
                     }
                 }
             }
@@ -499,7 +499,7 @@ void UIServerListDialog::FUN_141ad1d20()
 }
 
 // @0x141ad2380
-void UIServerListDialog::FUN_141ad2380()
+void UIServerListDialog::ConnectToServer()
 {
     if (m_strServer.IsEmpty())
         return;
@@ -509,7 +509,7 @@ void UIServerListDialog::FUN_141ad2380()
             int nIndex = rand() % (int)pServer->m_addresses.GetCount();
             CString strHost = pServer->m_addresses[nIndex];
             int nPort = pServer->m_ports[nIndex];
-            FUN_140714f90()->ConnectTo(strHost, nPort, 1, 1, 0);
+            GetNetworkService()->ConnectTo(strHost, nPort, 1, 1, 0);
             m_nConnecting = 1;
             m_30->Invoke("requestConnect");
         }
@@ -521,12 +521,12 @@ void UIServerListDialog::FUN_141ad2560(int nChannel)
 {
     if (m_nConnecting != 0)
         return;
-    FUN_141ad2ea0(nChannel);
-    FUN_141ad2380();
+    SetChannel(nChannel);
+    ConnectToServer();
 }
 
 // @0x141ad25a0
-void UIServerListDialog::FUN_141ad25a0(CStringW strServer)
+void UIServerListDialog::OnSelectServer(CStringW strServer)
 {
     if (ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(strServer)) {
         CMultiServer* pServer = pPair->m_value.get();
@@ -540,7 +540,7 @@ void UIServerListDialog::FUN_141ad25a0(CStringW strServer)
             bSelected = 0;
             int nSelectedIndex = -1;
             ASArray array(2);
-            FUN_141ad3370(array, &nSelectedIndex, m_nChannel, MS2Ptr<CMultiServer>(pServer));
+            BuildChannelList(array, &nSelectedIndex, m_nChannel, MS2Ptr<CMultiServer>(pServer));
             static_cast<Unk_SlScript*>(m_30.operator->())->Invoke("buildChannelList", array, nSelectedIndex);
             if (bSelected != 0) {
                 float fLimit = 1.0f;
@@ -575,9 +575,9 @@ void UIServerListDialog::FUN_141ad25a0(CStringW strServer)
 }
 
 // @0x141ad28f0
-void UIServerListDialog::FUN_141ad28f0(void* pPacket)
+void UIServerListDialog::SendLoginRequest(void* pPacket)
 {
-    int nScene = TSingleton<CStateService>::GetInstance()->FUN_1417e2610();
+    int nScene = TSingleton<CStateService>::GetInstance()->GetCurrentSceneId();
     if (nScene != 0x620000d)
         return;
     if (FUN_1406c34c0() != 0) {
@@ -588,12 +588,12 @@ void UIServerListDialog::FUN_141ad28f0(void* pPacket)
         request.m_strId = DAT_143ab29d8;
         request.m_strPassword = DAT_143ab2a28;
         request.m_nLoginType = m_nChannel;
-        reinterpret_cast<Unk_MachineId*>(&request.m_machineId)->FUN_14067c080(reinterpret_cast<const Unk_MachineId*>(reinterpret_cast<CMachineIDManager*>(FUN_140aadf70())->GetID()));
-        request.m_n2c = reinterpret_cast<CMachineIDManager*>(FUN_140aadf70())->GetValue();
+        reinterpret_cast<Unk_MachineId*>(&request.m_machineId)->FUN_14067c080(reinterpret_cast<const Unk_MachineId*>(reinterpret_cast<CMachineIDManager*>(GetMachineIDManager())->GetID()));
+        request.m_n2c = reinterpret_cast<CMachineIDManager*>(GetMachineIDManager())->GetValue();
         request.m_n30 = DAT_143ab2858;
         request.m_strRegion = FUN_140652030(FUN_1406516a0());
         if (reinterpret_cast<Unk_SlOptions*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_bLocaledName == 1)
-            request.m_strId = DAT_143ab29d8 + FUN_1406521f0(FUN_1406516b0());
+            request.m_strId = DAT_143ab29d8 + GetRegionCode(FUN_1406516b0());
         COutPacket packet(static_cast<int>(SendOp::ResponseLogin), 0);
         FUN_1401f9020((struct Unk_LoginA*)(&request), (class COutputStream*)(&packet));
         FUN_140710590(packet);
@@ -601,10 +601,10 @@ void UIServerListDialog::FUN_141ad28f0(void* pPacket)
 }
 
 // @0x141ad2b50
-void UIServerListDialog::FUN_141ad2b50(CInPacket* pPacket)
+void UIServerListDialog::OnLoginResult(CInPacket* pPacket)
 {
     Unk_NetworkLoginResult reply;
-    reinterpret_cast<Unk_SPDF*>(&reply)->FUN_1407a4740(&static_cast<CInputStream&>(*pPacket));
+    reinterpret_cast<Unk_SPDF*>(&reply)->ReadFrom(&static_cast<CInputStream&>(*pPacket));
     int nResult = reply.result;
     if (nResult != 0)
     {
@@ -625,11 +625,11 @@ void UIServerListDialog::FUN_141ad2b50(CInPacket* pPacket)
 }
 
 // @0x141ad2c50
-int UIServerListDialog::FUN_141ad2c50(__int64 nCharId, __int64 n3)
+int UIServerListDialog::EnterGame(__int64 nCharId, __int64 n3)
 {
     int nChannel = m_nChannel;
     if (nChannel == 0)
-        nChannel = FUN_14092f640();
+        nChannel = GetCurrentChannel();
     DAT_1439f4a7c = nChannel;
     static_cast<WorldService*>(((void*)WorldService::GetInstance()))->FUN_141bca1e0();
     Unk_SlEnterRequest request;
@@ -654,7 +654,7 @@ int UIServerListDialog::FUN_141ad2c50(__int64 nCharId, __int64 n3)
 }
 
 // @0x141ad2ea0
-void UIServerListDialog::FUN_141ad2ea0(int nChannel)
+void UIServerListDialog::SetChannel(int nChannel)
 {
     m_nChannel = nChannel;
     if (nChannel != 0)
@@ -674,11 +674,11 @@ void UIServerListDialog::FUN_141ad2ef0()
 void UIServerListDialog::FUN_141ad2f60(ASArray& array, int* pnSelected, int nSelectedChannel)
 {
     if (ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer()))
-        FUN_141ad3370(array, pnSelected, nSelectedChannel, MS2Ptr<CMultiServer>(pPair->m_value));
+        BuildChannelList(array, pnSelected, nSelectedChannel, MS2Ptr<CMultiServer>(pPair->m_value));
 }
 
 // @0x141ad3030
-void UIServerListDialog::FUN_141ad3030(const ATL::CAtlArray<int>& channels)
+void UIServerListDialog::SetChannels(const ATL::CAtlArray<int>& channels)
 {
     if (ATL::CRBMap<CStringW, MS2Ptr<CMultiServer> >::CPair* pPair = m_servers.Lookup(GetServer())) {
         pPair->m_value->m_channels.RemoveAll();
@@ -704,13 +704,13 @@ void UIServerListDialog::OnEndPopdown()
     {
     case 0x620001b:
     {
-        CSceneStateMulti* pMulti = FUN_140f30370();
+        CSceneStateMulti* pMulti = GetSceneStateMulti();
         if (pMulti != 0)
             PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), 0x4c8, 0, 0);
         break;
     }
     case 0x6200009:
-        FUN_140714f90()->SendRequestQuitAndDisconnect();
+        GetNetworkService()->SendRequestQuitAndDisconnect();
         TSingleton<CStateService>::GetInstance()->FUN_1417e25a0(0x6200009);
         break;
     }
@@ -723,7 +723,7 @@ bool UIServerListDialog::FUN_141ad3260(int nButton, const CMsgBoxData& data)
         COutPacket packet(static_cast<int>(SendOp::WaitingTicket), 0);
         packet.WriteUInt8(1);
         FUN_140710590(packet);
-        UIServerListDialog* pDialog = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
+        UIServerListDialog* pDialog = ((class UIServerListDialog*)FindServerListDialog(0x4ef0));
         if (pDialog != 0)
             pDialog->FUN_141ad2ef0();
         DAT_143ab2858 = 0;
@@ -741,7 +741,7 @@ void UIServerListDialog::OnSceneLogin()
 }
 
 // @0x141ad3370
-void UIServerListDialog::FUN_141ad3370(ASArray& array, int* pnSelected, int nSelectedChannel, MS2Ptr<CMultiServer> server)
+void UIServerListDialog::BuildChannelList(ASArray& array, int* pnSelected, int nSelectedChannel, MS2Ptr<CMultiServer> server)
 {
     if (server.get() != 0) {
         int nIndex = 0;
@@ -757,13 +757,13 @@ void UIServerListDialog::FUN_141ad3370(ASArray& array, int* pnSelected, int nSel
                     if (DAT_143ab2914 < 50 && nId != nSelectedChannel && nId > nLimit)
                         continue;
                     ASObj row(2);
-                    row.FUN_1407cb9c0("id", nId);
+                    row.SetIntMember("id", nId);
                     CStringW strLabel = StringFormat((const wchar_t*)strPattern, strChannel, nId);
-                    row.FUN_1407cbb20("label", strLabel);
-                    row.FUN_1407cbb20("labelDropdown", strLabel);
+                    row.SetWStringMember("label", strLabel);
+                    row.SetWStringMember("labelDropdown", strLabel);
                     if (nId == nSelectedChannel)
                         *pnSelected = nIndex;
-                    array.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
+                    array.PushValue(Scaleform::GFx::Value(row.GetValue()));
                     nIndex++;
                 }
             }

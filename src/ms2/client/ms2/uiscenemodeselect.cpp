@@ -23,8 +23,8 @@ class UIIntroMovie : public UIVideoContents
 };
 
 class Unk_SmWorld;                                      // FUN_1403ed2d0
-class Unk_SmHost;                                       // FUN_14025e7a0
-class Unk_SmPlayerState { public: int m_pad0; int m_pad4; int m_8; };   // FUN_1409331f0 (m_8 +8)
+class Unk_SmHost;                                       // GetGFxManager
+class Unk_SmPlayerState { public: int m_pad0; int m_pad4; int m_8; };   // GetKeyTable (m_8 +8)
 class Unk_SmLogin;                                      // FUN_14025e7c0
 
 class Unk_SmUIMgr;
@@ -35,9 +35,9 @@ public:
     int FUN_141bcfbd0();
     static class WorldService* GetInstance();
 };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
+class Unk_SoundSink* GetKeyTable();   // C3: was GetKeyTable
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -48,7 +48,7 @@ int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 
 int FUN_140e85580(Unk_SmPlayerState* p);
 static int FUN_140e853c0();
-UIIntroMovie* FUN_140e85420(int nUiId);
+UIIntroMovie* FindIntroMovie(int nUiId);
 GFxMovieBackground* FUN_140e85550(const NiRTTI* pRtti, GFxMovie* pObj);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,11 +80,11 @@ CString UISceneModeSelect::vfunc_7()
 int UISceneModeSelect::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
-    UIIntroMovie* pIntro = FUN_140e85420(0x4e33);
+    UIIntroMovie* pIntro = FindIntroMovie(0x4e33);
     if (pIntro != 0)
         pIntro->vfunc_53();
     TSingleton<CUIService>::GetInstance()->FUN_141adbe00(1.0f, 0);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 
 // @0x140e85150
@@ -126,7 +126,7 @@ void UISceneModeSelect::OnLoadComplete()
     UISwfEntity::OnLoadComplete();
     if (((class WorldService*)(class Unk_SmWorld*)(((class Unk_SmWorld*)WorldService::GetInstance())))->FUN_141bcfbd0() != 0)
         vfunc_55();
-    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_SmHost*)(((class Unk_SmHost*)FUN_14025e7a0())))->FindMovie(4));
+    GFxMovieBackground* pBg = FUN_140e85550(&GFxMovieBackground::ms_RTTI, ((class GFxManager*)(class Unk_SmHost*)(((class Unk_SmHost*)GetGFxManager())))->FindMovie(4));
     if (pBg != 0)
     {
         if (pBg->IsLoaded() != 0)
@@ -155,13 +155,13 @@ int UISceneModeSelect::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 // @0x140e853c0
 static int FUN_140e853c0()
 {
-    if (FUN_140e85580(((class Unk_SmPlayerState*)FUN_1409331f0())) == 0)
-        return reinterpret_cast<CInputKeyHandler*>(((class Unk_SmLogin*)FUN_14025e7c0()))->FUN_14116d9c0(0x75, 0, 0);
+    if (FUN_140e85580(((class Unk_SmPlayerState*)GetKeyTable())) == 0)
+        return reinterpret_cast<CInputKeyHandler*>(((class Unk_SmLogin*)FUN_14025e7c0()))->WasKeyPressed(0x75, 0, 0);
     return reinterpret_cast<CInputKeyHandler*>(((class Unk_SmLogin*)FUN_14025e7c0()))->FUN_14116dd30(0x493ef, false, 0);
 }
 
 // @0x140e85420
-UIIntroMovie* FUN_140e85420(int nUiId)
+UIIntroMovie* FindIntroMovie(int nUiId)
 {
     if (reinterpret_cast<Unk_SmUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {

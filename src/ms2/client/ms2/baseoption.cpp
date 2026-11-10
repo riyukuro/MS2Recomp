@@ -126,7 +126,7 @@ void CBaseOption::FUN_140a02d90(int n)
 {
     UIGameOptionDialog* pDialog = GetOptionDialog();
     if (pDialog != 0)
-        ((class UIGameOptionDialog*)(class UIGameOptionDialog*)(pDialog))->FUN_141943820(n);
+        ((class UIGameOptionDialog*)(class UIGameOptionDialog*)(pDialog))->SetApplyEnabled(n);
 }
 
 // @0x140a02dd0

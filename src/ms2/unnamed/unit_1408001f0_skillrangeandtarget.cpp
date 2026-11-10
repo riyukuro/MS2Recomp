@@ -42,7 +42,7 @@ Unk_RangeShape::Unk_RangeShape()
 }
 
 // @0x1408002b0
-bool Unk_RangeShape::FUN_1408002b0(const Unk_RangeShape& o)
+bool Unk_RangeShape::IsDifferent(const Unk_RangeShape& o)
 {
     if (m_nType != o.m_nType)
         return true;
@@ -113,9 +113,9 @@ Unk_RangeProperty::Unk_RangeProperty()
 }
 
 // @0x140800920
-bool Unk_RangeProperty::FUN_140800920(const Unk_RangeProperty& o)
+bool Unk_RangeProperty::IsDifferent(const Unk_RangeProperty& o)
 {
-    if (Unk_RangeShape(*this).FUN_1408002b0(Unk_RangeShape(o)))
+    if (Unk_RangeShape(*this).IsDifferent(Unk_RangeShape(o)))
         return true;
     if (m_n40 != o.m_n40)
         return true;
@@ -180,7 +180,7 @@ void Unk_RangeProperty::LoadElement(TiXmlElement* pElem, CString strName)
 void Unk_RangeProperty::SaveElement(void* pParent, CString strName)
 {
     static Unk_RangeProperty kDefault;
-    if (FUN_140800920(kDefault))
+    if (IsDifferent(kDefault))
     {
         TiXmlElement elem(strName);
         FUN_140800570(&elem);

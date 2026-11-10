@@ -88,7 +88,7 @@ public:
     virtual CString vfunc_6();                                              //  6 0x140fd8580 "PageStranger"
     virtual CStringW vfunc_7();                                             //  7 0x140fd85d0
 
-    void FUN_140fd88e0(GuestPtr spGuest);                                   // 0x140fd88e0 add a found stranger
+    void AddStranger(GuestPtr spGuest);                                   // 0x140fd88e0 add a found stranger
 
     std::map<CStringW, GuestPtr> m_strangers;                               // +0x30
 };
@@ -111,14 +111,14 @@ public:
     virtual int vfunc_65();                                                 // 65 0x140fccb80
     virtual void vfunc_67();                                                // 67 0x140fccbe0
 
-    void FUN_140fcd5b0(Unk_GsFound* pFound);                                 // 0x140fcd5b0 a stranger was found
-    void FUN_140fcd850(GuestPtr spGuest);                                   // 0x140fcd850 pick a guest
-    void FUN_140fcd9d0(const CStringW& strName);                            // 0x140fcd9d0 unpick a guest
-    bool FUN_140fcdb30(const CStringW& strName);                            // 0x140fcdb30 is the name picked
-    void FUN_140fcdba0();                                                   // 0x140fcdba0 forget the picked guests
-    void FUN_140fcdc50(PagePtr spPage);                                     // 0x140fcdc50 register a page by its key
+    void OnStrangerFound(Unk_GsFound* pFound);                                 // 0x140fcd5b0 a stranger was found
+    void AddGuest(GuestPtr spGuest);                                   // 0x140fcd850 pick a guest
+    void RemoveGuest(const CStringW& strName);                            // 0x140fcd9d0 unpick a guest
+    bool IsGuestSelected(const CStringW& strName);                            // 0x140fcdb30 is the name picked
+    void ClearGuests();                                                   // 0x140fcdba0 forget the picked guests
+    void RegisterPage(PagePtr spPage);                                     // 0x140fcdc50 register a page by its key
     void FUN_140fcdcf0();                                                   // 0x140fcdcf0 fill the "m_tab" strip
-    bool FUN_140fcdf30(const CStringW& strName);                            // 0x140fcdf30 may that name be added
+    bool CanAddGuest(const CStringW& strName);                            // 0x140fcdf30 may that name be added
     int FUN_140fce0a0();                                                    // 0x140fce0a0 invitations still allowed
 
 

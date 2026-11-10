@@ -81,7 +81,7 @@ bool ItemEntity::FUN_14026aff0() { return m_29; }
 // @0x14026b010
 bool ItemEntity::FUN_14026b010() { return m_2b; }
 // @0x14026b030
-void ItemEntity::FUN_14026b030(Unk_GiftOutput& stream) {
+void ItemEntity::Write(Unk_GiftOutput& stream) {
     reinterpret_cast<COutputStream&>(stream).WriteInt32(m_itemId);
     reinterpret_cast<COutputStream&>(stream).WriteInt16((short)m_rank);
     reinterpret_cast<COutputStream&>(stream).WriteInt32(m_count);
@@ -91,7 +91,7 @@ void ItemEntity::FUN_14026b030(Unk_GiftOutput& stream) {
     reinterpret_cast<COutputStream&>(stream).WriteBool(m_2b);
 }
 // @0x14026b100
-void ItemEntity::FUN_14026b100(Unk_GiftInput& stream) {
+void ItemEntity::Read(Unk_GiftInput& stream) {
     m_itemId = reinterpret_cast<CInputStream&>(stream).ReadInt32();
     m_rank = (unsigned short)reinterpret_cast<CInputStream&>(stream).ReadInt16();
     m_count = reinterpret_cast<CInputStream&>(stream).ReadInt32();
@@ -105,13 +105,13 @@ void ItemEntity::SetRank(int rank) { m_rank = rank; }
 
 // ---- CIngredientInfo ------------------------------------------------------------------------------------------
 // @0x14026b1e0
-void CIngredientInfo::FUN_14026b1e0(COutputStream& out) {
+void CIngredientInfo::Write(COutputStream& out) {
     out.WriteInt32(m_a);
     out.WriteInt32(m_b);
     out.WriteInt32(m_c);
 }
 // @0x14026b250
-void CIngredientInfo::FUN_14026b250(CInPacket& in) {
+void CIngredientInfo::Read(CInPacket& in) {
     m_a = in.ReadInt32();
     m_b = in.ReadInt32();
     m_c = in.ReadInt32();
@@ -147,7 +147,7 @@ unsigned CIngredientInfo::FUN_14026b4b0() {
     return 0;
 }
 // @0x14026b500
-unsigned CIngredientInfo::FUN_14026b500() {
+unsigned CIngredientInfo::GetItemId() {
     if (m_a != 0) return m_a;
     return FUN_14026b4b0();
 }
@@ -236,11 +236,11 @@ size_t CIngredientContainer::FUN_14026bee0() { return reinterpret_cast<VIng&>(m_
 // @0x14026bf10
 size_t CIngredientContainer::FUN_14026bf10() { return reinterpret_cast<VIng&>(m_items).size(); }
 // @0x14026bf40
-bool CIngredientContainer::FUN_14026bf40() { return reinterpret_cast<VIng&>(m_items).empty(); }
+bool CIngredientContainer::IsEmpty() { return reinterpret_cast<VIng&>(m_items).empty(); }
 // @0x14026bf70
 bool CIngredientContainer::FUN_14026bf70() { return reinterpret_cast<VIng&>(m_items).empty(); }
 // @0x14026bfa0
-void CIngredientContainer::FUN_14026bfa0(size_t n) { reinterpret_cast<VIng&>(m_items).reserve(n); }
+void CIngredientContainer::Reserve(size_t n) { reinterpret_cast<VIng&>(m_items).reserve(n); }
 // @0x14026bfd0
 void CIngredientContainer::Write(COutputStream& out) {
     unsigned char count = (unsigned char)reinterpret_cast<VIng&>(m_items).size();
@@ -267,13 +267,13 @@ void CIngredientContainer::Read(CInPacket& in) {
 Unk_IngVec* CIngredientContainer::FUN_14026c230() { return &m_items; }
 // @0x14026c250
 void CIngredientContainer::FUN_14026c250(CIngredientContainer* other) {
-    if (other->FUN_14026bf40()) return;
+    if (other->IsEmpty()) return;
     Unk_IngVec pending;
     size_t count = other->FUN_14026bee0();
     for (size_t i = 0; i < count; ++i) {
         Unk_IngRef cur = other->FUN_14026bdc0(i);
         if (cur == 0 || cur->IsEmpty()) continue;
-        Unk_IngRef found = FUN_14026c450(cur->m_a);
+        Unk_IngRef found = FindIngredient(cur->m_a);
         if (found.get() != 0) {
             int* dst = &found->m_c;
             *dst = *dst + cur->m_c;
@@ -289,7 +289,7 @@ void CIngredientContainer::FUN_14026c250(CIngredientContainer* other) {
     }
 }
 // @0x14026c450
-Unk_IngRef CIngredientContainer::FUN_14026c450(unsigned key) {
+Unk_IngRef CIngredientContainer::FindIngredient(unsigned key) {
     int keyBuffer;
     VIng::iterator FUN_14027bf30(VIng::iterator, VIng::iterator, int);   // std::find_if with the [key] predicate (commonstruct_2)
     VIng::iterator lower = FUN_14027bf30(reinterpret_cast<VIng&>(m_items).begin(), reinterpret_cast<VIng&>(m_items).end(), *FUN_14026b540(&keyBuffer, key));
@@ -310,7 +310,7 @@ DungeonRewardInfo::~DungeonRewardInfo() {}
 // map<unsigned char,int> value_type.
 struct Unk_RewardPair { unsigned char key; int value; };
 // @0x14026c660
-void DungeonRewardInfo::FUN_14026c660(COutputStream& out) {
+void DungeonRewardInfo::Write(COutputStream& out) {
     out.WriteInt32((int)reinterpret_cast<MapII&>(m_rewards).size());
     //
     MapII& rewards = reinterpret_cast<MapII&>(m_rewards);
@@ -334,7 +334,7 @@ void DungeonRewardInfo::FUN_14026c660(COutputStream& out) {
     }
 }
 // @0x14026c900
-void DungeonRewardInfo::FUN_14026c900(CInPacket& in) {
+void DungeonRewardInfo::Read(CInPacket& in) {
     int count = in.ReadInt32();
     for (int i = 0; i < count; ++i) {
         unsigned key = in.ReadUInt8();
@@ -379,7 +379,7 @@ __int64 DungeonRewardInfo::FUN_14026ccf0() {
     return *(unsigned*)((char*)(void*)found.operator->() + 4);
 }
 // @0x14026cd70
-unsigned DungeonRewardInfo::FUN_14026cd70(unsigned key) {
+unsigned DungeonRewardInfo::GetReward(unsigned key) {
     MapII::const_iterator found = reinterpret_cast<MapII&>(m_rewards).find(reinterpret_cast<int&>(key));
     //
     if (found == static_cast<const MapII::iterator&>(reinterpret_cast<MapII&>(m_rewards).end())) return 0;
@@ -391,13 +391,13 @@ void DungeonRewardInfo::Clear() {
     reinterpret_cast<VItem&>(m_items).clear();
 }
 // @0x14026ce30
-bool DungeonRewardInfo::FUN_14026ce30() {
+bool DungeonRewardInfo::HasRewards() {
     if (reinterpret_cast<MapII&>(m_rewards).size() > 0) return true;
     if (reinterpret_cast<VItem&>(m_items).size() > 0) return true;
     return false;
 }
 // @0x14026ce80
-void DungeonRewardInfo::FUN_14026ce80(unsigned key, int delta) {
+void DungeonRewardInfo::AddReward(unsigned key, int delta) {
     int* slot = &m_rewards.FUN_14027f180(key);
     *slot = *slot + delta;
 }
@@ -521,18 +521,18 @@ void NpcShopItemLife::Read(CInPacket& in) {
 // @0x14026f000
 bool NpcShopItemLife::FUN_14026f000() { return m_onlyVisible == false; }
 // @0x14026f040
-bool NpcShopItemLife::FUN_14026f040(const CMsTime& now) {
+bool NpcShopItemLife::IsVisible(const CMsTime& now) {
     if (FUN_14026f000()) return true;
     return IsNotExpired(now);
 }
 // @0x14026f080
 bool NpcShopItemLife::IsNotExpired(const CMsTime& now) {
-    if (!FUN_14026f0f0()) return true;
+    if (!IsValid()) return true;
     if (m_time.Get() > 0 && now > m_time) return false;
     return true;
 }
 // @0x14026f0f0
-bool NpcShopItemLife::FUN_14026f0f0() {
+bool NpcShopItemLife::IsValid() {
     switch (m_type) {
     case 1:
         if (m_value == 0) return false;
@@ -620,7 +620,7 @@ __int64 ItemDropItemLife::FUN_14026f520() {
     return 0;
 }
 // @0x14026f5d0
-bool ItemDropItemLife::FUN_14026f5d0() {
+bool ItemDropItemLife::IsValid() {
     switch (m_type) {
     case 1:
         if (m_value == 0) return false;
@@ -693,7 +693,7 @@ void CChangeableHistoryInfo::FUN_14026fab0() {
     m_total = total;
 }
 // @0x14026fc00
-int CChangeableHistoryInfo::FUN_14026fc00(int mode, __int64 id) {
+int CChangeableHistoryInfo::GetTotal(int mode, __int64 id) {
     int total = 0;
     Unk_CriticalSectionLock lock(m_lock, 1);
     if (mode == 1) {
@@ -719,7 +719,7 @@ int CChangeableHistoryInfo::FUN_14026fc00(int mode, __int64 id) {
     return total;
 }
 // @0x14026fda0
-void CChangeableHistoryInfo::FUN_14026fda0(Unk_HistRef entry) {
+void CChangeableHistoryInfo::AddHistory(Unk_HistRef entry) {
     if (entry == 0) return;
     if ((__int64)m_48 != entry->m_30) return;
     if (!(m_4c == entry->m_3c)) return;
@@ -728,7 +728,7 @@ void CChangeableHistoryInfo::FUN_14026fda0(Unk_HistRef entry) {
     m_total = m_total + entry->m_40;
 }
 // @0x14026fea0
-bool CChangeableHistoryInfo::FUN_14026fea0(__int64 id) {
+bool CChangeableHistoryInfo::RemoveHistory(__int64 id) {
     Unk_CriticalSectionLock lock(m_lock, 1);
     LHist::iterator it = reinterpret_cast<LHist&>(m_list).begin(); Unk_It saved;
     //
@@ -811,7 +811,7 @@ void HomeBlockInfo::FUN_140270530() {
     m_50.Empty();
 }
 // @0x1402705d0
-void HomeBlockInfo::FUN_1402705d0(COutputStream& out) {
+void HomeBlockInfo::Write(COutputStream& out) {
     out.WriteInt64(m_18);
     out.WriteInt64(m_20);
     out.WriteInt64(m_28);
@@ -823,7 +823,7 @@ void HomeBlockInfo::FUN_1402705d0(COutputStream& out) {
     out.WriteUnicodeStringA(m_50);
 }
 // @0x1402706f0
-void HomeBlockInfo::FUN_1402706f0(CInPacket& in) {
+void HomeBlockInfo::Read(CInPacket& in) {
     m_18 = in.ReadInt64();
     m_20 = in.ReadInt64();
     m_28 = in.ReadInt64();

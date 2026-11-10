@@ -41,7 +41,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 class CItemData   // C3: member view for the former free stand-ins
 {
@@ -71,15 +71,15 @@ bool FUN_1402226b0(int nLevel)
 {
     switch (nLevel) {
     case 1:
-        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xe7);
+        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xe7);
     case 10: case 20: case 30: case 40: case 50: case 60: case 70: case 80:
         return true;
     case 90:
-        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(8);
+        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(8);
     case 100:
-        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x12);
+        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x12);
     case 110:
-        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x25);
+        return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x25);
     }
     return false;
 }
@@ -216,26 +216,26 @@ int FUN_140222ce0(MS2Ptr<CItemData> h)
 
 // @0x140222e10
 // The grade slot is available (feature-gated).
-bool FUN_140222e10(int n)
+bool IsValidGemType(int n)
 {
     switch (n) {
     case 1: case 3: case 4:
         return true;
-    case 5: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x67);
-    case 6: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x68);
-    case 2: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x66);
-    case 7: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x69);
-    case 8: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x6a);
-    case 9: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x9d);
-    case 10: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x6b);
-    case 11: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x6c);
-    case 12: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x6d);
+    case 5: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x67);
+    case 6: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x68);
+    case 2: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x66);
+    case 7: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x69);
+    case 8: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x6a);
+    case 9: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x9d);
+    case 10: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x6b);
+    case 11: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x6c);
+    case 12: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x6d);
     }
     return false;
 }
 
 // @0x140222f50
-unsigned __int64 FUN_140222f50()
+unsigned __int64 GetGemTypeCount()
 {
     return 0xc;
 }
@@ -252,7 +252,7 @@ int FUN_140222f60(int n)
 }
 
 // @0x140222fb0
-int FUN_140222fb0(int n)
+int GetSetItemLayer(int n)
 {
     if (n > 2)
         return 0;
@@ -276,7 +276,7 @@ int FUN_140222ff0(const int* p)
 
 // @0x140223040
 // The English name of an item grade.
-CString FUN_140223040(int nGrade)
+CString GetGradeName(int nGrade)
 {
     if (nGrade == 1)
         return CString("Normal");

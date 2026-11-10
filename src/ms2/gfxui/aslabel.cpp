@@ -31,95 +31,95 @@ ASLabel::~ASLabel()
 }
 
 // @0x1422e4a00
-void ASLabel::FUN_1422e4a00(const CString& strText)
+void ASLabel::SetText(const CString& strText)
 {
-    FUN_1407cba60("text", strText);
+    SetStringMember("text", strText);
 }
-MS2_REPLACE_METHOD(0x1422E4A00, ASLabel, FUN_1422e4a00, 72, 0x901D9060);
+MS2_REPLACE_METHOD(0x1422E4A00, ASLabel, SetText, 72, 0x901D9060);
 
 // @0x1422e4a50
 void ASLabel::FUN_1422e4a50(const CStringW& strText)
 {
-    FUN_1407cbb20("text", strText);
+    SetWStringMember("text", strText);
 }
 MS2_REPLACE_METHOD(0x1422E4A50, ASLabel, FUN_1422e4a50, 72, 0x097D1931);
 
 // @0x1422e4aa0
-CStringW ASLabel::FUN_1422e4aa0()
+CStringW ASLabel::GetText()
 {
     return GetMember("text").GetStringW();
 }
-MS2_REPLACE_METHOD(0x1422E4AA0, ASLabel, FUN_1422e4aa0, 123, 0xB13FED19);
+MS2_REPLACE_METHOD(0x1422E4AA0, ASLabel, GetText, 123, 0xB13FED19);
 
 // @0x1422e4b30
-void ASLabel::FUN_1422e4b30(const CString& strText)
+void ASLabel::SetHtmlText(const CString& strText)
 {
-    FUN_1407cba60("htmlText", strText);
+    SetStringMember("htmlText", strText);
 }
-MS2_REPLACE_METHOD(0x1422E4B30, ASLabel, FUN_1422e4b30, 72, 0xEF204333);
+MS2_REPLACE_METHOD(0x1422E4B30, ASLabel, SetHtmlText, 72, 0xEF204333);
 
 // @0x1422e4b80
 void ASLabel::FUN_1422e4b80(const CStringW& strText)
 {
-    FUN_1407cbb20("htmlText", strText);
+    SetWStringMember("htmlText", strText);
 }
 MS2_REPLACE_METHOD(0x1422E4B80, ASLabel, FUN_1422e4b80, 72, 0x70D6C936);
 
 // @0x1422e4bd0
-CStringW ASLabel::FUN_1422e4bd0()
+CStringW ASLabel::GetHtmlText()
 {
     return GetMember("htmlText").GetStringW();
 }
-MS2_REPLACE_METHOD(0x1422E4BD0, ASLabel, FUN_1422e4bd0, 123, 0xE0781EE2);
+MS2_REPLACE_METHOD(0x1422E4BD0, ASLabel, GetHtmlText, 123, 0xE0781EE2);
 
 // @0x1422e4c60
-void ASLabel::FUN_1422e4c60(const CString& strAutoSize)
+void ASLabel::SetAutoSize(const CString& strAutoSize)
 {
-    FUN_1407cba60("autoSize", strAutoSize);
+    SetStringMember("autoSize", strAutoSize);
 }
-MS2_REPLACE_METHOD(0x1422E4C60, ASLabel, FUN_1422e4c60, 72, 0x8E9278D8);
+MS2_REPLACE_METHOD(0x1422E4C60, ASLabel, SetAutoSize, 72, 0x8E9278D8);
 
 // @0x1422e4cb0
-CString ASLabel::FUN_1422e4cb0()
+CString ASLabel::GetAutoSize()
 {
     return GetMember("autoSize").GetString();
 }
-MS2_REPLACE_METHOD(0x1422E4CB0, ASLabel, FUN_1422e4cb0, 123, 0x0D4463AB);
+MS2_REPLACE_METHOD(0x1422E4CB0, ASLabel, GetAutoSize, 123, 0x0D4463AB);
 
 // @0x1422e4d40
-void ASLabel::FUN_1422e4d40(const CString& strText)
+void ASLabel::AppendText(const CString& strText)
 {
-    FUN_1407cba60("appendText", strText);
+    SetStringMember("appendText", strText);
 }
-MS2_REPLACE_METHOD(0x1422E4D40, ASLabel, FUN_1422e4d40, 72, 0xCB95CC5E);
+MS2_REPLACE_METHOD(0x1422E4D40, ASLabel, AppendText, 72, 0xCB95CC5E);
 
 // @0x1422e4d90
 void ASLabel::FUN_1422e4d90(const CStringW& strText)
 {
-    FUN_1407cbb20("appendText", strText);
+    SetWStringMember("appendText", strText);
 }
 MS2_REPLACE_METHOD(0x1422E4D90, ASLabel, FUN_1422e4d90, 72, 0x9A27ED00);
 
 // @0x1422e4de0
-void ASLabel::FUN_1422e4de0(const CString& strHtml)
+void ASLabel::AppendHtml(const CString& strHtml)
 {
-    FUN_1407cba60("appendHtml", strHtml);
+    SetStringMember("appendHtml", strHtml);
 }
-MS2_REPLACE_METHOD(0x1422E4DE0, ASLabel, FUN_1422e4de0, 72, 0xD7A93D24);
+MS2_REPLACE_METHOD(0x1422E4DE0, ASLabel, AppendHtml, 72, 0xD7A93D24);
 
 // @0x1422e4e30
 void ASLabel::FUN_1422e4e30(const CStringW& strHtml)
 {
-    FUN_1407cbb20("appendHtml", strHtml);
+    SetWStringMember("appendHtml", strHtml);
 }
 MS2_REPLACE_METHOD(0x1422E4E30, ASLabel, FUN_1422e4e30, 72, 0xA636B77C);
 
 // @0x1422e4e80
-MS2Ptr<ASTextField> ASLabel::FUN_1422e4e80()
+MS2Ptr<ASTextField> ASLabel::GetTextField()
 {
     return FUN_1409b4620("textField");
 }
-MS2_REPLACE_METHOD(0x1422E4E80, ASLabel, FUN_1422e4e80, 102, 0xA832DBEC);
+MS2_REPLACE_METHOD(0x1422E4E80, ASLabel, GetTextField, 102, 0xA832DBEC);
 
 // @0x1422e4ef0
 void ASLabel::FUN_1422e4ef0(int nBegin, int nEnd)
@@ -127,7 +127,7 @@ void ASLabel::FUN_1422e4ef0(int nBegin, int nEnd)
     if (GetFocused() == 0)
         SetFocused(1);
     vfunc_24(true);
-    MS2Ptr<ASTextField> spTextField = FUN_1422e4e80();
+    MS2Ptr<ASTextField> spTextField = GetTextField();
     if (spTextField.get())
         spTextField->SetSelection(nBegin, nEnd);
 }

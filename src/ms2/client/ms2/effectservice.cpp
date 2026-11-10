@@ -201,7 +201,7 @@ int FUN_140873360(TiXmlElement* pNode, const char* pszName, float& fOut);
 int FUN_1408733e0(TiXmlElement* pNode, const char* pszName, CString& strOut);
 
 // String / path helpers (commonfiles).
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // path combine
+CString GetXmlPath(const CString& strDir, const CString& strFile);  // path combine
 void FUN_1401d3700(CString& strPath);                                   // normalize (lower case)
 
 bool FUN_14028d470(float a, float b);                   // nearly equal
@@ -248,9 +248,9 @@ bool CEffectParam::vfunc_7(Unk_EffectTarget* p)
 {
     if (!m_bIgnoreOptimize && reinterpret_cast<NoticeMessage*>(p)->CanShow())
         return true;
-    if (m_nGender != 2 && m_nGender != reinterpret_cast<NoticeMessage*>(p)->FUN_140a53010())
+    if (m_nGender != 2 && m_nGender != reinterpret_cast<NoticeMessage*>(p)->GetOwnerGender())
         return true;
-    if (m_nJobCode != 0 && m_nJobCode != reinterpret_cast<NoticeMessage*>(p)->FUN_140a53050())
+    if (m_nJobCode != 0 && m_nJobCode != reinterpret_cast<NoticeMessage*>(p)->GetOwnerJobCode())
         return true;
     if (m_bOnlyCasterMyPC && p->m_nKind != 1)
         return true;
@@ -580,7 +580,7 @@ MS2_REPLACE_METHOD(0x14119f870, EffectDataManager, GetEffectData, 482, 0xBC6A47F
 void EffectDataManager::LoadEffectFiles()
 {
     ATL::CAtlArray<CString> files;
-    FUN_140399100(".xml", "./Data/Xml/Effect", files, "", false);
+    FindFiles(".xml", "./Data/Xml/Effect", files, "", false);
     __int64 nPrefix = CString("./data/xml/effect/").GetLength();
     for (unsigned int i = 0; i < files.GetCount(); i++)
     {
@@ -594,11 +594,11 @@ MS2_REPLACE_METHOD(0x14119fa60, EffectDataManager, LoadEffectFiles, 489, 0x37B27
 CEffectDataPtr EffectDataManager::LoadEffectData(const CString& strPath)
 {
     CString strFile;
-    strFile = FUN_14071a5b0("Effect", strPath);
+    strFile = GetXmlPath("Effect", strPath);
     strFile.TrimLeft();
     strFile.TrimRight();
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strFile, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strFile, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 2, 0x13, L"파일을 읽을 수 없습니다 CEffectDataMgr[{0}]", strFile);
         return CEffectDataPtr(0);
@@ -610,7 +610,7 @@ CEffectDataPtr EffectDataManager::LoadEffectData(const CString& strPath)
         return CEffectDataPtr(0);
     }
     CEffectDataPtr spData(new CEffectData());
-    spData->FUN_1401d1160(strFile);
+    spData->SetPath(strFile);
     TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("effect"));
     if (pNode == 0)
         return CEffectDataPtr(0);
@@ -1035,7 +1035,7 @@ MS2_REPLACE_METHOD(0x1411a4040, EffectNode, SetTranslation, 60, 0xFFB13170);
 #include "ms2/commonfiles/timeutil.h"
 #include "ms2/placeholder/clientconstants.h"
 #include "soundservice.h"
-CSoundService* FUN_140c9cb10();                                // the sound service
+CSoundService* GetSoundService();                                // the sound service
 #include "pendingeffect.h"
 #include "raindroponcubeemitter.h"
 #include "afterimageitem.h"
@@ -1063,7 +1063,7 @@ CSoundService* FUN_140c9cb10();                                // the sound serv
 #include "ms2/client/ms2/pcbase.h"  // C3: PCBase (efd::DynamicCast<PCBase, GameObject>)
 namespace FMOD { class EventGroup; }
 
-void* FUN_1413f9950();   // C3: was FUN_1413f9950
+void* GetActiveCamera();   // C3: was GetActiveCamera
 template <class A, class B> void Unk_SkillTableLog(class CLogString*, int, int, const wchar_t*, const A&, const B&);   // C3: was FUN_140ab1290
 void Unk_140657820();                                           // invalid call of an empty Delegate
 // @0x1411b0e30
@@ -1084,13 +1084,13 @@ public:
     { return reinterpret_cast<CCooltimeManager*>(TSingleton<CooltimeManager>::s_instance); }
 };
 extern int DAT_143ae2b30;                                       // 1: the scene is split over several effect roots
-efd::MessageService* FUN_1413f9830();
+efd::MessageService* GetMessageService();
 // The field sound callback (strName, strArg) -> sound id.
 typedef TFunctor<unsigned int, ParamList<const CString&, ParamList<const CString&, EmptyParam> > > Unk_EsSoundFunctor;
 class GFxManager { public: void SetSoundCallback(Unk_EsSoundFunctor fn); };   // C3: member view (gfxmanager.h), the field sound callback
-class Unk_AltStringMgr* FUN_14025e7a0();
+class Unk_AltStringMgr* GetGFxManager();
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
-int FUN_140ad0d60(int n, int nMin, int nMax);                  // clamp
+int Clamp(int n, int nMin, int nMax);                  // clamp
 struct Unk_EsOptionData
 {
     char m_pad_00[0x12];
@@ -1335,7 +1335,7 @@ unsigned CEffectService::FUN_1411a5110(CString strCategory, CString strName, CSt
     }
     float fScale = nKind == 3 ? static_cast<Client::Constants*>(GetClientConstants())->VolumeOtherPc.Read() : 1.0f;
     FUN_1401d3700(strCategory);
-    MS2Ptr<CSoundEventEffectParam> spParam = FUN_141775980(strName, strCategory, fScale * fVolume, strExtra);
+    MS2Ptr<CSoundEventEffectParam> spParam = CreateSoundEventEffectParam(strName, strCategory, fScale * fVolume, strExtra);
     NoticeMessage kTarget;   // C3: was Unk_EffectTarget
     ((Unk_EffectTarget&)(kTarget)).m_pXform = pXform;
     kTarget.SetObjectCode(nOwner);
@@ -1378,7 +1378,7 @@ unsigned CEffectService::PlayEventVoice(int nId, GameObject* pActor)
         else
             strName = kVoice.m_strSoundId;
         if (!strName.IsEmpty()) {
-            int nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<Unk_WsC_GameObj*>(pActor));
+            int nKind = WorldService::GetInstance()->GetObjectKind(reinterpret_cast<Unk_WsC_GameObj*>(pActor));
             if (kVoice.m_bOnlyCasterMyPC && nKind != 1)
                 return 0;
             NiTransform kXform;
@@ -1401,7 +1401,7 @@ unsigned CEffectService::PlaySystemSound(const CString& strName, const CString& 
         nGender = pPlayer->GetGender();
         nJob = pPlayer->GetJobGroupId();
     }
-    MS2Ptr<SystemSoundProperty> spProp = TSingleton<SoundPropertyMgr>::GetInstance()->FUN_141792ee0(strName, strArg);
+    MS2Ptr<SystemSoundProperty> spProp = TSingleton<SoundPropertyMgr>::GetInstance()->FindSystemSound(strName, strArg);
     if (spProp == 0)
         return 0;
     CString strSound = spProp->GetSoundName(nGender, nJob);
@@ -1431,7 +1431,7 @@ unsigned CEffectService::PlayTriggerVoice(const CString& strName)
         CString strSound;
         if (!spProp->GetVoice(nGender, nJob, strSound))
             return 0;
-        if (FUN_140c9cb10()->FUN_1417b03d0(strSound)) {
+        if (GetSoundService()->HasTag(strSound)) {
             NiTransform kXform;
             kXform.MakeIdentity();
             kXform.m_fScale = 1.0f;
@@ -1944,25 +1944,25 @@ void CEffectService::FUN_1411a7e80(int nType)
         m_strAreaEffect = m_strAreaEffectCur;
         break;
     case 1:
-        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strArea3d0;
+        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(GetCommonResource())->m_strArea3d0;
         break;
     case 2:
-        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strArea3d8;
+        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(GetCommonResource())->m_strArea3d8;
         break;
     case 3:
-        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strArea3c0;
+        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(GetCommonResource())->m_strArea3c0;
         break;
     case 4:
-        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strArea3c8;
+        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(GetCommonResource())->m_strArea3c8;
         break;
     case 5:
-        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strArea3e0;
+        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(GetCommonResource())->m_strArea3e0;
         break;
     case 6:
-        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strArea3e8;
+        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(GetCommonResource())->m_strArea3e8;
         break;
     case 7:
-        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strArea3f0;
+        m_strAreaEffectNext = static_cast<Unk_EsConfig*>(GetCommonResource())->m_strArea3f0;
         break;
     }
 }
@@ -2150,7 +2150,7 @@ MS2_REPLACE_METHOD(0x1411a88c0, CEffectService, FUN_1411a88c0, 17, 0x116875E2);
 // @0x1411a8880
 void CEffectService::FUN_1411a8880(int n)
 {
-    m_unk_188 = FUN_140ad0d60(n, 1, 3);
+    m_unk_188 = Clamp(n, 1, 3);
 }
 MS2_REPLACE_METHOD(0x1411a8880, CEffectService, FUN_1411a8880, 49, 0x40BB776A);
 
@@ -2198,9 +2198,9 @@ MS2_REPLACE_METHOD(0x1411a8e70, CEffectService, GetTick, 17, 0xFA964832);
 // @0x1411a91d0
 bool CEffectService::IsEffectTypeVisible(int nType)
 {
-    if (reinterpret_cast<Unk_EsOptionData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bHide12 == true && nType == 4)
+    if (reinterpret_cast<Unk_EsOptionData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_bHide12 == true && nType == 4)
         return false;
-    if (reinterpret_cast<Unk_EsOptionData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bHide13 == true && nType == 2)
+    if (reinterpret_cast<Unk_EsOptionData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_bHide13 == true && nType == 2)
         return false;
     return true;
 }
@@ -2255,31 +2255,31 @@ efd::AsyncResult CEffectService::OnInit()
         kObjects.push_back(NiDynamicCast(NiObject, m_spRoot));
         pSceneGraph->AddSceneGraph(kObjects, true, true);
     }
-    FUN_1413f9830()->Subscribe(this, s_catEffectChannel, 0, false);
+    GetMessageService()->Subscribe(this, s_catEffectChannel, 0, false);
     TSingleton<CSoundEventMgr>::GetInstance()->GetEventGroup("ms2sound/sound/attack/hit", 1);
-    reinterpret_cast<GFxManager*>(FUN_14025e7a0())->SetSoundCallback(Unk_EsSoundFunctor(this, &CEffectService::PlaySystemSound));
+    reinterpret_cast<GFxManager*>(GetGFxManager())->SetSoundCallback(Unk_EsSoundFunctor(this, &CEffectService::PlaySystemSound));
     {
         CNifLoadingService* pLoader = ((class CNifLoadingService*)GetNifLoadingService());
         m_aPreloaded.Add(0);
-        NiAVObjectPtr spSky = pLoader->Load(static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strSky208, false, 1, 0, 0);
+        NiAVObjectPtr spSky = pLoader->Load(static_cast<Unk_EsConfig*>(GetCommonResource())->m_strSky208, false, 1, 0, 0);
         if (spSky)
             m_aPreloaded.Add(spSky);
-        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strSky210, false, 1, 0, 0);
+        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(GetCommonResource())->m_strSky210, false, 1, 0, 0);
         if (spSky)
             m_aPreloaded.Add(spSky);
-        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strSky218, false, 1, 0, 0);
+        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(GetCommonResource())->m_strSky218, false, 1, 0, 0);
         if (spSky)
             m_aPreloaded.Add(spSky);
-        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strSky220, false, 1, 0, 0);
+        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(GetCommonResource())->m_strSky220, false, 1, 0, 0);
         if (spSky)
             m_aPreloaded.Add(spSky);
-        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strSky228, false, 1, 0, 0);
+        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(GetCommonResource())->m_strSky228, false, 1, 0, 0);
         if (spSky)
             m_aPreloaded.Add(spSky);
-        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strSky230, false, 1, 0, 0);
+        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(GetCommonResource())->m_strSky230, false, 1, 0, 0);
         if (spSky)
             m_aPreloaded.Add(spSky);
-        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(FUN_1401d31f0())->m_strSky238, false, 1, 0, 0);
+        spSky = pLoader->Load(static_cast<Unk_EsConfig*>(GetCommonResource())->m_strSky238, false, 1, 0, 0);
         if (spSky)
             m_aPreloaded.Add(spSky);
     }
@@ -2397,7 +2397,7 @@ efd::AsyncResult CEffectService::OnShutdown()
     }
     m_mapGroups.clear();
     m_listTracked.RemoveAll();
-    FUN_1413f9830()->Unsubscribe(this, s_catEffectChannel, 0);
+    GetMessageService()->Unsubscribe(this, s_catEffectChannel, 0);
     if (TSingleton<CAfterImageEffectManager>::GetInstance())
         TSingleton<CAfterImageEffectManager>::DestroyInstance();
     return efd::AsyncResult_Complete;
@@ -2444,7 +2444,7 @@ void CEffectService::FUN_1411aab90(NiAVObject* pObject)
 {
     if (pObject == 0)
         return;
-    NiCamera* pCamera = ((class NiCamera*)FUN_1413f9950());
+    NiCamera* pCamera = ((class NiCamera*)GetActiveCamera());
     if (pCamera == 0)
         return;
     const float fDistance = 1500.0f;

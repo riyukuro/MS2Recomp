@@ -141,7 +141,7 @@ public:
 
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // Message boxes and strings.
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
@@ -149,7 +149,7 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_14151f200();
 CStringW GetStringCommon(int nId);
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int bEnable);   // enable the root's input
-int FUN_141b71a10(const char* sz);
+int ParseInt(const char* sz);
 CStringW FUN_141b71910(__int64 n);
 CStringW FUN_141b71990(unsigned n);
 CString FUN_14016a600(const wchar_t* sz, int n);
@@ -211,9 +211,9 @@ UIBeautyShopDevDialog::UIBeautyShopDevDialog()
     m_40 = 1;
     m_2c = 0xc;
     m_80 = 0;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     FUN_1422dc3b0(1);
-    FUN_141920770();
+    ClearItemLists();
 }
 
 // @0x14191c980
@@ -232,8 +232,8 @@ void UIBeautyShopDevDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    FUN_141920770();
-    FUN_14191f9d0();
+    ClearItemLists();
+    ShowCap();
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc)
         pPc->FUN_14166ed70(0x56057c6);
@@ -244,7 +244,7 @@ void UIBeautyShopDevDialog::vfunc_67()
     m_298 = 0;
     ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
-                                      Delegate<void(NotifyObject*)>(this, &UIBeautyShopDevDialog::FUN_1419213f0));
+                                      Delegate<void(NotifyObject*)>(this, &UIBeautyShopDevDialog::OnChangeActiveMyCodiTab));
 }
 
 // @0x14191ccd0
@@ -290,14 +290,14 @@ void UIBeautyShopDevDialog::OnLoadComplete()
     m_288.AssignRaw(new Customize(pPc->GetObjectId(), static_cast<IItemCustomizeEventListener*>(this), 0));
     m_288->SelectSlot(2);
     m_298 = reinterpret_cast<Unk_BSCamera*>(FindCameraEditDialog((eUIClassID)0x4ef2));
-    IItemCustomizeEventListener::FUN_141922e80(1);
+    IItemCustomizeEventListener::SetShopId(1);
     m_198 = 0;
     m_30->Invoke("initData");
     m_30->FUN_140bbe7c0<ASDropdownMenu>("m_colorIndexMenu", m_2b8);
-    FUN_1419200c0(1);
+    BuildEquipItems(1);
     ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyChangeActiveMyCodiTab"),
-                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopDevDialog::FUN_1419213f0));
+                                    Delegate<void(NotifyObject*)>(this, &UIBeautyShopDevDialog::OnChangeActiveMyCodiTab));
 }
 
 // @0x14191d1e0
@@ -318,7 +318,7 @@ int UIBeautyShopDevDialog::vfunc_13()
         FUN_14191fae0();
         return 1;
     }
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0x1c, false, 0))
     {
         if (m_30.get())
         {
@@ -355,7 +355,7 @@ void UIBeautyShopDevDialog::vfunc_15()
         {
             MS2Ptr<CItemData> spData = FUN_14053f870(m_1a4);
             if (!spData->IsAvatarColorItem())
-                nSlot = spData->GetModelOrEmpty()->FUN_14054b400();
+                nSlot = spData->GetModelOrEmpty()->GetFirstGroupType();
         }
         if (nSlot != 0)
         {
@@ -415,9 +415,9 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             int nTab = data.PopInt();
             m_1a0 = nTab;
             if (nTab == 0)
-                FUN_14191f970();
+                HideCap();
             else
-                FUN_14191f9d0();
+                ShowCap();
             vfunc_84(nTab, 0, L"");
             FUN_1419207c0(nTab);
         }
@@ -437,7 +437,7 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             ASData data;
             if (data.SetArgsIfAny(pArgs, nArgs))
             {
-                int nItemId = FUN_141b71a10(data.FUN_1422b8d30());
+                int nItemId = ParseInt(data.FUN_1422b8d30());
                 FUN_14191f620(nItemId);
             }
             if (m_198)
@@ -450,8 +450,8 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
             ASData data;
             if (data.SetArgsIfAny(pArgs, nArgs))
             {
-                int nIndex = FUN_141b71a10(data.FUN_1422b8d30());
-                FUN_14191f8e0(nIndex);
+                int nIndex = ParseInt(data.FUN_1422b8d30());
+                PlayEmotion(nIndex);
             }
             if (m_198)
                 FUN_14191fc40(1);
@@ -482,13 +482,13 @@ int UIBeautyShopDevDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         case 6:
             m_288->CommitAll();
             if (m_1a0 == 3)
-                FUN_14191fe00();
+                PlayApplyEffect();
             break;
         case 5:
             if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_items"))
             {
                 if (spList->GetSelectedIndex() >= 0)
-                    FUN_14191f8e0(spList->GetSelectedIndex());
+                    PlayEmotion(spList->GetSelectedIndex());
             }
             break;
         }
@@ -578,7 +578,7 @@ void UIBeautyShopDevDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStri
     {
         ASTooltip tip(1, 2);
         if (FUN_140f01670(tip, 0, pArgs))
-            *pRetVal = tip.FUN_1422bb870();
+            *pRetVal = tip.GetValue();
     }
 }
 
@@ -587,21 +587,21 @@ void UIBeautyShopDevDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CStri
 void UIBeautyShopDevDialog::vfunc_21(void* p)
 {
     if ((m_30.get() ? true : false) && vfunc_55() == 0 && p)
-        FUN_14191fe00();
+        PlayApplyEffect();
 }
 
 // @0x14191e4d0
 void UIBeautyShopDevDialog::vfunc_24(void* p)
 {
     if ((m_30.get() ? true : false) && vfunc_55() == 0 && p)
-        FUN_14191fe00();
+        PlayApplyEffect();
 }
 
 // @0x14191e560
 void UIBeautyShopDevDialog::vfunc_25(void* p)
 {
     if ((m_30.get() ? true : false) && vfunc_55() == 0)
-        FUN_14191fe00();
+        PlayApplyEffect();
 }
 
 // The customize controller's events: enable "m_save" / "m_reset" and remember the item whose debug text is pending.
@@ -664,7 +664,7 @@ int UIBeautyShopDevDialog::vfunc_5(void* p, void* q)
 bool UIBeautyShopDevDialog::FUN_14191e9e0(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
-        FUN_14191fa30();
+        RestoreAndLeave();
     FUN_14151f200();
     return true;
 }
@@ -714,9 +714,9 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
             if (!bMatch)
                 continue;
             ASObj row(2);
-            row.FUN_1407cbb20("field", CStringW(strName));
-            row.FUN_1407cbb20("code", CStringW(strCode));
-            aItems.PushValue(row.FUN_1422bb870());
+            row.SetWStringMember("field", CStringW(strName));
+            row.SetWStringMember("code", CStringW(strCode));
+            aItems.PushValue(row.GetValue());
         }
         break;
     }
@@ -760,9 +760,9 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
             for (unsigned i = 0; i < m_2a0.size(); i++)
             {
                 ASObj row(2);
-                row.FUN_1407cbb20("code", StringFormat(L"{0}", i));
-                row.FUN_1407cbb20("field", FUN_14016a730(m_2a0[i], 0));
-                aItems.PushValue(row.FUN_1422bb870());
+                row.SetWStringMember("code", StringFormat(L"{0}", i));
+                row.SetWStringMember("field", FUN_14016a730(m_2a0[i], 0));
+                aItems.PushValue(row.GetValue());
             }
         }
         break;
@@ -770,7 +770,7 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
     }
     if (bKeepList == 0)
     {
-        m_30->Invoke("buildItems", Scaleform::GFx::Value(aItems.FUN_1422bb870()), (long)nSelected);
+        m_30->Invoke("buildItems", Scaleform::GFx::Value(aItems.GetValue()), (long)nSelected);
     }
     else
     {
@@ -784,7 +784,7 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
                 if (spItem.get())
                 {
                     FUN_140f328a0(MS2Ptr<Customize>(m_288), row, nMode);
-                    m_30->Invoke("buildResetItem", Scaleform::GFx::Value(row.FUN_1422bb870()));
+                    m_30->Invoke("buildResetItem", Scaleform::GFx::Value(row.GetValue()));
                 }
             }
             else
@@ -800,7 +800,7 @@ void UIBeautyShopDevDialog::vfunc_84(int nTab, int bKeepList, const CStringW& st
 void UIBeautyShopDevDialog::vfunc_85(int nPalette, int nType)
 {
     if (m_288.get())
-        m_288->SetColors(nPalette, nType, FUN_141921500());
+        m_288->SetColors(nPalette, nType, GetSelectedColorIndex());
 }
 
 // A palette colour.
@@ -808,7 +808,7 @@ void UIBeautyShopDevDialog::vfunc_85(int nPalette, int nType)
 void UIBeautyShopDevDialog::vfunc_86(int nPalette, int nColor)
 {
     if (m_288.get())
-        m_288->ApplyPalette(nPalette, nColor, FUN_141921500());
+        m_288->ApplyPalette(nPalette, nColor, GetSelectedColorIndex());
 }
 
 // Preview an item ("buildCurrentItem").
@@ -842,14 +842,14 @@ void UIBeautyShopDevDialog::FUN_14191f620(int nItemId)
     if (FUN_140f32290(row, MS2Ptr<CItemData>(spData), MS2Ptr<Customize>(m_288), 1, nMode, true))
     {
         m_1a4 = nItemId;
-        m_30->Invoke("buildCurrentItem", Scaleform::GFx::Value(row.FUN_1422bb870()));
+        m_30->Invoke("buildCurrentItem", Scaleform::GFx::Value(row.GetValue()));
     }
     FUN_141921190(nItemId);
 }
 
 // Play the nIndex-th listed emotion.
 // @0x14191f8e0
-void UIBeautyShopDevDialog::FUN_14191f8e0(unsigned nIndex)
+void UIBeautyShopDevDialog::PlayEmotion(unsigned nIndex)
 {
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
@@ -860,7 +860,7 @@ void UIBeautyShopDevDialog::FUN_14191f8e0(unsigned nIndex)
 }
 
 // @0x14191f970
-void UIBeautyShopDevDialog::FUN_14191f970()
+void UIBeautyShopDevDialog::HideCap()
 {
     if (m_288 == 0)
         return;
@@ -868,7 +868,7 @@ void UIBeautyShopDevDialog::FUN_14191f970()
 }
 
 // @0x14191f9d0
-void UIBeautyShopDevDialog::FUN_14191f9d0()
+void UIBeautyShopDevDialog::ShowCap()
 {
     if (m_288 == 0)
         return;
@@ -877,14 +877,14 @@ void UIBeautyShopDevDialog::FUN_14191f9d0()
 
 // Restore the look and the field camera and leave.
 // @0x14191fa30
-int UIBeautyShopDevDialog::FUN_14191fa30()
+int UIBeautyShopDevDialog::RestoreAndLeave()
 {
     if (m_288.get())
         m_288->RestoreSlot(FUN_141921580(m_1a0));
     Unk_BSDevField* pField = reinterpret_cast<Unk_BSDevField*>(WorldService::GetInstance()->FUN_141bd3620());
     if (pField)
         pField->vfunc_149();
-    ((class GFxSceneService*)(class Unk_BSDevSound*)(((Unk_BSDevSound*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_BSDevSound*)(((Unk_BSDevSound*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
     return 1;
 }
 
@@ -894,7 +894,7 @@ void UIBeautyShopDevDialog::FUN_14191fae0()
 {
     if (!FUN_14191fff0())
     {
-        FUN_14191fa30();
+        RestoreAndLeave();
     }
     else
     {
@@ -915,14 +915,14 @@ void UIBeautyShopDevDialog::FUN_14191fc40(int bChanged)
         return;
     int bEnable = (bChanged && m_288->FUN_140cd2a00()) ? 1 : 0;
     if (MS2Ptr<ASButton> spSave = GetChild<ASButton>("m_save"))
-        spSave->FUN_1422c1fe0(bEnable);
+        spSave->SetEnabled(bEnable);
     if (MS2Ptr<ASButton> spReset = GetChild<ASButton>("m_reset"))
-        spReset->FUN_1422c1fe0(bEnable);
+        spReset->SetEnabled(bEnable);
 }
 
 // The change was applied: play the customizing effect and unlock the input.
 // @0x14191fe00
-void UIBeautyShopDevDialog::FUN_14191fe00()
+void UIBeautyShopDevDialog::PlayApplyEffect()
 {
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
@@ -933,7 +933,7 @@ void UIBeautyShopDevDialog::FUN_14191fe00()
         pPc->vfunc_59(0xe, 0, 0, 0);
     pPc->FUN_14166cc40(0x50);
     NoticeMessage target;
-    target.m_strName = ((class CommonResource*)FUN_1401d31f0())->m_strCustomizingFinish;
+    target.m_strName = ((class CommonResource*)GetCommonResource())->m_strCustomizingFinish;
     target.m_nObject = 1;
     target.SetActor(pPc->GetObjectId());
     CEffectService::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&target));
@@ -946,7 +946,7 @@ void UIBeautyShopDevDialog::FUN_14191fe00()
 // @0x14191ff70
 void UIBeautyShopDevDialog::FUN_14191ff70()
 {
-    FUN_1419200c0(0);
+    BuildEquipItems(0);
     FUN_1419207c0(m_1a0);
 }
 
@@ -965,14 +965,14 @@ int UIBeautyShopDevDialog::FUN_14191fff0()
     if (m_30.get())
     {
         if (MS2Ptr<ASButton> spSave = GetChild<ASButton>("m_save"))
-            return spSave->FUN_1422c2030();
+            return spSave->IsEnabled();
     }
     return 0;
 }
 
 // The worn customizable items ("buildEquipItems"; only on the cap tab unless forced).
 // @0x1419200c0
-void UIBeautyShopDevDialog::FUN_1419200c0(int bForce)
+void UIBeautyShopDevDialog::BuildEquipItems(int bForce)
 {
     PC* pPc = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
@@ -1002,18 +1002,18 @@ void UIBeautyShopDevDialog::FUN_1419200c0(int bForce)
             continue;
         int nItemId = pData->GetItemId();
         ASObj row(2);
-        row.FUN_1407cbb20("guid", FUN_141b71910(spItem->GetItemUid()));
+        row.SetWStringMember("guid", FUN_141b71910(spItem->GetItemUid()));
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
-        row.FUN_1407cbb20("itemid", FUN_141b71990(nItemId));
-        row.FUN_1407cbb20("itemname", CStringW(strName));
-        row.FUN_1407cba60("iconPath", spItem->FUN_140528590());
+        row.SetWStringMember("itemid", FUN_141b71990(nItemId));
+        row.SetWStringMember("itemname", CStringW(strName));
+        row.SetStringMember("iconPath", spItem->GetIconPath());
         ASTooltip tip(pPc, 0x20, 2);
         if (tip.FUN_1409e0d40(spItem.get()))
-            row.FUN_1409adbe0("tooltip", tip.FUN_1422bb870());
-        aRows.PushValue(row.FUN_1422bb870());
+            row.FUN_1409adbe0("tooltip", tip.GetValue());
+        aRows.PushValue(row.GetValue());
     }
     if (bBuild)
-        m_30->Invoke("buildEquipItems", Scaleform::GFx::Value(aRows.FUN_1422bb870()), -1L);
+        m_30->Invoke("buildEquipItems", Scaleform::GFx::Value(aRows.GetValue()), -1L);
 }
 
 // The tab an item belongs to (-1: none).
@@ -1032,7 +1032,7 @@ void UIBeautyShopDevDialog::FUN_1419206a0(int* pnTab, MS2Ptr<CItemData> spData)
 }
 
 // @0x141920770
-void UIBeautyShopDevDialog::FUN_141920770()
+void UIBeautyShopDevDialog::ClearItemLists()
 {
     for (int i = 0; i < 7; i++)
         m_1a8[i].RemoveAll();
@@ -1067,12 +1067,12 @@ void UIBeautyShopDevDialog::FUN_1419207c0(int nTab)
                 if (spList->GetSelectedIndex() >= 0)
                 {
                     AScript row = spList->GetDataProvider().operator->()->FUN_1422df140(spList->GetSelectedIndex());
-                    if (row.FUN_1422bb870().IsObject())
+                    if (row.GetValue().IsObject())
                     {
                         Scaleform::GFx::Value vId = row.GetMember("itemid");
                         if (vId.IsString())
                         {
-                            int nItemId = FUN_141b71a10(vId.GetString());
+                            int nItemId = ParseInt(vId.GetString());
                             FUN_141920aa0(nItemId);
                         }
                     }
@@ -1146,11 +1146,11 @@ void UIBeautyShopDevDialog::OnClickAdd()
         CItemDataTable::ModelPtr spModelData = TSingleton<CItemDataTable>::GetInstance()->GetModel(nModel);
         if (spModelData.get())
         {
-            if (!spData.operator->()->FUN_14053ec70()->FUN_140547360())
-                spModelData->FUN_14054b670()->handle.AssignRaw(new MsTransform);
-            spModelData->FUN_14054b670()->handle->position =
+            if (!spData.operator->()->FUN_14053ec70()->GetCapTransform())
+                spModelData->GetHead()->handle.AssignRaw(new MsTransform);
+            spModelData->GetHead()->handle->position =
                 reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(spModel->GetPosition()));
-            spModelData->FUN_14054b670()->handle->rotation =
+            spModelData->GetHead()->handle->rotation =
                 reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(spModel->GetPos6c()));
             TSingleton<CItemDataTable>::GetInstance()->FUN_140557910(ItemModelData::FUN_14054aec0(nModel));
         }
@@ -1183,16 +1183,16 @@ void UIBeautyShopDevDialog::FUN_141921190(int nItemId)
     if (m_1a0 == 6 && spData.operator->()->FUN_14053ec70()->FUN_1405471b0())
         bEnable = 1;
     if (MS2Ptr<ASButton> spNew = GetChild<ASButton>("m_new"))
-        spNew->FUN_1422c1fe0(bEnable);
+        spNew->SetEnabled(bEnable);
     if (MS2Ptr<ASButton> spAdd = GetChild<ASButton>("m_add"))
-        spAdd->FUN_1422c1fe0(bEnable);
+        spAdd->SetEnabled(bEnable);
     if (MS2Ptr<ASButton> spDelete = GetChild<ASButton>("m_delete"))
-        spDelete->FUN_1422c1fe0(bEnable);
+        spDelete->SetEnabled(bEnable);
 }
 
 // NotifyChangeActiveMyCodiTab: forget the kept previews.
 // @0x1419213f0
-void UIBeautyShopDevDialog::FUN_1419213f0(NotifyObject* pNotify)
+void UIBeautyShopDevDialog::OnChangeActiveMyCodiTab(NotifyObject* pNotify)
 {
     if (m_30 == 0 || m_288 == 0)
         return;
@@ -1201,7 +1201,7 @@ void UIBeautyShopDevDialog::FUN_1419213f0(NotifyObject* pNotify)
 
 // The previewed item has colours.
 // @0x141921460
-bool UIBeautyShopDevDialog::FUN_141921460()
+bool UIBeautyShopDevDialog::HasColors()
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(m_288->GetEditItemId());
     if (spData == 0)
@@ -1211,9 +1211,9 @@ bool UIBeautyShopDevDialog::FUN_141921460()
 
 // The selected colour index ("m_colorIndexMenu"; 0 when the item has no colours).
 // @0x141921500
-int UIBeautyShopDevDialog::FUN_141921500()
+int UIBeautyShopDevDialog::GetSelectedColorIndex()
 {
-    if ((m_2b8.get() ? true : false) && FUN_141921460())
+    if ((m_2b8.get() ? true : false) && HasColors())
         return m_2b8->GetSelectedIndex();
     return 0;
 }

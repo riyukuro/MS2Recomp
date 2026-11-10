@@ -60,23 +60,23 @@ public:
 
     // ---- non-virtual members, sorted by address ----
     void FUN_141b109a0();                                       // the slots were expanded: play "m_expandEff"
-    int FUN_141b10af0();                                        // may be used (no talk running, not closed)
-    CStringW FUN_141b10b50();                                   // the search text
+    int CanUse();                                        // may be used (no talk running, not closed)
+    CStringW GetSearchText();                                   // the search text
     void FUN_141b10ba0(int n);                                  // m_190 = n
-    void FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params& params);   // "search" button: candidates of the typed text
+    void UpdateSearchCandidates(const Scaleform::GFx::FunctionHandler::Params& params);   // "search" button: candidates of the typed text
     void FUN_141b10eb0();                                       // m_198 = 4
-    void FUN_141b10ed0(CStringW strText);                       // ask the platform to accept the text, then FUN_141b116d0
+    void FUN_141b10ed0(CStringW strText);                       // ask the platform to accept the text, then ScrollToItem
     void FUN_141b110e0();                                       // rebuild the bag
-    int FUN_141b11190(const __int64& nAmount);                  // deposit mesos
-    int FUN_141b11350(const __int64& nAmount);                  // withdraw mesos
+    int DepositMesos(const __int64& nAmount);                  // deposit mesos
+    int WithdrawMesos(const __int64& nAmount);                  // withdraw mesos
     int FUN_141b11490();                                        // can deposit / withdraw
-    int FUN_141b114f0();                                        // can expand the slots
-    void FUN_141b11520();                                       // expand the slots (or tell why not)
-    void FUN_141b11590();                                       // refresh the "m_expand" text
-    void FUN_141b116d0(CStringW strText);                       // scroll to / mark the item matching the text
+    int CanExpandSlots();                                        // can expand the slots
+    void ExpandSlots();                                       // expand the slots (or tell why not)
+    void UpdateExpandText();                                       // refresh the "m_expand" text
+    void ScrollToItem(CStringW strText);                       // scroll to / mark the item matching the text
     void FUN_141b11a10(CStringW strText, UIStoreNameList* pOut);  // collect the item names containing the text
     bool FUN_141b11ba0(int nButton, const CMsgBoxData& box);    // result callback: focus the search input
-    bool FUN_141b11c90(int nButton, const CMsgBoxData& box);    // result callback: expand
+    bool OnExpandConfirmed(int nButton, const CMsgBoxData& box);    // result callback: expand
 
 private:
     MS2_LAYOUT_FRIEND;

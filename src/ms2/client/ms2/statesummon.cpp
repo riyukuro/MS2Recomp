@@ -65,7 +65,7 @@ extern Unk_Inventory g_143ab2a90;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141bd1a10(class Unk_WsC_GameObj*);
+    int GetObjectKind(class Unk_WsC_GameObj*);
     class Unk_WsC_GameObj* FUN_141bd1a50(class Unk_WsC_GameObj*);
     static class WorldService* GetInstance();
 };
@@ -80,7 +80,7 @@ class CDropItem   // C3: member view for the former free stand-ins
 public:
     void FUN_141190900(int);
     void FUN_141191330(int);
-    class CItem* FUN_140b12380();                // the dropped item
+    class CItem* GetItem();                // the dropped item
 };
 
 // The actor registry the pet state queries by entity id.
@@ -90,7 +90,7 @@ int FUN_140b7f6a0(void* pRegistry, const egf::EntityID& kEntity);          // 0x
 
 // The client settings / skill services.
 class CGameOption;
-class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
+class Unk_BreakSelected* GetPetManager();   // C3: was GetPetManager
 class CPetManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -109,14 +109,14 @@ public:
     MS2Ptr<CPetData> GetRow();                                           // the pet's row (by value)
     PCBase* FUN_140b10320();                                               // the owner
 };
-int FUN_140b11e90(struct Unk_PetFoodBook*, class PCBase*);   // C3: was FUN_140b11e90
+int FindPetFoodItem(struct Unk_PetFoodBook*, class PCBase*);   // C3: was FindPetFoodItem
 
 // The client constants table and its Value<T> accessors.
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_SSGConstValue   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_140ad5c50();
+    int GetValue();
 };
 
 // The casting bar (statehomeconvenient.cpp / statenurturing.cpp own the real dialog).
@@ -127,12 +127,12 @@ public:
                        const CStringW& strExtra);                          // show
     void FUN_1418e1390();                                                  // cancel
 };
-UICastingBar* FUN_140ac2270(int nId);                                      // 0x140ac2270 the casting bar dialog
+UICastingBar* GetCastingBar(int nId);                                      // 0x140ac2270 the casting bar dialog
 CStringW GetStringCommon(int nId);                                           // 0x14028de60 the string-table text of an id
 int FUN_141276180(const CStringA& strCommand, const CStringA& strArg);    // 0x141276180 run a client command
 
 // The pet's position buffer (statehomemade.cpp owns the real one).
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_SmBuffMgr { public: };
 // PCBase vtable view: slot 22 takes the position by value (the exe copies it to a 16-aligned temp)
 class Unk_SmPointSlots
@@ -162,7 +162,7 @@ struct Unk_SummonUid0 { Unk_SummonUid0(); __int64 m_nUid; };
 struct Unk_SummonUid3 { Unk_SummonUid3(); __int64 m_nUid; };
 MS2_CHECK_SIZE(Unk_SummonUid0, 8);
 MS2_CHECK_SIZE(Unk_SummonUid3, 8);
-void FUN_1401fea90(unsigned char* payload, COutputStream& stream);         // 0x1401fea90 writes the uid (subtype 0)
+void WriteSummonUid(unsigned char* payload, COutputStream& stream);         // 0x1401fea90 writes the uid (subtype 0)
 void FUN_1401febb0(unsigned char* payload, COutputStream& stream);         // 0x1401febb0 writes the uid (subtype 3)
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -201,7 +201,7 @@ void StateSummon::vfunc_4(StateData* pData)
     m_n48 = 0;
     State::vfunc_4(pData);
 
-    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)GetClientConstants())) + 0x33c0))->FUN_140ad5c50();
+    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)GetClientConstants())) + 0x33c0))->GetValue();
     int nLabel = 0;
 
     m_spData.AssignRaw(dynamic_cast<StateSummonData*>(pData));
@@ -225,7 +225,7 @@ void StateSummon::vfunc_4(StateData* pData)
             else if (spItem->FUN_140527840()->IsRideItem())
             {
                 int nRideeId = spItem->FUN_140527840()->GetRideeId();
-                MS2SvrPtr<CRideeData> spRow = FUN_1407844b0(nRideeId);
+                MS2SvrPtr<CRideeData> spRow = GetRideeData(nRideeId);
                 if (spRow != 0)
                 {
                     nLabel = 0x650;
@@ -242,7 +242,7 @@ void StateSummon::vfunc_4(StateData* pData)
         BOOL bPreload = TRUE;
         if (FUN_1417b8560() == 0)
         {
-            if (*reinterpret_cast<unsigned char*>(static_cast<char*>((void*)TSingleton<CGameOption>::GetInstance()->FUN_140b123b0()) + 0x12) != 0)
+            if (*reinterpret_cast<unsigned char*>(static_cast<char*>((void*)TSingleton<CGameOption>::GetInstance()->GetStatus()) + 0x12) != 0)
                 bPreload = FALSE;
         }
         if (bPreload)
@@ -250,7 +250,7 @@ void StateSummon::vfunc_4(StateData* pData)
             // A NoticeMessage (0x70 bytes): the field id goes to m_nObject, the owner's object id to SetActor.
             NoticeMessage msg;
             msg.m_strName = "CH/Common/Eff_PetOn.xml";
-            msg.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(m_pOwner));
+            msg.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetObjectKind((class Unk_WsC_GameObj*)(m_pOwner));
             msg.SetActor(reinterpret_cast<GameObject*>(m_pOwner)->GetObjectId());
             ((class CEffectService*)(void*)((void*)TSingleton<CEffectService>::GetInstance()))->InsertEffect(*(class Unk_EffectTarget*)&static_cast<class NoticeMessage&>(msg));
         }
@@ -261,7 +261,7 @@ void StateSummon::vfunc_4(StateData* pData)
     {
         if (((void*)(reinterpret_cast<PC*>(pRider)->GetHeldItem())) != 0)
             reinterpret_cast<PC*>(pRider)->SendRequestCube();
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar != 0)
         {
             CStringW strExtra(L"");
@@ -286,7 +286,7 @@ void StateSummon::vfunc_5(int n)
     m_pOwner->FUN_14166e0a0();
     if (FUN_1417b8560() != 0)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar != 0)
             pBar->FUN_1418e1390();
     }
@@ -331,7 +331,7 @@ void StateSummon::vfunc_8(double fTime)
                             uid.m_nUid = spItem->GetItemUid();
                             COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
                             packet.Encode1(0);
-                            FUN_1401fea90(reinterpret_cast<unsigned char*>(&uid),
+                            WriteSummonUid(reinterpret_cast<unsigned char*>(&uid),
                                           *reinterpret_cast<COutputStream*>(&packet));
                             FUN_140710590(packet);
                         }
@@ -340,7 +340,7 @@ void StateSummon::vfunc_8(double fTime)
                 else if (spItem->FUN_140527840()->IsRideItem())
                 {
                     int nItemId = spItem->FUN_140527840()->GetRideeId();
-                    MS2SvrPtr<CRideeData> spRow = FUN_1407844b0(nItemId);
+                    MS2SvrPtr<CRideeData> spRow = GetRideeData(nItemId);
                     if (spRow != 0)
                     {
                         // MS2Ptr<RideOnActionUseItem> local (ctor 0x141532400, operator-> 0x141533230, dtor 0x141532ba0)
@@ -364,7 +364,7 @@ void StateSummon::vfunc_8(double fTime)
 
     Unk_SmBuffMgr* pBuff = ((Unk_SmBuffMgr*)(reinterpret_cast<PCBase*>(pRider)->FUN_14166d240()));
     reinterpret_cast<Unk_SmPointSlots*>(pRider)->vfunc_22(
-        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection())));
     if (m_pOwner->FUN_1416749c0())
         pRider->vfunc_59(2, 0, 0, 0);
     else
@@ -424,13 +424,13 @@ void StateGoToHome::vfunc_4(StateData* pData)
             reinterpret_cast<PC*>(pRider)->SendRequestCube();
     }
 
-    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)GetClientConstants())) + 0x35d0))->FUN_140ad5c50();
+    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)GetClientConstants())) + 0x35d0))->GetValue();
     efd::utf8string strAnim("Object_React_A");
     m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
 
     if (FUN_1417b8560() != 0)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar != 0)
         {
             CStringW strExtra(L"");
@@ -448,7 +448,7 @@ void StateGoToHome::vfunc_5(int n)
     State::vfunc_5(n);
     if (FUN_1417b8560() != 0)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar != 0)
             pBar->FUN_1418e1390();
     }
@@ -500,13 +500,13 @@ void StateRecall::vfunc_4(StateData* pData)
             reinterpret_cast<PC*>(pRider)->SendRequestCube();
     }
 
-    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)GetClientConstants())) + 0x3628))->FUN_140ad5c50();
+    int nDuration = ((class Unk_SSGConstValue*)(void const*)(reinterpret_cast<const char*>(((void*)GetClientConstants())) + 0x3628))->GetValue();
     efd::utf8string strAnim("Object_React_A");
     m_pOwner->PlayAnimation(strAnim, 1.0f, false, false);
 
     if (FUN_1417b8560() != 0)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar != 0)
         {
             CStringW strExtra(L"");
@@ -523,7 +523,7 @@ void StateRecall::vfunc_5(int n)
     m_pOwner->FUN_14166e0a0();
     if (FUN_1417b8560() != 0)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar != 0)
             pBar->FUN_1418e1390();
     }
@@ -566,7 +566,7 @@ void StateRecall::vfunc_8(double fTime)
 
     Unk_SmBuffMgr* pBuff = ((Unk_SmBuffMgr*)(reinterpret_cast<PCBase*>(pRider)->FUN_14166d240()));
     reinterpret_cast<Unk_SmPointSlots*>(pRider)->vfunc_22(
-        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection())));
     if (m_pOwner->FUN_1416749c0())
         pRider->vfunc_59(2, 0, 0, 0);
     else
@@ -717,10 +717,10 @@ void FUN_1417f9100(StateSummonIdle* pState, int nActorId)
 
         if (pState->m_t50.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(reinterpret_cast<char*>(((void*)GetClientConstants())) + 0x7e90)->Get()) != 0)
         {
-            int nIndex = FUN_140b11e90((struct Unk_PetFoodBook*)(reinterpret_cast<char*>(reinterpret_cast<CPetManager*>(FUN_140535320())->GetInfo()) + 0x68), (class PCBase*)(pManager));
+            int nIndex = FindPetFoodItem((struct Unk_PetFoodBook*)(reinterpret_cast<char*>(reinterpret_cast<CPetManager*>(GetPetManager())->GetInfo()) + 0x68), (class PCBase*)(pManager));
             if (nIndex != 0)
             {
-                MS2Ptr<CItem> refSkill = reinterpret_cast<CPetManager*>(((class CPetManager*)(void*)(((void*)FUN_140535320())))->FUN_140c8b430())->FindItemById(nIndex);
+                MS2Ptr<CItem> refSkill = reinterpret_cast<CPetManager*>(((class CPetManager*)(void*)(((void*)GetPetManager())))->FUN_140c8b430())->FindItemById(nIndex);
                 if (refSkill.operator==(0))
                     FUN_1417f94a0(pState, 0x5f);
             }
@@ -793,19 +793,19 @@ StateSummonRevive::StateSummonRevive(PCBase* pOwner) : State(pOwner), m_n40(3000
 void StateSummonRevive::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    m_timer.FUN_140868750(m_n40);
+    m_timer.Start(m_n40);
 }
 
 // @0x1417f95c0
 void StateSummonRevive::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    PCBase* pPet = FUN_1417b83d0();
+    PCBase* pPet = GetPetOwner();
     if (pPet == 0)
         return;
-    if (m_timer.FUN_140868c00() != 0)    // expired (0x140868c00), not still running
+    if (m_timer.IsExpired() != 0)    // expired (0x140868c00), not still running
     {
-        m_timer.FUN_1408687f0();
+        m_timer.Reset();
         if (pPet->IsDead() != 0 && reinterpret_cast<PC*>(pPet)->IsRevivalBlocked() == 0)
         {
             COutPacket packet(static_cast<int>(SendOp::Revival), 0);
@@ -820,7 +820,7 @@ void StateSummonRevive::vfunc_3(double fTime)
 void StateSummonRevive::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    m_timer.FUN_1408687f0();
+    m_timer.Reset();
 }
 
 // @0x1417f9700
@@ -894,7 +894,7 @@ void StateSummonItemPick::vfunc_4(StateData* pData)
 void StateSummonItemPick::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    if (FUN_1417b83d0() == 0)
+    if (GetPetOwner() == 0)
         return;
     PCBase* pPet = FUN_1417b83a0();
     if (pPet != 0)
@@ -902,7 +902,7 @@ void StateSummonItemPick::vfunc_3(double fTime)
         void* pField = ((void*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a50((class Unk_WsC_GameObj*)(pPet)));
         if (pField == 0)
             return;
-        void* pDrop = ((class CDropItem*)(void*)(pField))->FUN_140b12380();
+        void* pDrop = ((class CDropItem*)(void*)(pField))->GetItem();
         if (pDrop == 0)
             return;
         ((class CDropItem*)(void*)(pField))->FUN_141191330(reinterpret_cast<GameObject*>(pPet)->GetObjectId());

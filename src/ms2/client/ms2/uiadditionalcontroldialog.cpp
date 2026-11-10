@@ -60,9 +60,9 @@ class Unk_AcRow : public ASObj
 };
 
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-class Unk_AltStringMgr* FUN_14025e7a0();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
+class Unk_AltStringMgr* GetGFxManager();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
-CStringW FUN_14083f330(const CStringW& str, wchar_t chBegin, wchar_t chEnd);      // the text between two characters
+CStringW GetTextBetween(const CStringW& str, wchar_t chBegin, wchar_t chEnd);      // the text between two characters
 int FUN_140718200(const CStringW& text);                                                 // text to number
 
 // The request of packet 0x5c (add effect): FUN_1401fd400 writes it.
@@ -94,7 +94,7 @@ CString UIAdditionalControlDialog::GetTypeName()
 void UIAdditionalControlDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_1418b3620();
+    FillContextMenu();
 }
 
 // @0x1418b26f0
@@ -108,12 +108,12 @@ int UIAdditionalControlDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0)) {
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onEnterKey");
         return 1;
     }
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0)) {
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0xf, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onTabKey");
         return 1;
@@ -149,7 +149,7 @@ int UIAdditionalControlDialog::vfunc_28(const char* szMethod, const Scaleform::G
                 req.m_fValue = fValue;
                 COutPacket packet(static_cast<int>(SendOp::RequestAdditionalEffect), 0);
                 packet.WriteUInt8(0);
-                FUN_1401fd400((unsigned char*)&req, packet);
+                WriteAdditionalEffectRequest((unsigned char*)&req, packet);
                 FUN_140710590(packet);
             }
         }
@@ -170,18 +170,18 @@ int UIAdditionalControlDialog::vfunc_28(const char* szMethod, const Scaleform::G
 
 // The context menu click: "openXml" opens Data/Xml/Additional/NNN.xml of the selected effect.
 // @0x1418b2c20
-void UIAdditionalControlDialog::FUN_1418b2c20(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIAdditionalControlDialog::OnContextMenuClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_30 == 0 || m_pList == 0)
         return;
     ASListEvent evt(params);
-    ASObj row(evt.FUN_1422e2780(), 2);
+    ASObj row(evt.GetItemData(), 2);
     if (row.IsUndefinedOrNull())
         return;
     CStringW strFunc = ((Unk_AcRow*)&row)->GetWString("func");
     if (strFunc.IsEmpty())
         return;
-    unsigned nId = FUN_1418b3ac0();
+    unsigned nId = GetSelectedEffectId();
     if (nId == 0)
         return;
     CString strPath;
@@ -218,18 +218,18 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
             int nPassive = 0;
             strLabel.Format(L"[%ld] [Lv.%d] %s", nId, level->GetLevel(), (LPCWSTR)TSingleton<CStringTable>::GetInstance()->FUN_141812290(nId, level->GetLevel(), CString("name")));
             if (level->m_nKeepCondition == 99) {
-                strLabel.Append(reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_additionaleffect_control_dialog_name_passive"));
+                strLabel.Append(reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_additionaleffect_control_dialog_name_passive"));
                 nPassive = 1;
             }
             if (level->IsBuff())
-                strLabel.Append(reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_additionaleffect_control_dialog_name_buff"));
+                strLabel.Append(reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_additionaleffect_control_dialog_name_buff"));
             else
-                strLabel.Append(reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_additionaleffect_control_dialog_name_debuff"));
+                strLabel.Append(reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_additionaleffect_control_dialog_name_debuff"));
             ASObj row(2);
-            ((class AScript&)(row)).FUN_1407cbb20("label", strLabel);
+            ((class AScript&)(row)).SetWStringMember("label", strLabel);
             row.SetMemberUInt("effectCode", nId);
             row.FUN_1409c48f0("effectLevel", level->GetLevel());
-            ((class AScript&)(row)).FUN_1407cb9c0("isPassive", nPassive);
+            ((class AScript&)(row)).SetIntMember("isPassive", nPassive);
             if (strSearch.IsEmpty()) {
                 if (strGroup == "BF") {
                     if (level->IsBuff())
@@ -250,7 +250,7 @@ void UIAdditionalControlDialog::FUN_1418b2e80(const CString& strGroup, const CSt
 }
 
 // @0x1418b3620
-void UIAdditionalControlDialog::FUN_1418b3620()
+void UIAdditionalControlDialog::FillContextMenu()
 {
     if (m_pList = GetChild<ASScrollingList>("m_contextMenu")) {
         int bShow = !GetFileSystem()->FUN_140398190();
@@ -267,14 +267,14 @@ void UIAdditionalControlDialog::FUN_1418b3620()
                 if (item.first.IsEmpty())
                     continue;
                 ASObj row(2);
-                ((class AScript&)(row)).FUN_1407cbb20("label", item.first);
-                ((class AScript&)(row)).FUN_1407cbb20("func", item.second);
+                ((class AScript&)(row)).SetWStringMember("label", item.first);
+                ((class AScript&)(row)).SetWStringMember("func", item.second);
                 m_pList->AddItem(row);
                 nAdded++;
             }
             m_pList->SetSizeInt(nWidth, m_pList->GetItemCount() * nHeight);
             m_pList->vfunc_24(true);
-            m_pList->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIAdditionalControlDialog::FUN_1418b2c20), 0);
+            m_pList->AddItemClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIAdditionalControlDialog::OnContextMenuClick), 0);
         } else {
             m_pList = 0;
         }
@@ -282,7 +282,7 @@ void UIAdditionalControlDialog::FUN_1418b3620()
 }
 
 // @0x1418b3ac0
-unsigned UIAdditionalControlDialog::FUN_1418b3ac0()
+unsigned UIAdditionalControlDialog::GetSelectedEffectId()
 {
     MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_effects");
     if (!list)
@@ -290,7 +290,7 @@ unsigned UIAdditionalControlDialog::FUN_1418b3ac0()
     CStringW strLabel = list->GetSelectedLabelW();
     if (strLabel.IsEmpty())
         return 0;
-    CStringW strId = FUN_14083f330(strLabel, L'[', L']');
+    CStringW strId = GetTextBetween(strLabel, L'[', L']');
     return FUN_140718200(strId);
 }
 

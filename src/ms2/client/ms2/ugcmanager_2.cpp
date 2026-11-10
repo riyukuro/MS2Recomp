@@ -88,10 +88,10 @@ static CString s_strTabIndex = "tabIndex";
 CLogString* GetLogString();                                // the log singleton
 
 // UGC file names and paths.
-CString FUN_141027200(CString strName);                     // the cache key of a URL
+CString GetCacheKey(CString strName);                     // the cache key of a URL
 CString FUN_1410272e0(CString strUrl);                      // the file name of a URL
-CString FUN_1410280d0(int nKind, CString strName);          // the local file of a content kind
-CString FUN_141028a90(CString strPath, int n);
+CString GetDownloadFilePath(int nKind, CString strName);          // the local file of a content kind
+CString GetProfileImagePath(CString strPath, int n);
 CString FUN_14028d990(const CString& strUrl);
 CStringW FUN_14016a730(const char* psz, int nCodePage);     // multi-byte to wide
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
@@ -99,7 +99,7 @@ void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the
 // The game rules: content kinds a rule set disables (rule 0xb: UGC).
 
 // The client options; mode 1 bypasses the URL cache.
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 
 // The start handshake of CThread::vfunc_1.
 class Unk_140659080
@@ -195,14 +195,14 @@ public:
 class UIWeddingDialog : public UIDialog
 {
 public:
-    void FUN_140fc7f30();                                   // refresh the profile images
+    void SetOwnProfile();                                   // refresh the profile images
 };
-UIUGCCubePaletteDialog* FUN_140ef4a50(int nId);
-void* FUN_14136f480(int);   // C3: was FUN_14136f480
+UIUGCCubePaletteDialog* GetUGCCubePaletteDialog(int nId);
+void* FindGuildDialog(int);   // C3: was FindGuildDialog
 class UIGuildDialog : public UIDialog
 {
 public:
-    void FUN_1419764f0(unsigned __int64 nGuildId, const CString& strCode);
+    void OnGuildMarkReceived(unsigned __int64 nGuildId, const CString& strCode);
 };
 class UIMeratMarketDialog
 {
@@ -211,7 +211,7 @@ public:
 };
 template <class T> T* MyPCDialog(int nId);
 template <class T> T* Unk_GuildFindDialog(int nId);
-class UIMeratMarketDialog* FUN_140bfed50(int);   // C3: was FUN_140bfed50
+class UIMeratMarketDialog* FindMeratMarketDialog(int);   // C3: was FindMeratMarketDialog
 // The client platform (the scene-state game service); slot 47 shows a downloaded shop banner.
 class Unk_UgcPlatform
 {
@@ -418,8 +418,8 @@ UINT CUgcDownloadCtrl::Downloading(LPVOID pParam)
     CUgcDownloadCtrl* pCtrl = static_cast<CUgcDownloadCtrl*>(pParam);
     CStringW strUrl = FUN_14016a730(pCtrl->GetUrl(), 0);
     CStringW strPath = FUN_14016a730(pCtrl->GetPath(), 0);
-    CGameRule* pOptions = ((class CGameRule*)FUN_1401c0d90());
-    if (pOptions && pOptions->FUN_140478a60() == 1)
+    CGameRule* pOptions = ((class CGameRule*)GetGameRule());
+    if (pOptions && pOptions->GetDeleteUrlCache() == 1)
         DeleteUrlCacheEntryW(strUrl);
     HRESULT hr = URLDownloadToFileW(NULL, strUrl, strPath, 0, &pCtrl->m_callback);
     if (pCtrl->IsComplete())
@@ -465,7 +465,7 @@ void CUgcDownloadEquip::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(1, strName);
+    m_strPath = GetDownloadFilePath(1, strName);
 }
 MS2_REPLACE_METHOD(0x14186fb80, CUgcDownloadEquip, MakePath, 238, 0x49EC9BEB);
 
@@ -532,7 +532,7 @@ void CUgcDownloadCube::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(2, strName);
+    m_strPath = GetDownloadFilePath(2, strName);
 }
 MS2_REPLACE_METHOD(0x141870120, CUgcDownloadCube, MakePath, 238, 0x60D545CC);
 
@@ -553,7 +553,7 @@ void CUgcDownloadCube::ProcessResult()
             else
                 TSingleton<CUgcManager>::GetInstance()->ApplyImageToCube(sp.get(), m_strPath, m_param.m_upload.m_uid);
         }
-        UIUGCCubePaletteDialog* pDialog = FUN_140ef4a50(0x4f16);
+        UIUGCCubePaletteDialog* pDialog = GetUGCCubePaletteDialog(0x4f16);
         if (pDialog)
             pDialog->FUN_140eec480();
     }
@@ -601,7 +601,7 @@ void CUgcDownloadItemIcon::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(0xc9, strName);
+    m_strPath = GetDownloadFilePath(0xc9, strName);
 }
 MS2_REPLACE_METHOD(0x141870740, CUgcDownloadItemIcon, MakePath, 238, 0x01691EE1);
 
@@ -676,7 +676,7 @@ void CUgcDownloadBanner::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(3, strName);
+    m_strPath = GetDownloadFilePath(3, strName);
 }
 MS2_REPLACE_METHOD(0x141870d80, CUgcDownloadBanner, MakePath, 238, 0x3AF60BD9);
 
@@ -737,7 +737,7 @@ void CUgcDownloadProfile::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(5, strName);
+    m_strPath = GetDownloadFilePath(5, strName);
 }
 MS2_REPLACE_METHOD(0x1418713a0, CUgcDownloadProfile, MakePath, 238, 0xAC0BE74E);
 
@@ -758,14 +758,14 @@ void CUgcDownloadProfile::ProcessResult()
                 CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);
                 if (pImage)
                 {
-                    CString strImage = FUN_141028a90(strUrl, 0);
+                    CString strImage = GetProfileImagePath(strUrl, 0);
                     pImage->FUN_1414017b0(strImage);
                 }
             }
             else
             {
                 Unk_UgcPlayer* pMyPC = reinterpret_cast<Unk_UgcPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
-                if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() != 0x620000d)
+                if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSceneId() != 0x620000d)
                 {
                     if (pMyPC == NULL)
                         return;
@@ -830,7 +830,7 @@ void CUgcDownloadWeddingProfile::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(10, strName);
+    m_strPath = GetDownloadFilePath(10, strName);
 }
 MS2_REPLACE_METHOD(0x141871b60, CUgcDownloadWeddingProfile, MakePath, 238, 0x4F45D9FE);
 
@@ -847,7 +847,7 @@ void CUgcDownloadWeddingProfile::ProcessResult()
                 continue;
             UIWeddingDialog* pDialog = Unk_UgcGetDialog<UIWeddingDialog>(0x4f8c);
             if (pDialog)
-                pDialog->FUN_140fc7f30();
+                pDialog->SetOwnProfile();
         }
     }
     Unk_UgcLog(GetLogString(), 0xc, 0x13, L"[CUgcDownloadWeddingProfile::ProcessResult] proxy count = {0}",
@@ -886,7 +886,7 @@ void CUgcDownloadGuildMark::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(6, strName);
+    m_strPath = GetDownloadFilePath(6, strName);
 }
 MS2_REPLACE_METHOD(0x141871fc0, CUgcDownloadGuildMark, MakePath, 238, 0x178A6965);
 
@@ -901,15 +901,15 @@ void CUgcDownloadGuildMark::ProcessResult()
             MS2Ptr<CUgcGuildMarkProxy> sp = m_list.GetAt(pos);
             if (sp == 0)
                 continue;
-            UIGuildDialog* pGuild = reinterpret_cast<UIGuildDialog*>(FUN_14136f480(0x4e4f));
+            UIGuildDialog* pGuild = reinterpret_cast<UIGuildDialog*>(FindGuildDialog(0x4e4f));
             if (pGuild && pGuild->vfunc_55() == 0)
-                pGuild->FUN_1419764f0(sp->m_nGuildId, strUrl);
+                pGuild->OnGuildMarkReceived(sp->m_nGuildId, strUrl);
             UIPvPGuildTeamDialog* pPvp = MyPCDialog<UIPvPGuildTeamDialog>(0x4ec4);
             if (pPvp && pPvp->vfunc_55() == 0)
-                pPvp->FUN_14133b0f0(sp->m_nGuildId, FUN_14016a730(strUrl, 0));
+                pPvp->SetGuildMark(sp->m_nGuildId, FUN_14016a730(strUrl, 0));
             UIPvPGuildTeamResultDialog* pRank = Unk_GuildFindDialog<UIPvPGuildTeamResultDialog>(0x4ec7);
             if (pRank && pRank->vfunc_55() == 0)
-                pRank->FUN_1413415e0(sp->m_nGuildId, FUN_14016a730(strUrl, 0));
+                pRank->SetGuildMark(sp->m_nGuildId, FUN_14016a730(strUrl, 0));
             CInteractObject* pObject = WorldService::GetInstance()->FindProp(sp->m_strName).get();
             CInteractDisplayImage* pImage = dynamic_cast<CInteractDisplayImage*>(pObject);
             if (pImage)
@@ -951,7 +951,7 @@ void CUgcDownloadGuildPoster::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(8, strName);
+    m_strPath = GetDownloadFilePath(8, strName);
 }
 MS2_REPLACE_METHOD(0x141872630, CUgcDownloadGuildPoster, MakePath, 238, 0x4D0A1E3F);
 
@@ -996,7 +996,7 @@ void CUgcDownloadRidee::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(7, strName);
+    m_strPath = GetDownloadFilePath(7, strName);
 }
 MS2_REPLACE_METHOD(0x1418729c0, CUgcDownloadRidee, MakePath, 238, 0xA8BF23C6);
 
@@ -1051,7 +1051,7 @@ void CUgcDownloadBannerAdvertise::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_14028d990(m_strUrl);
-    m_strPath = FUN_1410280d0(m_param.m_nType, strName);
+    m_strPath = GetDownloadFilePath(m_param.m_nType, strName);
 }
 MS2_REPLACE_METHOD(0x141872e70, CUgcDownloadBannerAdvertise, MakePath, 195, 0x221FA327);
 
@@ -1098,7 +1098,7 @@ void CUgcDownloadShopBanner::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_14028d990(m_strUrl);
-    m_strPath = FUN_1410280d0(m_param.m_nType, strName);
+    m_strPath = GetDownloadFilePath(m_param.m_nType, strName);
 }
 MS2_REPLACE_METHOD(0x1418731a0, CUgcDownloadShopBanner, MakePath, 195, 0xD18445C4);
 
@@ -1115,7 +1115,7 @@ void CUgcDownloadShopBanner::ProcessResult()
     }
     if (m_param.m_nType == 0xcc || m_param.m_nType == 0xcf || m_param.m_nType == 0xd2)
     {
-        UIMeratMarketDialog* pDialog = FUN_140bfed50(0x4ec1);
+        UIMeratMarketDialog* pDialog = FindMeratMarketDialog(0x4ec1);
         bool bOk = m_nResult == 0 ? TRUE : FALSE;
         for (POSITION pos = m_list.GetHeadPosition(); pos; m_list.GetNext(pos))
         {
@@ -1166,7 +1166,7 @@ void CUgcDownloadAdBanner::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_14028d990(m_strUrl);
-    m_strPath = FUN_1410280d0(m_param.m_nType, strName);
+    m_strPath = GetDownloadFilePath(m_param.m_nType, strName);
 }
 MS2_REPLACE_METHOD(0x1418737e0, CUgcDownloadAdBanner, MakePath, 195, 0x1DDC5225);
 
@@ -1211,7 +1211,7 @@ void CUgcDownloadBannerRollingImage::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(0xce, strName);
+    m_strPath = GetDownloadFilePath(0xce, strName);
 }
 MS2_REPLACE_METHOD(0x141873bf0, CUgcDownloadBannerRollingImage, MakePath, 238, 0x0419C4B2);
 
@@ -1262,7 +1262,7 @@ void CUgcDownloadBlueprintImage::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(9, strName);
+    m_strPath = GetDownloadFilePath(9, strName);
 }
 MS2_REPLACE_METHOD(0x141873ff0, CUgcDownloadBlueprintImage, MakePath, 238, 0x29CDD6AB);
 
@@ -1329,7 +1329,7 @@ void CUgcDownloadBlueprintIcon::MakePath()
     if (m_strUrl.GetLength() == 0)
         return;
     CString strName = FUN_1410272e0(m_strUrl);
-    m_strPath = FUN_1410280d0(0xd1, strName);
+    m_strPath = GetDownloadFilePath(0xd1, strName);
 }
 MS2_REPLACE_METHOD(0x1418746a0, CUgcDownloadBlueprintIcon, MakePath, 238, 0x6D161295);
 
@@ -1432,7 +1432,7 @@ unsigned int CUgcDownloadDown::vfunc_1(void* pParam, Unk_140659080& start)
                 }
                 else
                 {
-                    if (TSingleton<CGameEventValueManager>::GetInstance() && TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(0xb)->FUN_1407d1210(sp->m_param.m_nType))
+                    if (TSingleton<CGameEventValueManager>::GetInstance() && TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(0xb)->IsShutdown(sp->m_param.m_nType))
                         continue;
                     sp->MakePath();
                     TSingleton<CUgcDownloadLoad>::GetInstance()->Push(sp->m_param.m_strUrl, sp->GetPath(), sp->m_param.m_nType,
@@ -1483,11 +1483,11 @@ int CUgcDownloadDown::Push(CUgcDownloadParam* pParam, IUgcProxy* pProxy)
     int bNew = 0;
     if (strUrl.GetLength() == 0)
         return 0;
-    if (TSingleton<CGameEventValueManager>::GetInstance() && TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(0xb)->FUN_1407d1210(nType))
+    if (TSingleton<CGameEventValueManager>::GetInstance() && TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(0xb)->IsShutdown(nType))
         return 0;
     if (nType == 1 || nType == 2 || nType == 0xc9 || nType == 3 || nType == 5 || nType == 6 || nType == 8 ||
         nType == 7 || nType == 0xce || nType == 9 || nType == 0xd1 || nType == 10)
-        strUrl = FUN_141027200(strUrl);
+        strUrl = GetCacheKey(strUrl);
     if (Unk_LockGuard guard = m_lock)
     {
     }

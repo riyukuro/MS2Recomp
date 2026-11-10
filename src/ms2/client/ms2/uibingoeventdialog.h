@@ -69,7 +69,7 @@ struct Unk_BingoPanel
     MS2Ptr<ASButton> m_use;              // +0x30
     MS2Ptr<ASButton> m_cancel;           // +0x40
     MS2Ptr<ASMovieClip> m_effect;               // +0x50
-    void FUN_140bb69a0();                       // clears every member
+    void Clear();                       // clears every member
     void FUN_140bb7fd0();                       // idle look
     void FUN_140bb8100();                       // selected look
 };
@@ -104,24 +104,24 @@ public:
     virtual int OnMessage(UISwfEntity*, UIMsg*);
     // @0x140bb6c60
     virtual int vfunc_48() { return 20355; }
-    void FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnClickCell(const Scaleform::GFx::FunctionHandler::Params&);
     void SendEventRewardMode23(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140bb0ea0(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140bb13e0(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnClickUseItem(const Scaleform::GFx::FunctionHandler::Params&);
+    void OnClickCancelItem(const Scaleform::GFx::FunctionHandler::Params&);
     bool FUN_140bb1460(int, const CMsgBoxData&);
-    bool FUN_140bb14a0(int, const CMsgBoxData&);
+    bool OnMsgBoxClosed(int, const CMsgBoxData&);
     void FUN_140bb14d0();
     void FUN_140bb1580();
-    void FUN_140bb1d60();
-    void FUN_140bb2310();
+    void UpdateItemCounts();
+    void UpdateDailyNumbers();
     void FUN_140bb2720();
-    void FUN_140bb2c40();
+    void UpdateCompletedLines();
     void FUN_140bb3050(int);
     void FUN_140bb3bd0();
-    unsigned FUN_140bb3f80();
+    unsigned GetCompletedLineCount();
     void PlayFireworkEffect();
     void FUN_140bb4150(unsigned);
-    void FUN_140bb43a0(ATL::CAtlArray<bool>&, ATL::CAtlArray<int>&);
+    void CalcCompletedLines(ATL::CAtlArray<bool>&, ATL::CAtlArray<int>&);
     void FUN_140bb46e0();
 private:
     MS2_LAYOUT_FRIEND;

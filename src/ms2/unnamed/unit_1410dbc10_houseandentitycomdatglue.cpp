@@ -71,7 +71,7 @@ template efd::SmartPointer<efd::IMessage> efd::GenericFactory<efd::SmartPointer<
 
 // @0x1410dbf80
 //   the house demolish dialog (class id given), null when it is not open
-Unk_CMISDemolishUI* FUN_1410dbf80(unsigned nId)
+Unk_CMISDemolishUI* FindHouseDemolishDialog(unsigned nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0) {
         MS2Ptr<UIObject> sp = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
@@ -115,7 +115,7 @@ egf::PropertyResult Unk_SetPropertyIntAnchor(egf::Entity* p, egf::PropertyID id,
 
 // @0x1410dc3b0   house sale marker record factory
 // The exe value-initializes: memset 0x38, then SalesInfo's implicit ctor (0x1411232e0).
-void* FUN_1410dc3b0(void* pTag)
+void* CreateSalesInfo(void* pTag)
 {
     return new SalesInfo();
 }

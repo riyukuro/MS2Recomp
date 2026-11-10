@@ -72,7 +72,7 @@ unsigned FUN_140047158(unsigned type);
 
 // @0x140046a1c
 // qsort comparator over two row numbers: orders by the sort column's value, descending for numbers, ascending for text.
-int FUN_140046a1c(const unsigned* pA, const unsigned* pB)
+int CompareRowsByColumn(const unsigned* pA, const unsigned* pB)
 {
     unsigned rowA = *pA;
     unsigned rowB = *pB;
@@ -113,7 +113,7 @@ int FUN_140046a1c(const unsigned* pA, const unsigned* pB)
 }
 
 // @0x140046c0c
-int FUN_140046c0c(Unk_CriUtfSortTable* table, unsigned slot, unsigned column)
+int CreateSortIndex(Unk_CriUtfSortTable* table, unsigned slot, unsigned column)
 {
     if (table->m_heap == 0)
     {
@@ -149,12 +149,12 @@ int FUN_140046c0c(Unk_CriUtfSortTable* table, unsigned slot, unsigned column)
     unsigned* idx = table->m_slots[slot].value;
     DAT_143ba9d40 = table;
     DAT_143ba9d48 = column;
-    qsort(idx, n, 4, (int (*)(const void*, const void*))FUN_140046a1c);
+    qsort(idx, n, 4, (int (*)(const void*, const void*))CompareRowsByColumn);
     return 1;
 }
 
 // @0x140046d50
-void FUN_140046d50(Unk_CriUtfSortTable* table, unsigned slot)
+void DestroySortIndex(Unk_CriUtfSortTable* table, unsigned slot)
 {
     if (slot >= 4)
     {

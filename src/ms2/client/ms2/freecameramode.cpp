@@ -86,13 +86,13 @@ CFreeCameraMode::~CFreeCameraMode()
 void CFreeCameraMode::vfunc_8(double fTime)
 {
     Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(0, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsMouseButtonDown(0, true, 0) && ((class CInputKeyHandler*)FUN_14025e7c0())->IsMouseButtonDown(1, true, 0))
     {
         efd::Point3 ptPos = FUN_1409f2540();
         ptPos.z = ptPos.z - ptMove.z * 2.0f;
         vfunc_3(reinterpret_cast<Vector3&>(ptPos));
     }
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsMouseButtonDown(1, true, 0))
     {
         if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
@@ -120,7 +120,7 @@ void CFreeCameraMode::vfunc_8(double fTime)
     }
     else
     {
-        if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116da30(0x22, true, 0))
+        if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyReleased(0x22, true, 0))
         {
             Unk_CameraTargetEntity* pActor = ((class Unk_CameraTargetEntity*)WorldService::GetInstance()->FUN_141bd0cc0());
             if (pActor != 0)
@@ -177,18 +177,18 @@ void CFreeCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
     m_78 = g_143b01a60;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x11, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x11, true, 0))
         m_78.x = 1.0f;
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1f, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1f, true, 0))
         m_78.x = -1.0f;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1e, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1e, true, 0))
         m_78.y = 1.0f;
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x20, true, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x20, true, 0))
         m_78.y = -1.0f;
     int nX;
     int nY;
     int nWheel;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->GetMouseDelta(&nX, &nY, &nWheel, false, 0))
     {
         ptMove.y = (float)nX;
         ptMove.z = (float)nY;
@@ -201,7 +201,7 @@ MS2_REPLACE_METHOD(0x141222b80, CFreeCameraMode, vfunc_9, 395, 0x1B154723);
 void CFreeCameraMode::vfunc_6(int n)
 {
     CCameraMode::vfunc_6(n);
-    TSingleton<CUIService>::GetInstance()->FUN_141adbca0(0);
+    TSingleton<CUIService>::GetInstance()->SetMoviesVisible(0);
 }
 MS2_REPLACE_METHOD(0x141222d20, CFreeCameraMode, vfunc_6, 47, 0x7D85A084);
 
@@ -209,6 +209,6 @@ MS2_REPLACE_METHOD(0x141222d20, CFreeCameraMode, vfunc_6, 47, 0x7D85A084);
 void CFreeCameraMode::vfunc_7()
 {
     CCameraMode::vfunc_7();
-    TSingleton<CUIService>::GetInstance()->FUN_141adbca0(1);
+    TSingleton<CUIService>::GetInstance()->SetMoviesVisible(1);
 }
 MS2_REPLACE_METHOD(0x141222d60, CFreeCameraMode, vfunc_7, 42, 0x92129541);

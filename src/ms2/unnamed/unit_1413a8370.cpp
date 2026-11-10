@@ -127,7 +127,7 @@ MS2_REPLACE_METHOD(0x1413A8460, CGuideConditionEquipSkill, vfunc_2, 63, 0x7F9BBE
 // @0x1413a84b0
 int CGuideConditionEquipSkill::vfunc_3()
 {
-    unsigned nEquipped = (FUN_1409331f0()->FindQuickSlotBySkillAndItemUid(m_n20, 0) != -1);
+    unsigned nEquipped = (GetKeyTable()->FindQuickSlotBySkillAndItemUid(m_n20, 0) != -1);
     return ApplyNotBool(nEquipped == (unsigned)m_nIsEquip);
 }
 MS2_REPLACE_METHOD(0x1413A84B0, CGuideConditionEquipSkill, vfunc_3, 110, 0x37B43B46);
@@ -340,7 +340,7 @@ int CGuideConditionDesignItem::vfunc_3()
             continue;
         if (spItem->HasCubeTextureMesh() == 0)
             continue;
-        if (spItem->FUN_140525f60() != 0)
+        if (spItem->HasUgcId() != 0)
             continue;
         if (m_nItemType != 0 && ((Unk_ItemEquipData*)spItem->FUN_140527840())->GetType() != m_nItemType)
             continue;

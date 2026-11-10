@@ -66,69 +66,69 @@ public:
 
     void LoadRenderTarget();                                       // "loadRenderTarget"
     void UnloadRenderTarget();                                       // "unloadRenderTarget"
-    void FUN_141b3da90(int nModel);                             // create the avatar of a model radio index
+    void CreateAvatar(int nModel);                             // create the avatar of a model radio index
     void ReleaseAvatars();                                       // drop every avatar and the render view
-    void FUN_141b3e410(MS2Ptr<UIAvatarBase> spAvatar, bool bChanged);   // show an avatar in the render view
-    void FUN_141b3e640(MS2Ptr<UIAvatarBase> spAvatar, bool bUseItem, bool bResetCamera);   // reset the avatar's pose
-    void FUN_141b3e780(MS2Ptr<UIAvatarBase> spAvatar, bool bUseItem);   // the avatar's facing angle
-    void FUN_141b3e990();                                       // "setCameraPosition"
-    bool FUN_141b3ea70(int* pnY, int* pnZoom);                  // the camera frame of the design's slot
-    void FUN_141b3f180(MS2Ptr<UIAvatarBase> spAvatar);          // reset the render view's camera
-    bool FUN_141b3f3a0(ASObj& obj, MS2Ptr<CUGCDesignData> spDesign);   // fill one design entry
-    bool FUN_141b3f690(ASObj& obj, MS2Ptr<CItem> spItem);       // fill the entry of the item being re-edited
-    void FUN_141b3f960(ASObj& obj, MS2Ptr<CUGCDesignData> spDesign);   // the price members of a design entry
+    void ShowAvatar(MS2Ptr<UIAvatarBase> spAvatar, bool bChanged);   // show an avatar in the render view
+    void ResetAvatarPose(MS2Ptr<UIAvatarBase> spAvatar, bool bUseItem, bool bResetCamera);   // reset the avatar's pose
+    void SetAvatarAngle(MS2Ptr<UIAvatarBase> spAvatar, bool bUseItem);   // the avatar's facing angle
+    void SetCameraPosition();                                       // "setCameraPosition"
+    bool GetCameraFrame(int* pnY, int* pnZoom);                  // the camera frame of the design's slot
+    void ResetCamera(MS2Ptr<UIAvatarBase> spAvatar);          // reset the render view's camera
+    bool FillDesignEntry(ASObj& obj, MS2Ptr<CUGCDesignData> spDesign);   // fill one design entry
+    bool FillEditItemEntry(ASObj& obj, MS2Ptr<CItem> spItem);       // fill the entry of the item being re-edited
+    void SetDesignPrice(ASObj& obj, MS2Ptr<CUGCDesignData> spDesign);   // the price members of a design entry
     void FUN_141b3fb60(MS2Ptr<CItem> spItem, bool* pbModelChanged);    // set the design item
     void SetItem(MS2Ptr<CItem> spItem);                   // set the design item (ignores the model change)
-    void FUN_141b40220();                                       // drop the design and the image
+    void ClearDesign();                                       // drop the design and the image
     void Restart();                                       // "restart"
     bool FUN_141b40300(__int64 nPrice, int nMeret);             // send the make request
-    void FUN_141b40880(ASObj& obj);                             // the model radio buttons
+    void BuildModelRadios(ASObj& obj);                             // the model radio buttons
     void SelectKindAndImage(int nKind, int nImage);                  // switch the content kind and reload the images
-    void FUN_141b40b00(int nPage);                              // "buildImageFiles"
-    void FUN_141b40c30();                                       // "buildDesignItems"
+    void BuildImageFiles(int nPage);                              // "buildImageFiles"
+    void BuildDesignItems();                                       // "buildDesignItems"
     void FUN_141b41090(ASObj& obj);                             // the category and gender drop downs
-    void FUN_141b41700(int nIndex);                             // "selectImage"
-    bool FUN_141b417e0();                                       // refresh the preview of the upload
+    void SelectImage(int nIndex);                             // "selectImage"
+    bool RefreshUploadPreview();                                       // refresh the preview of the upload
     void UpdateSelectedImage();                                       // "updateSelectedImage"
     void RequestCapture();                                       // "requestCapture"
-    bool FUN_141b41a80(const NiRect<unsigned int>& kRect);      // save the capture, "savedCapture"
-    void FUN_141b41cd0();                                       // the capture state machine (per frame)
+    bool SaveCapture(const NiRect<unsigned int>& kRect);      // save the capture, "savedCapture"
+    void UpdateCapture();                                       // the capture state machine (per frame)
     void ChangeModel(int nModel);                             // "changeModel"
-    void FUN_141b41ef0(MS2Ptr<CItemData> spData);               // the content kind of the design
+    void SetContentKind(MS2Ptr<CItemData> spData);               // the content kind of the design
     void FUN_141b41f90(MS2Ptr<CItemData> spData);               // "m_showRadioSelect"
-    void FUN_141b420f0(int nKind, MS2Ptr<UIAvatarBase> spAvatar, MS2Ptr<CItem> spItem);   // attach the viewer
-    void FUN_141b42800();                                       // refresh the viewer of the upload
-    void FUN_141b428d0(int nKind);                              // save a screenshot of the render view
+    void AttachViewer(int nKind, MS2Ptr<UIAvatarBase> spAvatar, MS2Ptr<CItem> spItem);   // attach the viewer
+    void RefreshViewer();                                       // refresh the viewer of the upload
+    void SaveScreenshot(int nKind);                              // save a screenshot of the render view
     int FUN_141b42a50(MS2Ptr<UIAvatarPC> spAvatar, int nGender);
-    int FUN_141b42b20(MS2Ptr<CItemData> spData, MS2Ptr<UIAvatarBase> spAvatar);   // the model index for a design
+    int GetModelIndexForItem(MS2Ptr<CItemData> spData, MS2Ptr<UIAvatarBase> spAvatar);   // the model index for a design
     int GetMakeCount();                                        // "getMakeCount"
     CStringW GetItemName();                                   // the item name input (trimmed)
-    __int64 FUN_141b43240(MS2Ptr<CUGCDesignData> spDesign, int nCount);   // the price of nCount items
-    int FUN_141b432f0(MS2Ptr<CItemData> spData);                // the UGC content kind of an item
+    __int64 GetDesignPrice(MS2Ptr<CUGCDesignData> spDesign, int nCount);   // the price of nCount items
+    int GetContentKind(MS2Ptr<CItemData> spData);                // the UGC content kind of an item
     MS2Ptr<UIAvatarBase> GetAvatar(int nModel);             // the avatar of a model index
     UIAvatarBase* FUN_141b43490();                              // the shown avatar
-    void FUN_141b434c0(ASData& args);                           // onChangeModel
+    void OnChangeModel(ASData& args);                           // onChangeModel
     bool FUN_141b43660(int nImage);                              // select an image of the folder
-    bool FUN_141b437c0(ASData& args);                           // onChangeIndexDesign
-    bool FUN_141b43be0(int nImage);                              // onDoubleClickImage
-    bool FUN_141b43c60(int nImage);                             // onClickMake
+    bool OnChangeIndexDesign(ASData& args);                           // onChangeIndexDesign
+    bool OnDoubleClickImage(int nImage);                              // onDoubleClickImage
+    bool OnClickMake(int nImage);                             // onClickMake
     void OnClickAddImage();                                       // onClickAddImage
     void OnClickInitialize();                                       // onClickInitialize
     void OnClickNewDraw();                                       // onClickNewDraw
-    void FUN_141b44a60(ASData& args);                           // onStartCapture
+    void OnStartCapture(ASData& args);                           // onStartCapture
     void ShowFilePage(int nPosition);                          // onImageScrollPosition
-    void FUN_141b44b90(ASData& args);                           // onChangeIndexDropDownCategory
-    void FUN_141b44d10(ASData& args);                           // onChangeIndexDropDownGender
-    void FUN_141b44d50(NotifyObject* pNotify);                  // "NotifyGameEventChanged"
-    void FUN_141b44e80(const Scaleform::GFx::FunctionHandler::Params& params);   // "setDesignDataImpl"
+    void OnChangeIndexDropDownCategory(ASData& args);                           // onChangeIndexDropDownCategory
+    void OnChangeIndexDropDownGender(ASData& args);                           // onChangeIndexDropDownGender
+    void OnGameEventChanged(NotifyObject* pNotify);                  // "NotifyGameEventChanged"
+    void SetDesignDataImpl(const Scaleform::GFx::FunctionHandler::Params& params);   // "setDesignDataImpl"
     void ClearItemName();                                       // clear the item name input
-    void FUN_141b450d0(int nResult);                            // the server answered the make request
-    void FUN_141b45180(MS2Ptr<CItem> spItem);                   // the made item: rename box
+    void OnMakeResult(int nResult);                            // the server answered the make request
+    void ShowRenameBox(MS2Ptr<CItem> spItem);                   // the made item: rename box
     void FUN_141b45770(const CUgcItemProxy* pProxy, CItemUgc* pUgc);   // the made item of a proxy (uncalled)
     bool FUN_141b45980(int nResult, const CMsgBoxData& box);
-    bool FUN_141b459d0(int nResult, const CMsgBoxData& box);    // the meso price box
-    bool FUN_141b45cc0(int nResult, const CMsgBoxData& box);    // the merat price box
-    bool FUN_141b46070(int nResult, const CMsgBoxData& box);    // the rename box
+    bool OnMesoPriceBox(int nResult, const CMsgBoxData& box);    // the meso price box
+    bool OnMeratPriceBox(int nResult, const CMsgBoxData& box);    // the merat price box
+    bool OnRenameBox(int nResult, const CMsgBoxData& box);    // the rename box
     bool FUN_141b461b0(int nResult, const CMsgBoxData& box);    // the screenshot box (meso)
     bool FUN_141b462a0(int nResult, const CMsgBoxData& box);    // the screenshot box (merat)
     void SetEditItem(MS2Ptr<CItem> spItem);                   // re-edit an item
@@ -166,6 +166,6 @@ MS2_CHECK_OFFSET(UIUGCItemEditDialog, m_spEditItem, 0x250);
 
 // ItemPreviewCommon (the second TU of the range): the avatar framing constants of the item preview dialogs and the
 // item filters they share.
-int FUN_141b48430(int nAvatarKind);                             // avatar kind -> preview kind (1 PC, 6, 9, 11)
+int GetPreviewKind(int nAvatarKind);                             // avatar kind -> preview kind (1 PC, 6, 9, 11)
 float FUN_141b48480(int nPreviewKind, int nSlot);               // the facing angle of a preview kind / equip slot
-float FUN_141b48500(int nPreviewKind);                          // the frame width of a preview kind
+float GetPreviewFrameWidth(int nPreviewKind);                          // the frame width of a preview kind

@@ -306,7 +306,7 @@ public:
 };
 CString FUN_140188f50(const char* sz, int n);
 CString FUN_140cc2ad0(const CString& strPrefix, const CString& strName);
-CString FUN_14016a5c0(const char* psz, int nCodePage);
+CString ToCString(const char* psz, int nCodePage);
 
 // ---- display handle glue ----
 // @0x14127c160
@@ -438,13 +438,13 @@ void GFxMovieBackground::vfunc_4(void* pUnused, const char* szEvent, const Scale
     else if (_stricmp("loadComplete", szEvent) == 0)
     {
         m_bLoaded = 1;
-        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50());
+        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50());
         if (pOwner != 0)
             pOwner->vfunc_60(m_spScript);
     }
     else if (_stricmp("dispatchEvent", szEvent) == 0)
     {
-        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50());
+        Unk_BgOwner* pOwner = ((class Unk_BgOwner*)((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50());
         if (pOwner != 0)
             pOwner->vfunc_61(m_spScript, pArgs, nArgs);
     }
@@ -944,7 +944,7 @@ CString GFxMovieBackground::GetBackgroundName()
     if (m_strBg.Find(".png", 0) != -1 || m_strBg.Find(".dds", 0) != -1)
     {
         CString strPrefix("BG");
-        return FUN_14016a5c0((const char*)FUN_140cc2ad0(strPrefix, FUN_140188f50((const char*)m_strBg, 0)), 0);
+        return ToCString((const char*)FUN_140cc2ad0(strPrefix, FUN_140188f50((const char*)m_strBg, 0)), 0);
     }
     return m_strBg;
 }

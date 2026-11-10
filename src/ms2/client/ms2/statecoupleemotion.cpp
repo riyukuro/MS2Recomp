@@ -94,7 +94,7 @@ MS2_CHECK_OFFSET(SkillData, m_nOffsetNameTag, 0x30);   // C3: the emotion skill 
 class CPhysXHelper
 {
 public:
-    int FUN_14168a450(const efd::Point3& ptFrom, float* pDist, float fLen);                            // closest hit distance
+    int GetGroundDistance(const efd::Point3& ptFrom, float* pDist, float fLen);                            // closest hit distance
     bool CheckCapsuleOverlap(const Vector3* pPoint);                                                    // the point is blocked
     int RayCastFromPoint(Vector3 ptFrom, Vector3& ptHit, Vector3 ptDir, float fLen, int nMask);       // 0x14168a230 line is blocked
     int RayCastFixedDirection(const Vector3& ptFrom, Vector3& ptHit, struct Unk_RayCastInfo* pInfo, float fLen, Vector3* pNormal, int nA);
@@ -102,8 +102,8 @@ public:
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 // The actor's pet-buff position buffer (see statesummon.cpp).
-#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
+class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_CeBuffMgr { public: };
 Unk_CeBuffMgr* FUN_14166d240(PCBase* p);                                   // 0x14166d240
 
@@ -114,7 +114,7 @@ egmAnimation::AnimationService* FUN_141b6f910();                           // 0x
 
 // UI helpers.
 template <class A> CStringW FormatStringId(int nId, const A& a);
-void FUN_1412751f0(const CStringW& text, int nA, int nB);                  // 0x1412751f0 notice
+void ShowSystemNotice(const CStringW& text, int nA, int nB);                  // 0x1412751f0 notice
 void FUN_141275260(int nStringId, int nA, int nB);                         // 0x141275260 notice by string id
 
 // The game's constants table, the slot holding the maximum distance of a couple emotion (+0x37e0).
@@ -159,7 +159,7 @@ bool FUN_140b83fa0(const NiPoint3& kA, const NiPoint3& kB);         // 0x140b83f
 bool FUN_140b83f60(int nState);                                     // 0x140b83f60
 bool FUN_140b83ec0();                                               // 0x140b83ec0
 bool FUN_140b84dc0(const NiPoint3& kPoint);                         // 0x140b84dc0 the point is placeable
-void FUN_140b86230(const efd::Point3& kEuler, NiMatrix3& kOut);  // 0x140b86230
+void EulerToMatrix(const efd::Point3& kEuler, NiMatrix3& kOut);  // 0x140b86230
 
 // ---- StateCoupleEmotionData -------------------------------------------------------------------------------------------
 
@@ -444,7 +444,7 @@ void StateCoupleEmotion::vfunc_4(StateData* pData)
         return;
     m_spLoopEffectNode = NiNew NiNode(0);
     TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot()->AttachChild((NiAVObject*)(NiNode*)m_spLoopEffectNode, false);
-    if (FUN_1417b7e40() == 0x96)
+    if (GetStateId() == 0x96)
         PlayFirstAni();
 }
 
@@ -498,7 +498,7 @@ void StateCoupleEmotion::vfunc_3(double fTime)
         Stop(0);
         return;
     }
-    switch (FUN_1417b7e40())
+    switch (GetStateId())
     {
     case 0x93:
         if (!FUN_140b83fa0(pOwnerPC->vfunc_18(), pPartner->vfunc_18()))
@@ -514,7 +514,7 @@ void StateCoupleEmotion::vfunc_3(double fTime)
             Stop(0);
         break;
     }
-    switch (FUN_1417b7e40())
+    switch (GetStateId())
     {
     case 0x95:
         if (pPartner->FUN_14166cc80() == 0x96)
@@ -537,7 +537,7 @@ void StateCoupleEmotion::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     int nActorId = FUN_140b7f6a0(FUN_141b6f910(), m_pOwner->GetEntityID());
-    switch (FUN_1417b7e40())
+    switch (GetStateId())
     {
     case 0x93:
     {
@@ -569,7 +569,7 @@ void StateCoupleEmotion::vfunc_24()
     do
     {
         float fDist = 0.0f;
-        if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450(kPos, &fDist, 50.0f) != 0)
+        if (((class CPhysXHelper*)GetPhysXHelper())->GetGroundDistance(kPos, &fDist, 50.0f) != 0)
         {
             kPos.z = kPos.z - (fDist - 1.0f);
             break;
@@ -658,7 +658,7 @@ void StateCoupleEmotion::vfunc_8(double fTime)
     if (FUN_1417b8560() == 0)
         return;
     Unk_CeBuffMgr* pMgr = static_cast<Unk_CeBuffMgr*>(m_pOwner->FUN_14166d240());
-    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->FUN_141683290())));
+    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->GetMoveDirection())));
     if (m_pOwner->FUN_1416749c0())
     {
         Stop(0);
@@ -674,7 +674,7 @@ void StateCoupleEmotion::vfunc_8(double fTime)
 // @0x140b81950
 void StateCoupleEmotion::vfunc_2(int n)
 {
-    int nOld = FUN_1417b7e40();
+    int nOld = GetStateId();
     State::vfunc_2(n);
     if (nOld == n)
         return;
@@ -755,7 +755,7 @@ int StateCoupleEmotion::vfunc_22(MS2Ptr<StateSyncObject> p)
 // @0x140b81f70
 bool StateCoupleEmotion::vfunc_28(MS2Ptr<StateSyncObject> p)
 {
-    return FUN_1417b7e40() != p->m_nSub;
+    return GetStateId() != p->m_nSub;
 }
 
 // @0x140b81fe0
@@ -870,7 +870,7 @@ bool StateCoupleEmotion::FindPlacement(efd::Point3& posA, efd::Point3& posB, flo
         (*reinterpret_cast<Vector3*>(&kPeerXf.m_Translate) -= (*reinterpret_cast<const Vector3*>(static_cast<const NiPoint3*>(&kOwnerXf.m_Translate))));
         (*reinterpret_cast<Vector3*>(&kOwnerXf.m_Translate) -= (*reinterpret_cast<const Vector3*>(static_cast<const NiPoint3*>(&kOwnerXf.m_Translate))));
         NiMatrix3 matRot;
-        FUN_140b86230(kRot, matRot);
+        EulerToMatrix(kRot, matRot);
         kOwnerXf.m_Rotate = matRot;
         kParentXf = kOwnerXf * kParentXf;
         kPeerXf = kOwnerXf * kPeerXf;
@@ -929,7 +929,7 @@ void StateCoupleEmotion::Stop(int bNotify)
     switch (bNotify)
     {
     case 1:
-        FUN_1412751f0(FormatStringId<CStringW>(0xcee, pPeer->vfunc_77()), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcee, pPeer->vfunc_77()), 1, 1);
         break;
     }
 }
@@ -947,7 +947,7 @@ void StateCoupleEmotion::SyncWithPartner(double fTime)
         return;
     if (pPeer->GetCurStateId() != 0x3a)
         return;
-    if (pPeer->FUN_14166cc80() != FUN_1417b7e40())
+    if (pPeer->FUN_14166cc80() != GetStateId())
         return;
     if (m_spCoupleData == 0)
         return;
@@ -957,7 +957,7 @@ void StateCoupleEmotion::SyncWithPartner(double fTime)
         MS2_ASSERT_AT(0x180, "pPeerState" && 0);
         return;
     }
-    int nAction = FUN_1417b7e40();
+    int nAction = GetStateId();
     if (nAction != 0x96)
         return;
     if (m_spAnimInfo.IsNull())
@@ -990,7 +990,7 @@ void StateCoupleEmotion::SyncWithPartner(double fTime)
         return;
     m_spAnimInfo->UpdateNif();
     NiTransform kParentXf = spParentNode->GetWorldTransform();
-    FUN_140b86230(m_spCoupleData->m_posEnd, kParentXf.m_Rotate);
+    EulerToMatrix(m_spCoupleData->m_posEnd, kParentXf.m_Rotate);
     NiTransform kOwnerXf = kParentXf * m_spAnimInfo->m_spOwnerNode->GetLocalTransform();
     NiPoint3 kPos(m_spCoupleData->m_posStart + kOwnerXf.m_Translate);
     pOwnerPC->vfunc_19(kPos);
@@ -1031,7 +1031,7 @@ int StateCoupleEmotion::GetAniIndex()
 
 // Euler angles in degrees (X, Y, Z) to a rotation matrix; the engine's rotation sense is the opposite one.
 // @0x140b86230
-void FUN_140b86230(const efd::Point3& kEuler, NiMatrix3& kOut)
+void EulerToMatrix(const efd::Point3& kEuler, NiMatrix3& kOut)
 {
     NiMatrix3 matX, matY, matZ;
     matX.MakeXRotation(kEuler.x * -0.017453292f);
@@ -1242,37 +1242,37 @@ void FUN_140b84010(int nWhy)
     switch (nWhy)
     {
     case 0:
-        FUN_1412751f0(FormatStringId<CStringW>(0xcf2, strPartner), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcf2, strPartner), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(FormatStringId<CStringW>(0xcf3, strPartner), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcf3, strPartner), 1, 1);
         break;
     case 1:
-        FUN_1412751f0(FormatStringId<CStringW>(0xcf4, strPartner), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcf4, strPartner), 1, 1);
         break;
     case 2:
-        FUN_1412751f0(FormatStringId<CStringW>(0xcf5, strPartner), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcf5, strPartner), 1, 1);
         break;
     case 6:
-        FUN_1412751f0(FormatStringId<CStringW>(0xcf8, strPartner), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcf8, strPartner), 1, 1);
         break;
     case 7:
-        FUN_1412751f0(FormatStringId<CStringW>(0xcea, strPartner), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcea, strPartner), 1, 1);
         break;
     case 8:
-        FUN_1412751f0(FormatStringId<CStringW>(0xcf9, strPartner), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcf9, strPartner), 1, 1);
         break;
     case 5:
-        FUN_1412751f0(FormatStringId<CStringW>(0xcf7, strPartner), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcf7, strPartner), 1, 1);
         break;
     case 3:
-        FUN_1412751f0(FormatStringId<CStringW>(0xcf6, strPartner), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcf6, strPartner), 1, 1);
         break;
     case 9:
-        FUN_1412751f0(FormatStringId<CStringW>(0xcf0, strPartner), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcf0, strPartner), 1, 1);
         break;
     default:
-        FUN_1412751f0(FormatStringId<CStringW>(0xce7, strPartner), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xce7, strPartner), 1, 1);
         break;
     }
 }
@@ -1284,7 +1284,7 @@ bool FUN_140b84dc0(const NiPoint3& kPoint)
     // the exe raises the caller's point itself (both callers go on using the raised point)
     const_cast<NiPoint3&>(kPoint).z += 5.0f;
     float fDist = 0.0f;
-    if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
+    if (((class CPhysXHelper*)GetPhysXHelper())->GetGroundDistance((const efd::Point3&)kPoint, &fDist, 10.0f) == 0)
         return false;
     if (((class CPhysXHelper*)GetPhysXHelper())->CheckCapsuleOverlap((const Vector3*)&kPoint))
         return false;
@@ -1351,7 +1351,7 @@ bool RequestCoupleEmotion(__int64 nTargetId, int nEmotionId)
         kPacket.Encode8(nTargetId);
         kPacket.Encode1(8);
         FUN_140710590(kPacket);
-        FUN_1412751f0(FormatStringId<CStringW>(0xcee, pTarget->vfunc_77()), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcee, pTarget->vfunc_77()), 1, 1);
         return false;
     }
     if (pMyPC->FUN_141675ed0() != 0)
@@ -1401,7 +1401,7 @@ bool RequestCoupleEmotion(__int64 nTargetId, int nEmotionId)
         kPacket.Encode8(nTargetId);
         kPacket.Encode1(7);
         FUN_140710590(kPacket);
-        FUN_1412751f0(FormatStringId<CStringW>(0xcea, pMyPC->vfunc_77()), 1, 1);
+        ShowSystemNotice(FormatStringId<CStringW>(0xcea, pMyPC->vfunc_77()), 1, 1);
         pMyPC->vfunc_59(1, 0, 0, 0);
         return false;
     }
@@ -1441,5 +1441,5 @@ template bool MS2Ptr<StateSyncObjectCoupleEmotion>::operator==(StateSyncObjectCo
 // MS2-PIN: ?RequestCoupleEmotion@@YA_N_JH@Z 0x140b845a0
 // MS2-PIN: ?FUN_140b845a0@@YAX_JI@Z 0x140b845a0
 // MS2-PIN: ?FUN_140b84dc0@@YA_NAEBVNiPoint3@@Z 0x140b84dc0
-// MS2-PIN: ?FUN_140b86230@@YAXAEBVPoint3@efd@@AEAVNiMatrix3@@Z 0x140b86230
-// MS2-PIN: ?FUN_140b86230@@YAXAEBVNiPoint3@@AEAVNiMatrix3@@Z 0x140b86230
+// MS2-PIN: ?EulerToMatrix@@YAXAEBVPoint3@efd@@AEAVNiMatrix3@@Z 0x140b86230
+// MS2-PIN: ?EulerToMatrix@@YAXAEBVNiPoint3@@AEAVNiMatrix3@@Z 0x140b86230

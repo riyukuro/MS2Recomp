@@ -71,7 +71,7 @@ bool FUN_14028d470(float a, float b);                   // approx equal         
 ShadowCullingProcess::ShadowCullingProcess() : NiTerrainCullingProcess(0, 0) {}
 
 bool FUN_141753a00(NiAVObject* o);
-int FUN_141753c20(const NiBound* b, const NiPlane& pl);
+int ClassifyBoundAgainstPlane(const NiBound* b, const NiPlane& pl);
 void FUN_141753c10(int v);
 // Scene object that owns the shadow manager pointer at +0x138.
 struct Unk_141753b80 {
@@ -79,7 +79,7 @@ struct Unk_141753b80 {
     void* m_138;
 };
 MS2_CHECK_OFFSET(Unk_141753b80, m_138, 0x138);
-void* FUN_141753b80(char* o);
+void* GetShadowManager(char* o);
 
 // MS2-FUNCTIONAL: Deactivate shift-count temp; factory EH state; ~Shadow vptr store (exe omits it)
 // @0x141753590
@@ -105,7 +105,7 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
     saved = m_kPlanes.GetActivePlaneState();
     for (i = 0; i < 6; ++i) {
         if (m_kPlanes.IsPlaneActive(i)) {
-            int r = FUN_141753c20((const NiBound*)((void*)&((class NiAVObject*)(class NiAVObject*)(obj))->GetWorldBound()), m_kPlanes.GetPlane(i));
+            int r = ClassifyBoundAgainstPlane((const NiBound*)((void*)&((class NiAVObject*)(class NiAVObject*)(obj))->GetWorldBound()), m_kPlanes.GetPlane(i));
             if (r == 2) break;
             if (r == 1) m_kPlanes.DisablePlane(i);
         }
@@ -119,7 +119,7 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
                     void* c = ((void*)((class NiNode*)(class NiAVObject*)(o2))->GetAt(k));
                     if (c != 0 && !((class NiAVObject*)(void*)(c))->IsNode()) break;
                 }
-                Unk_ShadowMgr* mgr = (Unk_ShadowMgr*)FUN_141753b80((char*)o2);
+                Unk_ShadowMgr* mgr = (Unk_ShadowMgr*)GetShadowManager((char*)o2);
                 int v = mgr->vfunc_18(GetLODCamera(), o2);
                 k = FUN_140ad02f0(k, v);
                 FUN_141753c10(k);
@@ -141,7 +141,7 @@ void ShadowCullingProcess::Process(NiAVObject* obj)
 }
 
 // @0x141753990   factory: EE_NEW(category) ShadowCullingProcess
-ShadowCullingProcess* FUN_141753990()
+ShadowCullingProcess* CreateShadowCullingProcess()
 {
     return new (efd::MemHint(efd::MemHint::NONE)) ShadowCullingProcess();
 }
@@ -157,7 +157,7 @@ bool FUN_141753a00(NiAVObject* o)
 }
 
 // @0x141753a50   exe's ~NiTerrainCullingProcess body: only forwards to the mesh base dtor
-void FUN_141753a50(NiMeshCullingProcess* p) { p->NiMeshCullingProcess::~NiMeshCullingProcess(); }
+void DestroyMeshCullingProcess(NiMeshCullingProcess* p) { p->NiMeshCullingProcess::~NiMeshCullingProcess(); }
 
 // MS2-PIN: ??1ShadowCullingProcess@@UEAA@XZ 0x141753a70 ; implicit dtor (no vftable store)
 
@@ -165,7 +165,7 @@ void FUN_141753a50(NiMeshCullingProcess* p) { p->NiMeshCullingProcess::~NiMeshCu
 void* FUN_141753a90(void** p) { return *p; }
 
 // @0x141753b80
-void* FUN_141753b80(char* o) { return FUN_141753a90(&((Unk_141753b80*)o)->m_138); }
+void* GetShadowManager(char* o) { return FUN_141753a90(&((Unk_141753b80*)o)->m_138); }
 
 // @0x141753bb0
 const NiRTTI* ShadowCullingProcess::GetRTTI() const { return (const NiRTTI*)&NiTerrainCullingProcess::ms_RTTI; }
@@ -174,7 +174,7 @@ const NiRTTI* ShadowCullingProcess::GetRTTI() const { return (const NiRTTI*)&NiT
 void FUN_141753c10(int v) { NiLODNode::ms_iGlobalLOD = v; }
 
 // @0x141753c20
-int FUN_141753c20(const NiBound* b, const NiPlane& pl)
+int ClassifyBoundAgainstPlane(const NiBound* b, const NiPlane& pl)
 {
     float d = ((class NiPlane*)(class NiPlane const*)(&pl))->Distance(*(class NiPoint3 const*)(&((const Unk_BoundView*)b)->m_kCenter));
     if (d <= -*(const float*)((const char*)b + 0xc)) { return 2; }

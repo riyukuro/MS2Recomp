@@ -55,7 +55,7 @@ MS2Ptr<AScript> FUN_1409e7dc0(int nMovieId, const Scaleform::GFx::Value& v);
 class CStateService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1417e2610();
+    int GetCurrentSceneId();
 };
 class CameraMgr   // C3: member view for the former free stand-ins
 {
@@ -73,18 +73,18 @@ template <> class TSingleton<CStateService> { public: static CStateService* GetI
 float FUN_1409f2430(CameraMgr* pCam);                   // distance
 void FUN_140ad4ff0(CameraMgr* pCam, float fValue);      // field of view
 void FUN_140b6bd30(void*);   // C3: was FUN_140b6bd30
-float FUN_140bf4fd0(float f);                                   // ceilf
-void* FUN_1413f9950();   // C3: was FUN_1413f9950
+float Ceil(float f);                                   // ceilf
+void* GetActiveCamera();   // C3: was GetActiveCamera
 
 
 // The manager's accessors defined in this unit (the first two are also declared, with void*, by unit_141274d10).
 int FUN_141032bb0(ASObj* pObj);
 void FUN_141032d40(CCameraMode* pMode, float* pA, float* pB);
 float FUN_141032d80(void* pCam);
-float FUN_141032df0(void* pCam);
+float GetMinDistance(void* pCam);
 float FUN_141032e60(void* pCam);
 void FUN_141032ed0(void* pCam, float f);
-void FUN_141032f30(void* pCam, float f);
+void SetMinDistance(void* pCam, float f);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -111,7 +111,7 @@ void UICameraDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     ASObj obj(2);
     FUN_141032bb0(&obj);
-    m_30->Invoke("initData", obj.FUN_1422bb870());
+    m_30->Invoke("initData", obj.GetValue());
 }
 
 // @0x141032120
@@ -122,31 +122,31 @@ int UICameraDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     if (_stricmp("onChangeSliderFOV", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_1410326e0(data);
+            OnChangeSliderFOV(data);
         return 1;
     }
     else if (_stricmp("onClickReset", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_141032780(data);
+            OnClickReset(data);
         return 1;
     }
     else if (_stricmp("onClickApplyMinDistance", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_141032a90(data);
+            OnClickApplyMinDistance(data);
         return 1;
     }
     else if (_stricmp("onClickApplyMaxDistance", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_141032970(data);
+            OnClickApplyMaxDistance(data);
         return 1;
     }
     else if (_stricmp("onClickApplyNearFar", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_1410328d0(data);
+            OnClickApplyNearFar(data);
         return 1;
     }
     return 0;
@@ -206,13 +206,13 @@ void UICameraDialog::FUN_141032610(const CString& strName, float f)
 }
 
 // @0x1410326e0
-void UICameraDialog::FUN_1410326e0(ASData& data)
+void UICameraDialog::OnChangeSliderFOV(ASData& data)
 {
-    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
+    if (TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() == 0x620000d)
         return;
     float fRaw = data.PopFloat();
     float fFov = fRaw;
-    fFov = FUN_140bf4fd0(fFov);
+    fFov = Ceil(fFov);
     if (fFov <= 0.0f)
         fFov = 1.0f;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
@@ -221,13 +221,13 @@ void UICameraDialog::FUN_1410326e0(ASData& data)
 }
 
 // @0x141032780
-void UICameraDialog::FUN_141032780(ASData& data)
+void UICameraDialog::OnClickReset(ASData& data)
 {
     Scaleform::GFx::Value vRoot = data.PopValue();
     MS2Ptr<AScript> spRoot = FUN_1409e7dc0(m_28, vRoot);
     if (((MS2Ptr<AScript>*)(void*)(&spRoot))->IsNull())
         return;
-    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
+    if (TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() == 0x620000d)
         return;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0)
         return;
@@ -239,11 +239,11 @@ void UICameraDialog::FUN_141032780(ASData& data)
 }
 
 // @0x1410328d0
-void UICameraDialog::FUN_1410328d0(ASData& data)
+void UICameraDialog::OnClickApplyNearFar(ASData& data)
 {
     float fNear = data.PopFloat();
     float fFar = data.PopFloat();
-    NiCamera* pCamera = ((class NiCamera*)FUN_1413f9950());
+    NiCamera* pCamera = ((class NiCamera*)GetActiveCamera());
     if (pCamera != 0) {
         NiFrustum kFrustum = pCamera->GetViewFrustum();
         kFrustum.m_fNear = fNear;
@@ -253,13 +253,13 @@ void UICameraDialog::FUN_1410328d0(ASData& data)
 }
 
 // @0x141032970
-void UICameraDialog::FUN_141032970(ASData& data)
+void UICameraDialog::OnClickApplyMaxDistance(ASData& data)
 {
-    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
+    if (TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() == 0x620000d)
         return;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0) {
         float fMax = data.PopFloat();
-        fMax = FUN_141032df0(TSingleton<CameraMgr>::GetInstance()) > fMax ? FUN_141032df0(TSingleton<CameraMgr>::GetInstance()) : fMax;
+        fMax = GetMinDistance(TSingleton<CameraMgr>::GetInstance()) > fMax ? GetMinDistance(TSingleton<CameraMgr>::GetInstance()) : fMax;
         CString strName = data.FUN_1422b8d30();
         if (!strName.IsEmpty())
             FUN_141032610(strName, fMax);
@@ -270,9 +270,9 @@ void UICameraDialog::FUN_141032970(ASData& data)
 }
 
 // @0x141032a90
-void UICameraDialog::FUN_141032a90(ASData& data)
+void UICameraDialog::OnClickApplyMinDistance(ASData& data)
 {
-    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
+    if (TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() == 0x620000d)
         return;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0) {
         float fMin = data.PopFloat();
@@ -280,7 +280,7 @@ void UICameraDialog::FUN_141032a90(ASData& data)
         CString strName = data.FUN_1422b8d30();
         if (!strName.IsEmpty())
             FUN_141032610(strName, fMin);
-        FUN_141032f30((TSingleton<CameraMgr>::GetInstance()), fMin);
+        SetMinDistance((TSingleton<CameraMgr>::GetInstance()), fMin);
         FUN_141032ed0((TSingleton<CameraMgr>::GetInstance()), fMin);
         FUN_140b6bd30((void*)(TSingleton<CameraMgr>::GetInstance()));
     }
@@ -297,8 +297,8 @@ int FUN_141032bb0(ASObj* pObj)
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0) {
             fFov = TSingleton<CameraMgr>::GetInstance()->FUN_140ad4b40();
             fMax = TSingleton<CameraMgr>::GetInstance()->FUN_140b67d10();
-            fMin = FUN_141032df0(TSingleton<CameraMgr>::GetInstance());
-            NiCamera* pCamera = ((class NiCamera*)FUN_1413f9950());
+            fMin = GetMinDistance(TSingleton<CameraMgr>::GetInstance());
+            NiCamera* pCamera = ((class NiCamera*)GetActiveCamera());
             if (pCamera != 0) {
                 const NiFrustum& kFrustum = pCamera->GetViewFrustum();
                 fNear = kFrustum.m_fNear;
@@ -329,7 +329,7 @@ float FUN_141032d80(void* pCam)
 }
 
 // @0x141032df0
-float FUN_141032df0(void* pCam)
+float GetMinDistance(void* pCam)
 {
     if (reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode).get() != 0)
         return reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode)->vfunc_15();
@@ -352,7 +352,7 @@ void FUN_141032ed0(void* pCam, float f)
 }
 
 // @0x141032f30
-void FUN_141032f30(void* pCam, float f)
+void SetMinDistance(void* pCam, float f)
 {
     if (reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode).get() != 0)
         reinterpret_cast<MS2Ptr<CCameraMode>&>(((Unk_CdView*)pCam)->m_mode)->vfunc_14(f);
@@ -391,16 +391,16 @@ MS2_REPLACE_METHOD(0x141032120, UICameraDialog, vfunc_28, 689, 0x5F6A272A);
 MS2_REPLACE_METHOD(0x1410323F0, UICameraDialog, vfunc_72, 351, 0x34E2F5B0);
 MS2_REPLACE_METHOD(0x141032560, UICameraDialog, FUN_141032560, 160, 0xC59F8B1E);
 MS2_REPLACE_METHOD(0x141032610, UICameraDialog, FUN_141032610, 196, 0xAD37A14A);
-MS2_REPLACE_METHOD(0x1410326E0, UICameraDialog, FUN_1410326e0, 153, 0xDF0D88BB);
-MS2_REPLACE_METHOD(0x141032780, UICameraDialog, FUN_141032780, 315, 0x04F91510);
-MS2_REPLACE_METHOD(0x1410328D0, UICameraDialog, FUN_1410328d0, 140, 0xE63D9F60);
-MS2_REPLACE_METHOD(0x141032970, UICameraDialog, FUN_141032970, 273, 0x176E6778);
-MS2_REPLACE_METHOD(0x141032A90, UICameraDialog, FUN_141032a90, 273, 0x3476B551);
+MS2_REPLACE_METHOD(0x1410326E0, UICameraDialog, OnChangeSliderFOV, 153, 0xDF0D88BB);
+MS2_REPLACE_METHOD(0x141032780, UICameraDialog, OnClickReset, 315, 0x04F91510);
+MS2_REPLACE_METHOD(0x1410328D0, UICameraDialog, OnClickApplyNearFar, 140, 0xE63D9F60);
+MS2_REPLACE_METHOD(0x141032970, UICameraDialog, OnClickApplyMaxDistance, 273, 0x176E6778);
+MS2_REPLACE_METHOD(0x141032A90, UICameraDialog, OnClickApplyMinDistance, 273, 0x3476B551);
 MS2_REPLACE_METHOD(0x141032E50, UICameraDialog, vfunc_48, 11, 0x5EDFFB5F);
 MS2_REPLACE(0x141032BB0, FUN_141032bb0, 323, 0xDAD2A6DA);
 MS2_REPLACE(0x141032D40, FUN_141032d40, 54, 0x57A21861);
 MS2_REPLACE(0x141032D80, FUN_141032d80, 102, 0xA877E9EA);
-MS2_REPLACE(0x141032DF0, FUN_141032df0, 83, 0x09D49DA9);
+MS2_REPLACE(0x141032DF0, GetMinDistance, 83, 0x09D49DA9);
 MS2_REPLACE(0x141032E60, FUN_141032e60, 102, 0x72E131EF);
 MS2_REPLACE(0x141032ED0, FUN_141032ed0, 93, 0x528F96DB);
-MS2_REPLACE(0x141032F30, FUN_141032f30, 90, 0x4E410C02);
+MS2_REPLACE(0x141032F30, SetMinDistance, 90, 0x4E410C02);

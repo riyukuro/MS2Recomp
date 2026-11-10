@@ -85,11 +85,11 @@ public:
     ShopBanner();                                                   // 0x141314210
     virtual ~ShopBanner();                                          // 0x1413147c0
 
-    void FUN_141347ed0(MS2Ptr<ShopBannerInfo> spInfo);                                  // add (keyed by its name)
+    void AddBanner(MS2Ptr<ShopBannerInfo> spInfo);                                  // add (keyed by its name)
     MS2Ptr<ShopBannerInfo> FUN_141347f50(const Unk_AdbPtr& spBanner, int nType);   // add one from an ad banner
-    MS2Ptr<ShopBannerInfo> FUN_1413480a0(const CString& strName);                       // find by name
-    void FUN_141348160(const CString& strUrl);                                          // open a banner link
-    void FUN_141348190(ASArray& arr);                                                   // write all banners
+    MS2Ptr<ShopBannerInfo> FindBanner(const CString& strName);                       // find by name
+    void OpenBannerLink(const CString& strUrl);                                          // open a banner link
+    void WriteBanners(ASArray& arr);                                                   // write all banners
     void Clear();                                                                       // 0x1413154e0 inline: m_banners.RemoveAll()
 
     Unk_ShopBannerMap m_banners;                                    // +0x18
@@ -100,13 +100,13 @@ MS2_CHECK_OFFSET(ShopBanner, m_banners, 0x18);
 typedef ATL::CAtlArray<MS2Ptr<ShopTabInfo> > Unk_ShopTabArray;
 
 // Tab list builders.
-int FUN_1413482e0(const Unk_ShopTabArray& arr, MS2Ptr<CShopCategoryTable::TabInfo> spTab);   // index of the tab, -1
+int FindTabIndex(const Unk_ShopTabArray& arr, MS2Ptr<CShopCategoryTable::TabInfo> spTab);   // index of the tab, -1
 int FUN_1413483c0(const CString& strCategory, const CString& strList);                       // category in a "a,b,c" list
-void FUN_141348530(int nShop, Unk_ShopTabArray& arr);
-void FUN_141348610(int nShop, Unk_ShopTabArray& arr, std::map<int, MS2Ptr<CNpcShopProductBase> >& products);
+void BuildShopTabs(int nShop, Unk_ShopTabArray& arr);
+void BuildShopTabsForProducts(int nShop, Unk_ShopTabArray& arr, std::map<int, MS2Ptr<CNpcShopProductBase> >& products);
 void FUN_1413487e0(Unk_ShopTabArray& arr, CShopCategoryTable::TabList& list, MS2Ptr<CNpcShopProductBase> spProduct,
                    int nDepth);
-void FUN_141348cf0(const Unk_ShopTabArray& arr, MS2Ptr<AScript> spRoot, int nSale, Delegate<void(AScript&)>* pfnEach);   // exe RTTI: Delegate<void(AScript&)>
+void BuildCategoryList(const Unk_ShopTabArray& arr, MS2Ptr<AScript> spRoot, int nSale, Delegate<void(AScript&)>* pfnEach);   // exe RTTI: Delegate<void(AScript&)>
 void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, int nSale, Delegate<void(AScript&)>* pfnEach);
 
 // Item tooltips compared with the equipped item.
@@ -115,13 +115,13 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
 
 int FUN_1413499b0(int nTab);                                                    // open the shop on a tab
 void FUN_141349ae0(MS2Ptr<CItem> spItem, int nStringId, const CString& strUrl); // item message box
-void FUN_141349ba0(MS2Ptr<CItem> spItem, CStringW strText, const CString& strUrl);
-int FUN_141349e30(const CString& strKind);                                      // banner link kind (link=1 .. searchBySN=5)
+void ShowItemMessageBox(MS2Ptr<CItem> spItem, CStringW strText, const CString& strUrl);
+int GetBannerLinkKind(const CString& strKind);                                      // banner link kind (link=1 .. searchBySN=5)
 
 // Currency helpers (nKind: the shop currency kind, mapped by FUN_14134a170).
 __int64 FUN_141349ef0(int nKind, int nItemId, unsigned int nAmount);
 void FUN_141349f30(CStringW& strOut, int nKind, int nArg, unsigned int nAmount, const CString& strCurrency);
 bool FUN_14134a030(int nKind, int nItemId, unsigned int nAmount);
-CStringW FUN_14134a070(int nKind, int nArg, unsigned int nAmount);
+CStringW GetCurrencyText(int nKind, int nArg, unsigned int nAmount);
 void FUN_14134a120(int nKind, int nItemId, unsigned int nAmount);
 int FUN_14134a170(int nKind);

@@ -32,11 +32,11 @@
 
 // ---- unit-local views of exe objects ----
 
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 // (0x1401783d0 is XmlSplitImpl<unsigned>(const CString&, std::vector<unsigned>&, const char*), placeholder/xmlattr.h)
-__int64 FUN_140475ff0(unsigned short nRule);                            // the rule's limit
+__int64 GetNextExp(unsigned short nRule);                            // the rule's limit
 struct Unk_RegMarker {};
 
 // ---- dynamic initializers (.text$di) ----
@@ -143,7 +143,7 @@ bool HideAndSeek::Info::FUN_14050a510() { return m_1a; }
 void HideAndSeek::Info::FUN_14050a530(__int64 nAdd, unsigned short nRule)
 {
     __int64 n = nAdd;
-    __int64 nLimit = FUN_140475ff0(nRule);
+    __int64 nLimit = GetNextExp(nRule);
     if (n > nLimit)
         n = nLimit;
     m_20 += n;
@@ -153,7 +153,7 @@ void HideAndSeek::Info::FUN_14050a530(__int64 nAdd, unsigned short nRule)
 void HideAndSeek::Info::FUN_14050a5a0(__int64 nValue, unsigned short nRule)
 {
     __int64 n = nValue;
-    __int64 nLimit = FUN_140475ff0(nRule);
+    __int64 nLimit = GetNextExp(nRule);
     if (n > nLimit)
         n = nLimit;
     m_20 = n;
@@ -201,13 +201,13 @@ void HideAndSeek::FUN_14050a770(unsigned nMapCode, std::vector<int>& out)
 // @0x14050a830
 void HideAndSeek::LoadHideAndSeek()
 {
-    CString strPath = FUN_14071a5b0("Table/Server", "hideAndSeek.xml");
+    CString strPath = GetXmlPath("Table/Server", "hideAndSeek.xml");
     if (Unk_LockGuard guard = s_lock) {} else
     {
         s_ridingTable.clear();
     }
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)

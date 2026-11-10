@@ -54,7 +54,7 @@ void UIVisualTrackerListDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     ASObj obj(2);
-    m_30->Invoke("initData", obj.FUN_1422bb870());
+    m_30->Invoke("initData", obj.GetValue());
 }
 MS2_REPLACE_METHOD(0x141B73040, UIVisualTrackerListDialog, OnLoadComplete, 176, 0x0B503C25);
 

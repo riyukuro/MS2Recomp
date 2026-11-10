@@ -31,9 +31,9 @@ CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was F
 CString FUN_14028d1f0(const char*);
 CStringW GetStringCommonByKey(const CStringW& s);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 class Unk_140166420 : public CFileSystem { };
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool CServerListTable::s_bInit;
@@ -54,7 +54,7 @@ CServerListTable::~CServerListTable()
 void CServerListTable::Load()
 {
     TiXmlDocument doc;
-    int bLoaded = ((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "serverList.xml"), 0, true, false);
+    int bLoaded = ((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, GetXmlPath("Table", "serverList.xml"), 0, true, false);
     if (bLoaded != 0)
     {
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
@@ -121,7 +121,7 @@ void CServerListTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CServerListTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CServerListTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

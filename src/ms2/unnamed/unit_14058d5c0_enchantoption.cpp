@@ -12,7 +12,7 @@
 class CEnchantOption : public CPtred
 {
 public:
-    void FUN_14058d5c0(CInPacket& packet);                  // the options
+    void ReadOptions(CInPacket& packet);                  // the options
     void FUN_14058d710(CInPacket& packet);                  // the header value, then the options
     __int64 m_n18;                                          // +0x18
     Unk_EnchantMap m_options;                               // +0x20 option id -> option
@@ -20,13 +20,13 @@ public:
 MS2_CHECK_SIZE(CEnchantOption, 0x68);
 
 // @0x14058d5c0
-void CEnchantOption::FUN_14058d5c0(CInPacket& packet)
+void CEnchantOption::ReadOptions(CInPacket& packet)
 {
     int nCount = packet.ReadInt32();
     for (int i = 0; i < nCount; ++i) {
         MS2Ptr<BaseOption> spOption(new BaseOption);
         int nKey = (unsigned short)packet.ReadInt16();
-        spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(static_cast<CInputStream&>(packet)));
+        spOption->Read(reinterpret_cast<Unk_EnchantRead&>(static_cast<CInputStream&>(packet)));
         m_options.SetAt(nKey, spOption);
     }
 }
@@ -35,5 +35,5 @@ void CEnchantOption::FUN_14058d5c0(CInPacket& packet)
 void CEnchantOption::FUN_14058d710(CInPacket& packet)
 {
     m_n18 = packet.ReadInt64();
-    FUN_14058d5c0(packet);
+    ReadOptions(packet);
 }

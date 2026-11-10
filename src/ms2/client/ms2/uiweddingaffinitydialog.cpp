@@ -32,7 +32,7 @@ public:
 };
 __int64 GetServerTime();                                        // server time
 int GetDayNumberDifference(__int64 nFrom, __int64 nTo);         // whole days between
-CStringW FUN_140b8e850(const CMsTime& time);                    // the date text
+CStringW FormatYearMonthDayHour(const CMsTime& time);                    // the date text
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/commonfiles/os.h"
 
@@ -41,7 +41,7 @@ UIWeddingAffinityDialog::UIWeddingAffinityDialog()
 {
     m_2c = 0x19;
     FUN_1422dc3b0(1);
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140fc2110
@@ -72,7 +72,7 @@ void UIWeddingAffinityDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     WeddingProxy* pWedding = TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0();
-    __int64 nExp = reinterpret_cast<WeddingTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140908e60(1, 0);
+    __int64 nExp = reinterpret_cast<WeddingTable*>(TSingleton<WeddingTable>::GetInstance())->GetRewardExp(1, 0);
     int nDays = GetDayNumberDifference(pWedding->m_n30, GetServerTime());
     nExp = nExp * nDays;
     CStringW strHistory;
@@ -83,7 +83,7 @@ void UIWeddingAffinityDialog::OnLoadComplete()
     {
         const Unk_WeddingLog& log = *it;
         CMsTime kTime(log.m_nTime);
-        CStringW strDate = FUN_140b8e850(kTime);
+        CStringW strDate = FormatYearMonthDayHour(kTime);
         CStringW strText = FUN_14028dfa0<__int64>(StringFormat(L"s_wedding_dialog_exp_{0}", reinterpret_cast<const Unk_WdKind&>(log.m_nType)), log.m_nAmount);
         strHistory += L"\n";
         strHistory += StringFormat<CStringW, CStringW>(L"[{0}] {1}", strDate, strText);

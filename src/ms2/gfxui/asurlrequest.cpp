@@ -12,13 +12,13 @@
 #include "hook/ms2hook.h"
 
 // The GFx movie of a movie id (AScript's static helper, ascript.cpp range; null if the movie is not loaded).
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);
+Scaleform::GFx::Movie* GetMovie(int nMovieId);
 
 // @0x1422e5a70
 ASURLRequest::ASURLRequest(CStringW strUrl, int nMovieId)
     : AScript(2)
 {
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(nMovieId);
     if (pMovie == NULL)
         return;
     Scaleform::GFx::Value arg;

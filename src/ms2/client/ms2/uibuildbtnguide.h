@@ -17,7 +17,7 @@ public:
     virtual void vfunc_43();                                                    // 43 0x1418dccc0
     virtual int vfunc_48() { return 0x4e7f; }                                   // 48 (COMDAT 0x1418dcf60)
 
-    void FUN_1418dcde0(int nGuide);                                             // show the guide of a key (0 hides)
+    void ShowGuide(int nGuide);                                             // show the guide of a key (0 hides)
 
 private:
     int m_70;                                                                   // +0x70 the guide currently shown

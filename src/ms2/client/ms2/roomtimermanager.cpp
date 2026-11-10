@@ -15,7 +15,7 @@ MS2_CHECK_SIZE(UITimerDialog,0x1a8);
 class Unk_RoomUIManager { public: };
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 CStringW GetStringCommon(int);
-void FUN_1412751f0(const CStringW&,int,int);
+void ShowSystemNotice(const CStringW&,int,int);
 template<class T> T* FindRoomUI(int id) {
     if(reinterpret_cast<Unk_RoomUIManager*>(TSingleton<CUIService>::GetInstance())) {
         MS2Ptr<UIObject> p=TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)id);
@@ -68,16 +68,16 @@ void RoomTimerManager::Update(Unk_RoomPacket& packet) {
     if(type==1) {
         if(delta>0) {
             CStringW message=BlockFormat<int>(0x99f,delta/1000);
-            FUN_1412751f0(message,4,1);
+            ShowSystemNotice(message,4,1);
             m_timer->vfunc_85();
         } else if(delta<0) {
             CStringW message=BlockFormat<int>(0x9a1,abs(delta/1000));
-            FUN_1412751f0(message,2,1);
+            ShowSystemNotice(message,2,1);
             m_timer->vfunc_86();
         }
     } else if(type==2) {
         CStringW message=GetStringCommon(0x9a0);
-        FUN_1412751f0(message,4,1);
+        ShowSystemNotice(message,4,1);
         m_timer->vfunc_85();
     }
 }

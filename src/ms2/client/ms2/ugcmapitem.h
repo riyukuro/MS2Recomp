@@ -29,7 +29,7 @@ public:
     __int64 GetUid();                                // the uid
     __int64 GetCount();                                // the count
     MS2Ptr<CUgcItemLook> GetLook();                   // the look
-    __int64 FUN_140dfc420();                                // the id of the look (0 without one)
+    __int64 GetLookId();                                // the id of the look (0 without one)
     int m_n18;                                              // +0x18
     int m_nItemId;                                          // +0x1c
     __int64 m_nUid;                                         // +0x20
@@ -47,7 +47,7 @@ public:
     Unk_CubeStock();                                        // 0x140dfc480
     ~Unk_CubeStock();                                       // 0x140dfc4b0
     void FUN_140dfc4e0();
-    void FUN_140dfc4f0();                                   // remove all
+    void Clear();                                   // remove all
     int FUN_140dfc520(CUGCMapItem* pItem);                  // add (0x11 when the uid is in the stock)
     void FUN_140dfc6e0(unsigned __int64 nUid);              // remove
     void FUN_140dfc750(ATL::CAtlArray<MS2Ptr<CUGCMapItem> >& out);   // every item

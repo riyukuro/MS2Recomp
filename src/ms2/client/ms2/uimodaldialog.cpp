@@ -12,7 +12,7 @@ extern int DAT_143af4400;               // the id of the modal dialog that is sh
 void FUN_141901470(int, int);
 class ASDialog : public ASDisplayObject {
 public:
-    void FUN_1407cbbe0(const char*, bool);
+    void SetBoolMember(const char*, bool);
 };
 
 // @0x141a55270
@@ -34,7 +34,7 @@ void UIModalDialog::vfunc_8(int nVisible) {
     if (dialog) {
         vfunc_47(nVisible == 0);
         dialog->vfunc_3(nVisible);
-        ((AScript*)dialog)->FUN_1407cbbe0("visible", nVisible == 1);
+        ((AScript*)dialog)->SetBoolMember("visible", nVisible == 1);
         if (m_178 && m_c4 != 0) {
             const char* name;
             if (nVisible != 0) name = "startOpen";
@@ -45,14 +45,14 @@ void UIModalDialog::vfunc_8(int nVisible) {
             }
         }
     }
-    if (nVisible != 0) FUN_141a55650(vfunc_48());
-    else FUN_141a55670(vfunc_48());
+    if (nVisible != 0) SetModalDialogId(vfunc_48());
+    else ClearModalDialogId(vfunc_48());
 }
 MS2_REPLACE_METHOD(0x141a55380, UIModalDialog, vfunc_8, 501, 0x1D8C5C66);
 // @0x141a55580
 void UIModalDialog::vfunc_67() {
     vfunc_47(1);
-    FUN_141a55670(vfunc_48());
+    ClearModalDialogId(vfunc_48());
     UIDialog::vfunc_67();
     m_178 = 0;
 }
@@ -64,16 +64,16 @@ void UIModalDialog::vfunc_68() {
 }
 MS2_REPLACE_METHOD(0x141a555e0, UIModalDialog, vfunc_68, 42, 0xABBA7414);
 // @0x141a55620
-int FUN_141a55620() { return DAT_143af4400 != 0; }
-MS2_REPLACE(0x141a55620, FUN_141a55620, 37, 0xB34B823E);
+int IsModalDialogShown() { return DAT_143af4400 != 0; }
+MS2_REPLACE(0x141a55620, IsModalDialogShown, 37, 0xB34B823E);
 // @0x141a55650
-void FUN_141a55650(int nId) { DAT_143af4400 = nId; }
-MS2_REPLACE(0x141a55650, FUN_141a55650, 15, 0x883EE3E0);
+void SetModalDialogId(int nId) { DAT_143af4400 = nId; }
+MS2_REPLACE(0x141a55650, SetModalDialogId, 15, 0x883EE3E0);
 // @0x141a55670
-void FUN_141a55670(int nId) {
+void ClearModalDialogId(int nId) {
     if (nId == DAT_143af4400) DAT_143af4400 = 0;
 }
-MS2_REPLACE(0x141a55670, FUN_141a55670, 27, 0x3785A5EB);
+MS2_REPLACE(0x141a55670, ClearModalDialogId, 27, 0x3785A5EB);
 // @0x141a556a0
 void UIModalDialog::OnLoadComplete() {
     UIDialog::OnLoadComplete();

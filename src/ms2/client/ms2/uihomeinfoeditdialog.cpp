@@ -33,7 +33,7 @@ class ASDialog : public ASDisplayObject
 // 0x140c270b0). The home name is moved into an MS2Ptr<ASTextInput> by the converting move 0x140c26dc0.
 
 // ---- out-of-unit callees ----
-UIHomeInfoDialog* FUN_140bbea00(int nId);                           // dialog by its ui id
+UIHomeInfoDialog* GetHomeInfoDialog(int nId);                           // dialog by its ui id
 CStringW GetStringCommon(int nStringId);
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-in
 {
@@ -48,7 +48,7 @@ public:
 };
 MS2_CHECK_SIZE(CMsgBoxData, 0x2a0);
 typedef MS2Ptr<CMsgBoxData> Unk_MsgBoxPtr;
-Unk_MsgBoxPtr FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);
+Unk_MsgBoxPtr CreateMessageBox(int nType, CStringW text, void* p, CStringW tag);
 void FUN_14151f150(Unk_MsgBoxPtr box);
 void FUN_140710590(COutPacket& packet);
 
@@ -84,7 +84,7 @@ template <> MS2Ptr<ASTextArea> UISwfEntity::GetChild<ASTextArea>(const CString& 
 // @0x140c26850
 CStringW UIHomeInfoEditDialog::FUN_140c26850()
 {
-    UIHomeInfoDialog* pDlg = FUN_140bbea00(0x4ed8);
+    UIHomeInfoDialog* pDlg = GetHomeInfoDialog(0x4ed8);
     if (pDlg != 0)
         return pDlg->FUN_1412c7090();
     return GetStringCommon(0x574);
@@ -92,11 +92,11 @@ CStringW UIHomeInfoEditDialog::FUN_140c26850()
 MS2_REPLACE_METHOD(0x140C26850, UIHomeInfoEditDialog, FUN_140c26850, 114, 0x4162ADBB);
 
 // @0x140c268d0
-CStringW UIHomeInfoEditDialog::FUN_140c268d0()
+CStringW UIHomeInfoEditDialog::GetHomeName()
 {
     return ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0();
 }
-MS2_REPLACE_METHOD(0x140C268D0, UIHomeInfoEditDialog, FUN_140c268d0, 61, 0xA1A1AAFA);
+MS2_REPLACE_METHOD(0x140C268D0, UIHomeInfoEditDialog, GetHomeName, 61, 0xA1A1AAFA);
 
 // @0x140c26920
 int UIHomeInfoEditDialog::FUN_140c26920()
@@ -122,7 +122,7 @@ MS2_REPLACE_METHOD(0x140C26920, UIHomeInfoEditDialog, FUN_140c26920, 72, 0xC1F6E
 UIHomeInfoEditDialog::UIHomeInfoEditDialog()
 {
     m_80 = 0;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140c264b0
@@ -144,7 +144,7 @@ void UIHomeInfoEditDialog::OnLoadComplete()
     if (MS2Ptr<ASTextInput> spName = GetChild<ASTextArea>("m_homeName"))
     {
         spName->SetMaxChars(FUN_140c26920());
-        spName->SetTextW(FUN_140c268d0());
+        spName->SetTextW(GetHomeName());
     }
     if (MS2Ptr<ASTextArea> spNotice = GetChild<ASTextArea>("m_homeNotice"))
     {
@@ -179,7 +179,7 @@ MS2_REPLACE_METHOD(0x140C267E0, UIHomeInfoEditDialog, vfunc_28, 94, 0xE55289F9);
 // @0x140c26970
 void UIHomeInfoEditDialog::OnConfirm()
 {
-    if (UIHomeInfoDialog* pInfo = FUN_140bbea00(0x4ed8))
+    if (UIHomeInfoDialog* pInfo = GetHomeInfoDialog(0x4ed8))
     {
         if (MS2Ptr<ASTextInput> spName = GetChild<ASTextArea>("m_homeName"))
         {
@@ -197,7 +197,7 @@ void UIHomeInfoEditDialog::OnConfirm()
                 }
                 else
                 {
-                    Unk_MsgBoxPtr box = FUN_140d73d20(0, CStringW(strMessage), 0, CStringW(L""));
+                    Unk_MsgBoxPtr box = CreateMessageBox(0, CStringW(strMessage), 0, CStringW(L""));
                     if (box.get() != 0)
                         FUN_14151f150(box);
                     return;

@@ -35,14 +35,14 @@ void CharacterDecalData::FUN_1401e4090(TiXmlElement* pElem)
              pCustom = ((class TiXmlElement*)((class Unk_XmlNode*)(pCustom))->NextSibling("custom")))
         {
             MS2Ptr<ItemCustom> spCustom(new ItemCustom);
-            spCustom->FUN_140266aa0(pCustom);
+            spCustom->ReadXml(pCustom);
             customs.push_back(spCustom);
         }
     }
 }
 
 // @0x1401e41c0
-std::vector<MS2Ptr<ItemCustom> >* CharacterDecalData::FUN_1401e41c0()
+std::vector<MS2Ptr<ItemCustom> >* CharacterDecalData::GetCustoms()
 {
     return &customs;
 }

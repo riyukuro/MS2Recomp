@@ -19,17 +19,17 @@ class Unk_MachineId
 {
 public:
     Unk_MachineId();                                                // 0x14067c020, zero-inits
-    Unk_MachineId* FUN_14067c050(const Unk_MachineId* pOther);      // copy
+    Unk_MachineId* CopyFrom(const Unk_MachineId* pOther);      // copy
     Unk_MachineId* FUN_14067c080(const Unk_MachineId* pOther);      // assignment
-    Unk_MachineId* FUN_14067c0c0(const CByteBuffer& buf);           // from a buffer of up to 16 bytes
-    bool FUN_14067c130(const Unk_MachineId* pOther) const;          // equal
-    bool FUN_14067c180(const Unk_MachineId* pOther) const;          // not equal
+    Unk_MachineId* SetFromBuffer(const CByteBuffer& buf);           // from a buffer of up to 16 bytes
+    bool IsEqual(const Unk_MachineId* pOther) const;          // equal
+    bool IsNotEqual(const Unk_MachineId* pOther) const;          // not equal
     bool FUN_14067c260(const Unk_MachineId* pOther) const;          // bytes 6..9 equal
-    void FUN_14067c2c0(COutputStream* pOut) const;
-    void FUN_14067c310(CInputStream* pIn);
-    void FUN_14067c360(CByteBuffer& buf) const;
-    void FUN_14067c3d0();                                           // clear
-    CStringW FUN_14067c400() const;                                 // "AA-BB-..." hex text
+    void Write(COutputStream* pOut) const;
+    void Read(CInputStream* pIn);
+    void CopyToBuffer(CByteBuffer& buf) const;
+    void Clear();                                           // clear
+    CStringW ToString() const;                                 // "AA-BB-..." hex text
 
     unsigned char m_data[16];
 };
@@ -38,17 +38,17 @@ MS2_CHECK_SIZE(Unk_MachineId, 0x10);
 // @0x14067c020
 Unk_MachineId::Unk_MachineId()
 {
-    FUN_14067c3d0();
+    Clear();
 }
 MS2_REPLACE_CTOR(0x14067C020, Unk_MachineId, 29, 0xAC794091);
 
 // @0x14067c050
-Unk_MachineId* Unk_MachineId::FUN_14067c050(const Unk_MachineId* pOther)
+Unk_MachineId* Unk_MachineId::CopyFrom(const Unk_MachineId* pOther)
 {
     memcpy(m_data, pOther->m_data, 16);
     return this;
 }
-MS2_REPLACE_METHOD(0x14067C050, Unk_MachineId, FUN_14067c050, 37, 0x65761C45);
+MS2_REPLACE_METHOD(0x14067C050, Unk_MachineId, CopyFrom, 37, 0x65761C45);
 
 // @0x14067c080
 Unk_MachineId* Unk_MachineId::FUN_14067c080(const Unk_MachineId* pOther)
@@ -61,36 +61,36 @@ MS2_REPLACE_METHOD(0x14067C080, Unk_MachineId, FUN_14067c080, 49, 0xD3408B84);
 
 // The length is read inside the memcpy call.
 // @0x14067c0c0
-Unk_MachineId* Unk_MachineId::FUN_14067c0c0(const CByteBuffer& buf)
+Unk_MachineId* Unk_MachineId::SetFromBuffer(const CByteBuffer& buf)
 {
     if (!(buf.GetLength() > 0x10))
     {
-        memcpy(m_data, buf.FUN_14067c4c0(), buf.GetLength());
+        memcpy(m_data, buf.GetData(), buf.GetLength());
 
     }
     return this;
 }
-MS2_REPLACE_METHOD(0x14067C0C0, Unk_MachineId, FUN_14067c0c0, 93, 0x9EA9E230);
+MS2_REPLACE_METHOD(0x14067C0C0, Unk_MachineId, SetFromBuffer, 93, 0x9EA9E230);
 
 // @0x14067c130
-bool Unk_MachineId::FUN_14067c130(const Unk_MachineId* pOther) const
+bool Unk_MachineId::IsEqual(const Unk_MachineId* pOther) const
 {
     return memcmp(m_data, pOther->m_data, 16) == 0;
 }
-MS2_REPLACE_METHOD(0x14067C130, Unk_MachineId, FUN_14067c130, 70, 0xA068BA25);
+MS2_REPLACE_METHOD(0x14067C130, Unk_MachineId, IsEqual, 70, 0xA068BA25);
 
 // @0x14067c180
-bool Unk_MachineId::FUN_14067c180(const Unk_MachineId* pOther) const
+bool Unk_MachineId::IsNotEqual(const Unk_MachineId* pOther) const
 {
-    return !FUN_14067c130(pOther);
+    return !IsEqual(pOther);
 }
-MS2_REPLACE_METHOD(0x14067C180, Unk_MachineId, FUN_14067c180, 64, 0xAA03750C);
+MS2_REPLACE_METHOD(0x14067C180, Unk_MachineId, IsNotEqual, 64, 0xAA03750C);
 
 // @0x14067c1d0
 void FUN_14067c1d0(const Unk_MachineId* pId)
 {
     static Unk_MachineId s_zero;
-    pId->FUN_14067c130(&s_zero);
+    pId->IsEqual(&s_zero);
 }
 MS2_REPLACE(0x14067C1D0, FUN_14067c1d0, 123, 0xDDF60160);
 
@@ -107,36 +107,36 @@ bool Unk_MachineId::FUN_14067c260(const Unk_MachineId* pOther) const
 MS2_REPLACE_METHOD(0x14067C260, Unk_MachineId, FUN_14067c260, 80, 0x7B8B5145);
 
 // @0x14067c2c0
-void Unk_MachineId::FUN_14067c2c0(COutputStream* pOut) const
+void Unk_MachineId::Write(COutputStream* pOut) const
 {
     pOut->WriteBytes((void*)m_data, 16);
 }
-MS2_REPLACE_METHOD(0x14067C2C0, Unk_MachineId, FUN_14067c2c0, 59, 0x9FBAB988);
+MS2_REPLACE_METHOD(0x14067C2C0, Unk_MachineId, Write, 59, 0x9FBAB988);
 
 // @0x14067c310
-void Unk_MachineId::FUN_14067c310(CInputStream* pIn)
+void Unk_MachineId::Read(CInputStream* pIn)
 {
     pIn->ReadBytes(m_data, 16);
 }
-MS2_REPLACE_METHOD(0x14067C310, Unk_MachineId, FUN_14067c310, 59, 0x9FBAB988);
+MS2_REPLACE_METHOD(0x14067C310, Unk_MachineId, Read, 59, 0x9FBAB988);
 
 // @0x14067c360
-void Unk_MachineId::FUN_14067c360(CByteBuffer& buf) const
+void Unk_MachineId::CopyToBuffer(CByteBuffer& buf) const
 {
     for (int i = 0; i < 16; i++)
         reinterpret_cast<ATL::CAtlArray<unsigned char>&>(buf)[i] = m_data[i];
 }
-MS2_REPLACE_METHOD(0x14067C360, Unk_MachineId, FUN_14067c360, 92, 0xFCBAB457);
+MS2_REPLACE_METHOD(0x14067C360, Unk_MachineId, CopyToBuffer, 92, 0xFCBAB457);
 
 // @0x14067c3d0
-void Unk_MachineId::FUN_14067c3d0()
+void Unk_MachineId::Clear()
 {
     memset(m_data, 0, 16);
 }
-MS2_REPLACE_METHOD(0x14067C3D0, Unk_MachineId, FUN_14067c3d0, 27, 0xD024C07A);
+MS2_REPLACE_METHOD(0x14067C3D0, Unk_MachineId, Clear, 27, 0xD024C07A);
 
 // @0x14067c400
-CStringW Unk_MachineId::FUN_14067c400() const
+CStringW Unk_MachineId::ToString() const
 {
     CStringW str;
     for (unsigned i = 0; i < 16; i++)
@@ -147,14 +147,14 @@ CStringW Unk_MachineId::FUN_14067c400() const
     }
     return str;
 }
-MS2_REPLACE_METHOD(0x14067C400, Unk_MachineId, FUN_14067c400, 179, 0xD390DB2E);
+MS2_REPLACE_METHOD(0x14067C400, Unk_MachineId, ToString, 179, 0xD390DB2E);
 
 // @0x14067c4c0
-const unsigned char* CByteBuffer::FUN_14067c4c0() const
+const unsigned char* CByteBuffer::GetData() const
 {
     return &m_aByteBuff[0];
 }
-MS2_REPLACE_METHOD(0x14067C4C0, CByteBuffer, FUN_14067c4c0, 33, 0x8714DA35);
+MS2_REPLACE_METHOD(0x14067C4C0, CByteBuffer, GetData, 33, 0x8714DA35);
 
 // @0x14067c4f0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);

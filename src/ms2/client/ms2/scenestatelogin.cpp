@@ -24,16 +24,16 @@ public:
     static WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
     void FUN_141bbae40(void* p);
     void FUN_141bbae80(void* p);
-    int FUN_141bbbe40(int mapId, int arg2, int arg3);
+    int LoadMap(int mapId, int arg2, int arg3);
 };
-void* FUN_140aae430();
+void* GetMS2();
 class MS2 { public: void SetBackgroundColor(NiColorA kColor); };   // C3: member view (ms2.h), the app's clear colour
 extern int DAT_1439f4a78;
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_ShopLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_140353fc0
 bool FUN_141902530(int, const CMsgBoxData&);
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool (int, CMsgBoxData const &)>);  // C3: the definition's signature
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW, int, Delegate<bool (int, CMsgBoxData const &)>);  // C3: the definition's signature
 class CStateService;
 template<> CStateService* TSingleton<CStateService>::GetInstance();   // statemanager.cpp defines s_instance
 class CStateService   // C3: member view for the former free stand-ins
@@ -48,7 +48,7 @@ struct Unk_1407a7d20 {
     CStringW m_text;
     void *m_p0, *m_p1, *m_p2, *m_p3, *m_p4;
 };
-void FUN_140d73aa0(CStringW, int, void*, CStringW);
+void ShowMessageBox(CStringW, int, void*, CStringW);
 class CameraMgr;
 template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // actioncameramode.cpp defines it
 class CameraMgr   // C3: member view for the former free stand-ins
@@ -60,7 +60,7 @@ public:
     void SetMode(int, int);
 };
 #include "ms2/client/ms2/cameramode.h"   // Unk_CameraSetting (ctor 0x140ae7ce0; was the Unk_140ae7ce0 view)
-void FUN_14174c520(CSceneStateLogin*, CInPacket&);
+void OnAdmin(CSceneStateLogin*, CInPacket&);
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(CSceneStateLogin);
 
@@ -87,9 +87,9 @@ void CSceneStateLogin::OnEnter(int nPrevState)
     CSceneStateBase::OnEnter(nPrevState);
     FUN_140930150(1);
     WorldService::GetInstance()->FUN_141bbae40((IWorldServiceCallback*)this);
-    ((class MS2*)FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
+    ((class MS2*)GetMS2())->SetBackgroundColor(efd::ColorA::BLACK);
     DAT_1439f4a78 = -1;
-    WorldService::GetInstance()->FUN_141bbbe40(1, 1, 0);
+    WorldService::GetInstance()->LoadMap(1, 1, 0);
 }
 
 // @0x14174c170
@@ -112,7 +112,7 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
     switch (packet.FUN_14070fe80())
     {
     case static_cast<int>(RecvOp::Admin):
-        FUN_14174c520(this, packet);
+        OnAdmin(this, packet);
         break;
     case static_cast<int>(RecvOp::ServerList):
     {
@@ -125,7 +125,7 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
         else
         {
             Unk_ShopLog<int>(GetLogString(), 1, 0x20, L"SceneStateLogin::OnPacket {0}", result);
-            FUN_140d74390(BlockFormat<int>(0x20e, 0), 0, Delegate<bool(int, const CMsgBoxData&)>(FUN_141902530));
+            ShowMessageBoxWithCallback(BlockFormat<int>(0x20e, 0), 0, Delegate<bool(int, const CMsgBoxData&)>(FUN_141902530));
             FUN_140d86260()->vfunc_58(0x20e, 0);
         }
         break;
@@ -133,7 +133,7 @@ void CSceneStateLogin::OnPacket(CInPacket& packet)
     case static_cast<int>(RecvOp::Notice):
     {
         Unk_1407a7d20 info(packet);
-        FUN_140d73aa0(CStringW(info.m_text), 0, 0, CStringW(L""));
+        ShowMessageBox(CStringW(info.m_text), 0, 0, CStringW(L""));
     }
     }
 }
@@ -153,7 +153,7 @@ void CSceneStateLogin::vfunc_1(int)
 }
 
 // @0x14174c520
-void FUN_14174c520(CSceneStateLogin*, CInPacket& packet)
+void OnAdmin(CSceneStateLogin*, CInPacket& packet)
 {
     int kind = packet.ReadUInt8();
     switch (kind)

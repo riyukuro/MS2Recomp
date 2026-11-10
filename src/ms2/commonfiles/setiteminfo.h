@@ -19,7 +19,7 @@ public:
     virtual ~SetItemInfo() = default;           // 0x1407adff0 (no vptr store; deleting 0x1407ae0f0)
 
     bool Load(TiXmlElement* pNode);   // read a <set> element; false when it is invalid
-    int FUN_1407ad550();                        // the set id
+    int GetId();                        // the set id
     int HasItem(unsigned nItemId) const;        // 0x1407ad570 the item is one of the pieces
     bool IsShowEffect();                       // showEffectIfItsSetItemMotion (+0x80)
     bool IsDisableTooltip();                    // 0x1407ad620 isDisableTooltip (+0x81)

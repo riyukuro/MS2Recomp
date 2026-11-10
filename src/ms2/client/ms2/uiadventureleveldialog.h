@@ -39,19 +39,19 @@ public:
     virtual void vfunc_oa0_30(int a1);                                                              // 0x140ba30a0
     virtual void vfunc_oa0_31(void* a1);                                                            // 0x140ba3140
 
-    void FUN_140ba31c0();                                                                           // level guide when the movie is up
-    void FUN_140ba3200();                                                                           // mission list when the movie is up
-    int FUN_140ba3240();                                                                            // missions done but not yet claimed
-    void FUN_140ba3330();                                                                           // fill the level guide
+    void RefreshLevelGuide();                                                                           // level guide when the movie is up
+    void RefreshMissionList();                                                                           // mission list when the movie is up
+    int GetClaimableMissionCount();                                                                            // missions done but not yet claimed
+    void FillLevelGuide();                                                                           // fill the level guide
     void FUN_140ba34b0();                                                                           // level + experience gauge
-    void FUN_140ba35a0();                                                                           // fill the ability list
-    void FUN_140ba3a30();                                                                           // fill the mission list
+    void FillAbilityList();                                                                           // fill the ability list
+    void FillMissionList();                                                                           // fill the mission list
     int FUN_140ba3d60(ASObj& obj, unsigned int nLevel);                                             // level row: state, level text
     int FUN_140ba3f80(ASObj& obj, unsigned int nLevel);                                             // level row: item reward
     int FUN_140ba4250(ASObj& obj, unsigned int nLevel);                                             // level row: stat reward
     int FUN_140ba45c0(ASObj& obj, unsigned int nMissionId);                                         // mission row: item reward
-    void FUN_140ba4960(unsigned int nLevel);                                                        // claim a level reward
-    void FUN_140ba4a10(unsigned int nMissionId);                                                    // claim a mission reward
+    void ClaimLevelReward(unsigned int nLevel);                                                        // claim a level reward
+    void ClaimMissionReward(unsigned int nMissionId);                                                    // claim a mission reward
 
 private:
     MS2_LAYOUT_FRIEND;

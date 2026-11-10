@@ -206,7 +206,7 @@ class Unk_IoSession : public CFeatureManager
 {
 public:
 };
-class Unk_IoMapRules { public: unsigned char FUN_1407d05e0(unsigned nMapId, int nBanType); };
+class Unk_IoMapRules { public: unsigned char IsShutdown(unsigned nMapId, int nBanType); };
 class Unk_IoGameCtx { public: Unk_IoMapRules* FUN_1403f3230(); };
 void FUN_141275260(int, int, int);
 int FUN_141276180(const CString&, const CString&);
@@ -229,14 +229,14 @@ void FUN_140b27ec0(void* e, unsigned nHash, void* pOut);
 int FUN_1408a2060(Unk_Entity* e, unsigned nHash, efd::utf8string* pOut);
 int FUN_140998250(Unk_Entity* e, unsigned nHash, efd::AssetID* pOut);
 void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
-void FUN_140de8bd0(egf::Entity* e, unsigned nHash, efd::AssetID* pValue);
+void SetAssetIdProperty(egf::Entity* e, unsigned nHash, efd::AssetID* pValue);
 const egf::EntityID* FUN_1408b76f0(Unk_Entity* e);
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
 void FUN_1401cd100(egf::EntityID* pDst, int n);
 unsigned __int64 FUN_140affe40(Unk_Entity* e);
 CString FUN_141b70dd0(struct Unk_UtilNameSrc* e);
 void FUN_1401d3700(CString& s);
-void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot);    // util.cpp
+void SetEntityHighlight(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot);    // util.cpp
 const char* FUN_1408ac310(efd::utf8string* p);
 const char* Unk_AssetUrnText(const efd::AssetID* pAsset);
 void FUN_1409989e0(efd::utf8string* p, const char* psz);
@@ -272,14 +272,14 @@ ecr::SceneGraphService* GetSceneGraphService();
 
 // post effect / system sound / ui
 struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: the real function (0x140a58500, gameoptiongamepad.cpp)
-class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
-class CUserMail { public: static __int64 FUN_1408e57f0(); };   // C3: the scene-service global (usermail.h clashes on FUN_141276180)
+class Unk_McEntityRules* GetTriggerService();   // C3: was GetTriggerService
+class CUserMail { public: static __int64 GetGFxSceneService(); };   // C3: the scene-service global (usermail.h clashes on FUN_141276180)
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_1422b9fd0(int);
 };
-void* FUN_14136f290(int);   // C3: was FUN_14136f290
+void* FindCutSceneCinematic(int);   // C3: was FindCutSceneCinematic
 CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
    // member (this=rcx, hidden return=rdx)
@@ -292,7 +292,7 @@ DWORD GetTickCountMs2();
 class UIMasteryObjectMark   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140e59bb0(class CInteractObject*);
+    void AddNodeMark(class CInteractObject*);
 };
 template <typename T> T* Unk_FcDialog(int nId);
 class Unk_IoGatherChk : public CMasteryManager { public: };
@@ -303,7 +303,7 @@ template <typename T> T* GetItemUseDialog(int nId);
 class UIItemBillBoardDialog   // C3: member view for the former free stand-ins
 {
 public:
-    __int64 FUN_140c322b0();
+    __int64 GetBillboardOwner();
 };
 class Unk_IoStream
 {
@@ -336,7 +336,7 @@ CInteractObject::CInteractObject()
     m_nParticle = 0;
     m_nVisible = 0;
     m_bHighlight = 1;
-    m_timer.FUN_1408687f0();
+    m_timer.Reset();
     m_bSpawned = 0;
 }
 
@@ -398,7 +398,7 @@ int CInteractObject::vfunc_4()
     if (m_spRow == 0)
         return 0;
     unsigned nMapId = (unsigned)WorldService::GetInstance()->FUN_141bd3060();
-    if (TSingleton<CGameEventValueManager>::GetInstance()->ShutdownInteractObjectId()->FUN_1407d05e0(nMapId, m_spRow->m_nId) == 1)
+    if (TSingleton<CGameEventValueManager>::GetInstance()->ShutdownInteractObjectId()->IsShutdown(nMapId, m_spRow->m_nId) == 1)
     {
         FUN_141275260(0x2f7, 1, 1);
         return 0;
@@ -488,9 +488,9 @@ void CInteractObject::SetVisible(unsigned char bVisible)
         return;
     m_nVisible = bVisible;
     if (bVisible != 0)
-        FUN_141b71e70(m_ent->GetEntityID(), true, 1, false);
+        SetEntityHighlight(m_ent->GetEntityID(), true, 1, false);
     else
-        FUN_141b71e70(m_ent->GetEntityID(), false, 1, false);
+        SetEntityHighlight(m_ent->GetEntityID(), false, 1, false);
 }
 
 // @0x1413fdd80
@@ -636,9 +636,9 @@ void CInteractObject::UpdateStateEffect()
 // @0x1413fe580
 void CInteractObject::vfunc_11()
 {
-    if (m_timer.FUN_140868c00() != 0)
+    if (m_timer.IsExpired() != 0)
     {
-        m_timer.FUN_1408687f0();
+        m_timer.Reset();
         DisableDynamicUpdate(0);
     }
 }
@@ -717,7 +717,7 @@ void CInteractObject::DisableDynamicUpdate(int nDelay)
         return;
     if (nDelay != 0)
     {
-        m_timer.FUN_140868750(nDelay);
+        m_timer.Start(nDelay);
     }
     else
     {
@@ -912,7 +912,7 @@ void CInteractMeshObject::FUN_1413ff690(const CString& strAsset)
     {
         efd::AssetID id;
         id.SetURN((const char*)strAsset);
-        FUN_140de8bd0(m_ent.operator->(), 0x770e5fc6, &id);
+        SetAssetIdProperty(m_ent.operator->(), 0x770e5fc6, &id);
     }
     else if (m_nAssetType == 2)
     {
@@ -972,14 +972,14 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
     {
         m_bActive = 1;
         FUN_141276180(s_strUseTelescope, "");
-        ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x6200041);
+        ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x6200041);
         CStringW strDesc;
-        UICutSceneCinematic* pHelp = ((class UICutSceneCinematic*)FUN_14136f290(0x4e52));
+        UICutSceneCinematic* pHelp = ((class UICutSceneCinematic*)FindCutSceneCinematic(0x4e52));
         if (pHelp != 0)
         {
             CStringW strTitle = GetStringCommon(0x666);
             if (*reinterpret_cast<unsigned char*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
-                strTitle = FUN_1409331f0()->GetActionKeyName(0x49409, 2);
+                strTitle = GetKeyTable()->GetActionKeyName(0x49409, 2);
             pHelp->StartCinematic(9, strDesc);
             pHelp->FUN_141907d60(3, strTitle, GetStringCommon(0x667));
             NotifySystem::GetInstance()->RegisterNotify(CStringW(L"NotifyCutSceneCinematicSkip"),
@@ -1011,8 +1011,8 @@ void CInteractTelescopeObject::vfunc_2(Unk_InteractMsg* pMsg)
 // @0x1413fff60
 void CInteractTelescopeObject::OnCutSceneSkip(NotifyObject*)
 {
-    ((class CTriggerService*)FUN_140ad4b90())->FUN_141863460(0.0f);
-    ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
+    ((class CTriggerService*)GetTriggerService())->FUN_141863460(0.0f);
+    ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
     MS2Ptr<CFieldDataCli> ref = WorldService::GetInstance()->FUN_141bd30a0();
     if (reinterpret_cast<Unk_IoCutData*>(ref.get()) != 0)
     {
@@ -1061,7 +1061,7 @@ void CInteractUIObject::vfunc_11()
     CInteractObject::vfunc_11();
     if (m_nDialogId == 0)
         return;
-    if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)m_nDialogId) != 0)
+    if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)m_nDialogId) != 0)
     {
         m_nDialogId = 0;
         return;
@@ -1106,12 +1106,12 @@ int CInteractDisplayImage::vfunc_1(Unk_Entity* pEntity, int nState)
 {
     if (CInteractObject::vfunc_1(pEntity, nState) == 0)
         return 0;
-    if (((CContentShutdown*)&((struct Unk_IoCfgHolder*)FUN_14025e7b0())->m_cfg)->Get((CContentShutdown::Content)0x32) == 0 && ((class Unk_IoSession*)FUN_140166410())->FUN_14036d570(0x3f) == 1)
+    if (((CContentShutdown*)&((struct Unk_IoCfgHolder*)FUN_14025e7b0())->m_cfg)->Get((CContentShutdown::Content)0x32) == 0 && ((class Unk_IoSession*)FUN_140166410())->IsFeatureEnabled(0x3f) == 1)
         m_pThread = AfxBeginThread(GetURLFromGameRanking, this, 0, 0, 0, 0);
-    else if (((class Unk_IoSession*)FUN_140166410())->FUN_14036e4c0())
+    else if (((class Unk_IoSession*)FUN_140166410())->IsRegionKR())
     {
         m_strUrl = "";
-        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(m_strUrl, (const char*)m_spRow->m_displayUrl.m_strIndirectUrl);
+        TSingleton<CWebBrowserService>::GetInstance()->ExpandUrlPrefix(m_strUrl, (const char*)m_spRow->m_displayUrl.m_strIndirectUrl);
         if (m_strUrl.GetLength() > 0)
             m_pThread = AfxBeginThread(GetURLFromIndirectURL, this, 0, 0, 0, 0);
     }
@@ -1312,7 +1312,7 @@ UINT CInteractDisplayImage::GetURLFromIndirectURL(LPVOID pParam)
     CString strName = pThis->GetName();
     std::wstring strUrl(CStringW(FUN_14016a730(pThis->m_strUrl, 0)));
     CWinHttpClient client(strUrl);
-    if (client.FUN_140920cf0(L"GET", false))
+    if (client.SendRequest(L"GET", false))
     {
         if (client.FUN_140922f20() != 0)
             return 0;
@@ -1442,7 +1442,7 @@ int CInteractGatheringObject::vfunc_1(Unk_Entity* pEntity, int nState)
     CInteractMeshObject::vfunc_1(pEntity, nState);
     void* pTable = Unk_FcDialog<UIMasteryObjectMark>(0x4f3a);
     if (pTable != 0)
-        ((class UIMasteryObjectMark*)(void*)(pTable))->FUN_140e59bb0(this);
+        ((class UIMasteryObjectMark*)(void*)(pTable))->AddNodeMark(this);
     return 1;
 }
 
@@ -1590,7 +1590,7 @@ int CInteractGuildPosterObject::vfunc_1(Unk_Entity* pEntity, int nState)
 {
     if (CInteractObject::vfunc_1(pEntity, nState) == 0)
         return 0;
-    if (((class Unk_IoSession*)FUN_140166410())->FUN_14036d570(0x5b) == 0)
+    if (((class Unk_IoSession*)FUN_140166410())->IsFeatureEnabled(0x5b) == 0)
         return 0;
     UpdatePoster(1);
     return 1;
@@ -1601,7 +1601,7 @@ void CInteractGuildPosterObject::vfunc_10()
 {
     if (vfunc_4() == 0)
         return;
-    ((class Unk_IoTexMgr*)TSingleton<CUgcManager>::GetInstance())->FUN_141880230(GetName(), GetHousePosterId());
+    ((class Unk_IoTexMgr*)TSingleton<CUgcManager>::GetInstance())->OpenGuildPosterUpload(GetName(), GetHousePosterId());
 }
 
 // @0x141402e60
@@ -1618,7 +1618,7 @@ void CInteractGuildPosterObject::UpdatePoster(unsigned char bShow)
     if (m_ent.operator egf::Entity*() == 0)
         return;
     int nPoster = GetHousePosterId();
-    unsigned __int64 nSvc = reinterpret_cast<CGuildInfo*>(&reinterpret_cast<Unk_IoPosterHolder*>(TSingleton<CGuildManager>::GetInstance())->m_svc)->FUN_1404ccbd0();
+    unsigned __int64 nSvc = reinterpret_cast<CGuildInfo*>(&reinterpret_cast<Unk_IoPosterHolder*>(TSingleton<CGuildManager>::GetInstance())->m_svc)->GetGuildId();
     CStringW strRaw = reinterpret_cast<CGuildInfo*>(&reinterpret_cast<Unk_IoPosterHolder*>(TSingleton<CGuildManager>::GetInstance())->m_svc)->FUN_1404d2220(nPoster);
     CStringW strFile = FUN_14016a730(FUN_1410299f0(nSvc, FUN_14016a600(strRaw, 0), nPoster, GetName(), reinterpret_cast<bool&>(bShow)), 0);
     if (((class BlindManager*)GetBlindManager())->IsBlocked(5, CStringW(strRaw)) == 1)
@@ -1674,7 +1674,7 @@ int CInteractBillBoardObject::vfunc_4()
     Unk_IoBoardSvc* pBoard = (Unk_IoBoardSvc*)GetItemUseDialog<UIItemBillBoardDialog>(0x4f4f);
     if (pBoard != 0)
     {
-        __int64 nCur = ((class UIItemBillBoardDialog*)(class Unk_IoBoardSvc*)(pBoard))->FUN_140c322b0();
+        __int64 nCur = ((class UIItemBillBoardDialog*)(class Unk_IoBoardSvc*)(pBoard))->GetBillboardOwner();
         if (nCur != 0 && nCur == m_nBoard)
             return 0;
     }

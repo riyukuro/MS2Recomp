@@ -27,7 +27,7 @@ public:
     ~Unk_NodeWalker();                                              // 0x1410439e0
     NiAVObject* FUN_1410446c0(bool bChildren);                      // 0x1410446c0 next node, NULL at the end
     void FUN_1410447b0(NiAVObject* pRoot);                          // 0x1410447b0 restart at pRoot
-    void FUN_141044210(NiNode* pNode);                              // 0x141044210 queue the children
+    void QueueChildren(NiNode* pNode);                              // 0x141044210 queue the children
 private:
     ATL::CAtlList<NiAVObject*> m_list;
 };
@@ -49,7 +49,7 @@ public:
                                                                                                     // 28 0x141040d20
     virtual int vfunc_48() { return 0x4eac; }                                                       // 48 (COMDAT 0x141041370)
 
-    void FUN_1410411e0(bool bApply);    // 0x1410411e0 set the apply flag; on: push the edited param to the running effects
+    void SetApply(bool bApply);    // 0x1410411e0 set the apply flag; on: push the edited param to the running effects
 
 public:
     MS2_LAYOUT_FRIEND;

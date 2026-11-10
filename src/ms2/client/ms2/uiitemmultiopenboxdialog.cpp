@@ -20,7 +20,7 @@ void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> item, int a, int b
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& strKey);                  // string table text
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);   // message box
 struct Unk_McConstVal;
 struct Unk_McConstVal { void* m_0; void* m_8; };
 struct Unk_McConfig
@@ -34,7 +34,7 @@ struct Unk_McConfig
 class Unk_McInventoryDialog : public UIDialog
 {
 public:
-    void FUN_140c3fe30(unsigned nFlags);                         // m_19c |= nFlags
+    void AddFlags(unsigned nFlags);                         // m_19c |= nFlags
 private:
     char m_pad_178[0x19c - 0x178];
     unsigned m_19c;
@@ -45,7 +45,7 @@ template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_McInventoryDialog* F
 // @0x140c3f350
 UIItemMultiOpenBoxDialog::UIItemMultiOpenBoxDialog() : m_180(0), m_184(0), m_190(0), m_194(0), m_198(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140c3f410
@@ -67,7 +67,7 @@ void UIItemMultiOpenBoxDialog::vfunc_67()
     DestroyItemInfoSlot(GetTypeName());
     Unk_McInventoryDialog* pInventory = reinterpret_cast<Unk_McInventoryDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pInventory != 0)
-        pInventory->FUN_140c3fe30(2);
+        pInventory->AddFlags(2);
     m_180 = 0;
     m_184 = 0;
     m_190 = 0;
@@ -157,7 +157,7 @@ void UIItemMultiOpenBoxDialog::FUN_140c3f9d0(int nBoxId, int nSlot, CStringW str
 }
 
 // @0x140c3fa80
-void UIItemMultiOpenBoxDialog::FUN_140c3fa80(int nOpened, int nResult)
+void UIItemMultiOpenBoxDialog::OnOpenResult(int nOpened, int nResult)
 {
     if (vfunc_55() != 0)
         return;
@@ -175,16 +175,16 @@ void UIItemMultiOpenBoxDialog::FUN_140c3fa80(int nOpened, int nResult)
         switch (nResult)
         {
         case 3:
-            FUN_140d73aa0(GetStringCommonByKey(L"s_err_cannot_open_multi_itembox_inventory_fail"), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommonByKey(L"s_err_cannot_open_multi_itembox_inventory_fail"), 0, 0, CStringW(L""));
             break;
         case 4:
-            FUN_140d73aa0(GetStringCommonByKey(L"s_err_cannot_open_multi_itembox_inventory"), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommonByKey(L"s_err_cannot_open_multi_itembox_inventory"), 0, 0, CStringW(L""));
             break;
         }
         vfunc_67();
     }
 }
-MS2_REPLACE_METHOD(0x140C3FA80, UIItemMultiOpenBoxDialog, FUN_140c3fa80, 536, 0x96E33585);
+MS2_REPLACE_METHOD(0x140C3FA80, UIItemMultiOpenBoxDialog, OnOpenResult, 536, 0x96E33585);
 
 // @0x140c3fca0
 void UIItemMultiOpenBoxDialog::FUN_140c3fca0()
@@ -198,7 +198,7 @@ void UIItemMultiOpenBoxDialog::FUN_140c3fca0()
 MS2_REPLACE_METHOD(0x140C3FCA0, UIItemMultiOpenBoxDialog, FUN_140c3fca0, 310, 0xAF05CB1C);
 
 // @0x140c3fe30
-void Unk_McInventoryDialog::FUN_140c3fe30(unsigned nFlags)
+void Unk_McInventoryDialog::AddFlags(unsigned nFlags)
 {
     m_19c |= nFlags;
 }

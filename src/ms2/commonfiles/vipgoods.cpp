@@ -30,7 +30,7 @@ class Unk_XmlNode { public: class Unk_XmlNode * FirstChild(char const *); };
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 void FUN_14028fd90(struct Unk_XmlElement* pParent, const char* pszName, const char* pszAttr1, const char* pszAttr2,
                    std::vector<struct Unk_XmlElement*>& out);
@@ -43,9 +43,9 @@ int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>), FUN_140177de0 (CAtlArray<int>)
 void ParseInt64List(CString& str, ATL::CAtlArray<__int64>& rOut, const char* pszSep);   // 0x1402a5010 (conditionutil)
 unsigned char FUN_1401d1320(CCacheData*);
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
-CStringW FUN_140b8ec90(const CMsTime& time);                               // date text
+CStringW FormatMonthDayHourMinute(const CMsTime& time);                               // date text
 CStringW FUN_1418fec00(int nType, __int64 nValue, bool);        // money text by pay type
 CStringW FUN_1418fef90(int nType, __int64 nValue);
 
@@ -99,7 +99,7 @@ CStringW CVIPGoods::GetSalesPeriodText()
     {
         return CStringW(L"");
     }
-    return FUN_14028dfa0(CStringW(L"s_vip_dialog_goods_sales_duration"), FUN_140b8ec90(CMsTime(m_salesStartDate)), FUN_140b8ec90(CMsTime(m_salesEndDate)));
+    return FUN_14028dfa0(CStringW(L"s_vip_dialog_goods_sales_duration"), FormatMonthDayHourMinute(CMsTime(m_salesStartDate)), FormatMonthDayHourMinute(CMsTime(m_salesEndDate)));
 }
 
 // @0x1408f5510
@@ -170,11 +170,11 @@ int CVIPTable::LoadGoods()
 {
     m_goods.RemoveAll();
     m_goodsList.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "vipGoodsTable.xml");
+    CString strPath = GetXmlPath("Table", "vipGoodsTable.xml");
     m_cacheGoods.AssignRaw(new CCacheData);
-    m_cacheGoods.get()->FUN_1401d1160(CString(strPath));
+    m_cacheGoods.get()->SetPath(CString(strPath));
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -249,11 +249,11 @@ int CVIPTable::LoadGoods()
 int CVIPTable::LoadBenefitItems()
 {
     m_benefitItems.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "vipBenefitItemTable.xml");
+    CString strPath = GetXmlPath("Table", "vipBenefitItemTable.xml");
     m_cacheBenefitItems.AssignRaw(new CCacheData);
-    m_cacheBenefitItems.get()->FUN_1401d1160(CString(strPath));
+    m_cacheBenefitItems.get()->SetPath(CString(strPath));
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -283,11 +283,11 @@ int CVIPTable::LoadBenefitItems()
 int CVIPTable::LoadBenefitEffects()
 {
     m_benefitEffects.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "vipBenefitEffectTable.xml");
+    CString strPath = GetXmlPath("Table", "vipBenefitEffectTable.xml");
     m_cacheBenefitEffects.AssignRaw(new CCacheData);
-    m_cacheBenefitEffects.get()->FUN_1401d1160(CString(strPath));
+    m_cacheBenefitEffects.get()->SetPath(CString(strPath));
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -411,7 +411,7 @@ void CVIPTable::CheckInit()
     if (!s_bInit)
     {
         CStringA msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CVIPTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CVIPTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

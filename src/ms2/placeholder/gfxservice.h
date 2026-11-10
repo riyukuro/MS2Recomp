@@ -37,12 +37,12 @@ public:
     virtual int vfunc_18(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);    // 18 0x1422e9d90
     virtual int vfunc_19(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);    // 19 0x1422e9df0 sees every message
     int FUN_1422e9e50();                                            // GFx allocator bytes in use (0 without allocator)
-    static bool FUN_1422ea110(bool bBeforeReset, void* pvData);     // NiDX9Renderer reset notification
+    static bool OnRenderDeviceReset(bool bBeforeReset, void* pvData);     // NiDX9Renderer reset notification
     static bool FUN_1422ea1f0(void* pvData);                        // NiDX9Renderer lost device notification
-    static void FUN_1422ea210(int nCaptureBlock);                   // s_nCaptureBlock =
+    static void SetCaptureBlock(int nCaptureBlock);                   // s_nCaptureBlock =
     void SetFont(CString strFont);                            // +0x28
-    void FUN_1422ea280(bool b);
-    static int FUN_141b47780();                                     // s_nCaptureBlock (inline COMDAT, uiugcitemeditdialog.cpp)
+    void DisableIme(bool b);
+    static int GetCaptureBlock();                                     // s_nCaptureBlock (inline COMDAT, uiugcitemeditdialog.cpp)
     bool FUN_1422ea2a0();                                           // 0x1422ea2a0 the font is "CN" (GFxMovieMouseCursor::vfunc_5)
     static int s_nCaptureBlock;                                     // 0x143b0d360 screenshots blocked while set
 private:
@@ -53,7 +53,7 @@ private:
 MS2_CHECK_OFFSET(GFxService, m_pSysAlloc, 0x20);
 MS2_CHECK_SIZE(GFxService, 0x30);
 
-GFxService* FUN_1414a56c0();                                        // the GFxService instance
+GFxService* GetGFxService();                                        // the GFxService instance
 
 // The scene service (0x40 bytes, vftable 0x143109b80, 16 slots): tracks the current UI scene and sub-scene (scene entity
 // ids 0x062000xx) and switches them (hide the old one, show the new one). Code in ?\gfxsceneservice.cpp (src/ms2/gfxui/

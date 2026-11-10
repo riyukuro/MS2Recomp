@@ -23,12 +23,12 @@ public:
 
     void StartDuelBar(int nObjectId, int nDurationMs, int nBarCount);   // start a duel (npc id, time, bars)
     void FUN_140e6bc10();                               // refresh both profiles, hp bars and the npc buffs
-    void FUN_140e6c440(MS2Ptr<AdditionalCli> buff);        // add a buff icon (when it belongs to the npc)
-    void FUN_140e6c540(MS2Ptr<AdditionalCli> buff);        // remove a buff icon
+    void AddBuffEffect(MS2Ptr<AdditionalCli> buff);        // add a buff icon (when it belongs to the npc)
+    void UpdateBuffEffect(MS2Ptr<AdditionalCli> buff);        // remove a buff icon
     void RemoveBuffEffect(int nBuffId);                    // update a buff icon
     void UpdateRemainingTime();                               // "setTime" mmss
     void UpdatePlayerHpBar();                               // "setHpBarLeft" (local player hp, max hp)
-    void FUN_140e6c9c0();                               // "setHpBarRight" (npc hp split into bars)
+    void UpdateNpcHpBar();                               // "setHpBarRight" (npc hp split into bars)
 
 private:
     MS2_LAYOUT_FRIEND;

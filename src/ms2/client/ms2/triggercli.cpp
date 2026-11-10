@@ -45,7 +45,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 int FUN_140873420(TiXmlElement* pNode, const char* pszName, CStringW& rOut);   // string attribute, 0 = found
 void FUN_1401d3700(CString& s);
 CStringW FUN_1401bf530(TiXmlElement* pNode, const char* pszName, CStringW strDefault);   // attribute or the default
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // path join
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // path join
 
 class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
@@ -79,8 +79,8 @@ struct Unk_TrgFramework { efd::ServiceManagerPtr manager; };
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(Unk_TrgFramework*)&egf::g_bapiContext)          // C3: was extern Unk_TrgFramework DAT_143b059e8
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
-int FUN_1407071e0(int nItemId);
-int FUN_140707710(int nItemId);
+int HasFunctionCube(int nItemId);
+int IsTriggerControlEnabled(int nItemId);
 int FUN_140707660(int nItemId);
 
 // @0x141199270
@@ -153,7 +153,7 @@ void TriggerCli::CollectIds(std::vector<std::pair<CStringW, int> >& rOut)
 int TriggerCli::LoadFile(const CString& strPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     CString strNorm(strPath);
     FUN_1401d3700(strNorm);
@@ -188,9 +188,9 @@ int TriggerCli::LoadEditorTable()
     int nEnabled = 0;
     if (nEnabled == 0)
         return 0;
-    CString strPath = FUN_14071a5b0("Table/Server", "triggerEditor.xml");
+    CString strPath = GetXmlPath("Table/Server", "triggerEditor.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -346,7 +346,7 @@ int TriggerCli::CheckObjects(std::vector<CStringW>& rErrors)
             rErrors.push_back(strMsg);
             continue;
         }
-        if (FUN_1407071e0(pObject->m_nItemId) == 0 || FUN_140707710(pObject->m_nItemId) == 0 ||
+        if (HasFunctionCube(pObject->m_nItemId) == 0 || IsTriggerControlEnabled(pObject->m_nItemId) == 0 ||
             FUN_140707660(pObject->m_nItemId) != 0)
         {
             strMsg = FormatStringId(0xafb, rId.first, GetErrorText(0xd), rId.second);

@@ -33,7 +33,7 @@ MS2_CHECK_SIZE(UIQuizOXWelcomeDialog, 0x180);
 MS2_CHECK_OFFSET(UIQuizOXWelcomeDialog, m_bHost, 0x178);
 
 // Push the host flag to the movie (0x140e7f110): remembers it, then calls "SetHost" with it.
-void FUN_140e7f110(UIQuizOXWelcomeDialog* pDialog, bool bHost);
+void SetHost(UIQuizOXWelcomeDialog* pDialog, bool bHost);
 
 // Ask the server to start the quiz (0x140e7f230): packet 0x90 with (10, 7) (the OX quiz mode and round count).
-void FUN_140e7f230(UIQuizOXWelcomeDialog* pDialog);
+void SendStartQuiz(UIQuizOXWelcomeDialog* pDialog);

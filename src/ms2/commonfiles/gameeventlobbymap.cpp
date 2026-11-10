@@ -17,7 +17,7 @@
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 
 // Out-of-unit helpers.
-GameEvent* FUN_14041cb50();   // ReturnUser factory (next unit)
+GameEvent* CreateGameEventReturnUser();   // ReturnUser factory (next unit)
 int FUN_140718200(const CStringW& text);
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
 
@@ -37,7 +37,7 @@ private:
     Unk_GESub m_sub;
 };
 struct Unk_GEManagerA { char m_pad[0x8e8]; int m_lobbyMap; };
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
@@ -45,22 +45,22 @@ public:
     void SetLoginNotice(bool, class CMsTime const&);
 };
 
-GameEvent* FUN_14041c1a0();
-GameEvent* FUN_14041c400();
-GameEvent* FUN_14041c5a0();
-GameEvent* FUN_14041c820();
+GameEvent* CreateGameEventLobbyMap();
+GameEvent* CreateGameEventLoginNotice();
+GameEvent* CreateGameEventCharacterCountRestricted();
+GameEvent* CreateGameEventOnlinePatch();
 
 #ifndef MS2_HOOK_DLL
 // Registration of the event factories by name (dynamic initializers).
-static ClassObjectRegistrar s_regCharacterCountRestricted(L"GameEventCharacterCountRestricted", (ClassObjectCreateFn)FUN_14041c5a0);   // 0x143aaeec2
-static ClassObjectRegistrar s_regLobbyMap(L"GameEventLobbyMap", (ClassObjectCreateFn)FUN_14041c1a0);                                  // 0x143aaeec0
-static ClassObjectRegistrar s_regLoginNotice(L"GameEventLoginNotice", (ClassObjectCreateFn)FUN_14041c400);                            // 0x143aaeec1
-static ClassObjectRegistrar s_regOnlinePatch(L"GameEventOnlinePatch", (ClassObjectCreateFn)FUN_14041c820);                            // 0x143aaeec3
-static ClassObjectRegistrar s_regReturnUser(L"GameEventReturnUser", (ClassObjectCreateFn)FUN_14041cb50);                              // 0x143aaeec4
+static ClassObjectRegistrar s_regCharacterCountRestricted(L"GameEventCharacterCountRestricted", (ClassObjectCreateFn)CreateGameEventCharacterCountRestricted);   // 0x143aaeec2
+static ClassObjectRegistrar s_regLobbyMap(L"GameEventLobbyMap", (ClassObjectCreateFn)CreateGameEventLobbyMap);                                  // 0x143aaeec0
+static ClassObjectRegistrar s_regLoginNotice(L"GameEventLoginNotice", (ClassObjectCreateFn)CreateGameEventLoginNotice);                            // 0x143aaeec1
+static ClassObjectRegistrar s_regOnlinePatch(L"GameEventOnlinePatch", (ClassObjectCreateFn)CreateGameEventOnlinePatch);                            // 0x143aaeec3
+static ClassObjectRegistrar s_regReturnUser(L"GameEventReturnUser", (ClassObjectCreateFn)CreateGameEventReturnUser);                              // 0x143aaeec4
 #endif
 
 // @0x14041c1a0
-GameEvent* FUN_14041c1a0() { return new GameEventLobbyMap; }
+GameEvent* CreateGameEventLobbyMap() { return new GameEventLobbyMap; }
 
 // @0x14041c200
 CStringW GameEventLobbyMap::GetTypeName() { return CStringW(L"GameEventLobbyMap"); }
@@ -68,8 +68,8 @@ CStringW GameEventLobbyMap::GetTypeName() { return CStringW(L"GameEventLobbyMap"
 // @0x14041c250
 GameEventLobbyMap::GameEventLobbyMap() : m_mapId(0)
 {
-    FUN_1402e3480(2);
-    FUN_1402e3480(3);
+    SetFlag(2);
+    SetFlag(3);
 }
 
 // @0x14041c2c0
@@ -90,13 +90,13 @@ void GameEventLobbyMap::vfunc_4(Unk_GEIn* in)
 }
 
 // @0x14041c3a0
-void GameEventLobbyMap::OnStart() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->FUN_14047b990(m_mapId); }
+void GameEventLobbyMap::OnStart() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)GetGameRule())))->FUN_14047b990(m_mapId); }
 
 // @0x14041c3d0
-void GameEventLobbyMap::vfunc_6() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->FUN_14047b990(0); }
+void GameEventLobbyMap::vfunc_6() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)GetGameRule())))->FUN_14047b990(0); }
 
 // @0x14041c400
-GameEvent* FUN_14041c400() { return new GameEventLoginNotice; }
+GameEvent* CreateGameEventLoginNotice() { return new GameEventLoginNotice; }
 
 // @0x14041c460
 CStringW GameEventLoginNotice::GetTypeName() { return CStringW(L"GameEventLoginNotice"); }
@@ -104,21 +104,21 @@ CStringW GameEventLoginNotice::GetTypeName() { return CStringW(L"GameEventLoginN
 // @0x14041c4b0
 GameEventLoginNotice::GameEventLoginNotice()
 {
-    FUN_1402e3480(2);
-    FUN_1402e3480(3);
+    SetFlag(2);
+    SetFlag(3);
 }
 
 // @0x14041c510
 void GameEventLoginNotice::vfunc_2() {}
 
 // @0x14041c520
-void GameEventLoginNotice::OnStart() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->SetLoginNotice(true, *(class CMsTime const*)(&m_38)); }
+void GameEventLoginNotice::OnStart() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)GetGameRule())))->SetLoginNotice(true, *(class CMsTime const*)(&m_38)); }
 
 // @0x14041c560
-void GameEventLoginNotice::vfunc_6() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)FUN_1401c0d90())))->SetLoginNotice(false, *(class CMsTime const*)(&m_38)); }
+void GameEventLoginNotice::vfunc_6() { ((class CGameRule*)(struct Unk_GEManagerA*)(((struct Unk_GEManagerA*)GetGameRule())))->SetLoginNotice(false, *(class CMsTime const*)(&m_38)); }
 
 // @0x14041c5a0
-GameEvent* FUN_14041c5a0() { return new GameEventCharacterCountRestricted; }
+GameEvent* CreateGameEventCharacterCountRestricted() { return new GameEventCharacterCountRestricted; }
 
 // @0x14041c600
 CStringW GameEventCharacterCountRestricted::GetTypeName() { return CStringW(L"GameEventCharacterCountRestricted"); }
@@ -126,8 +126,8 @@ CStringW GameEventCharacterCountRestricted::GetTypeName() { return CStringW(L"Ga
 // @0x14041c650
 GameEventCharacterCountRestricted::GameEventCharacterCountRestricted() : m_limit(1)
 {
-    FUN_1402e3480(2);
-    FUN_1402e3480(3);
+    SetFlag(2);
+    SetFlag(3);
 }
 
 // @0x14041c6c0
@@ -163,7 +163,7 @@ void GameEventCharacterCountRestricted::OnStart()
 void GameEventCharacterCountRestricted::vfunc_6() { ((class Unk_GameEventValue408*)(struct Unk_GESub*)(reinterpret_cast<Unk_GEManagerB*>(TSingleton<CGameEventValueManager>::GetInstance())->GetSub()))->Reset(); }
 
 // @0x14041c820
-GameEvent* FUN_14041c820() { return new GameEventOnlinePatch; }
+GameEvent* CreateGameEventOnlinePatch() { return new GameEventOnlinePatch; }
 
 // @0x14041c880
 CStringW GameEventOnlinePatch::GetTypeName() { return CStringW(L"GameEventOnlinePatch"); }
@@ -171,7 +171,7 @@ CStringW GameEventOnlinePatch::GetTypeName() { return CStringW(L"GameEventOnline
 // @0x14041c8d0
 GameEventOnlinePatch::GameEventOnlinePatch()
 {
-    FUN_1402e3480(2);
+    SetFlag(2);
 }
 
 // @0x14041c920

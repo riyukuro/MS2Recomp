@@ -100,10 +100,10 @@ enum SkillMoveType { SkillMoveType_None };
 struct Unk_SkillBlockA4
 {
     Unk_SkillBlockA4();                                     // 0x140802df0
-    bool FUN_140802e40(const Unk_SkillBlockA4& o);          // is different
+    bool IsDifferent(const Unk_SkillBlockA4& o);          // is different
     int Load(TiXmlElement* pElem);
-    int FUN_140802fc0(int nSkill);                          // the output skill of an input skill (else nSkill)
-    int FUN_140802ff0(int nSkill);                          // whether nSkill is the output skill
+    int GetOutputSkill(int nSkill);                          // the output skill of an input skill (else nSkill)
+    int IsOutputSkill(int nSkill);                          // whether nSkill is the output skill
     int FUN_140803040();                                    // the output skill (0 without a combo)
 
     unsigned m_nInputSkill;                                 // +0x00 "inputSkill"
@@ -119,7 +119,7 @@ MS2_CHECK_SIZE(Unk_SkillBlockA4, 0xc);
 struct Unk_SkillBlockB0
 {
     Unk_SkillBlockB0();                                     // 0x140803330
-    bool FUN_1408033b0(const Unk_SkillBlockB0& o);          // is different
+    bool IsDifferent(const Unk_SkillBlockB0& o);          // is different
     int Load(TiXmlElement* pElem);
     ATL::CAtlArray<unsigned> m_arrCheckEffectID;            // +0x00
     ATL::CAtlArray<unsigned short> m_arrCheckEffectLevel;   // +0x20
@@ -135,7 +135,7 @@ MS2_CHECK_SIZE(Unk_SkillBlockB0, 0xa0);
 struct Unk_SkillBlock150
 {
     Unk_SkillBlock150();                                    // 0x140803790
-    bool FUN_1408037e0(const Unk_SkillBlock150& o);         // is different
+    bool IsDifferent(const Unk_SkillBlock150& o);         // is different
     int Load(TiXmlElement* pElem);
     int Save(void* pParent);
     SkillMagicControl m_eEnable;                            // +0x00 "enable"
@@ -149,10 +149,10 @@ MS2_CHECK_SIZE(Unk_SkillBlock150, 0x10);
 struct Unk_SkillBlock160
 {
     Unk_SkillBlock160();                                    // 0x140803070
-    bool FUN_1408030c0(const Unk_SkillBlock160& o);         // is different
+    bool IsDifferent(const Unk_SkillBlock160& o);         // is different
     int Load(TiXmlElement* pElem);
     int FUN_1408031f0(void* pParent);
-    __int64 FUN_140803210();                                // key bits of the block
+    __int64 GetKey();                                // key bits of the block
     float m_fMaxDegree;                                     // +0x00
     float m_fMaxDistance;                                   // +0x04
     float m_fMaxHeight;                                     // +0x08
@@ -164,7 +164,7 @@ MS2_CHECK_SIZE(Unk_SkillBlock160, 0x10);
 struct Unk_SkillBlock170
 {
     Unk_SkillBlock170();                                    // 0x140802cd0
-    bool FUN_140802d00(const Unk_SkillBlock170& o);         // is different
+    bool IsDifferent(const Unk_SkillBlock170& o);         // is different
     int FUN_140802d50(TiXmlElement* pElem);
     int FUN_140802dd0(void* pParent);
     float m_fUp;                                            // +0x00 "up"
@@ -176,7 +176,7 @@ MS2_CHECK_SIZE(Unk_SkillBlock170, 8);
 struct Unk_SkillSensor : public Unk_RangeShape
 {
     Unk_SkillSensor();                                      // 0x1408011f0
-    bool FUN_140801270(const Unk_SkillSensor& o);           // is different
+    bool IsDifferent(const Unk_SkillSensor& o);           // is different
     void LoadElement(TiXmlElement* pElem, CString strName);
     void SaveElement(void* pParent, CString strName);
     unsigned m_nSensorStartDelay;                           // +0x40
@@ -194,14 +194,14 @@ class SkillMotionData : public CPtred
 {
 public:
     SkillMotionData();                                      // 0x1408073a0
-    bool FUN_140807620(const SkillMotionData& o);           // is different
+    bool IsDifferent(const SkillMotionData& o);           // is different
     int FUN_1408080d0(TiXmlElement* pElem);                // reads a <motion>
     void Load(TiXmlElement* pElem);               // reads its attributes
-    int FUN_140808240(void* pParent);                       // writes a <motion>
-    SkillAttackData* FUN_140807e20(int nAttack);            // one attack (0 if out of range)
-    SkillAttackData* FUN_140807e80(const CString& strPoint);    // one attack by its point
+    int Save(void* pParent);                       // writes a <motion>
+    SkillAttackData* GetAttack(int nAttack);            // one attack (0 if out of range)
+    SkillAttackData* FindAttackByPoint(const CString& strPoint);    // one attack by its point
     SkillAttackData* FUN_140807f20(const CString& strPoint);    // one attack with a pause by its point
-    int FUN_140807fd0();                                    // the attack count
+    int GetAttackCount();                                    // the attack count
     bool FUN_140808000();                                   // whether the move type is 3
     __int64 FUN_140808040();                                // key bits of the movement
 
@@ -253,31 +253,31 @@ class SkillLevelData : public CPtred
 {
 public:
     SkillLevelData(SkillData* pSkill);                      // 0x140803a30
-    bool FUN_140803b30(const SkillLevelData& o);            // is different
-    unsigned FUN_140803dc0();                               // the skill id
+    bool IsDifferent(const SkillLevelData& o);            // is different
+    unsigned GetSkillId();                               // the skill id
     unsigned short GetLevel();                         // the level
     SkillData* GetSkill();                             // the skill
-    SkillMotionData* FUN_140803e30(CString strSequence);    // one motion by its sequence name
-    SkillMotionData* FUN_140803f00(int nMotion);            // one motion (0 if out of range)
-    SkillAttackData* FUN_140803f60(int nMotion, int nAttack);   // one attack of a motion (0 if out of range)
+    SkillMotionData* FindMotionBySequenceName(CString strSequence);    // one motion by its sequence name
+    SkillMotionData* GetMotion(int nMotion);            // one motion (0 if out of range)
+    SkillAttackData* GetAttack(int nMotion, int nAttack);   // one attack of a motion (0 if out of range)
     SkillAttackData* FUN_140803fb0(int nMotion, CString strName);   // one attack of a motion by name
     SkillAttackData* FUN_140804030(const CString& strPoint) const; // one attack with a pause, by point
-    Unk_RangeProperty* FUN_1408040d0(int nMotion, int nAttack);   // the range of an attack
+    Unk_RangeProperty* GetAttackRange(int nMotion, int nAttack);   // the range of an attack
     Unk_RangeShape* FUN_140804120();                        // the detect shape (0 without one)
     float FUN_140804150(int nMotion, int nAttack);          // the damage rate of an attack
     __int64 FUN_1408041d0(int nMotion, int nAttack);        // the damage value of an attack
     int GetStanceDamageRate();                                    // the stance damage rate
-    int FUN_140804270();                                    // the motion count
-    float FUN_1408042a0(int nMotion, int nAttack);          // the range value of an attack
+    int GetMotionCount();                                    // the motion count
+    float GetAttackRangeValue(int nMotion, int nAttack);          // the range value of an attack
     float FUN_140804310();                                  // the largest range value
     int FUN_1408043f0(int nMotion, int nAttack);            // whether the attack exists
     bool FUN_140804450();                                   // whether a motion has a sequence name
     const CString& FUN_140804500(int nKind, int nMotion);   // an effect of a motion (kind 2/3/4)
     int FUN_1408045f0(int nMotion, int nAttack);            // the magic path id of an attack
-    float FUN_140804660();                                  // the cooldown
+    float GetCooldown();                                  // the cooldown
     int Load(TiXmlElement* pElem);                // reads a <level>
-    int FUN_140804ae0(void* pParent);                       // writes a <level>
-    __int64 FUN_140804c90(unsigned __int64 nMotion);        // the cooldown key of a motion (0 if out of range)
+    int Save(void* pParent);                       // writes a <level>
+    __int64 GetMotionKey(unsigned __int64 nMotion);        // the cooldown key of a motion (0 if out of range)
 
     int m_nSp;                                              // +0x18 "sp"
     int m_nEp;                                              // +0x1c "ep"
@@ -302,11 +302,11 @@ class SkillGlideData : public CPtred
 {
 public:
     SkillGlideData();                                       // 0x1408024f0
-    bool FUN_140802640(const SkillGlideData& o);            // is different
+    bool IsDifferent(const SkillGlideData& o);            // is different
     void Load(TiXmlElement* pElem);               // reads a <glide>
     int FUN_140802a40(TiXmlElement* pElem);                // reads the <glideProperty> of a skill
     int FUN_140802a90(void* pParent);
-    int FUN_140802ab0();                                    // the id
+    int GetId();                                    // the id
     CStringW* FUN_140802ad0();
 
     unsigned m_nId;                                         // +0x18 "id"
@@ -339,7 +339,7 @@ public:
     SkillData();                                            // 0x1407e83a0
     virtual ~SkillData();                                   // 0x1407e86e0
     bool operator!=(const SkillData& o);                    // 0x1407e8790
-    MS2Ptr<SkillLevelData> FUN_1407e90a0(unsigned short nLevel);  // the data of one level
+    MS2Ptr<SkillLevelData> GetLevelData(unsigned short nLevel);  // the data of one level
     void Load(TiXmlElement* pElem);                        // 0x1407e9130
     unsigned GetId();                                       // 0x1407e9a40
     SkillMainType GetMainType();                            // 0x1407e9a60
@@ -364,8 +364,8 @@ public:
     bool FUN_1407e9ef0();
     bool FUN_1407e9f30();                                   // checked before handing out level 1 of an unowned skill
     bool HasOrigin();                                       // 0x1407e9fb0
-    bool FUN_1407e9ff0();
-    void FUN_1407ea010();
+    bool IsFinishSkill();
+    void SetFinishSkill();
     __int64 FUN_1407ea030();                                // key bits of the targeting
     std::vector<MS2Ptr<SkillAttackData> > GetAttacks() const;   // 0x1407ea0d0 the attacks of every level
 

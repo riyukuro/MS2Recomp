@@ -100,7 +100,7 @@ public:
     virtual void vfunc_34();                                // 34 0x1417b9420
     virtual StateData* vfunc_35();                          // 35 0x1417b9430: m_spData.get()
 
-    int FUN_1417b7e40();                                    // return m_n10
+    int GetStateId();                                    // return m_n10
     void FUN_1417b9310();                                   // remove every id in m_ids, then clear it (dtor, slots 4/5)
     // w38 (stateemotionidle): non-virtual helpers, bodies unrecovered
     MyPC* FUN_1417b84b0();                                  // owner as MyPC (a Ridee's rider), via the class-id casts
@@ -110,7 +110,7 @@ public:
     // w77 (state.cpp)
     int FUN_1417b8340();                                    // owner slot 108
     PCBase* FUN_1417b83a0();                                // owner as npc (FUN_1409ffc60)
-    PCBase* FUN_1417b83d0();                                // the npc's pet / summon owner
+    PCBase* GetPetOwner();                                // the npc's pet / summon owner
     PCBase* FUN_1417b8480();                                // owner's mount (FUN_14096e110)
     int FUN_1417b8560();                                    // FUN_1417b84b0() != 0
 

@@ -51,7 +51,7 @@ public:
 CStringW FUN_1401bf530(TiXmlElement*,const char*,CStringW);
 CString FUN_1406513d0(CString);
 CStringW FUN_14016a730(const char*,int);
-bool FUN_14025fab0(CStringW&);
+bool MakeLower(CStringW&);
 
 
 // The logging callback specialization uses the shared Delegate layout and virtual interface.
@@ -243,7 +243,7 @@ CStringW CLogString::BuildLogFileName(int fullPath)
     if(m_instance) name=StringFormat(L"{0}_{1}_{2}_{3:04d}{4:02d}{5:02d}.txt",file,m_instance,computer,time.wYear,time.wMonth,time.wDay);
     else name=StringFormat(L"{0}_{1}_{2:04d}{3:02d}{4:02d}.txt",file,computer,time.wYear,time.wMonth,time.wDay);
     if(fullPath) name=StringFormat(L"{0}{1}",m_directory,name);
-    FUN_14025fab0(name); m_day=time.wDay; return name;
+    MakeLower(name); m_day=time.wDay; return name;
 }
 MS2_REPLACE_METHOD(0x140653880, CLogString, BuildLogFileName, 672, 0x448DA939);
 

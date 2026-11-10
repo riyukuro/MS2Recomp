@@ -21,8 +21,8 @@ public:
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 // C3 #8: the cast-only Unk_140168650 view removed
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
@@ -45,9 +45,9 @@ CContinentRegionTable::~CContinentRegionTable()
 // @0x1402c52b0
 void CContinentRegionTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "MapContinentTable.xml");
+    CString strPath = GetXmlPath("Table", "MapContinentTable.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -92,7 +92,7 @@ void CContinentRegionTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CContinentRegionTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CContinentRegionTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

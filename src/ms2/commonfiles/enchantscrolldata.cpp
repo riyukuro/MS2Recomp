@@ -40,7 +40,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
@@ -55,7 +55,7 @@ class CGloabalFactor;
 class CGloabalFactor   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1404c1810(int, int);
+    float GetMultiControlFactor(int, int);
 };
 int FUN_14034e730(TiXmlElement* pElem, const char* pszName, int* pnOut);
 
@@ -178,9 +178,9 @@ int CEnchantScrollRecipe::Read(TiXmlElement* pElem)
         return 0;
     m_nMaxLv = scroll->m_nMaxLv;
     XmlGetAttr((class TiXmlElement*)(pElem), "requireMeso", m_nMeso);
-    if (TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1810(1, 0) != 1.0f)
+    if (TSingleton<CGloabalFactor>::GetInstance()->GetMultiControlFactor(1, 0) != 1.0f)
     {
-        m_nMeso *= TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1810(1, 0);
+        m_nMeso *= TSingleton<CGloabalFactor>::GetInstance()->GetMultiControlFactor(1, 0);
         m_nMeso = ((m_nMeso + 50) / 100) * 100;
     }
     for (unsigned __int64 i = 1; i <= 5; i++)
@@ -237,9 +237,9 @@ int CEnchantScrollTable::Load()
 // @0x14034de20
 int CEnchantScrollTable::LoadScrolls()
 {
-    CString strPath = FUN_14071a5b0("Table", "enchantScroll.xml");
+    CString strPath = GetXmlPath("Table", "enchantScroll.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 1;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -264,9 +264,9 @@ int CEnchantScrollTable::LoadScrolls()
 // @0x14034e0d0
 int CEnchantScrollTable::LoadRecipes()
 {
-    CString strPath = FUN_14071a5b0("Table", "enchantScrollRecipe.xml");
+    CString strPath = GetXmlPath("Table", "enchantScrollRecipe.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 1;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

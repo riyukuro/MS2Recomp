@@ -51,7 +51,7 @@ public:
 class MyPC;
 CStringW GetStringCommonByKey(const CStringW& str);                // the text of a string id
 void FUN_1412751b0(const CStringW& strText, int nType);     // a notice
-void FUN_1412751f0(const CStringW& strText, int nA, int nB);    // a notice (error)
+void ShowSystemNotice(const CStringW& strText, int nA, int nB);    // a notice (error)
 
 // The mentoring dialog (RTTI .?AVUIMentoringDialog@@, class id 0x4f4b; the full class is in uimentoringrewardpage.h).
 class UIMentoringDialog : public UIDialog
@@ -217,7 +217,7 @@ CStringW CMentoringManager::FUN_140b71780()
     UICharacterListDialog* pDialog = Unk_MMDialog<UICharacterListDialog>(0x4ef1);
     if (pDialog != 0)
     {
-        int nCount = pDialog->FUN_1418f1c20();
+        int nCount = pDialog->GetCharacterCount();
         for (int i = 0; i < nCount; i = i + 1)
         {
             UICharacterListDialog::CharPtr spCharacter = pDialog->GetCharacterAt(i);
@@ -237,7 +237,7 @@ CStringW CMentoringManager::FUN_140b718b0()
     UICharacterListDialog* pDialog = Unk_MMDialog<UICharacterListDialog>(0x4ef1);
     if (pDialog != 0)
     {
-        int nCount = pDialog->FUN_1418f1c20();
+        int nCount = pDialog->GetCharacterCount();
         for (int i = 0; i < nCount; i = i + 1)
         {
             UICharacterListDialog::CharPtr spCharacter = pDialog->GetCharacterAt(i);
@@ -321,7 +321,7 @@ void CMentoringManager::OnMentorList(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMListPacket2 data;
-    reinterpret_cast<Unk_MentorListPacket*>(&data)->FUN_14069a0b0(MMReader(packet));
+    reinterpret_cast<Unk_MentorListPacket*>(&data)->ReadMentorList(MMReader(packet));
     m_mentors.RemoveAll();
     m_mentors.Copy(data.entries);
     Unk_MentorPtr<UIInviteMentoringDialog> spDialog(FUN_140b6f4c0(0x4f4c));
@@ -335,7 +335,7 @@ void CMentoringManager::OnMenteeList(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMListPacket3 data;
-    reinterpret_cast<Unk_MentorListPacket*>(&data)->FUN_14069a290(MMReader(packet));
+    reinterpret_cast<Unk_MentorListPacket*>(&data)->ReadMenteeList(MMReader(packet));
     m_mentees.RemoveAll();
     m_mentees.Copy(data.entries);
     UIMentoringDialog* pDialog = Unk_MMDialog<UIMentoringDialog>(0x4f4b);
@@ -367,7 +367,7 @@ void CMentoringManager::OnPairMode(CInPacket& packet)
 // @0x140b71f70
 void CMentoringManager::OnMenteeRegistered(CInPacket& packet)
 {
-    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f4b))) != 0)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4f4b))) != 0)
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f4b);
     FUN_1412751b0(GetStringCommonByKey(L"s_mentoring_register_mentee"), 0x10);
 }
@@ -434,7 +434,7 @@ void CMentoringManager::OnMentorDeclined(CInPacket& packet)
 // @0x140b72540
 void CMentoringManager::OnMentorRegistered(CInPacket& packet)
 {
-    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f4b))) != 0)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4f4b))) != 0)
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f4b);
     FUN_1412751b0(GetStringCommonByKey(L"s_mentoring_register_mentor"), 0x10);
 }
@@ -491,7 +491,7 @@ void CMentoringManager::OnSetIds(CInPacket& packet)
 {
     FUN_140b736c0(packet, -1);
     Unk_MMTwoIdPacket12 data;
-    reinterpret_cast<Unk_MentorTwoIdPacket*>(&data)->FUN_14069ac90(MMReader(packet));
+    reinterpret_cast<Unk_MentorTwoIdPacket*>(&data)->Read(MMReader(packet));
     m_n28 = data.a;
     m_n30 = data.b;
 }
@@ -505,31 +505,31 @@ void CMentoringManager::OnError(CInPacket& packet)
     switch (data.result)
     {
     case 1:
-        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_is_not_return_user"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_mentoring_error_is_not_return_user"), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentor_has_max_count_waiting"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_mentoring_error_mentor_has_max_count_waiting"), 1, 1);
         break;
     case 5:
-        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentee_has_max_count_received"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_mentoring_error_mentee_has_max_count_received"), 1, 1);
         break;
     case 6:
-        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentee_is_not_mentee"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_mentoring_error_mentee_is_not_mentee"), 1, 1);
         break;
     case 7:
-        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_mentee_has_already_mento"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_mentoring_error_mentee_has_already_mento"), 1, 1);
         break;
     case 8:
-        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_already_requested_to_mentee"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_mentoring_error_already_requested_to_mentee"), 1, 1);
         break;
     case 2:
-        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_target_not_exists"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_mentoring_error_target_not_exists"), 1, 1);
         break;
     case 3:
-        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_invalid_target"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_mentoring_error_invalid_target"), 1, 1);
         break;
     case 9:
-        FUN_1412751f0(GetStringCommonByKey(L"s_mentoring_error_full_earn_coin"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_mentoring_error_full_earn_coin"), 1, 1);
         break;
     }
 }
@@ -539,7 +539,7 @@ bool FUN_140b73bc0(MyPC* pMyPC)
 {
     if (pMyPC == 0)
         return false;
-    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() == 0x620001f)
+    if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSubSceneId() == 0x620001f)
         return false;
     if (((Unk_MMPlayer*)pMyPC)->IsInCubeMode() == 1)
         return false;

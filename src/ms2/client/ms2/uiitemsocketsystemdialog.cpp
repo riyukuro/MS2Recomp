@@ -120,7 +120,7 @@ public:
 // The tab strip data: an AS array of rows built by FUN_1418fff20 (ctor and dtor are the shared trivial ASArray subclass bodies).
 
 
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void FUN_1412761e0(MS2Ptr<AScript> spRoot, int n);
 void FUN_1418fff20(ASArray* pArray, int nTabIndex, const CStringW& strLabel, const CStringW& strText);
@@ -141,14 +141,14 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1)
 UIItemSocketSystemDialog::UIItemSocketSystemDialog()
     : m_pPage(0), m_nTab(0)
 {
-    FUN_141924170(1);
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
+    SetTweenEnabled(1);
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
 }
 
 // @0x140f68ed0
 UIItemSocketSystemDialog::~UIItemSocketSystemDialog()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0xde, Delegate<void(CInPacket&)>(this, &UIItemSocketSystemDialog::FUN_140f69b50));
 }
 
 // @0x140f68fc0
@@ -168,9 +168,9 @@ void UIItemSocketSystemDialog::OnLoadComplete()
         tabs.push_back(std::pair<int, CStringW>(0, L"gemstone_upgrade"));
         tabs.push_back(std::pair<int, CStringW>(1, L"gemstone_puton_off"));
         tabs.push_back(std::pair<int, CStringW>(2, L"socket_unlock"));
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xa7))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xa7))
             tabs.push_back(std::pair<int, CStringW>(3, L"socket_transfer"));
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x10f))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x10f))
             tabs.push_back(std::pair<int, CStringW>(4, L"gemstone_swap"));
         int nSelected = 0;
         ASDataProvider array(2);
@@ -188,7 +188,7 @@ void UIItemSocketSystemDialog::OnLoadComplete()
                     nSelected = i;
             }
         }
-        m_30->Invoke("initData", Scaleform::GFx::Value(array.FUN_1422bb870()), nSelected);
+        m_30->Invoke("initData", Scaleform::GFx::Value(array.GetValue()), nSelected);
     }
 }
 
@@ -240,9 +240,9 @@ int UIItemSocketSystemDialog::vfunc_65()
         m_pages[0] = new ItemSocketSystemPageGemStoneUpgrade();
         m_pages[1] = new ItemSocketSystemPageGemStoneManage();
         m_pages[2] = new ItemSocketSystemPageSocketUnlock();
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xa7))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xa7))
             m_pages[3] = new ItemSocketSystemPageSocketTransfer();
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x10f))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x10f))
             m_pages[4] = new ItemSocketSystemPageGemstoneSwap();
     }
     return 1;
@@ -267,7 +267,7 @@ void UIItemSocketSystemDialog::vfunc_26()
 }
 
 // @0x140f699f0
-void UIItemSocketSystemDialog::FUN_140f699f0(const int& nTab)
+void UIItemSocketSystemDialog::ChangeTab(const int& nTab)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
@@ -302,10 +302,10 @@ void UIItemSocketSystemDialog::FUN_140f69b50(CInPacket& packet)
 }
 
 // @0x140f69c10
-void UIItemSocketSystemDialog::FUN_140f69c10(const int& nTab)
+void UIItemSocketSystemDialog::SelectTab(const int& nTab)
 {
     if (FUN_141924630() != 0)
-        FUN_140f699f0(nTab);
+        ChangeTab(nTab);
     else
     {
         m_nTab = nTab;

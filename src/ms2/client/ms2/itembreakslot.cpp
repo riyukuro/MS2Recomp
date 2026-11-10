@@ -51,9 +51,9 @@ template <> ItemBreakSlot* efd::DynamicCast<ItemBreakSlot, DragSlot>(DragSlot* S
 class Unk_NotifyContext   // C3: static member view for the former free stand-ins
 {
 public:
-    static class NotifyContext::BindData* FUN_1422c8e90(CString const&);
-    static void FUN_1422c8f10(CString const&, class NotifyContext::BindData*);
-    static void FUN_1422c8f70(CString const&);
+    static class NotifyContext::BindData* FindBinding(CString const&);
+    static void RegisterBinding(CString const&, class NotifyContext::BindData*);
+    static void UnregisterBinding(CString const&);
 };
 
 ItemBreakSlotBag* FUN_1414109f0(NotifyContext::BindData* p);
@@ -129,7 +129,7 @@ int ItemBreakSlot::vfunc_0(void* p)
     {
         if (IsEnabled() == true)
             tip.SetEnablePreview(spItem);
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -145,7 +145,7 @@ int ItemBreakSlot::vfunc_8(void* p)
     int nOk = slot.FUN_1409c3860(vfunc_25().get(), pPlayer, 0x1401f);
     if (nOk != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -169,18 +169,18 @@ void FUN_1414106d0(const CString& strName)
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(100);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x141410780
 void FUN_141410780(const CString& strName)
 {
-    ItemBreakSlotBag* pBag = FUN_1414109f0(Unk_NotifyContext::FUN_1422c8e90(strName));
+    ItemBreakSlotBag* pBag = FUN_1414109f0(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -210,7 +210,7 @@ DragSlot* ItemBreakSlotBag::vfunc_16(int nIndex)
 // @0x1414109a0
 void FUN_1414109a0(DragSlotBag* pBag, int nIndex)
 {
-    DragSlot* pSlot = reinterpret_cast<DragSlot*>(efd::DynamicCast<ItemBreakSlot, DragSlot>(reinterpret_cast<DragSlot*>(reinterpret_cast<DragSlotBag*>(pBag)->FUN_1422cd070(nIndex))));
+    DragSlot* pSlot = reinterpret_cast<DragSlot*>(efd::DynamicCast<ItemBreakSlot, DragSlot>(reinterpret_cast<DragSlot*>(reinterpret_cast<DragSlotBag*>(pBag)->GetSlot(nIndex))));
     if (pSlot)
         pSlot->vfunc_10();
 }

@@ -127,17 +127,17 @@ template <class T> T* Unk_UgcGetDialog(int nId);
 template <class T> T* Unk_GaGetUI(int nId);
 void FUN_140d73ff0(CStringW text);                              // screen notice
 void FUN_14151f200();                                           // close the open modal box
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);   // confirm box
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);   // confirm box
 bool FUN_14092f660();                                           // in the wedding hall
-bool FUN_140900550();                                           // may send a wedding request
+bool IsWeddingEnabled();                                           // may send a wedding request
 __int64 GetServerTime();                                        // server time
-unsigned int FUN_140900f00();   // C3: was FUN_140900f00
-unsigned int FUN_140900d40();   // C3: was FUN_140900d40
+unsigned int GetWeddingInvitationMaxCount();   // C3: was GetWeddingInvitationMaxCount
+unsigned int GetWeddingProposeItemId();   // C3: was GetWeddingProposeItemId
 CStringW FUN_141b71910(__int64 n);                     // u64 -> text
 unsigned __int64 FUN_140718370(const CStringW& str);            // text -> u64
 CStringW FUN_140298ea0(CStringW key);                           // system string
 bool FUN_140900f30(__int64 nTime);                              // is night time
-CStringW FUN_140b8e850(const CMsTime& time);                    // formatted date
+CStringW FormatYearMonthDayHour(const CMsTime& time);                    // formatted date
 CStringW FUN_1409404f0(__int64 n);                              // formatted number
 class Unk_NametagActor   // C3: member view for the former free stand-ins
 {
@@ -167,9 +167,9 @@ extern Unk_Inventory g_143ab2a90;                                      // the pl
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 template <class T> CStringW FormatStringId(int nStringId, const T& arg);            // formatted string by id
 void FUN_1412751b0(const CStringW& text, int nKind);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-void FUN_1412751f0(const CStringW& text, int nA, int nB);
+void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void FUN_141275260(int nStringId, int nA, int nB);
 CStringW GetStringCommonByKey(const CStringW& str);
 template <class T> T* Unk_WmDialog(int nId)
@@ -197,7 +197,7 @@ WeddingManager::~WeddingManager()
 // @0x141b83750
 void WeddingManager::OnPacket(CInPacket& packet)
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x104))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x104))
         return;
     unsigned char mode = packet.ReadUInt8();
     switch (mode) {
@@ -289,13 +289,13 @@ void WeddingManager::OnHallList(CInPacket& packet)
 {
     UIWeddingGuestDialog* dialog = FUN_140fe6700(0x4f94);
     if (dialog)
-        dialog->FUN_140fcd5b0(reinterpret_cast<Unk_GsFound*>(&packet));
+        dialog->OnStrangerFound(reinterpret_cast<Unk_GsFound*>(&packet));
 }
 
 // @0x141b84bc0
 void WeddingManager::OnInvitationOk(CInPacket& packet)
 {
-    FUN_1412751f0(GetStringCommonByKey(L"s_wedding_invitation_ok"), 8, 1);
+    ShowSystemNotice(GetStringCommonByKey(L"s_wedding_invitation_ok"), 8, 1);
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f8e);
 }
 
@@ -303,7 +303,7 @@ void WeddingManager::OnInvitationOk(CInPacket& packet)
 void WeddingManager::OnReservationCancelRequest(CInPacket& packet)
 {
     CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_hall_reservation_cancel_request"), GetPartnerName());
-    FUN_140d74390(message, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnReservationCancelAnswer));
+    ShowMessageBoxWithCallback(message, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnReservationCancelAnswer));
 }
 
 // @0x141b85060
@@ -317,14 +317,14 @@ void WeddingManager::OnReserveCancelOk(CInPacket& packet)
 void WeddingManager::OnDivorceRequest(CInPacket& packet)
 {
     CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_divorce_mutual_msgbox"), GetPartnerName());
-    FUN_140d74390(message, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnDivorceAnswer));
+    ShowMessageBoxWithCallback(message, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnDivorceAnswer));
 }
 
 // @0x141b85850
 void WeddingManager::OnMode23(CInPacket& packet)
 {
     UIWeddingDialog* dialog = Unk_UgcGetDialog<UIWeddingDialog>(0x4f8c);
-    dialog->FUN_140fc7f30();
+    dialog->SetOwnProfile();
 }
 
 // @0x141b85890
@@ -385,7 +385,7 @@ void WeddingManager::SendReservationCancel()
 // @0x141b86750
 void WeddingManager::SendInvitation(unsigned __int64 id)
 {
-    if (!FUN_140900550()) {
+    if (!IsWeddingEnabled()) {
         ShowError(0x12);
     } else {
         COutPacket packet(static_cast<int>(SendOp::Wedding), 0);
@@ -417,7 +417,7 @@ void WeddingManager::RefreshTicketsIfDirty()
 int WeddingManager::CanInvite(unsigned __int64 first, unsigned __int64 second, int count)
 {
     int total = count + (int)m_invited.size();
-    if (total > (int)FUN_140900f00())
+    if (total > (int)GetWeddingInvitationMaxCount())
         return 0x33;
     if (m_invited.find(std::make_pair(first, second)) != m_invited.end())
         return 0x28;
@@ -506,8 +506,8 @@ CStringW WeddingManager::GetPartnerName()
     return m_proxy.GetSelf(DAT_143ab2828)->m_strName;
 }
 
-#define WM_CHAT(key) FUN_1412751f0(GetStringCommonByKey(L##key), 1, 1)
-#define WM_CHAT_NAME(key) FUN_1412751f0(FUN_14028dfa0(CStringW(L##key), m_strTarget), 1, 1)
+#define WM_CHAT(key) ShowSystemNotice(GetStringCommonByKey(L##key), 1, 1)
+#define WM_CHAT_NAME(key) ShowSystemNotice(FUN_14028dfa0(CStringW(L##key), m_strTarget), 1, 1)
 
 // @0x141b87760
 void WeddingManager::ShowError(int code)
@@ -526,8 +526,8 @@ void WeddingManager::ShowError(int code)
     case 0x1d: WM_CHAT("s_wedding_result_err_coolingoff_state_from"); break;
     case 0x1e: WM_CHAT("s_wedding_result_err_propose_cooltime_state_from"); break;
     case 0x1f:
-        FUN_1412751f0(FUN_14028dfa0(CStringW(L"s_wedding_result_err_not_find_propose_item"),
-            CStringTable::GetInstance()->FUN_141811980(1, FUN_140900d40())), 1, 1);
+        ShowSystemNotice(FUN_14028dfa0(CStringW(L"s_wedding_result_err_not_find_propose_item"),
+            CStringTable::GetInstance()->FUN_141811980(1, GetWeddingProposeItemId())), 1, 1);
         break;
     case 0x20: WM_CHAT("s_wedding_result_err_propose_distance"); break;
     case 0x22: WM_CHAT("s_wedding_result_err_same_field"); break;
@@ -563,7 +563,7 @@ void WeddingManager::ShowError(int code)
     case 0x3f: WM_CHAT("s_wedding_result_already_weddinghall_reserve"); break;
     case 0x40: WM_CHAT("s_wedding_result_lack_coupon"); break;
     default:
-        FUN_1412751f0(FUN_14028dfa0(CStringW(L"s_wedding_result_err_system"), reinterpret_cast<const Unk_WmResultCode&>(code)), 1, 1);
+        ShowSystemNotice(FUN_14028dfa0(CStringW(L"s_wedding_result_err_system"), reinterpret_cast<const Unk_WmResultCode&>(code)), 1, 1);
     }
 }
 
@@ -603,7 +603,7 @@ void WeddingManager::OnPropose(CInPacket& packet)
     CStringW name = packet.ReadUnicodeString();
     m_strTarget = name;
     CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_msg_box_propose_from"), name);
-    MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, message, (void*)0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, message, (void*)0, CStringW(L""));
     if (box.get()) {
         box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
         box->FUN_141a024a0(0);
@@ -629,7 +629,7 @@ void WeddingManager::OnReservationChangeRequest(CInPacket& packet)
         return;
     }
     FUN_14151f200();
-    FUN_140d74390(message, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnNoRefundAnswer));
+    ShowMessageBoxWithCallback(message, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnNoRefundAnswer));
 }
 
 // @0x141b85aa0
@@ -641,7 +641,7 @@ void WeddingManager::ShowStep()
         if (name.IsEmpty())
             name = m_strPartner;
         CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_enter_nickname"), name);
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0xe, message, (void*)0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(0xe, message, (void*)0, CStringW(L""));
         if (box.get()) {
             {
                 CStringW blank(L"");
@@ -663,7 +663,7 @@ void WeddingManager::ShowLastStep()
         if (name.IsEmpty())
             name = m_strPartner;
         CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_enter_nickname_confirm_final"), name);
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, message, (void*)0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(0, message, (void*)0, CStringW(L""));
         if (box.get()) {
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnLastStepAnswer));
             FUN_140d73c60(box);
@@ -687,7 +687,7 @@ void WeddingManager::ShowStepResult(int result)
         default:
             return;
         }
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, message, (void*)0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, message, (void*)0, CStringW(L""));
         if (box.get()) {
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnActingAnswer));
             box->Append<unsigned>(result);
@@ -705,7 +705,7 @@ void WeddingManager::ShowProposeAnswer(const CStringW& name)
     {
         PlayEmotion(1);
         CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_msg_box_propose_to"), m_strTarget);
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, message, (void*)0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(0, message, (void*)0, CStringW(L""));
         if (box.get()) {
             box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
             box->FUN_141a01800(4);
@@ -797,7 +797,7 @@ bool WeddingManager::OnNicknameAnswer(int result, const CMsgBoxData& box)
     }
     CStringW message = FUN_140298ea0(CStringW(L"s_wedding_enter_nickname_error"));
     {
-        MS2Ptr<CMsgBoxData> retry = FUN_140d73d20(0, message, (void*)0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> retry = CreateMessageBox(0, message, (void*)0, CStringW(L""));
         if (retry.get()) {
             retry->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnStepNext));
             FUN_140d73c60(retry);
@@ -838,31 +838,31 @@ void WeddingManager::OnReservationRequest(CInPacket& packet)
 {
     WeddingHallTicket ticket;
     ticket.Read(packet);
-    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(ticket.m_nPackageId);
+    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FindPackage(ticket.m_nPackageId);
     if (package == 0)
         return;
-    MS2Ptr<WeddingHallData> hall = package->FUN_140907110(ticket.m_nHallId);
+    MS2Ptr<WeddingHallData> hall = package->FindHall(ticket.m_nHallId);
     if (hall == 0)
         return;
-    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->FUN_140906e40(FUN_140900f30(ticket.m_nTime)));
-    CStringW date = FUN_140b8e850(CMsTime(ticket.m_nTime));
+    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->GetFieldId(FUN_140900f30(ticket.m_nTime)));
+    CStringW date = FormatYearMonthDayHour(CMsTime(ticket.m_nTime));
     CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_reservation_request_messagebox"),
         m_proxy.m_groom.m_strName, m_proxy.m_bride.m_strName, hallName, date, hall->m_nMerat);
-    FUN_140d74390(message, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnReservationAnswer));
+    ShowMessageBoxWithCallback(message, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnReservationAnswer));
 }
 
 // @0x141b846f0
 void WeddingManager::OnReserveOk(CInPacket& packet)
 {
     m_ticket.Read(packet);
-    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(m_ticket.m_nPackageId);
+    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FindPackage(m_ticket.m_nPackageId);
     if (package == 0)
         return;
-    MS2Ptr<WeddingHallData> hall = package->FUN_140907110(m_ticket.m_nHallId);
+    MS2Ptr<WeddingHallData> hall = package->FindHall(m_ticket.m_nHallId);
     if (hall == 0)
         return;
-    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->FUN_140906e40(FUN_140900f30(m_ticket.m_nTime)));
-    CStringW date = FUN_140b8e850(CMsTime(m_ticket.m_nTime));
+    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->GetFieldId(FUN_140900f30(m_ticket.m_nTime)));
+    CStringW date = FormatYearMonthDayHour(CMsTime(m_ticket.m_nTime));
     FUN_1412751b0(FUN_14028dfa0(CStringW(L"s_wedding_hall_reserve_ok"), hallName, date, hall->m_nMerat), 0x14);
 }
 
@@ -872,18 +872,18 @@ void WeddingManager::OnMode14(CInPacket& packet)
     WeddingHallTicket ticket;
     ticket.Read(packet);
     __int64 cost = packet.ReadInt64();
-    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(ticket.m_nPackageId);
+    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FindPackage(ticket.m_nPackageId);
     if (package == 0)
         return;
-    MS2Ptr<WeddingHallData> hall = package->FUN_140907110(ticket.m_nHallId);
+    MS2Ptr<WeddingHallData> hall = package->FindHall(ticket.m_nHallId);
     if (hall == 0)
         return;
-    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->FUN_140906e40(FUN_140900f30(ticket.m_nTime)));
-    CStringW date = FUN_140b8e850(CMsTime(ticket.m_nTime));
+    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->GetFieldId(FUN_140900f30(ticket.m_nTime)));
+    CStringW date = FormatYearMonthDayHour(CMsTime(ticket.m_nTime));
     CStringW price = FormatStringId<CStringW>(0x987, FUN_1409404f0(cost));
     CStringW message = FUN_14028dfa0(CStringW(L"s_wedding_reservation_change_request_messagebox"),
         m_proxy.m_groom.m_strName, m_proxy.m_bride.m_strName, hallName, date, price);
-    FUN_140d74390(message, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnReservationChangeAnswer));
+    ShowMessageBoxWithCallback(message, 1, Delegate<bool(int, const CMsgBoxData&)>(this, &WeddingManager::OnReservationChangeAnswer));
 }
 
 // @0x141b854c0
@@ -891,14 +891,14 @@ void WeddingManager::OnMode16(CInPacket& packet)
 {
     m_ticket.Read(packet);
     __int64 cost = packet.ReadInt64();
-    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(m_ticket.m_nPackageId);
+    MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FindPackage(m_ticket.m_nPackageId);
     if (package == 0)
         return;
-    MS2Ptr<WeddingHallData> hall = package->FUN_140907110(m_ticket.m_nHallId);
+    MS2Ptr<WeddingHallData> hall = package->FindHall(m_ticket.m_nHallId);
     if (hall == 0)
         return;
-    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->FUN_140906e40(m_ticket.m_nTime != 0));
-    CStringW date = FUN_140b8e850(CMsTime(m_ticket.m_nTime));
+    CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3, hall->GetFieldId(m_ticket.m_nTime != 0));
+    CStringW date = FormatYearMonthDayHour(CMsTime(m_ticket.m_nTime));
     FUN_1412751b0(FUN_14028dfa0(CStringW(L"s_wedding_hall_reserve_change_ok"), hallName, date, cost), 0x14);
 }
 
@@ -937,16 +937,16 @@ void WeddingManager::RefreshTickets()
     if (tickets.size() == 1) {
         unsigned __int64 id = tickets.begin()->first;
         WeddingHallTicket& ticket = tickets.begin()->second;
-        MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(ticket.m_nPackageId);
+        MS2Ptr<WeddingPackage> package = TSingleton<WeddingTable>::GetInstance()->FindPackage(ticket.m_nPackageId);
         if (package == 0)
             return;
-        MS2Ptr<WeddingHallData> hall = package->FUN_140907110(ticket.m_nHallId);
+        MS2Ptr<WeddingHallData> hall = package->FindHall(ticket.m_nHallId);
         if (hall == 0)
             return;
-        CStringW date = FUN_140b8e850(CMsTime(ticket.m_nTime));
+        CStringW date = FormatYearMonthDayHour(CMsTime(ticket.m_nTime));
         CMsTime start(ticket.m_nTime);
         AddMinutes(start, 15);
-        int fieldId = hall->FUN_140906e40(FUN_140900f30(ticket.m_nTime));
+        int fieldId = hall->GetFieldId(FUN_140900f30(ticket.m_nTime));
         param->m_str78 = StringFormat("{0}", start.Get());
         param->m_strUserValue = FUN_141b71910(id);
         param->m_extra.SetAt("groom", ticket.m_strGroom);
@@ -963,13 +963,13 @@ void WeddingManager::RefreshTickets()
     }
     UISidePopupTalk* dialog = Unk_GaGetUI<UISidePopupTalk>(0x4f57);
     if (dialog)
-        dialog->FUN_140e879a0(param);
+        dialog->ShowPopup(param);
 }
 
 // @0x141b862d0
 void WeddingManager::SendPropose(const CStringW& name)
 {
-    if (!FUN_140900550()) {
+    if (!IsWeddingEnabled()) {
         ShowError(0x12);
     } else {
         m_strTarget = name;
@@ -1009,7 +1009,7 @@ void WeddingManager::SendReservation(int packageId, int hallId, __int64 time, un
 // @0x141b865c0
 void WeddingManager::SendReservationChange(int packageId, int hallId, __int64 time, unsigned char night)
 {
-    if (!FUN_140900550()) {
+    if (!IsWeddingEnabled()) {
         ShowError(0x12);
     } else if (!IsPartnerOnline()) {
         ShowError(0x22);
@@ -1034,7 +1034,7 @@ void WeddingManager::SendReservationChange(int packageId, int hallId, __int64 ti
 // @0x141b87220
 int WeddingManager::CheckPropose(unsigned __int64 id)
 {
-    if (!FUN_140900550())
+    if (!IsWeddingEnabled())
         return 0x12;
     void* target = WorldService::GetInstance()->FUN_141bd1530(id);
     if (!target)
@@ -1044,7 +1044,7 @@ int WeddingManager::CheckPropose(unsigned __int64 id)
         return 0x12;
     if (!FUN_1409005c0(((PC*)user)->GetGender(), ((PC*)target)->GetGender()))
         return 0x15;
-    if (g_143ab2a90.FUN_140a5f180(FUN_140900d40(), 0) == 0)
+    if (g_143ab2a90.FUN_140a5f180(GetWeddingProposeItemId(), 0) == 0)
         return 0x1f;
     CBuddyManager::Ptr buddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(id);
     if (buddy == 0)
@@ -1060,7 +1060,7 @@ int WeddingManager::CheckPropose(unsigned __int64 id)
 // @0x141b89a10
 bool WeddingManager::CanVisit(int packageId, int hallId, __int64 id, unsigned char /*night*/)
 {
-    if (!FUN_140900550()) {
+    if (!IsWeddingEnabled()) {
         ShowError(0x12);
         return false;
     }
@@ -1085,7 +1085,7 @@ bool WeddingManager::IsPartnerOnline()
     unsigned __int64 partnerId = m_proxy.GetSelf(((PCBase*)user)->FUN_141656a80())->m_nCharacterId;
     if (WorldService::GetInstance()->FUN_141bd1530(partnerId))
         return true;
-    if (WorldService::GetInstance()->FUN_141bc9c60((void*)partnerId).get() != 0)
+    if (WorldService::GetInstance()->FindProxyObjectByOwner((void*)partnerId).get() != 0)
         return true;
     return false;
 }
@@ -1110,12 +1110,12 @@ void WeddingManager::ReadTicketMail(MS2Ptr<CMailInfo> mail, AScript* script)
                 XmlGetAttr((TiXmlElement*)node, "cancelMail", cancelMail);
                 CStringW hallName = CStringTable::GetInstance()->FUN_141811980(3,
                     TSingleton<WeddingTable>::GetInstance()->FUN_140908d50(ticket.m_nPackageId, ticket.m_nHallId, FUN_140900f30(ticket.m_nTime)));
-                CStringW date = FUN_140b8e850(CMsTime(ticket.m_nTime));
-                static_cast<ASObj*>(script)->FUN_1407cbb20("groom", ticket.m_strGroom);
-                static_cast<ASObj*>(script)->FUN_1407cbb20("bride", ticket.m_strBride);
-                static_cast<ASObj*>(script)->FUN_1407cbb20("date", date);
-                static_cast<ASObj*>(script)->FUN_1407cbb20("hall", hallName);
-                static_cast<ASObj*>(script)->FUN_1407cbbe0("cancelMail", cancelMail);
+                CStringW date = FormatYearMonthDayHour(CMsTime(ticket.m_nTime));
+                static_cast<ASObj*>(script)->SetWStringMember("groom", ticket.m_strGroom);
+                static_cast<ASObj*>(script)->SetWStringMember("bride", ticket.m_strBride);
+                static_cast<ASObj*>(script)->SetWStringMember("date", date);
+                static_cast<ASObj*>(script)->SetWStringMember("hall", hallName);
+                static_cast<ASObj*>(script)->SetBoolMember("cancelMail", cancelMail);
             }
         }
     }

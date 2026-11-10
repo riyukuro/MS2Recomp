@@ -64,7 +64,7 @@ public:
     void FUN_1418a8f80();                                                               // refresh the movie
     void FUN_1418a8ff0();                                                               // fill the list of the selected category
     void FUN_1418a9360();                                                               // the category tree
-    void FUN_1418a9800();                                                               // the reward counts of the tabs
+    void UpdateRewardCounts();                                                               // the reward counts of the tabs
     void FUN_1418a9c20();                                                               // the summary page
     void FUN_1418aa190(const FilterOptions* pOptions);                                  // the hero list
     void FUN_1418aa660(int nId);                                                        // update one trophy row

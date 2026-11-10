@@ -33,7 +33,7 @@ int CToolColorListBox::FUN_141853bc0(int nIndex)
 }
 
 // @0x141853c30
-Unk_ColorItem* CToolColorListBox::FUN_141853c30(int nIndex)
+Unk_ColorItem* CToolColorListBox::GetColorItem(int nIndex)
 {
     int nReal = FUN_141853bc0(nIndex);
     if (nReal == -1)
@@ -110,11 +110,11 @@ CToolColorListBox::~CToolColorListBox()
 // @0x1418541f0
 int CToolColorListBox::FUN_1418541f0(LPCSTR pszText, COLORREF clrBack, COLORREF clrText, UINT nFormat8, UINT nFormatC, int bNoBlend, int n14)
 {
-    return FUN_141854270(pszText, GetCount(), clrBack, clrText, nFormat8, nFormatC, bNoBlend, n14);
+    return InsertItem(pszText, GetCount(), clrBack, clrText, nFormat8, nFormatC, bNoBlend, n14);
 }
 
 // @0x141854270
-int CToolColorListBox::FUN_141854270(LPCSTR pszText, int nIndex, COLORREF clrBack, COLORREF clrText, UINT nFormat8, UINT nFormatC, int bNoBlend, int n14)
+int CToolColorListBox::InsertItem(LPCSTR pszText, int nIndex, COLORREF clrBack, COLORREF clrText, UINT nFormat8, UINT nFormatC, int bNoBlend, int n14)
 {
     if (nIndex < 0 || nIndex > GetCount())
         return -1;
@@ -156,7 +156,7 @@ void CToolColorListBox::FUN_141854420()
 // @0x141854450
 int CToolColorListBox::FUN_141854450(COLORREF clr, int nIndex)
 {
-    Unk_ColorItem* pItem = FUN_141853c30(nIndex);
+    Unk_ColorItem* pItem = GetColorItem(nIndex);
     if (pItem == 0)
         return 0;
     pItem->m_clrBack = clr;
@@ -167,7 +167,7 @@ int CToolColorListBox::FUN_141854450(COLORREF clr, int nIndex)
 // @0x1418544c0
 int CToolColorListBox::FUN_1418544c0(COLORREF clr, int nIndex)
 {
-    Unk_ColorItem* pItem = FUN_141853c30(nIndex);
+    Unk_ColorItem* pItem = GetColorItem(nIndex);
     if (pItem == 0)
         return 0;
     pItem->m_clrText = clr;
@@ -178,7 +178,7 @@ int CToolColorListBox::FUN_1418544c0(COLORREF clr, int nIndex)
 // @0x141854530
 int CToolColorListBox::FUN_141854530(UINT nFormat, int nIndex)
 {
-    Unk_ColorItem* pItem = FUN_141853c30(nIndex);
+    Unk_ColorItem* pItem = GetColorItem(nIndex);
     if (pItem == 0)
         return 0;
     pItem->m_nFormatC = nFormat;
@@ -189,7 +189,7 @@ int CToolColorListBox::FUN_141854530(UINT nFormat, int nIndex)
 // @0x1418545a0
 int CToolColorListBox::FUN_1418545a0(UINT nFormat, int nIndex)
 {
-    Unk_ColorItem* pItem = FUN_141853c30(nIndex);
+    Unk_ColorItem* pItem = GetColorItem(nIndex);
     if (pItem == 0)
         return 0;
     pItem->m_nFormat8 = nFormat;
@@ -200,7 +200,7 @@ int CToolColorListBox::FUN_1418545a0(UINT nFormat, int nIndex)
 // @0x141854610
 int CToolColorListBox::FUN_141854610(int bNoBlend, int nIndex)
 {
-    Unk_ColorItem* pItem = FUN_141853c30(nIndex);
+    Unk_ColorItem* pItem = GetColorItem(nIndex);
     if (pItem == 0)
         return 0;
     pItem->m_bNoBlend = bNoBlend;
@@ -211,7 +211,7 @@ int CToolColorListBox::FUN_141854610(int bNoBlend, int nIndex)
 // @0x141854680
 int CToolColorListBox::FUN_141854680(int n, int nIndex)
 {
-    Unk_ColorItem* pItem = FUN_141853c30(nIndex);
+    Unk_ColorItem* pItem = GetColorItem(nIndex);
     if (pItem == 0)
         return 0;
     pItem->m_n14 = n;
@@ -227,7 +227,7 @@ void CToolColorListBox::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
     {
         int nPad = 3;
         CDC* pDC = CDC::FromHandle(lpDrawItemStruct->hDC);
-        Unk_ColorItem* pItem = FUN_141853c30(lpDrawItemStruct->itemID);
+        Unk_ColorItem* pItem = GetColorItem(lpDrawItemStruct->itemID);
         COLORREF clrBack = pItem->m_clrBack;
         COLORREF clrText = pItem->m_clrText;
         if (clrBack == 17000000)

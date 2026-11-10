@@ -128,18 +128,18 @@ CStringW GetStringCommon(int nId);
 CStringW GetStringCommonByKey(const CStringW& str);
 void FUN_1412751b0(const CStringW& str, int nFlags);
 void FUN_141b91b20(bool b);
-void FUN_141a60d40(int n);
+void SetNameTagMode(int n);
 class UIArcadeMainDialog   // C3: member view (real class not in this TU)
 {
 public:
-    void FUN_140ef6920();
+    void ClearScores();
 };
 class Unk_GsDlg2 { public:  };
 class Unk_GsDlg3 : public UIClosetDialog { public:  };
-class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
-UIRecallScrollNotifyDialog* FUN_140bc1870(int nUiId);
+class Unk_ClubManager* GetClubClientManager();   // C3: was GetClubClientManager
+UIRecallScrollNotifyDialog* GetRecallScrollNotifyDialog(int nUiId);
 template <class T> T* Unk_SSGGetDialog(int nUiId);
-class UIClosetDialog* FUN_141815ed0();   // C3: was FUN_141815ed0
+class UIClosetDialog* GetClosetDialog();   // C3: was GetClosetDialog
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -190,7 +190,7 @@ int UISceneGame::vfunc_48(int n)
 {
     UISceneEntity::vfunc_48(n);
     if (FUN_1401d1320(reinterpret_cast<CCacheData*>(TSingleton<CItemDataTable>::GetInstance())) != 0) reinterpret_cast<Unk_GsSettings*>(TSingleton<CItemDataTable>::GetInstance())->Reload();
-    FUN_141a60d40(1);
+    SetNameTagMode(1);
     static int s_bWelcomeShown;
     if (s_bWelcomeShown == 0) {
         if (((Unk_GsNpcMgr*)TSingleton<CGameEventValueManager>::GetInstance()->GetPublicTest())->GetValue() != 0) {
@@ -200,9 +200,9 @@ int UISceneGame::vfunc_48(int n)
         }
         s_bWelcomeShown = 1;
     }
-    FUN_1422e7a40(0x620001d);
+    SetSubSceneId(0x620001d);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->SetMode(0x3ed);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 
 // @0x141ac74f0
@@ -213,20 +213,20 @@ int UISceneGame::vfunc_49(int n)
     TSingleton<CGuildManager>::GetInstance()->FUN_1413b5f90();
     TSingleton<CGroupChatManager>::GetInstance()->FUN_14137e190();
     TSingleton<CGameRankingCli>::GetInstance()->ClearPersonal();
-    ((class CClubClientManager*)FUN_140e0d900())->ClearClubsAndInvites();
+    ((class CClubClientManager*)GetClubClientManager())->ClearClubsAndInvites();
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adb4c0(1);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(0x620001d);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adad20(0x620001d);
-    FUN_141a60d40(0);
+    SetNameTagMode(0);
     TSingleton<CUIService>::GetInstance()->FUN_141add0b0((eUIClassID)0x4e55);
     TSingleton<CUIService>::GetInstance()->FUN_141add0b0((eUIClassID)0x4e41);
-    UIRecallScrollNotifyDialog* pDlg1 = FUN_140bc1870(0x4edd);
+    UIRecallScrollNotifyDialog* pDlg1 = GetRecallScrollNotifyDialog(0x4edd);
     if (pDlg1 != 0) pDlg1->FUN_14129cb20();
     Unk_GsDlg2* pDlg2 = (Unk_GsDlg2*)Unk_SSGGetDialog<UIArcadeMainDialog>(0x4efd);
-    if (pDlg2 != 0) ((UIArcadeMainDialog*)(Unk_GsDlg2*)(pDlg2))->FUN_140ef6920();
-    Unk_GsDlg3* pDlg3 = ((class Unk_GsDlg3*)FUN_141815ed0());
+    if (pDlg2 != 0) ((UIArcadeMainDialog*)(Unk_GsDlg2*)(pDlg2))->ClearScores();
+    Unk_GsDlg3* pDlg3 = ((class Unk_GsDlg3*)GetClosetDialog());
     if (pDlg3 != 0) pDlg3->ResetTabs();
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ac74f0, UISceneGame, vfunc_49, 298, 0x93FAE665);
 
@@ -234,7 +234,7 @@ MS2_REPLACE_METHOD(0x141ac74f0, UISceneGame, vfunc_49, 298, 0x93FAE665);
 void UISceneGame::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    TSingleton<UITalkManager>::GetInstance()->FUN_141b20af0();
+    TSingleton<UITalkManager>::GetInstance()->EndTalkIfNpcGone();
 }
 MS2_REPLACE_METHOD(0x141ac7620, UISceneGame, vfunc_15, 37, 0x043AEAC5);
 
@@ -242,16 +242,16 @@ class CUserMail   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_1408e48f0();
-    static __int64 FUN_1408e57f0();   // the scene-service global
+    static __int64 GetGFxSceneService();   // the scene-service global
 };
 extern CUserMail g_143ab2ee0;   // C3: was extern char DAT_143ab2ee0 (as scenestategame.cpp)
 // @0x141ac7650
 int UISceneGame::vfunc_13()
 {
     if (UISwfEntity::vfunc_13()) return 1;
-    if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x1d, false, 0)) {
-        if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x16, true, 0)) {
-            if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x38, true, 0)) {
+    if (((Unk_GsLogin*)FUN_14025e7c0())->IsKeyDown(0x1d, false, 0)) {
+        if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x16, true, 0)) {
+            if (((Unk_GsLogin*)FUN_14025e7c0())->IsKeyDown(0x38, true, 0)) {
                 if (((class Unk_GsWindow*)FUN_140aadf80()) != 0) FUN_141b91b20((FUN_140aadf80(), FUN_141b712e0()) == 1);
                 return 1;
             }
@@ -259,11 +259,11 @@ int UISceneGame::vfunc_13()
             if (DAT_143ab0248 == 2) bShow = DAT_143ab2914 >= 0x34;
             if (bShow) ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->CycleCursor();
             return 1;
-        } else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x14, true, 0)) {
-            if (((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001d) {
-                FUN_1422e7a40(0x6200020);
-            } else if (((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x6200020) {
-                FUN_1422e7a40(0x620001d);
+        } else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x14, true, 0)) {
+            if (((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x620001d) {
+                SetSubSceneId(0x6200020);
+            } else if (((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x6200020) {
+                SetSubSceneId(0x620001d);
             }
             return 1;
         }
@@ -300,8 +300,8 @@ MS2_REPLACE_METHOD(0x141ac78a0, UISceneGame, vfunc_55, 60, 0x44521706);
 void UISceneGame::vfunc_56()
 {
     UISceneEntity::vfunc_56();
-    if (((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d) {
-        FUN_1422e7a40(0x620001d);
+    if (((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::GetGFxSceneService())))->GetSubSceneId() != 0x620001d) {
+        SetSubSceneId(0x620001d);
         TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode0();
     }
     TSingleton<CUIService>::GetInstance()->FUN_141add0b0((eUIClassID)0x4e55);
@@ -392,7 +392,7 @@ struct Unk_GsMatrix3
 MS2_CHECK_SIZE(Unk_GsMatrix3, 0x24);
 namespace efd { class Point3; class Matrix3; Point3 operator*(const Point3&, const Matrix3&); } typedef Vector3 (*Unk_PtMat3Mul)(Vector3*, Unk_GsMatrix3*);   // C3: was Vector3 FUN_1420834e0(Vector3* pPt, Unk_GsMatrix3* pMat) = efd::operator*(Point3, Matrix3), called through this view
 typedef UIMsg Unk_GsUIMsg;
-class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
+class UIDialog* FindDialog(int);   // C3: was FindDialog
 
 // @0x141ac7da0
 MS2_EMIT_CRT_MEMMOVE_S();
@@ -432,9 +432,9 @@ int UISceneGameBeautyShop::vfunc_48(int n)
             FUN_141ac8e90();
         }
     } else {
-        ((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(n);
+        ((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(n);
     }
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ac8010, UISceneGameBeautyShop, vfunc_48, 276, 0x6FC9E2EA);
 
@@ -452,7 +452,7 @@ int UISceneGameBeautyShop::vfunc_49(int n)
     m_b0 = 0;
     m_b4 = 0;
     FUN_14151f200();
-    FUN_141ac8e70(0);
+    SetDialogMode(0);
     if (!m_b8.IsEmpty()) {
         COutPacket pkt(static_cast<int>(SendOp::FunctionCube), 0);
         pkt.WriteUInt8(7);
@@ -460,7 +460,7 @@ int UISceneGameBeautyShop::vfunc_49(int n)
         FUN_140710590(pkt);
         m_b8 = "";
     }
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ac8130, UISceneGameBeautyShop, vfunc_49, 344, 0x482C92FF);
 
@@ -481,7 +481,7 @@ MS2_REPLACE_METHOD(0x141ac8290, UISceneGameBeautyShop, vfunc_50, 110, 0x9C2574F9
 void UISceneGameBeautyShop::vfunc_52()
 {
     UISceneEntity::vfunc_52();
-    FUN_1422e7a40(0x620001d);
+    SetSubSceneId(0x620001d);
 }
 MS2_REPLACE_METHOD(0x141ac8310, UISceneGameBeautyShop, vfunc_52, 39, 0x70D86E74);
 
@@ -501,10 +501,10 @@ int UISceneGameBeautyShop::vfunc_28(const char* szMethod, const Scaleform::GFx::
         if (m_ac != 0) {
             Unk_GsUIMsg msg;
             ((ASData*)(Unk_GsUIMsg*)&(msg))->AddString(szMethod);
-            Unk_GsServerDlg* pDlg = ((class Unk_GsServerDlg*)FUN_140c300a0(m_ac));
+            Unk_GsServerDlg* pDlg = ((class Unk_GsServerDlg*)FindDialog(m_ac));
             if (pDlg != 0) pDlg->OnMessage(this, &msg);
         } else {
-            FUN_1422e7a40(0x620001d);
+            SetSubSceneId(0x620001d);
         }
         return 1;
     }
@@ -535,7 +535,7 @@ int UISceneGameBeautyShop::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 MS2_REPLACE_METHOD(0x141ac84a0, UISceneGameBeautyShop, OnMessage, 425, 0x799116AE);
 
 // @0x141ac8660
-void UISceneGameBeautyShop::FUN_141ac8660()
+void UISceneGameBeautyShop::RestoreFollowCamera()
 {
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0) return;
@@ -543,7 +543,7 @@ void UISceneGameBeautyShop::FUN_141ac8660()
     reinterpret_cast<PCBase*>(pPlayer)->FUN_14166d8e0(efd::Point3(0.0f, -1.0f, 0.0f));   // C3: PCBase::FUN_14166d8e0 (pcbase.h)
     pPlayer->vfunc_59(0xe, 0, 0, 0);
 }
-MS2_REPLACE_METHOD(0x141ac8660, UISceneGameBeautyShop, FUN_141ac8660, 160, 0xC0E3A86A);
+MS2_REPLACE_METHOD(0x141ac8660, UISceneGameBeautyShop, RestoreFollowCamera, 160, 0xC0E3A86A);
 
 // @0x141ac8710
 void UISceneGameBeautyShop::FUN_141ac8710()
@@ -558,7 +558,7 @@ void UISceneGameBeautyShop::FUN_141ac8710()
 MS2_REPLACE_METHOD(0x141ac8710, UISceneGameBeautyShop, FUN_141ac8710, 154, 0x8790D479);
 
 // @0x141ac87b0
-void UISceneGameBeautyShop::FUN_141ac87b0()
+void UISceneGameBeautyShop::SetBeautyShopCamera()
 {
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() == 0) return;
     Unk_CameraFlyBy param;
@@ -576,7 +576,7 @@ void UISceneGameBeautyShop::FUN_141ac87b0()
     TSingleton<CameraMgr>::GetInstance()->SetFlyBy(&param, 1, 1.0f);
     TSingleton<CameraMgr>::GetInstance()->SetMode(4, 0);
 }
-MS2_REPLACE_METHOD(0x141ac87b0, UISceneGameBeautyShop, FUN_141ac87b0, 319, 0x5E0960A6);
+MS2_REPLACE_METHOD(0x141ac87b0, UISceneGameBeautyShop, SetBeautyShopCamera, 319, 0x5E0960A6);
 
 // @0x141ac8900
 void UISceneGameBeautyShop::FUN_141ac8900()
@@ -640,11 +640,11 @@ void UISceneGameBeautyShop::FUN_141ac8b00(Vector3* pOut1, Vector3* pOut2, Vector
 MS2_REPLACE_METHOD(0x141ac8b00, UISceneGameBeautyShop, FUN_141ac8b00, 867, 0x333C6E82);
 
 // @0x141ac8e70
-void UISceneGameBeautyShop::FUN_141ac8e70(int nDialogMode)
+void UISceneGameBeautyShop::SetDialogMode(int nDialogMode)
 {
     m_a8 = nDialogMode;
 }
-MS2_REPLACE_METHOD(0x141ac8e70, UISceneGameBeautyShop, FUN_141ac8e70, 25, 0xD3EC7A67);
+MS2_REPLACE_METHOD(0x141ac8e70, UISceneGameBeautyShop, SetDialogMode, 25, 0xD3EC7A67);
 
 // @0x141ac8e90
 void UISceneGameBeautyShop::FUN_141ac8e90()
@@ -677,8 +677,8 @@ void UISceneGameBeautyShop::FUN_141ac8e90()
             }
         }
     }
-    FUN_141ac8660();
-    FUN_141ac87b0();
+    RestoreFollowCamera();
+    SetBeautyShopCamera();
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9e50(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada6f0(m_6c);
     m_ac = (m_a8 != 0) ? 0x4e79 : m_ac;
@@ -740,7 +740,7 @@ public:
     void FUN_141a251f0(int);
 };
 class UISwfEntityManager* GetUISwfEntityManager();   // C3: was GetUISwfEntityManager
-float FUN_141ac9b00();
+float GetUiScale();
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 extern unsigned DAT_143af62d4;
 extern unsigned DAT_143af62d8;
@@ -781,7 +781,7 @@ int UISceneGameCinematicCutScene::vfunc_48(int n)
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9e50(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada6f0(m_6c);
     ((Unk_GsCineMgr*)ChromaSDK::GetChromaManager())->vfunc_10(0xb);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ac9520, UISceneGameCinematicCutScene, vfunc_48, 237, 0x608CA992);
 
@@ -794,14 +794,14 @@ int UISceneGameCinematicCutScene::vfunc_49(int n)
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adad20(m_6c);
     ((Unk_GsCineMgr*)ChromaSDK::GetChromaManager())->vfunc_10(0);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ac9620, UISceneGameCinematicCutScene, vfunc_49, 158, 0x0B53EFBE);
 
 // @0x141ac96d0
 void UISceneGameCinematicCutScene::vfunc_54()
 {
-    ((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_GsSceneId*)(((Unk_GsSceneId*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
 }
 MS2_REPLACE_METHOD(0x141ac96d0, UISceneGameCinematicCutScene, vfunc_54, 32, 0x21320207);
 
@@ -851,15 +851,15 @@ int UISceneGameCinematicTalk::vfunc_48(int n)
     UISceneEntity::vfunc_48(n);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9e50(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada6f0(m_6c);
-    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141add1b0(4, true);
+    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->SetMovieLayerVisible(4, true);
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer != 0) {
         if (((class Unk_GsTalkTarget*)GetState())->m_48 != 0) ((class UIMessengerBrowser*)(void*)(((class Unk_GsTalkTarget*)GetState())->m_48))->FUN_141a251f0(0);
     }
-    m_b0 = FUN_14025e7a0()->FUN_1422afec0(m_28);
-    float fScale = FUN_141ac9b00();
-    if (FUN_14025e7a0()->FUN_1422aff10(fScale) != 0) ((class Unk_GsTutMgr*)GetUISwfEntityManager())->vfunc_6();
-    return FUN_1422e7950();
+    m_b0 = GetGFxManager()->GetMovieScale(m_28);
+    float fScale = GetUiScale();
+    if (GetGFxManager()->FUN_1422aff10(fScale) != 0) ((class Unk_GsTutMgr*)GetUISwfEntityManager())->vfunc_6();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ac98a0, UISceneGameCinematicTalk, vfunc_48, 253, 0xDD0D19F1);
 
@@ -869,11 +869,11 @@ int UISceneGameCinematicTalk::vfunc_49(int n)
     UISceneEntity::vfunc_49(n);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adad20(m_6c);
-    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141add1b0(4, false);
+    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->SetMovieLayerVisible(4, false);
     Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
     if (((class Unk_GsTalkTarget*)GetState())->m_48 != 0) ((class UIMessengerBrowser*)(void*)(((class Unk_GsTalkTarget*)GetState())->m_48))->FUN_141a251f0(1);
-    if (FUN_14025e7a0()->FUN_1422aff10(m_b0) != 0) ((class Unk_GsTutMgr*)GetUISwfEntityManager())->vfunc_6();
-    return FUN_1422e7950();
+    if (GetGFxManager()->FUN_1422aff10(m_b0) != 0) ((class Unk_GsTutMgr*)GetUISwfEntityManager())->vfunc_6();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ac99b0, UISceneGameCinematicTalk, vfunc_49, 210, 0xAF714157);
 
@@ -893,7 +893,7 @@ int UISceneGameCinematicTalk::vfunc_28(const char* szMethod, const Scaleform::GF
 MS2_REPLACE_METHOD(0x141ac9ab0, UISceneGameCinematicTalk, vfunc_28, 67, 0x9BB14E4A);
 
 // @0x141ac9b00
-float FUN_141ac9b00()
+float GetUiScale()
 {
     float fWide = (float)DAT_143af62d8 * 1.6f;
     float fRatio = (float)DAT_143af62d8 / (float)DAT_143af62d4;
@@ -925,8 +925,8 @@ class Unk_GsTexReload
 public:
     char m_pad_00[0xcc];
     int m_cc;
-    int FUN_141acccb0() { return m_cc; }                    // 0x141acccb0
-    void FUN_141accee0(int n) { m_cc = n; }                 // 0x141accee0
+    int GetTextureReload() { return m_cc; }                    // 0x141acccb0
+    void SetTextureReload(int n) { m_cc = n; }                 // 0x141accee0
 };
 class Unk_GsDlgA : public UIDialog { };
 void FUN_141815db0(void* p);
@@ -956,7 +956,7 @@ class CGameOption   // C3: member view for the former free stand-ins
 {
 public:
     int LoadCharacterOption();
-    struct Unk_InterfaceFlag* FUN_140c58ac0();
+    struct Unk_InterfaceFlag* GetInterfaceChar();
 };
 struct Unk_GpState* GetGamepadState(class Unk_GpSettings*);   // C3: was GetGamepadState
 void SetGamepadEnabled(struct Unk_GpState*, bool, bool);   // C3: was (char*, char, int)
@@ -968,13 +968,13 @@ void FUN_141275260(int nId, int a, int b);
 int FUN_141276180(const CString& a, const CString& b);
 extern CString DAT_143af6008;
 int FUN_1418fcb70();
-CMyCharacter* FUN_140931510();
+CMyCharacter* GetMyCharacter();
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 class UIDPSDialog;
 template <class T> T* PCBaseDialog(int nId);
 void* FUN_141371b20();   // C3: was FUN_141371b20
 void* FUN_141371b30();   // C3: was FUN_141371b30
-class CSoundService* FUN_140c9cb10();   // C3: was FUN_140c9cb10
+class CSoundService* GetSoundService();   // C3: was GetSoundService
 int FUN_1417af7a0();   // C3: was FUN_1417af7a0
 void FUN_1409c51f0();
 class UIMessenger   // C3: member view for the former free stand-ins
@@ -985,11 +985,11 @@ public:
 void FUN_140710590(COutPacket& packet);
 int FUN_141276f80(struct Unk_CommandChat* pCmd);
 void TakeScreenshotPng(int n);
-class GFxService* FUN_1414a56c0();   // the GFxService instance (gfxservice.h)
+class GFxService* GetGFxService();   // the GFxService instance (gfxservice.h)
 class GFxService   // C3: member view for the former free stand-ins
 {
 public:
-    static void FUN_1422ea210(int);
+    static void SetCaptureBlock(int);
 };
 namespace ecr { class RenderService; }
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
@@ -998,9 +998,9 @@ class MS2RenderService   // C3: member view for the former free stand-ins
 public:
     void CheckRenderState();
 };
-class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
+class Unk_SoundSink* GetKeyTable();   // C3: was GetKeyTable
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
-UIMinimapDialog* FUN_140c9b540(int nId);
+UIMinimapDialog* FindMinimapDialog(int nId);
 class UIGameMenuDialog* FindGameMenuDialog(int);   // C3: was FindGameMenuDialog
 class Unk_140166410* FUN_140166410();
 int FUN_140ae1c10();
@@ -1024,7 +1024,7 @@ UISceneGamePlay::UISceneGamePlay()
 {
     m_6c = 0x620001d;
     m_c8 = 0;
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeEnableFeature", Delegate<void(NotifyObject*)>(this, &UISceneGamePlay::FUN_141acc510));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeEnableFeature", Delegate<void(NotifyObject*)>(this, &UISceneGamePlay::OnNotifyChangeEnableFeature));
 }
 
 // @0x141ac9e80
@@ -1047,20 +1047,20 @@ int UISceneGamePlay::vfunc_48(int n)
     if (((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0()) != 0) {
         if (FUN_141acc6c0(n) != 0) {
             if (m_6c == 0x620001d) ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adb4c0(1);
-            if (((Unk_C2UiMgr*)(Unk_GsTutMgr*)(((class Unk_GsTutMgr*)GetUISwfEntityManager())))->FUN_1410af770() != 0) FUN_14025e7a0()->FUN_1422aed30(true);
+            if (((Unk_C2UiMgr*)(Unk_GsTutMgr*)(((class Unk_GsTutMgr*)GetUISwfEntityManager())))->FUN_1410af770() != 0) GetGFxManager()->FUN_1422aed30(true);
         } else {
             ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9e50(m_6c);
             ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada6f0(m_6c);
         }
         for (unsigned __int64 i = 0; i < m_a8.GetCount(); i++) {
-            if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)m_a8[i]) != 0) (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(m_a8[i])));
+            if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)m_a8[i]) != 0) (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(m_a8[i])));
         }
         m_a8.RemoveAll();
         FUN_141b70290();
     } else {
         ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(m_6c);
     }
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141ac9f20, UISceneGamePlay, vfunc_48, 415, 0x83342379);
 
@@ -1069,14 +1069,14 @@ int UISceneGamePlay::vfunc_49(int n)
 {
     UISceneEntity::vfunc_49(n);
     if (FUN_141acc6c0(n) != 0) {
-        if (((Unk_C2UiMgr*)(Unk_GsTutMgr*)(((class Unk_GsTutMgr*)GetUISwfEntityManager())))->FUN_1410af770()) FUN_14025e7a0()->FUN_1422aed30(false);
+        if (((Unk_C2UiMgr*)(Unk_GsTutMgr*)(((class Unk_GsTutMgr*)GetUISwfEntityManager())))->FUN_1410af770()) GetGFxManager()->FUN_1422aed30(false);
         if (m_6c == 0x620001d) ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adb4c0(0);
     } else {
         ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(m_6c);
         ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adad20(m_6c);
     }
     if (FUN_141acc5f0(n) != 0) FUN_141acc5a0(1.0f);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141aca0d0, UISceneGamePlay, vfunc_49, 189, 0xE218ED84);
 
@@ -1089,7 +1089,7 @@ void UISceneGamePlay::vfunc_11()
     FUN_141b70290();
     ((class CGameOption*)(void*)((void*)TSingleton<CGameOption>::GetInstance()))->LoadCharacterOption();
     SetGamepadEnabled(GetGamepadState((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance())), *((bool*)GetGamepadState((class Unk_GpSettings*)((void*)TSingleton<CGameOption>::GetInstance()))), false);
-    FUN_14125bd20(((struct Unk_InterfaceFlag*)TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()), *((bool*)TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()));
+    FUN_14125bd20(((struct Unk_InterfaceFlag*)TSingleton<CGameOption>::GetInstance()->GetInterfaceChar()), *((bool*)TSingleton<CGameOption>::GetInstance()->GetInterfaceChar()));
 }
 MS2_REPLACE_METHOD(0x141aca1a0, UISceneGamePlay, vfunc_11, 189, 0x2CECF6E0);
 
@@ -1097,7 +1097,7 @@ MS2_REPLACE_METHOD(0x141aca1a0, UISceneGamePlay, vfunc_11, 189, 0x2CECF6E0);
 int UISceneGamePlay::vfunc_13()
 {
     if (UISwfEntity::vfunc_13()) return 1;
-    return FUN_141aca870();
+    return HandleDebugHotkeys();
 }
 MS2_REPLACE_METHOD(0x141aca270, UISceneGamePlay, vfunc_13, 45, 0xD0F20584);
 
@@ -1123,9 +1123,9 @@ MS2_REPLACE_METHOD(0x141aca2b0, UISceneGamePlay, vfunc_14, 237, 0x5EDB9347);
 void UISceneGamePlay::vfunc_15()
 {
     UISwfEntity::vfunc_15();
-    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x49406, false, 0) != 0) ((class ItemPreviewMgr*)GetItemPreviewMgr())->SetHudMode(1);
+    if (((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyDown(0x49406, false, 0) != 0) ((class ItemPreviewMgr*)GetItemPreviewMgr())->SetHudMode(1);
     else ((class ItemPreviewMgr*)GetItemPreviewMgr())->SetHudMode(0);
-    if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x2a, 0, 0) != 0 || ((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x36, 0, 0) != 0) ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adcb60(1);
+    if (((Unk_GsLogin*)FUN_14025e7c0())->IsKeyDown(0x2a, 0, 0) != 0 || ((Unk_GsLogin*)FUN_14025e7c0())->IsKeyDown(0x36, 0, 0) != 0) ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adcb60(1);
     else ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adcb60(0);
     (&g_143ab2ee0)->FUN_1408e48f0();
 }
@@ -1134,7 +1134,7 @@ MS2_REPLACE_METHOD(0x141aca3b0, UISceneGamePlay, vfunc_15, 199, 0x6836B94F);
 // @0x141aca480
 void UISceneGamePlay::vfunc_34(void* p, float x, float y)
 {
-    if (FUN_14025e7a0()->FUN_1422aeed0(2) != 0) return;
+    if (GetGFxManager()->FUN_1422aeed0(2) != 0) return;
     UISwfEntity::vfunc_34(p, x, y);
 }
 MS2_REPLACE_METHOD(0x141aca480, UISceneGamePlay, vfunc_34, 82, 0x597C7D9E);
@@ -1151,7 +1151,7 @@ void UISceneGamePlay::vfunc_56()
 {
     UISceneEntity::vfunc_56();
     UIMassiveEvent* pUnit = FUN_140e01890(0x4e4c);
-    if (pUnit != 0) pUnit->FUN_1419f5ab0();
+    if (pUnit != 0) pUnit->ClearStage();
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ada610(m_6c);
     ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adad20(m_6c);
 }
@@ -1164,7 +1164,7 @@ void UISceneGamePlay::vfunc_58()
     ((class NotifySystem*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyFadeInComplete));
     int nMapId = WorldService::GetInstance()->FUN_141bd3060();
     MS2Ptr<CFieldDataCli> spMap = CFieldDataCli::Find(nMapId);
-    if ((((void*)spMap.get()) ? true : false) && spMap->FUN_1403754f0() != 0) {
+    if ((((void*)spMap.get()) ? true : false) && spMap->GetShadowContinent() != 0) {
         if (m_c8 != 0 && spMap->GetPkMode() == 0) {
             FUN_141275260(0x96f, 4, 0);
             FUN_1412751b0(GetStringCommon(0x970), 0x14);
@@ -1192,25 +1192,25 @@ void UISceneGamePlay::FUN_141aca840(int nUiId)
 MS2_REPLACE_METHOD(0x141aca840, UISceneGamePlay, FUN_141aca840, 42, 0x89200DCD);
 
 // @0x141aca870
-int UISceneGamePlay::FUN_141aca870()
+int UISceneGamePlay::HandleDebugHotkeys()
 {
     if (((CInputKeyHandler*)(Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d7a0(0xf) != 0) return 0;
-    if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x1d, 0, 0) != 0) {
-        if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x3d, 0, 0) != 0) {
+    if (((Unk_GsLogin*)FUN_14025e7c0())->IsKeyDown(0x1d, 0, 0) != 0) {
+        if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x3d, 0, 0) != 0) {
             int nMode = (FUN_140ae1c10() + 1) % 5;
             FUN_141610410(nMode);
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x21, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x21, 1, 0) != 0) {
             WorldService::GetInstance()->FUN_141bd2fa0();
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x2a, 1, 0) != 0 && ((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x1e, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->IsKeyDown(0x2a, 1, 0) != 0 && ((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x1e, 1, 0) != 0) {
             ((class CScriptTable*)FUN_141371b30())->Reload();
             FUN_1412751b0(StringFormat(L"Script reloaded"), 0x14);
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x1e, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x1e, 1, 0) != 0) {
             if (DAT_143ab0248 == 2 && DAT_143ab2914 < 0x34) return 0;
             DAT_143ae0fb8 = (DAT_143ae0fb8 == 0);
             CStringW strMsg;
@@ -1218,7 +1218,7 @@ int UISceneGamePlay::FUN_141aca870()
             FUN_1412751b0(strMsg, 0x14);
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x13, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x13, 1, 0) != 0) {
             if (DAT_143ab0248 == 2 && DAT_143ab2914 < 0x34) return 0;
             unsigned char nMode = (unsigned char)DAT_143ae0fb0;
             nMode++;
@@ -1230,9 +1230,9 @@ int UISceneGamePlay::FUN_141aca870()
             FUN_140710590(packet);
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x2e, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x2e, 1, 0) != 0) {
             if (DAT_143ab0248 == 2 && DAT_143ab2914 < 0x33) return 0;
-            if (FUN_140931510()->FUN_140d9f5d0(1) != 0) {
+            if (GetMyCharacter()->FUN_140d9f5d0(1) != 0) {
                 FUN_1412751b0(L"Error InvisibleFromAll On", 0x14);
                 return 1;
             }
@@ -1242,7 +1242,7 @@ int UISceneGamePlay::FUN_141aca870()
             FUN_141276f80(&cmd);
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x19, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x19, 1, 0) != 0) {
             if (DAT_143ab0248 == 2 && DAT_143ab2914 < 0x3b) return 0;
             Unk_CommandChat cmd;
             cmd.kind = 0;
@@ -1250,25 +1250,25 @@ int UISceneGamePlay::FUN_141aca870()
             FUN_141276f80(&cmd);
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x11, 1, 0) != 0) {
-            int nReload = ((class Unk_GsTexReload*)GetNifLoadingService())->FUN_141acccb0();
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x11, 1, 0) != 0) {
+            int nReload = ((class Unk_GsTexReload*)GetNifLoadingService())->GetTextureReload();
             nReload ^= 1;
-            ((class Unk_GsTexReload*)GetNifLoadingService())->FUN_141accee0(nReload);
+            ((class Unk_GsTexReload*)GetNifLoadingService())->SetTextureReload(nReload);
             CStringW strMsg;
             strMsg.Format(L"텍스쳐 리로드 : %s", nReload != 0 ? DAT_142fde9f4 : DAT_142fdea00);
             FUN_1412751b0(strMsg, 0x14);
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x20, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x20, 1, 0) != 0) {
             Unk_GsDlgA* pDlg = (Unk_GsDlgA*)PCBaseDialog<UIDPSDialog>(0x4e44);
             if (pDlg != 0) pDlg->FUN_1419246f0();
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x80, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x80, 1, 0) != 0) {
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e50));
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x26, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x26, 1, 0) != 0) {
             DAT_1439fa008 = DAT_1439fa008 - 1;
             if (DAT_1439fa008 == 0) DAT_1439fa008 = 3;
             CStringW strMsg;
@@ -1281,55 +1281,55 @@ int UISceneGamePlay::FUN_141aca870()
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4ea3));
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x22, 1, 0) != 0) return 1;
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x17, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x22, 1, 0) != 0) return 1;
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x17, 1, 0) != 0) {
             if (DAT_143ab0248 == 2 && DAT_143ab2914 < 0x34) return 0;
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e25));
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x18, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x18, 1, 0) != 0) {
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4ecd));
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x2d, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x2d, 1, 0) != 0) {
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e8f));
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x2c, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x2c, 1, 0) != 0) {
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4ea6));
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x31, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x31, 1, 0) != 0) {
             if (DAT_143ab0248 == 2 && DAT_143ab2914 < 0x34) return 0;
-            if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x38, 0, 0) != 0) TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e89));
+            if (((Unk_GsLogin*)FUN_14025e7c0())->IsKeyDown(0x38, 0, 0) != 0) TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e89));
             else TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e46));
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x32, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x32, 1, 0) != 0) {
             if (DAT_143ab0248 == 2 && DAT_143ab2914 < 0x33) return 0;
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e2a));
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x10, 1, 0) != 0) {
+        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x10, 1, 0) != 0) {
             Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
             if (pPlayer != 0 && reinterpret_cast<MyPC*>(pPlayer)->IsInParty() != 0) {
                 TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e8c));
                 return 1;
             }
         } else {
-            if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x30, 1, 0) != 0) {
+            if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x30, 1, 0) != 0) {
                 if (DAT_143ab0248 == 2 && DAT_143ab2914 < 0x34) return 0;
                 TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e4b));
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x24, 1, 0) != 0) {
+            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x24, 1, 0) != 0) {
                 WorldService::GetInstance()->ShowResearchAndDevelopmentDialog();
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x3f, 1, 0) != 0) {
+            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x3f, 1, 0) != 0) {
                 FUN_1412751b0(L"Reload sound resource & string & colorPalette", 0x14);
-                TSingleton<CStringTable>::GetInstance()->FUN_141811960();
-                FUN_140c9cb10();
+                TSingleton<CStringTable>::GetInstance()->Reload();
+                GetSoundService();
                 FUN_1417af7a0();
                 if (FUN_1401d1320(reinterpret_cast<CCacheData*>(TSingleton<CItemDataTable>::GetInstance())) != 0) reinterpret_cast<Unk_GsSettings*>(TSingleton<CItemDataTable>::GetInstance())->Reload();
                 TSingleton<CommonString>::GetInstance()->Reload();
@@ -1338,7 +1338,7 @@ int UISceneGamePlay::FUN_141aca870()
                 FUN_141815db0((void*)FUN_141371b20());
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x41, 1, 0) != 0) {
+            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x41, 1, 0) != 0) {
                 int bShow = WorldService::GetInstance()->FUN_141bda9f0() == 0;
                 WorldService::GetInstance()->FUN_141bda9c0(bShow);
                 CStringW strMsg;
@@ -1346,28 +1346,28 @@ int UISceneGamePlay::FUN_141aca870()
                 FUN_1412751b0(strMsg, 0x14);
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x42, 1, 0) != 0) {
+            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x42, 1, 0) != 0) {
                 void* pDevice = ((void*)NiRenderer::GetRenderer());
                 ((NiDX9Renderer*)pDevice)->SetDeviceLostHeld(reinterpret_cast<bool&>(DAT_1439fa00c));
-                if (((void*)FUN_1414a56c0()) != 0) {
-                    ((void*)FUN_1414a56c0());
-                    GFxService::FUN_1422ea210(DAT_1439fa00c);
+                if (((void*)GetGFxService()) != 0) {
+                    ((void*)GetGFxService());
+                    GFxService::SetCaptureBlock(DAT_1439fa00c);
                 }
                 DAT_1439fa00c = DAT_1439fa00c ^ 1;
-                CDebugConsole::FUN_141168200()->FUN_1411683e0("SetForceLostDevice : %d", DAT_1439fa00c);
+                CDebugConsole::GetInstance()->FUN_1411683e0("SetForceLostDevice : %d", DAT_1439fa00c);
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x44, 1, 0) != 0) {
+            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x44, 1, 0) != 0) {
                 TakeScreenshotPng(0);
                 FUN_1412751b0(L"SaveScreenShotToPNG", 0x14);
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x55, 1, 0) != 0) {
-                if (((class Unk_GsDbgLog*)CDebugConsole::FUN_141168200())->FUN_141168310() != 0) ((class Unk_GsDbgLog*)CDebugConsole::FUN_141168200())->FUN_1411682d0();
-                else ((CDebugConsole*)(Unk_GsDbgLog*)(((class Unk_GsDbgLog*)CDebugConsole::FUN_141168200())))->FUN_141168270();
+            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x55, 1, 0) != 0) {
+                if (((class Unk_GsDbgLog*)CDebugConsole::GetInstance())->IsConsoleOpen() != 0) ((class Unk_GsDbgLog*)CDebugConsole::GetInstance())->CloseConsole();
+                else ((CDebugConsole*)(Unk_GsDbgLog*)(((class Unk_GsDbgLog*)CDebugConsole::GetInstance())))->OpenConsole();
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x56, 1, 0) != 0) {
+            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x56, 1, 0) != 0) {
                 if (AfxMessageBox(DAT_142fdeb28, 1, 0) == 1) {
                     void* pNet = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
                     if (pNet != 0) ((class MS2RenderService*)(void*)(pNet))->CheckRenderState();
@@ -1383,50 +1383,50 @@ int UISceneGamePlay::FUN_141aca870()
         return 1;
     }
     if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a82, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a82);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a82);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a81, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a81);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a81);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a85, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a85);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a85);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a86, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a86);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a86);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a87, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a87);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a87);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a89, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a89);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a89);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x493ee, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x493ee);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x493ee);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a8f, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a8f);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a8f);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a90, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a90);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a90);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a8a, 0, 0)) {
-        if (DAT_143ab2914 >= 0x32) ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a8a);
+        if (DAT_143ab2914 >= 0x32) ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a8a);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a8b, 0, 0)) {
-        if (DAT_143ab2914 >= 0x32) ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a8b);
+        if (DAT_143ab2914 >= 0x32) ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a8b);
         return 1;
     }
-    else if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x493e2, false, 0)) {
+    else if (((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyDown(0x493e2, false, 0)) {
         Unk_GsPlayer* pPlayer = ((Unk_GsPlayer*)WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0 && reinterpret_cast<PCBase*>(pPlayer)->IsDead() == 0 && pPlayer->vfunc_63() != 0) {
             if (((Unk_GsMode*)Unk_PlayerActionState((struct Unk_MiPlayer*)(pPlayer)))->TryActivateCurrentAction()) {
@@ -1436,7 +1436,7 @@ int UISceneGamePlay::FUN_141aca870()
         return 0;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a8c, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a8c);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a8c);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x493ed, 0, 0)) {
@@ -1449,23 +1449,23 @@ int UISceneGamePlay::FUN_141aca870()
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a88, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a88);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a88);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x493f6, 0, 0)) {
         if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0) {
             TSingleton<CameraMgr>::GetInstance()->FUN_140aefa70();
-            UIMinimapDialog* pDlg = FUN_140c9b540(0x4e29);
+            UIMinimapDialog* pDlg = FindMinimapDialog(0x4e29);
             if (pDlg != 0) pDlg->FUN_141a39e40();
         }
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a8d, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a8d);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a8d);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a8e, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a8e);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a8e);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x49403, 0, 0)) {
@@ -1496,102 +1496,102 @@ int UISceneGamePlay::FUN_141aca870()
         return FUN_1418fcb70();
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a91, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a91);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a91);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a92, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a92);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a92);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a93, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a93);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a93);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a94, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a94);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a94);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a95, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a95);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a95);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a96, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a96);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a96);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61aa4, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61aa4);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61aa4);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61aa5, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61aa5);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61aa5);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61aa6, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61aa6);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61aa6);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0xc3504, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0xc3504);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0xc3504);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a97, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a97);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a97);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a98, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a98);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a98);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a99, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a99);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a99);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a9a, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a9a);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a9a);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a9b, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a9b);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a9b);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a9c, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a9c);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a9c);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a9d, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a9d);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a9d);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a9e, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a9e);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a9e);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61a9f, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61a9f);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61a9f);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61aa0, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61aa0);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61aa0);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61aa1, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61aa1);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61aa1);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61aa2, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61aa2);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61aa2);
         return 1;
     }
     else if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(0x61aa3, 0, 0)) {
-        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)FUN_1409331f0())))->FUN_14142b300(0x61aa3);
+        ((CKeyTable*)(Unk_GsHk*)(((class Unk_GsHk*)GetKeyTable())))->FUN_14142b300(0x61aa3);
         return 1;
     }
     else {
-        if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe3)) {
+        if (((CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xe3)) {
             for (int nKey = 0xdbba1; nKey <= 0xdbbaa; nKey++) {
                 if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116dd30(nKey, 0, 0)) {
-                    Unk_GsDlg3* pDlg = ((class Unk_GsDlg3*)FUN_141815ed0());
+                    Unk_GsDlg3* pDlg = ((class Unk_GsDlg3*)GetClosetDialog());
                     if (pDlg != 0) ((UIClosetDialog*)(Unk_GsDlg3*)(pDlg))->RequestById(nKey);
                     return 1;
                 }
@@ -1602,17 +1602,17 @@ int UISceneGamePlay::FUN_141aca870()
 }
 
 // @0x141acc510
-void UISceneGamePlay::FUN_141acc510(NotifyObject* pNotify)
+void UISceneGamePlay::OnNotifyChangeEnableFeature(NotifyObject* pNotify)
 {
     NotifyChangeEnableFeature* pChange = dynamic_cast<NotifyChangeEnableFeature*>(pNotify);
     if (pChange == 0) return;
     reinterpret_cast<Common::Constants*>(GetClientConstants())->Load();
-    TSingleton<CStringTable>::GetInstance()->FUN_141811960();
+    TSingleton<CStringTable>::GetInstance()->Reload();
     TSingleton<CommonString>::GetInstance()->Reload();
     FUN_1409c51f0();
     FUN_141815db0((void*)FUN_141371b20());
 }
-MS2_REPLACE_METHOD(0x141acc510, UISceneGamePlay, FUN_141acc510, 125, 0x4F19D812);
+MS2_REPLACE_METHOD(0x141acc510, UISceneGamePlay, OnNotifyChangeEnableFeature, 125, 0x4F19D812);
 
 // @0x141acc5a0
 void FUN_141acc5a0(float fValue)
@@ -1662,7 +1662,7 @@ void SetCachedBoolProperty(class Unk_CachedEntity* pEntity, unsigned int nHash, 
 egf::EntityID* FUN_1408b6b20(egf::EntityID* pDst, const egf::EntityID* pSrc);
 //
 void FUN_1413f9c40(bool bFlag);
-void* FUN_140aae430();   // C3: was FUN_140aae430
+void* GetMS2();   // C3: was GetMS2
 extern char DAT_142fdef20[];
 
 // @0x141acd1c0
@@ -1716,10 +1716,10 @@ int UISceneGameScreenShot::vfunc_48(int n)
         }
     }
     FUN_1413f9c40(false);
-    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9b30();
-    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adbca0(0);
+    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->UnloadBackgroundMovie();
+    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->SetMoviesVisible(0);
     ShowCursor(TRUE);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141acd290, UISceneGameScreenShot, vfunc_48, 838, 0x4471B5A7);
 
@@ -1736,11 +1736,11 @@ int UISceneGameScreenShot::vfunc_49(int n)
         }
     }
     FUN_1413f9c40(true);
-    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141ad9650();
-    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->FUN_141adbca0(1);
-    ((class MS2*)FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
+    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->LoadBackgroundMovie();
+    ((class Unk_GsUI*)TSingleton<CUIService>::GetInstance())->SetMoviesVisible(1);
+    ((class MS2*)GetMS2())->SetBackgroundColor(efd::ColorA::BLACK);
     ShowCursor(FALSE);
-    return FUN_1422e7950();
+    return GetSceneId();
 }
 MS2_REPLACE_METHOD(0x141acd5e0, UISceneGameScreenShot, vfunc_49, 329, 0xC3B72AAD);
 
@@ -1755,9 +1755,9 @@ MS2_REPLACE_METHOD(0x141acd730, UISceneGameScreenShot, vfunc_57, 24, 0xDE7FCC7E)
 int UISceneGameScreenShot::vfunc_13()
 {
     if (UISwfEntity::vfunc_13()) return 1;
-    if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d950(0x1d, 0, 0) != 0) {
-        if (((Unk_GsLogin*)FUN_14025e7c0())->FUN_14116d9c0(0x14, 1, 0) != 0) {
-            FUN_1422e7a40(0x620001d);
+    if (((Unk_GsLogin*)FUN_14025e7c0())->IsKeyDown(0x1d, 0, 0) != 0) {
+        if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x14, 1, 0) != 0) {
+            SetSubSceneId(0x620001d);
             return 1;
         }
     }

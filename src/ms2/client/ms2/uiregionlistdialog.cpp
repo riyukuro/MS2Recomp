@@ -100,13 +100,13 @@ int FUN_1406c34c0();                                            // the Nexon pla
 extern CString g_strServerAddr;                                 // the login ip
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
-CString FUN_14016a5c0(const char* sz, int n);
+CString ToCString(const char* sz, int n);
 CString FUN_140188f50(const char* sz, int n);
 CString FUN_140e819e0(CString strHost);
 
 // The scene manager of the application.
 class CNetworkService { public: int ConnectToConfiguredServer(); };   // C3: member view
-class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
+class CNetworkService* GetNetworkService();   // C3: was GetNetworkService
 
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& a);    // set a Value from an AS object
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                // set an Int value
@@ -134,7 +134,7 @@ Scaleform::GFx::Value Unk_RlScript::FUN_140e813f0(const char* szMethod, const AS
 // @0x140e80220
 UIRegionListDialog::UIRegionListDialog()
 {
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     m_80 = 0;
     m_nUnused198 = 0;
     m_nSelected = 0;
@@ -156,8 +156,8 @@ CString UIRegionListDialog::GetTypeName()
 // @0x140e803f0
 void UIRegionListDialog::OnLoadComplete()
 {
-    FUN_140e80a40();
-    FUN_140e80c30();
+    MoveSavedRegionToFront();
+    BuildRegionList();
     UIDialog::OnLoadComplete();
 }
 
@@ -184,8 +184,8 @@ int UIRegionListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     if (_stricmp("onSelectRegion", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
-            FUN_140e80f10(data.FUN_1422b8f40());
-            FUN_140e811d0();
+            SelectRegion(data.FUN_1422b8f40());
+            OnRegionSelected();
         }
         return 1;
     } else if (_stricmp("OnEndPopdown", szMethod) == 0) {
@@ -199,9 +199,9 @@ int UIRegionListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 void UIRegionListDialog::FUN_140e80620()
 {
     CStringW strRegion = TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()->m_str00;
-    if (!FUN_140e80f10(strRegion)) {
-        if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSceneId() == 0x6200009) {
-            UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetScene());
+    if (!SelectRegion(strRegion)) {
+        if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSceneId() == 0x6200009) {
+            UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(((GFxSceneService*)CUserMail::GetGFxSceneService())->GetScene());
             if (pLogin != 0) {
                 pLogin->FUN_141acf470();
                 return;
@@ -210,7 +210,7 @@ void UIRegionListDialog::FUN_140e80620()
         FUN_141924680();
         return;
     }
-    ((class CNetworkService*)FUN_140714f90())->ConnectToConfiguredServer();
+    ((class CNetworkService*)GetNetworkService())->ConnectToConfiguredServer();
     vfunc_67();
 }
 
@@ -225,12 +225,12 @@ void UIRegionListDialog::FUN_140e80740()
 }
 
 // @0x140e807c0
-Unk_RlPtr UIRegionListDialog::FUN_140e807c0()
+Unk_RlPtr UIRegionListDialog::GetSavedRegion()
 {
     CStringW strRegion = TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()->m_str00;
     if (strRegion.IsEmpty())
         return Unk_RlPtr(0);
-    Unk_RlPtr region = FUN_140e810d0(strRegion);
+    Unk_RlPtr region = FindRegion(strRegion);
     return region;
 }
 
@@ -255,7 +255,7 @@ void UIRegionListDialog::FUN_140e80910()
 }
 
 // @0x140e809b0
-Unk_RlPtr UIRegionListDialog::FUN_140e809b0(int nUnused)
+Unk_RlPtr UIRegionListDialog::GetFirstRegion(int nUnused)
 {
     if (m_regions.IsEmpty())
         return Unk_RlPtr(0);
@@ -263,13 +263,13 @@ Unk_RlPtr UIRegionListDialog::FUN_140e809b0(int nUnused)
 }
 
 // @0x140e80a40
-void UIRegionListDialog::FUN_140e80a40()
+void UIRegionListDialog::MoveSavedRegionToFront()
 {
     m_strSaved = TSingleton<CGameOption>::GetInstance()->FUN_140cfd260()->m_str00;
     if (m_strSaved.IsEmpty())
         return;
     ATL::CAtlArray<Unk_RlPtr> arrNew;
-    Unk_RlPtr saved = FUN_140e810d0(m_strSaved);
+    Unk_RlPtr saved = FindRegion(m_strSaved);
     if (saved.get() != 0)
         arrNew.InsertAt(0, saved, 1);
     for (int i = 0; i < (int)m_regions.GetCount(); i++) {
@@ -282,7 +282,7 @@ void UIRegionListDialog::FUN_140e80a40()
 }
 
 // @0x140e80c30
-void UIRegionListDialog::FUN_140e80c30()
+void UIRegionListDialog::BuildRegionList()
 {
     if (m_30 == 0)
         return;
@@ -290,27 +290,27 @@ void UIRegionListDialog::FUN_140e80c30()
     for (int i = 0; i < (int)m_regions.GetCount(); i++) {
         ASObj obj(2);
         CString strPath("./Data/Resource/Image/Emblem/Server/");
-        obj.FUN_1407cbb20("id", m_regions[i]->m_id);
-        obj.FUN_1407cbb20("label", m_regions[i]->m_label);
+        obj.SetWStringMember("id", m_regions[i]->m_id);
+        obj.SetWStringMember("label", m_regions[i]->m_label);
 #if defined(__clang__)
         // clang-cl inlines the dllimport Concatenate and needs CSimpleStringT::CopyChars, which no mfc140 import provides.
         CString strIcon = strPath;
         strIcon += m_regions[i]->m_image;
-        obj.FUN_1407cba60("icon", strIcon);
+        obj.SetStringMember("icon", strIcon);
 #else
-        obj.FUN_1407cba60("icon", strPath + m_regions[i]->m_image);
+        obj.SetStringMember("icon", strPath + m_regions[i]->m_image);
 #endif
-        obj.FUN_1407cb9c0("status", m_regions[i]->m_status);
-        arr.PushValue(Scaleform::GFx::Value(obj.FUN_1422bb870()));
+        obj.SetIntMember("status", m_regions[i]->m_status);
+        arr.PushValue(Scaleform::GFx::Value(obj.GetValue()));
     }
     static_cast<Unk_RlScript*>(m_30.operator->())->FUN_140e813f0("buildRegionList", arr, m_nSelected);
 }
 
 // MS2-FUNCTIONAL: stack slot order of the CStringW copy for FindRegion
 // @0x140e80f10
-bool UIRegionListDialog::FUN_140e80f10(CStringW strRegion)
+bool UIRegionListDialog::SelectRegion(CStringW strRegion)
 {
-    Unk_RlPtr region = FUN_140e810d0(strRegion);
+    Unk_RlPtr region = FindRegion(strRegion);
     if (region.get() != 0) {
         if (FUN_1406c34c0() == 1)
             g_strServerAddr = FUN_140e819e0(region->m_host);
@@ -326,7 +326,7 @@ bool UIRegionListDialog::FUN_140e80f10(CStringW strRegion)
 }
 
 // @0x140e810d0
-Unk_RlPtr UIRegionListDialog::FUN_140e810d0(CStringW strRegion)
+Unk_RlPtr UIRegionListDialog::FindRegion(CStringW strRegion)
 {
     for (int i = 0; i < (int)m_regions.GetCount(); i++) {
         if (m_regions[i]->m_id == strRegion)
@@ -336,10 +336,10 @@ Unk_RlPtr UIRegionListDialog::FUN_140e810d0(CStringW strRegion)
 }
 
 // @0x140e811d0
-void UIRegionListDialog::FUN_140e811d0()
+void UIRegionListDialog::OnRegionSelected()
 {
-    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSceneId() == 0x6200009) {
-        UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetScene());
+    if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSceneId() == 0x6200009) {
+        UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(((GFxSceneService*)CUserMail::GetGFxSceneService())->GetScene());
         if (pLogin != 0) {
             int nUiId = vfunc_48();
             pLogin->FUN_141acfad0((__int64)&nUiId);
@@ -362,9 +362,9 @@ void UIRegionListDialog::OnEndPopdown()
 // @0x140e812e0
 void UIRegionListDialog::FUN_140e812e0(const CStringW& strRegion)
 {
-    Unk_RlPtr region = FUN_140e810d0(strRegion);
+    Unk_RlPtr region = FindRegion(strRegion);
     if (region == 0)
-        region = FUN_140e809b0(0);
+        region = GetFirstRegion(0);
     if (region == 0)
         return;
     if (FUN_1406c34c0() == 0)
@@ -377,7 +377,7 @@ CString FUN_140e819e0(CString strHost)
 {
     WSADATA wsaData;
     WSAStartup(0x202, &wsaData);
-    hostent* pHost = gethostbyname(FUN_14016a5c0(strHost, 0));
+    hostent* pHost = gethostbyname(ToCString(strHost, 0));
     if (pHost == 0)
         return "";
     return FUN_140188f50(inet_ntoa(*(in_addr*)pHost->h_addr_list[0]), 0);

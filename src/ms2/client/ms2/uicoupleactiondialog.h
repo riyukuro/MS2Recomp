@@ -56,7 +56,7 @@ public:
     void FUN_140becef0();                                   // rebuild the emotions of the player and the pages
     void SetFocusByEmotion(int nEmotion);                       // "setFocusByEmotion"
     void FUN_140bed1f0(int nEmotion);                       // select an emotion for the player
-    void FUN_140bed2a0(unsigned __int64 nSelection);        // m_178 = nSelection
+    void SetSelectedCharacter(unsigned __int64 nSelection);        // m_178 = nSelection
     void FUN_140bed2d0();                                   // "buildActions" in id order
     void FUN_140bed8a0();                                   // "buildActions" in reverse id order
     void SetSearchText(CStringW strSearch);                 // set the search text; refresh when it changed
@@ -65,7 +65,7 @@ public:
     void FUN_140bee150(int nKey);                           // keys: move the selection in "m_list"
     int FUN_140bee590(int nKey);                           // the key has no emotion shortcut
     int FUN_140bee5e0(int nKey, unsigned __int64 nEmotion);    // set a shortcut
-    unsigned __int64 FUN_1417f5f70() { return m_178; }     // the selected character (COMDAT, stateskill)
+    unsigned __int64 GetSelectedCharacterId() { return m_178; }     // the selected character (COMDAT, stateskill)
 
 private:
     MS2_LAYOUT_FRIEND;

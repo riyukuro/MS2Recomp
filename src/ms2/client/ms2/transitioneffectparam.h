@@ -52,8 +52,8 @@ public:
     virtual bool vfunc_9();                                     // 9 0x14185f410 interpolate the current keyframe
     virtual void vfunc_13(TransitionData* pFrom, TransitionData* pTo, float fT) = 0;   // 13 apply
 
-    void FUN_14185f340(const TransitionEffectParam* pParam);    // 0x14185f340 copy keyframes (same as vfunc_3)
-    void FUN_14185f670(TransitionData* pData);                  // 0x14185f670 append a keyframe
+    void CopyKeyframes(const TransitionEffectParam* pParam);    // 0x14185f340 copy keyframes (same as vfunc_3)
+    void AddKeyframe(TransitionData* pData);                  // 0x14185f670 append a keyframe
     bool FUN_14185f6f0(double dNow, unsigned int* pnIndex, float* pfT);   // 0x14185f6f0 keyframe + t at dNow
 public:
     TransitionDataArray m_arrData;  // +0x30

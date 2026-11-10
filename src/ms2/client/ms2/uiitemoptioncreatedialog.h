@@ -30,10 +30,10 @@ public:
 
     // "OnCreateItem": send the create-item packet; pOptions is the array of {kinds, type, index, value} rows.
     void FUN_1412d2e50(unsigned nItemId, unsigned nCount, int nParam, int nParam2, const Scaleform::GFx::Value& pOptions);
-    void FUN_1412d33b0();                                       // fill the rank combo of the picked item
-    void FUN_1412d3740();                                       // fill the random option table of the item / rank
+    void UpdateRankCombo();                                       // fill the rank combo of the picked item
+    void UpdateRandomOptionTable();                                       // fill the random option table of the item / rank
     void FUN_1412d3a60();                                       // fill the constant option result of the item / rank
-    void FUN_1412d3c10(const CString& strGroup, const CStringW& strSearch);    // fill the item list (group / search filter)
+    void UpdateItemList(const CString& strGroup, const CStringW& strSearch);    // fill the item list (group / search filter)
 
 protected:
     MS2_LAYOUT_FRIEND;

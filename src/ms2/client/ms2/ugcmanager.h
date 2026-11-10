@@ -161,7 +161,7 @@ public:
     virtual int vfunc_26(ASObj& obj);               // 26 0x14187d9a0 fill the AS slot data
     virtual int vfunc_0(void* p);                   // ITooltip 0x14187dc70 build the item tooltip into p
 
-    int FUN_14187d870();                            // item template id, 0 if empty
+    int GetItemTemplateId();                            // item template id, 0 if empty
     void SetItem(MS2Ptr<CItem> spItem);       // m_spItem = spItem
 
 public:
@@ -172,7 +172,7 @@ MS2_CHECK_SIZE(UGCItemSlot, 0xa0);
 MS2_CHECK_OFFSET(UGCItemSlot, m_spItem, 0x90);
 
 void FUN_14187de00(const CString& strName, MS2Ptr<CItem> spItem);   // create a UGCItemSlot and bind it by name
-void FUN_14187dee0(const CString& strName);                         // unbind the named UGCItemSlot
+void UnbindItemSlot(const CString& strName);                         // unbind the named UGCItemSlot
 
 // ---- ugcmanager.cpp#2: downloads ----------------------------------------------------------------------------------
 

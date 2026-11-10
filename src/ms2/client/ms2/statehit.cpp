@@ -33,8 +33,8 @@ class Unk_AnimSvc* GetAnimationService();   // C3: was GetAnimationService
 // The physics body of the actor: the fly-away lift.
 
 // The actor's buffs (PCBase::FUN_14166d240).
-#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
-class Unk_PCMove { public: Vector3 FUN_141683290(); Vector3 FUN_1416836d0(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
+class Unk_PCMove { public: Vector3 GetMoveDirection(); Vector3 GetPressedMoveDirection(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The owner's vtable up to slot 22: slot 18 returns the position as an efd::Point3 straight into the local, slot 22
 // takes the direction by value.
@@ -83,13 +83,13 @@ void StateHit::vfunc_4(StateData* pData)
         m_nBc = pHit->m_n30;
         m_strC0 = pHit->m_str;
     }
-    m_timer.FUN_1408687f0();
+    m_timer.Reset();
     if (!FUN_14028d470(m_fB0, 0))
     {
         m_strAnim = (const char*)FUN_1409a2360("Jump_FlyDamg_A", 0);
         Unk_PCBaseBody* pBody = m_pOwner->GetPhysicsBody();
         reinterpret_cast<GameObjectController*>(pBody)->FUN_141240d70();
-        reinterpret_cast<GameObjectController*>(pBody)->FUN_141240cb0(m_fA4, m_fB0, m_fAc);
+        reinterpret_cast<GameObjectController*>(pBody)->StartLift(m_fA4, m_fB0, m_fAc);
     }
     else
     {
@@ -105,7 +105,7 @@ void StateHit::vfunc_4(StateData* pData)
     {
         m_pOwner->PlayAnimation(m_strAnim, fSpeed, true, false);
         float fLength = GetAnimationDuration(m_pOwner->GetEntityID(), CString(m_strAnim.c_str()));
-        m_timer.FUN_140868750((int)(fLength * 1000.0f * 0.7f));
+        m_timer.Start((int)(fLength * 1000.0f * 0.7f));
     }
     else
     {
@@ -189,9 +189,9 @@ void StateHit::vfunc_8(double fTime)
         return;
     Unk_PCMove* pBuff = (Unk_PCMove*)m_pOwner->FUN_14166d240();
     if (s_nKeyIsDown != 0)
-        reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+        reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->GetMoveDirection())));
     else
-        reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_1416836d0())));
+        reinterpret_cast<Unk_ShOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->GetPressedMoveDirection())));
     if (s_nMove != 0 && m_pOwner->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
     else if (s_nJump != 0 && m_pOwner->vfunc_99(0) == 0 && pBuff->FUN_141683100(0x493e1))
@@ -204,7 +204,7 @@ void StateHit::vfunc_8(double fTime)
 // @0x1417cb120
 int StateHit::vfunc_36()
 {
-    if (m_timer.FUN_140868ba0() != 0)
+    if (m_timer.IsRunning() != 0)
         return 0;
     else
         return 1;
@@ -236,13 +236,13 @@ void StateHit::FUN_1417cb1d0()
 }
 
 // @0x1417cb2a0
-int StateHit::FUN_1417cb2a0()
+int StateHit::HasHitDuration()
 {
     return !FUN_14028d470(m_fA4, 0);
 }
 
 // @0x1417cb2f0
-int StateHit::FUN_1417cb2f0()
+int StateHit::GetPushPriority()
 {
     return m_nBc;
 }

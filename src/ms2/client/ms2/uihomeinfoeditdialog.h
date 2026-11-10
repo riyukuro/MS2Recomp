@@ -18,7 +18,7 @@ public:
     virtual int vfunc_48() { return 0x4f79; }                   // 48 0x140c27100
 
     CStringW FUN_140c26850();                                   // the notice text (the home info dialog's, or string 0x574)
-    CStringW FUN_140c268d0();                                   // the owner name
+    CStringW GetHomeName();                                   // the owner name
     int FUN_140c26920();                                        // max chars of the home name (8 / 0x10)
     void OnConfirm();                                       // confirm: send the home name / notice, then close
 };

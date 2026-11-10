@@ -75,7 +75,7 @@ public:
 typedef Unk_TList<Unk_CameraListEntryPtr> Unk_CameraList;
 
 int LoadTestCamerValue();                               // reloads the camera xml (returns 0 on failure)
-namespace ecr { class RenderSurface; } ecr::RenderSurface* FUN_1413f98d0();
+namespace ecr { class RenderSurface; } ecr::RenderSurface* GetActiveRenderSurface();
 bool FUN_14028d470(float a, float b);                   // a == b (within epsilon)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -435,7 +435,7 @@ void CCameraMode::FUN_140afe4b0()
     efd::SmartPointer<ecr::CameraService> spCamera = egf::g_bapiContext.GetSystemServiceAs<ecr::CameraService>();
     if (spCamera)
     {
-        Unk_CameraTarget* pTarget = (Unk_CameraTarget*)FUN_1413f98d0();
+        Unk_CameraTarget* pTarget = (Unk_CameraTarget*)GetActiveRenderSurface();
         if (pTarget)
         {
             ecr::CameraData* pCamera = ((ecr::CameraService*)spCamera.operator->())->GetActiveCamera((ecr::RenderSurface*)pTarget);

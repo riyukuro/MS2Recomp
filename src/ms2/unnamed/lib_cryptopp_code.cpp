@@ -458,7 +458,7 @@ std::string* FUN_1423798d0(std::string* out)
 namespace CryptoPP { enum PowerUpSelfTestStatus : int; extern PowerUpSelfTestStatus g_powerUpSelfTestStatus; }   // 0x143b10184 (fips140.h)
 
 // @0x142353790
-int FUN_142353790()
+int GetPowerUpSelfTestStatus()
 {
     return CryptoPP::g_powerUpSelfTestStatus;
 }

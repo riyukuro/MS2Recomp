@@ -36,11 +36,11 @@ public:
     void FUN_140acf8f0();                   // drag every node behind its predecessor
     void FUN_140acfda0();                   // show all effects
     void FUN_140acfeb0();                   // hide all effects
-    void FUN_140acffc0(float fAlpha);       // set the alpha of all nodes
-    void FUN_140ad00e0(int nCount);         // wanted length (0..30)
+    void SetAlpha(float fAlpha);       // set the alpha of all nodes
+    void SetCount(int nCount);         // wanted length (0..30)
     void FUN_140ad0120(int nTailId);        // switch to another tail row
     void FUN_140ad01d0();                   // length 0, drop all effects
-    void FUN_140ad0200();                   // per-frame update
+    void Update();                   // per-frame update
 
     GameObject* m_pOwner;                                       // +0x18
     std::list<MS2Ptr<TailEffectInfo> > m_listInfo;              // +0x20

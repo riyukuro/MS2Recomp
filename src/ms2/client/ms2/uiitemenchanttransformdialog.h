@@ -36,10 +36,10 @@ public:
 
     void FUN_140c3d420();                                               // refill the targets, relabel the submit button
     void FUN_140c3d5a0();                                               // collect the transformable items into m_targets
-    void FUN_140c3d960(int nIndex);                                     // "OnSelectTargetItem": confirm / pick
-    void FUN_140c3de50(int nIndex);                                     // pick the target, build the output list
+    void OnSelectTargetItem(int nIndex);                                     // "OnSelectTargetItem": confirm / pick
+    void SelectTargetItem(int nIndex);                                     // pick the target, build the output list
     void OnSubmitTransform();                                               // "OnSubmitTransform": send packet 0x77
-    void FUN_140c3ead0();                                               // result: relabel submit "retry", "onTransformResult"
+    void OnTransformResult();                                               // result: relabel submit "retry", "onTransformResult"
     void OnSubmitRetry();                                               // "OnSubmitRetry": back to the first page
     bool FUN_140c3eda0(int nButton, const CMsgBoxData& box);            // the confirm box's answer
 

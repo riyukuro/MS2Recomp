@@ -62,7 +62,7 @@ void FUN_14151f200()
             if (FUN_14151fad0(spData) != 0)
                 return;
         }
-        else if (spData->FUN_141a049a0() != 0)
+        else if (spData->HasTimer() != 0)
         {
             spData->FUN_141a04a30();
         }
@@ -97,7 +97,7 @@ void ShowOrReplaceByTag(CStringW strTag, MS2Ptr<CMsgBoxData> spData)
     UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox == 0)
         return;
-    MS2Ptr<CMsgBoxData> spCur = pBox->FUN_1419f8470();
+    MS2Ptr<CMsgBoxData> spCur = pBox->GetCurrentBox();
     if (spCur == 0 || spCur->FUN_141a02b90() != strTag)
     {
         ReplaceQueuedByTag(strTag, spData);
@@ -139,7 +139,7 @@ MS2Ptr<CMsgBoxData> FUN_14151f820()
 {
     UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0)
-        return pBox->FUN_1419f8470();
+        return pBox->GetCurrentBox();
     return MS2Ptr<CMsgBoxData>(0);
 }
 MS2_REPLACE(0x14151F820, FUN_14151f820, 101, 0x20BC56CE);

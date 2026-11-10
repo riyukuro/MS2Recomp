@@ -65,14 +65,14 @@ public:
     void AddNewGroup(unsigned nGroupId);                                // flag a pack "new"
     unsigned char unrecovered[0x50];
 };
-class UIMessenger { public: void FUN_141a10010(int nFlag, int nId); };   // C3: member view
+class UIMessenger { public: void TypeEmoticon(int nFlag, int nId); };   // C3: member view
 class UIMessengerBrowser : public UIDialog
 {
 public:
-    UIMessenger* FUN_141a259c0(const CStringW& strName);
+    UIMessenger* FindWindowByName(const CStringW& strName);
     unsigned char unrecovered[0x10];
 };
-class UIGroupMessenger { public: void FUN_14194afc0(int nId); };   // C3: member view
+class UIGroupMessenger { public: void SendEmoticonImage(int nId); };   // C3: member view
 class UIGroupMessengerBrowser : public UIDialog
 {
 public:
@@ -97,8 +97,8 @@ __int64 GetServerTime();                                            // server ti
 CStringW GetStringCommonByKey(const CStringW& strKey);
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 CStringW FUN_14016a730(const char* sz, int nCodePage);
-void FUN_140d73aa0(CStringW strMsg, int nType, void* pTarget, CStringW strTag);
-void FUN_1412751f0(const CStringW& strMsg, int a, int b);
+void ShowMessageBox(CStringW strMsg, int nType, void* pTarget, CStringW strTag);
+void ShowSystemNotice(const CStringW& strMsg, int a, int b);
 void FUN_140710590(COutPacket& packet);
 
 // ---- dialog lookups ----
@@ -193,7 +193,7 @@ void CChatEmoticonCli::FUN_140a39170(CInPacket& packet)
     UIChatEmoticonDialog* pDlg = FindChatEmoticonDialog();
     if (pDlg != 0)
         pDlg->FUN_140bd2620();
-    FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_expired"), 0, 0, L"");
+    ShowMessageBox(GetStringCommonByKey(L"s_msg_chat_emoticon_expired"), 0, 0, L"");
 }
 MS2_REPLACE_METHOD(0x140A39170, CChatEmoticonCli, FUN_140a39170, 489, 0xFCB43972);
 
@@ -232,7 +232,7 @@ void CChatEmoticonCli::FUN_140a39360(CInPacket& packet)
                                         TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strMsg);
         ((UIRewardNotify*)pChat)->FUN_141ac1580(strName, strMsg, 1);
-        FUN_1412751f0(strMsg, 0, 1);
+        ShowSystemNotice(strMsg, 0, 1);
     }
 }
 MS2_REPLACE_METHOD(0x140A39360, CChatEmoticonCli, FUN_140a39360, 943, 0xC5A9D741);
@@ -272,10 +272,10 @@ void CChatEmoticonCli::OnEmoticonTypedInMessenger(CInPacket& packet)
     UIMessengerBrowser* pBrowser = FindMessengerBrowser(0x4e61);
     if (pBrowser == 0)
         return;
-    UIMessenger* pChat = pBrowser->FUN_141a259c0(strName);
+    UIMessenger* pChat = pBrowser->FindWindowByName(strName);
     if (pChat == 0)
         return;
-    pChat->FUN_141a10010(nFlag, nId);
+    pChat->TypeEmoticon(nFlag, nId);
 }
 MS2_REPLACE_METHOD(0x140A39830, CChatEmoticonCli, OnEmoticonTypedInMessenger, 255, 0xCDB8952F);
 
@@ -291,7 +291,7 @@ void CChatEmoticonCli::OnEmoticonSentInGroupMessenger(CInPacket& packet)
     UIGroupMessenger* pChat = pBrowser->FindWindowByName(strName);
     if (pChat == 0)
         return;
-    pChat->FUN_14194afc0(nId);
+    pChat->SendEmoticonImage(nId);
 }
 MS2_REPLACE_METHOD(0x140A39940, CChatEmoticonCli, OnEmoticonSentInGroupMessenger, 209, 0x3A7FAB09);
 
@@ -303,19 +303,19 @@ void CChatEmoticonCli::OnEmoticonResult(CInPacket& packet)
     switch (nResult)
     {
     case 0:
-        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_print_failed"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_msg_chat_emoticon_print_failed"), 0, 0, L"");
         break;
     case 1:
-        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
         break;
     case 2:
-        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed_already_exist"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed_already_exist"), 0, 0, L"");
         break;
     case 3:
-        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
         break;
     case 4:
-        FUN_140d73aa0(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_msg_chat_emoticon_add_failed"), 0, 0, L"");
         break;
     }
 }

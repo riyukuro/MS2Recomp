@@ -31,7 +31,7 @@ CStringW GetStringCommon(int nStringId);                                  // a c
 #include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> over FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
 int FUN_1406516a0();                                                    // client language
 int FUN_1406516b0();                                                    // the language / region id
-int FUN_1406516d0(int nLanguage);                                       // the digit-group size of a language
+int GetDigitGroupSize(int nLanguage);                                       // the digit-group size of a language
 __int64 FUN_140718320(const CStringW& str);                             // the number of a digit string
 CStringW FUN_1409404f0(__int64 nValue);                                 // a number with separators
 CStringW FUN_14083cb20(const CStringW& strNumber);                      // digits grouped with commas
@@ -50,47 +50,47 @@ MS2_REPLACE(0x140B8E760, FUN_140b8e760, 60, 0x3F791677);
 
 // "yyyy/mm/dd" text.
 // @0x140b8e7b0
-CStringW FUN_140b8e7b0(const CMsTime& time)
+CStringW FormatYearMonthDay(const CMsTime& time)
 {
     return FUN_14028dfa0(L"s_common_year_month_day", time.GetYear(), time.GetMonth(), time.GetDay());
 }
-MS2_REPLACE(0x140B8E7B0, FUN_140b8e7b0, 153, 0xF4DC5D66);
+MS2_REPLACE(0x140B8E7B0, FormatYearMonthDay, 153, 0xF4DC5D66);
 
 // "yyyy/mm/dd hh" text.
 // @0x140b8e850
-CStringW FUN_140b8e850(const CMsTime& time)
+CStringW FormatYearMonthDayHour(const CMsTime& time)
 {
     return FUN_14028dfa0(L"s_common_year_month_day_hour", time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour());
 }
-MS2_REPLACE(0x140B8E850, FUN_140b8e850, 177, 0xB3A40AE2);
+MS2_REPLACE(0x140B8E850, FormatYearMonthDayHour, 177, 0xB3A40AE2);
 
 // "mm/dd" text.
 // @0x140b8e910
-CStringW FUN_140b8e910(const CMsTime& time)
+CStringW FormatMonthDay(const CMsTime& time)
 {
     return FUN_14028dfa0(L"s_common_month_day", time.GetMonth(), time.GetDay());
 }
-MS2_REPLACE(0x140B8E910, FUN_140b8e910, 129, 0x27596ECF);
+MS2_REPLACE(0x140B8E910, FormatMonthDay, 129, 0x27596ECF);
 
 // "mm/dd (weekday)" text.
 // @0x140b8e9a0
-CStringW FUN_140b8e9a0(const CMsTime& time)
+CStringW FormatMonthDayWeekday(const CMsTime& time)
 {
     return FormatStringId(0x981, time.GetMonth(), time.GetDay(), FUN_140b8f000(time));
 }
-MS2_REPLACE(0x140B8E9A0, FUN_140b8e9a0, 156, 0x8D4DAA75);
+MS2_REPLACE(0x140B8E9A0, FormatMonthDayWeekday, 156, 0x8D4DAA75);
 
 // "start ~ end" text of a time range.
 // @0x140b8ea50
-CStringW FUN_140b8ea50(TimeRange& range)
+CStringW FormatTimeRange(TimeRange& range)
 {
-    return StringFormat(L"{0} ~ {1}", FUN_140b8e9a0(CMsTime(range.FUN_140868f20())), FUN_140b8e9a0(CMsTime(range.FUN_140868f40())));
+    return StringFormat(L"{0} ~ {1}", FormatMonthDayWeekday(CMsTime(range.GetStart())), FormatMonthDayWeekday(CMsTime(range.GetEnd())));
 }
-MS2_REPLACE(0x140B8EA50, FUN_140b8ea50, 222, 0x18744034);
+MS2_REPLACE(0x140B8EA50, FormatTimeRange, 222, 0x18744034);
 
 // "mm/dd" text with " hh<hour>" appended when the hour is not 0.
 // @0x140b8eb40
-CStringW FUN_140b8eb40(const CMsTime& time)
+CStringW FormatMonthDayHour(const CMsTime& time)
 {
     CStringW str = FUN_14028dfa0(L"s_common_month_date", time.GetMonth(), time.GetDay());
     if (time.GetHour() != 0) {
@@ -99,24 +99,24 @@ CStringW FUN_140b8eb40(const CMsTime& time)
     }
     return str;
 }
-MS2_REPLACE(0x140B8EB40, FUN_140b8eb40, 315, 0xD6B68D8C);
+MS2_REPLACE(0x140B8EB40, FormatMonthDayHour, 315, 0xD6B68D8C);
 
 // "mm/dd hh:mm" text.
 // @0x140b8ec90
-CStringW FUN_140b8ec90(const CMsTime& time)
+CStringW FormatMonthDayHourMinute(const CMsTime& time)
 {
     CStringW str = FUN_14028dfa0(L"s_common_month_date_hour_min", time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute());
     return str;
 }
-MS2_REPLACE(0x140B8EC90, FUN_140b8ec90, 232, 0x9DE062DE);
+MS2_REPLACE(0x140B8EC90, FormatMonthDayHourMinute, 232, 0x9DE062DE);
 
 // "mm/dd hh:mm:ss" text.
 // @0x140b8ed80
-CStringW FUN_140b8ed80(const CMsTime& time)
+CStringW FormatMonthDayHourMinuteSecond(const CMsTime& time)
 {
     return FUN_14028dfa0(L"s_common_month_date_hour_min_sec", time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute(), time.GetSecond());
 }
-MS2_REPLACE(0x140B8ED80, FUN_140b8ed80, 222, 0x34EC45CA);
+MS2_REPLACE(0x140B8ED80, FormatMonthDayHourMinuteSecond, 222, 0x34EC45CA);
 
 // The short weekday name of a 1-based day (1 = Sunday); empty for other values.
 // @0x140b8ee70
@@ -213,11 +213,11 @@ MS2_REPLACE(0x140B8F550, FUN_140b8f550, 463, 0xEE2BF939);
 
 // "x, y, z" with one decimal.
 // @0x140b8f730
-CStringW FUN_140b8f730(const Vector3& pos)
+CStringW FormatPosition(const Vector3& pos)
 {
     return StringFormat(L"{0:0.1f}, {1:0.1f}, {2:0.1f}", pos.x, pos.y, pos.z);
 }
-MS2_REPLACE(0x140B8F730, FUN_140b8f730, 94, 0x071B2F6A);
+MS2_REPLACE(0x140B8F730, FormatPosition, 94, 0x071B2F6A);
 
 // A digit string split into digit groups of the client language (four digits for Korean: man / eok / jo) and
 // formatted with the "s_number_string_<mask>" key, the mask having a bit per non-zero group. Short numbers get the
@@ -225,7 +225,7 @@ MS2_REPLACE(0x140B8F730, FUN_140b8f730, 94, 0x071B2F6A);
 // @0x140b8f7a0
 CStringW FUN_140b8f7a0(const CStringW& strNumber)
 {
-    int nGroup = FUN_1406516d0(FUN_1406516a0());
+    int nGroup = GetDigitGroupSize(FUN_1406516a0());
     int nLength = strNumber.GetLength();
     CStringW strRest(strNumber);
     if (nLength - nGroup <= 0)
@@ -258,16 +258,16 @@ MS2_REPLACE(0x140B8F7A0, FUN_140b8f7a0, 1041, 0xFF75188D);
 
 // "mm:ss" text of a span.
 // @0x140b8fbc0
-CStringW FUN_140b8fbc0(const ATL::CTimeSpan& span)
+CStringW FormatMinutesSeconds(const ATL::CTimeSpan& span)
 {
     CStringW str = FUN_14028dfa0(L"s_common_min_sec_2", span.GetMinutes(), span.GetSeconds());
     return str;
 }
-MS2_REPLACE(0x140B8FBC0, FUN_140b8fbc0, 166, 0x3D4F38DE);
+MS2_REPLACE(0x140B8FBC0, FormatMinutesSeconds, 166, 0x3D4F38DE);
 
 // The clock text of an hour and minute: "am/pm hh:mm" (12-hour) or the 24-hour string-table text.
 // @0x140b8fc70
-CStringW FUN_140b8fc70(int nHour, int nMinute, bool b24Hour)
+CStringW FormatHourMinute(int nHour, int nMinute, bool b24Hour)
 {
     CStringW str(L"");
     if (!b24Hour) {
@@ -283,7 +283,7 @@ CStringW FUN_140b8fc70(int nHour, int nMinute, bool b24Hour)
     str = FUN_14028dfa0(L"s_common_hour_min", nHour, nMinute);
     return str;
 }
-MS2_REPLACE(0x140B8FC70, FUN_140b8fc70, 590, 0xCF168768);
+MS2_REPLACE(0x140B8FC70, FormatHourMinute, 590, 0xCF168768);
 
 // A string-table text of the region's table (table 0x3e for language 2, else table 1).
 // @0x140b8fed0

@@ -175,7 +175,7 @@ int CPortal::FUN_14169b650(efd::SmartPointer<egf::Entity> spEntity)
 }
 
 // @0x14169b890
-int CPortal::FUN_14169b890()
+int CPortal::CreateTooltip()
 {
     if (m_nEndTime > 0)
     {
@@ -188,8 +188,8 @@ int CPortal::FUN_14169b890()
         m_tooltip->m_68 = 0;
         // (the by-value pass copies ptPos)
         m_tooltip->FUN_14191aae0(ptPos);
-        m_tooltip->FUN_14191ab10(CStringW(L""));
-        m_tooltip->FUN_14191aa10();
+        m_tooltip->SetText(CStringW(L""));
+        m_tooltip->Show();
     }
     return 1;
 }
@@ -240,7 +240,7 @@ int CPortal::ApplyMinimapTexture()
 }
 
 // @0x14169bd40
-void CPortal::FUN_14169bd40()
+void CPortal::UpdateTooltip()
 {
     if ((m_nType == 6 || m_nType == 3 || m_nType == 10 || m_nType == 0x10) && m_nEndTime > 0 && m_tooltip.get() != 0)
     {
@@ -275,7 +275,7 @@ void CPortal::FUN_14169bd40()
             if (m_strTip.GetLength() > 0)
                 strText += FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_msg_item_open_massive_portal_tooltip"), m_strTip,
                                          TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_unk_148));
-            m_tooltip->FUN_14191ab10(strText);
+            m_tooltip->SetText(strText);
         }
     }
     if (m_nEventTime != 0)
@@ -303,17 +303,17 @@ void CPortal::FUN_14169c280()
     if (m_nType == 6)
     {
         ApplyMinimapTexture();
-        FUN_14169b890();
+        CreateTooltip();
     }
     else if (m_nType == 3 || m_nType == 0x10)
     {
         if (m_strTip.GetLength() > 0)
             ApplyMinimapTexture();
-        FUN_14169b890();
+        CreateTooltip();
     }
     else if (m_nType == 10)
     {
-        FUN_14169b890();
+        CreateTooltip();
     }
     FUN_14169d3a0();
 }

@@ -39,8 +39,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
+CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item data of an id
 class Unk_XmlNode   // C3: member view for the former element stand-ins
@@ -149,9 +149,9 @@ CItemEnchantLimitTable::~CItemEnchantLimitTable()
 // @0x14058dc50
 int CItemEnchantLimitTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "enchantLimitTable.xml");
+    CString strPath = GetXmlPath("Table", "enchantLimitTable.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -204,7 +204,7 @@ int CItemEnchantLimitTable::FUN_14058df90(CItem* pItem)
     if (pItem->GetRequiredLevel() > spLimit->m_nMaxLv)
         return 0;
 
-    MS2Ptr<CItemEnchantInfo> spInfo(reinterpret_cast<CItemStatus*>(pItem->FUN_1405278a0())->GetEnchant());
+    MS2Ptr<CItemEnchantInfo> spInfo(reinterpret_cast<CItemStatus*>(pItem->GetStatus())->GetEnchant());
     if (!spInfo)
         return 0;
     if (spInfo->GetLevel() >= spLimit->m_nMaxGrade)
@@ -245,7 +245,7 @@ unsigned CItemEnchantLimitTable::IsMaxGrade(CItem* pItem)
     MS2Ptr<EnchantLimit> spLimit(0);
     if (!m_map.Lookup(ITEM_DATA(pItem)->GetEquipSubtype(), spLimit))
         return 0;
-    return pItem->FUN_140526fc0() == spLimit->m_nMaxGrade;
+    return pItem->GetEnchantLevel() == spLimit->m_nMaxGrade;
 }
 
 // @0x14058e4a0
@@ -289,7 +289,7 @@ void CItemEnchantLimitTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CItemEnchantLimitTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CItemEnchantLimitTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

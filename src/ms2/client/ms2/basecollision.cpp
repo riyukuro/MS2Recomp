@@ -237,7 +237,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
             if (spCtx->m_pExclude->Lookup(pObj->GetObjectId()) != NULL)
                 continue;
         }
-        if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd7))
+        if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xd7))
         {
             if (pObj->GetObjectId() == spCtx->m_pOwner->GetObjectId())
             {
@@ -285,7 +285,7 @@ void CBaseCollision::Detect(MS2Ptr<CDetectContext> spCtx)
                 if (bHit == 0)
                     continue;
             }
-            if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xd7))
+            if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xd7))
             {
                 if (pObj->GetObjectId() == spCtx->m_pOwner->GetObjectId())
                 {
@@ -809,7 +809,7 @@ static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFl
     if ((nFlags & 8) != 0)
     {
         if (pPet != NULL)
-            return pPet->FUN_141094f60() == NULL;
+            return pPet->GetOwner() == NULL;
     }
     else if (pPet != NULL)
     {
@@ -822,7 +822,7 @@ static int FilterTarget(GameObject* pSelf, GameObject* pTarget, unsigned int nFl
         CNpc* pNpc = efd::DynamicCast<CNpc, PCBase>(pOther);
         if (pNpc != NULL)
         {
-            int nKind = pNpc->FUN_1410934c0();
+            int nKind = pNpc->GetNpcClass();
             if ((nNpcKinds & (1 << nKind)) != 0)
                 return 0;
         }

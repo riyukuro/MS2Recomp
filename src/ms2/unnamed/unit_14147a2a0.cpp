@@ -28,7 +28,7 @@ Vector3 GetHorizontalDirection(Vector3 kFrom, Vector3 kTo, bool bFlag);  // dire
 float GetDistance2D(NiPoint3 kA, NiPoint3 kB);                // horizontal distance (z cleared on the copies)
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 float FUN_1407680d0(class Unk_Random*);   // C3: was FUN_1407680d0
-void FUN_140e69330(float fAngle, float* pSin, float* pCos);                 // sin and cos of the angle
+void GetSinCos(float fAngle, float* pSin, float* pCos);                 // sin and cos of the angle
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z)          // C3: was extern Vector3 DAT_143a08cf8
 
 // A 2D point and its NiPoint2 / efd::Point2 helpers.
@@ -50,8 +50,8 @@ struct Unk_Parabola
 };
 MS2_CHECK_SIZE(Unk_Parabola, 0x38);
 
-float FUN_14147af60(float fAngle);
-float FUN_14147aed0(const Unk_Pt2* pA, const Unk_Pt2* pB);
+float Tan(float fAngle);
+float DotProduct2D(const Unk_Pt2* pA, const Unk_Pt2* pB);
 Vector3 FUN_14147af10(Unk_NiPoint3 kVec);
 
 // @0x14147a2a0
@@ -65,7 +65,7 @@ void Unk_Parabola::FUN_14147a2a0(const Vector3& ptStart, const Vector3& ptEnd, f
     m_fSin = sinf(fAngle);
     float fRange = GetPlanarDistance(ptEnd, ptStart);
     float fRise = ptEnd.z - ptStart.z;
-    float fTan = FUN_14147af60(fAngle);
+    float fTan = Tan(fAngle);
     float fValue = fGravity * (fTan * fTan + 1.0f) / (2.0f * (fRange * fTan - fRise));
     if (fValue < 0.0f)
     {
@@ -128,12 +128,12 @@ bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, flo
 
 // @0x14147a850
 // Circle (centre kCenter, radius fRadius) against the line kOrigin + t * kDir; writes both crossing points.
-bool FUN_14147a850(const Unk_Pt2& kOrigin, const Unk_Pt2& kDir, const Unk_Pt2& kCenter, float fRadius, Unk_Pt2* pHit0, Unk_Pt2* pHit1)
+bool IntersectLineCircle(const Unk_Pt2& kOrigin, const Unk_Pt2& kDir, const Unk_Pt2& kCenter, float fRadius, Unk_Pt2* pHit0, Unk_Pt2* pHit1)
 {
     NiPoint2 kLocal(AsPoint2(kOrigin) - AsPoint2(kCenter));
-    float fA = FUN_14147aed0(&kDir, &kDir);
-    float fB = FUN_14147aed0(reinterpret_cast<const Unk_Pt2*>(&kLocal), &kDir);
-    float fC = FUN_14147aed0(reinterpret_cast<const Unk_Pt2*>(&kLocal), reinterpret_cast<const Unk_Pt2*>(&kLocal)) - fRadius * fRadius;
+    float fA = DotProduct2D(&kDir, &kDir);
+    float fB = DotProduct2D(reinterpret_cast<const Unk_Pt2*>(&kLocal), &kDir);
+    float fC = DotProduct2D(reinterpret_cast<const Unk_Pt2*>(&kLocal), reinterpret_cast<const Unk_Pt2*>(&kLocal)) - fRadius * fRadius;
     float fDisc = fB * fB - fA * fC;
     if (fDisc < 0.0f)
         return false;
@@ -151,7 +151,7 @@ bool FUN_14147a850(const Unk_Pt2& kOrigin, const Unk_Pt2& kDir, const Unk_Pt2& k
 
 // @0x14147aa60
 // Ray against a sphere; writes the first hit point (or the closest point on the sphere when the ray misses) to pHit.
-bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3& kCenter, float fRadius, NiPoint3* pHit)
+bool IntersectRaySphere(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3& kCenter, float fRadius, NiPoint3* pHit)
 {
     bool bHit = false;
     Vector3 kUnit = reinterpret_cast<const Vector3&>(kDir);
@@ -206,17 +206,17 @@ bool FUN_14147ad10(const Vector3& kOrigin, const Vector3& kDir, const Vector3& k
 
 // @0x14147ae30
 // A random point of the disc of radius fRadius (uniform by area): angle from one draw, radius from the root of the next.
-void FUN_14147ae30(float fUnused0, float fUnused1, float fRadius, float* pX, float* pY, void* pRandom)
+void GetRandomPointInCircle(float fUnused0, float fUnused1, float fRadius, float* pX, float* pY, void* pRandom)
 {
     float fAngle = FUN_1407680d0((class Unk_Random*)(pRandom)) * 6.2831855f;
     float fDist = fRadius * efd::Sqrt(FUN_1407680d0((class Unk_Random*)(pRandom)));
-    FUN_140e69330(fAngle, pY, pX);
+    GetSinCos(fAngle, pY, pX);
     *pX = *pX * fDist;
     *pY = *pY * fDist;
 }
 
 // @0x14147aed0
-float FUN_14147aed0(const Unk_Pt2* pA, const Unk_Pt2* pB)
+float DotProduct2D(const Unk_Pt2* pA, const Unk_Pt2* pB)
 {
     return pA->x * pB->x + pA->y * pB->y;
 }
@@ -231,7 +231,7 @@ Vector3 FUN_14147af10(Unk_NiPoint3 kVec)
 }
 
 // @0x14147af60
-float FUN_14147af60(float fAngle)
+float Tan(float fAngle)
 {
     return tanf(fAngle);
 }

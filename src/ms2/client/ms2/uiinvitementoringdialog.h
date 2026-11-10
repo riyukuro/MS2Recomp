@@ -27,12 +27,12 @@ public:
     virtual void vfunc_66();                                        // 66 0x140c2e2c0 docks beside the mentor dialog
     virtual void vfunc_67();                                        // 67 0x140c2dfe0 Close: back to the mentor page, drops the clip
 
-    void FUN_140c2f010();                                           // 0x140c2f010 show the mentor page
-    void FUN_140c2f040();                                           // 0x140c2f040 show the mentee page
+    void ShowMentorPage();                                           // 0x140c2f010 show the mentor page
+    void ShowMenteePage();                                           // 0x140c2f040 show the mentee page
     void FUN_140c2f070(const ATL::CAtlArray<Unk_MentorPtr<CMentor> >& arrMentors);   // 0x140c2f070 rows of the mentee page from the packet list
-    void FUN_140c2f440(const ATL::CAtlArray<Unk_MentorPtr<CMentor> >& arrMentors);   // 0x140c2f440 keep the search list and show it
+    void SetMentorList(const ATL::CAtlArray<Unk_MentorPtr<CMentor> >& arrMentors);   // 0x140c2f440 keep the search list and show it
     void FUN_140c2f490();                                           // 0x140c2f490 rows of the mentor page from the kept list
-    void FUN_140c2f860(__int64 nMentor, const CStringW& strName);         // 0x140c2f860 invite one (packet 0xa1 / 5)
+    void InviteMentor(__int64 nMentor, const CStringW& strName);         // 0x140c2f860 invite one (packet 0xa1 / 5)
     bool FUN_140c2fae0(int nResult, const CMsgBoxData& data);       // 0x140c2fae0 accept answer (packet 0xa1 / 6)
 
 

@@ -28,12 +28,12 @@ public:
     virtual void vfunc_67();                                    // 67 0x140e47aa0 Close: drop the bound item and the children
 
     void FUN_140e47f10(CInPacket& iPacket);                     // 0x140e47f10 handler of packet 0xf7 (the open request answer)
-    void FUN_140e48020(NotifyObject* pNotify);                  // 0x140e48020 "NotifyCompleteMyPC": refresh
+    void OnNotifyCompleteMyPC(NotifyObject* pNotify);                  // 0x140e48020 "NotifyCompleteMyPC": refresh
     void FUN_140e48050();                                       // 0x140e48050 reload the event of the current field (GameEventItemBox::vfunc_5)
     void FUN_140e483b0();                                       // 0x140e483b0 show the event texts and the box item
     void SendEventReward(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140e48600 request button: send packet 0x97
-    CString FUN_140e48770(unsigned nItemId);                    // 0x140e48770 bind the box item under "<class>_<id>"; "" when it is unknown
-    void FUN_140e48990();                                       // 0x140e48990 drop the bound item
+    CString BindBoxItem(unsigned nItemId);                    // 0x140e48770 bind the box item under "<class>_<id>"; "" when it is unknown
+    void UnbindBoxItem();                                       // 0x140e48990 drop the bound item
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -121,7 +121,7 @@ void UITencentCashChargeDialog::vfunc_8(int nVisible)
     {
         vfunc_47(nVisible == 0);
         pDialog->vfunc_3(nVisible);
-        pDialog->FUN_1407cbbe0("visible", nVisible == 1);
+        pDialog->SetBoolMember("visible", nVisible == 1);
     }
 }
 
@@ -170,10 +170,10 @@ void UITencentCashChargeDialog::vfunc_26()
 void UITencentCashChargeDialog::vfunc_85()
 {
     ((void*)&((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->AssignRaw(new ASLoader(2)));
-    ((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->operator->()->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat<CString, int, int>(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)GetClientConstants())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)GetClientConstants())->m_nHeight)->Get()), 2)));
+    ((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->operator->()->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat<CString, int, int>(L"img://{0}:webBrowser/{1}/{2}", GetManagerKey(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)GetClientConstants())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)GetClientConstants())->m_nHeight)->Get()), 2)));
     if (m_spTarget.get() != 0)
     {
-        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900((&**((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage)))->FUN_1422bb890());
+        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->AddChild((&**((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage)))->FUN_1422bb890());
     }
 }
 
@@ -182,7 +182,7 @@ void UITencentCashChargeDialog::vfunc_86()
 {
     if ((m_spTarget.get() ? true : false) && (((class Unk_AasImage*)((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->get()) ? true : false))
     {
-        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6b70((&**((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage)))->FUN_1422bb890());
+        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->RemoveChild((&**((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage)))->FUN_1422bb890());
     }
 }
 
@@ -199,12 +199,12 @@ bool UITencentCashChargeDialog::vfunc_90(POINT* pPos)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog == 0)
         return false;
-    pPos->x -= pDialog->FUN_1422c10a0();
-    pPos->y -= pDialog->FUN_1422c1110();
+    pPos->x -= pDialog->GetX();
+    pPos->y -= pDialog->GetY();
     if (m_spTarget == 0)
         return false;
-    pPos->x -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c10a0();
-    pPos->y -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c1110();
+    pPos->x -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->GetX();
+    pPos->y -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->GetY();
     if (!(pPos->x >= 0 && pPos->y >= 0 && !(pPos->x > *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)GetClientConstants())->m_nWidth)->Get()) && pPos->y <= *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_CashConsts*)GetClientConstants())->m_nHeight)->Get()))
     {
         return false;

@@ -20,7 +20,7 @@
 // ---- exe callees ----
 #define DAT_143b01a60 (*(const NiPoint3*)&efd::Point3::ZERO)          // C3: was extern const NiPoint3 DAT_143b01a60
 class CrashManagerCli;
-CString FUN_14016a5c0(const char* psz, int nCodePage);                                  // narrows a string
+CString ToCString(const char* psz, int nCodePage);                                  // narrows a string
 
 inline CString Unk_DbgPrepend(char ch, const CString& str) { return ch + str; }
 
@@ -210,7 +210,7 @@ std::string CDrawDebugString::FormatWithThousandsSeparator(unsigned nValue)
             nDigits = 0;
         }
     }
-    return std::string((const char*)FUN_14016a5c0((const char*)strOut, 0));
+    return std::string((const char*)ToCString((const char*)strOut, 0));
 }
 
 // @0x14118c300

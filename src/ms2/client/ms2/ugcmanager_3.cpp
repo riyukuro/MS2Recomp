@@ -19,7 +19,7 @@
 // Game context: FUN_141bd0cc0 returns the local player (the tooltip owner).
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);           // item template data by id
-int FUN_141275a10(CItem* pItem);                         // the usable state of an item (1 locked, 2 disabled, 3 condition)
+int GetItemUsableState(CItem* pItem);                         // the usable state of an item (1 locked, 2 disabled, 3 condition)
 CStringW FUN_14016a730(const char* sz, int nCodePage);   // multi-byte to wide
 
 // Registry of named bags/slots (GFx bind data).
@@ -45,13 +45,13 @@ UGCItemSlot::UGCItemSlot(const CString& strName, MS2Ptr<CItem> spItem)
 }
 
 // @0x14187d870
-int UGCItemSlot::FUN_14187d870()
+int UGCItemSlot::GetItemTemplateId()
 {
     if (m_spItem == 0)
         return 0;
-    return m_spItem->FUN_1405276c0();
+    return m_spItem->GetItemId();
 }
-MS2_REPLACE_METHOD(0x14187d870, UGCItemSlot, FUN_14187d870, 73, 0xC60F55F1);
+MS2_REPLACE_METHOD(0x14187d870, UGCItemSlot, GetItemTemplateId, 73, 0xC60F55F1);
 
 // @0x14187d8c0
 void UGCItemSlot::SetItem(MS2Ptr<CItem> spItem)
@@ -80,22 +80,22 @@ int UGCItemSlot::vfunc_26(ASObj& obj)
 {
     if (m_spItem == 0)
         return 0;
-    MS2Ptr<CItemData> spData = FUN_14053f870(m_spItem->FUN_1405276c0());
+    MS2Ptr<CItemData> spData = FUN_14053f870(m_spItem->GetItemId());
     if (!spData)
         return 0;
-    obj.FUN_1407cbbe0(s_strItemCash, spData->IsCashItem());
-    int nState = FUN_141275a10(m_spItem.get());
+    obj.SetBoolMember(s_strItemCash, spData->IsCashItem());
+    int nState = GetItemUsableState(m_spItem.get());
     if (nState == 1)
-        obj.FUN_1407cbbe0(s_strItemLock, true);
+        obj.SetBoolMember(s_strItemLock, true);
     else if (nState == 2)
-        obj.FUN_1407cbbe0(s_strDisable, true);
+        obj.SetBoolMember(s_strDisable, true);
     else if (nState == 3)
-        obj.FUN_1407cbbe0(s_strItemConditionLock, true);
-    obj.FUN_1407cb9c0(s_strIndex, m_nIndex);
-    obj.FUN_1407cb9c0(s_strItemCount, 0);
+        obj.SetBoolMember(s_strItemConditionLock, true);
+    obj.SetIntMember(s_strIndex, m_nIndex);
+    obj.SetIntMember(s_strItemCount, 0);
     obj.FUN_1409adc90(s_strItemGrade, m_spItem->GetRarity());
-    obj.FUN_1407cbb20(s_strIconPath, FUN_14016a730(m_spItem->FUN_140528590(), 0));
-    obj.FUN_1407cb9c0(s_strItemNew, 0);
+    obj.SetWStringMember(s_strIconPath, FUN_14016a730(m_spItem->GetIconPath(), 0));
+    obj.SetIntMember(s_strItemNew, 0);
     return 1;
 }
 MS2_REPLACE_METHOD(0x14187d9a0, UGCItemSlot, vfunc_26, 712, 0x8A7B3C34);
@@ -108,7 +108,7 @@ int UGCItemSlot::vfunc_0(void* p)
     ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x20, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()))
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -122,7 +122,7 @@ int UGCItemSlot::vfunc_8(void* p)
         return 0;
     ASObj obj(2);
     vfunc_26(obj);
-    *static_cast<Scaleform::GFx::Value*>(p) = obj.FUN_1422bb870();
+    *static_cast<Scaleform::GFx::Value*>(p) = obj.GetValue();
     return 1;
 }
 MS2_REPLACE_METHOD(0x14187dd50, UGCItemSlot, vfunc_8, 157, 0xDF8915C2);
@@ -132,18 +132,18 @@ void FUN_14187de00(const CString& strName, MS2Ptr<CItem> spItem)
 {
     UGCItemSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) UGCItemSlot(strName, spItem);
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::RegisterBinding(strName, pSlot);
 }
 MS2_REPLACE(0x14187de00, FUN_14187de00, 213, 0x341DE3D3);
 
 // @0x14187dee0
-void FUN_14187dee0(const CString& strName)
+void UnbindItemSlot(const CString& strName)
 {
-    UGCItemSlot* pSlot = efd::DynamicCast<UGCItemSlot>(Unk_NotifyContext::FUN_1422c8e90(strName));
+    UGCItemSlot* pSlot = efd::DynamicCast<UGCItemSlot>(Unk_NotifyContext::FindBinding(strName));
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
 }
-MS2_REPLACE(0x14187dee0, FUN_14187dee0, 55, 0xE2F5333B);
+MS2_REPLACE(0x14187dee0, UnbindItemSlot, 55, 0xE2F5333B);
 
 // The UCRT's `static __inline memcpy_s` (corecrt_memcpy_s.h), emitted because the original TU kept an unreferenced copy.
 #pragma function(memcpy, memset)

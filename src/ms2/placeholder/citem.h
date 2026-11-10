@@ -101,17 +101,17 @@ public:
   Unk_UserProxyItemData *FUN_140527870();
 
   // Packet serialization declarations appended by a4 (unit_1401f9eb0).
-  void FUN_140524ad0(COutputStream&);
-  void FUN_140524eb0(CInputStream&);
+  void WriteToStream(COutputStream&);
+  void ReadFromStream(CInputStream&);
   __int64 GetItemUid();
   void SetItemUid(__int64);
   void FUN_140526c10(int);
-  int FUN_140526b50();
-  void FUN_140526b70(int);
+  int GetSlot();
+  void SetSlot(int);
   void SetCountClamped(int);
   int GetRarity();
   int GetUgcTag();                    // 0x140528840 (astooltip.cpp)
-  int FUN_1405276c0();
+  int GetItemId();
   Unk_ItemEquipData* FUN_1405277b0();   // 0x1405277b0
   int GetIconCode();                  // 0x140527760
   Unk_ItemEquipData* FUN_140527840();   // 0x140527840 the item's data record (equip flags; uiequipiconcontainer.cpp)
@@ -124,8 +124,8 @@ public:
   virtual void vfunc_3(int);
   virtual int vfunc_4();
   virtual void vfunc_5(bool);
-  int FUN_1405268f0();
-  CString FUN_140528590();                // 0x140528590 the item's name (uirewardnotify.cpp)
+  int IsNew();
+  CString GetIconPath();                // 0x140528590 the item's name (uirewardnotify.cpp)
   int FUN_14052b130(int, int, int);   // can the item be combined with this one (ItemInfoSlot exchange scroll)
   // sb4 (clonecube.cpp): UGC look of the item. The callee returns a byte; callers test eax (declared int there).
   int HasCubeTextureMesh();                   // 0x140525f10 item data at +0xe8 is a UGC item
@@ -138,13 +138,13 @@ public:
   bool CanBeItemLocked();                   // 0x140528cc0 can be item-locked (unit_1406125d0)
   bool IsItemLocked();                   // 0x140528da0 can be item-unlocked (unit_1406125d0)
   // uiitemenchantdialog.cpp: enchant-related accessors.
-  int FUN_140526fc0();                    // 0x140526fc0 enchant level
+  int GetEnchantLevel();                    // 0x140526fc0 enchant level
   int GetEnchantCharge();                    // 0x1405270a0 enchant exp
   void SetEnchantCharge(int);                // 0x140527110 set enchant exp
   int GetPlusLevel();
   int FUN_140527030();
-  CItemStatus* FUN_1405278a0();   // 0x1405278a0 the enchant data object (null when absent)
-  Unk_ItemOwnerRef* FUN_140527930();      // 0x140527930 binding owner holder
+  CItemStatus* GetStatus();   // 0x1405278a0 the enchant data object (null when absent)
+  Unk_ItemOwnerRef* GetTransfer();      // 0x140527930 binding owner holder
   unsigned GetRequiredLevel();               // 0x140527710 item level
   int InitWithCount(int, int, int, int);  // set up from id, rank, 0, count
   MS2Ptr<CItem> Clone();          // 0x140524250 copy
@@ -162,9 +162,9 @@ public:
   // Delegations to the item table row (item.cpp, w74); names are by address.
   int IsPetItem();
   int FUN_140525870();
-  int FUN_140525ca0();
+  int IsPCBangItem();
   int FUN_140525db0();
-  int FUN_140525e00();
+  int HasWeddingLimit();
   int FUN_140525e50(int, int);
   int FUN_140525eb0(int, int);
   int FUN_140526010();
@@ -172,16 +172,16 @@ public:
   int HasQuestStartFunction();
   int FUN_140526320();
   int IsJobAllowed(int);
-  int FUN_1405267d0(int);
+  int IsGenderAllowed(int);
   int CanUseAtLevel(unsigned short);
   // Scalar accessors (item.cpp, w87): plain field getters/setters; names are by offset.
   int FUN_14052a020();
   void FUN_14052a040(int);
   int FUN_14052a150();
   void FUN_14052a130(int);
-  void FUN_1405268d0(int);
-  unsigned char FUN_140526930();
-  void FUN_140526910(unsigned char);
+  void SetNew(int);
+  unsigned char IsEvent();
+  void SetEvent(unsigned char);
   int FUN_140526a10();
   void FUN_140526a30(int);
   int FUN_140526970();
@@ -189,9 +189,9 @@ public:
   void FUN_140526990(int);
   __int64 FUN_140526a90();
   void FUN_140526ab0(__int64);
-  __int64 FUN_140526ad0();
+  __int64 GetCharacterId();
   void FUN_140526af0(__int64);
-  int FUN_140526b10();
+  int GetObjectId();
   int FUN_140526b90();
   void FUN_140526bf0(int);
   int FUN_140526c30();
@@ -199,32 +199,32 @@ public:
   __int64 FUN_140528a90();
   void FUN_140528a60(__int64);
   int FUN_140529260();
-  int FUN_140527300();
-  void FUN_1405272e0(int);
+  int GetRemakeCount();
+  void SetRemakeCount(int);
   int FUN_140527340();
   void FUN_140527320(int);
   int FUN_140528ca0();
   void FUN_140528c80(int);
-  __int64 FUN_140528e00();
-  void FUN_140528dd0(__int64);
+  __int64 GetUnlockTime();
+  void SetUnlockTime(__int64);
   int FUN_140529070();
   int FUN_140529090();
-  __int64 FUN_140528b90();
-  void FUN_140528b60(__int64);
-  int FUN_140528bd0();
+  __int64 GetPetExp();
+  void SetPetExp(__int64);
+  int GetPetEvolutionPoint();
   void FUN_140528bb0(int);
-  unsigned short FUN_140528c20();
-  void FUN_140528bf0(unsigned short);
+  unsigned short GetPetLevel();
+  void SetPetLevel(unsigned short);
   int FUN_140528c60();
   void FUN_140528c40(int);
   unsigned char FUN_140529620();
-  int FUN_1405292a0();
-  void FUN_140529280(int);
+  int GetExtractionCount();
+  void SetExtractionCount(int);
   int FUN_140529640();
   void FUN_140529660(int);
   unsigned char FUN_1405269f0();
   void FUN_1405269d0(unsigned char);
-  int FUN_1405291f0();
+  int IsEquipped();
   // item.cpp (w101): name is the address; return types read from the callers' disassembly.
   int FUN_140525980();
   int FUN_140525a80();
@@ -237,7 +237,7 @@ public:
   CStringW GetCoupleName();
   int FUN_140529560();
   CStringW FUN_140529de0();
-  CString FUN_140529eb0();
+  CString GetEnchantNif();
   CString FUN_140529f60(int, int, int, unsigned);
   int FUN_14052a060();
   void FUN_14052b370();
@@ -260,8 +260,8 @@ public:
   bool FUN_140525730();
   bool FUN_140525790();
   int IsStackable();
-  int FUN_1405258f0();
-  int FUN_140525920();
+  int IsMeso();
+  int IsMerat();
   int FUN_140525950();
   int FUN_1405259e0();
   int FUN_140525a30();
@@ -270,14 +270,14 @@ public:
   int GetTransferCount();               // w98
   void FUN_1405290b0();                  // w98
   bool SetEnchantLevel(int, bool);
-  bool FUN_140527180(int, bool);
+  bool SetPlusLevel(int, bool);
   int FUN_14052a170();                   // w98
   CStringW FUN_14052a4f0();
   int FUN_14052a580(void*);
   bool FUN_140528980();                   // w98
   int HasAnyEquipSlotOf();                   // w98
   int FUN_140526060(void*);              // w98
-  int FUN_140525f60();
+  int HasUgcId();
   int FUN_140525fc0();
   int FUN_140526160();
   int FUN_140526470(unsigned);
@@ -288,16 +288,16 @@ public:
   void FUN_140526f50(unsigned, bool);
   int GetTransferMax();
   void SetTransferCount(unsigned);
-  void FUN_140527490(unsigned);
+  void SetTransferMax(unsigned);
   unsigned GetRepackLimitCount();
   unsigned GetRepackConsumeCount();
   int GetRemainingRePackingCount();
   void FUN_1405275f0();
-  __int64 FUN_140527640();
+  __int64 GetTotalSellPrice();
   int FUN_1405279f0();
   unsigned FUN_140527a20();
   unsigned GetSlotMax();
-  unsigned short FUN_1405282d0();
+  unsigned short GetLevelLimit();
   int FUN_140528420();
   void SetBlueprintData(class CBlueprintItemData*);
   class CBlueprintItemData* GetBlueprintData();
@@ -321,16 +321,16 @@ public:
   bool FUN_140529680(int);
   void SetName(CString);
   void FUN_14052a210(unsigned);
-  void FUN_14052a230(unsigned);
+  void AddFlags(unsigned);
   void FUN_14052a260(unsigned);
-  bool FUN_14052a290(unsigned);
+  bool HasFlags(unsigned);
   bool FUN_14052a2d0();
   bool FUN_14052a330();
   bool FUN_14052a390();
   __int64 FUN_14052a480();
-  int FUN_14052b340(unsigned);
+  int SetCount(unsigned);
   bool FUN_14052b710(unsigned*, __int64*);
-  unsigned char FUN_14052b630();
+  unsigned char ClearBinding();
 private:
   CString m_strName;                    // +0x18
   int m_20;

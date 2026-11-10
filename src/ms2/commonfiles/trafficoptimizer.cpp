@@ -30,7 +30,7 @@ CTrafficOptimizer::CTrafficOptimizer() : m_map(17, .75f, .25f, 2.25f, 10) {}
 CTrafficOptimizer::~CTrafficOptimizer() {}
 
 // @0x14087d2f0
-unsigned CTrafficOptimizer::FUN_14087d2f0(Unk_TOEntity* entity) {
+unsigned CTrafficOptimizer::GetTrafficLimit(Unk_TOEntity* entity) {
     if (FUN_14087ddc0(entity ? entity->vfunc_6() : 0, 0x6200003)) {
         return FUN_14087d410(entity);
     } else if (FUN_14087ddc0(entity ? entity->vfunc_6() : 0, 0x6200045)) {
@@ -40,7 +40,7 @@ unsigned CTrafficOptimizer::FUN_14087d2f0(Unk_TOEntity* entity) {
     }
     return 100;
 }
-MS2_REPLACE_METHOD(0x14087D2F0, CTrafficOptimizer, FUN_14087d2f0, 264, 0x01DE5B8F);
+MS2_REPLACE_METHOD(0x14087D2F0, CTrafficOptimizer, GetTrafficLimit, 264, 0x01DE5B8F);
 
 // @0x14087d410
 unsigned CTrafficOptimizer::FUN_14087d410(Unk_TOEntity* entity) {

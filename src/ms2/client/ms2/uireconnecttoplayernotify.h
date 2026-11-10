@@ -15,7 +15,7 @@ public:
     virtual int vfunc_48() { return 0x4f78; }                                           // 48 0x140e800f0
     virtual void vfunc_52(int nRetry, int nMax);                                        // 52 0x140e7ff60 sets the retry counter
 
-    void FUN_140e80030();                                                               // pushes "setRetryCount" to the movie
+    void SetRetryCount();                                                               // pushes "setRetryCount" to the movie
 
 private:
     MS2_LAYOUT_FRIEND;

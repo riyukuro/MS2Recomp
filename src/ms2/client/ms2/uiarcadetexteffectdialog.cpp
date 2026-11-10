@@ -24,8 +24,8 @@
 // @0x140ba7d90
 UIArcadeTextEffectDialog::UIArcadeTextEffectDialog()
 {
-    FUN_141924170(0);
-    FUN_141925e70(1, 1);
+    SetTweenEnabled(0);
+    SetFlag(1, 1);
 }
 
 // @0x140ba7e20
@@ -70,7 +70,7 @@ void UIArcadeTextEffectDialog::FUN_140ba7fe0(int nMode, CInPacket& packet)
                 m_strText = FUN_14028dfa0<int>(CStringW(L"s_arcade_text_effect_consecutive_win"), nCount);
         }
         if (UIDialog::FUN_141924630())
-            FUN_140ba8160();
+            ShowText();
         else
             UIDialog::FUN_141924680();
     }
@@ -78,7 +78,7 @@ void UIArcadeTextEffectDialog::FUN_140ba7fe0(int nMode, CInPacket& packet)
 
 // An OnLoadComplete or a packet left a text behind: hand it to the swf and clear it.
 // @0x140ba8160
-void UIArcadeTextEffectDialog::FUN_140ba8160()
+void UIArcadeTextEffectDialog::ShowText()
 {
     if (m_30 == 0)
         return;
@@ -91,7 +91,7 @@ void UIArcadeTextEffectDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     if (m_strText.GetLength() > 0)
-        FUN_140ba8160();
+        ShowText();
 }
 
 // @0x140ba8270

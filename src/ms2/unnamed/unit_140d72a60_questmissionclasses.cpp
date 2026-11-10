@@ -44,7 +44,7 @@ class CGameRule {   // C3: member view of gamerule.h's CGameRule
 public:
     MS2Ptr<StampEventContext> FUN_14047ca40(Unk_AttendTable& table);
 };
-void* FUN_1401c0d90();
+void* GetGameRule();
 
 class Unk_MentorSchedule;
 class CGameEventValueMentoring   // C3: member view (the mentoring schedule)
@@ -56,9 +56,9 @@ class Unk_RuManager { public: class Unk_RuMentoring* GetMentoring(); };   // C3:
 
 UIRewardNotify* FindRewardNotify(int uiType);
 CStringW GetStringCommonByKey(const CStringW&);
-CStringW FUN_1416e4df0(int);
+CStringW GetQuestName(int);
 void FUN_1412751b0(const CStringW&, int);
-void FUN_1412751f0(const CStringW&, int, int);
+void ShowSystemNotice(const CStringW&, int, int);
 class CMentoringManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -187,14 +187,14 @@ void CEventMission::Complete(CInPacket& packet)
 {
     CQuest::Complete(packet);
     if (m_78 == 2) {
-        MS2Ptr<StampEventContext> ref = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
+        MS2Ptr<StampEventContext> ref = reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ca40(reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0));
         if (ref.IsNull()) return;
-        int n = ref->GetStampFlag(FUN_140bfc580());
+        int n = ref->GetStampFlag(GetQuestId());
         if (n == -1) return;
         UIRewardNotify* notify = FindRewardNotify(0x4e5d);
         if (notify != 0) {
-            CStringW text = FUN_14028dfa0<CStringW>(L"s_stampevent_quest_complete", FUN_1416e4df0(FUN_140bfc580()));
-            notify->FUN_141ac1730(text, n != 0, static_cast<Unk_QmGameEvent*>(ref.operator->())->m_tag);
+            CStringW text = FUN_14028dfa0<CStringW>(L"s_stampevent_quest_complete", GetQuestName(GetQuestId()));
+            notify->ShowStampNotice(text, n != 0, static_cast<Unk_QmGameEvent*>(ref.operator->())->m_tag);
         }
     }
 }
@@ -202,7 +202,7 @@ void CEventMission::Complete(CInPacket& packet)
 // @0x140d73340
 void CEventMission::ShowProgress(int index)
 {
-    if (m_78 == 1 && IsComplete()) FUN_1412751f0(GetStringCommonByKey(L"s_event_mission_levelpackage_complete"), 3, 1);
+    if (m_78 == 1 && IsComplete()) ShowSystemNotice(GetStringCommonByKey(L"s_event_mission_levelpackage_complete"), 3, 1);
 }
 
 // @0x140d73400
@@ -226,10 +226,10 @@ CMentoringMission::~CMentoringMission() {}
 void CMentoringMission::ShowExpired() {}
 
 // @0x140d734e0
-int CMentoringMission::FUN_1407447c0()
+int CMentoringMission::IsExpired()
 {
-    if (CQuestCommon::FUN_1407447c0()) return 1;
-    if (reinterpret_cast<CGameEventValueMentoring*>(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring())->HasId(FUN_140bfc580()) == 0) return 1;
+    if (CQuestCommon::IsExpired()) return 1;
+    if (reinterpret_cast<CGameEventValueMentoring*>(reinterpret_cast<Unk_RuManager*>(TSingleton<CGameEventValueManager>::GetInstance())->GetMentoring())->HasId(GetQuestId()) == 0) return 1;
     if (((class CMentoringManager*)(void*)(TSingleton<CMentoringManager>::GetInstance()))->FUN_140b71580() != 2) return 1;
     return 0;
 }

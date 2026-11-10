@@ -18,7 +18,7 @@ public:
     CWinHttpClient(const std::wstring& strUrl);             // 0x1409208e0
     ~CWinHttpClient();                                      // 0x140920b30
     void SetRequestURL(const std::wstring& strUrl);         // SetRequestUrl (m_requestURL = url)
-    bool FUN_140920cf0(const std::wstring& strVerb, bool bAsync);   // SendHttpRequest(httpVerb, disableAutoRedirect)
+    bool SendRequest(const std::wstring& strVerb, bool bAsync);   // SendHttpRequest(httpVerb, disableAutoRedirect)
     std::wstring GetResponseHeader();
     std::wstring GetResponseContent();                        // GetResponseContent
     std::wstring GetResponseCharset();
@@ -31,10 +31,10 @@ public:
     std::wstring GetResponseCookies();
     bool SaveResponseToFile(const std::wstring& filePath);
     bool SetAdditionalRequestCookies(const std::wstring& cookies);
-    bool FUN_140922b90(const unsigned char* pBody, unsigned nSize);    // SetAdditionalDataToSend
+    bool SetAdditionalDataToSend(const unsigned char* pBody, unsigned nSize);    // SetAdditionalDataToSend
     bool UpdateUrl(const std::wstring& url);
     bool ResetAdditionalDataToSend();
-    bool FUN_140922d20(const std::wstring& strHeaders);     // SetAdditionalRequestHeaders
+    bool SetAdditionalRequestHeaders(const std::wstring& strHeaders);     // SetAdditionalRequestHeaders
     bool SetProxy(const std::wstring& proxy);
     bool SetUserAgent(const std::wstring& userAgent);
     bool SetForceCharset(const std::wstring& charset);

@@ -28,17 +28,17 @@ public:
     virtual int vfunc_54(void* pCfg);                           // 54 0x1412cabf0 load "Convenience/lastPage"
 
     void FUN_1412cacc0();                                       // show the button of the state, refresh the effects
-    void FUN_1412cae10(int nArena);                             // select an arena: name, detail, banner, rewards
-    void FUN_1412cb220();                                       // play the registered effect
-    void FUN_1412cb240();                                       // the wait time labels of the arenas
-    void FUN_1412cb4b0(const Scaleform::GFx::FunctionHandler::Params& params);   // join button
+    void SelectArena(int nArena);                             // select an arena: name, detail, banner, rewards
+    void PlayArenaEffect();                                       // play the registered effect
+    void UpdateWaitTimeLabels();                                       // the wait time labels of the arenas
+    void SendCancelRequest(const Scaleform::GFx::FunctionHandler::Params& params);   // join button
     void FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler::Params& params);   // register button
     void SendPVPMode10(const Scaleform::GFx::FunctionHandler::Params& params);   // unregister button
-    void FUN_1412cb7e0(const Scaleform::GFx::FunctionHandler::Params& params);   // an arena button
-    void FUN_1412cb8d0(bool bPlay);                             // the "m_effect" clips of the arenas
-    CString FUN_1412cbc20(unsigned int nItemId);                // bind a reward icon, returns its key
-    void FUN_1412cbe90();                                       // release the bound icons
-    void FUN_1412cbf20();                                       // hide the three buttons
+    void OnClickArena(const Scaleform::GFx::FunctionHandler::Params& params);   // an arena button
+    void UpdateArenaEffect(bool bPlay);                             // the "m_effect" clips of the arenas
+    CString BindRewardIcon(unsigned int nItemId);                // bind a reward icon, returns its key
+    void ReleaseRewardIcons();                                       // release the bound icons
+    void HideButtons();                                       // hide the three buttons
 
 
 private:

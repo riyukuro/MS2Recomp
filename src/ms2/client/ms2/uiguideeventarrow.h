@@ -15,8 +15,8 @@ public:
     // 0 ~UIGuideEventArrow 0x1419609a0 is implicit (no vptr store in the exe)
     virtual void vfunc_1(MS2Ptr<AScript>);                          // 1 0x14195dd90 push the position to the swf (updateArrow/hideArrow)
     virtual int vfunc_2(void*);                                     // 2 0x14195dee0 screen position (Vector3*), 0 when off screen
-    void FUN_14195dfa0();                                           // ++m_34
-    void FUN_14195dfc0();                                           // --m_34 (asserts when 0)
+    void IncrementUseCount();                                           // ++m_34
+    void DecrementUseCount();                                           // --m_34 (asserts when 0)
     int GetUseCount();                                            // m_34
     int m_id;                                                       // +0x18 arrow id
     Vector3 m_pos;                                          // +0x1c world position
@@ -34,18 +34,18 @@ public:
     virtual int vfunc_2(void*);                                     // 2 0x14195e0e0
     void SetKindFromName(CString);                                    // kind from its name
     int GetTargetPosition(void*);                                       // kind 0: UI by id / name
-    int FUN_14195e3f0(void*);                                       // 1 skill slot of MainPlayerInfo
-    int FUN_14195e6e0(void*);                                       // 2..5 inventory item
-    int FUN_14195ead0(void*);                                       // 6 inventory tab
-    int FUN_14195eee0(void*);                                       // 7, 8 minimap marker
+    int GetSkillSlotPosition(void*);                                       // 1 skill slot of MainPlayerInfo
+    int GetInventoryItemPosition(void*);                                       // 2..5 inventory item
+    int GetInventoryTabPosition(void*);                                       // 6 inventory tab
+    int GetMinimapMarkerPosition(void*);                                       // 7, 8 minimap marker
     int GetHouseMarkPosition(void*);                                       // 9 house mark
     int GetPartyDialogPosition(void*);                                       // 10 party camera
     int GetMessengerTargetPosition(void*);                                       // 11 messenger
     int GetCubeTypePosition(void*);                                       // 12 cube palette
-    int FUN_14195f600(MS2Ptr<CItem>,int);                     // item matches the kind
+    int IsItemMatchingKind(MS2Ptr<CItem>,int);                     // item matches the kind
     unsigned FUN_14195f7b0(int);                                    // object id of kind 7 / 8
-    int FUN_14195f870(UISwfEntity*,void*);                          // position from the element path
-    int FUN_14195fc40(UISwfEntity*,void*);                          // same, game menu dialog
+    int GetElementPathPosition(UISwfEntity*,void*);                          // position from the element path
+    int GetGameMenuPathPosition(UISwfEntity*,void*);                          // same, game menu dialog
     int FUN_141960510();                                            // current scene is one of m_70
     int m_38;                                                       // +0x38 ui id
     CString m_name;                                                 // +0x40 ui name
@@ -70,10 +70,10 @@ public:
     // @0x14195cd90
     virtual int vfunc_48() { return 0x4e53; }
     int SkipTextTip();
-    void FUN_141959a60(MS2Ptr<UIGuideEventArrow>);                  // AddArrow
+    void AddArrow(MS2Ptr<UIGuideEventArrow>);                  // AddArrow
     void ReleaseArrow(unsigned int);
-    void FUN_14195a520(unsigned int,unsigned int,int);              // ShowTutorial
-    void FUN_14195ab40(unsigned int,unsigned int,int);              // ShowSummary
+    void ShowTutorial(unsigned int,unsigned int,int);              // ShowTutorial
+    void ShowSummary(unsigned int,unsigned int,int);              // ShowSummary
     void ParseTagNameValue(CStringW,CStringW&,CStringW&);               // split "[[name:value]]"
     void PlayVoice(unsigned int);                               // play the voice of a string
     MS2Ptr<AScript> FindChildScript(const CString&);
@@ -86,8 +86,8 @@ public:
     int IsSummaryShowing();
     int IsTextTipShowing();
     int GetLastTip();
-    void FUN_14195b970();
-    void FUN_14195be30();
+    void LoadGuideStrings();
+    void UpdateArrowSound();
     void CheckSummaryExpiry();
     CStringW GetGuideText(unsigned int);
     CString GetGuideVoice(unsigned int);

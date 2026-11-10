@@ -54,6 +54,6 @@ public:
     virtual void vfunc_il23(void* pItem);                               // o180 23 0x14134f0e0
 
     void FUN_14134f150();                                               // refill the stat list
-    void FUN_14134f790(MS2Ptr<ASScrollingList> list, int nStat, int bFloat);   // append the row of one stat
+    void AddStatRow(MS2Ptr<ASScrollingList> list, int nStat, int bFloat);   // append the row of one stat
 };
 MS2_CHECK_SIZE(UIStatControlDialog, 0x188);

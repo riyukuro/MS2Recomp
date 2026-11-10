@@ -133,11 +133,11 @@ void CGameOptionPersonalInfoAgreement::vfunc_6()   // @0x140a45ed0
     {
         MS2Ptr<ASRadioButton> agree = ((Unk_PiDialog*)GetOptionDialog())->GetTabRadioButton(CString("m_sendLogAgree"), -1);
         if (agree.get() != 0)
-            agree->FUN_1422ce090(m_state.m_bAgree);
+            agree->SetSelected(m_state.m_bAgree);
     }
     MS2Ptr<ASRadioButton> deny = ((Unk_PiDialog*)GetOptionDialog())->GetTabRadioButton(CString("m_sendLogDeny"), -1);
     if (deny.get() != 0)
-        deny->FUN_1422ce090(m_state.m_bAgree == 0);
+        deny->SetSelected(m_state.m_bAgree == 0);
 }
 
 void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
@@ -146,7 +146,7 @@ void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
         MS2Ptr<ASRadioButton> agree = ((Unk_PiDialog*)GetOptionDialog())->GetTabRadioButton(CString("m_sendLogAgree"), -1);
         if (agree.get() != 0)
         {
-            if (agree->FUN_1422ce0e0())
+            if (agree->IsSelected())
                 m_state.m_bAgree = true;
         }
     }
@@ -154,7 +154,7 @@ void CGameOptionPersonalInfoAgreement::vfunc_7()   // @0x140a46040
         MS2Ptr<ASRadioButton> deny = ((Unk_PiDialog*)GetOptionDialog())->GetTabRadioButton(CString("m_sendLogDeny"), -1);
         if (deny.get() != 0)
         {
-            if (deny->FUN_1422ce0e0())
+            if (deny->IsSelected())
                 m_state.m_bAgree = false;
         }
     }

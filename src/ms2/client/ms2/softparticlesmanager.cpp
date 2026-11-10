@@ -54,8 +54,8 @@ MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
 void* FUN_140876480(void* pOut, int nCat);      // category hint
 void* FUN_14208a860(size_t cb, int nCat);       // the engine allocator
-Ni3DRenderView* FUN_1413f9a70();                // the main 3D view
-ecr::RenderSurface* FUN_1413f98d0();            // the render surface
+Ni3DRenderView* FindRenderView();                // the main 3D view
+ecr::RenderSurface* GetActiveRenderSurface();            // the render surface
 ecr::SceneGraphService* FUN_1413f98b0();        // the scene-graph service
 bool FUN_1417741e0(const NiRTTI* pRTTI, const void* pObject);
 
@@ -66,8 +66,8 @@ public:
     static class Unk_AeFeatureMgr* FUN_1409a8b20();
 };
 
-void FUN_141773a90(void* pRegistry, void* pNode);
-void FUN_141773cc0(void* pRegistry, void* pNode);
+void RegisterModel(void* pRegistry, void* pNode);
+void UnregisterModel(void* pRegistry, void* pNode);
 void FUN_1417740c0(void* viewSystem, bool bCulled);
 bool FUN_141774040(NiRenderClick* pkClick, void* pvData);
 bool FUN_141774080(NiRenderClick* pkClick, void* pvData);
@@ -84,10 +84,10 @@ void FUN_141773630(void* viewSystem)
     ((SoftParticlesManager*)viewSystem)->m_spClick->SetClearAllBuffers(false);
 
     NiDefaultClickRenderStep* pkStep =
-        NiDynamicCast(NiDefaultClickRenderStep, FUN_1413f98d0()->GetRenderStep());
+        NiDynamicCast(NiDefaultClickRenderStep, GetActiveRenderSurface()->GetRenderStep());
     pkStep->AppendRenderClick(((SoftParticlesManager*)viewSystem)->m_spClick);
 
-    Ni3DRenderView* pkMainView = FUN_1413f9a70();
+    Ni3DRenderView* pkMainView = FindRenderView();
     ((SoftParticlesManager*)viewSystem)->m_spView = new (efd::MemHint(efd::MemHint::NONE)) Ni3DRenderView(pkMainView->GetCamera(),
         pkMainView->GetCullingProcess(), pkMainView->GetAlwaysUseCameraViewport());
     ((SoftParticlesManager*)viewSystem)->m_spClick->AppendRenderView(((SoftParticlesManager*)viewSystem)->m_spView);
@@ -98,7 +98,7 @@ void FUN_141773630(void* viewSystem)
 
 // Turns the click off/on; turning it on registers every scene of the main view as a soft-particle scene.
 // @0x141773940
-void SoftParticlesManager::FUN_141773940(bool bEnable)
+void SoftParticlesManager::SetEnabled(bool bEnable)
 {
     m_spClick->SetActive(bEnable);
     ((class PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416aa6a0((Unk_PPTexture)1, bEnable);
@@ -107,13 +107,13 @@ void SoftParticlesManager::FUN_141773940(bool bEnable)
     {
         m_spView->RemoveAllScenes();
 
-        Ni3DRenderView* pkMainView = FUN_1413f9a70();
+        Ni3DRenderView* pkMainView = FindRenderView();
         NiTPointerList<NiAVObjectPtr>& kScenes = pkMainView->GetScenes();
         NiTListIterator kPos = kScenes.GetHeadPos();
         while (kPos != 0)
         {
             const NiAVObjectPtr& spScene = kScenes.GetNext(kPos);
-            FUN_141773a90(this, (NiAVObject*)spScene);
+            RegisterModel(this, (NiAVObject*)spScene);
         }
     }
     else
@@ -131,7 +131,7 @@ void SoftParticlesManager::FUN_141773940(bool bEnable)
 
 // Registers one scene of the main view in the soft-particle view.
 // @0x141773a90
-void FUN_141773a90(void* pRegistry, void* pNode)
+void RegisterModel(void* pRegistry, void* pNode)
 {
     Unk_SceneWalker kWalker((NiAVObject*)((NiObject*)pNode));
     NiAVObject* pkNext;
@@ -164,7 +164,7 @@ void FUN_141773a90(void* pRegistry, void* pNode)
 
 // Unregisters one scene from the soft-particle view.
 // @0x141773cc0
-void FUN_141773cc0(void* pRegistry, void* pNode)
+void UnregisterModel(void* pRegistry, void* pNode)
 {
     Unk_SceneWalker kWalker((NiAVObject*)((NiObject*)pNode));
     NiAVObject* pkNext;
@@ -184,26 +184,26 @@ void FUN_141773cc0(void* pRegistry, void* pNode)
 
 // SceneGraphAddedMessage callback: register the entity's scene graph when soft particles are enabled.
 // @0x141773d90
-void FUN_141773d90(void* svc, const ecr::SceneGraphAddedMessage* pMsg, efd::Category cat)
+void OnSceneGraphAdded(void* svc, const ecr::SceneGraphAddedMessage* pMsg, efd::Category cat)
 {
     if (!reinterpret_cast<Unk_PPGraphicsOptions*>(reinterpret_cast<Unk_AeGameOption*>((class Unk_PPGraphicsOptions *)((class Unk_AeGameOption*)((TSingleton<CGameOption>::GetInstance())))->GetGraphicOption()))->IsSoftParticlesEnabled())
         return;
 
     ecr::SceneGraphService* pkService = FUN_1413f98b0();
     NiAVObject* pkScene = pkService->GetSceneGraphFromEntity(pMsg->GetEntity());
-    FUN_141773a90(svc, pkScene);
+    RegisterModel(svc, pkScene);
 }
 
 // SceneGraphRemovedMessage callback: unregister the entity's scene graph.
 // @0x141773e30
-void FUN_141773e30(void* svc, const ecr::SceneGraphRemovedMessage* pMsg, efd::Category cat)
+void OnSceneGraphRemoved(void* svc, const ecr::SceneGraphRemovedMessage* pMsg, efd::Category cat)
 {
     if (!reinterpret_cast<Unk_PPGraphicsOptions*>(reinterpret_cast<Unk_AeGameOption*>((class Unk_PPGraphicsOptions *)((class Unk_AeGameOption*)((TSingleton<CGameOption>::GetInstance())))->GetGraphicOption()))->IsSoftParticlesEnabled())
         return;
 
     ecr::SceneGraphService* pkService = FUN_1413f98b0();
     NiAVObject* pkScene = pkService->GetSceneGraphFromEntity(pMsg->GetEntity());
-    FUN_141773cc0(svc, pkScene);
+    UnregisterModel(svc, pkScene);
 }
 
 // Points every texturing property of the soft-particle view at the post-processing MRT target.
@@ -291,8 +291,8 @@ CRuntimeClass* FUN_141774210()
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 #include "hook/ms2hook.h"
-MS2_REPLACE_METHOD(0x141773940, SoftParticlesManager, FUN_141773940, 321, 0x4C2A5D6B);
-MS2_REPLACE(0x141773cc0, FUN_141773cc0, 198, 0xFB373809);
+MS2_REPLACE_METHOD(0x141773940, SoftParticlesManager, SetEnabled, 321, 0x4C2A5D6B);
+MS2_REPLACE(0x141773cc0, UnregisterModel, 198, 0xFB373809);
 MS2_REPLACE(0x141773ed0, FUN_141773ed0, 310, 0xBBA392D9);
 MS2_REPLACE_METHOD(0x141774010, Unk_PPSecondView, GetClick, 31, 0x7FC3E510);
 MS2_REPLACE(0x141774040, FUN_141774040, 43, 0x9063ABCD);

@@ -135,8 +135,8 @@ struct Unk_UtilFloat3;
 Vector3 FUN_141b6e150(const Unk_UtilFloat3* pVec);   // C3: util.cpp's definition (0x141b6e150), NxVec3 -> point
 float GetDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 
-// Scene picking (FUN_1413f98f0).
-struct Unk_McPickHit { Vector3* FUN_140ad4bd0(); };
+// Scene picking (GetPickService).
+struct Unk_McPickHit { Vector3* GetPoint(); };
 class Unk_GoPicker
 {
 public:
@@ -147,16 +147,16 @@ public:
     virtual ecr::PickService::PickRecord* vfunc_16(const efd::Point3& kOrigin, const efd::Point3& kDir, NiAVObject* pRoot,
         bool b, bool b2, bool b3);
 };
-void* FUN_1413f98f0();   // C3: was FUN_1413f98f0
+void* GetPickService();   // C3: was GetPickService
 
 // The shadow mesh (efd::SmartPointer at +0x58; the real class is CObjectShadow : CMesh, unit_14160fb10).
 class CObjectShadow : public NiRefObject
 {
 };
-void FUN_14160feb0(CObjectShadow* self, int n, const void* pPos, const void* pUp, float f, bool b);   // C3: the real free signature
+void UpdateShadow(CObjectShadow* self, int n, const void* pPos, const void* pUp, float f, bool b);   // C3: the real free signature
 
 // Scene graph walk (same iterator as cubecraft_1.cpp).
-void FUN_14160fe10(CObjectShadow* self, bool v);
+void SetEnabled(CObjectShadow* self, bool v);
 void FUN_14160fe70(CObjectShadow* self, bool v);
 
 class Unk_NodeQueue
@@ -174,7 +174,7 @@ extern NiFixedString DAT_143ae50b0;     // extra data key (alpha blending)
 
 // entity helpers
 void SetCachedBoolProperty(Unk_CachedEntity* pEntity, unsigned int nProp, const bool& bValue);
-void FUN_140de8bd0(egf::Entity* pEntity, unsigned int nProp, efd::AssetID* pValue);
+void SetAssetIdProperty(egf::Entity* pEntity, unsigned int nProp, efd::AssetID* pValue);
 void FUN_140de0cb0(efd::AssetID* pAsset, const efd::utf8string& strUrn);
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);
 bool Unk_IsFinite(const efd::Point3& kPos);
@@ -210,7 +210,7 @@ GameObject::GameObject()
 // @0x14123ed90
 void* FUN_14123ed90(CMeshUpdateGate* pGate, unsigned int nFlags)
 {
-    pGate->FUN_14176f390();
+    pGate->ReleaseProcess();
     if (nFlags & 1)
         operator delete(pGate, sizeof(CMeshUpdateGate));
     return pGate;
@@ -338,9 +338,9 @@ void GameObject::ChangeModel(CString str)
         efd::AssetID kAsset;
         FUN_140de0cb0(&kAsset, (const char*)GetModelPath());
         if (GO_ENTITY()->GetModel()->ContainsModel("Mesh"))
-            FUN_140de8bd0(GO_ENTITY(), 0x770e5fc6, &kAsset);
+            SetAssetIdProperty(GO_ENTITY(), 0x770e5fc6, &kAsset);
         else if (GO_ENTITY()->GetModel()->ContainsModel("Actor"))
-            FUN_140de8bd0(GO_ENTITY(), 0x12383cea, &kAsset);
+            SetAssetIdProperty(GO_ENTITY(), 0x12383cea, &kAsset);
     }
 }
 MS2_REPLACE_METHOD(0x14123bc20, GameObject, ChangeModel, 552, 0xB514144E);
@@ -369,7 +369,7 @@ NiPoint3 GameObject::vfunc_17()
     if (m_spField.get())
     {
         Unk_GoField* pField = m_spField.operator->();
-        if (WorldService::GetInstance()->FUN_141bd3430(pField->m_nFieldId).get())
+        if (WorldService::GetInstance()->FindFieldById(pField->m_nFieldId).get())
         {
             if (m_spField->vfunc_2(kPos))
                 return kPos;
@@ -638,7 +638,7 @@ MS2_REPLACE_METHOD(0x14123c9f0, GameObject, vfunc_30, 173, 0xE3707CF8);
 void GameObject::vfunc_31(bool b)
 {
     if (m_spShadow)
-        FUN_14160fe10(m_spShadow.operator->(), b);
+        SetEnabled(m_spShadow.operator->(), b);
 }
 MS2_REPLACE_METHOD(0x14123cad0, GameObject, vfunc_31, 70, 0x1DC06002);
 
@@ -654,7 +654,7 @@ MS2_REPLACE_METHOD(0x14123cb20, GameObject, SetShadowVisible, 91, 0xF9AE430E);
 void GameObject::vfunc_32(bool b)
 {
     if (m_spShadow)
-        FUN_14160feb0(m_spShadow.operator->(), 1, &static_cast<const NiPoint3&>(vfunc_18()), &efd::Point3::UNIT_Z, 0.0f, b);
+        UpdateShadow(m_spShadow.operator->(), 1, &static_cast<const NiPoint3&>(vfunc_18()), &efd::Point3::UNIT_Z, 0.0f, b);
 }
 MS2_REPLACE_METHOD(0x14123cb90, GameObject, vfunc_32, 129, 0x9697C5E7);
 
@@ -803,7 +803,7 @@ NiPoint3 GameObject::vfunc_38(const efd::Point3& kDir, const efd::Point3& kPos, 
     float fDistance = fRange;
     if (kDir == efd::Point3::ZERO)
         return static_cast<const NiPoint3&>(kPos);
-    Unk_GoPicker* pPicker = ((class Unk_GoPicker*)FUN_1413f98f0());
+    Unk_GoPicker* pPicker = ((class Unk_GoPicker*)GetPickService());
     if (pPicker == 0)
         return static_cast<const NiPoint3&>(kPos);
     NiAVObject* pRoot = FUN_141b6efc0(GetEntity());
@@ -816,12 +816,12 @@ NiPoint3 GameObject::vfunc_38(const efd::Point3& kDir, const efd::Point3& kPos, 
     const NiPick::Results* pHits = spList->GetPickResult();
     if (pHits->GetSize() == 0)
         return static_cast<const NiPoint3&>(kPos);
-    NiPoint3 kBest = static_cast<const NiPoint3&>(*reinterpret_cast<efd::Point3*>(reinterpret_cast<Unk_McPickHit*>(pHits->GetAt(0))->FUN_140ad4bd0()));
+    NiPoint3 kBest = static_cast<const NiPoint3&>(*reinterpret_cast<efd::Point3*>(reinterpret_cast<Unk_McPickHit*>(pHits->GetAt(0))->GetPoint()));
     float fMin = FLT_MAX;
     for (unsigned int i = 0; i < pHits->GetSize(); i++)
     {
         Unk_McPickHit* pHit = reinterpret_cast<Unk_McPickHit*>(pHits->GetAt(i));
-        efd::Point3* pPt = reinterpret_cast<efd::Point3*>(pHit->FUN_140ad4bd0());
+        efd::Point3* pPt = reinterpret_cast<efd::Point3*>(pHit->GetPoint());
         if ((kStart - *pPt).Length() > fDistance)
             continue;
         float fDist = (kPos - *pPt).Length();

@@ -140,7 +140,7 @@ int GFxImageLoader::Protocol::Parse(const String& strUrl)
     {
         int nWidth;
         int nHeight;
-        FUN_14025e7a0()->FUN_1422b0470(2, &nWidth, &nHeight);
+        GetGFxManager()->GetMovieViewportSize(2, &nWidth, &nHeight);
         m_nWidth = nWidth;
         m_nHeight = nHeight;
         m_nType = 3;
@@ -258,9 +258,9 @@ found:
     MemoryFile* pMemFile = NULL;
     bool bCached = false;
     bool bOpened = false;
-    if (FUN_14025e7a0() != NULL)
+    if (GetGFxManager() != NULL)
     {
-        pFile = FUN_14025e7a0()->FUN_1422b0d60(String(strPath));
+        pFile = GetGFxManager()->FUN_1422b0d60(String(strPath));
         if (pFile)
             pMemFile = dynamic_cast<MemoryFile*>(pFile.GetPtr());
         if (pMemFile != NULL)
@@ -300,11 +300,11 @@ found:
             {
                 if (!((Unk_MemoryFileView*)pMemFile)->FUN_1422ef1e0())
                 {
-                    if (FUN_14025e7a0() != NULL)
-                        FUN_14025e7a0()->FUN_1422b0e20(String(strPath), Ptr<File>(NULL));
+                    if (GetGFxManager() != NULL)
+                        GetGFxManager()->FUN_1422b0e20(String(strPath), Ptr<File>(NULL));
                 }
-                else if (bOpened && FUN_14025e7a0() != NULL)
-                    FUN_14025e7a0()->FUN_1422b0e20(String(strPath), pFile);
+                else if (bOpened && GetGFxManager() != NULL)
+                    GetGFxManager()->FUN_1422b0e20(String(strPath), pFile);
                 if (bCached)
                     kLock.Unlock();
             }
@@ -317,11 +317,11 @@ found:
     {
         if (!((Unk_MemoryFileView*)pMemFile)->FUN_1422ef1e0())
         {
-            if (FUN_14025e7a0() != NULL)
-                FUN_14025e7a0()->FUN_1422b0e20(String(strPath), Ptr<File>(NULL));
+            if (GetGFxManager() != NULL)
+                GetGFxManager()->FUN_1422b0e20(String(strPath), Ptr<File>(NULL));
         }
-        else if (bOpened && FUN_14025e7a0() != NULL)
-            FUN_14025e7a0()->FUN_1422b0e20(String(strPath), pFile);
+        else if (bOpened && GetGFxManager() != NULL)
+            GetGFxManager()->FUN_1422b0e20(String(strPath), pFile);
         if (bCached)
             kLock.Unlock();
     }

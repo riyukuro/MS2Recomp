@@ -33,12 +33,12 @@ public:
     virtual int vfunc_65();                                     // 65 0x140fc73f0 only while married
     virtual void vfunc_67();                                    // 67 0x140fc7460
 
-    void FUN_140fc7e80(const CStringW& strProfile);             // 0x140fc7e80 "setProfile" with a given image
-    void FUN_140fc7f30();                                       // 0x140fc7f30 "setProfile" with the own image
+    void SetProfile(const CStringW& strProfile);             // 0x140fc7e80 "setProfile" with a given image
+    void SetOwnProfile();                                       // 0x140fc7f30 "setProfile" with the own image
     bool SendWedding(int nResult, const CMsgBoxData& box);    // 0x140fc7fd0 divorce confirmed
     void FUN_140fc81a0(CInPacket& packet);                      // 0x140fc81a0 packet 0x10b: back to the first tab
     void OnDivorce();                                       // 0x140fc8240 onDivorce: confirm box
-    void FUN_140fc83d0(PagePtr spPage);                         // 0x140fc83d0 register a page under its key
+    void RegisterPage(PagePtr spPage);                         // 0x140fc83d0 register a page under its key
     void FUN_140fc8470();                                       // 0x140fc8470 fill the tab strip
     void FUN_140fc86c0(ASObj& data);                            // 0x140fc86c0 "exp" / "grade"
     CString FUN_140fc88d0();                                    // 0x140fc88d0 the profile image path

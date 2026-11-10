@@ -56,14 +56,14 @@ int FUN_14028c3e0(const CString& str, ATL::CAtlArray<CString>& rOut, const char*
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void Unk_SplitImplA(CString& str, ATL::CAtlArray<CString>* pOut, const char* szSep);   // split
 class Unk_LaunchOptions { public: void FUN_1406aef60(const CString& strKey, const CString& strValue); };
-Unk_LaunchOptions* FUN_1406aeee0();
+Unk_LaunchOptions* GetLaunchOptions();
 int FUN_1406c34c0();                                                            // the Nexon platform is on
 class CFeatureManager { public: static void SetServerTypeName(CString strEnv); };   // C3: member view;                                             // "-env" / the default "Dev"
 void FUN_140651190(CString strLocale);                                          // "-locale"
 int FUN_140718170(const CString& strValue);                                         // a number or an enum name
 bool FUN_140718390(const CString& strValue);                                 // a bool
 class CFilePreload { public: static void FUN_141210ca0(bool bValue); };   // C3: member view;                                       // "-preloadAll"
-void FUN_140650e70(CString strLanguage);                                        // "-language"
+void SetLanguageByCode(CString strLanguage);                                        // "-language"
 void FUN_140650b50(CString strLanguage);                                        // "-language" / "-voice"
 
 // ---- this unit's functions (called from other units) ----
@@ -75,7 +75,7 @@ int FUN_1414b15f0(CString strArg);                                             /
 int FUN_1414b16b0(CString strArg);                                             // "/sid:"
 int FUN_1414b1770(CString strArg);                                              // "/arg:"
 int FUN_1414b18c0(CString strArg);                                             // "/nexonsn:"
-void FUN_1414b1980();
+void ParseLaunchArguments();
 int FUN_1414b1c40(CString strArg);                                 // "/CRASHDUMP:" check
 void FUN_1414b1f10();                                                           // the "-key" options
 void FUN_1414b21d0();                                                           // the debug defaults
@@ -160,7 +160,7 @@ void FUN_1414b13f0(int nIndex, CString strArg)
         FUN_14028c3e0(strArg, tokens, ":", 2);
         if (tokens.GetCount() >= 2)
         {
-            reinterpret_cast<Unk_LaunchOptions*>(FUN_1406aeee0())->FUN_1406aef60(tokens[0], tokens[1]);
+            reinterpret_cast<Unk_LaunchOptions*>(GetLaunchOptions())->FUN_1406aef60(tokens[0], tokens[1]);
             g_args.SetAt((const char*)tokens[0], tokens[1]);
         }
     }
@@ -238,7 +238,7 @@ int FUN_1414b18c0(CString strArg)
 }
 
 // @0x1414b1980
-void FUN_1414b1980()
+void ParseLaunchArguments()
 {
     for (int i = 0; i < __argc; i++)
     {
@@ -333,7 +333,7 @@ void FUN_1414b1f10()
         g_nLogLevel = FUN_140718170(strValue);
     if (g_args.Lookup("-language", strValue))
     {
-        FUN_140650e70(CString(strValue));
+        SetLanguageByCode(CString(strValue));
         FUN_140650b50(CString(strValue));
         g_bLanguageSet = 1;
     }

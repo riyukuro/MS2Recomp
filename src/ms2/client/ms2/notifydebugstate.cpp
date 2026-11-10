@@ -68,9 +68,9 @@ public:
     void FUN_140da5180(int nOp, Delegate<void(CInPacket&)> handler);
     void FUN_140da51e0(int nOp, Delegate<void(CInPacket&)> handler);
 };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_SingletonObj* FUN_140939a10();   // C3: the NotifySystem (calls cast back)
-UIMainPlayerInfo* FUN_140931900(int nUiId);
+UIMainPlayerInfo* FindMainPlayerInfo(int nUiId);
 __int64 GetServerTime();                        // server time
 int GetServerTick();                            // tick count
 
@@ -109,13 +109,13 @@ CMyCharacter::~CMyCharacter()
 // @0x140d9f040
 void CMyCharacter::RegisterPacketHandler()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::OnTitlesPacket));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::OnTitlesPacket));
 }
 
 // @0x140d9f0c0
 void CMyCharacter::UnregisterPacketHandler()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::OnTitlesPacket));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0xd9, Delegate<void(CInPacket&)>(this, &CMyCharacter::OnTitlesPacket));
 }
 
 // @0x140d9f140
@@ -166,7 +166,7 @@ MS2Ptr<DungeonRecordManagerCli> CMyCharacter::GetRecord()
 void CMyCharacter::SetExpireAndUpdateTimer(__int64 nExpire)
 {
     m_nExpire = nExpire;
-    UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    UIMainPlayerInfo* pInfo = FindMainPlayerInfo(0x4e5f);
     if (pInfo != 0)
     {
         __int64 nNow = GetServerTime();
@@ -175,10 +175,10 @@ void CMyCharacter::SetExpireAndUpdateTimer(__int64 nExpire)
             ATL::CTimeSpan span = CMsTime(m_nExpire) - CMsTime(nNow);
             int nMs = (int)(span.GetTotalSeconds() * 1000);
             int nEnd = GetServerTick() + nMs;
-            pInfo->FUN_1419f1200(0x5f5e117, nEnd);
+            pInfo->AddCustomBuffEffect(0x5f5e117, nEnd);
         }
         else
-            pInfo->FUN_1419f1370(0x5f5e117);
+            pInfo->RemoveCustomBuffEffect(0x5f5e117);
     }
 }
 

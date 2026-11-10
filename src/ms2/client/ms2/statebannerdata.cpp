@@ -99,7 +99,7 @@ void StateBanner::vfunc_2(int n)
     switch (n)
     {
     case 0x97:
-        pOwner->FUN_1416700b0(FUN_140b7f3b0());
+        pOwner->FUN_1416700b0(GetBannerId());
         break;
     case 0x98:
         pOwner->FUN_1416700b0(0);
@@ -149,7 +149,7 @@ void StateBanner::vfunc_9(double fTime)
 {
     State::vfunc_9(fTime);
     int nState = FUN_140b7f6a0(reinterpret_cast<void*>(FUN_141b6f910()), m_pOwner->GetEntityID());
-    FUN_140b7f320(nState);
+    PlayBannerAnimation(nState);
 }
 
 // @0x140b7f2c0
@@ -162,7 +162,7 @@ void StateBanner::vfunc_6()
 }
 
 // @0x140b7f320
-void StateBanner::FUN_140b7f320(int n)
+void StateBanner::PlayBannerAnimation(int n)
 {
     int nState = 0;
     if (m_pOwner->vfunc_65() != 0)
@@ -175,7 +175,7 @@ void StateBanner::FUN_140b7f320(int n)
 }
 
 // @0x140b7f3b0
-int StateBanner::FUN_140b7f3b0()
+int StateBanner::GetBannerId()
 {
     if (m_spBannerData.get() != 0)
     {

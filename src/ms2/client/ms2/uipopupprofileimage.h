@@ -27,11 +27,11 @@ public:
     UIPopupProfileImage();                              // 0x141a8fa20
     virtual ~UIPopupProfileImage();                     //  0 0x141a8fa90 (??_G 0x141a90360)
     virtual CString GetTypeName();                          //  1 0x141a8fad0 "PopupProfileImage"
-    virtual void OnLoadComplete();                      // 22 0x141a8fb20 UIObject::OnLoadComplete(); FUN_141a8fc30(m_68)
+    virtual void OnLoadComplete();                      // 22 0x141a8fb20 UIObject::OnLoadComplete(); CreateEntityCache(m_68)
     virtual int vfunc_48() { return 0x4e57; }           // 48 0x141a903a0
 
-    void FUN_141a8fc30(unsigned int nCount);            // create the entity cache
-    Entity* FUN_141a8fe10(int nActorId);                // the entity of the actor (created or recycled)
+    void CreateEntityCache(unsigned int nCount);            // create the entity cache
+    Entity* GetEntity(int nActorId);                // the entity of the actor (created or recycled)
 };
 MS2_CHECK_SIZE(UIPopupProfileImage::Entity, 0xa8);
 MS2_CHECK_OFFSET(UIPopupProfileImage::Entity, m_a0, 0xa0);

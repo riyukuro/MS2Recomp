@@ -133,12 +133,12 @@ public:
     unsigned Load();                                            // 0x141791940 (all five tables)
     unsigned GetHitSound(int nAttack, int nDefence);          // a random hit sound id of the materials
     int GetEventVoice(int nEventId, GameObject* pActor, Unk_EventVoice* pOut);   // the event voice for the actor
-    SystemPtr FUN_141792ee0(const CString& strName, const CString& strArg);       // system sound property
+    SystemPtr FindSystemSound(const CString& strName, const CString& strArg);       // system sound property
     VoicePtr FindTriggerVoice(const CString& strName);                               // trigger voice property
-    void FUN_141793210(Unk_VoiceGroupMap& rOut);                // every trigger voice -> its sound names
+    void CollectTriggerVoiceNames(Unk_VoiceGroupMap& rOut);                // every trigger voice -> its sound names
     int FindPitch(int nObjectId, Unk_SoundPitch* pOut);    // the pitch of an object's voice
     void Reload();                                              // 0x1417933d0 (clear and Load)
-    void FUN_141793450();                                       // reload when a table file changed
+    void ReloadIfChanged();                                       // reload when a table file changed
 
     static void CheckInit();                                    // 0x1417a3890
     static void SetInit(bool b);                                // 0x1417a6920

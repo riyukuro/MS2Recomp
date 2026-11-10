@@ -39,7 +39,7 @@ public:
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
@@ -113,9 +113,9 @@ bool CMasteryInteriorTable::Load()
 // @0x140661df0
 bool CMasteryInteriorTable::LoadMastery()
 {
-    CString strPath = FUN_14071a5b0("Table", "masteryUGCHousing.xml");
+    CString strPath = GetXmlPath("Table", "masteryUGCHousing.xml");
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -159,9 +159,9 @@ bool CMasteryInteriorTable::LoadMastery()
 // @0x140662430
 bool CMasteryInteriorTable::LoadHeight()
 {
-    CString strPath = FUN_14071a5b0("Table", "ugcHousingExtendHeight.xml");
+    CString strPath = GetXmlPath("Table", "ugcHousingExtendHeight.xml");
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -184,9 +184,9 @@ bool CMasteryInteriorTable::LoadHeight()
 // @0x1406626f0
 bool CMasteryInteriorTable::LoadArea()
 {
-    CString strPath = FUN_14071a5b0("Table", "ugcHousingExtendArea.xml");
+    CString strPath = GetXmlPath("Table", "ugcHousingExtendArea.xml");
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -222,9 +222,9 @@ bool CMasteryInteriorTable::LoadArea()
 // @0x140662ae0
 bool CMasteryInteriorTable::LoadRewards()
 {
-    CString strPath = FUN_14071a5b0("Table", "ugcHousingPointReward.xml");
+    CString strPath = GetXmlPath("Table", "ugcHousingPointReward.xml");
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)

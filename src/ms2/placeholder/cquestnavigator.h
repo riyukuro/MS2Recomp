@@ -36,16 +36,16 @@ public:
     void OnCompleteMyPC(NotifyObject* pNotify);             // 0x140c9a1c0 "NotifyCompleteMyPC"
     void SelectQuest(int nQuestId);                         // 0x140c9a420
     int IsSelected(int nQuestId);                           // 0x140c9a490
-    int FUN_140c9a4c0(QuestNavigation::TraceResult* pResult);   // trace the quest to its nearest target (0 = found)
+    int TraceQuestTarget(QuestNavigation::TraceResult* pResult);   // trace the quest to its nearest target (0 = found)
     QuestNavigation::TraceResult* Result();                 // 0x140c9ac60
-    void FUN_140c9ac80();                                   // rebuild m_70 from the tracked quests
+    void RebuildTraceContext();                                   // rebuild m_70 from the tracked quests
     QuestNavigation::TraceContext* Context();               // 0x140c9adf0
     int HasMap(unsigned nMapId);                           // 0x140c9ae10
     int HasNpc(int nNpcId);                                // 0x140c9ae80
     int HasInteractObject(unsigned nObjectId);             // 0x140c9aef0
-    bool FUN_140c9af60();                                   // the beam may be shown
+    bool CanShowBeam();                                   // the beam may be shown
     Vector3 FUN_140c9b0a0(const Vector3& pos);   // the beam's end point towards pos
-    CStringW FUN_140c9b150(const Vector3& pos);     // the distance text to pos
+    CStringW GetDistanceText(const Vector3& pos);     // the distance text to pos
 
 private:
     MS2_LAYOUT_FRIEND;

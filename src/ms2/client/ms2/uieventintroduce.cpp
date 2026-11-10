@@ -54,7 +54,7 @@ void UIEventIntroduce::vfunc_2()
     }
     else
     {
-        FUN_1422dbf00(0x1e, 0, 0);
+        LoadSwf(0x1e, 0, 0);
     }
 }
 
@@ -85,49 +85,49 @@ void UIEventIntroduce::vfunc_43()
 }
 
 // @0x140f40ef0
-void UIEventIntroduce::FUN_140f40ef0(int n)
+void UIEventIntroduce::OnWin(int n)
 {
     if (m_30.get())
         m_30.operator->()->Invoke("onWin", n);
 }
 
 // @0x140f40f60
-void UIEventIntroduce::FUN_140f40f60(int n)
+void UIEventIntroduce::OnLose(int n)
 {
     if (m_30.get())
         m_30.operator->()->Invoke("onLose", n);
 }
 
 // @0x140f40fd0
-void UIEventIntroduce::FUN_140f40fd0(int n)
+void UIEventIntroduce::OnDraw(int n)
 {
     if (m_30.get())
         m_30.operator->()->Invoke("onDraw", n);
 }
 
 // @0x140f41040
-void UIEventIntroduce::FUN_140f41040(int n)
+void UIEventIntroduce::OnPerfect(int n)
 {
     if (m_30.get())
         m_30.operator->()->Invoke("onPerfect", n);
 }
 
 // @0x140f410b0
-void UIEventIntroduce::FUN_140f410b0(int n)
+void UIEventIntroduce::OnFight(int n)
 {
     if (m_30.get())
         m_30.operator->()->Invoke("onFight", n);
 }
 
 // @0x140f41120
-void UIEventIntroduce::FUN_140f41120(int n)
+void UIEventIntroduce::OnFinalRound(int n)
 {
     if (m_30.get())
         m_30.operator->()->Invoke("onFinalRound", n);
 }
 
 // @0x140f41190
-void UIEventIntroduce::FUN_140f41190(int a1, int a2)
+void UIEventIntroduce::OnRound(int a1, int a2)
 {
     if (m_30.get())
         m_30.operator->()->FUN_1409ba0d0("onRound", a1, a2);

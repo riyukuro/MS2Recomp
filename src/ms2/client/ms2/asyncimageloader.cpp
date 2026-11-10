@@ -46,8 +46,8 @@
 extern const NiPixelFormat DAT_1439fb040;                         // RGBA32
 extern NiTexture::FormatPrefs DAT_1439fc800;                // the format preferences of the placeholder image
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-NiImageConverter* FUN_141851720();                          // the calling thread's NiImageConverter
-CString FUN_14016a5c0(const char* sz, int n);               // the normalized asset path
+NiImageConverter* GetImageConverter();                          // the calling thread's NiImageConverter
+CString ToCString(const char* sz, int n);               // the normalized asset path
 CString FUN_1409a2360(const char* sz, int n);               // a copy of the string
 unsigned int FUN_1407181d0(const CString& str);             // atoi of the string (the emoticon id)
 
@@ -245,7 +245,7 @@ bool CAsyncImageLoader::LoadTexture(ParamPtr spParam)
         MS2_ASSERT_AT(0xbb, 0);
         return false;
     }
-    CString strFile = FUN_14016a5c0(spParam->m_18, 0);
+    CString strFile = ToCString(spParam->m_18, 0);
     efd::SmartPointer<NiTexture> spTexture = ((class CNifLoadingService*)GetNifLoadingService())->FindTexture(CString(strFile), 0);
     if (spTexture.operator NiTexture*() != 0)
     {
@@ -253,7 +253,7 @@ bool CAsyncImageLoader::LoadTexture(ParamPtr spParam)
         return true;
     }
     efd::utf8string path(FUN_1409a2360(strFile, 0));
-    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, GetImageConverter());
     if (pkConverter == 0)
     {
         MS2_ASSERT_AT(0xcc, 0);
@@ -370,7 +370,7 @@ Scaleform::Render::Image* FUN_140a59830(const GFxImageLoader::Protocol& kProtoco
     default:
         strFile = kProtocol.m_strPath;
     }
-    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, GetImageConverter());
     if (pkConverter == 0)
     {
         MS2_ASSERT_AT(0x108, 0);

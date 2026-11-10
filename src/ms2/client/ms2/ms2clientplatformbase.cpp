@@ -51,12 +51,12 @@ class UIReportDialog* FindReportDialog(int nId);
 class UIReportDialog : public UIDialog
 {
 public:
-    void FUN_141ab9aa0(__int64 nTargetId, const CStringW& strText);
-    void FUN_141ab9b10(const CStringW& strA, const CStringW& strB);
+    void SetCharacterTarget(__int64 nTargetId, const CStringW& strText);
+    void SetChatTarget(const CStringW& strA, const CStringW& strB);
     void FUN_141ab9a10(__int64 nTargetId, int nKind, const CStringA& strA, const CStringW& strText);
     void FUN_141ab9b80(Unk_MeratProductKey key, __int64 nTargetId, CStringW strA, CStringW strB, int nFlag);
     void FUN_141ab9c50(__int64 nTargetId, const CStringW& strText, int nA, int nB);
-    void FUN_141ab9ce0(CStringW strA, CStringW strB);
+    void SetPetTarget(CStringW strA, CStringW strB);
 };
 int FUN_141276180(const CString& strTarget, const CString& strValue);
 class CLogString* GetLogString();   // C3: was FUN_140166440
@@ -65,9 +65,9 @@ template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*,
 void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
 void FUN_140c76c70(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat, const unsigned __int64& nArg0,
                    const CStringA& strArg1, const CStringA& strArg2);
-__int64 FUN_140930240();
+__int64 GetMeratBalance();
 __int64 FUN_140930390(unsigned int);   // C3: was FUN_140930390
-__int64 FUN_140930ae0();
+__int64 GetRedMeratBalance();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 extern int DAT_143ab2914;
 class CUIService;
@@ -250,7 +250,7 @@ void CClientPlatformBase::vfunc_22(int nCode, const char* pszFormat, ...)
         va_start(args, pszFormat);
         strLog.FormatV(pszFormat, args);
         va_end(args);
-        GetNexonAnalytics()->FUN_14092d1f0(nCode, strLog);
+        GetNexonAnalytics()->EnqueueStageLog(nCode, strLog);
         Unk_SkillTableLog<unsigned, CStringA>(GetLogString(), 0xb, 400, L"enqueueStageLog with nCode: {0}, strLog: {1}", reinterpret_cast<const unsigned&>(nCode), strLog);
     }
 }
@@ -264,7 +264,7 @@ void CClientPlatformBase::vfunc_23(int nCode, const char* pszFormat, ...)
         va_start(args, pszFormat);
         strLog.FormatV(pszFormat, args);
         va_end(args);
-        GetNexonAnalytics()->FUN_14092d280(nCode, strLog);
+        GetNexonAnalytics()->EnqueueErrorLog(nCode, strLog);
         Unk_SkillTableLog<unsigned, CStringA>(GetLogString(), 0xb, 400, L"enqueueErrorLog with nCode: {0}, strLog: {1}", reinterpret_cast<const unsigned&>(nCode), strLog);
     }
 }
@@ -315,7 +315,7 @@ void CClientPlatformBase::vfunc_38(void*) {}
 // @0x140c75bf0
 bool CClientPlatformBase::vfunc_40(__int64 nTime)
 {
-    return FUN_140930240() - nTime >= 0;
+    return GetMeratBalance() - nTime >= 0;
 }
 
 // @0x140c75c30
@@ -330,7 +330,7 @@ bool CClientPlatformBase::vfunc_41(__int64 nTime)
     if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d650())
         return false;
     if (DAT_143ab2914 >= 52)
-        return FUN_140930ae0() - nTime >= 0;
+        return GetRedMeratBalance() - nTime >= 0;
     return false;
 }
 
@@ -372,10 +372,10 @@ void CClientPlatformBase::vfunc_48(MS2Ptr<CUserReportData> spReport)
         return;
     switch (spReport->GetType()) {
     case 0:
-        pDialog->FUN_141ab9aa0(spReport->GetField40(), spReport->GetTitle());
+        pDialog->SetCharacterTarget(spReport->GetField40(), spReport->GetTitle());
         break;
     case 1:
-        pDialog->FUN_141ab9b10(spReport->GetTitle(), spReport->GetField78());
+        pDialog->SetChatTarget(spReport->GetTitle(), spReport->GetField78());
         break;
     case 2:
         pDialog->FUN_141ab9a10(spReport->GetField48(), spReport->GetField58(), spReport->GetField50(), spReport->GetTitle());
@@ -388,7 +388,7 @@ void CClientPlatformBase::vfunc_48(MS2Ptr<CUserReportData> spReport)
         pDialog->FUN_141ab9c50(spReport->GetField68(), spReport->GetTitle(), spReport->GetField70(), spReport->GetField74());
         break;
     case 7:
-        pDialog->FUN_141ab9ce0(spReport->GetTitle(), spReport->GetField80());
+        pDialog->SetPetTarget(spReport->GetTitle(), spReport->GetField80());
         break;
     case 8:
         MS2_ASSERT_AT(512, FALSE);
@@ -492,7 +492,7 @@ void CClientPlatformBase::vfunc_68()
     Unk_NexonAnalytics* pAnalytics = GetNexonAnalytics();
     Unk_NxString kHost("livelog.nexon.com", 3);
     bool bResult = nId != 0 && pAnalytics->FUN_14092ce80("1.0.0", &kHost)
-        && pAnalytics->FUN_14092cf80(&kEvent, &kHost, &kService);
+        && pAnalytics->InitializeClientModule(&kEvent, &kHost, &kService);
     if (bResult) {
         Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xb, 400, L"Nexon Analytics SDK 의 초기화를 완료했습니다.");
         m_bAnalyticsOn = true;
@@ -504,7 +504,7 @@ void CClientPlatformBase::vfunc_69()
 {
     if (m_bAnalyticsOn) {
         m_bAnalyticsOn = false;
-        GetNexonAnalytics()->FUN_14092d070(true);
+        GetNexonAnalytics()->FinalizeModule(true);
         Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xb, 400, L"Nexon Analytics SDK 를 정상적으로 종료했습니다.");
     }
 }
@@ -514,7 +514,7 @@ void CClientPlatformBase::vfunc_70()
 {
     if (m_bAnalyticsLoaded) {
         Unk_NexonAnalytics* pAnalytics = GetNexonAnalytics();
-        pAnalytics->FUN_14092cbf0();
+        pAnalytics->UnloadModule();
         const char* pszModule = pAnalytics->GetModuleName();
         Unk_FileLog<const char*>(GetLogString(), 0xb, 400, L"{0} 파일을 정상적으로 언로드했습니다.", pszModule);
     }
@@ -593,7 +593,7 @@ Unk_NxNumber::Unk_NxNumber(unsigned n)
 // @0x140c77260
 Unk_NexonAnalytics::~Unk_NexonAnalytics()
 {
-    FUN_14092cbf0();
+    UnloadModule();
 }
 
 // @0x140c772f0

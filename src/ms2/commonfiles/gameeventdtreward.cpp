@@ -35,7 +35,7 @@ int FUN_1407181a0(const CStringW& value);
 // ---- GameEventDTReward -----------------------------------------------------------------------------------------------
 
 // @0x14041b140
-GameEvent* FUN_14041b140() { return new GameEventDTReward; }
+GameEvent* CreateGameEventDTReward() { return new GameEventDTReward; }
 
 // @0x14041b1a0
 CStringW GameEventDTReward::GetTypeName() { return CStringW(L"GameEventDTReward"); }
@@ -44,14 +44,14 @@ MS2_REPLACE_METHOD(0x14041B1A0, GameEventDTReward, GetTypeName, 61, 0xD464C57C);
 // @0x14041b1f0
 GameEventDTReward::GameEventDTReward() : m_bShown(false)
 {
-    FUN_1402e3480(1);
+    SetFlag(1);
 }
 
 // @0x14041b280
 void GameEventDTReward::vfunc_2()
 {
     m_spContext = 0;
-    FUN_14041b6e0(m_68, m_70, m_78, m_80);
+    BuildContext(m_68, m_70, m_78, m_80);
 }
 
 // @0x14041b300
@@ -86,23 +86,23 @@ void GameEventDTReward::vfunc_4(Unk_GEIn* in)
     m_70 = MS2_GE_R(in)->ReadStringW();
     m_78 = MS2_GE_R(in)->ReadStringW();
     m_80 = MS2_GE_R(in)->ReadStringW();
-    FUN_14041b6e0(m_68, m_70, m_78, m_80);
+    BuildContext(m_68, m_70, m_78, m_80);
 }
 
 // @0x14041b6e0
-void GameEventDTReward::FUN_14041b6e0(const CStringW& rewards, const CStringW& levels, const CStringW& flags, const CStringW& last)
+void GameEventDTReward::BuildContext(const CStringW& rewards, const CStringW& levels, const CStringW& flags, const CStringW& last)
 {
     ATL::CAtlArray<CStringW> rows;
     FUN_14025a680(const_cast<CStringW&>(rewards), rows, L";");
     if (rows.IsEmpty())
         return;
-    m_spContext.AssignRaw(new DTRewardEventContext(GetID(), FUN_1402e2730()));
+    m_spContext.AssignRaw(new DTRewardEventContext(GetID(), GetEndTime()));
     for (unsigned i = 0; i < rows.GetCount(); i++) {
         ATL::CAtlArray<unsigned int> fields;
         FUN_140274fc0(rows[i], &fields, L",");
         if (fields.IsEmpty() || fields.GetCount() != 9)
             continue;
-        ((class Unk_EventRewardList*)(void*)(m_spContext.operator->()))->FUN_1408d5c30(fields);
+        ((class Unk_EventRewardList*)(void*)(m_spContext.operator->()))->AddReward(fields);
     }
     ATL::CAtlArray<CStringW> parts;
     FUN_14025a680(const_cast<CStringW&>(levels), parts, L",");
@@ -118,7 +118,7 @@ void GameEventDTReward::FUN_14041b6e0(const CStringW& rewards, const CStringW& l
         m_spContext->m_b32 = FUN_1407183f0(parts[0]);
     m_spContext->m_b33 = FUN_1407183f0(last);
     if (!m_bShown)
-        FUN_1402e3480(3);
+        SetFlag(3);
 }
 
 // ---- DTRewardEventContext --------------------------------------------------------------------------------------------
@@ -134,5 +134,5 @@ CommonUserEvent::DTRewardEventContext::DTRewardEventContext(int id, const CMsTim
 // leaves it to the exe's own copy.
 // MS2-RANGE: 0x1400b86b0-0x1400b8700 .text$di
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regDTReward(L"GameEventDTReward", (ClassObjectCreateFn)FUN_14041b140);
+static ClassObjectRegistrar s_regDTReward(L"GameEventDTReward", (ClassObjectCreateFn)CreateGameEventDTReward);
 #endif

@@ -133,8 +133,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 
 
 // C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_140873420(TiXmlElement*, const char*, CStringW&);
@@ -147,7 +147,7 @@ void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the
 enum Unk_BmLanguage { Unk_BmLanguage_None = 0 };
 int FUN_140651920(CStringA);                                 // language code -> enum
 __int64 GetServerTime();                                            // server time
-__int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId); // random roll
+__int64 GetCurrencyAmount(int nCurrency, __int64 nAmount, int nItemId); // random roll
 int FindStatByName(const CStringA& strName);                        // stat name -> id (-1 when none)
 unsigned int FUN_14081d260(CStringA const&);                         // special option name -> id
 CStringW FUN_140630e10(int nId);                                    // special option text
@@ -162,7 +162,7 @@ class Unk_BmPriceMgr : public CLua
 class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_140479560();
+    int GetBlackMarketFeeDiscountRate();
 };
 class Unk_SingletonObj;
 class CLuaClient;
@@ -184,13 +184,13 @@ typedef Unk_BmBoxPtr<Unk_BmNameMap> Unk_BmNameMapPtr;
 typedef ATL::CRBMap<CStringA, CBlackMarketTable::TabPtr> Unk_BmTabIndex;
 typedef ATL::CRBMap<Unk_BmLanguage, Unk_BmNameMapPtr> Unk_BmNameTable;
 
-float FUN_1401bcd60();
+float GetBlackMarketCostRate();
 Unk_BmPriceMgr* FUN_1401c0db0();
-void* FUN_1401c0d90();
+void* GetGameRule();
 CBlackMarketTable* FUN_1401c06d0();
-CBlackMarketTable* FUN_1401c0d80();
+CBlackMarketTable* GetBlackMarketTable();
 void FUN_1401bf440(CBlackMarketTable::TabList& rList, Unk_BmTabIndex* pIndex);
-CLocaleLanguage* FUN_1401c0da0();
+CLocaleLanguage* GetLocaleLanguage();
 CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);
 
 // The statics of this unit.
@@ -209,9 +209,9 @@ long long FUN_1401bcbf0(CItem* pItem, long long nPrice)
 {
     if (pItem == 0)
         return 0;
-    if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_140479560() >= 0)
+    if (((class CGameRule*)(void*)(GetGameRule()))->GetBlackMarketFeeDiscountRate() >= 0)
     {
-        float fRate = FUN_1401bcd60();
+        float fRate = GetBlackMarketCostRate();
         return (long long)((float)nPrice * fRate);
     }
     MS2Ptr<Unk_BmItemData> data(reinterpret_cast<Unk_BmItemData*>(pItem->FUN_140527840()));
@@ -219,7 +219,7 @@ long long FUN_1401bcbf0(CItem* pItem, long long nPrice)
         return 0;
     int nRarity = pItem->GetRarity();
     unsigned nGroup = data->m_nGroup;
-    unsigned nEnchant = pItem->FUN_1405278a0()->GetEnchantLevel();
+    unsigned nEnchant = pItem->GetStatus()->GetEnchantLevel();
     long long nResult = reinterpret_cast<CLua*>(FUN_1401c0db0())->CalcBlackMarketBuyFeeCost(nPrice, nRarity, nGroup, nEnchant);
     return nResult;
 }
@@ -227,14 +227,14 @@ long long FUN_1401bcbf0(CItem* pItem, long long nPrice)
 // @0x1401bcd30
 int FUN_1401bcd30()
 {
-    int nResult = (int)(FUN_1401bcd60() * 10000.0f);
+    int nResult = (int)(GetBlackMarketCostRate() * 10000.0f);
     return nResult;
 }
 
 // @0x1401bcd60
-float FUN_1401bcd60()
+float GetBlackMarketCostRate()
 {
-    int nRate = ((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_140479560();
+    int nRate = ((class CGameRule*)(void*)(GetGameRule()))->GetBlackMarketFeeDiscountRate();
     if (nRate >= 0)
         return (float)nRate / 10000.0f;
     return FUN_1401c0db0()->CalcBlackMarketCostRate(1);
@@ -247,13 +247,13 @@ __int64 FUN_1401bcdb0(long long n)
 }
 
 // @0x1401bcde0
-__int64 FUN_1401bcde0()
+__int64 GetBlackMarketRegisterDepositMax()
 {
     return FUN_1401c0db0()->CalcBlackMarketRegisterDepositMax();
 }
 
 // @0x1401bce00
-int FUN_1401bce00()
+int GetBlackMarketRegisterDepositPercent()
 {
     return (int)FUN_1401c0db0()->CalcBlackMarketRegisterDepositPercent();
 }
@@ -384,7 +384,7 @@ unsigned int FUN_1401bd340(int n)
 unsigned int FUN_1401bd3a0()
 {
     FUN_1401c06d0();
-    CBlackMarketTable::TabListPtr tabs = FUN_1401c0d80()->GetTabs();
+    CBlackMarketTable::TabListPtr tabs = GetBlackMarketTable()->GetTabs();
     if ((tabs.get() ? true : false) && !tabs->IsEmpty())
     {
         FUN_1401bf440(*tabs, &s_mapTabByCategory);
@@ -400,7 +400,7 @@ unsigned int FUN_1401bd3a0()
 unsigned int LoadItemNames()
 {
     ATL::CAtlArray<CString> languages;
-    FUN_1401c0da0()->GetLanguageCodes(languages);
+    GetLocaleLanguage()->GetLanguageCodes(languages);
     if (languages.GetCount() == 0)
         return 0;
     for (size_t i = 0; i < languages.GetCount(); i++)
@@ -413,7 +413,7 @@ unsigned int LoadItemNames()
         names = Unk_BmNewTag(0);
         s_mapItemNames.SetAt(nLanguage, names);
         TiXmlDocument doc;
-        if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+        if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
             return 0;
         TiXmlElement* pRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
         if (pRoot == 0)
@@ -433,7 +433,7 @@ unsigned int LoadItemNames()
 }
 
 // @0x1401bd850
-CStringW FUN_1401bd850(Unk_BmLanguage nLanguage, unsigned int nId)
+CStringW GetBlackMarketItemName(Unk_BmLanguage nLanguage, unsigned int nId)
 {
     CBlackMarketUtil::CheckInit();
     CStringW strName;
@@ -552,10 +552,10 @@ void CBlackMarketProduct::Write(COutputStream* pStream)
     pStream->WriteInt64(m_nUnitPrice);
     pStream->WriteUInt8((unsigned char)m_nStateB);
     pStream->WriteInt64(m_item->GetItemUid());
-    pStream->WriteInt32(m_item->FUN_1405276c0());
+    pStream->WriteInt32(m_item->GetItemId());
     pStream->WriteUInt8((unsigned char)m_item->GetRarity());
     pStream->WriteInt64(m_qw68);
-    m_item->FUN_140524ad0(*pStream);
+    m_item->WriteToStream(*pStream);
 }
 
 MS2_REPLACE_METHOD(0x1401BDD80, CBlackMarketProduct, Write, 467, 0x4E40E47D);
@@ -579,7 +579,7 @@ void CBlackMarketProduct::Read(CInPacket* pPacket)
     if (m_item->FUN_140523c40(nId, nRank, 0))
     {
         m_item->SetItemUid(nUid);
-        m_item->FUN_140524eb0(*pPacket);
+        m_item->ReadFromStream(*pPacket);
     }
 }
 
@@ -639,7 +639,7 @@ MS2_REPLACE_METHOD(0x1401BE3D0, CBlackMarketProduct, SetQw78, 25, 0x6C790EDB);
 unsigned int CBlackMarketProduct::RollCount()
 {
     unsigned int nResult = 1;
-    long long nRoll = FUN_1418ff5a0(1, 0, 0);
+    long long nRoll = GetCurrencyAmount(1, 0, 0);
     long long nUnit = PriceFor(1);
     if (nUnit > 0)
         nResult = (unsigned int)(nRoll / nUnit < GetRemain() ? nRoll / nUnit : GetRemain());
@@ -1009,7 +1009,7 @@ void CBlackMarketUtil::CheckInit()
     if (!s_bInit)
     {
         CStringA msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CBlackMarketUtil).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CBlackMarketUtil).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -1017,23 +1017,23 @@ void CBlackMarketUtil::CheckInit()
 // @0x1401c06d0
 CBlackMarketTable* FUN_1401c06d0()
 {
-    return TSingleton<CBlackMarketTable>::s_instance != 0 ? FUN_1401c0d80() : new CBlackMarketTable;
+    return TSingleton<CBlackMarketTable>::s_instance != 0 ? GetBlackMarketTable() : new CBlackMarketTable;
 }
 
 // @0x1401c0d80
-CBlackMarketTable* FUN_1401c0d80()
+CBlackMarketTable* GetBlackMarketTable()
 {
     return static_cast<CBlackMarketTable*>(TSingleton<CBlackMarketTable>::s_instance);
 }
 
 // @0x1401c0d90
-void* FUN_1401c0d90()
+void* GetGameRule()
 {
     return reinterpret_cast<void*>(TSingleton<CGameRule>::s_instance);
 }
 
 // @0x1401c0da0
-CLocaleLanguage* FUN_1401c0da0()
+CLocaleLanguage* GetLocaleLanguage()
 {
     return static_cast<CLocaleLanguage*>(TSingleton<CLocaleLanguage>::s_instance);
 }
@@ -1049,8 +1049,8 @@ CBlackMarketTable::CBlackMarketTable()
     : m_tabs(0), m_tabById(17, 0.75f, 0.25f, 2.25f, 10), m_options(17, 0.75f, 0.25f, 2.25f, 10),
       m_statTables(17, 0.75f, 0.25f, 2.25f, 10)
 {
-    CString strPath = FUN_14071a5b0("Table", "blackMarketTable.xml");
-    FUN_1401d1160(strPath);
+    CString strPath = GetXmlPath("Table", "blackMarketTable.xml");
+    SetPath(strPath);
     Load();
 }
 
@@ -1065,7 +1065,7 @@ void CBlackMarketTable::Load()
 {
     Clear();
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false))
+    if (GetFileSystem()->LoadXmlFile(&doc, *GetPath(), 0, true, false))
     {
         TiXmlElement* pRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
         if (pRoot != 0)
@@ -1249,7 +1249,7 @@ void CBlackMarketTable::CheckInit()
     if (!s_bInit)
     {
         CStringA msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CBlackMarketTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CBlackMarketTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

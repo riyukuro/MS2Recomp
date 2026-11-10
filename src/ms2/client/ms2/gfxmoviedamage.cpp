@@ -50,7 +50,7 @@ class GFxManager   // C3: member view (gfxmanager.h)
 public:
     void FUN_1422b0790(int nMovieId);
 };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
+class Unk_AltStringMgr* GetGFxManager();   // C3: the GFxManager (calls cast back)
 
 
 // The UISwfEntityManager slots the movie calls (vftable 0x143112518; see gfxmoviepostdisplay.cpp). The swf key and the AS
@@ -146,9 +146,9 @@ void GFxMovieDamage::vfunc_4(void* pMovie, const char* szEvent, const Scaleform:
             Scaleform::GFx::Value vStage(pArgs[0]);
             Scaleform::GFx::Value vLoader(pArgs[1]);
             Scaleform::GFx::Value vThird(pArgs[2]);
-            FUN_1422be510(CreateStage(m_18, vStage));
-            FUN_1422be5b0(CreateMovieClipLoader(m_18, vLoader));
-            reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422b0790(m_18);
+            SetStage(CreateStage(m_18, vStage));
+            SetMovieClipLoader(CreateMovieClipLoader(m_18, vLoader));
+            reinterpret_cast<GFxManager*>(GetGFxManager())->FUN_1422b0790(m_18);
         }
         m_128.AssignRaw(Unk_DmgFindUI<UIDamageText>(0x4e32));
         FUN_140b62270();
@@ -200,7 +200,7 @@ void GFxMovieDamage::vfunc_8(float fTime)
         {
             MS2Ptr<UIDamageFont> spFont = m_d8.GetValueAt(pos);
             if (spFont.get())
-                spFont->FUN_1422dbd70(spFont->FUN_1422db750(), 1);
+                spFont->PreloadSwf(spFont->FUN_1422db750(), 1);
             m_d8.RemoveAtPos(pos);
         }
     }
@@ -225,7 +225,7 @@ bool GFxMovieDamage::LoadDamageFont(const CString& strFont)
     MS2Ptr<TDamageFontAttr> spAttr(new TDamageFontAttr);
     spAttr->m_18 = nId;
     spFont.AssignRaw(new UIDamageFont(strFont, spAttr));
-    spFont->FUN_1422dbf00(spFont->FUN_1422db750(), 0, 0);
+    spFont->LoadSwf(spFont->FUN_1422db750(), 0, 0);
     m_90.SetAt(nId, spFont);
     return true;
 }
@@ -283,7 +283,7 @@ void GFxMovieDamage::UnloadExpiredFonts()
                 MS2Ptr<UIDamageFont> spFont = arrExpired.GetAt(i);
                 if (spFont == 0)
                     continue;
-                m_90.RemoveKey(spFont->FUN_140e0dbe0());
+                m_90.RemoveKey(spFont->GetFontId());
                 m_128->UnloadFont(spFont->m_strName);
                 spFont->FUN_1422dc080();
             }
@@ -329,7 +329,7 @@ bool GFxMovieDamage::FUN_140b621a0()
 // @0x140b62270
 void GFxMovieDamage::FUN_140b62270()
 {
-    if (reinterpret_cast<GFxSceneService*>(CUserMail::FUN_1408e57f0())->GetSceneId() == 0x620000c)
+    if (reinterpret_cast<GFxSceneService*>(CUserMail::GetGFxSceneService())->GetSceneId() == 0x620000c)
         CUIService::GetInstance()->FUN_141add040((eUIClassID)0x4e32);
 }
 

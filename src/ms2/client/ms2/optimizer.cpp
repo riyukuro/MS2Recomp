@@ -79,14 +79,14 @@ class Unk_GoDeviceInfo { public: CStringW GetAdapterName(); };   // gameoption.c
 class CrashManagerCli;
 template<> CrashManagerCli* TSingleton<CrashManagerCli>::GetInstance();
 struct IDirect3D9* GetIDirect3D9();   // C3: was FUN_14151e7e0
-class GFxService* FUN_1414a56c0();   // the GFxService instance (gfxservice.h)
+class GFxService* GetGFxService();   // the GFxService instance (gfxservice.h)
 class GFxService   // C3: member view for the former free stand-ins
 {
 public:
     int FUN_1422e9e50();
 };
 CString FUN_14016a600(const wchar_t* pszText, int nCodePage);
-CString FUN_1412755b0();
+CString GetOptionFolder();
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);
 class TiXmlElement* DocRootElement(class TiXmlDocument*);   // C3: was FUN_14081b310
 class Unk_XmlNode   // C3: member view for the former free stand-ins
@@ -242,7 +242,7 @@ void COptimizer::WriteSystemInfoToCrashLog()
     CString strText;
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- COptimizer Log ---");
     strText.Format("OS : %s", (const char*)reinterpret_cast<Unk_OptOsInfo*>(TSingleton<COSInfo>::GetInstance())->GetFullName());
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->AddLogLine(strText);
     unsigned __int64 nMemory = FUN_141245b10();
     reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GlobalMemory : %d(MB)", nMemory);
     nMemory = GetPagefileUsageMB();
@@ -253,13 +253,13 @@ void COptimizer::WriteSystemInfoToCrashLog()
     RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Hardware\\Description\\System\\CentralProcessor\\0", 0, KEY_QUERY_VALUE, &hKey);
     RegQueryValueExA(hKey, "ProcessorNameString", 0, 0, szCpu, &dwLength);
     strText.Format("CPU : %s", szCpu);
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->AddLogLine(strText);
     if (((void*)GetIDirect3D9()) != 0)
     {
         strText.Format("GPU : %s", (const char*)FUN_14016a600((const wchar_t*)reinterpret_cast<Unk_GoDeviceInfo*>(TSingleton<GPUManager>::GetInstance())->GetAdapterName(), 0));
-        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
+        reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->AddLogLine(strText);
     }
-    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", ((class GFxService*)(void*)(((void*)FUN_1414a56c0())))->FUN_1422e9e50() / 0x100000);
+    reinterpret_cast<CCrashManager*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("GFXSysAlloc : %d(MB)", ((class GFxService*)(void*)(((void*)GetGFxService())))->FUN_1422e9e50() / 0x100000);
     const char* pszMultiScene;
     if (DAT_143ae2b30 != 0)
     {
@@ -378,7 +378,7 @@ void COptimizer::LoadOptimization()
         bool bLoaded;
         {
             CString strFile("Optimization.xml");
-            bLoaded = doc.LoadFile(FUN_140cc2a00(FUN_1412755b0(), strFile), TIXML_ENCODING_UNKNOWN);
+            bLoaded = doc.LoadFile(FUN_140cc2a00(GetOptionFolder(), strFile), TIXML_ENCODING_UNKNOWN);
         }
         if (bLoaded)
         {
@@ -698,7 +698,7 @@ void COptimizer::UpdateSelectedPlayers(bool bForce)
             if ((preloadMode & 8) != 0)
             {
                 std::list<Entry> candidates;
-                Unk_OptObjMap* pMap = ((class Unk_OptObjMap*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bd36b0());
+                Unk_OptObjMap* pMap = ((class Unk_OptObjMap*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->GetPlayerMap());
                 for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetHeadPosition(); pos != 0; ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetNext(pos))
                 {
                     TPtr<PC>& spRef = reinterpret_cast<TPtr<PC>&>(((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetValueAt(pos));
@@ -781,7 +781,7 @@ void COptimizer::ApplyModeToAllPlayers(int nFlags)
     {
         if (((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bca2e0() != 0)
         {
-            Unk_OptObjMap* pMap = ((class Unk_OptObjMap*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->FUN_141bd36b0());
+            Unk_OptObjMap* pMap = ((class Unk_OptObjMap*)((class WorldService*)(class Unk_OptWorld*)(reinterpret_cast<Unk_OptWorld*>(WorldService::GetInstance())))->GetPlayerMap());
             for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetHeadPosition(); pos != 0; ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetNext(pos))
             {
                 TPtr<PC> spActor(reinterpret_cast<TPtr<PC>&>(((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_OptObjMap*)(pMap))->GetValueAt(pos)));

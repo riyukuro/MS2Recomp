@@ -19,7 +19,7 @@ class GFxManager
 public:
     Unk_GFxUIRenderer2D* GetRenderer2D();                           // the movie renderer's Renderer2D (+0x40 member, slot 2)
 };
-class Unk_AltStringMgr* FUN_14025e7a0();
+class Unk_AltStringMgr* GetGFxManager();
 
 // Scaleform::Render::Renderer2D (render_renderer2d.h) as GetHAL sees it: the placeholder Unk_GFxUIRenderer2D keeps its
 // own class, so the member is reached through a cast.
@@ -36,6 +36,6 @@ public:
 Unk_GFxUIRenderer2D* FUN_1422cf080();                               // the UI's Renderer2D
 Unk_GFxUIHal* FUN_1422cf060();                                      // the UI renderer's HAL (gfxmoviebackground.cpp)
 NiDX9Renderer* FUN_1422cf0a0();                                     // the Gamebryo renderer as an NiDX9Renderer
-LPDIRECT3DDEVICE9 FUN_1422cf0d0();                                  // its D3D device (ugcmanager_1.cpp)
+LPDIRECT3DDEVICE9 GetD3DDevice();                                  // its D3D device (ugcmanager_1.cpp)
 void* FUN_1422cf0f0();                                              // the UI render context (asyncimageloader.cpp)
-int FUN_1422cf120();                                                // 1 while the device is lost or screen capture is blocked
+int IsDeviceLostOrCaptureBlocked();                                                // 1 while the device is lost or screen capture is blocked

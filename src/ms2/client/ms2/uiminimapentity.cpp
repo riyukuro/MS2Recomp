@@ -21,15 +21,15 @@
 // MS2-PIN: ?vfunc_4@UIMinimapEntity@@UEAAHXZ 0x141a4b200 ; unique
 // MS2-PIN: ?vfunc_48@UIMinimapDialog@@UEAAHXZ 0x141a4b210 ; unique
 // MS2-PIN: ?Lookup@?$CAtlMap@_KHV?$CElementTraits@_K@ATL@@V?$CElementTraits@H@2@@ATL@@QEAAPEAVCPair@12@_K@Z 0x141a4c6d0 ; unique
-// MS2-PIN: ?FUN_141a50bc0@UIMinimapEntityProxyPortal@@QEAAXAEBH@Z 0x141a50bc0 ; unique
-// MS2-PIN: ?FUN_141a51030@UIMinimapEntityProxyPortal@@QEAAX_N@Z 0x141a51030 ; unique
-// MS2-PIN: ?FUN_141a51050@UIMinimapEntityProxyPortal@@QEAAXH@Z 0x141a51050 ; unique
+// MS2-PIN: ?SetField@UIMinimapEntityProxyPortal@@QEAAXAEBH@Z 0x141a50bc0 ; unique
+// MS2-PIN: ?SetFlag@UIMinimapEntityProxyPortal@@QEAAX_N@Z 0x141a51030 ; unique
+// MS2-PIN: ?SetState@UIMinimapEntityProxyPortal@@QEAAXH@Z 0x141a51050 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??__Es_strEliteBoss@@YAXXZ 0x140118000 ; gb19 "elite_boss" into 0x143af41c8; exe text order is NoIcon, EliteBoss, EmptyIcon ("empty" @0x140118030), so auto-order lands EmptyIcon right
 // MS2-PIN: ??__Fs_strEliteBoss@@YAXXZ 0x142cc03d0 ; gb19 dtor of 0x143af41c8
 #define NOMINMAX
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiminimapentity.cpp"    // assumed
-#define MS2_TPTRVALUE_ASSIGN_VIA_TEMP   // FUN_141a454d0: `spHomes = Unk_GrNewTag(0)` converts into a temporary and assigns it
+#define MS2_TPTRVALUE_ASSIGN_VIA_TEMP   // AddPortalHome: `spHomes = Unk_GrNewTag(0)` converts into a temporary and assigns it
 #include "ms2/placeholder/ms2stdafx.h"
 #include "uiminimapentity.h"
 #include <egf/Entity.h>
@@ -104,19 +104,19 @@ class Unk_ReportDialogAccess : public UIDialog { public: template<class T> MS2Pt
 class CProxyGameObject : public CPtred
 {
 public:
-    int FUN_1416c1ff0();                                            // the local player's own object
+    int IsSelf();                                            // the local player's own object
     int IsOtherPlayer();                                            // another player's object
     int FUN_1416c2090();                                            // has a template id
-    int FUN_1416c20d0();                                            // has a portal
+    int HasPortal();                                            // has a portal
     int FUN_1416c2110();                                            // the portal is shown on the minimap
     struct Unk_QmNpcQuestState* GetQuestState();                  // the quest guide (+0x88)
     MS2Ptr<NpcDataCli> GetNpcData();                             // the npc data
-    void* FUN_1416c22f0();                                          // the owner character id
-    int FUN_1416c2350();                                            // the template (npc) id
+    void* GetCharacterId();                                          // the owner character id
+    int GetTemplateId();                                            // the template (npc) id
     CStringW GetName();                                       // the name
-    CString FUN_1416c2520();                                        // the portrait path
-    CStringW FUN_1416c2570();                                       // the today word
-    bool FUN_1416c2b30();                                           // visible on the minimap
+    CString GetPortraitPath();                                        // the portrait path
+    CStringW GetTodayMemo();                                       // the today word
+    bool IsVisibleOnMinimap();                                           // visible on the minimap
     bool FUN_1416c2b70();                                           // the visibility follows the actor
     int FUN_1416c21c0();                                            // a pet
     Vector3 GetPosition();                                        // the position (C3: cproxygameobject.h's return type)
@@ -151,7 +151,7 @@ public:
 };
 
 void* FUN_140764020();   // C3: was FUN_140764020
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);                         // the npc table row
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);                         // the npc table row
 
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
 
@@ -170,19 +170,19 @@ public:
     Unk_MmConfigValue m_minimapCell;                                // +0xda48 MinimapScaleSkipSplitPixel
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
-CString FUN_14192ebf0(unsigned nKind);                                  // the minimap icon of an npc function
+CString GetNpcMovieName(unsigned nKind);                                  // the minimap icon of an npc function
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);          // a string table text by id, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
 template <class T> T* Unk_GaGetUI();   // C3: was FUN_141386800
 CStringW FUN_140298ea0(CStringW strKey);
 CString SelectStringByQuestKind(MS2Ptr<class CQuestData> spQuest, const CString& sEpic, const CString& sWorld, const CString& sRepeat, const CString& sEvent);
-MS2Ptr<class CQuestData> FUN_14074bc40(int nQuestId);
+MS2Ptr<class CQuestData> GetQuestData(int nQuestId);
 void FUN_140710590(COutPacket& packet);
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class GFxManager { public: int IsTextFieldFocused(int nMovieId); };   // C3: member view (gfxmanager.cpp)
-class Unk_AltStringMgr* FUN_14025e7a0();
+class Unk_AltStringMgr* GetGFxManager();
 class WorldMapManager { public: void BuildNpcRewardPreview(int npc, ASObj* script); };   // C3: member view (worldmapmanager.h)
-class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
+class Unk_PcFieldTable* GetWorldMapManager();   // C3: was GetWorldMapManager
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 CStringW FUN_14016a730(const char* psz, int nLength);              // narrow -> wide
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // a common string
@@ -191,7 +191,7 @@ extern ATL::CAtlArray<unsigned int> DAT_143ab3078;                     // the ta
 int FUN_141b71c00(unsigned short nValue);                           // the taxi tier of a level
 int FUN_141276180(const CString& strSound, const CString& strArg); // play a ui sound
 int FUN_1418fd2f0();                                                // the minimap is suppressed (uicommon)
-int FUN_14192e8f0();
+int InitNpcMovieNames();
 extern int g_bAppActive;                                           // input enabled
 class UIEnterEventFieldDialog;
 class UIDTEventDialog;
@@ -204,7 +204,7 @@ public:
 };
 class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
 UIQuestEventDispatcher* FUN_140bfc4b0();
-class Unk_Hud* FUN_140933230();   // C3: was FUN_140933230
+class Unk_Hud* GetUIServerEventDispatcher();   // C3: was GetUIServerEventDispatcher
 class ASDialog : public ASUIComponent {};                             // the dialog root clip (UIDialog::m_90)
 
 // The quest payload pointer (MS2Ptr<CQuest>).
@@ -218,8 +218,8 @@ public:
 class CQuest : public CPtred, public Unk_MmQuestData {};          // the interface is the second base (+0x18)
 
 // The UI dialogs reached from the markers.
-class UIBossRewardPreviewDialog : public UIDialog { public: int FUN_140f25ad0(int nNpcId); };
-class UIDungeonRoomDialog : public UIDialog { public: bool FUN_1412b8f00(int nId); };
+class UIBossRewardPreviewDialog : public UIDialog { public: int SetNpcId(int nNpcId); };
+class UIDungeonRoomDialog : public UIDialog { public: bool OpenDungeonOrRoom(int nId); };
 template <class T> T* Unk_GetUI(int nUiType);
 
 // The open dialog of a ui id (COMDAT per T in this unit).
@@ -362,7 +362,7 @@ UIMinimapEntity::~UIMinimapEntity()
 // @0x141a310e0
 void UIMinimapEntity::SetFromNpcData(NpcDataCli* pNpc)
 {
-    m_icon = FUN_141a32750(pNpc);
+    m_icon = GetNpcIcon(pNpc);
     m_state = GetStateForIcon(m_icon);
     m_layer = GetLayerForNpc(pNpc, m_icon);
     m_visible = !m_icon.IsEmpty() && m_icon != s_strNoIcon;
@@ -370,40 +370,40 @@ void UIMinimapEntity::SetFromNpcData(NpcDataCli* pNpc)
 MS2_REPLACE_METHOD(0x141a310e0, UIMinimapEntity, SetFromNpcData, 389, 0x38FD60B2);
 
 // @0x141a31270
-void UIMinimapEntity::FUN_141a31270(ASObj& data, efd::SmartPointer<MinimapViewport> spViewport)
+void UIMinimapEntity::BuildData(ASObj& data, efd::SmartPointer<MinimapViewport> spViewport)
 {
     if (spViewport == 0)
         return;
-    data.FUN_1407cba60(s_strMcName, m_icon);
-    data.FUN_1407cba60(s_strFrame, m_state);
-    data.FUN_1407cba60(s_strLayer, m_layer);
-    data.FUN_1407cbbe0(s_strShowText, m_showText);
-    data.FUN_1407cbbe0(s_strShowGuide, m_showGuide);
-    data.FUN_1407cbb20(s_strName, m_text);
-    data.FUN_1407cbb20(s_strGuideName, m_guideName);
-    data.FUN_1407cbbe0("inFieldNpc", m_inFieldNpc);
+    data.SetStringMember(s_strMcName, m_icon);
+    data.SetStringMember(s_strFrame, m_state);
+    data.SetStringMember(s_strLayer, m_layer);
+    data.SetBoolMember(s_strShowText, m_showText);
+    data.SetBoolMember(s_strShowGuide, m_showGuide);
+    data.SetWStringMember(s_strName, m_text);
+    data.SetWStringMember(s_strGuideName, m_guideName);
+    data.SetBoolMember("inFieldNpc", m_inFieldNpc);
     data.FUN_141a472c0("groupType", m_type);
     NiPoint3 kPos(efd::Point3::ZERO);
     NiPoint3 kWorld(m_position);
     bool bVisible = spViewport->WorldToMinimap(kWorld, kPos) && m_visible;
     data.SetMemberFloat("x", kPos.x);
     data.SetMemberFloat("y", kPos.y);
-    data.FUN_1407cbbe0("visible", bVisible);
-    ASFunction fn(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMinimapEntity::FUN_141a32120), 0, 2);
-    data.FUN_1409adbe0("userFunction", Scaleform::GFx::Value(fn.FUN_1422bb870()));
+    data.SetBoolMember("visible", bVisible);
+    ASFunction fn(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMinimapEntity::OnUserFunction), 0, 2);
+    data.FUN_1409adbe0("userFunction", Scaleform::GFx::Value(fn.GetValue()));
     vfunc_2(&data);
 }
-MS2_REPLACE_METHOD(0x141a31270, UIMinimapEntity, FUN_141a31270, 1101, 0x837C432C);
+MS2_REPLACE_METHOD(0x141a31270, UIMinimapEntity, BuildData, 1101, 0x837C432C);
 
 // @0x141a316d0
-int UIMinimapEntity::FUN_141a316d0(const int& nField, bool& bSpecial, CString& strIcon, CString& strLayer)
+int UIMinimapEntity::FindPortalNpc(const int& nField, bool& bSpecial, CString& strIcon, CString& strLayer)
 {
     unsigned int nNpcId = 0;
     Unk_QmNpcQuestState guide;
-    ((class CQuestManager*)FUN_140764020())->FUN_1416d1800(nField, &guide);
+    ((class CQuestManager*)FUN_140764020())->GetBestNpcQuestState(nField, &guide);
     CString strQuestIcon;
     CString strQuestLayer;
-    if (FUN_141a31c80(&guide, strQuestIcon, strQuestLayer) && !bSpecial) {
+    if (ResolveQuestIcon(&guide, strQuestIcon, strQuestLayer) && !bSpecial) {
         bSpecial = true;
         strIcon = strQuestIcon;
         strLayer = strQuestLayer;
@@ -421,7 +421,7 @@ int UIMinimapEntity::FUN_141a316d0(const int& nField, bool& bSpecial, CString& s
                 continue;
             if (HasNpcMinimapInfo(spNpc) && nNpcId == 0) {
                 bSpecial = false;
-                strIcon = FUN_141a32750(spNpc);
+                strIcon = GetNpcIcon(spNpc);
                 strLayer = s_strLayerNpc;
                 nNpcId = nId;
                 break;
@@ -430,10 +430,10 @@ int UIMinimapEntity::FUN_141a316d0(const int& nField, bool& bSpecial, CString& s
     }
     return nNpcId;
 }
-MS2_REPLACE_METHOD(0x141a316d0, UIMinimapEntity, FUN_141a316d0, 780, 0x51BBD233);
+MS2_REPLACE_METHOD(0x141a316d0, UIMinimapEntity, FindPortalNpc, 780, 0x51BBD233);
 
 // @0x141a319f0
-CStringW UIMinimapEntity::FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strAlign, bool bMultiRow)
+CStringW UIMinimapEntity::GetNpcTooltip(NpcDataCli* pNpc, const CStringW& strAlign, bool bMultiRow)
 {
     CStringW strFunction = TSingleton<CStringTable>::GetInstance()->FUN_141811980(10, pNpc->GetId());
     if (!strFunction.IsEmpty()) {
@@ -445,10 +445,10 @@ CStringW UIMinimapEntity::FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strAli
     }
     return FUN_14028dfa0(L"s_minimap_tooltip_normal", FUN_1401aa6a0(pNpc->GetId()));
 }
-MS2_REPLACE_METHOD(0x141a319f0, UIMinimapEntity, FUN_141a319f0, 648, 0xB42DAA1D);
+MS2_REPLACE_METHOD(0x141a319f0, UIMinimapEntity, GetNpcTooltip, 648, 0xB42DAA1D);
 
 // @0x141a31c80
-bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& strIcon, CString& strLayer)
+bool UIMinimapEntity::ResolveQuestIcon(const Unk_QmNpcQuestState* pGuide, CString& strIcon, CString& strLayer)
 {
     if (pGuide->m_icon != 0xb) {
         MS2Ptr<CQuest> spQuest(0);
@@ -475,7 +475,7 @@ bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& 
         default:
             return false;
         }
-        MS2Ptr<CQuestData> spData = spQuest.get() ? spQuest->vfunc_0() : FUN_14074bc40(nQuestId);
+        MS2Ptr<CQuestData> spData = spQuest.get() ? spQuest->vfunc_0() : GetQuestData(nQuestId);
         const CString& strSuffix = SelectStringByQuestKind(spData, "_epic", "_world", "_repeat", "_event");
         if (bSuffix)
             strIcon += strSuffix;
@@ -484,10 +484,10 @@ bool UIMinimapEntity::FUN_141a31c80(const Unk_QmNpcQuestState* pGuide, CString& 
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a31c80, UIMinimapEntity, FUN_141a31c80, 1165, 0xD673AD64);
+MS2_REPLACE_METHOD(0x141a31c80, UIMinimapEntity, ResolveQuestIcon, 1165, 0xD673AD64);
 
 // @0x141a32120
-void UIMinimapEntity::FUN_141a32120(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIMinimapEntity::OnUserFunction(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (params.ArgCount <= 0)
         return;
@@ -497,26 +497,26 @@ void UIMinimapEntity::FUN_141a32120(const Scaleform::GFx::FunctionHandler::Param
     CStringW strName = args.FUN_1422b8f40();
     if (strName == L"tooltip") {
         ASObj tip(2);
-        if (FUN_141a32260(tip))
-            *params.pRetVal = tip.FUN_1422bb870();
+        if (BuildTooltip(tip))
+            *params.pRetVal = tip.GetValue();
     } else if (strName == L"click") {
         SendSetDebugMode();
     }
 }
-MS2_REPLACE_METHOD(0x141a32120, UIMinimapEntity, FUN_141a32120, 312, 0x1DDD54D5);
+MS2_REPLACE_METHOD(0x141a32120, UIMinimapEntity, OnUserFunction, 312, 0x1DDD54D5);
 
 // @0x141a32260
-bool UIMinimapEntity::FUN_141a32260(ASObj& data)
+bool UIMinimapEntity::BuildTooltip(ASObj& data)
 {
     CStringW strText;
     GetText(strText, data);
     if (!strText.IsEmpty()) {
-        data.FUN_1407cbb20(s_strText, strText);
+        data.SetWStringMember(s_strText, strText);
         return true;
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a32260, UIMinimapEntity, FUN_141a32260, 190, 0x14DE07A2);
+MS2_REPLACE_METHOD(0x141a32260, UIMinimapEntity, BuildTooltip, 190, 0x14DE07A2);
 
 // @0x141a32330
 void UIMinimapEntity::SendSetDebugMode()
@@ -568,7 +568,7 @@ MS2_REPLACE_METHOD(0x141a32620, UIMinimapEntity, vfunc_2, 11, 0x02239C70);
 // @0x141a32640
 bool UIMinimapEntity::HasNpcMinimapInfo(CNpcData* pNpc)
 {
-    CString strIcon = FUN_14192ebf0(pNpc->GetKind());
+    CString strIcon = GetNpcMovieName(pNpc->GetKind());
     if (strIcon.IsEmpty())
         return false;
     if (pNpc->GetKind() == 0)
@@ -581,7 +581,7 @@ bool UIMinimapEntity::HasNpcMinimapInfo(CNpcData* pNpc)
 MS2_REPLACE_METHOD(0x141a32640, UIMinimapEntity, HasNpcMinimapInfo, 264, 0xE39CD148);
 
 // @0x141a32750
-CString UIMinimapEntity::FUN_141a32750(NpcDataCli* pNpc)
+CString UIMinimapEntity::GetNpcIcon(NpcDataCli* pNpc)
 {
     if (!pNpc->IsMinimap())
         return s_strNoIcon;
@@ -604,14 +604,14 @@ CString UIMinimapEntity::FUN_141a32750(NpcDataCli* pNpc)
     case 0x55:
         return s_strGatekeeper;
     }
-    CString strIcon = FUN_14192ebf0(pNpc->GetKind());
+    CString strIcon = GetNpcMovieName(pNpc->GetKind());
     if (!strIcon.IsEmpty())
         return strIcon;
     if (pNpc->GetFriendly() > 0)
         return s_strFriendly;
     return s_strEnemy;
 }
-MS2_REPLACE_METHOD(0x141a32750, UIMinimapEntity, FUN_141a32750, 638, 0x25D61A8E);
+MS2_REPLACE_METHOD(0x141a32750, UIMinimapEntity, GetNpcIcon, 638, 0x25D61A8E);
 
 // @0x141a329e0
 CString UIMinimapEntity::GetStateForIcon(const CString& strIcon)
@@ -658,18 +658,18 @@ UIMinimapEntityProxy::UIMinimapEntityProxy(const int& nId, const int& nKind)
 }
 
 // @0x141a32da0
-MS2Ptr<CProxyGameObject> UIMinimapEntityProxy::FUN_141a32da0()
+MS2Ptr<CProxyGameObject> UIMinimapEntityProxy::GetProxy()
 {
     if (m_id == 0)
         return MS2Ptr<CProxyGameObject>(0);
     return WorldService::GetInstance()->FindProxyObject(m_id);
 }
-MS2_REPLACE_METHOD(0x141a32da0, UIMinimapEntityProxy, FUN_141a32da0, 111, 0x93351C5B);
+MS2_REPLACE_METHOD(0x141a32da0, UIMinimapEntityProxy, GetProxy, 111, 0x93351C5B);
 
 // @0x141a32e20
 void UIMinimapEntityProxy::GetText(CStringW& strText, ASObj& data)
 {
-    MS2Ptr<CProxyGameObject> spProxy = FUN_141a32da0();
+    MS2Ptr<CProxyGameObject> spProxy = GetProxy();
     if (spProxy == 0)
         return;
     vfunc_5(spProxy, strText, data);
@@ -679,25 +679,25 @@ MS2_REPLACE_METHOD(0x141a32e20, UIMinimapEntityProxy, GetText, 155, 0xDD25025D);
 // @0x141a32ed0
 void UIMinimapEntityProxy::vfunc_3()
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x1a))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x1a))
         return;
-    MS2Ptr<CProxyGameObject> spProxy = FUN_141a32da0();
+    MS2Ptr<CProxyGameObject> spProxy = GetProxy();
     if (spProxy.get() != 0) {
-    if (spProxy->FUN_1416c20d0()) {
+    if (spProxy->HasPortal()) {
         MS2Ptr<CPortal> spPortal = spProxy->m_portal;
         if (spPortal->m_nType == 8) {
             UIDungeonRoomDialog* pDialog = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd);
             if (pDialog) {
-                TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4ebd);
-                if (pDialog->FUN_1412b8f00(spPortal->m_nId))
+                TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4ebd);
+                if (pDialog->OpenDungeonOrRoom(spPortal->m_nId))
                     TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4ebd);
             }
         }
     } else if (spProxy->FUN_1416c2090()) {
         UIBossRewardPreviewDialog* pDialog = Unk_MmFindDialog<UIBossRewardPreviewDialog>(0x4efb);
         if (pDialog) {
-            TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4efb);
-            if (pDialog->FUN_140f25ad0(spProxy->FUN_1416c2350()))
+            TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4efb);
+            if (pDialog->SetNpcId(spProxy->GetTemplateId()))
                 TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)0x4efb);
         }
     }
@@ -722,7 +722,7 @@ void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& s
             unsigned int nQuest = 0;
             unsigned __int64 nCharId = 0;
             pDialog->FUN_141a3b4d0(nQuest, nCharId);
-            if (nCharId == reinterpret_cast<__int64>(spProxy->FUN_1416c22f0())) {
+            if (nCharId == reinterpret_cast<__int64>(spProxy->GetCharacterId())) {
                 CStringW strKey = StringFormat<unsigned int>(L"s_minimap_tooltip_quest_target_{0}", nQuest);
                 strText = FUN_140298ea0(strKey);
             }
@@ -748,10 +748,10 @@ void UIMinimapEntityProxy::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& s
                         strFrame = L"elite";
                     }
                     data.SetMemberUInt("npcID", spNpc->GetId());
-                    data.FUN_1407cbb20("bossFrameName", strFrame);
-                    reinterpret_cast<WorldMapManager*>(FUN_140cb17d0())->BuildNpcRewardPreview(spNpc->GetId(), &data);
+                    data.SetWStringMember("bossFrameName", strFrame);
+                    reinterpret_cast<WorldMapManager*>(GetWorldMapManager())->BuildNpcRewardPreview(spNpc->GetId(), &data);
                 } else {
-                    strText = FUN_141a319f0(spNpc, s_strCenter, true);
+                    strText = GetNpcTooltip(spNpc, s_strCenter, true);
                 }
             }
         }
@@ -771,13 +771,13 @@ UIMinimapEntityProxyPortal::UIMinimapEntityProxyPortal(const int& nId)
 }
 
 // @0x141a33650
-void UIMinimapEntityProxyPortal::FUN_141a33650()
+void UIMinimapEntityProxyPortal::Reset()
 {
     m_state = 0;
     m_field = 0;
     m_flag = false;
 }
-MS2_REPLACE_METHOD(0x141a33650, UIMinimapEntityProxyPortal, FUN_141a33650, 39, 0xF292E240);
+MS2_REPLACE_METHOD(0x141a33650, UIMinimapEntityProxyPortal, Reset, 39, 0xF292E240);
 
 // @0x141a33680
 void UIMinimapEntityProxyPortal::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& strText, ASObj& data)
@@ -786,9 +786,9 @@ void UIMinimapEntityProxyPortal::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStri
         return;
     MS2Ptr<CPortal> spPortal = spProxy->m_portal;
     if (m_state == 2) {
-        FUN_141a33850(spPortal, strText);
+        BuildHousingText(spPortal, strText);
     } else if (m_state == 1) {
-        FUN_141a33e30(spPortal, strText);
+        BuildFieldText(spPortal, strText);
     } else {
         CStringW strName = spPortal->GetName();
         if (!strName.IsEmpty())
@@ -798,7 +798,7 @@ void UIMinimapEntityProxyPortal::vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStri
 MS2_REPLACE_METHOD(0x141a33680, UIMinimapEntityProxyPortal, vfunc_5, 444, 0x1694A5EB);
 
 // @0x141a33850
-void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CStringW& strText)
+void UIMinimapEntityProxyPortal::BuildHousingText(MS2Ptr<CPortal> spPortal, CStringW& strText)
 {
     if (spPortal == 0)
         return;
@@ -845,10 +845,10 @@ void UIMinimapEntityProxyPortal::FUN_141a33850(MS2Ptr<CPortal> spPortal, CString
         strText = FUN_14028dfa0<CStringW, CStringW>(L"s_minimap_tooltip_function_portal", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nField), strAligned);
     }
 }
-MS2_REPLACE_METHOD(0x141a33850, UIMinimapEntityProxyPortal, FUN_141a33850, 1494, 0xAD2BDB4B);
+MS2_REPLACE_METHOD(0x141a33850, UIMinimapEntityProxyPortal, BuildHousingText, 1494, 0xAD2BDB4B);
 
 // @0x141a33e30
-void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CStringW& strText)
+void UIMinimapEntityProxyPortal::BuildFieldText(MS2Ptr<CPortal> spPortal, CStringW& strText)
 {
     if (spPortal == 0)
         return;
@@ -867,7 +867,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
     for (POSITION pos = npcs.GetHeadPosition(); pos != 0; npcs.GetNext(pos)) {
         unsigned int nId = npcs.GetAt(pos);
         if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fba40(nId, nField)) {
-            MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nId);
+            MS2Ptr<CNpcData> spNpc = FindNpcData(nId);
             if (spNpc.get() != 0 && HasNpcMinimapInfo(static_cast<CNpcData*>(spNpc)))
                 visible.AddTail(nId);
         }
@@ -882,7 +882,7 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
         if (spNpc.get() != 0) {
             bool bMultiRow = false;
             CStringW strAlign = visible.GetCount() > 1 ? s_strLeft : s_strCenter;
-            strLabel = FUN_141a319f0(static_cast<NpcDataCli*>(spNpc), strAlign, bMultiRow);
+            strLabel = GetNpcTooltip(static_cast<NpcDataCli*>(spNpc), strAlign, bMultiRow);
         }
     }
     if (!quests.IsEmpty()) {
@@ -910,13 +910,13 @@ void UIMinimapEntityProxyPortal::FUN_141a33e30(MS2Ptr<CPortal> spPortal, CString
             MS2Ptr<NpcDataCli> spNpc = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nId);
             if (spNpc == 0)
                 continue;
-            CStringW strTip = FUN_141a319f0(static_cast<NpcDataCli*>(spNpc), s_strLeft, false);
+            CStringW strTip = GetNpcTooltip(static_cast<NpcDataCli*>(spNpc), s_strLeft, false);
             strLabel.Append(strTip);
         }
     }
     strText = FUN_14028dfa0<CStringW, CStringW>(L"s_minimap_tooltip_function_portal", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, nField), strLabel);
 }
-MS2_REPLACE_METHOD(0x141a33e30, UIMinimapEntityProxyPortal, FUN_141a33e30, 1806, 0xFF202207);
+MS2_REPLACE_METHOD(0x141a33e30, UIMinimapEntityProxyPortal, BuildFieldText, 1806, 0xFF202207);
 
 // @0x141a34550
 UIMinimapEntityBuddyHome::UIMinimapEntityBuddyHome(MS2Ptr<CBuddy> spBuddy)
@@ -954,11 +954,11 @@ MS2_REPLACE_METHOD(0x141a34700, UIMinimapEntityMapObject, GetText, 263, 0xD0921D
 UIMinimapEntityTaxi::UIMinimapEntityTaxi(const efd::Point3& kPos)
     : UIMinimapEntity(2)
 {
-    FUN_141a34890(kPos);
+    Initialize(kPos);
 }
 
 // @0x141a34890
-void UIMinimapEntityTaxi::FUN_141a34890(const efd::Point3& kPos)
+void UIMinimapEntityTaxi::Initialize(const efd::Point3& kPos)
 {
     MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
@@ -978,7 +978,7 @@ void UIMinimapEntityTaxi::FUN_141a34890(const efd::Point3& kPos)
     m_visible = true;
     m_text = bBest ? GetStringCommonByKey(L"s_word_besttaxistation") : GetStringCommonByKey(L"s_word_taxistation");
 }
-MS2_REPLACE_METHOD(0x141a34890, UIMinimapEntityTaxi, FUN_141a34890, 908, 0x75C22537);
+MS2_REPLACE_METHOD(0x141a34890, UIMinimapEntityTaxi, Initialize, 908, 0x75C22537);
 
 // @0x141a34870
 void UIMinimapEntityTaxi::SetBest(bool bBest)
@@ -1040,7 +1040,7 @@ void UIMinimapEntityPing::SetPing(const efd::Point3& kPos)
 MS2_REPLACE_METHOD(0x141a34f40, UIMinimapEntityPing, SetPing, 174, 0xC68B0059);
 
 // @0x141a35000
-void UIMinimapEntityPing::FUN_141a35000(unsigned __int64 nId, int nColor, const efd::Point3& kPos, const CStringW& strName)
+void UIMinimapEntityPing::UpdatePing(unsigned __int64 nId, int nColor, const efd::Point3& kPos, const CStringW& strName)
 {
     if (m_clip == 0)
         return;
@@ -1056,7 +1056,7 @@ void UIMinimapEntityPing::FUN_141a35000(unsigned __int64 nId, int nColor, const 
     m_guideName = strName;
     m_text = strName;
 }
-MS2_REPLACE_METHOD(0x141a35000, UIMinimapEntityPing, FUN_141a35000, 471, 0xECE9CD61);
+MS2_REPLACE_METHOD(0x141a35000, UIMinimapEntityPing, UpdatePing, 471, 0xECE9CD61);
 
 // @0x141a351e0
 void UIMinimapEntityPing::GetText(CStringW& strText, ASObj& data)
@@ -1078,8 +1078,8 @@ UIMinimapDialog::UIMinimapDialog()
     m_7c = 0;
     m_88 = 1;
     FUN_1422dc3b0(1);
-    FUN_141a3b6f0();
-    FUN_141925e70(0, 1);
+    BuildShowAttributes();
+    SetFlag(0, 1);
     m_alignment = new UICommon::CAlignmentInfo(6, 0, 0);
 }
 
@@ -1090,7 +1090,7 @@ UIMinimapDialog::~UIMinimapDialog()
     m_data = 0;
     m_showAttrs.RemoveAll();
     m_clip228 = 0;
-    FUN_141a3fd20();
+    ClearEntityContainers();
 }
 
 // @0x141a35ba0
@@ -1109,21 +1109,21 @@ void UIMinimapDialog::OnLoadComplete()
         return;
     }
     FUN_141923680(1);
-    FUN_141a3c150();
-    FUN_141a3ced0();
+    BuildUIData();
+    BuildField();
     ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_1419308c0(this);
-    FUN_140bfc4b0()->FUN_141aa87c0(this);
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(this);
+    FUN_140bfc4b0()->AddListener(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->AddListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
-    TSingleton<UIBuddyEventDispatcher>::GetInstance()->FUN_1418d9450(this);
-    ((class UIServerEventDispatcher*)FUN_140933230())->AddListener(this);
+    TSingleton<UIBuddyEventDispatcher>::GetInstance()->AddListener(this);
+    ((class UIServerEventDispatcher*)GetUIServerEventDispatcher())->AddListener(this);
     if (UIObject* pWindow = reinterpret_cast<UIObject*>(FindCliDialog<UIEnterEventFieldDialog>(0x4f00)))
         pWindow->FUN_1422dc450();
     if (UIObject* pWindow = reinterpret_cast<UIObject*>(FindCliDialog<UIDTEventDialog>(0x4f01)))
         pWindow->FUN_1422dc450();
     if (UILevelUpPackageWidgetDialog* pWindow = Unk_MmFindDialog<UILevelUpPackageWidgetDialog>(0x4f5e))
         pWindow->FUN_1422dc450();
-    FUN_141a42a70();
+    UpdatePlayerVisibility();
     if (IsPingAllowed()) {
         if (m_90.get()) {
             m_90->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIMinimapDialog::FUN_141a456c0), static_cast<void*>(0));
@@ -1139,10 +1139,10 @@ void UIMinimapDialog::vfunc_26()
     UIDialog::vfunc_26();
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
     ((class Unk_UpperEvents*)FUN_140c607b0())->FUN_141930950(this);
-    FUN_140bfc4b0()->FUN_141aa8850(this);
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(this);
-    TSingleton<UIBuddyEventDispatcher>::GetInstance()->FUN_1418d94e0(this);
-    ((class UIServerEventDispatcher*)FUN_140933230())->RemoveListener(this);
+    FUN_140bfc4b0()->RemoveListener(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->RemoveListener(this);
+    TSingleton<UIBuddyEventDispatcher>::GetInstance()->RemoveListener(this);
+    ((class UIServerEventDispatcher*)GetUIServerEventDispatcher())->RemoveListener(this);
     vfunc_63(0);
     m_forceMinimize = false;
     m_fullmap = false;
@@ -1160,7 +1160,7 @@ void UIMinimapDialog::vfunc_26()
     m_clip228 = 0;
     m_clip238 = 0;
     m_maxPanel = 0;
-    FUN_141a3fd20();
+    ClearEntityContainers();
     m_460 = 0;
     m_468 = 0;
     m_timer46c.Init();
@@ -1177,7 +1177,7 @@ void UIMinimapDialog::vfunc_15()
         return;
     if (!m_timer474.Check(60))
         return;
-    FUN_141a402b0(m_player);
+    RefreshLocalPlayer(m_player);
     for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos)) {
         ProxyPtr spProxy(0);
         EntityPtr spEntity(0);
@@ -1186,9 +1186,9 @@ void UIMinimapDialog::vfunc_15()
             continue;
         int nKind = spEntity->vfunc_4();
         if (nKind == m_47c)
-            FUN_141a3fe10(spProxy, spEntity, nKind);
+            RefreshProxy(spProxy, spEntity, nKind);
         else
-            FUN_141a400d0(spProxy, spEntity, nKind);
+            UpdateProxyPosition(spProxy, spEntity, nKind);
     }
     if (m_210 && m_47c == 4)
         m_210 = false;
@@ -1197,7 +1197,7 @@ void UIMinimapDialog::vfunc_15()
         m_47c = 1;
     if (m_211) {
         m_211 = false;
-        FUN_141a42550();
+        RefreshNamed();
     }
     FUN_141a42bb0();
 }
@@ -1208,7 +1208,7 @@ void UIMinimapDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
     if (m_timer46c.Check(1000)) {
-        const std::pair<unsigned, __int64>& target = ((class CQuestManager*)FUN_140764020())->FUN_1416d1e90();
+        const std::pair<unsigned, __int64>& target = ((class CQuestManager*)FUN_140764020())->FindNearestQuestTarget();
         m_468 = target.first;
         m_460 = target.second;
     }
@@ -1227,7 +1227,7 @@ template <class T> T* Unk_MmGetDialog()
     return dynamic_cast<T*>(obj.operator->());
 }
 
-int FUN_1418fcee0();                                                // OnReport (uicommon)
+int OnReport();                                                // OnReport (uicommon)
      // the fishing spot text of a field
 class CFishingManager;
 
@@ -1254,10 +1254,10 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4e42);
         return 1;
     } else if (_stricmp("OnMorePlayers", szMethod) == 0) {
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e4d)) {
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e4d)) {
             UICommunityDialog* pDialog = Unk_MmGetDialog<UICommunityDialog>();
             if (pDialog != 0)
-                pDialog->FUN_1418d6930(0);
+                pDialog->SetTab(0);
         }
         TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4e4d);
         return 1;
@@ -1286,7 +1286,7 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
                 float x = data.PopFloat();
                 float y = data.PopFloat();
                 unsigned __int64 nId = _atoi64(data.FUN_1422b8d30());
-                FUN_141a45790(x, y, nId);
+                ShowPlayerMenu(x, y, nId);
             }
         }
         return 1;
@@ -1299,7 +1299,7 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         }
         return 1;
     } else if (_stricmp("OnReport", szMethod) == 0) {
-        return FUN_1418fcee0();
+        return OnReport();
     } else if (_stricmp("OnWheelStepChange", szMethod) == 0) {
         m_212 = true;
         return 1;
@@ -1310,9 +1310,9 @@ int UIMinimapDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
             if (!((Scaleform::GFx::Value*)(void*)(&value))->IsNull()) {
                 ASMovieClip clip(value, 2);
                 if (static_cast<MinimapViewport*>(m_viewport) != 0)
-                    m_viewport->InitFromFieldMinimap(clip.FUN_1422c1340());
+                    m_viewport->InitFromFieldMinimap(clip.GetWidthCeil());
                 m_1fc = true;
-                FUN_141a3ea10();
+                BuildEntities();
             }
         }
         return 1;
@@ -1340,7 +1340,7 @@ void UIMinimapDialog::vfunc_43()
         if (m_alignment.get() != 0)
             m_alignment->FUN_141901cd0();
     }
-    FUN_141a44f40();
+    ApplyAlignment();
 }
 MS2_REPLACE_METHOD(0x141a36e90, UIMinimapDialog, vfunc_43, 108, 0x65931339);
 
@@ -1356,7 +1356,7 @@ int UIMinimapDialog::vfunc_13()
     if (m_1fa && g_bAppActive == 0) {
         OnTabKeyUp();
     } else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dd30(0x49407, 0, 0)) {
-        if (!reinterpret_cast<GFxManager*>(FUN_14025e7a0())->IsTextFieldFocused(m_28))
+        if (!reinterpret_cast<GFxManager*>(GetGFxManager())->IsTextFieldFocused(m_28))
             OnTabKeyDown();
     } else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116ddb0(0x49407, 0, 0)) {
         OnTabKeyUp();
@@ -1370,7 +1370,7 @@ void UIMinimapDialog::vfunc_18()
 {
     if (static_cast<bool>(m_30.get()) && FUN_1422dc430()) {
         ChangeStageSize();
-        FUN_141a44f40();
+        ApplyAlignment();
     }
 }
 MS2_REPLACE_METHOD(0x141a37010, UIMinimapDialog, vfunc_18, 91, 0x42C557CB);
@@ -1417,7 +1417,7 @@ void UIMinimapDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             tooltip.SetTooltipAlign(7);
             tooltip.SetText(strText);
         }
-        *pRetVal = tooltip.FUN_1422bb870();
+        *pRetVal = tooltip.GetValue();
     }
 }
 MS2_REPLACE_METHOD(0x141a37150, UIMinimapDialog, vfunc_49, 662, 0x279A0D2F);
@@ -1520,10 +1520,10 @@ int UIMinimapDialog::vfunc_54(void* pCfg)
     XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strBgAlpha, *(int*)(&nBgAlpha));
     XmlGetChildAttr((class TiXmlElement*)(pCfg), "transform", s_strMapAlpha, *(int*)(&nMapAlpha));
     m_data.AssignRaw(new AScript(2));
-    static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("width", nWidth);
-    static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("height", nHeight);
-    static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("mapAlpha", nMapAlpha);
-    static_cast<ASObj*>(m_data.operator->())->FUN_1407cb9c0("bgAlpha", nBgAlpha);
+    static_cast<ASObj*>(m_data.operator->())->SetIntMember("width", nWidth);
+    static_cast<ASObj*>(m_data.operator->())->SetIntMember("height", nHeight);
+    static_cast<ASObj*>(m_data.operator->())->SetIntMember("mapAlpha", nMapAlpha);
+    static_cast<ASObj*>(m_data.operator->())->SetIntMember("bgAlpha", nBgAlpha);
     static_cast<ASObj*>(m_data.operator->())->SetMemberFloat("scale", fScale);
     void* pSection = ((void*)((class Unk_XmlNode*)(void*)(pCfg))->FirstChild(s_strIconCheck));
     if (pSection != 0) {
@@ -1558,7 +1558,7 @@ int UIMinimapDialog::vfunc_65()
         return 0;
     }
     m_80 = 1;
-    FUN_14192e8f0();
+    InitNpcMovieNames();
     return 1;
 }
 MS2_REPLACE_METHOD(0x141a373f0, UIMinimapDialog, vfunc_65, 85, 0xB26CB77A);
@@ -1579,7 +1579,7 @@ int UIMinimapDialog::vfunc_52()
 MS2_REPLACE_METHOD(0x141a38390, UIMinimapDialog, vfunc_52, 11, 0x30025ED0);
 
 CString FUN_140719530(unsigned __int64 nId);                        // "%I64u"
-CString FUN_141028a90(CString strId, int bDefault);                 // the UGC profile image path
+CString GetProfileImagePath(CString strId, int bDefault);                 // the UGC profile image path
 void FUN_1406c70a0(void* pActor);                                   // ~MS2Ptr<CProxyGameObject> (the by-value actor)
 
 // @0x141a383b0
@@ -1587,7 +1587,7 @@ void UIMinimapDialog::vfunc_ugc_1(void* p, CString str)
 {
     if (m_30.get() != 0) {
         CString strKey = FUN_140719530(reinterpret_cast<unsigned __int64>(p));
-        m_30->FUN_1413127f0("changePlayer", strKey, FUN_141028a90(str, 1));
+        m_30->FUN_1413127f0("changePlayer", strKey, GetProfileImagePath(str, 1));
     }
 }
 MS2_REPLACE_METHOD_VIA(0x141a383b0, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_1, 320, 0x51752DA6);
@@ -1597,7 +1597,7 @@ void UIMinimapDialog::vfunc_ugc_5()
 {
     if (vfunc_55())
         return;
-    FUN_141a3a9a0(false);
+    UpdateReturn(false);
     FUN_141a39e60();
 }
 MS2_REPLACE_METHOD_VIA(0x141a38500, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_5, 102, 0x66758822);
@@ -1607,7 +1607,7 @@ void UIMinimapDialog::vfunc_ugc_6()
 {
     if (vfunc_55())
         return;
-    FUN_141a3a9a0(true);
+    UpdateReturn(true);
     FUN_141a39e60();
 }
 MS2_REPLACE_METHOD_VIA(0x141a38570, UIMinimapDialog, UIUGCEventListener, vfunc_ugc_6, 102, 0x9D9C5CC7);
@@ -1626,19 +1626,19 @@ void UIMinimapDialog::vfunc_buddy_10(__int64 nId, int n)
         if (nCurrent == nField) {
             EntityPtr spEntity(0);
             if (m_buddies.Lookup(nId, spEntity))
-                FUN_141a3f930(spEntity);
-            FUN_141a3e2d0(spBuddy);
+                RemoveEntity(spEntity);
+            AddBuddyHome(spBuddy);
         } else {
-            FUN_141a454d0(nField, reinterpret_cast<const unsigned __int64&>(nId));
+            AddPortalHome(nField, reinterpret_cast<const unsigned __int64&>(nId));
         }
         if (static_cast<unsigned int>(n) > 0)
-            FUN_141a455e0(n, reinterpret_cast<const unsigned __int64&>(nId));
+            RemovePortalHome(n, reinterpret_cast<const unsigned __int64&>(nId));
     } else {
         EntityPtr spEntity(0);
         if (m_buddies.Lookup(nId, spEntity))
-            FUN_141a3f930(spEntity);
+            RemoveEntity(spEntity);
         else if (static_cast<unsigned int>(n) > 0)
-            FUN_141a455e0(n, reinterpret_cast<const unsigned __int64&>(nId));
+            RemovePortalHome(n, reinterpret_cast<const unsigned __int64&>(nId));
     }
 }
 MS2_REPLACE_METHOD_VIA(0x141a385e0, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_10, 666, 0xD25223C1);
@@ -1649,7 +1649,7 @@ void UIMinimapDialog::vfunc_buddy_5(__int64 nId)
     MS2Ptr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
     if (spBuddy == 0)
         return;
-    FUN_141a3f9f0(spBuddy);
+    RemoveBuddyHome(spBuddy);
 }
 MS2_REPLACE_METHOD_VIA(0x141a38880, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_5, 148, 0xE6AABD87);
 
@@ -1661,7 +1661,7 @@ void UIMinimapDialog::vfunc_buddy_4(__int64 nId, int n)
     MS2Ptr<CBuddy> spBuddy = CBuddyManager::GetInstance()->FindById(nId);
     if (spBuddy == 0)
         return;
-    FUN_141a3f9f0(spBuddy);
+    RemoveBuddyHome(spBuddy);
 }
 MS2_REPLACE_METHOD_VIA(0x141a38920, UIMinimapDialog, UIBuddyEventListener, vfunc_buddy_4, 165, 0xBDF902EA);
 
@@ -1694,7 +1694,7 @@ MS2_REPLACE_METHOD_VIA(0x141a38a70, UIMinimapDialog, UIStatusEventListener, vfun
 // @0x141a38ae0
 void UIMinimapDialog::vfunc_oa0_20(int a1)
 {
-    FUN_141a42a70();
+    UpdatePlayerVisibility();
 }
 MS2_REPLACE_METHOD_VIA(0x141a38ae0, UIMinimapDialog, UIStatusEventListener, vfunc_oa0_20, 37, 0x92EE80B3);
 
@@ -1720,7 +1720,7 @@ void UIMinimapDialog::vfunc_3(ProxyPtr spActor)
     if (m_30 == 0) {
         return;
     }
-    FUN_141a3d080(spActor);
+    AddProxy(spActor);
 }
 MS2_REPLACE_METHOD_VIA(0x141a38b90, UIMinimapDialog, UIEntityEventListener, vfunc_3, 133, 0xC8D16EBF);
 
@@ -1730,7 +1730,7 @@ void UIMinimapDialog::vfunc_4(ProxyPtr spActor)
     if (m_30 == 0) {
         return;
     }
-    FUN_141a3f600(spActor);
+    RemoveProxy(spActor);
 }
 MS2_REPLACE_METHOD_VIA(0x141a38c20, UIMinimapDialog, UIEntityEventListener, vfunc_4, 133, 0xF5478FEC);
 
@@ -1740,7 +1740,7 @@ void UIMinimapDialog::vfunc_o178_1(void* p)
     if (vfunc_55())
         return;
     if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
-        FUN_141a3ada0();
+        InvalidateEntities();
 }
 MS2_REPLACE_METHOD_VIA(0x141a38cb0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_1, 294, 0xA47B2DEF);
 
@@ -1750,7 +1750,7 @@ void UIMinimapDialog::vfunc_o178_2(void* p)
     if (vfunc_55())
         return;
     if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
-        FUN_141a3ada0();
+        InvalidateEntities();
 }
 MS2_REPLACE_METHOD_VIA(0x141a38de0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_2, 294, 0x0513889D);
 
@@ -1760,7 +1760,7 @@ void UIMinimapDialog::vfunc_o178_3(void* p)
     if (vfunc_55())
         return;
     if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
-        FUN_141a3ada0();
+        InvalidateEntities();
 }
 MS2_REPLACE_METHOD_VIA(0x141a38f10, UIMinimapDialog, UIQuestEventListener, vfunc_o178_3, 294, 0xAB5504E1);
 
@@ -1774,7 +1774,7 @@ void UIMinimapDialog::vfunc_o178_7(int a1, int a2)
 {
     if (vfunc_55())
         return;
-    FUN_141a3ada0();
+    InvalidateEntities();
 }
 MS2_REPLACE_METHOD_VIA(0x141a39060, UIMinimapDialog, UIQuestEventListener, vfunc_o178_7, 90, 0xB4E6AB38);
 
@@ -1784,14 +1784,14 @@ void UIMinimapDialog::vfunc_o178_5(void* p)
     if (vfunc_55())
         return;
     if (p != 0 && static_cast<bool>(static_cast<CQuest*>(p)->vfunc_0().get()))
-        FUN_141a3ada0();
+        InvalidateEntities();
 }
 MS2_REPLACE_METHOD_VIA(0x141a390c0, UIMinimapDialog, UIQuestEventListener, vfunc_o178_5, 294, 0x33501AE3);
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& v);   // the child clip of a value
 
 // @0x141a391f0
-void UIMinimapDialog::FUN_141a391f0(MS2Ptr<CInteractObject> spObject)
+void UIMinimapDialog::RefreshNamedObject(MS2Ptr<CInteractObject> spObject)
 {
     if (FUN_1418fd2f0())
         return;
@@ -1800,7 +1800,7 @@ void UIMinimapDialog::FUN_141a391f0(MS2Ptr<CInteractObject> spObject)
         if (spEntity == 0)
             return;
         CString strIcon = spEntity->m_icon;
-        FUN_141a44380(spObject, spEntity);
+        UpdateNamed(spObject, spEntity);
         if (strIcon != spEntity->m_icon) {
             if (spEntity->m_icon.IsEmpty()) {
                 spEntity->m_visible = false;
@@ -1808,8 +1808,8 @@ void UIMinimapDialog::FUN_141a391f0(MS2Ptr<CInteractObject> spObject)
             } else {
                 if (!strIcon.IsEmpty()) {
                     ASObj data(2);
-                    spEntity->FUN_141a31270(data, m_viewport);
-                    Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
+                    spEntity->BuildData(data, m_viewport);
+                    Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->GetValue(), data.GetValue());
                     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject())
                         return;
                     spEntity->m_clip = FUN_1409b40c0(m_28, value);
@@ -1822,13 +1822,13 @@ void UIMinimapDialog::FUN_141a391f0(MS2Ptr<CInteractObject> spObject)
             spEntity->m_clip->vfunc_4(spEntity->m_visible);
         }
     } else {
-        FUN_141a39770(spObject);
+        AddNamedObject(spObject);
     }
 }
-MS2_REPLACE_METHOD(0x141a391f0, UIMinimapDialog, FUN_141a391f0, 1396, 0xED7D2B0A);
+MS2_REPLACE_METHOD(0x141a391f0, UIMinimapDialog, RefreshNamedObject, 1396, 0xED7D2B0A);
 
 // @0x141a39770
-void UIMinimapDialog::FUN_141a39770(MS2Ptr<CInteractObject> spObject)
+void UIMinimapDialog::AddNamedObject(MS2Ptr<CInteractObject> spObject)
 {
     if (FUN_1418fd2f0())
         return;
@@ -1843,26 +1843,26 @@ void UIMinimapDialog::FUN_141a39770(MS2Ptr<CInteractObject> spObject)
     if (pPair != 0)
         return;
     EntityPtr spEntity = new UIMinimapEntity(6);
-    FUN_141a44380(spObject, spEntity);
+    UpdateNamed(spObject, spEntity);
     if (FUN_141a3e7d0(spEntity))
         m_named.SetAt(spObject->GetName(), spEntity);
     if (spEntity->m_64)
         m_212 = true;
 }
-MS2_REPLACE_METHOD(0x141a39770, UIMinimapDialog, FUN_141a39770, 1141, 0x13204261);
+MS2_REPLACE_METHOD(0x141a39770, UIMinimapDialog, AddNamedObject, 1141, 0x13204261);
 
 // @0x141a39bf0
-void UIMinimapDialog::FUN_141a39bf0(MS2Ptr<CInteractObject> spObject)
+void UIMinimapDialog::RemoveNamedObject(MS2Ptr<CInteractObject> spObject)
 {
     if (FUN_1418fd2f0())
         return;
     EntityPtr spEntity;
     if (m_named.Lookup(spObject->GetName(), spEntity)) {
-        FUN_141a3f930(spEntity);
+        RemoveEntity(spEntity);
         m_named.RemoveKey(spObject->GetName());
     }
 }
-MS2_REPLACE_METHOD(0x141a39bf0, UIMinimapDialog, FUN_141a39bf0, 325, 0xD354B6EA);
+MS2_REPLACE_METHOD(0x141a39bf0, UIMinimapDialog, RemoveNamedObject, 325, 0xD354B6EA);
 
 // @0x141a39d40
 void UIMinimapDialog::SetTriggerVisible(int nId, int bVisible)
@@ -1900,7 +1900,7 @@ void UIMinimapDialog::FUN_141a39e60()
         efd::SmartPointer<egf::Entity> spObject = list->GetAt(list->GetHeadPosition());
         if (spObject) {
             if (bDisabled) {
-                FUN_141a3f930(m_taxi);
+                RemoveEntity(m_taxi);
                 m_taxi = 0;
             } else if (m_taxi == 0 || m_taxi->m_clip == 0) {
                 Vector3 kPos = reinterpret_cast<const Vector3&>(efd::Point3::ZERO);
@@ -1932,9 +1932,9 @@ void UIMinimapDialog::FUN_141a3a200()
     spTaxi->m_icon = bBest ? s_strTaxiBest : s_strTaxi;
     spTaxi->SetBest(bBest);
     ASObj data(2);
-    data.FUN_1407cbb20(s_strName, spTaxi->m_text);
-    data.FUN_1407cba60(s_strMcName, spTaxi->m_icon);
-    Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spTaxi->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
+    data.SetWStringMember(s_strName, spTaxi->m_text);
+    data.SetStringMember(s_strMcName, spTaxi->m_icon);
+    Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spTaxi->m_clip->GetValue(), data.GetValue());
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject())
         spTaxi->m_clip = FUN_1409b40c0(m_28, value);
 }
@@ -1944,19 +1944,19 @@ class Unk_MmScript : public AScript
 {
 public:
     Scaleform::GFx::Value FUN_141a46a60(const char* szMethod, Scaleform::GFx::Value a1, const char* a2);
-    Scaleform::GFx::Value FUN_141a468e0(const char* szMethod, Scaleform::GFx::Value a1, int a2, CStringW a3, CStringW a4);
+    Scaleform::GFx::Value Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2, CStringW a3, CStringW a4);
 };
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 // @0x141a468e0
-inline Scaleform::GFx::Value Unk_MmScript::FUN_141a468e0(const char* szMethod, Scaleform::GFx::Value a1, int a2, CStringW a3, CStringW a4)
+inline Scaleform::GFx::Value Unk_MmScript::Invoke(const char* szMethod, Scaleform::GFx::Value a1, int a2, CStringW a3, CStringW a4)
 {
     ASArgList args;
     args.resize(4);
-    FUN_1422bcc70(&args[0], a1);
+    SetValue(&args[0], a1);
     FUN_1422bccb0(&args[1], a2);
     FUN_1422bcea0(&args[2], a3);
     FUN_1422bcea0(&args[3], a4);
@@ -1968,7 +1968,7 @@ inline Scaleform::GFx::Value Unk_MmScript::FUN_141a46a60(const char* szMethod, S
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcc70(&args[0], a1);
+    SetValue(&args[0], a1);
     FUN_1422bce70(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -1978,7 +1978,7 @@ inline Scaleform::GFx::Value AScript::FUN_141a46b60(const char* szMethod, Scalef
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcc70(&args[0], a1);
+    SetValue(&args[0], a1);
     FUN_1422bce70(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -1990,7 +1990,7 @@ void UIMinimapDialog::EnableTaxiFrame(int n)
         return;
     if (m_30 == 0 || m_taxi == 0)
         return;
-    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46a60("changeEntityFrame", m_taxi->m_clip->FUN_1422bb870(), "enabled");
+    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46a60("changeEntityFrame", m_taxi->m_clip->GetValue(), "enabled");
 }
 MS2_REPLACE_METHOD(0x141a3a780, UIMinimapDialog, EnableTaxiFrame, 260, 0xD00E0BB7);
 
@@ -2001,12 +2001,12 @@ void UIMinimapDialog::EnableTelescopeFrame()
         return;
     if (m_30 == 0 || m_telescope == 0)
         return;
-    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46a60("changeEntityFrame", m_telescope->m_clip->FUN_1422bb870(), "enabled");
+    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46a60("changeEntityFrame", m_telescope->m_clip->GetValue(), "enabled");
 }
 MS2_REPLACE_METHOD(0x141a3a890, UIMinimapDialog, EnableTelescopeFrame, 256, 0x45FFD4DF);
 
 // @0x141a3a9a0
-void UIMinimapDialog::FUN_141a3a9a0(bool bRemove)
+void UIMinimapDialog::UpdateReturn(bool bRemove)
 {
     if (m_30 == 0)
         return;
@@ -2019,21 +2019,21 @@ void UIMinimapDialog::FUN_141a3a9a0(bool bRemove)
                 efd::Point3 kPos = efd::Point3::ZERO;
                 if (pPC->GetHomePosition(kPos)) {
                     if (static_cast<ASMovieClip*>(m_return->m_clip) != 0) {
-                        FUN_141a44730(kPos, m_return->m_clip);
+                        ProjectClip(kPos, m_return->m_clip);
                         bShouldRemove = false;
                     }
                 }
             }
         }
         if (bShouldRemove) {
-            m_30->Invoke("removeEntity", m_return->m_clip->FUN_1422bb870());
+            m_30->Invoke("removeEntity", m_return->m_clip->GetValue());
             m_return = 0;
         }
     } else if (!bRemove) {
-        FUN_141a3dda0();
+        BuildReturn();
     }
 }
-MS2_REPLACE_METHOD(0x141a3a9a0, UIMinimapDialog, FUN_141a3a9a0, 539, 0xFC7D3984);
+MS2_REPLACE_METHOD(0x141a3a9a0, UIMinimapDialog, UpdateReturn, 539, 0xFC7D3984);
 
 // @0x141a3abd0
 void UIMinimapDialog::OnTabKeyUp()
@@ -2075,13 +2075,13 @@ void UIMinimapDialog::FUN_141a3ad80(bool b)
 MS2_REPLACE_METHOD(0x141a3ad80, UIMinimapDialog, FUN_141a3ad80, 26, 0x8AB8E1D5);
 
 // @0x141a3ada0
-void UIMinimapDialog::FUN_141a3ada0()
+void UIMinimapDialog::InvalidateEntities()
 {
     m_210 = true;
     m_211 = true;
     m_212 = true;
 }
-MS2_REPLACE_METHOD(0x141a3ada0, UIMinimapDialog, FUN_141a3ada0, 42, 0xE470E7BA);
+MS2_REPLACE_METHOD(0x141a3ada0, UIMinimapDialog, InvalidateEntities, 42, 0xE470E7BA);
 
 struct Unk_MmQuestIconOptions                                       // the quest icon filter options
 {
@@ -2097,61 +2097,61 @@ struct Unk_MmQuestIconOptions                                       // the quest
 //
 
 // @0x141a3add0
-void UIMinimapDialog::FUN_141a3add0()
+void UIMinimapDialog::RefreshQuestIconChecks()
 {
     if (m_maxPanel == 0)
         return;
-    Unk_MmQuestIconOptions* pOptions = ((struct Unk_MmQuestIconOptions*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0());
+    Unk_MmQuestIconOptions* pOptions = ((struct Unk_MmQuestIconOptions*)TSingleton<CGameOption>::GetInstance()->GetEtc());
     if (pOptions == 0)
         return;
     ASArray icons(2);
     {
         ASObj epic(2);
-        epic.FUN_1407cba60("layer", s_strLayerQuestEpic);
-        epic.FUN_1407cbbe0("check", pOptions->m_epic);
-        icons.PushValue(epic.FUN_1422bb870());
+        epic.SetStringMember("layer", s_strLayerQuestEpic);
+        epic.SetBoolMember("check", pOptions->m_epic);
+        icons.PushValue(epic.GetValue());
         ASObj world(2);
-        world.FUN_1407cba60("layer", s_strLayerQuestWorld);
-        world.FUN_1407cbbe0("check", pOptions->m_world);
-        icons.PushValue(world.FUN_1422bb870());
+        world.SetStringMember("layer", s_strLayerQuestWorld);
+        world.SetBoolMember("check", pOptions->m_world);
+        icons.PushValue(world.GetValue());
         ASObj repeat(2);
-        repeat.FUN_1407cba60("layer", s_strLayerQuestRepeat);
-        repeat.FUN_1407cbbe0("check", pOptions->m_repeat);
-        icons.PushValue(repeat.FUN_1422bb870());
+        repeat.SetStringMember("layer", s_strLayerQuestRepeat);
+        repeat.SetBoolMember("check", pOptions->m_repeat);
+        icons.PushValue(repeat.GetValue());
     }
-    m_maxPanel->Invoke("checkIcons", icons.FUN_1422bb870());
+    m_maxPanel->Invoke("checkIcons", icons.GetValue());
     m_210 = true;
 }
 
 // @0x141a3b130
-void UIMinimapDialog::FUN_141a3b130(unsigned __int64 nId, int nColor, const efd::Point3& kPos)
+void UIMinimapDialog::AddPing(unsigned __int64 nId, int nColor, const efd::Point3& kPos)
 {
     if (IsPingAllowed()) {
         EntityPtr spEntity(0);
         if (m_pings.Lookup(nId, spEntity)) {
-            FUN_141a3b390(nId, nColor, spEntity, kPos);
+            UpdatePing(nId, nColor, spEntity, kPos);
         } else {
             spEntity.AssignRaw(new UIMinimapEntityPing(kPos));
             if (FUN_141a3e7d0(spEntity)) {
                 m_30->Invoke("onTabKeyDown");
                 m_30->Invoke("onTabKeyUp");
                 m_pings.SetAt(nId, spEntity);
-                FUN_141a3b390(nId, nColor, spEntity, kPos);
+                UpdatePing(nId, nColor, spEntity, kPos);
             }
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3b130, UIMinimapDialog, FUN_141a3b130, 599, 0x9F70BD80);
+MS2_REPLACE_METHOD(0x141a3b130, UIMinimapDialog, AddPing, 599, 0x9F70BD80);
 
 // @0x141a3b390
-void UIMinimapDialog::FUN_141a3b390(unsigned __int64 nId, int nColor, EntityPtr spEntity, const efd::Point3& kPos)
+void UIMinimapDialog::UpdatePing(unsigned __int64 nId, int nColor, EntityPtr spEntity, const efd::Point3& kPos)
 {
     if (spEntity == 0)
         return;
     MS2Ptr<UIMinimapEntityPing> spPing = dynamic_cast<UIMinimapEntityPing*>(static_cast<UIMinimapEntity*>(spEntity));
     if (spPing == 0)
         return;
-    spPing->FUN_141a35000(nId, nColor, kPos, FUN_141a45d50(nId));
+    spPing->UpdatePing(nId, nColor, kPos, GetCharacterName(nId));
 }
 
 // @0x141a3b4d0
@@ -2185,12 +2185,12 @@ UIMinimapDialog::HomeListPtr UIMinimapDialog::FindHomeList(const int& nField)
 MS2_REPLACE_METHOD(0x141a3b660, UIMinimapDialog, FindHomeList, 126, 0x41232F01);
 
 // @0x141a3b6f0
-void UIMinimapDialog::FUN_141a3b6f0()
+void UIMinimapDialog::BuildShowAttributes()
 {
     if (m_showAttrs.IsEmpty()) {
         m_showAttrs.SetAt(s_strLayerShop, new TShowAttr(1, 0, L"$s_minimap_shop"));
         m_showAttrs.SetAt(s_strLayerFriendly, new TShowAttr(0, 1, L"$s_minimap_friendly_npc"));
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8d))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x8d))
             m_showAttrs.SetAt(s_strLayerTamingPet, new TShowAttr(1, 2, L"$s_minimap_taming_pet"));
         m_showAttrs.SetAt(s_strLayerPortal, new TShowAttr(1, 3, L"$s_minimap_portal"));
         m_showAttrs.SetAt(s_strLayerBuddy, new TShowAttr(1, 4, L"$s_minimap_buddy"));
@@ -2202,25 +2202,25 @@ void UIMinimapDialog::FUN_141a3b6f0()
 CString FUN_141028be0(__int64 nCharId, const CString& strKey, int nFlag, CString strEmpty);   // the profile image key
 
 // @0x141a3bda0
-bool UIMinimapDialog::FUN_141a3bda0(ASObj& data, ProxyPtr spProxy)
+bool UIMinimapDialog::BuildPlayerData(ASObj& data, ProxyPtr spProxy)
 {
     if (spProxy == 0)
         return false;
-    CString strPath = FUN_141028be0(reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()), spProxy->FUN_1416c2520(), 1, CString(""));
-    CString strId = FUN_140719530(reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()));
-    data.FUN_1407cba60("imgpath", strPath);
-    data.FUN_1407cba60("charid", strId);
-    CStringW strText = FUN_14028dfa0<CStringW, CStringW>(L"s_tooltip_todayword", spProxy->GetName(), spProxy->FUN_1416c2570());
+    CString strPath = FUN_141028be0(reinterpret_cast<__int64>(spProxy->GetCharacterId()), spProxy->GetPortraitPath(), 1, CString(""));
+    CString strId = FUN_140719530(reinterpret_cast<__int64>(spProxy->GetCharacterId()));
+    data.SetStringMember("imgpath", strPath);
+    data.SetStringMember("charid", strId);
+    CStringW strText = FUN_14028dfa0<CStringW, CStringW>(L"s_tooltip_todayword", spProxy->GetName(), spProxy->GetTodayMemo());
     ASObj tooltip(2);
     tooltip.FUN_1409c0dc0("className", "export_common_tooltip_tooltipText");
-    tooltip.FUN_1407cbb20("id", strText);
+    tooltip.SetWStringMember("id", strText);
     tooltip.FUN_1409c0dc0("align", "bottomLeft");
-    tooltip.FUN_1407cb9c0("onDelay", 300);
-    tooltip.FUN_1407cb9c0("offDelay", 60000);
+    tooltip.SetIntMember("onDelay", 300);
+    tooltip.SetIntMember("offDelay", 60000);
     data.FUN_1409eb270("tooltipData", tooltip);
     return true;
 }
-MS2_REPLACE_METHOD(0x141a3bda0, UIMinimapDialog, FUN_141a3bda0, 936, 0xFC9D3AA0);
+MS2_REPLACE_METHOD(0x141a3bda0, UIMinimapDialog, BuildPlayerData, 936, 0xFC9D3AA0);
 
 // @0x141a44e60
 void UIMinimapDialog::ChangeStageSize()
@@ -2240,7 +2240,7 @@ void UIMinimapDialog::ApplySelectedChannel()
 MS2_REPLACE_METHOD(0x141a44ed0, UIMinimapDialog, ApplySelectedChannel, 95, 0x88554227);
 
 // @0x141a44f40
-void UIMinimapDialog::FUN_141a44f40()
+void UIMinimapDialog::ApplyAlignment()
 {
     if (m_30 == 0)
         return;
@@ -2251,13 +2251,13 @@ void UIMinimapDialog::FUN_141a44f40()
     GetWindowSize(nWidth, nHeight);
     m_alignment->FUN_141901c10(m_30, nWidth, nHeight);
 }
-MS2_REPLACE_METHOD(0x141a44f40, UIMinimapDialog, FUN_141a44f40, 210, 0x473BA9B2);
+MS2_REPLACE_METHOD(0x141a44f40, UIMinimapDialog, ApplyAlignment, 210, 0x473BA9B2);
 
 // The ridden mount of an actor, held while it is read.
 typedef efd::SmartPointer<Ridee> Unk_MmRideeRef;
 
 // @0x141a422c0
-void UIMinimapDialog::FUN_141a422c0(ProxyPtr spProxy, EntityPtr spEntity)
+void UIMinimapDialog::RefreshPet(ProxyPtr spProxy, EntityPtr spEntity)
 {
     if (m_30 == 0)
         return;
@@ -2265,9 +2265,9 @@ void UIMinimapDialog::FUN_141a422c0(ProxyPtr spProxy, EntityPtr spEntity)
         return;
     if (spEntity == 0 || spEntity->m_clip == 0)
         return;
-    FUN_141a43ac0(spProxy, spEntity);
+    UpdatePet(spProxy, spEntity);
     if (spEntity->m_visible) {
-        if (!FUN_141a44730(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->GetPosition())), spEntity->m_clip))
+        if (!ProjectClip(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->GetPosition())), spEntity->m_clip))
             spEntity->m_visible = false;
     }
     if (!spEntity->m_64)
@@ -2275,28 +2275,28 @@ void UIMinimapDialog::FUN_141a422c0(ProxyPtr spProxy, EntityPtr spEntity)
 }
 
 // @0x141a42600
-void UIMinimapDialog::FUN_141a42600(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity)
+void UIMinimapDialog::UpdateNamedFrame(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity)
 {
     if (m_30 == 0 || spObject == 0)
         return;
     if (spEntity == 0 || spEntity->m_clip == 0)
         return;
-    CString strState = spObject->FUN_1413b5600() == 0 ? "enabled" : "disabled";
-    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46b60("changeEntityFrame", spEntity->m_clip->FUN_1422bb870(), strState);
+    CString strState = spObject->GetState() == 0 ? "enabled" : "disabled";
+    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46b60("changeEntityFrame", spEntity->m_clip->GetValue(), strState);
 }
 
 // @0x141a42550
-void UIMinimapDialog::FUN_141a42550()
+void UIMinimapDialog::RefreshNamed()
 {
     ATL::CAtlArray<MS2Ptr<CInteractObject> > objects;
-    WorldService::GetInstance()->FUN_141bc5f10(&objects);   // C3: WorldService (worldservice.h)
+    WorldService::GetInstance()->GetInteractObjects(&objects);   // C3: WorldService (worldservice.h)
     for (size_t i = 0; i < objects.GetCount(); ++i)
-        FUN_141a391f0(objects[i]);
+        RefreshNamedObject(objects[i]);
 }
-MS2_REPLACE_METHOD(0x141a42550, UIMinimapDialog, FUN_141a42550, 166, 0x38F4D24D);
+MS2_REPLACE_METHOD(0x141a42550, UIMinimapDialog, RefreshNamed, 166, 0x38F4D24D);
 
 extern int DAT_143ab0248;                                           // client country (2: no channel group)
-int FUN_14092f640();                                                // the current channel
+int GetCurrentChannel();                                                // the current channel
 
 // @0x141a42800
 void UIMinimapDialog::FUN_141a42800()
@@ -2306,13 +2306,13 @@ void UIMinimapDialog::FUN_141a42800()
     CStringW strGroup;
     if (DAT_143ab0248 != 2)
         strGroup = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x17, ((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldChannelGroupId());
-    m_channel = FUN_14092f640();
+    m_channel = GetCurrentChannel();
     int nSelected = 0;
     ASArray channels(2);
     UIServerListDialog* pServerList = Unk_MmGetDialog<UIServerListDialog>();
     if (pServerList != 0)
         pServerList->FUN_141ad2f60(channels, &nSelected, m_channel);
-    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a468e0("buildChannelList", channels.FUN_1422bb870(), nSelected, GetStringCommonByKey(L"s_word_ch"), strGroup);
+    static_cast<Unk_MmScript*>(m_30.operator->())->Invoke("buildChannelList", channels.GetValue(), nSelected, GetStringCommonByKey(L"s_word_ch"), strGroup);
 }
 MS2_REPLACE_METHOD(0x141a42800, UIMinimapDialog, FUN_141a42800, 616, 0x8585C70C);
 
@@ -2328,16 +2328,16 @@ void UIMinimapDialog::FUN_141a42bb0()
         return;
     double dPanelX = 0.0;
     double dPanelY = 0.0;
-    if (!m_maxPanel->FUN_1422c2510(&dPanelX, &dPanelY))
+    if (!m_maxPanel->LocalToGlobal(&dPanelX, &dPanelY))
         return;
-    float fScale = TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
+    float fScale = TSingleton<CUIService>::GetInstance()->GetUIScale();
     dPanelX /= fScale;
     dPanelY /= fScale;
     m_212 = false;
     ATL::CAtlMap<unsigned __int64, int> occupied;
     int nCell = *reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_MmGameConfig*)GetClientConstants())->m_minimapCell)->Get();
     ATL::CAtlArray<EntityPtr> entities;
-    FUN_141a42fe0(entities);
+    GatherOverlapEntities(entities);
     for (size_t i = 0; i < entities.GetCount(); ++i) {
         EntityPtr spEntity = entities[i];
         if (spEntity == 0)
@@ -2347,7 +2347,7 @@ void UIMinimapDialog::FUN_141a42bb0()
         if (m_viewport->WorldToMinimap(kWorld, kOut)) {
             double dX = 0.0;
             double dY = 0.0;
-            if (!spEntity->m_clip->FUN_1422c2510(&dX, &dY))
+            if (!spEntity->m_clip->LocalToGlobal(&dX, &dY))
                 continue;
             dX /= fScale;
             dY /= fScale;
@@ -2369,7 +2369,7 @@ void UIMinimapDialog::FUN_141a42bb0()
 MS2_REPLACE_METHOD(0x141a42bb0, UIMinimapDialog, FUN_141a42bb0, 1058, 0xAC337C95);
 
 // @0x141a42fe0
-void UIMinimapDialog::FUN_141a42fe0(ATL::CAtlArray<EntityPtr>& entities)
+void UIMinimapDialog::GatherOverlapEntities(ATL::CAtlArray<EntityPtr>& entities)
 {
     for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos)) {
         EntityPtr spEntity = m_proxies.GetValueAt(pos);
@@ -2383,16 +2383,16 @@ void UIMinimapDialog::FUN_141a42fe0(ATL::CAtlArray<EntityPtr>& entities)
             MS2Ptr<CInteractObject> spObject = WorldService::GetInstance()->FindProp(strKey);
             if (spObject == 0)
                 continue;
-            if (spObject->FUN_1413b5600() != 1)
+            if (spObject->GetState() != 1)
                 continue;
             entities.Add(m_named.GetValueAt(pos));
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a42fe0, UIMinimapDialog, FUN_141a42fe0, 693, 0xCC18C194);
+MS2_REPLACE_METHOD(0x141a42fe0, UIMinimapDialog, GatherOverlapEntities, 693, 0xCC18C194);
 
 // @0x141a42a70
-void UIMinimapDialog::FUN_141a42a70()
+void UIMinimapDialog::UpdatePlayerVisibility()
 {
     if (m_30 == 0)
         return;
@@ -2407,10 +2407,10 @@ void UIMinimapDialog::FUN_141a42a70()
     }
     m_30->Invoke("visiblePlayers", bVisible);
 }
-MS2_REPLACE_METHOD(0x141a42a70, UIMinimapDialog, FUN_141a42a70, 310, 0xA88A9455);
+MS2_REPLACE_METHOD(0x141a42a70, UIMinimapDialog, UpdatePlayerVisibility, 310, 0xA88A9455);
 
 // @0x141a43ac0
-void UIMinimapDialog::FUN_141a43ac0(ProxyPtr spProxy, EntityPtr spEntity)
+void UIMinimapDialog::UpdatePet(ProxyPtr spProxy, EntityPtr spEntity)
 {
     spEntity->m_64 = false;
     spEntity->m_showGuide = false;
@@ -2421,7 +2421,7 @@ void UIMinimapDialog::FUN_141a43ac0(ProxyPtr spProxy, EntityPtr spEntity)
 }
 
 // @0x141a44730
-bool UIMinimapDialog::FUN_141a44730(const efd::Point3& kPos, MS2Ptr<ASMovieClip> spClip)
+bool UIMinimapDialog::ProjectClip(const efd::Point3& kPos, MS2Ptr<ASMovieClip> spClip)
 {
     if (spClip == 0)
         return false;
@@ -2436,7 +2436,7 @@ bool UIMinimapDialog::FUN_141a44730(const efd::Point3& kPos, MS2Ptr<ASMovieClip>
 }
 
 // @0x141a454d0
-void UIMinimapDialog::FUN_141a454d0(const int& nField, const unsigned __int64& nHome)
+void UIMinimapDialog::AddPortalHome(const int& nField, const unsigned __int64& nHome)
 {
     if (m_homes.IsEmpty())
         return;
@@ -2448,10 +2448,10 @@ void UIMinimapDialog::FUN_141a454d0(const int& nField, const unsigned __int64& n
         m_homes.SetAt(nField, spHomes);
     }
 }
-MS2_REPLACE_METHOD(0x141a454d0, UIMinimapDialog, FUN_141a454d0, 258, 0x35FA8FE3);
+MS2_REPLACE_METHOD(0x141a454d0, UIMinimapDialog, AddPortalHome, 258, 0x35FA8FE3);
 
 // @0x141a455e0
-void UIMinimapDialog::FUN_141a455e0(const int& nField, const unsigned __int64& nHome)
+void UIMinimapDialog::RemovePortalHome(const int& nField, const unsigned __int64& nHome)
 {
     if (m_homes.IsEmpty())
         return;
@@ -2462,7 +2462,7 @@ void UIMinimapDialog::FUN_141a455e0(const int& nField, const unsigned __int64& n
             spHomes->RemoveAt(pos);
     }
 }
-MS2_REPLACE_METHOD(0x141a455e0, UIMinimapDialog, FUN_141a455e0, 206, 0xFF96F73D);
+MS2_REPLACE_METHOD(0x141a455e0, UIMinimapDialog, RemovePortalHome, 206, 0xFF96F73D);
 
 class Unk_MmInput;                                                  // the input manager
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
@@ -2530,14 +2530,14 @@ MS2_REPLACE_METHOD(0x141a45ce0, UIMinimapDialog, IsPingAllowed, 102, 0x620E2CE5)
 void FUN_140763210(int nId, int nKind, CStringW& strText, CStringW& strExtra);   // the quest guide text
 
 // @0x141a45ed0
-CStringW UIMinimapDialog::FUN_141a45ed0(const int& nId, int nKind)
+CStringW UIMinimapDialog::GetQuestGuideText(const int& nId, int nKind)
 {
     CStringW strText;
     CStringW strExtra;
     FUN_140763210(nId, nKind, strText, strExtra);
     return strText;
 }
-MS2_REPLACE_METHOD(0x141a45ed0, UIMinimapDialog, FUN_141a45ed0, 151, 0xFEC1B993);
+MS2_REPLACE_METHOD(0x141a45ed0, UIMinimapDialog, GetQuestGuideText, 151, 0xFEC1B993);
 
 void FUN_14020af60(COutPacket* pPacket, const Vector3* pPt);    // writes the three floats of a point
 
@@ -2553,7 +2553,7 @@ void UIMinimapDialog::SendMinimapPing(int nKind, float x, float y)
         return;
     NiPoint3 kPos(efd::Point3::ZERO);
     Scaleform::GFx::Value contains = m_30->Invoke("mouseContains");
-    if (contains.IsBool() && ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(contains))->GetBool() && FUN_141a451b0(true, x, y, kPos)) {
+    if (contains.IsBool() && ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(contains))->GetBool() && GetPingPosition(true, x, y, kPos)) {
         COutPacket packet(static_cast<int>(SendOp::MinimapPing), 0);
         packet.Encode8(pPC->FUN_141656a80());
         packet.Encode1((unsigned char)nKind);
@@ -2586,25 +2586,25 @@ public:
 };
 
 // @0x141a45790
-void UIMinimapDialog::FUN_141a45790(float x, float y, unsigned __int64 nId)
+void UIMinimapDialog::ShowPlayerMenu(float x, float y, unsigned __int64 nId)
 {
     UIPopUpMenu* pMenu = Unk_MmGetDialog<UIPopUpMenu>();
     if (pMenu != 0) {
-        ProxyPtr spProxy = WorldService::GetInstance()->FUN_141bc9c60((void*)nId);
+        ProxyPtr spProxy = WorldService::GetInstance()->FindProxyObjectByOwner((void*)nId);
         if (static_cast<CProxyGameObject*>(spProxy) != 0) {
             Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 1, CString(""), 0);
             pMenu->FUN_141a7eb60(info, spProxy, 9);
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a45790, UIMinimapDialog, FUN_141a45790, 310, 0x37E80969);
+MS2_REPLACE_METHOD(0x141a45790, UIMinimapDialog, ShowPlayerMenu, 310, 0x37E80969);
 
 class Unk_MmActor : public GameObject                                                   // a field actor
 {
 };
 
 // @0x141a45b70
-bool UIMinimapDialog::FUN_141a45b70(ProxyPtr spProxy)
+bool UIMinimapDialog::IsProxyVisible(ProxyPtr spProxy)
 {
     if (spProxy == 0)
         return false;
@@ -2613,11 +2613,11 @@ bool UIMinimapDialog::FUN_141a45b70(ProxyPtr spProxy)
         if (pActor != 0)
             return pActor->FUN_14123c660() == 0;
     }
-    return spProxy->FUN_1416c2b30();
+    return spProxy->IsVisibleOnMinimap();
 }
 
 // @0x141a45d50
-CStringW UIMinimapDialog::FUN_141a45d50(const unsigned __int64& nId)
+CStringW UIMinimapDialog::GetCharacterName(const unsigned __int64& nId)
 {
     PCBase* pActor = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(nId));
     if (pActor)
@@ -2629,14 +2629,14 @@ CStringW UIMinimapDialog::FUN_141a45d50(const unsigned __int64& nId)
     }
     return L"";
 }
-MS2_REPLACE_METHOD(0x141a45d50, UIMinimapDialog, FUN_141a45d50, 364, 0x1CEEB35C);
+MS2_REPLACE_METHOD(0x141a45d50, UIMinimapDialog, GetCharacterName, 364, 0x1CEEB35C);
 
 class Unk_MmCamera;                                                 // the field camera
 class Unk_MmSpatial;                                                // the field's collision space
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 // @0x141a451b0
-bool UIMinimapDialog::FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOut)
+bool UIMinimapDialog::GetPingPosition(bool bLocal, float x, float y, NiPoint3& kOut)
 {
     if (bLocal) {
         if (m_30 == 0)
@@ -2669,10 +2669,10 @@ bool UIMinimapDialog::FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOu
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x141a451b0, UIMinimapDialog, FUN_141a451b0, 787, 0x516BAE6F);
+MS2_REPLACE_METHOD(0x141a451b0, UIMinimapDialog, GetPingPosition, 787, 0x516BAE6F);
 
 // @0x141a45920
-float UIMinimapDialog::FUN_141a45920(PCBase* pPC)
+float UIMinimapDialog::GetPlayerHeading(PCBase* pPC)
 {
     efd::Point3 kUp(0.0f, -1.0f, 0.0f);
     efd::Point3 kDir;
@@ -2691,12 +2691,12 @@ float UIMinimapDialog::FUN_141a45920(PCBase* pPC)
     }
     return fAngle - fRot + 90.0f;
 }
-MS2_REPLACE_METHOD(0x141a45920, UIMinimapDialog, FUN_141a45920, 425, 0x27EB4910);
+MS2_REPLACE_METHOD(0x141a45920, UIMinimapDialog, GetPlayerHeading, 425, 0x27EB4910);
 
 // @0x141a3ced0
-void UIMinimapDialog::FUN_141a3ced0()
+void UIMinimapDialog::BuildField()
 {
-    FUN_141a3f570();
+    RemoveField();
     int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nField);
     if (static_cast<bool>(spField.get())) {
@@ -2707,10 +2707,10 @@ void UIMinimapDialog::FUN_141a3ced0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3ced0, UIMinimapDialog, FUN_141a3ced0, 426, 0x8DA94486);
+MS2_REPLACE_METHOD(0x141a3ced0, UIMinimapDialog, BuildField, 426, 0x8DA94486);
 
 // @0x141a3dbb0
-void UIMinimapDialog::FUN_141a3dbb0()
+void UIMinimapDialog::BuildTaxi()
 {
     Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x85359406);
     if (static_cast<bool>(list.get()) && !list->IsEmpty()) {
@@ -2724,10 +2724,10 @@ void UIMinimapDialog::FUN_141a3dbb0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3dbb0, UIMinimapDialog, FUN_141a3dbb0, 475, 0x65BF49F1);
+MS2_REPLACE_METHOD(0x141a3dbb0, UIMinimapDialog, BuildTaxi, 475, 0x65BF49F1);
 
 // @0x141a3dda0
-void UIMinimapDialog::FUN_141a3dda0()
+void UIMinimapDialog::BuildReturn()
 {
     MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
     if (pPC != 0) {
@@ -2745,7 +2745,7 @@ void UIMinimapDialog::FUN_141a3dda0()
 }
 
 // @0x141a3e2d0
-void UIMinimapDialog::FUN_141a3e2d0(MS2Ptr<CBuddy> spBuddy)
+void UIMinimapDialog::AddBuddyHome(MS2Ptr<CBuddy> spBuddy)
 {
     if (spBuddy == 0 || !spBuddy->FUN_1401cc5f0())
         return;
@@ -2757,12 +2757,12 @@ void UIMinimapDialog::FUN_141a3e2d0(MS2Ptr<CBuddy> spBuddy)
         spEntity->m_position = reinterpret_cast<const efd::Point3&>(kPos);
         spEntity->m_visible = true;
         if (FUN_141a3e7d0(spEntity))
-            m_buddies.SetAt(spBuddy->FUN_1401cc2f0(), spEntity);
+            m_buddies.SetAt(spBuddy->GetId(), spEntity);
     }
 }
 
 // @0x141a3ed50
-void UIMinimapDialog::FUN_141a3ed50()
+void UIMinimapDialog::BuildBuddyHomes()
 {
     ATL::CAtlArray<MS2Ptr<CBuddy> > buddies;
     TSingleton<CBuddyManager>::GetInstance()->GetAllBuddies(buddies);
@@ -2774,21 +2774,21 @@ void UIMinimapDialog::FUN_141a3ed50()
             continue;
         int nField = spBuddy->FUN_1401cc3e0();
         if (static_cast<unsigned int>(nField) > 0) {
-            unsigned __int64 nHome = spBuddy->FUN_1401cc2f0();
-            FUN_141a454d0(nField, nHome);
+            unsigned __int64 nHome = spBuddy->GetId();
+            AddPortalHome(nField, nHome);
             if (nField == nCurrent)
-                FUN_141a3e2d0(spBuddy);
+                AddBuddyHome(spBuddy);
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3ed50, UIMinimapDialog, FUN_141a3ed50, 377, 0x077301A2);
+MS2_REPLACE_METHOD(0x141a3ed50, UIMinimapDialog, BuildBuddyHomes, 377, 0x077301A2);
 
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& value); }
 extern ATL::CAtlArray<int> DAT_143ab3128;                           // the telescopes the player has used
 CStringW GetStringCommon(int nStringId);                               // a common string by id
 
 // @0x141a3df40
-void UIMinimapDialog::FUN_141a3df40()
+void UIMinimapDialog::BuildTelescope()
 {
     Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x62f7a42c);
     if (static_cast<bool>(list.get()) && !list->IsEmpty()) {
@@ -2813,11 +2813,11 @@ void UIMinimapDialog::FUN_141a3df40()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3df40, UIMinimapDialog, FUN_141a3df40, 906, 0x6C5FA91F);
+MS2_REPLACE_METHOD(0x141a3df40, UIMinimapDialog, BuildTelescope, 906, 0x6C5FA91F);
 
 
 // @0x141a3e4e0
-void UIMinimapDialog::FUN_141a3e4e0(efd::SmartPointer<egf::Entity> spEntity)
+void UIMinimapDialog::AddTrigger(efd::SmartPointer<egf::Entity> spEntity)
 {
     if (spEntity == 0)
         return;
@@ -2843,29 +2843,29 @@ void UIMinimapDialog::FUN_141a3e4e0(efd::SmartPointer<egf::Entity> spEntity)
 }
 
 // @0x141a3ef80
-void UIMinimapDialog::FUN_141a3ef80()
+void UIMinimapDialog::BuildTriggers()
 {
     Unk_WsC_TagPtr first = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x74b363a7);
     if (static_cast<bool>(first.get()) && !first->IsEmpty()) {
         for (POSITION pos = first->GetHeadPosition(); pos != 0; first->GetNext(pos)) {
             efd::SmartPointer<egf::Entity> spObject = first->GetAt(pos);
-            FUN_141a3e4e0(spObject);
+            AddTrigger(spObject);
         }
     }
     Unk_WsC_TagPtr second = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x4714f9ea);
     if (static_cast<bool>(second.get()) && !second->IsEmpty()) {
         for (POSITION pos = second->GetHeadPosition(); pos != 0; second->GetNext(pos)) {
             efd::SmartPointer<egf::Entity> spObject = second->GetAt(pos);
-            FUN_141a3e4e0(spObject);
+            AddTrigger(spObject);
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3ef80, UIMinimapDialog, FUN_141a3ef80, 567, 0xD23B9533);
+MS2_REPLACE_METHOD(0x141a3ef80, UIMinimapDialog, BuildTriggers, 567, 0xD23B9533);
 
 void FUN_1401d3700(CString& str);                                    // normalises the symbol name
 
 // @0x141a3f1c0
-void UIMinimapDialog::FUN_141a3f1c0()
+void UIMinimapDialog::BuildMapObjects()
 {
     Unk_WsC_TagPtr list = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd0420(0x6fb4d420);
     if (static_cast<bool>(list.get()) && !list->IsEmpty()) {
@@ -2894,27 +2894,27 @@ void UIMinimapDialog::FUN_141a3f1c0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141a3f1c0, UIMinimapDialog, FUN_141a3f1c0, 927, 0x9CACB9AE);
+MS2_REPLACE_METHOD(0x141a3f1c0, UIMinimapDialog, BuildMapObjects, 927, 0x9CACB9AE);
 
 // @0x141a3ea10
-void UIMinimapDialog::FUN_141a3ea10()
+void UIMinimapDialog::BuildEntities()
 {
     if (m_30 == 0)
         return;
-    FUN_141a3fb10();
+    RemoveAllEntities();
     int nField = ((class Unk_MmWorld*)WorldService::GetInstance())->FUN_141bd3060();
     ATL::CAtlArray<ProxyPtr> portals;
     ATL::CAtlMap<unsigned int, ProxyPtr>& proxies = *(ATL::CAtlMap<unsigned int, ProxyPtr>*)WorldService::GetInstance()->FUN_141bc9fb0();   // C3: WorldService (worldservice.h)
     for (POSITION pos = proxies.GetStartPosition(); pos != 0; proxies.GetNext(pos)) {
         ProxyPtr spProxy = proxies.GetValueAt(pos);
         if (spProxy.get()) {
-            if (!spProxy->FUN_1416c20d0()) {
-                FUN_141a3d080(spProxy);
+            if (!spProxy->HasPortal()) {
+                AddProxy(spProxy);
             } else {
                 {
                     int nDest = spProxy->m_portal->FUN_14169d280();
                     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nDest);
-                    if (spField.get() && spField->FUN_140375130()) {
+                    if (spField.get() && spField->IsIndoor()) {
                         HomeListPtr spHomes(0);
                         m_homes.SetAt(nDest, spHomes);
                     }
@@ -2923,51 +2923,51 @@ void UIMinimapDialog::FUN_141a3ea10()
             }
         }
     }
-    FUN_141a3ed50();
+    BuildBuddyHomes();
     size_t nCount = portals.GetCount();
     for (size_t i = 0; i < nCount; ++i)
-        FUN_141a3d080(portals[i]);
+        AddProxy(portals[i]);
     if (TSingleton<CTaxiManager>::GetInstance()->FUN_14085f6e0(nField))
-        FUN_141a3dbb0();
-    FUN_141a3df40();
-    FUN_141a3dda0();
-    FUN_141a3eed0();
-    FUN_141a3ef80();
-    FUN_141a3f1c0();
+        BuildTaxi();
+    BuildTelescope();
+    BuildReturn();
+    BuildNamed();
+    BuildTriggers();
+    BuildMapObjects();
     m_30->Invoke("buildPlayers");
 }
-MS2_REPLACE_METHOD(0x141a3ea10, UIMinimapDialog, FUN_141a3ea10, 816, 0x8461D8E7);
+MS2_REPLACE_METHOD(0x141a3ea10, UIMinimapDialog, BuildEntities, 816, 0x8461D8E7);
 
 // @0x141a3fe10
-void UIMinimapDialog::FUN_141a3fe10(ProxyPtr spProxy, EntityPtr spEntity, int n)
+void UIMinimapDialog::RefreshProxy(ProxyPtr spProxy, EntityPtr spEntity, int n)
 {
     if (spProxy == 0 || spEntity == 0)
         return;
     switch (n) {
     case 1:
-        FUN_141a41560(spProxy, spEntity);
+        RefreshOtherPlayer(spProxy, spEntity);
         break;
     case 2:
-        FUN_141a40d90(spProxy, spEntity);
+        RefreshNpc(spProxy, spEntity);
         break;
     case 3:
-        FUN_141a422c0(spProxy, spEntity);
+        RefreshPet(spProxy, spEntity);
         break;
     case 4:
-        FUN_141a407c0(spProxy, spEntity);
+        RefreshPortal(spProxy, spEntity);
         break;
     }
 }
 
 // @0x141a400d0
-void UIMinimapDialog::FUN_141a400d0(ProxyPtr spProxy, EntityPtr spEntity, int n)
+void UIMinimapDialog::UpdateProxyPosition(ProxyPtr spProxy, EntityPtr spEntity, int n)
 {
     if (spProxy == 0 || spEntity == 0)
         return;
     if (n == 4)
         return;
     if (spEntity->m_visible && (static_cast<ASMovieClip*>(spEntity->m_clip) ? true : false)) {
-        if (!FUN_141a44730(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->GetPosition())), spEntity->m_clip)) {
+        if (!ProjectClip(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->GetPosition())), spEntity->m_clip)) {
             spEntity->m_visible = false;
             spEntity->m_clip->vfunc_4(spEntity->m_visible);
         }
@@ -2975,7 +2975,7 @@ void UIMinimapDialog::FUN_141a400d0(ProxyPtr spProxy, EntityPtr spEntity, int n)
 }
 
 // @0x141a402b0
-void UIMinimapDialog::FUN_141a402b0(EntityPtr spEntity)
+void UIMinimapDialog::RefreshLocalPlayer(EntityPtr spEntity)
 {
     if (spEntity == 0 || spEntity->m_clip == 0)
         return;
@@ -3009,18 +3009,18 @@ void UIMinimapDialog::FUN_141a402b0(EntityPtr spEntity)
         bool bAlive = !bDead;
         m_clip238->vfunc_4(bAlive);
         if (bAlive)
-            m_clip238->SetRotation(FUN_141a45920(pPC));
+            m_clip238->SetRotation(GetPlayerHeading(pPC));
     }
 }
 
 // @0x141a407c0
-void UIMinimapDialog::FUN_141a407c0(ProxyPtr spProxy, EntityPtr spEntity)
+void UIMinimapDialog::RefreshPortal(ProxyPtr spProxy, EntityPtr spEntity)
 {
     if (m_30 == 0)
         return;
     if (spEntity == 0 || spEntity->m_clip == 0)
         return;
-    if (spProxy == 0 || !spProxy->FUN_1416c20d0())
+    if (spProxy == 0 || !spProxy->HasPortal())
         return;
     MS2Ptr<ASMovieClip> spClip = spEntity->m_clip;
     bool bUpdate = m_210;
@@ -3030,11 +3030,11 @@ void UIMinimapDialog::FUN_141a407c0(ProxyPtr spProxy, EntityPtr spEntity)
         bool bVisible = spEntity->m_visible;
         CString strIcon = spEntity->m_icon;
         CString strState = spEntity->m_state;
-        FUN_141a43b80(spProxy, spEntity, false);
+        UpdatePortal(spProxy, spEntity, false);
         if (bVisible != spEntity->m_visible || strIcon != spEntity->m_icon || strState != spEntity->m_state) {
             ASObj data(2);
-            spEntity->FUN_141a31270(data, m_viewport);
-            Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spClip->FUN_1422bb870(), data.FUN_1422bb870());
+            spEntity->BuildData(data, m_viewport);
+            Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spClip->GetValue(), data.GetValue());
             if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject())
                 return;
             spClip = FUN_1409b40c0(m_28, value);
@@ -3046,7 +3046,7 @@ void UIMinimapDialog::FUN_141a407c0(ProxyPtr spProxy, EntityPtr spEntity)
 
 
 // @0x141a40d90
-void UIMinimapDialog::FUN_141a40d90(ProxyPtr spProxy, EntityPtr spEntity)
+void UIMinimapDialog::RefreshNpc(ProxyPtr spProxy, EntityPtr spEntity)
 {
     if (m_30 == 0)
         return;
@@ -3056,7 +3056,7 @@ void UIMinimapDialog::FUN_141a40d90(ProxyPtr spProxy, EntityPtr spEntity)
     CString strState = spEntity->m_state;
     CString strLayer = spEntity->m_layer;
     CStringW strGuide = spEntity->m_guideName;
-    FUN_141a43680(spProxy, spEntity);
+    UpdateNpc(spProxy, spEntity);
     unsigned int nChanged = 0;
     if (!spEntity->m_icon.IsEmpty()) {
         if (strIcon != spEntity->m_icon)
@@ -3073,18 +3073,18 @@ void UIMinimapDialog::FUN_141a40d90(ProxyPtr spProxy, EntityPtr spEntity)
             spEntity->m_clip->vfunc_15(spEntity->m_state);
         } else {
             ASObj data(2);
-            data.FUN_1407cba60(s_strMcName, spEntity->m_icon);
-            data.FUN_1407cba60(s_strFrame, spEntity->m_state);
-            data.FUN_1407cba60(s_strLayer, spEntity->m_layer);
-            data.FUN_1407cbbe0(s_strShowGuide, spEntity->m_showGuide);
-            data.FUN_1407cbb20(s_strGuideName, spEntity->m_guideName);
-            Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
+            data.SetStringMember(s_strMcName, spEntity->m_icon);
+            data.SetStringMember(s_strFrame, spEntity->m_state);
+            data.SetStringMember(s_strLayer, spEntity->m_layer);
+            data.SetBoolMember(s_strShowGuide, spEntity->m_showGuide);
+            data.SetWStringMember(s_strGuideName, spEntity->m_guideName);
+            Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->GetValue(), data.GetValue());
             if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject())
                 spEntity->m_clip = FUN_1409b40c0(m_28, value);
         }
     }
     if (spEntity->m_visible) {
-        if (!FUN_141a44730(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->GetPosition())), spEntity->m_clip))
+        if (!ProjectClip(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->GetPosition())), spEntity->m_clip))
             spEntity->m_visible = false;
     }
     if (!spEntity->m_64)
@@ -3092,18 +3092,18 @@ void UIMinimapDialog::FUN_141a40d90(ProxyPtr spProxy, EntityPtr spEntity)
 }
 
 class Unk_HsInfo : public CPtred { };   // hide and seek: the player is a seeker
-class Unk_PvPRankEntry { public: bool FUN_141343860(); };         // the player has a rank
+class Unk_PvPRankEntry { public: bool HasRank(); };         // the player has a rank
 class Unk_PvPRankService                                                 // the pvp ranking service (FUN_140f97ef0)
 {
 public:
     int FUN_1413437e0(__int64 nCharId);                             // the rank of a character
-    Unk_PvPRankEntry* FUN_141343810(int nRank);                   // the row of a rank
+    Unk_PvPRankEntry* GetRankEntry(int nRank);                   // the row of a rank
 };
 class CPVPManager;
 CStringW FUN_140719630(int n);
 
 // @0x141a41560
-void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
+void UIMinimapDialog::RefreshOtherPlayer(ProxyPtr spProxy, EntityPtr spEntity)
 {
     if (m_30 == 0)
         return;
@@ -3113,12 +3113,12 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
     if (spClip == 0)
         return;
     CString strState = spEntity->m_state;
-    FUN_141a432a0(spProxy, spEntity);
+    UpdateOtherPlayer(spProxy, spEntity);
     if (strState != spEntity->m_state) {
         ASObj data(2);
-        data.FUN_1407cba60(s_strFrame, spEntity->m_state);
-        data.FUN_1407cba60(s_strLayer, spEntity->m_layer);
-        Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->FUN_1422bb870(), data.FUN_1422bb870());
+        data.SetStringMember(s_strFrame, spEntity->m_state);
+        data.SetStringMember(s_strLayer, spEntity->m_layer);
+        Scaleform::GFx::Value value = m_30->Invoke("changeEntityData", spEntity->m_clip->GetValue(), data.GetValue());
         if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject())
             return;
         spEntity->m_clip = FUN_1409b40c0(m_28, value);
@@ -3129,19 +3129,19 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
     if (pPC != 0) {
         int nPkMode = WorldService::GetInstance()->FUN_141bd30a0()->GetPkMode();
         if (nPkMode != 0) {
-            bVisible = pPC != 0 ? pPC->FUN_1415278d0(spProxy->FUN_1416c22f0()) == 1 : false;
+            bVisible = pPC != 0 ? pPC->FUN_1415278d0(spProxy->GetCharacterId()) == 1 : false;
         } else {
             MS2Ptr<CPvPInfo> spPvP = pPC->GetPvPInfo();
             if (spPvP.get() != 0) {
                 if (spPvP->FUN_1407435d0() || spPvP->IsOnePunchMode()) {
-                    __int64 nCharId = reinterpret_cast<__int64>(spProxy->FUN_1416c22f0());
-                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->FUN_1416c22f0())));
+                    __int64 nCharId = reinterpret_cast<__int64>(spProxy->GetCharacterId());
+                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->GetCharacterId())));
                     if (pOther != 0) {
                         bVisible = false;
                         int nRank = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_1413437e0(nCharId);
                         if (nRank > 0) {
-                            Unk_PvPRankEntry* pEntry = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nRank);
-                            if (nRank <= 3 && pEntry != 0 && pEntry->FUN_141343860())
+                            Unk_PvPRankEntry* pEntry = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->GetRankEntry(nRank);
+                            if (nRank <= 3 && pEntry != 0 && pEntry->HasRank())
                                 bVisible = true;
                             if (bVisible) {
                                 {
@@ -3155,7 +3155,7 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
                         }
                     }
                 } else if (spPvP->FUN_140743610()) {
-                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->FUN_1416c22f0())));
+                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->GetCharacterId())));
                     if (pOther != 0) {
                         bVisible = pOther->GetPvPInfo()->GetPoint() == pPC->GetPvPInfo()->GetPoint();
                         if (bVisible) {
@@ -3164,11 +3164,11 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
                         }
                     }
                 } else if (spPvP->FUN_140743590() || spPvP->FUN_140743690()) {
-                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->FUN_1416c22f0())));
+                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->GetCharacterId())));
                     if (pOther != 0)
                         bVisible = pOther->FUN_141674bc0() == 0;
                 } else if (spPvP->HasPoint()) {
-                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->FUN_1416c22f0())));
+                    PC* pOther = reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd1530(reinterpret_cast<__int64>(spProxy->GetCharacterId())));
                     if (pOther != 0) {
                         bVisible = pOther->vfunc_116() == pPC->vfunc_116() ? true : pOther->FUN_141674bc0() == 0;
                     }
@@ -3176,13 +3176,13 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
             }
             MS2Ptr<Unk_HsInfo> spHs = pPC->GetHideAndSeekInfo();
             if (static_cast<bool>(spHs.get()) && reinterpret_cast<HideAndSeek::Info*>(spHs.operator->())->FUN_14050a6a0() != 0)
-                bVisible = pPC != 0 ? pPC->FUN_1415278d0(spProxy->FUN_1416c22f0()) == 1 : false;
+                bVisible = pPC != 0 ? pPC->FUN_1415278d0(spProxy->GetCharacterId()) == 1 : false;
         }
     }
     if (spProxy->m_cc == 0x3f)
         bVisible = false;
     if (bVisible) {
-        if (!FUN_141a44730(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->GetPosition())), spClip))
+        if (!ProjectClip(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->GetPosition())), spClip))
             bVisible = false;
     }
     spEntity->m_visible = bVisible;
@@ -3190,15 +3190,15 @@ void UIMinimapDialog::FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity)
 }
 
 // @0x141a432a0
-void UIMinimapDialog::FUN_141a432a0(ProxyPtr spProxy, EntityPtr spEntity)
+void UIMinimapDialog::UpdateOtherPlayer(ProxyPtr spProxy, EntityPtr spEntity)
 {
     if (spProxy == 0 || spEntity == 0)
         return;
     MyPC* pPC = (MyPC*)WorldService::GetInstance()->FUN_141bd0cc0();   // C3: WorldService (worldservice.h)
     if (pPC == 0)
         return;
-    __int64 nId = reinterpret_cast<__int64>(spProxy->FUN_1416c22f0());
-    if (spProxy->FUN_1416c1ff0()) {
+    __int64 nId = reinterpret_cast<__int64>(spProxy->GetCharacterId());
+    if (spProxy->IsSelf()) {
         spEntity->m_state = s_strIdle;
         spEntity->m_layer = s_strLayerPlayer;
     } else if (m_460 == nId) {
@@ -3210,7 +3210,7 @@ void UIMinimapDialog::FUN_141a432a0(ProxyPtr spProxy, EntityPtr spEntity)
             spEntity->m_state = spMember->leader != 0 ? s_strPartyChief : s_strParty;
             spEntity->m_layer = s_strLayerParty;
         } else {
-            MS2Ptr<CGuildMember> spGuild = CGuildManager::GetInstance()->FUN_1404cf9f0(spProxy->GetName());
+            MS2Ptr<CGuildMember> spGuild = CGuildManager::GetInstance()->FindMemberByName(spProxy->GetName());
             if (static_cast<CGuildMember*>(spGuild) != 0) {
                 spEntity->m_state = s_strGuild;
                 spEntity->m_layer = s_strLayerGuild;
@@ -3228,7 +3228,7 @@ void UIMinimapDialog::FUN_141a432a0(ProxyPtr spProxy, EntityPtr spEntity)
 }
 
 // @0x141a43680
-void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
+void UIMinimapDialog::UpdateNpc(ProxyPtr spProxy, EntityPtr spEntity)
 {
     spEntity->m_64 = false;
     spEntity->m_showGuide = false;
@@ -3237,13 +3237,13 @@ void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
     if (pGuide->m_icon != 0xb) {
         CString strState;
         CString strLayer;
-        spEntity->FUN_141a31c80(pGuide, strState, strLayer);
+        spEntity->ResolveQuestIcon(pGuide, strState, strLayer);
         spEntity->m_icon = s_strQuest;
         spEntity->m_state = strState;
         spEntity->m_layer = strLayer;
-        spEntity->m_visible = FUN_141a45b70(spProxy);
+        spEntity->m_visible = IsProxyVisible(spProxy);
         spEntity->m_showGuide = true;
-        spEntity->m_guideName = FUN_141a45ed0(reinterpret_cast<const int&>(pGuide->m_questId), pGuide->m_state);
+        spEntity->m_guideName = GetQuestGuideText(reinterpret_cast<const int&>(pGuide->m_questId), pGuide->m_state);
         return;
     }
     MS2Ptr<NpcDataCli> spNpc = spProxy->GetNpcData();
@@ -3251,7 +3251,7 @@ void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
         return;
     spEntity->SetFromNpcData(spNpc);
     if (spEntity->m_visible)
-        spEntity->m_visible = FUN_141a45b70(spProxy);
+        spEntity->m_visible = IsProxyVisible(spProxy);
     if (spProxy->m_68 != 0) {
         bBoss = IsBossIcon(spEntity->m_icon);
         if (bBoss)
@@ -3260,7 +3260,7 @@ void UIMinimapDialog::FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity)
             spEntity->m_visible = false;
     }
     if (!bBoss) {
-        if (CQuestNavigator::GetInstance()->HasMap(spProxy->FUN_1416c2350())) {
+        if (CQuestNavigator::GetInstance()->HasMap(spProxy->GetTemplateId())) {
             spEntity->m_icon = s_strQuestTargetMonster;
             spEntity->m_layer = s_strLayerNpc;
             spEntity->m_64 = true;
@@ -3272,7 +3272,7 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }   // 
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 
 // @0x141a43b80
-void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool bInit)
+void UIMinimapDialog::UpdatePortal(ProxyPtr spProxy, EntityPtr spEntity, bool bInit)
 {
     if (spProxy == 0 || spEntity == 0)
         return;
@@ -3287,7 +3287,7 @@ void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool b
     MS2Ptr<UIMinimapEntityProxyPortal> spPortalEntity = dynamic_cast<UIMinimapEntityProxyPortal*>(static_cast<UIMinimapEntity*>(spEntity));
     if (spPortalEntity == 0)
         return;
-    spPortalEntity->FUN_141a33650();
+    spPortalEntity->Reset();
     bool bEnabled = spPortal->IsShown();
     bool bVisible = spPortal->FUN_14169d1d0();
     int nDest = spPortal->FUN_14169d280();
@@ -3296,7 +3296,7 @@ void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool b
         MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(nDest);
         if (spField == 0)
             return;
-        bHousing = spField->FUN_140375130();
+        bHousing = spField->IsIndoor();
     }
     if (!bInit) {
         bool bChanged = spEntity->m_visible != bVisible;
@@ -3321,19 +3321,19 @@ void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool b
         bool bSpecial = false;
         CString strIcon;
         CString strLayer;
-        int nNpc = spEntity->FUN_141a316d0(nDest, bSpecial, strIcon, strLayer);
+        int nNpc = spEntity->FindPortalNpc(nDest, bSpecial, strIcon, strLayer);
         bool bHandled = false;
         if (!bSpecial) {
             if (FUN_141a44850(spEntity, nDest, bEnabled)) {
-                spPortalEntity->FUN_141a51050(2);
+                spPortalEntity->SetState(2);
                 bHandled = true;
             }
         }
         if (!bHandled && nNpc != 0) {
             if (FUN_141a44c00(spEntity, nNpc, bSpecial, strIcon, strLayer, bEnabled, bVisible)) {
-                spPortalEntity->FUN_141a51050(1);
-                spPortalEntity->FUN_141a51030(bSpecial);
-                spPortalEntity->FUN_141a50bc0(nNpc);
+                spPortalEntity->SetState(1);
+                spPortalEntity->SetFlag(bSpecial);
+                spPortalEntity->SetField(nNpc);
             }
         }
     }
@@ -3342,20 +3342,20 @@ void UIMinimapDialog::FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool b
 }
 
 // @0x141a44380
-void UIMinimapDialog::FUN_141a44380(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity)
+void UIMinimapDialog::UpdateNamed(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity)
 {
-    bool bOverlap = CQuestNavigator::GetInstance()->HasNpc(spObject->GetRowId()) == 1 && spObject->FUN_1413b5600() == 1;
+    bool bOverlap = CQuestNavigator::GetInstance()->HasNpc(spObject->GetRowId()) == 1 && spObject->GetState() == 1;
     spEntity->m_icon = bOverlap ? s_strQuestTargetObject : spObject->GetRow()->m_display.m_strMinimapIcon;
     spEntity->m_layer = s_strLayerInteract;
     spEntity->m_position = *reinterpret_cast<const efd::Point3*>(&static_cast<const Vector3&>(spObject->GetPos()));
     spEntity->m_text = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x10, spObject->GetRowId());
     spEntity->m_64 = bOverlap;
     if (!spEntity->m_64)
-        spEntity->m_visible = spObject->FUN_1413b5600() == 1 && !spEntity->m_icon.IsEmpty();
+        spEntity->m_visible = spObject->GetState() == 1 && !spEntity->m_icon.IsEmpty();
     if (spObject->vfunc_5() == 9) {
         spEntity->m_layer = s_strLayerWatchtower;
         spEntity->m_visible = true;
-        FUN_141a42600(spObject, spEntity);
+        UpdateNamedFrame(spObject, spEntity);
     }
 }
 
@@ -3417,7 +3417,7 @@ bool UIMinimapDialog::FUN_141a44c00(EntityPtr spEntity, const int& nField, bool 
         Unk_QmNpcQuestState guide;
         ((class CQuestManager*)FUN_140764020())->GetNpcQuestState(nField, &guide, 0);
         bVisible = b2;
-        strText = FUN_141a45ed0(reinterpret_cast<const int&>(guide.m_questId), guide.m_state);
+        strText = GetQuestGuideText(reinterpret_cast<const int&>(guide.m_questId), guide.m_state);
     } else {
         bVisible = b3;
     }
@@ -3453,7 +3453,7 @@ public:
 extern __int64 DAT_143ab2820;                                       // the own account id
 
 // @0x141a3c150
-void UIMinimapDialog::FUN_141a3c150()
+void UIMinimapDialog::BuildUIData()
 {
     if (m_30 == 0)
         return;
@@ -3473,17 +3473,17 @@ void UIMinimapDialog::FUN_141a3c150()
     if (spData == 0)
         spData.AssignRaw(new AScript(2));
     if (spData.get() != 0) {
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("fieldname", strName);
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("minimize", vfunc_64() == 1);
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("fullmap", m_fullmap);
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("forceMinimize", bForceMinimize);
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbbe0("reportVisible", bReport);
+        static_cast<ASObj*>(spData.operator->())->SetWStringMember("fieldname", strName);
+        static_cast<ASObj*>(spData.operator->())->SetBoolMember("minimize", vfunc_64() == 1);
+        static_cast<ASObj*>(spData.operator->())->SetBoolMember("fullmap", m_fullmap);
+        static_cast<ASObj*>(spData.operator->())->SetBoolMember("forceMinimize", bForceMinimize);
+        static_cast<ASObj*>(spData.operator->())->SetBoolMember("reportVisible", bReport);
         if (m_78 == 0) {
-            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("width", 0);
-            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("height", 0);
+            static_cast<ASObj*>(spData.operator->())->SetIntMember("width", 0);
+            static_cast<ASObj*>(spData.operator->())->SetIntMember("height", 0);
             static_cast<ASObj*>(spData.operator->())->SetMemberFloat("scale", 1.0f);
-            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("bgAlpha", 30);
-            static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("mapAlpha", 100);
+            static_cast<ASObj*>(spData.operator->())->SetIntMember("bgAlpha", 30);
+            static_cast<ASObj*>(spData.operator->())->SetIntMember("mapAlpha", 100);
         }
         else {
             float fScale = 1.0f;
@@ -3506,49 +3506,49 @@ void UIMinimapDialog::FUN_141a3c150()
                 if (spAttr == 0)
                     continue;
                 const CString& strKey = pPair->m_key;
-                entry.FUN_1407cba60("layer", strKey);
-                entry.FUN_1407cb9c0("state", spAttr->m_state);
-                entry.FUN_1407cbb20("textKey", spAttr->m_key);
-                entry.FUN_1407cb9c0("displayOrder", spAttr->m_order);
-                entry.FUN_1407cba60("iconSuffix", strKey);
+                entry.SetStringMember("layer", strKey);
+                entry.SetIntMember("state", spAttr->m_state);
+                entry.SetWStringMember("textKey", spAttr->m_key);
+                entry.SetIntMember("displayOrder", spAttr->m_order);
+                entry.SetStringMember("iconSuffix", strKey);
             }
-            showEntities.PushValue(entry.FUN_1422bb870());
+            showEntities.PushValue(entry.GetValue());
         }
-        static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("showentity", Scaleform::GFx::Value(showEntities.FUN_1422bb870()));
+        static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("showentity", Scaleform::GFx::Value(showEntities.GetValue()));
         int nSelected = 0;
         ASArray channels(2);
-        m_channel = FUN_14092f640();
+        m_channel = GetCurrentChannel();
         UIServerListDialog* pServerList = Unk_MmGetDialog<UIServerListDialog>();
         if (pServerList != 0)
             pServerList->FUN_141ad2f60(channels, &nSelected, m_channel);
-        static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("channel", Scaleform::GFx::Value(channels.FUN_1422bb870()));
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cb9c0("selectedchannel", nSelected);
+        static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("channel", Scaleform::GFx::Value(channels.GetValue()));
+        static_cast<ASObj*>(spData.operator->())->SetIntMember("selectedchannel", nSelected);
         CStringW strGroup;
         if (DAT_143ab0248 != 2)
             strGroup = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x17, ((class Unk_MmWorld*)WorldService::GetInstance())->GetFieldChannelGroupId());
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("channelprefix", GetStringCommonByKey(L"s_word_ch"));
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("channelgroup", strGroup);
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("mapAlphaPrefix", GetStringCommonByKey(L"s_word_minimap_alpha"));
-        static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("bgAlphaPrefix", GetStringCommonByKey(L"s_word_mapbg_alpha"));
+        static_cast<ASObj*>(spData.operator->())->SetWStringMember("channelprefix", GetStringCommonByKey(L"s_word_ch"));
+        static_cast<ASObj*>(spData.operator->())->SetWStringMember("channelgroup", strGroup);
+        static_cast<ASObj*>(spData.operator->())->SetWStringMember("mapAlphaPrefix", GetStringCommonByKey(L"s_word_minimap_alpha"));
+        static_cast<ASObj*>(spData.operator->())->SetWStringMember("bgAlphaPrefix", GetStringCommonByKey(L"s_word_mapbg_alpha"));
     }
-    m_30->Invoke("initData", spData->FUN_1422bb870());
+    m_30->Invoke("initData", spData->GetValue());
 }
-MS2_REPLACE_METHOD(0x141a3c150, UIMinimapDialog, FUN_141a3c150, 3442, 0x5796E527);
+MS2_REPLACE_METHOD(0x141a3c150, UIMinimapDialog, BuildUIData, 3442, 0x5796E527);
 
 // @0x141a3d080
-void UIMinimapDialog::FUN_141a3d080(ProxyPtr spProxy)
+void UIMinimapDialog::AddProxy(ProxyPtr spProxy)
 {
     if (m_30 == 0)
         return;
     if (m_proxies.Lookup(spProxy) != 0)
         return;
-    if (spProxy->IsOtherPlayer() || spProxy->FUN_1416c1ff0()) {
+    if (spProxy->IsOtherPlayer() || spProxy->IsSelf()) {
         ASObj data(2);
-        if (FUN_141a3bda0(data, spProxy))
-            m_30->Invoke("createPlayer", data.FUN_1422bb870());
+        if (BuildPlayerData(data, spProxy))
+            m_30->Invoke("createPlayer", data.GetValue());
     }
     EntityPtr spEntity(0);
-    if (spProxy->FUN_1416c1ff0()) {
+    if (spProxy->IsSelf()) {
         spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 0));
         spEntity->m_icon = s_strPlayer;
         spEntity->m_layer = s_strLayerPlayer;
@@ -3564,23 +3564,23 @@ void UIMinimapDialog::FUN_141a3d080(ProxyPtr spProxy)
         spEntity->m_text = spProxy->GetName();
         spEntity->m_showText = false;
         spEntity->m_showGuide = false;
-        FUN_141a432a0(spProxy, spEntity);
+        UpdateOtherPlayer(spProxy, spEntity);
     } else if (spProxy->FUN_1416c2090()) {
         spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 2));
         if (MS2Ptr<CNpcData> spNpc = spProxy->GetNpcData()) {
             spEntity->m_text = spProxy->GetName();
             spEntity->m_position = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->GetPosition()));
-            FUN_141a43680(spProxy, spEntity);
+            UpdateNpc(spProxy, spEntity);
         }
     } else if (spProxy->FUN_1416c21c0()) {
         spEntity.AssignRaw(new UIMinimapEntityProxy(spProxy->m_proxyId, 3));
         spEntity->m_text = spProxy->GetName();
         spEntity->m_position = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(spProxy->GetPosition()));
-        FUN_141a43ac0(spProxy, spEntity);
-    } else if (spProxy->FUN_1416c20d0()) {
+        UpdatePet(spProxy, spEntity);
+    } else if (spProxy->HasPortal()) {
         spEntity.AssignRaw(new UIMinimapEntityProxyPortal(spProxy->m_proxyId));
         if (spProxy->FUN_1416c2110())
-            FUN_141a43b80(spProxy, spEntity, true);
+            UpdatePortal(spProxy, spEntity, true);
     }
     if (FUN_141a3e7d0(spEntity))
         m_proxies.SetAt(spProxy, spEntity);
@@ -3596,7 +3596,7 @@ bool UIMinimapDialog::FUN_141a3e7d0(EntityPtr spEntity)
     if (spEntity == 0 || spEntity->m_icon.IsEmpty())
         return false;
     ASObj data(2);
-    spEntity->FUN_141a31270(data, m_viewport);
+    spEntity->BuildData(data, m_viewport);
     Scaleform::GFx::Value value = m_30->Invoke("createEntity", data);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(value))->IsObject()) {
         spEntity->m_clip = FUN_1409b40c0(m_28, value);
@@ -3607,17 +3607,17 @@ bool UIMinimapDialog::FUN_141a3e7d0(EntityPtr spEntity)
 }
 
 // @0x141a3eed0
-void UIMinimapDialog::FUN_141a3eed0()
+void UIMinimapDialog::BuildNamed()
 {
     ATL::CAtlArray<MS2Ptr<CInteractObject> > objects;
-    WorldService::GetInstance()->FUN_141bc5f10(&objects);   // C3: WorldService (worldservice.h)
+    WorldService::GetInstance()->GetInteractObjects(&objects);   // C3: WorldService (worldservice.h)
     for (size_t i = 0; i < objects.GetCount(); ++i)
-        FUN_141a39770(objects[i]);
+        AddNamedObject(objects[i]);
 }
-MS2_REPLACE_METHOD(0x141a3eed0, UIMinimapDialog, FUN_141a3eed0, 166, 0x633A6A4C);
+MS2_REPLACE_METHOD(0x141a3eed0, UIMinimapDialog, BuildNamed, 166, 0x633A6A4C);
 
 // @0x141a3f570
-void UIMinimapDialog::FUN_141a3f570()
+void UIMinimapDialog::RemoveField()
 {
     if (m_30 == 0)
         return;
@@ -3626,10 +3626,10 @@ void UIMinimapDialog::FUN_141a3f570()
         m_clip228 = 0;
     }
 }
-MS2_REPLACE_METHOD(0x141a3f570, UIMinimapDialog, FUN_141a3f570, 134, 0x60F6F4E1);
+MS2_REPLACE_METHOD(0x141a3f570, UIMinimapDialog, RemoveField, 134, 0x60F6F4E1);
 
 // @0x141a3f600
-void UIMinimapDialog::FUN_141a3f600(ProxyPtr spProxy)
+void UIMinimapDialog::RemoveProxy(ProxyPtr spProxy)
 {
     if (spProxy == 0)
         return;
@@ -3646,13 +3646,13 @@ void UIMinimapDialog::FUN_141a3f730(MS2Ptr<ASMovieClip> spClip, ProxyPtr spProxy
     if (m_30 == 0 || spClip == 0)
         return;
     CString strChar;
-    if ((static_cast<CProxyGameObject*>(spProxy) != 0 ? true : false) && reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()) != 0)
-        strChar = FUN_140719530(reinterpret_cast<__int64>(spProxy->FUN_1416c22f0()));
-    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46b60("removeEntity", spClip->FUN_1422bb870(), strChar);
+    if ((static_cast<CProxyGameObject*>(spProxy) != 0 ? true : false) && reinterpret_cast<__int64>(spProxy->GetCharacterId()) != 0)
+        strChar = FUN_140719530(reinterpret_cast<__int64>(spProxy->GetCharacterId()));
+    static_cast<Unk_MmScript*>(m_30.operator->())->FUN_141a46b60("removeEntity", spClip->GetValue(), strChar);
 }
 
 // @0x141a3f930
-void UIMinimapDialog::FUN_141a3f930(EntityPtr spEntity)
+void UIMinimapDialog::RemoveEntity(EntityPtr spEntity)
 {
     if (spEntity == 0)
         return;
@@ -3660,7 +3660,7 @@ void UIMinimapDialog::FUN_141a3f930(EntityPtr spEntity)
 }
 
 // @0x141a46c90
-void UIMinimapDialog::FUN_141a46c90(EntityMap& map)
+void UIMinimapDialog::RemoveEntities(EntityMap& map)
 {
     if (map.IsEmpty())
         return;
@@ -3673,7 +3673,7 @@ void UIMinimapDialog::FUN_141a46c90(EntityMap& map)
 }
 
 // @0x141a46dc0
-void UIMinimapDialog::FUN_141a46dc0(NamedMap& map)
+void UIMinimapDialog::RemoveNamedEntities(NamedMap& map)
 {
     if (map.IsEmpty())
         return;
@@ -3686,7 +3686,7 @@ void UIMinimapDialog::FUN_141a46dc0(NamedMap& map)
 }
 
 // @0x141a46ef0
-void UIMinimapDialog::FUN_141a46ef0(ProxyMap& map)
+void UIMinimapDialog::RemoveProxyEntities(ProxyMap& map)
 {
     if (map.IsEmpty())
         return;
@@ -3700,7 +3700,7 @@ void UIMinimapDialog::FUN_141a46ef0(ProxyMap& map)
 }
 
 // @0x141a47060
-void UIMinimapDialog::FUN_141a47060(BuddyMap& map)
+void UIMinimapDialog::RemoveBuddyEntities(BuddyMap& map)
 {
     if (map.IsEmpty())
         return;
@@ -3713,7 +3713,7 @@ void UIMinimapDialog::FUN_141a47060(BuddyMap& map)
 }
 
 // @0x141a47190
-void UIMinimapDialog::FUN_141a47190(PingMap& map)
+void UIMinimapDialog::RemovePingEntities(PingMap& map)
 {
     if (map.IsEmpty())
         return;
@@ -3735,42 +3735,42 @@ void ASObj::FUN_141a472c0(const char* szName, int n)
 }
 
 // @0x141a3f9f0
-void UIMinimapDialog::FUN_141a3f9f0(MS2Ptr<CBuddy> spBuddy)
+void UIMinimapDialog::RemoveBuddyHome(MS2Ptr<CBuddy> spBuddy)
 {
     if (spBuddy == 0)
         return;
     int nField = spBuddy->FUN_1401cc3e0();
     if (static_cast<unsigned int>(nField) > 0) {
-        unsigned __int64 nHome = spBuddy->FUN_1401cc2f0();
+        unsigned __int64 nHome = spBuddy->GetId();
         EntityPtr spEntity(0);
         if (m_buddies.Lookup(nHome, spEntity))
-            FUN_141a3f930(spEntity);
+            RemoveEntity(spEntity);
         else
-            FUN_141a455e0(nField, nHome);
+            RemovePortalHome(nField, nHome);
     }
 }
 
 // @0x141a3fb10
-void UIMinimapDialog::FUN_141a3fb10()
+void UIMinimapDialog::RemoveAllEntities()
 {
-    FUN_141a3f930(m_taxi);
-    FUN_141a3f930(m_return);
-    FUN_141a3f930(m_telescope);
-    FUN_141a3f930(m_player);
+    RemoveEntity(m_taxi);
+    RemoveEntity(m_return);
+    RemoveEntity(m_telescope);
+    RemoveEntity(m_player);
     m_clip238 = 0;
-    FUN_141a46ef0(m_proxies);
-    FUN_141a47190(m_pings);
-    FUN_141a46ef0(m_proxies);
-    FUN_141a47060(m_buddies);
-    FUN_141a46dc0(m_named);
-    FUN_141a46c90(m_triggers);
-    FUN_141a46c90(m_objects);
-    FUN_141a3fd20();
+    RemoveProxyEntities(m_proxies);
+    RemovePingEntities(m_pings);
+    RemoveProxyEntities(m_proxies);
+    RemoveBuddyEntities(m_buddies);
+    RemoveNamedEntities(m_named);
+    RemoveEntities(m_triggers);
+    RemoveEntities(m_objects);
+    ClearEntityContainers();
 }
-MS2_REPLACE_METHOD(0x141a3fb10, UIMinimapDialog, FUN_141a3fb10, 513, 0xEBDDB7DE);
+MS2_REPLACE_METHOD(0x141a3fb10, UIMinimapDialog, RemoveAllEntities, 513, 0xEBDDB7DE);
 
 // @0x141a3fd20
-void UIMinimapDialog::FUN_141a3fd20()
+void UIMinimapDialog::ClearEntityContainers()
 {
     m_taxi = 0;
     m_return = 0;
@@ -3784,6 +3784,6 @@ void UIMinimapDialog::FUN_141a3fd20()
     m_objects.RemoveAll();
     m_homes.RemoveAll();
 }
-MS2_REPLACE_METHOD(0x141a3fd20, UIMinimapDialog, FUN_141a3fd20, 231, 0x2297E1D9);
+MS2_REPLACE_METHOD(0x141a3fd20, UIMinimapDialog, ClearEntityContainers, 231, 0x2297E1D9);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cc01c0-0x142cc0d10 .text$yd

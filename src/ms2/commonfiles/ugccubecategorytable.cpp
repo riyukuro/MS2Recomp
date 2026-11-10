@@ -63,7 +63,7 @@ public:
 
 
 
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned short&);   // C3: was FUN_1408731a0
@@ -107,8 +107,8 @@ UGCCubeCategoryTable::UGCCubeCategoryTable()
 {
     m_menus = Unk_CubeNewTag(0);
     m_sorts = Unk_CubeNewTag(0);
-    CString strPath = FUN_14071a5b0("Table", "cubeCategory.xml");
-    FUN_1401d1160(strPath);
+    CString strPath = GetXmlPath("Table", "cubeCategory.xml");
+    SetPath(strPath);
 }
 
 // @0x140886380
@@ -224,7 +224,7 @@ bool UGCCubeCategoryTable::HasAnyField(const std::vector<unsigned int>& fields)
 void UGCCubeCategoryTable::LoadMenus()
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false) != 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, *GetPath(), 0, true, false) != 0)
     {
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
         if (pRoot != 0)
@@ -284,9 +284,9 @@ void UGCCubeCategoryTable::LoadMenus()
 // @0x140886fc0
 void UGCCubeCategoryTable::LoadInteriors()
 {
-    CString strPath = FUN_14071a5b0("Table", "ugcCubeDefaultCategory.xml");
+    CString strPath = GetXmlPath("Table", "ugcCubeDefaultCategory.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) != 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) != 0)
     {
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
         if (pRoot != 0)
@@ -442,7 +442,7 @@ void UGCCubeCategoryTable::SetInit(bool b)
 }
 
 // @0x14088da20
-int FUN_14088da20(int nType)
+int ConvertPriceType(int nType)
 {
     switch (nType)
     {
@@ -524,7 +524,7 @@ MS2_REPLACE_METHOD(0x140886920, UGCCubeCategoryTable, RemoveMenu, 281, 0x59D503F
 MS2_REPLACE_METHOD(0x140886A40, UGCCubeCategoryTable, HasAnyField, 160, 0x9FECD42D);
 MS2_REPLACE_METHOD(0x140886AF0, UGCCubeCategoryTable, LoadMenus, 1226, 0x979BE594);
 MS2_REPLACE_METHOD(0x140886FC0, UGCCubeCategoryTable, LoadInteriors, 621, 0x051C8BC4);
-MS2_REPLACE(0x14088DA20, FUN_14088da20, 66, 0x2F3EA80B);
+MS2_REPLACE(0x14088DA20, ConvertPriceType, 66, 0x2F3EA80B);
 MS2_REPLACE(0x14088DB30, FUN_14088db30, 76, 0x0FDDD541);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9c6e0-0x142c9c760 .text$yd

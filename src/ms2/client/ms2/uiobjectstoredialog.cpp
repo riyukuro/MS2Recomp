@@ -41,15 +41,15 @@ typedef UIMsg Unk_OsUIMsg;
 // The bound slot bag of a bag id (StoreSlotBag) and the control state it keeps.
 class Unk_OsBind;
 class Unk_OsSlotBag;
-namespace NotifyContext { class BindData; } class StoreSlotBag* FUN_14180b940(NotifyContext::BindData* pBind);                        // the slot bag of it (NULL when unbound)
+namespace NotifyContext { class BindData; } class StoreSlotBag* GetStoreSlotBag(NotifyContext::BindData* pBind);                        // the slot bag of it (NULL when unbound)
 class DragSlotBag   // C3: member view for the former free stand-ins
 {
 public:
     void FUN_1422cca90();
 };
 void FUN_14180b230(const CString& strBagId);                                    // drop the bag bound to the id
-void FUN_14180b170(const CString& strBagId, int nSlot, int nSize);              // create the bag (StoreSlotBag)
-int FUN_1408b6200(int nItemType);                                       // the slot count of an item type's bank
+void CreateStoreSlotBag(const CString& strBagId, int nSlot, int nSize);              // create the bag (StoreSlotBag)
+int GetBankSlotCount(int nItemType);                                       // the slot count of an item type's bank
 
 // The object store state (global 0x143ab2d80): the sort button sends packet 0x18 / 8.
 #include "ms2/client/ms2/store.h"     // DAT_143ab2d80, the store table (CStore)
@@ -89,7 +89,7 @@ UIObjectStoreDialog::UIObjectStoreDialog()
     : m_180(GetTypeName())
     , m_188(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_164 = 1;
 }
 
@@ -189,7 +189,7 @@ void UIObjectStoreDialog::OnLoadComplete()
         {
             MS2Ptr<CItemData> spItem = FUN_14053f870(m_198);
             if (spItem.get() != 0) {
-                unsigned int nBankId = spItem->FUN_14053dce0();
+                unsigned int nBankId = spItem->GetBankId();
                 CBankTable::DataPtr spBank = TSingleton<CBankTable>::GetInstance()->GetBankData(nBankId);
                 if (spBank.get() != 0)
                     nSlots = spBank->m_nSlotCount / 6;
@@ -232,7 +232,7 @@ int UIObjectStoreDialog::vfunc_oa0_1()
 void UIObjectStoreDialog::vfunc_oa0_9(unsigned short a1)
 {
     if (FUN_1422dc390() != 0) {
-        Unk_OsSlotBag* pBag = (Unk_OsSlotBag*)FUN_14180b940(Unk_NotifyContext::FUN_1422c8e90(m_180));
+        Unk_OsSlotBag* pBag = (Unk_OsSlotBag*)GetStoreSlotBag(Unk_NotifyContext::FindBinding(m_180));
         if (pBag != 0)
             ((class DragSlotBag*)(class Unk_OsSlotBag*)(pBag))->FUN_1422cca90();
     }
@@ -242,7 +242,7 @@ void UIObjectStoreDialog::vfunc_oa0_9(unsigned short a1)
 void UIObjectStoreDialog::vfunc_oa0_7(int a1, CStringW s)
 {
     if (FUN_1422dc390() != 0) {
-        Unk_OsSlotBag* pBag = (Unk_OsSlotBag*)FUN_14180b940(Unk_NotifyContext::FUN_1422c8e90(m_180));
+        Unk_OsSlotBag* pBag = (Unk_OsSlotBag*)GetStoreSlotBag(Unk_NotifyContext::FindBinding(m_180));
         if (pBag != 0)
             ((class DragSlotBag*)(class Unk_OsSlotBag*)(pBag))->FUN_1422cca90();
     }
@@ -251,12 +251,12 @@ void UIObjectStoreDialog::vfunc_oa0_7(int a1, CStringW s)
 // @0x141a72f80
 void UIObjectStoreDialog::FUN_141a72f80(int bBind)
 {
-    int nSlots = FUN_1408b6200(m_198);
+    int nSlots = GetBankSlotCount(m_198);
     FUN_14180b230(m_180);
-    FUN_14180b170(m_180, 0, nSlots);
+    CreateStoreSlotBag(m_180, 0, nSlots);
     if (bBind != 0) {
         if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_itemBag"))
-            spBag->FUN_1407cba60("bagId", m_180);
+            spBag->SetStringMember("bagId", m_180);
     }
 }
 MS2_REPLACE_METHOD(0x141A725E0, UIObjectStoreDialog, GetTypeName, 61, 0x2433FD6F);

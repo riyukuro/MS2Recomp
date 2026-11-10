@@ -47,7 +47,7 @@ class CMentoringManager;
 class Unk_MentorFlag { public: int FUN_1402c4c90(int); };
 class Unk_MentorFlags { public: void* p0; Unk_MentorFlag flags; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
-class UIInviteMentoringDialog { public: void FUN_140c2f040(); };   // C3: view of the real class
+class UIInviteMentoringDialog { public: void ShowMenteePage(); };   // C3: view of the real class
 UIInviteMentoringDialog* FUN_140b6f4c0(int nId);
 void FUN_141275260(int, int, int);
 class CPartyManager;
@@ -63,7 +63,7 @@ private:
     void* m_pad_70; void* m_pad_78;
 };
 class UIPopUpMenu { public: void FUN_141a7f090(class Unk_PopupMenuInfo const &, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> const &, unsigned __int64, void *, int, int); }; class Unk_PopupMenu : public UIPopUpMenu { };
-Unk_PopupMenu* FUN_140c30140(int nId);
+Unk_PopupMenu* FindPopupMenu(int nId);
 unsigned __int64 FUN_140718350(const CString& str);
 CStringW GetStringCommonByKey(const CStringW& strId);
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
@@ -79,7 +79,7 @@ CString FUN_140719530(unsigned __int64 n);                               // numb
 // FUN_14052b9d0 = FUN_14028dfa0<unsigned short, CStringW> (wcformat.h, instantiated in item.cpp)
 
 // @0x140c70240
-static CMentoringManager* FUN_140c70240()
+static CMentoringManager* GetMentoringManager()
 {
     return TSingleton<CMentoringManager>::s_instance;
 }
@@ -108,7 +108,7 @@ MS2_REPLACE_METHOD(0x140C6E860, ASMentoringMenteePage, OnInit, 515, 0x4AC55F75);
 void ASMentoringMenteePage::Refresh()
 {
     if (!((class MentoringDataTable*)FUN_1406c7610())) return;
-    int nMentee = FUN_140c70240()->FUN_140b71650();
+    int nMentee = GetMentoringManager()->FUN_140b71650();
     int nReward = ((class MentoringDataTable*)FUN_1406c7610())->GetMaxMenteeDailyRewardCoin();
     m_coin->SetTextW(FUN_14028dfa0<unsigned, unsigned>(L"s_mentoring_coin_info", reinterpret_cast<const unsigned&>(nMentee), reinterpret_cast<const unsigned&>(nReward)));
 }
@@ -125,7 +125,7 @@ int UIMentoringMenteePage::vfunc_1()
     if (!UIMentoringPage::vfunc_1()) return 0;
     m_mentee = new ASMentoringMenteePage(this);
     m_mentee->OnInit();
-    FUN_140c6f190();
+    RefreshMenteePage();
     return 1;
 }
 MS2_REPLACE_METHOD(0x140C6EC00, UIMentoringMenteePage, vfunc_1, 167, 0x7C55F081);
@@ -150,7 +150,7 @@ int UIMentoringMenteePage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
             return 1;
         }
         UIInviteMentoringDialog* pDlg = FUN_140b6f4c0(0x4f4c);
-        if (pDlg) ((class UIInviteMentoringDialog*)(pDlg))->FUN_140c2f040();
+        if (pDlg) ((class UIInviteMentoringDialog*)(pDlg))->ShowMenteePage();
         return 1;
     }
     else if (_stricmp(szMethod, "onPartyRequest") == 0)
@@ -168,7 +168,7 @@ int UIMentoringMenteePage::vfunc_5(const char* szMethod, const Scaleform::GFx::V
             float y = data.PopFloat();
             CStringW strName = data.FUN_1422b8f40();
             unsigned __int64 nSerial = FUN_140718350(data.FUN_1422b8d30());
-            Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);
+            Unk_PopupMenu* pMenu = FindPopupMenu(0x4e39);
             if (pMenu)
             {
                 Unk_PopupMenuInfo info(x, y, 3, 10, 0, "", NULL);
@@ -194,65 +194,65 @@ void UIMentoringMenteePage::vfunc_9() { if (m_mentee.get()) m_mentee->Refresh();
 MS2_REPLACE_METHOD(0x140C6F110, UIMentoringMenteePage, vfunc_9, 61, 0xE6D9F15D);
 
 // @0x140c6f160
-int UIMentoringMenteePage::vfunc_8() { return FUN_140c70240()->GetMentorCount(); }
+int UIMentoringMenteePage::vfunc_8() { return GetMentoringManager()->GetMentorCount(); }
 MS2_REPLACE_METHOD(0x140C6F160, UIMentoringMenteePage, vfunc_8, 27, 0x39E6850C);
 
 // @0x140c6f190
-void UIMentoringPage::FUN_140c6f190()
+void UIMentoringPage::RefreshMenteePage()
 {
-    FUN_140c6f7a0("m_mentor", FUN_140c70240()->GetMentee(0));
+    SetMenteeData("m_mentor", GetMentoringManager()->GetMentee(0));
     if (MS2Ptr<ASMovieClip> pSearchMovie = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_searchMovie"))
     {
-        pSearchMovie->vfunc_4(FUN_140c70240()->GetMenteeCount() == 0);
+        pSearchMovie->vfunc_4(GetMentoringManager()->GetMenteeCount() == 0);
         SetChildText((*pSearchMovie).FUN_1422bb890(), "m_desc", GetStringCommonByKey(L"s_mentoring_tab_mentee_search_desc"));
     }
     if (MS2Ptr<ASMovieClip> pSearch = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_search"))
     {
-        pSearch->vfunc_4(FUN_140c70240()->GetMenteeCount() == 0);
+        pSearch->vfunc_4(GetMentoringManager()->GetMenteeCount() == 0);
     }
     if (MS2Ptr<ASMovieClip> pNotify = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_notifyMovie"))
     {
-        pNotify->vfunc_4(FUN_140c70240()->GetMenteeCount() != 0);
+        pNotify->vfunc_4(GetMentoringManager()->GetMenteeCount() != 0);
     }
     if (MS2Ptr<ASUIComponent> pMentor = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0<ASUIComponent>("m_mentor"))
     {
-        pMentor->vfunc_4(FUN_140c70240()->GetMenteeCount() != 0);
+        pMentor->vfunc_4(GetMentoringManager()->GetMenteeCount() != 0);
     }
     if (MS2Ptr<ASMovieClip> pEffect = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_1409b4560("m_effect"))
     {
-        pEffect->vfunc_4(FUN_140c70240()->GetMentorCount() != 0);
+        pEffect->vfunc_4(GetMentoringManager()->GetMentorCount() != 0);
     }
     if (m_script.get())
     {
-        m_script->Invoke("setCount", FUN_140c70240()->GetMentorCount());
+        m_script->Invoke("setCount", GetMentoringManager()->GetMentorCount());
     }
 }
-MS2_REPLACE_METHOD(0x140C6F190, UIMentoringPage, FUN_140c6f190, 1536, 0xA2D1B5E6);
+MS2_REPLACE_METHOD(0x140C6F190, UIMentoringPage, RefreshMenteePage, 1536, 0xA2D1B5E6);
 
 // @0x140c6f7a0
-void UIMentoringPage::FUN_140c6f7a0(CString strName, Unk_MentorPtr<CMentor> pEntry)
+void UIMentoringPage::SetMenteeData(CString strName, Unk_MentorPtr<CMentor> pEntry)
 {
     MS2Ptr<ASUIComponent> pClip = reinterpret_cast<Unk_MentorScript*>(m_script.operator->())->FUN_140accfb0<ASUIComponent>(strName);
     if (pClip.get())
     {
         ASObj obj(2);
-        pEntry = FUN_140c70240()->GetMentee(0);
+        pEntry = GetMentoringManager()->GetMentee(0);
         if (pEntry.get())
         {
-            obj.FUN_1407cba60("iconPath", FUN_141028be0(pEntry->c, FUN_14016a600(pEntry->guild, 0), 1, ""));
-            obj.FUN_1407cbbe0("isOnline", pEntry->online);
-            ((class AScript&)(obj)).FUN_1407cbb20("name", pEntry->name);
-            ((class AScript&)(obj)).FUN_1407cbb20("extra", FUN_14028dfa0(CStringW(L"s_mentoring_user_info"), pEntry->level, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pEntry->y)));
-            ((class AScript&)(obj)).FUN_1407cbb20("charName", pEntry->name);
-            obj.FUN_1407cba60("charSN", FUN_140719530(pEntry->c));
+            obj.SetStringMember("iconPath", FUN_141028be0(pEntry->c, FUN_14016a600(pEntry->guild, 0), 1, ""));
+            obj.SetBoolMember("isOnline", pEntry->online);
+            ((class AScript&)(obj)).SetWStringMember("name", pEntry->name);
+            ((class AScript&)(obj)).SetWStringMember("extra", FUN_14028dfa0(CStringW(L"s_mentoring_user_info"), pEntry->level, TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pEntry->y)));
+            ((class AScript&)(obj)).SetWStringMember("charName", pEntry->name);
+            obj.SetStringMember("charSN", FUN_140719530(pEntry->c));
         }
         else
         {
-            ((Scaleform::GFx::Value*)&(obj.FUN_1422bb870()))->SetNull();
+            ((Scaleform::GFx::Value*)&(obj.GetValue()))->SetNull();
         }
         pClip->Invoke("setData", obj);
     }
 }
-MS2_REPLACE_METHOD(0x140C6F7A0, UIMentoringPage, FUN_140c6f7a0, 1150, 0xF09790F1);
+MS2_REPLACE_METHOD(0x140C6F7A0, UIMentoringPage, SetMenteeData, 1150, 0xF09790F1);
 
 MS2_EMIT_CRT_MEMMOVE_S();

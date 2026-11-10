@@ -19,7 +19,7 @@ Unk_SPDA::Unk_SPDA(const Unk_SPD0& src) {
 }
 
 // @0x1407a3490
-void Unk_SPDA::FUN_1407a3490(COutputStream* out) {
+void Unk_SPDA::WriteTo(COutputStream* out) {
     out->WriteUInt8(type);
     switch (type) {
     case 2:
@@ -39,10 +39,10 @@ void Unk_SPDA::FUN_1407a3490(COutputStream* out) {
         break;
     }
 }
-MS2_REPLACE_METHOD(0x1407A3490, Unk_SPDA, FUN_1407a3490, 355, 0x8BEDCA45);
+MS2_REPLACE_METHOD(0x1407A3490, Unk_SPDA, WriteTo, 355, 0x8BEDCA45);
 
 // @0x1407a3640
-void Unk_SPDA::FUN_1407a3640(Unk_SPDReader& in) {
+void Unk_SPDA::ReadFrom(Unk_SPDReader& in) {
     // (range: Unk_140203550<unsigned char> argument temp)
     type = Unk_Read8(&in, Unk_140203550<unsigned char>(0, 0x14));
     switch (type) {
@@ -63,10 +63,10 @@ void Unk_SPDA::FUN_1407a3640(Unk_SPDReader& in) {
         break;
     }
 }
-MS2_REPLACE_METHOD(0x1407A3640, Unk_SPDA, FUN_1407a3640, 756, 0x43C6420F);
+MS2_REPLACE_METHOD(0x1407A3640, Unk_SPDA, ReadFrom, 756, 0x43C6420F);
 
 // @0x1407a3980
-void Unk_SPDB::FUN_1407a3980(COutputStream* out) {
+void Unk_SPDB::WriteTo(COutputStream* out) {
     out->WriteUInt8(type);
     switch (type) {
     case 2:
@@ -109,10 +109,10 @@ void Unk_SPDB::FUN_1407a3980(COutputStream* out) {
         MS2_ASSERT_AT(0x86, 0);
     }
 }
-MS2_REPLACE_METHOD(0x1407A3980, Unk_SPDB, FUN_1407a3980, 752, 0xDE36C697);
+MS2_REPLACE_METHOD(0x1407A3980, Unk_SPDB, WriteTo, 752, 0xDE36C697);
 
 // @0x1407a3cc0
-void Unk_SPDB::FUN_1407a3cc0(Unk_SPDReader& in) {
+void Unk_SPDB::ReadFrom(Unk_SPDReader& in) {
     // (range: Unk_140203550<unsigned char> argument temp)
     type = Unk_Read8(&in, Unk_140203550<unsigned char>(0, 0x14));
     switch (type) {
@@ -154,44 +154,44 @@ void Unk_SPDB::FUN_1407a3cc0(Unk_SPDReader& in) {
         break;
     }
 }
-MS2_REPLACE_METHOD(0x1407A3CC0, Unk_SPDB, FUN_1407a3cc0, 1648, 0x14FFD8A2);
+MS2_REPLACE_METHOD(0x1407A3CC0, Unk_SPDB, ReadFrom, 1648, 0x14FFD8A2);
 
 // @0x1407a4380
-void Unk_SPDC::FUN_1407a4380(COutputStream* out) {
+void Unk_SPDC::WriteTo(COutputStream* out) {
     out->WriteInt32(a);
     out->WriteInt32(b);
     out->WriteInt32(c);
     out->WriteInt32(d);
     out->WriteUInt8(e);
 }
-MS2_REPLACE_METHOD(0x1407A4380, Unk_SPDC, FUN_1407a4380, 139, 0x3A3B4B05);
+MS2_REPLACE_METHOD(0x1407A4380, Unk_SPDC, WriteTo, 139, 0x3A3B4B05);
 
 // @0x1407a4420
-void Unk_SPDC::FUN_1407a4420(CInputStream* in) {
+void Unk_SPDC::ReadFrom(CInputStream* in) {
     a = in->ReadInt32();
     b = in->ReadInt32();
     c = in->ReadInt32();
     d = in->ReadInt32();
     e = in->ReadUInt8();
 }
-MS2_REPLACE_METHOD(0x1407A4420, Unk_SPDC, FUN_1407a4420, 138, 0xE2ECB42C);
+MS2_REPLACE_METHOD(0x1407A4420, Unk_SPDC, ReadFrom, 138, 0xE2ECB42C);
 
 // @0x1407a44b0
-void Unk_SPDE::FUN_1407a44b0(COutputStream* out) {
+void Unk_SPDE::WriteTo(COutputStream* out) {
     out->WriteUInt8(kind);
     out->WriteUnicodeString(name);
 }
-MS2_REPLACE_METHOD(0x1407A44B0, Unk_SPDE, FUN_1407a44b0, 81, 0x55FD50B3);
+MS2_REPLACE_METHOD(0x1407A44B0, Unk_SPDE, WriteTo, 81, 0x55FD50B3);
 
 // @0x1407a4510
-void Unk_SPDE::FUN_1407a4510(CInputStream* in) {
+void Unk_SPDE::ReadFrom(CInputStream* in) {
     kind = in->ReadUInt8();
     name = in->ReadUnicodeString();
 }
-MS2_REPLACE_METHOD(0x1407A4510, Unk_SPDE, FUN_1407a4510, 125, 0xB200A850);
+MS2_REPLACE_METHOD(0x1407A4510, Unk_SPDE, ReadFrom, 125, 0xB200A850);
 
 // @0x1407a45a0
-void Unk_SPDF::FUN_1407a45a0(COutputStream* out) {
+void Unk_SPDF::WriteTo(COutputStream* out) {
     out->WriteUInt8(a);
     out->WriteInt32(b);
     out->WriteUnicodeString(name);
@@ -210,10 +210,10 @@ void Unk_SPDF::FUN_1407a45a0(COutputStream* out) {
     }
     out->WriteInt32(k);
 }
-MS2_REPLACE_METHOD(0x1407A45A0, Unk_SPDF, FUN_1407a45a0, 407, 0x8F5C5A48);
+MS2_REPLACE_METHOD(0x1407A45A0, Unk_SPDF, WriteTo, 407, 0x8F5C5A48);
 
 // @0x1407a4740
-void Unk_SPDF::FUN_1407a4740(CInputStream* in) {
+void Unk_SPDF::ReadFrom(CInputStream* in) {
     a = in->ReadUInt8();
     b = in->ReadInt32();
     name = in->ReadUnicodeString();
@@ -232,42 +232,42 @@ void Unk_SPDF::FUN_1407a4740(CInputStream* in) {
     }
     k = in->ReadInt32();
 }
-MS2_REPLACE_METHOD(0x1407A4740, Unk_SPDF, FUN_1407a4740, 452, 0x5B028907);
+MS2_REPLACE_METHOD(0x1407A4740, Unk_SPDF, ReadFrom, 452, 0x5B028907);
 
 // @0x1407a4910
-void Unk_SPDG::FUN_1407a4910(COutputStream* out) {
+void Unk_SPDG::WriteTo(COutputStream* out) {
     out->WriteInt32(a);
     out->WriteInt64(b);
     out->WriteInt64(c);
     out->WriteUnicodeString(d);
 }
-MS2_REPLACE_METHOD(0x1407A4910, Unk_SPDG, FUN_1407a4910, 130, 0x4DAF50D7);
+MS2_REPLACE_METHOD(0x1407A4910, Unk_SPDG, WriteTo, 130, 0x4DAF50D7);
 
 // @0x1407a49a0
-void Unk_SPDG::FUN_1407a49a0(CInputStream* in) {
+void Unk_SPDG::ReadFrom(CInputStream* in) {
     a = in->ReadInt32();
     b = in->ReadInt64();
     c = in->ReadInt64();
     d = in->ReadUnicodeString();
 }
-MS2_REPLACE_METHOD(0x1407A49A0, Unk_SPDG, FUN_1407a49a0, 172, 0x17B43280);
+MS2_REPLACE_METHOD(0x1407A49A0, Unk_SPDG, ReadFrom, 172, 0x17B43280);
 
 // @0x1407a4a60
-void Unk_SPDH::FUN_1407a4a60(COutputStream* out) {
+void Unk_SPDH::WriteTo(COutputStream* out) {
     out->WriteInt64(a);
     out->WriteUnicodeString(b);
 }
-MS2_REPLACE_METHOD(0x1407A4A60, Unk_SPDH, FUN_1407a4a60, 81, 0xC84F2203);
+MS2_REPLACE_METHOD(0x1407A4A60, Unk_SPDH, WriteTo, 81, 0xC84F2203);
 
 // @0x1407a4ac0
-void Unk_SPDH::FUN_1407a4ac0(CInputStream* in) {
+void Unk_SPDH::ReadFrom(CInputStream* in) {
     a = in->ReadInt64();
     b = in->ReadUnicodeString();
 }
-MS2_REPLACE_METHOD(0x1407A4AC0, Unk_SPDH, FUN_1407a4ac0, 123, 0x1D80FD34);
+MS2_REPLACE_METHOD(0x1407A4AC0, Unk_SPDH, ReadFrom, 123, 0x1D80FD34);
 
 // @0x1407a4b50
-void Unk_NetworkTransfer::FUN_1407a4b50(COutputStream* out) {
+void Unk_NetworkTransfer::WriteTo(COutputStream* out) {
     out->WriteUInt8(result);
     if (result == 0) {
         out->WriteInt32(ip);
@@ -282,10 +282,10 @@ void Unk_NetworkTransfer::FUN_1407a4b50(COutputStream* out) {
         out->WriteInt64(character);
     }
 }
-MS2_REPLACE_METHOD(0x1407A4B50, Unk_NetworkTransfer, FUN_1407a4b50, 254, 0x578809F0);
+MS2_REPLACE_METHOD(0x1407A4B50, Unk_NetworkTransfer, WriteTo, 254, 0x578809F0);
 
 // @0x1407a4c60
-void Unk_NetworkTransfer::FUN_1407a4c60(CInputStream* in) {
+void Unk_NetworkTransfer::ReadFrom(CInputStream* in) {
     result = in->ReadUInt8();
     if (result == 0) {
         ip = in->ReadInt32();
@@ -300,32 +300,32 @@ void Unk_NetworkTransfer::FUN_1407a4c60(CInputStream* in) {
         character = in->ReadInt64();
     }
 }
-MS2_REPLACE_METHOD(0x1407A4C60, Unk_NetworkTransfer, FUN_1407a4c60, 295, 0x1CFF92C3);
+MS2_REPLACE_METHOD(0x1407A4C60, Unk_NetworkTransfer, ReadFrom, 295, 0x1CFF92C3);
 
 // @0x1407a4d90
-void Unk_SPDJ::FUN_1407a4d90(COutputStream* out) {
+void Unk_SPDJ::WriteTo(COutputStream* out) {
     out->WriteInt32(a);
 }
-MS2_REPLACE_METHOD(0x1407A4D90, Unk_SPDJ, FUN_1407a4d90, 42, 0x198D3D0B);
+MS2_REPLACE_METHOD(0x1407A4D90, Unk_SPDJ, WriteTo, 42, 0x198D3D0B);
 
 // @0x1407a4dc0
-void Unk_SPDJ::FUN_1407a4dc0(Unk_SPDReader& in) {
+void Unk_SPDJ::ReadFrom(Unk_SPDReader& in) {
     a = in.ReadInt32();
 }
-MS2_REPLACE_METHOD(0x1407A4DC0, Unk_SPDJ, FUN_1407a4dc0, 60, 0x21DC48C6);
+MS2_REPLACE_METHOD(0x1407A4DC0, Unk_SPDJ, ReadFrom, 60, 0x21DC48C6);
 
 // @0x1407a4e10
-void Unk_SPDK::FUN_1407a4e10(COutputStream* out) {
+void Unk_SPDK::WriteTo(COutputStream* out) {
     out->WriteUInt8(b);
     out->WriteInt64(a);
     out->WriteInt32(c);
 }
-MS2_REPLACE_METHOD(0x1407A4E10, Unk_SPDK, FUN_1407a4e10, 92, 0x43E21C6F);
+MS2_REPLACE_METHOD(0x1407A4E10, Unk_SPDK, WriteTo, 92, 0x43E21C6F);
 
 // @0x1407a4e80
-void Unk_SPDK::FUN_1407a4e80(Unk_SPDReader& in) {
+void Unk_SPDK::ReadFrom(Unk_SPDReader& in) {
     b = in.ReadUInt8();
     a = in.ReadInt64();
     c = in.ReadInt32();
 }
-MS2_REPLACE_METHOD(0x1407A4E80, Unk_SPDK, FUN_1407a4e80, 148, 0xEF4965A1);
+MS2_REPLACE_METHOD(0x1407A4E80, Unk_SPDK, ReadFrom, 148, 0xEF4965A1);

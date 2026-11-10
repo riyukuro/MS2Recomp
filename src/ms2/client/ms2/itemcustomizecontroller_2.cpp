@@ -46,16 +46,16 @@ public:
 // Game context: FUN_141bd0cc0 returns the local player (the tooltip owner).
 
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 uid);               // find an item by uid
-CStringW FUN_1419021b0(unsigned a, unsigned b);                   // format "a/b"
+CStringW GetIngredientCountText(unsigned a, unsigned b);                   // format "a/b"
 CStringW GetStringCommon(int id);                         // string table lookup
 CStringW GetStringCommonByKey(const CStringW& str);            // string table lookup by key
 void FUN_140d2d150(int nItemId, int nAmount);           // show the item's popup menu
 void SetChildHtmlText(const Scaleform::GFx::Value&, CString, CStringW);   // set a member of the movie to a string
-float FUN_140bf4fd0(float f);                           // ceilf
+float Ceil(float f);                           // ceilf
 void Unk_140657820();                                   // 'invalid call' of an empty Delegate (shared)
 
 // Registry of named bags/slots (GFx bind data).
-ItemInfoSlot* FUN_140c69ab0(NotifyContext::BindData* p);   // BindData -> ItemInfoSlot (TypeCast), 0 on failure
+ItemInfoSlot* GetItemInfoSlot(NotifyContext::BindData* p);   // BindData -> ItemInfoSlot (TypeCast), 0 on failure
 
 // The empty-delegate error of ItemInfoSlotCanFn.
 class InvalidCallException : public std::exception
@@ -125,20 +125,20 @@ void FUN_141414d60(const CString& strName, const ATL::CAtlArray<unsigned __int64
     ItemEnchantSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) ItemEnchantSlotBag(strName, items);
     if (pBag)
     {
-        int nCount = (int)(FUN_140bf4fd0((float)items.GetCount() / 4.0f) * 4.0f);
+        int nCount = (int)(Ceil((float)items.GetCount() / 4.0f) * 4.0f);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x141414e50
 void FUN_141414e50(const CString& strName)
 {
-    ItemEnchantSlotBag* pBag = FUN_1414151d0(Unk_NotifyContext::FUN_1422c8e90(strName));
+    ItemEnchantSlotBag* pBag = FUN_1414151d0(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -185,7 +185,7 @@ void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int nIndex
 {
     ItemInfoSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) ItemInfoSlot(strName, spItem, nIndex, nIconType, nFlags);
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::RegisterBinding(strName, pSlot);
 }
 
 // @0x141415560
@@ -193,15 +193,15 @@ void FUN_141415560(const CString& strName, ItemInfoSlot::CreateParam* pParam)
 {
     ItemInfoSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) ItemInfoSlot(strName, pParam);
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::RegisterBinding(strName, pSlot);
 }
 
 // @0x141415600
 void DestroyItemInfoSlot(const CString& strName)
 {
-    ItemInfoSlot* pSlot = FUN_140c69ab0(Unk_NotifyContext::FUN_1422c8e90(strName));
+    ItemInfoSlot* pSlot = GetItemInfoSlot(Unk_NotifyContext::FindBinding(strName));
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
 }
 
 // @0x141415390
@@ -261,7 +261,7 @@ ItemInfoSlot::~ItemInfoSlot()
 int ItemInfoSlot::vfunc_15()
 {
     if (m_spItem.get())
-        FUN_140d2d150(m_spItem->FUN_1405276c0(), m_spItem->GetRarity());
+        FUN_140d2d150(m_spItem->GetItemId(), m_spItem->GetRarity());
     return DragSlot::vfunc_15();
 }
 
@@ -283,7 +283,7 @@ void ItemInfoSlot::UpdateItemId()
 {
     int nId;
     if (m_spItem.get() != 0)
-        nId = m_spItem->FUN_1405276c0();
+        nId = m_spItem->GetItemId();
     else
         nId = 0;
     m_nItemId = nId;
@@ -322,7 +322,7 @@ int ItemInfoSlot::vfunc_0(void* p)
         {
             if (m_nTipArg != -1)
                 tip.SetTooltipAlign(m_nTipArg);
-            *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+            *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
             return 1;
         }
     }
@@ -341,7 +341,7 @@ int ItemInfoSlot::vfunc_0(void* p)
                 void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
                 if (pPlayer == 0)
                     return 0;
-                CExchangeItemInfoPtr spData = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(m_spItem->FUN_1405276c0());
+                CExchangeItemInfoPtr spData = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(m_spItem->GetItemId());
                 if (spData.get())
                 {
                     MS2Ptr<CItem> spCmp(new CItem);
@@ -362,7 +362,7 @@ int ItemInfoSlot::vfunc_0(void* p)
                                 CStringW strKey(L"s_word_compose_result");
                                 tip2.SetItemEquipBoth(GetStringCommonByKey(strKey), strEmpty);
                             }
-                            *static_cast<Scaleform::GFx::Value*>(p) = tip2.FUN_1422bb870();
+                            *static_cast<Scaleform::GFx::Value*>(p) = tip2.GetValue();
                             return 1;
                         }
                     }
@@ -378,7 +378,7 @@ int ItemInfoSlot::vfunc_0(void* p)
     }
     if (nResult == 1)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -394,8 +394,8 @@ int ItemInfoSlot::vfunc_8(void* p)
         if (m_strSlotText.GetLength() != 0 && slot.FUN_1409c48b0(m_strSlotText))
         {
             if (m_strCount.GetLength() > 0)
-                slot.FUN_1407cba60((const char*)s_itemCount, m_strCount);
-            *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+                slot.SetStringMember((const char*)s_itemCount, m_strCount);
+            *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
             return 1;
         }
         return 0;
@@ -405,8 +405,8 @@ int ItemInfoSlot::vfunc_8(void* p)
         if (!m_fnSlot.IsNull())
             m_fnSlot(*this, slot);
         if (m_strCount.GetLength() > 0)
-            slot.FUN_1407cba60((const char*)s_itemCount, m_strCount);
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+            slot.SetStringMember((const char*)s_itemCount, m_strCount);
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -436,7 +436,7 @@ void ItemInfoSlot::SetCountText(int a, int b)
     AScript root(m_value18, 2);
     if (root.IsUndefinedOrNull())
         return;
-    CStringW strCount = FUN_1419021b0(a, b);
+    CStringW strCount = GetIngredientCountText(a, b);
     SetChildHtmlText(m_value18, "m_count", strCount);
 }
 

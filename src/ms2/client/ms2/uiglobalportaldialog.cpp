@@ -43,11 +43,11 @@ int FUN_140bd09c0(void* pButton);                                       // which
 
 void SetNestedChildText(const Scaleform::GFx::Value& root, CString strName, CString strField, CStringW strText);   // set a text clip's text
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // the string table text
-void FUN_1412751f0(const CStringW& text, int nA, int nB);               // the notice popup
+void ShowSystemNotice(const CStringW& text, int nA, int nB);               // the notice popup
 CString FUN_14016a600(const wchar_t* pw, int n);                        // wide to narrow
 int FUN_141276180(const CString& strName, const CString& strArg);      // play a system sound
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-int FUN_140768010(int, int);   // C3: was FUN_140768010
+int GetRandomRange(int, int);   // C3: was GetRandomRange
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
@@ -60,7 +60,7 @@ template<> CStateService* TSingleton<CStateService>::GetInstance();   // statema
 class CStateService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1417e2610();
+    int GetCurrentSceneId();
 };
 int FUN_1418dd0d0();                                                    // the screen margin
 
@@ -75,9 +75,9 @@ UIGlobalPortalDialog::UIGlobalPortalDialog()
 {
     m_nShownEventId = 0;
     m_nShownParam = 0;
-    FUN_141924170(1);
-    FUN_141925e70(0, 1);
-    FUN_141925e70(3, 1);
+    SetTweenEnabled(1);
+    SetFlag(0, 1);
+    SetFlag(3, 1);
     m_nRetryTime = 0;
 }
 
@@ -99,7 +99,7 @@ CString UIGlobalPortalDialog::GetTypeName()
 void UIGlobalPortalDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925ec0("m_closeButton");
+    BindCloseButton("m_closeButton");
     Unk_GpButton* pButton1 = reinterpret_cast<Unk_GpButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_enterButton1", reinterpret_cast<MS2Ptr<ASButton>&>(m_enterButton1)).get());
     if (pButton1)
         ((class ASButton*)(m_enterButton1))->FUN_1422ce240(GpClickDelegate(this, &UIGlobalPortalDialog::SendGlobalPortal), (void *)(0));
@@ -151,7 +151,7 @@ void UIGlobalPortalDialog::vfunc_72()
         return;
     }
     m_nRetryTime = 0;
-    if (((class CStateService*)(void*)(TSingleton<CStateService>::GetInstance()))->FUN_1417e2610() != 0x620000c)
+    if (((class CStateService*)(void*)(TSingleton<CStateService>::GetInstance()))->GetCurrentSceneId() != 0x620000c)
         return;
     if (FUN_141924630() == 0)
         FUN_141924680();
@@ -210,7 +210,7 @@ void UIGlobalPortalDialog::FUN_1412c2980()
 }
 
 // @0x1412c3020
-void UIGlobalPortalDialog::FUN_1412c3020(CInPacket& packet)
+void UIGlobalPortalDialog::OnGlobalPortalPacket(CInPacket& packet)
 {
     int nType = packet.ReadUInt8();
     switch (nType)
@@ -222,10 +222,10 @@ void UIGlobalPortalDialog::FUN_1412c3020(CInPacket& packet)
         FUN_1412c3640(packet);
         break;
     case 3:
-        FUN_1412751f0(GetStringCommonByKey(L"s_massive_event_error_cant_enter_dead"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_massive_event_error_cant_enter_dead"), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(GetStringCommonByKey(L"s_massive_event_error_cant_enter_level_limit"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_massive_event_error_cant_enter_level_limit"), 1, 1);
         break;
     }
 }
@@ -263,7 +263,7 @@ void UIGlobalPortalDialog::FUN_1412c32a0(CInPacket& packet)
         return;
     m_nShownEventId = 0;
     m_nShownParam = 0;
-    m_nRetryTime = GetTickCountMs2() + FUN_140768010(10000, 0);
+    m_nRetryTime = GetTickCountMs2() + GetRandomRange(10000, 0);
 }
 
 // @0x1412c3640

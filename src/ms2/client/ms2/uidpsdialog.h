@@ -20,13 +20,13 @@ public:
     virtual void vfunc_67();                                    // 67 0x141928e80 close
     virtual void vfunc_72();                                    // 72 0x141928f20 per frame update
 
-    void FUN_141929700();                                       // reset the measurement
-    void FUN_141929760();                                       // add the history line
-    int FUN_1419299e0();                                        // m_178: the measurement runs
-    void FUN_141929a00(__int64 nDamage, int nType);             // add damage
+    void ResetMeasurement();                                       // reset the measurement
+    void AddHistoryLine();                                       // add the history line
+    int IsMeasuring();                                        // m_178: the measurement runs
+    void AddDamage(__int64 nDamage, int nType);             // add damage
     void FUN_141929a60(int nDelay, int nDuration);              // OnStart: arm the measurement (seconds)
     void OnStop();                                       // OnStop
-    void FUN_141929b70(int bStart);                             // tell the movie "onStart" / "onStop"
+    void InvokeStartStop(int bStart);                             // tell the movie "onStart" / "onStop"
 
 private:
     MS2_LAYOUT_FRIEND;

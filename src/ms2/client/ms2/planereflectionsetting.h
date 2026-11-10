@@ -37,7 +37,7 @@ public:
     efd::Point3 m_vA;                               // +0x28
     efd::Point3 m_vB;                               // +0x34
 
-    bool FUN_1416b1d10() { return m_bEnable; }      // inline, emitted in postprocessingservice.cpp
+    bool IsEnabled() { return m_bEnable; }      // inline, emitted in postprocessingservice.cpp
     efd::Point3& FUN_1416b0e20() { return m_vA; }    // inline, emitted in postprocessingservice.cpp
     efd::Point3& FUN_1416b0de0() { return m_vB; }    // inline, emitted in postprocessingservice.cpp
 };

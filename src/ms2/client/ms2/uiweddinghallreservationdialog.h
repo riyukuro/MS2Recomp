@@ -35,25 +35,25 @@ public:
     virtual void vfunc_67();                                    // 67 0x140fdb5f0 also ends the npc talk
 
     void SetPackage(int nPackage);                           // set the package
-    void FUN_140fdbf70();                                       // previous tab
-    void FUN_140fdc030();                                       // next tab
+    void SelectPreviousTab();                                       // previous tab
+    void SelectNextTab();                                       // next tab
     void SetHall(int nHall);                              // set the hall
     void SetTime(__int64 nTime);                          // set the time
     void SetNight(bool bNight);                            // set the night flag
     void FUN_140fdc180();                                       // open the bill of the reservation
-    void FUN_140fdc970();                                       // send the reservation change
-    void FUN_140fdc9f0();                                       // send the reservation cancel
+    void SendReservationChange();                                       // send the reservation change
+    void SendReservationCancel();                                       // send the reservation cancel
     int GetHall();                                        // the hall
     __int64 GetTime();                                    // the time
     bool GetNight();                                       // the night flag
     int GetMode();                                        // the mode (0 reserve, 1 change, 2 cancel)
-    void FUN_140fdcaa0(const CString& strMode);                 // set the mode by name
-    __int64 FUN_140fdcb30();                                    // the price of the hall
-    void FUN_140fdcc30(PagePtr spPage);                         // register a page under its name
+    void SetMode(const CString& strMode);                 // set the mode by name
+    __int64 GetHallPrice();                                    // the price of the hall
+    void RegisterPage(PagePtr spPage);                         // register a page under its name
     void FUN_140fdccd0(const std::vector<CString>& names);      // fill the tab strip
-    void FUN_140fdcfc0();                                       // the left / right button labels of the tab
+    void UpdateTabButtons();                                       // the left / right button labels of the tab
     void FUN_140fdd2d0();                                       // "setTabEnable" of every tab
-    PagePtr FUN_140fdd3f0(const CString& strName);              // the page of a name (null: none)
+    PagePtr FindPage(const CString& strName);              // the page of a name (null: none)
 
 private:
     MS2_LAYOUT_FRIEND;

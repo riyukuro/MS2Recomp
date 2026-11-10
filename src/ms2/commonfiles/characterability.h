@@ -51,8 +51,8 @@ public:
     int FUN_1401df7b0();                                    // (re)loads both files
     int LoadCharacterAbilityCategory();                                    // CharacterAbilityCategory.xml
     int LoadCharacterAbility();                                    // CharacterAbility.xml
-    void FUN_1401e0350(ATL::CAtlList<MS2Ptr<CCharacterAbilityCategory> >* pOut);
-    void FUN_1401e0450(ATL::CAtlList<MS2Ptr<CCharacterAbility> >* pOut);
+    void GetCategories(ATL::CAtlList<MS2Ptr<CCharacterAbilityCategory> >* pOut);
+    void GetAbilities(ATL::CAtlList<MS2Ptr<CCharacterAbility> >* pOut);
     MS2Ptr<CCharacterAbilityCategory> FUN_1401e0560(int nId);
     MS2Ptr<CCharacterAbility> FUN_1401e0670(int nId);
     static void CheckInit();                                // 0x1401e1690

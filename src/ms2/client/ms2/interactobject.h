@@ -78,15 +78,15 @@ public:
     int GetRowId();                                        // 0x140967110 id of the entity's template
     Vector3 GetPos();                            // 0x1409673c0 position copy
     Vector3 GetRot();                            // 0x1417d4940 rotation copy (stateinteractdata.cpp)
-    int FUN_1413b5600();                                        // 0x1413b5600 the interact state (0: usable; uiminimapentity.cpp)
+    int GetState();                                        // 0x1413b5600 the interact state (0: usable; uiminimapentity.cpp)
     // @0x140967150
     int FUN_140967150() { return m_nVisible; }
     // @0x14174a4a0
-    void FUN_14174a4a0(const CString& strName) { m_strName = strName; }
+    void SetName(const CString& strName) { m_strName = strName; }
     // @0x14174a4d0
-    void FUN_14174a4d0() { m_bSpawned = 1; }
+    void SetSpawned() { m_bSpawned = 1; }
     // @0x141c04fc0
-    unsigned char FUN_141c04fc0() { return m_bSpawned; }   // WorldService 0x141bbfb50 (?\worldservice.cpp#6)
+    unsigned char IsSpawned() { return m_bSpawned; }   // WorldService 0x141bbfb50 (?\worldservice.cpp#6)
 
     efd::SmartPointer<egf::Entity> GetEnt();                                 // copy of the entity handle
     egf::EntityID GetEntityID();                              // id of the entity (0 when unbound)

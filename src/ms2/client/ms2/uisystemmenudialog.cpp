@@ -73,7 +73,7 @@ class Unk_SmScript : public AScript
 {
 public:
     // @0x141b151d0
-    Scaleform::GFx::Value FUN_141b151d0(const char* szMethod, const ASArray& arr, int n, CStringW str);
+    Scaleform::GFx::Value Invoke(const char* szMethod, const ASArray& arr, int n, CStringW str);
 };
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& a);    // set a Value from an AS object
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);                // set an Int value
@@ -107,14 +107,14 @@ MS2_CHECK_OFFSET(Unk_SmConsts, m_cfe0, 0xcfe0);
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 class Unk_SmUiMgr { public: void FUN_141adc530(int nUiId); };
-CNetworkService* FUN_140714f90();
+CNetworkService* GetNetworkService();
 
-class Unk_Hud* FUN_140933230();   // C3: was FUN_140933230
+class Unk_Hud* GetUIServerEventDispatcher();   // C3: was GetUIServerEventDispatcher
 void FUN_141274f50();
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 int FUN_1418fd280();
-int FUN_14092f640();
-void* FUN_14136f520(int);   // C3: was FUN_14136f520
+int GetCurrentChannel();
+void* FindServerListDialog(int);   // C3: was FindServerListDialog
 void FUN_14151f200();
 void FUN_140dffb50(void*);   // C3: was FUN_140dffb50
 CStringW GetStringCommon(int nStringId);
@@ -122,7 +122,7 @@ CStringW BlockFormat(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 #include "ms2/placeholder/formatstringid.h"
 CStringW FUN_140cd7d20();                                               // the dungeon name
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 // @0x141b15530 / @0x141b14ea0 / @0x141b15520: the answer of the leave box in a normal field (captureless lambda).
@@ -133,8 +133,8 @@ void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 UISystemMenuDialog::UISystemMenuDialog()
     : m_180(0), m_198(false)
 {
-    FUN_141924170(1);
-    FUN_141925e70(1, 1);
+    SetTweenEnabled(1);
+    SetFlag(1, 1);
 }
 
 // @0x141b12c20
@@ -149,7 +149,7 @@ int UISystemMenuDialog::vfunc_65()
     if (UIDialog::vfunc_65() == 0)
         return 0;
     FUN_141274f50();
-    ((class UIServerEventDispatcher*)FUN_140933230())->AddListener(static_cast<UIServerEventListener*>(this));
+    ((class UIServerEventDispatcher*)GetUIServerEventDispatcher())->AddListener(static_cast<UIServerEventListener*>(this));
     return 1;
 }
 
@@ -158,7 +158,7 @@ void UISystemMenuDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     m_180 = 0;
-    ((class UIServerEventDispatcher*)FUN_140933230())->RemoveListener(static_cast<UIServerEventListener*>(this));
+    ((class UIServerEventDispatcher*)GetUIServerEventDispatcher())->RemoveListener(static_cast<UIServerEventListener*>(this));
 }
 
 // @0x141b12d50
@@ -174,14 +174,14 @@ void UISystemMenuDialog::OnLoadInit()
             {
                 if (spField->m_nMapType == 3)
                 {
-                    m_188->FUN_1422ce240(SmClickDelegate(this, &UISystemMenuDialog::FUN_141b13b00), 0);
-                    m_188->FUN_1422cdfb0(FUN_141b146a0(spField->m_nMapType));
+                    m_188->FUN_1422ce240(SmClickDelegate(this, &UISystemMenuDialog::OnLeaveHomeClick), 0);
+                    m_188->FUN_1422cdfb0(GetLeaveButtonText(spField->m_nMapType));
                     m_188->vfunc_3(1);
                 }
                 else if (FUN_1418fd280() == 0)
                 {
-                    m_188->FUN_1422ce240(SmClickDelegate(this, &UISystemMenuDialog::FUN_141b13880), 0);
-                    m_188->FUN_1422cdfb0(FUN_141b146a0(spField->m_nMapType));
+                    m_188->FUN_1422ce240(SmClickDelegate(this, &UISystemMenuDialog::OnLeaveFieldClick), 0);
+                    m_188->FUN_1422cdfb0(GetLeaveButtonText(spField->m_nMapType));
                     m_188->vfunc_3(1);
                 }
             }
@@ -244,7 +244,7 @@ int UISystemMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     ASData data;
     if (_stricmp("OnGameOptionDialog", szMethod) == 0)
     {
-        FUN_141b14560(1);
+        OpenGameOptionDialog(1);
         return 1;
     }
     else if (_stricmp("OnSelectCharacter", szMethod) == 0)
@@ -254,7 +254,7 @@ int UISystemMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     }
     else if (_stricmp("onGraphic", szMethod) == 0)
     {
-        FUN_141b14560(6);
+        OpenGameOptionDialog(6);
         return 1;
     }
     else if (_stricmp("OnChangeChannel", szMethod) == 0)
@@ -264,7 +264,7 @@ int UISystemMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         {
             int nChannel = channel.PopInt();
             if (reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bc80c0(nChannel) == 0)
-                FUN_141b14630();
+                SelectCurrentChannel();
         }
         return 1;
     }
@@ -284,7 +284,7 @@ void UISystemMenuDialog::vfunc_79(void* p)
             return;
         int bSelect = static_cast<CInPacket*>(p)->ReadUInt8();
         if (bSelect != 0)
-            FUN_141b14630();
+            SelectCurrentChannel();
         break;
     }
 }
@@ -299,8 +299,8 @@ void UISystemMenuDialog::Notify()
         return;
     ASArray array(2);
     int nSelected = 0;
-    m_180 = FUN_14092f640();
-    UIServerListDialog* pList = ((class UIServerListDialog*)FUN_14136f520(0x4ef0));
+    m_180 = GetCurrentChannel();
+    UIServerListDialog* pList = ((class UIServerListDialog*)FindServerListDialog(0x4ef0));
     if (pList != 0)
         pList->FUN_141ad2f60(array, &nSelected, m_180);
     CStringW strName;
@@ -318,12 +318,12 @@ void UISystemMenuDialog::Notify()
         strPrefix = strName;
         strPrefix.Append(L" ");
     }
-    static_cast<Unk_SmScript*>(m_30.operator->())->FUN_141b151d0("buildChannelList", array, nSelected, CStringW(strPrefix));
+    static_cast<Unk_SmScript*>(m_30.operator->())->Invoke("buildChannelList", array, nSelected, CStringW(strPrefix));
 }
 
 // The leave click of a normal field: ask, or leave at once in the dungeon-like fields.
 // @0x141b13880
-void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Params&)
+void UISystemMenuDialog::OnLeaveFieldClick(const Scaleform::GFx::FunctionHandler::Params&)
 {
     MS2Ptr<CFieldDataCli> spField = reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0)
@@ -333,8 +333,8 @@ void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Pa
         FUN_140dffb50((void*)(static_cast<IMessageListener*>(this)));
         return;
     }
-    CStringW strText = FUN_141b149d0(spField->m_nMapType);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0, CStringW(strText), static_cast<IMessageListener*>(this), CStringW(L"leaveInField"));
+    CStringW strText = GetLeaveBoxText(spField->m_nMapType);
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0, CStringW(strText), static_cast<IMessageListener*>(this), CStringW(L"leaveInField"));
     if (spBox.get() != 0)
     {
         spBox->SetButtonLabelIds(0x476, 0, 0);
@@ -344,21 +344,21 @@ void UISystemMenuDialog::FUN_141b13880(const Scaleform::GFx::FunctionHandler::Pa
 }
 
 // @0x141b13b00
-void UISystemMenuDialog::FUN_141b13b00(const Scaleform::GFx::FunctionHandler::Params&)
+void UISystemMenuDialog::OnLeaveHomeClick(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    FUN_141b13b30();
+    LeaveHome();
 }
 
 // The leave click of a home: leave at once, or ask first when the design has changes.
 // @0x141b13b30
-void UISystemMenuDialog::FUN_141b13b30()
+void UISystemMenuDialog::LeaveHome()
 {
     MyPC* pPc = static_cast<MyPC*>(reinterpret_cast<Unk_SmWorld*>(WorldService::GetInstance())->FUN_141bd0cc0());
     if (pPc == 0)
         return;
     if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(2))
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, BlockFormat(0x877), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, BlockFormat(0x877), 0, CStringW(L""));
         spBox->FUN_141a01800(1);
         spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
         FUN_140d73c60(MS2Ptr<CMsgBoxData>(spBox));
@@ -367,7 +367,7 @@ void UISystemMenuDialog::FUN_141b13b30()
     {
         if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d5530())
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_info_exit_messagebox_save"), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_home_info_exit_messagebox_save"), 0, CStringW(L""));
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01800(1);
             spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
@@ -382,7 +382,7 @@ void UISystemMenuDialog::FUN_141b13b30()
     {
         if (reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d5530())
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_info_exit_blueprint_messagebox_save"), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_home_info_exit_blueprint_messagebox_save"), 0, CStringW(L""));
             spBox->FUN_141a024a0(0);
             spBox->FUN_141a01800(1);
             spBox->SetCallback(SmBoxDelegate(this, &UISystemMenuDialog::FUN_141b14510));
@@ -396,7 +396,7 @@ void UISystemMenuDialog::FUN_141b13b30()
     else if (pPc->FUN_14152e950())
     {
         CStringW strText = FormatStringId<CStringW>(0x876, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, pPc->FUN_14152e950()));
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strText), 0, CStringW(L""));
         if (spBox.get() != 0)
         {
             spBox->FUN_141a01800(1);
@@ -406,7 +406,7 @@ void UISystemMenuDialog::FUN_141b13b30()
     }
     else
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, BlockFormat(0x877), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, BlockFormat(0x877), 0, CStringW(L""));
         spBox->FUN_141a01800(1);
         spBox->SetCallback(SmBoxDelegate([](int nResult, const CMsgBoxData&) -> bool
         {
@@ -423,7 +423,7 @@ void UISystemMenuDialog::FUN_141b13b30()
 }
 
 // @0x141b144f0
-void UISystemMenuDialog::FUN_141b144f0(bool b)
+void UISystemMenuDialog::SetRedCircle(bool b)
 {
     m_198 = b;
 }
@@ -442,30 +442,30 @@ bool UISystemMenuDialog::FUN_141b14510(int nResult, const CMsgBoxData&)
 
 // Open the option dialog at a page and close the menu.
 // @0x141b14560
-void UISystemMenuDialog::FUN_141b14560(int nPage)
+void UISystemMenuDialog::OpenGameOptionDialog(int nPage)
 {
     UIGameOptionDialog* pDialog = FindGameOptionDialog(0x4ef3);
-    pDialog->FUN_141b15670(nPage);
+    pDialog->SetTab(nPage);
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ef3)));
     vfunc_67();
 }
 
 // @0x141b145c0
-void UISystemMenuDialog::FUN_141b145c0()
+void UISystemMenuDialog::RequestQuit()
 {
-    FUN_140714f90()->SendRequestQuit();
+    GetNetworkService()->SendRequestQuit();
     vfunc_67();
 }
 
 // @0x141b14600
 void UISystemMenuDialog::OnSelectCharacter()
 {
-    FUN_140714f90()->SendRequestQuit();
+    GetNetworkService()->SendRequestQuit();
 }
 
 // Select the current channel in the list.
 // @0x141b14630
-void UISystemMenuDialog::FUN_141b14630()
+void UISystemMenuDialog::SelectCurrentChannel()
 {
     if (m_30.get())
         m_30->Invoke("setSelectedChannel", m_180);
@@ -473,7 +473,7 @@ void UISystemMenuDialog::FUN_141b14630()
 
 // The text of the leave button by map type.
 // @0x141b146a0
-CStringW UISystemMenuDialog::FUN_141b146a0(int nMapType)
+CStringW UISystemMenuDialog::GetLeaveButtonText(int nMapType)
 {
     switch (nMapType)
     {
@@ -506,7 +506,7 @@ CStringW UISystemMenuDialog::FUN_141b146a0(int nMapType)
 
 // The text of the leave box by map type.
 // @0x141b149d0
-CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
+CStringW UISystemMenuDialog::GetLeaveBoxText(int nMapType)
 {
     switch (nMapType)
     {
@@ -538,7 +538,7 @@ CStringW UISystemMenuDialog::FUN_141b149d0(int nMapType)
 }
 
 // @0x141b151d0
-Scaleform::GFx::Value Unk_SmScript::FUN_141b151d0(const char* szMethod, const ASArray& arr, int n, CStringW str)
+Scaleform::GFx::Value Unk_SmScript::Invoke(const char* szMethod, const ASArray& arr, int n, CStringW str)
 {
     ASArgList args;
     args.resize(3);

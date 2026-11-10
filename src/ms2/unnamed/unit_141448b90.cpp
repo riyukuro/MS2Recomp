@@ -33,7 +33,7 @@ class NiDX9RenderState;
 class NiFrustum { public: float m_fLeft, m_fRight, m_fTop, m_fBottom, m_fNear, m_fFar; bool m_bOrtho; };
 class NiCamera { public: const NiFrustum& GetViewFrustum() const; };       // C3: member view (0x1409a8de0)
 class Ni3DRenderView { public: NiCamera* GetCamera() const; };             // C3: member view (0x1409a8a60)
-class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
+class Ni3DRenderView* FindRenderView();   // C3: was FindRenderView
 class NiRenderer   // C3: member view for the former free stand-ins
 {
 public:
@@ -91,9 +91,9 @@ public:
     virtual int vfunc_48() { return 0x4ead; }                                       // 48 (COMDAT 0x141449250)
     virtual void vfunc_67();                                                        // 67 0x141448c70
 
-    void FUN_141448ec0(ASData* pData);                                              // fog colour (r, g, b in 0..255)
-    void FUN_141448fd0(ASData* pData);                                              // fog depth (two sliders)
-    void FUN_141449190(bool bEnable);                                               // fog on/off
+    void OnChangeSliderColor(ASData* pData);                                              // fog colour (r, g, b in 0..255)
+    void OnChangeSliderDepth(ASData* pData);                                              // fog depth (two sliders)
+    void OnChangeFogEnable(bool bEnable);                                               // fog on/off
 };
 
 // @0x141448b90
@@ -135,27 +135,27 @@ int UILightDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             bool bEnable = data.PopBool();
-            FUN_141449190(bEnable);
+            OnChangeFogEnable(bEnable);
         }
         return 1;
     }
     else if (_stricmp("onChangeSliderColor", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_141448ec0(&data);
+            OnChangeSliderColor(&data);
         return 1;
     }
     else if (_stricmp("onChangeSliderDepth", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_141448fd0(&data);
+            OnChangeSliderDepth(&data);
         return 1;
     }
     return 0;
 }
 
 // @0x141448ec0
-void UILightDialog::FUN_141448ec0(ASData* pData)
+void UILightDialog::OnChangeSliderColor(ASData* pData)
 {
     float fR = pData->PopFloat();
     float fG = pData->PopFloat();
@@ -170,7 +170,7 @@ void UILightDialog::FUN_141448ec0(ASData* pData)
 }
 
 // @0x141448fd0
-void UILightDialog::FUN_141448fd0(ASData* pData)
+void UILightDialog::OnChangeSliderDepth(ASData* pData)
 {
     float fSlider1 = pData->PopFloat();
     float fSlider2 = pData->PopFloat();
@@ -178,7 +178,7 @@ void UILightDialog::FUN_141448fd0(ASData* pData)
     float fDensity = 1.0f;
     float fNear = 0.0f;
     float fFar = 0.0f;
-    Ni3DRenderView* pView = FUN_1413f9a70();
+    Ni3DRenderView* pView = FindRenderView();
     const NiFrustum* pFrustum = &pView->GetCamera()->GetViewFrustum();
     fNear = pFrustum->m_fNear;
     fFar = pFrustum->m_fFar;
@@ -197,7 +197,7 @@ void UILightDialog::FUN_141448fd0(ASData* pData)
 }
 
 // @0x141449190
-void UILightDialog::FUN_141449190(bool bEnable)
+void UILightDialog::OnChangeFogEnable(bool bEnable)
 {
     NiFogProperty* pFog = reinterpret_cast<NiFogProperty*>(GetNiFogProperty());
     pFog->SetFog(bEnable);

@@ -145,10 +145,10 @@ public:
     CStringW GetValuesText();                   // 0x1402e34c0
     bool ParsePartTime(const CStringW& text, ATL::CAtlArray<Unk_DayTimeRange>& ranges);   // 0x1402e3560
     bool ParseDayOfWeek(const CStringW& text, std::set<int>& days);    // 0x1402e3810
-    void FUN_1402e3480(int kind);               // sets the flag `kind` in the set at +0x8c
+    void SetFlag(int kind);               // sets the flag `kind` in the set at +0x8c
     int GetID();                                // 0x1402e1d00 the event id (m_id); named by the gameeventmanagercli asserts
-    CMsTime FUN_1402e26f0();                    // the begin time (gameeventbase.cpp)
-    CMsTime FUN_1402e2730();                    // the end time (gameeventbase.cpp)
+    CMsTime GetBeginTime();                    // the begin time (gameeventbase.cpp)
+    CMsTime GetEndTime();                    // the end time (gameeventbase.cpp)
 
 protected:
     MS2_LAYOUT_FRIEND;
@@ -584,8 +584,8 @@ public:
     // @0x1403d3b90
     GameEventExchangeScrollSale()
     {
-        FUN_1402e3480(1);
-        FUN_1402e3480(3);
+        SetFlag(1);
+        SetFlag(3);
     }
     ATL::CAtlArray<int> m_d0;                   // item ids ("," separated m_68)
     int m_f0;                                   // m_70
@@ -845,8 +845,8 @@ public:
     // @0x1403d4000
     GameEventItemTradeRestriction() : m_110(0)
     {
-        FUN_1402e3480(1);
-        FUN_1402e3480(3);
+        SetFlag(1);
+        SetFlag(3);
     }
     ATL::CAtlArray<CStringW> m_d0;              // the restriction kinds ("," separated m_68)
     ATL::CAtlArray<int> m_f0;                   // item ids (m_70)
@@ -1879,7 +1879,7 @@ public:
     void Read(CInPacket& packet);                   // 0x140402d20
     MS2Ptr<TreeWatering_TreeStep> GetStep(const CMsTime& time);     // 0x140403710 the step whose span holds the time
     MS2Ptr<TreeWatering_TreeResource> GetResource(int id);          // 0x140403810
-    bool FUN_1404038c0(const CMsTime& now);     // 0x1404038c0 some emotion day (array at +0x68) covers the time
+    bool IsInEmotionDay(const CMsTime& now);     // 0x1404038c0 some emotion day (array at +0x68) covers the time
     int m_nEventId;                 // +0x18 key of the attend table rows
     int m_pad_1c;
     ATL::CAtlMap<int, MS2Ptr<TreeWatering_TreeStep> > m_steps;              // +0x20

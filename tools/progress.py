@@ -80,6 +80,7 @@ RTTI_VFTABLES = ms2paths.RTTI_VFTABLES
 # Nexon Messenger is not part of the rebuild (user 2026-10-24); the same zone as tools/fullexe/plan.py's NM_ZONE
 NM_ZONE = (0x14156a020, 0x14160a7f0)
 NM_QUEUE_NOTE = "stubbed: NM not needed"
+STATUS_HOOK_NS = "@detail@hook@ms2@@"     # mangled scope of src/hook/ms2hook.h's helper templates (MS2_STATUS_REAL_NAME)
 
 # cmake/ms2-game-flags.cmake (MS2_GAME_COMPILE_OPTIONS + _DEFINITIONS + C++14) + /MD /Z7 + the ms2game include dirs.
 GAME_FLAGS = ["/nologo", "/c", "/Od", "/Ob0", "/Oi", "/EHsc", "/GS", "/GR", "/Gy", "/fp:fast", "/Zc:wchar_t",
@@ -1831,6 +1832,24 @@ def main():
     for rel, c in cache.items():
         if c.get("res"):
             names_to_demangle += list(c["res"]["pairs"].keys())
+    # MS2_STATUS_REAL_NAME=1 (default off): a function whose pair in its unit is a src/hook/ms2hook.h helper
+    # (ms2::hook::detail FnToVoid / ArgPass::Get: a leaf with the same bytes) is named in status.tsv after another
+    # name at that VA: an exact pair of any unit, else any other pair, else a symbol-table row. State and counts stay.
+    real_at = {}
+    if os.environ.get("MS2_STATUS_REAL_NAME") == "1":
+        hook_vas = {p["va"] for c in cache.values() if c.get("res") for n, p in c["res"]["pairs"].items() if STATUS_HOOK_NS in n}
+        cand = {}
+        for rel, c in cache.items():
+            if c.get("res"):
+                for n, p in c["res"]["pairs"].items():
+                    if p["va"] in hook_vas and STATUS_HOOK_NS not in n:
+                        cand.setdefault(p["va"], set()).add((0 if p["ok"] else 1, n))
+        for va in hook_vas:
+            for n in names_at.get(va, []):
+                if STATUS_HOOK_NS not in n and not any(n == x for _, x in cand.get(va, ())):
+                    cand.setdefault(va, set()).add((2, n))
+        real_at = {va: min(s)[1] for va, s in cand.items()}
+        names_to_demangle += list(real_at.values())
     dem = demangle_all(sorted(set(names_to_demangle)))
     for rel in sorted(cache):
         u = unit_by_rel[rel]
@@ -1849,6 +1868,8 @@ def main():
                 size, gname = finfo[va]
                 if va in byva:
                     sym, ok = byva[va]
+                    if STATUS_HOOK_NS in sym and va in real_at:
+                        sym = real_at[va]
                     state = "matched" if ok else "functional"
                     nm = short_name(dem.get(sym, sym))
                 else:

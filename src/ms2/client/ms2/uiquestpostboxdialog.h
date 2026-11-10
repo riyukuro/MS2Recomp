@@ -19,7 +19,7 @@ public:
     virtual void vfunc_o178_1(void* pQuest);            // quest accepted: close when the quest flag +0x33 is set
     virtual int vfunc_48() { return 0x4f56; }           // 48 (COMDAT 0x140e7fd40)
 
-    void FUN_140e7f660();                               // fill "m_list" with the quests, sorted by kind
+    void RefreshQuestList();                               // fill "m_list" with the quests, sorted by kind
     void FUN_140e7f920(int nQuest);                     // onSelectPost: talk to the quest's npc
     CString FUN_140e7fb90(int nQuest);                  // list icon name of a quest kind
 };

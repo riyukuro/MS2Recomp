@@ -54,7 +54,7 @@ typedef Delegate<bool(int, const CMsgBoxData&)> Unk_MsgBoxCallback;
 extern template class MS2Ptr<UIObject>;
 
 void FUN_140d73c60(Unk_MsgBoxPtr box);
-Unk_MsgBoxPtr FUN_140d74500(CStringW strText, int nType, Unk_MsgBoxCallback cb);
+Unk_MsgBoxPtr CreateMessageBoxWithCallback(CStringW strText, int nType, Unk_MsgBoxCallback cb);
 
 // The game constants: the ready-check length in seconds.
 class Unk_PartyConsts
@@ -68,11 +68,11 @@ namespace Client { class Constants; } template<class T> class TSingleton; templa
 extern __int64 DAT_143ab2828;                                      // my character id
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 __int64 GetServerTime();                                           // server time
-CStringW FUN_140b8fbc0(const ATL::CTimeSpan& span);                // "mm:ss" text
+CStringW FormatMinutesSeconds(const ATL::CTimeSpan& span);                // "mm:ss" text
 CStringW GetStringCommon(int nId);
 CStringW FUN_140298ea0(CStringW strKey);
 void FUN_1412751b0(const CStringW& str, int nChannel);
-void FUN_1412751f0(const CStringW& str, int a, int b);
+void ShowSystemNotice(const CStringW& str, int a, int b);
 int FUN_141276180(const CString& a, const CString& b);
 void FUN_140710590(COutPacket& packet);
 
@@ -185,7 +185,7 @@ CStringW PartyVoteCli::GetRemainingTimeText() const
     if (end < now)
         end = now;
     ATL::CTimeSpan span = end - now;
-    return FUN_140b8fbc0(span);
+    return FormatMinutesSeconds(span);
 }
 
 // ---- PartyVoteKickUserCli ----
@@ -258,11 +258,11 @@ void PartyVoteReadyCli::vfunc_2()
     }
     if (!HasVoted())
     {
-        Unk_MsgBoxPtr box = FUN_140d74500(FUN_140298ea0(CStringW(L"s_party_vote_ready_message")), 1,
+        Unk_MsgBoxPtr box = CreateMessageBoxWithCallback(FUN_140298ea0(CStringW(L"s_party_vote_ready_message")), 1,
                                           Unk_MsgBoxCallback(this, &PartyVoteReadyCli::OnMessageBoxResult));
         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->SetTimer(0x14, 1, GetStringCommon(0x2b8));
         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a02460(1);
-        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a02480(1);
+        ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->SetModaless(1);
         ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a024a0(0);
         FUN_140d73c60(box);
     }
@@ -271,7 +271,7 @@ void PartyVoteReadyCli::vfunc_2()
 // @0x140a89f70
 void PartyVoteReadyCli::vfunc_3()
 {
-    FUN_1412751f0(FUN_140298ea0(CStringW(L"s_party_vote_ready_message_end")), 1, 1);
+    ShowSystemNotice(FUN_140298ea0(CStringW(L"s_party_vote_ready_message_end")), 1, 1);
     TSingleton<CPartyManager>::GetInstance()->FUN_14162c3a0();
     void* pDialog = FUN_140a8a720();
     if (pDialog != 0)

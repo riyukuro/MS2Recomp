@@ -155,7 +155,7 @@ class Unk_RankFlags { public: void* p0; CContentShutdown flags; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 
 // The XML loader and the string table.
-CString FUN_14071a5b0(const CString&, const CString&);
+CString GetXmlPath(const CString&, const CString&);
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
@@ -182,12 +182,12 @@ CStringW FUN_14016a730(const char*, int);
 CString FUN_14016a600(const wchar_t*, int);
 CString FUN_141028be0(__int64 nId, const CString& strName, int nFlag, CString strExtra);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
-CString FUN_1410280d0(int, CString);
+CString GetDownloadFilePath(int, CString);
 CStringW FUN_14083bdc0(const CMsTime& t, bool b, CStringW strSep, CStringW strSep2);
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
 CStringW BlockFormat(int);
-void FUN_140d73aa0(CStringW, int, void*, CStringW);
+void ShowMessageBox(CStringW, int, void*, CStringW);
 void FUN_141275260(int, int, int);
 int FUN_1418fd330(__int64 nOwner);
 int FUN_1418fd740(__int64 nParam, __int64 nId, int nType);
@@ -200,14 +200,14 @@ void FUN_140222be0(ATL::CAtlArray<Unk_LevelEntry>& arr);    // the job ids
 
 int FUN_140b3f460(int nType);
 
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 class PCBase;
 class PC { public: CStringW& GetGuildName(); };
 class Unk_RankPlayerMgr { public: PCBase* FUN_141bd0cc0(); };
 UISwfEntityManager* GetUISwfEntityManager();
 
 
-CArcadeDataTable* FUN_140e37aa0();
+CArcadeDataTable* GetArcadeDataTable();
 
 // ---- the dialog ----
 
@@ -263,15 +263,15 @@ void UIGameRankingDialog::vfunc_26()
 void UIGameRankingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3f))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x3f))
         return;
     LoadGameRankingCategory();
-    FUN_140e2e540();
+    SelectFirstCategory();
     FUN_140e2e620();
     FUN_1419260d0(CString("m_webGuideButton"), 0);
     m_items = GetChild<ASScrollingList>("m_items");
     FUN_140e31140();
-    FUN_140e33e20();
+    SelectCategoryInList();
 }
 
 // @0x140e2d0d0
@@ -284,10 +284,10 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             m_nCategory = data.PopInt();
-            Unk_RankCatPtr spCategory = FUN_140e350c0(m_nCategory);
+            Unk_RankCatPtr spCategory = FindCategory(m_nCategory);
             if (spCategory)
             {
-                if (FUN_140e32c30(spCategory->m_nId) != 0)
+                if (HasSubCategories(spCategory->m_nId) != 0)
                 {
                     if (m_30.get())
                         reinterpret_cast<Unk_RankAS*>(m_30.operator->())->FUN_140e35c60("showSearchResult", 2);
@@ -306,12 +306,12 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             m_nTab = data.PopInt();
             FUN_140e31910(1);
             CGameRankingParam::Key key;
-            FUN_140e351d0(m_nCategory, &key);
+            BuildRankingKey(m_nCategory, &key);
             MS2Ptr<GameRanking::Page> req = TSingleton<CGameRankingCli>::GetInstance()->Query(key, 1, 1);
             if (req.get() != 0)
-                FUN_140e34ce0(1, req->Total());
+                SetButtonPage(1, req->Total());
             m_nPage = 1;
-            FUN_140e32f30(1, 1, CStringW(L""));
+            RequestPage(1, 1, CStringW(L""));
         }
     }
     else if (_stricmp("OnChangePageRequest", szMethod) == 0)
@@ -320,7 +320,7 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             m_nPage = data.PopInt();
-            FUN_140e32f30(1, 0, CStringW(L""));
+            RequestPage(1, 0, CStringW(L""));
         }
     }
     else if (_stricmp("onSearch", szMethod) == 0)
@@ -357,7 +357,7 @@ int UIGameRankingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             unsigned __int64 nAccount = FUN_140718350(data.FUN_1422b8d30());
             unsigned __int64 nChar = FUN_140718350(data.FUN_1422b8d30());
             CStringW strName = data.FUN_1422b8f40();
-            UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+            UIPopUpMenu* pMenu = (UIPopUpMenu*)FindPopupMenu(0x4e39);
             if (pMenu != 0)
             {
                 Unk_PopupMenuInfo info(x, y, 3, 2, 0, CString(""), 0);
@@ -379,7 +379,7 @@ int UIGameRankingDialog::vfunc_13()
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
     if (pDlg != 0)
     {
-        if (((class Unk_RankInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
+        if (((class Unk_RankInputState*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
         {
             if (GetUISwfEntityManager() != 0)
             {
@@ -432,7 +432,7 @@ void UIGameRankingDialog::vfunc_72()
         if (bAll)
         {
             m_missingMarks.RemoveAll();
-            FUN_140e32f30(1, 1, CStringW(L""));
+            RequestPage(1, 1, CStringW(L""));
         }
     }
 }
@@ -447,24 +447,24 @@ void UIGameRankingDialog::FUN_140e2dec0(int nMsg)
             reinterpret_cast<Unk_RankAS*>(m_30.operator->())->FUN_140e35c60("showSearchResult", 0);
         break;
     case 0x457:
-        FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
+        ShowMessageBox(BlockFormat(0x8b7), 0, 0, CStringW(L""));
         break;
     }
 }
 
 // @0x140e2dfc0
-void UIGameRankingDialog::FUN_140e2dfc0(int nType, int nSub)
+void UIGameRankingDialog::SelectCategory(int nType, int nSub)
 {
-    int nId = FUN_140e354d0(nType, nSub);
+    int nId = FindCategoryId(nType, nSub);
     if (nId == 0)
         return;
-    if (FUN_140e32c30(nId) != 0)
+    if (HasSubCategories(nId) != 0)
         nId += 10;
     m_nCategory = nId;
 }
 
 // @0x140e2e030
-void UIGameRankingDialog::FUN_140e2e030(CString strUrl)
+void UIGameRankingDialog::SelectCategoryByUrl(CString strUrl)
 {
     strUrl.MakeLower();
     if (strUrl.Find("/rank/", 0) == -1)
@@ -478,7 +478,7 @@ void UIGameRankingDialog::FUN_140e2e030(CString strUrl)
             {
                 if (strUrl.Find(spCategory->m_strUrl, 0) != -1)
                 {
-                    if (FUN_140e32c30(spCategory->m_nId) != 0)
+                    if (HasSubCategories(spCategory->m_nId) != 0)
                         m_nCategory = spCategory->m_nId + 10;
                     else
                         m_nCategory = spCategory->m_nId;
@@ -492,10 +492,10 @@ void UIGameRankingDialog::FUN_140e2e030(CString strUrl)
 // @0x140e2e1d0
 void UIGameRankingDialog::LoadGameRankingCategory()
 {
-    CString strPath = FUN_14071a5b0("Table", "gameRankingCategory.xml");
+    CString strPath = GetXmlPath("Table", "gameRankingCategory.xml");
     m_categories.RemoveAll();
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     void* pRoot = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -515,12 +515,12 @@ void UIGameRankingDialog::LoadGameRankingCategory()
         XmlGetAttr((class TiXmlElement*)(pNode), "url", spCategory->m_strUrl);
         spCategory->m_strUrl.MakeLower();
         spCategory->m_strLabel = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x34, spCategory->m_nType);
-        FUN_140e305a0(spCategory);
+        AddCategory(spCategory);
     }
 }
 
 // @0x140e2e540
-void UIGameRankingDialog::FUN_140e2e540()
+void UIGameRankingDialog::SelectFirstCategory()
 {
     if (m_categories.IsEmpty())
         return;
@@ -529,7 +529,7 @@ void UIGameRankingDialog::FUN_140e2e540()
     {
         if (m_nCategory == 0)
         {
-            if (FUN_140e32c30(spCategory->m_nId) != 0)
+            if (HasSubCategories(spCategory->m_nId) != 0)
                 m_nCategory = spCategory->m_nId + 10;
             else
                 m_nCategory = spCategory->m_nId;
@@ -538,7 +538,7 @@ void UIGameRankingDialog::FUN_140e2e540()
 }
 
 #define RANK_ADD_TAB(box, key) \
-    (box)->Add(FUN_140e304c0(FUN_140298ea0(CStringW(key)), CStringW(L""), 0))
+    (box)->Add(CreateRankTab(FUN_140298ea0(CStringW(key)), CStringW(L""), 0))
 
 #define RANK_BOSS_TABS(box) \
     RANK_ADD_TAB(box, L"s_gameranking_tab_boss_maximum_join"); \
@@ -607,7 +607,7 @@ void UIGameRankingDialog::FUN_140e2e620()
 }
 
 // @0x140e304c0
-Unk_RankTabPtr UIGameRankingDialog::FUN_140e304c0(CStringW strLabel, CStringW strTooltip, int nSeason)
+Unk_RankTabPtr UIGameRankingDialog::CreateRankTab(CStringW strLabel, CStringW strTooltip, int nSeason)
 {
     Unk_RankTabPtr spTab((Unk_RankNewTag(0)));
     spTab->m_strLabel = strLabel;
@@ -617,7 +617,7 @@ Unk_RankTabPtr UIGameRankingDialog::FUN_140e304c0(CStringW strLabel, CStringW st
 }
 
 // @0x140e305a0
-void UIGameRankingDialog::FUN_140e305a0(Unk_RankCatPtr spCategory)
+void UIGameRankingDialog::AddCategory(Unk_RankCatPtr spCategory)
 {
     if (spCategory == 0)
         return;
@@ -698,7 +698,7 @@ void UIGameRankingDialog::FUN_140e305a0(Unk_RankCatPtr spCategory)
     else if (nType == 10)
     {
         std::vector<CArcadeDataTable::MainPtr> aArcade;
-        FUN_140e37aa0()->GetMainDataList(aArcade);
+        GetArcadeDataTable()->GetMainDataList(aArcade);
         if (aArcade.size() == 0)
             return;
         m_categories.AddTail(spCategory);
@@ -741,7 +741,7 @@ void UIGameRankingDialog::FUN_140e31140()
         ASObj root(2);
         ASArray nodes(2);
         ATL::CAtlList<Unk_RankCatPtr> top(10);
-        FUN_140e32d30(top);
+        GetTopCategories(top);
         for (POSITION pos = top.GetHeadPosition(); pos != 0; top.GetNext(pos))
         {
             Unk_RankCatPtr spCat(top.GetAt(pos));
@@ -749,9 +749,9 @@ void UIGameRankingDialog::FUN_140e31140()
             {
                 ASObj node(2);
                 ASArray sub(2);
-                node.FUN_1407cbb20("label", CStringW(spCat->m_strLabel));
+                node.SetWStringMember("label", CStringW(spCat->m_strLabel));
                 node.FUN_140e35da0("rankType", spCat->m_nType);
-                if (FUN_140e32c30(spCat->m_nId) != 0)
+                if (HasSubCategories(spCat->m_nId) != 0)
                 {
                     FUN_140e32a00(spCat, sub);
                     node.FUN_140e35d00("type", 1);
@@ -761,7 +761,7 @@ void UIGameRankingDialog::FUN_140e31140()
                 {
                     node.FUN_140e35d00("type", 0);
                 }
-                node.FUN_1407cb9c0("id", spCat->m_nId);
+                node.SetIntMember("id", spCat->m_nId);
                 node.FUN_1409c0dc0("rendererClassName", "export_renderer_category");
                 static_cast<Unk_RankArr&>(nodes).PushObj(node);
             }
@@ -781,27 +781,27 @@ void UIGameRankingDialog::FUN_140e31510(Unk_RankCatPtr spCategory)
     if (!spTab)
         return;
     spTab->SetSelectedIndex(-1);
-    spTab->FUN_1422e3400();
+    spTab->ClearDataProvider();
     spTab->vfunc_24(1);
     int nType = spCategory->m_nType;
-    Unk_RankTabsPtr spTabs = FUN_140e33240(Unk_RankCatPtr(spCategory));
+    Unk_RankTabsPtr spTabs = GetCategoryTabs(Unk_RankCatPtr(spCategory));
     for (size_t i = 0; i < spTabs->GetCount(); i++)
     {
-        Unk_RankTabPtr spData = FUN_140e339e0(nType, (int)i);
+        Unk_RankTabPtr spData = GetRankTab(nType, (int)i);
         if (spData)
         {
             ASObj item(2);
-            item.FUN_1407cbb20("label", CStringW(spData->m_strLabel));
-            item.FUN_1407cb9c0("seasonID", spData->m_nSeasonID);
+            item.SetWStringMember("label", CStringW(spData->m_strLabel));
+            item.SetIntMember("seasonID", spData->m_nSeasonID);
             ASObj tip(2);
             tip.FUN_1409c0dc0("className", "export_common_tooltip_tooltipText");
-            tip.FUN_1407cbb20("id", CStringW(spData->m_strTooltip));
+            tip.SetWStringMember("id", CStringW(spData->m_strTooltip));
             tip.FUN_1409c0dc0("align", "topLeft");
             item.FUN_1409eb270("tooltipData", tip);
-            aTabs.PushValue(Scaleform::GFx::Value(item.FUN_1422bb870()));
+            aTabs.PushValue(Scaleform::GFx::Value(item.GetValue()));
         }
     }
-    spTab->SetDataProvider(aTabs.FUN_1422bb870());
+    spTab->SetDataProvider(aTabs.GetValue());
     spTab->SetSelectedIndex(0);
     m_nTab = spTab->GetSelectedIndex();
 }
@@ -810,7 +810,7 @@ void UIGameRankingDialog::FUN_140e31510(Unk_RankCatPtr spCategory)
 void UIGameRankingDialog::FUN_140e31910(int nFlag)
 {
     ASObj info(2);
-    Unk_RankCatPtr spCat = FUN_140e350c0(m_nCategory);
+    Unk_RankCatPtr spCat = FindCategory(m_nCategory);
     if (spCat)
     {
         info.FUN_140e35da0("type", spCat->m_nType);
@@ -818,16 +818,16 @@ void UIGameRankingDialog::FUN_140e31910(int nFlag)
         FUN_140e34830(info, Unk_RankCatPtr(spCat));
         FUN_140e34bb0(info, Unk_RankCatPtr(spCat));
         if (m_30.get())
-            reinterpret_cast<Unk_RankAS*>(m_30.operator->())->Invoke("setRankInfo", Scaleform::GFx::Value(info.FUN_1422bb870()));
+            reinterpret_cast<Unk_RankAS*>(m_30.operator->())->Invoke("setRankInfo", Scaleform::GFx::Value(info.GetValue()));
     }
 }
 
 #define RANK_ROW (m_rows[i].operator->())
 
 // @0x140e31b00
-void UIGameRankingDialog::FUN_140e31b00()
+void UIGameRankingDialog::UpdateRankRows()
 {
-    Unk_RankCatPtr spCat = FUN_140e350c0(m_nCategory);
+    Unk_RankCatPtr spCat = FindCategory(m_nCategory);
     if (!spCat)
         return;
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_missingMarks))->RemoveAll();
@@ -835,27 +835,27 @@ void UIGameRankingDialog::FUN_140e31b00()
     {
         ASObj row(2);
         if (RANK_ROW->m_category != 0)
-            row.FUN_1407cb9c0("ranktype", RANK_ROW->m_category);
+            row.SetIntMember("ranktype", RANK_ROW->m_category);
         if (RANK_ROW->m_rank != 0)
-            row.FUN_1407cb9c0("rank", RANK_ROW->m_rank);
+            row.SetIntMember("rank", RANK_ROW->m_rank);
         if (RANK_ROW->m_point != 0)
-            row.FUN_1407cbb20("point", FUN_1409404f0(RANK_ROW->m_point));
+            row.SetWStringMember("point", FUN_1409404f0(RANK_ROW->m_point));
         if (RANK_ROW->m_14 != 0)
-            row.FUN_1407cb9c0("pvpGrade", RANK_ROW->m_14);
+            row.SetIntMember("pvpGrade", RANK_ROW->m_14);
         if (!RANK_ROW->m_name.IsEmpty())
-            row.FUN_1407cbb20("cname", CStringW(RANK_ROW->m_name));
+            row.SetWStringMember("cname", CStringW(RANK_ROW->m_name));
         if (!RANK_ROW->m_40.IsEmpty())
-            row.FUN_1407cbb20("pbname", CStringW(RANK_ROW->m_40));
+            row.SetWStringMember("pbname", CStringW(RANK_ROW->m_40));
         if (!RANK_ROW->m_48.IsEmpty())
-            row.FUN_1407cbb20("gname", CStringW(RANK_ROW->m_48));
+            row.SetWStringMember("gname", CStringW(RANK_ROW->m_48));
         if (!RANK_ROW->m_50.IsEmpty())
-            row.FUN_1407cbb20("gbname", CStringW(RANK_ROW->m_50));
+            row.SetWStringMember("gbname", CStringW(RANK_ROW->m_50));
         if (!RANK_ROW->m_date.IsEmpty())
-            row.FUN_1407cbb20("registerationDate", CStringW(RANK_ROW->m_date));
+            row.SetWStringMember("registerationDate", CStringW(RANK_ROW->m_date));
         if (!RANK_ROW->m_time.IsEmpty())
-            row.FUN_1407cbb20("attackTime", CStringW(RANK_ROW->m_time));
+            row.SetWStringMember("attackTime", CStringW(RANK_ROW->m_time));
         if (!RANK_ROW->m_70.IsEmpty())
-            row.FUN_1407cbb20("pvpGradeName", CStringW(RANK_ROW->m_70));
+            row.SetWStringMember("pvpGradeName", CStringW(RANK_ROW->m_70));
         if (!RANK_ROW->m_image.IsEmpty())
         {
             CString strUrl;
@@ -863,25 +863,25 @@ void UIGameRankingDialog::FUN_140e31b00()
             if (RANK_ROW->m_20 != 0)
             {
                 strUrl = FUN_141029590(RANK_ROW->m_20, FUN_14016a600(RANK_ROW->m_image, 0), "", CString(""));
-                strSub = FUN_1410280d0(6, FUN_14016a600(RANK_ROW->m_image, 0));
+                strSub = GetDownloadFilePath(6, FUN_14016a600(RANK_ROW->m_image, 0));
             }
             else
             {
                 strUrl = FUN_141028be0(RANK_ROW->m_id, FUN_14016a600(RANK_ROW->m_image, 0), 1, CString(""));
-                strSub = FUN_1410280d0(5, FUN_14016a600(RANK_ROW->m_image, 0));
+                strSub = GetDownloadFilePath(5, FUN_14016a600(RANK_ROW->m_image, 0));
             }
             if (_waccess(FUN_14016a730(strSub, 0), 4) != 0)
                 m_missingMarks.Add(strSub);
-            row.FUN_1407cba60("markURL", CString(strUrl));
+            row.SetStringMember("markURL", CString(strUrl));
         }
         if (!RANK_ROW->m_80.IsEmpty())
-            row.FUN_1407cbb20("homename", CStringW(RANK_ROW->m_80));
+            row.SetWStringMember("homename", CStringW(RANK_ROW->m_80));
         if (RANK_ROW->m_28 != 0)
-            row.FUN_1407cba60("accountSN", FUN_140719530(RANK_ROW->m_28));
+            row.SetStringMember("accountSN", FUN_140719530(RANK_ROW->m_28));
         if (RANK_ROW->m_id != 0)
-            row.FUN_1407cba60("charSN", FUN_140719530(RANK_ROW->m_id));
+            row.SetStringMember("charSN", FUN_140719530(RANK_ROW->m_id));
         if (RANK_ROW->m_10 != 0)
-            row.FUN_1407cba60("rankPoint", FUN_140719530((__int64)RANK_ROW->m_10));
+            row.SetStringMember("rankPoint", FUN_140719530((__int64)RANK_ROW->m_10));
         m_items->AddItem(row);
     }
     m_items->vfunc_24(1);
@@ -902,8 +902,8 @@ void UIGameRankingDialog::FUN_140e32a00(Unk_RankCatPtr spCategory, ASArray& arr)
             if (spSub->m_nParent == spCategory->m_nId)
             {
                 ASObj node(2);
-                node.FUN_1407cb9c0("id", spSub->m_nId);
-                node.FUN_1407cbb20("label", CStringW(spSub->m_strLabel));
+                node.SetIntMember("id", spSub->m_nId);
+                node.SetWStringMember("label", CStringW(spSub->m_strLabel));
                 node.FUN_140e35da0("rankType", spSub->m_nType);
                 node.FUN_140e35d00("type", 0);
                 node.FUN_1409c0dc0("rendererClassName", "export_renderer_category_low");
@@ -916,7 +916,7 @@ void UIGameRankingDialog::FUN_140e32a00(Unk_RankCatPtr spCategory, ASArray& arr)
 }
 
 // @0x140e32c30
-int UIGameRankingDialog::FUN_140e32c30(int nCategoryId)
+int UIGameRankingDialog::HasSubCategories(int nCategoryId)
 {
     ATL::CAtlList<Unk_RankCatPtr> list(10);
     FUN_140e32df0(list);
@@ -933,7 +933,7 @@ int UIGameRankingDialog::FUN_140e32c30(int nCategoryId)
 }
 
 // @0x140e32d30
-void UIGameRankingDialog::FUN_140e32d30(ATL::CAtlList<Unk_RankCatPtr>& list)
+void UIGameRankingDialog::GetTopCategories(ATL::CAtlList<Unk_RankCatPtr>& list)
 {
     for (POSITION pos = m_categories.GetHeadPosition(); pos != 0; m_categories.GetNext(pos))
     {
@@ -955,7 +955,7 @@ void UIGameRankingDialog::FUN_140e32df0(ATL::CAtlList<Unk_RankCatPtr>& list)
 }
 
 // @0x140e32eb0
-void UIGameRankingDialog::FUN_140e32eb0()
+void UIGameRankingDialog::ClearRankRows()
 {
     m_rows.RemoveAll();
     if (m_items == 0)
@@ -965,18 +965,18 @@ void UIGameRankingDialog::FUN_140e32eb0()
 }
 
 // @0x140e32f30 // MS2-FUNCTIONAL: code identical; the showSearchResult Value temp gets a lower frame slot (exe rsp+0x140, ours 0xa0)
-void UIGameRankingDialog::FUN_140e32f30(int nPush, int nForce, CStringW strSearch)
+void UIGameRankingDialog::RequestPage(int nPush, int nForce, CStringW strSearch)
 {
-    FUN_140e32eb0();
+    ClearRankRows();
     CGameRankingParam::Key key;
-    FUN_140e351d0(m_nCategory, &key);
+    BuildRankingKey(m_nCategory, &key);
     if (m_30.get())
         reinterpret_cast<Unk_RankAS*>(m_30.operator->())->FUN_140e35c60("showSearchResult", 1);
     int bForce = nForce;
     if (TSingleton<CGameRankingCli>::GetInstance()->Read(key, m_nPage, m_rows, CStringW(strSearch), bForce) == 1)
     {
         if (nPush == 1)
-            FUN_140e31b00();
+            UpdateRankRows();
     }
     else if (nForce == 1 && strSearch.GetLength() == 0)
     {
@@ -988,7 +988,7 @@ void UIGameRankingDialog::FUN_140e32f30(int nPush, int nForce, CStringW strSearc
     if (strSearch.GetLength() == 0)
     {
         CGameRankingParam::Key key2;
-        FUN_140e35350(m_nCategory, &key2);
+        BuildMyRankKey(m_nCategory, &key2);
         MS2Ptr<GameRanking::IResponse> info = TSingleton<CGameRankingCli>::GetInstance()->QueryPrevious(key2, bForce);
         if (info == 0)
         {
@@ -1005,7 +1005,7 @@ void UIGameRankingDialog::FUN_140e32f30(int nPush, int nForce, CStringW strSearc
 }
 
 // @0x140e33240
-Unk_RankTabsPtr UIGameRankingDialog::FUN_140e33240(Unk_RankCatPtr spCategory)
+Unk_RankTabsPtr UIGameRankingDialog::GetCategoryTabs(Unk_RankCatPtr spCategory)
 {
     if (spCategory == 0)
         return Unk_RankTabsPtr(0);
@@ -1024,13 +1024,13 @@ Unk_RankTabsPtr UIGameRankingDialog::FUN_140e33240(Unk_RankCatPtr spCategory)
         {
             TSingleton<CSeasonDataTable>::GetInstance()->GetRecent((SeasonRankType)nKind, aSeasons);
             CStringW strOff = FUN_140298ea0(CStringW(L"s_gameranking_tab_off_season"));
-            spTabs->Add(FUN_140e304c0(strOff, CStringW(L""), 0));
+            spTabs->Add(CreateRankTab(strOff, CStringW(L""), 0));
         }
     }
     for (size_t i = 0; i < aSeasons.GetCount(); i++)
     {
         MS2Ptr<CSeasonData> spSeason(aSeasons[i]);
-        CStringW strLabel = FUN_140e33ae0(Unk_RankCatPtr(spCategory), MS2Ptr<CSeasonData>(spSeason));
+        CStringW strLabel = GetSeasonLabel(Unk_RankCatPtr(spCategory), MS2Ptr<CSeasonData>(spSeason));
         CMsTime tStart(spSeason->m_start);
         CMsTime tEnd(spSeason->m_end);
         tEnd -= 1;
@@ -1039,13 +1039,13 @@ Unk_RankTabsPtr UIGameRankingDialog::FUN_140e33240(Unk_RankCatPtr spCategory)
         strStart = strStart.Left(strStart.GetLength() - 3);
         strEnd = strEnd.Left(strEnd.GetLength() - 3);
         CStringW strRange = StringFormat<CStringW, CStringW>(L"{0} ~ {1}", strStart, strEnd);
-        spTabs->Add(FUN_140e304c0(CStringW(strLabel), CStringW(strRange), spSeason.operator->()->m_nSeasonID));
+        spTabs->Add(CreateRankTab(CStringW(strLabel), CStringW(strRange), spSeason.operator->()->m_nSeasonID));
     }
     return spTabs;
 }
 
 // @0x140e339e0
-Unk_RankTabPtr UIGameRankingDialog::FUN_140e339e0(int nType, int nIndex)
+Unk_RankTabPtr UIGameRankingDialog::GetRankTab(int nType, int nIndex)
 {
     Unk_RankTabsPtr spTabs;
     Unk_RankTabPtr spTab(0);
@@ -1056,7 +1056,7 @@ Unk_RankTabPtr UIGameRankingDialog::FUN_140e339e0(int nType, int nIndex)
 }
 
 // @0x140e33ae0
-CStringW UIGameRankingDialog::FUN_140e33ae0(Unk_RankCatPtr spCategory, MS2Ptr<CSeasonData> spSeason)
+CStringW UIGameRankingDialog::GetSeasonLabel(Unk_RankCatPtr spCategory, MS2Ptr<CSeasonData> spSeason)
 {
     if (spSeason == 0 || spCategory == 0)
         return CStringW(L"");
@@ -1085,7 +1085,7 @@ CStringW UIGameRankingDialog::FUN_140e33ae0(Unk_RankCatPtr spCategory, MS2Ptr<CS
 }
 
 // @0x140e33e20
-void UIGameRankingDialog::FUN_140e33e20()
+void UIGameRankingDialog::SelectCategoryInList()
 {
     if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_mainCategory"))
     {
@@ -1098,7 +1098,7 @@ void UIGameRankingDialog::FUN_140e33e20()
                 if (spCat->m_nId == m_nCategory)
                 {
                     spList->SetSelectedIndex(nIndex);
-                    spList->FUN_1422e17f0(nIndex);
+                    spList->SetScrollPosition(nIndex);
                     return;
                 }
             }
@@ -1110,20 +1110,20 @@ void UIGameRankingDialog::FUN_140e33e20()
 void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, int nFlag)
 {
     CGameRankingParam::Key key;
-    FUN_140e35350(spCategory->m_nId, &key);
+    BuildMyRankKey(spCategory->m_nId, &key);
     MS2Ptr<GameRanking::IResponse> info = TSingleton<CGameRankingCli>::GetInstance()->QueryPrevious(key, nFlag);
     int nRank = info.get() ? info->GetRank() : 0;
     int nKeyType = key.GetCategory();
-    MS2Ptr<UgcMapCommendationGMEvent> spRec = ((class CGameRule*)FUN_1401c0d90())->GetUgcMapCommendationEvent(1);
+    MS2Ptr<UgcMapCommendationGMEvent> spRec = ((class CGameRule*)GetGameRule())->GetUgcMapCommendationEvent(1);
     if ((spRec.get() ? true : false) && nKeyType == 6)
     {
-        obj.FUN_1407cbbe0("recommender", true);
-        obj.FUN_1407cbb20("recommenderName", CStringW(spRec->m_28));
-        obj.FUN_1407cba60("recommenderAccountSN", FUN_140719530(spRec->m_20));
+        obj.SetBoolMember("recommender", true);
+        obj.SetWStringMember("recommenderName", CStringW(spRec->m_28));
+        obj.SetStringMember("recommenderAccountSN", FUN_140719530(spRec->m_20));
     }
     else
     {
-        obj.FUN_1407cbbe0("recommender", false);
+        obj.SetBoolMember("recommender", false);
     }
     switch (nKeyType)
     {
@@ -1141,9 +1141,9 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
     case 0x10:
     case 0x11:
         if (nRank != 0)
-            obj.FUN_1407cbb20("rankText", FUN_14028dfa0(CStringW(L"s_gameranking_tab_my_rank"), nRank));
+            obj.SetWStringMember("rankText", FUN_14028dfa0(CStringW(L"s_gameranking_tab_my_rank"), nRank));
         else
-            obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
+            obj.SetWStringMember("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
         break;
     case 1:
     case 5:
@@ -1154,14 +1154,14 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
             {
                 CStringW strGuild(reinterpret_cast<PC*>(pPc)->GetGuildName());
                 if (strGuild.IsEmpty())
-                    obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
+                    obj.SetWStringMember("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
                 else
-                    obj.FUN_1407cbb20("rankText", FUN_14028dfa0(CStringW(L"s_gameranking_tab_guild_rank"), strGuild, nRank));
+                    obj.SetWStringMember("rankText", FUN_14028dfa0(CStringW(L"s_gameranking_tab_guild_rank"), strGuild, nRank));
             }
         }
         else
         {
-            obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
+            obj.SetWStringMember("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
         }
         break;
     case 0xe:
@@ -1172,19 +1172,19 @@ void UIGameRankingDialog::FUN_140e33fb0(ASObj& obj, Unk_RankCatPtr spCategory, i
                 int nValue = nRank;
                 if (nValue >= 0)
                 {
-                    obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_my_rank_percent_up")));
+                    obj.SetWStringMember("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_my_rank_percent_up")));
                 }
                 else
                 {
-                    obj.FUN_1407cbb20("rankText", FUN_14028dfa0(CStringW(L"s_gameranking_tab_my_rank_percent_down"), nRank * -1));
+                    obj.SetWStringMember("rankText", FUN_14028dfa0(CStringW(L"s_gameranking_tab_my_rank_percent_down"), nRank * -1));
                 }
                 break;
             }
         }
         if (nRank != 0)
-            obj.FUN_1407cbb20("rankText", FUN_14028dfa0(CStringW(L"s_gameranking_tab_my_rank"), nRank));
+            obj.SetWStringMember("rankText", FUN_14028dfa0(CStringW(L"s_gameranking_tab_my_rank"), nRank));
         else
-            obj.FUN_1407cbb20("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
+            obj.SetWStringMember("rankText", FUN_140298ea0(CStringW(L"s_gameranking_tab_no_rank")));
     }
 }
 
@@ -1194,7 +1194,7 @@ void UIGameRankingDialog::FUN_140e34830(ASObj& obj, Unk_RankCatPtr spCategory)
     CStringW strCategory(spCategory->m_nParent != 0 ? TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x34, spCategory->m_nType) : CStringW(spCategory->m_strLabel));
     CStringW strSub(spCategory->m_strLabel);
     Unk_RankTabPtr spTab;
-    spTab = FUN_140e339e0(spCategory->m_nType, m_nTab);
+    spTab = GetRankTab(spCategory->m_nType, m_nTab);
     if (spTab)
     {
         switch (spCategory->m_nType)
@@ -1215,9 +1215,9 @@ void UIGameRankingDialog::FUN_140e34830(ASObj& obj, Unk_RankCatPtr spCategory)
         }
     }
     CGameRankingParam::Key key;
-    FUN_140e351d0(spCategory->m_nId, &key);
+    BuildRankingKey(spCategory->m_nId, &key);
     CStringW strDesc = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gameranking_tab_description"), strCategory, strSub);
-    obj.FUN_1407cbb20("desc", CStringW(strDesc));
+    obj.SetWStringMember("desc", CStringW(strDesc));
 }
 
 // @0x140e34bb0
@@ -1238,12 +1238,12 @@ void UIGameRankingDialog::FUN_140e34bb0(ASObj& obj, Unk_RankCatPtr spCategory)
     case 0xc:
     case 0xf:
     case 0x11:
-        obj.FUN_1407cbb20("iconPath", CStringW(spCategory->m_strImage));
+        obj.SetWStringMember("iconPath", CStringW(spCategory->m_strImage));
     }
 }
 
 // @0x140e34ce0
-void UIGameRankingDialog::FUN_140e34ce0(int nPage, int nPages)
+void UIGameRankingDialog::SetButtonPage(int nPage, int nPages)
 {
     if (m_30.get())
         reinterpret_cast<Unk_RankAS*>(m_30.operator->())->FUN_1409ba0d0("setButtonPage", nPage, nPages);
@@ -1255,7 +1255,7 @@ void UIGameRankingDialog::FUN_140e34d50(CStringW strSearch)
     if (strSearch.IsEmpty())
         return;
     CGameRankingParam::Key key;
-    FUN_140e351d0(m_nCategory, &key);
+    BuildRankingKey(m_nCategory, &key);
     MS2Ptr<GameRanking::Page> req = TSingleton<CGameRankingCli>::GetInstance()->Search(key, CStringW(strSearch), 1);
     if (req == 0)
     {
@@ -1271,7 +1271,7 @@ void UIGameRankingDialog::FUN_140e34eb0(MS2Ptr<GameRanking::Page> spReply)
 {
     if (spReply == 0)
         return;
-    FUN_140e32eb0();
+    ClearRankRows();
     MS2Ptr<GameRankingItem::IRankItem> list = spReply->GetFirstItem();
     if (list.get() != 0)
     {
@@ -1287,13 +1287,13 @@ void UIGameRankingDialog::FUN_140e34eb0(MS2Ptr<GameRanking::Page> spReply)
             m_rows.Add(spData);
             if (m_30.get())
                 reinterpret_cast<Unk_RankAS*>(m_30.operator->())->FUN_140e35c60("showSearchResult", 1);
-            FUN_140e31b00();
+            UpdateRankRows();
         }
     }
 }
 
 // @0x140e350c0
-Unk_RankCatPtr UIGameRankingDialog::FUN_140e350c0(int nCategoryId)
+Unk_RankCatPtr UIGameRankingDialog::FindCategory(int nCategoryId)
 {
     for (POSITION pos = m_categories.GetHeadPosition(); pos != 0; m_categories.GetNext(pos))
     {
@@ -1308,13 +1308,13 @@ Unk_RankCatPtr UIGameRankingDialog::FUN_140e350c0(int nCategoryId)
 }
 
 // @0x140e351d0
-void UIGameRankingDialog::FUN_140e351d0(int nCategoryId, CGameRankingParam::Key* pKey)
+void UIGameRankingDialog::BuildRankingKey(int nCategoryId, CGameRankingParam::Key* pKey)
 {
-    Unk_RankCatPtr spCat = FUN_140e350c0(nCategoryId);
+    Unk_RankCatPtr spCat = FindCategory(nCategoryId);
     if (spCat)
     {
         Unk_RankTabPtr spTab;
-        spTab = FUN_140e339e0(spCat->m_nType, m_nTab);
+        spTab = GetRankTab(spCat->m_nType, m_nTab);
         if (spTab == 0)
             return;
         TSingleton<CGameRankingCli>::GetInstance()->BuildKey(*pKey, spCat->m_nType, spCat->m_nSub, m_nTab, spTab->m_nSeasonID);
@@ -1322,13 +1322,13 @@ void UIGameRankingDialog::FUN_140e351d0(int nCategoryId, CGameRankingParam::Key*
 }
 
 // @0x140e35350
-void UIGameRankingDialog::FUN_140e35350(int nCategoryId, CGameRankingParam::Key* pKey)
+void UIGameRankingDialog::BuildMyRankKey(int nCategoryId, CGameRankingParam::Key* pKey)
 {
-    Unk_RankCatPtr spCat = FUN_140e350c0(nCategoryId);
+    Unk_RankCatPtr spCat = FindCategory(nCategoryId);
     if (spCat)
     {
         Unk_RankTabPtr spTab;
-        spTab = FUN_140e339e0(spCat->m_nType, m_nTab);
+        spTab = GetRankTab(spCat->m_nType, m_nTab);
         if (spTab == 0)
             return;
         TSingleton<CGameRankingCli>::GetInstance()->BuildMyRankKey(*pKey, spCat->m_nType, spCat->m_nSub, m_nTab, spTab->m_nSeasonID);
@@ -1336,7 +1336,7 @@ void UIGameRankingDialog::FUN_140e35350(int nCategoryId, CGameRankingParam::Key*
 }
 
 // @0x140e354d0
-int UIGameRankingDialog::FUN_140e354d0(int nType, int nSub)
+int UIGameRankingDialog::FindCategoryId(int nType, int nSub)
 {
     for (POSITION pos = m_categories.GetHeadPosition(); pos != 0; m_categories.GetNext(pos))
     {
@@ -1377,7 +1377,7 @@ void UIGameRankingDialog::FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, i
                                  m_rows[nRow].operator->()->m_members[i].m_level);
     }
     tooltip.SetText(strText);
-    *pRet = tooltip.FUN_1422bb870();
+    *pRet = tooltip.GetValue();
 }
 
 // @0x140e359e0
@@ -1429,7 +1429,7 @@ void ASObj::FUN_140e35da0(const char* szName, int n)
 }
 
 // @0x140e37aa0
-CArcadeDataTable* FUN_140e37aa0()
+CArcadeDataTable* GetArcadeDataTable()
 {
     return TSingleton<CArcadeDataTable>::s_instance;
 }

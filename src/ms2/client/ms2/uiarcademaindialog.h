@@ -48,7 +48,7 @@ public:
     virtual void vfunc_72();                                        // 72 0x140ef65f0 take the finished ranking
 
     void FUN_140ef67f0();                                           // 0x140ef67f0 take the in-game ranking result
-    void FUN_140ef6920();                                           // 0x140ef6920 forget the game list answer
+    void ClearScores();                                           // 0x140ef6920 forget the game list answer
     void FUN_140ef6960(const Scaleform::GFx::FunctionHandler::Params& params);   // a game button was clicked
     void FUN_140ef6a60(const Scaleform::GFx::FunctionHandler::Params& params);   // the enter button was clicked
     void FUN_140ef6dd0();                                           // 0x140ef6dd0 merge the npc records into the ranking
@@ -56,11 +56,11 @@ public:
     bool FUN_140ef7ab0(int nResult, const CMsgBoxData& box);        // 0x140ef7ab0 the map-change confirm box result
     bool FUN_140ef7b00(int nArcadeId);                              // 0x140ef7b00 request to enter the game
     void FUN_140ef7d30(int nMode, CInPacket& packet);               // 0x140ef7d30 mode 9: the last played game and the scores
-    void FUN_140ef7e70();                                           // 0x140ef7e70 clear the ranking
-    void FUN_140ef7ea0();                                           // 0x140ef7ea0 start the ranking request
+    void ClearRanks();                                           // 0x140ef7e70 clear the ranking
+    void RequestRanking();                                           // 0x140ef7ea0 start the ranking request
     void FUN_140ef7fc0(CStringW strResponse);                       // 0x140ef7fc0 the worker stores the web answer
-    void FUN_140ef8040(int nArcadeId, RankingList list);            // 0x140ef8040 the worker stores one board
-    void FUN_140ef80f0(CStringW strXml);                            // 0x140ef80f0 parse the web ranking
+    void AddRankingResult(int nArcadeId, RankingList list);            // 0x140ef8040 the worker stores one board
+    void ParseRankingXml(CStringW strXml);                            // 0x140ef80f0 parse the web ranking
     void FUN_140ef8380(RankingResults results);                     // 0x140ef8380 apply the in-game ranking
     static unsigned OnRequestRanking(void* pArg);                   // 0x140ef85b0 worker: the web ranking
     static unsigned OnRequestRankingFromInGameRanking(void* pArg);  // 0x140ef87e0 worker: the in-game ranking service

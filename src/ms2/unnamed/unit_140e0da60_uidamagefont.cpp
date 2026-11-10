@@ -37,7 +37,7 @@ public:
     virtual void OnLoadComplete();                                          // 22 0x140e0dbb0
     virtual int vfunc_48() { return 0x4f39; }                               // 48 (COMDAT 0x140e0de30)
 
-    int FUN_140e0dbe0();                                                    // the attribute's +0x18, 0 without one
+    int GetFontId();                                                    // the attribute's +0x18, 0 without one
     bool FUN_140e0dc30();                                                   // stamp the attribute with the current time
     __int64 FUN_140e0dca0();                                                // the attribute's time stamp
 
@@ -79,7 +79,7 @@ void UIDamageFont::OnLoadComplete()
 }
 
 // @0x140e0dbe0
-int UIDamageFont::FUN_140e0dbe0()
+int UIDamageFont::GetFontId()
 {
     if (m_spAttr.get() != 0)
         return m_spAttr->m_18;

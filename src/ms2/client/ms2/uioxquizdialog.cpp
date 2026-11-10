@@ -33,7 +33,7 @@ bool UIOxQuizDialog::s_bEnable;
 UIOxQuizDialog::UIOxQuizDialog()
     : m_178(0), m_17c(10.0f)
 {
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x140e6e490
@@ -59,7 +59,7 @@ int UIOxQuizDialog::vfunc_65()
 void UIOxQuizDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140e6e640();
+    UpdateCoolTime();
 }
 
 // @0x140e6e580
@@ -80,27 +80,27 @@ int UIOxQuizDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 }
 
 // @0x140e6e610
-void UIOxQuizDialog::FUN_140e6e610(bool bUnused)
+void UIOxQuizDialog::RefreshCoolTime(bool bUnused)
 {
     if (FUN_1418fd280() == 0)
         return;
-    FUN_140e6e640();
+    UpdateCoolTime();
 }
 
 // @0x140e6e640
-void UIOxQuizDialog::FUN_140e6e640()
+void UIOxQuizDialog::UpdateCoolTime()
 {
     if (FUN_1418fd280() == 0)
         return;
     if (FUN_1418fd2f0())
     {
         float fRemain = m_17c - (float)(GetTickCountMs2() - m_178) / 1000.0f;
-        FUN_140e6e6c0(fRemain, m_17c);
+        SetQuizPromoteCooltime(fRemain, m_17c);
     }
 }
 
 // @0x140e6e6c0
-void UIOxQuizDialog::FUN_140e6e6c0(float fRemain, float fTotal)
+void UIOxQuizDialog::SetQuizPromoteCooltime(float fRemain, float fTotal)
 {
     if (ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30))
         pDialog->Invoke("setQuizPromoteCooltime", fRemain, fTotal, GetStringCommon(0x5ce), GetStringCommon(0x5cc),
@@ -110,7 +110,7 @@ void UIOxQuizDialog::FUN_140e6e6c0(float fRemain, float fTotal)
 }
 
 // @0x140e6e8b0
-void UIOxQuizDialog::FUN_140e6e8b0(bool bEnable)
+void UIOxQuizDialog::SetEnable(bool bEnable)
 {
     s_bEnable = bEnable;
 }

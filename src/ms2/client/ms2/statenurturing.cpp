@@ -77,7 +77,7 @@ struct Unk_CastInfo
 };
 MS2_CHECK_SIZE(Unk_CastInfo, 0x38);
 
-// The casting bar dialog (RTTI UICastingBar, found through FUN_140ac2270).
+// The casting bar dialog (RTTI UICastingBar, found through GetCastingBar).
 class UICastingBar : public UIObject
 {
 public:
@@ -96,9 +96,9 @@ struct Unk_FcUseInfo
 };
 void FUN_1401fc610(unsigned char*, class COutputStream&);   // C3: was FUN_1401fc610
 
-UICastingBar* FUN_140ac2270(int nId);
+UICastingBar* GetCastingBar(int nId);
 
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_NuBuffMgr { public: };
 // vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
 class Unk_NuSlots
@@ -118,7 +118,7 @@ CFunctionCubeService* GetFunctionCubeService();
 // ---- the casting bar lookup ----
 
 // @0x140ac2270
-UICastingBar* FUN_140ac2270(int nId)
+UICastingBar* GetCastingBar(int nId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
@@ -128,7 +128,7 @@ UICastingBar* FUN_140ac2270(int nId)
     }
     return 0;
 }
-MS2_REPLACE(0x140AC2270, FUN_140ac2270, 147, 0x24834FA8);
+MS2_REPLACE(0x140AC2270, GetCastingBar, 147, 0x24834FA8);
 
 // ---- Unk_FcUseInfo ----
 
@@ -172,18 +172,18 @@ void StateNurturing::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
     m_n48 = 0;
-    m_pOwner->PlayAnimation(FUN_140ac13a0(), 1.0f, false, false);
+    m_pOwner->PlayAnimation(GetActionAnimation(), 1.0f, false, false);
     PCBase* pPC = FUN_1417b8370();
     MyPC* pRider = FUN_1417b84b0();
     if (pPC && ((void*)(reinterpret_cast<PC*>(pPC)->GetHeldItem())))
         reinterpret_cast<PC*>(pPC)->SendRequestCube();
     if (pRider)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
         {
             Unk_CastInfo kInfo;
-            FUN_140ac1480(&kInfo);
+            FillCastInfo(&kInfo);
             pBar->StartCasting((ICastingEventListener*)this, (const Unk_CastingParam*)&kInfo);
         }
     }
@@ -247,7 +247,7 @@ void StateNurturing::vfunc_5(int n)
 {
     if (FUN_1417b8560())
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
     }
@@ -278,7 +278,7 @@ void StateNurturing::vfunc_3(double fTime)
         MyPC* pRider = FUN_1417b84b0();
         if (pRider)
         {
-            UICastingBar* pBar = FUN_140ac2270(0x4e72);
+            UICastingBar* pBar = GetCastingBar(0x4e72);
             if (pBar)
                 pBar->FUN_1418e1390();
             SendFunctionCubeMode5();
@@ -296,7 +296,7 @@ void StateNurturing::vfunc_8(double fTime)
     if (pPC)
     {
         Unk_NuBuffMgr* pBuff = ((Unk_NuBuffMgr*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-        reinterpret_cast<Unk_NuSlots*>(pPC)->vfunc_22(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290());
+        reinterpret_cast<Unk_NuSlots*>(pPC)->vfunc_22(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection());
         if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
             pPC->vfunc_59(2, 0, 0, 0);
     }
@@ -310,21 +310,21 @@ void StateNurturing::EndOfSequence(NiActorManager*, unsigned int, NiControllerSe
 {
     if (m_pOwner)
     {
-        m_pOwner->PlayAnimation(FUN_140ac13a0(), 1.0f, true, false);
+        m_pOwner->PlayAnimation(GetActionAnimation(), 1.0f, true, false);
     }
 }
 MS2_REPLACE_METHOD(0x140AC12C0, StateNurturing, EndOfSequence, 163, 0xB108BB78);
 
 // @0x140ac1370
-unsigned StateNurturing::FUN_140ac1370()
+unsigned StateNurturing::GetNurturingDuration()
 {
     unsigned nDuration = static_cast<Client::Constants*>(GetClientConstants())->NurturingDuration.Read();
     return nDuration;
 }
-MS2_REPLACE_METHOD(0x140AC1370, StateNurturing, FUN_140ac1370, 41, 0x32A092A2);
+MS2_REPLACE_METHOD(0x140AC1370, StateNurturing, GetNurturingDuration, 41, 0x32A092A2);
 
 // @0x140ac13a0
-efd::utf8string StateNurturing::FUN_140ac13a0()
+efd::utf8string StateNurturing::GetActionAnimation()
 {
     if (m_n10 == 0xa7)
         return efd::utf8string("Functobj_Gift_A01");
@@ -336,12 +336,12 @@ efd::utf8string StateNurturing::FUN_140ac13a0()
 }
 
 // @0x140ac1480
-void StateNurturing::FUN_140ac1480(Unk_CastInfo* pInfo)
+void StateNurturing::FillCastInfo(Unk_CastInfo* pInfo)
 {
     MyPC* pPC = FUN_1417b84b0();
     if (!pPC)
         return;
-    pInfo->m_nDuration = FUN_140ac1370();
+    pInfo->m_nDuration = GetNurturingDuration();
     if (m_n10 == 0xa7)
         pInfo->m_str28 = GetStringCommonByKey(L"s_action_nurturing_gifting");
     else if (m_n10 == 0xa5)
@@ -351,7 +351,7 @@ void StateNurturing::FUN_140ac1480(Unk_CastInfo* pInfo)
 }
 
 // @0x140ac1650
-MS2Ptr<CNurturingCubeObject> StateNurturing::FUN_140ac1650()
+MS2Ptr<CNurturingCubeObject> StateNurturing::FindNearestUsableCube()
 {
     PCBase* pPC = FUN_1417b8370();
     if (!pPC)
@@ -377,7 +377,7 @@ MS2Ptr<CNurturingCubeObject> StateNurturing::FUN_140ac1650()
     }
     return spNearest;
 }
-MS2_REPLACE_METHOD(0x140AC1650, StateNurturing, FUN_140ac1650, 723, 0xEE67D063);
+MS2_REPLACE_METHOD(0x140AC1650, StateNurturing, FindNearestUsableCube, 723, 0xEE67D063);
 
 // @0x140ac1930
 void StateNurturing::SendFunctionCubeMode4()
@@ -435,7 +435,7 @@ int StateInterActionSpawnObject::vfunc_1() { return 0x19; }
 void StateInterActionSpawnObject::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    CubeSpawnObject* pCube = FUN_140ac1de0();
+    CubeSpawnObject* pCube = GetCubeSpawnObject();
     if (pCube)
     {
         if (m_n10 == 0xa7)
@@ -452,7 +452,7 @@ MS2_REPLACE_METHOD(0x140AC1CA0, StateInterActionSpawnObject, vfunc_4, 148, 0x1EA
 void StateInterActionSpawnObject::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    CubeSpawnObject* pCube = FUN_140ac1de0();
+    CubeSpawnObject* pCube = GetCubeSpawnObject();
     if (pCube)
     {
         if (m_n10 == 0xa7)
@@ -466,11 +466,11 @@ void StateInterActionSpawnObject::vfunc_5(int n)
 MS2_REPLACE_METHOD(0x140AC1D40, StateInterActionSpawnObject, vfunc_5, 146, 0xFF86A32D);
 
 // @0x140ac1de0
-CubeSpawnObject* StateInterActionSpawnObject::FUN_140ac1de0()
+CubeSpawnObject* StateInterActionSpawnObject::GetCubeSpawnObject()
 {
     return dynamic_cast<CubeSpawnObject*>(m_pOwner);
 }
-MS2_REPLACE_METHOD(0x140AC1DE0, StateInterActionSpawnObject, FUN_140ac1de0, 52, 0x990330BD);
+MS2_REPLACE_METHOD(0x140AC1DE0, StateInterActionSpawnObject, GetCubeSpawnObject, 52, 0x990330BD);
 
 // ---- StateIdleSpawnObject ----
 
@@ -492,7 +492,7 @@ void StateIdleSpawnObject::vfunc_2(int n)
     State::vfunc_2(n);
     if (n == 0xa8)
     {
-        CubeSpawnObject* pCube = FUN_140ac21e0();
+        CubeSpawnObject* pCube = GetCubeSpawnObject();
         if (pCube)
         {
             pCube->SetAnimState(0x62);
@@ -506,7 +506,7 @@ MS2_REPLACE_METHOD(0x140AC1EC0, StateIdleSpawnObject, vfunc_2, 95, 0x555B3AAA);
 void StateIdleSpawnObject::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    CubeSpawnObject* pCube = FUN_140ac21e0();
+    CubeSpawnObject* pCube = GetCubeSpawnObject();
     if (!pCube)
         return;
     if (pCube->FUN_140a4f690() != 0)
@@ -544,7 +544,7 @@ MS2_REPLACE_METHOD(0x140AC2020, StateIdleSpawnObject, vfunc_5, 32, 0xB391CF41);
 void StateIdleSpawnObject::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
-    CubeSpawnObject* pCube = FUN_140ac21e0();
+    CubeSpawnObject* pCube = GetCubeSpawnObject();
     if (pCube)
     {
         if (m_timer.Check(60000))
@@ -590,11 +590,11 @@ void StateIdleSpawnObject::EndOfSequence(NiActorManager*, unsigned int, NiContro
 MS2_REPLACE_METHOD(0x140AC21A0, StateIdleSpawnObject, EndOfSequence, 47, 0x29DCDDED);
 
 // @0x140ac21e0
-CubeSpawnObject* StateIdleSpawnObject::FUN_140ac21e0()
+CubeSpawnObject* StateIdleSpawnObject::GetCubeSpawnObject()
 {
     return dynamic_cast<CubeSpawnObject*>(m_pOwner);
 }
-MS2_REPLACE_METHOD(0x140AC21E0, StateIdleSpawnObject, FUN_140ac21e0, 52, 0x81C5DAE1);
+MS2_REPLACE_METHOD(0x140AC21E0, StateIdleSpawnObject, GetCubeSpawnObject, 52, 0x81C5DAE1);
 
 // The UCRT header-inline memcpy_s (corecrt_memcpy_s.h) closes the obj's COMDAT tail; the exe calls memset/memcpy here.
 #pragma function(memcpy, memset)

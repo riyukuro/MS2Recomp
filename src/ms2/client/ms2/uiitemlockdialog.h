@@ -1,7 +1,7 @@
 // uiitemlockdialog.h - UIItemLockDialog (RTTI .?AVUIItemLockDialog@@, 0x1b8 bytes, UIDialog + UIStatusEventListener +
 // UIItemEventListener, UI id 0x4f08, swf "ItemLockDialog"): the window where items are locked / unlocked. It binds the
 // "m_itemBag" control to its own bag id, follows the inventory dialog, tells the CItemLockManager the selected tab and
-// asks for confirmation (message boxes) before an item is locked or unlocked. FUN_140f57c60 creates a display item slot
+// asks for confirmation (message boxes) before an item is locked or unlocked. CreateItemSlot creates a display item slot
 // (kept in m_188 so that it can be released). Owning unit: ?\uiitemlockdialog.cpp. Header name assumed from the unit path.
 #pragma once
 #include <afx.h>
@@ -29,11 +29,11 @@ public:
     virtual void vfunc_67();                                    // 67 0x140f571f0
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x140f57a20
 
-    void FUN_140f56c80();                                       // bind the bag, then refresh the lock buttons
-    void FUN_140f56e00();                                       // enable / disable the lock buttons
-    int FUN_140f56f50();                                        // the bag control is visible
-    CString FUN_140f57c60(unsigned nItemId, int nRarity);       // create a display slot for an item
-    void FUN_140f57e30();                                       // release the display slots
+    void BindItemBag();                                       // bind the bag, then refresh the lock buttons
+    void UpdateLockButtons();                                       // enable / disable the lock buttons
+    int IsItemBagVisible();                                        // the bag control is visible
+    CString CreateItemSlot(unsigned nItemId, int nRarity);       // create a display slot for an item
+    void ReleaseSlotBinds();                                       // release the display slots
 
 private:
     MS2_LAYOUT_FRIEND;

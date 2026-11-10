@@ -42,7 +42,7 @@
 #include "ms2/placeholder/uiugceventdispatcher.h"
 #include "ms2/placeholder/creservedwordtable.h"
 #include "ms2/placeholder/mstime.h"
-#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FindNpcData)
 
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
@@ -64,7 +64,7 @@ public:
 };
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT lives in another unit).
-class Unk_SSGConstValue { public: int FUN_140ad5c50(); };
+class Unk_SSGConstValue { public: int GetValue(); };
 
 // The UGC info behind CItem::FUN_1405278d0 holds its look at +0x18.
 struct Unk_WhisperItemUgc : public CPtred
@@ -88,17 +88,17 @@ struct Unk_WhisperItemData
 };
 MS2_CHECK_OFFSET(Unk_WhisperItemData, m_nMaxCount, 0x88);
 
-MS2Ptr<CNpcData> FUN_1406cd330(int nId);                      // the sender's npc row
+MS2Ptr<CNpcData> FindNpcData(int nId);                      // the sender's npc row
 
 
 
-CString FUN_141028a90(CString strId, int bDefault);             // the local file of a downloaded image
-CString FUN_1410280d0(int nKind, CString strName);
+CString GetProfileImagePath(CString strId, int bDefault);             // the local file of a downloaded image
+CString GetDownloadFilePath(int nKind, CString strName);
 CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CString strUrl);
 MS2Ptr<CItemData> FUN_14053f870(int itemId);
 CStringW FUN_1401aa6a0(int nId);                                // the character's name
 CStringW FUN_140719a80(unsigned __int64 nUid);                  // the item guid text
-CStringW FUN_1416e5900(int nItemId, bool bBold);                // the item name text
+CStringW GetQuestTitle(int nItemId, bool bBold);                // the item name text
 void FUN_1412751b0(const CStringW& strText, int nKind);         // shows the text as a notice
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);
@@ -121,11 +121,11 @@ void* FUN_140764020();   // C3: was FUN_140764020
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* psz);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value src);
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value src);
 
 // The exe's wrapper around CItemData lookups: "the item's data record".
 // @0x141b52ac0
-CString FUN_141b52ac0(unsigned __int64 nId)
+CString FormatId(unsigned __int64 nId)
 {
     CString str;
     str.Format("%I64u", nId);
@@ -148,7 +148,7 @@ Scaleform::GFx::Value Unk_WhisperScript::FUN_141b52c80(const char* szMethod, Sca
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcc70(&args[0], a1);
+    SetValue(&args[0], a1);
     FUN_1422bcea0(&args[1], (const wchar_t*)a2);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -157,8 +157,8 @@ Scaleform::GFx::Value Unk_WhisperScript::FUN_141b52c80(const char* szMethod, Sca
 UIWhisperNotifyDialog::UIWhisperNotifyDialog()
     : m_whisperTimes(17, 0.75f, 0.25f, 2.25f, 10), m_systemTimes(17, 0.75f, 0.25f, 2.25f, 10)
 {
-    m_nCooldown = reinterpret_cast<Unk_SSGConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->WisperIgnoreTime)->FUN_140ad5c50();
-    FUN_141925e70(0, 1);
+    m_nCooldown = reinterpret_cast<Unk_SSGConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->WisperIgnoreTime)->GetValue();
+    SetFlag(0, 1);
 }
 
 // @0x141b518b0
@@ -172,7 +172,7 @@ int UIWhisperNotifyDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->AddListener(static_cast<UIUGCEventListener*>(this));
     return 1;
 }
 
@@ -181,7 +181,7 @@ void UIWhisperNotifyDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
     m_whisperTimes.RemoveAll();
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->RemoveListener(static_cast<UIUGCEventListener*>(this));
 }
 
 // @0x141b519d0
@@ -227,8 +227,8 @@ void UIWhisperNotifyDialog::vfunc_ugc_1(void* pId, CString strPath)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        CString strImage = FUN_141028a90(CString(strPath), 0);
-        pDialog->FUN_1413127f0("updateProfileImage", FUN_141b52ac0((unsigned __int64)pId), strImage);
+        CString strImage = GetProfileImagePath(CString(strPath), 0);
+        pDialog->FUN_1413127f0("updateProfileImage", FormatId((unsigned __int64)pId), strImage);
     }
 }
 
@@ -237,25 +237,25 @@ void UIWhisperNotifyDialog::vfunc_ugc_2(void* pId, CString strName)
 {
     if (m_30 == 0)
         return;
-    CString strIcon = FUN_1410280d0(0xc9, CString(strName));
-    static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_1413127f0("updateItemIcon", FUN_141b52ac0((unsigned __int64)pId), strIcon);
+    CString strIcon = GetDownloadFilePath(0xc9, CString(strName));
+    static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_1413127f0("updateItemIcon", FormatId((unsigned __int64)pId), strIcon);
 }
 
 // @0x141b51e30
-void UIWhisperNotifyDialog::FUN_141b51e30(unsigned __int64 nId, const CStringW& strMsg, const CString& strName)
+void UIWhisperNotifyDialog::AddWhisper(unsigned __int64 nId, const CStringW& strMsg, const CString& strName)
 {
     if (FUN_1422dc2d0() == 0)
         return;
     if (FUN_141b529f0(nId) != 0)
         return;
-    CString strId = FUN_141b52ac0(nId);
+    CString strId = FormatId(nId);
     CString strImage = FUN_141028be0(nId, strName, 1, CString(""));
     static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52b40("addWhisper", strId, strImage, CStringW(strMsg));
     m_whisperTimes.SetAt(nId, GetTickCountMs2());
 }
 
 // @0x141b52030
-void UIWhisperNotifyDialog::FUN_141b52030(int nItemId, int nGrade, int nCount, const CStringW& strMsg)
+void UIWhisperNotifyDialog::AddGiftItemById(int nItemId, int nGrade, int nCount, const CStringW& strMsg)
 {
     if (FUN_1422dc2d0() == 0)
         return;
@@ -267,11 +267,11 @@ void UIWhisperNotifyDialog::FUN_141b52030(int nItemId, int nGrade, int nCount, c
     slot.SetItemGrade(nGrade);
     if (1 < reinterpret_cast<Unk_WhisperItemData*>(spData.get())->m_nMaxCount)
         slot.SetItemCountValue(nCount);
-    static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52c80("addGiftItem", slot.FUN_1422bb870(), CStringW(strMsg));
+    static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52c80("addGiftItem", slot.GetValue(), CStringW(strMsg));
 }
 
 // @0x141b52210
-void UIWhisperNotifyDialog::FUN_141b52210(MS2Ptr<CItem> spItem, const CStringW& strMsg, const CString& strUgcPath)
+void UIWhisperNotifyDialog::AddGiftItem(MS2Ptr<CItem> spItem, const CStringW& strMsg, const CString& strUgcPath)
 {
     if (FUN_1422dc2d0() == 0)
         return;
@@ -279,10 +279,10 @@ void UIWhisperNotifyDialog::FUN_141b52210(MS2Ptr<CItem> spItem, const CStringW& 
         return;
     ASSlot slot(2);
     {
-        CString strName = spItem->FUN_140528590();
+        CString strName = spItem->GetIconPath();
         if (!strUgcPath.IsEmpty())
             strName = strUgcPath;
-        if (spItem->FUN_140525f60() != 0)
+        if (spItem->HasUgcId() != 0)
         {
             if (spItem->GetUgcInfo() != 0)
             {
@@ -297,11 +297,11 @@ void UIWhisperNotifyDialog::FUN_141b52210(MS2Ptr<CItem> spItem, const CStringW& 
             slot.SetItemCountValue(spItem->GetCount());
         slot.SetUgcTag(spItem->GetUgcTag());
     }
-    static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52c80("addGiftItem", slot.FUN_1422bb870(), CStringW(strMsg));
+    static_cast<Unk_WhisperScript*>(m_30.operator->())->FUN_141b52c80("addGiftItem", slot.GetValue(), CStringW(strMsg));
 }
 
 // @0x141b52570
-void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMode, int nItemId)
+void UIWhisperNotifyDialog::AddSystemWhisper(const Unk_WhisperInfo* pInfo, int nMode, int nItemId)
 {
     if (FUN_1422dc2d0() == 0)
         return;
@@ -311,7 +311,7 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
         return;
     CStringW strText = FormatStringId<CStringW>(0x5eb, FUN_1401aa6a0(pInfo->m_nId));
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
-    MS2Ptr<CNpcData> sender = FUN_1406cd330(pInfo->m_nId);
+    MS2Ptr<CNpcData> sender = FindNpcData(pInfo->m_nId);
     if (!sender)
         return;
     CStringW strExtra(L"");
@@ -320,7 +320,7 @@ void UIWhisperNotifyDialog::FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMod
         MS2Ptr<CItemData> spData = (&((struct Unk_WhisperItemMgr*)FUN_140764020())->m_source)->vfunc_3(nItemId);
         if (spData.get() != 0)
         {
-            CStringW strName = FUN_1416e5900(nItemId, true);
+            CStringW strName = GetQuestTitle(nItemId, true);
             strExtra += FormatStringId<CStringW>(0x5ed, strName);
         }
     }

@@ -167,7 +167,7 @@ void CWebBrowserService::FUN_141b781e0(int nIndex, const char* pszUrl, const cha
     CStringA strUrl(g_strMaviewURL);
     if (pszUrl != NULL) {
         strUrl = pszUrl;
-    } else if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x5c) == true) {
+    } else if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x5c) == true) {
         if (strUrl.IsEmpty() == true) {
             // empty in the exe
         }
@@ -222,7 +222,7 @@ BOOL CWebBrowserService::FUN_141b78650()
 }
 
 // @0x141b786a0
-void* CWebBrowserService::FUN_141b786a0(int nIndex)
+void* CWebBrowserService::GetBrowserTexture(int nIndex)
 {
     COffscreenWebBrowser* pBrowser = FindBrowser(nIndex);
     if (pBrowser == NULL) {
@@ -230,7 +230,7 @@ void* CWebBrowserService::FUN_141b786a0(int nIndex)
     }
     return pBrowser->GetTexture();
 }
-MS2_REPLACE_METHOD(0x141B786A0, CWebBrowserService, FUN_141b786a0, 59, 0xDFAC4E8D);
+MS2_REPLACE_METHOD(0x141B786A0, CWebBrowserService, GetBrowserTexture, 59, 0xDFAC4E8D);
 
 // @0x141b786f0
 void CWebBrowserService::Navigate(int nIndex, const char* pszUrl)
@@ -249,7 +249,7 @@ void CWebBrowserService::FUN_141b78760(int nIndex, int nPage)
 {
     if (nPage == 0) {
         CStringA strPath("");
-        if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x5c) == true) {
+        if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x5c) == true) {
             // empty in the exe (the feature test is all that is left)
         }
         Navigate(nIndex, g_strMaviewURL + strPath);
@@ -471,7 +471,7 @@ const char* CWebBrowserService::GetDisplayName() const
 MS2_REPLACE_METHOD(0x141B794C0, CWebBrowserService, GetDisplayName, 13, 0xC1B115A6);
 
 // @0x141b794e0
-void CWebBrowserService::FUN_141b794e0(CStringA& strOut, const char* pszUrl)
+void CWebBrowserService::ExpandUrlPrefix(CStringA& strOut, const char* pszUrl)
 {
     if (pszUrl != NULL) {
         int nPrefix = -1;

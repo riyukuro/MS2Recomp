@@ -512,7 +512,7 @@ class CLearningQuestTable;
 class CMeratMarketPremium;
 CLearningQuestTable* GetLearningQuestTable();
 CMeratMarketPremium* GetMeratMarketPremium();
-class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions* GetLaunchOptions();   // C3: was GetLaunchOptions
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
 public:
@@ -526,7 +526,7 @@ public:
 };
 void FUN_1411a49a0(CString);
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
-class CQuestNavigationMap* FUN_140c9b8e0();   // C3: was FUN_140c9b8e0
+class CQuestNavigationMap* GetQuestNavigationMap();   // C3: was GetQuestNavigationMap
 class CQuestNavigationMap   // C3: member view for the former free stand-ins
 {
 public:
@@ -548,7 +548,7 @@ class CAchieveData   // C3: member view for the former free stand-ins
 public:
     static void LoadAll();
 };
-void FUN_1410917a0(unsigned);
+void PreloadNpcData(unsigned);
 bool FUN_1411a4800(CStringA const&, int);
 // Explicit result-storage forms preserve the member hidden-result ABI.
 // The NIF service's texture load and the skill table lookup return by value (views over the exe types).
@@ -572,7 +572,7 @@ void CFilePreload::PreloadDataStep1(bool notify) {
 MS2_REPLACE_METHOD(0x141210e10, CFilePreload, PreloadDataStep1, 230, 0x9568662A);
 // @0x141210f00
 void CFilePreload::PreloadDataStep2(bool notify) {
-    if(((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->FUN_1406af0a0()) {
+    if(((class Unk_LaunchOptions*)(void*)(((void*)GetLaunchOptions())))->FUN_1406af0a0()) {
         CStopWatch watch("PreloadDataStep2");
         if(stopped==0 && DAT_1439f7068) ((class NpcDataTableCli*)(void*)(((void*)FUN_1406d6e90())))->LoadAll();
         watch.vfunc_1("CNpcData::ReadAll");
@@ -601,7 +601,7 @@ MS2_REPLACE_METHOD(0x141210f00, CFilePreload, PreloadDataStep2, 826, 0xAF9D15C6)
 void CFilePreload::FUN_141211240(void*) {
     dataReady=0;
     if(stopped==0) ((class QuestDataTable*)(class Unk_PreloadServiceA*)(reinterpret_cast<Unk_PreloadServiceA*>(TSingleton<QuestDataTable>::GetInstance())))->LoadQuestData();
-    if(stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)FUN_140c9b8e0())))->InitTraceTable();
+    if(stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)GetQuestNavigationMap())))->InitTraceTable();
     NotifyProgress(2);
     if(stopped==0) ((class CEnchantScrollTable*)(class Unk_PreloadServiceC*)(((class Unk_PreloadServiceC*)TSingleton<CEnchantScrollTable>::GetInstance())))->Load();
     if(stopped==0) LoadQuestDescription();
@@ -623,7 +623,7 @@ void CFilePreload::FUN_141211380(void*) {
     std::set<unsigned> pending;
     { if(Unk_LockGuard guard=idsLock) { __assume(0); } else { pending=ids; ids.clear(); } }
     for(auto it=pending.begin();it!=pending.end();++it) {
-        if(stopped==0) { FUN_1410917a0(*it); }
+        if(stopped==0) { PreloadNpcData(*it); }
         else return;
     }
 }
@@ -701,7 +701,7 @@ UINT CFilePreload::FUN_141211b80(void* context) {
         if(self->stopped==0) {
             self->PreloadDataStep1(false);
             TSingleton<CItemDataTable>::GetInstance()->LoadAllItemData();
-            if(self->stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)FUN_140c9b8e0())))->Rebuild();
+            if(self->stopped==0) ((class CQuestNavigationMap*)(class Unk_PreloadServiceB*)(((class Unk_PreloadServiceB*)GetQuestNavigationMap())))->Rebuild();
             self->PreloadDataStep2(false);
         }
         self->ClearBackgroundThread();

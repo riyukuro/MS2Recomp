@@ -83,7 +83,7 @@ UINoticeDialog::UINoticeDialog()
 {
     m_nHideAt = 0;
     FUN_1422dc3b0(1);
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x1410085c0
@@ -111,22 +111,22 @@ void UINoticeDialog::OnLoadComplete()
     if (m_90->FUN_140bc71c0("m_mainWindow", m_mainWindow).get())
     {
         if (m_mainWindow->FUN_140bbe640<ASButton>("m_showButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_showButton)).get())
-            reinterpret_cast<ASButton*>(m_showButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009770), 0);
+            reinterpret_cast<ASButton*>(m_showButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnShowButtonClick), 0);
         if (m_mainWindow->FUN_140bbe640<ASButton>("m_maviewButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_maviewButton)).get())
-            reinterpret_cast<ASButton*>(m_maviewButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_1410097a0), 0);
+            reinterpret_cast<ASButton*>(m_maviewButton.operator->())->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnMaviewButtonClick), 0);
         m_mainWindow->FUN_141009c70("m_renderTarget", m_renderTarget);
         m_mainWindow->FUN_141009c70("m_hitArea", m_hitArea);
     }
     if (m_hitArea.get())
     {
         m_hitArea->SetFocusable(1);
-        reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->FUN_1422de700(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009710), 0, 0);
-        reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::FUN_141009740), 0, 0);
+        reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->FUN_1422de700(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnHitAreaMouseOver), 0, 0);
+        reinterpret_cast<ASInteractiveObject*>(m_hitArea.operator->())->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UINoticeDialog::OnHitAreaMouseOut), 0, 0);
         m_hitArea->SetFocused(0);
         vfunc_84(m_hitArea->GetFocused() != 0);
     }
     if (m_nHideAt != 0)
-        FUN_141009980();
+        Show();
 }
 
 // @0x141008e10
@@ -157,7 +157,7 @@ void UINoticeDialog::vfunc_72()
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
     if (m_nHideAt != 0 && GetTickCountMs2() > m_nHideAt)
-        FUN_141009a60();
+        Hide();
 }
 
 // @0x141008fa0
@@ -167,8 +167,8 @@ void UINoticeDialog::vfunc_85()
         return;
     vfunc_86();
     m_spImage.AssignRaw(reinterpret_cast<Unk_AasImage*>(new ASLoader(2)));
-    ((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->operator->()->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}", FUN_1422db6e0(), m_renderTarget->FUN_1422c1340(), m_renderTarget->GetHeightCeil()), 2)));
-    m_renderTarget->FUN_1422c6900(m_spImage->FUN_1422bb890());
+    ((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->operator->()->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}", GetManagerKey(), m_renderTarget->GetWidthCeil(), m_renderTarget->GetHeightCeil()), 2)));
+    m_renderTarget->AddChild(m_spImage->FUN_1422bb890());
     reinterpret_cast<CWebBrowserService*>(reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance()))->SetBrowserKeyboard(m_nBrowserId, 0);
 }
 
@@ -178,7 +178,7 @@ void UINoticeDialog::vfunc_86()
     if (m_spImage.get() != 0)
     {
         ((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->operator->()->UnloadAndStop(true);
-        m_renderTarget->FUN_1422c6b70(m_spImage->FUN_1422bb890());
+        m_renderTarget->RemoveChild(m_spImage->FUN_1422bb890());
         m_spImage = 0;
     }
 }
@@ -195,7 +195,7 @@ void UINoticeDialog::vfunc_87(SIZE* pSize)
 {
     if (m_renderTarget == NULL)
         return;
-    pSize->cx = m_renderTarget->FUN_1422c1340();
+    pSize->cx = m_renderTarget->GetWidthCeil();
     pSize->cy = m_renderTarget->GetHeightCeil();
 }
 
@@ -205,16 +205,16 @@ bool UINoticeDialog::vfunc_90(POINT* pPos)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog == 0)
         return false;
-    pPos->x -= pDialog->FUN_1422c10a0();
-    pPos->y -= pDialog->FUN_1422c1110();
+    pPos->x -= pDialog->GetX();
+    pPos->y -= pDialog->GetY();
     if (m_mainWindow == NULL)
         return false;
-    pPos->x -= m_mainWindow->FUN_1422c10a0();
-    pPos->y -= m_mainWindow->FUN_1422c1110();
+    pPos->x -= m_mainWindow->GetX();
+    pPos->y -= m_mainWindow->GetY();
     if (m_renderTarget == NULL)
         return false;
-    pPos->x -= m_renderTarget->FUN_1422c10a0();
-    pPos->y -= m_renderTarget->FUN_1422c1110();
+    pPos->x -= m_renderTarget->GetX();
+    pPos->y -= m_renderTarget->GetY();
     if (pPos->x < 0 || pPos->y < 0 || pPos->x > m_size.cx || pPos->y > m_size.cy)
         return false;
     return true;
@@ -229,87 +229,87 @@ void UINoticeDialog::OnNoticeDialog(NotifyObject* pNotify)
     case 0:
         if (FUN_141924630())
         {
-            FUN_141009950(*static_cast<Client::Constants*>(GetClientConstants())->NoticeDialogOpenSeconds.Get());
-            FUN_141009980();
+            SetHideAt(*static_cast<Client::Constants*>(GetClientConstants())->NoticeDialogOpenSeconds.Get());
+            Show();
         }
         break;
     }
 }
 
 // @0x141009710
-void UINoticeDialog::FUN_141009710(const Scaleform::GFx::FunctionHandler::Params& params)
+void UINoticeDialog::OnHitAreaMouseOver(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     vfunc_84(1);
 }
 
 // @0x141009740
-void UINoticeDialog::FUN_141009740(const Scaleform::GFx::FunctionHandler::Params& params)
+void UINoticeDialog::OnHitAreaMouseOut(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     vfunc_84(0);
 }
 
 // @0x141009770
-void UINoticeDialog::FUN_141009770(const Scaleform::GFx::FunctionHandler::Params& params)
+void UINoticeDialog::OnShowButtonClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_1410097d0();
+    ToggleShowHide();
 }
 
 // @0x1410097a0
-void UINoticeDialog::FUN_1410097a0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UINoticeDialog::OnMaviewButtonClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e6a)));
 }
 
 // @0x1410097d0
-void UINoticeDialog::FUN_1410097d0()
+void UINoticeDialog::ToggleShowHide()
 {
     if (m_90 == NULL)
         return;
-    if (reinterpret_cast<ASMovieClip*>(m_90.operator->())->FUN_1422c2420() == "show")
-        FUN_141009a60();
+    if (reinterpret_cast<ASMovieClip*>(m_90.operator->())->GetCurrentLabel() == "show")
+        Hide();
     else
-        FUN_141009980();
+        Show();
 }
 
 // @0x141009870
-void UINoticeDialog::FUN_141009870()
+void UINoticeDialog::NavigateToNoticeUrl()
 {
     CString strUrl(*static_cast<Client::Constants*>(GetClientConstants())->NoticeDialogUrl.Get());
     if (strUrl.IsEmpty())
         return;
-    if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5c))
+    if (((CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x5c))
     {
     }
-    reinterpret_cast<CWebBrowserService*>(reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance()))->FUN_141b794e0(reinterpret_cast<CStringA&>(m_strUrl), strUrl);
+    reinterpret_cast<CWebBrowserService*>(reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance()))->ExpandUrlPrefix(reinterpret_cast<CStringA&>(m_strUrl), strUrl);
     reinterpret_cast<Unk_NdBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->SendNewsNotification(1, m_nBrowserId);
 }
 
 // @0x141009950
-void UINoticeDialog::FUN_141009950(int nSeconds)
+void UINoticeDialog::SetHideAt(int nSeconds)
 {
     m_nHideAt = GetTickCountMs2() + nSeconds;
 }
 
 // @0x141009980
-void UINoticeDialog::FUN_141009980()
+void UINoticeDialog::Show()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
-    FUN_141009870();
+    NavigateToNoticeUrl();
     m_90->vfunc_13("show");
-    m_showButton->FUN_1422ce090(1);
+    m_showButton->SetSelected(1);
     vfunc_84(1);
-    FUN_1419235d0();
+    SetTopMostLayer();
 }
 
 // @0x141009a60
-void UINoticeDialog::FUN_141009a60()
+void UINoticeDialog::Hide()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0)
         return;
     vfunc_84(0);
     m_90->vfunc_13("hide");
-    m_showButton->FUN_1422ce090(0);
-    FUN_14135f7f0();
+    m_showButton->SetSelected(0);
+    CloseBrowser();
     m_nHideAt = 0;
 }

@@ -23,7 +23,7 @@
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 of this obj; Get is Value<int>::Get).
-class Unk_SSGConstValue { public: int FUN_140ad5c50(); };
+class Unk_SSGConstValue { public: int GetValue(); };
 
 class Unk_StateDataArg                                   // the state-sync record (slots 1/2 of StateData)
 {
@@ -34,7 +34,7 @@ public:
 };
 MS2_CHECK_OFFSET(Unk_StateDataArg, m_str70, 0x70);
 
-// The casting bar dialog (RTTI UICastingBar, found through FUN_140ac2270).
+// The casting bar dialog (RTTI UICastingBar, found through GetCastingBar).
 class UICastingBar : public UIObject
 {
 public:
@@ -42,13 +42,13 @@ public:
         const CStringW& strLabel);                       // show
     void FUN_1418e1390();                                // cancel
 };
-UICastingBar* FUN_140ac2270(int nId);
+UICastingBar* GetCastingBar(int nId);
 CStringW GetStringCommon(int nId);                         // string table text by id
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_TwBuffMgr { public: };
 
 // @0x140ad5c50
-int Unk_SSGConstValue::FUN_140ad5c50()
+int Unk_SSGConstValue::GetValue()
 {
     return *reinterpret_cast<Common::Constants::Value<int>*>(this)->Get();
 }
@@ -99,7 +99,7 @@ void StateTreeWatering::vfunc_4(StateData* pData)
     m_n48 = 0;
     State::vfunc_4(pData);
     int nTextId;
-    int nDuration = reinterpret_cast<Unk_SSGConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->SummonRideeDuration)->FUN_140ad5c50();
+    int nDuration = reinterpret_cast<Unk_SSGConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->SummonRideeDuration)->GetValue();
     nTextId = 0;
     if (m_n10 == 0xa0)
         nTextId = 0xd1b;
@@ -116,7 +116,7 @@ void StateTreeWatering::vfunc_4(StateData* pData)
     {
         if (((void*)((class PC*)(class PCBase*)(pRider))->GetHeldItem()) != 0)
             ((class PC*)(class PCBase*)(pRider))->SendRequestCube();
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar != 0)
         {
             CStringW strLabel(L"");
@@ -151,7 +151,7 @@ void StateTreeWatering::vfunc_5(int n)
     m_pOwner->FUN_14166e0a0();
     if (FUN_1417b8560())
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
     }
@@ -182,7 +182,7 @@ void StateTreeWatering::vfunc_8(double fTime)
     }
     Unk_TwBuffMgr* pBuff = ((class Unk_TwBuffMgr*)((class PCBase*)(class PCBase*)(pRider))->FUN_14166d240());
     pRider->vfunc_22(reinterpret_cast<const efd::Point3&>(
-        static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+        static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection())));
     if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_1416749c0() != 0)
         pRider->vfunc_59(2, 0, 0, 0);
     else

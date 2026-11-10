@@ -18,7 +18,7 @@
 #include "ms2/ms2recover.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/client/ms2/additionalclilist.h"
-class GameObjectController { public: class GameObjectControllerHitReport * FUN_141240f20(void); void FUN_141240730(void); void FUN_141241070(void); };
+class GameObjectController { public: class GameObjectControllerHitReport * GetHitReport(void); void StopJump(void); void ClearCollisionFlags(void); };
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
 class Unk_StateDataArg
@@ -38,9 +38,9 @@ class GameObjectControllerHitReport { public: void FUN_140cfaf30(); };   // clea
 class Unk_GtBody                                                         // the actor's physics body
 {
 public:
-    void FUN_141240730();                                                // drop the stood-on entity
-    GameObjectControllerHitReport* FUN_141240f20();
-    void FUN_141241070();                                                // start falling
+    void StopJump();                                                // drop the stood-on entity
+    GameObjectControllerHitReport* GetHitReport();
+    void ClearCollisionFlags();                                                // start falling
 };
 
 // ---- StateDataGrabTarget ----
@@ -90,7 +90,7 @@ void StateGrabTarget::vfunc_4(StateData* pData)
     }
     else
     {
-        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240730();
+        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->StopJump();
         m_pOwner->vfunc_31(false);
         MyPC* pPC = FUN_1417b84b0();
         if (pPC != 0)
@@ -100,8 +100,8 @@ void StateGrabTarget::vfunc_4(StateData* pData)
         }
         m_kPos = m_pOwner->vfunc_18();
         m_kDir = m_pOwner->vfunc_20();
-        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240f20()->FUN_140cfaf30();
-        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141241070();
+        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->GetHitReport()->FUN_140cfaf30();
+        ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->ClearCollisionFlags();
     }
 }
 
@@ -109,7 +109,7 @@ void StateGrabTarget::vfunc_4(StateData* pData)
 void StateGrabTarget::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240730();
+    ((class GameObjectController*)(((Unk_GtBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->StopJump();
     m_pOwner->vfunc_31(true);
     m_pOwner->vfunc_21(m_kDir);
 }

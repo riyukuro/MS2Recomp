@@ -155,7 +155,7 @@ Unk_140166410* FUN_140166410();
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 template<class T>struct Unk_PayloadConstant {
@@ -233,12 +233,12 @@ struct Unk_ColorItems {
     ATL::CAtlArray<MS2Ptr<CCItemColoringPacket::ChangeColorItem>> items;
     void FUN_140200950(COutputStream&);
     void FUN_140200a50(void*);
-    void FUN_140200bc0(MS2Ptr<CCItemColoringPacket::ChangeColorItem>);
+    void AddItem(MS2Ptr<CCItemColoringPacket::ChangeColorItem>);
     void FUN_140200c10();
-    bool FUN_140200c40();
-    MS2Ptr<CCItemColoringPacket::ChangeColorItem> FUN_140200c70(size_t);
+    bool IsEmpty();
+    MS2Ptr<CCItemColoringPacket::ChangeColorItem> GetItem(size_t);
     MS2Ptr<CCItemColoringPacket::ChangeColorItem> FUN_140200d40();
-    size_t FUN_140200e10();
+    size_t GetCount();
 };
 MS2_CHECK_SIZE(Unk_ColorItems,0x38);
 MS2_CHECK_OFFSET(Unk_ColorItems,items,0x18);
@@ -264,8 +264,8 @@ struct Unk_PayloadZero {Unk_PayloadZero();int value;};
 MS2_CHECK_SIZE(Unk_PayloadZero,4);
 using TencentUserReport::Unk_ReportData;   // C3: the report record (tencentuserreportdata.h)
 struct Unk_PayloadItemWire {
-    void FUN_1401fcdd0(COutputStream&,MS2Ptr<CItem>);
-    MS2Ptr<CItem> FUN_1401fce40(CInputStream&);
+    void WriteItem(COutputStream&,MS2Ptr<CItem>);
+    MS2Ptr<CItem> ReadItem(CInputStream&);
     void FUN_1401fce90(COutputStream&,MS2Ptr<CItem>);
     MS2Ptr<CItem> FUN_1401fcfc0(CInputStream&);
 };
@@ -482,14 +482,14 @@ void CCCreateItemPacket::vfunc_0(COutputStream& stream)
             Unk_PacketOptionA key=optionsA[index].GetKeyAt(pos);
             MS2Ptr<BaseOption> option=optionsA[index].GetValueAt(pos);
             stream.WriteInt32(key);
-            option->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(stream));
+            option->Write(reinterpret_cast<Unk_EnchantWrite&>(stream));
         }
         stream.WriteUInt8(static_cast<unsigned char>(optionsB[index].GetCount()));
         for(POSITION second=optionsB[index].GetStartPosition();second;optionsB[index].GetNext(second)){
             Unk_PacketOptionB key=optionsB[index].GetKeyAt(second);
             MS2Ptr<BaseOption> option=optionsB[index].GetValueAt(second);
             stream.WriteInt32(key);
-            option->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(stream));
+            option->Write(reinterpret_cast<Unk_EnchantWrite&>(stream));
         }
     }
 }
@@ -508,14 +508,14 @@ void CCCreateItemPacket::vfunc_1(void* packet)
         for(unsigned int n=0;n<count;++n){
             Unk_PacketOptionA key=static_cast<Unk_PacketOptionA>(reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32());
             MS2Ptr<BaseOption> option=new BaseOption;
-            option->FUN_140266d60(*reinterpret_cast<Unk_EnchantRead*>(static_cast<unsigned char*>(packet)+8));
+            option->Read(*reinterpret_cast<Unk_EnchantRead*>(static_cast<unsigned char*>(packet)+8));
             optionsA[index].SetAt(key,option);
         }
         unsigned int secondCount=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
         for(unsigned int n=0;n<secondCount;++n){
             Unk_PacketOptionB key=static_cast<Unk_PacketOptionB>(reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadInt32());
             MS2Ptr<BaseOption> option=new BaseOption;
-            option->FUN_140266d60(*reinterpret_cast<Unk_EnchantRead*>(static_cast<unsigned char*>(packet)+8));
+            option->Read(*reinterpret_cast<Unk_EnchantRead*>(static_cast<unsigned char*>(packet)+8));
             optionsB[index].SetAt(key,option);
         }
     }
@@ -580,7 +580,7 @@ bool FUN_1401fb870(unsigned char* payload,int mode)
         *reinterpret_cast<int*>(payload+12)=1;
         return true;
     case 2:
-        if(((class CFeatureManager*)(void*)(FUN_140166410()))->FUN_14036d570(142)==1)*reinterpret_cast<int*>(payload+12)=2;
+        if(((class CFeatureManager*)(void*)(FUN_140166410()))->IsFeatureEnabled(142)==1)*reinterpret_cast<int*>(payload+12)=2;
         else *reinterpret_cast<int*>(payload+12)=1;
         return true;
     }
@@ -840,11 +840,11 @@ void FUN_1401fc670(unsigned char* payload, void* inputPacket)
 }
 
 // @0x1401fc710
-void FUN_1401fc710(unsigned char* payload, COutputStream& stream)
+void WriteFallDamageHeight(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteFloat(*reinterpret_cast<float*>(payload));
 }
-MS2_REPLACE(0x1401FC710, FUN_1401fc710, 44, 0xDE48B588);
+MS2_REPLACE(0x1401FC710, WriteFallDamageHeight, 44, 0xDE48B588);
 
 
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
@@ -855,7 +855,7 @@ void FUN_1401fc750(unsigned char* payload, void* inputPacket)
 }
 
 // @0x1401fc790
-void FUN_1401fc790(unsigned char* payload, COutputStream& stream)
+void WriteBuddyRequest(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteUInt8(*reinterpret_cast<unsigned char*>(payload + 0));
     switch(*reinterpret_cast<unsigned char*>(payload + 0)) {
@@ -864,7 +864,7 @@ void FUN_1401fc790(unsigned char* payload, COutputStream& stream)
     case 5:case 10:stream.WriteInt64(*reinterpret_cast<__int64*>(payload + 8));stream.WriteUnicodeString(*reinterpret_cast<CStringW*>(payload + 16));stream.WriteUnicodeString(*reinterpret_cast<CStringW*>(payload + 24));break;
     }
 }
-MS2_REPLACE(0x1401FC790, FUN_1401fc790, 310, 0x002C2E8B);
+MS2_REPLACE(0x1401FC790, WriteBuddyRequest, 310, 0x002C2E8B);
 
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
 // @0x1401fc910
@@ -906,12 +906,12 @@ MS2_REPLACE(0x1401FCC40, FUN_1401fcc40, 63, 0xA149175E);
 
 
 // @0x1401fcc90
-void FUN_1401fcc90(unsigned char* payload, COutputStream& stream)
+void WriteRideRequest(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteInt32(*reinterpret_cast<int*>(payload));
     stream.WriteInt64(*reinterpret_cast<__int64*>(payload + 0x8));
 }
-MS2_REPLACE(0x1401FCC90, FUN_1401fcc90, 67, 0xE289C58A);
+MS2_REPLACE(0x1401FCC90, WriteRideRequest, 67, 0xE289C58A);
 
 
 // @0x1401fcce0
@@ -940,29 +940,29 @@ MS2_REPLACE(0x1401FCD80, FUN_1401fcd80, 60, 0x21DC48C6);
 
 
 // @0x1401fcdd0
-void Unk_PayloadItemWire::FUN_1401fcdd0(COutputStream& stream,MS2Ptr<CItem> item)
+void Unk_PayloadItemWire::WriteItem(COutputStream& stream,MS2Ptr<CItem> item)
 {
     COutputStream& out=stream;
     FUN_1401fce90(out,item);
 }
-MS2_REPLACE_METHOD(0x1401FCDD0, Unk_PayloadItemWire, FUN_1401fcdd0, 104, 0x0BE4AB2C);
+MS2_REPLACE_METHOD(0x1401FCDD0, Unk_PayloadItemWire, WriteItem, 104, 0x0BE4AB2C);
 
 // @0x1401fce40
-MS2Ptr<CItem> Unk_PayloadItemWire::FUN_1401fce40(CInputStream& stream)
+MS2Ptr<CItem> Unk_PayloadItemWire::ReadItem(CInputStream& stream)
 {
     return FUN_1401fcfc0(stream);
 }
-MS2_REPLACE_METHOD(0x1401FCE40, Unk_PayloadItemWire, FUN_1401fce40, 68, 0xA85E3908);
+MS2_REPLACE_METHOD(0x1401FCE40, Unk_PayloadItemWire, ReadItem, 68, 0xA85E3908);
 
 // @0x1401fce90
 void Unk_PayloadItemWire::FUN_1401fce90(COutputStream& stream,MS2Ptr<CItem> item)
 {
     if(item==static_cast<CItem*>(0))return;
-    stream.WriteUInt8(item->FUN_140526b50());
-    stream.WriteInt32(item->FUN_1405276c0());
+    stream.WriteUInt8(item->GetSlot());
+    stream.WriteInt32(item->GetItemId());
     stream.WriteInt64(item->GetItemUid());
     stream.WriteInt32(item->GetRarity());
-    item->FUN_140524ad0(stream);
+    item->WriteToStream(stream);
 }
 MS2_REPLACE_METHOD(0x1401FCE90, Unk_PayloadItemWire, FUN_1401fce90, 287, 0x518F52E0);
 
@@ -976,8 +976,8 @@ MS2Ptr<CItem> Unk_PayloadItemWire::FUN_1401fcfc0(CInputStream& stream)
     MS2Ptr<CItem> item=new CItem;
     int ok=item->FUN_140523c40(type,value,0);
     if(!ok)return MS2Ptr<CItem>(0);
-    item->FUN_140524eb0(stream);
-    item->FUN_140526b70(state);
+    item->ReadFromStream(stream);
+    item->SetSlot(state);
     item->SetItemUid(id);
     return item;
 }
@@ -1034,13 +1034,13 @@ void FUN_1401fd360(unsigned char* payload, void* inputPacket)
 MS2_REPLACE(0x1401FD360, FUN_1401fd360, 145, 0xD59F90E7);
 
 // @0x1401fd400
-void FUN_1401fd400(unsigned char* payload, COutputStream& stream)
+void WriteAdditionalEffectRequest(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteInt32(*reinterpret_cast<int*>(payload));
     stream.WriteInt32(*reinterpret_cast<unsigned short*>(payload + 0x4));
     stream.WriteFloat(*reinterpret_cast<float*>(payload + 0x8));
 }
-MS2_REPLACE(0x1401FD400, FUN_1401fd400, 105, 0x8D4447BE);
+MS2_REPLACE(0x1401FD400, WriteAdditionalEffectRequest, 105, 0x8D4447BE);
 
 
 // @0x1401fd470
@@ -1054,7 +1054,7 @@ MS2_REPLACE(0x1401FD470, FUN_1401fd470, 147, 0x5C477225);
 
 
 // @0x1401fd510
-void FUN_1401fd510(unsigned char* payload, COutputStream& stream)
+void WriteSkillUse(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteInt64(*reinterpret_cast<__int64*>(payload + 0));stream.WriteInt32(*reinterpret_cast<int*>(payload + 8));stream.WriteInt32(*reinterpret_cast<int*>(payload + 12));
     stream.WriteInt16(*reinterpret_cast<short*>(payload+16));stream.WriteUInt8(*reinterpret_cast<unsigned char*>(payload + 18));
@@ -1063,12 +1063,12 @@ void FUN_1401fd510(unsigned char* payload, COutputStream& stream)
     reinterpret_cast<Unk_PointWriter*>(&stream)->WritePoint(*reinterpret_cast<Unk_PayloadPoint*>(payload+44));
     stream.WriteFloat(*reinterpret_cast<float*>(payload+56));stream.WriteInt32(*reinterpret_cast<int*>(payload + 60));
     stream.WriteBool(*reinterpret_cast<bool*>(payload+64));stream.WriteInt64(*reinterpret_cast<__int64*>(payload + 72));stream.WriteInt64(*reinterpret_cast<__int64*>(payload + 96));
-    if(((class CFeatureManager*)(void*)(FUN_140166410()))->FUN_14036d570(174)){
+    if(((class CFeatureManager*)(void*)(FUN_140166410()))->IsFeatureEnabled(174)){
         stream.WriteBool(*reinterpret_cast<bool*>(payload+80));
         if(*reinterpret_cast<unsigned char*>(payload + 80)){stream.WriteInt32(*reinterpret_cast<int*>(payload + 84));stream.WriteUnicodeStringA(*reinterpret_cast<CString*>(payload + 88));}
     }
 }
-MS2_REPLACE(0x1401FD510, FUN_1401fd510, 455, 0xFC4EF9EF);
+MS2_REPLACE(0x1401FD510, WriteSkillUse, 455, 0xFC4EF9EF);
 
 // @0x1401fd6e0
 void FUN_1401fd6e0(unsigned char* payload, void* inputPacket)
@@ -1080,7 +1080,7 @@ void FUN_1401fd6e0(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<Unk_PayloadPoint*>(payload+44)=reinterpret_cast<Unk_PayloadReader*>(inputPacket)->ReadPoint<Unk_PayloadPoint>();
     *reinterpret_cast<float*>(payload+56)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadFloat();*reinterpret_cast<int*>(payload + 60)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();
     *reinterpret_cast<bool*>(payload+64)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadBool();*reinterpret_cast<__int64*>(payload + 72)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt64();*reinterpret_cast<__int64*>(payload + 96)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt64();
-    if(((class CFeatureManager*)(void*)(FUN_140166410()))->FUN_14036d570(174)){
+    if(((class CFeatureManager*)(void*)(FUN_140166410()))->IsFeatureEnabled(174)){
         *reinterpret_cast<bool*>(payload+80)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadBool();
         if(*reinterpret_cast<unsigned char*>(payload + 80)){*reinterpret_cast<int*>(payload + 84)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();*reinterpret_cast<CString*>(payload + 88)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadUnicodeStringA();}
     }
@@ -1088,11 +1088,11 @@ void FUN_1401fd6e0(unsigned char* payload, void* inputPacket)
 MS2_REPLACE(0x1401FD6E0, FUN_1401fd6e0, 990, 0xA5C944FB);
 
 // @0x1401fdad0
-void FUN_1401fdad0(unsigned char* payload, COutputStream& stream)
+void WriteNpcId(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteInt32(*reinterpret_cast<int*>(payload));
 }
-MS2_REPLACE(0x1401FDAD0, FUN_1401fdad0, 42, 0x198D3D0B);
+MS2_REPLACE(0x1401FDAD0, WriteNpcId, 42, 0x198D3D0B);
 
 
 // @0x1401fdb00
@@ -1146,13 +1146,13 @@ void FUN_1401fdd00(unsigned char* payload, void* inputPacket)
 }
 
 // @0x1401fddd0
-void FUN_1401fddd0(unsigned char* payload, COutputStream& stream)
+void WriteVibrateInfo(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteString(reinterpret_cast<Unk_NarrowPayload*>(payload)->text);stream.WriteInt64(*reinterpret_cast<__int64*>(payload + 8));stream.WriteInt32(*reinterpret_cast<int*>(payload + 16));
     stream.WriteInt16(*reinterpret_cast<short*>(payload+20));stream.WriteUInt8(*reinterpret_cast<unsigned char*>(payload + 24));stream.WriteUInt8(*reinterpret_cast<unsigned char*>(payload + 28));stream.WriteInt32(*reinterpret_cast<int*>(payload + 32));
     reinterpret_cast<Unk_PointWriter*>(&stream)->WritePoint(*reinterpret_cast<Unk_PayloadPoint*>(payload+36));
 }
-MS2_REPLACE(0x1401FDDD0, FUN_1401fddd0, 223, 0x0C02C129);
+MS2_REPLACE(0x1401FDDD0, WriteVibrateInfo, 223, 0x0C02C129);
 
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
 // @0x1401fdec0
@@ -1165,7 +1165,7 @@ void FUN_1401fdec0(unsigned char* payload, void* inputPacket)
 }
 
 // @0x1401fe0d0
-void FUN_1401fe0d0(unsigned char* payload, COutputStream& stream)
+void WriteBreakableInfo(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteString(reinterpret_cast<Unk_PayloadStrA*>(payload)->str);
     stream.WriteInt64(*reinterpret_cast<__int64*>(payload + 0x8));
@@ -1174,7 +1174,7 @@ void FUN_1401fe0d0(unsigned char* payload, COutputStream& stream)
     stream.WriteUInt8(*reinterpret_cast<unsigned char*>(payload + 0x18));
     stream.WriteUInt8(*reinterpret_cast<unsigned char*>(payload + 0x1c));
 }
-MS2_REPLACE(0x1401FE0D0, FUN_1401fe0d0, 177, 0x7B6F94D9);
+MS2_REPLACE(0x1401FE0D0, WriteBreakableInfo, 177, 0x7B6F94D9);
 
 
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
@@ -1326,12 +1326,12 @@ void FUN_1401fe980(unsigned char* payload, void* inputPacket)
 }
 
 // @0x1401fe9e0
-void FUN_1401fe9e0(unsigned char* payload, COutputStream& stream)
+void WriteTaxiRequest(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteInt32(*reinterpret_cast<int*>(payload));
     stream.WriteInt32(*reinterpret_cast<int*>(payload + 0x4));
 }
-MS2_REPLACE(0x1401FE9E0, FUN_1401fe9e0, 66, 0x5231AD06);
+MS2_REPLACE(0x1401FE9E0, WriteTaxiRequest, 66, 0x5231AD06);
 
 
 // Not hooked: validation can construct a DLL-local Exception.
@@ -1344,11 +1344,11 @@ void FUN_1401fea30(unsigned char* payload, void* inputPacket)
 }
 
 // @0x1401fea90
-void FUN_1401fea90(unsigned char* payload, COutputStream& stream)
+void WriteSummonUid(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteInt64(*reinterpret_cast<__int64*>(payload));
 }
-MS2_REPLACE(0x1401FEA90, FUN_1401fea90, 43, 0xCCA85769);
+MS2_REPLACE(0x1401FEA90, WriteSummonUid, 43, 0xCCA85769);
 
 
 // @0x1401fead0
@@ -1449,7 +1449,7 @@ MS2_REPLACE_METHOD(0x1401FEE50, Unk_PetIdentity, FUN_1401fee50, 226, 0xB35DE9FE)
 // Not hooked: constructs DLL-local RTTI (directly or through validation).
 #ifndef MS2_HOOK_DLL
 // @0x1401fef40
-void Unk_PetIdentity::FUN_1401fef40(void* packet)
+void Unk_PetIdentity::Read(void* packet)
 {
     Unk_CriticalSectionLock guard(&lock,1);
     name=reinterpret_cast<Unk_PayloadReader*>(packet)->ReadWide(Unk_WideMaximum(32));
@@ -1462,12 +1462,12 @@ void Unk_PetIdentity::FUN_1401fef40(void* packet)
 #endif
 
 // @0x1401ff0f0
-void Unk_PetIdentity::FUN_1401ff0f0(const Unk_PetIdentity& other)
+void Unk_PetIdentity::CopyFrom(const Unk_PetIdentity& other)
 {
     Unk_CriticalSectionLock guard(&lock,1);
     name=other.name;id=other.id;value=other.value;level=other.level;state=other.state;
 }
-MS2_REPLACE_METHOD(0x1401FF0F0, Unk_PetIdentity, FUN_1401ff0f0, 154, 0x6CC50086);
+MS2_REPLACE_METHOD(0x1401FF0F0, Unk_PetIdentity, CopyFrom, 154, 0x6CC50086);
 
 // @0x1401ff190
 void Unk_PetIdentity::FUN_1401ff190(COutputStream& stream)
@@ -1502,7 +1502,7 @@ Unk_PetOptions::Unk_PetOptions():map(17,0.75f,0.25f,2.25f,10)
 }
 
 // @0x1401ff3f0
-void Unk_PetOptions::FUN_1401ff3f0(COutputStream& stream)
+void Unk_PetOptions::Write(COutputStream& stream)
 {
     stream.WriteUInt8(static_cast<unsigned char>(map.GetCount()));
     for(POSITION pos=map.GetStartPosition();pos;map.GetNext(pos)) {
@@ -1512,10 +1512,10 @@ void Unk_PetOptions::FUN_1401ff3f0(COutputStream& stream)
         stream.WriteInt32(option.enabled);
     }
 }
-MS2_REPLACE_METHOD(0x1401FF3F0, Unk_PetOptions, FUN_1401ff3f0, 205, 0x2FC926D7);
+MS2_REPLACE_METHOD(0x1401FF3F0, Unk_PetOptions, Write, 205, 0x2FC926D7);
 
 // @0x1401ff4d0
-void Unk_PetOptions::FUN_1401ff4d0(void* packet)
+void Unk_PetOptions::Read(void* packet)
 {
     map.RemoveAll();
     unsigned int count=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(packet)+8)->ReadUInt8();
@@ -1527,10 +1527,10 @@ void Unk_PetOptions::FUN_1401ff4d0(void* packet)
         map.SetAt(index,option);
     }
 }
-MS2_REPLACE_METHOD(0x1401FF4D0, Unk_PetOptions, FUN_1401ff4d0, 260, 0x331C58E3);
+MS2_REPLACE_METHOD(0x1401FF4D0, Unk_PetOptions, Read, 260, 0x331C58E3);
 
 // @0x1401ff5e0
-void Unk_PetOptions::FUN_1401ff5e0(const Unk_PetOptions& other)
+void Unk_PetOptions::CopyFrom(const Unk_PetOptions& other)
 {
     map.RemoveAll();
     for(POSITION pos=other.map.GetStartPosition();pos!=0;other.map.GetNext(pos)) {
@@ -1539,7 +1539,7 @@ void Unk_PetOptions::FUN_1401ff5e0(const Unk_PetOptions& other)
         map.SetAt(key,option);
     }
 }
-MS2_REPLACE_METHOD(0x1401FF5E0, Unk_PetOptions, FUN_1401ff5e0, 149, 0xD429DC30);
+MS2_REPLACE_METHOD(0x1401FF5E0, Unk_PetOptions, CopyFrom, 149, 0xD429DC30);
 
 // @0x1401ff680
 int Unk_PetOptions::FUN_1401ff680()
@@ -1563,7 +1563,7 @@ Unk_PetFlags::Unk_PetFlags():a(1),b(1),c(1),d(1),e(1),f(1),g(1),h(1),i(0),j(1)
 }
 
 // @0x1401ff810
-void FUN_1401ff810(unsigned char* payload, COutputStream& stream)
+void WritePetFlags(unsigned char* payload, COutputStream& stream)
 {
     stream.WriteUInt8(*reinterpret_cast<unsigned char*>(payload));
     stream.WriteUInt8(*reinterpret_cast<unsigned char*>(payload + 0x4));
@@ -1576,11 +1576,11 @@ void FUN_1401ff810(unsigned char* payload, COutputStream& stream)
     stream.WriteInt32(*reinterpret_cast<int*>(payload + 0x24));
     stream.WriteUInt8(*reinterpret_cast<unsigned char*>(payload + 0x1c));
 }
-MS2_REPLACE(0x1401FF810, FUN_1401ff810, 267, 0xEF8C240A);
+MS2_REPLACE(0x1401FF810, WritePetFlags, 267, 0xEF8C240A);
 
 
 // @0x1401ff930
-void FUN_1401ff930(unsigned char* payload, void* inputPacket)
+void ReadPetFlags(unsigned char* payload, void* inputPacket)
 {
     *reinterpret_cast<unsigned int*>(payload) = reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket) + 8)->ReadUInt8();
     *reinterpret_cast<unsigned int*>(payload + 0x4) = reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket) + 8)->ReadUInt8();
@@ -1593,7 +1593,7 @@ void FUN_1401ff930(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<unsigned int*>(payload + 0x24) = reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket) + 8)->ReadInt32();
     *reinterpret_cast<unsigned int*>(payload + 0x1c) = reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket) + 8)->ReadUInt8();
 }
-MS2_REPLACE(0x1401FF930, FUN_1401ff930, 555, 0x6D2D944B);
+MS2_REPLACE(0x1401FF930, ReadPetFlags, 555, 0x6D2D944B);
 
 
 // @0x1401ffb70
@@ -1623,8 +1623,8 @@ CCPetInfoPacket::Info::Info()
 void CCPetInfoPacket::Info::FUN_1401ffca0(COutputStream& stream)
 {
     identity.FUN_1401fee50(stream);
-    options.FUN_1401ff3f0(stream);
-    FUN_1401ff810(reinterpret_cast<unsigned char*>(&flags),stream);
+    options.Write(stream);
+    WritePetFlags(reinterpret_cast<unsigned char*>(&flags),stream);
 }
 MS2_REPLACE_METHOD(0x1401FFCA0, CCPetInfoPacket::Info, FUN_1401ffca0, 87, 0xC23F9BBD);
 
@@ -1633,9 +1633,9 @@ MS2_REPLACE_METHOD(0x1401FFCA0, CCPetInfoPacket::Info, FUN_1401ffca0, 87, 0xC23F
 // @0x1401ffd00
 void CCPetInfoPacket::Info::FUN_1401ffd00(void* packet)
 {
-    identity.FUN_1401fef40(packet);
-    options.FUN_1401ff4d0(packet);
-    FUN_1401ff930(reinterpret_cast<unsigned char*>(&flags),packet);
+    identity.Read(packet);
+    options.Read(packet);
+    ReadPetFlags(reinterpret_cast<unsigned char*>(&flags),packet);
 }
 #endif
 
@@ -1757,17 +1757,17 @@ void Unk_ColorItems::FUN_140200a50(void* packet)
         if(flag==1){
             MS2Ptr<CCItemColoringPacket::ChangeColorItem> item=new CCItemColoringPacket::ChangeColorItem;
             item->FUN_1402001b0(packet);
-            FUN_140200bc0(item);
+            AddItem(item);
         }
     }
 }
 
 // @0x140200bc0
-void Unk_ColorItems::FUN_140200bc0(MS2Ptr<CCItemColoringPacket::ChangeColorItem> item)
+void Unk_ColorItems::AddItem(MS2Ptr<CCItemColoringPacket::ChangeColorItem> item)
 {
     items.Add(item);
 }
-MS2_REPLACE_METHOD(0x140200BC0, Unk_ColorItems, FUN_140200bc0, 61, 0x074EBB45);
+MS2_REPLACE_METHOD(0x140200BC0, Unk_ColorItems, AddItem, 61, 0x074EBB45);
 
 // @0x140200c10
 void Unk_ColorItems::FUN_140200c10()
@@ -1777,25 +1777,25 @@ void Unk_ColorItems::FUN_140200c10()
 MS2_REPLACE_METHOD(0x140200C10, Unk_ColorItems, FUN_140200c10, 31, 0x3439313D);
 
 // @0x140200c40
-bool Unk_ColorItems::FUN_140200c40()
+bool Unk_ColorItems::IsEmpty()
 {
     return items.IsEmpty();
 }
-MS2_REPLACE_METHOD(0x140200C40, Unk_ColorItems, FUN_140200c40, 31, 0xA55FE3CB);
+MS2_REPLACE_METHOD(0x140200C40, Unk_ColorItems, IsEmpty, 31, 0xA55FE3CB);
 
 // @0x140200c70
-MS2Ptr<CCItemColoringPacket::ChangeColorItem> Unk_ColorItems::FUN_140200c70(size_t index)
+MS2Ptr<CCItemColoringPacket::ChangeColorItem> Unk_ColorItems::GetItem(size_t index)
 {
     if(items.IsEmpty())return MS2Ptr<CCItemColoringPacket::ChangeColorItem>(0);
     if(index>=items.GetCount())return MS2Ptr<CCItemColoringPacket::ChangeColorItem>(0);
     return items[index];
 }
-MS2_REPLACE_METHOD(0x140200C70, Unk_ColorItems, FUN_140200c70, 191, 0xA11E03C4);
+MS2_REPLACE_METHOD(0x140200C70, Unk_ColorItems, GetItem, 191, 0xA11E03C4);
 
 // @0x140200d40
 MS2Ptr<CCItemColoringPacket::ChangeColorItem> Unk_ColorItems::FUN_140200d40()
 {
-    MS2Ptr<CCItemColoringPacket::ChangeColorItem> item=FUN_140200c70(0);
+    MS2Ptr<CCItemColoringPacket::ChangeColorItem> item=GetItem(0);
     if(item.get()!=0){
         items.RemoveAt(0,1);
         return item;
@@ -1808,26 +1808,26 @@ MS2Ptr<CCItemColoringPacket::ChangeColorItem> Unk_ColorItems::FUN_140200d40()
 MS2_REPLACE_METHOD(0x140200D40, Unk_ColorItems, FUN_140200d40, 188, 0x633FE9CD);
 
 // @0x140200e10
-size_t Unk_ColorItems::FUN_140200e10()
+size_t Unk_ColorItems::GetCount()
 {
     return items.GetCount();
 }
-MS2_REPLACE_METHOD(0x140200E10, Unk_ColorItems, FUN_140200e10, 31, 0x55BB308A);
+MS2_REPLACE_METHOD(0x140200E10, Unk_ColorItems, GetCount, 31, 0x55BB308A);
 
 // @0x140200e40
 Unk_ReportData::Unk_ReportData()
 {
-    FUN_140200f80();
+    Reset();
 }
 
 // @0x140200f80
-void Unk_ReportData::FUN_140200f80()
+void Unk_ReportData::Reset()
 {
     type=0;reason=0;name=L"";itemName=L"";m_20=0;m_28=0;content=L"";m_38.Reset();
     itemId=0;guildId=0;guildNumber=0;m_60=L"";comment=L"";itemKind=0;m_88=0;m_90=0;m_98=L"";reportTitle=L"";
     reportId=0;reportPath="";reportComment=L"";m_c0=0;m_c8=0;m_d0="";m_d8=0;m_e0=0;
 }
-MS2_REPLACE_METHOD(0x140200F80, Unk_ReportData, FUN_140200f80, 503, 0x9645EFC9);
+MS2_REPLACE_METHOD(0x140200F80, Unk_ReportData, Reset, 503, 0x9645EFC9);
 
 // @0x140201180
 void FUN_140201180(unsigned char* payload, COutputStream& stream)
@@ -1895,7 +1895,7 @@ MS2_REPLACE(0x140201A10, FUN_140201a10, 231, 0xE74226EA);
 
 
 // @0x140201b00
-void FUN_140201b00(unsigned char* payload, void* inputPacket)
+void ReadGiftNew(unsigned char* payload, void* inputPacket)
 {
     *reinterpret_cast<CStringW*>(payload + 0x18)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadUnicodeString();
     *reinterpret_cast<unsigned int*>(payload + 0x20)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadUInt8();
@@ -1905,7 +1905,7 @@ void FUN_140201b00(unsigned char* payload, void* inputPacket)
     *reinterpret_cast<CString*>(payload + 0x30)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadString();
     *reinterpret_cast<CStringW*>(payload + 0x38)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadUnicodeString();
 }
-MS2_REPLACE(0x140201B00, FUN_140201b00, 565, 0x0B7A0CE4);
+MS2_REPLACE(0x140201B00, ReadGiftNew, 565, 0x0B7A0CE4);
 
 // @0x140201d40
 void FUN_140201d40(unsigned char* payload, COutputStream& stream)
@@ -1915,11 +1915,11 @@ void FUN_140201d40(unsigned char* payload, COutputStream& stream)
 MS2_REPLACE(0x140201D40, FUN_140201d40, 91, 0xBB348299);
 
 // @0x140201db0
-void FUN_140201db0(unsigned char* payload, void* inputPacket)
+void ReadMailNew(unsigned char* payload, void* inputPacket)
 {
     *reinterpret_cast<int*>(payload + 24)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();*reinterpret_cast<bool*>(payload+32)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadBool();*reinterpret_cast<int*>(payload + 28)=reinterpret_cast<CInputStream*>(static_cast<unsigned char*>(inputPacket)+8)->ReadInt32();
 }
-MS2_REPLACE(0x140201DB0, FUN_140201db0, 144, 0xF86EB425);
+MS2_REPLACE(0x140201DB0, ReadMailNew, 144, 0xF86EB425);
 
 // @0x140201e50
 void FUN_140201e50(unsigned char* payload, COutputStream& stream)

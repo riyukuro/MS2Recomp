@@ -39,7 +39,7 @@ class Unk_RpBody;
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141240520(float, float);
+    void SetCapsuleSize(float, float);
 };
 
 // @0x141346a40
@@ -65,11 +65,11 @@ void UIRangePreviewDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     ASObj obj(2);
-    obj.FUN_1407cbbe0("collisionPC", reinterpret_cast<bool&>(DAT_143ae95e2));
-    obj.FUN_1407cbbe0("collisionNPC", reinterpret_cast<bool&>(DAT_143ae95e3));
-    obj.FUN_1407cbbe0("skillPC", DAT_143ae95e0);
-    obj.FUN_1407cbbe0("skillNPC", DAT_143ae95e1);
-    m_30->Invoke("initData", obj.FUN_1422bb870());
+    obj.SetBoolMember("collisionPC", reinterpret_cast<bool&>(DAT_143ae95e2));
+    obj.SetBoolMember("collisionNPC", reinterpret_cast<bool&>(DAT_143ae95e3));
+    obj.SetBoolMember("skillPC", DAT_143ae95e0);
+    obj.SetBoolMember("skillNPC", DAT_143ae95e1);
+    m_30->Invoke("initData", obj.GetValue());
 }
 MS2_REPLACE_METHOD(0x141346B20, UIRangePreviewDialog, OnLoadComplete, 282, 0x7D8BCB79);
 
@@ -81,13 +81,13 @@ int UIRangePreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     if (_stricmp("onCheckCollision", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_141346dc0(this, &data);
+            OnCheckCollision(this, &data);
         return 1;
     }
     else if (_stricmp("onCheckSkillRange", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_141346e00(this, &data);
+            OnCheckSkillRange(this, &data);
         return 1;
     }
     else if (_stricmp("onClickNpcExtentReload", szMethod) == 0) {
@@ -99,14 +99,14 @@ int UIRangePreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 MS2_REPLACE_METHOD(0x141346C40, UIRangePreviewDialog, vfunc_28, 370, 0x2E61E272);
 
 // @0x141346dc0
-void FUN_141346dc0(UIRangePreviewDialog* pDialog, ASData* pArgs)
+void OnCheckCollision(UIRangePreviewDialog* pDialog, ASData* pArgs)
 {
     reinterpret_cast<bool&>(DAT_143ae95e2) = pArgs->PopBool();
     reinterpret_cast<bool&>(DAT_143ae95e3) = pArgs->PopBool();
 }
 
 // @0x141346e00
-void FUN_141346e00(UIRangePreviewDialog* pDialog, ASData* pArgs)
+void OnCheckSkillRange(UIRangePreviewDialog* pDialog, ASData* pArgs)
 {
     DAT_143ae95e0 = pArgs->PopBool();
     DAT_143ae95e1 = pArgs->PopBool();
@@ -116,7 +116,7 @@ void FUN_141346e00(UIRangePreviewDialog* pDialog, ASData* pArgs)
 void UIRangePreviewDialog::OnClickNpcExtentReload()
 {
     FUN_140a7cbe0(((void*)FUN_1406d6e90()));
-    void* pMap = WorldService::GetInstance()->FUN_141bd36d0();
+    void* pMap = WorldService::GetInstance()->GetNpcMap();
     for (POSITION pos = reinterpret_cast<ATL::CRBTree<unsigned, efd::SmartPointer<CNpc> >*>(pMap)->GetHeadPosition(); pos != 0; reinterpret_cast<const ATL::CRBTree<unsigned, efd::SmartPointer<CNpc> >*>(pMap)->GetNext(pos))
     {
         PCBase* pNpc = reinterpret_cast<const ATL::CRBTree<unsigned, efd::SmartPointer<CNpc> >*>(pMap)->GetValueAt(pos).operator CNpc*();
@@ -127,7 +127,7 @@ void UIRangePreviewDialog::OnClickNpcExtentReload()
                 continue;
             pNpc->FUN_141670d50(efd::Point2(*(float*)((char*)kData.operator->() + 0x2d8),
                                             *(float*)((char*)kData.operator->() + 0x2dc)));
-            ((class GameObjectController*)(class Unk_RpBody*)(((class Unk_RpBody*)((class PCBase*)(class PCBase*)(pNpc))->GetPhysicsBody())))->FUN_141240520(*(float*)((char*)kData.operator->() + 0x2d8), *(float*)((char*)kData.operator->() + 0x2dc));
+            ((class GameObjectController*)(class Unk_RpBody*)(((class Unk_RpBody*)((class PCBase*)(class PCBase*)(pNpc))->GetPhysicsBody())))->SetCapsuleSize(*(float*)((char*)kData.operator->() + 0x2d8), *(float*)((char*)kData.operator->() + 0x2dc));
             NiPoint3 kPos = pNpc->vfunc_18();
             kPos.z += *(float*)((char*)kData.operator->() + 0x2dc);
             pNpc->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));

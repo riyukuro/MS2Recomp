@@ -519,7 +519,7 @@ void CPonyTailController::vfunc_37()
 // The position of a point mirrored across the plane through kOrigin (with its z taken from the point) whose normal is
 // kAxis.
 // @0x141695bc0
-Vector3 CPonyTailController::FUN_141695bc0(const Vector3& kOrigin, const Vector3& kPoint,
+Vector3 CPonyTailController::MirrorPoint(const Vector3& kOrigin, const Vector3& kPoint,
                                                    const Vector3& kAxis)
 {
     Vector3 kPlane = kOrigin;
@@ -619,7 +619,7 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
                 Unk_NiMatrix3 mTurn;
                 ((efd::Matrix3*)(struct Unk_EfdMatrix3*)(&mTurn))->MakeIdentity();
                 if ((m_spPicker.operator CItemPickingHelper*() ? true : false) && m_spPicker->GetPickedIndex() == 0)
-                    mTurn.FUN_14107cc40(3.1415927f, reinterpret_cast<Vector3&>(kFwd));
+                    mTurn.MakeRotation(3.1415927f, reinterpret_cast<Vector3&>(kFwd));
                 m_kFirst.m_kPose.m_fScale = reinterpret_cast<CEquipModel*>(spFirst.operator->())->vfunc_21();
                 Unk_NiMatrix3 mRot(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(mTurn) * reinterpret_cast<const efd::Matrix3&>(static_cast<const NiMatrix3&>(NiMatrix3(kN, kUp, kFwd))))));
                 memcpy(&m_kFirst.m_kPose.m_Rotate, &mRot, sizeof(mRot));
@@ -650,10 +650,10 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
                 Vector3 kAnchor = reinterpret_cast<const Vector3&>(m_kFirst.m_kAnchor);
                 Vector3 kOldAnchor = reinterpret_cast<const Vector3&>(m_kSecond.m_kAnchor);
                 NiPoint3 kPlayerPos = pPlayer->vfunc_18();
-                Vector3 kMirror = FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), reinterpret_cast<const Vector3&>(kHit), kRight);
+                Vector3 kMirror = MirrorPoint(reinterpret_cast<const Vector3&>(kPlayerPos), reinterpret_cast<const Vector3&>(kHit), kRight);
                 efd::Point3 kTip = reinterpret_cast<const efd::Point3&>(kHit) + kAnchor * 10.0f;
                 reinterpret_cast<efd::Point3&>(kPlayerPos) = reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_18()));
-                m_kSecond.m_kAnchor = FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), kTip, kRight) - kMirror;
+                m_kSecond.m_kAnchor = MirrorPoint(reinterpret_cast<const Vector3&>(kPlayerPos), kTip, kRight) - kMirror;
                 reinterpret_cast<efd::Point3&>(m_kSecond.m_kAnchor).Unitize();
                 if (*(int*)((char*)((Unk_PickPartInfo*)FUN_141200ab0((class CEquipModel*)(spSecond.operator->()))) + 0x28) == 1)
                 {
@@ -677,7 +677,7 @@ void CPonyTailController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNormal
                     Unk_NiMatrix3 mTurn;
                     ((efd::Matrix3*)(struct Unk_EfdMatrix3*)(&mTurn))->MakeIdentity();
                     if ((m_spPicker.operator CItemPickingHelper*() ? true : false) && m_spPicker->GetPickedIndex() == 1)
-                        mTurn.FUN_14107cc40(3.1415927f, reinterpret_cast<Vector3&>(kFwd));
+                        mTurn.MakeRotation(3.1415927f, reinterpret_cast<Vector3&>(kFwd));
                     m_kSecond.m_kPose.m_fScale = reinterpret_cast<CEquipModel*>(spSecond.operator->())->vfunc_21();
                     Unk_NiMatrix3 mRot(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(mTurn) * reinterpret_cast<const efd::Matrix3&>(static_cast<const NiMatrix3&>(NiMatrix3(kN, kUp, kFwd))))));
                     memcpy(&m_kSecond.m_kPose.m_Rotate, &mRot, sizeof(mRot));
@@ -761,14 +761,14 @@ void CPonyTailController::FUN_141694650()
         NiPoint3 kRight, kForward;
         FUN_140a01250(reinterpret_cast<const efd::Point3&>(static_cast<const NiPoint3&>(pPlayer->vfunc_20())), reinterpret_cast<efd::Point3*>(&kForward), reinterpret_cast<efd::Point3*>(&kRight));
         NiPoint3 kPlayerPos = pPlayer->vfunc_18();
-        Vector3 kMirror = FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos),
+        Vector3 kMirror = MirrorPoint(reinterpret_cast<const Vector3&>(kPlayerPos),
                                         reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_23())),
                                         reinterpret_cast<const Vector3&>(kRight));
         reinterpret_cast<Unk_PonyModelSlots*>(m_kSecond.m_spModel.operator->())->vfunc_24(reinterpret_cast<const NiPoint3&>(kMirror));
         efd::Point3 kTip = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(reinterpret_cast<CEquipModel*>(m_kFirst.m_spModel.operator->())->vfunc_23()))))
                                    + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(m_kFirst.m_kAnchor))) * 10.0f;
         static_cast<efd::Point3&>(kPlayerPos) = pPlayer->vfunc_18();   // efd::Point3::operator= (0x140194470)
-        m_kSecond.m_kAnchor = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>((FUN_141695bc0(reinterpret_cast<const Vector3&>(kPlayerPos), reinterpret_cast<Vector3&>(kTip), reinterpret_cast<const Vector3&>(kRight)) - kMirror)))));
+        m_kSecond.m_kAnchor = static_cast<NiPoint3&&>(const_cast<NiPoint3&>(reinterpret_cast<const NiPoint3&>(static_cast<const Unk_NiPoint3&>((MirrorPoint(reinterpret_cast<const Vector3&>(kPlayerPos), reinterpret_cast<Vector3&>(kTip), reinterpret_cast<const Vector3&>(kRight)) - kMirror)))));
         reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor).Unitize();
         Vector3 kEuler = FUN_140a0b080(kMirror, reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kMirror) + reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Vector3&>(m_kSecond.m_kAnchor))) * 10.0f)), DAT_143a08cf8);
         kEuler.z = kEuler.z + 90.0f;
@@ -855,13 +855,13 @@ void CPonyTailController::FUN_141695220()
         return;
     if (m_kFirst.m_spModel == (CEquipModel*)0 && m_kSecond.m_spModel == (CEquipModel*)0)
         return;
-    FUN_1416952c0(&m_kFirst);
-    FUN_1416952c0(&m_kSecond);
+    ApplyPartRestPose(&m_kFirst);
+    ApplyPartRestPose(&m_kSecond);
     m_bBusy = 1;
 }
 
 // @0x1416952c0
-void CPonyTailController::FUN_1416952c0(Unk_PonyPart* pPart)
+void CPonyTailController::ApplyPartRestPose(Unk_PonyPart* pPart)
 {
     MS2Ptr<CEquipModel> spPart = pPart->m_spModel;
     if (spPart == (CEquipModel*)0)
@@ -896,14 +896,14 @@ void CPonyTailController::FUN_1416955b0(int nMode, int nIndex, Unk_PonyPoseFn pF
 {
     if (m_bBusy == 0)
         return;
-    FUN_141695710(&m_kFirst, nMode, nIndex, pFn, nValue, 0);
-    FUN_141695710(&m_kSecond, nMode, nIndex, pFn, nValue, 1);
+    ApplyPartPose(&m_kFirst, nMode, nIndex, pFn, nValue, 0);
+    ApplyPartPose(&m_kSecond, nMode, nIndex, pFn, nValue, 1);
     vfunc_39(nIndex != 0 ? true : false);
     m_bBusy = 0;
 }
 
 // @0x141695710
-void CPonyTailController::FUN_141695710(Unk_PonyPart* pPart, int nMode, int nIndex, Unk_PonyPoseFn pFn, int nValue,
+void CPonyTailController::ApplyPartPose(Unk_PonyPart* pPart, int nMode, int nIndex, Unk_PonyPoseFn pFn, int nValue,
                                         int bSecond)
 {
     egmAnimation::AnimationService* pSvc = FUN_141b6f910();
@@ -1023,7 +1023,7 @@ float FUN_141696cf0(const float* pValues, const Unk_PonyJointEntry* pEntry)
 }
 
 // @0x141696de0
-void FUN_141696de0(NxJointLimitSoftDesc* pLimit, float fValue)
+void SetJointLimitSoftDesc(NxJointLimitSoftDesc* pLimit, float fValue)
 {
     if (FUN_1409a8f90(&fValue) == 0)
     {
@@ -1045,11 +1045,11 @@ void FUN_141696de0(NxJointLimitSoftDesc* pLimit, float fValue)
 // @0x141696ea0
 void SetD6JointLimits(NxD6JointDesc* pDesc, float fValue)
 {
-    FUN_141696de0(&pDesc->linearLimit, fValue);
-    FUN_141696de0(&pDesc->swing1Limit, fValue);
-    FUN_141696de0(&pDesc->swing2Limit, fValue);
-    FUN_141696de0(&pDesc->twistLimit.low, fValue);
-    FUN_141696de0(&pDesc->twistLimit.high, fValue);
+    SetJointLimitSoftDesc(&pDesc->linearLimit, fValue);
+    SetJointLimitSoftDesc(&pDesc->swing1Limit, fValue);
+    SetJointLimitSoftDesc(&pDesc->swing2Limit, fValue);
+    SetJointLimitSoftDesc(&pDesc->twistLimit.low, fValue);
+    SetJointLimitSoftDesc(&pDesc->twistLimit.high, fValue);
 }
 
 // @0x141696f40

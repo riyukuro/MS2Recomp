@@ -42,10 +42,10 @@ MS2_REPLACE_METHOD(0x140E93830, UISkillPreviewDialog, vfunc_67, 45, 0x89DA258E);
 // @0x140e93870
 int UISkillPreviewDialog::vfunc_65()
 {
-    if (!vfunc_55()) FUN_1419235d0();
+    if (!vfunc_55()) SetTopMostLayer();
     m_skill = 0;
     m_level = 0;
-    FUN_140e93ff0();
+    CreateAvatar();
     return UIDialog::vfunc_65();
 }
 MS2_REPLACE_METHOD(0x140E93870, UISkillPreviewDialog, vfunc_65, 96, 0xDE108BC1);
@@ -114,7 +114,7 @@ int UISkillPreviewDialog::vfunc_o178_1(void* avatar)
     if (!avatar) return 0;
     LoadRenderTarget();
     AScript data(2);
-    m_30->Invoke("initData", data.FUN_1422bb870());
+    m_30->Invoke("initData", data.GetValue());
     return 1;
 }
 MS2_REPLACE_METHOD_VIA(0x140E93D40, UISkillPreviewDialog, IUIAvatarEventListener, vfunc_o178_1, 221, 0x2DA9586A);
@@ -145,7 +145,7 @@ void UISkillPreviewDialog::FUN_140e93e70(int skill, unsigned short level)
 MS2_REPLACE_METHOD(0x140E93E70, UISkillPreviewDialog, FUN_140e93e70, 368, 0xA3D6BD91);
 
 // @0x140e93ff0
-void UISkillPreviewDialog::FUN_140e93ff0()
+void UISkillPreviewDialog::CreateAvatar()
 {
     if (m_avatar.get()) return;
     WorldService* player = WorldService::GetInstance();
@@ -155,7 +155,7 @@ void UISkillPreviewDialog::FUN_140e93ff0()
     m_avatar.AssignRaw(new UIAvatarPC(actor, true));
     m_avatar->vfunc_1(this);
 }
-MS2_REPLACE_METHOD(0x140E93FF0, UISkillPreviewDialog, FUN_140e93ff0, 342, 0x09033A99);
+MS2_REPLACE_METHOD(0x140E93FF0, UISkillPreviewDialog, CreateAvatar, 342, 0x09033A99);
 
 // @0x140e94150
 void UISkillPreviewDialog::LoadRenderTarget()

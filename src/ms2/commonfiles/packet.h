@@ -32,7 +32,7 @@ inline void FUN_14020af60(COutPacket* out, const Vector3* p)                    
 
 #define MS2_PKT_FILE L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\packet.h"
 // @0x14020b630
-inline void COutPacket::FUN_14020b630(unsigned n)
+inline void COutPacket::EnsureBufferCapacity(unsigned n)
 {
     unsigned neededBufferSize = m_nLength + n;
     (void)((neededBufferSize <= 0xffffffffu) || (_wassert(L"neededBufferSize <= MAX_LEN_PACKET", MS2_PKT_FILE, 0x340), 0));
@@ -43,25 +43,25 @@ inline void COutPacket::FUN_14020b630(unsigned n)
     }
 }
 #define MS2_PKT_PUT(Size, Put, value) \
-    do { FUN_14020b630(Size(value)); m_nLength += Put(value, (unsigned char*)&m_aBuffer[0] + m_nLength); } while (0)
+    do { EnsureBufferCapacity(Size(value)); m_nLength += Put(value, (unsigned char*)&m_aBuffer[0] + m_nLength); } while (0)
 
 // @0x14020a630
 inline COutPacket::~COutPacket() {}
 // @0x14020aa30
-inline void COutPacket::FUN_14020aa30(const COutPacket& src, int offset)
+inline void COutPacket::AppendPayload(const COutPacket& src, int offset)
 {
-    WriteBytes(src.m_aBuffer.GetData() + offset, src.FUN_14020b9f0() - offset);
+    WriteBytes(src.m_aBuffer.GetData() + offset, src.GetLength() - offset);
 }
 // @0x14020ac70
-inline void COutPacket::WriteUInt8(unsigned char value) { FUN_14020b630(FUN_14020abc0(value)); m_nLength += FUN_14020ac40(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
+inline void COutPacket::WriteUInt8(unsigned char value) { EnsureBufferCapacity(FUN_14020abc0(value)); m_nLength += FUN_14020ac40(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
 // @0x14020ad10
-inline void COutPacket::WriteInt16(short value) { FUN_14020b630(FUN_14020abd0(value)); m_nLength += FUN_14020ace0(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
+inline void COutPacket::WriteInt16(short value) { EnsureBufferCapacity(FUN_14020abd0(value)); m_nLength += FUN_14020ace0(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
 // @0x14020adb0
-inline void COutPacket::WriteInt32(int value) { FUN_14020b630(FUN_14020abe0(value)); m_nLength += FUN_14020ad80(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
+inline void COutPacket::WriteInt32(int value) { EnsureBufferCapacity(FUN_14020abe0(value)); m_nLength += FUN_14020ad80(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
 // @0x14020ae50
-inline void COutPacket::WriteInt64(__int64 value) { FUN_14020b630(FUN_14020abf0(value)); m_nLength += FUN_14020ae20(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
+inline void COutPacket::WriteInt64(__int64 value) { EnsureBufferCapacity(FUN_14020abf0(value)); m_nLength += FUN_14020ae20(value, (unsigned char*)&m_aBuffer[0] + m_nLength); }
 // @0x14020aef0
-inline void COutPacket::WriteBytes(const void* data, int count) { FUN_14020b630(count); m_nLength += FUN_14020aec0(data, count, (unsigned char*)&m_aBuffer[0] + m_nLength); }
+inline void COutPacket::WriteBytes(const void* data, int count) { EnsureBufferCapacity(count); m_nLength += FUN_14020aec0(data, count, (unsigned char*)&m_aBuffer[0] + m_nLength); }
 // @0x14020afc0
 inline void COutPacket::WriteUnicodeStringA(const CString& value) { CStringW text = FUN_14016a730(value, 0); WriteUnicodeString(text); }
 // @0x14020b090
@@ -69,7 +69,7 @@ inline void COutPacket::WriteString(const CString& value)
 {
     CString text = value;
     if (text.GetLength() > 0xffff) text = text.Left(0xffff);
-    FUN_14020b630(FUN_14020ac00(text));
+    EnsureBufferCapacity(FUN_14020ac00(text));
     m_nLength += FUN_14020b020(text, (unsigned char*)&m_aBuffer[0] + m_nLength);
 }
 // @0x14020b1e0
@@ -77,7 +77,7 @@ inline void COutPacket::WriteUnicodeString(const CStringW& value)
 {
     CStringW text = value;
     if (text.GetLength() > 0xffff) text = text.Left(0xffff);
-    FUN_14020b630(FUN_14020ac20(text));
+    EnsureBufferCapacity(FUN_14020ac20(text));
     m_nLength += FUN_14020b170(text, (unsigned char*)&m_aBuffer[0] + m_nLength);
 }
 // @0x14020b2c0
@@ -97,7 +97,7 @@ inline void COutPacket::WriteVector3Short(const Vector3& value)
 inline void COutPacket::WriteFloat(float value)
 {
     int n = (int)(__int64)value;
-    FUN_14020b630(FUN_14020abe0(n));
+    EnsureBufferCapacity(FUN_14020abe0(n));
     m_nLength += FUN_14020b410(value, (unsigned char*)&m_aBuffer[0] + m_nLength);
 }
 // @0x14020b4d0

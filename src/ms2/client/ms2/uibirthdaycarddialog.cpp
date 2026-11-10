@@ -29,7 +29,7 @@ public:
     __int64 m_pad_00[0x23d];
     __int64 m_nBirthday;                                        // +0x11e8
 };
-__int64 FUN_140bb9ba0(Unk_BirthdayActor* pActor);
+__int64 GetBirthday(Unk_BirthdayActor* pActor);
 
 // The sound manager (scenestategame.cpp's Unk_SSGEffectMgr).
 class Unk_BirthdaySound
@@ -51,7 +51,7 @@ CString DAT_143abd4f8("02100303");
 // @0x140bb9770
 UIBirthdayCardDialog::UIBirthdayCardDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140bb97d0
@@ -111,7 +111,7 @@ void UIBirthdayCardDialog::FUN_140bb9960()
         {
             if (((unsigned int)((class PC*)(pActor))->FUN_141660030()) != 0)
             {
-                CMsTime time(FUN_140bb9ba0(pActor));
+                CMsTime time(GetBirthday(pActor));
                 int nMonth;
                 m_30->Invoke("setBirthDay", Unk_SocketFormat<int>("{0:02d}", (nMonth = time.GetMonth())));
                 TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/system"), CString(DAT_143abd4f8), CString(""), 1, 0, 1.0f, 0);
@@ -122,7 +122,7 @@ void UIBirthdayCardDialog::FUN_140bb9960()
 MS2_REPLACE_METHOD(0x140bb9960, UIBirthdayCardDialog, FUN_140bb9960, 506, 0x608DD92A);
 
 // @0x140bb9ba0
-__int64 FUN_140bb9ba0(Unk_BirthdayActor* pActor)
+__int64 GetBirthday(Unk_BirthdayActor* pActor)
 {
     return pActor->m_nBirthday;
 }

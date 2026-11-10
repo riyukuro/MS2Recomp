@@ -29,7 +29,7 @@ public:
     virtual void vfunc_26();                                        // 26
     virtual int vfunc_48() { return 0x4f21; }                       // 48 UI type id (COMDAT 0x140e18480)
 
-    void FUN_140e17930(CInPacket& packet);                          // packet handler: reads m_178, m_17c
+    void OnRoomPacket(CInPacket& packet);                          // packet handler: reads m_178, m_17c
 
 private:
     MS2_LAYOUT_FRIEND;

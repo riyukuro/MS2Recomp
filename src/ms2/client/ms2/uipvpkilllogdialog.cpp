@@ -35,12 +35,12 @@ public:
 template <class A> CStringW FormatStringId(int nId, const A& a);       // string table text with one name
 int FUN_141276180(const CString& strName, const CString& strOpt);   // play a sound
 void FUN_1412751b0(const CStringW& strMsg, int nType);
-void FUN_141925e70(int, int);
+void SetFlag(int, int);
 
 // @0x141342570
 UIPvPKillLogDialog::UIPvPKillLogDialog()
 {
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
 }
 
 // @0x141342600
@@ -76,7 +76,7 @@ void UIPvPKillLogDialog::OnLoadComplete()
     {
         if (m_strTarget.GetLength() != 0)
         {
-            FUN_141342880(m_strAttacker, m_strTarget);
+            AddKill(m_strAttacker, m_strTarget);
             m_strAttacker = L"";
             m_strTarget = L"";
         }
@@ -93,7 +93,7 @@ void UIPvPKillLogDialog::vfunc_79(void* p)
 }
 
 // @0x141342880
-void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
+void UIPvPKillLogDialog::AddKill(CStringW strAttacker, CStringW strTarget)
 {
     if (m_30.IsNull())
     {
@@ -105,10 +105,10 @@ void UIPvPKillLogDialog::FUN_141342880(CStringW strAttacker, CStringW strTarget)
     if (pMe == 0)
         return;
     ASObj obj(2);
-    obj.FUN_1407cbb20("attackerName", strAttacker);
-    obj.FUN_1407cbb20("targetName", strTarget);
-    obj.FUN_1407cbb20("myName", pMe->vfunc_77());
-    m_30->Invoke("addKill", Scaleform::GFx::Value(obj.FUN_1422bb870()));
+    obj.SetWStringMember("attackerName", strAttacker);
+    obj.SetWStringMember("targetName", strTarget);
+    obj.SetWStringMember("myName", pMe->vfunc_77());
+    m_30->Invoke("addKill", Scaleform::GFx::Value(obj.GetValue()));
     if (strAttacker == pMe->vfunc_77())
     {
         FUN_141276180(s_strBattleFieldKill, "");

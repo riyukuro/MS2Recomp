@@ -132,16 +132,16 @@ class Unk_BingoSlot : public ASItemSlot
 class Unk_BingoClip : public ASMovieClip
 {
 public:
-    MS2Ptr<ASItemSlot> FUN_140bb4ba0(const CString&);
+    MS2Ptr<ASItemSlot> GetItemSlot(const CString&);
 };
 class UIMessageBox { public: void FUN_1419f8120(); };
 UIMessageBox* GetMessageBoxLayer();
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int, CStringW, void*, CStringW);
 void FUN_14151f150(MS2Ptr<CMsgBoxData>);
 class ASDialog : public ASDisplayObject {};
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
-void FUN_1412751f0(const CStringW&, int, int);
+void ShowSystemNotice(const CStringW&, int, int);
 void FUN_1401cdae0(ATL::CAtlArray<int>*, int);
 extern Unk_Inventory g_143ab2a90;
 // FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
@@ -152,7 +152,7 @@ class CGameEventValueManager;
 int FUN_14053feb0(int);
 CStringW StringFormat(const wchar_t*);
 
-void FUN_1401d9a30(CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
+void ParseIntArray(CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 __int64 GetServerTime();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 bool IsEarlierDay(CMsTime, CMsTime, int);   // C3: was FUN_14086ab70 (commonfiles/timeutil.cpp)
@@ -160,9 +160,9 @@ int FUN_141276180(const CString&, const CString&);
 
 // ---- the scalar / index codecs of the delegate user data (the exe keeps the index in the data pointer) ----
 // @0x140bb9630
-inline void* FUN_140bb9630(int n) { return (void*)(__int64)n; }
+inline void* IntToUserData(int n) { return (void*)(__int64)n; }
 // @0x140bb9640
-inline int FUN_140bb9640(void* n) { return (int)(__int64)n; }
+inline int UserDataToInt(void* n) { return (int)(__int64)n; }
 
 // ---- GetChild specializations (one COMDAT per wrapper class) ----
 // @0x140bb4b10 (owner: this unit; uiinventorydialog only declares it)
@@ -181,7 +181,7 @@ template <> MS2Ptr<ASItemSlot> Unk_ASCreate<ASItemSlot>(int nMovieId, const Scal
 }
 
 // @0x140bb4ba0
-MS2Ptr<ASItemSlot> Unk_BingoClip::FUN_140bb4ba0(const CString& strName)
+MS2Ptr<ASItemSlot> Unk_BingoClip::GetItemSlot(const CString& strName)
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (v.IsObject())
@@ -194,7 +194,7 @@ template <> MS2Ptr<ASItemSlot> UISwfEntity::GetChild<ASItemSlot>(const CString& 
 {
     if (m_30 == 0)
         return MS2Ptr<ASItemSlot>(0);
-    return static_cast<Unk_BingoClip*>(m_30.operator->())->FUN_140bb4ba0(strName);
+    return static_cast<Unk_BingoClip*>(m_30.operator->())->GetItemSlot(strName);
 }
 
 // @0x140bb4cf0
@@ -307,14 +307,14 @@ void UIBingoEventDialog::OnLoadComplete()
         if ((size_t)i != 7)
         {
             unsigned n = i + 1;
-            text->SetTextW(StringFormat<unsigned int>(FUN_14025e7a0()->Localize("$s_bingo_event_dialog_reward_condition"), n));
+            text->SetTextW(StringFormat<unsigned int>(GetGFxManager()->Localize("$s_bingo_event_dialog_reward_condition"), n));
         }
         else
-            text->SetTextW(StringFormat(FUN_14025e7a0()->Localize("$s_bingo_event_dialog_reward_condition_last")));
+            text->SetTextW(StringFormat(GetGFxManager()->Localize("$s_bingo_event_dialog_reward_condition_last")));
         MS2Ptr<ASButton> receive = reinterpret_cast<AScript*>(list.operator->())->FUN_140acce30<ASButton>("m_receiveButton");
         if (receive.IsNull())
             continue;
-        reinterpret_cast<ASButton*>(receive.operator->())->FUN_1422ce240(BingoParamsDelegate(this, &UIBingoEventDialog::SendEventRewardMode23), FUN_140bb9630(i));
+        reinterpret_cast<ASButton*>(receive.operator->())->FUN_1422ce240(BingoParamsDelegate(this, &UIBingoEventDialog::SendEventRewardMode23), IntToUserData(i));
         m_receive.SetAt(i, receive);
         Unk_BingoSlots slots(Unk_BingoNewTag(0));
         for (unsigned long long j = 0; j < 2; j++)
@@ -330,7 +330,7 @@ void UIBingoEventDialog::OnLoadComplete()
             {
                 for (unsigned long long k = 0; k <= j; k++)
                 {
-                    MS2Ptr<ASItemSlot> slot = BINGO_CLIP(group)->FUN_140bb4ba0(StringFormat<unsigned __int64>("m_slot{0}", k));
+                    MS2Ptr<ASItemSlot> slot = BINGO_CLIP(group)->GetItemSlot(StringFormat<unsigned __int64>("m_slot{0}", k));
                     if (slot.IsNull())
                         break;
                     slots->Add(slot);
@@ -346,20 +346,20 @@ void UIBingoEventDialog::OnLoadComplete()
     if (freeUse.IsNull())
         return;
     m_free.m_use = freeUse;
-    static_cast<ASMovieClip*>((ASDisplayObject*)freeUse.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::FUN_140bb0ea0), FUN_140bb9630(0));
+    static_cast<ASMovieClip*>((ASDisplayObject*)freeUse.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::OnClickUseItem), IntToUserData(0));
     MS2Ptr<ASButton> cashUse = GetChild<ASButton>("m_useCashItem");
     if (cashUse.IsNull())
         return;
     m_cash.m_use = cashUse;
-    static_cast<ASMovieClip*>((ASDisplayObject*)cashUse.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::FUN_140bb0ea0), FUN_140bb9630(1));
+    static_cast<ASMovieClip*>((ASDisplayObject*)cashUse.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::OnClickUseItem), IntToUserData(1));
     m_free.m_cancel = GetChild<ASButton>("m_cancelFreeItem");
     if (m_free.m_cancel == 0)
         return;
-    static_cast<ASMovieClip*>((ASDisplayObject*)m_free.m_cancel.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::FUN_140bb13e0), FUN_140bb9630(0));
+    static_cast<ASMovieClip*>((ASDisplayObject*)m_free.m_cancel.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::OnClickCancelItem), IntToUserData(0));
     m_cash.m_cancel = GetChild<ASButton>("m_cancelCashItem");
     if (m_cash.m_cancel == 0)
         return;
-    static_cast<ASMovieClip*>((ASDisplayObject*)m_cash.m_cancel.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::FUN_140bb13e0), FUN_140bb9630(1));
+    static_cast<ASMovieClip*>((ASDisplayObject*)m_cash.m_cancel.operator->())->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::OnClickCancelItem), IntToUserData(1));
     m_free.m_text = GetChild<ASTextField>("m_freeItemText");
     m_cash.m_text = GetChild<ASTextField>("m_cashItemText");
     m_free.m_icon = GetChild<ASMovieClip>("m_freeItemIcon");
@@ -388,7 +388,7 @@ void UIBingoEventDialog::OnLoadComplete()
         MS2Ptr<BingoContext> ref2 = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
         if (!ref2)
             return;
-        CStringW str = FUN_14025e7a0()->Localize("$s_bingo_event_description");
+        CStringW str = GetGFxManager()->Localize("$s_bingo_event_description");
         str = StringFormat<CStringW, CStringW>((const wchar_t*)str, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref2->m_freeItemId), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref2->m_cashItemId));
         desc->SetTextW(str);
     }
@@ -408,10 +408,10 @@ void UIBingoEventDialog::vfunc_79(void* pData)
         m_stage = ((CInPacket*)pData)->ReadInt32();
         CStringW strChecked = ((CInPacket*)pData)->ReadUnicodeString();
         m_checked.RemoveAll();
-        FUN_1401d9a30(strChecked, m_checked, L",");
+        ParseIntArray(strChecked, m_checked, L",");
         CStringW strReceived = ((CInPacket*)pData)->ReadUnicodeString();
         m_received.RemoveAll();
-        FUN_1401d9a30(strReceived, m_received, L",");
+        ParseIntArray(strReceived, m_received, L",");
         unsigned count = ((CInPacket*)pData)->ReadInt32();
         m_called.RemoveAll();
         for (unsigned i = 0; i < count; i++)
@@ -423,11 +423,11 @@ void UIBingoEventDialog::vfunc_79(void* pData)
     {
         CStringW strChecked = ((CInPacket*)pData)->ReadUnicodeString();
         m_checked.RemoveAll();
-        FUN_1401d9a30(strChecked, m_checked, L",");
+        ParseIntArray(strChecked, m_checked, L",");
         CStringW strReceived = ((CInPacket*)pData)->ReadUnicodeString();
         m_received.RemoveAll();
-        FUN_1401d9a30(strReceived, m_received, L",");
-        FUN_140bb1d60();
+        ParseIntArray(strReceived, m_received, L",");
+        UpdateItemCounts();
         FUN_140bb2720();
     }
 }
@@ -452,8 +452,8 @@ void UIBingoEventDialog::vfunc_26()
     m_rewardSlots.RemoveAll();
     m_rewardLists.RemoveAll();
     m_receive.RemoveAll();
-    m_free.FUN_140bb69a0();
-    m_cash.FUN_140bb69a0();
+    m_free.Clear();
+    m_cash.Clear();
     while (!m_steps.empty())
         m_steps.pop();
     m_state = 0;
@@ -489,7 +489,7 @@ int UIBingoEventDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         pkt.WriteInt32(ref->m_cashItemId);
     pkt.WriteInt32(m_board[nIndex]);
     FUN_140710590(pkt);
-    BINGO_CLIP(m_cells[nIndex])->FUN_1422c1fe0(0);
+    BINGO_CLIP(m_cells[nIndex])->SetEnabled(0);
     FUN_140bb3050(nIndex);
     return 0;
 }
@@ -500,7 +500,7 @@ void UIBingoEventDialog::vfunc_72()
     if (IsEarlierDay(CMsTime(m_time), CMsTime(GetServerTime()), 0))
     {
         m_time = CMsTime(GetServerTime());
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, FUN_14025e7a0()->Localize("$s_bingo_event_change_day"), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(0, GetGFxManager()->Localize("$s_bingo_event_change_day"), 0, CStringW(L""));
         if (box.get() != 0)
         {
             if (m_msgOpen == true)
@@ -542,7 +542,7 @@ void UIBingoEventDialog::vfunc_72()
         }
         else
         {
-            bool done = BINGO_CLIP(clip)->FUN_1422c2420() == "end" && step.m_index != -1;
+            bool done = BINGO_CLIP(clip)->GetCurrentLabel() == "end" && step.m_index != -1;
             if (done)
             {
                 clip->vfunc_4(false);
@@ -553,7 +553,7 @@ void UIBingoEventDialog::vfunc_72()
     }
     else if (step.m_kind == 2)
     {
-        if (BINGO_CLIP(clip)->FUN_1422c2420() == "checked")
+        if (BINGO_CLIP(clip)->GetCurrentLabel() == "checked")
         {
             clip->vfunc_13("flip");
             m_tick = GetTickCountMs2();
@@ -577,14 +577,14 @@ void UIBingoEventDialog::vfunc_72()
             else
                 pen->vfunc_15("magicpencil");
         }
-        else if (BINGO_CLIP(clip)->FUN_1422c2420() == "checked")
+        else if (BINGO_CLIP(clip)->GetCurrentLabel() == "checked")
             m_steps.pop();
     }
     if (m_steps.empty())
     {
         FUN_140bb3bd0();
         FUN_141276180(s_sndLineComplete, "");
-        if ((size_t)FUN_140bb3f80() == 12)
+        if ((size_t)GetCompletedLineCount() == 12)
             PlayFireworkEffect();
     }
 }
@@ -599,13 +599,13 @@ void UIBingoEventDialog::vfunc_43()
 }
 
 // @0x140bb06e0
-void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIBingoEventDialog::OnClickCell(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    int nIndex = FUN_140bb9640(params.pUserData);
+    int nIndex = UserDataToInt(params.pUserData);
     MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
     if (!ref)
         return;
-    CStringW strMsg = FUN_14025e7a0()->Localize("$s_bingo_event_check");
+    CStringW strMsg = GetGFxManager()->Localize("$s_bingo_event_check");
     if (m_state == 1)
     {
         if (Common::FindElement<int>(m_called, m_board[nIndex]) == -1)
@@ -620,7 +620,7 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
         CStringW strTag = StringFormat<int>(L"{0}", nIndex);
         strMsg = StringFormat<CStringW, int>((const wchar_t*)strMsg, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, key.m_id), m_board[nIndex]);
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, strMsg, static_cast<IMessageListener*>(this), strTag);
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, strMsg, static_cast<IMessageListener*>(this), strTag);
         if (box.IsNull())
             return;
         box->SetSound(s_sndSpecialPopUp);
@@ -639,7 +639,7 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
         CStringW strTag = StringFormat<int>(L"{0}", nIndex);
         strMsg = StringFormat<CStringW, int>((const wchar_t*)strMsg, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, key.m_id), m_board[nIndex]);
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, strMsg, static_cast<IMessageListener*>(this), strTag);
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, strMsg, static_cast<IMessageListener*>(this), strTag);
         if (box.IsNull())
             return;
         box->SetSound(s_sndSpecialPopUp);
@@ -651,7 +651,7 @@ void UIBingoEventDialog::FUN_140bb06e0(const Scaleform::GFx::FunctionHandler::Pa
 // @0x140bb0e20
 void UIBingoEventDialog::SendEventRewardMode23(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    int nIndex = FUN_140bb9640(params.pUserData);
+    int nIndex = UserDataToInt(params.pUserData);
     COutPacket pkt(static_cast<int>(SendOp::EventReward), 0);
     pkt.WriteUInt8(0x17);
     pkt.WriteInt32(nIndex);
@@ -659,17 +659,17 @@ void UIBingoEventDialog::SendEventRewardMode23(const Scaleform::GFx::FunctionHan
 }
 
 // @0x140bb0ea0
-void UIBingoEventDialog::FUN_140bb0ea0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIBingoEventDialog::OnClickUseItem(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    int nType = FUN_140bb9640(params.pUserData);
+    int nType = UserDataToInt(params.pUserData);
     m_state = nType + 1;
     if (m_state == 1)
     {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(FUN_14025e7a0()->Localize("$s_bingo_event_click_normal"), 0);
+        MS2Ptr<CMsgBoxData> box = FUN_140d73f20(GetGFxManager()->Localize("$s_bingo_event_click_normal"), 0);
         if (box.IsNull())
             return;
         box->SetSound(s_sndRegPopUp);
-        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBingoEventDialog::FUN_140bb14a0));
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBingoEventDialog::OnMsgBoxClosed));
         FUN_14151f150(box);
         m_msgOpen = true;
         m_cash.FUN_140bb7fd0();
@@ -680,13 +680,13 @@ void UIBingoEventDialog::FUN_140bb0ea0(const Scaleform::GFx::FunctionHandler::Pa
         MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
         if (!ref)
             return;
-        CStringW strMsg = StringFormat<CStringW>(FUN_14025e7a0()->Localize("$s_bingo_event_click_rare"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref->m_cashItemId));
+        CStringW strMsg = StringFormat<CStringW>(GetGFxManager()->Localize("$s_bingo_event_click_rare"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, ref->m_cashItemId));
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
         MS2Ptr<CMsgBoxData> box = FUN_140d73f20(strMsg, 0);
         if (box.IsNull())
             return;
         box->SetSound(s_sndRegPopUp);
-        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBingoEventDialog::FUN_140bb14a0));
+        box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBingoEventDialog::OnMsgBoxClosed));
         FUN_14151f150(box);
         m_msgOpen = true;
         m_cash.FUN_140bb8100();
@@ -697,9 +697,9 @@ void UIBingoEventDialog::FUN_140bb0ea0(const Scaleform::GFx::FunctionHandler::Pa
 }
 
 // @0x140bb13e0
-void UIBingoEventDialog::FUN_140bb13e0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIBingoEventDialog::OnClickCancelItem(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    int nIndex = FUN_140bb9640(params.pUserData);
+    int nIndex = UserDataToInt(params.pUserData);
     if (nIndex == 0)
         m_free.FUN_140bb7fd0();
     else
@@ -717,7 +717,7 @@ bool UIBingoEventDialog::FUN_140bb1460(int, const CMsgBoxData&)
 }
 
 // @0x140bb14a0
-bool UIBingoEventDialog::FUN_140bb14a0(int, const CMsgBoxData&)
+bool UIBingoEventDialog::OnMsgBoxClosed(int, const CMsgBoxData&)
 {
     m_msgOpen = false;
     return true;
@@ -729,13 +729,13 @@ void UIBingoEventDialog::FUN_140bb14d0()
     if (m_30 == 0)
         return;
     FUN_140bb1580();
-    FUN_140bb1d60();
-    FUN_140bb2310();
+    UpdateItemCounts();
+    UpdateDailyNumbers();
     FUN_140bb2720();
-    if ((size_t)FUN_140bb3f80() == 12)
+    if ((size_t)GetCompletedLineCount() == 12)
     {
-        reinterpret_cast<ASMovieClip*>(m_free.m_use.operator->())->FUN_1422c1fe0(0);
-        reinterpret_cast<ASMovieClip*>(m_cash.m_use.operator->())->FUN_1422c1fe0(0);
+        reinterpret_cast<ASMovieClip*>(m_free.m_use.operator->())->SetEnabled(0);
+        reinterpret_cast<ASMovieClip*>(m_cash.m_use.operator->())->SetEnabled(0);
     }
 }
 
@@ -781,20 +781,20 @@ void UIBingoEventDialog::FUN_140bb1580()
         if (Common::FindElement<int>(m_checked, nValue) == -1)
         {
             clip->vfunc_15("nor");
-            BINGO_CLIP(clip)->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::FUN_140bb06e0), FUN_140bb9630(i));
+            BINGO_CLIP(clip)->FUN_1422c2a70(BingoParamsDelegate(this, &UIBingoEventDialog::OnClickCell), IntToUserData(i));
         }
         else
         {
             clip->vfunc_15("checked");
-            BINGO_CLIP(clip)->FUN_1422c2af0(BingoParamsDelegate(this, &UIBingoEventDialog::FUN_140bb06e0));
+            BINGO_CLIP(clip)->FUN_1422c2af0(BingoParamsDelegate(this, &UIBingoEventDialog::OnClickCell));
         }
     }
-    FUN_140bb2c40();
+    UpdateCompletedLines();
     FUN_140bb3bd0();
 }
 
 // @0x140bb1d60
-void UIBingoEventDialog::FUN_140bb1d60()
+void UIBingoEventDialog::UpdateItemCounts()
 {
     if (m_30 == 0)
         return;
@@ -819,16 +819,16 @@ void UIBingoEventDialog::FUN_140bb1d60()
         return;
     if (nFree > 0)
     {
-        reinterpret_cast<ASMovieClip*>(m_free.m_use.operator->())->FUN_1422c1fe0(1);
-        if ((size_t)FUN_140bb3f80() == 12)
+        reinterpret_cast<ASMovieClip*>(m_free.m_use.operator->())->SetEnabled(1);
+        if ((size_t)GetCompletedLineCount() == 12)
         {
             m_free.FUN_140bb7fd0();
-            reinterpret_cast<ASMovieClip*>(m_free.m_use.operator->())->FUN_1422c1fe0(0);
+            reinterpret_cast<ASMovieClip*>(m_free.m_use.operator->())->SetEnabled(0);
         }
     }
     else
     {
-        reinterpret_cast<ASMovieClip*>(m_free.m_use.operator->())->FUN_1422c1fe0(0);
+        reinterpret_cast<ASMovieClip*>(m_free.m_use.operator->())->SetEnabled(0);
         if (m_state == 1)
         {
             m_free.FUN_140bb7fd0();
@@ -838,8 +838,8 @@ void UIBingoEventDialog::FUN_140bb1d60()
                 MS2Ptr<ASMovieClip> clip = m_cells[i];
                 if (clip == 0)
                     continue;
-                if (BINGO_CLIP(clip)->FUN_1422c2030() != 0)
-                    BINGO_CLIP(clip)->FUN_1422c1fe0(0);
+                if (BINGO_CLIP(clip)->IsEnabled() != 0)
+                    BINGO_CLIP(clip)->SetEnabled(0);
             }
         }
     }
@@ -847,16 +847,16 @@ void UIBingoEventDialog::FUN_140bb1d60()
         return;
     if (nCash > 0)
     {
-        reinterpret_cast<ASMovieClip*>(m_cash.m_use.operator->())->FUN_1422c1fe0(1);
-        if ((size_t)FUN_140bb3f80() == 12)
+        reinterpret_cast<ASMovieClip*>(m_cash.m_use.operator->())->SetEnabled(1);
+        if ((size_t)GetCompletedLineCount() == 12)
         {
             m_cash.FUN_140bb7fd0();
-            reinterpret_cast<ASMovieClip*>(m_cash.m_use.operator->())->FUN_1422c1fe0(0);
+            reinterpret_cast<ASMovieClip*>(m_cash.m_use.operator->())->SetEnabled(0);
         }
     }
     else
     {
-        reinterpret_cast<ASMovieClip*>(m_cash.m_use.operator->())->FUN_1422c1fe0(0);
+        reinterpret_cast<ASMovieClip*>(m_cash.m_use.operator->())->SetEnabled(0);
         if (m_state == 2)
         {
             m_cash.FUN_140bb7fd0();
@@ -866,15 +866,15 @@ void UIBingoEventDialog::FUN_140bb1d60()
                 MS2Ptr<ASMovieClip> clip = m_cells[i];
                 if (clip == 0)
                     continue;
-                if (BINGO_CLIP(clip)->FUN_1422c2030() != 0)
-                    BINGO_CLIP(clip)->FUN_1422c1fe0(0);
+                if (BINGO_CLIP(clip)->IsEnabled() != 0)
+                    BINGO_CLIP(clip)->SetEnabled(0);
             }
         }
     }
 }
 
 // @0x140bb2310
-void UIBingoEventDialog::FUN_140bb2310()
+void UIBingoEventDialog::UpdateDailyNumbers()
 {
     if (m_30 == 0)
         return;
@@ -917,7 +917,7 @@ void UIBingoEventDialog::FUN_140bb2720()
 {
     if (m_30 == 0)
         return;
-    unsigned nLines = FUN_140bb3f80();
+    unsigned nLines = GetCompletedLineCount();
     MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
     if (!ref)
         return;
@@ -937,17 +937,17 @@ void UIBingoEventDialog::FUN_140bb2720()
         else if (nLines < i + 1)
         {
             panel->vfunc_15("normal");
-            reinterpret_cast<ASMovieClip*>(button.operator->())->FUN_1422c1fe0(0);
+            reinterpret_cast<ASMovieClip*>(button.operator->())->SetEnabled(0);
         }
         else if ((size_t)i == 7 && nLines != 12)
         {
             panel->vfunc_15("normal");
-            reinterpret_cast<ASMovieClip*>(button.operator->())->FUN_1422c1fe0(0);
+            reinterpret_cast<ASMovieClip*>(button.operator->())->SetEnabled(0);
         }
         else
         {
             panel->vfunc_15("complete");
-            reinterpret_cast<ASMovieClip*>(button.operator->())->FUN_1422c1fe0(1);
+            reinterpret_cast<ASMovieClip*>(button.operator->())->SetEnabled(1);
             for (unsigned long long j = 0; j < 2; j++)
             {
                 MS2Ptr<ASMovieClip> effect = m_rewardLists[i]->FUN_1409b4560(StringFormat<unsigned __int64>("m_effect{0}", j));
@@ -958,8 +958,8 @@ void UIBingoEventDialog::FUN_140bb2720()
                 else
                 {
                     effect->vfunc_4(true);
-                    BINGO_CLIP(effect)->FUN_1422c6640(0);
-                    BINGO_CLIP(effect)->FUN_1422deb40(0);
+                    BINGO_CLIP(effect)->SetMouseChildren(0);
+                    BINGO_CLIP(effect)->SetMouseEnabled(0);
                 }
             }
         }
@@ -967,9 +967,9 @@ void UIBingoEventDialog::FUN_140bb2720()
 }
 
 // @0x140bb2c40
-void UIBingoEventDialog::FUN_140bb2c40()
+void UIBingoEventDialog::UpdateCompletedLines()
 {
-    FUN_140bb43a0(m_lineDone, m_checked);
+    CalcCompletedLines(m_lineDone, m_checked);
     for (size_t i = 0; i < m_lineDone.GetCount(); i++)
     {
         bool bDone = m_lineDone[i];
@@ -1013,8 +1013,8 @@ void UIBingoEventDialog::FUN_140bb3050(int nIndex)
     m_steps.push(Unk_BingoStep(0, check, nIndex, bPlus));
     m_checkedCopy.Copy(m_checked);
     m_checkedCopy.Add(m_board[nIndex]);
-    FUN_140bb43a0(m_lineShown, m_checkedCopy);
-    int nBefore = FUN_140bb3f80();
+    CalcCompletedLines(m_lineShown, m_checkedCopy);
+    int nBefore = GetCompletedLineCount();
     int nChanged = 0;
     for (size_t i = 0; i < m_lineDone.GetCount(); i++)
     {
@@ -1102,24 +1102,24 @@ void UIBingoEventDialog::FUN_140bb3bd0()
             continue;
         if (m_state == 0)
         {
-            BINGO_CLIP(clip)->FUN_1422c1fe0(0);
+            BINGO_CLIP(clip)->SetEnabled(0);
             blind->vfunc_4(false);
         }
         else if (m_state == 1)
         {
             if (Common::FindElement<int>(m_called, nValue) == -1)
             {
-                BINGO_CLIP(clip)->FUN_1422c1fe0(0);
+                BINGO_CLIP(clip)->SetEnabled(0);
                 blind->vfunc_4(true);
             }
             else if (Common::FindElement<int>(m_checked, nValue) != -1)
             {
-                BINGO_CLIP(clip)->FUN_1422c1fe0(0);
+                BINGO_CLIP(clip)->SetEnabled(0);
                 blind->vfunc_4(true);
             }
             else
             {
-                BINGO_CLIP(clip)->FUN_1422c1fe0(1);
+                BINGO_CLIP(clip)->SetEnabled(1);
                 blind->vfunc_4(false);
             }
         }
@@ -1127,12 +1127,12 @@ void UIBingoEventDialog::FUN_140bb3bd0()
         {
             if (Common::FindElement<int>(m_checked, nValue) != -1)
             {
-                BINGO_CLIP(clip)->FUN_1422c1fe0(0);
+                BINGO_CLIP(clip)->SetEnabled(0);
                 blind->vfunc_4(true);
             }
             else
             {
-                BINGO_CLIP(clip)->FUN_1422c1fe0(1);
+                BINGO_CLIP(clip)->SetEnabled(1);
                 blind->vfunc_4(false);
             }
         }
@@ -1140,7 +1140,7 @@ void UIBingoEventDialog::FUN_140bb3bd0()
 }
 
 // @0x140bb3f80
-unsigned UIBingoEventDialog::FUN_140bb3f80()
+unsigned UIBingoEventDialog::GetCompletedLineCount()
 {
     MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
     if (!ref)
@@ -1166,7 +1166,7 @@ void UIBingoEventDialog::FUN_140bb4150(unsigned nLines)
 {
     if ((size_t)nLines == 12)
     {
-        FUN_1412751f0(StringFormat(FUN_14025e7a0()->Localize("$s_bingo_event_complete_all_bingo")), 3, 1);
+        ShowSystemNotice(StringFormat(GetGFxManager()->Localize("$s_bingo_event_complete_all_bingo")), 3, 1);
         return;
     }
     MS2Ptr<BingoContext> ref = reinterpret_cast<CGameEventValueBingo*>(reinterpret_cast<CGameEventValueManager*>(reinterpret_cast<Unk_BingoMgr*>(TSingleton<CGameEventValueManager>::GetInstance()))->GetBingoEvent())->Get();
@@ -1177,14 +1177,14 @@ void UIBingoEventDialog::FUN_140bb4150(unsigned nLines)
     {
         if (i == nLines)
         {
-            FUN_1412751f0(StringFormat<unsigned int>(FUN_14025e7a0()->Localize("$s_bingo_event_complete_bingo"), nLines), 3, 1);
+            ShowSystemNotice(StringFormat<unsigned int>(GetGFxManager()->Localize("$s_bingo_event_complete_bingo"), nLines), 3, 1);
             return;
         }
     }
 }
 
 // @0x140bb43a0
-void UIBingoEventDialog::FUN_140bb43a0(ATL::CAtlArray<bool>& lines, ATL::CAtlArray<int>& checked)
+void UIBingoEventDialog::CalcCompletedLines(ATL::CAtlArray<bool>& lines, ATL::CAtlArray<int>& checked)
 {
     lines.RemoveAll();
     lines.SetCount(12, -1);
@@ -1246,12 +1246,12 @@ void UIBingoEventDialog::FUN_140bb46e0()
             step.m_clip->vfunc_4(false);
         m_steps.pop();
     }
-    if ((size_t)FUN_140bb3f80() == 12)
+    if ((size_t)GetCompletedLineCount() == 12)
         PlayFireworkEffect();
 }
 
 // @0x140bb69a0
-void Unk_BingoPanel::FUN_140bb69a0()
+void Unk_BingoPanel::Clear()
 {
     m_icon = 0;
     m_text = 0;
@@ -1304,17 +1304,17 @@ MS2_REPLACE_METHOD_VIA(0x140BAF990, UIBingoEventDialog, IMessageListener, OnMess
 MS2_REPLACE_METHOD(0x140BAFBC0, UIBingoEventDialog, vfunc_72, 2704, 0xD97805CE);
 MS2_REPLACE_METHOD(0x140BB0660, UIBingoEventDialog, vfunc_43, 110, 0xCD09A3C9);
 MS2_REPLACE_METHOD(0x140BB0E20, UIBingoEventDialog, SendEventRewardMode23, 115, 0xC9AB93BE);
-MS2_REPLACE_METHOD(0x140BB13E0, UIBingoEventDialog, FUN_140bb13e0, 119, 0xBD64CF06);
+MS2_REPLACE_METHOD(0x140BB13E0, UIBingoEventDialog, OnClickCancelItem, 119, 0xBD64CF06);
 MS2_REPLACE_METHOD(0x140BB1460, UIBingoEventDialog, FUN_140bb1460, 44, 0x5B0A3F82);
 MS2_REPLACE_METHOD(0x140BB14D0, UIBingoEventDialog, FUN_140bb14d0, 158, 0x5D5E2DE1);
 MS2_REPLACE_METHOD(0x140BB1580, UIBingoEventDialog, FUN_140bb1580, 2001, 0x145B4613);
-MS2_REPLACE_METHOD(0x140BB1D60, UIBingoEventDialog, FUN_140bb1d60, 1439, 0xB5799AF2);
-MS2_REPLACE_METHOD(0x140BB2310, UIBingoEventDialog, FUN_140bb2310, 1031, 0x7AF628CE);
+MS2_REPLACE_METHOD(0x140BB1D60, UIBingoEventDialog, UpdateItemCounts, 1439, 0xB5799AF2);
+MS2_REPLACE_METHOD(0x140BB2310, UIBingoEventDialog, UpdateDailyNumbers, 1031, 0x7AF628CE);
 MS2_REPLACE_METHOD(0x140BB2720, UIBingoEventDialog, FUN_140bb2720, 1304, 0x9630E841);
-MS2_REPLACE_METHOD(0x140BB2C40, UIBingoEventDialog, FUN_140bb2c40, 1028, 0x8B850411);
+MS2_REPLACE_METHOD(0x140BB2C40, UIBingoEventDialog, UpdateCompletedLines, 1028, 0x8B850411);
 MS2_REPLACE_METHOD(0x140BB3050, UIBingoEventDialog, FUN_140bb3050, 2923, 0xBCEF99A8);
 MS2_REPLACE_METHOD(0x140BB3BD0, UIBingoEventDialog, FUN_140bb3bd0, 937, 0xA5C210EF);
-MS2_REPLACE_METHOD(0x140BB3F80, UIBingoEventDialog, FUN_140bb3f80, 175, 0x5FCF2704);
+MS2_REPLACE_METHOD(0x140BB3F80, UIBingoEventDialog, GetCompletedLineCount, 175, 0x5FCF2704);
 MS2_REPLACE_METHOD(0x140BB4150, UIBingoEventDialog, FUN_140bb4150, 577, 0x731DDFCE);
-MS2_REPLACE_METHOD(0x140BB43A0, UIBingoEventDialog, FUN_140bb43a0, 819, 0x3C30635D);
+MS2_REPLACE_METHOD(0x140BB43A0, UIBingoEventDialog, CalcCompletedLines, 819, 0x3C30635D);
 MS2_REPLACE_METHOD(0x140BB46E0, UIBingoEventDialog, FUN_140bb46e0, 163, 0xFB4F9A6C);

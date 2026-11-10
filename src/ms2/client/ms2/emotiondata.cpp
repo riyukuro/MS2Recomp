@@ -31,11 +31,11 @@ public:
 class Unk_140166420 : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // <dir>/<file> resource path
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // <dir>/<file> resource path
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int XmlGetChildAttr(class TiXmlElement *, char const *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> &);
-void FUN_140399100(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly);
+void FindFiles(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly);
 unsigned int FUN_1407181d0(const CString& s);                           // decimal string -> id
 extern int DAT_1439ed00c;                                               // file caches checked (hot reload)
 
@@ -127,7 +127,7 @@ void CEmotionData::CheckResources(CString strDir)
     for (unsigned int i = 0; i < m_effects.GetCount(); i++)
     {
         CString& strEffect = m_effects.GetAt(i);
-        CString strPath = FUN_14071a5b0("Effect", strEffect);
+        CString strPath = GetXmlPath("Effect", strEffect);
         if (FindFirstFileA(strPath, &fd) == INVALID_HANDLE_VALUE)
             Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[EmotionData - effect] [{0}]", strEffect);
     }
@@ -135,15 +135,15 @@ void CEmotionData::CheckResources(CString strDir)
     {
         for (unsigned int i = 0; i < m_spTextureAni->m_arrFrames.GetCount(); i++)
         {
-            CString strTexture = m_spTextureAni->m_arrFrames.GetAt(i).FUN_141847960(strDir);
+            CString strTexture = m_spTextureAni->m_arrFrames.GetAt(i).GetBaseTexturePath(strDir);
             if (!strTexture.IsEmpty())
             {
                 if (FindFirstFileA(strTexture, &fd) == INVALID_HANDLE_VALUE)
                     Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[EmotionData - texture] [{0}]", strTexture);
             }
-            if (m_spTextureAni->m_arrFrames.GetAt(i).FUN_141847bb0())
+            if (m_spTextureAni->m_arrFrames.GetAt(i).HasControlTexture())
             {
-                strTexture = m_spTextureAni->m_arrFrames.GetAt(i).FUN_141847a60(strDir);
+                strTexture = m_spTextureAni->m_arrFrames.GetAt(i).GetControlTexturePath(strDir);
                 if (FindFirstFileA(strTexture, &fd) == INVALID_HANDLE_VALUE)
                     Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[EmotionData - controlTexture] [{0}]", strTexture);
             }
@@ -289,11 +289,11 @@ void CEmotionTable::LoadCommon()
 {
     ATL::CAtlArray<CString> files;
     CString strDir = FUN_1411c0aa0("./Data/xml/Emotion/Common");
-    FUN_140399100(".xml", strDir, files, "", false);
+    FindFiles(".xml", strDir, files, "", false);
     for (unsigned int i = 0; i < files.GetCount(); i++)
     {
         TiXmlDocument doc;
-        if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, files[i], 0, true, false) == 0)
+        if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->LoadXmlFile(&doc, files[i], 0, true, false) == 0)
             return;
         TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
@@ -316,7 +316,7 @@ void CEmotionTable::LoadAll()
 {
     ATL::CAtlArray<CString> files;
     CString strDir = Unk_SocketFormat("./Data/xml/Emotion/{0}", m_strType);
-    FUN_140399100(".xml", strDir, files, "", false);
+    FindFiles(".xml", strDir, files, "", false);
     for (size_t i = 0; i < files.GetCount(); i++)
     {
         CString strName = PathFindFileNameA(files[i]);
@@ -350,10 +350,10 @@ MS2Ptr<CEmotionGroup> CEmotionTable::ReadEmotionGroup(unsigned int nId)
 {
     CString strPath;
     strPath.Format("%s/%08u.xml", (const char*)m_strType, nId);
-    strPath = FUN_14071a5b0("Emotion", strPath);
+    strPath = GetXmlPath("Emotion", strPath);
     AddIdCache(nId, strPath);
     TiXmlDocument doc;
-    if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->LoadXmlFile(&doc, strPath, 0, false, false) == 0)
         return NULL;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -437,7 +437,7 @@ void CEmotionTable::AddIdCache(unsigned int nId, const CString& strPath)
         MS2_ASSERT_AT(0x19f, "cache" && 0);
         return;
     }
-    spCache->FUN_1401d1160(strPath);
+    spCache->SetPath(strPath);
     m_idCache.SetAt(nId, spCache);
 }
 
@@ -450,7 +450,7 @@ void CEmotionTable::AddNameCache(const CString& strName, const CString& strPath)
         MS2_ASSERT_AT(0x1aa, "cache" && 0);
         return;
     }
-    spCache->FUN_1401d1160(strPath);
+    spCache->SetPath(strPath);
     m_nameCache.SetAt(strName, spCache);
 }
 

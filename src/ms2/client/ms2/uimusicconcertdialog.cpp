@@ -44,13 +44,13 @@ class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_1402bad60
-void* FUN_140bb9630(int n);                                     // int -> delegate user data
-int FUN_140bb9640(void* p);                                     // delegate user data -> int
+void* IntToUserData(int n);                                     // int -> delegate user data
+int UserDataToInt(void* p);                                     // delegate user data -> int
 int GetServerTick();   // C3: was GetServerTick
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-void FUN_1412751f0(const CStringW& text, int nA, int nB);
-bool FUN_1407105c0(COutPacket* packet, int key, int delay);
+void ShowSystemNotice(const CStringW& text, int nA, int nB);
+bool SendPacketThrottled(COutPacket* packet, int key, int delay);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 
@@ -58,7 +58,7 @@ void FUN_1422bce70(Scaleform::GFx::Value* pValue, const char* sz);
 UIMusicConcertDialog::UIMusicConcertDialog()
     : m_clips(), m_buttons(), m_foldButton(), m_topText()
 {
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
     m_bFolded = false;
 }
 
@@ -98,7 +98,7 @@ void UIMusicConcertDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_bFolded = false;
-    FUN_141925fa0("m_dragBar");
+    BindDragBar("m_dragBar");
     for (int i = 0; i < 6; i++)
     {
         int nIndex = i + 1;
@@ -109,10 +109,10 @@ void UIMusicConcertDialog::OnLoadComplete()
         m_buttons[i] = m_clips[i]->FUN_140acce30<ASButton>("m_button");
         if (m_buttons[i] == 0)
             continue;
-        m_buttons[i]->FUN_1422ce240(McClickDelegate(this, &UIMusicConcertDialog::FUN_140e6a0d0), FUN_140bb9630(i));
+        m_buttons[i]->FUN_1422ce240(McClickDelegate(this, &UIMusicConcertDialog::OnActionButtonClick), IntToUserData(i));
     }
     m_foldButton = GetChild<ASButton>("m_foldButton");
-    m_foldButton->FUN_1422ce240(McClickDelegate(this, &UIMusicConcertDialog::FUN_140e6a1b0), 0);
+    m_foldButton->FUN_1422ce240(McClickDelegate(this, &UIMusicConcertDialog::OnFoldButtonClick), 0);
     m_topText = GetChild<ASTextField>("m_topText");
     {
         CStringW strKey(L"s_music_concert_can_play");
@@ -162,11 +162,11 @@ void UIMusicConcertDialog::vfunc_43()
 }
 
 // @0x140e6a0d0
-void UIMusicConcertDialog::FUN_140e6a0d0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIMusicConcertDialog::OnActionButtonClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_30 == 0)
         return;
-    int nIndex = FUN_140bb9640(params.pUserData);
+    int nIndex = UserDataToInt(params.pUserData);
     if (nIndex >= 6 || nIndex < 0)
         return;
     if (nIndex == 0)
@@ -184,7 +184,7 @@ void UIMusicConcertDialog::FUN_140e6a0d0(const Scaleform::GFx::FunctionHandler::
 }
 
 // @0x140e6a1b0
-void UIMusicConcertDialog::FUN_140e6a1b0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIMusicConcertDialog::OnFoldButtonClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_30 == 0)
         return;
@@ -222,7 +222,7 @@ void UIMusicConcertDialog::FUN_140e6a290()
         unsigned nMin = nRemain / 0x3c;
         unsigned nSec = nRemain % 0x3c;
         m_topText->SetTextW(FUN_14028dfa0<int, int>(CStringW(L"s_music_concert_playing_text"), reinterpret_cast<const int&>(nMin), reinterpret_cast<const int&>(nSec)));
-        __int64 nOwner = (__int64)WorldService::GetInstance()->FUN_141bcaf80();
+        __int64 nOwner = (__int64)WorldService::GetInstance()->GetMusicConcertOwner();
         if (pPC->FUN_141656a80() == nOwner)
             strAction = GetStringCommonByKey(L"s_music_concert_abort_play");
     }
@@ -262,14 +262,14 @@ void UIMusicConcertDialog::FUN_140e6a780()
     }
     else
     {
-        __int64 nOwner = (__int64)WorldService::GetInstance()->FUN_141bcaf80();
+        __int64 nOwner = (__int64)WorldService::GetInstance()->GetMusicConcertOwner();
         if (nOwner == pPC->FUN_141656a80())
         {
             FUN_140e6a9d0();
             return;
         }
         else
-            FUN_1412751f0(GetStringCommonByKey(L"s_music_concert_msg_cant_register"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_music_concert_msg_cant_register"), 1, 1);
     }
 }
 
@@ -289,7 +289,7 @@ void UIMusicConcertDialog::SendPlayInstrumentMode13()
         return;
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.WriteUInt8(0xd);
-    FUN_1407105c0(&packet, 0xd, 1000);
+    SendPacketThrottled(&packet, 0xd, 1000);
 }
 
 // @0x140e6ab90
@@ -305,7 +305,7 @@ void UIMusicConcertDialog::FUN_140e6ab90()
     }
     else
     {
-        FUN_1412751f0(GetStringCommonByKey(L"s_music_concert_msg_cant_change_camera"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_music_concert_msg_cant_change_camera"), 1, 1);
     }
 }
 
@@ -317,7 +317,7 @@ void UIMusicConcertDialog::SendPlayInstrumentMode14()
         return;
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.WriteUInt8(0xe);
-    FUN_1407105c0(&packet, 0xe, 2000);
+    SendPacketThrottled(&packet, 0xe, 2000);
 }
 
 // @0x140e6ad00
@@ -343,7 +343,7 @@ void UIMusicConcertDialog::SendPlayInstrumentMode15(int nEmotion)
     COutPacket packet(static_cast<int>(SendOp::PlayInstrument), 0);
     packet.WriteUInt8(0xf);
     packet.WriteInt32(nEmotion);
-    FUN_1407105c0(&packet, 0xf, 2000);
+    SendPacketThrottled(&packet, 0xf, 2000);
 }
 
 // @0x140e6adf0

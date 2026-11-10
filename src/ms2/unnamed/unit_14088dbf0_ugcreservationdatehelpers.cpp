@@ -63,7 +63,7 @@ int FUN_14088dcf0(MS2Ptr<CItemData> spItemData)
 {
     if (spItemData->FUN_14053cbc0())
         return 1;
-    else if (spItemData->FUN_14053cb80())
+    else if (spItemData->IsInstallItem())
         return 2;
     else if (spItemData->IsRideItem())
         return 7;
@@ -79,7 +79,7 @@ int FUN_14088de00(MS2Ptr<CItemData> spItemData)
     {
         if (spItemData->FUN_14053cbc0())
             return 1;
-        else if (spItemData->FUN_14053cb80())
+        else if (spItemData->IsInstallItem())
             return 2;
         else if (spItemData->IsRideItem())
             return 3;

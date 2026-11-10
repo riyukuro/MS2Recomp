@@ -47,22 +47,22 @@ public:
     CStringW GetSelectedLabelW();                                           // the selected entry's label ("" if none)
     bool GetSelectedItem(AScript& item);                                  // the selected entry (false if none)
     void SelectByIntMember(const CString& strMember, int nValue);           // select the first entry whose member is a string with GetInt() == nValue
-    void FUN_1422dd9e0(const CString& strMember, int nValue);           // the same with GetUInt()
-    void FUN_1422ddb40(const CString& strMember, const CStringW& strValue);   // select the first entry whose member equals strValue
+    void SelectByUIntMember(const CString& strMember, int nValue);           // the same with GetUInt()
+    void SelectByStringMember(const CString& strMember, const CStringW& strValue);   // select the first entry whose member equals strValue
     void RemoveItemAt(int nIndex);                                     // remove the entry at an index
-    void FUN_1422dddc0(const CString& strLabel);                        // remove the first entry with this label
+    void RemoveItemByLabel(const CString& strLabel);                        // remove the first entry with this label
     // "itemPress" / "itemClick" / "itemRollOver" / "itemRollOut" / "itemDoubleClick" listeners: add (pUser: the AS
     // function object's user data), remove
     void AddItemPressHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
     void RemoveItemPressHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
-    void FUN_1422de0e0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
-    void FUN_1422de160(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
-    void FUN_1422de1c0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
-    void FUN_1422de240(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
-    void FUN_1422de2a0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
-    void FUN_1422de320(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
-    void FUN_1422de380(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
-    void FUN_1422de400(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
+    void AddItemClickHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
+    void RemoveItemClickHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
+    void AddItemRollOverHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
+    void RemoveItemRollOverHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
+    void AddItemRollOutHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
+    void RemoveItemRollOutHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
+    void AddItemDoubleClickHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
+    void RemoveItemDoubleClickHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
     // Slot 23 override and the new slot 25 (vftable 0x143113210; ASTileCacheList overrides 25). Opt-in with the
     // ASUIComponent slots (MS2_ASUICOMPONENT_SLOTS): without them slot 25 would land on index 16.
 #ifdef MS2_ASUICOMPONENT_SLOTS
@@ -78,12 +78,12 @@ public:
     ASScrollingList(const Scaleform::GFx::Value& v, int nMovieId);     // 0x1422e1720
     virtual ~ASScrollingList();                                         // 0x1422e1770
     void FUN_1422e17a0();                                               // show every entry (row count = entry count)
-    void FUN_1422e17f0(int nPosition);                                  // set "scrollPosition"
-    int FUN_1422e1820();                                                // "scrollPosition" (the first visible row)
-    void FUN_1422e1890(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);   // add a "listIndexChange" listener
-    void FUN_1422e1910(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);   // remove the "listIndexChange" listener
+    void SetScrollPosition(int nPosition);                                  // set "scrollPosition"
+    int GetScrollPosition();                                                // "scrollPosition" (the first visible row)
+    void AddListIndexChangeListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);   // add a "listIndexChange" listener
+    void RemoveListIndexChangeListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);   // remove the "listIndexChange" listener
     void FUN_1422e1970(int nIndex, ASObj& row);                   // replace a data provider entry
-    void FUN_1422e1a00(int nIndex, ASObj& row);                   // "setData" on the visible renderer of an entry
+    void SetRendererData(int nIndex, ASObj& row);                   // "setData" on the visible renderer of an entry
 };
 MS2_CHECK_SIZE(ASScrollingList, 0x88);
 
@@ -95,11 +95,11 @@ public:
     virtual ~ASListItemRenderer();                                      // 0x1422e1ca0 (scalar deleting 0x1422e2040)
     // recovered with ?\aslistitemrenderer.cpp (src/ms2/gfxui/aslistitemrenderer.cpp)
     bool FUN_1422e1cd0();                                               // "focusable" (the exe tests IsBool(), not the value)
-    void FUN_1422e1d30(bool bFocusable);                                // set "focusable"
-    unsigned int FUN_1422e1d60();                                       // "index"
-    void FUN_1422e1dc0(unsigned int nIndex);                            // set "index"
+    void SetFocusable(bool bFocusable);                                // set "focusable"
+    unsigned int GetIndex();                                       // "index"
+    void SetIndex(unsigned int nIndex);                            // set "index"
     bool FUN_1422e1df0();                                               // "selectable" (IsBool(), as above)
-    void FUN_1422e1e50(bool bSelectable);                               // set "selectable"
+    void SetSelectable(bool bSelectable);                               // set "selectable"
 };
 MS2_CHECK_SIZE(ASListItemRenderer, 0x88);
 

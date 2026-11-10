@@ -59,7 +59,7 @@ bool CByteBuffer::Compress(CByteBuffer& dest) const {
     if(len>=0x80000000u) return false;
     dest.FUN_140715230(len+4);
     MS2_ASSERT_AT(342,dest.GetLength() >= len + 4);
-    if(compress(dest.FUN_140204eb0()+4,&len,FUN_14067c4c0(),length)==0) {
+    if(compress(dest.FUN_140204eb0()+4,&len,GetData(),length)==0) {
         dest.SetLength(len+4);result=len+4;
         dest[0]=(length&0xff000000)>>24;dest[1]=(length&0xff0000)>>16;dest[2]=(length&0xff00)>>8;dest[3]=length&0xff;
     } else dest.FUN_140715230(0);
@@ -77,7 +77,7 @@ bool CByteBuffer::Uncompress(CByteBuffer& dest) const {
     dest.FUN_140715230(len);
     MS2_ASSERT_AT(385,dest.GetLength() >= len);
     unsigned long original=len;
-    if(uncompress(dest.FUN_140204eb0(),&len,FUN_14067c4c0()+4,length-4)==0) {
+    if(uncompress(dest.FUN_140204eb0(),&len,GetData()+4,length-4)==0) {
         if(len!=original && len>=0x80000000u) return false;
         dest.SetLength(len);result=len;
     } else dest.FUN_140715230(0);

@@ -84,10 +84,10 @@ WC_WRAP(7)
 template CStringW FUN_14028dfa0<int, int, int, int, int, int, CStringW>(CStringW, const int&, const int&, const int&, const int&, const int&, const int&, const CStringW&);
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 class CReservedWordTable;
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
 // The register role byte (ctor 0x140c71120 always stores 4).
@@ -138,7 +138,7 @@ int UIMentoringMenteeRegisterPage::vfunc_5(const char* szMethod, const Scaleform
         CStringW strMsg = FUN_14028dfa0(CStringW(L"s_mentoring_mentee_register_warn"), nStartYear, nStartMonth, nStartDay, nEndYear, nEndMonth, nEndDay, pActor->GetName());
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strMsg);
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox)
             {
                 spBox.get()->FUN_141a024a0(false);

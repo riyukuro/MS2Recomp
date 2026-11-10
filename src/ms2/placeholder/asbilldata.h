@@ -50,7 +50,7 @@ public:
     bool SetOptionDropDown(class CMeratMarketPremiumProduct* pProduct, int nOption, int nCurrency);   // 0x1409acfe0 the option drop down
     void AddOptionRow(class ASArray& arr, int nCurrency, class CDBPremiumProduct* pSub, bool bDay,
                        class CDBPremiumProduct* pBase);             // 0x1409ad420 one option row
-    bool FUN_140eacf60() const { return m_b40; }                    // 0x140eacf60 (inline COMDAT, uimarketbilldialog.cpp)
+    bool IsChecked() const { return m_b40; }                    // 0x140eacf60 (inline COMDAT, uimarketbilldialog.cpp)
     bool FUN_140eacf20() const { return m_b48; }                    // 0x140eacf20 (same)
     bool m_b40;                                                     // +0x40
     int m_n44;                                                      // +0x44 1

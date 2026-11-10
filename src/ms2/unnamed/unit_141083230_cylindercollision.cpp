@@ -29,7 +29,7 @@ public:
     float GetTopZ() const { return m_center.z + m_height; }                 // 0x141083470
     float GetBottomZ() const { return m_center.z - m_ptSize.z; }                // 0x1410834a0
     void BuildLines(NiMesh* pkMesh, Vector3* pkPoints, unsigned int uiCount);   // 0x141084740
-    void FUN_1410848f0();
+    void RenderBottomMesh();
 
     NiMeshPtr m_spTopMesh;                                                  // +0x78
     NiMeshPtr m_spBottomMesh;                                               // +0x80
@@ -184,7 +184,7 @@ void CCylinderCollision::BuildLines(NiMesh* pkMesh, Vector3* pkPoints, unsigned 
 }
 
 // @0x1410848f0
-void CCylinderCollision::FUN_1410848f0()
+void CCylinderCollision::RenderBottomMesh()
 {
     if (m_bBuilt == 0)
         vfunc_5();

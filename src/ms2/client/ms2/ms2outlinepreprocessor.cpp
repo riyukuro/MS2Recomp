@@ -40,7 +40,7 @@ public:
 unsigned int Unk_ColorValue(struct Unk_ConstColor const&);   // C3: was FUN_14056d500
 bool UpdateGlobalShaderConstantFloats(class NiFixedString&, float const*, int);   // C3: was FUN_1409a5770
 bool FUN_14098dfc0(class NiAVObject*);   // C3: was FUN_14098dfc0
-bool FUN_141568c90(class NiRenderObject*);   // C3: was FUN_141568c90
+bool IsUnlightable(class NiRenderObject*);   // C3: was IsUnlightable
 unsigned int FUN_141568dc0(class NiAVObject*);   // C3: was FUN_141568dc0
 void FUN_141568df0(class NiAVObject*);   // C3: was FUN_141568df0
 class CMeshUVPicker   // C3: member view for the former free stand-ins
@@ -115,7 +115,7 @@ void MS2OutlinePreProcessor::PreRenderProcessList(const NiVisibleArray* pkInput,
         NiRenderObject* obj = &pkInput->GetAt(i);
         if (FUN_14098dfc0((class NiAVObject*)(obj)))
             continue;
-        if (FUN_141568c90((class NiRenderObject*)(obj)))
+        if (IsUnlightable((class NiRenderObject*)(obj)))
             continue;
         int flag = 1;
         if (DAT_143ae2b34 != 0)

@@ -34,7 +34,7 @@
 // Unit-local declarations, pending recovery of the quest data and AS wrapper units.
 class UIQuestEventDispatcher* FUN_140bfc4b0();   // C3: was FUN_140bfc4b0
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
+class Unk_AltStringMgr* GetGFxManager();   // C3: the GFxManager (calls cast back)
 class Unk_QuestDebugAccess : public CInputKeyHandler {};
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 // The exe's non-null test of a condition parameter's CConditionDictPtr (0x141a99100), a separate copy of get().
@@ -47,16 +47,16 @@ private:
     void* m_0;
     void* m_p;
 };
-MS2Ptr<CQuestData> FUN_14074bc40(int);
+MS2Ptr<CQuestData> GetQuestData(int);
 int FUN_14074b030(CQuestData*);
-CStringW FUN_1416e4df0(int);
-CStringW FUN_1416e5900(int, bool);
-CStringW FUN_1416e7fb0(int);
+CStringW GetQuestName(int);
+CStringW GetQuestTitle(int, bool);
+CStringW GetChapterName(int);
 CStringW FUN_1401aa6a0(int);
 CStringW GetStringCommon(int);
 __int64 FUN_140761ba0(int, int);
 __int64 FUN_140761cc0(int, int);
-void FUN_1416e5890(int, ATL::CAtlArray<CStringW>&);
+void GetQuestConditionTexts(int, ATL::CAtlArray<CStringW>&);
 int FUN_1416e6100(int, int);
 class Unk_QuestDebugState
 {
@@ -107,12 +107,12 @@ UIQuestDebugDialog::UIQuestDebugDialog()
     m_refresh = 0;
     m_40 = 1;
     FUN_1422dc3b0(1);
-    ((class UIQuestEventDispatcher*)FUN_140bfc4b0())->FUN_141aa87c0(this);
+    ((class UIQuestEventDispatcher*)FUN_140bfc4b0())->AddListener(this);
 }
 // @0x141a92fd0
 UIQuestDebugDialog::~UIQuestDebugDialog()
 {
-    ((class UIQuestEventDispatcher*)FUN_140bfc4b0())->FUN_141aa8850(this);
+    ((class UIQuestEventDispatcher*)FUN_140bfc4b0())->RemoveListener(this);
 }
 // @0x141a930a0
 CString UIQuestDebugDialog::GetTypeName() { return "QuestDebugDialog"; }
@@ -169,31 +169,31 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
     } else if (_stricmp("OnChangeQuest", method) == 0) {
         if (data.SetArgsIfAny(args, count)) {
             unsigned int id = data.PopUInt();
-            MS2Ptr<CQuestData> quest = FUN_14074bc40(id);
+            MS2Ptr<CQuestData> quest = GetQuestData(id);
             if (quest.IsNull()) return 1;
             void* actor = WorldService::GetInstance()->FUN_141bd0cc0();
             if (!actor) return 1;
             if (MS2Ptr<ASTextArea> desc = GetChild<ASTextArea>("m_desc")) {
                 CStringW text;
-                CStringW expLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_exp");
-                CStringW mesoLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_meso");
-                CStringW statLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_stat_point");
-                CStringW skillLabel = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_skill_point");
+                CStringW expLabel = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_quest_debug_desc_exp");
+                CStringW mesoLabel = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_quest_debug_desc_meso");
+                CStringW statLabel = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_quest_debug_desc_stat_point");
+                CStringW skillLabel = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_quest_debug_desc_skill_point");
                 text += StringFormat<__int64>(expLabel, FUN_140761ba0(id, 1));
                 text += StringFormat<__int64>(mesoLabel, FUN_140761cc0(id, 1));
                 if (quest->m_require.m_quest.GetCount()) {
                     text += L"\nPreceding Quest\n";
                     for (size_t i = 0; i < quest->m_require.m_quest.GetCount(); ++i) {
                         unsigned int reqId = quest->m_require.m_quest[i];
-                        text += StringFormat<CStringW, unsigned int>(L"{0}({1})\n", FUN_1416e4df0(reqId), reqId);
+                        text += StringFormat<CStringW, unsigned int>(L"{0}({1})\n", GetQuestName(reqId), reqId);
                     }
                 }
                 if (quest->m_2e8 != 0) {
-                    CStringW label = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_start_npc");
+                    CStringW label = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_quest_debug_desc_start_npc");
                     text += StringFormat<CStringW, unsigned int>(label, FUN_1401aa6a0(quest->m_2e8), reinterpret_cast<unsigned&>(quest->m_2e8));
                 }
                 if (quest->m_2ec != 0) {
-                    CStringW label = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_desc_complate_npc");
+                    CStringW label = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_quest_debug_desc_complate_npc");
                     text += StringFormat<CStringW, unsigned int>(label, FUN_1401aa6a0(quest->m_2ec), reinterpret_cast<unsigned&>(quest->m_2ec));
                 }
                 size_t condCount = quest->m_conditions.GetCount();
@@ -221,11 +221,11 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
     } else if (_stricmp("onReqQuest", method) == 0) {
         if (data.SetArgsIfAny(args, count)) {
             unsigned int id = data.PopUInt();
-            MS2Ptr<CQuestData> quest = FUN_14074bc40(id);
+            MS2Ptr<CQuestData> quest = GetQuestData(id);
             if (quest.get()) {
                 CStringW list;
                 for (size_t i = 0; i < quest->m_require.m_quest.GetCount(); ++i) {
-                    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_QuestDebugGlobal*)FUN_140764020())->state)->FUN_140745590(quest->m_require.m_quest[i]) == 0) {
+                    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_QuestDebugGlobal*)FUN_140764020())->state)->IsQuestRewarded(quest->m_require.m_quest[i]) == 0) {
                         if (list.GetLength() != 0) list += L",";
                         list += StringFormat<unsigned int>(L"{0}", quest->m_require.m_quest[i]);
                     }
@@ -275,13 +275,13 @@ int UIQuestDebugDialog::vfunc_28(const char* method, const Scaleform::GFx::Value
         CString csv("id,name,require,locking,standardlevel,requirelevel,feature,beginnpc,completenpc\n");
         for (size_t n = 0; n < m_ids.GetCount(); ++n) {
             unsigned int id = m_ids[n];
-            MS2Ptr<CQuestData> quest = FUN_14074bc40(id);
+            MS2Ptr<CQuestData> quest = GetQuestData(id);
             if (quest.IsNull()) continue;
             CString require;
             for (size_t i = 0; i < quest->m_require.m_quest.GetCount(); ++i) {
                 require += Unk_SocketFormat<unsigned>("{0} ", quest->m_require.m_quest[i]);
             }
-            CString name = StringFormat<CString>("\"{0}\"", FUN_14016a600(FUN_1416e4df0(id), 0));
+            CString name = StringFormat<CString>("\"{0}\"", FUN_14016a600(GetQuestName(id), 0));
             CString state;
             if (quest->m_30) state = "locking";
             else {
@@ -303,7 +303,7 @@ MS2_REPLACE_METHOD(0x141A93340, UIQuestDebugDialog, vfunc_28, 5937, 0x25607CCF);
 int UIQuestDebugDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13()) return 1;
-    if (((class Unk_QuestDebugAccess*)FUN_14025e7c0())->FUN_14116d9c0(28, 0, 0)) {
+    if (((class Unk_QuestDebugAccess*)FUN_14025e7c0())->WasKeyPressed(28, 0, 0)) {
         if (m_30.get()) m_30->Invoke("onEnterKey");
         return 1;
     }
@@ -319,35 +319,35 @@ void UIQuestDebugDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& met
         unsigned int id = args->PopUInt();
         ASArray array(2);
         {
-            auto quest = FUN_14074bc40(id);
+            auto quest = GetQuestData(id);
             if (quest.get()) {
                 for (size_t i = 0; i < quest->m_require.m_quest.GetCount(); ++i) {
                     unsigned int reqId = quest->m_require.m_quest[i];
-                    auto required = FUN_14074bc40(reqId);
+                    auto required = GetQuestData(reqId);
                     if (required.get()) {
                         ASObj data(2);
-                        data.FUN_1407cbb20("name", FUN_1416e4df0(reqId));
+                        data.SetWStringMember("name", GetQuestName(reqId));
                         data.SetMemberUInt("id", reqId);
-                        data.FUN_1407cb9c0("locking", quest->m_30 != 0);
-                        data.FUN_1407cb9c0("selectable", 0);
+                        data.SetIntMember("locking", quest->m_30 != 0);
+                        data.SetIntMember("selectable", 0);
                         array.PushObj(data);
                     }
                 }
                 for (size_t i = 0; i < quest->m_require.m_selectableQuest.GetCount(); ++i) {
                     unsigned int reqId = quest->m_require.m_selectableQuest[i];
-                    auto required = FUN_14074bc40(reqId);
+                    auto required = GetQuestData(reqId);
                     if (required.get()) {
                         ASObj data(2);
-                        data.FUN_1407cbb20("name", FUN_1416e4df0(reqId));
+                        data.SetWStringMember("name", GetQuestName(reqId));
                         data.SetMemberUInt("id", reqId);
-                        data.FUN_1407cb9c0("locking", quest->m_30 != 0);
-                        data.FUN_1407cb9c0("selectable", 1);
+                        data.SetIntMember("locking", quest->m_30 != 0);
+                        data.SetIntMember("selectable", 1);
                         array.PushObj(data);
                     }
                 }
             }
         }
-        *out = array.FUN_1422bb870();
+        *out = array.GetValue();
     }
 }
 MS2_REPLACE_METHOD(0x141A94B30, UIQuestDebugDialog, vfunc_45, 978, 0x1971147F);
@@ -386,7 +386,7 @@ MS2_REPLACE_METHOD_VIA(0x141A94FF0, UIQuestDebugDialog, UIQuestEventListener, vf
 void UIQuestDebugDialog::FUN_141a95010()
 {
     if (vfunc_55()) return;
-    CStringW filter = FUN_141a966a0(1);
+    CStringW filter = GetSearchFilter(1);
     ATL::CAtlArray<int> chapters;
     TSingleton<QuestDataTable>::GetInstance()->GetChapterIds(chapters);
     if (MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_chapter")) {
@@ -394,13 +394,13 @@ void UIQuestDebugDialog::FUN_141a95010()
         for (size_t i = 0; i < chapters.GetCount(); ++i) {
             ASObj data(2);
             CString unused;
-            CStringW label = FUN_1416e7fb0(chapters[i]);
+            CStringW label = GetChapterName(chapters[i]);
             if (filter.GetLength() && label.GetLength() > 0) {
                 if (label.Find(filter) == -1) continue;
             }
-            if (FUN_141a96870(chapters[i])) label += " (lock)";
-            data.FUN_1407cbb20("label", label);
-            data.FUN_1407cb9c0("id", chapters[i]);
+            if (IsChapterLocked(chapters[i])) label += " (lock)";
+            data.SetWStringMember("label", label);
+            data.SetIntMember("id", chapters[i]);
             list->AddItem(data);
         }
         list->vfunc_24(1);
@@ -420,7 +420,7 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
     int maxLevel = 0;
     if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_searchLevelMax")) maxLevel = _wtoi(input->GetText());
     unsigned int standard = 0;
-    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkStandardLv")) standard = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkStandardLv")) standard = check->IsSelected();
     // The count formatter is a separate unrecovered COMDAT; its call and two array arguments are retained below.
     if (MS2Ptr<ASTextField> text = GetChild<ASTextField>("m_count")) {
         ATL::CAtlArray<MS2Ptr<CQuestData>> available, completed;
@@ -430,22 +430,22 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
         TSingleton<QuestDataTable>::GetInstance()->CollectQuestsByType(available, 6);
         TSingleton<QuestDataTable>::GetInstance()->CollectQuestsByType(available, 8);
         TSingleton<QuestDataTable>::GetInstance()->CollectQuestsByType(available, 9);
-        CStringW format = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_quest_debug_textfield_count");
+        CStringW format = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_quest_debug_textfield_count");
         text->SetTextW(StringFormat(format, available.GetCount(), completed.GetCount()));
     }
     unsigned int progress = 0, complete = 0, autoStart = 0, exceptLocking = 0;
-    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkAutoStart")) autoStart = check->FUN_1422ce0e0();
-    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkProgress")) progress = check->FUN_1422ce0e0();
-    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkComplete")) complete = check->FUN_1422ce0e0();
-    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkExceptLocking")) exceptLocking = check->FUN_1422ce0e0();
-    CStringW filter = FUN_141a966a0(0);
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkAutoStart")) autoStart = check->IsSelected();
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkProgress")) progress = check->IsSelected();
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkComplete")) complete = check->IsSelected();
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkExceptLocking")) exceptLocking = check->IsSelected();
+    CStringW filter = GetSearchFilter(0);
     std::vector<MS2Ptr<CQuestData>> quests;
     if (chapter) {
         ATL::CAtlArray<unsigned int> ids;
         TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(chapter, ids);
         for (size_t i = 0; i < ids.GetCount(); ++i) {
             unsigned int id = ids[i];
-            quests.push_back(FUN_14074bc40(id));
+            quests.push_back(GetQuestData(id));
         }
     } else {
         ATL::CAtlArray<MS2Ptr<CQuestData>> all;
@@ -456,12 +456,12 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
             unsigned int id = FUN_14074b030(quest.operator->());
             CStringW name, idText;
             idText.Format(L"%d", id);
-            name = FUN_1416e5900(id, false);
-            if (!FUN_141a96960(id, name, idText, filter)) continue;
+            name = GetQuestTitle(id, false);
+            if (!MatchesFilter(id, name, idText, filter)) continue;
             if (progress || complete) {
                 int keep = 0;
                 if (progress) { if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_QuestDebugGlobal*)FUN_140764020())->state)->IsQuestActive(id)) keep = 1; }
-                if (complete) { if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_QuestDebugGlobal*)FUN_140764020())->state)->FUN_140745590(id)) keep = 1; }
+                if (complete) { if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_QuestDebugGlobal*)FUN_140764020())->state)->IsQuestRewarded(id)) keep = 1; }
                 if (!keep) continue;
             }
             if (autoStart && !quest->m_2d) continue;
@@ -487,18 +487,18 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
             if (!search && chapter && chapter != quest->m_28) continue;
             ++count;
             unsigned int id = FUN_14074b030(quest.operator->());
-            CStringW name = FUN_1416e5900(id, false);
+            CStringW name = GetQuestTitle(id, false);
             ASObj data(2);
             data.SetMemberUInt("id", id);
-            data.FUN_1407cb9c0("standardLv", quest->m_level);
+            data.SetIntMember("standardLv", quest->m_level);
             data.FUN_1409c48f0("acceptLv", quest->m_require.m_level);
             data.FUN_1409c1180("exp", FUN_140761ba0(id, 1));
             data.FUN_1409c1180("meso", FUN_140761cc0(id, 1));
-            data.FUN_1407cbb20("name", name);
-            data.FUN_1407cbb20("npc", FUN_1401aa6a0(quest->m_2e8));
-            data.FUN_1407cbb20("req", FUN_1401aa6a0(quest->m_2ec));
-            data.FUN_1407cbb20("state", state);
-            data.FUN_1407cbbe0("locking", reinterpret_cast<bool&>(quest->m_30));
+            data.SetWStringMember("name", name);
+            data.SetWStringMember("npc", FUN_1401aa6a0(quest->m_2e8));
+            data.SetWStringMember("req", FUN_1401aa6a0(quest->m_2ec));
+            data.SetWStringMember("state", state);
+            data.SetBoolMember("locking", reinterpret_cast<bool&>(quest->m_30));
             list->AddItem(data);
             m_ids.Add(id);
         }
@@ -509,51 +509,51 @@ void UIQuestDebugDialog::FUN_141a95310(int chapter, int search)
 MS2_REPLACE_METHOD(0x141A95310, UIQuestDebugDialog, FUN_141a95310, 4998, 0x217DF313);
 
 // @0x141a966a0
-CStringW UIQuestDebugDialog::FUN_141a966a0(unsigned int mode)
+CStringW UIQuestDebugDialog::GetSearchFilter(unsigned int mode)
 {
     unsigned int checked = 0;
-    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkFilter")) checked = check->FUN_1422ce0e0();
+    if (MS2Ptr<ASCheckBox> check = GetChild<ASCheckBox>("m_checkFilter")) checked = check->IsSelected();
     CStringW text;
     if (checked == mode) {
         if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_searchInput")) text = input->GetText();
     }
     return text;
 }
-MS2_REPLACE_METHOD(0x141A966A0, UIQuestDebugDialog, FUN_141a966a0, 452, 0x063564E3);
+MS2_REPLACE_METHOD(0x141A966A0, UIQuestDebugDialog, GetSearchFilter, 452, 0x063564E3);
 
 // @0x141a96870
-int UIQuestDebugDialog::FUN_141a96870(int chapter)
+int UIQuestDebugDialog::IsChapterLocked(int chapter)
 {
     ATL::CAtlArray<unsigned int> ids;
     TSingleton<QuestDataTable>::GetInstance()->GetQuestIdsByChapter(chapter, ids);
     for (size_t i = 0; i < ids.GetCount(); ++i) {
-        auto quest = FUN_14074bc40(ids[i]);
+        auto quest = GetQuestData(ids[i]);
         if (!quest->m_30) return 0;
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x141A96870, UIQuestDebugDialog, FUN_141a96870, 219, 0x629DE2A2);
+MS2_REPLACE_METHOD(0x141A96870, UIQuestDebugDialog, IsChapterLocked, 219, 0x629DE2A2);
 
 // @0x141a96960
-int UIQuestDebugDialog::FUN_141a96960(int id, CStringW& name, CStringW& idText, const CStringW& filter)
+int UIQuestDebugDialog::MatchesFilter(int id, CStringW& name, CStringW& idText, const CStringW& filter)
 {
     if (!filter.GetLength()) return 1;
     if (name.Find(filter) != -1) return 1;
     if (idText.Find(filter) != -1) return 1;
-    auto quest = FUN_14074bc40(id);
+    auto quest = GetQuestData(id);
     if (quest.IsNull()) return 0;
     CStringW beginNpc = FUN_1401aa6a0(quest->m_2e8);
     if (beginNpc.Find(filter) != -1) return 1;
     CStringW endNpc = FUN_1401aa6a0(quest->m_2ec);
     if (endNpc.Find(filter) != -1) return 1;
     ATL::CAtlArray<CStringW> texts;
-    FUN_1416e5890(id, texts);
+    GetQuestConditionTexts(id, texts);
     for (size_t i = 0; i < texts.GetCount(); ++i) {
         if (texts[i].Find(filter) != -1) return 1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x141A96960, UIQuestDebugDialog, FUN_141a96960, 699, 0x6A48A5B4);
+MS2_REPLACE_METHOD(0x141A96960, UIQuestDebugDialog, MatchesFilter, 699, 0x6A48A5B4);
 
 // @0x141a96c30
 int UIQuestDebugDialog::FUN_141a96c30(int id, MS2Ptr<CQuestData> quest)

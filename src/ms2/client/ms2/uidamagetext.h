@@ -104,39 +104,39 @@ public:
     void SetClearing(bool bClearing);
     void SetObserver(bool b);                                                         // m_bObserver
     void SetObservedId(__int64 n);                                                      // m_nObservedId
-    void FUN_141913a20();                                                               // read the layout constants
-    float FUN_141913af0(GameObject* pTarget);                                           // height offset of a target
+    void LoadLayoutConstants();                                                               // read the layout constants
+    float GetHeightOffset(GameObject* pTarget);                                           // height offset of a target
     float FUN_141913b80(const NiPoint3& kPos);
     int FUN_141913bd0(GameObject* pTarget, int nGrade, int nCasterId);                  // the number is shown (battle options)
-    int FUN_141914020(GameObject* pTarget, NiPoint3& kPos, const CString& strNode);    // anchor position of a target
+    int GetAnchorPosition(GameObject* pTarget, NiPoint3& kPos, const CString& strNode);    // anchor position of a target
     int GetCounterIndex(GameObject* pTarget, int& nIndex, CounterMap& map);
-    int FUN_1419141a0(GameObject* pTarget);                                            // within the show distance
+    int IsWithinShowDistance(GameObject* pTarget);                                            // within the show distance
     int GetTargetKind(GameObject* pTarget);                                             // 0 npc-like, 1 player
     CString GetTargetKindName(int nTargetKind, bool bUser);                                 // "Monster" / "User"
     int FUN_141914490(GameObject* pTarget);                                             // pc bang bonus (0)
-    int FUN_1419144b0(int nGrade);                                                      // recover grade
-    bool FUN_1419144f0(int nGrade);                                                     // damage grade
+    int IsRecoverGrade(int nGrade);                                                      // recover grade
+    bool IsDamageGrade(int nGrade);                                                     // damage grade
     int FUN_141914530(int nGrade);                                                      // recover grade
-    CString FUN_141914570(int nGrade);                                                  // "Normal" / "Critical" / "Recover"
-    CString FUN_141914660(__int64 nValue, int nGrade);                                  // the value text
-    CString FUN_1419147e0();                                                            // the option flags as text
+    CString GetGradeName(int nGrade);                                                  // "Normal" / "Critical" / "Recover"
+    CString GetDamageValueText(__int64 nValue, int nGrade);                                  // the value text
+    CString GetOptionFlagsText();                                                            // the option flags as text
     int FUN_141914850(int nType);
     CString FUN_141914890(int nValue, int nType);                                       // the exp / meso / item value text
     CString FUN_1419149d0(int nType);                                                   // "Exp" / "Meso" / "Item"
     float FUN_141914a90(const NiPoint3& kPos);                                          // distance scale
     float FUN_141914c40(GameObject* pTarget);
     int FUN_141914d40(GameObject* pTarget);                                             // 1: do not show
-    void FUN_141914da0(int bAppend, POSITION* pLast, DamageList& list, CounterMap& map,
+    void InsertDamageInfo(int bAppend, POSITION* pLast, DamageList& list, CounterMap& map,
                        MS2Ptr<DamageInfo> spInfo, int nMax);                            // insert into a list
-    void FUN_141915090(POSITION pos);                                                   // remove from m_ownerFollowers
-    void FUN_1419150f0(POSITION pos);                                                   // remove from m_normals
-    void FUN_141915150(const unsigned __int64& nOwnerId, int nCount, CounterMap& map);  // decrement a counter
-    MS2Ptr<CounterInfo> FUN_141915240(unsigned __int64 nOwnerId, CounterMap& map, int nGrade);   // get or create a counter
-    void FUN_1419153d0();                                                               // update m_ownerFollowers
-    void FUN_141915990();                                                               // update m_normals
+    void RemoveOwnerFollower(POSITION pos);                                                   // remove from m_ownerFollowers
+    void RemoveNormal(POSITION pos);                                                   // remove from m_normals
+    void DecrementCounter(const unsigned __int64& nOwnerId, int nCount, CounterMap& map);  // decrement a counter
+    MS2Ptr<CounterInfo> GetOrCreateCounter(unsigned __int64 nOwnerId, CounterMap& map, int nGrade);   // get or create a counter
+    void UpdateOwnerFollowers();                                                               // update m_ownerFollowers
+    void UpdateNormals();                                                               // update m_normals
     void FUN_141916340();                                                               // pop the queue
-    void FUN_141916430(MS2Ptr<ASGameEntity> spRoot);                                    // update m_ownerFollowers (clearing)
-    void FUN_141916ac0(MS2Ptr<ASGameEntity> spRoot);                                    // update m_normals (clearing)
+    void UpdateOwnerFollowersClearing(MS2Ptr<ASGameEntity> spRoot);                                    // update m_ownerFollowers (clearing)
+    void UpdateNormalsClearing(MS2Ptr<ASGameEntity> spRoot);                                    // update m_normals (clearing)
     int FUN_1419175c0(MS2Ptr<DamageInfo> spInfo, const NiPoint3& kPos, GameObject* pTarget,
                       const Scaleform::GFx::Value& clip, const efd::Point3& kScreen, int bAppend);   // bind the clip and insert it
 

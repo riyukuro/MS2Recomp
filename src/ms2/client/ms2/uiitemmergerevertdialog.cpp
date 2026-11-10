@@ -84,19 +84,19 @@ unsigned __int64 FUN_140718370(const CStringW& str);                         // 
 class CItemStatus   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_140630810();
+    bool HasGroup4Options();
 };
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
 void FUN_14083d2b0(CStringW& str);
 CStringW FUN_141b71910(__int64 nUid);                               // the uid as text
-void FUN_1412751f0(const CStringW& text, int nA, int nB);           // notice
+void ShowSystemNotice(const CStringW& text, int nA, int nB);           // notice
 
 // @0x1400d84b0 / @0x1400d8570: the two sort-name tables above (see MS2-RANGE .text$di)
 
 // @0x140e4c050
 UIItemMergeRevertDialog::UIItemMergeRevertDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_164 = 1;
     m_nItemUid = 0;
 }
@@ -150,7 +150,7 @@ int UIItemMergeRevertDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
             MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
             if (spItem.IsNull())
                 return 1;
-            if (FUN_140e4d330(spItem.get()) != 0)
+            if (CheckItem(spItem.get()) != 0)
                 return 1;
             COutPacket packet(static_cast<int>(SendOp::ItemMerge), 0);
             packet.WriteUInt8(6);
@@ -167,20 +167,20 @@ void UIItemMergeRevertDialog::FUN_140e4c440()
 {
     FUN_140d42630(GetTypeName());
     FUN_140d42540(GetTypeName(), m_nItemUid, MS2Ptr<CItem>(0));
-    if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(GetTypeName())))
+    if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FindBinding(GetTypeName())))
     {
-        pSlot->SetRemoveFn(Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::FUN_140e4ce70));
-        pSlot->SetDropFn(Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
+        pSlot->SetRemoveFn(Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::OnItemRemoved));
+        pSlot->SetDropFn(Unk_MrDropFn(this, &UIItemMergeRevertDialog::OnItemDropped));
     }
     ASObj obj(2);
-    ((class AScript&)(obj)).FUN_1407cb9c0("isReady", 1);
-    obj.FUN_1407cba60("binding", GetTypeName());
-    ((class AScript&)(obj)).FUN_1407cb9c0("price", 0);
+    ((class AScript&)(obj)).SetIntMember("isReady", 1);
+    obj.SetStringMember("binding", GetTypeName());
+    ((class AScript&)(obj)).SetIntMember("price", 0);
     m_30->Invoke("setData", obj);
 }
 
 // @0x140e4c7a0
-void UIItemMergeRevertDialog::FUN_140e4c7a0(CItem* pItem)
+void UIItemMergeRevertDialog::SetItemUid(CItem* pItem)
 {
     m_nItemUid = pItem->GetItemUid();
 }
@@ -190,22 +190,22 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
 {
     FUN_140d42630(GetTypeName());
     FUN_140d42540(GetTypeName(), m_nItemUid, MS2Ptr<CItem>(pItem));
-    if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(GetTypeName())))
+    if (ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FindBinding(GetTypeName())))
     {
-        pSlot->SetRemoveFn(Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::FUN_140e4ce70));
-        pSlot->SetDropFn(Unk_MrDropFn(this, &UIItemMergeRevertDialog::FUN_140e4cea0));
+        pSlot->SetRemoveFn(Unk_MrRemoveFn(this, &UIItemMergeRevertDialog::OnItemRemoved));
+        pSlot->SetDropFn(Unk_MrDropFn(this, &UIItemMergeRevertDialog::OnItemDropped));
     }
-    CStringW strOption = TSingleton<CItemMergeOptionTable>::GetInstance()->FUN_1405c1090(MS2Ptr<CItem>(pItem), 1);
+    CStringW strOption = TSingleton<CItemMergeOptionTable>::GetInstance()->GetMergeOptionDescription(MS2Ptr<CItem>(pItem), 1);
     CStringW strText = StringFormat<CStringW, CStringW>(L"{0}{1}", GetStringCommonByKey(L"s_tooltip_itemoption_kinds_merge"), strOption);
     int nType = reinterpret_cast<CItemData*>(pItem->FUN_140527840())->GetEquipSubtype();
     FUN_14083d2b0(strText);
     ASObj obj(2);
-    ((class AScript&)(obj)).FUN_1407cb9c0("isReady", 0);
-    obj.FUN_1407cba60("binding", GetTypeName());
-    ((class AScript&)(obj)).FUN_1407cbb20("name", pItem->FUN_140528160());
-    ((class AScript&)(obj)).FUN_1407cbb20("optionStr", CStringW(strText));
-    obj.FUN_1407cbbe0("enabled", FUN_140e4d330(pItem) == 0);
-    ((class AScript&)(obj)).FUN_1407cbb20("itemGUID", FUN_141b71910(pItem->GetItemUid()));
+    ((class AScript&)(obj)).SetIntMember("isReady", 0);
+    obj.SetStringMember("binding", GetTypeName());
+    ((class AScript&)(obj)).SetWStringMember("name", pItem->FUN_140528160());
+    ((class AScript&)(obj)).SetWStringMember("optionStr", CStringW(strText));
+    obj.SetBoolMember("enabled", CheckItem(pItem) == 0);
+    ((class AScript&)(obj)).SetWStringMember("itemGUID", FUN_141b71910(pItem->GetItemUid()));
     obj.FUN_1409c1180("price", ((class CLua*)FUN_1401c0db0())->CalcItemMergeRevertMeso(pItem->GetRarity(), nType));
     m_30->Invoke("setData", obj);
 }
@@ -213,18 +213,18 @@ void UIItemMergeRevertDialog::FUN_140e4c7d0(CItem* pItem)
 // @0x140e4cda0
 void UIItemMergeRevertDialog::FUN_140e4cda0(CItem* pItem)
 {
-    FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_item_merge_option_revert"), pItem->FUN_140527b10()), 3, 1);
+    ShowSystemNotice(FUN_14028dfa0<CStringW>(CStringW(L"s_item_merge_option_revert"), pItem->FUN_140527b10()), 3, 1);
     vfunc_67();
 }
 
 // @0x140e4ce70
-void UIItemMergeRevertDialog::FUN_140e4ce70(ItemScrollSlot& slot)
+void UIItemMergeRevertDialog::OnItemRemoved(ItemScrollSlot& slot)
 {
     FUN_140e4c440();
 }
 
 // @0x140e4cea0
-void UIItemMergeRevertDialog::FUN_140e4cea0(ItemScrollSlot& slot, DragSlot* pDrag)
+void UIItemMergeRevertDialog::OnItemDropped(ItemScrollSlot& slot, DragSlot* pDrag)
 {
     if (m_30 == 0)
         return;
@@ -234,13 +234,13 @@ void UIItemMergeRevertDialog::FUN_140e4cea0(ItemScrollSlot& slot, DragSlot* pDra
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(pInven->GetItemUid());
         if (spItem.IsNull())
         {
-            FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_mergeitem"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_item_merge_option_error_invalid_mergeitem"), 1, 1);
             return;
         }
-        int nError = FUN_140e4d330(spItem.get());
+        int nError = CheckItem(spItem.get());
         if (nError != 0)
         {
-            FUN_140e4d010(nError);
+            ShowErrorMessage(nError);
             return;
         }
         FUN_140e4c7d0(spItem.get());
@@ -248,33 +248,33 @@ void UIItemMergeRevertDialog::FUN_140e4cea0(ItemScrollSlot& slot, DragSlot* pDra
 }
 
 // @0x140e4d010
-void UIItemMergeRevertDialog::FUN_140e4d010(int nError)
+void UIItemMergeRevertDialog::ShowErrorMessage(int nError)
 {
     switch (nError)
     {
     case 5:
-        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_merge_scroll"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_item_merge_option_error_invalid_merge_scroll"), 1, 1);
         break;
     case 6:
-        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_revert_rank"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_item_merge_option_error_invalid_revert_rank"), 1, 1);
         break;
     case 7:
-        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_revert_option"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_item_merge_option_error_invalid_revert_option"), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_material"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_item_merge_option_error_invalid_material"), 1, 1);
         break;
     case 8:
-        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_revert_slot"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_item_merge_option_error_invalid_revert_slot"), 1, 1);
         break;
     case 3:
-        FUN_1412751f0(GetStringCommonByKey(L"s_item_merge_option_error_invalid_mergeitem"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_item_merge_option_error_invalid_mergeitem"), 1, 1);
         break;
     }
 }
 
 // @0x140e4d330
-int UIItemMergeRevertDialog::FUN_140e4d330(CItem* pItem)
+int UIItemMergeRevertDialog::CheckItem(CItem* pItem)
 {
     if (pItem == 0)
         return 3;
@@ -287,7 +287,7 @@ int UIItemMergeRevertDialog::FUN_140e4d330(CItem* pItem)
         return 5;
     if (spBase->GetRarity() != pItem->GetRarity())
         return 6;
-    if (!((class CItemStatus*)(void*)(pItem->FUN_1405278a0()))->FUN_140630810())
+    if (!((class CItemStatus*)(void*)(pItem->GetStatus()))->HasGroup4Options())
         return 7;
     if (spBase->FUN_140527840() == 0)
         return 5;

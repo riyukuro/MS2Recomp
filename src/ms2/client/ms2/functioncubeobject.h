@@ -148,11 +148,11 @@ class UIBootyPopup : public CPtred
 {
 public:
     UIBootyPopup();                                               // 0x141031430
-    void FUN_1410315c0();                                         // show
-    void FUN_1410315f0();                                         // close and release
+    void Show();                                         // show
+    void Close();                                         // close and release
     void FUN_141031660(Vector3 pt);
-    void FUN_141031690(egf::EntityID kId);
-    void FUN_1410316d0(int nItemId);
+    void SetEntityId(egf::EntityID kId);
+    void SetItemId(int nItemId);
     void FUN_141031a60(int bShow);
     char m_pad_18[0x90 - 0x18];
 };
@@ -161,11 +161,11 @@ class UIUGCCubeNoticePopup : public CPtred
 {
 public:
     UIUGCCubeNoticePopup();                                       // 0x140fb49b0
-    void FUN_140fb4bb0();
-    void FUN_140fb4be0();                                         // close and release
+    void StartShowing();
+    void StopShowing();                                         // close and release
     void SetPtWorld(Vector3 ptWorld);
-    void FUN_140fb4cc0(const CStringW& strTitle, const CStringW& strText);
-    void FUN_140fb5080(int bShow);
+    void SetText(const CStringW& strTitle, const CStringW& strText);
+    void SetVisible(int bShow);
     char m_pad_18[0x98 - 0x18];
 };
 MS2_CHECK_SIZE(UIUGCCubeNoticePopup, 0x98);
@@ -317,7 +317,7 @@ public:
     virtual int vfunc_16();                                       // 16 0x141228fa0 mastery kind
     virtual int vfunc_17();                                       // 17 0x1412291e0 mastery is enough
 
-    MS2Ptr<FunctionCubeData> FUN_140ca6580();                     // 0x140ca6580 the cube data (by value)
+    MS2Ptr<FunctionCubeData> GetFunctionCubeData();                     // 0x140ca6580 the cube data (by value)
     void FUN_141228fb0(__int64 n);                                // 0x141228fb0
     __int64 FUN_141228fe0();                                      // 0x141228fe0
     int FUN_141229000(bool bWatch);                               // 0x141229000

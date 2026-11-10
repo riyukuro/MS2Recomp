@@ -32,11 +32,11 @@ public:
 
     void FUN_141032560(const CString& strName, float f);        // show f in the text field strName
     void FUN_141032610(const CString& strName, float f);        // show f in the input strName
-    void FUN_1410326e0(ASData& data);                           // "onChangeSliderFOV"
-    void FUN_141032780(ASData& data);                           // "onClickReset"
-    void FUN_1410328d0(ASData& data);                           // "onClickApplyNearFar"
-    void FUN_141032970(ASData& data);                           // "onClickApplyMaxDistance"
-    void FUN_141032a90(ASData& data);                           // "onClickApplyMinDistance"
+    void OnChangeSliderFOV(ASData& data);                           // "onChangeSliderFOV"
+    void OnClickReset(ASData& data);                           // "onClickReset"
+    void OnClickApplyNearFar(ASData& data);                           // "onClickApplyNearFar"
+    void OnClickApplyMaxDistance(ASData& data);                           // "onClickApplyMaxDistance"
+    void OnClickApplyMinDistance(ASData& data);                           // "onClickApplyMinDistance"
 
     MS2Ptr<Unk_CdInput> FUN_140e35bd0(const CString& strName);       // 0x140e35bd0 input child lookup (a shared GetChild instance)
 };

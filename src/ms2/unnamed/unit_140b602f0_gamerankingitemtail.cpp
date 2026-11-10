@@ -52,7 +52,7 @@ void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&); 
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 
 // @0x140b60bf0
-CString FUN_140b60bf0(egf::Entity* pEntity)
+CString GetEffectName(egf::Entity* pEntity)
 {
     efd::utf8string str;
     pEntity->GetPropertyValue<efd::utf8string>(0xdd2ac78a, str);
@@ -60,7 +60,7 @@ CString FUN_140b60bf0(egf::Entity* pEntity)
 }
 
 // @0x140b60c90
-float FUN_140b60c90(egf::Entity* pEntity)
+float GetScale(egf::Entity* pEntity)
 {
     float fValue = 1.0f;
     pEntity->GetPropertyValue(0x2d7cad2d, fValue);
@@ -68,7 +68,7 @@ float FUN_140b60c90(egf::Entity* pEntity)
 }
 
 // @0x140b60cd0
-efd::Point3 FUN_140b60cd0(egf::Entity* pEntity)
+efd::Point3 GetPosition(egf::Entity* pEntity)
 {
     efd::Point3 kPoint;
     reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kPoint));
@@ -92,7 +92,7 @@ int FUN_140b60d90(egf::Entity* pEntity)
 }
 
 // @0x140b60dd0
-bool FUN_140b60dd0(egf::Entity* pEntity)
+bool IsVisible(egf::Entity* pEntity)
 {
     bool bValue = false;
     pEntity->GetPropertyValue(0xa0b6b179, bValue);
@@ -108,7 +108,7 @@ void FUN_140b60e10(egf::Entity* pEntity, bool bValue)
 // @0x140b60e40
 void FUN_140b60e40(egf::Entity* pEntity, bool bDefault)
 {
-    if (((class CPhysXHelper*)GetPhysXHelper())->FUN_141689a10(pEntity) == 0)
+    if (((class CPhysXHelper*)GetPhysXHelper())->HasPhysicsProps(pEntity) == 0)
         return;
     unsigned short usKind = 0;
     pEntity->GetPropertyValue<unsigned short>(0xada5c5d2, usKind);

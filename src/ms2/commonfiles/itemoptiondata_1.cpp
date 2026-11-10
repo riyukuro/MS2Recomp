@@ -13,10 +13,10 @@
 
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 
-// The option table (CItemOptionTable; FUN_140166430 returns the singleton).
+// The option table (CItemOptionTable; GetItemOptionTable returns the singleton).
 class Unk_140166430;
 class CItemOptionTable { public: int GetDisplayOrder(Unk_SocketSpecialStat nKey) const; };   // C3: member view (citemoptiontable.h)
-Unk_140166430* FUN_140166430();
+Unk_140166430* GetItemOptionTable();
 int FUN_14081d480(int nStat);                   // the display key of a stat
 const CString& GetStatName(unsigned nStat);        // C3: was FUN_14082efb0 (the xml name of a stat)
 const CString& FUN_14081d380(int nStat);        // the xml name of a special stat
@@ -81,12 +81,12 @@ unsigned CItemOption::GetItemId() {
 }
 
 // @0x1405cb360
-void CItemOption::FUN_1405cb360(int nValue) {
+void CItemOption::SetMergeId(int nValue) {
     m_n2f0=nValue;
 }
 
 // @0x1405cb380
-int CItemOption::FUN_1405cb380() {
+int CItemOption::GetMergeId() {
     return m_n2f0;
 }
 
@@ -159,7 +159,7 @@ void CItemOption::FUN_1405cb900(int nGroup, Unk_OptionTextMap& kOut) {
         MS2Ptr<BaseOption> spOption=m_aStat[nGroup].GetValueAt(pos);
         int nKey=0;
         if (spOption->HasValue()) nKey=FUN_14081d480(nStat);
-        unsigned nOrder=reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetDisplayOrder((Unk_SocketSpecialStat)nKey);
+        unsigned nOrder=reinterpret_cast<CItemOptionTable*>(GetItemOptionTable())->GetDisplayOrder((Unk_SocketSpecialStat)nKey);
         kOut.SetAt(nOrder,GetStatName((unsigned)nStat));
     }
     for (POSITION pos=m_aSpecial[nGroup].GetStartPosition();pos;m_aSpecial[nGroup].GetNext(pos)) {
@@ -167,7 +167,7 @@ void CItemOption::FUN_1405cb900(int nGroup, Unk_OptionTextMap& kOut) {
         MS2Ptr<BaseOption> spOption=m_aSpecial[nGroup].GetValueAt(pos);
         CString strName;
         if (spOption->HasValue()) strName=FUN_14081d380(eStat);
-        unsigned nOrder=reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetDisplayOrder(eStat);
+        unsigned nOrder=reinterpret_cast<CItemOptionTable*>(GetItemOptionTable())->GetDisplayOrder(eStat);
         kOut.SetAt(nOrder,FUN_14081d380(eStat));
     }
 }
@@ -225,14 +225,14 @@ void CItemOption::Serialize(COutputStream& kOut) {
             int nStat=m_aStat[i].GetKeyAt(pos);
             MS2Ptr<BaseOption> spOption=m_aStat[i].GetValueAt(pos);
             kOut.WriteInt16((short)nStat);
-            spOption->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(kOut));
+            spOption->Write(reinterpret_cast<Unk_EnchantWrite&>(kOut));
         }
         kOut.WriteInt16((short)m_aSpecial[i].GetCount());
         for (POSITION pos=m_aSpecial[i].GetStartPosition();pos;m_aSpecial[i].GetNext(pos)) {
             Unk_SocketSpecialStat eStat=m_aSpecial[i].GetKeyAt(pos);
             MS2Ptr<BaseOption> spOption=m_aSpecial[i].GetValueAt(pos);
             kOut.WriteInt16((short)eStat);
-            spOption->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(kOut));
+            spOption->Write(reinterpret_cast<Unk_EnchantWrite&>(kOut));
         }
     }
     kOut.WriteInt32(m_n2f0);
@@ -246,14 +246,14 @@ void CItemOption::Deserialize(CInputStream& kIn) {
         for (unsigned j=0;j<nCount;j++) {
             MS2Ptr<BaseOption> spOption(new BaseOption);
             int nStat=(unsigned short)kIn.ReadInt16();
-            spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(kIn));
+            spOption->Read(reinterpret_cast<Unk_EnchantRead&>(kIn));
             m_aStat[i].SetAt(nStat,spOption);
         }
         unsigned nSpecialCount=(unsigned short)kIn.ReadInt16();
         for (unsigned j=0;j<nSpecialCount;j++) {
             MS2Ptr<BaseOption> spOption(new BaseOption);
             Unk_SocketSpecialStat eStat=(Unk_SocketSpecialStat)(unsigned short)kIn.ReadInt16();
-            spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(kIn));
+            spOption->Read(reinterpret_cast<Unk_EnchantRead&>(kIn));
             m_aSpecial[i].SetAt(eStat,spOption);
         }
     }
@@ -285,7 +285,7 @@ BOOL CItemOption::SetGroup(int nGroup, const Unk_EnchantMap& kStat, const Unk_So
 }
 
 // @0x1405cc640
-bool CItemOption::FUN_1405cc640(int nGroup, CItemOption* pOther) const {
+bool CItemOption::HasSameGroupOptions(int nGroup, CItemOption* pOther) const {
     for (POSITION pos=m_aStat[nGroup].GetStartPosition();pos;m_aStat[nGroup].GetNext(pos)) {
         int nStat=m_aStat[nGroup].GetKeyAt(pos);
         MS2Ptr<BaseOption> spOther=pOther->GetStatOption(nGroup,nStat);

@@ -47,7 +47,7 @@ UIWeddingHallListDialog::UIWeddingHallListDialog()
     m_bRefresh = 0;
     m_2c = 0xc;
     FUN_1422dc3b0(1);
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140fd8e80
@@ -82,7 +82,7 @@ void UIWeddingHallListDialog::vfunc_72()
     UIDialog::vfunc_72();
     if (m_bRefresh == 1) {
         m_bRefresh = 0;
-        FUN_140fd9110();
+        UpdateHallLists();
     }
 }
 MS2_REPLACE_METHOD(0x140FD8F50, UIWeddingHallListDialog, vfunc_72, 63, 0xB770684D);
@@ -91,7 +91,7 @@ MS2_REPLACE_METHOD(0x140FD8F50, UIWeddingHallListDialog, vfunc_72, 63, 0xB770684
 void UIWeddingHallListDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140fd9110();
+    UpdateHallLists();
 }
 MS2_REPLACE_METHOD(0x140FD8FA0, UIWeddingHallListDialog, OnLoadComplete, 34, 0x97E35379);
 
@@ -120,7 +120,7 @@ void UIWeddingHallListDialog::FUN_140fd90f0(bool b)
 MS2_REPLACE_METHOD(0x140FD90F0, UIWeddingHallListDialog, FUN_140fd90f0, 22, 0x418ED914);
 
 // @0x140fd9110
-void UIWeddingHallListDialog::FUN_140fd9110()
+void UIWeddingHallListDialog::UpdateHallLists()
 {
     std::map<unsigned __int64, WeddingHallTicket> halls;
     TSingleton<WeddingManager>::GetInstance()->CollectTickets(halls);
@@ -137,17 +137,17 @@ void UIWeddingHallListDialog::FUN_140fd9110()
     __int64 nNow = GetServerTime();
     for (; it != itEnd; ++it) {
         WeddingHallTicket& ticket = it->second;
-        MS2Ptr<WeddingPackage> pPackage = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(ticket.m_nPackageId);
+        MS2Ptr<WeddingPackage> pPackage = TSingleton<WeddingTable>::GetInstance()->FindPackage(ticket.m_nPackageId);
         if (pPackage == 0)
             continue;
-        MS2Ptr<WeddingHallData> pHall = pPackage->FUN_140907110(ticket.m_nHallId);
+        MS2Ptr<WeddingHallData> pHall = pPackage->FindHall(ticket.m_nHallId);
         if (pHall == 0)
             continue;
         CStringW strName = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_wedding_hall_list_name"), ticket.m_strGroom, ticket.m_strBride);
         ASObj row(2);
-        ((class AScript&)(row)).FUN_1407cbb20("name", strName);
-        ((class AScript&)(row)).FUN_1407cbb20("hall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, ((int)((class WeddingHallData*)(pHall))->FUN_140906e40(FUN_140900f30(ticket.m_nTime)))));
-        ((class AScript&)(row)).FUN_1407cbb20("weddingSN", FUN_141b71910(it->first));
+        ((class AScript&)(row)).SetWStringMember("name", strName);
+        ((class AScript&)(row)).SetWStringMember("hall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, ((int)((class WeddingHallData*)(pHall))->GetFieldId(FUN_140900f30(ticket.m_nTime)))));
+        ((class AScript&)(row)).SetWStringMember("weddingSN", FUN_141b71910(it->first));
         if (ticket.m_nTime > nNow)
             pOpenList->AddItem(row);
         else
@@ -156,7 +156,7 @@ void UIWeddingHallListDialog::FUN_140fd9110()
     pOpenList->vfunc_24(true);
     pProgressList->vfunc_24(true);
 }
-MS2_REPLACE_METHOD(0x140FD9110, UIWeddingHallListDialog, FUN_140fd9110, 1258, 0x20B250A4);
+MS2_REPLACE_METHOD(0x140FD9110, UIWeddingHallListDialog, UpdateHallLists, 1258, 0x20B250A4);
 
 // @0x140fd9c90
 // (vfunc_48 is inline in the header)

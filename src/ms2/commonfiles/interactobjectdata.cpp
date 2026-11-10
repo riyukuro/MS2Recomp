@@ -52,8 +52,8 @@ float FUN_1401973d0(TiXmlElement* pElem, const char* pszName, float fDefault);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_14028c2d0(CStringA, efd::Point3 *);  // C3: the definition's signature
 int FUN_140764310(const CStringA& strQuests, const CStringA& strStates, QuestMask* pMask);   // questmasktable.cpp
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // data file path
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);  // data file path
+CString ToCString(const char* psz, int n);
 CLogString* GetLogString();
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
 // The one-argument log of additionalactionadditional.cpp (an FMT_VARIADIC instance it emitted first).
@@ -393,11 +393,11 @@ bool CInteractObjectData::Load(TiXmlElement* pElem)
 MS2_REPLACE_METHOD(0x14051CE70, CInteractObjectData, Load, 9198, 0xA6BDC3CC);
 
 // @0x14051f270
-int CInteractObjectData::FUN_14051f270()
+int CInteractObjectData::HasQuestMask()
 {
     return reinterpret_cast<Unk_QuestMaskView*>(&m_maskUse)->m_aMask.GetCount() > 0 ? TRUE : FALSE;
 }
-MS2_REPLACE_METHOD(0x14051F270, CInteractObjectData, FUN_14051f270, 58, 0xC01AAFE8);
+MS2_REPLACE_METHOD(0x14051F270, CInteractObjectData, HasQuestMask, 58, 0xC01AAFE8);
 
 // LoadAll and Get construct rows (DLL-local vftables in the hook DLL): not hooked.
 // @0x14051f2b0
@@ -409,8 +409,8 @@ void CInteractObjectData::LoadAll()
     for (size_t i = 0; i < aFile.GetCount(); i++)
     {
         TiXmlDocument doc;
-        CString strPath = FUN_14071a5b0("Table", aFile[i]);
-        if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+        CString strPath = GetXmlPath("Table", aFile[i]);
+        if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
             return;
         TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
@@ -424,7 +424,7 @@ void CInteractObjectData::LoadAll()
             if (!FUN_14028f710((struct Unk_XmlElement*)(pNode)))
                 continue;
             MS2Ptr<CInteractObjectData> spData(new CInteractObjectData);
-            spData->FUN_1401d1160(CString(strPath));
+            spData->SetPath(CString(strPath));
             if (!spData->Load(pNode))
                 continue;
             if (Unk_LockGuard guard = s_lock)
@@ -486,7 +486,7 @@ inline void CInteractObjectData::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CInteractObjectData).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CInteractObjectData).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

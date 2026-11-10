@@ -36,5 +36,5 @@ CGameEventValueManager::~CGameEventValueManager()
 // @0x14046d0d0
 CShutdownEventValue* CGameEventValueManager::GetShutdownValue(int nKind)
 {
-    return m_shutdownGroup.FUN_1407d1400(nKind);
+    return m_shutdownGroup.GetValue(nKind);
 }

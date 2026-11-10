@@ -78,7 +78,7 @@ CItemLinkData::CItemLinkData(long nType, __int64 nOwnerId) : CHyperLinkData(nTyp
 }
 
 // @0x1405bd720
-void FUN_1405bd720(const CStringW& strText, ATL::CAtlArray<MS2Ptr<CHyperLinkData> >& arrOut)
+void ParseHyperLinks(const CStringW& strText, ATL::CAtlArray<MS2Ptr<CHyperLinkData> >& arrOut)
 {
     ATL::CAtlArray<CStringW> arrTags;
     {
@@ -146,7 +146,7 @@ int CLinkItemID::GetItemId() const
 }
 
 // @0x1405bdb20
-unsigned short CLinkItemID::FUN_1405bdb20() const
+unsigned short CLinkItemID::GetRarity() const
 {
     return (unsigned short)m_nRarity;
 }

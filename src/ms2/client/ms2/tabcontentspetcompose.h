@@ -27,7 +27,7 @@ public:
     virtual void vfunc_3() {}                           //  3 0x140cb71c0 refresh the section's state
     virtual void vfunc_4() {}                           //  4 0x140cb71b0 rebuild the section's bag
     virtual void vfunc_5(int nTab) {}                   //  5 0x140cb80e0 react to the tab changing
-    void FUN_140cb8490(MS2Ptr<ASUIComponent> ui);       // m_ui = ui (the argument is destroyed by the callee)
+    void SetUI(MS2Ptr<ASUIComponent> ui);       // m_ui = ui (the argument is destroyed by the callee)
 
     MS2Ptr<ASUIComponent> m_ui;                         // +0x18
 };
@@ -77,7 +77,7 @@ public:
 
     void FUN_140cb2fb0();                               // the pet card was selected
     void FUN_140cb34b0();                               // an ingredient was selected
-    void FUN_140cb3a30();                               // the compose succeeded
+    void OnComposeSuccess();                               // the compose succeeded
 };
 MS2_CHECK_SIZE(PetComposePetEnchant, 0x40);
 
@@ -96,24 +96,24 @@ public:
     virtual int vfunc_8();                              //  8 0x140cb4790 (1)
 
     unsigned __int64 GetUidPet();                   // the pet's item uid
-    void FUN_140cb47d0(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_petCards
-    void FUN_140cb4800(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_candidates
-    void FUN_140cb4830(ATL::CAtlArray<IdCount>& out);   // copy of m_pool
-    void FUN_140cb4860(ATL::CAtlArray<IdCount>& out);   // copy of m_selected
-    void FUN_140cb48a0(int bUsePoint);                  // send the compose request
+    void GetPetCards(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_petCards
+    void GetCandidates(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_candidates
+    void GetPool(ATL::CAtlArray<IdCount>& out);   // copy of m_pool
+    void GetSelected(ATL::CAtlArray<IdCount>& out);   // copy of m_selected
+    void SendComposeRequest(int bUsePoint);                  // send the compose request
     void FUN_140cb4ed0(__int64* pBase, __int64* pBonus);   // exp gain of the selected ingredients (base, event bonus)
     void FUN_140cb5300(unsigned short* pClass, __int64* pExp);   // the pet class and exp after the compose
     void FUN_140cb5600();                               // rebuild the pet card and candidate lists from the inventory
-    void FUN_140cb5970();                               // rebuild the ingredient pool
-    void FUN_140cb5bd0();                               // drop the selected ingredients
-    void FUN_140cb5c00(int nIndex);                     // a pet card was clicked
+    void RebuildPool();                               // rebuild the ingredient pool
+    void ClearSelected();                               // drop the selected ingredients
+    void OnPetCardClicked(int nIndex);                     // a pet card was clicked
     void FUN_140cb5c90(int nIndex);                     // an ingredient in the pool was clicked
     void FUN_140cb5fd0(int nIndex);                     // an ingredient in the enchant bag was clicked
     int FUN_140cb6080(ATL::CAtlArray<IdCount>& arr, unsigned __int64 id);   // index of id, -1 when absent
     unsigned __int64 FUN_140cb6100(ATL::CAtlArray<IdCount>& arr, int nIndex);   // uid at nIndex, 0 when out of range
-    int FUN_140cb6180(int nIndex);                      // selected -> pool
-    int FUN_140cb62e0(unsigned __int64 id);             // pool -> selected
-    int FUN_140cb6450(unsigned __int64 id);             // how many of id can still be added
+    int MoveSelectedToPool(int nIndex);                      // selected -> pool
+    int MovePoolToSelected(unsigned __int64 id);             // pool -> selected
+    int GetAvailableCount(unsigned __int64 id);             // how many of id can still be added
 
     unsigned __int64 m_uidPet;                          // +0x18
     ATL::CAtlArray<unsigned __int64> m_petCards;        // +0x20

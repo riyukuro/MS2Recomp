@@ -91,9 +91,9 @@ struct Unk_CubeFocus
 {
     Unk_CubeFocus();                                        // 0x140ee9c90
     bool IsActive();                                   // active
-    void FUN_140ee9cf0(int nIndex, int nCubeId);            // activate (index clamped at 0)
-    void FUN_140ee9d50();                                   // clear
-    int FUN_140ee9d70();                                    // list index of the cube (or the stored index)
+    void Activate(int nIndex, int nCubeId);            // activate (index clamped at 0)
+    void Deactivate();                                   // clear
+    int GetListIndex();                                    // list index of the cube (or the stored index)
     bool m_bActive;
     int m_nIndex;
     int m_nCubeId;
@@ -106,9 +106,9 @@ struct Unk_CubeTimer
 {
     Unk_CubeTimer();                                        // 0x140ee9e40
     ~Unk_CubeTimer();                                       // 0x140ef04c0
-    bool FUN_140ee9e80();                                   // expired
-    void FUN_140ee9eb0(int n);                              // arm (200 ms), remember max(n, 0)
-    void FUN_140ee9f00();                                   // reset
+    bool IsExpired();                                   // expired
+    void Arm(int n);                              // arm (200 ms), remember max(n, 0)
+    void Reset();                                   // reset
     int GetValue();                                    // the remembered value
     Timer m_timer;                                          // +0x00
     int m_nValue;                                           // +0x38
@@ -149,21 +149,21 @@ public:
     virtual void vfunc_16(void*);                                                                   // 0x140eeb4c0
 
     // non-virtual members (this = UIUGCCubePaletteDialog*)
-    void FUN_140eec0b0(unsigned __int64 uid);
+    void SelectCubeByUid(unsigned __int64 uid);
     bool FUN_140eec330(int nBtn, const CMsgBoxData& data);
     bool FUN_140eec410(int nBtn, const CMsgBoxData& data);
     void FUN_140eec480();
-    int FUN_140eec4d0(int nTypeId, Vector3* pPos);
+    int GetCubeTypeRowPosition(int nTypeId, Vector3* pPos);
     void FUN_140eeca50();
-    void FUN_140eecfe0();
-    void FUN_140eed2d0();
-    void FUN_140eed620(int n);
-    void FUN_140eede00(int nCubeType);
-    void FUN_140eee160(int nCubeType, unsigned int nMainCategory);
+    void FillCubeTypeList();
+    void FillSortCategoryList();
+    void RefreshCubeList(int n);
+    void FillMainCategoryList(int nCubeType);
+    void FillSubCategoryList(int nCubeType, unsigned int nMainCategory);
     int FUN_140eee630();
-    void FUN_140eeea80(int n);
+    void UpdateCubePreview(int n);
     void OnDestroyCubeItem();
-    void FUN_140eef510(const CStringW& str);
+    void SetSearchText(const CStringW& str);
     void FUN_140eef560(int n);
     void FUN_140eef670(int n);
     void FUN_140eef7e0(int nCubeIndex);

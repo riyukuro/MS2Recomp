@@ -24,7 +24,7 @@ template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // C3: the real ac
 class Unk_FreeCamInput : public CInputKeyHandler
 {
 public:
-    bool FUN_14116da30(int nKey, bool b, int n);                    // key pressed
+    bool WasKeyReleased(int nKey, bool b, int n);                    // key pressed
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
@@ -94,13 +94,13 @@ void CEditCameraMode::vfunc_8(double fTime)
 {
     vfunc_9();
     Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
-    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(0, false, 0) && ((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0))
+    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->IsMouseButtonDown(0, false, 0) && ((class Unk_FreeCamInput*)FUN_14025e7c0())->IsMouseButtonDown(1, false, 0))
     {
         efd::Point3 ptPos = FUN_1409f2540();
         ptPos.z = ptPos.z - ptMove.z * 2.0f;
         vfunc_3(reinterpret_cast<Vector3&>(ptPos));
     }
-    else if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0))
+    else if (((class Unk_FreeCamInput*)FUN_14025e7c0())->IsMouseButtonDown(1, false, 0))
     {
         if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
         {
@@ -153,18 +153,18 @@ void CEditCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
     m_78 = g_143b01a60;
-    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116d950(0x11, false, 0))
+    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->IsKeyDown(0x11, false, 0))
         m_78.z = -1.0f;
-    else if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116d950(0x1f, false, 0))
+    else if (((class Unk_FreeCamInput*)FUN_14025e7c0())->IsKeyDown(0x1f, false, 0))
         m_78.z = 1.0f;
-    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116d950(0x1e, false, 0))
+    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->IsKeyDown(0x1e, false, 0))
         m_78.y = 1.0f;
-    else if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116d950(0x20, false, 0))
+    else if (((class Unk_FreeCamInput*)FUN_14025e7c0())->IsKeyDown(0x20, false, 0))
         m_78.y = -1.0f;
     int nX;
     int nY;
     int nWheel;
-    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0))
+    if (((class Unk_FreeCamInput*)FUN_14025e7c0())->GetMouseDelta(&nX, &nY, &nWheel, false, 0))
     {
         ptMove.y = (float)nX;
         ptMove.z = (float)nY;

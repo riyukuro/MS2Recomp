@@ -60,7 +60,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 int XmlGetAttr(class TiXmlElement*, char const*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
 CString FUN_140188f50(const char* psz, int n);                      // null-safe CString
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>)
-void FUN_14185f0b0(TransitionData* pData, TiXmlElement* pNode, float* pfTime);    // type / duration / start time
+void ReadTransitionData(TransitionData* pData, TiXmlElement* pNode, float* pfTime);    // type / duration / start time
 
 // C3: m_update is bitset.h's Unk_Bitset<3> (Set 0x140314670, any 0x1411fe0e0, all 0x140afc5a0)
 //
@@ -253,7 +253,7 @@ void CLightEffectParam::vfunc_1(TiXmlElement* pNode)
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("transition")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("transition")))
     {
         NiPointer<LightEffectTransitionData> spData(new (efd::MemHint(efd::MemHint::NONE)) LightEffectTransitionData());
-        FUN_14185f0b0(spData.operator->(), pKey, &fTime);
+        ReadTransitionData(spData.operator->(), pKey, &fTime);
         ATL::CAtlArray<unsigned int> arrDiffuse;
         ATL::CAtlArray<unsigned int> arrSpecular;
         LIGHT_PARSE_COLOR(spData->m_clrDiffuse, pKey, "diffuse", strDiffuse, arrDiffuse);

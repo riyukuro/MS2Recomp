@@ -30,7 +30,7 @@ const unsigned char* FUN_1406c3630(const ATL::CAtlArray<char>& a)
 int FUN_1406c3660(const ATL::CAtlArray<char>& a) { return (int)a.GetCount(); }
 
 // @0x1406c3230
-char* FUN_1406c3230(ATL::CAtlArray<char>& a)
+char* GetData(ATL::CAtlArray<char>& a)
 {
     if (((const ATL::CAtlArray<unsigned char>&)a).IsEmpty()) return 0;
     return &a[0];
@@ -44,7 +44,7 @@ const char* FUN_1406c3270(const ATL::CAtlArray<char>& a)
 }
 
 // @0x1406c32b0
-void FUN_1406c32b0(ATL::CAtlArray<char>& a, const char* src, __int64 count)
+void SetData(ATL::CAtlArray<char>& a, const char* src, __int64 count)
 {
     if (count == 0) return;
     if (a.GetCount() != (size_t)count) a.SetCount(count, -1);
@@ -52,9 +52,9 @@ void FUN_1406c32b0(ATL::CAtlArray<char>& a, const char* src, __int64 count)
 }
 
 // @0x1406c3320
-ATL::CAtlArray<char>& FUN_1406c3320(ATL::CAtlArray<char>& a, const ATL::CAtlArray<char>& b)
+ATL::CAtlArray<char>& Assign(ATL::CAtlArray<char>& a, const ATL::CAtlArray<char>& b)
 {
-    if (FUN_1406c3660(b) != 0) FUN_1406c32b0(a, (const char*)FUN_1406c3630(b), FUN_1406c3660(b));
+    if (FUN_1406c3660(b) != 0) SetData(a, (const char*)FUN_1406c3630(b), FUN_1406c3660(b));
     return a;
 }
 
@@ -63,7 +63,7 @@ void FUN_1406c3380(ATL::CAtlArray<char>& a, COutputStream* out)
 {
     int n = (int)a.GetCount();
     out->WriteInt32(n);
-    if (n != 0) out->WriteBytes(FUN_1406c3230(a), n);
+    if (n != 0) out->WriteBytes(GetData(a), n);
 }
 
 // @0x1406c33f0

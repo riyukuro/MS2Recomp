@@ -33,17 +33,17 @@
 // A CQuest as handed to the listener: the CQuestCommon base sits at +0x18 (after CPtred).
 struct Unk_PbQuestView { void* m_pad_00; void* m_pad_08; void* m_pad_10; void* m_vftable_common; };
 
-Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int nQuestId, int n);   // the quest's talk script (id, 100)
+Unk_ScriptPtr<CTalkScript> FindQuestTalk(int nQuestId, int n);   // the quest's talk script (id, 100)
 
 void* FUN_140764020();   // C3: was FUN_140764020
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 int FUN_14074b030(CQuestData* pData);
 int FUN_14074bc90(int);   // C3: was FUN_14074bc90
-unsigned short FUN_14074bd10(int nQuestId);             // quest level
-CStringW FUN_1416e5900(int, bool);       // quest title
+unsigned short GetQuestLevel(int nQuestId);             // quest level
+CStringW GetQuestTitle(int, bool);       // quest title
 template <class A> CStringW BlockFormat(int nId, const A& a);
 UIQuestEventDispatcher* FUN_140bfc4b0();
-int FUN_140e7fc90(const void* pa, const void* pb);
+int CompareQuestKind(const void* pa, const void* pb);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -53,7 +53,7 @@ UIQuestPostBoxDialog::UIQuestPostBoxDialog()
     m_80 = 0;
     m_88 = 1;
     m_58 = 1;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140e7f390
@@ -71,7 +71,7 @@ MS2_REPLACE_METHOD(0x140E7F450, UIQuestPostBoxDialog, vfunc_65, 37, 0x65811C24);
 void UIQuestPostBoxDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140bfc4b0()->FUN_141aa8850(this);
+    FUN_140bfc4b0()->RemoveListener(this);
 }
 MS2_REPLACE_METHOD(0x140E7F480, UIQuestPostBoxDialog, vfunc_67, 77, 0x335B0AE4);
 
@@ -79,8 +79,8 @@ MS2_REPLACE_METHOD(0x140E7F480, UIQuestPostBoxDialog, vfunc_67, 77, 0x335B0AE4);
 void UIQuestPostBoxDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140e7f660();
-    FUN_140bfc4b0()->FUN_141aa87c0(this);
+    RefreshQuestList();
+    FUN_140bfc4b0()->AddListener(this);
 }
 MS2_REPLACE_METHOD(0x140E7F4E0, UIQuestPostBoxDialog, OnLoadComplete, 87, 0x783BB0F8);
 
@@ -102,20 +102,20 @@ int UIQuestPostBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 MS2_REPLACE_METHOD(0x140E7F540, UIQuestPostBoxDialog, vfunc_28, 268, 0x60E4B318);
 
 // @0x140e7f660
-void UIQuestPostBoxDialog::FUN_140e7f660()
+void UIQuestPostBoxDialog::RefreshQuestList()
 {
-    if (MS2Ptr<ASScrollingList> list = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_list")) {
+    if (MS2Ptr<ASScrollingList> list = reinterpret_cast<UIDailyMissionDialog*>(this)->GetScrollingList("m_list")) {
         list->FUN_1422dd1d0();
         ATL::CAtlArray<unsigned> quests;
         ((class CQuestManager*)FUN_140764020())->FUN_1416d0920(quests);
-        qsort(quests.GetData(), quests.GetCount(), 4, FUN_140e7fc90);
+        qsort(quests.GetData(), quests.GetCount(), 4, CompareQuestKind);
         for (size_t i = 0; i < quests.GetCount(); ++i) {
             unsigned nQuest = quests[i];
             ASObj row(2);
-            row.FUN_1407cbb20("label", FUN_1416e5900(nQuest, (bool)0));
-            row.FUN_1407cbb20("level", BlockFormat<unsigned short>(0x459, FUN_14074bd10(nQuest)));
+            row.SetWStringMember("label", GetQuestTitle(nQuest, (bool)0));
+            row.SetWStringMember("level", BlockFormat<unsigned short>(0x459, GetQuestLevel(nQuest)));
             row.SetMemberUInt("id", nQuest);
-            row.FUN_1407cba60("icon", FUN_140e7fb90(nQuest));
+            row.SetStringMember("icon", FUN_140e7fb90(nQuest));
             list->AddItem(row);
         }
         list->vfunc_24(true);
@@ -125,11 +125,11 @@ void UIQuestPostBoxDialog::FUN_140e7f660()
 // @0x140e7f920
 void UIQuestPostBoxDialog::FUN_140e7f920(int nQuest)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(nQuest);
+    MS2Ptr<CQuestData> data = GetQuestData(nQuest);
     if (data.IsNull()) return;
-    Unk_ScriptPtr<CTalkScript> script = FUN_1408564b0(FUN_14074b030(data.operator->()), 100);
+    Unk_ScriptPtr<CTalkScript> script = FindQuestTalk(FUN_14074b030(data.operator->()), 100);
     if (script.IsNull()) return;
-    TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(reinterpret_cast<MS2Ptr<CTalkScript>&>(script), data->m_2e8, 4, 0);
+    TSingleton<UITalkManager>::GetInstance()->BeginTalkWithoutNpc(reinterpret_cast<MS2Ptr<CTalkScript>&>(script), data->m_2e8, 4, 0);
 }
 MS2_REPLACE_METHOD(0x140E7F920, UIQuestPostBoxDialog, FUN_140e7f920, 282, 0x7DFA22B7);
 
@@ -165,7 +165,7 @@ int FUN_140e7fc40(unsigned nQuest)
 }
 
 // @0x140e7fc90
-int FUN_140e7fc90(const void* pa, const void* pb)
+int CompareQuestKind(const void* pa, const void* pb)
 {
     const unsigned* pA = (const unsigned*)pa;
     const unsigned* pB = (const unsigned*)pb;

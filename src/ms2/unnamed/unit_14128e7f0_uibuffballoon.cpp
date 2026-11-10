@@ -22,8 +22,8 @@ public:
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
+    Scaleform::GFx::Value CreateEntity(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 struct Unk_BuffCfgFloat { char m_pad[0x58]; };
 struct Unk_BuffCfg
@@ -33,11 +33,11 @@ struct Unk_BuffCfg
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_BuffUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 float FUN_1412762d0(const NiPoint3& pt);
 class Unk_BuffActor : public PCBase
@@ -94,7 +94,7 @@ void UIBuffBalloon::Entity::vfunc_5()
     if (m_38.get() != 0)
     {
         AScript info(m_18);
-        info.FUN_1407cbb20("imgPath", FUN_14016a730((const char*)FUN_14128edf0(), 0));
+        info.SetWStringMember("imgPath", FUN_14016a730((const char*)FUN_14128edf0(), 0));
         m_38->Invoke("open", info);
     }
 }
@@ -104,7 +104,7 @@ void UIBuffBalloon::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get())
     {
-        *pPos *= ((class GFxManager*)(class Unk_BuffUIScale*)(((class Unk_BuffUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
+        *pPos *= ((class GFxManager*)(class Unk_BuffUIScale*)(((class Unk_BuffUIScale*)GetGFxManager())))->GetMovieScale(m_18);
         pPos->y = pPos->y + vfunc_9();
         pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
         reinterpret_cast<ASDisplayObject*>(((Unk_BuffEntity*)m_38.operator->()))->SetPositionFloat(pPos->x - 55.0f, pPos->y - 110.0f);
@@ -145,7 +145,7 @@ void UIBuffBalloon::Entity::FUN_14128ecf0(int nBuffId, CString strImg, int nTime
     if (FUN_140f48d40() != 0)
     {
         FUN_140f48d80();
-        m_68.FUN_140868750(m_64);
+        m_68.Start(m_64);
     }
     else
     {
@@ -188,7 +188,7 @@ CString UIBuffBalloon::GetTypeName()
 void UIBuffBalloon::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_14128f030(m_68);
+    CreateEntityCache(m_68);
 }
 
 // @0x14128ef70
@@ -205,11 +205,11 @@ void FUN_14128eff0(int nActorId)
 {
     UIBuffBalloon* pBar = FUN_14128f650(0x4ea4);
     if (pBar)
-        pBar->FUN_140f49c00(nActorId);
+        pBar->ReleaseEntity(nActorId);
 }
 
 // @0x14128f030
-void UIBuffBalloon::FUN_14128f030(unsigned int nCount)
+void UIBuffBalloon::CreateEntityCache(unsigned int nCount)
 {
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
@@ -233,10 +233,10 @@ void UIBuffBalloon::FUN_14128f030(unsigned int nCount)
 // @0x14128f210
 UIBuffBalloon::Entity* UIBuffBalloon::FUN_14128f210(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     {
-        FUN_140f49c00(nActorId);
+        ReleaseEntity(nActorId);
         MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pClip.get())
         {
@@ -244,7 +244,7 @@ UIBuffBalloon::Entity* UIBuffBalloon::FUN_14128f210(int nActorId)
             {
                 bool bFlag = FUN_140930110(nActorId);
                 bFlag = false;
-                Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+                Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
                 if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
                 {
                     Entity* p = new Entity(m_28, v, nActorId);
@@ -271,7 +271,7 @@ UIBuffBalloon::Entity* UIBuffBalloon::FUN_14128f210(int nActorId)
                         {
                             MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                             if (pOldClip.get())
-                                ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", reinterpret_cast<AScript*>(((Unk_BuffEntity*)pOldClip.operator->()))->FUN_1422bb870(), bNew);
+                                ((Unk_BannerClip*)pClip.operator->())->UpdateEntity("updateEntity", reinterpret_cast<AScript*>(((Unk_BuffEntity*)pOldClip.operator->()))->GetValue(), bNew);
                         }
                     }
                     pEntity->FUN_140f48ce0(nActorId);
@@ -309,7 +309,7 @@ MS2_REPLACE_METHOD(0x14128edb0, UIBuffBalloon::Entity, FUN_14128edb0, 51, 0xBB11
 MS2_REPLACE_METHOD(0x14128eef0, UIBuffBalloon, GetTypeName, 61, 0x66ADCDFE);
 MS2_REPLACE_METHOD(0x14128ef40, UIBuffBalloon, OnLoadComplete, 42, 0x70E8ED61);
 MS2_REPLACE(0x14128eff0, FUN_14128eff0, 50, 0x15407F24);
-MS2_REPLACE_METHOD(0x14128f030, UIBuffBalloon, FUN_14128f030, 465, 0x0B5FAD34);
+MS2_REPLACE_METHOD(0x14128f030, UIBuffBalloon, CreateEntityCache, 465, 0x0B5FAD34);
 MS2_REPLACE_METHOD(0x14128f210, UIBuffBalloon, FUN_14128f210, 1082, 0xA2243DCB);
 MS2_REPLACE(0x14128f650, FUN_14128f650, 147, 0x4464D1DD);
 

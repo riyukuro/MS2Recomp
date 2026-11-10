@@ -161,11 +161,11 @@ void UISystemText::OnLoadComplete()
         {
             unsigned int nNow = GetTickCountMs2();
             if (nNow < m_80)
-                FUN_141b16270(m_78, m_70, m_80 - nNow);
+                ShowTimedMessage(m_78, m_70, m_80 - nNow);
         }
         else
         {
-            FUN_141b15ec0(m_78, m_70, 0);
+            ShowMessage(m_78, m_70, 0);
         }
         m_78.Empty();
         m_70 = 0;
@@ -209,7 +209,7 @@ void UISystemText::vfunc_43()
         if (pUpper != 0)
         {
             if (MS2Ptr<ASGameEntity> pUpperRoot = dynamic_cast<ASGameEntity*>((AScript*)pUpper->FUN_1422dba00()))
-                nTop = (int)(static_cast<Unk_StEntity*>(pUpperRoot.operator->())->FUN_1422c1110() + (float)pUpperRoot->GetHeightCeil() + 10.0f);
+                nTop = (int)(static_cast<Unk_StEntity*>(pUpperRoot.operator->())->GetY() + (float)pUpperRoot->GetHeightCeil() + 10.0f);
         }
         pEntity->vfunc_2(1, 0, nTop);
     }
@@ -230,7 +230,7 @@ void UISystemText::vfunc_3()
 }
 
 // @0x141b15ec0
-void UISystemText::FUN_141b15ec0(const CStringW& strText, int nType, int nOption)
+void UISystemText::ShowMessage(const CStringW& strText, int nType, int nOption)
 {
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pEntity.get())
@@ -271,7 +271,7 @@ void UISystemText::FUN_141b15ec0(const CStringW& strText, int nType, int nOption
 }
 
 // @0x141b16270
-void UISystemText::FUN_141b16270(const CStringW& strText, int nType, int nDuration)
+void UISystemText::ShowTimedMessage(const CStringW& strText, int nType, int nDuration)
 {
     unsigned int nNow = GetTickCountMs2();
     int nExpire = nDuration + nNow;

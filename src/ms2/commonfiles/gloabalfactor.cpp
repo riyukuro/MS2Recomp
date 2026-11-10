@@ -31,7 +31,7 @@ public:
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 enum Unk_DungeonGroupType : int; template <class E> int XmlValueByName(TiXmlElement* pElem, const char* pszName, E& eOut); template <> int XmlValueByName(TiXmlElement*, const char*, Unk_DungeonGroupType&);   // 0x140179060, the enum attribute (specialization in additionalactionadditional.cpp)
 class Unk_140166410;   // the game settings (CFeatureManager)
 Unk_140166410* FUN_140166410();
@@ -132,9 +132,9 @@ bool CGloabalFactor::LoadMultiControl()
     m_multi.resize(6);
     CString strDir;
     strDir.Format("%s", "Table");
-    CString strPath = FUN_14071a5b0(strDir, "multicontrol.xml");
+    CString strPath = GetXmlPath(strDir, "multicontrol.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -168,7 +168,7 @@ bool CGloabalFactor::LoadMultiControl()
 }
 
 // @0x1404c1730
-float CGloabalFactor::FUN_1404c1730(unsigned int nLevel, int nKind)
+float CGloabalFactor::GetMesoRate(unsigned int nLevel, int nKind)
 {
     CheckInit();
     if (nLevel < 1 || nLevel > (unsigned short)reinterpret_cast<CFeatureManager*>(FUN_140166410())->GetLevelCap())
@@ -186,7 +186,7 @@ float CGloabalFactor::FUN_1404c17a0(unsigned int nLevel, int nKind)
 }
 
 // @0x1404c1810
-float CGloabalFactor::FUN_1404c1810(int nType, int nGroupId)
+float CGloabalFactor::GetMultiControlFactor(int nType, int nGroupId)
 {
     CheckInit();
     if (nType == 0 || nType >= 6)
@@ -199,7 +199,7 @@ float CGloabalFactor::FUN_1404c1810(int nType, int nGroupId)
 }
 
 // @0x1404c18c0
-void CGloabalFactor::FUN_1404c18c0(CInPacket& packet)
+void CGloabalFactor::ReadRates(CInPacket& packet)
 {
     CheckInit();
     for (size_t i = 0; i < 3; ++i)

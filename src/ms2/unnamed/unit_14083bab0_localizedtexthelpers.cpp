@@ -22,9 +22,9 @@
 class CFileSystem;
 
 int FUN_1406516a0();                                                    // client language (localepath.cpp)
-int FUN_1406514e0(int nCountry, ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& rLanguages);     // fallback language list of a country
+int GetFallbackLanguages(int nCountry, ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>& rLanguages);     // fallback language list of a country
 CStringA FUN_1406522f0(int nLanguage);                                  // language code text
-CStringA FUN_14016a5c0(const char* psz, int n);
+CStringA ToCString(const char* psz, int n);
 class Unk_Be790Xml;
 class TiXmlElement;
 TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
@@ -42,11 +42,11 @@ extern int DAT_143ab0240;                                               // clien
 extern int DAT_143ab0248;                                               // client country
 extern CStringA DAT_143ab0250;                                          // xml attribute name of the localized text
 
-CStringW FUN_14083da90(int nLang);
-CStringW FUN_14083db10(int nLang);
-CStringW FUN_14083dbc0(int nLang);
+CStringW GetDateSeparator(int nLang);
+CStringW GetThousandsSeparator(int nLang);
+CStringW GetDecimalSeparator(int nLang);
 bool FUN_14083f280(const CStringW& str, wchar_t ch);
-bool FUN_14083d7e0(const CStringW& str, const CStringW& strPrefix);
+bool StartsWith(const CStringW& str, const CStringW& strPrefix);
 
 // @0x14083bab0
 // Date text "<d1><sep><d2><sep><d3>"; the field order follows the language.
@@ -55,7 +55,7 @@ CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep)
     int nLang = FUN_1406516a0();
     CStringW strOut;
     if (operator==(strSep, L"/"))
-        strSep = FUN_14083da90(nLang);
+        strSep = GetDateSeparator(nLang);
     switch (nLang)
     {
     case 2:
@@ -97,7 +97,7 @@ CStringW FUN_14083bdc0(const CMsTime& time, bool bShort24, CStringW strDateSep, 
     CStringW strOut;
     int nHour = 0;
     CStringW strAmPm;
-    strDateSep = FUN_14083da90(nLang);
+    strDateSep = GetDateSeparator(nLang);
     if (bShort24 == 0)
     {
         if (time.GetHour() > 12)
@@ -173,7 +173,7 @@ CStringW FUN_14083c410(const CMsTime& time, CStringW strDateSep, CStringW strTim
     CStringW strOut;
     CStringW strHour;
     CStringW strAmPm;
-    strDateSep = FUN_14083da90(nLang);
+    strDateSep = GetDateSeparator(nLang);
     if (!b24)
     {
         if (time.GetHour() > 12)
@@ -247,9 +247,9 @@ CStringW FUN_14083cb20(const CStringW& str)
         return str;
     CStringW strOut(str);
     if (nInt < nLen)
-        strOut.SetAt(nInt, FUN_14083dbc0(DAT_143ab0240)[0]);
+        strOut.SetAt(nInt, GetDecimalSeparator(DAT_143ab0240)[0]);
     strOut.Preallocate(nLen + nLen / 3);
-    CStringW strSep = FUN_14083db10(DAT_143ab0240);
+    CStringW strSep = GetThousandsSeparator(DAT_143ab0240);
     for (int nPos = nInt - 3; nPos > 0; nPos -= 3)
         strOut.Insert(nPos, strSep.GetString());
     return strOut;
@@ -260,7 +260,7 @@ CStringW FUN_14083cb20(const CStringW& str)
 CStringW FUN_14083ccf0(const CStringW& str)
 {
     CStringW strDigits;
-    CStringW strSep = FUN_14083dbc0(DAT_143ab0240);
+    CStringW strSep = GetDecimalSeparator(DAT_143ab0240);
     bool bFraction = false;
     for (int i = 0; i < str.GetLength(); ++i)
     {
@@ -299,7 +299,7 @@ CStringW FUN_14083cf10(const CStringW& str)
 
 // @0x14083cf50
 // Percent text of a value in hundredths ("12.5%"); bLocalized wraps it in the s_common_percent string.
-CStringW FUN_14083cf50(int nValue, bool bLocalized)
+CStringW FormatPercent(int nValue, bool bLocalized)
 {
     int nFrac = nValue % 100;
     int nInt = nValue / 100;
@@ -332,7 +332,7 @@ void FUN_14083d2b0(CStringW& str)
 // For "<ms2>" xml text: the first child element's localized attribute (the client language, then its fallbacks).
 CStringW FUN_14083d340(CStringW str)
 {
-    if (!FUN_14083d7e0(str, L"<ms2>"))
+    if (!StartsWith(str, L"<ms2>"))
         return str;
     TiXmlDocument doc;
     if (reinterpret_cast<Unk_Be790Loader*>(GetFileSystem())->LoadXmlFromString(&doc, str) == 0)
@@ -344,16 +344,16 @@ CStringW FUN_14083d340(CStringW str)
     if (pElem == NULL)
         return str;
     CStringW strText;
-    XmlGetAttr((class TiXmlElement*)(pElem), FUN_14016a5c0(DAT_143ab0250, 0), strText);
+    XmlGetAttr((class TiXmlElement*)(pElem), ToCString(DAT_143ab0250, 0), strText);
     if (!strText.IsEmpty())
         return strText;
     ATL::CAtlArray<int> arrLang;
-    FUN_1406514e0(DAT_143ab0248, reinterpret_cast<ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>&>(arrLang));
+    GetFallbackLanguages(DAT_143ab0248, reinterpret_cast<ATL::CAtlArray<int, ATL::CDefaultElementTraits<int>>&>(arrLang));
     for (unsigned i = 0; i < arrLang.GetCount(); ++i)
     {
         int nLang = arrLang[i];
         CStringA strName = FUN_1406522f0(nLang);
-        XmlGetAttr((class TiXmlElement*)(pElem), FUN_14016a5c0(strName, 0), strText);
+        XmlGetAttr((class TiXmlElement*)(pElem), ToCString(strName, 0), strText);
         if (!strText.IsEmpty())
             return strText;
     }
@@ -362,7 +362,7 @@ CStringW FUN_14083d340(CStringW str)
 
 // @0x14083d7e0
 // str starts with strPrefix.
-bool FUN_14083d7e0(const CStringW& str, const CStringW& strPrefix)
+bool StartsWith(const CStringW& str, const CStringW& strPrefix)
 {
     if (str.GetLength() < strPrefix.GetLength())
         return false;
@@ -418,7 +418,7 @@ bool FUN_14083d990(CStringA str)
 
 // @0x14083da90
 // Date separator of a language.
-CStringW FUN_14083da90(int nLang)
+CStringW GetDateSeparator(int nLang)
 {
     switch (nLang)
     {
@@ -431,7 +431,7 @@ CStringW FUN_14083da90(int nLang)
 
 // @0x14083db10
 // Thousands separator of a language.
-CStringW FUN_14083db10(int nLang)
+CStringW GetThousandsSeparator(int nLang)
 {
     switch (nLang)
     {
@@ -447,7 +447,7 @@ CStringW FUN_14083db10(int nLang)
 
 // @0x14083dbc0
 // Decimal separator of a language.
-CStringW FUN_14083dbc0(int nLang)
+CStringW GetDecimalSeparator(int nLang)
 {
     switch (nLang)
     {
@@ -467,7 +467,7 @@ bool FUN_14083f280(const CStringW& str, wchar_t ch)
 
 // @0x14083f330
 // The text between the first ch1 and the next ch2.
-CStringW FUN_14083f330(const CStringW& str, wchar_t ch1, wchar_t ch2)
+CStringW GetTextBetween(const CStringW& str, wchar_t ch1, wchar_t ch2)
 {
     int nFirst = str.Find(ch1, 0);
     int nSecond = str.Find(ch2, nFirst);

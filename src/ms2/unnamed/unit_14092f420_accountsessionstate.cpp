@@ -142,7 +142,7 @@ class Unk_Restrictions : public CGuideManager { };
 class Unk_SoundSink;
 // Three more one-method singletons.
 class Unk_Hud { public: virtual void vfunc_0(); virtual void vfunc_1(); };
-Unk_Hud* FUN_140933230();
+Unk_Hud* GetUIServerEventDispatcher();
 class Unk_BonusBar { };
 class GameEventUserValueManager   // C3: member view for the former free stand-ins
 {
@@ -259,16 +259,16 @@ class Unk_Notice { public: void* m_pad_00; Unk_NoticeSub m_sub; };
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 class Unk_QuickSlots { };
 int FUN_14035a870(Unk_QuickSlots* pSlots, int nSlot, unsigned nValue);
-Unk_EmoNpcTable* FUN_140764010();
-CMyCharacter* FUN_140931510();
+Unk_EmoNpcTable* GetFameTable();
+CMyCharacter* GetMyCharacter();
 void FUN_140935a90(std::vector<std::pair<int, __int64> >* pVec, std::pair<int, __int64>&& value);
 Unk_Restrictions* FUN_1409331e0();
-Unk_SoundSink* FUN_1409331f0();
-CMasteryInteriorTable* FUN_140933200();
-Unk_ItemSlotTable* FUN_140933210();
-Unk_BonusBar* FUN_140933220();
+Unk_SoundSink* GetKeyTable();
+CMasteryInteriorTable* GetMasteryInteriorTable();
+Unk_ItemSlotTable* GetTitleTable();
+Unk_BonusBar* GetGameEventUserValueManager();
 bool FUN_140930d70();
-UIMainPlayerInfo* FUN_140931900(int nUiId);
+UIMainPlayerInfo* FindMainPlayerInfo(int nUiId);
 
 extern GameEventUserValue DAT_143ab2fc0;
 extern GameEventUserValue DAT_143ab3010;
@@ -292,13 +292,13 @@ int FUN_141276180(const CString& strSound, const CString& strArg);
 // @0x14092f420
 void FUN_14092f420()
 {
-    FUN_140931510()->ClearDungeonState();
+    GetMyCharacter()->ClearDungeonState();
     DAT_143ab2d80.Clear();
     g_143ab2a90.Clear();
     DAT_143ab2fc0.Clear();
     DAT_143ab3010.Clear();
     DAT_143ab2e20.RemoveAll();
-    DAT_143ab2e50.FUN_140dfc4f0();
+    DAT_143ab2e50.Clear();
     DAT_143ab2857 = 0;
     DAT_143ab2938 = 0;
     DAT_143ab32d8.clear();
@@ -335,7 +335,7 @@ unsigned FUN_14092f4e0(int nSkillId)
 }
 
 // @0x14092f640
-int FUN_14092f640()
+int GetCurrentChannel()
 {
     if (DAT_1439f4a7c == 0)
         return DAT_1439f4a80;
@@ -376,7 +376,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
             FUN_141275260(0x9a7, 1, 1);
             return 0;
         }
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd3))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xd3))
         {
             Unk_Inventory::ItemPtr spItem = g_143ab2a90.FUN_140a5e2e0(nItemId);
             if (spItem.get() != 0)
@@ -417,7 +417,7 @@ int FUN_14092f690(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, int nK
 // @0x14092fac0
 int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
 {
-    UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    UIMainPlayerInfo* pInfo = FindMainPlayerInfo(0x4e5f);
     if (pInfo != 0 && pInfo->FUN_1419f29c0() != 0)
     {
         FUN_141275260(0x9a6, 1, 1);
@@ -433,7 +433,7 @@ int FUN_14092fac0(int nSkillId, int nItemId, __int64 nItemUid, int nSlot)
             FUN_141275260(0x9a7, 1, 1);
             return 0;
         }
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd3))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xd3))
         {
             Unk_Inventory::ItemPtr spItem = g_143ab2a90.FUN_140a5e2e0(nItemId);
             if (spItem.get() != 0)
@@ -496,7 +496,7 @@ int SendKeyTableMode5(int nSkillId, int nItemId, __int64 nItemUid, int nSlot, in
         packet.WriteInt32(nSkillId);
         packet.WriteInt64(nItemUid);
         FUN_140710590(packet);
-        reinterpret_cast<CKeyTable*>(FUN_1409331f0())->FUN_14142f470(nSlot, nParam);
+        reinterpret_cast<CKeyTable*>(GetKeyTable())->FUN_14142f470(nSlot, nParam);
     }
     return 1;
 }
@@ -530,7 +530,7 @@ bool FUN_140930110(int nValue)
 void FUN_140930150(int nValue)
 {
     DAT_143ab2914 = nValue;
-    FUN_140933230()->vfunc_1();
+    GetUIServerEventDispatcher()->vfunc_1();
 }
 
 // @0x140930190
@@ -567,7 +567,7 @@ unsigned char FUN_140930200(int nKind)
 }
 
 // @0x140930240
-__int64 FUN_140930240()
+__int64 GetMeratBalance()
 {
     return DAT_143ab2978;
 }
@@ -644,12 +644,12 @@ void FUN_1409304d0(__int64 n0, __int64 n1, __int64 n2, __int64 n3)
 }
 
 // @0x140930580
-Unk_Wallet* FUN_140930580()
+Unk_Wallet* GetWallet()
 {
     return &g_143ab2a78;
 }
 
-void FUN_140931590(Unk_Wallet* pVec, int nKind, __int64 nAmount);
+void AddWalletAmount(Unk_Wallet* pVec, int nKind, __int64 nAmount);
 
 // @0x140930590
 bool FUN_140930590(__int64 nAmount, Unk_PayList* pOut)
@@ -738,7 +738,7 @@ bool FUN_140930910(__int64 nAmount, unsigned nMask, Unk_Wallet* pVec)
                 continue;
             if ((*pWallet)[i] >= nRemain)
             {
-                FUN_140931590(pVec, i, nRemain);
+                AddWalletAmount(pVec, i, nRemain);
                 nRemain = 0;
                 break;
             }
@@ -746,7 +746,7 @@ bool FUN_140930910(__int64 nAmount, unsigned nMask, Unk_Wallet* pVec)
             if (nHave > 0)
             {
                 nRemain = nRemain - nHave;
-                FUN_140931590(pVec, i, nHave);
+                AddWalletAmount(pVec, i, nHave);
             }
         }
     }
@@ -756,7 +756,7 @@ bool FUN_140930910(__int64 nAmount, unsigned nMask, Unk_Wallet* pVec)
         if (nRemain > 0 || pVec->empty() == true)
         {
             unsigned nKind = FUN_1409301f0();
-            FUN_140931590(pVec, nKind, nRemain);
+            AddWalletAmount(pVec, nKind, nRemain);
             return nRemain > nCash;
         }
     }
@@ -764,13 +764,13 @@ bool FUN_140930910(__int64 nAmount, unsigned nMask, Unk_Wallet* pVec)
 }
 
 // @0x140930ae0
-__int64 FUN_140930ae0()
+__int64 GetRedMeratBalance()
 {
     return DAT_143ab2980;
 }
 
 // @0x140930af0
-void FUN_140930af0(__int64 nValue)
+void SetRedMeratBalance(__int64 nValue)
 {
     DAT_143ab2980 = nValue;
 }
@@ -883,7 +883,7 @@ int FUN_140930e10()
     for (unsigned short nLevel = 1; nLevel <= DAT_143ab291c; nLevel++)
     {
         ATL::CAtlArray<MS2Ptr<ItemEntity> > quests;
-        FUN_140933200()->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->GetJobGroupId(), quests);
+        GetMasteryInteriorTable()->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->GetJobGroupId(), quests);
         if (quests.GetCount() == 0)
             continue;
         if (FUN_140931890(&DAT_143ab32b8, &nLevel) != -1)
@@ -933,7 +933,7 @@ void FUN_140930fe0(CInPacket& packet)
             spTarget = DAT_143ab3010.ReadVariable(packet);
         if (spTarget.get() != 0)
         {
-            ((class GameEventUserValueManager*)(class Unk_BonusBar*)(FUN_140933220()))->Dispatch(((GameEventVariable*)spTarget.operator->())->GetType(), (class GameEventVariable*)(spTarget.get()));
+            ((class GameEventUserValueManager*)(class Unk_BonusBar*)(GetGameEventUserValueManager()))->Dispatch(((GameEventVariable*)spTarget.operator->())->GetType(), (class GameEventVariable*)(spTarget.get()));
         }
         break;
     }
@@ -941,7 +941,7 @@ void FUN_140930fe0(CInPacket& packet)
 }
 
 // @0x140931210
-int FUN_140931210(Unk_FameAlliance nAlliance)
+int GetFamePoints(Unk_FameAlliance nAlliance)
 {
     int nValue = 0;
     DAT_143ab3220.Lookup(nAlliance, nValue);
@@ -951,7 +951,7 @@ int FUN_140931210(Unk_FameAlliance nAlliance)
 // @0x140931250
 int FUN_140931250(Unk_FameAlliance nAlliance)
 {
-    return ((CFameTable*)FUN_140764010())->GetGradeByPoint(nAlliance, FUN_140931210(nAlliance));
+    return ((CFameTable*)GetFameTable())->GetGradeByPoint(nAlliance, GetFamePoints(nAlliance));
 }
 
 // @0x140931290
@@ -1001,9 +1001,9 @@ unsigned FUN_1409313b0()
 }
 
 // @0x140931450
-unsigned FUN_140931450(CString strName)
+unsigned HasTitle(CString strName)
 {
-    int nSlot = ((CTitleTable*)FUN_140933210())->FindTitleId(strName);
+    int nSlot = ((CTitleTable*)GetTitleTable())->FindTitleId(strName);
     if (nSlot == 0)
         return 0;
     return Unk_ArrayFind<int>(reinterpret_cast<const ATL::CAtlArray<int>&>(DAT_143ab3268), nSlot) != -1;
@@ -1013,7 +1013,7 @@ unsigned FUN_140931450(CString strName)
 // (FUN_14092f420 on field entry) bind the exe getter and its object 0x143ab3350 (fx6).
 #ifndef MS2_HOOK_DLL
 // @0x140931510
-CMyCharacter* FUN_140931510()
+CMyCharacter* GetMyCharacter()
 {
     static CMyCharacter s_character;
     return &s_character;
@@ -1021,7 +1021,7 @@ CMyCharacter* FUN_140931510()
 #endif
 
 // @0x140931590
-void FUN_140931590(Unk_Wallet* pVec, int nKind, __int64 nAmount)
+void AddWalletAmount(Unk_Wallet* pVec, int nKind, __int64 nAmount)
 {
     if (nKind < 0 || (int)pVec->size() <= nKind)
         return;
@@ -1046,7 +1046,7 @@ int FUN_140931890(ATL::CAtlArray<int>* pArray, unsigned short* pValue)
 }
 
 // @0x140931900
-UIMainPlayerInfo* FUN_140931900(int nUiId)
+UIMainPlayerInfo* FindMainPlayerInfo(int nUiId)
 {
     if (reinterpret_cast<Unk_UiManager*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
@@ -1070,39 +1070,39 @@ Unk_Restrictions* FUN_1409331e0()
 }
 
 // @0x1409331f0
-Unk_SoundSink* FUN_1409331f0()
+Unk_SoundSink* GetKeyTable()
 {
     return reinterpret_cast<Unk_SoundSink*>(TSingleton<CKeyTable>::s_instance);
 }
 
 // @0x140933200
-CMasteryInteriorTable* FUN_140933200()
+CMasteryInteriorTable* GetMasteryInteriorTable()
 {
     return TSingleton<CMasteryInteriorTable>::s_instance;
 }
 
 // @0x140933210
-Unk_ItemSlotTable* FUN_140933210()
+Unk_ItemSlotTable* GetTitleTable()
 {
     return reinterpret_cast<Unk_ItemSlotTable*>(TSingleton<CTitleTable>::s_instance);
 }
 
 // @0x140933220
-Unk_BonusBar* FUN_140933220()
+Unk_BonusBar* GetGameEventUserValueManager()
 {
     return reinterpret_cast<Unk_BonusBar*>(TSingleton<GameEventUserValueManager>::s_instance);
 }
 
 // @0x140933230
-Unk_Hud* FUN_140933230()
+Unk_Hud* GetUIServerEventDispatcher()
 {
     return reinterpret_cast<Unk_Hud*>(TSingleton<UIServerEventDispatcher>::s_instance);
 }
 
-// ---- hooks (logic free functions; template glue, FUN_140931450 and FUN_140931510 are not hooked)
+// ---- hooks (logic free functions; template glue, HasTitle and GetMyCharacter are not hooked)
 MS2_REPLACE(0x14092F420, FUN_14092f420, 177, 0xF2E4E897);
 MS2_REPLACE(0x14092F4E0, FUN_14092f4e0, 333, 0x577FA26D);
-MS2_REPLACE(0x14092F640, FUN_14092f640, 24, 0xBB440648);
+MS2_REPLACE(0x14092F640, GetCurrentChannel, 24, 0xBB440648);
 MS2_REPLACE(0x14092F660, FUN_14092f660, 38, 0xCF7D0CEE);
 MS2_REPLACE(0x14092F690, FUN_14092f690, 1064, 0xC2F7F480);
 MS2_REPLACE(0x14092FAC0, FUN_14092fac0, 1051, 0xDAF9E13C);
@@ -1115,7 +1115,7 @@ MS2_REPLACE(0x140930190, FUN_140930190, 34, 0x990CD6A7);
 MS2_REPLACE(0x1409301C0, FUN_1409301c0, 31, 0xD4DDD20D);
 MS2_REPLACE(0x1409301F0, FUN_1409301f0, 6, 0xFFA3AE7F);
 MS2_REPLACE(0x140930200, FUN_140930200, 47, 0xC7272AB7);
-MS2_REPLACE(0x140930240, FUN_140930240, 8, 0xA2C0D39F);
+MS2_REPLACE(0x140930240, GetMeratBalance, 8, 0xA2C0D39F);
 MS2_REPLACE(0x140930250, FUN_140930250, 59, 0xA9A57F01);
 MS2_REPLACE(0x1409302A0, FUN_1409302a0, 29, 0xFD5CE0CE);
 MS2_REPLACE(0x1409302D0, FUN_1409302d0, 29, 0xA25DF127);
@@ -1125,12 +1125,12 @@ MS2_REPLACE(0x140930390, FUN_140930390, 245, 0x5A4DAC0E);
 MS2_REPLACE(0x140930490, FUN_140930490, 8, 0x0D9ADA60);
 MS2_REPLACE(0x1409304A0, FUN_1409304a0, 36, 0x7B99688F);
 MS2_REPLACE(0x1409304D0, FUN_1409304d0, 159, 0x2452A543);
-MS2_REPLACE(0x140930580, FUN_140930580, 8, 0x5EEA02EA);
+MS2_REPLACE(0x140930580, GetWallet, 8, 0x5EEA02EA);
 MS2_REPLACE(0x140930590, FUN_140930590, 433, 0x21C60B90);
 MS2_REPLACE(0x140930750, FUN_140930750, 431, 0x76010D2E);
 MS2_REPLACE(0x140930910, FUN_140930910, 448, 0xB742D06B);
-MS2_REPLACE(0x140930AE0, FUN_140930ae0, 8, 0x1D651B06);
-MS2_REPLACE(0x140930AF0, FUN_140930af0, 18, 0x526F478A);
+MS2_REPLACE(0x140930AE0, GetRedMeratBalance, 8, 0x1D651B06);
+MS2_REPLACE(0x140930AF0, SetRedMeratBalance, 18, 0x526F478A);
 MS2_REPLACE(0x140930B10, FUN_140930b10, 38, 0xDE946B1E);
 MS2_REPLACE(0x140930B40, FUN_140930b40, 29, 0x4BC52E14);
 MS2_REPLACE(0x140930B70, FUN_140930b70, 29, 0x392C3F35);
@@ -1144,20 +1144,20 @@ MS2_REPLACE(0x140930D70, FUN_140930d70, 143, 0x5DDD397F);
 MS2_REPLACE(0x140930E10, FUN_140930e10, 262, 0xB6A2B024);
 MS2_REPLACE(0x140930F20, FUN_140930f20, 181, 0xAB6D1980);
 MS2_REPLACE(0x140930FE0, FUN_140930fe0, 530, 0x22983945);
-MS2_REPLACE(0x140931210, FUN_140931210, 47, 0x5984E440);
+MS2_REPLACE(0x140931210, GetFamePoints, 47, 0x5984E440);
 MS2_REPLACE(0x140931250, FUN_140931250, 50, 0x6490BC3C);
 MS2_REPLACE(0x140931290, FUN_140931290, 81, 0x20EF52D0);
 MS2_REPLACE(0x1409312F0, FUN_1409312f0, 176, 0xB25D8E28);
 MS2_REPLACE(0x1409313B0, FUN_1409313b0, 150, 0x698D7CE5);
-MS2_REPLACE(0x140931590, FUN_140931590, 144, 0x50E78C9C);
+MS2_REPLACE(0x140931590, AddWalletAmount, 144, 0x50E78C9C);
 MS2_REPLACE(0x140931890, FUN_140931890, 98, 0x6C37EF7D);
-MS2_REPLACE(0x140931900, FUN_140931900, 147, 0xE7C00ADE);
+MS2_REPLACE(0x140931900, FindMainPlayerInfo, 147, 0xE7C00ADE);
 MS2_REPLACE(0x1409331E0, FUN_1409331e0, 8, 0xC54D3565);
-MS2_REPLACE(0x1409331F0, FUN_1409331f0, 8, 0x8D62E8AD);
-MS2_REPLACE(0x140933200, FUN_140933200, 8, 0xDA9BFB2D);
-MS2_REPLACE(0x140933210, FUN_140933210, 8, 0x6C3796B0);
-MS2_REPLACE(0x140933220, FUN_140933220, 8, 0xE24B178D);
-MS2_REPLACE(0x140933230, FUN_140933230, 8, 0x9B7C0E25);
+MS2_REPLACE(0x1409331F0, GetKeyTable, 8, 0x8D62E8AD);
+MS2_REPLACE(0x140933200, GetMasteryInteriorTable, 8, 0xDA9BFB2D);
+MS2_REPLACE(0x140933210, GetTitleTable, 8, 0x6C3796B0);
+MS2_REPLACE(0x140933220, GetGameEventUserValueManager, 8, 0xE24B178D);
+MS2_REPLACE(0x140933230, GetUIServerEventDispatcher, 8, 0x9B7C0E25);
 
 // ---- template tail the recovered source does not instantiate ----------------------------------------------------------
 // The exe keeps these COMDAT members of the zone's containers (an ATL red-black map in two flavours, std::set<unsigned>, the
@@ -1229,7 +1229,7 @@ void FUN_1409329b0(Unk_TailTreeB* pTree);
 void FUN_1409329f0(Unk_TailBoxPtr* pBox) noexcept;
 void FUN_140933320(Unk_TailTreeA* pTree);
 void FUN_1409333a0(Unk_TailTreeB* pTree);
-bool FUN_140933240(Unk_TailTreeA* pTree, Unk_TailNodeA* pNode);
+bool IsNilNode(Unk_TailTreeA* pTree, Unk_TailNodeA* pNode);
 bool FUN_140933280(Unk_TailTreeB* pTree, Unk_TailNodeB* pNode);
 void FUN_140933420(Unk_TailTreeA* pTree, Unk_TailNodeA* pNode);
 void FUN_140933480(Unk_TailTreeB* pTree, Unk_TailNodeB* pNode);
@@ -1532,7 +1532,7 @@ void FUN_140933140(Unk_TailTreeB* pThis, Unk_TailNodeB* pNode)
 }
 
 // @0x140933240
-bool FUN_140933240(Unk_TailTreeA* pThis, Unk_TailNodeA* pNode)
+bool IsNilNode(Unk_TailTreeA* pThis, Unk_TailNodeA* pNode)
 {
     return pNode == pThis->m_pNil;
 }
@@ -1546,7 +1546,7 @@ bool FUN_140933280(Unk_TailTreeB* pThis, Unk_TailNodeB* pNode)
 // @0x140933320
 void FUN_140933320(Unk_TailTreeA* pThis)
 {
-    if (!FUN_140933240(pThis, pThis->m_pRoot))
+    if (!IsNilNode(pThis, pThis->m_pRoot))
         FUN_140933420(pThis, pThis->m_pRoot);
     pThis->m_nCount = 0;
     ((ATL::CAtlPlex*)(void*)(pThis->m_pBlocks))->FreeDataChain();
@@ -1570,7 +1570,7 @@ void FUN_1409333a0(Unk_TailTreeB* pThis)
 // @0x140933420
 void FUN_140933420(Unk_TailTreeA* pThis, Unk_TailNodeA* pNode)
 {
-    if (FUN_140933240(pThis, pNode))
+    if (IsNilNode(pThis, pNode))
         return;
     FUN_140933420(pThis, pNode->m_pLeft);
     FUN_140933420(pThis, pNode->m_pRight);

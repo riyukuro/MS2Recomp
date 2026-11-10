@@ -159,7 +159,7 @@ void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the
 
 // ---- unit-local placeholders ----
 
-// The Scaleform movie manager (global at FUN_14025e7a0).
+// The Scaleform movie manager (global at GetGFxManager).
 class GFxManager   // C3: member view (real class not in this TU)
 {
 public:
@@ -176,23 +176,23 @@ public:
     int IsTextFieldFocused(int);
     void FUN_1422afb00();
     CStringW Localize(const CString& strKey);   // C3: the real member (0x1422b0570, a $-key's localized string)
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
     int FUN_1422aff10(float);
-    void FUN_1422b0060(float);
+    void SetMoviesScale(float);
     GFxMovie* FindMovie(int);
-    void FUN_1422b24f0();
+    void ReloadMovies();
     bool FUN_1422b2760();
     bool FUN_1422b27c0();
     void FUN_1422b27e0(bool);
     int IsArchive();
     void SetFormatCallback(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&));   // 0x1422aee20
-    void FUN_1422aeea0(void (*pfn)(class AScript&, int));                                 // C3: the real member
+    void SetCommonCallback(void (*pfn)(class AScript&, int));                                 // C3: the real member
 };
 class Unk_UisMovieMgr
 {
 public:
 };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_UisMovieMgr (calls cast back)
+class Unk_AltStringMgr* GetGFxManager();   // C3: the Unk_UisMovieMgr (calls cast back)
 
 // ---- exe helpers the service reaches ----
 class PCBase;
@@ -234,7 +234,7 @@ public:
     char m_unk08[0x10];
     efd::SmartPointer<Unk_VtmMovieView> m_slot;                    // +0x18
 };
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);   // C3: the definition's return type
+Scaleform::GFx::Movie* GetMovie(int nMovieId);   // C3: the definition's return type
 class Unk_UisPlayerInfo { };   // the local player's name
 class Unk_AkoHouseSvc   // C3: member view for the former free stand-ins
 {
@@ -251,7 +251,7 @@ public:
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class UIMeratMarketDialog : public UIDialog { public: UIMeratMarketDialog(); int vfunc_48(); void SearchByText(const CStringW& strText); char m_pad[0x660 - sizeof(UIDialog)]; };   // ctor 0x1412e84b0
-UIMeratMarketDialog* FUN_140bfed50(int nClass);              // find the dialog (dynamic_cast)
+UIMeratMarketDialog* FindMeratMarketDialog(int nClass);              // find the dialog (dynamic_cast)
 class UISwfEntityManager* GetUISwfEntityManager();   // C3: was GetUISwfEntityManager
 class UISwfEntityManager   // C3: member view for the former free stand-ins
 {
@@ -261,7 +261,7 @@ public:
     void FUN_1422d4b70(bool);
     void FUN_1422d4d10();
     void FUN_1422d4a30(bool b);              // C3: the real member
-    void FUN_1422d4b40(int (*pfn)());        // C3: the real member
+    void SetInputTakenCallback(int (*pfn)());        // C3: the real member
 };
 void FUN_140d73cd0();
 class UIGroupMessengerBrowser* FindGroupMessengerBrowser(int nClass);                 // find the dialog (dynamic_cast)
@@ -272,39 +272,39 @@ class CMeratMarketMan   // C3: member view for the former free stand-ins
 public:
     void CloseMarketAndClearAds();
 };
-void FUN_141a8a010(float x, float y);      // right mouse button down at (x, y)
+void OnRightMouseDown(float x, float y);      // right mouse button down at (x, y)
 UIObject* FindUIObject(int nClass);                                // dialog by class id
 class UIMessageBox* GetMessageBoxLayer();   // C3: was GetMessageBoxLayer
 void FUN_14151f460(int n);
-void FUN_141a60d40(int n);
+void SetNameTagMode(int n);
 int FUN_1418fd280();
-class UIHomeMenuDialog* FUN_140ef49b0(int);   // C3: was FUN_140ef49b0
+class UIHomeMenuDialog* GetHomeMenuDialog(int);   // C3: was GetHomeMenuDialog
 int FUN_1412755a0();
-class UISystemText* FUN_141278110(int nClass);
+class UISystemText* FindSystemText(int nClass);
 class UIHpBar;
 template<class T> T* Unk_SSGGetDialog(int nClass);   // C3: the scenestategame template
-class UIShieldBar* FUN_140e86a50(int);   // C3: was FUN_140e86a50
-class UITamingBar* FUN_140e98660(int);   // C3: was FUN_140e98660
-class UITombStoneBar* FUN_141994a90(int);   // C3: was FUN_141994a90
-class UINameTag* FUN_141a62100(int);   // C3: was FUN_141a62100
-class UIEmoticon* FUN_141930440(int);   // C3: was FUN_141930440
+class UIShieldBar* GetShieldBar(int);   // C3: was GetShieldBar
+class UITamingBar* FindTamingBar(int);   // C3: was FindTamingBar
+class UITombStoneBar* GetTombStoneBar(int);   // C3: was GetTombStoneBar
+class UINameTag* FindNameTag(int);   // C3: was FindNameTag
+class UIEmoticon* GetEmoticon(int);   // C3: was GetEmoticon
 class UIBuffBalloon* FUN_14128f650(int);   // C3: was FUN_14128f650
 class UIChatBalloon* FUN_1418fc4e0(int);   // C3: was FUN_1418fc4e0
-class UIPopupProfileImage* FUN_141a90250(int);   // C3: was FUN_141a90250
+class UIPopupProfileImage* GetPopupProfileImage(int);   // C3: was GetPopupProfileImage
 class UIBanner;
 template<class T> T* Unk_GetUI(int nUiId);   // C3: the actionkeyobject template
-class UISlimeEventBar* FUN_1419949f0(int);   // C3: was FUN_1419949f0
+class UISlimeEventBar* GetSlimeEventBar(int);   // C3: was GetSlimeEventBar
 class UICutSceneMovie* FindCutSceneMovie(int);   // 0x14138fd50 the cut scene movie dialog (guideentity_1b)
 template <class T> T* Unk_AcFindUI(eUIClassID nId);
-class UIGroupMessengerBrowser : public UIDialog { public: UIGroupMessengerBrowser(); int vfunc_48(); int FUN_141952780(); int FUN_141952840(); char m_pad[0x290 - sizeof(UIDialog)]; };   // ctor 0x141950770
+class UIGroupMessengerBrowser : public UIDialog { public: UIGroupMessengerBrowser(); int vfunc_48(); int MinimizeAllWindows(); int FUN_141952840(); char m_pad[0x290 - sizeof(UIDialog)]; };   // ctor 0x141950770
 class UIAdPushDialog : public UIDialog { public: UIAdPushDialog(); int vfunc_48(); bool IsAnyAnimating(); bool MaximizeAll(); char m_pad[0x3f0 - sizeof(UIDialog)]; };   // ctor 0x140e3efd0
 class UIHomeMenuDialog : public UIDialog { public: UIHomeMenuDialog(); int vfunc_48(); void FUN_140c296e0(bool bCraft); char m_pad[0x1f8 - sizeof(UIDialog)]; };   // ctor 0x140c29160
 class UIUpperHpBar : public UIObject { public: UIUpperHpBar(); int vfunc_48(); void FUN_141b4d0a0(); char m_pad[0x3c0 - sizeof(UIObject)]; };   // ctor 0x141b4bd20
-class UISystemText : public UIObject { public: UISystemText(); int vfunc_48(); void FUN_141b15ec0(const CStringW& strText, int nType, int nOption); char m_pad[0x98 - sizeof(UIObject)]; };   // ctor 0x141b15900
-class UICutSceneCinematic : public UIObject { public: UICutSceneCinematic(); int vfunc_48(); void ClearTalks(); void FUN_141908720(float fDelta); char m_pad[0x148 - sizeof(UIObject)]; };   // ctor 0x141906f30
-class UILoadingProgress : public UIObject { public: UILoadingProgress(); int vfunc_48(); void FUN_1419dfa60(int nMap); void FUN_1419dfd90(); void FUN_1419dff50(const CStringW& strMsg, int a, int b); char m_pad[0x80 - sizeof(UIObject)]; };   // ctor 0x1419df870
+class UISystemText : public UIObject { public: UISystemText(); int vfunc_48(); void ShowMessage(const CStringW& strText, int nType, int nOption); char m_pad[0x98 - sizeof(UIObject)]; };   // ctor 0x141b15900
+class UICutSceneCinematic : public UIObject { public: UICutSceneCinematic(); int vfunc_48(); void ClearTalks(); void Update(float fDelta); char m_pad[0x148 - sizeof(UIObject)]; };   // ctor 0x141906f30
+class UILoadingProgress : public UIObject { public: UILoadingProgress(); int vfunc_48(); void StartProgress(int nMap); void StopProgress(); void SetProgress(const CStringW& strMsg, int a, int b); char m_pad[0x80 - sizeof(UIObject)]; };   // ctor 0x1419df870
 class UICutSceneMovie : public UIObject { public: UICutSceneMovie(); int vfunc_48(); void PlayCurrentScene(); char m_pad[0xa8 - sizeof(UIObject)]; };   // ctor 0x14190eac0
-void* FUN_14136f290(int nClass);
+void* FindCutSceneCinematic(int nClass);
 class Unk_UisScene                                                  // UISceneEntity
 {
 public:
@@ -363,9 +363,9 @@ void FUN_141aee190(void* p);
 void FUN_141af0f00(void* p);
 void FUN_141af0df0(void* p);
 void FUN_141af0ce0(void* p);
-void* FUN_141aee9a0();
-void FUN_141aeec30();
-void FUN_141aeec90();
+void* GetRoomTimerManager();
+void DestroyGameMenuTable();
+void DestroyRoomTimerManager();
 class GFxLogger { public: GFxLogger(); virtual ~GFxLogger(); };
 void FUN_140a5bb80(Scaleform::Log* pLog);   // C3: the definition's signature
 void FUN_140a5bba0(void* p);
@@ -376,7 +376,7 @@ inline Unk_UisLogger::Unk_UisLogger() { new (this) GFxLogger; }
 inline Unk_UisMap::~Unk_UisMap() { reinterpret_cast<ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*>(this)->~CAtlMap(); }
 inline Unk_UisPtr8::~Unk_UisPtr8() { reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(this)->~SmartPointer(); }
 inline Unk_UisLogger::~Unk_UisLogger() { reinterpret_cast<GFxLogger*>(this)->GFxLogger::~GFxLogger(); }
-CStringA FUN_14071a5b0(const CStringA& strKey, const CStringA& strFile);
+CStringA GetXmlPath(const CStringA& strKey, const CStringA& strFile);
 
 // A weak dialog reference (vptr / pointer pair, 0x20 bytes of storage in the callers).
 struct Unk_UisRef
@@ -389,7 +389,7 @@ void FUN_141278470(Unk_UisRef* p);                                  // release
 bool FUN_141aefc70(void* pMap, const int* pKey, Unk_UisRef* pOut);  // Lookup
 bool FUN_141aee4a0(Unk_UisRef* p);                                  // is null
 void FUN_141aeddf0(Unk_UisRef* pDst, Unk_UisRef* pSrc);             // copy
-int FUN_1419244c0(UIDialog* p, int n);
+int IsFlagSet(UIDialog* p, int n);
 void FUN_141924680(UIDialog* p);
 void FUN_1419246f0(UIDialog* p);
 int FUN_141924740(UIDialog* p);
@@ -443,9 +443,9 @@ CUIService::CUIService()
     ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x620007f, 0);
     ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen2))->SetAt(0x6200086, 0);
     m_spDebugClick = 0;
-    FUN_141aee9a0();
-    m_strTable = FUN_14071a5b0("Table", "alignWidget.xml");
-    m_cache.FUN_1401d1160(CString(m_strTable));
+    GetRoomTimerManager();
+    m_strTable = GetXmlPath("Table", "alignWidget.xml");
+    m_cache.SetPath(CString(m_strTable));
 }
 #endif
 
@@ -453,8 +453,8 @@ CUIService::CUIService()
 CUIService::~CUIService()
 {
     FUN_140a5bba0(&m_log);
-    FUN_141aeec30();
-    FUN_141aeec90();
+    DestroyGameMenuTable();
+    DestroyRoomTimerManager();
 }
 
 // @0x141ad9330
@@ -486,14 +486,14 @@ void XmlSetAttr(TiXmlElement* pElem, const char* szName, int nValue);        // 
 
 
 
-CString FUN_1412755f0();                                                     // the user data folder
+CString GetCharacterFolder();                                                     // the user data folder
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);       // path join
 void FUN_141b70290();
 
 // @0x141ad9350
 void CUIService::ClearAllUI()
 {
-    FUN_141adc050();
+    CloseClosableDialogs();
     m_mapA.RemoveAll();
     m_mapDlg.RemoveAll();
     m_mapC.RemoveAll();
@@ -501,7 +501,7 @@ void CUIService::ClearAllUI()
 MS2_REPLACE_METHOD(0x141ad9350, CUIService, ClearAllUI, 79, 0xD2BAAC08);
 
 // @0x141ad9650
-void CUIService::FUN_141ad9650()
+void CUIService::LoadBackgroundMovie()
 {
     MS2Ptr<CFieldDataCli> spField = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd30a0();
     if (spField == 0)
@@ -512,7 +512,7 @@ void CUIService::FUN_141ad9650()
         if (!strBg.IsEmpty())
         {
             GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, spField->m_nVScroll, spField->m_nHScroll);
-            ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
+            ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
             return;
         }
     }
@@ -524,10 +524,10 @@ void CUIService::FUN_141ad9650()
     if (!strBg.IsEmpty())
     {
         GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, spField->m_nVScroll, spField->m_nHScroll);
-        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
+        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
     }
 }
-MS2_REPLACE_METHOD(0x141ad9650, CUIService, FUN_141ad9650, 805, 0x6765F254);
+MS2_REPLACE_METHOD(0x141ad9650, CUIService, LoadBackgroundMovie, 805, 0x6765F254);
 
 // @0x141ad9980
 void CUIService::LoadStageBackground(char nStage)
@@ -536,7 +536,7 @@ void CUIService::LoadStageBackground(char nStage)
     if (!strBg.IsEmpty())
     {
         GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, 1, 1);
-        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
+        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
     }
 }
 MS2_REPLACE_METHOD(0x141ad9980, CUIService, LoadStageBackground, 214, 0x88859AF5);
@@ -547,39 +547,39 @@ void CUIService::LoadBackground(CStringA strBg)
     if (!strBg.IsEmpty())
     {
         GFxMovieBackground* pBg = EE_NEW GFxMovieBackground(strBg, 1, 1);
-        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
+        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->LoadBackgroundMovie((GFxMovie*)(void*)(pBg));
     }
 }
 MS2_REPLACE_METHOD(0x141ad9a60, CUIService, LoadBackground, 190, 0xFA75380C);
 
 // @0x141ad9b30
-void CUIService::FUN_141ad9b30()
+void CUIService::UnloadBackgroundMovie()
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->UnloadBackgroundMovie();
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->UnloadBackgroundMovie();
 }
-MS2_REPLACE_METHOD(0x141ad9b30, CUIService, FUN_141ad9b30, 27, 0x0C5983B1);
+MS2_REPLACE_METHOD(0x141ad9b30, CUIService, UnloadBackgroundMovie, 27, 0x0C5983B1);
 
 // @0x141ad9b60
 bool CUIService::AddMovieDamage()
 {
     GFxMovieDamage* pDamage = new (efd::MemHint(efd::MemHint::NONE)) GFxMovieDamage;
-    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->LoadDamageTextMovie(pDamage) == 1;
+    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->LoadDamageTextMovie(pDamage) == 1;
 }
 
 // @0x141ad9c10
-void CUIService::FUN_141ad9c10()
+void CUIService::UnloadDamageTextMovie()
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->UnloadDamageTextMovie();
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->UnloadDamageTextMovie();
 }
-MS2_REPLACE_METHOD(0x141ad9c10, CUIService, FUN_141ad9c10, 27, 0xD41E04A3);
+MS2_REPLACE_METHOD(0x141ad9c10, CUIService, UnloadDamageTextMovie, 27, 0xD41E04A3);
 
 // @0x141ad93b0
 // Checks the saved UI layout version (version.xml, "ms2" version 0x15) and rewrites the file.
-void CUIService::FUN_141ad93b0()
+void CUIService::CheckVersionFile()
 {
     {
         TiXmlDocument kDoc;
-        bool bLoaded = kDoc.LoadFile(FUN_140cc2a00(FUN_1412755f0(), "version.xml"), TIXML_ENCODING_UNKNOWN);
+        bool bLoaded = kDoc.LoadFile(FUN_140cc2a00(GetCharacterFolder(), "version.xml"), TIXML_ENCODING_UNKNOWN);
         if (bLoaded)
         {
             TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlDocument*)(&kDoc))->FirstChild("ms2"));
@@ -601,14 +601,14 @@ void CUIService::FUN_141ad93b0()
     TiXmlElement* pRoot = new TiXmlElement("ms2");
     XmlSetAttr(pRoot, "version", 0x15);
     ((void*)((class TiXmlNode*)(class TiXmlDocument*)(&kDoc))->LinkEndChild((class TiXmlNode*)(pRoot)));
-    kDoc.SaveFile(FUN_140cc2a00(FUN_1412755f0(), "version.xml"));
+    kDoc.SaveFile(FUN_140cc2a00(GetCharacterFolder(), "version.xml"));
 }
-MS2_REPLACE_METHOD(0x141ad93b0, CUIService, FUN_141ad93b0, 655, 0x104E5C39);
+MS2_REPLACE_METHOD(0x141ad93b0, CUIService, CheckVersionFile, 655, 0x104E5C39);
 
 // @0x141ad9c40
 void CUIService::FUN_141ad9c40(MS2Ptr<CGemBase> spGem)
 {
-    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FindMovie(1));
+    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FindMovie(1));
     if (pDamage != 0)
         pDamage->LoadDamageFont(FUN_140719190(spGem->GetGemId()));
 }
@@ -617,7 +617,7 @@ MS2_REPLACE_METHOD(0x141ad9c40, CUIService, FUN_141ad9c40, 174, 0x2F761BAF);
 // @0x141ad9d00
 void CUIService::FUN_141ad9d00(MS2Ptr<CGemBase> spGem)
 {
-    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FindMovie(1));
+    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FindMovie(1));
     if (pDamage != 0)
         pDamage->FUN_140b61b80(FUN_140719190(spGem->GetGemId()));
 }
@@ -626,20 +626,20 @@ MS2_REPLACE_METHOD(0x141ad9d00, CUIService, FUN_141ad9d00, 174, 0x5D6CDB34);
 // @0x141ad9dc0
 void CUIService::FUN_141ad9dc0()
 {
-    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FindMovie(1));
+    GFxMovieDamage* pDamage = dynamic_cast<GFxMovieDamage*>(((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FindMovie(1));
     if (pDamage != 0)
         pDamage->UnloadExpiredFonts();
 }
 MS2_REPLACE_METHOD(0x141ad9dc0, CUIService, FUN_141ad9dc0, 87, 0x904062BB);
 
 // @0x141ad9e20
-bool CUIService::FUN_141ad9e20(HWND__*)
+bool CUIService::OnPostInitMovie(HWND__*)
 {
     if (!AddMovieDamage())
         return false;
     return true;
 }
-MS2_REPLACE_METHOD(0x141ad9e20, CUIService, FUN_141ad9e20, 42, 0x11F37F9D);
+MS2_REPLACE_METHOD(0x141ad9e20, CUIService, OnPostInitMovie, 42, 0x11F37F9D);
 
 // C3: the string getter 0x140298f80 is Common::Constants::Value<CString>::Get() (clientconstants.h)
 
@@ -678,12 +678,12 @@ class CUserEventManager   // C3: member view for the former free stand-ins
 public:
     int HasDTReward(unsigned short);
 };
-void* FUN_1401c0d90();
+void* GetGameRule();
 class SnowmanContext : public CPtred {};   // gameevent.h; only held through MS2Ptr here
 class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1404795e0();
+    int GetEventFieldPopup();
     MS2Ptr<class SnowmanContext> GetSnowman();
 };
 class UIEventWidgetDialog   // C3: member view for the former free stand-ins
@@ -754,7 +754,7 @@ void CUIService::FUN_141ad9e50(int nScene)
         }
         if (((class CUserEventManager*)(void*)(((void*)TSingleton<CUserEventManager>::GetInstance())))->HasDTReward((unsigned short)pPlayer->vfunc_78()) != 0)
             m_listOpen.AddTail((eUIClassID)0x4f01);
-        if (((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_1404795e0() != 0)
+        if (((class CGameRule*)(void*)(GetGameRule()))->GetEventFieldPopup() != 0)
             m_listOpen.AddTail((eUIClassID)0x4f00);
         if (FUN_1418fd280() != 0) {
             m_listOpen.AddTail((eUIClassID)0x4f7d);
@@ -770,19 +770,19 @@ void CUIService::FUN_141ad9e50(int nScene)
         }
         if (((class WorldService*)(void*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bcb150())
             m_listOpen.AddTail((eUIClassID)0x4f36);
-        void* pObj = ((class CGameRule*)(void*)(FUN_1401c0d90()))->GetSnowman().get();
+        void* pObj = ((class CGameRule*)(void*)(GetGameRule()))->GetSnowman().get();
         if (pObj != 0)
             m_listOpen.AddTail((eUIClassID)0x4f5d);
         m_listOpen.AddTail((eUIClassID)eUI_4f34);
         UIEventWidgetDialog::FUN_140c59350();
-        if (static_cast<CFeatureManager*>(((void*)FUN_140166410()))->FUN_14036d570(0xdd) && !bTab2)
+        if (static_cast<CFeatureManager*>(((void*)FUN_140166410()))->IsFeatureEnabled(0xdd) && !bTab2)
             m_listOpen.AddTail((eUIClassID)0x4f75);
         ((NotifySystem*)(void*)FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifyOpenDialogByScene(nScene)));
 
     } else if (nScene == 0x620001f) {
         m_listOpen.AddTail((eUIClassID)eUI_4ef2);
         if (FUN_1418fd280() != 0) {
-            void* pDlg = ((void*)FUN_140ef49b0(0x4f7c));
+            void* pDlg = ((void*)GetHomeMenuDialog(0x4f7c));
             if (pDlg)
                 ((UIHomeMenuDialog*)pDlg)->FUN_140c296e0(true);
         }
@@ -803,7 +803,7 @@ void CUIService::FUN_141ada6f0(int nScene)
     } else if (nScene == 0x620000d) {
         m_listClose.AddTail((eUIClassID)0x4e41);
     } else if (nScene == 0x620001d) {
-        FUN_141a60d40(1);
+        SetNameTagMode(1);
         m_listClose.AddTail((eUIClassID)0x4e27);
         m_listClose.AddTail((eUIClassID)0x4f66);
         m_listClose.AddTail((eUIClassID)0x4e51);
@@ -826,33 +826,33 @@ void CUIService::FUN_141ada6f0(int nScene)
         m_listClose.AddTail((eUIClassID)0x4f72);
         m_listClose.AddTail((eUIClassID)0x4e88);
         m_listClose.AddTail((eUIClassID)0x4f9a);
-        FUN_141add1b0(8, true);
+        SetMovieLayerVisible(8, true);
     } else if (nScene == 0x620001f) {
-        FUN_141add1b0(0xb, true);
-        FUN_141add1b0(0x24, true);
-        FUN_141add1b0(0x25, true);
+        SetMovieLayerVisible(0xb, true);
+        SetMovieLayerVisible(0x24, true);
+        SetMovieLayerVisible(0x25, true);
     } else if (nScene == 0x6200031) {
-        FUN_141add1b0(0x24, true);
-        FUN_141add1b0(0x25, true);
-        FUN_141add1b0(0x21, true);
-        FUN_141add1b0(0x1c, true);
-        FUN_141add1b0(10, true);
-        FUN_141add1b0(1, true);
-        FUN_141add1b0(0x1b, true);
+        SetMovieLayerVisible(0x24, true);
+        SetMovieLayerVisible(0x25, true);
+        SetMovieLayerVisible(0x21, true);
+        SetMovieLayerVisible(0x1c, true);
+        SetMovieLayerVisible(10, true);
+        SetMovieLayerVisible(1, true);
+        SetMovieLayerVisible(0x1b, true);
         FUN_141add040((eUIClassID)0x4e40);
     } else if (nScene == 0x6200041) {
-        FUN_141add1b0(0x24, true);
-        FUN_141add1b0(7, true);
+        SetMovieLayerVisible(0x24, true);
+        SetMovieLayerVisible(7, true);
         FUN_141add040((eUIClassID)0x4e52);
     } else if (nScene == 0x6200022) {
-        FUN_141add1b0(0xb, true);
-        FUN_141add1b0(0x24, true);
-        FUN_141add1b0(0x25, true);
+        SetMovieLayerVisible(0xb, true);
+        SetMovieLayerVisible(0x24, true);
+        SetMovieLayerVisible(0x25, true);
     } else if (nScene == 0x620007f) {
-        FUN_141add1b0(0x24, true);
-        FUN_141add1b0(7, true);
+        SetMovieLayerVisible(0x24, true);
+        SetMovieLayerVisible(7, true);
     } else if (nScene == 0x6200086) {
-        FUN_141add1b0(0x19, true);
+        SetMovieLayerVisible(0x19, true);
     }
 }
 
@@ -900,11 +900,11 @@ void CUIService::FUN_141adad20(int nScene)
     } else if (nScene == 0x6200031) {
         FUN_141add0b0((eUIClassID)0x4e40);
     } else if (nScene == 0x6200041) {
-        FUN_141a60d40(1);
+        SetNameTagMode(1);
         FUN_141add0b0((eUIClassID)0x4e52);
     } else if (nScene == 0x6200022) {
     } else if (nScene == 0x620007f) {
-        FUN_141a60d40(1);
+        SetNameTagMode(1);
     }
 }
 
@@ -926,7 +926,7 @@ public:
     virtual void vfunc_3();                                         // MS2: slot 3 (0x18) show
 };
 // @0x141adafd0
-void CUIService::FUN_141adafd0(int nScene)
+void CUIService::HideWorldUI(int nScene)
 {
     if (UIObject* p = FindUIObject(0x3ed))
         reinterpret_cast<Unk_UisToggle*>(p)->vfunc_2();
@@ -935,36 +935,36 @@ void CUIService::FUN_141adafd0(int nScene)
     if (void* p = ((void*)GetMessageBoxLayer()))
         static_cast<Unk_UisToggle*>(p)->vfunc_2();
     if (void* p = Unk_SSGGetDialog<UIHpBar>(0x4e36))
-        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
-    if (void* p = ((void*)FUN_140e86a50(0x4f77)))
-        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
-    if (void* p = ((void*)FUN_140e98660(0x4f3b)))
-        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
-    if (void* p = ((void*)FUN_141994a90(0x4e64)))
-        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
-    if (void* p = ((void*)FUN_141a62100(0x4e5a)))
-        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(2, 0, 0);
-    if (void* p = ((void*)FUN_141930440(0x4e2f)))
-        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(4, 0, 0);
+        ((class UISwfEntity*)(void*)(p))->LoadSwf(3, 0, 0);
+    if (void* p = ((void*)GetShieldBar(0x4f77)))
+        ((class UISwfEntity*)(void*)(p))->LoadSwf(3, 0, 0);
+    if (void* p = ((void*)FindTamingBar(0x4f3b)))
+        ((class UISwfEntity*)(void*)(p))->LoadSwf(3, 0, 0);
+    if (void* p = ((void*)GetTombStoneBar(0x4e64)))
+        ((class UISwfEntity*)(void*)(p))->LoadSwf(3, 0, 0);
+    if (void* p = ((void*)FindNameTag(0x4e5a)))
+        ((class UISwfEntity*)(void*)(p))->LoadSwf(2, 0, 0);
+    if (void* p = ((void*)GetEmoticon(0x4e2f)))
+        ((class UISwfEntity*)(void*)(p))->LoadSwf(4, 0, 0);
     if (void* p = ((void*)FUN_14128f650(0x4ea4)))
-        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
+        ((class UISwfEntity*)(void*)(p))->LoadSwf(3, 0, 0);
     if (void* p = ((void*)FUN_1418fc4e0(0x4e2e)))
-        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(7, 0, 0);
-    if (void* p = ((void*)FUN_141a90250(0x4e57)))
-        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(7, 0, 0);
+        ((class UISwfEntity*)(void*)(p))->LoadSwf(7, 0, 0);
+    if (void* p = ((void*)GetPopupProfileImage(0x4e57)))
+        ((class UISwfEntity*)(void*)(p))->LoadSwf(7, 0, 0);
     if (void* p = Unk_GetUI<UIBanner>(0x4e30))
-        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(7, 0, 0);
-    if (void* p = ((void*)FUN_1419949f0(0x4e65)))
-        ((class UISwfEntity*)(void*)(p))->FUN_1422dbf00(3, 0, 0);
+        ((class UISwfEntity*)(void*)(p))->LoadSwf(7, 0, 0);
+    if (void* p = ((void*)GetSlimeEventBar(0x4e65)))
+        ((class UISwfEntity*)(void*)(p))->LoadSwf(3, 0, 0);
     if (nScene != 0x6200009 && nScene != 0x620000b) {
-        if (UISystemText* p = FUN_141278110(0x4e41))
+        if (UISystemText* p = FindSystemText(0x4e41))
             reinterpret_cast<Unk_UisToggle*>(p)->vfunc_2();
     }
 }
-MS2_REPLACE_METHOD(0x141adafd0, CUIService, FUN_141adafd0, 712, 0x9D512FEF);
+MS2_REPLACE_METHOD(0x141adafd0, CUIService, HideWorldUI, 712, 0x9D512FEF);
 
 // @0x141adb2a0
-void CUIService::FUN_141adb2a0(int nScene)
+void CUIService::ShowWorldUI(int nScene)
 {
     if (UIObject* p = FindUIObject(0x3ed))
         reinterpret_cast<Unk_UisToggle*>(p)->vfunc_3();
@@ -974,28 +974,28 @@ void CUIService::FUN_141adb2a0(int nScene)
         static_cast<Unk_UisToggle*>(p)->vfunc_3();
     if (void* p = Unk_SSGGetDialog<UIHpBar>(0x4e36))
         ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
-    if (void* p = ((void*)FUN_140e86a50(0x4f77)))
+    if (void* p = ((void*)GetShieldBar(0x4f77)))
         ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
-    if (void* p = ((void*)FUN_140e98660(0x4f3b)))
+    if (void* p = ((void*)FindTamingBar(0x4f3b)))
         ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
-    if (void* p = ((void*)FUN_141994a90(0x4e64)))
+    if (void* p = ((void*)GetTombStoneBar(0x4e64)))
         ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
-    if (void* p = ((void*)FUN_141a62100(0x4e5a)))
+    if (void* p = ((void*)FindNameTag(0x4e5a)))
         ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
-    if (void* p = ((void*)FUN_141930440(0x4e2f)))
+    if (void* p = ((void*)GetEmoticon(0x4e2f)))
         ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
     if (void* p = ((void*)FUN_14128f650(0x4ea4)))
         ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
     if (void* p = ((void*)FUN_1418fc4e0(0x4e2e)))
         ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
-    if (void* p = ((void*)FUN_141a90250(0x4e57)))
+    if (void* p = ((void*)GetPopupProfileImage(0x4e57)))
         ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
     if (void* p = Unk_GetUI<UIBanner>(0x4e30))
         ((class UISwfEntity*)(void*)(p))->FUN_1422dc080();
-    if (UISystemText* p = FUN_141278110(0x4e41))
+    if (UISystemText* p = FindSystemText(0x4e41))
         reinterpret_cast<Unk_UisToggle*>(p)->vfunc_3();
 }
-MS2_REPLACE_METHOD(0x141adb2a0, CUIService, FUN_141adb2a0, 523, 0x1DF58595);
+MS2_REPLACE_METHOD(0x141adb2a0, CUIService, ShowWorldUI, 523, 0x1DF58595);
 
 // @0x141aec1f0
 int CUIService::IsDialogClosable(MS2Ptr<UIDialog> spDlg)
@@ -1006,7 +1006,7 @@ int CUIService::IsDialogClosable(MS2Ptr<UIDialog> spDlg)
             return 0;
         if (spDlg->vfunc_55() != 0)
             return 0;
-        if (spDlg->FUN_1419244c0(1) != 0)
+        if (spDlg->IsFlagSet(1) != 0)
             return 0;
         if (spDlg->vfunc_48() == 0x4eec)
             return 0;
@@ -1029,7 +1029,7 @@ int CUIService::CloseAllDialogs()
         }
     }
     if (UIGroupMessengerBrowser* pBrowser = FindGroupMessengerBrowser(eUI_4e93))
-        pBrowser->FUN_141952780();
+        pBrowser->MinimizeAllWindows();
     if (UIAdPushDialog* pAd = FUN_140d61c00(eUI_4f34))
         pAd->MaximizeAll();
     return 1;
@@ -1148,9 +1148,9 @@ void CUIService::FUN_141ada610(int nScene)
         return;
     ((ATL::CAtlMap<unsigned int, int, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<int>>*)(void*)(&m_mapOpen))->SetAt(nScene, 0);
     if (nScene == 0x6200018) {
-        FUN_141adc050();
+        CloseClosableDialogs();
     } else if (nScene == 0x620001d) {
-        FUN_141adc050();
+        CloseClosableDialogs();
         ((class CMeratMarketMan*)(void*)(((void*)GetMeratMarketMan())))->CloseMarketAndClearAds();
     } else if (nScene == 0x620001f) {
         CloseDialog(eUI_4ef2);
@@ -1162,7 +1162,7 @@ MS2_REPLACE_METHOD(0x141ada610, CUIService, FUN_141ada610, 215, 0x260C5DC3);
 // @0x141adbd10
 unsigned CUIService::FUN_141adbd10()
 {
-    return (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aeed0(2) == 0 && m_n124 == 0) ? 0 : 1;
+    return (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FUN_1422aeed0(2) == 0 && m_n124 == 0) ? 0 : 1;
 }
 MS2_REPLACE_METHOD(0x141adbd10, CUIService, FUN_141adbd10, 72, 0x31DAF086);
 
@@ -1193,23 +1193,23 @@ int CUIService::FUN_141adbe00(float fValue, int bRaw)
     float f = fValue;
     if (bRaw == 0)
         f = FUN_141276490((float)DAT_143af62d4, fValue);
-    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aff10(f);
+    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FUN_1422aff10(f);
 }
 MS2_REPLACE_METHOD(0x141adbe00, CUIService, FUN_141adbe00, 91, 0x1AE4A279);
 
 // @0x141adbe70
-float CUIService::FUN_141adbe70()
+float CUIService::GetUIScale()
 {
-    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422afec0(2);
+    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->GetMovieScale(2);
 }
-MS2_REPLACE_METHOD(0x141adbe70, CUIService, FUN_141adbe70, 32, 0x1FDD01DB);
+MS2_REPLACE_METHOD(0x141adbe70, CUIService, GetUIScale, 32, 0x1FDD01DB);
 
 // @0x141adbca0
-void CUIService::FUN_141adbca0(int n)
+void CUIService::SetMoviesVisible(int n)
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->SetMoviesVisible(n);
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->SetMoviesVisible(n);
 }
-MS2_REPLACE_METHOD(0x141adbca0, CUIService, FUN_141adbca0, 35, 0x3F0A8ADB);
+MS2_REPLACE_METHOD(0x141adbca0, CUIService, SetMoviesVisible, 35, 0x3F0A8ADB);
 
 // @0x141adbcd0
 void CUIService::FUN_141adbcd0(char b)
@@ -1229,20 +1229,20 @@ void CUIService::FUN_141adbf00()
 MS2_REPLACE_METHOD(0x141adbf00, CUIService, FUN_141adbf00, 37, 0xCC1A7CE0);
 
 // @0x141adbf30
-void CUIService::FUN_141adbf30()
+void CUIService::PlayCurrentCutScene()
 {
     void* p = ((void*)FindCutSceneMovie(0x4e7e));
     if (p != 0)
         ((UICutSceneMovie*)p)->PlayCurrentScene();
 }
-MS2_REPLACE_METHOD(0x141adbf30, CUIService, FUN_141adbf30, 47, 0xAF6C57BE);
+MS2_REPLACE_METHOD(0x141adbf30, CUIService, PlayCurrentCutScene, 47, 0xAF6C57BE);
 
 // @0x141adbf70
 void CUIService::FUN_141adbf70(int n)
 {
     UIVideoContents* p = Unk_UisFind<UIVideoContents>(eUI_3ee);
     if (p != 0)
-        p->FUN_14135afa0(n);
+        p->SetVideoMuted(n);
 }
 MS2_REPLACE_METHOD(0x141adbf70, CUIService, FUN_141adbf70, 55, 0xAE0BC1C7);
 
@@ -1284,9 +1284,9 @@ MS2_REPLACE_METHOD(0x141adcb40, CUIService, FUN_141adcb40, 17, 0x10229582);
 // @0x141adb810
 void CUIService::FUN_141adb810()
 {
-    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->GetSubSceneId() != 0x620001d)
     {
-        Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50());
+        Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50());
         if (pScene != 0)
         {
             if (pScene->vfunc_62() == 0)
@@ -1301,7 +1301,7 @@ MS2_REPLACE_METHOD(0x141adb810, CUIService, FUN_141adb810, 105, 0x5CD42794);
 // @0x141adb880
 void CUIService::FUN_141adb880()
 {
-    Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50());
+    Unk_UisScene* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50());
     if (pScene != 0)
     {
         if (pScene->vfunc_63() == 0)
@@ -1319,12 +1319,12 @@ void CUIService::FUN_141adb900(int n)
     UIUpperHpBar* pHpBar = Unk_AcFindUI<UIUpperHpBar>((eUIClassID)0x4e3d);
     if (pHpBar != 0)
         pHpBar->FUN_141b4d0a0();
-    UILoadingProgress* pLoading = static_cast<UILoadingProgress*>(FindUIObject(FUN_141add730()));
+    UILoadingProgress* pLoading = static_cast<UILoadingProgress*>(FindUIObject(GetValidMode()));
     if (pLoading != 0)
-        pLoading->FUN_1419dfa60(n);
-    FUN_141ad9b30();
+        pLoading->StartProgress(n);
+    UnloadBackgroundMovie();
     FUN_141ad9dc0();
-    UICutSceneCinematic* pDlg = (UICutSceneCinematic*)FUN_14136f290(0x4e52);
+    UICutSceneCinematic* pDlg = (UICutSceneCinematic*)FindCutSceneCinematic(0x4e52);
     if (pDlg != 0)
         pDlg->ClearTalks();
     FUN_141adbcd0(0);
@@ -1337,7 +1337,7 @@ void CUIService::FUN_141adb9c0(const CStringW& str, int a, int b)
 {
     UILoadingProgress* pLoading = static_cast<UILoadingProgress*>(FindUIObject(GetMode()));
     if (pLoading != 0)
-        pLoading->FUN_1419dff50(str, a, b);
+        pLoading->SetProgress(str, a, b);
     ChromaSDK::GetChromaManager()->SetState(1);
 }
 MS2_REPLACE_METHOD(0x141adb9c0, CUIService, FUN_141adb9c0, 115, 0x60FA7A5A);
@@ -1346,14 +1346,14 @@ MS2_REPLACE_METHOD(0x141adb9c0, CUIService, FUN_141adb9c0, 115, 0x60FA7A5A);
 void CUIService::FUN_141adba40()
 {
     DAT_143af62e0 = 1;
-    if (FUN_141aec350() != 0)
+    if (GetFieldNameId() != 0)
     {
-        UISystemText* pText = FUN_141278110(0x4e41);
+        UISystemText* pText = FindSystemText(0x4e41);
         if (pText != 0)
         {
             CStringW str = L"";
             ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3330(&str);
-            pText->FUN_141b15ec0(str, 7, 0);
+            pText->ShowMessage(str, 7, 0);
         }
     }
     ChromaSDK::GetChromaManager()->SetState(-1);
@@ -1361,26 +1361,26 @@ void CUIService::FUN_141adba40()
 MS2_REPLACE_METHOD(0x141adba40, CUIService, FUN_141adba40, 174, 0x72FCEE36);
 
 // @0x141adbb00
-int CUIService::FUN_141adbb00()
+int CUIService::IsTextFieldFocused()
 {
     if (((class CWebBrowserService*)(class Unk_UisBrowserMgr*)(reinterpret_cast<Unk_UisBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())))->FUN_141b78650() != 0)
         return 1;
-    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->IsTextFieldFocused(2);
+    return ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->IsTextFieldFocused(2);
 }
-MS2_REPLACE_METHOD(0x141adbb00, CUIService, FUN_141adbb00, 56, 0xACD21E96);
+MS2_REPLACE_METHOD(0x141adbb00, CUIService, IsTextFieldFocused, 56, 0xACD21E96);
 
 // @0x141adbea0
-void CUIService::FUN_141adbea0()
+void CUIService::HideLoadingProgress()
 {
     if (m_b120)
     {
         UILoadingProgress* pLoading = static_cast<UILoadingProgress*>(FindUIObject(GetMode()));
         if (pLoading != 0)
-            pLoading->FUN_1419dfd90();
+            pLoading->StopProgress();
     }
     m_b120 = 0;
 }
-MS2_REPLACE_METHOD(0x141adbea0, CUIService, FUN_141adbea0, 82, 0x3A2CD5A8);
+MS2_REPLACE_METHOD(0x141adbea0, CUIService, HideLoadingProgress, 82, 0x3A2CD5A8);
 
 // @0x141adbfb0
 void CUIService::FUN_141adbfb0(void* p)
@@ -1408,7 +1408,7 @@ void CUIService::SetMode(int nMode)
 MS2_REPLACE_METHOD(0x141add6e0, CUIService, SetMode, 73, 0x4ED8E211);
 
 // @0x141add730
-int CUIService::FUN_141add730()
+int CUIService::GetValidMode()
 {
     int nMode = 0;
     if (!m_b120 && m_n11c != 0)
@@ -1423,7 +1423,7 @@ int CUIService::FUN_141add730()
     }
     return nMode;
 }
-MS2_REPLACE_METHOD(0x141add730, CUIService, FUN_141add730, 295, 0x6A8E9128);
+MS2_REPLACE_METHOD(0x141add730, CUIService, GetValidMode, 295, 0x6A8E9128);
 
 // @0x141add860
 int CUIService::GetMode()
@@ -1441,7 +1441,7 @@ bool CUIService::FUN_141add880(int nResult, const CMsgBoxData& box)
         if (str.IsEmpty()) {
             OpenDialog(eUI_4ec1);
         } else {
-            UIMeratMarketDialog* pDlg = FUN_140bfed50(eUI_4ec1);
+            UIMeratMarketDialog* pDlg = FindMeratMarketDialog(eUI_4ec1);
             if (pDlg != 0) {
                 pDlg->SearchByText(str);
             }
@@ -1455,7 +1455,7 @@ MS2_REPLACE_METHOD(0x141add880, CUIService, FUN_141add880, 180, 0x01ADF378);
 bool CUIService::FUN_141add940(int nResult, const CMsgBoxData&)
 {
     if (nResult == 0) {
-        if (static_cast<CFeatureManager*>(((void*)FUN_140166410()))->FUN_14036d570(0xc2) == 0) {
+        if (static_cast<CFeatureManager*>(((void*)FUN_140166410()))->IsFeatureEnabled(0xc2) == 0) {
             FUN_140d73cd0();
             return false;
         }
@@ -1471,7 +1471,7 @@ bool CUIService::FUN_141add9b0(int nResult, const CMsgBoxData&)
     if (nResult != 0) {
         return true;
     }
-    if (!static_cast<CFeatureManager*>(((void*)FUN_140166410()))->FUN_14036d570(0xc2)) {
+    if (!static_cast<CFeatureManager*>(((void*)FUN_140166410()))->IsFeatureEnabled(0xc2)) {
         FUN_140d73cd0();
         return false;
     }
@@ -1481,19 +1481,19 @@ bool CUIService::FUN_141add9b0(int nResult, const CMsgBoxData&)
 MS2_REPLACE_METHOD(0x141add9b0, CUIService, FUN_141add9b0, 99, 0x19D19D27);
 
 // @0x141aec350
-int CUIService::FUN_141aec350()
+int CUIService::GetFieldNameId()
 {
-    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9ea0() != 0)
+    if (((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9ea0() != 0)
         return 0;
     MS2Ptr<CFieldDataCli> spField = ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bd30a0();
     if (!spField)
         return 0;
     return spField->m_nFieldName;
 }
-MS2_REPLACE_METHOD(0x141aec350, CUIService, FUN_141aec350, 138, 0x476DE331);
+MS2_REPLACE_METHOD(0x141aec350, CUIService, GetFieldNameId, 138, 0x476DE331);
 
 // @0x141adc050
-void CUIService::FUN_141adc050()
+void CUIService::CloseClosableDialogs()
 {
     FUN_14151f460(1);
     for (POSITION pos = m_mapDlg.GetStartPosition(); pos != 0; m_mapDlg.GetNext(pos))
@@ -1501,14 +1501,14 @@ void CUIService::FUN_141adc050()
         MS2Ptr<UIDialog> spDlg = m_mapDlg.GetValueAt(pos);
         if (spDlg)
         {
-            if (spDlg->FUN_1419244c0(2) != 0)
+            if (spDlg->IsFlagSet(2) != 0)
                 continue;
             if (spDlg->vfunc_55() == 0)
                 spDlg->vfunc_68();
         }
     }
 }
-MS2_REPLACE_METHOD(0x141adc050, CUIService, FUN_141adc050, 275, 0x98EEA880);
+MS2_REPLACE_METHOD(0x141adc050, CUIService, CloseClosableDialogs, 275, 0x98EEA880);
 
 // @0x141adc170
 void CUIService::FUN_141adc170()
@@ -1613,7 +1613,7 @@ void CUIService::CloseDialog(eUIClassID nClass)
 MS2_REPLACE_METHOD(0x141adc5d0, CUIService, CloseDialog, 179, 0x707388F7);
 
 // @0x141adc690
-void CUIService::FUN_141adc690(eUIClassID nClass)
+void CUIService::RequestCloseDialog(eUIClassID nClass)
 {
     MS2Ptr<UIDialog> spDlg = 0;
     if (m_mapDlg.Lookup(nClass, spDlg) && spDlg)
@@ -1622,7 +1622,7 @@ void CUIService::FUN_141adc690(eUIClassID nClass)
             spDlg->vfunc_68();
     }
 }
-MS2_REPLACE_METHOD(0x141adc690, CUIService, FUN_141adc690, 179, 0xACF0C5DA);
+MS2_REPLACE_METHOD(0x141adc690, CUIService, RequestCloseDialog, 179, 0xACF0C5DA);
 
 // @0x141adc750
 void CUIService::ToggleDialog(eUIClassID nClass)
@@ -1646,24 +1646,24 @@ int CUIService::FUN_141adc7f0(eUIClassID nClass)
 MS2_REPLACE_METHOD(0x141adc7f0, CUIService, FUN_141adc7f0, 139, 0xA1476223);
 
 // @0x141adc890
-int CUIService::FUN_141adc890(eUIClassID nClass)
+int CUIService::IsDialogOpen(eUIClassID nClass)
 {
     MS2Ptr<UIDialog> spDlg = FindDialog(nClass);
     if (spDlg)
         return spDlg->vfunc_55() == 0;
     return 0;
 }
-MS2_REPLACE_METHOD(0x141adc890, CUIService, FUN_141adc890, 165, 0xA9116C01);
+MS2_REPLACE_METHOD(0x141adc890, CUIService, IsDialogOpen, 165, 0xA9116C01);
 
 // @0x141adc940
-int CUIService::FUN_141adc940(eUIClassID nClass)
+int CUIService::IsDialogClosed(eUIClassID nClass)
 {
     MS2Ptr<UIDialog> spDlg = FindDialog(nClass);
     if (spDlg)
         return spDlg->vfunc_55();
     return 1;
 }
-MS2_REPLACE_METHOD(0x141adc940, CUIService, FUN_141adc940, 139, 0x902CC994);
+MS2_REPLACE_METHOD(0x141adc940, CUIService, IsDialogClosed, 139, 0x902CC994);
 
 // @0x141adc9e0
 int CUIService::FUN_141adc9e0(eUIClassID nClass)
@@ -1676,12 +1676,12 @@ int CUIService::FUN_141adc9e0(eUIClassID nClass)
 MS2_REPLACE_METHOD(0x141adc9e0, CUIService, FUN_141adc9e0, 123, 0xB9DBFA3E);
 
 // @0x141adca70
-void CUIService::FUN_141adca70()
+void CUIService::RefreshTooltip()
 {
     PCBase* pPC = ((PCBase*)((WorldService*)(Unk_UisWorld*)(((class Unk_UisWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
         return;
-    Unk_UisMovie* pMovie = reinterpret_cast<Unk_UisMovie*>(FUN_1422bb8b0(2));
+    Unk_UisMovie* pMovie = reinterpret_cast<Unk_UisMovie*>(GetMovie(2));
     if (pMovie != 0)
     {
         Scaleform::GFx::Value kName("scaleform.ms2.manager.TooltipManager");
@@ -1690,7 +1690,7 @@ void CUIService::FUN_141adca70()
             kClass.Invoke("dispatchRefreshTooltip", 0);
     }
 }
-MS2_REPLACE_METHOD(0x141adca70, CUIService, FUN_141adca70, 196, 0x7FBAC618);
+MS2_REPLACE_METHOD(0x141adca70, CUIService, RefreshTooltip, 196, 0x7FBAC618);
 
 // @0x141adcb60
 void CUIService::FUN_141adcb60(int n)
@@ -1698,7 +1698,7 @@ void CUIService::FUN_141adcb60(int n)
     if (m_n128 == n)
         return;
     m_n128 = n;
-    TSingleton<CUIService>::GetInstance()->FUN_141adca70();
+    TSingleton<CUIService>::GetInstance()->RefreshTooltip();
 }
 MS2_REPLACE_METHOD(0x141adcb60, CUIService, FUN_141adcb60, 65, 0x9BF97C8B);
 
@@ -1779,18 +1779,18 @@ void CUIService::RegisterDialog(MS2Ptr<UIDialog> spDlg)
 MS2_REPLACE_METHOD(0x141aec080, CUIService, RegisterDialog, 159, 0x38E07131);
 
 // @0x141add1b0
-void CUIService::FUN_141add1b0(int nSlot, bool bOn)
+void CUIService::SetMovieLayerVisible(int nSlot, bool bOn)
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->SetMoviesLayerVisible(nSlot, bOn);
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->SetMoviesLayerVisible(nSlot, bOn);
 }
-MS2_REPLACE_METHOD(0x141add1b0, CUIService, FUN_141add1b0, 46, 0x400D367F);
+MS2_REPLACE_METHOD(0x141add1b0, CUIService, SetMovieLayerVisible, 46, 0x400D367F);
 
 // @0x141adb7b0
 void CUIService::FUN_141adb7b0(int bOn)
 {
     bool b = bOn ? true : false;
-    FUN_141add1b0(0x23, b);
-    FUN_141add1b0(0x24, b);
+    SetMovieLayerVisible(0x23, b);
+    SetMovieLayerVisible(0x24, b);
 }
 MS2_REPLACE_METHOD(0x141adb7b0, CUIService, FUN_141adb7b0, 88, 0xE406C889);
 
@@ -1800,7 +1800,7 @@ void CUIService::CycleCursor()
     m_nCursor++;
     int nCursor = m_nCursor % 4;
     m_nCursor = nCursor;
-    FUN_141aec8c0(nCursor);
+    SetMoviesVisibleStep(nCursor);
 }
 MS2_REPLACE_METHOD(0x141adbb40, CUIService, CycleCursor, 93, 0x36CF9842);
 
@@ -1808,67 +1808,67 @@ MS2_REPLACE_METHOD(0x141adbb40, CUIService, CycleCursor, 93, 0x36CF9842);
 void CUIService::FUN_141adb4c0(int bOn)
 {
     bool b = bOn ? true : false;
-    FUN_141add1b0(0x19, b);
-    FUN_141add1b0(0x11, b);
-    FUN_141add1b0(0x13, b);
-    FUN_141add1b0(0x1a, b);
-    FUN_141add1b0(0xd, b);
-    FUN_141add1b0(0xe, b);
-    FUN_141add1b0(3, b);
-    FUN_141add1b0(0xf, b);
-    if (static_cast<CFeatureManager*>(((void*)FUN_140166410()))->FUN_14036d570(0xbd) != 0)
-        FUN_141add1b0(0x10, b);
-    FUN_141add1b0(8, b);
-    FUN_141add1b0(0x28, b);
-    FUN_141add1b0(0x25, b);
-    FUN_141add1b0(0, b);
-    FUN_141add1b0(2, b);
-    FUN_141add1b0(4, b);
-    FUN_141add1b0(5, b);
-    FUN_141add1b0(0x14, b);
-    FUN_141add1b0(6, b);
-    FUN_141add1b0(0x16, b);
-    FUN_141add1b0(0x1d, b);
-    FUN_141add1b0(0x24, b);
-    FUN_141add1b0(0x12, b);
-    FUN_141add1b0(10, b);
-    FUN_141add1b0(9, b);
-    FUN_141add1b0(7, b);
-    FUN_141add1b0(1, b);
-    FUN_141add1b0(0x1e, b);
-    FUN_141add1b0(0x15, b);
-    FUN_141add1b0(0x1f, b);
-    FUN_141add1b0(0x17, b);
-    FUN_141add1b0(0x23, b);
-    FUN_141add1b0(0xb, b);
+    SetMovieLayerVisible(0x19, b);
+    SetMovieLayerVisible(0x11, b);
+    SetMovieLayerVisible(0x13, b);
+    SetMovieLayerVisible(0x1a, b);
+    SetMovieLayerVisible(0xd, b);
+    SetMovieLayerVisible(0xe, b);
+    SetMovieLayerVisible(3, b);
+    SetMovieLayerVisible(0xf, b);
+    if (static_cast<CFeatureManager*>(((void*)FUN_140166410()))->IsFeatureEnabled(0xbd) != 0)
+        SetMovieLayerVisible(0x10, b);
+    SetMovieLayerVisible(8, b);
+    SetMovieLayerVisible(0x28, b);
+    SetMovieLayerVisible(0x25, b);
+    SetMovieLayerVisible(0, b);
+    SetMovieLayerVisible(2, b);
+    SetMovieLayerVisible(4, b);
+    SetMovieLayerVisible(5, b);
+    SetMovieLayerVisible(0x14, b);
+    SetMovieLayerVisible(6, b);
+    SetMovieLayerVisible(0x16, b);
+    SetMovieLayerVisible(0x1d, b);
+    SetMovieLayerVisible(0x24, b);
+    SetMovieLayerVisible(0x12, b);
+    SetMovieLayerVisible(10, b);
+    SetMovieLayerVisible(9, b);
+    SetMovieLayerVisible(7, b);
+    SetMovieLayerVisible(1, b);
+    SetMovieLayerVisible(0x1e, b);
+    SetMovieLayerVisible(0x15, b);
+    SetMovieLayerVisible(0x1f, b);
+    SetMovieLayerVisible(0x17, b);
+    SetMovieLayerVisible(0x23, b);
+    SetMovieLayerVisible(0xb, b);
 }
 MS2_REPLACE_METHOD(0x141adb4c0, CUIService, FUN_141adb4c0, 740, 0x3EEFB50B);
 
 // ---- efd::ISystemService overrides ----
 extern "C++" {
-void FUN_141af1860(Unk_UisMovieMgr* pMgr, void (*pfn)(CString));
-void FUN_141af1a90(Unk_UisMovieMgr* pMgr, void (*pfn)());
+void SetFeatureCallback(Unk_UisMovieMgr* pMgr, void (*pfn)(CString));
+void SetTickCallback(Unk_UisMovieMgr* pMgr, void (*pfn)());
 int FUN_141b6fc50(const CString& strA, const CString& strB, unsigned int nFlags);   // C3: the definition's signature
-class Unk_PhysWorldSvc* FUN_14168ab40(efd::ServiceManager* pSvcMgr);   // C3: the definition's signature
+class Unk_PhysWorldSvc* GetPhysWorldService(efd::ServiceManager* pSvcMgr);   // C3: the definition's signature
 class Unk_UisLog : public CCrashManager
 {
 public:
 };   // debug log (printf-style)
 void* FUN_141aee920();
-int FUN_1419244c0(void* pDlg, int n);
+int IsFlagSet(void* pDlg, int n);
 void FUN_141aee3b0(void* p, int n);
 bool FUN_1401d1320(void* pCache);
 class Unk_140e45740* FUN_140e45740();   // C3: the definition's return type
-void FUN_141626ac0(void* p);
+void ClearRenderClicks(void* p);
 }
 
 // @0x141adea90
 efd::SyncResult CUIService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 {
     pRegistrar->AddDependency<ecr::RenderService>(1);
-    FUN_141af1860(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0()), &CUIService::FUN_141ade300);
-    FUN_141af1a90(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0()), reinterpret_cast<void (*)()>(FUN_141b6fc50));
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->SetPostInitMovieCallback(TFunctor<bool, ParamList<HWND__*, EmptyParam> >(this, &CUIService::FUN_141ad9e20));
+    SetFeatureCallback(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager()), &CUIService::LogMovieMessage);
+    SetTickCallback(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager()), reinterpret_cast<void (*)()>(FUN_141b6fc50));
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->SetPostInitMovieCallback(TFunctor<bool, ParamList<HWND__*, EmptyParam> >(this, &CUIService::OnPostInitMovie));
     return efd::SyncResult_Success;
 }
 
@@ -1876,15 +1876,15 @@ efd::SyncResult CUIService::OnPreInit(efd::IDependencyRegistrar* pRegistrar)
 efd::AsyncResult CUIService::OnInit()
 {
     m_pWorldSvc30 = m_pServiceManager->GetSystemServiceAs<ecr::RenderService>();
-    m_pEntitySvc28 = FUN_14168ab40(m_pServiceManager);
+    m_pEntitySvc28 = GetPhysWorldService(m_pServiceManager);
     void* pWorld = ((ecr::RenderService*)m_pWorldSvc30)->GetActiveRenderSurface();
     if (pWorld == 0)
         return efd::AsyncResult_Pending;                        // no world yet: called again next tick
-    FUN_141adf250();
-    FUN_141adf580();
+    CreateClickRenderSteps();
+    CreateAllDialogs();
     NiDX9Renderer* pEvt = (NiDX9Renderer*)NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
-    pEvt->AddResetNotificationFunc(&CUIService::FUN_141ade1f0, this);
-    pEvt->AddLostDeviceNotificationFunc(&CUIService::FUN_141ade2d0, this);
+    pEvt->AddResetNotificationFunc(&CUIService::OnDeviceReset, this);
+    pEvt->AddLostDeviceNotificationFunc(&CUIService::OnDeviceLost, this);
     reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce3d0(TFunctor<void, EmptyParam>(this, &CUIService::FUN_141aece70));
     reinterpret_cast<CGameMenuTable*>(FUN_141aee920())->Init();
     return efd::AsyncResult_Complete;
@@ -1915,7 +1915,7 @@ efd::AsyncResult CUIService::OnTick()
     }
     if (DAT_143af62e0 != 0 && m_listOpen.IsEmpty() && m_listClose.IsEmpty())
     {
-        FUN_141adbea0();
+        HideLoadingProgress();
         DAT_143af62e0 = 0;
     }
     FUN_141aec690();
@@ -1924,7 +1924,7 @@ efd::AsyncResult CUIService::OnTick()
     {
         UIDialog* pDlg = m_mapDlg.GetValueAt(pos);      // MS2Ptr<UIDialog>::operator UIDialog* 0x1412784d0
         // per-frame update: always-tick dialogs (flag 3), else open and visible ones
-        if (pDlg->FUN_1419244c0(3) == 0)
+        if (pDlg->IsFlagSet(3) == 0)
         {
             if (pDlg->vfunc_55() != 0)
                 continue;
@@ -1938,9 +1938,9 @@ efd::AsyncResult CUIService::OnTick()
     FUN_141aec9c0();
     if (FUN_1401d1320(&m_cache))
     {
-        ((UIAlignWidgetManager*)FUN_140e45740())->FUN_1422e6960();
-        ((UIAlignWidgetManager*)FUN_140e45740())->FUN_1422e6d00(1);
-        m_cache.FUN_1401d1160(m_strTable);
+        ((UIAlignWidgetManager*)FUN_140e45740())->LoadWidgets();
+        ((UIAlignWidgetManager*)FUN_140e45740())->RequestLayout(1);
+        m_cache.SetPath(m_strTable);
     }
     return efd::AsyncResult_Pending;
 }
@@ -1957,7 +1957,7 @@ efd::AsyncResult CUIService::OnShutdown()
             if (pRoot != 0)
             {
                 pRoot->RemoveRenderStep((NiDefaultClickRenderStep*)*reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(&m_x38));
-                FUN_141626ac0(reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(&m_x38)->operator->());
+                ClearRenderClicks(reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(&m_x38)->operator->());
                 *reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(&m_x38) = (NiDefaultClickRenderStep*)0;
             }
         }
@@ -1969,12 +1969,12 @@ efd::AsyncResult CUIService::OnShutdown()
 }
 
 
-// ---- FUN_141adf580: every dialog's construction (the ctors are unrecovered-signature exe functions) ----
+// ---- CreateAllDialogs: every dialog's construction (the ctors are unrecovered-signature exe functions) ----
 int FUN_141adda20();
 void FUN_141addb30(long long n);
 void FUN_141ade430(void* p, int nMovieId);
 
-// The dialogs created by FUN_141adf580: declared by their ctor and size only (their units define the real classes).
+// The dialogs created by CreateAllDialogs: declared by their ctor and size only (their units define the real classes).
 class UIGuideEvent : public UIObject { public: UIGuideEvent(); int vfunc_48(); char m_pad[0x1c0 - sizeof(UIObject)]; };   // 141959330
 class UIExpBar : public UIObject { public: UIExpBar(); int vfunc_48(); char m_pad[0x78 - sizeof(UIObject)]; };   // 141931eb0
 class UIAdventureLevelExpBar : public UIObject { public: UIAdventureLevelExpBar(); int vfunc_48(); char m_pad[0x78 - sizeof(UIObject)]; };   // 140ba6b20
@@ -2318,11 +2318,11 @@ class UIWeddingHallListDialog : public UIDialog { public: UIWeddingHallListDialo
 class UIUnlimitedEnchantDialog : public UIDialog { public: UIUnlimitedEnchantDialog(); int vfunc_48(); char m_pad[0x1d8 - sizeof(UIDialog)]; };   // 140fb5ca0
 
 // @0x141adf580
-void CUIService::FUN_141adf580()
+void CUIService::CreateAllDialogs()
 {
-    GetUISwfEntityManager()->FUN_1422d4b40(FUN_141adda20);
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->SetFormatCallback(reinterpret_cast<void (*)(const Scaleform::GFx::FunctionHandler::Params&)>(FUN_141addb30));
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aeea0(reinterpret_cast<void (*)(AScript&, int)>(FUN_141ade430));
+    GetUISwfEntityManager()->SetInputTakenCallback(FUN_141adda20);
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->SetFormatCallback(reinterpret_cast<void (*)(const Scaleform::GFx::FunctionHandler::Params&)>(FUN_141addb30));
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->SetCommonCallback(reinterpret_cast<void (*)(AScript&, int)>(FUN_141ade430));
     RegisterObject(MS2Ptr<UIObject>(new UIGuideEvent));
     RegisterObject(MS2Ptr<UIObject>(new UIExpBar));
     RegisterObject(MS2Ptr<UIObject>(new UIAdventureLevelExpBar));
@@ -2679,32 +2679,32 @@ void CUIService::FUN_141adf580()
 }
 
 // @0x141aec8c0
-void CUIService::FUN_141aec8c0(int nMode)
+void CUIService::SetMoviesVisibleStep(int nMode)
 {
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->SetMoviesVisibleStep(nMode);
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->SetMoviesVisibleStep(nMode);
 }
-MS2_REPLACE_METHOD(0x141aec8c0, CUIService, FUN_141aec8c0, 35, 0x66E851B8);
+MS2_REPLACE_METHOD(0x141aec8c0, CUIService, SetMoviesVisibleStep, 35, 0x66E851B8);
 
 // @0x141aecf60
-int CUIService::FUN_141aecf60(MS2Ptr<UIDialog> spDlg)
+int CUIService::LogLostDialog(MS2Ptr<UIDialog> spDlg)
 {
     reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("*Lost \xbf\xad\xb7\xc1\xc0\xd6\xb4\xc2 dlg [%s]", (const char*)spDlg->GetTypeName());
     return 0;
 }
-MS2_REPLACE(0x141aecf60, CUIService::FUN_141aecf60, 152, 0x2A7C9D69);
+MS2_REPLACE(0x141aecf60, CUIService::LogLostDialog, 152, 0x2A7C9D69);
 
 // @0x141aed000
-int CUIService::FUN_141aed000(MS2Ptr<UIDialog> spDlg)
+int CUIService::LogResetDialog(MS2Ptr<UIDialog> spDlg)
 {
     reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("*Reset \xbf\xad\xb7\xc1\xc0\xd6\xb4\xc2 dlg [%s]", (const char*)spDlg->GetTypeName());
     return 0;
 }
-MS2_REPLACE(0x141aed000, CUIService::FUN_141aed000, 152, 0x11E968B0);
+MS2_REPLACE(0x141aed000, CUIService::LogResetDialog, 152, 0x11E968B0);
 
 // @0x141ade340
 // window message hook: remembers the mouse position on WM_RBUTTONDOWN, then lets the dialogs see the message
 // MS2: the exe keeps six dead `jmp` blocks after the default jump (empty cases; the other ids are guesses)
-long long FUN_141ade340(void*, int nMsg, void* wParam, void* lParam)
+long long OnWindowMessage(void*, int nMsg, void* wParam, void* lParam)
 {
     switch (nMsg) {
     case WM_MOUSEMOVE: break;
@@ -2715,7 +2715,7 @@ long long FUN_141ade340(void*, int nMsg, void* wParam, void* lParam)
     case WM_RBUTTONDBLCLK: break;
     case WM_RBUTTONDOWN: {
         POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
-        FUN_141a8a010((float)pt.x, (float)pt.y);
+        OnRightMouseDown((float)pt.x, (float)pt.y);
         break;
     }
     }
@@ -2724,7 +2724,7 @@ long long FUN_141ade340(void*, int nMsg, void* wParam, void* lParam)
     else
         return 0;
 }
-MS2_REPLACE(0x141ade340, FUN_141ade340, 159, 0xED9CBC2C);
+MS2_REPLACE(0x141ade340, OnWindowMessage, 159, 0xED9CBC2C);
 
 // @0x141adf0f0
 int CUIService::FUN_141adf0f0(int nMsg, void* wParam, void* lParam)
@@ -2772,8 +2772,8 @@ class CInputKeyHandler   // C3: member view for the former free stand-ins
 public:
     bool FUN_14116d7a0(unsigned int);
     bool FUN_14116d840();
-    bool FUN_14116d950(int, bool, int);
-    bool FUN_14116d9c0(int, bool, int);
+    bool IsKeyDown(int, bool, int);
+    bool WasKeyPressed(int, bool, int);
 };
 int FUN_1418fcb70();   // C3: the definition's return type
 float FUN_141276460();
@@ -2781,13 +2781,13 @@ float FUN_141276460();
 // @0x141adda20
 int FUN_141adda20()
 {
-    int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->GetSubSceneId();
-    if (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->IsArchive() == 0
+    int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->GetSubSceneId();
+    if (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->IsArchive() == 0
         && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->IsKeyDownGated(0x1d, 0)
         && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->IsKeyDownGated(0x38, 0)
         && ((class MS2InputService*)(void*)(((void*)FUN_140a58540())))->WasKeyPressedGated(0x13))
     {
-        TSingleton<CUIService>::GetInstance()->FUN_141aecc30();
+        TSingleton<CUIService>::GetInstance()->RebuildSceneUI();
         return 1;
     }
     if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d840() && ((class Unk_C2UiMgr*)(void*)(((void*)GetUISwfEntityManager())))->FUN_1410af770() && nScene == 0x620001d)
@@ -2801,19 +2801,19 @@ int FUN_141adda20()
 }
 
 // @0x141aecc30
-void CUIService::FUN_141aecc30()
+void CUIService::RebuildSceneUI()
 {
-    if (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b27c0() != 0)
+    if (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FUN_1422b27c0() != 0)
         return;
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422afb00();
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FUN_1422afb00();
     if (CUIService* pService = TSingleton<CUIService>::GetInstance())
     {
-        pService->FUN_141aecd70();
-        int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->GetSubSceneId();
+        pService->RequestCloseAllDialogs();
+        int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->GetSubSceneId();
         pService->FUN_141adad20(nScene);
         pService->FUN_141ada610(nScene);
-        pService->FUN_141adb2a0(nScene);
-        pService->FUN_141ad9b30();
+        pService->ShowWorldUI(nScene);
+        pService->UnloadBackgroundMovie();
     }
     if (efd::SmartPointer<CubeMapInformationService> spHousing = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>())
         ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(spHousing.operator->())))->FUN_1410bc320();
@@ -2821,31 +2821,31 @@ void CUIService::FUN_141aecc30()
     ((class UISwfEntityManager*)(void*)(((void*)GetUISwfEntityManager())))->FUN_1422d4b70(1);
     ((class UISwfEntityManager*)(void*)(((void*)GetUISwfEntityManager())))->FUN_1422d4d10();
     ((class UISwfEntityManager*)(void*)(((void*)GetUISwfEntityManager())))->FlushUnloading();
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b24f0();
-    TSingleton<CUIService>::GetInstance()->FUN_141ad9c10();
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->ReloadMovies();
+    TSingleton<CUIService>::GetInstance()->UnloadDamageTextMovie();
 }
 
 // @0x141ade1f0
-bool CUIService::FUN_141ade1f0(bool bFlag, void* pUnused)
+bool CUIService::OnDeviceReset(bool bFlag, void* pUnused)
 {
     if (bFlag)
     {
     }
     else
     {
-        TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(&CUIService::FUN_141aed000);
+        TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(&CUIService::LogResetDialog);
         NiRenderTargetGroup* pGroup = NiRenderer::GetRenderer()->GetDefaultRenderTargetGroup();
         DAT_143af62d4 = pGroup->GetWidth(0);
         DAT_143af62d8 = pGroup->GetHeight(0);
-        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b0060(FUN_141276490((float)DAT_143af62d4, FUN_141276460()));
+        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->SetMoviesScale(FUN_141276490((float)DAT_143af62d4, FUN_141276460()));
     }
     return true;
 }
 
 // @0x141ade300
-void CUIService::FUN_141ade300(CString strText)
+void CUIService::LogMovieMessage(CString strText)
 {
-    reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce270(strText);
+    reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->AddLogLine(strText);
 }
 
 // ---- per-tick and mode helpers ----
@@ -2858,7 +2858,7 @@ public:
 };
 int FUN_141277f40();
 int FUN_141277f50();
-void* FUN_1413f9950();
+void* GetActiveCamera();
    // scene name (member: this=rcx, hidden return=rdx)
 struct Unk_VtmObjectTable   // C3: member view for the former free stand-ins
 {
@@ -2880,34 +2880,34 @@ void CUIService::FUN_141aec690()
 {
     if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d7a0(0xf) != 0)
         return;
-    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d9c0(0x19, 1, 0) && ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d950(0x1d, 1, 0))
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->WasKeyPressed(0x19, 1, 0) && ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsKeyDown(0x1d, 1, 0))
     {
         ToggleDialog((eUIClassID)0x4e7d);
         return;
     }
-    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d9c0(0x3b, 1, 0) && ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->FUN_14116d950(0x1d, 1, 0))
+    if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->WasKeyPressed(0x3b, 1, 0) && ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsKeyDown(0x1d, 1, 0))
         ToggleDialog((eUIClassID)0x4ea9);
 }
 
 // @0x141aec760
 void CUIService::FUN_141aec760(float fDelta)
 {
-    if (UICutSceneCinematic* pDlg = (UICutSceneCinematic*)FUN_14136f290(0x4e52))
-        pDlg->FUN_141908720(fDelta);
+    if (UICutSceneCinematic* pDlg = (UICutSceneCinematic*)FindCutSceneCinematic(0x4e52))
+        pDlg->Update(fDelta);
     int nNow = GetTickCountMs2();
     if ((unsigned)(nNow - m_n130) > 0x32)
     {
         m_n130 = nNow;
         float x, y;
         ((class CWindowService*)(void*)(FUN_140aadf80()))->GetCursorClientPos(&x, &y);
-        if (Unk_UisMovie* pMovie = reinterpret_cast<Unk_UisMovie*>(FUN_1422bb8b0(2)))
+        if (Unk_UisMovie* pMovie = reinterpret_cast<Unk_UisMovie*>(GetMovie(2)))
         {
             int bHit = pMovie->vfunc_37(x, y, 3, 0);
-            ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aef20(2, bHit);
+            ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FUN_1422aef20(2, bHit);
             if (bHit)
             {
-                ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aef20(FUN_141277f40(), 0);
-                ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aef20(FUN_141277f50(), 0);
+                ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FUN_1422aef20(FUN_141277f40(), 0);
+                ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FUN_1422aef20(FUN_141277f50(), 0);
             }
         }
     }
@@ -2924,14 +2924,14 @@ void CUIService::FUN_141aec8f0(bool bOn, NiAVObject* pRoot)
     if (bOn)
     {
         m_spDebugClick->AddRoot(pRoot);
-        ((NiDebugVisualizationClick*)m_spDebugClick)->SetCamera((NiCamera*)FUN_1413f9950());
+        ((NiDebugVisualizationClick*)m_spDebugClick)->SetCamera((NiCamera*)GetActiveCamera());
     }
 }
 
 // @0x141aec9c0
 void CUIService::FUN_141aec9c0()
 {
-    if (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b27c0() != 0 && ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b2760() != 0)
+    if (((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FUN_1422b27c0() != 0 && ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FUN_1422b2760() != 0)
     {
         CUIService* pService = TSingleton<CUIService>::GetInstance();
         if (pService == 0)
@@ -2940,25 +2940,25 @@ void CUIService::FUN_141aec9c0()
         pService->AddMovieDamage();
         if (pService->FUN_141adbe00(((struct Unk_UisInfo*)((class Unk_ChaosSettings*)(void*)(TSingleton<CGameOption>::GetInstance()))->FUN_140e09150())->m_fValue, 0) != 0)
             static_cast<Unk_UisSlot6*>(((void*)GetUISwfEntityManager()))->vfunc_6();
-        if (void* pScene = ((void*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->GetScene()))
-            ((class UISwfEntity*)(void*)(pScene))->FUN_1422dbf80(static_cast<UISwfEntity*>(pScene)->FUN_1422db790(), ((class UISwfEntity*)(void*)(pScene))->FUN_1422db750(), 0, 0);
-        if (void* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9e50()))
-            ((class UISwfEntity*)(void*)(pScene))->FUN_1422dbf80(static_cast<UISwfEntity*>(pScene)->FUN_1422db790(), ((class UISwfEntity*)(void*)(pScene))->FUN_1422db750(), 0, 0);
-        int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::FUN_1408e57f0())))->GetSubSceneId();
+        if (void* pScene = ((void*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->GetScene()))
+            ((class UISwfEntity*)(void*)(pScene))->FUN_1422dbf80(static_cast<UISwfEntity*>(pScene)->GetSwfFileName(), ((class UISwfEntity*)(void*)(pScene))->FUN_1422db750(), 0, 0);
+        if (void* pScene = ((class Unk_UisScene*)((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9e50()))
+            ((class UISwfEntity*)(void*)(pScene))->FUN_1422dbf80(static_cast<UISwfEntity*>(pScene)->GetSwfFileName(), ((class UISwfEntity*)(void*)(pScene))->FUN_1422db750(), 0, 0);
+        int nScene = ((class GFxSceneService*)(class Unk_UisSceneMgr*)(((Unk_UisSceneMgr*)CUserMail::GetGFxSceneService())))->GetSubSceneId();
         pService->FUN_141ada6f0(nScene);
         pService->FUN_141ad9e50(nScene);
-        pService->FUN_141adafd0(nScene);
-        pService->FUN_141ad9650();
+        pService->HideWorldUI(nScene);
+        pService->LoadBackgroundMovie();
         efd::SmartPointer<CubeMapInformationService> spHousing = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
         if (spHousing)
             ((class CubeMapInformationService*)(class Unk_UisHousingSvc*)(reinterpret_cast<Unk_UisHousingSvc*>(spHousing.operator->())))->FUN_1410bc1c0();
         ((class Unk_UisWorld*)WorldService::GetInstance())->FUN_141bdb6a0();
-        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422b27e0(0);
+        ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->FUN_1422b27e0(0);
     }
 }
 
 // @0x141aecd70
-void CUIService::FUN_141aecd70()
+void CUIService::RequestCloseAllDialogs()
 {
     FUN_14151f460(1);
     for (POSITION pos = m_mapDlg.GetStartPosition(); pos != 0; m_mapDlg.GetNext(pos))
@@ -2976,7 +2976,7 @@ void CUIService::FUN_141aecd70()
 void CUIService::FUN_141aece70()
 {
     reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2b0("\n--- CUIService Log ---");
-    if (Unk_UisMovie* pMovie = reinterpret_cast<Unk_UisMovie*>(FUN_1422bb8b0(2)))
+    if (Unk_UisMovie* pMovie = reinterpret_cast<Unk_UisMovie*>(GetMovie(2)))
     {
         if (pMovie->m_slot ? true : false)
         {
@@ -2984,32 +2984,32 @@ void CUIService::FUN_141aece70()
                 reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("MaxCollectionRoots: %d", pOwner->m_sub->GetObjectCount());
         }
     }
-    FUN_141adcbb0(&CUIService::FUN_141aed0a0);
+    FUN_141adcbb0(&CUIService::LogDialogState);
 }
 
 // @0x141aed0a0
-int CUIService::FUN_141aed0a0(MS2Ptr<UIDialog> spDlg)
+int CUIService::LogDialogState(MS2Ptr<UIDialog> spDlg)
 {
     reinterpret_cast<Unk_UisLog*>(TSingleton<CrashManagerCli>::GetInstance())->FUN_1401ce2f0("*Dialog [%s] closed %d AniState %d LoadComplete %d", (const char*)spDlg->GetTypeName(), static_cast<Unk_UisDlgPeek*>(spDlg.get())->Get68(), static_cast<Unk_UisDlgPeek*>(spDlg.get())->GetC0(), ((class UISwfEntity*)(class UIDialog*)(spDlg.get()))->FUN_1422dc430());
     return 0;
 }
 
 // @0x141aebed0
-void CUIService::FUN_141aebed0()
+void CUIService::RegisterCameraDialog()
 {
-    GetUISwfEntityManager()->FUN_1422d4b40(FUN_141adda20);
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->SetFormatCallback(reinterpret_cast<void (*)(const Scaleform::GFx::FunctionHandler::Params&)>(FUN_141addb30));
-    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(FUN_14025e7a0())))->FUN_1422aeea0(reinterpret_cast<void (*)(AScript&, int)>(FUN_141ade430));
+    GetUISwfEntityManager()->SetInputTakenCallback(FUN_141adda20);
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->SetFormatCallback(reinterpret_cast<void (*)(const Scaleform::GFx::FunctionHandler::Params&)>(FUN_141addb30));
+    ((GFxManager*)(Unk_UisMovieMgr*)(reinterpret_cast<Unk_UisMovieMgr*>(GetGFxManager())))->SetCommonCallback(reinterpret_cast<void (*)(AScript&, int)>(FUN_141ade430));
     RegisterDialog(MS2Ptr<UIDialog>(new UICameraDialog));
 }
 
 // @0x141ade2d0
-bool CUIService::FUN_141ade2d0(void* pContext)
+bool CUIService::OnDeviceLost(void* pContext)
 {
-    TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(&CUIService::FUN_141aecf60);
+    TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(&CUIService::LogLostDialog);
     return true;
 }
-MS2_REPLACE(0x141ade2d0, CUIService::FUN_141ade2d0, 36, 0xCAD73910);
+MS2_REPLACE(0x141ade2d0, CUIService::OnDeviceLost, 36, 0xCAD73910);
 
 template class ATL::CAtlMap<eUIClassID, MS2Ptr<UIDialog> >;
 template class ATL::CAtlMap<eUIClassID, MS2Ptr<UIObject> >;
@@ -3036,47 +3036,47 @@ struct Unk_UisMovieMgrCb
 };
 
 // @0x141af1860
-void FUN_141af1860(Unk_UisMovieMgr* pMgr, void (*pfn)(CString))
+void SetFeatureCallback(Unk_UisMovieMgr* pMgr, void (*pfn)(CString))
 {
     reinterpret_cast<Unk_UisMovieMgrCb*>(pMgr)->m_pfnFeature = pfn;
 }
-MS2_REPLACE(0x141af1860, FUN_141af1860, 28, 0xA73837CE);
+MS2_REPLACE(0x141af1860, SetFeatureCallback, 28, 0xA73837CE);
 
 // @0x141af1a90
-void FUN_141af1a90(Unk_UisMovieMgr* pMgr, void (*pfn)())
+void SetTickCallback(Unk_UisMovieMgr* pMgr, void (*pfn)())
 {
     reinterpret_cast<Unk_UisMovieMgrCb*>(pMgr)->m_pfnTick = pfn;
 }
-MS2_REPLACE(0x141af1a90, FUN_141af1a90, 28, 0x5C733F66);
+MS2_REPLACE(0x141af1a90, SetTickCallback, 28, 0x5C733F66);
 
 // ---- lazily created singletons (game menu table, room timer manager) ----
 struct Unk_UisSingleton { virtual ~Unk_UisSingleton(); };          // MS2: slot 0 is the deleting destructor
-class Unk_GpDb* FUN_140c1d2f0();   // C3: was FUN_140c1d2f0
+class Unk_GpDb* GetGameMenuTable();   // C3: was GetGameMenuTable
 
 // @0x141aee920
 void* FUN_141aee920()
 {
-    return TSingleton<CGameMenuTable>::s_instance ? ((void*)FUN_140c1d2f0()) : new CGameMenuTable;
+    return TSingleton<CGameMenuTable>::s_instance ? ((void*)GetGameMenuTable()) : new CGameMenuTable;
 }
 
 // @0x141aee9a0
-void* FUN_141aee9a0()
+void* GetRoomTimerManager()
 {
     return TSingleton<RoomTimerManager>::s_instance ? Unk_TimerPlayer::Get() : new RoomTimerManager;
 }
 
 // @0x141aeec30
-void FUN_141aeec30()
+void DestroyGameMenuTable()
 {
     if (TSingleton<CGameMenuTable>::s_instance)
     {
-        delete static_cast<Unk_UisSingleton*>(((void*)FUN_140c1d2f0()));
+        delete static_cast<Unk_UisSingleton*>(((void*)GetGameMenuTable()));
         TSingleton<CGameMenuTable>::s_instance = 0;
     }
 }
 
 // @0x141aeec90
-void FUN_141aeec90()
+void DestroyRoomTimerManager()
 {
     if (TSingleton<RoomTimerManager>::s_instance)
     {
@@ -3089,14 +3089,14 @@ void FUN_141aeec90()
 struct Unk_UisRenderer { virtual void vfunc_0(); virtual void vfunc_1(); virtual void vfunc_2(); virtual void vfunc_3(); virtual NiRenderTargetGroup* vfunc_4(); };   // MS2: slot 4
 
 // @0x141aee8d0
-void FUN_141aee8d0(NiRenderFrame* pFrame, NiRenderStep* pStep)
+void AppendRenderStep(NiRenderFrame* pFrame, NiRenderStep* pStep)
 {
     // MS2: the exe reaches the step list at +0x10 directly (GetRenderSteps is not a call there)
     reinterpret_cast<NiTPointerList<NiRenderStepPtr>*>(reinterpret_cast<char*>(pFrame) + 0x10)->AddTail(pStep);
 }
 
 // @0x141adf250
-void CUIService::FUN_141adf250()
+void CUIService::CreateClickRenderSteps()
 {
     ecr::RenderSurface* pScene = ((ecr::RenderService*)m_pWorldSvc30)->GetActiveRenderSurface();
     NiRenderTargetGroup* pTarget = ((struct Unk_UisRenderer*)NiRenderStep::DynamicCast(&NiClickRenderStep::ms_RTTI, pScene->GetRenderStep()))->vfunc_4();
@@ -3109,7 +3109,7 @@ void CUIService::FUN_141adf250()
         NiFixedString kName("UI Render Step");
         reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(&m_x38)->operator->()->SetName(kName);
     }
-    FUN_141aee8d0(pFrame, (NiDefaultClickRenderStep*)*reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(&m_x38));
+    AppendRenderStep(pFrame, (NiDefaultClickRenderStep*)*reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(&m_x38));
 
     m_spDebugClick = new (efd::MemHint(efd::MemHint::NONE)) NiDebugVisualizationClick(0xf);
     {
@@ -3117,7 +3117,7 @@ void CUIService::FUN_141adf250()
         m_spDebugClick->SetName(kName);
     }
     m_spDebugClick->ClearRoots();
-    m_spDebugClick->SetCamera((NiCamera*)FUN_1413f9950());
+    m_spDebugClick->SetCamera((NiCamera*)GetActiveCamera());
     m_spDebugClick->SetClearAllBuffers(false);
     m_spDebugClick->ProcessScene();
     if ((NiDefaultClickRenderStep*)*reinterpret_cast<efd::SmartPointer<NiDefaultClickRenderStep>*>(&m_x38) != 0)
@@ -3144,7 +3144,7 @@ private:
 };
 
 // @0x141ade740
-static void FUN_141ade740(const Unk_UisAsParams& params)
+static void GetMesoText(const Unk_UisAsParams& params)
 {
     int nArgs = params.ArgCount;
     if (nArgs < 1)
@@ -3159,11 +3159,11 @@ static void FUN_141ade740(const Unk_UisAsParams& params)
     CStringW strArg(data.FUN_1422b8d30());
     CStringW strText = FUN_140e70010(strArg);
     ASObj obj(val, 2);
-    obj.FUN_1407cbb20("text", strText);
+    obj.SetWStringMember("text", strText);
 }
 
 // @0x141ade900
-static void FUN_141ade900(const Unk_UisAsParams& params)
+static void GetNumericText(const Unk_UisAsParams& params)
 {
     int nArgs = params.ArgCount;
     if (nArgs < 1)
@@ -3178,7 +3178,7 @@ static void FUN_141ade900(const Unk_UisAsParams& params)
     CStringW strArg(data.FUN_1422b8d30());
     CStringW strText = FUN_14083ccf0(strArg);
     ASObj obj(val, 2);
-    obj.FUN_1407cbb20("text", strText);
+    obj.SetWStringMember("text", strText);
 }
 
 // @0x141ade430
@@ -3188,19 +3188,19 @@ void FUN_141ade430(void* p, int nMovieId)
     for (int i = 1; i < 0x118; ++i)
     {
         int nFeature = i;
-        if (!static_cast<CFeatureManager*>(((void*)FUN_140166410()))->FUN_14036d570(nFeature))
+        if (!static_cast<CFeatureManager*>(((void*)FUN_140166410()))->IsFeatureEnabled(nFeature))
             continue;
         strFeatures += static_cast<CFeatureManager*>(((void*)FUN_140166410()))->GetFeatureNameById(nFeature) + L",";
     }
-    static_cast<ASObj*>(p)->FUN_1407cbb20("m_currentFeatureByString", CStringW(strFeatures));
+    static_cast<ASObj*>(p)->SetWStringMember("m_currentFeatureByString", CStringW(strFeatures));
     static_cast<ASObj*>(p)->SetMemberUInt("m_bottomMarginOfStage", FUN_1418dd0c0() + FUN_1418dd110());
     static_cast<ASObj*>(p)->SetMemberUInt("m_bottomMarginOfGamePlayScene", FUN_1418dd0d0());
 
-    ASFunction fnMeso(Delegate<void(const Unk_UisAsParams&)>(FUN_141ade740), 0, nMovieId);
-    static_cast<ASObj*>(p)->FUN_1409adbe0("m_getMesoTextFunction", Scaleform::GFx::Value(fnMeso.FUN_1422bb870()));
+    ASFunction fnMeso(Delegate<void(const Unk_UisAsParams&)>(GetMesoText), 0, nMovieId);
+    static_cast<ASObj*>(p)->FUN_1409adbe0("m_getMesoTextFunction", Scaleform::GFx::Value(fnMeso.GetValue()));
 
-    ASFunction fnNumeric(Delegate<void(const Unk_UisAsParams&)>(FUN_141ade900), 0, nMovieId);
-    static_cast<ASObj*>(p)->FUN_1409adbe0("m_getNumericFunction", Scaleform::GFx::Value(fnNumeric.FUN_1422bb870()));
+    ASFunction fnNumeric(Delegate<void(const Unk_UisAsParams&)>(GetNumericText), 0, nMovieId);
+    static_cast<ASObj*>(p)->FUN_1409adbe0("m_getNumericFunction", Scaleform::GFx::Value(fnNumeric.GetValue()));
 
     static_cast<ASObj*>(p)->SetMemberUInt("m_tooltipLabelMaxWidth", static_cast<Client::Constants*>(GetClientConstants())->TooltipLabelMaxWidth);
 }
@@ -3215,7 +3215,7 @@ template void format_arg<wchar_t, eUIClassID>(BasicFormatter<wchar_t>& formatter
 // ---- cached per-account config cleanup ----
 extern __int64 DAT_143ab2828;
 struct Unk_UisFindFiles {};
-void FUN_140399100(CString strExt, CString strDir, ATL::CAtlArray<CString>& arrOut, CString strFilter, bool bRecursive);
+void FindFiles(CString strExt, CString strDir, ATL::CAtlArray<CString>& arrOut, CString strFilter, bool bRecursive);
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 CString FUN_140188f50(const char* szPath, int n);
 
@@ -3226,7 +3226,7 @@ void CUIService::FUN_141aec3e0()
     strDir.Format("./Config/%I64u", DAT_143ab2828);
     ATL::CAtlArray<CString> arrFiles;
     ((struct Unk_UisFindFiles*)GetFileSystem());
-    FUN_140399100(CString(".xml"), CString(strDir), arrFiles, CString(""), false);
+    FindFiles(CString(".xml"), CString(strDir), arrFiles, CString(""), false);
     for (size_t i = 0; i < arrFiles.GetCount(); ++i)
     {
         char szDrive[3];
@@ -3235,7 +3235,7 @@ void CUIService::FUN_141aec3e0()
         _splitpath(arrFiles[i], szDrive, szDir, szName, 0);
         CString strFile;
         strFile.Format("%s.xml", szName);
-        DeleteFileA(FUN_140cc2a00(FUN_140188f50(FUN_1412755f0(), 0), strFile));
+        DeleteFileA(FUN_140cc2a00(FUN_140188f50(GetCharacterFolder(), 0), strFile));
     }
 }
 
@@ -3268,7 +3268,7 @@ void FUN_141addb30(long long n)
             return;
         CStringW strFormat;
         if (strKeyW.Find(L"$", 0) == 0)
-            strFormat = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(strKey);
+            strFormat = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize(strKey);
         else if (strKeyW.Find(L"s_", 0) == 0)
             strFormat = GetStringCommonByKey(strKeyW);
         else

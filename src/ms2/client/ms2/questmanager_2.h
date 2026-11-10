@@ -106,8 +106,8 @@ public:
     int GetRemainingMissionAttackCount();
     void SendQuestMode14();
     void FUN_1416d0920(ATL::CAtlArray<unsigned>& out);
-    int FUN_1416d09d0(int mapId, int warn);
-    void FUN_1416d1d00(PCBase* pc);
+    int CanEnterSkyFortress(int mapId, int warn);
+    void AddPlayerToQuestTargets(PCBase* pc);
     void FUN_1416d3010();
     void FUN_1416d3250();
     void OnNotifyPlayerChanged(NotifyObject*);
@@ -128,7 +128,7 @@ public:
     int HasQuestInGroup(int);
     int HasTalkScriptForNpc(int);
     int FUN_1416cede0(int, unsigned*);
-    void FUN_1416cef90(int);
+    void UpdateQuestProgress(int);
     void SendQuestMode12(int);
     void SendQuestMode13(int);
     void SendQuestMode19(int);
@@ -147,9 +147,9 @@ public:
     unsigned FUN_1416d1100(int, int, int*);
     int GetNpcQuestState(int npcId, Unk_QmNpcQuestState* state, int all);
     void FUN_1416d16c0(int group, ATL::CAtlList<unsigned>& out);
-    void FUN_1416d1800(int group, Unk_QmNpcQuestState* best);
+    void GetBestNpcQuestState(int group, Unk_QmNpcQuestState* best);
     void CollectQuestTargetUsers(unsigned questId);
-    std::pair<unsigned, __int64> FUN_1416d1e90();   // nearest live user of a tracked quest (quest id, user id)
+    std::pair<unsigned, __int64> FindNearestQuestTarget();   // nearest live user of a tracked quest (quest id, user id)
     const std::set<unsigned __int64>& GetQuestTargets(unsigned questId);   // users found for the quest (empty set if none)
     unsigned GetNextQuestId(int questId, int checkAccept);   // first available follow-up quest
     int GetFollowingQuests(int questId, std::list<unsigned>& out, int checkAccept);
@@ -161,7 +161,7 @@ public:
     int TraceQuestPath(int depth, unsigned fromQuestId, unsigned toQuestId, std::list<unsigned>& path,
         std::list<std::list<unsigned>>& reached, std::list<std::list<unsigned>>* notReached);
     int FUN_1416d3ed0(MS2Ptr<class CQuestData> data, int checkAccept, int job);   // job 200 = the player's
-    int FUN_1416d00c0();
+    int GetNextRound();
     int IsRoundTargetReached();
     int CountCompletedQuests80();
     int IsLastRound();

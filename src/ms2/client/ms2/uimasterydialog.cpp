@@ -123,11 +123,11 @@ public:
     static class WorldService* GetInstance();
 };
 
-// The casting bar dialog (global lookup FUN_140ac2270(id)).
+// The casting bar dialog (global lookup GetCastingBar(id)).
 class Unk_MCastingBar : public UICastingBar
 {
 };
-class UICastingBar* FUN_140ac2270(int);   // C3: was FUN_140ac2270
+class UICastingBar* GetCastingBar(int);   // C3: was GetCastingBar
 
 
 // The AS value setters / getters used by the Invoke helpers of this unit.
@@ -171,7 +171,7 @@ public:
 
 // MyPC accessors.
 int FUN_14053feb0(int nItemId);                             // default rank of an item
-CStringW FUN_1419021b0(unsigned nHave, unsigned nNeed);               // "have/need" count text
+CStringW GetIngredientCountText(unsigned nHave, unsigned nNeed);               // "have/need" count text
 #include "ms2/commonfiles/commonutil.h"
 #include "ms2/client/ms2/skillrecord.h"
 #include "ms2/commonfiles/ugccubecategorytable.h"
@@ -192,7 +192,7 @@ public:
     virtual void vfunc_20(); virtual void vfunc_21(); virtual void vfunc_22(); virtual void vfunc_23();
     virtual void vfunc_24(bool b);
     void FUN_1409c0dc0(const char* szName, const char* szValue);     // the ASObj setters, applied to the control
-    void FUN_1407cb9c0(const char* szName, int n);
+    void SetIntMember(const char* szName, int n);
 };
 
 // "m_mainTab" / "m_gradeGroup" (a button group: selectedIndex).
@@ -224,9 +224,9 @@ public:
 
 typedef ATL::CAtlArray<MS2Ptr<ItemEntity> > Unk_MItemArray;   // reward lists hold item pointers (CMasteryTable::Rewards)
 // message box helpers
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pUnk, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pUnk, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_141275260(int nStringId, int nA, int nB);
 int FUN_1407181a0(const CStringW& str);
 #include "ms2/client/ms2/cubemapinformationservice_3.h"   // B22 follow-up: was a local member view (the Unk_BuddyHandle clash is gone)
@@ -236,14 +236,14 @@ public:
     static class Unk_AkoHouseSvc* GetInstance();
 };
 class CAchieveManager { public: BOOL IsGradeCleared(unsigned nId, int nGrade); };   // C3: member view (achievemanager.h)
-class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
-int FUN_140eb8cd0(MS2Ptr<ItemHousing> spFurn);
+class Unk_NametagTrophy* GetAchieveManager();   // C3: was GetAchieveManager
+int IsHousingItemUnlocked(MS2Ptr<ItemHousing> spFurn);
 int FUN_140eb8eb0(MS2Ptr<ItemHousing> spFurn);
 bool FUN_140ebb1e0(const Scaleform::GFx::Value* v);                // Value::IsInt
 // (FUN_140889fd0 decl gone: 0x140889fd0 is the real InteriorMap CNode::GetHash, reached through FindNextNode below)
 // ---- housing / furniture / scroll tables ----
 class CMasteryInteriorTable;
-CMasteryInteriorTable* FUN_140933200();
+CMasteryInteriorTable* GetMasteryInteriorTable();
 namespace Common { template <class T> int FindElement(const ATL::CAtlArray<T>& arr, const T& v); }   // C3: was FUN_1402bacf0; index of the value (-1 when absent)
 extern ATL::CAtlArray<int> DAT_143ab32b8;   // scenestategame.cpp
 class Unk_MHouseRec : public CPtred { public: char m_pad[8]; unsigned short m_nLevel; };    // m_nLevel +0x20
@@ -308,11 +308,11 @@ class Unk_MObjSetter : public AScript { public: void FUN_140eba4a0(const char* s
 // @0x140eadd70
 Unk_MasteryCraft::Unk_MasteryCraft()
 {
-    FUN_140eadda0();
+    Reset();
 }
 
 // @0x140eadda0
-void Unk_MasteryCraft::FUN_140eadda0()
+void Unk_MasteryCraft::Reset()
 {
     m_nType = 2;
     m_nTotal = 0;
@@ -322,13 +322,13 @@ void Unk_MasteryCraft::FUN_140eadda0()
 }
 
 // @0x140eaddf0
-BOOL Unk_MasteryCraft::FUN_140eaddf0()
+BOOL Unk_MasteryCraft::IsMagicScroll()
 {
     return m_nType == 0;
 }
 
 // @0x140eade30
-BOOL Unk_MasteryCraft::FUN_140eade30()
+BOOL Unk_MasteryCraft::IsManufacturing()
 {
     return m_nType == 1;
 }
@@ -354,7 +354,7 @@ UIMasteryDialog::UIMasteryDialog()
     memset(m_lastSelected, 0, sizeof(m_lastSelected));
     memset(m_268, 0, sizeof(m_268));
     memset(m_scroll, 0, sizeof(m_scroll));
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     SetIconType(&m_reward, 0x11);
     SetIconType(&m_require, 1);
     SetIconType(&m_mastery, 0x11);
@@ -362,7 +362,7 @@ UIMasteryDialog::UIMasteryDialog()
     m_nPendingList = 0;
     m_304 = 0;
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyDamagedMyPC"), Delegate<void(NotifyObject*)>(this, &UIMasteryDialog::OnDamagedMyPC));
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd1))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xd1))
         m_2f8 = 10;
     else
         m_2f8 = 6;
@@ -392,12 +392,12 @@ int UIMasteryDialog::vfunc_65()
 void UIMasteryDialog::vfunc_67()
 {
     if (m_craft.HasTotal()) {
-        Unk_MCastingBar* pBar = ((class Unk_MCastingBar*)FUN_140ac2270(0x4e72));
+        Unk_MCastingBar* pBar = ((class Unk_MCastingBar*)GetCastingBar(0x4e72));
         if (pBar)
             pBar->FUN_1418e1390();
     }
     m_magicScroll = 0;
-    m_craft.FUN_140eadda0();
+    m_craft.Reset();
     ((class ItemSlotBinder*)(class ItemSlotBinder*)(&m_reward))->FUN_140d43990();
     ((class ItemSlotBinder*)(class ItemSlotBinder*)(&m_require))->FUN_140d43990();
     ((class ItemSlotBinder*)(class ItemSlotBinder*)(&m_mastery))->FUN_140d43990();
@@ -432,11 +432,11 @@ void UIMasteryDialog::OnLoadComplete()
         reinterpret_cast<Unk_MArray&>(last).PushInt(m_lastSelected[i]);
     reinterpret_cast<ASObj*>(m_30.operator->())->FUN_1409eb1d0("m_lastSelectedIndex", last);
     if (MS2Ptr<ASUIComponent> spScrollCtrl = GetChild<ASUIComponent>("m_magicScrollControl"))
-        spScrollCtrl->Invoke("setSelectedSlotIndex", FUN_140eb6870() - 1);
+        spScrollCtrl->Invoke("setSelectedSlotIndex", GetDefaultWeaponSlot() - 1);
     if (MS2Ptr<ASEventDispatcher> spMainTab = FindControl("m_mainTab"))
         spMainTab->Invoke("setSelectedButtonByIndex", m_nMainTab);
     do { m_30->FUN_140bbe640("m_magicScroll", m_magicScroll); if (m_magicScroll == 0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError", MS2_THIS_FILE, MS2_LINE(272), __FUNCTION__)); } while (0);
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5a))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x5a))
         m_magicScroll->vfunc_3(0);
     FUN_140eb7e30();
 }
@@ -454,7 +454,7 @@ void UIMasteryDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             ASTooltip tip(((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 8, 2);
             if (tip.FUN_1409e0d40(spItem.get())) {
                 tip.SetTooltipAlign(7);
-                *pRetVal = tip.FUN_1422bb870();
+                *pRetVal = tip.GetValue();
             }
         }
     } else if (strName == "masteryRecipe") {
@@ -467,7 +467,7 @@ void UIMasteryDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
                     ASTooltip tip(((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 0x800, 2);
                     if (tip.FUN_1409e0d40(spItem.get())) {
                         tip.SetTooltipAlign(7);
-                        *pRetVal = tip.FUN_1422bb870();
+                        *pRetVal = tip.GetValue();
                     }
                 }
             }
@@ -483,18 +483,18 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     if (!_stricmp(szMethod, "onSelectCategory")) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_140eafde0();
+            UpdateSubTabs();
         return 1;
     } else if (!_stricmp(szMethod, "onSelectMastery")) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_140eb53a0();
+            OnSelectMastery();
         return 1;
     } else if (!_stricmp(szMethod, "onSelectList")) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             int nIndex = data.PopInt();
-            FUN_140eb5450(nIndex);
+            OnSelectList(nIndex);
         }
         return 1;
     } else if (!_stricmp(szMethod, "onReceiveItem")) {
@@ -540,7 +540,7 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
                 FUN_140eb5e30(nId);
                 break;
             case 3:
-                FUN_140eb5e60(nId);
+                CraftMagicScroll(nId);
                 break;
             }
         }
@@ -567,7 +567,7 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
                 pChat->FUN_141a25770(CStringW(strCommand), false);
         }
     } else if (!_stricmp(szMethod, "onChangeFilter")) {
-        FUN_140eb3460();
+        UpdateMagicScrollList();
     } else if (!_stricmp(szMethod, "onScrollPosition")) {
         if (m_304 != 0)
             return 1;
@@ -585,12 +585,12 @@ int UIMasteryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 // @0x140eaf840
 void UIMasteryDialog::OnCastingFinished()
 {
-    if (m_craft.FUN_140eaddf0()) {
+    if (m_craft.IsMagicScroll()) {
         COutPacket pkt(static_cast<int>(SendOp::Mastery), 0);
         pkt.Encode1(2);
         pkt.Encode4(m_craft.m_nId);
         FUN_140710590(pkt);
-    } else if (m_craft.FUN_140eade30()) {
+    } else if (m_craft.IsManufacturing()) {
         COutPacket pkt(static_cast<int>(SendOp::EnchantScroll), 0);
         pkt.Encode1(4);
         pkt.Encode4(m_craft.m_nId);
@@ -600,18 +600,18 @@ void UIMasteryDialog::OnCastingFinished()
         return;
     }
     m_craft.m_nDone++;
-    int nResult = FUN_140eb6d40(m_craft.m_nType, m_craft.m_nId);
+    int nResult = GetMaxCraftCount(m_craft.m_nType, m_craft.m_nId);
     if (m_craft.m_nDone <= m_craft.m_nTotal && nResult != 0)
         m_craft.m_nPending = 1;
     else
-        m_craft.FUN_140eadda0();
+        m_craft.Reset();
 }
 
 // @0x140eafa10
 void UIMasteryDialog::OnCastingCancelled()
 {
-    m_craft.FUN_140eadda0();
-    FUN_140eb8b20();
+    m_craft.Reset();
+    RestoreListSelection();
 }
 
 // @0x140eafa50
@@ -619,14 +619,14 @@ void UIMasteryDialog::vfunc_72()
 {
     if (m_craft.HasTotal() && m_craft.m_nPending != 0) {
         int nTime = 2000;
-        if (m_craft.FUN_140eaddf0()) {
+        if (m_craft.IsMagicScroll()) {
             MS2Ptr<CMasteryReceipe> spRec = FUN_1409670c0()->Find(m_craft.m_nId);
             if (spRec.get())
                 nTime = spRec->m_nGatheringTime;
         }
-        Unk_MCastingBar* pBar = ((class Unk_MCastingBar*)FUN_140ac2270(0x4e72));
+        Unk_MCastingBar* pBar = ((class Unk_MCastingBar*)GetCastingBar(0x4e72));
         if (pBar) {
-            CStringW strKey = m_craft.FUN_140eaddf0() ? L"s_mastery_manufacture_progress" : L"s_mastery_magicscroll_progress";
+            CStringW strKey = m_craft.IsMagicScroll() ? L"s_mastery_manufacture_progress" : L"s_mastery_magicscroll_progress";
             CStringW strText = FUN_14028dfa0(strKey, m_craft.m_nDone, m_craft.m_nTotal);
             pBar->StartCastingText((ICastingEventListener*)this, strText, nTime, false, true, L"");
         }
@@ -635,13 +635,13 @@ void UIMasteryDialog::vfunc_72()
     if (m_nPendingSub != 0) {
         FUN_140eb05b0(m_nPendingSub, true);
         if (FUN_140eb8a90() == m_nPendingList)
-            FUN_140eb1770(m_nSelected, true);
+            UpdateRecipePage(m_nSelected, true);
         m_nPendingSub = 0;
         m_nPendingList = 0;
     } else if (m_nPendingList != 0) {
         if (FUN_140eb8a90() == m_nPendingList) {
             FUN_140eb0da0(m_nPendingList, true);
-            FUN_140eb1770(m_nSelected, true);
+            UpdateRecipePage(m_nSelected, true);
         }
         m_nPendingList = 0;
     }
@@ -654,17 +654,17 @@ void UIMasteryDialog::SetMainTab(int nMainTab, int)
 }
 
 // @0x140eafde0
-void UIMasteryDialog::FUN_140eafde0()
+void UIMasteryDialog::UpdateSubTabs()
 {
     if (!FUN_141924630())
         return;
-    if (MS2Ptr<ASButtonBar> spSub = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_subTab")) {
-        spSub.operator->()->FUN_1422e3400();
+    if (MS2Ptr<ASButtonBar> spSub = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar("m_subTab")) {
+        spSub.operator->()->ClearDataProvider();
         switch (GetMainTabIndex()) {
         case 0:
             spSub.operator->()->AddLabelItem(GetMasteryTabName(3));
             spSub.operator->()->AddLabelItem(GetMasteryTabName(5));
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x59)) {
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x59)) {
                 spSub.operator->()->AddLabelItem(GetMasteryTabName(4));
                 spSub.operator->()->AddLabelItem(GetMasteryTabName(6));
             }
@@ -672,26 +672,26 @@ void UIMasteryDialog::FUN_140eafde0()
         case 1:
             spSub.operator->()->AddLabelItem(GetMasteryTabName(7));
             spSub.operator->()->AddLabelItem(GetMasteryTabName(8));
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x59)) {
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x59)) {
                 spSub.operator->()->AddLabelItem(GetMasteryTabName(9));
                 spSub.operator->()->AddLabelItem(GetMasteryTabName(10));
             }
             break;
         case 2:
             spSub.operator->()->AddLabelItem(GetHousingTabName());
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8d))
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x8d))
                 spSub.operator->()->AddLabelItem(GetMasteryTabName(0xb));
             break;
         case 3:
-            if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5a))
+            if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x5a))
                 break;
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7c))
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x7c))
                 spSub.operator->()->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_enchant_scroll_tab"));
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7d))
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x7d))
                 spSub.operator->()->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_restore_scroll_tab"));
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7e))
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x7e))
                 spSub.operator->()->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_fracto_scroll_tab"));
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7f))
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x7f))
                 spSub.operator->()->AddLabelItem(GetStringCommonByKey(L"s_mastery_magicscroll_protected_scroll_tab"));
             break;
         }
@@ -760,7 +760,7 @@ void UIMasteryDialog::FUN_140eb0610(int nType, bool bKeep)
 }
 
 // @0x140eb0bf0
-void UIMasteryDialog::FUN_140eb0bf0(int nType, int nIndex)
+void UIMasteryDialog::AddLevelGuide(int nType, int nIndex)
 {
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
@@ -788,23 +788,23 @@ void UIMasteryDialog::FUN_140eb0da0(int nType, bool bKeep)
             int nCount = (int)recs.GetCount();
             int nScroll = spList->GetSelectedIndex();
             if (nScroll < nCount) {
-                int nFirst = spList->FUN_1422e1820();
+                int nFirst = spList->GetScrollPosition();
                 int nRow = 0;
                 for (int i = 0; i < nCount; i++) {
                     MS2Ptr<CMasteryReceipe> spRec(recs[i]);
                     if (((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->FUN_140b6d330(recs[i]->m_nId) == 0)
                         continue;
                     ASObj row(2);
-                    row.FUN_1407cb9c0("id", spRec->m_nId);
-                    row.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2f, spRec->m_nId));
-                    row.FUN_1407cbb20("state", FUN_140eb71a0(MS2Ptr<CMasteryReceipe>(spRec)));
-                    row.FUN_1407cbbe0("active", (nMastery >= (unsigned int)spRec->m_nRequireMastery && HasRequiredLevel(MS2Ptr<CMasteryReceipe>(spRec)) != 0) ? true : false);
-                    row.FUN_1407cba60("icon", spRec->IconPath());
+                    row.SetIntMember("id", spRec->m_nId);
+                    row.SetWStringMember("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2f, spRec->m_nId));
+                    row.SetWStringMember("state", GetRecipeStateText(MS2Ptr<CMasteryReceipe>(spRec)));
+                    row.SetBoolMember("active", (nMastery >= (unsigned int)spRec->m_nRequireMastery && HasRequiredLevel(MS2Ptr<CMasteryReceipe>(spRec)) != 0) ? true : false);
+                    row.SetStringMember("icon", spRec->IconPath());
                     if (nType == 0xb && spRec->m_rewards.GetCount() > 0)
                         row.FUN_1409adc90("grade", spRec->m_rewards[0].vfunc_o18_1());
                     if (nRow >= nFirst && nRow <= nFirst + 5) {
                         spList->FUN_1422e1970(nRow, row);
-                        spList->FUN_1422e1a00(nRow, row);
+                        spList->SetRendererData(nRow, row);
                     } else {
                         spList->FUN_1422e1970(nRow, row);
                     }
@@ -818,7 +818,7 @@ void UIMasteryDialog::FUN_140eb0da0(int nType, bool bKeep)
         if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_objectList")) {
             spList->FUN_1422dd1d0();
             static_cast<ASObj*>(static_cast<AScript*>(spList.operator->()))->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_mastery");
-            spList->FUN_1407cb9c0("rowHeight", 0x4c);
+            spList->SetIntMember("rowHeight", 0x4c);
             Unk_MRecArray recs;
             FUN_1409670c0()->Receipes(nType, recs);
             for (size_t i = 0; i < recs.GetCount(); i++) {
@@ -826,22 +826,22 @@ void UIMasteryDialog::FUN_140eb0da0(int nType, bool bKeep)
                 if (((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->FUN_140b6d330(recs[i]->m_nId) == 0)
                     continue;
                 ASObj row(2);
-                row.FUN_1407cb9c0("id", spRec->m_nId);
-                row.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2f, spRec->m_nId));
-                row.FUN_1407cbb20("state", FUN_140eb71a0(MS2Ptr<CMasteryReceipe>(spRec)));
-                row.FUN_1407cbbe0("active", (nMastery >= (unsigned int)spRec->m_nRequireMastery && HasRequiredLevel(MS2Ptr<CMasteryReceipe>(spRec)) != 0) ? true : false);
-                row.FUN_1407cba60("icon", spRec->IconPath());
+                row.SetIntMember("id", spRec->m_nId);
+                row.SetWStringMember("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2f, spRec->m_nId));
+                row.SetWStringMember("state", GetRecipeStateText(MS2Ptr<CMasteryReceipe>(spRec)));
+                row.SetBoolMember("active", (nMastery >= (unsigned int)spRec->m_nRequireMastery && HasRequiredLevel(MS2Ptr<CMasteryReceipe>(spRec)) != 0) ? true : false);
+                row.SetStringMember("icon", spRec->IconPath());
                 if (nType == 0xb && spRec->m_rewards.GetCount() > 0)
                     row.FUN_1409adc90("grade", spRec->m_rewards[0].vfunc_o18_1());
                 spList->AddItem(row);
             }
-            FUN_140eb8b20();
+            RestoreListSelection();
         }
     }
 }
 
 // @0x140eb1770
-void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
+void UIMasteryDialog::UpdateRecipePage(int nId, bool bKeep)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
@@ -861,10 +861,10 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
                 if (ref->m_b != 0)
                     nHave = g_143ab2a90.GetItemCountByTag(ref->m_b, 0);
                 else
-                    nHave = g_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
-                CStringW strCnt = FUN_1419021b0(nHave, nNeed);
+                    nHave = g_143ab2a90.FUN_140a5f180(ref->GetItemId(), 0);
+                CStringW strCnt = GetIngredientCountText(nHave, nNeed);
                 ASObj req(2);
-                req.FUN_1407cbb20("itemCnt", CStringW(strCnt));
+                req.SetWStringMember("itemCnt", CStringW(strCnt));
                 page.FUN_1409eb270(Unk_SocketFormat<unsigned __int64>("require{0}", i), req);
             }
             m_30->Invoke("refreshPage", page);
@@ -880,7 +880,7 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
             for (size_t i = 0; i < spRec->m_rewards.GetCount(); i++) {
                 ItemEntity& rew = spRec->m_rewards[i];
                 int nRank = CalcAdjustedItemCount(spRec->m_nType, spRec->m_nRequireMastery, &rew);
-                page.FUN_1407cba60(Unk_SocketFormat<unsigned __int64>("binding{0}", i), m_reward.BindNewItem(rew.m_itemId, rew.vfunc_o18_1(), nRank));
+                page.SetStringMember(Unk_SocketFormat<unsigned __int64>("binding{0}", i), m_reward.BindNewItem(rew.m_itemId, rew.vfunc_o18_1(), nRank));
             }
             int bEnough = 1;
             for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
@@ -890,28 +890,28 @@ void UIMasteryDialog::FUN_140eb1770(int nId, bool bKeep)
                 if (ref->m_b != 0)
                     nHave = g_143ab2a90.GetItemCountByTag(ref->m_b, 0);
                 else
-                    nHave = g_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
+                    nHave = g_143ab2a90.FUN_140a5f180(ref->GetItemId(), 0);
                 if (nHave < nNeed)
                     bEnough = 0;
-                int nItem = ref->FUN_14026b500();
+                int nItem = ref->GetItemId();
                 int nItemRank = FUN_14053feb0(nItem);
                 int nCount = ref->m_c;
-                CStringW strCnt = FUN_1419021b0(nHave, nNeed);
+                CStringW strCnt = GetIngredientCountText(nHave, nNeed);
                 ASObj req(2);
-                req.FUN_1407cba60("binding", m_require.BindNewItem(nItem, nItemRank, nCount));
-                req.FUN_1407cbb20("itemCnt", CStringW(strCnt));
+                req.SetStringMember("binding", m_require.BindNewItem(nItem, nItemRank, nCount));
+                req.SetWStringMember("itemCnt", CStringW(strCnt));
                 page.FUN_1409eb270(Unk_SocketFormat<unsigned __int64>("require{0}", i), req);
             }
             int bState = HasRequiredLevel(MS2Ptr<CMasteryReceipe>(spRec));
-            page.FUN_1407cb9c0("id", nId);
-            page.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2f, nId));
-            page.FUN_1407cbb20("mastery", FUN_14028dfa0(CStringW(L"s_mastery_reward_mastery"), (unsigned)FUN_140eb8120(MS2Ptr<CMasteryReceipe>(spRec))));
-            page.FUN_1407cbb20("desc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x30, nId));
-            page.FUN_1407cbb20("place", CStringW(spRec->m_strHabitat));
-            page.FUN_1407cba60("icon", spRec->IconPath());
+            page.SetIntMember("id", nId);
+            page.SetWStringMember("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2f, nId));
+            page.SetWStringMember("mastery", FUN_14028dfa0(CStringW(L"s_mastery_reward_mastery"), (unsigned)FUN_140eb8120(MS2Ptr<CMasteryReceipe>(spRec))));
+            page.SetWStringMember("desc", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x30, nId));
+            page.SetWStringMember("place", CStringW(spRec->m_strHabitat));
+            page.SetStringMember("icon", spRec->IconPath());
             page.FUN_1409c1180("meso", spRec->m_nRequireMeso);
-            page.FUN_1407cbbe0("enabled", bCanCraft && bEnough && bState);
-            page.FUN_1407cbbe0("debug", ((class CInputKeyHandler*)(class Unk_MDebug*)(((class Unk_MDebug*)FUN_14025e7c0())))->IsDebugMode());
+            page.SetBoolMember("enabled", bCanCraft && bEnough && bState);
+            page.SetBoolMember("debug", ((class CInputKeyHandler*)(class Unk_MDebug*)(((class Unk_MDebug*)FUN_14025e7c0())))->IsDebugMode());
             if (spRec->m_nType == 0xb && spRec->m_rewards.GetCount() > 0)
                 page.FUN_1409adc90("grade", spRec->m_rewards[0].vfunc_o18_1());
             m_30->Invoke("setPage", page);
@@ -925,7 +925,7 @@ void UIMasteryDialog::FUN_140eb2460()
     if (FUN_140eb86b0() != 8)
         return;
     FUN_140eb24a0();
-    FUN_140eb2d10();
+    UpdateHousingList();
 }
 
 // @0x140eb24a0
@@ -938,42 +938,42 @@ void UIMasteryDialog::FUN_140eb24a0()
         ((class ItemSlotBinder*)(class ItemSlotBinder*)(&m_mastery))->FUN_140d43990();
         spLevel->Invoke("removeGradeAll");
         unsigned short nCur = DAT_143ab291c;
-        unsigned short nMax = FUN_140933200()->FUN_140ebb020();
+        unsigned short nMax = GetMasteryInteriorTable()->GetMaxGrade();
         int nSum = 0;
         unsigned int nSumCur = 0;
         ASArray rows(2);
         for (int nLevel = 1; nLevel <= (int)nMax; nLevel++) {
             Unk_MItemArray items;
-            FUN_140933200()->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->GetJobGroupId(), items);
+            GetMasteryInteriorTable()->GetInteriorItems(nLevel, reinterpret_cast<PC*>(pPc)->GetJobGroupId(), items);
             if (nLevel != 1 && items.GetCount() == 0)
                 continue;
-            int nAdd = FUN_140933200()->GetMasteryValue(nLevel);
+            int nAdd = GetMasteryInteriorTable()->GetMasteryValue(nLevel);
             nSum += nAdd;
             if (nLevel <= (int)nCur)
                 nSumCur += nAdd;
             ASObj row(2);
-            row.FUN_1407cb9c0("id", nLevel);
+            row.SetIntMember("id", nLevel);
             row.SetMemberUInt("level", nSum);
-            row.FUN_1407cbb20("levelStr", FUN_14028dfa0(CStringW(L"s_mastery_housing_grade"), nLevel));
+            row.SetWStringMember("levelStr", FUN_14028dfa0(CStringW(L"s_mastery_housing_grade"), nLevel));
             int bInactive = Common::FindElement<int>(DAT_143ab32b8, nLevel) != -1;
             CString strState;
             if (bInactive)
                 strState = "inactive";
             else
                 strState = (nCur >= nLevel) ? "active" : "lock";
-            row.FUN_1407cba60("state", CString(strState));
+            row.SetStringMember("state", CString(strState));
             if (items.GetCount() > 0) {
                 MS2Ptr<ItemEntity> spItem0(items[0]);
-                row.FUN_1407cba60("binding", m_mastery.BindNewItem(spItem0->m_itemId, spItem0->vfunc_o18_1(), spItem0->m_count));
+                row.SetStringMember("binding", m_mastery.BindNewItem(spItem0->m_itemId, spItem0->vfunc_o18_1(), spItem0->m_count));
             }
             reinterpret_cast<Unk_MArray&>(rows).PushObj(row);
         }
         reinterpret_cast<Unk_MLevelCtrl*>(spLevel.operator->())->FUN_140eba120("setGrade", rows, nSumCur + DAT_143ab2930, 0);
         CStringW strGrade = StringFormat(L"{0} {1}", FUN_140298ea0(CStringW(L"s_mastery_housing")), FUN_14028dfa0(CStringW(L"s_mastery_housing_grade"), DAT_143ab291c));
-        if (DAT_143ab291c == FUN_140933200()->FUN_140ebb020()) {
+        if (DAT_143ab291c == GetMasteryInteriorTable()->GetMaxGrade()) {
             reinterpret_cast<Unk_MLevelCtrl*>(spLevel.operator->())->FUN_140eb9e40("setPcGrade", 1, 1, CStringW(strGrade), 1);
         } else {
-            MS2Ptr<MasteryInteriorInfo> spNext = FUN_140933200()->GetMastery((unsigned short)(DAT_143ab291c + 1));
+            MS2Ptr<MasteryInteriorInfo> spNext = GetMasteryInteriorTable()->GetMastery((unsigned short)(DAT_143ab291c + 1));
             if (spNext)
                 reinterpret_cast<Unk_MLevelCtrl*>(spLevel.operator->())->FUN_140eba380("setPcGrade", DAT_143ab2930, spNext->m_nValue, CStringW(strGrade), 0);
         }
@@ -981,7 +981,7 @@ void UIMasteryDialog::FUN_140eb24a0()
 }
 
 // @0x140eb2d10
-void UIMasteryDialog::FUN_140eb2d10()
+void UIMasteryDialog::UpdateHousingList()
 {
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
@@ -993,8 +993,8 @@ void UIMasteryDialog::FUN_140eb2d10()
     if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_objectList")) {
         spList->FUN_1422dd1d0();
         static_cast<ASObj*>(static_cast<AScript*>(spList.operator->()))->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_housing");
-        spList->FUN_1407cb9c0("rowHeight", 0x39);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdb)) {
+        spList->SetIntMember("rowHeight", 0x39);
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xdb)) {
             Unk_MHouseMap& map = reinterpret_cast<Unk_MHouseMap&>(TSingleton<UGCCubeCategoryTable>::GetInstance()->GetBonusInteriors());
             for (POSITION pos = map.GetStartPosition(); pos; map.GetNext(pos)) {
                 unsigned int nKey = map.GetKeyAt(pos);
@@ -1002,12 +1002,12 @@ void UIMasteryDialog::FUN_140eb2d10()
                 ASObj row(2);
                 reinterpret_cast<Unk_MObjSetter&>(row).FUN_140eba4a0("id", nKey);
                 row.FUN_1409c48f0("level", spRec->m_nLevel);
-                row.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nKey));
-                row.FUN_1407cbbe0("active", nCur >= spRec->m_nLevel);
+                row.SetWStringMember("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nKey));
+                row.SetBoolMember("active", nCur >= spRec->m_nLevel);
                 spList->AddItem(row);
             }
         }
-        FUN_140eb8b20();
+        RestoreListSelection();
     }
 }
 
@@ -1026,19 +1026,19 @@ void UIMasteryDialog::FUN_140eb3010(int nId)
     if (m_30.get()) {
         Unk_MFurnArray furn;
         TSingleton<CItemDataTable>::GetInstance()->GetHousingByCategory(nId, furn);
-        qsort(furn.GetData(), furn.GetCount(), 0x10, &UIMasteryDialog::FUN_140eb8f40);
+        qsort(furn.GetData(), furn.GetCount(), 0x10, &UIMasteryDialog::CompareHousingItems);
         ASDataProvider page(2);
         for (size_t i = 0; i < furn.GetCount(); i++) {
             MS2Ptr<ItemHousing> spFurn(furn[i]);
-            MS2Ptr<CItemData> spDef = FUN_14053f870(spFurn->FUN_1405494e0());
+            MS2Ptr<CItemData> spDef = FUN_14053f870(spFurn->GetItemId());
             if (spDef == 0)
                 continue;
-            if (!spFurn->hasPrice && !DAT_143ab2e20.FUN_1408fbe90(spFurn->FUN_1405494e0()))
+            if (!spFurn->hasPrice && !DAT_143ab2e20.FindItemById(spFurn->GetItemId()))
                 continue;
             ASObj row(2);
-            row.SetMemberUInt("id", spFurn->FUN_1405494e0());
-            row.FUN_1407cba60("icon", spDef->GetIconPath());
-            row.FUN_1407cbbe0("lock", FUN_140eb8cd0(MS2Ptr<ItemHousing>(spFurn)) == 0);
+            row.SetMemberUInt("id", spFurn->GetItemId());
+            row.SetStringMember("icon", spDef->GetIconPath());
+            row.SetBoolMember("lock", IsHousingItemUnlocked(MS2Ptr<ItemHousing>(spFurn)) == 0);
             reinterpret_cast<Unk_MPageArray&>(page).PushObj(row);
         }
         MPage(m_30)->Invoke("setPage", reinterpret_cast<const ASDataProvider&>(page));
@@ -1046,13 +1046,13 @@ void UIMasteryDialog::FUN_140eb3010(int nId)
 }
 
 // @0x140eb3460
-void UIMasteryDialog::FUN_140eb3460()
+void UIMasteryDialog::UpdateMagicScrollList()
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5a))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x5a))
         return;
     int nTab = FUN_140eb8ac0();
     if (MS2Ptr<ASUIComponent> spCtrl = GetChild<ASUIComponent>("m_magicScrollControl")) {
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd1))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xd1))
             spCtrl->Invoke("setExpansion");
         int nG0 = TSingleton<CEnchantScrollTable>::GetInstance()->HasRecipe(nTab, 4);
         int nG1 = TSingleton<CEnchantScrollTable>::GetInstance()->HasRecipe(nTab, 5);
@@ -1074,14 +1074,14 @@ void UIMasteryDialog::FUN_140eb3460()
     if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_objectList")) {
         spList->FUN_1422dd1d0();
         static_cast<ASObj*>(static_cast<AScript*>(spList.operator->()))->FUN_1409c0dc0("itemRendererName", "UIMasteryDialog_renderer_mastery");
-        spList->FUN_1407cb9c0("rowHeight", 0x4c);
+        spList->SetIntMember("rowHeight", 0x4c);
         int nSub = GetSelectedMagicScrollGrade();
         int nSlot = GetSelectedMagicScrollSlot();
         Unk_MScrollArray recs;
         TSingleton<CEnchantScrollTable>::GetInstance()->FindRecipes(nTab, nSlot, nSub, recs);
-        qsort(recs.GetData(), recs.GetCount(), 0x10, &UIMasteryDialog::FUN_140eb9160);
+        qsort(recs.GetData(), recs.GetCount(), 0x10, &UIMasteryDialog::CompareEnchantScrollRecipes);
         if (recs.GetCount() == 0) {
-            FUN_140d74390(GetStringCommonByKey(L"s_mastery_magicscroll_no_recipe"), 0, Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::OnRestoreMagicScrollSelectionMsgBox));
+            ShowMessageBoxWithCallback(GetStringCommonByKey(L"s_mastery_magicscroll_no_recipe"), 0, Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::OnRestoreMagicScrollSelectionMsgBox));
             return;
         }
         for (size_t i = 0; i < recs.GetCount(); i++) {
@@ -1091,11 +1091,11 @@ void UIMasteryDialog::FUN_140eb3460()
             CStringW strName = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x35, spRec->m_nId), spRec->m_scroll.vfunc_o18_1());
             CStringW strState = FUN_14028dfa0(CStringW(L"s_mastery_magicscroll_list_state"), spRec->m_nMaxLv);
             ASObj row(2);
-            row.FUN_1407cb9c0("id", spRec->m_nId);
-            row.FUN_1407cbb20("name", CStringW(strName));
-            row.FUN_1407cbb20("state", CStringW(strState));
-            row.FUN_1407cb9c0("active", 1);
-            row.FUN_1407cba60("icon", spRec->GetRewardName());
+            row.SetIntMember("id", spRec->m_nId);
+            row.SetWStringMember("name", CStringW(strName));
+            row.SetWStringMember("state", CStringW(strState));
+            row.SetIntMember("active", 1);
+            row.SetStringMember("icon", spRec->GetRewardName());
             row.FUN_1409adc90("grade", spRec->m_scroll.vfunc_o18_1());
             spList->AddItem(row);
         }
@@ -1105,16 +1105,16 @@ void UIMasteryDialog::FUN_140eb3460()
             if (MS2Ptr<ASEventDispatcher> spSlot = spCtrl2->FUN_140eb9cf0<ASEventDispatcher>("m_slotGroup"))
                 m_308 = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spSlot->GetMember("selectedIndex")))->GetInt();
         }
-        FUN_140eb8b20();
+        RestoreListSelection();
     }
 }
 
 // @0x140eb4210
-void UIMasteryDialog::FUN_140eb4210(int nId)
+void UIMasteryDialog::UpdateMagicScrollPage(int nId)
 {
     if (m_30.IsNull())
         return;
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5a))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x5a))
         return;
     FUN_140eb0540();
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -1125,10 +1125,10 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
         return;
     ASObj page(2);
     ItemEntity& res = spRec->m_scroll;
-    page.FUN_1407cba60("binding0", m_reward.BindNewItem(res.m_itemId, res.vfunc_o18_1(), res.m_count));
+    page.SetStringMember("binding0", m_reward.BindNewItem(res.m_itemId, res.vfunc_o18_1(), res.m_count));
     for (size_t i = 0; i < spRec->m_rewards.GetCount(); i++) {
         ItemEntity& rew = spRec->m_rewards[i];
-        page.FUN_1407cba60(Unk_SocketFormat<unsigned __int64>("binding{0}", i + 1), m_reward.BindNewItem(rew.m_itemId, rew.vfunc_o18_1(), rew.m_count));
+        page.SetStringMember(Unk_SocketFormat<unsigned __int64>("binding{0}", i + 1), m_reward.BindNewItem(rew.m_itemId, rew.vfunc_o18_1(), rew.m_count));
     }
     int bEnough = 1;
     for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
@@ -1143,28 +1143,28 @@ void UIMasteryDialog::FUN_140eb4210(int nId)
         unsigned int nNeed = ref->m_c;
         if (nHave < nNeed)
             bEnough = 0;
-        CStringW strCnt = FUN_1419021b0(nHave, nNeed);
+        CStringW strCnt = GetIngredientCountText(nHave, nNeed);
         int nRank = FUN_14053feb0(ref->m_a);
         ASObj req(2);
-        req.FUN_1407cba60("binding", m_require.BindNewItem(ref->m_a, nRank, ref->m_c));
-        req.FUN_1407cbb20("itemCnt", CStringW(strCnt));
+        req.SetStringMember("binding", m_require.BindNewItem(ref->m_a, nRank, ref->m_c));
+        req.SetWStringMember("itemCnt", CStringW(strCnt));
         page.FUN_1409eb270(Unk_SocketFormat<unsigned __int64>("require{0}", i), req);
     }
     int bWarn = 1;
     int nSlot = GetSelectedMagicScrollSlot();
     if (nSlot == 1 || nSlot == 3 || nSlot == 2)
-        bWarn = (nSlot == FUN_140eb6870());
+        bWarn = (nSlot == GetDefaultWeaponSlot());
     CStringW strName = FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x35, nId), spRec->m_scroll.vfunc_o18_1());
     CStringW strState = FUN_14028dfa0(CStringW(L"s_mastery_magicscroll_list_state"), spRec->m_nMaxLv);
-    page.FUN_1407cb9c0("id", nId);
-    page.FUN_1407cbb20("name", CStringW(strName));
-    page.FUN_1407cba60("icon", spRec->GetRewardName());
+    page.SetIntMember("id", nId);
+    page.SetWStringMember("name", CStringW(strName));
+    page.SetStringMember("icon", spRec->GetRewardName());
     page.FUN_1409adc90("grade", spRec->m_scroll.vfunc_o18_1());
     page.FUN_1409c1180("meso", spRec->m_nMeso);
-    page.FUN_1407cbb20("mastery", CStringW(strState));
-    page.FUN_1407cbbe0("enabled", bEnough && !m_craft.HasTotal());
+    page.SetWStringMember("mastery", CStringW(strState));
+    page.SetBoolMember("enabled", bEnough && !m_craft.HasTotal());
     page.FUN_1409c0dc0("goto", bWarn ? "normal" : "warn");
-    page.FUN_1407cbbe0("debug", ((class CInputKeyHandler*)(class Unk_MDebug*)(((class Unk_MDebug*)FUN_14025e7c0())))->IsDebugMode());
+    page.SetBoolMember("debug", ((class CInputKeyHandler*)(class Unk_MDebug*)(((class Unk_MDebug*)FUN_14025e7c0())))->IsDebugMode());
     m_30->Invoke("setPage", page);
 }
 
@@ -1173,13 +1173,13 @@ void UIMasteryDialog::FUN_140eb4ba0()
 {
     if (GetMainTabIndex() != 3)
         return;
-    FUN_140eb4210(m_nSelected);
+    UpdateMagicScrollPage(m_nSelected);
 }
 
 // @0x140eb4be0
 void UIMasteryDialog::FUN_140eb4be0()
 {
-    FUN_140eafde0();
+    UpdateSubTabs();
     FUN_140eb7e30();
 }
 
@@ -1223,7 +1223,7 @@ bool UIMasteryDialog::OnMagicScrollCraftConfirm(int nResult, const CMsgBoxData& 
     m_craft.m_nId = box.FUN_141a02e50(0, 0);
     m_craft.m_nDone = 1;
     m_craft.m_nPending = 1;
-    FUN_140eb4210(m_craft.m_nId);
+    UpdateMagicScrollPage(m_craft.m_nId);
     return true;
 }
 
@@ -1236,7 +1236,7 @@ bool UIMasteryDialog::OnRestoreMagicScrollSelectionMsgBox(int nResult, const CMs
         spCtrl->Invoke("setSelectedSlotIndex", m_308);
         spCtrl->Invoke("setSelectedGradeIndex", m_30c);
     }
-    FUN_140eb3460();
+    UpdateMagicScrollList();
     return true;
 }
 
@@ -1273,7 +1273,7 @@ int UIMasteryDialog::GetSubTabIndex()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return -1;
-    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_subTab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar("m_subTab"))
         return ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(spTab->GetMember("selectedIndex")))->GetInt();
     return -1;
 }
@@ -1311,7 +1311,7 @@ void UIMasteryDialog::OnDamagedMyPC(NotifyObject* pNotify)
 }
 
 // @0x140eb53a0
-void UIMasteryDialog::FUN_140eb53a0()
+void UIMasteryDialog::OnSelectMastery()
 {
     switch (GetMainTabIndex()) {
     case 0:
@@ -1329,18 +1329,18 @@ void UIMasteryDialog::FUN_140eb53a0()
         }
         break;
     case 3:
-        FUN_140eb3460();
+        UpdateMagicScrollList();
         break;
     }
 }
 
 // @0x140eb5450
-void UIMasteryDialog::FUN_140eb5450(int nIndex)
+void UIMasteryDialog::OnSelectList(int nIndex)
 {
     switch (GetMainTabIndex()) {
     case 0:
     case 1:
-        FUN_140eb1770(nIndex, false);
+        UpdateRecipePage(nIndex, false);
         break;
     case 2:
         switch (FUN_140eb86b0()) {
@@ -1348,12 +1348,12 @@ void UIMasteryDialog::FUN_140eb5450(int nIndex)
             FUN_140eb3010(nIndex);
             break;
         case 9:
-            FUN_140eb1770(nIndex, false);
+            UpdateRecipePage(nIndex, false);
             break;
         }
         break;
     case 3:
-        FUN_140eb4210(nIndex);
+        UpdateMagicScrollPage(nIndex);
         break;
     }
     m_nSelected = nIndex;
@@ -1381,18 +1381,18 @@ void UIMasteryDialog::FUN_140eb55e0(int nId)
         for (size_t i = 0; i < spRec->m_ingredients.FUN_14026bee0(); i++) {
             Unk_IngRef ref = spRec->m_ingredients.FUN_14026bdc0(i);
             ItemEntity ent;
-            ent.m_itemId = ref->FUN_14026b500();
+            ent.m_itemId = ref->GetItemId();
             ent.SetRank(FUN_14053feb0(ent.m_itemId));
             ent.m_count = CalcIngredientCount(spRec->m_nType, spRec->m_nRequireMastery, ref->m_c);
             ingredients.Add(ent);
         }
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, GetStringCommonByKey(L"s_craft_messagebox_desc"), static_cast<IMessageListener*>(this), CStringW(L""))) {
+        if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x23, GetStringCommonByKey(L"s_craft_messagebox_desc"), static_cast<IMessageListener*>(this), CStringW(L""))) {
             spBox->Append(spRec->m_nId);
             ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.get()))->SetTitle(GetStringCommonByKey(L"s_craft_messagebox_title"));
             spBox->SetButtonLabels(GetStringCommonByKey(L"s_word_craft"), GetStringCommonByKey(L"s_word_cancel"), L"");
-            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, FUN_140eb6d40(0, spRec->m_nId), spRec->m_nRequireMeso, 1);
+            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, GetMaxCraftCount(0, spRec->m_nId), spRec->m_nRequireMeso, 1);
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a02a30(ingredients);
+            spBox->SetRequiredItems(ingredients);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::OnRecipeCraftCountInput));
             FUN_140d73c60(spBox);
         }
@@ -1406,7 +1406,7 @@ void UIMasteryDialog::FUN_140eb5e30(int nId)
 }
 
 // @0x140eb5e60
-void UIMasteryDialog::FUN_140eb5e60(int nId)
+void UIMasteryDialog::CraftMagicScroll(int nId)
 {
     MS2Ptr<CEnchantScrollRecipe> spRec = TSingleton<CEnchantScrollTable>::GetInstance()->FindRecipe(nId);
     if (spRec.IsNull())
@@ -1431,13 +1431,13 @@ void UIMasteryDialog::FUN_140eb5e60(int nId)
             ent.SetRank(FUN_14053feb0(ref->m_a));
             ingredients.Add(ent);
         }
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x23, GetStringCommonByKey(L"s_magicscroll_craft_messagebox_desc"), static_cast<IMessageListener*>(this), CStringW(L""))) {
+        if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x23, GetStringCommonByKey(L"s_magicscroll_craft_messagebox_desc"), static_cast<IMessageListener*>(this), CStringW(L""))) {
             spBox->Append(spRec->m_nId);
             ((class CMsgBoxData*)(class CMsgBoxData*)(spBox.get()))->SetTitle(GetStringCommonByKey(L"s_magicscroll_craft_messagebox_title"));
             spBox->SetButtonLabels(GetStringCommonByKey(L"s_magicscroll_word_craft"), GetStringCommonByKey(L"s_word_cancel"), L"");
-            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, FUN_140eb6d40(1, spRec->m_nId), (int)spRec->m_nMeso, 1);
+            spBox->FUN_141a01ee0(MS2Ptr<CItem>(spItem), spItem->FUN_140527b10(), 1, 1, GetMaxCraftCount(1, spRec->m_nId), (int)spRec->m_nMeso, 1);
             spBox->FUN_141a024a0(0);
-            spBox->FUN_141a02a30(ingredients);
+            spBox->SetRequiredItems(ingredients);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMasteryDialog::OnMagicScrollCraftConfirm));
             FUN_140d73c60(spBox);
         }
@@ -1449,14 +1449,14 @@ void UIMasteryDialog::FUN_140eb6660(void* pArg)
 {
     if (!pArg)
         return;
-    int nItemId = static_cast<CItem*>(pArg)->FUN_1405276c0();
+    int nItemId = static_cast<CItem*>(pArg)->GetItemId();
     int nTab = GetMainTabIndex();
     if (nTab == 1) {
         int nType = FUN_140eb8a90();
         if (FUN_1409670c0()->HasTypeIngredient(nType, nItemId) != 0)
             SetPendingList(nType);
     } else if (nTab == 3) {
-        if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5a))
+        if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x5a))
             return;
         {
             MS2Ptr<CEnchantScrollRecipe> spRec = TSingleton<CEnchantScrollTable>::GetInstance()->FindRecipe(m_nSelected);
@@ -1476,14 +1476,14 @@ void UIMasteryDialog::FUN_140eb6660(void* pArg)
                     }
                 }
                 if (bFound)
-                    FUN_140eb4210(m_nSelected);
+                    UpdateMagicScrollPage(m_nSelected);
             }
         }
     }
 }
 
 // @0x140eb6870
-int UIMasteryDialog::FUN_140eb6870()
+int UIMasteryDialog::GetDefaultWeaponSlot()
 {
     MyPC* pPc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
@@ -1504,7 +1504,7 @@ void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
     unsigned int nId = FUN_1409670c0()->MakeID(nType, nIndex);
     obj.SetMemberUInt("id", nId);
     obj.SetMemberUInt("level", nNeed);
-    obj.FUN_1407cbb20("levelStr", FUN_1409670c0()->GradeName(nType, nIndex));
+    obj.SetWStringMember("levelStr", FUN_1409670c0()->GradeName(nType, nIndex));
     int nFlag = 0;
     DAT_143ab31a0.Lookup(nId, nFlag);
     CString strState;
@@ -1512,12 +1512,12 @@ void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
         strState = "inactive";
     else
         strState = (reinterpret_cast<PC*>(pPc)->GetMastery(nType) >= nNeed) ? "active" : "lock";
-    obj.FUN_1407cba60("state", CString(strState));
+    obj.SetStringMember("state", CString(strState));
     Unk_MItemArray items;
     FUN_1409670c0()->Rewards(nId, reinterpret_cast<PC*>(pPc)->GetJobGroupId(), items);
     if (items.GetCount() > 0) {
         MS2Ptr<ItemEntity> spItem0(items[0]);
-        obj.FUN_1407cba60("binding", m_mastery.BindNewItem(spItem0->m_itemId, spItem0->vfunc_o18_1(), spItem0->m_count));
+        obj.SetStringMember("binding", m_mastery.BindNewItem(spItem0->m_itemId, spItem0->vfunc_o18_1(), spItem0->m_count));
     }
 }
 
@@ -1525,18 +1525,18 @@ void UIMasteryDialog::FUN_140eb6920(int nType, int nIndex, ASObj& obj)
 void UIMasteryDialog::CancelCraft()
 {
     if (m_craft.HasTotal()) {
-        Unk_MCastingBar* pBar = ((class Unk_MCastingBar*)FUN_140ac2270(0x4e72));
+        Unk_MCastingBar* pBar = ((class Unk_MCastingBar*)GetCastingBar(0x4e72));
         if (pBar)
             pBar->FUN_1418e1390();
         BOOL bSame = m_nSelected == m_craft.m_nId;
-        m_craft.FUN_140eadda0();
+        m_craft.Reset();
         if (bSame)
-            FUN_140eb5450(m_nSelected);
+            OnSelectList(m_nSelected);
     }
 }
 
 // @0x140eb6d40
-int UIMasteryDialog::FUN_140eb6d40(int nKind, int nId)
+int UIMasteryDialog::GetMaxCraftCount(int nKind, int nId)
 {
     int nMax = 1000;
     if (nKind == 0) {
@@ -1555,7 +1555,7 @@ int UIMasteryDialog::FUN_140eb6d40(int nKind, int nId)
             if (ref->m_b != 0)
                 nHave = g_143ab2a90.GetItemCountByTag(ref->m_b, 0);
             else
-                nHave = g_143ab2a90.FUN_140a5f180(ref->FUN_14026b500(), 0);
+                nHave = g_143ab2a90.FUN_140a5f180(ref->GetItemId(), 0);
             int nCan = nHave / nNeed;
             nMax = (std::min)(nCan, nMax);
         }
@@ -1589,7 +1589,7 @@ int UIMasteryDialog::FUN_140eb6d40(int nKind, int nId)
 }
 
 // @0x140eb71a0
-CStringW UIMasteryDialog::FUN_140eb71a0(MS2Ptr<CMasteryReceipe> spRec)
+CStringW UIMasteryDialog::GetRecipeStateText(MS2Ptr<CMasteryReceipe> spRec)
 {
     CStringW strErr;
     if (HasRequiredLevel(MS2Ptr<CMasteryReceipe>(spRec)) == 0)
@@ -1616,7 +1616,7 @@ CStringW UIMasteryDialog::FUN_140eb71a0(MS2Ptr<CMasteryReceipe> spRec)
         }
         return FUN_1409670c0()->SuccessDescription(spRec->m_nType, spRec->m_nId, 1);
     }
-    int nCount = FUN_140eb6d40(0, spRec->m_nId);
+    int nCount = GetMaxCraftCount(0, spRec->m_nId);
     if (nCount == 1000)
         return FUN_14028dfa0(CStringW(L"s_mastery_manufacture_count_max"), nCount);
     return FUN_14028dfa0(CStringW(L"s_mastery_manufacture_count"), nCount);
@@ -1705,7 +1705,7 @@ void UIMasteryDialog::FUN_140eb7e30()
     int nCount = 0;
     nCount += ((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->CountClaimableRewardLevels(3);
     nCount += ((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->CountClaimableRewardLevels(5);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x59)) {
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x59)) {
         nCount += ((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->CountClaimableRewardLevels(4);
         nCount += ((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->CountClaimableRewardLevels(6);
     }
@@ -1713,13 +1713,13 @@ void UIMasteryDialog::FUN_140eb7e30()
     nCount = 0;
     nCount += ((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->CountClaimableRewardLevels(7);
     nCount += ((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->CountClaimableRewardLevels(8);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x59)) {
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x59)) {
         nCount += ((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->CountClaimableRewardLevels(9);
         nCount += ((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->CountClaimableRewardLevels(10);
     }
     MPage(m_30)->FUN_140eba2c0("setMainTabReward", 1, 0 < nCount);
     nCount = FUN_140930e10();
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8d))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x8d))
         nCount += ((class Unk_MPoints*)TSingleton<CMasteryManager>::GetInstance())->CountClaimableRewardLevels(0xb);
     MPage(m_30)->FUN_140eba2c0("setMainTabReward", 2, 0 < nCount);
     MPage(m_30)->FUN_140eba200("setMainTabReward", 3, 0);
@@ -1820,7 +1820,7 @@ int UIMasteryDialog::FUN_140eb86b0()
     if (nTab == 0) {
         slots.Add(0);
         slots.Add(1);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x59)) {
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x59)) {
             slots.Add(2);
             slots.Add(3);
         }
@@ -1829,7 +1829,7 @@ int UIMasteryDialog::FUN_140eb86b0()
     } else if (nTab == 1) {
         slots.Add(5);
         slots.Add(4);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x59)) {
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x59)) {
             slots.Add(6);
             slots.Add(7);
         }
@@ -1837,19 +1837,19 @@ int UIMasteryDialog::FUN_140eb86b0()
             return slots[nSub];
     } else if (nTab == 2) {
         slots.Add(8);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8d))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x8d))
             slots.Add(9);
         if (nSub < (int)slots.GetCount())
             return slots[nSub];
     } else if (nTab == 3) {
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5a)) {
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7c))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x5a)) {
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x7c))
                 slots.Add(10);
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7d))
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x7d))
                 slots.Add(0xb);
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7e))
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x7e))
                 slots.Add(0xc);
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x7f))
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x7f))
                 slots.Add(0xd);
         }
         if (nSub < (int)slots.GetCount())
@@ -1908,7 +1908,7 @@ int UIMasteryDialog::FUN_140eb8ac0()
 }
 
 // @0x140eb8b20
-void UIMasteryDialog::FUN_140eb8b20()
+void UIMasteryDialog::RestoreListSelection()
 {
     if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_objectList")) {
         m_304 = 1;
@@ -1917,14 +1917,14 @@ void UIMasteryDialog::FUN_140eb8b20()
         spList->vfunc_24(true);
         spList->SetSelectedIndex(m_268[nSlot]);
         spList->vfunc_24(true);
-        spList->FUN_1422e17f0(m_scroll[nSlot]);
+        spList->SetScrollPosition(m_scroll[nSlot]);
         spList->vfunc_24(true);
         m_304 = 0;
     }
 }
 
 // @0x140eb8cd0
-int FUN_140eb8cd0(MS2Ptr<ItemHousing> spFurn)
+int IsHousingItemUnlocked(MS2Ptr<ItemHousing> spFurn)
 {
     if (spFurn->priceCount == 3)
         return 1;
@@ -1937,7 +1937,7 @@ int FUN_140eb8cd0(MS2Ptr<ItemHousing> spFurn)
         return 0;
     if (spFurn->trophyID == 0)
         return 1;
-    return ((class CAchieveManager*)FUN_1406c7600())->IsGradeCleared(spFurn->trophyID, spFurn->trophyLevel);
+    return ((class CAchieveManager*)GetAchieveManager())->IsGradeCleared(spFurn->trophyID, spFurn->trophyLevel);
 }
 
 // @0x140eb8eb0
@@ -1951,12 +1951,12 @@ int FUN_140eb8eb0(MS2Ptr<ItemHousing> spFurn)
 }
 
 // @0x140eb8f40
-int UIMasteryDialog::FUN_140eb8f40(const void* pA, const void* pB)
+int UIMasteryDialog::CompareHousingItems(const void* pA, const void* pB)
 {
     MS2Ptr<ItemHousing> spA = *(const MS2Ptr<ItemHousing>*)pA;
     MS2Ptr<ItemHousing> spB = *(const MS2Ptr<ItemHousing>*)pB;
-    int nLockA = FUN_140eb8cd0(spA);
-    int nLockB = FUN_140eb8cd0(spB);
+    int nLockA = IsHousingItemUnlocked(spA);
+    int nLockB = IsHousingItemUnlocked(spB);
     if (nLockA == nLockB) {
         int nKindB;
         int nKindA = FUN_140eb8eb0(spA);
@@ -1969,7 +1969,7 @@ int UIMasteryDialog::FUN_140eb8f40(const void* pA, const void* pB)
 }
 
 // @0x140eb9160
-int UIMasteryDialog::FUN_140eb9160(const void* pA, const void* pB)
+int UIMasteryDialog::CompareEnchantScrollRecipes(const void* pA, const void* pB)
 {
     MS2Ptr<CEnchantScrollRecipe> spA = *(const MS2Ptr<CEnchantScrollRecipe>*)pA;
     MS2Ptr<CEnchantScrollRecipe> spB = *(const MS2Ptr<CEnchantScrollRecipe>*)pB;
@@ -1998,7 +1998,7 @@ public:
 struct Unk_MSinkRef { Unk_MSink* m_pObj; void* m_p8; void* m_pIdx; };
 
 // @0x140eb9620
-MS2Ptr<ASEventDispatcher> FUN_140eb9620(int nMovieId, const Scaleform::GFx::Value& v)
+MS2Ptr<ASEventDispatcher> CreateEventDispatcher(int nMovieId, const Scaleform::GFx::Value& v)
 {
     MS2Ptr<ASEventDispatcher> sp(new ASEventDispatcher(v, nMovieId));
     return sp;
@@ -2009,7 +2009,7 @@ template<> MS2Ptr<ASEventDispatcher> AScript::FUN_140eb9cf0<ASEventDispatcher>(c
 {
     Scaleform::GFx::Value v = GetMember(strName);
     if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(v))->IsObject())
-        return FUN_140eb9620(m_nMovieId, v);
+        return CreateEventDispatcher(m_nMovieId, v);
     return MS2Ptr<ASEventDispatcher>(0);
 }
 
@@ -2211,7 +2211,7 @@ void* FUN_140ebafb0(void*, void* p)
 }
 
 // @0x140ebb020
-int CMasteryInteriorTable::FUN_140ebb020()
+int CMasteryInteriorTable::GetMaxGrade()
 {
     return m_nMaxGrade;
 }
@@ -2226,9 +2226,9 @@ int CMasteryInteriorTable::FUN_140ebb020()
 
 
 // @0x140ebb080
-Unk_MMapNode* FUN_140ebb080(Unk_MMapRaw* pMap);
+Unk_MMapNode* GetFirstNode(Unk_MMapRaw* pMap);
 bool FUN_140ebb1b0(Unk_MMapRaw* pMap);
-Unk_MMapNode* FUN_140ebb080(Unk_MMapRaw* pMap)
+Unk_MMapNode* GetFirstNode(Unk_MMapRaw* pMap)
 {
     if (FUN_140ebb1b0(pMap))
         return 0;
@@ -2280,19 +2280,19 @@ MS2_REPLACE_METHOD(0x140EAED30, UIMasteryDialog, vfunc_49, 854, 0xCABA0319);
 MS2_REPLACE_METHOD(0x140EAF090, UIMasteryDialog, vfunc_28, 1909, 0x1C41E7B5);
 MS2_REPLACE_METHOD(0x140EAFA50, UIMasteryDialog, vfunc_72, 854, 0x26543527);
 MS2_REPLACE_METHOD(0x140EAFDB0, UIMasteryDialog, SetMainTab, 30, 0xCCD60FF0);
-MS2_REPLACE_METHOD(0x140EAFDE0, UIMasteryDialog, FUN_140eafde0, 1873, 0xB1D4732E);
+MS2_REPLACE_METHOD(0x140EAFDE0, UIMasteryDialog, UpdateSubTabs, 1873, 0xB1D4732E);
 MS2_REPLACE_METHOD(0x140EB0540, UIMasteryDialog, FUN_140eb0540, 99, 0xC5E0DBBE);
 MS2_REPLACE_METHOD(0x140EB05B0, UIMasteryDialog, FUN_140eb05b0, 81, 0x46902322);
 MS2_REPLACE_METHOD(0x140EB0610, UIMasteryDialog, FUN_140eb0610, 1491, 0x7BE87C52);
-MS2_REPLACE_METHOD(0x140EB0BF0, UIMasteryDialog, FUN_140eb0bf0, 415, 0xF903DA28);
+MS2_REPLACE_METHOD(0x140EB0BF0, UIMasteryDialog, AddLevelGuide, 415, 0xF903DA28);
 MS2_REPLACE_METHOD(0x140EB0DA0, UIMasteryDialog, FUN_140eb0da0, 2498, 0x789089B1);
-MS2_REPLACE_METHOD(0x140EB1770, UIMasteryDialog, FUN_140eb1770, 3301, 0xC0091B5B);
+MS2_REPLACE_METHOD(0x140EB1770, UIMasteryDialog, UpdateRecipePage, 3301, 0xC0091B5B);
 MS2_REPLACE_METHOD(0x140EB2460, UIMasteryDialog, FUN_140eb2460, 51, 0x0C8FF59D);
 MS2_REPLACE_METHOD(0x140EB24A0, UIMasteryDialog, FUN_140eb24a0, 2139, 0xCA371192);
-MS2_REPLACE_METHOD(0x140EB2D10, UIMasteryDialog, FUN_140eb2d10, 760, 0xD85E09ED);
+MS2_REPLACE_METHOD(0x140EB2D10, UIMasteryDialog, UpdateHousingList, 760, 0xD85E09ED);
 MS2_REPLACE_METHOD(0x140EB3010, UIMasteryDialog, FUN_140eb3010, 1085, 0x50FFDE62);
-MS2_REPLACE_METHOD(0x140EB3460, UIMasteryDialog, FUN_140eb3460, 3498, 0x8881EAB6);
-MS2_REPLACE_METHOD(0x140EB4210, UIMasteryDialog, FUN_140eb4210, 2430, 0x488FEEFD);
+MS2_REPLACE_METHOD(0x140EB3460, UIMasteryDialog, UpdateMagicScrollList, 3498, 0x8881EAB6);
+MS2_REPLACE_METHOD(0x140EB4210, UIMasteryDialog, UpdateMagicScrollPage, 2430, 0x488FEEFD);
 MS2_REPLACE_METHOD(0x140EB4BA0, UIMasteryDialog, FUN_140eb4ba0, 52, 0x51EBCE4F);
 MS2_REPLACE_METHOD(0x140EB4BE0, UIMasteryDialog, FUN_140eb4be0, 34, 0xA36B67C8);
 MS2_REPLACE_METHOD(0x140EB4C10, UIMasteryDialog, FUN_140eb4c10, 86, 0xFF84B02A);
@@ -2303,17 +2303,17 @@ MS2_REPLACE_METHOD(0x140EB5040, UIMasteryDialog, GetMainTabIndex, 262, 0x20B8A84
 MS2_REPLACE_METHOD(0x140EB5150, UIMasteryDialog, GetSubTabIndex, 262, 0x96FE42B1);
 MS2_REPLACE_METHOD(0x140EB5260, UIMasteryDialog, SetPendingSub, 76, 0x2CC1527B);
 MS2_REPLACE_METHOD(0x140EB52C0, UIMasteryDialog, SetPendingList, 76, 0x88AF847F);
-MS2_REPLACE_METHOD(0x140EB53A0, UIMasteryDialog, FUN_140eb53a0, 168, 0xE87AEB17);
-MS2_REPLACE_METHOD(0x140EB5450, UIMasteryDialog, FUN_140eb5450, 383, 0x59943791);
+MS2_REPLACE_METHOD(0x140EB53A0, UIMasteryDialog, OnSelectMastery, 168, 0xE87AEB17);
+MS2_REPLACE_METHOD(0x140EB5450, UIMasteryDialog, OnSelectList, 383, 0x59943791);
 MS2_REPLACE_METHOD(0x140EB55E0, UIMasteryDialog, FUN_140eb55e0, 2107, 0xE774B82B);
 MS2_REPLACE_METHOD(0x140EB5E30, UIMasteryDialog, FUN_140eb5e30, 32, 0x88F3761A);
-MS2_REPLACE_METHOD(0x140EB5E60, UIMasteryDialog, FUN_140eb5e60, 2035, 0xF71AE862);
+MS2_REPLACE_METHOD(0x140EB5E60, UIMasteryDialog, CraftMagicScroll, 2035, 0xF71AE862);
 MS2_REPLACE_METHOD(0x140EB6660, UIMasteryDialog, FUN_140eb6660, 514, 0x8F8B8549);
-MS2_REPLACE_METHOD(0x140EB6870, UIMasteryDialog, FUN_140eb6870, 165, 0xAD0EE20F);
+MS2_REPLACE_METHOD(0x140EB6870, UIMasteryDialog, GetDefaultWeaponSlot, 165, 0xAD0EE20F);
 MS2_REPLACE_METHOD(0x140EB6920, UIMasteryDialog, FUN_140eb6920, 847, 0x1994F4C2);
 MS2_REPLACE_METHOD(0x140EB6C80, UIMasteryDialog, CancelCraft, 171, 0xA584C675);
-MS2_REPLACE_METHOD(0x140EB6D40, UIMasteryDialog, FUN_140eb6d40, 1103, 0xDD4A5FC7);
-MS2_REPLACE_METHOD(0x140EB71A0, UIMasteryDialog, FUN_140eb71a0, 2049, 0x55889835);
+MS2_REPLACE_METHOD(0x140EB6D40, UIMasteryDialog, GetMaxCraftCount, 1103, 0xDD4A5FC7);
+MS2_REPLACE_METHOD(0x140EB71A0, UIMasteryDialog, GetRecipeStateText, 2049, 0x55889835);
 MS2_REPLACE_METHOD(0x140EB79B0, UIMasteryDialog, CalcAdjustedItemCount, 391, 0x4D8BEAD2);
 MS2_REPLACE_METHOD(0x140EB7B40, UIMasteryDialog, CalcIngredientCount, 102, 0x4F669A99);
 MS2_REPLACE_METHOD(0x140EB7BB0, UIMasteryDialog, GetMyMastery, 62, 0x938E275E);
@@ -2331,7 +2331,7 @@ MS2_REPLACE_METHOD(0x140EB86B0, UIMasteryDialog, FUN_140eb86b0, 806, 0xBECB6CA9)
 MS2_REPLACE_METHOD(0x140EB89E0, UIMasteryDialog, GetTypeForSlot, 119, 0xC05B67C2);
 MS2_REPLACE_METHOD(0x140EB8A90, UIMasteryDialog, FUN_140eb8a90, 36, 0x9BF96619);
 MS2_REPLACE_METHOD(0x140EB8AC0, UIMasteryDialog, FUN_140eb8ac0, 88, 0xA2E18639);
-MS2_REPLACE_METHOD(0x140EB8B20, UIMasteryDialog, FUN_140eb8b20, 419, 0x27518734);
+MS2_REPLACE_METHOD(0x140EB8B20, UIMasteryDialog, RestoreListSelection, 419, 0x27518734);
 MS2_REPLACE_METHOD_VIA(0x140EB4F60, UIMasteryDialog, UIItemEventListener, vfunc_2, 91, 0xB308A7BA);
 MS2_REPLACE_METHOD_VIA(0x140EB4FD0, UIMasteryDialog, UIItemEventListener, vfunc_4, 96, 0x85CF0DB2);
 MS2_REPLACE_METHOD_VIA(0x140EAF840, UIMasteryDialog, ICastingEventListener, OnCastingFinished, 443, 0x4DD2CA94);

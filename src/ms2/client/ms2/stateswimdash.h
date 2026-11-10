@@ -23,7 +23,7 @@ public:
     virtual int vfunc_14();                                 // 14 0x1417fbff0: 0
     virtual int vfunc_36();                                 // 36 0x1417fbe00 (input / skill check)
 
-    void FUN_1417fbe80();                                   // stop the effect
+    void StopEffect();                                   // stop the effect
     void FUN_1417fbec0();                                   // start the effect of the owner's dash animation
 
     int m_nEffect;                                          // +0x78 effect id (0 = none)

@@ -40,7 +40,7 @@ void ASMouseCursor::FUN_1422cec40(int bShow)
     if (bShow != 0) {
         int nMode = m_nMode;
         m_nMode = 0;
-        FUN_1422cecb0(nMode);
+        SetCursorMode(nMode);
     } else {
         while (ShowCursor(FALSE) >= 0) {
         }
@@ -50,7 +50,7 @@ void ASMouseCursor::FUN_1422cec40(int bShow)
 MS2_REPLACE_METHOD(0x1422CEC40, ASMouseCursor, FUN_1422cec40, 103, 0x74716333);
 
 // @0x1422cecb0
-void ASMouseCursor::FUN_1422cecb0(int nMode)
+void ASMouseCursor::SetCursorMode(int nMode)
 {
     if (m_nMode == nMode)
         return;
@@ -76,7 +76,7 @@ void ASMouseCursor::FUN_1422cecb0(int nMode)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1422CECB0, ASMouseCursor, FUN_1422cecb0, 240, 0x6AD91E82);
+MS2_REPLACE_METHOD(0x1422CECB0, ASMouseCursor, SetCursorMode, 240, 0x6AD91E82);
 
 // @0x1422cedb0
 void ASMouseCursor::FUN_1422cedb0()
@@ -115,13 +115,13 @@ void ASMouseCursor::FUN_1422ceea0(const CStringW& strText)
 MS2_REPLACE_METHOD(0x1422CEEA0, ASMouseCursor, FUN_1422ceea0, 103, 0x0D3A4B38);
 
 // @0x1422cef10
-int ASMouseCursor::FUN_1422cef10()
+int ASMouseCursor::GetCursorType()
 {
     if (m_bDisabled != 0)
         return 0;
     return Invoke("getCursorType").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422CEF10, ASMouseCursor, FUN_1422cef10, 106, 0x5A62D2A9);
+MS2_REPLACE_METHOD(0x1422CEF10, ASMouseCursor, GetCursorType, 106, 0x5A62D2A9);
 
 // @0x1422cef80
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, Unk_MouseCursorType a1)
@@ -143,7 +143,7 @@ Unk_GFxUIHal* FUN_1422cf060()
 // @0x1422cf080
 Unk_GFxUIRenderer2D* FUN_1422cf080()
 {
-    return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetRenderer2D();
+    return reinterpret_cast<GFxManager*>(GetGFxManager())->GetRenderer2D();
 }
 
 // @0x1422cf0a0
@@ -153,7 +153,7 @@ NiDX9Renderer* FUN_1422cf0a0()
 }
 
 // @0x1422cf0d0
-LPDIRECT3DDEVICE9 FUN_1422cf0d0()
+LPDIRECT3DDEVICE9 GetD3DDevice()
 {
     return FUN_1422cf0a0()->GetD3DDevice();
 }
@@ -165,11 +165,11 @@ void* FUN_1422cf0f0()
 }
 
 // @0x1422cf120
-int FUN_1422cf120()
+int IsDeviceLostOrCaptureBlocked()
 {
-    if (FUN_1422cf0d0()->TestCooperativeLevel() == D3DERR_DEVICELOST)
+    if (GetD3DDevice()->TestCooperativeLevel() == D3DERR_DEVICELOST)
         return 1;
-    if (FUN_1414a56c0()->FUN_141b47780())
+    if (GetGFxService()->GetCaptureBlock())
         return 1;
     return 0;
 }

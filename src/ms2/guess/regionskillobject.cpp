@@ -91,10 +91,10 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
     m_spRow = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (m_spRow.IsNull())
         return 0;
-    m_spSkill = m_spRow->FUN_1407e90a0(nLevel);
+    m_spSkill = m_spRow->GetLevelData(nLevel);
     if (m_spSkill.IsNull())
         return 0;
-    m_pAttr = reinterpret_cast<Unk_RsAttr*>(m_spSkill->FUN_140803f00(0));
+    m_pAttr = reinterpret_cast<Unk_RsAttr*>(m_spSkill->GetMotion(0));
     if (m_pAttr == 0)
         return 0;
 
@@ -168,7 +168,7 @@ int CRegionSkillObject::Init(int nId, int nOwnerId, const ATL::CAtlArray<Vector3
             }
         }
     }
-    FUN_1416f6e40();
+    StopLoopEffects();
     FUN_1416f7790();
     if (DAT_143ae95e1 || DAT_143ae95e0)
     {
@@ -223,7 +223,7 @@ void CRegionSkillObject::FadeOutEffects()
 // @0x1416f6900
 void CRegionSkillObject::FUN_1416f6900()
 {
-    Unk_RsAttr* pAttr = reinterpret_cast<Unk_RsAttr*>(m_spSkill->FUN_140803f00(0));
+    Unk_RsAttr* pAttr = reinterpret_cast<Unk_RsAttr*>(m_spSkill->GetMotion(0));
     if (pAttr == 0)
         return;
     for (unsigned i = 0; i < m_loopEffects.GetCount(); i++)
@@ -259,7 +259,7 @@ void CRegionSkillObject::FUN_1416f6b90()
         __int64* pHandle = &m_collisions.GetAt(pos);
         FUN_141469a90()->Touch(*pHandle);
     }
-    Unk_RsAttr* pAttr = reinterpret_cast<Unk_RsAttr*>(m_spSkill->FUN_140803f00(0));
+    Unk_RsAttr* pAttr = reinterpret_cast<Unk_RsAttr*>(m_spSkill->GetMotion(0));
     if (pAttr == 0)
         return;
     if (pAttr->m_strResetEffect.IsEmpty())
@@ -291,7 +291,7 @@ int CRegionSkillObject::GetId()
 }
 
 // @0x1416f6e40
-void CRegionSkillObject::FUN_1416f6e40()
+void CRegionSkillObject::StopLoopEffects()
 {
     for (unsigned i = 0; i < m_loopEffects.GetCount(); i++)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a68f0(m_loopEffects[i], true);

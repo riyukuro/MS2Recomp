@@ -105,8 +105,8 @@ static const CString s_mergeShopSortNames[] = {"None", "Buy", "Like", "PriceLow"
 
 class CLogString* GetLogString();   // Unrecovered helpers (the xml loader helpers the other table units use).
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
+CString ToCString(const char* psz, int n);
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 int FindStatByName(const CString& strName);         // normal option id by name (-1: none)
@@ -395,8 +395,8 @@ CItemMergeOptionTable::~CItemMergeOptionTable()
 void CItemMergeOptionTable::LoadItemMergeOptionBase()
 {
     TiXmlDocument doc;
-    CString strPath = FUN_14071a5b0("Table", "itemMergeOptionBase.xml");
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    CString strPath = GetXmlPath("Table", "itemMergeOptionBase.xml");
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"\xd30c\xc77c\xc744 \xc77d\xc744 \xc218 \xc5c6\xc2b5\xb2c8\xb2e4[{0}]", strPath);
         return;
@@ -457,7 +457,7 @@ CItemMergeOptionTable::DataPtr CItemMergeOptionTable::FUN_1405c00e0(int nItemId,
 }
 
 // @0x1405c03d0
-bool CItemMergeOptionTable::FUN_1405c03d0(int nCategory, int* pNormal)
+bool CItemMergeOptionTable::GetFirstNormalOption(int nCategory, int* pNormal)
 {
     DataPtr spData = FUN_1405c1f40(nCategory);
     if (spData.IsNull())
@@ -475,7 +475,7 @@ bool CItemMergeOptionTable::FUN_1405c03d0(int nCategory, int* pNormal)
 }
 
 // @0x1405c04f0
-bool CItemMergeOptionTable::FUN_1405c04f0(int nCategory, int* pSpecial)
+bool CItemMergeOptionTable::GetFirstSpecialOption(int nCategory, int* pSpecial)
 {
     DataPtr spData = FUN_1405c1f40(nCategory);
     if (spData.IsNull())
@@ -605,21 +605,21 @@ int CItemMergeOptionTable::FUN_1405c0e80(int nItemId, int nMaterialId, int nFlag
 }
 
 // @0x1405c1090
-CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
+CStringW CItemMergeOptionTable::GetMergeOptionDescription(MS2Ptr<CItem> spItem, int nFlag)
 {
     if (spItem.IsNull())
         return CStringW(L"");
-    CItemStatus* pStatus = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0());
+    CItemStatus* pStatus = reinterpret_cast<CItemStatus*>(spItem->GetStatus());
     if (pStatus == 0)
         return CStringW(L"");
     MS2Ptr<CItemOption> spOption = pStatus->m_spOption;
     if (spOption.IsNull())
         return CStringW(L"");
-    int bSpecial = pStatus->FUN_140630810();
+    int bSpecial = pStatus->HasGroup4Options();
     CStringW strResult;
     {
         CStringW strLines;
-        int nMergeId = spOption->FUN_1405cb380();
+        int nMergeId = spOption->GetMergeId();
         CStringW strTag;
         if (((class CInputKeyHandler*)(class Unk_FeatureSet*)((Unk_FeatureSet *)(((class Unk_FeatureSet*)FUN_14025e7c0()))))->IsDebugMode() && nMergeId != 0)
             strTag = StringFormat(L"[{0}]", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nMergeId));
@@ -634,9 +634,9 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
             CStringW strLine;
             CStringW strExtra;
             strLine = FUN_140631600(nStat, spValue.get()) + strTag;
-            if (FUN_1405c0870(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
+            if (FUN_1405c0870(spItem->GetItemId(), nMergeId, bSpecial, nStat, spValue))
             {
-                if (FUN_1405c0c70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
+                if (FUN_1405c0c70(spItem->GetItemId(), nMergeId, bSpecial, nStat, spValue))
                     strLine = FormatStringId<CStringW>(0x48d, strLine);
                 strLine = FUN_14028dfa0(CStringW(L"s_word_stat_max_color"), strLine);
             }
@@ -653,9 +653,9 @@ CStringW CItemMergeOptionTable::FUN_1405c1090(MS2Ptr<CItem> spItem, int nFlag)
                 continue;
             CStringW strLine = FUN_140631830(nStat, spValue->GetValue(), (CItemData *)(spItem->FUN_140527840())) + strTag;
             CStringW strExtra;
-            if (FUN_1405c0a70(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
+            if (FUN_1405c0a70(spItem->GetItemId(), nMergeId, bSpecial, nStat, spValue))
             {
-                if (FUN_1405c0e80(spItem->FUN_1405276c0(), nMergeId, bSpecial, nStat, spValue))
+                if (FUN_1405c0e80(spItem->GetItemId(), nMergeId, bSpecial, nStat, spValue))
                     strLine = FormatStringId<CStringW>(0x48d, strLine);
                 strLine = FUN_14028dfa0(CStringW(L"s_word_stat_max_color"), strLine);
             }
@@ -716,7 +716,7 @@ void CItemMergeOptionTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CItemMergeOptionTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CItemMergeOptionTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

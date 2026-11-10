@@ -48,9 +48,9 @@ __int64 FUN_14028d260(float f);                              // seconds -> ms  (
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommon(int nId);                         // string table text by id
 template <class A> CStringW FormatStringId(int nId, const A& a);
-void FUN_1412751f0(const CStringW& strText, int a, int b);      // system notice
+void ShowSystemNotice(const CStringW& strText, int a, int b);      // system notice
 
-// The strings singleton (FUN_1401d31f0): the station / effect names per call type.
+// The strings singleton (GetCommonResource): the station / effect names per call type.
 struct Unk_CcStrings
 {
     char m_pad_000[0x3a0];
@@ -60,17 +60,17 @@ struct Unk_CcStrings
     CString m_str3b8;                                    // +0x3b8
 };
 MS2_CHECK_OFFSET(Unk_CcStrings, m_str3b8, 0x3b8);
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 lives in another unit).
-class Unk_SSGConstValue { public: int FUN_140ad5c50(void); }; class Unk_CcConstValue : public Unk_SSGConstValue {};
+class Unk_SSGConstValue { public: int GetValue(void); }; class Unk_CcConstValue : public Unk_SSGConstValue {};
 // C3: the former option-entry member view. 0x140298f40 is Common::Constants::Value<float>::Get()
 // (clientconstants.h). Its body is the generic Value<T>::Get() instantiated in
 // unit_1402ab440_constantsblocks.cpp, and the callers read the float through the
 // pointer it returns.
 //
 
-// The casting bar dialog (RTTI UICastingBar, found through FUN_140ac2270).
+// The casting bar dialog (RTTI UICastingBar, found through GetCastingBar).
 class ICastingEventListener;
 class UICastingBar : public UIObject
 {
@@ -79,10 +79,10 @@ public:
         const CStringW& strLabel);                       // show
     void FUN_1418e1390();                                // cancel
 };
-UICastingBar* FUN_140ac2270(int nId);
+UICastingBar* GetCastingBar(int nId);
 
 // The actor's move-key state (PCBase::FUN_14166d240).
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_CcBuffMgr { public: };
 
 // The player inventory (global 0x143ab2a90): item lookup by uid and the item's name.
@@ -176,7 +176,7 @@ void StateCashCall::vfunc_4(StateData* pData)
             m_nEnd = m_nEnd + 100;
             if (((void*)(reinterpret_cast<PC*>(pMyPC)->GetHeldItem())) != 0)
                 reinterpret_cast<PC*>(pMyPC)->SendRequestCube();
-            UICastingBar* pBar = FUN_140ac2270(0x4e72);
+            UICastingBar* pBar = GetCastingBar(0x4e72);
             if (pBar != 0)
             {
                 CStringW strLabel(L"");
@@ -209,10 +209,10 @@ void StateCashCall::vfunc_5(int n)
             {
                 MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_spCash->m_nItemUid);
                 if (spItem.get() != 0)
-                    FUN_1412751f0(FormatStringId<CStringW>(0xa0, spItem->FUN_140527b10()), 1, 1);
+                    ShowSystemNotice(FormatStringId<CStringW>(0xa0, spItem->FUN_140527b10()), 1, 1);
             }
         }
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar != 0)
             pBar->FUN_1418e1390();
     }
@@ -262,7 +262,7 @@ void StateCashCall::vfunc_8(double fTime)
     if (pRider == 0)
         return;
     Unk_CcBuffMgr* pMgr = ((class Unk_CcBuffMgr*)((class PCBase*)(class PCBase*)(pRider))->FUN_14166d240());
-    pRider->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->FUN_141683290())));
+    pRider->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->GetMoveDirection())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0() != 0)
         pRider->vfunc_59(2, 0, 0, 0);
     else
@@ -292,7 +292,7 @@ void StateCashCall::OnCastEnd(double fTime)
 {
     if (FUN_1417b8560() != 0)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar != 0)
             pBar->FUN_1418e1390();
     }
@@ -301,7 +301,7 @@ void StateCashCall::OnCastEnd(double fTime)
     {
         SpawnEffect(strEffect);
         int nWait = 0xc80;
-        if (strEffect == ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3a0)
+        if (strEffect == ((struct Unk_CcStrings*)GetCommonResource())->m_str3a0)
             nWait = 1000;
         SetPhase(0x6c, nWait);
     }
@@ -348,7 +348,7 @@ void StateCashCall::OnLeave(double fTime)
     case 5:
         nWait = (int)FUN_14028d260(*((Common::Constants::Value<float>*)(void*)(&static_cast<Client::Constants*>(GetClientConstants())->CashCallMedicLeaveDelay))->Get());
         if (FUN_1417b8560() != 0)
-            FUN_1412751f0(GetStringCommon(0x98), 1, 1);
+            ShowSystemNotice(GetStringCommon(0x98), 1, 1);
         break;
     }
     SetPhase(0x6e, nWait);
@@ -438,17 +438,17 @@ MS2_REPLACE_METHOD(0x141023B50, StateCashCall, GetEffectName, 202, 0x0E80E190);
 // @0x141023c20
 int StateCashCall::GetDuration()
 {
-    int nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->TaxiCallDuration)->FUN_140ad5c50();
+    int nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->TaxiCallDuration)->GetValue();
     switch (GetCallType()) {
     case 2:
     case 3:
-        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->AirTaxiCashCallDuration)->FUN_140ad5c50();
+        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->AirTaxiCashCallDuration)->GetValue();
         break;
     case 1:
-        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->AirTaxiMesoCallDuration)->FUN_140ad5c50();
+        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->AirTaxiMesoCallDuration)->GetValue();
         break;
     case 6:
-        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->BankCallDuration)->FUN_140ad5c50();
+        nDuration = reinterpret_cast<Unk_CcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->BankCallDuration)->GetValue();
         break;
     }
     if (FUN_1417b84b0() == 0)
@@ -472,13 +472,13 @@ CString StateCashCall::GetStationName()
     switch (GetCallType()) {
     case 2:
     case 3:
-        return ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3a0;
+        return ((struct Unk_CcStrings*)GetCommonResource())->m_str3a0;
     case 1:
-        return ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3a8;
+        return ((struct Unk_CcStrings*)GetCommonResource())->m_str3a8;
     case 4:
-        return ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3b8;
+        return ((struct Unk_CcStrings*)GetCommonResource())->m_str3b8;
     case 5:
-        return ((struct Unk_CcStrings*)FUN_1401d31f0())->m_str3b0;
+        return ((struct Unk_CcStrings*)GetCommonResource())->m_str3b0;
     }
     return "";
 }

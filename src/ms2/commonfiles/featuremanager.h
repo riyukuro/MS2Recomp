@@ -16,7 +16,7 @@
 
 class TiXmlElement;                        // game TinyXML element
 
-CString FUN_14016a5c0(const char* psz, int nCodePage);          // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);          // narrows a string (the RTTI name in CheckInit)
 
 // The feature id (the 279 ids of CFeatureTable::Init). The maps below store it as an enum: the exe's SetAt/Lookup glue
 // takes the keys and values by reference. The member names of the ids are not recovered.
@@ -32,9 +32,9 @@ public:
     CFeatureTable();                        // 0x14036eef0
 
     bool Init();                            // 0x1403687f0 fills the name -> id map, false when the count is not 279
-    void FUN_14036b9e0();                   // empties the map with RemoveAll (never called)
+    void Clear();                   // empties the map with RemoveAll (never called)
     static CFeatureTable* FUN_14036f550();  // the instance (created when missing)
-    static void FUN_14036f750();            // deletes the instance
+    static void DestroyInstance();            // deletes the instance
 
     typedef ATL::CAtlMap<CStringW, Unk_FeatureId, ATL::CStringElementTraits<CStringW> > NameMap;
     NameMap m_map;                          // +0x08
@@ -50,12 +50,12 @@ public:
     virtual ~CFeatureManager();             // 0x14036cbf0
 
     bool Init();                                       // loads the feature files; false when missing
-    bool FUN_14036cd30();                                       // the manager is initialised
+    bool IsInitialized();                                       // the manager is initialised
     bool LoadFeatureSetting();                                       // feature_setting.xml: the level of this locale
     bool LoadFeature();                                       // feature.xml: feature name -> level
     bool BuildIdNameMap();                                       // builds the id -> name map
     bool IsFeatureEnabledByName(const CStringW& strName);                // the named feature is switched on
-    bool FUN_14036d570(int nFeature);                           // the feature is switched on
+    bool IsFeatureEnabled(int nFeature);                           // the feature is switched on
     bool FUN_14036d650();                                       // red merat in use
     bool IsRedMeratFeatureEnabled(int nFeature);
     bool FUN_14036d6d0();
@@ -74,15 +74,15 @@ public:
     int FUN_14036de00();
     CStringW SelectHigherLevelFeatureName(const CStringW& strA, const CStringW& strB);     // the one with the higher feature level
     CStringW FUN_14036dfa0(const CStringW& strA, const CStringW& strB);     // the one matching this locale
-    TiXmlElement* FUN_14036e160(TiXmlElement* pA, TiXmlElement* pB);    // the winner of two <feature> rows
-    bool FUN_14036e4c0();                                       // locale KR
+    TiXmlElement* SelectFeatureElement(TiXmlElement* pA, TiXmlElement* pB);    // the winner of two <feature> rows
+    bool IsRegionKR();                                       // locale KR
     bool IsRegionCN();                                       // locale CN
     bool IsRegionNA();                                       // locale NA
     bool IsRegionJP();                                       // locale JP
 
     static CString GetServerTypeName();                             // the server type name ("Live" by default)
     static void SetServerTypeName(CString strType);                 // sets the server type name and its id
-    static int FUN_14036e6b0();                                 // the server type id
+    static int GetServerType();                                 // the server type id
     static bool IsTestServerType();                                // the server type is 1, 2 or 3
     static int GetFeatureIdByNameStatic(const CStringW& strName);          // the level of a feature name (1 without a manager)
 
@@ -92,7 +92,7 @@ public:
         if (!s_bInit)
         {
             CStringA msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CFeatureManager).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(CFeatureManager).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }

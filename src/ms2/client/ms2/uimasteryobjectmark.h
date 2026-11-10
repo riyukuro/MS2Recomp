@@ -58,15 +58,15 @@ public:
     // @0x140e5cca0
     virtual int vfunc_48() { return 0x4f3a; }                       // 48
 
-    void FUN_140e59bb0(CInteractObject* pObject);                   // add the mark of a gathering node
-    void FUN_140e59ea0(CFunctionCubeObject* pCube);                 // add the mark of a homemade cube
+    void AddNodeMark(CInteractObject* pObject);                   // add the mark of a gathering node
+    void AddCubeMark(CFunctionCubeObject* pCube);                 // add the mark of a homemade cube
     void FUN_140e5a600();                                           // refresh the gathering node marks
-    void FUN_140e5ac30();                                           // refresh the cube marks
-    void FUN_140e5b450(const CStringA& strKey);                     // remove a gathering node mark (swf "remove")
-    int FUN_140e5b520(CInteractObject* pObject, EntityContext* pContext);   // update the texts of a node mark: changed
-    int FUN_140e5b620(CFunctionCubeObject* pCube, EntityContext* pContext); // same for a cube mark
-    unsigned FUN_140e5b720(int nReceipeId, EntityContext* pContext);        // fill the mastery texts of a recipe: changed
-    void FUN_140e5bd80(EntityContext* pContext);                    // send the texts to the clip ("setData")
+    void UpdateCubeMarks();                                           // refresh the cube marks
+    void RemoveMark(const CStringA& strKey);                     // remove a gathering node mark (swf "remove")
+    int UpdateNodeMarkTexts(CInteractObject* pObject, EntityContext* pContext);   // update the texts of a node mark: changed
+    int UpdateCubeMarkTexts(CFunctionCubeObject* pCube, EntityContext* pContext); // same for a cube mark
+    unsigned UpdateRecipeMarkTexts(int nReceipeId, EntityContext* pContext);        // fill the mastery texts of a recipe: changed
+    void SendMarkData(EntityContext* pContext);                    // send the texts to the clip ("setData")
 
 private:
     MS2_LAYOUT_FRIEND;

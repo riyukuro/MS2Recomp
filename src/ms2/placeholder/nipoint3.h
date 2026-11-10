@@ -64,7 +64,7 @@ struct Unk_EfdMatrix3
     void FUN_142084ba0(float fAngle);                               // efd::Matrix3::MakeYRotation
     void FUN_142084c10(float fAngle);                               // efd::Matrix3::MakeZRotation
     Vector3 FUN_140a00720(const Vector3& v) const;  // efd::Matrix3::operator*(Point3)
-    void FUN_14107cc40(float fAngle, const Vector3& kAxis); // efd::Matrix3::MakeRotation (angle about a unit axis)
+    void MakeRotation(float fAngle, const Vector3& kAxis); // efd::Matrix3::MakeRotation (angle about a unit axis)
     Unk_EfdMatrix3 FUN_140a33480(const Unk_EfdMatrix3& m) const;    // efd::Matrix3::operator*
     float m_afEntry[3][3];
 };

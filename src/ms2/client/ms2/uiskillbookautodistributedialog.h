@@ -43,7 +43,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x140ec4350
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x140ec4660
 
-    void FUN_140ec48e0();                                       // 0x140ec48e0 name / tooltip of the (up to) three buttons
+    void UpdateDistributeButtons();                                       // 0x140ec48e0 name / tooltip of the (up to) three buttons
 
     ATL::CAtlArray<CStringW> m_names;                           // +0x180 the entries' names (string table keys)
     ATL::CAtlArray<CStringW> m_tooltips;                        // +0x1a0 and their tooltips

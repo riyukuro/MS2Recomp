@@ -336,7 +336,7 @@ class Unk_140166430
 };
 class CItemOptionTable;
 // @0x140166430
-inline Unk_140166430* FUN_140166430()
+inline Unk_140166430* GetItemOptionTable()
 {
     return reinterpret_cast<Unk_140166430*>(TSingleton<CItemOptionTable>::s_instance);
 }
@@ -351,10 +351,10 @@ inline CFileSystem* GetFileSystem()
 {
     return TSingleton<CFileSystem>::s_instance;
 }
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 extern int DAT_1439f4840;                       // default code page (localepath.cpp)
 // @0x14016a5c0
-inline CString FUN_14016a5c0(const char* psz, int)
+inline CString ToCString(const char* psz, int)
 {
     return CString(psz);
 }
@@ -655,7 +655,7 @@ inline void CAchieveData::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CAchieveData).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CAchieveData).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -863,7 +863,7 @@ void CAchieveData::LoadAll()
         s_mapData.RemoveAll();
         DAT_143aab428.RemoveAll();
         ATL::CAtlArray<CString> files;
-        FUN_140399100("*.xml", FUN_14071a5b0("Achieve", ""), files, CString(""), false);
+        FindFiles("*.xml", GetXmlPath("Achieve", ""), files, CString(""), false);
         for (size_t i = 0; i < files.GetCount(); i++)
         {
             CString strFile = files[i];
@@ -877,7 +877,7 @@ void CAchieveData::LoadAll()
 void CAchieveData::Load(CString strPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
@@ -894,7 +894,7 @@ void CAchieveData::Load(CString strPath)
     {
         Unk_XmlNode* pNode = nodes[i];
         MS2Ptr<CAchieveData> pData(new CAchieveData);
-        pData->FUN_1401d1160(CString(strPath));
+        pData->SetPath(CString(strPath));
         XmlGetAttr((class TiXmlElement*)(pNode), "id", pData->m_nId);
         XmlGetAttr((class TiXmlElement*)(pNode), "noticePercent", pData->m_nNoticePercent);
         XmlGetBool((class TiXmlElement*)(pNode), "account", *(int*)(&pData->m_nAccount));
@@ -947,7 +947,7 @@ void CAchieveData::Load(CString strPath)
                 {
                     CString strId;
                     strId.Format("AchieveID=%u", pData->m_nId);
-                    reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f5e90(pGrade->m_reward.m_nCode, pGrade->m_reward.m_nRank,
+                    reinterpret_cast<CItemOptionTable*>(GetItemOptionTable())->FUN_1405f5e90(pGrade->m_reward.m_nCode, pGrade->m_reward.m_nRank,
                                                    CString("CAchieveGradeData first Achieve.xml"), CString(strId));
                 }
                 else if (pGrade->m_reward.m_nType == 3)
@@ -979,7 +979,7 @@ void CAchieveData::Load(CString strPath)
 void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog(GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
@@ -996,7 +996,7 @@ void CAchieveData::LoadClient(CString strPath, MS2Ptr<CAchieveData>& rOut)
     {
         Unk_XmlNode* pNode = nodes[i];
         MS2Ptr<CAchieveData> pData(new CAchieveData);
-        pData->FUN_1401d1160(CString(strPath));
+        pData->SetPath(CString(strPath));
         XmlGetAttr((class TiXmlElement*)(pNode), "id", pData->m_nId);
         XmlGetAttr((class TiXmlElement*)(pNode), "noticePercent", pData->m_nNoticePercent);
         XmlGetBool((class TiXmlElement*)(pNode), "account", *(int*)(&pData->m_nAccount));

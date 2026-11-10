@@ -18,7 +18,7 @@ void TerrainExportScheduler::FUN_14183e2c0(unsigned char select)
     m_maps.RemoveAll();
     m_cur = 0;
     std::vector<MS2Ptr<CFieldData> > list;
-    CFieldData::FUN_140374090(list);
+    CFieldData::GetAllFields(list);
     int curId = WorldService::GetInstance()->FUN_141bd3060();
     int index = 0;
     std::vector<MS2Ptr<CFieldData> >* range = &list;
@@ -33,7 +33,7 @@ void TerrainExportScheduler::FUN_14183e2c0(unsigned char select)
         index = index + 1;
     }
     unsigned* p = &m_maps[m_cur];
-    WorldService::GetInstance()->FUN_141bbbe40(*p, 1, 0);
+    WorldService::GetInstance()->LoadMap(*p, 1, 0);
 }
 
 MS2_REPLACE_METHOD(0x14183E2C0, TerrainExportScheduler, FUN_14183e2c0, 383, 0xBF38375E);
@@ -49,7 +49,7 @@ void TerrainExportScheduler::vfunc_1(int)
     unsigned __int64 next = m_cur + 1;
     m_cur = next;
     if (next < m_maps.GetCount()) {
-        mgr->FUN_141bbbe40(m_maps[m_cur], 1, 0);
+        mgr->LoadMap(m_maps[m_cur], 1, 0);
     } else {
         mgr->FUN_141bbae80((IWorldServiceCallback*)this);
         MessageBoxA(0, "Export Complete!", "Yeah", 0);

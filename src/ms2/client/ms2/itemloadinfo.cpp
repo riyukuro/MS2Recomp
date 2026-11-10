@@ -265,12 +265,12 @@ void CItemLoader::LoadNext(CItemLoader* pLoader)
             }
             std::map<std::string, std::list<NiAVObjectPtr> >& nifs = info->m_nifs;
             NiAVObjectPtr nif(0);
-            for (size_t i = 0; i < data->GetModelOrEmpty()->FUN_14054b3d0(); ++i)
+            for (size_t i = 0; i < data->GetModelOrEmpty()->GetGroupCount(); ++i)
             {
                 const ModelGroup* pGroup = data->GetModelOrEmpty()->GetGroup(i);
-                for (size_t j = 0; j < pGroup->FUN_1405450c0(); ++j)
+                for (size_t j = 0; j < pGroup->GetPartCount(); ++j)
                 {
-                    const ModelPart* pPart = pGroup->FUN_140544fe0(j);
+                    const ModelPart* pPart = pGroup->GetPart(j);
                     if (pPart->isNif == 1)
                     {
                         if (data->FUN_14053cfd0())

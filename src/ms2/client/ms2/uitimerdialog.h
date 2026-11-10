@@ -13,7 +13,7 @@ public:UITimerDialog();
  virtual void vfunc_85();
  virtual void vfunc_86();
  virtual int vfunc_48();
- void FUN_141b26bf0();
+ void StopEffect();
  bool FUN_141b26c50(int& nMin,int& nSec);
 private:MS2_LAYOUT_FRIEND;
  int m_nEffectRunning;          // +0x188 effect request is live

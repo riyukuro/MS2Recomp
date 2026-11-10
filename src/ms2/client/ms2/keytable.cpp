@@ -129,10 +129,10 @@ void FUN_14028faa0(Unk_XmlElement* pParent, const char* pszName, const char* psz
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 CString FUN_14028d1f0(const char* psz);
 CStringW GetStringCommonByKey(const CStringW& strKey);              // string table text by key
-void FUN_1412751f0(const CStringW& strText, int nA, int nB);  // system notice
+void ShowSystemNotice(const CStringW& strText, int nA, int nB);  // system notice
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
 extern int g_bAppActive;                                   // input enabled
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement* pElem);                  // the element is enabled
 int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);           // int attribute
 unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault);  // unsigned attribute
@@ -146,7 +146,7 @@ class Unk_KtMainPlayerInfo : public UIMainPlayerInfo                            
 {
 public:
 };
-UIMainPlayerInfo* FUN_140931900(int nUiId);
+UIMainPlayerInfo* FindMainPlayerInfo(int nUiId);
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);          // string-table text, "{0}" arguments
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* sep);   // split
@@ -163,7 +163,7 @@ public:
     Unk_KtQuestList m_list;                                 // +0x10
 };
 void* FUN_140764020();   // C3: the real return type; callers cast to Unk_KtQuestMgr
-class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (the scene-service global)
+class CUserMail { public: static __int64 GetGFxSceneService(); };  // C3: member view (the scene-service global)
 class GFxSceneService                                       // the scene sound/UI scene controller
 {
 public:
@@ -174,7 +174,7 @@ UIGameMenuDialog* FindGameMenuDialog(int nUiId);   // the 0x4e28 popup menu
 class Unk_KtRules { public: unsigned char m_pad[8]; CContentShutdown m_flags; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: the real return type; callers cast to Unk_KtRules
 CStringW FUN_140298ea0(CStringW strKey);                    // string table text (second table)
-void FUN_140d73aa0(CStringW strMsg, int nType, void* pListener, CStringW strTag);   // message box
+void ShowMessageBox(CStringW strMsg, int nType, void* pListener, CStringW strTag);   // message box
 class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527840's record (item.cpp owns the real one)
 int UseItem(MS2Ptr<CItem> spItem, int nMode);              // 0x140d1bd60
 int FUN_140dffeb0(class Unk_OxArgs* pArgs);                // the ugc event item command
@@ -207,7 +207,7 @@ private:
 };
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, unsigned nValue);      // C3: was FUN_140873ce0 (int)
 void XmlSetAttr(TiXmlElement* pElem, const char* pszName, const size_t& nValue);      // SetAttribute (size_t)
-CString FUN_1412755f0();                                    // the user setting directory
+CString GetCharacterFolder();                                    // the user setting directory
 CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path join
 
 // A key code as a custom-formatted fmt argument (as in gameoptioninputdefault.cpp / guess\usercommandcli.cpp).
@@ -292,7 +292,7 @@ void CKeyTable::OnKeyTable(CInPacket& packet)
         if (nDefault == 1)
         {
             FUN_1414297e0("./Data/Xml/Table/default/DefaultKey.xml", 0);
-            if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xb5) == true)
+            if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xb5) == true)
             {
                 if (FUN_140a58540()->GetPadKind() == 2)
                     FUN_141429e60("./Data/Xml/Table/default/DefaultPSKey.xml");
@@ -306,7 +306,7 @@ void CKeyTable::OnKeyTable(CInPacket& packet)
             if (nCount == 0)
             {
                 FUN_1414297e0("./Data/Xml/Table/default/DefaultKey.xml", 0);
-                if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xb5) == true)
+                if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xb5) == true)
                 {
                     if (FUN_140a58540()->GetPadKind() == 2)
                         FUN_141429e60("./Data/Xml/Table/default/DefaultPSKey.xml");
@@ -398,7 +398,7 @@ MS2_REPLACE_METHOD(0x1414294E0, CKeyTable, SendKeyTableMode1, 281, 0xE9AD9B88);
 // @0x141429600
 void CKeyTable::SendKeysToServer()
 {
-    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000c)
+    if (TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() != 0x620000c)
         return;
     if (m_bDirty == 0)
         return;
@@ -429,7 +429,7 @@ MS2_REPLACE_METHOD(0x141429600, CKeyTable, SendKeysToServer, 467, 0x64A12F3D);
 int CKeyTable::FUN_1414297e0(const CString& strPath, int n)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -500,7 +500,7 @@ MS2_REPLACE_METHOD(0x1414297E0, CKeyTable, FUN_1414297e0, 1645, 0x48DBACBE);
 int CKeyTable::FUN_141429e60(const CString& strPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -614,7 +614,7 @@ void CKeyTable::FUN_14142a8b0(__int64 nAction)
 {
     CString str;
     str.Format("%I64u", nAction);
-    Unk_NotifyContext::FUN_1422c9380(str);
+    Unk_NotifyContext::MarkNameChanged(str);
 }
 MS2_REPLACE_METHOD(0x14142A8B0, CKeyTable, FUN_14142a8b0, 85, 0x3BC4C506);
 
@@ -755,14 +755,14 @@ int CKeyTable::ExecuteActionKey(int nAction)
         Unk_KtPlayer* pPlayer = static_cast<Unk_KtPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0 && !pPlayer->IsDead())
         {
-            UISceneEntity* pScene = ((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetScene();
+            UISceneEntity* pScene = ((GFxSceneService*)CUserMail::GetGFxSceneService())->GetScene();
             if (pScene != 0)
             {
                 UISceneGameBeautyShop* pShop = dynamic_cast<UISceneGameBeautyShop*>(pScene->FUN_1422e7a70(0x620001f));
                 if (pShop != 0)
-                    pShop->FUN_141ac8e70(1);
+                    pShop->SetDialogMode(1);
             }
-            ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001f);
+            ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9fd0(0x620001f);
         }
         break;
     }
@@ -770,7 +770,7 @@ int CKeyTable::ExecuteActionKey(int nAction)
     {
         Unk_KtPlayer* pPlayer = static_cast<Unk_KtPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
         if (pPlayer != 0 && !pPlayer->IsDead())
-            ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001f);
+            ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9fd0(0x620001f);
         break;
     }
     case 300014:
@@ -802,7 +802,7 @@ int CKeyTable::ExecuteActionKey(int nAction)
         TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4ebc);
         break;
     case 400018:
-        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xf9))
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xf9))
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f84);
         else
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f1c);
@@ -811,10 +811,10 @@ int CKeyTable::ExecuteActionKey(int nAction)
         TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4ec9);
         break;
     case 400020:
-        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x4e))
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x4e))
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f04);
         else
-            FUN_140d73aa0(FUN_140298ea0(L"s_pvp_arena_close_test_season_msg"), 0, 0, L"");
+            ShowMessageBox(FUN_140298ea0(L"s_pvp_arena_close_test_season_msg"), 0, 0, L"");
         break;
     case 400021:
         TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4e97);
@@ -829,7 +829,7 @@ int CKeyTable::ExecuteActionKey(int nAction)
         TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4ebd);
         break;
     case 400038:
-        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xd3))
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xd3))
         {
             if (reinterpret_cast<Unk_KtRules*>(FUN_14025e7b0())->m_flags.Get((CContentShutdown::Content)0x5b))
             {
@@ -852,7 +852,7 @@ int CKeyTable::ExecuteActionKey(int nAction)
         TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f0c);
         break;
     case 400026:
-        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x4a))
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x4a))
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f1b);
         break;
     case 400027:
@@ -869,7 +869,7 @@ int CKeyTable::ExecuteActionKey(int nAction)
         TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f1e);
         break;
     case 400030:
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f18))
+        if (TSingleton<CUIService>::GetInstance()->IsDialogOpen((eUIClassID)0x4f18))
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f18);
         else
         {
@@ -891,7 +891,7 @@ int CKeyTable::ExecuteActionKey(int nAction)
         TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)0x4f25);
         break;
     case 400035:
-        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x8c))
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x8c))
             TSingleton<CUIService>::GetInstance()->ToggleDialog(eUI_4f38);
         break;
     }
@@ -964,7 +964,7 @@ void CKeyTable::FUN_14142bb10()
         for (unsigned i = 0; i < aKeys.GetCount(); i++)
         {
             int nKey = aKeys[i];
-            if (static_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d9c0(nKey, false, 0))
+            if (static_cast<CInputKeyHandler*>(FUN_14025e7c0())->WasKeyPressed(nKey, false, 0))
             {
                 if (IsShortKey(nKey))
                     continue;
@@ -1341,7 +1341,7 @@ CStringW CKeyTable::GetKeyName(int nKey)
     MS2Ptr<stKeyData> spKey(0);
     if (m_keys.Lookup(nKey, spKey))
     {
-        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xb5) == true)
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xb5) == true)
         {
             if (IsGamepadKey(nKey) == 0)
             {
@@ -1403,9 +1403,9 @@ MS2_REPLACE_METHOD(0x14142D760, CKeyTable, GetActionKeyName, 107, 0xA4DDC314);
 // @0x14142d7e0
 CStringW CKeyTable::GetKeyActionLabel(const int& nKey)
 {
-    unsigned __int64 nAction = FUN_1409331f0()->GetKeyAction(nKey);
+    unsigned __int64 nAction = GetKeyTable()->GetKeyAction(nKey);
     if (IsQuickSlotKey(nKey))
-        return StringFormat(L"{0}[{1}]", TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((int)nAction), FUN_1409331f0()->GetKeyName(nKey));
+        return StringFormat(L"{0}[{1}]", TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((int)nAction), GetKeyTable()->GetKeyName(nKey));
     else if (nAction >= 0xaae61 && nAction <= 0xaae63)
         return TSingleton<CStringTable>::GetInstance()->FUN_1418125b0((int)nAction);
     else if (nAction >= 0xdbba1 && nAction <= 0xdbbaa)
@@ -1548,7 +1548,7 @@ __int64 CKeyTable::GetQuickSlotItemUidByKey(unsigned nKey)
     int nIndex = 0;
     Unk_KtMainPlayerInfo* pInfo;
     SkillSlot* pSlot;
-    if (FindQuickSlotIndexByKey(nKey, nIndex) && (pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f)) != 0 && (pSlot = (SkillSlot*)pInfo->FUN_1419f2930(nIndex)) != 0)
+    if (FindQuickSlotIndexByKey(nKey, nIndex) && (pInfo = (Unk_KtMainPlayerInfo*)FindMainPlayerInfo(0x4e5f)) != 0 && (pSlot = (SkillSlot*)pInfo->GetSlot(nIndex)) != 0)
     {
         MS2Ptr<CItem> spItem = pSlot->vfunc_25();
         if (spItem.get())
@@ -1564,7 +1564,7 @@ int CKeyTable::GetQuickSlotItemIdByKey(unsigned nKey)
     int nIndex = 0;
     Unk_KtMainPlayerInfo* pInfo;
     SkillSlot* pSlot;
-    if (FindQuickSlotIndexByKey(nKey, nIndex) && (pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f)) != 0 && (pSlot = (SkillSlot*)pInfo->FUN_1419f2930(nIndex)) != 0)
+    if (FindQuickSlotIndexByKey(nKey, nIndex) && (pInfo = (Unk_KtMainPlayerInfo*)FindMainPlayerInfo(0x4e5f)) != 0 && (pSlot = (SkillSlot*)pInfo->GetSlot(nIndex)) != 0)
         return pSlot->GetItemId();
     return 0;
 }
@@ -1757,12 +1757,12 @@ int CKeyTable::HasSkillSlotMatch(int nSkillId, int nItemId, __int64 nItemUid, un
     static int s_aSlotIndex[25] = { 4, 5, 6, 7, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
     if (nCount > 25)
         nCount = 25;
-    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FindMainPlayerInfo(0x4e5f);
     if (!pInfo)
         return 0;
     for (unsigned i = 0; i < nCount; i++)
     {
-        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(s_aSlotIndex[i]);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->GetSlot(s_aSlotIndex[i]);
         if (!pSlot)
             continue;
         if (nItemId != 0 && pSlot->GetItemId() == nItemId)
@@ -1788,14 +1788,14 @@ void CKeyTable::ApplySkillSetToQuickSlots(MS2Ptr<CSkillSet> spSet)
     if (pPage == 0)
         return;
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifySkillSetMode(true)));
-    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FindMainPlayerInfo(0x4e5f);
     if (pInfo == 0)
         return;
     size_t nSkill = 0;
     size_t nItem = 0;
     for (unsigned i = 0; i < 25; i++)
     {
-        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(s_aSlotIndex[i]);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->GetSlot(s_aSlotIndex[i]);
         if (!pSlot)
             continue;
         pSlot->vfunc_11();
@@ -1818,7 +1818,7 @@ void CKeyTable::ApplySkillSetToQuickSlots(MS2Ptr<CSkillSet> spSet)
                 continue;
             }
             Unk_SsQuickEntry entry;
-            entry.m_nSkillId = spItem->FUN_14053dc20();
+            entry.m_nSkillId = spItem->GetSkillId();
             entry.m_nItemId = nItemId;
             entry.m_nItemUid = 0;
             pPage->SetAt(s_aSlotIndex[i], entry);
@@ -1844,12 +1844,12 @@ void CKeyTable::ApplyItemListToQuickSlots(const ATL::CAtlArray<unsigned>& aItemI
     if (pPage == 0)
         return;
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifySkillSetMode(true)));
-    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FindMainPlayerInfo(0x4e5f);
     if (pInfo == 0)
         return;
     for (unsigned i = 0; i < 25; i++)
     {
-        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(s_aSlotIndex[i]);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->GetSlot(s_aSlotIndex[i]);
         if (!pSlot)
             continue;
         pSlot->vfunc_11();
@@ -1873,14 +1873,14 @@ void CKeyTable::FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsig
     static int s_aSlotIndex[25] = { 4, 5, 6, 7, 0, 1, 2, 3, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
     if (m_nLocked != 1)
         return;
-    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FindMainPlayerInfo(0x4e5f);
     if (!pInfo)
         return;
     if (nCount > 25)
         nCount = 25;
     for (unsigned i = 0; i < nCount; i++)
     {
-        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(s_aSlotIndex[i]);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->GetSlot(s_aSlotIndex[i]);
         if (!pSlot)
             continue;
         if (nItemId != 0 && pSlot->GetItemId() == nItemId)
@@ -1895,7 +1895,7 @@ void CKeyTable::FUN_14142ef50(int nSkillId, int nItemId, __int64 nItemUid, unsig
         return;
     for (unsigned j = 0; j < nCount; j++)
     {
-        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(s_aSlotIndex[j]);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->GetSlot(s_aSlotIndex[j]);
         if (!pSlot)
             continue;
         if (pSlot->GetItemId() == 0 && pSlot->GetSkillId() == 0 && pSlot->GetItemUid() == 0)
@@ -1920,13 +1920,13 @@ MS2_REPLACE_METHOD(0x14142EF50, CKeyTable, FUN_14142ef50, 607, 0x560846BE);
 // @0x14142f1c0
 void CKeyTable::FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid)
 {
-    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FindMainPlayerInfo(0x4e5f);
     if (pInfo == 0)
         return;
     int nSlot = FUN_141432650(nItemId);
     if (nSlot == -1)
         return;
-    SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(nSlot);
+    SkillSlot* pSlot = (SkillSlot*)pInfo->GetSlot(nSlot);
     if (pSlot == 0)
         return;
     if (pSlot->GetSkillId() != 0 || pSlot->GetItemUid() != 0 || pSlot->GetItemId() != 0)
@@ -1938,19 +1938,19 @@ void CKeyTable::FUN_14142f1c0(int nSkillId, int nItemId, __int64 nItemUid)
     {
         if (pPlayer->GetJobGroupId() == 90)
         {
-            if (!reinterpret_cast<CQuestManagerCommon*>(&static_cast<Unk_KtQuestMgr*>(FUN_140764020())->m_list)->FUN_140745590(90000414))
+            if (!reinterpret_cast<CQuestManagerCommon*>(&static_cast<Unk_KtQuestMgr*>(FUN_140764020())->m_list)->IsQuestRewarded(90000414))
                 return;
-            if (!reinterpret_cast<CQuestManagerCommon*>(&static_cast<Unk_KtQuestMgr*>(FUN_140764020())->m_list)->FUN_140745590(90000415))
+            if (!reinterpret_cast<CQuestManagerCommon*>(&static_cast<Unk_KtQuestMgr*>(FUN_140764020())->m_list)->IsQuestRewarded(90000415))
                 return;
         }
         if (pPlayer->GetJobGroupId() == 110)
         {
-            if (!reinterpret_cast<CQuestManagerCommon*>(&static_cast<Unk_KtQuestMgr*>(FUN_140764020())->m_list)->FUN_140745590(90000444))
+            if (!reinterpret_cast<CQuestManagerCommon*>(&static_cast<Unk_KtQuestMgr*>(FUN_140764020())->m_list)->IsQuestRewarded(90000444))
                 return;
         }
         if (pPlayer->GetJobGroupId() == 100)
         {
-            if (!reinterpret_cast<CQuestManagerCommon*>(&static_cast<Unk_KtQuestMgr*>(FUN_140764020())->m_list)->FUN_140745590(90000431))
+            if (!reinterpret_cast<CQuestManagerCommon*>(&static_cast<Unk_KtQuestMgr*>(FUN_140764020())->m_list)->IsQuestRewarded(90000431))
                 return;
         }
     }
@@ -1975,7 +1975,7 @@ MS2_REPLACE_METHOD(0x14142F1C0, CKeyTable, FUN_14142f1c0, 668, 0xE69F370C);
 // @0x14142f470
 void CKeyTable::FUN_14142f470(int nPage, int nSlot)
 {
-    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FindMainPlayerInfo(0x4e5f);
     if (pInfo == 0)
         return;
     QuickSlotPage* pPage = GetQuickSlotPage(nPage);
@@ -1985,9 +1985,9 @@ void CKeyTable::FUN_14142f470(int nPage, int nSlot)
     g_143ab2a90.GetItemsInCategory(10, items);
     for (size_t i = 0; i < items.GetCount(); i++)
     {
-        int nSkillId = items[i]->FUN_140527840()->FUN_14053dc20();
+        int nSkillId = items[i]->FUN_140527840()->GetSkillId();
         __int64 nItemUid = items[i]->GetItemUid();
-        int nItemId = items[i]->FUN_1405276c0();
+        int nItemId = items[i]->GetItemId();
         int nJobSlot = FUN_141432650(nItemId);
         if (nJobSlot == -1)
             continue;
@@ -2002,7 +2002,7 @@ void CKeyTable::FUN_14142f470(int nPage, int nSlot)
         pPage->SetAt(nSlot, entry);
         if (nPage == m_nQuickSlotPage)
         {
-            SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(nJobSlot);
+            SkillSlot* pSlot = (SkillSlot*)pInfo->GetSlot(nJobSlot);
             if (pSlot == 0)
                 continue;
             pSlot->SetSkillId(nSkillId);
@@ -2022,9 +2022,9 @@ void CKeyTable::SendKeyTableMode7()
 {
     if (m_nLocked == 0)
         return;
-    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FindMainPlayerInfo(0x4e5f);
     if (pInfo)
-        pInfo->FUN_1419f2a90();
+        pInfo->ClearQuickSlots();
     m_nLocked = 0;
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->Post(MS2Ptr<NotifyObject>(new NotifySkillSetMode(false)));
     SendKeysToServer();
@@ -2063,7 +2063,7 @@ template <class T> void Unk_KtLogFormat(Unk_KtLog* pLog, int nLevel, int nCatego
 // @0x14142f8b0
 void CKeyTable::SaveKeySetting(CString strName)
 {
-    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FindMainPlayerInfo(0x4e5f);
     if (pInfo == 0)
         return;
     TiXmlDocument doc;
@@ -2072,7 +2072,7 @@ void CKeyTable::SaveKeySetting(CString strName)
     TiXmlElement* pRoot = new TiXmlElement("ms2");
     for (size_t i = 0; i < 25; i++)
     {
-        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930((int)i);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->GetSlot((int)i);
         if (!pSlot)
             continue;
         int nItemId = pSlot->GetItemId();
@@ -2082,7 +2082,7 @@ void CKeyTable::SaveKeySetting(CString strName)
         {
             MS2Ptr<CItemData> spItem = FUN_14053f870(nJobItemId);
             if (spItem)
-                nSkillId = spItem->FUN_14053dc20();
+                nSkillId = spItem->GetSkillId();
         }
         TiXmlElement* pSetting = new TiXmlElement("setting");
         XmlSetAttr(pSetting, "index", i);
@@ -2092,19 +2092,19 @@ void CKeyTable::SaveKeySetting(CString strName)
     }
     reinterpret_cast<TiXmlNode*>(&doc)->LinkEndChild(reinterpret_cast<TiXmlNode*>(pRoot));
     CString strFile = StringFormat<CString>("keySetting_{0}.xml", strName);
-    doc.SaveFile(FUN_140cc2a00(FUN_1412755f0(), strFile));
+    doc.SaveFile(FUN_140cc2a00(GetCharacterFolder(), strFile));
 }
 MS2_REPLACE_METHOD(0x14142F8B0, CKeyTable, SaveKeySetting, 843, 0x96150CB6);
 
 // @0x14142fc10
 void CKeyTable::LoadKeySetting(CString strName)
 {
-    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FUN_140931900(0x4e5f);
+    Unk_KtMainPlayerInfo* pInfo = (Unk_KtMainPlayerInfo*)FindMainPlayerInfo(0x4e5f);
     if (pInfo == 0)
         return;
     CString strFile = StringFormat<CString>("keySetting_{0}.xml", strName);
     TiXmlDocument doc;
-    if (!doc.LoadFile(FUN_140cc2a00(FUN_1412755f0(), strFile), TIXML_ENCODING_UNKNOWN))
+    if (!doc.LoadFile(FUN_140cc2a00(GetCharacterFolder(), strFile), TIXML_ENCODING_UNKNOWN))
         return;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -2124,9 +2124,9 @@ void CKeyTable::LoadKeySetting(CString strName)
         {
             MS2Ptr<CItemData> spItem = FUN_14053f870(nJobItemId);
             if (spItem)
-                nSkillId = spItem->FUN_14053dc20();
+                nSkillId = spItem->GetSkillId();
         }
-        SkillSlot* pSlot = (SkillSlot*)pInfo->FUN_1419f2930(nIndex);
+        SkillSlot* pSlot = (SkillSlot*)pInfo->GetSlot(nIndex);
         if (!pSlot)
             continue;
         pSlot->vfunc_11();
@@ -2148,7 +2148,7 @@ MS2_REPLACE_METHOD(0x14142FC10, CKeyTable, LoadKeySetting, 978, 0x3C20ED15);
 int CKeyTable::LoadKeySettingTable()
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "keySetting.xml"), 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, GetXmlPath("Table", "keySetting.xml"), 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -2606,12 +2606,12 @@ void CKeyTable::FUN_141431f20(int nKey)
 {
     CString str;
     str.Format("%d", nKey);
-    Unk_NotifyContext::FUN_1422c9380(str);
+    Unk_NotifyContext::MarkNameChanged(str);
     int nPair;
     if (m_pairKeys.Lookup(nKey, nPair))
     {
         str.Format("%d", nPair);
-        Unk_NotifyContext::FUN_1422c9380(str);
+        Unk_NotifyContext::MarkNameChanged(str);
     }
 }
 MS2_REPLACE_METHOD(0x141431F20, CKeyTable, FUN_141431f20, 153, 0xDC75732D);
@@ -2643,7 +2643,7 @@ int CKeyTable::FUN_141432010(int nAction)
     case 0x61a81:
     case 0x61a82:
     case 0x61a85:
-        FUN_1412751f0(GetStringCommonByKey(L"s_hide_pcinfo_dialog_disable_message"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_hide_pcinfo_dialog_disable_message"), 1, 1);
         return 0;
     }
     return 1;

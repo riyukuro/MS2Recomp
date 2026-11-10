@@ -40,7 +40,7 @@ void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStrin
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strIcon);
 
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);
+Scaleform::GFx::Movie* GetMovie(int nMovieId);
 MS2Ptr<ASEffectManager> FUN_140e6cd80(int nMovieId, CString strClass, __int64 a1, int a2);   // create the clip
 
 // AScript calls with a fixed argument list (the 3-argument one is this unit's own COMDAT copy)
@@ -60,8 +60,8 @@ template CString Unk_SocketFormat<Unk_NdJobCode>(const char*, const Unk_NdJobCod
 // @0x140e6b7b0
 UINpcDuelHPBarDialog::UINpcDuelHPBarDialog()
 {
-    FUN_141924170(1);
-    FUN_141925e70(0, 1);
+    SetTweenEnabled(1);
+    SetFlag(0, 1);
     m_nObjectId = 0;
     m_nBarCount = 1;
 }
@@ -94,7 +94,7 @@ void UINpcDuelHPBarDialog::vfunc_72()
         return;
     UpdateRemainingTime();
     UpdatePlayerHpBar();
-    FUN_140e6c9c0();
+    UpdateNpcHpBar();
     if (m_effects.get() != 0)
         m_effects->Update();
 }
@@ -106,7 +106,7 @@ void UINpcDuelHPBarDialog::OnLoadComplete()
     m_effects = FUN_140e6cd80(2, "flash.display.MovieClip", 0, 0);
     m_effects->SetPosA(0x2c4, 0x3c);
     m_effects->SetPosB(0x2c4, 0x69);
-    m_30->Invoke("addChild", m_effects->FUN_1422bb870());
+    m_30->Invoke("addChild", m_effects->GetValue());
     FUN_140e6bc10();
 }
 
@@ -140,13 +140,13 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
     }
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nObjectId));
     if (pNpc != 0) {
-        CStringW strName = FUN_14028dfa0<CStringW, CStringW>(L"s_npc_duelhpbar_dialog_right_name", FUN_1401aa6a0(pNpc->FUN_141092fa0()),
+        CStringW strName = FUN_14028dfa0<CStringW, CStringW>(L"s_npc_duelhpbar_dialog_right_name", FUN_1401aa6a0(pNpc->GetNpcId()),
             TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, pNpc->GetNpcData()->GetRace()));
         SetChildHtmlText(FUN_1422dbc00(), "m_rightName", strName);
         SetChildText(FUN_1422dbc00(), "m_rightLevel", StringFormat(L"{0}", pNpc->vfunc_78()));
         CString strProfile(pNpc->GetNpcData()->m_strPortrait);
         m_30->Invoke("setRightProfile", strProfile);
-        FUN_140e6c9c0();
+        UpdateNpcHpBar();
         m_effects->Clear();
         ATL::CAtlList<MS2Ptr<AdditionalCli> > list(10);
         reinterpret_cast<AdditionalCliList*>(pNpc->FUN_1416749a0())->FUN_1409725f0(list);
@@ -157,13 +157,13 @@ void UINpcDuelHPBarDialog::FUN_140e6bc10()
             bool bFlag = FUN_140930110(buff->m_nCasterId);
             if (!buff->GetLevelData()->m_ui.FUN_1401927c0(bFlag))
                 continue;
-            FUN_140e6c440(buff);
+            AddBuffEffect(buff);
         }
     }
 }
 
 // @0x140e6c440
-void UINpcDuelHPBarDialog::FUN_140e6c440(MS2Ptr<AdditionalCli> buff)
+void UINpcDuelHPBarDialog::AddBuffEffect(MS2Ptr<AdditionalCli> buff)
 {
     if (m_30 == 0)
         return;
@@ -175,7 +175,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c440(MS2Ptr<AdditionalCli> buff)
 }
 
 // @0x140e6c540
-void UINpcDuelHPBarDialog::FUN_140e6c540(MS2Ptr<AdditionalCli> buff)
+void UINpcDuelHPBarDialog::UpdateBuffEffect(MS2Ptr<AdditionalCli> buff)
 {
     if (m_30 == 0)
         return;
@@ -241,7 +241,7 @@ void UINpcDuelHPBarDialog::UpdatePlayerHpBar()
 }
 
 // @0x140e6c9c0
-void UINpcDuelHPBarDialog::FUN_140e6c9c0()
+void UINpcDuelHPBarDialog::UpdateNpcHpBar()
 {
     if (m_30 == 0)
         return;
@@ -282,7 +282,7 @@ void UINpcDuelHPBarDialog::FUN_140e6c9c0()
 // @0x140e6cd80
 MS2Ptr<ASEffectManager> FUN_140e6cd80(int nMovieId, CString strClass, __int64 a1, int a2)
 {
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(nMovieId);
     if (pMovie == 0)
         return MS2Ptr<ASEffectManager>(0);
     Scaleform::GFx::Value obj;
@@ -309,10 +309,10 @@ MS2_REPLACE_METHOD(0x140E6B8F0, UINpcDuelHPBarDialog, vfunc_67, 90, 0x54B3777A);
 MS2_REPLACE_METHOD(0x140E6B950, UINpcDuelHPBarDialog, vfunc_72, 123, 0x2C3B24B1);
 MS2_REPLACE_METHOD(0x140E6B9E0, UINpcDuelHPBarDialog, OnLoadComplete, 387, 0x3FEED2D8);
 MS2_REPLACE_METHOD(0x140E6BB70, UINpcDuelHPBarDialog, StartDuelBar, 145, 0x9B9A0FFE);
-MS2_REPLACE_METHOD(0x140E6C440, UINpcDuelHPBarDialog, FUN_140e6c440, 247, 0xDB003D3C);
-MS2_REPLACE_METHOD(0x140E6C540, UINpcDuelHPBarDialog, FUN_140e6c540, 247, 0x169BBFC0);
+MS2_REPLACE_METHOD(0x140E6C440, UINpcDuelHPBarDialog, AddBuffEffect, 247, 0xDB003D3C);
+MS2_REPLACE_METHOD(0x140E6C540, UINpcDuelHPBarDialog, UpdateBuffEffect, 247, 0x169BBFC0);
 MS2_REPLACE_METHOD(0x140E6C640, UINpcDuelHPBarDialog, RemoveBuffEffect, 107, 0x38164386);
 MS2_REPLACE_METHOD(0x140E6C6C0, UINpcDuelHPBarDialog, vfunc_43, 203, 0x0737E564);
 MS2_REPLACE_METHOD(0x140E6C900, UINpcDuelHPBarDialog, UpdatePlayerHpBar, 181, 0x15054B8C);
-MS2_REPLACE_METHOD(0x140E6C9C0, UINpcDuelHPBarDialog, FUN_140e6c9c0, 951, 0xE11ED690);
+MS2_REPLACE_METHOD(0x140E6C9C0, UINpcDuelHPBarDialog, UpdateNpcHpBar, 951, 0xE11ED690);
 MS2_REPLACE(0x140E6CD80, FUN_140e6cd80, 436, 0x15B246EF);

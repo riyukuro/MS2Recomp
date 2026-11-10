@@ -28,10 +28,10 @@ public:
     virtual int vfunc_o178_2(void* pAvatar);                        // 0x1412d6250
     virtual int vfunc_48() { return 0x4ec2; }                       // 48 (COMDAT 0x1412d6c70)
 
-    void FUN_1412d6270();                                           // "loadRenderTarget"
-    void FUN_1412d62d0();                                           // "unloadRenderTarget"
+    void LoadRenderTarget();                                           // "loadRenderTarget"
+    void UnloadRenderTarget();                                           // "unloadRenderTarget"
     void FUN_1412d6330(MS2Ptr<CItem> spItem);                       // show the item on the avatar
-    void FUN_1412d66e0(const Scaleform::GFx::FunctionHandler::Params& params);   // tooltip callback
+    void GetItemTooltip(const Scaleform::GFx::FunctionHandler::Params& params);   // tooltip callback
 
 private:
     MS2_LAYOUT_FRIEND;

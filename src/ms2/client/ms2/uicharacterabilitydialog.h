@@ -40,13 +40,13 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x140f2ae70 "OnMesoReset"
     virtual void vfunc_15();                            // 15 0x140f2abb0 empty
 
-    void FUN_140f2b000(NotifyObject* pNotify);          // the level changed
+    void OnChangeMyLevel(NotifyObject* pNotify);          // the level changed
     void FUN_140f2b0f0();                               // all abilities arrived
-    void FUN_140f2b110(MS2Ptr<CCharacterAbility> ref);   // one ability learned (by value: callee destroys)
-    void FUN_140f2b1e0();                               // send the whole table
+    void OnAbilityLearned(MS2Ptr<CCharacterAbility> ref);   // one ability learned (by value: callee destroys)
+    void BuildAbilityTable();                               // send the whole table
     void FUN_140f2b760();                               // send the points text
     void FUN_140f2b850();                               // send the reset cooldown button
-    void FUN_140f2ba20();                               // send the "disabled" text (quest not done)
+    void UpdateDisabledText();                               // send the "disabled" text (quest not done)
     void FUN_140f2bee0(unsigned short nLevel);          // flag the menu button when an ability is new at this level
 
 private:
@@ -57,4 +57,4 @@ private:
 };
 MS2_CHECK_SIZE(UICharacterAbilityDialog, 0x188);
 
-UICharacterAbilityDialog* FUN_140f2c530(int nId);       // GetDialog<UICharacterAbilityDialog>
+UICharacterAbilityDialog* GetCharacterAbilityDialog(int nId);       // GetDialog<UICharacterAbilityDialog>

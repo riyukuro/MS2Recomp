@@ -30,7 +30,7 @@ public:
 
     void FUN_1418b6580();                                       // fill the movie: title, contract button, emblems
     void FUN_1418b6840(int nA, int nMapId, int nGroup);         // 0x1418b6840 select the apartment
-    void FUN_1418b68c0();                                       // 0x1418b68c0 show the contract effect
+    void ShowContractEffect();                                       // 0x1418b68c0 show the contract effect
     void FUN_1418b6990(int nRoom);                              // 0x1418b6990 move to the apartment
     bool FUN_1418b6ab0(int nMode);                              // 0x1418b6ab0 the contract message box state
     void FUN_1418b6bf0(const Scaleform::GFx::FunctionHandler::Params& params);   // the broker was clicked
@@ -38,7 +38,7 @@ public:
     void FUN_1418b6d10(const Scaleform::GFx::FunctionHandler::Params& params);   // the other door
     void FUN_1418b6d40(const Scaleform::GFx::FunctionHandler::Params& params);   // nothing
     void FUN_1418b6d60(const Scaleform::GFx::FunctionHandler::Params& params);   // the contract button was clicked
-    CStringW FUN_1418b6de0();                                   // 0x1418b6de0 the apartment name
+    CStringW GetApartmentName();                                   // 0x1418b6de0 the apartment name
     void FUN_1418b6ec0(int nUiType);                            // 0x1418b6ec0 the broker's lines
 
 private:

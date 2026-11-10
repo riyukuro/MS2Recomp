@@ -27,6 +27,9 @@
 // MS2-PIN: ??$forward@PEAV?$map@HV?$list@UStateEffectData@@V?$allocator@UStateEffectData@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@UStateEffectData@@V?$allocator@UStateEffectData@@@std@@@std@@@std@@@2@@std@@@std@@YA$$QEAPEAV?$map@HV?$list@UStateEffectData@@V?$allocator@UStateEffectData@@@std@@@std@@U?$less@H@2@V?$allocator@U?$pair@$$CBHV?$list@UStateEffectData@@V?$allocator@UStateEffectData@@@std@@@std@@@std@@@2@@0@AEAPEAV10@@Z 0x140ca1df0 ; manual
 // MS2-PIN: ??$forward@PEAVGameObject@@@std@@YA$$QEAPEAVGameObject@@AEAPEAV1@@Z 0x140ca1df0 ; manual
 // MS2-PINS-END tplpin
+// Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$forward@AEBH@std@@YAAEBHAEBH@Z 0x140ca1df0
 // MS2-PIN: ??$?0AEBH$0A@@?$tuple@AEBH@std@@QEAA@AEBH@Z 0x140ca0060 ; cf7: own byte-identical copy (table binds 0x1401e7be0 / 0x1401d97a0)
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\stateeffectmgr.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
@@ -57,7 +60,7 @@ public:
 class Unk_140166420 : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // 0x1403a1280 for T = const char*
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 unsigned char FUN_1401d1320(CCacheData*);
 int FUN_1417b90f0(CString strName);                                      // state name -> state type
@@ -67,7 +70,7 @@ class Unk_StateActorInfo;
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141bd1a10(class Unk_WsC_GameObj*);
+    int GetObjectKind(class Unk_WsC_GameObj*);
     static class WorldService* GetInstance();
 };
 
@@ -100,8 +103,8 @@ StateEffectMgr::~StateEffectMgr()
 // @0x140c9f8f0
 bool StateEffectMgr::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "StateEffectPC.xml");
-    m_cache.FUN_1401d1160(CString(strPath));
+    CString strPath = GetXmlPath("Table", "StateEffectPC.xml");
+    m_cache.SetPath(CString(strPath));
     m_effects.clear();
     return LoadXml(strPath, &m_effects);
 }
@@ -134,7 +137,7 @@ void StateEffectMgr::GetEffects(GameObject* pObject, int nStateType, Unk_StateEf
         }
         Unk_EffectQuery query;
         query.m_strName = it->m_strEffect;
-        query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1a10((class Unk_WsC_GameObj*)(pObject));
+        query.m_nObject = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->GetObjectKind((class Unk_WsC_GameObj*)(pObject));
         query.SetActor(reinterpret_cast<GameObject*>(pObject)->GetObjectId());
         int nEffectId = reinterpret_cast<CEffectService*>(((void*)TSingleton<CEffectService>::GetInstance()))->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(static_cast<NoticeMessage*>(&query)));
         if (nEffectId != 0)
@@ -166,7 +169,7 @@ MS2_REPLACE_METHOD(0x140C9FC30, StateEffectMgr, IsPlayerObject, 85, 0xEDD991A6);
 bool StateEffectMgr::LoadXml(const char* pszPath, EffectMap* pMap)
 {
     TiXmlDocument doc;
-    if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->LoadXmlFile(&doc, pszPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

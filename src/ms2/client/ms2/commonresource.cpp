@@ -38,8 +38,8 @@ class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); };          //
 class Unk_140166420 : public CFileSystem { };
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
+CString ToCString(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);                       // the document's first child element
 CString FUN_140188f50(const char* psz, int nCodePage);                   // CString from a C string
@@ -273,9 +273,9 @@ bool CommonResource::LoadXml()
 {
     m_map.RemoveAll();
     m_caches.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "commonResource.xml");
+    CString strPath = GetXmlPath("Table", "commonResource.xml");
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
         return false;
@@ -284,7 +284,7 @@ bool CommonResource::LoadXml()
         MS2Ptr<CCacheData> spCache(new CCacheData);
         if (spCache.get() != 0)
         {
-            spCache->FUN_1401d1160(CString(strPath));
+            spCache->SetPath(CString(strPath));
             m_caches.Add(spCache);
         }
     }
@@ -339,7 +339,7 @@ void CommonResource::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CommonResource).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CommonResource).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

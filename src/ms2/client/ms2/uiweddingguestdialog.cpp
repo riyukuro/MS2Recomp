@@ -84,17 +84,17 @@ MS2_CHECK_OFFSET(Unk_GsFound, m_info, 0x8);
 
 class WeddingManager;
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-void FUN_1412751f0(const CStringW& text, int nA, int nB);       // message popup
+void ShowSystemNotice(const CStringW& text, int nA, int nB);       // message popup
 void FUN_140710590(COutPacket& packet);                         // send the packet
 unsigned __int64 FUN_140718370(const CStringW& text);           // text -> number
 CStringW FUN_141b71910(__int64 nValue);                         // the number as text
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 CString FUN_141028be0(__int64 nCharSN, const CString& strProfile, int nA, CString strB);   // the profile picture url
-unsigned int FUN_140900f00();                                            // max invitations
+unsigned int GetWeddingInvitationMaxCount();                                            // max invitations
 // The buddy's level getter as this unit sees it: an int result (the body returns the 16-bit field; the call site
 // takes eax as is).
 #include "ms2/placeholder/wcformat.h"
-Scaleform::GFx::Movie*FUN_1422bb8b0(int);                              // the movie of a UI layer
+Scaleform::GFx::Movie*GetMovie(int);                              // the movie of a UI layer
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acca70 (T = ASUIComponent)
 class UITalkCinematic* FindTalkCinematic(int);   // C3: was FindTalkCinematic
 
@@ -107,10 +107,10 @@ UIWeddingGuestDialog::UIWeddingGuestDialog()
 {
     m_2c = 0x1b;
     FUN_1422dc3b0(1);
-    FUN_141924170(1);
-    FUN_140fcdc50(PagePtr(new UIWeddingGuestPageFriend(this)));
-    FUN_140fcdc50(PagePtr(new UIWeddingGuestPageGuild(this)));
-    FUN_140fcdc50(PagePtr(new UIWeddingGuestPageStranger(this)));
+    SetTweenEnabled(1);
+    RegisterPage(PagePtr(new UIWeddingGuestPageFriend(this)));
+    RegisterPage(PagePtr(new UIWeddingGuestPageGuild(this)));
+    RegisterPage(PagePtr(new UIWeddingGuestPageStranger(this)));
 }
 
 // @0x140fccab0
@@ -240,15 +240,15 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             if (nError != 0)
             {
                 WeddingManager::GetInstance()->ShowError(nError);
-                ((Scaleform::GFx::Movie*)(void*)(FUN_1422bb8b0(m_28)))->SetExternalInterfaceRetVal(Scaleform::GFx::Value(false));
+                ((Scaleform::GFx::Movie*)(void*)(GetMovie(m_28)))->SetExternalInterfaceRetVal(Scaleform::GFx::Value(false));
                 return 1;
             }
-            if (!FUN_140fcdf30(strName))
+            if (!CanAddGuest(strName))
             {
-                ((Scaleform::GFx::Movie*)(void*)(FUN_1422bb8b0(m_28)))->SetExternalInterfaceRetVal(Scaleform::GFx::Value(false));
+                ((Scaleform::GFx::Movie*)(void*)(GetMovie(m_28)))->SetExternalInterfaceRetVal(Scaleform::GFx::Value(false));
                 return 1;
             }
-            ((Scaleform::GFx::Movie*)(void*)(FUN_1422bb8b0(m_28)))->SetExternalInterfaceRetVal(Scaleform::GFx::Value(true));
+            ((Scaleform::GFx::Movie*)(void*)(GetMovie(m_28)))->SetExternalInterfaceRetVal(Scaleform::GFx::Value(true));
         }
         return 1;
     }
@@ -261,7 +261,7 @@ int UIWeddingGuestDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 }
 
 // @0x140fcd5b0
-void UIWeddingGuestDialog::FUN_140fcd5b0(Unk_GsFound* pFound)
+void UIWeddingGuestDialog::OnStrangerFound(Unk_GsFound* pFound)
 {
     GuestPtr spGuest(new WeddingGuest());
     spGuest->m_n20 = ((Unk_GsFoundInfo*)&pFound->m_info)->vfunc_4();
@@ -270,19 +270,19 @@ void UIWeddingGuestDialog::FUN_140fcd5b0(Unk_GsFound* pFound)
     spGuest->m_nKind = 2;
     if (spGuest->m_n28 == 0)
     {
-        FUN_1412751f0(GetStringCommonByKey(L"s_wedding_result_err_not_find_character"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_wedding_result_err_not_find_character"), 1, 1);
     }
     else
     {
         UIWeddingGuestPageStranger* pStranger =
             dynamic_cast<UIWeddingGuestPageStranger*>((UIWeddingGuestPage*)m_spPage);
         if (pStranger != 0)
-            pStranger->FUN_140fd88e0(spGuest);
+            pStranger->AddStranger(spGuest);
     }
 }
 
 // @0x140fcd850
-void UIWeddingGuestDialog::FUN_140fcd850(GuestPtr spGuest)
+void UIWeddingGuestDialog::AddGuest(GuestPtr spGuest)
 {
     m_guests[spGuest->m_strName] = spGuest;
     if (MS2Ptr<ASTextField> spCounter = GetChild<ASTextField>("m_counter"))
@@ -294,7 +294,7 @@ void UIWeddingGuestDialog::FUN_140fcd850(GuestPtr spGuest)
 }
 
 // @0x140fcd9d0
-void UIWeddingGuestDialog::FUN_140fcd9d0(const CStringW& strName)
+void UIWeddingGuestDialog::RemoveGuest(const CStringW& strName)
 {
     m_guests.erase(strName);
     if (MS2Ptr<ASTextField> spCounter = GetChild<ASTextField>("m_counter"))
@@ -306,7 +306,7 @@ void UIWeddingGuestDialog::FUN_140fcd9d0(const CStringW& strName)
 }
 
 // @0x140fcdb30
-bool UIWeddingGuestDialog::FUN_140fcdb30(const CStringW& strName)
+bool UIWeddingGuestDialog::IsGuestSelected(const CStringW& strName)
 {
     std::map<CStringW, GuestPtr>::iterator it = m_guests.find(strName);
     if (it != m_guests.end())
@@ -315,7 +315,7 @@ bool UIWeddingGuestDialog::FUN_140fcdb30(const CStringW& strName)
 }
 
 // @0x140fcdba0
-void UIWeddingGuestDialog::FUN_140fcdba0()
+void UIWeddingGuestDialog::ClearGuests()
 {
     m_guests.clear();
     for (std::map<CString, PagePtr>::iterator it = m_pages.begin(); it != m_pages.end(); ++it)
@@ -323,7 +323,7 @@ void UIWeddingGuestDialog::FUN_140fcdba0()
 }
 
 // @0x140fcdc50
-void UIWeddingGuestDialog::FUN_140fcdc50(PagePtr spPage)
+void UIWeddingGuestDialog::RegisterPage(PagePtr spPage)
 {
     m_pages[spPage->vfunc_6()] = spPage;
 }
@@ -331,14 +331,14 @@ void UIWeddingGuestDialog::FUN_140fcdc50(PagePtr spPage)
 // @0x140fcdcf0
 void UIWeddingGuestDialog::FUN_140fcdcf0()
 {
-    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar("m_tab"))
     {
-        spTab->FUN_1422e3400();
+        spTab->ClearDataProvider();
         for (std::map<CString, PagePtr>::iterator it = m_pages.begin(); it != m_pages.end(); ++it)
         {
             ASObj row(2);
-            row.FUN_1407cba60("page", it->second->vfunc_6());
-            row.FUN_1407cbb20("label", it->second->vfunc_7());
+            row.SetStringMember("page", it->second->vfunc_6());
+            row.SetWStringMember("label", it->second->vfunc_7());
             spTab->AddItem(row);
         }
         spTab->SetSelectedIndex(0);
@@ -347,19 +347,19 @@ void UIWeddingGuestDialog::FUN_140fcdcf0()
 }
 
 // @0x140fcdf30
-bool UIWeddingGuestDialog::FUN_140fcdf30(const CStringW& strName)
+bool UIWeddingGuestDialog::CanAddGuest(const CStringW& strName)
 {
     int nGuests;                                    // declared first: the exe gives it the first frame slot
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
     if (strName == pProxy->m_groom.m_strName || strName == pProxy->m_bride.m_strName)
     {
-        FUN_1412751f0(GetStringCommonByKey(L"s_wedding_invitation_error_user"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_wedding_invitation_error_user"), 1, 1);
         return false;
     }
     nGuests = (int)m_guests.size();
-    if (nGuests > (int)(FUN_140900f00()))
+    if (nGuests > (int)(GetWeddingInvitationMaxCount()))
     {
-        FUN_1412751f0(GetStringCommonByKey(L"s_wedding_invitation_error_max_user"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_wedding_invitation_error_max_user"), 1, 1);
         return false;
     }
     return true;
@@ -368,7 +368,7 @@ bool UIWeddingGuestDialog::FUN_140fcdf30(const CStringW& strName)
 // @0x140fce0a0
 int UIWeddingGuestDialog::FUN_140fce0a0()
 {
-    return (int)(FUN_140900f00()) - WeddingManager::GetInstance()->GetInvitedCount();
+    return (int)(GetWeddingInvitationMaxCount()) - WeddingManager::GetInstance()->GetInvitedCount();
 }
 
 // @0x140fce870
@@ -467,15 +467,15 @@ bool UIWeddingGuestPageFriend::vfunc_1()
             if (spBuddy->FUN_1401cc5f0() == 0)
                 continue;
             ASObj row(2);
-            row.FUN_1407cbb20("name", spBuddy->FUN_1401cc1c0());
-            row.FUN_1407cbb20("accSN", FUN_141b71910(spBuddy->FUN_1401cc250()));
-            row.FUN_1407cbb20("charSN", FUN_141b71910(spBuddy->FUN_1401cc230()));
-            row.FUN_1407cbbe0("selected", m_pDialog->FUN_140fcdb30(spBuddy->FUN_1401cc1c0()));
-            row.FUN_1407cbb20("extra", FUN_14028dfa0<int, CStringW>(CStringW(L"s_wedding_guest_user"),
-                                                      spBuddy->FUN_1401cc210(),
-                                                      TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spBuddy->FUN_1401cc2b0())));
-            row.FUN_1407cba60("profile", FUN_141028be0(spBuddy->FUN_1401cc230(),
-                                                       FUN_14016a5c0((const char*)*spBuddy->FUN_1401cc530(), 0), 1, CString("")));
+            row.SetWStringMember("name", spBuddy->GetName());
+            row.SetWStringMember("accSN", FUN_141b71910(spBuddy->FUN_1401cc250()));
+            row.SetWStringMember("charSN", FUN_141b71910(spBuddy->FUN_1401cc230()));
+            row.SetBoolMember("selected", m_pDialog->IsGuestSelected(spBuddy->GetName()));
+            row.SetWStringMember("extra", FUN_14028dfa0<int, CStringW>(CStringW(L"s_wedding_guest_user"),
+                                                      spBuddy->GetLevel(),
+                                                      TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spBuddy->GetJobCode())));
+            row.SetStringMember("profile", FUN_141028be0(spBuddy->FUN_1401cc230(),
+                                                       ToCString((const char*)*spBuddy->FUN_1401cc530(), 0), 1, CString("")));
             spList->AddItem(row);
         }
         spList->SetSelectedIndex(0);
@@ -511,7 +511,7 @@ bool UIWeddingGuestPageFriend::vfunc_4(const char* szMethod, const Scaleform::GF
             {
                 if (!bSelected)
                 {
-                    m_pDialog->FUN_140fcd9d0(strName);
+                    m_pDialog->RemoveGuest(strName);
                 }
                 else
                 {
@@ -520,7 +520,7 @@ bool UIWeddingGuestPageFriend::vfunc_4(const char* szMethod, const Scaleform::GF
                     spGuest->m_strName = strName;
                     spGuest->m_n28 = spBuddy->FUN_1401cc230();
                     spGuest->m_n20 = spBuddy->FUN_1401cc250();
-                    m_pDialog->FUN_140fcd850(spGuest);
+                    m_pDialog->AddGuest(spGuest);
                 }
             }
             return true;
@@ -552,14 +552,14 @@ bool UIWeddingGuestPageGuild::vfunc_1()
         {
             MS2Ptr<CGuildMember> spMember = members[i];
             ASObj row(2);
-            row.FUN_1407cbb20("name", spMember->data.FUN_1404ca890());
-            row.FUN_1407cbb20("accSN", FUN_141b71910(spMember->data.f00));
-            row.FUN_1407cbb20("charSN", FUN_141b71910(spMember->data.f08));
-            row.FUN_1407cbbe0("selected", m_pDialog->FUN_140fcdb30(spMember->data.FUN_1404ca890()));
-            row.FUN_1407cbb20("extra", FUN_14028dfa0<unsigned short, CStringW>(CStringW(L"s_wedding_guest_user"), spMember->data.f1c,
+            row.SetWStringMember("name", spMember->data.GetName());
+            row.SetWStringMember("accSN", FUN_141b71910(spMember->data.f00));
+            row.SetWStringMember("charSN", FUN_141b71910(spMember->data.f08));
+            row.SetBoolMember("selected", m_pDialog->IsGuestSelected(spMember->data.GetName()));
+            row.SetWStringMember("extra", FUN_14028dfa0<unsigned short, CStringW>(CStringW(L"s_wedding_guest_user"), spMember->data.f1c,
                                                       TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMember->data.f18)));
-            row.FUN_1407cba60("profile", FUN_141028be0(spMember->data.f08,
-                                                       FUN_14016a5c0(spMember->data.FUN_1404ca980(), 0), 1, CString("")));
+            row.SetStringMember("profile", FUN_141028be0(spMember->data.f08,
+                                                       ToCString(spMember->data.GetCode(), 0), 1, CString("")));
             spList->AddItem(row);
         }
         spList->SetSelectedIndex(0);
@@ -595,7 +595,7 @@ bool UIWeddingGuestPageGuild::vfunc_4(const char* szMethod, const Scaleform::GFx
             {
                 if (!bSelected)
                 {
-                    m_pDialog->FUN_140fcd9d0(strName);
+                    m_pDialog->RemoveGuest(strName);
                 }
                 else
                 {
@@ -604,7 +604,7 @@ bool UIWeddingGuestPageGuild::vfunc_4(const char* szMethod, const Scaleform::GFx
                     spGuest->m_strName = strName;
                     spGuest->m_n28 = spMember->data.f08;
                     spGuest->m_n20 = spMember->data.f00;
-                    m_pDialog->FUN_140fcd850(spGuest);
+                    m_pDialog->AddGuest(spGuest);
                 }
             }
             return true;
@@ -620,7 +620,7 @@ MS2Ptr<CGuildMember> UIWeddingGuestPageGuild::FUN_140fd80e0(const CStringW& strN
     CGuildManager::GetInstance()->FUN_1404d0420(&members);
     for (size_t i = 0; i < members.GetCount(); i++)
     {
-        if (members[i]->data.FUN_1404ca890() == strName)
+        if (members[i]->data.GetName() == strName)
             return MS2Ptr<CGuildMember>(members[i]);
     }
     return MS2Ptr<CGuildMember>(0);
@@ -645,10 +645,10 @@ bool UIWeddingGuestPageStranger::vfunc_1()
         {
             GuestPtr spGuest = it->second;
             ASObj row(2);
-            row.FUN_1407cbb20("name", CStringW(spGuest->m_strName));
-            row.FUN_1407cbb20("accSN", FUN_141b71910(spGuest->m_n20));
-            row.FUN_1407cbb20("charSN", FUN_141b71910(spGuest->m_n28));
-            row.FUN_1407cbbe0("selected", m_pDialog->FUN_140fcdb30(spGuest->m_strName));
+            row.SetWStringMember("name", CStringW(spGuest->m_strName));
+            row.SetWStringMember("accSN", FUN_141b71910(spGuest->m_n20));
+            row.SetWStringMember("charSN", FUN_141b71910(spGuest->m_n28));
+            row.SetBoolMember("selected", m_pDialog->IsGuestSelected(spGuest->m_strName));
             spList->AddItem(row);
         }
         spList->SetSelectedIndex(0);
@@ -702,9 +702,9 @@ bool UIWeddingGuestPageStranger::vfunc_4(const char* szMethod, const Scaleform::
             {
                 GuestPtr spGuest = it->second;
                 if (bSelected)
-                    m_pDialog->FUN_140fcd850(spGuest);
+                    m_pDialog->AddGuest(spGuest);
                 else
-                    m_pDialog->FUN_140fcd9d0(strName);
+                    m_pDialog->RemoveGuest(strName);
             }
             return true;
         }
@@ -713,17 +713,17 @@ bool UIWeddingGuestPageStranger::vfunc_4(const char* szMethod, const Scaleform::
 }
 
 // @0x140fd88e0
-void UIWeddingGuestPageStranger::FUN_140fd88e0(GuestPtr spGuest)
+void UIWeddingGuestPageStranger::AddStranger(GuestPtr spGuest)
 {
     std::map<CStringW, GuestPtr>::iterator it = m_strangers.find(spGuest->m_strName);
     if (it == m_strangers.end())
     {
         m_strangers[spGuest->m_strName] = spGuest;
         ASObj row(2);
-        row.FUN_1407cbb20("name", CStringW(spGuest->m_strName));
-        row.FUN_1407cbb20("accSN", FUN_141b71910(spGuest->m_n20));
-        row.FUN_1407cbb20("charSN", FUN_141b71910(spGuest->m_n28));
-        row.FUN_1407cbbe0("selected", m_pDialog->FUN_140fcdb30(spGuest->m_strName));
+        row.SetWStringMember("name", CStringW(spGuest->m_strName));
+        row.SetWStringMember("accSN", FUN_141b71910(spGuest->m_n20));
+        row.SetWStringMember("charSN", FUN_141b71910(spGuest->m_n28));
+        row.SetBoolMember("selected", m_pDialog->IsGuestSelected(spGuest->m_strName));
         m_pScript->Invoke("addUser", row);
     }
 }

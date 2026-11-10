@@ -30,7 +30,7 @@
 template <> template <>
 MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEntity>&);
 
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
+MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
 
 // Singleton at 0x1401d3200 (a huge manager); two members at +0xc768 / +0xc7c0 give the screen origin.
 class Unk_14025a620 { public: void* m_unknown; };
@@ -859,7 +859,7 @@ public:
 };
 
 int FUN_141277f40();
-int FUN_140768010(int n1, int n2);
+int GetRandomRange(int n1, int n2);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -963,7 +963,7 @@ MS2_REPLACE_METHOD(0x140E663B0, UIMicroGameRps, Hide, 117, 0x9B525C31);
 // @0x140e66430
 void UIMicroGameRps::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 MS2_REPLACE_METHOD(0x140E66430, UIMicroGameRps, vfunc_41, 99, 0x1825152D);
 
@@ -994,7 +994,7 @@ void UIMicroGameRps::SendMicrogame()
     if (m_30 == NULL)
         return;
     if (m_nCard == -1)
-        m_nCard = FUN_140768010(3, 0);
+        m_nCard = GetRandomRange(3, 0);
     COutPacket packet(static_cast<int>(SendOp::Microgame), 0);
     packet.Encode2(7);
     packet.Encode4(m_nCard);

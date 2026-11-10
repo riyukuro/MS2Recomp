@@ -47,7 +47,7 @@
 #include <vector>
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/placeholder/asbutton.h"  // C3: ASButton::FUN_1422ce090
-#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FindNpcData)
 #include "ms2/placeholder/ascorelist.h"
 #include "ms2/placeholder/astilelist.h"
 #include "ms2/client/ms2/uidungeonroomdialog.h"
@@ -84,7 +84,7 @@ void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> pItem, int a1, int
 
 // quests
 void* FUN_140764020();   // C3: was FUN_140764020
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 int FUN_140748050(CQuestData::QuestRewardItem* pItem, int nJob);                       // the reward item suits the job
 
 // strings
@@ -94,21 +94,21 @@ CStringW FUN_1401aa6a0(int nId);                                // npc name
 int FUN_14074b030(CQuestData* pData);                           // the quest id
 
 // message boxes and packets
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, void* listener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int type, CStringW text, void* listener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket& packet);
 
 // npcs and the boss tooltip
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 class WorldMapManager { public: void BuildNpcRewardPreview(int npc, ASObj* script); };   // 0x141b99dc0
-class Unk_PcFieldTable* FUN_140cb17d0();   // C3: was FUN_140cb17d0
+class Unk_PcFieldTable* GetWorldMapManager();   // C3: was GetWorldMapManager
 
 // opening the dialogs of a row
 template <class T> T* Unk_GetUI(int nUiType);
 
 // recommendContents.xml
-CString FUN_14071a5b0(const CString&, const CString&);
-class CFileSystem { public: int FUN_1403974b0(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly); };
+CString GetXmlPath(const CString&, const CString&);
+class CFileSystem { public: int LoadXmlFile(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly); };
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was V::FUN_14015eb90
@@ -150,8 +150,8 @@ UILevelUpGuideDialog::RecommendContnets::RecommendContnets()
 // @0x140f84310
 UILevelUpGuideDialog::UILevelUpGuideDialog() : m_1e0(10)
 {
-    FUN_141924170(1);
-    FUN_140f85ba0();
+    SetTweenEnabled(1);
+    LoadRecommendContents();
     for (size_t i = 0; i < 3; i++)
         m_1cc[i] = 1;
 }
@@ -167,7 +167,7 @@ int UILevelUpGuideDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140bfc4b0()->FUN_141aa87c0(this);
+    FUN_140bfc4b0()->AddListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 1;
 }
@@ -175,16 +175,16 @@ int UILevelUpGuideDialog::vfunc_65()
 // @0x140f84610
 void UILevelUpGuideDialog::vfunc_67()
 {
-    FUN_140bfc4b0()->FUN_141aa8850(this);
+    FUN_140bfc4b0()->RemoveListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     for (size_t i = 0; i < m_1a8.GetCount(); i++)
         DestroyItemInfoSlot(m_1a8.GetAt(i));
     if (MS2Ptr<ASCheckBox> spEtc = GetChild<ASCheckBox>("m_contentsEtc"))
-        m_1cc[0] = spEtc->FUN_1422ce0e0();
+        m_1cc[0] = spEtc->IsSelected();
     if (MS2Ptr<ASCheckBox> spBoss = GetChild<ASCheckBox>("m_contentsBoss"))
-        m_1cc[1] = spBoss->FUN_1422ce0e0();
+        m_1cc[1] = spBoss->IsSelected();
     if (MS2Ptr<ASCheckBox> spDungeon = GetChild<ASCheckBox>("m_contentsDungeon"))
-        m_1cc[2] = spDungeon->FUN_1422ce0e0();
+        m_1cc[2] = spDungeon->IsSelected();
     UIDialog::vfunc_67();
 }
 
@@ -196,15 +196,15 @@ void UILevelUpGuideDialog::OnLoadComplete()
     if (pPlayer == 0)
         return;
     unsigned short nLevel = Unk_LgActorLevel(pPlayer);
-    FUN_140f85330(nLevel);
+    CollectLevelSteps(nLevel);
     if (MS2Ptr<ASCheckBox> spEtc = GetChild<ASCheckBox>("m_contentsEtc"))
-        spEtc->FUN_1422ce090(m_1cc[0]);
+        spEtc->SetSelected(m_1cc[0]);
     if (MS2Ptr<ASCheckBox> spBoss = GetChild<ASCheckBox>("m_contentsBoss"))
-        spBoss->FUN_1422ce090(m_1cc[1]);
+        spBoss->SetSelected(m_1cc[1]);
     if (MS2Ptr<ASCheckBox> spDungeon = GetChild<ASCheckBox>("m_contentsDungeon"))
-        spDungeon->FUN_1422ce090(m_1cc[2]);
+        spDungeon->SetSelected(m_1cc[2]);
     FUN_140f85f90();
-    FUN_140f861c0();
+    UpdateContentsList();
     FUN_140f869f0();
 }
 
@@ -224,18 +224,18 @@ int UILevelUpGuideDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             int nId = data.PopInt();
-            FUN_140f854b0(nId);
+            OpenLinkedDialog(nId);
         }
     }
     else if (_stricmp(szMethod, "onContentsFilter") == 0) {
-        FUN_140f861c0();
+        UpdateContentsList();
     }
     else if (_stricmp(szMethod, "onLevelSelect") == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             unsigned short nLevel = data.PopInt();
-            FUN_140f87af0(nLevel);
-            FUN_140f861c0();
+            SetLevelRange(nLevel);
+            UpdateContentsList();
         }
     }
     return 0;
@@ -255,10 +255,10 @@ void UILevelUpGuideDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
             switch (spRow->m_kind)
             {
             case 1:
-                FUN_140f876b0(spRow, pRetVal);
+                BuildBossTooltip(spRow, pRetVal);
                 break;
             case 0:
-                FUN_140f878e0(spRow, pRetVal);
+                BuildTextTooltip(spRow, pRetVal);
                 break;
             }
         }
@@ -278,14 +278,14 @@ void UILevelUpGuideDialog::vfunc_o178_8(void* pQuestRaw)
     switch (spData->m_338.m_value) {
     case 1: {
         ASObj obj(2);
-        if (FUN_140f86dd0(obj, static_cast<CQuest*>(pQuestRaw)->FUN_140bfc580()) != 0)
+        if (FUN_140f86dd0(obj, static_cast<CQuest*>(pQuestRaw)->GetQuestId()) != 0)
             m_30->Invoke("addLevelGuide", obj);
     }
         break;
     case 2: {
         if (MS2Ptr<ASDialog> spEvent = FUN_140f880c0("m_eventDialog")) {
             ASObj obj(2);
-            if (FUN_140f86dd0(obj, static_cast<CQuest*>(pQuestRaw)->FUN_140bfc580()) != 0)
+            if (FUN_140f86dd0(obj, static_cast<CQuest*>(pQuestRaw)->GetQuestId()) != 0)
                 spEvent->Invoke("addLevelGuide", obj);
         }
         break;
@@ -299,8 +299,8 @@ void UILevelUpGuideDialog::vfunc_oa0_9(unsigned short nLevel)
     if (m_30.IsNull())
         return;
     LG_ROOT(m_30)->FUN_140ea5e70("setPC", nLevel);
-    FUN_140f87af0(nLevel);
-    FUN_140f861c0();
+    SetLevelRange(nLevel);
+    UpdateContentsList();
 }
 
 // @0x140f85290
@@ -317,7 +317,7 @@ bool UILevelUpGuideDialog::SendQuestMode24(int nResult, const CMsgBoxData& rBox)
 }
 
 // @0x140f85330
-void UILevelUpGuideDialog::FUN_140f85330(unsigned short nLevel)
+void UILevelUpGuideDialog::CollectLevelSteps(unsigned short nLevel)
 {
     m_188.RemoveAll();
     m_1d8 = 0;
@@ -332,11 +332,11 @@ void UILevelUpGuideDialog::FUN_140f85330(unsigned short nLevel)
             m_188.Add(nQuestLevel);
         }
     }
-    FUN_140f87af0(nLevel);
+    SetLevelRange(nLevel);
 }
 
 // @0x140f854b0
-void UILevelUpGuideDialog::FUN_140f854b0(int nId)
+void UILevelUpGuideDialog::OpenLinkedDialog(int nId)
 {
     MS2Ptr<RecommendContnets> spRow(0);
     if (!m_1e0.Lookup(nId, spRow))
@@ -346,8 +346,8 @@ void UILevelUpGuideDialog::FUN_140f854b0(int nId)
     if (spRow->m_link == "DungeonRoomDialog") {
         UIDungeonRoomDialog* pDialog = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd);
         if (pDialog != 0) {
-            TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4ebd);
-            pDialog->FUN_1412b8ff0(spRow->m_code);
+            TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4ebd);
+            pDialog->OpenRoom(spRow->m_code);
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ebd)));
         }
     }
@@ -360,7 +360,7 @@ void UILevelUpGuideDialog::FUN_140f854b0(int nId)
                 pDialog->FUN_141b5bc70(spRow->m_code);
             CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x24, spRow->m_id);
             if (strText.GetLength() != 0)
-                pDialog->FUN_141b5bcc0(strText);
+                pDialog->SetPendingSearch(strText);
         }
         else {
             unsigned nField;
@@ -391,7 +391,7 @@ void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
     if (pSelf == 0)
         return;
     if (spData->m_338.m_value == 1 && pSelf->GetJobGroupId() == 1) {
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_recommend_contents_newbie_warn"), 0, L"")) {
+        if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_recommend_contents_newbie_warn"), 0, L"")) {
             spBox->Append<unsigned>(nQuest);
             spBox->SetCallback(LgAnswerDelegate(this, &UILevelUpGuideDialog::SendQuestMode24));
             FUN_140d73c60(spBox);
@@ -406,11 +406,11 @@ void UILevelUpGuideDialog::FUN_140f857e0(int nQuest)
 }
 
 // @0x140f85ba0 Table\recommendContents.xml
-void UILevelUpGuideDialog::FUN_140f85ba0()
+void UILevelUpGuideDialog::LoadRecommendContents()
 {
-    CString path = FUN_14071a5b0("Table", "recommendContents.xml");
+    CString path = GetXmlPath("Table", "recommendContents.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, path, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, path, 0, true, false) == 0)
         return;
     void* root = ((void*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (root == 0) {
@@ -462,7 +462,7 @@ void UILevelUpGuideDialog::FUN_140f85f90()
 }
 
 // @0x140f861c0
-void UILevelUpGuideDialog::FUN_140f861c0()
+void UILevelUpGuideDialog::UpdateContentsList()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
@@ -477,7 +477,7 @@ void UILevelUpGuideDialog::FUN_140f861c0()
     if (MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_contentsList")) {
         spList->Invoke("resetRenderer");
         reinterpret_cast<ASCoreList*>(spList.operator->())->FUN_1422dd1d0();
-        reinterpret_cast<ASTileList*>(spList.operator->())->FUN_1422cf4f0(0);
+        reinterpret_cast<ASTileList*>(spList.operator->())->SetScrollPosition(0);
         std::vector<MS2Ptr<RecommendContnets> > rows;
         for (POSITION pos = m_1e0.GetHeadPosition(); pos != 0; m_1e0.GetNext(pos)) {
             MS2Ptr<RecommendContnets> spRow = m_1e0.GetValueAt(pos);
@@ -504,15 +504,15 @@ void UILevelUpGuideDialog::FUN_140f861c0()
             }
             {
                 MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>(strCheck);
-                if (spCheck.get() != 0 && !spCheck->FUN_1422ce0e0())
+                if (spCheck.get() != 0 && !spCheck->IsSelected())
                     continue;
             }
             ASObj row(2);
-            row.FUN_1407cb9c0("id", spRow->m_id);
-            row.FUN_1407cba60("type", spRow->m_type);
-            row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x23, spRow->m_id));
-            row.FUN_1407cba60("imgPath", spRow->m_img);
-            row.FUN_1407cbbe0("clickable", spRow->m_link.GetLength() ? true : false);
+            row.SetIntMember("id", spRow->m_id);
+            row.SetStringMember("type", spRow->m_type);
+            row.SetWStringMember("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x23, spRow->m_id));
+            row.SetStringMember("imgPath", spRow->m_img);
+            row.SetBoolMember("clickable", spRow->m_link.GetLength() ? true : false);
             reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(row);
         }
         spList->vfunc_24(true);
@@ -534,13 +534,13 @@ void UILevelUpGuideDialog::FUN_140f869f0()
             MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(FUN_14074b030(spData.operator->()));
             if (spQuest.IsNull())
                 continue;
-            if (spQuest->FUN_1407447c0() != 0)
+            if (spQuest->IsExpired() != 0)
                 continue;
             if (spQuest->GetState() != 1 && spQuest->GetState() != 2)
                 continue;
             if (spData->m_conditions.GetCount() > 0) {
                 ASObj row(2);
-                row.FUN_1407cb9c0("disableEvent", 1);
+                row.SetIntMember("disableEvent", 1);
                 if (FUN_140f86dd0(row, FUN_14074b030(spData.operator->())) != 0) {
                     spEvent->Invoke("addLevelGuide", row);
                     bAdded = 1;
@@ -559,7 +559,7 @@ void UILevelUpGuideDialog::FUN_140f869f0()
 // @0x140f86dd0
 int UILevelUpGuideDialog::FUN_140f86dd0(ASObj& rObj, int nQuest)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuest);
     if (!spData)
         return 0;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
@@ -581,9 +581,9 @@ int UILevelUpGuideDialog::FUN_140f86dd0(ASObj& rObj, int nQuest)
     else
         strLevel = FUN_14028dfa0<unsigned short>(CStringW(L"s_recommend_contents_level"), nLevel);
     rObj.SetMemberUInt("id", FUN_14074b030(spData.operator->()));
-    rObj.FUN_1407cba60("state", strState);
+    rObj.SetStringMember("state", strState);
     rObj.FUN_1409c48f0("level", nLevel);
-    rObj.FUN_1407cbb20("levelStr", strLevel);
+    rObj.SetWStringMember("levelStr", strLevel);
     FUN_140f87270(rObj, FUN_14074b030(spData.operator->()), 0);
     return 1;
 }
@@ -591,7 +591,7 @@ int UILevelUpGuideDialog::FUN_140f86dd0(ASObj& rObj, int nQuest)
 // @0x140f87270
 void UILevelUpGuideDialog::FUN_140f87270(ASObj& rObj, int nQuest, int bName)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuest);
     if (!spData)
         return;
     PC* pSelf = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -618,32 +618,32 @@ void UILevelUpGuideDialog::FUN_140f87270(ASObj& rObj, int nQuest, int bName)
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_1a8.GetCount() + 1);
     CreateItemInfoSlot(strBindID, spItem, 0, nSlot, 0x800);
-    rObj.FUN_1407cba60("binding", strBindID);
+    rObj.SetStringMember("binding", strBindID);
     if (bName != 0)
-        rObj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pItem->m_itemId));
+        rObj.SetWStringMember("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pItem->m_itemId));
     m_1a8.Add(strBindID);
 }
 
 // @0x140f876b0 boss tooltip
-void UILevelUpGuideDialog::FUN_140f876b0(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal)
+void UILevelUpGuideDialog::BuildBossTooltip(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal)
 {
     int nNpc = spRow->m_code;
-    MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nNpc);
+    MS2Ptr<CNpcData> spNpc = FindNpcData(nNpc);
     if (!spNpc)
         return;
     ASTooltip tip(1, 2);
-    reinterpret_cast<WorldMapManager*>(FUN_140cb17d0())->BuildNpcRewardPreview(nNpc, &tip);
-    tip.FUN_1407cbb20("text", FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_recommend_contents_tooltip_boss"), FUN_1401aa6a0(nNpc), spNpc->GetLevel()));
+    reinterpret_cast<WorldMapManager*>(GetWorldMapManager())->BuildNpcRewardPreview(nNpc, &tip);
+    tip.SetWStringMember("text", FUN_14028dfa0<CStringW, unsigned short>(CStringW(L"s_recommend_contents_tooltip_boss"), FUN_1401aa6a0(nNpc), spNpc->GetLevel()));
     tip.FUN_1409c0e60("enableLClick", L"");
     tip.SetTooltipClass("WorldMapTooltip_Boss");
     tip.SetOnDelay(300);
     tip.SetOffDelay(60000);
     tip.SetTooltipAlign(1);
-    *pRetVal = tip.FUN_1422bb870();
+    *pRetVal = tip.GetValue();
 }
 
 // @0x140f878e0 plain text tooltip
-void UILevelUpGuideDialog::FUN_140f878e0(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal)
+void UILevelUpGuideDialog::BuildTextTooltip(MS2Ptr<RecommendContnets> spRow, Scaleform::GFx::Value* pRetVal)
 {
     CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x25, spRow->m_id);
     if (strText.GetLength() == 0)
@@ -654,7 +654,7 @@ void UILevelUpGuideDialog::FUN_140f878e0(MS2Ptr<RecommendContnets> spRow, Scalef
     tip.SetOffDelay(60000);
     tip.SetTooltipAlign(1);
     tip.SetText(strText);
-    *pRetVal = tip.FUN_1422bb870();
+    *pRetVal = tip.GetValue();
 }
 
 // @0x140f87a30
@@ -668,7 +668,7 @@ int UILevelUpGuideDialog::FUN_140f87a30(MS2Ptr<RecommendContnets> spRow)
 }
 
 // @0x140f87af0
-void UILevelUpGuideDialog::FUN_140f87af0(unsigned short nLevel)
+void UILevelUpGuideDialog::SetLevelRange(unsigned short nLevel)
 {
     unsigned short nLo = 1;
     unsigned short nHi = m_1d8;

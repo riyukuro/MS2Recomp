@@ -139,9 +139,9 @@ public:
 };
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 MS2Ptr<CItemData> FUN_14053f870(int);
-CString FUN_1410280d0(int, CString);
+CString GetDownloadFilePath(int, CString);
 void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: rotation to euler angles (degrees, negated)
-void FUN_140b86230(const efd::Point3&, NiMatrix3&);
+void EulerToMatrix(const efd::Point3&, NiMatrix3&);
 NiAVObject* FUN_141b6efc0(egf::Entity*);
 void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned, const bool&);   // C3: was egf::Entity*
 
@@ -175,7 +175,7 @@ class Unk_GuidePlayer : public AvatarPC
 };
 class ClonePC* FUN_1405a7e30(class PC*);   // C3: was FUN_1405a7e30
 class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
-void FUN_141568d80(class NiAVObject*);   // C3: was FUN_141568d80
+void SetUnlightable(class NiAVObject*);   // C3: was SetUnlightable
 struct Unk_FishCatch { char m_pad_00[0x18]; int m_nCount; int m_nFishId; int m_nSize; };
 
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -202,7 +202,7 @@ long long FUN_1410a7630();
 MS2_CHECK_OFFSET(SkillData, m_block150, 0x150);   // C3: the skill row read by CSkillMagicControlGuide::FUN_1410a5ea0 (was the row view Unk_SkillRow)
 void FUN_1409f7320(efd::Matrix3*);
 #include "ms2/client/ms2/gameobject.h"
-class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
+class Unk_ServiceManager* GetServiceManager();   // C3: was GetServiceManager
 // The reference-counted service interfaces the lookups below call through (slots 1/2 AddRef/Release, 5 the typed
 // query, 14 the service by id).
 class Unk_CcSvcIf
@@ -253,7 +253,7 @@ public: void FUN_1408356f0(class CInPacket& packet);         // the record read
     int m_na8;
     int m_nac;
 };
-MS2Ptr<StateSyncObject> FUN_140835450(int nType);
+MS2Ptr<StateSyncObject> CreateStateSyncObject(int nType);
 class Unk_GuideRecord : public StateSyncObject { };         // the controller's record type (cubecraft_1.h; GetCurrent / FUN_1417b7670)
 //
 
@@ -301,7 +301,7 @@ struct Unk_GuideConfig
     char m_pad_420[0x468 - 0x420];
     CString m_astrFishing[0x16];                                // +0x468
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 class Unk_CubeSelection : public Unk_PCCubeCraft
 {
@@ -324,9 +324,9 @@ public:
 class Unk_PCMove   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141683a90();
+    void UpdateMoveDirection();
 };
-void FUN_141682f60(void*, PCBase*);
+void SetOwner(void*, PCBase*);
 void SetObjectId(int);
 
 
@@ -389,7 +389,7 @@ int CGuideObject::vfunc_116()
 // @0x1410a11e0
 void CGuideObject::vfunc_125(double fTime)
 {
-    ((class Unk_PCMove*)(void*)(&m_unk_6d8))->FUN_141683a90();
+    ((class Unk_PCMove*)(void*)(&m_unk_6d8))->UpdateMoveDirection();
     UpdateTargetYawFromLook();
     reinterpret_cast<Unk_CcStateMgr*>(PCBase::FUN_14166ccb0())->vfunc_8(fTime);
 }
@@ -420,7 +420,7 @@ PCBase* CGuideObject::GetOwner()
 void CGuideObject::vfunc_126()
 {
     m_ctrl.FUN_1417b76b0(reinterpret_cast<Unk_GuideApp*>(TSingleton<CMainSystem>::GetInstance())->GetLastGameTimeDelta());
-    if (m_ctrl.FUN_1417b7490())
+    if (m_ctrl.IsRecordDue())
         m_ctrl.vfunc_0();
     MS2Ptr<Unk_GuideRecord> spOld = m_ctrl.GetCurrent();
     if (!spOld
@@ -430,7 +430,7 @@ void CGuideObject::vfunc_126()
     {
         if (spOld.get() != 0)
             m_ctrl.vfunc_0();
-        MS2Ptr<StateSyncObject> spNew = FUN_140835450(GetCurStateId());
+        MS2Ptr<StateSyncObject> spNew = CreateStateSyncObject(GetCurStateId());
         spNew->m_nObjId = FUN_14166cc80();
         spNew->m_pos3c = m_pos98;
         spNew->m_pos20 = vfunc_18();
@@ -483,7 +483,7 @@ void CGuideObject::vfunc_129(void* pStream)
     for (int i = 0; i < nCount; ++i)
     {
         int nType = (&((Unk_CcRecordStream*)pStream)->m_reader)->ReadU8();
-        MS2Ptr<StateSyncObject> spRec = FUN_140835450(nType);
+        MS2Ptr<StateSyncObject> spRec = CreateStateSyncObject(nType);
         spRec->FUN_1408356f0(*(CInPacket*)pStream);
         vfunc_114(spRec.get());
     }
@@ -504,9 +504,9 @@ void CGuideObject::vfunc_53(float f)
 CConstructionGuideObject::CConstructionGuideObject()
     : m_spGuide(0), m_nDc8(0), m_spModel(0), m_spLiftNode(0), m_spGod(0), m_spBirdHead(0)
 {
-    CString strPath(((struct Unk_GuideConfig*)FUN_1401d31f0())->m_strGuideModel);
+    CString strPath(((struct Unk_GuideConfig*)GetCommonResource())->m_strGuideModel);
     m_spModel = NiDynamicCast(NiNode, (NiAVObject*)((class CNifLoadingService*)GetNifLoadingService())->Load(strPath, 0, 5, 0, 0));
-    FUN_141682f60(&m_unk_6d8, this);
+    SetOwner(&m_unk_6d8, this);
     m_spStateMgr.AssignRaw(new CStateManager(this));
     m_spStateMgr->RegisterState(0x24, new StateFloat(this));
     m_spItem.AssignRaw(new CubeItemInfo());
@@ -526,7 +526,7 @@ CConstructionGuideObject::~CConstructionGuideObject()
     m_spLiftNode = (NiNode*)0;
     if (m_spBirdHead.get())
     {
-        m_spBirdHead->FUN_1418ce890();
+        m_spBirdHead->Hide();
         m_spBirdHead->FUN_1418ce830();
     }
     m_spBirdHead = 0;
@@ -607,7 +607,7 @@ void CConstructionGuideObject::FUN_1410a2440()
         if ((unsigned int)m_spItem->itemId > 0)
             FUN_1410a2a60(pSel);
         else if ((m_spBirdHead.get() ? true : false) && m_bLocal)
-            m_spBirdHead->FUN_1418ce890();
+            m_spBirdHead->Hide();
         if (m_spGuide.get())
         {
             m_spGuide->vfunc_9(0.5f);
@@ -696,10 +696,10 @@ int CConstructionGuideObject::FUN_1410a2a60(void* pCube)
     {
         if (m_spItem->FUN_1408b3860() == 1)
         {
-            CString strLook = FUN_1410280d0(2, m_spItem->look->m_strUrl);
+            CString strLook = GetDownloadFilePath(2, m_spItem->look->m_strUrl);
             if (_access(strLook, 0) != 0)
             {
-                TSingleton<CUgcManager>::GetInstance()->FUN_1418845a0(((Unk_CubeSelection*)pCube)->FUN_1410ad670(), egf::EntityID(0));
+                TSingleton<CUgcManager>::GetInstance()->DownloadCubeLook(((Unk_CubeSelection*)pCube)->FUN_1410ad670(), egf::EntityID(0));
             }
             m_spGuide->vfunc_15(m_spItem.get());
         }
@@ -708,7 +708,7 @@ int CConstructionGuideObject::FUN_1410a2a60(void* pCube)
     {
         CStringW strName = FUN_141277910(spData);
         m_spBirdHead->FUN_1418ce8f0(strName, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_spItem->itemId));
-        m_spBirdHead->FUN_1418ce800();
+        m_spBirdHead->Show();
     }
     return 1;
 }
@@ -754,7 +754,7 @@ void CConstructionGuideObject::FUN_1410a3190()
     }
     kC.z = kB.z - kA.z;
     NiMatrix3 kRot;
-    FUN_140b86230(kC, kRot);
+    EulerToMatrix(kC, kRot);
     m_spLiftNode->SetRotate(kRot);
 }
 
@@ -775,7 +775,7 @@ void CConstructionGuideObject::vfunc_128()
     if (pOwner != 0)
     {
         NoticeMessage kReq;
-        kReq.m_strName = ((struct Unk_GuideConfig*)FUN_1401d31f0())->m_strLiftEffect;
+        kReq.m_strName = ((struct Unk_GuideConfig*)GetCommonResource())->m_strLiftEffect;
         kReq.m_nObject = 7;
         kReq.SetActor(pOwner->GetObjectId());
         TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
@@ -790,7 +790,7 @@ int CConstructionGuideObject::vfunc_10()
         SetKeepVisibleForBGTransparency(true);
     if (!PCBase::vfunc_10())
         return 0;
-    ((GameObjectController*)(void*)(m_unk_150))->FUN_14123fbf0(4);
+    ((GameObjectController*)(void*)(m_unk_150))->SetCollisionGroup(4);
     ((GameObjectController*)(void*)(m_unk_150))->FUN_14123fd30(8);
     return 1;
 }
@@ -800,7 +800,7 @@ int CConstructionGuideObject::vfunc_11()
 {
     GameObject::vfunc_11();
     NoticeMessage kReq;
-    kReq.m_strName = ((struct Unk_GuideConfig*)FUN_1401d31f0())->m_strLiftEffect;
+    kReq.m_strName = ((struct Unk_GuideConfig*)GetCommonResource())->m_strLiftEffect;
     kReq.m_nObject = 7;
     kReq.SetActor(GetObjectId());
     TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
@@ -923,7 +923,7 @@ CFishingGuideObject::CFishingGuideObject()
     : m_fishLine()
 {
     m_str88 = "GameObject";
-    FUN_141682f60(&m_unk_6d8, this);
+    SetOwner(&m_unk_6d8, this);
     m_spStateMgr.AssignRaw(new CStateManager(this));
     m_spStateMgr->RegisterState(0x2e, new StateFishingFloat(this));
     m_ctrl.SetKind(1);
@@ -941,7 +941,7 @@ CFishingGuideObject::~CFishingGuideObject()
 {
     if (m_spBirdHead.get())
     {
-        m_spBirdHead->FUN_1418ce890();
+        m_spBirdHead->Hide();
         m_spBirdHead->FUN_1418ce830();
     }
     m_spBirdHead = 0;
@@ -973,7 +973,7 @@ int CFishingGuideObject::vfunc_124(int nOwnerId, efd::Point3 kPos, efd::Point3 k
         int nRod = ((class PC*)(class PCBase*)(pOwner))->GetMasteryGrade(1);
         if (nRod >= 1 && nRod < 0x16)
         {
-            CString strModel = Unk_SocketFormat("urn:gamebryo-animation:{0}", ((struct Unk_GuideConfig*)FUN_1401d31f0())->m_astrFishing[nRod]);
+            CString strModel = Unk_SocketFormat("urn:gamebryo-animation:{0}", ((struct Unk_GuideConfig*)GetCommonResource())->m_astrFishing[nRod]);
             SetModelPath(strModel);
             if (efd::ClassInfo::IsKindOf(pPlayer ? pPlayer->GetClassDesc() : NULL, 0x6200044))
                 m_unk_d0 = 1;
@@ -1039,7 +1039,7 @@ int CFishingGuideObject::vfunc_11()
     PCBase* pOwner = GetOwner();
     Unk_GuidePlayer* pPlayer = ((class Unk_GuidePlayer*)FUN_1405a7e30((class PC*)(pOwner)));
     NoticeMessage kReq;
-    kReq.m_strName = ((struct Unk_GuideConfig*)FUN_1401d31f0())->m_strFishEffectA;
+    kReq.m_strName = ((struct Unk_GuideConfig*)GetCommonResource())->m_strFishEffectA;
     kReq.m_nObject = 0;
     kReq.m_p28 = &m_line;
     kReq.SetActor(GetObjectId());
@@ -1065,7 +1065,7 @@ int CFishingGuideObject::vfunc_10()
     if (pPlayer != 0)
     {
         NiPointer<NiNode> spRoot = NiDynamicCast(NiNode, FUN_141b6efc0(GetEntity()));
-        FUN_141568d80((class NiAVObject*)(spRoot.operator->()));
+        SetUnlightable((class NiAVObject*)(spRoot.operator->()));
         pPlayer->AddExternalNode(spRoot);
         pPlayer->FUN_141087390();
     }
@@ -1100,7 +1100,7 @@ void CFishingGuideObject::FUN_1410a4d30(void* pCatch)
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, ((Unk_FishCatch*)pCatch)->m_nFishId);
         CStringW strInfo = StringFormat<CStringW, unsigned>(L"{0} {1}cm", strName, reinterpret_cast<const unsigned&>(((Unk_FishCatch*)pCatch)->m_nSize));
         CStringW strGrade;
-        int nGrade = spRow->FUN_1403b1520(((Unk_FishCatch*)pCatch)->m_nSize);
+        int nGrade = spRow->GetSizeClass(((Unk_FishCatch*)pCatch)->m_nSize);
         switch (nGrade)
         {
         case 0:
@@ -1117,7 +1117,7 @@ void CFishingGuideObject::FUN_1410a4d30(void* pCatch)
             break;
         }
         m_spBirdHead->FUN_1418ce8f0(strInfo, strGrade);
-        m_spBirdHead->FUN_1418ce800();
+        m_spBirdHead->Show();
     }
 }
 
@@ -1184,7 +1184,7 @@ void CFishingGuideObject::vfunc_53(float f)
           if (m_nEffectB == 0)
           {
             NoticeMessage kReq;
-            kReq.m_strName = ((struct Unk_GuideConfig*)FUN_1401d31f0())->m_strFishEffectB;
+            kReq.m_strName = ((struct Unk_GuideConfig*)GetCommonResource())->m_strFishEffectB;
             kReq.m_nObject = 0;
             kReq.SetActor(GetObjectId());
             m_nEffectB = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
@@ -1262,7 +1262,7 @@ void CFishingGuideObject::UpdateLureEffect()
         {
             NoticeMessage kReq;
             kReq.m_strName = (const wchar_t*)strGem;
-            kReq.m_nObject = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<Unk_WsC_GameObj*>(pOwner));
+            kReq.m_nObject = WorldService::GetInstance()->GetObjectKind(reinterpret_cast<Unk_WsC_GameObj*>(pOwner));
             kReq.SetActor(GetObjectId());
             m_nEffectC = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kReq));
         }
@@ -1286,7 +1286,7 @@ CSkillMagicControlGuide::CSkillMagicControlGuide()
     , m_fDcc(0.0f)
     , m_bReleased(false)
 {
-    FUN_141682f60(&m_unk_6d8, this);
+    SetOwner(&m_unk_6d8, this);
     m_spStateMgr.AssignRaw(new CStateManager(this));
     // the state is new'd straight into the call (no named local)
     m_spStateMgr->RegisterState(0x41, new StateSkillMagicControl(this));
@@ -1406,7 +1406,7 @@ void CSkillMagicControlGuide::vfunc_24(int)
 // @0x1410a65f0
 int CSkillMagicControlGuide::IsOutOfRange(int nSkill)
 {
-    Unk_NullableFloat* pRange = ((struct Unk_NullableFloat*)((class WorldService*)(class Unk_GuideWorld*)(reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance())))->FUN_141bd9c00());
+    Unk_NullableFloat* pRange = ((struct Unk_NullableFloat*)((class WorldService*)(class Unk_GuideWorld*)(reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance())))->GetSightRange());
     if (FUN_1410a82b0(pRange))
         return 0;
     int nState = ((class WorldService*)(class Unk_GuideWorld*)(reinterpret_cast<Unk_GuideWorld*>(WorldService::GetInstance())))->FUN_141bd19d0(nSkill);
@@ -1471,7 +1471,7 @@ void* FUN_1410a6880(Unk_CcSvcIf* pSvc)
 // @0x1410a68d0
 Unk_AnimSvc* GetAnimationService()
 {
-    return (Unk_AnimSvc*)((efd::ServiceManager*)FUN_1413f9850())->GetSystemServiceAs<egmAnimation::AnimationService>();
+    return (Unk_AnimSvc*)((efd::ServiceManager*)GetServiceManager())->GetSystemServiceAs<egmAnimation::AnimationService>();
 }
 
 // @0x1410a68f0

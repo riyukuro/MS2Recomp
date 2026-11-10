@@ -14,7 +14,7 @@ public:
     virtual void OnLoadComplete();
     virtual void vfunc_26();
     void SendNoticeDialog();
-    void FUN_140ea6540(const Scaleform::GFx::FunctionHandler::Params& params);
+    void OnClickCreateButton(const Scaleform::GFx::FunctionHandler::Params& params);
     virtual int vfunc_48() { return 20266; }
 private:
     MS2_LAYOUT_FRIEND;

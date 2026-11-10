@@ -129,7 +129,7 @@ MS2_REPLACE_METHOD(0x14116D780, CInputKeyHandler, SetModifier2, 23, 0x21F96C9B);
 // @0x14116d7a0
 bool CInputKeyHandler::FUN_14116d7a0(unsigned nMask)
 {
-    if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0 && (nMask & 2) != 0)
+    if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->IsTextFieldFocused() != 0 && (nMask & 2) != 0)
         return true;
     if (reinterpret_cast<Unk_KhCamera*>(((class Unk_KhCamera*)GetInstrumentManager()))->IsEnsemble() != 0 && (nMask & 4) != 0)
         return true;
@@ -146,7 +146,7 @@ bool CInputKeyHandler::FUN_14116d840()
 {
     if (FUN_140a58540()->WasKeyPressedGated(1))
         return true;
-    if (FUN_1409331f0()->IsActionKeyPressed(0x49409) != 0)
+    if (GetKeyTable()->IsActionKeyPressed(0x49409) != 0)
         return true;
     return false;
 }
@@ -157,19 +157,19 @@ bool CInputKeyHandler::FUN_14116d890(bool bAlt)
 {
     if (FUN_140a58540()->WasKeyPressedGated(0x1c))
         return true;
-    if (FUN_1409331f0()->IsActionKeyPressed(0x49408) != 0)
+    if (GetKeyTable()->IsActionKeyPressed(0x49408) != 0)
         return true;
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == true)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb5) == true)
     {
         if (*reinterpret_cast<unsigned char*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0)
         {
-            if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->FUN_141adbb00() != 0)
+            if (reinterpret_cast<Unk_KhUI*>(TSingleton<CUIService>::GetInstance())->IsTextFieldFocused() != 0)
                 return false;
         }
     }
     if (bAlt != false)
     {
-        if (FUN_1409331f0()->IsActionKeyPressed(0x493e2) != 0)
+        if (GetKeyTable()->IsActionKeyPressed(0x493e2) != 0)
             return true;
     }
     return false;
@@ -177,7 +177,7 @@ bool CInputKeyHandler::FUN_14116d890(bool bAlt)
 MS2_REPLACE_METHOD(0x14116D890, CInputKeyHandler, FUN_14116d890, 180, 0x2308ADB8);
 
 // @0x14116d950
-bool CInputKeyHandler::FUN_14116d950(int nKey, bool bDebugOnly, int nLevel)
+bool CInputKeyHandler::IsKeyDown(int nKey, bool bDebugOnly, int nLevel)
 {
     if (bDebugOnly != false && IsDebugMode() == false)
         return false;
@@ -185,10 +185,10 @@ bool CInputKeyHandler::FUN_14116d950(int nKey, bool bDebugOnly, int nLevel)
         return false;
     return FUN_140a58540()->IsKeyDownGated(nKey, 0);
 }
-MS2_REPLACE_METHOD(0x14116D950, CInputKeyHandler, FUN_14116d950, 94, 0x1516CB0C);
+MS2_REPLACE_METHOD(0x14116D950, CInputKeyHandler, IsKeyDown, 94, 0x1516CB0C);
 
 // @0x14116d9c0
-bool CInputKeyHandler::FUN_14116d9c0(int nKey, bool bDebugOnly, int nLevel)
+bool CInputKeyHandler::WasKeyPressed(int nKey, bool bDebugOnly, int nLevel)
 {
     if (bDebugOnly != false && IsDebugMode() == false)
         return false;
@@ -196,10 +196,10 @@ bool CInputKeyHandler::FUN_14116d9c0(int nKey, bool bDebugOnly, int nLevel)
         return false;
     return FUN_140a58540()->WasKeyPressedGated(nKey);
 }
-MS2_REPLACE_METHOD(0x14116D9C0, CInputKeyHandler, FUN_14116d9c0, 91, 0xDA608B14);
+MS2_REPLACE_METHOD(0x14116D9C0, CInputKeyHandler, WasKeyPressed, 91, 0xDA608B14);
 
 // @0x14116da30
-bool CInputKeyHandler::FUN_14116da30(int nKey, bool bDebugOnly, int nLevel)
+bool CInputKeyHandler::WasKeyReleased(int nKey, bool bDebugOnly, int nLevel)
 {
     if (bDebugOnly != false && IsDebugMode() == false)
         return false;
@@ -207,10 +207,10 @@ bool CInputKeyHandler::FUN_14116da30(int nKey, bool bDebugOnly, int nLevel)
         return false;
     return FUN_140a58540()->WasKeyReleasedGated(nKey);
 }
-MS2_REPLACE_METHOD(0x14116DA30, CInputKeyHandler, FUN_14116da30, 91, 0x411CF2AC);
+MS2_REPLACE_METHOD(0x14116DA30, CInputKeyHandler, WasKeyReleased, 91, 0x411CF2AC);
 
 // @0x14116daa0
-bool CInputKeyHandler::FUN_14116daa0(int nKey, bool bDebugOnly, int nLevel)
+bool CInputKeyHandler::IsMouseButtonDown(int nKey, bool bDebugOnly, int nLevel)
 {
     if (bDebugOnly != false && IsDebugMode() == false)
         return false;
@@ -218,10 +218,10 @@ bool CInputKeyHandler::FUN_14116daa0(int nKey, bool bDebugOnly, int nLevel)
         return false;
     return FUN_140a58540()->IsMouseButtonDown(nKey);
 }
-MS2_REPLACE_METHOD(0x14116DAA0, CInputKeyHandler, FUN_14116daa0, 91, 0x73C0F6D9);
+MS2_REPLACE_METHOD(0x14116DAA0, CInputKeyHandler, IsMouseButtonDown, 91, 0x73C0F6D9);
 
 // @0x14116db10
-bool CInputKeyHandler::FUN_14116db10(int nKey, bool bDebugOnly, int nLevel)
+bool CInputKeyHandler::WasMouseButtonPressed(int nKey, bool bDebugOnly, int nLevel)
 {
     if (bDebugOnly != false && IsDebugMode() == false)
         return false;
@@ -229,10 +229,10 @@ bool CInputKeyHandler::FUN_14116db10(int nKey, bool bDebugOnly, int nLevel)
         return false;
     return FUN_140a58540()->WasMouseButtonPressed(nKey);
 }
-MS2_REPLACE_METHOD(0x14116DB10, CInputKeyHandler, FUN_14116db10, 91, 0x03E62CD8);
+MS2_REPLACE_METHOD(0x14116DB10, CInputKeyHandler, WasMouseButtonPressed, 91, 0x03E62CD8);
 
 // @0x14116db80
-bool CInputKeyHandler::FUN_14116db80(int nKey, bool bDebugOnly, int nLevel)
+bool CInputKeyHandler::WasMouseButtonReleased(int nKey, bool bDebugOnly, int nLevel)
 {
     if (bDebugOnly != false && IsDebugMode() == false)
         return false;
@@ -240,10 +240,10 @@ bool CInputKeyHandler::FUN_14116db80(int nKey, bool bDebugOnly, int nLevel)
         return false;
     return FUN_140a58540()->WasMouseButtonReleased(nKey);
 }
-MS2_REPLACE_METHOD(0x14116DB80, CInputKeyHandler, FUN_14116db80, 91, 0x69171645);
+MS2_REPLACE_METHOD(0x14116DB80, CInputKeyHandler, WasMouseButtonReleased, 91, 0x69171645);
 
 // @0x14116dbf0
-bool CInputKeyHandler::FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool bDebugOnly, int nLevel)
+bool CInputKeyHandler::GetMouseDelta(int* pnX, int* pnY, int* pnZ, bool bDebugOnly, int nLevel)
 {
     if (bDebugOnly != false && IsDebugMode() == false)
         return false;
@@ -259,10 +259,10 @@ bool CInputKeyHandler::FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool bDebugOn
     }
     return FUN_140a58540()->GetMouseDelta(pnX, pnY, pnZ);
 }
-MS2_REPLACE_METHOD(0x14116DBF0, CInputKeyHandler, FUN_14116dbf0, 176, 0x7EBD267F);
+MS2_REPLACE_METHOD(0x14116DBF0, CInputKeyHandler, GetMouseDelta, 176, 0x7EBD267F);
 
 // @0x14116dcb0
-bool CInputKeyHandler::FUN_14116dcb0(int nSetting, bool bDebugOnly, int nLevel)
+bool CInputKeyHandler::IsActionKeyDown(int nSetting, bool bDebugOnly, int nLevel)
 {
     if (bDebugOnly != false && IsDebugMode() == false)
         return false;
@@ -270,11 +270,11 @@ bool CInputKeyHandler::FUN_14116dcb0(int nSetting, bool bDebugOnly, int nLevel)
         return false;
     if (g_bAppActive == 0)
         return false;
-    if (FUN_1409331f0()->IsActionKeyDown(nSetting) != 0)
+    if (GetKeyTable()->IsActionKeyDown(nSetting) != 0)
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x14116DCB0, CInputKeyHandler, FUN_14116dcb0, 114, 0x384BBBA6);
+MS2_REPLACE_METHOD(0x14116DCB0, CInputKeyHandler, IsActionKeyDown, 114, 0x384BBBA6);
 
 // @0x14116dd30
 bool CInputKeyHandler::FUN_14116dd30(int nSetting, bool bDebugOnly, int nLevel)
@@ -285,7 +285,7 @@ bool CInputKeyHandler::FUN_14116dd30(int nSetting, bool bDebugOnly, int nLevel)
         return false;
     if (g_bAppActive == 0)
         return false;
-    if (FUN_1409331f0()->IsActionKeyPressed(nSetting) != 0)
+    if (GetKeyTable()->IsActionKeyPressed(nSetting) != 0)
         return true;
     return false;
 }
@@ -300,29 +300,29 @@ bool CInputKeyHandler::FUN_14116ddb0(int nSetting, bool bDebugOnly, int nLevel)
         return false;
     if (g_bAppActive == 0)
         return false;
-    if (FUN_1409331f0()->IsActionKeyReleased(nSetting) != 0)
+    if (GetKeyTable()->IsActionKeyReleased(nSetting) != 0)
         return true;
     return false;
 }
 MS2_REPLACE_METHOD(0x14116DDB0, CInputKeyHandler, FUN_14116ddb0, 114, 0xFBF30D0E);
 
 // @0x14116de30
-bool CInputKeyHandler::FUN_14116de30(int nKey)
+bool CInputKeyHandler::InjectKeyPress(int nKey)
 {
     if (g_bAppActive == 0)
         return false;
     FUN_140a58540()->InjectKeyPress(nKey);
     return true;
 }
-MS2_REPLACE_METHOD(0x14116DE30, CInputKeyHandler, FUN_14116de30, 50, 0xF94EB644);
+MS2_REPLACE_METHOD(0x14116DE30, CInputKeyHandler, InjectKeyPress, 50, 0xF94EB644);
 
 // @0x14116de70
-bool CInputKeyHandler::FUN_14116de70(int nKey)
+bool CInputKeyHandler::InjectKeyRelease(int nKey)
 {
     FUN_140a58540()->InjectKeyRelease(nKey);
     return true;
 }
-MS2_REPLACE_METHOD(0x14116DE70, CInputKeyHandler, FUN_14116de70, 37, 0x37431F25);
+MS2_REPLACE_METHOD(0x14116DE70, CInputKeyHandler, InjectKeyRelease, 37, 0x37431F25);
 
 // ---- NotifyDebugMode ----------------------------------------------------------------------------------------------------
 
@@ -352,7 +352,7 @@ CStringA FUN_14116e030(void* pUnused)
 // Reloads the original base / control textures that the skin replacement stored as string extra data on the object
 // (extra data "OriginalBaseTexturePath" / "OriginalControlTexturePath"), puts them back into the texturing property
 // and drops the extra data.
-bool FUN_14116e080(NiAVObject* pObject)
+bool RestoreOriginalTextures(NiAVObject* pObject)
 {
     NiTexturingProperty* pTexturing = NiDynamicCast(NiTexturingProperty, pObject->GetProperty(NiProperty::TEXTURING));
     if (pTexturing == 0)

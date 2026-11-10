@@ -64,8 +64,8 @@ typedef std::vector<Unk_PvpEntryItem*> Unk_PtVec;
 class Unk_PtMgr
 {
 public:
-    Unk_PtVec* FUN_1413465d0(int nTeam);                        // the member list of a team
-    void FUN_141346600(int* pScoreA, int* pScoreB);             // the team scores
+    Unk_PtVec* GetTeamMembers(int nTeam);                        // the member list of a team
+    void GetTeamScores(int* pScoreA, int* pScoreB);             // the team scores
 private:
     char m_pad_00[0x68];
     Unk_PvpEntryBlock m_68;
@@ -97,7 +97,7 @@ void DestroyItemInfoSlot(const CString& strBindID);                   // release
 bool FUN_140a467d0(const MS2Ptr<AScript>*);
 int FUN_1418fc760(const char* szEvent, void* a2, int a3, void* a4);
 void FUN_140710590(COutPacket& packet);
-void FUN_141346650();
+void ThrowOutOfRange();
 Unk_PtMember** FUN_141346670(Unk_PtVec* pVec, size_t nIndex);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
@@ -109,7 +109,7 @@ UIPvPTeamResultDialog::UIPvPTeamResultDialog()
 {
     m_80 = 0;
     m_nCount = -1;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x141345160
@@ -133,7 +133,7 @@ void UIPvPTeamResultDialog::vfunc_67()
         FUN_140710590(packet);
         m_nCount = -1;
     }
-    FUN_141346140();
+    UnbindRewardSlots();
     UIDialog::vfunc_67();
 }
 
@@ -145,7 +145,7 @@ void UIPvPTeamResultDialog::OnLoadComplete()
 }
 
 // @0x1413452c0
-void UIPvPTeamResultDialog::FUN_1413452c0()
+void UIPvPTeamResultDialog::ResetResult()
 {
     m_nCount = -1;
     m_nUnk17c = -1;
@@ -154,7 +154,7 @@ void UIPvPTeamResultDialog::FUN_1413452c0()
 }
 
 // @0x141345310
-void UIPvPTeamResultDialog::FUN_141345310()
+void UIPvPTeamResultDialog::SetMyTeam()
 {
     PC* pPlayer = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -168,18 +168,18 @@ void UIPvPTeamResultDialog::FUN_141345310()
     else if (reinterpret_cast<CPvPInfo*>(pPlayer->GetPvPInfo().operator->())->GetPoint() == 0xca)
         nMyTeam = 2;
     m_nMyTeam = nMyTeam;
-    FUN_141345e40();
+    UpdateMyTeam();
 }
 
 // @0x1413454b0
-void UIPvPTeamResultDialog::FUN_1413454b0()
+void UIPvPTeamResultDialog::UpdateTeamMembers()
 {
     if (m_30.IsNull())
         return;
     int teams[2] = {0xc9, 0xca};
     for (int i = 0; i < 2; i++)
     {
-        Unk_PtVec* pList = reinterpret_cast<Unk_PtMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_1413465d0(teams[i]);
+        Unk_PtVec* pList = reinterpret_cast<Unk_PtMgr*>(TSingleton<CPVPManager>::GetInstance())->GetTeamMembers(teams[i]);
         if (pList != 0)
         {
             for (size_t j = 0; j < pList->size(); j++)
@@ -190,7 +190,7 @@ void UIPvPTeamResultDialog::FUN_1413454b0()
                 ASObj obj(2);
                 if (!FUN_141345c60(obj, (int)j, pMember))
                     continue;
-                static_cast<Unk_PtScript*>(m_30.operator->())->Invoke("AddOrUpdateTeamMember", teams[i] == 0xc9, obj.FUN_1422bb870());
+                static_cast<Unk_PtScript*>(m_30.operator->())->Invoke("AddOrUpdateTeamMember", teams[i] == 0xc9, obj.GetValue());
             }
         }
     }
@@ -203,12 +203,12 @@ void UIPvPTeamResultDialog::FUN_1413456a0()
         return;
     int nScoreA = 0;
     int nScoreB = 0;
-    reinterpret_cast<Unk_PtMgr*>(TSingleton<CPVPManager>::GetInstance())->FUN_141346600(&nScoreA, &nScoreB);
+    reinterpret_cast<Unk_PtMgr*>(TSingleton<CPVPManager>::GetInstance())->GetTeamScores(&nScoreA, &nScoreB);
     static_cast<Unk_PtScript*>(m_30.operator->())->FUN_1409ba0d0("UpdateScore", nScoreA, nScoreB);
 }
 
 // @0x141345740
-void UIPvPTeamResultDialog::FUN_141345740(int nTeam, int nCount)
+void UIPvPTeamResultDialog::SetResult(int nTeam, int nCount)
 {
     m_nCount = nCount;
     m_nUnk17c = 0;
@@ -234,7 +234,7 @@ void UIPvPTeamResultDialog::FUN_1413457f0()
     else if (m_nCount >= 0)
     {
         unsigned int nItemId = *reinterpret_cast<unsigned int*>(reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_PtConfig*)GetClientConstants())->m_rewardItem)->Get());
-        CString strBind = FUN_141345eb0(nItemId, m_nCount);
+        CString strBind = BindRewardItem(nItemId, m_nCount);
         CStringW strIcon = FUN_14016a730(strBind, 0);
         CStringW strReward(L"");
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId);
@@ -264,14 +264,14 @@ bool UIPvPTeamResultDialog::FUN_141345c60(ASObj& obj, int nIndex, Unk_PtMember* 
     PC* pPlayer = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return false;
-    obj.FUN_1407cb9c0("index", nIndex);
-    obj.FUN_1407cbb20("charName", pMember->m_8);
-    obj.FUN_1407cb9c0("kill", pMember->m_14);
-    obj.FUN_1407cb9c0("death", pMember->m_18);
-    obj.FUN_1407cb9c0("steal", pMember->m_10);
-    obj.FUN_1407cbbe0("isOffline", pMember->m_20 == 0);
-    obj.FUN_1407cbbe0("isMe", pPlayer->FUN_141656a80() == pMember->m_0);
-    obj.FUN_1407cb9c0("job", pMember->m_1c);
+    obj.SetIntMember("index", nIndex);
+    obj.SetWStringMember("charName", pMember->m_8);
+    obj.SetIntMember("kill", pMember->m_14);
+    obj.SetIntMember("death", pMember->m_18);
+    obj.SetIntMember("steal", pMember->m_10);
+    obj.SetBoolMember("isOffline", pMember->m_20 == 0);
+    obj.SetBoolMember("isMe", pPlayer->FUN_141656a80() == pMember->m_0);
+    obj.SetIntMember("job", pMember->m_1c);
     return true;
 }
 
@@ -280,14 +280,14 @@ void UIPvPTeamResultDialog::FUN_141345de0()
 {
     if (m_30.IsNull())
         return;
-    FUN_141345e40();
-    FUN_1413454b0();
+    UpdateMyTeam();
+    UpdateTeamMembers();
     FUN_1413456a0();
     FUN_1413457f0();
 }
 
 // @0x141345e40
-void UIPvPTeamResultDialog::FUN_141345e40()
+void UIPvPTeamResultDialog::UpdateMyTeam()
 {
     if (m_30.IsNull())
         return;
@@ -295,7 +295,7 @@ void UIPvPTeamResultDialog::FUN_141345e40()
 }
 
 // @0x141345eb0
-CString UIPvPTeamResultDialog::FUN_141345eb0(unsigned int nItemId, int nAmount)
+CString UIPvPTeamResultDialog::BindRewardItem(unsigned int nItemId, int nAmount)
 {
     CString strBind;
     strBind.Format("%s_%d", (LPCSTR)GetTypeName(), nItemId);
@@ -312,7 +312,7 @@ CString UIPvPTeamResultDialog::FUN_141345eb0(unsigned int nItemId, int nAmount)
 }
 
 // @0x141346140
-void UIPvPTeamResultDialog::FUN_141346140()
+void UIPvPTeamResultDialog::UnbindRewardSlots()
 {
     for (std::set<CString>::iterator it = m_slots.begin(), itEnd = m_slots.end(); it != itEnd; ++it)
         DestroyItemInfoSlot(*it);
@@ -370,19 +370,19 @@ Scaleform::GFx::Value Unk_PtScript::FUN_141346430(const char* szMethod, bool a1,
 }
 
 // @0x1413465d0
-Unk_PtVec* Unk_PtMgr::FUN_1413465d0(int nTeam)
+Unk_PtVec* Unk_PtMgr::GetTeamMembers(int nTeam)
 {
-    return m_68.FUN_14101c160(nTeam);
+    return m_68.GetTeamRows(nTeam);
 }
 
 // @0x141346600
-void Unk_PtMgr::FUN_141346600(int* pScoreA, int* pScoreB)
+void Unk_PtMgr::GetTeamScores(int* pScoreA, int* pScoreB)
 {
-    m_68.FUN_14101c1a0(pScoreA, pScoreB);
+    m_68.GetTeamScores(pScoreA, pScoreB);
 }
 
 // @0x141346650
-void FUN_141346650()
+void ThrowOutOfRange()
 {
     std::_Xout_of_range("invalid vector<T> subscript");
 }
@@ -391,7 +391,7 @@ void FUN_141346650()
 Unk_PtMember** FUN_141346670(Unk_PtVec* pVec, size_t nIndex)
 {
     if (pVec->size() <= nIndex)
-        FUN_141346650();
+        ThrowOutOfRange();
     return (Unk_PtMember**)(static_cast<const Unk_PtVec*>(pVec)->_Myfirst() + nIndex);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

@@ -35,8 +35,8 @@ public:
 
     int FUN_1417cb160();                                    // the hit is still running
     void FUN_1417cb1d0();                                   // clear the hit record
-    int FUN_1417cb2a0();                                    // the hit has a duration
-    int FUN_1417cb2f0();                                    // m_nBc
+    int HasHitDuration();                                    // the hit has a duration
+    int GetPushPriority();                                    // m_nBc
 
     Timer m_timer;                      // +0x40
     efd::utf8string m_strAnim;          // +0x78 the hit animation

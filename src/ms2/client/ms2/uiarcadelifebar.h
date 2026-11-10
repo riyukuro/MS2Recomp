@@ -26,10 +26,10 @@ public:
     virtual void OnLoadComplete();                                   // 22 0x140ef5160
     virtual void vfunc_43();                                         // 43 0x140ef5080 (position the movie root)
     virtual int vfunc_48();                                          // 48 0x140ef5510: 0x4efc
-    void FUN_140ef51e0(int nMode, CInPacket& packet);                // 0x140ef51e0 mode 5: all three values, 6: life only
-    void FUN_140ef5320(int nLife, int nMaxLife);                     // 0x140ef5320
+    void OnLifePacket(int nMode, CInPacket& packet);                // 0x140ef51e0 mode 5: all three values, 6: life only
+    void SetLife(int nLife, int nMaxLife);                     // 0x140ef5320
     void FUN_140ef5370(int nInit, int nLife, int nMaxLife);          // 0x140ef5370
-    void FUN_140ef53f0(int nX, int nY);                              // 0x140ef53f0 the movie root position
+    void SetPosition(int nX, int nY);                              // 0x140ef53f0 the movie root position
     void FUN_140ef5430();                                            // 0x140ef5430 send "setlife"
 private:
     MS2_LAYOUT_FRIEND;

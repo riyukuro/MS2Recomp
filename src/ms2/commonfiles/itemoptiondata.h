@@ -89,8 +89,8 @@ public:
     double FUN_1405d2020(int nRank);
     double FUN_1405d20f0(int nStat);
     double FUN_1405d2250(int nStat);
-    double FUN_1405d23b0(double dValue);
-    int FUN_1405d2410(MS2Ptr<CItemData> spItem);
+    double RoundToTenth(double dValue);
+    int GetRecommendedJob(MS2Ptr<CItemData> spItem);
     friend class ItemOptionConstant;           // its createType 3 loader reads "luaIndex" in place
 private:
     unsigned m_nLuaIndex;                       // +0x28 "luaIndex"
@@ -105,16 +105,16 @@ class ItemOptionRandomContext : public CPtred
 public:
     ItemOptionRandomContext(MS2Ptr<CItemOption> spOption, int n, MS2Ptr<ItemOptionRandom> spRandom);  // 0x1405d9a50
     int FUN_1405d9b10(int nStatId);             // the table's value of a stat id (CItemOptionTable)
-    int FUN_1405d9b40(int nStatId, Unk_Random* pRandom);
+    int RollVariation(int nStatId, Unk_Random* pRandom);
     int FUN_1405d9b80(int nStatId);
     int FUN_1405d9bb0(int nStatId);
-    ItemOptionStatGroup FUN_1405d9e00();        // the random row's statGroup
-    int FUN_1405d9e30();                        // m_n50
+    ItemOptionStatGroup GetStatGroup();        // the random row's statGroup
+    int GetRank();                        // m_n50
     void SetTarget(MS2Ptr<Unk_1405e74c0> spTarget);    // sets the reroll request
     BOOL FUN_1405d9c30(CString strName);        // the option already holds a stat of the name's exclusive group
     BOOL FUN_1405d9d10(CString strName);        // the same for the reroll result
     MS2Ptr<CItemOption> GetOption();        // the option
-    int FUN_1405d9ea0(MS2Ptr<ItemOptionValueRandom> spValue, Unk_Random* pRandom, unsigned* pCount, Unk_ProbabilityLog* pLogs);
+    int AddRandomValue(MS2Ptr<ItemOptionValueRandom> spValue, Unk_Random* pRandom, unsigned* pCount, Unk_ProbabilityLog* pLogs);
     int FUN_1405da4b0(MS2Ptr<ItemOptionValueRandom> spValue, unsigned* pCount, int nIndex, Unk_ProbabilityLog* pLogs);
     int FUN_1405daad0(MS2Ptr<ItemOptionValueRandom> spValue, unsigned* pCount, Unk_ProbabilityLog* pLogs);
     BOOL FUN_1405db0b0(MS2Ptr<CItemOption> spOption, CString strName);
@@ -131,7 +131,7 @@ class ItemOptionValueRandom : public CPtred
 {
 public:
     ItemOptionValueRandom();                    // 0x1405d2520
-    bool FUN_1405d2590(TiXmlElement* pElem);   // xml read
+    bool LoadFromXml(TiXmlElement* pElem);   // xml read
     CString FUN_1405d26c0();                    // the xml name of the stat
     int GetStat();                        // the stat (-1 for a special stat)
     unsigned GetSpecial();                   // the special stat
@@ -140,7 +140,7 @@ public:
     int GetWeight();                        // "weight"
     int FUN_1405d2800(MS2Ptr<ItemOptionRandomContext> spContext);
     int FUN_1405d28d0(MS2Ptr<ItemOptionRandomContext> spContext, Unk_Random* pRandom);
-    bool FUN_1405d29b0();                       // the special stat is a special ability
+    bool IsSpecialAbility();                       // the special stat is a special ability
 private:
     int m_nStat;                                // +0x18
     unsigned m_nSpecial;                        // +0x1c
@@ -156,13 +156,13 @@ public:
     ItemOptionConstant();                       // 0x1405d29f0
     void FUN_1405d2a50(int nValue);
     int GetGrade();                        // "grade"
-    bool FUN_1405d2a90(TiXmlElement* pElem);   // xml read
+    bool Load(TiXmlElement* pElem);   // xml read
     void FUN_1405d2e70(MS2Ptr<CItemOption> spOption, int nRank);   // adds the rows to an option
     size_t FUN_1405d31f0();                     // the row count
-    MS2Ptr<ItemOptionValue> FUN_1405d3220(int nStat);
-    MS2Ptr<ItemOptionValue> FUN_1405d3300(unsigned nSpecial);
-    void FUN_1405d33e0(std::function<void(ItemOptionValue*)> fnVisit);
-    void FUN_1405d3490(TiXmlElement* pElem);   // xml read of createType 3 (lua computed) rows
+    MS2Ptr<ItemOptionValue> FindValueByStat(int nStat);
+    MS2Ptr<ItemOptionValue> FindValueBySpecial(unsigned nSpecial);
+    void ForEachValue(std::function<void(ItemOptionValue*)> fnVisit);
+    void LoadLuaValues(TiXmlElement* pElem);   // xml read of createType 3 (lua computed) rows
 private:
     int m_n18;                                  // +0x18
     int m_nGrade;                               // +0x1c "grade"
@@ -246,12 +246,12 @@ class ItemOptionVariationData : public CPtred
 {
 public:
     ItemOptionVariationData();                  // 0x1405d37e0
-    void FUN_1405d3870(TiXmlElement* pElem);   // xml read
-    int FUN_1405d3a20();                        // "id"
+    void Load(TiXmlElement* pElem);   // xml read
+    int GetId();                        // "id"
     int FUN_1405d3a40();                        // a random stat (0 when none)
     int FUN_1405d3a90(Unk_Random* pRandom);
-    int FUN_1405d3ae0();                        // the first stat
-    int FUN_1405d3b30() const;                   // the last stat
+    int GetFirstStat();                        // the first stat
+    int GetLastStat() const;                   // the last stat
     int GetHighStat();                        // "highStat"
     bool FUN_1405d3ba0(int nStat);              // nStat reaches highStat
 private:
@@ -275,15 +275,15 @@ public:
     int GetLevelGroupId();                        // "levelGroupID"
     bool Load(TiXmlElement* pElem);   // xml read
     // Rolls the random options onto an option.
-    void FUN_1405d3f70(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);
-    bool FUN_1405d4270(MS2Ptr<Unk_ItemOptionPreset> spPreset, MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);
+    void RollOptions(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);
+    bool RollPresetOptions(MS2Ptr<Unk_ItemOptionPreset> spPreset, MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);
     void FUN_1405d48d0(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom,
                        const std::vector<std::pair<int, int> >& vLocked, unsigned nCount, Unk_ProbabilityLog* pLogs);
     bool FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random* pRandom);    // rerolls until the result differs
     bool FUN_1405d55e0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random* pRandom);
-    int FUN_1405d5fe0(int nRank);               // the pick count of a rank
-    bool FUN_1405d6020(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);   // adds one random option
-    void FUN_1405d6560(MS2Ptr<CItemOption> spOption, int nRank, unsigned nTrials,
+    int GetPickCount(int nRank);               // the pick count of a rank
+    bool AddRandomOption(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom);   // adds one random option
+    void SimulateOptions(MS2Ptr<CItemOption> spOption, int nRank, unsigned nTrials,
                        const std::vector<std::pair<int, int> >& vLocked, std::vector<CStringW>* pOut);
     void FUN_1405d68f0(unsigned nItemId, int nRank, unsigned& nPick, std::vector<CStringW>* pOut);
     bool HasStat(int nStat);              // a row of the stat

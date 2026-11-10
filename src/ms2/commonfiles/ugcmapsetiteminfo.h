@@ -70,8 +70,8 @@ public:
     CUGCMapSetItemTable();                  // 0x140b9de60
     virtual ~CUGCMapSetItemTable();         // 0x140b9def0
 
-    UGCMapSetItemDataPtr FUN_140b9df60(unsigned int nGroup);        // cached lookup, loads on miss (name invented)
-    void FUN_140b9e0a0();                                           // drop the cache
+    UGCMapSetItemDataPtr GetUGCMapSetItem(unsigned int nGroup);        // cached lookup, loads on miss (name invented)
+    void ClearCache();                                           // drop the cache
     UGCMapSetItemDataPtr LoadUGCMapSetItem(unsigned int nGroup);        // (re)load the xml, return that group
 
 private:

@@ -32,10 +32,10 @@ public:
     class Unk_XmlNode* NextSibling(char const*);
 };
 class CReservedWordTable;
-int FUN_140768010(int, int);  // C3: the definition's signature
+int GetRandomRange(int, int);  // C3: the definition's signature
 class CTalkScript;
 Unk_ScriptPtr<CTalkScript> FUN_140856820(int nNpcId, int nKind);                 // talk script by npc
-Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int nQuestId, int nKind);               // talk script by quest
+Unk_ScriptPtr<CTalkScript> FindQuestTalk(int nQuestId, int nKind);               // talk script by quest
 
 // @0x14078ced0
 CScriptContent::CScriptContent()
@@ -114,18 +114,18 @@ CCinematicDistractor::~CCinematicDistractor()
 }
 
 // @0x14078d3a0
-size_t CCinematicDistractor::FUN_14078d3a0() const
+size_t CCinematicDistractor::GetChoiceCount() const
 {
     return m_choices.GetCount();
 }
-MS2_REPLACE_METHOD(0x14078D3A0, CCinematicDistractor, FUN_14078d3a0, 31, 0x99CA2EA9);
+MS2_REPLACE_METHOD(0x14078D3A0, CCinematicDistractor, GetChoiceCount, 31, 0x99CA2EA9);
 
 // @0x14078d3d0
-int CCinematicDistractor::FUN_14078d3d0() const
+int CCinematicDistractor::HasChoices() const
 {
     return m_choices.GetCount() > 0;
 }
-MS2_REPLACE_METHOD(0x14078D3D0, CCinematicDistractor, FUN_14078d3d0, 58, 0xA3132CDC);
+MS2_REPLACE_METHOD(0x14078D3D0, CCinematicDistractor, HasChoices, 58, 0xA3132CDC);
 
 // @0x14078d410
 void CCinematicDistractor::WriteTo(COutputStream& out)
@@ -185,7 +185,7 @@ Unk_ScriptPtr<CScriptContent> CCinematicEventScript::GetRandomContent()
 {
     if (m_contents.GetCount() == 0)
         return Unk_ScriptPtr<CScriptContent>(0);
-    unsigned n = FUN_140768010((unsigned)m_contents.GetCount(), 0);
+    unsigned n = GetRandomRange((unsigned)m_contents.GetCount(), 0);
     return m_contents.GetAt(n);
 }
 
@@ -343,7 +343,7 @@ void CCinematicContent::vfunc_4(int nId)
                 continue;
             BOOL bAll = TRUE;
             for (size_t j = 0; j < ids.GetCount(); j++) {
-                if (FUN_1408564b0(nId, ids[j]).get() != 0) {
+                if (FindQuestTalk(nId, ids[j]).get() != 0) {
                     bAll = FALSE;
                     break;
                 }

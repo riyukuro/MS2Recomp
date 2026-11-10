@@ -56,7 +56,7 @@ unsigned __int64 FUN_140837770(int nId, unsigned nCount)
 }
 
 // @0x1408377d0
-void FUN_1408377d0(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> >& ids)
+void GetCostIds(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> >& ids)
 {
     for (POSITION pos = s_costs.GetHeadPosition(); pos != 0; s_costs.GetNext(pos))
     {

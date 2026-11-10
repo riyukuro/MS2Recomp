@@ -66,7 +66,7 @@ public:
 
     int FUN_140ddb5d0();                                    // the rod id of the data (0 without data)
     int FUN_140ddb620();                                    // the rod id of the worn fishing gem, else of the data
-    void FUN_140ddb740(int nRod);                           // puts the rod into the hand and starts the chair effect
+    void EquipRod(int nRod);                           // puts the rod into the hand and starts the chair effect
 
     MS2Ptr<StateFishingData> m_spFishingData;               // +0x40
     efd::SmartPointer<NiNode> m_spEffect;                   // +0x50
@@ -99,7 +99,7 @@ public:
     virtual void vfunc_8(double fTime);                     // 8  0x140ddc180
     virtual void vfunc_9(double fTime);                     // 9  0x140ddc240
 
-    Unk_FsCell FUN_140ddc3c0(efd::Point3 kPoint);     // the grid cell of a point, shifted to the corner of its quadrant
+    Unk_FsCell GetGridCell(efd::Point3 kPoint);     // the grid cell of a point, shifted to the corner of its quadrant
     int FUN_140ddc4b0(efd::Point3 kDir);              // the owner may move by this step (ray cast to the water)
 };
 MS2_CHECK_SIZE(StateFishingFloat, 0x40);

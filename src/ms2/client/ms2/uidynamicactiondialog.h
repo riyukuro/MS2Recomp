@@ -52,7 +52,7 @@ public:
     void FUN_14192c690(const Scaleform::GFx::FunctionHandler::Params& params);   // empty (the search input callback)
     void FUN_14192c6b0();                                   // rebuild the learned actions of the player and the pages
     void SetFocusByEmotion(int nAction);                        // "setFocusByEmotion"
-    void FUN_14192c9b0(int nAction);                        // use the action on the player
+    void UseAction(int nAction);                        // use the action on the player
     void PreviewAction(int nAction);                        // open the skill preview of the action
     void FUN_14192ca70();                                   // "buildActions" in id order
     void FUN_14192d100();                                   // "buildActions" in reverse id order
@@ -60,7 +60,7 @@ public:
     CStringW GetActionKeywords(unsigned int nAction);           // the search keywords of an action, space separated
     void PadEntriesToGrid(ASArray& arr);                       // pad the page list with empty slots
     void FUN_14192da70(int nKey);                           // keys: move the selection in "m_list"
-    int FUN_14192deb0(int nKey);                            // the key has no action bound
+    int IsKeyUnbound(int nKey);                            // the key has no action bound
     int FUN_14192df00(int nKey, unsigned __int64 nAction);  // bind an action to a key
 
 private:

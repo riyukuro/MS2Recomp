@@ -9,8 +9,8 @@ public:
     CPacketBuffer(int size, char* data, CPacketBuffer* parent);   // @0x1407130d0
     virtual ~CPacketBuffer();                                       // @0x1407132c0
     int GetSize() const;                                      // size, @0x140714fa0
-    char* FUN_140713530();                                          // data, @0x140713530
-    CPacketBuffer* FUN_140715390(unsigned offset,int size,const Unk_SocketNew&);         // slice [offset, offset+size), @0x140715390
+    char* GetData();                                          // data, @0x140713530
+    CPacketBuffer* CreateSlice(unsigned offset,int size,const Unk_SocketNew&);         // slice [offset, offset+size), @0x140715390
     CPacketBuffer* FUN_140715000(int size,char* data,CPacketBuffer* parent);  // @0x140715000
     void FUN_140715360(void* value);                                // @0x140715360 (stores into the field at +0x10)
     void** FUN_140715db0();                                         // @0x140715db0 (address of the field at +0x10)

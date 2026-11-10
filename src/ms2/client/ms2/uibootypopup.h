@@ -20,13 +20,13 @@ public:
     virtual int vfunc_48();                                         // 48 0x141031f70: 0x4ebb
     virtual void vfunc_52();                                        // 52 0x1410316f0 hide once the movie clip exists
 
-    int FUN_1410315a0();                                            // m_74 (shown)
-    void FUN_1410315c0();                                           // m_78 = m_74 = 1
-    void FUN_1410315f0();                                           // unregister from the manager; m_78 = m_74 = 0
+    int IsShown();                                            // m_74 (shown)
+    void Show();                                           // m_78 = m_74 = 1
+    void Close();                                           // unregister from the manager; m_78 = m_74 = 0
     void FUN_141031660(Vector3 pt);                  // m_68 = pt (the world anchor)
-    void FUN_141031690(egf::EntityID kId);                   // m_80 = kId
-    void FUN_1410316d0(int nItemId);                                // m_88 = nItemId
-    void FUN_141031890();                                           // project m_68 to the screen and move the movie
+    void SetEntityId(egf::EntityID kId);                   // m_80 = kId
+    void SetItemId(int nItemId);                                // m_88 = nItemId
+    void UpdateScreenPosition();                                           // project m_68 to the screen and move the movie
     void FUN_141031a60(int bShow);                                  // show/hide; on show push the item name + description
 
 private:

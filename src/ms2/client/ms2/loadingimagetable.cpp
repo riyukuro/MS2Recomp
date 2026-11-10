@@ -48,13 +48,13 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 // Unrecovered helpers (the xml loader helpers the other table units use).
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_140cc2ad0(const CString& strDir, const CString& strFile);    // <dir>/<file>
-CString FUN_14016a5c0(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);                   // narrows a string (the RTTI name in CheckInit)
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 __int64 GetServerTime();                                                 // the server time
-int FUN_140768010(int nMax, int nMin);                                   // random index
+int GetRandomRange(int nMax, int nMin);                                   // random index
 unsigned int FUN_1407181d0(const CString& str);                                        // string to int
 
 void FUN_140275080(CString& str, void* pOut, const char* pszDelim);   // C3: the exe's void* signature (was Unk_StrVec*)   // splits into a std::vector<CString>
@@ -131,14 +131,14 @@ int CLoadingImageTable::LoadingImage::IsInPeriod() const
 }
 
 // The interval test at 0x1403b4ef0 (defined in fishsimultedata.cpp).
-struct Unk_FishRange { bool FUN_1403b4ef0(unsigned n) const; };   // C3: was CLoadingImageTable::Unk_MapRange::FUN_1403b4ef0
+struct Unk_FishRange { bool IsInRange(unsigned n) const; };   // C3: was CLoadingImageTable::Unk_MapRange::IsInRange
 
 // @0x140d44390
 int CLoadingImageTable::LoadingImage::IsExceptMap(int nMapCode) const
 {
     for (size_t i = 0; i < m_exceptMaps.GetCount(); i++)
     {
-        if (reinterpret_cast<const Unk_FishRange&>(m_exceptMaps[i]).FUN_1403b4ef0(nMapCode))
+        if (reinterpret_cast<const Unk_FishRange&>(m_exceptMaps[i]).IsInRange(nMapCode))
             return 1;
     }
     return 0;
@@ -161,9 +161,9 @@ CLoadingImageTable::~CLoadingImageTable()
 int CLoadingImageTable::Load()
 {
     SetInit(true);
-    CString strPath = FUN_14071a5b0("Table", "loadingImage.xml");
+    CString strPath = GetXmlPath("Table", "loadingImage.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -257,7 +257,7 @@ CString CLoadingImageTable::GetImageFile(int nMapCode, int bCommon)
     CollectImages(nMapCode, aImages, bCommon);
     if (aImages.GetCount() == 0)
         return CString("");
-    ImagePtr spImage(aImages.GetAt((unsigned)FUN_140768010(aImages.GetCount(), 0)));
+    ImagePtr spImage(aImages.GetAt((unsigned)GetRandomRange(aImages.GetCount(), 0)));
     return CString(spImage.get()->m_strFile);
 }
 
@@ -350,7 +350,7 @@ void CLoadingImageTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CLoadingImageTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CLoadingImageTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

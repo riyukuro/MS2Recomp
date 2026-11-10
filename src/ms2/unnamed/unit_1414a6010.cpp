@@ -151,7 +151,7 @@ namespace egmAnimation { class KFMCache; }
 extern egmAnimation::KFMCache* (*g_pfnMS2CreateKFMCache)();   // C3: was extern void* DAT_143b094a0 (AnimationService.cpp)
 
 // @0x1414a6230
-void FUN_1414a6230(efd::IBase* (*pfnFactory)())
+void SetKFMCacheFactory(efd::IBase* (*pfnFactory)())
 {
     g_pfnMS2CreateKFMCache = (egmAnimation::KFMCache* (*)())pfnFactory;
 }

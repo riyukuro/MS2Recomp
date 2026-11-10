@@ -13,7 +13,7 @@ struct Unk_CubePaletteFilter {
     bool FUN_140df00f0();                                                         // 0x140df00f0
     int FUN_140df0110();                                                          // 0x140df0110
     int FUN_140df0160();                                                          // 0x140df0160
-    int FUN_140df01a0();                                                          // 0x140df01a0
+    int GetCategory();                                                          // 0x140df01a0
     void FUN_140df0140(int);                                                      // 0x140df0140
     void FUN_140df0180(int);                                                      // 0x140df0180
     bool includeOwned,flag1,flag2;
@@ -30,28 +30,28 @@ public:
     public:
         UGCCube(int itemId);                                                      // 0x140def070
         UGCCube(int itemId, __int64 uid, __int64 count, CUgcItemLook* pLook);     // 0x140def210
-        MS2Ptr<CubeItemInfo> FUN_140def3d0();
-        int FUN_140def5a0();
-        __int64 FUN_140def5f0();
-        int FUN_140defff0();
+        MS2Ptr<CubeItemInfo> GetInfo();
+        int GetItemId();
+        __int64 GetInstanceId();
+        int GetIndex();
         // uiugccubepalettedialog.cpp
-        __int64 FUN_140defba0();
-        bool FUN_140def420();
+        __int64 GetUgcUid();
+        bool IsLocked();
         __int64 FUN_140def620();
         __int64 FUN_140def6c0();
-        CStringW FUN_140def710();
-        CStringW FUN_140def880();
-        CStringW FUN_140defd20();
-        int FUN_140defcd0();
+        CStringW GetName();
+        CStringW GetIconPath();
+        CStringW GetPaymentIcon();
+        int GetPriceCount();
         unsigned FUN_140defe70();
         unsigned FUN_140defed0();
         bool FUN_140def4f0();
         // ugccubepalette.cpp
-        int FUN_140defc30();
-        int FUN_140defc80();
-        bool FUN_140defdd0(int nId);
+        int GetCategoryIndex();
+        int GetFilter();
+        bool HasCategoryTag(int nId);
         bool FUN_140deff30();
-        void FUN_140df0010(int nIndex);
+        void SetIndex(int nIndex);
         int index;
         MS2Ptr<CItemData> itemData;
         MS2Ptr<ItemHousing> ingredient;

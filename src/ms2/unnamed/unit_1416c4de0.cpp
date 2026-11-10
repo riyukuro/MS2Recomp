@@ -89,7 +89,7 @@ void CPVPCameraMode::vfunc_6(int n)
     m_f0 = 0;
     Vector3 ptPos = m_d8.m_pos;
     Vector3 ptRot = g_143b01a60;
-    efd::Point3 ptCenter = FUN_1416c5d30();
+    efd::Point3 ptCenter = GetFramingCenter();
     m_50 = m_124;
     ptPos.x = m_50 * FUN_1409f25a0(m_68) + ptCenter.x;
     ptPos.y = m_50 * FUN_1409f2310(m_68) + ptCenter.y;
@@ -113,7 +113,7 @@ void CPVPCameraMode::vfunc_8(double fTime)
 {
     Vector3 ptPos = m_d8.m_pos;
     Vector3 ptRot = g_143b01a60;
-    efd::Point3 ptCenter = FUN_1416c5d30();
+    efd::Point3 ptCenter = GetFramingCenter();
     Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
     if (reinterpret_cast<const efd::Point3&>(ptMove) != reinterpret_cast<const efd::Point3&>(g_143b01a60))
     {
@@ -256,7 +256,7 @@ BOOL CPVPCameraMode::vfunc_31()
 MS2_REPLACE_METHOD(0x1416c5b20, CPVPCameraMode, vfunc_31, 514, 0x392A4514);
 
 // @0x1416c5d30
-efd::Point3 CPVPCameraMode::FUN_1416c5d30()
+efd::Point3 CPVPCameraMode::GetFramingCenter()
 {
     Vector3 ptCenter(0.0f, 0.0f, 0.0f);
     Vector3 ptOther(0.0f, 0.0f, 0.0f);
@@ -295,7 +295,7 @@ efd::Point3 CPVPCameraMode::FUN_1416c5d30()
     float fLen = kDir.Unitize();
     return reinterpret_cast<const efd::Point3&>(ptCenter) + reinterpret_cast<const efd::Point3&>(kDir) * (fLen * 0.5f);
 }
-MS2_REPLACE_METHOD(0x1416c5d30, CPVPCameraMode, FUN_1416c5d30, 849, 0x6A577FD4);
+MS2_REPLACE_METHOD(0x1416c5d30, CPVPCameraMode, GetFramingCenter, 849, 0x6A577FD4);
 
 // memmove_s 0x1416c60f0 closes the unit's COMDAT tail.
 __declspec(selectany) extern errno_t(__cdecl* const ms2_pvpCameraModeMemmoveS)(void*, size_t, const void*, size_t) = &memmove_s;

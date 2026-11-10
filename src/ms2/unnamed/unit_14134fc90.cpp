@@ -68,12 +68,12 @@ public:
 // The notice dispatcher (FUN_140939a10).
 class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x140939a10, the definer's signature)
 
-// The string table (FUN_1409331f0).
+// The string table (GetKeyTable).
 class CKeyTable { public: class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> GetActionKeyName(int, int); }; class Unk_DemolishTable : public CKeyTable {
 public:
 
 };
-Unk_SoundSink* FUN_1409331f0();
+Unk_SoundSink* GetKeyTable();
 
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 int FUN_14053f9c0(int nItemId);
@@ -95,7 +95,7 @@ UIHouseDemolishDialog::UIHouseDemolishDialog()
     : m_bShown(false), m_bRefreshed(false), m_nDirty(0)
 {
     m_58 = 0;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x14134fd40
@@ -231,7 +231,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
             MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
             if (spField ? true : false)
             {
-                if (spField->FUN_140375130() == 0)
+                if (spField->IsIndoor() == 0)
                 {
                     int nCount = 0;
                     int nLimit = 0;
@@ -251,7 +251,7 @@ void UIHouseDemolishDialog::Refresh(const unsigned* pnFlags)
         MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_textKey");
         if (spText.get() != 0)
         {
-            CStringW strText = reinterpret_cast<Unk_DemolishTable*>(FUN_1409331f0())->GetActionKeyName(0x493ed, 0);
+            CStringW strText = reinterpret_cast<Unk_DemolishTable*>(GetKeyTable())->GetActionKeyName(0x493ed, 0);
             spText->SetTextHTMLW(strText);
         }
     }

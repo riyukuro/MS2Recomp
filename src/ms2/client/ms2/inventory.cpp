@@ -263,7 +263,7 @@ Unk_InventoryStateManager* GetBlockManager();
 template <class T> class Unk_BlockPtr; struct Unk_BlockRecord;
 void ShowBlockNotice(const Unk_BlockPtr<Unk_BlockRecord>& spBlock, int nAction, unsigned __int64 n);   // C3: the real signature
 extern CString DAT_143ab78e8;
-int FUN_14052a7e0(Unk_Inventory::ItemPtr, Unk_Inventory::ItemPtr);
+int CompareItems(Unk_Inventory::ItemPtr, Unk_Inventory::ItemPtr);
 struct Unk_MeratItemOwner;
 bool FUN_1406a5a50(Unk_Inventory::ItemPtr, const Unk_MeratItemOwner*);
 #include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
@@ -323,7 +323,7 @@ MS2_CHECK_OFFSET(Unk_InventoryConstants, autoEquipMinLevel, 0xe6c0);
 MS2_CHECK_OFFSET(Unk_InventoryConstants, autoEquipMaxLevel, 0xe718);
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 void FUN_140d73bc0(int, int, void*, CStringW);
-void FUN_140d73aa0(CStringW, int, void*, CStringW);
+void ShowMessageBox(CStringW, int, void*, CStringW);
 void FUN_141275260(int, int, int);
 int FUN_141276180(const CString&, const CString&);
 CStringW GetStringCommonByKey(const CStringW&);
@@ -356,7 +356,7 @@ void FUN_1401fb910(unsigned char* p, COutputStream& stream);
 void FUN_1401fb760(unsigned char* p, COutputStream& stream);
 bool FUN_1401fb870(unsigned char* p, int mode);
 class CMsgBoxData;
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int, CStringW, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 class Unk_InventoryBinding { public: int FUN_140635100(); int FUN_140635120(); };
 int FUN_141420a70(class CItem*, class AvatarPC*);   // C3: was FUN_141420a70
@@ -368,7 +368,7 @@ struct Unk_InventoryAccount {
 };
 MS2_CHECK_SIZE(Unk_InventoryAccount, 0xa9d); // accessed prefix
 MS2_CHECK_OFFSET(Unk_InventoryAccount, flag, 0xa9c);
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 extern std::set<unsigned __int64> DAT_143ab2a30;   // ids of the account's characters (uicharacterlistdialog.cpp)
 class UIInventoryDialog;
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_InventoryDialog* FUN_1405344f0 (calls cast back)
@@ -471,7 +471,7 @@ int Unk_Inventory::FUN_140a5ce30(CStringW& names) {
     for (size_t i = 0; i < 15; ++i) {
         if (IsExtraSlotsMaxed((unsigned)i)) {
             if (count++ > 0) names += L", ";
-            names += TSingleton<CStringTable>::GetInstance()->FUN_141813300((int)i);
+            names += TSingleton<CStringTable>::GetInstance()->GetInventoryTabName((int)i);
         }
     }
     return count < 15;
@@ -511,7 +511,7 @@ int Unk_Inventory::AddItem(CItem* item) {
     if (category < 0 || category >= 15) return 11;
     if (Unk_LockGuard guard = lock) {} else {
         if (items.Lookup(item->GetItemUid()) != nullptr) return 17;
-        int slot = item->FUN_140526b50();
+        int slot = item->GetSlot();
         if (slot != -1) {
             int count = (int)slots[category].GetCount();
             if (slot < 0 || slot >= count) return 29;
@@ -520,7 +520,7 @@ int Unk_Inventory::AddItem(CItem* item) {
             int newSlot = FindEmptySlot(category);
             if (newSlot == -1) return 13;
             slot = newSlot;
-            item->FUN_140526b70(slot);
+            item->SetSlot(slot);
         }
         items.SetAt(item->GetItemUid(), item);
         slots[category][slot].AssignRaw(item);
@@ -537,7 +537,7 @@ void Unk_Inventory::RemoveItem(__int64 id) {
             int category = FUN_140a617f0(item);
             if (category < 0 || category >= 15) return;
             ItemArray& bag = slots[category];
-            int slot = item->FUN_140526b50();
+            int slot = item->GetSlot();
             if (slot < 0 || slot >= (int)bag.GetCount()) return;
             bag[slot] = 0;
         }
@@ -549,9 +549,9 @@ void Unk_Inventory::ReplaceItem(CItem* item) {
     if (item == nullptr) return;
     ItemPtr old = FindItemByUid(item->GetItemUid());
     if (old.get() != nullptr) {
-        int slot = old->FUN_140526b50();
+        int slot = old->GetSlot();
         int category = FUN_140a617f0(old);
-        item->FUN_140526b70(slot);
+        item->SetSlot(slot);
         items.SetAt(old->GetItemUid(), item);
         slots[category][slot].AssignRaw(item);
     }
@@ -575,7 +575,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FindItemBySkillId(int skill, int ignoreUsa
         for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
             ItemPtr item = items.GetValueAt(pos);
             if (!item) continue;
-            int itemSkill = item->FUN_140527840()->FUN_14053dc20();
+            int itemSkill = item->FUN_140527840()->GetSkillId();
             if (itemSkill == 0 || itemSkill != skill) continue;
             if (item->IsLapenshard() != 0) continue;
             if (ignoreUsability == 0 && player->CanUseItem(item.get()) == 0) continue;
@@ -616,7 +616,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FindItemByFunctionAndParameter(CStringW fu
             ItemPtr item = items.GetValueAt(pos);
             if (!item) continue;
             if (item->FUN_140527840()->function.name != function) continue;
-            if (((ItemFunctionArgs*)&item->FUN_140527840()->function.parameter)->FUN_1408d2330() != parameter) continue;
+            if (((ItemFunctionArgs*)&item->FUN_140527840()->function.parameter)->GetText() != parameter) continue;
             if (player->CanUseItem(item.get()) == 0) continue;
             found.push_back(item);
         }
@@ -659,7 +659,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e2e0(int itemId) {
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
-            if (item == nullptr || item->FUN_1405276c0() != itemId) continue;
+            if (item == nullptr || item->GetItemId() != itemId) continue;
             if (player->CanUseItem(item.get()) == 0) continue;
             return item;
         }
@@ -680,7 +680,7 @@ Unk_Inventory::ItemPtr Unk_Inventory::FUN_140a5e5c0(int itemId, int rarity) {
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
-            if (item == nullptr || item->FUN_1405276c0() != itemId) continue;
+            if (item == nullptr || item->GetItemId() != itemId) continue;
             if (item->GetRarity() != rarity) continue;
             if (player->CanUseItem(item.get()) == 0) continue;
             return item;
@@ -700,7 +700,7 @@ int Unk_Inventory::FUN_140a5e8d0(int itemId, ATL::CAtlList<ItemPtr>& result, int
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
-            if (item == nullptr || item->FUN_1405276c0() != itemId) continue;
+            if (item == nullptr || item->GetItemId() != itemId) continue;
             if (order == 2) result.AddTail(item);
             else if ((unsigned)item->GetCount() < item->GetSlotMax()) result.AddTail(item);
         }
@@ -754,7 +754,7 @@ int Unk_Inventory::GetItemCountByFilter(const int* filter) {
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
             if (item == nullptr) continue;
-            if (item->FUN_1405276c0() != *filter) continue;
+            if (item->GetItemId() != *filter) continue;
             if (*(filter + 1) != 0 && item->GetRarity() != *(filter + 1)) continue;
             if (*(filter + 2) != 0 && item->FUN_140528e20()) continue;
             if (player->CanUseItem(item.get()) == 0) continue;
@@ -793,7 +793,7 @@ int Unk_Inventory::FUN_140a5f180(int itemId, int rarity) {
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
             if (item == nullptr) continue;
-            if (item->FUN_1405276c0() != itemId) continue;
+            if (item->GetItemId() != itemId) continue;
             if (rarity != 0 && item->GetRarity() != rarity) continue;
             if (player->CanUseItem(item.get()) == 0) continue;
             count += item->vfunc_4();
@@ -805,7 +805,7 @@ MS2_REPLACE_METHOD(0x140a5f180, Unk_Inventory, FUN_140a5f180, 640, 0xA56DD464);
 // @0x140a5f410
 int Unk_Inventory::FUN_140a5f410(ItemPtr reference) {
     if (reference == nullptr) return 0;
-    int itemId = reference->FUN_1405276c0();
+    int itemId = reference->GetItemId();
     Unk_InventoryPlayer* player = (Unk_InventoryPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (player == nullptr) return 0;
     MS2Ptr<CItemData> data = FUN_14053f870(itemId);
@@ -818,7 +818,7 @@ int Unk_Inventory::FUN_140a5f410(ItemPtr reference) {
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
             if (item == nullptr) continue;
-            if (item->FUN_1405276c0() != itemId) continue;
+            if (item->GetItemId() != itemId) continue;
             if (item->GetRarity() != reference->GetRarity()) continue;
             if (player->CanUseItem(reference.get()) == 0) continue;
             if (item->FUN_140529640() != reference->FUN_140529640()) continue;
@@ -882,7 +882,7 @@ int Unk_Inventory::GetItemCountBySkillId(int skill, int includeEquipment) {
             for (unsigned i = 0; i < slots[category].GetCount(); ++i) {
                 ItemPtr item = slots[category][i];
                 if (item == nullptr) continue;
-                int itemSkill = item->FUN_140527840()->FUN_14053dc20();
+                int itemSkill = item->FUN_140527840()->GetSkillId();
                 if (itemSkill == 0 || itemSkill != skill) continue;
                 if (includeEquipment == 0) {
                     if (item->FUN_140527840()->FUN_14053cbc0()) continue;
@@ -904,14 +904,14 @@ MS2_REPLACE_METHOD(0x140a5fbd0, Unk_Inventory, GetItemCountBySkillId, 653, 0x115
 int Unk_Inventory::FUN_140a5fe70(int category, ItemPtr reference) {
     if (reference == nullptr) return 0;
     if (category < 0 || category >= 15) return 0;
-    MS2Ptr<CItemData> data = FUN_14053f870(reference->FUN_1405276c0());
+    MS2Ptr<CItemData> data = FUN_14053f870(reference->GetItemId());
     if (!data || data->property.slotMax == 1) return 0;
     int capacity = 0;
     if (Unk_LockGuard guard = lock) {} else {
         ItemArray& bag = slots[category];
         for (unsigned i = 0; i < bag.GetCount(); ++i) {
             ItemPtr item = bag[i];
-            if (item == nullptr || item->FUN_1405276c0() != reference->FUN_1405276c0()) continue;
+            if (item == nullptr || item->GetItemId() != reference->GetItemId()) continue;
             if (reference->HasCubeTextureMesh() != 0) {
                 if (item->HasCubeTextureMesh() == 0) continue;
                 Unk_InventoryStackIdentity* first = ((Unk_InventoryStackIdentity*)reference->GetUgcInfo());
@@ -941,12 +941,12 @@ int Unk_Inventory::SwapSlots(int category, int from, int to) {
         ItemPtr first = GetItemAt(category, from);
         if (first.get() != nullptr) {
             RemoveItem(first->GetItemUid());
-            first->FUN_140526b70(to);
+            first->SetSlot(to);
         }
         ItemPtr second = GetItemAt(category, to);
         if (second.get() != nullptr) {
             RemoveItem(second->GetItemUid());
-            second->FUN_140526b70(from);
+            second->SetSlot(from);
         }
         if (first.get() != nullptr) AddItem(first.get());
         if (second.get() != nullptr) AddItem(second.get());
@@ -958,7 +958,7 @@ MS2_REPLACE_METHOD(0x140a603e0, Unk_Inventory, SwapSlots, 377, 0x816338B7);
 int Unk_Inventory::FUN_140a60560(int category, int slot, ItemPtr item) {
     if (item == nullptr) return 0;
     if (category < 0 || category >= 15) return 0;
-    if (item->FUN_140526b50() == slot) return 1;
+    if (item->GetSlot() == slot) return 1;
     if (Unk_LockGuard guard = lock) {} else {
         ItemArray& bag = slots[category];
         // The original tests slot <= count here, despite the unusual direction.
@@ -966,7 +966,7 @@ int Unk_Inventory::FUN_140a60560(int category, int slot, ItemPtr item) {
         ItemPtr previous = bag[slot];
         if (previous.get() != nullptr) return 0;
         slots[category][slot] = item;
-        item->FUN_140526b70(slot);
+        item->SetSlot(slot);
     }
     return 1;
 }
@@ -1133,7 +1133,7 @@ int Unk_Inventory::FUN_140a616e0() {
     if (Unk_LockGuard guard = lock) {} else {
         for (POSITION pos = items.GetHeadPosition(); pos != nullptr; items.GetNext(pos)) {
             ItemPtr item = items.GetValueAt(pos);
-            if ((item.get() ? true : false) && item->FUN_1405268f0() != 0) ++count;
+            if ((item.get() ? true : false) && item->IsNew() != 0) ++count;
         }
     }
     return count;
@@ -1165,7 +1165,7 @@ int Unk_Inventory::NeedsSort(int category) {
         for (unsigned i = 1; i < slots[category].GetCount(); ++i) {
             first = slots[category][i - 1];
             second = slots[category][i];
-            compare = FUN_14052a7e0(first, second);
+            compare = CompareItems(first, second);
             if (compare == 1) return 1;
         }
     }
@@ -1185,12 +1185,12 @@ int Unk_Inventory::HasMergeableStacks(int category) {
         if (item == nullptr) continue;
         data.AssignRaw(item->FUN_140527840());
         if (data == nullptr) continue;
-        if (!data->FUN_14053c7c0()) continue;
+        if (!data->IsStackable()) continue;
         limit = data->property.slotMax;
         if ((unsigned)item->GetCount() < limit) {
             unsigned previous;
-            if (seen.Lookup(item->FUN_1405276c0(), previous)) return 1;
-            else seen.SetAt(item->FUN_1405276c0(), i);
+            if (seen.Lookup(item->GetItemId(), previous)) return 1;
+            else seen.SetAt(item->GetItemId(), i);
         }
     }
     return 0;
@@ -1243,13 +1243,13 @@ int Unk_Inventory::RequestEquipItem(CItem* item, int slot, int mode, int skipBin
     int selected = slot == 0 ? FUN_141420a70(item, (class AvatarPC*)(player)) : slot;
     if (CanEquipItem(item, selected, mode) == 0) return 0;
     if (skipBinding == 0) {
-        if (((CItemTransfer*)item->FUN_140527930())->HasBindingRule() != 0 && ((CItemTransfer*)item->FUN_140527930())->HasBinding() == 0) {
+        if (((CItemTransfer*)item->GetTransfer())->HasBindingRule() != 0 && ((CItemTransfer*)item->GetTransfer())->HasBinding() == 0) {
             CStringW prompt = FUN_14028dfa0<CStringW>(L"s_msg_transfer_bind_when_equip", player->vfunc_77());
-            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(17, prompt, nullptr, s_useBindEquipItem);
+            MS2Ptr<CMsgBoxData> box = CreateMessageBox(17, prompt, nullptr, s_useBindEquipItem);
             if (box.get() != nullptr) {
                 box->Append<unsigned>(slot);
                 box->Append<unsigned>(mode);
-                box->FUN_141a01600(item->GetItemUid());
+                box->SetItemUid(item->GetItemUid());
                 box->FUN_141a01ee0(ItemPtr(item), item->FUN_140527b10(), 1, 0, -1, -1, 1);
                 box->SetButtonLabelIds(1143, 1144, 0);
                 FUN_140d73c60(box);
@@ -1321,7 +1321,7 @@ unsigned Unk_Inventory::FUN_140a62d30(int skill) {
         Unk_InventorySkillRequest request(skill, 1);
         request.remap = data.operator->()->FUN_140804450();
         request.item = item->GetItemUid();
-        MS2Ptr<CSkillRecord> record = player->GetSkillSystem()->FUN_141765570(request);
+        MS2Ptr<CSkillRecord> record = player->GetSkillSystem()->CreateSkillRecord(request);
         if (record == 0) return 0;
         return player->vfunc_102(record);
     }
@@ -1339,13 +1339,13 @@ unsigned Unk_Inventory::FUN_140a63000(int itemId) {
     if (item == 0) return 0;
     if (((class CGuideManager*)FUN_1409331e0())->IsRestricted(8)) { FUN_141275260(2184, 1, 1); return 0; }
     if (item->FUN_140527840()->FUN_14053d270()) {
-        MS2Ptr<SkillLevelData> data = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(metadata->FUN_14053dc20(), 1);
+        MS2Ptr<SkillLevelData> data = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(metadata->GetSkillId(), 1);
         if (data == 0) return 0;
-        Unk_InventorySkillRequest request(metadata->FUN_14053dc20(), 1);
+        Unk_InventorySkillRequest request(metadata->GetSkillId(), 1);
         request.remap = data.operator->()->FUN_140804450();
         request.itemUse = true;
         request.item = item->GetItemUid();
-        MS2Ptr<CSkillRecord> record = player->GetSkillSystem()->FUN_141765570(request);
+        MS2Ptr<CSkillRecord> record = player->GetSkillSystem()->CreateSkillRecord(request);
         if (record == 0) return 0;
         return player->vfunc_102(record);
     }
@@ -1367,7 +1367,7 @@ unsigned Unk_Inventory::FUN_140a63360(int skill) {
         request.remap = data.operator->()->FUN_140804450();
         request.item = item->GetItemUid();
         request.itemUse = true;
-        MS2Ptr<CSkillRecord> record = player->GetSkillSystem()->FUN_141765570(request);
+        MS2Ptr<CSkillRecord> record = player->GetSkillSystem()->CreateSkillRecord(request);
         if (record == 0) return 0;
         return player->vfunc_102(record);
     }
@@ -1392,7 +1392,7 @@ unsigned Unk_Inventory::FUN_140a635f0(CItem* item) {
         request.level = level;
         request.remap = data.operator->()->FUN_140804450();
         request.item = item->GetItemUid();
-        MS2Ptr<CSkillRecord> record = player->GetSkillSystem()->FUN_141765570(request);
+        MS2Ptr<CSkillRecord> record = player->GetSkillSystem()->CreateSkillRecord(request);
         if (record == 0) return 0;
         return player->vfunc_102(record);
     }
@@ -1422,10 +1422,10 @@ int Unk_Inventory::CanEquipItem(CItem* item, int slot, int mode) {
     MS2Ptr<CItemData> data(item->FUN_140527840());
     if (!data) return 0;
     if (!data.get()->FUN_14053c710()) return 0;
-    bool codi = CFeatureManager::GetInstance()->FUN_14036d570(0x8e);
+    bool codi = CFeatureManager::GetInstance()->IsFeatureEnabled(0x8e);
     if (mode == 2) {
         if (!codi || !data.get()->HasSkinType()) {
-            FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_Invalid_slot_codi"), 0, nullptr, L"");
+            ShowMessageBox(GetStringCommonByKey(L"s_item_err_Invalid_slot_codi"), 0, nullptr, L"");
             return 0;
         }
     } else if (mode == 1) {
@@ -1460,7 +1460,7 @@ int Unk_Inventory::CanEquipItem(CItem* item, int slot, int mode) {
                 if (codiHeadWorn) {
                     MS2Ptr<CItem> worn = codiHead->GetItem();
                     if (!worn->FUN_140528980() || worn->FUN_140525e50(mask, type) == 0) {
-                        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
+                        ShowMessageBox(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
                         return 0;
                     }
                 }
@@ -1469,7 +1469,7 @@ int Unk_Inventory::CanEquipItem(CItem* item, int slot, int mode) {
                 if (codiTopWorn) {
                     MS2Ptr<CItem> worn = codiTop->GetItem();
                     if (!worn->FUN_140528980() || worn->FUN_140525e50(mask, type) == 0) {
-                        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
+                        ShowMessageBox(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
                         return 0;
                     }
                 }
@@ -1485,7 +1485,7 @@ int Unk_Inventory::CanEquipItem(CItem* item, int slot, int mode) {
                 if (codi) {
                     MS2Ptr<CEquipItem> codiHead = player->GetEquipBySlotKind(5, 2);
                     if ((codiHead.get() ? true : false) && codiHead->GetItemData() != nullptr && codiHead->GetItemData()->FUN_14053d460()) {
-                        FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
+                        ShowMessageBox(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
                         return 0;
                     }
                 }
@@ -1501,7 +1501,7 @@ int Unk_Inventory::CanEquipItem(CItem* item, int slot, int mode) {
                     if (codiCurWorn) {
                         MS2Ptr<CItem> worn = codiCur->GetItem();
                         if (!worn->FUN_140528980() || worn->FUN_140525e50(mask, type) == 0) {
-                            FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
+                            ShowMessageBox(GetStringCommonByKey(L"s_item_err_codi_slot"), 0, nullptr, L"");
                             return 0;
                         }
                     }
@@ -1598,7 +1598,7 @@ int Unk_Inventory::GetItemRequirementError(MS2Ptr<CItemData> data, int) {
     if (data->FUN_14053d1f0() && player->IsVip() == 0) return 7;
     if (data->HasWeddingLimit() && !TSingleton<WeddingManager>::GetInstance()->IsInProgress()) return 7;
     if (data->FUN_14053ce40()) {
-        if (player->GetSkillSystem()->FUN_141768fb0(data->FUN_14053dc20(), data->FUN_14053dc40()) != 0) return 9;
+        if (player->GetSkillSystem()->IsEmotionLearned(data->GetSkillId(), data->GetSkillLevel()) != 0) return 9;
     }
     return 0;
 }
@@ -1607,7 +1607,7 @@ int Unk_Inventory::GetItemRequirementError(MS2Ptr<CItemData> data, int) {
 int Unk_Inventory::FUN_140a65b70() {
     UIInventoryDialog* dialog = Unk_BreakDialog<UIInventoryDialog>(20013);
     if (dialog != nullptr)
-        return dialog->FUN_141999de0();
+        return dialog->GetSelectedTab();
     return -1;
 }
 MS2_REPLACE_METHOD(0x140a65b70, Unk_Inventory, FUN_140a65b70, 54, 0x9D821E3C);
@@ -1618,7 +1618,7 @@ int Unk_Inventory::SendEmotion(CItem* item) {
     if (item == nullptr) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
     if (item->FUN_140527840() == nullptr) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
     if (item->FUN_140527840()->GetType() != 24) { FUN_140d73bc0(2135, 0, nullptr, L""); return 0; }
-    if (player->GetSkillSystem()->FUN_141768fb0(item->FUN_140527840()->FUN_14053dc20(), item->FUN_140527840()->FUN_14053dc40()) != 0) { FUN_140d73bc0(2136, 0, nullptr, L""); return 0; }
+    if (player->GetSkillSystem()->IsEmotionLearned(item->FUN_140527840()->GetSkillId(), item->FUN_140527840()->GetSkillLevel()) != 0) { FUN_140d73bc0(2136, 0, nullptr, L""); return 0; }
     COutPacket packet(static_cast<int>(SendOp::Emote), 0);
     packet.Encode1(1);
     packet.Encode8(item->GetItemUid());
@@ -1644,7 +1644,7 @@ int Unk_Inventory::FUN_140a65e30(CItem* item) {
         }
         else if (error == 5) { FUN_140d73bc0(225, 0, nullptr, L""); return 1; }
         else if (error == 6) { FUN_140d73bc0(226, 0, nullptr, L""); return 1; }
-        else if (error == 7) { FUN_140d73aa0(GetStringCommonByKey(L"s_item_err_puton_vip"), 0, nullptr, L""); return 1; }
+        else if (error == 7) { ShowMessageBox(GetStringCommonByKey(L"s_item_err_puton_vip"), 0, nullptr, L""); return 1; }
         else if (error == 10) return 1;
     }
     return 0;
@@ -1663,14 +1663,14 @@ int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
     Unk_InventoryPlayer* player = (Unk_InventoryPlayer*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (player == nullptr) return 0;
     if (player->IsDead() != 0) return 0;
-    Unk_InventoryBinding* binding = ((Unk_InventoryBinding*)item->FUN_140527930());
+    Unk_InventoryBinding* binding = ((Unk_InventoryBinding*)item->GetTransfer());
     if (binding == nullptr) return 0;
     CStringW unused;
     ItemUtilTransfer::TOutBindingParam output;
     __int64 character = player->FUN_141656a80();
     if (FUN_1406344b0(ItemPtr(item), &character, &output)) return 1;
     name = output.name;
-    bool allowed = ((struct Unk_InventoryAccount*)FUN_1401c0d90())->FUN_140a6a0d0() && item->HasSkin() != 0;
+    bool allowed = ((struct Unk_InventoryAccount*)GetGameRule())->FUN_140a6a0d0() && item->HasSkin() != 0;
     bool enchanted = ((Unk_InventoryEnchant*)item->GetSocket())->HasAnyGem();
     if (allowed && enchanted) { *reason = 2; return 0; }
     if (allowed) return 1;
@@ -1692,7 +1692,7 @@ int Unk_Inventory::FUN_140a66200(CItem* item, int* reason, CStringW& name) {
 // MS2-FUNCTIONAL: indexed typed setting selection replaces the duplicated switch body.
 // @0x140a66510
 int FUN_140a66510(int category) {
-    if (!CFeatureManager::GetInstance()->FUN_14036d570(116)) return 48;
+    if (!CFeatureManager::GetInstance()->IsFeatureEnabled(116)) return 48;
     int count = 48;
     Unk_InventoryArraySetting* setting = nullptr;
     switch (category) {
@@ -1723,7 +1723,7 @@ MS2_REPLACE(0x140a66510, FUN_140a66510, 499, 0x76FF035D);
 // MS2-FUNCTIONAL: indexed typed setting selection replaces the duplicated switch body.
 // @0x140a66750
 int FUN_140a66750(int category) {
-    if (!CFeatureManager::GetInstance()->FUN_14036d570(116)) return 48;
+    if (!CFeatureManager::GetInstance()->IsFeatureEnabled(116)) return 48;
     int count = 48;
     Unk_InventoryArraySetting* setting = nullptr;
     switch (category) {
@@ -1753,7 +1753,7 @@ int FUN_140a66750(int category) {
 MS2_REPLACE(0x140a66750, FUN_140a66750, 503, 0x0D527D0B);
 // @0x140a66990
 void Unk_Inventory::FUN_140a66990(unsigned short level) {
-    if (!CFeatureManager::GetInstance()->FUN_14036d570(232)) return;
+    if (!CFeatureManager::GetInstance()->IsFeatureEnabled(232)) return;
     if (IsAutoEquipEnabled() == 0) return;
     ATL::CAtlMap<Unk_InventoryEquipSlot, ItemPtr> candidates;
     CollectAutoEquipCandidates(candidates, level);
@@ -1777,7 +1777,7 @@ void Unk_Inventory::ResetAutoEquip() {
         pendingItem = 0;
         autoEquipQueue.RemoveAll();
         excludedItems.RemoveAll();
-        autoEquipEnabled = CFeatureManager::GetInstance()->FUN_14036d570(232);
+        autoEquipEnabled = CFeatureManager::GetInstance()->IsFeatureEnabled(232);
     }
 }
 MS2_REPLACE_METHOD(0x140a66c00, Unk_Inventory, ResetAutoEquip, 154, 0x80D2AB72);
@@ -1795,7 +1795,7 @@ void Unk_Inventory::CollectAutoEquipCandidates(ATL::CAtlMap<Unk_InventoryEquipSl
             int mode = item->FUN_14052a170();
             if (mode == 0) {
                 if (player->GetEquipBySlotKind(slot, mode) == nullptr) {
-                    if (level == 0 || (unsigned)level == item->FUN_1405282d0()) {
+                    if (level == 0 || (unsigned)level == item->GetLevelLimit()) {
                         ItemPtr old;
                         result.Lookup(slot, old);
                         if (old.get() != nullptr) {
@@ -1828,7 +1828,7 @@ MS2_REPLACE_METHOD(0x140a67000, Unk_Inventory, IsAutoEquipEnabled, 17, 0xD08230F
 // @0x140a67020
 int Unk_Inventory::FUN_140a67020(ItemPtr item) {
     if (item == nullptr) return 0;
-    if (!CFeatureManager::GetInstance()->FUN_14036d570(232)) return 0;
+    if (!CFeatureManager::GetInstance()->IsFeatureEnabled(232)) return 0;
     if (IsAutoEquipEnabled() == 0) return 0;
     __int64 id = item->GetItemUid();
     if (!item->FUN_140527840()->FUN_14053cbc0()) return 0;
@@ -1866,7 +1866,7 @@ MS2_REPLACE_METHOD(0x140a673e0, Unk_Inventory, FUN_140a673e0, 204, 0xFEF46B0C);
 // @0x140a674c0
 void Unk_Inventory::ExcludeFromAutoEquip(ItemPtr item) {
     if (item == nullptr) return;
-    if (!CFeatureManager::GetInstance()->FUN_14036d570(232)) return;
+    if (!CFeatureManager::GetInstance()->IsFeatureEnabled(232)) return;
     if (Unk_LockGuard guard = lock) {} else {
         if (excludedItems.Find(item->GetItemUid(), nullptr) == nullptr)
             excludedItems.AddTail(item->GetItemUid());
@@ -1875,7 +1875,7 @@ void Unk_Inventory::ExcludeFromAutoEquip(ItemPtr item) {
 MS2_REPLACE_METHOD(0x140a674c0, Unk_Inventory, ExcludeFromAutoEquip, 243, 0xD2BF86FC);
 // @0x140a675c0
 void Unk_Inventory::ProcessAutoEquipQueue() {
-    if (!CFeatureManager::GetInstance()->FUN_14036d570(232)) return;
+    if (!CFeatureManager::GetInstance()->IsFeatureEnabled(232)) return;
     if (autoEquipQueue.GetCount() == 0) return;
     if (FUN_140a66f20() != 0) return;
     ItemPtr item = autoEquipQueue.GetHead();

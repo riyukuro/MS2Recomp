@@ -24,8 +24,8 @@ public:
                                                                                                     // 28 0x1417095d0
     virtual int vfunc_48() { return 0x4eae; }                                                       // 48 (COMDAT 0x141709960)
 
-    void FUN_1417097a0(ASData& data);   // "onChangeSliderLightAngle": yaw (+90 in the UI), pitch
-    void FUN_141709800(ASData& data);   // "onChangeSliderShadow": four shadow parameters
-    void FUN_141709870(ASData& data);   // "onChangeSliderSSS": r, g, b, power
+    void OnChangeSliderLightAngle(ASData& data);   // "onChangeSliderLightAngle": yaw (+90 in the UI), pitch
+    void OnChangeSliderShadow(ASData& data);   // "onChangeSliderShadow": four shadow parameters
+    void OnChangeSliderSSS(ASData& data);   // "onChangeSliderSSS": r, g, b, power
 };
 MS2_CHECK_SIZE(UIRimLightDialog, 0x178);

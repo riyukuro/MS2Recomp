@@ -23,7 +23,7 @@ template<> fmt::internal::MakeValue<fmt::BasicFormatter<wchar_t>>::MakeValue(con
 __int64 GetServerTime();
 COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the definition's signature
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
-COutputStream& FUN_14070fa60(COutputStream&,float);
+COutputStream& WriteFloat(COutputStream&,float);
 COutputStream& FUN_14070f820(COutputStream&,bool);
 
 class Unk_CommonLog : public CLogString {
@@ -84,7 +84,7 @@ Unk_CommonWireRecord::Unk_CommonWireRecord() : first(0),second(0),type(0),value(
 void Unk_CommonWireRecord::Write(COutputStream& out) {
     FUN_14070fa20(out,first); FUN_14070fa20(out,second);
     out.WriteInt16((short)type);
-    FUN_14070f9a0(out,value); FUN_14070fa60(out,extra);
+    FUN_14070f9a0(out,value); WriteFloat(out,extra);
     FUN_14070f820(out,enabled); FUN_14070f820(out,flag);
 }
 MS2_REPLACE_METHOD(0x14026D670, Unk_CommonWireRecord, Write, 157, 0x700F57C5);
@@ -182,8 +182,8 @@ MS2_REPLACE_METHOD(0x14026DE30, PacketLogQueue, PrintPacketLogs, 312, 0xD695911F
 Unk_CommonCachedPacket::Unk_CommonCachedPacket() : sequence(0),packet(0) {}
 // @0x14026dfb0
 Unk_CommonCachedPacket::Unk_CommonCachedPacket(const Unk_CommonPacket& source,unsigned sequence) : sequence(sequence),packet(Unk_PktNewTag(0)) {
-    packet->FUN_140710740(source.FUN_14020ba20(),source.FUN_14020bc40(),1);
-    packet->FUN_14020aa30(source,2);
+    packet->FUN_140710740(source.FUN_14020ba20(),source.IsLoopback(),1);
+    packet->AppendPayload(source,2);
 }
 // @0x14026e080
 Unk_CommonResendQueue::Unk_CommonResendQueue() : m_totalBytes(0),m_lastPacketSeq(0) {}
@@ -191,7 +191,7 @@ Unk_CommonResendQueue::Unk_CommonResendQueue() : m_totalBytes(0),m_lastPacketSeq
 void Unk_CommonResendQueue::Add(const Unk_CommonPacket& source,unsigned packetSeq) {
     if(Unk_LockGuard guard=m_lock) { __assume(0); } else {
         Unk_CommonCachedPacket entry(source,packetSeq);
-        m_packets.AddTail(entry); m_totalBytes+=source.FUN_14020b9f0();
+        m_packets.AddTail(entry); m_totalBytes+=source.GetLength();
         MS2_ASSERT_AT(0x902,m_lastPacketSeq == 0 || m_lastPacketSeq < packetSeq);
         m_lastPacketSeq=packetSeq;
     }
@@ -204,7 +204,7 @@ void Unk_CommonResendQueue::Prune(int targetBytes,int threshold) {
         if(Unk_LockGuard guard=m_lock) { __assume(0); } else {
             while(m_totalBytes>targetBytes&&!m_packets.IsEmpty()) {
                 Unk_CommonCachedPacket entry=m_packets.RemoveHead();
-                m_totalBytes-=entry.packet->FUN_14020b9f0();
+                m_totalBytes-=entry.packet->GetLength();
             }
         }
     }
@@ -216,7 +216,7 @@ void Unk_CommonResendQueue::Acknowledge(unsigned sequence) {
         while(!m_packets.IsEmpty()) {
             Unk_CommonCachedPacket& entry=m_packets.GetHead();
             if(entry.sequence>sequence) break;
-            m_totalBytes-=entry.packet->FUN_14020b9f0(); m_packets.RemoveHeadNoReturn();
+            m_totalBytes-=entry.packet->GetLength(); m_packets.RemoveHeadNoReturn();
         }
     }
 }

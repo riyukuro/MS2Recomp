@@ -42,11 +42,11 @@ public:
     double GetDeltaTime();
 };
 void FUN_14107b010();                                           // refreshes the sun direction constants
-void FUN_14107b050(efd::Point3 const&);   // C3: was FUN_14107b050
-void FUN_1418bf270(float* pAngle);                              // wraps an angle (degrees)
+void SetSunDirection(efd::Point3 const&);   // C3: was FUN_14107b050
+void NormalizeAngle(float* pAngle);                              // wraps an angle (degrees)
 void FUN_141568a10(NiNode* pRoot);
 void FUN_1415687f0(class NiAVObject*);   // C3: was FUN_1415687f0
-void FUN_141568880(class NiAVObject*);   // C3: was FUN_141568880
+void RemoveLights(class NiAVObject*);   // C3: was RemoveLights
 class Unk_UmvEffectMgr;
 class Unk_AeFeatureMgr   // C3: member view for the former free stand-ins
 {
@@ -59,12 +59,12 @@ public:
     void RemoveMirroredScene(class NiAVObject*);
 };
 #define DAT_143b01a60 (*(efd::Point3*)&efd::Point3::ZERO)          // C3: was extern efd::Point3 DAT_143b01a60
-float FUN_140bf4fd0(float f);                                   // the float ceil overload (out of line in the exe)
+float Ceil(float f);                                   // the float ceil overload (out of line in the exe)
 #define DAT_143a08cf8 (*(efd::Point3*)&efd::Point3::UNIT_Z)                                // (0, 0, 1)
 class CLogString* GetLogString();
 void FUN_140e68a40(CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const float* pA, const float* pB, const float* pC);
 void FUN_140e69060(NiQuaternion* pQuat, float fX, float fY, float fZ);
-void FUN_140e69330(float fAngle, float* pSin, float* pCos);
+void GetSinCos(float fAngle, float* pSin, float* pCos);
 float FUN_1409f25a0(float fAngle);                              // sin
 float FUN_1409f2310(float fAngle);                              // cos
 
@@ -75,7 +75,7 @@ UIModelView::~UIModelView()
 }
 
 // @0x140e66980
-UIRenderView* FUN_140e66980(int nWidth, int nHeight, GameObject* pObject, float fLightDimmer)
+UIRenderView* CreateModelView(int nWidth, int nHeight, GameObject* pObject, float fLightDimmer)
 {
     return EE_NEW UIModelView(nWidth, nHeight, pObject, fLightDimmer);
 }
@@ -85,8 +85,8 @@ void UIModelView::vfunc_2()
 {
     if (m_spCamera)
     {
-        FUN_140e685d0();
-        FUN_14107b050(*(efd::Point3 const*)&static_cast<class NiPoint3 const&>(m_spCamera->GetWorldDirection()));
+        UpdateZoomAnimation();
+        SetSunDirection(*(efd::Point3 const*)&static_cast<class NiPoint3 const&>(m_spCamera->GetWorldDirection()));
         FUN_141ab7b80(0);
     }
 }
@@ -131,9 +131,9 @@ void UIModelView::vfunc_7(float fX, float fY, float fZ)
     kAngle += m_kRotation;
     NiMatrix3 kRotate;
     kRotate.MakeIdentity();
-    FUN_1418bf270(&kAngle.x);
-    FUN_1418bf270(&kAngle.y);
-    FUN_1418bf270(&kAngle.z);
+    NormalizeAngle(&kAngle.x);
+    NormalizeAngle(&kAngle.y);
+    NormalizeAngle(&kAngle.z);
     m_kRotation = kAngle;
     NiQuaternion kQuat;
     FUN_140e69060(&kQuat, (kAngle.x * 3.1415927f) / 180.0f, (kAngle.y * 3.1415927f) / 180.0f, (kAngle.z * 3.1415927f) / 180.0f);
@@ -215,7 +215,7 @@ void UIModelView::vfunc_12(const ATL::CAtlArray<NiNode*>& arrNodes, NiNodePtr sp
         if (pNode != 0)
         {
             FUN_1415687f0((class NiAVObject*)(pNode));
-            FUN_141568880((class NiAVObject*)(pNode));
+            RemoveLights((class NiAVObject*)(pNode));
             pNode->DetachEffect(m_spDirLight);
             pNode->DetachEffect(m_spAmbientLight);
             pNode->AttachEffect(m_spDirLight);
@@ -328,7 +328,7 @@ int UIModelView::vfunc_15()
 }
 
 // @0x140e685d0
-void UIModelView::FUN_140e685d0()
+void UIModelView::UpdateZoomAnimation()
 {
     if ((unsigned int)m_nObjectId > 0)
     {
@@ -346,7 +346,7 @@ void UIModelView::FUN_140e685d0()
                 {
                     if (fDist > m_kCamera.m_fMaxDistance)
                     {
-                        float fMove = -FUN_140bf4fd0((fDist < m_kCamera.m_fSpeed ? fDist : m_kCamera.m_fSpeed) * fDelta);
+                        float fMove = -Ceil((fDist < m_kCamera.m_fSpeed ? fDist : m_kCamera.m_fSpeed) * fDelta);
                         kPos += kDir * fMove;
                         fDist = (kTarget - kPos).Length();
                         if (fDist <= m_kCamera.m_fMaxDistance)
@@ -365,7 +365,7 @@ void UIModelView::FUN_140e685d0()
                 {
                     if (fDist < m_kCamera.m_fMinDistance)
                     {
-                        float fMove = FUN_140bf4fd0((fDist < m_kCamera.m_fSpeed ? fDist : m_kCamera.m_fSpeed) * fDelta);
+                        float fMove = Ceil((fDist < m_kCamera.m_fSpeed ? fDist : m_kCamera.m_fSpeed) * fDelta);
                         kPos += kDir * fMove;
                         fDist = (kTarget - kPos).Length();
                         if (fDist >= m_kCamera.m_fMinDistance)
@@ -402,9 +402,9 @@ void FUN_140e68a40(CLogString* pLog, int nLevel, int nCategory, const wchar_t* s
 void FUN_140e69060(NiQuaternion* pQuat, float fX, float fY, float fZ)
 {
     float fSinX, fCosX, fSinY, fCosY, fSinZ, fCosZ;
-    FUN_140e69330(fX * 0.5f, &fSinX, &fCosX);
-    FUN_140e69330(fY * 0.5f, &fSinY, &fCosY);
-    FUN_140e69330(fZ * 0.5f, &fSinZ, &fCosZ);
+    GetSinCos(fX * 0.5f, &fSinX, &fCosX);
+    GetSinCos(fY * 0.5f, &fSinY, &fCosY);
+    GetSinCos(fZ * 0.5f, &fSinZ, &fCosZ);
     pQuat->m_fW = fCosZ * fCosY * fCosX + fSinZ * fSinY * fSinX;
     pQuat->m_fX = fCosZ * fCosY * fSinX - fSinZ * fSinY * fCosX;
     pQuat->m_fY = fCosZ * fSinY * fCosX + fSinZ * fCosY * fSinX;
@@ -412,7 +412,7 @@ void FUN_140e69060(NiQuaternion* pQuat, float fX, float fY, float fZ)
 }
 
 // @0x140e69330
-void FUN_140e69330(float fAngle, float* pSin, float* pCos)
+void GetSinCos(float fAngle, float* pSin, float* pCos)
 {
     *pSin = FUN_1409f25a0(fAngle);
     *pCos = FUN_1409f2310(fAngle);

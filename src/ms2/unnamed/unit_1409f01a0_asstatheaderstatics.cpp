@@ -19,7 +19,7 @@ static CString s_strStun2 = "stun";
 static egf::EntityID s_pointer2(0);                                              // @0x1400c2290
 static Unk_1402a9d70 s_unk1402a9d702(17, 0.75f, 0.25f, 2.25f, 10);
 
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);   // the movie of a UI layer (ascript.cpp)
+Scaleform::GFx::Movie* GetMovie(int nMovieId);   // the movie of a UI layer (ascript.cpp)
 CStringW GetStatCommonText(unsigned nStat);                            // stat display text
 CStringW GetStringCommon(int nId);                                       // string table text
 template <class A, class B> CStringW BlockFormat(int nId, const A& a, const B& b);
@@ -27,7 +27,7 @@ template <class A, class B> CStringW BlockFormat(int nId, const A& a, const B& b
 // @0x1409f01a0
 ASStat::ASStat(int nType) : ASObj(nType)
 {
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(m_nMovieId);
     if (pMovie != 0)
     {
         pMovie->CreateArray(&m_title);
@@ -50,9 +50,9 @@ void ASStat::AddCompare(int nStat, __int64 nValue)
 {
     CStringW strName = GetStatCommonText(nStat);
     ASObj row(2);
-    row.FUN_1407cbb20("statName", strName);
+    row.SetWStringMember("statName", strName);
     row.FUN_1409c1180("statValue", nValue);
-    m_compare.PushBack(row.FUN_1422bb870());
+    m_compare.PushBack(row.GetValue());
 }
 MS2_REPLACE_METHOD(0x1409F04F0, ASStat, AddCompare, 206, 0x89FDD721);
 
@@ -61,13 +61,13 @@ void ASStat::AddStat(int nStat, unsigned nValue, unsigned nStrengthen, int bEsse
 {
     CStringW strName = GetStatCommonText(nStat);
     ASObj row(2);
-    row.FUN_1407cbb20("statName", strName);
+    row.SetWStringMember("statName", strName);
     row.SetMemberUInt("statValue", nValue);
     row.SetMemberUInt("statStrengthen", nStrengthen);
     if (bEssential != 0)
-        m_essential.PushBack(row.FUN_1422bb870());
+        m_essential.PushBack(row.GetValue());
     else
-        m_random.PushBack(row.FUN_1422bb870());
+        m_random.PushBack(row.GetValue());
 }
 MS2_REPLACE_METHOD(0x1409F05D0, ASStat, AddStat, 281, 0x44847E99);
 
@@ -76,10 +76,10 @@ void ASStat::AddEssentialText(int a1, int a2)
 {
     CStringW strValue = BlockFormat<unsigned, unsigned>(0x4f8, reinterpret_cast<const unsigned&>(a1), reinterpret_cast<const unsigned&>(a2));
     ASObj row(2);
-    row.FUN_1407cbb20("statName", GetStringCommon(0x4aa));
-    row.FUN_1407cbb20("statValue", strValue);
-    row.FUN_1407cb9c0("statStrengthen", 0);
-    m_essential.PushBack(row.FUN_1422bb870());
+    row.SetWStringMember("statName", GetStringCommon(0x4aa));
+    row.SetWStringMember("statValue", strValue);
+    row.SetIntMember("statStrengthen", 0);
+    m_essential.PushBack(row.GetValue());
 }
 MS2_REPLACE_METHOD(0x1409F06F0, ASStat, AddEssentialText, 267, 0xB3775FA1);
 // Atexit thunks of this unit's statics (gap1 yd sweep).

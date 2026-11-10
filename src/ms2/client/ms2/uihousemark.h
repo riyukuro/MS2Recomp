@@ -43,30 +43,30 @@ public:
     UIHouseMarkEntity(const Unk_HouseMarkInfo& info);               // 0x14198aca0
     virtual ~UIHouseMarkEntity();                                   // 0 0x14198adc0 (??_G 0x14198f210)
 
-    void FUN_14198ae60(MS2Ptr<ASMovieClip> spClip);                 // attach the movie clip and its button callbacks
-    void FUN_14198b100();                                           // per-frame update
-    bool FUN_14198b250();                                           // no clip yet
-    int FUN_14198b290();                                            // the group id
-    const NiPoint3& FUN_14198b2b0();                                // the world position
+    void AttachMovieClip(MS2Ptr<ASMovieClip> spClip);                 // attach the movie clip and its button callbacks
+    void Update();                                           // per-frame update
+    bool IsClipMissing();                                           // no clip yet
+    int GetId();                                            // the group id
+    const NiPoint3& GetPosition();                                // the world position
     bool FUN_14198b2d0();
-    void FUN_14198b2f0();                                           // open the popup
-    void FUN_14198b320();                                           // close the popup
-    void FUN_14198b340();                                           // place the mark on the screen
-    void FUN_14198b5b0();                                           // refresh the sale state from the cube service
-    void FUN_14198b7b0();                                           // the debug text
-    void FUN_14198b970();                                           // fill the popup's address
-    void FUN_14198c0d0(bool bVisible);
+    void OpenPopup();                                           // open the popup
+    void ClosePopup();                                           // close the popup
+    void UpdateScreenPosition();                                           // place the mark on the screen
+    void UpdateSaleState();                                           // refresh the sale state from the cube service
+    void UpdateDebugText();                                           // the debug text
+    void UpdateAddress();                                           // fill the popup's address
+    void SetVisible(bool bVisible);
     void FUN_14198c140(bool bPopup);
-    void FUN_14198c210(int nIconType);
-    void FUN_14198c370(int nProgress);
+    void SetIconType(int nIconType);
+    void SetWaitingProgress(int nProgress);
     bool IsPopup();                                           // the popup is open
     void FUN_14198c410();                                           // the button: contract terms, then the contract UI
     void FUN_14198c5a0();                                           // open the contract UI (0x4e76)
-    void FUN_14198c610();                                           // show again after a reset
+    void ShowAfterReset();                                           // show again after a reset
     void FUN_14198c670(const Scaleform::GFx::FunctionHandler::Params& params);    // click
-    void FUN_14198c6a0(const Scaleform::GFx::FunctionHandler::Params& params);    // roll over
-    void FUN_14198c6d0(const Scaleform::GFx::FunctionHandler::Params& params);    // roll out
-    bool FUN_14198c700(int nResult, const CMsgBoxData& box);        // the terms message box result
+    void OnRollOver(const Scaleform::GFx::FunctionHandler::Params& params);    // roll over
+    void OnRollOut(const Scaleform::GFx::FunctionHandler::Params& params);    // roll out
+    bool OnTermsResult(int nResult, const CMsgBoxData& box);        // the terms message box result
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -103,9 +103,9 @@ public:
     virtual void OnLoadComplete();                                  // 22
     virtual int vfunc_48() { return 0x4e88; }                       // 48 0x14198f260 (inline: emitted after ??_G)
 
-    void FUN_14198cb00(const Unk_HouseMarkInfo& info);              // add a house
-    void FUN_14198cc20(MS2Ptr<UIHouseMarkEntity> spEntity);         // create its movie clip
-    MS2Ptr<UIHouseMarkEntity> FUN_14198ce50(const int& nId) const;  // the mark of a group
+    void AddHouseMark(const Unk_HouseMarkInfo& info);              // add a house
+    void CreateEntity(MS2Ptr<UIHouseMarkEntity> spEntity);         // create its movie clip
+    MS2Ptr<UIHouseMarkEntity> FindEntity(const int& nId) const;  // the mark of a group
     void FUN_14198cf40();
     void FUN_14198cf50();                                           // vfunc_3
 

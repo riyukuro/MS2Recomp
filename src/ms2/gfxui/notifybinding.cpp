@@ -28,12 +28,12 @@ void NotifyBinding::CreateBindingImpl(const Params& params)
     const char* szName = params.pArgs[0].GetString();
     const Scaleform::GFx::Value& vTarget = params.pArgs[1];
     const Scaleform::GFx::Value& vData = params.pArgs[2];
-    NotifyContext::BindData* pData = Unk_NotifyContext::FUN_1422c8e90(szName);
+    NotifyContext::BindData* pData = Unk_NotifyContext::FindBinding(szName);
     if (pData != NULL)
     {
         pData->FUN_1422c8cb0(vData);
-        pData->FUN_1422c8d10(vTarget);
-        pData->FUN_1422c8be0();
+        pData->SetTarget(vTarget);
+        pData->PushBinding();
     }
 }
 MS2_REPLACE_METHOD(0x142301140, NotifyBinding, CreateBindingImpl, 196, 0xDF1D4B7F);
@@ -43,16 +43,16 @@ void NotifyBinding::DeleteBindingImpl(const Params& params)
 {
     const char* szName = params.pArgs[0].GetString();
     const Scaleform::GFx::Value& vData = params.pArgs[2];
-    NotifyContext::BindData* pData = Unk_NotifyContext::FUN_1422c8e90(szName);
+    NotifyContext::BindData* pData = Unk_NotifyContext::FindBinding(szName);
     if (pData != NULL)
     {
         if (params.pArgs[2].IsNull() || vData == pData->FUN_1422c8d40())
         {
             Scaleform::GFx::Value vNull;
             vNull.SetNull();
-            pData->FUN_1422c8b50();
+            pData->ClearBinding();
             pData->FUN_1422c8cb0(vNull);
-            pData->FUN_1422c8d10(vNull);
+            pData->SetTarget(vNull);
         }
     }
 }

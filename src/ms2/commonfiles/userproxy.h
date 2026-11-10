@@ -65,7 +65,7 @@ private:
   T *m_p;
 };
 MS2_CHECK_SIZE(Unk_UserProxyPtr<CPlatformProxy>, 0x10);
-Unk_UserProxyPtr<CPlatformProxy> FUN_1408e7250();
+Unk_UserProxyPtr<CPlatformProxy> CreatePlatformProxy();
 
 // Distinct lock constructor overloads, verified at the annotated exe addresses.
 #include "ms2/placeholder/clockcriticalsection.h"   // Unk_CriticalSectionLock (was a local lock view)
@@ -194,14 +194,14 @@ public:
   void FUN_1408f1e60();
   void FUN_1408eeb60(CInPacket *p);
   void FUN_1408ee190(COutputStream &s);
-  void FUN_1408ed170(CInPacket *p);
-  void FUN_1408ec5e0(COutputStream &s);
+  void Decode(CInPacket *p);
+  void Encode(COutputStream &s);
   Unk_UserProxy &operator=(const Unk_UserProxy &p);
-  void FUN_1408efa70(const Unk_UserProxy &p);
-  void FUN_1408ebe30();
+  void CopyFrom(const Unk_UserProxy &p);
+  void Reset();
   void FUN_1408ec260();
-  void FUN_1408ef900(CInPacket &p);
-  void FUN_1408ef880(COutputStream &s);
+  void DecodePlayInfo(CInPacket &p);
+  void EncodePlayInfo(COutputStream &s);
   void FUN_1408f06e0(Unk_UserProxyClubPacket &p);
   void FUN_1408f0520(Unk_UserProxySummaryPacket &p);
   void FUN_1408f04c0(const Unk_UserProxyStatsPacket &p);
@@ -214,8 +214,8 @@ public:
   void FUN_1408ec460(COutputStream &s);
   void FUN_1408ec410(CInPacket &s);
   void FUN_1408ec3c0(COutputStream &s);
-  void FUN_1408f20e0(int bit, bool value);
-  bool FUN_1408f20b0(int bit);
+  void SetFlag(int bit, bool value);
+  bool GetFlag(int bit);
   int FUN_1408f2070();
   void FUN_1408f2020(unsigned char value);
   unsigned char FUN_1408f2000();
@@ -224,18 +224,18 @@ public:
   int FUN_1408f1d60();
   unsigned short FUN_1408f1d30();
   int FUN_1408f1ce0();
-  void FUN_1408f1970(CInPacket &p);
-  void FUN_1408f18a0();
-  void FUN_1408f1900(COutputStream &p);
-  void FUN_1408f1830(const ATL::CAtlArray<MS2Ptr<Club::NameInfo>> &p);
-  void FUN_1408f17c0(ATL::CAtlArray<MS2Ptr<Club::NameInfo>> &p);
-  void FUN_1408f1710(__int64 id, CStringW name);
-  void FUN_1408f16a0(__int64 id);
-  int FUN_1408f1600(MS2Ptr<Club::NameInfo> p);
+  void DecodeClubs(CInPacket &p);
+  void ClearClubs();
+  void EncodeClubs(COutputStream &p);
+  void SetClubs(const ATL::CAtlArray<MS2Ptr<Club::NameInfo>> &p);
+  void GetClubs(ATL::CAtlArray<MS2Ptr<Club::NameInfo>> &p);
+  void SetClubName(__int64 id, CStringW name);
+  void RemoveClub(__int64 id);
+  int AddClub(MS2Ptr<Club::NameInfo> p);
   int FUN_1408f1560(__int64 id, CStringW name);
   int FUN_1408f14f0();
-  size_t FUN_1408f1480();
-  MS2Ptr<Club::NameInfo> FUN_1408f13f0(__int64 id);
+  size_t GetClubCount();
+  MS2Ptr<Club::NameInfo> FindClub(__int64 id);
   __int64 FUN_1408f1330();
   void FUN_1408f1270(ATL::CAtlArray<unsigned __int64> &out);
   void FUN_1408f1200();
@@ -243,13 +243,13 @@ public:
   void FUN_1408f1110(unsigned __int64 p);
   void FUN_1408f1090(CString p);
   void FUN_1408f1040(__int64 p);
-  void FUN_1408f0fb0();
-  void FUN_1408f0f20(CInputStream &s);
-  void FUN_1408f0e90(COutputStream &s);
-  void FUN_1408f0e00();
+  void ExpireLabels();
+  void DecodeLabels(CInputStream &s);
+  void EncodeLabels(COutputStream &s);
+  void ClearLabels();
   int FUN_1408f0d30(int i);
-  void FUN_1408f0ca0(int i, Unk_UserProxyLabel &p);
-  void FUN_1408f0c10(int i, const Unk_UserProxyLabel &p);
+  void GetLabel(int i, Unk_UserProxyLabel &p);
+  void SetLabel(int i, const Unk_UserProxyLabel &p);
   void FUN_1408f0b70(Unk_UserProxyLabel &label, int a, int b, int c, const CStringW &text, __int64 until);
   void FUN_1408f0b00(int p);
   void FUN_1408f0aa0(int p);
@@ -260,17 +260,17 @@ public:
   CStringW FUN_1408f1b60();
   CStringW FUN_1408f1ae0();
   CString FUN_1408f1a60();
-  CStringW FUN_1408f19e0();
+  CStringW GetName();
   void FUN_1408f08c0(const CStringW &p);
   void FUN_1408f0a30(const CString &p);
   void FUN_1408f09c0(const CStringW &p);
   void FUN_1408f0950(const CStringW &p);
   void FUN_1408f0850(const CString &p);
-  void FUN_1408f07e0(const CStringW &p);
+  void SetName(const CStringW &p);
   // @0x141748180 (scenestategame.cpp): the platform account id
   __int64 FUN_141748180() { return m_330 == 0 ? 0 : m_330->vfunc_8(); }
   // @0x1417480a0 (scenestategame.cpp): the platform account name
-  CString FUN_1417480a0() { return m_330 == 0 ? "" : (const char *)m_330->vfunc_10(); }
+  CString GetPlatformAccountName() { return m_330 == 0 ? "" : (const char *)m_330->vfunc_10(); }
   __int64 m_0, m_8;
   int m_10;
   unsigned char m_14;

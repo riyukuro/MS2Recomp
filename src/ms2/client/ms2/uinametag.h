@@ -48,11 +48,11 @@ public:
     UINameTag();                                        // 0x141a60c00
     virtual ~UINameTag();                               //  0 0x141a60c70 (??_G 0x141a62270)
     virtual CString GetTypeName();                          //  1 0x141a60cb0 "NameTag"
-    virtual void OnLoadComplete();                      // 22 0x141a60d00 UIObject::OnLoadComplete(); FUN_141a60f70(m_68)
+    virtual void OnLoadComplete();                      // 22 0x141a60d00 UIObject::OnLoadComplete(); CreateEntityCache(m_68)
     virtual int vfunc_48() { return 0x4e5a; }           // 48 0x141a622b0
 
-    void FUN_141a60f70(unsigned int nCount);            // create the entity cache
-    Entity* FUN_141a61150(int nActorId);                // the entity of the actor (created or recycled)
+    void CreateEntityCache(unsigned int nCount);            // create the entity cache
+    Entity* AcquireEntity(int nActorId);                // the entity of the actor (created or recycled)
 };
 MS2_CHECK_SIZE(UINameTag::Entity, 0x80);
 MS2_CHECK_OFFSET(UINameTag::Entity, m_60, 0x60);

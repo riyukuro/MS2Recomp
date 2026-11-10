@@ -66,7 +66,7 @@ void NotifySwfEntity::playSound(const Params& params)
     if (params.ArgCount > 1)
         strArg = params.pArgs[1].GetString();
     if (!strSound.IsEmpty())
-        FUN_14025e7a0()->InvokeSoundCallback(strSound, strArg);
+        GetGFxManager()->InvokeSoundCallback(strSound, strArg);
 }
 
 // @0x142303340

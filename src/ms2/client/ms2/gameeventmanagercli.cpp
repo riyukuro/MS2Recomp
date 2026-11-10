@@ -57,7 +57,7 @@ template <class T> T* FindCliDialog(int nId);         // gameeventcli.cpp
 int Parse_14021b830(const CStringA& value);                     // a game menu entry id by name (commonenum.cpp)
 int FUN_140718200(const CStringW& str);                         // _wtoi
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
@@ -462,7 +462,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_nUiId = 0x4efa;
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (CFeatureManager::GetInstance()->FUN_14036d570(27))
+    if (CFeatureManager::GetInstance()->IsFeatureEnabled(27))
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 6;
@@ -543,7 +543,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193d5e0);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (CFeatureManager::GetInstance()->FUN_14036d570(59) == true)
+    if (CFeatureManager::GetInstance()->IsFeatureEnabled(59) == true)
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 14;
@@ -640,7 +640,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193b750);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (CFeatureManager::GetInstance()->FUN_14036d570(74) == true)
+    if (CFeatureManager::GetInstance()->IsFeatureEnabled(74) == true)
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 23;
@@ -771,10 +771,10 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_strTooltip = L"s_tooltip_gamemenu_levelup_package";
         pDef->m_nUiId = 0x4f2f;
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193c3c0);
-        pDef->m_isEnabled.Bind(pLevelUpPackage, &UILevelUpPackageDialog::FUN_140ea4b70);
+        pDef->m_isEnabled.Bind(pLevelUpPackage, &UILevelUpPackageDialog::HasOpenPackageQuest);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (CFeatureManager::GetInstance()->FUN_14036d570(92) == true)
+    if (CFeatureManager::GetInstance()->IsFeatureEnabled(92) == true)
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 36;
@@ -805,7 +805,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193c630);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (CFeatureManager::GetInstance()->FUN_14036d570(140) == true)
+    if (CFeatureManager::GetInstance()->IsFeatureEnabled(140) == true)
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 39;
@@ -927,20 +927,20 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_strName = "adventure_level";
         pDef->m_strLabel = "$s_gamemenu_popup_adventure_level";
         pDef->m_strTooltip = L"s_tooltip_gamemenu_adventure_level";
-        if (CFeatureManager::GetInstance()->FUN_14036d570(251))
+        if (CFeatureManager::GetInstance()->IsFeatureEnabled(251))
             pDef->m_nUiId = 0x4f67;
         else
             pDef->m_nUiId = 0x4f87;
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (CFeatureManager::GetInstance()->FUN_14036d570(199))
+    if (CFeatureManager::GetInstance()->IsFeatureEnabled(199))
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 52;
         pDef->m_strName = "world_champion";
         pDef->m_strLabel = "$s_gamemenu_popup_world_champion";
         pDef->m_strTooltip = L"s_tooltip_gamemenu_world_champion";
-        pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193d520);
+        pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::SendWorldChampionMode8);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
     {
@@ -961,10 +961,10 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_strLabel = "$s_gamemenu_popup_changejob";
         pDef->m_strTooltip = L"s_tooltip_gamemenu_changejob";
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193d590);
-        pDef->m_isEnabled.Bind(pChangeJob, &UIChangeJobDialog::FUN_140bd88e0);
+        pDef->m_isEnabled.Bind(pChangeJob, &UIChangeJobDialog::CanChangeJob);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
-    if (CFeatureManager::GetInstance()->FUN_14036d570(211))
+    if (CFeatureManager::GetInstance()->IsFeatureEnabled(211))
     {
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 55;
@@ -1020,7 +1020,7 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_strTooltip = L"s_tooltip_gamemenu_payback";
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193d700);
         pDef->m_nUiId = 0x4f93;
-        pDef->m_isEnabled.Bind(pPayback, &UIPaybackDialog::FUN_140e6f890);
+        pDef->m_isEnabled.Bind(pPayback, &UIPaybackDialog::IsPaybackAvailable);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
     {
@@ -1125,9 +1125,9 @@ int CGameMenuTable::RegisterDefs()
 // @0x140cf6ef0
 int CGameMenuTable::LoadXml()
 {
-    CString strPath = FUN_14071a5b0("Table", "gameMenu.xml");
+    CString strPath = GetXmlPath("Table", "gameMenu.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

@@ -37,7 +37,7 @@ public:
     MS2VideoSoundSystemDX8(HWND hWnd, MemoryHeap* pheap = Memory::GetGlobalHeap());   // 0x1422fe810
     ~MS2VideoSoundSystemDX8();                                              // 0x1422fe8b0
     virtual VideoSound* Create();                                           // 1 0x1422fe920
-    bool FUN_1422fe9e0();                                                   // the DirectSound output is up
+    bool IsInitialized();                                                   // the DirectSound output is up
     bool FUN_1422fea10(HWND hWnd);                                          // (re)initializes it on hWnd, restores a lost buffer
 
 private:

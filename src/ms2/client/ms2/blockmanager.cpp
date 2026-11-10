@@ -32,16 +32,16 @@ CStringW GetStringCommon(int id);                               // string table 
 void FUN_1412751b0(const CStringW& msg, int seconds);         // on-screen notice
 #include "ms2/placeholder/wcformat.h"
 void AddDays(CMsTime& time, long days);   // 0x14086a7e0 (commonfiles/timeutil.cpp)
-void FUN_140d73aa0(CStringW msg, int a, void* cb, CStringW b);  // message box
+void ShowMessageBox(CStringW msg, int a, void* cb, CStringW b);  // message box
 // The message box data (CMsgBoxData of unit_140d74b20.cpp; only handled through its MS2Ptr here).
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int flags, CStringW msg, void* cb, CStringW b);   // message box (copy 0x140534b80, dtor 0x140534d60)
+MS2Ptr<CMsgBoxData> CreateMessageBox(int flags, CStringW msg, void* cb, CStringW b);   // message box (copy 0x140534b80, dtor 0x140534d60)
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int a, int id, void* b, CStringW s);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                       // show (by value)
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036e4c0();
+    bool IsRegionKR();
 };
 CStringW Name_140217ff0(int id);
 void FUN_142c9ef00();
@@ -161,8 +161,8 @@ CStringW FUN_140a2fcd0(__int64 from, __int64 to)
 // @0x140a30ad0  plain message box for a record + action
 void FUN_140a30ad0(const BlockPtr& rec, int action, u64 cb)
 {
-    CStringW msg = FUN_1401ca400(rec, action);
-    FUN_140d73aa0(CStringW(msg), 0, (void*)cb, CStringW(L""));
+    CStringW msg = GetBlockActionMessage(rec, action);
+    ShowMessageBox(CStringW(msg), 0, (void*)cb, CStringW(L""));
 }
 
 // @0x140a30b80
@@ -189,7 +189,7 @@ void ShowBlockNotice(const BlockPtr& rec, int action, u64 cb)
             body = BlockFormat(0x43c, t1.GetYear(), t1.GetMonth(), t1.GetDay(), t1.GetHour(), t1.GetMinute(), t1.GetSecond(),
                             t2.GetYear(), t2.GetMonth(), t2.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond(), *(CStringW*)&rec->m_30);
         }
-        MS2Ptr<CMsgBoxData> h = FUN_140d73d20(0x10, CStringW(body), (void*)cb, CStringW(L""));
+        MS2Ptr<CMsgBoxData> h = CreateMessageBox(0x10, CStringW(body), (void*)cb, CStringW(L""));
         if (h) {
             reinterpret_cast<CMsgBoxData*>(h.operator->())->SetTitle(title);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(h));
@@ -197,7 +197,7 @@ void ShowBlockNotice(const BlockPtr& rec, int action, u64 cb)
     }
         break;
     case 5:
-        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036e4c0()) {
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionKR()) {
             MS2Ptr<CMsgBoxData> h = FUN_140d73e40(1, 0x440, 0, CStringW(s_externalBlock));
             if (h) {
                 FUN_140a30b80((char*)h.operator->(), 1);
@@ -211,7 +211,7 @@ void ShowBlockNotice(const BlockPtr& rec, int action, u64 cb)
             title = GetStringCommon(0x43d);
             body = BlockFormat(0x43e, t1.GetYear(), t1.GetMonth(), t1.GetDay(), t1.GetHour(), t1.GetMinute(), t1.GetSecond(),
                             t2.GetYear(), t2.GetMonth(), t2.GetDay(), t2.GetHour(), t2.GetMinute(), t2.GetSecond(), *(CStringW*)&rec->m_30);
-            MS2Ptr<CMsgBoxData> h = FUN_140d73d20(0x10, CStringW(body), (void*)cb, CStringW(L""));
+            MS2Ptr<CMsgBoxData> h = CreateMessageBox(0x10, CStringW(body), (void*)cb, CStringW(L""));
             if (h) {
                 reinterpret_cast<CMsgBoxData*>(h.operator->())->SetTitle(title);
                 FUN_140d73c60(MS2Ptr<CMsgBoxData>(h));

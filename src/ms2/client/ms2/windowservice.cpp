@@ -134,10 +134,10 @@ struct Unk_GameCore {
 //    void* m_pad_00;
 //    struct Unk_Worker* m_p;
 //};
-int FUN_141b938f0(int);
+int SetPowerMode(int);
 void FUN_141b93a20(unsigned);
 void FUN_141b93aa0();
-class GFxService* FUN_1414a56c0();   // the GFxService instance (gfxservice.h)
+class GFxService* GetGFxService();   // the GFxService instance (gfxservice.h)
 
 class CLoadingDialog;
 extern MS2Ptr<CLoadingDialog> g_spLoadingDialog;     // 0x143ac2bd0, loadingdialog.cpp
@@ -148,21 +148,21 @@ public:
     void Close();
 };
 class GFxManager { public: MS2Ptr<ASMouseCursor> GetMouseCursor(int nMovieId); };
-class Unk_AltStringMgr* FUN_14025e7a0();
+class Unk_AltStringMgr* GetGFxManager();
 template <class T> T* Unk_MessageBoxDialog(int);
-float FUN_14028aed0(float f);                                       // floor(float)
+float Floor(float f);                                       // floor(float)
 void FUN_14209cc20(void*, void*);
 template <typename A> CStringW BlockFormat(int nId, const A& a);
 CStringW GetStringCommon(int);
-void FUN_140d73aa0(CStringW, int, void*, CStringW);
+void ShowMessageBox(CStringW, int, void*, CStringW);
 void FUN_140d73bc0(int, int, void*, CStringW);
 
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
 bool FUN_141902530(int, const CMsgBoxData&);
-CNetworkService* FUN_140714f90();
+CNetworkService* GetNetworkService();
 // (C3: FUN_140e800e0 = TSingleton<CReconnectionManagerCli>::GetInstance, reconnectionmanagercli.h)
 void* FUN_140aadf80();
-CSoundService* FUN_140c9cb10();
+CSoundService* GetSoundService();
 struct Unk_PmFixedItem* GetInstrumentManager();   // C3: was GetInstrumentManager
 class CInstrumentManager   // C3: member view for the former free stand-ins
 {
@@ -179,9 +179,9 @@ public:
     void FUN_141bc9fd0(int);
     static class WorldService* GetInstance();
 };
-void* FUN_140aae430();
+void* GetMS2();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-__int64 FUN_141ade340(void*, int, void*, void*);
+__int64 OnWindowMessage(void*, int, void*, void*);
 
 LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -369,10 +369,10 @@ void CWindowService::ApplyWindowMode(bool bFullscreen, unsigned nWidth, unsigned
         ShowWindow(GetWindowRef(), 0);
         SetWindowLongA(GetWindowRef(), -16, dwStyle);
         SetWindowPos(GetWindowRef(), 0, 0, 0, nOuterW, nOuterH, 0x23);
-        int nPosX = (int)(FUN_14028aed0((float)(nScreenW - nOuterW) * 0.5f) < 0.0f
-                              ? 0.0f : FUN_14028aed0((float)(nScreenW - nOuterW) * 0.5f));
-        int nPosY = (int)(FUN_14028aed0((float)(nScreenH - nOuterH) * 0.5f) < 0.0f
-                              ? 0.0f : FUN_14028aed0((float)(nScreenH - nOuterH) * 0.5f));
+        int nPosX = (int)(Floor((float)(nScreenW - nOuterW) * 0.5f) < 0.0f
+                              ? 0.0f : Floor((float)(nScreenW - nOuterW) * 0.5f));
+        int nPosY = (int)(Floor((float)(nScreenH - nOuterH) * 0.5f) < 0.0f
+                              ? 0.0f : Floor((float)(nScreenH - nOuterH) * 0.5f));
         SetWindowPos(GetWindowRef(), HWND_NOTOPMOST, nPosX, nPosY, nOuterW, nOuterH, 0);
         ShowWindow(GetWindowRef(), nShowCmd);
     }
@@ -381,7 +381,7 @@ void CWindowService::ApplyWindowMode(bool bFullscreen, unsigned nWidth, unsigned
 
 // Stops the worker thread held in g_spLoadingDialog and drops it.
 // @0x141b91a60
-void FUN_141b91a60()
+void CloseLoadingDialog()
 {
     if (g_spLoadingDialog)
     {
@@ -416,7 +416,7 @@ int FUN_141b91ab0()
 void FUN_141b91b20(bool bValue)
 {
     g_byteFlag1439faadc = bValue;
-    MS2Ptr<ASMouseCursor> hud = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetMouseCursor(6);
+    MS2Ptr<ASMouseCursor> hud = reinterpret_cast<GFxManager*>(GetGFxManager())->GetMouseCursor(6);
     if (hud.operator ASMouseCursor*())
         hud.operator->()->FUN_1422cec40(bValue);
 }
@@ -424,7 +424,7 @@ void FUN_141b91b20(bool bValue)
 // @0x141b91ba0
 void CWindowService::ShowGameWindow()
 {
-    FUN_141b91a60();
+    CloseLoadingDialog();
     if (m_bMaximize)
         ShowWindow(GetWindowRef(), 3);
     else
@@ -443,18 +443,18 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
         if (TSingleton<CStateService>::GetInstance() != 0)
         {
-            if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
+            if (TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() == 0x620000d)
             {
                 CSceneStateBase* pState = TSingleton<CStateService>::GetInstance()->GetCurrent();
                 if (pState != 0)
-                    static_cast<CSceneStateMulti*>(pState)->FUN_14174ebc0();
+                    static_cast<CSceneStateMulti*>(pState)->EnterSelectScene();
             }
         }
     }
     else if (uMsg == 0x465)
     {
-        if (FUN_140714f90() != 0)
-            FUN_140714f90()->ProcessReceivedPackets();
+        if (GetNetworkService() != 0)
+            GetNetworkService()->ProcessReceivedPackets();
         if (TSingleton<CStateService>::GetInstance() != 0)
         {
             int nCode = (int)wParam;
@@ -548,7 +548,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                 }
                 else
                 {
-                    FUN_140d73aa0(strMessage, 0, 0, CStringW(L""));
+                    ShowMessageBox(strMessage, 0, 0, CStringW(L""));
                     if (GetClientPlatform() != 0)
                         GetClientPlatform()->vfunc_58(0x20f, nCode);
                 }
@@ -562,7 +562,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             bool bFlag = true;
             if (TSingleton<CStateService>::GetInstance() != 0)
             {
-                if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000c)
+                if (TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() != 0x620000c)
                 {
                     bFlag = false;
                     TSingleton<CReconnectionManagerCli>::GetInstance()->OnReconnectFailed(0xcc);
@@ -615,28 +615,28 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         else
         {
             int nCode = (int)wParam;
-            FUN_140d74390(BlockFormat<int>(0x20e, nCode), 0, Delegate<bool(int, const CMsgBoxData&)>(FUN_141902530));
+            ShowMessageBoxWithCallback(BlockFormat<int>(0x20e, nCode), 0, Delegate<bool(int, const CMsgBoxData&)>(FUN_141902530));
             if (GetClientPlatform() != 0)
                 GetClientPlatform()->vfunc_58(0x20e, nCode);
         }
     }
     else if (uMsg == 0x468)
     {
-        if (FUN_140714f90() != 0)
-            FUN_140714f90()->ConnectToConfiguredServer();
+        if (GetNetworkService() != 0)
+            GetNetworkService()->ConnectToConfiguredServer();
     }
     else if (uMsg == 0x469)
     {
-        if (FUN_140714f90() != 0)
-            FUN_140714f90()->FUN_141538540();
+        if (GetNetworkService() != 0)
+            GetNetworkService()->FUN_141538540();
     }
     else if (uMsg == 0x46a)
     {
         int bFlag = 0;
         if (TSingleton<CReconnectionManagerCli>::GetInstance() != 0)
             bFlag = TSingleton<CReconnectionManagerCli>::GetInstance()->IsReconnecting();
-        if (FUN_140714f90() != 0)
-            FUN_140714f90()->Reconnect(bFlag);
+        if (GetNetworkService() != 0)
+            GetNetworkService()->Reconnect(bFlag);
     }
     if (GetClientPlatform() != 0)
         GetClientPlatform()->vfunc_19(uMsg, (void*)wParam, (void*)lParam);
@@ -647,7 +647,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         {
             if (TSingleton<CStateService>::GetInstance() != 0)
             {
-                if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x6200009 && TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000b)
+                if (TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() != 0x6200009 && TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() != 0x620000b)
                 {
                     FUN_140d73bc0(0x288, 0x17, 0, s_gameExit);
                     return 0;
@@ -709,17 +709,17 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     switch (uMsg)
     {
     case 0x113:
-        if (wParam == 1000 && FUN_140aae430() != 0 && DAT_143af7d44 == 0)
+        if (wParam == 1000 && GetMS2() != 0 && DAT_143af7d44 == 0)
         {
-            unsigned nLastInput = reinterpret_cast<MS2*>(FUN_140aae430())->GetLastTickTime();
+            unsigned nLastInput = reinterpret_cast<MS2*>(GetMS2())->GetLastTickTime();
             unsigned nNow = GetTickCountMs2();
             if (nLastInput + 500 < nNow)
-                reinterpret_cast<MS2*>(FUN_140aae430())->Tick();
+                reinterpret_cast<MS2*>(GetMS2())->Tick();
             static unsigned s_nLastPowerTick = GetTickCountMs2();
             unsigned nElapsed = nNow - s_nLastPowerTick;
             if (nElapsed >= 10000)
             {
-                FUN_141b938f0(1);
+                SetPowerMode(1);
                 s_nLastPowerTick = nNow;
             }
         }
@@ -774,8 +774,8 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         NiDX9Renderer* pRenderer = (NiDX9Renderer*)NiObject::DynamicCast(&NiDX9Renderer::ms_RTTI, NiDX9Renderer::GetRenderer());
         if (pRenderer != 0)
             pRenderer->RestoreDisplayMode();
-        if (TSingleton<CStateService>::GetInstance() != 0 && TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x6200009 &&
-            TSingleton<CStateService>::GetInstance()->FUN_1417e2610() != 0x620000b)
+        if (TSingleton<CStateService>::GetInstance() != 0 && TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() != 0x6200009 &&
+            TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() != 0x620000b)
         {
             FUN_140d73bc0(0x288, 0x17, 0, s_gameExit);
             return 0;
@@ -802,9 +802,9 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
             if (g_bAppActive == 0)
             {
                 g_bAppActive = 1;
-                if (TSingleton<CGameOption>::GetInstance() != 0 && FUN_140c9cb10() != 0 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b01 == 0)
+                if (TSingleton<CGameOption>::GetInstance() != 0 && GetSoundService() != 0 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b01 == 0)
                 {
-                    FUN_140c9cb10()->FUN_1417ae840(0);
+                    GetSoundService()->FUN_1417ae840(0);
                     if (((void*)GetInstrumentManager()) != 0)
                         ((class CInstrumentManager*)(void*)(((void*)GetInstrumentManager())))->Unmute();
                 }
@@ -826,9 +826,9 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
                         pRenderer->RestoreDisplayMode();
                 }
                 g_bAppActive = 0;
-                if (TSingleton<CGameOption>::GetInstance() != 0 && FUN_140c9cb10() != 0 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b01 == 0)
+                if (TSingleton<CGameOption>::GetInstance() != 0 && GetSoundService() != 0 && TSingleton<CGameOption>::GetInstance()->FUN_140d13c70()->m_b01 == 0)
                 {
-                    FUN_140c9cb10()->FUN_1417ae840(1);
+                    GetSoundService()->FUN_1417ae840(1);
                     if (((void*)GetInstrumentManager()) != 0)
                         ((class CInstrumentManager*)(void*)(((void*)GetInstrumentManager())))->Mute();
                 }
@@ -842,7 +842,7 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         }
         break;
     case 0x18:
-        FUN_141b91a60();
+        CloseLoadingDialog();
         break;
     case 3:
         GetWindowRect(hWnd, &g_rcWindow);
@@ -860,11 +860,11 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         pInfo->ptMaxTrackSize.y = nTrackH + 0x32;
     }
     }
-    if (FUN_141ade340(hWnd, (int)uMsg, (void*)wParam, (void*)lParam) != 0)
+    if (OnWindowMessage(hWnd, (int)uMsg, (void*)wParam, (void*)lParam) != 0)
         return 0;
-    if (((class Unk_MessageHook*)FUN_1414a56c0()) != 0)
+    if (((class Unk_MessageHook*)GetGFxService()) != 0)
     {
-        if (((class Unk_MessageHook*)FUN_1414a56c0())->vfunc_18(hWnd, uMsg, wParam, lParam) != 0)
+        if (((class Unk_MessageHook*)GetGFxService())->vfunc_18(hWnd, uMsg, wParam, lParam) != 0)
             return 0;
     }
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
@@ -944,7 +944,7 @@ void CWindowService::OnRendererChanged(void* pDevice)
 
 // Keeps the display awake (nMode 1) or restores the power and screensaver defaults (nMode 0).
 // @0x141b938f0
-int FUN_141b938f0(int nMode)
+int SetPowerMode(int nMode)
 {
     switch (nMode)
     {
@@ -973,7 +973,7 @@ int FUN_141b938f0(int nMode)
 // @0x141b93a20
 void FUN_141b93a20(unsigned nArg)
 {
-    TSingleton<CUIService>::GetInstance()->FUN_141adbea0();
+    TSingleton<CUIService>::GetInstance()->HideLoadingProgress();
     FUN_140d73bc0(0xae, 0, 0, s_forceLogin);
     GetClientPlatform()->vfunc_58(0xae, nArg);
 }
@@ -981,8 +981,8 @@ void FUN_141b93a20(unsigned nArg)
 // @0x141b93aa0
 void FUN_141b93aa0()
 {
-    TSingleton<CUIService>::GetInstance()->FUN_141adbea0();
-    FUN_140d73aa0(BlockFormat<int>(0x20f, 0), 0, 0, s_forceLogin);
+    TSingleton<CUIService>::GetInstance()->HideLoadingProgress();
+    ShowMessageBox(BlockFormat<int>(0x20f, 0), 0, 0, s_forceLogin);
     GetClientPlatform()->vfunc_58(0x20f, 0);
 }
 

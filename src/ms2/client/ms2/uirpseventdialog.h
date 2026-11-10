@@ -19,15 +19,15 @@ public:
     virtual int vfunc_71();
     virtual int OnMessage(UISwfEntity*, UIMsg*);
     virtual int vfunc_48();
-    CString FUN_140e83120(int);
+    CString GetItemIconPath(int);
     void FUN_140e83200(ATL::CAtlArray<int>&);
-    int FUN_140e832d0();
+    int GetCurrentPlayCount();
     void FUN_140e83370(MS2Ptr<RpsContext>);
     void FUN_140e83a30();
     void RefreshBannerButton();
-    void FUN_140e83fa0(int);
+    void RequestReward(int);
     int FUN_140e841a0();
-    void FUN_140e84350(GameEventVariable*);
+    void OnGameEventVariableChanged(GameEventVariable*);
     void OnPacketRefresh(CInPacket&);
 private:
     MS2_LAYOUT_FRIEND;

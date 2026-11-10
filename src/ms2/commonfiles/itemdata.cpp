@@ -40,8 +40,8 @@
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 static CString FormatIconPath(const char* pszFormat, const CString& v0);
 int FUN_1405400f0(TiXmlElement*, const char*, int&);
@@ -117,13 +117,13 @@ class CGloabalFactor;
 class CGloabalFactor   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1404c1810(int, int);
+    float GetMultiControlFactor(int, int);
 };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 template<> class TSingleton<ItemGachaBoxTable> { public: static ItemGachaBoxTable* GetInstance(); };   // C3: was FUN_14052d230 (real spec in itemgachaboxtable.h)
 class ItemGachaBoxTable   // C3: member view for the former free stand-ins
@@ -148,27 +148,27 @@ private:
 
 
 
-class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
+class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
 
 // Free functions of this unit used before their definition.
-unsigned FUN_14053c690(unsigned nItemId);
+unsigned GetItemDataFileId(unsigned nItemId);
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 bool FUN_14053f8c0(unsigned nItemId);
 bool FUN_14053f900(unsigned nItemId);
 bool FUN_14053f940(unsigned nItemId);
 int FUN_14053f990(int nId);
 int FUN_14053f9c0(int nItemId);
-int FUN_14053fa40(int nItemId);
-int FUN_14053fac0(int nItemId);
-int FUN_14053fb40(int nItemId);
+int HasMaidId(int nItemId);
+int IsFatiguePenaltyApplied(int nItemId);
+int HasAdditionalEffect(int nItemId);
 int FUN_14053fbc0(int nId);
-int FUN_14053fc10(int nItemId);
+int GetIconCode(int nItemId);
 bool FUN_14053fc90(int nSub);
 bool FUN_14053fd10(int nSub);
 bool FUN_14053fd50(int nSub);
 int FUN_14053feb0(int nItemId);
-bool FUN_14053ff30(int nItemId, int nRank);
-unsigned FUN_140540000(const CString& strName);
+bool HasRank(int nItemId, int nRank);
+unsigned GetTagByName(const CString& strName);
 
 // @0x140539370
 CItemChangeBeautyTable::CItemChangeBeautyTable()
@@ -186,11 +186,11 @@ bool CItemChangeBeautyTable::Load()
     CachePtr cache(new CCacheData);
     if (cache == 0)
         return false;
-    const CString& strPath = FUN_14071a5b0("Table", "ItemChangeBeauty.xml");
-    cache->FUN_1401d1160(CString(strPath));
+    const CString& strPath = GetXmlPath("Table", "ItemChangeBeauty.xml");
+    cache->SetPath(CString(strPath));
     m_caches.Add(cache);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((TiXmlElement*)((Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -297,7 +297,7 @@ void CItemChangeBeautyTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CItemChangeBeautyTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CItemChangeBeautyTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -383,7 +383,7 @@ bool CItemData::Load(TiXmlElement* pElem)
                 reinterpret_cast<const unsigned&>(nItemId), reinterpret_cast<const unsigned&>(nModelId));
         }
     }
-    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2f) == 1 && FUN_140541580()) {
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x2f) == 1 && FUN_140541580()) {
         property.flag09 = reinterpret_cast<GameDictionaryManager*>(FUN_140541580())->Get(GameDictionaryManager::kItem, GetItemId()).operator->() != 0;
     }
     return true;
@@ -408,12 +408,12 @@ bool CItemData::Save(void* pParent)
     cubeTextureName.SaveXml(pParent);
     period.Save(pParent);
     limit.Save(pParent);
-    skill.FUN_1405467f0(pParent);
+    skill.Save(pParent);
     effect.Save(pParent);
-    fusion.FUN_140549580(pParent);
+    fusion.Save(pParent);
     install.Save(pParent);
-    material.FUN_140547440(pParent);
-    additionalEffect.FUN_140549d40(pParent);
+    material.Save(pParent);
+    additionalEffect.Save(pParent);
     if (itemPreset != 0) {
         TiXmlElement tool("tool");
         XmlSetAttr(&tool, "itemPreset", (unsigned int)(itemPreset));
@@ -470,7 +470,7 @@ int CItemData::GetItemId()
 // @0x14053c530
 void CItemData::FUN_14053c530()
 {
-    FUN_14053c690(GetItemId());
+    GetItemDataFileId(GetItemId());
 }
 
 // @0x14053c560
@@ -514,19 +514,19 @@ int CItemData::GetEquipSubtype()
 }
 
 // @0x14053c650
-int CItemData::FUN_14053c650()
+int CItemData::GetParam1()
 {
     return param1;
 }
 
 // @0x14053c670
-int CItemData::FUN_14053c670()
+int CItemData::GetParam2()
 {
     return param2;
 }
 
 // @0x14053c690
-unsigned FUN_14053c690(unsigned nItemId)
+unsigned GetItemDataFileId(unsigned nItemId)
 {
     return nItemId / 100000;
 }
@@ -548,20 +548,20 @@ bool CItemData::FUN_14053c710()
 {
     if (!FUN_14053cbc0())
         return false;
-    size_t nGroups = GetModelOrEmpty()->FUN_14054b3d0();
+    size_t nGroups = GetModelOrEmpty()->GetGroupCount();
     if (nGroups == 0)
         return false;
     for (size_t i = 0; i < nGroups; ++i)
     {
         const ModelGroup* pGroup = GetModelOrEmpty()->GetGroup(i);
-        if (pGroup->FUN_1405451a0() == 0)
+        if (pGroup->GetType() == 0)
             return false;
     }
     return true;
 }
 
 // @0x14053c7c0
-bool CItemData::FUN_14053c7c0()
+bool CItemData::IsStackable()
 {
     if (GetType() == 1)
         return false;
@@ -625,12 +625,12 @@ int CItemData::FUN_14053c9e0(int nGender, int nB)
 {
     if (FUN_14053d2f0())
     {
-        for (size_t i = 0; i < GetModelOrEmpty()->FUN_14054b3d0(); ++i)
+        for (size_t i = 0; i < GetModelOrEmpty()->GetGroupCount(); ++i)
         {
             const ModelGroup* pGroup = GetModelOrEmpty()->GetGroup(i);
-            for (size_t j = 0; j < pGroup->FUN_1405450c0(); ++j)
+            for (size_t j = 0; j < pGroup->GetPartCount(); ++j)
             {
-                const ModelPart* pPart = pGroup->FUN_140544fe0(j);
+                const ModelPart* pPart = pGroup->GetPart(j);
                 if (pPart->FUN_140544aa0(nGender, nB) != 0)
                     return 1;
             }
@@ -654,7 +654,7 @@ bool CItemData::FUN_14053cb40()
 }
 
 // @0x14053cb80
-bool CItemData::FUN_14053cb80()
+bool CItemData::IsInstallItem()
 {
     return GetType() == 6;
 }
@@ -712,7 +712,7 @@ bool CItemData::HasFunction()
 // @0x14053cde0
 bool CItemData::HasMaidId()
 {
-    return 0 < FUN_14053dd30();
+    return 0 < GetMaidId();
 }
 
 // @0x14053ce20
@@ -728,7 +728,7 @@ bool CItemData::FUN_14053ce40()
 }
 
 // @0x14053ce80
-bool CItemData::FUN_14053ce80()
+bool CItemData::IsBeautyItem()
 {
     if (FUN_14053cbc0())
     {
@@ -749,7 +749,7 @@ bool CItemData::IsAvatarColorItem()
 // @0x14053cf40
 bool CItemData::FUN_14053cf40()
 {
-    return GetModelOrEmpty()->FUN_14054b400() == 0x12;
+    return GetModelOrEmpty()->GetFirstGroupType() == 0x12;
 }
 
 // @0x14053cf90
@@ -761,25 +761,25 @@ bool CItemData::HasSkinType()
 // @0x14053cfd0
 bool CItemData::FUN_14053cfd0()
 {
-    return GetModelOrEmpty()->FUN_14054b400() == 1;
+    return GetModelOrEmpty()->GetFirstGroupType() == 1;
 }
 
 // @0x14053d020
 bool CItemData::FUN_14053d020()
 {
-    return GetModelOrEmpty()->FUN_14054b400() == 2;
+    return GetModelOrEmpty()->GetFirstGroupType() == 2;
 }
 
 // @0x14053d070
 bool CItemData::FUN_14053d070()
 {
-    return GetModelOrEmpty()->FUN_14054b400() == 3;
+    return GetModelOrEmpty()->GetFirstGroupType() == 3;
 }
 
 // @0x14053d0c0
 bool CItemData::FUN_14053d0c0()
 {
-    return GetModelOrEmpty()->FUN_14054b400() == 3;
+    return GetModelOrEmpty()->GetFirstGroupType() == 3;
 }
 
 // @0x14053d110
@@ -879,12 +879,12 @@ bool CItemData::FUN_14053d340()
     }
     else if (GetType() == 0x17)
     {
-        if (GetModelOrEmpty()->FUN_14054b450(5))
+        if (GetModelOrEmpty()->HasGroupType(5))
         {
-            if (GetModelOrEmpty()->FUN_14054b450(4))
+            if (GetModelOrEmpty()->HasGroupType(4))
                 return false;
         }
-        return GetModelOrEmpty()->FUN_14054b450(5) || GetModelOrEmpty()->FUN_14054b450(4);
+        return GetModelOrEmpty()->HasGroupType(5) || GetModelOrEmpty()->HasGroupType(4);
     }
     return false;
 }
@@ -912,9 +912,9 @@ bool CItemData::FUN_14053d460()
     }
     else if (GetType() == 0x17)
     {
-        if (GetModelOrEmpty()->FUN_14054b450(5))
+        if (GetModelOrEmpty()->HasGroupType(5))
         {
-            if (GetModelOrEmpty()->FUN_14054b450(4))
+            if (GetModelOrEmpty()->HasGroupType(4))
                 return true;
         }
     }
@@ -1105,13 +1105,13 @@ int CItemData::CanRegisterMeratMarket()
 {
     if (FUN_14053d900())
     {
-        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xec))
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xec))
             return limit.enableRegisterMeratMarket;
         return 0;
     }
     if (FUN_14053cd10())
     {
-        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xa9))
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xa9))
             return limit.enableRegisterMeratMarket;
         return 0;
     }
@@ -1119,13 +1119,13 @@ int CItemData::CanRegisterMeratMarket()
 }
 
 // @0x14053dc20
-int CItemData::FUN_14053dc20()
+int CItemData::GetSkillId()
 {
     return skill.skillId;
 }
 
 // @0x14053dc40
-unsigned short CItemData::FUN_14053dc40()
+unsigned short CItemData::GetSkillLevel()
 {
     return skill.skillLevel;
 }
@@ -1150,7 +1150,7 @@ int CItemData::FUN_14053dc90()
 }
 
 // @0x14053dce0
-int CItemData::FUN_14053dce0()
+int CItemData::GetBankId()
 {
     if (GetType() != 6)
         return 0;
@@ -1160,7 +1160,7 @@ int CItemData::FUN_14053dce0()
 }
 
 // @0x14053dd30
-int CItemData::FUN_14053dd30()
+int CItemData::GetMaidId()
 {
     if (GetType() != 6)
         return 0;
@@ -1218,7 +1218,7 @@ int CItemData::GetInstrumentId()
 {
     if (!FUN_14053cd50())
         return 0;
-    return FUN_14053c650();
+    return GetParam1();
 }
 
 // @0x14053dec0
@@ -1283,7 +1283,7 @@ bool CItemData::IsCashItem()
 }
 
 // @0x14053e170
-bool CItemData::FUN_14053e170()
+bool CItemData::IsCustomizable()
 {
     if (model == 0)
         return false;
@@ -1337,7 +1337,7 @@ bool CItemData::FUN_14053e370()
 }
 
 // @0x14053e3c0
-int CItemData::FUN_14053e3c0()
+int CItemData::GetMultiColorCount()
 {
     if (model == 0)
         return 0;
@@ -1507,7 +1507,7 @@ int CItemData::GetUnlimitedEnchantMaxGrade()
 // @0x14053ea00
 unsigned long long CItemData::GetSellPrice(int nRank)
 {
-    long long nPrice = property.FUN_1405480f0(nRank);
+    long long nPrice = property.GetSellPrice(nRank);
     if (FUN_14053cbc0())
     {
         if (!HasSkinType() && nPrice == 0)
@@ -1520,7 +1520,7 @@ unsigned long long CItemData::GetSellPrice(int nRank)
                 (void)(nPrice != 0 || (_wassert(L"sellPrice", L"e:\\build\\kr\\22_04\\ms2code\\commonfiles\\itemdata.cpp", 0x685), 0));
             }
         }
-        float fRate = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1810(3, nRank);
+        float fRate = TSingleton<CGloabalFactor>::GetInstance()->GetMultiControlFactor(3, nRank);
         nPrice = (long long)((float)nPrice * fRate);
     }
     return nPrice;
@@ -1575,12 +1575,12 @@ void CItemData::FUN_14053ed00()
         {
             for (int nRank = 1; nRank < 7; ++nRank)
             {
-                reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f4ff0(MS2Ptr<CItemData>(this), nRank, &key);
+                reinterpret_cast<CItemOptionTable*>(GetItemOptionTable())->CreateOption(MS2Ptr<CItemData>(this), nRank, &key);
             }
         }
         else
         {
-            reinterpret_cast<CItemOptionTable*>(FUN_140166430())->FUN_1405f4ff0(MS2Ptr<CItemData>(this), rank, &key);
+            reinterpret_cast<CItemOptionTable*>(GetItemOptionTable())->CreateOption(MS2Ptr<CItemData>(this), rank, &key);
         }
     }
     if ((unsigned int)property.gearScore > 0)
@@ -1624,7 +1624,7 @@ unsigned char CItemData::FUN_14053ef80()
 }
 
 // @0x14053efd0
-int CItemData::FUN_14053efd0()
+int CItemData::GetConstantId()
 {
     return constantID;
 }
@@ -1634,7 +1634,7 @@ int CItemData::FUN_14053eff0(int nType)
 {
     if (IsPetItem())
     {
-        if (FUN_14053efd0() == 0)
+        if (GetConstantId() == 0)
             return 0;
         switch (nType)
         {
@@ -1654,13 +1654,13 @@ int CItemData::FUN_14053eff0(int nType)
 }
 
 // @0x14053f080
-int CItemData::FUN_14053f080()
+int CItemData::GetOptionLevel()
 {
     return optionLevel;
 }
 
 // @0x14053f0a0
-int CItemData::FUN_14053f0a0()
+int CItemData::GetOptionLevelFactor()
 {
     if (optionLevelFactor == 0)
         return optionLevel;
@@ -1947,7 +1947,7 @@ int FUN_14053f9c0(int nItemId)
 }
 
 // @0x14053fa40
-int FUN_14053fa40(int nItemId)
+int HasMaidId(int nItemId)
 {
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem.IsNull())
@@ -1956,7 +1956,7 @@ int FUN_14053fa40(int nItemId)
 }
 
 // @0x14053fac0
-int FUN_14053fac0(int nItemId)
+int IsFatiguePenaltyApplied(int nItemId)
 {
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem == 0)
@@ -1965,7 +1965,7 @@ int FUN_14053fac0(int nItemId)
 }
 
 // @0x14053fb40
-int FUN_14053fb40(int nItemId)
+int HasAdditionalEffect(int nItemId)
 {
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem.IsNull())
@@ -1988,7 +1988,7 @@ int FUN_14053fbc0(int nId)
 }
 
 // @0x14053fc10
-int FUN_14053fc10(int nItemId)
+int GetIconCode(int nItemId)
 {
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem.IsNull())
@@ -2061,7 +2061,7 @@ int CItemData::FUN_14053fd90()
 }
 
 // @0x14053fdb0
-int CItemData::FUN_14053fdb0()
+int CItemData::GetVipLevel()
 {
     return limit.vipLevel;
 }
@@ -2069,7 +2069,7 @@ int CItemData::FUN_14053fdb0()
 // @0x14053fdd0
 CString CItemData::GetIconPath()
 {
-    CString* pIcon = property.FUN_1405481d0();
+    CString* pIcon = property.GetSlotIcon();
     if (pIcon->IsEmpty())
     {
         int nItemId = GetItemId();
@@ -2090,7 +2090,7 @@ int FUN_14053feb0(int nItemId)
 }
 
 // @0x14053ff30
-bool FUN_14053ff30(int nItemId, int nRank)
+bool HasRank(int nItemId, int nRank)
 {
     MS2Ptr<CItemData> pItem = FUN_14053f870(nItemId);
     if (pItem == 0)
@@ -2101,7 +2101,7 @@ bool FUN_14053ff30(int nItemId, int nRank)
 }
 
 // @0x140540000
-unsigned FUN_140540000(const CString& strName)
+unsigned GetTagByName(const CString& strName)
 {
     if (TSingleton<CItemDataTable>::GetInstance() == 0)
         return 0;

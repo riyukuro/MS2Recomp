@@ -56,15 +56,15 @@ void FUN_140b6c7a0(const CString& strName, __int64 nTarget, MS2Ptr<CItem> spItem
 {
     ItemExchangeSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) ItemExchangeSlot(strName, nTarget, spItem);
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::RegisterBinding(strName, pSlot);
 }
 
 // @0x140b6c890
 void FUN_140b6c890(const CString& strName)
 {
-    ItemExchangeSlot* pSlot = FUN_140b6cde0(Unk_NotifyContext::FUN_1422c8e90(strName));
+    ItemExchangeSlot* pSlot = FUN_140b6cde0(Unk_NotifyContext::FindBinding(strName));
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
 }
 
 // @0x140b6c8d0
@@ -131,7 +131,7 @@ int ItemExchangeSlot::vfunc_0(void* p)
     int nResult = tip.FUN_1409e0d40(vfunc_25().get());
     if (nResult != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -147,7 +147,7 @@ int ItemExchangeSlot::vfunc_8(void* p)
     int nResult = slot.FUN_1409c3860(vfunc_25().get(), pPlayer, 1);
     if (nResult != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;

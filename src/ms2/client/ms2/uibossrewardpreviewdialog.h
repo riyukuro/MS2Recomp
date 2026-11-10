@@ -2,7 +2,7 @@
 // from the unit path: the .cpp's __FILE__ string is not in the exe for this unit).
 //
 // UIBossRewardPreviewDialog ("BossRewardPreviewDialog", UI type id 0x4efb, RTTI .?AVUIBossRewardPreviewDialog@@, 0x1c8
-// bytes): the reward list of a boss npc on the world map search. FUN_140f25ad0 picks the npc (kind 4 / 6 with a reward
+// bytes): the reward list of a boss npc on the world map search. SetNpcId picks the npc (kind 4 / 6 with a reward
 // row), FUN_140f25bf0 fills the title ("m_title") and builds the item bag (SlotBag, 0x12 slots named after the dialog),
 // the exp / meso rows are bound in OnLoadComplete. Slot (0xa0, id 0x620006d) shows one item, SlotBag (0xb0, id 0x620006e)
 // builds the reward items of the npc (the "rewardId" bag name goes to the movie).
@@ -70,7 +70,7 @@ public:
     virtual int vfunc_48() { return 0x4efb; }                       // 48 0x140f26660
     virtual void vfunc_67();                                        // 67 0x140f25700 close: drop the bag
 
-    int FUN_140f25ad0(int nNpcId);                                  // 0x140f25ad0 show the npc's rewards; 1 = it has some
+    int SetNpcId(int nNpcId);                                  // 0x140f25ad0 show the npc's rewards; 1 = it has some
     void FUN_140f25bf0();                                           // 0x140f25bf0 refresh the title and the bag
     // 0x140e48d80 bind a child = UISwfEntity::GetChildInto<ASTextField> (uiswfentity.h)
 

@@ -20,9 +20,9 @@ using Scaleform::File;
 // The GFx UI manager singleton (0x14025e7a0; its class lives in the library's first obj, 0x1422b0060-0x1422b7f20).
 // FUN_14025e7a0 (the GFxManager singleton, 0x14025e7a0) is declared in gfxmanager.h
 
-int FUN_14083f4d0(CString a, CString b);   // case-insensitive compare (both lower-cased; by value: the callee destroys them)
+int CompareNoCase(CString a, CString b);   // case-insensitive compare (both lower-cased; by value: the callee destroys them)
 
-extern GFxFileOpener::OpenCallback DAT_143b0d790;   // the open callback (0 until FUN_1422eb400 sets it)
+extern GFxFileOpener::OpenCallback DAT_143b0d790;   // the open callback (0 until SetOpenCallback sets it)
 
 // @0x1422eaea0
 GFxFileOpener::GFxFileOpener()
@@ -60,9 +60,9 @@ File* GFxFileOpener::OpenFile(const char* purl, int flags, int mode)
         char szDir[260] = {};
         char szExt[260] = {};
         _splitpath_s(purl, szDrive, 3, szDir, 260, szFName, 256, szExt, 260);
-        if (FUN_14083f4d0(szFName, "Ime") == 0 && (strcmp(szExt, ".swf") == 0 || strcmp(szExt, ".gfx") == 0)) {
+        if (CompareNoCase(szFName, "Ime") == 0 && (strcmp(szExt, ".swf") == 0 || strcmp(szExt, ".gfx") == 0)) {
             m_bImeSwfOpened = 1;
-            CString strImePath = FUN_14025e7a0()->GetIme();
+            CString strImePath = GetGFxManager()->GetIme();
             return FUN_1422eb2f0(strImePath, flags, mode);
         }
     }
@@ -91,7 +91,7 @@ File* GFxFileOpener::FUN_1422eb2f0(const CString& strPath, int flags, int mode)
 MS2_REPLACE_METHOD(0x1422EB2F0, GFxFileOpener, FUN_1422eb2f0, 252, 0x575A02EC);
 
 // @0x1422eb400
-void GFxFileOpener::FUN_1422eb400(OpenCallback pfn)
+void GFxFileOpener::SetOpenCallback(OpenCallback pfn)
 {
     DAT_143b0d790 = pfn;
 }

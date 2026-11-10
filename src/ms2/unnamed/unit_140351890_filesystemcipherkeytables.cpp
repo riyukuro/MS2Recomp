@@ -30,7 +30,7 @@ extern unsigned char** DAT_143aaeae8;
 extern unsigned char** DAT_143aaeaf0;
 extern unsigned char** DAT_143aaeaf8;
 
-void FUN_140352130(const unsigned char* a, const unsigned char* b, unsigned char* out, unsigned int count);
+void XorBytes(const unsigned char* a, const unsigned char* b, unsigned char* out, unsigned int count);
 
 // @0x140351890
 void FUN_140351890()
@@ -44,7 +44,7 @@ void FUN_140351890()
         }
         for (unsigned int j = 0; j < 0x80; j++)
         {
-            FUN_140352130(DAT_1439ed030[j], DAT_1439ee830[j], DAT_143aaead0[j], 0x20);
+            XorBytes(DAT_1439ed030[j], DAT_1439ee830[j], DAT_143aaead0[j], 0x20);
         }
     }
     if (DAT_143aaead8 == 0)
@@ -56,7 +56,7 @@ void FUN_140351890()
         }
         for (unsigned int j = 0; j < 0x80; j++)
         {
-            FUN_140352130(DAT_1439ee030[j], DAT_1439ef830[j], DAT_143aaead8[j], 0x10);
+            XorBytes(DAT_1439ee030[j], DAT_1439ef830[j], DAT_143aaead8[j], 0x10);
         }
     }
     if (DAT_143aaeae0 == 0)
@@ -68,7 +68,7 @@ void FUN_140351890()
         }
         for (unsigned int j = 0; j < 0x80; j++)
         {
-            FUN_140352130(DAT_1439ee830[j], DAT_1439f0030[j], DAT_143aaeae0[j], 0x20);
+            XorBytes(DAT_1439ee830[j], DAT_1439f0030[j], DAT_143aaeae0[j], 0x20);
         }
     }
     if (DAT_143aaeae8 == 0)
@@ -80,7 +80,7 @@ void FUN_140351890()
         }
         for (unsigned int j = 0; j < 0x80; j++)
         {
-            FUN_140352130(DAT_1439ef830[j], DAT_1439f1030[j], DAT_143aaeae8[j], 0x10);
+            XorBytes(DAT_1439ef830[j], DAT_1439f1030[j], DAT_143aaeae8[j], 0x10);
         }
     }
     if (DAT_143aaeaf0 == 0)
@@ -92,7 +92,7 @@ void FUN_140351890()
         }
         for (unsigned int j = 0; j < 0x80; j++)
         {
-            FUN_140352130(DAT_1439f0030[j], DAT_1439f1830[j], DAT_143aaeaf0[j], 0x20);
+            XorBytes(DAT_1439f0030[j], DAT_1439f1830[j], DAT_143aaeaf0[j], 0x20);
         }
     }
     if (DAT_143aaeaf8 == 0)
@@ -104,17 +104,17 @@ void FUN_140351890()
         }
         for (unsigned int j = 0; j < 0x80; j++)
         {
-            FUN_140352130(DAT_1439f1030[j], DAT_1439f2830[j], DAT_143aaeaf8[j], 0x10);
+            XorBytes(DAT_1439f1030[j], DAT_1439f2830[j], DAT_143aaeaf8[j], 0x10);
         }
     }
-    FUN_140352130(DAT_1439f3030, DAT_1439f3830, DAT_143aad2d0, 0x800);
-    FUN_140352130(DAT_1439f3830, DAT_1439f4030, DAT_143aadad0, 0x800);
-    FUN_140352130(DAT_1439f4030, DAT_1439f3030, DAT_143aae2d0, 0x800);
+    XorBytes(DAT_1439f3030, DAT_1439f3830, DAT_143aad2d0, 0x800);
+    XorBytes(DAT_1439f3830, DAT_1439f4030, DAT_143aadad0, 0x800);
+    XorBytes(DAT_1439f4030, DAT_1439f3030, DAT_143aae2d0, 0x800);
 }
 MS2_REPLACE(0x140351890, FUN_140351890, 1527, 0xAE1F3259);
 
 // @0x140351e90
-void FUN_140351e90()
+void FreeCipherKeyTables()
 {
     if (DAT_143aaead0 != 0)
     {
@@ -171,10 +171,10 @@ void FUN_140351e90()
         DAT_143aaeaf8 = 0;
     }
 }
-MS2_REPLACE(0x140351E90, FUN_140351e90, 663, 0xB9E5C11F);
+MS2_REPLACE(0x140351E90, FreeCipherKeyTables, 663, 0xB9E5C11F);
 
 // @0x140352130 out[i] = a[i] ^ b[i] over count bytes (dword loop, then the byte tail).
-void FUN_140352130(const unsigned char* a, const unsigned char* b, unsigned char* out, unsigned int count)
+void XorBytes(const unsigned char* a, const unsigned char* b, unsigned char* out, unsigned int count)
 {
     unsigned int i;
     unsigned int words = count >> 2;
@@ -192,7 +192,7 @@ void FUN_140352130(const unsigned char* a, const unsigned char* b, unsigned char
         out[i + j] = a[i + j] ^ b[i + j];
     }
 }
-MS2_REPLACE(0x140352130, FUN_140352130, 253, 0xACFC606B);
+MS2_REPLACE(0x140352130, XorBytes, 253, 0xACFC606B);
 
 // @0x140352230
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);

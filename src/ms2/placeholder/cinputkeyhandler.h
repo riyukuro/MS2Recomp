@@ -20,18 +20,18 @@ public:
     bool FUN_14116d7a0(unsigned nMask);                      // 0x14116d7a0 bit mask of the modifier states in effect
     bool FUN_14116d840();                                    // 0x14116d840
     bool FUN_14116d890(bool bAlt);                           // 0x14116d890
-    bool FUN_14116d950(int nKey, bool bDebugOnly, int nLevel);   // 0x14116d950 key held (group-aware)
-    bool FUN_14116d9c0(int nKey, bool bDebugOnly, int nLevel);   // 0x14116d9c0 key pressed this frame
-    bool FUN_14116da30(int nKey, bool bDebugOnly, int nLevel);   // 0x14116da30 key released this frame
-    bool FUN_14116daa0(int nKey, bool bDebugOnly, int nLevel);   // 0x14116daa0 mouse button held
-    bool FUN_14116db10(int nKey, bool bDebugOnly, int nLevel);   // 0x14116db10 mouse button pressed
-    bool FUN_14116db80(int nKey, bool bDebugOnly, int nLevel);   // 0x14116db80 mouse button released
-    bool FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool bDebugOnly, int nLevel);   // 0x14116dbf0 mouse movement deltas
-    bool FUN_14116dcb0(int nSetting, bool bDebugOnly, int nLevel);   // 0x14116dcb0 key-binding table query
+    bool IsKeyDown(int nKey, bool bDebugOnly, int nLevel);   // 0x14116d950 key held (group-aware)
+    bool WasKeyPressed(int nKey, bool bDebugOnly, int nLevel);   // 0x14116d9c0 key pressed this frame
+    bool WasKeyReleased(int nKey, bool bDebugOnly, int nLevel);   // 0x14116da30 key released this frame
+    bool IsMouseButtonDown(int nKey, bool bDebugOnly, int nLevel);   // 0x14116daa0 mouse button held
+    bool WasMouseButtonPressed(int nKey, bool bDebugOnly, int nLevel);   // 0x14116db10 mouse button pressed
+    bool WasMouseButtonReleased(int nKey, bool bDebugOnly, int nLevel);   // 0x14116db80 mouse button released
+    bool GetMouseDelta(int* pnX, int* pnY, int* pnZ, bool bDebugOnly, int nLevel);   // 0x14116dbf0 mouse movement deltas
+    bool IsActionKeyDown(int nSetting, bool bDebugOnly, int nLevel);   // 0x14116dcb0 key-binding table query
     bool FUN_14116dd30(int nSetting, bool bDebugOnly, int nLevel);   // 0x14116dd30
     bool FUN_14116ddb0(int nSetting, bool bDebugOnly, int nLevel);   // 0x14116ddb0
-    bool FUN_14116de30(int nKey);                           // 0x14116de30 inject a key press (input enabled)
-    bool FUN_14116de70(int nKey);                           // 0x14116de70 inject a key release
+    bool InjectKeyPress(int nKey);                           // 0x14116de30 inject a key press (input enabled)
+    bool InjectKeyRelease(int nKey);                           // 0x14116de70 inject a key release
 
 private:
     MS2_LAYOUT_FRIEND;

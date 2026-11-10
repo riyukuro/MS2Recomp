@@ -99,32 +99,32 @@ private: void* p0; void* p8; void* p10;
 class CIngredientContainer : public CPtred {
 public:
     CIngredientContainer(); virtual ~CIngredientContainer();
-    size_t FUN_14026bee0(); bool FUN_14026bf40(); MS2Ptr<CIngredientInfo> FUN_14026bdc0(size_t);
+    size_t FUN_14026bee0(); bool IsEmpty(); MS2Ptr<CIngredientInfo> FUN_14026bdc0(size_t);
     std::vector<MS2Ptr<CIngredientInfo> >* FUN_14026c230(); void FUN_14026c250(CIngredientContainer*);
     Unk_BreakIngredients ingredients;
 };
 MS2_CHECK_SIZE(CIngredientContainer,0x30);
 class Unk_BreakRecipe : public CLua { };
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
-void FUN_140628390(int,unsigned short,int,CIngredientContainer*);
+void GetSocketUnlockCost(int,unsigned short,int,CIngredientContainer*);
 class CContentShutdown { public: enum Content {}; int Get(Content); };   // C3: member view
 class Unk_BreakFlags { public: void* p0; CContentShutdown flags; };
 struct Unk_BanConfig* FUN_14025e7b0();   // C3: was FUN_14025e7b0
 class Unk_BreakSelected : public CPetManager { };
 class Unk_BreakRules { public: };
-class CItemLockManager { public: int FUN_140613160(CItem* pItem); };   // C3: unit-local view (unit_1406125d0.h)
+class CItemLockManager { public: int CanUseItem(CItem* pItem); };   // C3: unit-local view (unit_1406125d0.h)
 class CItemBreakIngredientTable;
 class CItemLockManager;
 class CPetManager;
 class Unk_BreakRecipes;
-inline Unk_BreakRecipes* FUN_140535300() { return reinterpret_cast<Unk_BreakRecipes*>(TSingleton<CItemBreakIngredientTable>::s_instance); }
+inline Unk_BreakRecipes* GetItemBreakIngredientTable() { return reinterpret_cast<Unk_BreakRecipes*>(TSingleton<CItemBreakIngredientTable>::s_instance); }
 inline Unk_BreakRules* FUN_140535310() { return reinterpret_cast<Unk_BreakRules*>(TSingleton<CItemLockManager>::s_instance); }
-inline Unk_BreakSelected* FUN_140535320() { return reinterpret_cast<Unk_BreakSelected*>(TSingleton<CPetManager>::s_instance); }
+inline Unk_BreakSelected* GetPetManager() { return reinterpret_cast<Unk_BreakSelected*>(TSingleton<CPetManager>::s_instance); }
 bool FUN_140633bf0(Unk_BreakItemPtr);
 class Unk_Inventory { public: MS2Ptr<CItem> FindItemByUid(__int64); };   // C3: minimal view (was Unk_BreakInventory)
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90)
-class UIInventoryDialog : public UIDialog { public: void FUN_14199a3f0(__int64); };
-class UIItemBreakBase : public UIDialog { public: void FUN_1419a1430(); void FUN_1419a1d20(int); };   // C3: member view
+class UIInventoryDialog : public UIDialog { public: void RefreshItemSlot(__int64); };
+class UIItemBreakBase : public UIDialog { public: void FUN_1419a1430(); void OnBagSlotChanged(int); };   // C3: member view
 class UIItemBreakDialog : public UIItemBreakBase {
 public:
     virtual void vfunc_84(Unk_BreakPacket&); virtual void vfunc_85(bool,int); virtual int vfunc_86();
@@ -148,10 +148,10 @@ template<class T> inline int Unk_BreakFind(const ATL::CAtlArray<T>& values,const
     for(int i=0;i<(int)values.GetCount();++i) if(values.GetAt(i)==value) return i; return -1;
 }
 CStringW GetStringCommonByKey(const CStringW&);
-void FUN_1412751f0(const CStringW&,int,int);
+void ShowSystemNotice(const CStringW&,int,int);
 void FUN_141275260(int,int,int);
 void FUN_141275460(int,int,int,const fmt::ArgList&);
-void FUN_140d73aa0(CStringW,int,void*,CStringW);
+void ShowMessageBox(CStringW,int,void*,CStringW);
 int FUN_141276180(const CString&,const CString&);
 // These are message-display wrappers over fmt; StringFormat is used for string-returning wrappers.
 template<class A,class B> inline void Unk_BreakMessage(int id,int a,int b,const A& x,const B& y) {
@@ -191,7 +191,7 @@ MS2_CHECK_OFFSET(Unk_BreakIngredient,count,0x20);
 template<> inline void CMsgBoxData::Append(int v) { m_args.Add(FUN_140719630(v)); }
 template<> inline void CMsgBoxData::Append(unsigned v) { m_args.Add(FUN_1407196b0(v)); }
 template<> inline void CMsgBoxData::Append(__int64 v) { m_args.Add(FUN_140719a80(v)); }
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int,CStringW,void*,CStringW);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int,CStringW,void*,CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 int FUN_141902660(Unk_BreakItemPtr);
 void FUN_1409e4950(Unk_BreakItemPtr,CStringW&,bool*);
@@ -243,13 +243,13 @@ bool ItemBreakCommon::FUN_140530b40(Items& items,int index,__int64 id,int count)
 // @0x140530c90
 void FUN_140530c90(MS2Ptr<CItemData> item,int grade,int enhance,CIngredientContainer& output) {
     if(item==0) return;
-    if(TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x3a)) { int level=item->GetSkinType(); if(level) {
+    if(TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x3a)) { int level=item->GetSkinType(); if(level) {
     unsigned short category=((Unk_BreakTemplate*)item.operator->())->category;
     __int64 value=item->GetSellPrice(grade);
     ((class Unk_BreakRecipe*)FUN_1401c0db0())->CalcMeratSkinItemBreakReward(category,grade,value,level,output);
     if(enhance>0) {
-        CIngredientContainer extra; FUN_140628390(grade,category,level,&extra);
-        if(!extra.FUN_14026bf40()) {
+        CIngredientContainer extra; GetSocketUnlockCost(grade,category,level,&extra);
+        if(!extra.IsEmpty()) {
             int percent=((class Unk_BreakRecipe*)FUN_1401c0db0())->CalcMeratSkinItemBreakRefundPercent();
             for(size_t i=0;i<extra.FUN_14026bee0();++i) { MS2Ptr<CIngredientInfo> p=extra.FUN_14026bdc0(i); if(p==0) continue;
                 unsigned amount=(reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count*percent)/100<1?1:(reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count*percent)/100; if(percent==0) amount=0; reinterpret_cast<Unk_BreakIngredient*>(p.operator->())->count=amount*enhance;
@@ -288,18 +288,18 @@ int CItemBreakManager::FUN_140531510(ItemPtr item) {
 }
 MS2_REPLACE_METHOD(0x140531510, CItemBreakManager, FUN_140531510, 269, 0x665F5D7D);
 // @0x140531630
-int CItemBreakManager::FUN_140531630(ItemPtr item) { unsigned __int64 id=FUN_140535320()->GetSummonUid(); if(id==0) return 1; if(id==item->GetItemUid()) return 0; return 1; }
+int CItemBreakManager::FUN_140531630(ItemPtr item) { unsigned __int64 id=GetPetManager()->GetSummonUid(); if(id==0) return 1; if(id==item->GetItemUid()) return 0; return 1; }
 MS2_REPLACE_METHOD(0x140531630, CItemBreakManager, FUN_140531630, 149, 0x879E8F78);
 // @0x1405316d0
 bool CItemBreakManager::FUN_1405316d0(ItemPtr item) {
-    if(item->FUN_140526fc0()>0) return true; if(item->GetEnchantCharge()>0) return true; if(item->GetPlusLevel()>0) return true;
-    if(item->FUN_140528c20()>1) return true; if(item->FUN_140528b90()>0) return true; if(((unsigned)item->FUN_140528bd0())>0) return true; if(item->FUN_140528c60()!=0) return true; return false;
+    if(item->GetEnchantLevel()>0) return true; if(item->GetEnchantCharge()>0) return true; if(item->GetPlusLevel()>0) return true;
+    if(item->GetPetLevel()>1) return true; if(item->GetPetExp()>0) return true; if(((unsigned)item->GetPetEvolutionPoint())>0) return true; if(item->FUN_140528c60()!=0) return true; return false;
 }
 MS2_REPLACE_METHOD(0x1405316D0, CItemBreakManager, FUN_1405316d0, 373, 0x79429692);
 // @0x140531850
 bool CItemBreakManager::FUN_140531850(ItemPtr item) {
     if(item==0) return false; if(!item->HasSkin()) return true;
-    MS2SvrPtr<CIngredientContainer> p=reinterpret_cast<CItemBreakIngredientTable*>(FUN_140535300())->GetBreakItem(item->FUN_1405276c0());
+    MS2SvrPtr<CIngredientContainer> p=reinterpret_cast<CItemBreakIngredientTable*>(GetItemBreakIngredientTable())->GetBreakItem(item->GetItemId());
     if(p.get()) { const Unk_BreakIngredients& list=*reinterpret_cast<const Unk_BreakIngredients*>(p->FUN_14026c230()); if(!reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo>>&>(list).empty()) return true; }
     int level=((CItemData*)item->FUN_140527840())->GetSkinType(); if(level) {
         unsigned short category=((unsigned short)item->GetRequiredLevel()); int grade=item->GetRarity(); __int64 value=item->GetSellPrice(); CIngredientContainer result;
@@ -349,8 +349,8 @@ void CItemBreakManager::RefreshActiveDialog() {
 MS2_REPLACE_METHOD(0x140532060, CItemBreakManager, RefreshActiveDialog, 110, 0x1A85706E);
 // @0x1405320e0
 void CItemBreakManager::UpdateActiveDialogSlot(int index) {
-    switch(type) { case 1: { UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(0x4e8d); if(p) p->FUN_1419a1d20(index); } break;
-    case 2: { UIItemBreakDonationDialog* p=Unk_BreakDialog<UIItemBreakDonationDialog>(0x4e8e); if(p) p->FUN_1419a1d20(index); }
+    switch(type) { case 1: { UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(0x4e8d); if(p) p->OnBagSlotChanged(index); } break;
+    case 2: { UIItemBreakDonationDialog* p=Unk_BreakDialog<UIItemBreakDonationDialog>(0x4e8e); if(p) p->OnBagSlotChanged(index); }
     }
 }
 MS2_REPLACE_METHOD(0x1405320E0, CItemBreakManager, UpdateActiveDialogSlot, 122, 0x94B746AD);
@@ -377,12 +377,12 @@ void CItemBreakManager::OnItemDismantlePacket(Unk_BreakPacket& packet) {
         unsigned __int64 id=(&packet.input)->vfunc_4(); int index=(&packet.input)->vfunc_2(); int count=(&packet.input)->vfunc_3();
         if(index<0 || index>=100) return;
         ItemPtr item=g_143ab2a90.FindItemByUid(id); if(item.get()) { ItemBreakCommon::FUN_140530b40(items,index,id,count); UpdateActiveDialogSlot(index); FUN_141276180(s_breakSound,""); }
-        UIInventoryDialog* p=Unk_BreakDialog<UIInventoryDialog>(0x4e2d); if(p) p->FUN_14199a3f0(id);
+        UIInventoryDialog* p=Unk_BreakDialog<UIInventoryDialog>(0x4e2d); if(p) p->RefreshItemSlot(id);
     } else if(mode==2) {
         unsigned __int64 id=(&packet.input)->vfunc_4(); int index=ItemBreakCommon::FUN_140530a10(items,id);
         if(index>=0) { ItemBreakCommon::Ptr p=items[index]; if(p.get()) p->FUN_1405306f0(); }
         for(size_t i=0;i<pending.GetCount();++i) if(pending.GetAt(i)==id) { pending.GetAt(i)=0; break; }
-        UpdateActiveDialogSlot(index); UIInventoryDialog* p=Unk_BreakDialog<UIInventoryDialog>(0x4e2d); if(p) p->FUN_14199a3f0(id);
+        UpdateActiveDialogSlot(index); UIInventoryDialog* p=Unk_BreakDialog<UIInventoryDialog>(0x4e2d); if(p) p->RefreshItemSlot(id);
     } else if(mode==3) {
         int value=(&packet.input)->vfunc_1(); if(type!=value) { MS2_ASSERT_AT(1306,"m_type == type" && 0); return; }
         ItemBreakCommon::FUN_140530b00(items,100); ForwardPacketToDialog(packet); RefreshActiveDialog();
@@ -392,7 +392,7 @@ void CItemBreakManager::OnItemDismantlePacket(Unk_BreakPacket& packet) {
         else if(result==2) FUN_141275260(0x8f7,1,1);
         else if(result==3) FUN_141275260(0x43,1,1);
         else if(result==4) {}
-        else if(result==5) FUN_1412751f0(GetStringCommonByKey(L"s_itembreak_empty"),1,1); else Unk_BreakMessage(0x8f8,1,1,result);
+        else if(result==5) ShowSystemNotice(GetStringCommonByKey(L"s_itembreak_empty"),1,1); else Unk_BreakMessage(0x8f8,1,1,result);
         UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(); if(p && p->FUN_1405352d0()) p->ResetBreak(); FUN_140532220();
     } else if(mode==5) {
         UIItemBreakDialog* p=Unk_BreakDialog<UIItemBreakDialog>(); if(p) p->FUN_1419a44d0(reinterpret_cast<CInPacket*>(&packet));
@@ -400,7 +400,7 @@ void CItemBreakManager::OnItemDismantlePacket(Unk_BreakPacket& packet) {
         UIInventoryDialog* p=Unk_BreakDialog<UIInventoryDialog>(0x4e2d); unsigned count=(&packet.input)->vfunc_3();
         for(unsigned i=0;i<count;++i) { int index=(&packet.input)->vfunc_2(); unsigned __int64 id=(&packet.input)->vfunc_4(); int amount=(&packet.input)->vfunc_3();
             if(index<0 || index>=100) return; ItemPtr item=g_143ab2a90.FindItemByUid(id);
-            if(item.get()) { ItemBreakCommon::FUN_140530b40(items,index,id,amount); UpdateActiveDialogSlot(index); } if(p) p->FUN_14199a3f0(id);
+            if(item.get()) { ItemBreakCommon::FUN_140530b40(items,index,id,amount); UpdateActiveDialogSlot(index); } if(p) p->RefreshItemSlot(id);
         }
         if(count!=0) FUN_141276180(s_breakSound,"");
     }
@@ -431,9 +431,9 @@ MS2_REPLACE_METHOD(0x140532D80, CItemBreakManager, SendItemDismantleMode3, 86, 0
 // @0x140532de0
 int CItemBreakManager::TryAddItem(ItemPtr item,int arg) {
     if(item==0) return 0;
-    if(FUN_140535310() && !((CItemLockManager*)FUN_140535310())->FUN_140613160(item.get())) return 0;
-    if(ItemBreakCommon::FUN_140530a10(items,item->GetItemUid())!=-1) { FUN_1412751f0(GetStringCommonByKey(L"s_itembreak_selected_item"),1,1); return 0; }
-    Unk_BreakEnhance* enhance=((Unk_BreakEnhance*)item->GetSocket()); if(enhance && !enhance->CheckGemsBreakable()) { FUN_140d73aa0(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"),0,0,L""); return 0; }
+    if(FUN_140535310() && !((CItemLockManager*)FUN_140535310())->CanUseItem(item.get())) return 0;
+    if(ItemBreakCommon::FUN_140530a10(items,item->GetItemUid())!=-1) { ShowSystemNotice(GetStringCommonByKey(L"s_itembreak_selected_item"),1,1); return 0; }
+    Unk_BreakEnhance* enhance=((Unk_BreakEnhance*)item->GetSocket()); if(enhance && !enhance->CheckGemsBreakable()) { ShowMessageBox(GetStringCommonByKey(L"s_itembreak_usedgemstone_item"),0,0,L""); return 0; }
     if(type==2) { if(!CanBreakItem(item)) { FUN_141275260(0x8f7,1,1); return 0; }
         if(!((CItemData*)item->FUN_140527840())->FUN_14053cbc0() && !item->HasSkin()) { FUN_141275260(0x8f7,1,1); return 0; }
     } else if(!CanBreakItem(item)) { FUN_141275260(0x8f6,1,1); return 0; }
@@ -455,7 +455,7 @@ MS2_REPLACE_METHOD(0x140533340, CItemBreakManager, RequestRemoveItem, 248, 0x31B
 void CItemBreakManager::AddItemWithConfirm(ItemPtr item,int arg) {
     if(item==0) return; if(FUN_141902660(item)!=0) return;
     if(item->IsStackable()!=0 && ((unsigned)item->GetCount())>1) {
-        if(MS2Ptr<CMsgBoxData> box=FUN_140d73d20(5,GetStringCommonByKey(L"s_msg_item_break"),0,L"")) {
+        if(MS2Ptr<CMsgBoxData> box=CreateMessageBox(5,GetStringCommonByKey(L"s_msg_item_break"),0,L"")) {
             unsigned count=((unsigned)item->GetCount()); CStringW text; text.Format(L"%d",count);
             box->SetInput(1,text,count,0,0);
             box->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::OnDismantleCountMsgBox));
@@ -465,9 +465,9 @@ void CItemBreakManager::AddItemWithConfirm(ItemPtr item,int arg) {
         CStringW option; bool flag=false; FUN_1409e4950(item,option,&flag);
         if(item->GetRarity()>=5 && flag==1) {
             CStringW warning=GetStringCommonByKey(L"s_itembreak_high_sa_option_item"); CStringW text; text.Append(option); text.Append(L"\n"); text.Append(warning);
-            MS2Ptr<CMsgBoxData> box=FUN_140d73d20(0x11,text,0,L"");
+            MS2Ptr<CMsgBoxData> box=CreateMessageBox(0x11,text,0,L"");
             if(box) { box->SetCallback(Delegate<bool(int,const CMsgBoxData&)>(this,&CItemBreakManager::OnConfirmMessageBoxResult));
-                box->FUN_141a01600(item->GetItemUid()); box->FUN_141a01ee0(item,item->FUN_140527b10(),1,0,-1,-1,1); box->SetButtonLabelIds(0x475,0x476,0);
+                box->SetItemUid(item->GetItemUid()); box->FUN_141a01ee0(item,item->FUN_140527b10(),1,0,-1,-1,1); box->SetButtonLabelIds(0x475,0x476,0);
                 box->Append(arg); box->Append(item->GetItemUid()); box->Append(((unsigned)item->GetCount())); FUN_140d73c60(box);
             }
         } else SendItemDismantleMode1(item->GetItemUid(),((unsigned)item->GetCount()),arg);
@@ -487,8 +487,8 @@ bool CItemBreakManager::OnConfirmMessageBoxResult(int result,const CMsgBoxData& 
 }
 MS2_REPLACE_METHOD(0x140533DA0, CItemBreakManager, OnConfirmMessageBoxResult, 121, 0x0F93C2D3);
 // @0x140533e20
-unsigned CItemBreakManager::FUN_140533e20() { unsigned index=0; for(size_t i=0;i<items.GetCount();++i) { if(items[i]==0) continue; index=(unsigned)i; } return index; }
-MS2_REPLACE_METHOD(0x140533E20, CItemBreakManager, FUN_140533e20, 125, 0x4181B233);
+unsigned CItemBreakManager::GetLastItemIndex() { unsigned index=0; for(size_t i=0;i<items.GetCount();++i) { if(items[i]==0) continue; index=(unsigned)i; } return index; }
+MS2_REPLACE_METHOD(0x140533E20, CItemBreakManager, GetLastItemIndex, 125, 0x4181B233);
 
 
 

@@ -54,7 +54,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x14134d8b0
     virtual void vfunc_72();                                    // 72 0x14134db90 close after the delay
 
-    void FUN_14134dc50(int nRecommendId);                       // 0x14134dc50 pick the offer by id
+    void SetRecommendItem(int nRecommendId);                       // 0x14134dc50 pick the offer by id
     void FUN_14134dcc0();                                       // 0x14134dcc0 fill the movie
 
 private:

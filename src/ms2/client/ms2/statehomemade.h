@@ -34,10 +34,10 @@ public:
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x140ca64d0: an empty StateHomemadeData
     virtual void OnCastingFinished();                       // listener 0  0x140ca4d30: m_n48 = 1
 
-    int FUN_140ca4e00();                                    // the harvest duration, scaled by the cursor manager
-    efd::utf8string FUN_140ca4e50();                        // the action animation of m_n10
-    void FUN_140ca4f30(Unk_HmCastInfo* pInfo);              // fill the casting bar request
-    int FUN_140ca4fd0(int nMode);                           // a homemade cube is in reach
+    int GetHarvestDuration();                                    // the harvest duration, scaled by the cursor manager
+    efd::utf8string GetActionAnimation();                        // the action animation of m_n10
+    void FillCastingInfo(Unk_HmCastInfo* pInfo);              // fill the casting bar request
+    int HasCubeInReach(int nMode);                           // a homemade cube is in reach
     void SendFunctionCubeMode4();                                   // send the cubes in reach (kind 4)
     void SendFunctionCubeMode5();                                   // send the cubes that may be used (kind 5)
 

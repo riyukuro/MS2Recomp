@@ -68,17 +68,17 @@ class CCharacterAbilityManager;
 class CCharacterAbilityTable;
 
 // The quest state (holder + 0x10) and the quest rows.
-class Unk_CaQuestState { public: int FUN_140745590(int nQuest); };
+class Unk_CaQuestState { public: int IsQuestRewarded(int nQuest); };
 class Unk_CaQuestHolder { public: char m_pad_0[0x10]; Unk_CaQuestState m_state; };
 void* FUN_140764020();   // C3: was FUN_140764020
 struct Unk_CaQuestRow { char m_pad_0[0x1c]; int m_nType; char m_pad_20[8]; int m_28; char m_pad_2c[0x2c]; unsigned short m_58; };
 MS2_CHECK_OFFSET(Unk_CaQuestRow, m_nType, 0x1c);   // the exe reads it through 0x14074b050 ([rcx+0x1c])
 MS2_CHECK_OFFSET(Unk_CaQuestRow, m_28, 0x28);
 MS2_CHECK_OFFSET(Unk_CaQuestRow, m_58, 0x58);
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuest);
+MS2Ptr<CQuestData> GetQuestData(int nQuest);
 int FUN_14074b050(CQuestData* pQuest);                  // the quest type
-CStringW FUN_1416e4df0(int nQuest);                     // the quest name
-CStringW FUN_1416e7fb0(int n);
+CStringW GetQuestName(int nQuest);                     // the quest name
+CStringW GetChapterName(int n);
 
 CStringW GetStringCommon(int nStringId);
 CStringW GetStringCommonByKey(const CStringW& str);
@@ -117,9 +117,9 @@ public:
 };
 MS2_CHECK_SIZE(NotifyChangeMyLevel, 0x20);
 
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);
+void ShowMessageBox(CStringW text, int nType, void* pListener, CStringW tag);
 void FUN_140710590(COutPacket& packet);
 
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
@@ -127,8 +127,8 @@ void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
 // The singletons.
-CCharacterAbilityManager* FUN_140f2d240();
-CCharacterAbilityTable* FUN_140f2d250();
+CCharacterAbilityManager* GetCharacterAbilityManager();
+CCharacterAbilityTable* GetCharacterAbilityTable();
 
 // ---- the formatter of the pending-quest text (one template instance) -------------------------------------------------
 
@@ -144,7 +144,7 @@ template <class A, class B, class C, class D> CStringW FUN_140f2c170(int nString
 // ---- the Invoke forms of the ability movie -----------------------------------------------------------------------------
 
 // @0x140f2c5d0
-Scaleform::GFx::Value AScript::FUN_140f2c5d0(const char* szMethod, int n, ASArray& arr)
+Scaleform::GFx::Value AScript::InvokeIntArray(const char* szMethod, int n, ASArray& arr)
 {
     ASArgList args;
     args.resize(2);
@@ -154,7 +154,7 @@ Scaleform::GFx::Value AScript::FUN_140f2c5d0(const char* szMethod, int n, ASArra
 }
 
 // @0x140f2c690
-Scaleform::GFx::Value AScript::FUN_140f2c690(const char* szMethod, int n, CStringW str)
+Scaleform::GFx::Value AScript::InvokeIntString(const char* szMethod, int n, CStringW str)
 {
     ASArgList args;
     args.resize(2);
@@ -164,19 +164,19 @@ Scaleform::GFx::Value AScript::FUN_140f2c690(const char* szMethod, int n, CStrin
 }
 
 // @0x140f2d240
-CCharacterAbilityManager* FUN_140f2d240()
+CCharacterAbilityManager* GetCharacterAbilityManager()
 {
     return (CCharacterAbilityManager*)reinterpret_cast<void*>(TSingleton<CCharacterAbilityManager>::s_instance);
 }
 
 // @0x140f2d250
-CCharacterAbilityTable* FUN_140f2d250()
+CCharacterAbilityTable* GetCharacterAbilityTable()
 {
     return TSingleton<CCharacterAbilityTable>::s_instance;
 }
 
 // @0x140f2c530
-UICharacterAbilityDialog* FUN_140f2c530(int nId)
+UICharacterAbilityDialog* GetCharacterAbilityDialog(int nId)
 {
     if (reinterpret_cast<Unk_CaUIManager*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -232,7 +232,7 @@ void CCharacterAbilityManager::FUN_140f29b70(CInPacket& packet)
     }
     m_nResetTime = packet.ReadInt64();
     m_nPoints = packet.ReadInt32();
-    if (UICharacterAbilityDialog* pDlg = FUN_140f2c530(0x4f0c))
+    if (UICharacterAbilityDialog* pDlg = GetCharacterAbilityDialog(0x4f0c))
         pDlg->FUN_140f2b0f0();
     if (UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28))
         pMenu->FUN_141938850();
@@ -242,12 +242,12 @@ void CCharacterAbilityManager::FUN_140f29b70(CInPacket& packet)
 void CCharacterAbilityManager::FUN_140f29cc0(CInPacket& packet)
 {
     int nId = packet.ReadInt32();
-    MS2Ptr<CCharacterAbility> ref = FUN_140f2d250()->FUN_1401e0670(nId);
+    MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->FUN_1401e0670(nId);
     if (ref == NULL)
         return;
     m_abilities.AddTail(nId);
-    if (UICharacterAbilityDialog* pDlg = FUN_140f2c530(0x4f0c))
-        pDlg->FUN_140f2b110(ref);
+    if (UICharacterAbilityDialog* pDlg = GetCharacterAbilityDialog(0x4f0c))
+        pDlg->OnAbilityLearned(ref);
     if (UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28))
         pMenu->FUN_141938850();
 }
@@ -287,7 +287,7 @@ ATL::CTimeSpan CCharacterAbilityManager::FUN_140f29ea0()
 }
 
 // @0x140f29f90
-int CCharacterAbilityManager::FUN_140f29f90(MS2Ptr<CCharacterAbility> ref)
+int CCharacterAbilityManager::CanLearnAbility(MS2Ptr<CCharacterAbility> ref)
 {
     if (FUN_140f29e00() == 0)
         return 0;
@@ -310,7 +310,7 @@ int CCharacterAbilityManager::FUN_140f2a0b0(int nId)
 // @0x140f2a100
 int CCharacterAbilityManager::FUN_140f2a100(int nId)
 {
-    MS2Ptr<CCharacterAbility> ref = FUN_140f2d250()->FUN_1401e0670(nId);
+    MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->FUN_1401e0670(nId);
     if (ref == NULL)
         return 1;
     PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -332,7 +332,7 @@ int CCharacterAbilityManager::FUN_140f2a210()
 // @0x140f2a260
 UICharacterAbilityDialog::UICharacterAbilityDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_timer.Init();
     m_bBuilt = 0;
 }
@@ -353,7 +353,7 @@ int UICharacterAbilityDialog::vfunc_65()
 {
     if (!UIDialog::vfunc_65())
         return 0;
-    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UICharacterAbilityDialog::FUN_140f2b000));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UICharacterAbilityDialog::OnChangeMyLevel));
     return 1;
 }
 
@@ -379,20 +379,20 @@ void UICharacterAbilityDialog::vfunc_72()
 void UICharacterAbilityDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925ec0(CString("m_close"));
+    BindCloseButton(CString("m_close"));
     m_bBuilt = 0;
-    FUN_140f2ba20();
+    UpdateDisabledText();
     PCBase* pPc = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == NULL)
         return;
     if (FUN_1401e0800((unsigned short)pPc->vfunc_78()) == 0)
         return;
-    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_CaQuestHolder*)FUN_140764020())->m_state)->FUN_140745590(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_quest)->Get())) == 0)
+    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_CaQuestHolder*)FUN_140764020())->m_state)->IsQuestRewarded(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_quest)->Get())) == 0)
         return;
     UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28);
     if (pMenu)
         pMenu->FUN_141938ae0(0x4f0c, 0);
-    FUN_140f2b1e0();
+    BuildAbilityTable();
 }
 
 // @0x140f2a620
@@ -405,18 +405,18 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
         return 0;
     if (_stricmp(szMethod, "onAddButton") == 0)
     {
-        if (FUN_140f2d240()->FUN_140f29e00() == 0)
+        if (GetCharacterAbilityManager()->FUN_140f29e00() == 0)
         {
-            FUN_140d73aa0(GetStringCommon(0xc57), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommon(0xc57), 0, 0, CStringW(L""));
             return 1;
         }
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             int nId = data.PopUInt();
-            if (FUN_140f2d240()->FUN_140f2a0b0(nId))
+            if (GetCharacterAbilityManager()->FUN_140f2a0b0(nId))
                 return 1;
-            MS2Ptr<CCharacterAbility> ref = FUN_140f2d250()->FUN_1401e0670(nId);
+            MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->FUN_1401e0670(nId);
             if (ref->m_nRequireLevel > (unsigned short)pPc->vfunc_78())
                 return 1;
             COutPacket packet(static_cast<int>(SendOp::CharacterAbility), 0);
@@ -427,16 +427,16 @@ int UICharacterAbilityDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     else if (_stricmp(szMethod, "onResetButton") == 0)
     {
-        if (FUN_140f2d240()->FUN_140f29ea0() > 0)
+        if (GetCharacterAbilityManager()->FUN_140f29ea0() > 0)
         {
-            FUN_140d73aa0(GetStringCommon(0xc5d), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommon(0xc5d), 0, 0, CStringW(L""));
         }
         else
         {
             ATL::CTimeSpan cooldown((unsigned)(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_cooldown)->Get()) * 0x3c));
             __int64 nDays = cooldown.GetDays();
             CStringW strText = FormatStringId<__int64, __int64>(0xc5b, nDays, *reinterpret_cast<Common::Constants::Value<__int64>*>(&((class Unk_CaConfig*)GetClientConstants())->m_meso)->Get());
-            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strText), static_cast<IMessageListener*>(this), CStringW(L"OnMesoReset"));
+            MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, CStringW(strText), static_cast<IMessageListener*>(this), CStringW(L"OnMesoReset"));
             if (box.get())
             {
                 ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->FUN_141a024a0(0);
@@ -465,7 +465,7 @@ void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* 
     if (strKind == "ability")
     {
         int nId = pArgs->PopUInt();
-        MS2Ptr<CCharacterAbility> ref = FUN_140f2d250()->FUN_1401e0670(nId);
+        MS2Ptr<CCharacterAbility> ref = GetCharacterAbilityTable()->FUN_1401e0670(nId);
         if (ref == NULL)
             return;
         MS2Ptr<AdditionalLevelData> skill = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(ref->m_nAdditionalEffectId, ref->m_nAdditionalEffectLevel);
@@ -477,7 +477,7 @@ void UICharacterAbilityDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* 
     else if (strKind == "CategoryIcon")
     {
         int nId = pArgs->PopUInt();
-        MS2Ptr<CCharacterAbilityCategory> cat = FUN_140f2d250()->FUN_1401e0560(nId);
+        MS2Ptr<CCharacterAbilityCategory> cat = GetCharacterAbilityTable()->FUN_1401e0560(nId);
         if (cat == NULL)
             return;
         ASTooltip tip(*pRetVal, 2);
@@ -512,31 +512,31 @@ int UICharacterAbilityDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x140f2b000
-void UICharacterAbilityDialog::FUN_140f2b000(NotifyObject* pNotify)
+void UICharacterAbilityDialog::OnChangeMyLevel(NotifyObject* pNotify)
 {
     NotifyChangeMyLevel* p = dynamic_cast<NotifyChangeMyLevel*>(pNotify);
     if (p == NULL)
         return;
     if (FUN_1401e0800(p->m_nLevel) == 0)
         return;
-    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_CaQuestHolder*)FUN_140764020())->m_state)->FUN_140745590(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_quest)->Get())) == 0)
+    if (reinterpret_cast<CQuestManagerCommon*>(&((class Unk_CaQuestHolder*)FUN_140764020())->m_state)->IsQuestRewarded(*reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_quest)->Get())) == 0)
         return;
     FUN_140f2bee0(p->m_nLevel);
     if (m_30 == NULL)
         return;
     if (vfunc_55() != 0)
         return;
-    FUN_140f2b1e0();
+    BuildAbilityTable();
 }
 
 // @0x140f2b0f0
 void UICharacterAbilityDialog::FUN_140f2b0f0()
 {
-    FUN_140f2b1e0();
+    BuildAbilityTable();
 }
 
 // @0x140f2b110
-void UICharacterAbilityDialog::FUN_140f2b110(MS2Ptr<CCharacterAbility> ref)
+void UICharacterAbilityDialog::OnAbilityLearned(MS2Ptr<CCharacterAbility> ref)
 {
     if (m_30.get())
         m_30->Invoke("LearnAbility", (int)ref->m_nCategoryId, (int)ref->m_nAdditionalEffectId);
@@ -544,18 +544,18 @@ void UICharacterAbilityDialog::FUN_140f2b110(MS2Ptr<CCharacterAbility> ref)
 }
 
 // @0x140f2b1e0
-void UICharacterAbilityDialog::FUN_140f2b1e0()
+void UICharacterAbilityDialog::BuildAbilityTable()
 {
     if (m_30 == NULL)
         return;
     ATL::CAtlList<MS2Ptr<CCharacterAbilityCategory> > cats(10);
-    FUN_140f2d250()->FUN_1401e0350(&cats);
+    GetCharacterAbilityTable()->GetCategories(&cats);
     if (cats.IsEmpty())
         return;
     for (POSITION pos = cats.GetHeadPosition(); pos != NULL; cats.GetNext(pos))
     {
         MS2Ptr<CCharacterAbilityCategory> cat = cats.GetAt(pos);
-        m_30->FUN_140f2c690("buildCategory", cat->m_nId, CStringW(cat->m_strName));
+        m_30->InvokeIntString("buildCategory", cat->m_nId, CStringW(cat->m_strName));
         ATL::CAtlMap<unsigned int, MS2Ptr<CCharacterAbility> >& abilities = cat->m_abilities;
         if (abilities.IsEmpty())
             continue;
@@ -574,14 +574,14 @@ void UICharacterAbilityDialog::FUN_140f2b1e0()
                 continue;
             ASObj item(2);
             item.SetMemberUInt("id", a->m_nId);
-            item.FUN_1407cba60("iconPath", CString(skill->m_ui.m_strIcon));
+            item.SetStringMember("iconPath", CString(skill->m_ui.m_strIcon));
             item.FUN_1409c48f0("requireLevel", a->m_nRequireLevel);
-            item.FUN_1407cb9c0("disableAbility", FUN_140f2d240()->FUN_140f2a100(a->m_nId));
-            item.FUN_1407cb9c0("learnAbility", FUN_140f2d240()->FUN_140f2a0b0(a->m_nId));
-            item.FUN_1407cbbe0("newAbility", false);
+            item.SetIntMember("disableAbility", GetCharacterAbilityManager()->FUN_140f2a100(a->m_nId));
+            item.SetIntMember("learnAbility", GetCharacterAbilityManager()->FUN_140f2a0b0(a->m_nId));
+            item.SetBoolMember("newAbility", false);
             arr.PushObj(item);
         }
-        m_30->FUN_140f2c5d0("buildAbility", cat->m_nId, arr);
+        m_30->InvokeIntArray("buildAbility", cat->m_nId, arr);
     }
     FUN_140f2b760();
     FUN_140f2b850();
@@ -593,8 +593,8 @@ void UICharacterAbilityDialog::FUN_140f2b760()
 {
     if (m_30 == NULL)
         return;
-    unsigned nTotal = FUN_140f2d240()->FUN_140f29e40();
-    int nRemain = FUN_140f2d240()->FUN_140f29e00();
+    unsigned nTotal = GetCharacterAbilityManager()->FUN_140f29e40();
+    int nRemain = GetCharacterAbilityManager()->FUN_140f29e00();
     CStringW strText = BlockFormat<unsigned, unsigned>(0xc5a, reinterpret_cast<const unsigned&>(nRemain), nTotal);
     m_30->Invoke("SetPointInfoText", CStringW(strText));
 }
@@ -606,23 +606,23 @@ void UICharacterAbilityDialog::FUN_140f2b850()
         return;
     int bCooling = 0;
     CStringW strRemain;
-    ATL::CTimeSpan remain = FUN_140f2d240()->FUN_140f29ea0();
+    ATL::CTimeSpan remain = GetCharacterAbilityManager()->FUN_140f29ea0();
     if (remain > 0)
     {
         bCooling = 1;
         strRemain = FormatTimeSpan(remain, true, true, remain.GetDays() == 0, remain.GetHours() == 0);
     }
-    int nIntermediate = FUN_140f2d240()->FUN_140f2a210();
+    int nIntermediate = GetCharacterAbilityManager()->FUN_140f2a210();
     m_30->Invoke("SetRemainCoolButton", bCooling, CStringW(strRemain), nIntermediate);
 }
 
 // @0x140f2ba20
-void UICharacterAbilityDialog::FUN_140f2ba20()
+void UICharacterAbilityDialog::UpdateDisabledText()
 {
     if (m_30 == NULL)
         return;
     int nQuest = *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_CaConfig*)GetClientConstants())->m_quest)->Get());
-    MS2Ptr<CQuestData> quest = FUN_14074bc40(nQuest);
+    MS2Ptr<CQuestData> quest = GetQuestData(nQuest);
     if (quest == 0)
         return;
     CStringW strUnlock = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x50, nQuest);
@@ -650,7 +650,7 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
             break;
         }
     }
-    CStringW strText = FUN_140f2c170(0xc60, FUN_1416e4df0(nQuest), reinterpret_cast<Unk_CaQuestRow*>(quest.operator->())->m_58, strUnlock, FUN_1416e7fb0(reinterpret_cast<Unk_CaQuestRow*>(quest.operator->())->m_28));
+    CStringW strText = FUN_140f2c170(0xc60, GetQuestName(nQuest), reinterpret_cast<Unk_CaQuestRow*>(quest.operator->())->m_58, strUnlock, GetChapterName(reinterpret_cast<Unk_CaQuestRow*>(quest.operator->())->m_28));
     m_30->Invoke("SetDisabledText", CStringW(strText));
 }
 
@@ -658,12 +658,12 @@ void UICharacterAbilityDialog::FUN_140f2ba20()
 void UICharacterAbilityDialog::FUN_140f2bee0(unsigned short nLevel)
 {
     ATL::CAtlList<MS2Ptr<CCharacterAbility> > abilities(10);
-    FUN_140f2d250()->FUN_1401e0450(&abilities);
+    GetCharacterAbilityTable()->GetAbilities(&abilities);
     int bNew = 0;
     for (POSITION pos = abilities.GetHeadPosition(); pos != NULL; abilities.GetNext(pos))
     {
         MS2Ptr<CCharacterAbility> a = abilities.GetAt(pos);
-        if (a->m_nRequireLevel == nLevel && !FUN_140f2d240()->FUN_140f2a0b0(a->m_nId))
+        if (a->m_nRequireLevel == nLevel && !GetCharacterAbilityManager()->FUN_140f2a0b0(a->m_nId))
         {
             bNew = 1;
             break;

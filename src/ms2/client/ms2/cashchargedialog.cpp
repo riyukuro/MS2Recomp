@@ -26,7 +26,7 @@ public:
 
 class Unk_CashShopUIMgr { public: };
 void* FUN_140aadf80();                                              // the screen
-class Unk_McApp { public: RECT FUN_140ad4c30(); };              // C3: the screen rect, the definer's member (0x140ad4c30, unit_140ad1860_mousecontroller)
+class Unk_McApp { public: RECT GetWindowRect(); };              // C3: the screen rect, the definer's member (0x140ad4c30, unit_140ad1860_mousecontroller)
 
 IMPLEMENT_DYNAMIC(CCashChargeDialog, CDialogEx)
 
@@ -91,7 +91,7 @@ void CCashChargeDialog::Navigate(CString strUrl)
 // @0x140b04cf0
 void CCashChargeDialog::CenterOnScreen()
 {
-    RECT rcScreen = ((Unk_McApp*)FUN_140aadf80())->FUN_140ad4c30();
+    RECT rcScreen = ((Unk_McApp*)FUN_140aadf80())->GetWindowRect();
     RECT rcWindow;
     GetWindowRect(&rcWindow);
     int x = ((rcScreen.right - rcScreen.left) - (rcWindow.right - rcWindow.left)) / 2 + rcScreen.left;

@@ -31,5 +31,5 @@ public:
 MS2_CHECK_SIZE(UIRangePreviewDialog, 0x178);
 
 // The check box handlers: the first two arguments are the pc / npc flags.
-void FUN_141346dc0(UIRangePreviewDialog* pDialog, ASData* pArgs);   // 0x141346dc0 collision
-void FUN_141346e00(UIRangePreviewDialog* pDialog, ASData* pArgs);   // 0x141346e00 skill range
+void OnCheckCollision(UIRangePreviewDialog* pDialog, ASData* pArgs);   // 0x141346dc0 collision
+void OnCheckSkillRange(UIRangePreviewDialog* pDialog, ASData* pArgs);   // 0x141346e00 skill range

@@ -50,7 +50,7 @@ struct Unk_PgtrConfig
     char m_pad_00[0xa0];
     CString m_strMarkServer;                                        // +0xa0 passed to the guild mark URL builder
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 
 // The reward item: pointer 0x14053f870, get 0x140203c60, operator-> 0x1401b52a0, release 0x1401b50d0.
@@ -106,8 +106,8 @@ UIPvPGuildTeamResultDialog::UIPvPGuildTeamResultDialog()
     : m_bOwnA(false), m_bSound(false), m_bSwap(false)
 {
     m_80 = 0;
-    FUN_141924170(1);
-    FUN_141925e70(1, 1);
+    SetTweenEnabled(1);
+    SetFlag(1, 1);
 }
 
 // @0x141340aa0
@@ -165,14 +165,14 @@ void UIPvPGuildTeamResultDialog::vfunc_43()
 }
 
 // @0x141340d70
-void UIPvPGuildTeamResultDialog::FUN_141340d70(CInPacket* pIn)
+void UIPvPGuildTeamResultDialog::SetGuildBattleResult(CInPacket* pIn)
 {
     m_guildA.FUN_141340650(pIn);
     m_guildB.FUN_141340650(pIn);
     int nCount = pIn->ReadInt32();
     m_nMode = 0;
     m_strTitle = FUN_140298ea0(L"s_PvpGuildResult_title_pvp");
-    __int64 nOwnGuild = reinterpret_cast<Unk_PgtrGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0();
+    __int64 nOwnGuild = reinterpret_cast<Unk_PgtrGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.GetGuildId();
     m_guildA.m_strResult = L"win";
     m_guildB.m_strResult = L"lose";
     m_bOwnA = m_guildA.m_nGuildId == nOwnGuild;
@@ -200,7 +200,7 @@ void UIPvPGuildTeamResultDialog::FUN_141340d70(CInPacket* pIn)
 }
 
 // @0x141341220
-void UIPvPGuildTeamResultDialog::FUN_141341220(CInPacket* pIn)
+void UIPvPGuildTeamResultDialog::SetVsGameResult(CInPacket* pIn)
 {
     m_guildA.FUN_141340810(pIn);
     m_guildB.FUN_141340810(pIn);
@@ -209,8 +209,8 @@ void UIPvPGuildTeamResultDialog::FUN_141341220(CInPacket* pIn)
     m_bSwap = true;
     m_nRewardItem = 0;
     m_bSound = false;
-    FUN_141342190();
-    __int64 nOwnGuild = reinterpret_cast<Unk_PgtrGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0();
+    SetResultFromScores();
+    __int64 nOwnGuild = reinterpret_cast<Unk_PgtrGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.GetGuildId();
     Unk_PgtrGuild* pOwn = FUN_1413420e0(nOwnGuild, true);
     if (pOwn->m_strResult == L"win")
         m_strReward = FUN_14028dfa0<CStringW>(L"s_PvpGuildResult_vsGame_result_lose", pOwn->m_strName);
@@ -225,7 +225,7 @@ void UIPvPGuildTeamResultDialog::FUN_141341220(CInPacket* pIn)
 }
 
 // @0x1413415e0
-void UIPvPGuildTeamResultDialog::FUN_1413415e0(__int64 nGuildId, const CStringW& strMark)
+void UIPvPGuildTeamResultDialog::SetGuildMark(__int64 nGuildId, const CStringW& strMark)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
@@ -233,8 +233,8 @@ void UIPvPGuildTeamResultDialog::FUN_1413415e0(__int64 nGuildId, const CStringW&
         return;
     if (m_guildA.m_nGuildId != nGuildId && m_guildB.m_nGuildId != nGuildId)
         return;
-    CStringW strUrl = FUN_14016a730(FUN_141029590(nGuildId, FUN_14016a600(strMark, 0), "", ((struct Unk_PgtrConfig*)FUN_1401d31f0())->m_strMarkServer), 0);
-    Unk_PgtrGuild* pLeft = FUN_141342040(true);
+    CStringW strUrl = FUN_14016a730(FUN_141029590(nGuildId, FUN_14016a600(strMark, 0), "", ((struct Unk_PgtrConfig*)GetCommonResource())->m_strMarkServer), 0);
+    Unk_PgtrGuild* pLeft = GetGuildBySide(true);
     if (pLeft->m_nGuildId == nGuildId)
         m_30->Invoke("setLeftGuildMark", strUrl);
     else
@@ -246,7 +246,7 @@ void UIPvPGuildTeamResultDialog::FUN_1413418a0()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
-    SetChildText(FUN_1422dbb40(), "m_msg", m_strTitle);
+    SetChildText(GetGFxValue(), "m_msg", m_strTitle);
     Unk_PgtrGuild* pLeft;
     {
         Unk_PgtrGuild* p = m_bSwap ? &m_guildA : &m_guildB;
@@ -265,20 +265,20 @@ void UIPvPGuildTeamResultDialog::FUN_1413418a0()
     else
         szType = "text";
     m_30->Invoke("setRewardText", m_strReward, szType);
-    FUN_1413415e0(pLeft->m_nGuildId, pLeft->m_strMark);
-    FUN_1413415e0(pRight->m_nGuildId, pRight->m_strMark);
+    SetGuildMark(pLeft->m_nGuildId, pLeft->m_strMark);
+    SetGuildMark(pRight->m_nGuildId, pRight->m_strMark);
     if (m_nRewardItem != 0)
     {
         MS2Ptr<CItemData> spItem = FUN_14053f870(m_nRewardItem);
         if (spItem.get() != 0)
             m_30->Invoke("setRewardIcon", reinterpret_cast<Unk_PgtrItemData*>(spItem.operator->())->GetIconPath());
     }
-    FUN_141341e70();
+    PlayResultSounds();
 }
 
 #ifndef MS2_HOOK_DLL
 // @0x141341e70
-void UIPvPGuildTeamResultDialog::FUN_141341e70()
+void UIPvPGuildTeamResultDialog::PlayResultSounds()
 {
     if (!m_bSound)
         return;
@@ -299,7 +299,7 @@ void UIPvPGuildTeamResultDialog::FUN_141341e70()
 #endif
 
 // @0x141342040
-Unk_PgtrGuild* UIPvPGuildTeamResultDialog::FUN_141342040(bool bLeft)
+Unk_PgtrGuild* UIPvPGuildTeamResultDialog::GetGuildBySide(bool bLeft)
 {
     if (m_bSwap)
     {
@@ -328,7 +328,7 @@ Unk_PgtrGuild* UIPvPGuildTeamResultDialog::FUN_1413420e0(__int64 nGuildId, bool 
 }
 
 // @0x141342190
-void UIPvPGuildTeamResultDialog::FUN_141342190()
+void UIPvPGuildTeamResultDialog::SetResultFromScores()
 {
     if (m_guildA.m_nScore > m_guildB.m_nScore)
     {

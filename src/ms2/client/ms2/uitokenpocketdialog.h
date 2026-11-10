@@ -23,9 +23,9 @@ public:
     virtual void vfunc_43();                                    // 43 0x1413524b0 place the movie
     virtual int vfunc_48() { return 0x4ece; }                   // 48 0x1413532e0
 
-    void FUN_141352530(NotifyObject* pNotify);                  // "NotifyChangedTokenMoney" handler
+    void OnChangedTokenMoney(NotifyObject* pNotify);                  // "NotifyChangedTokenMoney" handler
     void FUN_141352560();                                       // refresh the amount texts
-    MS2Ptr<ASUIComponent> FUN_141352cf0(int nTokenKind, const CStringW& strTooltip);   // add one token slot
+    MS2Ptr<ASUIComponent> AddTokenSlot(int nTokenKind, const CStringW& strTooltip);   // add one token slot
 
 private:
     MS2_LAYOUT_FRIEND;

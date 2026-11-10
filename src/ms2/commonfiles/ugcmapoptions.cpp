@@ -29,9 +29,9 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 #include "hook/ms2hook.h"
 
-class CPriceTable* FUN_140552df0();   // C3: was FUN_140552df0
+class CPriceTable* GetPriceTable();   // C3: was GetPriceTable
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item table record
-CStringA FUN_1410280d0(int nPathType, CStringA strName);    // a local resource path
+CStringA GetDownloadFilePath(int nPathType, CStringA strName);    // a local resource path
 efd::Point3 FUN_1408a15b0(Unk_Int3 kCell, efd::Point3& kOffset);   // the world position of a cube cell
 
 // ---- UGCMapOptions -------------------------------------------------------------------------------------------------
@@ -499,11 +499,11 @@ void Cube::FUN_1408b4fd0(egf::Entity* pEntity)
     CStringA strPath;
     if (item->look == 0)
         return;
-    strPath = FUN_1410280d0(2, CStringA(item->look->m_strUrl));
+    strPath = GetDownloadFilePath(2, CStringA(item->look->m_strUrl));
     if (_access(strPath, 4) == 0)
         FUN_1408b51d0();
     else
-        TSingleton<CUgcManager>::GetInstance()->FUN_1418845a0(item.get(), entity->GetEntityID());
+        TSingleton<CUgcManager>::GetInstance()->DownloadCubeLook(item.get(), entity->GetEntityID());
 }
 MS2_REPLACE_METHOD(0x1408B4FD0, Cube, FUN_1408b4fd0, 500, 0xE53038B6);
 
@@ -518,7 +518,7 @@ int Cube::FUN_1408b51d0()
     CStringA strPath;
     if (item->look == 0)
         return 0;
-    strPath = FUN_1410280d0(2, CStringA(item->look->m_strUrl));
+    strPath = GetDownloadFilePath(2, CStringA(item->look->m_strUrl));
     if (_access(strPath, 4) != 0)
         return 0;
     TSingleton<CUgcManager>::GetInstance()->FUN_1418873c0(this);
@@ -554,9 +554,9 @@ MS2_REPLACE(0x1408B53D0, FUN_1408b53d0, 167, 0x267F2C3D);
 // @0x1408b5480
 int FUN_1408b5480(unsigned nItemId)
 {
-    if (((class CPriceTable*)FUN_140552df0()) == 0)
+    if (((class CPriceTable*)GetPriceTable()) == 0)
         return 0;
-    return ((class CPriceTable*)FUN_140552df0())->IsHousingBuyable(nItemId);
+    return ((class CPriceTable*)GetPriceTable())->IsHousingBuyable(nItemId);
 }
 MS2_REPLACE(0x1408B5480, FUN_1408b5480, 44, 0x938A7F09);
 
@@ -610,7 +610,7 @@ int FUN_1408b56c0(MS2Ptr<CItemData> spItem)
 {
     if (!spItem)
         return 0;
-    if (spItem->FUN_14053dd30() > 0 && FUN_1407075a0(spItem->install.objCode))
+    if (spItem->GetMaidId() > 0 && FUN_1407075a0(spItem->install.objCode))
         return 1;
     return 0;
 }
@@ -666,7 +666,7 @@ int FUN_1408b5950(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (!spItem)
         return 0;
-    if (FUN_140707710(spItem->install.objCode))
+    if (IsTriggerControlEnabled(spItem->install.objCode))
         return 1;
     return 0;
 }
@@ -837,9 +837,9 @@ MS2_REPLACE(0x1408B6120, FUN_1408b6120, 151, 0xD177F686);
 // @0x1408b61c0
 int FUN_1408b61c0(unsigned nItemId)
 {
-    if (((class CPriceTable*)FUN_140552df0()) == 0)
+    if (((class CPriceTable*)GetPriceTable()) == 0)
         return 0;
-    if (((class CPriceTable*)FUN_140552df0())->HasHousing(nItemId) != 0)
+    if (((class CPriceTable*)GetPriceTable())->HasHousing(nItemId) != 0)
         return 0;
     return 1;
 }
@@ -847,17 +847,17 @@ MS2_REPLACE(0x1408B61C0, FUN_1408b61c0, 57, 0xE59C84D7);
 
 // The bank slot count of the item's bank.
 // @0x1408b6200
-int FUN_1408b6200(int nItemId)
+int GetBankSlotCount(int nItemId)
 {
     if (nItemId == 0)
         return 0;
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (!spItem)
         return 0;
-    unsigned nBankId = spItem->FUN_14053dce0();
+    unsigned nBankId = spItem->GetBankId();
     MS2Ptr<CBankData> spBank = TSingleton<CBankTable>::GetInstance()->GetBankData(nBankId);
     if (spBank == 0)
         return 0;
     return spBank->m_nSlotCount;
 }
-MS2_REPLACE(0x1408B6200, FUN_1408b6200, 237, 0x7FEBF024);
+MS2_REPLACE(0x1408B6200, GetBankSlotCount, 237, 0x7FEBF024);

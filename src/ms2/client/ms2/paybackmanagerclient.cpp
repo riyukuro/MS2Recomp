@@ -49,7 +49,7 @@ static UICommon::CMyPCKeyInputController s_keyInputController;
 class UIPaybackDialog : public UIDialog
 {
 public:
-    void FUN_140e6f820(int nOldLevel, unsigned nOldMerat);          // 0x140e6f820 the level / merat changed
+    void OnPaybackChanged(int nOldLevel, unsigned nOldMerat);          // 0x140e6f820 the level / merat changed
 };
 
 // The events of the game (a closed event is not running).
@@ -94,7 +94,7 @@ PaybackManagerClient::PaybackManagerClient()
 // @0x140a8afb0
 void PaybackManagerClient::OnPaybackPacket(CInPacket& packet)
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x109))
         return;
     {
         unsigned char nKind = packet.ReadUInt8();
@@ -116,7 +116,7 @@ void PaybackManagerClient::OnPaybackPacket(CInPacket& packet)
             UIPaybackDialog* pDialog = FindPaybackDialog(0x4f93);
             if (pDialog == 0)
                 break;
-            pDialog->FUN_140e6f820(nOldLevel, nOldMerat);
+            pDialog->OnPaybackChanged(nOldLevel, nOldMerat);
             break;
         }
         case 1:
@@ -164,7 +164,7 @@ unsigned PaybackManagerClient::GetMerat() const
 // @0x140a8b360
 MS2Ptr<CMeratMarketProduct> PaybackManagerClient::GetFirstSellingProduct() const
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x109))
         return MS2Ptr<CMeratMarketProduct>(0);
     for (ProductVector::const_iterator it = m_products.begin(); it != m_products.end(); it++)
     {
@@ -258,7 +258,7 @@ CStringW PaybackManagerClient::GetPeriodText()
 // @0x140a8bcc0
 bool PaybackManagerClient::NotifyResetWindow(MS2Ptr<CMeratMarketProduct> spProduct)
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x109))
         return false;
     if (spProduct == 0)
         return false;
@@ -283,7 +283,7 @@ bool PaybackManagerClient::IsAvailable(unsigned char bNotify)
 // @0x140a8be80
 bool PaybackManagerClient::IsEnabled(unsigned char bNotify)
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x109))
         return false;
     if (!TSingleton<GameEventManagerCli>::GetInstance()->IsEnabled(CStringW(L"FinishPayback")))
         return false;
@@ -299,7 +299,7 @@ bool PaybackManagerClient::IsEnabled(unsigned char bNotify)
 // @0x140a8bf50
 bool PaybackManagerClient::FUN_140a8bf50(MS2Ptr<CMeratMarketProduct> spProduct) const
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x109))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x109))
         return false;
     if (spProduct == 0)
         return false;

@@ -102,10 +102,10 @@ void FUN_140b6c7a0(const CString& strName, __int64 nTarget, MS2Ptr<CItem> spItem
 void FUN_140b6c890(const CString& strName);                         // drop the drag slot
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
 int FUN_14053feb0(int);   // C3: was FUN_14053feb0
-int FUN_140ad0d60(int a, int b, int nMax);                          // clamp
+int Clamp(int a, int b, int nMax);                          // clamp
 CStringW FUN_1409404f0(__int64 nMeso);                              // meso text
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
-void FUN_1412751f0(const CStringW& strText, int a, int b);          // show a notice
+void ShowSystemNotice(const CStringW& strText, int a, int b);          // show a notice
 void FUN_140710590(COutPacket& packet);                             // send
 void FUN_140202470(unsigned char* pRecord, COutputStream& out);     // encode an ExchangeRequest
 void FUN_140202580(unsigned char* pRecord, COutputStream& out);     // encode a ForceFillIngredient
@@ -119,7 +119,7 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 // @0x140f50d60
 UIItemExchangeScrollDialog::UIItemExchangeScrollDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_uidScroll = 0;
     m_uidTarget = 0;
 }
@@ -179,7 +179,7 @@ void UIItemExchangeScrollDialog::OnLoadComplete()
     FUN_140f53a70();
     FUN_140f52880();
     m_spScroll = GetChild<ASMovieClip>("m_scroll");
-    FUN_140f55d10();
+    BindDebugButtons();
 }
 
 // @0x140f51280
@@ -219,7 +219,7 @@ void UIItemExchangeScrollDialog::vfunc_79(void* p)
                 vfunc_67();
         }
         else if (nKind == 3)
-            FUN_140f53300((CInPacket*)p);
+            UpdateIngredientCounts((CInPacket*)p);
     }
 }
 
@@ -230,7 +230,7 @@ void UIItemExchangeScrollDialog::vfunc_oa0_11(void* p)
 }
 
 // @0x140f51490
-void UIItemExchangeScrollDialog::FUN_140f51490(CItem* pScroll)
+void UIItemExchangeScrollDialog::SetScrollItem(CItem* pScroll)
 {
     m_uidScroll = pScroll->GetItemUid();
 }
@@ -272,8 +272,8 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
         else
             strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
         strText = strCount;
-        slot.FUN_1407cb9c0("itemRequireCount", nBase);
-        slot.FUN_1407cb9c0("itemCurrentCount", nHave);
+        slot.SetIntMember("itemRequireCount", nBase);
+        slot.SetIntMember("itemCurrentCount", nHave);
     }
     else
     {
@@ -283,13 +283,13 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
         strText = spItem->FUN_140528160();
         if (spCur.get() != 0)
         {
-            spItem->SetEnchantLevel(spCur->FUN_140526fc0(), 0);
-            if (spItem->FUN_1405278a0() != 0
-                && reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->GetEnchant() != 0
+            spItem->SetEnchantLevel(spCur->GetEnchantLevel(), 0);
+            if (spItem->GetStatus() != 0
+                && reinterpret_cast<CItemStatus*>(spItem->GetStatus())->GetEnchant() != 0
                 && spCur->FUN_140527030() != 0)
-                reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->GetEnchant()->FUN_14058c870();
-            reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->CopyGroup4From(
-                MS2Ptr<CItemStatus>(reinterpret_cast<CItemStatus*>(spCur->FUN_1405278a0())));
+                reinterpret_cast<CItemStatus*>(spItem->GetStatus())->GetEnchant()->FUN_14058c870();
+            reinterpret_cast<CItemStatus*>(spItem->GetStatus())->CopyGroup4From(
+                MS2Ptr<CItemStatus>(reinterpret_cast<CItemStatus*>(spCur->GetStatus())));
         }
     }
     CString strBind;
@@ -309,19 +309,19 @@ void UIItemExchangeScrollDialog::FUN_140f514c0(const Unk_ExchangeItemRef* pRef, 
     {
         MS2Ptr<CItemData> spData = FUN_14053f870(pRef->m_nId);
         if (spData.get() != 0)
-            slot.FUN_1407cbb20("level", FUN_14028dfa0(CStringW(L"s_itemslot_exchange_level"),
+            slot.SetWStringMember("level", FUN_14028dfa0(CStringW(L"s_itemslot_exchange_level"),
                                                       *reinterpret_cast<const unsigned*>(reinterpret_cast<char*>(spData.operator->()) + 0x138)));
     }
-    slot.FUN_1407cba60("binding", CString(strBind));
-    slot.FUN_1407cbb20("name", CStringW(strText));
+    slot.SetStringMember("binding", CString(strBind));
+    slot.SetWStringMember("name", CStringW(strText));
     obj.FUN_1409eb270(strKey, slot);
 }
 
 // @0x140f51e90
-void UIItemExchangeScrollDialog::FUN_140f51e90(CIngredientInfo* pIng, CString strKey, ASObj& obj, unsigned char nFlags, int nMul)
+void UIItemExchangeScrollDialog::WriteIngredientSlot(CIngredientInfo* pIng, CString strKey, ASObj& obj, unsigned char nFlags, int nMul)
 {
     MS2Ptr<CItem> spItem(new CItem());
-    if (spItem->FUN_14052b130(pIng->FUN_14026b500(), FUN_14053feb0(pIng->FUN_14026b500()), 0) == 0)
+    if (spItem->FUN_14052b130(pIng->GetItemId(), FUN_14053feb0(pIng->GetItemId()), 0) == 0)
         return;
     ItemInfoSlot::CreateParam param;
     param.m_spItem = spItem;
@@ -338,7 +338,7 @@ void UIItemExchangeScrollDialog::FUN_140f51e90(CIngredientInfo* pIng, CString st
         else
         {
             Unk_InventoryItemKey key;
-            key.m_id = pIng->FUN_14026b500();
+            key.m_id = pIng->GetItemId();
             key.m_extra = 1;
             nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByFilter(&key.m_id);
         }
@@ -351,8 +351,8 @@ void UIItemExchangeScrollDialog::FUN_140f51e90(CIngredientInfo* pIng, CString st
             strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
         strText = strCount;
         param.m_nIconType = 0x405;
-        slot.FUN_1407cb9c0("itemRequireCount", nBase);
-        slot.FUN_1407cb9c0("itemCurrentCount", nHave);
+        slot.SetIntMember("itemRequireCount", nBase);
+        slot.SetIntMember("itemCurrentCount", nHave);
     }
     else
     {
@@ -366,30 +366,30 @@ void UIItemExchangeScrollDialog::FUN_140f51e90(CIngredientInfo* pIng, CString st
     strBind.Format("%s_info_%d", (const char*)GetTypeName(), m_infoKeys.GetCount());
     FUN_141415560(strBind, &param);
     ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_infoKeys))->Add(strBind);
-    slot.FUN_1407cba60("binding", CString(strBind));
-    slot.FUN_1407cbb20("name", CStringW(strText));
+    slot.SetStringMember("binding", CString(strBind));
+    slot.SetWStringMember("name", CStringW(strText));
     obj.FUN_1409eb270(strKey, slot);
 }
 
 // @0x140f524d0
-bool UIItemExchangeScrollDialog::FUN_140f524d0(unsigned nCount)
+bool UIItemExchangeScrollDialog::CanExchange(unsigned nCount)
 {
-    int nError = FUN_140f52520(nCount);
+    int nError = GetExchangeErrorCode(nCount);
     return nError == 0;
 }
 
 // @0x140f52520
-unsigned UIItemExchangeScrollDialog::FUN_140f52520(unsigned nCount)
+unsigned UIItemExchangeScrollDialog::GetExchangeErrorCode(unsigned nCount)
 {
     MS2Ptr<CExchangeItemInfo> spInfo(m_spExchange);
     if (spInfo == 0)
         return 1;
-    unsigned nError = FUN_140f52610(spInfo->GetMeso(), &spInfo->m_receipe, &spInfo->m_require, nCount);
+    unsigned nError = CheckExchangeRequirements(spInfo->GetMeso(), &spInfo->m_receipe, &spInfo->m_require, nCount);
     return nError;
 }
 
 // @0x140f52610
-unsigned UIItemExchangeScrollDialog::FUN_140f52610(__int64 nMeso, const Unk_ExchangeItemRef* pRecipe, CIngredientContainer* pRequire, unsigned nCount)
+unsigned UIItemExchangeScrollDialog::CheckExchangeRequirements(__int64 nMeso, const Unk_ExchangeItemRef* pRecipe, CIngredientContainer* pRequire, unsigned nCount)
 {
     if (nMeso > 0 && DAT_143ab2898 < nMeso * nCount)
         return 3;
@@ -413,7 +413,7 @@ unsigned UIItemExchangeScrollDialog::FUN_140f52610(__int64 nMeso, const Unk_Exch
         else
         {
             Unk_InventoryItemKey ingKey;
-            ingKey.m_id = ref->FUN_14026b500();
+            ingKey.m_id = ref->GetItemId();
             ingKey.m_extra = 1;
             if (reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByFilter(&ingKey.m_id) < nNeedIng)
                 return 4;
@@ -423,7 +423,7 @@ unsigned UIItemExchangeScrollDialog::FUN_140f52610(__int64 nMeso, const Unk_Exch
 }
 
 // @0x140f52810
-CItem* UIItemExchangeScrollDialog::FUN_140f52810()
+CItem* UIItemExchangeScrollDialog::GetScrollItem()
 {
     return reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).FindItemByUid(m_uidScroll).get();
 }
@@ -442,7 +442,7 @@ void UIItemExchangeScrollDialog::FUN_140f52880()
     {
     case 1:
         FUN_140f53bb0(obj, spInfo.get());
-        bEnable = FUN_140f524d0(nCount);
+        bEnable = CanExchange(nCount);
         strTitle = L"$s_item_exchange_title";
         break;
     case 2:
@@ -452,7 +452,7 @@ void UIItemExchangeScrollDialog::FUN_140f52880()
         break;
     case 3:
         FUN_140f544d0(obj, spInfo.get());
-        bEnable = FUN_140f524d0(nCount);
+        bEnable = CanExchange(nCount);
         strTitle = L"$s_item_exchange_trading_title";
         break;
     }
@@ -464,10 +464,10 @@ void UIItemExchangeScrollDialog::FUN_140f52880()
         float fRate = (float)nSale / 100.0f;
         strSale = FUN_14028dfa0<float>(CStringW(L"s_itemslot_exchange_money_sale_desc"), fRate);
     }
-    obj.FUN_1407cbb20("event", CStringW(strSale));
+    obj.SetWStringMember("event", CStringW(strSale));
     m_30->Invoke("setData", obj);
     if (m_spOk.get() != 0)
-        m_spOk->FUN_1422c1fe0(bEnable);
+        m_spOk->SetEnabled(bEnable);
     if (MS2Ptr<ASTextField> spTitle = ((Unk_IesEntity*)this)->GetChild<ASTextField>("m_title"))
         spTitle->SetTextW(strTitle);
 }
@@ -501,21 +501,21 @@ void UIItemExchangeScrollDialog::FUN_140f52ca0(CInPacket* pPacket)
     int nCount = 1;
     ASObj obj(2);
     obj.FUN_1409c0dc0("type", "upgrade");
-    obj.FUN_1407cb9c0("isReady", 0);
-    obj.FUN_1407cbb20("price", FUN_1409404f0(spInfo->GetTotalMeso(nCount)));
+    obj.SetIntMember("isReady", 0);
+    obj.SetWStringMember("price", FUN_1409404f0(spInfo->GetTotalMeso(nCount)));
     FUN_140f514c0(&spInfo->m_requireEquip, CString("recipe"), obj, 0xc, nCount, MS2Ptr<CItem>(spTarget));
     FUN_140f514c0(&spInfo->m_exchange, CString("exchange"), obj, 6, nCount, MS2Ptr<CItem>(spTarget));
     for (unsigned __int64 i = 0; i < pContainer->FUN_14026bee0(); i++)
-        FUN_140f51e90(pContainer->FUN_14026bdc0(i).get(), Unk_SocketFormat("require{0}", i + 1), obj, 1, 1);
+        WriteIngredientSlot(pContainer->FUN_14026bdc0(i).get(), Unk_SocketFormat("require{0}", i + 1), obj, 1, 1);
     m_30->Invoke("setData", obj);
     if (m_spOk.get() != 0)
-        m_spOk->FUN_1422c1fe0(FUN_140f524d0(nCount));
+        m_spOk->SetEnabled(CanExchange(nCount));
     m_uidTarget = uidTarget;
-    FUN_140f55d10();
+    BindDebugButtons();
 }
 
 // @0x140f53300
-void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
+void UIItemExchangeScrollDialog::UpdateIngredientCounts(CInPacket* pPacket)
 {
     if (m_30 == 0)
         return;
@@ -548,7 +548,7 @@ void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
         else
         {
             Unk_InventoryItemKey key;
-            key.m_id = pIng->FUN_14026b500();
+            key.m_id = pIng->GetItemId();
             key.m_extra = 1;
             nHave = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByFilter(&key.m_id);
         }
@@ -559,13 +559,13 @@ void UIItemExchangeScrollDialog::FUN_140f53300(CInPacket* pPacket)
             strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_enable"), nHave, nNeed);
         else
             strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
-        SetChildHtmlText(spReq->FUN_1422bb870(), CString("m_name"), CStringW(strCount));
+        SetChildHtmlText(spReq->GetValue(), CString("m_name"), CStringW(strCount));
         ASObj data(spReq->GetMember("data"), 2);
         if (!data.IsUndefinedOrNull())
         {
-            data.FUN_1407cb9c0("itemRequireCount", nBase);
-            data.FUN_1407cb9c0("itemCurrentCount", nHave);
-            data.FUN_1407cbb20("name", CStringW(strCount));
+            data.SetIntMember("itemRequireCount", nBase);
+            data.SetIntMember("itemCurrentCount", nHave);
+            data.SetWStringMember("name", CStringW(strCount));
         }
     }
     FUN_140f56180();
@@ -581,7 +581,7 @@ void UIItemExchangeScrollDialog::SendItemExchangeScrollMode1(ASData* pData)
         FUN_140f55670(&nCode);
         return;
     }
-    int nError = FUN_140f52520(nCount);
+    int nError = GetExchangeErrorCode(nCount);
     if (nError != 0)
     {
         FUN_140f55670(&nError);
@@ -601,7 +601,7 @@ void UIItemExchangeScrollDialog::SendItemExchangeScrollMode1(ASData* pData)
 void UIItemExchangeScrollDialog::FUN_140f53a70()
 {
     m_spExchange = 0;
-    CItem* pScroll = FUN_140f52810();
+    CItem* pScroll = GetScrollItem();
     if (pScroll == 0)
         return;
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData*>(pScroll->FUN_140527840()));
@@ -618,29 +618,29 @@ void UIItemExchangeScrollDialog::FUN_140f53bb0(ASObj& obj, CExchangeItemInfo* pI
 {
     if (pInfo == 0)
         return;
-    int nMax = FUN_140f55220();
+    int nMax = GetMaxMakeCount();
     nMax = nMax > 1 ? nMax : 1;
     int nMin = 1;
-    int nDefault = FUN_140ad0d60(1, nMin, nMax);
+    int nDefault = Clamp(1, nMin, nMax);
     if (pInfo->GetTotalMeso(1) == 0)
         nDefault = nMax;
     obj.FUN_1409c0dc0("type", "exchange");
     FUN_140f514c0(&pInfo->m_receipe, CString("recipe"), obj, 0x11, nDefault, MS2Ptr<CItem>(0));
     FUN_140f514c0(&pInfo->m_exchange, CString("exchange"), obj, 2, nDefault, MS2Ptr<CItem>(0));
     for (unsigned __int64 i = 0; i < pInfo->m_require.FUN_14026bee0(); i++)
-        FUN_140f51e90(pInfo->m_require.FUN_14026bdc0(i).get(), Unk_SocketFormat("require{0}", i + 1), obj, 1, nDefault);
-    obj.FUN_1407cbb20("price", FUN_1409404f0(pInfo->GetTotalMeso(nDefault)));
-    obj.FUN_1407cb9c0("itemMaxCount", nMax);
-    obj.FUN_1407cb9c0("itemMinCount", nMin);
-    obj.FUN_1407cb9c0("itemDefaultCount", nDefault);
+        WriteIngredientSlot(pInfo->m_require.FUN_14026bdc0(i).get(), Unk_SocketFormat("require{0}", i + 1), obj, 1, nDefault);
+    obj.SetWStringMember("price", FUN_1409404f0(pInfo->GetTotalMeso(nDefault)));
+    obj.SetIntMember("itemMaxCount", nMax);
+    obj.SetIntMember("itemMinCount", nMin);
+    obj.SetIntMember("itemDefaultCount", nDefault);
     ASFunction fn(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemExchangeScrollDialog::FUN_140f54a20), 0,
                   FUN_1422db730());
-    obj.FUN_1409adbe0("updateCountFunction", Scaleform::GFx::Value(fn.FUN_1422bb870()));
+    obj.FUN_1409adbe0("updateCountFunction", Scaleform::GFx::Value(fn.GetValue()));
     bool bInput = false;
     MS2Ptr<CItemData> spData = FUN_14053f870(pInfo->m_exchange.m_nId);
     if ((bool)spData.get() && (unsigned)spData->GetSlotMax() > 1)
         bInput = true;
-    obj.FUN_1407cbbe0("enableInputCount", bInput);
+    obj.SetBoolMember("enableInputCount", bInput);
 }
 
 // @0x140f54120
@@ -650,15 +650,15 @@ void UIItemExchangeScrollDialog::FUN_140f54120(ASObj& obj, CExchangeItemInfo* pI
         return;
     int nCount = 1;
     obj.FUN_1409c0dc0("type", "upgrade");
-    obj.FUN_1407cb9c0("isReady", 1);
-    obj.FUN_1407cbb20("price", FUN_1409404f0(pInfo->GetTotalMeso(nCount)));
+    obj.SetIntMember("isReady", 1);
+    obj.SetWStringMember("price", FUN_1409404f0(pInfo->GetTotalMeso(nCount)));
     FUN_140f514c0(&pInfo->m_requireEquip, CString("recipe"), obj, 0xc, nCount, MS2Ptr<CItem>(0));
     FUN_140f514c0(&pInfo->m_exchange, CString("exchange"), obj, 6, nCount, MS2Ptr<CItem>(0));
     CStringW strNotify = FUN_14028dfa0<CStringW>(CStringW(L"s_itemslot_exchange_upgrade_notify"),
                                        TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pInfo->m_requireEquip.m_nId));
     ((class CReservedWordTable*)(void*)(((void*)TSingleton<CReservedWordTable>::GetInstance())))->ReplaceObjectAndValueWords(strNotify);
-    obj.FUN_1407cbb20("warning", FUN_14028dfa0(CStringW(L"s_itemslot_exchange_upgrade_warning"), pInfo->m_nMaxGrade));
-    obj.FUN_1407cbb20("notify", CStringW(strNotify));
+    obj.SetWStringMember("warning", FUN_14028dfa0(CStringW(L"s_itemslot_exchange_upgrade_warning"), pInfo->m_nMaxGrade));
+    obj.SetWStringMember("notify", CStringW(strNotify));
 }
 
 // @0x140f544d0
@@ -666,27 +666,27 @@ void UIItemExchangeScrollDialog::FUN_140f544d0(ASObj& obj, CExchangeItemInfo* pI
 {
     if (pInfo == 0)
         return;
-    int nMax = FUN_140f55220();
+    int nMax = GetMaxMakeCount();
     nMax = nMax > 1 ? nMax : 1;
     int nMin = 1;
-    int nDefault = FUN_140ad0d60(1, nMin, nMax);
+    int nDefault = Clamp(1, nMin, nMax);
     obj.FUN_1409c0dc0("type", "trading");
     FUN_140f514c0(&pInfo->m_receipe, CString("recipe"), obj, 0x11, nDefault, MS2Ptr<CItem>(0));
     FUN_140f514c0(&pInfo->m_exchange, CString("exchange"), obj, 2, nDefault, MS2Ptr<CItem>(0));
     for (unsigned __int64 i = 0; i < pInfo->m_require.FUN_14026bee0(); i++)
-        FUN_140f51e90(pInfo->m_require.FUN_14026bdc0(i).get(), Unk_SocketFormat("require{0}", i + 1), obj, 1, nDefault);
-    obj.FUN_1407cbb20("price", FUN_1409404f0(pInfo->GetTotalMeso(nDefault)));
-    obj.FUN_1407cb9c0("itemMaxCount", nMax);
-    obj.FUN_1407cb9c0("itemMinCount", nMin);
-    obj.FUN_1407cb9c0("itemDefaultCount", nDefault);
+        WriteIngredientSlot(pInfo->m_require.FUN_14026bdc0(i).get(), Unk_SocketFormat("require{0}", i + 1), obj, 1, nDefault);
+    obj.SetWStringMember("price", FUN_1409404f0(pInfo->GetTotalMeso(nDefault)));
+    obj.SetIntMember("itemMaxCount", nMax);
+    obj.SetIntMember("itemMinCount", nMin);
+    obj.SetIntMember("itemDefaultCount", nDefault);
     ASFunction fn(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemExchangeScrollDialog::FUN_140f54a20), 0,
                   FUN_1422db730());
-    obj.FUN_1409adbe0("updateCountFunction", Scaleform::GFx::Value(fn.FUN_1422bb870()));
+    obj.FUN_1409adbe0("updateCountFunction", Scaleform::GFx::Value(fn.GetValue()));
     bool bInput = false;
     MS2Ptr<CItemData> spData = FUN_14053f870(pInfo->m_exchange.m_nId);
     if ((bool)spData.get() && (unsigned)spData->GetSlotMax() > 1)
         bInput = true;
-    obj.FUN_1407cbbe0("enableInputCount", bInput);
+    obj.SetBoolMember("enableInputCount", bInput);
 }
 
 // @0x140f54a20
@@ -705,7 +705,7 @@ void UIItemExchangeScrollDialog::FUN_140f54a20(const Scaleform::GFx::FunctionHan
     AScript argSlot(reinterpret_cast<const Unk_IesParams&>(params).m_pArgs[2], 2);
     if (argSlot.IsUndefinedOrNull())
         return;
-    int nMake = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(argMake.FUN_1422bb870()))->GetInt();
+    int nMake = ((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(argMake.GetValue()))->GetInt();
     int nLen = argList.GetLength();
     bool bEnough = true;
     for (int i = 0; i < nLen; i++)
@@ -727,7 +727,7 @@ void UIItemExchangeScrollDialog::FUN_140f54a20(const Scaleform::GFx::FunctionHan
             bEnough = false;
             strCount = FUN_14028dfa0<int, int>(CStringW(L"s_itemslot_exchange_count_disable"), nHave, nNeed);
         }
-        SetChildHtmlText(item.FUN_1422bb870(), CString("m_name"), CStringW(strCount));
+        SetChildHtmlText(item.GetValue(), CString("m_name"), CStringW(strCount));
     }
     MS2Ptr<ASMovieClip> spSlot = argSlot.FUN_1409b4560("slot");
     if (spSlot.get() != 0)
@@ -738,13 +738,13 @@ void UIItemExchangeScrollDialog::FUN_140f54a20(const Scaleform::GFx::FunctionHan
     {
         __int64 nMeso = m_spExchange->GetTotalMeso(nMake);
         bool bPay = DAT_143ab2898 >= nMeso;
-        m_spOk->FUN_1422c1fe0(bPay && bEnough);
+        m_spOk->SetEnabled(bPay && bEnough);
         m_spOk->FUN_1422cdfb0(FUN_1409404f0(nMeso));
     }
 }
 
 // @0x140f55190
-unsigned UIItemExchangeScrollDialog::FUN_140f55190()
+unsigned UIItemExchangeScrollDialog::GetMakeCount()
 {
     if (m_spScroll == 0)
         return 0;
@@ -752,9 +752,9 @@ unsigned UIItemExchangeScrollDialog::FUN_140f55190()
 }
 
 // @0x140f55220
-int UIItemExchangeScrollDialog::FUN_140f55220()
+int UIItemExchangeScrollDialog::GetMaxMakeCount()
 {
-    CItem* pScroll = FUN_140f52810();
+    CItem* pScroll = GetScrollItem();
     if (pScroll == 0)
         return 0;
     if (m_spExchange == 0)
@@ -784,7 +784,7 @@ int UIItemExchangeScrollDialog::FUN_140f55220()
             else
             {
                 Unk_InventoryItemKey ingKey;
-                ingKey.m_id = ref->FUN_14026b500();
+                ingKey.m_id = ref->GetItemId();
                 ingKey.m_extra = 1;
                 nHaveIng = reinterpret_cast<Unk_IesInventory&>(g_143ab2a90).GetItemCountByFilter(&ingKey.m_id);
             }
@@ -818,7 +818,7 @@ bool UIItemExchangeScrollDialog::FUN_140f55670(const int* pCode)
     {
         {
             CStringW strKey(L"s_itemslot_exchange_ok");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
         return false;
     }
@@ -827,55 +827,55 @@ bool UIItemExchangeScrollDialog::FUN_140f55670(const int* pCode)
     case 1:
         {
             CStringW strKey(L"s_itemslot_exchange_scroll_invalid");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
         break;
     case 2:
         {
             CStringW strKey(L"s_itemslot_exchange_upgrade_invalid");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
         break;
     case 6:
         {
             CStringW strKey(L"s_itemslot_exchange_lockstate_item");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
         break;
     case 3:
         {
             CStringW strKey(L"s_itemslot_exchange_money_invalid");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
         break;
     case 4:
         {
             CStringW strKey(L"s_itemslot_exchange_count_invalid");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
         break;
     case 5:
         {
             CStringW strKey(L"s_itemslot_exchange_grade_invalid");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
         break;
     case 8:
         {
             CStringW strKey(L"s_itemslot_exchange_unknown");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
         break;
     case 7:
         {
             CStringW strKey(L"s_itemslot_exchange_count_check");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
         break;
     default:
         {
             CStringW strKey(L"s_itemslot_exchange_unknown");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
     }
     return true;
@@ -916,7 +916,7 @@ void UIItemExchangeScrollDialog::FUN_140f55c50(const Scaleform::GFx::FunctionHan
 }
 
 // @0x140f55d10
-void UIItemExchangeScrollDialog::FUN_140f55d10()
+void UIItemExchangeScrollDialog::BindDebugButtons()
 {
     bool bDebug = ((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode();
     if (!bDebug)
@@ -925,10 +925,10 @@ void UIItemExchangeScrollDialog::FUN_140f55d10()
         return;
     if (m_spExchange->m_eType == 2)
     {
-        if (m_spIngredients == 0 || m_spIngredients->FUN_14026bf40())
+        if (m_spIngredients == 0 || m_spIngredients->IsEmpty())
             return;
     }
-    else if (m_spExchange->m_require.FUN_14026bf40())
+    else if (m_spExchange->m_require.IsEmpty())
         return;
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     MS2Ptr<ASMovieClip> spScroll(m_spScroll);
@@ -956,15 +956,15 @@ void UIItemExchangeScrollDialog::FUN_140f56180()
 {
     if (m_30 == 0 || m_spScroll == 0)
         return;
-    int nMax = FUN_140f55220();
+    int nMax = GetMaxMakeCount();
     nMax = nMax > 1 ? nMax : 1;
     ASObj obj(2);
-    obj.FUN_1407cb9c0("itemMaxCount", nMax);
-    m_spScroll->Invoke("updateData", obj.FUN_1422bb870());
+    obj.SetIntMember("itemMaxCount", nMax);
+    m_spScroll->Invoke("updateData", obj.GetValue());
     if (m_spOk.get() != 0)
     {
-        unsigned nMake = FUN_140f55190();
-        m_spOk->FUN_1422c1fe0(FUN_140f524d0(nMake));
+        unsigned nMake = GetMakeCount();
+        m_spOk->SetEnabled(CanExchange(nMake));
     }
 }
 

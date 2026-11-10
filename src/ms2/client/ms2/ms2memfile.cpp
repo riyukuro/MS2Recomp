@@ -36,8 +36,8 @@
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_141371b20();   // C3: was FUN_141371b20
 CString FUN_14071ae20(const CString& strFile);              // the GFx UI's XML path of a file
-CString FUN_14071a6f0(const CString& strFile);              // the GFx debug XML path of a file
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlDebugPath(const CString& strFile);              // the GFx debug XML path of a file
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 class NiString;
 class NiTextKey;
 int FUN_1414a90c0(NiString kPath, NiString kAnim, NiTextKey** ppEntries);   // ms2animationservice.cpp
@@ -329,9 +329,9 @@ void FUN_141627390()
     // CFileSystem::FUN_14039a660 takes (CString, FILETIME); filesystem.h declares the unused second parameter void*.
     FUN_1401d17b0(Unk_FileChangeFunctor(GetFileSystem(),
         reinterpret_cast<void (CFileSystem::*)(CString, FILETIME)>(&CFileSystem::MarkCharacterModelLoaded)));
-    GFxFileOpener::FUN_1422eb400(OpenGfxFile);
+    GFxFileOpener::SetOpenCallback(OpenGfxFile);
     NiTextKeyExtraData::MS2SetTextKeyReader(reinterpret_cast<int (*)(NiString, NiString, NiTextKey**)>(FUN_1414a90c0));
-    UIAlignWidgetManager::FUN_1422e6e20(Delegate<bool(TiXmlDocument&)>(LoadAlignWidget));
+    UIAlignWidgetManager::SetXmlLoader(Delegate<bool(TiXmlDocument&)>(LoadAlignWidget));
 }
 
 // Developer layout: loose files through MS2MemFile, debug swf names.
@@ -347,7 +347,7 @@ void FUN_1416275e0()
     efd::File::SetCreateDirectoryFunc((efd::File::CREATEDIRFUNCW)efd::File::DefaultCreateDirectoryFunc);
     efd::File::SetDirectoryExistsFunc(FUN_141628000);
     NiSearchPath::SetCreateFunc((NiSearchPath::CreateFunction)FUN_141508060);
-    GFxFileOpener::FUN_1422eb400(OpenGfxFile);
+    GFxFileOpener::SetOpenCallback(OpenGfxFile);
     UISwfEntity::SetSwfNameDelegate(Delegate<CString(CString, bool)>(FUN_141628470));
     NiGFxLocalizeManager::SetLocale(((class CFeatureManager*)FUN_140166410())->GetLocaleName());
     NiGFxLocalizeManager::FUN_141629df0(Delegate<bool(TiXmlDocument&)>(FUN_141628610));
@@ -355,7 +355,7 @@ void FUN_1416275e0()
     NiGFxLocalizeManager::FUN_141629e30(Delegate<bool(TiXmlDocument&)>(LoadStringMovie));
     NiGFxLocalizeManager::FUN_141629db0(Delegate<bool(TiXmlDocument&)>(LoadFlashDebug));
     NiTextKeyExtraData::MS2SetTextKeyReader(reinterpret_cast<int (*)(NiString, NiString, NiTextKey**)>(FUN_1414a90c0));
-    UIAlignWidgetManager::FUN_1422e6e20(Delegate<bool(TiXmlDocument&)>(LoadAlignWidget));
+    UIAlignWidgetManager::SetXmlLoader(Delegate<bool(TiXmlDocument&)>(LoadAlignWidget));
 }
 
 // The swf file of a movie name (debug builds of the movie under ..\GfxDebug).
@@ -403,7 +403,7 @@ bool FUN_141627aa0(const char* pcName)
 {
     if (GetFileSystem()->FUN_140398640(std::string(pcName), false))
         return false;
-    if (GetFileSystem()->FUN_140398200(std::string(pcName)))
+    if (GetFileSystem()->DirectoryExists(std::string(pcName)))
         return true;
     return efd::File::DefaultDirectoryExistsFunc(pcName);
 }
@@ -415,7 +415,7 @@ bool FUN_141627b70(const char* pcName, efd::File::OpenMode eMode)
     {
         if (GetFileSystem()->FUN_140398640(std::string(pcName), true))
             return false;
-        if (GetFileSystem()->FUN_1403987d0(std::string(pcName)))
+        if (GetFileSystem()->FileExists(std::string(pcName)))
             return true;
         return false;
     }
@@ -452,7 +452,7 @@ bool FUN_141627e40(const char* pcName, efd::File::OpenMode eMode)
 {
     if (eMode == efd::File::READ_ONLY)
     {
-        if (GetFileSystem()->FUN_1403987d0(std::string(pcName)))
+        if (GetFileSystem()->FileExists(std::string(pcName)))
             return true;
         return false;
     }
@@ -470,13 +470,13 @@ bool FUN_141627ef0(const char* pcName, efd::File::OpenMode eMode)
 {
     if (GetFileSystem() == 0)
         return efd::File::DefaultFileAccessFunc(pcName, eMode);
-    return GetFileSystem()->FUN_1403987d0(std::string(pcName)) ? true : false;
+    return GetFileSystem()->FileExists(std::string(pcName)) ? true : false;
 }
 
 // @0x141627f90
 bool FUN_141627f90(const char* pcName)
 {
-    if (GetFileSystem()->FUN_140398200(std::string(pcName)))
+    if (GetFileSystem()->DirectoryExists(std::string(pcName)))
         return true;
     return efd::File::DefaultDirectoryExistsFunc(pcName);
 }
@@ -523,7 +523,7 @@ Scaleform::File* OpenGfxFile(CString strPath)
     Scaleform::File* pFile = 0;
     char szExt[MAX_PATH];
     _splitpath(strPath, 0, 0, 0, szExt);
-    CFileSystem::BufferPtr buffer = GetFileSystem()->FUN_140397bc0(strPath, GetFileSystem()->FUN_1403981b0() ? 1 : 0, 1);
+    CFileSystem::BufferPtr buffer = GetFileSystem()->FUN_140397bc0(strPath, GetFileSystem()->HasAlternatePaths() ? 1 : 0, 1);
     if (buffer.get() != 0)
         pFile = new ScaleformMemFile(strPath, buffer.get());
     return pFile;
@@ -534,9 +534,9 @@ Scaleform::File* OpenGfxFile(CString strPath)
 CString FUN_141628470(CString strName, bool bDebug)
 {
     if (!bDebug)
-        return FUN_14016a5c0("..\\GfxDebug\\UI", 0) + strName + ".gfx";
+        return ToCString("..\\GfxDebug\\UI", 0) + strName + ".gfx";
     else
-        return FUN_14016a5c0("..\\GfxDebug\\Debug_UI", 0) + strName + ".gfx";
+        return ToCString("..\\GfxDebug\\Debug_UI", 0) + strName + ".gfx";
 }
 
 // @0x141628610
@@ -549,7 +549,7 @@ bool FUN_141628610(TiXmlDocument& doc)
 bool LoadUsmSubtitleText(TiXmlDocument& doc)
 {
     CString strPath = FUN_14071ae20("usmSubtitleText.xml");
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     return true;
 }
@@ -558,7 +558,7 @@ bool LoadUsmSubtitleText(TiXmlDocument& doc)
 bool LoadStringMovie(TiXmlDocument& doc)
 {
     CString strPath = FUN_14071ae20("stringMovie.xml");
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     return true;
 }
@@ -566,8 +566,8 @@ bool LoadStringMovie(TiXmlDocument& doc)
 // @0x1416287c0
 bool LoadFlashDebug(TiXmlDocument& doc)
 {
-    CString strPath = FUN_14071a6f0("flashDebug.xml");
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    CString strPath = GetXmlDebugPath("flashDebug.xml");
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     return true;
 }
@@ -575,8 +575,8 @@ bool LoadFlashDebug(TiXmlDocument& doc)
 // @0x141628880
 bool LoadAlignWidget(TiXmlDocument& doc)
 {
-    CString strPath = FUN_14071a5b0("Table", "alignWidget.xml");
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    CString strPath = GetXmlPath("Table", "alignWidget.xml");
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     return true;
 }

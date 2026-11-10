@@ -45,7 +45,7 @@ public:
     // @0x140e11cf0
     virtual int vfunc_48() { return 20249; }
     bool FUN_140e0ea40();
-    void FUN_140e0eb40(CInPacket&);
+    void OnClosingPhotoPacket(CInPacket&);
     void ClearEntries();
     void FUN_140e0f790();
     void FUN_140e0fcf0(int);
@@ -53,8 +53,8 @@ public:
     void LoadAllRenderTargets();
     void UnloadAllRenderTargets();
     void FUN_140e10010(int&, int&, unsigned&, int, int);
-    void FUN_140e102b0(Unk_ClosingEntry*);
-    void FUN_140e104d0(int);
+    void UpdateAddFriendButton(Unk_ClosingEntry*);
+    void OnAddFriend(int);
     void FUN_140e10800(int, CStringW);
 private:
     MS2_LAYOUT_FRIEND;

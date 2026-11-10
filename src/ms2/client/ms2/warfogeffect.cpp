@@ -21,8 +21,8 @@
 
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 class NxGroupsMask; struct Unk_RayCastInfo; class CPhysXHelper { public: bool CastRay(Unk_RayCastInfo*, const NxGroupsMask*); };           // cast the ray; fills m_hit
-float FUN_14029dba0(float f);                                           // sinf
-float FUN_14029cc60(float f);                                           // cosf
+float Sin(float f);                                           // sinf
+float Cos(float f);                                           // cosf
 float FUN_14029d220(float f);                                           // fabsf
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ void CWarFogEffect::FUN_141b733c0()
 MS2_REPLACE_METHOD(0x141b733c0, CWarFogEffect, FUN_141b733c0, 213, 0xB5D547D5);
 
 // @0x141b734a0
-void CWarFogEffect::FUN_141b734a0(bool bVisible)
+void CWarFogEffect::SetVisible(bool bVisible)
 {
     if (m_spMesh == NULL)
         return;
@@ -72,7 +72,7 @@ void CWarFogEffect::FUN_141b734a0(bool bVisible)
         return;
     ((CMesh*)m_spMesh)->GetMesh()->SetAppCulled(!bVisible);
 }
-MS2_REPLACE_METHOD(0x141b734a0, CWarFogEffect, FUN_141b734a0, 137, 0xEF7188DD);
+MS2_REPLACE_METHOD(0x141b734a0, CWarFogEffect, SetVisible, 137, 0xEF7188DD);
 
 // @0x141b73530
 void CWarFogEffect::FUN_141b73530(const Unk_WarFogParam* pParam, const efd::Point3& ptCenter)
@@ -91,7 +91,7 @@ void CWarFogEffect::FUN_141b73530(const Unk_WarFogParam* pParam, const efd::Poin
         float angle = 0.0f;
         for (int i = 0; i < 0x40; ++i) {
             angle = ((float)i / 63.0f) * 3.1415927f * 2.0f;
-            NiPoint3 dir(FUN_14029cc60(angle), FUN_14029dba0(angle), 0.0f);
+            NiPoint3 dir(Cos(angle), Sin(angle), 0.0f);
             NiPoint3 point(dir * m_fRadius + center);
             Unk_WarFogRay ray;
             ray.m_origin = center;
@@ -124,7 +124,7 @@ bool CWarFogEffect::FUN_141b739e0(const Unk_WarFogParam* pParam)
         return true;
     if (m_bFlag2c != pParam->FUN_140381370())
         return true;
-    if (FUN_14029d220(m_fAlpha - pParam->FUN_140381340()) > 0.001f)
+    if (FUN_14029d220(m_fAlpha - pParam->GetAlpha()) > 0.001f)
         return true;
     if (m_bFlag24 != pParam->FUN_140381320())
         return true;
@@ -137,7 +137,7 @@ void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
 {
     m_fRadius = pParam->FUN_1403812a0();
     m_bFlag2c = pParam->FUN_140381370();
-    m_fAlpha = pParam->FUN_140381340();
+    m_fAlpha = pParam->GetAlpha();
     m_bFlag24 = pParam->FUN_140381320();
     m_spMesh = NiNew CMesh(false, true, 0, 0xc3, 0x100, 0x15);
     NiNode* pScene = TSingleton<CEffectService>::GetInstance()->GetLeastLoadedRoot();
@@ -146,11 +146,11 @@ void CWarFogEffect::FUN_141b73ab0(const Unk_WarFogParam* pParam)
     for (int i = 0; i < 0x40; ++i) {
         angle = ((float)i / 63.0f) * 3.1415927f * 2.0f;
         ((CMesh*)m_spMesh)->SetPosition(i * 3,
-            NiPoint3(FUN_14029cc60(angle) * (m_fRadius - 50.0f), FUN_14029dba0(angle) * (m_fRadius - 50.0f), 0.0f));
+            NiPoint3(Cos(angle) * (m_fRadius - 50.0f), Sin(angle) * (m_fRadius - 50.0f), 0.0f));
         ((CMesh*)m_spMesh)->SetPosition(i * 3 + 1,
-            NiPoint3(FUN_14029cc60(angle) * (m_fRadius + 50.0f), FUN_14029dba0(angle) * (m_fRadius + 50.0f), 0.0f));
+            NiPoint3(Cos(angle) * (m_fRadius + 50.0f), Sin(angle) * (m_fRadius + 50.0f), 0.0f));
         ((CMesh*)m_spMesh)->SetPosition(i * 3 + 2,
-            NiPoint3(FUN_14029cc60(angle) * (m_fRadius + 2000.0f), FUN_14029dba0(angle) * (m_fRadius + 2000.0f), 0.0f));
+            NiPoint3(Cos(angle) * (m_fRadius + 2000.0f), Sin(angle) * (m_fRadius + 2000.0f), 0.0f));
         ((CMesh*)m_spMesh)->SetColor(i * 3, NiColorA(0.0f, 0.0f, 0.0f, 0.0f));
         ((CMesh*)m_spMesh)->SetColor(i * 3 + 1, NiColorA(0.0f, 0.0f, 0.0f, m_fAlpha));
         ((CMesh*)m_spMesh)->SetColor(i * 3 + 2, NiColorA(0.0f, 0.0f, 0.0f, m_fAlpha));

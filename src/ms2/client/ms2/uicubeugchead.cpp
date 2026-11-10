@@ -19,16 +19,16 @@
 extern int g_nDebugUI;                                           // debug switch: UI always shown
 int FUN_141277f40();                                                // next UI layer
 int FUN_140707660(int nKind);
-int FUN_140707710(int nKind);
+int IsTriggerControlEnabled(int nKind);
 efd::Point3 FUN_1408a15b0(Unk_Int3 cell, efd::Point3& ptOrigin);   // the world point of a cell (Unk_UgcCell is the same 3 ints)
 class Unk_UIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
+MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
 // @0x141906490
 UICubeUGCHead::UICubeUGCHead(Unk_UgcCell cell, CStringW strName, int nType)
@@ -37,7 +37,7 @@ UICubeUGCHead::UICubeUGCHead(Unk_UgcCell cell, CStringW strName, int nType)
     m_2c = 2;
     m_58 = 0;
     m_28 = FUN_141277f40();
-    FUN_1422dbf00(m_2c, 1, 0);
+    LoadSwf(m_2c, 1, 0);
 }
 
 // @0x1419065a0
@@ -47,13 +47,13 @@ CString UICubeUGCHead::GetTypeName()
 }
 
 // @0x1419065f0
-int UICubeUGCHead::FUN_1419065f0()
+int UICubeUGCHead::IsShown()
 {
     return m_80;
 }
 
 // @0x141906610
-void UICubeUGCHead::FUN_141906610(int nId)
+void UICubeUGCHead::Show(int nId)
 {
     m_88 = nId;
     m_84 = 1;
@@ -76,11 +76,11 @@ void UICubeUGCHead::FUN_141906680()
 }
 
 // @0x1419066c0
-int UICubeUGCHead::FUN_1419066c0()
+int UICubeUGCHead::CanShowLabel()
 {
-    if (FUN_140707660(m_8c) != 0 || FUN_140707710(m_8c) != 0)
+    if (FUN_140707660(m_8c) != 0 || IsTriggerControlEnabled(m_8c) != 0)
     {
-        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e6b))) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4e6b))) != 0)
             return 1;
     }
     if (g_nDebugUI != 0)
@@ -92,8 +92,8 @@ int UICubeUGCHead::FUN_1419066c0()
 void UICubeUGCHead::vfunc_2()
 {
     UISwfEntity::vfunc_2();
-    FUN_1422dbf00(m_2c, m_44, 0);
-    FUN_141906610(m_88);
+    LoadSwf(m_2c, m_44, 0);
+    Show(m_88);
 }
 
 // @0x141906790
@@ -112,7 +112,7 @@ void UICubeUGCHead::vfunc_52()
     MS2Ptr<ASMovieClip> pClip(dynamic_cast<ASMovieClip*>((AScript*)m_30));
     if (pClip.get())
     {
-        if (FUN_1419066c0() != 0)
+        if (CanShowLabel() != 0)
             vfunc_8(1);
         else
             vfunc_8(0);
@@ -137,8 +137,8 @@ void UICubeUGCHead::vfunc_15()
         return;
     if (m_84 != 0)
         vfunc_52();
-    if (FUN_1419065f0())
-        FUN_141906b60();
+    if (IsShown())
+        UpdateScreenPosition();
     else
         vfunc_8(0);
 }
@@ -152,7 +152,7 @@ int UICubeUGCHead::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
 }
 
 // @0x141906b60
-void UICubeUGCHead::FUN_141906b60()
+void UICubeUGCHead::UpdateScreenPosition()
 {
     efd::Point3 ptOrigin = efd::Point3::ZERO;
     NiPoint3 world = FUN_1408a15b0(reinterpret_cast<const Unk_Int3&>(m_68), ptOrigin);
@@ -162,11 +162,11 @@ void UICubeUGCHead::FUN_141906b60()
         MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pEntity.get())
         {
-            if (FUN_1419066c0() != 0)
+            if (CanShowLabel() != 0)
                 vfunc_8(1);
             else
                 vfunc_8(0);
-            reinterpret_cast<efd::Point3&>(screen) *= ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
+            reinterpret_cast<efd::Point3&>(screen) *= ((class GFxManager*)(class Unk_UIScale*)(((class Unk_UIScale*)GetGFxManager())))->GetMovieScale(m_28);
             ((class ASDisplayObject*)(class ASGameEntity*)(pEntity.operator->()))->SetPositionFloat(screen.x, screen.y);
         }
     }
@@ -177,7 +177,7 @@ void UICubeUGCHead::FUN_141906b60()
 // @0x141906d20
 void UICubeUGCHead::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 
 // ~UICubeUGCHead (0x141906d90) is implicit.

@@ -8,8 +8,8 @@ struct Unk_PetIdentity {
     Unk_PetIdentity();
     ~Unk_PetIdentity();
     void FUN_1401fee50(COutputStream&);
-    void FUN_1401fef40(void*);
-    void FUN_1401ff0f0(const Unk_PetIdentity&);
+    void Read(void*);
+    void CopyFrom(const Unk_PetIdentity&);
     void FUN_1401ff190(COutputStream&);
     void FUN_1401ff280(CInputStream&);
     CStringW name;
@@ -31,9 +31,9 @@ struct Unk_PetOptions {
     ATL::CAtlMap<unsigned int,Unk_PetOption> map;
     Unk_PetOptions();
     ~Unk_PetOptions();
-    void FUN_1401ff3f0(COutputStream&);
-    void FUN_1401ff4d0(void*);
-    void FUN_1401ff5e0(const Unk_PetOptions&);
+    void Write(COutputStream&);
+    void Read(void*);
+    void CopyFrom(const Unk_PetOptions&);
     int FUN_1401ff680();
 };
 MS2_CHECK_SIZE(Unk_PetOptions,0x48);

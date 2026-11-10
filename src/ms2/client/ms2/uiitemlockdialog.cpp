@@ -35,7 +35,7 @@ class ASDialog : public ASDisplayObject
 class UIInventoryDialog : public UIDialog
 {
 public:
-    void FUN_141999f60();
+    void UpdateButtonState();
     void FUN_141999e00();
 };
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
@@ -82,17 +82,17 @@ public:
 typedef UIMsg Unk_LdUIMsg;
 
 // The message box machinery (unit_140d73aa0.cpp) and the string tables.
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
 void FUN_14151f200();
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the GFxManager (calls cast back)
+class Unk_AltStringMgr* GetGFxManager();   // C3: the GFxManager (calls cast back)
 
 void FUN_140d42100(const CString& strName);
 void FUN_140d42050(const CString& strName);
 void DestroyItemInfoSlot(const CString& strName);
 void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> spItem, int a, int b, int c);
 
-void FUN_140f57f40(Unk_LdLockMgr* pMgr, int nTab);
+void SetTab(Unk_LdLockMgr* pMgr, int nTab);
 
 // "itemlock_confirm" (message box tag) and the sort-type name table of the item header (only this part of the shared
 // header statics is present in this unit's .text$di).
@@ -103,7 +103,7 @@ static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "Price
 UIItemLockDialog::UIItemLockDialog()
     : m_lstSlots(10)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_164 = 1;
 }
 
@@ -119,26 +119,26 @@ CString UIItemLockDialog::GetTypeName()
 }
 
 // @0x140f56c80
-void UIItemLockDialog::FUN_140f56c80()
+void UIItemLockDialog::BindItemBag()
 {
     FUN_140d42100(GetTypeName());
     FUN_140d42050(GetTypeName());
     if (MS2Ptr<ASTileList> spBag = GetChild<ASTileList>("m_itemBag"))
-        spBag->FUN_1407cba60("bagId", GetTypeName());
-    FUN_140f56e00();
+        spBag->SetStringMember("bagId", GetTypeName());
+    UpdateLockButtons();
 }
 
 // @0x140f56e00
-void UIItemLockDialog::FUN_140f56e00()
+void UIItemLockDialog::UpdateLockButtons()
 {
     if (MS2Ptr<ASButton> spLock = GetChild<ASButton>("m_lock"))
-        spLock->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
+        spLock->SetEnabled(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
     if (MS2Ptr<ASButton> spUnLock = GetChild<ASButton>("m_unLock"))
-        spUnLock->FUN_1422c1fe0(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
+        spUnLock->SetEnabled(reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0());
 }
 
 // @0x140f56f50
-int UIItemLockDialog::FUN_140f56f50()
+int UIItemLockDialog::IsItemBagVisible()
 {
     if (m_30 == 0)
         return 0;
@@ -160,14 +160,14 @@ void UIItemLockDialog::OnLoadInit()
 void UIItemLockDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140f56c80();
+    BindItemBag();
     ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    FUN_140f57f40(FUN_140535310(), 0);
+    SetTab(FUN_140535310(), 0);
     reinterpret_cast<CItemLockManager*>(FUN_140535310())->SendRequestItemLockMode0();
     UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
-        pInv->FUN_141999f60();
+        pInv->UpdateButtonState();
         pInv->FUN_141999e00();
     }
 }
@@ -179,7 +179,7 @@ void UIItemLockDialog::vfunc_26()
     UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
-        pInv->FUN_141999f60();
+        pInv->UpdateButtonState();
         pInv->FUN_141999e00();
     }
     FUN_140d42100(GetTypeName());
@@ -189,7 +189,7 @@ void UIItemLockDialog::vfunc_26()
 void UIItemLockDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140f57e30();
+    ReleaseSlotBinds();
     ((class Unk_ItemEventSystem*)(class Unk_LdItemEvents*)(((class Unk_LdItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
     reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612780();
     CString strArg("item_lock");
@@ -213,15 +213,15 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         {
             if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 0)
             {
-                FUN_140d73aa0(L"", 0x21, 0, s_strItemLockConfirm);
+                ShowMessageBox(L"", 0x21, 0, s_strItemLockConfirm);
             }
             else if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 1)
             {
-                CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_unlock_confirm");
+                CStringW strMsg = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_itemlock_msgbox_unlock_confirm");
                 int nHours = (int)*GetClientConstants()->ItemUnLockTime.Get();
                 nHours = nHours / 0xe10;
                 strMsg = StringFormat<int>(strMsg, nHours);
-                FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), L"");
+                ShowMessageBox(strMsg, 1, static_cast<IMessageListener*>(this), L"");
             }
             return 1;
         }
@@ -232,15 +232,15 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         {
             if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 0)
             {
-                FUN_140d73aa0(L"", 0x21, 0, s_strItemLockConfirm);
+                ShowMessageBox(L"", 0x21, 0, s_strItemLockConfirm);
             }
             else if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->GetMode() == 1)
             {
-                CStringW strMsg = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_unlock_confirm");
+                CStringW strMsg = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_itemlock_msgbox_unlock_confirm");
                 int nHours = (int)*GetClientConstants()->ItemUnLockTime.Get();
                 nHours = nHours / 0xe10;
                 strMsg = StringFormat<int>(strMsg, nHours);
-                FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), L"");
+                ShowMessageBox(strMsg, 1, static_cast<IMessageListener*>(this), L"");
             }
             return 1;
         }
@@ -254,9 +254,9 @@ int UIItemLockDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             if (reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612da0() != 0)
             {
                 reinterpret_cast<CItemLockManager*>(FUN_140535310())->FUN_140612780();
-                FUN_140f56c80();
+                BindItemBag();
             }
-            FUN_140f57f40(FUN_140535310(), nTab);
+            SetTab(FUN_140535310(), nTab);
             UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
             if (pInv != 0 && pInv->vfunc_55() == 0)
                 pInv->FUN_141999e00();
@@ -314,14 +314,14 @@ void UIItemLockDialog::vfunc_43()
         {
             if (ASDialog* pInvDlg = dynamic_cast<ASDialog*>((AScript*)pInv->FUN_1422dba00()))
             {
-                fX = pInvDlg->FUN_1422c10a0();
-                fY = pInvDlg->FUN_1422c1110();
+                fX = pInvDlg->GetX();
+                fY = pInvDlg->GetY();
             }
         }
         ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDlg != 0)
         {
-            int nWidth = pDlg->FUN_1422c1340();
+            int nWidth = pDlg->GetWidthCeil();
             pDlg->SetPositionFloat(fX - (float)nWidth, fY);
             return;
         }
@@ -340,7 +340,7 @@ void UIItemLockDialog::vfunc_15()
 }
 
 // @0x140f57c60
-CString UIItemLockDialog::FUN_140f57c60(unsigned nItemId, int nRarity)
+CString UIItemLockDialog::CreateItemSlot(unsigned nItemId, int nRarity)
 {
     CItem* pItem = new CItem;
     if (pItem->FUN_140523c40(nItemId, nRarity, 0))
@@ -355,7 +355,7 @@ CString UIItemLockDialog::FUN_140f57c60(unsigned nItemId, int nRarity)
 }
 
 // @0x140f57e30
-void UIItemLockDialog::FUN_140f57e30()
+void UIItemLockDialog::ReleaseSlotBinds()
 {
     for (POSITION pos = m_lstSlots.GetHeadPosition(); pos != 0; m_lstSlots.GetNext(pos))
     {
@@ -366,7 +366,7 @@ void UIItemLockDialog::FUN_140f57e30()
 }
 
 // @0x140f57f40
-void FUN_140f57f40(Unk_LdLockMgr* pMgr, int nTab)
+void SetTab(Unk_LdLockMgr* pMgr, int nTab)
 {
     pMgr->m_nTab = nTab;
 }

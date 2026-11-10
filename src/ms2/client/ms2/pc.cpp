@@ -255,7 +255,7 @@
 #include "ms2/commonfiles/timeutil.h"   // C3: GetServerTime
 #include "ms2/client/ms2/uinametag.h"   // C3: UINameTag::Entity
 #include "ms2/client/ms2/uihpbar.h"   // C3: UITombStoneBar::Entity
-#include "ms2/client/ms2/uiemoticon.h"   // C3: UIEmoticon::Entity (FUN_14192fd40)
+#include "ms2/client/ms2/uiemoticon.h"   // C3: UIEmoticon::Entity (GetEmoticonEntity)
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes; SetActor 0x140a53190)
 {
 public:
@@ -270,7 +270,7 @@ class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationSe
 void FUN_141993180(int nObjectId);                                  // drop the actor's +0xfd8 record
 void FUN_141b6f220(class NiAVObject*, int, struct Unk_Colc const&);   // C3: was FUN_141b6f220
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-CTailEffectDataTable* FUN_140ad0da0();                              // the tail effect table
+CTailEffectDataTable* GetTailEffectDataTable();                              // the tail effect table
 typedef ATL::CAtlList<efd::SmartPointer<egf::Entity> > Unk_PCEntList;
 // 16-byte smart pointer to a boxed entity list (TPtredDummy<T>; scenestategame.cpp's Unk_SSGEntListPtr, the same COMDATs: operator-> 0x1409f2190, dtor 0x1409f20e0).
 struct Unk_PCEntListPtr
@@ -319,7 +319,7 @@ void FUN_1419f37f0(unsigned int);   // C3: was FUN_1419f37f0
 class Unk_PCMove
 {
 public:
-    bool FUN_141682fe0(int nKey);                                   // the key is down
+    bool IsActionKeyDown(int nKey);                                   // the key is down
     bool FUN_141683100(int nKey);                                   // the key was pressed
 };
 // PCBase::FUN_1416767d0 (the position; the ride's when riding) is called below as pcbase.h declares it (NiPoint3).
@@ -355,7 +355,7 @@ class Unk_PCBaseBody : public GameObjectController
 public:
 };
 NiAVObject* FUN_141b6ef70(egf::EntityID kId);                       // the scene graph of an entity
-void FUN_141567330(NiAVObject* pRoot, bool b);                      // (the model was loaded)
+void SetShadowCaster(NiAVObject* pRoot, bool b);                      // (the model was loaded)
 extern float DAT_1439f8210;                                         // the hit colour boost (0.7, 0.1, 0.1)
 extern float DAT_1439f8214;
 extern float DAT_1439f8218;
@@ -437,7 +437,7 @@ public:
 private:
     char m_pad_10[0x58 - sizeof(NiRefObject)];
 };
-#include "ms2/client/ms2/uibanner.h"   // C3: UIBanner::Entity (FUN_140ba8cf0); below: the pvp manager (FUN_140f97ef0)
+#include "ms2/client/ms2/uibanner.h"   // C3: UIBanner::Entity (GetBannerEntity); below: the pvp manager (FUN_140f97ef0)
 class Unk_PCPvPMgr
 {
 public:
@@ -477,8 +477,8 @@ public:
     void FUN_14133afb0(unsigned __int64, __int64, __int64);
 };
 template <class T> T* MyPCDialog(int nId);   // C3: was FUN_141531c80
-#include "ms2/client/ms2/uichatballoon.h"   // C3: UIChatBalloon::Entity (FUN_1418fbdb0)
-#include "ms2/client/ms2/uipopupprofileimage.h"   // C3: UIPopupProfileImage::Entity (FUN_141a8fb50); the PCBase UI component stand-ins (as pcbase.cpp) and their factories
+#include "ms2/client/ms2/uichatballoon.h"   // C3: UIChatBalloon::Entity (GetChatBalloonEntity)
+#include "ms2/client/ms2/uipopupprofileimage.h"   // C3: UIPopupProfileImage::Entity (GetProfileImageEntity); the PCBase UI component stand-ins (as pcbase.cpp) and their factories
 class Unk_PCBaseComp_a68 : public CPtred {};
 class Unk_PCBaseComp_a78 : public CPtred
 {
@@ -497,15 +497,15 @@ public:
 };
 class Unk_PCBaseComp_ac8 : public CPtred {};
 class Unk_PCBaseComp_a58 : public CPtred {};                        // UIHpBar::Entity
-MS2Ptr<UIHpBar::Entity> FUN_141992920(int nActorId);            // UIHpBar::Entity
+MS2Ptr<UIHpBar::Entity> GetHpBarEntity(int nActorId);            // UIHpBar::Entity
 MS2Ptr<UIShieldBar::Entity> FUN_140e86320(int nActorId);
-MS2Ptr<UINameTag::Entity> FUN_141a60da0(int nActorId);            // UINameTag
-MS2Ptr<UIEmoticon::Entity> FUN_14192fd40(int nActorId);            // UIEmoticon (uiemoticon.cpp)
+MS2Ptr<UINameTag::Entity> CreateNameTagEntity(int nActorId);            // UINameTag
+MS2Ptr<UIEmoticon::Entity> GetEmoticonEntity(int nActorId);            // UIEmoticon (uiemoticon.cpp)
 MS2Ptr<UIBuffBalloon::Entity> FUN_14128ef70(int nActorId);            // UIBuffBalloon
-MS2Ptr<UIChatBalloon::Entity> FUN_1418fbdb0(int nActorId);            // UIChatBalloon
-MS2Ptr<UIPopupProfileImage::Entity> FUN_141a8fb50(int nActorId);            // UIPopupProfileImage
-MS2Ptr<UIBanner::Entity> FUN_140ba8cf0(int nActorId);
-MS2Ptr<UITombStoneBar::Entity> FUN_141993100(int nActorId);       // uihpbar.cpp; m_spFD8 holds it as Unk_PCLinkFD8
+MS2Ptr<UIChatBalloon::Entity> GetChatBalloonEntity(int nActorId);            // UIChatBalloon
+MS2Ptr<UIPopupProfileImage::Entity> GetProfileImageEntity(int nActorId);            // UIPopupProfileImage
+MS2Ptr<UIBanner::Entity> GetBannerEntity(int nActorId);
+MS2Ptr<UITombStoneBar::Entity> GetTombStoneBarEntity(int nActorId);       // uihpbar.cpp; m_spFD8 holds it as Unk_PCLinkFD8
 void FUN_141a60f00(int nActorId);                                   // the level changed (name tag)
 // The game options (FUN_1409a8b10).
 class Unk_PCOption
@@ -543,15 +543,15 @@ public:
     bool m_bLoop28;                                                 // +0x28
 };
 int GetServerTick();   // C3: was GetServerTick
-// The main player info dialog (FUN_140931900 = the UI by id).
-UIMainPlayerInfo* FUN_140931900(int nUiId);
-// The client config singleton (FUN_1401d31f0): the invincibility effect file at +0x268 (other members not recovered).
+// The main player info dialog (FindMainPlayerInfo = the UI by id).
+UIMainPlayerInfo* FindMainPlayerInfo(int nUiId);
+// The client config singleton (GetCommonResource): the invincibility effect file at +0x268 (other members not recovered).
 struct Unk_PCConfig
 {
     char m_pad_0[0x268];
     CString m_strInvincibleEffect;                                  // +0x268
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 class Unk_AkoMyPC;
 template <> Unk_AkoMyPC* efd::DynamicCast<Unk_AkoMyPC, PCBase>(PCBase* Source);   // C3: was FUN_1409613d0 (the local player cast, class id 0x6200004; actionkeyobject.cpp)
 int IsMonthChanged(__int64 nTime);                                  // the time lies before today
@@ -732,7 +732,7 @@ PC::PC()
         m_spGuide1228[i] = 0;
     memset(m_aMastery1150, 0, sizeof(m_aMastery1150));
     int nTailId = *GetClientConstants()->TailEffectDefaultID.Get();
-    MS2SvrPtr<TailEffectData> spTail = FUN_140ad0da0()->GetData(nTailId);
+    MS2SvrPtr<TailEffectData> spTail = GetTailEffectDataTable()->GetData(nTailId);
     if (spTail)
         m_spTailEffect1270.AssignRaw(new CTailEffectObject(this, spTail));
     m_spRandomTarget12c8.AssignRaw(new CRandomTargetEffect(this));
@@ -801,7 +801,7 @@ void PC::vfunc_9(void* p)
 int PC::vfunc_10()
 {
     PCBase::vfunc_10();
-    m_unk_150->FUN_14123fbf0(2);
+    m_unk_150->SetCollisionGroup(2);
     m_unk_150->FUN_14123fd30(0x399);
     SetDefaultBoundingBox();
     bool bHurt = FUN_141670a00(4) != FUN_141670a30(4);
@@ -832,7 +832,7 @@ void PC::vfunc_12()
             m_spD88.AssignRaw(static_cast<Unk_PCD88*>(new CBoneRotateManager));
             m_spD88->Init(this, CString("Bip01 Head"));
         }
-        FUN_141567330(pRoot, true);
+        SetShadowCaster(pRoot, true);
     }
     vfunc_143();
     size_t nCount = CPCEffectDummy::GetInstance()->GetCount(GetGender());
@@ -909,9 +909,9 @@ void PC::vfunc_33(void* a, efd::Point3 kHit)
         if (GetCurStateId() == 0xd)
         {
             StateHit* pHit = static_cast<StateHit*>(FUN_14166ccb0());
-            if (pHit->FUN_1417cb2a0() && pRecord->GetAttackData()->m_damage.m_nPushPriorityHitImmune != 0)
+            if (pHit->HasHitDuration() && pRecord->GetAttackData()->m_damage.m_nPushPriorityHitImmune != 0)
             {
-                if (pHit->FUN_1417cb2f0() >= pRecord->GetAttackData()->m_damage.m_nPushPriority)
+                if (pHit->GetPushPriority() >= pRecord->GetAttackData()->m_damage.m_nPushPriority)
                     bReact = false;
             }
         }
@@ -954,7 +954,7 @@ void PC::vfunc_33(void* a, efd::Point3 kHit)
         AddColorBoost(fX, fY, fZ);
         Common::Constants::Value<float>* pVolume = (nCasterRel != 1 && nCasterRel != 2) ? &GetClientConstants()->VolumeNpcToPc : &GetClientConstants()->VolumeNpcToMyPc;
         float fVolume = pVolume->Read();
-        TSingleton<CEffectService>::GetInstance()->PlayHitSound(pRecord->FUN_14175ad50(), 1, nOwnerRel, vfunc_18(), fVolume);
+        TSingleton<CEffectService>::GetInstance()->PlayHitSound(pRecord->GetAttackMaterial(), 1, nOwnerRel, vfunc_18(), fVolume);
     }
     FUN_141671c20(MS2Ptr<CDamageRecord>(pRecord));
     if (IsDead())
@@ -1032,9 +1032,9 @@ void PC::vfunc_35(void* p)
         if (GetCurStateId() == 0xd)
         {
             StateHit* pHit = static_cast<StateHit*>(FUN_14166ccb0());
-            if (pHit->FUN_1417cb2a0() && pRecord->GetAttackData()->m_damage.m_nPushPriorityHitImmune != 0)
+            if (pHit->HasHitDuration() && pRecord->GetAttackData()->m_damage.m_nPushPriorityHitImmune != 0)
             {
-                if (pHit->FUN_1417cb2f0() >= pRecord->GetAttackData()->m_damage.m_nPushPriority)
+                if (pHit->GetPushPriority() >= pRecord->GetAttackData()->m_damage.m_nPushPriority)
                     bReact = false;
             }
         }
@@ -1077,7 +1077,7 @@ void PC::vfunc_35(void* p)
         AddColorBoost(fX, fY, fZ);
         Common::Constants::Value<float>* pVolume = (nCasterRel != 1 && nCasterRel != 2) ? &GetClientConstants()->VolumeNpcToPc : &GetClientConstants()->VolumeNpcToMyPc;
         float fVolume = pVolume->Read();
-        ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->PlayHitSound(pRecord->FUN_14175ad50(), 1, nOwnerRel, vfunc_18(), fVolume);
+        ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->PlayHitSound(pRecord->GetAttackMaterial(), 1, nOwnerRel, vfunc_18(), fVolume);
     }
     OnSplashDamageRecord(MS2Ptr<CSplashDamageRecord>(pRecord));
     if (IsDead())
@@ -1217,12 +1217,12 @@ void PC::AddItemAndPreloadModels(MS2Ptr<CItem> spItem)
 {
     m_kListD48.Add(spItem);
     MS2SvrPtr<CItemData> spData(reinterpret_cast<CItemData*>(spItem->FUN_140527840()));
-    for (size_t i = 0; i < spData->GetModelOrEmpty()->FUN_14054b3d0(); i++)
+    for (size_t i = 0; i < spData->GetModelOrEmpty()->GetGroupCount(); i++)
     {
         const ModelGroup* pGroup = spData->GetModelOrEmpty()->GetGroup(i);
-        for (size_t j = 0; j < pGroup->FUN_1405450c0(); j++)
+        for (size_t j = 0; j < pGroup->GetPartCount(); j++)
         {
-            const ModelPart* pPart = pGroup->FUN_140544fe0(j);
+            const ModelPart* pPart = pGroup->GetPart(j);
             if (pPart->isNif != 0 && (pPart->gender == 2 || pPart->gender == GetGender()))
             {
                 if (!((class CNifLoadingService*)GetNifLoadingService())->IsCached(CString(pPart->name0)))
@@ -1501,7 +1501,7 @@ void PC::vfunc_74(__int64 nCur, __int64 nMax)
     if (HasPvPPoint())
     {
         if (UIPvPObserverDialog* pParty = MyPCDialog<UIPvPObserverDialog>(0x4e96))
-            pParty->FUN_141a92b10(FUN_141656a80(), nCur, nMax);
+            pParty->SetFighterHp(FUN_141656a80(), nCur, nMax);
         if (UIPvPGuildTeamDialog* pRaid = MyPCDialog<UIPvPGuildTeamDialog>(0x4ec4))
             pRaid->FUN_14133afb0(FUN_141656a80(), nCur, nMax);
     }
@@ -1548,7 +1548,7 @@ MS2Ptr<Unk_PCBaseComp_a68> PC::vfunc_81()
     {
         if (pPlayer->FUN_1415278d0((void*)FUN_141656a80()) == 0)
             return MS2Ptr<Unk_PCBaseComp_a68>(0);
-        if (!reinterpret_cast<Unk_PCOption*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bShowPartyHp)
+        if (!reinterpret_cast<Unk_PCOption*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_bShowPartyHp)
             return MS2Ptr<Unk_PCBaseComp_a68>(0);
     }
     if (m_spA68 == 0)
@@ -1563,7 +1563,7 @@ MS2Ptr<Unk_PCBaseComp_a78> PC::vfunc_82()
         return MS2Ptr<Unk_PCBaseComp_a78>(0);
     if (m_spA78.get())
         return m_spA78;
-    if ((m_spA78 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a78>&>(static_cast<const MS2Ptr<UINameTag::Entity>&>(FUN_141a60da0(m_unk_70)))).get())
+    if ((m_spA78 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a78>&>(static_cast<const MS2Ptr<UINameTag::Entity>&>(CreateNameTagEntity(m_unk_70)))).get())
     {
         reinterpret_cast<UINameTag::Entity*>(m_spA78.operator->())->FUN_141a5e4c0(0x12);
         reinterpret_cast<UINameTag::Entity*>(m_spA78.operator->())->FUN_141a5e500(NpcConstantValue(reinterpret_cast<Unk_NpcConstant<unsigned>*>(&static_cast<Client::Constants*>(GetClientConstants())->NameTagColorFriendly)));
@@ -1586,7 +1586,7 @@ MS2Ptr<Unk_PCBaseComp_a98> PC::vfunc_84()
 MS2Ptr<Unk_PCBaseComp_aa8> PC::vfunc_85()
 {
     if (m_spAA8 == 0)
-        m_spAA8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_aa8>&>(static_cast<const MS2Ptr<UIChatBalloon::Entity>&>(FUN_1418fbdb0(m_unk_70)));
+        m_spAA8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_aa8>&>(static_cast<const MS2Ptr<UIChatBalloon::Entity>&>(GetChatBalloonEntity(m_unk_70)));
     return m_spAA8;
 }
 
@@ -1597,7 +1597,7 @@ MS2Ptr<Unk_PCBaseComp_ab8> PC::vfunc_86()
         return MS2Ptr<Unk_PCBaseComp_ab8>(0);
     if (m_spAB8 == 0)
     {
-        if (m_spAB8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_ab8>&>(static_cast<const MS2Ptr<UIPopupProfileImage::Entity>&>(FUN_141a8fb50(m_unk_70))))
+        if (m_spAB8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_ab8>&>(static_cast<const MS2Ptr<UIPopupProfileImage::Entity>&>(GetProfileImageEntity(m_unk_70))))
             m_spAB8->vfunc_2();
     }
     return m_spAB8;
@@ -1607,7 +1607,7 @@ MS2Ptr<Unk_PCBaseComp_ab8> PC::vfunc_86()
 MS2Ptr<Unk_PCBaseComp_ac8> PC::vfunc_87()
 {
     if (m_spAC8 == 0)
-        m_spAC8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_ac8>&>(static_cast<const MS2Ptr<UIBanner::Entity>&>(FUN_140ba8cf0(m_unk_70)));
+        m_spAC8 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_ac8>&>(static_cast<const MS2Ptr<UIBanner::Entity>&>(GetBannerEntity(m_unk_70)));
     return m_spAC8;
 }
 
@@ -1615,7 +1615,7 @@ MS2Ptr<Unk_PCBaseComp_ac8> PC::vfunc_87()
 MS2Ptr<Unk_PCBaseComp_a88> PC::vfunc_83()
 {
     if (m_spA88 == 0)
-        m_spA88 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a88>&>(static_cast<const MS2Ptr<UIEmoticon::Entity>&>(FUN_14192fd40(m_unk_70)));
+        m_spA88 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a88>&>(static_cast<const MS2Ptr<UIEmoticon::Entity>&>(GetEmoticonEntity(m_unk_70)));
     return m_spA88;
 }
 
@@ -1625,7 +1625,7 @@ MS2Ptr<Unk_PCLinkFD8> PC::FUN_141657730()
     if (IsRevivalBlocked())
         return MS2Ptr<Unk_PCLinkFD8>(0);
     if (m_spFD8 == 0)
-        m_spFD8 = reinterpret_cast<MS2Ptr<Unk_PCLinkFD8> (*)(int)>(&FUN_141993100)(m_unk_70);
+        m_spFD8 = reinterpret_cast<MS2Ptr<Unk_PCLinkFD8> (*)(int)>(&GetTombStoneBarEntity)(m_unk_70);
     return m_spFD8;
 }
 
@@ -1715,7 +1715,7 @@ int PC::vfunc_132(CItem* pItem, int nSlot, bool bForce)
             }
             else if (spData->FUN_14053d340())
             {
-                if (spData->GetModelOrEmpty()->FUN_14054b450(5))
+                if (spData->GetModelOrEmpty()->HasGroupType(5))
                 {
                     MS2Ptr<CEquipItem> spEquip = GetEquipItemLayer0(5);
                     if (spEquip.get())
@@ -2021,12 +2021,12 @@ void PC::FUN_1416619d0(unsigned int nEnd)
     m_n10e8 = nEnd;
     if ((MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(this))
     {
-        if (UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f))
+        if (UIMainPlayerInfo* pInfo = FindMainPlayerInfo(0x4e5f))
         {
             if (nEnd > 0)
-                pInfo->FUN_1419f1200(0x5f5e103, FUN_141661a80());
+                pInfo->AddCustomBuffEffect(0x5f5e103, FUN_141661a80());
             else
-                pInfo->FUN_1419f1370(0x5f5e103);
+                pInfo->RemoveCustomBuffEffect(0x5f5e103);
         }
     }
 }
@@ -2275,7 +2275,7 @@ void PC::FUN_141663500(int nObjectId)
 void PC::FUN_141663620()
 {
     if (m_spCouple11d8.get())
-        m_spCouple11d8->FUN_140b0ed30();
+        m_spCouple11d8->SpawnEffect();
     else
         m_n11d0 = 1;
 }
@@ -2284,7 +2284,7 @@ void PC::FUN_141663620()
 void PC::FUN_141663680()
 {
     if (m_spCouple11d8.get())
-        m_spCouple11d8->FUN_140b0eed0();
+        m_spCouple11d8->RemoveEffect();
     else
         m_n11d0 = 0;
 }
@@ -2406,7 +2406,7 @@ void PC::SetTailEffect(int nCount, int nTailId)
 {
     if (m_spTailEffect1270 == 0)
         return;
-    m_spTailEffect1270->FUN_140ad00e0(nCount);
+    m_spTailEffect1270->SetCount(nCount);
     m_spTailEffect1270->FUN_140ad0120(nTailId);
 }
 
@@ -2424,7 +2424,7 @@ void PC::AddAdditionalTailEffect(AdditionalCli* pCli)
     if (pCli->GetLevelData()->m_nTailEffect == 0)
         return;
     AdditionalLevelData* pData = pCli->GetLevelData();
-    MS2SvrPtr<TailEffectData> spData = FUN_140ad0da0()->GetData(pData->m_nTailEffect);
+    MS2SvrPtr<TailEffectData> spData = GetTailEffectDataTable()->GetData(pData->m_nTailEffect);
     if (spData == 0)
         return;
     MS2Ptr<CTailEffectObjectFromAdditional> spTail(0);
@@ -2432,7 +2432,7 @@ void PC::AddAdditionalTailEffect(AdditionalCli* pCli)
     if (spTail.get())
         return;
     spTail.AssignRaw(new CTailEffectObjectFromAdditional(this, spData, pCli->GetId()));
-    spTail->FUN_140ad00e0(pCli->m_nOverlapCount);
+    spTail->SetCount(pCli->m_nOverlapCount);
     m_mapTail1280.SetAt(pCli->GetId(), spTail);
 }
 
@@ -2442,7 +2442,7 @@ void PC::FUN_1416640d0(AdditionalCli* pCli)
     MS2Ptr<CTailEffectObjectFromAdditional> spTail(0);
     m_mapTail1280.Lookup(pCli->GetId(), spTail);
     if (spTail.get())
-        spTail->FUN_140ad00e0(pCli->m_nOverlapCount);
+        spTail->SetCount(pCli->m_nOverlapCount);
 }
 
 // @0x141664160
@@ -2694,7 +2694,7 @@ void PC::FUN_141663550()
         return;
     do
     {
-        MS2Ptr<CProxyGameObject> spProxy = pWorld->FUN_141bc9c60((void*)FUN_141656a80());
+        MS2Ptr<CProxyGameObject> spProxy = pWorld->FindProxyObjectByOwner((void*)FUN_141656a80());
         if (spProxy.IsNull())
             break;
         int nState = spProxy->m_cc;
@@ -2728,7 +2728,7 @@ void PC::vfunc_24(int nFlags)
                 bShow = 0;
             if (bShow && (nFlags & 4))
             {
-                if (CGuildManager::GetInstance()->FUN_1404cf9f0(vfunc_77()).get())
+                if (CGuildManager::GetInstance()->FindMemberByName(vfunc_77()).get())
                     bShow = 0;
             }
         }
@@ -2759,14 +2759,14 @@ MS2Ptr<Unk_PCBaseComp_a58> PC::vfunc_80()
 {
     if (((COptimizer*)(Unk_PCEquipConfig*)(((class Unk_PCEquipConfig*)GetOptimizer())))->FUN_1409f7ea0() && FUN_14123dbd0() == 0)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
-    if (!reinterpret_cast<Unk_PCOption*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bShowHpBar)
+    if (!reinterpret_cast<Unk_PCOption*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_bShowHpBar)
         return MS2Ptr<Unk_PCBaseComp_a58>(0);
     if (Unk_PCLocalPlayer* pPlayer = ((Unk_PCLocalPlayer*)((WorldService*)(Unk_PCWorld*)(((class Unk_PCWorld*)WorldService::GetInstance())))->FUN_141bd0cc0()))
     {
         if (HasPvPPoint() == 0 && pPlayer->FUN_1415278d0((void*)FUN_141656a80()) == 0 && pPlayer->vfunc_122(this) == 0)
             return MS2Ptr<Unk_PCBaseComp_a58>(0);
         if (m_spA58 == 0)
-            m_spA58 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a58>&>(static_cast<const MS2Ptr<UIHpBar::Entity>&>(FUN_141992920(m_unk_70)));
+            m_spA58 = reinterpret_cast<const MS2Ptr<Unk_PCBaseComp_a58>&>(static_cast<const MS2Ptr<UIHpBar::Entity>&>(GetHpBarEntity(m_unk_70)));
         return m_spA58;
     }
     return MS2Ptr<Unk_PCBaseComp_a58>(0);
@@ -2997,13 +2997,13 @@ int PC::FUN_14165c090(efd::Point3 kPos)
     kInfo.m_groups = 0x201;
     if (!((class CPhysXHelper*)GetPhysXHelper())->CastRay(&kInfo, 0))
         return false;
-    return !GetPhysicsBody()->FUN_1412410c0(kPos, m_unk_620.y * 0.5f);
+    return !GetPhysicsBody()->IsCapsuleOverlapping(kPos, m_unk_620.y * 0.5f);
 }
 
 // @0x14165df00
 MS2Ptr<CGemPetSkin> PC::GetPetSkinGem()
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x6c))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x6c))
         return MS2Ptr<CGemPetSkin>(0);
     MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(GetGemEquip())->FUN_141270740(0xb);
     if (!spGem)
@@ -3015,7 +3015,7 @@ MS2Ptr<CGemPetSkin> PC::GetPetSkinGem()
 MS2Ptr<CGemSwim> PC::GetSwimGem()
 {
     MS2Ptr<CGemSwim> spSwim(0);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x68))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x68))
     {
         MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(GetGemEquip())->FUN_141270740(6);
         if (spGem)
@@ -3198,7 +3198,7 @@ egf::Entity* PC::FUN_141659b80(int nKind, unsigned int nModel, float fHeight)
             CMouseController::GetInstance()->FUN_140ad2220() == 0)
             continue;
         if (nKind == 0 && nModel == 0xbadf0a13 &&
-            !static_cast<Unk_PCMove*>(FUN_14166d240())->FUN_141682fe0(0x30d41) &&
+            !static_cast<Unk_PCMove*>(FUN_14166d240())->IsActionKeyDown(0x30d41) &&
             CMouseController::GetInstance()->FUN_140ad2220() == 0)
             continue;
         if (kMy.z < kPos.z)
@@ -3292,7 +3292,7 @@ BOOL PC::FUN_141661e40(int* pnEnchant, int* pnGrade)
             continue;
         if (spItem->GetRarity() < *Client::Constants::GetInstance()->ShowNameTagEnchantItemGrade.Get())
             continue;
-        CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(spItem->FUN_1405278a0())->GetEnchant();
+        CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(spItem->GetStatus())->GetEnchant();
         if (pEnchant == 0)
             continue;
         if (pEnchant->GetLevel() < *Client::Constants::GetInstance()->ShowNameTagEnchantLevel.Get())
@@ -3318,13 +3318,13 @@ void PC::FUN_1416629d0(Vector3 kPos, Vector3 kRot)
     {
         MS2Ptr<CStateManager> spStates = spRidee->GetStateMgr();
         if (spStates.get())
-            ((CStateManager*)spStates)->FUN_1417daa70();
+            ((CStateManager*)spStates)->ClearRequests();
     }
     else
     {
         MS2Ptr<CStateManager> spStates = GetStateMgr();
         if (spStates.get())
-            ((CStateManager*)spStates)->FUN_1417daa70();
+            ((CStateManager*)spStates)->ClearRequests();
     }
     if (IsDead() == 0 && spRidee == NULL && GetCurStateId() != 0x3a)
         vfunc_59(1, 0, 0, 0);
@@ -3333,8 +3333,8 @@ void PC::FUN_1416629d0(Vector3 kPos, Vector3 kRot)
     SetTargetYaw(kRot.z);
     if (GetPhysicsBody())
     {
-        GetPhysicsBody()->FUN_141240730();
-        ((class GameObjectControllerHitReport*)(void*)(((void*)((GameObjectController*)(Unk_PCBaseBody*)(GetPhysicsBody()))->FUN_141240f20())))->FUN_140cfaf30();
+        GetPhysicsBody()->StopJump();
+        ((class GameObjectControllerHitReport*)(void*)(((void*)((GameObjectController*)(Unk_PCBaseBody*)(GetPhysicsBody()))->GetHitReport())))->FUN_140cfaf30();
     }
     if (spRidee)
     {
@@ -3344,8 +3344,8 @@ void PC::FUN_1416629d0(Vector3 kPos, Vector3 kRot)
         Unk_PCBaseBody* pBody = spRidee->GetPhysicsBody();
         if (pBody)
         {
-            pBody->FUN_141240730();
-            ((class GameObjectControllerHitReport*)(void*)(((void*)((GameObjectController*)(Unk_PCBaseBody*)(pBody))->FUN_141240f20())))->FUN_140cfaf30();
+            pBody->StopJump();
+            ((class GameObjectControllerHitReport*)(void*)(((void*)((GameObjectController*)(Unk_PCBaseBody*)(pBody))->GetHitReport())))->FUN_140cfaf30();
         }
         spRidee->vfunc_59(1, 0, 0, 0);
     }
@@ -3372,7 +3372,7 @@ void PC::ReadPetItem(CInPacket& packet)
         if (!spItem->FUN_140523c40(nItemId, nRarity, 0))
             return;
     }
-    spItem->FUN_140524eb0(packet);
+    spItem->ReadFromStream(packet);
     spItem->SetItemUid(nItemUid);
     spItem->SetObjectId(GetObjectId());
     SetPetItem(spItem);
@@ -3385,10 +3385,10 @@ void PC::FUN_141661370(int bStart, int nFlag, int nTimerId)
 {
     if ((MyPC*)efd::DynamicCast<Unk_AkoMyPC, PCBase>(this))
     {
-        if (UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f))
+        if (UIMainPlayerInfo* pInfo = FindMainPlayerInfo(0x4e5f))
         {
             if (m_n105c != 0)
-                pInfo->FUN_1419f1370(m_n105c);
+                pInfo->RemoveCustomBuffEffect(m_n105c);
             if (bStart != 0)
             {
                 int nEnd = 0;
@@ -3402,7 +3402,7 @@ void PC::FUN_141661370(int bStart, int nFlag, int nTimerId)
                     break;
                 }
                 if (nEnd != 0)
-                    pInfo->FUN_1419f1200(nTimerId, nEnd);
+                    pInfo->AddCustomBuffEffect(nTimerId, nEnd);
             }
         }
     }
@@ -3415,7 +3415,7 @@ void PC::FUN_141661370(int bStart, int nFlag, int nTimerId)
         m_n1064 = nNow;
         m_n1058 = nFlag;
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-        ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_PCConfig*)FUN_1401d31f0())->m_strInvincibleEffect;
+        ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_PCConfig*)GetCommonResource())->m_strInvincibleEffect;
         ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
         kTarget.SetActor(GetObjectId());
         m_n1060 = ((class Unk_PCFxMgr*)TSingleton<CEffectService>::GetInstance())->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
@@ -3513,7 +3513,7 @@ bool PC::GetSwimAnimName(efd::utf8string& kOut, int nAction)
     MS2Ptr<CGemSwim> spSwim = GetSwimGem();
     if (spSwim == 0)
         return false;
-    MS2Ptr<CGemSwimData> spData = spSwim->FUN_1405a5720();
+    MS2Ptr<CGemSwimData> spData = spSwim->GetData();
     if (spData.get())
     {
         if (nAction == 0x30)
@@ -3533,11 +3533,11 @@ class Unk_PCCoupleItem;
 // @0x1416636e0
 void PC::CreateCoupleEffect(MS2Ptr<CItem> spItem, int nGemId)
 {
-    m_spCouple11d8.AssignRaw(new CoupleEffectSystem(this, spItem->FUN_1405293b0(), spItem->FUN_1405276c0(),
+    m_spCouple11d8.AssignRaw(new CoupleEffectSystem(this, spItem->FUN_1405293b0(), spItem->GetItemId(),
         spItem->FUN_1405294a0(), spItem->GetCoupleName(), nGemId));
     if (m_n11d0 != 0)
     {
-        m_spCouple11d8->FUN_140b0ed30();
+        m_spCouple11d8->SpawnEffect();
         m_n11d0 = 0;
     }
 }
@@ -3577,7 +3577,7 @@ CString PC::GetSwimEffectName(int nAction)
     MS2Ptr<CGemSwim> spSwim = GetSwimGem();
     if (spSwim.get())
     {
-        MS2Ptr<CGemSwimData> spData = spSwim->FUN_1405a5720();
+        MS2Ptr<CGemSwimData> spData = spSwim->GetData();
         if (spData.get())
         {
             if (nAction == 0x30)
@@ -4056,7 +4056,7 @@ void PC::FUN_14165cac0()
     efd::Point3 kRot = efd::Point3::ZERO;
     efd::utf8string kAsset;
     MS2Ptr<CGemTombStone> spTomb(0);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x67))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x67))
     {
         MS2Ptr<CGemBase> spGem = reinterpret_cast<PCGemEquip*>(GetGemEquip())->FUN_141270740(5);
         if (spGem.get())
@@ -4064,7 +4064,7 @@ void PC::FUN_14165cac0()
             spTomb.AssignRaw(dynamic_cast<CGemTombStone*>((CGemBase*)spGem));
             if (spTomb.get())
             {
-                MS2Ptr<CGemTombStoneData> spData = spTomb->FUN_1405a53c0();
+                MS2Ptr<CGemTombStoneData> spData = spTomb->GetData();
                 if (spData.get())
                 {
                     kRot = spData->m_ptRotation;
@@ -4095,11 +4095,11 @@ int FUN_14081dd50(int nIndex);
 void SetNodeAlpha(NiAVObject* pNode, float fAlpha, bool b);       // set the alpha of a node tree
 void FUN_140ae1e80(NiAVObject* pObject, float a, float b, float c, float d, egf::EntityID kId);   // fade a node tree
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
-CString FUN_1410280d0(int nType, CString strPath);                  // a UGC resource path (ugcimagepath.cpp)
+CString GetDownloadFilePath(int nType, CString strPath);                  // a UGC resource path (ugcimagepath.cpp)
 extern unsigned DAT_143ab2830;                                      // the own character's type
 extern NiFixedString DAT_143ae50f8;                                 // the skin colour extra data key
 bool FUN_1406343b0(MS2Ptr<CItem> spItem, const __int64* pnCharId);  // the item is bound to the character
-float FUN_14028d3a0(float fValue);                                  // (commonutil.cpp)
+float FromPercent(float fValue);                                  // (commonutil.cpp)
 float GetDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00)
 void FUN_140a01250(efd::Point3 kDir, efd::Point3* pForward, efd::Point3* pRight);                                      // the special ability is shown (specialability.cpp)
 
@@ -4139,7 +4139,7 @@ void PC::vfunc_125(MS2Ptr<Unk_PCArg125> spInfo)
     if (spProxy)
     {
         spInfo->m_3c8 = spProxy->m_c8;
-        spInfo->m_3d4 = ((CProxyGameObject*)spProxy.operator->())->FUN_1416c2920();
+        spInfo->m_3d4 = ((CProxyGameObject*)spProxy.operator->())->GetTrophyTotal();
         spInfo->m_3f0 = spProxy->FUN_1416c2600();
     }
     spInfo->m_3e0 = FUN_1416612e0();
@@ -4147,7 +4147,7 @@ void PC::vfunc_125(MS2Ptr<Unk_PCArg125> spInfo)
     spInfo->m_3f8 = GetGuildName();
     spInfo->m_3d8 = FUN_141662730();
     spInfo->m_3dc = GetMonthlyCount();
-    MS2Ptr<CGuildMember> spMember = CGuildManager::GetInstance()->FUN_1404cf9f0(vfunc_77());
+    MS2Ptr<CGuildMember> spMember = CGuildManager::GetInstance()->FindMemberByName(vfunc_77());
     if (spMember)
         spInfo->m_400 = CGuildManager::GetInstance()->GetGradeName(spMember->fb4);
     spInfo->m_408 = GetName();
@@ -4289,7 +4289,7 @@ void PC::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
         return;
     if (m_pushControl.m_kDir != efd::Point3::ZERO && m_pushControl.m_nPriority >= pAttack->m_damage.m_nPushPriority)
         return;
-    float fSpeed = FUN_14028d3a0(pAttack->m_damage.m_fPushDistance);
+    float fSpeed = FromPercent(pAttack->m_damage.m_fPushDistance);
     efd::Point3 kDir;
     if (nKind == 2) {
         kDir = PC_RECORD_PT(m_ptPos) - vfunc_18();
@@ -4326,7 +4326,7 @@ void PC::vfunc_107(MS2Ptr<CDamageRecord> spRecord, float fScale)
     else if (nKind == 4) {
         PC_RECORD_PT(m_ptDir) = PC_RECORD_PT(m_ptPos) - vfunc_18();
         PC_RECORD_PT(m_ptDir).z = 0.0f;
-        fSpeed = FUN_14028d3a0(PC_RECORD_PT(m_ptDir).Length());
+        fSpeed = FromPercent(PC_RECORD_PT(m_ptDir).Length());
         PC_RECORD_PT(m_ptDir).Unitize();
     }
     if (FUN_14028d470(fSpeed, 0.0f))
@@ -4439,9 +4439,9 @@ void PC::vfunc_53(float f)
     else
         m_nFF0 = 0;
     FUN_141659000(0);
-    bool bExpired = m_timer970.FUN_140868c00() || !m_timer970.FUN_140868ba0() ? true : false;
+    bool bExpired = m_timer970.IsExpired() || !m_timer970.IsRunning() ? true : false;
     if (bExpired)
-        m_timer970.FUN_140868750(200);
+        m_timer970.Start(200);
     vfunc_93(bExpired);
     FUN_141660ee0();
     if (m_spD88.get())
@@ -4471,16 +4471,16 @@ void PC::vfunc_53(float f)
     if (((class CSkillTierOptionManager*)(class CSkillTierOptionManager*)(m_spSkillTier1110.get()))->Update())
     {
         if (GetClassID() == 0x06200004)
-            TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0ce20(0xe, 0);
+            TSingleton<UIStatusEventDispatcher>::GetInstance()->NotifyStatusChanged(0xe, 0);
     }
     if (m_spCouple11d8.get())
-        reinterpret_cast<CoupleEffectSystem*>((CoupleEffectSystem*)m_spCouple11d8.operator->())->FUN_140b0e7a0(f);
+        reinterpret_cast<CoupleEffectSystem*>((CoupleEffectSystem*)m_spCouple11d8.operator->())->Update(f);
     if (m_spTailEffect1270.get())
-        m_spTailEffect1270->FUN_140ad0200();
+        m_spTailEffect1270->Update();
     for (POSITION pos = m_mapTail1280.GetStartPosition(); pos; m_mapTail1280.GetNext(pos))
     {
         MS2Ptr<CTailEffectObjectFromAdditional> spTail = m_mapTail1280.GetValueAt(pos);
-        ((CTailEffectObjectFromAdditional*)spTail)->FUN_140ad0200();
+        ((CTailEffectObjectFromAdditional*)spTail)->Update();
     }
     if (m_spRandomTarget12c8.get())
         reinterpret_cast<Unk_PCRandomTargetView*>((CRandomTargetEffect*)m_spRandomTarget12c8.operator->())->UpdatePosition();
@@ -4498,7 +4498,7 @@ int PC::vfunc_116()
         if (((HideAndSeek::Info*)(GetHideAndSeekInfo()).operator->())->FUN_14050a6a0() == 2)
             return 0xca;
     }
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x10e) == true)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x10e) == true)
     {
         if (GetWaterGunInfo().get() && ((WaterGunBattleInfo*)(GetWaterGunInfo()).operator->())->GetFlag() == true)
             return ((WaterGunBattleInfo*)(GetWaterGunInfo()).operator->())->GetValue();
@@ -4560,11 +4560,11 @@ void PC::vfunc_42(float f, bool b)
         }
     }
     if (m_spTailEffect1270.get())
-        m_spTailEffect1270->FUN_140acffc0(f);
+        m_spTailEffect1270->SetAlpha(f);
     for (POSITION posTail = m_mapTail1280.GetStartPosition(); posTail; m_mapTail1280.GetNext(posTail))
     {
         MS2Ptr<CTailEffectObjectFromAdditional> spTail = m_mapTail1280.GetValueAt(posTail);
-        ((CTailEffectObjectFromAdditional*)spTail)->FUN_140acffc0(f);
+        ((CTailEffectObjectFromAdditional*)spTail)->SetAlpha(f);
     }
     if (m_spRandomTarget12c8.get())
         reinterpret_cast<Unk_PCRandomTargetView*>((CRandomTargetEffect*)m_spRandomTarget12c8.operator->())->FUN_140aab3c0(f);
@@ -4693,7 +4693,7 @@ int PC::CanUseItem(CItem* pItem)
     if (pItem->FUN_14052a390() && !vfunc_146())
         return 0;
     bool bCheckOwner = true;
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xd4))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xd4))
         bCheckOwner = GetClassID() != 0x06200046;   // FittingDollPC
     if (bCheckOwner)
     {
@@ -4750,7 +4750,7 @@ void PC::SetProfileImageKey(CString str)
         return;
     if (str.GetLength() == 0)
         return;
-    CString strPath = FUN_1410280d0(5, str);
+    CString strPath = GetDownloadFilePath(5, str);
     if (_access(strPath, 0) != 0)
         TSingleton<CUgcManager>::GetInstance()->FUN_141884e30(DAT_143ab2830, 0, FUN_141656a80(), str, CString(""));
 }

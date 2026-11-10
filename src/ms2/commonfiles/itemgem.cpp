@@ -97,7 +97,7 @@ struct Unk_BannerCfg
 
 // The cast of an actor to ClonePC (class id 0x6200044), NULL when it is none.
 ClonePC* FUN_1405a7e30(PC* pPC);                                    // 0x1405a7e30
-__int64 FUN_14028d0e0();                                            // 0x14028d0e0
+__int64 GenerateUniqueId();                                            // 0x14028d0e0
 CString FUN_140719190(int nValue);                                  // 0x140719190
 
 // A view of the item data (CItemData +0x78: a flag the gem items set).
@@ -312,7 +312,7 @@ int CGemTransparency::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
         MS2Ptr<CItem> spNew(new CItem);
         if (spNew->FUN_140523c40(nItemId, 1, 0))
         {
-            spNew->SetItemUid(FUN_14028d0e0());
+            spNew->SetItemUid(GenerateUniqueId());
             spNew->FUN_140526c10(FUN_1405a46d0(nSlot));
             ((class CItem*)(class CItem*)(spNew.operator->()))->SetObjectId(pPC->GetObjectId());
             {
@@ -726,15 +726,15 @@ int CGemNametag::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
 MS2_REPLACE_METHOD(0x1405A5060, CGemNametag, vfunc_7, 354, 0xE14E63A2);
 
 // @0x1405a53c0
-MS2Ptr<CGemTombStoneData> CGemTombStone::FUN_1405a53c0()
+MS2Ptr<CGemTombStoneData> CGemTombStone::GetData()
 {
     bool bLoad = (m_spData == 0) ? true : false;
     bLoad = true;
     if (bLoad)
-        m_spData.AssignRaw(dynamic_cast<CGemTombStoneData*>(FUN_1405a96f0()->FUN_1405ac160(m_nDataId).get()));
+        m_spData.AssignRaw(dynamic_cast<CGemTombStoneData*>(GetItemGemPropertyTable()->FUN_1405ac160(m_nDataId).get()));
     return m_spData;
 }
-MS2_REPLACE_METHOD(0x1405A53C0, CGemTombStone, FUN_1405a53c0, 247, 0x4AF456DD);
+MS2_REPLACE_METHOD(0x1405A53C0, CGemTombStone, GetData, 247, 0x4AF456DD);
 
 // @0x1405a54c0
 void CGemTombStone::vfunc_8()
@@ -748,15 +748,15 @@ void CGemTombStone::vfunc_8()
 MS2_REPLACE_METHOD(0x1405A54C0, CGemTombStone, vfunc_8, 94, 0x7E6834A8);
 
 // @0x1405a5720
-MS2Ptr<CGemSwimData> CGemSwim::FUN_1405a5720()
+MS2Ptr<CGemSwimData> CGemSwim::GetData()
 {
     bool bLoad = (m_spData == 0) ? true : false;
     bLoad = true;
     if (bLoad)
-        m_spData.AssignRaw(dynamic_cast<CGemSwimData*>(FUN_1405a96f0()->FUN_1405ac160(m_nDataId).get()));
+        m_spData.AssignRaw(dynamic_cast<CGemSwimData*>(GetItemGemPropertyTable()->FUN_1405ac160(m_nDataId).get()));
     return m_spData;
 }
-MS2_REPLACE_METHOD(0x1405A5720, CGemSwim, FUN_1405a5720, 247, 0xC3E00D40);
+MS2_REPLACE_METHOD(0x1405A5720, CGemSwim, GetData, 247, 0xC3E00D40);
 
 // @0x1405a5820
 void CGemSwim::vfunc_8()
@@ -795,7 +795,7 @@ int CGemCharEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
     ClonePC* pClone = FUN_1405a7e30(pPC);
     if (pClone != 0)
         return 0;
-    MS2Ptr<CGemCharEffectData> spData = FUN_1405a61f0();
+    MS2Ptr<CGemCharEffectData> spData = GetData();
     if (spData == 0)
         return 0;
     Unk_EffectQuery query;
@@ -830,22 +830,22 @@ int CGemCharEffect::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
 MS2_REPLACE_METHOD(0x1405A6080, CGemCharEffect, vfunc_7, 350, 0x55D80C92);
 
 // @0x1405a61f0
-MS2Ptr<CGemCharEffectData> CGemCharEffect::FUN_1405a61f0()
+MS2Ptr<CGemCharEffectData> CGemCharEffect::GetData()
 {
     bool bLoad = (m_spData == 0) ? true : false;
     bLoad = true;
     if (bLoad)
-        m_spData.AssignRaw(dynamic_cast<CGemCharEffectData*>(FUN_1405a96f0()->FUN_1405ac160(m_nDataId).get()));
+        m_spData.AssignRaw(dynamic_cast<CGemCharEffectData*>(GetItemGemPropertyTable()->FUN_1405ac160(m_nDataId).get()));
     return m_spData;
 }
-MS2_REPLACE_METHOD(0x1405A61F0, CGemCharEffect, FUN_1405a61f0, 247, 0x46DC65A6);
+MS2_REPLACE_METHOD(0x1405A61F0, CGemCharEffect, GetData, 247, 0x46DC65A6);
 
 // @0x1405a6650
 int CGemEffect::vfunc_6(PC* pPC, MS2Ptr<CItem> spItem)
 {
     if (CGemBase::vfunc_6(pPC, spItem) == 0)
         return 0;
-    MS2Ptr<CGemEffectData> spData = FUN_1405a68d0();
+    MS2Ptr<CGemEffectData> spData = GetData();
     if (spData == 0)
         return 0;
     if (!((PCGemEquip*)((void*)((class PC*)(class PC*)(pPC))->GetGemEquip()))->FUN_141271090(spItem, spData->m_strEffect))
@@ -865,15 +865,15 @@ int CGemEffect::vfunc_7(PC* pPC, MS2Ptr<CItem> spItem)
 MS2_REPLACE_METHOD(0x1405A67E0, CGemEffect, vfunc_7, 224, 0x711888E0);
 
 // @0x1405a68d0
-MS2Ptr<CGemEffectData> CGemEffect::FUN_1405a68d0()
+MS2Ptr<CGemEffectData> CGemEffect::GetData()
 {
     bool bLoad = (m_spData == 0) ? true : false;
     bLoad = true;
     if (bLoad)
-        m_spData.AssignRaw(dynamic_cast<CGemEffectData*>(FUN_1405a96f0()->FUN_1405ac160(m_nDataId).get()));
+        m_spData.AssignRaw(dynamic_cast<CGemEffectData*>(GetItemGemPropertyTable()->FUN_1405ac160(m_nDataId).get()));
     return m_spData;
 }
-MS2_REPLACE_METHOD(0x1405A68D0, CGemEffect, FUN_1405a68d0, 247, 0x9858071E);
+MS2_REPLACE_METHOD(0x1405A68D0, CGemEffect, GetData, 247, 0x9858071E);
 
 // @0x1405a6b90
 void CGemPetSkin::vfunc_2(COutputStream& stream)
@@ -1101,7 +1101,7 @@ MS2_REPLACE_METHOD(0x1405AA540, CItemGem, SetGem, 61, 0x63D19A2E);
 
 // @0x1405a96f0
 class CItemGemPropertyTable;
-Unk_GemTable* FUN_1405a96f0()
+Unk_GemTable* GetItemGemPropertyTable()
 {
     return (Unk_GemTable*)reinterpret_cast<void*>(TSingleton<CItemGemPropertyTable>::s_instance);
 }

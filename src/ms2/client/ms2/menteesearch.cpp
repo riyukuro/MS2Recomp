@@ -154,7 +154,7 @@ CMenteeSearchManager::~CMenteeSearchManager()
 // @0x140b6e3e0
 void CMenteeSearchManager::ProcessResponse()
 {
-    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x3f))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x3f))
         return;
     FUN_140b6eae0();
 }
@@ -214,7 +214,7 @@ void CMenteeSearchManager::RequestSearch(const CMenteeSearchParam* pParam)
 {
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_MenteeConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x41)) == 1)
         return;
-    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x3f))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x3f))
         return;
     SetParam(pParam);
     MS2Ptr<CMenteeSearchParam> spParam = GetParam();
@@ -282,7 +282,7 @@ void CMenteeSearchManager::FUN_140b6eae0()
     {
         CMentorArray arrMentors;
         GetMentees(arrMentors);
-        pDlg->FUN_140c2f440(arrMentors);
+        pDlg->SetMentorList(arrMentors);
     }
 }
 
@@ -307,7 +307,7 @@ UINT CMenteeSearchManager::RequestWeb(LPVOID pParam)
     MS2Ptr<CMenteeSearchParam> spParam(static_cast<CMenteeSearchParam*>(pParam));
     if (spParam == 0)
         return 1;
-    MS2Ptr<CMenteeSearchWebResult> spResult = TSingleton<CSoapClient>::GetInstance()->FUN_141770be0(spParam);
+    MS2Ptr<CMenteeSearchWebResult> spResult = TSingleton<CSoapClient>::GetInstance()->RequestMenteeSearch(spParam);
     GetInstance()->OnWebResult(spParam, spResult);
     return 0;
 }

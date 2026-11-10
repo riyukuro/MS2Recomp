@@ -33,7 +33,7 @@ public:
     virtual void vfunc_69();                                            // 69 0x141b22620 revert unless applied, then Close
     virtual void vfunc_80(void* pRequest);                              // 80 0x141b230f0 the platform request answers (OnKeyHandler / OnOk / eventApply)
 
-    CStringW FUN_141b23550();                                           // the "m_tab" input's text
+    CStringW GetTabName();                                           // the "m_tab" input's text
     int EventInitialize();                                                // reset the PanelSetting to the defaults and show it
     int FUN_141b236c0(const CStringW& strName);                         // validate the new tab name, apply the movie's settings; 1 = done
     int FUN_141b23a40(const CStringW& strName);                         // the chat window accepts the tab name

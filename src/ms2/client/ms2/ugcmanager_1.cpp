@@ -49,7 +49,7 @@ public:
     NiTexturePtr FUN_1415534d0(CString strKey, NiPixelDataPtr spPixelData, int nPriority);
 };
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: the Unk_UgcTextureCache (calls cast back)
-NiImageConverter* FUN_141851720();
+NiImageConverter* GetImageConverter();
 extern NiTexture::FormatPrefs DAT_1439fc800;                // NiSourceTexture's default format preferences
 // The world service and its local player (MyPC).
 // A client config singleton; +0xd8 is the capture file path.
@@ -59,23 +59,23 @@ public:
     void* m_pad[0xd8 / 8];
     CString m_strCaptureFile;                               // +0xd8
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-LPDIRECT3DDEVICE9 FUN_1422cf0d0();                          // the renderer's D3D device
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
+LPDIRECT3DDEVICE9 GetD3DDevice();                          // the renderer's D3D device
 
 // Upload/convert paths (all under ".\Custom\Convert").
-CStringW FUN_14102a420(const CStringW& strSrc);            // upload.dds
-CStringW FUN_14102a4d0();                                   // the icon file
+CStringW GetUploadDdsPath(const CStringW& strSrc);            // upload.dds
+CStringW GetUploadIconPath();                                   // the icon file
 CStringW FUN_14102a5d0(const CStringW& strSrc);
 CStringW FUN_14102a720(const CStringW& strSrc);            // the banner file
-CStringW FUN_14102aa70(const CStringW& strSrc);
-CStringW FUN_14102a870(const CStringW& strOrgFile);        // upload.m2u
-CStringW FUN_14102a920(const CStringW& strZipFile);        // <name>.dds for a downloaded package
-int FUN_14102ac40(const CStringW& strPath, CAtlArray<CStringW>& parts);   // drive/dir/name/ext of an existing file
+CStringW GetDecompressDdsPath(const CStringW& strSrc);
+CStringW GetUploadM2uPath(const CStringW& strOrgFile);        // upload.m2u
+CStringW GetConvertDdsPath(const CStringW& strZipFile);        // <name>.dds for a downloaded package
+int SplitPath(const CStringW& strPath, CAtlArray<CStringW>& parts);   // drive/dir/name/ext of an existing file
 CStringW FUN_141026920(int nKind);                          // a UGC directory
 int FUN_141027420(CString strName);
-CString FUN_141027200(CString strName);
+CString GetCacheKey(CString strName);
 void FUN_140841420(CStringW& str);
-CString FUN_14016a5c0(const char* psz, int nCodePage);
+CString ToCString(const char* psz, int nCodePage);
 CString FUN_14016a600(const wchar_t* psz, int nCodePage);
 CStringW FUN_14016a730(const char* psz, int nCodePage);
 CString FUN_140390ea0(const wchar_t* psz, int nCodePage);
@@ -143,7 +143,7 @@ int CUgcCompress::Compress(const CStringW& strOrgFile, void* pUnused)
     int nResult = 1;
     try
     {
-        CStringW strZipFile = FUN_14102a870(strOrgFile);
+        CStringW strZipFile = GetUploadM2uPath(strOrgFile);
         if (strZipFile.GetLength() == 0)
             throw Exception("zip_file", 0x51);
         if (_waccess(strZipFile, 0) == 0)
@@ -185,7 +185,7 @@ int CUgcCompress::Decompress(const CStringW& strZipFile, unsigned __int64 userDa
     int nResult = 1;
     try
     {
-        CStringW strOrgFile = FUN_14102a920(strZipFile);
+        CStringW strOrgFile = GetConvertDdsPath(strZipFile);
         if (strOrgFile.GetLength() == 0)
             throw Exception("org_file", 0x52);
         CStringW strRead(L"rb");
@@ -452,7 +452,7 @@ int CUgcImageConverter::ConvertTexture(const CStringW& strSrc, int nSize, bool b
     nResult = LoadFile();
     if (nResult != 0)
         return nResult;
-    CStringW strDst = FUN_14102a420(strSrc);
+    CStringW strDst = GetUploadDdsPath(strSrc);
     if (strDst.GetLength() == 0)
         return 0x4a;
     if (_waccess(strDst, 0) == 0)
@@ -488,7 +488,7 @@ int CUgcImageConverter::ConvertIcon(const CStringW& strSrc)
     nResult = LoadFile();
     if (nResult != 0)
         return nResult;
-    CStringW strDst = FUN_14102a4d0();
+    CStringW strDst = GetUploadIconPath();
     if (strDst.GetLength() == 0)
         return 0x4a;
     if (_waccess(strDst, 0) == 0)
@@ -540,7 +540,7 @@ int CUgcImageConverter::ConvertMemory(const CStringW& strSrc, const void* pData,
     nResult = LoadMemory(pData, nSize);
     if (nResult != 0)
         return nResult;
-    CStringW strDst = FUN_14102aa70(strSrc);
+    CStringW strDst = GetDecompressDdsPath(strSrc);
     if (strDst.GetLength() == 0)
         return 0x4a;
     if (_waccess(strDst, 0) == 0)
@@ -635,7 +635,7 @@ int CUgcImageConverter::LoadFile()
         if (kInfo.ResourceType != D3DRTYPE_TEXTURE)
             throw Exception(0x3e);
         D3DXIMAGE_INFO kLoaded;
-        hr = D3DXCreateTextureFromFileExW(FUN_1422cf0d0(), m_strSrcFile, kInfo.Width, kInfo.Height, kInfo.MipLevels, 0,
+        hr = D3DXCreateTextureFromFileExW(GetD3DDevice(), m_strSrcFile, kInfo.Width, kInfo.Height, kInfo.MipLevels, 0,
                                           kInfo.Format, D3DPOOL_MANAGED, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0,
                                           &kLoaded, NULL, &m_pSrcTexture);
         if (FAILED(hr))
@@ -667,7 +667,7 @@ int CUgcImageConverter::LoadMemory(const void* pData, int nSize)
         if (kInfo.ResourceType != D3DRTYPE_TEXTURE)
             throw Exception(0x3e);
         D3DXIMAGE_INFO kLoaded;
-        hr = D3DXCreateTextureFromFileInMemoryEx(FUN_1422cf0d0(), pData, nSize, kInfo.Width, kInfo.Height,
+        hr = D3DXCreateTextureFromFileInMemoryEx(GetD3DDevice(), pData, nSize, kInfo.Width, kInfo.Height,
                                                  kInfo.MipLevels, 0, kInfo.Format, D3DPOOL_MANAGED, D3DX_FILTER_NONE,
                                                  D3DX_FILTER_NONE, 0, &kLoaded, NULL, &m_pSrcTexture);
         if (FAILED(hr))
@@ -692,7 +692,7 @@ int CUgcImageConverter::Convert(D3DFORMAT eFormat, int nWidth, int nHeight, int 
 {
     HRESULT hr;
     int nResult = 0;
-    LPDIRECT3DDEVICE9 pDevice = FUN_1422cf0d0();
+    LPDIRECT3DDEVICE9 pDevice = GetD3DDevice();
     IDirect3DTexture9* pSrc = m_pSrcTexture;
     IDirect3DTexture9* pDst = NULL;
     try
@@ -841,7 +841,7 @@ NiTexturePtr LoadUgcTexture(const CStringW& strPath, int nSize, bool bPng)
 {
     int nResult;
     CAtlArray<CStringW> parts;
-    nResult = FUN_14102ac40(strPath, parts);
+    nResult = SplitPath(strPath, parts);
     if (nResult != 0)
         return NULL;
     CStringW strExt = parts.GetAt(3);
@@ -858,7 +858,7 @@ NiTexturePtr LoadUgcTexture(const CStringW& strPath, int nSize, bool bPng)
         strConverted = converter.GetDstFile();
     }
     CStringW strFile = bConverted == TRUE ? strConverted : strPath;
-    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, GetImageConverter());
     NiPixelDataPtr spPixelData = pkConverter->ReadImageFile((const wchar_t*)strFile, NULL);
     NiTexturePtr spTexture = NiSourceTexture::Create(spPixelData, DAT_1439fc800, true);
     if (bConverted == TRUE)
@@ -876,7 +876,7 @@ NiTexturePtr LoadCachedTexture(const CStringW& strPath)
     if (spTexture != NULL)
         return spTexture;
     efd::utf8string strFile(FUN_140390ea0(strPath, 0));
-    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, GetImageConverter());
     NiPixelDataPtr spPixelData = pkConverter->ReadImageFile(strFile.c_str(), NULL);
     NiTexturePtr spLoaded = reinterpret_cast<Unk_UgcTextureCache*>(GetNifLoadingService())->FUN_1415534d0(strKey, spPixelData, 5);
     return spLoaded;
@@ -957,7 +957,7 @@ Unk_UgcFileResult SaveRenderTargetImage(NiRect<unsigned int> kRect, NiRenderTarg
             throw Exception("mypc", 0xc);
         __time64_t tNow;
         time(&tNow);
-        strPath = ((class Unk_UgcClientPaths*)FUN_1401d31f0())->m_strCaptureFile;
+        strPath = ((class Unk_UgcClientPaths*)GetCommonResource())->m_strCaptureFile;
         if (_access(strPath, 0) == 0)
             FUN_14028e900(strPath);
         if (SaveRenderTargetToFileA(&strPath, D3DXIFF_PNG, pkGroup, kRect) == 0)
@@ -989,7 +989,7 @@ Unk_UgcFileResult SaveTextureImage(NiTexture* pkTexture)
             throw Exception("mypc", 0xc);
         __time64_t tNow;
         time(&tNow);
-        strPath = ((class Unk_UgcClientPaths*)FUN_1401d31f0())->m_strCaptureFile;
+        strPath = ((class Unk_UgcClientPaths*)GetCommonResource())->m_strCaptureFile;
         if (_access(strPath, 0) == 0)
             FUN_14028e900(strPath);
         if (SaveTextureToFileA(&strPath, D3DXIFF_PNG, pkTexture) == 0)
@@ -1021,7 +1021,7 @@ Unk_UgcFileResult SaveIconImage(CStringW strFile)
             throw Exception("mypc", 0xc);
         __time64_t tNow;
         time(&tNow);
-        strPath = ((class Unk_UgcClientPaths*)FUN_1401d31f0())->m_strCaptureFile;
+        strPath = ((class Unk_UgcClientPaths*)GetCommonResource())->m_strCaptureFile;
         if (_access(strPath, 0) == 0)
             FUN_14028e900(strPath);
         NiTexturePtr spTexture = LoadUgcTexture(strFile, 0x30, true);
@@ -1176,7 +1176,7 @@ unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
                 if (spPixelData != NULL)
                 {
                     if (GetNifLoadingService())
-                        spTexture = reinterpret_cast<Unk_UgcTextureCache*>(GetNifLoadingService())->FUN_1415534d0(FUN_14016a5c0(pData->m_strPath, 0), spPixelData, 5);
+                        spTexture = reinterpret_cast<Unk_UgcTextureCache*>(GetNifLoadingService())->FUN_1415534d0(ToCString(pData->m_strPath, 0), spPixelData, 5);
                 }
                 else
                 {
@@ -1188,7 +1188,7 @@ unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
                     {
                         CStringW strDstFile = converter.GetDstFile();
                         if (GetNifLoadingService())
-                            spTexture = reinterpret_cast<Unk_UgcTextureCache*>(GetNifLoadingService())->GetTextureFrom(FUN_14016a5c0(pData->m_strPath, 0),
+                            spTexture = reinterpret_cast<Unk_UgcTextureCache*>(GetNifLoadingService())->GetTextureFrom(ToCString(pData->m_strPath, 0),
                                                                        FUN_14016a600(strDstFile, 0), 5);
                         if (_waccess(strDstFile, 0) == 0)
                             DeleteFileW(strDstFile);
@@ -1205,7 +1205,7 @@ unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
             {
                 CString strName = loaded.GetAt(pos);
                 if (!FUN_141027420(strName))
-                    strName = FUN_141027200(strName);
+                    strName = GetCacheKey(strName);
                 if (TSingleton<CUgcDownloadDown>::GetInstance())
                     TSingleton<CUgcDownloadDown>::GetInstance()->Finish(strName, 0);
             }
@@ -1213,7 +1213,7 @@ unsigned int CUgcDownloadLoad::vfunc_1(void* pParam, Unk_140659080& start)
             {
                 CString strName = failed.GetAt(pos);
                 if (!FUN_141027420(strName))
-                    strName = FUN_141027200(strName);
+                    strName = GetCacheKey(strName);
                 if (TSingleton<CUgcDownloadDown>::GetInstance())
                     TSingleton<CUgcDownloadDown>::GetInstance()->Finish(strName, 0x20);
             }

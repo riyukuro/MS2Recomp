@@ -29,7 +29,7 @@ class Unk_RmMutex
 public:
     Unk_RmMutex(const char* szName);                        // 0x140c9c030
     ~Unk_RmMutex();                                         // 0x140c9c090
-    int FUN_140c9c1e0();                                    // the mutex existed already
+    int IsAlreadyExists();                                    // the mutex existed already
 private:
     DWORD m_dwError;                                        // +0x00
     HANDLE m_hMutex;                                        // +0x08
@@ -54,14 +54,14 @@ class Unk_RmOption { public:  };
 
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 namespace ecr { class RenderService; }
-ecr::RenderService* FUN_1413f9890();
+ecr::RenderService* GetRenderService();
 
 // @0x140c9cb10
-CSoundService* FUN_140c9cb10() { return TSingleton<CSoundService>::s_instance; }
+CSoundService* GetSoundService() { return TSingleton<CSoundService>::s_instance; }
 
 // @0x140c9c1a0
 static ecr::RenderContext* FUN_140c9c1d0(Unk_RmRenderLink* pLink);
-static ecr::RenderContext* FUN_140c9c1a0(Unk_RmRenderService* pService)
+static ecr::RenderContext* GetRenderContext(Unk_RmRenderService* pService)
 {
     if (pService->m_pLink != 0)
         return FUN_140c9c1d0(pService->m_pLink);
@@ -103,10 +103,10 @@ int RecodeMgr::IsRecording()
 }
 
 // @0x140c9bb60
-int RecodeMgr::FUN_140c9bb60()
+int RecodeMgr::StartRecording()
 {
     StopRecording();
-    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0((Unk_RmRenderService*)FUN_1413f9890()));
+    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(GetRenderContext((Unk_RmRenderService*)GetRenderService()));
     if (pContext != 0)
     {
         FUN_140c9be00();
@@ -129,17 +129,17 @@ int RecodeMgr::FUN_140c9bb60()
 int RecodeMgr::StopRecording()
 {
     m_bRecording = 0;
-    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0((Unk_RmRenderService*)FUN_1413f9890()));
+    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(GetRenderContext((Unk_RmRenderService*)GetRenderService()));
     if (pContext != 0)
         pContext->ReleaseRecodeSurface();
     return 1;
 }
 
 // @0x140c9bc70
-int RecodeMgr::FUN_140c9bc70(CString strText)
+int RecodeMgr::StartRecordingWithText(CString strText)
 {
     StopRecording();
-    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(FUN_140c9c1a0((Unk_RmRenderService*)FUN_1413f9890()));
+    MS2RenderContext* pContext = dynamic_cast<MS2RenderContext*>(GetRenderContext((Unk_RmRenderService*)GetRenderService()));
     if (pContext != 0)
     {
         FUN_140c9be00();
@@ -171,7 +171,7 @@ int RecodeMgr::FUN_140c9be00()
     Unk_RmMutex* pMutex = new Unk_RmMutex("MS2Media");
     if (pMutex != 0)
     {
-        if (!pMutex->FUN_140c9c1e0())
+        if (!pMutex->IsAlreadyExists())
         {
             delete pMutex;
             CString strExe;
@@ -215,7 +215,7 @@ Unk_RmMutex::~Unk_RmMutex()
 }
 
 // @0x140c9c1e0
-int Unk_RmMutex::FUN_140c9c1e0()
+int Unk_RmMutex::IsAlreadyExists()
 {
     return m_dwError == 0xb7;
 }
@@ -310,30 +310,30 @@ void CResearchAndDevelopmentDialog::OnBnClickedPlay()
     UpdateData(1);
     if (m_strUrl.IsEmpty())
         return;
-    if (FUN_140c9cb10() != 0)
+    if (GetSoundService() != 0)
     {
-        FUN_140c9cb10()->FUN_1417af4f0(CStringA(m_strUrl));
+        GetSoundService()->FUN_1417af4f0(CStringA(m_strUrl));
         int nPos = m_sldVolume.GetPos();
         float fVolume = (float)nPos * 0.01f;
-        FUN_140c9cb10()->FUN_1417ae760(fVolume);
+        GetSoundService()->SetVolume(fVolume);
     }
 }
 
 // @0x140c9c7d0
 void CResearchAndDevelopmentDialog::OnBnClickedStop()
 {
-    if (FUN_140c9cb10() != 0)
-        FUN_140c9cb10()->FUN_1417af600();
+    if (GetSoundService() != 0)
+        GetSoundService()->FUN_1417af600();
 }
 
 // @0x140c9c800
 void CResearchAndDevelopmentDialog::OnNMReleasedcaptureVolume(NMHDR* pNMHDR, LRESULT* pResult)
 {
     int nPos = m_sldVolume.GetPos();
-    if (FUN_140c9cb10() != 0)
+    if (GetSoundService() != 0)
     {
         float fVolume = (float)nPos * 0.01f;
-        FUN_140c9cb10()->FUN_1417ae760(fVolume);
+        GetSoundService()->SetVolume(fVolume);
         m_strVolume.Format("%.2f", fVolume);
         UpdateData(0);
     }
@@ -345,7 +345,7 @@ void CResearchAndDevelopmentDialog::OnBnClickedRecord()
 {
     UpdateData(1);
     if (RecodeMgr::GetInstance() != 0 && !m_strRecordName.IsEmpty())
-        RecodeMgr::GetInstance()->FUN_140c9bc70(CString(m_strRecordName));
+        RecodeMgr::GetInstance()->StartRecordingWithText(CString(m_strRecordName));
 }
 
 // @0x140c9c950

@@ -98,7 +98,7 @@ public:
 // Buff container of an actor.
 // The knock-back direction (a POD with a declared ctor, so the return temp is not a /GS buffer).
 struct Unk_SeiPoint { float x, y, z; Unk_SeiPoint(); };
-class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141683100(int nKey); bool FUN_141682fe0(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // Config constants singleton (FUN_1401d3200): the idle delay at +0xa00 and the idle-emotion chance at +0x29c8.
 class Unk_IdleDelay { public: char m_c; };
@@ -160,7 +160,7 @@ public:
     static class WorldService* GetInstance();
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
-int FUN_140768010(int, int);   // C3: was FUN_140768010
+int GetRandomRange(int, int);   // C3: was GetRandomRange
 unsigned FUN_140767ff0();
 
 // ---- StateEmotionData ----
@@ -269,7 +269,7 @@ void StateEmotion::vfunc_8(double fTime)
     if (pPC == 0)
         return;
     Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(pPC)->FUN_14166d240()));
-    reinterpret_cast<Unk_SeiSlots*>(pPC)->vfunc_22(reinterpret_cast<const Unk_SeiPoint&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+    reinterpret_cast<Unk_SeiSlots*>(pPC)->vfunc_22(reinterpret_cast<const Unk_SeiPoint&>(static_cast<const Vector3&>(pBuff->GetMoveDirection())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
     {
         pPC->vfunc_59(2, 0, 0, 0);
@@ -282,11 +282,11 @@ void StateEmotion::vfunc_8(double fTime)
     {
         pPC->TryUseChairOrBed(2, 0);
     }
-    else if (reinterpret_cast<PCBase*>(pPC)->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
+    else if (reinterpret_cast<PCBase*>(pPC)->FUN_141671a30() != 0 && pBuff->IsActionKeyDown(0x493e1))
     {
         pPC->vfunc_59(6, 0, 0x25, 0);
     }
-    else if (pBuff->FUN_141682fe0(0x493e5))
+    else if (pBuff->IsActionKeyDown(0x493e5))
     {
         pPC->vfunc_59(3, 0, 0, 0);
     }
@@ -305,7 +305,7 @@ void StateEmotion::vfunc_3(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        if (((class CSkillSystem*)((class MyPC*)(class MyPC*)(pPC))->GetSkillSystem())->FUN_141768fb0(m_spData2->m_nEmotion, 1) == 0)
+        if (((class CSkillSystem*)((class MyPC*)(class MyPC*)(pPC))->GetSkillSystem())->IsEmotionLearned(m_spData2->m_nEmotion, 1) == 0)
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
             return;
@@ -657,7 +657,7 @@ StateEmotionIdle::~StateEmotionIdle()
 void StateEmotionIdle::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    m_timer.FUN_1408687f0();
+    m_timer.Reset();
     m_n10 = 0x6f;
     m_spData2.AssignRaw(dynamic_cast<StateEmotionIdleData*>(pData));
     if (m_spData2 == 0)
@@ -696,7 +696,7 @@ void StateEmotionIdle::vfunc_3(double fTime)
     MyPC* pPC = FUN_1417b84b0();
     if (pPC)
     {
-        if (((class CSkillSystem*)((class MyPC*)(class MyPC*)(pPC))->GetSkillSystem())->FUN_141768fb0(m_spData2->m_nEmotion, 1) == 0)
+        if (((class CSkillSystem*)((class MyPC*)(class MyPC*)(pPC))->GetSkillSystem())->IsEmotionLearned(m_spData2->m_nEmotion, 1) == 0)
         {
             m_pOwner->vfunc_59(1, 0, 0, 0);
             return;
@@ -726,7 +726,7 @@ void StateEmotionIdle::vfunc_8(double fTime)
     if (m_pOwner->vfunc_63() == 0)
         return;
     Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
-    reinterpret_cast<Unk_SeiSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const Unk_SeiPoint&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+    reinterpret_cast<Unk_SeiSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const Unk_SeiPoint&>(static_cast<const Vector3&>(pBuff->GetMoveDirection())));
     if (pPC != 0 && pBuff->FUN_141683100(0x30d41))
     {
         egf::Entity* pEntity = reinterpret_cast<PC*>(pPC)->FUN_141659af0(1);
@@ -756,7 +756,7 @@ void StateEmotionIdle::vfunc_8(double fTime)
     {
         pPC->TryUseChairOrBed(2, 0);
     }
-    else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
+    else if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_141671a30() != 0 && pBuff->IsActionKeyDown(0x493e1))
     {
         m_pOwner->vfunc_59(6, 0, 0x25, 0);
     }
@@ -764,7 +764,7 @@ void StateEmotionIdle::vfunc_8(double fTime)
     {
         m_pOwner->vfunc_59(2, 0, 0, 0);
     }
-    else if (pBuff->FUN_141682fe0(0x493e5))
+    else if (pBuff->IsActionKeyDown(0x493e5))
     {
         m_pOwner->vfunc_59(3, 0, 0, 0);
     }
@@ -774,11 +774,11 @@ void StateEmotionIdle::vfunc_8(double fTime)
     }
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         m_pOwner->vfunc_59(2, 0, 0, 0);
-    if (m_timer.FUN_140868c00() != 0)
+    if (m_timer.IsExpired() != 0)
     {
-        m_timer.FUN_1408687f0();
+        m_timer.Reset();
         static unsigned s_nChance = reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_IdleConsts*)GetClientConstants())->m_chance)->Read();
-        if (s_nChance >= FUN_140768010(100, 0))
+        if (s_nChance >= GetRandomRange(100, 0))
         {
             unsigned nCount = 0;
             CString strTmp;
@@ -796,9 +796,9 @@ void StateEmotionIdle::vfunc_8(double fTime)
             }
         }
     }
-    else if (m_timer.FUN_140868ba0() == 0)
+    else if (m_timer.IsRunning() == 0)
     {
-        m_timer.FUN_140868750(FUN_14025a620((class Unk_ConstVal*)&((class Unk_IdleConsts*)GetClientConstants())->m_delay));
+        m_timer.Start(FUN_14025a620((class Unk_ConstVal*)&((class Unk_IdleConsts*)GetClientConstants())->m_delay));
     }
 }
 

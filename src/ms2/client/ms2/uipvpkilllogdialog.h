@@ -24,7 +24,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x1413426f0
     virtual void vfunc_79(void* p);                             // 79 0x141342820
 
-    void FUN_141342880(CStringW strAttacker, CStringW strTarget);   // 0x141342880 add a kill to the feed
+    void AddKill(CStringW strAttacker, CStringW strTarget);   // 0x141342880 add a kill to the feed
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -37,26 +37,26 @@ public:
     virtual void vfunc_72();                                    // 72 0x140bff8c0 apply the pending refresh flags
     virtual void vfunc_o178_8(void* pQuest);                    // UIQuestEventListener 8 0x140bffd70 a daily mission quest changed
 
-    void FUN_140bffee0(NotifyObject* pNotify);                  // 0x140bffee0 "NotifyGameStart": open once in the lobby
-    void FUN_140bfff70(NotifyObject* pNotify);                  // 0x140bfff70 "NotifyChangeMyPC": allow the auto open again
+    void OnGameStart(NotifyObject* pNotify);                  // 0x140bffee0 "NotifyGameStart": open once in the lobby
+    void OnChangeMyPC(NotifyObject* pNotify);                  // 0x140bfff70 "NotifyChangeMyPC": allow the auto open again
     void FUN_140bfff90(CInPacket& rPacket);                     // 0x140bfff90 packet 0x10b: show the window
     int FUN_140bffff0();                                        // 0x140bffff0 BOOL: the feature is on and the player has a level
     void SendQuest(int nQuestId);                           // 0x140c00070 request the reward of a finished quest
-    void FUN_140c001d0();                                       // 0x140c001d0 fill the recommended list of the selected group
-    void FUN_140c00500();                                       // 0x140c00500 fill the level guide bar and the mission point
-    void FUN_140c009b0();                                       // 0x140c009b0 fill the group tabs
-    void FUN_140c00c10(CQuest* pQuest);                         // 0x140c00c10 update one quest row
-    void FUN_140c00cd0();                                       // 0x140c00cd0 refresh the clear / satisfied counts and the point
-    void FUN_140c01040(ASObj& rRow, CQuest* pQuest);            // 0x140c01040 fill the row of a quest
-    int FUN_140c012d0(ASObj& rRow, unsigned nQuestId);          // 0x140c012d0 fill the row of a level guide entry
-    void FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bName);   // 0x140c01790 bind the reward item to the row
-    int FUN_140c01b50(int nGroup);                              // 0x140c01b50 quests of the group
+    void RefreshRecommendList();                                       // 0x140c001d0 fill the recommended list of the selected group
+    void RefreshLevelGuide();                                       // 0x140c00500 fill the level guide bar and the mission point
+    void RefreshGroupTabs();                                       // 0x140c009b0 fill the group tabs
+    void UpdateQuestRow(CQuest* pQuest);                         // 0x140c00c10 update one quest row
+    void RefreshCounts();                                       // 0x140c00cd0 refresh the clear / satisfied counts and the point
+    void FillQuestRow(ASObj& rRow, CQuest* pQuest);            // 0x140c01040 fill the row of a quest
+    int FillLevelGuideRow(ASObj& rRow, unsigned nQuestId);          // 0x140c012d0 fill the row of a level guide entry
+    void BindRewardItem(ASObj& rRow, unsigned nQuestId, int bName);   // 0x140c01790 bind the reward item to the row
+    int CountGroupQuests(int nGroup);                              // 0x140c01b50 quests of the group
     int FUN_140c01d30(int nGroup);                              // 0x140c01d30 satisfied quests of the group
     int FUN_140c01f50();                                        // 0x140c01f50 the highest reward point of the finished quests
     int FUN_140c020d0();                                        // 0x140c020d0 the largest mission point of the open quests
     int FUN_140c02320(int nGroup);                              // 0x140c02320 the group has a quest that can be received
-    MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);     // 0x140c02870 bind a tab child
-    MS2Ptr<ASScrollingList> FUN_140c02900(const CString& strName);       // 0x140c02900 bind a list child
+    MS2Ptr<ASButtonBar> GetButtonBar(const CString& strName);     // 0x140c02870 bind a tab child
+    MS2Ptr<ASScrollingList> GetScrollingList(const CString& strName);       // 0x140c02900 bind a list child
 
 private:
     MS2_LAYOUT_FRIEND;

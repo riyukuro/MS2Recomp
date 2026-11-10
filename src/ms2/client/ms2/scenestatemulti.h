@@ -76,18 +76,18 @@ public:
     int OnMessage(UISwfEntity* pSender, UIMsg* pMsg) override;  // 0x14174ea50 (IMessageListener slot 0)
 
     int HasMyPC();                                   // a lobby actor exists
-    void FUN_14174eb30();                                   // leave the lobby to the server list
+    void ExitToServerList();                                   // leave the lobby to the server list
     void SelectCreateJob(int nJobCode);                       // enter the create scene for a job
-    void FUN_14174ebc0();                                   // enter the select scene
+    void EnterSelectScene();                                   // enter the select scene
     void FUN_14174ec40(int nGender, bool bFlag);           // spawn the preview pc for a new character
     void FUN_14174ee00(BackUpCharacterInfo* pInfo);         // respawn the preview pc from a backup
     Unk_LobbyChar* FUN_14174f0f0();                         // 0x14174f0f0 the lobby actor matching the scan row
-    void FUN_14174f390(void* pActor, int);                  // 0x14174f390
+    void SetMyPC(void* pActor, int);                  // 0x14174f390
     unsigned int GetSelectMapForSelectedJob();                                 // 0x14174f3e0 select map of the current job
     unsigned int FUN_14174f440();                                 // 0x14174f440 create map of the current job
     void FUN_14174f470();                                   // 0x14174f470
     void FUN_14174f4a0();                                   // 0x14174f4a0
-    void FUN_14174f4c0(CInPacket& packet);                  // 0x14174f4c0 opcode 0x71
+    void OnNotice(CInPacket& packet);                  // 0x14174f4c0 opcode 0x71
     void OnWaitingTicketUpdate(CInPacket& packet);                  // 0x14174f8d0 opcode 0xb4
     void OnServerTimePacket(CInPacket& packet);                  // 0x14174fcc0 opcode 0x10f
     void ReleasePreviewPC();                                   // 0x14174fd00 drop the preview pc

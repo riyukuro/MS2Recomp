@@ -19,7 +19,7 @@ public:
 
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
@@ -46,10 +46,10 @@ bool CTailEffectDataTable::Reload()
 // @0x1408534b0
 bool CTailEffectDataTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "tailEffect.xml");
-    m_cache.FUN_1401d1160(CString(strPath));
+    CString strPath = GetXmlPath("Table", "tailEffect.xml");
+    m_cache.SetPath(CString(strPath));
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

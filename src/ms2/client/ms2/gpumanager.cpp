@@ -67,7 +67,7 @@ int GPUManager::FUN_141375390(CStringW adapterName)
         else
             return 0;
     }
-    m_timer.FUN_140868750(1000);
+    m_timer.Start(1000);
     return 1;
 }
 
@@ -77,12 +77,12 @@ void GPUManager::Update()
     m_elapsed += TSingleton<CMainSystem>::GetInstance()->GetDeltaTime();
     if (0.1f > m_elapsed) {
         m_elapsed = 0;
-    } else if (m_timer.FUN_140868c00() != 0) {
+    } else if (m_timer.IsExpired() != 0) {
         if (m_gpu != 0) {
             m_gpu->vfunc_3(&m_30, &m_34);
             m_gpu->vfunc_5(&m_20, &m_28);
         }
-        m_timer.FUN_140868750(1000);
+        m_timer.Start(1000);
     }
 }
 

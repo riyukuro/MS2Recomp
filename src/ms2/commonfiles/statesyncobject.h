@@ -72,4 +72,4 @@ public:
 MS2_CHECK_SIZE(StateSyncObjectWeddingEmotion, 0xc8);
 
 // New state request for nState (the subclass above for 0x3a/0x3c/0x45/0x47, else the base record).
-MS2Ptr<StateSyncObject> FUN_140835450(int nState);
+MS2Ptr<StateSyncObject> CreateStateSyncObject(int nState);

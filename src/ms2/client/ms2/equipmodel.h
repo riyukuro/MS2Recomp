@@ -92,7 +92,7 @@ public:
     efd::utf8string FUN_141201780();                        // 0x141201780 the model's entity model name
     // scene-node helpers of a pickable part (defined in unit_1411673f0_equipmodelpartscenehelpers.cpp)
     NiAVObject* FUN_1411673f0(const CString* pName) const;      // 0x1411673f0 the scene node named pName
-    NiAVObject* FUN_1411676d0(const CString* pPartName) const;  // 0x1411676d0 the model node of one attach part
+    NiAVObject* GetPartMesh(const CString* pPartName) const;  // 0x1411676d0 the model node of one attach part
     // highlight: fScale/fMode from CItemCustomizeController::vfunc_39, pNode = the picked mesh or NULL
     void FUN_1411679d0(float fScale, float fMode, NiAVObject* pNode);   // 0x1411679d0
 

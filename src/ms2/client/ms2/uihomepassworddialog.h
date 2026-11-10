@@ -1,7 +1,7 @@
 // uihomepassworddialog.h - UIHomePasswordDialog (RTTI .?AVUIHomePasswordDialog@@, 0x180 bytes, UIDialog, UI id 0x4ed6,
 // swf "HomePasswordDialog"): the dialog where the owner of a house sets the entry password and the visitors enter it.
 // Owning unit: ?\uihomepassworddialog.cpp. Header name assumed from the unit path. m_178 is the password the dialog
-// currently holds (set by FUN_1412c9680, sent by vfunc_67 on close).
+// currently holds (set by SetPassword, sent by vfunc_67 on close).
 #pragma once
 #include "ms2/client/ms2/uidialog.h"
 #include "ms2/placeholder/gfxvalue.h"
@@ -21,9 +21,9 @@ public:
     virtual void vfunc_79(void* p);                             // 79 0x1412c9030
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x1412c9580
 
-    void FUN_1412c9680(CString strPassword);                    // m_178 = strPassword
+    void SetPassword(CString strPassword);                    // m_178 = strPassword
     void SendRequestCube(int nMode, CStringW strPassword, int nUnused);   // send the password packet (type 0x37, sub 0x18)
-    void FUN_1412c97c0();                                       // SendRequestCube(0, L"", 0): clear the password
+    void ClearPassword();                                       // SendRequestCube(0, L"", 0): clear the password
 
 private:
     CString m_178;                                              // +0x178

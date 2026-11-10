@@ -13,7 +13,7 @@
 #include "ms2/placeholder/tptrvalue.h"
 
 class TCreateCharInfo;
-CString FUN_14016a5c0(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
 
 // The equipment slot of a default item (the "slot" attribute; the 18 slots 1..18 of the slot table 0x142d5f5f0). An enum:
 // the maps take it by const reference and the log formats it as a custom argument. The name is the one unit_140583f00
@@ -67,13 +67,13 @@ public:
     static void GetCreateItems(TCreateCharInfo* pInfo, ATL::CAtlArray<unsigned>& aItemIds);     // 0x140584ff0
 
     static int FUN_140583f00(int nGender);                      // unit_140583f00
-    static int FUN_140583f70(int nGender);                      // unit_140583f00: 1 for gender 0 or 1
+    static int IsValidTableIndex(int nGender);                      // unit_140583f00: 1 for gender 0 or 1
     // 0x140587a50 (CValidData-style check: a message box until Load ran)
     static void CheckInit()
     {
         if (!s_bInit) {
             CString msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CItemDefaultData).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(CItemDefaultData).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }

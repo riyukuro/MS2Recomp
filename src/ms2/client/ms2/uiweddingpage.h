@@ -28,7 +28,7 @@ public:
     virtual CString vfunc_6() = 0;                              //  6 the page key
     virtual CStringW vfunc_7() = 0;                              //  7 the tab label
     MS2Ptr<AScript> GetScript() const;                      // 0x140fe7620 the page movie clip
-    UIWeddingDialog* FUN_140fe7670() const;                     // 0x140fe7670 the owner
+    UIWeddingDialog* GetDialog() const;                     // 0x140fe7670 the owner
 
 protected:
     MS2_LAYOUT_FRIEND;
@@ -81,7 +81,7 @@ public:
     virtual void vfunc_o178_12(void* pQuest);                   // 0x140fe8e20 (listener slot 12) refresh the list
 
     void SendQuest(int nQuestId);                           // 0x140fe8e50 turn in a completed quest
-    void FUN_140fe8fb0();                                       // 0x140fe8fb0 fill "m_list" with the quests
+    void UpdateQuestList();                                       // 0x140fe8fb0 fill "m_list" with the quests
 
 private:
     ItemSlotBinder m_binder;                                    // +0x38

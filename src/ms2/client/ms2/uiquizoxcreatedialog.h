@@ -38,4 +38,4 @@ MS2_CHECK_SIZE(UIQuizOXCreateDialog, 0x190);
 MS2_CHECK_OFFSET(UIQuizOXCreateDialog, m_fees, 0x178);
 
 // "OnCreate" handler (0x140e7e900): the first three arguments (as ints) go to the create request packet.
-int FUN_140e7e900(UIQuizOXCreateDialog* pDialog, ASData* pArgs);
+int OnCreate(UIQuizOXCreateDialog* pDialog, ASData* pArgs);

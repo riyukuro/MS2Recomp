@@ -12,7 +12,7 @@
 #include "ms2/client/ms2/ms2.h"   // C3: MS2::GetBackgroundColor / SetBackgroundColor
 
 // ---- out-of-unit callees ----
-void* FUN_140aae430();                                                  // the renderer singleton
+void* GetMS2();                                                  // the renderer singleton
 
 extern "C" float (__cdecl* __imp_ceilf)(float);                       // the exe calls the IAT slot
 
@@ -40,7 +40,7 @@ CString UIHSLDialog::GetTypeName()
 void UIHSLDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    NiColorA kRgb = reinterpret_cast<MS2*>(FUN_140aae430())->GetBackgroundColor();
+    NiColorA kRgb = reinterpret_cast<MS2*>(GetMS2())->GetBackgroundColor();
     int nR = (int)__imp_ceilf(kRgb.r * 255.0f);
     int nG = (int)__imp_ceilf(kRgb.g * 255.0f);
     int nB = (int)__imp_ceilf(kRgb.b * 255.0f);
@@ -48,9 +48,9 @@ void UIHSLDialog::OnLoadComplete()
 }
 
 // @0x1412c9c50
-void FUN_1412c9c50(UIHSLDialog* pDialog)
+void ApplyBackgroundColor(UIHSLDialog* pDialog)
 {
-    reinterpret_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(NiColorA((float)pDialog->m_nHue / 255.0f, (float)pDialog->m_nSaturation / 255.0f,
+    reinterpret_cast<MS2*>(GetMS2())->SetBackgroundColor(NiColorA((float)pDialog->m_nHue / 255.0f, (float)pDialog->m_nSaturation / 255.0f,
                                                  (float)pDialog->m_nLightness / 255.0f, 1.0f));
 }
 
@@ -65,7 +65,7 @@ int UIHSLDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             m_nHue = data.PopInt();
-            FUN_1412c9c50(this);
+            ApplyBackgroundColor(this);
         }
         return 1;
     }
@@ -75,7 +75,7 @@ int UIHSLDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             m_nSaturation = data.PopInt();
-            FUN_1412c9c50(this);
+            ApplyBackgroundColor(this);
         }
         return 1;
     }
@@ -85,7 +85,7 @@ int UIHSLDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pAr
         if (data.SetArgsIfAny(pArgs, nArgs))
         {
             m_nLightness = data.PopInt();
-            FUN_1412c9c50(this);
+            ApplyBackgroundColor(this);
         }
         return 1;
     }

@@ -60,7 +60,7 @@ static Unk_1402a9d70 condition(17, 0.75f, 0.25f, 2.25f, 10);
 }
 static UICommon::CMyPCKeyInputController s_keyController;
 
-int FUN_141a60d30();                                                        // the name tag mode
+int GetNameTagMode();                                                        // the name tag mode
 void FUN_141a60f40();                                                       // mark every tag dirty
 const char* FUN_141a61590(int nState, const std::pair<const char*, Unk_RequireState>* pTable);   // state name
 
@@ -75,8 +75,8 @@ public:
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
+    Scaleform::GFx::Value CreateEntity(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 
 struct Unk_NtCfgFloat { char m_pad[0x58]; };
@@ -94,11 +94,11 @@ struct Unk_NtCfg
 struct Unk_NtFlags { bool m_0; bool m_1; bool m_2; bool m_3; bool m_4; bool m_5; };
 
 class Unk_NtUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 float FUN_1412762d0(const NiPoint3& pt);
 bool FUN_14028d470(float a, float b);                                       // a == b (within epsilon)
@@ -146,8 +146,8 @@ public:
     int FUN_1406c5b00(unsigned short nId, int nKind);
     CStringW FUN_1406c6360(unsigned short nId, PC* pPc, int n);
 };
-class Unk_NtMgr* FUN_14131e120();   // C3: was FUN_14131e120
-CStringW FUN_140b8f730(const Vector3& kPos);   // "x,y,z" (unit_140b8e760_clientdatetimehelpers.cpp)
+class Unk_NtMgr* GetNametagSymbolTable();   // C3: was GetNametagSymbolTable
+CStringW FormatPosition(const Vector3& kPos);   // "x,y,z" (unit_140b8e760_clientdatetimehelpers.cpp)
 CStringW FUN_14016a730(const char* sz, int n);
 CStringW GetStringCommon(int nStringId);
 
@@ -260,9 +260,9 @@ void UINameTag::Entity::vfunc_4()
 void UINameTag::Entity::vfunc_5()
 {
     UIHudEntity::Entity::vfunc_5();
-    if (FUN_141a60d30() == 1)
+    if (GetNameTagMode() == 1)
         FUN_141a5ff60();
-    else if (FUN_141a60d30() == 2)
+    else if (GetNameTagMode() == 2)
         FUN_141a5f080();
     if (m_38.get() != 0)
     {
@@ -279,9 +279,9 @@ void UINameTag::Entity::vfunc_6(NiPoint3* pPos)
         return;
     if (m_38.get() != 0)
     {
-        if (FUN_141a60d30() == 2)
+        if (GetNameTagMode() == 2)
             FUN_141a5f080();
-        *pPos *= ((class GFxManager*)(class Unk_NtUIScale*)(((class Unk_NtUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
+        *pPos *= ((class GFxManager*)(class Unk_NtUIScale*)(((class Unk_NtUIScale*)GetGFxManager())))->GetMovieScale(m_18);
         pPos->y += vfunc_9();
         float fDist = FUN_140f48e20();
         bool bNear = !(700.0f < fDist) || WorldService::GetInstance()->FUN_141bd30a0()->m_nGlobalNameTag != 0;
@@ -307,7 +307,7 @@ void UINameTag::Entity::vfunc_7()
 // @0x141a5ebe0
 int UINameTag::Entity::vfunc_8(int n)
 {
-    if (FUN_141a60d30() == 0)
+    if (GetNameTagMode() == 0)
         return 1;
     {
         PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -328,7 +328,7 @@ int UINameTag::Entity::vfunc_8(int n)
     if (pHolder != 0)
     {
         MS2SvrPtr<CRideeData> spMount = pHolder->GetData();
-        bool bMounted = ((CRideeData*)spMount ? true : false) && spMount->FUN_140784970()->m_nNameTagHide != 0;
+        bool bMounted = ((CRideeData*)spMount ? true : false) && spMount->GetDefaultRider()->m_nNameTagHide != 0;
         if (bMounted)
             return 1;
     }
@@ -408,8 +408,8 @@ void UINameTag::Entity::FUN_141a5f080()
             strInfo = StringFormat(L"{0} state:[{1}] pos:[{2}] rot:[{3}] {4}",
                                    pPc->vfunc_77(),
                                    FUN_14016a730(FUN_141a61590(((class PCBase*)(class PCBase*)(pPc))->GetCurStateId(), s_gosNames), 0),
-                                   FUN_140b8f730(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPc->vfunc_18()))),
-                                   FUN_140b8f730(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPc->vfunc_20()))),
+                                   FormatPosition(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPc->vfunc_18()))),
+                                   FormatPosition(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pPc->vfunc_20()))),
                                    pPc->vfunc_134());
         }
         else if (Unk_NtNpc* pNpc = reinterpret_cast<Unk_NtNpc*>(efd::DynamicCast<CNpc, PCBase>(pActor)))
@@ -445,10 +445,10 @@ void UINameTag::Entity::FUN_141a5f080()
                 strInfo.AppendFormat(L" tamingLevel:[%d], tamerOID:[%d], tamingPoint:[%d]",
                                      pPet->GetGrade(), pPet->GetKind(), pPet->GetTamingPoint());
         }
-        obj.FUN_1407cb9c0("visibleSymbol", m_7c);
-        obj.FUN_1407cb9c0("visibleName", m_78);
-        obj.FUN_1407cbb20("name", strInfo);
-        obj.FUN_1407cbb20("guild", strStats);
+        obj.SetIntMember("visibleSymbol", m_7c);
+        obj.SetIntMember("visibleName", m_78);
+        obj.SetWStringMember("name", strInfo);
+        obj.SetWStringMember("guild", strStats);
         obj.SetMemberUInt("fontSize", m_60);
         obj.SetMemberUInt("fontColor", m_64);
         m_38->Invoke("setData", obj);
@@ -483,12 +483,12 @@ void UINameTag::Entity::FUN_141a5ff60()
                 Unk_NtSymbolRec& rec = *pRec;
                 if (((class PCBase*)(class PC*)(pPc))->FUN_141678320() == 1)
                 {
-                    obj.FUN_1407cbb20("symbol", rec.m_18);
+                    obj.SetWStringMember("symbol", rec.m_18);
                     bSymbol = true;
                 }
                 else if (((class PCBase*)(class PC*)(pPc))->FUN_141678320() == 2)
                 {
-                    obj.FUN_1407cbb20("symbol", rec.m_20);
+                    obj.SetWStringMember("symbol", rec.m_20);
                     bSymbol = true;
                 }
             }
@@ -515,23 +515,23 @@ void UINameTag::Entity::FUN_141a5ff60()
             if (!bSymbol)
             {
                 unsigned short nId = ((class PCBase*)(class PC*)(pPc))->FUN_141661e00();
-                if (((class Unk_NtItemMgr*)FUN_14131e120())->FUN_1406c5b00(nId, 2) != 0)
+                if (((class Unk_NtItemMgr*)GetNametagSymbolTable())->FUN_1406c5b00(nId, 2) != 0)
                 {
                     int nGrade, nRank;
                     if (((class PC*)(class PC*)(pPc))->FUN_141661e40(&nGrade, &nRank) != 0)
                     {
                         obj.FUN_1409c0dc0("symbol", "enchant");
-                        obj.FUN_1407cb9c0("grade", nGrade);
+                        obj.SetIntMember("grade", nGrade);
                         obj.FUN_1409adc90("rank", nRank);
                     }
                 }
                 else if (((class PCBase*)(class PC*)(pPc))->FUN_141661e20() != 0)
                 {
-                    const CStringW& strIcon = ((class Unk_NtItemMgr*)FUN_14131e120())->FUN_1406c6360(nId, pPc, 0);
-                    obj.FUN_1407cbb20("symbol", strIcon);
-                    if (((class Unk_NtItemMgr*)FUN_14131e120())->FUN_1406c5b00(nId, 1) != 0)
+                    const CStringW& strIcon = ((class Unk_NtItemMgr*)GetNametagSymbolTable())->FUN_1406c6360(nId, pPc, 0);
+                    obj.SetWStringMember("symbol", strIcon);
+                    if (((class Unk_NtItemMgr*)GetNametagSymbolTable())->FUN_1406c5b00(nId, 1) != 0)
                         obj.FUN_1409c48f0("level", (short)pPc->vfunc_78());
-                    else if (((class Unk_NtItemMgr*)FUN_14131e120())->FUN_1406c5b00(nId, 0xb) != 0)
+                    else if (((class Unk_NtItemMgr*)GetNametagSymbolTable())->FUN_1406c5b00(nId, 0xb) != 0)
                         obj.SetMemberUInt("level", pPc->vfunc_141());
                 }
             }
@@ -540,13 +540,13 @@ void UINameTag::Entity::FUN_141a5ff60()
         {
             strGuild = pNpc->FUN_141093980();
         }
-        obj.FUN_1407cb9c0("visibleSymbol", m_7c);
-        obj.FUN_1407cb9c0("visibleName", m_78);
-        obj.FUN_1407cbb20("name", strName);
-        obj.FUN_1407cbb20("guild", strGuild);
+        obj.SetIntMember("visibleSymbol", m_7c);
+        obj.SetIntMember("visibleName", m_78);
+        obj.SetWStringMember("name", strName);
+        obj.SetWStringMember("guild", strGuild);
         obj.SetMemberUInt("fontSize", m_60);
         obj.SetMemberUInt("fontColor", m_64);
-        obj.FUN_1407cba60("skin", m_70);
+        obj.SetStringMember("skin", m_70);
         m_38->Invoke("setData", obj);
     }
 }
@@ -562,18 +562,18 @@ int UINameTag::Entity::FUN_141a60920()
         return 0;
     if (FUN_1417ddbf0(pActor ? pActor->GetClassDesc() : 0, 0x6200004))   // the exe uses the exact-class check here
     {
-        FUN_141a60b90(reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_1, reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_0);
+        FUN_141a60b90(reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_1, reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_0);
         return m_78 != 0 || m_7c != 0;
     }
     else if (Unk_NtPC* pPc = reinterpret_cast<Unk_NtPC*>(efd::DynamicCast<PC, PCBase>(pActor)))
     {
         if (pPlayer->vfunc_122(pPc) == 0)
         {
-            FUN_141a60b90(reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_1, reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_2);
+            FUN_141a60b90(reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_1, reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_2);
         }
         else
         {
-            FUN_141a60b90(reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_1, reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_3);
+            FUN_141a60b90(reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_1, reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_3);
         }
         return m_78 != 0 || m_7c != 0;
     }
@@ -584,9 +584,9 @@ int UINameTag::Entity::FUN_141a60920()
     else if (Unk_NtNpc* pNpc = reinterpret_cast<Unk_NtNpc*>(efd::DynamicCast<CNpc, PCBase>(pActor)))
     {
         if (pNpc->vfunc_116() == 0)
-            return reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_5;
+            return reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_5;
         else
-            return reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_4;
+            return reinterpret_cast<Unk_NtFlags*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_4;
     }
     return 0;
 }
@@ -623,21 +623,21 @@ CString UINameTag::GetTypeName()
 void UINameTag::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_141a60f70(m_68);
+    CreateEntityCache(m_68);
 }
 
 #ifndef MS2_HOOK_DLL
 // @0x141a60d30
-int FUN_141a60d30()
+int GetNameTagMode()
 {
     return s_nNameTagMode;
 }
 #endif
 
-void FUN_141a60d40(int nMode);
+void SetNameTagMode(int nMode);
 #ifndef MS2_HOOK_DLL
 // @0x141a60d40
-void FUN_141a60d40(int nMode)
+void SetNameTagMode(int nMode)
 {
     if (((struct Unk_NtCfg*)GetClientConstants())->m_8 != 0)
     {
@@ -655,7 +655,7 @@ void FUN_141a60d40(int nMode)
 #endif
 
 // @0x141a62100
-UINameTag* FUN_141a62100(int nUiId)
+UINameTag* FindNameTag(int nUiId)
 {
     if (reinterpret_cast<Unk_NtUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -667,12 +667,12 @@ UINameTag* FUN_141a62100(int nUiId)
 }
 
 // @0x141a60da0
-MS2Ptr<UINameTag::Entity> FUN_141a60da0(int nActorId)
+MS2Ptr<UINameTag::Entity> CreateNameTagEntity(int nActorId)
 {
-    UINameTag* pTag = FUN_141a62100(0x4e5a);
+    UINameTag* pTag = FindNameTag(0x4e5a);
     if (pTag != 0)
     {
-        MS2Ptr<UINameTag::Entity> pEntity(pTag->FUN_141a61150(nActorId));
+        MS2Ptr<UINameTag::Entity> pEntity(pTag->AcquireEntity(nActorId));
         if (pEntity.IsNull())
             return MS2Ptr<UINameTag::Entity>(0);
         pEntity->vfunc_1();
@@ -685,15 +685,15 @@ MS2Ptr<UINameTag::Entity> FUN_141a60da0(int nActorId)
 // @0x141a60ec0
 void FUN_141a60ec0(int nActorId)
 {
-    UINameTag* pTag = FUN_141a62100(0x4e5a);
+    UINameTag* pTag = FindNameTag(0x4e5a);
     if (pTag)
-        pTag->FUN_140f49c00(nActorId);
+        pTag->ReleaseEntity(nActorId);
 }
 
 // @0x141a60f00
 void FUN_141a60f00(int nActorId)
 {
-    UINameTag* pTag = FUN_141a62100(0x4e5a);
+    UINameTag* pTag = FindNameTag(0x4e5a);
     if (pTag)
         pTag->FUN_140f49cb0(nActorId);
 }
@@ -701,13 +701,13 @@ void FUN_141a60f00(int nActorId)
 // @0x141a60f40
 void FUN_141a60f40()
 {
-    UINameTag* pTag = FUN_141a62100(0x4e5a);
+    UINameTag* pTag = FindNameTag(0x4e5a);
     if (pTag)
         pTag->FUN_140f49d20();
 }
 
 // @0x141a60f70
-void UINameTag::FUN_141a60f70(unsigned int nCount)
+void UINameTag::CreateEntityCache(unsigned int nCount)
 {
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
@@ -729,12 +729,12 @@ void UINameTag::FUN_141a60f70(unsigned int nCount)
 }
 
 // @0x141a61150
-UINameTag::Entity* UINameTag::FUN_141a61150(int nActorId)
+UINameTag::Entity* UINameTag::AcquireEntity(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     {
-    FUN_140f49c00(nActorId);
+    ReleaseEntity(nActorId);
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
     {
@@ -742,7 +742,7 @@ UINameTag::Entity* UINameTag::FUN_141a61150(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -769,7 +769,7 @@ UINameTag::Entity* UINameTag::FUN_141a61150(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", pOldClip->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->UpdateEntity("updateEntity", pOldClip->GetValue(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);

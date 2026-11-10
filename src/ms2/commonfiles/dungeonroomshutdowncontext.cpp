@@ -46,7 +46,7 @@ DungeonRoomShutdownContext::DungeonRoomShutdownContext()
 }
 
 // @0x140343eb0
-void DungeonRoomShutdownContext::FUN_140343eb0(const CStringW& strXml)
+void DungeonRoomShutdownContext::LoadRoomIds(const CStringW& strXml)
 {
     TiXmlDocument doc;
     if (GetFileSystem()->LoadXmlFromString(&doc, strXml) == 0)
@@ -84,7 +84,7 @@ void DungeonRoomShutdownContext::FUN_140343fc0(const CStringW& strXml)
 }
 
 // @0x1403440d0
-bool DungeonRoomShutdownContext::FUN_1403440d0(unsigned nRoomId)
+bool DungeonRoomShutdownContext::HasRoomId(unsigned nRoomId)
 {
     if (m_roomIds.find(nRoomId) != m_roomIds.end())
         return 1;

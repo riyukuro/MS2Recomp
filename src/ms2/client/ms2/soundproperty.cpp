@@ -188,8 +188,8 @@ template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*,
 int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
 CString FUN_14028d1f0(const char* psz);                                 // CString of attribute text
 CString FUN_140188f50(const char* psz, int nCodePage);
-CString FUN_14016a5c0(const char* psz, int n);                          // narrows a string (the RTTI name in CheckInit)
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);  // Table/<file>
+CString ToCString(const char* psz, int n);                          // narrows a string (the RTTI name in CheckInit)
+CString GetXmlPath(const CString& strDir, const CString& strFile);  // Table/<file>
 void FUN_1401d3700(CString& str);                                       // lower-cases in place
 #ifdef MS2_HOOK_DLL
 CString& FUN_1401c0cc0(ATL::CAtlArray<CString>* pArray, unsigned __int64 nIndex);   // folded CAtlArray<CString>::operator[] copy
@@ -466,42 +466,42 @@ unsigned SoundPropertyMgr::Load()
     unsigned bOk = 1;
     CString strPath;
     CCacheData* pCache;
-    strPath = FUN_14071a5b0("Table", "hitSound.xml");
+    strPath = GetXmlPath("Table", "hitSound.xml");
     bOk = LoadHitSound(strPath) & bOk;
     pCache = new CCacheData;
-    pCache->FUN_1401d1160(strPath);
+    pCache->SetPath(strPath);
     {
         CachePtr spCache(pCache);
         m_cacheFiles.push_front(static_cast<CachePtr&&>(spCache));
     }
-    strPath = FUN_14071a5b0("Table", "systemSound.xml");
+    strPath = GetXmlPath("Table", "systemSound.xml");
     bOk = LoadSystemSound(strPath) & bOk;
     pCache = new CCacheData;
-    pCache->FUN_1401d1160(strPath);
+    pCache->SetPath(strPath);
     {
         CachePtr spCache(pCache);
         m_cacheFiles.push_front(static_cast<CachePtr&&>(spCache));
     }
-    strPath = FUN_14071a5b0("Table", "pitchSound.xml");
+    strPath = GetXmlPath("Table", "pitchSound.xml");
     bOk = LoadPitchSound(strPath) & bOk;
     pCache = new CCacheData;
-    pCache->FUN_1401d1160(strPath);
+    pCache->SetPath(strPath);
     {
         CachePtr spCache(pCache);
         m_cacheFiles.push_front(static_cast<CachePtr&&>(spCache));
     }
-    strPath = FUN_14071a5b0("Table", "EventSound.xml");
+    strPath = GetXmlPath("Table", "EventSound.xml");
     bOk = LoadEventSound(strPath) & bOk;
     pCache = new CCacheData;
-    pCache->FUN_1401d1160(strPath);
+    pCache->SetPath(strPath);
     {
         CachePtr spCache(pCache);
         m_cacheFiles.push_front(static_cast<CachePtr&&>(spCache));
     }
-    strPath = FUN_14071a5b0("Table", "TriggerVoice.xml");
+    strPath = GetXmlPath("Table", "TriggerVoice.xml");
     bOk = LoadTriggerVoice(strPath) & bOk;
     pCache = new CCacheData;
-    pCache->FUN_1401d1160(strPath);
+    pCache->SetPath(strPath);
     {
         CachePtr spCache(pCache);
         m_cacheFiles.push_front(static_cast<CachePtr&&>(spCache));
@@ -514,7 +514,7 @@ unsigned SoundPropertyMgr::Load()
 int SoundPropertyMgr::LoadHitSound(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, pszPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot != 0)
@@ -543,7 +543,7 @@ int SoundPropertyMgr::LoadHitSound(const char* pszPath)
 int SoundPropertyMgr::LoadSystemSound(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, pszPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot != 0)
@@ -565,7 +565,7 @@ int SoundPropertyMgr::LoadSystemSound(const char* pszPath)
 int SoundPropertyMgr::LoadPitchSound(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, pszPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot != 0)
@@ -591,7 +591,7 @@ int SoundPropertyMgr::LoadPitchSound(const char* pszPath)
 int SoundPropertyMgr::LoadEventSound(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, pszPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot != 0)
@@ -631,7 +631,7 @@ int SoundPropertyMgr::LoadEventSound(const char* pszPath)
 int SoundPropertyMgr::LoadTriggerVoice(const char* pszPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, pszPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot != 0)
@@ -673,7 +673,7 @@ int SoundPropertyMgr::GetEventVoice(int nEventId, GameObject* pActor, Unk_EventV
     return 0;
 }
 // @0x141792ee0
-SoundPropertyMgr::SystemPtr SoundPropertyMgr::FUN_141792ee0(const CString& strName, const CString& strArg)
+SoundPropertyMgr::SystemPtr SoundPropertyMgr::FindSystemSound(const CString& strName, const CString& strArg)
 {
     CheckInit();
     if (m_systemSounds.IsEmpty())
@@ -705,7 +705,7 @@ SoundPropertyMgr::VoicePtr SoundPropertyMgr::FindTriggerVoice(const CString& str
     return VoicePtr(0);
 }
 // @0x141793210
-void SoundPropertyMgr::FUN_141793210(Unk_VoiceGroupMap& rOut)
+void SoundPropertyMgr::CollectTriggerVoiceNames(Unk_VoiceGroupMap& rOut)
 {
     for (POSITION pos = m_triggerVoices.GetStartPosition(); pos != 0; m_triggerVoices.GetNext(pos))
     {
@@ -743,7 +743,7 @@ void SoundPropertyMgr::Reload()
     Load();
 }
 // @0x141793450
-void SoundPropertyMgr::FUN_141793450()
+void SoundPropertyMgr::ReloadIfChanged()
 {
     bool bChanged = false;
     for (std::list<CachePtr>::iterator it = m_cacheFiles.begin(); it != m_cacheFiles.end(); ++it)
@@ -791,7 +791,7 @@ void SoundPropertyMgr::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(SoundPropertyMgr).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(SoundPropertyMgr).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

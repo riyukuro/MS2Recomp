@@ -157,14 +157,14 @@ public:
     // @0x140e7cb60
     virtual int vfunc_48() { return 0x4f3c; }                       // 48
 
-    void FUN_140e7af90(NotifyObject* pNotify);                      // NotifyAddNpc
-    void FUN_140e7b130(NotifyObject* pNotify);                      // NotifyRemoveNpc
-    void FUN_140e7b290(NotifyObject* pNotify);                      // NotifyAddInteract
-    void FUN_140e7b430(NotifyObject* pNotify);                      // NotifyAddLiftable
+    void OnAddNpc(NotifyObject* pNotify);                      // NotifyAddNpc
+    void OnRemoveNpc(NotifyObject* pNotify);                      // NotifyRemoveNpc
+    void OnAddInteract(NotifyObject* pNotify);                      // NotifyAddInteract
+    void OnAddLiftable(NotifyObject* pNotify);                      // NotifyAddLiftable
     void FUN_140e7b640(NotifyObject* pNotify);                      // NotifyCompleteMyPC: the "PcHud" arrow
-    void FUN_140e7b720(NotifyObject* pNotify);                      // NotifyAddPortal
-    int FUN_140e7b890(MS2Ptr<QuestNavigation::NavigationEntity> spEntity);   // addChild (by value: callee destroys)
-    int FUN_140e7ba00(MS2Ptr<QuestNavigation::NavigationEntity> spEntity);   // removeChild
+    void OnAddPortal(NotifyObject* pNotify);                      // NotifyAddPortal
+    int AddChild(MS2Ptr<QuestNavigation::NavigationEntity> spEntity);   // addChild (by value: callee destroys)
+    int RemoveChild(MS2Ptr<QuestNavigation::NavigationEntity> spEntity);   // removeChild
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -58,13 +58,13 @@ template <class A> CStringW FormatStringId(int nId, const A& a);            // f
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int nType);    // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                    // show it
 void FUN_140710590(COutPacket& packet);                         // send the packet
-class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
+class UIMinimapDialog* FindMinimapDialog(int);   // C3: was FindMinimapDialog
 
 // @0x140f3fb10
 UIEnterEventFieldDialog::UIEnterEventFieldDialog()
 {
     m_2c = 0x19;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     m_nFieldId = 0;
 }
 
@@ -139,8 +139,8 @@ void UIEnterEventFieldDialog::vfunc_43()
         int nInside = (m_60 == 0 && m_78 != 0 && vfunc_52() != 0) ? 1 : 0;
         if (nInside != 0)
         {
-            if ((float)pDialog->FUN_1422c1500() < pDialog->FUN_1422c10a0() || (float)static_cast<ASDisplayObject*>(pDialog)->FUN_1422c1530() < pDialog->FUN_1422c1110()
-                || pDialog->FUN_1422c10a0() < 0.0f || pDialog->FUN_1422c1110() < 0.0f)
+            if ((float)pDialog->FUN_1422c1500() < pDialog->GetX() || (float)static_cast<ASDisplayObject*>(pDialog)->FUN_1422c1530() < pDialog->GetY()
+                || pDialog->GetX() < 0.0f || pDialog->GetY() < 0.0f)
                 bMove = true;
         }
         else
@@ -149,7 +149,7 @@ void UIEnterEventFieldDialog::vfunc_43()
         }
         if (bMove)
         {
-            UIObject* pHud = ((class UIObject*)FUN_140c9b540(0x4e29));
+            UIObject* pHud = ((class UIObject*)FindMinimapDialog(0x4e29));
             if (pHud != 0)
             {
                 if (pHud->FUN_1422dc430() == 0)
@@ -163,8 +163,8 @@ void UIEnterEventFieldDialog::vfunc_43()
                     {
                         double dX = 0.0;
                         double dY = 0.0;
-                        if (((class ASMovieClip*)(class ASMovieClip*)(spClip.operator->()))->FUN_1422c2510(&dX, &dY) != 0)
-                            nX = (int)((dX - (double)(int)((float)pDialog->FUN_1422c1340() * 0.5f)) + 10.0);
+                        if (((class ASMovieClip*)(class ASMovieClip*)(spClip.operator->()))->LocalToGlobal(&dX, &dY) != 0)
+                            nX = (int)((dX - (double)(int)((float)pDialog->GetWidthCeil() * 0.5f)) + 10.0);
                     }
                     pDialog->SetPositionInt(nX > 0 ? nX : 0, 0);
                 }

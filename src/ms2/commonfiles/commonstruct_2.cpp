@@ -777,7 +777,7 @@ Unk_ItemAbleTwin::Unk_ItemAbleTwin() {}
 // ---- smart-pointer / container dtors: noexcept single-call bodies (the -2 unwind slot + nop is the noexcept frame) ----
 i64 FUN_140288e10(void*); i64 FUN_140288e50(void*); i64 FUN_140288e90(void*); i64 FUN_140288ed0(void*);
 i64 FUN_140288f50(void*); i64 FUN_140288fd0(void*); i64 FUN_140289010(void*);
-i64 FUN_140289050(void*); struct Unk_CsI64Vec { void FUN_140289670(); }; i64 FUN_140289810(void*); i64 FUN_1402898e0(void*);
+i64 FUN_140289050(void*); struct Unk_CsI64Vec { void Tidy(); }; i64 FUN_140289810(void*); i64 FUN_1402898e0(void*);
 i64 FUN_1402899b0(void*); i64 FUN_140289650(void*); i64 FUN_1402895f0(void*);
 void FUN_140287dc0(void*, i64);
 // MS2-PIN: ??1?$MS2Ptr@VCIngredientInfo@@@@QEAA@XZ 0x14027df70
@@ -803,7 +803,7 @@ class InvokeEffectOption; template MS2Ptr<InvokeEffectOption>::~MS2Ptr();   // C
 // @0x14027e120
 template PLog::~MS2Ptr();   // C3: was FUN_14027e120 calling FUN_140289010
 // @0x14027e3f0
-void FUN_14027e3f0(void* t) noexcept { reinterpret_cast<Unk_CsI64Vec*>(t)->FUN_140289670(); }
+void FUN_14027e3f0(void* t) noexcept { reinterpret_cast<Unk_CsI64Vec*>(t)->Tidy(); }
 // @0x14027e4b0
 template VLog::~vector();   // C3: was FUN_14027e4b0 calling FUN_1402899b0 (_Tidy, ICF with vector<MS2Ptr<CPtred>>)
 // @0x14027deb0
@@ -951,7 +951,7 @@ void FUN_140287550(i64, i64); void FUN_140287580(i64, i64);
 i64 FUN_14027eb30(i64 t, i64 o)
 {
     if (t != FUN_14027b500(o)) {
-        if (Unk_False::value) reinterpret_cast<Unk_CsI64Vec*>(t)->FUN_140289670();
+        if (Unk_False::value) reinterpret_cast<Unk_CsI64Vec*>(t)->Tidy();
         FUN_140287550(t, (i64)&reinterpret_cast<const VI64*>(o)->_Getal());
         reinterpret_cast<VRemake*>(t)->assign(*(Unk_RemakeLockOpt**)&reinterpret_cast<const VI64*>(o)->_Myfirst(), *(Unk_RemakeLockOpt**)&reinterpret_cast<const VI64*>(o)->_Mylast());
     }
@@ -1026,7 +1026,7 @@ int& Unk_RewardMap::FUN_14027f180(unsigned& key)
     return reinterpret_cast<MapII::iterator*>(FUN_14027c4c0((i64)this, (i64)&loc, (i64)&key))->operator->()->second;
 }
 // @0x14027f1c0
-CString* Unk_StrVec::FUN_14027f1c0(size_t i) { return (CString*)*(i64*)(i64)&reinterpret_cast<VStr*>((i64)this)->_Myfirst() + i; }
+CString* Unk_StrVec::GetAt(size_t i) { return (CString*)*(i64*)(i64)&reinterpret_cast<VStr*>((i64)this)->_Myfirst() + i; }
 // @0x14027f1f0
 template PIng& VIng::operator[](size_t);
 // @0x14027f220

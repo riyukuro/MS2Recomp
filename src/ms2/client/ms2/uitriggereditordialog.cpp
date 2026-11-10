@@ -138,20 +138,20 @@ public:
 class Unk_TeScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_141b2fee0(const char* szMethod, const AScript& a1, CStringW a2);   // inline COMDAT below
+    Scaleform::GFx::Value Invoke(const char* szMethod, const AScript& a1, CStringW a2);   // inline COMDAT below
 };
 // The (int, int, int) invoke helper, defined as Unk_EpEntity:: by uiepprogress.cpp.
 class Unk_EpEntity { public: Scaleform::GFx::Value FUN_141931d80(const char* szMethod, int a1, int a2, int a3); };
 // The (string, int, int) invoke helper, defined as Unk_FtEntity:: by uiguildflagtooltip.cpp.
-class Unk_FtEntity { public: Scaleform::GFx::Value FUN_1412c4930(const char* szMethod, CStringW a1, int a2, int a3); };   // a1 by value
+class Unk_FtEntity { public: Scaleform::GFx::Value Invoke(const char* szMethod, CStringW a1, int a2, int a3); };   // a1 by value
 
 extern int g_bAppActive;                                                // 0x143af7d40
-class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
+class UIWebBrowser* FindWebBrowser(int);   // C3: was FindWebBrowser
 CStringW GetStringCommon(int nStringId);                                  // common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // common string by key
 CStringW FUN_1422b9490(const Scaleform::GFx::Value& v);                 // the value as a string
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);   // system message
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Unk_TeBoxDelegate cb);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW strText, int nType, Unk_TeBoxDelegate cb);
 template <class A> MS2Ptr<CMsgBoxData> Unk_PmShowYesNo(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb, A arg);   // C3: was FUN_141a879a0 (uipartydialog)
 void FUN_14151f150(MS2Ptr<CMsgBoxData> spBox);                          // show the box
 CString FUN_141b6e500(const CString& strDir, const char* pszFilter, const CString& strDefault);   // open-file dialog
@@ -164,12 +164,12 @@ CStringW FUN_140719960(const wchar_t* psz);                             // a mes
 void FUN_140710590(COutPacket& packet);                                 // send the packet
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text field
 int FUN_1408a03c0(Unk_Int3 pos);                                        // the cube key of a position
-int FUN_140768010(int nRange, int nMin);                                // random position
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);                                     // the GFx movie of a movie id
+int GetRandomRange(int nRange, int nMin);                                // random position
+Scaleform::GFx::Movie* GetMovie(int nMovieId);                                     // the GFx movie of a movie id
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 MS2Ptr<CMsgBoxData> FUN_141b30060(CStringW strText, int nType, Unk_TeBoxDelegate cb, const wchar_t* pszTag);
-bool FUN_141b2fa20(Cube* pLeft, Cube* pRight);
+bool CompareCubeNames(Cube* pLeft, Cube* pRight);
 
 // @0x141b29f20
 UITriggerEditorDialog::UITriggerEditorDialog()
@@ -177,7 +177,7 @@ UITriggerEditorDialog::UITriggerEditorDialog()
 {
     m_spTrigger.AssignRaw(new TriggerCli);
     m_spTrigger->LoadEditorTable();
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x141b2a0a0
@@ -216,12 +216,12 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
         return 1;
     if (_stricmp("OnClose", szMethod) == 0)
     {
-        FUN_140d74390(GetStringCommon(0xb01), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b140));
+        ShowMessageBoxWithCallback(GetStringCommon(0xb01), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::OnCloseAnswer));
         return 1;
     }
     else if (_stricmp("OnHelp", szMethod) == 0)
     {
-        UIWebBrowserBase* pBrowser = ((class UIWebBrowserBase*)FUN_140c43790(0x4e6a));
+        UIWebBrowserBase* pBrowser = ((class UIWebBrowserBase*)FindWebBrowser(0x4e6a));
         if (pBrowser == 0)
             return 0;
         pBrowser->FUN_14135ec00(*TSingleton<Client::Constants>::GetInstance()->TriggerEditorHelpURL.Get(), true);
@@ -241,7 +241,7 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 states.GetElement((unsigned int)i, &state);
                 FUN_141b2be80(state);
             }
-            FUN_140d74390(GetStringCommon(0xb00), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b200));
+            ShowMessageBoxWithCallback(GetStringCommon(0xb00), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::OnApplyAnswer));
         }
         return 1;
     }
@@ -269,7 +269,7 @@ int UITriggerEditorDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     {
         if (nArgs != 2)
             return 1;
-        Unk_TeBoxDelegate cb(this, &UITriggerEditorDialog::FUN_141b2b2b0);
+        Unk_TeBoxDelegate cb(this, &UITriggerEditorDialog::OnRemoveStateAnswer);
         CStringW strText = FUN_14028dfa0(CStringW(L"s_user_trigger_ask_msg_remove_state"), FUN_1422b9490(pArgs[0]));
         Unk_PmShowYesNo<CStringW>(strText, 1, cb, FUN_1422b9490(pArgs[1]));
         return 1;
@@ -287,13 +287,13 @@ void UITriggerEditorDialog::OnLoadComplete()
     efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     Cube* pCube = spService->GetCubeByKey(m_nCubeId);
     if (pCube != 0)
-        SetChildText(FUN_1422dbb40(), "m_computerName", StringFormat(L"{0} ({1})", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
+        SetChildText(GetGFxValue(), "m_computerName", StringFormat(L"{0} ({1})", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_1408b4f20()), m_nCubeId));
     reinterpret_cast<Unk_EpEntity*>(m_30.operator->())->FUN_141931d80("initalMaxAttribute",
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerEnterActionMax.Get(),
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerConditionMax.Get(),
         *TSingleton<Client::Constants>::GetInstance()->UserTriggerConditionActionMax.Get());
-    static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("m_szCanvasWidth", 1500);
-    static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("m_szCanvasHeight", 1500);
+    static_cast<ASObj*>(m_30.operator->())->SetIntMember("m_szCanvasWidth", 1500);
+    static_cast<ASObj*>(m_30.operator->())->SetIntMember("m_szCanvasHeight", 1500);
     m_30->Invoke("initScrollBar");
     if (m_nCubeId != 0)
     {
@@ -312,16 +312,16 @@ void UITriggerEditorDialog::OnLoadComplete()
 MS2_REPLACE_METHOD(0x141B2AA10, UITriggerEditorDialog, OnLoadComplete, 1827, 0x93A07744);
 
 // @0x141b2b140
-bool UITriggerEditorDialog::FUN_141b2b140(int nResult, const CMsgBoxData& data)
+bool UITriggerEditorDialog::OnCloseAnswer(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
         vfunc_67();
     return 1;
 }
-MS2_REPLACE_METHOD(0x141B2B140, UITriggerEditorDialog, FUN_141b2b140, 51, 0x49202735);
+MS2_REPLACE_METHOD(0x141B2B140, UITriggerEditorDialog, OnCloseAnswer, 51, 0x49202735);
 
 // @0x141b2b180
-bool UITriggerEditorDialog::FUN_141b2b180(int nResult, const CMsgBoxData& data)
+bool UITriggerEditorDialog::OnResetAnswer(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
@@ -331,16 +331,16 @@ bool UITriggerEditorDialog::FUN_141b2b180(int nResult, const CMsgBoxData& data)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x141B2B180, UITriggerEditorDialog, FUN_141b2b180, 111, 0xA5682A69);
+MS2_REPLACE_METHOD(0x141B2B180, UITriggerEditorDialog, OnResetAnswer, 111, 0xA5682A69);
 
 // @0x141b2b200
-bool UITriggerEditorDialog::FUN_141b2b200(int nResult, const CMsgBoxData& data)
+bool UITriggerEditorDialog::OnApplyAnswer(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
         FUN_141b2d570();
     return 1;
 }
-MS2_REPLACE_METHOD(0x141B2B200, UITriggerEditorDialog, FUN_141b2b200, 42, 0xEF2A9723);
+MS2_REPLACE_METHOD(0x141B2B200, UITriggerEditorDialog, OnApplyAnswer, 42, 0xEF2A9723);
 
 // @0x141b2b230
 bool UITriggerEditorDialog::SendTriggerMode22(int nResult, const CMsgBoxData& data)
@@ -357,7 +357,7 @@ bool UITriggerEditorDialog::SendTriggerMode22(int nResult, const CMsgBoxData& da
 MS2_REPLACE_METHOD(0x141B2B230, UITriggerEditorDialog, SendTriggerMode22, 114, 0x4CC5B095);
 
 // @0x141b2b2b0
-bool UITriggerEditorDialog::FUN_141b2b2b0(int nResult, const CMsgBoxData& data)
+bool UITriggerEditorDialog::OnRemoveStateAnswer(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
@@ -366,7 +366,7 @@ bool UITriggerEditorDialog::FUN_141b2b2b0(int nResult, const CMsgBoxData& data)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x141B2B2B0, UITriggerEditorDialog, FUN_141b2b2b0, 221, 0xD3DD425F);
+MS2_REPLACE_METHOD(0x141B2B2B0, UITriggerEditorDialog, OnRemoveStateAnswer, 221, 0xD3DD425F);
 
 // @0x141b2b3a0
 void UITriggerEditorDialog::vfunc_43()
@@ -381,7 +381,7 @@ int UITriggerEditorDialog::vfunc_13()
 {
     if (CInputKeyHandler::GetInstance()->FUN_14116d840())
     {
-        FUN_141b30060(GetStringCommon(0xb01), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b140), L"TestArg");
+        FUN_141b30060(GetStringCommon(0xb01), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::OnCloseAnswer), L"TestArg");
         return 1;
     }
     if (UIDialog::vfunc_13() != 0)
@@ -391,25 +391,25 @@ int UITriggerEditorDialog::vfunc_13()
     if (m_bFolded != 0 && g_bAppActive == 0)
     {
         if (m_bFolded != 0 && m_30)
-            FUN_141b2b6e0();
+            UnfoldDialog();
     }
     else
     {
-        if (CInputKeyHandler::GetInstance()->FUN_14116d9c0(0xf, 0, 0))
-            FUN_141b2b600();
-        else if (CInputKeyHandler::GetInstance()->FUN_14116da30(0xf, 0, 0))
-            FUN_141b2b6e0();
+        if (CInputKeyHandler::GetInstance()->WasKeyPressed(0xf, 0, 0))
+            FoldDialog();
+        else if (CInputKeyHandler::GetInstance()->WasKeyReleased(0xf, 0, 0))
+            UnfoldDialog();
     }
     return 0;
 }
 MS2_REPLACE_METHOD(0x141B2B3D0, UITriggerEditorDialog, vfunc_13, 550, 0xD257927B);
 
 // @0x141b2b600
-void UITriggerEditorDialog::FUN_141b2b600()
+void UITriggerEditorDialog::FoldDialog()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    if (FUN_14025e7a0()->IsTextFieldFocused(m_28) == 0)
+    if (GetGFxManager()->IsTextFieldFocused(m_28) == 0)
     {
         m_30->Invoke("FoldDialog");
         m_bFolded = 1;
@@ -418,10 +418,10 @@ void UITriggerEditorDialog::FUN_141b2b600()
         GetUISwfEntityManager()->AddToLayer(this, 3);
     }
 }
-MS2_REPLACE_METHOD(0x141B2B600, UITriggerEditorDialog, FUN_141b2b600, 203, 0xC7D7F041);
+MS2_REPLACE_METHOD(0x141B2B600, UITriggerEditorDialog, FoldDialog, 203, 0xC7D7F041);
 
 // @0x141b2b6e0
-void UITriggerEditorDialog::FUN_141b2b6e0()
+void UITriggerEditorDialog::UnfoldDialog()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
@@ -434,10 +434,10 @@ void UITriggerEditorDialog::FUN_141b2b6e0()
         GetUISwfEntityManager()->AddToLayer(this, m_e0);
     }
 }
-MS2_REPLACE_METHOD(0x141B2B6E0, UITriggerEditorDialog, FUN_141b2b6e0, 242, 0x11538C2C);
+MS2_REPLACE_METHOD(0x141B2B6E0, UITriggerEditorDialog, UnfoldDialog, 242, 0x11538C2C);
 
 // @0x141b2b7e0
-int UITriggerEditorDialog::FUN_141b2b7e0(CFileSystem::BufferPtr spBuffer)
+int UITriggerEditorDialog::LoadTriggerScript(CFileSystem::BufferPtr spBuffer)
 {
     if (spBuffer.IsNull())
         return 0;
@@ -445,29 +445,29 @@ int UITriggerEditorDialog::FUN_141b2b7e0(CFileSystem::BufferPtr spBuffer)
     if (m_spTrigger.IsNull())
         return 0;
     m_spTrigger->LoadEditorTable();
-    FUN_141b2d870();
-    FUN_141b2dd80();
+    RefreshInstallObjectList();
+    RefreshStates();
     return 1;
 }
-MS2_REPLACE_METHOD(0x141B2B7E0, UITriggerEditorDialog, FUN_141b2b7e0, 322, 0x6593F73F);
+MS2_REPLACE_METHOD(0x141B2B7E0, UITriggerEditorDialog, LoadTriggerScript, 322, 0x6593F73F);
 
 // @0x141b2b930
-void UITriggerEditorDialog::FUN_141b2b930()
+void UITriggerEditorDialog::RefreshInstallList()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    FUN_141b2d870();
+    RefreshInstallObjectList();
     m_30->Invoke("invalidateInstallObject");
 }
-MS2_REPLACE_METHOD(0x141B2B930, UITriggerEditorDialog, FUN_141b2b930, 97, 0x87D9C935);
+MS2_REPLACE_METHOD(0x141B2B930, UITriggerEditorDialog, RefreshInstallList, 97, 0x87D9C935);
 
 // @0x141b2b9a0
-void UITriggerEditorDialog::FUN_141b2b9a0(CString strCube, int nCubeId)
+void UITriggerEditorDialog::SetCube(CString strCube, int nCubeId)
 {
     m_strCube = strCube;
     m_nCubeId = nCubeId;
 }
-MS2_REPLACE_METHOD(0x141B2B9A0, UITriggerEditorDialog, FUN_141b2b9a0, 84, 0x09BB57A1);
+MS2_REPLACE_METHOD(0x141B2B9A0, UITriggerEditorDialog, SetCube, 84, 0x09BB57A1);
 
 // @0x141b2ba00
 void UITriggerEditorDialog::FUN_141b2ba00(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -479,14 +479,14 @@ MS2_REPLACE_METHOD(0x141B2BA00, UITriggerEditorDialog, FUN_141b2ba00, 29, 0xD7B9
 // @0x141b2ba30
 void UITriggerEditorDialog::FUN_141b2ba30(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_140d74390(GetStringCommon(0xafe), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::SendTriggerMode22));
+    ShowMessageBoxWithCallback(GetStringCommon(0xafe), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::SendTriggerMode22));
 }
 MS2_REPLACE_METHOD(0x141B2BA30, UITriggerEditorDialog, FUN_141b2ba30, 211, 0x5605CB96);
 
 // @0x141b2bb10
 void UITriggerEditorDialog::FUN_141b2bb10(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_140d74390(GetStringCommon(0xaff), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::FUN_141b2b180));
+    ShowMessageBoxWithCallback(GetStringCommon(0xaff), 1, Unk_TeBoxDelegate(this, &UITriggerEditorDialog::OnResetAnswer));
 }
 MS2_REPLACE_METHOD(0x141B2BB10, UITriggerEditorDialog, FUN_141b2bb10, 211, 0x1ED019CA);
 
@@ -728,7 +728,7 @@ void UITriggerEditorDialog::FUN_141b2d570()
 MS2_REPLACE_METHOD(0x141B2D570, UITriggerEditorDialog, FUN_141b2d570, 747, 0xC7E0F5F8);
 
 // @0x141b2d870
-void UITriggerEditorDialog::FUN_141b2d870()
+void UITriggerEditorDialog::RefreshInstallObjectList()
 {
     PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -739,7 +739,7 @@ void UITriggerEditorDialog::FUN_141b2d870()
     efd::SmartPointer<Unk_TeCubeService> spService(((class Unk_TeCubeService*)egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>()));
     spService->FUN_1410b9e90(reinterpret_cast<PC*>(pPlayer)->GetAccountId(), reinterpret_cast<struct Unk_CMISCubePtrSet*>(&cubes));
     if (!cubes.empty())
-        std::sort(cubes.begin(), cubes.end(), FUN_141b2fa20);
+        std::sort(cubes.begin(), cubes.end(), CompareCubeNames);
     MS2Ptr<ASTileList> spList = GetChild<ASTileList>("m_installScrollingList");
     if (spList == 0)
         return;
@@ -754,16 +754,16 @@ void UITriggerEditorDialog::FUN_141b2d870()
         if (pCube->item.IsNull())
             continue;
         ASObj obj(2);
-        obj.FUN_1407cb9c0("id", nIndex);
+        obj.SetIntMember("id", nIndex);
         CStringW strText = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pCube->FUN_1408b4f20());
-        obj.FUN_1407cbb20("text", strText);
+        obj.SetWStringMember("text", strText);
         int nHash = FUN_1408a03c0(pCube->position);
-        obj.FUN_1407cb9c0("hash", nHash);
+        obj.SetIntMember("hash", nHash);
         obj.FUN_141b2ffc0("type", 1);
-        obj.FUN_1407cbb20("label", StringFormat((const wchar_t*)strFormat, strText, nHash));
-        CObjectDataPtr spData = FUN_140704ec0(pCube->fieldB4);
+        obj.SetWStringMember("label", StringFormat((const wchar_t*)strFormat, strText, nHash));
+        CObjectDataPtr spData = GetObjectData(pCube->fieldB4);
         if ((CObjectData*)spData != 0)
-            obj.FUN_1407cb9c0("functionType", spData->m_cube.m_nControlType);
+            obj.SetIntMember("functionType", spData->m_cube.m_nControlType);
         else
             continue;
         spList->AddItem(obj);
@@ -772,10 +772,10 @@ void UITriggerEditorDialog::FUN_141b2d870()
     m_30->Invoke("initalizeInstallObjects");
     spList->vfunc_24(true);
 }
-MS2_REPLACE_METHOD(0x141B2D870, UITriggerEditorDialog, FUN_141b2d870, 1287, 0x915E55A8);
+MS2_REPLACE_METHOD(0x141B2D870, UITriggerEditorDialog, RefreshInstallObjectList, 1287, 0x915E55A8);
 
 // @0x141b2dd80
-void UITriggerEditorDialog::FUN_141b2dd80()
+void UITriggerEditorDialog::RefreshStates()
 {
     if (m_spTrigger.IsNull())
         return;
@@ -787,10 +787,10 @@ void UITriggerEditorDialog::FUN_141b2dd80()
     for (size_t i = 0; i < states.GetCount(); i++)
     {
         ASObj obj(2);
-        POINT pt = FUN_141b2f430(states[i]->GetPosX(), states[i]->GetPosY());
+        POINT pt = ClampStatePosition(states[i]->GetPosX(), states[i]->GetPosY());
         obj.FUN_141a07250("PosX", pt.x);
         obj.FUN_141a07250("PosY", pt.y);
-        void* pMovie = FUN_1422bb8b0(m_28);
+        void* pMovie = GetMovie(m_28);
         if (pMovie == 0)
             return;
         Scaleform::GFx::Value enterNames;
@@ -880,13 +880,13 @@ void UITriggerEditorDialog::FUN_141b2dd80()
             strKey.Format("Cond%d_CondActionArg2", j);
             obj.FUN_1409adbe0(strKey, actArgs2);
             strKey.Format("Cond%d_Next", j);
-            obj.FUN_1407cbb20(strKey, spTrans->m_strTarget);
+            obj.SetWStringMember(strKey, spTrans->m_strTarget);
         }
-        static_cast<Unk_TeScript*>(m_30.operator->())->FUN_141b2fee0("addState", obj, states[i]->GetName());
+        static_cast<Unk_TeScript*>(m_30.operator->())->Invoke("addState", obj, states[i]->GetName());
     }
     m_30->Invoke("invalidateStates");
 }
-MS2_REPLACE_METHOD(0x141B2DD80, UITriggerEditorDialog, FUN_141b2dd80, 5046, 0xB0B4B67B);
+MS2_REPLACE_METHOD(0x141B2DD80, UITriggerEditorDialog, RefreshStates, 5046, 0xB0B4B67B);
 
 // @0x141b2f140
 void UITriggerEditorDialog::FUN_141b2f140(const std::vector<Message>& messages)
@@ -905,11 +905,11 @@ void UITriggerEditorDialog::FUN_141b2f140(const std::vector<Message>& messages)
     {
         Message msg = messages[i];
         ASObj obj(2);
-        obj.FUN_1407cb9c0("id", nIndex);
-        obj.FUN_1407cbb20("name", msg.m_strCategory);
-        obj.FUN_1407cbb20("text", msg.m_strText);
-        obj.FUN_1407cb9c0("type", msg.m_nKind);
-        obj.FUN_1407cbb20("label", msg.FUN_1408f4c40());
+        obj.SetIntMember("id", nIndex);
+        obj.SetWStringMember("name", msg.m_strCategory);
+        obj.SetWStringMember("text", msg.m_strText);
+        obj.SetIntMember("type", msg.m_nKind);
+        obj.SetWStringMember("label", msg.FUN_1408f4c40());
         spList->AddItem(obj);
         nIndex++;
     }
@@ -919,7 +919,7 @@ void UITriggerEditorDialog::FUN_141b2f140(const std::vector<Message>& messages)
 MS2_REPLACE_METHOD(0x141B2F140, UITriggerEditorDialog, FUN_141b2f140, 733, 0x2E268709);
 
 // @0x141b2f430
-POINT UITriggerEditorDialog::FUN_141b2f430(int nX, int nY)
+POINT UITriggerEditorDialog::ClampStatePosition(int nX, int nY)
 {
     RECT rcCanvas = {0, 0, 1500, 1500};
     CRect rect(0, 0, 1500, 1500);
@@ -928,12 +928,12 @@ POINT UITriggerEditorDialog::FUN_141b2f430(int nX, int nY)
     pt.y = nY;
     if (!rect.PtInRect(pt))
     {
-        pt.x = FUN_140768010(1000, 20);
-        pt.y = FUN_140768010(1000, 20);
+        pt.x = GetRandomRange(1000, 20);
+        pt.y = GetRandomRange(1000, 20);
     }
     return pt;
 }
-MS2_REPLACE_METHOD(0x141B2F430, UITriggerEditorDialog, FUN_141b2f430, 215, 0xC406528F);
+MS2_REPLACE_METHOD(0x141B2F430, UITriggerEditorDialog, ClampStatePosition, 215, 0xC406528F);
 
 // @0x141b2f510
 void UITriggerEditorDialog::FUN_141b2f510()
@@ -964,19 +964,19 @@ void UITriggerEditorDialog::FUN_141b2f510()
     ASTriggerState state(active, 2);
     if (!state.IsUndefinedOrNull())
     {
-        nX = (int)state.FUN_1422c10a0() + 50;
-        nY = (int)state.FUN_1422c1110() + 50;
-        if (nX + state.FUN_1422c1340() >= 1500)
+        nX = (int)state.GetX() + 50;
+        nY = (int)state.GetY() + 50;
+        if (nX + state.GetWidthCeil() >= 1500)
             nX = m_30->Invoke("screenCanvasPosX").GetInt();
         if (nY + state.GetHeightCeil() >= 1500)
             nY = m_30->Invoke("screenCanvasPosY").GetInt();
     }
-    reinterpret_cast<Unk_FtEntity*>(m_30.operator->())->FUN_1412c4930("newState", strName, nX, nY);
+    reinterpret_cast<Unk_FtEntity*>(m_30.operator->())->Invoke("newState", strName, nX, nY);
 }
 MS2_REPLACE_METHOD(0x141B2F510, UITriggerEditorDialog, FUN_141b2f510, 1279, 0xE813195F);
 
 // @0x141b2fa20
-bool FUN_141b2fa20(Cube* pLeft, Cube* pRight)
+bool CompareCubeNames(Cube* pLeft, Cube* pRight)
 {
     if (pLeft->item.IsNull())
         return false;
@@ -988,7 +988,7 @@ bool FUN_141b2fa20(Cube* pLeft, Cube* pRight)
         return true;
     return false;
 }
-MS2_REPLACE(0x141B2FA20, FUN_141b2fa20, 294, 0x29CD6CD2);
+MS2_REPLACE(0x141B2FA20, CompareCubeNames, 294, 0x29CD6CD2);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMDAT glue
@@ -1000,7 +1000,7 @@ inline void CMsgBoxData::FUN_141b2fe80(const wchar_t* psz)
 }
 
 // @0x141b2fee0
-inline Scaleform::GFx::Value Unk_TeScript::FUN_141b2fee0(const char* szMethod, const AScript& a1, CStringW a2)
+inline Scaleform::GFx::Value Unk_TeScript::Invoke(const char* szMethod, const AScript& a1, CStringW a2)
 {
     ASArgList args;
     args.resize(2);

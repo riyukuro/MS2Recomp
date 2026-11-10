@@ -27,7 +27,7 @@
 #include "ms2/placeholder/cnpc.h"
 #include "ms2/placeholder/cinputkeyhandler.h"
 #include "ms2/placeholder/fittingdollpc.h"  // C3: PC (efd::DynamicCast<PC, PCBase>)
-class GameObjectController { public: class GameObjectControllerHitReport * FUN_141240f20(void); void FUN_141240730(void); void FUN_141241070(void); };
+class GameObjectController { public: class GameObjectControllerHitReport * GetHitReport(void); void StopJump(void); void ClearCollisionFlags(void); };
 // MS2Ptr members instantiated by other objs.
 template <> MS2Ptr<SkillData>::~MS2Ptr();                                               // 0x14063e5c0
 
@@ -52,11 +52,11 @@ class GameObjectControllerHitReport { public: void FUN_140cfaf30(); };
 class Unk_HoldBody                                                       // the actor's physics body
 {
 public:
-    void FUN_141240730();                                                // drop the stood-on entity
-    GameObjectControllerHitReport* FUN_141240f20();
-    void FUN_141241070();                                                // start falling
+    void StopJump();                                                // drop the stood-on entity
+    GameObjectControllerHitReport* GetHitReport();
+    void ClearCollisionFlags();                                                // start falling
 };
-class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool FUN_141683100(int nKey); };   // C3: view of the real class (unit_141682f80)
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_HoldConsts                                                     // the game's constants table
 {
@@ -135,7 +135,7 @@ void StateHoldData::vfunc_2(Unk_StateDataArg* p)
 }
 
 // @0x1417cbb50
-MS2Ptr<SkillData> StateHoldData::FUN_1417cbb50()
+MS2Ptr<SkillData> StateHoldData::GetSkillData()
 {
     return reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(m_nSkill);
 }
@@ -161,7 +161,7 @@ StateHold::~StateHold()
 void StateHold::vfunc_4(StateData* pData)
 {
     StateMoveSkill::vfunc_4(pData);
-    ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240730();
+    ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->StopJump();
     m_spHold.AssignRaw(dynamic_cast<StateHoldData*>(pData));
     if (m_spHold == 0)
     {
@@ -179,8 +179,8 @@ void StateHold::vfunc_4(StateData* pData)
         }
         m_kPos = m_pOwner->vfunc_18();
         m_kDir = m_pOwner->vfunc_20();
-        ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240f20()->FUN_140cfaf30();
-        ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141241070();
+        ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->GetHitReport()->FUN_140cfaf30();
+        ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->ClearCollisionFlags();
     }
 }
 
@@ -188,7 +188,7 @@ void StateHold::vfunc_4(StateData* pData)
 void StateHold::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
-    ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->FUN_141240730();
+    ((class GameObjectController*)(((Unk_HoldBody*)(reinterpret_cast<PCBase*>(m_pOwner)->GetPhysicsBody()))))->StopJump();
     m_pOwner->vfunc_31(true);
     m_pOwner->vfunc_21(m_kDir);
     MyPC* pPC = FUN_1417b84b0();
@@ -242,7 +242,7 @@ void StateHold::vfunc_3(double fTime)
     }
     else
     {
-        FUN_1417ccca0(m_nFallbackState, m_nFallbackSub);
+        ChangeState(m_nFallbackState, m_nFallbackSub);
     }
     State::vfunc_3(fTime);
 }
@@ -263,8 +263,8 @@ void StateHold::vfunc_8(double fTime)
             return;
         else
         {
-            m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
-            FUN_1417ccca0(m_nFallbackState, 0);
+            m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->GetMoveDirection())));
+            ChangeState(m_nFallbackState, 0);
         }
     }
     else
@@ -286,7 +286,7 @@ void StateHold::vfunc_9(double fTime)
         void* pNpc = reinterpret_cast<void*>(efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(pTarget)));
         if (pNpc != 0)
         {
-            const int& nNpcId = reinterpret_cast<CNpc*>(pNpc)->FUN_141092fa0();
+            const int& nNpcId = reinterpret_cast<CNpc*>(pNpc)->GetNpcId();
             if (nNpcId == 0xa7e02a)
             {
                 efd::utf8string kAnim("Ride_Idle_U");
@@ -374,7 +374,7 @@ void StateHold::vfunc_9(double fTime)
 }
 
 // @0x1417ccca0
-void StateHold::FUN_1417ccca0(int nState, int nSub)
+void StateHold::ChangeState(int nState, int nSub)
 {
     m_pOwner->vfunc_59(nState, 0, nSub, 0);
 }
@@ -416,7 +416,7 @@ void StateHold::FUN_1417ccd50()
 // @0x1417cce10
 void StateHold::FUN_1417cce10()
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xae))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xae))
         return;
     Unk_PCMove* pBuff = ((Unk_PCMove*)(reinterpret_cast<PCBase*>(m_pOwner)->FUN_14166d240()));
     if (!pBuff->FUN_141683100(0x49401))
@@ -437,7 +437,7 @@ void StateHold::FUN_1417cce10()
     if (pTarget->GetClassID() != 0x6200028)
         return;
     Unk_InventorySkillRequest kReq(((class Unk_HoldConsts*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_nHoldSkill, 1);
-    MS2Ptr<CSkillRecord> spRecord = pPC->GetSkillSystem()->FUN_141765570(kReq);
+    MS2Ptr<CSkillRecord> spRecord = pPC->GetSkillSystem()->CreateSkillRecord(kReq);
     if (spRecord == 0)
         return;
     spRecord->m_nTargetId = m_spHold.get()->m_nTargetId;
@@ -467,7 +467,7 @@ int StateHold::vfunc_36()
 {
     PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1200(m_spHold.get()->m_nTargetId));
     if (pTarget != 0 && pTarget->GetClassID() != 0x6200045)
-        return reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116dcb0(0x493e2, 0, 0);
+        return reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsActionKeyDown(0x493e2, 0, 0);
     else
         return 1;
 }

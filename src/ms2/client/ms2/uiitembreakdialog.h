@@ -42,10 +42,10 @@ public:
 
     // ---- non-virtual members, sorted by address ----
     void FUN_1419a1430();                                       // (re)register the slot bag under the movie name
-    int FUN_1419a1660();                                        // "m_itemBag" is visible
-    void FUN_1419a1d20(int nIndex);                             // a bag slot changed
-    CString FUN_1419a1dc0(int nItemId, int nRarity, int nCount);   // bind a reward item; the binding name
-    void FUN_1419a1fb0();                                       // release the reward bindings
+    int IsItemBagVisible();                                        // "m_itemBag" is visible
+    void OnBagSlotChanged(int nIndex);                             // a bag slot changed
+    CString BindRewardItem(int nItemId, int nRarity, int nCount);   // bind a reward item; the binding name
+    void ReleaseRewardBindings();                                       // release the reward bindings
     void StartBreak();                                       // "startBreak"
     void EndBreak();                                       // "endBreak"
 
@@ -79,8 +79,8 @@ public:
 
     void ResetBreak();                                       // "resetBreak"
     void FUN_1419a44d0(CInPacket* pPacket);                     // the preview list
-    CString FUN_1419a4aa0(int nItemId);                         // bind a preview item; the binding name
-    void FUN_1419a4c80();                                       // release the preview bindings
+    CString BindPreviewItem(int nItemId);                         // bind a preview item; the binding name
+    void ReleasePreviewBindings();                                       // release the preview bindings
     int FUN_1405352d0();                                        // 0x1405352d0 breaking (m_188); defined in itembreakmanager.cpp
 
 protected:

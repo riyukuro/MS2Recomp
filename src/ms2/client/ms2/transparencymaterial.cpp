@@ -111,7 +111,7 @@ void TransparencyMaterial::FUN_141860140()
 }
 
 // @0x141860700
-void TransparencyMaterial::FUN_141860700()
+void TransparencyMaterial::RestoreProperties()
 {
     NiAlphaProperty* pAlpha = NiDynamicCast(NiAlphaProperty, m_pGeometry->GetProperty(0));
     if (pAlpha != 0)
@@ -157,5 +157,5 @@ void TransparencyStandardMaterial::vfunc_2(const NiBound&)
 // @0x141860bd0
 void TransparencyStandardMaterial::vfunc_3()
 {
-    FUN_141860700();
+    RestoreProperties();
 }

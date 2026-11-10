@@ -36,12 +36,12 @@ CStringW FUN_14016a730(const char* psz, int n);                 // narrow -> wid
 void FUN_140710590(COutPacket& packet);                         // send the packet
 void FUN_14151f200();
 void FUN_141901390(int nRelease, int nUiType);
-void FUN_141925ec0(UIDialog* pDialog, CString strName);
+void BindCloseButton(UIDialog* pDialog, CString strName);
 
 // @0x141299650
 UIHomeSummonDialog::UIHomeSummonDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     FUN_1422dc3b0(1);
 }
 
@@ -73,7 +73,7 @@ void UIHomeSummonDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     if (m_30.IsNull() != 0)
         return;
-    FUN_141925ec0("m_closeButton");
+    BindCloseButton("m_closeButton");
     reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_confirmButton", m_180);
     m_180->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHomeSummonDialog::OnConfirmClick), (void*)0);
     FUN_14129a040("m_textInput", m_190);
@@ -100,7 +100,7 @@ int UIHomeSummonDialog::vfunc_13()
         vfunc_67();
         return 1;
     }
-    else if (reinterpret_cast<Unk_SumKeys*>(FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0) != 0)
+    else if (reinterpret_cast<Unk_SumKeys*>(FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0) != 0)
     {
         CStringW strText = m_190.operator->()->GetText();
         if (!strText.IsEmpty())

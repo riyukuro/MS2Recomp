@@ -27,7 +27,7 @@ template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Va
 class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140fdc9f0();
+    void SendReservationCancel();
 };
 void* GetUITalkManager();
 class UITalkManager   // C3: member view for the former free stand-ins
@@ -164,7 +164,7 @@ void UIWeddingHallReservationPageCancel::vfunc_2()
 // @0x140fe2640
 void UIWeddingHallReservationPageCancel::vfunc_5()
 {
-    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc9f0();
+    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SendReservationCancel();
     m_pDialog->vfunc_67();
     ((class UITalkManager*)(void*)(GetUITalkManager()))->SendNpcTalkMode0();
 }

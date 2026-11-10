@@ -150,7 +150,7 @@ public:
 //
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);
 class CBoneRotateManager { public: void ClearActions(); };
-void FUN_141ab6e80(NiAVObject* pObj);
+void AddMeshExtraData(NiAVObject* pObj);
 class CKfmModel   // C3: member view for the former free stand-ins
 {
 public:
@@ -496,7 +496,7 @@ void ClonePC::FUN_141087790()
     m_kList1300.clear();
     vfunc_44(&m_kList1300);
     for (std::list<NiAVObject*>::iterator it = m_kList1300.begin(); it != m_kList1300.end(); ++it)
-        FUN_141ab6e80(*it);
+        AddMeshExtraData(*it);
 }
 // MS2-HOOK-DISABLED (fx1, 2026-10-16): hooking this alone crashes field entry (null-this page fault at 0x14160e608 in the exe's list
 // iterator check, found by ddmin over the HEAD DLL); the exe's list<NiAVObject*> clear/iterate path is not reproduced by efd::list. Root cause open.

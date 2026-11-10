@@ -61,14 +61,14 @@ public:
     virtual void vfunc_43();                            // 43 0x1419db4b0 center below the inventory / set the stage size
     virtual int vfunc_48() { return 0x4e7c; }           // 48 0x1419dd650 UI type id
 
-    void FUN_1419db600();                               // read both tables, then mark the check valid
+    void LoadTables();                               // read both tables, then mark the check valid
     void LoadJobPreview();                               // read jobPreview.xml
     void LoadJobDescription();                               // read korJobDescription.xml
     void FUN_1419dbe30(int nJob);                       // send the preview skills
     void FUN_1419dc1e0(int nJob);                       // send the texts and the job
     void FUN_1419dc510(int nJob);                       // choose the job
-    int FUN_1419dc530();                                // the chosen job is a hard one (difficulty > 4)
-    static void FUN_1419dec80(bool bValid);             // the tables were read
+    int IsHardJob();                                // the chosen job is a hard one (difficulty > 4)
+    static void SetValid(bool bValid);             // the tables were read
     static void FUN_1419dcf80();                        // the tables must be read (message box otherwise)
 
 private:

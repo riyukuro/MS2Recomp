@@ -170,11 +170,11 @@ public:
     // UIWorldShareInfoEventListener (+0x78)
     virtual void vfunc_1(__int64 n, int a, int b);                          // 1 0x140e87da0 a special npc notice
 
-    void FUN_140e879a0(MS2Ptr<SidePopupTalkParam> spParam);                 // show (queued until the movie loaded)
-    void FUN_140e87ec0(NotifyObject* pNotify);                              // "NotifyFadeInComplete": the map's popup
-    void FUN_140e88010(MS2Ptr<SidePopupTalkParam> spParam);                 // "addPopup"
+    void ShowPopup(MS2Ptr<SidePopupTalkParam> spParam);                 // show (queued until the movie loaded)
+    void OnNotifyFadeInComplete(NotifyObject* pNotify);                              // "NotifyFadeInComplete": the map's popup
+    void AddPopup(MS2Ptr<SidePopupTalkParam> spParam);                 // "addPopup"
     int FUN_140e88690(unsigned nId);                                        // notified within the last minute
-    void FUN_140e886f0(int bVisible);                                       // show / hide the minimap and quest guide
+    void SetMinimapAndQuestGuideVisible(int bVisible);                                       // show / hide the minimap and quest guide
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -212,8 +212,8 @@ public:
 
     void FUN_140e8c790(const Scaleform::GFx::FunctionHandler::Params& params);  // "m_okButton": select the item (packet 0xa7)
     void FUN_140e8c8e0(const Scaleform::GFx::FunctionHandler::Params& params);  // "m_close": the same without closing
-    void FUN_140e8ca10(ATL::CAtlArray<MS2Ptr<CItem> >& aOut);              // the "SuperWorldChat" items of the inventory
-    void FUN_140e8cb80(ATL::CAtlArray<MS2Ptr<CItem> >& aOut);              // the "WeddingChat" items
+    void GetSuperWorldChatItems(ATL::CAtlArray<MS2Ptr<CItem> >& aOut);              // the "SuperWorldChat" items of the inventory
+    void GetWeddingChatItems(ATL::CAtlArray<MS2Ptr<CItem> >& aOut);              // the "WeddingChat" items
     MS2Ptr<ASMultiSelectTileCacheList> FUN_140e8d030(const CString& strName, MS2Ptr<ASMultiSelectTileCacheList>& out);  // bind a child
 
 private:

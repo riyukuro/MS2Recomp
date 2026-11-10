@@ -38,7 +38,7 @@ CStringA FUN_14071ae20(const CStringA& strFile);                        // the f
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringW FUN_1401bf530(TiXmlElement*, const char* pszName, CStringW strDefault);   // string attribute with default
 CStringA FUN_1401d4330(const wchar_t* psz, int nCodePage);              // narrows a string
-CString FUN_14016a5c0(const char* psz, int nCodePage);                  // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);                  // narrows a string (the RTTI name in CheckInit)
 
 
 bool CServerStringGroup::s_bInit;
@@ -59,7 +59,7 @@ bool CServerStringGroup::Load()
 {
     CStringA strPath = FUN_14071ae20(m_strFile);
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -68,7 +68,7 @@ bool CServerStringGroup::Load()
         return false;
     }
     m_mapFile.RemoveAll();
-    CCacheData::FUN_1401d1160(CStringA(strPath));
+    CCacheData::SetPath(CStringA(strPath));
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
@@ -177,7 +177,7 @@ void CServerStringGroup::CheckInit()
     if (!s_bInit)
     {
         CStringA msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CServerStringGroup).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CServerStringGroup).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

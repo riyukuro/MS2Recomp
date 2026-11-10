@@ -98,7 +98,7 @@ MS2_CHECK_OFFSET(Unk_RNConfig, m_190, 0x190);
 MS2_CHECK_OFFSET(Unk_RNConfig, m_1a0, 0x1a0);
 MS2_CHECK_OFFSET(Unk_RNConfig, m_1c0, 0x1c0);
 MS2_CHECK_OFFSET(Unk_RNConfig, m_1d0, 0x1d0);
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // A "NotifyChangedTokenMoney" notice: kind at +0x18, the amount at +0x28.
 struct Unk_RNNotice { void* m_0; void* m_8; void* m_10; int m_kind; int m_1c; void* m_20; __int64 m_count; };
@@ -119,7 +119,7 @@ class GFxSceneService   // C3: member view for the former free stand-ins
 public:
     int GetSubSceneId();
 };
-class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
+class CUserMail { public: static __int64 GetGFxSceneService(); };  // C3: member view (0x1408e57f0, the scene-service global)
 extern int DAT_1439fa004;
 
 
@@ -142,7 +142,7 @@ bool FUN_14053f900(unsigned int);   // C3: was FUN_14053f900
 class Unk_RNAchieve : public CAchieve { };
 
 // Skills.
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
+MS2Ptr<ASGameEntity> CreateGameEntity(int nUiId, const Scaleform::GFx::Value& root);
 
 // Fishing.
 
@@ -166,7 +166,7 @@ MS2_REPLACE_METHOD(0x141abe240, UIRewardNotify, GetTypeName, 61, 0x6D329B98);
 void UIRewardNotify::vfunc_2()
 {
     m_block = 0;
-    FUN_1422dbf00(0x1f, 0, 0);
+    LoadSwf(0x1f, 0, 0);
 }
 MS2_REPLACE_METHOD(0x141abe290, UIRewardNotify, vfunc_2, 50, 0xDA01054C);
 
@@ -182,16 +182,16 @@ MS2_REPLACE_METHOD(0x141abe2d0, UIRewardNotify, vfunc_3, 41, 0xBABD3D2D);
 void UIRewardNotify::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyLearnEmotion", Delegate<void(NotifyObject*)>(this, &UIRewardNotify::FUN_141abea10));
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UIRewardNotify::FUN_141abea50));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyLearnEmotion", Delegate<void(NotifyObject*)>(this, &UIRewardNotify::OnNotifyLearnEmotion));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UIRewardNotify::OnNotifyChangedTokenMoney));
 }
 
 // @0x141abe4c0
 void UIRewardNotify::vfunc_26()
 {
     UIObject::vfunc_26();
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyLearnEmotion", Delegate<void(NotifyObject*)>(this, &UIRewardNotify::FUN_141abea10));
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UIRewardNotify::FUN_141abea50));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyLearnEmotion", Delegate<void(NotifyObject*)>(this, &UIRewardNotify::OnNotifyLearnEmotion));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UIRewardNotify::OnNotifyChangedTokenMoney));
 }
 
 // @0x141abe680
@@ -208,7 +208,7 @@ MS2_REPLACE_METHOD(0x141abe680, UIRewardNotify, vfunc_43, 184, 0x9A181B4D);
 // @0x141abe740
 void UIRewardNotify::vfunc_15()
 {
-    if (((class GFxSceneService*)(void*)(CUserMail::FUN_1408e57f0()))->GetSubSceneId() == 0x6200031)
+    if (((class GFxSceneService*)(void*)(CUserMail::GetGFxSceneService()))->GetSubSceneId() == 0x6200031)
         return;
     if (m_block != 0)
         return;
@@ -242,15 +242,15 @@ int UIRewardNotify::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 }
 
 // @0x141abea10
-void UIRewardNotify::FUN_141abea10(NotifyObject* pNotice)
+void UIRewardNotify::OnNotifyLearnEmotion(NotifyObject* pNotice)
 {
     Unk_RNNotice* pN = reinterpret_cast<Unk_RNNotice*>(pNotice);
     FUN_141abffa0(pN->m_kind);
 }
-MS2_REPLACE_METHOD(0x141abea10, UIRewardNotify, FUN_141abea10, 47, 0x5232D604);
+MS2_REPLACE_METHOD(0x141abea10, UIRewardNotify, OnNotifyLearnEmotion, 47, 0x5232D604);
 
 // @0x141abea50
-void UIRewardNotify::FUN_141abea50(NotifyObject* pNotice)
+void UIRewardNotify::OnNotifyChangedTokenMoney(NotifyObject* pNotice)
 {
     Unk_RNNotice* pN = reinterpret_cast<Unk_RNNotice*>(pNotice);
     if (!(0 < pN->m_count)) return;
@@ -258,62 +258,62 @@ void UIRewardNotify::FUN_141abea50(NotifyObject* pNotice)
         __int64 nCount = pN->m_count;
         switch ((unsigned)pN->m_kind) {
         case 3: {
-            ShowIconNotice(FormatStringId(0x68c, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_180, 0));
+            ShowIconNotice(FormatStringId(0x68c, nCount), FUN_14016a730(((struct Unk_RNConfig*)GetCommonResource())->m_180, 0));
             break;
         }
         case 4: {
-            ShowIconNotice(FormatStringId(0x68d, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_178, 0));
+            ShowIconNotice(FormatStringId(0x68d, nCount), FUN_14016a730(((struct Unk_RNConfig*)GetCommonResource())->m_178, 0));
             break;
         }
         case 5: {
-            ShowIconNotice(FormatStringId(0x68e, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_188, 0));
+            ShowIconNotice(FormatStringId(0x68e, nCount), FUN_14016a730(((struct Unk_RNConfig*)GetCommonResource())->m_188, 0));
             break;
         }
         case 6: {
-            ShowIconNotice(FormatStringId(0x68f, nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_190, 0));
+            ShowIconNotice(FormatStringId(0x68f, nCount), FUN_14016a730(((struct Unk_RNConfig*)GetCommonResource())->m_190, 0));
             break;
         }
         case 9: {
-            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_reverse_coin", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1a0, 0));
+            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_reverse_coin", nCount), FUN_14016a730(((struct Unk_RNConfig*)GetCommonResource())->m_1a0, 0));
             break;
         }
         case 10: {
-            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_mentor_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1a8, 0));
+            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_mentor_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)GetCommonResource())->m_1a8, 0));
             break;
         }
         case 11: {
-            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_mentee_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1b0, 0));
+            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_mentee_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)GetCommonResource())->m_1b0, 0));
             break;
         }
         case 12: {
-            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_star_point", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1b8, 0));
+            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_star_point", nCount), FUN_14016a730(((struct Unk_RNConfig*)GetCommonResource())->m_1b8, 0));
             break;
         }
         case 13: {
-            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_meso_market_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_1c0, 0));
+            ShowIconNotice(FUN_14028dfa0(L"s_system_achieve_reward_meso_market_token", nCount), FUN_14016a730(((struct Unk_RNConfig*)GetCommonResource())->m_1c0, 0));
             break;
         }
         }
     }
 }
-MS2_REPLACE_METHOD(0x141abea50, UIRewardNotify, FUN_141abea50, 1885, 0xA81C48DD);
+MS2_REPLACE_METHOD(0x141abea50, UIRewardNotify, OnNotifyChangedTokenMoney, 1885, 0xA81C48DD);
 
 // @0x141abf1f0
-void UIRewardNotify::FUN_141abf1f0() { m_block = 1; }
-MS2_REPLACE_METHOD(0x141abf1f0, UIRewardNotify, FUN_141abf1f0, 21, 0x9908BB04);
+void UIRewardNotify::BlockToasts() { m_block = 1; }
+MS2_REPLACE_METHOD(0x141abf1f0, UIRewardNotify, BlockToasts, 21, 0x9908BB04);
 
 // @0x141abf210
-void UIRewardNotify::FUN_141abf210() { m_block = 0; }
-MS2_REPLACE_METHOD(0x141abf210, UIRewardNotify, FUN_141abf210, 21, 0x54617667);
+void UIRewardNotify::UnblockToasts() { m_block = 0; }
+MS2_REPLACE_METHOD(0x141abf210, UIRewardNotify, UnblockToasts, 21, 0x54617667);
 
 // @0x141abf230
 void UIRewardNotify::FUN_141abf230(__int64 nExp, __int64 nBonus)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
     if (nBonus > 0) {
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x682, FUN_1409404f0(nExp), nBonus));
+        RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0x682, FUN_1409404f0(nExp), nBonus));
     } else {
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x681, FUN_1409404f0(nExp)));
+        RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0x681, FUN_1409404f0(nExp)));
     }
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "exp");
     AppendReward(pObj);
@@ -325,12 +325,12 @@ void UIRewardNotify::FUN_141abf450(__int64 nMoney, __int64 nBonus)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
     if (nBonus > 0) {
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x684, FUN_1409404f0(nMoney), nBonus));
+        RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0x684, FUN_1409404f0(nMoney), nBonus));
     } else {
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x683, FUN_1409404f0(nMoney)));
+        RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0x683, FUN_1409404f0(nMoney)));
     }
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
-    RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_158, 0));
+    RN_OBJ(pObj)->SetWStringMember("icon", FUN_14016a730(((struct Unk_RNConfig*)GetCommonResource())->m_158, 0));
     AppendReward(pObj);
 }
 MS2_REPLACE_METHOD(0x141abf450, UIRewardNotify, FUN_141abf450, 647, 0x3500A818);
@@ -344,10 +344,10 @@ void UIRewardNotify::FUN_141abf6e0(int nItemId, int nGrade)
         CStringW strMsg = FormatStringId(0x687, nCount, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
         MS2Ptr<AScript> pObj(new ASObj(2));
         RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
-        RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(info.operator->()->GetIconPath(), 0));
+        RN_OBJ(pObj)->SetWStringMember("msg", strMsg);
+        RN_OBJ(pObj)->SetWStringMember("icon", FUN_14016a730(info.operator->()->GetIconPath(), 0));
         RN_OBJ(pObj)->FUN_1409adc90("grade", nGrade);
-        RN_OBJ(pObj)->FUN_1407cbbe0("itemPiece", info.operator->()->IsPieceItem() == 1);
+        RN_OBJ(pObj)->SetBoolMember("itemPiece", info.operator->()->IsPieceItem() == 1);
         RN_OBJ(pObj)->SetMemberUInt("key", nItemId);
         AppendReward(pObj);
     }
@@ -357,7 +357,7 @@ MS2_REPLACE_METHOD(0x141abf6e0, UIRewardNotify, FUN_141abf6e0, 801, 0xC67E6D8B);
 // @0x141abfa10
 void UIRewardNotify::FUN_141abfa10(MS2Ptr<CItem> item)
 {
-    if (FUN_14053f900(item->FUN_1405276c0()))
+    if (FUN_14053f900(item->GetItemId()))
         return;
     if ((item.get() ? true : false) && item->FUN_140527840()) {
         int nGrade = item->GetRarity();
@@ -365,11 +365,11 @@ void UIRewardNotify::FUN_141abfa10(MS2Ptr<CItem> item)
         CStringW strMsg = FormatStringId(0x687, nCount, item->FUN_140527b10());
         MS2Ptr<AScript> pObj(new ASObj(2));
         RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
-        RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(item->FUN_140528590(), 0));
+        RN_OBJ(pObj)->SetWStringMember("msg", strMsg);
+        RN_OBJ(pObj)->SetWStringMember("icon", FUN_14016a730(item->GetIconPath(), 0));
         RN_OBJ(pObj)->FUN_1409adc90("grade", nGrade);
-        RN_OBJ(pObj)->FUN_1407cbbe0("itemPiece", reinterpret_cast<CItemData*>(item->FUN_140527840())->IsPieceItem() == 1);
-        RN_OBJ(pObj)->SetMemberUInt("key", item->FUN_1405276c0());
+        RN_OBJ(pObj)->SetBoolMember("itemPiece", reinterpret_cast<CItemData*>(item->FUN_140527840())->IsPieceItem() == 1);
+        RN_OBJ(pObj)->SetMemberUInt("key", item->GetItemId());
         AppendReward(pObj);
     }
 }
@@ -381,9 +381,9 @@ void UIRewardNotify::FUN_141abfdc0(Unk_RNAchieve* pAchieve)
     if (pAchieve) {
         MS2Ptr<AScript> pObj(new ASObj(2));
         RN_OBJ(pObj)->FUN_1409c0dc0("type", "achieve");
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14093b970(pAchieve->GetId()));
-        RN_OBJ(pObj)->FUN_1407cba60("icon", pAchieve->GetName(0));
-        RN_OBJ(pObj)->FUN_1407cbbe0("emblem", pAchieve->GetType() == 9);
+        RN_OBJ(pObj)->SetWStringMember("msg", FUN_14093b970(pAchieve->GetId()));
+        RN_OBJ(pObj)->SetStringMember("icon", pAchieve->GetName(0));
+        RN_OBJ(pObj)->SetBoolMember("emblem", pAchieve->GetType() == 9);
         AppendReward(pObj);
     }
 }
@@ -398,9 +398,9 @@ void UIRewardNotify::FUN_141abffa0(int nEmotionId)
             return;
         MS2Ptr<AScript> pObj(new ASObj(2));
         RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
-        RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x85b, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nEmotionId)));
-        RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(ref->m_strIcon, 0));
-        RN_OBJ(pObj)->FUN_1407cb9c0("grade", 1);
+        RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0x85b, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nEmotionId)));
+        RN_OBJ(pObj)->SetWStringMember("icon", FUN_14016a730(ref->m_strIcon, 0));
+        RN_OBJ(pObj)->SetIntMember("grade", 1);
         AppendReward(pObj);
     }
 }
@@ -429,9 +429,9 @@ void UIRewardNotify::FUN_141ac0210(PC* pPlayer)
             bAny = 1;
             MS2Ptr<AScript> pObj(new ASObj(2));
             RN_OBJ(pObj)->FUN_1409c0dc0("type", "learn_skill");
-            RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x804, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, learn->GetID())));
-            RN_OBJ(pObj)->FUN_1407cb9c0("skillType", ref->FUN_1407e9de0() != 0);
-            RN_OBJ(pObj)->FUN_1407cba60("skillIconPath", ref->m_strIcon);
+            RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0x804, TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, learn->GetID())));
+            RN_OBJ(pObj)->SetIntMember("skillType", ref->FUN_1407e9de0() != 0);
+            RN_OBJ(pObj)->SetStringMember("skillIconPath", ref->m_strIcon);
             AppendReward(pObj);
         }
     }
@@ -448,13 +448,13 @@ void UIRewardNotify::FUN_141ac05d0(int nSkillId, CStringW strMsg, int nSkillType
     RewardComplete();
     MS2Ptr<AScript> pObj(new ASObj(2));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "skill_msg");
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
+    RN_OBJ(pObj)->SetWStringMember("msg", strMsg);
     if (nSkillType == 0) {
-        RN_OBJ(pObj)->FUN_1407cb9c0("skillType", ref->FUN_1407e9de0() != 0);
+        RN_OBJ(pObj)->SetIntMember("skillType", ref->FUN_1407e9de0() != 0);
     } else {
-        RN_OBJ(pObj)->FUN_1407cb9c0("skillType", DAT_1439fa004);
+        RN_OBJ(pObj)->SetIntMember("skillType", DAT_1439fa004);
     }
-    RN_OBJ(pObj)->FUN_1407cba60("skillIconPath", ref->m_strIcon);
+    RN_OBJ(pObj)->SetStringMember("skillIconPath", ref->m_strIcon);
     AppendReward(pObj);
 }
 MS2_REPLACE_METHOD(0x141ac05d0, UIRewardNotify, FUN_141ac05d0, 641, 0xFD5E4298);
@@ -463,7 +463,7 @@ MS2_REPLACE_METHOD(0x141ac05d0, UIRewardNotify, FUN_141ac05d0, 641, 0xFD5E4298);
 void UIRewardNotify::ShowMeratNotice(__int64 nValue)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x685, nValue));
+    RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0x685, nValue));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "merat");
     AppendReward(pObj);
 }
@@ -473,7 +473,7 @@ MS2_REPLACE_METHOD(0x141ac0860, UIRewardNotify, ShowMeratNotice, 287, 0xD0EB08AF
 void UIRewardNotify::ShowMeratRedNotice(__int64 nValue)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x685, nValue));
+    RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0x685, nValue));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "merat_red");
     AppendReward(pObj);
 }
@@ -484,9 +484,9 @@ void UIRewardNotify::FUN_141ac0ac0(int nId)
 {
     FUN_141276180(s_strPCTitleGet, "");
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0x689, FUN_141b720b0(nId, 0)));
+    RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0x689, FUN_141b720b0(nId, 0)));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
-    RN_OBJ(pObj)->FUN_1407cbb20("icon", FUN_14016a730(((struct Unk_RNConfig*)FUN_1401d31f0())->m_170, 0));
+    RN_OBJ(pObj)->SetWStringMember("icon", FUN_14016a730(((struct Unk_RNConfig*)GetCommonResource())->m_170, 0));
     AppendReward(pObj);
 }
 
@@ -494,9 +494,9 @@ void UIRewardNotify::FUN_141ac0ac0(int nId)
 void UIRewardNotify::ShowIconNotice(const CStringW& strMsg, const CStringW& strIcon)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
+    RN_OBJ(pObj)->SetWStringMember("msg", strMsg);
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
-    RN_OBJ(pObj)->FUN_1407cbb20("icon", strIcon);
+    RN_OBJ(pObj)->SetWStringMember("icon", strIcon);
     AppendReward(pObj);
 }
 MS2_REPLACE_METHOD(0x141ac0cd0, UIRewardNotify, ShowIconNotice, 378, 0x4267BFD9);
@@ -507,15 +507,15 @@ void UIRewardNotify::FUN_141ac0e50(int nFishId, unsigned nLength)
     CFishDataPtr pFish = TSingleton<CFishingTable>::GetInstance()->GetFish(nFishId);
     if (pFish.IsNull())
         return;
-    int nSize = pFish->FUN_1403b1520(nLength);
-    int nMedal = pFish->FUN_1403b1590(nLength);
+    int nSize = pFish->GetSizeClass(nLength);
+    int nMedal = pFish->GetSizeGrade(nLength);
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0xbd8, pFish->FUN_1403b1650()));
+    RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0xbd8, pFish->GetName()));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "fishing_success");
-    RN_OBJ(pObj)->FUN_1407cbb20("icon", pFish->FUN_1403b1600());
-    RN_OBJ(pObj)->FUN_1407cbb20("size", StringFormat(L"{0}cm", nLength));
-    RN_OBJ(pObj)->FUN_1407cb9c0("success", 1);
-    RN_OBJ(pObj)->FUN_1407cbbe0("bigFish", nSize == 3);
+    RN_OBJ(pObj)->SetWStringMember("icon", pFish->GetIconPath());
+    RN_OBJ(pObj)->SetWStringMember("size", StringFormat(L"{0}cm", nLength));
+    RN_OBJ(pObj)->SetIntMember("success", 1);
+    RN_OBJ(pObj)->SetBoolMember("bigFish", nSize == 3);
     RN_OBJ(pObj)->FUN_140f43b40("medal", nMedal);
     RN_OBJ(pObj)->SetMemberUInt("key", nFishId);
     AppendReward(pObj);
@@ -528,13 +528,13 @@ void UIRewardNotify::FUN_141ac11b0(int nFishId, unsigned nLength)
     CFishDataPtr pFish = TSingleton<CFishingTable>::GetInstance()->GetFish(nFishId);
     if (pFish.IsNull())
         return;
-    int nMedal = pFish->FUN_1403b1590(nLength);
+    int nMedal = pFish->GetSizeGrade(nLength);
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FormatStringId(0xbd9, pFish->FUN_1403b1650()));
+    RN_OBJ(pObj)->SetWStringMember("msg", FormatStringId(0xbd9, pFish->GetName()));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "fishing_fail");
-    RN_OBJ(pObj)->FUN_1407cbb20("icon", pFish->FUN_1403b1600());
-    RN_OBJ(pObj)->FUN_1407cbb20("size", StringFormat(L"{0}cm", nLength));
-    RN_OBJ(pObj)->FUN_1407cb9c0("success", 0);
+    RN_OBJ(pObj)->SetWStringMember("icon", pFish->GetIconPath());
+    RN_OBJ(pObj)->SetWStringMember("size", StringFormat(L"{0}cm", nLength));
+    RN_OBJ(pObj)->SetIntMember("success", 0);
     RN_OBJ(pObj)->FUN_140f43b40("medal", nMedal);
     RN_OBJ(pObj)->SetMemberUInt("key", nFishId);
     AppendReward(pObj);
@@ -554,25 +554,25 @@ MS2_REPLACE_METHOD(0x141ac14b0, UIRewardNotify, ShowSkillLevelUpNotice, 194, 0x6
 void UIRewardNotify::FUN_141ac1580(const CStringW& strIcon, const CStringW& strMsg, int nEffect)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
+    RN_OBJ(pObj)->SetWStringMember("msg", strMsg);
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
-    RN_OBJ(pObj)->FUN_1407cbb20("icon", strIcon);
-    RN_OBJ(pObj)->FUN_1407cb9c0("effect", nEffect);
+    RN_OBJ(pObj)->SetWStringMember("icon", strIcon);
+    RN_OBJ(pObj)->SetIntMember("effect", nEffect);
     AppendReward(pObj);
 }
 MS2_REPLACE_METHOD(0x141ac1580, UIRewardNotify, FUN_141ac1580, 416, 0x33D96BED);
 
 // @0x141ac1730
-void UIRewardNotify::FUN_141ac1730(const CStringW& strMsg, int nSpecial, const CStringW& strTag)
+void UIRewardNotify::ShowStampNotice(const CStringW& strMsg, int nSpecial, const CStringW& strTag)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", strMsg);
+    RN_OBJ(pObj)->SetWStringMember("msg", strMsg);
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "stamp");
-    RN_OBJ(pObj)->FUN_1407cb9c0("isSpecial", nSpecial);
-    RN_OBJ(pObj)->FUN_1407cbb20("eventTag", strTag);
+    RN_OBJ(pObj)->SetIntMember("isSpecial", nSpecial);
+    RN_OBJ(pObj)->SetWStringMember("eventTag", strTag);
     AppendReward(pObj);
 }
-MS2_REPLACE_METHOD(0x141ac1730, UIRewardNotify, FUN_141ac1730, 416, 0x96962105);
+MS2_REPLACE_METHOD(0x141ac1730, UIRewardNotify, ShowStampNotice, 416, 0x96962105);
 
 // @0x141ac18e0
 void UIRewardNotify::NotifySkillBookDialog(bool bOpen)
@@ -591,8 +591,8 @@ void UIRewardNotify::FUN_141ac1950(int nPoint, int nKind)
     CStringW strKey = L"s_reward_notify_skill_point";
     if (nKind == 2)
         strKey = L"s_reward_notify_skill_point_sub_1";
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14028dfa0(strKey, nPoint));
-    RN_OBJ(pObj)->FUN_1407cba60("icon", ((class CommonResource*)FUN_1401d31f0())->GetPath(nKind));
+    RN_OBJ(pObj)->SetWStringMember("msg", FUN_14028dfa0(strKey, nPoint));
+    RN_OBJ(pObj)->SetStringMember("icon", ((class CommonResource*)GetCommonResource())->GetPath(nKind));
     AppendReward(pObj);
 }
 MS2_REPLACE_METHOD(0x141ac1950, UIRewardNotify, FUN_141ac1950, 499, 0xDF525E27);
@@ -602,8 +602,8 @@ void UIRewardNotify::FUN_141ac1b50(int nPoint)
 {
     MS2Ptr<AScript> pObj(new ASObj(2));
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "icon");
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", FUN_14028dfa0(L"s_reward_notify_stat_point", nPoint));
-    RN_OBJ(pObj)->FUN_1407cba60("icon", ((struct Unk_RNConfig*)FUN_1401d31f0())->m_1d0);
+    RN_OBJ(pObj)->SetWStringMember("msg", FUN_14028dfa0(L"s_reward_notify_stat_point", nPoint));
+    RN_OBJ(pObj)->SetStringMember("icon", ((struct Unk_RNConfig*)GetCommonResource())->m_1d0);
     AppendReward(pObj);
 }
 MS2_REPLACE_METHOD(0x141ac1b50, UIRewardNotify, FUN_141ac1b50, 430, 0xA44E763B);
@@ -618,8 +618,8 @@ void UIRewardNotify::FUN_141ac1d10(int nItemId)
     CString strName = pItem->GetIconPath();
     RN_OBJ(pObj)->FUN_1409c0dc0("type", "boxOpen");
     RN_OBJ(pObj)->FUN_1409c0dc0("nextType", "cashCoupon");
-    RN_OBJ(pObj)->FUN_1407cba60("icon", strName);
-    RN_OBJ(pObj)->FUN_1407cbb20("msg", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
+    RN_OBJ(pObj)->SetStringMember("icon", strName);
+    RN_OBJ(pObj)->SetWStringMember("msg", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nItemId));
     AppendReward(pObj);
 }
 MS2_REPLACE_METHOD(0x141ac1d10, UIRewardNotify, FUN_141ac1d10, 552, 0x6C02BD1D);
@@ -644,7 +644,7 @@ MS2_REPLACE_METHOD(0x141ac1fa0, UIRewardNotify, vfunc_45, 54, 0xF5BC91C1);
 void UIRewardNotify::AppendReward(MS2Ptr<AScript> pReward)
 {
     MS2Ptr<ASGameEntity> pEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
-    if (pEntity == 0 || ((class GFxSceneService*)(void*)(CUserMail::FUN_1408e57f0()))->GetSubSceneId() == 0x6200031 || m_block != 0) {
+    if (pEntity == 0 || ((class GFxSceneService*)(void*)(CUserMail::GetGFxSceneService()))->GetSubSceneId() == 0x6200031 || m_block != 0) {
         m_queue.Add(pReward);
     } else {
         pEntity->Invoke("appendReward", pReward);
@@ -655,7 +655,7 @@ MS2_REPLACE_METHOD(0x141ac1fe0, UIRewardNotify, AppendReward, 300, 0x2850DCE6);
 // @0x141ac2120
 void UIRewardNotify::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 MS2_REPLACE_METHOD(0x141ac2120, UIRewardNotify, vfunc_41, 99, 0x7C80D96D);
 
@@ -681,21 +681,21 @@ MS2_REPLACE_METHOD(0x141ac3fb0, UIRewardNotify, vfunc_48, 11, 0x81757CC6);
 
 // ---- UIFameContentsNotify ----
 
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
-void FUN_140762fc0(int nQuestId, int* pCurrent, int* pMax, CStringW& strPoint);
-CStringW FUN_140762de0(int nQuestId);
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
+void GetFamePointProgress(int nQuestId, int* pCurrent, int* pMax, CStringW& strPoint);
+CStringW GetAllianceName(int nQuestId);
 
 // @0x141ac2190
 UIFameContentsNotify::UIFameContentsNotify() : m_list(10)
 {
     m_2c = 0x1f;
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UIFameContentsNotify::FUN_141ac2790));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UIFameContentsNotify::OnFadeInComplete));
 }
 
 // @0x141ac22d0
 UIFameContentsNotify::~UIFameContentsNotify()
 {
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UIFameContentsNotify::FUN_141ac2790));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UIFameContentsNotify::OnFadeInComplete));
 }
 
 // @0x141ac23e0
@@ -744,9 +744,9 @@ int UIFameContentsNotify::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 MS2_REPLACE_METHOD(0x141ac2510, UIFameContentsNotify, vfunc_28, 142, 0xEA30EA87);
 
 // @0x141ac25b0
-void UIFameContentsNotify::FUN_141ac25b0(int nQuestId)
+void UIFameContentsNotify::QueueOpeningBanner(int nQuestId)
 {
-    MS2Ptr<CQuestData> pQuest = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> pQuest = GetQuestData(nQuestId);
     if (pQuest.IsNull())
         return;
     int nId = pQuest->m_4c;
@@ -757,12 +757,12 @@ void UIFameContentsNotify::FUN_141ac25b0(int nQuestId)
     if (m_30.IsNull())
         vfunc_2();
 }
-MS2_REPLACE_METHOD(0x141ac25b0, UIFameContentsNotify, FUN_141ac25b0, 234, 0x433D9F6E);
+MS2_REPLACE_METHOD(0x141ac25b0, UIFameContentsNotify, QueueOpeningBanner, 234, 0x433D9F6E);
 
 // @0x141ac26a0
-void UIFameContentsNotify::FUN_141ac26a0(int nQuestId)
+void UIFameContentsNotify::QueueEndingBanner(int nQuestId)
 {
-    MS2Ptr<CQuestData> pQuest = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> pQuest = GetQuestData(nQuestId);
     if (pQuest.IsNull())
         return;
     int nId = pQuest->m_4c;
@@ -773,15 +773,15 @@ void UIFameContentsNotify::FUN_141ac26a0(int nQuestId)
     if (m_30.IsNull())
         vfunc_2();
 }
-MS2_REPLACE_METHOD(0x141ac26a0, UIFameContentsNotify, FUN_141ac26a0, 234, 0xC16B99F5);
+MS2_REPLACE_METHOD(0x141ac26a0, UIFameContentsNotify, QueueEndingBanner, 234, 0xC16B99F5);
 
 // @0x141ac2790
-void UIFameContentsNotify::FUN_141ac2790(NotifyObject* pNotice)
+void UIFameContentsNotify::OnFadeInComplete(NotifyObject* pNotice)
 {
     if (m_list.GetCount() != 0)
         vfunc_2();
 }
-MS2_REPLACE_METHOD(0x141ac2790, UIFameContentsNotify, FUN_141ac2790, 57, 0xF67B0925);
+MS2_REPLACE_METHOD(0x141ac2790, UIFameContentsNotify, OnFadeInComplete, 57, 0xF67B0925);
 
 // @0x141ac27d0
 int UIFameContentsNotify::FUN_141ac27d0()
@@ -794,16 +794,16 @@ int UIFameContentsNotify::FUN_141ac27d0()
     int nCurrent = 0;
     int nMax = 0;
     CStringW strPoint;
-    FUN_140762fc0(nId, &nCurrent, &nMax, strPoint);
+    GetFamePointProgress(nId, &nCurrent, &nMax, strPoint);
     CString strAlliance(nKind != 0 ? "Opening_" : "Ending_");
     strAlliance += Name_14021a6b0(nId);
     CStringW strKey(nKind != 0 ? L"s_fame_contents_notify_opening" : L"s_fame_contents_notify_ending");
     ASObj o(2);
-    o.FUN_1407cba60("alliance", strAlliance);
-    o.FUN_1407cbb20("msg", FUN_14028dfa0(strKey, FUN_140762de0(nId)));
-    o.FUN_1407cb9c0("current", nCurrent);
-    o.FUN_1407cb9c0("max", nMax);
-    o.FUN_1407cbb20("point", strPoint);
+    o.SetStringMember("alliance", strAlliance);
+    o.SetWStringMember("msg", FUN_14028dfa0(strKey, GetAllianceName(nId)));
+    o.SetIntMember("current", nCurrent);
+    o.SetIntMember("max", nMax);
+    o.SetWStringMember("point", strPoint);
     m_30->FUN_140acd1f0("addNotify", o);
     return 1;
 }
@@ -827,11 +827,11 @@ static CString s_strSpinStart = "spin_Start";
 // The root AS object of the roulette movie.
 class ASDialog : public ASDisplayObject {
 public:
-    Scaleform::GFx::Value FUN_141ac65b0(const char* szMethod, CString strBind, unsigned long long nSlot, CString strName, int nRarity);   // "bind"
+    Scaleform::GFx::Value InvokeBind(const char* szMethod, CString strBind, unsigned long long nSlot, CString strName, int nRarity);   // "bind"
 };
 
 class Unk_RLPackets { public: void FUN_140da5180(int, Delegate<void(CInPacket&)>); void FUN_140da51e0(int, Delegate<void(CInPacket&)>); };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class UITalkCinematic* FindTalkCinematic(int);   // C3: was FindTalkCinematic
 UIRewardNotify* FindRewardNotify(int nId);
 #include "ms2/commonfiles/commonutil.h"
@@ -842,7 +842,7 @@ void DestroyItemInfoSlot(const CString& strBindID);
 void FUN_140710590(COutPacket&);
 
 // @0x141ac65b0
-inline Scaleform::GFx::Value ASDialog::FUN_141ac65b0(const char* szMethod, CString strBind, unsigned long long nSlot, CString strName, int nRarity)
+inline Scaleform::GFx::Value ASDialog::InvokeBind(const char* szMethod, CString strBind, unsigned long long nSlot, CString strName, int nRarity)
 {
     ASArgList args;
     args.resize(4);
@@ -858,13 +858,13 @@ UIRouletteDialog::UIRouletteDialog()
 {
     m_2c = 0xc;
     m_178 = 0;
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x7c, Delegate<void(CInPacket&)>(this, &UIRouletteDialog::FUN_141ac5e70));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x7c, Delegate<void(CInPacket&)>(this, &UIRouletteDialog::OnRoulettePacket));
 }
 
 // @0x141ac4a90
 UIRouletteDialog::~UIRouletteDialog()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x7c, Delegate<void(CInPacket&)>(this, &UIRouletteDialog::FUN_141ac5e70));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x7c, Delegate<void(CInPacket&)>(this, &UIRouletteDialog::OnRoulettePacket));
 }
 
 // @0x141ac4bd0
@@ -959,15 +959,15 @@ int UIRouletteDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
             if (pDlg != 0)
                 { bool bDebug = static_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsDebugMode(); pDlg->Invoke("spin", m_spins[m_spinIndex].m_slot + 1, bDebug); }
-            CStringW strResult = TSingleton<UITalkManager>::GetInstance()->FUN_141b20ed0();
+            CStringW strResult = TSingleton<UITalkManager>::GetInstance()->GetCurrentPageName();
             CStringW strTitle = GetStringCommonByKey(L"s_roulette_reward");
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strResult);
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strTitle);
             UITalkCinematic* pUI = FindTalkCinematic(0x4e40);
             if (pUI != 0) {
                 if (items.GetCount() > 0)
-                    pUI->FUN_141b1ac40(reinterpret_cast<Unk_TalkItemList&>(items), strTitle, 0, 0, 0);
-                pUI->FUN_141b1a8e0(strResult, "", "");
+                    pUI->ShowRewardPage(reinterpret_cast<Unk_TalkItemList&>(items), strTitle, 0, 0, 0);
+                pUI->ModifyScript(strResult, "", "");
             }
         } else {
             COutPacket packet(static_cast<int>(SendOp::BonusGame), 0);
@@ -998,7 +998,7 @@ void UIRouletteDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             item->SetCountClamped(m_counts[nIndex]);
             ASTooltip tooltip(pPlayer, 0x800, 2);
             if (tooltip.FUN_1409e0d40(item.get())) {
-                *pRetVal = tooltip.FUN_1422bb870();
+                *pRetVal = tooltip.GetValue();
                 return;
             }
         }
@@ -1011,7 +1011,7 @@ void UIRouletteDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             item->SetCountClamped(m_counts[nIndex]);
             ASTooltip tooltip(pPlayer, 0x800, 2);
             if (tooltip.FUN_1409e0d40(item.get())) {
-                *pRetVal = tooltip.FUN_1422bb870();
+                *pRetVal = tooltip.GetValue();
                 return;
             }
         }
@@ -1024,8 +1024,8 @@ int UIRouletteDialog::GetSpinIndex() { return m_spinIndex; }
 MS2_REPLACE_METHOD(0x141ac59e0, UIRouletteDialog, GetSpinIndex, 17, 0xA19D11F5);
 
 // @0x141ac5a00
-int UIRouletteDialog::FUN_141ac5a00() { return (int)m_spins.GetCount(); }
-MS2_REPLACE_METHOD(0x141ac5a00, UIRouletteDialog, FUN_141ac5a00, 33, 0x13EDAFA4);
+int UIRouletteDialog::GetSpinCount() { return (int)m_spins.GetCount(); }
+MS2_REPLACE_METHOD(0x141ac5a00, UIRouletteDialog, GetSpinCount, 33, 0x13EDAFA4);
 
 // @0x141ac5a30
 void UIRouletteDialog::FUN_141ac5a30()
@@ -1048,18 +1048,18 @@ void UIRouletteDialog::FUN_141ac5a30()
                 CString strBind;
                 strBind.Format("%s_%d", (const char*)GetTypeName(), i + 1);
                 CreateItemInfoSlot(strBind, item, i, 0x415, 0);
-                pDlg->FUN_141ac65b0("bind", strBind, i + 1, item->FUN_140528590(), nCount);
+                pDlg->InvokeBind("bind", strBind, i + 1, item->GetIconPath(), nCount);
                 m_binds.Add(strBind);
             }
         }
-        pDlg->FUN_1407cb9c0("selectedIndex", 1);
+        pDlg->SetIntMember("selectedIndex", 1);
     }
 }
 MS2_REPLACE_METHOD(0x141ac5a30, UIRouletteDialog, FUN_141ac5a30, 1071, 0x93B7D820);
 
 #ifndef MS2_HOOK_DLL
 // @0x141ac5e70
-void UIRouletteDialog::FUN_141ac5e70(CInPacket& pkt)
+void UIRouletteDialog::OnRoulettePacket(CInPacket& pkt)
 {
     int nMode = pkt.ReadUInt8();
     if (nMode == 1) {
@@ -1079,7 +1079,7 @@ void UIRouletteDialog::FUN_141ac5e70(CInPacket& pkt)
             m_counts.Add(nCnt);
         }
         m_178 = pkt.ReadInt32();
-        TSingleton<UITalkManager>::GetInstance()->FUN_141b21ae0("RouletteDialog");
+        TSingleton<UITalkManager>::GetInstance()->OpenOrQueueDialog("RouletteDialog");
     } else if (nMode == 2) {
         if (FUN_141924630() == 0)
             return;

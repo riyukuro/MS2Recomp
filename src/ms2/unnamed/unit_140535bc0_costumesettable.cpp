@@ -55,8 +55,8 @@ class Unk_140166420 : public CFileSystem { };
 CFileSystem* GetFileSystem();
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-CString FUN_14016a5c0(const char* psz, int n);                           // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
+CString ToCString(const char* psz, int n);                           // undecorated class name
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -64,7 +64,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 int FUN_1405451c0(CStringA &);  // C3: the definition's signature
 CStringA FUN_1405451e0(int);  // C3: the definition's signature
-Unk_LaunchOptions* FUN_1406aeee0();
+Unk_LaunchOptions* GetLaunchOptions();
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
 public:
@@ -74,7 +74,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 class ItemModelData   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_14054b400() const;
+    int GetFirstGroupType() const;
 };
 unsigned char FUN_1401d1320(CCacheData*);
 
@@ -170,11 +170,11 @@ int CostumeSetTable::LoadXml()
 {
     for (unsigned i = 0; i < 2; i++)
         m_sets[i].RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "CostumeSet.xml");
+    CString strPath = GetXmlPath("Table", "CostumeSet.xml");
     m_cache.AssignRaw(new CCacheData);
-    m_cache.get()->FUN_1401d1160(CString(strPath));
+    m_cache.get()->SetPath(CString(strPath));
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -221,7 +221,7 @@ int CostumeSetTable::LoadXml()
                 XmlGetAttr((class TiXmlElement*)(pNode), strAttr, nItemId);
                 if (nItemId == 0)
                     continue;
-                if (!((class Unk_LaunchOptions*)(void*)(FUN_1406aeee0()))->IsDisableValidate())
+                if (!((class Unk_LaunchOptions*)(void*)(GetLaunchOptions()))->IsDisableValidate())
                 {
                     MS2Ptr<CItemData> item = FUN_14053f870(nItemId);
                     if (item == 0)
@@ -229,7 +229,7 @@ int CostumeSetTable::LoadXml()
                         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
                         return 0;
                     }
-                    if (((class ItemModelData*)(class ItemModelData*)(item->GetModelOrEmpty()))->FUN_14054b400() != nKey)
+                    if (((class ItemModelData*)(class ItemModelData*)(item->GetModelOrEmpty()))->GetFirstGroupType() != nKey)
                     {
                         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml \xd615\xc2dd\xc774 \xc798\xbabb \xb418\xc5c8\xc2b5\xb2c8\xb2e4[<ms2> {0}]", strPath);
                         return 0;
@@ -250,7 +250,7 @@ void CostumeSetTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CostumeSetTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CostumeSetTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

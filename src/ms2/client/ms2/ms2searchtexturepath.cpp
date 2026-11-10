@@ -39,7 +39,7 @@ bool MS2SearchTexturePath::GetNextSearchPath(char* pcPath, unsigned int uiString
         if (!m_bQueried) {
             m_bQueried = true;
             StandardizePath(pcPath);
-            return GetFileSystem()->FUN_14039a160(m_acReferencePath, m_acFilePath, pcPath, uiStringLen);
+            return GetFileSystem()->FindTexturePath(m_acReferencePath, m_acFilePath, pcPath, uiStringLen);
         }
     } else {
         return NiTextureSearchPath::GetNextSearchPath(pcPath, uiStringLen);

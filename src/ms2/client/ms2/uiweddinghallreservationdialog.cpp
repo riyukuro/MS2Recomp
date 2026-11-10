@@ -98,12 +98,12 @@ UIWeddingHallReservationDialog::UIWeddingHallReservationDialog()
 {
     m_2c = 0x1b;
     FUN_1422dc3b0(1);
-    FUN_141924170(1);
-    FUN_140fdcc30(PagePtr(new UIWeddingHallReservationPageSelect(this)));
-    FUN_140fdcc30(PagePtr(new UIWeddingHallReservationPageSchedule(this)));
-    FUN_140fdcc30(PagePtr(new UIWeddingHallReservationPageConfirm(this)));
-    FUN_140fdcc30(PagePtr(new UIWeddingHallReservationPageChange(this)));
-    FUN_140fdcc30(PagePtr(new UIWeddingHallReservationPageCancel(this)));
+    SetTweenEnabled(1);
+    RegisterPage(PagePtr(new UIWeddingHallReservationPageSelect(this)));
+    RegisterPage(PagePtr(new UIWeddingHallReservationPageSchedule(this)));
+    RegisterPage(PagePtr(new UIWeddingHallReservationPageConfirm(this)));
+    RegisterPage(PagePtr(new UIWeddingHallReservationPageChange(this)));
+    RegisterPage(PagePtr(new UIWeddingHallReservationPageCancel(this)));
 }
 
 // @0x140fdb460
@@ -228,7 +228,7 @@ int UIWeddingHallReservationDialog::vfunc_28(const char* szMethod, const Scalefo
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             m_nTab = data.PopInt();
-            FUN_140fdcfc0();
+            UpdateTabButtons();
         }
     }
     else if (_stricmp(szMethod, "onButtonLeft") == 0)
@@ -287,24 +287,24 @@ void UIWeddingHallReservationDialog::SetPackage(int nPackage)
 MS2_REPLACE_METHOD(0x140fdbf50, UIWeddingHallReservationDialog, SetPackage, 25, 0x11D24FAE);
 
 // @0x140fdbf70
-void UIWeddingHallReservationDialog::FUN_140fdbf70()
+void UIWeddingHallReservationDialog::SelectPreviousTab()
 {
     if (m_nTab == 0)
         return;
     if (MS2Ptr<ASButtonBar> spTab = GetChild<ASButtonBar>("m_tab"))
         spTab->SetSelectedIndex(m_nTab - 1);
 }
-MS2_REPLACE_METHOD(0x140fdbf70, UIWeddingHallReservationDialog, FUN_140fdbf70, 184, 0x3EFA11E0);
+MS2_REPLACE_METHOD(0x140fdbf70, UIWeddingHallReservationDialog, SelectPreviousTab, 184, 0x3EFA11E0);
 
 // @0x140fdc030
-void UIWeddingHallReservationDialog::FUN_140fdc030()
+void UIWeddingHallReservationDialog::SelectNextTab()
 {
     if (m_nTab >= (int)(m_tabs.size() - 1))
         return;
     if (MS2Ptr<ASButtonBar> spTab = GetChild<ASButtonBar>("m_tab"))
         spTab->SetSelectedIndex(m_nTab + 1);
 }
-MS2_REPLACE_METHOD(0x140fdc030, UIWeddingHallReservationDialog, FUN_140fdc030, 205, 0xFF3DDA98);
+MS2_REPLACE_METHOD(0x140fdc030, UIWeddingHallReservationDialog, SelectNextTab, 205, 0xFF3DDA98);
 
 // @0x140fdc110
 void UIWeddingHallReservationDialog::SetHall(int nHall)
@@ -330,30 +330,30 @@ MS2_REPLACE_METHOD(0x140fdc160, UIWeddingHallReservationDialog, SetNight, 26, 0x
 // @0x140fdc180
 void UIWeddingHallReservationDialog::FUN_140fdc180()
 {
-    MS2Ptr<WeddingPackage> spPackage = WeddingTable::GetInstance()->FUN_140908b80(m_nPackage);
+    MS2Ptr<WeddingPackage> spPackage = WeddingTable::GetInstance()->FindPackage(m_nPackage);
     if (spPackage == 0)
         return;
-    MS2Ptr<WeddingHallData> spHall = spPackage->FUN_140907110(m_nHall);
+    MS2Ptr<WeddingHallData> spHall = spPackage->FindHall(m_nHall);
     if (spHall == 0)
         return;
     if (!WeddingManager::GetInstance()->CanVisit(m_nPackage, m_nHall, m_nTime, m_bNight))
         return;
     MS2Ptr<CItem> spCoupon(0);
-    if (spHall->FUN_140906e80() != 0)
-        spCoupon = g_143ab2a90.FindItemByTag(spHall->FUN_140906e80());
+    if (spHall->GetReservationCouponId() != 0)
+        spCoupon = g_143ab2a90.FindItemByTag(spHall->GetReservationCouponId());
     MS2Ptr<UIBillDialog::TData> spBill(new UIBillDialog::TData());
     MS2Ptr<AScript> spData(new ASObj(2));
-    static_cast<ASObj*>(spData.operator->())->FUN_1407cbb20("category",
+    static_cast<ASObj*>(spData.operator->())->SetWStringMember("category",
         GetStringCommonByKey(StringFormat(L"s_wedding_reservation_hall_bill_category_grade_{0}", spHall->m_nGrade)));
     CStringW strDetail =
-        CStringTable::GetInstance()->FUN_141811980(3, spHall->FUN_140906e40(FUN_140900f30(m_nTime)));
+        CStringTable::GetInstance()->FUN_141811980(3, spHall->GetFieldId(FUN_140900f30(m_nTime)));
     CStringW strPrice = FormatStringId<CStringW>(0x987, FUN_1409404f0(spHall->m_nMerat));
     ASArray rows(2);
     ASObj row(2);
-    ((class AScript&)(row)).FUN_1407cbb20("detail", strDetail);
-    ((class AScript&)(row)).FUN_1407cbb20("strPrice", strPrice);
-    rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
-    static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("list", Scaleform::GFx::Value(rows.FUN_1422bb870()));
+    ((class AScript&)(row)).SetWStringMember("detail", strDetail);
+    ((class AScript&)(row)).SetWStringMember("strPrice", strPrice);
+    rows.PushValue(Scaleform::GFx::Value(row.GetValue()));
+    static_cast<ASObj*>(spData.operator->())->FUN_1409adbe0("list", Scaleform::GFx::Value(rows.GetValue()));
     spBill->m_18 = static_cast<IMessageListener*>(this);
     spBill->m_30 = 3;
     spBill->m_20 = spData;
@@ -372,20 +372,20 @@ void UIWeddingHallReservationDialog::FUN_140fdc180()
 // (not hooked: the inline UIBillDialog::TData ctor stores a DLL-local vftable)
 
 // @0x140fdc970
-void UIWeddingHallReservationDialog::FUN_140fdc970()
+void UIWeddingHallReservationDialog::SendReservationChange()
 {
     WeddingManager::GetInstance()->SendReservationChange(m_nPackage, m_nHall, m_nTime, m_bNight);
     vfunc_67();
     UITalkManager::GetInstance()->SendNpcTalkMode0();
 }
-MS2_REPLACE_METHOD(0x140fdc970, UIWeddingHallReservationDialog, FUN_140fdc970, 110, 0x5F93CD48);
+MS2_REPLACE_METHOD(0x140fdc970, UIWeddingHallReservationDialog, SendReservationChange, 110, 0x5F93CD48);
 
 // @0x140fdc9f0
-void UIWeddingHallReservationDialog::FUN_140fdc9f0()
+void UIWeddingHallReservationDialog::SendReservationCancel()
 {
     WeddingManager::GetInstance()->SendReservationCancel();
 }
-MS2_REPLACE_METHOD(0x140fdc9f0, UIWeddingHallReservationDialog, FUN_140fdc9f0, 27, 0x68E3290C);
+MS2_REPLACE_METHOD(0x140fdc9f0, UIWeddingHallReservationDialog, SendReservationCancel, 27, 0x68E3290C);
 
 // @0x140fdca20
 int UIWeddingHallReservationDialog::GetHall()
@@ -416,7 +416,7 @@ int UIWeddingHallReservationDialog::GetMode()
 MS2_REPLACE_METHOD(0x140fdca80, UIWeddingHallReservationDialog, GetMode, 17, 0xD5D5F2AE);
 
 // @0x140fdcaa0
-void UIWeddingHallReservationDialog::FUN_140fdcaa0(const CString& strMode)
+void UIWeddingHallReservationDialog::SetMode(const CString& strMode)
 {
     if (strMode.CompareNoCase("reservation") == 0)
         m_nMode = 0;
@@ -425,27 +425,27 @@ void UIWeddingHallReservationDialog::FUN_140fdcaa0(const CString& strMode)
     else if (strMode.CompareNoCase("reservationCancel") == 0)
         m_nMode = 2;
 }
-MS2_REPLACE_METHOD(0x140fdcaa0, UIWeddingHallReservationDialog, FUN_140fdcaa0, 134, 0x7115E4B7);
+MS2_REPLACE_METHOD(0x140fdcaa0, UIWeddingHallReservationDialog, SetMode, 134, 0x7115E4B7);
 
 // @0x140fdcb30
-__int64 UIWeddingHallReservationDialog::FUN_140fdcb30()
+__int64 UIWeddingHallReservationDialog::GetHallPrice()
 {
-    MS2Ptr<WeddingPackage> spPackage = WeddingTable::GetInstance()->FUN_140908b80(m_nPackage);
+    MS2Ptr<WeddingPackage> spPackage = WeddingTable::GetInstance()->FindPackage(m_nPackage);
     if (spPackage == 0)
         return 0;
-    MS2Ptr<WeddingHallData> spHall = spPackage->FUN_140907110(m_nHall);
+    MS2Ptr<WeddingHallData> spHall = spPackage->FindHall(m_nHall);
     if (spHall == 0)
         return 0;
     return spHall->m_nMerat;
 }
-MS2_REPLACE_METHOD(0x140fdcb30, UIWeddingHallReservationDialog, FUN_140fdcb30, 239, 0x0A256752);
+MS2_REPLACE_METHOD(0x140fdcb30, UIWeddingHallReservationDialog, GetHallPrice, 239, 0x0A256752);
 
 // @0x140fdcc30
-void UIWeddingHallReservationDialog::FUN_140fdcc30(PagePtr spPage)
+void UIWeddingHallReservationDialog::RegisterPage(PagePtr spPage)
 {
     m_pages[spPage->vfunc_8()] = spPage;
 }
-MS2_REPLACE_METHOD(0x140fdcc30, UIWeddingHallReservationDialog, FUN_140fdcc30, 139, 0x80C34F37);
+MS2_REPLACE_METHOD(0x140fdcc30, UIWeddingHallReservationDialog, RegisterPage, 139, 0x80C34F37);
 
 // @0x140fdccd0
 void UIWeddingHallReservationDialog::FUN_140fdccd0(const std::vector<CString>& names)
@@ -455,15 +455,15 @@ void UIWeddingHallReservationDialog::FUN_140fdccd0(const std::vector<CString>& n
         m_30->FUN_140c1c8c0("setupTabSize", names.size());
         m_tabs.clear();
         m_nTab = 0;
-        spTab->FUN_1422e3400();
+        spTab->ClearDataProvider();
         for (size_t i = 0; i < names.size(); ++i)
         {
-            PagePtr spPage = FUN_140fdd3f0(names[i]);
+            PagePtr spPage = FindPage(names[i]);
             if (spPage.get() != 0)
             {
                 ASObj item(2);
-                item.FUN_1407cba60("page", spPage->vfunc_8());
-                ((class AScript&)(item)).FUN_1407cbb20("label", spPage->vfunc_9());
+                item.SetStringMember("page", spPage->vfunc_8());
+                ((class AScript&)(item)).SetWStringMember("label", spPage->vfunc_9());
                 spTab->AddItem(item);
                 m_tabs.push_back(spPage);
             }
@@ -475,7 +475,7 @@ void UIWeddingHallReservationDialog::FUN_140fdccd0(const std::vector<CString>& n
 MS2_REPLACE_METHOD(0x140fdccd0, UIWeddingHallReservationDialog, FUN_140fdccd0, 732, 0xE82E44DD);
 
 // @0x140fdcfc0
-void UIWeddingHallReservationDialog::FUN_140fdcfc0()
+void UIWeddingHallReservationDialog::UpdateTabButtons()
 {
     if (m_nTab < 0 || m_nTab >= (int)m_tabs.size())
         return;
@@ -485,15 +485,15 @@ void UIWeddingHallReservationDialog::FUN_140fdcfc0()
     if (MS2Ptr<ASButton> spLeft = GetChild<ASButton>("m_leftButton"))
     {
         spLeft->FUN_1422cdfb0(spPage->vfunc_10(true));
-        spLeft->FUN_1422c1fe0(spPage->vfunc_11(true));
+        spLeft->SetEnabled(spPage->vfunc_11(true));
     }
     if (MS2Ptr<ASButton> spRight = GetChild<ASButton>("m_rightButton"))
     {
         spRight->FUN_1422cdfb0(spPage->vfunc_10(false));
-        spRight->FUN_1422c1fe0(spPage->vfunc_11(false));
+        spRight->SetEnabled(spPage->vfunc_11(false));
     }
 }
-MS2_REPLACE_METHOD(0x140fdcfc0, UIWeddingHallReservationDialog, FUN_140fdcfc0, 777, 0xC85CC01E);
+MS2_REPLACE_METHOD(0x140fdcfc0, UIWeddingHallReservationDialog, UpdateTabButtons, 777, 0xC85CC01E);
 
 // @0x140fdd2d0
 void UIWeddingHallReservationDialog::FUN_140fdd2d0()
@@ -509,14 +509,14 @@ void UIWeddingHallReservationDialog::FUN_140fdd2d0()
 MS2_REPLACE_METHOD(0x140fdd2d0, UIWeddingHallReservationDialog, FUN_140fdd2d0, 273, 0x47AE7618);
 
 // @0x140fdd3f0
-UIWeddingHallReservationDialog::PagePtr UIWeddingHallReservationDialog::FUN_140fdd3f0(const CString& strName)
+UIWeddingHallReservationDialog::PagePtr UIWeddingHallReservationDialog::FindPage(const CString& strName)
 {
     PageMap::iterator it = m_pages.find(strName);
     if (it == m_pages.end())
         return PagePtr(0);
     return it->second;
 }
-MS2_REPLACE_METHOD(0x140fdd3f0, UIWeddingHallReservationDialog, FUN_140fdd3f0, 178, 0x06AD05E1);
+MS2_REPLACE_METHOD(0x140fdd3f0, UIWeddingHallReservationDialog, FindPage, 178, 0x06AD05E1);
 
 // @0x140fdd6b0
 Scaleform::GFx::Value AScript::FUN_140fdd6b0(const char* szMethod, unsigned __int64 a1, bool a2)

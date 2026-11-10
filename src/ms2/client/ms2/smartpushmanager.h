@@ -43,11 +43,11 @@ public:
     CSmartPushManager();                                        // 0x140dd81d0
     virtual ~CSmartPushManager();                               // 0x140dd8250 (??_G 0x140dd8e50)
 
-    void FUN_140dd82b0();                                       // create one CSmartPush per table row
-    void FUN_140dd8440();                                       // per-frame poll, 100 ms throttle
-    void FUN_140dd8620(int nId);                                // forward event to push nId
+    void CreatePushes();                                       // create one CSmartPush per table row
+    void UpdatePushes();                                       // per-frame poll, 100 ms throttle
+    void OnPushClicked(int nId);                                // forward event to push nId
     void FUN_140dd86a0(int nId, int nValue);                    // forward event with a value to push nId
-    void FUN_140dd8730();                                       // reset every push to hidden
+    void ResetPushStates();                                       // reset every push to hidden
     void FUN_140dd87d0();                                       // re-add every visible push to the strip
 
 private:

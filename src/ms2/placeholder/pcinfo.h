@@ -29,7 +29,7 @@ public:
     int FUN_140dba240();
     int FUN_140dba260();
     void ReadStats(CInPacket* pPacket);                 // reads the stat table (0x23 stats x 3 kinds)
-    MS2Ptr<CItem> FUN_140dba560(int nGemType);              // the first item of m_aItems whose gem has the type
+    MS2Ptr<CItem> FindItemByGemType(int nGemType);              // the first item of m_aItems whose gem has the type
     MS2Ptr<CItem> GetEquipItemSet0(Unk_InventoryEquipSlot nSlot);  // the item worn in a slot (m_mapEquip0)
     MS2Ptr<CItem> GetEquipItemSet1(Unk_InventoryEquipSlot nSlot);  // (m_mapEquip1)
     MS2Ptr<CItem> GetEquipItemSet2(Unk_InventoryEquipSlot nSlot);  // (m_mapEquip2)

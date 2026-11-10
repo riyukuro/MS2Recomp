@@ -58,7 +58,7 @@ class Unk_VwWearer;
 class Unk_ItemEquipData : public CItemData { };             // CItem::FUN_140527840's record (item.cpp)
 class Unk_SgNifLoader { public: NiTexturePtr FUN_141553eb0(CString strPath, NiTexture* pkSelf); };
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
-CString FUN_1410280d0(int nKind, CString strName);          // the local file of a ugc content kind
+CString GetDownloadFilePath(int nKind, CString strName);          // the local file of a ugc content kind
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                   // the scene root of an entity
 class Unk_VwWorld
 {
@@ -82,7 +82,7 @@ public:
     bool IsRegionCN();
 };
 class CGuildManager;
-class CGuildInfo { public: __int64 FUN_1404ccbd0(); };      // the guild id (guilddef_1.h)
+class CGuildInfo { public: __int64 GetGuildId(); };      // the guild id (guilddef_1.h)
 struct Unk_VwSummary { char m_pad[0x20]; int m_nState; };   // the own character's summary (+0x20: 2 = wedding done)
 class WeddingManager   // C3: member view for the former free stand-ins
 {
@@ -96,7 +96,7 @@ public:
 // UI dialogs by id.
 class UIMyInfoDialog* FindMyInfoDialog(int);   // C3: was FindMyInfoDialog
 template <class T> T* Unk_UgcGetDialog(int nId);            // 0x4f8c the wedding profile dialog
-void* FUN_14136f480(int nId);                               // 0x4e4f the guild mark dialog
+void* FindGuildDialog(int nId);                               // 0x4e4f the guild mark dialog
 class UIPCInfoDialog   // C3: member view for the former free stand-ins
 {
 public:
@@ -106,14 +106,14 @@ public:
 class UIWeddingDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140fc7f30();
-    void FUN_140fc7e80(const CStringW& strProfile);              // (wedding profile)
+    void SetOwnProfile();
+    void SetProfile(const CStringW& strProfile);              // (wedding profile)
 };
 class UIGuildDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_1419769d0();
-    void FUN_141976980(const CStringW& strMark);                 // (guild mark)
+    void SetOwnGuildMark();
+    void SetGuildMarkIfOpen(const CStringW& strMark);                 // (guild mark)
 };
 
 // Textures of the preview files and the format helper strings.
@@ -187,7 +187,7 @@ public:
     virtual void vfunc_54();
     virtual int vfunc_55();
 };
-class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
+class UIDialog* FindDialog(int);   // C3: was FindDialog
 // The upload event hub (slot 4 shows the finished upload of a dialog).
 class Unk_VwEvents
 {
@@ -222,8 +222,8 @@ CUgcViewerEquip::CUgcViewerEquip()
 
 // @0x14189ec30
 CUgcViewerEquip::CUgcViewerEquip(CItem* pItem)
-    : m_item(pItem, pItem != 0 ? pItem->FUN_140526b10() : 0)
-    , m_icon(pItem, pItem != 0 ? pItem->FUN_140526b10() : 0)
+    : m_item(pItem, pItem != 0 ? pItem->GetObjectId() : 0)
+    , m_icon(pItem, pItem != 0 ? pItem->GetObjectId() : 0)
 {
 }
 
@@ -238,7 +238,7 @@ CUgcViewerEquip::~CUgcViewerEquip()
 // @0x14189ee30
 int CUgcViewerEquip::vfunc_2()
 {
-    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(FUN_14189f730()))));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(GetObjectId()))));
     if (pWearer == 0)
         return 0;
     MS2Ptr<CEquipItem> spEquip = pWearer->GetEquipByUid(m_item.m_itemUid);
@@ -278,7 +278,7 @@ int CUgcViewerEquip::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x14189f260
 void CUgcViewerEquip::vfunc_4()
 {
-    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(FUN_14189f730()))));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(GetObjectId()))));
     if (pWearer == 0)
         return;
     MS2Ptr<CEquipItem> spEquip = pWearer->GetEquipByUid(m_item.m_itemUid);
@@ -293,7 +293,7 @@ void CUgcViewerEquip::vfunc_4()
 // @0x14189f360
 void CUgcViewerEquip::vfunc_5()
 {
-    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(FUN_14189f730()))));
+    Unk_VwWearer* pWearer = ((class Unk_VwWearer*)FUN_140b120b0(reinterpret_cast<GameObject*>(WorldService::GetInstance()->FUN_141bd1290(GetObjectId()))));
     if (pWearer == 0)
         return;
     MS2Ptr<CEquipItem> spEquip = pWearer->GetEquipByUid(m_item.m_itemUid);
@@ -355,13 +355,13 @@ void CUgcViewerEquip::vfunc_12(__int64 itemUid)
 }
 
 // @0x14189f730
-int CUgcViewerEquip::FUN_14189f730()
+int CUgcViewerEquip::GetObjectId()
 {
     return m_item.m_nObjectId;
 }
 
 // @0x14189f750
-void CUgcViewerEquip::FUN_14189f750(int nObjectId)
+void CUgcViewerEquip::SetObjectId(int nObjectId)
 {
     m_item.m_nObjectId = nObjectId;
 }
@@ -387,7 +387,7 @@ CUgcViewerCube::~CUgcViewerCube()
 // @0x14189f8b0
 int CUgcViewerCube::vfunc_2()
 {
-    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(FUN_1418a0110())));
+    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(GetEntityId())));
     if (spCube == 0)
         return 0;
     MS2Ptr<CItemUgcMeshContainer> spMeshes = spCube->GetUgcMesh();
@@ -415,7 +415,7 @@ int CUgcViewerCube::vfunc_3(MS2Ptr<CUploadFile> spFile)
     NiTexturePtr spTexture = LoadUgcTexture(strPath, vfunc_9(), true);
     if (spTexture == 0)
         return 0;
-    if (TSingleton<CUgcManager>::GetInstance()->FUN_141886de0(&m_item, spTexture) == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->ApplyTextureToCube(&m_item, spTexture) == 0)
         return 0;
     spCtrl->m_spFile = spFile;
     return 1;
@@ -424,7 +424,7 @@ int CUgcViewerCube::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x14189fcd0
 void CUgcViewerCube::vfunc_4()
 {
-    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(FUN_1418a0110())));
+    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(GetEntityId())));
     if (spCube == 0)
         return;
     spCube->FUN_141085250();
@@ -433,7 +433,7 @@ void CUgcViewerCube::vfunc_4()
 // @0x14189fd80
 void CUgcViewerCube::vfunc_5()
 {
-    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(FUN_1418a0110())));
+    efd::SmartPointer<AvatarCube> spCube = efd::DynamicCast<AvatarCube>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(GetEntityId())));
     if (spCube == 0)
         return;
     CItemData* pData = spCube->GetItemData().get();
@@ -487,13 +487,13 @@ void CUgcViewerCube::vfunc_12(__int64 itemUid)
 }
 
 // @0x1418a0110
-egf::EntityID CUgcViewerCube::FUN_1418a0110()
+egf::EntityID CUgcViewerCube::GetEntityId()
 {
     return m_item.m_entityId;
 }
 
 // @0x1418a0150
-void CUgcViewerCube::FUN_1418a0150(const egf::EntityID& id)
+void CUgcViewerCube::SetEntityId(const egf::EntityID& id)
 {
     m_item.m_entityId = id;
 }
@@ -555,7 +555,7 @@ void CUgcViewerBanner::vfunc_1()
     float fDistance = bPlanar ? GetPlanarDistance(reinterpret_cast<const Vector3&>(kPlayer), kBanner) : GetDistance(reinterpret_cast<const Vector3&>(kPlayer), kBanner);
     float fLimit = GetClientConstants()->RegistUgcDistanceClose.Read();
     if (fDistance > fLimit)
-        TSingleton<CUgcManager>::GetInstance()->FUN_14187f1f0();
+        TSingleton<CUgcManager>::GetInstance()->SetInitialized();
 }
 
 // @0x1418a04d0
@@ -603,13 +603,13 @@ void CUgcViewerBanner::vfunc_4()
         spTexture = m_spImage;
     else
     {
-        CString strFile = FUN_1410280d0(3, spRegist->m_strUrl);
+        CString strFile = GetDownloadFilePath(3, spRegist->m_strUrl);
         if (_access(strFile, 0) == 0)
         {
             spTexture = ((class Unk_SgNifLoader*)GetNifLoadingService())->FUN_141553eb0(strFile, 0);
             if (spTexture == 0)
             {
-                TSingleton<CUgcManager>::GetInstance()->FUN_141884af0(spRegist);
+                TSingleton<CUgcManager>::GetInstance()->DownloadBannerImage(spRegist);
                 return;
             }
         }
@@ -818,7 +818,7 @@ int CUgcViewerWeddingProfile::vfunc_3(MS2Ptr<CUploadFile> spFile)
     void* pDialog = Unk_UgcGetDialog<UIWeddingDialog>(0x4f8c);
     if (pDialog == 0)
         return 0;
-    reinterpret_cast<UIWeddingDialog*>(pDialog)->FUN_140fc7e80(strThumb);
+    reinterpret_cast<UIWeddingDialog*>(pDialog)->SetProfile(strThumb);
     return 1;
 }
 
@@ -828,7 +828,7 @@ void CUgcViewerWeddingProfile::vfunc_4()
     void* pDialog = Unk_UgcGetDialog<UIWeddingDialog>(0x4f8c);
     if (pDialog == 0)
         return;
-    ((class UIWeddingDialog*)(void*)(pDialog))->FUN_140fc7f30();
+    ((class UIWeddingDialog*)(void*)(pDialog))->SetOwnProfile();
 }
 
 // @0x1418a19b0
@@ -888,7 +888,7 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    if (reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->FUN_1404ccbd0() == 0)
+    if (reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->GetGuildId() == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     if (_waccess(strPath, 0) != 0)
@@ -897,20 +897,20 @@ int CUgcViewerGuildMark::vfunc_3(MS2Ptr<CUploadFile> spFile)
     if (strThumb.GetLength() == 0)
         return 0;
     spCtrl->m_spFile = spFile;
-    void* pDialog = FUN_14136f480(0x4e4f);
+    void* pDialog = FindGuildDialog(0x4e4f);
     if (pDialog == 0)
         return 0;
-    reinterpret_cast<UIGuildDialog*>(pDialog)->FUN_141976980(strThumb);
+    reinterpret_cast<UIGuildDialog*>(pDialog)->SetGuildMarkIfOpen(strThumb);
     return 1;
 }
 
 // @0x1418a1ee0
 void CUgcViewerGuildMark::vfunc_4()
 {
-    void* pDialog = FUN_14136f480(0x4e4f);
+    void* pDialog = FindGuildDialog(0x4e4f);
     if (pDialog == 0)
         return;
-    ((class UIGuildDialog*)(void*)(pDialog))->FUN_1419769d0();
+    ((class UIGuildDialog*)(void*)(pDialog))->SetOwnGuildMark();
 }
 
 // @0x1418a1f20
@@ -976,7 +976,7 @@ int CUgcViewerGuildPoster::vfunc_3(MS2Ptr<CUploadFile> spFile)
     GameObject* pPlayer = ((GameObject*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return 0;
-    if (reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->FUN_1404ccbd0() == 0)
+    if (reinterpret_cast<CGuildInfo*>((char*)reinterpret_cast<void*>(TSingleton<CGuildManager>::GetInstance()) + 8)->GetGuildId() == 0)
         return 0;
     CStringW strPath = spFile->GetPath();
     if (_waccess(strPath, 0) != 0)
@@ -1054,7 +1054,7 @@ CUgcViewerRidee::~CUgcViewerRidee()
 // @0x1418a2880
 int CUgcViewerRidee::vfunc_2()
 {
-    efd::SmartPointer<AvatarRidee> spRidee = efd::DynamicCast<AvatarRidee>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(FUN_1418a2fc0())));
+    efd::SmartPointer<AvatarRidee> spRidee = efd::DynamicCast<AvatarRidee>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(GetEntityId())));
     if (spRidee == 0)
         return 0;
     MS2Ptr<CItemUgcMeshContainer> spMeshes = spRidee->GetUgcMesh();
@@ -1082,7 +1082,7 @@ int CUgcViewerRidee::vfunc_3(MS2Ptr<CUploadFile> spFile)
     NiTexturePtr spTexture = LoadUgcTexture(strPath, vfunc_9(), true);
     if (spTexture == 0)
         return 0;
-    if (TSingleton<CUgcManager>::GetInstance()->FUN_141887160(&m_item, spTexture) == 0)
+    if (TSingleton<CUgcManager>::GetInstance()->ApplyTextureToRidee(&m_item, spTexture) == 0)
         return 0;
     spCtrl->m_spFile = spFile;
     return 1;
@@ -1091,7 +1091,7 @@ int CUgcViewerRidee::vfunc_3(MS2Ptr<CUploadFile> spFile)
 // @0x1418a2ca0
 void CUgcViewerRidee::vfunc_4()
 {
-    efd::SmartPointer<AvatarRidee> spRidee = efd::DynamicCast<AvatarRidee>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(FUN_1418a2fc0())));
+    efd::SmartPointer<AvatarRidee> spRidee = efd::DynamicCast<AvatarRidee>(((GameObject*)WorldService::GetInstance()->FindObjectByEntityId(GetEntityId())));
     if (spRidee == 0)
         return;
     spRidee->FUN_141085250();
@@ -1147,13 +1147,13 @@ void CUgcViewerRidee::vfunc_12(__int64 itemUid)
 }
 
 // @0x1418a2fc0
-egf::EntityID CUgcViewerRidee::FUN_1418a2fc0()
+egf::EntityID CUgcViewerRidee::GetEntityId()
 {
     return m_item.m_entityId;
 }
 
 // @0x1418a3000
-void CUgcViewerRidee::FUN_1418a3000(const egf::EntityID& id)
+void CUgcViewerRidee::SetEntityId(const egf::EntityID& id)
 {
     m_item.m_entityId = id;
 }
@@ -1423,7 +1423,7 @@ CUgcUploadCtrl::~CUgcUploadCtrl()
 }
 
 // @0x1418a3840
-void CUgcUploadCtrl::FUN_1418a3840(int nType)
+void CUgcUploadCtrl::SetKind(int nType)
 {
     Clear();
     m_nKind = nType;
@@ -1433,9 +1433,9 @@ void CUgcUploadCtrl::FUN_1418a3840(int nType)
 }
 
 // @0x1418a38a0
-void CUgcUploadCtrl::FUN_1418a38a0()
+void CUgcUploadCtrl::RefreshPreview()
 {
-    Unk_VwDialogUi* pDialog = ((class Unk_VwDialogUi*)FUN_140c300a0(m_nDialog));
+    Unk_VwDialogUi* pDialog = ((class Unk_VwDialogUi*)FindDialog(m_nDialog));
     if (pDialog == 0)
         return;
     if (pDialog->vfunc_55() == 1)
@@ -1481,10 +1481,10 @@ void CUgcUploadCtrl::FUN_1418a3af0(int nResult)
 }
 
 // @0x1418a3b80
-int CUgcUploadCtrl::FUN_1418a3b80(__int64 uid)
+int CUgcUploadCtrl::PrepareUpload(__int64 uid)
 {
     int nResult = 1;
-    nResult = FUN_1418a3c20(uid);
+    nResult = PrepareUploadByKind(uid);
     if (nResult != 0)
         return nResult;
     FUN_1418a3db0();
@@ -1498,7 +1498,7 @@ CStringW CUgcUploadCtrl::GetResult()
 }
 
 // @0x1418a3c20
-int CUgcUploadCtrl::FUN_1418a3c20(__int64 uid)
+int CUgcUploadCtrl::PrepareUploadByKind(__int64 uid)
 {
     int nResult = 1;
     switch (m_nKind)
@@ -1530,7 +1530,7 @@ void CUgcUploadCtrl::FUN_1418a3db0()
 {
     if (!(m_nKind == 1 || m_nKind == 2 || m_nKind == 7 || m_nKind == 9))
         return;
-    CStringW strDir = FUN_14016a730(static_cast<Unk_VwConfig*>(FUN_1401d31f0())->m_strUploadDir, 0);
+    CStringW strDir = FUN_14016a730(static_cast<Unk_VwConfig*>(GetCommonResource())->m_strUploadDir, 0);
     if (_waccess(strDir, 0) != 0)
         return;
     MS2Ptr<CUploadFile> spFile(new CUploadFile());
@@ -1541,7 +1541,7 @@ void CUgcUploadCtrl::FUN_1418a3db0()
     m_spImage->m_upload.CopyFrom(&m_upload);
     m_spImage->m_spFile = spFile;
     m_spImage->m_spViewer = m_spViewer;
-    m_spImage->FUN_1418a3c20(0);
+    m_spImage->PrepareUploadByKind(0);
 }
 
 // @0x1418a4100

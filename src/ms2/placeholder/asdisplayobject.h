@@ -40,26 +40,26 @@ public:
     ASEventDispatcher(const Scaleform::GFx::Value& v, int nMovieId);    // 0x1422c3090 (AScript ctor 0x1422ba780)
     virtual ~ASEventDispatcher();                                       // 0 0x1422c3100 (??_G 0x1422c44e0)
     // Defines the AS member strName as a function calling cb (once per name).
-    void FUN_1422c3180(CString strName, const Callback& cb);            // 0x1422c3180 (strName by value)
-    void FUN_1422c33c0(CString strName);                                // 0x1422c33c0 undo FUN_1422c3180 (member := undefined)
-    void FUN_1422c34f0();                                               // 0x1422c34f0 undo every FUN_1422c3180
+    void AddMemberCallback(CString strName, const Callback& cb);            // 0x1422c3180 (strName by value)
+    void RemoveMemberCallback(CString strName);                                // 0x1422c33c0 undo AddMemberCallback (member := undefined)
+    void RemoveAllMemberCallbacks();                                               // 0x1422c34f0 undo every AddMemberCallback
     // addEventListener (0x1422c3600): pUser is the AS function object's user data
     // (asbuttongroup.cpp). Once per delegate.
-    void FUN_1422c3600(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, int nPriority, int a5, void* pUser);
+    void AddEventListener(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture, int nPriority, int a5, void* pUser);
     // removeEventListener (0x1422c3820; asloader.cpp "complete")
-    void FUN_1422c3820(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
-    void FUN_1422c3940();                                               // 0x1422c3940 remove every listener
+    void RemoveEventListener(const CString& strEvent, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
+    void RemoveAllEventListeners();                                               // 0x1422c3940 remove every listener
     // The flash.events.IEventDispatcher methods on an AS function value.
     void FUN_1422c3a30(const CString& strType, const Scaleform::GFx::Value& listener, bool bUseCapture, int nPriority,
                        int bUseWeakReference);                          // addEventListener
     void FUN_1422c3b30(const CString& strType, const Scaleform::GFx::Value& listener, bool bUseCapture);   // removeEventListener
-    int FUN_1422c3bf0(const CString& strType);                          // hasEventListener
-    int FUN_1422c3c90(const CString& strType);                          // willTrigger
-    int FUN_1422c3d30(class ASEvent& ev);                               // dispatchEvent (asuicomponent.cpp)
+    int HasEventListener(const CString& strType);                          // hasEventListener
+    int WillTrigger(const CString& strType);                          // willTrigger
+    int DispatchEvent(class ASEvent& ev);                               // dispatchEvent (asuicomponent.cpp)
 private:
     MS2_LAYOUT_FRIEND;
     ATL::CAtlArray<Scaleform::Ptr<ASEventHandlerCtx> > m_listeners;    // +0x40 FUN_1422c3600's AS listeners
-    ATL::CAtlArray<Scaleform::Ptr<ASEventHandlerCtx> > m_members;      // +0x60 FUN_1422c3180's AS member functions
+    ATL::CAtlArray<Scaleform::Ptr<ASEventHandlerCtx> > m_members;      // +0x60 AddMemberCallback's AS member functions
 };
 MS2_CHECK_SIZE(ASEventDispatcher, 0x80);
 MS2_CHECK_OFFSET(ASEventDispatcher, m_listeners, 0x40);
@@ -123,13 +123,13 @@ public:
     void SetHeightFloat(float fHeight);
     void GetPosition(float* pX, float* pY);                   // get the position (uivipdialog.cpp)
     void GetScale(float* pXScale, float* pYScale);         // get the scale
-    float FUN_1422c10a0();                                      // x
-    float FUN_1422c1110();                                      // y
+    float GetX();                                      // x
+    float GetY();                                      // y
     float GetZ();                                      // z
     float GetXScale();                                      // x scale
     float GetYScale();                                      // y scale
     float GetZScale();                                      // z scale
-    int FUN_1422c1340();                                        // ceil(width)
+    int GetWidthCeil();                                        // ceil(width)
     int GetHeightCeil();                                        // ceil(height)
     float GetWidth();                                      // width
     float GetHeight();                                      // height
@@ -138,13 +138,13 @@ public:
     int HitTestPointInt(int x, int y, bool bShapeFlag);          // hitTestPoint
     int HitTestPoint(float x, float y, bool bShapeFlag);      // hitTestPoint
     int HitTestObject(MS2Ptr<ASDisplayObject> spObj);          // hitTestObject (spObj by value: the callee destroys it)
-    int FUN_1422c17d0(const Scaleform::GFx::Value::DisplayInfo& info);   // SetDisplayInfo
+    int SetDisplayInfo(const Scaleform::GFx::Value::DisplayInfo& info);   // SetDisplayInfo
     int GetDisplayInfo(Scaleform::GFx::Value::DisplayInfo& info);         // GetDisplayInfo (false if not a display object)
 
     // ---- defined in other units of the GFx UI library ----
-    // FUN_1422c3180 (AS -> C++ callback), FUN_1422c3600 (addEventListener) and FUN_1422c3820 (removeEventListener) are
+    // AddMemberCallback (AS -> C++ callback), FUN_1422c3600 (addEventListener) and FUN_1422c3820 (removeEventListener) are
     // ASEventDispatcher's, inherited.
-    int FUN_1422c2510(double* pX, double* pY);                  // get the position (double; uiminimapentity.cpp; ASMovieClip's, asmovieclip.cpp)
+    int LocalToGlobal(double* pX, double* pY);                  // get the position (double; uiminimapentity.cpp; ASMovieClip's, asmovieclip.cpp)
 };
 MS2_CHECK_SIZE(ASDisplayObject, 0x80);
 
@@ -165,17 +165,17 @@ public:
     void FUN_1422de960(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
     void FUN_1422de9c0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
     void FUN_1422dea20(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, bool bCapture);
-    void FUN_1422dea80(int bEnabled);                                       // set "doubleClickEnabled" (asinteractiveobject.cpp)
-    int FUN_1422dead0();                                                    // "doubleClickEnabled"
-    void FUN_1422deb40(bool bEnabled);                                      // set "mouseEnabled"
-    int FUN_1422deb70();                                                    // "mouseEnabled"
-    void FUN_1422debe0(int bNeeds);                                         // set "needsSoftKeyboard"
+    void SetDoubleClickEnabled(int bEnabled);                                       // set "doubleClickEnabled" (asinteractiveobject.cpp)
+    int IsDoubleClickEnabled();                                                    // "doubleClickEnabled"
+    void SetMouseEnabled(bool bEnabled);                                      // set "mouseEnabled"
+    int IsMouseEnabled();                                                    // "mouseEnabled"
+    void SetNeedsSoftKeyboard(int bNeeds);                                         // set "needsSoftKeyboard"
     int FUN_1422dec30();                                                    // "needsSoftKeyboard"
-    void FUN_1422deca0(int bEnabled);                                       // set "tabEnabled"
-    int FUN_1422decf0();                                                    // "tabEnabled"
-    void FUN_1422ded60(int nIndex);                                         // set "tabIndex" (as a Boolean: the exe passes nIndex != 0)
-    int FUN_1422dedb0();                                                    // "tabIndex" (read as a Boolean)
-    int FUN_1422dee20();                                                    // requestSoftKeyboard() (asinteractiveobject.cpp)
+    void SetTabEnabled(int bEnabled);                                       // set "tabEnabled"
+    int IsTabEnabled();                                                    // "tabEnabled"
+    void SetTabIndex(int nIndex);                                         // set "tabIndex" (as a Boolean: the exe passes nIndex != 0)
+    int GetTabIndex();                                                    // "tabIndex" (read as a Boolean)
+    int RequestSoftKeyboard();                                                    // requestSoftKeyboard() (asinteractiveobject.cpp)
 };
 // Recovered with ?\asdisplayobjectcontainer.cpp (src/ms2/gfxui/asdisplayobjectcontainer.cpp, 0x1422c6570-0x1422c70b0); each
 // method calls the AS DisplayObjectContainer member of the same name. The Value arguments are by value (the callee
@@ -185,24 +185,24 @@ class ASDisplayObjectContainer : public ASInteractiveObject
 public:
     ASDisplayObjectContainer(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422c6570 (asloader.cpp)
     virtual ~ASDisplayObjectContainer();                                // 0 0x1422c65c0 (scalar deleting 0x1422c7070)
-    void FUN_1422c65f0(int bTab);                                       // set "tabChildren"
-    void FUN_1422c6640(bool b);                                         // set "mouseChildren" (uidungeonsearchsettingdialog)
-    int FUN_1422c6670();                                                // numChildren
-    int FUN_1422c66d0();                                                // "tabChildren"
-    int FUN_1422c6740();                                                // "mouseChildren"
-    int FUN_1422c67b0(MS2Ptr<ASDisplayObject> spChild);                 // getChildIndex
-    int FUN_1422c6860(const Scaleform::GFx::Value& child);              // contains
-    Scaleform::GFx::Value FUN_1422c6900(Scaleform::GFx::Value child);   // addChild (returns the child)
-    Scaleform::GFx::Value FUN_1422c69c0(Scaleform::GFx::Value child, int nIndex);   // addChildAt (returns the child)
-    Scaleform::GFx::Value FUN_1422c6aa0(int nIndex);                   // getChildAt
-    Scaleform::GFx::Value FUN_1422c6b00(const CString& strName);       // getChildByName (uipvpguildteamdialog)
-    Scaleform::GFx::Value FUN_1422c6b70(Scaleform::GFx::Value child);   // removeChild
-    Scaleform::GFx::Value FUN_1422c6c00(int nIndex);                   // removeChildAt
-    Scaleform::GFx::Value FUN_1422c6c60();                             // "parent"
-    void FUN_1422c6cb0(MS2Ptr<ASDisplayObject> spChild, int nIndex);    // setChildIndex
-    void FUN_1422c6d60(MS2Ptr<ASDisplayObject> spChild1, MS2Ptr<ASDisplayObject> spChild2);   // swapChildren
-    void FUN_1422c6e50(int nIndex1, int nIndex2);                       // swapChildrenAt
-    void FUN_1422c6eb0();                                               // parent.removeChild(this)
+    void SetTabChildren(int bTab);                                       // set "tabChildren"
+    void SetMouseChildren(bool b);                                         // set "mouseChildren" (uidungeonsearchsettingdialog)
+    int GetNumChildren();                                                // numChildren
+    int GetTabChildren();                                                // "tabChildren"
+    int GetMouseChildren();                                                // "mouseChildren"
+    int GetChildIndex(MS2Ptr<ASDisplayObject> spChild);                 // getChildIndex
+    int Contains(const Scaleform::GFx::Value& child);              // contains
+    Scaleform::GFx::Value AddChild(Scaleform::GFx::Value child);   // addChild (returns the child)
+    Scaleform::GFx::Value AddChildAt(Scaleform::GFx::Value child, int nIndex);   // addChildAt (returns the child)
+    Scaleform::GFx::Value GetChildAt(int nIndex);                   // getChildAt
+    Scaleform::GFx::Value GetChildByName(const CString& strName);       // getChildByName (uipvpguildteamdialog)
+    Scaleform::GFx::Value RemoveChild(Scaleform::GFx::Value child);   // removeChild
+    Scaleform::GFx::Value RemoveChildAt(int nIndex);                   // removeChildAt
+    Scaleform::GFx::Value GetParent();                             // "parent"
+    void SetChildIndex(MS2Ptr<ASDisplayObject> spChild, int nIndex);    // setChildIndex
+    void SwapChildren(MS2Ptr<ASDisplayObject> spChild1, MS2Ptr<ASDisplayObject> spChild2);   // swapChildren
+    void SwapChildrenAt(int nIndex1, int nIndex2);                       // swapChildrenAt
+    void RemoveFromParent();                                               // parent.removeChild(this)
 };
 // ASStage (RTTI .?AVASStage@@, 0x80, vftable 0x143111a78, ctor 0x1422cfcb0): the movie's stage; slot 5 returns itself.
 class ASStage : public ASDisplayObjectContainer
@@ -212,12 +212,12 @@ public:
     virtual ~ASStage();                                         // 0 0x1422cfd00 (scalar deleting 0x1422cffb0)
     virtual ASStage* vfunc_5();                                 // 5 0x1422cff80 returns itself
     // Recovered with ?\asstage.cpp (src/ms2/gfxui/asstage.cpp, 0x1422cfcb0-0x1422cfff0).
-    void FUN_1422cfd30(MS2Ptr<ASInteractiveObject> spFocus);   // set the stage "focus" (by value: the callee destroys it; asuicomponent.cpp)
+    void SetFocus(MS2Ptr<ASInteractiveObject> spFocus);   // set the stage "focus" (by value: the callee destroys it; asuicomponent.cpp)
     MS2Ptr<ASInteractiveObject> FUN_1422cfe20();               // the focus: always NULL (the exe never reads it back)
-    void FUN_1422cfe60(int nWidth);                             // set "stageWidth"
-    void FUN_1422cfe90(int nHeight);                            // set "stageHeight"
-    int FUN_1422cfec0();                                        // "stageWidth"
-    int FUN_1422cff20();                                        // "stageHeight"
+    void SetStageWidth(int nWidth);                             // set "stageWidth"
+    void SetStageHeight(int nHeight);                            // set "stageHeight"
+    int GetStageWidth();                                        // "stageWidth"
+    int GetStageHeight();                                        // "stageHeight"
 };
 // ASSprite (RTTI .?AVASSprite@@, 0x80, vftable 0x143115c78: only the dtor is overridden). Recovered with ?\assprite.cpp
 // (src/ms2/gfxui/assprite.cpp, 0x1422e5be0-0x1422e6170); the comments name the AS member each method uses.
@@ -227,11 +227,11 @@ class ASSprite : public ASDisplayObjectContainer
 public:
     ASSprite(const Scaleform::GFx::Value& v, int nMovieId);    // 0x1422e5be0 (ASMovieClip's ctors call it)
     virtual ~ASSprite();                                        // 0 0x1422e5c30 (scalar deleting 0x1422e6020)
-    MS2Ptr<ASGraphics> FUN_1422e5c60();                         // "graphics"
-    void FUN_1422e5cd0(int bUse);                               // set "useHandCursor"
-    int FUN_1422e5d20();                                        // "useHandCursor"
-    void FUN_1422e5d90(int bLockCenter);                        // startDrag(lockCenter)
-    void FUN_1422e5dd0();                                       // stopDrag()
+    MS2Ptr<ASGraphics> GetGraphics();                         // "graphics"
+    void SetUseHandCursor(int bUse);                               // set "useHandCursor"
+    int GetUseHandCursor();                                        // "useHandCursor"
+    void StartDrag(int bLockCenter);                        // startDrag(lockCenter)
+    void StopDrag();                                       // stopDrag()
 };
 MS2_CHECK_SIZE(ASSprite, 0x80);
 // Recovered with ?\asmovieclip.cpp (src/ms2/gfxui/asmovieclip.cpp, 0x1422c1e40-0x1422c2fc0).
@@ -242,8 +242,8 @@ public:
     ASMovieClip(Scaleform::GFx::Value v, int nMovieId);         // 0x1422c1e90 (the Value is destroyed by the callee)
     ASMovieClip(CString strLinkage, int nMovieId);              // 0x1422c1ef0 (creates the clip from a linkage name)
     virtual ~ASMovieClip();                                     // 0 deleting 0x1422c2de0, dtor 0x1422c1fb0
-    void FUN_1422c1fe0(int bEnabled);                           // set "enabled"
-    int FUN_1422c2030();                                        // "enabled"
+    void SetEnabled(int bEnabled);                           // set "enabled"
+    int IsEnabled();                                        // "enabled"
     // 6-11 invoke the AS MovieClip method of the same name, 12-15 go to a frame through the value's object interface
     virtual void vfunc_6();                                     // 6 0x1422c20a0 play
     virtual void vfunc_7();                                     // 7 0x1422c20e0 stop
@@ -255,14 +255,14 @@ public:
     virtual void vfunc_13(const CString& strLabel);             // 13 0x1422c2220 gotoAndPlay(label)
     virtual void vfunc_14(int nFrame);                          // 14 0x1422c22d0 gotoAndStop(frame)
     virtual void vfunc_15(const CString& strLabel);             // 15 0x1422c2290 gotoAndStop(label)
-    int FUN_1422c2300();                                        // "currentFrame"
-    CString FUN_1422c2360();                                    // "currentFrameLabel" ("" if it is not a string)
-    CString FUN_1422c2420();                                    // "currentLabel"
-    int FUN_1422c24b0();                                        // "totalFrames"
-    int FUN_1422c2510(double* pX, double* pY);                  // localToGlobal(new Point): the stage position
-    int FUN_1422c2700(float* pX, float* pY);                    // globalToLocal(0, 0)
+    int GetCurrentFrame();                                        // "currentFrame"
+    CString GetCurrentFrameLabel();                                    // "currentFrameLabel" ("" if it is not a string)
+    CString GetCurrentLabel();                                    // "currentLabel"
+    int GetTotalFrames();                                        // "totalFrames"
+    int LocalToGlobal(double* pX, double* pY);                  // localToGlobal(new Point): the stage position
+    int GlobalToLocal(float* pX, float* pY);                    // globalToLocal(0, 0)
     int FUN_1422c2740(float x, float y, float* pX, float* pY);  // globalToLocal(x, y)
-    int FUN_1422c29c0(float x, float y, bool bShapeFlag);       // hitTestPoint (0 unless the result is a bool)
+    int HitTestPoint(float x, float y, bool bShapeFlag);       // hitTestPoint (0 unless the result is a bool)
     // "click" / "doubleClick" / "rightClick" listeners (pUser: the pointer-sized user data handed back with the call)
     void FUN_1422c2a70(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);
     void FUN_1422c2a70(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, int nUser);   // the same function, an int user value (uishopdialog.cpp)
@@ -272,7 +272,7 @@ public:
     void FUN_1422c2c30(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser);   // asitemslot.cpp
     void FUN_1422c2cb0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
     // sets "externalTooltipFunction" to an ASFunction of the delegate (cb by value: the callee destroys it)
-    void FUN_1422c2d10(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb, void* pUser);
+    void SetExternalTooltipFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb, void* pUser);
 };
 MS2_CHECK_SIZE(ASMovieClip, 0x80);                              // exe allocates 0x80 bytes (asequipicon 0x1409b93ed)
 

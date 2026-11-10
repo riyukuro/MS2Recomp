@@ -73,6 +73,14 @@
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@PEAVTiXmlElement@@V?$allocator@PEAVTiXmlElement@@@std@@@std@@@std@@QEAAAEAPEAPEAVTiXmlElement@@XZ 0x14091cf20
 // MS2-PIN: ??E?$_Vector_const_iterator@V?$_Vector_val@U?$_Simple_types@V?$MS2Ptr@VWeddingCompleteRewardItem@@@@@std@@@std@@@std@@QEAAAEAV01@XZ 0x140917730
 // MS2-PINS-END tplpin
+// The exe's WeddingExpData node-allocator ctor is 0x140916120 (called by the WeddingExpData _Compressed_pair ctor 0x140909b50);
+// 0x140916150 is the one the WeddingSkillData pair ctor 0x140909be0 calls. Unpinned, the Exp name took 0x140916150 and a hook
+// helper with the same 11 bytes was paired at 0x140916120.
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VWeddingExpData@@@@@std@@PEAX@std@@@std@@QEAA@XZ 0x140916120
+// MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@PEAX@std@@@std@@QEAA@XZ 0x140916150
+// Same for the two WeddingSkillData _Get_first accessors (their exe callers 0x14091c3f0 and 0x14091c1c0 reference these names):
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@H@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@H@2@XZ 0x14091bd40
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@@std@@@2@$00@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@PEAX@std@@@2@XZ 0x14091be00
 // MS2-PIN: ??_7WeddingTable@@6B?$TSingleton@VWeddingTable@@@@@ 0x142da97e0
 // MS2-PIN: ??_7WeddingTable@@6B?$CValidData@VWeddingTable@@@@@ 0x142da97f0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\weddingtable.cpp"   // no asserts of its own
@@ -106,7 +114,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 // Unrecovered helpers (the xml loader helpers the other table units use).
 class Unk_140166420 : public CFileSystem { };
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& arr, const wchar_t* pszDelim);   // split
@@ -264,16 +272,16 @@ bool WeddingHallData::Read(TiXmlElement* pNode)
 MS2_REPLACE_METHOD(0x140906740, WeddingHallData, Read, 1781, 0x877EF4F7);
 
 // @0x140906e40
-unsigned int WeddingHallData::FUN_140906e40(bool bNight)
+unsigned int WeddingHallData::GetFieldId(bool bNight)
 {
     if (bNight && m_nNightFieldId != 0)
         return m_nNightFieldId;
     return m_nFieldId;
 }
-MS2_REPLACE_METHOD(0x140906e40, WeddingHallData, FUN_140906e40, 48, 0x34703355);
+MS2_REPLACE_METHOD(0x140906e40, WeddingHallData, GetFieldId, 48, 0x34703355);
 
 // @0x140906e80
-int WeddingHallData::FUN_140906e80()
+int WeddingHallData::GetReservationCouponId()
 {
     switch (m_nGrade)
     {
@@ -283,7 +291,7 @@ int WeddingHallData::FUN_140906e80()
     default: return 0;
     }
 }
-MS2_REPLACE_METHOD(0x140906e80, WeddingHallData, FUN_140906e80, 68, 0x91943924);
+MS2_REPLACE_METHOD(0x140906e80, WeddingHallData, GetReservationCouponId, 68, 0x91943924);
 
 // @0x140906ed0
 WeddingPackage::WeddingPackage()
@@ -314,13 +322,13 @@ bool WeddingPackage::Read(TiXmlElement* pNode)
 MS2_REPLACE_METHOD(0x140906f80, WeddingPackage, Read, 394, 0x14BB0ADC);
 
 // @0x140907110
-MS2Ptr<WeddingHallData> WeddingPackage::FUN_140907110(int nHallId)
+MS2Ptr<WeddingHallData> WeddingPackage::FindHall(int nHallId)
 {
     if (m_halls.find(nHallId) == m_halls.end())
         return MS2Ptr<WeddingHallData>(0);
     return m_halls[nHallId];
 }
-MS2_REPLACE_METHOD(0x140907110, WeddingPackage, FUN_140907110, 187, 0x5689F444);
+MS2_REPLACE_METHOD(0x140907110, WeddingPackage, FindHall, 187, 0x5689F444);
 
 // @0x1409071e0
 WeddingRewardData::WeddingRewardData()
@@ -521,9 +529,9 @@ MS2_REPLACE_METHOD(0x140907d40, WeddingTable, Load, 121, 0x0C86D934);
 // @0x140907dc0
 bool WeddingTable::LoadPackage()
 {
-    CString strPath = FUN_14071a5b0("Table", "weddingPackage.xml");
+    CString strPath = GetXmlPath("Table", "weddingPackage.xml");
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -550,9 +558,9 @@ MS2_REPLACE_METHOD(0x140907dc0, WeddingTable, LoadPackage, 718, 0x5F37CE29);
 // @0x1409080a0
 bool WeddingTable::LoadReward()
 {
-    CString strPath = FUN_14071a5b0("Table", "weddingReward.xml");
+    CString strPath = GetXmlPath("Table", "weddingReward.xml");
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -579,9 +587,9 @@ MS2_REPLACE_METHOD(0x1409080a0, WeddingTable, LoadReward, 718, 0x7BC1ECB2);
 // @0x140908380
 bool WeddingTable::LoadExp()
 {
-    CString strPath = FUN_14071a5b0("Table", "weddingExp.xml");
+    CString strPath = GetXmlPath("Table", "weddingExp.xml");
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -608,9 +616,9 @@ MS2_REPLACE_METHOD(0x140908380, WeddingTable, LoadExp, 718, 0xDBC076D2);
 // @0x140908660
 bool WeddingTable::LoadMaintenance()
 {
-    CString strPath = FUN_14071a5b0("Table", "weddingMaintenance.xml");
+    CString strPath = GetXmlPath("Table", "weddingMaintenance.xml");
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -635,9 +643,9 @@ MS2_REPLACE_METHOD(0x140908660, WeddingTable, LoadMaintenance, 629, 0xDF3E5F92);
 // @0x1409088e0
 bool WeddingTable::LoadSkill()
 {
-    CString strPath = FUN_14071a5b0("Table", "weddingSkill.xml");
+    CString strPath = GetXmlPath("Table", "weddingSkill.xml");
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -659,13 +667,13 @@ bool WeddingTable::LoadSkill()
 MS2_REPLACE_METHOD(0x1409088e0, WeddingTable, LoadSkill, 651, 0xD6DED500);
 
 // @0x140908b80
-MS2Ptr<WeddingPackage> WeddingTable::FUN_140908b80(int nPackageId)
+MS2Ptr<WeddingPackage> WeddingTable::FindPackage(int nPackageId)
 {
     if (m_packages.find(nPackageId) == m_packages.end())
         return MS2Ptr<WeddingPackage>(0);
     return m_packages[nPackageId];
 }
-MS2_REPLACE_METHOD(0x140908b80, WeddingTable, FUN_140908b80, 187, 0x621C9EE1);
+MS2_REPLACE_METHOD(0x140908b80, WeddingTable, FindPackage, 187, 0x621C9EE1);
 
 // @0x140908c50
 MS2Ptr<WeddingPackage> WeddingTable::FindPackageByPlanner(int nPlanner)
@@ -683,19 +691,19 @@ MS2_REPLACE_METHOD(0x140908c50, WeddingTable, FindPackageByPlanner, 250, 0x73794
 // @0x140908d50
 unsigned int WeddingTable::FUN_140908d50(int nPackageId, int nHallId, bool bNight)
 {
-    MS2Ptr<WeddingPackage> spPackage = FUN_140908b80(nPackageId);
+    MS2Ptr<WeddingPackage> spPackage = FindPackage(nPackageId);
     if (spPackage == 0)
         return 0;
-    MS2Ptr<WeddingHallData> spHall = spPackage->FUN_140907110(nHallId);
+    MS2Ptr<WeddingHallData> spHall = spPackage->FindHall(nHallId);
     if (spHall == 0)
         return 0;
-    unsigned int nFieldId = spHall->FUN_140906e40(bNight);
+    unsigned int nFieldId = spHall->GetFieldId(bNight);
     return nFieldId;
 }
 MS2_REPLACE_METHOD(0x140908d50, WeddingTable, FUN_140908d50, 253, 0x73D8FEEF);
 
 // @0x140908e60
-__int64 WeddingTable::FUN_140908e60(int nType, __int64 nLastTime)
+__int64 WeddingTable::GetRewardExp(int nType, __int64 nLastTime)
 {
     std::map<int, MS2Ptr<WeddingRewardData> >::iterator it = m_rewards.find(nType);
     if (it == m_rewards.end())
@@ -718,7 +726,7 @@ __int64 WeddingTable::FUN_140908e60(int nType, __int64 nLastTime)
         return 0;
     return spReward->m_nRewardExp;
 }
-MS2_REPLACE_METHOD(0x140908e60, WeddingTable, FUN_140908e60, 290, 0x4159F3A0);
+MS2_REPLACE_METHOD(0x140908e60, WeddingTable, GetRewardExp, 290, 0x4159F3A0);
 
 // @0x140908f90
 int WeddingTable::GetGrade(__int64 nExp)
@@ -751,25 +759,25 @@ int WeddingTable::GetMaxGrade()
 MS2_REPLACE_METHOD(0x1409090f0, WeddingTable, GetMaxGrade, 46, 0xAFD7CDB2);
 
 // @0x140909130
-int WeddingTable::FUN_140909130(int nPackageId, int nHallId)
+int WeddingTable::GetHallGrade(int nPackageId, int nHallId)
 {
-    MS2Ptr<WeddingPackage> spPackage = FUN_140908b80(nPackageId);
+    MS2Ptr<WeddingPackage> spPackage = FindPackage(nPackageId);
     if (spPackage == 0)
         return 0;
-    MS2Ptr<WeddingHallData> spHall = spPackage->FUN_140907110(nHallId);
+    MS2Ptr<WeddingHallData> spHall = spPackage->FindHall(nHallId);
     if (spHall == 0)
         return 0;
     return spHall->m_nGrade;
 }
-MS2_REPLACE_METHOD(0x140909130, WeddingTable, FUN_140909130, 227, 0x4882E462);
+MS2_REPLACE_METHOD(0x140909130, WeddingTable, GetHallGrade, 227, 0x4882E462);
 
 // @0x140909220
 __int64 WeddingTable::FUN_140909220(int nPackageId, int nHallId)
 {
-    MS2Ptr<WeddingPackage> spPackage = FUN_140908b80(nPackageId);
+    MS2Ptr<WeddingPackage> spPackage = FindPackage(nPackageId);
     if (spPackage == 0)
         return 0;
-    MS2Ptr<WeddingHallData> spHall = spPackage->FUN_140907110(nHallId);
+    MS2Ptr<WeddingHallData> spHall = spPackage->FindHall(nHallId);
     if (spHall == 0)
         return 0;
     return spHall->m_nMerat;
@@ -781,16 +789,16 @@ bool WeddingTable::GetUpgradeItems(int nFromPackageId, int nFromHallId, int nToP
                                    std::vector<ItemEntity>& items)
 {
     items.clear();
-    MS2Ptr<WeddingPackage> spFromPackage = FUN_140908b80(nFromPackageId);
+    MS2Ptr<WeddingPackage> spFromPackage = FindPackage(nFromPackageId);
     if (spFromPackage == 0)
         return false;
-    MS2Ptr<WeddingHallData> spFromHall = spFromPackage->FUN_140907110(nFromHallId);
+    MS2Ptr<WeddingHallData> spFromHall = spFromPackage->FindHall(nFromHallId);
     if (spFromHall == 0)
         return false;
-    MS2Ptr<WeddingPackage> spToPackage = FUN_140908b80(nToPackageId);
+    MS2Ptr<WeddingPackage> spToPackage = FindPackage(nToPackageId);
     if (spToPackage == 0)
         return false;
-    MS2Ptr<WeddingHallData> spToHall = spToPackage->FUN_140907110(nToHallId);
+    MS2Ptr<WeddingHallData> spToHall = spToPackage->FindHall(nToHallId);
     if (spToHall == 0)
         return false;
     if (spFromHall->m_nGrade >= spToHall->m_nGrade)
@@ -837,7 +845,7 @@ bool WeddingTable::GetUpgradeItems(int nFromPackageId, int nFromHallId, int nToP
 MS2_REPLACE_METHOD(0x140909310, WeddingTable, GetUpgradeItems, 1367, 0xC00F9162);
 
 // @0x140909870
-bool WeddingTable::FUN_140909870(int nWorld, const CMsTime& time)
+bool WeddingTable::IsMaintenance(int nWorld, const CMsTime& time)
 {
     for (std::list<MS2Ptr<WeddingMaintenanceData> >::iterator it = m_maintenance.begin(); it != m_maintenance.end();
          ++it)
@@ -847,7 +855,7 @@ bool WeddingTable::FUN_140909870(int nWorld, const CMsTime& time)
     }
     return false;
 }
-MS2_REPLACE_METHOD(0x140909870, WeddingTable, FUN_140909870, 150, 0x09828A71);
+MS2_REPLACE_METHOD(0x140909870, WeddingTable, IsMaintenance, 150, 0x09828A71);
 
 // @0x140909910
 MS2Ptr<WeddingSkillData> WeddingTable::FindSkill(int nId)

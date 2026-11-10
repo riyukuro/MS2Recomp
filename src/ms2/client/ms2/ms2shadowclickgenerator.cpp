@@ -98,13 +98,13 @@ const NiRTTI MS2ShadowVisitor::ms_RTTI("MS2ShadowVisitor", MS2_VIS_BASE);
 extern NiFixedString DAT_143ae51a8;      // extra-data name that marks a shadow caster
 extern int DAT_143ae2b34;       // 0: casters are found by that extra data, otherwise by the DISPLAY_OBJECT flag
 class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
-unsigned int FUN_141569010(NiAVObject* pkObject);   // the flag-based caster test (out of unit; also used by unit_141567000)
+unsigned int IsShadowCaster(NiAVObject* pkObject);   // the flag-based caster test (out of unit; also used by unit_141567000)
 
 // "is this one of the shadow casters", written out inline at each use (a macro in the source: the exe has no call)
 #define MS2_IS_SHADOW_CASTER(pkObject, bResult)                                                           \
     bResult = 0;                                                                                           \
     if (DAT_143ae2b34)                                                                                     \
-        bResult = FUN_141569010(pkObject);                                                                 \
+        bResult = IsShadowCaster(pkObject);                                                                 \
     else                                                                                                   \
         bResult = pkObject->GetExtraData(DAT_143ae51a8) != 0
 
@@ -112,7 +112,7 @@ unsigned int FUN_141569010(NiAVObject* pkObject);   // the flag-based caster tes
 class Unk_ShadowModelNode : public NiNode
 {
 public:
-    int FUN_1410444a0() { return m_nMode; }
+    int GetMode() { return m_nMode; }
     bool FUN_14144e250() { return m_bIgnoreShadow; }
 private:
     char m_pad_130;
@@ -155,7 +155,7 @@ void MS2ExcludeFromShadows(NiAVObject* pkObject)
     }
 }
 
-ecr::RenderService* FUN_1413f9890();                                    // the render service
+ecr::RenderService* GetRenderService();                                    // the render service
 
 // The camera manager's current mode accepts shadow-follow cameras? (inline of ?\actioncameramode.cpp's obj)
 class CameraMgr   // C3: member view for the former free stand-ins
@@ -614,7 +614,7 @@ bool MS2ShadowClickGenerator::HandleCameraFollowDirectionalLight(NiShadowGenerat
     Unk_CameraTargetEntity* pTarget = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60();
     NiPoint3 kCameraPos(MS2_SC_POINT(efd::Point3,
         (pTarget->vfunc_18() - MS2_SC_POINT(Vector3, pkDirLight->GetWorldDirection() * 10000.0f))));
-    ecr::RenderSurface* pHolder = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pHolder = GetRenderService()->GetActiveRenderSurface();
     if (pHolder)
     {
         NiCamera* pkSceneCamera = pHolder->GetCamera();
@@ -676,7 +676,7 @@ bool MS2ShadowClickGenerator::HandleCameraFollowDirectionalLight(NiShadowGenerat
 // @0x14150a420
 void MS2ShadowClickGenerator::UpdateCullPlanes()
 {
-    ecr::RenderSurface* pHolder = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pHolder = GetRenderService()->GetActiveRenderSurface();
     if (pHolder == 0)
         return;
     NiCamera* pkCamera = pHolder->GetCamera();
@@ -921,7 +921,7 @@ void MS2ShadowVisitor::AdditiveListHelperAtl(NiNode* pkNode, MS2CasterList* pkOb
         Unk_ShadowModelNode* pkModel;
         if (((class COptimizer*)GetOptimizer())->IsModelCullingOn() &&
             (pkModel = (Unk_ShadowModelNode*)NiObject::DynamicCast(&EffectNode::ms_RTTI, pkNode)) != 0 &&
-            pkModel->FUN_1410444a0() == 1 && !pkModel->FUN_14144e250())
+            pkModel->GetMode() == 1 && !pkModel->FUN_14144e250())
             return;
 
         if (bIncludeAppCulled || !pkNode->GetAppCulled())

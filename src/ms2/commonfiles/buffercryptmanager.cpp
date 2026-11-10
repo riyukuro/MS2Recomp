@@ -45,7 +45,7 @@ MS2_CHECK_OFFSET(Unk_Random, m_lock, 0x10);
 
 // The shuffle helpers, defined further down (the manager's Init reaches them before their definitions).
 void FUN_1401cdae0(ATL::CAtlArray<int>* pValues, int nSeed);    // 0x1401cdae0 seeded shuffle
-void FUN_1401cdb50(BYTE* pLeft, BYTE* pRight);                  // 0x1401cdb50 byte swap
+void SwapBytes(BYTE* pLeft, BYTE* pRight);                  // 0x1401cdb50 byte swap
 void FUN_1401cdbb0(int* pLeft, int* pRight);                    // 0x1401cdbb0 int swap
 
 // ---- CXORCrypter: XOR with a 2-byte key, alternating key bytes. Encrypt == Decrypt. ----
@@ -179,7 +179,7 @@ void CRearrangeCrypter::Encrypt(BYTE* pBuffer, UINT nSize, unsigned* /*pKey*/)
 {
     UINT nHalf = nSize / 2;
     for (UINT i = 0; i < nHalf; ++i)
-        FUN_1401cdb50(&pBuffer[i], &pBuffer[nHalf + i]);
+        SwapBytes(&pBuffer[i], &pBuffer[nHalf + i]);
 }
 
 // @0x1401cd9b0
@@ -187,7 +187,7 @@ BOOL CRearrangeCrypter::Decrypt(BYTE* pBuffer, UINT nSize, unsigned* /*pKey*/)
 {
     UINT nHalf = nSize / 2;
     for (UINT i = 0; i < nHalf; ++i)
-        FUN_1401cdb50(&pBuffer[i], &pBuffer[nHalf + i]);
+        SwapBytes(&pBuffer[i], &pBuffer[nHalf + i]);
     return TRUE;
 }
 
@@ -228,7 +228,7 @@ int* FUN_1401cdb40(int* pValue)
 }
 
 // @0x1401cdb50
-void FUN_1401cdb50(BYTE* pLeft, BYTE* pRight)
+void SwapBytes(BYTE* pLeft, BYTE* pRight)
 {
     BYTE nTemp = *FUN_1401cdb30(pLeft);
     *FUN_1401cdb30(pLeft) = *FUN_1401cdb30(pRight);
@@ -316,7 +316,7 @@ MS2_REPLACE(0x1401cda40, FUN_1401cda40, 157, 0x50CC8F22);
 MS2_REPLACE(0x1401cdae0, FUN_1401cdae0, 74, 0xDC3759AD);
 MS2_REPLACE(0x1401cdb30, FUN_1401cdb30, 11, 0x3BE09B6E);
 MS2_REPLACE(0x1401cdb40, FUN_1401cdb40, 11, 0x3BE09B6E);
-MS2_REPLACE(0x1401cdb50, FUN_1401cdb50, 88, 0x671D7725);
+MS2_REPLACE(0x1401cdb50, SwapBytes, 88, 0x671D7725);
 MS2_REPLACE(0x1401cdbb0, FUN_1401cdbb0, 85, 0x157B6DDC);
 MS2_REPLACE(0x1401cddd0, FUN_1401cddd0, 128, 0x7B198022);
 MS2_REPLACE(0x1401cde60, FUN_1401cde60, 213, 0xDCD4A622);

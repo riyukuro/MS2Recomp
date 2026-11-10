@@ -31,7 +31,7 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-bool FUN_14083d7e0(const CStringW& strText, const CStringW& strPrefix);         // starts with
+bool StartsWith(const CStringW& strText, const CStringW& strPrefix);         // starts with
 CFileSystem* GetFileSystem();                                                   // the file system singleton
       // text by kind and id (1 = item name)
 
@@ -213,7 +213,7 @@ bool MailText::Load(const CStringW& title, const CStringW& body) {
 // @0x14065d600
 bool MailText::LoadTitle(const CStringW& text) {
     SetTitleText(text);
-    if (!FUN_14083d7e0(text, L"<ms2>")) return true;
+    if (!StartsWith(text, L"<ms2>")) return true;
     TiXmlDocument document;
     if (!GetFileSystem()->LoadXmlFromString(&document, text)) return false;
     void* root = ((void*)((class Unk_XmlNode*)(void*)(&document))->FirstChild("ms2")); if (!root) return false;
@@ -225,7 +225,7 @@ bool MailText::LoadTitle(const CStringW& text) {
 // @0x14065d7b0
 bool MailText::LoadBody(const CStringW& text) {
     m_paragraphs.RemoveAll();
-    if (!FUN_14083d7e0(text, L"<ms2>")) return true;
+    if (!StartsWith(text, L"<ms2>")) return true;
     TiXmlDocument document;
     if (!GetFileSystem()->LoadXmlFromString(&document, text)) return false;
     void* root = ((void*)((class Unk_XmlNode*)(void*)(&document))->FirstChild("ms2")); if (!root) return false;

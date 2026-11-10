@@ -65,12 +65,12 @@ class PacketHandlerManager { public:   // C3: member view
     void RegisterHandler(unsigned,Delegate<void(CInPacket&)>);
     void UnregisterHandler(unsigned,Delegate<void(CInPacket&)>);
 };
-Unk_140bccd50* FUN_140bccd50();
+Unk_140bccd50* GetPacketHandlerManager();
 class GameEventUserValueManager { public:   // C3: member view
     void RegisterListener(unsigned,Delegate<void(GameEventVariable*)>);
     void UnregisterListener(unsigned,Delegate<void(GameEventVariable*)>);
 };
-class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
+class Unk_BonusBar* GetGameEventUserValueManager();   // C3: was GetGameEventUserValueManager
 class Unk_14070f480 { public:
     virtual ~Unk_14070f480();
     virtual unsigned char vfunc_1();
@@ -78,7 +78,7 @@ class Unk_14070f480 { public:
     virtual int vfunc_3();
 };
 class CInPacket { public: void* m_00; void* m_stream; };
-CMyCharacter* FUN_140931510();
+CMyCharacter* GetMyCharacter();
 class CItem {
 public:
     CItem();
@@ -165,14 +165,14 @@ class CMsgBoxData { public: bool IsCheckbox0Checked(); template<class T> void Ap
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW,int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 CStringW GetStringCommonByKey(const CStringW&);
-void FUN_1412751f0(const CStringW&,int,int);
+void ShowSystemNotice(const CStringW&,int,int);
 //   FUN_14028dfa0 <unsigned, __int64> = 0x140f09c60 (wcformat.h)
-CStringW FUN_140b8e910(const CMsTime&);
+CStringW FormatMonthDay(const CMsTime&);
 CStringW FUN_14083bab0(const CMsTime&,CStringW);
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_AttendCursor : public ItemPreviewMgr { };
 class Unk_ItemPreview* GetItemPreviewMgr();   // C3: was GetItemPreviewMgr
-MS2Ptr<CItem> FUN_140ebc360(int,int);
+MS2Ptr<CItem> CreateItem(int,int);
 void SetChildText(const Scaleform::GFx::Value&,CString,CStringW);
 void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
 int FUN_140bd09c0(void*);   // C3: was FUN_140bd09c0
@@ -196,18 +196,18 @@ template<class T> MS2Ptr<T> UIAttendGiftDialog::FUN_14102f870(const CString& nam
 // @0x14102b4d0
 UIAttendGiftDialog::UIAttendGiftDialog() : m_eventId(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_80=0;
-    ((PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UIAttendGiftDialog::OnAttendancePacket));
-    ((GameEventUserValueManager*)FUN_140933220())->RegisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
-    ((GameEventUserValueManager*)FUN_140933220())->RegisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
+    ((PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UIAttendGiftDialog::OnAttendancePacket));
+    ((GameEventUserValueManager*)GetGameEventUserValueManager())->RegisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
+    ((GameEventUserValueManager*)GetGameEventUserValueManager())->RegisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
 }
 // @0x14102b7f0
 UIAttendGiftDialog::~UIAttendGiftDialog()
 {
-    ((PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UIAttendGiftDialog::OnAttendancePacket));
-    ((GameEventUserValueManager*)FUN_140933220())->UnregisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
-    ((GameEventUserValueManager*)FUN_140933220())->UnregisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
+    ((PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UIAttendGiftDialog::OnAttendancePacket));
+    ((GameEventUserValueManager*)GetGameEventUserValueManager())->UnregisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d650));
+    ((GameEventUserValueManager*)GetGameEventUserValueManager())->UnregisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UIAttendGiftDialog::FUN_14102d610));
 }
 // @0x14102bab0
 CString UIAttendGiftDialog::GetTypeName() { return "AttendGiftDialog"; }
@@ -259,7 +259,7 @@ void UIAttendGiftDialog::RemoveEvent(MS2Ptr<GameEventAttendGiftCli> event)
     if(FUN_141924630()) {
         if(m_activeEvents.IsEmpty()) { vfunc_67(); return; }
         if(m_selected==event.get()) { m_selected=m_activeEvents[0]; RefreshAll(); }
-        else FUN_14102d6e0();
+        else UpdateEventButtons();
     }
 }
 MS2_REPLACE_METHOD(0x14102C9E0, UIAttendGiftDialog, RemoveEvent, 364, 0xC713545C);
@@ -277,7 +277,7 @@ MS2Ptr<GameEventAttendGiftCli> UIAttendGiftDialog::FindEventByKind(int kind)
 }
 MS2_REPLACE_METHOD(0x14102CBB0, UIAttendGiftDialog, FindEventByKind, 270, 0x245AF2A3);
 // @0x14102ccd0
-int UIAttendGiftDialog::FUN_14102ccd0()
+int UIAttendGiftDialog::GetTotalUsablePoints()
 {
     int total=0;
     for(auto it=m_events.begin();it!=m_events.end();it++) {
@@ -286,7 +286,7 @@ int UIAttendGiftDialog::FUN_14102ccd0()
     }
     return total;
 }
-MS2_REPLACE_METHOD(0x14102CCD0, UIAttendGiftDialog, FUN_14102ccd0, 221, 0xF20BDE6F);
+MS2_REPLACE_METHOD(0x14102CCD0, UIAttendGiftDialog, GetTotalUsablePoints, 221, 0xF20BDE6F);
 // @0x14102cea0
 void UIAttendGiftDialog::FUN_14102cea0(const Scaleform::GFx::FunctionHandler::Params&)
 {
@@ -308,13 +308,13 @@ MS2_REPLACE_METHOD(0x14102D5C0, UIAttendGiftDialog, SetEventId, 67, 0xBC002A9E);
 void UIAttendGiftDialog::FUN_14102d610(GameEventVariable*) { if(!FUN_1422dc2d0()) return; RefreshAll(); }
 MS2_REPLACE_METHOD(0x14102D610, UIAttendGiftDialog, FUN_14102d610, 45, 0x777F4742);
 // @0x14102d650
-void UIAttendGiftDialog::FUN_14102d650(GameEventVariable*) { if(!FUN_1422dc2d0()) return; FUN_14102e6a0(); }
+void UIAttendGiftDialog::FUN_14102d650(GameEventVariable*) { if(!FUN_1422dc2d0()) return; UpdateUsePointButton(); }
 MS2_REPLACE_METHOD(0x14102D650, UIAttendGiftDialog, FUN_14102d650, 45, 0xBEB08E82);
 // @0x14102d690
 void UIAttendGiftDialog::RefreshAll()
 {
     if(!FUN_1422dc2d0()) return;
-    FUN_14102d6e0(); FUN_14102da40(); FUN_14102e490(); FUN_14102e6a0();
+    UpdateEventButtons(); UpdateGiftList(); UpdatePayButton(); UpdateUsePointButton();
 }
 MS2_REPLACE_METHOD(0x14102D690, UIAttendGiftDialog, RefreshAll, 70, 0x1A05A86E);
 // @0x14102e940
@@ -357,7 +357,7 @@ MS2_REPLACE_METHOD(0x14102EBB0, UIAttendGiftDialog, OnAttendancePacket, 164, 0x1
 void UIAttendGiftDialog::FUN_14102ec60(CInPacket&) { RefreshAll(); }
 MS2_REPLACE_METHOD(0x14102EC60, UIAttendGiftDialog, FUN_14102ec60, 29, 0xA96931BB);
 // @0x14102ec90
-void UIAttendGiftDialog::FUN_14102ec90(CInPacket& packet) { FUN_140931510()->FUN_140d9f1c0(packet); }
+void UIAttendGiftDialog::FUN_14102ec90(CInPacket& packet) { GetMyCharacter()->FUN_140d9f1c0(packet); }
 MS2_REPLACE_METHOD(0x14102EC90, UIAttendGiftDialog, FUN_14102ec90, 37, 0x6F2E6015);
 // @0x14102ecc0
 void UIAttendGiftDialog::FUN_14102ecc0(CInPacket& packet)
@@ -393,8 +393,8 @@ void UIAttendGiftDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     RebuildActiveEvents();
     UpdateSelectedEvent();
-    FUN_141925ec0("m_closeButton");
-    FUN_141925fa0("m_dragBar");
+    BindCloseButton("m_closeButton");
+    BindDragBar("m_dragBar");
     FUN_14102f870("m_giftList",m_giftList);
     do { m_30->FUN_140bbe640<ASButton>("m_payAttendButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_pay));
     if(m_pay==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(64),__FUNCTION__)); } while(0);
@@ -411,7 +411,7 @@ void UIAttendGiftDialog::OnLoadComplete()
         }
     }
     m_detail->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102cea0),0);
-    m_pay->FUN_1422cdf20(true);
+    m_pay->SetHtml(true);
     m_pay->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102cf30),0);
     m_usePoint->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this,&UIAttendGiftDialog::FUN_14102d4b0),0);
     bool nDefault=false;
@@ -484,7 +484,7 @@ bool UIAttendGiftDialog::OnAttendanceMsgBox(int result,const CMsgBoxData& data)
 }
 MS2_REPLACE_METHOD(0x14102D4E0, UIAttendGiftDialog, OnAttendanceMsgBox, 209, 0xA75E113E);
 // @0x14102d6e0
-void UIAttendGiftDialog::FUN_14102d6e0()
+void UIAttendGiftDialog::UpdateEventButtons()
 {
     ATL::CAtlArray<MS2Ptr<GameEventAttendGiftCli>> events;
     if(m_requested.get()) events.Add(m_requested);
@@ -495,17 +495,17 @@ void UIAttendGiftDialog::FUN_14102d6e0()
             continue;
         }
         {
-            CStringW strFrom=FUN_140b8e910(events[i]->FUN_140ce3aa0());
-            CStringW strTo=FUN_140b8e910(events[i]->GetEndTime());
+            CStringW strFrom=FormatMonthDay(events[i]->FUN_140ce3aa0());
+            CStringW strTo=FormatMonthDay(events[i]->GetEndTime());
             m_buttons[i]->vfunc_3(1);
             m_buttons[i]->FUN_1422cdfb0(FUN_14028dfa0<CStringW,CStringW,CStringW>(L"s_attendGift_title_name",strFrom,strTo,events[i]->GetTitleWithPoints()));
-            m_buttons[i]->FUN_1422ce090(events[i]==m_selected.get());
+            m_buttons[i]->SetSelected(events[i]==m_selected.get());
         }
     }
 }
-MS2_REPLACE_METHOD(0x14102D6E0, UIAttendGiftDialog, FUN_14102d6e0, 845, 0x941B0147);
+MS2_REPLACE_METHOD(0x14102D6E0, UIAttendGiftDialog, UpdateEventButtons, 845, 0x941B0147);
 // @0x14102da40
-void UIAttendGiftDialog::FUN_14102da40()
+void UIAttendGiftDialog::UpdateGiftList()
 {
     if(!FUN_1422dc2d0()) return;
     if(m_selected==NULL) return;
@@ -533,9 +533,9 @@ void UIAttendGiftDialog::FUN_14102da40()
                 bool darken=false; bool check=false; bool border=false;
                 if(index<attended) { darken=true; check=true; }
                 else if(index==attended) { border=true; if(checked) check=true; }
-                slot.FUN_1407cbbe0("isDarken",darken);
-                slot.FUN_1407cbbe0("isCheck",check);
-                slot.FUN_1407cbbe0("isBorder",border);
+                slot.SetBoolMember("isDarken",darken);
+                slot.SetBoolMember("isCheck",check);
+                slot.SetBoolMember("isBorder",border);
                 {
                     MS2Ptr<CItem> item(new CItem);
                     ItemAble* it3=&static_cast<ItemAble&>(*reward.operator->());
@@ -543,29 +543,29 @@ void UIAttendGiftDialog::FUN_14102da40()
                         ASTooltip tip(WorldService::GetInstance()->FUN_141bd0cc0(),8,2);
                         if(tip.FUN_1409e0d40(item.get())) {
                             tip.SetTooltipAlign(1);
-                            slot.FUN_1409adbe0("tooltip",tip.FUN_1422bb870());
+                            slot.FUN_1409adbe0("tooltip",tip.GetValue());
                         }
                     }
                 }
-                slots.PushValue(slot.FUN_1422bb870());
+                slots.PushValue(slot.GetValue());
             }
         }
     }
-    reinterpret_cast<ASMultiSelectTileCacheList*>(m_giftList.operator->())->vfunc_25(slots.FUN_1422bb870());
+    reinterpret_cast<ASMultiSelectTileCacheList*>(m_giftList.operator->())->vfunc_25(slots.GetValue());
     reinterpret_cast<ASMultiSelectTileCacheList*>(m_giftList.operator->())->vfunc_24(true);
     CStringW strPeriod;
-    if(m_selected->FUN_140ce3960()==2 && !FUN_140931510()->HasTime(m_selected->GetID())) {
+    if(m_selected->FUN_140ce3960()==2 && !GetMyCharacter()->HasTime(m_selected->GetID())) {
         int nItemId=m_selected->FUN_140ce3980();
         strPeriod=FUN_14028dfa0<CStringW>(L"s_attend_gift_item_require",TSingleton<CStringTable>::GetInstance()->FUN_141811980(1,nItemId));
     } else {
         strPeriod=FUN_14028dfa0<CStringW,CStringW>(L"s_attendGift_event_period",FUN_14083bab0(m_selected->FUN_140ce3aa0(),L"/"),FUN_14083bab0(m_selected->GetEndTime(),L"/"));
     }
-    SetChildText(FUN_1422dbb40(),"m_eventPeriod",strPeriod);
+    SetChildText(GetGFxValue(),"m_eventPeriod",strPeriod);
     m_detail->vfunc_4(!m_selected->GetDesc().IsEmpty());
 }
-MS2_REPLACE_METHOD(0x14102DA40, UIAttendGiftDialog, FUN_14102da40, 2634, 0x785FE8CD);
+MS2_REPLACE_METHOD(0x14102DA40, UIAttendGiftDialog, UpdateGiftList, 2634, 0x785FE8CD);
 // @0x14102e490
-void UIAttendGiftDialog::FUN_14102e490()
+void UIAttendGiftDialog::UpdatePayButton()
 {
     if(m_pay==NULL) return;
     m_pay->vfunc_4(false);
@@ -581,34 +581,34 @@ void UIAttendGiftDialog::FUN_14102e490()
         break;
     }
 }
-MS2_REPLACE_METHOD(0x14102E490, UIAttendGiftDialog, FUN_14102e490, 517, 0x9A57E086);
+MS2_REPLACE_METHOD(0x14102E490, UIAttendGiftDialog, UpdatePayButton, 517, 0x9A57E086);
 // @0x14102e6a0
-void UIAttendGiftDialog::FUN_14102e6a0()
+void UIAttendGiftDialog::UpdateUsePointButton()
 {
     if(m_usePoint==NULL) return;
-    FUN_140cff840(FUN_1422dbb40(),"m_footerText",1);
+    FUN_140cff840(GetGFxValue(),"m_footerText",1);
     m_usePoint->vfunc_4(false);
     if(m_selected==NULL) return;
     if(m_selected->FUN_140ce3a80()==0) {
-    FUN_140cff840(FUN_1422dbb40(),"m_footerText",0);
+    FUN_140cff840(GetGFxValue(),"m_footerText",0);
     int nDefault=0;
     int points=reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(0x69,m_selected->GetID(),nDefault);
     m_usePoint->vfunc_4(true);
     m_usePoint->FUN_1422cdfb0(FUN_14028dfa0<unsigned>(L"s_attendGift_usePoint_button",*(const unsigned*)&points));
-    m_usePoint->FUN_1422c1fe0((unsigned int)points>0);
+    m_usePoint->SetEnabled((unsigned int)points>0);
     }
 }
-MS2_REPLACE_METHOD(0x14102E6A0, UIAttendGiftDialog, FUN_14102e6a0, 652, 0x255AD9CE);
+MS2_REPLACE_METHOD(0x14102E6A0, UIAttendGiftDialog, UpdateUsePointButton, 652, 0x255AD9CE);
 // @0x14102ed90
 void UIAttendGiftDialog::FUN_14102ed90(CInPacket& packet)
 {
     int result=reinterpret_cast<Unk_14070f480*>(&packet.m_stream)->vfunc_1();
     switch(result) {
-    case 1: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMoney"),1,1); break;
-    case 2: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMerat"),1,1); break;
-    case 3: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_hasNotCoupon"),1,1); break;
-    case 5: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_item_attend_already_used"),1,1); break;
-    case 6: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_item_attend_not_found_evnet"),1,1); break;
+    case 1: ShowSystemNotice(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMoney"),1,1); break;
+    case 2: ShowSystemNotice(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMerat"),1,1); break;
+    case 3: ShowSystemNotice(GetStringCommonByKey(L"s_attendGift_payAttend_result_hasNotCoupon"),1,1); break;
+    case 5: ShowSystemNotice(GetStringCommonByKey(L"s_attendGift_item_attend_already_used"),1,1); break;
+    case 6: ShowSystemNotice(GetStringCommonByKey(L"s_attendGift_item_attend_not_found_evnet"),1,1); break;
     default: MS2_ASSERT_AT(0x26b,0); break;
     }
 }
@@ -617,19 +617,19 @@ MS2_REPLACE_METHOD(0x14102ED90, UIAttendGiftDialog, FUN_14102ed90, 734, 0x1FFE8C
 void UIAttendGiftDialog::FUN_14102f180(ASData& data)
 {
     if(m_30==0) return;
-    if(!reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116dcb0(0x49406,0,0)) return;
+    if(!reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsActionKeyDown(0x49406,0,0)) return;
     Scaleform::GFx::Value args=data.PopValue();
     ASSlot slot(args,FUN_1422db730());
     if(slot.IsUndefinedOrNull()) return;
     int a=slot.GetItemID();
     int b=slot.GetItemGrade();
-    MS2Ptr<CItem> item=FUN_140ebc360(a,b);
+    MS2Ptr<CItem> item=CreateItem(a,b);
     if(item==0) return;
     if(((class Unk_AttendCursor*)GetItemPreviewMgr())->IsHudOn()) ((class Unk_AttendCursor*)GetItemPreviewMgr())->OpenPreview(item,0);
 }
 MS2_REPLACE_METHOD(0x14102F180, UIAttendGiftDialog, FUN_14102f180, 435, 0xBEDCF0BE);
 // @0x141030e20
-UIBannerAdvertisingDialog::UIBannerAdvertisingDialog() { m_refs=0; m_2c=0x22; FUN_141925e70(1,1); }
+UIBannerAdvertisingDialog::UIBannerAdvertisingDialog() { m_refs=0; m_2c=0x22; SetFlag(1,1); }
 // @0x141030ee0
 UIBannerAdvertisingDialog::~UIBannerAdvertisingDialog() {}
 // @0x141030f60

@@ -37,15 +37,15 @@ public:
     virtual bool vfunc_90(POINT* pPos);                             // 90 0x141009470
 
     void OnNoticeDialog(NotifyObject* pNotify);                      // 0x141009680 notice handler: restart the open time and show
-    void FUN_141009710(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141009710 mouse over the hit area: vfunc_84(1)
-    void FUN_141009740(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141009740 mouse out of the hit area: vfunc_84(0)
-    void FUN_141009770(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141009770 "show" button
-    void FUN_1410097a0(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1410097a0 "maview" button: open the WebBrowser
-    void FUN_1410097d0();                                           // 0x1410097d0 toggle between show and hide
-    void FUN_141009870();                                           // 0x141009870 navigate the browser page to the notice url
-    void FUN_141009950(int nSeconds);                               // 0x141009950 m_nHideAt = now + nSeconds
-    void FUN_141009980();                                           // 0x141009980 show
-    void FUN_141009a60();                                           // 0x141009a60 hide
+    void OnHitAreaMouseOver(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141009710 mouse over the hit area: vfunc_84(1)
+    void OnHitAreaMouseOut(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141009740 mouse out of the hit area: vfunc_84(0)
+    void OnShowButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141009770 "show" button
+    void OnMaviewButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x1410097a0 "maview" button: open the WebBrowser
+    void ToggleShowHide();                                           // 0x1410097d0 toggle between show and hide
+    void NavigateToNoticeUrl();                                           // 0x141009870 navigate the browser page to the notice url
+    void SetHideAt(int nSeconds);                               // 0x141009950 m_nHideAt = now + nSeconds
+    void Show();                                           // 0x141009980 show
+    void Hide();                                           // 0x141009a60 hide
 
 private:
     MS2_LAYOUT_FRIEND;

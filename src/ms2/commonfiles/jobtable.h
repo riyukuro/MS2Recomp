@@ -26,7 +26,7 @@ enum Unk_JobGroupID { Unk_JobGroupID_None = 0 };
 enum Unk_JobCode { Unk_JobCode_None = 0 };
 
 int FUN_140718170(const CString& s);    // string -> int
-CString FUN_14016a5c0(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
 
 // "x,y" point attribute (uiPosition).
 int XmlValue(TiXmlElement* pElem, const char* pszName, CPoint& pt);    // 0x140645190
@@ -124,7 +124,7 @@ public:
         if (!s_bInit)
         {
             CStringA msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(JobTable).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(JobTable).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }

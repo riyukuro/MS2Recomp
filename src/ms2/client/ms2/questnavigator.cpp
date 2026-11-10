@@ -46,14 +46,14 @@ class NotifyObject;
 class UIMinimapDialog : public UIDialog
 {
 public:
-    void FUN_141a3ada0();   // C3: was free FUN_141a3ada0
+    void InvalidateEntities();   // C3: was free InvalidateEntities
 };
 
 // ---- unit-local views of the exe objects and unrecovered callees ----
 
 // The tracked quest id lives in the player settings block (CGameOption +0x160, field +0x30).
 // @0x140c9b8b0
-Unk_GoEtc* CGameOption::FUN_140c9b8b0()
+Unk_GoEtc* CGameOption::GetEtc()
 {
     return &m_etc;
 }
@@ -75,17 +75,17 @@ public:
     int GetSubSceneId();
 };
 CStringW GetStringCommonByKey(const CStringW& strKey);
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
-CQuestNavigationMap* FUN_140c9b8e0();
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
+CQuestNavigationMap* GetQuestNavigationMap();
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& value);   // index of a value (-1: absent)
-UIMinimapDialog* FUN_140c9b540(int nId);
+UIMinimapDialog* FindMinimapDialog(int nId);
 
 // the minimap dialog (UI type 0x4e29) and the UI manager
 class Unk_QnUIMgr { public:  };
 
 // engine helpers (non-inlined in the exe)
 Vector3 FUN_140a0b080(const Vector3& a, const Vector3& b, const Vector3& c);
-void FUN_140b86230(const efd::Point3& kTarget, NiMatrix3& kRot);   // C3: the definer's signature (0x140b86230)
+void EulerToMatrix(const efd::Point3& kTarget, NiMatrix3& kRot);   // C3: the definer's signature (0x140b86230)
 float GetDistance(Vector3 a, Vector3 b);
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)      // the zero point
 #define DAT_143a08cf8 (*(Vector3*)&efd::Point3::UNIT_Z)    // the up axis
@@ -96,7 +96,7 @@ class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
 
 #ifndef MS2_HOOK_DLL
 #include <atlcoll.h>   // 0x1402a9d70 = CAtlMap<unsigned, CStringA>::CAtlMap(nBins, fOptimal, fLo, fHi, nBlock) (conditionutil)
-void FUN_142ca3a50();                                               // the exe's atexit destructor of the marker
+void DestroyMarker();                                               // the exe's atexit destructor of the marker
 struct Unk_QnMarker {};
 #endif
 
@@ -112,13 +112,13 @@ static CString s_stun("stun");
 #ifndef MS2_HOOK_DLL
 // @0x1400cf5a0
 static char s_marker[0x48];
-static Unk_QnMarker s_initMarker = (reinterpret_cast<ATL::CAtlMap<unsigned int, CStringA>*>(&s_marker)->ATL::CAtlMap<unsigned int, CStringA>::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142ca3a50), Unk_QnMarker());
+static Unk_QnMarker s_initMarker = (reinterpret_cast<ATL::CAtlMap<unsigned int, CStringA>*>(&s_marker)->ATL::CAtlMap<unsigned int, CStringA>::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(DestroyMarker), Unk_QnMarker());
 
 typedef ATL::CAtlMap<unsigned int, CStringA> Unk_UIntStrMap;          // ~CAtlMap is 0x1402aa1d0
 // The exe's atexit destructor of s_marker.
 // MS2-FUNCTIONAL: our build tail-calls the destructor; the exe's compiler-made atexit thunk keeps a frame.
 // @0x142ca3a50
-void FUN_142ca3a50() { reinterpret_cast<Unk_UIntStrMap*>(s_marker)->Unk_UIntStrMap::~Unk_UIntStrMap(); }
+void DestroyMarker() { reinterpret_cast<Unk_UIntStrMap*>(s_marker)->Unk_UIntStrMap::~Unk_UIntStrMap(); }
 #endif
 
 // ---- CQuestNavigator ----
@@ -128,7 +128,7 @@ CQuestNavigator::CQuestNavigator()
 {
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
-    FUN_140bfc4b0()->FUN_141aa87c0(this);
+    FUN_140bfc4b0()->AddListener(this);
 }
 
 // @0x140c99990
@@ -136,14 +136,14 @@ CQuestNavigator::~CQuestNavigator()
 {
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyCompleteMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCompleteMyPC));
     reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(CStringW(L"NotifyCreateMyPC"), Delegate<void(NotifyObject*)>(this, &CQuestNavigator::OnCreateMyPC));
-    FUN_140bfc4b0()->FUN_141aa8850(this);
+    FUN_140bfc4b0()->RemoveListener(this);
 }
 
 // A quest was removed / completed: the navigation target is dropped when it was this quest.
 // @0x140c99be0
 void CQuestNavigator::vfunc_o178_6(void* pQuest)
 {
-    if (!IsSelected(((CQuest*)pQuest)->FUN_140bfc580()))
+    if (!IsSelected(((CQuest*)pQuest)->GetQuestId()))
         return;
     if (((CQuest*)pQuest)->GetTrackingState() == 0)
         SelectQuest(0);
@@ -162,7 +162,7 @@ void CQuestNavigator::vfunc_o178_1(void* pQuest)
             if (spData.IsNull())
                 return;
             if (spData->m_flag != 0)
-                SelectQuest(((CQuest*)pQuest)->FUN_140bfc580());
+                SelectQuest(((CQuest*)pQuest)->GetQuestId());
         }
     }
 }
@@ -171,7 +171,7 @@ void CQuestNavigator::vfunc_o178_1(void* pQuest)
 void CQuestNavigator::vfunc_o178_2(void* pQuest)
 {
     m_68 = 1;
-    if (IsSelected(((CQuest*)pQuest)->FUN_140bfc580()))
+    if (IsSelected(((CQuest*)pQuest)->GetQuestId()))
         SelectQuest(0);
 }
 
@@ -185,7 +185,7 @@ void CQuestNavigator::vfunc_o178_3(void* pQuest)
 void CQuestNavigator::vfunc_o178_5(void* pQuest)
 {
     m_68 = 1;
-    if (IsSelected(((CQuest*)pQuest)->FUN_140bfc580()))
+    if (IsSelected(((CQuest*)pQuest)->GetQuestId()))
         SelectQuest(0);
 }
 
@@ -220,8 +220,8 @@ void CQuestNavigator::FUN_140c99ee0()
     if (m_10 != 0)
     {
         m_18.Clear();
-        int nFailed = FUN_140c9a4c0(&m_18);
-        unsigned char bShow = FUN_140c9af60();
+        int nFailed = TraceQuestTarget(&m_18);
+        unsigned char bShow = CanShowBeam();
         if (nFailed != 0)
             bShow = 0;
         if (bShow != (m_10->GetAppCulled() == 0))
@@ -231,14 +231,14 @@ void CQuestNavigator::FUN_140c99ee0()
             NiTransform xf;
             xf.MakeIdentity();
             xf.m_Translate = static_cast<const efd::Point3&>(pPC->vfunc_18());
-            FUN_140b86230(reinterpret_cast<const efd::Point3&>(m_18.m_2c), xf.m_Rotate);
+            EulerToMatrix(reinterpret_cast<const efd::Point3&>(m_18.m_2c), xf.m_Rotate);
             m_10->SetLocalTransform(xf);
         }
     }
     if (m_68 != 0)
     {
         m_68 = 0;
-        FUN_140c9ac80();
+        RebuildTraceContext();
     }
 }
 
@@ -248,7 +248,7 @@ void CQuestNavigator::OnCreateMyPC(NotifyObject* pNotify)
 {
     m_18.Clear();
     m_18.m_18 = 0;
-    int nQuestId = TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n30;
+    int nQuestId = TSingleton<CGameOption>::GetInstance()->GetEtc()->m_n30;
     MS2Ptr<CQuest> spQuest = static_cast<CQuestManagerCommon&>(*((class CQuestManager*)FUN_140764020())).vfunc_o10_3(nQuestId);
     if (spQuest.get() != 0 ? true : false)
     {
@@ -261,7 +261,7 @@ void CQuestNavigator::OnCreateMyPC(NotifyObject* pNotify)
 // @0x140c9a1c0
 void CQuestNavigator::OnCompleteMyPC(NotifyObject* pNotify)
 {
-    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x77))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x77))
         return;
     if (m_10 == 0)
     {
@@ -280,10 +280,10 @@ void CQuestNavigator::OnCompleteMyPC(NotifyObject* pNotify)
             }
         }
     }
-    FUN_140c9ac80();
-    UIMinimapDialog* pMinimap = FUN_140c9b540(0x4e29);
+    RebuildTraceContext();
+    UIMinimapDialog* pMinimap = FindMinimapDialog(0x4e29);
     if (pMinimap != 0)
-        ((class UIMinimapDialog*)(class UIMinimapDialog*)(pMinimap))->FUN_141a3ada0();
+        ((class UIMinimapDialog*)(class UIMinimapDialog*)(pMinimap))->InvalidateEntities();
 }
 
 // @0x140c9a420
@@ -291,9 +291,9 @@ void CQuestNavigator::SelectQuest(int nQuestId)
 {
     m_18.Clear();
     m_18.m_18 = nQuestId;
-    if (TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n30 != nQuestId)
+    if (TSingleton<CGameOption>::GetInstance()->GetEtc()->m_n30 != nQuestId)
     {
-        TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0()->m_n30 = nQuestId;
+        TSingleton<CGameOption>::GetInstance()->GetEtc()->m_n30 = nQuestId;
         TSingleton<CGameOption>::GetInstance()->SaveCharacterSettings();
     }
 }
@@ -309,21 +309,21 @@ int CQuestNavigator::IsSelected(int nQuestId)
 // Trace the quest of pResult to its nearest target. Returns 0 when a target was found (pResult filled), 1 when the
 // quest cannot be navigated, 2 while the map paths are still being built.
 // @0x140c9a4c0
-int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
+int CQuestNavigator::TraceQuestTarget(QuestNavigation::TraceResult* pResult)
 {
-    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x77))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x77))
         return 1;
-    if (FUN_140c9b8e0()->FUN_140c9b8d0() == 0)
+    if (GetQuestNavigationMap()->IsPathsBuilt() == 0)
     {
         pResult->m_38 = GetStringCommonByKey(L"s_quest_navigation_initializing");
         return 2;
     }
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(pResult->m_18);
+    MS2Ptr<CQuestData> spData = GetQuestData(pResult->m_18);
     if (spData.IsNull())
         return 1;
     if (spData->m_flag == 0)
         return 1;
-    MS2Ptr<QuestNavigation::TraceContext> spContext = FUN_140c9b8e0()->TraceQuest(pResult->m_18);
+    MS2Ptr<QuestNavigation::TraceContext> spContext = GetQuestNavigationMap()->TraceQuest(pResult->m_18);
     if (spContext == 0)
         return 1;
     int nFailed = 1;
@@ -359,11 +359,11 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
     else
     {
         ATL::CAtlArray<unsigned> aPath;
-        if (FUN_140c9b8e0()->FindMapPath(nCurrentMap, nTargetMap, aPath) != 0)
+        if (GetQuestNavigationMap()->FindMapPath(nCurrentMap, nTargetMap, aPath) != 0)
         {
             int bFound = 0;
             ATL::CAtlArray<MS2Ptr<CPortal> > aPortals;
-            WorldService::GetInstance()->FUN_141bc2a70(6, &aPortals);
+            WorldService::GetInstance()->GetFieldObjectsByType(6, &aPortals);
             for (size_t i = 0; i < aPortals.GetCount(); i++)
             {
                 MS2Ptr<CPortal> spPortal = aPortals[i];
@@ -381,7 +381,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
             }
             if (bFound == 0)
             {
-                int nNextMap = FUN_140c9b8e0()->GetNextMapOnPath(nCurrentMap, nTargetMap);
+                int nNextMap = GetQuestNavigationMap()->GetNextMapOnPath(nCurrentMap, nTargetMap);
                 if (nNextMap != 0)
                 {
                     MS2Ptr<CPortal> spNext = WorldService::GetInstance()->FindPortalByDestMap(nNextMap);
@@ -403,7 +403,7 @@ int CQuestNavigator::FUN_140c9a4c0(QuestNavigation::TraceResult* pResult)
         Vector3 posTarget = reinterpret_cast<Vector3&>(pResult->m_20);
         reinterpret_cast<Vector3&>(pResult->m_2c) = FUN_140c9b0a0(posTarget);
         Vector3 posText = reinterpret_cast<Vector3&>(pResult->m_20);
-        pResult->m_38 = FUN_140c9b150(posText);
+        pResult->m_38 = GetDistanceText(posText);
         pResult->m_40 = spContext;
     }
     return nFailed;
@@ -417,7 +417,7 @@ QuestNavigation::TraceResult* CQuestNavigator::Result()
 
 // Rebuild m_70 from the tracked quests of the current map.
 // @0x140c9ac80
-void CQuestNavigator::FUN_140c9ac80()
+void CQuestNavigator::RebuildTraceContext()
 {
     m_70.m_20.clear();
     m_70.m_30.clear();
@@ -428,7 +428,7 @@ void CQuestNavigator::FUN_140c9ac80()
     for (size_t i = 0; i < aQuests.GetCount(); i++)
     {
         MS2Ptr<CQuest> spQuest = aQuests[i];
-        FUN_140c9b8e0()->FUN_140c92fc0(spQuest, nMapId, m_70);
+        GetQuestNavigationMap()->FUN_140c92fc0(spQuest, nMapId, m_70);
     }
 }
 
@@ -464,19 +464,19 @@ int CQuestNavigator::HasInteractObject(unsigned nObjectId)
 
 // The beam shows only in the field state, and not while the player is hidden or rides something without a beam.
 // @0x140c9af60
-bool CQuestNavigator::FUN_140c9af60()
+bool CQuestNavigator::CanShowBeam()
 {
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() != 0x620001d)
         return false;
     PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
         return false;
     if (pPC->IsRiding() != 0)
     {
-        MS2SvrPtr<CRideeData> ride = FUN_1407844b0(pPC->GetRideeId());
+        MS2SvrPtr<CRideeData> ride = GetRideeData(pPC->GetRideeId());
         if (!ride)
             return false;
-        return ride->FUN_140784970()->m_nUseRidingNavi != 0;
+        return ride->GetDefaultRider()->m_nUseRidingNavi != 0;
     }
     return pPC->FUN_14123c660() == 0;
 }
@@ -495,7 +495,7 @@ Vector3 CQuestNavigator::FUN_140c9b0a0(const Vector3& pos)
 
 // The distance text from the player to pos.
 // @0x140c9b150
-CStringW CQuestNavigator::FUN_140c9b150(const Vector3& pos)
+CStringW CQuestNavigator::GetDistanceText(const Vector3& pos)
 {
     PCBase* pPC = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
@@ -522,7 +522,7 @@ CStringW CQuestNavigator::FUN_140c9b150(const Vector3& pos)
 
 // The minimap dialog (UI type 0x4e29).
 // @0x140c9b540
-UIMinimapDialog* FUN_140c9b540(int nId)
+UIMinimapDialog* FindMinimapDialog(int nId)
 {
     if (reinterpret_cast<Unk_QnUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -534,7 +534,7 @@ UIMinimapDialog* FUN_140c9b540(int nId)
 }
 
 // @0x140c9b8e0
-CQuestNavigationMap* FUN_140c9b8e0()
+CQuestNavigationMap* GetQuestNavigationMap()
 {
     return TSingleton<CQuestNavigationMap>::s_instance;
 }

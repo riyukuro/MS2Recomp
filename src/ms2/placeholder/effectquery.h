@@ -45,8 +45,8 @@ class NoticeMessage
 public:
     NoticeMessage();                                        // 0x140a52ef0
 
-    int FUN_140a53010();                                    // the owner PC's FUN_141658e60, else 2
-    int FUN_140a53050();                                    // the owner PC's job (FUN_141654700), else 2
+    int GetOwnerGender();                                    // the owner PC's FUN_141658e60, else 2
+    int GetOwnerJobCode();                                    // the owner PC's job (FUN_141654700), else 2
     int GetObjectCode();                                    // 0x140a53090 the owner's FUN_140976780, else m_nObjectCode
     bool IsMyPC();                                          // 0x140a530d0 the owner is the local player
     bool CanShow();                                         // 0x140a53110

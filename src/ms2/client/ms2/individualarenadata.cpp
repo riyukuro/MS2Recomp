@@ -28,12 +28,12 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int FUN_140873420(TiXmlElement* pElem, const char* pszName, CStringW& rOut);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
-int FUN_140768010(int nRange, int nBase);                                   // random number in [nBase, nBase + nRange)
+int GetRandomRange(int nRange, int nBase);                                   // random number in [nBase, nBase + nRange)
 
 // An array of strings that can hand out a random element (the weakest-typed caller of the tail function below).
 class Unk_IaNames { public: CString GetRandomName(); void* m_names; };
@@ -77,9 +77,9 @@ CIndividualArenaDataTable::~CIndividualArenaDataTable()
 bool CIndividualArenaDataTable::Load()
 {
     m_map.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "IndividualArena.xml");
+    CString strPath = GetXmlPath("Table", "IndividualArena.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -145,7 +145,7 @@ void CIndividualArenaDataTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CIndividualArenaDataTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CIndividualArenaDataTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -164,6 +164,6 @@ CString Unk_IaNames::GetRandomName()
 {
     if (((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&m_names))->GetCount() == 0)
         return "";
-    int nIndex = FUN_140768010((int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&m_names))->GetCount(), 0);
+    int nIndex = GetRandomRange((int)((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&m_names))->GetCount(), 0);
     return (*((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)(void*)(&m_names)))[nIndex];
 }

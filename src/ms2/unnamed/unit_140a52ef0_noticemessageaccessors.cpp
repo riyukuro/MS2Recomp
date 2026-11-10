@@ -26,24 +26,24 @@ NoticeMessage::NoticeMessage()
 }
 
 // @0x140a53010
-int NoticeMessage::FUN_140a53010()
+int NoticeMessage::GetOwnerGender()
 {
     PC* pPC = efd::DynamicCast<PC>(m_pOwner);
     if (pPC)
         return ((class PC*)(class PC*)(pPC))->GetGender();
     return 2;
 }
-MS2_REPLACE_METHOD(0x140A53010, NoticeMessage, FUN_140a53010, 58, 0xA2303F78);
+MS2_REPLACE_METHOD(0x140A53010, NoticeMessage, GetOwnerGender, 58, 0xA2303F78);
 
 // @0x140a53050
-int NoticeMessage::FUN_140a53050()
+int NoticeMessage::GetOwnerJobCode()
 {
     PC* pPC = efd::DynamicCast<PC>(m_pOwner);
     if (pPC)
         return pPC->GetJobGroupId();
     return 2;
 }
-MS2_REPLACE_METHOD(0x140A53050, NoticeMessage, FUN_140a53050, 58, 0xA668C7D0);
+MS2_REPLACE_METHOD(0x140A53050, NoticeMessage, GetOwnerJobCode, 58, 0xA668C7D0);
 
 // @0x140a53090
 int NoticeMessage::GetObjectCode()

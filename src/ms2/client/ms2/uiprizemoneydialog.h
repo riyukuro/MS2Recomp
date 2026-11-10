@@ -31,7 +31,7 @@ MS2_CHECK_SIZE(UIPrizeMoneyDialog, 0x188);
 MS2_CHECK_OFFSET(UIPrizeMoneyDialog, m_nPrize1, 0x178);
 
 // Remember both amounts and push them to the movie (0x140e78330).
-void FUN_140e78330(UIPrizeMoneyDialog* pDialog, __int64 nPrize1, __int64 nPrize2);
+void SetPrizeMoney(UIPrizeMoneyDialog* pDialog, __int64 nPrize1, __int64 nPrize2);
 
 // Push the amounts to the movie (0x140e78380).
-void FUN_140e78380(UIPrizeMoneyDialog* pDialog);
+void UpdatePrizeMoney(UIPrizeMoneyDialog* pDialog);

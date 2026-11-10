@@ -65,7 +65,7 @@ public:
     // 0x140373d50: load ./Data/Xml/Table/fieldData.xml into the table.
     static void LoadFieldData();
     // 0x140374090: append every table entry to out (vector::push_back 0x14037bed0), under the table lock.
-    static void FUN_140374090(std::vector<MS2Ptr<CFieldData> >& out);
+    static void GetAllFields(std::vector<MS2Ptr<CFieldData> >& out);
     // 0x140374140: look up a field id (0 -> null; logs "FieldID : {0}" when missing).
     static MS2Ptr<CFieldData> FUN_140374140(int fieldId);
     // 0x140374270: find the entry whose m_strXBlock equals xblock (case-insensitive compare 0x1401c0090).
@@ -77,14 +77,14 @@ public:
     static bool FUN_1403744a0(int fieldId);
 
     // Recovered predicates and accessors (appended by a3; the shared layout is unchanged).
-    bool FUN_140375100(); bool FUN_140375130(); bool FUN_140375170(); bool FUN_140375190();
+    bool FUN_140375100(); bool IsIndoor(); bool FUN_140375170(); bool FUN_140375190();
     bool FUN_1403751b0(); bool FUN_140375270(); bool FUN_1403752c0(); bool HasTutorialType();
     int GetContinentCode(); int GetRegionCode();
     int FUN_140375390(); int FUN_1403753d0(); int FUN_140375410(); int FUN_140375450(); int FUN_140375490();
-    int GetPkMode(); int FUN_1403754f0();
-    int FUN_140375570(); int FUN_1403755a0(); int GetOnlyDarkTomb();
-    int FUN_140375660(unsigned); int FUN_140375690(void*); bool FUN_1403756c0(unsigned);
-    bool FUN_1403756f0(); int FUN_140375740(); int GetMapType(); int FUN_1403757c0(); unsigned GetSetItemRestrainId();
+    int GetPkMode(); int GetShadowContinent();
+    int HasAutoRevivalType1(); int HasAutoRevivalType2(); int GetOnlyDarkTomb();
+    int HasLimitContent(unsigned); int FUN_140375690(void*); bool HasLimitMove(unsigned);
+    bool FUN_1403756f0(); int FUN_140375740(); int GetMapType(); int GetCapacity(); unsigned GetSetItemRestrainId();
 
 public:
     MS2_LAYOUT_FRIEND;

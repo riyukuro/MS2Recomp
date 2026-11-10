@@ -20,27 +20,27 @@ class ASVideoPlayer : public ASVideo
 public:
     ASVideoPlayer(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422e92e0
     virtual ~ASVideoPlayer();                                       // 0 0x1422e9330 (scalar deleting 0x1422e9a00)
-    void FUN_1422e9360(const CString& strMode);     // set "scaleMode"
-    CString FUN_1422e93b0();                        // "scaleMode"
+    void SetScaleMode(const CString& strMode);     // set "scaleMode"
+    CString GetScaleMode();                        // "scaleMode"
     void FUN_1422e9440(int n);                      // (empty)
     int FUN_1422e9450();                            // returns 0
     void FUN_1422e9460(float f);                    // (empty)
     float FUN_1422e9480();                          // returns 0.0f
-    void FUN_1422e9490(float fVolume);              // set "volume"
-    float FUN_1422e94d0();                          // "volume"
-    float FUN_1422e9540();                          // "time": the current play time (s)
-    void FUN_1422e95b0(const CString& strPath);     // play(path)
+    void SetVolume(float fVolume);              // set "volume"
+    float GetVolume();                          // "volume"
+    float GetTime();                          // "time": the current play time (s)
+    void Play(const CString& strPath);     // play(path)
     void FUN_1422e9610();                           // rePlay()
-    void FUN_1422e9650();                           // stop()
-    void FUN_1422e9690(float fTime);                // seek(time)
-    void FUN_1422e96d0();                           // pause()
-    int FUN_1422e9710();                            // isPlay()
-    void FUN_1422e9780(int bLoop);                  // setLoop(loop)
-    void FUN_1422e97c0(int nWidth, int nHeight);    // setAspectRatio(w, h)
-    void FUN_1422e9810(int nWidth, int nHeight);    // setSize(w, h)
+    void Stop();                           // stop()
+    void Seek(float fTime);                // seek(time)
+    void Pause();                           // pause()
+    int IsPlaying();                            // isPlay()
+    void SetLoop(int bLoop);                  // setLoop(loop)
+    void SetAspectRatio(int nWidth, int nHeight);    // setAspectRatio(w, h)
+    void SetSize(int nWidth, int nHeight);    // setSize(w, h)
     void FUN_1422e9860(unsigned nWidth, unsigned nHeight);   // setSize(w, h) (the unsigned Invoke 0x140acd070)
     void FUN_1422e98b0(float fWidth, float fHeight);         // setSize(w, h)
-    void FUN_1422e9910(int nX, int nY);             // setScale(x, y)
+    void SetScale(int nX, int nY);             // setScale(x, y)
     void FUN_1422e9960(unsigned nX, unsigned nY);   // setScale(x, y) (unsigned)
     void FUN_1422e99b0(float fX, float fY);         // setScale(x, y)
     // width / height: ASDisplayObject::FUN_1422c1500 / FUN_1422c1530 (inherited)
@@ -60,7 +60,7 @@ public:
     virtual int vfunc_52(const CString& strPath, float fVolume);            // 52 0x14135ab40 play
     virtual int vfunc_53();                                                 // 53 0x14135ad10 stop
     virtual int vfunc_54(float fTimeout);                                  // 54 0x14135adc0
-    void FUN_14135afa0(int bMute);
+    void SetVideoMuted(int bMute);
 
 protected:
     MS2_LAYOUT_FRIEND;

@@ -43,8 +43,8 @@ private:
 };
 MS2_CHECK_SIZE(CAlignmentInfo, 0x30);
 }
-class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+class Unk_BonusBar* GetGameEventUserValueManager();   // C3: was GetGameEventUserValueManager
+void* GetGameRule();   // C3: was GetGameRule
 
 
 __int64 GetServerTime();
@@ -52,10 +52,10 @@ __int64 GetServerTime();
 
 class Unk_LtaTable {   // C3: gameeventcli.cpp's view of the user value table
 public:
-    CStringW FUN_140c6d980(int, int, const CStringW&);
+    CStringW GetStringValue(int, int, const CStringW&);
 };
 extern GameEventUserValue DAT_143ab2fc0;
-void FUN_1401d9a30(CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
+void ParseIntArray(CStringW&, ATL::CAtlArray<int>&, const wchar_t*);
 template<class T> bool Contains(T& values, int n) {
     if (values.GetCount() == 0) return false;
     {
@@ -85,7 +85,7 @@ UISnowmanEventDialog::UISnowmanEventDialog()
 {
     m_80 = 1;
     m_2c = 13;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     m_alignment = 6;
     m_offsetX = 0;
     m_offsetY = 0;
@@ -118,10 +118,10 @@ MS2_REPLACE_METHOD(0x140E945B0, UISnowmanEventDialog, vfunc_65, 37, 0xACC9F404);
 void UISnowmanEventDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96ed0));
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f00));
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f30));
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->UnregisterListener(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::OnSnowflakeCountChanged));
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->UnregisterListener(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::OnDailyCompleteCountChanged));
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->UnregisterListener(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::OnAccumCompleteCountChanged));
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->UnregisterListener(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
 }
 MS2_REPLACE_METHOD(0x140E945E0, UISnowmanEventDialog, vfunc_67, 645, 0x4676E7F6);
 
@@ -129,11 +129,11 @@ MS2_REPLACE_METHOD(0x140E945E0, UISnowmanEventDialog, vfunc_67, 645, 0x4676E7F6)
 void UISnowmanEventDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96ed0));
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f00));
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f30));
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
-    MS2Ptr<SnowmanContext> context = ((CGameRule*)FUN_1401c0d90())->GetSnowman();
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->RegisterListener(0x6a4, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::OnSnowflakeCountChanged));
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->RegisterListener(0x6a5, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::OnDailyCompleteCountChanged));
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->RegisterListener(0x6a6, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::OnAccumCompleteCountChanged));
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->RegisterListener(0x6a7, Delegate<void(GameEventVariable*)>(this, &UISnowmanEventDialog::FUN_140e96f60));
+    MS2Ptr<SnowmanContext> context = ((CGameRule*)GetGameRule())->GetSnowman();
     if (context == NULL)
         return;
     m_timer.Init();
@@ -152,7 +152,7 @@ void UISnowmanEventDialog::vfunc_45(Scaleform::GFx::Value* result, const CString
         if (owner) {
             ASTooltip tooltip(owner, 0x20, 2);
             if (tooltip.FUN_1409e1770(id, rank))
-                *result = tooltip.FUN_1422bb870();
+                *result = tooltip.GetValue();
         }
     }
 }
@@ -163,7 +163,7 @@ int UISnowmanEventDialog::vfunc_28(const char* method, const Scaleform::GFx::Val
 {
     if (UIDialog::vfunc_28(method, args, count))
         return 1;
-    MS2Ptr<SnowmanContext> context = ((CGameRule*)FUN_1401c0d90())->GetSnowman();
+    MS2Ptr<SnowmanContext> context = ((CGameRule*)GetGameRule())->GetSnowman();
     if (context == NULL)
         return 0;
     if (!_stricmp("OnDailyCompleteReward", method)) {
@@ -199,7 +199,7 @@ void UISnowmanEventDialog::vfunc_72()
         return;
     __int64 now = GetServerTime();
     if (IsEarlierDay(CMsTime(m_lastUpdate), CMsTime(now), 0))
-        FUN_140e965e0();
+        UpdateInfo();
 }
 MS2_REPLACE_METHOD(0x140E94F40, UISnowmanEventDialog, vfunc_72, 191, 0x3C07D89C);
 
@@ -234,7 +234,7 @@ int UISnowmanEventDialog::vfunc_53(void* cfg)
         if ((m_alignInfo.get() ? true : false) && dialog) {
             float x = (float)reinterpret_cast<ASDisplayObject*>(dialog)->FUN_1422c1500();
             float y = (float)reinterpret_cast<ASDisplayObject*>(dialog)->FUN_1422c1530();
-            m_alignInfo->FUN_141901880(m_30, (float)dialog->FUN_1422e6310(), (float)dialog->FUN_1422e6270(), x, y);
+            m_alignInfo->FUN_141901880(m_30, (float)dialog->GetWindowWidth(), (float)dialog->GetWindowHeight(), x, y);
             m_alignInfo->FUN_1419015e0((class TiXmlElement*)cfg);
         }
         return 1;
@@ -287,13 +287,13 @@ void UISnowmanEventDialog::FUN_140e954b0(MS2Ptr<SnowmanContext> context)
         }
         ASObj row(2);
         row.FUN_140e846b0("index", i);
-        row.FUN_1407cb9c0("curSnowflakeCount", FUN_140e95f40((int)i));
-        row.FUN_1407cb9c0("maxSnowflakeCount", snowman->m_18);
-        row.FUN_1407cb9c0("curDailyCompleteCount", FUN_140e960d0((int)i));
-        row.FUN_1407cb9c0("maxDailyCompleteCount", snowman->m_1c);
-        row.FUN_1407cb9c0("curAccumCompleteCount", FUN_140e96260((int)i));
-        row.FUN_1407cb9c0("maxAccumCompleteCount", snowman->m_20);
-        row.FUN_1407cbbe0("accumCompleteRewardReceived", IsAccumRewardReceived((int)i));
+        row.SetIntMember("curSnowflakeCount", GetCurSnowflakeCount((int)i));
+        row.SetIntMember("maxSnowflakeCount", snowman->m_18);
+        row.SetIntMember("curDailyCompleteCount", GetCurDailyCompleteCount((int)i));
+        row.SetIntMember("maxDailyCompleteCount", snowman->m_1c);
+        row.SetIntMember("curAccumCompleteCount", GetCurAccumCompleteCount((int)i));
+        row.SetIntMember("maxAccumCompleteCount", snowman->m_20);
+        row.SetBoolMember("accumCompleteRewardReceived", IsAccumRewardReceived((int)i));
         {
             ItemEntity item;
             if (!snowman->m_items.IsEmpty())
@@ -302,7 +302,7 @@ void UISnowmanEventDialog::FUN_140e954b0(MS2Ptr<SnowmanContext> context)
             reward.SetMemberUInt("itemID", item.m_itemId);
             reward.FUN_1409adc90("itemRank", item.vfunc_o18_1());
             reward.SetMemberUInt("itemCount", item.m_count);
-            reward.FUN_1407cba60("iconPath", FUN_140e96500(item.m_itemId));
+            reward.SetStringMember("iconPath", GetItemIconPath(item.m_itemId));
             row.FUN_1409eb270("dailyCompleteReward", reward);
         }
         {
@@ -313,14 +313,14 @@ void UISnowmanEventDialog::FUN_140e954b0(MS2Ptr<SnowmanContext> context)
             reward.SetMemberUInt("itemID", item.m_itemId);
             reward.FUN_1409adc90("itemRank", item.vfunc_o18_1());
             reward.SetMemberUInt("itemCount", item.m_count);
-            reward.FUN_1407cba60("iconPath", FUN_140e96500(item.m_itemId));
+            reward.SetStringMember("iconPath", GetItemIconPath(item.m_itemId));
             row.FUN_1409eb270("accumCompleteReward", reward);
         }
-        snowmans.PushValue(row.FUN_1422bb870());
+        snowmans.PushValue(row.GetValue());
     }
-    info.FUN_1409adbe0("snowmans", snowmans.FUN_1422bb870());
-    info.FUN_1407cbb20("thema", context->m_strTitle);
-    m_30->Invoke("init", info.FUN_1422bb870());
+    info.FUN_1409adbe0("snowmans", snowmans.GetValue());
+    info.SetWStringMember("thema", context->m_strTitle);
+    m_30->Invoke("init", info.GetValue());
     m_lastUpdate = GetServerTime();
 }
 MS2_REPLACE_METHOD(0x140E954B0, UISnowmanEventDialog, FUN_140e954b0, 1819, 0x9131C474);
@@ -328,7 +328,7 @@ MS2_REPLACE_METHOD(0x140E954B0, UISnowmanEventDialog, FUN_140e954b0, 1819, 0x913
 // @0x140e95be0
 void UISnowmanEventDialog::SendEventRewardMode12(int index)
 {
-    MS2Ptr<SnowmanContext> context = ((CGameRule*)FUN_1401c0d90())->GetSnowman();
+    MS2Ptr<SnowmanContext> context = ((CGameRule*)GetGameRule())->GetSnowman();
     if (context == NULL)
         return;
     if (index < 0 || index > (int)context->m_snowmen.GetCount() - 1) {
@@ -350,7 +350,7 @@ MS2_REPLACE_METHOD(0x140E95BE0, UISnowmanEventDialog, SendEventRewardMode12, 425
 // @0x140e95d90
 void UISnowmanEventDialog::SendEventRewardMode13(int index)
 {
-    MS2Ptr<SnowmanContext> context = ((CGameRule*)FUN_1401c0d90())->GetSnowman();
+    MS2Ptr<SnowmanContext> context = ((CGameRule*)GetGameRule())->GetSnowman();
     if (context == NULL)
         return;
     if (index < 0 || index > (int)context->m_snowmen.GetCount() - 1) {
@@ -370,14 +370,14 @@ void UISnowmanEventDialog::SendEventRewardMode13(int index)
 MS2_REPLACE_METHOD(0x140E95D90, UISnowmanEventDialog, SendEventRewardMode13, 425, 0xFB46BF75);
 
 // @0x140e95f40
-int UISnowmanEventDialog::FUN_140e95f40(int index)
+int UISnowmanEventDialog::GetCurSnowflakeCount(int index)
 {
-    MS2Ptr<SnowmanContext> context = ((CGameRule*)FUN_1401c0d90())->GetSnowman();
+    MS2Ptr<SnowmanContext> context = ((CGameRule*)GetGameRule())->GetSnowman();
     if (context == NULL)
         return 0;
-    CStringW values = reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d980(0x6a4, context->m_eventId, L"");
+    CStringW values = reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).GetStringValue(0x6a4, context->m_eventId, L"");
     ATL::CAtlArray<int> ints;
-    FUN_1401d9a30(values, ints, L",");
+    ParseIntArray(values, ints, L",");
     BOOL valid;
     if (index >= 0 && index <= (int)ints.GetCount() - 1)
         valid = TRUE;
@@ -387,17 +387,17 @@ int UISnowmanEventDialog::FUN_140e95f40(int index)
         return 0;
     return ints[index];
 }
-MS2_REPLACE_METHOD(0x140E95F40, UISnowmanEventDialog, FUN_140e95f40, 379, 0x8CE80314);
+MS2_REPLACE_METHOD(0x140E95F40, UISnowmanEventDialog, GetCurSnowflakeCount, 379, 0x8CE80314);
 
 // @0x140e960d0
-int UISnowmanEventDialog::FUN_140e960d0(int index)
+int UISnowmanEventDialog::GetCurDailyCompleteCount(int index)
 {
-    MS2Ptr<SnowmanContext> context = ((CGameRule*)FUN_1401c0d90())->GetSnowman();
+    MS2Ptr<SnowmanContext> context = ((CGameRule*)GetGameRule())->GetSnowman();
     if (context == NULL)
         return 0;
-    CStringW values = reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d980(0x6a5, context->m_eventId, L"");
+    CStringW values = reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).GetStringValue(0x6a5, context->m_eventId, L"");
     ATL::CAtlArray<int> ints;
-    FUN_1401d9a30(values, ints, L",");
+    ParseIntArray(values, ints, L",");
     BOOL valid;
     if (index >= 0 && index <= (int)ints.GetCount() - 1)
         valid = TRUE;
@@ -407,17 +407,17 @@ int UISnowmanEventDialog::FUN_140e960d0(int index)
         return 0;
     return ints[index];
 }
-MS2_REPLACE_METHOD(0x140E960D0, UISnowmanEventDialog, FUN_140e960d0, 379, 0x012AD364);
+MS2_REPLACE_METHOD(0x140E960D0, UISnowmanEventDialog, GetCurDailyCompleteCount, 379, 0x012AD364);
 
 // @0x140e96260
-int UISnowmanEventDialog::FUN_140e96260(int index)
+int UISnowmanEventDialog::GetCurAccumCompleteCount(int index)
 {
-    MS2Ptr<SnowmanContext> context = ((CGameRule*)FUN_1401c0d90())->GetSnowman();
+    MS2Ptr<SnowmanContext> context = ((CGameRule*)GetGameRule())->GetSnowman();
     if (context == NULL)
         return 0;
-    CStringW values = reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d980(0x6a6, context->m_eventId, L"");
+    CStringW values = reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).GetStringValue(0x6a6, context->m_eventId, L"");
     ATL::CAtlArray<int> ints;
-    FUN_1401d9a30(values, ints, L",");
+    ParseIntArray(values, ints, L",");
     BOOL valid;
     if (index >= 0 && index <= (int)ints.GetCount() - 1)
         valid = TRUE;
@@ -427,23 +427,23 @@ int UISnowmanEventDialog::FUN_140e96260(int index)
         return 0;
     return ints[index];
 }
-MS2_REPLACE_METHOD(0x140E96260, UISnowmanEventDialog, FUN_140e96260, 379, 0xA99A1D27);
+MS2_REPLACE_METHOD(0x140E96260, UISnowmanEventDialog, GetCurAccumCompleteCount, 379, 0xA99A1D27);
 
 // @0x140e963f0
 bool UISnowmanEventDialog::IsAccumRewardReceived(int index)
 {
-    MS2Ptr<SnowmanContext> context = ((CGameRule*)FUN_1401c0d90())->GetSnowman();
+    MS2Ptr<SnowmanContext> context = ((CGameRule*)GetGameRule())->GetSnowman();
     if (context == NULL)
         return false;
     ATL::CAtlArray<int> ints;
-    CStringW values = reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).FUN_140c6d980(0x6a7, context->m_eventId, L"");
-    FUN_1401d9a30(values, ints, L",");
+    CStringW values = reinterpret_cast<Unk_LtaTable&>(DAT_143ab2fc0).GetStringValue(0x6a7, context->m_eventId, L"");
+    ParseIntArray(values, ints, L",");
     return Contains(ints, index);
 }
 MS2_REPLACE_METHOD(0x140E963F0, UISnowmanEventDialog, IsAccumRewardReceived, 266, 0x0AF304C2);
 
 // @0x140e96500
-CString UISnowmanEventDialog::FUN_140e96500(int itemId)
+CString UISnowmanEventDialog::GetItemIconPath(int itemId)
 {
     if (!itemId)
         return "";
@@ -452,16 +452,16 @@ CString UISnowmanEventDialog::FUN_140e96500(int itemId)
         return "";
     return item->GetIconPath();
 }
-MS2_REPLACE_METHOD(0x140E96500, UISnowmanEventDialog, FUN_140e96500, 211, 0x675DA32B);
+MS2_REPLACE_METHOD(0x140E96500, UISnowmanEventDialog, GetItemIconPath, 211, 0x675DA32B);
 
 // @0x140e965e0
-void UISnowmanEventDialog::FUN_140e965e0()
+void UISnowmanEventDialog::UpdateInfo()
 {
     if (m_30.IsNull()) {
         MS2_ASSERT_AT(234, "m_ascript" && 0);
         return;
     }
-    MS2Ptr<SnowmanContext> context = ((CGameRule*)FUN_1401c0d90())->GetSnowman();
+    MS2Ptr<SnowmanContext> context = ((CGameRule*)GetGameRule())->GetSnowman();
     if (context == NULL)
         return;
     ASObj info(2);
@@ -469,17 +469,17 @@ void UISnowmanEventDialog::FUN_140e965e0()
     for (size_t i = 0; i < context->m_snowmen.GetCount(); ++i) {
         ASObj row(2);
         row.FUN_140e846b0("index", i);
-        row.FUN_1407cb9c0("curSnowflakeCount", FUN_140e95f40((int)i));
-        row.FUN_1407cb9c0("curDailyCompleteCount", FUN_140e960d0((int)i));
-        row.FUN_1407cb9c0("curAccumCompleteCount", FUN_140e96260((int)i));
-        row.FUN_1407cbbe0("accumCompleteRewardReceived", IsAccumRewardReceived((int)i));
-        snowmans.PushValue(row.FUN_1422bb870());
+        row.SetIntMember("curSnowflakeCount", GetCurSnowflakeCount((int)i));
+        row.SetIntMember("curDailyCompleteCount", GetCurDailyCompleteCount((int)i));
+        row.SetIntMember("curAccumCompleteCount", GetCurAccumCompleteCount((int)i));
+        row.SetBoolMember("accumCompleteRewardReceived", IsAccumRewardReceived((int)i));
+        snowmans.PushValue(row.GetValue());
     }
-    info.FUN_1409adbe0("snowmans", snowmans.FUN_1422bb870());
-    m_30->Invoke("updateInfo", info.FUN_1422bb870());
+    info.FUN_1409adbe0("snowmans", snowmans.GetValue());
+    m_30->Invoke("updateInfo", info.GetValue());
     m_lastUpdate = GetServerTime();
 }
-MS2_REPLACE_METHOD(0x140E965E0, UISnowmanEventDialog, FUN_140e965e0, 784, 0xAF323AEA);
+MS2_REPLACE_METHOD(0x140E965E0, UISnowmanEventDialog, UpdateInfo, 784, 0xAF323AEA);
 
 // @0x140e96900
 void UISnowmanEventDialog::GetDialogSize(int* width, int* height)
@@ -488,8 +488,8 @@ void UISnowmanEventDialog::GetDialogSize(int* width, int* height)
         return;
     ASDialog* dialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (dialog) {
-        *width = dialog->FUN_1422e6310();
-        *height = dialog->FUN_1422e6270();
+        *width = dialog->GetWindowWidth();
+        *height = dialog->GetWindowHeight();
     }
 }
 MS2_REPLACE_METHOD(0x140E96900, UISnowmanEventDialog, GetDialogSize, 148, 0x464891AD);
@@ -581,16 +581,16 @@ int UISnowmanEventDialog::FUN_140e96c50(int type, CInPacket& packet)
 MS2_REPLACE_METHOD(0x140E96C50, UISnowmanEventDialog, FUN_140e96c50, 622, 0x872ADDA2);
 
 // @0x140e96ed0
-void UISnowmanEventDialog::FUN_140e96ed0(GameEventVariable*) { FUN_140e965e0(); }
-MS2_REPLACE_METHOD(0x140E96ED0, UISnowmanEventDialog, FUN_140e96ed0, 29, 0x5E788497);
+void UISnowmanEventDialog::OnSnowflakeCountChanged(GameEventVariable*) { UpdateInfo(); }
+MS2_REPLACE_METHOD(0x140E96ED0, UISnowmanEventDialog, OnSnowflakeCountChanged, 29, 0x5E788497);
 // @0x140e96f00
-void UISnowmanEventDialog::FUN_140e96f00(GameEventVariable*) { FUN_140e965e0(); }
-MS2_REPLACE_METHOD(0x140E96F00, UISnowmanEventDialog, FUN_140e96f00, 29, 0xB2FF4CA7);
+void UISnowmanEventDialog::OnDailyCompleteCountChanged(GameEventVariable*) { UpdateInfo(); }
+MS2_REPLACE_METHOD(0x140E96F00, UISnowmanEventDialog, OnDailyCompleteCountChanged, 29, 0xB2FF4CA7);
 // @0x140e96f30
-void UISnowmanEventDialog::FUN_140e96f30(GameEventVariable*) { FUN_140e965e0(); }
-MS2_REPLACE_METHOD(0x140E96F30, UISnowmanEventDialog, FUN_140e96f30, 29, 0x13444DB7);
+void UISnowmanEventDialog::OnAccumCompleteCountChanged(GameEventVariable*) { UpdateInfo(); }
+MS2_REPLACE_METHOD(0x140E96F30, UISnowmanEventDialog, OnAccumCompleteCountChanged, 29, 0x13444DB7);
 // @0x140e96f60
-void UISnowmanEventDialog::FUN_140e96f60(GameEventVariable*) { FUN_140e965e0(); }
+void UISnowmanEventDialog::FUN_140e96f60(GameEventVariable*) { UpdateInfo(); }
 MS2_REPLACE_METHOD(0x140E96F60, UISnowmanEventDialog, FUN_140e96f60, 29, 0x69C2AD47);
 
 // @0x140e973f0

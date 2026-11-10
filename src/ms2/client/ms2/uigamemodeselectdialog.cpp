@@ -41,7 +41,7 @@ void FUN_1412761e0(MS2Ptr<AScript> pScript, int bShow);
 UIGameModeSelectDialog::UIGameModeSelectDialog()
 {
     m_80 = 0;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x140c19fb0
@@ -72,12 +72,12 @@ void UIGameModeSelectDialog::OnLoadComplete()
     }
     m_178 = m_30->FUN_140acce30<ASButton>("m_start");
     if (m_178.get() != 0)
-        m_178.operator->()->FUN_1422ce240(GmClickDelegate(this, &UIGameModeSelectDialog::FUN_140c1a510), 0);
+        m_178.operator->()->FUN_1422ce240(GmClickDelegate(this, &UIGameModeSelectDialog::OnStartClick), 0);
     ASObj obj(2);
-    ((class AScript&)(obj)).FUN_1407cbb20("rpgMoviePath", ((Unk_GmGlobals*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e548);
-    ((class AScript&)(obj)).FUN_1407cbb20("royaleMoviePath", ((Unk_GmGlobals*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e550);
+    ((class AScript&)(obj)).SetWStringMember("rpgMoviePath", ((Unk_GmGlobals*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e548);
+    ((class AScript&)(obj)).SetWStringMember("royaleMoviePath", ((Unk_GmGlobals*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_e550);
     FUN_1412761e0(MS2Ptr<AScript>(m_30), 0);
-    m_30->Invoke("initData", obj.FUN_1422bb870());
+    m_30->Invoke("initData", obj.GetValue());
 }
 
 // @0x140c1a390
@@ -125,7 +125,7 @@ void UIGameModeSelectDialog::vfunc_43()
 }
 
 // @0x140c1a510
-void UIGameModeSelectDialog::FUN_140c1a510(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIGameModeSelectDialog::OnStartClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_30 == 0)
         return;
@@ -141,4 +141,4 @@ MS2_REPLACE_METHOD(0x140C1A3E0, UIGameModeSelectDialog, vfunc_13, 37, 0xA76943DB
 MS2_REPLACE_METHOD(0x140C1A410, UIGameModeSelectDialog, vfunc_28, 149, 0xF73F36FA);
 MS2_REPLACE_METHOD(0x140C1A4B0, UIGameModeSelectDialog, vfunc_26, 45, 0xD437AC42);
 MS2_REPLACE_METHOD(0x140C1A4F0, UIGameModeSelectDialog, vfunc_43, 24, 0x1D314201);
-MS2_REPLACE_METHOD(0x140C1A510, UIGameModeSelectDialog, FUN_140c1a510, 143, 0xCEEA4664);
+MS2_REPLACE_METHOD(0x140C1A510, UIGameModeSelectDialog, OnStartClick, 143, 0xCEEA4664);

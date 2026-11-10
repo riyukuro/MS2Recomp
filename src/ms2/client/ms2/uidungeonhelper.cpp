@@ -73,13 +73,13 @@
 #include "ms2/placeholder/formatstringid.h"
 
 // Unit-local declarations; the unidentified names describe uses rather than original class names.
-class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
+class CMyCharacter* GetMyCharacter();   // C3: was GetMyCharacter
 __int64 GetServerTime();
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -88,15 +88,15 @@ public:
     static class WorldService* GetInstance();
 };
 // The reward list of a reward id (meso, exp and the items); same layout as uidungeoncategory.cpp's.
-void* FUN_140764030();   // C3: was FUN_140764030
+void* GetRewardContentsTable();   // C3: was GetRewardContentsTable
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nValue);
 void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, bool bDisable);
-void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
-void FUN_140d013b0(const Scaleform::GFx::Value& root, int n);
+void SetButtonText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetTextAutoSize(const Scaleform::GFx::Value& root, int n);
 void FUN_140d01340(const Scaleform::GFx::Value& root, unsigned a, int b);
 CStringW FUN_140298ea0(CStringW);
 CStringW FUN_1409404f0(__int64);
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW, int, Delegate<bool(int, const CMsgBoxData&)>);
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)>, CStringW);
 void FUN_140d73ff0(CStringW);
 void FUN_140710590(COutPacket&);
@@ -109,7 +109,7 @@ public:
     bool IsLocalPlayerLeader();
 };
 
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 CStringW TranslateEnumDungeonGroup(unsigned nDungeonKind);
 CStringW BlockFormat(int nStringId);
 CStringW FUN_140b8f230(int n);
@@ -121,13 +121,13 @@ ASWeeklyRewardItemSlot::ASWeeklyRewardItemSlot(const Scaleform::GFx::Value& v, i
 }
 
 // @0x140e12780
-void ASWeeklyRewardItemSlot::FUN_140e12780(__int64 nMeso, __int64 nExp)
+void ASWeeklyRewardItemSlot::SetReward(__int64 nMeso, __int64 nExp)
 {
     m_nMeso = nMeso;
     m_nExp = nExp;
-    FUN_140e12bf0();
+    ApplyBoostRates();
 }
-MS2_REPLACE_METHOD(0x140E12780, ASWeeklyRewardItemSlot, FUN_140e12780, 68, 0x9804D897);
+MS2_REPLACE_METHOD(0x140E12780, ASWeeklyRewardItemSlot, SetReward, 68, 0x9804D897);
 
 // @0x140e127d0
 void ASWeeklyRewardItemSlot::vfunc_25(Scaleform::GFx::Value** ppOut)
@@ -146,23 +146,23 @@ void ASWeeklyRewardItemSlot::vfunc_25(Scaleform::GFx::Value** ppOut)
                     text += StringFormat<CStringW>(L"\n{0}", FUN_14028dfa0(CStringW(L"s_dungeonSearch_united_reward_tooltip_exp"), FUN_1409404f0(m_nExp)));
                 tooltip.SetItemDamage(text);   // the reward lines go in the "itemDamage" field
             }
-            **ppOut = tooltip.FUN_1422bb870();
+            **ppOut = tooltip.GetValue();
         }
     }
 }
 MS2_REPLACE_METHOD(0x140E127D0, ASWeeklyRewardItemSlot, vfunc_25, 1045, 0xC063A51E);
 
 // @0x140e12bf0
-void ASWeeklyRewardItemSlot::FUN_140e12bf0()
+void ASWeeklyRewardItemSlot::ApplyBoostRates()
 {
-    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xb9))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xb9))
         return;
-    if (!FUN_140931510()->GetRecord()->IsBoostActive())
+    if (!GetMyCharacter()->GetRecord()->IsBoostActive())
         return;
-    m_nMeso *= FUN_140931510()->GetRecord()->GetRateB();
-    m_nExp *= FUN_140931510()->GetRecord()->GetRateA();
+    m_nMeso *= GetMyCharacter()->GetRecord()->GetRateB();
+    m_nExp *= GetMyCharacter()->GetRecord()->GetRateA();
 }
-MS2_REPLACE_METHOD(0x140E12BF0, ASWeeklyRewardItemSlot, FUN_140e12bf0, 384, 0x31FE659B);
+MS2_REPLACE_METHOD(0x140E12BF0, ASWeeklyRewardItemSlot, ApplyBoostRates, 384, 0x31FE659B);
 
 // @0x140e12d80
 UIDungeonSearchUnitedReward::UIDungeonSearchUnitedReward()
@@ -197,8 +197,8 @@ bool UIDungeonSearchUnitedReward::Init(MS2Ptr<ASMovieClip> root)
             return false;
         FUN_140d01670((*item).FUN_1422bb890(), "m_check", true);
         FUN_140cff840((*item).FUN_1422bb890(), "m_bg", entry->m_uiShowBg);
-        FUN_140cff4e0((*item).FUN_1422bb890(), "m_rewardCount", FUN_14028dfa0(L"s_dungeonSearch_united_reward_count", entry->m_rewardCount));
-        m_root->FUN_1422c6900(Scaleform::GFx::Value((*item).FUN_1422bb890()));
+        SetButtonText((*item).FUN_1422bb890(), "m_rewardCount", FUN_14028dfa0(L"s_dungeonSearch_united_reward_count", entry->m_rewardCount));
+        m_root->AddChild(Scaleform::GFx::Value((*item).FUN_1422bb890()));
         m_slots.push_back(slot);
         m_points.push_back(item);
     }
@@ -206,10 +206,10 @@ bool UIDungeonSearchUnitedReward::Init(MS2Ptr<ASMovieClip> root)
     DH_BIND(m_root->FUN_140beaf20<ASTextField>("m_rewardDaily", m_daily), m_daily, 0x74);
     DH_BIND(m_root->FUN_140beaf20<ASTextField>("m_rewardWeekly", m_weekly), m_weekly, 0x75);
     DH_BIND(m_root->FUN_140bbe640<ASButton>("m_unitedRewardResetButton", m_resetButton), m_resetButton, 0x76);
-    FUN_140d013b0(m_weekly->FUN_1422bb890(), 2);
+    SetTextAutoSize(m_weekly->FUN_1422bb890(), 2);
     if (MS2Ptr<ASTextField> title = m_root->FUN_1409b4620("rewardWeeklyTitle"))
     {
-        FUN_140d013b0(title->FUN_1422bb890(), 2);
+        SetTextAutoSize(title->FUN_1422bb890(), 2);
         FUN_140d01340(title->FUN_1422bb890(), 2, 2);
     }
     FUN_140e142f0();
@@ -226,7 +226,7 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
     unsigned nWeekly = 0;
     unsigned nWeeklyMax = 0;
     {
-        if (MS2Ptr<DungeonRecordCli> mission = FUN_140931510()->GetRecord()->GetRecord(0x3ee))
+        if (MS2Ptr<DungeonRecordCli> mission = GetMyCharacter()->GetRecord()->GetRecord(0x3ee))
         {
             nWeekly = mission->GetBonusRewardCountNow();
             nWeeklyMax = mission->GetMaxCount();
@@ -236,7 +236,7 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
     if (nWeekly >= nWeeklyMax) {
         m_daily->vfunc_3(0);
     } else {
-        if (MS2Ptr<DungeonRecordCli> mission = FUN_140931510()->GetRecord()->GetRecord(0x3ee))
+        if (MS2Ptr<DungeonRecordCli> mission = GetMyCharacter()->GetRecord()->GetRecord(0x3ee))
         {
             unsigned nDaily = mission->GetClearCount(GetServerTime());
             unsigned nDailyMax = mission->GetSubRewardCount();
@@ -252,10 +252,10 @@ void UIDungeonSearchUnitedReward::FUN_140e13c00()
             continue;
         RewardContentsTable::Result rewards;
         // slot 78 (+0x270), passed inline
-        ((RewardContentsTable*)FUN_140764030())->GetReward(entry->m_rewardID, static_cast<PCBase*>(pActor)->vfunc_78(), rewards);
+        ((RewardContentsTable*)GetRewardContentsTable())->GetReward(entry->m_rewardID, static_cast<PCBase*>(pActor)->vfunc_78(), rewards);
         if (!rewards.m_items.empty())
             m_slots[i]->FUN_1409ba630(reinterpret_cast<const Unk_ItemSlotSource&>(static_cast<ItemAble&>(rewards.m_items[0])));
-        m_slots[i]->FUN_140e12780(rewards.m_nMeso, rewards.m_nExp);
+        m_slots[i]->SetReward(rewards.m_nMeso, rewards.m_nExp);
         const bool bReached = nWeekly >= entry->m_rewardCount ? 1 : 0;
         if (bReached)
             nGauge = entry->m_uiPosX;
@@ -269,7 +269,7 @@ MS2_REPLACE_METHOD(0x140E13C00, UIDungeonSearchUnitedReward, FUN_140e13c00, 1762
 // @0x140e142f0
 void UIDungeonSearchUnitedReward::FUN_140e142f0()
 {
-    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xb9))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xb9))
         return;
     const int nOffset = -22;
     ((class ASDisplayObject*)(class ASTextField*)(m_daily.get()))->MoveY(nOffset);
@@ -303,18 +303,18 @@ MS2_REPLACE_METHOD(0x140E144B0, UIDungeonSearchUnitedReward, SendRoomDungeon, 93
 bool FUN_140e14520(int nKind)
 {
     switch (nKind) {
-    case 3: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x80);
-    case 4: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x76);
-    case 5: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xcb);
-    case 6: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x79);
-    case 7: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(5);
-    case 8: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xaa);
-    case 12: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xab);
-    case 9: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x4c);
-    case 10: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x4b);
-    case 11: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x55);
-    case 13: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xf0);
-    case 14: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x103);
+    case 3: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x80);
+    case 4: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x76);
+    case 5: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xcb);
+    case 6: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x79);
+    case 7: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(5);
+    case 8: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xaa);
+    case 12: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xab);
+    case 9: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x4c);
+    case 10: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x4b);
+    case 11: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x55);
+    case 13: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xf0);
+    case 14: return ((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x103);
     default: return true;
     }
 }
@@ -330,7 +330,7 @@ bool FUN_140e146a0()
 }
 
 // @0x140e146f0
-void FUN_140e146f0(CInPacket& packet)
+void OnDungeonMatchError(CInPacket& packet)
 {
     int nError = packet.ReadUInt8();
     int nParam = packet.ReadInt32();
@@ -340,7 +340,7 @@ void FUN_140e146f0(CInPacket& packet)
         FUN_140d73ff0(CStringW(L"s_dungeonMatch_error_notFoundDungeon"));
         break;
     case 2:
-        FUN_140d74390(FUN_14028dfa0(CStringW(L"s_dungeonMatch_error_overMaxRegisterUser"), nParam), 0, Delegate<bool(int, const CMsgBoxData&)>());
+        ShowMessageBoxWithCallback(FUN_14028dfa0(CStringW(L"s_dungeonMatch_error_overMaxRegisterUser"), nParam), 0, Delegate<bool(int, const CMsgBoxData&)>());
         break;
     case 3:
         FUN_140d73ff0(CStringW(L"s_dungeonMatch_error_lackRequire"));
@@ -361,7 +361,7 @@ void FUN_140e146f0(CInPacket& packet)
         FUN_140d73ff0(CStringW(L"s_dungeonMatch_error_hasDungeonMatchCooldown"));
         break;
     case 9:
-        FUN_140d74390(FUN_14028dfa0(CStringW(L"s_dungeonMatch_error_hasDungeonMatchCooldownParty"), strName), 0, Delegate<bool(int, const CMsgBoxData&)>());
+        ShowMessageBoxWithCallback(FUN_14028dfa0(CStringW(L"s_dungeonMatch_error_hasDungeonMatchCooldownParty"), strName), 0, Delegate<bool(int, const CMsgBoxData&)>());
         break;
     default:
         MS2_ASSERT_AT(299, 0);
@@ -375,7 +375,7 @@ CStringW FUN_140e14b70(MS2Ptr<DungeonRoom> pRoom)
 }
 
 // @0x140e14bd0
-CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit)
+CStringW GetRoomListText(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit)
 {
     if (pRoom == NULL)
         return CStringW(L"");
@@ -388,15 +388,15 @@ CStringW FUN_140e14bd0(MS2Ptr<DungeonRoom> pRoom, bool bShowLimit)
 }
 
 // @0x140e14d70
-CStringW FUN_140e14d70(int nMissionId)
+CStringW GetWeeklyRewardCountText(int nMissionId)
 {
-    MS2Ptr<DungeonRecordCli> mission = FUN_140931510()->GetRecord()->GetRecord(nMissionId);
+    MS2Ptr<DungeonRecordCli> mission = GetMyCharacter()->GetRecord()->GetRecord(nMissionId);
     if (mission == NULL)
         return CStringW(L"");
     unsigned nCur = mission->GetBonusRewardCountNow();
     unsigned nMax = mission->GetMaxCount();
     CStringW strCount = StringFormat<unsigned, unsigned>(L"{0} / {1}", nCur, nMax);
-    MS2Ptr<DungeonExtraRewardCountCtx> event = ((CGameRule*)FUN_1401c0d90())->GetDungeonExtraRewardCount(nMissionId);
+    MS2Ptr<DungeonExtraRewardCountCtx> event = ((CGameRule*)GetGameRule())->GetDungeonExtraRewardCount(nMissionId);
     if (event.get())
     {
         unsigned nBonus = mission->GetExtraCountNow();
@@ -407,9 +407,9 @@ CStringW FUN_140e14d70(int nMissionId)
 }
 
 // @0x140e14fd0
-CStringW FUN_140e14fd0(int nMissionId)
+CStringW GetDailyRewardCountText(int nMissionId)
 {
-    MS2Ptr<DungeonRecordCli> mission = FUN_140931510()->GetRecord()->GetRecord(nMissionId);
+    MS2Ptr<DungeonRecordCli> mission = GetMyCharacter()->GetRecord()->GetRecord(nMissionId);
     if (mission == NULL)
         return CStringW(L"");
     unsigned nCur = mission->GetClearCount(GetServerTime());
@@ -419,7 +419,7 @@ CStringW FUN_140e14fd0(int nMissionId)
 }
 
 // @0x140e15130
-CStringW FUN_140e15130(int nRoomId)
+CStringW GetRewardCooldownTooltip(int nRoomId)
 {
     DungeonRoomPtr pRoom = TSingleton<DungeonRoomTable>::GetInstance()->GetRoom(nRoomId);
     if (pRoom == NULL)
@@ -438,9 +438,9 @@ CStringW FUN_140e15130(int nRoomId)
 }
 
 // @0x140e152a0
-CStringW FUN_140e152a0()
+CStringW GetHelperRewardCountText()
 {
-    return FUN_140e14d70(0x3eb);
+    return GetWeeklyRewardCountText(0x3eb);
 }
 
 template <class T> inline MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v)

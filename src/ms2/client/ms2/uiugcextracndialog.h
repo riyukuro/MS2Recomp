@@ -25,9 +25,9 @@ public:
 
     void FUN_140facfa0(bool bCameraMode);                       // 0x140facfa0 enable / disable the camera mode button
     void FUN_140fad070(bool bCameraMode);                       // 0x140fad070 forwards to FUN_140facfa0
-    bool FUN_140fad0a0(int nResult, const CMsgBoxData& box);    // 0x140fad0a0 screenshot confirm answered
-    void FUN_140fad2b0();                                       // 0x140fad2b0 the camera mode button's label and icon
-    void FUN_140fad4f0(bool bCameraMode);                       // 0x140fad4f0 switch the camera mode
+    bool OnScreenshotConfirm(int nResult, const CMsgBoxData& box);    // 0x140fad0a0 screenshot confirm answered
+    void RefreshCameraModeButton();                                       // 0x140fad2b0 the camera mode button's label and icon
+    void SetCameraMode(bool bCameraMode);                       // 0x140fad4f0 switch the camera mode
 private:
     MS2_LAYOUT_FRIEND;
     bool m_bCameraMode;                                         // +0x178 the free camera is on

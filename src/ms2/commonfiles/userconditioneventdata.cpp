@@ -36,10 +36,10 @@ typedef ATL::CRBMap<int, CUserConditionEventData::Ptr> Unk_UceMap;
 
 // ---- unrecovered helpers ----
 
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);         // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);       // Table/<file>
+CString ToCString(const char* pszName, int nFlags);         // undecorated class name
    // the item exists
-class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
+class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
 extern CLockCriticalSection g_cacheLock;                        // 0x143aac550
 extern int DAT_1439ed00c;
 unsigned char FUN_1401d1320(CCacheData* p);                     // file changed since load
@@ -100,8 +100,8 @@ CUserConditionEventData::~CUserConditionEventData()
 void CUserConditionEventData::Load()
 {
     TiXmlDocument doc;
-    CString strPath = FUN_14071a5b0("Table", "userConditionEvent.xml");
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    CString strPath = GetXmlPath("Table", "userConditionEvent.xml");
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -112,7 +112,7 @@ void CUserConditionEventData::Load()
     for (TiXmlElement* pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("event")); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("event")))
     {
         Ptr spData(new CUserConditionEventData);
-        spData->FUN_1401d1160(CString(strPath));
+        spData->SetPath(CString(strPath));
         XmlGetAttr((class TiXmlElement*)(pNode), "id", reinterpret_cast<int&>(spData->m_nId));
         XmlGetAttr((class TiXmlElement*)(pNode), "gameEventID", reinterpret_cast<int&>(spData->m_nGameEventId));
         CString strInfo;
@@ -137,7 +137,7 @@ void CUserConditionEventData::Load()
                 XmlGetAttr((class TiXmlElement*)(pAttach), "itemID", attach.m_nItemId);
                 Unk_ReadRank((class Unk_XmlNode*)(pAttach), "itemRank", &attach.m_nItemRank);
                 XmlGetAttr((class TiXmlElement*)(pAttach), "itemCount", attach.m_nItemCount);
-                if (((class CItemOptionTable*)FUN_140166430())->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
+                if (((class CItemOptionTable*)GetItemOptionTable())->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
                     spData->m_notify.m_attachments.Add(attach);
             }
         }
@@ -155,7 +155,7 @@ void CUserConditionEventData::Load()
                 XmlGetAttr((class TiXmlElement*)(pAttach), "itemID", attach.m_nItemId);
                 Unk_ReadRank((class Unk_XmlNode*)(pAttach), "itemRank", &attach.m_nItemRank);
                 XmlGetAttr((class TiXmlElement*)(pAttach), "itemCount", attach.m_nItemCount);
-                if (((class CItemOptionTable*)FUN_140166430())->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
+                if (((class CItemOptionTable*)GetItemOptionTable())->FUN_1405f5e90(attach.m_nItemId, attach.m_nItemRank, "systemMail.xml", CString(strInfo)) != 0)
                     spData->m_mail.m_attachments.Add(attach);
             }
         }
@@ -223,7 +223,7 @@ void CUserConditionEventData::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CUserConditionEventData).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CUserConditionEventData).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

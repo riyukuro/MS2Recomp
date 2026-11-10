@@ -45,7 +45,7 @@
 #include "ms2/placeholder/intervaltimer.h"  // C3: Unk_IntervalTimer::Check (0x140268870)
 #include "ms2/gfxui/asmdragtarget.h"
 #include "ms2/commonfiles/userconditioneventdata.h"
-class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
+class CUserMail { public: static __int64 GetGFxSceneService(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
@@ -79,7 +79,7 @@ struct Unk_SmBody
     CString m_strAttach;                                        // +0x10 "attachment" or a text
     ATL::CAtlArray<Unk_SmReward> m_rewards;                     // +0x18
     // @0x1412a7050 the rewards for a job: its own rows and the all-job rows
-    void FUN_1412a7050(unsigned nJob, ATL::CAtlArray<Unk_SmReward>& out)
+    void GetRewardsForJob(unsigned nJob, ATL::CAtlArray<Unk_SmReward>& out)
     {
         for (size_t i = 0; i < m_rewards.GetCount(); i++)
         {
@@ -140,7 +140,7 @@ class Unk_SmClip : public ASMovieClip
 {
 };
 
-MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASDisplayObjectContainer> CreateDisplayObjectContainer(int nMovieId, const Scaleform::GFx::Value& v);
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);
 #ifndef MS2_HOOK_DLL
 // Same body as uiitemdropinfodialog's MakeDropChild<ASMDragTarget> (0x140c3bb40): /opt:icf folds them.
@@ -174,7 +174,7 @@ public:
     static class WorldService* GetInstance();
 };
       // text of a string id
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
    // the item name text
 void SetNestedChildText(const Scaleform::GFx::Value& root, CString strProp, CString strChild, CStringW strText);   // set a child's text
 CStringW FUN_14016a730(const char* psz, int n);                             // narrow -> wide
@@ -201,18 +201,18 @@ template <class T> MS2Ptr<T> Unk_SmNode::GetChild(const CString& strName, MS2Ptr
 
 template <class T> MS2Ptr<T> Unk_SmNode::FUN_deep(const Scaleform::GFx::Value& v, const CString& strName)
 {
-    MS2Ptr<ASDisplayObjectContainer> spObj = FUN_140bc5fc0(m_nMovieId, v);
+    MS2Ptr<ASDisplayObjectContainer> spObj = CreateDisplayObjectContainer(m_nMovieId, v);
     if (!spObj->HasMember("getChildByName"))
         return MS2Ptr<T>(0);
-    Scaleform::GFx::Value child = spObj->FUN_1422c6b00(strName);
+    Scaleform::GFx::Value child = spObj->GetChildByName(strName);
     if (child.IsObject())
         return Unk_ASCreate<T>(m_nMovieId, child);
     if (!spObj->HasMember("numChildren"))
         return MS2Ptr<T>(0);
-    int nCount = spObj->FUN_1422c6670();
+    int nCount = spObj->GetNumChildren();
     for (int i = 0; i < nCount; i++)
     {
-        Scaleform::GFx::Value sub = spObj->FUN_1422c6aa0(i);
+        Scaleform::GFx::Value sub = spObj->GetChildAt(i);
         if (!sub.IsObject())
             continue;
         MS2Ptr<T> spFound = FUN_deep<T>(sub, strName);
@@ -226,7 +226,7 @@ template <> inline MS2Ptr<ASButton> Unk_SmNode::GetChild<ASButton>(const CString
 UISystemMailNotifyDialog::UISystemMailNotifyDialog()
     : m_bOnTime(0), m_nHideAt(0)
 {
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     m_17c = 0;
     m_178 = 0;
     m_180 = 0;
@@ -283,7 +283,7 @@ void UISystemMailNotifyDialog::OnLoadComplete()
         if (m_178 != 0 && (m_180 != 0 || m_184 != 0))
         {
             m_180 = 0;
-            FUN_1412a5570(m_178);
+            ShowMail(m_178);
             if (m_184 != 0)
                 m_184 = 0;
         }
@@ -314,9 +314,9 @@ void UISystemMailNotifyDialog::vfunc_72()
     {
         unsigned nNow = GetTickCountMs2();
         if (nNow >= m_nHideAt)
-            FUN_1412a62a0();
+            OnHideTimerExpired();
         else
-            FUN_1412a6390();
+            UpdateRemainTime();
     }
 }
 
@@ -343,7 +343,7 @@ void UISystemMailNotifyDialog::FUN_1412a53e0(CInPacket& packet)
                     m_178 = nId;
                     m_17c = rec->m_notify.m_nPreview;
                     if (FUN_141924630() != 0)
-                        FUN_1412a5570(nId);
+                        ShowMail(nId);
                 }
             }
             m_180 = (nId != 0);
@@ -353,7 +353,7 @@ void UISystemMailNotifyDialog::FUN_1412a53e0(CInPacket& packet)
 }
 
 // @0x1412a5570
-void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
+void UISystemMailNotifyDialog::ShowMail(int nMailId)
 {
     MS2Ptr<CUserConditionEventData> rec(CUserConditionEventData::GetEvent(nMailId));
     if (reinterpret_cast<Unk_SmHandle&>(rec).FUN_1412a6f10() != 0)
@@ -365,16 +365,16 @@ void UISystemMailNotifyDialog::FUN_1412a5570(int nMailId)
     Unk_SmPlayer* pPlayer = ((Unk_SmPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    m_strUrl = ((class CGameRule*)FUN_1401c0d90())->GetUserConditionText(rec->m_nGameEventId);
+    m_strUrl = ((class CGameRule*)GetGameRule())->GetUserConditionText(rec->m_nGameEventId);
     ATL::CAtlArray<Unk_SmReward> rewards;
-    reinterpret_cast<Unk_SmBody&>(rec->m_notify).FUN_1412a7050(pPlayer->GetJobGroupId(), rewards);
+    reinterpret_cast<Unk_SmBody&>(rec->m_notify).GetRewardsForJob(pPlayer->GetJobGroupId(), rewards);
     if (rewards.GetCount() > 0)
     {
         FUN_1412a5eb0(&rewards[0]);
         MS2Ptr<ASMDragTarget> spSlot;
         ASMDragTarget* pSlotClip = static_cast<Unk_SmNode*>(static_cast<ASDisplayObjectContainer*>(m_event.operator->()))->GetChild<ASMDragTarget>("m_slot", spSlot).get();
         if (pSlotClip != 0)
-            spSlot->FUN_1422e4840(m_strSlot);
+            spSlot->SetBinding(m_strSlot);
         SetNestedChildText((&*m_event)->FUN_1422bb890(), "content", "m_title", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, rewards[0].m_nItemId));
         CStringW strAttach;
         if ((rec->m_notify.m_strDescArg == "attachment"))
@@ -395,13 +395,13 @@ void UISystemMailNotifyDialog::SetOnTime(bool bOnTime)
 }
 
 // @0x1412a5c70
-void UISystemMailNotifyDialog::FUN_1412a5c70(int nMs)
+void UISystemMailNotifyDialog::SetHideTimer(int nMs)
 {
     m_nHideAt = GetTickCountMs2() + nMs;
 }
 
 // @0x1412a5ca0
-int UISystemMailNotifyDialog::FUN_1412a5ca0()
+int UISystemMailNotifyDialog::HasPendingMail()
 {
     return m_17c != 0;
 }
@@ -417,8 +417,8 @@ void UISystemMailNotifyDialog::FUN_1412a5d10(const Scaleform::GFx::FunctionHandl
 {
     if (m_event.get() != 0)
     {
-        if ((static_cast<Unk_SmClip*>(m_event.operator->())->FUN_1422c2420() == "close"))
-            FUN_1412a5570(m_178);
+        if ((static_cast<Unk_SmClip*>(m_event.operator->())->GetCurrentLabel() == "close"))
+            ShowMail(m_178);
         else
             FUN_1412a61a0();
     }
@@ -442,9 +442,9 @@ void UISystemMailNotifyDialog::FUN_1412a5de0(const Scaleform::GFx::FunctionHandl
 // @0x1412a5e60
 void UISystemMailNotifyDialog::FUN_1412a5e60(NotifyObject*)
 {
-    if (((class GFxSceneService*)(class Unk_SmEvent*)(((Unk_SmEvent*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(class Unk_SmEvent*)(((Unk_SmEvent*)CUserMail::GetGFxSceneService())))->GetSubSceneId() != 0x620001d)
         return;
-    if (FUN_1412a5ca0() != 0)
+    if (HasPendingMail() != 0)
         FUN_141924680();
 }
 
@@ -474,7 +474,7 @@ void UISystemMailNotifyDialog::FUN_1412a60d0()
         return;
     m_event->vfunc_3(1);
     m_event->vfunc_13("open");
-    FUN_1412a5c70(3000);
+    SetHideTimer(3000);
 }
 
 // @0x1412a61a0
@@ -491,14 +491,14 @@ void UISystemMailNotifyDialog::FUN_1412a61a0()
 }
 
 // @0x1412a62a0
-void UISystemMailNotifyDialog::FUN_1412a62a0()
+void UISystemMailNotifyDialog::OnHideTimerExpired()
 {
     m_nHideAt = 0;
     if (m_event.get() != 0)
     {
         if (static_cast<Unk_SmScript*>(m_30.operator->())->Invoke("hitTestEvent").GetBool())
         {
-            FUN_1412a5c70(3000);
+            SetHideTimer(3000);
             return;
         }
         FUN_1412a61a0();
@@ -514,7 +514,7 @@ void UISystemMailNotifyDialog::FUN_1412a62a0()
 }
 
 // @0x1412a6390
-void UISystemMailNotifyDialog::FUN_1412a6390()
+void UISystemMailNotifyDialog::UpdateRemainTime()
 {
     if (m_onTimeEvent.get() != 0)
     {

@@ -45,7 +45,7 @@ public:
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
 bool FUN_14028d470(float a, float b);                                       // approximately equal
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
@@ -92,7 +92,7 @@ void UnlimitedEnchantOption::MergePrimary(MS2Ptr<UnlimitedEnchantOption> spOther
         else
         {
             MS2Ptr<BaseOption> spOption(new BaseOption);
-            spOption->FUN_140266da0(it->second.get());
+            spOption->CopyFrom(it->second.get());
             m_stats[nKey] = spOption;
         }
     }
@@ -113,7 +113,7 @@ void UnlimitedEnchantOption::MergeSecondary(MS2Ptr<UnlimitedEnchantOption> spOth
         else
         {
             MS2Ptr<BaseOption> spOption(new BaseOption);
-            spOption->FUN_140266da0(it->second.get());
+            spOption->CopyFrom(it->second.get());
             m_specials[nKey] = spOption;
         }
     }
@@ -133,9 +133,9 @@ UnlimitedEnchantTable::~UnlimitedEnchantTable()
 bool UnlimitedEnchantTable::Load()
 {
     InitializeCosts();
-    CString strPath = FUN_14071a5b0("Table/Server", "UnlimitedEnchantOption.xml");
+    CString strPath = GetXmlPath("Table/Server", "UnlimitedEnchantOption.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
@@ -240,7 +240,7 @@ MS2Ptr<UnlimitedEnchantOption> UnlimitedEnchantTable::FindForItem(MS2Ptr<CItem> 
 {
     if (spItem == 0)
         return MS2Ptr<UnlimitedEnchantOption>(0);
-    return Find(spItem->FUN_1405276c0(), spItem->GetPlusLevel());
+    return Find(spItem->GetItemId(), spItem->GetPlusLevel());
 }
 
 // @0x1408c4600

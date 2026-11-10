@@ -44,10 +44,10 @@ public:
     virtual void vfunc_64() {}                                      // 64 (folded empty body 0x140e84f90)
 
     int FUN_1422e7930();                                            // 0x1422e7930 m_68
-    int FUN_1422e7950();                                            // 0x1422e7950 m_6c the scene entity id
-    int FUN_1422e7970();                                            // 0x1422e7970 m_70 shown
+    int GetSceneId();                                            // 0x1422e7950 m_6c the scene entity id
+    int IsShown();                                            // 0x1422e7970 m_70 shown
     int FUN_1422e7990(int nSceneId);                                // 0x1422e7990 has a child scene of the id
-    void FUN_1422e7a40(int nSceneId);                               // 0x1422e7a40 switch the sub-scene (GFxSceneService)
+    void SetSubSceneId(int nSceneId);                               // 0x1422e7a40 switch the sub-scene (GFxSceneService)
     UISceneEntity* FUN_1422e7a70(int nSceneId);                     // 0x1422e7a70 the child scene of the id
 
 public:

@@ -58,7 +58,7 @@ struct Unk_UVPickerPtr
 {
     Unk_UVPickerPtr(CMeshUVPicker* p);                         // 0x141286170
     ~Unk_UVPickerPtr();                                         // 0x1412861b0
-    Unk_UVPickerPtr& FUN_1412861e0(CMeshUVPicker* p);           // reset
+    Unk_UVPickerPtr& Reset(CMeshUVPicker* p);           // reset
     CMeshUVPicker* FUN_141286290() const;                       // get
     bool FUN_141286250(CMeshUVPicker* p) const;                 // m_p == p (0x141286250)
     CMeshUVPicker* FUN_141412c80() const { return m_p; }        // get (inline COMDAT 0x141412c80, emitted by #1)

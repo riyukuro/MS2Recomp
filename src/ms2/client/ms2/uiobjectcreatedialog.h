@@ -30,6 +30,6 @@ public:
                                                                         // 28 0x14131f800 the movie's callbacks
     virtual int vfunc_48() { return 0x4ed0; }                           // 48 0x141320530 UI type id
 
-    void FUN_14131ff70();                                               // refill m_objects from the search text
+    void RefreshObjectList();                                               // refill m_objects from the search text
 };
 MS2_CHECK_SIZE(UIObjectCreateDialog, 0x178);

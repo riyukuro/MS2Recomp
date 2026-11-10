@@ -14,25 +14,25 @@ public:
     // C3: the setters, reset and load are free functions on Unk_GsAutoLoot* (gameoptionstruct.cpp)
 
     // @0x1419dae30
-    int FUN_1419dae30() { return m_nGrade; }
+    int GetGrade() { return m_nGrade; }
     // @0x1419dae50
-    bool FUN_1419dae50() { return m_bConsume; }
+    bool IsConsume() { return m_bConsume; }
     // @0x1419dae60
-    bool FUN_1419dae60() { return m_bEtc; }
+    bool IsEtc() { return m_bEtc; }
     // @0x1419dae70
-    bool FUN_1419dae70() { return m_bEquip; }
+    bool IsEquip() { return m_bEquip; }
     // @0x1419dae80
-    bool FUN_1419dae80() { return m_bGemstone; }
+    bool IsGemstone() { return m_bGemstone; }
     // @0x1419dae90
-    bool FUN_1419dae90() { return m_bMerat; }
+    bool IsMerat() { return m_bMerat; }
     // @0x1419daea0
-    bool FUN_1419daea0() { return m_bMeso; }
+    bool IsMeso() { return m_bMeso; }
     // @0x1419daeb0
-    bool FUN_1419daeb0() { return m_bOther; }
+    bool IsOther() { return m_bOther; }
     // @0x1419daec0
     bool FUN_1419daec0() { return m_bPet; }
     // @0x1419daed0
-    bool FUN_1419daed0() { return m_bToken; }
+    bool IsToken() { return m_bToken; }
 
 private:
     bool m_bEquip;                                              // +0x00
@@ -62,8 +62,8 @@ public:
     virtual void vfunc_67();                                    // 67 0x1419d9700 UIModalDialog::vfunc_67
 
     void SetMode(int nMode);                              // set the mode
-    void FUN_1419da8f0();                                       // load the options (account or local copy)
-    void FUN_1419dabc0();                                       // apply: send the options / store the copy
+    void LoadOptions();                                       // load the options (account or local copy)
+    void ApplyOptions();                                       // apply: send the options / store the copy
 
 private:
     MS2_LAYOUT_FRIEND;

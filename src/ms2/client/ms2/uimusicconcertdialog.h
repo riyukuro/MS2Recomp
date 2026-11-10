@@ -26,8 +26,8 @@ public:
     virtual void vfunc_67();                                    // 67 0x140e69680 close: drop the controls
     virtual void vfunc_72();                                    // 72 0x140e69730 refresh the top text
 
-    void FUN_140e6a0d0(const Scaleform::GFx::FunctionHandler::Params& params);   // an action button was clicked
-    void FUN_140e6a1b0(const Scaleform::GFx::FunctionHandler::Params& params);   // the fold button was clicked
+    void OnActionButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);   // an action button was clicked
+    void OnFoldButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);   // the fold button was clicked
     void FUN_140e6a290();                                       // the top text and the first button's label
     void FUN_140e6a5d0(int nIndex, const CString& strIcon, const CStringW& strTooltip);   // icon + tooltip of one button
     void FUN_140e6a780();                                       // register button

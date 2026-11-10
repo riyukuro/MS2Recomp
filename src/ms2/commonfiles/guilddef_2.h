@@ -11,8 +11,8 @@ class CInPacket;
 class CNpcShopProductProxy : public CPtred {
 public:
     CNpcShopProductProxy():f18(0),f1c(0),f20(0),f24(0){}
-    void FUN_1404d7f20(COutputStream& out);
-    void FUN_1404d7fa0(CInPacket* packet);
+    void Write(COutputStream& out);
+    void Read(CInPacket* packet);
     int f18,f1c,f20,f24;
 };
 MS2_CHECK_SIZE(CNpcShopProductProxy,0x28);
@@ -20,13 +20,13 @@ class CGuildNpcShop : public CPtred {
 public:
     CGuildNpcShop():f18(0),f20(0),f28(0){}
     virtual ~CGuildNpcShop(){}
-    bool FUN_1404d8070(__int64 now);
-    void FUN_1404d80a0();
-    MS2Ptr<CNpcShopProductProxy> FUN_1404d80d0(int itemId,int rank,int price);
-    MS2Ptr<CNpcShopProductProxy> FUN_1404d81e0(int itemId,int rank,int price);
-    int FUN_1404d82a0(int itemId,int rank,int price);
-    void FUN_1404d83e0(COutputStream& out);
-    void FUN_1404d8520(CInPacket* packet);
+    bool IsExpired(__int64 now);
+    void ClearProducts();
+    MS2Ptr<CNpcShopProductProxy> AddProduct(int itemId,int rank,int price);
+    MS2Ptr<CNpcShopProductProxy> FindProduct(int itemId,int rank,int price);
+    int FindProductIndex(int itemId,int rank,int price);
+    void Write(COutputStream& out);
+    void Read(CInPacket* packet);
     unsigned f18; __int64 f20,f28;
     std::vector<MS2Ptr<CNpcShopProductProxy>> products;
 };
@@ -36,8 +36,8 @@ class Unk_GuildShopOffer : public CPtred {
 public:
     Unk_GuildShopOffer():f18(0),f1c(0),f20(0),f28(0){}
     virtual ~Unk_GuildShopOffer(){}
-    void FUN_1404d91e0(COutputStream& out);
-    void FUN_1404d9260(CInPacket* packet);
+    void Write(COutputStream& out);
+    void Read(CInPacket* packet);
     int f18; unsigned f1c; unsigned f20; __int64 f28;
 };
 MS2_CHECK_SIZE(Unk_GuildShopOffer,0x30);
@@ -45,13 +45,13 @@ class CGuildNpcShopMgr : public CPtred {
 public:
     CGuildNpcShopMgr(){}
     virtual ~CGuildNpcShopMgr(){}
-    MS2Ptr<CGuildNpcShop> FUN_1404d86e0(unsigned id,__int64 time);
+    MS2Ptr<CGuildNpcShop> CreateShop(unsigned id,__int64 time);
     MS2Ptr<CGuildNpcShop> GetShop(unsigned id);
     MS2Ptr<CGuildNpcShop> GetOrCreateShop(unsigned id);
     int FUN_1404d89e0(ItemEntity* item,Unk_GuildShopOffer* offer,bool* created);
     void Write(COutputStream& out);
     void Read(CInPacket* packet);
-    void FUN_1404d8ff0(unsigned id,CInPacket* packet);
+    void ReadShop(unsigned id,CInPacket* packet);
     void FUN_1404d9060(unsigned id,CInPacket* packet);
     std::map<unsigned,MS2Ptr<CGuildNpcShop>> shops;
 };

@@ -33,12 +33,12 @@ public:
     virtual void vfunc_33(int nClassId, int n);                 // UIItemEventListener 33 0x141933ad0
 
     void SendFittingDoll();                                       // ask the server to transform the doll
-    void FUN_141933b00();                                       // show the doll's name / description / frames
+    void SetDollInfo();                                       // show the doll's name / description / frames
     void FUN_141934070();                                       // tell the bag id / ownership to the movie
     void FUN_1419342e0();                                       // FUN_14121e760(GetTypeName())
-    void FUN_141934340();                                       // enable the "m_transform" button again
-    int FUN_141934430();                                        // can the doll wear the equipment (0 yes, else error code)
-    bool FUN_141934c10(int nResult, const CMsgBoxData& box);    // confirm box callback: 0 sends the request
+    void EnableTransformButton();                                       // enable the "m_transform" button again
+    int CanWearEquipment();                                        // can the doll wear the equipment (0 yes, else error code)
+    bool OnConfirmTransform(int nResult, const CMsgBoxData& box);    // confirm box callback: 0 sends the request
 
 private:
     MS2_LAYOUT_FRIEND;

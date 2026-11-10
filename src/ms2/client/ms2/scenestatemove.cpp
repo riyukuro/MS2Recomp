@@ -16,8 +16,8 @@
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/ms2format.h"   // C3: fmt for BlockFormat<int>
 
-CNetworkService* FUN_140714f90();
-void* FUN_140aae430();
+CNetworkService* GetNetworkService();
+void* GetMS2();
 extern CString DAT_143ab2a48;
 extern unsigned short DAT_143ab2848;
 template <class A, class B> void Unk_SSGFormatMsg(int nStringId, int nA, int nB, const A& a, const B& b);   // C3: was FUN_141740b00 (scenestategame)
@@ -51,11 +51,11 @@ CSceneStateMove::~CSceneStateMove()
 // @0x14174caa0
 void CSceneStateMove::OnEnter(int nPrevState)
 {
-    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
+    static_cast<MS2*>(GetMS2())->SetBackgroundColor(efd::ColorA::BLACK);
     m_bConnecting = 0;
     m_bFailed = 0;
     CSceneStateBase::OnEnter(nPrevState);
-    m_timer.FUN_1408687f0();
+    m_timer.Reset();
     m_nRetry = 0;
 }
 
@@ -71,44 +71,44 @@ void CSceneStateMove::OnUpdate(double fTime)
     if (m_bConnecting == 0)
     {
         m_bConnecting = 1;
-        FUN_140714f90()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
-        m_timer.FUN_140868750(10000);
+        GetNetworkService()->ConnectTo(DAT_143ab2a48, DAT_143ab2848, 1, 1, 0);
+        m_timer.Start(10000);
         CStringW addr = FUN_14016a730(DAT_143ab2a48, 0);
         Unk_SSGFormatMsg<CStringW, unsigned short>(0x2dd, 1, 1, addr, DAT_143ab2848);
     }
     if (m_nRetry < 5)
     {
-        if (m_bConnecting != 0 && m_timer.FUN_140868c00() != 0)
+        if (m_bConnecting != 0 && m_timer.IsExpired() != 0)
         {
-            if (FUN_140714f90()->IsConnected() == 0)
+            if (GetNetworkService()->IsConnected() == 0)
             {
                 m_bConnecting = 0;
                 m_nRetry = m_nRetry + 1;
-                m_timer.FUN_140868750(10000);
+                m_timer.Start(10000);
                 CStringW text = FUN_14028dfa0<int>(CStringW(L"s_reconnect_to_server"), m_nRetry);
                 void* loading = ((void*)FindUIObject(0x3ed));
                 if (loading)
-                    reinterpret_cast<UILoadingProgress*>(loading)->FUN_1419e0050(text);
+                    reinterpret_cast<UILoadingProgress*>(loading)->SetMoveChannelMessage(text);
             }
         }
     }
-    else if (m_nRetry == 5 && m_timer.FUN_140868c00() != 0)
+    else if (m_nRetry == 5 && m_timer.IsExpired() != 0)
     {
         if (m_bFailed == 0)
         {
-            if (FUN_140714f90()->RestoreServerAddress())
+            if (GetNetworkService()->RestoreServerAddress())
             {
                 CStringW text = FUN_140298ea0(CStringW(L"s_reconnect_to_server_fail"));
                 void* loading = ((void*)FindUIObject(0x3ed));
                 if (loading)
-                    reinterpret_cast<UILoadingProgress*>(loading)->FUN_1419e0050(text);
+                    reinterpret_cast<UILoadingProgress*>(loading)->SetMoveChannelMessage(text);
                 m_bFailed = 1;
                 m_nRetry = 0;
                 m_bConnecting = 0;
                 return;
             }
         }
-        m_timer.FUN_1408687f0();
+        m_timer.Reset();
         m_nRetry = 6;
         if (DAT_143b03490)
         {

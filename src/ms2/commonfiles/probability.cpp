@@ -117,7 +117,7 @@ bool Probability::IsLogEnabled()
 bool FUN_14073e6a0()
 {
     if (IsLogEnabled() == true)
-        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x115);
+        return TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x115);
     return false;
 }
 
@@ -125,14 +125,14 @@ bool FUN_14073e6a0()
 bool FUN_14073e6e0()
 {
     if (IsLogEnabled() == true)
-        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x114);
+        return TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x114);
     return false;
 }
 
 // @0x14073e720
 bool FUN_14073e720()
 {
-    return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x116);
+    return TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x116);
 }
 
 // The random option picks of one reroll: each picked value is popped from a copy of the picker so the next trial is

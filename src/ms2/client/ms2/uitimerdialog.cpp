@@ -24,7 +24,7 @@ public:
 
 // The client configuration singleton; the timer's low-time effect name is the CString at +0x2f0.
 struct Unk_TimerCfg { char m_pad_00[0x2f0]; CString m_strEffect; };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 
 // @0x141b265f0
@@ -37,13 +37,13 @@ UITimerDialog::UITimerDialog()
     m_nMin = 0;
     m_nSec = 0;
     m_bReset = false;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x141b266d0
 UITimerDialog::~UITimerDialog()
 {
-    FUN_141b26bf0();
+    StopEffect();
 }
 
 // @0x141b26730
@@ -75,12 +75,12 @@ void UITimerDialog::vfunc_72()
     }
     if (m_nEffectRunning == 0 && nMin == 0 && nSec <= 10) {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-        ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_TimerCfg*)FUN_1401d31f0())->m_strEffect;
+        ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_TimerCfg*)GetCommonResource())->m_strEffect;
         ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
         m_nEffectRunning = 1;
     } else if (m_nEffectRunning != 0 && (nMin > 0 || nSec > 10)) {
-        FUN_141b26bf0();
+        StopEffect();
     }
     m_nMin = nMin;
     m_nSec = nSec;
@@ -98,7 +98,7 @@ MS2_REPLACE_METHOD(0x141B26A60, UITimerDialog, OnLoadComplete, 24, 0xCE72123F);
 void UITimerDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_141b26bf0();
+    StopEffect();
     m_nMin = 0;
     m_nSec = 0;
     m_bReset = false;
@@ -132,7 +132,7 @@ void UITimerDialog::vfunc_86()
 MS2_REPLACE_METHOD(0x141B26B90, UITimerDialog, vfunc_86, 87, 0x0987DDCB);
 
 // @0x141b26bf0
-void UITimerDialog::FUN_141b26bf0()
+void UITimerDialog::StopEffect()
 {
     if (m_nEffect > 0) {
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
@@ -140,7 +140,7 @@ void UITimerDialog::FUN_141b26bf0()
         m_nEffectRunning = 0;
     }
 }
-MS2_REPLACE_METHOD(0x141B26BF0, UITimerDialog, FUN_141b26bf0, 82, 0x02F74680);
+MS2_REPLACE_METHOD(0x141B26BF0, UITimerDialog, StopEffect, 82, 0x02F74680);
 
 // @0x141b26c50
 bool UITimerDialog::FUN_141b26c50(int& nMin, int& nSec)

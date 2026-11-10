@@ -87,41 +87,41 @@ public:
 class Unk_DmUIMgr { public: void FUN_141adc530(int nUiId); };
 bool FUN_140930b40();
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 UIQuestEventDispatcher* FUN_140bfc4b0();
 void* FUN_140764020();   // C3: was FUN_140764020
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                                       // the quest id
-CStringW FUN_1416e5350(int nQuestId, int nIndex);                           // the description text of a quest
+CStringW GetQuestSummary(int nQuestId, int nIndex);                           // the description text of a quest
 __int64 FUN_140761ba0(int nQuestId, int nReward);                           // the experience reward
 CStringW FUN_140763e10(int nValue);                                         // the text of a mission point
 CStringW FUN_1409404f0(__int64 n);                                          // number with thousands separators
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
 CString FUN_14021a8b0(int n);                                               // int to text
-void FUN_1412751f0(const CStringW& text, int nA, int nB);                   // the warning bar
+void ShowSystemNotice(const CStringW& text, int nA, int nB);                   // the warning bar
 void FUN_140710590(COutPacket& packet);                                     // send
 void CreateItemInfoSlot(const CString& strBindId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind the item to the id
 void DestroyItemInfoSlot(const CString& strBindId);                               // release the bind
-void FUN_141924170(UIDialog* p, int n);
+void SetTweenEnabled(UIDialog* p, int n);
 extern int DAT_143abdf50;                                              // refresh flags: 1 guide bar / point, 2 list, 4 counts
 
 // @0x140bff060
 UIDailyMissionDialog::UIDailyMissionDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_1b0 = 0;
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bffee0));
-    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bfff70));
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIDailyMissionDialog::FUN_140bfff90));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::OnGameStart));
+    ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::OnChangeMyPC));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIDailyMissionDialog::FUN_140bfff90));
 }
 
 // @0x140bff390
 UIDailyMissionDialog::~UIDailyMissionDialog()
 {
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bffee0));
-    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::FUN_140bfff70));
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIDailyMissionDialog::FUN_140bfff90));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::OnGameStart));
+    ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyPC", Delegate<void(NotifyObject*)>(this, &UIDailyMissionDialog::OnChangeMyPC));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIDailyMissionDialog::FUN_140bfff90));
 }
 
 // @0x140bff660
@@ -132,12 +132,12 @@ int UIDailyMissionDialog::vfunc_65()
 {
     if (!FUN_140bffff0())
     {
-        FUN_1412751f0(GetStringCommonByKey(L"s_daily_mission_lack_level_warn"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_daily_mission_lack_level_warn"), 1, 1);
         return 0;
     }
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140bfc4b0()->FUN_141aa87c0(this);
+    FUN_140bfc4b0()->AddListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(this);
     m_1b0 = 0;
     return 1;
@@ -146,7 +146,7 @@ int UIDailyMissionDialog::vfunc_65()
 // @0x140bff7d0
 void UIDailyMissionDialog::vfunc_67()
 {
-    FUN_140bfc4b0()->FUN_141aa8850(this);
+    FUN_140bfc4b0()->RemoveListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(this);
     for (size_t i = 0; i < m_188.GetCount(); i++)
         DestroyItemInfoSlot(m_188[i]);
@@ -162,11 +162,11 @@ void UIDailyMissionDialog::vfunc_72()
     if (DAT_143abdf50 != 0)
     {
         if (DAT_143abdf50 & 1)
-            FUN_140c00500();
+            RefreshLevelGuide();
         if (DAT_143abdf50 & 2)
-            FUN_140c001d0();
+            RefreshRecommendList();
         if (DAT_143abdf50 & 4)
-            FUN_140c00cd0();
+            RefreshCounts();
         DAT_143abdf50 = 0;
     }
 }
@@ -175,9 +175,9 @@ void UIDailyMissionDialog::vfunc_72()
 void UIDailyMissionDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140c009b0();
-    FUN_140c001d0();
-    FUN_140c00500();
+    RefreshGroupTabs();
+    RefreshRecommendList();
+    RefreshLevelGuide();
 }
 
 // @0x140bff990
@@ -203,7 +203,7 @@ int UIDailyMissionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             if (m_1b0 >= 0 && m_1b0 < 6)
             {
                 m_1b0 = nIndex;
-                FUN_140c001d0();
+                RefreshRecommendList();
             }
         }
     }
@@ -222,7 +222,7 @@ void UIDailyMissionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
         return;
     CStringW strType = pArgs->FUN_1422b8f40();
     int nId = pArgs->PopUInt();
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nId);
     if (!spData)
         return;
     if (operator==(strType, "point") != 0)
@@ -231,7 +231,7 @@ void UIDailyMissionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
         if (tip.ApplyTextTooltip(FUN_140763e10(spData->m_complete.m_missionPoint)))
         {
             tip.SetTooltipAlign(1);
-            *pRetVal = tip.FUN_1422bb870();
+            *pRetVal = tip.GetValue();
         }
     }
     else
@@ -240,7 +240,7 @@ void UIDailyMissionDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArg
         if (tip.ApplyTextTooltip(FUN_1409404f0(FUN_140761ba0(nId, 1))))
         {
             tip.SetTooltipAlign(1);
-            *pRetVal = tip.FUN_1422bb870();
+            *pRetVal = tip.GetValue();
         }
     }
 }
@@ -262,7 +262,7 @@ void UIDailyMissionDialog::vfunc_o178_8(void* pQuestPtr)
     case 4:
         DAT_143abdf50 |= 4;
         if (spData->m_338.m_4 == m_1b0)
-            FUN_140c00c10((CQuest*)pQuestPtr);
+            UpdateQuestRow((CQuest*)pQuestPtr);
         break;
     case 5:
         DAT_143abdf50 |= 1;
@@ -272,11 +272,11 @@ void UIDailyMissionDialog::vfunc_o178_8(void* pQuestPtr)
 
 // "NotifyGameStart": open the window once in the lobby.
 // @0x140bffee0
-void UIDailyMissionDialog::FUN_140bffee0(NotifyObject* pNotify)
+void UIDailyMissionDialog::OnGameStart(NotifyObject* pNotify)
 {
     if (WorldService::GetInstance()->HasTutorial())
         return;
-    if (((class GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)CUserMail::GetGFxSceneService())->GetSubSceneId() != 0x620001d)
         return;
     if (!FUN_140bffff0())
         return;
@@ -288,7 +288,7 @@ void UIDailyMissionDialog::FUN_140bffee0(NotifyObject* pNotify)
 
 // "NotifyChangeMyPC": allow the auto open again.
 // @0x140bfff70
-void UIDailyMissionDialog::FUN_140bfff70(NotifyObject* pNotify)
+void UIDailyMissionDialog::OnChangeMyPC(NotifyObject* pNotify)
 {
     m_1a8 = 0;
 }
@@ -308,7 +308,7 @@ void UIDailyMissionDialog::FUN_140bfff90(CInPacket& rPacket)
 // @0x140bffff0
 int UIDailyMissionDialog::FUN_140bffff0()
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x92))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x92))
         return 0;
     Unk_DmActor* pPlayer = static_cast<Unk_DmActor*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -336,9 +336,9 @@ void UIDailyMissionDialog::SendQuest(int nQuestId)
 
 // Fill the recommended list with the quests of the selected group.
 // @0x140c001d0
-void UIDailyMissionDialog::FUN_140c001d0()
+void UIDailyMissionDialog::RefreshRecommendList()
 {
-    if (MS2Ptr<ASScrollingList> spList = FUN_140c02900("m_recommendList"))
+    if (MS2Ptr<ASScrollingList> spList = GetScrollingList("m_recommendList"))
     {
         spList->FUN_1422dd1d0();
         ATL::CAtlArray<MS2Ptr<CQuest>> quests;
@@ -357,7 +357,7 @@ void UIDailyMissionDialog::FUN_140c001d0()
             if (spQuest->GetData()->m_338.m_4 != m_1b0)
                 continue;
             ASObj row(2);
-            FUN_140c01040(row, spQuest.get());
+            FillQuestRow(row, spQuest.get());
             spList->AddItem(row);
         }
         spList->vfunc_24(true);
@@ -366,7 +366,7 @@ void UIDailyMissionDialog::FUN_140c001d0()
 
 // Fill the level guide bar and the mission point gauge.
 // @0x140c00500
-void UIDailyMissionDialog::FUN_140c00500()
+void UIDailyMissionDialog::RefreshLevelGuide()
 {
     if (m_30.IsNull())
         return;
@@ -380,7 +380,7 @@ void UIDailyMissionDialog::FUN_140c00500()
         if (spData->m_conditions.GetCount() > 0)
         {
             ASObj row(2);
-            if (FUN_140c012d0(row, FUN_14074b030(spData.operator->())) != 0)
+            if (FillLevelGuideRow(row, FUN_14074b030(spData.operator->())) != 0)
                 m_30->Invoke("addLevelGuide", row);
         }
     }
@@ -403,12 +403,12 @@ void UIDailyMissionDialog::FUN_140c00500()
 
 // Fill the group tabs.
 // @0x140c009b0
-void UIDailyMissionDialog::FUN_140c009b0()
+void UIDailyMissionDialog::RefreshGroupTabs()
 {
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
         return;
-    if (MS2Ptr<ASButtonBar> spTab = FUN_140c02870("m_groupTab"))
+    if (MS2Ptr<ASButtonBar> spTab = GetButtonBar("m_groupTab"))
     {
         for (size_t i = 0; i < 6; i++)
         {
@@ -417,45 +417,45 @@ void UIDailyMissionDialog::FUN_140c009b0()
             if (nGroup == 2 && Unk_DmActorLevel(pPlayer) < 0x32)
                 strKey = "newbee";
             ASObj row(2);
-            ((class AScript&)(row)).FUN_1407cbb20("label", GetStringCommonByKey(StringFormat(L"s_daily_mission_{0}", strKey)));
-            ((class AScript&)(row)).FUN_1407cb9c0("enabled", FUN_140c02320(nGroup));
+            ((class AScript&)(row)).SetWStringMember("label", GetStringCommonByKey(StringFormat(L"s_daily_mission_{0}", strKey)));
+            ((class AScript&)(row)).SetIntMember("enabled", FUN_140c02320(nGroup));
             spTab.operator->()->AddItem(row);
         }
         spTab.operator->()->SetSelectedIndex(0);
         spTab.operator->()->vfunc_24(true);
     }
-    FUN_140c00cd0();
+    RefreshCounts();
 }
 
 // Update one quest row.
 // @0x140c00c10
-void UIDailyMissionDialog::FUN_140c00c10(CQuest* pQuest)
+void UIDailyMissionDialog::UpdateQuestRow(CQuest* pQuest)
 {
     if (m_30.IsNull())
         return;
     ASObj row(2);
-    FUN_140c01040(row, pQuest);
+    FillQuestRow(row, pQuest);
     m_30->Invoke("updateQuest", row);
 }
 
 // Refresh the clear / satisfied counts and the point gauge.
 // @0x140c00cd0
-void UIDailyMissionDialog::FUN_140c00cd0()
+void UIDailyMissionDialog::RefreshCounts()
 {
     ASArray clear(2);
     for (size_t i = 0; i < 6; i++)
     {
         int nGroup = (int)i;
-        clear.PushInt(FUN_140c01b50(nGroup));
+        clear.PushInt(CountGroupQuests(nGroup));
     }
-    m_30->FUN_140bd2cb0("refreshClearCount", clear);
+    m_30->InvokeWithArray("refreshClearCount", clear);
     ASArray satisfied(2);
     for (size_t i = 0; i < 6; i++)
     {
         int nGroup = (int)i;
         satisfied.PushInt(FUN_140c01d30(nGroup));
     }
-    m_30->FUN_140bd2cb0("refreshSatisfiedCount", satisfied);
+    m_30->InvokeWithArray("refreshSatisfiedCount", satisfied);
     if (MS2Ptr<ASMovieClip> spPoint = GetChild<ASMovieClip>("m_missionPoint"))
     {
         {
@@ -473,7 +473,7 @@ void UIDailyMissionDialog::FUN_140c00cd0()
 
 // Fill the row of a quest.
 // @0x140c01040
-void UIDailyMissionDialog::FUN_140c01040(ASObj& rRow, CQuest* pQuest)
+void UIDailyMissionDialog::FillQuestRow(ASObj& rRow, CQuest* pQuest)
 {
     if (pQuest == 0)
         return;
@@ -481,22 +481,22 @@ void UIDailyMissionDialog::FUN_140c01040(ASObj& rRow, CQuest* pQuest)
     if (pPlayer == 0)
         return;
     CString strIcon = pQuest->GetData()->m_338.m_8;
-    CStringW strDesc = FUN_1416e5350(pQuest->FUN_140bfc580(), 0);
+    CStringW strDesc = GetQuestSummary(pQuest->GetQuestId(), 0);
     strDesc.Replace(L"#5c2b00", L"#000000");
-    rRow.SetMemberUInt("id", pQuest->FUN_140bfc580());
-    rRow.FUN_1407cba60("icon", strIcon);
-    ((class AScript&)(rRow)).FUN_1407cbb20("desc", strDesc);
-    ((class AScript&)(rRow)).FUN_1407cb9c0("satisfied", pQuest->IsComplete());
-    ((class AScript&)(rRow)).FUN_1407cb9c0("completed", pQuest->IsRewarded());
-    rRow.FUN_1409c1180("exp", FUN_140761ba0(pQuest->FUN_140bfc580(), 1));
-    FUN_140c01790(rRow, pQuest->FUN_140bfc580(), 1);
+    rRow.SetMemberUInt("id", pQuest->GetQuestId());
+    rRow.SetStringMember("icon", strIcon);
+    ((class AScript&)(rRow)).SetWStringMember("desc", strDesc);
+    ((class AScript&)(rRow)).SetIntMember("satisfied", pQuest->IsComplete());
+    ((class AScript&)(rRow)).SetIntMember("completed", pQuest->IsRewarded());
+    rRow.FUN_1409c1180("exp", FUN_140761ba0(pQuest->GetQuestId(), 1));
+    BindRewardItem(rRow, pQuest->GetQuestId(), 1);
 }
 
 // Fill the row of a level guide entry; 0 when the quest is not shown.
 // @0x140c012d0
-int UIDailyMissionDialog::FUN_140c012d0(ASObj& rRow, unsigned nQuestId)
+int UIDailyMissionDialog::FillLevelGuideRow(ASObj& rRow, unsigned nQuestId)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (spData.IsNull())
         return 0;
     if (m_30.IsNull())
@@ -522,18 +522,18 @@ int UIDailyMissionDialog::FUN_140c012d0(ASObj& rRow, unsigned nQuestId)
     CStringW strLevel;
     strLevel = FUN_14028dfa0<int>(CStringW(L"s_daily_mission_mission_point"), nLevel);
     rRow.SetMemberUInt("id", FUN_14074b030(spData.operator->()));
-    rRow.FUN_1407cba60("state", strState);
-    ((class AScript&)(rRow)).FUN_1407cb9c0("level", nLevel);
-    ((class AScript&)(rRow)).FUN_1407cbb20("levelStr", strLevel);
-    FUN_140c01790(rRow, FUN_14074b030(spData.operator->()), 0);
+    rRow.SetStringMember("state", strState);
+    ((class AScript&)(rRow)).SetIntMember("level", nLevel);
+    ((class AScript&)(rRow)).SetWStringMember("levelStr", strLevel);
+    BindRewardItem(rRow, FUN_14074b030(spData.operator->()), 0);
     return 1;
 }
 
 // Bind the reward item to the row.
 // @0x140c01790
-void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bName)
+void UIDailyMissionDialog::BindRewardItem(ASObj& rRow, unsigned nQuestId, int bName)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (spData.IsNull())
         return;
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
@@ -560,15 +560,15 @@ void UIDailyMissionDialog::FUN_140c01790(ASObj& rRow, unsigned nQuestId, int bNa
     CString strBind;
     strBind.Format("%s.%d", (LPCSTR)GetTypeName(), m_188.GetCount() + 1);
     CreateItemInfoSlot(strBind, spItem, 0, nFlags, 0x800);
-    rRow.FUN_1407cba60("binding", strBind);
+    rRow.SetStringMember("binding", strBind);
     if (bName != 0)
-        ((class AScript&)(rRow)).FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pReward->m_itemId));
+        ((class AScript&)(rRow)).SetWStringMember("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, pReward->m_itemId));
     m_188.Add(strBind);
 }
 
 // The number of quests of the group.
 // @0x140c01b50
-int UIDailyMissionDialog::FUN_140c01b50(int nGroup)
+int UIDailyMissionDialog::CountGroupQuests(int nGroup)
 {
     ATL::CAtlArray<MS2Ptr<CQuest>> quests;
     ((class CQuestManager*)FUN_140764020())->GetQuestsByStateAndGrade(quests, 2, 0);
@@ -682,7 +682,7 @@ int UIDailyMissionDialog::FUN_140c02320(int nGroup)
 
 // The group tab / list / guide bar child lookups (one COMDAT per wrapper class).
 // @0x140c02870
-MS2Ptr<ASButtonBar> UIDailyMissionDialog::FUN_140c02870(const CString& strName)
+MS2Ptr<ASButtonBar> UIDailyMissionDialog::GetButtonBar(const CString& strName)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return MS2Ptr<ASButtonBar>(0);
@@ -690,7 +690,7 @@ MS2Ptr<ASButtonBar> UIDailyMissionDialog::FUN_140c02870(const CString& strName)
 }
 
 // @0x140c02900
-MS2Ptr<ASScrollingList> UIDailyMissionDialog::FUN_140c02900(const CString& strName)
+MS2Ptr<ASScrollingList> UIDailyMissionDialog::GetScrollingList(const CString& strName)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return MS2Ptr<ASScrollingList>(0);

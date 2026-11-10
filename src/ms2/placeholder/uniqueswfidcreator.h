@@ -25,7 +25,7 @@ public:
     // The id of a movie file: "" (returns 0) for an empty name; the name without ".swf" for a fixed id (bFixed, also
     // recorded) or a name already recorded as fixed; else "<name>_<n>_" with a per-name counter.
     int FUN_1422f6ac0(CString& strId, const CString& strFile, int bFixed);
-    int FUN_1422f6c90(CString strId);                                       // drop an id from m_list10 (0 if the list has others but not it)
+    int RemoveId(CString strId);                                       // drop an id from m_list10 (0 if the list has others but not it)
     // "<name>.<ext>_<n>_" with a per-key counter; the id is also queued (m_listIds). "" (returns 0) for an empty ext.
     int FUN_1422f6d50(CString& strId, CString strName, const CString& strExt);
     int FUN_1422f6ec0(CString strId);                                       // drop a queued id (1 if found)
@@ -33,7 +33,7 @@ public:
 
 private:
     MS2_LAYOUT_FRIEND;
-    ATL::CAtlList<CString> m_list10;                                        // +0x10 ids FUN_1422f6c90 removes
+    ATL::CAtlList<CString> m_list10;                                        // +0x10 ids RemoveId removes
     ATL::CAtlMap<CString, unsigned int, ATL::CStringElementTraits<CString> > m_mapCount;   // +0x40 name -> last counter
     ATL::CAtlList<CString> m_listIds;                                       // +0x88 ids from FUN_1422f6d50
     ATL::CRBMap<CString, unsigned int> m_mapExtCount;                       // +0xb8 "<name>.<ext>" -> last counter

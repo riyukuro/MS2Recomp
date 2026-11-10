@@ -20,13 +20,13 @@ CString FUN_14016a600(const wchar_t* wsz, int nCodePage); // wide -> narrow
 extern Scaleform::GFx::Value DAT_143b0ae18;              // the undefined value returned by failed invokes
 extern CString DAT_143b0ae38;                            // the method FUN_1422bb7e0 calls
 
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);
+Scaleform::GFx::Movie* GetMovie(int nMovieId);
 
 // @0x1422ba6e0
 AScript::AScript(int nMovieId)
     : m_nMovieId(nMovieId)
 {
-    if (Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId))
+    if (Scaleform::GFx::Movie* pMovie = GetMovie(m_nMovieId))
         pMovie->CreateObject(&m_value);
 }
 
@@ -302,28 +302,28 @@ bool AScript::FUN_1422bb7e0(const AScript& obj)
 MS2_REPLACE_METHOD(0x1422BB7E0, AScript, FUN_1422bb7e0, 137, 0x80CEE5CA);
 
 // @0x1422bb870
-Scaleform::GFx::Value& AScript::FUN_1422bb870()
+Scaleform::GFx::Value& AScript::GetValue()
 {
     return m_value;
 }
-MS2_REPLACE_METHOD(0x1422BB870, AScript, FUN_1422bb870, 15, 0x5731F599);
+MS2_REPLACE_METHOD(0x1422BB870, AScript, GetValue, 15, 0x5731F599);
 
 // @0x1422bb890
 Scaleform::GFx::Value& AScript::FUN_1422bb890()
 {
-    return FUN_1422bb870();
+    return GetValue();
 }
 MS2_REPLACE_METHOD(0x1422BB890, AScript, FUN_1422bb890, 24, 0x797F65C6);
 
 // @0x1422bb8b0
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId)
+Scaleform::GFx::Movie* GetMovie(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_14025e7a0()->FindMovie(nMovieId);
+    GFxMovie* pMovie = GetGFxManager()->FindMovie(nMovieId);
     if (pMovie)
         return pMovie->FUN_1422bd0f0();
     return 0;
 }
-MS2_REPLACE(0x1422BB8B0, FUN_1422bb8b0, 57, 0x7765765F);
+MS2_REPLACE(0x1422BB8B0, GetMovie, 57, 0x7765765F);
 
 // @0x1422bb8f0
 Scaleform::GFx::Value AScript::FUN_1422bb8f0(const char* szMethod, ASArgList& args)

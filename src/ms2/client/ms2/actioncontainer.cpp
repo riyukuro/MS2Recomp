@@ -588,3 +588,7 @@ int ReadAction(TiXmlElement* pNode, const char* szName, int* pnType)
 MS2_REPLACE(0x14094A400, ReadAction, 188, 0x0CD24539);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9d360-0x142c9d480 .text$yd
+// Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$addressof@$$CBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@std@@@std@@@std@@YAPEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VPCActionList@@@@@std@@@std@@@0@AEBV10@@Z 0x14094ccb0
+// MS2-PIN: ??$forward@AEBH@std@@YAAEBHAEBH@Z 0x14094d190

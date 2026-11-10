@@ -194,7 +194,7 @@ efd::AsyncResult MS2AnimationService::OnInit()
 // @0x1414a8880
 efd::AsyncResult MS2AnimationService::OnTick()
 {
-    int nReload = GetFileSystem()->FUN_14039a720();
+    int nReload = GetFileSystem()->GetCharacterMask();
     if (nReload != -1)
     {
         switch (nReload)
@@ -362,14 +362,14 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, NiTextKey** ppEntries)
             {
                 if (FUN_1401d1320(spCache.get()))
                 {
-                    spCache.get()->FUN_1401d1160(CString((const char*)kKey));
+                    spCache.get()->SetPath(CString((const char*)kKey));
                     s_nReloading = 1;
                 }
             }
             else
             {
                 spCache.AssignRaw(new CCacheData());
-                spCache.get()->FUN_1401d1160(CString((const char*)kKey));
+                spCache.get()->SetPath(CString((const char*)kKey));
                 s_mapCache.SetAt(kKey, spCache);
             }
         }
@@ -384,7 +384,7 @@ int FUN_1414a90c0(NiString kPath, NiString kAnim, NiTextKey** ppEntries)
         }
         if (pRoot == 0)
         {
-            if (((class Unk_FileSys*)GetFileSystem())->FUN_1403974b0(&kDoc, (const char*)kPath, 0, true, false) != 0)
+            if (((class Unk_FileSys*)GetFileSystem())->LoadXmlFile(&kDoc, (const char*)kPath, 0, true, false) != 0)
             {
                 pRoot = reinterpret_cast<Unk_XmlNode*>(&kDoc)->FirstChild("ms2");
                 s_mapXml.insert(std::make_pair(kPath, kDoc));

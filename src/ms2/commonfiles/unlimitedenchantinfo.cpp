@@ -28,7 +28,7 @@ UnlimitedEnchantInfo::UnlimitedEnchantInfo(int nItemId, int nRarity) : m_nItemId
 }
 
 // @0x1408bba60
-MS2Ptr<UnlimitedEnchantInfo> UnlimitedEnchantInfo::FUN_1408bba60()
+MS2Ptr<UnlimitedEnchantInfo> UnlimitedEnchantInfo::Clone()
 {
     MS2Ptr<UnlimitedEnchantInfo> spCopy(new UnlimitedEnchantInfo(m_nItemId, m_nRarity));
     spCopy->m_nLevel = m_nLevel;
@@ -84,7 +84,7 @@ void UnlimitedEnchantInfo::FUN_1408bbd30(COutputStream& out)
     for (; it != itEnd; ++it)
     {
         out.WriteInt16(static_cast<short>(it->first));
-        it->second->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(out));
+        it->second->Write(reinterpret_cast<Unk_EnchantWrite&>(out));
     }
     unsigned nSecondary = static_cast<const SecondaryMap&>(m_secondary).size();
     out.WriteInt32(nSecondary);
@@ -93,7 +93,7 @@ void UnlimitedEnchantInfo::FUN_1408bbd30(COutputStream& out)
     for (; it2 != it2End; ++it2)
     {
         out.WriteInt16(static_cast<short>(it2->first));
-        it2->second->FUN_140266d20(reinterpret_cast<Unk_EnchantWrite&>(out));
+        it2->second->Write(reinterpret_cast<Unk_EnchantWrite&>(out));
     }
 }
 
@@ -107,7 +107,7 @@ void UnlimitedEnchantInfo::FUN_1408bbef0(CInputStream& in)
     {
         OptionKey key = static_cast<OptionKey>(static_cast<unsigned short>(in.ReadInt16()));
         MS2Ptr<BaseOption> spOption(new BaseOption);
-        spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(in));
+        spOption->Read(reinterpret_cast<Unk_EnchantRead&>(in));
         m_options.insert(std::make_pair(key, spOption));
     }
     m_secondary.clear();
@@ -116,7 +116,7 @@ void UnlimitedEnchantInfo::FUN_1408bbef0(CInputStream& in)
     {
         Unk_SocketSpecialStat key = static_cast<Unk_SocketSpecialStat>(static_cast<unsigned short>(in.ReadInt16()));
         MS2Ptr<BaseOption> spOption(new BaseOption);
-        spOption->FUN_140266d60(reinterpret_cast<Unk_EnchantRead&>(in));
+        spOption->Read(reinterpret_cast<Unk_EnchantRead&>(in));
         m_secondary.insert(std::make_pair(key, spOption));
     }
 }
@@ -143,7 +143,7 @@ MS2Ptr<BaseOption> UnlimitedEnchantInfo::FindOption(unsigned nType)
 }
 
 // @0x1408bc2d0
-UnlimitedEnchantInfo::OptionMap& UnlimitedEnchantInfo::FUN_1408bc2d0()
+UnlimitedEnchantInfo::OptionMap& UnlimitedEnchantInfo::GetOptions()
 {
     return m_options;
 }
@@ -158,7 +158,7 @@ MS2Ptr<BaseOption> UnlimitedEnchantInfo::FindSecondaryOption(unsigned nType)
 }
 
 // @0x1408bc3b0
-UnlimitedEnchantInfo::SecondaryMap& UnlimitedEnchantInfo::FUN_1408bc3b0()
+UnlimitedEnchantInfo::SecondaryMap& UnlimitedEnchantInfo::GetSecondaryOptions()
 {
     return m_secondary;
 }

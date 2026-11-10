@@ -59,16 +59,16 @@ int LoadGameOptionLanguage(struct Unk_LgState*, class TiXmlDocument*);   // C3: 
 void FUN_14125f260(Unk_LgState* pDst, const Unk_LgState* pSrc);
 
 // the locale rows
-CLocaleLanguage* FUN_1401c0da0();
+CLocaleLanguage* GetLocaleLanguage();
 CString FUN_140652030(int nLanguage);                                   // language enum -> code
-CString FUN_1406521f0(int nRegion);                                     // region enum -> code
+CString GetRegionCode(int nRegion);                                     // region enum -> code
 int FUN_140651920(CString strCode);                                     // language code -> enum
 int FUN_140651b00(CString strCode);                                     // region code -> enum
 int FUN_1406516c0();
 extern int DAT_143ab0248;                                               // the client region
 
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // string table text
-void FUN_140d73aa0(CStringW strText, int, void*, CStringW strTitle);   // message box
+void ShowMessageBox(CStringW strText, int, void*, CStringW strTitle);   // message box
 
 struct Unk_LgPtrView { void* m_0; CLocaleLanguageData* m_p; };
 
@@ -127,7 +127,7 @@ int CGameOptionLanguage::vfunc_5(const char* pszName, void* pArg, int nArg)
 // @0x140cfb590
 void CGameOptionLanguage::vfunc_6()
 {
-    LocaleLanguageDataPtr row = FUN_1401c0da0()->GetLocaleData(0);
+    LocaleLanguageDataPtr row = GetLocaleLanguage()->GetLocaleData(0);
     if (FUN_140cfd210(&row) != 0)
     {
         {
@@ -151,7 +151,7 @@ void CGameOptionLanguage::vfunc_6()
             {
                 for (unsigned __int64 i = 0; i < row->m_regions.GetCount(); i++)
                 {
-                    CString strCode = FUN_1406521f0(DAT_143ab0248);
+                    CString strCode = GetRegionCode(DAT_143ab0248);
                     if (row->m_voices.GetAt(i).CompareNoCase((const char*)strCode) == 0)
                     {
                         list->SetSelectedIndex((int)i);
@@ -264,7 +264,7 @@ int CGameOptionLanguage::FUN_140cfbcd0(int nVoice)
 void CGameOptionLanguage::FUN_140cfbf50()
 {
     int nIndex = 0;
-    LocaleLanguageDataPtr row = FUN_1401c0da0()->GetLocaleData(nIndex);
+    LocaleLanguageDataPtr row = GetLocaleLanguage()->GetLocaleData(nIndex);
     if (FUN_140cfd210(&row) != 0)
     {
         {
@@ -276,14 +276,14 @@ void CGameOptionLanguage::FUN_140cfbf50()
                 {
                     ASObj item(2);
                     CString strCode(row->m_languages.GetAt(i));
-                    item.FUN_1407cbb20("label", FUN_140cfc970(CString(strCode)));
+                    item.SetWStringMember("label", FUN_140cfc970(CString(strCode)));
                     item.FUN_140cfd0d0("index", FUN_140651920(CString(strCode)));
                     list->AddItemRow(item);
                 }
                 if (row->m_languages.GetCount() <= 3)
                     list->SetMenuRowCount((unsigned int)row->m_languages.GetCount());
                 if (row->m_languages.GetCount() == 1)
-                    list->FUN_1422c1fe0(0);
+                    list->SetEnabled(0);
             }
         }
         {
@@ -298,12 +298,12 @@ void CGameOptionLanguage::FUN_140cfbf50()
                     if (strRegion.IsEmpty())
                         strRegion = "stage";
                     ASObj item(2);
-                    item.FUN_1407cbb20("label", FUN_140cfca90(CString(strRegion)));
-                    item.FUN_1407cb9c0("index", 0);
+                    item.SetWStringMember("label", FUN_140cfca90(CString(strRegion)));
+                    item.SetIntMember("index", 0);
                     list->AddItemRow(item);
                     list->SetMenuRowCount(1);
                     list->SetSelectedIndex(0);
-                    list->FUN_1422c1fe0(0);
+                    list->SetEnabled(0);
                 }
                 else
                 {
@@ -311,14 +311,14 @@ void CGameOptionLanguage::FUN_140cfbf50()
                     {
                         ASObj item(2);
                         CString strCode(row->m_regions.GetAt(i));
-                        item.FUN_1407cbb20("label", FUN_140cfca90(CString(row->m_regions.GetAt(i))));
+                        item.SetWStringMember("label", FUN_140cfca90(CString(row->m_regions.GetAt(i))));
                         item.FUN_140cfd170("index", FUN_140651b00(CString(strCode)));
                         list->AddItemRow(item);
                     }
                     if (row->m_regions.GetCount() <= 3)
                         list->SetMenuRowCount((unsigned int)row->m_regions.GetCount());
                     if (row->m_regions.GetCount() == 1)
-                        list->FUN_1422c1fe0(0);
+                        list->SetEnabled(0);
                 }
             }
         }
@@ -331,14 +331,14 @@ void CGameOptionLanguage::FUN_140cfbf50()
                 {
                     ASObj item(2);
                     CString strCode(row->m_voices.GetAt(i));
-                    item.FUN_1407cbb20("label", FUN_140cfca00(CString(strCode)));
+                    item.SetWStringMember("label", FUN_140cfca00(CString(strCode)));
                     item.FUN_140cfd0d0("index", FUN_140651920(CString(strCode)));
                     list->AddItemRow(item);
                 }
                 if (row->m_voices.GetCount() <= 3)
                     list->SetMenuRowCount((unsigned int)row->m_voices.GetCount());
                 if (row->m_voices.GetCount() == 1)
-                    list->FUN_1422c1fe0(0);
+                    list->SetEnabled(0);
             }
         }
     }
@@ -382,7 +382,7 @@ void CGameOptionLanguage::vfunc_10()
         }
         if (nOk == 0)
         {
-            FUN_140d73aa0(GetStringCommonByKey(L"s_gameoption_voice_select_warning"), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommonByKey(L"s_gameoption_voice_select_warning"), 0, 0, CStringW(L""));
         }
         else
         {
@@ -391,7 +391,7 @@ void CGameOptionLanguage::vfunc_10()
         }
     }
     if (bRestart)
-        FUN_140d73aa0(GetStringCommonByKey(L"s_gameoption_voice_select_restart"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_gameoption_voice_select_restart"), 0, 0, CStringW(L""));
     FUN_14125f260(TSingleton<CGameOption>::GetInstance()->FUN_140cfd280(), &m_state);
 }
 MS2_REPLACE_METHOD(0x140cfcb20, CGameOptionLanguage, vfunc_10, 726, 0xD92A6CE6);

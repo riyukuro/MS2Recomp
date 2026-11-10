@@ -28,10 +28,10 @@ public:
     void FUN_140fc0b60(bool bFlag);                             // 0x140fc0b60 remember the flag, push "foldDialog"
     void FUN_140fc1380(const Scaleform::GFx::FunctionHandler::Params& params);   // an action button was clicked
     void FUN_140fc1440(const Scaleform::GFx::FunctionHandler::Params& params);   // the fold button was clicked
-    void FUN_140fc1560(int nIndex, const CString& strIcon, const CStringW& strTooltip);   // icon + tooltip of one action button
+    void SetActionButton(int nIndex, const CString& strIcon, const CStringW& strTooltip);   // icon + tooltip of one action button
     void FUN_140fc1710();                                       // next camera
-    void FUN_140fc17d0();                                       // reset the camera
-    void FUN_140fc1850(int nEmotion);                           // play an emotion on the own player
+    void ResetCamera();                                       // reset the camera
+    void PlayEmotion(int nEmotion);                           // play an emotion on the own player
 
 
 private:

@@ -378,13 +378,13 @@ class StanceTable;
 bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
 int Parse_140219400(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
 int Parse_140218c20(class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
-SAType FUN_14081dd80(const CString& str);
+SAType FindSpecialAbilityByName(const CString& str);
 Unk_SkillMasteryType FUN_14021c400(const CString& str);
 // Per SA type flags (0x20 bytes each); +8 = the type may be set by an additional effect.
 struct Unk_SATypeInfo { void* m_0; int m_bAllowAdditional; int m_c; void* m_10; void* m_18; };
 struct SpecialAbilityInfo;
 extern std::vector<SpecialAbilityInfo> DAT_143ab1a40;   // skilltieroptionmanager.cpp (specialability.h's SAType clashes with ours)
-CString FUN_14016a5c0(const char* psz, int nCodePage);                     // multibyte copy
+CString ToCString(const char* psz, int nCodePage);                     // multibyte copy
 bool FUN_14028d470(float fValue, float fTolerance);                          // commonutil: nearly equal
 extern int DAT_1439f4840;                                                   // the default code page
 
@@ -392,11 +392,11 @@ extern int DAT_1439f4840;                                                   // t
 inline CString FUN_140188f50(const char* psz, int nCodePage)
 {
     int nCP = nCodePage == 0 ? DAT_1439f4840 : nCodePage;
-    return FUN_14016a5c0(psz, nCP);
+    return ToCString(psz, nCP);
 }
 
 // @0x140186320
-inline Unk_AdditionalFlags* FUN_140186320()
+inline Unk_AdditionalFlags* GetStanceTable()
 {
     return reinterpret_cast<Unk_AdditionalFlags*>(TSingleton<StanceTable>::s_instance);
 }
@@ -494,7 +494,7 @@ template <> inline int XmlValueByName(TiXmlElement* pElem, const char* pszName, 
     int nRet = XmlGetAttr((class TiXmlElement*)(pElem), pszName, str);
     if (nRet != 0)
         return nRet;
-    eOut = FUN_14081dd80(str);
+    eOut = FindSpecialAbilityByName(str);
     return nRet;
 }
 
@@ -717,9 +717,9 @@ bool AdditionalData::Load(TiXmlElement* pElem)
             continue;
         ReadLevel(pLevel);
     }
-    if (FUN_140186320()->HasStance(m_nID))
+    if (GetStanceTable()->HasStance(m_nID))
         m_b48 = true;
-    if (FUN_140186320()->HasHitCountStance(m_nID))
+    if (GetStanceTable()->HasHitCountStance(m_nID))
         m_b49 = true;
     if (m_vLevel.empty())
         return false;
@@ -1027,9 +1027,9 @@ bool AdditionalLevelData::IsDifferent(const AdditionalLevelData& o)
     if (m_arrCompareStat.GetCount() != o.m_arrCompareStat.GetCount()) return true;
     for (size_t i = 0; i < m_arrCompareStat.GetCount(); i++)
     {
-        if (m_arrCompareStat[i].FUN_1407e5e00(o.m_arrCompareStat[i])) return true;
+        if (m_arrCompareStat[i].IsDifferent(o.m_arrCompareStat[i])) return true;
     }
-    if (m_overlapCondition.FUN_1407e5fe0(o.m_overlapCondition)) return true;
+    if (m_overlapCondition.IsDifferent(o.m_overlapCondition)) return true;
     if (m_nIgnoreOwnerEvent != o.m_nIgnoreOwnerEvent) return true;
     if (!IsSameArray(m_arrRequireStates, o.m_arrRequireStates)) return true;
     if (!IsSameArray(m_arrRequireSubStates, o.m_arrRequireSubStates)) return true;
@@ -1626,7 +1626,7 @@ void AdditionalLevelData::LoadCondition(TiXmlElement* pElem)
         for (TiXmlElement* p = ((class TiXmlElement*)((class Unk_XmlNode*)(pOwner))->FirstChild("compareStat")); p; p = ((class TiXmlElement*)((class Unk_XmlNode*)(p))->NextSibling("compareStat")))
         {
             Unk_CompareStat stat;
-            if (stat.FUN_1407e5e70(p) == 0)
+            if (stat.Load(p) == 0)
                 return;
             m_arrCompareStat.Add(stat);
         }
@@ -1932,7 +1932,7 @@ inline bool AdditionalLevelData::SpecialEffectProperty::IsDifferent(const Specia
 {
     if (m_eType != o.m_eType) return true;
     if (m_fProbability != o.m_fProbability) return true;
-    if (m_xml.get()->FUN_14092c370(o.m_xml.get())) return true;
+    if (m_xml.get()->IsDifferent(o.m_xml.get())) return true;
     if (m_strValues != o.m_strValues) return true;
     if (m_strActivateMsg != o.m_strActivateMsg) return true;
     return false;
@@ -1954,8 +1954,8 @@ inline void AdditionalLevelData::SpecialEffectProperty::Parse()
         return;
     if (m_strValues.IsEmpty())
         return;
-    m_xml->FUN_14092c590();
-    m_xml->FUN_14092c400(m_strValues);
+    m_xml->ClearValues();
+    m_xml->ParseValues(m_strValues);
 }
 
 // @0x140192d70
@@ -1969,7 +1969,7 @@ inline bool AdditionalLevelData::SpreadProperty::IsDifferent(const SpreadPropert
 {
     if (m_eType != o.m_eType) return true;
     if (m_nCount != o.m_nCount) return true;
-    if (m_rangeProperty.FUN_140800920(o.m_rangeProperty)) return true;
+    if (m_rangeProperty.IsDifferent(o.m_rangeProperty)) return true;
     return false;
 }
 

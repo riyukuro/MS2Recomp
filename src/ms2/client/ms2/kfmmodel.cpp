@@ -147,7 +147,7 @@ bool FUN_1401c0090(const CString& a, const CString& b);
 bool Unk_IsFinite(const efd::Point3& p);   void FUN_140a38a50(egf::Entity* e, unsigned id, const void* v);
 void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 int FUN_140998250(egf::Entity* e, unsigned id, efd::AssetID* v);
-void FUN_140de8bd0(egf::Entity* e, unsigned id, efd::AssetID* v);
+void SetAssetIdProperty(egf::Entity* e, unsigned id, efd::AssetID* v);
 egf::Entity* FUN_1408a9090(const void* sp);   egf::Entity* FUN_1408a9280(const void* sp);
 bool FUN_1408b70b0(const void* sp, int n);   bool FUN_140965490(const void* sp, int n);
    void FUN_1401cd100(void* dst, int n);
@@ -166,7 +166,7 @@ public:
     void FUN_14168a540(int);
     void Unlock();
     void SetEntityCollisionGroup(egf::Entity* pEntity, unsigned short nGroup, const NxGroupsMask* pMask, int bRefresh);
-    bool FUN_141689a10(egf::Entity* pEntity);
+    bool HasPhysicsProps(egf::Entity* pEntity);
 };
 class CPonyTailPhysXHelper   // C3: member view for the former free stand-ins
 {
@@ -332,7 +332,7 @@ int CKfmModel::vfunc_4(CString strPath)
     m_unk_f0.operator=((NiAVObject*)0);
     m_nState = 0;
     m_spNode.operator=((NiNode*)0);
-    FUN_140de8bd0(m_spEntity.operator->(), 0x12383cea, &kNew);
+    SetAssetIdProperty(m_spEntity.operator->(), 0x12383cea, &kNew);
     bool bFlag = false;
     SetCachedBoolProperty((class Unk_CachedEntity*)(m_spEntity.operator->()), 0xa0b6b179, bFlag);
     if (TSingleton<EntityWorldManager>::GetInstance()->FindEntity(GetEntityID()) != 0)
@@ -445,7 +445,7 @@ int CKfmModel::vfunc_8() { return 1; }
 // @0x14143e1b0
 int CKfmModel::vfunc_9()
 {
-    if (!((class CPhysXHelper*)GetPhysXHelper())->FUN_141689a10(m_spEntity.operator egf::Entity*()))
+    if (!((class CPhysXHelper*)GetPhysXHelper())->HasPhysicsProps(m_spEntity.operator egf::Entity*()))
         return m_nState;
     return m_nState != 0 && m_bPhysicsLoaded != 0;
 }
@@ -898,7 +898,7 @@ void CKfmModel::TextKeyEvent(NiActorManager*, NiActorManager::SequenceID, const 
         void* pActor = efd::DynamicCast<PCBase, GameObject>(static_cast<GameObject*>(GetOwnerObject(this)));
         NoticeMessage kReq;
         kReq.m_strName = strKey.Right(strKey.GetLength() - 7);
-        kReq.m_nObject = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd1a10((class Unk_WsC_GameObj*)(pActor));
+        kReq.m_nObject = ((class WorldService*)(void*)(WorldService::GetInstance()))->GetObjectKind((class Unk_WsC_GameObj*)(pActor));
         kReq.m_spNode.operator=((NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (NiObject*)vfunc_14()));
         if (pActor != 0)
             kReq.SetActor(((GameObject*)pActor)->GetObjectId());

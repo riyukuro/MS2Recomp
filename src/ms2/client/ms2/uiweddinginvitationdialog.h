@@ -29,7 +29,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x140fe58e0 close: forget the guests
 
     void FUN_140fe5f20(const std::vector<GuestPtr>& guests);    // 0x140fe5f20 take the guests, "setReceiver"
-    size_t FUN_140fe60a0();                                     // 0x140fe60a0 number of guests
+    size_t GetGuestCount();                                     // 0x140fe60a0 number of guests
     bool FUN_140fe60d0(int nResult, const CMsgBoxData& box);    // 0x140fe60d0 send confirmed
 
 private:

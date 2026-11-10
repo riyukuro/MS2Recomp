@@ -24,12 +24,12 @@ public:
 TiXmlElement* FUN_140345b40(TiXmlDocument* pDoc);   // C3: dungeonroomshutdowncontext.cpp's definition (0x140345b40), the first child element
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);                     // integer attribute
 int FUN_1406516b0();                                                      // current language id
 CString FUN_1406522f0(int nLanguage);                                     // language id -> file name suffix
-CString FUN_14016a5c0(const char* psz, int nFlags);                       // path conversion
+CString ToCString(const char* psz, int nFlags);                       // path conversion
 void XmlSetAttr(class TiXmlElement *, char const *, class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const &);
 void XmlSetAttr(class TiXmlElement*, char const*, int);   // C3: was FUN_140873ca0
 
@@ -138,7 +138,7 @@ int CSoundDataTable::Load()
 {
     TiXmlDocument doc;
     const CString& strPath = GetPath();
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"failed to read {0}", strPath);
         return 0;
@@ -202,7 +202,7 @@ int CSoundDataTable::Save()
         ((void*)((class TiXmlNode*)(void*)(DocRootElement(&doc)))->InsertEndChild(*(class TiXmlNode const*)(&triggerVoiceSound)));
     }
 
-    CString strPath = FUN_14016a5c0(GetPath(), 0);
+    CString strPath = ToCString(GetPath(), 0);
     if (!reinterpret_cast<TiXmlDocument*>(&doc)->SaveFile(strPath))
     {
         MS2_ASSERT_AT(0x9f, 0);
@@ -223,7 +223,7 @@ void CSoundDataTable::SetLanguage(int nLanguage)
     CString strFile;
     strFile.Format("soundDataTable_%s.xml", (const char*)FUN_1406522f0(nLanguage));
     CString strDir("Table");
-    m_strPath = FUN_14071a5b0(strDir, strFile);
+    m_strPath = GetXmlPath(strDir, strFile);
 }
 
 // @0x140818460

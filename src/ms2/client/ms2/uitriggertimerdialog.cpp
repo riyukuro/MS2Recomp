@@ -36,7 +36,7 @@ class ASGameEntity : public ASDisplayObject { public: virtual void vfunc_2(int, 
 
 // The client configuration singleton; the low-time effect name is the CString at +0x2f0 (as UITimerDialog's).
 struct Unk_TriggerTimerCfg { char m_pad_00[0x2f0]; CString m_strEffect; };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 
 // @0x141b330c0
@@ -48,7 +48,7 @@ UITriggerTimerDialog::UITriggerTimerDialog()
     m_nEffect = 0;
     m_nOffsetY = 0;
     m_nAlign = 1;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x141b33180
@@ -89,7 +89,7 @@ void UITriggerTimerDialog::vfunc_72()
         if (m_nEffectRunning == 0 && nMin == 0 && nSec <= 10)
         {
             NoticeMessage kTarget;   // C3: was Unk_EffectTarget
-            ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_TriggerTimerCfg*)FUN_1401d31f0())->m_strEffect;
+            ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_TriggerTimerCfg*)GetCommonResource())->m_strEffect;
             ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
             m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
             m_nEffectRunning = 1;
@@ -128,20 +128,20 @@ int UITriggerTimerDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 MS2_REPLACE_METHOD(0x141B33480, UITriggerTimerDialog, vfunc_28, 67, 0xFD047DC9);
 
 // @0x141b334d0
-void UITriggerTimerDialog::FUN_141b334d0(int nOffsetY)
+void UITriggerTimerDialog::SetOffsetY(int nOffsetY)
 {
     m_nOffsetY = nOffsetY;
     vfunc_43();
 }
-MS2_REPLACE_METHOD(0x141B334D0, UITriggerTimerDialog, FUN_141b334d0, 52, 0xAD6E7DF7);
+MS2_REPLACE_METHOD(0x141B334D0, UITriggerTimerDialog, SetOffsetY, 52, 0xAD6E7DF7);
 
 // @0x141b33510
-void UITriggerTimerDialog::FUN_141b33510(int nAlign)
+void UITriggerTimerDialog::SetAlign(int nAlign)
 {
     m_nAlign = nAlign;
     vfunc_43();
 }
-MS2_REPLACE_METHOD(0x141B33510, UITriggerTimerDialog, FUN_141b33510, 52, 0x5ACC961B);
+MS2_REPLACE_METHOD(0x141B33510, UITriggerTimerDialog, SetAlign, 52, 0x5ACC961B);
 
 // @0x141b33550
 void UITriggerTimerDialog::vfunc_43()

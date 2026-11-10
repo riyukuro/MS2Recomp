@@ -69,7 +69,7 @@ template <> MS2Ptr<ASTextField> UISwfEntity::GetChild<ASTextField>(const CString
 
 // ---- callees (instances in other units; declared with their real argument lists) ------------------------------------
 class Unk_SingletonObj* FUN_140939a10();   // C3: was FUN_140939a10
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_PcBangWorld { public: PCBase* FUN_141bd0cc0(); };     // the world service: the local player
 class WorldService   // C3: member view for the former free stand-ins
@@ -80,7 +80,7 @@ public:
 };
 int GetServerTick();   // C3: was GetServerTick
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-int FUN_141275a10(CItem* pItem);                                // the usable state (1 locked, 2 disabled, 3 condition)
+int GetItemUsableState(CItem* pItem);                                // the usable state (1 locked, 2 disabled, 3 condition)
 void FUN_140710590(COutPacket& packet);                         // send
 void ReadBits(Unk_PartyBits& bits, CInputStream& in);           // 0x14031c1f0 (bitset.inl stream helper)
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140513200
@@ -89,7 +89,7 @@ template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);  
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 template <class A> CStringW BlockFormat(int nId, const A& a);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // the localized text of a key
-void FUN_1412751f0(const CStringW& strText, int nA, int nB);    // system chat notice
+void ShowSystemNotice(const CStringW& strText, int nA, int nB);    // system chat notice
 int FUN_141276180(const CString& strSound, const CString& strExtra);   // play a UI sound
 void FUN_140d73bc0(int nStringId, int nType, void* pListener, CStringW strTag);   // pop a system message
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStringId, void* pListener, CStringW strTag);
@@ -125,12 +125,12 @@ UIPcBangDialog::UIPcBangDialog()
     : m_nState(0), m_nGrade(0), m_bGiftOrderDirty(0), m_nReceivable(0), m_playTimeTimer(30000),
       m_receivableTimer(10000), m_banner(3)
 {
-    FUN_141924170(1);
-    FUN_141925e70(3, 1);
+    SetTweenEnabled(1);
+    SetFlag(3, 1);
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnGameStart));
     ((class NotifySystem*)FUN_140939a10())->RegisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnChangeMyLevel));
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xa5, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnPacket));
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnResetBonus));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0xa5, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnPacket));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnResetBonus));
 }
 
 // @0x1413230d0
@@ -138,8 +138,8 @@ UIPcBangDialog::~UIPcBangDialog()
 {
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnGameStart));
     ((class NotifySystem*)FUN_140939a10())->UnregisterNotify(L"NotifyChangeMyLevel", Delegate<void(NotifyObject*)>(this, &UIPcBangDialog::OnChangeMyLevel));
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xa5, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnPacket));
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnResetBonus));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0xa5, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnPacket));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPcBangDialog::OnResetBonus));
 }
 
 // @0x141323490
@@ -205,7 +205,7 @@ void UIPcBangDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             MS2Ptr<CItem> spWorn = static_cast<MyPC*>(pPlayer)->FUN_14152e2f0(spItem);
             ASTooltip tip(((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0()), 4, 2);
             if (tip.FUN_1409e13a0(spWorn.get(), spItem.get()) != 0)
-                *pRetVal = tip.FUN_1422bb870();
+                *pRetVal = tip.GetValue();
         }
     }
     else if ((strType == "playGift"))
@@ -284,7 +284,7 @@ MS2_REPLACE_METHOD(0x141323F40, UIPcBangDialog, OnPacket, 188, 0xF2997A0E);
 void UIPcBangDialog::OnPacketInfo(CInPacket& packet)
 {
     ResetInfo();
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3c))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x3c))
         return;
     m_nGrade = packet.ReadUInt8();
     m_nStartTime = packet.ReadInt32();
@@ -383,7 +383,7 @@ MS2_REPLACE_METHOD(0x141324B40, UIPcBangDialog, OnPacketNotice, 192, 0xCF468095)
 // @0x141324c10
 void UIPcBangDialog::OnResetBonus(CInPacket& packet)
 {
-    FUN_1412751f0(GetStringCommonByKey(L"s_pcbang_msg_reset_bonus"), 1, 1);
+    ShowSystemNotice(GetStringCommonByKey(L"s_pcbang_msg_reset_bonus"), 1, 1);
     if (FUN_141924630())
     {
         COutPacket packet(static_cast<int>(SendOp::PcBangBonus), 0);
@@ -503,7 +503,7 @@ void UIPcBangDialog::UpdateRows()
         }
         m_rows[i]->vfunc_3(1);
         MS2Ptr<PlayBonusItemGift> spBonus = m_playBonus[i];
-        const Scaleform::GFx::Value& row = m_rows[i]->FUN_1422bb870();
+        const Scaleform::GFx::Value& row = m_rows[i]->GetValue();
         FUN_140d00360(row, "itemSlot", spBonus->m_itemId, spBonus->vfunc_o18_1(), spBonus->m_count);
         SetChildText(row, "itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spBonus->m_itemId));
         SetChildText(row, "reqPlayTime", BlockFormat<unsigned>(0x97c, spBonus->GetMinutes()));
@@ -523,7 +523,7 @@ void UIPcBangDialog::UpdateProgress()
         if (i >= m_playBonus.GetCount())
             continue;
         MS2Ptr<PlayBonusItemGift> spBonus = m_playBonus[i];
-        const Scaleform::GFx::Value& row = m_rows[i]->FUN_1422bb870();
+        const Scaleform::GFx::Value& row = m_rows[i]->GetValue();
         bool bReached = nPlayTime >= spBonus->m_requiredTime;
         FUN_140cffa50(row, "bgColor", bReached ? "black" : "white");
         bool bEnable;
@@ -554,17 +554,17 @@ void UIPcBangDialog::RefreshGiftList()
         {
             ASObj obj(2);
             obj.SetMemberUInt("id", spGift->m_giftId);
-            ((class AScript&)(obj)).FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spGift->m_itemId));
+            ((class AScript&)(obj)).SetWStringMember("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spGift->m_itemId));
             obj.FUN_1409adc90("itemGrade", spGift->vfunc_o18_1());
-            obj.FUN_1407cba60("iconPath", spData->GetIconPath());
-            ((class AScript&)(obj)).FUN_1407cb9c0("itemPcBang", spItem->FUN_140525ca0());
-            int nState = FUN_141275a10(spItem.get());
+            obj.SetStringMember("iconPath", spData->GetIconPath());
+            ((class AScript&)(obj)).SetIntMember("itemPcBang", spItem->IsPCBangItem());
+            int nState = GetItemUsableState(spItem.get());
             if (nState == 2)
-                ((class AScript&)(obj)).FUN_1407cb9c0("disable", 1);
+                ((class AScript&)(obj)).SetIntMember("disable", 1);
             else if (nState == 1)
-                ((class AScript&)(obj)).FUN_1407cb9c0("itemLock", 1);
+                ((class AScript&)(obj)).SetIntMember("itemLock", 1);
             else if (nState == 3)
-                ((class AScript&)(obj)).FUN_1407cb9c0("itemConditionLock", 1);
+                ((class AScript&)(obj)).SetIntMember("itemConditionLock", 1);
             ((class ASCoreList*)(m_spGiftList))->AddItem(obj);
         }
     }

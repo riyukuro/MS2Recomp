@@ -14,7 +14,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
+Scaleform::GFx::Movie* GetMovie(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
 
 // @0x1422c8390
 ASFunctionHandlerCtx::ASFunctionHandlerCtx(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb)
@@ -33,7 +33,7 @@ ASFunction::ASFunction(const Delegate<void(const Scaleform::GFx::FunctionHandler
     : AScript(nMovieId)
 {
     m_value.SetNull();
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(m_nMovieId);
     if (pMovie) {
         Scaleform::Ptr<Scaleform::GFx::FunctionHandler> spHandler = *new ASFunctionHandlerCtx(cb);
         m_spHandler = spHandler;

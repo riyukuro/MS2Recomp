@@ -31,16 +31,16 @@ public:
     virtual void vfunc_67();                                         // 67 0x141ab8e70
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);        // IMessageListener 0 0x141ab8ec0 the confirm box
 
-    void FUN_141ab9890();                                            // 0x141ab9890 forget the target
+    void ClearTarget();                                            // 0x141ab9890 forget the target
     void FUN_141ab9a10(__int64 nPosterId, int nBannerId, const CString& strUrl, const CStringW& strTarget);   // 0x141ab9a10 wall poster
-    void FUN_141ab9aa0(__int64 nCharacterId, const CStringW& strTarget);                                       // 0x141ab9aa0 character
-    void FUN_141ab9b10(const CStringW& strTarget, const CStringW& strChat);                                    // 0x141ab9b10 chat line
+    void SetCharacterTarget(__int64 nCharacterId, const CStringW& strTarget);                                       // 0x141ab9aa0 character
+    void SetChatTarget(const CStringW& strTarget, const CStringW& strChat);                                    // 0x141ab9b10 chat line
     void FUN_141ab9b80(Unk_MeratProductKey key, __int64 nItemId, CStringW strItem, CStringW strTarget, int nFlag);
                                                                      // 0x141ab9b80 design item
     void FUN_141ab9c50(__int64 nPageId, const CStringW& strTarget, int nArg1, int nArg2);                      // 0x141ab9c50 real estate
-    void FUN_141ab9ce0(CStringW strTarget, CStringW strPet);         // 0x141ab9ce0 pet
-    bool FUN_141ab9d70(CString strMethod, unsigned int nFlags, CStringW strText);   // 0x141ab9d70 send packet 0x52
-    void FUN_141aba110(CString strMethod, unsigned int nFlags);      // 0x141aba110 block the reported target
+    void SetPetTarget(CStringW strTarget, CStringW strPet);         // 0x141ab9ce0 pet
+    bool SendReport(CString strMethod, unsigned int nFlags, CStringW strText);   // 0x141ab9d70 send packet 0x52
+    void BlockReportedTarget(CString strMethod, unsigned int nFlags);      // 0x141aba110 block the reported target
     bool FUN_141aba4b0(const CString& strMethod);                    // 0x141aba4b0 target name length is valid
 
 private:

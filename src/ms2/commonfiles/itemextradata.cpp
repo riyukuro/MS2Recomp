@@ -35,7 +35,7 @@ template<> EquipColorInfo* Unk_SocketRef<EquipColorInfo>::Create(void*) { return
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 int FUN_14059d150(float* p);
 void FUN_140159b70(long hr);                                    // ATL throw
-float FUN_14029dd40(float f);                                   // fabs
+float Abs(float f);                                   // fabs
 extern float DAT_1439f4838;                                     // 0.01f: FUN_14059bfe0's tolerance (a .data global in the exe)
 extern float DAT_1439f483c;                                     // 0.01f: FUN_14059c020's tolerance
 CStringW GetStringCommon(int nId, void* a, void* b, int nFlag);   // string table text with two arguments
@@ -46,7 +46,7 @@ static int FUN_14059d190(Vector3* p);
 // ---- the float helpers of the unit ----
 
 // @0x14059d930
-float FUN_14059d930(float f) { return FUN_14029dd40(f); }
+float FUN_14059d930(float f) { return Abs(f); }
 
 // @0x14059bfe0
 static int FUN_14059bfe0(float a, float b)
@@ -167,7 +167,7 @@ void CItemExtraData::vfunc_4(CItemData* pData)
     if (pData->FUN_14053e370())
     {
         m_bMulti = true;
-        AllocColors(pData->FUN_14053e3c0());
+        AllocColors(pData->GetMultiColorCount());
     }
     InitColorsFromPalette(pData);
     m_nPick = -1;
@@ -282,7 +282,7 @@ MS2_REPLACE_METHOD(0x140599830, CItemExtraData, HasSameKindAndRgb, 300, 0x11708C
 // @0x140599970
 int CItemExtraData::FUN_140599970(const CItemExtraData* pOther)
 {
-    if (FUN_14059d130() != pOther->FUN_14059d130())
+    if (GetKind() != pOther->GetKind())
         return 0;
     int* pOtherRgb = pOther->GetSlotColor(0)->m_aRgb;
     for (unsigned i = 0; i < 3; i++)
@@ -300,7 +300,7 @@ void CItemExtraData::InitColorsFromPalette(CItemData* pData)
 {
     if (pData == 0 || pData->FUN_14053e260() == 0)
         return;
-    for (unsigned i = 0; i < (unsigned)pData->FUN_14053ec70()->FUN_140547330(); i++)
+    for (unsigned i = 0; i < (unsigned)pData->FUN_14053ec70()->GetIdCount(); i++)
     {
         MS2Ptr<ItemColorEx> spColor = TSingleton<CItemDataTable>::GetInstance()->GetPaletteColorOrRandom(pData->FUN_14053e260(), pData->FUN_14053e2b0(i));
         if (spColor.get() != 0)
@@ -432,11 +432,11 @@ bool CItemExtraData::AdvanceCycle()
 MS2_REPLACE_METHOD(0x14059A350, CItemExtraData, AdvanceCycle, 156, 0x2C345355);
 
 // @0x14059d130
-int CItemExtraData::FUN_14059d130() const
+int CItemExtraData::GetKind() const
 {
     return m_nKind;
 }
-MS2_REPLACE_METHOD(0x14059D130, CItemExtraData, FUN_14059d130, 14, 0xD26D6807);
+MS2_REPLACE_METHOD(0x14059D130, CItemExtraData, GetKind, 14, 0xD26D6807);
 
 // @0x14059d140
 int CItemExtraData::FUN_14059d140() const
@@ -478,17 +478,17 @@ void CDecalExtraData::vfunc_4(CItemData* pData)
         m_f5c = FUN_14059d120(pDecal);
         m_f64 = FUN_14059d0f0(pDecal);
         m_f60 = FUN_14059d100(pDecal);
-        if (!pDecal->FUN_1401e41c0()->empty())
+        if (!pDecal->GetCustoms()->empty())
         {
-            int nCount = (int)pDecal->FUN_1401e41c0()->size();
+            int nCount = (int)pDecal->GetCustoms()->size();
             int r = rand() % nCount;
             m_nPick = r;
-            MS2Ptr<ItemCustom>& spCustom = (*pDecal->FUN_1401e41c0())[r];
+            MS2Ptr<ItemCustom>& spCustom = (*pDecal->GetCustoms())[r];
             m_f58 = spCustom->unknown18.x;
             m_f5c = spCustom->unknown18.y;
             m_f64 = spCustom->unknown24.z;
         }
-        if (pData->GetModelOrEmpty()->FUN_14054b3d0() > 0)
+        if (pData->GetModelOrEmpty()->GetGroupCount() > 0)
             m_f60 = pData->GetModelOrEmpty()->GetGroup(0)->FUN_1405450f0(0);
     }
 }
@@ -589,14 +589,14 @@ MS2_REPLACE_METHOD(0x14059AA20, CHairExtraData, ClampScales, 111, 0x557560E6);
 void CHairExtraData::vfunc_4(CItemData* pData)
 {
     CItemExtraData::vfunc_4(pData);
-    if (pData->GetModelOrEmpty()->FUN_14054b3d0() == 0)
+    if (pData->GetModelOrEmpty()->GetGroupCount() == 0)
         return;
     const ModelGroup* pGroup = pData->GetModelOrEmpty()->GetGroup(0);
     int nPick = -1;
     int nSlot = 0;
-    for (size_t i = 0; i < pGroup->FUN_1405450c0() && nSlot < 2; i++)
+    for (size_t i = 0; i < pGroup->GetPartCount() && nSlot < 2; i++)
     {
-        const ModelPart* pPart = pGroup->FUN_140544fe0(i);
+        const ModelPart* pPart = pGroup->GetPart(i);
         if (pPart->pony != 0 && !pPart->customs.empty())
         {
             size_t nCount = pPart->customs.size();
@@ -610,7 +610,7 @@ void CHairExtraData::vfunc_4(CItemData* pData)
         }
     }
     for (int i = 0; i < 2; i++)
-        m_fScale[i] = pGroup->FUN_140544f20(i)->FUN_140544c20();
+        m_fScale[i] = pGroup->FUN_140544f20(i)->GetRandomValue();
     ClampScales();
     m_bUseScale = 1;
     m_bUsePt2 = 1;
@@ -735,14 +735,14 @@ CCapExtraData::CCapExtraData()
 void CCapExtraData::vfunc_4(CItemData* pData)
 {
     CItemExtraData::vfunc_4(pData);
-    if (pData->GetModelOrEmpty()->FUN_14054b3d0() == 0)
+    if (pData->GetModelOrEmpty()->GetGroupCount() == 0)
         return;
     const ModelGroup* pGroup = pData->GetModelOrEmpty()->GetGroup(0);
     for (unsigned int i = 0; i < 1; i++)
     {
-        if (i >= pGroup->FUN_1405450c0())
+        if (i >= pGroup->GetPartCount())
             continue;
-        const ModelPart* pPart = pGroup->FUN_140544fe0(i);
+        const ModelPart* pPart = pGroup->GetPart(i);
         if (!pPart->customs.empty())
         {
             int nIdx = rand() % (int)pPart->customs.size();
@@ -757,7 +757,7 @@ void CCapExtraData::vfunc_4(CItemData* pData)
             m_aPt3[i] = *(const Vector3*)&pPart->points[nIdx];
         }
     }
-    m_f58 = pGroup->FUN_140544f20(0)->FUN_140544c20();
+    m_f58 = pGroup->FUN_140544f20(0)->GetRandomValue();
 }
 MS2_REPLACE_METHOD(0x14059B580, CCapExtraData, vfunc_4, 558, 0x209EDBB1);
 

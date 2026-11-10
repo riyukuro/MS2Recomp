@@ -1,4 +1,4 @@
-// Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The deliberate-crash test: FUN_140cca840(n) triggers one of
+// Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). The deliberate-crash test: TriggerCrash(n) triggers one of
 // 14 kinds of failure (null write, terminate, pure virtual call, stack overflow, SEH / C++ / MFC exceptions) so the crash
 // reporter can be exercised. Name assumed (the exe has no __FILE__ for this unit); Crash::CBase / CDerived are RTTI names.
 // MS2-UNIT: ?\crash.cpp
@@ -35,10 +35,10 @@ public:
 };
 }
 
-void* FUN_140aae430();
+void* GetMS2();
 
 // @0x140cca840
-void FUN_140cca840(int nType);
+void TriggerCrash(int nType);
 
 // @0x140cca9d0
 int FUN_140cca9d0()
@@ -85,7 +85,7 @@ int FUN_140ccaae0(const char* pszFormat, ...)
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
 // @0x140cca840
-void FUN_140cca840(int nType)
+void TriggerCrash(int nType)
 {
     switch (nType)
     {
@@ -137,7 +137,7 @@ void FUN_140cca840(int nType)
         throw std::bad_alloc();
         break;
     case 13:
-        reinterpret_cast<MS2*>(FUN_140aae430())->SetCrashOnShutdown();
+        reinterpret_cast<MS2*>(GetMS2())->SetCrashOnShutdown();
         break;
     }
 }

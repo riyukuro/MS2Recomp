@@ -41,53 +41,53 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0
     virtual void vfunc_24(void* pItem);                         // UIItemEventListener 24: an item left the inventory
 
-    void FUN_1419adbe0(NotifyObject* pNotify);                  // "NotifyGameEventChanged"
-    void FUN_1419addc0(NotifyObject* pNotify);                  // "NotifyChangeActiveMyCodiTab"
-    void FUN_1419ae170();                                       // fill "buildItems" with the dyeable equipment
-    void FUN_1419ae790();                                       // play the dye pose of the previewed item
+    void OnGameEventChanged(NotifyObject* pNotify);                  // "NotifyGameEventChanged"
+    void OnActiveMyCodiTabChanged(NotifyObject* pNotify);                  // "NotifyChangeActiveMyCodiTab"
+    void BuildItems();                                       // fill "buildItems" with the dyeable equipment
+    void PlayDyePose();                                       // play the dye pose of the previewed item
     int FUN_1419ae940();                                        // leave the page (restore the camera)
-    void FUN_1419ae9f0();                                       // close (asks first when the basket is not saved)
+    void RequestClose();                                       // close (asks first when the basket is not saved)
     void RefreshBasketState();                                       // refresh the save button and the fee
-    void FUN_1419aebc0(const __int64* pUid, int nIndex);        // select an item
-    void FUN_1419aeea0(unsigned nPalette, unsigned nColor);     // preview a palette colour
-    void FUN_1419aef10(int nPalette, int nColor);               // preview a detail colour
-    int FUN_1419aef80();                                        // "m_save" enabled
-    void FUN_1419af050(int bEnable);                            // enable "m_save"
-    void FUN_1419af110(int bEnable);                            // enable "m_reset"
+    void SelectItem(const __int64* pUid, int nIndex);        // select an item
+    void PreviewPaletteColor(unsigned nPalette, unsigned nColor);     // preview a palette colour
+    void PreviewDetailColor(int nPalette, int nColor);               // preview a detail colour
+    int IsSaveEnabled();                                        // "m_save" enabled
+    void SetSaveButtonEnabled(int bEnable);                            // enable "m_save"
+    void SetResetButtonEnabled(int bEnable);                            // enable "m_reset"
     void SetAddBasketButtonEnabled(int bEnable);                            // enable "m_addBasket"
     void ClearSelected();                                       // "forceClearSelected"
-    void FUN_1419af2f0(unsigned nPrice);                        // "setFee"
+    void SetFee(unsigned nPrice);                        // "setFee"
     void FUN_1419af750();                                       // the dye done effect
-    int FUN_1419af840();                                        // the dye was applied
-    void FUN_1419af8d0();                                       // the dye failed
+    int OnDyeApplied();                                        // the dye was applied
+    void OnDyeFailed();                                       // the dye failed
     int FUN_1419af980();                                        // ask and pay (coupons first)
     void FUN_1419afcd0(const Scaleform::GFx::FunctionHandler::Params& params);    // item slot tooltip
     int FUN_1419afe30();                                        // "initData" once the shop and the page are there
-    void FUN_1419b00b0(CInPacket& packet);                      // beauty shop packet 0x31
-    void FUN_1419b02c0(__int64 nUid, int nIndex);               // preview the item
-    void FUN_1419b0620(int n);                                  // refresh the buttons
+    void OnBeautyShopPacket(CInPacket& packet);                      // beauty shop packet 0x31
+    void PreviewItem(__int64 nUid, int nIndex);               // preview the item
+    void RefreshButtons(int n);                                  // refresh the buttons
     void FUN_1419b0700();                                       // send the basket (0x23/0x16)
-    int FUN_1419b0b10(ASArray* pRows, int* pTotal);             // the bill rows
-    int FUN_1419b0ef0();                                        // open the bill
+    int BuildBillRows(ASArray* pRows, int* pTotal);             // the bill rows
+    int OpenBill();                                        // open the bill
     MS2Ptr<CItem> AddCurrentItemToBasket(int nItemId);                   // move the previewed item into the basket
     MS2Ptr<CItem> RemoveBasketItem(int nItemId);                   // take an item out of the basket
     __int64 GetTotalPrice();                                    // the basket price
     int FUN_1419b1760(int* pCoupons);                           // the player can pay; coupons used
-    bool FUN_1419b1900(int bCoupon);                            // a coupon is owned
-    int FUN_1419b1970(int bCoupon);                             // coupons owned
-    CStringW FUN_1419b19c0();                                   // the coupon name
+    bool HasCoupon(int bCoupon);                            // a coupon is owned
+    int GetCouponCount(int bCoupon);                             // coupons owned
+    CStringW GetCouponName();                                   // the coupon name
     int FUN_1419b1a50();                                        // the player level
-    unsigned FUN_1419b1a90();                                   // the price per item
-    Unk_BSFee* FUN_1419b1ac0();                                 // the fee row
-    unsigned FUN_1419b1af0(unsigned nPrice);                    // the sale price
-    bool FUN_1419b1b50();                                       // restart (the "my codi" tab expired)
-    bool FUN_1419b1d00(int nButton, const CMsgBoxData& box);    // close confirm
-    bool FUN_1419b1d40(int nButton, const CMsgBoxData& box);    // pay confirm
-    bool FUN_1419b1d70(int nButton, const CMsgBoxData& box);    // restart confirm
-    void FUN_1419b1db0();                                       // empty the basket
-    void FUN_1419b1e40(ATL::CAtlList<MS2Ptr<CItem> >& list);    // restore the items of a list
-    void FUN_1419b1f50(int nDelta);                             // pending dye requests
-    int FUN_1418ce5b0();                                        // the sale event id (m_1a8.m_18; uibeautyshopdialog.cpp)
+    unsigned GetPricePerItem();                                   // the price per item
+    Unk_BSFee* GetFee();                                 // the fee row
+    unsigned GetSalePrice(unsigned nPrice);                    // the sale price
+    bool Restart();                                       // restart (the "my codi" tab expired)
+    bool OnCloseConfirm(int nButton, const CMsgBoxData& box);    // close confirm
+    bool OnPayConfirm(int nButton, const CMsgBoxData& box);    // pay confirm
+    bool OnRestartConfirm(int nButton, const CMsgBoxData& box);    // restart confirm
+    void ClearBasket();                                       // empty the basket
+    void RestoreItems(ATL::CAtlList<MS2Ptr<CItem> >& list);    // restore the items of a list
+    void AddPendingRequests(int nDelta);                             // pending dye requests
+    int GetSaleEventId();                                        // the sale event id (m_1a8.m_18; uibeautyshopdialog.cpp)
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -40,8 +40,8 @@ public:
     virtual void vfunc_9() {}
     virtual bool vfunc_10() { return false; }
     virtual bool vfunc_11() { return true; }
-    int FUN_140e42540() { return m_nKind; }
-    int FUN_140e42560() { return m_nId; }
+    int GetKind() { return m_nKind; }
+    int GetId() { return m_nId; }
     bool FUN_140e42580() { return m_bTick; }
 protected:
     MS2_LAYOUT_FRIEND;

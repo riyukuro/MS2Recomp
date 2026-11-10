@@ -47,7 +47,7 @@ public:
     virtual int vfunc_15();                                 // 15 0x140e68420 create the camera
     virtual void vfunc_17(const NiPoint3& kPivot);          // 17 0x140e67c20 remember the pivot and the camera state
 
-    void FUN_140e685d0();                                   // 0x140e685d0 steps the zoom animation
+    void UpdateZoomAnimation();                                   // 0x140e685d0 steps the zoom animation
 
 protected:
     NiPoint3 m_kFarPosition;                                // +0x60 camera position at the far limit

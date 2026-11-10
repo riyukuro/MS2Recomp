@@ -89,7 +89,7 @@ void CPriortyCutting::vfunc_2()
             continue;
         }
         ItemModelData* pModel = reinterpret_cast<CItemData*>(equip.get()->GetItemData())->GetModelOrEmpty();
-        std::vector<CString>* pNames = pModel->FUN_14054b2c0(nGender);
+        std::vector<CString>* pNames = pModel->GetCuttingNames(nGender);
         std::vector<CString>& names = *pNames;
         std::vector<CString>::iterator itEnd = names.end();
         for (std::vector<CString>::iterator it = names.begin(); it != itEnd; ++it) {

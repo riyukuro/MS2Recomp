@@ -18,7 +18,7 @@
 class CGemDataBase;
 class TiXmlElement;
 
-CString FUN_14016a5c0(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
 
 class CItemGemPropertyTable : public TSingleton<CItemGemPropertyTable>,
                               public CValidData<CItemGemPropertyTable>
@@ -29,7 +29,7 @@ public:
 
     bool Load();                                            // 0x1405abe50 the four ItemGemProperty_*.xml
     MS2Ptr<CGemDataBase> FUN_1405ac160(int nGemId);         // 0x1405ac160 the row of a gem (null when missing)
-    bool FUN_1405ac260();                                   // 0x1405ac260 reloads when a file changed on disk
+    bool ReloadIfChanged();                                   // 0x1405ac260 reloads when a file changed on disk
 
     // @0x1405afa00
     static void CheckInit()
@@ -37,7 +37,7 @@ public:
         if (!s_bInit)
         {
             CStringA msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CItemGemPropertyTable).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(CItemGemPropertyTable).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }

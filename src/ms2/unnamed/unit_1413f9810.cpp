@@ -69,7 +69,7 @@ private:
 typedef Unk_NodeQueue Unk_SceneWalker;   // C3: was a local stand-in for Unk_NodeQueue
 MS2_CHECK_SIZE(Unk_SceneWalker, 0x30);
 
-// effect object configured by FUN_1413f9ba0 (only the members used here)
+// effect object configured by ResetEffectTransform (only the members used here)
 class Unk_NHEffect
 {
 public:
@@ -110,8 +110,8 @@ void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 
 // GetService<T>: the framework's service manager, asked for system service T (instances at 0x1413fb6e0 / 0x1413fb740, which
 // in turn instantiate Unk_ServiceManager::GetSystemServiceAs<T> at 0x1413fb800 / 0x1413fb840).
-Unk_ServiceManager* FUN_1413f9850();
-template <class T> T* GetService() { return FUN_1413f9850()->GetSystemServiceAs<T>(); }
+Unk_ServiceManager* GetServiceManager();
+template <class T> T* GetService() { return GetServiceManager()->GetSystemServiceAs<T>(); }
 
 // tail wrappers defined below (service accessors whose manager call is another unit's COMDAT)
 void* FUN_1413fb700();
@@ -133,51 +133,51 @@ static CString s_stun("stun");
 void* FUN_1413f9810() { return FUN_1413fb7e0(); }
 MS2_REPLACE(0x1413F9810, FUN_1413f9810, 14, 0xE0176E0C);
 // @0x1413f9830
-efd::MessageService* FUN_1413f9830() { return FUN_1413fb760(); }
-MS2_REPLACE(0x1413F9830, FUN_1413f9830, 14, 0x11E32E6C);
+efd::MessageService* GetMessageService() { return FUN_1413fb760(); }
+MS2_REPLACE(0x1413F9830, GetMessageService, 14, 0x11E32E6C);
 // @0x1413f9850
-Unk_ServiceManager* FUN_1413f9850() { return reinterpret_cast<Unk_ServiceManager*>(reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_NHFramework*>(TSingleton<CMainSystem>::GetInstance())->m_svc)->GetServiceManager()); }
-MS2_REPLACE(0x1413F9850, FUN_1413f9850, 26, 0xC8CC15AE);
+Unk_ServiceManager* GetServiceManager() { return reinterpret_cast<Unk_ServiceManager*>(reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_NHFramework*>(TSingleton<CMainSystem>::GetInstance())->m_svc)->GetServiceManager()); }
+MS2_REPLACE(0x1413F9850, GetServiceManager, 26, 0xC8CC15AE);
 // @0x1413f9870
-void* FUN_1413f9870() { return FUN_1413fb720(); }
-MS2_REPLACE(0x1413F9870, FUN_1413f9870, 14, 0x6D86080D);
+void* GetLightService() { return FUN_1413fb720(); }
+MS2_REPLACE(0x1413F9870, GetLightService, 14, 0x6D86080D);
 // @0x1413f9890
-ecr::RenderService* FUN_1413f9890() { return FUN_1413fb7a0(); }
-MS2_REPLACE(0x1413F9890, FUN_1413f9890, 14, 0x3083754C);
+ecr::RenderService* GetRenderService() { return FUN_1413fb7a0(); }
+MS2_REPLACE(0x1413F9890, GetRenderService, 14, 0x3083754C);
 // @0x1413f98b0
 ecr::SceneGraphService* FUN_1413f98b0() { return FUN_1413fb7c0(); }
 MS2_REPLACE(0x1413F98B0, FUN_1413f98b0, 14, 0x3083754C);
 // @0x1413f98d0
-ecr::RenderSurface* FUN_1413f98d0() { return ((ecr::RenderService*)(void*)(FUN_1413f9890()))->GetActiveRenderSurface(); }
-MS2_REPLACE(0x1413F98D0, FUN_1413f98d0, 22, 0xDB3697F6);
+ecr::RenderSurface* GetActiveRenderSurface() { return ((ecr::RenderService*)(void*)(GetRenderService()))->GetActiveRenderSurface(); }
+MS2_REPLACE(0x1413F98D0, GetActiveRenderSurface, 22, 0xDB3697F6);
 // @0x1413f98f0
-void* FUN_1413f98f0() { return FUN_1413fb780(); }
-MS2_REPLACE(0x1413F98F0, FUN_1413f98f0, 14, 0x56DD25ED);
+void* GetPickService() { return FUN_1413fb780(); }
+MS2_REPLACE(0x1413F98F0, GetPickService, 14, 0x56DD25ED);
 // @0x1413f9910
-ecr::CameraService* FUN_1413f9910() { return GetService<ecr::CameraService>(); }
-MS2_REPLACE(0x1413F9910, FUN_1413f9910, 14, 0xDD60EADA);
+ecr::CameraService* GetCameraService() { return GetService<ecr::CameraService>(); }
+MS2_REPLACE(0x1413F9910, GetCameraService, 14, 0xDD60EADA);
 // @0x1413f9930
-NiRenderFrame* FUN_1413f9930() { return FUN_1413f98d0()->GetRenderFrame(); }
-MS2_REPLACE(0x1413F9930, FUN_1413f9930, 22, 0x0B440CE1);
+NiRenderFrame* GetRenderFrame() { return GetActiveRenderSurface()->GetRenderFrame(); }
+MS2_REPLACE(0x1413F9930, GetRenderFrame, 22, 0x0B440CE1);
 
 // @0x1413f9950
-void* FUN_1413f9950()
+void* GetActiveCamera()
 {
-    ecr::RenderSurface* pTarget = FUN_1413f98d0();
+    ecr::RenderSurface* pTarget = GetActiveRenderSurface();
     if (pTarget != 0) {
-        void* pCamera = ((void*)((ecr::CameraService*)(void*)(FUN_1413f9910()))->GetActiveCamera(pTarget));
+        void* pCamera = ((void*)((ecr::CameraService*)(void*)(GetCameraService()))->GetActiveCamera(pTarget));
         if (pCamera != 0)
             return ((void*)((ecr::CameraData*)(void*)(pCamera))->GetCamera());
     }
     return 0;
 }
-MS2_REPLACE(0x1413F9950, FUN_1413f9950, 72, 0xBFE082CE);
+MS2_REPLACE(0x1413F9950, GetActiveCamera, 72, 0xBFE082CE);
 
 // The "SceneGraphClick" render click of the main surface.
 // @0x1413f99a0
-NiViewRenderClick* FUN_1413f99a0()
+NiViewRenderClick* FindSceneGraphClick()
 {
-    ecr::RenderService* pService = FUN_1413f9890();
+    ecr::RenderService* pService = GetRenderService();
     NiDefaultClickRenderStep* pClickStep = NiDynamicCast(NiDefaultClickRenderStep, ((ecr::RenderService*)(void*)(pService))->GetActiveRenderSurface()->GetRenderStep());
     NiViewRenderClick* pResult = 0;
     NiTPointerList<NiRenderClickPtr>& kClicks = pClickStep->GetRenderClickList();
@@ -191,13 +191,13 @@ NiViewRenderClick* FUN_1413f99a0()
     }
     return 0;
 }
-MS2_REPLACE(0x1413F99A0, FUN_1413f99a0, 198, 0x7B349F4F);
+MS2_REPLACE(0x1413F99A0, FindSceneGraphClick, 198, 0x7B349F4F);
 
 // The "Render View" 3D render view of the scene graph click.
 // @0x1413f9a70
-Ni3DRenderView* FUN_1413f9a70()
+Ni3DRenderView* FindRenderView()
 {
-    NiTPointerList<NiRenderViewPtr>& kViews = FUN_1413f99a0()->GetRenderViews();
+    NiTPointerList<NiRenderViewPtr>& kViews = FindSceneGraphClick()->GetRenderViews();
     NiTListIterator kPos = kViews.GetHeadPos();
     Ni3DRenderView* pResult;
     while (kPos != 0) {
@@ -209,23 +209,23 @@ Ni3DRenderView* FUN_1413f9a70()
     }
     return 0;
 }
-MS2_REPLACE(0x1413F9A70, FUN_1413f9a70, 144, 0x1355C9B9);
+MS2_REPLACE(0x1413F9A70, FindRenderView, 144, 0x1355C9B9);
 
 // @0x1413f9b10
 void* FUN_1413f9b10() { return GetAnimationService(); }
 MS2_REPLACE(0x1413F9B10, FUN_1413f9b10, 14, 0x6C309163);
 // @0x1413f9b30
-void* FUN_1413f9b30() { return FUN_1413fb700(); }
-MS2_REPLACE(0x1413F9B30, FUN_1413f9b30, 14, 0xC45E29F8);
+void* GetFlatModelManager() { return FUN_1413fb700(); }
+MS2_REPLACE(0x1413F9B30, GetFlatModelManager, 14, 0xC45E29F8);
 // @0x1413f9b50
-egf::EntityLoaderService* FUN_1413f9b50() { return GetService<egf::EntityLoaderService>(); }
-MS2_REPLACE(0x1413F9B50, FUN_1413f9b50, 14, 0xCE7DBF18);
+egf::EntityLoaderService* GetEntityLoaderService() { return GetService<egf::EntityLoaderService>(); }
+MS2_REPLACE(0x1413F9B50, GetEntityLoaderService, 14, 0xCE7DBF18);
 // @0x1413f9b70
 NiActorManager* FUN_1413f9b70(const egf::EntityID& id) { return reinterpret_cast<egmAnimation::AnimationService*>(FUN_1413f9b10())->GetActorManager(id); }
 MS2_REPLACE(0x1413F9B70, FUN_1413f9b70, 32, 0x15F69FD7);
 
 // @0x1413f9ba0
-void FUN_1413f9ba0(Unk_NHEffect* pEffect)
+void ResetEffectTransform(Unk_NHEffect* pEffect)
 {
     if (pEffect != 0) {
         NiMatrix3 kXform(*reinterpret_cast<const efd::Matrix3*>(&DAT_143a09600));
@@ -235,7 +235,7 @@ void FUN_1413f9ba0(Unk_NHEffect* pEffect)
         pEffect->vfunc_33();
     }
 }
-MS2_REPLACE(0x1413F9BA0, FUN_1413f9ba0, 151, 0xA4EE9233);
+MS2_REPLACE(0x1413F9BA0, ResetEffectTransform, 151, 0xA4EE9233);
 
 // @0x1413f9c40
 void FUN_1413f9c40(bool bFlag)
@@ -255,7 +255,7 @@ void FUN_1413fa820(std::string kIn, std::wstring* pOut);
 void FUN_1413fb0f0(std::string kIn, std::string* pOut);
 const wchar_t* FUN_1413fb330(const char* pcText, unsigned int uiCodePage);
 const char* FUN_1413fb400(const wchar_t* pwText, unsigned int uiCodePage);
-void FUN_1413fb630(egf::Entity* pEntity, efd::vector<NiMesh*>* pMeshes);
+void GetEntityMeshes(egf::Entity* pEntity, efd::vector<NiMesh*>* pMeshes);
 template <class Functor> bool FUN_1413fb4d0(NiAVObject* pObject, Functor& kFunctor);
 
 struct NodeHelper { static bool FindNode(NiAVObject* pRoot, NiAVObject* pNode); };
@@ -345,7 +345,7 @@ MS2_REPLACE(0x1413F9E80, FUN_1413f9e80, 261, 0x6D1EB66C);
 
 // The scene graph named "Scene Root" among all entities.
 // @0x1413f9f90
-NiNode* FUN_1413f9f90()
+NiNode* FindSceneRoot()
 {
     egf::Entity* pEntity = 0;
     Unk_WorldEntityMap::iterator kIter = TSingleton<EntityWorldManager>::GetInstance()->BeginAllEntities();
@@ -359,7 +359,7 @@ NiNode* FUN_1413f9f90()
     }
     return 0;
 }
-MS2_REPLACE(0x1413F9F90, FUN_1413f9f90, 152, 0x9962FE8E);
+MS2_REPLACE(0x1413F9F90, FindSceneRoot, 152, 0x9962FE8E);
 
 // @0x1413fa030
 NiNode* FUN_1413fa030(egf::Entity* pEntity)
@@ -392,10 +392,10 @@ MS2_REPLACE(0x1413FA0D0, FUN_1413fa0d0, 207, 0x9C2AC7F3);
 
 // Detaches every mesh of an entity from its parent.
 // @0x1413fa1b0
-void FUN_1413fa1b0(egf::Entity* pEntity)
+void DetachEntityMeshes(egf::Entity* pEntity)
 {
     efd::vector<NiMesh*> kMeshes;
-    FUN_1413fb630(pEntity, &kMeshes);
+    GetEntityMeshes(pEntity, &kMeshes);
     efd::vector<NiMesh*>& rMeshes = kMeshes;
     efd::vector<NiMesh*>::const_iterator itEnd = rMeshes.end();
     for (efd::vector<NiMesh*>::const_iterator it = rMeshes.begin(); it != itEnd; ++it)
@@ -404,7 +404,7 @@ void FUN_1413fa1b0(egf::Entity* pEntity)
         pkMesh->GetParent()->DetachChild(pkMesh);
     }
 }
-MS2_REPLACE(0x1413FA1B0, FUN_1413fa1b0, 232, 0xC57CBF3D);
+MS2_REPLACE(0x1413FA1B0, DetachEntityMeshes, 232, 0xC57CBF3D);
 
 // @0x1413fa2a0
 bool FUN_1413fa2a0(egf::Entity* pEntity)
@@ -425,13 +425,13 @@ bool FUN_1413fa2e0(egf::Entity* pEntity)
 MS2_REPLACE(0x1413FA2E0, FUN_1413fa2e0, 44, 0x7EEE2184);
 
 // @0x1413fa320
-efd::Color FUN_1413fa320(egf::Entity* pEntity)
+efd::Color GetEntityColor(egf::Entity* pEntity)
 {
     efd::Color kValue(0.70588237f, 0.70588237f, 0.70588237f);
     FUN_140b27ec0((void*)(pEntity), 0x213f5f94, (void*)(&kValue));
     return kValue;
 }
-MS2_REPLACE(0x1413FA320, FUN_1413fa320, 102, 0xE69C262A);
+MS2_REPLACE(0x1413FA320, GetEntityColor, 102, 0xE69C262A);
 
 // Is the entity's resource valid (named "None" aside, either flagged or a 64 character hash)?
 // @0x1413fa390
@@ -615,13 +615,13 @@ int FUN_1413faf90(wchar_t wc)
 MS2_REPLACE(0x1413FAF90, FUN_1413faf90, 101, 0xD33A8D88);
 
 // @0x1413fb000
-unsigned int FUN_1413fb000(egf::Entity* pEntity)
+unsigned int GetEntityMeshCount(egf::Entity* pEntity)
 {
     efd::vector<NiMesh*> kMeshes;
-    FUN_1413fb630(pEntity, &kMeshes);
+    GetEntityMeshes(pEntity, &kMeshes);
     return (unsigned int)kMeshes.size();
 }
-MS2_REPLACE(0x1413FB000, FUN_1413fb000, 77, 0x0DBED506);
+MS2_REPLACE(0x1413FB000, GetEntityMeshCount, 77, 0x0DBED506);
 
 // Johab jamo tables (initial / medial / final), indexed by the 5 bit fields of a Johab character.
 static const unsigned short s_johabInitial[32] = {
@@ -635,7 +635,7 @@ static const unsigned short s_johabFinal[32] = {
     0x8450, 0x8451, 0x0000, 0x8453, 0x8454, 0x8455, 0x8456, 0x8457, 0x8458, 0x8459, 0x845a, 0x845b, 0x845c, 0x845d, 0x0000, 0x0000 };
 
 // @0x1413fb060
-unsigned short FUN_1413fb060(unsigned short usIndex, int iKind)
+unsigned short GetJohabJamoCode(unsigned short usIndex, int iKind)
 {
     if (usIndex < 0 && usIndex > 31)
         return 0;
@@ -649,7 +649,7 @@ unsigned short FUN_1413fb060(unsigned short usIndex, int iKind)
     }
     return 0;
 }
-MS2_REPLACE(0x1413FB060, FUN_1413fb060, 124, 0x9ACB187F);
+MS2_REPLACE(0x1413FB060, GetJohabJamoCode, 124, 0x9ACB187F);
 
 // Expands every Johab (combining) double byte character of kIn into its jamo codes.
 // @0x1413fb0f0
@@ -660,9 +660,9 @@ void FUN_1413fb0f0(std::string kIn, std::string* pOut)
     for (size_t i = 0; i < uiLength; ++i) {
         if (IsDBCSLeadByte(kIn[i]) && i < uiLength - 1) {
             WORD usCode = MAKEWORD(kIn[i + 1], kIn[i]);
-            WORD sInitial = FUN_1413fb060((usCode & 0x7c00) >> 10, 1);
-            WORD sMedial = FUN_1413fb060((usCode & 0x3e0) >> 5, 2);
-            WORD sFinal = FUN_1413fb060(usCode & 0x1f, 3);
+            WORD sInitial = GetJohabJamoCode((usCode & 0x7c00) >> 10, 1);
+            WORD sMedial = GetJohabJamoCode((usCode & 0x3e0) >> 5, 2);
+            WORD sFinal = GetJohabJamoCode(usCode & 0x1f, 3);
             if (sInitial != 0) {
                 pOut->push_back(HIBYTE(sInitial));
                 pOut->push_back(LOBYTE(sInitial));
@@ -726,7 +726,7 @@ template <class Functor> bool FUN_1413fb4d0(NiAVObject* pObject, Functor& kFunct
 
 // Collects the NiMesh objects of an entity's scene graph.
 // @0x1413fb630
-void FUN_1413fb630(egf::Entity* pEntity, efd::vector<NiMesh*>* pMeshes)
+void GetEntityMeshes(egf::Entity* pEntity, efd::vector<NiMesh*>* pMeshes)
 {
     if (pEntity != 0) {
         unsigned int uiCount = FUN_1413f98b0()->GetObjectCountFromEntity(pEntity);
@@ -738,27 +738,27 @@ void FUN_1413fb630(egf::Entity* pEntity, efd::vector<NiMesh*>* pMeshes)
         }
     }
 }
-MS2_REPLACE(0x1413FB630, FUN_1413fb630, 166, 0xC0724502);
+MS2_REPLACE(0x1413FB630, GetEntityMeshes, 166, 0xC0724502);
 
 // Plain service accessors (the manager call is another unit's COMDAT).
 // @0x1413fb700
-void* FUN_1413fb700() { return reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<egf::FlatModelManager>(); }
+void* FUN_1413fb700() { return reinterpret_cast<efd::ServiceManager*>(GetServiceManager())->GetSystemServiceAs<egf::FlatModelManager>(); }
 MS2_REPLACE(0x1413FB700, FUN_1413fb700, 22, 0x2B776A23);
 // @0x1413fb720
-void* FUN_1413fb720() { return reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<ecr::LightService>(); }
+void* FUN_1413fb720() { return reinterpret_cast<efd::ServiceManager*>(GetServiceManager())->GetSystemServiceAs<ecr::LightService>(); }
 MS2_REPLACE(0x1413FB720, FUN_1413fb720, 22, 0xF6909721);
 // @0x1413fb760
-efd::MessageService* FUN_1413fb760() { return reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<efd::MessageService>(); }
+efd::MessageService* FUN_1413fb760() { return reinterpret_cast<efd::ServiceManager*>(GetServiceManager())->GetSystemServiceAs<efd::MessageService>(); }
 MS2_REPLACE(0x1413FB760, FUN_1413fb760, 22, 0xBCA5E236);
 // @0x1413fb780
-void* FUN_1413fb780() { return reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<ecr::PickService>(); }
+void* FUN_1413fb780() { return reinterpret_cast<efd::ServiceManager*>(GetServiceManager())->GetSystemServiceAs<ecr::PickService>(); }
 MS2_REPLACE(0x1413FB780, FUN_1413fb780, 22, 0x6C40E697);
 // @0x1413fb7a0
-ecr::RenderService* FUN_1413fb7a0() { return reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<ecr::RenderService>(); }
+ecr::RenderService* FUN_1413fb7a0() { return reinterpret_cast<efd::ServiceManager*>(GetServiceManager())->GetSystemServiceAs<ecr::RenderService>(); }
 MS2_REPLACE(0x1413FB7A0, FUN_1413fb7a0, 22, 0x275BB836);
 // @0x1413fb7c0
-ecr::SceneGraphService* FUN_1413fb7c0() { return reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<ecr::SceneGraphService>(); }
+ecr::SceneGraphService* FUN_1413fb7c0() { return reinterpret_cast<efd::ServiceManager*>(GetServiceManager())->GetSystemServiceAs<ecr::SceneGraphService>(); }
 MS2_REPLACE(0x1413FB7C0, FUN_1413fb7c0, 22, 0x084C1DD9);
 // @0x1413fb7e0
-void* FUN_1413fb7e0() { return reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<egf::Scheduler>(); }
+void* FUN_1413fb7e0() { return reinterpret_cast<efd::ServiceManager*>(GetServiceManager())->GetSystemServiceAs<egf::Scheduler>(); }
 MS2_REPLACE(0x1413FB7E0, FUN_1413fb7e0, 22, 0xF80406BF);

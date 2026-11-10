@@ -47,7 +47,7 @@ template <class T> MS2Ptr<T> Unk_SptASCreate(int nMovieId, const Scaleform::GFx:
 UISelectSuperWorldChatDialog::UISelectSuperWorldChatDialog()
     : m_binder("SelectSuperWorldChatDialog")
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     SetIconType(&m_binder, 0x411);
 }
 
@@ -81,7 +81,7 @@ void UISelectSuperWorldChatDialog::OnLoadComplete()
     PC* pPlayer = static_cast<PC*>(TSingleton<WorldService>::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    FUN_141925ec0("m_close");
+    BindCloseButton("m_close");
     FUN_140e8d030("m_selectItemList", m_list);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_okButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_okButton)).get())
         m_okButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UISelectSuperWorldChatDialog::FUN_140e8c790), 0);
@@ -91,8 +91,8 @@ void UISelectSuperWorldChatDialog::OnLoadComplete()
     m_binder.FUN_140d43990();
 
     ATL::CAtlArray<MS2Ptr<CItem> > aItems;
-    FUN_140e8ca10(aItems);
-    FUN_140e8cb80(aItems);
+    GetSuperWorldChatItems(aItems);
+    GetWeddingChatItems(aItems);
     unsigned nMinSlots = 0x12;
     unsigned nCount = (unsigned)aItems.GetCount();
     unsigned nSlots = (std::max)(nCount, nMinSlots);
@@ -107,21 +107,21 @@ void UISelectSuperWorldChatDialog::OnLoadComplete()
         MS2Ptr<CItem> spItem = aItems[i];
         if (spItem == 0)
             continue;
-        int nItemId = spItem->FUN_1405276c0();
+        int nItemId = spItem->GetItemId();
         int nRarity = spItem->GetRarity();
         int nAmount = g_143ab2a90.FUN_140a5f180(nItemId, nRarity);
         CString strBind = m_binder.BindNewItem(nItemId, nRarity, nAmount);
         if (strBind.IsEmpty())
             continue;
         ASObj entry(2);
-        entry.FUN_1407cba60("bindID", strBind);
+        entry.SetStringMember("bindID", strBind);
         if (nItemId == pPlayer->FUN_1416639e0())
-            entry.FUN_1407cbbe0("select", true);
+            entry.SetBoolMember("select", true);
         list.PushValue(entry.FUN_1422bb890());
         m_slotItems.SetAt((unsigned)i, nItemId);
     }
     m_list->Invoke("resetRenderer");
-    m_list->vfunc_25(list.FUN_1422bb870());
+    m_list->vfunc_25(list.GetValue());
     m_list->vfunc_24(true);
 }
 
@@ -188,7 +188,7 @@ void UISelectSuperWorldChatDialog::FUN_140e8c8e0(const Scaleform::GFx::FunctionH
 MS2_REPLACE_METHOD(0x140E8C8E0, UISelectSuperWorldChatDialog, FUN_140e8c8e0, 292, 0x9AA48589);
 
 // @0x140e8ca10
-void UISelectSuperWorldChatDialog::FUN_140e8ca10(ATL::CAtlArray<MS2Ptr<CItem> >& aOut)
+void UISelectSuperWorldChatDialog::GetSuperWorldChatItems(ATL::CAtlArray<MS2Ptr<CItem> >& aOut)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > aItems;
     g_143ab2a90.GetItemsInCategory(7, aItems);
@@ -205,10 +205,10 @@ void UISelectSuperWorldChatDialog::FUN_140e8ca10(ATL::CAtlArray<MS2Ptr<CItem> >&
         aOut.Add(spItem);
     }
 }
-MS2_REPLACE_METHOD(0x140E8CA10, UISelectSuperWorldChatDialog, FUN_140e8ca10, 362, 0x7D369B5E);
+MS2_REPLACE_METHOD(0x140E8CA10, UISelectSuperWorldChatDialog, GetSuperWorldChatItems, 362, 0x7D369B5E);
 
 // @0x140e8cb80
-void UISelectSuperWorldChatDialog::FUN_140e8cb80(ATL::CAtlArray<MS2Ptr<CItem> >& aOut)
+void UISelectSuperWorldChatDialog::GetWeddingChatItems(ATL::CAtlArray<MS2Ptr<CItem> >& aOut)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > aItems;
     g_143ab2a90.GetItemsInCategory(7, aItems);
@@ -225,7 +225,7 @@ void UISelectSuperWorldChatDialog::FUN_140e8cb80(ATL::CAtlArray<MS2Ptr<CItem> >&
         aOut.Add(spItem);
     }
 }
-MS2_REPLACE_METHOD(0x140E8CB80, UISelectSuperWorldChatDialog, FUN_140e8cb80, 362, 0x8CEE4E13);
+MS2_REPLACE_METHOD(0x140E8CB80, UISelectSuperWorldChatDialog, GetWeddingChatItems, 362, 0x8CEE4E13);
 
 // ---- the GetChild<ASMultiSelectTileCacheList> chain (template COMDATs of this TU) ------------------------------------
 

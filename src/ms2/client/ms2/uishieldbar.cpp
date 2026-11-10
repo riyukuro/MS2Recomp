@@ -31,8 +31,8 @@ class Unk_ShieldEntity : public ASGameEntity
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
+    Scaleform::GFx::Value CreateEntity(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 struct Unk_ShieldCfgFloat { char m_pad[0x58]; };
 struct Unk_ShieldCfgInt { void* m_unknown; };
@@ -45,11 +45,11 @@ struct Unk_ShieldCfg
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_ShieldUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 float FUN_1412762d0(const NiPoint3& pt);
 class Unk_ShieldActor : public PCBase
@@ -121,7 +121,7 @@ void UIShieldBar::Entity::vfunc_5()
             {
                 MS2Ptr<ASMovieClip> gauge = gaugeMc->FUN_1409b4560("gauge");
                 if (gauge.get())
-                    m_b8 = gauge->FUN_1422c1340();
+                    m_b8 = gauge->GetWidthCeil();
             }
         }
     }
@@ -144,16 +144,16 @@ void UIShieldBar::Entity::vfunc_6(NiPoint3* pPos)
                     if (m_b4 != 0)
                     {
                         if (0 < m_64)
-                            m_68.FUN_140868750(m_64);
+                            m_68.Start(m_64);
                         float fRate = (float)m_a0 / (float)m_a8;
                         ((Unk_ShieldClip*)gauge.operator->())->SetWidthInt((int)(fRate * (float)m_b8));
                         ((Unk_ShieldClip*)gaugeMc.operator->())->vfunc_13("defence");
                         m_b4 = 0;
                     }
-                    *pPos *= ((class GFxManager*)(class Unk_ShieldUIScale*)(((class Unk_ShieldUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
+                    *pPos *= ((class GFxManager*)(class Unk_ShieldUIScale*)(((class Unk_ShieldUIScale*)GetGFxManager())))->GetMovieScale(m_18);
                     pPos->y = pPos->y + vfunc_9();
                     pPos->y = pPos->y + FUN_1412762d0(vfunc_10());
-                    pPos->x = pPos->x - (float)(m_38->FUN_1422c1340() / 2);
+                    pPos->x = pPos->x - (float)(m_38->GetWidthCeil() / 2);
                     ((Unk_ShieldEntity*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y);
                 }
             }
@@ -257,7 +257,7 @@ int UIShieldBar::Entity::FUN_140e860f0()
     if (pActor == 0)
         return 0;
     if (efd::ClassInfo::IsKindOf(pActor ? pActor->GetClassDesc() : 0, 0x6200004) != 0)
-        return reinterpret_cast<Unk_ShieldCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_b;
+        return reinterpret_cast<Unk_ShieldCfgData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_b;
     else
     {
         PCBase* pPc = efd::DynamicCast<PC, PCBase>(pActor);
@@ -265,7 +265,7 @@ int UIShieldBar::Entity::FUN_140e860f0()
         {
             if (pPlayer->FUN_1415278d0((void*)((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80()) == 0)
                 return 0;
-            return reinterpret_cast<Unk_ShieldCfgData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_d;
+            return reinterpret_cast<Unk_ShieldCfgData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_d;
         }
     }
     return 1;
@@ -292,11 +292,11 @@ CString UIShieldBar::GetTypeName()
 void UIShieldBar::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_140e86430(m_68);
+    CreateEntityCache(m_68);
 }
 
 // @0x140e86a50
-UIShieldBar* FUN_140e86a50(int nUiId)
+UIShieldBar* GetShieldBar(int nUiId)
 {
     if (reinterpret_cast<Unk_ShieldUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -310,10 +310,10 @@ UIShieldBar* FUN_140e86a50(int nUiId)
 // @0x140e86320
 MS2Ptr<UIShieldBar::Entity> FUN_140e86320(int nActorId)
 {
-    UIShieldBar* pBar = FUN_140e86a50(0x4f77);
+    UIShieldBar* pBar = GetShieldBar(0x4f77);
     if (pBar != 0)
     {
-        MS2Ptr<UIShieldBar::Entity> pEntity(pBar->FUN_140e86610(nActorId));
+        MS2Ptr<UIShieldBar::Entity> pEntity(pBar->GetOrCreateEntity(nActorId));
         if (pEntity.get())
             pEntity->FUN_140e86090();
         return pEntity;
@@ -324,13 +324,13 @@ MS2Ptr<UIShieldBar::Entity> FUN_140e86320(int nActorId)
 // @0x140e863f0
 void FUN_140e863f0(int nActorId)
 {
-    UIShieldBar* pBar = FUN_140e86a50(0x4f77);
+    UIShieldBar* pBar = GetShieldBar(0x4f77);
     if (pBar)
-        pBar->FUN_140f49c00(nActorId);
+        pBar->ReleaseEntity(nActorId);
 }
 
 // @0x140e86430
-void UIShieldBar::FUN_140e86430(unsigned int nCount)
+void UIShieldBar::CreateEntityCache(unsigned int nCount)
 {
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
@@ -352,12 +352,12 @@ void UIShieldBar::FUN_140e86430(unsigned int nCount)
 }
 
 // @0x140e86610
-UIShieldBar::Entity* UIShieldBar::FUN_140e86610(int nActorId)
+UIShieldBar::Entity* UIShieldBar::GetOrCreateEntity(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     {
-    FUN_140f49c00(nActorId);
+    ReleaseEntity(nActorId);
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
     {
@@ -365,7 +365,7 @@ UIShieldBar::Entity* UIShieldBar::FUN_140e86610(int nActorId)
         {
             bool bFlag = FUN_140930110(nActorId);
             bFlag = false;
-            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+            Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
             if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
             {
                 Entity* p = new Entity(m_28, v, nActorId);
@@ -392,7 +392,7 @@ UIShieldBar::Entity* UIShieldBar::FUN_140e86610(int nActorId)
                     {
                         MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                         if (pOldClip.get())
-                            ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_ShieldEntity*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                            ((Unk_BannerClip*)pClip.operator->())->UpdateEntity("updateEntity", ((Unk_ShieldEntity*)pOldClip.operator->())->GetValue(), bNew);
                     }
                 }
                 pEntity->FUN_140f48ce0(nActorId);
@@ -419,9 +419,9 @@ MS2_REPLACE_METHOD(0x140e86090, UIShieldBar::Entity, FUN_140e86090, 77, 0xA954AA
 MS2_REPLACE_METHOD(0x140e860f0, UIShieldBar::Entity, FUN_140e860f0, 236, 0xD81920B4);
 MS2_REPLACE_METHOD(0x140e862a0, UIShieldBar, GetTypeName, 61, 0xFC836A90);
 MS2_REPLACE_METHOD(0x140e862f0, UIShieldBar, OnLoadComplete, 42, 0x272BBEC3);
-MS2_REPLACE_METHOD(0x140e86430, UIShieldBar, FUN_140e86430, 465, 0xC9744E09);
-MS2_REPLACE_METHOD(0x140e86610, UIShieldBar, FUN_140e86610, 1082, 0x2816AFC0);
-MS2_REPLACE(0x140e86a50, FUN_140e86a50, 147, 0x6B5755F8);
+MS2_REPLACE_METHOD(0x140e86430, UIShieldBar, CreateEntityCache, 465, 0xC9744E09);
+MS2_REPLACE_METHOD(0x140e86610, UIShieldBar, GetOrCreateEntity, 1082, 0x2816AFC0);
+MS2_REPLACE(0x140e86a50, GetShieldBar, 147, 0x6B5755F8);
 MS2_REPLACE(0x140e863f0, FUN_140e863f0, 50, 0x1EE05996);
 
 MS2_EMIT_CRT_MEMMOVE_S();

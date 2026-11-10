@@ -59,7 +59,7 @@ public:
 };
 extern template class MS2Ptr<CMsgBoxData>;
 
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* p, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
@@ -69,7 +69,7 @@ class Unk_ClubManager : public CClubClientManager
 public:
 };
 class CClubClientManager;
-inline Unk_ClubManager* FUN_140e0d900() { return reinterpret_cast<Unk_ClubManager*>(TSingleton<CClubClientManager>::s_instance); }
+inline Unk_ClubManager* GetClubClientManager() { return reinterpret_cast<Unk_ClubManager*>(TSingleton<CClubClientManager>::s_instance); }
 
 CClubDataTable* GetClubDataTable();   // the CClubDataTable instance
 
@@ -163,8 +163,8 @@ void UIClubDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     FUN_1419260d0("m_webGuideButton", 0);
-    if (FUN_140e0d900()->FUN_140b15310() != 0)
-        FUN_140e0bfd0();
+    if (GetClubClientManager()->FUN_140b15310() != 0)
+        RefreshCategoryList();
 }
 MS2_REPLACE_METHOD(0x140E0ABE0, UIClubDialog, OnLoadComplete, 102, 0x247ED296);
 
@@ -177,7 +177,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             m_nCategory = data.PopInt();
             m_nClubId = FUN_140718350(data.FUN_1422b8d30());
-            FUN_140e0c570(m_nClubId);
+            RefreshMemberList(m_nClubId);
         }
         return 1;
     } else if (_stricmp("onAddMember", szMethod) == 0) {
@@ -192,9 +192,9 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         return 1;
     } else if (_stricmp("onWithdrawal", szMethod) == 0) {
         {
-        MS2Ptr<CClubCli> club = FUN_140e0d900()->GetClub(m_nClubId);
+        MS2Ptr<CClubCli> club = GetClubClientManager()->GetClub(m_nClubId);
         if (club.get() != 0) {
-            if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, StringFormat<CStringW>(GetStringCommon(0x363), club->FUN_14020f1a0()), 0, CStringW(L""))) {
+            if (MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, StringFormat<CStringW>(GetStringCommon(0x363), club->GetName()), 0, CStringW(L""))) {
                 box->FUN_141a01800(2);
                 box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bdb0));
                 FUN_140d73c60(box);
@@ -202,13 +202,13 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         }
         }
     } else if (_stricmp("onSettingBuff", szMethod) == 0) {
-        MS2Ptr<CClubCli> club = FUN_140e0d900()->GetClub(m_nClubId);
+        MS2Ptr<CClubCli> club = GetClubClientManager()->GetClub(m_nClubId);
         if (club == 0)
             return 1;
-        CClubDataTable::BuffPtr buff = GetClubDataTable()->FUN_140211a40();
+        CClubDataTable::BuffPtr buff = GetClubDataTable()->GetFirstBuff();
         int nBuffId = buff->m_effectId;
         unsigned short nLevel = buff->m_effectLevel;
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x25, FUN_140298ea0(CStringW(L"s_club_ui_msg_buff_setting")), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(0x25, FUN_140298ea0(CStringW(L"s_club_ui_msg_buff_setting")), 0, CStringW(L""));
         if (box.get() != 0) {
             box->SetExtra(s_strClubBuff);
             box->FUN_141a01800(2);
@@ -223,7 +223,7 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
         }
     } else if (_stricmp("onNameChange", szMethod) == 0) {
         int nCost = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)GetClientConstants())->m_nameChange)->Get();
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(10, FUN_14028dfa0<int, int>(CStringW(L"s_party_change_name"), nCost / 2, nCost), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(10, FUN_14028dfa0<int, int>(CStringW(L"s_party_change_name"), nCost / 2, nCost), 0, CStringW(L""));
         if (box.get() != 0) {
             box->SetInput(2, L"", nCost, 0, 0);
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIClubDialog::FUN_140e0bef0));
@@ -236,11 +236,11 @@ int UIClubDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             float y = data.PopFloat();
             CStringW strName = data.FUN_1422b8f40();
             {
-                MS2Ptr<CClubCli> club = FUN_140e0d900()->GetClub(m_nClubId);
+                MS2Ptr<CClubCli> club = GetClubClientManager()->GetClub(m_nClubId);
                 if (club.get() != 0) {
                     MS2Ptr<CClubMember> member = club->FindMemberByName(strName);
                     if (member.get() != 0) {
-                        UIPopUpMenu* pPopup = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+                        UIPopUpMenu* pPopup = (UIPopUpMenu*)FindPopupMenu(0x4e39);
                         if (pPopup != 0) {
                             Unk_PopupMenuInfo info(x, y, 3, 0x63de, 1, CString(""), 0);
                             pPopup->PopUpMenuFromClubMember(info, member);
@@ -259,8 +259,8 @@ void UIClubDialog::RefreshData()
 {
     if (vfunc_55() != 0)
         return;
-    if (FUN_140e0d900()->FUN_140b15310() != 0) {
-        FUN_140e0bfd0();
+    if (GetClubClientManager()->FUN_140b15310() != 0) {
+        RefreshCategoryList();
     } else {
         if (m_30.get() != 0)
             m_30->Invoke("showData", false);
@@ -277,7 +277,7 @@ bool UIClubDialog::FUN_140e0bcd0(int nResult, const CMsgBoxData& data)
     strName.Trim(L",");
     if (strName.IsEmpty())
         return false;
-    FUN_140e0d900()->FUN_140b160c0(m_nClubId, strName);
+    GetClubClientManager()->FUN_140b160c0(m_nClubId, strName);
     return true;
 }
 MS2_REPLACE_METHOD(0x140E0BCD0, UIClubDialog, FUN_140e0bcd0, 217, 0x5985EA9A);
@@ -287,7 +287,7 @@ bool UIClubDialog::FUN_140e0bdb0(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
-    FUN_140e0d900()->WithdrawFromClub(m_nClubId);
+    GetClubClientManager()->WithdrawFromClub(m_nClubId);
     return true;
 }
 MS2_REPLACE_METHOD(0x140E0BDB0, UIClubDialog, FUN_140e0bdb0, 61, 0x7B7F7ED9);
@@ -299,9 +299,9 @@ bool UIClubDialog::OnMsgBoxBuffConfirm(int nResult, const CMsgBoxData& data)
         return true;
     {
         int nId = _wtoi(data.FUN_141a02d50());
-        CClubDataTable::BuffPtr spBuff = GetClubDataTable()->FUN_1402116a0(nId);
+        CClubDataTable::BuffPtr spBuff = GetClubDataTable()->FindBuffById(nId);
         if (spBuff != 0)
-            FUN_140e0d900()->FUN_140b163c0(m_nClubId, spBuff->m_effectId, spBuff->m_effectLevel);
+            GetClubClientManager()->FUN_140b163c0(m_nClubId, spBuff->m_effectId, spBuff->m_effectLevel);
     }
     return true;
 }
@@ -316,15 +316,15 @@ bool UIClubDialog::FUN_140e0bef0(int nResult, const CMsgBoxData& data)
     strName.Trim(L",");
     if (strName.IsEmpty())
         return false;
-    FUN_140e0d900()->RenameClub(m_nClubId, strName);
+    GetClubClientManager()->RenameClub(m_nClubId, strName);
     return true;
 }
 MS2_REPLACE_METHOD(0x140E0BEF0, UIClubDialog, FUN_140e0bef0, 217, 0x8D1F2157);
 
 // @0x140e0bfd0
-void UIClubDialog::FUN_140e0bfd0()
+void UIClubDialog::RefreshCategoryList()
 {
-    Unk_SocketPtr<Unk_ClubCliMap> spMap = FUN_140e0d900()->FUN_140b14e40();
+    Unk_SocketPtr<Unk_ClubCliMap> spMap = GetClubClientManager()->FUN_140b14e40();
     if (spMap != 0) {
         {
             if (MS2Ptr<ASScrollingList> spList = GetChild<ASScrollingList>("m_category")) {
@@ -338,15 +338,15 @@ void UIClubDialog::FUN_140e0bfd0()
                     if (spClub == 0)
                         continue;
                     ASObj row(2);
-                    row.FUN_1407cba60("clubSN", FUN_140719530(nClubSN));
-                    row.FUN_1407cb9c0("master", spClub->IsLeaderName(CStringW(strMyName)));
-                    row.FUN_1407cbb20("label", spClub->FUN_14020f1a0());
-                    row.FUN_1407cbb20("memberCount", StringFormat<int, int>(GetStringCommon(0x367), spClub->GetMemberCount(), 10));
+                    row.SetStringMember("clubSN", FUN_140719530(nClubSN));
+                    row.SetIntMember("master", spClub->IsLeaderName(CStringW(strMyName)));
+                    row.SetWStringMember("label", spClub->GetName());
+                    row.SetWStringMember("memberCount", StringFormat<int, int>(GetStringCommon(0x367), spClub->GetMemberCount(), 10));
                     SetRowBuffIcon(row, spClub->GetBuffId(), spClub->GetBuffLevel());
                     SetRowNameChange(row, spClub->GetNameChangeAvailableTime());
-                    rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
+                    rows.PushValue(Scaleform::GFx::Value(row.GetValue()));
                 }
-                spList->vfunc_25(rows.FUN_1422bb870());
+                spList->vfunc_25(rows.GetValue());
                 spList->vfunc_24(true);
                 if (m_nCategory >= (int)spMap.operator->()->GetCount())
                     m_nCategory = 0;
@@ -359,9 +359,9 @@ void UIClubDialog::FUN_140e0bfd0()
 }
 
 // @0x140e0c570
-void UIClubDialog::FUN_140e0c570(__int64 nClubId)
+void UIClubDialog::RefreshMemberList(__int64 nClubId)
 {
-    MS2Ptr<CClubCli> spClub = FUN_140e0d900()->GetClub(nClubId);
+    MS2Ptr<CClubCli> spClub = GetClubClientManager()->GetClub(nClubId);
     if (spClub.get() != 0) {
         MS2Ptr<ASMovieClip> spClip = GetChild<ASMovieClip>("m_clubData");
         if (spClip == 0)
@@ -372,9 +372,9 @@ void UIClubDialog::FUN_140e0c570(__int64 nClubId)
             MS2Ptr<CClubMember> spLeader = spClub->GetLeader();
             if (spLeader.get() != 0) {
                 ASObj row(2);
-                row.FUN_1407cbbe0("master", true);
+                row.SetBoolMember("master", true);
                 FUN_140e0ca20(row, spLeader);
-                rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
+                rows.PushValue(Scaleform::GFx::Value(row.GetValue()));
             }
             ATL::CAtlArray<MS2Ptr<CClubMember> > members;
             spClub->GetAllMembers(members);
@@ -382,11 +382,11 @@ void UIClubDialog::FUN_140e0c570(__int64 nClubId)
                 if (spClub->IsLeaderName(members[i]->m_info.GetName()) != 0)
                     continue;
                 ASObj row(2);
-                row.FUN_1407cbbe0("master", false);
+                row.SetBoolMember("master", false);
                 FUN_140e0ca20(row, members[i]);
-                rows.PushValue(Scaleform::GFx::Value(row.FUN_1422bb870()));
+                rows.PushValue(Scaleform::GFx::Value(row.GetValue()));
             }
-            spList->vfunc_25(rows.FUN_1422bb870());
+            spList->vfunc_25(rows.GetValue());
             spList->vfunc_24(true);
         }
     }
@@ -395,11 +395,11 @@ void UIClubDialog::FUN_140e0c570(__int64 nClubId)
 // @0x140e0ca20
 void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
 {
-    row.FUN_1407cbb20("name", spMember->m_info.GetName());
+    row.SetWStringMember("name", spMember->m_info.GetName());
     CStringW strInfo = StringFormat(GetStringCommon(0x360),
                                     reinterpret_cast<const unsigned short&>(spMember->m_info.m_level),
                                     TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, spMember->m_info.m_job));
-    row.FUN_1407cbb20("info", strInfo);
+    row.SetWStringMember("info", strInfo);
     CStringW strLocation;
     CStringW strTime;
     if (spMember->m_f0 != 0) {
@@ -422,10 +422,10 @@ void UIClubDialog::FUN_140e0ca20(ASObj& row, MS2Ptr<CClubMember> spMember)
                                         TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spMember->m_info.m_mapId));
         }
     }
-    row.FUN_1407cbb20("location", strLocation);
+    row.SetWStringMember("location", strLocation);
     CString strImage = FUN_141028be0(spMember->m_info.m_characterId, spMember->m_info.GetPicture(), 1, CString(""));
-    row.FUN_1407cba60("profileImage", strImage);
-    row.FUN_1407cb9c0("offline", spMember->m_f0);
+    row.SetStringMember("profileImage", strImage);
+    row.SetIntMember("offline", spMember->m_f0);
 }
 
 // @0x140e0d180
@@ -433,7 +433,7 @@ void UIClubDialog::SetRowBuffIcon(ASObj& row, int nBuffId, unsigned short nLevel
 {
     MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(nBuffId, nLevel);
     if (spAttr.get() != 0)
-        row.FUN_1407cba60("buffIcon", spAttr->GetIcon());
+        row.SetStringMember("buffIcon", spAttr->GetIcon());
 }
 MS2_REPLACE_METHOD(0x140E0D180, UIClubDialog, SetRowBuffIcon, 155, 0x66BCF20D);
 
@@ -442,9 +442,9 @@ void UIClubDialog::SetRowNameChange(ASObj& row, __int64 nNameChangeTime)
 {
     __int64 nNow = GetServerTime();
     if (nNow > nNameChangeTime)
-        row.FUN_1407cb9c0("nameChange", 1);
+        row.SetIntMember("nameChange", 1);
     else
-        row.FUN_1407cb9c0("nameChange", 0);
+        row.SetIntMember("nameChange", 0);
 }
 MS2_REPLACE_METHOD(0x140E0D230, UIClubDialog, SetRowNameChange, 91, 0x3A2471AF);
 // Atexit thunks of this unit's statics (gap1 yd sweep).

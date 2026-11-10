@@ -25,8 +25,8 @@ public:
     virtual int vfunc_48();                                          // 48 0x141a737c0: 0x4e8a
     virtual void vfunc_67();                                         // 67 0x141a73580
     void FUN_141a735c0();                                            // 0x141a735c0 empty
-    void FUN_141a735d0(CStringW strName);                            // 0x141a735d0 the observed player's name (by value: destroyed here)
-    void FUN_141a736c0(bool bCenterCamera);                          // 0x141a736c0 clear the name, swf "SetCenterCamera"
+    void SetPlayerName(CStringW strName);                            // 0x141a735d0 the observed player's name (by value: destroyed here)
+    void SetCenterCamera(bool bCenterCamera);                          // 0x141a736c0 clear the name, swf "SetCenterCamera"
 private:
     MS2_LAYOUT_FRIEND;
     CStringW m_strName;             // +0x178 observed player's name

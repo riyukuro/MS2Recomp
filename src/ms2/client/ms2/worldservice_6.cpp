@@ -234,15 +234,15 @@ void Unk_WsTail6Getters(PC& pc, CInteractObject& obj, CInteractObjectData& def, 
     Unk_WsProxyMgr& proxies)
 {
     pc.FUN_141c04f70();
-    obj.FUN_141c04fc0();
-    def.FUN_141c05790();
-    def.FUN_141c057c0();
-    def.FUN_141c05820();
-    def.FUN_141c04f90();
-    def.FUN_141c051c0();
-    def.FUN_141c057f0();
+    obj.IsSpawned();
+    def.IsTelescope();
+    def.IsUIObject();
+    def.IsWebObject();
+    def.IsDisplayImage();
+    def.IsGatheringObject();
+    def.IsWatchTower();
     web.CInteractWebObject::vfunc_5();
-    proxies.FUN_141c05780();
+    proxies.GetEnabledCount();
 }
 
 // The out-of-line helpers worldservice_1.cpp calls by address.
@@ -295,7 +295,7 @@ class FieldProperty;
 #define WS_MAP_VALUE_AT(T) ATLENSURE(pos != NULL); void* pNode = pos; return (T)((char*)pNode + 8)
 #define WS_TREE_VALUE_AT(T) ATLENSURE(pos != NULL); return (T)((char*)pos + 8)
 
-void* FUN_141c00300(void* map, void* pos) { WS_MAP_VALUE_AT(void*); }
+void* GetValueAt(void* map, void* pos) { WS_MAP_VALUE_AT(void*); }
 
 MS2Ptr<FieldProperty>* FUN_141c00530(void* map, void* pos) { WS_MAP_VALUE_AT(MS2Ptr<FieldProperty>*); }
 

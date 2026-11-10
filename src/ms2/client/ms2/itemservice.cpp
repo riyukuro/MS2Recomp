@@ -189,17 +189,17 @@ MS2Ptr<CEquipItem> CItemService::CreateEquipItem(CItem* pItem, PC* pPC, __int64 
     }
     bool bSecond = pItem->FUN_14052a170() == 2;
     int nWeapon = pPC->vfunc_133(pItem, bSecond);
-    bool bHair = reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->FUN_14054b400() == 0xe ? true : false;
+    bool bHair = reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->GetFirstGroupType() == 0xe ? true : false;
     int nGender = pPC->GetGender();
     if (!reinterpret_cast<CItemData *>(pItem->FUN_140527840())->FUN_14053cae0(nGender, nWeapon))
         return spEquip;
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData *>(pItem->FUN_140527840()));
-    for (size_t i = 0; i < spData->GetModelOrEmpty()->FUN_14054b3d0(); i++)
+    for (size_t i = 0; i < spData->GetModelOrEmpty()->GetGroupCount(); i++)
     {
         const ModelGroup* pGroup = spData->GetModelOrEmpty()->GetGroup(i);
-        for (size_t j = 0; j < pGroup->FUN_1405450c0(); j++)
+        for (size_t j = 0; j < pGroup->GetPartCount(); j++)
         {
-            const ModelPart* pPart = pGroup->FUN_140544fe0(j);
+            const ModelPart* pPart = pGroup->GetPart(j);
             if (!pPart->FUN_140544aa0(nGender, nWeapon))
                 continue;
             CString strPath(pPart->name0);
@@ -312,12 +312,12 @@ int CItemService::FUN_14141b000(CItem* pItem, PC* pPC)
     if (!reinterpret_cast<CItemData *>(pItem->FUN_140527840())->FUN_14053cae0(nGender, nWeapon))
         return 0;
     MS2Ptr<CItemData> spData(reinterpret_cast<CItemData *>(pItem->FUN_140527840()));
-    for (size_t i = 0; i < spData->GetModelOrEmpty()->FUN_14054b3d0(); i++)
+    for (size_t i = 0; i < spData->GetModelOrEmpty()->GetGroupCount(); i++)
     {
         const ModelGroup* pGroup = spData->GetModelOrEmpty()->GetGroup(i);
-        for (int j = 0; j < (int)pGroup->FUN_1405450c0(); j++)
+        for (int j = 0; j < (int)pGroup->GetPartCount(); j++)
         {
-            const ModelPart* pPart = pGroup->FUN_140544fe0(j);
+            const ModelPart* pPart = pGroup->GetPart(j);
             if (pPart->FUN_140544aa0(nGender, nWeapon) == 0)
                 continue;
             MS2Ptr<CEquipModel> spModel(0);
@@ -334,9 +334,9 @@ int CItemService::FUN_14141b000(CItem* pItem, PC* pPC)
 void CItemService::CollectLinkedEquipItems(CItem* pItem, PC* pPC, ATL::CAtlList<MS2Ptr<CEquipItem> >* pList)
 {
     int nLayer = pItem->FUN_14052a170();
-    for (size_t i = 0; i < reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->FUN_14054b3d0(); i++)
+    for (size_t i = 0; i < reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->GetGroupCount(); i++)
     {
-        int nSlot = FUN_141420a30(reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->GetGroup(i)->FUN_1405451a0(), pItem,
+        int nSlot = FUN_141420a30(reinterpret_cast<CItemData *>(pItem->FUN_140527840())->GetModelOrEmpty()->GetGroup(i)->GetType(), pItem,
             reinterpret_cast<AvatarPC*>(pPC));
         MS2Ptr<CEquipItem> spItem = reinterpret_cast<CEquipment*>(pPC->GetEquipment())->GetItemAt(nSlot, nLayer);
         if (spItem.get() != 0)
@@ -426,7 +426,7 @@ void CreateItemSlotBag(const CString& strName, int nSlots, void* pItems, ItemSlo
     if (pBag != 0)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
@@ -437,18 +437,18 @@ void FUN_14141f860(const CString& strName, int nSlots, void* pItems, MS2Ptr<Item
     if (pBag != 0)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x14141f970
 void DestroyItemSlotBag(const CString& strName)
 {
-    ItemSlotBag* pBag = FUN_140c54520(Unk_NotifyContext::FUN_1422c8e90(strName));
+    ItemSlotBag* pBag = FUN_140c54520(Unk_NotifyContext::FindBinding(strName));
     if (pBag != 0)
     {
         pBag->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -479,7 +479,7 @@ ItemSlotBag::~ItemSlotBag()
 // @0x14141fbc0
 void ItemSlotBag::vfunc_13(int nIndex)
 {
-    ItemInfoSlot* pSlot = CastToItemInfoSlot(reinterpret_cast<NotifyContext::BindData *>(FUN_1422cd070(nIndex)));
+    ItemInfoSlot* pSlot = CastToItemInfoSlot(reinterpret_cast<NotifyContext::BindData *>(GetSlot(nIndex)));
     if (pSlot != 0)
         pSlot->vfunc_11();
 }
@@ -487,7 +487,7 @@ void ItemSlotBag::vfunc_13(int nIndex)
 // @0x14141fc10
 void ItemSlotBag::vfunc_14(int nIndex)
 {
-    ItemInfoSlot* pSlot = CastToItemInfoSlot(reinterpret_cast<NotifyContext::BindData *>(FUN_1422cd070(nIndex)));
+    ItemInfoSlot* pSlot = CastToItemInfoSlot(reinterpret_cast<NotifyContext::BindData *>(GetSlot(nIndex)));
     if (pSlot != 0)
         pSlot->vfunc_10();
 }
@@ -529,7 +529,7 @@ void ResizeItemSlotBag(ItemSlotBag* pBag, int nCount)
     {
         int nStart = nOld;
         for (int i = nStart; i < nCount; i++)
-            pBag->FUN_1422ccb50(i);
+            pBag->AddSlot(i);
     }
     else if (nCount < nOld)
     {
@@ -537,13 +537,13 @@ void ResizeItemSlotBag(ItemSlotBag* pBag, int nCount)
         if (nLast < 0)
             return;
         for (int i = nLast; i >= nCount; i--)
-            pBag->FUN_1422ccc60(i);
+            pBag->RemoveSlot(i);
     }
     if (pBag->m_slots.empty())
         return;
     for (auto kv : pBag->m_slots)
     {
-        ItemInfoSlot* pSlot = CastToItemInfoSlot(reinterpret_cast<NotifyContext::BindData *>(pBag->FUN_1422cd0f0(kv.second)));
+        ItemInfoSlot* pSlot = CastToItemInfoSlot(reinterpret_cast<NotifyContext::BindData *>(pBag->GetSlotByName(kv.second)));
         if (pSlot == 0)
             continue;
         int nIndex = pSlot->GetIndex();

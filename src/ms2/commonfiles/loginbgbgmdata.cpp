@@ -40,13 +40,13 @@ template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_
 void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* format);
 template <class T, class U>
 void Unk_ItemDataLog(CLogString* log, int level, int category, const wchar_t* format, const T& first, const U& second);   // C3: was FUN_14054c030
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // 0x1401782a0 for std::vector<unsigned> (xmlattr.h)
 __int64 GetServerTime();                                                  // server time
-int FUN_140768010(int, int);  // C3: the definition's signature
+int GetRandomRange(int, int);  // C3: the definition's signature
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flag (symbols-manual.tsv)
 LoginBgBgmTable* TSingleton<LoginBgBgmTable>::s_instance;
@@ -90,9 +90,9 @@ LoginBgBgmTable::~LoginBgBgmTable()
 // @0x140a72170
 bool LoginBgBgmTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "loginBgBgm.xml");
+    CString strPath = GetXmlPath("Table", "loginBgBgm.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return true;
@@ -195,7 +195,7 @@ void LoginBgBgmTable::SelectCurrent()
         Unk_AdditionalLog(GetLogString(), 2, 0x13, L"[<ms2> LoginBgBgmTable::Get candidateVector size 0 error");
         return;
     }
-    m_spCurrent = candidates[(unsigned)FUN_140768010(nCandidates, 0)];
+    m_spCurrent = candidates[(unsigned)GetRandomRange(nCandidates, 0)];
 }
 MS2_REPLACE_METHOD(0x140A729E0, LoginBgBgmTable, SelectCurrent, 718, 0xFB4A22D4);
 
@@ -218,7 +218,7 @@ std::pair<unsigned, unsigned> LoginBgBgmTable::GetBgm()
         std::vector<std::pair<unsigned, unsigned> >* pBgm = &m_spCurrent->m_bgm;
         int nCount = pBgm->size();
         if (nCount != 0)
-            result = (*pBgm)[(unsigned)FUN_140768010(nCount, 0)];
+            result = (*pBgm)[(unsigned)GetRandomRange(nCount, 0)];
     }
     return result;
 }

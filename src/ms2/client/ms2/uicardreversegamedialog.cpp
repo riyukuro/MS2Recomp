@@ -48,7 +48,7 @@ void FUN_140614800(const Scaleform::GFx::Value& v);                // destroy a 
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 template <class A> CStringW BlockFormat(int nId, const A& a);
 CStringW GetStringCommon(int nId);
-void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);
+void ShowMessageBox(CStringW strText, int nType, void* pListener, CStringW strTag);
 
 // Item slot bindings (the bound slot key -> the item).
 void DestroyItemInfoSlot(const CString& strKey);                         // unbind
@@ -76,7 +76,7 @@ static Unk_CRRawItem& FUN_140f28bd0(MS2Ptr<CardReward>& sp) { return reinterpret
 
 // Swap two cards.
 // @0x140f28be0
-static void FUN_140f28be0(MS2Ptr<CardReward>& a, MS2Ptr<CardReward>& b)
+static void SwapCards(MS2Ptr<CardReward>& a, MS2Ptr<CardReward>& b)
 {
     Unk_CRRawItem tmp = FUN_140f28bd0(a);
     FUN_140f28bd0(a) = FUN_140f28bd0(b);
@@ -85,14 +85,14 @@ static void FUN_140f28be0(MS2Ptr<CardReward>& a, MS2Ptr<CardReward>& b)
 
 // Fisher-Yates over the cards.
 // @0x140f28b30
-static void FUN_140f28b30(ATL::CAtlArray<MS2Ptr<CardReward> >& cards)
+static void ShuffleCards(ATL::CAtlArray<MS2Ptr<CardReward> >& cards)
 {
     int nCount = (int)cards.GetCount();
     for (int i = nCount - 1; i >= 1; --i)
     {
         int j = rand() % (i + 1);
         if (i != j)
-            FUN_140f28be0(cards[i], cards[j]);
+            SwapCards(cards[i], cards[j]);
     }
 }
 
@@ -103,8 +103,8 @@ UICardReverseGameDialog::UICardReverseGameDialog()
     : m_1e8(0), m_1ec(0), m_1f0(-1), m_1f4(0), m_1f8(0)
 {
     m_2c = 0xc;
-    FUN_141925e70(0, 1);
-    FUN_141924170(1);
+    SetFlag(0, 1);
+    SetTweenEnabled(1);
 }
 
 // @0x140f26aa0
@@ -142,14 +142,14 @@ void UICardReverseGameDialog::vfunc_67()
     UIDialog::vfunc_67();
     TSingleton<CUIService>::GetInstance()->FUN_141ada610(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141adad20(0x6200022);
-    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(((Unk_CRSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(((Unk_CRSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
 }
 
 // @0x140f26cd0
 void UICardReverseGameDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(((Unk_CRSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x6200022);
+    ((class GFxSceneService*)(class Unk_CRSceneMgr*)(((Unk_CRSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141ad9e50(0x6200022);
     TSingleton<CUIService>::GetInstance()->FUN_141ada6f0(0x6200022);
     m_1c8.RemoveAll();
@@ -209,12 +209,12 @@ void UICardReverseGameDialog::vfunc_79(void* p)
                     }
                     spCard->m_strBindId = strBind;
                     obj.SetMemberUInt("index", nCard);
-                    obj.FUN_1407cba60("bindID", CString(strBind));
+                    obj.SetStringMember("bindID", CString(strBind));
                     obj.SetMemberUInt("itemID", spCard->m_nItemId);
                     obj.SetMemberUInt("itemRank", spCard->m_nRank);
-                    obj.FUN_1407cb9c0("itemCount", spCard->m_nCount);
-                    obj.FUN_1407cbb20("itemName", spItem->FUN_140527b10());
-                    static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", Scaleform::GFx::Value(obj.FUN_1422bb870()));
+                    obj.SetIntMember("itemCount", spCard->m_nCount);
+                    obj.SetWStringMember("itemName", spItem->FUN_140527b10());
+                    static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", Scaleform::GFx::Value(obj.GetValue()));
                     m_1a8.Add(spCard);
                 }
             }
@@ -229,7 +229,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
             for (unsigned i = 0; i < m_180.GetCount(); ++i)
                 DestroyItemInfoSlot(m_180[i]);
             ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->RemoveAll();
-            FUN_140f28b30(m_1c8);
+            ShuffleCards(m_1c8);
         }
         else if (nMode == 2)
         {
@@ -258,7 +258,7 @@ void UICardReverseGameDialog::vfunc_79(void* p)
             {
                 CStringW strMsg = BlockFormat<unsigned>(0xc3f, reinterpret_cast<const unsigned&>(m_1e8));
                 TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
-                FUN_140d73aa0(CStringW(strMsg), 0, 0, CStringW(L""));
+                ShowMessageBox(CStringW(strMsg), 0, 0, CStringW(L""));
                 static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("setShuffleButton", 1);
             }
             }
@@ -322,12 +322,12 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->Add(strBind);
                         m_1f8->m_strBindId = strBind;
                     }
-                    obj.FUN_1407cba60("bindID", CString(m_1f8->m_strBindId));
+                    obj.SetStringMember("bindID", CString(m_1f8->m_strBindId));
                     obj.SetMemberUInt("itemID", m_1f8->m_nItemId);
                     obj.SetMemberUInt("itemRank", m_1f8->m_nRank);
-                    obj.FUN_1407cb9c0("itemCount", m_1f8->m_nCount);
-                    obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1f8->m_nItemId));
-                    static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", Scaleform::GFx::Value(obj.FUN_1422bb870()));
+                    obj.SetIntMember("itemCount", m_1f8->m_nCount);
+                    obj.SetWStringMember("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, m_1f8->m_nItemId));
+                    static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", Scaleform::GFx::Value(obj.GetValue()));
                     OnCardTweenComplete();
                     m_1f0 = -1;
                     m_1f8 = 0;
@@ -350,12 +350,12 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
                             ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(m_180))->Add(strBind);
                             spCard->m_strBindId = strBind;
                         }
-                        obj.FUN_1407cba60("bindID", CString(spCard->m_strBindId));
+                        obj.SetStringMember("bindID", CString(spCard->m_strBindId));
                         obj.SetMemberUInt("itemID", spCard->m_nItemId);
                         obj.FUN_1409adc90("itemRank", spCard->m_nRank);
-                        obj.FUN_1407cb9c0("itemCount", spCard->m_nCount);
-                        obj.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spCard->m_nItemId));
-                        static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", Scaleform::GFx::Value(obj.FUN_1422bb870()));
+                        obj.SetIntMember("itemCount", spCard->m_nCount);
+                        obj.SetWStringMember("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spCard->m_nItemId));
+                        static_cast<Unk_CRAS*>(m_30.operator->())->Invoke("updateItem", Scaleform::GFx::Value(obj.GetValue()));
                     }
                 }
             }
@@ -370,7 +370,7 @@ int UICardReverseGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
     else if (_stricmp(szMethod, "OnCloseDialog") == 0)
     {
         if (m_1f4 > 0)
-            FUN_140d73aa0(GetStringCommon(0xc41), 1, static_cast<IMessageListener*>(this), CStringW(L""));
+            ShowMessageBox(GetStringCommon(0xc41), 1, static_cast<IMessageListener*>(this), CStringW(L""));
         else
             vfunc_67();
         return 1;
@@ -398,7 +398,7 @@ void UICardReverseGameDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* p
         ASTooltip tip(pPlayer, 0x20, 2);
         if (tip.FUN_1409e0d40(spItem.get()) != 0)
         {
-            *pRetVal = tip.FUN_1422bb870();
+            *pRetVal = tip.GetValue();
             return;
         }
     }

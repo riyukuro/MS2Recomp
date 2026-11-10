@@ -13,7 +13,7 @@
 #include "ms2/placeholder/cvaliddata.h"
 #include "ms2/placeholder/ascript.h"
 
-CString FUN_14016a5c0(const char* pszName, int nFlags);    // undecorated class name
+CString ToCString(const char* pszName, int nFlags);    // undecorated class name
 
 class CQuestUIData : public CPtred, public CValidData<CQuestUIData>
 {
@@ -33,7 +33,7 @@ public:
         if (!s_bInit)
         {
             CString msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CQuestUIData).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(CQuestUIData).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }
@@ -69,7 +69,7 @@ public:
         if (!s_bInit)
         {
             CString msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CChapterUIData).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(CChapterUIData).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }

@@ -71,8 +71,8 @@ class Unk_EwRoot : public AScript { public:
 // The widget's movie root as an ASDialog (RTTI .?AVASDialog@@).
 class ASDialog : public ASDisplayObjectContainer {
 public:
-    float FUN_1422c10a0();                                              // x
-    float FUN_1422c1110();                                              // y
+    float GetX();                                              // x
+    float GetY();                                              // y
     int FUN_1422c1500();                                                // width
     int FUN_1422c1530();                                                // height
 private:
@@ -110,7 +110,7 @@ class UIStatusEventDispatcher;
 
 // quests
 void* FUN_140764020();   // C3: was FUN_140764020
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                                   // the quest id
 int FUN_140748050(CQuestData::QuestRewardItem* pItem, int nJob);                               // the reward item suits the job
 #define EwQuestLevel(pData) ((unsigned short)(pData)->m_conditions[0]->m_target.GetFirstValue())
@@ -156,7 +156,7 @@ class Unk_MyPCBurningEvent : public CPtred {};
 // @0x140c58d30
 UIEventWidgetDialog::UIEventWidgetDialog()
 {
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     m_178 = 0;
     UIEventWidgetDialog* pThis = this;
     s_widgets.Add(pThis);
@@ -204,7 +204,7 @@ MS2_REPLACE_METHOD(0x140C58F30, UIEventWidgetDialog, vfunc_67, 75, 0x91098C16);
 void UIEventWidgetDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140c59210();
+    UpdateData();
 }
 MS2_REPLACE_METHOD(0x140C58F90, UIEventWidgetDialog, OnLoadComplete, 34, 0xF2D99F3E);
 
@@ -233,9 +233,9 @@ void UIEventWidgetDialog::vfunc_43()
         bool bReset = false;
         int bFixed = m_60 == 0 && m_78 != 0 && vfunc_52() != 0;
         if (bFixed) {
-            if (((class ASDisplayObject*)(pDialog))->FUN_1422c1500() < ((class ASDisplayObject*)(pDialog))->FUN_1422c10a0()
-                || ((class ASDisplayObject*)(pDialog))->FUN_1422c1530() < ((class ASDisplayObject*)(pDialog))->FUN_1422c1110()
-                || ((class ASDisplayObject*)(pDialog))->FUN_1422c10a0() < 0.0f || ((class ASDisplayObject*)(pDialog))->FUN_1422c1110() < 0.0f)
+            if (((class ASDisplayObject*)(pDialog))->FUN_1422c1500() < ((class ASDisplayObject*)(pDialog))->GetX()
+                || ((class ASDisplayObject*)(pDialog))->FUN_1422c1530() < ((class ASDisplayObject*)(pDialog))->GetY()
+                || ((class ASDisplayObject*)(pDialog))->GetX() < 0.0f || ((class ASDisplayObject*)(pDialog))->GetY() < 0.0f)
                 bReset = true;
         }
         else
@@ -250,7 +250,7 @@ void UIEventWidgetDialog::vfunc_43()
 MS2_REPLACE_METHOD(0x140C59070, UIEventWidgetDialog, vfunc_43, 396, 0x1C3E6B57);
 
 // @0x140c59210
-void UIEventWidgetDialog::FUN_140c59210()
+void UIEventWidgetDialog::UpdateData()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
@@ -261,7 +261,7 @@ void UIEventWidgetDialog::FUN_140c59210()
     }
     static_cast<Unk_EwRoot*>(m_30.operator->())->Invoke("setData", (class AScript const &)(data));
 }
-MS2_REPLACE_METHOD(0x140C59210, UIEventWidgetDialog, FUN_140c59210, 215, 0x3AAA625C);
+MS2_REPLACE_METHOD(0x140C59210, UIEventWidgetDialog, UpdateData, 215, 0x3AAA625C);
 
 // @0x140c592f0
 int UIEventWidgetDialog::vfunc_85(ASObj& rObj)
@@ -306,7 +306,7 @@ int UILevelUpPackageWidgetDialog::vfunc_65()
 {
     if (!UIEventWidgetDialog::vfunc_65())
         return 0;
-    FUN_140bfc4b0()->FUN_141aa87c0(static_cast<UIQuestEventListener*>(this));
+    FUN_140bfc4b0()->AddListener(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 1;
 }
@@ -315,7 +315,7 @@ MS2_REPLACE_METHOD(0x140C595E0, UILevelUpPackageWidgetDialog, vfunc_65, 143, 0x7
 // @0x140c59680
 void UILevelUpPackageWidgetDialog::vfunc_67()
 {
-    FUN_140bfc4b0()->FUN_141aa8850(static_cast<UIQuestEventListener*>(this));
+    FUN_140bfc4b0()->RemoveListener(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIEventWidgetDialog::vfunc_67();
 }
@@ -324,7 +324,7 @@ MS2_REPLACE_METHOD(0x140C59680, UILevelUpPackageWidgetDialog, vfunc_67, 130, 0x4
 // @0x140c59710
 void UILevelUpPackageWidgetDialog::vfunc_oa0_9(unsigned short nLevel)
 {
-    FUN_140c59210();
+    UpdateData();
 }
 
 // @0x140c59740
@@ -337,7 +337,7 @@ void UILevelUpPackageWidgetDialog::vfunc_o178_8(void* pQuest)
         return;
     if (spData->m_338.m_value != 1)
         return;
-    FUN_140c59210();
+    UpdateData();
 }
 
 // @0x140c597f0
@@ -361,7 +361,7 @@ int UILevelUpPackageWidgetDialog::vfunc_85(ASObj& rObj)
     m_198 = FUN_140c59bd0(range);
     if (m_198 == 0)
         return 0;
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(m_198);
+    MS2Ptr<CQuestData> spData = GetQuestData(m_198);
     if (!spData)
         return 0;
     CQuestData::QuestRewardItem* pReward = 0;
@@ -371,10 +371,10 @@ int UILevelUpPackageWidgetDialog::vfunc_85(ASObj& rObj)
             pReward = &spData->m_complete.m_choiceRewards[i];
     }
     rObj.FUN_1409c0dc0("title", "$s_levelup_package_widget");
-    rObj.FUN_1407cba60("binding", m_178->BindNewItem(pReward->m_itemId, pReward->m_count, pReward->m_job));
-    ((class AScript&)(rObj)).FUN_1407cb9c0("max", (unsigned)range.m_nHigh - (unsigned)range.m_nLow);
-    ((class AScript&)(rObj)).FUN_1407cb9c0("current", (unsigned)Unk_EwActorLevel(pSelf) - (unsigned)range.m_nLow);
-    ((class AScript&)(rObj)).FUN_1407cbb20("text", StringFormat(L"{0}/{1}", Unk_EwActorLevel(pSelf), range.m_nHigh));
+    rObj.SetStringMember("binding", m_178->BindNewItem(pReward->m_itemId, pReward->m_count, pReward->m_job));
+    ((class AScript&)(rObj)).SetIntMember("max", (unsigned)range.m_nHigh - (unsigned)range.m_nLow);
+    ((class AScript&)(rObj)).SetIntMember("current", (unsigned)Unk_EwActorLevel(pSelf) - (unsigned)range.m_nLow);
+    ((class AScript&)(rObj)).SetWStringMember("text", StringFormat(L"{0}/{1}", Unk_EwActorLevel(pSelf), range.m_nHigh));
     return 1;
 }
 MS2_REPLACE_METHOD(0x140C59830, UILevelUpPackageWidgetDialog, vfunc_85, 750, 0x2AB8BFF8);
@@ -416,7 +416,7 @@ int UILevelUpPackageWidgetDialog::FUN_140c59bd0(Unk_DcLevelRange& rRange)
         unsigned short nKey = byLevel.GetKeyAt(pos);
         MS2Ptr<CQuestData> spData = byLevel.GetValueAt(pos);
         if (nLevel >= nKey) {
-            if (((class CQuestManager*)FUN_140764020())->FUN_140745590(FUN_14074b030(spData.get())) == 0) {
+            if (((class CQuestManager*)FUN_140764020())->IsQuestRewarded(FUN_14074b030(spData.get())) == 0) {
                 posFound = pos;
                 break;
             }
@@ -458,7 +458,7 @@ MS2_REPLACE_METHOD(0x140C5A0B0, UIBurningEventWidgetDialog, GetTypeName, 61, 0x2
 // @0x140c5a100
 void UIBurningEventWidgetDialog::FUN_140c5a100(void* pEvent)
 {
-    FUN_140c59210();
+    UpdateData();
 }
 
 // @0x140c5a130
@@ -482,7 +482,7 @@ MS2_REPLACE_METHOD(0x140C5A190, UIBurningEventWidgetDialog, vfunc_67, 77, 0x5FA8
 // @0x140c5a1f0
 void UIBurningEventWidgetDialog::vfunc_oa0_9(unsigned short nLevel)
 {
-    FUN_140c59210();
+    UpdateData();
 }
 
 // @0x140c5a220
@@ -545,11 +545,11 @@ int UIBurningEventWidgetDialog::vfunc_85(ASObj& rObj)
     if (spResult == 0)
         return 0;
     m_190 = spResult->m_eventId;
-    ((class AScript&)(rObj)).FUN_1407cbb20("title", GetStringCommonByKey(spResult->m_rewardUiTitleStringKey));
-    rObj.FUN_1407cba60("binding", m_178->BindNewItem(spResult->m_rewardItems.begin()->m_itemId, spResult->m_rewardItems.begin()->vfunc_o18_1(), spResult->m_rewardItems.begin()->m_count));
+    ((class AScript&)(rObj)).SetWStringMember("title", GetStringCommonByKey(spResult->m_rewardUiTitleStringKey));
+    rObj.SetStringMember("binding", m_178->BindNewItem(spResult->m_rewardItems.begin()->m_itemId, spResult->m_rewardItems.begin()->vfunc_o18_1(), spResult->m_rewardItems.begin()->m_count));
     rObj.FUN_1409c48f0("max", spResult->m_endLevel);
     rObj.FUN_1409c48f0("current", Unk_EwActorLevel(pSelf));
-    ((class AScript&)(rObj)).FUN_1407cbb20("text", StringFormat(L"{0}/{1}", Unk_EwActorLevel(pSelf), spResult->m_endLevel));
+    ((class AScript&)(rObj)).SetWStringMember("text", StringFormat(L"{0}/{1}", Unk_EwActorLevel(pSelf), spResult->m_endLevel));
     return 1;
 }
 MS2_REPLACE_METHOD(0x140C5A420, UIBurningEventWidgetDialog, vfunc_85, 1261, 0x598DDAF2);
@@ -585,18 +585,18 @@ void UIBurningEventWidgetDialog::vfunc_86()
 MS2_REPLACE_METHOD(0x140C5A930, UIBurningEventWidgetDialog, vfunc_86, 491, 0xA7113577);
 
 // @0x140c5ab30
-void UIBurningEventWidgetDialog::FUN_140c5ab30(MS2Ptr<Unk_MyPCBurningEvent> spEvent)
+void UIBurningEventWidgetDialog::SetEvent(MS2Ptr<Unk_MyPCBurningEvent> spEvent)
 {
     m_198 = spEvent;
 }
-MS2_REPLACE_METHOD(0x140C5AB30, UIBurningEventWidgetDialog, FUN_140c5ab30, 63, 0x73AD55D6);
+MS2_REPLACE_METHOD(0x140C5AB30, UIBurningEventWidgetDialog, SetEvent, 63, 0x73AD55D6);
 
 // @0x140c5ab80
-MS2Ptr<Unk_MyPCBurningEvent> UIBurningEventWidgetDialog::FUN_140c5ab80()
+MS2Ptr<Unk_MyPCBurningEvent> UIBurningEventWidgetDialog::GetEvent()
 {
     return m_198;
 }
-MS2_REPLACE_METHOD(0x140C5AB80, UIBurningEventWidgetDialog, FUN_140c5ab80, 67, 0x353C2547);
+MS2_REPLACE_METHOD(0x140C5AB80, UIBurningEventWidgetDialog, GetEvent, 67, 0x353C2547);
 
 // MS2-FUNCTIONAL: frame size and temporaries differ from the exe (same calls and conditions)
 // @0x140c5af20

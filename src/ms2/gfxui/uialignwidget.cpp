@@ -54,12 +54,12 @@ UIAlignWidget::~UIAlignWidget()
 }
 
 // @0x1422e6550
-void UIAlignWidget::FUN_1422e6550(int nOffsetX, int nOffsetY)
+void UIAlignWidget::SetOffset(int nOffsetX, int nOffsetY)
 {
     m_nOffsetX = nOffsetX;
     m_nOffsetY = nOffsetY;
 }
-MS2_REPLACE_METHOD(0x1422E6550, UIAlignWidget, FUN_1422e6550, 39, 0x3919B85D);
+MS2_REPLACE_METHOD(0x1422E6550, UIAlignWidget, SetOffset, 39, 0x3919B85D);
 
 // @0x1422e6580
 void UIAlignWidget::SetAlignType(int nAlignType)
@@ -74,7 +74,7 @@ int UIAlignWidget::FUN_1422e65a0(const CString& strName, int bAny)
     POSITION pos = m_listEntities.Find(strName);
     if (pos == NULL)
         return 0;
-    UISwfEntity* pEntity = GetUISwfEntityManager()->FUN_1422d4380(strName);
+    UISwfEntity* pEntity = GetUISwfEntityManager()->FindEntityByTypeName(strName);
     if (pEntity == NULL)
         return 0;
     if (bAny != 0)
@@ -96,7 +96,7 @@ void UIAlignWidget::FUN_1422e6640(const CString& strName)
 MS2_REPLACE_METHOD(0x1422E6640, UIAlignWidget, FUN_1422e6640, 81, 0xE3730B32);
 
 // @0x1422e66a0
-void UIAlignWidget::FUN_1422e66a0(int bAny)
+void UIAlignWidget::LayoutEntities(int bAny)
 {
     int nX = m_nOffsetX;
     int nY = m_nOffsetY;
@@ -104,7 +104,7 @@ void UIAlignWidget::FUN_1422e66a0(int bAny)
     while (pos != NULL)
     {
         const CString& strName = m_listEntities.GetNext(pos);
-        UISwfEntity* pEntity = GetUISwfEntityManager()->FUN_1422d4380(strName);
+        UISwfEntity* pEntity = GetUISwfEntityManager()->FindEntityByTypeName(strName);
         if (pEntity == NULL || pEntity->FUN_1422dc430() == 0 || pEntity->vfunc_9() == 0)
             continue;
         int nWidth = 0;
@@ -132,7 +132,7 @@ void UIAlignWidget::FUN_1422e66a0(int bAny)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1422E66A0, UIAlignWidget, FUN_1422e66a0, 449, 0xD7E26A2F);
+MS2_REPLACE_METHOD(0x1422E66A0, UIAlignWidget, LayoutEntities, 449, 0xD7E26A2F);
 
 // @0x1422e68a0
 UIAlignWidgetManager::UIAlignWidgetManager()
@@ -146,7 +146,7 @@ UIAlignWidgetManager::~UIAlignWidgetManager()
 }
 
 // @0x1422e6960
-void UIAlignWidgetManager::FUN_1422e6960()
+void UIAlignWidgetManager::LoadWidgets()
 {
     m_listWidgets.RemoveAll();
     if (!ms_kXmlLoader.IsNull())
@@ -168,7 +168,7 @@ void UIAlignWidgetManager::FUN_1422e6960()
                 XmlGetAttr((TiXmlElement*)pWidget, "alignType", nAlignType);
                 MS2Ptr<UIAlignWidget> spWidget(new UIAlignWidget);
                 spWidget->SetAlignType(nAlignType);
-                spWidget->FUN_1422e6550(nOffsetX, nOffsetY);
+                spWidget->SetOffset(nOffsetX, nOffsetY);
                 for (Unk_XmlNode* pEntity = pWidget->FirstChild("entity"); pEntity != NULL;
                      pEntity = pEntity->NextSibling("entity"))
                 {
@@ -183,10 +183,10 @@ void UIAlignWidgetManager::FUN_1422e6960()
         }
     }
 }
-MS2_REPLACE_METHOD(0x1422E6960, UIAlignWidgetManager, FUN_1422e6960, 645, 0x85F9E9B3);
+MS2_REPLACE_METHOD(0x1422E6960, UIAlignWidgetManager, LoadWidgets, 645, 0x85F9E9B3);
 
 // @0x1422e6bf0
-int UIAlignWidgetManager::FUN_1422e6bf0(UISwfEntity* pEntity, int bAny)
+int UIAlignWidgetManager::HasWidgetForEntity(UISwfEntity* pEntity, int bAny)
 {
     if (pEntity == NULL)
         return 0;
@@ -203,18 +203,18 @@ int UIAlignWidgetManager::FUN_1422e6bf0(UISwfEntity* pEntity, int bAny)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422E6BF0, UIAlignWidgetManager, FUN_1422e6bf0, 263, 0x8B6116DB);
+MS2_REPLACE_METHOD(0x1422E6BF0, UIAlignWidgetManager, HasWidgetForEntity, 263, 0x8B6116DB);
 
 // @0x1422e6d00
-void UIAlignWidgetManager::FUN_1422e6d00(int bAny)
+void UIAlignWidgetManager::RequestLayout(int bAny)
 {
     m_bLayoutPending = 1;
     m_nLayoutArg = bAny;
 }
-MS2_REPLACE_METHOD(0x1422E6D00, UIAlignWidgetManager, FUN_1422e6d00, 34, 0xD80EB384);
+MS2_REPLACE_METHOD(0x1422E6D00, UIAlignWidgetManager, RequestLayout, 34, 0xD80EB384);
 
 // @0x1422e6d30
-void UIAlignWidgetManager::FUN_1422e6d30()
+void UIAlignWidgetManager::ProcessPendingLayout()
 {
     if (m_bLayoutPending != 0)
     {
@@ -223,7 +223,7 @@ void UIAlignWidgetManager::FUN_1422e6d30()
         m_nLayoutArg = 0;
     }
 }
-MS2_REPLACE_METHOD(0x1422E6D30, UIAlignWidgetManager, FUN_1422e6d30, 67, 0xF69AB0F6);
+MS2_REPLACE_METHOD(0x1422E6D30, UIAlignWidgetManager, ProcessPendingLayout, 67, 0xF69AB0F6);
 
 // @0x1422e6d80
 void UIAlignWidgetManager::FUN_1422e6d80(int bAny)
@@ -233,13 +233,13 @@ void UIAlignWidgetManager::FUN_1422e6d80(int bAny)
     {
         MS2Ptr<UIAlignWidget> spWidget = m_listWidgets.GetNext(pos);
         if (spWidget.get() != NULL)
-            spWidget->FUN_1422e66a0(bAny);
+            spWidget->LayoutEntities(bAny);
     }
 }
 MS2_REPLACE_METHOD(0x1422E6D80, UIAlignWidgetManager, FUN_1422e6d80, 143, 0x8E6BFA2A);
 
 // @0x1422e6e20
-void UIAlignWidgetManager::FUN_1422e6e20(Delegate<bool(TiXmlDocument&)> loader)
+void UIAlignWidgetManager::SetXmlLoader(Delegate<bool(TiXmlDocument&)> loader)
 {
     ms_kXmlLoader = loader;
 }

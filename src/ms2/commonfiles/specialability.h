@@ -31,4 +31,4 @@ typedef Unk_BmBoxPtr<ATL::CAtlList<eSpecialAbility> > Unk_SAListPtr;    // TPtr<
 int FUN_14081c880();                                        // loads everything and fills the lookup tables
 int LoadSpecialAbilityStringTable();                                        // the row table
 int LoadStringSpecialAbilityName(std::map<int, CStringW>& mapNames);       // stringSpecialAbilityName.xml
-Unk_SAListPtr FUN_14081d7b0(eSpecialAbility nType);                // the ability list of a group
+Unk_SAListPtr GetSpecialAbilityList(eSpecialAbility nType);                // the ability list of a group

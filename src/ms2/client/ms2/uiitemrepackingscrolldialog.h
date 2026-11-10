@@ -32,14 +32,14 @@ public:
     virtual void vfunc_67();                                    // 67 0x140f61ea0 close: forget the items
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x140f61f20 message box answers
 
-    void FUN_140f62020(CInPacket& packet);                      // 0x140f62020 packet 0xe4: result
+    void OnRePackingScrollPacket(CInPacket& packet);                      // 0x140f62020 packet 0xe4: result
     void FUN_140f62200(CInPacket& packet);                      // 0x140f62200 result 2: success
     void FUN_140f625e0(CInPacket& packet);                      // 0x140f625e0 result 3: error code
     void FUN_140f62710(int nError);                             // 0x140f62710 error code -> message
     void FUN_140f628d0(MS2Ptr<CItem> spItem);                   // 0x140f628d0 forget an item's lock
     ItemScrollSlot* FUN_140f62930(CString strName);             // 0x140f62930 the scroll slot of a name
-    MS2Ptr<CItemRePackingScrollData> FUN_140f62a90(MS2Ptr<CItemData> spData);   // 0x140f62a90 the scroll row of an item's data
-    bool FUN_140f629b0(MS2Ptr<CItem> spItem);                   // 0x140f629b0 put an item in the slot
+    MS2Ptr<CItemRePackingScrollData> GetRePackingScrollData(MS2Ptr<CItemData> spData);   // 0x140f62a90 the scroll row of an item's data
+    bool SetSlotItem(MS2Ptr<CItem> spItem);                   // 0x140f629b0 put an item in the slot
     void FUN_140f62b70(ItemScrollSlot& slot);                   // 0x140f62b70 the item was removed from the slot
     void FUN_140f62be0(ItemScrollSlot& slot, DragSlot* pDrag);  // 0x140f62be0 an item was dropped onto the slot
 

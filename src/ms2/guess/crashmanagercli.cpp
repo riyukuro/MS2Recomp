@@ -49,11 +49,11 @@ extern DWORD g_dwCrashMainThreadId;                         // 0x143aac530
 extern LPTOP_LEVEL_EXCEPTION_FILTER g_pfnPrevExceptionFilter;   // 0x143ab6728
 
 class Unk_ImgTagSource;
-Unk_AltStringMgr* FUN_14025e7a0();
+Unk_AltStringMgr* GetGFxManager();
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    unsigned int FUN_1422af8a0(int);
+    unsigned int GetImeConversionMode(int);
 };
 CStringW GetStringCommon(int nStringId);
 CString FUN_14016a600(const wchar_t* pwsz, int n);          // wide -> narrow
@@ -84,32 +84,32 @@ void CrashManagerCli::FUN_140a435a0()
 }
 
 // @0x140a43750
-void CrashManagerCli::FUN_140a43750(DWORD nId, CString strText)
+void CrashManagerCli::SetCrashLogEntry(DWORD nId, CString strText)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_map.SetAt(nId, strText);
 }
 
 // @0x140a437d0
-void CrashManagerCli::FUN_140a437d0(DWORD nId)
+void CrashManagerCli::RemoveCrashLogEntry(DWORD nId)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     m_map.RemoveKey(nId);
 }
 
 // @0x140a43830
-void CrashManagerCli::FUN_140a43830()
+void CrashManagerCli::WriteCrashLogEntries()
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (POSITION pos = m_map.GetHeadPosition(); pos != NULL; m_map.GetNext(pos))
     {
         CString strLine = Unk_SocketFormat("{0} {1}", m_map.GetKeyAt(pos), m_map.GetValueAt(pos));
-        FUN_1401ce270(strLine);
+        AddLogLine(strLine);
     }
 }
 
 // @0x140a43920
-BOOL CrashManagerCli::FUN_140a43920(DWORD nId, CString& strText)
+BOOL CrashManagerCli::GetCrashLogEntry(DWORD nId, CString& strText)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     return m_map.Lookup(nId, strText) != 0;
@@ -130,23 +130,23 @@ void FUN_140a439d0()
     {
         if (TSingleton<CrashManagerCli>::GetInstance() != 0)
         {
-            unsigned nImgTag = ((class GFxManager*)(class Unk_ImgTagSource*)(reinterpret_cast<Unk_ImgTagSource*>(FUN_14025e7a0())))->FUN_1422af8a0(2);
+            unsigned nImgTag = ((class GFxManager*)(class Unk_ImgTagSource*)(reinterpret_cast<Unk_ImgTagSource*>(GetGFxManager())))->GetImeConversionMode(2);
             TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce2f0("MyPreErrHandler ImgTag:%x", nImgTag);
-            std::list<TFunctor<void, EmptyParam> >& callbacks = TSingleton<CrashManagerCli>::GetInstance()->FUN_140a44800();
+            std::list<TFunctor<void, EmptyParam> >& callbacks = TSingleton<CrashManagerCli>::GetInstance()->GetShutdownCallbacks();
             for (std::list<TFunctor<void, EmptyParam> >::iterator it = callbacks.begin(); it != callbacks.end(); ++it)
             {
                 if (!it->IsNull())
                     (*it)();
             }
-            TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce3a0();
+            TSingleton<CrashManagerCli>::GetInstance()->FlushLog();
         }
     }
     else
     {
         if (TSingleton<CrashManagerCli>::GetInstance() != 0)
         {
-            TSingleton<CrashManagerCli>::GetInstance()->FUN_140a43830();
-            TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce3a0();
+            TSingleton<CrashManagerCli>::GetInstance()->WriteCrashLogEntries();
+            TSingleton<CrashManagerCli>::GetInstance()->FlushLog();
         }
     }
 }
@@ -272,7 +272,7 @@ LONG WINAPI FUN_140a43fa0(EXCEPTION_POINTERS* pException)
 }
 
 // @0x140a44800
-std::list<TFunctor<void, EmptyParam> >& CrashManagerCli::FUN_140a44800()
+std::list<TFunctor<void, EmptyParam> >& CrashManagerCli::GetShutdownCallbacks()
 {
     return m_callbacks;
 }

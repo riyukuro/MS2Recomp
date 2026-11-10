@@ -28,21 +28,21 @@ public:
     virtual void vfunc_79(void* pEvent);                        // 79 0x140f8c6b0 key event: F5 refresh
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x140f8cc10 join answers
 
-    void FUN_140f8dde0();                                     // clear the search text and the condition text
+    void ClearSearchText();                                     // clear the search text and the condition text
     void FUN_140f8ded0();                                       // m_178 = 0
     int FUN_140f8def0(int nStart, int nCount, ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& list);   // send the list page + notice
     int FUN_140f8e220(int nStart, int nCount, ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& list);  // send a list page
     int FUN_140f8e340(int nStart, int nCount);                  // page of the manager's results
-    int FUN_140f8e3a0();                                        // the last search is older than 500 ms
-    int FUN_140f8e3f0(int nPage);                               // queue a search (page = nPage)
-    int FUN_140f8e480(const CStringW& strText);                 // validate the search text; 1 = stored
-    void FUN_140f8e610();                                       // "forceClickRefresh"
-    void FUN_140f8e670();                                       // make sure the condition exists (page 1)
+    int IsSearchDelayElapsed();                                        // the last search is older than 500 ms
+    int QueueSearch(int nPage);                               // queue a search (page = nPage)
+    int ValidateSearchText(const CStringW& strText);                 // validate the search text; 1 = stored
+    void ForceClickRefresh();                                       // "forceClickRefresh"
+    void InitSearchCondition();                                       // make sure the condition exists (page 1)
     void FUN_140f8e790(float x, float y, unsigned __int64 nAccount, __int64 nChar, CStringW* pName, int nFlag);   // right click menu
     void OnClickRegisterMemeberSearch();                                       // register the member search
     void OnClickRegisterMemeberSearchModify();                                       // modify the member search registration
     void FUN_140f8ed40(ATL::CAtlArray<MS2Ptr<CMatchPartyRecruit>>& list, int nStart);   // show a received page
-    void FUN_140f8edb0();                                       // refresh the member search state
+    void RefreshMemberSearchState();                                       // refresh the member search state
     void FUN_140f8ee00(CMatchPartyRecruit* pRecruit);           // refresh and force the refresh click
     void FUN_140f8ee50(CMatchPartyRecruit* pRecruit);           // "updateDataTo"
 

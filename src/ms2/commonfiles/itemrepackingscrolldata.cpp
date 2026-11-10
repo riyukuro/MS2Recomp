@@ -35,8 +35,8 @@ bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetBool(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873710
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
+CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 bool FUN_140634230(MS2Ptr<CItem> pItem);
 __int64 GetServerTime();
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);
@@ -82,10 +82,10 @@ CItemRePackingScrollTable::~CItemRePackingScrollTable()
 // @0x14061d130
 int CItemRePackingScrollTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "itemRePackingScroll.xml");
-    FUN_1401d1160(strPath);
+    CString strPath = GetXmlPath("Table", "itemRePackingScroll.xml");
+    SetPath(strPath);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 1;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -150,8 +150,8 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
         return 7;
     if (!((CItem*)pItem)->FUN_140528980() || ((CItem*)pItem)->FUN_140527030() != 0)
         return 2;
-    CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(((CItem*)pItem)->FUN_1405278a0())->GetEnchant();
-    if (pEnchant != 0 && !pEnchant->FUN_14058c9a0())
+    CItemEnchantInfo* pEnchant = reinterpret_cast<CItemStatus*>(((CItem*)pItem)->GetStatus())->GetEnchant();
+    if (pEnchant != 0 && !pEnchant->IsEnabled())
         return 10;
     MS2Ptr<CItemData> pItemData(((class CItemData*)((class CItem*)(class CItem*)(pItem))->FUN_140527840()));
     if (pItemData == 0)
@@ -181,7 +181,7 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
         break;
     }
     case 1:
-        if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa4))
+        if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xa4))
             return 7;
         if (!pItemData->IsPetItem())
             return 3;
@@ -195,15 +195,15 @@ int CItemRePackingScrollTable::Check(MS2Ptr<CItem> pItem, CItemRePackingScrollDa
         return 5;
     if (!pItemData->FUN_14053d800())
         return 8;
-    if (((CItem*)pItem)->FUN_140527930() == 0)
+    if (((CItem*)pItem)->GetTransfer() == 0)
         return 2;
-    if (reinterpret_cast<CItemTransfer*>(((CItem*)pItem)->FUN_140527930())->GetCount() > 0)
+    if (reinterpret_cast<CItemTransfer*>(((CItem*)pItem)->GetTransfer())->GetCount() > 0)
         return 9;
     if (FUN_140634230(pItem))
         return 1;
     if (((CItem*)pItem)->GetRemainingRePackingCount() == 0)
         return 10;
-    if (((CItem*)pItem)->FUN_140528ca0() == 1 || ((CItem*)pItem)->FUN_140528e00() > GetServerTime())
+    if (((CItem*)pItem)->FUN_140528ca0() == 1 || ((CItem*)pItem)->GetUnlockTime() > GetServerTime())
         return 0xb;
     return 0;
 }
@@ -214,7 +214,7 @@ void CItemRePackingScrollTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CItemRePackingScrollTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CItemRePackingScrollTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

@@ -43,7 +43,7 @@ void RideOnAction::vfunc_2(CInputStream* pStream)
 }
 MS2_REPLACE_METHOD(0x14077DE30, RideOnAction, vfunc_2, 112, 0xBBE81F7C);
 // @0x14077deb0
-MS2Ptr<RideOnAction> FUN_14077deb0(CInputStream* pStream)
+MS2Ptr<RideOnAction> ReadRideOnAction(CInputStream* pStream)
 {
     unsigned int nType = pStream->ReadUInt8();
     MS2Ptr<RideOnAction> pAction(0);
@@ -65,7 +65,7 @@ MS2Ptr<RideOnAction> FUN_14077deb0(CInputStream* pStream)
         pAction->vfunc_2(pStream);
     return pAction;
 }
-MS2_REPLACE(0x14077DEB0, FUN_14077deb0, 578, 0xB0AA39DE);
+MS2_REPLACE(0x14077DEB0, ReadRideOnAction, 578, 0xB0AA39DE);
 // @0x14077e100
 RideOnActionUseItem::RideOnActionUseItem()
     : m_n30(0), m_n38(0)
@@ -156,7 +156,7 @@ void RideOffAction::vfunc_2(CInputStream* pStream)
 }
 MS2_REPLACE_METHOD(0x14077E570, RideOffAction, vfunc_2, 46, 0x84681AAE);
 // @0x14077e5b0
-MS2Ptr<RideOffAction> FUN_14077e5b0(CInputStream* pStream)
+MS2Ptr<RideOffAction> ReadRideOffAction(CInputStream* pStream)
 {
     int nType = pStream->ReadUInt8();
     MS2Ptr<RideOffAction> pAction(0);
@@ -244,7 +244,7 @@ MS2Ptr<RideOffAction> FUN_14077e5b0(CInputStream* pStream)
         pAction->vfunc_2(pStream);
     return pAction;
 }
-MS2_REPLACE(0x14077E5B0, FUN_14077e5b0, 2890, 0x80429F64);
+MS2_REPLACE(0x14077E5B0, ReadRideOffAction, 2890, 0x80429F64);
 // @0x14077f170
 RideOffActionBeautyShop::RideOffActionBeautyShop(int nArg)
     : RideOffAction(nArg)

@@ -18,8 +18,8 @@ public:
     CCacheData(const CCacheData& kOther);   // 0x1401d2670
     virtual ~CCacheData();              // 0x1401d1100
 
-    CString* FUN_1401d1140();           // address of the path string
-    bool FUN_1401d1160(CString strPath);    // records the loaded cache path and its file time, by value
+    CString* GetPath();           // address of the path string
+    bool SetPath(CString strPath);    // records the loaded cache path and its file time, by value
     int FUN_1401d17f0(CString strPath, FILETIME* pTime);    // reads the last-write time of the file
 
     friend unsigned char FUN_1401d1320(CCacheData*);    // file changed since load

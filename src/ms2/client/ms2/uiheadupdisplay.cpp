@@ -21,7 +21,7 @@
 template <> template <>
 MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEntity>&);
 
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
+MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
 
 static CString s_strSortTypeNames[] = {"None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd"};
 
@@ -48,7 +48,7 @@ MS2_REPLACE_METHOD(0x141986C00, UIHeadUpDisplay, GetTypeName, 61, 0x0B1F24FC);
 // @0x141986c50
 void UIHeadUpDisplay::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 MS2_REPLACE_METHOD(0x141986C50, UIHeadUpDisplay, vfunc_41, 99, 0xA8B7BC6F);
 
@@ -56,7 +56,7 @@ MS2_REPLACE_METHOD(0x141986C50, UIHeadUpDisplay, vfunc_41, 99, 0xA8B7BC6F);
 void UIHeadUpDisplay::vfunc_2()
 {
     m_68 = 1;
-    FUN_1422dbf00(m_2c, m_44, 0);
+    LoadSwf(m_2c, m_44, 0);
 }
 MS2_REPLACE_METHOD(0x141986CC0, UIHeadUpDisplay, vfunc_2, 56, 0x342FA7E4);
 

@@ -23,9 +23,9 @@ public:
     CNpcShopBuyPeriod();                                    // 0x1406dc5a0
     // implicit dtor (COMDAT 0x1406ef650, ??_G 0x1406f1000)
     bool operator!=(const CNpcShopBuyPeriod& o);            // 0x1406dc660 (non-const: this uses the non-const operator[])
-    bool FUN_1406dc810();                                   // after reading: compute the window around the server time
-    void FUN_1406dc850(COutputStream& out);                 // write the period
-    void FUN_1406dcb40(CInPacket& in);                      // read the period from a packet
+    bool UpdateWindow();                                   // after reading: compute the window around the server time
+    void Write(COutputStream& out);                 // write the period
+    void Read(CInPacket& in);                      // read the period from a packet
     void SetWindow(const CMsTime& tmFrom, const CMsTime& tmTo); // set the window, clipped to [start, end]
     void FUN_1406dcf10(const CMsTime& tmNow);               // compute the next buy window from tmNow
     bool HasSchedule() const;                             // the period has a day / time-of-day restriction

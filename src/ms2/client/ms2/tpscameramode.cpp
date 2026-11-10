@@ -24,8 +24,8 @@ MS2_EMIT_CRT_MEMMOVE_S();
 class Unk_InputState
 {
 public:
-    bool FUN_14116daa0(int nButton, bool b, int n);                 // mouse button held
-    bool FUN_14116dbf0(int* pnX, int* pnY, int* pnZ, bool b, int n);    // mouse move delta
+    bool IsMouseButtonDown(int nButton, bool b, int n);                 // mouse button held
+    bool GetMouseDelta(int* pnX, int* pnY, int* pnZ, bool b, int n);    // mouse move delta
 };
 Unk_InputState* FUN_14025e7c0();
 
@@ -78,7 +78,7 @@ namespace Client { class Constants; } template<class T> class TSingleton; templa
 class Unk_Cursor
 {
 public:
-    RECT FUN_140ad4c30();
+    RECT GetWindowRect();
 };
 Unk_Cursor* FUN_140aadf80();
 

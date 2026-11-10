@@ -27,7 +27,7 @@ struct ItemSkill                    // <skill skillID skillLevel>
 {
     ItemSkill();                    // 0x140546740
     int LoadXml(TiXmlElement* pElem);        // XML read (the <skill> child of pElem)
-    int FUN_1405467f0(void* pParent);               // XML write (nothing)
+    int Save(void* pParent);               // XML write (nothing)
     bool FUN_140546810(const ItemSkill* pOther);    // operator!=
     unsigned skillId;               // +0x00 "skillID"
     unsigned short skillLevel;      // +0x04 "skillLevel" (default 1)
@@ -39,7 +39,7 @@ struct ItemMaterial                 // <material ... attack>
 {
     ItemMaterial();                 // 0x140547390
     int FUN_1405473c0(TiXmlElement* pElem);
-    int FUN_140547440(void* pParent);
+    int Save(void* pParent);
     bool FUN_140547460(const ItemMaterial* pOther);
     int unknown0;
     int attack;
@@ -53,8 +53,8 @@ struct ItemProperty                 // <property> block: slotMax, collection, pr
     void Load(TiXmlElement* pElem);       // XML read
     void FUN_1405479a0(void* pElem);                // XML write (attributes of the <property> element)
     bool FUN_140547ec0(const ItemProperty* pOther); // operator!=
-    __int64 FUN_1405480f0(int nRarity);             // sell price (one value, or one per rarity 1..6)
-    CString* FUN_1405481d0();                       // &slotIcon
+    __int64 GetSellPrice(int nRarity);             // sell price (one value, or one per rarity 1..6)
+    CString* GetSlotIcon();                       // &slotIcon
     CString slotIcon;               // +0x00
     bool flag08;                    // +0x08
     bool flag09;                    // +0x09 (CItemData +0x79 is set from it)
@@ -110,14 +110,14 @@ struct ItemLimit                    // <limit ...>
     ~ItemLimit();                   // 0x140540dd0
     int Load(TiXmlElement* pElem);        // XML read (the <limit> child of pElem)
     int Save(void* pParent);               // XML write (nothing when equal to the default)
-    bool FUN_140545a80(const ItemLimit* pOther);    // operator==
+    bool IsEqual(const ItemLimit* pOther);    // operator==
     bool FUN_140545ad0(const ItemLimit* pOther);    // operator!=
     bool IsJobAllowed(int nJob);                   // job allowed
     bool IsJobRecommended(int nJob);                   // job recommended (true when none are)
     bool FUN_140545e40();                           // the item has a job restriction
     bool FUN_140545f30();                           // transfer type 0, 3, 4 or 5
     unsigned GetRecommendJobMask();                       // job flags of the recommended jobs (0xfff when none)
-    unsigned FUN_140546030();                       // job flags of the job limit (0xfff when it allows all)
+    unsigned GetJobLimitMask();                       // job flags of the job limit (0xfff when it allows all)
     unsigned levelLimit;            // +0x00 "levelLimit" (default 1)
     unsigned genderLimit;           // +0x04 "genderLimit" (default 2 = both)
     ATL::CAtlArray<unsigned> jobLimit;          // +0x08
@@ -162,9 +162,9 @@ struct ItemInstallData {
     bool useInstancing;       // +0x5c "useInstancing" (default true)
     int Load(TiXmlElement* pElem);     // XML read
     int Save(void* pParent);            // XML write
-    bool FUN_140548a50(const ItemInstallData* pOther);   // operator==
+    bool IsEqual(const ItemInstallData* pOther);   // operator==
     bool FUN_140548aa0(const ItemInstallData* pOther);   // operator!=
-    int FUN_140548cb0();      // stackable
+    int GetStackable();      // stackable
     bool FUN_140548cd0();     // space & 6
     bool FUN_140548d10();     // space & 1 (ugccubepalette.cpp)
     bool FUN_140548d50();     // stackable has all of bits 1, 2 and 4
@@ -219,12 +219,12 @@ public:
     int LoadElement(TiXmlElement* pElem);                // XML read (the attributes of pElem)
     int Save(void* pParent);                       // XML write (nothing when equal to the default)
     bool FUN_14054abd0(const ItemMusicScore* pOther);       // operator!=
-    bool FUN_14054aca0();                                   // isCustomNote
-    int FUN_14054acc0();                                    // noteLengthMax
-    int FUN_14054ace0();                                    // playTime
-    int FUN_14054ad00();                                    // playCount
+    bool IsCustomNote();                                   // isCustomNote
+    int GetNoteLengthMax();                                    // noteLengthMax
+    int GetPlayTime();                                    // playTime
+    int GetPlayCount();                                    // playCount
     CStringW FUN_14054ad20();                               // the title of the recommended music book
-    int FUN_14054ade0();                                    // masteryValueMax
+    int GetMasteryValueMax();                                    // masteryValueMax
     int playCount;                      // +0x18 "playCount"
     int unknown1c;
     int masteryValueMax;                // +0x20 "masteryValueMax"
@@ -249,7 +249,7 @@ public:
     int Save(void* pParent);                       // XML write (nothing when equal to the default)
     bool FUN_140549380(const ItemHousing* pOther);          // operator!=
     int FUN_140549470(int nItemId, __int64 nUid, __int64 nUgc);     // the item can be placed
-    int FUN_1405494e0();                                    // item id
+    int GetItemId();                                    // item id
     __int64 price;                      // +0x18 price table
     std::vector<unsigned> categoryTag;  // +0x20 "categoryTag"
     ItemHousingFilter filter;           // +0x38 "filter" (default 100)
@@ -272,7 +272,7 @@ struct ItemFusion                   // <fusion fusionable>
 {
     ItemFusion();                   // 0x140549500
     int LoadXml(TiXmlElement* pElem);
-    int FUN_140549580(void* pParent);
+    int Save(void* pParent);
     int fusionable;
     int unknown4;
 };
@@ -283,10 +283,10 @@ struct ItemAdditionalEffect         // <AdditionalEffect ...>
     ItemAdditionalEffect();         // 0x140549bb0
     ~ItemAdditionalEffect();        // 0x140540c40
     int FUN_140549c00(TiXmlElement* pElem);
-    int FUN_140549d40(void* pParent);
+    int Save(void* pParent);
     bool FUN_140549d60(const ItemAdditionalEffect* pOther);     // operator!=
-    unsigned FUN_140549de0();       // the first id (0 when none)
-    unsigned short FUN_140549e20(); // the first level (0 when none)
+    unsigned GetFirstId();       // the first id (0 when none)
+    unsigned short GetFirstLevel(); // the first level (0 when none)
     ATL::CAtlArray<unsigned> ids;           // +0x00 "id"
     ATL::CAtlArray<unsigned short> levels;  // +0x20 "level"
     int dropEffect;                 // +0x40 "dropEffect"
@@ -303,7 +303,7 @@ struct ItemFunctionArgs
     ~ItemFunctionArgs();            // 0x140540c00
     void FUN_1408d1e00(CStringW strText, CStringW strSeparators);   // split strText into args
     bool FUN_1408d1ec0(int nKey, int* pnValue);                     // table lookup with an out value
-    int FUN_1408d1f10(int nKey, int nDefault);                      // table lookup with a default
+    int GetValueOrDefault(int nKey, int nDefault);                      // table lookup with a default
     int FUN_1408d1f60(unsigned nIndex, int nDefault);               // word n as int (_wtoi)
     int FUN_1408d1fd0(unsigned nIndex, int nDefault);               // word n as int (_wtol)
     __int64 FUN_1408d2040(unsigned nIndex, __int64 nDefault);       // word n as __int64
@@ -312,7 +312,7 @@ struct ItemFunctionArgs
     CStringW FUN_1408d21c0(int nIndex, CStringW strDefault);        // word n as a string
     float FUN_1408d2280(unsigned nIndex, float fDefault);
     double FUN_1408d22c0(unsigned nIndex, double dDefault);
-    CStringW FUN_1408d2330();                                       // copy of the raw text
+    CStringW GetText();                                       // copy of the raw text
     unsigned FUN_1408d2380();                                       // the argument count
     CStringW text;                  // +0x00
     ATL::CAtlArray<CStringW> args;  // +0x08
@@ -327,7 +327,7 @@ struct ItemFunction                 // <function name parameter ...>
     int Load(TiXmlElement* pElem);
     bool FUN_14054a2b0(const ItemFunction* pOther);    // operator!=
     int FUN_14054a350();            // 0 when the parameter is malformed
-    bool FUN_14054a3d0();           // has a name
+    bool HasName();           // has a name
     bool FUN_14054a410();           // has xml values
     int FUN_14054a460();            // the box (drop group) id an OpenItemBox* / SelectItemBox / OpenGachaBox opens
     CStringW name;                  // +0x00 (functionName)
@@ -352,11 +352,11 @@ public:
     bool FUN_14053d510();    // 0x14053d510
     int GetStringTag();     // 0x14053c6f0
     int GetItemId();     // 0x14053c510 return the item id (+0x20; sb4, clonecube)
-    int FUN_14053fdb0();     // 0x14053fdb0 (ugccubepalette.cpp) required level, 0 when none
+    int GetVipLevel();     // 0x14053fdb0 (ugccubepalette.cpp) required level, 0 when none
     bool HasMaidId();    // 0x14053cde0 unique (non-stacking) item
-    int FUN_14053dd30();     // 0x14053dd30 the id of the npc the item summons
+    int GetMaidId();     // 0x14053dd30 the id of the npc the item summons
     bool HasCubeTextureMesh();    // 0x14053d6f0 UGC item
-    bool FUN_14053cb80();    // 0x14053cb80
+    bool IsInstallItem();    // 0x14053cb80
     CString GetIconPath(); // 0x14053fdd0 the item's display name
     // @ITEMDATA-MEMBERS-BEGIN (added by itemdata.cpp)
     void SetItemId(int nId);    // 0x14053c4f0
@@ -366,11 +366,11 @@ public:
     int GetSubtype();    // 0x14053c5e0
     int GetIconCode();    // 0x14053c600
     int GetEquipSubtype();    // 0x14053c620
-    int FUN_14053c650();    // 0x14053c650
-    int FUN_14053c670();    // 0x14053c670
+    int GetParam1();    // 0x14053c650
+    int GetParam2();    // 0x14053c670
     bool HasStringTag(int nStringTag);    // 0x14053c6b0
     bool FUN_14053c710();    // 0x14053c710
-    bool FUN_14053c7c0();    // 0x14053c7c0
+    bool IsStackable();    // 0x14053c7c0
     bool FUN_14053c810();    // 0x14053c810
     bool FUN_14053c870();    // 0x14053c870
     bool FUN_14053c8b0();    // 0x14053c8b0
@@ -390,7 +390,7 @@ public:
     bool HasFunction();    // 0x14053cd90
     bool IsPCBangItem();    // 0x14053ce20
     bool FUN_14053ce40();    // 0x14053ce40
-    bool FUN_14053ce80();    // 0x14053ce80
+    bool IsBeautyItem();    // 0x14053ce80
     bool IsAvatarColorItem();    // 0x14053cf00
     bool FUN_14053cf40();    // 0x14053cf40
     bool HasSkinType();    // 0x14053cf90
@@ -427,11 +427,11 @@ public:
     bool HasOpenGachaBoxFunction();    // 0x14053da20
     bool HasQuestStartFunction();    // 0x14053dad0
     int CanRegisterMeratMarket();    // 0x14053db80
-    int FUN_14053dc20();    // 0x14053dc20
-    unsigned short FUN_14053dc40();    // 0x14053dc40
+    int GetSkillId();    // 0x14053dc20
+    unsigned short GetSkillLevel();    // 0x14053dc40
     int GetPetId();    // 0x14053dc60
     int FUN_14053dc90();    // 0x14053dc90
-    int FUN_14053dce0();    // 0x14053dce0
+    int GetBankId();    // 0x14053dce0
     int GetRideeId();    // 0x14053dd80
     int FUN_14053ddb0();    // 0x14053ddb0
     int FUN_14053dde0();    // 0x14053dde0
@@ -447,13 +447,13 @@ public:
     int HasExpandCharacterSlotFunction();    // 0x14053e070
     int HasUGCMapPackageFunction();    // 0x14053e0d0
     bool IsCashItem();    // 0x14053e130
-    bool FUN_14053e170();    // 0x14053e170
+    bool IsCustomizable();    // 0x14053e170
     bool FUN_14053e210();    // 0x14053e210
     int FUN_14053e260();    // 0x14053e260
     int FUN_14053e2b0(int nIndex);    // 0x14053e2b0
     int FUN_14053e310(int nIndex);    // 0x14053e310
     bool FUN_14053e370();    // 0x14053e370
-    int FUN_14053e3c0();    // 0x14053e3c0
+    int GetMultiColorCount();    // 0x14053e3c0
     int FUN_14053e410();    // 0x14053e410
     bool FUN_14053e460();    // 0x14053e460
     int FUN_14053e530();    // 0x14053e530
@@ -473,10 +473,10 @@ public:
     void FUN_14053ed00();    // 0x14053ed00
     bool FUN_14053ef40();    // 0x14053ef40
     unsigned char FUN_14053ef80();    // 0x14053ef80
-    int FUN_14053efd0();    // 0x14053efd0
+    int GetConstantId();    // 0x14053efd0
     int FUN_14053eff0(int nType);    // 0x14053eff0
-    int FUN_14053f080();    // 0x14053f080
-    int FUN_14053f0a0();    // 0x14053f0a0
+    int GetOptionLevel();    // 0x14053f080
+    int GetOptionLevelFactor();    // 0x14053f0a0
     int FUN_14053f0d0(int nRank);    // 0x14053f0d0
     int FUN_14053f390(int nBase, int nIdx);    // 0x14053f390
     double FUN_14053f430(int nSub);    // 0x14053f430

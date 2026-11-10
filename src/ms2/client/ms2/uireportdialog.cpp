@@ -38,7 +38,7 @@ __int64 GetServerTime();                                        // the server ti
 void FUN_141275260(int nStringId, int nA, int nB);              // system message
 CStringW GetStringCommon(int nStringId);                          // string table text by id
 CStringW BlockFormat(int nStringId);                          // string table text by id
-void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // open a message box
+void ShowMessageBox(CStringW strText, int nType, void* pListener, CStringW strTag);   // open a message box
 void FUN_14028cd00(const CStringW& strText, CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nMax);   // split
 void FUN_14151f200();
 void FUN_140710590(COutPacket& packet);                         // send
@@ -68,8 +68,8 @@ class Unk_MeratBlindManager* GetBlindManager();   // C3: was GetBlindManager
 // @0x141ab8920
 UIReportDialog::UIReportDialog()
 {
-    FUN_141924170(1);
-    FUN_141ab9890();
+    SetTweenEnabled(1);
+    ClearTarget();
     m_c8 = s_strReportOpen;
     m_d0 = s_strReportClose;
 }
@@ -163,21 +163,21 @@ int UIReportDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 {
                     if (operator==(strTag, L"report"))
                     {
-                        if (FUN_141ab9d70(m_strMethod, m_nFlags, m_strText) == true)
+                        if (SendReport(m_strMethod, m_nFlags, m_strText) == true)
                             vfunc_67();
                         else
-                            FUN_140d73aa0(GetStringCommon(0x8ac), 0, 0, CStringW(L""));
+                            ShowMessageBox(GetStringCommon(0x8ac), 0, 0, CStringW(L""));
                     }
                     else if (operator==(strTag, L"reportAndBan"))
                     {
-                        if (FUN_141ab9d70(m_strMethod, m_nFlags, m_strText) == true)
+                        if (SendReport(m_strMethod, m_nFlags, m_strText) == true)
                         {
-                            FUN_141aba110(m_strMethod, m_nFlags);
+                            BlockReportedTarget(m_strMethod, m_nFlags);
                             vfunc_67();
                         }
                         else
                         {
-                            FUN_140d73aa0(GetStringCommon(0x8ac), 0, 0, CStringW(L""));
+                            ShowMessageBox(GetStringCommon(0x8ac), 0, 0, CStringW(L""));
                         }
                     }
                 }
@@ -232,7 +232,7 @@ int UIReportDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
             m_strText = strText;
             if (nMode == 1)
             {
-                FUN_140d73aa0(BlockFormat(0x8a7), 1, static_cast<IMessageListener*>(this), CStringW(L"report"));
+                ShowMessageBox(BlockFormat(0x8a7), 1, static_cast<IMessageListener*>(this), CStringW(L"report"));
             }
             else
             {
@@ -243,7 +243,7 @@ int UIReportDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
                 {
                     strAsk = BlockFormat(0x8a8);
                 }
-                FUN_140d73aa0(strAsk, 1, static_cast<IMessageListener*>(this), CStringW(L"reportAndBan"));
+                ShowMessageBox(strAsk, 1, static_cast<IMessageListener*>(this), CStringW(L"reportAndBan"));
             }
         }
         return 1;
@@ -257,7 +257,7 @@ int UIReportDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 }
 
 // @0x141ab9890
-void UIReportDialog::FUN_141ab9890()
+void UIReportDialog::ClearTarget()
 {
     m_178 = 0;
     m_nPosterId = 0;
@@ -278,12 +278,12 @@ void UIReportDialog::FUN_141ab9890()
     m_nPageArg2 = 0;
     m_key.Reset();
 }
-MS2_REPLACE_METHOD(0x141AB9890, UIReportDialog, FUN_141ab9890, 376, 0x749B0024);
+MS2_REPLACE_METHOD(0x141AB9890, UIReportDialog, ClearTarget, 376, 0x749B0024);
 
 // @0x141ab9a10
 void UIReportDialog::FUN_141ab9a10(__int64 nPosterId, int nBannerId, const CString& strUrl, const CStringW& strTarget)
 {
-    FUN_141ab9890();
+    ClearTarget();
     m_nBannerId = nBannerId;
     m_nPosterId = nPosterId;
     m_strPosterUrl = strUrl;
@@ -293,29 +293,29 @@ void UIReportDialog::FUN_141ab9a10(__int64 nPosterId, int nBannerId, const CStri
 MS2_REPLACE_METHOD(0x141AB9A10, UIReportDialog, FUN_141ab9a10, 136, 0xF06431EF);
 
 // @0x141ab9aa0
-void UIReportDialog::FUN_141ab9aa0(__int64 nCharacterId, const CStringW& strTarget)
+void UIReportDialog::SetCharacterTarget(__int64 nCharacterId, const CStringW& strTarget)
 {
-    FUN_141ab9890();
+    ClearTarget();
     m_strTarget = strTarget;
     m_nCharacterId = nCharacterId;
     m_nKind = 1;
 }
-MS2_REPLACE_METHOD(0x141AB9AA0, UIReportDialog, FUN_141ab9aa0, 91, 0xB1AC1FF9);
+MS2_REPLACE_METHOD(0x141AB9AA0, UIReportDialog, SetCharacterTarget, 91, 0xB1AC1FF9);
 
 // @0x141ab9b10
-void UIReportDialog::FUN_141ab9b10(const CStringW& strTarget, const CStringW& strChat)
+void UIReportDialog::SetChatTarget(const CStringW& strTarget, const CStringW& strChat)
 {
-    FUN_141ab9890();
+    ClearTarget();
     m_strTarget = strTarget;
     m_strChat = strChat;
     m_nKind = 2;
 }
-MS2_REPLACE_METHOD(0x141AB9B10, UIReportDialog, FUN_141ab9b10, 99, 0xB82CC288);
+MS2_REPLACE_METHOD(0x141AB9B10, UIReportDialog, SetChatTarget, 99, 0xB82CC288);
 
 // @0x141ab9b80
 void UIReportDialog::FUN_141ab9b80(Unk_MeratProductKey key, __int64 nItemId, CStringW strItem, CStringW strTarget, int nFlag)
 {
-    FUN_141ab9890();
+    ClearTarget();
     m_key = key;
     m_nItemId = nItemId;
     m_strItem = strItem;
@@ -327,7 +327,7 @@ void UIReportDialog::FUN_141ab9b80(Unk_MeratProductKey key, __int64 nItemId, CSt
 // @0x141ab9c50
 void UIReportDialog::FUN_141ab9c50(__int64 nPageId, const CStringW& strTarget, int nArg1, int nArg2)
 {
-    FUN_141ab9890();
+    ClearTarget();
     m_strTarget = strTarget;
     m_nPageArg1 = nArg1;
     m_nPageId = nPageId;
@@ -337,9 +337,9 @@ void UIReportDialog::FUN_141ab9c50(__int64 nPageId, const CStringW& strTarget, i
 MS2_REPLACE_METHOD(0x141AB9C50, UIReportDialog, FUN_141ab9c50, 126, 0x0525F9F9);
 
 // @0x141ab9ce0
-void UIReportDialog::FUN_141ab9ce0(CStringW strTarget, CStringW strPet)
+void UIReportDialog::SetPetTarget(CStringW strTarget, CStringW strPet)
 {
-    FUN_141ab9890();
+    ClearTarget();
     m_strTarget = strTarget;
     m_strPet = strPet;
     m_nKind = 6;
@@ -347,7 +347,7 @@ void UIReportDialog::FUN_141ab9ce0(CStringW strTarget, CStringW strPet)
 
 // Sends the report (packet 0x52): the target name, the text, then the kind-specific target.
 // @0x141ab9d70
-bool UIReportDialog::FUN_141ab9d70(CString strMethod, unsigned int nFlags, CStringW strText)
+bool UIReportDialog::SendReport(CString strMethod, unsigned int nFlags, CStringW strText)
 {
     int nLength = strText.GetLength();
     if (nLength > 0xfa0 || nLength < 1)
@@ -403,7 +403,7 @@ bool UIReportDialog::FUN_141ab9d70(CString strMethod, unsigned int nFlags, CStri
 
 // After a report went out: block the reported target (friend list entry, blind list, banner, notification).
 // @0x141aba110
-void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
+void UIReportDialog::BlockReportedTarget(CString strMethod, unsigned int nFlags)
 {
     if (FUN_141aba4b0(strMethod) == false)
         return;
@@ -417,7 +417,7 @@ void UIReportDialog::FUN_141aba110(CString strMethod, unsigned int nFlags)
             CBuddyManager::Ptr spBuddy = TSingleton<CBuddyManager>::GetInstance()->FindByAccount(m_nCharacterId);
             if (spBuddy.get() != 0)
             {
-                nBuddyId = spBuddy->FUN_1401cc2f0();
+                nBuddyId = spBuddy->GetId();
                 if (spBuddy->FUN_1401cc5b0() != 0)
                     bRequest = false;
             }

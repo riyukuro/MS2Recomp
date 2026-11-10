@@ -44,19 +44,19 @@ public:
     virtual void vfunc_ugc_4(int nDialog);                      // 4 0x141b3a630 the upload moved to this dialog
 
     void FUN_141b3a600();                                       // rebuild the list and unselect
-    void FUN_141b3a690(int nResult);                            // the server answered the upload
-    bool FUN_141b3a780(const int* pnKind);                      // the running upload is one of this kind
-    void FUN_141b3ab90();                                       // rebuild the file list
+    void OnUploadResult(int nResult);                            // the server answered the upload
+    bool IsUploadKind(const int* pnKind);                      // the running upload is one of this kind
+    void BuildFileList();                                       // rebuild the file list
     void OnOpenFolder();                                       // open the upload directory
-    int  FUN_141b3acb0(int nIndex);                             // preview a file
-    int  FUN_141b3adc0(int nIndex);                             // upload a file
+    int  PreviewFile(int nIndex);                             // preview a file
+    int  UploadFile(int nIndex);                             // upload a file
     int  OnNewTemplate();                                       // OnNewTemplate: clear the upload
     int  OnAddImage();                                       // OnAddImage: pick an image file
-    int FUN_141b3b0e0(int nIndex);                              // scroll the list
-    void FUN_141b3b1d0();                                       // update the thumbnail image
-    void FUN_141b3b2c0();                                       // show the banner price
-    __int64 FUN_141b3b390();                                    // the price of the banner
-    void FUN_141b3b4e0(int nIndex);                             // select the thumbnail
+    int BuildScrollPosition(int nIndex);                              // scroll the list
+    void UpdateThumbnailImage();                                       // update the thumbnail image
+    void UpdateBannerPrice();                                       // show the banner price
+    __int64 GetBannerPrice();                                    // the price of the banner
+    void SelectThumbnail(int nIndex);                             // select the thumbnail
     int FUN_140c39820() { return m_188; }                       // 0x140c39820 the upload kind
 
 private:

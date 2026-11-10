@@ -38,15 +38,15 @@ public:
 
     void FUN_140c55b50(const CString& strParam);                     // 0x140c55b50 "free" parameter: free appraise
     void SendTreasureMapMode2(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140c55ba0 item bag click: ask the cost
-    void FUN_140c55d20(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140c55d20 m_submit click
-    void FUN_140c55ea0();                                            // 0x140c55ea0 show the initial (select) page
-    void FUN_140c560f0();                                            // 0x140c560f0 collect the treasure maps, fill the bag
-    void FUN_140c563d0();                                            // 0x140c563d0 start the appraise
-    void FUN_140c56670();                                            // 0x140c56670 back to the select page
-    void FUN_140c56a50(__int64 nUid, __int64 nCost);                 // 0x140c56a50 packet: the cost of the picked map
-    void FUN_140c57300(int nItemId, int nRank);                      // 0x140c57300 packet: the appraised item
-    bool FUN_140c57a70(MS2Ptr<CItem> spItem);                        // 0x140c57a70 is a treasure map (the callee drops spItem)
-    void FUN_140c57b50();                                            // 0x140c57b50 drop the children
+    void OnSubmitClick(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140c55d20 m_submit click
+    void ShowSelectPage();                                            // 0x140c55ea0 show the initial (select) page
+    void RefreshTreasureMapBag();                                            // 0x140c560f0 collect the treasure maps, fill the bag
+    void StartAppraise();                                            // 0x140c563d0 start the appraise
+    void ReturnToSelectPage();                                            // 0x140c56670 back to the select page
+    void OnAppraiseCost(__int64 nUid, __int64 nCost);                 // 0x140c56a50 packet: the cost of the picked map
+    void ShowAppraisedItem(int nItemId, int nRank);                      // 0x140c57300 packet: the appraised item
+    bool IsTreasureMap(MS2Ptr<CItem> spItem);                        // 0x140c57a70 is a treasure map (the callee drops spItem)
+    void ClearChildren();                                            // 0x140c57b50 drop the children
     MS2Ptr<ASMovieClip> FUN_140c57ce0(const CString& strName, MS2Ptr<ASMovieClip>& out);   // 0x140c57ce0 bind a movie clip child
 
 private:

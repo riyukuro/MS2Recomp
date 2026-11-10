@@ -20,7 +20,7 @@ __int64 GetServerTime();                        // the current time
 void AddDays(CMsTime& time, long days);         // 0x14086a7e0 (commonfiles/timeutil.cpp)
 
 // @0x1408d5040
-bool Unk_EventCore::FUN_1408d5040(TiXmlElement* pNode)
+bool Unk_EventCore::LoadFromXml(TiXmlElement* pNode)
 {
     CStringA strTitle;
     CStringA strContent;
@@ -73,15 +73,15 @@ bool Unk_EventCore::FUN_1408d5040(TiXmlElement* pNode)
         if (strEndDate.GetLength() > 0)
         {
             CMsTime endTime = FUN_140718950(strEndDate);
-            FUN_1408d5320(endTime);
+            SetEndTime(endTime);
         }
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x1408D5040, Unk_EventCore, FUN_1408d5040, 721, 0xB684B24F);
+MS2_REPLACE_METHOD(0x1408D5040, Unk_EventCore, LoadFromXml, 721, 0xB684B24F);
 
 // @0x1408d5320
-void Unk_EventCore::FUN_1408d5320(const CMsTime& endTime)
+void Unk_EventCore::SetEndTime(const CMsTime& endTime)
 {
     time = endTime;
     CMsTime zero(0);
@@ -90,7 +90,7 @@ void Unk_EventCore::FUN_1408d5320(const CMsTime& endTime)
         mode = 0;
     }
 }
-MS2_REPLACE_METHOD(0x1408D5320, Unk_EventCore, FUN_1408d5320, 94, 0xC7602ABC);
+MS2_REPLACE_METHOD(0x1408D5320, Unk_EventCore, SetEndTime, 94, 0xC7602ABC);
 
 // @0x1408d5390
 void Unk_EventCore::FUN_1408d5390(int nMode)
@@ -109,7 +109,7 @@ void Unk_EventCore::FUN_1408d5390(int nMode)
 MS2_REPLACE_METHOD(0x1408D5390, Unk_EventCore, FUN_1408d5390, 83, 0x4B16BFF8);
 
 // @0x1408d53f0
-CMsTime Unk_EventCore::FUN_1408d53f0() const
+CMsTime Unk_EventCore::GetEndTime() const
 {
     if (mode != 0)
     {
@@ -119,4 +119,4 @@ CMsTime Unk_EventCore::FUN_1408d53f0() const
     }
     return time;
 }
-MS2_REPLACE_METHOD(0x1408D53F0, Unk_EventCore, FUN_1408d53f0, 115, 0xD48E5C39);
+MS2_REPLACE_METHOD(0x1408D53F0, Unk_EventCore, GetEndTime, 115, 0xD48E5C39);

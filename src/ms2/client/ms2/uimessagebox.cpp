@@ -1,7 +1,7 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). Original: client\ms2\uimessagebox.cpp.
 //
 // UIMessageBox: the HUD layer that shows the CMsgBoxData queue one box at a time (uimessageboxdata.h) and runs the
-// result handlers of the tagged boxes (FUN_1419f9ba0: plain tags, FUN_1419fa910: "tag,arg" tags).
+// result handlers of the tagged boxes (HandlePlainTag: plain tags, FUN_1419fa910: "tag,arg" tags).
 // MS2-UNIT: client\ms2\uimessagebox.cpp
 // MS2-RANGE: 0x1419f71e0-0x141a00db0 .text$mn
 // MS2-RANGE: 0x1401167a0-0x1401174d0 .text$di
@@ -194,13 +194,13 @@ void RemoveFromQueue(MS2Ptr<CMsgBoxData> spData);
 int FUN_14151f6e0();
 MS2Ptr<CMsgBoxData> FUN_14151f820();
 UIMessageBox* GetMessageBoxLayer();
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spData);
-void FUN_140d73aa0(CStringW strText, int nType, void* p, CStringW strTag);
+void ShowMessageBox(CStringW strText, int nType, void* p, CStringW strTag);
 CStringW GetStringCommon(int nId);                                // string table text
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // the "s_..." key text
 template <class A> CStringW FormatStringId(int nId, const A& a);        // formatted string table text
-void FUN_1412751f0(const CStringW& strText, int nA, int nB);     // system message
+void ShowSystemNotice(const CStringW& strText, int nA, int nB);     // system message
 void FUN_141275260(int nId, int nA, int nB);
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* szDelim, int nMax);
 bool FUN_1407183f0(const CStringW& str);                        // "1", "o" or "t"
@@ -215,7 +215,7 @@ class CGuildManager;
 class Unk_MessageBoxSocket : public CNetworkService
 {
 };
-class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
+class CNetworkService* GetNetworkService();   // C3: was GetNetworkService
 void FUN_1416a0e70();
 extern int DAT_143ab2858;                                       // nonzero: the login dialog is the front end
 extern bool DAT_143ab2942;
@@ -238,10 +238,10 @@ template <class T> inline T* Unk_MessageBoxDialog(int nId)
     }
     return 0;
 }
-class UILoginDialog : public UIDialog { public: bool FUN_1419e2310(int n); };
-class UIItemRemakeScrollDialog : public UIDialog { public: void FUN_140f59ad0(unsigned __int64 nUid, int n); };
+class UILoginDialog : public UIDialog { public: bool HandleMessageBoxResult(int n); };
+class UIItemRemakeScrollDialog : public UIDialog { public: void SendRemakeRequest(unsigned __int64 nUid, int n); };
 class Unk_MessageBoxGuideDialog : public UICartoonDialog { public: };
-class UICartoonDialog* FUN_140ff7030(int);   // C3: was FUN_140ff7030
+class UICartoonDialog* FindCartoonDialog(int);   // C3: was FindCartoonDialog
 class CWebBrowserService;
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class CPartyManager;
@@ -297,7 +297,7 @@ extern const efd::Matrix3 DAT_143a09600;                  // identity rotation
 class CItemDataTable;
 
 // The skill a bound item casts (avatarpc.cpp / inventory.cpp layout).
-// The points are efd::Point3, not float arrays: an array would give FUN_1419fdbe0 a GS cookie the exe does not have.
+// The points are efd::Point3, not float arrays: an array would give HandleUseBindItemSkillButton a GS cookie the exe does not have.
 struct Unk_InventorySkillRequest {
     Unk_InventorySkillRequest(int, unsigned short);
     int skill;
@@ -351,8 +351,8 @@ extern Unk_Inventory g_143ab2a90;
 #include "ms2/placeholder/chomeprivilege.h"  // C3: CHomePrivilege complete for the headers above
 #include <efd/Win32/Win32PlatformService.h>  // C3: efd::Win32PlatformService::GetWindowRef
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
-class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
-class TabContentsPetCompose : public PetSystemTabContents { public: void FUN_140cb48a0(int bUsePoint); };
+class CUserMail { public: static __int64 GetGFxSceneService(); };  // C3: member view (0x1408e57f0, the scene-service global)
+class TabContentsPetCompose : public PetSystemTabContents { public: void SendComposeRequest(int bUsePoint); };
 class TabContentsPetRemakeOption : public PetSystemTabContents { public: void FUN_140b95280(int bUsePoint); };
 template <class T> T* Unk_PetGetDialog(int nId);   // C3: was FUN_140b99ba0
 template <class T> T* GetItemUseDialog(int nId);   // C3: was FUN_140d276c0
@@ -453,23 +453,23 @@ int UIMessageBox::vfunc_13()
         else
             return 1;
     }
-    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x79, 0, 0))
+    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->WasKeyPressed(0x79, 0, 0))
         method = "onUpKey";
     else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116dd30(0x30d41, 0, 0))
         method = "onUpKey";
-    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x7b, 0, 0))
+    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->WasKeyPressed(0x7b, 0, 0))
         method = "onLeftKey";
     else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116dd30(0x30d43, 0, 0))
         method = "onLeftKey";
-    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x7e, 0, 0))
+    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->WasKeyPressed(0x7e, 0, 0))
         method = "onDownKey";
     else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116dd30(0x30d42, 0, 0))
         method = "onDownKey";
-    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x7c, 0, 0))
+    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->WasKeyPressed(0x7c, 0, 0))
         method = "onRightKey";
     else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116dd30(0x30d44, 0, 0))
         method = "onRightKey";
-    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->FUN_14116d9c0(15, 0, 0))
+    else if (((class Unk_MessageBoxKeys*)FUN_14025e7c0())->WasKeyPressed(15, 0, 0))
         method = "onTabKey";
     if (!method.IsEmpty())
     {
@@ -496,7 +496,7 @@ int UIMessageBox::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
             CStringW strTag = data.FUN_1422b8f40();
             Scaleform::GFx::Value extra = data.PopValue();
             if (m_data.get())
-                m_data->FUN_141a02810(strTag);
+                m_data->SetClickedTag(strTag);
             FUN_1419f9410(nButton, nBoxId, strTag, extra);
         }
         return 1;
@@ -523,8 +523,8 @@ int UIMessageBox::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
     {
         if (m_data == 0)
             return 0;
-        m_data->FUN_141a03390(this);
-        if (IMessageListener* pListener = m_data->FUN_141a02cc0())
+        m_data->OnPopupTimerComplete(this);
+        if (IMessageListener* pListener = m_data->GetListener())
         {
             UIMsg msg(2002);
             msg.AddWString(m_data->GetExtra());
@@ -565,7 +565,7 @@ int UIMessageBox::ShowMessage(MS2Ptr<CMsgBoxData> spData)
 {
     if (m_30.IsNull())
         return 0;
-    if (FUN_1419f84c0(spData))
+    if (IsSameBox(spData))
         return 0;
     m_closing = 0;
     if (!FUN_1419f8270())
@@ -616,12 +616,12 @@ int UIMessageBox::FUN_1419f8270()
 MS2_REPLACE_METHOD(0x1419F8270, UIMessageBox, FUN_1419f8270, 44, 0x346395F5);
 
 // @0x1419f82b0
-void UIMessageBox::FUN_1419f82b0(const CStringW& strText)
+void UIMessageBox::UpdateErrorMessage(const CStringW& strText)
 {
     if (m_30.get())
         m_30->Invoke("onProcessFunction", "updateErrorMsg", strText);
 }
-MS2_REPLACE_METHOD(0x1419F82B0, UIMessageBox, FUN_1419f82b0, 171, 0x7D43612C);
+MS2_REPLACE_METHOD(0x1419F82B0, UIMessageBox, UpdateErrorMessage, 171, 0x7D43612C);
 
 // @0x1419f8370
 void UIMessageBox::UpdateMessage(const CStringW& strText)
@@ -636,14 +636,14 @@ void UIMessageBox::UpdateMessage(const CStringW& strText)
 MS2_REPLACE_METHOD(0x1419F8370, UIMessageBox, UpdateMessage, 240, 0x1109672B);
 
 // @0x1419f8470
-MS2Ptr<CMsgBoxData> UIMessageBox::FUN_1419f8470()
+MS2Ptr<CMsgBoxData> UIMessageBox::GetCurrentBox()
 {
     return m_data;
 }
-MS2_REPLACE_METHOD(0x1419F8470, UIMessageBox, FUN_1419f8470, 67, 0xE0100933);
+MS2_REPLACE_METHOD(0x1419F8470, UIMessageBox, GetCurrentBox, 67, 0xE0100933);
 
 // @0x1419f84c0
-int UIMessageBox::FUN_1419f84c0(MS2Ptr<CMsgBoxData> spData)
+int UIMessageBox::IsSameBox(MS2Ptr<CMsgBoxData> spData)
 {
     if (spData.IsNull() || m_data.IsNull())
         return 0;
@@ -656,7 +656,7 @@ int UIMessageBox::FUN_1419f84c0(MS2Ptr<CMsgBoxData> spData)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1419F84C0, UIMessageBox, FUN_1419f84c0, 1043, 0x42470F2E);
+MS2_REPLACE_METHOD(0x1419F84C0, UIMessageBox, IsSameBox, 1043, 0x42470F2E);
 
 // @0x1419f88e0
 void UIMessageBox::FUN_1419f88e0(int bBlock)
@@ -667,7 +667,7 @@ MS2_REPLACE_METHOD(0x1419F88E0, UIMessageBox, FUN_1419f88e0, 48, 0x9F3089AC);
 
 // Sell an item: asks first when the item is rare or the price is over the confirm limit.
 // @0x1419f8920
-void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
+void SellItem(MS2Ptr<CItem> spItem, unsigned int nCount)
 {
     if (!spItem)
         return;
@@ -695,12 +695,12 @@ void FUN_1419f8920(MS2Ptr<CItem> spItem, unsigned int nCount)
             strMsg.Append(L"\n");
         }
         strMsg.Append(strAsk);
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, strMsg, 0, strTag);
+        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x11, strMsg, 0, strTag);
         if (spBox.get())
         {
             MS2Ptr<CItem> spCopy = spItem->Clone();
             spCopy->SetCountClamped(nCount);
-            spBox->FUN_141a01600(spItem->GetItemUid());
+            spBox->SetItemUid(spItem->GetItemUid());
             spBox->FUN_141a01ee0(spCopy, spCopy->FUN_140527b10(), 1, 0, -1, -1, 1);
             spBox->SetButtonLabelIds(0x47e, 0x476, 0);
             FUN_140d73c60(spBox);
@@ -752,7 +752,7 @@ void UIMessageBox::FUN_1419f8ec0(MS2Ptr<CMsgBoxData> spData)
     if (m_data.get())
     {
         ASObj obj(FUN_1422db730());
-        m_data->FUN_141a034d0(obj);
+        m_data->FillObj(obj);
         m_30->Invoke("open", obj);
         vfunc_8(1);
     }
@@ -760,7 +760,7 @@ void UIMessageBox::FUN_1419f8ec0(MS2Ptr<CMsgBoxData> spData)
 MS2_REPLACE_METHOD(0x1419F8EC0, UIMessageBox, FUN_1419f8ec0, 571, 0xFAAAA2EC);
 
 // @0x1419f9110
-void UIMessageBox::FUN_1419f9110()
+void UIMessageBox::ResetAfterClose()
 {
     if (!FUN_1419f8270())
     {
@@ -781,7 +781,7 @@ void UIMessageBox::FUN_1419f9110()
     m_count = 0;
     m_closing = 0;
 }
-MS2_REPLACE_METHOD(0x1419F9110, UIMessageBox, FUN_1419f9110, 299, 0x70757C1F);
+MS2_REPLACE_METHOD(0x1419F9110, UIMessageBox, ResetAfterClose, 299, 0x70757C1F);
 
 // @0x1419f9250
 void UIMessageBox::FUN_1419f9250(int nResult)
@@ -789,15 +789,15 @@ void UIMessageBox::FUN_1419f9250(int nResult)
     if (static_cast<bool>(m_30.get()) && static_cast<bool>(m_data.get()))
     {
         m_data->FUN_141a03470();
-        Scaleform::GFx::Value ret = m_30->Invoke("closeCurrent", (long)m_data->FUN_141a02ca0(), nResult);
+        Scaleform::GFx::Value ret = m_30->Invoke("closeCurrent", (long)m_data->GetId(), nResult);
         if (m_data->IsModaless())
         {
             MS2Ptr<ASDialog> spBox = Unk_ASCreate<ASDialog>(m_28, ret);
             if (spBox.get())
-                m_data->FUN_141a04f80(spBox);
+                m_data->SaveModalessPosition(spBox);
         }
     }
-    FUN_1419f9110();
+    ResetAfterClose();
 }
 MS2_REPLACE_METHOD(0x1419F9250, UIMessageBox, FUN_1419f9250, 434, 0xCED33908);
 
@@ -805,7 +805,7 @@ MS2_REPLACE_METHOD(0x1419F9250, UIMessageBox, FUN_1419f9250, 434, 0xCED33908);
 // @0x1419f9410
 void UIMessageBox::FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra)
 {
-    if (m_data == 0 || m_data->FUN_141a02ca0() != nBoxId)
+    if (m_data == 0 || m_data->GetId() != nBoxId)
     {
         FUN_14151f200();
         return;
@@ -825,7 +825,7 @@ void UIMessageBox::FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scale
     else
     {
         int bHandled = 1;
-        IMessageListener* pListener = m_data->FUN_141a02cc0();
+        IMessageListener* pListener = m_data->GetListener();
         if (pListener)
         {
             UIMsg msg(0);
@@ -844,7 +844,7 @@ void UIMessageBox::FUN_1419f9410(int nButton, int nBoxId, CStringW strTag, Scale
         MS2Ptr<CMsgBoxData> spNext = FUN_14151f820();
         if (spNext.get())
         {
-            if (spNext->FUN_141a02ca0() == nBoxId)
+            if (spNext->GetId() == nBoxId)
                 FUN_14151f200();
             else
                 RemoveFromQueue(spData);
@@ -865,11 +865,11 @@ int UIMessageBox::FUN_1419f97a0(int nButton, int nBoxId, CStringW strTag, Scalef
         return 1;
     }
     MS2Ptr<CMsgBoxData> spData = m_data;
-    if (FUN_1419f9ba0(nButton, nBoxId, strTag, extra))
+    if (HandlePlainTag(nButton, nBoxId, strTag, extra))
         return 1;
     if (FUN_1419fa910(nButton, nBoxId, strTag, extra))
         return 1;
-    IMessageListener* pListener = spData->FUN_141a02cc0();
+    IMessageListener* pListener = spData->GetListener();
     if (pListener)
     {
         ATL::CAtlList<CStringW> groups(10);
@@ -896,7 +896,7 @@ int UIMessageBox::FUN_1419f97a0(int nButton, int nBoxId, CStringW strTag, Scalef
 MS2_REPLACE_METHOD(0x1419F97A0, UIMessageBox, FUN_1419f97a0, 1009, 0x3894B590);
 
 // @0x1419f9ba0
-int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra)
+int UIMessageBox::HandlePlainTag(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra)
 {
     if (strTag == s_143af3ba8 && HandleGameexitButton(nButton))
         return 1;
@@ -907,7 +907,7 @@ int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scalef
     }
     else if (strTag == s_143af3c20)
     {
-        if (FUN_1419fb3c0())
+        if (HandleForceloginButton())
             return 1;
     }
     else if (strTag.Find(s_143af3c28) == 0)
@@ -977,7 +977,7 @@ int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scalef
     }
     else if (strTag == s_143af3c98)
     {
-        if (FUN_1419fba50(nButton))
+        if (HandleDestroyItemButton(nButton))
             return 1;
     }
     else if (strTag == s_143af3ca0)
@@ -1017,12 +1017,12 @@ int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scalef
     }
     else if (strTag == s_143af3cd8)
     {
-        if (FUN_1419fd260(nButton))
+        if (HandleComposeBindPetButton(nButton))
             return 1;
     }
     else if (strTag == s_143af3ce0)
     {
-        if (FUN_1419fd4a0(nButton))
+        if (HandleEvolutionBindPetButton(nButton))
             return 1;
     }
     else if (strTag == s_143af3ce8)
@@ -1036,7 +1036,7 @@ int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scalef
     }
     else if (strTag == s_143af3cf8)
     {
-        if (FUN_1419fd830(nButton))
+        if (HandleStudyBindPetButton(nButton))
             return 1;
     }
     else if (strTag == s_143af3d00)
@@ -1046,7 +1046,7 @@ int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scalef
     }
     else if (strTag == s_143af3d08)
     {
-        if (FUN_1419fdbe0(nButton))
+        if (HandleUseBindItemSkillButton(nButton))
             return 1;
     }
     else if (strTag == s_143af3d10)
@@ -1066,7 +1066,7 @@ int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scalef
     }
     else if (strTag == s_143af3d28)
     {
-        if (FUN_1419ff870(nButton))
+        if (HandleCoupleEmotionButton(nButton))
             return 1;
     }
     else if (strTag == s_143af3d30)
@@ -1076,17 +1076,17 @@ int UIMessageBox::FUN_1419f9ba0(int nButton, int nBoxId, CStringW strTag, Scalef
     }
     else if (strTag == s_143af3d38)
     {
-        if (FUN_1419ffb20(nButton))
+        if (HandleRpsGameRequestButton(nButton))
             return 1;
     }
     else if (strTag == s_143af3d40)
     {
-        if (FUN_1419fff10(nButton))
+        if (HandleCoupleDanceRequestButton(nButton))
             return 1;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1419F9BA0, UIMessageBox, FUN_1419f9ba0, 3430, 0x6E7FC896);
+MS2_REPLACE_METHOD(0x1419F9BA0, UIMessageBox, HandlePlainTag, 3430, 0x6E7FC896);
 
 // @0x1419fa910
 int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scaleform::GFx::Value& extra)
@@ -1097,25 +1097,25 @@ int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scalef
     if (tokens[0] == s_143af3d48)
     {
         int nValue = _wtoi(tokens[1]);
-        if (FUN_1419fe240(nButton, nValue))
+        if (HandleUseStoreInButton(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3d50)
     {
         int nValue = _wtoi(tokens[1]);
-        if (FUN_1419fe310(nButton, nValue))
+        if (HandleUseStoreOutButton(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3d58)
     {
         int nValue = _wtoi(tokens[1]);
-        if (FUN_1419fe590(nButton, nValue))
+        if (HandleSwapStoreInButton(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3d60)
     {
         int nValue = _wtoi(tokens[1]);
-        if (FUN_1419fe690(nButton, nValue))
+        if (HandleSwapStoreOutButton(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3cc0)
@@ -1133,33 +1133,33 @@ int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scalef
     else if (tokens[0] == s_143af3d68)
     {
         int nValue = _wtoi(tokens[1]);
-        if (FUN_1419fe900(nButton, nValue))
+        if (HandleTradeInButton(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3d70)
     {
         int nValue = _wtoi(tokens[1]);
-        if (FUN_1419fea00(nButton, nValue))
+        if (HandleSellConfirmButton(nButton, nValue))
             return 1;
     }
     else if (tokens[0] == s_143af3d78)
     {
-        if (FUN_1419feae0(nButton, tokens[1]))
+        if (HandleChangeCharNameButton(nButton, tokens[1]))
             return 1;
     }
     else if (tokens[0] == s_143af3d80)
     {
-        if (FUN_1419fecc0(nButton, tokens[1]))
+        if (HandleChangeInvalidCharNameButton(nButton, tokens[1]))
             return 1;
     }
     else if (tokens[0] == s_143af3d88)
     {
-        if (FUN_1419feeb0(nButton, tokens[1]))
+        if (HandleChangeGuildNameButton(nButton, tokens[1]))
             return 1;
     }
     else if (tokens[0] == s_143af3d90)
     {
-        if (FUN_1419ff130(nButton, tokens[1]))
+        if (HandleOpenMassiveButton(nButton, tokens[1]))
             return 1;
     }
     else if (tokens[0] == s_143af3d98)
@@ -1168,7 +1168,7 @@ int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scalef
         if (bDontAsk == true && nButton == 0)
         {
             __time64_t tNow = GetServerTime();
-            reinterpret_cast<Unk_MessageBoxGameOption*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_nFuncItemAsk = tNow;
+            reinterpret_cast<Unk_MessageBoxGameOption*>(TSingleton<CGameOption>::GetInstance()->GetEtc())->m_nFuncItemAsk = tNow;
             reinterpret_cast<Unk_MessageBoxGameOptions*>(TSingleton<CGameOption>::GetInstance())->SaveCharacterSettings();
         }
         if (FUN_1419fc810(nButton))
@@ -1180,22 +1180,22 @@ int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scalef
         if (bDontAsk == true && nButton == 0)
         {
             __time64_t tNow = GetServerTime();
-            reinterpret_cast<Unk_MessageBoxGameOption*>(TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_nCurrencyAsk = tNow;
+            reinterpret_cast<Unk_MessageBoxGameOption*>(TSingleton<CGameOption>::GetInstance()->GetEtc())->m_nCurrencyAsk = tNow;
             reinterpret_cast<Unk_MessageBoxGameOptions*>(TSingleton<CGameOption>::GetInstance())->SaveCharacterSettings();
         }
-        if (FUN_1419ffe20(nButton))
+        if (HandleCurrencyOverflowAskButton(nButton))
             return 1;
     }
     else if (tokens[0] == s_143af3da8)
     {
-        if (FUN_1419fbd40(nButton, strTag))
+        if (HandleDestroyStoreItemButton(nButton, strTag))
             return 1;
     }
     else if (tokens[0] == s_143af3db0)
     {
-        if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xd4))
+        if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xd4))
             return 0;
-        if (FUN_1419fc140(nButton, strTag))
+        if (HandleDestroyDollItemButton(nButton, strTag))
             return 1;
     }
     return 0;
@@ -1203,18 +1203,18 @@ int UIMessageBox::FUN_1419fa910(int nButton, int nBoxId, CStringW strTag, Scalef
 MS2_REPLACE_METHOD(0x1419FA910, UIMessageBox, FUN_1419fa910, 2716, 0x7FE1CD7E);
 
 // @0x1419fb3c0
-int UIMessageBox::FUN_1419fb3c0()
+int UIMessageBox::HandleForceloginButton()
 {
-    if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSceneId() == 0x620000d)
+    if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSceneId() == 0x620000d)
     {
-        ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestQuitAndDisconnect();
+        ((class Unk_MessageBoxSocket*)GetNetworkService())->SendRequestQuitAndDisconnect();
         FUN_1416a0e70();
         PostQuitMessage(0);
         return 0;
     }
-    if (TSingleton<CStateService>::GetInstance()->FUN_1417e25a0(0x6200009) == 0 && ((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSceneId() == 0x6200009)
+    if (TSingleton<CStateService>::GetInstance()->FUN_1417e25a0(0x6200009) == 0 && ((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSceneId() == 0x6200009)
     {
-        UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetScene());
+        UISceneLogin* pLogin = dynamic_cast<UISceneLogin*>(((GFxSceneService*)CUserMail::GetGFxSceneService())->GetScene());
         if (pLogin)
             pLogin->FUN_141acf470();
     }
@@ -1228,7 +1228,7 @@ int UIMessageBox::HandleGameexitButton(int nButton)
     {
         if (DAT_143ab2942 == false)
             FUN_140d86260()->vfunc_22(0x3f2, "GameEnd");
-        ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestQuitAndDisconnect();
+        ((class Unk_MessageBoxSocket*)GetNetworkService())->SendRequestQuitAndDisconnect();
         FUN_1416a0e70();
         PostQuitMessage(0);
         return 0;
@@ -1242,19 +1242,19 @@ int UIMessageBox::HandleStartbypassButton(int nButton)
 {
     if (nButton == 0)
     {
-        if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSceneId() == 0x6200009)
+        if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSceneId() == 0x6200009)
         {
             if (DAT_143ab2858 != 0)
             {
                 UILoginDialog* pDialog = Unk_MessageBoxDialog<UILoginDialog>(0x4e22);
                 if (pDialog)
-                    pDialog->FUN_1419e2310(0);
+                    pDialog->HandleMessageBoxResult(0);
             }
             else
             {
                 CStringW strCommon = GetStringCommon(0xd28);
                 CStringW strText = FormatStringId<CStringW>(0x20f, strCommon);
-                FUN_140d73aa0(strText, 0, 0, L"");
+                ShowMessageBox(strText, 0, 0, L"");
             }
             return 0;
         }
@@ -1271,7 +1271,7 @@ int UIMessageBox::FUN_1419fb630(int nButton)
     }
     else if (nButton == 2)
     {
-        Unk_MessageBoxGuideDialog* pDialog = ((class Unk_MessageBoxGuideDialog*)FUN_140ff7030(0x4e87));
+        Unk_MessageBoxGuideDialog* pDialog = ((class Unk_MessageBoxGuideDialog*)FindCartoonDialog(0x4e87));
         if (pDialog)
             pDialog->OpenBook(*reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(GetClientConstants())->m_guideId)->Get(), 0x22, m_layer);
         return 0;
@@ -1279,11 +1279,11 @@ int UIMessageBox::FUN_1419fb630(int nButton)
     else if (nButton == 3)
     {
         CString strUrl;
-        TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(strUrl, *reinterpret_cast<Common::Constants::Value<CString>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(GetClientConstants())->m_guideUrl)->Get());
+        TSingleton<CWebBrowserService>::GetInstance()->ExpandUrlPrefix(strUrl, *reinterpret_cast<Common::Constants::Value<CString>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(GetClientConstants())->m_guideUrl)->Get());
         FUN_1418fe1c0(strUrl);
         return 0;
     }
-    Unk_MessageBoxGuideDialog* pDialog = ((class Unk_MessageBoxGuideDialog*)FUN_140ff7030(0x4e87));
+    Unk_MessageBoxGuideDialog* pDialog = ((class Unk_MessageBoxGuideDialog*)FindCartoonDialog(0x4e87));
     if (pDialog && !pDialog->vfunc_55() && pDialog->GetBookId() == *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_MessageBoxConsts*>(GetClientConstants())->m_guideId)->Get())
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e87);
     return 1;
@@ -1300,10 +1300,10 @@ int UIMessageBox::HandleLearnSkillButton(int nButton)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
-            pPlayer->GetJobSystem()->RequestSkill(nUid, ((class CItemData*)(class Unk_ItemEquipData*)(spItem->FUN_140527840()))->FUN_14053dc20(), ((class CItemData*)(class Unk_ItemEquipData*)(spItem->FUN_140527840()))->FUN_14053dc40());
+            pPlayer->GetJobSystem()->RequestSkill(nUid, ((class CItemData*)(class Unk_ItemEquipData*)(spItem->FUN_140527840()))->GetSkillId(), ((class CItemData*)(class Unk_ItemEquipData*)(spItem->FUN_140527840()))->GetSkillLevel());
     }
     return 1;
 }
@@ -1349,7 +1349,7 @@ MS2_REPLACE_METHOD(0x1419FBA00, UIMessageBox, HandleGuildinviteButton, 73, 0xDD7
 
 
 // @0x1419fba50
-int UIMessageBox::FUN_1419fba50(int nButton)
+int UIMessageBox::HandleDestroyItemButton(int nButton)
 {
     if (m_data == 0)
         return 1;
@@ -1358,10 +1358,10 @@ int UIMessageBox::FUN_1419fba50(int nButton)
         return 1;
     if (nButton == 0)
     {
-        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_data->FUN_141a02c00());
+        MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_data->GetItemUid());
         if (spItem.get())
         {
-            ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestItemInventoryMode5(spItem->GetItemUid());
+            ((class Unk_MessageBoxSocket*)GetNetworkService())->SendRequestItemInventoryMode5(spItem->GetItemUid());
             Unk_MessageBoxXform xf;
             reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
             xf.m_fScale = 1.0f;
@@ -1376,10 +1376,10 @@ int UIMessageBox::FUN_1419fba50(int nButton)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FBA50, UIMessageBox, FUN_1419fba50, 735, 0x7B0CE74D);
+MS2_REPLACE_METHOD(0x1419FBA50, UIMessageBox, HandleDestroyItemButton, 735, 0x7B0CE74D);
 
 // @0x1419fbd40
-int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
+int UIMessageBox::HandleDestroyStoreItemButton(int nButton, CStringW strTag)
 {
     ATL::CAtlArray<CStringW> tokens;
     if (!FUN_14028cb70(strTag, tokens, L",", 2))
@@ -1392,10 +1392,10 @@ int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
     bool bOk = FUN_1407183f0(tokens[1]);
     if (bOk == true && nButton == 0)
     {
-        MS2Ptr<CItem> spItem = DAT_143ab2d80.Find(m_data->FUN_141a02c00());
+        MS2Ptr<CItem> spItem = DAT_143ab2d80.Find(m_data->GetItemUid());
         if (spItem.get())
         {
-            ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestItemStorage(spItem->GetItemUid());
+            ((class Unk_MessageBoxSocket*)GetNetworkService())->SendRequestItemStorage(spItem->GetItemUid());
             Unk_MessageBoxXform xf;
             reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
             xf.m_fScale = 1.0f;
@@ -1410,10 +1410,10 @@ int UIMessageBox::FUN_1419fbd40(int nButton, CStringW strTag)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FBD40, UIMessageBox, FUN_1419fbd40, 1004, 0x279431D3);
+MS2_REPLACE_METHOD(0x1419FBD40, UIMessageBox, HandleDestroyStoreItemButton, 1004, 0x279431D3);
 
 // @0x1419fc140
-int UIMessageBox::FUN_1419fc140(int nButton, CStringW strTag)
+int UIMessageBox::HandleDestroyDollItemButton(int nButton, CStringW strTag)
 {
     Unk_MessageBoxPC* pPlayer = ((Unk_MessageBoxPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -1427,10 +1427,10 @@ int UIMessageBox::FUN_1419fc140(int nButton, CStringW strTag)
     if (bOk == true && nButton == 0)
     {
         __int64 nSlot = 0;
-        MS2Ptr<CItem> spItem(pPlayer->FUN_14152efa0(m_data->FUN_141a02c00(), &nSlot));
+        MS2Ptr<CItem> spItem(pPlayer->FUN_14152efa0(m_data->GetItemUid(), &nSlot));
         if (spItem.get())
         {
-            ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendFittingDoll(nSlot, spItem->GetItemUid());
+            ((class Unk_MessageBoxSocket*)GetNetworkService())->SendFittingDoll(nSlot, spItem->GetItemUid());
             Unk_MessageBoxXform xf;
             reinterpret_cast<NiTransform*>(&xf)->NiTransform::NiTransform();
             xf.m_fScale = 1.0f;
@@ -1445,7 +1445,7 @@ int UIMessageBox::FUN_1419fc140(int nButton, CStringW strTag)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FC140, UIMessageBox, FUN_1419fc140, 1021, 0xB1DBE34C);
+MS2_REPLACE_METHOD(0x1419FC140, UIMessageBox, HandleDestroyDollItemButton, 1021, 0xB1DBE34C);
 
 // @0x1419fc550
 int UIMessageBox::HandleLearnEmotionButton(int nButton)
@@ -1457,7 +1457,7 @@ int UIMessageBox::HandleLearnEmotionButton(int nButton)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         FUN_14151f200();
         if (MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid))
             g_143ab2a90.SendEmotion(spItem.get());
@@ -1470,7 +1470,7 @@ MS2_REPLACE_METHOD(0x1419FC550, UIMessageBox, HandleLearnEmotionButton, 221, 0xF
 int UIMessageBox::HandleRecallconfirmButton(int nButton)
 {
     int bAccept = nButton == 0 ? 1 : 0;
-    ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRecallUserReply(bAccept);
+    ((class Unk_MessageBoxSocket*)GetNetworkService())->SendRecallUserReply(bAccept);
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419FC640, UIMessageBox, HandleRecallconfirmButton, 73, 0x0185AFFF);
@@ -1514,7 +1514,7 @@ int UIMessageBox::HandleMaintenanceExitButton(int nButton)
 {
     if (nButton == 0)
     {
-        ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestQuitAndDisconnect();
+        ((class Unk_MessageBoxSocket*)GetNetworkService())->SendRequestQuitAndDisconnect();
         FUN_1416a0e70();
         PostQuitMessage(0);
     }
@@ -1530,7 +1530,7 @@ int UIMessageBox::FUN_1419fc810(int nButton)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         int bAsk = 0;
         m_data->GetArg(0, bAsk);
         if (bAsk != 0)
@@ -1544,10 +1544,10 @@ int UIMessageBox::FUN_1419fc810(int nButton)
                     m_data->FUN_140b76a70(1, strName);
                     m_data->FUN_140e01c50(2, nAmount);
                     CStringW strMsg = FormatStringId<CStringW>(0x2a7, strName);
-                    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x1a, strMsg, 0, s_143af3da0);
+                    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x1a, strMsg, 0, s_143af3da0);
                     if (spBox.get())
                     {
-                        spBox->FUN_141a01600(spItem->GetItemUid());
+                        spBox->SetItemUid(spItem->GetItemUid());
                         spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
                         spBox->FUN_141a01800(2);
                         spBox->SetCheckbox0(GetStringCommon(0x29e), 0);
@@ -1572,7 +1572,7 @@ MS2_REPLACE_METHOD(0x1419FC810, UIMessageBox, FUN_1419fc810, 1112, 0xC18E5FC1);
 int UIMessageBox::HandleAlreadyReconnectButton(int nButton)
 {
     if (nButton == 0)
-        FUN_140714f90()->ConnectToConfiguredServer();
+        GetNetworkService()->ConnectToConfiguredServer();
     return 1;
 }
 MS2_REPLACE_METHOD(0x1419FCC70, UIMessageBox, HandleAlreadyReconnectButton, 43, 0x23E8BDFB);
@@ -1598,7 +1598,7 @@ int UIMessageBox::HandleExternalBlockButton(int nButton)
     case 0:
         info.lpParameters = "http://maplestory2.nexon.com/Auth/Certify";
         ShellExecuteExA(&info);
-        ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestQuitAndDisconnect();
+        ((class Unk_MessageBoxSocket*)GetNetworkService())->SendRequestQuitAndDisconnect();
         FUN_1416a0e70();
         PostQuitMessage(0);
         break;
@@ -1675,7 +1675,7 @@ int UIMessageBox::HandleSummonBindPetButton(int nButton)
         return 0;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
@@ -1686,7 +1686,7 @@ int UIMessageBox::HandleSummonBindPetButton(int nButton)
 MS2_REPLACE_METHOD(0x1419FD130, UIMessageBox, HandleSummonBindPetButton, 283, 0x693778D4);
 
 // @0x1419fd260
-int UIMessageBox::FUN_1419fd260(int nButton)
+int UIMessageBox::HandleComposeBindPetButton(int nButton)
 {
     if (m_data == 0)
         return 1;
@@ -1695,7 +1695,7 @@ int UIMessageBox::FUN_1419fd260(int nButton)
         return 0;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
@@ -1704,20 +1704,20 @@ int UIMessageBox::FUN_1419fd260(int nButton)
         {
             if (pDialog->vfunc_55())
                 return 0;
-            MS2Ptr<PetSystemTabContents> spTab = pDialog->FUN_140e746c0();
+            MS2Ptr<PetSystemTabContents> spTab = pDialog->GetShownPage();
             if (spTab == 0)
                 return 0;
             MS2Ptr<TabContentsPetCompose> spCompose(dynamic_cast<TabContentsPetCompose*>((PetSystemTabContents*)spTab));
             if (spCompose == 0)
                 return 0;
-            spCompose->FUN_140cb48a0(1);
+            spCompose->SendComposeRequest(1);
         }
     }
     return 1;
 }
 
 // @0x1419fd4a0
-int UIMessageBox::FUN_1419fd4a0(int nButton)
+int UIMessageBox::HandleEvolutionBindPetButton(int nButton)
 {
     if (m_data == 0)
         return 1;
@@ -1726,7 +1726,7 @@ int UIMessageBox::FUN_1419fd4a0(int nButton)
         return 0;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
@@ -1735,7 +1735,7 @@ int UIMessageBox::FUN_1419fd4a0(int nButton)
         {
             if (pDialog->vfunc_55())
                 return 0;
-            MS2Ptr<PetSystemTabContents> spTab = pDialog->FUN_140e746c0();
+            MS2Ptr<PetSystemTabContents> spTab = pDialog->GetShownPage();
             if (spTab == 0)
                 return 0;
             MS2Ptr<TabContentsPetEvolution> spEvolution(dynamic_cast<TabContentsPetEvolution*>((PetSystemTabContents*)spTab));
@@ -1757,7 +1757,7 @@ int UIMessageBox::HandleTrainingBindPetButton(int nButton)
         return 0;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
@@ -1766,7 +1766,7 @@ int UIMessageBox::HandleTrainingBindPetButton(int nButton)
         {
             if (pDialog->vfunc_55())
                 return 0;
-            pDialog->FUN_140e57d60();
+            pDialog->SendTrainingRequest();
             return 1;
         }
     }
@@ -1775,7 +1775,7 @@ int UIMessageBox::HandleTrainingBindPetButton(int nButton)
 MS2_REPLACE_METHOD(0x1419FD6E0, UIMessageBox, HandleTrainingBindPetButton, 326, 0xEB79FDCB);
 
 // @0x1419fd830
-int UIMessageBox::FUN_1419fd830(int nButton)
+int UIMessageBox::HandleStudyBindPetButton(int nButton)
 {
     if (m_data == 0)
         return 1;
@@ -1784,7 +1784,7 @@ int UIMessageBox::FUN_1419fd830(int nButton)
         return 0;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
@@ -1793,7 +1793,7 @@ int UIMessageBox::FUN_1419fd830(int nButton)
         {
             if (pDialog->vfunc_55())
                 return 0;
-            MS2Ptr<PetSystemTabContents> spTab = pDialog->FUN_140e746c0();
+            MS2Ptr<PetSystemTabContents> spTab = pDialog->GetShownPage();
             if (spTab == 0)
                 return 0;
             MS2Ptr<TabContentsPetRemakeOption> spRemake(dynamic_cast<TabContentsPetRemakeOption*>((PetSystemTabContents*)spTab));
@@ -1815,7 +1815,7 @@ int UIMessageBox::HandleRemakeOptionScrollBindPetButton(int nButton)
         return 0;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
@@ -1826,14 +1826,14 @@ int UIMessageBox::HandleRemakeOptionScrollBindPetButton(int nButton)
                 return 0;
             __int64 nScroll = 0;
             m_data->FUN_140b19130(0, nScroll);
-            pDialog->FUN_140f59ad0(nScroll, 1);
+            pDialog->SendRemakeRequest(nScroll, 1);
         }
     }
     return 1;
 }
 
 // @0x1419fdbe0
-int UIMessageBox::FUN_1419fdbe0(int nButton)
+int UIMessageBox::HandleUseBindItemSkillButton(int nButton)
 {
     if (m_data == 0)
         return 1;
@@ -1842,7 +1842,7 @@ int UIMessageBox::FUN_1419fdbe0(int nButton)
         return 0;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
@@ -1854,7 +1854,7 @@ int UIMessageBox::FUN_1419fdbe0(int nButton)
         Unk_InventorySkillRequest request(nSkill, 1);
         request.remap = spLevel->FUN_140804450();
         request.item = spItem->GetItemUid();
-        MS2Ptr<CSkillRecord> spRecord = pPlayer->GetSkillSystem()->FUN_141765570(request);
+        MS2Ptr<CSkillRecord> spRecord = pPlayer->GetSkillSystem()->CreateSkillRecord(request);
         if (spRecord == 0)
             return 0;
         spRecord->m_bItemSkill = true;
@@ -1862,7 +1862,7 @@ int UIMessageBox::FUN_1419fdbe0(int nButton)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FDBE0, UIMessageBox, FUN_1419fdbe0, 662, 0x412AD453);
+MS2_REPLACE_METHOD(0x1419FDBE0, UIMessageBox, HandleUseBindItemSkillButton, 662, 0x412AD453);
 
 // @0x1419fde80
 int UIMessageBox::HandleUseBindFuncItemButton(int nButton)
@@ -1871,7 +1871,7 @@ int UIMessageBox::HandleUseBindFuncItemButton(int nButton)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
@@ -1886,7 +1886,7 @@ int UIMessageBox::HandleUseBindEquipItemButton(int nButton)
 {
     if (m_data == 0)
         return 1;
-    __int64 nUid = m_data->FUN_141a02c00();
+    __int64 nUid = m_data->GetItemUid();
     int nResult = 0;
     if (nButton == 0)
     {
@@ -1897,7 +1897,7 @@ int UIMessageBox::HandleUseBindEquipItemButton(int nButton)
         int nArg1 = m_data->FUN_141a02e90(1, 0);
         nResult = g_143ab2a90.RequestEquipItem(spItem.get(), nArg0, nArg1, 1);
     }
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xe8) && nResult == 0 && g_143ab2a90.FUN_140a66f20() == nUid)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xe8) && nResult == 0 && g_143ab2a90.FUN_140a66f20() == nUid)
         g_143ab2a90.FUN_140a66f40(0);
     return 1;
 }
@@ -1910,7 +1910,7 @@ int UIMessageBox::HandleUseBindGemEquipItemButton(int nButton)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem == 0)
             return 0;
@@ -1925,29 +1925,29 @@ static int FUN_141a00250(__int64 nUid, int nCount);
 static int FUN_141a002b0(__int64 nUid, int nCount);
 
 // @0x1419fe240
-int UIMessageBox::FUN_1419fe240(int nButton, int nCount)
+int UIMessageBox::HandleUseStoreInButton(int nButton, int nCount)
 {
     if (m_data == 0)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         if (!FUN_141a002b0(nUid, nCount))
             return 1;
         FUN_140de2dc0(&DAT_143ab2d80, nUid, 0, nCount, MS2Ptr<CItemData>(0));
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FE240, UIMessageBox, FUN_1419fe240, 198, 0x8FFC0149);
+MS2_REPLACE_METHOD(0x1419FE240, UIMessageBox, HandleUseStoreInButton, 198, 0x8FFC0149);
 
 // @0x1419fe310
-int UIMessageBox::FUN_1419fe310(int nButton, int nCount)
+int UIMessageBox::HandleUseStoreOutButton(int nButton, int nCount)
 {
     if (m_data == 0)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         if (!FUN_141a00250(nUid, nCount))
             return 1;
         MS2Ptr<CItem> spItem = DAT_143ab2d80.Find(nUid);
@@ -1957,7 +1957,7 @@ int UIMessageBox::FUN_1419fe310(int nButton, int nCount)
         int nResult = g_143ab2a90.FUN_140a612b0(nSlot, spItem, nCount);
         if (nResult == -1)
         {
-            Unk_AkoMessage<CStringW>(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->FUN_141813300(nSlot));
+            Unk_AkoMessage<CStringW>(0x44, 1, 1, TSingleton<CStringTable>::GetInstance()->GetInventoryTabName(nSlot));
             {
                 CString strEmpty("");
                 FUN_141276180(s_warning, strEmpty);
@@ -1968,41 +1968,41 @@ int UIMessageBox::FUN_1419fe310(int nButton, int nCount)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FE310, UIMessageBox, FUN_1419fe310, 624, 0x8F2EFD69);
+MS2_REPLACE_METHOD(0x1419FE310, UIMessageBox, HandleUseStoreOutButton, 624, 0x8F2EFD69);
 
 // @0x1419fe590
-int UIMessageBox::FUN_1419fe590(int nButton, int nCount)
+int UIMessageBox::HandleSwapStoreInButton(int nButton, int nCount)
 {
     if (m_data == 0)
         return 1;
     if (nButton == 0)
     {
         int nSlot = m_data->FUN_141a02c60();
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         if (!FUN_141a002b0(nUid, nCount))
             return 1;
         FUN_140de2dc0(&DAT_143ab2d80, nUid, nSlot, nCount, MS2Ptr<CItemData>(0));
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FE590, UIMessageBox, FUN_1419fe590, 235, 0x3212ADF6);
+MS2_REPLACE_METHOD(0x1419FE590, UIMessageBox, HandleSwapStoreInButton, 235, 0x3212ADF6);
 
 // @0x1419fe690
-int UIMessageBox::FUN_1419fe690(int nButton, int nCount)
+int UIMessageBox::HandleSwapStoreOutButton(int nButton, int nCount)
 {
     if (m_data == 0)
         return 1;
     if (nButton == 0)
     {
         int nSlot = m_data->FUN_141a02c60();
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         if (!FUN_141a00250(nUid, nCount))
             return 1;
         FUN_140de31f0(&DAT_143ab2d80, nUid, nSlot, nCount, MS2Ptr<CItemData>(0));
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FE690, UIMessageBox, FUN_1419fe690, 235, 0xA5B54A09);
+MS2_REPLACE_METHOD(0x1419FE690, UIMessageBox, HandleSwapStoreOutButton, 235, 0xA5B54A09);
 
 // @0x1419fe790
 int UIMessageBox::HandleDropButton(int nButton, int nCount)
@@ -2011,10 +2011,10 @@ int UIMessageBox::HandleDropButton(int nButton, int nCount)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         if (!FUN_141a002b0(nUid, nCount))
             return 1;
-        ((class Unk_MessageBoxSocket*)FUN_140714f90())->SendRequestItemInventoryMode4(nUid, nCount);
+        ((class Unk_MessageBoxSocket*)GetNetworkService())->SendRequestItemInventoryMode4(nUid, nCount);
     }
     return 1;
 }
@@ -2027,11 +2027,11 @@ int UIMessageBox::HandleSellButton(int nButton, int nCount)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         if (!FUN_141a002b0(nUid, nCount))
             return 1;
         FUN_14151f200();
-        FUN_1419f8920(g_143ab2a90.FindItemByUid(nUid), nCount);
+        SellItem(g_143ab2a90.FindItemByUid(nUid), nCount);
         return 1;
     }
     return 1;
@@ -2039,16 +2039,16 @@ int UIMessageBox::HandleSellButton(int nButton, int nCount)
 MS2_REPLACE_METHOD(0x1419FE830, UIMessageBox, HandleSellButton, 193, 0xB5EC7C67);
 
 // @0x1419fe900
-int UIMessageBox::FUN_1419fe900(int nButton, int nCount)
+int UIMessageBox::HandleTradeInButton(int nButton, int nCount)
 {
     if (m_data == 0)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         if (!FUN_141a002b0(nUid, nCount))
             return 1;
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e83) == 0)
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e83) == 0)
         {
             UITradeDialogEx* pDialog = Unk_InvGetDialogById<UITradeDialogEx>(0x4e83);
             if (pDialog)
@@ -2064,26 +2064,26 @@ int UIMessageBox::FUN_1419fe900(int nButton, int nCount)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FE900, UIMessageBox, FUN_1419fe900, 244, 0xEB4B35A3);
+MS2_REPLACE_METHOD(0x1419FE900, UIMessageBox, HandleTradeInButton, 244, 0xEB4B35A3);
 
 // @0x1419fea00
-int UIMessageBox::FUN_1419fea00(int nButton, int nCount)
+int UIMessageBox::HandleSellConfirmButton(int nButton, int nCount)
 {
     if (m_data == 0)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         if (!FUN_141a002b0(nUid, nCount))
             return 1;
         RequestSellItem(nUid, nCount, (void*)(g_143ab2a90.FindItemByUid(nUid).get()));
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FEA00, UIMessageBox, FUN_1419fea00, 218, 0x20D8B1E2);
+MS2_REPLACE_METHOD(0x1419FEA00, UIMessageBox, HandleSellConfirmButton, 218, 0x20D8B1E2);
 
 // @0x1419feae0
-int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
+int UIMessageBox::HandleChangeCharNameButton(int nButton, const CStringW& strName)
 {
     if (m_data == 0)
         return 1;
@@ -2094,7 +2094,7 @@ int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
         {
             UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox)
-                pBox->FUN_1419f82b0(GetStringCommon(0xd));
+                pBox->UpdateErrorMessage(GetStringCommon(0xd));
             return 0;
         }
         CStringW strError;
@@ -2102,10 +2102,10 @@ int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
         {
             UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox)
-                pBox->FUN_1419f82b0(strError);
+                pBox->UpdateErrorMessage(strError);
             return 0;
         }
-        __int64 nUid = spData->FUN_141a02c00();
+        __int64 nUid = spData->GetItemUid();
         COutPacket packet(static_cast<int>(SendOp::CheckCharName), 0);
         packet.COutPacket::WriteUnicodeString(strName);
         packet.Encode8(nUid);
@@ -2113,10 +2113,10 @@ int UIMessageBox::FUN_1419feae0(int nButton, const CStringW& strName)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FEAE0, UIMessageBox, FUN_1419feae0, 471, 0x6BA83DA0);
+MS2_REPLACE_METHOD(0x1419FEAE0, UIMessageBox, HandleChangeCharNameButton, 471, 0x6BA83DA0);
 
 // @0x1419fecc0
-int UIMessageBox::FUN_1419fecc0(int nButton, const CStringW& strName)
+int UIMessageBox::HandleChangeInvalidCharNameButton(int nButton, const CStringW& strName)
 {
     if (m_data == 0)
         return 1;
@@ -2127,7 +2127,7 @@ int UIMessageBox::FUN_1419fecc0(int nButton, const CStringW& strName)
         {
             UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox)
-                pBox->FUN_1419f82b0(GetStringCommon(0xd));
+                pBox->UpdateErrorMessage(GetStringCommon(0xd));
             return 0;
         }
         CStringW strError;
@@ -2135,7 +2135,7 @@ int UIMessageBox::FUN_1419fecc0(int nButton, const CStringW& strName)
         {
             UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox)
-                pBox->FUN_1419f82b0(strError);
+                pBox->UpdateErrorMessage(strError);
             return 0;
         }
         Unk_MessageBoxNameDialog* pDialog = static_cast<Unk_MessageBoxNameDialog*>(Unk_MMDialog<UICharacterListDialog>(0x4ef1));
@@ -2153,10 +2153,10 @@ int UIMessageBox::FUN_1419fecc0(int nButton, const CStringW& strName)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FECC0, UIMessageBox, FUN_1419fecc0, 490, 0x65602E3E);
+MS2_REPLACE_METHOD(0x1419FECC0, UIMessageBox, HandleChangeInvalidCharNameButton, 490, 0x65602E3E);
 
 // @0x1419feeb0
-int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
+int UIMessageBox::HandleChangeGuildNameButton(int nButton, const CStringW& strName)
 {
     if (m_data == 0)
         return 1;
@@ -2167,7 +2167,7 @@ int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
         {
             UIMessageBox* pBox = GetMessageBoxLayer();
             if (pBox)
-                pBox->FUN_1419f82b0(GetStringCommon(0xd));
+                pBox->UpdateErrorMessage(GetStringCommon(0xd));
             return 0;
         }
         if (CBanTextChecker* pFilter = TSingleton<CommonString>::GetInstance()->GetChecker().get())
@@ -2175,11 +2175,11 @@ int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
             CStringW strMsg;
             if (pFilter->CheckGuildName(strName, strMsg))
             {
-                FUN_1412751f0(strMsg, 1, 1);
+                ShowSystemNotice(strMsg, 1, 1);
                 return 0;
             }
         }
-        __int64 nUid = spData->FUN_141a02c00();
+        __int64 nUid = spData->GetItemUid();
         CItem* pItem = g_143ab2a90.FindItemByUid(nUid).get();
         if (!pItem)
             return 0;
@@ -2187,10 +2187,10 @@ int UIMessageBox::FUN_1419feeb0(int nButton, const CStringW& strName)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FEEB0, UIMessageBox, FUN_1419feeb0, 630, 0x2C053356);
+MS2_REPLACE_METHOD(0x1419FEEB0, UIMessageBox, HandleChangeGuildNameButton, 630, 0x2C053356);
 
 // @0x1419ff130
-int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
+int UIMessageBox::HandleOpenMassiveButton(int nButton, const CStringW& strName)
 {
     if (m_data == 0)
         return 1;
@@ -2202,7 +2202,7 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
             return 0;
         }
         MS2Ptr<CMsgBoxData> spData = m_data;
-        __int64 nUid = spData->FUN_141a02c00();
+        __int64 nUid = spData->GetItemUid();
         CItem* pItem = g_143ab2a90.FindItemByUid(nUid);
         if (!pItem)
             return 0;
@@ -2213,27 +2213,27 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         WorldService::GetInstance()->FUN_141bc2c90(pPlayer->vfunc_18(), &portals);
         if (portals.GetCount() > 0)
         {
-            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_another_portal"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_msg_item_open_massive_error_another_portal"), 1, 1);
             return 0;
         }
         if (FUN_140930b10())
         {
-            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_msg_item_open_massive_cant_open"), 1, 1);
             return 0;
         }
         if (((class PCBase*)(class PC*)(pPlayer))->GetCurStateId() != 1)
         {
-            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
             return 0;
         }
-        if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetSubSceneId() != 0x620001d)
+        if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetSubSceneId() != 0x620001d)
         {
-            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_msg_item_open_massive_invalid_state"), 1, 1);
             return 0;
         }
         int nOpen = 0;
         std::vector<int> ids;
-        WorldService::GetInstance()->FUN_141bc2980(&ids);   // C3: WorldService (worldservice.h)
+        WorldService::GetInstance()->GetFieldObjectIds(&ids);   // C3: WorldService (worldservice.h)
         for (size_t i = 0; i < ids.size(); i++)
         {
             MS2Ptr<CPortal> spPortal = WorldService::GetInstance()->FUN_141bc2800(ids[i]);
@@ -2244,14 +2244,14 @@ int UIMessageBox::FUN_1419ff130(int nButton, const CStringW& strName)
         }
         if (nOpen >= 10)
         {
-            FUN_1412751f0(GetStringCommonByKey(L"s_msg_item_open_massive_error_too_many_portal"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_msg_item_open_massive_error_too_many_portal"), 1, 1);
             return 0;
         }
         g_143ab2a90.FUN_140a63880(pItem, strName);
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FF130, UIMessageBox, FUN_1419ff130, 1684, 0x88C3FDCA);
+MS2_REPLACE_METHOD(0x1419FF130, UIMessageBox, HandleOpenMassiveButton, 1684, 0x88C3FDCA);
 
 // @0x1419ff7d0
 int UIMessageBox::HandleBannerCloseButton(int nButton)
@@ -2270,7 +2270,7 @@ int UIMessageBox::HandleBannerCloseButton(int nButton)
 MS2_REPLACE_METHOD(0x1419FF7D0, UIMessageBox, HandleBannerCloseButton, 142, 0xBBEC0EC1);
 
 // @0x1419ff870
-int UIMessageBox::FUN_1419ff870(int nButton)
+int UIMessageBox::HandleCoupleEmotionButton(int nButton)
 {
     if (m_data == 0)
         return 1;
@@ -2301,7 +2301,7 @@ int UIMessageBox::FUN_1419ff870(int nButton)
 }
 
 // @0x1419ffb20
-int UIMessageBox::FUN_1419ffb20(int nButton)
+int UIMessageBox::HandleRpsGameRequestButton(int nButton)
 {
     if (m_data == 0)
         return 1;
@@ -2331,13 +2331,13 @@ int UIMessageBox::FUN_1419ffb20(int nButton)
 }
 
 // @0x1419ffe20
-int UIMessageBox::FUN_1419ffe20(int nButton)
+int UIMessageBox::HandleCurrencyOverflowAskButton(int nButton)
 {
     if (m_data == 0)
         return 1;
     if (nButton == 0)
     {
-        __int64 nUid = m_data->FUN_141a02c00();
+        __int64 nUid = m_data->GetItemUid();
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
         if (spItem.get())
         {
@@ -2347,10 +2347,10 @@ int UIMessageBox::FUN_1419ffe20(int nButton)
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419FFE20, UIMessageBox, FUN_1419ffe20, 223, 0x879EDE35);
+MS2_REPLACE_METHOD(0x1419FFE20, UIMessageBox, HandleCurrencyOverflowAskButton, 223, 0x879EDE35);
 
 // @0x1419fff10
-int UIMessageBox::FUN_1419fff10(int nButton)
+int UIMessageBox::HandleCoupleDanceRequestButton(int nButton)
 {
     if (m_data == 0)
         return 1;
@@ -2388,7 +2388,7 @@ int UIMessageBox::FUN_1419fff10(int nButton)
 template <class A, class B> inline void Unk_BreakMessage(int nId, int nA, int nB, const A& a, const B& b);
 
 // @0x141a00180
-static int FUN_141a00180(MS2Ptr<CItem> spItem, int nCount)
+static int IsItemCountValid(MS2Ptr<CItem> spItem, int nCount)
 {
     if (!spItem)
         return 1;
@@ -2407,7 +2407,7 @@ static int FUN_141a00250(__int64 nUid, int nCount)
 {
     if (nUid == 0)
         return 1;
-    return FUN_141a00180(DAT_143ab2d80.Find(nUid), nCount);
+    return IsItemCountValid(DAT_143ab2d80.Find(nUid), nCount);
 }
 
 // @0x141a002b0
@@ -2415,7 +2415,7 @@ static int FUN_141a002b0(__int64 nUid, int nCount)
 {
     if (nUid == 0)
         return 1;
-    return FUN_141a00180(g_143ab2a90.FindItemByUid(nUid), nCount);
+    return IsItemCountValid(g_143ab2a90.FindItemByUid(nUid), nCount);
 }
 
 int Parse_1402180a0(const CStringW& value);                     // the block type of a name (commonenum.cpp)

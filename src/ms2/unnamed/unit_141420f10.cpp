@@ -37,7 +37,7 @@ int FUN_141420f10(CItemData* pData, AvatarPC* pAvatar)
                 return nCustomizeId;
         }
     }
-    return pData->GetModelOrEmpty()->FUN_14054b400();
+    return pData->GetModelOrEmpty()->GetFirstGroupType();
 }
 
 // @0x141420f90
@@ -68,7 +68,7 @@ int FUN_141421040(int nSlot, AvatarPC* pAvatar)
     {
         MS2Ptr<CEquipItem> spEquip = FUN_1414211a0(nSlot, pAvatar);
         if (spEquip.get())
-            return spEquip->GetItem()->FUN_1405276c0();
+            return spEquip->GetItem()->GetItemId();
     }
     return 0;
 }

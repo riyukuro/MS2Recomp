@@ -20,7 +20,7 @@
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ASCallback;
 
 extern Scaleform::GFx::Value DAT_143b0ae18;                    // an undefined value (unit_140135ac0.cpp)
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
+Scaleform::GFx::Movie* GetMovie(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
 
 // @0x1422c1e40
 ASMovieClip::ASMovieClip(int nMovieId)
@@ -38,7 +38,7 @@ ASMovieClip::ASMovieClip(Scaleform::GFx::Value v, int nMovieId)
 ASMovieClip::ASMovieClip(CString strLinkage, int nMovieId)
     : ASSprite(DAT_143b0ae18, nMovieId)
 {
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(m_nMovieId);
     if (pMovie != NULL) {
         pMovie->CreateObject(&m_value, strLinkage, 0, 0);
         if (m_value.IsUndefined()) {
@@ -52,18 +52,18 @@ ASMovieClip::~ASMovieClip()
 }
 
 // @0x1422c1fe0
-void ASMovieClip::FUN_1422c1fe0(int bEnabled)
+void ASMovieClip::SetEnabled(int bEnabled)
 {
-    FUN_1407cbbe0("enabled", bEnabled != 0);
+    SetBoolMember("enabled", bEnabled != 0);
 }
-MS2_REPLACE_METHOD(0x1422C1FE0, ASMovieClip, FUN_1422c1fe0, 60, 0x71A1E927);
+MS2_REPLACE_METHOD(0x1422C1FE0, ASMovieClip, SetEnabled, 60, 0x71A1E927);
 
 // @0x1422c2030
-int ASMovieClip::FUN_1422c2030()
+int ASMovieClip::IsEnabled()
 {
     return GetMember("enabled").GetBool();
 }
-MS2_REPLACE_METHOD(0x1422C2030, ASMovieClip, FUN_1422c2030, 91, 0xF8A9AD73);
+MS2_REPLACE_METHOD(0x1422C2030, ASMovieClip, IsEnabled, 91, 0xF8A9AD73);
 
 // @0x1422c20a0
 void ASMovieClip::vfunc_6()
@@ -136,40 +136,40 @@ void ASMovieClip::vfunc_14(int nFrame)
 MS2_REPLACE_METHOD(0x1422C22D0, ASMovieClip, vfunc_14, 39, 0x441BCDF7);
 
 // @0x1422c2300
-int ASMovieClip::FUN_1422c2300()
+int ASMovieClip::GetCurrentFrame()
 {
     return GetMember("currentFrame").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422C2300, ASMovieClip, FUN_1422c2300, 88, 0x3860367F);
+MS2_REPLACE_METHOD(0x1422C2300, ASMovieClip, GetCurrentFrame, 88, 0x3860367F);
 
 // @0x1422c2360
-CString ASMovieClip::FUN_1422c2360()
+CString ASMovieClip::GetCurrentFrameLabel()
 {
     Scaleform::GFx::Value v = GetMember("currentFrameLabel");
     if (v.IsString())
         return CString(v.GetString());
     return CString("");
 }
-MS2_REPLACE_METHOD(0x1422C2360, ASMovieClip, FUN_1422c2360, 172, 0x4B3CB78C);
+MS2_REPLACE_METHOD(0x1422C2360, ASMovieClip, GetCurrentFrameLabel, 172, 0x4B3CB78C);
 
 // @0x1422c2420
-CString ASMovieClip::FUN_1422c2420()
+CString ASMovieClip::GetCurrentLabel()
 {
     return CString(GetMember("currentLabel").GetString());
 }
-MS2_REPLACE_METHOD(0x1422C2420, ASMovieClip, FUN_1422c2420, 123, 0xB3302518);
+MS2_REPLACE_METHOD(0x1422C2420, ASMovieClip, GetCurrentLabel, 123, 0xB3302518);
 
 // @0x1422c24b0
-int ASMovieClip::FUN_1422c24b0()
+int ASMovieClip::GetTotalFrames()
 {
     return GetMember("totalFrames").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422C24B0, ASMovieClip, FUN_1422c24b0, 88, 0x340EE638);
+MS2_REPLACE_METHOD(0x1422C24B0, ASMovieClip, GetTotalFrames, 88, 0x340EE638);
 
 // @0x1422c2510
-int ASMovieClip::FUN_1422c2510(double* pX, double* pY)
+int ASMovieClip::LocalToGlobal(double* pX, double* pY)
 {
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(m_nMovieId);
     if (pMovie == NULL)
         return 0;
     Scaleform::GFx::Value point;
@@ -188,19 +188,19 @@ int ASMovieClip::FUN_1422c2510(double* pX, double* pY)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422C2510, ASMovieClip, FUN_1422c2510, 489, 0x5C25EF81);
+MS2_REPLACE_METHOD(0x1422C2510, ASMovieClip, LocalToGlobal, 489, 0x5C25EF81);
 
 // @0x1422c2700
-int ASMovieClip::FUN_1422c2700(float* pX, float* pY)
+int ASMovieClip::GlobalToLocal(float* pX, float* pY)
 {
     return FUN_1422c2740(0, 0, pX, pY);
 }
-MS2_REPLACE_METHOD(0x1422C2700, ASMovieClip, FUN_1422c2700, 55, 0xEEA93180);
+MS2_REPLACE_METHOD(0x1422C2700, ASMovieClip, GlobalToLocal, 55, 0xEEA93180);
 
 // @0x1422c2740
 int ASMovieClip::FUN_1422c2740(float x, float y, float* pX, float* pY)
 {
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(m_nMovieId);
     if (pMovie == NULL)
         return 0;
     Scaleform::GFx::Value point;
@@ -224,20 +224,20 @@ int ASMovieClip::FUN_1422c2740(float x, float y, float* pX, float* pY)
 MS2_REPLACE_METHOD(0x1422C2740, ASMovieClip, FUN_1422c2740, 634, 0x7848ED6E);
 
 // @0x1422c29c0
-int ASMovieClip::FUN_1422c29c0(float x, float y, bool bShapeFlag)
+int ASMovieClip::HitTestPoint(float x, float y, bool bShapeFlag)
 {
     Scaleform::GFx::Value result = FUN_1422c1870("hitTestPoint", x, y, bShapeFlag);
     if (result.IsBool())
         return result.GetBool();
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422C29C0, ASMovieClip, FUN_1422c29c0, 168, 0x46923415);
+MS2_REPLACE_METHOD(0x1422C29C0, ASMovieClip, HitTestPoint, 168, 0x46923415);
 
 // @0x1422c2a70
 void ASMovieClip::FUN_1422c2a70(const ASCallback& cb, void* pUser)
 {
     CString strEvent("click");
-    FUN_1422c3600(strEvent, cb, false, 0, 0, pUser);
+    AddEventListener(strEvent, cb, false, 0, 0, pUser);
 }
 // no hook: overloaded (the int-user declaration in asdisplayobject.h names the same function)
 
@@ -245,7 +245,7 @@ void ASMovieClip::FUN_1422c2a70(const ASCallback& cb, void* pUser)
 void ASMovieClip::FUN_1422c2af0(const ASCallback& cb)
 {
     CString strEvent("click");
-    FUN_1422c3820(strEvent, cb, false);
+    RemoveEventListener(strEvent, cb, false);
 }
 MS2_REPLACE_METHOD(0x1422C2AF0, ASMovieClip, FUN_1422c2af0, 82, 0x90C507C3);
 
@@ -253,7 +253,7 @@ MS2_REPLACE_METHOD(0x1422C2AF0, ASMovieClip, FUN_1422c2af0, 82, 0x90C507C3);
 void ASMovieClip::FUN_1422c2b50(const ASCallback& cb, void* pUser)
 {
     CString strEvent("doubleClick");
-    FUN_1422c3600(strEvent, cb, false, 0, 0, pUser);
+    AddEventListener(strEvent, cb, false, 0, 0, pUser);
 }
 MS2_REPLACE_METHOD(0x1422C2B50, ASMovieClip, FUN_1422c2b50, 113, 0xCF13A8F9);
 
@@ -261,7 +261,7 @@ MS2_REPLACE_METHOD(0x1422C2B50, ASMovieClip, FUN_1422c2b50, 113, 0xCF13A8F9);
 void ASMovieClip::FUN_1422c2bd0(const ASCallback& cb)
 {
     CString strEvent("doubleClick");
-    FUN_1422c3820(strEvent, cb, false);
+    RemoveEventListener(strEvent, cb, false);
 }
 MS2_REPLACE_METHOD(0x1422C2BD0, ASMovieClip, FUN_1422c2bd0, 82, 0x11EE430C);
 
@@ -269,7 +269,7 @@ MS2_REPLACE_METHOD(0x1422C2BD0, ASMovieClip, FUN_1422c2bd0, 82, 0x11EE430C);
 void ASMovieClip::FUN_1422c2c30(const ASCallback& cb, void* pUser)
 {
     CString strEvent("rightClick");
-    FUN_1422c3600(strEvent, cb, false, 0, 0, pUser);
+    AddEventListener(strEvent, cb, false, 0, 0, pUser);
 }
 MS2_REPLACE_METHOD(0x1422C2C30, ASMovieClip, FUN_1422c2c30, 113, 0x0C34BD40);
 
@@ -277,14 +277,14 @@ MS2_REPLACE_METHOD(0x1422C2C30, ASMovieClip, FUN_1422c2c30, 113, 0x0C34BD40);
 void ASMovieClip::FUN_1422c2cb0(const ASCallback& cb)
 {
     CString strEvent("rightClick");
-    FUN_1422c3820(strEvent, cb, false);
+    RemoveEventListener(strEvent, cb, false);
 }
 MS2_REPLACE_METHOD(0x1422C2CB0, ASMovieClip, FUN_1422c2cb0, 82, 0x0E45EB64);
 
 // @0x1422c2d10
-void ASMovieClip::FUN_1422c2d10(ASCallback cb, void* pUser)
+void ASMovieClip::SetExternalTooltipFunction(ASCallback cb, void* pUser)
 {
-    FUN_141b46a40("externalTooltipFunction", ASFunction(cb, (__int64)pUser, m_nMovieId));
+    SetFunction("externalTooltipFunction", ASFunction(cb, (__int64)pUser, m_nMovieId));
 }
 
 // @0x1422c2ea0

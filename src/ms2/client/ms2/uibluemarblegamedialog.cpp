@@ -62,7 +62,7 @@ void FUN_141901470(int n, int nType);                               // UIObject:
 
 // The chat output.
 
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 extern Unk_Inventory g_143ab2a90;                                   // the player inventory
 
@@ -73,11 +73,11 @@ CStringW FUN_14028e060(const CString& strKey, const fmt::ArgList& args);
 CStringW Name_140218290(int n);                                     // number text
 CStringW FUN_140298ea0(CStringW strKey);                            // localized text, tooltip form
 CStringW FUN_14016a730(const char* sz, int nCodePage);              // multibyte to wide
-void FUN_1412751f0(const CStringW& text, int nA, int nB);
+void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 void CreateItemInfoSlot(const CString& strId, MS2Ptr<CItem> spItem, int a, int b, int c);   // bind an item under the id
 void DestroyItemInfoSlot(const CString& strId);                           // release the item bound to the id
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 
 // ---- shared COMDATs first instantiated here ----
 
@@ -137,8 +137,8 @@ UIBlueMarbleGameDialog::UIBlueMarbleGameDialog()
     m_nConsumeItemCount = 0;
     m_bIdle = 1;
     m_58 = 0;
-    FUN_141924170(1);
-    FUN_141925e70(0, 1);
+    SetTweenEnabled(1);
+    SetFlag(0, 1);
 }
 
 // @0x140f21680
@@ -169,7 +169,7 @@ void UIBlueMarbleGameDialog::vfunc_67()
     UIDialog::vfunc_67();
     ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ada610(0x6200022);
     ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141adad20(0x6200022);
-    ((class GFxSceneService*)(class Unk_BmSceneMgr*)(((Unk_BmSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_BmSceneMgr*)(((Unk_BmSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
 }
 
 // @0x140f217f0
@@ -189,7 +189,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
     if (BM_PKT->FUN_14070fe80() == 0xe5) {
         int nKind = BM_PKT->ReadUInt8();
         if (nKind == 0) {
-            ((class GFxSceneService*)(class Unk_BmSceneMgr*)(((Unk_BmSceneMgr*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x6200022);
+            ((class GFxSceneService*)(class Unk_BmSceneMgr*)(((Unk_BmSceneMgr*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x6200022);
             ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ad9e50(0x6200022);
             ((class CUIService*)(class Unk_BmSceneCtl*)(reinterpret_cast<Unk_BmSceneCtl*>(TSingleton<CUIService>::GetInstance())))->FUN_141ada6f0(0x6200022);
             FUN_141901470(0, 0x4f15);
@@ -202,9 +202,9 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
                                         m_nConsumeItemCount));
             FUN_140f227a0(*BM_PKT);
             FUN_140f22bb0(m_nPosition);
-            FUN_140f23b90();
-            FUN_140f23ca0();
-            FUN_140f23940();
+            UpdateCoinCount();
+            UpdateFinishCount();
+            UpdateDiceButton();
             m_30->Invoke("moveImmediately", m_nPosition);
             m_30->Invoke("enableDebugDice", ((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode());
             vfunc_8(1);
@@ -242,7 +242,7 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
                 m_bIdle = 1;
             }
             m_30->Invoke("playQueue");
-            FUN_140f23940();
+            UpdateDiceButton();
             if (!bReset) {
                 COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
                 packet.WriteUInt8(3);
@@ -253,13 +253,13 @@ void UIBlueMarbleGameDialog::vfunc_79(void* p)
             if (nResult == 1) {
                 CStringW strText = FUN_14028dfa0<unsigned>(CStringW(L"s_bluemarble_result_consume_fail"), reinterpret_cast<const unsigned&>(m_nConsumeItemId));
                 TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strText);
-                FUN_1412751f0(strText, 1, 1);
+                ShowSystemNotice(strText, 1, 1);
             } else if (nResult == 4) {
-                FUN_1412751f0(GetStringCommonByKey(L"s_bluemarble_result_dice_complete"), 1, 1);
+                ShowSystemNotice(GetStringCommonByKey(L"s_bluemarble_result_dice_complete"), 1, 1);
             } else if (nResult == 5) {
-                FUN_1412751f0(GetStringCommonByKey(L"s_bluemarble_result_dice_not_complete"), 1, 1);
+                ShowSystemNotice(GetStringCommonByKey(L"s_bluemarble_result_dice_not_complete"), 1, 1);
             }
-            FUN_140f24140(1);
+            SetDiceButtonEnabled(1);
             m_bIdle = 1;
         }
     }
@@ -275,14 +275,14 @@ int UIBlueMarbleGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         COutPacket packet(static_cast<int>(SendOp::Mapleopoly), 0);
         packet.WriteUInt8(1);
         FUN_140710590(packet);
-        FUN_140f24140(0);
+        SetDiceButtonEnabled(0);
         m_bIdle = 0;
     } else if (_stricmp(szMethod, "onDiceMovieComplete") == 0) {
-        FUN_140f23940();
-        FUN_140f23b90();
+        UpdateDiceButton();
+        UpdateCoinCount();
     } else if (_stricmp(szMethod, "onEndQueue") == 0) {
-        FUN_140f24140(m_bIdle);
-        FUN_140f23ca0();
+        SetDiceButtonEnabled(m_bIdle);
+        UpdateFinishCount();
         FUN_140f23da0();
     } else if (_stricmp(szMethod, "onClickDebugDice") == 0) {
         ASData data;
@@ -308,15 +308,15 @@ int UIBlueMarbleGameDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 int UIBlueMarbleGameDialog::vfunc_71()
 {
     if (m_bIdle == 0) {
-        FUN_140d74390(GetStringCommonByKey(L"s_bluemarble_close"), 1,
-            Delegate<bool(int, const CMsgBoxData&)>(this, &UIBlueMarbleGameDialog::FUN_140f22760));
+        ShowMessageBoxWithCallback(GetStringCommonByKey(L"s_bluemarble_close"), 1,
+            Delegate<bool(int, const CMsgBoxData&)>(this, &UIBlueMarbleGameDialog::OnCloseConfirm));
         return 1;
     }
     return 0;
 }
 
 // @0x140f22760
-bool UIBlueMarbleGameDialog::FUN_140f22760(int nResult, const CMsgBoxData& box)
+bool UIBlueMarbleGameDialog::OnCloseConfirm(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
         vfunc_67();
@@ -336,15 +336,15 @@ void UIBlueMarbleGameDialog::FUN_140f227a0(CInPacket& packet)
         if (nKind == 10) {
             MS2Ptr<CItemData> spData = FUN_14053f870(nArg);
             if (spData.get()) {
-                row.FUN_1407cba60("binding", FUN_140f23f10(spData->GetItemId(), spData->GetRank(), nCount));
+                row.SetStringMember("binding", BindRewardItem(spData->GetItemId(), spData->GetRank(), nCount));
             }
         } else if (nKind != 0) {
             CStringW strKind = Name_140218290(nKind);
             CStringW strAction = FUN_14028dfa0<int>(StringFormat<CStringW>(L"s_bluemarble_action_{0}", strKind), nArg);
             CStringW strTooltip = FUN_140298ea0(StringFormat<CStringW>(L"s_bluemarble_action_tooltip_{0}", strKind));
-            row.FUN_1407cbb20("action", strKind);
-            row.FUN_1407cbb20("actionStr", strAction);
-            row.FUN_1407cbb20("tooltipStr", strTooltip);
+            row.SetWStringMember("action", strKind);
+            row.SetWStringMember("actionStr", strAction);
+            row.SetWStringMember("tooltipStr", strTooltip);
         }
         if (m_30.get())
             m_30->Invoke("setBoard", row);
@@ -356,7 +356,7 @@ void UIBlueMarbleGameDialog::FUN_140f22bb0(int nPosition)
 {
     ASArray rewards(2);
     {
-        MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetBlueMarbleEvent();
+        MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)GetGameRule())->GetBlueMarbleEvent();
         if (spContext.get()) {
             for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos; spContext->m_rewards.GetNext(pos)) {
                 MS2Ptr<ItemEntity> spReward = spContext->m_rewards.GetValueAt(pos);
@@ -365,25 +365,25 @@ void UIBlueMarbleGameDialog::FUN_140f22bb0(int nPosition)
                 if (spData == 0)
                     continue;
                 ASObj row(2);
-                row.FUN_1407cba60("binding", FUN_140f23f10(spData->GetItemId(), spData->GetRank(), spReward->m_count));
+                row.SetStringMember("binding", BindRewardItem(spData->GetItemId(), spData->GetRank(), spReward->m_count));
                 bool bReceive;
                 if (nPosition >= nRound * 0x1c && nRound != 0)
                     bReceive = true;
                 else
                     bReceive = false;
-                row.FUN_1407cbbe0("receive", bReceive);
+                row.SetBoolMember("receive", bReceive);
                 CStringW strRound;
                 if (nRound == 0)
                     strRound = GetStringCommonByKey(L"s_bluemarble_reward_default");
                 else
                     strRound = FUN_14028dfa0<int>(CStringW(L"s_bluemarble_reward_repeat"), nRound);
-                row.FUN_1407cbb20("round", strRound);
+                row.SetWStringMember("round", strRound);
                 rewards.PushObj(row);
             }
         }
     }
     if (m_30.get())
-        m_30->FUN_140bd2cb0("onReward", rewards);
+        m_30->InvokeWithArray("onReward", rewards);
 }
 
 // @0x140f22fe0
@@ -455,7 +455,7 @@ void UIBlueMarbleGameDialog::FUN_140f237e0(int nPrevPosition, int nPosition)
     int nLap = nPosition / 0x1c;
     if (nPrevLap == nLap)
         return;
-    MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetBlueMarbleEvent();
+    MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)GetGameRule())->GetBlueMarbleEvent();
     if (spContext.get()) {
         MS2Ptr<ItemEntity> spReward(0);
         if (spContext->m_rewards.Lookup(0, spReward))
@@ -466,7 +466,7 @@ void UIBlueMarbleGameDialog::FUN_140f237e0(int nPrevPosition, int nPosition)
 }
 
 // @0x140f23940
-void UIBlueMarbleGameDialog::FUN_140f23940()
+void UIBlueMarbleGameDialog::UpdateDiceButton()
 {
     CStringW strText = m_nFreeDice > 0 ? FUN_14028dfa0<int>(CStringW(L"s_bluemarble_free_dice"), m_nFreeDice)
                                        : GetStringCommonByKey(L"s_bluemarble_dice");
@@ -475,7 +475,7 @@ void UIBlueMarbleGameDialog::FUN_140f23940()
 }
 
 // @0x140f23b90
-void UIBlueMarbleGameDialog::FUN_140f23b90()
+void UIBlueMarbleGameDialog::UpdateCoinCount()
 {
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_coinCount")) {
         int nCoins = g_143ab2a90.FUN_140a5f180(m_nConsumeItemId, 0);
@@ -485,7 +485,7 @@ void UIBlueMarbleGameDialog::FUN_140f23b90()
 }
 
 // @0x140f23ca0
-void UIBlueMarbleGameDialog::FUN_140f23ca0()
+void UIBlueMarbleGameDialog::UpdateFinishCount()
 {
     if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_finishCount")) {
         int nFinish = m_nPosition / 0x1c;
@@ -498,7 +498,7 @@ void UIBlueMarbleGameDialog::FUN_140f23ca0()
 void UIBlueMarbleGameDialog::FUN_140f23da0()
 {
     ASArray flags(2);
-    if (MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)FUN_1401c0d90())->GetBlueMarbleEvent()) {
+    if (MS2Ptr<BlueMarbleEventContext> spContext = ((class CGameRule*)GetGameRule())->GetBlueMarbleEvent()) {
         for (POSITION pos = spContext->m_rewards.GetHeadPosition(); pos != 0; spContext->m_rewards.GetNext(pos)) {
             int nRound = spContext->m_rewards.GetKeyAt(pos);
             bool bReceive = m_nPosition >= nRound * 0x1c && nRound != 0;
@@ -506,11 +506,11 @@ void UIBlueMarbleGameDialog::FUN_140f23da0()
         }
     }
     if (m_30.get())
-        m_30->FUN_140bd2cb0("updateReward", flags);
+        m_30->InvokeWithArray("updateReward", flags);
 }
 
 // @0x140f23f10
-CString UIBlueMarbleGameDialog::FUN_140f23f10(int nItemId, int nRarity, int nCount)
+CString UIBlueMarbleGameDialog::BindRewardItem(int nItemId, int nRarity, int nCount)
 {
     size_t nIndex = m_boundIds.GetCount();
     CString strId = Unk_SocketFormat("{0}_{1}", GetTypeName(), nIndex);
@@ -524,10 +524,10 @@ CString UIBlueMarbleGameDialog::FUN_140f23f10(int nItemId, int nRarity, int nCou
 }
 
 // @0x140f24140
-void UIBlueMarbleGameDialog::FUN_140f24140(int bEnabled)
+void UIBlueMarbleGameDialog::SetDiceButtonEnabled(int bEnabled)
 {
     if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_dice"))
-        spButton->FUN_1422c1fe0(bEnabled);
+        spButton->SetEnabled(bEnabled);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca8f70-0x142ca9020 .text$yd

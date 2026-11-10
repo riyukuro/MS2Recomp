@@ -20,7 +20,7 @@
 class Unk_RiObj { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual bool vfunc_5(int nId, __int64* pOut); };
 __int64 FUN_141020ad0(__int64 pObject);                         // the rider's body component (vfunc 5, id 0x6200013)
 NiAVObject* FUN_141b6ef70(egf::EntityID id);                    // the scene root of an entity
-void FUN_140b86230(const efd::Point3& kEuler, NiMatrix3& kOut);    // euler angles (degrees) to a rotation matrix
+void EulerToMatrix(const efd::Point3& kEuler, NiMatrix3& kOut);    // euler angles (degrees) to a rotation matrix
 void FUN_140a0b1f0(const NiMatrix3&, efd::Point3&);   // C3: rotation to euler angles (degrees, negated)
 class Unk_RiApp;
 
@@ -62,7 +62,7 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
     NiAVObject* pRoot = FUN_141b6ef70(pBody->GetEntityID());
     if ((spNode ? true : false) && pRoot != 0)
     {
-        Unk_RiderPtr spModel = spData->FUN_140784970();
+        Unk_RiderPtr spModel = spData->GetDefaultRider();
         if (spModel == 0)
             return false;
         NiTransform kXform = ((class NiAVObject*)(class NiAVObject*)(spNode.operator->()))->GetLocalTransform();
@@ -76,7 +76,7 @@ bool RideeInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, NiQuatT
         efd::Point3 kEuler;
         efd::Point3 kSeatRot(spModel->m_vRotation.x, spModel->m_vRotation.y, spModel->m_vRotation.z);
         NiMatrix3 kSeat;
-        FUN_140b86230(kSeatRot, kSeat);
+        EulerToMatrix(kSeatRot, kSeat);
         kRot = kRot * kSeat;
         FUN_140a0b1f0(static_cast<const NiMatrix3&>(kRot), reinterpret_cast<efd::Point3&>(kEuler));
         efd::Point3 kX;

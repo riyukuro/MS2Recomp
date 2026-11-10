@@ -6,11 +6,11 @@
 // MS2-RANGE: 0x1400dbd70-0x1400dc070 .text$di
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?get@?$MS2Ptr@VTMarketBillDataParam@@@@QEBAPEAVTMarketBillDataParam@@XZ 0x140eac460 ; unique
-// MS2-PIN: ?FUN_140eacad0@UIMarketBillDialog@@QEAAHXZ 0x140eacad0 ; unique
+// MS2-PIN: ?GetMode@UIMarketBillDialog@@QEAAHXZ 0x140eacad0 ; unique
 // MS2-PIN: ?FUN_140eacf20@ASBillData@@QEBA_NXZ 0x140eacf20 ; unique
-// MS2-PIN: ?FUN_140eacf60@ASBillData@@QEBA_NXZ 0x140eacf60 ; unique
-// MS2-PIN: ?FUN_140eacf70@TMeratMarketBillDataParam@@QEBA_NXZ 0x140eacf70 ; unique
-// MS2-PIN: ?FUN_140eacfc0@TMarketBillDataParam@@QEBA_NXZ 0x140eacfc0 ; unique
+// MS2-PIN: ?IsChecked@ASBillData@@QEBA_NXZ 0x140eacf60 ; unique
+// MS2-PIN: ?IsGift@TMeratMarketBillDataParam@@QEBA_NXZ 0x140eacf70 ; unique
+// MS2-PIN: ?HasFixedPrice@TMarketBillDataParam@@QEBA_NXZ 0x140eacfc0 ; unique
 // MS2-PIN: ?Invoke@?$DelegateImpl@U?$pair@PEAVUIMarketBillDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@UEAA_NHAEBVCMsgBoxData@@@Z 0x140eadab0 ; unique
 // MS2-PIN: ??$Call@VUIMarketBillDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@?$DelegateImpl@U?$pair@PEAVUIMarketBillDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@@?$Delegate@$$A6A_NHAEBVCMsgBoxData@@@Z@@CA_NAEAU?$pair@PEAVUIMarketBillDialog@@P81@EAA_NHAEBVCMsgBoxData@@@Z@std@@HAEBVCMsgBoxData@@@Z 0x140eadaf0 ; unique
 // MS2-PIN: ??C?$MS2Ptr@VTMeratMarketBillDataParam@@@@QEBAPEAVTMeratMarketBillDataParam@@XZ 0x140eacc80 ; p5j: byte-identical to 0x140bc0510 (look-alike guess picked ASBillData by name order since merge 47)
@@ -108,7 +108,7 @@ public:
 
 
 CStringW FUN_1418fe5d0(int nPayType);                  // pay type name
-CStringW FUN_1418fe6c0(int nPayType, int nFlag);                // pay type name (flag -1 / 0)
+CStringW GetCurrencyName(int nPayType, int nFlag);                // pay type name (flag -1 / 0)
 CStringW FUN_1418fec00(int nType, __int64 nValue, bool);         // money text by pay type
 CStringW FUN_1418fec00(int nType, __int64 nValue, int, int);
 CStringW FUN_1409404f0(__int64 n);
@@ -120,10 +120,10 @@ bool FUN_140930590(__int64 nId, std::vector<std::pair<int, __int64> >* pOut);
 bool FUN_140930750(std::vector<std::pair<int, __int64> >* pIn, std::vector<std::pair<int, __int64> >* pOut);
 
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* pListener, CStringW strExtra);
-MS2Ptr<CMsgBoxData> FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);
+MS2Ptr<CMsgBoxData> ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW strText);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);    // pop the system message nTable
-void FUN_140d73aa0(CStringW strText, int n, void* pListener, CStringW strExtra);
+void ShowMessageBox(CStringW strText, int n, void* pListener, CStringW strExtra);
 
 // ---- the pay type text helpers ----
 
@@ -241,25 +241,25 @@ bool Delegate<bool(Scaleform::GFx::Value*, ASData&, MS2Ptr<TMarketBillDataParam>
 // @0x140eab940
 void TMarketBillDataParam::FUN_140eab940(bool b)
 {
-    m_b2c = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x45) && b;
+    m_b2c = ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x45) && b;
 }
 
 // @0x140eab9a0
-void TMarketBillDataParam::FUN_140eab9a0(unsigned __int64 n)
+void TMarketBillDataParam::SetFixedPrice(unsigned __int64 n)
 {
     m_b2d = true;
     m_n30 = n;
 }
 
 // @0x140eab9d0
-void TMarketBillDataParam::FUN_140eab9d0(int n, unsigned __int64 v)
+void TMarketBillDataParam::SetFixedPayback(int n, unsigned __int64 v)
 {
     m_n38 = n;
     m_n40 = v;
 }
 
 // @0x140eaba00
-MS2Ptr<ASBillData> TMarketBillDataParam::FUN_140eaba00(int nIndex)
+MS2Ptr<ASBillData> TMarketBillDataParam::GetBill(int nIndex)
 {
     if (m_bills.IsEmpty())
         return MS2Ptr<ASBillData>(0);
@@ -280,7 +280,7 @@ UIMarketBillDialog::UIMarketBillDialog()
     , m_nTotal(0)
     , m_bBlueprint(false)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     FUN_1422dc3b0(1);
 }
 
@@ -334,7 +334,7 @@ int UIMarketBillDialog::vfunc_13()
         return 1;
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return 0;
-    if (((class Unk_MbKeys*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
+    if (((class Unk_MbKeys*)FUN_14025e7c0())->WasKeyPressed(0xf, 0, 0))
     {
         m_30->Invoke("onTabKey");
         return 1;
@@ -349,7 +349,7 @@ void UIMarketBillDialog::OnLoadComplete()
     if (m_spParam == 0)
         vfunc_67();
     SetMode(m_spParam->m_nType);
-    FUN_140ea8df0();
+    InitData();
 }
 
 // @0x140ea7390
@@ -359,9 +359,9 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     if (_stricmp("onClickBuy", szMethod) == 0)
     {
-        if (FUN_140eacad0() == 4)
+        if (GetMode() == 4)
         {
-            FUN_140ea9fc0();
+            Cancel();
         }
         else
         {
@@ -373,7 +373,7 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
                     return 1;
                 }
             }
-            FUN_140eaa0b0(szMethod);
+            OnClickBuy(szMethod);
         }
         return 1;
     }
@@ -381,21 +381,21 @@ int UIMarketBillDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_140eaa1e0(szMethod, &data);
+            OnClickGiftOk(szMethod, &data);
         return 1;
     }
     else if (_stricmp("onUpdateTotalPrice", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_140eaa5e0(&data);
+            OnUpdateTotalPrice(&data);
         return 1;
     }
     else if (_stricmp("onChangeMode", szMethod) == 0)
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_140eaa860(&data);
+            OnChangeMode(&data);
         return 1;
     }
     return 0;
@@ -427,13 +427,13 @@ void UIMarketBillDialog::vfunc_72()
 
 // Take a new parameter and its fixed sums.
 // @0x140ea7770
-void UIMarketBillDialog::FUN_140ea7770(MS2Ptr<TMarketBillDataParam> spParam)
+void UIMarketBillDialog::SetParam(MS2Ptr<TMarketBillDataParam> spParam)
 {
     m_spParam = spParam;
     m_nTotal = 0;
     m_mapPrice.RemoveAll();
     m_mapRandomPayback.RemoveAll();
-    if ((m_spParam.get() ? true : false) && m_spParam->FUN_140eacfc0())
+    if ((m_spParam.get() ? true : false) && m_spParam->HasFixedPrice())
     {
         m_mapPrice.SetAt((ePayType&)m_spParam->m_nCurrency, m_spParam->m_n30);
         m_nTotal = m_spParam->m_n30;
@@ -447,7 +447,7 @@ void UIMarketBillDialog::FUN_140ea7900()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
-    int nMode = FUN_140eacad0();
+    int nMode = GetMode();
     if (nMode == 4 || nMode == 0)
     {
         m_bDirty = false;
@@ -457,7 +457,7 @@ void UIMarketBillDialog::FUN_140ea7900()
     MS2Ptr<ASTextField> spFee = m_30->FUN_1409b4620("m_totalFee");
     MS2Ptr<ASTextField> spFeeText = m_30->FUN_1409b4620("m_totalFeeText");
     if (spFee.get() && spFeeText.get())
-        fGrow = FUN_140ea7e70(spFee, spFeeText, m_mapPrice);
+        fGrow = FillFeeTexts(spFee, spFeeText, m_mapPrice);
     MS2Ptr<ASTextField> spPayback = m_30->FUN_1409b4620("m_totalPayback");
     MS2Ptr<ASTextField> spPaybackText = m_30->FUN_1409b4620("m_totalPaybackText");
     if ((spPayback.get() ? true : false) && (spPaybackText.get() ? true : false))
@@ -475,7 +475,7 @@ void UIMarketBillDialog::FUN_140ea7900()
         spPaybackText->vfunc_4(bAny);
         if (bAny)
         {
-            float fGrowPayback = FUN_140ea8ab0(spPayback, spPaybackText, m_mapRandomPayback);
+            float fGrowPayback = FillPaybackTexts(spPayback, spPaybackText, m_mapRandomPayback);
             fGrow = std::max<float>(fGrow, fGrowPayback);
         }
     }
@@ -491,7 +491,7 @@ void UIMarketBillDialog::FUN_140ea7900()
 
 // Fill the fee texts (names and amounts, one pay type per line); the height they gained.
 // @0x140ea7e70
-float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASTextField> spFeeText, const PaymentMap& mapPay)
+float UIMarketBillDialog::FillFeeTexts(MS2Ptr<ASTextField> spFee, MS2Ptr<ASTextField> spFeeText, const PaymentMap& mapPay)
 {
     int nOldHeight = spFee->GetHeightCeil();
     CStringW strNames;
@@ -520,7 +520,7 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
             {
                 if (!strNames.IsEmpty())
                     strNames.Append(strLf);
-                strNames.Append(FUN_1418fe6c0(nPayType, -1));
+                strNames.Append(GetCurrencyName(nPayType, -1));
                 if (!strAmounts.IsEmpty())
                     strAmounts.Append(strLf);
                 strAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
@@ -549,7 +549,7 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
             {
                 if (!strNames.IsEmpty())
                     strNames.Append(strLf);
-                strNames.Append(FUN_1418fe6c0(nPayType, -1));
+                strNames.Append(GetCurrencyName(nPayType, -1));
                 if (!strAmounts.IsEmpty())
                     strAmounts.Append(strLf);
                 strAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
@@ -563,7 +563,7 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
     if (strTotals.IsEmpty())
     {
         int nCurrency = m_spParam.get() ? m_spParam->m_nCurrency : 1;
-        strNames.Append(FUN_1418fe6c0(nCurrency, -1));
+        strNames.Append(GetCurrencyName(nCurrency, -1));
         strAmounts.Append(FUN_1418fec00(nCurrency, 0, 0));
         strTotals = FUN_1418fec00(nCurrency, 0, 0);
         ++nLines;
@@ -589,7 +589,7 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
                 continue;
             if (!strGiveNames.IsEmpty())
                 strGiveNames.Append(strLf);
-            strGiveNames.Append(FUN_1418fe6c0(nPayType, -1));
+            strGiveNames.Append(GetCurrencyName(nPayType, -1));
             if (!strGiveAmounts.IsEmpty())
                 strGiveAmounts.Append(strLf);
             strGiveAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
@@ -604,7 +604,7 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
     }
     spFeeText->SetTextHTMLW(strNameText);
     spFee->SetTextHTMLW(strAmountText);
-    spFeeText->SetXFloat(spFee->FUN_1422c10a0());
+    spFeeText->SetXFloat(spFee->GetX());
     int nNewHeight = spFee->GetHeightCeil();
     int nDiff = nNewHeight - nOldHeight;
     return (float)nDiff;
@@ -612,7 +612,7 @@ float UIMarketBillDialog::FUN_140ea7e70(MS2Ptr<ASTextField> spFee, MS2Ptr<ASText
 
 // The same for the random payback (one line per pay type).
 // @0x140ea8ab0
-float UIMarketBillDialog::FUN_140ea8ab0(MS2Ptr<ASTextField> spPayback, MS2Ptr<ASTextField> spPaybackText, const PaymentMap& mapPay)
+float UIMarketBillDialog::FillPaybackTexts(MS2Ptr<ASTextField> spPayback, MS2Ptr<ASTextField> spPaybackText, const PaymentMap& mapPay)
 {
     int nOldHeight = spPayback->GetHeightCeil();
     CStringW strNames;
@@ -625,7 +625,7 @@ float UIMarketBillDialog::FUN_140ea8ab0(MS2Ptr<ASTextField> spPayback, MS2Ptr<AS
         __int64 nValue = mapPay.GetValueAt(pos);
         if (!strNames.IsEmpty())
             strNames.Append(strLf);
-        strNames.Append(FUN_14028dfa0<CStringW>(L"s_meratmarket_random_payback", FUN_1418fe6c0(nPayType, 0)));
+        strNames.Append(FUN_14028dfa0<CStringW>(L"s_meratmarket_random_payback", GetCurrencyName(nPayType, 0)));
         if (!strAmounts.IsEmpty())
             strAmounts.Append(strLf);
         strAmounts.Append(FUN_1418fec00(nPayType, nValue, 0));
@@ -647,9 +647,9 @@ MS2Ptr<TMarketBillDataParam> UIMarketBillDialog::GetParam()
 
 // "initData": hand the bill rows and the texts to the movie.
 // @0x140ea8df0
-void UIMarketBillDialog::FUN_140ea8df0()
+void UIMarketBillDialog::InitData()
 {
-    int nMode = FUN_140eacad0();
+    int nMode = GetMode();
     ASObj objData(2);
     ASDataProvider rows(2);
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = m_spParam->m_bills;
@@ -660,7 +660,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
             MS2Ptr<ASBillData> spBill = bills[i];
             if (spBill == 0)
                 continue;
-            rows.PushValue(Scaleform::GFx::Value(spBill->FUN_1422bb870()));
+            rows.PushValue(Scaleform::GFx::Value(spBill->GetValue()));
         }
         objData.FUN_1409c0e60("noticeKey", L"$s_marketbill_notice_meratmarket_basket");
     }
@@ -672,12 +672,12 @@ void UIMarketBillDialog::FUN_140ea8df0()
             MS2Ptr<ASBillData> spBill = bills[i];
             if (spBill == 0)
                 continue;
-            rows.PushValue(Scaleform::GFx::Value(spBill->FUN_1422bb870()));
+            rows.PushValue(Scaleform::GFx::Value(spBill->GetValue()));
             int nPayType = spBill->vfunc_4();
-            FUN_140ea9770(nPayType, spBill->vfunc_2());
-            FUN_140ea9880(nPayType, spBill->vfunc_9());
+            AddPrice(nPayType, spBill->vfunc_2());
+            AddRandomPayback(nPayType, spBill->vfunc_9());
             int nPaybackType = spBill->vfunc_8();
-            FUN_140ea9970(nPaybackType, spBill->vfunc_6());
+            AddPayback(nPaybackType, spBill->vfunc_6());
             if (nPayType == 3)
             {
                 int nItemId = spBill->vfunc_1();
@@ -692,7 +692,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
                 ++nCount;
         }
         CStringW strTotal = BlockFormat<unsigned>(0xa40, nCount);
-        objData.FUN_1407cbb20("totalText", strTotal);
+        objData.SetWStringMember("totalText", strTotal);
         CStringW strNotice;
         CStringW strNoticeGift;
         if (m_spParam->m_nDialogId != 0)
@@ -702,7 +702,7 @@ void UIMarketBillDialog::FUN_140ea8df0()
             {
                 bool bGift = false;
                 if (MS2Ptr<TMeratMarketBillDataParam> spMerat = dynamic_cast<TMeratMarketBillDataParam*>(m_spParam.get()))
-                    bGift = spMerat->FUN_140eacf70();
+                    bGift = spMerat->IsGift();
                 strNotice = bGift ? "$s_marketbill_notice_meratmarket" : "$s_marketbill_notice_meratmarket_only_premium";
                 strNoticeGift = strNotice;
             }
@@ -712,16 +712,16 @@ void UIMarketBillDialog::FUN_140ea8df0()
                 strNoticeGift = "$s_marketbill_notice_cashshop_gift";
             }
         }
-        objData.FUN_1407cbb20("noticeKey", strNotice);
-        objData.FUN_1407cbb20("noticeGiftKey", strNoticeGift);
-        objData.FUN_1407cbbe0("gift", m_spParam->m_b2c);
+        objData.SetWStringMember("noticeKey", strNotice);
+        objData.SetWStringMember("noticeGiftKey", strNoticeGift);
+        objData.SetBoolMember("gift", m_spParam->m_b2c);
         ((class PaybackManagerClient*)GetPaybackManager())->FUN_140a8b490(m_spParam);
         if (!m_spParam->m_str70.IsEmpty())
-            objData.FUN_1407cbb20("additionalInfoDescText", m_spParam->m_str70);
+            objData.SetWStringMember("additionalInfoDescText", m_spParam->m_str70);
     }
-    objData.FUN_1409adbe0("dp", Scaleform::GFx::Value(rows.FUN_1422bb870()));
-    objData.FUN_1407cba60("mode", FUN_140eaac50(m_spParam->m_nType));
-    m_30->Invoke("initData", Scaleform::GFx::Value(objData.FUN_1422bb870()));
+    objData.FUN_1409adbe0("dp", Scaleform::GFx::Value(rows.GetValue()));
+    objData.SetStringMember("mode", GetModeName(m_spParam->m_nType));
+    m_30->Invoke("initData", Scaleform::GFx::Value(objData.GetValue()));
     FUN_140ea7900();
 }
 
@@ -734,11 +734,11 @@ CStringW UIMarketBillDialog::FUN_140ea9710(int nPayType, __int64 nAmount)
 
 // Add to the price of a pay type (and the total).
 // @0x140ea9770
-void UIMarketBillDialog::FUN_140ea9770(int nPayType, __int64 nAmount)
+void UIMarketBillDialog::AddPrice(int nPayType, __int64 nAmount)
 {
     if (m_spParam.get() ? true : false)
     {
-        if (m_spParam->FUN_140eacfc0())
+        if (m_spParam->HasFixedPrice())
             return;
     }
     __int64 nCurrent = 0;
@@ -751,11 +751,11 @@ void UIMarketBillDialog::FUN_140ea9770(int nPayType, __int64 nAmount)
 
 // Add to the random payback of a pay type.
 // @0x140ea9880
-void UIMarketBillDialog::FUN_140ea9880(int nPayType, __int64 nAmount)
+void UIMarketBillDialog::AddRandomPayback(int nPayType, __int64 nAmount)
 {
     if (m_spParam.get() ? true : false)
     {
-        if (m_spParam->FUN_140eacfc0())
+        if (m_spParam->HasFixedPrice())
             return;
     }
     __int64 nCurrent = 0;
@@ -767,11 +767,11 @@ void UIMarketBillDialog::FUN_140ea9880(int nPayType, __int64 nAmount)
 
 // Add to the payback of a pay type.
 // @0x140ea9970
-void UIMarketBillDialog::FUN_140ea9970(int nPayType, __int64 nAmount)
+void UIMarketBillDialog::AddPayback(int nPayType, __int64 nAmount)
 {
     if (m_spParam.get() ? true : false)
     {
-        if (m_spParam->FUN_140eacfc0())
+        if (m_spParam->HasFixedPrice())
             return;
     }
     if (nPayType == 0x11)
@@ -785,7 +785,7 @@ void UIMarketBillDialog::FUN_140ea9970(int nPayType, __int64 nAmount)
 
 // A row is a UGC map package.
 // @0x140ea9a70
-bool UIMarketBillDialog::FUN_140ea9a70()
+bool UIMarketBillDialog::HasUgcMapPackage()
 {
     if (m_spParam == 0 || m_spParam->m_bills.IsEmpty())
         return false;
@@ -808,7 +808,7 @@ bool UIMarketBillDialog::FUN_140ea9a70()
 
 // A row is an item of the type.
 // @0x140ea9c30
-bool UIMarketBillDialog::FUN_140ea9c30(const int& nItemType)
+bool UIMarketBillDialog::HasItemType(const int& nItemType)
 {
     if (m_spParam == 0 || m_spParam->m_bills.IsEmpty())
         return false;
@@ -857,7 +857,7 @@ bool UIMarketBillDialog::FUN_140ea9df0()
 
 // "onClickBuy" in the basket mode.
 // @0x140ea9fc0
-void UIMarketBillDialog::FUN_140ea9fc0()
+void UIMarketBillDialog::Cancel()
 {
     if (m_spParam == 0)
         return;
@@ -868,7 +868,7 @@ void UIMarketBillDialog::FUN_140ea9fc0()
 
 // "onClickBuy".
 // @0x140eaa0b0
-void UIMarketBillDialog::FUN_140eaa0b0(const char* szMethod)
+void UIMarketBillDialog::OnClickBuy(const char* szMethod)
 {
     if (m_spParam == 0)
         return;
@@ -884,7 +884,7 @@ void UIMarketBillDialog::FUN_140eaa0b0(const char* szMethod)
 
 // "onClickGiftOk".
 // @0x140eaa1e0
-void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
+void UIMarketBillDialog::OnClickGiftOk(const char* szMethod, ASData* pData)
 {
     if (m_spParam == 0)
         return;
@@ -907,7 +907,7 @@ void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
         {
             if (TSingleton<CBuddyManager>::GetInstance()->FUN_140ae5240(strName) == 1)
             {
-                FUN_140d73aa0(GetStringCommonByKey(L"s_cashshop_err_fail_gift_block"), 0, 0, L"");
+                ShowMessageBox(GetStringCommonByKey(L"s_cashshop_err_fail_gift_block"), 0, 0, L"");
                 return;
             }
         }
@@ -925,7 +925,7 @@ void UIMarketBillDialog::FUN_140eaa1e0(const char* szMethod, ASData* pData)
 
 // "onUpdateTotalPrice": a bill row changed its numbers.
 // @0x140eaa5e0
-void UIMarketBillDialog::FUN_140eaa5e0(ASData* pData)
+void UIMarketBillDialog::OnUpdateTotalPrice(ASData* pData)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) || m_spParam == 0)
         return;
@@ -934,40 +934,40 @@ void UIMarketBillDialog::FUN_140eaa5e0(ASData* pData)
     if (nIndex < 0)
         return;
     ASBillData bill(value, 2);
-    MS2Ptr<ASBillData> spBill = m_spParam->FUN_140eaba00(nIndex);
+    MS2Ptr<ASBillData> spBill = m_spParam->GetBill(nIndex);
     if (spBill == 0)
         return;
     int nPayType = spBill->vfunc_4();
     __int64 nPrice = spBill->vfunc_2();
     nPrice -= spBill->vfunc_3();
-    FUN_140ea9770(nPayType, nPrice);
+    AddPrice(nPayType, nPrice);
     int nPaybackType = spBill->vfunc_8();
     __int64 nPayback = spBill->vfunc_6();
     nPayback -= spBill->vfunc_7();
-    FUN_140ea9970(nPaybackType, nPayback);
+    AddPayback(nPaybackType, nPayback);
     m_bDirty = true;
 }
 
 // "onChangeMode".
 // @0x140eaa860
-void UIMarketBillDialog::FUN_140eaa860(ASData* pData)
+void UIMarketBillDialog::OnChangeMode(ASData* pData)
 {
     bool bOn = pData->PopBool();
     if (bOn)
     {
         SetMode(2);
-        FUN_140eaa8d0();
+        RebuildSums();
     }
     else
     {
         SetMode(1);
-        FUN_140eaa8d0();
+        RebuildSums();
     }
 }
 
 // Rebuild the sums from the rows.
 // @0x140eaa8d0
-void UIMarketBillDialog::FUN_140eaa8d0()
+void UIMarketBillDialog::RebuildSums()
 {
     MS2Ptr<TMarketBillDataParam> spParam = m_spParam;
     if (spParam == 0)
@@ -978,7 +978,7 @@ void UIMarketBillDialog::FUN_140eaa8d0()
     m_mapPrice.RemoveAll();
     m_mapPayback.RemoveAll();
     m_mapRandomPayback.RemoveAll();
-    bool bOnlyChecked = FUN_140eacad0() == 2;
+    bool bOnlyChecked = GetMode() == 2;
     ATL::CAtlArray<MS2Ptr<ASBillData> >& bills = spParam->m_bills;
     if (!bills.IsEmpty())
     {
@@ -988,11 +988,11 @@ void UIMarketBillDialog::FUN_140eaa8d0()
             MS2Ptr<ASBillData> spBill = bills.GetAt(i);
             if (spBill == 0)
                 continue;
-            if (bOnlyChecked && !spBill->FUN_140eacf60())
+            if (bOnlyChecked && !spBill->IsChecked())
                 continue;
-            FUN_140ea9770(spBill->vfunc_4(), spBill->vfunc_2());
-            FUN_140ea9970(spBill->vfunc_8(), spBill->vfunc_6());
-            FUN_140ea9880(spBill->vfunc_8(), spBill->vfunc_9());
+            AddPrice(spBill->vfunc_4(), spBill->vfunc_2());
+            AddPayback(spBill->vfunc_8(), spBill->vfunc_6());
+            AddRandomPayback(spBill->vfunc_8(), spBill->vfunc_9());
         }
     }
     m_bDirty = true;
@@ -1006,7 +1006,7 @@ void UIMarketBillDialog::SetMode(int nMode)
 
 // The mode as the movie names it.
 // @0x140eaac50
-CString UIMarketBillDialog::FUN_140eaac50(int nMode)
+CString UIMarketBillDialog::GetModeName(int nMode)
 {
     switch (nMode)
     {
@@ -1025,12 +1025,12 @@ CString UIMarketBillDialog::FUN_140eaac50(int nMode)
 bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
 {
     *pbClose = true;
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xec))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xec))
     {
         int nBlueprint = 0x16;
-        if (FUN_140ea9c30(nBlueprint))
+        if (HasItemType(nBlueprint))
         {
-            FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0), GetStringCommonByKey(L"s_meratmarket_buy_notice_blueprint"));
+            ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab6b0), GetStringCommonByKey(L"s_meratmarket_buy_notice_blueprint"));
             *pbClose = false;
             return true;
         }
@@ -1040,7 +1040,7 @@ bool UIMarketBillDialog::FUN_140eaad30(bool* pbClose)
         return false;
     if (pPlayer->HasNoHome() != 0)
     {
-        if (FUN_140ea9a70())
+        if (HasUgcMapPackage())
             {
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(0x1f, 0x6eb, 0, L"");
                 if (spBox.get())
@@ -1081,13 +1081,13 @@ bool UIMarketBillDialog::FUN_140eab330(bool* pbClose, const CStringW& strName, c
 {
     CStringW strText;
     int nBlueprint = 0x16;
-    if (FUN_140ea9c30(nBlueprint) && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xec))
+    if (HasItemType(nBlueprint) && ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xec))
         strText = FUN_14028dfa0<CStringW>(L"s_meratmarket_gift_ask_confirm_blueprint", strName);
     else if (m_spParam->m_nDialogId == 0x4ec1)
         strText = FUN_14028dfa0<CStringW>(L"s_meratmarket_gift_ask_confirm", strName);
     if (!strText.IsEmpty())
     {
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d74230(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab7b0), strText);
+        MS2Ptr<CMsgBoxData> spBox = ShowYesNoMessageBox(Delegate<bool(int, const CMsgBoxData&)>(this, &UIMarketBillDialog::FUN_140eab7b0), strText);
         if (spBox.get())
         {
             spBox->AddStringArg(strName);

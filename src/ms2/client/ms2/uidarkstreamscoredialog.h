@@ -35,8 +35,8 @@ public:
     virtual int vfunc_48();                                         // 48 0x140f35880 UI type id
     virtual void vfunc_84(int nScore);                              // 84 0x140f35590
     virtual void vfunc_85();                                        // 85 0x140f355d0
-    void FUN_140f35660(int nOffsetY);                               // 0x140f35660 set m_nOffsetY, re-place the root
-    void FUN_140f356a0(int nAlign);                                 // 0x140f356a0 set m_nAlign, re-place the root
+    void SetOffsetY(int nOffsetY);                               // 0x140f35660 set m_nOffsetY, re-place the root
+    void SetAlign(int nAlign);                                 // 0x140f356a0 set m_nAlign, re-place the root
 private:
     MS2_LAYOUT_FRIEND;
     int m_nScore;                   // +0x178

@@ -24,7 +24,7 @@ public:
     void FUN_140f70770();
     void FUN_140f70ad0();
     void FUN_140f70c70();
-    void FUN_140f70f90(MS2Ptr<CItem>);
+    void SelectEquipment(MS2Ptr<CItem>);
     void FUN_140f71330(MS2Ptr<CItem>);
     void FUN_140f71530(int);
     MS2Ptr<CItem> GetItemAt(const CAtlArray<MS2Ptr<CItem>>&, int);

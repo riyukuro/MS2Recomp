@@ -18,7 +18,7 @@ typedef unsigned __int64 u64;
 // ---- shared string-table lookups (defined in the stringtable unit) ----
 CStringW GetStringCommonByKey(const CStringW& strKey);   // text by key
 CStringW GetStringCommon(int nStringId);            // text by numeric id
-CString FUN_140651350();                           // localized base path
+CString GetLanguageCode();                           // localized base path
 
 // ---- fmt argument pack (same layout as the other recovered fmt call sites) ----
 struct Unk_FmtArg { const void* m_value; void* m_fn; };
@@ -38,7 +38,7 @@ struct Unk_MoveErrConfig {
 MS2_CHECK_OFFSET(Unk_MoveErrConfig, m_strDir60, 0x60);
 MS2_CHECK_OFFSET(Unk_MoveErrConfig, m_strDir68, 0x68);
 MS2_CHECK_OFFSET(Unk_MoveErrConfig, m_strDir70, 0x70);
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // ---- the int-argument formatter lambda and its closure ----
 
@@ -116,7 +116,7 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 CString FUN_140cc28f0(const CString& strA, const CString& strB)
 {
     CString str;
-    str.Format("%s%s/%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)FUN_1401d31f0())->m_strDir68, (LPCSTR)FUN_140651350(),
+    str.Format("%s%s/%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)GetCommonResource())->m_strDir68, (LPCSTR)GetLanguageCode(),
                (LPCSTR)strA, (LPCSTR)strB);
     return str;
 }
@@ -125,7 +125,7 @@ CString FUN_140cc28f0(const CString& strA, const CString& strB)
 CString FUN_140cc2a00(const CString& strA, const CString& strB)
 {
     CString str;
-    str.Format("%s%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)FUN_1401d31f0())->m_strDir60, (LPCSTR)strA, (LPCSTR)strB);
+    str.Format("%s%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)GetCommonResource())->m_strDir60, (LPCSTR)strA, (LPCSTR)strB);
     return str;
 }
 
@@ -133,7 +133,7 @@ CString FUN_140cc2a00(const CString& strA, const CString& strB)
 CString FUN_140cc2ad0(const CString& strA, const CString& strB)
 {
     CString str;
-    str.Format("%s%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)FUN_1401d31f0())->m_strDir68, (LPCSTR)strA, (LPCSTR)strB);
+    str.Format("%s%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)GetCommonResource())->m_strDir68, (LPCSTR)strA, (LPCSTR)strB);
     return str;
 }
 
@@ -141,14 +141,14 @@ CString FUN_140cc2ad0(const CString& strA, const CString& strB)
 CString FUN_140cc2ba0(const CString& strA, const CString& strB)
 {
     CString str;
-    str.Format("%s%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)FUN_1401d31f0())->m_strDir70, (LPCSTR)strA, (LPCSTR)strB);
+    str.Format("%s%s/%s", (LPCSTR)((struct Unk_MoveErrConfig*)GetCommonResource())->m_strDir70, (LPCSTR)strA, (LPCSTR)strB);
     return str;
 }
 
 // ---- the move-error switch ----
 
 // @0x140cc20a0
-CStringW FUN_140cc20a0(int nErr)
+CStringW GetFieldMoveErrorMessage(int nErr)
 {
     switch (nErr) {
     case 8:  return GetStringCommon(0x268);

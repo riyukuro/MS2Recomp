@@ -28,15 +28,15 @@ public:
     virtual void vfunc_o178_10(void* pQuest);                               // 0x140ee2f20 quest progress
     virtual int vfunc_48() { return 0x4f43; }                               // 48 (COMDAT 0x140ee51c0)
 
-    void FUN_140ee3580();                                                   // setMapData / setRewardData / setFinalReward
+    void UpdateRewardData();                                                   // setMapData / setRewardData / setFinalReward
     void FUN_140ee3c00(int nDay);                                           // fill "m_list" with the quests of a day
-    int FUN_140ee4280(MS2Ptr<TimeRunEventContext> spContext);               // distance earned by the rewarded quests
+    int GetEarnedDistance(MS2Ptr<TimeRunEventContext> spContext);               // distance earned by the rewarded quests
     CStringW FUN_140ee4380(MS2Ptr<TimeRunEventContext> spContext);          // time left of the first quest
-    void FUN_140ee4570(int n);                                                 // refresh and open the reward dialog
-    __int64 FUN_140ee4990(MS2Ptr<TimeRunEventContext> spContext);           // start time of the first quest
-    int FUN_140ee4b00();                                                    // selected day tab + 1, -1 when unbound
-    int FUN_140ee4bb0(MS2Ptr<TimeRunEventContext> spContext);               // elapsed days, at most 6
-    void FUN_140ee4ca0();                                                   // setTabCount per day
+    void OpenRewardDialog(int n);                                                 // refresh and open the reward dialog
+    __int64 GetStartTime(MS2Ptr<TimeRunEventContext> spContext);           // start time of the first quest
+    int GetSelectedDay();                                                    // selected day tab + 1, -1 when unbound
+    int GetElapsedDays(MS2Ptr<TimeRunEventContext> spContext);               // elapsed days, at most 6
+    void UpdateTabCounts();                                                   // setTabCount per day
 
 private:
     MS2_LAYOUT_FRIEND;
@@ -45,7 +45,7 @@ private:
     Unk_IntervalTimer m_tick;                                               // +0x200 1 s refresh timer
 public:
     int FUN_140ee3290();                                    // 0x140ee3290 a reward is waiting (bound by the game menu table; ignores this)
-    int FUN_140ee45c0();                                    // 0x140ee45c0 number of claimable steps (the game menu badge; ignores this)
+    int GetClaimableCount();                                    // 0x140ee45c0 number of claimable steps (the game menu badge; ignores this)
 };
 MS2_CHECK_SIZE(UITimeRunEventDialog, 0x208);
 MS2_CHECK_OFFSET(UITimeRunEventDialog, m_missionBinder, 0x180);

@@ -56,7 +56,7 @@ public:
 };
 
 // Buff container of an actor.
-#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
 class NoticeMessage   // C3: unit-local view (ctor 0x140a52ef0, dtor 0x1405a89e0, 0x70 bytes)
 {
 public:
@@ -65,7 +65,7 @@ public:
     void SetActor(int nActor);                           // 0x140a53190
     void* m_storage[14];
 };
-class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141683100(int nKey); bool FUN_141682fe0(int nKey); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool FUN_141683100(int nKey); bool IsActionKeyDown(int nKey); };   // C3: view of the real class (unit_141682f80)
 
 // The player-side views of the actor (PC members seen through the PCBase pointer of FUN_1417b8370).
 class Unk_PCD88 : public CBoneRotateManager { };    // the target the player is bound to
@@ -119,7 +119,7 @@ public:
     int FUN_1422b9ea0();
 };
 class Unk_SiMode;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -135,10 +135,10 @@ public:
     void FUN_140b114e0(int);
 };
 class Unk_SiPetBook { public: char m_c; };
-int FUN_140b11e90(struct Unk_PetFoodBook* pBook, PCBase* pPet);   // C3: the real free function
+int FindPetFoodItem(struct Unk_PetFoodBook* pBook, PCBase* pPet);   // C3: the real free function
 class Unk_SiPetData { public: char m_pad[0x68]; Unk_SiPetBook m_book; };
 class Unk_SiPetMgr;
-class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
+class Unk_BreakSelected* GetPetManager();   // C3: was GetPetManager
 class CCPetInfoPacket { public: class Info; };
 class CPetManager   // C3: member view for the former free stand-ins
 {
@@ -159,7 +159,7 @@ StateIdle::StateIdle(PCBase* pOwner) : State(pOwner)
 // @0x1417cd4a0
 StateIdle::~StateIdle()
 {
-    FUN_1417cf210();
+    StopIdleSound();
     FUN_1417cf4a0();
 }
 
@@ -171,15 +171,15 @@ void StateIdle::vfunc_4(StateData* pData)
         vfunc_2(0xc);
     else
         vfunc_2(1);
-    m_timerBore.FUN_1408687f0();
-    m_timerLeave.FUN_1408687f0();
+    m_timerBore.Reset();
+    m_timerLeave.Reset();
     if (m_pOwner->FUN_141675ed0() != 0)
     {
         if (m_pOwner->GetClassID() == 0x6200045)
             PCBase::FUN_141677f40(m_pOwner);
         vfunc_2(7);
         if (m_nSoundIdle == 0)
-            FUN_1417cf260();
+            StartIdleSound();
     }
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
@@ -202,7 +202,7 @@ void StateIdle::vfunc_3(double fTime)
 void StateIdle::vfunc_5(int n)
 {
     State::vfunc_5(n);
-    FUN_1417cf210();
+    StopIdleSound();
     FUN_1417cf4a0();
 }
 
@@ -222,9 +222,9 @@ int StateIdle::vfunc_15()
 void StateIdle::vfunc_8(double fTime)
 {
     State::vfunc_8(fTime);
-    if (TSingleton<CStateService>::GetInstance()->FUN_1417e2610() == 0x620000d)
+    if (TSingleton<CStateService>::GetInstance()->GetCurrentSceneId() == 0x620000d)
     {
-        FUN_1417cef60();
+        UpdateIdleTimers();
         return;
     }
     MyPC* pPC = FUN_1417b84b0();
@@ -232,7 +232,7 @@ void StateIdle::vfunc_8(double fTime)
         return;
     int nWater = m_pOwner->FUN_141675ed0();
     Unk_PCMove* pBuff = static_cast<Unk_PCMove*>(m_pOwner->FUN_14166d240());
-    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->FUN_141683290())));
+    m_pOwner->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(pBuff->GetMoveDirection())));
     if (m_pOwner->FUN_141676b70() != 0)
     {
         vfunc_2(0xc);
@@ -270,7 +270,7 @@ void StateIdle::vfunc_8(double fTime)
     {
         pPC->TryUseChairOrBed(2, 0);
     }
-    else if (m_pOwner->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
+    else if (m_pOwner->FUN_141671a30() != 0 && pBuff->IsActionKeyDown(0x493e1))
     {
         m_pOwner->vfunc_59(6, 0, 0x25, 0);
     }
@@ -278,7 +278,7 @@ void StateIdle::vfunc_8(double fTime)
     {
         m_pOwner->vfunc_59(2, 0, 0, 0);
     }
-    else if (pBuff->FUN_141682fe0(0x493e5) && nWater == 0)
+    else if (pBuff->IsActionKeyDown(0x493e5) && nWater == 0)
     {
         m_pOwner->vfunc_59(3, 0, 0, 0);
     }
@@ -287,7 +287,7 @@ void StateIdle::vfunc_8(double fTime)
         FUN_1417b9460();
     }
     if (nWater == 0)
-        FUN_1417cef60();
+        UpdateIdleTimers();
 }
 
 // @0x1417cdbb0
@@ -343,7 +343,7 @@ void StateIdle::vfunc_9(double fTime)
             }
             if (m_n10 != 7 && m_nSoundIdle != 0)
             {
-                FUN_1417cf210();
+                StopIdleSound();
                 return;
             }
         }
@@ -360,7 +360,7 @@ void StateIdle::vfunc_9(double fTime)
         FUN_1417ce9f0(nSeq);
         break;
     case 1:
-        FUN_1417ce6f0(nSeq);
+        PlayStandAnimation(nSeq);
         break;
     case 0x14:
         FUN_1417cee40(nSeq);
@@ -375,7 +375,7 @@ void StateIdle::vfunc_9(double fTime)
         FUN_1417ce820(nSeq);
         break;
     case 7:
-        FUN_1417ceab0(nSeq);
+        PlayBoreWaitAnimation(nSeq);
         break;
     case 8:
         FUN_1417ceca0(nSeq);
@@ -462,7 +462,7 @@ void StateIdle::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
     {
         vfunc_2(1);
         unsigned nSeq = static_cast<NiActorManager*>(pkManager)->GetTargetAnimation();
-        FUN_1417ce6f0(nSeq);
+        PlayStandAnimation(nSeq);
     }
     else if (m_pOwner->FUN_14166de90(0x49, eSequenceID))
     {
@@ -484,7 +484,7 @@ void StateIdle::EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceI
 // @0x1417ce5b0
 void StateIdle::vfunc_21(int n)
 {
-    m_timerLeave.FUN_140868750(FUN_14025a620((class Unk_ConstVal*)&((class Unk_SiConsts*)GetClientConstants())->m_delayLeave));
+    m_timerLeave.Start(FUN_14025a620((class Unk_ConstVal*)&((class Unk_SiConsts*)GetClientConstants())->m_delayLeave));
     vfunc_2(6);
 }
 
@@ -515,7 +515,7 @@ int StateIdle::vfunc_22(MS2Ptr<StateSyncObject> p)
 }
 
 // @0x1417ce6f0
-void StateIdle::FUN_1417ce6f0(unsigned nSeq)
+void StateIdle::PlayStandAnimation(unsigned nSeq)
 {
     int nKey = 0;
     if (m_pOwner->vfunc_65() != 0)
@@ -570,7 +570,7 @@ void StateIdle::FUN_1417ce9f0(unsigned nSeq)
 }
 
 // @0x1417ceab0
-void StateIdle::FUN_1417ceab0(unsigned nSeq)
+void StateIdle::PlayBoreWaitAnimation(unsigned nSeq)
 {
     int nKey = 0x30;
     efd::SmartPointer<Ridee> spRidee(((class Ridee*)FUN_141468360((struct Unk_MagicEntity*)(m_pOwner))));
@@ -592,9 +592,9 @@ void StateIdle::FUN_1417ceab0(unsigned nSeq)
     if (!kName.empty())
         bPlayed = m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     if (bPlayed)
-        FUN_1417cf210();
+        StopIdleSound();
     if (m_nSoundIdle == 0)
-        FUN_1417cf260();
+        StartIdleSound();
 }
 
 // @0x1417ceca0
@@ -635,7 +635,7 @@ void StateIdle::FUN_1417cee90(unsigned nSeq)
 }
 
 // @0x1417cef60
-void StateIdle::FUN_1417cef60()
+void StateIdle::UpdateIdleTimers()
 {
     MyPC* pPC = FUN_1417b84b0();
     if (pPC == 0)
@@ -643,14 +643,14 @@ void StateIdle::FUN_1417cef60()
     if (pPC->GetRidee() != 0)
         return;
     if (m_pOwner->vfunc_65() != 0)
-        m_timerBore.FUN_1408687f0();
-    bool bBusy = ((class GFxSceneService*)(class Unk_SiScene*)(((Unk_SiScene*)CUserMail::FUN_1408e57f0())))->FUN_1422b9ea0() == 1;
+        m_timerBore.Reset();
+    bool bBusy = ((class GFxSceneService*)(class Unk_SiScene*)(((Unk_SiScene*)CUserMail::GetGFxSceneService())))->FUN_1422b9ea0() == 1;
     if (!bBusy)
-        bBusy = ((class GFxManager*)(class Unk_SiMode*)(((class Unk_SiMode*)FUN_14025e7a0())))->FUN_1422ae940() == 1;
+        bBusy = ((class GFxManager*)(class Unk_SiMode*)(((class Unk_SiMode*)GetGFxManager())))->FUN_1422ae940() == 1;
     if (m_n10 == 1 && m_pOwner->vfunc_65() == 0 && !bBusy)
     {
         Unk_PCD88* pTarget = AsPC(pPC)->FUN_14165c2d0().get();
-        if (pTarget != 0 && pTarget->IsLooking() == 0 && m_timerBore.FUN_140868c00() != 0)
+        if (pTarget != 0 && pTarget->IsLooking() == 0 && m_timerBore.IsExpired() != 0)
         {
             int nBore = m_pOwner->FUN_141679120(0x27);
             vfunc_2(nBore + 2);
@@ -658,20 +658,20 @@ void StateIdle::FUN_1417cef60()
                 m_n10 = 2;
             if (5 < m_n10)
                 m_n10 = 5;
-            m_timerBore.FUN_1408687f0();
+            m_timerBore.Reset();
         }
-        if (m_timerBore.FUN_140868ba0() == 0)
-            m_timerBore.FUN_140868750(FUN_14025a620((class Unk_ConstVal*)&((class Unk_SiConsts*)GetClientConstants())->m_delayBore));
+        if (m_timerBore.IsRunning() == 0)
+            m_timerBore.Start(FUN_14025a620((class Unk_ConstVal*)&((class Unk_SiConsts*)GetClientConstants())->m_delayBore));
     }
     else
     {
-        if (m_timerLeave.FUN_140868c00() != 0)
+        if (m_timerLeave.IsExpired() != 0)
             vfunc_2(1);
     }
 }
 
 // @0x1417cf210
-void StateIdle::FUN_1417cf210()
+void StateIdle::StopIdleSound()
 {
     if (m_nSoundIdle != 0)
     {
@@ -681,15 +681,15 @@ void StateIdle::FUN_1417cf210()
 }
 
 // @0x1417cf260
-void StateIdle::FUN_1417cf260()
+void StateIdle::StartIdleSound()
 {
-    FUN_1417cf210();
+    StopIdleSound();
     PCBase* pPC = FUN_1417b8370();
     if (pPC != 0)
     {
         NoticeMessage kTarget;   // C3: was Unk_EffectTarget
         ((Unk_EffectTarget&)(kTarget)).m_strName = AsPC(pPC)->GetSwimEffectName(0x30);
-        ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->GetObjectKind(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
         kTarget.SetActor(m_pOwner->GetObjectId());
         m_nSoundIdle = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
     }
@@ -715,7 +715,7 @@ void StateIdle::FUN_1417cf360()
         {
             return;
         }
-        ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
+        ((Unk_EffectTarget&)(kTarget)).m_nKind = WorldService::GetInstance()->GetObjectKind(reinterpret_cast<class Unk_WsC_GameObj*>(m_pOwner));
         kTarget.SetActor(m_pOwner->GetObjectId());
         ((Unk_EffectTarget&)(kTarget)).m_b30 = true;
         m_nSoundEmotion = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(((Unk_EffectTarget&)(kTarget)));
@@ -742,7 +742,7 @@ void StateIdle::vfunc_29(MS2Ptr<Unk_StateArg29> p)
     {
         MS2Ptr<CGemSwim> spSwim(dynamic_cast<CGemSwim*>((CGemBase*)spGem->GetGem()));
         if (spSwim.get() != 0)
-            FUN_1417cf210();
+            StopIdleSound();
     }
 }
 
@@ -773,7 +773,7 @@ void StateIdleNPC::vfunc_4(StateData* pData)
 }
 
 // @0x1417cf860
-void StateIdleNPC::FUN_1417cf860(unsigned nSeq)
+void StateIdleNPC::PlayStandAnimation(unsigned nSeq)
 {
     int nKey = 0;
     if (m_pOwner->vfunc_65() != 0)
@@ -863,7 +863,7 @@ void StateIdlePet::vfunc_9(double fTime)
             FUN_1417d02e0(nSeq);
             break;
         case 0x11:
-            FUN_1417d03b0(nSeq);
+            PlayReviveAnimation(nSeq);
             break;
         case 0x13:
             FUN_1417d0470(nSeq);
@@ -911,15 +911,15 @@ void StateIdlePet::FUN_1417cfea0(unsigned nSeq)
     if (pPet != 0)
     {
         if (m_timerVoiceA.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)GetClientConstants())->m_intervalA)->Get()) != 0)
-            FUN_1417d0540(0x5a);
+            PlayPetVoice(0x5a);
         if (m_timerVoiceB.Check(*reinterpret_cast<Common::Constants::Value<unsigned int>*>(&((class Unk_SiConsts*)GetClientConstants())->m_intervalB)->Get()) != 0)
         {
-            int nPetId = FUN_140b11e90((struct Unk_PetFoodBook*)&reinterpret_cast<Unk_SiPetData*>(reinterpret_cast<CPetManager*>(FUN_140535320())->GetInfo())->m_book, pPet);
+            int nPetId = FindPetFoodItem((struct Unk_PetFoodBook*)&reinterpret_cast<Unk_SiPetData*>(reinterpret_cast<CPetManager*>(GetPetManager())->GetInfo())->m_book, pPet);
             if (nPetId != 0)
             {
-                MS2Ptr<CItem> spRow = reinterpret_cast<CPetManager*>(((class CPetManager*)(class Unk_SiPetMgr*)(((class Unk_SiPetMgr*)FUN_140535320())))->FUN_140c8b430())->FindItemById(nPetId);
+                MS2Ptr<CItem> spRow = reinterpret_cast<CPetManager*>(((class CPetManager*)(class Unk_SiPetMgr*)(((class Unk_SiPetMgr*)GetPetManager())))->FUN_140c8b430())->FindItemById(nPetId);
                 if (spRow == 0)
-                    FUN_1417d0540(0x5f);
+                    PlayPetVoice(0x5f);
             }
         }
     }
@@ -943,7 +943,7 @@ void StateIdlePet::FUN_1417d0140(unsigned nSeq)
         efd::utf8string kName(m_pOwner->vfunc_123(0x27));
         m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
-    FUN_1417d0540(0x5c);
+    PlayPetVoice(0x5c);
 }
 
 // @0x1417d0210
@@ -954,7 +954,7 @@ void StateIdlePet::FUN_1417d0210(unsigned nSeq)
         efd::utf8string kName(m_pOwner->vfunc_123(0x42));
         m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
-    FUN_1417d0540(0x5d);
+    PlayPetVoice(0x5d);
 }
 
 // @0x1417d02e0
@@ -965,18 +965,18 @@ void StateIdlePet::FUN_1417d02e0(unsigned nSeq)
         efd::utf8string kName(m_pOwner->vfunc_123(0x43));
         m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
-    FUN_1417d0540(0x5e);
+    PlayPetVoice(0x5e);
 }
 
 // @0x1417d03b0
-void StateIdlePet::FUN_1417d03b0(unsigned nSeq)
+void StateIdlePet::PlayReviveAnimation(unsigned nSeq)
 {
     if (!m_pOwner->FUN_14166de90(0x44, nSeq))
     {
         efd::utf8string kName("Revive_A");
         m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
-    FUN_1417d0540(0x60);
+    PlayPetVoice(0x60);
 }
 
 // @0x1417d0470
@@ -987,11 +987,11 @@ void StateIdlePet::FUN_1417d0470(unsigned nSeq)
         efd::utf8string kName(m_pOwner->vfunc_123(0x45));
         m_pOwner->PlayAnimation(kName, m_pOwner->FUN_1416713c0(), false, false);
     }
-    FUN_1417d0540(0x61);
+    PlayPetVoice(0x61);
 }
 
 // @0x1417d0540
-void StateIdlePet::FUN_1417d0540(int nVoice)
+void StateIdlePet::PlayPetVoice(int nVoice)
 {
     PCBase* pNpc = FUN_1417b83a0();
     if (pNpc == 0)

@@ -89,7 +89,7 @@ public:
 
 
 // The maid npc: the maid record (placeholder/cnpc.h).
-class CNpc { public: MS2Ptr<CMaid> FUN_141093800(); };
+class CNpc { public: MS2Ptr<CMaid> GetMaid(); };
 
 enum SAType;   // C3: the special ability type (commonfiles/additionalactionadditional.h)
 // The local player (only its stats).
@@ -97,7 +97,7 @@ enum SAType;   // C3: the special ability type (commonfiles/additionalactionaddi
 class Unk_UmPC { public: };
 class PC { public: struct Unk_PCEquipSet* GetEquipment(); };   // C3: the real member (0x1416561a0, the equip holder)
 
-class Unk_MdBookTable* FUN_1412db940();   // C3: was FUN_1412db940
+class Unk_MdBookTable* GetMaidRecipeGroupTable();   // C3: was GetMaidRecipeGroupTable
 
 // The record of a running craft.
 struct Unk_UmMfItem : public CPtred
@@ -119,7 +119,7 @@ MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 int FUN_14053feb0(int nItemId);                                 // default rarity of an item
     // the experience of one affinity grade
-void* FUN_1401c0d90();
+void* GetGameRule();
 __int64 GetServerTime();                                        // the server time
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
@@ -233,7 +233,7 @@ UIManufactureDialog::UIManufactureDialog()
 {
     m_2c = 0xc;
     FUN_1422dc3b0(1);
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x1412e2660
@@ -394,9 +394,9 @@ void UIManufactureDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_194 = 0;
-    FUN_1412e34c0();
-    FUN_1412e3990(1);
-    FUN_1412e4240();
+    SetTitle();
+    FillRecipeList(1);
+    UpdateProgress();
 }
 
 // @0x1412e3010
@@ -441,21 +441,21 @@ void UIManufactureDialog::vfunc_72()
 }
 
 // @0x1412e3480
-void UIManufactureDialog::FUN_1412e3480(int nNpcId, unsigned __int64 nManufactureId)
+void UIManufactureDialog::SetNpcAndManufactureId(int nNpcId, unsigned __int64 nManufactureId)
 {
     m_nNpcId = nNpcId;
     m_nManufactureId = nManufactureId;
 }
 
 // @0x1412e34c0
-void UIManufactureDialog::FUN_1412e34c0()
+void UIManufactureDialog::SetTitle()
 {
     if (m_30.IsNull())
         return;
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     TPtrValue<MaidDesc> spDesc = TSingleton<CMaidDescTable>::GetInstance()->Find(spMaid->m_nMaidId);
@@ -480,20 +480,20 @@ void UIManufactureDialog::FUN_1412e34c0()
 }
 
 // @0x1412e3990
-void UIManufactureDialog::FUN_1412e3990(int bSelect)
+void UIManufactureDialog::FillRecipeList(int bSelect)
 {
     if (m_30.IsNull())
         return;
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
-    CMaidRecipeGroupTable::RecipeList spBook = ((class CMaidRecipeGroupTable*)FUN_1412db940())->Find(spMaid->m_nMaidId);
+    CMaidRecipeGroupTable::RecipeList spBook = ((class CMaidRecipeGroupTable*)GetMaidRecipeGroupTable())->Find(spMaid->m_nMaidId);
     if (spBook == 0)
         return;
-    if (MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_scrollList"))   // the list getter of UIDailyMissionDialog
+    if (MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->GetScrollingList("m_scrollList"))   // the list getter of UIDailyMissionDialog
     {
         spList->FUN_1422dd1d0();
         int nFirst = 0;
@@ -507,17 +507,17 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
             {
                 ASObj row(2);
                 row.FUN_140e846b0("id", i + 1);
-                row.FUN_1407cbb20("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->productItemId));
-                row.FUN_1407cb9c0("recipeID", spRef->recipeId);
+                row.SetWStringMember("itemName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->productItemId));
+                row.SetIntMember("recipeID", spRef->recipeId);
                 if (spRef->requireLevel > *reinterpret_cast<Common::Constants::Value<int>*>(&reinterpret_cast<Unk_UmLevels*>(((class Unk_UmLevelInfo*)GetClientConstants()))->m_5180)->Get())   // exe: add rax, 0x5180
-                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7ab, spRef->requireLevel));
+                    row.SetWStringMember("require", BlockFormat<int>(0x7ab, spRef->requireLevel));
                 else
-                    row.FUN_1407cbb20("require", BlockFormat<int>(0x7aa, spRef->requireLevel));
+                    row.SetWStringMember("require", BlockFormat<int>(0x7aa, spRef->requireLevel));
                 m_mapRecipes.SetAt((int)i, spRef->recipeId);
                 int bAvailable = spRef->requireLevel <= spMaid->m_nOrder;
                 if (bAvailable != 0)
                     nFirst = (int)i;
-                row.FUN_1407cb9c0("available", bAvailable);
+                row.SetIntMember("available", bAvailable);
                 spList.get()->AddItem(row);
                 int nItemId = spRecipe->productItemId;
                 int nRarity = spRecipe->productRank;
@@ -534,7 +534,7 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
                     CString strKey;
                     strKey.Format("%s.%d", (const char*)GetTypeName(), i + 1);
                     CreateItemInfoSlot(strKey, spItem, (int)i, nFlags, 0x800);
-                    m_30->Invoke("bind", CString(strKey), i + 1, spItem->FUN_140528590());
+                    m_30->Invoke("bind", CString(strKey), i + 1, spItem->GetIconPath());
                     m_aRowKeys.Add(strKey);
                 }
             }
@@ -544,13 +544,13 @@ void UIManufactureDialog::FUN_1412e3990(int bSelect)
         {
             spList->SetSelectedIndex(nFirst);
             m_nSelected = nFirst;
-            FUN_1412e48a0();
+            SelectItem();
         }
     }
 }
 
 // @0x1412e4240
-void UIManufactureDialog::FUN_1412e4240()
+void UIManufactureDialog::UpdateProgress()
 {
     if (m_30.IsNull())
         return;
@@ -596,7 +596,7 @@ void UIManufactureDialog::FUN_1412e4240()
 }
 
 // @0x1412e48a0
-void UIManufactureDialog::FUN_1412e48a0()
+void UIManufactureDialog::SelectItem()
 {
     if (m_30.IsNull())
         return;
@@ -606,7 +606,7 @@ void UIManufactureDialog::FUN_1412e48a0()
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     int nRecipeId = 0;
@@ -616,14 +616,14 @@ void UIManufactureDialog::FUN_1412e48a0()
     if (spRecipe.get() != 0)
     {
         int nGrade = 0;
-        if (((class CMaidRecipeGroupTable*)FUN_1412db940())->GetRequireLevel(spMaid->m_nMaidId, nRecipeId, nGrade) == 0)
+        if (((class CMaidRecipeGroupTable*)GetMaidRecipeGroupTable())->GetRequireLevel(spMaid->m_nMaidId, nRecipeId, nGrade) == 0)
             return;
         int bAvailable = 1;
         if (nGrade > spMaid->m_nOrder)
             bAvailable = 0;
         if (m_nState != 0)
             bAvailable = 0;
-        unsigned nMeso = ((CGameRule*)FUN_1401c0d90())->FUN_14047b7c0(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->GetAbilityRate((SAType)0x3e), spRecipe->maidExp);
+        unsigned nMeso = ((CGameRule*)GetGameRule())->FUN_14047b7c0(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->GetAbilityRate((SAType)0x3e), spRecipe->maidExp);
         CStringW strGrade = BlockFormat<int>(0x7aa, nGrade);
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spRecipe->productItemId);
         ATL::CTimeSpan span((unsigned __int64)spRecipe->leadTimes[reinterpret_cast<CMaid*>(spMaid.operator->())->GetMoodGrade()]);
@@ -655,7 +655,7 @@ void UIManufactureDialog::FUN_1412e48a0()
             if (spData == 0)
                 continue;
             int nIngRarity = spData->FUN_14053cbc0() ? spIngredient->field04 : FUN_14053feb0(nIngItem);
-            unsigned nNeeded = ((CGameRule*)FUN_1401c0d90())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->GetAbilityRate((SAType)0x3f), spIngredient->count);
+            unsigned nNeeded = ((CGameRule*)GetGameRule())->FUN_14047b860(reinterpret_cast<CEquipment*>(reinterpret_cast<PC*>(pPlayer)->GetEquipment())->GetAbilityRate((SAType)0x3f), spIngredient->count);
             MS2Ptr<CItem> spIngItem(new CItem());
             if (spIngItem->FUN_14052b130(nIngItem, nIngRarity, 0))
             {
@@ -718,14 +718,14 @@ void UIManufactureDialog::FUN_1412e5c90()
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
-    FUN_1412e48a0();
+    SelectItem();
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(0, reinterpret_cast<Unk_MfNpc*>(pNpc));
     UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
     if (pTalk != 0)
-        pTalk->FUN_141b1a8e0(strText, "", "");
+        pTalk->ModifyScript(strText, "", "");
 }
 
 // @0x1412e5dd0
@@ -734,7 +734,7 @@ void UIManufactureDialog::FUN_1412e5dd0(int nRow)
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     int nRecipeId = 0;
@@ -747,7 +747,7 @@ void UIManufactureDialog::FUN_1412e5dd0(int nRow)
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, "", "");
+            pTalk->ModifyScript(strText, "", "");
     }
 }
 
@@ -757,7 +757,7 @@ void UIManufactureDialog::FUN_1412e5f70(int nRow)
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     int nRecipeId = 0;
@@ -770,27 +770,27 @@ void UIManufactureDialog::FUN_1412e5f70(int nRow)
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, "", "");
+            pTalk->ModifyScript(strText, "", "");
     }
 }
 
 // @0x1412e6110
-void UIManufactureDialog::FUN_1412e6110(int nResult)
+void UIManufactureDialog::OnCraftResult(int nResult)
 {
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
     UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
     if (pTalk != 0)
-        pTalk->FUN_141b1a8e0(strText, "", "");
+        pTalk->ModifyScript(strText, "", "");
     if (nResult == 1)
     {
-        FUN_1412e4240();
-        FUN_1412e48a0();
+        UpdateProgress();
+        SelectItem();
     }
 }
 
@@ -800,7 +800,7 @@ void UIManufactureDialog::OnRecieve()
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     int nResult;
@@ -810,7 +810,7 @@ void UIManufactureDialog::OnRecieve()
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, "", "");
+            pTalk->ModifyScript(strText, "", "");
     }
 }
 
@@ -843,7 +843,7 @@ void UIManufactureDialog::OnRecieveByMerat()
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     int nResult;
@@ -853,7 +853,7 @@ void UIManufactureDialog::OnRecieveByMerat()
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, "", "");
+            pTalk->ModifyScript(strText, "", "");
     }
 }
 
@@ -863,7 +863,7 @@ void UIManufactureDialog::OnRecieveJackpot()
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     int nResult;
@@ -873,27 +873,27 @@ void UIManufactureDialog::OnRecieveJackpot()
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, "", "");
+            pTalk->ModifyScript(strText, "", "");
     }
 }
 
 // @0x1412e6850
-void UIManufactureDialog::FUN_1412e6850(int nResult)
+void UIManufactureDialog::OnReceiveResult(int nResult)
 {
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
     UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
     if (pTalk != 0)
-        pTalk->FUN_141b1a8e0(strText, "", "");
+        pTalk->ModifyScript(strText, "", "");
     if (FUN_1412e7170(nResult) != 0)
     {
-        FUN_1412e4240();
-        FUN_1412e48a0();
+        UpdateProgress();
+        SelectItem();
     }
 }
 
@@ -903,7 +903,7 @@ void UIManufactureDialog::FUN_1412e69a0()
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     int nResult;
@@ -913,27 +913,27 @@ void UIManufactureDialog::FUN_1412e69a0()
         CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
         UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
         if (pTalk != 0)
-            pTalk->FUN_141b1a8e0(strText, "", "");
+            pTalk->ModifyScript(strText, "", "");
     }
 }
 
 // @0x1412e6af0
-void UIManufactureDialog::FUN_1412e6af0(int nResult)
+void UIManufactureDialog::OnCancelResult(int nResult)
 {
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     CStringW strText = CManufactureManager::GetInstance()->GetMaidText(nResult, reinterpret_cast<Unk_MfNpc*>(pNpc));
     UITalkCinematic* pTalk = FindTalkCinematic(0x4e40);
     if (pTalk != 0)
-        pTalk->FUN_141b1a8e0(strText, "", "");
+        pTalk->ModifyScript(strText, "", "");
     if (nResult == 4)
     {
-        FUN_1412e4240();
-        FUN_1412e48a0();
+        UpdateProgress();
+        SelectItem();
     }
 }
 
@@ -945,7 +945,7 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
     CNpc* pNpc = reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(m_nNpcId));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pNpc->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pNpc->GetMaid();
     if (spMaid.IsNull())
         return;
     MS2Ptr<CItem> spItem(new CItem());
@@ -973,7 +973,7 @@ void UIManufactureDialog::FUN_1412e6c30(int nItemId, int nRarity, int nAmount, i
                 else
                     strBonus = BlockFormat<int>(0x7c2, nBonus);
             }
-            pTalk->FUN_141b1b000(aItems, nJackpot != 0 ? GetStringCommon(0x7b9) : GetStringCommon(0x7b8), strExp, strBonus, nJackpot);
+            pTalk->ShowMaidRewardPage(aItems, nJackpot != 0 ? GetStringCommon(0x7b9) : GetStringCommon(0x7b8), strExp, strBonus, nJackpot);
         }
     }
 }

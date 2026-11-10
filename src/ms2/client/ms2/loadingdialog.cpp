@@ -195,7 +195,7 @@ void CLoadingDialog::Paint(HDC hdc)
         DrawImage(hdc, &m_imgBack);
 }
 
-float FUN_14028aed0(float f);                                   // round
+float Floor(float f);                                   // round
 
 // @0x140d4aae0
 void CLoadingDialog::CenterRect(RECT* prc, int cx, int cy)
@@ -210,9 +210,9 @@ void CLoadingDialog::CenterRect(RECT* prc, int cx, int cy)
         nH = nScreenY;
     int nWidth = prc->right - prc->left;
     int nHeight = prc->bottom - prc->top;
-    prc->left = (int)__max(0.0f, FUN_14028aed0((float)(nScreenX - nWidth) * 0.5f));
+    prc->left = (int)__max(0.0f, Floor((float)(nScreenX - nWidth) * 0.5f));
     prc->right = prc->left + nW;
-    prc->top = (int)__max(0.0f, FUN_14028aed0((float)(nScreenY - nHeight) * 0.5f));
+    prc->top = (int)__max(0.0f, Floor((float)(nScreenY - nHeight) * 0.5f));
     prc->bottom = prc->top + nH;
 }
 

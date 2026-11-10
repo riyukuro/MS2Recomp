@@ -87,7 +87,7 @@ public:
     void* m_storage[14];
 };
 struct Unk_IEEffectPaths { char m_pad_0[0x2e0]; CString m_hairApply; };   // +0x2e0
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // A client constant holding a string (0x58 bytes each).
 class Unk_AvTextCfg
@@ -184,11 +184,11 @@ class CItemCustomizeController   // C3: member view for the former free stand-in
 public:
     int GetEquipItemValue();
 };
-void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);
+void ShowMessageBox(CStringW strText, int nType, void* pListener, CStringW strTag);
 enum Unk_BSResult : unsigned int {};
 template <class A> CStringW BlockFormat(int nId, const A& a);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 CStringW GetStringCommon(int nId);
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -206,7 +206,7 @@ UIItemEditDialog::UIItemEditDialog()
     m_7c = 1;
     m_88 = 1;
     m_58 = 1;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x1419bc850
@@ -234,7 +234,7 @@ void UIItemEditDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    FUN_1419bdb50(0);
+    SetButtonsEnabled(0);
     Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc)
     {
@@ -258,7 +258,7 @@ int UIItemEditDialog::vfunc_13()
         return 1;
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840())
     {
-        FUN_1419bd9f0();
+        RequestClose();
         return 1;
     }
     return 0;
@@ -286,7 +286,7 @@ int UIItemEditDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         {
             CString strMethod = pMsg->FUN_1422b8d30();
             if (_stricmp("OnExit", strMethod) == 0)
-                FUN_1419bd9f0();
+                RequestClose();
             return 1;
         }
         else if (dynamic_cast<UIMessageBox*>(pSender))
@@ -317,7 +317,7 @@ void UIItemEditDialog::vfunc_79(void* p)
         int nResult = static_cast<CInPacket*>(p)->ReadInt32();
         if (nResult != 0)
         {
-            FUN_140d73aa0(BlockFormat<Unk_BSResult>(0x272, reinterpret_cast<const Unk_BSResult&>(nResult)), 0, static_cast<IMessageListener*>(this), L"errorEdit");
+            ShowMessageBox(BlockFormat<Unk_BSResult>(0x272, reinterpret_cast<const Unk_BSResult&>(nResult)), 0, static_cast<IMessageListener*>(this), L"errorEdit");
             OnReset();
         }
     }
@@ -340,7 +340,7 @@ int UIItemEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("OnClickClose", szMethod) == 0)
     {
-        FUN_1419bd9f0();
+        RequestClose();
         return 1;
     }
     return 0;
@@ -359,11 +359,11 @@ void UIItemEditDialog::vfunc_24(void* p)
         pPc->vfunc_59(0xe, 0, 0, 0);
     reinterpret_cast<PCBase*>(pPc)->FUN_14166cc40(0x4c);
     NoticeMessage effect;   // C3: was Unk_IEEffectRequest
-    ((Unk_IEEffectRequest&)(effect)).m_strName = ((struct Unk_IEEffectPaths*)FUN_1401d31f0())->m_hairApply;
+    ((Unk_IEEffectRequest&)(effect)).m_strName = ((struct Unk_IEEffectPaths*)GetCommonResource())->m_hairApply;
     ((Unk_IEEffectRequest&)(effect)).m_n08 = 1;
     ((class NoticeMessage*)(struct Unk_IEEffectRequest*)(&((Unk_IEEffectRequest&)(effect))))->SetActor(((class GameObject*)(class Unk_IEPlayer*)(pPc))->GetObjectId());
     TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_IEEffectRequest&)(effect))));
-    FUN_1419bdb50(0);
+    SetButtonsEnabled(0);
     m_1b0 = 0;
 }
 
@@ -376,7 +376,7 @@ int UIItemEditDialog::vfunc_1(void* p)
     if (m_198 == 0)
         return 0;
     if (m_198->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
-        FUN_1419bdb50(1);
+        SetButtonsEnabled(1);
     return 1;
 }
 
@@ -388,7 +388,7 @@ int UIItemEditDialog::vfunc_3(void* p, float)
     if (m_198 == 0)
         return 0;
     if (m_198->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
-        FUN_1419bdb50(1);
+        SetButtonsEnabled(1);
     return 1;
 }
 
@@ -400,7 +400,7 @@ int UIItemEditDialog::vfunc_2(void* p, float, int)
     if (m_198 == 0)
         return 0;
     if (m_198->GetEditItemId() == ((class CItemCustomizeController*)(void*)(p))->GetEquipItemValue())
-        FUN_1419bdb50(1);
+        SetButtonsEnabled(1);
     return 1;
 }
 
@@ -421,7 +421,7 @@ void UIItemEditDialog::FUN_1419bd530(NotifyObject* pNotify)
         return;
     NotifyChangeActiveMyCodiTab* pTab = dynamic_cast<NotifyChangeActiveMyCodiTab*>(pNotify);
     if (pTab != 0 && !pTab->m_bActive)
-        FUN_140d74390(GetStringCommonByKey(L"s_beauty_msg_exit_by_expired_codi"), 0,
+        ShowMessageBoxWithCallback(GetStringCommonByKey(L"s_beauty_msg_exit_by_expired_codi"), 0,
                       Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEditDialog::FUN_1419bd500));
     else
         FUN_1419bd860();
@@ -440,7 +440,7 @@ bool UIItemEditDialog::FUN_1419bd710()
 {
     if (m_30 == 0 || m_198 == 0)
         return true;
-    if (FUN_1419bd7a0() == false)
+    if (IsWornCostumeEditable() == false)
         FUN_1419bd860();
     else
         m_198->SelectSlot(6);
@@ -449,7 +449,7 @@ bool UIItemEditDialog::FUN_1419bd710()
 
 // The worn costume can be edited.
 // @0x1419bd7a0
-bool UIItemEditDialog::FUN_1419bd7a0()
+bool UIItemEditDialog::IsWornCostumeEditable()
 {
     Unk_IEPlayer* pPc = ((Unk_IEPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -473,7 +473,7 @@ BOOL UIItemEditDialog::FUN_1419bd860()
     Unk_IEField* pField = reinterpret_cast<Unk_IEField*>(WorldService::GetInstance()->FUN_141bd3620());
     if (pField)
         pField->vfunc_149();
-    ((class GFxSceneService*)(class Unk_IESound*)(((Unk_IESound*)CUserMail::FUN_1408e57f0())))->FUN_1422b9fd0(0x620001d);
+    ((class GFxSceneService*)(class Unk_IESound*)(((Unk_IESound*)CUserMail::GetGFxSceneService())))->FUN_1422b9fd0(0x620001d);
     return true;
 }
 
@@ -482,7 +482,7 @@ void UIItemEditDialog::OnSave()
 {
     if (m_198.get())
         m_198->CommitSlot(6);
-    FUN_1419bdb50(0);
+    SetButtonsEnabled(0);
     m_1b0 = 1;
 }
 
@@ -491,14 +491,14 @@ void UIItemEditDialog::OnReset()
 {
     if (m_198.get())
         m_198->RestoreSlot(6);
-    FUN_1419bdb50(0);
+    SetButtonsEnabled(0);
 }
 
 // Close: ask first when something was changed.
 // @0x1419bd9f0
-void UIItemEditDialog::FUN_1419bd9f0()
+void UIItemEditDialog::RequestClose()
 {
-    if (FUN_1419bdb90() != 0)
+    if (IsSaveButtonEnabled() != 0)
     {
         MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommon(0x271), 1);
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIItemEditDialog::FUN_1419bd500));
@@ -512,30 +512,30 @@ void UIItemEditDialog::FUN_1419bd9f0()
 }
 
 // @0x1419bdb50
-void UIItemEditDialog::FUN_1419bdb50(int bEnable)
+void UIItemEditDialog::SetButtonsEnabled(int bEnable)
 {
-    FUN_1419bdc40(bEnable);
-    FUN_1419bdce0(bEnable);
+    SetSaveEnabled(bEnable);
+    SetResetEnabled(bEnable);
 }
 
 // @0x1419bdb90
-int UIItemEditDialog::FUN_1419bdb90()
+int UIItemEditDialog::IsSaveButtonEnabled()
 {
     if (MS2Ptr<ASButton> spSave = GetChild<ASButton>("m_save"))
-        return spSave->FUN_1422c2030();
+        return spSave->IsEnabled();
     return 0;
 }
 
 // @0x1419bdc40
-void UIItemEditDialog::FUN_1419bdc40(int bEnable)
+void UIItemEditDialog::SetSaveEnabled(int bEnable)
 {
     if (MS2Ptr<ASButton> spSave = GetChild<ASButton>("m_save"))
-        spSave->FUN_1422c1fe0(bEnable);
+        spSave->SetEnabled(bEnable);
 }
 
 // @0x1419bdce0
-void UIItemEditDialog::FUN_1419bdce0(int bEnable)
+void UIItemEditDialog::SetResetEnabled(int bEnable)
 {
     if (MS2Ptr<ASButton> spReset = GetChild<ASButton>("m_reset"))
-        spReset->FUN_1422c1fe0(bEnable);
+        spReset->SetEnabled(bEnable);
 }

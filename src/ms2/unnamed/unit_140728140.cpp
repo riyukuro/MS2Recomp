@@ -39,7 +39,7 @@ class Unk_XmlNode   // C3: member view for the former element stand-ins
 public:
     class Unk_XmlNode* FirstChild(char const*);
 };
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
@@ -51,7 +51,7 @@ CString FUN_14015f710(TiXmlElement* pElem, const char* pszName, CString strDefau
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 void FUN_1402929a0(const CStringW& str, std::vector<int>& rOut, const wchar_t* pszSep);          // split into ints (the definer's signature, commonutil.cpp)
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 unsigned char FUN_1401d1320(CCacheData* pCache);    // file changed since load
 
 // @0x140729360
@@ -179,9 +179,9 @@ bool CPetDataTable::Load()
 // @0x140728a70
 bool CPetDataTable::LoadProperties()
 {
-    CString strPath = FUN_14071a5b0("Table", "petProperty.xml");
+    CString strPath = GetXmlPath("Table", "petProperty.xml");
     TiXmlDocument doc;
-    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (reinterpret_cast<Unk_140166420*>(GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -190,7 +190,7 @@ bool CPetDataTable::LoadProperties()
         return false;
     }
     Unk_CriticalSectionLock lock(m_lock, 1);
-    FUN_1401d1160(CString(strPath));
+    SetPath(CString(strPath));
     m_pets.RemoveAll();
     m_petsByKfm.RemoveAll();
     std::vector<TiXmlElement*> nodes;
@@ -211,7 +211,7 @@ bool CPetDataTable::LoadProperties()
         m_pets.SetAt(spPet->GetId(), spPet);
         if (spPet->m_nType == 1 && spPet->m_nTamingGroupId != 0)
         {
-            MS2Ptr<CNpcData> spNpc = FUN_1406cd330(spPet->GetId());
+            MS2Ptr<CNpcData> spNpc = FindNpcData(spPet->GetId());
             if (spNpc.get() != 0)
             {
                 if (Contains(spNpc->m_model.m_strKfm))

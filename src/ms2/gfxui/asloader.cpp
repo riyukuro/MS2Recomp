@@ -24,15 +24,15 @@
 extern Scaleform::GFx::Value DAT_143b0ae18;
 
 // The GFx movie of a movie id (AScript's static helper, ascript.cpp range; null if the movie is not loaded).
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);
+Scaleform::GFx::Movie* GetMovie(int nMovieId);
 // args[i] = v (the argument is destroyed by the callee; asitemslot.cpp declares the same).
-void FUN_1422bcc70(Scaleform::GFx::Value* pDst, Scaleform::GFx::Value v);
+void SetValue(Scaleform::GFx::Value* pDst, Scaleform::GFx::Value v);
 
 // @0x1422e5300
 ASLoader::ASLoader(int nMovieId)
     : ASDisplayObjectContainer(DAT_143b0ae18, nMovieId)
 {
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId);
+    Scaleform::GFx::Movie* pMovie = GetMovie(m_nMovieId);
     if (pMovie == NULL)
         return;
     pMovie->CreateObject(&m_value, "scaleform.ms2.loader.debugLoader", NULL, 0);
@@ -80,7 +80,7 @@ MS2_REPLACE_METHOD(0x1422E55C0, ASLoader, UnloadAndStop, 56, 0x01E16389);
 void ASLoader::AddCompleteListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb, void* pUser)
 {
     if (m_spContentLoaderInfo.get() != 0)
-        m_spContentLoaderInfo->FUN_1422c3600("complete", cb, false, 0, 0, pUser);
+        m_spContentLoaderInfo->AddEventListener("complete", cb, false, 0, 0, pUser);
 }
 MS2_REPLACE_METHOD(0x1422E5600, ASLoader, AddCompleteListener, 154, 0x9B06E033);
 
@@ -88,7 +88,7 @@ MS2_REPLACE_METHOD(0x1422E5600, ASLoader, AddCompleteListener, 154, 0x9B06E033);
 void ASLoader::RemoveCompleteListener(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb)
 {
     if (m_spContentLoaderInfo.get() != 0)
-        m_spContentLoaderInfo->FUN_1422c3820("complete", cb, false);
+        m_spContentLoaderInfo->RemoveEventListener("complete", cb, false);
 }
 MS2_REPLACE_METHOD(0x1422E56A0, ASLoader, RemoveCompleteListener, 123, 0xC983CB1D);
 
@@ -111,6 +111,6 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, ASURLRequest a1)
 {
     ASArgList args;
     args.resize(1);
-    FUN_1422bcc70(&args[0], a1.FUN_1422bb890());
+    SetValue(&args[0], a1.FUN_1422bb890());
     return FUN_1422bb8f0(szMethod, args);
 }

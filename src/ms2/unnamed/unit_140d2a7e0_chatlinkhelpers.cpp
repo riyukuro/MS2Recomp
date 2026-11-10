@@ -87,8 +87,8 @@ MS2_CHECK_OFFSET(Unk_ChatWindow, m_pMessenger, 0x50);
 // shared helpers of other units
 Unk_MdState* GetState();
 UIMessengerBrowser* FindMessengerBrowser(int nUiId);
-class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
-class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
+class Unk_NametagTrophy* GetAchieveManager();   // C3: was GetAchieveManager
+class Unk_BreakSelected* GetPetManager();   // C3: was GetPetManager
 CStringW GetRecordedDateText(CAchieve* pAchieve, int nGrade);
 CStringW FUN_14093b9c0(int nAchieveId, int nGrade);
 CStringW GetItemDisplayName(unsigned int);                        // the item's name
@@ -169,7 +169,7 @@ CStringW FUN_140d2da30(MS2Ptr<CCashSaleProduct> spProduct);
 CStringW FUN_140d2dc70(MS2Ptr<CMeratMarketProduct> spProduct);
 CStringW FUN_140d2ec30(MS2Ptr<CMeratMarketPremiumProduct> spProduct);
 void FUN_140d2d060(int nItemId, int nGrade, __int64 nUid);
-void FUN_140d2c730(CStringW& strText, const CStringW& strTag);
+void RemoveHtmlTag(CStringW& strText, const CStringW& strTag);
 __int64 FUN_140d2caf0(const CStringW& strText);
 void FUN_140d2f020(const CStringW& strText, ATL::CAtlArray<__int64>& ids, const wchar_t* pszDelimiters);
 bool FUN_140d2a7e0(CStringW strText, ATL::CAtlArray<CStringW>& arrLinks);
@@ -182,8 +182,8 @@ CStringW FUN_140d2bff0(MS2Ptr<CItem> spItem);
 bool FUN_140d2a7e0(CStringW strText, ATL::CAtlArray<CStringW>& arrLinks)
 {
     CStringW strPlain(strText);
-    FUN_140d2c730(strPlain, L"A");
-    FUN_140d2c730(strPlain, L"FONT");
+    RemoveHtmlTag(strPlain, L"A");
+    RemoveHtmlTag(strPlain, L"FONT");
     strPlain.Replace(L"&apos;", L"'");
     strPlain.Replace(L"&lt;", L"<");
     strPlain.Replace(L"&gt;", L">");
@@ -191,8 +191,8 @@ bool FUN_140d2a7e0(CStringW strText, ATL::CAtlArray<CStringW>& arrLinks)
     for (unsigned i = 0; i < arrLinks.GetCount(); ++i)
     {
         CStringW strOther(arrLinks[i]);
-        FUN_140d2c730(strOther, L"a");
-        FUN_140d2c730(strOther, L"FONT");
+        RemoveHtmlTag(strOther, L"a");
+        RemoveHtmlTag(strOther, L"FONT");
         if (strPlain == strOther)
         {
             __int64 nId = FUN_140d2caf0(strText);
@@ -388,7 +388,7 @@ CStringW FUN_140d2b8f0(MS2Ptr<CItem> spItem, const CStringW& strFilter)
 // @0x140d2bff0
 CStringW FUN_140d2bff0(MS2Ptr<CItem> spItem)
 {
-    return TSingleton<CItemMergeOptionTable>::GetInstance()->FUN_1405c1090(spItem, 0);
+    return TSingleton<CItemMergeOptionTable>::GetInstance()->GetMergeOptionDescription(spItem, 0);
 }
 
 // Cuts every pair of [begin ... end] out of the text into the list. true when at least one was found.
@@ -459,7 +459,7 @@ void FUN_140d2c2a0(MS2Ptr<ASTextInput> spInput, ATL::CAtlArray<CStringW>& arrLin
 }
 
 // @0x140d2c620
-void FUN_140d2c620(CStringW& strText)
+void EscapeAmpersand(CStringW& strText)
 {
     strText.Replace(L"&", L"&amp;");
 }
@@ -467,15 +467,15 @@ void FUN_140d2c620(CStringW& strText)
 // @0x140d2c650
 void FUN_140d2c650(CStringW& strText)
 {
-    FUN_140d2c730(strText, L"P");
-    FUN_140d2c730(strText, L"BR");
-    FUN_140d2c730(strText, L"TEXTFORMAT");
-    FUN_140d2c730(strText, L"FONT");
+    RemoveHtmlTag(strText, L"P");
+    RemoveHtmlTag(strText, L"BR");
+    RemoveHtmlTag(strText, L"TEXTFORMAT");
+    RemoveHtmlTag(strText, L"FONT");
 }
 
 // Removes the <tag ...> and </tag> markup of the tag from the text (at most 20 tags); a broken tag clears the text.
 // @0x140d2c730
-void FUN_140d2c730(CStringW& strText, const CStringW& strTag)
+void RemoveHtmlTag(CStringW& strText, const CStringW& strTag)
 {
     CStringW strLowerTag(strTag);
     strLowerTag.MakeLower();
@@ -579,7 +579,7 @@ void FUN_140d2cfc0(MS2Ptr<CItem> spItem)
 {
     if (spItem == NULL)
         return;
-    FUN_140d2d060(spItem->FUN_1405276c0(), spItem->GetRarity(), spItem->GetItemUid());
+    FUN_140d2d060(spItem->GetItemId(), spItem->GetRarity(), spItem->GetItemUid());
 }
 
 // @0x140d2d060
@@ -627,7 +627,7 @@ void FUN_140d2d330(MS2Ptr<CMeratMarketPremiumProduct> spProduct)
 // @0x140d2d440
 CStringW FUN_140d2d440(unsigned nId, int nGrade)
 {
-    MS2Ptr<CAchieve> spAchieve = ((class CAchieveManager*)FUN_1406c7600())->Find(nId);
+    MS2Ptr<CAchieve> spAchieve = ((class CAchieveManager*)GetAchieveManager())->Find(nId);
     if (spAchieve.IsNull())
         return CStringW(L"");
 
@@ -728,7 +728,7 @@ CStringW FUN_140d2e2b0(int nItemId, int nGrade, __int64 nUid)
             spItem = pPC->FUN_141655b80(nUid);
             if (spItem == NULL)
             {
-                spItem = ((class CPetManager*)FUN_140535320())->GetInventory()->GetItemByUid(nUid);
+                spItem = ((class CPetManager*)GetPetManager())->GetInventory()->GetItemByUid(nUid);
             }
             if (spItem == NULL)
                 spItem = MS2_STORE_TABLE.Find(nUid);
@@ -744,7 +744,7 @@ CStringW FUN_140d2e6f0(MS2Ptr<CItem> spItem)
 {
     unsigned __int64 nUid = spItem->GetItemUid();
     ItemGradeKey eGrade = (ItemGradeKey)spItem->GetRarity();
-    unsigned nItemId = spItem->FUN_1405276c0();
+    unsigned nItemId = spItem->GetItemId();
     unsigned __int64 nUid2 = spItem->GetItemUid();
     Unk_ChatLinkKind eKind = CHATLINK_ITEM_UID;
     CStringW strLink = StringFormat(L"'event:itemTooltip,{0},{1},{2},{3},{4}'", nUid, eKind, nUid2, nItemId, eGrade);
@@ -801,7 +801,7 @@ CStringW FUN_140d2ec30(MS2Ptr<CMeratMarketPremiumProduct> spProduct)
 // @0x140d2ef00
 CStringW FUN_140d2ef00(CStringW strHref, CStringW strColor, CStringW strText)
 {
-    FUN_140d2c620(strText);
+    EscapeAmpersand(strText);
     return StringFormat(L"<a href={0}><FONT color='{1}'>[{2}]</FONT></a>", strHref, strColor, strText);
 }
 

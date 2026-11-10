@@ -49,7 +49,7 @@ public:
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                           // the scene root of an entity
 void FUN_141567760(NiAVObject* pRoot);
-void FUN_141567330(NiAVObject* pRoot, bool bShadow);
+void SetShadowCaster(NiAVObject* pRoot, bool bShadow);
 void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&);   // C3: was FUN_14098c6e0
 const char* Unk_AssetUrnText(const efd::AssetID* pAsset);   // animationcallbackmanager.cpp
 extern int DAT_1439f825c;                                           // the running id of the proxies (counts down)
@@ -76,7 +76,7 @@ public:
     ~Unk_ProxyMgr();                                                // 0x1416c3190
     efd::SmartPointer<CProxyObject> CreateProxy(efd::AssetID asset, efd::Point3 kPos, efd::Point3 kRot, float fRadius);   // create a proxy and add it to the world
     void FUN_1416c33c0(int bEnable);                                // rebuild the proxies of the map's marker entities
-    void FUN_1416c3670();                                           // remove every proxy from the world
+    void RemoveAllProxies();                                           // remove every proxy from the world
     void FUN_1416c3730();                                           // draw the collision shape of every proxy
     efd::SmartPointer<egf::Entity> FUN_1416c37e0(efd::SmartPointer<egf::Entity> spEntity);   // the entity whose proxy shows spEntity
 
@@ -120,7 +120,7 @@ int CProxyObject::vfunc_11()
     if (pRoot != 0)
     {
         FUN_141567760(pRoot);
-        FUN_141567330(pRoot, false);
+        SetShadowCaster(pRoot, false);
     }
     bool bVisible = false;
     SetCachedBoolProperty((class Unk_CachedEntity*)(static_cast<egf::Entity*>(m_unk_80)), 0x90d6d437, bVisible);
@@ -200,7 +200,7 @@ efd::SmartPointer<CProxyObject> Unk_ProxyMgr::CreateProxy(efd::AssetID asset, ef
 void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
 {
     m_nEnabled = bEnable;
-    FUN_1416c3670();
+    RemoveAllProxies();
     if (bEnable != 0)
     {
         void* pService = reinterpret_cast<Unk_ServiceManager*>(((class Unk_GameContext*)(void*)(&reinterpret_cast<Unk_PxApp*>(TSingleton<CMainSystem>::GetInstance())->m_spServiceManager))->GetServiceManager())->GetSystemServiceAs<efd::AssetLocatorService>();
@@ -232,7 +232,7 @@ void Unk_ProxyMgr::FUN_1416c33c0(int bEnable)
 }
 
 // @0x1416c3670
-void Unk_ProxyMgr::FUN_1416c3670()
+void Unk_ProxyMgr::RemoveAllProxies()
 {
     for (POSITION pos = m_proxies.GetHeadPosition(); pos != 0; m_proxies.GetNext(pos))
     {

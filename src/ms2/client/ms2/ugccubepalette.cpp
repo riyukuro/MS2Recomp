@@ -69,15 +69,15 @@ class CItemDataTable;
 
 // Names of the npc / strings tables.
 
-#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FindNpcData)
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 
 
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 
-CStringW FUN_1402918a0(int nType, unsigned nId);
+CStringW GetIconName(int nType, unsigned nId);
 int FUN_141901d20(int, __int64, __int64);   // C3: was FUN_141901d20
 int FUN_141901f70(int, __int64, __int64);   // C3: was FUN_141901f70
 CStringW FUN_14016a730(const char* sz, int nCodePage);
@@ -114,7 +114,7 @@ public:
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
 
 // The home / mastery service: the state of a box.
-class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
+class Unk_NametagTrophy* GetAchieveManager();   // C3: was GetAchieveManager
 
 // ---- the cubes already taken (the usage of the bag, the stock and the table while a list is built) ----
 
@@ -158,21 +158,21 @@ UGCCube::UGCCube(int itemId, __int64 uid, __int64 count, CUgcItemLook* pLook)   
     info.AssignRaw(new CubeItemInfo(itemId, uid, count, pLook));
 }
 
-MS2Ptr<CubeItemInfo> UGCCube::FUN_140def3d0()                                                  // @0x140def3d0
+MS2Ptr<CubeItemInfo> UGCCube::GetInfo()                                                  // @0x140def3d0
 {
     return info;
 }
 
-bool UGCCube::FUN_140def420()                                                                  // @0x140def420
+bool UGCCube::IsLocked()                                                                  // @0x140def420
 {
     if (itemData == 0)
         return true;
     PCBase* pPC = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC == 0)
         return true;
-    if (0 < itemData->FUN_14053fdb0())
+    if (0 < itemData->GetVipLevel())
     {
-        if (reinterpret_cast<PC*>(pPC)->FUN_141663080() < itemData->FUN_14053fdb0())
+        if (reinterpret_cast<PC*>(pPC)->FUN_141663080() < itemData->GetVipLevel())
             return true;
     }
     return ((class MyPC*)(class PCBase*)(pPC))->FUN_1415302e0(itemData->GetItemId());
@@ -189,14 +189,14 @@ bool UGCCube::FUN_140def4f0()                                                   
     return true;
 }
 
-int UGCCube::FUN_140def5a0()                                                                   // @0x140def5a0
+int UGCCube::GetItemId()                                                                   // @0x140def5a0
 {
     if (itemData.get() != 0)
         return itemData->GetItemId();
     return 0;
 }
 
-__int64 UGCCube::FUN_140def5f0()                                                               // @0x140def5f0
+__int64 UGCCube::GetInstanceId()                                                               // @0x140def5f0
 {
     return info->instanceId;
 }
@@ -204,7 +204,7 @@ __int64 UGCCube::FUN_140def5f0()                                                
 __int64 UGCCube::FUN_140def620()                                                               // @0x140def620
 {
     if (ingredient.get() != 0)
-        return reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047bc50((Unk_SaleHousingKey)ingredient->filter, ingredient->priceCount, ingredient->price);
+        return reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047bc50((Unk_SaleHousingKey)ingredient->filter, ingredient->priceCount, ingredient->price);
     return 0;
 }
 
@@ -215,7 +215,7 @@ __int64 UGCCube::FUN_140def6c0()                                                
     return 0;
 }
 
-CStringW UGCCube::FUN_140def710()                                                              // @0x140def710
+CStringW UGCCube::GetName()                                                              // @0x140def710
 {
     MS2Ptr<CUgcItemLook> spLook = info->look;
     if (spLook.get() != 0)
@@ -229,7 +229,7 @@ CStringW UGCCube::FUN_140def710()                                               
     return L"";
 }
 
-CStringW UGCCube::FUN_140def880()                                                              // @0x140def880
+CStringW UGCCube::GetIconPath()                                                              // @0x140def880
 {
     MS2Ptr<CUgcItemLook> spLook = info->look;
     if (spLook.get() != 0)
@@ -240,10 +240,10 @@ CStringW UGCCube::FUN_140def880()                                               
     }
     if (itemData->HasMaidId() && FUN_140defe70() > 0)
     {
-        TPtrValue<MaidInfo> spNpc = TSingleton<CMaidInfoTable>::GetInstance()->Find(itemData->FUN_14053dd30());
+        TPtrValue<MaidInfo> spNpc = TSingleton<CMaidInfoTable>::GetInstance()->Find(itemData->GetMaidId());
         if (spNpc.get() != 0)
         {
-            MS2Ptr<CNpcData> spData = FUN_1406cd330(spNpc.operator->()->npcId);
+            MS2Ptr<CNpcData> spData = FindNpcData(spNpc.operator->()->npcId);
             if (spData.get())
                 return FUN_14016a730(spData->m_strPortrait, 0);
         }
@@ -253,7 +253,7 @@ CStringW UGCCube::FUN_140def880()                                               
     return L"";
 }
 
-__int64 UGCCube::FUN_140defba0()                                                               // @0x140defba0
+__int64 UGCCube::GetUgcUid()                                                               // @0x140defba0
 {
     MS2Ptr<CUgcItemLook> spLook = info->look;
     if (spLook.get() != 0)
@@ -261,36 +261,36 @@ __int64 UGCCube::FUN_140defba0()                                                
     return 0;
 }
 
-int UGCCube::FUN_140defc30()                                                                   // @0x140defc30
+int UGCCube::GetCategoryIndex()                                                                   // @0x140defc30
 {
     if (ingredient.get() != 0)
         return ingredient->categoryIndex;
     return 10000;
 }
 
-int UGCCube::FUN_140defc80()                                                                   // @0x140defc80
+int UGCCube::GetFilter()                                                                   // @0x140defc80
 {
     if (ingredient.get() != 0)
         return ingredient->filter;
     return 100;
 }
 
-int UGCCube::FUN_140defcd0()                                                                   // @0x140defcd0
+int UGCCube::GetPriceCount()                                                                   // @0x140defcd0
 {
     if (ingredient.get() != 0)
         return ingredient->priceCount;
     return 1;
 }
 
-CStringW UGCCube::FUN_140defd20()                                                              // @0x140defd20
+CStringW UGCCube::GetPaymentIcon()                                                              // @0x140defd20
 {
-    int nTier = FUN_140defcd0();
+    int nTier = GetPriceCount();
     if (((class CFeatureManager*)FUN_140166410())->FUN_14036d710(0x61) && nTier == 3)
-        return FUN_1402918a0(10, FUN_140def5a0());
-    return FUN_1402918a0(nTier, FUN_140def5a0());
+        return GetIconName(10, GetItemId());
+    return GetIconName(nTier, GetItemId());
 }
 
-bool UGCCube::FUN_140defdd0(int nId)                                                           // @0x140defdd0
+bool UGCCube::HasCategoryTag(int nId)                                                           // @0x140defdd0
 {
     if (ingredient == 0)
         return false;
@@ -305,12 +305,12 @@ bool UGCCube::FUN_140defdd0(int nId)                                            
 
 unsigned UGCCube::FUN_140defe70()                                                                   // @0x140defe70
 {
-    return FUN_141901d20(FUN_140def5a0(), FUN_140def5f0(), FUN_140defba0());
+    return FUN_141901d20(GetItemId(), GetInstanceId(), GetUgcUid());
 }
 
 unsigned UGCCube::FUN_140defed0()                                                                   // @0x140defed0
 {
-    return FUN_141901f70(FUN_140def5a0(), FUN_140def5f0(), FUN_140defba0());
+    return FUN_141901f70(GetItemId(), GetInstanceId(), GetUgcUid());
 }
 
 bool UGCCube::FUN_140deff30()                                                                  // @0x140deff30
@@ -322,19 +322,19 @@ bool UGCCube::FUN_140deff30()                                                   
         return false;
     if (!(reinterpret_cast<PC*>(pPC)->FUN_141663080() > 0))
         return false;
-    if (!(itemData->FUN_14053fdb0() > 0))
+    if (!(itemData->GetVipLevel() > 0))
         return false;
-    if (reinterpret_cast<PC*>(pPC)->FUN_141663080() >= itemData->FUN_14053fdb0())
+    if (reinterpret_cast<PC*>(pPC)->FUN_141663080() >= itemData->GetVipLevel())
         return true;
     return false;
 }
 
-int UGCCube::FUN_140defff0()                                                                   // @0x140defff0
+int UGCCube::GetIndex()                                                                   // @0x140defff0
 {
     return index;
 }
 
-void UGCCube::FUN_140df0010(int nIndex)                                                        // @0x140df0010
+void UGCCube::SetIndex(int nIndex)                                                        // @0x140df0010
 {
     index = nIndex;
 }
@@ -392,7 +392,7 @@ void Unk_CubePaletteFilter::FUN_140df0180(int nBox)                             
     field18 = nBox;
 }
 
-int Unk_CubePaletteFilter::FUN_140df01a0()                                                     // @0x140df01a0
+int Unk_CubePaletteFilter::GetCategory()                                                     // @0x140df01a0
 {
     return category;
 }
@@ -401,96 +401,96 @@ int Unk_CubePaletteFilter::FUN_140df01a0()                                      
 
 static bool FUN_140df04d0(const CubePtr& a, const CubePtr& b)                                  // @0x140df04d0
 {
-    if (a->FUN_140def420() && !b->FUN_140def420())
+    if (a->IsLocked() && !b->IsLocked())
         return false;
-    if (!a->FUN_140def420() && b->FUN_140def420())
+    if (!a->IsLocked() && b->IsLocked())
         return true;
-    if (a->FUN_140defcd0() < b->FUN_140defcd0())
+    if (a->GetPriceCount() < b->GetPriceCount())
         return false;
-    if (a->FUN_140defcd0() > b->FUN_140defcd0())
+    if (a->GetPriceCount() > b->GetPriceCount())
         return true;
     if (a->FUN_140def620() < b->FUN_140def620())
         return false;
     if (a->FUN_140def620() > b->FUN_140def620())
         return true;
-    if ((unsigned)a->FUN_140def5a0() > (unsigned)b->FUN_140def5a0())
+    if ((unsigned)a->GetItemId() > (unsigned)b->GetItemId())
         return false;
-    if (a->FUN_140defc80() == 0x5b && b->FUN_140defc80() == 0x5b && a->FUN_140def5a0() == b->FUN_140def5a0()
-        && (unsigned __int64)a->FUN_140def5f0() > 0 && b->FUN_140def5f0() == 0)
+    if (a->GetFilter() == 0x5b && b->GetFilter() == 0x5b && a->GetItemId() == b->GetItemId()
+        && (unsigned __int64)a->GetInstanceId() > 0 && b->GetInstanceId() == 0)
         return false;
     return true;
 }
 
 static bool FUN_140df0710(const CubePtr& a, const CubePtr& b)                                  // @0x140df0710
 {
-    if (a->FUN_140def420() && !b->FUN_140def420())
+    if (a->IsLocked() && !b->IsLocked())
         return false;
-    if (!a->FUN_140def420() && b->FUN_140def420())
+    if (!a->IsLocked() && b->IsLocked())
         return true;
-    if (a->FUN_140defcd0() > b->FUN_140defcd0())
+    if (a->GetPriceCount() > b->GetPriceCount())
         return false;
-    if (a->FUN_140defcd0() < b->FUN_140defcd0())
+    if (a->GetPriceCount() < b->GetPriceCount())
         return true;
     if (a->FUN_140def620() > b->FUN_140def620())
         return false;
     if (a->FUN_140def620() < b->FUN_140def620())
         return true;
-    if ((unsigned)a->FUN_140def5a0() > (unsigned)b->FUN_140def5a0())
+    if ((unsigned)a->GetItemId() > (unsigned)b->GetItemId())
         return false;
-    if (a->FUN_140defc80() == 0x5b && b->FUN_140defc80() == 0x5b && a->FUN_140def5a0() == b->FUN_140def5a0()
-        && (unsigned __int64)a->FUN_140def5f0() > 0 && b->FUN_140def5f0() == 0)
+    if (a->GetFilter() == 0x5b && b->GetFilter() == 0x5b && a->GetItemId() == b->GetItemId()
+        && (unsigned __int64)a->GetInstanceId() > 0 && b->GetInstanceId() == 0)
         return false;
     return true;
 }
 
 static bool FUN_140df0950(const CubePtr& a, const CubePtr& b)                                  // @0x140df0950
 {
-    if (a->FUN_140def420() && !b->FUN_140def420())
+    if (a->IsLocked() && !b->IsLocked())
         return false;
-    if (!a->FUN_140def420() && b->FUN_140def420())
+    if (!a->IsLocked() && b->IsLocked())
         return true;
-    if (a->FUN_140def710() > b->FUN_140def710())
+    if (a->GetName() > b->GetName())
         return false;
-    if (a->FUN_140def710() < b->FUN_140def710())
+    if (a->GetName() < b->GetName())
         return true;
-    if (a->FUN_140defcd0() > b->FUN_140defcd0())
+    if (a->GetPriceCount() > b->GetPriceCount())
         return false;
-    if (a->FUN_140defcd0() < b->FUN_140defcd0())
+    if (a->GetPriceCount() < b->GetPriceCount())
         return true;
     if (a->FUN_140def620() > b->FUN_140def620())
         return false;
     if (a->FUN_140def620() < b->FUN_140def620())
         return true;
-    if ((unsigned)a->FUN_140def5a0() > (unsigned)b->FUN_140def5a0())
+    if ((unsigned)a->GetItemId() > (unsigned)b->GetItemId())
         return false;
-    if (a->FUN_140defc80() == 0x5b && b->FUN_140defc80() == 0x5b && a->FUN_140def5a0() == b->FUN_140def5a0()
-        && (unsigned __int64)a->FUN_140def5f0() > 0 && b->FUN_140def5f0() == 0)
+    if (a->GetFilter() == 0x5b && b->GetFilter() == 0x5b && a->GetItemId() == b->GetItemId()
+        && (unsigned __int64)a->GetInstanceId() > 0 && b->GetInstanceId() == 0)
         return false;
     return true;
 }
 
 static bool FUN_140df0cf0(const CubePtr& a, const CubePtr& b)                                  // @0x140df0cf0
 {
-    if (a->FUN_140def420() && !b->FUN_140def420())
+    if (a->IsLocked() && !b->IsLocked())
         return false;
-    if (!a->FUN_140def420() && b->FUN_140def420())
+    if (!a->IsLocked() && b->IsLocked())
         return true;
-    if (a->FUN_140def710() < b->FUN_140def710())
+    if (a->GetName() < b->GetName())
         return false;
-    if (a->FUN_140def710() > b->FUN_140def710())
+    if (a->GetName() > b->GetName())
         return true;
-    if (a->FUN_140defcd0() > b->FUN_140defcd0())
+    if (a->GetPriceCount() > b->GetPriceCount())
         return false;
-    if (a->FUN_140defcd0() < b->FUN_140defcd0())
+    if (a->GetPriceCount() < b->GetPriceCount())
         return true;
     if (a->FUN_140def620() > b->FUN_140def620())
         return false;
     if (a->FUN_140def620() < b->FUN_140def620())
         return true;
-    if ((unsigned)a->FUN_140def5a0() > (unsigned)b->FUN_140def5a0())
+    if ((unsigned)a->GetItemId() > (unsigned)b->GetItemId())
         return false;
-    if (a->FUN_140defc80() == 0x5b && b->FUN_140defc80() == 0x5b && a->FUN_140def5a0() == b->FUN_140def5a0()
-        && (unsigned __int64)a->FUN_140def5f0() > 0 && b->FUN_140def5f0() == 0)
+    if (a->GetFilter() == 0x5b && b->GetFilter() == 0x5b && a->GetItemId() == b->GetItemId()
+        && (unsigned __int64)a->GetInstanceId() > 0 && b->GetInstanceId() == 0)
         return false;
     return true;
 }
@@ -501,26 +501,26 @@ static bool FUN_140df1090(const CubePtr& a, const CubePtr& b)                   
         return true;
     if (b->FUN_140deff30())
         return false;
-    if (a->FUN_140def420() && !b->FUN_140def420())
+    if (a->IsLocked() && !b->IsLocked())
         return false;
-    if (!a->FUN_140def420() && b->FUN_140def420())
+    if (!a->IsLocked() && b->IsLocked())
         return true;
-    if (a->FUN_140defc30() > b->FUN_140defc30())
+    if (a->GetCategoryIndex() > b->GetCategoryIndex())
         return false;
-    if (a->FUN_140defc30() < b->FUN_140defc30())
+    if (a->GetCategoryIndex() < b->GetCategoryIndex())
         return true;
-    if (a->FUN_140defcd0() > b->FUN_140defcd0())
+    if (a->GetPriceCount() > b->GetPriceCount())
         return false;
-    if (a->FUN_140defcd0() < b->FUN_140defcd0())
+    if (a->GetPriceCount() < b->GetPriceCount())
         return true;
     if (a->FUN_140def620() > b->FUN_140def620())
         return false;
     if (a->FUN_140def620() < b->FUN_140def620())
         return true;
-    if ((unsigned)a->FUN_140def5a0() > (unsigned)b->FUN_140def5a0())
+    if ((unsigned)a->GetItemId() > (unsigned)b->GetItemId())
         return false;
-    if (a->FUN_140defc80() == 0x5b && b->FUN_140defc80() == 0x5b && a->FUN_140def5a0() == b->FUN_140def5a0()
-        && (unsigned __int64)a->FUN_140def5f0() > 0 && b->FUN_140def5f0() == 0)
+    if (a->GetFilter() == 0x5b && b->GetFilter() == 0x5b && a->GetItemId() == b->GetItemId()
+        && (unsigned __int64)a->GetInstanceId() > 0 && b->GetInstanceId() == 0)
         return false;
     return true;
 }
@@ -543,7 +543,7 @@ Unk_CubeSorter::Unk_CubeSorter(CubeArray& cubes, Unk_CubePaletteFilter* pFilter)
     {
         CubePtr spCube = *it;
         cubes.Add(spCube);
-        spCube->FUN_140df0010((int)cubes.GetCount());
+        spCube->SetIndex((int)cubes.GetCount());
     }
 }
 
@@ -570,7 +570,7 @@ bool Unk_CubeUsage::FUN_140df13e0(int nItemId)                                  
         return true;
     if (m_listIds.Find(nItemId) != 0)
         return false;
-    MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbe90(nItemId);
+    MS2Ptr<CItem> spItem = DAT_143ab2e20.FindItemById(nItemId);
     if (spItem.get() != 0)
         return false;
     return true;
@@ -578,12 +578,12 @@ bool Unk_CubeUsage::FUN_140df13e0(int nItemId)                                  
 
 bool Unk_CubeUsage::FUN_140df15e0(MS2Ptr<CItem> spItem, Unk_CubePaletteFilter* pFilter)        // @0x140df15e0
 {
-    return FUN_140df1720(spItem->FUN_1405276c0(), spItem->GetItemUid(), spItem->GetUgcUid(), pFilter);
+    return FUN_140df1720(spItem->GetItemId(), spItem->GetItemUid(), spItem->GetUgcUid(), pFilter);
 }
 
 bool Unk_CubeUsage::FUN_140df1680(MS2Ptr<Unk_UgcStock> spStock, Unk_CubePaletteFilter* pFilter)  // @0x140df1680
 {
-    return FUN_140df1720(spStock->GetItemId(), spStock->GetUid(), spStock->FUN_140dfc420(), pFilter);
+    return FUN_140df1720(spStock->GetItemId(), spStock->GetUid(), spStock->GetLookId(), pFilter);
 }
 
 bool Unk_CubeUsage::FUN_140df1720(int nItemId, unsigned __int64 nInstance, unsigned __int64 nUgc, Unk_CubePaletteFilter* pFilter)   // @0x140df1720
@@ -648,23 +648,23 @@ unsigned UGCCubePalette::FUN_140df1a40(CubeArray& out, Unk_CubePaletteFilter& fi
         if (!filter.includeOwned)
         {
             MS2Ptr<CItemData> spData;
-            if (mapItems.Lookup(spCube->FUN_140def5a0(), spData))
+            if (mapItems.Lookup(spCube->GetItemId(), spData))
             {
                 MS2Ptr<ItemHousing> spIng = TSingleton<CItemDataTable>::GetInstance()->GetHousing(spData->GetItemId());
                 if (spIng && TSingleton<UGCCubeCategoryTable>::GetInstance()->HasAnyField(spIng->categoryTag))
                     continue;
             }
         }
-        if (filter.flag2 && spCube->FUN_140def420())
+        if (filter.flag2 && spCube->IsLocked())
             continue;
         if (!filter.text.IsEmpty())
         {
-            if (!FUN_140df3350(filter.text, spCube->FUN_140def710()))
+            if (!FUN_140df3350(filter.text, spCube->GetName()))
                 continue;
         }
         if (filter.field10 != 0)
         {
-            if (!spCube->FUN_140defdd0(filter.field10))
+            if (!spCube->HasCategoryTag(filter.field10))
                 continue;
         }
         out.Add(spCube);
@@ -724,9 +724,9 @@ void FUN_140df1ff0(unsigned nBox, Unk_FieldIdList* pOut)                        
     }
 }
 
-unsigned FUN_140df20a0(unsigned nArgA, unsigned nArgB);
+unsigned AddBoxById(unsigned nArgA, unsigned nArgB);
 #ifndef MS2_HOOK_DLL
-unsigned FUN_140df20a0(unsigned nArgA, unsigned nArgB)                                         // @0x140df20a0
+unsigned AddBoxById(unsigned nArgA, unsigned nArgB)                                         // @0x140df20a0
 {
     unsigned nBox = TSingleton<UGCCubeCategoryTable>::GetInstance()->AddMenuById(nArgA, nArgB);
     s_mapBoxes.SetAt(nBox, Unk_FieldIdListPtr(Unk_FieldNewTag(0)));
@@ -734,9 +734,9 @@ unsigned FUN_140df20a0(unsigned nArgA, unsigned nArgB)                          
 }
 #endif
 
-unsigned FUN_140df2130(CStringW strName, unsigned nArg);
+unsigned AddBoxByName(CStringW strName, unsigned nArg);
 #ifndef MS2_HOOK_DLL
-unsigned FUN_140df2130(CStringW strName, unsigned nArg)                                        // @0x140df2130
+unsigned AddBoxByName(CStringW strName, unsigned nArg)                                        // @0x140df2130
 {
     unsigned nBox = TSingleton<UGCCubeCategoryTable>::GetInstance()->AddMenu(strName, nArg);
     s_mapBoxes.SetAt(nBox, Unk_FieldIdListPtr(Unk_FieldNewTag(0)));
@@ -744,9 +744,9 @@ unsigned FUN_140df2130(CStringW strName, unsigned nArg)                         
 }
 #endif
 
-void FUN_140df2210(unsigned nBox);
+void RemoveBox(unsigned nBox);
 #ifndef MS2_HOOK_DLL
-void FUN_140df2210(unsigned nBox)                                                              // @0x140df2210
+void RemoveBox(unsigned nBox)                                                              // @0x140df2210
 {
     TSingleton<UGCCubeCategoryTable>::GetInstance()->RemoveMenu(nBox);
     s_mapBoxes.RemoveKey(nBox);
@@ -765,7 +765,7 @@ void UGCCubePalette::FUN_140df2250()                                            
         MS2Ptr<CItemData> spData = FUN_14053f870(vecIds[i]);
         if (spData == 0)
             continue;
-        if (!spData->FUN_14053cb80())
+        if (!spData->IsInstallItem())
             continue;
         if (TSingleton<CItemDataTable>::GetInstance()->GetHousing(spData->GetItemId()) == 0)
             continue;
@@ -787,7 +787,7 @@ void UGCCubePalette::FUN_140df23f0(CubeArray& out, Unk_CubePaletteFilter* pFilte
             MS2Ptr<CItem> spItem = items[i];
             if (spItem == 0)
                 continue;
-            int nItemId = spItem->FUN_1405276c0();
+            int nItemId = spItem->GetItemId();
             MS2Ptr<CItemData> spData = FUN_14053f870(nItemId);
             if (spData == 0)
                 continue;
@@ -855,7 +855,7 @@ void UGCCubePalette::FUN_140df2bc0(CubeArray& out, Unk_CubePaletteFilter* pFilte
             continue;
         if (FUN_140df3100(spField, spData, pFilter))
             continue;
-        MS2Ptr<CItem> spItem = DAT_143ab2e20.FUN_1408fbe90(nItemId);
+        MS2Ptr<CItem> spItem = DAT_143ab2e20.FindItemById(nItemId);
         if (spItem.get() != 0)
         {
             out.Add(new UGCCube(nItemId, spItem->GetItemUid(), spItem->FUN_140528910(), spItem->GetUgcLook()));
@@ -882,7 +882,7 @@ bool UGCCubePalette::FUN_140df3100(const MS2Ptr<CFieldDataCli>& spField, const M
         if (!spData->install.FUN_140548d10())
             return true;
     }
-    if (spField->FUN_140375130())
+    if (spField->IsIndoor())
     {
         if (!spData->install.FUN_140548cd0())
             return true;
@@ -898,9 +898,9 @@ bool UGCCubePalette::FUN_140df3100(const MS2Ptr<CFieldDataCli>& spField, const M
     }
     int nBoxId = spIng->trophyID;
     int nBoxArg = spIng->trophyLevel;
-    if (reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->IsGradeCleared(nBoxId, nBoxArg) == 0)
+    if (reinterpret_cast<CAchieveManager*>(GetAchieveManager())->IsGradeCleared(nBoxId, nBoxArg) == 0)
     {
-        MS2Ptr<CAchieve> spBox = reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->Find(nBoxId);
+        MS2Ptr<CAchieve> spBox = reinterpret_cast<CAchieveManager*>(GetAchieveManager())->Find(nBoxId);
         if (spBox && spBox.get()->GetData68() != 0)
             return true;
     }
@@ -930,18 +930,18 @@ static bool FUN_140df3350(const CStringW& strFilter, const CStringW& strName)   
 }
 
 // ---- hooks (members that read no mutable unit static) ----
-MS2_REPLACE_METHOD(0x140DEF420, UGCCube, FUN_140def420, 191, 0x53A80095);
+MS2_REPLACE_METHOD(0x140DEF420, UGCCube, IsLocked, 191, 0x53A80095);
 MS2_REPLACE_METHOD(0x140DEF4F0, UGCCube, FUN_140def4f0, 168, 0xCDF7544C);
-MS2_REPLACE_METHOD(0x140DEF5A0, UGCCube, FUN_140def5a0, 65, 0x0250E2B3);
-MS2_REPLACE_METHOD(0x140DEFC30, UGCCube, FUN_140defc30, 63, 0x84911D1F);
-MS2_REPLACE_METHOD(0x140DEFC80, UGCCube, FUN_140defc80, 63, 0x9B115DD9);
-MS2_REPLACE_METHOD(0x140DEFCD0, UGCCube, FUN_140defcd0, 63, 0x4A3A45AA);
-MS2_REPLACE_METHOD(0x140DEFDD0, UGCCube, FUN_140defdd0, 146, 0x7A5AE522);
+MS2_REPLACE_METHOD(0x140DEF5A0, UGCCube, GetItemId, 65, 0x0250E2B3);
+MS2_REPLACE_METHOD(0x140DEFC30, UGCCube, GetCategoryIndex, 63, 0x84911D1F);
+MS2_REPLACE_METHOD(0x140DEFC80, UGCCube, GetFilter, 63, 0x9B115DD9);
+MS2_REPLACE_METHOD(0x140DEFCD0, UGCCube, GetPriceCount, 63, 0x4A3A45AA);
+MS2_REPLACE_METHOD(0x140DEFDD0, UGCCube, HasCategoryTag, 146, 0x7A5AE522);
 MS2_REPLACE_METHOD(0x140DEFE70, UGCCube, FUN_140defe70, 77, 0x26B3D68E);
 MS2_REPLACE_METHOD(0x140DEFED0, UGCCube, FUN_140defed0, 77, 0xA7BDAFEE);
 MS2_REPLACE_METHOD(0x140DEFF30, UGCCube, FUN_140deff30, 178, 0x06DA54A2);
-MS2_REPLACE_METHOD(0x140DEFFF0, UGCCube, FUN_140defff0, 14, 0x72E52537);
-MS2_REPLACE_METHOD(0x140DF0010, UGCCube, FUN_140df0010, 22, 0x068001AB);
+MS2_REPLACE_METHOD(0x140DEFFF0, UGCCube, GetIndex, 14, 0x72E52537);
+MS2_REPLACE_METHOD(0x140DF0010, UGCCube, SetIndex, 22, 0x068001AB);
 MS2_REPLACE_METHOD(0x140DF00B0, Unk_CubePaletteFilter, FUN_140df00b0, 23, 0xF8A6CA9A);
 MS2_REPLACE_METHOD(0x140DF00D0, Unk_CubePaletteFilter, FUN_140df00d0, 23, 0x5B0BD116);
 MS2_REPLACE_METHOD(0x140DF00F0, Unk_CubePaletteFilter, FUN_140df00f0, 23, 0xF8A6CA9A);
@@ -949,6 +949,6 @@ MS2_REPLACE_METHOD(0x140DF0110, Unk_CubePaletteFilter, FUN_140df0110, 29, 0x28CC
 MS2_REPLACE_METHOD(0x140DF0140, Unk_CubePaletteFilter, FUN_140df0140, 22, 0x3E6244BF);
 MS2_REPLACE_METHOD(0x140DF0160, Unk_CubePaletteFilter, FUN_140df0160, 14, 0x72E52537);
 MS2_REPLACE_METHOD(0x140DF0180, Unk_CubePaletteFilter, FUN_140df0180, 22, 0x068001AB);
-MS2_REPLACE_METHOD(0x140DF01A0, Unk_CubePaletteFilter, FUN_140df01a0, 14, 0x7AB52803);
+MS2_REPLACE_METHOD(0x140DF01A0, Unk_CubePaletteFilter, GetCategory, 14, 0x7AB52803);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca5fa0-0x142ca6070 .text$yd

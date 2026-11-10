@@ -58,7 +58,7 @@ public:
 };
 template <class T> class TSingleton;
 template <> class TSingleton<CommonString> { public: static CommonString* GetInstance(); };   // 0x14025e7d0, as in commonstringtable.h
-CNetworkService* FUN_140714f90();
+CNetworkService* GetNetworkService();
 
 // The text-filter owner (global DAT_143ab2080); the filter sits at +8.
 class Unk_PatchTextOwner
@@ -112,11 +112,11 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
     unsigned char type = packet.ReadUInt8();
     if (type == 1) {
         static_cast<COnlinePatchManagerCli*>(pManager)->DeletePatchFiles("./DataPatch/");
-        FUN_140714f90()->SendResponseVersion();
+        GetNetworkService()->SendResponseVersion();
     } else if (type == 2) {
         GetFileSystem()->FUN_140396d00("./DataPatch/");
         static_cast<COnlinePatchManagerCli*>(pManager)->ReloadTables();
-        FUN_140714f90()->SendResponseVersion();
+        GetNetworkService()->SendResponseVersion();
     } else if (type == 3) {
         static_cast<COnlinePatchManagerCli*>(pManager)->DeletePatchFiles("./DataPatch/");
         static_cast<COnlinePatchManagerCli*>(pManager)->CreatePatchDirectory("./DataPatch/");
@@ -133,7 +133,7 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
             static_cast<COnlinePatchManagerCli*>(pManager)->m_files.push_back(spFile->m_strPath);
         }
         if (static_cast<COnlinePatchManagerCli*>(pManager)->RequestNextFile() != 1) {
-            FUN_140714f90()->SendResponseVersion();
+            GetNetworkService()->SendResponseVersion();
         }
     } else if (type == 5) {
         CString strPath = packet.ReadUnicodeStringA();
@@ -153,7 +153,7 @@ void FUN_140a84960(void* pManager, CInPacket& packet)
                 } else {
                     GetFileSystem()->FUN_140396d00("./DataPatch/");
                     static_cast<COnlinePatchManagerCli*>(pManager)->ReloadTables();
-                    FUN_140714f90()->SendResponseVersion();
+                    GetNetworkService()->SendResponseVersion();
                 }
             } else {
                 static_cast<COnlinePatchManagerCli*>(pManager)->RequestFile(spFile.get());
@@ -291,7 +291,7 @@ void COnlinePatchManagerCli::ReloadTables()
     LoadSystemMailContent();
     LoadTalkScripts();
     ((class CServerStringGroup*)(class Unk_PatchTextFilter*)(GetServerString()->FUN_140a87690()))->Load();
-    TSingleton<CStringTable>::GetInstance()->FUN_141811960();
+    TSingleton<CStringTable>::GetInstance()->Reload();
     ((class CommonString*)(void*)(((void*)TSingleton<CommonString>::GetInstance())))->Reload();
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).

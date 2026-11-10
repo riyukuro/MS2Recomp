@@ -544,8 +544,8 @@ bool Constants::Lookup(const CString& key, float* out)
 CString FUN_1407185b0(const CString& s);
 CStringW FUN_140718650(const CString& s);
 // The parsers as defined (unit_1407186f0_stringconversionhelpers.cpp).
-Unk_ConstColor FUN_140718770(const CStringA& s);
-void* FUN_140718830(void* ret, const CStringA& s);
+Unk_ConstColor ParseHexColor(const CStringA& s);
+void* ParseTick(void* ret, const CStringA& s);
 namespace Common {
 efd::Point3 FUN_140db9570(const CString& s);
 
@@ -556,7 +556,7 @@ bool Constants::Lookup(const CString& key, Unk_ConstColor* out)
     if (values.Lookup(key, s))
     {
         //
-        *out = FUN_140718770(s);
+        *out = ParseHexColor(s);
         return true;
     }
     return false;
@@ -567,7 +567,7 @@ bool Constants::Lookup(const CString& key, MS2Colors* out)
     CString s;
     if (values.Lookup(key, s))
     {
-        *out = FUN_1407186f0(s);
+        *out = ParseColors(s);
         return true;
     }
     return false;
@@ -579,7 +579,7 @@ bool Constants::Lookup(const CString& key, MS2Tick* out)
     if (values.Lookup(key, s))
     {
         unsigned t;
-        *out = *(MS2Tick*)FUN_140718830((void*)&t, s);
+        *out = *(MS2Tick*)ParseTick((void*)&t, s);
         return true;
     }
     return false;
@@ -1296,8 +1296,8 @@ CFileSystem* GetFileSystem();
 unsigned char FUN_1401d1320(CCacheData* cacheData);
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& dir, const CString& file);
-CString FUN_14071a6f0(const CString& file);
+CString GetXmlPath(const CString& dir, const CString& file);
+CString GetXmlDebugPath(const CString& file);
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
@@ -1315,11 +1315,11 @@ bool Common::Constants::LoadFiles()
 {
     values.RemoveAll();
     ATL::CAtlArray<Unk_ConstFile> files;
-    files.Add(Unk_ConstFile(FUN_14071a5b0("Table", "constants.xml"), true));
-    files.Add(Unk_ConstFile(FUN_14071a5b0("Table", "colorConstants.xml"), true));
+    files.Add(Unk_ConstFile(GetXmlPath("Table", "constants.xml"), true));
+    files.Add(Unk_ConstFile(GetXmlPath("Table", "colorConstants.xml"), true));
     if (!reinterpret_cast<Unk_ConstFileSystem*>(GetFileSystem())->FUN_140398190())
     {
-        files.Add(Unk_ConstFile(FUN_14071a6f0("testConstants.xml"), false));
+        files.Add(Unk_ConstFile(GetXmlDebugPath("testConstants.xml"), false));
     }
     cacheRefs.RemoveAll();
     for (size_t i = 0; i < files.GetCount(); i++)
@@ -1328,7 +1328,7 @@ bool Common::Constants::LoadFiles()
         const CString& filePath = entry.path;
         bool required = entry.required;
         TiXmlDocument doc;
-        if (reinterpret_cast<Unk_ConstFileSystem*>(GetFileSystem())->FUN_1403974b0(&doc, filePath, 0, true, false) == 0)
+        if (reinterpret_cast<Unk_ConstFileSystem*>(GetFileSystem())->LoadXmlFile(&doc, filePath, 0, true, false) == 0)
         {
             if (required)
             {
@@ -1341,7 +1341,7 @@ bool Common::Constants::LoadFiles()
             MS2Ptr<CCacheData> ref(new CCacheData());
             if ((CCacheData*)ref)
             {
-                ref->FUN_1401d1160(CString(filePath));
+                ref->SetPath(CString(filePath));
                 cacheRefs.Add(ref);
             }
         }

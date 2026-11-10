@@ -91,7 +91,7 @@ public:
     NiNode* GetClone(egf::Entity*);
     void FUN_14147d290();
     // Accessors emitted in ?\hardwareinstancingservice.cpp's COMDAT run (0x1413eb740-0x1413ed300).
-    int FUN_140ad4bb0() const;                  // mode
+    int IsHidden() const;                  // mode
     void IncrementActiveCount();                       // ++config.activeCount
     egf::EntityID GetEntityId() const;        // id18
     unsigned GetActiveCount() const;             // config.activeCount

@@ -89,7 +89,7 @@ CCrashManager::~CCrashManager()
 }
 
 // @0x1401ce270
-void CCrashManager::FUN_1401ce270(const CString& strLine)
+void CCrashManager::AddLogLine(const CString& strLine)
 {
     if (m_nLogId == -1)
         return;
@@ -118,7 +118,7 @@ void CCrashManager::FUN_1401ce2f0(const char* pszFormat, ...)
 }
 
 // @0x1401ce3a0
-void CCrashManager::FUN_1401ce3a0()
+void CCrashManager::FlushLog()
 {
     TSingleton<CFileLogger>::GetInstance()->FlushLog(m_nLogId);
 }

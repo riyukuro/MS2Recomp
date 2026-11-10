@@ -36,16 +36,16 @@ public:
     void FUN_14020d4a0(CStringW strName, int nJobCode, int nJob, short nLevel, CString strPicture);   // reset, then set these
     void WriteMapId(COutputStream& out);         // write the map id
     void FUN_14020d690(COutputStream& out);         // write name, job code, job, level, picture
-    void FUN_14020d610(COutputStream& out);         // write the whole snapshot (thunk of FUN_14020d9a0)
-    void FUN_14020d9a0(COutputStream& out);         // write the whole snapshot
-    void FUN_14020db80(CInputStream* in);           // read the whole snapshot
+    void FUN_14020d610(COutputStream& out);         // write the whole snapshot (thunk of Write)
+    void Write(COutputStream& out);         // write the whole snapshot
+    void Read(CInputStream* in);           // read the whole snapshot
     void FUN_14020de80(COutputStream& out);         // write the short form
     void FUN_14020df70(CInputStream* in);           // read the short form
-    void FUN_14020e350(Unk_UserProxy* p);           // fill from a user proxy (0x1408f19e0 / 0x1408f1a60 accessors)
+    void SetFromUserProxy(Unk_UserProxy* p);           // fill from a user proxy (0x1408f19e0 / 0x1408f1a60 accessors)
     void FUN_14020d770(CInPacket& packet);          // read the short form from a packet
     void ReadMapId(CInPacket& packet);          // read from a packet (clubcli.cpp)
     void FUN_14020d640(CInPacket* packet);          // read (null-checked packet pointer)
-    void FUN_14020e130(const CClubMemberProxy& o);  // copy assignment
+    void CopyFrom(const CClubMemberProxy& o);  // copy assignment
     __int64 m_accountId;                            // +0x18
     __int64 m_characterId;                          // +0x20
     unsigned char m_gender;                         // +0x28 reset 3
@@ -81,15 +81,15 @@ public:
     CClubMember();
     virtual ~CClubMember();                         // ??_G 0x140212760, vftable 0x142cf3968
     void ReadPacket(CInPacket* packet);          // read from a packet
-    void FUN_14020e950(CClubMember* o);             // copy (null-checked)
+    void CopyFrom(CClubMember* o);             // copy (null-checked)
     void Reset();                           // reset all fields
     void FUN_14020ea20(COutputStream& out);         // write (thunk of Write)
     void Write(COutputStream& out);         // write
     void Read(CInputStream* in);           // read
     int FUN_14020eca0(Club::SaveMember* pSave);    // fill the save record when the dirty flag is set, then clear it
-    void FUN_14020edb0(int nDirty);                 // set m_f4
+    void SetDirty(int nDirty);                 // set m_f4
     int FUN_14020edd0();                            // m_f4
-    Unk_IntTriple* FUN_14020edf0();               // &m_info.m_trophy
+    Unk_IntTriple* GetTrophy();               // &m_info.m_trophy
     void FUN_14020ee10();                           // m_info.m_trophy.FUN_140267c10()
     __int64 m_18;                                   // +0x18
     CClubMemberProxy m_info;                        // +0x20 (character id at +0x40 is compared with the club leader)
@@ -124,20 +124,20 @@ public:
     virtual int vfunc_4(MS2Ptr<CClubMember> spMember);  // 4 0x140210340 add member (by value; max 10, sets m_leader)
     virtual void vfunc_5(CStringW strName);         // 5 0x1402104e0 remove member by name (by value)
     // Accessors recovered by client\ms2\uiclubdialog.cpp (non-virtual; they take m_lock).
-    CStringW FUN_14020f1a0();                       // m_name
+    CStringW GetName();                       // m_name
     // clubcli.cpp users
-    __int64 FUN_14020f0c0();                        // club id
+    __int64 GetClubId();                        // club id
     void SetClubId(__int64 n);                  // set the club id
     unsigned GetMaxMemberCount();                       // max members (m_48)
     unsigned GetState();                       // state (m_state)
     void SetState(int nState);                 // set the state
     void SetBuff(int nBuffId, int nBuffLevel);   // set m_50/m_54 then vfunc_2(1)
-    void FUN_14020f230(const CStringW& strName);           // set the club name
+    void SetName(const CStringW& strName);           // set the club name
     void SetNameChangeAvailableTime(__int64 n);                  // set m_90
     void SetLeaderInfo(__int64 nAccountId, __int64 nCharacterId, CStringW strName, int nUnused);   // set the leader, then vfunc_2(1); callers pass 1 as nUnused, which it never reads
     void RenameMember(const CStringW& strOldName, const CStringW& strNewName);   // rename a member
     CStringW GetLeaderName();                       // leader name
-    void FUN_14020fd80(CInPacket& packet);          // read the club
+    void Read(CInPacket& packet);          // read the club
     __int64 GetNameChangeAvailableTime();                        // name change available time
     int GetBuffId();                            // buff id
     unsigned GetBuffLevel();                       // buff level
@@ -153,7 +153,7 @@ public:
     void FUN_14020f9c0(__int64 n);                  // set m_78
     __int64 FUN_14020fa30();                        // m_80
     void FUN_14020fab0(__int64 n);                  // set m_80
-    void FUN_14020fb20(COutputStream& out);         // write the club (header, then the members)
+    void Write(COutputStream& out);         // write the club (header, then the members)
     void WriteMembers(COutputStream& out);         // write the members
     void ReadMembers(CInPacket& packet);          // read the members
     MS2Ptr<CClubMember> FindMemberById(__int64 nId); // member by m_18
@@ -295,11 +295,11 @@ public:
     virtual ~CClubDataTable();                      // 0x140211360
     int FUN_1402113c0();                            // load (thunk of LoadClubBuff)
     int LoadClubBuff();                            // load Table/clubBuff.xml
-    BuffPtr FUN_1402116a0(unsigned nId);            // buff by id
-    BuffPtr FUN_140211760(int nEffectId, int nEffectLevel);   // buff by effect id and level
-    void FUN_1402118e0(ATL::CAtlArray<unsigned>& ids);        // all buff ids
-    void FUN_140211990(ATL::CAtlArray<BuffPtr>& buffs);       // all buffs
-    BuffPtr FUN_140211a40();                        // first buff
+    BuffPtr FindBuffById(unsigned nId);            // buff by id
+    BuffPtr FindBuffByEffect(int nEffectId, int nEffectLevel);   // buff by effect id and level
+    void GetBuffIds(ATL::CAtlArray<unsigned>& ids);        // all buff ids
+    void GetAllBuffs(ATL::CAtlArray<BuffPtr>& buffs);       // all buffs
+    BuffPtr GetFirstBuff();                        // first buff
     CLockCriticalSection m_lock;                    // +0x08
     BuffMap m_buffs;                                // +0x38
 };

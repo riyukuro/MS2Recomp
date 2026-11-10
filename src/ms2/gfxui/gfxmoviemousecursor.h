@@ -33,4 +33,4 @@ private:
 MS2_CHECK_SIZE(GFxMovieMouseCursor, 0xa0);
 
 // new ASMouseCursor(v, nMovieId) in an MS2Ptr (COMDAT 0x1422f2f30, same shape as gfxmovie.h's FUN_140b62400)
-MS2Ptr<ASMouseCursor> FUN_1422f2f30(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASMouseCursor> CreateASMouseCursor(int nMovieId, const Scaleform::GFx::Value& v);

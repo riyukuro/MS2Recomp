@@ -47,8 +47,8 @@ class CCinematicDistractor : public CPtred {
 public:
     CCinematicDistractor();                                 // 0x14078d300
     virtual ~CCinematicDistractor();                        // 0x14078d350
-    int FUN_14078d3d0() const;
-    size_t FUN_14078d3a0() const;                           // m_choices.GetCount()
+    int HasChoices() const;
+    size_t GetChoiceCount() const;                           // m_choices.GetCount()
     void WriteTo(COutputStream& out);                       // 0x14078d410
     void ReadFrom(CByteBuffer& in);                         // 0x14078d540
 

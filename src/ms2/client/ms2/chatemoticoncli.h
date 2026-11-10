@@ -50,8 +50,8 @@ public:
     void SendMessenger();                               // report the expired packs to the server
     MS2Ptr<ChatEmoticonGroupInfo> FindGroup(unsigned nGroupId);   // the owned pack, or null
     void DispatchPacket(CInPacket& packet);              // packet dispatcher
-    const std::list<unsigned>& FUN_140bd5ba0() const { return m_ids; }                     // inline (COMDAT 0x140bd5ba0)
-    const std::list<MS2Ptr<ChatEmoticonGroupInfo> >& FUN_140bd5bb0() const { return m_groups; }   // inline (COMDAT 0x140bd5bb0)
+    const std::list<unsigned>& GetIds() const { return m_ids; }                     // inline (COMDAT 0x140bd5ba0)
+    const std::list<MS2Ptr<ChatEmoticonGroupInfo> >& GetGroups() const { return m_groups; }   // inline (COMDAT 0x140bd5bb0)
 
     std::list<unsigned> m_ids;                                               // +0x18
     std::list<MS2Ptr<ChatEmoticonGroupInfo> > m_groups;                  // +0x28

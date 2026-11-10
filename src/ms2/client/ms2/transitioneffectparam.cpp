@@ -79,12 +79,12 @@ TransitionEffect::~TransitionEffect()
 }
 
 // @0x14185f340
-void TransitionEffect::FUN_14185f340(const TransitionEffectParam* pParam)
+void TransitionEffect::CopyKeyframes(const TransitionEffectParam* pParam)
 {
     m_nLoopIndex = pParam->m_nLoopIndex;
     m_arrData.Copy(pParam->m_arrData);
 }
-MS2_REPLACE_METHOD(0x14185f340, TransitionEffect, FUN_14185f340, 61, 0xB160F342);
+MS2_REPLACE_METHOD(0x14185f340, TransitionEffect, CopyKeyframes, 61, 0xB160F342);
 
 // @0x14185f390
 bool TransitionEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pTarget)
@@ -135,11 +135,11 @@ bool TransitionEffect::vfunc_9()
 MS2_REPLACE_METHOD(0x14185f410, TransitionEffect, vfunc_9, 597, 0x036D8903);
 
 // @0x14185f670
-void TransitionEffect::FUN_14185f670(TransitionData* pData)
+void TransitionEffect::AddKeyframe(TransitionData* pData)
 {
     m_arrData.Add(pData);
 }
-MS2_REPLACE_METHOD(0x14185f670, TransitionEffect, FUN_14185f670, 77, 0x11902412);
+MS2_REPLACE_METHOD(0x14185f670, TransitionEffect, AddKeyframe, 77, 0x11902412);
 
 // @0x14185f6f0
 bool TransitionEffect::FUN_14185f6f0(double dNow, unsigned int* pnIndex, float* pfT)
@@ -210,7 +210,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 CString FUN_140188f50(const char* psz, int nCodePage);                  // CString from a C string
 
 // @0x14185f0b0
-void FUN_14185f0b0(TransitionData* pData, TiXmlElement* pNode, float* pfTime)
+void ReadTransitionData(TransitionData* pData, TiXmlElement* pNode, float* pfTime)
 {
     pData->m_nInterpolation = 0;
     CString strType = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("type"), 0);
@@ -224,7 +224,7 @@ void FUN_14185f0b0(TransitionData* pData, TiXmlElement* pNode, float* pfTime)
     pData->m_fStartTime = *pfTime;
     *pfTime += pData->m_fDuration;
 }
-MS2_REPLACE(0x14185F0B0, FUN_14185f0b0, 272, 0x9103B1FB);
+MS2_REPLACE(0x14185F0B0, ReadTransitionData, 272, 0x9103B1FB);
 
 // Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).
 // MS2-RANGE: 0x14010e8e0-0x14010e910 .text$di

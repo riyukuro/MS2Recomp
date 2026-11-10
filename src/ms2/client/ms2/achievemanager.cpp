@@ -102,7 +102,7 @@ class Unk_AmUIManager
 public:
 };
 
-class UIMainPlayerInfo* FUN_140931900(int);   // C3: was FUN_140931900
+class UIMainPlayerInfo* FindMainPlayerInfo(int);   // C3: was FindMainPlayerInfo
 class Unk_MpAchieve;   // uimainplayerinfo.h's view of the achievement
 class UIMainPlayerInfo   // only the call used here (uimainplayerinfo.h)
 {
@@ -163,7 +163,7 @@ class Unk_AmFileSystem : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CStringA FUN_14071ae20(const CStringA& strFile);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 int FUN_140197350(TiXmlElement* pNode, const char* pszName, int nDefault);
 unsigned FUN_140197390(TiXmlElement* pNode, const char* pszName, unsigned nDefault);
 CStringW FUN_1401bf530(TiXmlElement* pNode, const char* pszName, CStringW strDefault);
@@ -225,8 +225,8 @@ CStringW FormatDate(__int64 nTime);
 CStringW FUN_1409404f0(__int64 nValue);
 int FUN_140940370(TiXmlElement* pNode, const char* pszName, int* pOut);
 int FUN_140940430(TiXmlElement* pNode, const char* pszName, int* pOut);
-class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
-CString FUN_14016a5c0(const char* psz, int n);
+class Unk_NametagTrophy* GetAchieveManager();   // C3: was GetAchieveManager
+CString ToCString(const char* psz, int n);
 
 // ---- unit statics (.text$di) -----------------------------------------------------------------------------------------------------
 static ATL::CAtlMap<int, MS2Ptr<CAchieveUIData> > s_mapUIData;                      // 0x143ab35c0 (achieveDescription.xml rows)
@@ -546,7 +546,7 @@ void CAchieveManager::OnPacket(CByteBuffer& rBuf)
                 UIGameMenuDialog* pMenu = FindGameMenuDialog(0x4e28);
                 if (pMenu != 0)
                     ((class UIGameMenuDialog*)(class UIGameMenuDialog*)(pMenu))->FUN_141937ea0((void*)(pAchieve.get()), bNotified);
-                UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+                UIMainPlayerInfo* pInfo = FindMainPlayerInfo(0x4e5f);
                 if (pInfo != 0)
                     pInfo->FUN_1419f0bb0(reinterpret_cast<Unk_MpAchieve*>(pAchieve.get()));
                 UIMyInfoDialog* pMyInfo = FindMyInfoDialog(0x2711);
@@ -645,7 +645,7 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
                                    FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_shop_unlock"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, r.m_nCode)), 0);
             FUN_1412751b0(FUN_14028dfa0<CStringW>(CStringW(L"s_system_achieve_reward_shop_auth_notify"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, r.m_nCode)), 0x1c);
         }
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbb))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xbb))
         {
             switch (r.m_nType)
             {
@@ -703,7 +703,7 @@ void CAchieveManager::NotifyReward(int nId, int nGrade)
             }
             }
         }
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbc) && pGrade->m_reward.m_nType == 9)
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xbc) && pGrade->m_reward.m_nType == 9)
         {
             Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pPC == 0)
@@ -813,7 +813,7 @@ void CAchieveUIData::LoadDesc()
 {
     TiXmlDocument doc;
     CStringA strPath = FUN_14071ae20("achieveDescription.xml");
-    if (((class Unk_AmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_AmFileSystem*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -855,7 +855,7 @@ void CAchieveUIData::LoadSpecialReward()
 {
     TiXmlDocument doc;
     CStringA strPath = FUN_14071ae20("achieveSpecialRewardDescription.xml");
-    if (((class Unk_AmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_AmFileSystem*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1053,7 +1053,7 @@ CStringW FUN_14093c8d0(int nId, int nGrade, int bRaw)
 // @0x14093cdb0
 CStringW FUN_14093cdb0(int nId)
 {
-    MS2Ptr<CAchieve> pAchieve = ((class CAchieveManager*)FUN_1406c7600())->Find(nId);
+    MS2Ptr<CAchieve> pAchieve = ((class CAchieveManager*)GetAchieveManager())->Find(nId);
     if (pAchieve.IsNull())
         return CStringW(L"");
     return FUN_14093ce70(nId, pAchieve->GetStartGrade());
@@ -1102,7 +1102,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
         case 7:
             return FUN_14028dfa0<CStringW>(CStringW(L"s_achieve_reward_item_buy_auth"), TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nCode));
         }
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbb))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xbb))
         {
             switch (pGrade->m_reward.m_nType)
             {
@@ -1141,7 +1141,7 @@ CStringW FUN_14093ce70(int nId, int nGrade)
             }
             }
         }
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbc) && pGrade->m_reward.m_nType == 9)
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xbc) && pGrade->m_reward.m_nType == 9)
         {
             Unk_AmPC* pPC = ((class Unk_AmPC*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pPC == 0)
@@ -1291,8 +1291,8 @@ CAchieveCategory::~CAchieveCategory()
 int CAchieveCategory::Load()
 {
     TiXmlDocument doc;
-    CStringA strPath = FUN_14071a5b0("Table", "achieveCategory.xml");
-    if (((class Unk_AmFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    CStringA strPath = GetXmlPath("Table", "achieveCategory.xml");
+    if (((class Unk_AmFileSystem*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1606,7 +1606,7 @@ void CAchieveCategory::CheckInit()
     if (!s_bInit)
     {
         CStringA msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CAchieveCategory).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CAchieveCategory).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -1617,7 +1617,7 @@ void CAchieveUIData::CheckInit()
     if (!s_bInit)
     {
         CStringA msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CAchieveUIData).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CAchieveUIData).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

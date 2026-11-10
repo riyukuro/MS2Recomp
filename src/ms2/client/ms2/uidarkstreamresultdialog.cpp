@@ -37,15 +37,15 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 class UIGameRankingDialog* FUN_140b2d030(int);   // C3: was FUN_140b2d030
 class UIGameRankingDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140e2dfc0(int, int);
+    void SelectCategory(int, int);
 };
-class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
+class UIWebBrowser* FindWebBrowser(int);   // C3: was FindWebBrowser
 class UIWebBrowserBase { public: void FUN_14135ec00(const CString& strUrl, bool bFlag); };
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);
@@ -86,7 +86,7 @@ void UIDarkStreamResultDialog::OnLoadComplete()
         FUN_140f34d50();
         m_bPending = false;
     }
-    FUN_140f34cb0(m_bMode);
+    SetMode(m_bMode);
 }
 MS2_REPLACE_METHOD(0x140F347B0, UIDarkStreamResultDialog, OnLoadComplete, 85, 0xFB604896);
 
@@ -126,18 +126,18 @@ int UIDarkStreamResultDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     }
     else if (_stricmp("OnViewRanking", szMethod) == 0)
     {
-        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x3f) == true)
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x3f) == true)
         {
             void* pRanking = ((void*)FUN_140b2d030(0x4f24));
             if (pRanking != 0)
             {
-                ((class UIGameRankingDialog*)(void*)(pRanking))->FUN_140e2dfc0(3, 0);
+                ((class UIGameRankingDialog*)(void*)(pRanking))->SelectCategory(3, 0);
                 (TSingleton<CUIService>::GetInstance()->OpenDialog((eUIClassID)(0x4f24)));
             }
         }
-        else if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x3b) == true)
+        else if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x3b) == true)
         {
-            void* pPage = ((void*)FUN_140c43790(0x4e6a));
+            void* pPage = ((void*)FindWebBrowser(0x4e6a));
             if (pPage == 0)
                 return 1;
             ((class UIWebBrowserBase*)pPage)->FUN_14135ec00(m_strRankingUrl, true);
@@ -150,7 +150,7 @@ MS2_REPLACE_METHOD(0x140F34930, UIDarkStreamResultDialog, vfunc_28, 359, 0xB0C82
 
 // The result packet: five numbers and a byte-counted list of reward items.
 // @0x140f34ab0
-void UIDarkStreamResultDialog::FUN_140f34ab0(CInPacket& packet)
+void UIDarkStreamResultDialog::ReadResultPacket(CInPacket& packet)
 {
     m_items.clear();
     m_nValue0 = packet.ReadInt32();
@@ -162,15 +162,15 @@ void UIDarkStreamResultDialog::FUN_140f34ab0(CInPacket& packet)
     for (int i = 0; i < nCount; ++i)
     {
         ItemEntity item;
-        item.FUN_14026b100(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
+        item.Read(reinterpret_cast<Unk_GiftInput&>(static_cast<CInputStream&>(packet)));
         m_items.push_back(item);
     }
     FUN_140f34d50();
 }
-MS2_REPLACE_METHOD(0x140F34AB0, UIDarkStreamResultDialog, FUN_140f34ab0, 492, 0xA07CE4EF);
+MS2_REPLACE_METHOD(0x140F34AB0, UIDarkStreamResultDialog, ReadResultPacket, 492, 0xA07CE4EF);
 
 // @0x140f34cb0
-void UIDarkStreamResultDialog::FUN_140f34cb0(bool bMode)
+void UIDarkStreamResultDialog::SetMode(bool bMode)
 {
     m_bMode = bMode;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
@@ -180,7 +180,7 @@ void UIDarkStreamResultDialog::FUN_140f34cb0(bool bMode)
         nMode = 1;
     m_30.operator->()->Invoke("setMode", nMode);
 }
-MS2_REPLACE_METHOD(0x140F34CB0, UIDarkStreamResultDialog, FUN_140f34cb0, 144, 0xACAE770B);
+MS2_REPLACE_METHOD(0x140F34CB0, UIDarkStreamResultDialog, SetMode, 144, 0xACAE770B);
 
 // Make a CItem of every reward (the ones the item table accepts), hand them to an item bag and send the whole result
 // to the swf; before the movie has loaded just remember that it is pending.
@@ -199,7 +199,7 @@ void UIDarkStreamResultDialog::FUN_140f34d50()
         MS2Ptr<CItem> item(new CItem);
         if (item->FUN_14052b130(entity.vfunc_o18_0(), entity.vfunc_o18_1(), 0) != 0)
         {
-            item->FUN_14052b340(entity.vfunc_o18_2());
+            item->SetCount(entity.vfunc_o18_2());
             items.Add(item);
         }
     }

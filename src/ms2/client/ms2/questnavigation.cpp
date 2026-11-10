@@ -179,9 +179,9 @@ void CQuestNavigationMap::Rebuild()
 // @0x140c909d0
 int CQuestNavigationMap::BuildMapPaths()
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x77))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x77))
         return 1;
-    Unk_FieldIdListMap& portals = TSingleton<CFieldMetaTable>::GetInstance()->FUN_140c955c0();
+    Unk_FieldIdListMap& portals = TSingleton<CFieldMetaTable>::GetInstance()->GetPortalTargets();
     short nCount = (short)portals.GetCount() + 1;
     m_10.SetCount(nCount);
     short nIndex = 1;
@@ -211,7 +211,7 @@ int CQuestNavigationMap::BuildMapPaths()
             unsigned nTo = m_10[j];
             if (i == j)
                 costs[i][j] = 0;
-            else if (((class CFieldMetaTable*)(class CFieldMetaTable*)(TSingleton<CFieldMetaTable>::GetInstance()))->FUN_1406fc7b0(nFrom, nTo))
+            else if (((class CFieldMetaTable*)(class CFieldMetaTable*)(TSingleton<CFieldMetaTable>::GetInstance()))->HasPortalTarget(nFrom, nTo))
             {
                 short nCost = 1;
                 if (nFrom == 0x3197542 || nTo == 0x3197542)
@@ -253,7 +253,7 @@ int CQuestNavigationMap::FindMapPath(int nFrom, int nTo, ATL::CAtlArray<unsigned
         return 0;
     if (m_78[nFromIndex][nToIndex] == 0)
     {
-        if (!((class CFieldMetaTable*)(class CFieldMetaTable*)(TSingleton<CFieldMetaTable>::GetInstance()))->FUN_1406fc7b0(nFrom, nTo))
+        if (!((class CFieldMetaTable*)(class CFieldMetaTable*)(TSingleton<CFieldMetaTable>::GetInstance()))->HasPortalTarget(nFrom, nTo))
             return 0;
     }
     path.Add(nFrom);
@@ -314,7 +314,7 @@ int CQuestNavigationMap::NearestMap(const ATL::CAtlArray<unsigned>& maps)
 // @0x140c91690
 int CQuestNavigationMap::InitTraceTable()
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x77))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x77))
         return 1;
     if (FUN_1412755a0())
         return 1;
@@ -330,7 +330,7 @@ int CQuestNavigationMap::InitTraceTable()
         for (size_t c = 0; c < spQuest->m_conditions.GetCount(); c++)
         {
             MS2Ptr<TraceTarget> spTarget(new TraceTarget);
-            Unk_SocketPtr<CQuestData::NavigationData> spNavi = spQuest->FUN_14074b380((int)c);
+            Unk_SocketPtr<CQuestData::NavigationData> spNavi = spQuest->GetNavigationData((int)c);
             if (spNavi.get())
             {
                 for (size_t n = 0; n < spNavi->m_targets.GetCount(); n++)
@@ -345,7 +345,7 @@ int CQuestNavigationMap::InitTraceTable()
                             else
                             {
                                 ATL::CAtlArray<unsigned> maps;
-                                TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb2a0(spEntry->m_ids[i], maps);
+                                TSingleton<CFieldMetaTable>::GetInstance()->GetNpcFields(spEntry->m_ids[i], maps);
                                 spTarget->AddMaps(0, spEntry->m_ids[i], maps);
                             }
                         }
@@ -373,7 +373,7 @@ int CQuestNavigationMap::InitTraceTable()
                             else
                             {
                                 ATL::CAtlArray<unsigned> maps;
-                                TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb120(spEntry->m_ids[i], maps);
+                                TSingleton<CFieldMetaTable>::GetInstance()->GetLiftableFields(spEntry->m_ids[i], maps);
                                 spTarget->AddMaps(2, spEntry->m_ids[i], maps);
                             }
                         }
@@ -389,7 +389,7 @@ int CQuestNavigationMap::InitTraceTable()
                     {
                         ATL::CAtlArray<unsigned> maps;
                         if (!FindConditionMaps(spCond, maps))
-                            TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb2a0((unsigned)spCond->m_code.m_ids[i], maps);
+                            TSingleton<CFieldMetaTable>::GetInstance()->GetNpcFields((unsigned)spCond->m_code.m_ids[i], maps);
                         spTarget->AddMaps(0, (unsigned)spCond->m_code.m_ids[i], maps);
                         if (maps.GetCount() == 0 && bUseNavi && !bHasTag)
                         {
@@ -423,7 +423,7 @@ int CQuestNavigationMap::InitTraceTable()
                     {
                         ATL::CAtlArray<unsigned> maps;
                         if (!FindConditionMaps(spCond, maps))
-                            TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb120((unsigned)spCond->m_code.m_ids[i], maps);
+                            TSingleton<CFieldMetaTable>::GetInstance()->GetLiftableFields((unsigned)spCond->m_code.m_ids[i], maps);
                         spTarget->AddMaps(2, (unsigned)spCond->m_code.m_ids[i], maps);
                         if (maps.GetCount() == 0 && bUseNavi && !bHasTag)
                             Unk_QnLog(GetLogString(), 2, 0x13,
@@ -483,7 +483,7 @@ int CQuestNavigationMap::ClassifyCondition(int nType)
 // @0x140c92730
 MS2Ptr<QuestNavigation::TraceContext> CQuestNavigationMap::TraceQuest(int nQuestId)
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x77))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x77))
         return MS2Ptr<QuestNavigation::TraceContext>(0);
     MS2Ptr<CQuest> spQuest = ((class CQuestManager*)FUN_140764020())->vfunc_o10_3(nQuestId);
     if (spQuest.IsNull())
@@ -498,7 +498,7 @@ MS2Ptr<QuestNavigation::TraceContext> CQuestNavigationMap::TraceQuest(int nQuest
         MS2Ptr<QuestNavigation::TraceContext> spContext(new QuestNavigation::TraceContext);
         spContext->m_20.insert(*reinterpret_cast<unsigned*>(&spData->m_2ec));
         ATL::CAtlArray<unsigned> maps;
-        TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb2a0(spData->m_2ec, maps);
+        TSingleton<CFieldMetaTable>::GetInstance()->GetNpcFields(spData->m_2ec, maps);
         spContext->m_18 = NearestMap(maps);
         return spContext;
     }
@@ -560,7 +560,7 @@ void CQuestNavigationMap::FUN_140c92fc0(MS2Ptr<CQuest> spQuest, int nMapId, Ques
     if (spData.IsNull())
         return;
     MS2BoxPtr<TargetTable> spTable(0);
-    if (!m_98.Lookup(spQuest->FUN_140bfc580(), spTable))
+    if (!m_98.Lookup(spQuest->GetQuestId(), spTable))
         return;
     for (size_t c = 0; c < spData->m_conditions.GetCount(); c++)
     {

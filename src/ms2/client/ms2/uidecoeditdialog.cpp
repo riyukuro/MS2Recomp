@@ -37,7 +37,7 @@ class ASDialog : public ASDisplayObject
 class Unk_DeScript : public AScript
 {
 public:
-    Scaleform::GFx::Value FUN_14191c3d0(const char* szMethod, const wchar_t* pszArg);
+    Scaleform::GFx::Value InvokeWithString(const char* szMethod, const wchar_t* pszArg);
 };
 
 // The brush interface: slots 6-9 with the types the dialog passes.
@@ -104,8 +104,8 @@ void UIDecoEditDialog::OnLoadInit()
                 if (pLayer)
                 {
                     ASObj row(2);
-                    row.FUN_1407cba60("label", pLayer->GetName());
-                    row.FUN_1407cba60("asset", pLayer->GetAsset());
+                    row.SetStringMember("label", pLayer->GetName());
+                    row.SetStringMember("asset", pLayer->GetAsset());
                     spLayers->AddItem(row);
                 }
             }
@@ -139,37 +139,37 @@ int UIDecoEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("OnAssetChange", szMethod) == 0)
     {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14191bd30(data.FUN_1422b8d30());
+            OnAssetChange(data.FUN_1422b8d30());
     }
     else if (_stricmp("OnLayerInsert", szMethod) == 0)
     {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14191c060(data.FUN_1422b8d30());
+            OnLayerInsert(data.FUN_1422b8d30());
     }
     else if (_stricmp("OnLayerDelete", szMethod) == 0)
     {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14191c0d0(data.FUN_1422b8d30());
+            OnLayerDelete(data.FUN_1422b8d30());
     }
     else if (_stricmp("OnLayerChange", szMethod) == 0)
     {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14191c140(data.FUN_1422b8d30());
+            OnLayerChange(data.FUN_1422b8d30());
     }
     else if (_stricmp("OnBrushChange", szMethod) == 0)
     {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14191c1b0(data.PopInt());
+            OnBrushChange(data.PopInt());
     }
     else if (_stricmp("OnBrushRadiusChange", szMethod) == 0)
     {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14191c1e0(data.PopFloat());
+            OnBrushRadiusChange(data.PopFloat());
     }
     else if (_stricmp("OnBrushDensityChange", szMethod) == 0)
     {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_14191c230(data.PopFloat());
+            OnBrushDensityChange(data.PopFloat());
     }
     else if (_stricmp("OnBrushScaleChange", szMethod) == 0)
     {
@@ -177,21 +177,21 @@ int UIDecoEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         {
             float fX = data.PopFloat();
             float fY = data.PopFloat();
-            FUN_14191c280(efd::Point2(fX, fY));
+            OnBrushScaleChange(efd::Point2(fX, fY));
         }
     }
     else if (_stricmp("OnBrushRotationChange", szMethod) == 0 && data.SetArgsIfAny(pArgs, nArgs) != 0)
     {
         float fX = data.PopFloat();
         float fY = data.PopFloat();
-        FUN_14191c2d0(efd::Point2(fX, fY));
+        OnBrushRotationChange(efd::Point2(fX, fY));
     }
     return 0;
 }
 
 // MS2-FUNCTIONAL: op-identical; the exe puts the GetCurrentDirectoryW result slot at 0x58 (just above strPath), ours puts it on top of the frame
 // @0x14191bd30
-void UIDecoEditDialog::FUN_14191bd30(CString strFile)
+void UIDecoEditDialog::OnAssetChange(CString strFile)
 {
     WCHAR szCurrentDir[MAX_PATH] = {0};
     CString strName = FUN_140188f50(strFile, 0);
@@ -216,38 +216,38 @@ void UIDecoEditDialog::FUN_14191bd30(CString strFile)
                         pLayer->ChangeAsset(strAsset);
                     pLayer->SetAsset(strAsset);
                 }
-                reinterpret_cast<Unk_DeScript*>(pDialog)->FUN_14191c3d0("setAsset", szFile);
+                reinterpret_cast<Unk_DeScript*>(pDialog)->InvokeWithString("setAsset", szFile);
             }
         }
     }
 }
 
 // @0x14191c060
-void UIDecoEditDialog::FUN_14191c060(CString strName)
+void UIDecoEditDialog::OnLayerInsert(CString strName)
 {
     BrushService()->AddLayer(strName);
 }
 
 // @0x14191c0d0
-void UIDecoEditDialog::FUN_14191c0d0(CString strName)
+void UIDecoEditDialog::OnLayerDelete(CString strName)
 {
     BrushService()->RemoveLayer(strName);
 }
 
 // @0x14191c140
-void UIDecoEditDialog::FUN_14191c140(CString strName)
+void UIDecoEditDialog::OnLayerChange(CString strName)
 {
     BrushService()->SelectLayer(strName);
 }
 
 // @0x14191c1b0
-void UIDecoEditDialog::FUN_14191c1b0(int nBrush)
+void UIDecoEditDialog::OnBrushChange(int nBrush)
 {
     BrushService()->SetBrush(nBrush);
 }
 
 // @0x14191c1e0
-void UIDecoEditDialog::FUN_14191c1e0(float fRadius)
+void UIDecoEditDialog::OnBrushRadiusChange(float fRadius)
 {
     Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(BrushService()->GetBrush());
     if (pBrush)
@@ -255,7 +255,7 @@ void UIDecoEditDialog::FUN_14191c1e0(float fRadius)
 }
 
 // @0x14191c230
-void UIDecoEditDialog::FUN_14191c230(float fDensity)
+void UIDecoEditDialog::OnBrushDensityChange(float fDensity)
 {
     Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(BrushService()->GetBrush());
     if (pBrush)
@@ -263,7 +263,7 @@ void UIDecoEditDialog::FUN_14191c230(float fDensity)
 }
 
 // @0x14191c280
-void UIDecoEditDialog::FUN_14191c280(efd::Point2 vScale)
+void UIDecoEditDialog::OnBrushScaleChange(efd::Point2 vScale)
 {
     Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(BrushService()->GetBrush());
     if (pBrush)
@@ -271,7 +271,7 @@ void UIDecoEditDialog::FUN_14191c280(efd::Point2 vScale)
 }
 
 // @0x14191c2d0
-void UIDecoEditDialog::FUN_14191c2d0(efd::Point2 vRotation)
+void UIDecoEditDialog::OnBrushRotationChange(efd::Point2 vRotation)
 {
     Unk_DeBrush* pBrush = reinterpret_cast<Unk_DeBrush*>(BrushService()->GetBrush());
     if (pBrush)
@@ -290,7 +290,7 @@ void FUN_14191c320(CStringW& strPath)
 }
 
 // @0x14191c3d0
-Scaleform::GFx::Value Unk_DeScript::FUN_14191c3d0(const char* szMethod, const wchar_t* pszArg)
+Scaleform::GFx::Value Unk_DeScript::InvokeWithString(const char* szMethod, const wchar_t* pszArg)
 {
     ASArgList args;
     args.resize(1);

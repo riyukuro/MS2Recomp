@@ -130,8 +130,8 @@ CString FUN_140188f50(const char* psz, int n);                         // CStrin
 int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_140873360
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);  // point attribute
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // data path of a file
-int FUN_140768010(int nRange, int nBase);    // random integer
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // data path of a file
+int GetRandomRange(int nRange, int nBase);    // random integer
 float FUN_140768090();                                                  // random float in [0, 1)
 extern "C" float (__cdecl* __imp_sinf)(float);                        // the exe calls the CRT import
 #define g_143a08ce8 (*(const Vector3*)&efd::Point3::UNIT_Y) // C3: was extern const Vector3 g_143a08ce8; efd::Point3::UNIT_Y
@@ -176,8 +176,8 @@ class CInputKeyHandler   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_14116d7a0(unsigned int);
-    bool FUN_14116d950(int, bool, int);
-    bool FUN_14116d9c0(int, bool, int);
+    bool IsKeyDown(int, bool, int);
+    bool WasKeyPressed(int, bool, int);
     bool IsDebugMode();
 };
 void FUN_1412751b0(const CStringW& strMsg, int nType);                  // system chat notice
@@ -197,12 +197,12 @@ void* FUN_140aadf80();   // C3: was FUN_140aadf80
 class Unk_CameraActor : public PCBase
 {
 };
-ecr::RenderService* FUN_1413f9890();                                    // the render service
-ecr::CameraService* FUN_1413f9910();                                    // the camera service
+ecr::RenderService* GetRenderService();                                    // the render service
+ecr::CameraService* GetCameraService();                                    // the camera service
 class Unk_SceneApp;
 class Unk_UIManager;
 class Unk_140ad4b90;
-class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
+class Unk_McEntityRules* GetTriggerService();   // C3: was GetTriggerService
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 bool UpdateGlobalShaderConstantFloats(NiFixedString& kName, const float* pf, int n); // set a global shader constant
 extern NiFixedString DAT_143ae5380;                                     // camera shader constant name
@@ -462,7 +462,7 @@ BOOL LoadTestCamerValue()
     TiXmlDocument doc;
     if (!doc.LoadFile("./data/xml/table/TestCamerValue.xml", TIXML_ENCODING_UNKNOWN))
     {
-        if (!GetFileSystem()->FUN_1403974b0(&doc, "./data/xml/table/TestCamerValue.xml", 0, true, false))
+        if (!GetFileSystem()->LoadXmlFile(&doc, "./data/xml/table/TestCamerValue.xml", 0, true, false))
             return FALSE;
     }
     TiXmlElement* pRoot = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
@@ -707,13 +707,13 @@ bool CVibrateCameraEffect::vfunc_1(double fTime, Vector3& ptLook, Vector3& ptUp)
         float fWave = __imp_sinf(fPhase * m_fFrequency * 2.0f * 3.1415927f) * fScale;
         if (!m_bVertical || m_bNegative != (fWave < 0.0f))
         {
-            float fX = ((float)(unsigned int)FUN_140768010(2, 0) - 0.5f) * 2.0f;
-            float fZ = ((float)(unsigned int)FUN_140768010(2, 0) - 0.5f) * 2.0f;
+            float fX = ((float)(unsigned int)GetRandomRange(2, 0) - 0.5f) * 2.0f;
+            float fZ = ((float)(unsigned int)GetRandomRange(2, 0) - 0.5f) * 2.0f;
             m_ptDir.x = FUN_140768090() * fX;
             m_ptDir.z = FUN_140768090() * fZ;
             if (m_bVertical)
             {
-                float fY = ((float)(unsigned int)FUN_140768010(2, 0) - 0.5f) * 2.0f;
+                float fY = ((float)(unsigned int)GetRandomRange(2, 0) - 0.5f) * 2.0f;
                 m_ptDir.y = FUN_140768090() * fY;
             }
             m_ptDir.Unitize();
@@ -803,7 +803,7 @@ void CameraMgr::FUN_140ae9ed0(egf::Entity* pEntity, const Vector3* pLook, const 
     m_1b0 = 1;
     m_bFlyBy = 0;
     LoadTestCamerValue();
-    m_testCache.FUN_1401d1160("./data/xml/table/TestCamerValue.xml");
+    m_testCache.SetPath("./data/xml/table/TestCamerValue.xml");
 }
 
 // @0x140aea4c0
@@ -814,32 +814,32 @@ void CameraMgr::Update(float fTime)
     if (FUN_1401d1320(&m_testCache))
     {
         m_spMode->vfunc_31();
-        m_testCache.FUN_1401d1160("./data/xml/table/TestCamerValue.xml");
+        m_testCache.SetPath("./data/xml/table/TestCamerValue.xml");
     }
     if (m_nPendingMode)
     {
         SetMode(m_nPendingMode, 1);
         m_nPendingMode = 0;
-        reinterpret_cast<CTriggerService*>(FUN_140ad4b90())->FUN_1418631a0();
+        reinterpret_cast<CTriggerService*>(GetTriggerService())->FUN_1418631a0();
     }
     FUN_140aea7f0();
     m_spMode->vfunc_8(fTime);
     FUN_140af1de0();
     float fValue = m_spMode.get() ? m_spMode->vfunc_19() : 0;
     UpdateGlobalShaderConstantFloats(DAT_143ae5380, &fValue, 1);
-    ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
-    if ((((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->FUN_1417e2610() == 0x620000c || ((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->FUN_1417e2610() == 0x620000d ||
-            ((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->FUN_1417e2610() == 0x6200018) &&
+    ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
+    if ((((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->GetCurrentSceneId() == 0x620000c || ((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->GetCurrentSceneId() == 0x620000d ||
+            ((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->GetCurrentSceneId() == 0x6200018) &&
         m_1ac && GetTickCountMs2() - m_1d0 > 1000)
     {
-        reinterpret_cast<GFxSceneService*>(CUserMail::FUN_1408e57f0())->FUN_1422ba250();
+        reinterpret_cast<GFxSceneService*>(CUserMail::GetGFxSceneService())->FUN_1422ba250();
         m_1ac = 0;
     }
     if (m_108)
         FUN_140af1f70();
     if (pSurface)
     {
-        ecr::CameraData* pData = FUN_1413f9910()->GetActiveCamera(pSurface);
+        ecr::CameraData* pData = GetCameraService()->GetActiveCamera(pSurface);
         NiCamera* pCamera;
         if (pData && (pCamera = pData->GetCamera()) != 0)
         {
@@ -905,16 +905,16 @@ void FUN_140ad4ff0(CameraMgr* pCam, float fValue);   // C3: the camera scale set
 // @0x140aeb070
 BOOL CameraMgr::FUN_140aeb070()
 {
-    ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
     if (pSurface && m_pCamera)
     {
         float fValue = ((class WorldService*)(class Unk_GameContext*)(reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())))->FUN_141bcfc50();
         ::FUN_140ad4ff0(this, fValue);
-        FUN_1413f9910()->SetActiveCamera(m_pCamera->GetEntityID(), pSurface->GetWindowRef());
-        ecr::CameraData* pData = FUN_1413f9910()->GetActiveCamera(pSurface);
+        GetCameraService()->SetActiveCamera(m_pCamera->GetEntityID(), pSurface->GetWindowRef());
+        ecr::CameraData* pData = GetCameraService()->GetActiveCamera(pSurface);
         if (pData)
             pSurface->SetCamera(pData->GetCamera());
-        if (((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->FUN_1417e2610() != 0x6200009)
+        if (((class CStateService*)(class Unk_SceneApp*)(reinterpret_cast<Unk_SceneApp*>(TSingleton<CStateService>::GetInstance())))->GetCurrentSceneId() != 0x6200009)
         {
             FUN_140af9c10(1);
             FUN_140af9930(GetTickCountMs2());
@@ -1081,11 +1081,11 @@ void CameraMgr::FUN_140aeb1a0()
 efd::SmartPointer<ecr::PickService::PickRecord> CameraMgr::FUN_140af0850(float fX, float fY, bool bFrontOnly, bool bAppCulled, bool bClosestOnly,
     NiAVObject* pRoot)
 {
-    if (!FUN_1413f9890())
+    if (!GetRenderService())
         return efd::SmartPointer<ecr::PickService::PickRecord>(0);
     NiPoint3 kOrigin;
     NiPoint3 kDir;
-    NiCamera* pCamera = FUN_1413f9890()->GetActiveRenderSurface()->GetCamera();
+    NiCamera* pCamera = GetRenderService()->GetActiveRenderSurface()->GetCamera();
     pCamera->WindowPointToRay((long)fX, (long)fY, kOrigin, kDir);
     ecr::PickService* pPick = reinterpret_cast<Unk_GameContext*>(WorldService::GetInstance())->GetServiceManager()->GetSystemServiceAs<ecr::PickService>();
     if (pPick)
@@ -1220,7 +1220,7 @@ void CameraMgr::FUN_140aece50()
             }
             else if (setup.m_28 == 3)
             {
-                if (reinterpret_cast<CTriggerService*>(FUN_140ad4b90())->ObjectContains(setup.m_34, pTarget->vfunc_18()))
+                if (reinterpret_cast<CTriggerService*>(GetTriggerService())->ObjectContains(setup.m_34, pTarget->vfunc_18()))
                     bHit = true;
             }
             if (bHit)
@@ -1240,7 +1240,7 @@ MS2_REPLACE_METHOD(0x140AECE50, CameraMgr, FUN_140aece50, 587, 0x127E1FEB);
 // @0x140aefa70
 void CameraMgr::FUN_140aefa70()
 {
-    if (((class GFxSceneService*)(class Unk_UIManager*)(((Unk_UIManager*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x620000c && GetModeType() == 2 && m_spMode.get())
+    if (((class GFxSceneService*)(class Unk_UIManager*)(((Unk_UIManager*)CUserMail::GetGFxSceneService())))->GetSceneId() == 0x620000c && GetModeType() == 2 && m_spMode.get())
     {
         m_240 = !m_240;
         m_spMode->vfunc_33();
@@ -1439,7 +1439,7 @@ MS2_REPLACE_METHOD(0x140AF0170, CameraMgr, FUN_140af0170, 88, 0x7E78B2A1);
 // @0x140af01d0
 int CameraMgr::FUN_140af01d0()
 {
-    if (((class GFxSceneService*)(class Unk_UIManager*)(((Unk_UIManager*)CUserMail::FUN_1408e57f0())))->GetSceneId() != 0x620000c)
+    if (((class GFxSceneService*)(class Unk_UIManager*)(((Unk_UIManager*)CUserMail::GetGFxSceneService())))->GetSceneId() != 0x620000c)
         return 0;
     return m_240;
 }
@@ -1458,10 +1458,10 @@ MS2_REPLACE_METHOD(0x140AF0210, CameraMgr, FUN_140af0210, 56, 0x229AC15E);
 NiPoint3 CameraMgr::FUN_140af0250()
 {
     NiPoint3 kResult(NiPoint3::ZERO);
-    ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
     if (!pSurface)
         return kResult;
-    ecr::CameraData* pData = FUN_1413f9910()->GetActiveCamera(pSurface);
+    ecr::CameraData* pData = GetCameraService()->GetActiveCamera(pSurface);
     if (pData)
     {
         NiCamera* pCamera = pData->GetCamera();
@@ -1477,10 +1477,10 @@ MS2_REPLACE_METHOD(0x140AF0250, CameraMgr, FUN_140af0250, 224, 0x4D4E7969);
 NiPoint3 CameraMgr::FUN_140af0340()
 {
     NiPoint3 kResult(NiPoint3::ZERO);
-    ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
     if (!pSurface)
         return kResult;
-    ecr::CameraData* pData = FUN_1413f9910()->GetActiveCamera(pSurface);
+    ecr::CameraData* pData = GetCameraService()->GetActiveCamera(pSurface);
     if (pData)
     {
         NiCamera* pCamera = pData->GetCamera();
@@ -1496,10 +1496,10 @@ MS2_REPLACE_METHOD(0x140AF0340, CameraMgr, FUN_140af0340, 224, 0x76D3E4C7);
 NiPoint3 CameraMgr::FUN_140af0430()
 {
     NiPoint3 kResult(NiPoint3::ZERO);
-    ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
     if (!pSurface)
         return kResult;
-    ecr::CameraData* pData = FUN_1413f9910()->GetActiveCamera(pSurface);
+    ecr::CameraData* pData = GetCameraService()->GetActiveCamera(pSurface);
     if (pData)
     {
         NiCamera* pCamera = pData->GetCamera();
@@ -1514,10 +1514,10 @@ MS2_REPLACE_METHOD(0x140AF0430, CameraMgr, FUN_140af0430, 224, 0xE650B517);
 // @0x140af0520
 bool CameraMgr::ScreenToRay(const NiPoint2& kScreen, NiPoint3& kOrigin, NiPoint3& kDir)
 {
-    ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
     if (!pSurface)
         return false;
-    ecr::CameraData* pData = FUN_1413f9910()->GetActiveCamera(pSurface);
+    ecr::CameraData* pData = GetCameraService()->GetActiveCamera(pSurface);
     if (pData)
     {
         NiCamera* pCamera = pData->GetCamera();
@@ -1531,10 +1531,10 @@ MS2_REPLACE_METHOD(0x140AF0520, CameraMgr, ScreenToRay, 169, 0x98386F27);
 // @0x140af05d0
 bool CameraMgr::WorldToScreen(const efd::Point3& kWorld, NiPoint2& kScreen)
 {
-    ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
     if (!pSurface)
         return false;
-    ecr::CameraData* pData = FUN_1413f9910()->GetActiveCamera(pSurface);
+    ecr::CameraData* pData = GetCameraService()->GetActiveCamera(pSurface);
     if (pData)
     {
         NiCamera* pCamera = pData->GetCamera();
@@ -1552,7 +1552,7 @@ MS2_REPLACE_METHOD(0x140AF05D0, CameraMgr, WorldToScreen, 285, 0xC91CEC8F);
 // @0x140af0700
 bool CameraMgr::FUN_140af0700(const efd::Point3& kWorld, NiPoint3& kScreen)
 {
-    ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
     if (!pSurface)
         return false;
     if (!pSurface->GetCamera())
@@ -1768,11 +1768,11 @@ void CameraMgr::FUN_140aeb950(CLocalTargetCameraMode* pMode)
 void CameraMgr::LoadMapLocalTargetCamera(unsigned int nMapId)
 {
     CString strPath;
-    strPath.Format("%s/%08d.xml", (const char*)static_cast<const CString&>(FUN_14071a5b0("Camera", "Map")), nMapId);
+    strPath.Format("%s/%08d.xml", (const char*)static_cast<const CString&>(GetXmlPath("Camera", "Map")), nMapId);
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return;
-    m_mapCache.FUN_1401d1160(strPath);
+    m_mapCache.SetPath(strPath);
     TiXmlElement* pRoot = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (!pRoot)
         return;
@@ -1872,11 +1872,11 @@ void CameraMgr::LoadMapCamera(unsigned int nMapId)
     if (!m_spMapCameraData->m_30)
         return;
     CString strPath;
-    strPath.Format("%s/%08d.xml", (const char*)FUN_14071a5b0("Camera", "Map"), nMapId);
+    strPath.Format("%s/%08d.xml", (const char*)GetXmlPath("Camera", "Map"), nMapId);
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return;
-    m_mapCache.FUN_1401d1160(strPath);
+    m_mapCache.SetPath(strPath);
     TiXmlElement* pRoot = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (!pRoot)
         return;
@@ -1918,7 +1918,7 @@ void CameraMgr::FUN_140aea7f0()
         bAllowed = DAT_143ab2914 >= 52;
     if (bAllowed)
     {
-        if (((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d9c0(0x3e, true, 0) && ((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d950(0x1d, true, 0))
+        if (((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->WasKeyPressed(0x3e, true, 0) && ((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->IsKeyDown(0x1d, true, 0))
         {
             Unk_CameraSetting setting;
             setting.m_0 = FUN_140ad4b40();
@@ -1943,13 +1943,13 @@ void CameraMgr::FUN_140aea7f0()
             s_bStudioCamera ^= 1;
             return;
         }
-        if (((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d9c0(0x3f, true, 0) && ((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d950(0x2a, true, 0))
+        if (((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->WasKeyPressed(0x3f, true, 0) && ((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->IsKeyDown(0x2a, true, 0))
         {
             FUN_140af0c10();
             { CStringW strMsg(L"Read Camera value [./data/xml/table/TestCamerValue.xml]"); FUN_1412751b0(strMsg, 0x14); }
             return;
         }
-        if (((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d9c0(0x40, true, 0) && ((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->FUN_14116d950(0x1d, true, 0))
+        if (((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->WasKeyPressed(0x40, true, 0) && ((class CInputKeyHandler*)(class Unk_CameraInput*)(((class Unk_CameraInput*)FUN_14025e7c0())))->IsKeyDown(0x1d, true, 0))
         {
             int nMode = 2;
             if (++s_nDebugMode == 7)
@@ -2334,8 +2334,8 @@ void CameraMgr::FUN_140af1f70()
             if (dTime > m_effect.m_fMaxTime)
                 dTime = m_effect.m_fMaxTime;
             m_effect.m_spCameraNode->Update((float)dTime, true);
-            ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
-            ecr::CameraData* pData = FUN_1413f9910()->GetActiveCamera(pSurface);
+            ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
+            ecr::CameraData* pData = GetCameraService()->GetActiveCamera(pSurface);
             NiCamera* pCamera;
             if (pData && (pCamera = pData->GetCamera()) != 0)
             {

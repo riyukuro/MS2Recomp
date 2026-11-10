@@ -32,13 +32,13 @@ public:
     void FUN_140f3b920(CInPacket& packet);                          // 0x140f3b920 packet: open with a scroll
     void FUN_140f3bd10(CInPacket& packet);                          // 0x140f3bd10 packet: an item was put on, fill the movie
     void FUN_140f3c6c0(CInPacket& packet);                          // 0x140f3c6c0 packet: the request result (0 = ask, else message)
-    void FUN_140f3cb10();                                           // 0x140f3cb10 show the scroll and its limits
+    void UpdateScrollInfo();                                           // 0x140f3cb10 show the scroll and its limits
     void FUN_140f3d210();                                           // 0x140f3d210 reset to no scroll
-    CStringW FUN_140f3d320(int nLevel, MS2Ptr<CItem> spItem, int bStable, int bRandom);   // 0x140f3d320 item name at a level
+    CStringW GetItemNameAtLevel(int nLevel, MS2Ptr<CItem> spItem, int bStable, int bRandom);   // 0x140f3d320 item name at a level
     void FUN_140f3d5b0(MS2Ptr<CItem> spItem, ASObj& rData, CInPacket& packet);   // 0x140f3d5b0 option rows of a level scroll
     void FUN_140f3db20(MS2Ptr<CItem> spItem, ASObj& rData, CInPacket& packet);   // 0x140f3db20 option rows of a random scroll
     CStringW FUN_140f3e390();                                       // 0x140f3e390 the scroll's effect value text
-    CStringW FUN_140f3e550(MS2Ptr<CItem> spItem);                   // 0x140f3e550 the scroll's description
+    CStringW GetScrollDescription(MS2Ptr<CItem> spItem);                   // 0x140f3e550 the scroll's description
     CStringW FUN_140f3e730();                                       // 0x140f3e730 the failure text
 
 private:

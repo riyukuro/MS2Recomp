@@ -30,12 +30,12 @@ public:
     virtual bool vfunc_28(MS2Ptr<StateSyncObject> p);        // 28 0x1417c9660
     virtual bool vfunc_38(StateData* pData);                // 38 0x1417c9790
 
-    void FUN_1417c9880(float fTime);                        // advance the glide and move the actor
+    void UpdateGlide(float fTime);                        // advance the glide and move the actor
     float FUN_1417c99f0();                                  // sway
-    float FUN_1417c9ad0();
-    float FUN_1417c9b70();                                  // row +0x28
+    float GetVerticalVelocity();
+    float GetHorizontalVelocity();                                  // row +0x28
     efd::Point3 FUN_1417c9ba0();                            // owner facing as world direction
-    efd::Point3 FUN_1417c9c00();                            // the move of this frame (height)
+    efd::Point3 GetVerticalMove();                            // the move of this frame (height)
     efd::Point3 FUN_1417c9ee0();                            // the move of this frame (forward)
     int FUN_1417c9740();                                    // 0x1417c9740
     int FUN_1417ca000();                                    // the actor is low enough to land

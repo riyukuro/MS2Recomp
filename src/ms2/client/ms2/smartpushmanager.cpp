@@ -68,7 +68,7 @@ CSmartPushManager::~CSmartPushManager()
 }
 
 // @0x140dd82b0
-void CSmartPushManager::FUN_140dd82b0()
+void CSmartPushManager::CreatePushes()
 {
     ATL::CAtlArray<CSmartPushTable::DataPtr> rows;
     CSmartPushTable::GetInstance()->GetAll(rows);
@@ -87,7 +87,7 @@ void CSmartPushManager::FUN_140dd82b0()
 }
 
 // @0x140dd8440
-void CSmartPushManager::FUN_140dd8440()
+void CSmartPushManager::UpdatePushes()
 {
     UISmartPush* pUi = FindStripUI(0x4ef7);
     if (pUi == 0)
@@ -100,20 +100,20 @@ void CSmartPushManager::FUN_140dd8440()
     {
         const PushPtr push(static_cast<const PushPtr&>(m_pushes.GetValueAt(pos)));
         int nWanted = push->vfunc_6();
-        if (reinterpret_cast<Unk_SpOptionData*>(TSingleton<CGameOption>::GetInstance()->FUN_140b123b0())->m_bSuppress)
+        if (reinterpret_cast<Unk_SpOptionData*>(TSingleton<CGameOption>::GetInstance()->GetStatus())->m_bSuppress)
             nWanted = 0;
         if (push->m_nState != nWanted)
         {
             if (nWanted == 0)
             {
-                pUi->FUN_140fa40c0(push->m_nId);
+                pUi->RemovePush(push->m_nId);
                 push->m_nState = 0;
             }
             else
             {
                 int nOld = push->m_nState;
                 push->m_nState = nWanted;
-                if (pUi->FUN_140fa3e20(push) == 0)
+                if (pUi->AddPush(push) == 0)
                     push->m_nState = nOld;
             }
         }
@@ -122,7 +122,7 @@ void CSmartPushManager::FUN_140dd8440()
 }
 
 // @0x140dd8620
-void CSmartPushManager::FUN_140dd8620(int nId)
+void CSmartPushManager::OnPushClicked(int nId)
 {
     PushPtr push(0);
     if (m_pushes.Lookup(nId, push))
@@ -138,7 +138,7 @@ void CSmartPushManager::FUN_140dd86a0(int nId, int nValue)
 }
 
 // @0x140dd8730
-void CSmartPushManager::FUN_140dd8730()
+void CSmartPushManager::ResetPushStates()
 {
     for (POSITION pos = m_pushes.GetStartPosition(); pos != 0; m_pushes.GetNext(pos))
     {
@@ -159,7 +159,7 @@ void CSmartPushManager::FUN_140dd87d0()
     {
         const PushPtr push(static_cast<const PushPtr&>(m_pushes.GetValueAt(pos)));
         if (push->vfunc_6() != 0)
-            pUi->FUN_140fa3e20(push);
+            pUi->AddPush(push);
     }
 }
 

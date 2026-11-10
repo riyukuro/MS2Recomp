@@ -66,21 +66,21 @@ public:
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                           // the item data row of an id
 int FUN_14053feb0(int nItemId);                                         // the default rarity of an item id
-__int64 FUN_14028d0e0();                                                // the server time
+__int64 GenerateUniqueId();                                                // the server time
 void FUN_141275260(int nStringId, int nA, int nB);                      // system notice
 int FUN_1408b5f70(int nItemId);                                         // the cube has a model view
-MS2Ptr<CItem> FUN_140ebc2b0(MS2Ptr<CItemData> spData, int nGrade);   // a new item of a data row
+MS2Ptr<CItem> CreateItemFromData(MS2Ptr<CItemData> spData, int nGrade);   // a new item of a data row
 
 // ?\uiugcitemeditdialog.cpp helpers of the preview
 float FUN_141b48480(int nSet, int nIndex);                              // default angle
-float FUN_141b48500(int nType);                                         // default angle of a lapenshard / accessory type
+float GetPreviewFrameWidth(int nType);                                         // default angle of a lapenshard / accessory type
 bool FUN_141b48710(MS2Ptr<CItemData> spData);
-bool FUN_141b488c0(MS2Ptr<CItemData> spData);                           // the item can be previewed
+bool IsPreviewable(MS2Ptr<CItemData> spData);                           // the item can be previewed
 bool FUN_141b48950(MS2Ptr<CItem> spItem);                               // the item goes on the character
-bool FUN_141b48f90(PC* pPC, MS2Ptr<CItemData> spData, MS2Ptr<WeaponType> spFilter, Unk_PackageItems* pItems,
+bool ResolvePackage(PC* pPC, MS2Ptr<CItemData> spData, MS2Ptr<WeaponType> spFilter, Unk_PackageItems* pItems,
     MS2Ptr<CItemData>* pspData, MS2Ptr<CItemData>* pspPackageData, bool* pbDefault);  // resolve a package
 MS2Ptr<CItemData> FUN_141b494f0(MS2Ptr<CItem> spItem);                  // the data row the item looks like
-bool FUN_141b49b50(MS2Ptr<CItemData> spData);                           // the item is a package
+bool IsPackageItem(MS2Ptr<CItemData> spData);                           // the item is a package
 
 // ---- ItemPreview ------------------------------------------------------------------------------------------------------
 
@@ -117,15 +117,15 @@ int ItemPreview::InitWithItem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return 0;
-    MS2Ptr<CItemData> spItemData = FUN_14053f870(spItem->FUN_1405276c0());
+    MS2Ptr<CItemData> spItemData = FUN_14053f870(spItem->GetItemId());
     if (spItemData == 0)
         return 0;
     m_items.clear();
     ClearPackageData();
     bool bDefault = false;
-    if (FUN_141b49b50(spItemData))
+    if (IsPackageItem(spItemData))
     {
-        if (!FUN_141b48f90(m_pPC, spItemData, MS2Ptr<WeaponType>(0), &m_packageItems, &m_spData, &m_spPackageData,
+        if (!ResolvePackage(m_pPC, spItemData, MS2Ptr<WeaponType>(0), &m_packageItems, &m_spData, &m_spPackageData,
                 &bDefault))
             ClearPackageData();
     }
@@ -138,14 +138,14 @@ int ItemPreview::InitWithItem(MS2Ptr<CItem> spItem)
     MS2Ptr<CItemData> spData = m_spData;
     if (FUN_140d3de80(spData))
         m_spAvatar = FUN_140d3e450(spData, 0, bDefault);
-    else if (spData->FUN_14053cb80())
+    else if (spData->IsInstallItem())
         m_spAvatar = CreateCubeAvatar(spData, 0);
     else if (spData->IsPetItem())
         m_spAvatar = CreatePetAvatar(spData, 0);
     m_spItem = spItem;
     if ((m_spPreview = CreatePreviewItem(spItem)).get())
     {
-        m_spPreview->SetItemUid(FUN_14028d0e0());
+        m_spPreview->SetItemUid(GenerateUniqueId());
         m_spPreview->SetObjectId(GetAvatarObjectId());
         AddWornItem(m_spPreview);
         return 1;
@@ -171,7 +171,7 @@ int ItemPreview::InitWithItems(std::vector<MS2Ptr<CItem> > items)
         {
             if (!((class CItemData*)((class CItem*)(class CItem*)(spShown))->FUN_140527840())->IsGenderAllowed(nGender))
                 continue;
-            spShown->SetItemUid(FUN_14028d0e0());
+            spShown->SetItemUid(GenerateUniqueId());
             spShown->SetObjectId(GetAvatarObjectId());
             m_items.push_back(spShown);
             m_spPreview = spShown;
@@ -247,7 +247,7 @@ MS2Ptr<CItem> ItemPreview::CreatePreviewItem(MS2Ptr<CItem> spItem)
             return 0;
         CItemGem* pGem = spCopy->GetGem();
         if (pGem && pGem->GetGem().IsNull())
-            pGem->CreateGem(spData->FUN_14053e900(), spData->FUN_14053c650());
+            pGem->CreateGem(spData->FUN_14053e900(), spData->GetParam1());
         return spCopy;
     }
     return spItem->Clone();
@@ -281,7 +281,7 @@ void ItemPreview::ApplyPreviewToCube()
     UIAvatarCube* pCube = dynamic_cast<UIAvatarCube*>((UIAvatarBase*)m_spAvatar);
     if (pCube)
     {
-        AvatarCube* pObj = pCube->FUN_1418bde80();
+        AvatarCube* pObj = pCube->GetAvatarCube();
         if (pObj)
             pObj->FUN_141085530(m_spPreview);
     }
@@ -316,7 +316,7 @@ void ItemPreview::FUN_140d3d0d0(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, voi
     {
         if (m_spPreview == 0)
             return;
-        MS2Ptr<CItemData> spData = FUN_14053f870(m_spPreview->FUN_1405276c0());
+        MS2Ptr<CItemData> spData = FUN_14053f870(m_spPreview->GetItemId());
         if (spData == 0)
             return;
         ApplyItemToAvatar(m_spPreview);
@@ -334,13 +334,13 @@ void ItemPreview::FUN_140d3d0d0(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, voi
             {
                 if (m_items[i] == 0)
                     continue;
-                MS2Ptr<CItemData> spData = FUN_14053f870(m_items[i]->FUN_1405276c0());
+                MS2Ptr<CItemData> spData = FUN_14053f870(m_items[i]->GetItemId());
                 if (spData == 0)
                     return;
                 bool bDefault = false;
-                if (FUN_141b49b50(spData))
+                if (IsPackageItem(spData))
                 {
-                    if (!FUN_141b48f90(m_pPC, spData, MS2Ptr<WeaponType>(0), &m_packageItems, &m_spData,
+                    if (!ResolvePackage(m_pPC, spData, MS2Ptr<WeaponType>(0), &m_packageItems, &m_spData,
                             &m_spPackageData, &bDefault))
                         ClearPackageData();
                 }
@@ -365,7 +365,7 @@ void ItemPreview::SetupCameraForItem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return;
-    int nItemId = spItem->FUN_1405276c0();
+    int nItemId = spItem->GetItemId();
     UIRenderView* pView = m_spAvatar->GetView();
     if (pView == 0)
         return;
@@ -376,15 +376,15 @@ void ItemPreview::SetupCameraForItem(MS2Ptr<CItem> spItem)
     if (spItemData == 0)
         return;
     MS2Ptr<CItemData> spData = spItemData;
-    if (FUN_141b49b50(spItemData))
+    if (IsPackageItem(spItemData))
         spData = m_spData;
     if (spData == 0)
         return;
 
-    int nModelType = spData->GetModelOrEmpty()->FUN_14054b400();
+    int nModelType = spData->GetModelOrEmpty()->GetFirstGroupType();
     if (nModelType != 0 && spData->FUN_14053cbc0())
         m_spAvatar->vfunc_19(FUN_141b48480(1, nModelType), 0);
-    else if (spData->FUN_14053cb80())
+    else if (spData->IsInstallItem())
     {
         if (FUN_1408b5f70(nItemId))
             m_spAvatar->vfunc_19(FUN_141b48480(0xb, 0), 0);
@@ -394,7 +394,7 @@ void ItemPreview::SetupCameraForItem(MS2Ptr<CItem> spItem)
     else if (spData->IsPetItem())
         m_spAvatar->vfunc_19(FUN_141b48480(0xb, 0), 0);
     else if (spData->FUN_14053cc00())
-        m_spAvatar->vfunc_19(FUN_141b48500(spData->FUN_14053e900()), 0);
+        m_spAvatar->vfunc_19(GetPreviewFrameWidth(spData->FUN_14053e900()), 0);
 
     Unk_ModelViewCamera kCamera;
     UIAvatarPC* pAvatarPC = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
@@ -430,7 +430,7 @@ void ItemPreview::SetupCameraForItem(MS2Ptr<CItem> spItem)
     {
         kCamera.ApplyRideeCamera();
         float fScale = 1.0f;
-        MS2SvrPtr<CRideeData> spRow = FUN_1407844b0(spData->GetRideeId());
+        MS2SvrPtr<CRideeData> spRow = GetRideeData(spData->GetRideeId());
         if (spRow)
             fScale = spRow->m_collision.m_fDepth * 0.015f;
         kCamera.m_fMinDistance = 300.0f;
@@ -517,7 +517,7 @@ MS2Ptr<UIAvatarBase> ItemPreview::CreatePcAvatar()
     if (pAvatar)
     {
         pAvatar->vfunc_1(m_pListener);
-        AvatarPC* pObj = pAvatar->FUN_1418bd1d0();
+        AvatarPC* pObj = pAvatar->GetAvatarPC();
         if (pObj)
             pObj->SetEnabled(true);
     }
@@ -550,7 +550,7 @@ MS2Ptr<UIAvatarBase> ItemPreview::FUN_140d3e450(MS2Ptr<CItemData> spData, int nU
     if (pAvatar)
     {
         pAvatar->vfunc_1(m_pListener);
-        AvatarPC* pObj = pAvatar->FUN_1418bd1d0();
+        AvatarPC* pObj = pAvatar->GetAvatarPC();
         if (pObj)
             pObj->SetEnabled(bShowEquip);
     }
@@ -605,7 +605,7 @@ void ItemPreview::ApplyItemToAvatar(MS2Ptr<CItem> spItem)
         if (spData->FUN_14053cb40())
             pAvatar->FUN_1418bced0(spData);
         else if (spData->FUN_14053ce40())
-            pAvatar->FUN_1418bce80(spData->FUN_14053dc20());
+            pAvatar->FUN_1418bce80(spData->GetSkillId());
         else if (spData->FUN_14053cd50())
             pAvatar->FUN_1418bcfc0(spData);
         else if (spData->IsRideItem())
@@ -615,37 +615,37 @@ void ItemPreview::ApplyItemToAvatar(MS2Ptr<CItem> spItem)
             int nType = spData->FUN_14053e900();
             if (nType == 5 || nType == 8 || nType == 6)
             {
-                ((class CItemTransfer*)((class CItem*)(class CItem*)(spItem))->FUN_140527930())->ClearBinding();
+                ((class CItemTransfer*)((class CItem*)(class CItem*)(spItem))->GetTransfer())->ClearBinding();
                 pAvatar->FUN_1418bc110(spItem);
             }
         }
-        else if (FUN_141b49b50(spData))
+        else if (IsPackageItem(spData))
         {
             int nSlot = 0;
             if (!((ATL::CAtlArray<MS2Ptr<CItemData>, ATL::CElementTraits<MS2Ptr<CItemData>>>*)(void*)(&m_packageItems))->IsEmpty())
                 pAvatar->FUN_1418bb2a0(spData, nSlot, &m_packageItems);
             if (m_spPackageData.get())
             {
-                MS2Ptr<CItem> spPackageItem = FUN_140ebc2b0(m_spPackageData, 1);
+                MS2Ptr<CItem> spPackageItem = CreateItemFromData(m_spPackageData, 1);
                 ApplyToPCAvatar(m_spPackageData, spPackageItem);
             }
         }
         else
         {
-            for (size_t i = 0; i < spData->GetModelOrEmpty()->FUN_14054b3d0(); ++i)
+            for (size_t i = 0; i < spData->GetModelOrEmpty()->GetGroupCount(); ++i)
             {
-                int nType = spData->GetModelOrEmpty()->GetGroup(i)->FUN_1405451a0();
+                int nType = spData->GetModelOrEmpty()->GetGroup(i)->GetType();
                 if (nType == 0x13)
                 {
                     spItem->FUN_140526c10(5);
-                    pAvatar->FUN_1418bbd30(5);
+                    pAvatar->UnequipSlot(5);
                 }
                 else
                 {
-                    pAvatar->FUN_1418bbd30(nType);
+                    pAvatar->UnequipSlot(nType);
                 }
             }
-            pAvatar->FUN_1418baf40(spItem.get());
+            pAvatar->EquipItem(spItem.get());
         }
     }
     SetupCameraForItem(spItem);
@@ -663,7 +663,7 @@ void ItemPreview::ApplyToPCAvatar(MS2Ptr<CItemData> spData, MS2Ptr<CItem> spItem
         if (spData->FUN_14053cb40())
             pAvatar->FUN_1418bced0(spData);
         else if (spData->FUN_14053ce40())
-            pAvatar->FUN_1418bce80(spData->FUN_14053dc20());
+            pAvatar->FUN_1418bce80(spData->GetSkillId());
         else if (spData->FUN_14053cd50())
             pAvatar->FUN_1418bcfc0(spData);
         else if (spData->IsRideItem())
@@ -686,16 +686,16 @@ bool ItemPreview::TryOnItem(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
-    MS2Ptr<CItemData> spItemData = FUN_14053f870(spItem->FUN_1405276c0());
+    MS2Ptr<CItemData> spItemData = FUN_14053f870(spItem->GetItemId());
     if (spItemData == 0)
         return false;
     if (IsItemWorn(spItem) == true)
         return false;
     ClearPackageData();
     bool bDefault = false;
-    if (FUN_141b49b50(spItemData))
+    if (IsPackageItem(spItemData))
     {
-        if (!FUN_141b48f90(m_pPC, spItemData, MS2Ptr<WeaponType>(0), &m_packageItems, &m_spData, &m_spPackageData,
+        if (!ResolvePackage(m_pPC, spItemData, MS2Ptr<WeaponType>(0), &m_packageItems, &m_spData, &m_spPackageData,
                 &bDefault))
             ClearPackageData();
     }
@@ -708,7 +708,7 @@ bool ItemPreview::TryOnItem(MS2Ptr<CItem> spItem)
     m_spItem = spItem;
     if ((m_spPreview = CreatePreviewItem(spItem)).get())
     {
-        m_spPreview->SetItemUid(FUN_14028d0e0());
+        m_spPreview->SetItemUid(GenerateUniqueId());
         m_spPreview->SetObjectId(GetAvatarObjectId());
         ApplyItemToAvatar(m_spPreview);
         AddWornItem(m_spPreview);
@@ -725,8 +725,8 @@ void ItemPreview::ResetAvatarOutfit()
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
     if (pAvatar)
     {
-        pAvatar->FUN_1418bbe40();
-        pAvatar->FUN_1418bd830();
+        pAvatar->ClearPreview();
+        pAvatar->ReapplyPose();
         ResetCamera();
     }
     m_items.clear();
@@ -740,7 +740,7 @@ void ItemPreview::FUN_140d3fa30()
     if (pAvatar)
     {
         pAvatar->vfunc_3();
-        pAvatar->FUN_1418bd830();
+        pAvatar->ReapplyPose();
         ResetCamera();
     }
     m_items.clear();
@@ -796,7 +796,7 @@ bool ItemPreview::IsItemWorn(MS2Ptr<CItem> spItem)
     {
         if (m_items[i] == 0)
             continue;
-        if (m_items[i]->FUN_1405276c0() == spItem->FUN_1405276c0())
+        if (m_items[i]->GetItemId() == spItem->GetItemId())
             return true;
     }
     return false;
@@ -856,10 +856,10 @@ int ItemPreviewMgr::OpenPreview(MS2Ptr<CItem> spItem, int nArg)
     UIItemPreviewDialog* pDialog = FindPreviewDialog(0x4ec2);
     if (pDialog == 0)
         return 0;
-    MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
+    MS2Ptr<CItemData> spData = FUN_14053f870(spItem->GetItemId());
     if (spData == 0)
         return 0;
-    if (!FUN_141b488c0(spData))
+    if (!IsPreviewable(spData))
     {
         FUN_141275260(0xf9, 1, 1);
         return 0;
@@ -930,7 +930,7 @@ void ItemPreviewMgr::SetHudMode(int bOn)
 {
     if (m_bHudOn == bOn)
         return;
-    MS2Ptr<ASMouseCursor> spHud = FUN_14025e7a0()->GetMouseCursor(6);
+    MS2Ptr<ASMouseCursor> spHud = GetGFxManager()->GetMouseCursor(6);
     if (spHud == 0)
         return;
     m_bHudOn = bOn;

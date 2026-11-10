@@ -27,38 +27,38 @@ public:
     CMouseController();                                     // 0x140ad1860
     virtual ~CMouseController();                            // 0x140ad1d20 (scalar deleting 0x140ad4810)
 
-    void FUN_140ad1da0(int nMsg, int nX, int nY);           // mouse message dispatcher (0x200 move, 0x201 down, 0x202 up, 0x2a3 leave)
-    void FUN_140ad1ef0();                                   // per-frame update
-    void FUN_140ad1f30(int nOldAction, int nNewAction);     // the player's action changed
+    void OnMouseMessage(int nMsg, int nX, int nY);           // mouse message dispatcher (0x200 move, 0x201 down, 0x202 up, 0x2a3 leave)
+    void Update();                                   // per-frame update
+    void OnActionChanged(int nOldAction, int nNewAction);     // the player's action changed
     void FUN_140ad2070();                                   // forget the click vectors
-    int FUN_140ad20f0(int bEnable);                         // switch the controller on / off (false when the option is missing)
+    int SetEnabled(int bEnable);                         // switch the controller on / off (false when the option is missing)
     int HasMode();                                   // is the controller on
     int FUN_140ad21f0();                                    // does the move vector differ from zero
     int FUN_140ad2220();                                   // move vector y > 0
     int FUN_140ad2260();                                   // move vector y < 0
     Vector3 GetMove();                        // the move vector
-    void FUN_140ad22d0();                                   // reset and go idle
+    void ResetToIdle();                                   // reset and go idle
     void FUN_140ad2300(const Vector3& pt);                 // spawn the click effect at pt
     void FUN_140ad23f0(int nX, int nY);                     // button released
     void FUN_140ad2660(int nX, int nY);                                // button pressed
-    void FUN_140ad26d0(int nX, int nY);                     // mouse moved while the button is held
+    void OnMouseMove(int nX, int nY);                     // mouse moved while the button is held
     void FUN_140ad2830();                                   // interact ray from the player
     int FUN_140ad2ac0(int nX, int nY, CStringW* pStrHint);  // cursor kind under the mouse (and its hint string)
-    void FUN_140ad2d80();                                   // hover update
+    void UpdateHover();                                   // hover update
     void FUN_140ad3040();                                   // movement progress check
     efd::Point3 FUN_140ad3260(Vector3 pt);      // direction towards pt in the map's plane
     Vector3 FUN_140ad3400(Vector3 pt);      // direction towards pt for side-view maps
     int FUN_140ad3550(int nX, int nY, Vector3* pOut);   // pick an interact strategy
     Vector3 FUN_140ad3740(int nX, int nY);          // pick a point with the scene pick
     Vector3 FUN_140ad3a60(int nX, int nY);          // intersect the cursor ray with the player's plane
-    Vector3 FUN_140ad3c70();                        // position of the player (or what it rides)
+    Vector3 GetPlayerPosition();                        // position of the player (or what it rides)
     int FUN_140ad3d60();                                    // any of the three slots occupied
     int FUN_140ad3dd0(int nX, int nY);                      // cursor inside the window
-    bool FUN_140ad3e80(egf::Entity* pEntity);       // entity may be clicked
+    bool IsEntityClickable(egf::Entity* pEntity);       // entity may be clicked
     bool FUN_140ad3fb0(const egf::EntityID& id);   // same, by entity id
-    void FUN_140ad4000(const Vector3* pPoint);      // remember the clicked point
+    void SetClickPoint(const Vector3* pPoint);      // remember the clicked point
     void FUN_140ad40b0();                                   // drop the selected strategy
-    int FUN_140ad4140(int nMapId);                          // map allows a special pick
+    int IsSpecialPickMap(int nMapId);                          // map allows a special pick
 
     int m_nMode;                                            // +0x08 0 off, 1 idle, 2 moving, 3 button held
     Vector3 m_vMove;                                // +0x0c

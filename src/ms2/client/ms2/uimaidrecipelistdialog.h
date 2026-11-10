@@ -29,7 +29,7 @@ public:
     virtual int vfunc_65();
     virtual void vfunc_67();
 
-    void FUN_1412dac40();                                   // fill the list with the recipes of the book
+    void FillRecipeList();                                   // fill the list with the recipes of the book
     void FUN_1412db660(int nBook, float fX, float fY);      // open on a recipe book at a screen position
     void FUN_1412db6c0();                                   // move to the position and rebuild the list
 
@@ -108,7 +108,7 @@ public:
     virtual void vfunc_67();
     virtual void vfunc_79(void* p);
 
-    void FUN_1412df370();                                   // run MS2Util.exe (this unused)
+    void RunMS2Util();                                   // run MS2Util.exe (this unused)
     void FUN_1412dea90(const CStringW& strSearch);         // fill the item list (the shop's items that match the search)
     template <class T> MS2Ptr<T> FUN_140f880c0(const CString& strName);     // bind a child control
 

@@ -25,10 +25,10 @@ public:
     virtual void vfunc_79(void* pData);                         // 79 0x141343bb0
 
     void FUN_141343c10(int nFrom, int nTo);                     // push the rows of ranks nFrom..nTo (any order)
-    void FUN_141343da0(int nRank);                              // m_180 = nRank; the reward text / icon and "showLastResult"
+    void SetLastResult(int nRank);                              // m_180 = nRank; the reward text / icon and "showLastResult"
     void FUN_1413440a0();                                       // read the mode and the reward item from the player's PvP info
     bool FUN_141344210(ASObj* pObj, int nRank, Unk_PvPRankEntry* pEntry);   // fill one row object
-    void FUN_141344780(int nRank);                              // push all rows, then FUN_141343da0
+    void FUN_141344780(int nRank);                              // push all rows, then SetLastResult
 
     int m_178;                                                  // +0x178 mode (2 = free-for-all, 5 = one punch)
     int m_17c;                                                  // +0x17c reward item id

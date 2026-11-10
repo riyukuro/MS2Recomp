@@ -28,14 +28,14 @@ public:
     virtual ~CSoapClient();
     void FUN_14176fcf0(CString strPath, int nMode);         // sets the mode: 2 = soap (keeps the path), else plain
     CString GetError();                                // the last error text
-    void FUN_14176fe30(CString strError);                   // keeps and logs an error text
-    int FUN_14176feb0();                                    // sends the pending UGC uploads (always 0)
-    MS2Ptr<CGameRankingWebResult> FUN_141770670(MS2Ptr<CGameRankingParam> spParam);   // the game ranking request
-    MS2Ptr<CMenteeSearchWebResult> FUN_141770be0(MS2Ptr<CMenteeSearchParam> spParam); // the mentee search request
-    MS2Ptr<CSoapResult> FUN_141771040(MS2Ptr<CUgcUploadCtrl> spCtrl, int nSize, void* pData);   // one UGC file upload
-    CString FUN_141771600(ATL::CComVariant vValue);         // a database value as text
-    CString FUN_141771900(int nValue);
-    CString FUN_1417719b0(__int64 nValue);
+    void SetError(CString strError);                   // keeps and logs an error text
+    int UploadPendingUgc();                                    // sends the pending UGC uploads (always 0)
+    MS2Ptr<CGameRankingWebResult> RequestGameRanking(MS2Ptr<CGameRankingParam> spParam);   // the game ranking request
+    MS2Ptr<CMenteeSearchWebResult> RequestMenteeSearch(MS2Ptr<CMenteeSearchParam> spParam); // the mentee search request
+    MS2Ptr<CSoapResult> UploadUgcFile(MS2Ptr<CUgcUploadCtrl> spCtrl, int nSize, void* pData);   // one UGC file upload
+    CString VariantToString(ATL::CComVariant vValue);         // a database value as text
+    CString IntToString(int nValue);
+    CString Int64ToString(__int64 nValue);
 private:
     MS2_LAYOUT_FRIEND;
     typedef MS2Ptr<CUgcUploadCtrl> UploadPtr;               // 16 bytes (0x140c39310 copy, 0x140c394b0 dtor)

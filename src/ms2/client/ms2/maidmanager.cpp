@@ -24,9 +24,9 @@ template<> Unk_PCBaseComp_a78* MS2Ptr<Unk_PCBaseComp_a78>::operator->() const;  
 #include "ms2/client/ms2/uiservice.h"  // C3: CUIService::FUN_141adc890
 
 class UIMaidDialog : public UIObject {public:
-    void FUN_1412d9680();   // C3: was free FUN_1412d9680
+    void UpdateStatus();   // C3: was free UpdateStatus
 public:
-    void FUN_1412d9b90();   // C3: was free FUN_1412d9b90
+    void UpdateProperty();   // C3: was free UpdateProperty
 };
 
 // ---- out-of-unit callees ----
@@ -136,20 +136,20 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
             }
         }
         m_mapMaid.SetAt(spMaid->m_nId, spMaid);
-        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e9d))) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4e9d))) != 0)
         {
             UIMaidDialog* pDlg = GetMaidDialog(0x4e9d);
             if (pDlg != 0)
-                ((class UIMaidDialog*)(class UIMaidDialog*)(pDlg))->FUN_1412d9680();
+                ((class UIMaidDialog*)(class UIMaidDialog*)(pDlg))->UpdateStatus();
         }
-        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec0))) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4ec0))) != 0)
         {
             void* pDlg = ((void*)CManufactureManager::GetManufactureDialog(0x4ec0));
             if (pDlg != 0)
             {
-                ((class UIManufactureDialog*)(void*)(pDlg))->FUN_1412e34c0();
+                ((class UIManufactureDialog*)(void*)(pDlg))->SetTitle();
                 if (bNewer)
-                    ((class UIManufactureDialog*)(void*)(pDlg))->FUN_1412e3990(0);
+                    ((class UIManufactureDialog*)(void*)(pDlg))->FillRecipeList(0);
             }
         }
     }
@@ -162,11 +162,11 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
     else if (cMode == 4)
     {
         int nActorId = pPacket->ReadInt32();
-        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e9d))) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4e9d))) != 0)
         {
             UIMaidDialog* pDlg = GetMaidDialog(0x4e9d);
             if (pDlg != 0)
-                ((class UIMaidDialog*)(class UIMaidDialog*)(pDlg))->FUN_1412d9b90();
+                ((class UIMaidDialog*)(class UIMaidDialog*)(pDlg))->UpdateProperty();
         }
         PCBase* pPC = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd1320(nActorId));
         if (pPC != 0)
@@ -178,7 +178,7 @@ void CUserMaidManager::OnPacket(CInPacket* pPacket)
     }
     if (cMode == 1 || cMode == 2 || cMode == 3)
     {
-        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4ec9))) != 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4ec9))) != 0)
         {
             void* pDlg = ((void*)CManufactureManager::GetManufactureStatus(0x4ec9));
             if (pDlg != 0)

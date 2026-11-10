@@ -58,9 +58,9 @@ public:
     void FUN_1419d11b0(CInPacket& packet);                      // answer: the material items
     void FUN_1419d12f0(CInPacket& packet);                      // answer: the option proxy (price, ranges)
     void FUN_1419d1490(int nNormal, int nSpecial, int nValue);  // show the old and the new option (the merge answer)
-    void FUN_1419d1ad0(MS2Ptr<CItem> spItem);                   // show the merge result
-    void FUN_1419d1d20(int nError);                             // show the message of an error code
-    int FUN_1419d27e0(ItemInfoSlot& slot);                      // is the movie idle (no merge animation running)
+    void ShowMergeResult(MS2Ptr<CItem> spItem);                   // show the merge result
+    void ShowMergeError(int nError);                             // show the message of an error code
+    int CanShowTooltip(ItemInfoSlot& slot);                      // is the movie idle (no merge animation running)
 
     // Sorts the option ranges for the preview: the fixed order of m_optionOrder first, the rest by name.
     class OptionLess

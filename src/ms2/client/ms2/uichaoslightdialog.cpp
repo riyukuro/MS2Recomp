@@ -95,7 +95,7 @@ struct Unk_MapController
     char m_pad_00[0x58];
     NiTexturingProperty::Map* m_pMap;
     // @0x141044480
-    NiTexturingProperty::Map* FUN_141044480() { return m_pMap; }
+    NiTexturingProperty::Map* GetMap() { return m_pMap; }
 };
 
 // The effect node (EffectNode, 400 bytes): the walker skips the subtrees of the ones with mode 1.
@@ -104,7 +104,7 @@ struct Unk_EffectNodeView
     char m_pad_00[0x17c];
     int m_nMode;
     // @0x1410444a0
-    int FUN_1410444a0() { return m_nMode; }
+    int GetMode() { return m_nMode; }
 };
 
 // CEffect's run-time type test (the effects are NiRefObject-based; the helpers are inline COMDATs of this obj).
@@ -142,7 +142,7 @@ class Unk_EffectMgr
 {
 public:
     // @0x141044430
-    Unk_EsGroupMap* FUN_141044430() { return &m_mapGroups; }
+    Unk_EsGroupMap* GetGroupMap() { return &m_mapGroups; }
     char m_pad_00[0x48];
     Unk_EsGroupMap m_mapGroups;                                     // +0x48
 };
@@ -185,8 +185,8 @@ void UIChaosLightDialog::OnLoadComplete()
     obj.SetMemberFloat("r", pParam->m_fRed);
     obj.SetMemberFloat("g", pParam->m_fGreen);
     obj.SetMemberFloat("b", pParam->m_fBlue);
-    obj.FUN_1407cbbe0("apply", FUN_1410420c0());
-    m_30->Invoke("initData", obj.FUN_1422bb870());
+    obj.SetBoolMember("apply", FUN_1410420c0());
+    m_30->Invoke("initData", obj.GetValue());
 }
 
 // @0x141040d20
@@ -198,7 +198,7 @@ int UIChaosLightDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             bool bApply = data.PopBool();
-            FUN_1410411e0(bApply);
+            SetApply(bApply);
         }
         return 1;
     }
@@ -242,7 +242,7 @@ int UIChaosLightDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
 }
 
 // @0x1410411e0
-void UIChaosLightDialog::FUN_1410411e0(bool bApply)
+void UIChaosLightDialog::SetApply(bool bApply)
 {
     FUN_1410420a0(bApply);
     if (bApply)
@@ -296,7 +296,7 @@ Unk_NodeWalker::~Unk_NodeWalker()
 }
 
 // @0x141044210
-void Unk_NodeWalker::FUN_141044210(NiNode* pNode)
+void Unk_NodeWalker::QueueChildren(NiNode* pNode)
 {
     int nCount = pNode->GetArrayCount();
     for (int i = 0; i < nCount; i++)
@@ -313,13 +313,13 @@ NiAVObject* Unk_NodeWalker::FUN_1410446c0(bool bChildren)
     if (m_list.IsEmpty())
         return NULL;
     NiAVObject* pObject = m_list.RemoveTail();
-    if (((void*)NiObject::DynamicCast(&EffectNode::ms_RTTI, (class NiObject const*)(pObject))) && ((Unk_EffectNodeView*)pObject)->FUN_1410444a0() == 1)
+    if (((void*)NiObject::DynamicCast(&EffectNode::ms_RTTI, (class NiObject const*)(pObject))) && ((Unk_EffectNodeView*)pObject)->GetMode() == 1)
         return FUN_1410446c0(bChildren);
     if (bChildren)
     {
         NiNode* pNode = (NiNode*)((void*)NiObject::DynamicCast((class NiRTTI const*)(&NiNode::ms_RTTI), (class NiObject const*)(pObject)));
         if (pNode)
-            FUN_141044210(pNode);
+            QueueChildren(pNode);
     }
     return pObject;
 }
@@ -382,7 +382,7 @@ void ChaosLightEffect::vfunc_4()
 {
     m_b2e = true;
     MS2_FOR_EACH(NiAVObjectPtr spNode, m_vecObjects)
-        FUN_1410423d0(spNode);
+        AddLayers(spNode);
     m_dStartTime2 = TSingleton<CMainSystem>::GetInstance()->GetGameTime();
 }
 
@@ -420,7 +420,7 @@ void ChaosLightEffect::vfunc_13(TransitionData* pFrom, TransitionData* pTo, floa
 bool ChaosLightEffect::vfunc_9()
 {
     if (m_param.m_bBlink)
-        FUN_1410420d0();
+        UpdateBlink();
     return TransitionEffect::vfunc_9();
 }
 
@@ -438,7 +438,7 @@ void FUN_141041ea0(const ChaosLightEffectParam* pParam)
     s_defaultParam.FUN_141043a30(*pParam);
     if (!s_bApply)
         return;
-    Unk_EsGroupMap* pMap = reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->FUN_141044430();
+    Unk_EsGroupMap* pMap = reinterpret_cast<Unk_EffectMgr*>(TSingleton<CEffectService>::GetInstance())->GetGroupMap();
     for (Unk_EsGroupMap::iterator itGroup = pMap->begin(); itGroup != pMap->end(); ++itGroup)
     {
         Unk_EsEffectGroup* pGroup = itGroup->second;
@@ -477,7 +477,7 @@ bool FUN_1410420c0()
 
 // @0x1410420d0
 // Blink: the colour toggles between black and the current colour, the phase speeds up after blinkBoostStart seconds.
-void ChaosLightEffect::FUN_1410420d0()
+void ChaosLightEffect::UpdateBlink()
 {
     ChaosLightEffectParam kParam;
     kParam.FUN_141043a30(m_param);
@@ -512,7 +512,7 @@ void ChaosLightEffect::FUN_1410420d0()
 
 // @0x1410423d0
 // Put a chaos light layer on every mesh below spObject that has a chaos material and whose glow map no controller drives.
-void ChaosLightEffect::FUN_1410423d0(NiAVObjectPtr spObject)
+void ChaosLightEffect::AddLayers(NiAVObjectPtr spObject)
 {
     if (spObject == NULL)
         return;
@@ -538,7 +538,7 @@ void ChaosLightEffect::FUN_1410423d0(NiAVObjectPtr spObject)
                 {
                     Unk_MapController* pMapCtrl = (Unk_MapController*)((void*)NiObject::DynamicCast(&NiTextureTransformController::ms_RTTI, (class NiObject const*)(pCtrl)));
                     pCtrl = pCtrl->GetNext();
-                    if (pMapCtrl && pGlowMap == pMapCtrl->FUN_141044480())
+                    if (pMapCtrl && pGlowMap == pMapCtrl->GetMap())
                     {
                         bDriven = true;
                         break;
@@ -565,16 +565,16 @@ MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 MS2_REPLACE_METHOD(0x141040B40, UIChaosLightDialog, GetTypeName, 61, 0x55C7BAFE);
 MS2_REPLACE_METHOD(0x141040B90, UIChaosLightDialog, OnLoadComplete, 389, 0xC4F956FC);
 MS2_REPLACE_METHOD(0x141040D20, UIChaosLightDialog, vfunc_28, 1166, 0xB0797E63);
-MS2_REPLACE_METHOD(0x1410411E0, UIChaosLightDialog, FUN_1410411e0, 64, 0x8A3224F6);
+MS2_REPLACE_METHOD(0x1410411E0, UIChaosLightDialog, SetApply, 64, 0x8A3224F6);
 MS2_REPLACE_METHOD(0x141043A30, ChaosLightEffectParam, FUN_141043a30, 270, 0xE2E1D133);
-MS2_REPLACE_METHOD(0x141044210, Unk_NodeWalker, FUN_141044210, 110, 0x1E0CF115);
+MS2_REPLACE_METHOD(0x141044210, Unk_NodeWalker, QueueChildren, 110, 0x1E0CF115);
 MS2_REPLACE_METHOD(0x1410446C0, Unk_NodeWalker, FUN_1410446c0, 176, 0x1AA4469C);
 MS2_REPLACE_METHOD(0x1410447B0, Unk_NodeWalker, FUN_1410447b0, 50, 0x33965F07);
 MS2_REPLACE_METHOD(0x1410419E0, ChaosLightEffect, vfunc_4, 246, 0x59ADE1A6);
 MS2_REPLACE_METHOD(0x141041AE0, ChaosLightEffect, vfunc_7, 307, 0x9E354AEA);
 MS2_REPLACE_METHOD(0x141041C20, ChaosLightEffect, vfunc_13, 540, 0x2DCE3D62);
 MS2_REPLACE_METHOD(0x141041E50, ChaosLightEffect, vfunc_9, 50, 0x6D5BDC9F);
-MS2_REPLACE_METHOD(0x1410420D0, ChaosLightEffect, FUN_1410420d0, 747, 0x30F00AC9);
+MS2_REPLACE_METHOD(0x1410420D0, ChaosLightEffect, UpdateBlink, 747, 0x30F00AC9);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cab8e0-0x142cab980 .text$yd
 

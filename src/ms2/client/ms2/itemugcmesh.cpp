@@ -812,7 +812,7 @@ int FUN_141424970(MS2Ptr<CItem> spItem, Unk_UgcPlayer* pPlayer)
 {
     if (spItem == 0)
         return 0;
-    MS2Ptr<CItemData> spData = FUN_14053f870(spItem->FUN_1405276c0());
+    MS2Ptr<CItemData> spData = FUN_14053f870(spItem->GetItemId());
     if (spData == 0)
         return 0;
     if (((Unk_UgcItemData*)spData.operator->())->IsAvatarColorItem())
@@ -1518,6 +1518,9 @@ CString FUN_1414218c0(const CString& strPath, const CString& strSuffix)
 MS2_REPLACE(0x1414218C0, FUN_1414218c0, 477, 0x1EC93043);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cb21e0-0x142cb2230 .text$yd
+// Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@@0@AEAV10@@Z 0x141427210
 // sfr34: the bound-member DelegateImpl's clone (vfunc_1) and copy ctor replace the FUN_1414281e0 stand-in, which
 // copied from its second argument instead of this and called the copy ctor under a FUN_ twin.
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCItemExtraData@@P81@EAA_NAEBVItemColorEx@@V?$MS2Ptr@VCItemData@@@@@Z@std@@@?$Delegate@$$A6A_NAEBVItemColorEx@@V?$MS2Ptr@VCItemData@@@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1414281e0

@@ -15,7 +15,7 @@
 #include "hook/ms2hook.h"
 
 // Out-of-unit callees.
-class Unk_ServiceManager* FUN_1413f9850();                                       // the game's service manager
+class Unk_ServiceManager* GetServiceManager();                                       // the game's service manager
 int XmlGetAttr(class TiXmlElement*, char const*, class CMsTime&);   // C3: was FUN_140873600
 
 // @0x1408690a0
@@ -36,7 +36,7 @@ Timer::~Timer()
 }
 
 // @0x140868750
-void Timer::FUN_140868750(unsigned int ms)
+void Timer::Start(unsigned int ms)
 {
     m_nPeriod = ms;
     m_nPauseTime = 0;
@@ -48,11 +48,11 @@ void Timer::FUN_140868750(unsigned int ms)
 // @0x1408687c0
 void Timer::FUN_1408687c0()
 {
-    FUN_140868750(0x3fffffff);
+    Start(0x3fffffff);
 }
 
 // @0x1408687f0
-void Timer::FUN_1408687f0()
+void Timer::Reset()
 {
     m_nPeriod = 0;
     m_fLastRatio = 0.0f;
@@ -65,13 +65,13 @@ void Timer::FUN_140868820()
 }
 
 // @0x140868850
-void Timer::FUN_140868850()
+void Timer::Pause()
 {
     m_nPauseTime = (int)FUN_1408688e0();
 }
 
 // @0x140868880
-void Timer::FUN_140868880()
+void Timer::Resume()
 {
     int d = (int)FUN_1408688e0() - m_nPauseTime;
     m_nStart += d;
@@ -83,25 +83,25 @@ void Timer::FUN_140868880()
 __int64 Timer::FUN_1408688e0()
 {
     if (m_pClock == 0)
-        m_pClock = ((efd::ServiceManager*)FUN_1413f9850())->GetClock(0xe001001b);
+        m_pClock = ((efd::ServiceManager*)GetServiceManager())->GetClock(0xe001001b);
     return (__int64)(m_pClock->GetCurrentTime() * 1000.0);
 }
 
 // @0x140868940
 float Timer::FUN_140868940()
 {
-    if (FUN_140868c00() != 0)
+    if (IsExpired() != 0)
         return 1.0f;
-    return (float)FUN_140868a70() / (float)FUN_140868af0();
+    return (float)FUN_140868a70() / (float)GetPeriod();
 }
 
 // @0x1408689a0
 float Timer::FUN_1408689a0()
 {
     float r;
-    if (FUN_140868c00() != 0)
+    if (IsExpired() != 0)
         return 1.0f;
-    r = (float)FUN_140868a70() / (float)FUN_140868af0();
+    r = (float)FUN_140868a70() / (float)GetPeriod();
     r = r + r * 2.0f;
     if (1.0f < r)
         r = 1.0f;
@@ -131,7 +131,7 @@ int Timer::FUN_140868ab0()
 }
 
 // @0x140868af0
-int Timer::FUN_140868af0() const
+int Timer::GetPeriod() const
 {
     if (m_nPeriod == 0)
         return 1;
@@ -148,7 +148,7 @@ float Timer::FUN_140868b20()
 }
 
 // @0x140868b80
-int Timer::FUN_140868b80() const
+int Timer::IsArmed() const
 {
     if (m_nPeriod == 0)
         return 0;
@@ -156,19 +156,19 @@ int Timer::FUN_140868b80() const
 }
 
 // @0x140868ba0
-int Timer::FUN_140868ba0()
+int Timer::IsRunning()
 {
     if (m_nPeriod == 0)
         return false;
-    return FUN_140868a70() < FUN_140868af0();
+    return FUN_140868a70() < GetPeriod();
 }
 
 // @0x140868c00
-int Timer::FUN_140868c00()
+int Timer::IsExpired()
 {
     if (m_nPeriod == 0)
         return false;
-    return FUN_140868a70() >= FUN_140868af0();
+    return FUN_140868a70() >= GetPeriod();
 }
 
 // @0x140868c60
@@ -196,7 +196,7 @@ void TimeRange::FUN_140868d60(TiXmlElement* pNode)
 }
 
 // @0x140868db0
-void TimeRange::FUN_140868db0(COutputStream& out) const
+void TimeRange::Write(COutputStream& out) const
 {
     if (m_start.Get() == 0 || m_end.Get() == 0)
     {
@@ -211,7 +211,7 @@ void TimeRange::FUN_140868db0(COutputStream& out) const
 }
 
 // @0x140868e70
-void TimeRange::FUN_140868e70(CInPacket& in)
+void TimeRange::Read(CInPacket& in)
 {
     int present = in.ReadUInt8();
     if (present == 1)
@@ -222,19 +222,19 @@ void TimeRange::FUN_140868e70(CInPacket& in)
 }
 
 // @0x140868f20
-CMsTime& TimeRange::FUN_140868f20()
+CMsTime& TimeRange::GetStart()
 {
     return m_start;
 }
 
 // @0x140868f40
-CMsTime& TimeRange::FUN_140868f40()
+CMsTime& TimeRange::GetEnd()
 {
     return m_end;
 }
 
 // @0x140868f60
-bool TimeRange::FUN_140868f60(const CMsTime& t) const
+bool TimeRange::IsInRange(const CMsTime& t) const
 {
     if (m_start.Get() <= t.Get())
     {
@@ -256,7 +256,7 @@ bool TimeRange::FUN_140868fd0(const CMsTime& t, ATL::CTimeSpan before, ATL::CTim
 }
 
 // @0x140869060
-bool TimeRange::FUN_140869060() const
+bool TimeRange::IsValid() const
 {
     if (m_start.Get() > m_end.Get())
         return false;

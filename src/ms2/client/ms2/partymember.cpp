@@ -100,7 +100,7 @@ MS2_REPLACE_METHOD(0x141637BB0, CPartyMember, FUN_141637bb0, 15, 0xAC153A31);
 // @0x141637bd0
 CStringW CPartyMember::GetName()
 {
-    return user.FUN_1408f19e0();
+    return user.GetName();
 }
 MS2_REPLACE_METHOD(0x141637BD0, CPartyMember, GetName, 65, 0x67BF551D);
 

@@ -50,7 +50,7 @@ public:
     void RemoveEvent(MS2Ptr<GameEventAttendGiftCli>);
     bool HasActiveEvents();
     MS2Ptr<GameEventAttendGiftCli> FindEventByKind(int);
-    int FUN_14102ccd0();
+    int GetTotalUsablePoints();
     void SelectEventByIndex(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_14102cea0(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_14102cf30(const Scaleform::GFx::FunctionHandler::Params&);
@@ -60,10 +60,10 @@ public:
     void FUN_14102d610(GameEventVariable*);
     void FUN_14102d650(GameEventVariable*);
     void RefreshAll();
-    void FUN_14102d6e0();
-    void FUN_14102da40();
-    void FUN_14102e490();
-    void FUN_14102e6a0();
+    void UpdateEventButtons();
+    void UpdateGiftList();
+    void UpdatePayButton();
+    void UpdateUsePointButton();
     void RebuildActiveEvents();
     void UpdateSelectedEvent();
     void OnAttendancePacket(CInPacket&);

@@ -42,20 +42,20 @@ class ASDialog : public ASDisplayObjectContainer { public: virtual void vfunc_2(
 class Unk_HsInfo : public CPtred { };
 
 // The trigger service: the camera steps.
-class Unk_McEntityRules* FUN_140ad4b90();   // C3: the definer's signature (0x140ad4b90, unit_140ad1860); the trigger service
+class Unk_McEntityRules* GetTriggerService();   // C3: the definer's signature (0x140ad4b90, unit_140ad1860); the trigger service
 static const unsigned s_nCameraModel = 0x65338ec3;           // the FlatModel the camera triggers show (0x142e91444)
 
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-void* FUN_140bb9630(int n);                                     // int -> delegate user data
-int FUN_140bb9640(void* p);                                     // delegate user data -> int
+void* IntToUserData(int n);                                     // int -> delegate user data
+int UserDataToInt(void* p);                                     // delegate user data -> int
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 
 // @0x140fc07a0
 UIWatchAGameDialog::UIWatchAGameDialog()
     : m_bFolded(false), m_nValue(0), m_nCharId(0), m_bFlag(false), m_nCamera(-1), m_foldButton(0)
 {
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
     for (unsigned int i = 0; i < 4; i++)
     {
         m_buttons[i] = 0;
@@ -117,7 +117,7 @@ void UIWatchAGameDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_bFolded = false;
-    FUN_141925fa0("m_dragBar");
+    BindDragBar("m_dragBar");
     for (int i = 0; i < 4; i++)
     {
         int nIndex = i + 1;
@@ -128,31 +128,31 @@ void UIWatchAGameDialog::OnLoadComplete()
         m_buttons[i] = m_clips[i]->FUN_140acce30<ASButton>("m_button");
         if (m_buttons[i] == 0)
             continue;
-        m_buttons[i]->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1380), FUN_140bb9630(i));
+        m_buttons[i]->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1380), IntToUserData(i));
     }
     m_foldButton = GetChild<ASButton>("m_foldButton");
     m_foldButton->FUN_1422ce240(WagClickDelegate(this, &UIWatchAGameDialog::FUN_140fc1440), 0);
     {
         CStringW strKey(L"s_watchagame_change_camera");
         CString strIcon("./Data/Resource/Image/skill/icon/ChangeCamera.png");
-        FUN_140fc1560(0, strIcon, GetStringCommonByKey(strKey));
+        SetActionButton(0, strIcon, GetStringCommonByKey(strKey));
     }
     {
         CStringW strKey(L"s_watchagame_reset_camera");
         CString strIcon("./Data/Resource/Image/skill/icon/MoveStage.png");
-        FUN_140fc1560(1, strIcon, GetStringCommonByKey(strKey));
+        SetActionButton(1, strIcon, GetStringCommonByKey(strKey));
     }
     {
         CStringW strKey(L"s_music_concert_emotion_shake");
         CString strIcon("./Data/Resource/Image/skill/icon/Lightstick.png");
-        FUN_140fc1560(2, strIcon, GetStringCommonByKey(strKey));
+        SetActionButton(2, strIcon, GetStringCommonByKey(strKey));
     }
     {
         CStringW strKey(L"s_music_concert_emotion_clap");
         CString strIcon("./Data/Resource/Image/skill/icon/Clap.png");
-        FUN_140fc1560(3, strIcon, GetStringCommonByKey(strKey));
+        SetActionButton(3, strIcon, GetStringCommonByKey(strKey));
     }
-    ((CTriggerService*)FUN_140ad4b90())->FUN_1418637a0(s_nCameraModel, m_cameras);
+    ((CTriggerService*)GetTriggerService())->FindObjectsByModel(s_nCameraModel, m_cameras);
     FUN_140fc0b60(m_bFlag);
 }
 
@@ -170,7 +170,7 @@ void UIWatchAGameDialog::FUN_140fc1380(const Scaleform::GFx::FunctionHandler::Pa
 {
     if (m_30 == 0)
         return;
-    int nIndex = FUN_140bb9640(params.pUserData);
+    int nIndex = UserDataToInt(params.pUserData);
     if (nIndex >= 4 || nIndex < 0)
         return;
     switch (nIndex)
@@ -179,13 +179,13 @@ void UIWatchAGameDialog::FUN_140fc1380(const Scaleform::GFx::FunctionHandler::Pa
         FUN_140fc1710();
         break;
     case 1:
-        FUN_140fc17d0();
+        ResetCamera();
         break;
     case 2:
-        FUN_140fc1850(0x5607ed2);
+        PlayEmotion(0x5607ed2);
         break;
     case 3:
-        FUN_140fc1850(0x5607ed1);
+        PlayEmotion(0x5607ed1);
         break;
     }
 }
@@ -208,7 +208,7 @@ void UIWatchAGameDialog::FUN_140fc1440(const Scaleform::GFx::FunctionHandler::Pa
 }
 
 // @0x140fc1560
-void UIWatchAGameDialog::FUN_140fc1560(int nIndex, const CString& strIcon, const CStringW& strTooltip)
+void UIWatchAGameDialog::SetActionButton(int nIndex, const CString& strIcon, const CStringW& strTooltip)
 {
     if (m_30 == 0)
         return;
@@ -232,20 +232,20 @@ void UIWatchAGameDialog::FUN_140fc1710()
     if (nNext >= (int)m_cameras.size())
         m_nCamera = 0;
     int nObject = m_cameras[m_nCamera];
-    ((CTriggerService*)FUN_140ad4b90())->QueueCameraStep(nObject, 1);
+    ((CTriggerService*)GetTriggerService())->QueueCameraStep(nObject, 1);
 }
 
 // @0x140fc17d0
-void UIWatchAGameDialog::FUN_140fc17d0()
+void UIWatchAGameDialog::ResetCamera()
 {
     if (m_nCamera < 0 || m_nCamera >= (int)m_cameras.size())
         return;
     int nObject = m_cameras[m_nCamera];
-    ((CTriggerService*)FUN_140ad4b90())->QueueCameraStep(nObject, 0);
+    ((CTriggerService*)GetTriggerService())->QueueCameraStep(nObject, 0);
 }
 
 // @0x140fc1850
-void UIWatchAGameDialog::FUN_140fc1850(int nEmotion)
+void UIWatchAGameDialog::PlayEmotion(int nEmotion)
 {
     PC* pPC = static_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)

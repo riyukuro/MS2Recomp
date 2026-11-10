@@ -53,28 +53,28 @@ public:
 
     bool FUN_14191e9e0(int nResult, const CMsgBoxData& data);   // the close confirmation
     void FUN_14191f620(int nItemId);                    // preview an item ("buildCurrentItem")
-    void FUN_14191f8e0(unsigned nIndex);                // play the nIndex-th listed emotion
-    void FUN_14191f970();                               // hide the cap
-    void FUN_14191f9d0();                               // show the cap
-    int FUN_14191fa30();                                // restore and leave
+    void PlayEmotion(unsigned nIndex);                // play the nIndex-th listed emotion
+    void HideCap();                               // hide the cap
+    void ShowCap();                               // show the cap
+    int RestoreAndLeave();                                // restore and leave
     void FUN_14191fae0();                               // close (asks when there are unsaved changes)
     void FUN_14191fc40(int bChanged);                   // enable "m_save" / "m_reset"
-    void FUN_14191fe00();                               // play the apply effect
+    void PlayApplyEffect();                               // play the apply effect
     void FUN_14191ff70();                               // refresh the worn list and the selection
     void FUN_14191ffb0();
     int FUN_14191fff0();                                // "m_save" is enabled
-    void FUN_1419200c0(int bForce);                     // "buildEquipItems"
+    void BuildEquipItems(int bForce);                     // "buildEquipItems"
     void FUN_1419206a0(int* pnTab, MS2Ptr<CItemData> spData);   // the tab an item belongs to (-1: none)
-    void FUN_141920770();                               // clear the item lists
+    void ClearItemLists();                               // clear the item lists
     void FUN_1419207c0(int nTab);                       // select the worn item of the tab
     void FUN_141920aa0(int nItemId);                    // preview an item id
     void OnClickNew();                               // "OnClickNew"
     void OnClickAdd();                               // "OnClickAdd": store the cap transform of the hat
     void OnClickDelete();                               // "OnClickDelete"
     void FUN_141921190(int nItemId);                    // enable "m_new" / "m_add" / "m_delete"
-    void FUN_1419213f0(NotifyObject* pNotify);          // NotifyChangeActiveMyCodiTab
-    bool FUN_141921460();                               // the previewed item has colours
-    int FUN_141921500();                                // the selected colour index
+    void OnChangeActiveMyCodiTab(NotifyObject* pNotify);          // NotifyChangeActiveMyCodiTab
+    bool HasColors();                               // the previewed item has colours
+    int GetSelectedColorIndex();                                // the selected colour index
 
 private:
     MS2_LAYOUT_FRIEND;

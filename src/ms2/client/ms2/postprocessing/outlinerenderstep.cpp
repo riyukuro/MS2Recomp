@@ -55,7 +55,7 @@ bool OutlineRenderStep::vfunc_15(unsigned int a, void* b)
 bool OutlineRenderStep::vfunc_23()
 {
     void* p;
-    FUN_141626ac0(this);
+    ClearRenderClicks(this);
     p = FUN_140c8f690(FUN_1416b4990(this, "OuterBlur_H", 0, 0, FUN_140c8f680(&((void**)m_98)[10]), 0, 0, FUN_140c8f680(&m_b8), "OuterGaussianBlur_H", 0, 0, 0));
     if (p == 0)
         return false;
@@ -88,7 +88,7 @@ bool ReloadablePostProcess::vfunc_14() { return false; }
 bool ReloadablePostProcess::vfunc_13() { return false; }
 
 // @0x141626ac0
-void FUN_141626ac0(void* p)
+void ClearRenderClicks(void* p)
 {
     ((NiTListBase<NiTPointerAllocator<unsigned __int64>, efd::SmartPointer<NiRenderClick> >*)((char*)p + 0x50))->RemoveAll();
 }
@@ -126,5 +126,5 @@ MS2_REPLACE_METHOD(0x141626970, OutlineRenderStep, vfunc_16, 66, 0x5D0A5722);
 MS2_REPLACE_METHOD(0x141626a90, OutlineRenderStep, GetRTTI, 13, 0xE04CAFAB);
 MS2_REPLACE_METHOD(0x141626aa0, ReloadablePostProcess, vfunc_14, 8, 0x41132FCD);
 MS2_REPLACE_METHOD(0x141626ab0, ReloadablePostProcess, vfunc_13, 8, 0x41132FCD);
-MS2_REPLACE(0x141626ac0, FUN_141626ac0, 31, 0xC6A21E5A);
+MS2_REPLACE(0x141626ac0, ClearRenderClicks, 31, 0xC6A21E5A);
 

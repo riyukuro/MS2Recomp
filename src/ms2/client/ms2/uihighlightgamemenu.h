@@ -26,20 +26,20 @@ struct Unk_HlBitRef
 {
     Unk_HlBits* m_pBits;
     int m_nPos;
-    bool FUN_140c24ac0();                               // 0x140c24ac0 the bit
+    bool IsSet();                               // 0x140c24ac0 the bit
     Unk_HlBitRef(Unk_HlBits* pBits, int nPos);          // 0x140c249d0
 };
 struct Unk_HlBits
 {
     unsigned char m_a[1];
     Unk_HlBits& FUN_140c24770();                        // 0x140c24770 ctor (all clear)
-    Unk_HlBits& FUN_140c261c0();                        // 0x140c261c0 set all
-    Unk_HlBits& FUN_140c26080();                        // 0x140c26080 clear all
-    Unk_HlBits& FUN_140c260a0(int nPos, bool bSet);     // 0x140c260a0 Set
-    bool FUN_140c261e0(int nPos) const;                 // 0x140c261e0 Test
+    Unk_HlBits& SetAll();                        // 0x140c261c0 set all
+    Unk_HlBits& ClearAll();                        // 0x140c26080 clear all
+    Unk_HlBits& SetBit(int nPos, bool bSet);     // 0x140c260a0 Set
+    bool IsBitSet(int nPos) const;                 // 0x140c261e0 Test
     void FUN_140c26280(unsigned char nFill);            // 0x140c26280 Fill
-    void FUN_140c262e0();                               // 0x140c262e0 clear the unused bits
-    Unk_HlBitRef FUN_140c25f10(int nPos);               // 0x140c25f10 operator[]
+    void ClearUnusedBits();                               // 0x140c262e0 clear the unused bits
+    Unk_HlBitRef GetBitRef(int nPos);               // 0x140c25f10 operator[]
 };
 MS2_CHECK_SIZE(Unk_HlBits, 1);
 
@@ -66,14 +66,14 @@ public:
     virtual void vfunc_22(void* pItem);                 // UIItemEventListener 22 0x140c22ea0
 
     bool IsActive();                               // 0x140c22ce0 the icon count is non-zero
-    void FUN_140c244b0(int* pPos, bool bSet);           // 0x140c244b0 set a socket bit
-    void FUN_140c22f50();                               // ask every action, send the "setMenu" list
-    int  FUN_140c231b0();                               // "inven": a better piece of equipment is in the bag
+    void SetSocketBit(int* pPos, bool bSet);           // 0x140c244b0 set a socket bit
+    void UpdateMenu();                               // ask every action, send the "setMenu" list
+    int  HasBetterEquipmentInBag();                               // "inven": a better piece of equipment is in the bag
     int  FUN_140c234d0();                               // "skillbook": a skill point can be spent
     int  FUN_140c235d0();                               // class 6: a gem stone page is open
     int  FUN_140c236f0();                               // "characterinfo": the stat window has a point to spend
     int  FUN_140c237a0();                               // "enchantscroll": a scroll and an item that can use it
-    int  FUN_140c23f10();                               // "gemstone": a socket and a gem stone for it
+    int  HasUsableGemStone();                               // "gemstone": a socket and a gem stone for it
     void FUN_140c24470(NotifyObject* pObj);             // "NotifyGameStart": reset the gem stone bits
 
 private:

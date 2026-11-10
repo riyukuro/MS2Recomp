@@ -45,7 +45,7 @@ public:
 class Unk_SSGDlg4e28 : public UIDialog
 {
 public:
-    void FUN_140ea5f80();
+    void MarkDirty();
 private:
     char m_pad_178[0x1a0 - 0x178];
     int m_nDirty;
@@ -69,9 +69,9 @@ void DestroyItemInfoSlot(const CString& strBindID);
 void CreateItemInfoSlot(const CString& strName, MS2Ptr<CItem> pItem, int a1, int a2, int a3);
 
 // quests: the ids of the package quests come from the game rule table
-void* FUN_1401c0d90();
+void* GetGameRule();
 void* FUN_140764020();   // C3: was FUN_140764020
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 int FUN_14074b030(CQuestData* pData);                           // the quest id
 #define LgQuestLevel(pData) ((unsigned short)(pData)->m_conditions[0]->m_target.GetFirstValue())
 
@@ -90,7 +90,7 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 // @0x140ea44b0
 UILevelUpPackageDialog::UILevelUpPackageDialog() : m_1a8(GetTypeName())
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140ea45b0
@@ -104,7 +104,7 @@ int UILevelUpPackageDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    FUN_140bfc4b0()->FUN_141aa87c0(this);
+    FUN_140bfc4b0()->AddListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     return 1;
 }
@@ -114,7 +114,7 @@ void UILevelUpPackageDialog::vfunc_67()
 {
     for (size_t i = 0; i < m_188.GetCount(); i++)
         DestroyItemInfoSlot(m_188.GetAt(i));
-    FUN_140bfc4b0()->FUN_141aa8850(this);
+    FUN_140bfc4b0()->RemoveListener(this);
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
     UIDialog::vfunc_67();
 }
@@ -170,18 +170,18 @@ void UILevelUpPackageDialog::vfunc_o178_10(void* pQuestRaw)
     if (spData->m_350.m_value != 1)
         return;
     FUN_140ea4d00();
-    if (FUN_140ea4b70() == 0) {
+    if (HasOpenPackageQuest() == 0) {
         vfunc_67();
         if (Unk_SSGDlg4e28* pMenu = ((class Unk_SSGDlg4e28*)FindGameMenuDialog(0x4e28)))
-            pMenu->FUN_140ea5f80();
+            pMenu->MarkDirty();
     }
 }
 
 // @0x140ea4b70
-int UILevelUpPackageDialog::FUN_140ea4b70()
+int UILevelUpPackageDialog::HasOpenPackageQuest()
 {
     ATL::CAtlArray<unsigned> ids;
-    ((CGameRule*)FUN_1401c0d90())->FUN_14047c870(ids);
+    ((CGameRule*)GetGameRule())->FUN_14047c870(ids);
     if (ids.GetCount() == 0)
         return 0;
     BOOL bAllIdle = TRUE;
@@ -203,9 +203,9 @@ void UILevelUpPackageDialog::FUN_140ea4d00()
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     ATL::CAtlArray<unsigned> ids;
-    ((CGameRule*)FUN_1401c0d90())->FUN_14047c870(ids);
+    ((CGameRule*)GetGameRule())->FUN_14047c870(ids);
     for (size_t i = 0; i < ids.GetCount(); i++) {
-        MS2Ptr<CQuestData> spData = FUN_14074bc40(ids[i]);
+        MS2Ptr<CQuestData> spData = GetQuestData(ids[i]);
         if (spData == 0)
             continue;
         if (spData->m_conditions.GetCount() > 0) {
@@ -224,7 +224,7 @@ void UILevelUpPackageDialog::FUN_140ea4d00()
 void UILevelUpPackageDialog::FUN_140ea4f10(unsigned short nLevel)
 {
     m_1a8.FUN_140d43990();
-    unsigned nItemId = FUN_140ea5b50(nLevel);
+    unsigned nItemId = GetRewardItemId(nLevel);
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem.get() != 0) {
         unsigned nArgs = spItem->function.parameter.FUN_1408d2380();
@@ -235,16 +235,16 @@ void UILevelUpPackageDialog::FUN_140ea4f10(unsigned short nLevel)
         TSingleton<ItemDropTable>::GetInstance()->GetBoxItems(nBoxId, drops);
         ASObj obj(2);
         obj.FUN_140e846b0("count", drops.size());
-        obj.FUN_1407cbb20("text", FUN_14028dfa0<unsigned short>(CStringW(L"s_quest_scroll_package_title"), reinterpret_cast<const unsigned short&>(nLevel)));
+        obj.SetWStringMember("text", FUN_14028dfa0<unsigned short>(CStringW(L"s_quest_scroll_package_title"), reinterpret_cast<const unsigned short&>(nLevel)));
         for (unsigned __int64 i = 0; i < drops.size(); i++) {
             CString strSlot = m_1a8.FUN_140d43510(static_cast<ItemAble*>(&drops[i]));
-            obj.FUN_1407cba60(StringFormat<unsigned __int64>("slot{0}", i), strSlot);
+            obj.SetStringMember(StringFormat<unsigned __int64>("slot{0}", i), strSlot);
         }
         m_30->Invoke("setRewardSlot", obj);
     }
     else {
         ASObj obj(2);
-        obj.FUN_1407cb9c0("count", 0);
+        obj.SetIntMember("count", 0);
         obj.FUN_1409c0e60("text", L"");
         m_30->Invoke("setRewardSlot", obj);
     }
@@ -273,7 +273,7 @@ void UILevelUpPackageDialog::SendQuest(int nQuest)
 // @0x140ea5460
 void UILevelUpPackageDialog::FUN_140ea5460(ASObj& rObj, int nQuest)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuest);
     if (!spData)
         return;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
@@ -291,16 +291,16 @@ void UILevelUpPackageDialog::FUN_140ea5460(ASObj& rObj, int nQuest)
     short nLevel = (short)LgQuestLevel(spData.get());
     CStringW strLevel = FUN_14028dfa0<unsigned short>(CStringW(L"s_recommend_contents_level"), reinterpret_cast<const unsigned short&>(nLevel));
     rObj.SetMemberUInt("id", FUN_14074b030(spData.get()));
-    rObj.FUN_1407cba60("state", strState);
+    rObj.SetStringMember("state", strState);
     rObj.FUN_1409c48f0("level", nLevel);
-    rObj.FUN_1407cbb20("levelStr", strLevel);
+    rObj.SetWStringMember("levelStr", strLevel);
     FUN_140ea57d0(rObj, FUN_14074b030(spData.get()));
 }
 
 // @0x140ea57d0
 void UILevelUpPackageDialog::FUN_140ea57d0(ASObj& rObj, int nQuest)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuest);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuest);
     if (!spData)
         return;
     void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
@@ -324,20 +324,20 @@ void UILevelUpPackageDialog::FUN_140ea57d0(ASObj& rObj, int nQuest)
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_188.GetCount() + 1);
     CreateItemInfoSlot(strBindID, spItem, 0, nSlotFlags, 0x800);
-    rObj.FUN_1407cba60("binding", strBindID);
+    rObj.SetStringMember("binding", strBindID);
     m_188.Add(strBindID);
 }
 
 // @0x140ea5b50
-unsigned UILevelUpPackageDialog::FUN_140ea5b50(unsigned short nLevel)
+unsigned UILevelUpPackageDialog::GetRewardItemId(unsigned short nLevel)
 {
     void* pPlayer = ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0();
     if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<unsigned> ids;
-    ((CGameRule*)FUN_1401c0d90())->FUN_14047c870(ids);
+    ((CGameRule*)GetGameRule())->FUN_14047c870(ids);
     for (size_t i = 0; i < ids.GetCount(); i++) {
-        MS2Ptr<CQuestData> spData = FUN_14074bc40(ids[i]);
+        MS2Ptr<CQuestData> spData = GetQuestData(ids[i]);
         unsigned short nQuestLevel = LgQuestLevel(spData.get());
         if (nQuestLevel == nLevel) {
             for (size_t j = 0; j < spData->m_complete.m_choiceRewards.GetCount(); j++) {
@@ -357,11 +357,11 @@ unsigned short UILevelUpPackageDialog::FUN_140ea5d10()
     if (pPlayer == 0)
         return 0;
     ATL::CAtlArray<unsigned> ids;
-    ((CGameRule*)FUN_1401c0d90())->FUN_14047c870(ids);
+    ((CGameRule*)GetGameRule())->FUN_14047c870(ids);
     unsigned short nPlayerLevel = pPlayer->vfunc_78();
     unsigned short nBest = 0;
     for (size_t i = 0; i < ids.GetCount(); i++) {
-        MS2Ptr<CQuestData> spData = FUN_14074bc40(ids[i]);
+        MS2Ptr<CQuestData> spData = GetQuestData(ids[i]);
         unsigned short nQuestLevel = LgQuestLevel(spData.get());
         if (nPlayerLevel < nQuestLevel)
             continue;
@@ -381,7 +381,7 @@ Scaleform::GFx::Value Unk_LgRoot::FUN_140ea5e70(const char* szMethod, unsigned s
 }
 
 // @0x140ea5f80
-void Unk_SSGDlg4e28::FUN_140ea5f80() { m_nDirty = 1; }
+void Unk_SSGDlg4e28::MarkDirty() { m_nDirty = 1; }
 
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).

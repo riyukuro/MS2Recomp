@@ -68,8 +68,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_140873
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString FUN_140188f50(const char* psz, int n);                          // null-safe CString
-void FUN_14185f0b0(TransitionData* pData, TiXmlElement* pNode, float* pfTime);    // type / duration / start time
-void FUN_141b6ed40(const CString& str, Vector3* pVec3);                 // parse "x,y,z"
+void ReadTransitionData(TransitionData* pData, TiXmlElement* pNode, float* pfTime);    // type / duration / start time
+void ParseVector3(const CString& str, Vector3* pVec3);                 // parse "x,y,z"
 
 // The out-of-line colour constructor (0x140a56db0) is the definer's Unk_Vec3Cli(float, float, float).
 #include "ms2/client/ms2/fielddatacli.h"   // Unk_Vec3Cli: the out-of-line colour ctor 0x140a56db0 (was a local Unk_Colc view)
@@ -125,7 +125,7 @@ void ChaosLightEffectParam::vfunc_1(TiXmlElement* pNode)
     if (pszRgb != 0)
     {
         Vector3 kRgb;
-        FUN_141b6ed40(pszRgb, &kRgb);
+        ParseVector3(pszRgb, &kRgb);
         m_fRed = kRgb.x;
         m_fGreen = kRgb.y;
         m_fBlue = kRgb.z;
@@ -144,7 +144,7 @@ void ChaosLightEffectParam::vfunc_1(TiXmlElement* pNode)
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->FirstChild("transition")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("transition")))
     {
         NiPointer<ChaosLightTransitionData> spData(new (efd::MemHint(efd::MemHint::NONE)) ChaosLightTransitionData);
-        FUN_14185f0b0(spData.operator->(), pKey, &fTime);
+        ReadTransitionData(spData.operator->(), pKey, &fTime);
         CString strLoop = FUN_140188f50(((class TiXmlElement*)(class TiXmlElement*)(pNode))->Attribute("loop"), 0);
         if (strLoop.CompareNoCase("true") == 0 && m_nLoopIndex == -1)
             m_nLoopIndex = (int)m_arrData.GetCount();
@@ -161,7 +161,7 @@ void ChaosLightEffectParam::vfunc_1(TiXmlElement* pNode)
         if (pszKeyRgb != 0)
         {
             Vector3 kRgb;
-            FUN_141b6ed40(pszKeyRgb, &kRgb);
+            ParseVector3(pszKeyRgb, &kRgb);
             spData.operator->()->m_fRed = kRgb.x;
             spData.operator->()->m_fGreen = kRgb.y;
             spData.operator->()->m_fBlue = kRgb.z;

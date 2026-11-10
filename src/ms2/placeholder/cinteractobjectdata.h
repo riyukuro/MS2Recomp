@@ -237,7 +237,7 @@ public:
     virtual ~CInteractObjectData();     // 0x14051cd40
 
     bool Load(TiXmlElement* pElem);    // 0x14051ce70
-    int FUN_14051f270();                // the <quest> mask has entries
+    int HasQuestMask();                // the <quest> mask has entries
 
     // The table: every row by "id" (the loaders read both files).
     static void LoadAll();                                          // 0x14051f2b0
@@ -256,17 +256,17 @@ public:
     int FUN_1417486c0() { return m_eType == 8; }    // a bill board
     // The interact object factory's kind tests (WorldService 0x141bcda90; COMDATs in ?\worldservice.cpp#6).
     // @0x141c05790
-    int FUN_141c05790() { return m_eType == 2; }
+    int IsTelescope() { return m_eType == 2; }
     // @0x141c057c0
-    int FUN_141c057c0() { return m_eType == 3; }
+    int IsUIObject() { return m_eType == 3; }
     // @0x141c05820
-    int FUN_141c05820() { return m_eType == 4; }    // a web object (CInteractWebObject)
+    int IsWebObject() { return m_eType == 4; }    // a web object (CInteractWebObject)
     // @0x141c04f90
-    int FUN_141c04f90() { return m_eType == 5; }
+    int IsDisplayImage() { return m_eType == 5; }
     // @0x141c051c0
-    int FUN_141c051c0() { return m_eType == 6; }
+    int IsGatheringObject() { return m_eType == 6; }
     // @0x141c057f0
-    int FUN_141c057f0() { return m_eType == 9; }
+    int IsWatchTower() { return m_eType == 9; }
 
     unsigned m_nId;                     // +0x30 "id" (the table key)
     Unk_InteractObjectType m_eType;     // +0x34 "type"

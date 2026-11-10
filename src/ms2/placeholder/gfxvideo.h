@@ -19,9 +19,9 @@ public:
     // Creates the video system (texture manager, sound system) and sets it on pLoader; returns 1.
     int FUN_1422ec460(HWND hWnd, Scaleform::GFx::Loader* pLoader);
     void FUN_1422ec670();                                                               // drops the sound, pauses
-    bool FUN_1422ec700(HWND hWnd);                                                      // (re)creates the sound system
+    bool RestoreSoundSystem(HWND hWnd);                                                      // (re)creates the sound system
     Scaleform::GFx::Video::Video* GetVideo();                                            // the video system
-    Scaleform::GFx::Video::VideoDecoder* FUN_1422ec860();                               // its decoder (NULL if none)
+    Scaleform::GFx::Video::VideoDecoder* GetVideoDecoder();                               // its decoder (NULL if none)
 
 private:
     MS2_LAYOUT_FRIEND;

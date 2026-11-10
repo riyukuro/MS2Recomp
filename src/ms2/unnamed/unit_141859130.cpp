@@ -24,7 +24,7 @@ public:
     class Unk_XmlNode* NextSibling(char const*);   // C3: was free FUN_140168650
 };
 
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 
 #pragma function(memcmp, memset)
 // A GUID kept as 16 raw bytes, compared with memcmp.
@@ -68,7 +68,7 @@ int Unk_XBlockNameMap::LoadXBlock(CString strXBlock)
     CString strPath;
     strPath.Format("./Data/Resource/Exported/XBlock/%s.xblock", (const char*)strXBlock);
     TiXmlDocument doc;
-    if (!doc.LoadFile(FUN_14016a5c0((const char*)strPath, 0), TIXML_ENCODING_UNKNOWN))
+    if (!doc.LoadFile(ToCString((const char*)strPath, 0), TIXML_ENCODING_UNKNOWN))
         return 0;
     Unk_XmlNode* pGame = ((class Unk_XmlNode*)(void*)(&doc))->FirstChild("game");
     if (pGame == 0)

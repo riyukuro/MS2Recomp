@@ -97,6 +97,9 @@
 // MS2-PIN: ?max_size@?$_Default_allocator_traits@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VDungeonRoundGroup@@@@@std@@PEAX@std@@@std@@@std@@SA_KAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VDungeonRoundGroup@@@@@std@@PEAX@std@@@2@@Z 0x140343440 ; unique
 // MS2-PIN: ?size@?$vector@FV?$allocator@F@std@@@std@@QEBA_KXZ 0x140343c30 ; unique
 // MS2-PINS-END tplpin
+// Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$forward@AEBU?$less@_J@std@@@std@@YAAEBU?$less@_J@0@AEBU10@@Z 0x1403311c0
 // DungeonRoomTable's vftables (no RTTI pairing for the TSingleton/CValidData subobjects)
 // MS2-PIN: ??_7DungeonRoomTable@@6B?$TSingleton@VDungeonRoomTable@@@@@ 0x142d28ab0
 // MS2-PIN: ??_7DungeonRoomTable@@6B?$CValidData@VDungeonRoomTable@@@@@ 0x142d28ac0
@@ -158,7 +161,7 @@ template<class T> T* Common::Constants::Value<T>::Get()
     return &m_value;
 }
 
-int FUN_140768010(int nRange, int nBase);              // random number in [nBase, nBase + nRange)
+int GetRandomRange(int nRange, int nBase);              // random number in [nBase, nBase + nRange)
 int Unk_ClubBuffTypeOf(int nValue);
 int XmlGetAttr(class TiXmlElement *, char const *, short &);
 int XmlGetAttr(class TiXmlElement *, char const *, class CMsTime &);
@@ -166,11 +169,11 @@ int Parse_14021ab60(const CString& str);               // timer type name -> val
 void FUN_140274fc0(CStringW& str, void* pOut, const wchar_t* pszDelim);   // split into a CAtlArray<unsigned>
 
 // The table file loader helpers.
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 bool FUN_14028f710(struct Unk_XmlElement* pElem);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
 class Unk_LaunchOptions { public: bool FUN_1406af020(void); }; class Unk_1406aeee0 : public Unk_LaunchOptions { };
-class Unk_LaunchOptions* FUN_1406aeee0();
+class Unk_LaunchOptions* GetLaunchOptions();
 
 // Clamps v into [lo, hi].
 template <class T> T Clamp(const T& v, T lo, T hi)
@@ -606,7 +609,7 @@ unsigned DungeonRoom::GetRandomFieldID()
 {
     if (m_fieldIDs.IsEmpty())
         return 0;
-    unsigned nIndex = FUN_140768010((int)m_fieldIDs.GetCount(), 0);
+    unsigned nIndex = GetRandomRange((int)m_fieldIDs.GetCount(), 0);
     return m_fieldIDs[nIndex];
 }
 MS2_REPLACE_METHOD(0x14031E240, DungeonRoom, GetRandomFieldID, 101, 0x827DB8B9);
@@ -674,7 +677,7 @@ MS2_REPLACE_METHOD(0x14031E480, DungeonRoom, IsSeasonRankRoom, 68, 0xCDEF7F9A);
 // @0x14031e4d0
 bool DungeonRoom::IsRandomMatchable()
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xb8))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xb8))
         return false;
     switch (m_groupType)
     {
@@ -931,7 +934,7 @@ MS2_REPLACE_METHOD(0x14031ED90, DungeonSeason, Load, 652, 0x9A7CADD3);
 // @0x14031f030
 bool DungeonSeason::IsInPeriod(const CMsTime& t)
 {
-    return m_period.FUN_140868f60(t);
+    return m_period.IsInRange(t);
 }
 MS2_REPLACE_METHOD(0x14031F030, DungeonSeason, IsInPeriod, 41, 0x58E9BF83);
 
@@ -1052,9 +1055,9 @@ DungeonRoomTable::~DungeonRoomTable()
 void DungeonRoomTable::LoadRooms()
 {
     Clear();
-    CString strPath = FUN_14071a5b0("Table", "DungeonRoom.xml");
+    CString strPath = GetXmlPath("Table", "DungeonRoom.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1076,9 +1079,9 @@ void DungeonRoomTable::LoadRooms()
 void DungeonRoomTable::LoadSeasons()
 {
     m_seasons.clear();
-    CString strPath = FUN_14071a5b0("Table", "DungeonSeason.xml");
+    CString strPath = GetXmlPath("Table", "DungeonSeason.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1101,9 +1104,9 @@ MS2_REPLACE_METHOD(0x14031FBF0, DungeonRoomTable, LoadSeasons, 645, 0xC71A8598);
 // @0x14031fe80
 void DungeonRoomTable::LoadConfig()
 {
-    CString strPath = FUN_14071a5b0("Table", "DungeonConfig.xml");
+    CString strPath = GetXmlPath("Table", "DungeonConfig.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1124,9 +1127,9 @@ MS2_REPLACE_METHOD(0x14031FE80, DungeonRoomTable, LoadConfig, 450, 0x1832338C);
 void DungeonRoomTable::LoadRankRewards()
 {
     m_rankRewards.clear();
-    CString strPath = FUN_14071a5b0("Table", "DungeonRankReward.xml");
+    CString strPath = GetXmlPath("Table", "DungeonRankReward.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1150,9 +1153,9 @@ MS2_REPLACE_METHOD(0x140320050, DungeonRoomTable, LoadRankRewards, 739, 0xA3832F
 void DungeonRoomTable::LoadRoundGroups()
 {
     m_roundGroups.clear();
-    CString strPath = FUN_14071a5b0("Table", "DungeonRoundData.xml");
+    CString strPath = GetXmlPath("Table", "DungeonRoundData.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1550,9 +1553,9 @@ MS2_REPLACE_METHOD(0x140321FD0, DungeonRoomTable, GetGroupSet, 40, 0xCEE3254A);
 void DungeonRoomTable::LoadCoupons()
 {
     m_coupons.clear();
-    CString strPath = FUN_14071a5b0("Table", "DungeonRewardCoupon.xml");
+    CString strPath = GetXmlPath("Table", "DungeonRewardCoupon.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1613,7 +1616,7 @@ MS2_REPLACE_METHOD(0x140322370, DungeonRoomTable, LoadDungeonConfig, 194, 0x9149
 // @0x140322440
 bool DungeonRoomTable::LoadReverseRaidConfig(TiXmlElement* pElem)
 {
-    if (((Unk_1406aeee0*)FUN_1406aeee0())->FUN_1406af020())
+    if (((Unk_1406aeee0*)GetLaunchOptions())->FUN_1406af020())
         return true;
     XmlGetAttr((class TiXmlElement *)(pElem), "startDate", m_startDate);
     XmlGetAttr((class TiXmlElement*)(pElem), "periodDays", reinterpret_cast<int&>(m_periodDays));

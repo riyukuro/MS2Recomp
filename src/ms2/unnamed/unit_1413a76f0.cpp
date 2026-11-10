@@ -16,7 +16,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/usermail.h"  // C3: CUserMail::FUN_1408e57f0 (the scene-service global)
-class UIInventoryDialog { public: int FUN_141999de0(void); };
+class UIInventoryDialog { public: int GetSelectedTab(void); };
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
 // The local player: only the position getter (slot 18) is used here.
@@ -48,7 +48,7 @@ public:
 class Unk_TabInventory : public UIDialog
 {
 public:
-    int FUN_141999de0();                                    // the selected tab
+    int GetSelectedTab();                                    // the selected tab
 };
 class UIInventoryDialog;
 template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_TabInventory* FUN_1405344f0 (calls cast back)
@@ -136,7 +136,7 @@ int CGuideConditionInventoryTab::vfunc_3()
 {
     Unk_TabInventory* pInv = reinterpret_cast<Unk_TabInventory*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pInv != 0 && pInv->vfunc_55() == 0)
-        return ApplyNotBool(m_n20 == ((class UIInventoryDialog*)(pInv))->FUN_141999de0());
+        return ApplyNotBool(m_n20 == ((class UIInventoryDialog*)(pInv))->GetSelectedTab());
     return 0;
 }
 MS2_REPLACE_METHOD(0x1413A7A50, CGuideConditionInventoryTab, vfunc_3, 111, 0xD63E69C8);
@@ -159,6 +159,6 @@ MS2_REPLACE_METHOD(0x1413A7B30, CGuideConditionGameScene, GetTypeName, 61, 0xCE0
 // @0x1413a7b80
 int CGuideConditionGameScene::vfunc_3()
 {
-    return ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001d;
+    return ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x620001d;
 }
 MS2_REPLACE_METHOD(0x1413A7B80, CGuideConditionGameScene, vfunc_3, 56, 0xA135E761);

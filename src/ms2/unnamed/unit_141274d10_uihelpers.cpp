@@ -58,7 +58,7 @@ static CString s_strChartSortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", 
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 class CItemData;   // C3: MS2Ptr<CItemData>::operator->
-class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
+class CUserMail { public: static __int64 GetGFxSceneService(); };  // C3: member view (0x1408e57f0, the scene-service global)
 
 // return types of the getters this unit calls
 class CEffectService;
@@ -82,19 +82,19 @@ struct Unk_MdState* GetState();   // C3: was GetState
 
 class UISystemText : public UIObject {                  // the system message line (UI id 0x4e41)
 public:
-    void FUN_141b15ec0(const CStringW& msg, int a, int b);
-    void FUN_141b16270(const CStringW& msg, int a, int b);
+    void ShowMessage(const CStringW& msg, int a, int b);
+    void ShowTimedMessage(const CStringW& msg, int a, int b);
 };
 class UITopLayerNotify : public UIObject {              // the top-layer notice (UI id 0x4ef5)
 public:
-    void FUN_140fa8970(const CStringW& msg, int a);
+    void ShowMessage(const CStringW& msg, int a);
 };
 
 class Unk_PlayerActor { public: char m_pad_00[8]; };
 class Unk_PlayerRef;
 void FUN_14151f460(int);
-void FUN_141a8a730();
-int FUN_141a8a760();
+void ClosePopupMenu();
+int IsPopupMenuOpen();
 UIMessageBox* GetMessageBoxLayer();
 void* GetUITalkManager();
 class UITalkManager   // C3: member view for the former free stand-ins
@@ -105,10 +105,10 @@ public:
 class PC { public: int IsInCubeMode(); int FUN_141659690(); };   // C3: unit-local view
 CStringW GetStringCommon(int nId);
 CStringW FUN_140298ea0(CStringW);
-UISystemText* FUN_141278110(int nId);
-UITopLayerNotify* FUN_1412781b0(int nId);
+UISystemText* FindSystemText(int nId);
+UITopLayerNotify* FindTopLayerNotify(int nId);
 void FUN_1412751b0(const CStringW&, int);
-void FUN_1412751f0(const CStringW&, int, int);
+void ShowSystemNotice(const CStringW&, int, int);
 class UIMessengerBrowser* FindMessengerBrowser(int);   // C3: was FindMessengerBrowser
 class UICommunityDialog;
 UICommunityDialog* FUN_140ae5990(int);
@@ -121,14 +121,14 @@ class UIMessengerBrowser   // C3: member view for the former free stand-ins
 public:
     void FUN_141a247c0(const CStringW& strText, int nType);
     void FUN_141a24890(CItem* pItem, unsigned nCount, int nManyId, int nOneId);
-    void FUN_141a24cb0(CItem* pItem, unsigned nCount, int nDelta, int nManyId, int nOneId);
+    void LogItemCountChange(CItem* pItem, unsigned nCount, int nDelta, int nManyId, int nOneId);
     void FUN_141a23c20();
 };
-void FUN_1418d6410(UICommunityDialog*);
+void ResetTab(UICommunityDialog*);
 class UIInventoryDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141999e20();
+    void ResetTab();
 };
 class UIGroupMessengerBrowser   // C3: member view for the former free stand-ins
 {
@@ -160,7 +160,7 @@ int FUN_141274df0(MS2Ptr<UIDialog> pDlg)
             return 0;
         if (pDlg.get()->vfunc_64() != 0)
             return 0;
-        if (pDlg.get()->FUN_1419244c0(1) != 0)
+        if (pDlg.get()->IsFlagSet(1) != 0)
             return 0;
         return 1;
     }
@@ -172,7 +172,7 @@ MS2_REPLACE(0x141274df0, FUN_141274df0, 331, 0xD4D42BD8);
 void FUN_141274f50()
 {
     FUN_14151f460(0);
-    FUN_141a8a730();
+    ClosePopupMenu();
     TSingleton<CUIService>::GetInstance()->CloseAllDialogs();
 }
 MS2_REPLACE(0x141274f50, FUN_141274f50, 34, 0x61491953);
@@ -182,7 +182,7 @@ int FUN_141274f80()
 {
     if (TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(FUN_141274d10) != 0)
         return 1;
-    if (FUN_141a8a760() != 0)
+    if (IsPopupMenuOpen() != 0)
         return 1;
     UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0 && pBox->FUN_1419f8270() == 0)
@@ -196,7 +196,7 @@ int FUN_141274ff0()
 {
     if (TSingleton<CUIService>::GetInstance()->FUN_141adcbb0(FUN_141274df0) != 0)
         return 1;
-    if (FUN_141a8a760() != 0)
+    if (IsPopupMenuOpen() != 0)
         return 1;
     UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox != 0 && pBox->FUN_1419f8270() == 0)
@@ -221,7 +221,7 @@ int FUN_141275080()
     if (pActor != 0) {
         if (((PC*)pActor)->IsInCubeMode() != 0 && ((PC*)pActor)->FUN_141659690() == 0)
             return 0;
-        if (CAutoFindTaxiStation::GetInstance()->FUN_141278a40() != 0)
+        if (CAutoFindTaxiStation::GetInstance()->IsActive() != 0)
             return 0;
     }
     return 1;
@@ -239,7 +239,7 @@ MS2_REPLACE(0x1412750f0, FUN_1412750f0, 77, 0x2112E627);
 void FUN_141275150(CItem* pItem, int a, int b, int c, int d)
 {
     if (reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)GetState()))->m_log != 0)
-        reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)GetState()))->m_log->FUN_141a24cb0(pItem, a, b, c, d);
+        reinterpret_cast<Unk_ChatWindow*>(((class Unk_ChatWindow*)GetState()))->m_log->LogItemCountChange(pItem, a, b, c, d);
 }
 MS2_REPLACE(0x141275150, FUN_141275150, 85, 0xA770C8C1);
 
@@ -252,16 +252,16 @@ void FUN_1412751b0(const CStringW& str, int nType)
 MS2_REPLACE(0x1412751b0, FUN_1412751b0, 54, 0x5701C5EE);
 
 // @0x1412751f0
-void FUN_1412751f0(const CStringW& str, int a, int bLog)
+void ShowSystemNotice(const CStringW& str, int a, int bLog)
 {
-    UISystemText* pText = FUN_141278110(0x4e41);
+    UISystemText* pText = FindSystemText(0x4e41);
     if (pText != 0) {
-        pText->FUN_141b15ec0(str, a, 0);
+        pText->ShowMessage(str, a, 0);
         if (bLog != 0)
             FUN_1412751b0(str, 0x14);
     }
 }
-MS2_REPLACE(0x1412751f0, FUN_1412751f0, 91, 0xEB4DF479);
+MS2_REPLACE(0x1412751f0, ShowSystemNotice, 91, 0xEB4DF479);
 
 // @0x141275260
 void FUN_141275260(int nId, int a, int b)
@@ -269,7 +269,7 @@ void FUN_141275260(int nId, int a, int b)
     CStringW str = GetStringCommon(nId);
     if (str.GetLength() == 0)
         return;
-    FUN_1412751f0(str, a, b);
+    ShowSystemNotice(str, a, b);
 }
 MS2_REPLACE(0x141275260, FUN_141275260, 105, 0x8556833F);
 
@@ -279,34 +279,34 @@ void FUN_1412752d0(const CStringW& str, int a)
     CStringW text = FUN_140298ea0(str);
     if (text.GetLength() == 0)
         return;
-    FUN_1412751f0(text, a, 1);
+    ShowSystemNotice(text, a, 1);
 }
 MS2_REPLACE(0x1412752d0, FUN_1412752d0, 134, 0x4DC78C07);
 
 // @0x141275360
 void FUN_141275360(const CStringW& str, int a, int b)
 {
-    UISystemText* pText = FUN_141278110(0x4e41);
+    UISystemText* pText = FindSystemText(0x4e41);
     if (pText != 0)
-        pText->FUN_141b16270(str, a, b);
+        pText->ShowTimedMessage(str, a, b);
 }
 MS2_REPLACE(0x141275360, FUN_141275360, 71, 0x77F73145);
 
 // @0x1412753b0
-void FUN_1412753b0(const CStringW& str, int a, int b)
+void ShowSystemText(const CStringW& str, int a, int b)
 {
-    UISystemText* pText = FUN_141278110(0x4e41);
+    UISystemText* pText = FindSystemText(0x4e41);
     if (pText != 0)
-        pText->FUN_141b15ec0(str, a, b);
+        pText->ShowMessage(str, a, b);
 }
-MS2_REPLACE(0x1412753b0, FUN_1412753b0, 71, 0x21351DE1);
+MS2_REPLACE(0x1412753b0, ShowSystemText, 71, 0x21351DE1);
 
 // @0x141275400
 void FUN_141275400(const CStringW& str, int a)
 {
-    UITopLayerNotify* pNotify = FUN_1412781b0(0x4ef5);
+    UITopLayerNotify* pNotify = FindTopLayerNotify(0x4ef5);
     if (pNotify != 0) {
-        pNotify->FUN_140fa8970(str, a);
+        pNotify->ShowMessage(str, a);
         FUN_1412751b0(str, 0x1d);
     }
 }
@@ -319,7 +319,7 @@ void FUN_141275460(int nId, int a, int b, const fmt::ArgList& args)
     if (fmtStr.GetLength() == 0)
         return;
     CStringW text = StringFormat((const wchar_t*)fmtStr, args);
-    FUN_1412751f0(text, a, b);
+    ShowSystemNotice(text, a, b);
 }
 MS2_REPLACE(0x141275460, FUN_141275460, 152, 0xFB7641A0);
 
@@ -331,10 +331,10 @@ void FUN_141275500()
         ((class UIMessengerBrowser*)(void*)(pDlg))->FUN_141a23c20();
     UICommunityDialog* pCommunity = FUN_140ae5990(0x4e4d);
     if (pCommunity != 0)
-        FUN_1418d6410(pCommunity);
+        ResetTab(pCommunity);
     Unk_GuideInventory* pGuide = reinterpret_cast<Unk_GuideInventory*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
     if (pGuide != 0)
-        ((class UIInventoryDialog*)(class Unk_GuideInventory*)(pGuide))->FUN_141999e20();
+        ((class UIInventoryDialog*)(class Unk_GuideInventory*)(pGuide))->ResetTab();
     void* pOther = ((void*)FindGroupMessengerBrowser(0x4e93));
     if (pOther != 0)
         ((class UIGroupMessengerBrowser*)(void*)(pOther))->ClearAll();
@@ -398,27 +398,27 @@ int FUN_1412755a0()
 MS2_REPLACE(0x1412755a0, FUN_1412755a0, 3, 0x94777CFF);
 
 // @0x1412755b0
-CString FUN_1412755b0()
+CString GetOptionFolder()
 {
     return CString("../../Config/");
 }
-MS2_REPLACE(0x1412755b0, FUN_1412755b0, 56, 0x66DFF2A6);
+MS2_REPLACE(0x1412755b0, GetOptionFolder, 56, 0x66DFF2A6);
 
 // @0x1412755f0
-CString FUN_1412755f0()
+CString GetCharacterFolder()
 {
     return FUN_1412756c0(DAT_143ab2820, DAT_143ab2828);
 }
-MS2_REPLACE(0x1412755f0, FUN_1412755f0, 62, 0xD2DDF8EA);
+MS2_REPLACE(0x1412755f0, GetCharacterFolder, 62, 0xD2DDF8EA);
 
 // @0x141275640
-CString FUN_141275640()
+CString GetAccountFolder()
 {
     CString str;
     str.Format("%s%I64u", "../../Config/", DAT_143ab2820);
     return CString(str);
 }
-MS2_REPLACE(0x141275640, FUN_141275640, 118, 0x0758439E);
+MS2_REPLACE(0x141275640, GetAccountFolder, 118, 0x0758439E);
 
 // @0x1412756c0
 CString FUN_1412756c0(__int64 a, __int64 b)
@@ -430,11 +430,11 @@ CString FUN_1412756c0(__int64 a, __int64 b)
 MS2_REPLACE(0x1412756c0, FUN_1412756c0, 136, 0xC8FACBDD);
 
 // @0x141275750
-CString FUN_141275750()
+CString GetDefaultOptionFolder()
 {
     return CString("../../Data/Xml/Table/Default");
 }
-MS2_REPLACE(0x141275750, FUN_141275750, 56, 0x8631081E);
+MS2_REPLACE(0x141275750, GetDefaultOptionFolder, 56, 0x8631081E);
 
 // @0x141275790
 CStringW FUN_141275790(const CStringW& str)
@@ -477,7 +477,7 @@ __int64 FUN_1412759a0(const CStringW& str)
 MS2_REPLACE(0x1412759a0, FUN_1412759a0, 96, 0xFED3BB25);
 
 // @0x141275a10
-int FUN_141275a10(CItem* pItem)
+int GetItemUsableState(CItem* pItem)
 {
     if (pItem == 0)
         return 0;
@@ -491,7 +491,7 @@ int FUN_141275a10(CItem* pItem)
     }
     return 0;
 }
-MS2_REPLACE(0x141275a10, FUN_141275a10, 126, 0xBF3ECD51);
+MS2_REPLACE(0x141275a10, GetItemUsableState, 126, 0xBF3ECD51);
 
 // @0x141275aa0
 int FUN_141275aa0(int nCode)
@@ -545,7 +545,7 @@ MS2_REPLACE(0x141275c00, FUN_141275c00, 30, 0x3CCFEEBB);
 // ---- window alignment ---------------------------------------------------------------------------------------------
 class ASWindow : public ASDisplayObjectContainer {      // the dialog frame wrapper (RTTI .?AVASWindow@@)
 public:
-    int FUN_1422e6310();                                // width of the frame
+    int GetWindowWidth();                                // width of the frame
 };
 struct Unk_AlignOffset { float x, y; };
 
@@ -563,17 +563,17 @@ void FUN_141275c30(UISwfEntity* pLeft, UISwfEntity* pRight, efd::Point2 offLeft,
     float fX = pPos->x;
     float fY = pPos->y;
     if (MS2Ptr<ASMovieClip> panel = winLeft->FUN_1409b4560("m_panel"))
-        fLeftWidth = (float)panel->FUN_1422c1340();
+        fLeftWidth = (float)panel->GetWidthCeil();
     else
-        fLeftWidth = (float)winLeft->FUN_1422e6310();
+        fLeftWidth = (float)winLeft->GetWindowWidth();
     MS2Ptr<ASWindow> winRight(dynamic_cast<ASWindow*>((AScript*)pRight->FUN_1422dba00()));
     if (winRight.IsNull())
         return;
     float fRightWidth = 436.0f;
     if (MS2Ptr<ASMovieClip> panel = winRight->FUN_1409b4560("m_panel"))
-        fRightWidth = (float)panel->FUN_1422c1340();
+        fRightWidth = (float)panel->GetWidthCeil();
     else
-        fRightWidth = (float)winRight->FUN_1422e6310();
+        fRightWidth = (float)winRight->GetWindowWidth();
     int nTotal = winLeft->FUN_1422c1500();
     float fBoth = fLeftWidth + fRightWidth;
     float fOverflow = (float)nTotal - (fX + fBoth);
@@ -615,8 +615,8 @@ void FUN_1412761e0(MS2Ptr<AScript> pScript, int bShow)
     if (pScript.get() != 0) {
         MS2Ptr<ASDisplayObjectContainer> pContainer(dynamic_cast<ASDisplayObjectContainer*>((AScript*)pScript));
         if (pContainer) {
-            ((class ASDisplayObjectContainer*)(class ASDisplayObjectContainer*)(pContainer.get()))->FUN_1422c6640(bShow ? true : false);
-            ((class ASInteractiveObject*)(class ASDisplayObjectContainer*)(pContainer.get()))->FUN_1422deb40(bShow ? true : false);
+            ((class ASDisplayObjectContainer*)(class ASDisplayObjectContainer*)(pContainer.get()))->SetMouseChildren(bShow ? true : false);
+            ((class ASInteractiveObject*)(class ASDisplayObjectContainer*)(pContainer.get()))->SetMouseEnabled(bShow ? true : false);
         }
     }
 }
@@ -637,9 +637,9 @@ public:
 };
 // CameraMgr::FUN_140a17e10 returns a Vector3 (12 bytes) by value. The type has a user ctor (never called here), so it
 // is returned through a hidden pointer and is not a /GS buffer.
-float FUN_141032df0(void*);
+float GetMinDistance(void*);
 float FUN_141032e60(void*);
-float FUN_14028aed0(float);
+float Floor(float);
 
 // @0x1412762d0
 float FUN_1412762d0(const NiPoint3& kPos)
@@ -660,7 +660,7 @@ float FUN_1412762d0(const NiPoint3& kPos)
     fLength = reinterpret_cast<const Unk_Point2&>(static_cast<const efd::Point2&>(efd::Point2(vOrigin.x, vOrigin.y) - efd::Point2(kPos.x, kPos.y))).FUN_140affe70();
     fBase = -40.0f;
     fRange = 70.0f;
-    fZoomRaw = FUN_141032df0(TSingleton<CameraMgr>::GetInstance());
+    fZoomRaw = GetMinDistance(TSingleton<CameraMgr>::GetInstance());
     if (fLength <= fZoomRaw)
         fRatio = 1.0f;
     else
@@ -670,7 +670,7 @@ float FUN_1412762d0(const NiPoint3& kPos)
     fAngle = FUN_141032e60(TSingleton<CameraMgr>::GetInstance());
     fZero = 0.0f;
     fT = (std::max)(fZero, (std::min)(fAngle, fMaxAngle));
-    return FUN_14028aed0((fBase + (fRange * fT) / 90.0f) * fZoom);
+    return Floor((fBase + (fRange * fT) / 90.0f) * fZoom);
 }
 MS2_REPLACE(0x1412762d0, FUN_1412762d0, 390, 0x7A9ACA89);
 
@@ -705,9 +705,9 @@ float FUN_141276490(float fWidth, float fHeight);
 // @0x141276490
 float FUN_141276490(float fWidth, float fHeight)
 {
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId() == 0x6200018)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSceneId() == 0x6200018)
         return 1.0f;
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() != 0x620001d)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() != 0x620001d)
         fHeight = 1.0f;
     const Unk_ScaleMap::CPair* pPair = s_scaleCache.Lookup(Unk_ScreenKey(fWidth, fHeight));
     if (pPair != 0)
@@ -754,7 +754,7 @@ public:
 class ASTextArea   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_1422e4720();
+    void ScrollToEnd();
 };
 CStringW FUN_14183e930(const CStringW&, unsigned nColor);
 
@@ -775,7 +775,7 @@ void FUN_141276790(MS2Ptr<Unk_GdTextArea> console)
 {
     Unk_GdTextArea* pView = console.operator->();
     pView->vfunc_24(true);
-    ((class ASTextArea*)(console.operator->()))->FUN_1422e4720();
+    ((class ASTextArea*)(console.operator->()))->ScrollToEnd();
 }
 MS2_REPLACE(0x141276790, FUN_141276790, 88, 0x0E6E447B);
 
@@ -804,10 +804,10 @@ class UITalkCinematic : public UISwfEntity { };
 UITalkCinematic* FindTalkCinematic(int nId) noexcept;
 
 // @0x141276980
-int FUN_141276980()
+int IsNpcTalkAllowed()
 {
     UITalkCinematic* pHolder = FindTalkCinematic(0x4e40);
-    bool bMatch = pHolder != 0 && pHolder->FUN_1422db6e0() != s_strEmpty;
+    bool bMatch = pHolder != 0 && pHolder->GetManagerKey() != s_strEmpty;
     if (bMatch)
         return 0;
     return 1;
@@ -937,7 +937,7 @@ int FUN_141276f80(Unk_CommandChat* pChat)
         }
     }
     if (DAT_143ab2914 < 0x32) {
-        int nRestricted = WorldService::GetInstance()->FUN_141bd30a0()->FUN_140375660(0x100);
+        int nRestricted = WorldService::GetInstance()->FUN_141bd30a0()->HasLimitContent(0x100);
         if (nRestricted != 0) {
             FUN_1412751b0(GetStringCommonByKey(L"s_field_limit_content_chat"), 0x14);
             return 0;
@@ -977,7 +977,7 @@ int FUN_1412773a0(int nValue)
 MS2_REPLACE(0x1412773a0, FUN_1412773a0, 106, 0x48A5ECDC);
 
 // @0x141277410
-CStringW FUN_141277410(int nIconCode)
+CStringW GetIconCodeName(int nIconCode)
 {
     int nStringId = 0;
     switch (nIconCode) {
@@ -1037,14 +1037,14 @@ CStringW FUN_141277410(int nIconCode)
     }
     return GetStringCommon(nStringId);
 }
-MS2_REPLACE(0x141277410, FUN_141277410, 1056, 0x44216BDE);
+MS2_REPLACE(0x141277410, GetIconCodeName, 1056, 0x44216BDE);
 
 // ---- item / icon names ------------------------------------------------------------------------------------------------
 class Unk_IconItemData : public CItemData {
 };
 class Unk_SlotLapenTable* GetLapenshardTable();   // C3: was GetLapenshardTable
 
-CStringW FUN_141277be0(MS2Ptr<CItemData> item);
+CStringW GetLapenshardName(MS2Ptr<CItemData> item);
 CStringW FUN_141277b90(const CStringW& str);
 
 // @0x141277910
@@ -1055,13 +1055,13 @@ CStringW FUN_141277910(MS2Ptr<CItemData> item)
     if (reinterpret_cast<Unk_IconItemData*>(item.operator->())->FUN_14053cbc0() != 0)
         return TSingleton<CStringTable>::GetInstance()->FUN_141811980(8, reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetEquipSubtype());
     if (reinterpret_cast<Unk_IconItemData*>(item.operator->())->IsLapenshardType() != 0)
-        return FUN_141277be0(item);
-    return FUN_141277410(reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetIconCode());
+        return GetLapenshardName(item);
+    return GetIconCodeName(reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetIconCode());
 }
 MS2_REPLACE(0x141277910, FUN_141277910, 365, 0x0A17FA5D);
 
 // @0x141277a90
-CStringW FUN_141277a90(CUgcItemLook* pSource, const CStringW& strFallback)
+CStringW GetUgcItemName(CUgcItemLook* pSource, const CStringW& strFallback)
 {
     if (pSource->FUN_140893520() != 0)
         return GetStringCommon(0xf4);
@@ -1069,7 +1069,7 @@ CStringW FUN_141277a90(CUgcItemLook* pSource, const CStringW& strFallback)
         return FUN_141277b90(pSource->m_str28);
     return CStringW(strFallback);
 }
-MS2_REPLACE(0x141277a90, FUN_141277a90, 236, 0xA59909FA);
+MS2_REPLACE(0x141277a90, GetUgcItemName, 236, 0xA59909FA);
 
 // @0x141277b90
 CStringW FUN_141277b90(const CStringW& str)
@@ -1079,7 +1079,7 @@ CStringW FUN_141277b90(const CStringW& str)
 MS2_REPLACE(0x141277b90, FUN_141277b90, 59, 0x41F5801C);
 
 // @0x141277be0
-CStringW FUN_141277be0(MS2Ptr<CItemData> item)
+CStringW GetLapenshardName(MS2Ptr<CItemData> item)
 {
     MS2Ptr<CItemLapenshardData> lapen = reinterpret_cast<CItemLapenshardTable*>(GetLapenshardTable())->Get(reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetItemId());
     if (lapen.get() != 0) {
@@ -1102,9 +1102,9 @@ CStringW FUN_141277be0(MS2Ptr<CItemData> item)
         }
         }
     }
-    return FUN_141277410(reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetIconCode());
+    return GetIconCodeName(reinterpret_cast<Unk_IconItemData*>(item.operator->())->GetIconCode());
 }
-MS2_REPLACE(0x141277be0, FUN_141277be0, 478, 0xA2D611FC);
+MS2_REPLACE(0x141277be0, GetLapenshardName, 478, 0xA2D611FC);
 
 // C3: the former Unk_ConstString view is Scaleform::GFx::Value itself:
 //   COMDAT 0x141278ab0 = Value::IsStringW (gfx_value.h)
@@ -1135,7 +1135,7 @@ int FUN_141277f50()
 MS2_REPLACE(0x141277f50, FUN_141277f50, 6, 0x76552545);
 
 // @0x141277f60
-CString FUN_141277f60(int nLayer)
+CString GetUILayerName(int nLayer)
 {
     switch (nLayer) {
     case 0: return CString("GC_Gfx HUD");
@@ -1148,7 +1148,7 @@ CString FUN_141277f60(int nLayer)
     }
     return CString("");
 }
-MS2_REPLACE(0x141277f60, FUN_141277f60, 367, 0xF155C2F4);
+MS2_REPLACE(0x141277f60, GetUILayerName, 367, 0xF155C2F4);
 
 // @0x1412780f0
 unsigned FUN_1412780f0(Unk_McValue<unsigned>* pSlot)
@@ -1158,7 +1158,7 @@ unsigned FUN_1412780f0(Unk_McValue<unsigned>* pSlot)
 MS2_REPLACE(0x1412780f0, FUN_1412780f0, 32, 0x2D2EB095);
 
 // @0x141278110
-UISystemText* FUN_141278110(int nId)
+UISystemText* FindSystemText(int nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0) {
         MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
@@ -1167,10 +1167,10 @@ UISystemText* FUN_141278110(int nId)
     }
     return 0;
 }
-MS2_REPLACE(0x141278110, FUN_141278110, 147, 0xBEDFD4A1);
+MS2_REPLACE(0x141278110, FindSystemText, 147, 0xBEDFD4A1);
 
 // @0x1412781b0
-UITopLayerNotify* FUN_1412781b0(int nId)
+UITopLayerNotify* FindTopLayerNotify(int nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0) {
         MS2Ptr<UIObject> ref = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
@@ -1179,4 +1179,4 @@ UITopLayerNotify* FUN_1412781b0(int nId)
     }
     return 0;
 }
-MS2_REPLACE(0x1412781b0, FUN_1412781b0, 147, 0x619EFE61);
+MS2_REPLACE(0x1412781b0, FindTopLayerNotify, 147, 0x619EFE61);

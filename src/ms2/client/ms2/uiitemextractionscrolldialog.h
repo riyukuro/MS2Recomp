@@ -73,8 +73,8 @@ public:
 
     bool SendItemExtractionScroll(int nResult, const CMsgBoxData& box);        // 0x140e4a4b0 the confirmation was answered: send 0xa0
     void FUN_140e4a920(__int64 nItemUid);                           // 0x140e4a920 an item was dropped: show it and the scroll
-    void FUN_140e4b2c0(__int64 nScrollUid);                         // 0x140e4b2c0 remember the scroll if the player owns it
-    void FUN_140e4b340();                                           // 0x140e4b340 refresh the inventory dialog
+    void SetScrollUid(__int64 nScrollUid);                         // 0x140e4b2c0 remember the scroll if the player owns it
+    void RefreshInventoryDialog();                                           // 0x140e4b340 refresh the inventory dialog
     void OnOk();                                           // 0x140e4b380 ask for the confirmation
     void FUN_140e4b640(MS2Ptr<CItem> spTarget, MS2Ptr<CItem> spScroll);   // 0x140e4b640 rebuild the bag
 

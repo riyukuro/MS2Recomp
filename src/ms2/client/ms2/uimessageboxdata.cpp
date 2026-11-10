@@ -60,13 +60,13 @@ extern CString DAT_143af3e30;
 // ---- unit-local declarations (names describe uses, not original class names) ----
 
 // The dialog the message box is placed on.
-class ASDialog : public ASDisplayObject   // CMsgBoxData::FUN_141a04f80 takes it by value
+class ASDialog : public ASDisplayObject   // CMsgBoxData::SaveModalessPosition takes it by value
 {
 };
 
 // The AS object `obj` keys. Free functions of other units.
 
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 CStringW FUN_14183e930(const CStringW& str, unsigned nColor);
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140513200
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -79,7 +79,7 @@ class UIMessageBox* FindMessageBox(int);   // C3: was FindMessageBox
 
 class Unk_140166410* FUN_140166410();
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-class Unk_AltStringMgr* FUN_14025e7a0();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
+class Unk_AltStringMgr* GetGFxManager();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
 typedef Common::Constants::Value<int> Unk_MsgOption;
 class Unk_MsgGlobals { public: char m_pad_0[0xdf30]; Unk_MsgOption m_dfOption30; Unk_MsgOption m_dfOption88; };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
@@ -94,29 +94,29 @@ class Unk_MsgASArray : public ASArray
 {
 };
 
-CString FUN_141a066e0(int nType);                                   // the AS box type name
-CString FUN_141a06e80(int nTextType);                               // the AS text input type name
-CString FUN_141a06ff0(int nSound);                                  // the sound event name
+CString GetBoxTypeName(int nType);                                   // the AS box type name
+CString GetTextTypeName(int nTextType);                               // the AS text input type name
+CString GetSoundName(int nSound);                                  // the sound event name
 CString FUN_1407186a0(const CStringW& str);
 bool FUN_1407183f0(const CStringW& str);
 
 // @0x141a034d0
-int CMsgBoxData::FUN_141a034d0(ASObj& obj)
+int CMsgBoxData::FillObj(ASObj& obj)
 {
-    obj.FUN_1407cba60("boxType", FUN_14016a5c0(FUN_141a066e0(m_nType), 0));
+    obj.SetStringMember("boxType", ToCString(GetBoxTypeName(m_nType), 0));
     obj.FUN_141a07250("sID", m_nId);
-    obj.FUN_1407cbb20("msg", m_strMsg);
-    obj.FUN_1407cbb20("msg2", m_strMsg2);
-    obj.FUN_1407cbb20("btnLabel0", m_strBtn0);
-    obj.FUN_1407cbb20("btnLabel1", m_strBtn1);
-    obj.FUN_1407cbb20("btnLabel2", m_strBtn2);
-    obj.FUN_1407cbb20("title", m_strTitle);
-    obj.FUN_1407cbbe0("modaless", m_bModaless);
+    obj.SetWStringMember("msg", m_strMsg);
+    obj.SetWStringMember("msg2", m_strMsg2);
+    obj.SetWStringMember("btnLabel0", m_strBtn0);
+    obj.SetWStringMember("btnLabel1", m_strBtn1);
+    obj.SetWStringMember("btnLabel2", m_strBtn2);
+    obj.SetWStringMember("title", m_strTitle);
+    obj.SetBoolMember("modaless", m_bModaless);
     int nShowModaless = (FUN_14151f9c0() && m_bModaless) ? 1 : 0;
-    obj.FUN_1407cb9c0("showModaless", nShowModaless);
-    obj.FUN_1407cbb20("strikeStr", m_strStrike);
+    obj.SetIntMember("showModaless", nShowModaless);
+    obj.SetWStringMember("strikeStr", m_strStrike);
     if (m_nAlign != 4)
-        obj.FUN_1407cba60("textAlign", m_strAlign[m_nAlign]);
+        obj.SetStringMember("textAlign", m_strAlign[m_nAlign]);
     if (IsModaless() && g_messageBoxState.m_bSaved != 0)
     {
         ASObj posData(2);
@@ -124,10 +124,10 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
         posData.SetMemberFloat("posY", g_messageBoxState.m_pos.y);
         posData.SetMemberFloat("stageWidth", g_messageBoxState.m_stage.x);
         posData.SetMemberFloat("stageHeight", g_messageBoxState.m_stage.y);
-        obj.FUN_1409adbe0("modalessPosData", posData.FUN_1422bb870());
+        obj.FUN_1409adbe0("modalessPosData", posData.GetValue());
     }
     if (m_strExtra.GetLength() > 0)
-        obj.FUN_1407cbb20("extra", m_strExtra);
+        obj.SetWStringMember("extra", m_strExtra);
     if ((m_nFlags & 4) != 0)
     {
         if (m_timer.m_nArmed != -1)
@@ -136,22 +136,22 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
             m_timer.m_nArmed = -1;
             m_timer.m_timer.FUN_140868820();
         }
-        obj.FUN_1407cb9c0("time", m_timer.m_nSec);
+        obj.SetIntMember("time", m_timer.m_nSec);
         if (m_timer.m_nShowFormat != 0)
         {
             CStringW strTail = L"\n" + StringFormat<int>(m_timer.m_strFormat, m_timer.m_nSec);
-            obj.FUN_1407cbb20("msg", m_strMsg + strTail);
+            obj.SetWStringMember("msg", m_strMsg + strTail);
         }
     }
     if ((m_nFlags & 2) != 0)
     {
-        obj.FUN_1407cba60("textType", FUN_14016a5c0(FUN_141a06e80(m_input.m_nType), 0));
-        obj.FUN_1407cbb20("inputDefault", m_input.m_strDefault);
-        obj.FUN_1407cb9c0("inputMaxChars", m_input.m_nMaxChars);
-        obj.FUN_1407cb9c0("inputTextShowLimit", m_input.m_nShowLimit);
-        obj.FUN_1407cb9c0("inputMaxLine", m_input.m_nMaxLine);
-        obj.FUN_1407cbb20("maxLineMsg", m_input.m_strMaxLineMsg);
-        obj.FUN_1407cbb20("textCountMsg", m_input.m_strCountMsg);
+        obj.SetStringMember("textType", ToCString(GetTextTypeName(m_input.m_nType), 0));
+        obj.SetWStringMember("inputDefault", m_input.m_strDefault);
+        obj.SetIntMember("inputMaxChars", m_input.m_nMaxChars);
+        obj.SetIntMember("inputTextShowLimit", m_input.m_nShowLimit);
+        obj.SetIntMember("inputMaxLine", m_input.m_nMaxLine);
+        obj.SetWStringMember("maxLineMsg", m_input.m_strMaxLineMsg);
+        obj.SetWStringMember("textCountMsg", m_input.m_strCountMsg);
     }
     if ((m_nFlags & 1) != 0 && (m_spItem.get() != 0 ? true : false))
     {
@@ -160,18 +160,18 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
         DestroyItemInfoSlot(strBagId);
         CreateItemInfoSlot(strBagId, m_spItem->m_spItem, 0, m_spItem->m_48, 0);
         m_spItem->m_strBindId = strBagId;
-        obj.FUN_1407cba60("bagId", m_spItem->m_strBindId);
-        obj.FUN_1407cbb20("itemName", m_spItem->m_strName);
+        obj.SetStringMember("bagId", m_spItem->m_strBindId);
+        obj.SetWStringMember("itemName", m_spItem->m_strName);
         if (m_spItem->m_nCount != -1)
         {
-            obj.FUN_1407cb9c0("itemCount", m_spItem->m_nCount);
-            obj.FUN_1407cb9c0("itemMax", m_spItem->m_nMax);
-            obj.FUN_1407cb9c0("itemUnitCount", m_spItem->m_nUnitCount);
+            obj.SetIntMember("itemCount", m_spItem->m_nCount);
+            obj.SetIntMember("itemMax", m_spItem->m_nMax);
+            obj.SetIntMember("itemUnitCount", m_spItem->m_nUnitCount);
             if (m_spItem->m_nPrice != -1)
             {
                 __int64 nTotal = m_spItem->m_nPrice * m_spItem->m_nCount;
                 obj.FUN_1409c1180("itemTotalPrice", nTotal);
-                obj.FUN_1407cb9c0("itemPrice", m_spItem->m_nPrice);
+                obj.SetIntMember("itemPrice", m_spItem->m_nPrice);
             }
         }
     }
@@ -182,47 +182,47 @@ int CMsgBoxData::FUN_141a034d0(ASObj& obj)
         DestroyItemInfoSlot(strBagId);
         CreateItemInfoSlot(strBagId, m_spItem2->m_spItem, 0, m_spItem2->m_48, 0);
         m_spItem2->m_strBindId = strBagId;
-        obj.FUN_1407cba60("bagId2", m_spItem2->m_strBindId);
-        obj.FUN_1407cbb20("itemName2", m_spItem2->m_strName);
+        obj.SetStringMember("bagId2", m_spItem2->m_strBindId);
+        obj.SetWStringMember("itemName2", m_spItem2->m_strName);
         if (m_spItem2->m_nCount != -1)
         {
-            obj.FUN_1407cb9c0("itemCount2", m_spItem2->m_nCount);
-            obj.FUN_1407cb9c0("itemMax2", m_spItem2->m_nMax);
-            obj.FUN_1407cb9c0("itemUnitCount2", m_spItem2->m_nUnitCount);
+            obj.SetIntMember("itemCount2", m_spItem2->m_nCount);
+            obj.SetIntMember("itemMax2", m_spItem2->m_nMax);
+            obj.SetIntMember("itemUnitCount2", m_spItem2->m_nUnitCount);
             if (m_spItem2->m_nPrice != -1)
             {
                 __int64 nTotal = m_spItem2->m_nPrice * m_spItem2->m_nCount;
                 obj.FUN_1409c1180("itemTotalPrice2", nTotal);
-                obj.FUN_1407cb9c0("itemPrice2", m_spItem2->m_nPrice);
+                obj.SetIntMember("itemPrice2", m_spItem2->m_nPrice);
             }
         }
     }
     if ((m_nFlags & 8) != 0)
     {
         if (!m_checks.m_strLabel0.IsEmpty())
-            obj.FUN_1407cbb20("checkbox0", m_checks.m_strLabel0);
+            obj.SetWStringMember("checkbox0", m_checks.m_strLabel0);
         if (!m_checks.m_strLabel1.IsEmpty())
-            obj.FUN_1407cbb20("checkbox1", m_checks.m_strLabel1);
+            obj.SetWStringMember("checkbox1", m_checks.m_strLabel1);
         if (!m_checks.m_bEnabled0)
-            obj.FUN_1407cbbe0("check0Enabled", m_checks.m_bEnabled0);
+            obj.SetBoolMember("check0Enabled", m_checks.m_bEnabled0);
         if (!m_checks.m_bEnabled1)
-            obj.FUN_1407cbbe0("check1Enabled", m_checks.m_bEnabled1);
-        obj.FUN_1407cbbe0("check0Selected", m_checks.m_bSelected0);
-        obj.FUN_1407cbbe0("check1Selected", m_checks.m_bSelected1);
-        obj.FUN_1407cbbe0("mustCheck", m_checks.m_bMust);
+            obj.SetBoolMember("check1Enabled", m_checks.m_bEnabled1);
+        obj.SetBoolMember("check0Selected", m_checks.m_bSelected0);
+        obj.SetBoolMember("check1Selected", m_checks.m_bSelected1);
+        obj.SetBoolMember("mustCheck", m_checks.m_bMust);
     }
     if ((m_nFlags & 0x10) != 0)
     {
-        obj.FUN_1407cb9c0("width", m_nWidth);
-        obj.FUN_1407cb9c0("height", m_nHeight);
+        obj.SetIntMember("width", m_nWidth);
+        obj.SetIntMember("height", m_nHeight);
     }
     if ((m_nFlags & 0x40) != 0 && !m_strLinkTitle.IsEmpty())
     {
-        obj.FUN_1407cbb20("hyperLinkTitle", m_strLinkTitle);
-        obj.FUN_1407cba60("hyperLinkUrl", m_strLinkUrl);
+        obj.SetWStringMember("hyperLinkTitle", m_strLinkTitle);
+        obj.SetStringMember("hyperLinkUrl", m_strLinkUrl);
     }
     if (((CFeatureManager*)FUN_140166410())->FUN_14036d710(0x61))
-        obj.FUN_1407cbbe0("rbmerat", true);
+        obj.SetBoolMember("rbmerat", true);
     if (!m_values.empty())
     {
         for (std::map<CString, Scaleform::GFx::Value>::iterator it = m_values.begin(); it != m_values.end(); it++)
@@ -240,7 +240,7 @@ int CMsgBoxData::FUN_141a04900()
         if (m_timer.m_nArmed > 0)
         {
             int nSec = m_timer.m_timer.FUN_140868ab0() / 1000;
-            return (nSec > 0 && m_timer.m_timer.FUN_140868c00() == 0) ? 1 : 0;
+            return (nSec > 0 && m_timer.m_timer.IsExpired() == 0) ? 1 : 0;
         }
         if (m_timer.m_nSec < 0)
             return 0;
@@ -249,7 +249,7 @@ int CMsgBoxData::FUN_141a04900()
 }
 
 // @0x141a049a0
-int CMsgBoxData::FUN_141a049a0() const
+int CMsgBoxData::HasTimer() const
 {
     if ((m_nFlags & 4) != 0)
         return 1;
@@ -259,7 +259,7 @@ int CMsgBoxData::FUN_141a049a0() const
 // @0x141a049d0
 int CMsgBoxData::IsTimerExpired() const
 {
-    if (FUN_141a049a0())
+    if (HasTimer())
     {
         unsigned int nEnd = m_timer.m_nSec * 1000 + m_timer.m_nMs;
         unsigned int nNow = GetTickCountMs2();
@@ -297,7 +297,7 @@ bool CMsgBoxData::IsCheckbox0Checked()
     MS2Ptr<ASCheckBox> check;
     ASCheckBox* pCheck = root.FUN_140c12010("m_checkbox0", check).get();
     if (pCheck != 0)
-        return check->FUN_1422ce0e0();
+        return check->IsSelected();
     return false;
 }
 
@@ -313,12 +313,12 @@ bool CMsgBoxData::IsCheckbox1Checked()
     MS2Ptr<ASCheckBox> check;
     ASCheckBox* pCheck = root.FUN_140c12010("m_checkbox1", check).get();
     if (pCheck != 0)
-        return check->FUN_1422ce0e0();
+        return check->IsSelected();
     return false;
 }
 
 // @0x141a04da0
-CStringW CMsgBoxData::FUN_141a04da0()
+CStringW CMsgBoxData::GetInputText()
 {
     if (((Scaleform::GFx::Value*)(void*)(&m_movie))->IsUndefined())
     {
@@ -334,9 +334,9 @@ CStringW CMsgBoxData::FUN_141a04da0()
 }
 
 // @0x141a04f80
-void CMsgBoxData::FUN_141a04f80(MS2Ptr<ASDialog> spDialog)
+void CMsgBoxData::SaveModalessPosition(MS2Ptr<ASDialog> spDialog)
 {
-    if (spDialog->FUN_1422bb870().IsNull() == 0)
+    if (spDialog->GetValue().IsNull() == 0)
     {
         Unk_MsgPoint2& stage = g_messageBoxState.m_stage;
         stage.x = (float)spDialog->FUN_1422c1500();
@@ -357,7 +357,7 @@ int FUN_141a05070(CMsgBoxData* pBox)
 }
 
 // @0x141a050b0
-void CMsgBoxData::FUN_141a050b0()
+void CMsgBoxData::SetLayoutAndSound()
 {
     int nSound = 3;
     switch (m_nType)
@@ -395,7 +395,7 @@ void CMsgBoxData::FUN_141a050b0()
         FUN_141a01800(3);
         break;
     }
-    m_strSound = FUN_141a06ff0(nSound);
+    m_strSound = GetSoundName(nSound);
 }
 
 // @0x141a051e0
@@ -410,7 +410,7 @@ void CMsgBoxData::FillObjByType(ASObj& obj)
         FillGroupObj(obj);
         break;
     case 0x16:
-        FUN_141a05540(obj);
+        FillGroupListObj(obj);
         break;
     case 0x1b:
     case 0x1c:
@@ -429,10 +429,10 @@ void CMsgBoxData::FillObjByType(ASObj& obj)
         FillUgcNoticeObj(obj);
         break;
     case 0x21:
-        FUN_141a05930(obj);
+        FillItemLockConfirmObj(obj);
         break;
     case 0x23:
-        FUN_141a05bd0(obj);
+        FillRequireItemsObj(obj);
         break;
     case 0x25:
         FUN_141a05f30(obj);
@@ -450,9 +450,9 @@ void CMsgBoxData::FillObjByType(ASObj& obj)
 // @0x141a05380
 void CMsgBoxData::FillCharProfileObj(ASObj& obj)
 {
-    obj.FUN_1407cbb20("charName", m_strCharName);
-    obj.FUN_1407cbb20("charDetail", m_strCharDetail);
-    obj.FUN_1407cbb20("profile", m_strProfile);
+    obj.SetWStringMember("charName", m_strCharName);
+    obj.SetWStringMember("charDetail", m_strCharDetail);
+    obj.SetWStringMember("profile", m_strProfile);
 }
 
 // @0x141a05470
@@ -460,12 +460,12 @@ void CMsgBoxData::FillGroupObj(ASObj& obj)
 {
     CStringW strGroupName = FUN_141a02fd0(0, CStringW());
     int nAlpha = FUN_141a02e50(1, 0);
-    obj.FUN_1407cb9c0("alpha", nAlpha);
-    obj.FUN_1407cbb20("groupName", strGroupName);
+    obj.SetIntMember("alpha", nAlpha);
+    obj.SetWStringMember("groupName", strGroupName);
 }
 
 // @0x141a05540
-void CMsgBoxData::FUN_141a05540(ASObj& obj)
+void CMsgBoxData::FillGroupListObj(ASObj& obj)
 {
     if (!m_choices.m_list.IsEmpty())
     {
@@ -473,23 +473,23 @@ void CMsgBoxData::FUN_141a05540(ASObj& obj)
         for (POSITION pos = m_choices.m_list.GetHeadPosition(); pos != 0; m_choices.m_list.GetNext(pos))
         {
             ASObj row(2);
-            row.FUN_1407cbb20(DAT_143af3e28, m_choices.m_list.GetAt(pos));
-            list.PushValue(row.FUN_1422bb870());
+            row.SetWStringMember(DAT_143af3e28, m_choices.m_list.GetAt(pos));
+            list.PushValue(row.GetValue());
         }
-        obj.FUN_1409adbe0("dropdownList", list.FUN_1422bb870());
+        obj.FUN_1409adbe0("dropdownList", list.GetValue());
     }
 }
 
 // @0x141a056f0
 void CMsgBoxData::WriteAgreement(ASObj& obj)
 {
-    obj.FUN_1407cbbe0("agreement", m_bAgreement);
+    obj.SetBoolMember("agreement", m_bAgreement);
 }
 
 // @0x141a05730
 void CMsgBoxData::WriteRetraction(ASObj& obj)
 {
-    obj.FUN_1407cb9c0("retraction", m_nRetraction);
+    obj.SetIntMember("retraction", m_nRetraction);
 }
 
 // @0x141a05770
@@ -498,35 +498,35 @@ void CMsgBoxData::FillBuffObj(ASObj& obj)
     MS2Ptr<AdditionalLevelData> spAttr = TSingleton<SkillDataTableCli>::GetInstance()->FUN_140aafef0(m_buff.m_nId, m_buff.m_nLevel);
     if (spAttr.get() != 0)
     {
-        obj.FUN_1407cbb20("buffDesc", m_buff.m_strDesc);
-        obj.FUN_1407cba60("buffIcon", spAttr->m_ui.m_strIcon);
-        obj.FUN_1407cbb20("extraBuffDesc", m_buff.m_strExtra);
+        obj.SetWStringMember("buffDesc", m_buff.m_strDesc);
+        obj.SetStringMember("buffIcon", spAttr->m_ui.m_strIcon);
+        obj.SetWStringMember("extraBuffDesc", m_buff.m_strExtra);
     }
 }
 
 // @0x141a058c0
 void CMsgBoxData::FillUgcNoticeObj(ASObj& obj)
 {
-    obj.FUN_1407cb9c0("ugcAttention", *((class Unk_MsgGlobals*)GetClientConstants())->m_dfOption30.Get());
-    obj.FUN_1407cb9c0("ugcInfringementCenter", *((class Unk_MsgGlobals*)GetClientConstants())->m_dfOption88.Get());
+    obj.SetIntMember("ugcAttention", *((class Unk_MsgGlobals*)GetClientConstants())->m_dfOption30.Get());
+    obj.SetIntMember("ugcInfringementCenter", *((class Unk_MsgGlobals*)GetClientConstants())->m_dfOption88.Get());
 }
 
 // @0x141a05930
-void CMsgBoxData::FUN_141a05930(ASObj& obj)
+void CMsgBoxData::FillItemLockConfirmObj(ASObj& obj)
 {
-    CStringW strEnable = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_lock_desc_enable");
-    if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x38) == true)
-        strEnable += reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_lock_desc_enable_repacking");
-    CStringW strDisable = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_lock_desc_disable");
-    if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e) == true)
-        strDisable += reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_lock_desc_disable_socket");
-    strDisable += reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_itemlock_msgbox_lock_desc_disable_remakeoption");
+    CStringW strEnable = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_itemlock_msgbox_lock_desc_enable");
+    if (((CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x38) == true)
+        strEnable += reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_itemlock_msgbox_lock_desc_enable_repacking");
+    CStringW strDisable = reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_itemlock_msgbox_lock_desc_disable");
+    if (((CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x2e) == true)
+        strDisable += reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_itemlock_msgbox_lock_desc_disable_socket");
+    strDisable += reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_itemlock_msgbox_lock_desc_disable_remakeoption");
     CStringW strDesc = StringFormat<CStringW, CStringW>(L"{0}\n\n{1}", strEnable, strDisable);
-    obj.FUN_1407cbb20("itemLockConfirmDesc", strDesc);
+    obj.SetWStringMember("itemLockConfirmDesc", strDesc);
 }
 
 // @0x141a05bd0
-void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
+void CMsgBoxData::FillRequireItemsObj(ASObj& obj)
 {
     ATL::CAtlArray<ItemEntity>& items = m_reqItems.m_items;
     ASArray list(2);
@@ -544,7 +544,7 @@ void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
             DestroyItemInfoSlot(strBind);
             FUN_141415560(strBind, &param);
             ASObj entry(2);
-            entry.FUN_1407cba60("binding", strBind);
+            entry.SetStringMember("binding", strBind);
             entry.SetMemberUInt("itemCount", m_reqItems.m_items[i].m_count);
             ((Unk_MsgASArray&)list).PushObj(entry);
             m_reqItems.m_binds.Add(strBind);
@@ -557,7 +557,7 @@ void CMsgBoxData::FUN_141a05bd0(ASObj& obj)
 void CMsgBoxData::FUN_141a05f30(ASObj& obj)
 {
     ATL::CAtlArray<CClubDataTable::BuffPtr> buffs;
-    GetClubDataTable()->FUN_140211990(buffs);
+    GetClubDataTable()->GetAllBuffs(buffs);
     ASArray list(2);
     for (size_t i = 0; i < buffs.GetCount(); i++)
     {
@@ -570,22 +570,22 @@ void CMsgBoxData::FUN_141a05f30(ASObj& obj)
         {
             row.SetMemberUInt("effectID", nBuffId);
             row.FUN_1409c48f0("level", nLevel);
-            row.FUN_1407cba60("buffIcon", spAttr->GetIcon());
-            row.FUN_1407cbb20(DAT_143af3e28, strName);
-            list.PushValue(row.FUN_1422bb870());
+            row.SetStringMember("buffIcon", spAttr->GetIcon());
+            row.SetWStringMember(DAT_143af3e28, strName);
+            list.PushValue(row.GetValue());
         }
     }
-    obj.FUN_1409adbe0("dropdownList", list.FUN_1422bb870());
+    obj.FUN_1409adbe0("dropdownList", list.GetValue());
 }
 
 // @0x141a06250
 void CMsgBoxData::FillInputSelectList(ASObj& obj)
 {
     if (!m_args.IsEmpty())
-        obj.FUN_1407cbb20(DAT_143af3e30, m_args[0]);
+        obj.SetWStringMember(DAT_143af3e30, m_args[0]);
     ASArray list(2);
     ((Unk_MsgASArray&)list).PushString("$s_gameoption_input_select_keyboard");
-    if (((CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb5) == true)
+    if (((CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb5) == true)
     {
         int nPad = FUN_140a58540()->GetPadKind();
         if (nPad == 1)
@@ -595,7 +595,7 @@ void CMsgBoxData::FillInputSelectList(ASObj& obj)
         else if (nPad == 3)
             ((Unk_MsgASArray&)list).PushString("$s_gameoption_input_select_steam");
     }
-    obj.FUN_1409adbe0("inputList", list.FUN_1422bb870());
+    obj.FUN_1409adbe0("inputList", list.GetValue());
 }
 
 // @0x141a063e0
@@ -603,8 +603,8 @@ void CMsgBoxData::FillTwoLabelObj(ASObj& obj)
 {
     CStringW strLabel1 = m_args[0];
     CStringW strLabel2 = m_args[1];
-    obj.FUN_1407cbb20("label1", strLabel1);
-    obj.FUN_1407cbb20("label2", strLabel2);
+    obj.SetWStringMember("label1", strLabel1);
+    obj.SetWStringMember("label2", strLabel2);
 }
 
 // @0x141a064e0
@@ -621,7 +621,7 @@ CMsgBoxDataItem::~CMsgBoxDataItem()
 }
 
 // @0x141a06630
-void CMsgBoxDataItem::FUN_141a06630(const CStringW& strName, bool bColor, int nColor)
+void CMsgBoxDataItem::SetName(const CStringW& strName, bool bColor, int nColor)
 {
     m_strName = strName;
     if (bColor)
@@ -632,7 +632,7 @@ void CMsgBoxDataItem::FUN_141a06630(const CStringW& strName, bool bColor, int nC
 }
 
 // @0x141a066e0
-CString FUN_141a066e0(int nType)
+CString GetBoxTypeName(int nType)
 {
     switch (nType)
     {
@@ -684,7 +684,7 @@ CString FUN_141a066e0(int nType)
 }
 
 // @0x141a06e80
-CString FUN_141a06e80(int nTextType)
+CString GetTextTypeName(int nTextType)
 {
     switch (nTextType)
     {
@@ -700,7 +700,7 @@ CString FUN_141a06e80(int nTextType)
 
 #ifndef MS2_HOOK_DLL
 // @0x141a06ff0
-CString FUN_141a06ff0(int nSound)
+CString GetSoundName(int nSound)
 {
     switch (nSound)
     {
@@ -861,31 +861,31 @@ void Unk_MsgBoxDataDtorAnchor(CMsgBoxData* p) { p->CMsgBoxData::~CMsgBoxData(); 
 
 MS2_EMIT_CRT_MEMMOVE_S();
 
-MS2_REPLACE_METHOD(0x141A034D0, CMsgBoxData, FUN_141a034d0, 5147, 0x5C72EDD0);
+MS2_REPLACE_METHOD(0x141A034D0, CMsgBoxData, FillObj, 5147, 0x5C72EDD0);
 MS2_REPLACE_METHOD(0x141A04900, CMsgBoxData, FUN_141a04900, 154, 0x64CD6E62);
-MS2_REPLACE_METHOD(0x141A049A0, CMsgBoxData, FUN_141a049a0, 33, 0x89107F8D);
+MS2_REPLACE_METHOD(0x141A049A0, CMsgBoxData, HasTimer, 33, 0x89107F8D);
 MS2_REPLACE_METHOD(0x141A049D0, CMsgBoxData, IsTimerExpired, 86, 0x2C7D803C);
 MS2_REPLACE_METHOD(0x141A04A30, CMsgBoxData, FUN_141a04a30, 63, 0x2C84B9F2);
 MS2_REPLACE_METHOD(0x141A04A80, CMsgBoxData, GetTimer, 17, 0x60BBC863);
 MS2_REPLACE_METHOD(0x141A04AA0, CMsgBoxData, IsCheckbox0Checked, 374, 0xD9CE5F6D);
 MS2_REPLACE_METHOD(0x141A04C20, CMsgBoxData, IsCheckbox1Checked, 374, 0xCBD40F82);
-MS2_REPLACE_METHOD(0x141A04DA0, CMsgBoxData, FUN_141a04da0, 473, 0x68010C21);
-MS2_REPLACE_METHOD(0x141A050B0, CMsgBoxData, FUN_141a050b0, 239, 0xC461D7FD);
+MS2_REPLACE_METHOD(0x141A04DA0, CMsgBoxData, GetInputText, 473, 0x68010C21);
+MS2_REPLACE_METHOD(0x141A050B0, CMsgBoxData, SetLayoutAndSound, 239, 0xC461D7FD);
 MS2_REPLACE_METHOD(0x141A051E0, CMsgBoxData, FillObjByType, 317, 0x8B701FF3);
 MS2_REPLACE_METHOD(0x141A05380, CMsgBoxData, FillCharProfileObj, 223, 0x41624052);
 MS2_REPLACE_METHOD(0x141A05470, CMsgBoxData, FillGroupObj, 199, 0xC97B9BBC);
-MS2_REPLACE_METHOD(0x141A05540, CMsgBoxData, FUN_141a05540, 415, 0xD1D45854);
+MS2_REPLACE_METHOD(0x141A05540, CMsgBoxData, FillGroupListObj, 415, 0xD1D45854);
 MS2_REPLACE_METHOD(0x141A056F0, CMsgBoxData, WriteAgreement, 49, 0x2753803B);
 MS2_REPLACE_METHOD(0x141A05730, CMsgBoxData, WriteRetraction, 48, 0x4B92E680);
 MS2_REPLACE_METHOD(0x141A05770, CMsgBoxData, FillBuffObj, 320, 0x04D3E35E);
 MS2_REPLACE_METHOD(0x141A058C0, CMsgBoxData, FillUgcNoticeObj, 97, 0x9877B99C);
-MS2_REPLACE_METHOD(0x141A05930, CMsgBoxData, FUN_141a05930, 653, 0x5806077E);
-MS2_REPLACE_METHOD(0x141A05BD0, CMsgBoxData, FUN_141a05bd0, 849, 0xE5ECF5D2);
+MS2_REPLACE_METHOD(0x141A05930, CMsgBoxData, FillItemLockConfirmObj, 653, 0x5806077E);
+MS2_REPLACE_METHOD(0x141A05BD0, CMsgBoxData, FillRequireItemsObj, 849, 0xE5ECF5D2);
 MS2_REPLACE_METHOD(0x141A05F30, CMsgBoxData, FUN_141a05f30, 784, 0x0A52D0DA);
 MS2_REPLACE_METHOD(0x141A06250, CMsgBoxData, FillInputSelectList, 379, 0x767DA9E5);
 MS2_REPLACE_METHOD(0x141A063E0, CMsgBoxData, FillTwoLabelObj, 245, 0xCDB086A7);
 MS2_REPLACE_METHOD(0x141A07140, CMsgBoxData, GetStringArg, 153, 0x45E471F0);
 MS2_REPLACE_METHOD(0x141A071E0, CMsgBoxData, GetBoolArg, 103, 0xC313FF72);
-MS2_REPLACE_METHOD(0x141A06630, CMsgBoxDataItem, FUN_141a06630, 161, 0x524A9354);
+MS2_REPLACE_METHOD(0x141A06630, CMsgBoxDataItem, SetName, 161, 0x524A9354);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbfe20-0x142cbfeb0 .text$yd

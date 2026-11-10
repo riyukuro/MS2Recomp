@@ -49,10 +49,10 @@ public:
 
     void FUN_141968140(CInPacket& packet);                      // guild packet 0x8a: refresh the buttons on 0x76 / 0x77
     int FUN_1419681b0(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // the join / request pages' AS callbacks (vfunc_28)
-    void FUN_141969040(const CStringW& strCategory);            // open a category's page and show it
-    void FUN_141969290(const CStringW& strCategory);            // show a category's page
+    void OpenCategoryPage(const CStringW& strCategory);            // open a category's page and show it
+    void ShowCategoryPage(const CStringW& strCategory);            // show a category's page
     void SetPageVisible(MS2Ptr<ASUIComponent> spPage, bool b);
-    void FUN_1419698f0();                                       // hide every page   // a page's slot 4
+    void HideAllPages();                                       // hide every page   // a page's slot 4
     bool EnsurePageCreated(const CString& strName, MS2Ptr<ASUIComponent>& spPage);   // bind (create) a page
     void CreateCreatePage();                                       // open "guild_create_page"
     void CreateJoinPage();                                       // open "guild_join_page"
@@ -63,7 +63,7 @@ public:
     void CreatePvpHistoryPage();                                       // open "guild_pvp_history_page"
     void CreateAcceptRequestPage();                                       // open "guild_accept_request_page"
     void CreateSkillPage();                                       // open "guild_skill_page" (type 0)
-    void FUN_14196a640();                                       // open "guild_skill_page" (type 1)
+    void CreateMemberSkillPage();                                       // open "guild_skill_page" (type 1)
     void CreateEventPage();                                     // 0x14196a6f0 open "UIGuildDialog_EventPage" (name: its GfxError string)
     void CreateHousePage();                                       // open "guild_house_page"
     void CreateStoragePage();                                       // open "guild_storage_page"
@@ -71,10 +71,10 @@ public:
     void SetupCategory();
     void ShowGuildDialog();
     void FUN_14196b3a0();
-    void FUN_14196b620();
-    void FUN_14196c1d0();
-    void FUN_14196c860();
-    void FUN_14196cd30();                                       // "setGradeInfo"
+    void UpdateGuildInfo();
+    void UpdateChampionshipRating();
+    void SetMasterInfo();
+    void SetGradeInfo();                                       // "setGradeInfo"
     void UpdateBelongGuildText();                                       // the championship page's guild text
     void FUN_14196d0c0(int nPage);                              // "buildSearchGuild" (9 per page)
     void FUN_14196d660();                                       // "buildSearchMy": my join requests
@@ -87,49 +87,49 @@ public:
     void FUN_141970f00();                                       // the guild vs-game event panel
     void FUN_141971490();                                       // the house page
     void FUN_141971ac0();
-    void FUN_141972520();                                       // the storage page
-    void FUN_1419729d0();                                       // the storage history (last 7 days)
-    void FUN_141972fc0();                                       // the raid score
+    void UpdateStoragePage();                                       // the storage page
+    void UpdateStorageHistory();                                       // the storage history (last 7 days)
+    void UpdateRaidScore();                                       // the raid score
     void FUN_141973220();                                       // the raid history
-    void FUN_141973610();                                       // the championship info
+    void UpdateChampionshipInfo();                                       // the championship info
     void UpdateAttendBackground();                                       // show the attendance mark
     void FUN_141973b20(const CStringW& strName);                // refresh a member's row
-    void FUN_141973df0(const CStringW& strName);                // "removeMember"
+    void RemoveMember(const CStringW& strName);                // "removeMember"
     void RefreshMembersOfGrade(int nGrade);                             // grade renamed: refresh its members
-    void FUN_141974120(const CString& strCode);                 // set the mark from a code
+    void SetGuildMarkFromCode(const CString& strCode);                 // set the mark from a code
     void SetGuildName(const CStringW& strName);                // "setGuildName"
     void FUN_141974240();                                       // the pvp history page
     void FUN_141974640();                                       // the pvp season history
-    void FUN_141974930();                                       // confirm the championship guild
+    void ShowChampionGuildConfirm();                                       // confirm the championship guild
     bool FUN_141974ba0(int nResult, const CMsgBoxData& box);    // confirm boxes: forward the box's number to the manager
     bool FUN_141974bf0(int nResult, const CMsgBoxData& box);
-    bool FUN_141974c40(int nResult, const CMsgBoxData& box);
-    bool FUN_141974c90(int nResult, const CMsgBoxData& box);
-    void FUN_141974ce0();                                       // bind the web guide button and build the static pages
+    bool OnUpgradeSkillConfirm(int nResult, const CMsgBoxData& box);
+    bool OnUpgradeNpcConfirm(int nResult, const CMsgBoxData& box);
+    void InitializeGuildDialog();                                       // bind the web guide button and build the static pages
     bool OnCreateGuild(const CStringW& strName);                // "createGuild"
     bool OnChangeNotify(const CStringW& strText);                // "changeNotify"
-    bool FUN_141974e70(const CStringW& strName);                // request by name ("changeMemo")
-    bool FUN_141974ea0();                                       // request a refresh
+    bool OnChangeMemo(const CStringW& strName);                // request by name ("changeMemo")
+    bool OnBreakGuild();                                       // request a refresh
     bool OpenRealtimeRankPage();                                       // open the realtime rank page
     bool OpenRankPage();                                       // open the rank page
     bool OpenPvpRankPage();                                       // open the pvp rank page
     bool FUN_141974ed0();                                       // is the guild mail filled in
-    bool FUN_1419751e0();                                       // "sendMail"
+    bool OnSendMail();                                       // "sendMail"
     bool OnAddMember(const CStringW& strName);                // "addMember"
     void FUN_141975620();
-    void FUN_1419758a0();
+    void UpdateSkillInfo();
     void FUN_141975c80();
     void PurgeExpiredRequests();
-    void FUN_1419761f0();                                       // update the buttons
+    void UpdateEventButtons();                                       // update the buttons
     void OnEventRegisterClick(const Scaleform::GFx::FunctionHandler::Params& params);
     void OnEventUnregisterClick(const Scaleform::GFx::FunctionHandler::Params& params);
     void UpdateStorageSlotCount(ItemInfoSlot& slot, ASSlot& asSlot);     // a storage slot's count
     bool IsGuildExpEventRunning();                                       // is a guild exp event running
-    void FUN_1419764f0(unsigned __int64 nGuildId, const CString& strCode);   // a guild's mark arrived
-    void FUN_141976730(const CStringW& strMark, int n);         // "setGuildMark"
-    void FUN_1419769d0();                                       // set the own guild's mark
+    void OnGuildMarkReceived(unsigned __int64 nGuildId, const CString& strCode);   // a guild's mark arrived
+    void SetGuildMark(const CStringW& strMark, int n);         // "setGuildMark"
+    void SetOwnGuildMark();                                       // set the own guild's mark
     void FUN_141970900();
-    void FUN_141976980(const CStringW& strMark);                // set the mark unless the dialog is closed
+    void SetGuildMarkIfOpen(const CStringW& strMark);                // set the mark unless the dialog is closed
     static UINT RequestHistoryGuildMarkToWeb(LPVOID pParam);    // thread: the pvp history guilds' marks from the web
     void FUN_141976e00(CString strXml);                         // the web answer: store the guilds' marks
 

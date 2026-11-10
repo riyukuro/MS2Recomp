@@ -44,7 +44,7 @@ public:
     class Unk_XmlNode* FirstChild(char const*);
     class Unk_XmlNode* NextSibling(char const*);
 };
-CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);         // Table/<file>
+CStringA GetXmlPath(const CStringA& strDir, const CStringA& strFile);         // Table/<file>
 CStringA FUN_14071ae20(const CStringA& strFile);                                 // the localised string table path
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -173,9 +173,9 @@ int LoadSpecialAbilityStringTable()
     DAT_143ab1a40.resize(0xcf);
     std::map<int, CStringW> mapNames;
     LoadStringSpecialAbilityName(mapNames);
-    CStringA strPath = FUN_14071a5b0("Table", "specialAbilityStringTable.xml");
+    CStringA strPath = GetXmlPath("Table", "specialAbilityStringTable.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -203,7 +203,7 @@ int LoadStringSpecialAbilityName(std::map<int, CStringW>& mapNames)
 {
     CStringA strPath = FUN_14071ae20("stringSpecialAbilityName.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(class TiXmlElement*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -300,7 +300,7 @@ int FUN_14081d480(int nType)
 // @0x14081d650 the option has one of the abilities of the group
 int FUN_14081d650(MS2Ptr<CItemOption> spOption, int nGroup, unsigned nType)
 {
-    Unk_SAListPtr spList = FUN_14081d7b0((eSpecialAbility)nType);
+    Unk_SAListPtr spList = GetSpecialAbilityList((eSpecialAbility)nType);
     if (spList.get() != 0)
     {
         POSITION pos = spList->GetHeadPosition();
@@ -316,7 +316,7 @@ int FUN_14081d650(MS2Ptr<CItemOption> spOption, int nGroup, unsigned nType)
 }
 
 // @0x14081d7b0 the ability list of a group
-Unk_SAListPtr FUN_14081d7b0(eSpecialAbility nType)
+Unk_SAListPtr GetSpecialAbilityList(eSpecialAbility nType)
 {
     Unk_SAListPtr spList(0);
     g_mapSAAbilityList.Lookup(nType, spList);
@@ -326,7 +326,7 @@ Unk_SAListPtr FUN_14081d7b0(eSpecialAbility nType)
 // @0x14081d830
 int FUN_14081d830(int nType)
 {
-    return FUN_14081d7b0((eSpecialAbility)nType).get() != 0;
+    return GetSpecialAbilityList((eSpecialAbility)nType).get() != 0;
 }
 
 // @0x14081d8a0
@@ -477,7 +477,7 @@ int FUN_14081dd50(int nIndex)
 }
 
 // @0x14081dd80
-SAType FUN_14081dd80(const CStringA& strName)
+SAType FindSpecialAbilityByName(const CStringA& strName)
 {
     return FUN_14081d2f0(strName);
 }

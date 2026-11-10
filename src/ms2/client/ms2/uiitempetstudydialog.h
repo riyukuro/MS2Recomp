@@ -29,7 +29,7 @@ public:
 
     void SetOwner(unsigned __int64 nOwner);                // 0x140e557f0 the uid of the study scroll
     void FUN_140e55820(CInPacket& packet);                      // 0x140e55820 packet 0xcc: study done
-    void FUN_140e558d0();                                       // 0x140e558d0 ask the server to study
+    void SendStudyRequest();                                       // 0x140e558d0 ask the server to study
     ItemScrollSlot* FUN_140e559c0(CString strName);             // 0x140e559c0 the scroll slot of a name
     int FUN_140e55a40(MS2Ptr<CItem> spPet, int bMessage);       // 0x140e55a40 can this pet study the scroll
     void FUN_140e55f10(ItemScrollSlot& slot);                  // 0x140e55f10 the pet was removed from the slot

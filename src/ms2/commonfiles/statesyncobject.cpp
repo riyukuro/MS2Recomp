@@ -68,7 +68,7 @@ StateSyncObject::~StateSyncObject()
 }
 
 // @0x140835450
-MS2Ptr<StateSyncObject> FUN_140835450(int nState)
+MS2Ptr<StateSyncObject> CreateStateSyncObject(int nState)
 {
     MS2Ptr<StateSyncObject> spState;
     switch (nState) {
@@ -185,7 +185,7 @@ void StateSyncObject::vfunc_2(CInPacket& kIn)
 // @0x140836250
 void StateSyncObject::FUN_140836250(COutputStream& kOut)
 {
-    m_optional.FUN_140837500();
+    m_optional.Reset();
     if (m_n64 != 0)
         m_optional.Set(0, true);
     if (m_n68 != 0)
@@ -377,7 +377,7 @@ Unk_PartyBitRef::operator bool() const
 }
 
 // @0x140837500
-Unk_PartyBits& Unk_PartyBits::FUN_140837500()
+Unk_PartyBits& Unk_PartyBits::Reset()
 {
     Fill(false);
     return *this;

@@ -95,7 +95,7 @@ struct ModelFloatList               // <scale> element, 0x28 bytes
     // implicit dtor (COMDAT 0x140541080 in itemdata.cpp) and moves: no user-declared dtor
     int Load(TiXmlElement* pElem);        // XML read
     int FUN_140544c00(void* pParent);            // XML write (nothing)
-    float FUN_140544c20() const;    // a random entry of values, 1.0 when empty
+    float GetRandomValue() const;    // a random entry of values, 1.0 when empty
     float maxValue;                 // +0x00 "max" (default 1.0)
     float minValue;                 // +0x04 "min"
     int reverse;                    // +0x08 "reverse"
@@ -159,15 +159,15 @@ struct ModelGroup                   // 0x38 bytes (also the unit's third static,
 {
     ModelGroup();                   // 0x140544ca0
     // implicit dtor (COMDAT 0x140540f30 in itemdata.cpp) and moves: no user-declared dtor
-    void FUN_140544cf0(TiXmlElement* pElem);       // XML read
+    void Load(TiXmlElement* pElem);       // XML read
     void FUN_140544f00(void* pParent);           // XML write (nothing)
     const ModelFloatList* FUN_140544f20(size_t nIndex) const;   // the nIndex-th scale list (a static default when out of range)
-    const ModelPart* FUN_140544fe0(size_t nIndex) const;  // the nIndex-th part (a static default when out of range)
+    const ModelPart* GetPart(size_t nIndex) const;  // the nIndex-th part (a static default when out of range)
     size_t FUN_140545090() const;       // number of scale lists
-    size_t FUN_1405450c0() const;       // number of parts
+    size_t GetPartCount() const;       // number of parts
     float FUN_1405450f0(int nIndex) const;              // a random value of the nIndex-th scale list
     void FUN_140545130(const CString& strName);     // renames every part
-    int FUN_1405451a0() const;     // type
+    int GetType() const;     // type
     std::vector<ModelPart> parts;   // +0x00
     std::vector<ModelFloatList> floats; // +0x18
     int type;                       // +0x30 "name"
@@ -204,8 +204,8 @@ struct ItemModelHead                // <customize> block, 0x50 bytes at ItemMode
     int FUN_140547250();            // +0x14
     int FUN_140547270(int nIndex) const;    // the nIndex-th entry of the id list, -1 when out of range
     int FUN_1405472d0(int nIndex) const;    // the nIndex-th colour delay, 0 when out of range
-    size_t FUN_140547330();         // size of the id list
-    MsTransform* FUN_140547360();   // the cap transform (may be null)
+    size_t GetIdCount();         // size of the id list
+    MsTransform* GetCapTransform();   // the cap transform (may be null)
     MS2Ptr<MsTransform> handle;     // +0x00 <capTransform>
     bool flag10;                    // +0x10 "color"
     bool flag11;                    // +0x11 more than one default colour index
@@ -230,12 +230,12 @@ public:
     void FUN_14054af00(TiXmlElement* pElem);       // XML read
     void FUN_14054b230(void* pParent);           // XML write (nothing)
     void FUN_14054b250(const CString& strName);     // renames every part of every group
-    std::vector<CString>* FUN_14054b2c0(int nGender);   // the <cutting> names of a gender
+    std::vector<CString>* GetCuttingNames(int nGender);   // the <cutting> names of a gender
     const ModelGroup* GetGroup(size_t nIndex) const;       // the nIndex-th group (a static empty one when out of range)
     int FUN_14054b3b0();            // m_nUnk28
-    size_t FUN_14054b3d0();         // number of groups
-    int FUN_14054b400() const;      // type of the first group, 0 when none
-    bool FUN_14054b450(int nType) const;    // a group has the type (type 19 stands for 4 and 5)
+    size_t GetGroupCount();         // number of groups
+    int GetFirstGroupType() const;      // type of the first group, 0 when none
+    bool HasGroupType(int nType) const;    // a group has the type (type 19 stands for 4 and 5)
     bool FUN_14054b520();
     bool FUN_14054b550();
     int FUN_14054b580();
@@ -243,7 +243,7 @@ public:
     int FUN_14054b5e0(int nIndex);
     size_t FUN_14054b610();
     bool FUN_14054b640();
-    ItemModelHead* FUN_14054b670(); // &head
+    ItemModelHead* GetHead(); // &head
     ItemModelHead* FUN_14054b690(); // &head
     CharacterDecalData* FUN_14054b6b0();            // the decal block (may be null)
     CStringW GetName();       // name
@@ -266,7 +266,7 @@ class DropNifData : public CPtred   // 0x20 bytes
 public:
     DropNifData();                  // 0x1405434a0
     virtual ~DropNifData() = default;   // COMDAT 0x140552480 (no vptr store)
-    void FUN_1405434f0(TiXmlElement* pElem);   // XML read
+    void Load(TiXmlElement* pElem);   // XML read
     bool FUN_140543550(unsigned n); // m_nUnk1c <= n
     int GetTypeId();            // type id
     int m_nTypeId;                  // +0x18 "typeID"

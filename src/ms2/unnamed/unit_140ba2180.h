@@ -31,15 +31,15 @@ public:
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x140ba2330
     virtual int vfunc_48() { return 20378; }                        // 48 0x140ba2950 UI type id
 
-    void FUN_140ba2390(const Unk_StanceInfo* pInfo);                // start the stance
-    void FUN_140ba23c0(const Unk_StanceInfo* pInfo);                // stop, then start
-    void FUN_140ba2400();                                           // stop
-    void FUN_140ba2420(unsigned long nTime);                        // updateTime
-    void FUN_140ba2490(int nStep);                                  // updateStep
+    void StartStance(const Unk_StanceInfo* pInfo);                // start the stance
+    void RestartStance(const Unk_StanceInfo* pInfo);                // stop, then start
+    void StopStance();                                           // stop
+    void UpdateTime(unsigned long nTime);                        // updateTime
+    void UpdateStep(int nStep);                                  // updateStep
     void FUN_140ba2520(const Unk_StanceInfo* pInfo);                // startStance
     void FUN_140ba25c0();                                           // stopStance + mark stopped
     void FUN_140ba25f0();                                           // call stopStance when running
-    void FUN_140ba2670();                                           // mark stopped
+    void MarkStopped();                                           // mark stopped
     void FUN_140ba26b0() {}                                         // empty
     void FUN_140ba26c0();                                           // empty (no caller; emitted as a COMDAT in the exe)
 

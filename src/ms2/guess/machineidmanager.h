@@ -40,7 +40,7 @@ MS2_CHECK_SIZE(CSystemInfo, 0x28);
 
 void FUN_1423b10a0(CSystemInfo* pLocal);         // fills the hardware and support ids
 void* FUN_1423b1080(CSystemInfo* pLocal);        // the id buffer inside the working object
-unsigned int FUN_1423ae960(CSystemInfo* pLocal); // the PC-bang code, 0 if none
+unsigned int GetPcBangCode(CSystemInfo* pLocal); // the PC-bang code, 0 if none
 
 class CMachineIDManager : public TSingleton<CMachineIDManager>
 {

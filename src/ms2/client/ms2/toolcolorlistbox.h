@@ -30,9 +30,9 @@ public:
     virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct);  // 0x141854b40
 
     int FUN_141853bc0(int nIndex);                                  // the valid list index of nIndex (-1: the current selection), else -1
-    Unk_ColorItem* FUN_141853c30(int nIndex);                       // the item record of an index
+    Unk_ColorItem* GetColorItem(int nIndex);                       // the item record of an index
     int FUN_1418541f0(LPCSTR pszText, COLORREF clrBack, COLORREF clrText, UINT nFormat8, UINT nFormatC, int bNoBlend, int n14);   // append
-    int FUN_141854270(LPCSTR pszText, int nIndex, COLORREF clrBack, COLORREF clrText, UINT nFormat8, UINT nFormatC, int bNoBlend, int n14);   // insert
+    int InsertItem(LPCSTR pszText, int nIndex, COLORREF clrBack, COLORREF clrText, UINT nFormat8, UINT nFormatC, int bNoBlend, int n14);   // insert
     int FUN_141854380(int nIndex);                                 // delete one item and its record
     void FUN_141854420();                                           // delete every item
     int FUN_141854450(COLORREF clr, int nIndex);                   // set the background colour

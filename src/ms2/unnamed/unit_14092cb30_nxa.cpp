@@ -63,7 +63,7 @@ public:
 
 // The process-wide default allocator (0x143ab26d8, guard 0x143ab26e0).
 // @0x14092ed70
-static nxa::MemoryAllocator* FUN_14092ed70()
+static nxa::MemoryAllocator* GetDefaultMemoryAllocator()
 {
     static nxa::DefaultMemoryAllocator s_kAllocator;
     return &s_kAllocator;
@@ -71,9 +71,9 @@ static nxa::MemoryAllocator* FUN_14092ed70()
 
 // The current allocator (0x143ab26e8, guard 0x143ab26f0); a non-null argument replaces it.
 // @0x14092ecb0
-static nxa::MemoryAllocator* FUN_14092ecb0(nxa::MemoryAllocator* pAllocator)
+static nxa::MemoryAllocator* GetMemoryAllocator(nxa::MemoryAllocator* pAllocator)
 {
-    static nxa::MemoryAllocator* s_pAllocator = FUN_14092ed70();
+    static nxa::MemoryAllocator* s_pAllocator = GetDefaultMemoryAllocator();
     if (pAllocator != NULL && pAllocator != s_pAllocator)
         s_pAllocator = pAllocator;
     return s_pAllocator;
@@ -96,12 +96,12 @@ static void FUN_14092f0d0(Unk_NxPool* pPool)
     void** p = pPool->m_pChunks;
     while (p != NULL) {
         void** pNext = (void**)*p;
-        FUN_14092ecb0(NULL)->Free(p);
+        GetMemoryAllocator(NULL)->Free(p);
         p = pNext;
     }
     pPool->m_pChunks = NULL;
     if (pPool->m_ppFree != NULL) {
-        FUN_14092ecb0(NULL)->Free(pPool->m_ppFree);
+        GetMemoryAllocator(NULL)->Free(pPool->m_ppFree);
         pPool->m_ppFree = NULL;
     }
     pPool->m_n14 = 0;
@@ -139,12 +139,12 @@ static void FUN_14092ee40(Unk_NxPool* pPool, void* p)
     if (pPool->m_nFree <= nClass) {
         size_t nCount = nClass + 1;
         nCount = nCount < 0x40 ? 0x40 : (nCount + 7) / 8 * 8;
-        void** ppNew = (void**)FUN_14092ecb0(NULL)->Alloc(nCount * 8);
+        void** ppNew = (void**)GetMemoryAllocator(NULL)->Alloc(nCount * 8);
         void** ppTail;
         if (pPool->m_ppFree != NULL) {
             memcpy(ppNew, pPool->m_ppFree, (size_t)pPool->m_nFree * 8);
             ppTail = ppNew + pPool->m_nFree;
-            FUN_14092ecb0(NULL)->Free(pPool->m_ppFree);
+            GetMemoryAllocator(NULL)->Free(pPool->m_ppFree);
         } else {
             ppTail = ppNew;
         }
@@ -231,7 +231,7 @@ static void FUN_14092e440(Unk_NxArray* pArray) noexcept
     FUN_14092f020(pArray);
     if (pArray->m_bOwnPool) {
         FUN_14092e630(pArray->m_pPool, 0);
-        FUN_14092ecb0(NULL)->Free(pArray->m_pPool);
+        GetMemoryAllocator(NULL)->Free(pArray->m_pPool);
     }
 }
 
@@ -288,7 +288,7 @@ static void FUN_14092e4e0(Unk_NxObject* pObject) noexcept
     FUN_14092ee40(pObject->m_pPool, pObject->m_ppBuckets);
     if (pObject->m_bOwnPool) {
         FUN_14092e630(pObject->m_pPool, 0);
-        FUN_14092ecb0(NULL)->Free(pObject->m_pPool);
+        GetMemoryAllocator(NULL)->Free(pObject->m_pPool);
     }
 }
 
@@ -308,7 +308,7 @@ static void FUN_14092ec50(Unk_NxRaw* pValue)
     if (pValue->m_pPool == NULL)
         return;
     FUN_14092e630(pValue->m_pPool, 0);
-    FUN_14092ecb0(NULL)->Free(pValue->m_pPool);
+    GetMemoryAllocator(NULL)->Free(pValue->m_pPool);
     pValue->m_pPool = NULL;
 }
 
@@ -316,7 +316,7 @@ static void FUN_14092ec50(Unk_NxRaw* pValue)
 // @0x14092e950
 static void FUN_14092e950(Unk_NxRaw* pValue)
 {
-    FUN_14092ecb0(NULL)->Free(*(void**)pValue->m_abPayload);
+    GetMemoryAllocator(NULL)->Free(*(void**)pValue->m_abPayload);
     pValue->m_nSize = 0;
 }
 
@@ -385,7 +385,7 @@ void FUN_14092ea10(void* p, int nKind)
 // @0x14092e7e0
 static void* FUN_14092e7e0(Unk_NxRaw* pValue, size_t nSize)
 {
-    void* p = FUN_14092ecb0(NULL)->Alloc(nSize);
+    void* p = GetMemoryAllocator(NULL)->Alloc(nSize);
     if (p != NULL) {
         new (pValue->m_abPayload) void*(p);
         pValue->m_nSize = (unsigned)nSize;
@@ -708,7 +708,7 @@ bool FUN_14092d8f0(HMODULE* ppModule)
 }
 
 // @0x14092cbf0
-void Unk_NexonAnalytics::FUN_14092cbf0()
+void Unk_NexonAnalytics::UnloadModule()
 {
     if (!FUN_14092edf0((HMODULE*)this))
         return;
@@ -739,7 +739,7 @@ bool Unk_NexonAnalytics::FUN_14092ce80(const Unk_NxString& kVersion, const Unk_N
 }
 
 // @0x14092cf80
-bool Unk_NexonAnalytics::FUN_14092cf80(const Unk_NxEvent* pEvent, const Unk_NxString* pHost,
+bool Unk_NexonAnalytics::InitializeClientModule(const Unk_NxEvent* pEvent, const Unk_NxString* pHost,
                                        const Unk_NxNumber* pService)
 {
     if (!FUN_14092edf0((HMODULE*)this))
@@ -753,7 +753,7 @@ bool Unk_NexonAnalytics::FUN_14092cf80(const Unk_NxEvent* pEvent, const Unk_NxSt
 }
 
 // @0x14092d070
-void Unk_NexonAnalytics::FUN_14092d070(bool bFlush)
+void Unk_NexonAnalytics::FinalizeModule(bool bFlush)
 {
     if (!FUN_14092edf0((HMODULE*)this))
         return;
@@ -777,14 +777,14 @@ static bool FUN_14092d1a0(HMODULE* ppModule, int nCode, const Unk_NxString* pLog
 }
 
 // @0x14092d1f0
-bool Unk_NexonAnalytics::FUN_14092d1f0(int nCode, const CStringA& strLog)
+bool Unk_NexonAnalytics::EnqueueStageLog(int nCode, const CStringA& strLog)
 {
     Unk_NxString kLog((const char*)strLog, 3);
     return FUN_14092d150((HMODULE*)this, nCode, &kLog);
 }
 
 // @0x14092d280
-bool Unk_NexonAnalytics::FUN_14092d280(int nCode, const CStringA& strLog)
+bool Unk_NexonAnalytics::EnqueueErrorLog(int nCode, const CStringA& strLog)
 {
     Unk_NxString kLog((const char*)strLog, 3);
     return FUN_14092d1a0((HMODULE*)this, nCode, &kLog);
@@ -794,7 +794,7 @@ bool Unk_NexonAnalytics::FUN_14092d280(int nCode, const CStringA& strLog)
 
 // Loads the DLL and resolves its exports.
 // @0x14092cb30
-bool FUN_14092cb30(HMODULE* ppModule, LPCWSTR pszPath)
+bool LoadModule(HMODULE* ppModule, LPCWSTR pszPath)
 {
     if (FUN_14092edf0(ppModule))
         return true;
@@ -813,7 +813,7 @@ bool FUN_14092cb30(HMODULE* ppModule, LPCWSTR pszPath)
 #define NXA_CALL(type, slot) ((type)s_pfn_##slot)
 
 // @0x14092cd10
-void FUN_14092cd10(HMODULE* ppModule, const Unk_NxString* pDir)
+void PresetWorkingDirectory(HMODULE* ppModule, const Unk_NxString* pDir)
 {
     if (!FUN_14092edf0(ppModule))
         return;
@@ -821,7 +821,7 @@ void FUN_14092cd10(HMODULE* ppModule, const Unk_NxString* pDir)
 }
 
 // @0x14092cd50
-bool FUN_14092cd50(HMODULE* ppModule, const Unk_NxString* pVersion)
+bool PresetNxLogVersion(HMODULE* ppModule, const Unk_NxString* pVersion)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -829,7 +829,7 @@ bool FUN_14092cd50(HMODULE* ppModule, const Unk_NxString* pVersion)
 }
 
 // @0x14092cd90
-bool FUN_14092cd90(HMODULE* ppModule, const Unk_NxString* pHost)
+bool PresetConfigServerAddress(HMODULE* ppModule, const Unk_NxString* pHost)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -837,7 +837,7 @@ bool FUN_14092cd90(HMODULE* ppModule, const Unk_NxString* pHost)
 }
 
 // @0x14092cdd0
-bool FUN_14092cdd0(HMODULE* ppModule, const Unk_NxString* pHost)
+bool PresetLogServerAddress(HMODULE* ppModule, const Unk_NxString* pHost)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -845,7 +845,7 @@ bool FUN_14092cdd0(HMODULE* ppModule, const Unk_NxString* pHost)
 }
 
 // @0x14092ce10
-void FUN_14092ce10(HMODULE* ppModule, const Unk_NxNumber* pLimit)
+void PresetBackupFileLimit(HMODULE* ppModule, const Unk_NxNumber* pLimit)
 {
     if (!FUN_14092edf0(ppModule))
         return;
@@ -853,23 +853,23 @@ void FUN_14092ce10(HMODULE* ppModule, const Unk_NxNumber* pLimit)
 }
 
 // @0x14092ce50
-void FUN_14092ce50(HMODULE* ppModule)
+void PresetSystemInfoLogOff(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return;
     NXA_CALL(void (*)(), presetSystemInfoLogOff)();
 }
 
-// FUN_14092cf80 with an empty host.
+// InitializeClientModule with an empty host.
 // @0x14092cef0
 bool FUN_14092cef0(Unk_NexonAnalytics* pAnalytics, const Unk_NxEvent* pEvent, const Unk_NxNumber* pService)
 {
     Unk_NxString kHost(NULL, 3);
-    return pAnalytics->FUN_14092cf80(pEvent, &kHost, pService);
+    return pAnalytics->InitializeClientModule(pEvent, &kHost, pService);
 }
 
 // @0x14092d0b0
-bool FUN_14092d0b0(HMODULE* ppModule, const void* p1, const void* p2)
+bool UpdateUser(HMODULE* ppModule, const void* p1, const void* p2)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -877,7 +877,7 @@ bool FUN_14092d0b0(HMODULE* ppModule, const void* p1, const void* p2)
 }
 
 // @0x14092d100
-bool FUN_14092d100(HMODULE* ppModule, const void* p1, const void* p2, const void* p3)
+bool SetUserExtraInfo(HMODULE* ppModule, const void* p1, const void* p2, const void* p3)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -885,7 +885,7 @@ bool FUN_14092d100(HMODULE* ppModule, const void* p1, const void* p2, const void
 }
 
 // @0x14092d310
-bool FUN_14092d310(HMODULE* ppModule, const void* p1, const void* p2)
+bool EnqueueLogOnlyOnce(HMODULE* ppModule, const void* p1, const void* p2)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -893,7 +893,7 @@ bool FUN_14092d310(HMODULE* ppModule, const void* p1, const void* p2)
 }
 
 // @0x14092d360
-bool FUN_14092d360(HMODULE* ppModule, const void* p)
+bool EnqueueNxLog(HMODULE* ppModule, const void* p)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -901,7 +901,7 @@ bool FUN_14092d360(HMODULE* ppModule, const void* p)
 }
 
 // @0x14092d3a0
-bool FUN_14092d3a0(HMODULE* ppModule, const void* p1, const void* p2)
+bool EnqueueLog(HMODULE* ppModule, const void* p1, const void* p2)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -909,7 +909,7 @@ bool FUN_14092d3a0(HMODULE* ppModule, const void* p1, const void* p2)
 }
 
 // @0x14092d3f0
-bool FUN_14092d3f0(HMODULE* ppModule, const void* p)
+bool EnqueueJsonLog(HMODULE* ppModule, const void* p)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -917,7 +917,7 @@ bool FUN_14092d3f0(HMODULE* ppModule, const void* p)
 }
 
 // @0x14092d430
-bool FUN_14092d430(HMODULE* ppModule, int nLevel, const void* p)
+bool EnqueueDevLog(HMODULE* ppModule, int nLevel, const void* p)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -925,7 +925,7 @@ bool FUN_14092d430(HMODULE* ppModule, int nLevel, const void* p)
 }
 
 // @0x14092d480
-bool FUN_14092d480(HMODULE* ppModule, const void* p)
+bool EnqueueSystemInfoLog(HMODULE* ppModule, const void* p)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -933,7 +933,7 @@ bool FUN_14092d480(HMODULE* ppModule, const void* p)
 }
 
 // @0x14092d4c0
-bool FUN_14092d4c0(HMODULE* ppModule, const void* p1, const void* p2)
+bool AssignInfoUser(HMODULE* ppModule, const void* p1, const void* p2)
 {
     if (!FUN_14092edf0(ppModule))
         return false;
@@ -941,7 +941,7 @@ bool FUN_14092d4c0(HMODULE* ppModule, const void* p1, const void* p2)
 }
 
 // @0x14092d510
-const char* FUN_14092d510(HMODULE* ppModule, const char* pszField)
+const char* GetCommonFieldA(HMODULE* ppModule, const char* pszField)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
@@ -949,7 +949,7 @@ const char* FUN_14092d510(HMODULE* ppModule, const char* pszField)
 }
 
 // @0x14092d550
-const wchar_t* FUN_14092d550(HMODULE* ppModule, const wchar_t* pszField)
+const wchar_t* GetCommonFieldW(HMODULE* ppModule, const wchar_t* pszField)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
@@ -957,7 +957,7 @@ const wchar_t* FUN_14092d550(HMODULE* ppModule, const wchar_t* pszField)
 }
 
 // @0x14092d590
-const char* FUN_14092d590(HMODULE* ppModule)
+const char* GetAccountNoA(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
@@ -965,7 +965,7 @@ const char* FUN_14092d590(HMODULE* ppModule)
 }
 
 // @0x14092d5c0
-const wchar_t* FUN_14092d5c0(HMODULE* ppModule)
+const wchar_t* GetAccountNoW(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
@@ -973,7 +973,7 @@ const wchar_t* FUN_14092d5c0(HMODULE* ppModule)
 }
 
 // @0x14092d5f0
-const char* FUN_14092d5f0(HMODULE* ppModule)
+const char* GetSessionIdA(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
@@ -981,7 +981,7 @@ const char* FUN_14092d5f0(HMODULE* ppModule)
 }
 
 // @0x14092d620
-const wchar_t* FUN_14092d620(HMODULE* ppModule)
+const wchar_t* GetSessionIdW(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
@@ -989,7 +989,7 @@ const wchar_t* FUN_14092d620(HMODULE* ppModule)
 }
 
 // @0x14092d650
-const char* FUN_14092d650(HMODULE* ppModule)
+const char* GetMachineIdA(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
@@ -997,7 +997,7 @@ const char* FUN_14092d650(HMODULE* ppModule)
 }
 
 // @0x14092d680
-const wchar_t* FUN_14092d680(HMODULE* ppModule)
+const wchar_t* GetMachineIdW(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return NULL;
@@ -1019,7 +1019,7 @@ int FUN_14092d6b0(HMODULE* ppModule)
 }
 
 // @0x14092d700
-void FUN_14092d700(HMODULE* ppModule, int nLevel)
+void SetDevLogLevel(HMODULE* ppModule, int nLevel)
 {
     if (!FUN_14092edf0(ppModule))
         return;
@@ -1027,7 +1027,7 @@ void FUN_14092d700(HMODULE* ppModule, int nLevel)
 }
 
 // @0x14092d740
-void FUN_14092d740(HMODULE* ppModule, bool bActive)
+void SetActiveInputLog(HMODULE* ppModule, bool bActive)
 {
     if (!FUN_14092edf0(ppModule))
         return;
@@ -1035,7 +1035,7 @@ void FUN_14092d740(HMODULE* ppModule, bool bActive)
 }
 
 // @0x14092d780
-void FUN_14092d780(HMODULE* ppModule, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+void InputProc(HMODULE* ppModule, HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (!FUN_14092edf0(ppModule))
         return;
@@ -1043,7 +1043,7 @@ void FUN_14092d780(HMODULE* ppModule, HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 }
 
 // @0x14092d7d0
-void FUN_14092d7d0(HMODULE* ppModule, unsigned short nLevel)
+void SetInputLogLevel(HMODULE* ppModule, unsigned short nLevel)
 {
     if (!FUN_14092edf0(ppModule))
         return;
@@ -1051,7 +1051,7 @@ void FUN_14092d7d0(HMODULE* ppModule, unsigned short nLevel)
 }
 
 // @0x14092d810
-void FUN_14092d810(HMODULE* ppModule, const void* p1, const void* p2)
+void EnqueueInputAction(HMODULE* ppModule, const void* p1, const void* p2)
 {
     if (!FUN_14092edf0(ppModule))
         return;
@@ -1059,7 +1059,7 @@ void FUN_14092d810(HMODULE* ppModule, const void* p1, const void* p2)
 }
 
 // @0x14092d860
-void FUN_14092d860(HMODULE* ppModule, const void* p1, int n1, int n2, const void* p2)
+void RegisterKeymapInfo(HMODULE* ppModule, const void* p1, int n1, int n2, const void* p2)
 {
     if (!FUN_14092edf0(ppModule))
         return;
@@ -1072,7 +1072,7 @@ void FUN_14092d8b0(HMODULE* ppModule)
 {
     if (!FUN_14092edf0(ppModule))
         return;
-    FUN_14092ecb0(NXA_CALL(nxa::MemoryAllocator* (*)(), getPoolAllocator)());
+    GetMemoryAllocator(NXA_CALL(nxa::MemoryAllocator* (*)(), getPoolAllocator)());
 }
 
 // An empty function of one int (ICF-shared with the crash reporter's caller).

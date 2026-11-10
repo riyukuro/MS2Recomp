@@ -24,10 +24,10 @@ public:
     virtual int vfunc_48();                                                // 48 0x140c2b8e0
     virtual void vfunc_67();                                               // 67 0x140c292d0
 
-    void FUN_140c29600(bool bCraft);                                       // refresh the movie ("setState", buttons, camera)
+    void Refresh(bool bCraft);                                       // refresh the movie ("setState", buttons, camera)
     void FUN_140c296e0(bool bCraft);                                       // same
-    void FUN_140c29710();                                                  // "ToggleDesignMode"
-    void FUN_140c29980();                                                  // "ToggleBlueprintMode"
+    void ToggleDesignMode();                                                  // "ToggleDesignMode"
+    void ToggleBlueprintMode();                                                  // "ToggleBlueprintMode"
     void FUN_140c29b70();                                                  // "OnHomePriority" (again)
     void ToggleCraftMode();                                                  // "ToggleCraftMode"
     void OnScreenshot();                                                  // "OnScreenshot"
@@ -42,14 +42,14 @@ public:
     void OnBlueprintExport();                                                  // "OnBlueprintExport"
     void OnBlueprintShop();                                                  // "OnBlueprintShop"
     void FUN_140c2a780();                                                  // enable / check the buttons of the movie
-    CString FUN_140c2ad90();                                               // the state frame name of the movie
-    bool FUN_140c2af70();                                                  // the local player is in craft mode
-    void FUN_140c2afd0(bool bFreeCamera);                                  // switch the free camera
-    CStringW FUN_140c2b080();                                              // the screenshot upload address (empty: none)
+    CString GetStateFrameName();                                               // the state frame name of the movie
+    bool IsCraftMode();                                                  // the local player is in craft mode
+    void SetFreeCamera(bool bFreeCamera);                                  // switch the free camera
+    CStringW TakeScreenshot();                                              // the screenshot upload address (empty: none)
     bool FUN_140c2b0e0(int nResult, const CMsgBoxData& data);              // "save design" box result
     bool FUN_140c2b130(int nResult, const CMsgBoxData& data);              // "save blueprint" box result
     bool FUN_140c2b180(int nResult, const CMsgBoxData& data);              // screenshot upload box result
-    bool FUN_140c2b390(int nResult, const CMsgBoxData& data);              // "leave design" box result
+    bool OnLeaveDesignResult(int nResult, const CMsgBoxData& data);              // "leave design" box result
     bool SendRequestCube(int nResult, const CMsgBoxData& data);              // "demolish" box result
 
 private:

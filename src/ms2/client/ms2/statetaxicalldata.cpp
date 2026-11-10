@@ -61,17 +61,17 @@ struct Unk_TcStrings
     CString m_strBestLeave;                              // +0x398
 };
 MS2_CHECK_OFFSET(Unk_TcStrings, m_strBestLeave, 0x398);
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // A Constants::Value<int> seen through its Read (the inline COMDAT 0x140ad5c50 lives in another unit).
-class Unk_SSGConstValue { public: int FUN_140ad5c50(void); }; class Unk_TcConstValue : public Unk_SSGConstValue {};
+class Unk_SSGConstValue { public: int GetValue(void); }; class Unk_TcConstValue : public Unk_SSGConstValue {};
 // C3: the former option-entry member view. 0x140298f40 is Common::Constants::Value<float>::Get()
 // (clientconstants.h). Its body is the generic Value<T>::Get() instantiated in
 // unit_1402ab440_constantsblocks.cpp, and the callers read the float through the
 // pointer it returns.
 //
 
-// The casting bar dialog (RTTI UICastingBar, found through FUN_140ac2270).
+// The casting bar dialog (RTTI UICastingBar, found through GetCastingBar).
 class ICastingEventListener;
 class UICastingBar : public UIObject
 {
@@ -80,11 +80,11 @@ public:
         const CStringW& strLabel);                       // show
     void FUN_1418e1390();                                // cancel
 };
-UICastingBar* FUN_140ac2270(int nId);
+UICastingBar* GetCastingBar(int nId);
 CStringW GetStringCommon(int nId);                         // string table text by id
 
 // The actor's move-key state (PCBase::FUN_14166d240).
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_TcBuffMgr { public: };
 // vtable-slot view: slot 22 takes the point by value (the exe copies 12 bytes into an arg slot)
 class Unk_TcSlots
@@ -116,7 +116,7 @@ class Unk_TcEntity;
 #define DAT_143a08ce8 (*(Vector3*)&efd::Point3::UNIT_Y) // C3: was extern Vector3 DAT_143a08ce8; the default direction
 
 void FUN_140710590(COutPacket& packet);
-void FUN_1401fe9e0(unsigned char* payload, COutputStream& stream);
+void WriteTaxiRequest(unsigned char* payload, COutputStream& stream);
 
 // ---- StateTaxiCallData ----
 
@@ -186,23 +186,23 @@ void StateTaxiCall::vfunc_4(StateData* pData)
         efd::utf8string kName("Object_React_B");
         m_nStart = nNow;
         m_nElapsed = nNow;
-        m_strCall = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strCall;
-        m_strArrive = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strArrive;
-        m_strLeave = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strLeave;
-        int nDuration = reinterpret_cast<Unk_TcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->TaxiCallDuration)->FUN_140ad5c50();
+        m_strCall = ((struct Unk_TcStrings*)GetCommonResource())->m_strCall;
+        m_strArrive = ((struct Unk_TcStrings*)GetCommonResource())->m_strArrive;
+        m_strLeave = ((struct Unk_TcStrings*)GetCommonResource())->m_strLeave;
+        int nDuration = reinterpret_cast<Unk_TcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->TaxiCallDuration)->GetValue();
         if (FUN_141b71c00((unsigned short)m_pOwner->vfunc_78()) != 0)
         {
-            nDuration = reinterpret_cast<Unk_TcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->TaxiCallBestDriverDuration)->FUN_140ad5c50();
-            m_strCall = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strBestCall;
-            m_strArrive = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strBestArrive;
-            m_strLeave = ((struct Unk_TcStrings*)FUN_1401d31f0())->m_strBestLeave;
+            nDuration = reinterpret_cast<Unk_TcConstValue*>(&static_cast<Client::Constants*>(GetClientConstants())->TaxiCallBestDriverDuration)->GetValue();
+            m_strCall = ((struct Unk_TcStrings*)GetCommonResource())->m_strBestCall;
+            m_strArrive = ((struct Unk_TcStrings*)GetCommonResource())->m_strBestArrive;
+            m_strLeave = ((struct Unk_TcStrings*)GetCommonResource())->m_strBestLeave;
         }
         m_nEnd = nNow + nDuration;
         m_bSurprise = 0.9f < FUN_140768090();
         m_pOwner->PlayAnimation(kName, 1.0f, false, false);
         if (FUN_1417b8560() != 0)
         {
-            UICastingBar* pBar = FUN_140ac2270(0x4e72);
+            UICastingBar* pBar = GetCastingBar(0x4e72);
             if (pBar != 0)
             {
                 CStringW strLabel(L"");
@@ -227,7 +227,7 @@ void StateTaxiCall::vfunc_5(int n)
     State::vfunc_5(n);
     if (FUN_1417b8560() != 0)
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar != 0)
             pBar->FUN_1418e1390();
     }
@@ -247,7 +247,7 @@ void StateTaxiCall::vfunc_3(double fTime)
         case 0x65:
         {
             FUN_1417fdbc0(0x66, (int)FUN_14028d260(1.9f));
-            FUN_1417fdc00(m_strCall);
+            SpawnTaxiEffect(m_strCall);
             m_pOwner->PlayAnimationById(0);
             if (m_bSurprise)
             {
@@ -259,7 +259,7 @@ void StateTaxiCall::vfunc_3(double fTime)
         case 0x66:
         {
             FUN_1417fdbc0(0x67, (int)FUN_14028d260(0.45f));
-            FUN_1417fdc00(m_strArrive);
+            SpawnTaxiEffect(m_strArrive);
             break;
         }
         case 0x67:
@@ -271,7 +271,7 @@ void StateTaxiCall::vfunc_3(double fTime)
         case 0x68:
         {
             FUN_1417fdbc0(0x69, (int)FUN_14028d260(1.0f));
-            FUN_1417fdc00(m_strLeave);
+            SpawnTaxiEffect(m_strLeave);
             break;
         }
         case 0x69:
@@ -284,7 +284,7 @@ void StateTaxiCall::vfunc_3(double fTime)
                 kReq.m_nCost = 100000000;
                 COutPacket kPacket(static_cast<int>(SendOp::RequestTaxi), 0);
                 kPacket.WriteUInt8(1);
-                FUN_1401fe9e0((unsigned char*)&kReq, kPacket);
+                WriteTaxiRequest((unsigned char*)&kReq, kPacket);
                 FUN_140710590(kPacket);
             }
             break;
@@ -309,7 +309,7 @@ void StateTaxiCall::vfunc_8(double fTime)
     if (pRider == 0)
         return;
     Unk_TcBuffMgr* pBuff = ((class Unk_TcBuffMgr*)((class PCBase*)(class PCBase*)(pRider))->FUN_14166d240());
-    reinterpret_cast<Unk_TcSlots*>(pRider)->vfunc_22(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290());
+    reinterpret_cast<Unk_TcSlots*>(pRider)->vfunc_22(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection());
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0())
         pRider->vfunc_59(2, 0, 0, 0);
     else
@@ -327,7 +327,7 @@ void StateTaxiCall::vfunc_6()
 }
 
 // @0x1417fdb70
-int StateTaxiCall::FUN_1417fdb70()
+int StateTaxiCall::GetTaxiId()
 {
     if (m_spData.get() != 0)
         return m_spData->m_nTaxiId;
@@ -342,7 +342,7 @@ void StateTaxiCall::FUN_1417fdbc0(int nState, int nAdd)
 }
 
 // @0x1417fdc00
-void StateTaxiCall::FUN_1417fdc00(const CString& strEffect)
+void StateTaxiCall::SpawnTaxiEffect(const CString& strEffect)
 {
     Vector3 kPos;
     Vector3 kRot;

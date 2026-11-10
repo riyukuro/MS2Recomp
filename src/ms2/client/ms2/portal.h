@@ -45,9 +45,9 @@ public:
 
     // @0x14169b650 read the "model" / "theme" strings and the position from the entity (the entity is passed by value)
     int FUN_14169b650(efd::SmartPointer<egf::Entity> spEntity);
-    int FUN_14169b890();                                                // create the tooltip above the portal
+    int CreateTooltip();                                                // create the tooltip above the portal
     int ApplyMinimapTexture();                                               // load the theme image onto Theme_Image_Plane
-    void FUN_14169bd40();                                               // per-frame: countdown text and event timer
+    void UpdateTooltip();                                               // per-frame: countdown text and event timer
     void FUN_14169c280();                                               // refresh the tooltip and the image by type
     int FUN_14169c330();                                                // both content switches enabled
     CStringW GetActionText();                                           // action string of the portal type

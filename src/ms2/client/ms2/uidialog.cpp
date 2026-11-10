@@ -91,8 +91,8 @@ public:
 class ASWindow : public ASDisplayObjectContainer                    // RTTI .?AVASWindow@@
 {
 public:
-    void FUN_1422e61f0(int n);
-    void FUN_1422e6230(int n);
+    void SetTopMostEnable(int n);
+    void SetCanDrag(int n);
 };
 // The button wrapper of the bound children ("m_closeButton", "m_dragBar", "m_webGuideButton").
 // C3: Unk_140acd6e0 (the button view) is ASButton itself.
@@ -102,7 +102,7 @@ public:
 class Unk_Finder : public ASDisplayObjectContainer   // C3: was Unk_ASChildFinder; the definer view (unit_140cff310_gfxutilwrappers)
 {
 public:
-    MS2Ptr<ASButton> FUN_140d01c90(const CString& strName);    // recursive getChildByName (the ASButton instance, the only T here)
+    MS2Ptr<ASButton> FindButton(const CString& strName);    // recursive getChildByName (the ASButton instance, the only T here)
 };
 class ASUIComponentEx : public ASUIComponent
 {
@@ -127,12 +127,12 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 int IsDialogLimited(CString strName);
 void FUN_140d73cd0();
 void FUN_141275260(int nId, int a1, int a2);                        // system message by id
-void FUN_141a8a730();
+void ClosePopupMenu();
 
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-void* FUN_140bb9630(int n);                                         // int -> delegate user data
-int FUN_140bb9640(void* p);                                         // delegate user data -> int
+void* IntToUserData(int n);                                         // int -> delegate user data
+int UserDataToInt(void* p);                                         // delegate user data -> int
 void FUN_140d01960(CString strKey);                                 // open the web guide page
 float FUN_141276490(float fWidth, float fHeight);                   // UI scale
 struct Unk_Info140e09150 { __int64 m_pad_00; float m_fValue; };
@@ -188,7 +188,7 @@ void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, int, bool); 
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, float, bool);   // C3: was FUN_1408744b0
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, int&);   // C3: was FUN_1408741a0
 int XmlGetChildAttr(class TiXmlElement*, char const*, char const*, float&);   // C3: was FUN_140874210
-CString FUN_1412755f0();                                            // the UI settings directory
+CString GetCharacterFolder();                                            // the UI settings directory
 CString FUN_140cc2a00(const CString& strRoot, const CString& strPath);    // path join
 
 #define UIDIALOG_INL_ASSERT_0()                                                                                   \
@@ -224,20 +224,20 @@ int UIDialog::vfunc_52()
 MS2_REPLACE_METHOD(0x141923530, UIDialog, vfunc_52, 144, 0x6143FF76);
 
 // @0x1419235d0
-void UIDialog::FUN_1419235d0()
+void UIDialog::SetTopMostLayer()
 {
     MS2Ptr<ASWindow> spWindow(dynamic_cast<ASWindow*>((AScript*)m_30));
     if (spWindow.get())
         spWindow->Invoke("setTopMostLayer");
 }
-MS2_REPLACE_METHOD(0x1419235d0, UIDialog, FUN_1419235d0, 155, 0x6033B6CC);
+MS2_REPLACE_METHOD(0x1419235d0, UIDialog, SetTopMostLayer, 155, 0x6033B6CC);
 
 // @0x141923680
 void UIDialog::FUN_141923680(int n)
 {
     MS2Ptr<ASWindow> spWindow(dynamic_cast<ASWindow*>((AScript*)m_30));
     if (spWindow.get())
-        spWindow->FUN_1422e61f0(n);
+        spWindow->SetTopMostEnable(n);
 }
 MS2_REPLACE_METHOD(0x141923680, UIDialog, FUN_141923680, 138, 0x74DC9C10);
 
@@ -246,7 +246,7 @@ void UIDialog::FUN_141923710(int n)
 {
     MS2Ptr<ASWindow> spWindow(dynamic_cast<ASWindow*>((AScript*)m_30));
     if (spWindow.get())
-        spWindow->FUN_1422e6230(n);
+        spWindow->SetCanDrag(n);
 }
 MS2_REPLACE_METHOD(0x141923710, UIDialog, FUN_141923710, 138, 0x693CF38F);
 
@@ -271,7 +271,7 @@ int UIDialog::vfunc_4()
     if (!pRoot)
         return 0;
     vfunc_53(pRoot);
-    return m_e8.SaveFile(FUN_140cc2a00(FUN_1412755f0(), GetTypeName() + ".xml"));
+    return m_e8.SaveFile(FUN_140cc2a00(GetCharacterFolder(), GetTypeName() + ".xml"));
 }
 MS2_REPLACE_METHOD(0x1419237c0, UIDialog, vfunc_4, 673, 0x49894032);
 
@@ -282,7 +282,7 @@ int UIDialog::vfunc_5()
         return 0;
     ((class TiXmlNode*)(class TiXmlDocument*)(&m_e8))->Clear();
     vfunc_83();
-    if (m_e8.LoadFile(FUN_140cc2a00(FUN_1412755f0(), GetTypeName() + ".xml"), TIXML_ENCODING_UNKNOWN)) {
+    if (m_e8.LoadFile(FUN_140cc2a00(GetCharacterFolder(), GetTypeName() + ".xml"), TIXML_ENCODING_UNKNOWN)) {
         void* pNode = ((void*)((class Unk_XmlNode*)(class TiXmlDocument*)(&m_e8))->FirstChild(GetTypeName()));
         if (!pNode)
             return 0;
@@ -306,7 +306,7 @@ int UIDialog::vfunc_53(void* pCfg)
             XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "x", x, 1);
             XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "y", y, 1);
             if (!m_7c) {
-                XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "width", pDialog->FUN_1422c1340(), 1);
+                XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "width", pDialog->GetWidthCeil(), 1);
                 XmlSetChildAttr((class TiXmlElement*)(pCfg), "transform", "height", pDialog->GetHeightCeil(), 1);
             }
             if (vfunc_52()) {
@@ -360,11 +360,11 @@ int UIDialog::vfunc_54(void* pCfg)
 MS2_REPLACE_METHOD(0x141923ed0, UIDialog, vfunc_54, 662, 0xC475BD6F);
 
 // @0x141924170
-void UIDialog::FUN_141924170(int n)
+void UIDialog::SetTweenEnabled(int n)
 {
     m_c4 = n;
 }
-MS2_REPLACE_METHOD(0x141924170, UIDialog, FUN_141924170, 25, 0xD8FD4C23);
+MS2_REPLACE_METHOD(0x141924170, UIDialog, SetTweenEnabled, 25, 0xD8FD4C23);
 
 // @0x141924190
 void UIDialog::FUN_141924190()
@@ -415,11 +415,11 @@ int UIDialog::FUN_141924470()
 MS2_REPLACE_METHOD(0x141924470, UIDialog, FUN_141924470, 61, 0x59070A67);
 
 // @0x1419244c0
-int UIDialog::FUN_1419244c0(int nBit)
+int UIDialog::IsFlagSet(int nBit)
 {
     return m_a0.test(nBit) != 0;
 }
-MS2_REPLACE_METHOD(0x1419244c0, UIDialog, FUN_1419244c0, 72, 0x6C241F1A);
+MS2_REPLACE_METHOD(0x1419244c0, UIDialog, IsFlagSet, 72, 0x6C241F1A);
 
 // @0x141924510
 void UIDialog::FUN_141924510()
@@ -446,7 +446,7 @@ void UIDialog::FUN_141924680()
 {
     if (vfunc_58() && !WorldService::GetInstance()->FUN_141bd0cc0())
         return;
-    FUN_141a8a730();
+    ClosePopupMenu();
     if (vfunc_65())
         vfunc_8(1);
 }
@@ -493,7 +493,7 @@ MS2_REPLACE_METHOD(0x1419247d0, UIDialog, vfunc_55, 58, 0x0D2345C6);
 // @0x141924810
 int UIDialog::vfunc_56()
 {
-    return FUN_1419244c0(0);
+    return IsFlagSet(0);
 }
 MS2_REPLACE_METHOD(0x141924810, UIDialog, vfunc_56, 26, 0x73B4958C);
 
@@ -538,7 +538,7 @@ void UIDialog::vfunc_62(int nWidth, int nHeight)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog) {
         int nCurHeight = pDialog->GetHeightCeil();
-        int nCurWidth = pDialog->FUN_1422c1340();
+        int nCurWidth = pDialog->GetWidthCeil();
         reinterpret_cast<ASUIComponent*>(pDialog)->SetSizeInt((std::max)(nCurWidth, nWidth), (std::max)(nHeight, nCurHeight));
         pDialog->vfunc_24(true);
     }
@@ -571,13 +571,13 @@ int UIDialog::vfunc_65()
     if (m_158) {
         if (m_15c) {
             m_160 = 1;
-            FUN_1422dbf00(m_2c, 0, 0);
+            LoadSwf(m_2c, 0, 0);
         } else {
-            FUN_1422dbd70(m_2c, 0);
-            FUN_141924170(0);
+            PreloadSwf(m_2c, 0);
+            SetTweenEnabled(0);
         }
     } else {
-        FUN_1422dbf00(m_2c, 0, 0);
+        LoadSwf(m_2c, 0, 0);
     }
     GetUISwfEntityManager()->AddToLayer(this, m_e0);
     GetUISwfEntityManager()->FUN_1422d4dd0(m_20);
@@ -706,7 +706,7 @@ void UIDialog::OnLoadComplete()
         m_15c = 1;
         vfunc_81();
         vfunc_67();
-        FUN_141924170(1);
+        SetTweenEnabled(1);
         vfunc_61(1);
     }
 }
@@ -717,7 +717,7 @@ void UIDialog::vfunc_26()
 {
     UIObject::vfunc_26();
     for (unsigned i = 0; i < m_a8.size(); i++)
-        static_cast<ASUIComponentEx*>(m_a8[i].operator->())->FUN_1422c3940();
+        static_cast<ASUIComponentEx*>(m_a8[i].operator->())->RemoveAllEventListeners();
     m_a8.clear();
 }
 MS2_REPLACE_METHOD(0x141925250, UIDialog, vfunc_26, 140, 0xE1973F25);
@@ -744,7 +744,7 @@ void UIDialog::vfunc_18()
             pDialog->GetPosition(&x, &y);
             unsigned nWidth = 0;
             unsigned nHeight = 0;
-            ((class GFxManager*)FUN_14025e7a0())->FUN_1422b0840(m_28, (int*)&nWidth, (int*)&nHeight);
+            ((class GFxManager*)GetGFxManager())->FUN_1422b0840(m_28, (int*)&nWidth, (int*)&nHeight);
             float fRateX = x / (float)nWidth;
             float fRateY = y / (float)nHeight;
             float fX = (float)pDialog->FUN_1422c1500() * fRateX;
@@ -773,7 +773,7 @@ bool UIDialog::vfunc_17()
             pDialog->GetPosition(&x, &y);
             unsigned nWidth = 0;
             unsigned nHeight = 0;
-            ((class GFxManager*)FUN_14025e7a0())->FUN_1422b0840(m_28, (int*)&nWidth, (int*)&nHeight);
+            ((class GFxManager*)GetGFxManager())->FUN_1422b0840(m_28, (int*)&nWidth, (int*)&nHeight);
             float fRateX = x / (float)nWidth;
             float fRateY = y / (float)nHeight;
             pDialog->SetPositionFloat((float)pDialog->FUN_1422c1500() * fRateX, (float)pDialog->FUN_1422c1530() * fRateY);
@@ -796,7 +796,7 @@ void UIDialog::vfunc_77()
     if (m_70) {
         ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDialog)
-            reinterpret_cast<ASSprite*>(pDialog)->FUN_1422e5dd0();
+            reinterpret_cast<ASSprite*>(pDialog)->StopDrag();
         m_70 = 0;
         m_74 = 1;
         vfunc_4();
@@ -825,9 +825,9 @@ void UIDialog::vfunc_43()
     if (pDialog) {
         int bCheck = !m_60 && m_78 && vfunc_52();
         if (bCheck) {
-            if (!((float)pDialog->FUN_1422c1500() >= pDialog->FUN_1422c10a0() &&
-                  (float)pDialog->FUN_1422c1530() >= pDialog->FUN_1422c1110() && pDialog->FUN_1422c10a0() >= 0.0f &&
-                  pDialog->FUN_1422c1110() >= 0.0f))
+            if (!((float)pDialog->FUN_1422c1500() >= pDialog->GetX() &&
+                  (float)pDialog->FUN_1422c1530() >= pDialog->GetY() && pDialog->GetX() >= 0.0f &&
+                  pDialog->GetY() >= 0.0f))
                 pDialog->vfunc_25();
         } else {
             pDialog->vfunc_25();
@@ -845,7 +845,7 @@ int UIDialog::vfunc_13()
         return 0;
     if (vfunc_56())
         return 0;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() && !vfunc_64() && !FUN_1419244c0(1)) {
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d840() && !vfunc_64() && !IsFlagSet(1)) {
         vfunc_69();
         return 1;
     }
@@ -929,7 +929,7 @@ void UIDialog::vfunc_41(const Scaleform::GFx::Value& root)
 {
     m_30 = Unk_ASCreate<ASDialog>(m_28, root);
     if (m_30.get())
-        m_90 = Unk_ASCreate<ASDialog>(m_28, m_30->FUN_1422bb870());
+        m_90 = Unk_ASCreate<ASDialog>(m_28, m_30->GetValue());
     else
         m_90 = 0;
 }
@@ -961,20 +961,20 @@ MS2_REPLACE_METHOD(0x141925de0, UIDialog, FUN_141925de0, 38, 0xFDF30234);
 // @0x141925e10
 void UIDialog::FUN_141925e10(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_140d01960(FUN_1419268a0(FUN_140bb9640(params.pUserData)));
+    FUN_140d01960(GetTypeNameWithIndex(UserDataToInt(params.pUserData)));
 }
 MS2_REPLACE_METHOD(0x141925e10, UIDialog, FUN_141925e10, 76, 0x60699A5B);
 
 // @0x141925e70
-void UIDialog::FUN_141925e70(int nBit, int bSet)
+void UIDialog::SetFlag(int nBit, int bSet)
 {
     m_a0.set(nBit, bSet != 0);
 }
-MS2_REPLACE_METHOD(0x141925e70, UIDialog, FUN_141925e70, 73, 0x0E440CF3);
+MS2_REPLACE_METHOD(0x141925e70, UIDialog, SetFlag, 73, 0x0E440CF3);
 
 #ifndef MS2_HOOK_DLL
 // @0x141925ec0
-void UIDialog::FUN_141925ec0(CString strName)
+void UIDialog::BindCloseButton(CString strName)
 {
     FUN_1419264e0(strName, Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialog::FUN_141925de0));
 }
@@ -982,44 +982,44 @@ void UIDialog::FUN_141925ec0(CString strName)
 // Not hooked: builds a DelegateImpl with the DLL's vftable/RTTI and hands it to the exe (see section 9).
 
 // @0x141925fa0
-void UIDialog::FUN_141925fa0(CString strName)
+void UIDialog::BindDragBar(CString strName)
 {
     if (m_30 == 0)
         return;
     MS2Ptr<ASButton> spBar = FUN_141926e30<ASButton>(strName);
     if (spBar == 0)
         return;
-    m_30->Invoke("setDragBar", Scaleform::GFx::Value(spBar->FUN_1422bb870()));
+    m_30->Invoke("setDragBar", Scaleform::GFx::Value(spBar->GetValue()));
 }
-MS2_REPLACE_METHOD(0x141925fa0, UIDialog, FUN_141925fa0, 296, 0x1B3B0B70);
+MS2_REPLACE_METHOD(0x141925fa0, UIDialog, BindDragBar, 296, 0x1B3B0B70);
 
 // @0x1419260d0
 void UIDialog::FUN_1419260d0(CString strName, int n)
 {
-    FUN_141926180(m_30, strName, n);
+    BindWebGuideButton(m_30, strName, n);
 }
 MS2_REPLACE_METHOD(0x1419260d0, UIDialog, FUN_1419260d0, 163, 0x0D892337);
 
 #ifndef MS2_HOOK_DLL
 // @0x141926180
-void UIDialog::FUN_141926180(MS2Ptr<AScript> spRoot, CString strName, int n)
+void UIDialog::BindWebGuideButton(MS2Ptr<AScript> spRoot, CString strName, int n)
 {
     if (spRoot == 0)
         return;
     MS2Ptr<ASButton> spButton = spRoot->FUN_140acce30<ASButton>(strName);
     if (spButton == 0)
         return;
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5f)) {
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x5f)) {
         spButton->vfunc_4(false);
         return;
     }
-    if (TSingleton<WebGuideTable>::GetInstance()->FUN_141927640(FUN_1419268a0(n)) == 0) {
+    if (TSingleton<WebGuideTable>::GetInstance()->FUN_141927640(GetTypeNameWithIndex(n)) == 0) {
         spButton->vfunc_4(false);
         return;
     }
     spButton->vfunc_4(true);
     spButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDialog::FUN_141925e10),
-                            FUN_140bb9630(n));
+                            IntToUserData(n));
     MS2Ptr<ASUIComponent> spComponent(spButton.get());
     m_a8.push_back(spComponent);
 }
@@ -1057,9 +1057,9 @@ void UIDialog::FUN_141926620(int* pnAlign, float* pX, float* pY)
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog) {
-        float x = pDialog->FUN_1422c10a0();
-        float y = pDialog->FUN_1422c1110();
-        float fWidth = (float)pDialog->FUN_1422c1340();
+        float x = pDialog->GetX();
+        float y = pDialog->GetY();
+        float fWidth = (float)pDialog->GetWidthCeil();
         float fHeight = (float)pDialog->GetHeightCeil();
         float fHalfWidth = (float)pDialog->FUN_1422c1500() * 0.5f;
         float fHalfHeight = (float)pDialog->FUN_1422c1530() * 0.5f;
@@ -1097,14 +1097,14 @@ void UIDialog::FUN_141926890()
 MS2_REPLACE_METHOD(0x141926890, UIDialog, FUN_141926890, 6, 0xA9AF6E37);
 
 // @0x1419268a0
-CString UIDialog::FUN_1419268a0(int n)
+CString UIDialog::GetTypeNameWithIndex(int n)
 {
     if (n == 0)
         return GetTypeName();
     else
         return StringFormat("{0}{1}", GetTypeName(), n);
 }
-MS2_REPLACE_METHOD(0x1419268a0, UIDialog, FUN_1419268a0, 177, 0x6DE46A52);
+MS2_REPLACE_METHOD(0x1419268a0, UIDialog, GetTypeNameWithIndex, 177, 0x6DE46A52);
 
 // @0x141926960
 bool UIDialog::FUN_141926960()
@@ -1130,7 +1130,7 @@ template <class T> MS2Ptr<T> UIDialog::FUN_141926e30(const CString& strName)
         UIDIALOG_INL_ASSERT_0();
         return MS2Ptr<T>(0);
     }
-    return static_cast<Unk_Finder*>(spContainer.operator->())->FUN_140d01c90(strName);
+    return static_cast<Unk_Finder*>(spContainer.operator->())->FindButton(strName);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();  // memmove_s 0x141927e50

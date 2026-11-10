@@ -104,7 +104,7 @@ NiAVObject* CEquipModel::FUN_1411673f0(const CString* pName) const
 
 // @0x1411676d0
 // The mesh of the part named pPartName; failing that, the first "Editable " / "HR" mesh below the node of that name.
-NiAVObject* CEquipModel::FUN_1411676d0(const CString* pPartName) const
+NiAVObject* CEquipModel::GetPartMesh(const CString* pPartName) const
 {
     NiAVObject* pNode = FUN_1411673f0(pPartName);
     NiMesh* pMesh = NiDynamicCast(NiMesh, pNode);
@@ -216,10 +216,10 @@ NiAVObject* FUN_141167cf0(const CString& strName)
             spItem->GetModels(aParts);   // C3: was the free FUN_1411dcc80 view
             for (unsigned i = 0; i < aParts.GetCount(); i++) {
                 MS2Ptr<CEquipModel>& spPart = aParts[i];
-                NiAVObject* pMesh = spPart.get()->FUN_1411676d0(&strName);
+                NiAVObject* pMesh = spPart.get()->GetPartMesh(&strName);
                 if (pMesh != 0)
                     return pMesh;
-                pMesh = spPart.get()->FUN_1411676d0(&((Unk_PickPartInfo*)::FUN_141200ab0(spPart.operator->()))->m_str08);
+                pMesh = spPart.get()->GetPartMesh(&((Unk_PickPartInfo*)::FUN_141200ab0(spPart.operator->()))->m_str08);
                 if (pMesh != 0)
                     return pMesh;
             }

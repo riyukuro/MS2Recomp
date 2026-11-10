@@ -14,7 +14,7 @@ class SoftParticlesManager : public NiRefObject
 public:
     // implicit ctor 0x1409a7940 (?\applyeffect.cpp; value-initialized by NiNew SoftParticlesManager())
     virtual ~SoftParticlesManager();                            // 0x1417738e0
-    void FUN_141773940(bool bEnabled);                          // enable / disable the soft particle view
+    void SetEnabled(bool bEnabled);                          // enable / disable the soft particle view
 
     MS2_LAYOUT_FRIEND;
     efd::SmartPointer<NiViewRenderClick> m_spClick;     // +0x10 the "SoftParticleClick" render click

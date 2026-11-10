@@ -20,7 +20,7 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 // @0x141344ab0
 UIPvPTeamFlagGagueDialog::UIPvPTeamFlagGagueDialog()
 {
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
     m_nPercent = 0;
     m_nShownTick = 0;
     m_nLastPercent = -1;
@@ -44,7 +44,7 @@ void UIPvPTeamFlagGagueDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_bShown = true;
-    FUN_141344d50(m_nPercent - 1);
+    SetRedTeamGaugePercent(m_nPercent - 1);
 }
 MS2_REPLACE_METHOD(0x141344BE0, UIPvPTeamFlagGagueDialog, OnLoadComplete, 61, 0xDFD85496);
 
@@ -66,12 +66,12 @@ void UIPvPTeamFlagGagueDialog::vfunc_72()
     if (!m_bShown)
         return;
     if (m_nShownTick + 2000U < GetTickCountMs2())
-        FUN_141344f20();
+        Hide();
 }
 MS2_REPLACE_METHOD(0x141344CE0, UIPvPTeamFlagGagueDialog, vfunc_72, 101, 0xCE26E10C);
 
 // @0x141344d50
-void UIPvPTeamFlagGagueDialog::FUN_141344d50(int nPercent)
+void UIPvPTeamFlagGagueDialog::SetRedTeamGaugePercent(int nPercent)
 {
     nPercent = nPercent + 1;
     if (!m_30) {
@@ -99,16 +99,16 @@ void UIPvPTeamFlagGagueDialog::FUN_141344d50(int nPercent)
         m_nLastPercent = nPercent;
     }
 }
-MS2_REPLACE_METHOD(0x141344D50, UIPvPTeamFlagGagueDialog, FUN_141344d50, 453, 0x3878F040);
+MS2_REPLACE_METHOD(0x141344D50, UIPvPTeamFlagGagueDialog, SetRedTeamGaugePercent, 453, 0x3878F040);
 
 // @0x141344f20
-void UIPvPTeamFlagGagueDialog::FUN_141344f20()
+void UIPvPTeamFlagGagueDialog::Hide()
 {
     vfunc_8(0);
     m_bShown = false;
     m_nLastPercent = -1;
 }
-MS2_REPLACE_METHOD(0x141344F20, UIPvPTeamFlagGagueDialog, FUN_141344f20, 59, 0x57251EE9);
+MS2_REPLACE_METHOD(0x141344F20, UIPvPTeamFlagGagueDialog, Hide, 59, 0x57251EE9);
 
 // @0x141344fb0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);

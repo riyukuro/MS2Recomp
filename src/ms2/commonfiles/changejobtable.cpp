@@ -26,7 +26,7 @@ public:
 };
 
 // Out-of-unit callees.
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
 
 // Common::Constants::Value<T>::Get, header-inline in the original (the Value<unsigned> instance 0x1401d7c10 is in this unit's
@@ -65,11 +65,11 @@ ChangeJobData::~ChangeJobData()
 // @0x1401d6550
 void CChangeJobTable::Load()
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xca))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xca))
         return;
-    CString strPath = FUN_14071a5b0("Table", "changeJob.xml");
+    CString strPath = GetXmlPath("Table", "changeJob.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)

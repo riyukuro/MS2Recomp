@@ -117,7 +117,7 @@ void UIInteriorBuildDialog::vfunc_67()
 void UIInteriorBuildDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140f4b7d0();
+    SetData();
 }
 
 // @0x140f4b580
@@ -159,7 +159,7 @@ int UIInteriorBuildDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x140f4b7d0
-void UIInteriorBuildDialog::FUN_140f4b7d0()
+void UIInteriorBuildDialog::SetData()
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_178);
     if (spItem == 0)
@@ -175,11 +175,11 @@ void UIInteriorBuildDialog::FUN_140f4b7d0()
     if (pDialog)
     {
         ASObj obj(m_28);
-        obj.FUN_1407cba60(s_itemMovie, spData->property.movie);
-        ((class AScript&)(obj)).FUN_1407cbb20("packageName", FormatStringId<CStringW>(0x6ed, spItem->FUN_140527b10()));
-        ((class AScript&)(obj)).FUN_1407cbb20("packageDesc", BlockFormat(0x6ee));
-        ((class AScript&)(obj)).FUN_1407cbb20("installName", BlockFormat(0x6ef));
-        ((class AScript&)(obj)).FUN_1407cbb20("installDesc", FUN_14028dee0(0x6f0, spPackage->m_strIndoorSizeType));
+        obj.SetStringMember(s_itemMovie, spData->property.movie);
+        ((class AScript&)(obj)).SetWStringMember("packageName", FormatStringId<CStringW>(0x6ed, spItem->FUN_140527b10()));
+        ((class AScript&)(obj)).SetWStringMember("packageDesc", BlockFormat(0x6ee));
+        ((class AScript&)(obj)).SetWStringMember("installName", BlockFormat(0x6ef));
+        ((class AScript&)(obj)).SetWStringMember("installDesc", FUN_14028dee0(0x6f0, spPackage->m_strIndoorSizeType));
         pDialog->FUN_140acd1f0("setData", AScript(obj));
     }
 }

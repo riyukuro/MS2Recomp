@@ -71,12 +71,12 @@ void FUN_1408731e0(Unk_DcXmlNode* pNode, const char* szName, int& n);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 enum Unk_DungeonGroupType : int; template <class E> int XmlValueByName(TiXmlElement* pElem, const char* pszName, E& eOut); template <> int XmlValueByName(TiXmlElement*, const char*, Unk_DungeonGroupType&);   // 0x140179060, the enum attribute (specialization in additionalactionadditional.cpp)
 bool FUN_14028f710(struct Unk_XmlElement* pNode);               // the element is enabled (feature/locale filter)
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
+CString ToCString(const char* psz, int n);
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 
-class Unk_140bccd50* FUN_140bccd50();   // the packet handler manager
+class Unk_140bccd50* GetPacketHandlerManager();   // the packet handler manager
 COutputStream& FUN_14070f820(COutputStream& out, bool value);
 COutputStream& FUN_14070f9a0(COutputStream& out, unsigned int value);
 
@@ -155,12 +155,12 @@ MS2_CHECK_OFFSET(Unk_DcRoom, m_strBanner, 0x148);
 MS2_CHECK_OFFSET(Unk_DcRoom, m_bHidden, 0x1b1);
 MS2_CHECK_OFFSET(Unk_DcRoom, m_nGroupId, 0x1ec);
 
-class CMyCharacter* FUN_140931510();
+class CMyCharacter* GetMyCharacter();
 __int64 GetServerTime();
 class Unk_140166410* FUN_140166410();
-class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
+class CFeatureManager { public: bool IsFeatureEnabled(int nFeature); };   // C3: unit-local view
 
-void* FUN_140764030();
+void* GetRewardContentsTable();
 
 // The find component's party search button.
 #include "ms2/placeholder/asbutton.h"   // C3: the button view is ASButton (was the stand-in Unk_140acd6e0)
@@ -176,7 +176,7 @@ template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C&
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_1409404f0(__int64 n);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 extern int DAT_143ab2878;                                       // service type (2: party search disabled)
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols-manual.tsv)
@@ -207,7 +207,7 @@ UIDungeonCategoryTable::~UIDungeonCategoryTable()
 }
 
 // @0x140c09130
-int FUN_140c09130(Unk_DcXmlNode* pNode, const char* szName, Unk_DcLevelRange& range)
+int GetLevelRangeAttr(Unk_DcXmlNode* pNode, const char* szName, Unk_DcLevelRange& range)
 {
     CString str;
     int nResult = XmlGetAttr((class TiXmlElement*)(pNode), szName, str);
@@ -225,8 +225,8 @@ int FUN_140c09130(Unk_DcXmlNode* pNode, const char* szName, Unk_DcLevelRange& ra
 void UIDungeonCategoryTable::Load()
 {
     TiXmlDocument doc;
-    CString strPath = FUN_14071a5b0("Table", "dungeonCategory.xml");
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    CString strPath = GetXmlPath("Table", "dungeonCategory.xml");
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
     Unk_DcXmlNode* pRoot = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(reinterpret_cast<Unk_DcXmlNode*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0) {
@@ -244,7 +244,7 @@ void UIDungeonCategoryTable::Load()
             if (!FUN_14028f710((struct Unk_XmlElement*)(pSub)))
                 continue;
             MS2Ptr<UIDungeonCategory> pCategory(new UIDungeonCategory);
-            FUN_140c09130(pSub, "level", pCategory->m_range);
+            GetLevelRangeAttr(pSub, "level", pCategory->m_range);
             for (Unk_DcXmlNode* pNode = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pSub))->FirstChild("dungeonCategory")); pNode != 0;
                  pNode = ((class Unk_DcXmlNode*)((class Unk_XmlNode*)(pNode))->NextSibling("dungeonCategory"))) {
                 Unk_DcGroupType nGroupType;
@@ -258,7 +258,7 @@ void UIDungeonCategoryTable::Load()
 }
 
 // @0x140c08ec0
-void UIDungeonCategoryTable::FUN_140c08ec0(int nTab, ATL::CAtlArray<MS2Ptr<UIDungeonCategory> >& out)
+void UIDungeonCategoryTable::GetSubTabs(int nTab, ATL::CAtlArray<MS2Ptr<UIDungeonCategory> >& out)
 {
     CheckInit();
     if (nTab < 0 || nTab >= 2)
@@ -267,10 +267,10 @@ void UIDungeonCategoryTable::FUN_140c08ec0(int nTab, ATL::CAtlArray<MS2Ptr<UIDun
     for (POSITION pos = map.GetHeadPosition(); pos != 0; map.GetNext(pos))
         out.Add(map.GetValueAt(pos));
 }
-MS2_REPLACE_METHOD(0x140C08EC0, UIDungeonCategoryTable, FUN_140c08ec0, 138, 0xCD3F2EA2);
+MS2_REPLACE_METHOD(0x140C08EC0, UIDungeonCategoryTable, GetSubTabs, 138, 0xCD3F2EA2);
 
 // @0x140c08f50
-unsigned short UIDungeonCategoryTable::FUN_140c08f50(int nTab)
+unsigned short UIDungeonCategoryTable::GetMaxSubTabLevel(int nTab)
 {
     CheckInit();
     if (nTab < 0 || nTab >= 2)
@@ -284,7 +284,7 @@ unsigned short UIDungeonCategoryTable::FUN_140c08f50(int nTab)
     }
     return nMax;
 }
-MS2_REPLACE_METHOD(0x140C08F50, UIDungeonCategoryTable, FUN_140c08f50, 212, 0xFFEA75BF);
+MS2_REPLACE_METHOD(0x140C08F50, UIDungeonCategoryTable, GetMaxSubTabLevel, 212, 0xFFEA75BF);
 
 // @0x140c09030
 int UIDungeonCategoryTable::FUN_140c09030(int nTab, unsigned short nLevel)
@@ -309,7 +309,7 @@ void UIDungeonCategoryTable::CheckInit()
 {
     if (!s_bInit) {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(UIDungeonCategoryTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(UIDungeonCategoryTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -344,8 +344,8 @@ MS2_REPLACE_METHOD(0x140C0AFD0, UIDungeonControlCenter, GetTypeName, 61, 0x134E9
 void UIDungeonControlCenter::vfunc_67()
 {
     UIDialog::vfunc_67();
-    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cea0));
-    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->UnregisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cf20));
+    reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->UnregisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::OnPartyMatchPacket));
+    reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->UnregisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::OnDungeonRewardPacket));
     m_binder.FUN_140d43990();
 }
 
@@ -353,14 +353,14 @@ void UIDungeonControlCenter::vfunc_67()
 void UIDungeonControlCenter::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cea0));
-    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->RegisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::FUN_140c0cf20));
+    reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->RegisterHandler(0x53, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::OnPartyMatchPacket));
+    reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->RegisterHandler(0x1a, Delegate<void(CInPacket&)>(this, &UIDungeonControlCenter::OnDungeonRewardPacket));
     FUN_1419260d0("m_webGuideButton", 0);
     Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
         m_nSubTab = UIDungeonCategoryTable::GetInstance()->FUN_140c09030(0, pPlayer->vfunc_78());
-    FUN_140c0bab0();
-    FUN_140c0c430();
+    UpdateWeeklyReward();
+    UpdateFindComponent();
     FUN_140c0c600(0);
 }
 
@@ -409,7 +409,7 @@ int UIDungeonControlCenter::vfunc_28(const char* szMethod, const Scaleform::GFx:
     } else if (_stricmp("onClickTile", szMethod) == 0) {
         ASData args;
         if (args.SetArgsIfAny(pArgs, nArgs))
-            FUN_140c0cdb0(args.PopUInt());
+            OpenDungeonRoomDialog(args.PopUInt());
         return 1;
     }
     return 0;
@@ -448,14 +448,14 @@ int UIDungeonControlCenter::vfunc_54(void* pCfg)
 MS2_REPLACE_METHOD(0x140C0B920, UIDungeonControlCenter, vfunc_54, 325, 0xE146A10B);
 
 // @0x140c0ba70
-void UIDungeonControlCenter::FUN_140c0ba70(std::set<unsigned int>& ids)
+void UIDungeonControlCenter::SetBookmarks(std::set<unsigned int>& ids)
 {
     m_bookmarks.swap(ids);
 }
-MS2_REPLACE_METHOD(0x140C0BA70, UIDungeonControlCenter, FUN_140c0ba70, 43, 0x24B189AA);
+MS2_REPLACE_METHOD(0x140C0BA70, UIDungeonControlCenter, SetBookmarks, 43, 0x24B189AA);
 
 // @0x140c0bab0
-void UIDungeonControlCenter::FUN_140c0bab0()
+void UIDungeonControlCenter::UpdateWeeklyReward()
 {
     Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -463,13 +463,13 @@ void UIDungeonControlCenter::FUN_140c0bab0()
     ASObj obj(2);
     int nWeekly = 0;
     int nWeeklyMax = 0;
-    if (DungeonRecordCliPtr pMission = FUN_140931510()->GetRecord().operator->()->GetRecord(0x3ee)) {
+    if (DungeonRecordCliPtr pMission = GetMyCharacter()->GetRecord().operator->()->GetRecord(0x3ee)) {
         nWeekly = pMission->GetBonusRewardCountNow();
         nWeeklyMax = pMission->GetMaxCount();
-        obj.FUN_1407cbb20("weekly", FUN_14028dfa0(L"s_dungeon_control_center_reward_weekly", reinterpret_cast<const unsigned&>(nWeekly), reinterpret_cast<const unsigned&>(nWeeklyMax)));
+        obj.SetWStringMember("weekly", FUN_14028dfa0(L"s_dungeon_control_center_reward_weekly", reinterpret_cast<const unsigned&>(nWeekly), reinterpret_cast<const unsigned&>(nWeeklyMax)));
         int nDaily = pMission->GetClearCount(GetServerTime());
         int nDailyMax = pMission->GetSubRewardCount();
-        obj.FUN_1407cbb20("daily", FUN_14028dfa0(L"s_dungeon_control_center_reward_daily", reinterpret_cast<const unsigned&>(nDaily), reinterpret_cast<const unsigned&>(nDailyMax)));
+        obj.SetWStringMember("daily", FUN_14028dfa0(L"s_dungeon_control_center_reward_daily", reinterpret_cast<const unsigned&>(nDaily), reinterpret_cast<const unsigned&>(nDailyMax)));
     }
     int nNext = 0;
     size_t nCount = TSingleton<DungeonRoomTable>::GetInstance()->GetUnitedWeeklyRewardCount();
@@ -485,37 +485,37 @@ void UIDungeonControlCenter::FUN_140c0bab0()
     }
     if (nNext == 0) {
         nNext = nWeeklyMax;
-        obj.FUN_1407cb9c0("complete", 1);
-        obj.FUN_1407cbb20("count", GetStringCommonByKey(L"s_dungeon_control_center_require_reward_complete"));
+        obj.SetIntMember("complete", 1);
+        obj.SetWStringMember("count", GetStringCommonByKey(L"s_dungeon_control_center_require_reward_complete"));
     } else {
         int nRemain = nNext - nWeekly;
-        obj.FUN_1407cb9c0("complete", 0);
-        obj.FUN_1407cbb20("count", FUN_14028dfa0(L"s_dungeon_control_center_require_reward_count", reinterpret_cast<const unsigned&>(nRemain)));
+        obj.SetIntMember("complete", 0);
+        obj.SetWStringMember("count", FUN_14028dfa0(L"s_dungeon_control_center_require_reward_count", reinterpret_cast<const unsigned&>(nRemain)));
     }
     MS2Ptr<DungeonUnitedWeeklyReward> pStep = TSingleton<DungeonRoomTable>::GetInstance()->FindUnitedWeeklyReward(nNext);
     if (pStep.get()) {
         RewardContentsTable::Result rewards;
-        static_cast<RewardContentsTable*>(FUN_140764030())->GetReward(pStep->m_rewardID, pPlayer->vfunc_78(), rewards);
+        static_cast<RewardContentsTable*>(GetRewardContentsTable())->GetReward(pStep->m_rewardID, pPlayer->vfunc_78(), rewards);
         if (!rewards.m_items.empty())
-            obj.FUN_1407cba60("binding", m_binder.FUN_140d43510(static_cast<ItemAble*>(&rewards.m_items[0])));
+            obj.SetStringMember("binding", m_binder.FUN_140d43510(static_cast<ItemAble*>(&rewards.m_items[0])));
         __int64 nMeso = rewards.m_nMeso;
         __int64 nExp = rewards.m_nExp;
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb9)) {
-            if (FUN_140931510()->GetRecord().operator->()->IsBoostActive()) {
-                nMeso *= FUN_140931510()->GetRecord().operator->()->GetRateB();
-                nExp *= FUN_140931510()->GetRecord().operator->()->GetRateA();
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb9)) {
+            if (GetMyCharacter()->GetRecord().operator->()->IsBoostActive()) {
+                nMeso *= GetMyCharacter()->GetRecord().operator->()->GetRateB();
+                nExp *= GetMyCharacter()->GetRecord().operator->()->GetRateA();
             }
         }
-        obj.FUN_1407cbb20("meso", FUN_1409404f0(nMeso));
-        obj.FUN_1407cbb20("exp", FUN_14028dfa0<CStringW>(L"s_number_string_exp", FUN_1409404f0(nExp)));
+        obj.SetWStringMember("meso", FUN_1409404f0(nMeso));
+        obj.SetWStringMember("exp", FUN_14028dfa0<CStringW>(L"s_number_string_exp", FUN_1409404f0(nExp)));
     }
     if (MS2Ptr<ASUIComponent> pComponent = GetChild<ASUIComponent>("m_dungeonRewardComponent"))
         pComponent->Invoke("setData", obj);
 }
-MS2_REPLACE_METHOD(0x140C0BAB0, UIDungeonControlCenter, FUN_140c0bab0, 2415, 0xF7AC412D);
+MS2_REPLACE_METHOD(0x140C0BAB0, UIDungeonControlCenter, UpdateWeeklyReward, 2415, 0xF7AC412D);
 
 // @0x140c0c430
-void UIDungeonControlCenter::FUN_140c0c430()
+void UIDungeonControlCenter::UpdateFindComponent()
 {
     int nMatch = reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->IsMatchSearching(1);
     int bEnabled = FUN_140e146a0();
@@ -523,10 +523,10 @@ void UIDungeonControlCenter::FUN_140c0c430()
         pComponent->Invoke("setMatch", nMatch);
         pComponent->Invoke("setEnabled", bEnabled);
         if (MS2Ptr<ASButton> pButton = pComponent->FUN_140acce30<ASButton>("m_partySearch"))
-            pButton->FUN_1422c1fe0(DAT_143ab2878 != 2);
+            pButton->SetEnabled(DAT_143ab2878 != 2);
     }
 }
-MS2_REPLACE_METHOD(0x140C0C430, UIDungeonControlCenter, FUN_140c0c430, 443, 0xF0A3FAEA);
+MS2_REPLACE_METHOD(0x140C0C430, UIDungeonControlCenter, UpdateFindComponent, 443, 0xF0A3FAEA);
 
 // @0x140c0c600
 void UIDungeonControlCenter::FUN_140c0c600(int nTab)
@@ -549,7 +549,7 @@ MS2_REPLACE_METHOD(0x140C0C600, UIDungeonControlCenter, FUN_140c0c600, 90, 0xE69
 void UIDungeonControlCenter::FUN_140c0c660(int bUpdate)
 {
     ATL::CAtlArray<MS2Ptr<UIDungeonCategory> > categories;
-    UIDungeonCategoryTable::GetInstance()->FUN_140c08ec0(0, categories);
+    UIDungeonCategoryTable::GetInstance()->GetSubTabs(0, categories);
     if (m_nSubTab >= (int)categories.GetCount())
         return;
     ASObj obj(2);
@@ -560,8 +560,8 @@ void UIDungeonControlCenter::FUN_140c0c660(int bUpdate)
     if (bUpdate != 0) {
         m_30->FUN_140acd1f0("updateTab", AScript(obj));
     } else {
-        obj.FUN_1409c48f0("dungeonLv", UIDungeonCategoryTable::GetInstance()->FUN_140c08f50(0));
-        obj.FUN_1407cb9c0("idx", m_nSubTab);
+        obj.FUN_1409c48f0("dungeonLv", UIDungeonCategoryTable::GetInstance()->GetMaxSubTabLevel(0));
+        obj.SetIntMember("idx", m_nSubTab);
         m_30->Invoke("buildTab", 0, AScript(obj));
     }
 }
@@ -571,7 +571,7 @@ MS2_REPLACE_METHOD(0x140C0C660, UIDungeonControlCenter, FUN_140c0c660, 632, 0xB1
 void UIDungeonControlCenter::FUN_140c0c8e0()
 {
     ATL::CAtlArray<MS2Ptr<UIDungeonCategory> > categories;
-    UIDungeonCategoryTable::GetInstance()->FUN_140c08ec0(1, categories);
+    UIDungeonCategoryTable::GetInstance()->GetSubTabs(1, categories);
     ASObj obj(2);
     if (categories.GetCount() == 0)
         return;
@@ -583,7 +583,7 @@ void UIDungeonControlCenter::FUN_140c0c8e0()
 MS2_REPLACE_METHOD(0x140C0C8E0, UIDungeonControlCenter, FUN_140c0c8e0, 400, 0xBA9C9A96);
 
 // @0x140c0dea0
-UIDungeonSearchSettingDialog* FUN_140c0dea0(int nUiId)
+UIDungeonSearchSettingDialog* GetDungeonSearchSettingDialog(int nUiId)
 {
     if (reinterpret_cast<Unk_DcUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0) {
         MS2Ptr<UIObject> spUI = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nUiId);
@@ -603,7 +603,7 @@ void UIDungeonControlCenter::OnSetting()
         MS2_FOR_EACH(MS2Ptr<Unk_DcRoom> pRoom, rooms)
             m_bookmarks.insert(reinterpret_cast<DungeonRoom*>(pRoom.operator->())->GetDungeonRoomID());
     }
-    UIDungeonSearchSettingDialog* pDialog = FUN_140c0dea0(0x4f86);
+    UIDungeonSearchSettingDialog* pDialog = GetDungeonSearchSettingDialog(0x4f86);
     if (pDialog != 0) {
         pDialog->SetSelected(m_bookmarks);
         pDialog->FUN_141924680();
@@ -653,7 +653,7 @@ void UIDungeonControlCenter::OnBookmark()
 {
     UIDungeonRoomDialog* pDialog = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd);
     if (pDialog != 0) {
-        TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4ebd);
+        TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4ebd);
         pDialog->FUN_1412b9110();
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ebd)));
     }
@@ -668,16 +668,16 @@ void UIDungeonControlCenter::OnPopupDetail()
 MS2_REPLACE_METHOD(0x140C0CD80, UIDungeonControlCenter, OnPopupDetail, 32, 0xE11816BE);
 
 // @0x140c0cdb0
-void UIDungeonControlCenter::FUN_140c0cdb0(int nId)
+void UIDungeonControlCenter::OpenDungeonRoomDialog(int nId)
 {
     UIDungeonRoomDialog* pDialog = Unk_GetUI<UIDungeonRoomDialog>(0x4ebd);
     if (pDialog != 0) {
-        TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4ebd);
-        pDialog->FUN_1412b8ff0(nId);
+        TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4ebd);
+        pDialog->OpenRoom(nId);
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4ebd)));
     }
 }
-MS2_REPLACE_METHOD(0x140C0CDB0, UIDungeonControlCenter, FUN_140c0cdb0, 91, 0xA9F2625E);
+MS2_REPLACE_METHOD(0x140C0CDB0, UIDungeonControlCenter, OpenDungeonRoomDialog, 91, 0xA9F2625E);
 
 // @0x140c0ce20
 void UIDungeonControlCenter::SendRoomDungeon(int nGroupType)
@@ -692,7 +692,7 @@ void UIDungeonControlCenter::SendRoomDungeon(int nGroupType)
 MS2_REPLACE_METHOD(0x140C0CE20, UIDungeonControlCenter, SendRoomDungeon, 113, 0xCAA06AAE);
 
 // @0x140c0cea0
-void UIDungeonControlCenter::FUN_140c0cea0(CInPacket& packet)
+void UIDungeonControlCenter::OnPartyMatchPacket(CInPacket& packet)
 {
     int nCommand = packet.ReadUInt8();
     switch (nCommand) {
@@ -702,23 +702,23 @@ void UIDungeonControlCenter::FUN_140c0cea0(CInPacket& packet)
     case 8:
     case 9:
     case 0x1e:
-        FUN_140c0c430();
+        UpdateFindComponent();
         break;
     }
 }
-MS2_REPLACE_METHOD(0x140C0CEA0, UIDungeonControlCenter, FUN_140c0cea0, 115, 0x2E3439AD);
+MS2_REPLACE_METHOD(0x140C0CEA0, UIDungeonControlCenter, OnPartyMatchPacket, 115, 0x2E3439AD);
 
 // @0x140c0cf20
-void UIDungeonControlCenter::FUN_140c0cf20(CInPacket& packet)
+void UIDungeonControlCenter::OnDungeonRewardPacket(CInPacket& packet)
 {
     int nCommand = packet.ReadUInt8();
     switch (nCommand) {
     case 0x17:
-        FUN_140c0bab0();
+        UpdateWeeklyReward();
         break;
     }
 }
-MS2_REPLACE_METHOD(0x140C0CF20, UIDungeonControlCenter, FUN_140c0cf20, 87, 0xD16A6CCA);
+MS2_REPLACE_METHOD(0x140C0CF20, UIDungeonControlCenter, OnDungeonRewardPacket, 87, 0xD16A6CCA);
 
 // @0x140c0cf80
 int UIDungeonControlCenter::FUN_140c0cf80(int nGroupType, const Unk_DcLevelRange& range, ASArray& out)
@@ -731,8 +731,8 @@ int UIDungeonControlCenter::FUN_140c0cf80(int nGroupType, const Unk_DcLevelRange
             continue;
         ASObj obj(2);
         obj.SetMemberUInt("id", pRoom->m_nId);
-        obj.FUN_1407cba60("banner", pRoom->m_strBanner);
-        obj.FUN_1407cbb20("title", FUN_14028dfa0<unsigned short, CStringW>(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
+        obj.SetStringMember("banner", pRoom->m_strBanner);
+        obj.SetWStringMember("title", FUN_14028dfa0<unsigned short, CStringW>(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
                                                  TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->m_nId)));
         out.PushObj(obj);
     }
@@ -744,11 +744,11 @@ MS2_REPLACE_METHOD(0x140C0CF80, UIDungeonControlCenter, FUN_140c0cf80, 720, 0x94
 void UIDungeonControlCenter::FUN_140c0d260(ASArray& out)
 {
     ASObj obj(2);
-    obj.FUN_1407cb9c0("isRecommend", 1);
-    obj.FUN_1407cbb20("category", GetStringCommonByKey(L"s_dungeon_control_center_recommend_category"));
+    obj.SetIntMember("isRecommend", 1);
+    obj.SetWStringMember("category", GetStringCommonByKey(L"s_dungeon_control_center_recommend_category"));
     ASArray list(2);
     RoomVec rooms;
-    FUN_140c0d800(rooms);
+    GetRecommendedRooms(rooms);
     for (unsigned int i = 0; i < rooms.size(); i++) {
         if (!reinterpret_cast<Unk_DcParty*>(TSingleton<CPartyManager>::GetInstance())->CanEnterDungeonRoom(reinterpret_cast<DungeonRoom*>(rooms[i].operator->())->GetDungeonRoomID()))
             continue;
@@ -757,8 +757,8 @@ void UIDungeonControlCenter::FUN_140c0d260(ASArray& out)
         MS2Ptr<Unk_DcRoom> pRoom = rooms[i];
         ASObj item(2);
         item.SetMemberUInt("id", pRoom->m_nId);
-        item.FUN_1407cba60("banner", pRoom->m_strBanner);
-        item.FUN_1407cbb20("title", FUN_14028dfa0<unsigned short, CStringW>(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
+        item.SetStringMember("banner", pRoom->m_strBanner);
+        item.SetWStringMember("title", FUN_14028dfa0<unsigned short, CStringW>(L"s_dungeon_control_center_dungeon_title", pRoom->m_nMinLevel,
                                                   TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x14, pRoom->m_nId)));
         list.PushObj(item);
     }
@@ -775,10 +775,10 @@ void UIDungeonControlCenter::FUN_140c0d620(MS2Ptr<UIDungeonCategory> pCategory, 
         if (!FUN_140e14520(nGroupType))
             continue;
         ASObj obj(2);
-        obj.FUN_1407cb9c0("isRecommend", 0);
-        obj.FUN_1407cbb20("category", TranslateEnumDungeonGroup(nGroupType));
+        obj.SetIntMember("isRecommend", 0);
+        obj.SetWStringMember("category", TranslateEnumDungeonGroup(nGroupType));
         obj.FUN_140c0e050("groupType", nGroupType);
-        obj.FUN_1407cbbe0("hasLobby", FUN_140c0dc60(nGroupType) != -1);
+        obj.SetBoolMember("hasLobby", FUN_140c0dc60(nGroupType) != -1);
         ASArray list(2);
         if (FUN_140c0cf80(nGroupType, pCategory->m_range, list)) {
             obj.FUN_1409eb1d0("list", list);
@@ -789,7 +789,7 @@ void UIDungeonControlCenter::FUN_140c0d620(MS2Ptr<UIDungeonCategory> pCategory, 
 MS2_REPLACE_METHOD(0x140C0D620, UIDungeonControlCenter, FUN_140c0d620, 473, 0x77BD59BC);
 
 // @0x140c0d800
-void UIDungeonControlCenter::FUN_140c0d800(RoomVec& out)
+void UIDungeonControlCenter::GetRecommendedRooms(RoomVec& out)
 {
     out.clear();
     Unk_DcPlayer* pPlayer = ((Unk_DcPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -825,7 +825,7 @@ void UIDungeonControlCenter::FUN_140c0d800(RoomVec& out)
             break;
     }
 }
-MS2_REPLACE_METHOD(0x140C0D800, UIDungeonControlCenter, FUN_140c0d800, 677, 0xFD9591E3);
+MS2_REPLACE_METHOD(0x140C0D800, UIDungeonControlCenter, GetRecommendedRooms, 677, 0xFD9591E3);
 
 // @0x140c0dab0
 void UIDungeonControlCenter::FUN_140c0dab0(RoomVec& out)
@@ -878,7 +878,7 @@ Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, AScript a2)
     ASArgList args;
     args.resize(2);
     FUN_1422bccb0(&args[0], a1);
-    FUN_1422bcc70(&args[1], Scaleform::GFx::Value(a2.FUN_1422bb890()));
+    SetValue(&args[1], Scaleform::GFx::Value(a2.FUN_1422bb890()));
     return FUN_1422bb8f0(szMethod, args);
 }
 

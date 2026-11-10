@@ -37,10 +37,10 @@ public:
     virtual void vfunc_ugc_1(void* pId, CString strPath);                   // 1 0x141b51b80 the sender's profile image arrived
     virtual void vfunc_ugc_2(void* pId, CString strName);                   // 2 0x141b51cd0 the gift's item icon arrived
 
-    void FUN_141b51e30(unsigned __int64 nId, const CStringW& strMsg, const CString& strName);   // add a whisper
-    void FUN_141b52030(int nItemId, int nGrade, int nCount, const CStringW& strMsg);            // add a gift item by id
-    void FUN_141b52210(MS2Ptr<CItem> spItem, const CStringW& strMsg, const CString& strUgcPath);   // add a gift item
-    void FUN_141b52570(const Unk_WhisperInfo* pInfo, int nMode, int nItemId);                   // add a system whisper
+    void AddWhisper(unsigned __int64 nId, const CStringW& strMsg, const CString& strName);   // add a whisper
+    void AddGiftItemById(int nItemId, int nGrade, int nCount, const CStringW& strMsg);            // add a gift item by id
+    void AddGiftItem(MS2Ptr<CItem> spItem, const CStringW& strMsg, const CString& strUgcPath);   // add a gift item
+    void AddSystemWhisper(const Unk_WhisperInfo* pInfo, int nMode, int nItemId);                   // add a system whisper
     int FUN_141b529f0(unsigned __int64 nId);                                // the sender whispered within the cool-down
     int FUN_141b52a60(int nId);                                             // the system sender notified within a minute
 

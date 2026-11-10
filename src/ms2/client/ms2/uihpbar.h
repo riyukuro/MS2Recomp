@@ -47,10 +47,10 @@ public:
     UIHpBar();                                          // 0x1419927f0
     virtual ~UIHpBar();                                 //  0 0x141992860 (??_G 0x141994e80)
     virtual CString GetTypeName();                          //  1 0x1419928a0 "HpBar"
-    virtual void OnLoadComplete();                      // 22 0x1419928f0 UIObject::OnLoadComplete(); FUN_141993790(m_68)
+    virtual void OnLoadComplete();                      // 22 0x1419928f0 UIObject::OnLoadComplete(); CreateEntityCache(m_68)
     virtual int vfunc_48() { return 0x4e36; }           // 48 0x141994f40
 
-    void FUN_141993790(unsigned int nCount);            // create the entity cache
+    void CreateEntityCache(unsigned int nCount);            // create the entity cache
     Entity* FUN_141993d30(int nActorId);                // the entity of the actor (created or recycled)
 };
 MS2_CHECK_SIZE(UIHpBar::Entity, 0xc8);
@@ -82,10 +82,10 @@ public:
     UITombStoneBar();                                   // 0x141992fd0
     virtual ~UITombStoneBar();                          //  0 0x141993040 (??_G 0x141994f00)
     virtual CString GetTypeName();                          //  1 0x141993080 "TombGaugeBar"
-    virtual void OnLoadComplete();                      // 22 0x1419930d0 UIHpBar::OnLoadComplete(); FUN_141993b50(m_68)
+    virtual void OnLoadComplete();                      // 22 0x1419930d0 UIHpBar::OnLoadComplete(); CreateEntityCache(m_68)
     virtual int vfunc_48() { return 0x4e64; }           // 48 0x141994f60
 
-    void FUN_141993b50(unsigned int nCount);            // create the entity cache
+    void CreateEntityCache(unsigned int nCount);            // create the entity cache
     Entity* FUN_1419945b0(int nActorId);                // the entity of the actor (created or recycled)
 };
 MS2_CHECK_SIZE(UITombStoneBar::Entity, 0xd0);
@@ -116,10 +116,10 @@ public:
     UISlimeEventBar();                                  // 0x1419935a0
     virtual ~UISlimeEventBar();                         //  0 0x141993610 (??_G 0x141994ec0)
     virtual CString GetTypeName();                          //  1 0x141993650 "SlimeEventBar"
-    virtual void OnLoadComplete();                      // 22 0x1419936a0 UIHpBar::OnLoadComplete(); FUN_141993970(m_68)
+    virtual void OnLoadComplete();                      // 22 0x1419936a0 UIHpBar::OnLoadComplete(); CreateEntityCache(m_68)
     virtual int vfunc_48() { return 0x4e65; }           // 48 0x141994f50
 
-    void FUN_141993970(unsigned int nCount);            // create the entity cache
+    void CreateEntityCache(unsigned int nCount);            // create the entity cache
     Entity* FUN_141994170(int nActorId);                // the entity of the actor (created or recycled)
 };
 MS2_CHECK_SIZE(UISlimeEventBar::Entity, 0xe0);

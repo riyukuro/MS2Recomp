@@ -18,11 +18,11 @@ public:
     CrashManagerCli() {}
     // implicit dtor @0x141497620 (the exe's stores no vftable pointers)
     void FUN_140a435a0();                                   // installs the crash handler (InitInstance)
-    void FUN_140a43750(DWORD nId, CString strText);           // set the text of a crash-log entry
-    void FUN_140a437d0(DWORD nId);                            // remove a crash-log entry
-    void FUN_140a43830();                                   // write every entry to the crash log
-    BOOL FUN_140a43920(DWORD nId, CString& strText);          // read a crash-log entry
-    std::list<TFunctor<void, EmptyParam> >& FUN_140a44800();    // the shutdown callbacks
+    void SetCrashLogEntry(DWORD nId, CString strText);           // set the text of a crash-log entry
+    void RemoveCrashLogEntry(DWORD nId);                            // remove a crash-log entry
+    void WriteCrashLogEntries();                                   // write every entry to the crash log
+    BOOL GetCrashLogEntry(DWORD nId, CString& strText);          // read a crash-log entry
+    std::list<TFunctor<void, EmptyParam> >& GetShutdownCallbacks();    // the shutdown callbacks
 private:
     MS2_LAYOUT_FRIEND;
     CLockCriticalSection m_lock;                            // +0x70

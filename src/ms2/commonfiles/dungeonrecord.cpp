@@ -25,7 +25,7 @@
 
 COutputStream& FUN_14070f860(COutputStream& out, unsigned char value);
 COutputStream& FUN_14070f8e0(COutputStream& out, unsigned short value);
-COutputStream& FUN_14070f960(COutputStream& out, long value);
+COutputStream& WriteLong(COutputStream& out, long value);
 COutputStream& FUN_14070f9a0(COutputStream& out, unsigned value);
 COutputStream & FUN_14070fa20(COutputStream &, unsigned __int64);  // C3: the definition's signature
 
@@ -222,7 +222,7 @@ COutputStream& operator<<(COutputStream& out, DungeonRecord& record)
     out << record.m_clearCount;
     FUN_14070f860(out, record.m_bonusCount);
     out << record.m_extraCount;
-    FUN_14070f960(out, record.m_5c);
+    WriteLong(out, record.m_5c);
     FUN_14070f8e0(out, record.m_60);
     out << record.m_68;
     out << record.m_flags;
@@ -249,7 +249,7 @@ MS2_REPLACE_OVERLOAD(0x14031BE60, CInputStream&(CInputStream&, DungeonRankReward
 COutputStream& operator<<(COutputStream& out, DungeonRankReward& reward)
 {
     FUN_14070f9a0(out, reward.m_18);
-    FUN_14070f960(out, reward.m_1c);
+    WriteLong(out, reward.m_1c);
     FUN_14070fa20(out, reward.m_20);
     return out;
 }

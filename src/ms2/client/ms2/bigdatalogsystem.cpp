@@ -30,7 +30,7 @@
               // the network service: latency
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
-CNetworkService* FUN_140714f90();
+CNetworkService* GetNetworkService();
 void FUN_140710590(COutPacket& packet);                                 // send the packet
 
 // @0x140a1f250
@@ -152,7 +152,7 @@ void CBigDataLogSystem::Update()
     AddSample(SAMPLE_FPS, (__int64)fFrameRate);
     unsigned __int64 nMemory = ((class COptimizer*)GetOptimizer())->GetPagefileUsageMB();
     AddSample(SAMPLE_MEMORY, (__int64)(float)nMemory);
-    unsigned nLatency = FUN_140714f90()->GetAverageLatency();
+    unsigned nLatency = GetNetworkService()->GetAverageLatency();
     AddSample(SAMPLE_LATENCY, nLatency);
 }
 MS2_REPLACE_METHOD(0x140A1F8A0, CBigDataLogSystem, Update, 199, 0x15B837EF);

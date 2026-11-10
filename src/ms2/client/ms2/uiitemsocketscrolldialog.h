@@ -30,10 +30,10 @@ public:
     virtual int vfunc_48();                                     // 48 0x140f688b0
     virtual void vfunc_67();                                    // 67 0x140f64990 close: forget the items
 
-    void FUN_140f64a20(CInPacket& packet);                      // 0x140f64a20 packet 0xe3
+    void OnItemSocketScrollPacket(CInPacket& packet);                      // 0x140f64a20 packet 0xe3
     void FUN_140f650a0(ItemScrollSlot& slot);                   // 0x140f650a0 the item was removed from the slot
     void FUN_140f65130(ItemScrollSlot& slot, DragSlot* pDrag);  // 0x140f65130 an item was dropped onto the slot
-    bool FUN_140f659e0(int nButton, const CMsgBoxData& box);    // 0x140f659e0 "used" box answered: close
+    bool OnUsedMsgBox(int nButton, const CMsgBoxData& box);    // 0x140f659e0 "used" box answered: close
     bool FUN_140f65a40(int nButton, const CMsgBoxData& box);    // 0x140f65a40 "unlock more" box answered: send
     void SetHasItem(int bHasItem);                           // 0x140f65a90
     ItemScrollSlot* FUN_140f65ab0(CString strName);             // 0x140f65ab0 the scroll slot of a name
@@ -41,7 +41,7 @@ public:
     bool FUN_140f65c10(CItemSocketScrollDataPtr spRow, CStringW& strNotice);    // 0x140f65c10 the limit text
     bool FUN_140f66680(MS2Ptr<CItem> spItem, CItemSocketScrollDataPtr spRow, CStringW& strDesc);   // 0x140f66680 the description
     void OnClickAction();                                       // 0x140f66870 onClickAction
-    void FUN_140f66f70(int nError);                             // 0x140f66f70 notice for a check error
+    void ShowSocketScrollError(int nError);                             // 0x140f66f70 notice for a check error
     void SendItemSocketScroll(__int64 nTargetUid);                     // 0x140f670e0 send packet 0x8b
     void FUN_140f67170(CInPacket& packet);                      // 0x140f67170 packet type 0: a scroll was opened
     void FUN_140f672a0(CInPacket& packet);                      // 0x140f672a0 packet type 2: the scroll was used

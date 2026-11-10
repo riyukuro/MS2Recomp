@@ -35,18 +35,18 @@ public:
 
     void FUN_141a53100();                                           // 0x141a53100 load the <minimap> node of the map xml into m_spMinimap and the camera
     void FUN_141a53750();                                           // 0x141a53750 store the camera/image area into m_spMinimap and save the xml
-    void FUN_141a540f0(int bShow);                                  // 0x141a540f0 hide (1) / restore (0) the world objects for the capture
+    void SetWorldObjectsHidden(int bShow);                                  // 0x141a540f0 hide (1) / restore (0) the world objects for the capture
     void OnScreenShot();                                           // 0x141a545a0 save the minimap area as a png screenshot
     CString GetXBlockPath(CString strXBlock);                       // 0x141a54940 "./data/xml/MapXblock/{0}.xml"
-    CString FUN_141a549c0();                                        // 0x141a549c0 "./Data/Resource/Image/Map/Minimap/%08d.dds" of the current map
-    NiRect<unsigned int> FUN_141a54a50();                                           // 0x141a54a50 the rounded screen rectangle of the record
+    CString GetMinimapImagePath();                                        // 0x141a549c0 "./Data/Resource/Image/Map/Minimap/%08d.dds" of the current map
+    NiRect<unsigned int> GetImageRect();                                           // 0x141a54a50 the rounded screen rectangle of the record
 
 private:
     MS2_LAYOUT_FRIEND;
     CString m_strImageIcon;                                         // +0x178 <image icon>
     CString m_strImageName;                                         // +0x180 <image name>
     MS2Ptr<CMinimap> m_spMinimap;                                   // +0x188 the edited record
-    ATL::CAtlList<egf::EntityID> m_hidden;                          // +0x198 entities of the objects hidden by FUN_141a540f0
+    ATL::CAtlList<egf::EntityID> m_hidden;                          // +0x198 entities of the objects hidden by SetWorldObjectsHidden
     ATL::CAtlList<egf::Entity*> m_instanced;                        // +0x1c8 hardware-instanced entities hidden from the instancing service
 };
 MS2_CHECK_SIZE(UIMinimapEditDialog, 0x1f8);

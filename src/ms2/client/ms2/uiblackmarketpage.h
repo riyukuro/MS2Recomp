@@ -50,8 +50,8 @@ public:
     virtual void vfunc_5();                                         //  5 0x140f0c3a0 empty (per frame)
     virtual MS2Ptr<CBlackMarketProduct> vfunc_6(unsigned __int64 nId);   //  6 0x140f0c3b0 product of an id
 
-    void FUN_140f0c150(MS2Ptr<AScript> spRoot);                     // m_20 = spRoot (the callee destroys it)
-    void FUN_140f0c1a0(int nMovieId);                               // m_50 = nMovieId
+    void SetRoot(MS2Ptr<AScript> spRoot);                     // m_20 = spRoot (the callee destroys it)
+    void SetMovieId(int nMovieId);                               // m_50 = nMovieId
     void UpdateNoticeSymbolFrom(const CString& strState);                    // "updateNoticeSymbolFrom" with the page object
 
     MS2_LAYOUT_FRIEND;
@@ -94,24 +94,24 @@ public:
     virtual void vfunc_5();                                         //  5 0x140f0d550 send a pending search
     virtual MS2Ptr<CBlackMarketProduct> vfunc_6(unsigned __int64 nId);   //  6 0x140f0d500 product of the search result
 
-    void FUN_140f0d630(int nMsg, void* p2, void* p3);               // key input: the item name candidates
+    void UpdateNameCandidates(int nMsg, void* p2, void* p3);               // key input: the item name candidates
     void BuildItemList(int nA, int nB, void* p);                    // rebuild "buildItemList"
-    void FUN_140f0db00(MS2Ptr<CBlackMarketProduct> spEntry, int nState);   // "updateItem" (the callee destroys the entry)
+    void UpdateItem(MS2Ptr<CBlackMarketProduct> spEntry, int nState);   // "updateItem" (the callee destroys the entry)
     void FUN_140f0de60(int nA, int nB, void* p);                    // server notice
-    void FUN_140f0dfe0(int nAction);                                // reply received
-    void FUN_140f0e050();                                           // "buildSearchOptionList"
+    void OnReplyReceived(int nAction);                                // reply received
+    void BuildSearchOptionList();                                           // "buildSearchOptionList"
     void AppendTabs(ASArray& out, ATL::CAtlList<Unk_BmPtr<CBlackMarketTable::TabInfo> >* pTabs);   // the tab tree
-    void FUN_140f0e940(ASObj& out, int nTabId);                     // the option lists of a low category
+    void BuildOptionLists(ASObj& out, int nTabId);                     // the option lists of a low category
     void FillSubTabArray(ASObj& out, int nTabId);                     // the low categories of a tab
     void FillSearchResults(int nFirst, int nEnd, POSITION pos);         // "buildPage" from the search list position
     void ClearNameInput();                                           // clear the name input
     void OnSearchDelayError();                                           // "errorSearchFromDelay"
     int CanSearchNow();                                            // the search delay is over
-    int FUN_140f0f310(ASData* pArgs, int n);                        // read the search condition
-    void FUN_140f103c0(unsigned __int64 nId, const CString& strState);   // "OnClickBuy"
+    int ReadSearchCondition(ASData* pArgs, int n);                        // read the search condition
+    void OnClickBuy(unsigned __int64 nId, const CString& strState);   // "OnClickBuy"
     int AddLabeledEntry(ASObj& obj, const CStringW& strLabel, const CString& strKey, int nValue);   // dropdown entry
     void BuyProduct(unsigned __int64 nId, int nCount);           // send the purchase
-    void FUN_140f108e0(MS2Ptr<CBlackMarketProduct> spEntry);        // ask the count
+    void AskBuyCount(MS2Ptr<CBlackMarketProduct> spEntry);        // ask the count
     void FUN_140f10d90(MS2Ptr<CBlackMarketProduct> spEntry, int nCount);   // ask the purchase
     bool FUN_140f113e0(int nResult, const CMsgBoxData& box);        // count box result
     bool OnBuyCountMsgBox(int nResult, const CMsgBoxData& box);        // purchase box result
@@ -164,16 +164,16 @@ public:
     void FUN_140f12d40(MS2Ptr<CBlackMarketProduct> spEntry);        // a product was registered (the callee destroys the entry)
     void FUN_140f13030(MS2Ptr<CBlackMarketProduct> spEntry, int nReason);   // a product was removed (0: by the owner)
     void BuildOwnerItemList(CBlackMarketMan::ProductMap& own);           // "buildOwnerItemList"
-    void FUN_140f133b0(int nAction);                                // reply received
+    void OnReplyReceived(int nAction);                                // reply received
     void FUN_140f13420(NotifyContext::BindData* pSlot, CItem& item);   // an item was dropped on the register slot
     void UpdateTotalPriceNumber(const Scaleform::GFx::FunctionHandler::Params& params);   // "changeTotalPrice"
     void FUN_140f137a0(int nItemId, int nRank, unsigned __int64 nPrice);   // the reference price arrived
     bool FUN_140f13950(int nResult, const CMsgBoxData& box);        // stop-sale confirmation
-    bool FUN_140f139e0(int nResult, const CMsgBoxData& box);        // fee notice closed: register
+    bool OnFeeNoticeClosed(int nResult, const CMsgBoxData& box);        // fee notice closed: register
     bool FUN_140f13a10(int nResult, const CMsgBoxData& box);        // register confirmation
     void SelectItem(MS2Ptr<CItem> spItem);                       // put an item on the slot: ask its reference price
-    void FUN_140f13d80();                                           // send the pending register request
-    void FUN_140f13e70(unsigned __int64 nUid, __int64 nPrice, int nCount);   // "OnClickRegister"
+    void SendRegisterRequest();                                           // send the pending register request
+    void OnClickRegister(unsigned __int64 nUid, __int64 nPrice, int nCount);   // "OnClickRegister"
     int FUN_140f14650(ASObj& obj, CItem& item, BlackMarketRegisterItem& reg);   // the slot data of an item
     CStringW FUN_140f14900(int nRank);                              // the fee notice
 
@@ -209,17 +209,17 @@ public:
 
     void OnMesoPacket(CInPacket& packet);                          // packet 0x81 reply (2 counts, 7 list, 8 bought)
     void OnRangeDropdownChanged(const Scaleform::GFx::FunctionHandler::Params& params);   // a range dropdown changed
-    void FUN_140f19d00(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_searchButton"
+    void OnSearchButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_searchButton"
     void OnPageButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_prevPage" / "m_nextPage"
     bool SendMesoMarketMode8(int nResult, const CMsgBoxData& box);        // buy confirmation: send 0x81/8
     void RefreshPage();                                             // 0x140f19f80
-    void FUN_140f1a230();                                           // the market list
+    void UpdateMarketList();                                           // the market list
     void UpdateMerat();                                           // "UpdateMerat"
-    void FUN_140f1a5a0();                                           // "m_myToken"
+    void UpdateMyToken();                                           // "m_myToken"
     void FUN_140f1a690();                                           // the explanation and the market price
-    void FUN_140f1a8f0();                                           // "m_buyCount"
-    void FUN_140f1aa20();                                           // the page controls
-    void FUN_140f1ac40(int nDelta);                                 // move the page
+    void UpdateBuyCount();                                           // "m_buyCount"
+    void UpdatePageControls();                                           // the page controls
+    void MovePage(int nDelta);                                 // move the page
     void SendMesoMarketMode7(__int64 nBegin, __int64 nEnd);               // send the search 0x81/7
 
     MS2_LAYOUT_FRIEND;
@@ -248,24 +248,24 @@ public:
     virtual void vfunc_oa0_11(void* a1);                            // +0x60 slot 11 0x140f1c2d0 the mesos changed
 
     void OnMesoPacket(CInPacket& packet);                          // packet 0x81 reply (2 counts, 4 list, 5 registered, 6 cancelled)
-    void FUN_140f1c3b0(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_register"
-    void FUN_140f1c900(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_mesoDropdown" changed
-    void FUN_140f1c930(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_buyMerat" changed
+    void OnRegisterButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_register"
+    void OnMesoDropdownChanged(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_mesoDropdown" changed
+    void OnBuyMeratChanged(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_buyMerat" changed
     void OnPageButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_prevPage" / "m_nextPage"
     bool SendMesoMarketMode5(int nResult, const CMsgBoxData& box);        // register confirmation: send 0x81/5
     bool SendMesoMarketMode6(int nResult, const CMsgBoxData& box);        // stop-sale confirmation: send 0x81/6
     void FUN_140f1cc00();                                           // the single range / fee controls
     void ResetInputs();                                           // reset the inputs
     void RefreshAll();                                           // refresh everything
-    void FUN_140f1d1c0();                                           // the own list
+    void UpdateOwnList();                                           // the own list
     void UpdateCurrentMeso();                                           // "m_currentMeso"
-    void FUN_140f1d5b0();                                           // the total price
+    void UpdateTotalPrice();                                           // the total price
     void FUN_140f1d730();                                           // the rates, market price and fee notice
-    void FUN_140f1dab0();                                           // "m_registerCount"
-    void FUN_140f1dbe0();                                           // the page controls
+    void UpdateRegisterCount();                                           // "m_registerCount"
+    void UpdatePageControls();                                           // the page controls
     __int64 GetBuyMeratValue();                                        // the merat price input
-    __int64 FUN_140f1dec0();                                        // the total price
-    void FUN_140f1dfa0(int nDelta);                                 // move the page
+    __int64 GetTotalPrice();                                        // the total price
+    void MovePage(int nDelta);                                 // move the page
 
     MS2_LAYOUT_FRIEND;
     MS2Ptr<ASDropdownMenu> m_spMesoDropdown;                        // +0x68 "m_mesoDropdown"

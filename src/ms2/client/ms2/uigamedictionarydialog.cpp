@@ -90,13 +90,13 @@ class CReservedWordTable;
 CStringW GetStringCommon(int nStringId);                      // common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);             // common string by key
 CStringW BlockFormat(int nStringId);
-void FUN_140d73aa0(CStringW str, int a, void* pListener, CStringW strExtra);
+void ShowMessageBox(CStringW str, int a, void* pListener, CStringW strExtra);
 int FUN_14083fec0(CStringW strText, CStringW strSearch);    // find the search text (-1 = none)
 
 // The string formatters (key by value: the callee destroys it).
 #include "ms2/placeholder/wcformat.h"
 CStringW FUN_1406cd420(int nKind);                          // the function name of an npc kind
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 
 // The AS object with its value member visible (the helpers below read it inline).
 struct Unk_GdScript : AScript
@@ -108,7 +108,7 @@ struct Unk_GdScript : AScript
 
 // @0x140f47270
 // By-value tooltip: the callee destroys it.
-void FUN_140f47270(AScript* pScript, const char* szName, ASTooltip tooltip)
+void SetTooltip(AScript* pScript, const char* szName, ASTooltip tooltip)
 {
     ASData data;
     data.AddValue(tooltip.FUN_1422bb890());
@@ -116,7 +116,7 @@ void FUN_140f47270(AScript* pScript, const char* szName, ASTooltip tooltip)
 }
 
 // @0x140f47320
-void FUN_140f47320(AScript* pScript, const char* szName, int n)
+void SetInt(AScript* pScript, const char* szName, int n)
 {
     ASData data;
     data.AddInt(n);
@@ -187,14 +187,14 @@ void UIGameDictionaryDialog::vfunc_67()
 void UIGameDictionaryDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140f452e0();
+    CollectEntries();
     if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_inputSearch"))
         spInput->SetTextW(m_180);
-    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar("m_tab"))
         spTab->SetSelectedIndex(m_178);
     if (m_17c != 0)
     {
-        if (MS2Ptr<ASScrollingList> spItems = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_items"))
+        if (MS2Ptr<ASScrollingList> spItems = reinterpret_cast<UIDailyMissionDialog*>(this)->GetScrollingList("m_items"))
         {
             if (spItems->GetDataProvider()->GetLength() > 0)
             {
@@ -214,7 +214,7 @@ int UIGameDictionaryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
     if (_stricmp("OnSearchItem", szMethod) == 0)
     {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
-            FUN_140f46c90(data.FUN_1422b8f40());
+            Search(data.FUN_1422b8f40());
         return 1;
     }
     else if (_stricmp("OnChangeTab", szMethod) == 0)
@@ -234,7 +234,7 @@ int UIGameDictionaryDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
             int nType = data.PopInt();
             CStringW strName = data.FUN_1422b8f40();
             int nGrade = data.PopInt();
-            FUN_140f45c20(nId, nType, CStringW(strName), nGrade);
+            SetDetailInfo(nId, nType, CStringW(strName), nGrade);
         }
     }
     return 1;
@@ -248,14 +248,14 @@ int UIGameDictionaryDialog::vfunc_13()
     if (vfunc_55() != 0 || m_30.IsNull())
         return 0;
     ASDialog* pDlg = dynamic_cast<ASDialog*>(static_cast<AScript*>(m_30));
-    if (pDlg != 0 && ((class Unk_DictInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
+    if (pDlg != 0 && ((class Unk_DictInputState*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
     {
         if (GetUISwfEntityManager() != 0 && GetUISwfEntityManager()->FUN_1422d4e20(CString(m_20)) == 0)
             return 0;
         if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_inputSearch"))
         {
             if (spInput.operator->()->GetFocused() != 0)
-                FUN_140f46c90(spInput.operator->()->GetText());
+                Search(spInput.operator->()->GetText());
         }
         return 1;
     }
@@ -283,13 +283,13 @@ void UIGameDictionaryDialog::vfunc_80(void* pRequest)
         else
         {
             m_180 = L"";
-            FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
+            ShowMessageBox(BlockFormat(0x8b7), 0, 0, CStringW(L""));
         }
     }
 }
 
 // @0x140f452e0
-void UIGameDictionaryDialog::FUN_140f452e0()
+void UIGameDictionaryDialog::CollectEntries()
 {
     m_188.clear();
     if (GameDictionaryManager::GetInstance() == 0)
@@ -346,27 +346,27 @@ void UIGameDictionaryDialog::FUN_140f452e0()
 // @0x140f45870
 void UIGameDictionaryDialog::FUN_140f45870()
 {
-    MS2Ptr<ASScrollingList> spItems = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_items");
+    MS2Ptr<ASScrollingList> spItems = reinterpret_cast<UIDailyMissionDialog*>(this)->GetScrollingList("m_items");
     if (spItems.IsNull())
         return;
     spItems->FUN_1422dd1d0();
     spItems->SetSelectedIndex(-1);
-    unsigned nMask = FUN_140f46e40(m_178);
+    unsigned nMask = GetTabTypeMask(m_178);
     CStringW strUnused;
     std::list<Entry> unused;
     int bFound = 0;
     for (std::list<Entry>::iterator it = m_188.begin(); it != m_188.end(); ++it)
     {
         Entry entry = *it;
-        if ((FUN_140f46e40(entry.m_type) & nMask) != 0)
+        if ((GetTabTypeMask(entry.m_type) & nMask) != 0)
         {
             if (FUN_14083fec0(CStringW(entry.m_name), CStringW(m_180)) != -1)
             {
                 ASObj item(2);
-                item.FUN_1407cbb20("label", CStringW(entry.m_name));
-                item.FUN_1407cb9c0("id", entry.m_id);
-                item.FUN_1407cb9c0("itemGrade", entry.m_levelOrGrade);
-                FUN_140f47320(&item, "type", entry.m_type);
+                item.SetWStringMember("label", CStringW(entry.m_name));
+                item.SetIntMember("id", entry.m_id);
+                item.SetIntMember("itemGrade", entry.m_levelOrGrade);
+                SetInt(&item, "type", entry.m_type);
                 spItems->AddItem(item);
                 bFound = 1;
             }
@@ -379,7 +379,7 @@ void UIGameDictionaryDialog::FUN_140f45870()
 }
 
 // @0x140f46e40
-unsigned UIGameDictionaryDialog::FUN_140f46e40(int nTab)
+unsigned UIGameDictionaryDialog::GetTabTypeMask(int nTab)
 {
     switch (nTab)
     {
@@ -397,7 +397,7 @@ unsigned UIGameDictionaryDialog::FUN_140f46e40(int nTab)
 }
 
 // @0x140f46c90
-void UIGameDictionaryDialog::FUN_140f46c90(CStringW strSearch)
+void UIGameDictionaryDialog::Search(CStringW strSearch)
 {
     if (strSearch.IsEmpty() == 1)
     {
@@ -420,7 +420,7 @@ void UIGameDictionaryDialog::FUN_140f46c90(CStringW strSearch)
 }
 
 // @0x140f46ea0
-void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSelectFirst)
+void UIGameDictionaryDialog::OpenTabWithSearch(int nTab, CStringW strSearch, int bSelectFirst)
 {
     m_17c = bSelectFirst;
     m_180 = strSearch;
@@ -428,7 +428,7 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
         spInput->SetTextW(m_180);
     if (vfunc_55() == 0)
     {
-        if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+        if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar("m_tab"))
         {
             if (m_178 == nTab)
                 FUN_140f45870();
@@ -437,7 +437,7 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
         }
         if (m_17c != 0)
         {
-            if (MS2Ptr<ASScrollingList> spItems = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_items"))
+            if (MS2Ptr<ASScrollingList> spItems = reinterpret_cast<UIDailyMissionDialog*>(this)->GetScrollingList("m_items"))
             {
                 if (spItems->GetDataProvider()->GetLength() > 0)
                 {
@@ -452,7 +452,7 @@ void UIGameDictionaryDialog::FUN_140f46ea0(int nTab, CStringW strSearch, int bSe
 }
 
 // @0x140f45c20
-void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName, int nGrade)
+void UIGameDictionaryDialog::SetDetailInfo(int nId, int nType, CStringW strName, int nGrade)
 {
     for (std::list<Entry>::iterator it = m_188.begin(); it != m_188.end(); ++it)
     {
@@ -463,16 +463,16 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
             if (pDlg != 0)
             {
                 ASObj detail(2);
-                detail.FUN_1407cbb20("name", CStringW(entry.m_name));
-                detail.FUN_1407cb9c0("id", entry.m_id);
-                detail.FUN_1407cb9c0("itemGrade", entry.m_levelOrGrade);
-                FUN_140f47320(&detail, "type", entry.m_type);
+                detail.SetWStringMember("name", CStringW(entry.m_name));
+                detail.SetIntMember("id", entry.m_id);
+                detail.SetIntMember("itemGrade", entry.m_levelOrGrade);
+                SetInt(&detail, "type", entry.m_type);
                 switch (entry.m_type)
                 {
                 case 1:
                 {
                     CNpcData* pNpc;
-                    CNpcData* pDead = pNpc = FUN_1406cd330(entry.m_id).get();
+                    CNpcData* pDead = pNpc = FindNpcData(entry.m_id).get();
                     if (pNpc != 0)
                     {
                         unsigned nField = 0;
@@ -487,15 +487,15 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                         CStringW strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_npc_content"), strMaps, FUN_1406cd420(pNpc->GetKind()));
                         TSingleton<CReservedWordTable>::GetInstance()->ReplaceBoldWords(strContent);
                         strContent.Replace(L"#5c2b00", L"#a0a0a0");
-                        detail.FUN_1407cbb20("content", CStringW(strContent));
-                        detail.FUN_1407cba60("iconPath", CStringA(pNpc->m_strPortrait));
+                        detail.SetWStringMember("content", CStringW(strContent));
+                        detail.SetStringMember("iconPath", CStringA(pNpc->m_strPortrait));
                     }
                 }
                     break;
                 case 2:
                 {
                     CNpcData* pNpc;
-                    CNpcData* pDead = pNpc = FUN_1406cd330(entry.m_id).get();
+                    CNpcData* pDead = pNpc = FindNpcData(entry.m_id).get();
                     if (pNpc != 0)
                     {
                         int aGradeNames[9] = { 0x573, 0xaf, 0xb0, 0xb1, 0xb3, 0xb5, 0xb4, 0xb2 };
@@ -505,11 +505,11 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                             strMini = FUN_14028dfa0<CStringW>(CStringW(L"s_gamedictionary_monster_mini_info_invisible_level"), GetStringCommon(aGradeNames[nGrade]));
                         else
                             strMini = FUN_14028dfa0<unsigned short, CStringW>(CStringW(L"s_gamedictionary_monster_mini_info"), nLevel, GetStringCommon(aGradeNames[nGrade]));
-                        detail.FUN_1407cbb20("npcInfo", CStringW(strMini));
+                        detail.SetWStringMember("npcInfo", CStringW(strMini));
                         CStringW strRace = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x11, pNpc->GetRace());
                         CStringW strMaps;
                         ATL::CAtlList<unsigned> fields(10);
-                        CFieldMetaTable::GetInstance()->FUN_1406fb3a0(entry.m_id, fields);
+                        CFieldMetaTable::GetInstance()->GetNpcMapSearchFields(entry.m_id, fields);
                         if (entry.m_fieldId != 0)
                             strMaps = StringFormat<unsigned int>(L"$map:{0}$", entry.m_fieldId);
                         else
@@ -543,8 +543,8 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                             strContent = FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_gamedictionary_monster_content"), strRace, strMaps);
                         TSingleton<CReservedWordTable>::GetInstance()->ReplaceBoldWords(strContent);
                         strContent.Replace(L"#5c2b00", L"#a0a0a0");
-                        detail.FUN_1407cbb20("content", CStringW(strContent));
-                        detail.FUN_1407cba60("iconPath", CStringA(pNpc->m_strPortrait));
+                        detail.SetWStringMember("content", CStringW(strContent));
+                        detail.SetStringMember("iconPath", CStringA(pNpc->m_strPortrait));
                     }
                 }
                     break;
@@ -560,8 +560,8 @@ void UIGameDictionaryDialog::FUN_140f45c20(int nId, int nType, CStringW strName,
                             {
                                 ASTooltip tip(pOwner, 0x800, 2);
                                 tip.FUN_1409e0d40(spItem.get());
-                                FUN_140f47270(&detail, "tooltipData", tip);
-                                detail.FUN_1407cba60("iconPath", spItem->FUN_140528590());
+                                SetTooltip(&detail, "tooltipData", tip);
+                                detail.SetStringMember("iconPath", spItem->GetIconPath());
                             }
                         }
                     }

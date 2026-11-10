@@ -100,8 +100,8 @@ bool CMeshUVPicker::PickUV(NiRenderObject* pMesh, NiCamera* pCamera, float fX, f
     RenderPickPass(pMesh, pExtras, pCamera, fX, fY, true);
     Unk_UVTexel kTexel;
     ReadTexel(2, &kTexel);
-    *pU = kTexel.FUN_14135dd50(0);
-    *pV = kTexel.FUN_14135dd50(1);
+    *pU = kTexel.GetComponent(0);
+    *pV = kTexel.GetComponent(1);
     const float kEpsilon = 0.001f;
     if (*pU < kEpsilon && *pV < kEpsilon)
         return false;
@@ -119,12 +119,12 @@ bool CMeshUVPicker::PickUVAndPosition(NiRenderObject* pMesh, NiCamera* pCamera, 
     RenderPickPass(pMesh, pExtras, pCamera, fX, fY, false);
     Unk_UVTexel kTexel;
     ReadTexel(0, &kTexel);
-    *reinterpret_cast<NiPoint3*>(pPos0) = NiPoint3(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1), kTexel.FUN_14135dd50(2));
+    *reinterpret_cast<NiPoint3*>(pPos0) = NiPoint3(kTexel.GetComponent(0), kTexel.GetComponent(1), kTexel.GetComponent(2));
     ReadTexel(1, &kTexel);
-    *reinterpret_cast<NiPoint3*>(pPos1) = NiPoint3(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1), kTexel.FUN_14135dd50(2));
+    *reinterpret_cast<NiPoint3*>(pPos1) = NiPoint3(kTexel.GetComponent(0), kTexel.GetComponent(1), kTexel.GetComponent(2));
     ReadTexel(2, &kTexel);
-    *pUV = NiPoint2(kTexel.FUN_14135dd50(0), kTexel.FUN_14135dd50(1));
-    *pIndex = kTexel.FUN_14135dd50(2);
+    *pUV = NiPoint2(kTexel.GetComponent(0), kTexel.GetComponent(1));
+    *pIndex = kTexel.GetComponent(2);
     const float kEpsilon = 0.001f;
     if (pUV->x < kEpsilon && pUV->y < kEpsilon)
         return false;

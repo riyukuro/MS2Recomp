@@ -39,8 +39,8 @@ struct Unk_SptNpcNotice
     unsigned m_nNpcId;                                      // +0x00
 };
 
-int FUN_140768010(int nMax, int nMin);                      // a random number in [nMin, nMax)
-class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
+int GetRandomRange(int nMax, int nMin);                      // a random number in [nMin, nMax)
+class UIMinimapDialog* FindMinimapDialog(int);   // C3: was FindMinimapDialog
 int FUN_141276180(const CString& strName, const CString& strGroup);   // play a system sound
 __int64 FUN_140718320(const CStringW& str);                 // parse a number text
 unsigned __int64 FUN_140718370(const CStringW& str);        // parse an unsigned 64-bit number text
@@ -62,17 +62,17 @@ UISidePopupTalk::UISidePopupTalk()
 {
     m_2c = 0x1a;
     m_table.Init();
-    TSingleton<UIQuestEventDispatcher>::GetInstance()->FUN_141aa87c0(this);
-    TSingleton<UIWorldShareInfoEventDispatcher>::GetInstance()->FUN_14135fd20(this);
-    TSingleton<NotifySystem>::GetInstance()->RegisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UISidePopupTalk::FUN_140e87ec0));
+    TSingleton<UIQuestEventDispatcher>::GetInstance()->AddListener(this);
+    TSingleton<UIWorldShareInfoEventDispatcher>::GetInstance()->AddListener(this);
+    TSingleton<NotifySystem>::GetInstance()->RegisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UISidePopupTalk::OnNotifyFadeInComplete));
 }
 
 // @0x140e87040
 UISidePopupTalk::~UISidePopupTalk()
 {
-    TSingleton<UIQuestEventDispatcher>::GetInstance()->FUN_141aa8850(this);
-    TSingleton<UIWorldShareInfoEventDispatcher>::GetInstance()->FUN_14135fdb0(this);
-    TSingleton<NotifySystem>::GetInstance()->UnregisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UISidePopupTalk::FUN_140e87ec0));
+    TSingleton<UIQuestEventDispatcher>::GetInstance()->RemoveListener(this);
+    TSingleton<UIWorldShareInfoEventDispatcher>::GetInstance()->RemoveListener(this);
+    TSingleton<NotifySystem>::GetInstance()->UnregisterNotify(L"NotifyFadeInComplete", Delegate<void(NotifyObject*)>(this, &UISidePopupTalk::OnNotifyFadeInComplete));
 }
 
 // @0x140e87260
@@ -88,7 +88,7 @@ void UISidePopupTalk::OnLoadComplete()
     UIHeadUpDisplay::OnLoadComplete();
     m_voices.RemoveAll();
     for (size_t i = 0; i < m_pending.GetCount(); i++)
-        FUN_140e88010(m_pending[i]);
+        AddPopup(m_pending[i]);
     m_pending.RemoveAll();
 }
 MS2_REPLACE_METHOD(0x140E872B0, UISidePopupTalk, OnLoadComplete, 181, 0x318E81AB);
@@ -115,7 +115,7 @@ int UISidePopupTalk::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         {
             int nKind = args.PopInt();
             if (nKind == 1)
-                FUN_140e886f0(1);
+                SetMinimapAndQuestGuideVisible(1);
         }
         return 1;
     }
@@ -189,7 +189,7 @@ MS2_REPLACE_METHOD(0x140E878D0, UISidePopupTalk, vfunc_2, 24, 0xCA049B49);
 void UISidePopupTalk::vfunc_3()
 {
     UIHeadUpDisplay::vfunc_3();
-    FUN_140e886f0(1);
+    SetMinimapAndQuestGuideVisible(1);
     for (POSITION pos = m_voices.GetStartPosition(); pos != NULL; m_voices.GetNext(pos))
     {
         unsigned& nEffect = m_voices.GetValueAt(pos);
@@ -201,7 +201,7 @@ MS2_REPLACE_METHOD(0x140E878F0, UISidePopupTalk, vfunc_3, 167, 0xC9B74047);
 
 
 // @0x140e879a0
-void UISidePopupTalk::FUN_140e879a0(MS2Ptr<SidePopupTalkParam> spParam)
+void UISidePopupTalk::ShowPopup(MS2Ptr<SidePopupTalkParam> spParam)
 {
     if (m_30.IsNull())
     {
@@ -210,7 +210,7 @@ void UISidePopupTalk::FUN_140e879a0(MS2Ptr<SidePopupTalkParam> spParam)
     }
     else
     {
-        FUN_140e88010(spParam);
+        AddPopup(spParam);
     }
 }
 
@@ -218,15 +218,15 @@ void UISidePopupTalk::FUN_140e879a0(MS2Ptr<SidePopupTalkParam> spParam)
 void UISidePopupTalk::vfunc_o178_1(void* p)
 {
     {
-        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_ACCEPT, static_cast<CQuest*>(p)->FUN_140bfc580());
+        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_ACCEPT, static_cast<CQuest*>(p)->GetQuestId());
         if (spParam.get())
-            FUN_140e879a0(spParam);
+            ShowPopup(spParam);
     }
     if (static_cast<CQuest*>(p)->IsComplete())
     {
-        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_SATISFIED, static_cast<CQuest*>(p)->FUN_140bfc580());
+        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_SATISFIED, static_cast<CQuest*>(p)->GetQuestId());
         if (spParam.get())
-            FUN_140e879a0(spParam);
+            ShowPopup(spParam);
     }
 }
 MS2_REPLACE_METHOD_VIA(0x140E87A40, UISidePopupTalk, UIQuestEventListener, vfunc_o178_1, 337, 0x5F70B326);
@@ -235,15 +235,15 @@ MS2_REPLACE_METHOD_VIA(0x140E87A40, UISidePopupTalk, UIQuestEventListener, vfunc
 void UISidePopupTalk::vfunc_o178_3(void* p)
 {
     {
-        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_PROGRESS, static_cast<CQuest*>(p)->FUN_140bfc580());
+        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_PROGRESS, static_cast<CQuest*>(p)->GetQuestId());
         if (spParam.get())
-            FUN_140e879a0(spParam);
+            ShowPopup(spParam);
     }
     if (static_cast<CQuest*>(p)->IsComplete())
     {
-        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_SATISFIED, static_cast<CQuest*>(p)->FUN_140bfc580());
+        MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_SATISFIED, static_cast<CQuest*>(p)->GetQuestId());
         if (spParam.get())
-            FUN_140e879a0(spParam);
+            ShowPopup(spParam);
     }
 }
 MS2_REPLACE_METHOD_VIA(0x140E87BA0, UISidePopupTalk, UIQuestEventListener, vfunc_o178_3, 337, 0x4B164C3C);
@@ -251,9 +251,9 @@ MS2_REPLACE_METHOD_VIA(0x140E87BA0, UISidePopupTalk, UIQuestEventListener, vfunc
 // @0x140e87d00
 void UISidePopupTalk::vfunc_o178_2(void* p)
 {
-    MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_COMPLETE, static_cast<CQuest*>(p)->FUN_140bfc580());
+    MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_QUEST_COMPLETE, static_cast<CQuest*>(p)->GetQuestId());
     if (spParam.get())
-        FUN_140e879a0(spParam);
+        ShowPopup(spParam);
 }
 MS2_REPLACE_METHOD_VIA(0x140E87D00, UISidePopupTalk, UIQuestEventListener, vfunc_o178_2, 145, 0xE893A71B);
 
@@ -266,24 +266,24 @@ void UISidePopupTalk::vfunc_1(__int64 n, int a, int b)
     MS2Ptr<SidePopupTalkParam> spParam = m_table.Find(SIDEPOPUP_EVENT_BOSS_REGEN, reinterpret_cast<const Unk_SptNpcNotice*>(n)->m_nNpcId);
     if (spParam.get())
     {
-        FUN_140e879a0(spParam);
+        ShowPopup(spParam);
     }
     else
     {
         UIWhisperNotifyDialog* pDialog = Unk_SptGetUI<UIWhisperNotifyDialog>(0x4e5e);
         if (pDialog != 0)
-            pDialog->FUN_141b52570(reinterpret_cast<const Unk_WhisperInfo*>(n), a, b);
+            pDialog->AddSystemWhisper(reinterpret_cast<const Unk_WhisperInfo*>(n), a, b);
     }
 }
 
 // @0x140e87ec0
-void UISidePopupTalk::FUN_140e87ec0(NotifyObject* pNotify)
+void UISidePopupTalk::OnNotifyFadeInComplete(NotifyObject* pNotify)
 {
     MS2Ptr<SidePopupTalkParam> spParam = m_table.FindByMap(TSingleton<WorldService>::GetInstance()->FUN_141bd3060());
     if (spParam.get())
-        FUN_140e879a0(spParam);
+        ShowPopup(spParam);
 }
-MS2_REPLACE_METHOD(0x140E87EC0, UISidePopupTalk, FUN_140e87ec0, 138, 0x3BC35300);
+MS2_REPLACE_METHOD(0x140E87EC0, UISidePopupTalk, OnNotifyFadeInComplete, 138, 0x3BC35300);
 
 // @0x140e87f50
 void UISidePopupTalk::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& strMethod, ASData* pArgs)
@@ -300,12 +300,12 @@ MS2_REPLACE_METHOD(0x140E87F50, UISidePopupTalk, vfunc_45, 181, 0xC6A4F5C2);
 
 
 // @0x140e88010
-void UISidePopupTalk::FUN_140e88010(MS2Ptr<SidePopupTalkParam> spParam)
+void UISidePopupTalk::AddPopup(MS2Ptr<SidePopupTalkParam> spParam)
 {
     CStringW strMsg;
     if (spParam->m_script.size() > 0)
     {
-        int nIndex = FUN_140768010(spParam->m_script.size(), 0);
+        int nIndex = GetRandomRange(spParam->m_script.size(), 0);
         strMsg = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x44, spParam->m_script[nIndex]);
     }
     else
@@ -316,28 +316,28 @@ void UISidePopupTalk::FUN_140e88010(MS2Ptr<SidePopupTalkParam> spParam)
 
     ASObj obj(2);
     obj.FUN_140e88a10("type", spParam->m_nKind);
-    obj.FUN_1407cba60("movie", spParam->m_strName);
-    obj.FUN_1407cbb20("msg", strMsg);
-    obj.FUN_1407cba60("illust", spParam->m_strIcon);
+    obj.SetStringMember("movie", spParam->m_strName);
+    obj.SetWStringMember("msg", strMsg);
+    obj.SetStringMember("illust", spParam->m_strIcon);
     obj.FUN_1409c4990("duration", spParam->m_nNpcId);
-    obj.FUN_1407cba60("voice", spParam->m_strSound);
-    obj.FUN_1407cba60("sound", spParam->m_strScript);
-    obj.FUN_1407cba60("mapTile", spParam->m_str68);
-    obj.FUN_1407cbb20("mapName", spParam->m_str70);
-    obj.FUN_1407cba60("expire", spParam->m_str78);
-    obj.FUN_1407cbb20("userValue", spParam->m_strUserValue);
+    obj.SetStringMember("voice", spParam->m_strSound);
+    obj.SetStringMember("sound", spParam->m_strScript);
+    obj.SetStringMember("mapTile", spParam->m_str68);
+    obj.SetWStringMember("mapName", spParam->m_str70);
+    obj.SetStringMember("expire", spParam->m_str78);
+    obj.SetWStringMember("userValue", spParam->m_strUserValue);
     for (POSITION pos = spParam->m_extra.GetStartPosition(); pos != NULL; spParam->m_extra.GetNext(pos))
     {
         CStringA strName = spParam->m_extra.GetKeyAt(pos);
         CStringW strValue = spParam->m_extra.GetValueAt(pos);
-        obj.FUN_1407cbb20(strName, strValue);
+        obj.SetWStringMember(strName, strValue);
     }
     Unk_SoundState* pSound = TSingleton<CGameOption>::GetInstance()->FUN_140d13c70();
     if (pSound != 0)
         obj.SetMemberFloat("volume", pSound->m_b00 ? 0.0f : pSound->GetMovieVolume());
     m_30->Invoke("addPopup", obj);
     if (spParam->m_nKind == 1)
-        FUN_140e886f0(0);
+        SetMinimapAndQuestGuideVisible(0);
 }
 
 // @0x140e88690
@@ -353,9 +353,9 @@ int UISidePopupTalk::FUN_140e88690(unsigned nId)
 MS2_REPLACE_METHOD(0x140E88690, UISidePopupTalk, FUN_140e88690, 90, 0x43DD4ACF);
 
 // @0x140e886f0
-void UISidePopupTalk::FUN_140e886f0(int bVisible)
+void UISidePopupTalk::SetMinimapAndQuestGuideVisible(int bVisible)
 {
-    UISwfEntity* pMinimap = ((class UISwfEntity*)FUN_140c9b540(0x4e29));
+    UISwfEntity* pMinimap = ((class UISwfEntity*)FindMinimapDialog(0x4e29));
     if (pMinimap != 0)
     {
         if (pMinimap->vfunc_9() != bVisible)
@@ -368,7 +368,7 @@ void UISidePopupTalk::FUN_140e886f0(int bVisible)
             pGuide->vfunc_8(bVisible);
     }
 }
-MS2_REPLACE_METHOD(0x140E886F0, UISidePopupTalk, FUN_140e886f0, 148, 0x698C3076);
+MS2_REPLACE_METHOD(0x140E886F0, UISidePopupTalk, SetMinimapAndQuestGuideVisible, 148, 0x698C3076);
 
 // The "type" member of a popup (an int through ASData; the COMDAT is this unit's).
 // @0x140e88a10

@@ -25,15 +25,15 @@
 extern Unk_Inventory g_143ab2a90;                       // the player's inventory
 
 // The pet system singleton (0x140535320): the uid of the item the pet currently uses.
-class Unk_BreakSelected* FUN_140535320();   // C3: the CPetManager (calls cast back)
+class Unk_BreakSelected* GetPetManager();   // C3: the CPetManager (calls cast back)
 
 // Registry of named bags/slots (GFx bind data).
 class Unk_NotifyContext   // C3: static member view for the former free stand-ins
 {
 public:
-    static class NotifyContext::BindData* FUN_1422c8e90(CString const&);
-    static void FUN_1422c8f10(CString const&, class NotifyContext::BindData*);
-    static void FUN_1422c8f70(CString const&);
+    static class NotifyContext::BindData* FindBinding(CString const&);
+    static void RegisterBinding(CString const&, class NotifyContext::BindData*);
+    static void UnregisterBinding(CString const&);
 };
 
 PetCardSlotBag* AsPetCardSlotBag(NotifyContext::BindData* p);
@@ -72,7 +72,7 @@ int PetCardSlot::vfunc_0(void* p)
     ASTooltip tip(pPlayer, nFlags, 2);
     if (tip.FUN_1409e0d40(spItem.get()) != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -91,7 +91,7 @@ int PetCardSlot::vfunc_8(void* p)
     if (slot.FUN_1409c3860(spItem.get(), pPlayer, 0x10401) != 0)
     {
         slot.DisableDrag();
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -113,7 +113,7 @@ unsigned __int64 PetCardSlot::GetItemUid()
 #define PET_MIN(a, b) ((a) < (b) ? (a) : (b))
 
 // @0x140b773a0
-void FUN_140b773a0(const CString& strName, const ATL::CAtlArray<unsigned __int64>& uids)
+void CreatePetCardSlotBag(const CString& strName, const ATL::CAtlArray<unsigned __int64>& uids)
 {
     PetCardSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) PetCardSlotBag(strName, uids);
     if (pBag)
@@ -122,18 +122,18 @@ void FUN_140b773a0(const CString& strName, const ATL::CAtlArray<unsigned __int64
         int nCap = g_143ab2a90.GetSlotCount(9);
         int nSlots = PET_MIN(PET_MAX((int)uids.GetCount(), 15), nCap);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x140b77500
 void FUN_140b77500(const CString& strName)
 {
-    PetCardSlotBag* pBag = AsPetCardSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
+    PetCardSlotBag* pBag = AsPetCardSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -153,7 +153,7 @@ PetCardSlotBag::~PetCardSlotBag()
 CString PetCardSlotBag::vfunc_15(int nIndex)
 {
     CString str;
-    str.Format("%s.PETCARD%d", (const char*)FUN_1422c89f0(), (unsigned)nIndex);
+    str.Format("%s.PETCARD%d", (const char*)GetName(), (unsigned)nIndex);
     return str;
 }
 
@@ -193,7 +193,7 @@ int PetConsumeSlot::vfunc_0(void* p)
     ASTooltip tip(pPlayer, nFlags, 2);
     if (tip.FUN_1409e0d40(spItem.get()) != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -215,7 +215,7 @@ int PetConsumeSlot::vfunc_8(void* p)
         slot.SetItemSeal(IsUnavailable());
         if (1 < (unsigned)m_nCount)
             slot.SetItemCountValue(m_nCount);
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -243,13 +243,13 @@ int PetConsumeSlot::IsUnavailable()
         return 1;
     if (((CItem*)spItem)->FUN_140528ca0() == 1)
         return 1;
-    if (reinterpret_cast<CPetManager*>(FUN_140535320())->GetSummonUid() == (__int64)m_nItemUid)
+    if (reinterpret_cast<CPetManager*>(GetPetManager())->GetSummonUid() == (__int64)m_nItemUid)
         return 1;
     return 0;
 }
 
 // @0x140b77cf0
-void FUN_140b77cf0(const CString& strName, const ATL::CAtlArray<PetConsumeSlotBag::Entry>& entries)
+void CreatePetConsumeSlotBag(const CString& strName, const ATL::CAtlArray<PetConsumeSlotBag::Entry>& entries)
 {
     PetConsumeSlotBag* pBag = new (efd::MemHint(efd::MemHint::NONE)) PetConsumeSlotBag(strName, entries);
     if (pBag)
@@ -258,18 +258,18 @@ void FUN_140b77cf0(const CString& strName, const ATL::CAtlArray<PetConsumeSlotBa
         int nCap = g_143ab2a90.GetSlotCount(9);
         int nSlots = PET_MIN(PET_MAX((int)entries.GetCount(), 15), nCap);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nSlots);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x140b77e50
 void FUN_140b77e50(const CString& strName)
 {
-    PetConsumeSlotBag* pBag = AsPetConsumeSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
+    PetConsumeSlotBag* pBag = AsPetConsumeSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -289,7 +289,7 @@ PetConsumeSlotBag::~PetConsumeSlotBag()
 CString PetConsumeSlotBag::vfunc_15(int nIndex)
 {
     CString str;
-    str.Format("%s.PETCARD%d", (const char*)FUN_1422c89f0(), (unsigned)nIndex);
+    str.Format("%s.PETCARD%d", (const char*)GetName(), (unsigned)nIndex);
     return str;
 }
 
@@ -329,7 +329,7 @@ MS2_EMIT_CRT_MEMMOVE_S();
 MS2_REPLACE_METHOD(0x140B771F0, PetCardSlot, vfunc_8, 304, 0x5907B6EF);
 MS2_REPLACE_METHOD(0x140B77330, PetCardSlot, vfunc_25, 72, 0x64D77ADE);
 MS2_REPLACE_METHOD(0x140B77380, PetCardSlot, GetItemUid, 18, 0xEE8FE4C1);
-MS2_REPLACE(0x140B773A0, FUN_140b773a0, 342, 0xC592DD3A);
+MS2_REPLACE(0x140B773A0, CreatePetCardSlotBag, 342, 0xC592DD3A);
 MS2_REPLACE(0x140B77500, FUN_140b77500, 65, 0x7D3CD8AC);
 MS2_REPLACE_METHOD(0x140B77610, PetCardSlotBag, vfunc_15, 175, 0x35FA3E2F);
 MS2_REPLACE_METHOD(0x140B776D0, PetCardSlotBag, vfunc_16, 271, 0x037E7E8A);
@@ -337,7 +337,7 @@ MS2_REPLACE_METHOD(0x140B779F0, PetConsumeSlot, vfunc_8, 374, 0x570CE11F);
 MS2_REPLACE_METHOD(0x140B77B70, PetConsumeSlot, vfunc_25, 72, 0x787A76A4);
 MS2_REPLACE_METHOD(0x140B77BC0, PetConsumeSlot, GetItemUid, 18, 0xB95413A9);
 MS2_REPLACE_METHOD(0x140B77BE0, PetConsumeSlot, IsUnavailable, 265, 0xF8714119);
-MS2_REPLACE(0x140B77CF0, FUN_140b77cf0, 342, 0x02E66DF3);
+MS2_REPLACE(0x140B77CF0, CreatePetConsumeSlotBag, 342, 0x02E66DF3);
 MS2_REPLACE(0x140B77E50, FUN_140b77e50, 65, 0xA753BCAF);
 MS2_REPLACE_METHOD(0x140B77F60, PetConsumeSlotBag, vfunc_15, 175, 0xC812C402);
 MS2_REPLACE_METHOD(0x140B78020, PetConsumeSlotBag, vfunc_16, 299, 0x8D4F8608);

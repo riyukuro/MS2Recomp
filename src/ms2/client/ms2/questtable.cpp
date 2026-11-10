@@ -27,8 +27,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 class Unk_140166420 : public CFileSystem { };
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
+CString ToCString(const char* psz, int n);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv); a local copy stays false -> "is not initialized" box
 bool CQuestTable::s_bInit;
@@ -48,9 +48,9 @@ CQuestTable::~CQuestTable()
 // @0x1416e3910
 void CQuestTable::LoadQuestToField()
 {
-    CString strPath = FUN_14071a5b0("Table", "questToFieldTable.xml");
+    CString strPath = GetXmlPath("Table", "questToFieldTable.xml");
     TiXmlDocument doc;
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -91,7 +91,7 @@ void CQuestTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CQuestTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CQuestTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

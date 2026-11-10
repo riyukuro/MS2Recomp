@@ -49,7 +49,7 @@ template <> inline MS2Ptr<ASLabel> UISwfEntity::GetChild<ASLabel>(const CString&
 UIOtherPetSystemDialog::UIOtherPetSystemDialog()
     : m_1e8(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140e6d450
@@ -59,7 +59,7 @@ CString UIOtherPetSystemDialog::GetTypeName()
 }
 
 // @0x140e6d4a0
-void UIOtherPetSystemDialog::FUN_140e6d4a0(int nOwnerId, MS2Ptr<CItem> spPet)
+void UIOtherPetSystemDialog::ShowPet(int nOwnerId, MS2Ptr<CItem> spPet)
 {
     if (spPet == 0)
         return;

@@ -23,5 +23,5 @@ void Unk_MinimapPtrReleaseAnchor(UIMinimapDialog* pDialog, UIMinimapEntity* pEnt
     MS2Ptr<UIMinimapEntityTaxi> spTaxi(pTaxi);
     Unk_AlignInfoPtr<UICommon::CAlignmentInfo> spAlign(pAlign);
     Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cbDialog(pDialog, &UIMinimapDialog::FUN_141a456c0);
-    Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cbEntity(pEntity, &UIMinimapEntity::FUN_141a32120);
+    Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cbEntity(pEntity, &UIMinimapEntity::OnUserFunction);
 }

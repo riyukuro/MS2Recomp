@@ -76,10 +76,10 @@ public:
     virtual int vfunc_65();                                                         // 65 0x141946cf0
 
     // 0x140e52670 check box child lookup = UISwfEntity::GetChild<ASCheckBox> (uiitempetboxdialog.cpp)
-    void FUN_1419475a0(int bHdr);                                                  // HDR on/off
-    void FUN_141947600(int bShimmer);                                              // shimmer on/off
-    void FUN_141947710(int bMirror);                                               // mirror on/off
-    void FUN_141947770(int nShadow);                                                // shadow quality
+    void SetDisplayHdr(int bHdr);                                                  // HDR on/off
+    void SetDisplayShimmer(int bShimmer);                                              // shimmer on/off
+    void SetDisplayMirror(int bMirror);                                               // mirror on/off
+    void SetDisplayShadow(int nShadow);                                                // shadow quality
 };
 
 // @0x141946c10
@@ -113,11 +113,11 @@ MS2_REPLACE_METHOD(0x141946cf0, UIGraphicOptionDialog, vfunc_65, 37, 0xE40486DA)
 int UIGraphicOptionDialog::vfunc_5()
 {
     if (MS2Ptr<ASCheckBox> spHdr = GetChild<ASCheckBox>("m_hdr"))
-        spHdr->FUN_1422ce090(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bHdr);
+        spHdr->SetSelected(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bHdr);
     if (MS2Ptr<ASCheckBox> spShimmer = GetChild<ASCheckBox>("m_shimmer"))
-        spShimmer->FUN_1422ce090(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bShimmer);
+        spShimmer->SetSelected(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bShimmer);
     if (MS2Ptr<ASCheckBox> spMirror = GetChild<ASCheckBox>("m_mirror"))
-        spMirror->FUN_1422ce090(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bMirror);
+        spMirror->SetSelected(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bMirror);
     if (MS2Ptr<ASDropdownMenu> spShadow = GetChild<ASDropdownMenu>("m_shadow"))
         spShadow->SetSelectedIndex(reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_nShadow);
     return UIDialog::vfunc_5();
@@ -151,25 +151,25 @@ int UIGraphicOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     ASData data;
     if (_stricmp("OnDisplayHdr", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs)) {
-            FUN_1419475a0(data.PopBool());
+            SetDisplayHdr(data.PopBool());
             return 1;
         }
     }
     else if (_stricmp("OnDisplayShimmer", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs)) {
-            FUN_141947600(data.PopBool());
+            SetDisplayShimmer(data.PopBool());
             return 1;
         }
     }
     else if (_stricmp("OnDisplayMirror", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs)) {
-            FUN_141947710(data.PopBool());
+            SetDisplayMirror(data.PopBool());
             return 1;
         }
     }
     else if (_stricmp("OnDisplayShadow", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs)) {
-            FUN_141947770(data.PopInt());
+            SetDisplayShadow(data.PopInt());
             return 1;
         }
     }
@@ -185,15 +185,15 @@ int UIGraphicOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
 MS2_REPLACE_METHOD(0x141947290, UIGraphicOptionDialog, vfunc_28, 766, 0x22DD0AE9);
 
 // @0x1419475a0
-void UIGraphicOptionDialog::FUN_1419475a0(int bHdr)
+void UIGraphicOptionDialog::SetDisplayHdr(int bHdr)
 {
     if (reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bHdr != bHdr)
         reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bHdr = bHdr ? true : false;
 }
-MS2_REPLACE_METHOD(0x1419475a0, UIGraphicOptionDialog, FUN_1419475a0, 81, 0x89AE58C7);
+MS2_REPLACE_METHOD(0x1419475a0, UIGraphicOptionDialog, SetDisplayHdr, 81, 0x89AE58C7);
 
 // @0x141947600
-void UIGraphicOptionDialog::FUN_141947600(int bShimmer)
+void UIGraphicOptionDialog::SetDisplayShimmer(int bShimmer)
 {
     if (reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bShimmer != bShimmer) {
         reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bShimmer = bShimmer ? true : false;
@@ -208,23 +208,23 @@ void UIGraphicOptionDialog::FUN_141947600(int bShimmer)
         }
     }
 }
-MS2_REPLACE_METHOD(0x141947600, UIGraphicOptionDialog, FUN_141947600, 251, 0x88436EBF);
+MS2_REPLACE_METHOD(0x141947600, UIGraphicOptionDialog, SetDisplayShimmer, 251, 0x88436EBF);
 
 // @0x141947710
-void UIGraphicOptionDialog::FUN_141947710(int bMirror)
+void UIGraphicOptionDialog::SetDisplayMirror(int bMirror)
 {
     if (reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bMirror != bMirror)
         reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_bMirror = bMirror ? true : false;
 }
-MS2_REPLACE_METHOD(0x141947710, UIGraphicOptionDialog, FUN_141947710, 81, 0xA404FEDE);
+MS2_REPLACE_METHOD(0x141947710, UIGraphicOptionDialog, SetDisplayMirror, 81, 0xA404FEDE);
 
 // @0x141947770
-void UIGraphicOptionDialog::FUN_141947770(int nShadow)
+void UIGraphicOptionDialog::SetDisplayShadow(int nShadow)
 {
     if (reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_nShadow != nShadow)
         reinterpret_cast<Unk_GoGraphics*>(reinterpret_cast<Unk_AeGameOption*>(TSingleton<CGameOption>::GetInstance())->GetGraphicOption())->m_nShadow = nShadow;
 }
-MS2_REPLACE_METHOD(0x141947770, UIGraphicOptionDialog, FUN_141947770, 60, 0x8A6148B2);
+MS2_REPLACE_METHOD(0x141947770, UIGraphicOptionDialog, SetDisplayShadow, 60, 0x8A6148B2);
 
 // @0x141947800
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);

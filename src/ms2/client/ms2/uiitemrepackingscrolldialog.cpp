@@ -81,10 +81,10 @@ public:
     void FUN_140da5180(int nPacket, Delegate<void(CInPacket&)> fn);     // register a packet handler
     void FUN_140da51e0(int nPacket, Delegate<void(CInPacket&)> fn);     // unregister it
 };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 
 class Unk_RpTable;
-Unk_RpTable* FUN_140f64150();
+Unk_RpTable* GetItemRePackingScrollTable();
 class CItemRePackingScrollTable;
 
 struct Unk_RpItemData { char m_pad_00[0x2b0]; ItemFunctionArgs m_args; };   // CItemData: the <function> parameters at +0x2b0
@@ -95,7 +95,7 @@ template<class T> T* Unk_BreakDialog(int);   // C3: was Unk_RpInvDlg* FUN_140534
 class CMsgBoxData : public CPtred
 {
 public:
-    void FUN_141a01600(__int64 n);
+    void SetItemUid(__int64 n);
     void FUN_141a024a0(int n);
     void FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, int nA, int nB, int nC, int nD, int nE);
     void SetButtonLabelIds(int nA, int nB, int nC);
@@ -107,7 +107,7 @@ CStringW FUN_141b71910(__int64 nValue);
 CStringW GetStringCommon(int nStringId);
 CStringW FUN_14183e9c0(CStringW strName, int nRank);
 void FUN_1412751b0(const CStringW& text, int nA);
-void FUN_1412751f0(const CStringW& text, int nA, int nB);
+void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void FUN_1412752d0(const CStringW& text, int nA);
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int n);
 ItemScrollSlot* FUN_140d42c30(NotifyContext::BindData* p);
@@ -167,7 +167,7 @@ CStringW FUN_140f63810(int nStringId, const unsigned& nA, const int& nB)
 }
 
 // @0x140f64150
-Unk_RpTable* FUN_140f64150()
+Unk_RpTable* GetItemRePackingScrollTable()
 {
     return reinterpret_cast<Unk_RpTable*>(TSingleton<CItemRePackingScrollTable>::s_instance);
 }
@@ -178,15 +178,15 @@ Unk_RpTable* FUN_140f64150()
 UIItemRePackingScrollDialog::UIItemRePackingScrollDialog()
     : m_strSlot(), m_nOwner(0), m_spItem(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_164 = 1;
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::FUN_140f62020));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::OnRePackingScrollPacket));
 }
 
 // @0x140f60f50
 UIItemRePackingScrollDialog::~UIItemRePackingScrollDialog()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::FUN_140f62020));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0xe4, Delegate<void(CInPacket&)>(this, &UIItemRePackingScrollDialog::OnRePackingScrollPacket));
 }
 
 // @0x140f61050
@@ -216,7 +216,7 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
         return;
     if (MS2Ptr<ASTextField> spTitle = GetChild<ASTextField>("m_title"))
         spTitle->SetTextW(static_cast<CItem*>(spScroll)->FUN_140527b10());
-    MS2Ptr<CItemRePackingScrollData> spRow = FUN_140f62a90(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
+    MS2Ptr<CItemRePackingScrollData> spRow = GetRePackingScrollData(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
     if (spRow == 0)
         return;
     CStringW strLevel;
@@ -248,9 +248,9 @@ void UIItemRePackingScrollDialog::OnLoadComplete()
         break;
     }
     ASObj obj(2);
-    obj.FUN_1407cbb20("itemGUID", FUN_141b71910(0));
-    obj.FUN_1407cba60("bindID", CString(m_strSlot));
-    obj.FUN_1407cbb20("scrollDesc", FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(strDesc), strLevel, strRanks, strLimit));
+    obj.SetWStringMember("itemGUID", FUN_141b71910(0));
+    obj.SetStringMember("bindID", CString(m_strSlot));
+    obj.SetWStringMember("scrollDesc", FUN_14028dfa0<CStringW, CStringW, CStringW>(CStringW(strDesc), strLevel, strRanks, strLimit));
     m_30->Invoke("setData", obj);
 }
 
@@ -277,7 +277,7 @@ int UIItemRePackingScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
                 FUN_140f62710(7);
                 return 1;
             }
-            int nHave = g_143ab2a90.FUN_140a5f180(static_cast<CItem*>(spScroll)->FUN_1405276c0(), 0);
+            int nHave = g_143ab2a90.FUN_140a5f180(static_cast<CItem*>(spScroll)->GetItemId(), 0);
             int nNeed = static_cast<CItem*>(spTarget)->GetRepackConsumeCount();
             if (nHave < nNeed)
             {
@@ -297,7 +297,7 @@ int UIItemRePackingScrollDialog::vfunc_28(const char* szMethod, const Scaleform:
 // @0x140f61e70
 int UIItemRePackingScrollDialog::vfunc_65()
 {
-    reinterpret_cast<CItemRePackingScrollTable*>(FUN_140f64150())->Reload();
+    reinterpret_cast<CItemRePackingScrollTable*>(GetItemRePackingScrollTable())->Reload();
     return UIDialog::vfunc_65();
 }
 
@@ -335,7 +335,7 @@ int UIItemRePackingScrollDialog::vfunc_48()
 }
 
 // @0x140f62020
-void UIItemRePackingScrollDialog::FUN_140f62020(CInPacket& packet)
+void UIItemRePackingScrollDialog::OnRePackingScrollPacket(CInPacket& packet)
 {
     int nCode = packet.ReadUInt8();
     if (nCode == 0)
@@ -373,13 +373,13 @@ void UIItemRePackingScrollDialog::FUN_140f62200(CInPacket& packet)
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (!spItem)
         return;
-    static_cast<CItem*>(spItem)->FUN_140524eb0(static_cast<CInputStream&>(packet));
+    static_cast<CItem*>(spItem)->ReadFromStream(static_cast<CInputStream&>(packet));
     UIInventoryDialog* pInven = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInven != 0)
         pInven->FUN_141999e00();
     if (MS2Ptr<CMsgBoxData> box = FUN_140d73e40(0x11, 0x967, static_cast<IMessageListener*>(this), CStringW(L"repacking_ok")))
     {
-        box->FUN_141a01600(nUid);
+        box->SetItemUid(nUid);
         box->FUN_141a024a0(0);
         box->FUN_141a01ee0(spItem, static_cast<CItem*>(spItem)->FUN_140527b10(), 1, 0, -1, -1, 1);
         box->SetButtonLabelIds(0x475, 0, 0);
@@ -408,7 +408,7 @@ void UIItemRePackingScrollDialog::FUN_140f625e0(CInPacket& packet)
         FUN_140f62710(nCode);
         break;
     default:
-        FUN_1412751f0(FUN_140f634e0(CStringW(L"s_item_repacking_scroll_error_server_default"), nFlag, reinterpret_cast<const Unk_RpError&>(nCode)), 1, 1);
+        ShowSystemNotice(FUN_140f634e0(CStringW(L"s_item_repacking_scroll_error_server_default"), nFlag, reinterpret_cast<const Unk_RpError&>(nCode)), 1, 1);
     }
 }
 
@@ -446,14 +446,14 @@ void UIItemRePackingScrollDialog::FUN_140f628d0(MS2Ptr<CItem> spItem)
 // @0x140f62930
 ItemScrollSlot* UIItemRePackingScrollDialog::FUN_140f62930(CString strName)
 {
-    ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FUN_1422c8e90(strName));
+    ItemScrollSlot* pSlot = FUN_140d42c30(Unk_NotifyContext::FindBinding(strName));
     if (pSlot != 0)
         return pSlot;
     return 0;
 }
 
 // @0x140f629b0
-bool UIItemRePackingScrollDialog::FUN_140f629b0(MS2Ptr<CItem> spItem)
+bool UIItemRePackingScrollDialog::SetSlotItem(MS2Ptr<CItem> spItem)
 {
     ItemScrollSlot* pSlot = FUN_140f62930(CString(m_strSlot));
     if (pSlot != 0)
@@ -466,12 +466,12 @@ bool UIItemRePackingScrollDialog::FUN_140f629b0(MS2Ptr<CItem> spItem)
 }
 
 // @0x140f62a90
-MS2Ptr<CItemRePackingScrollData> UIItemRePackingScrollDialog::FUN_140f62a90(MS2Ptr<CItemData> spData)
+MS2Ptr<CItemRePackingScrollData> UIItemRePackingScrollDialog::GetRePackingScrollData(MS2Ptr<CItemData> spData)
 {
     if (spData == 0)
         return MS2Ptr<CItemRePackingScrollData>(0);
     unsigned nId = reinterpret_cast<Unk_RpItemData*>(spData.operator->())->m_args.FUN_1408d1f60(0, 0);
-    MS2Ptr<CItemRePackingScrollData> spRow = reinterpret_cast<CItemRePackingScrollTable*>(FUN_140f64150())->GetData(nId);
+    MS2Ptr<CItemRePackingScrollData> spRow = reinterpret_cast<CItemRePackingScrollTable*>(GetItemRePackingScrollTable())->GetData(nId);
     return spRow;
 }
 
@@ -498,7 +498,7 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
         MS2Ptr<CItem> spScroll = g_143ab2a90.FindItemByUid(m_nOwner);
         if (spScroll == 0 || static_cast<CItem*>(spScroll)->FUN_140527840() == 0)
             return;
-        MS2Ptr<CItemRePackingScrollData> spRow = FUN_140f62a90(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
+        MS2Ptr<CItemRePackingScrollData> spRow = GetRePackingScrollData(MS2Ptr<CItemData>(reinterpret_cast<CItemData*>(static_cast<CItem*>(spScroll)->FUN_140527840())));
         int nError = CItemRePackingScrollTable::Check(spItem, spRow);
         if (nError != 0)
         {
@@ -509,15 +509,15 @@ void UIItemRePackingScrollDialog::FUN_140f62be0(ItemScrollSlot& slot, DragSlot* 
         slot.vfunc_10();
         CStringW strName = static_cast<CItem*>(spItem)->FUN_140528160();
         int nNeed = static_cast<CItem*>(spItem)->GetRepackConsumeCount();
-        unsigned nScrollId = static_cast<CItem*>(spScroll)->FUN_1405276c0();
+        unsigned nScrollId = static_cast<CItem*>(spScroll)->GetItemId();
         CStringW strDesc = FUN_140f63810(0x966, nScrollId, nNeed);
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strDesc);
         ASObj obj(2);
-        obj.FUN_1407cbb20("itemName", CStringW(strName));
-        obj.FUN_1407cbb20("itemGUID", FUN_141b71910(static_cast<CItem*>(spItem)->GetItemUid()));
-        obj.FUN_1407cbb20("desc", CStringW(strDesc));
+        obj.SetWStringMember("itemName", CStringW(strName));
+        obj.SetWStringMember("itemGUID", FUN_141b71910(static_cast<CItem*>(spItem)->GetItemUid()));
+        obj.SetWStringMember("desc", CStringW(strDesc));
         m_spItem = spItem;
-        m_30->Invoke("selectItem", obj.FUN_1422bb870());
+        m_30->Invoke("selectItem", obj.GetValue());
     }
 }
 

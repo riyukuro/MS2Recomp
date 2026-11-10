@@ -34,13 +34,13 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // IMessageListener 0 0x141943010 message box answers
 
     void FUN_141943480();                                           // pick the simple (reduced) mode, enable the pages, setTabComponent
-    void FUN_1419436e0(int nTab);                                   // open a tab: page vfunc_3(1)
+    void OpenTab(int nTab);                                   // open a tab: page vfunc_3(1)
     void OnCloseTab(int nTab);                                   // close a tab: page vfunc_4(1)
-    void FUN_141943820(int n);                                      // "m_apply" button enabled state
-    void FUN_1419438b0();                                           // re-open the current tab
-    void FUN_141943900(bool b);                                     // m_bF1d0, update the red circle
+    void SetApplyEnabled(int n);                                      // "m_apply" button enabled state
+    void ReopenCurrentTab();                                           // re-open the current tab
+    void SetAgreementRedCircle(bool b);                                     // m_bF1d0, update the red circle
     void FUN_141943940();                                           // agreement tab red circle
-    void FUN_141943a00();                                           // RemoveAll
+    void RemoveAllPages();                                           // RemoveAll
     void FUN_141943a30();                                           // the "init to default" confirm box
     void FUN_141943d80();                                           // every page vfunc_9
     void OnSave();                                           // save (confirm box when not all agreed)
@@ -48,11 +48,11 @@ public:
     void FUN_141944030(int n);                                      // m_nF1cc = n; page vfunc_12 (all pages when 0)
     void OnCloseDialog();                                           // check and save
     int FUN_141944250();                                            // 1 when nothing is pending
-    int FUN_141944330();                                            // 1 when no page differs
-    MS2Ptr<CBaseOption> FUN_141944460(int nIndex);                  // the nIndex-th page (1-based, map order)
-    void FUN_141944590(int n);                                      // FUN_1419445c0(0x10, n)
-    void FUN_1419445c0(int nKey, int n);                            // n == 0: drop the page nKey
-    void FUN_141b15670(int nTab) { m_nTab = nTab; }                 // 0x141b15670 (inline COMDAT, uisystemmenudialog.cpp)
+    int IsNoPageChanged();                                            // 1 when no page differs
+    MS2Ptr<CBaseOption> GetPageByIndex(int nIndex);                  // the nIndex-th page (1-based, map order)
+    void FUN_141944590(int n);                                      // RemovePage(0x10, n)
+    void RemovePage(int nKey, int n);                            // n == 0: drop the page nKey
+    void SetTab(int nTab) { m_nTab = nTab; }                 // 0x141b15670 (inline COMDAT, uisystemmenudialog.cpp)
     // appended by ?\gameoptioninputdefault.cpp (w471): inline COMDATs first used there, and the child lookups it calls
     int FUN_141254590() const { return m_nTab; }                    // 0x141254590
     int FUN_141254a00() const { return m_nF1cc; }                   // 0x141254a00

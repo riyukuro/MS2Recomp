@@ -167,7 +167,7 @@ public:
     virtual void vfunc_5(int nEvent);                               //  5 0x140c63a70
     virtual int vfunc_8(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 8 0x140c63ad0 "OnSelectSourceItem"
 
-    void FUN_140c63bb0(int nIndex);                                 // pick the item of the bag as the source
+    void SelectSourceItem(int nIndex);                                 // pick the item of the bag as the source
 
     CString m_strBag;                                               // +0x28 the bag's registry name
     UILapenshardUpgradeTab* m_pTab;                                 // +0x30
@@ -187,7 +187,7 @@ public:
     virtual void vfunc_5(int nEvent);                               //  5 0x140c64200
     virtual int vfunc_8(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 8 0x140c642b0 "OnSelectIngredientItem"
 
-    void FUN_140c64390(int nIndex);                                 // pick (some of) the item of the bag as an ingredient
+    void SelectIngredientItem(int nIndex);                                 // pick (some of) the item of the bag as an ingredient
     void FUN_140c64960(int nIndex, int nCount);                     // move nCount of the item into / out of the ingredients
     bool FUN_140c64b10(int nResult, const CMsgBoxData& box);       // the count input box's answer (message-box delegate)
     bool FUN_140c64bc0(int nResult, const CMsgBoxData& box);       // the count box's answer (message-box delegate)
@@ -214,12 +214,12 @@ public:
     void FUN_140c65360(ItemInfoSlot& slot, ASTooltip& tooltip);    // tooltip callback
     void FUN_140c654a0(CString& strSlot, MS2Ptr<CItem> spItem);     // 0x140c654a0 bind a slot name to an item
     void FUN_140c65540(CString& strBag, MS2Ptr<class CItemLapenshardData> spRec, ATL::CAtlArray<MS2Ptr<CItem> >& items, LapenshardKindArray& kinds, ASObj& out);
-    void FUN_140c664e0();
+    void UpdateSourceAndResultSlots();
     void FUN_140c65e00();
     void FUN_140c65ef0();
-    void FUN_140c660f0();
+    void UpdateIngredientData();
     void FUN_140c671d0();
-    void FUN_140c67440(bool bSuccess);
+    void ShowUpgradeResult(bool bSuccess);
     void FUN_140c67ce0();
 
     CString m_strSource;                                            // +0x28 "lapenshardUpgradeSourceSlot"
@@ -252,15 +252,15 @@ public:
     void SendLapenshardMode4();                                           // tell the server the ingredients changed
     void SendLapenshardMode3(MS2Ptr<CItem> spItem);                       // pick the source item
     MS2Ptr<CItem> GetSource();                                  // the source item
-    void FUN_140c68df0();                                           // clear the source item
-    int FUN_140c68e20() { return m_nState; }                        // 0 idle, 1 source set, 2 requested, 3 answered, 4 processed
+    void ClearSource();                                           // clear the source item
+    int GetState() { return m_nState; }                        // 0 idle, 1 source set, 2 requested, 3 answered, 4 processed
     int GetN_bc();
-    void FUN_140c68e60(unsigned __int64 nUid, int nDelta);          // add / remove ingredients of an item
-    void FUN_140c68f90();                                           // clear the ingredients
-    int FUN_140c68fd0() { return m_nTotal; }                        // the number of ingredients
-    int FUN_140c68ff0(unsigned __int64 nUid);                       // the number of one ingredient
+    void ChangeIngredientCount(unsigned __int64 nUid, int nDelta);          // add / remove ingredients of an item
+    void ClearIngredients();                                           // clear the ingredients
+    int GetIngredientTotal() { return m_nTotal; }                        // the number of ingredients
+    int GetIngredientCount(unsigned __int64 nUid);                       // the number of one ingredient
     void SendLapenshardMode5();                                           // request the upgrade
-    int FUN_140c691f0();                                            // the upgrade can be requested
+    int CanRequestUpgrade();                                            // the upgrade can be requested
     void FUN_140c69620();
     int FUN_140c69650();
 
@@ -320,7 +320,7 @@ public:
     void FUN_140c624d0();                                           // notify 11
     int FUN_140c62500() const { return m_nSlot; }                   // the selected equip slot
     void OnLeaveTab();                                           // the shown page: close
-    void FUN_140c627a0(unsigned nTab, const Scaleform::GFx::Value& root);   // show the page of tab nTab
+    void ShowTabPage(unsigned nTab, const Scaleform::GFx::Value& root);   // show the page of tab nTab
 
 
     LapenshardTabPtr m_spPage;                                      // +0x188 the shown page
@@ -371,7 +371,7 @@ public:
     MS2Ptr<AdditionalCli> GetBuff();                          // the shown buff
     CStringW FUN_140c5f9e0();                                       // "mm:ss" left
     void FUN_140c5faf0();                                           // play "end"
-    int FUN_140c5fbb0();                                            // the buff ended
+    int IsEnded();                                            // the buff ended
     void FUN_140c5fbd0();                                           // bind the skill slot and play "open"
 
     MS2Ptr<AdditionalCli> m_spBuff;                                 // +0x78

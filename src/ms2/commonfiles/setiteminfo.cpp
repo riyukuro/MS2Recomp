@@ -67,11 +67,11 @@ bool SetItemInfo::Load(TiXmlElement* pNode)
 }
 
 // @0x1407ad550
-int SetItemInfo::FUN_1407ad550()
+int SetItemInfo::GetId()
 {
     return m_nId;
 }
-MS2_REPLACE_METHOD(0x1407AD550, SetItemInfo, FUN_1407ad550, 14, 0x72E52537);
+MS2_REPLACE_METHOD(0x1407AD550, SetItemInfo, GetId, 14, 0x72E52537);
 
 // @0x1407ad570
 int SetItemInfo::HasItem(unsigned nItemId) const
@@ -164,8 +164,8 @@ CStringA SetItemInfo::GetSetEffect(unsigned nCount)
         MS2Ptr<SetItemOptionPart> spPart;
         if (m_parts.Lookup(i, spPart))
         {
-            if (!spPart->FUN_1407bce90().IsEmpty())
-                strEffect = spPart->FUN_1407bce90();
+            if (!spPart->GetSetEffect().IsEmpty())
+                strEffect = spPart->GetSetEffect();
         }
     }
     return strEffect;
@@ -181,8 +181,8 @@ CStringA SetItemInfo::GetGroundAttribute(unsigned nCount)
         MS2Ptr<SetItemOptionPart> spPart;
         if (m_parts.Lookup(i, spPart))
         {
-            if (!spPart->FUN_1407bceb0().IsEmpty())
-                strAttribute = spPart->FUN_1407bceb0();
+            if (!spPart->GetGroundAttribute().IsEmpty())
+                strAttribute = spPart->GetGroundAttribute();
         }
     }
     return strAttribute;

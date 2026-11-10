@@ -26,7 +26,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);       // Table/<file>
 
 // @0x1403b72d0
 GameDictionaryManager::GameDictionaryManager()
@@ -54,9 +54,9 @@ void GameDictionaryManager::LoadNpc()
     m_npcs.RemoveAll();
     CString strDir;
     strDir.Format("%s", "Table");
-    CString strPath = FUN_14071a5b0(strDir, "monsterWebfinder_Npc.xml");
+    CString strPath = GetXmlPath(strDir, "monsterWebfinder_Npc.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -75,9 +75,9 @@ void GameDictionaryManager::LoadMob()
     m_mobs.RemoveAll();
     CString strDir;
     strDir.Format("%s", "Table");
-    CString strPath = FUN_14071a5b0(strDir, "monsterWebfinder_Mob.xml");
+    CString strPath = GetXmlPath(strDir, "monsterWebfinder_Mob.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -96,9 +96,9 @@ void GameDictionaryManager::LoadItem()
     m_items.RemoveAll();
     CString strDir;
     strDir.Format("%s", "Table");
-    CString strPath = FUN_14071a5b0(strDir, "itemWebfinder.xml");
+    CString strPath = GetXmlPath(strDir, "itemWebfinder.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)

@@ -117,7 +117,7 @@ CStringA FUN_1401d4330(const wchar_t* pszWide, int nCodePage);   // wide -> mult
 CString FUN_140390ea0(const wchar_t* psz, int n);           // wide -> multibyte (the text files)
 CStringA FUN_14016a600(const wchar_t* psz, int n);          // wide -> multibyte (the csv file)
 
-float FUN_14028d380(float fValue);                          // percent (x100)
+float ToPercent(float fValue);                          // percent (x100)
 bool FUN_14028d470(float a, float b);                       // nearly equal
 #include "ms2/placeholder/formatstringid.h"
 CStringW GetStatValueText(unsigned nStat);                  // the format of a stat value (stat.cpp)
@@ -961,8 +961,8 @@ int CDPSMeterSystem::AddDamage(int nSide, int nCasterId, int nTargetId, int nKin
     spData->m_nLevel = nLevel;
     spData->m_nCasterId = nCasterId;
     spData->m_nTargetId = nTargetId;
-    spData->m_strCaster = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1830(nCasterId);
-    spData->m_strTarget = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1830(nTargetId);
+    spData->m_strCaster = ((class Unk_DpsWorld*)WorldService::GetInstance())->GetObjectName(nCasterId);
+    spData->m_strTarget = ((class Unk_DpsWorld*)WorldService::GetInstance())->GetObjectName(nTargetId);
     spData->m_nKind = nKind;
     spData->m_nAttribute = nAttribute;
     spData->m_nGrade = nGrade;
@@ -1053,8 +1053,8 @@ int CDPSMeterSystem::AddEffect(CStringW strEvent, int nSide, int nCasterId, int 
     spData->m_nLevel = nLevel;
     spData->m_nCasterId = nCasterId;
     spData->m_nTargetId = nTargetId;
-    spData->m_strCaster = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1830(nCasterId);
-    spData->m_strTarget = ((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd1830(nTargetId);
+    spData->m_strCaster = ((class Unk_DpsWorld*)WorldService::GetInstance())->GetObjectName(nCasterId);
+    spData->m_strTarget = ((class Unk_DpsWorld*)WorldService::GetInstance())->GetObjectName(nTargetId);
     if (Unk_LockGuard guard = m_lock)
     {
     }
@@ -1361,8 +1361,8 @@ static const CStringW& GetItemText(CItem* pItem)
     s_str.Empty();
     if (pItem == 0)
         return s_str;
-    MS2Ptr<CItemOption> spOption = pItem->FUN_1405278a0()->m_spOption;
-    s_str.AppendFormat(L"%d, %s", pItem->FUN_1405276c0(), (const wchar_t*)pItem->FUN_140527b10());
+    MS2Ptr<CItemOption> spOption = pItem->GetStatus()->m_spOption;
+    s_str.AppendFormat(L"%d, %s", pItem->GetItemId(), (const wchar_t*)pItem->FUN_140527b10());
     if (pItem->FUN_140526390() != 0)
     {
         unsigned nCount = (unsigned)pItem->FUN_140527840()->additionalEffect.ids.GetCount();
@@ -1379,7 +1379,7 @@ static const CStringW& GetItemText(CItem* pItem)
         {
             int nStatId = nStat;
             MS2Ptr<BaseOption> spStat(new BaseOption);
-            spStat->SetValue(pItem->FUN_1405278a0()->GetStatValue(nStatId, 0, (int)nRank));
+            spStat->SetValue(pItem->GetStatus()->GetStatValue(nStatId, 0, (int)nRank));
             int nValue = spStat->GetValue();
             if (nValue == 0)
                 continue;
@@ -1393,7 +1393,7 @@ static const CStringW& GetItemText(CItem* pItem)
             int nTypeId = nType;
             MS2Ptr<BaseOption> spSpecial = spOption->GetSpecialOption((int)nRank, nTypeId);
             if (spSpecial.get() != 0)
-                s_str.AppendFormat(L", %s", (const wchar_t*)pItem->FUN_1405278a0()->GetSpecialStatText((int)nRank, nTypeId, 0));
+                s_str.AppendFormat(L", %s", (const wchar_t*)pItem->GetStatus()->GetSpecialStatText((int)nRank, nTypeId, 0));
         }
     }
     return s_str;
@@ -1661,10 +1661,10 @@ __int64 CDPSMeterSystem::GetAverageWeaponAttack()
     {
         if (spLeft->GetItem().IsNull())
             return 0;
-        if (spLeft->GetItem()->FUN_1405278a0() == 0)
+        if (spLeft->GetItem()->GetStatus() == 0)
             return 0;
-        nMin = spLeft->GetItem()->FUN_1405278a0()->GetStatValue(0x1b, 3, 5);
-        nMax = spLeft->GetItem()->FUN_1405278a0()->GetStatValue(0x1c, 3, 5);
+        nMin = spLeft->GetItem()->GetStatus()->GetStatValue(0x1b, 3, 5);
+        nMax = spLeft->GetItem()->GetStatus()->GetStatValue(0x1c, 3, 5);
     }
     else
     {
@@ -1713,7 +1713,7 @@ CStringW CDPSMeterSystem::GetBonusText(int nStat, int bPercent)
     if (pMe == 0)
         return str;
     float fBase = 0.0f;
-    float fBonus = bPercent != 0 ? FUN_14028d380(reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->GetEquipment()))->GetAbilityRate((SAType)(nStat)))
+    float fBonus = bPercent != 0 ? ToPercent(reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->GetEquipment()))->GetAbilityRate((SAType)(nStat)))
                                  : (float)reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->GetEquipment()))->GetAbilityTotal((SAType)(nStat));
     float fValue = fBase + fBonus;
     if (bPercent != 0)

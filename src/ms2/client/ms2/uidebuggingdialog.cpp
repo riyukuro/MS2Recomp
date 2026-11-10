@@ -69,11 +69,11 @@ public:
     void* m_storage[14];
 };
 struct Unk_DbgConfig { char m_pad[0x2e8]; CString m_strMarkerEffect; };   // the client config
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 struct Unk_DbgApp : public CWindowService { };         // cursor position
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
-class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
-class Unk_ServiceManager* FUN_1413f9850();   // C3: was FUN_1413f9850
+class Ni3DRenderView* FindRenderView();   // C3: was FindRenderView
+class Unk_ServiceManager* GetServiceManager();   // C3: was GetServiceManager
 ecr::SceneGraphService* FUN_1413f98b0();                                // the scene graph service
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
 // Depth-first walker over a scene graph (0x38 bytes; unrecovered class, symbols-manual rows shared with util.cpp).
@@ -95,7 +95,7 @@ CStringW FUN_14016a730(const char* sz, int n);                          // narro
 struct Unk_EmModelLoader { efd::utf8string GetCurrentSequenceName(const egf::EntityID& kId); };   // C3: as equipmodel.cpp defines it
 namespace egmAnimation { class AnimationService; }
 egmAnimation::AnimationService* FUN_141b6f910();
-float FUN_14028d3a0(float fValue);                                       // table value of a speed
+float FromPercent(float fValue);                                       // table value of a speed
 bool FUN_14028d470(float fValue, float fZero);                           // fValue == nZero
 // The npc record handle accessors.
 struct Unk_DbgSpeedRec;
@@ -118,7 +118,7 @@ Unk_UVPickerPtr::~Unk_UVPickerPtr()
 }
 
 // @0x1412861e0
-Unk_UVPickerPtr& Unk_UVPickerPtr::FUN_1412861e0(CMeshUVPicker* p)
+Unk_UVPickerPtr& Unk_UVPickerPtr::Reset(CMeshUVPicker* p)
 {
     if (m_p != p)
     {
@@ -156,7 +156,7 @@ UIDebuggingDialog::UIDebuggingDialog()
 // @0x141284ea0
 UIDebuggingDialog::~UIDebuggingDialog()
 {
-    m_spPicker.FUN_1412861e0(0);
+    m_spPicker.Reset(0);
     FUN_1412860c0();
 }
 
@@ -174,9 +174,9 @@ void UIDebuggingDialog::OnLoadComplete()
     m_nMarkerId = 0;
     if (m_spPicker.FUN_141286250(0))
     {
-        m_spPicker.FUN_1412861e0(new (efd::MemHint(efd::MemHint::NONE)) CMeshUVPicker);
+        m_spPicker.Reset(new (efd::MemHint(efd::MemHint::NONE)) CMeshUVPicker);
     }
-    m_timer.FUN_1408687f0();
+    m_timer.Reset();
     m_bClear = 1;
     m_30->Invoke("initData");
 }
@@ -200,9 +200,9 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
     UISwfEntity::vfunc_33(p, fX, fY);
     if (vfunc_55() != 0)
         return;
-    if (m_bPicking != 0 && m_timer.FUN_140868c00() != 0 && TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0)
+    if (m_bPicking != 0 && m_timer.IsExpired() != 0 && TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0)
     {
-        void* pScene = ((void*)FUN_1413f9850());
+        void* pScene = ((void*)GetServiceManager());
         if (pScene == 0)
             return;
         efd::Point2 kScreen(fX, fY);
@@ -210,9 +210,9 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
         Unk_NiPoint3 kDir(DAT_143b01a60);
         if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay(reinterpret_cast<const NiPoint2&>(kScreen), reinterpret_cast<NiPoint3&>(kOrigin), reinterpret_cast<NiPoint3&>(kDir)))
         {
-            if (void* pSceneData = reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<ecr::PickService>())
+            if (void* pSceneData = reinterpret_cast<efd::ServiceManager*>(GetServiceManager())->GetSystemServiceAs<ecr::PickService>())
             {
-                void* pMap = WorldService::GetInstance()->FUN_141bd36d0();
+                void* pMap = WorldService::GetInstance()->GetNpcMap();
                 bool bFound = false;
                 for (void* pos = ((void*)((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(pMap))->GetHeadPosition()); pos != 0; ((ATL::CRBTree<unsigned int, efd::SmartPointer<CNpc>, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<efd::SmartPointer<CNpc>>>*)(void*)(pMap))->GetNext(reinterpret_cast<POSITION&>(pos)))
                 {
@@ -231,7 +231,7 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                     {
                         if (void* pMesh = ((void*)NiObject::DynamicCast(&NiRenderObject::ms_RTTI, (class NiObject const*)(pNode))))
                         {
-                            Ni3DRenderView* pView = FUN_1413f9a70();
+                            Ni3DRenderView* pView = FindRenderView();
                             Vector3 kHit;
                             Vector3 kNormal;
                             efd::Point2 kUV;
@@ -247,8 +247,8 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
                                     FUN_1412860c0();
                                 m_nTargetId = pNpc->GetObjectId();
                                 NoticeMessage kMarker;   // C3: was Unk_DbgMarker
-                                reinterpret_cast<CString&>(((Unk_DbgMarker&)(kMarker)).m_pName) = ((struct Unk_DbgConfig*)FUN_1401d31f0())->m_strMarkerEffect;
-                                ((Unk_DbgMarker&)(kMarker)).m_nType = pNpc->FUN_141092ff0() != 0 ? 6 : 5;
+                                reinterpret_cast<CString&>(((Unk_DbgMarker&)(kMarker)).m_pName) = ((struct Unk_DbgConfig*)GetCommonResource())->m_strMarkerEffect;
+                                ((Unk_DbgMarker&)(kMarker)).m_nType = pNpc->IsBoss() != 0 ? 6 : 5;
                                 ((class NoticeMessage*)(struct Unk_DbgMarker*)(&((Unk_DbgMarker&)(kMarker))))->SetActor(pNpc->GetObjectId());
                                 m_nMarkerId = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&((Unk_DbgMarker&)(kMarker))));
                                 bFound = true;
@@ -266,7 +266,7 @@ void UIDebuggingDialog::vfunc_33(void* p, float fX, float fY)
 void UIDebuggingDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    m_spPicker.FUN_1412861e0(0);
+    m_spPicker.Reset(0);
     FUN_1412860c0();
 }
 
@@ -295,7 +295,7 @@ void UIDebuggingDialog::vfunc_72()
             FUN_141286050("m_aniSpeedCondition", FUN_14016a730(pNpc->FUN_1416713e0(), 0));
             FUN_141286050("m_aniSpeedExpression", FUN_14016a730(pNpc->FUN_141671430(), 0));
             CStringW strMoveSpeed;
-            strMoveSpeed.Format(L"%.1f/%.1f", (double)pNpc->vfunc_95(), (double)FUN_14028d3a0(pNpc->GetNpcData()->m_fRunSpeed));
+            strMoveSpeed.Format(L"%.1f/%.1f", (double)pNpc->vfunc_95(), (double)FromPercent(pNpc->GetNpcData()->m_fRunSpeed));
             FUN_141286050("m_moveSpeedS", strMoveSpeed);
             MS2Ptr<CNpcData> spData = pNpc->GetNpcData();
             if (spData.get() != 0)
@@ -357,7 +357,7 @@ void UIDebuggingDialog::FUN_1412860c0()
 void UIDebuggingDialog::OnClickChooseNPC()
 {
     m_bPicking = 1;
-    m_timer.FUN_140868750(500);
+    m_timer.Start(500);
 }
 
 // @0x1412862e0 is the inline vfunc_48 of the header.

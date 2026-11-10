@@ -31,12 +31,12 @@ struct Unk_TextureFrame
     Unk_TextureFrame();                                         // 0x141847510
     ~Unk_TextureFrame();                                        // 0x141849de0
     void Load(TiXmlElement* pNode);                   // read "file", "control" and "delay"
-    void FUN_1418475d0(const CString& strDir, int nFlags);      // load the textures into the resource manager
-    bool FUN_1418476e0(const CString& strDir);                  // both textures are loaded
-    void FUN_141847880(const CString& strDir);                  // queue the textures in the file preload
-    CString FUN_141847960(const CString& strDir);               // resource path of the base texture
-    CString FUN_141847a60(const CString& strDir);               // resource path of the control (map) texture, "" if none
-    bool FUN_141847bb0();                                       // has a control texture
+    void LoadTextures(const CString& strDir, int nFlags);      // load the textures into the resource manager
+    bool AreTexturesLoaded(const CString& strDir);                  // both textures are loaded
+    void PreloadTextures(const CString& strDir);                  // queue the textures in the file preload
+    CString GetBaseTexturePath(const CString& strDir);               // resource path of the base texture
+    CString GetControlTexturePath(const CString& strDir);               // resource path of the control (map) texture, "" if none
+    bool HasControlTexture();                                       // has a control texture
     int GetDelay();                                        // delay of the frame (ms)
 
     CString m_strFile;                  // +0x00 "file"
@@ -54,10 +54,10 @@ public:
 
     int FUN_141847c90(int nTime);                               // frame index at the given time
     bool FUN_141847e30(TiXmlElement* pNode);                   // parse "target" and the <texture> list; false when empty
-    int FUN_141847fe0(const CString& strDir);                   // all frames loaded
+    int AreAllFramesLoaded(const CString& strDir);                   // all frames loaded
     void FUN_141848080(const CString& strDir, int nFlags);      // load all frames
-    efd::SmartPointer<NiTexture> FUN_141848110(unsigned int nFrame, const CString& strDir);   // base texture of a frame
-    efd::SmartPointer<NiTexture> FUN_141848200(unsigned int nFrame, const CString& strDir);   // control texture of a frame
+    efd::SmartPointer<NiTexture> GetFrameBaseTexture(unsigned int nFrame, const CString& strDir);   // base texture of a frame
+    efd::SmartPointer<NiTexture> GetFrameControlTexture(unsigned int nFrame, const CString& strDir);   // control texture of a frame
 
 public:
     CString m_strTarget;                                        // +0x18 "target" (node name; default "Scene Root"-style first face part)
@@ -75,13 +75,13 @@ public:
     virtual ~CTextureAnimation();                               //  0 0x1418483e0 (??_G 0x14184a050)
 
     void FUN_1418484a0(MS2Ptr<CTextureAnimationData> spData, const CString& strDir);   // start playing
-    void FUN_141848650();                                       // stop: remove the layer, reset the clock
-    bool FUN_141848740(int nElapsed);                           // advance the clock; false when finished
-    void FUN_141848890(unsigned int nFrame);                    // show a frame
-    efd::SmartPointer<NiTexture> FUN_141848bb0(unsigned int nFrame);            // cached base texture of a frame
-    efd::SmartPointer<NiTexture> FUN_141848dc0(unsigned int nFrame);            // cached control texture of a frame
-    NiAVObject* FUN_141849060(const CString& strName);          // find the target node of the owner
-    unsigned int FUN_141849150();                               // frame count
+    void Stop();                                       // stop: remove the layer, reset the clock
+    bool Update(int nElapsed);                           // advance the clock; false when finished
+    void ShowFrame(unsigned int nFrame);                    // show a frame
+    efd::SmartPointer<NiTexture> GetBaseTexture(unsigned int nFrame);            // cached base texture of a frame
+    efd::SmartPointer<NiTexture> GetControlTexture(unsigned int nFrame);            // cached control texture of a frame
+    NiAVObject* FindTargetNode(const CString& strName);          // find the target node of the owner
+    unsigned int GetFrameCount();                               // frame count
     void FUN_141849190();                                       // load every frame's textures
     void FUN_141849210();                                       // queue every frame in the file preload
 
@@ -127,8 +127,8 @@ public:
     virtual ~TextureLayer() = default;                          //  0 0x14184b370 (implicit) (??_G 0x14184b3c0)
     virtual NiAVObject* vfunc_18();                             // 18 0x14184b110 the texturing property (a property, not a node)
     virtual void vfunc_19();                                    // 19 0x14184b1a0 apply the base / map textures
-    void FUN_14184b140(void* pBase);                            // replace the base texture
-    void FUN_14184b170(void* pMap);                             // replace the map texture
+    void SetBaseTexture(void* pBase);                            // replace the base texture
+    void SetMapTexture(void* pMap);                             // replace the map texture
 
 public:
     efd::SmartPointer<NiTexture> m_spBase;                                      // +0x18 base texture

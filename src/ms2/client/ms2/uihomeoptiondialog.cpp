@@ -67,15 +67,15 @@ enum class Unk_HomeOpenType : unsigned char { Kind0 = 0, Kind1 = 1, Kind2 = 2 };
 CStringW FUN_140298ea0(CStringW strKey);                            // string table by key
 CString FUN_140223190(int nRow);                                   // the name of a permission row
 int FUN_1418fd280();
-void FUN_1412751f0(const CStringW& str, int a, int b);
+void ShowSystemNotice(const CStringW& str, int a, int b);
 void FUN_140710590(COutPacket& packet);
 void FUN_14151f200();
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 
 
 // @0x140fa9c90
-void FUN_140fa9c90(ASObj* pObj, const char* szName, unsigned char b)
+void SetMemberInt(ASObj* pObj, const char* szName, unsigned char b)
 {
     ASData data;
     data.AddInt(b);
@@ -114,7 +114,7 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     if (_stricmp("onApply", szMethod) == 0)
     {
-        FUN_140d73aa0(FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 1, static_cast<IMessageListener*>(this), CStringW(L"onApply"));
+        ShowMessageBox(FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 1, static_cast<IMessageListener*>(this), CStringW(L"onApply"));
     }
     else if (_stricmp("onConfirm", szMethod) == 0)
     {
@@ -123,7 +123,7 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         {
             unsigned char bConfirm = data.PopBool();
             if (bConfirm == 1)
-                FUN_140d73aa0(FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnConfirm"));
+                ShowMessageBox(FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnConfirm"));
             else
                 vfunc_67();
         }
@@ -151,19 +151,19 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             }
             else
             {
-                FUN_140fa99b0(nOpenType, CStringW(strPassword));
+                SetHomeOpenType(nOpenType, CStringW(strPassword));
             }
             for (int i = 0; i < 9; ++i)
-                FUN_140fa9a50(i, data.PopInt());
+                SetPermissionRow(i, data.PopInt());
         }
     }
     else if (_stricmp("onKickUser", szMethod) == 0)
     {
-        FUN_140d73aa0(FUN_140298ea0(CStringW(L"s_home_option_msg_etc_kickuser")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnKickUser"));
+        ShowMessageBox(FUN_140298ea0(CStringW(L"s_home_option_msg_etc_kickuser")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnKickUser"));
     }
     else if (_stricmp("OnReset", szMethod) == 0)
     {
-        FUN_140d73aa0(FUN_140298ea0(CStringW(L"s_home_option_init")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnReset"));
+        ShowMessageBox(FUN_140298ea0(CStringW(L"s_home_option_init")), 1, static_cast<IMessageListener*>(this), CStringW(L"OnReset"));
     }
     return 1;
 }
@@ -206,7 +206,7 @@ void UIHomeOptionDialog::FUN_140fa97a0()
     {
         Unk_BmPtr<UserUGCMapInfo> spHouse(pPC->GetUGCMapInfo());
         if (spHouse.get() != 0)
-            FUN_140fa9c90(&obj, "opentype", spHouse->m_n40);
+            SetMemberInt(&obj, "opentype", spHouse->m_n40);
     }
     {
         efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
@@ -222,7 +222,7 @@ void UIHomeOptionDialog::FUN_140fa97a0()
                 nValue = 0;
             else
                 nValue = nLevel + 1;
-            obj.FUN_1407cb9c0(FUN_140223190(nRow), nValue);
+            obj.SetIntMember(FUN_140223190(nRow), nValue);
         }
     }
     m_30->Invoke("setData", obj);
@@ -230,7 +230,7 @@ void UIHomeOptionDialog::FUN_140fa97a0()
 MS2_REPLACE_METHOD(0x140FA97A0, UIHomeOptionDialog, FUN_140fa97a0, 515, 0xB6C067B7);
 
 // @0x140fa99b0
-void UIHomeOptionDialog::FUN_140fa99b0(unsigned char nOpenType, CStringW strPassword)
+void UIHomeOptionDialog::SetHomeOpenType(unsigned char nOpenType, CStringW strPassword)
 {
     if (static_cast<Unk_HomeOpenType>(nOpenType) != Unk_HomeOpenType::Kind1)
         strPassword = L"";
@@ -238,17 +238,17 @@ void UIHomeOptionDialog::FUN_140fa99b0(unsigned char nOpenType, CStringW strPass
     if (pPC != 0)
         pPC->SendHouseSetting((Unk_MyPCHouseSetting)nOpenType, CStringW(strPassword), 1);
 }
-MS2_REPLACE_METHOD(0x140FA99B0, UIHomeOptionDialog, FUN_140fa99b0, 149, 0x7577FED5);
+MS2_REPLACE_METHOD(0x140FA99B0, UIHomeOptionDialog, SetHomeOpenType, 149, 0x7577FED5);
 
 // @0x140fa9a50
-void UIHomeOptionDialog::FUN_140fa9a50(int nRow, int nValue)
+void UIHomeOptionDialog::SetPermissionRow(int nRow, int nValue)
 {
     SendRequestCubeMode42(nRow, 0 < nValue);
     int nLevel = nValue - 1;
     int nZero = 0;
     SendRequestCubeMode43(nRow, (std::max)(nZero, nLevel));
 }
-MS2_REPLACE_METHOD(0x140FA9A50, UIHomeOptionDialog, FUN_140fa9a50, 112, 0x83221714);
+MS2_REPLACE_METHOD(0x140FA9A50, UIHomeOptionDialog, SetPermissionRow, 112, 0x83221714);
 
 // @0x140fa9ad0
 void UIHomeOptionDialog::SendRequestCubeMode42(int nRow, bool bOn)
@@ -279,7 +279,7 @@ void UIHomeOptionDialog::SendRequestCubeMode49()
     packet.WriteUInt8(0x31);
     FUN_140710590(packet);
     if (FUN_1418fd280() == 1)
-        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_home_option_msg_kick_user")), 1, 1);
+        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_home_option_msg_kick_user")), 1, 1);
 }
 MS2_REPLACE_METHOD(0x140FA9BD0, UIHomeOptionDialog, SendRequestCubeMode49, 187, 0x29C0712D);
 

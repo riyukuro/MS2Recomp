@@ -86,12 +86,12 @@ public:
 
 
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: the physics service getter (real return type)
-int FUN_140768010(int nRange, int nBase);                           // random number in [nBase, nBase + nRange)
+int GetRandomRange(int nRange, int nBase);                           // random number in [nBase, nBase + nRange)
 float FUN_140768090();                                              // random 0..1
 float FUN_14109ace0();                                              // random 0..1
 __int64 FUN_14028d260(float f);                                     // seconds -> milliseconds
 bool Unk_IsFinite(const efd::Point3& kPoint);   // C3: was FUN_140a33ff0(const Vector3*); all components finite
-void FUN_140de8bd0(egf::Entity* pEntity, unsigned nProp, efd::AssetID* pValue);
+void SetAssetIdProperty(egf::Entity* pEntity, unsigned nProp, efd::AssetID* pValue);
 
 
 Unk_Int3 FUN_1408a1430(NiPoint3 pt);                        // point -> cube cell (C3: actionkeyobject.cpp's declaration)
@@ -283,7 +283,7 @@ int CEntityVibrator::Update()
                     reinterpret_cast<CubeMapInformationService*>(com.operator->())->FUN_1410c5570(reinterpret_cast<egf::EntityPtr&>(m_entity));
                 }
                 if (!m_a8) {
-                    if (((CPhysXHelper*)GetPhysXHelper())->FUN_141689a10(m_entity.operator egf::Entity*())) {
+                    if (((CPhysXHelper*)GetPhysXHelper())->HasPhysicsProps(m_entity.operator egf::Entity*())) {
                         ((CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(m_entity.operator egf::Entity*(), 0, 0, 1);
                     }
                 }
@@ -310,8 +310,8 @@ int CEntityVibrator::Update()
             float fT = (float)(nNow - m_2c) / (float)(unsigned)(m_34 - m_2c);
             float fOffset = __imp_sinf(fT * m_20 * 2.0f * 3.1415927f + m_64) * fScale;
             if (m_60 != (fOffset < 0.0f)) {
-                float fA = ((float)(unsigned)FUN_140768010(2, 0) - 0.5f) * 2.0f;
-                float fB = ((float)(unsigned)FUN_140768010(2, 0) - 0.5f) * 2.0f;
+                float fA = ((float)(unsigned)GetRandomRange(2, 0) - 0.5f) * 2.0f;
+                float fB = ((float)(unsigned)GetRandomRange(2, 0) - 0.5f) * 2.0f;
                 m_3c.x = FUN_140768090() * fA;
                 m_3c.y = FUN_140768090() * fB;
                 m_3c.Unitize();
@@ -341,7 +341,7 @@ void CEntityVibrator::MakePhysxActor(MS2Ptr<CSkillRecord> params)
     NxScene* pScene = ((CPhysXHelper*)GetPhysXHelper())->GetNxScene();
     if (pScene != 0) {
         if (!m_a8) {
-            if (((CPhysXHelper*)GetPhysXHelper())->FUN_141689a10(m_entity.operator egf::Entity*())) {
+            if (((CPhysXHelper*)GetPhysXHelper())->HasPhysicsProps(m_entity.operator egf::Entity*())) {
                 ((CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(m_entity.operator egf::Entity*(), 5, 0, 1);
             }
         }
@@ -481,7 +481,7 @@ void CEntityVibrator::RestoreRestPose()
             reinterpret_cast<CubeMapInformationService*>(com.operator->())->FUN_1410c5570(reinterpret_cast<egf::EntityPtr&>(m_entity));
         }
         if (!m_a8) {
-            if (((CPhysXHelper*)GetPhysXHelper())->FUN_141689a10(m_entity.operator egf::Entity*())) {
+            if (((CPhysXHelper*)GetPhysXHelper())->HasPhysicsProps(m_entity.operator egf::Entity*())) {
                 ((CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(m_entity.operator egf::Entity*(), 0, 0, 1);
             }
         }
@@ -577,7 +577,7 @@ void CEntityVibrator::StartFall()
 {
     if (m_entity == (egf::Entity*)0) return;
     if (!m_a8) {
-        if (((CPhysXHelper*)GetPhysXHelper())->FUN_141689a10(m_entity.operator egf::Entity*())) {
+        if (((CPhysXHelper*)GetPhysXHelper())->HasPhysicsProps(m_entity.operator egf::Entity*())) {
             ((CPhysXHelper*)GetPhysXHelper())->SetEntityCollisionGroup(m_entity.operator egf::Entity*(), 5, 0, 1);
         }
     }
@@ -620,7 +620,7 @@ void CEntityVibrator::FUN_1411cddc0(CString strModel, unsigned char nMode)
                 bHas = m_entity.operator->()->GetModel()->ContainsModel(strMesh);
             }
             if (bHas) {
-                FUN_140de8bd0(m_entity.operator->(), 0x770e5fc6, &asset);
+                SetAssetIdProperty(m_entity.operator->(), 0x770e5fc6, &asset);
                 m_c8 = strModel;
             }
         }

@@ -25,9 +25,9 @@ public:
     virtual void vfunc_o178_8(void*);
     void FUN_141a95010();
     void FUN_141a95310(int, int);
-    CStringW FUN_141a966a0(unsigned int);
-    int FUN_141a96870(int);
-    int FUN_141a96960(int, CStringW&, CStringW&, const CStringW&);
+    CStringW GetSearchFilter(unsigned int);
+    int IsChapterLocked(int);
+    int MatchesFilter(int, CStringW&, CStringW&, const CStringW&);
     int FUN_141a96c30(int, MS2Ptr<CQuestData>);
     // Unrecovered child-binding helpers; this is the original UISwfEntity subobject.
     // 0x140e52670 check box child lookup = UISwfEntity::GetChild<ASCheckBox> (uiitempetboxdialog.cpp)

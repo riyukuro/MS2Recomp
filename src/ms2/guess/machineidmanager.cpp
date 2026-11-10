@@ -43,7 +43,7 @@ void CMachineIDManager::BuildID()
     CSystemInfo local;
     FUN_1423b10a0(&local);
     m_id = *static_cast<Unk_MachineID*>(FUN_1423b1080(&local));
-    m_n18 = FUN_1423ae960(&local);
+    m_n18 = GetPcBangCode(&local);
 }
 MS2_REPLACE_METHOD(0x140D4FD50, CMachineIDManager, BuildID, 139, 0xC65EBD09);
 

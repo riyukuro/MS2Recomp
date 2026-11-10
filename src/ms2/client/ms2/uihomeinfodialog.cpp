@@ -153,7 +153,7 @@ MS2_CHECK_OFFSET(Unk_HiConstTable, m_doctor, 0x67e0);
 class UISystemMenuDialog : public UIObject
 {
 public:
-    void FUN_141b13b30();
+    void LeaveHome();
 };
 
 class Unk_HiOptions;
@@ -161,19 +161,19 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
     bool FUN_14036d710(int);
 };
 
-int FUN_1418fd130();
-int FUN_1418fcee0();
+int OnRecommend();
+int OnReport();
 int FUN_1418fd280();
 int FUN_1418fd2f0();
 int FUN_140930190();
 unsigned char FUN_140930c50();
-__int64 FUN_140930240();
-__int64 FUN_140930ae0();
-int FUN_14092f640();   // C3: was FUN_14092f640
+__int64 GetMeratBalance();
+__int64 GetRedMeratBalance();
+int GetCurrentChannel();   // C3: was GetCurrentChannel
 bool FUN_141902580(bool bMessage);
 __int64 GetServerTime();
 void FUN_141275260(int nId, int a, int b);
@@ -184,11 +184,11 @@ CStringW FUN_1409404f0(__int64 n);
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
 int FUN_14028cb70(const CStringW& str, CAtlArray<CStringW>& arr, const wchar_t* szDelim, int nMax);
 int FUN_1412772f0(__int64 nValue, int bGrouped);
-UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId);
+UIHomeSaveSlotDialog* GetHomeSaveSlotDialog(int nUiId);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* p, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
@@ -202,7 +202,7 @@ UIHomeInfoDialog::UIHomeInfoDialog()
     m_17c = 0;
     m_88 = 1;
     FUN_1422dc3b0(1);
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x1412c4d70
@@ -220,13 +220,13 @@ void UIHomeInfoDialog::OnLoadComplete()
         if (MS2Ptr<ASDropdownMenu> spChannel = GetChild<ASDropdownMenu>("m_channel"))
         {
             CStringW strLabel;
-            strLabel.Format(L"%s %d", (LPCWSTR)GetStringCommon(0x579), FUN_14092f640());
+            strLabel.Format(L"%s %d", (LPCWSTR)GetStringCommon(0x579), GetCurrentChannel());
             ASObj obj(2);
-            obj.FUN_1407cbb20("label", strLabel);
+            obj.SetWStringMember("label", strLabel);
             spChannel->AddItemRow(obj);
             spChannel->vfunc_24(true);
             spChannel->SetSelectedIndex(0);
-            spChannel->FUN_1422c1fe0(0);
+            spChannel->SetEnabled(0);
         }
     }
 }
@@ -264,9 +264,9 @@ int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         return 1;
     }
     else if (_stricmp("OnRecommend", szMethod) == 0)
-        return FUN_1418fd130();
+        return OnRecommend();
     else if (_stricmp("OnReport", szMethod) == 0)
-        return FUN_1418fcee0();
+        return OnReport();
     else if (_stricmp("OnConstruct", szMethod) == 0)
     {
         OnConstruct();
@@ -301,7 +301,7 @@ int UIHomeInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 }
 
 // @0x1412c5330
-void UIHomeInfoDialog::FUN_1412c5330(unsigned int nRemainMs)
+void UIHomeInfoDialog::StartBankCooldown(unsigned int nRemainMs)
 {
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
@@ -314,7 +314,7 @@ void UIHomeInfoDialog::FUN_1412c5330(unsigned int nRemainMs)
 }
 
 // @0x1412c54e0
-void UIHomeInfoDialog::FUN_1412c54e0(unsigned int nRemainMs)
+void UIHomeInfoDialog::StartDoctorCooldown(unsigned int nRemainMs)
 {
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
@@ -327,7 +327,7 @@ void UIHomeInfoDialog::FUN_1412c54e0(unsigned int nRemainMs)
 }
 
 // @0x1412c5690
-void UIHomeInfoDialog::FUN_1412c5690()
+void UIHomeInfoDialog::UpdateCooldowns()
 {
     if (FUN_1418fd280() == 0)
         return;
@@ -342,9 +342,9 @@ void UIHomeInfoDialog::FUN_1412c5690()
         if (MS2Ptr<ASButton> spBank = spPanel->FUN_140acce30<ASButton>("m_bank"))
         {
             reinterpret_cast<Unk_HiScript*>(spBank.operator->())->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
-            unsigned int nRemain = FUN_1412c81d0();
+            unsigned int nRemain = GetBankCooldownRemaining();
             if (nRemain > 0)
-                FUN_1412c5330(nRemain);
+                StartBankCooldown(nRemain);
         }
     }
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
@@ -352,15 +352,15 @@ void UIHomeInfoDialog::FUN_1412c5690()
         if (MS2Ptr<ASButton> spDoctor = spPanel->FUN_140acce30<ASButton>("m_doctor"))
         {
             reinterpret_cast<Unk_HiScript*>(spDoctor.operator->())->Invoke("setTimeString", GetStringCommon(0x5ce), GetStringCommon(0x5cc), GetStringCommon(0x5ca), GetStringCommon(0x5cb));
-            unsigned int nRemain = FUN_1412c8280();
+            unsigned int nRemain = GetDoctorCooldownRemaining();
             if (nRemain > 0)
-                FUN_1412c54e0(nRemain);
+                StartDoctorCooldown(nRemain);
         }
     }
 }
 
 // @0x1412c5c30
-void UIHomeInfoDialog::FUN_1412c5c30()
+void UIHomeInfoDialog::UpdateNoticeText()
 {
     if (vfunc_55())
         return;
@@ -372,26 +372,26 @@ void UIHomeInfoDialog::FUN_1412c5c30()
 }
 
 // @0x1412c5da0
-void UIHomeInfoDialog::FUN_1412c5da0()
+void UIHomeInfoDialog::UpdateRecommendButton()
 {
     if (vfunc_55())
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
         if (MS2Ptr<ASButton> spButton = spPanel->FUN_140acce30<ASButton>("m_recommend"))
-            spButton->FUN_1422c1fe0(FUN_140930190() ? 0 : 1);
+            spButton->SetEnabled(FUN_140930190() ? 0 : 1);
     }
 }
 
 // @0x1412c5f00
-void UIHomeInfoDialog::FUN_1412c5f00()
+void UIHomeInfoDialog::UpdateAddressText()
 {
     if (vfunc_55())
         return;
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
         if (MS2Ptr<ASTextField> spText = spPanel->FUN_1409b4620("m_address"))
-            spText->SetTextW(FUN_1412c7140());
+            spText->SetTextW(GetAddressText());
     }
 }
 
@@ -400,7 +400,7 @@ void UIHomeInfoDialog::FUN_1412c6070()
 {
     if (vfunc_55())
         return;
-    FUN_1412c5da0();
+    UpdateRecommendButton();
     if (MS2Ptr<ASUIComponent> spPanel = GetChild<ASUIComponent>("m_homeInfoPanel"))
     {
         if (MS2Ptr<ASTextField> spText = spPanel->FUN_1409b4620("m_constructScore"))
@@ -413,7 +413,7 @@ void UIHomeInfoDialog::FUN_1412c6070()
 }
 
 // @0x1412c6220
-void UIHomeInfoDialog::FUN_1412c6220()
+void UIHomeInfoDialog::UpdateBalance()
 {
     if (vfunc_55())
         return;
@@ -429,7 +429,7 @@ void UIHomeInfoDialog::FUN_1412c6220()
             if (MS2Ptr<ASButton> spBalance = spConv->FUN_140acce30<ASButton>("m_balance"))
             {
                 bool bOwner = FUN_1418fd280() ? true : false;
-                spBalance->FUN_1422c1fe0(bOwner);
+                spBalance->SetEnabled(bOwner);
                 spBalance->vfunc_4(bOwner);
             }
             if (MS2Ptr<ASTextField> spMeso = spConv->FUN_1409b4620("m_balanceMeso"))
@@ -472,8 +472,8 @@ void UIHomeInfoDialog::FUN_1412c66c0()
                         if (pPlayer != 0)
                         {
                             ASObj obj(2);
-                            obj.FUN_1407cbb20((LPCSTR)s_strCharName, pPlayer->vfunc_77());
-                            obj.FUN_1407cbbe0("myHome", FUN_1418fd280() != 0);
+                            obj.SetWStringMember((LPCSTR)s_strCharName, pPlayer->vfunc_77());
+                            obj.SetBoolMember("myHome", FUN_1418fd280() != 0);
                             reinterpret_cast<ASCoreList*>(spList.operator->())->AddItem(obj);
                         }
                     }
@@ -509,7 +509,7 @@ void UIHomeInfoDialog::FUN_1412c6b50()
 }
 
 // @0x1412c6e70
-void UIHomeInfoDialog::FUN_1412c6e70(const CStringW& strItemName, const CStringW& strCreator)
+void UIHomeInfoDialog::SetItemInfo(const CStringW& strItemName, const CStringW& strCreator)
 {
     if (vfunc_55())
         return;
@@ -537,7 +537,7 @@ CStringW UIHomeInfoDialog::FUN_1412c7090()
 }
 
 // @0x1412c7140
-CStringW UIHomeInfoDialog::FUN_1412c7140()
+CStringW UIHomeInfoDialog::GetAddressText()
 {
     CStringW strAddress = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0();
     Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
@@ -569,25 +569,25 @@ int UIHomeInfoDialog::FUN_1412c72d0()
             pDialog->Invoke("setMyHome", FUN_1418fd280(), nCraft, nMode);
         if (nCraft == 0)
         {
-            FUN_1412c5c30();
-            FUN_1412c5da0();
-            FUN_1412c5f00();
+            UpdateNoticeText();
+            UpdateRecommendButton();
+            UpdateAddressText();
             FUN_1412c6070();
-            int bBook = ((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->FUN_14036d570(0x3e);
+            int bBook = ((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->IsFeatureEnabled(0x3e);
             if (MS2Ptr<ASGameEntity> spPanel = reinterpret_cast<Unk_ReportDialogAccess*>(this)->GetChild<ASGameEntity>("m_homeInfoPanel"))
             {
                 if (MS2Ptr<ASButton> spBook = spPanel->FUN_140acce30<ASButton>("m_visitorsBook"))
                 {
-                    spBook->FUN_1422c1fe0(bBook);
+                    spBook->SetEnabled(bBook);
                     spBook->vfunc_3(bBook);
                 }
             }
         }
-        FUN_1412c6220();
+        UpdateBalance();
         FUN_1412c66c0();
-        FUN_1412c6e70(L"", L"");
+        SetItemInfo(L"", L"");
         if (FUN_1418fd280() != 0)
-            FUN_1412c5690();
+            UpdateCooldowns();
         return 1;
     }
     vfunc_8(0);
@@ -599,7 +599,7 @@ void UIHomeInfoDialog::FUN_1412c7600()
 {
     UISystemMenuDialog* pMenu = FUN_1412c8470();
     if (pMenu != 0)
-        pMenu->FUN_141b13b30();
+        pMenu->LeaveHome();
 }
 
 // @0x1412c7630
@@ -635,7 +635,7 @@ void UIHomeInfoDialog::OnBank()
     Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    if (FUN_1412c81d0() > 0)
+    if (GetBankCooldownRemaining() > 0)
         return;
     pPc->FUN_1415283c0(1);
 }
@@ -646,7 +646,7 @@ void UIHomeInfoDialog::OnDoctor()
     Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
         return;
-    if (FUN_1412c8280() > 0)
+    if (GetDoctorCooldownRemaining() > 0)
         return;
     pPc->FUN_1415286a0();
 }
@@ -688,9 +688,9 @@ bool UIHomeInfoDialog::FUN_1412c7aa0(int nResult, const CMsgBoxData& data)
 }
 
 // @0x1412c7af0
-bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot, const CMsgBoxData& data)
+bool UIHomeInfoDialog::OnSaveSlotAction(int nSlot, const CMsgBoxData& data)
 {
-    UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
+    UIHomeSaveSlotDialog* pDialog = GetHomeSaveSlotDialog(0x4f27);
     switch (nSlot)
     {
     case 0:
@@ -699,18 +699,18 @@ bool UIHomeInfoDialog::FUN_1412c7af0(int nSlot, const CMsgBoxData& data)
         if (nCount > 0)
         {
             CStringW strMsg = GetStringCommon(0xbb1);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strMsg, static_cast<IMessageListener*>(this), CStringW(L"OnHousingSave"));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strMsg, static_cast<IMessageListener*>(this), CStringW(L"OnHousingSave"));
             if (spBox == 0)
                 return false;
             spBox->FUN_141a024a0(0);
             FUN_140d73c60(spBox);
         }
         else
-            pDialog->FUN_140faa6d0();
+            pDialog->SetSaveMode();
         break;
     }
     case 1:
-        pDialog->FUN_140faa750();
+        pDialog->SetLoadMode();
         break;
     case 2:
     {
@@ -745,7 +745,7 @@ bool UIHomeInfoDialog::SendRequestCubeMode31(int nResult, const CMsgBoxData& dat
 {
     if (nResult == 0)
     {
-        if (((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->FUN_14036d570(0xd4))
+        if (((class CFeatureManager*)(class Unk_HiOptions*)(((class Unk_HiOptions*)FUN_140166410())))->IsFeatureEnabled(0xd4))
         {
             Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pPc != 0)
@@ -770,7 +770,7 @@ bool UIHomeInfoDialog::FUN_1412c7ff0(int nResult, const CMsgBoxData& data)
         {
             __int64 nMeso = _wtoi64(parts[0]);
             __int64 nMerat = _wtoi64(parts[1]);
-            if (nMeso <= DAT_143ab2898 && nMerat <= FUN_140930240() + FUN_140930ae0())
+            if (nMeso <= DAT_143ab2898 && nMerat <= GetMeratBalance() + GetRedMeratBalance())
             {
                 COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
                 packet.WriteUInt8(0x38);
@@ -782,7 +782,7 @@ bool UIHomeInfoDialog::FUN_1412c7ff0(int nResult, const CMsgBoxData& data)
             {
                 if (nMeso > DAT_143ab2898)
                     FUN_141275260(0xcb0, 1, 1);
-                if (nMerat > FUN_140930240() + FUN_140930ae0())
+                if (nMerat > GetMeratBalance() + GetRedMeratBalance())
                     FUN_141275260(0xcb1, 1, 1);
             }
         }
@@ -791,7 +791,7 @@ bool UIHomeInfoDialog::FUN_1412c7ff0(int nResult, const CMsgBoxData& data)
 }
 
 // @0x1412c81d0
-unsigned int UIHomeInfoDialog::FUN_1412c81d0()
+unsigned int UIHomeInfoDialog::GetBankCooldownRemaining()
 {
     Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -807,7 +807,7 @@ unsigned int UIHomeInfoDialog::FUN_1412c81d0()
 }
 
 // @0x1412c8280
-unsigned int UIHomeInfoDialog::FUN_1412c8280()
+unsigned int UIHomeInfoDialog::GetDoctorCooldownRemaining()
 {
     Unk_HiPc* pPc = ((class Unk_HiPc*)((class WorldService*)(class Unk_HiWorld*)(reinterpret_cast<Unk_HiWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -875,16 +875,16 @@ MS2_REPLACE_METHOD(0x1412C4D70, UIHomeInfoDialog, GetTypeName, 61, 0xDB750399);
 MS2_REPLACE_METHOD(0x1412C4DC0, UIHomeInfoDialog, OnLoadComplete, 491, 0xE377F024);
 MS2_REPLACE_METHOD(0x1412C4FC0, UIHomeInfoDialog, vfunc_43, 103, 0xD19FE84D);
 MS2_REPLACE_METHOD(0x1412C5030, UIHomeInfoDialog, vfunc_28, 702, 0xAD2CA2DB);
-MS2_REPLACE_METHOD(0x1412C5690, UIHomeInfoDialog, FUN_1412c5690, 1425, 0x3B047595);
-MS2_REPLACE_METHOD(0x1412C5C30, UIHomeInfoDialog, FUN_1412c5c30, 357, 0xBD0CFBD2);
-MS2_REPLACE_METHOD(0x1412C5DA0, UIHomeInfoDialog, FUN_1412c5da0, 335, 0x28AE81DF);
-MS2_REPLACE_METHOD(0x1412C5F00, UIHomeInfoDialog, FUN_1412c5f00, 357, 0xFC72C3EE);
+MS2_REPLACE_METHOD(0x1412C5690, UIHomeInfoDialog, UpdateCooldowns, 1425, 0x3B047595);
+MS2_REPLACE_METHOD(0x1412C5C30, UIHomeInfoDialog, UpdateNoticeText, 357, 0xBD0CFBD2);
+MS2_REPLACE_METHOD(0x1412C5DA0, UIHomeInfoDialog, UpdateRecommendButton, 335, 0x28AE81DF);
+MS2_REPLACE_METHOD(0x1412C5F00, UIHomeInfoDialog, UpdateAddressText, 357, 0xFC72C3EE);
 MS2_REPLACE_METHOD(0x1412C6070, UIHomeInfoDialog, FUN_1412c6070, 423, 0x47F5A907);
-MS2_REPLACE_METHOD(0x1412C6220, UIHomeInfoDialog, FUN_1412c6220, 1167, 0x031C2BDB);
+MS2_REPLACE_METHOD(0x1412C6220, UIHomeInfoDialog, UpdateBalance, 1167, 0x031C2BDB);
 MS2_REPLACE_METHOD(0x1412C6B50, UIHomeInfoDialog, FUN_1412c6b50, 788, 0xA95FEA93);
-MS2_REPLACE_METHOD(0x1412C6E70, UIHomeInfoDialog, FUN_1412c6e70, 537, 0x8CBD6EEE);
+MS2_REPLACE_METHOD(0x1412C6E70, UIHomeInfoDialog, SetItemInfo, 537, 0x8CBD6EEE);
 MS2_REPLACE_METHOD(0x1412C7090, UIHomeInfoDialog, FUN_1412c7090, 160, 0x81FF7CA8);
-MS2_REPLACE_METHOD(0x1412C7140, UIHomeInfoDialog, FUN_1412c7140, 390, 0x1D9E1367);
+MS2_REPLACE_METHOD(0x1412C7140, UIHomeInfoDialog, GetAddressText, 390, 0x1D9E1367);
 MS2_REPLACE_METHOD(0x1412C72D0, UIHomeInfoDialog, FUN_1412c72d0, 806, 0xB76F0C61);
 MS2_REPLACE_METHOD(0x1412C7600, UIHomeInfoDialog, FUN_1412c7600, 42, 0x5E244372);
 MS2_REPLACE_METHOD(0x1412C7630, UIHomeInfoDialog, OnTogglePanel, 167, 0x80DDFABF);
@@ -895,10 +895,10 @@ MS2_REPLACE_METHOD(0x1412C77C0, UIHomeInfoDialog, OnDoctor, 68, 0x6D992898);
 MS2_REPLACE_METHOD(0x1412C7810, UIHomeInfoDialog, OnBalance, 444, 0xF76ACB35);
 MS2_REPLACE_METHOD(0x1412C79E0, UIHomeInfoDialog, SendRequestCubeMode58, 173, 0xBF680A66);
 MS2_REPLACE_METHOD(0x1412C7AA0, UIHomeInfoDialog, FUN_1412c7aa0, 72, 0xA734365C);
-MS2_REPLACE_METHOD(0x1412C7AF0, UIHomeInfoDialog, FUN_1412c7af0, 1011, 0x70EEF58B);
+MS2_REPLACE_METHOD(0x1412C7AF0, UIHomeInfoDialog, OnSaveSlotAction, 1011, 0x70EEF58B);
 MS2_REPLACE_METHOD(0x1412C7EF0, UIHomeInfoDialog, FUN_1412c7ef0, 72, 0x71DF7278);
 MS2_REPLACE_METHOD(0x1412C7F40, UIHomeInfoDialog, SendRequestCubeMode31, 157, 0xC5195BF7);
 MS2_REPLACE_METHOD(0x1412C7FF0, UIHomeInfoDialog, FUN_1412c7ff0, 461, 0xE69FF28C);
-MS2_REPLACE_METHOD(0x1412C81D0, UIHomeInfoDialog, FUN_1412c81d0, 164, 0xB0D62B29);
-MS2_REPLACE_METHOD(0x1412C8280, UIHomeInfoDialog, FUN_1412c8280, 164, 0x180D9578);
+MS2_REPLACE_METHOD(0x1412C81D0, UIHomeInfoDialog, GetBankCooldownRemaining, 164, 0xB0D62B29);
+MS2_REPLACE_METHOD(0x1412C8280, UIHomeInfoDialog, GetDoctorCooldownRemaining, 164, 0x180D9578);
 MS2_REPLACE_METHOD(0x1412C8950, UIHomeInfoDialog, vfunc_48, 11, 0x3523FE59);

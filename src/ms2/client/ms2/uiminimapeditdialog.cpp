@@ -84,19 +84,19 @@ void XmlSetChild(class TiXmlElement*, char const*, NiRect<float> const&, bool);
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, CString const&, bool);
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, efd::Point3 const&, bool);
 void XmlSetChildAttr(class TiXmlElement*, char const*, char const*, float, bool);   // C3: was FUN_1408744b0
-CString FUN_14016a5c0(const char* pszPath, int nFlags);             // path conversion
+CString ToCString(const char* pszPath, int nFlags);             // path conversion
 CString FUN_1409a2360(const char* psz, int n);                      // text conversion
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);          // wide -> narrow
-void FUN_140d73aa0(CStringW strText, int nType, void* pOwner, CStringW strTag);   // show a message box
+void ShowMessageBox(CStringW strText, int nType, void* pOwner, CStringW strTag);   // show a message box
 
-void* FUN_140aae430();   // C3: was FUN_140aae430
+void* GetMS2();   // C3: was GetMS2
 
 // camera manager members (exe functions of other objs)
 float FUN_1409f2430(class CameraMgr*);   // C3: was FUN_1409f2430
 void FUN_140ad4ff0(class CameraMgr*, float);
 float FUN_141032e60(void*);   // C3: was FUN_141032e60
 void FUN_141032ed0(void*, float);   // C3: was FUN_141032ed0
-void FUN_141032f30(void*, float);   // C3: was FUN_141032f30
+void SetMinDistance(void*, float);   // C3: was SetMinDistance
 void FUN_140b6bd30(void*);   // C3: was FUN_140b6bd30
 void CameraMgrMoveTo(CameraMgr* pCamera, Vector3 ptPos);    // set the camera position
 
@@ -112,8 +112,8 @@ namespace ecr
 class CameraData { public: NiCamera* GetCamera() const; };
 class CameraService { public: CameraData* GetActiveCamera(RenderSurface* pSurface); };
 }
-ecr::RenderService* FUN_1413f9890();
-ecr::CameraService* FUN_1413f9910();
+ecr::RenderService* GetRenderService();
+ecr::CameraService* GetCameraService();
 extern unsigned int DAT_143af62d4;                                         // the screen width
 extern unsigned int DAT_143af62d8;                                         // the screen height
 
@@ -125,7 +125,7 @@ int SaveRenderTargetToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILE
 int SaveDefaultTargetToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILEFORMAT eFormat, int nUnused,
     NiRect<unsigned int> kRect, float fScale);
 
-float FUN_14028aed0(float f);                                        // round
+float Floor(float f);                                        // round
 
 // the CRT time wrappers
 // @0x141a51ec0
@@ -135,7 +135,7 @@ struct tm* FUN_141a51ec0(const __time64_t* pTime)
 }
 
 // @0x141a51ee0
-__time64_t FUN_141a51ee0(__time64_t* pTime)
+__time64_t GetTime(__time64_t* pTime)
 {
     return _time64(pTime);
 }
@@ -149,7 +149,7 @@ void FUN_141a551a0(CameraMgr* pCamera, bool b)
 }
 
 // @0x141a55200
-void FUN_141a55200(CameraMgr* pCamera, Vector3 pt)
+void SetCameraRotation(CameraMgr* pCamera, Vector3 pt)
 {
     if (pCamera->m_spMode.get())
         pCamera->m_spMode->vfunc_4(pt);
@@ -178,8 +178,8 @@ int UIMinimapEditDialog::vfunc_65()
         return 0;
     if (CameraMgr::GetInstance()->FUN_140a18070() == 0)
         return 0;
-    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(NiColorA(0, 0, 0, 0));
-    FUN_141a540f0(1);
+    static_cast<MS2*>(GetMS2())->SetBackgroundColor(NiColorA(0, 0, 0, 0));
+    SetWorldObjectsHidden(1);
     TSingleton<ApplyEffect>::GetInstance()->SetSoftParticlesOption(true, 0);
     TSingleton<ApplyEffect>::GetInstance()->ApplyFieldFogRange(false);
     CameraMgr::GetInstance()->SetMode(6, 1);
@@ -194,8 +194,8 @@ int UIMinimapEditDialog::vfunc_65()
 void UIMinimapEditDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    static_cast<MS2*>(FUN_140aae430())->SetBackgroundColor(efd::ColorA::BLACK);
-    FUN_141a540f0(0);
+    static_cast<MS2*>(GetMS2())->SetBackgroundColor(efd::ColorA::BLACK);
+    SetWorldObjectsHidden(0);
     TSingleton<ApplyEffect>::GetInstance()->ApplySoftParticleOption();
     TSingleton<ApplyEffect>::GetInstance()->ApplyFieldFog();
     CameraMgr::GetInstance()->FUN_140aec8a0(false);
@@ -218,43 +218,43 @@ void UIMinimapEditDialog::OnLoadComplete()
 
     if (MS2Ptr<ASSlider> spFov = GetChild<ASSlider>("m_sliderFov"))
     {
-        spFov->FUN_1422ce750(0);
-        spFov->FUN_1422ce6a0(90.0f);
-        spFov->FUN_1422ce5f0(CameraMgr::GetInstance()->FUN_140ad4b40());
-        spFov->FUN_1422c1fe0(0);
+        spFov->SetMinimum(0);
+        spFov->SetMaximum(90.0f);
+        spFov->SetValue(CameraMgr::GetInstance()->FUN_140ad4b40());
+        spFov->SetEnabled(0);
     }
     if (MS2Ptr<ASSlider> spDistance = GetChild<ASSlider>("m_sliderDistance"))
     {
-        spDistance->FUN_1422ce750(10.0f);
-        spDistance->FUN_1422ce6a0(20000.0f);
-        spDistance->FUN_1422ce5f0(FUN_1409f2430(CameraMgr::GetInstance()));
-        spDistance->FUN_1422c1fe0(0);
+        spDistance->SetMinimum(10.0f);
+        spDistance->SetMaximum(20000.0f);
+        spDistance->SetValue(FUN_1409f2430(CameraMgr::GetInstance()));
+        spDistance->SetEnabled(0);
     }
     if (MS2Ptr<ASSlider> spVAngle = GetChild<ASSlider>("m_sliderVAngle"))
     {
-        spVAngle->FUN_1422ce750(0);
-        spVAngle->FUN_1422ce6a0(90.0f);
-        spVAngle->FUN_1422ce5f0(FUN_141032e60((void*)(CameraMgr::GetInstance())));
-        spVAngle->FUN_1422c1fe0(0);
+        spVAngle->SetMinimum(0);
+        spVAngle->SetMaximum(90.0f);
+        spVAngle->SetValue(FUN_141032e60((void*)(CameraMgr::GetInstance())));
+        spVAngle->SetEnabled(0);
     }
 
     if (MS2Ptr<ASLabel> spLabelFov = GetChild<ASLabel>("m_labelFov"))
     {
         CString strText;
         strText.Format("Camera Fov [%f]", (double)CameraMgr::GetInstance()->FUN_140ad4b40());
-        spLabelFov->FUN_1422e4a00(strText);
+        spLabelFov->SetText(strText);
     }
     if (MS2Ptr<ASLabel> spLabelDistance = GetChild<ASLabel>("m_labelDistance"))
     {
         CString strText;
         strText.Format("Camera Distance [%f]", (double)FUN_1409f2430(CameraMgr::GetInstance()));
-        spLabelDistance->FUN_1422e4a00(strText);
+        spLabelDistance->SetText(strText);
     }
     if (MS2Ptr<ASLabel> spLabelVAngle = GetChild<ASLabel>("m_labelVAngle"))
     {
         CString strText;
         strText.Format("Camera VAngle [%f]", (double)FUN_141032e60((void*)(CameraMgr::GetInstance())));
-        spLabelVAngle->FUN_1422e4a00(strText);
+        spLabelVAngle->SetText(strText);
     }
 
     if (MS2Ptr<ASTextInput> spEmblem = GetChild<ASTextInput>("m_emblem"))
@@ -262,7 +262,7 @@ void UIMinimapEditDialog::OnLoadComplete()
     if (MS2Ptr<ASTextInput> spFileName = GetChild<ASTextInput>("m_fileName"))
     {
         if (m_strImageName.GetLength() < 1)
-            m_strImageName = FUN_141a549c0();
+            m_strImageName = GetMinimapImagePath();
         spFileName->SetTextA(m_strImageName);
     }
 
@@ -310,7 +310,7 @@ int UIMinimapEditDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         {
             float fDistance = data.PopFloat();
             FUN_141032ed0((void*)(CameraMgr::GetInstance()), fDistance);
-            FUN_141032f30((void*)(CameraMgr::GetInstance()), fDistance);
+            SetMinDistance((void*)(CameraMgr::GetInstance()), fDistance);
             CameraMgr::GetInstance()->FUN_140af9b40(fDistance);
             FUN_140b6bd30((void*)(CameraMgr::GetInstance()));
         }
@@ -346,7 +346,7 @@ void UIMinimapEditDialog::FUN_141a53100()
     if (spMap == 0)
         return;
     TiXmlDocument doc;
-    if (doc.LoadFile((const char*)FUN_14016a5c0((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), TIXML_ENCODING_UNKNOWN))
+    if (doc.LoadFile((const char*)ToCString((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), TIXML_ENCODING_UNKNOWN))
     {
         Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
         if (pRoot == NULL)
@@ -365,7 +365,7 @@ void UIMinimapEditDialog::FUN_141a53100()
             m_spMinimap->m_rcImage.r = m_spMinimap->m_rcImage.l + 1024.0f;
             m_spMinimap->m_rcImage.b = m_spMinimap->m_rcImage.t + 1024.0f;
             CameraMgrMoveTo(CameraMgr::GetInstance(), Vector3(reinterpret_cast<const Vector3&>(m_spMinimap->m_vecCamPos)));
-            FUN_141a55200(CameraMgr::GetInstance(), Vector3(reinterpret_cast<const Vector3&>(m_spMinimap->m_vecCamRot)));
+            SetCameraRotation(CameraMgr::GetInstance(), Vector3(reinterpret_cast<const Vector3&>(m_spMinimap->m_vecCamRot)));
             CameraMgr::GetInstance()->FUN_140af0170(m_spMinimap->m_fZoomFactor < 1.0f ? 1.0f : m_spMinimap->m_fZoomFactor, false);
             FUN_140b6bd30((void*)(CameraMgr::GetInstance()));
         }
@@ -384,10 +384,10 @@ void UIMinimapEditDialog::FUN_141a53750()
         return;
     if (MS2Ptr<ASMovieClip> spArea = GetChild<ASMovieClip>("m_rectarea"))
     {
-        ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
+        ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
         if (pSurface != NULL)
         {
-            ecr::CameraData* pCamera = FUN_1413f9910()->GetActiveCamera(pSurface);
+            ecr::CameraData* pCamera = GetCameraService()->GetActiveCamera(pSurface);
             if (pCamera != NULL && CameraMgr::GetInstance()->FUN_140a18070() != 0)
             {
                 reinterpret_cast<NiPoint3&>(m_spMinimap->m_vecCamPos) = CameraMgr::GetInstance()->FUN_140a17e10();
@@ -396,9 +396,9 @@ void UIMinimapEditDialog::FUN_141a53750()
                 m_spMinimap->m_fZoomFactor = CameraMgr::GetInstance()->FUN_140af0140();
                 m_spMinimap->m_strImageName = m_strImageName;
                 m_spMinimap->m_rcScreen = Unk_Rect4(0, (float)DAT_143af62d4, 0, (float)DAT_143af62d8);
-                m_spMinimap->m_rcImage.l = spArea->FUN_1422c10a0();
-                m_spMinimap->m_rcImage.r = m_spMinimap->m_rcImage.l + (float)spArea->FUN_1422c1340();
-                m_spMinimap->m_rcImage.t = spArea->FUN_1422c1110();
+                m_spMinimap->m_rcImage.l = spArea->GetX();
+                m_spMinimap->m_rcImage.r = m_spMinimap->m_rcImage.l + (float)spArea->GetWidthCeil();
+                m_spMinimap->m_rcImage.t = spArea->GetY();
                 m_spMinimap->m_rcImage.b = m_spMinimap->m_rcImage.t + (float)spArea->GetHeightCeil();
             }
         }
@@ -406,7 +406,7 @@ void UIMinimapEditDialog::FUN_141a53750()
     if (spMap->m_strXBlock.IsEmpty())
         return;
     TiXmlDocument doc;
-    if (!doc.LoadFile((const char*)FUN_14016a5c0((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), TIXML_ENCODING_UNKNOWN))
+    if (!doc.LoadFile((const char*)ToCString((const char*)GetXBlockPath(CString(spMap->m_strXBlock)), 0), TIXML_ENCODING_UNKNOWN))
     {
         TiXmlDeclaration decl("1.0", "utf-8", "");
         reinterpret_cast<TiXmlNode*>(&doc)->InsertEndChild(decl);
@@ -432,11 +432,11 @@ void UIMinimapEditDialog::FUN_141a53750()
         XmlSetChildAttr((class TiXmlElement*)(pMinimap), "edit", "zoomfactor", m_spMinimap->m_fZoomFactor, 1);
         doc.SaveFile();
     }
-    SaveDefaultTargetToFileA(&m_strImageName, D3DXIFF_DDS, 1, FUN_141a54a50(), 0.5f);
+    SaveDefaultTargetToFileA(&m_strImageName, D3DXIFF_DDS, 1, GetImageRect(), 0.5f);
 }
 
 // @0x141a540f0
-void UIMinimapEditDialog::FUN_141a540f0(int bShow)
+void UIMinimapEditDialog::SetWorldObjectsHidden(int bShow)
 {
     efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
     if (bShow != 0)
@@ -503,9 +503,9 @@ void UIMinimapEditDialog::FUN_141a540f0(int bShow)
         }
     }
     if (bShow != 0)
-        TSingleton<CUIService>::GetInstance()->FUN_141ad9b30();
+        TSingleton<CUIService>::GetInstance()->UnloadBackgroundMovie();
     else
-        TSingleton<CUIService>::GetInstance()->FUN_141ad9650();
+        TSingleton<CUIService>::GetInstance()->LoadBackgroundMovie();
 }
 
 // @0x141a545a0
@@ -514,18 +514,18 @@ void UIMinimapEditDialog::OnScreenShot()
     if (MS2Ptr<ASMovieClip> spArea = GetChild<ASMovieClip>("m_rectarea"))
     {
         NiRect<unsigned int> kRect(0, 0, 0, 0);
-        kRect.m_left = (int)(__int64)spArea->FUN_1422c10a0();
-        kRect.m_right = kRect.m_left + spArea->FUN_1422c1340();
-        kRect.m_top = (int)(__int64)spArea->FUN_1422c1110();
+        kRect.m_left = (int)(__int64)spArea->GetX();
+        kRect.m_right = kRect.m_left + spArea->GetWidthCeil();
+        kRect.m_top = (int)(__int64)spArea->GetY();
         kRect.m_bottom = kRect.m_top + spArea->GetHeightCeil();
         CStringW strDirectory;
         if (EnsureScreenshotDirectory(&strDirectory) < 0)
         {
             CStringW strMessage = StringFormat(L"Could not create directory. path={0}", strDirectory);
-            FUN_140d73aa0(strMessage, 0, 0, CStringW(L""));
+            ShowMessageBox(strMessage, 0, 0, CStringW(L""));
             return;
         }
-        __time64_t tNow = FUN_141a51ee0(0);
+        __time64_t tNow = GetTime(0);
         const struct tm* pTm = FUN_141a51ec0(&tNow);
         CStringW strName;
         strName.Format(L"\\%d%02d%02d_%02d%02d%02d.png", pTm->tm_year + 1900, pTm->tm_mon + 1, pTm->tm_mday, pTm->tm_hour, pTm->tm_min, pTm->tm_sec);
@@ -551,7 +551,7 @@ CString UIMinimapEditDialog::GetXBlockPath(CString strXBlock)
 }
 
 // @0x141a549c0
-CString UIMinimapEditDialog::FUN_141a549c0()
+CString UIMinimapEditDialog::GetMinimapImagePath()
 {
     CString strPath;
     strPath.Format("./Data/Resource/Image/Map/Minimap/%08d.dds", WorldService::GetInstance()->FUN_141bd3060());
@@ -559,12 +559,12 @@ CString UIMinimapEditDialog::FUN_141a549c0()
 }
 
 // @0x141a54a50
-NiRect<unsigned int> UIMinimapEditDialog::FUN_141a54a50()
+NiRect<unsigned int> UIMinimapEditDialog::GetImageRect()
 {
     NiRect<unsigned int> kRect(0, 0, 0, 0);
-    kRect.m_left = (int)(__int64)FUN_14028aed0(m_spMinimap->m_rcImage.l);
-    kRect.m_right = (int)(__int64)FUN_14028aed0(m_spMinimap->m_rcImage.r);
-    kRect.m_top = (int)(__int64)FUN_14028aed0(m_spMinimap->m_rcImage.t);
-    kRect.m_bottom = (int)(__int64)FUN_14028aed0(m_spMinimap->m_rcImage.b);
+    kRect.m_left = (int)(__int64)Floor(m_spMinimap->m_rcImage.l);
+    kRect.m_right = (int)(__int64)Floor(m_spMinimap->m_rcImage.r);
+    kRect.m_top = (int)(__int64)Floor(m_spMinimap->m_rcImage.t);
+    kRect.m_bottom = (int)(__int64)Floor(m_spMinimap->m_rcImage.b);
     return kRect;
 }

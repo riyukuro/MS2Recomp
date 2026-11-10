@@ -100,10 +100,10 @@ public:
     void FUN_140da5180(int nOpcode, Delegate<void(CInPacket&)> handler);
     void FUN_140da51e0(int nOpcode, Delegate<void(CInPacket&)> handler);
 };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_140651350();
+CString GetLanguageCode();
 CString FUN_1411c0aa0(const char* pszPath);
 class UIMessengerBrowser { public: void FUN_141a25770(CStringW strText, bool b); };
 UIMessengerBrowser* FindMessengerBrowser(int);
@@ -200,13 +200,13 @@ UIDebugGuideDialog::UIDebugGuideDialog()
 {
     m_40 = 1;
     FUN_1422dc3b0(1);
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0x87, Delegate<void(CInPacket&)>(this, &UIDebugGuideDialog::OnPacket));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0x87, Delegate<void(CInPacket&)>(this, &UIDebugGuideDialog::OnPacket));
 }
 
 // @0x141286a10
 UIDebugGuideDialog::~UIDebugGuideDialog()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0x87, Delegate<void(CInPacket&)>(this, &UIDebugGuideDialog::OnPacket));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0x87, Delegate<void(CInPacket&)>(this, &UIDebugGuideDialog::OnPacket));
 }
 
 // @0x141286ba0
@@ -221,8 +221,8 @@ void UIDebugGuideDialog::OnLoadInit()
     UIObject::OnLoadInit();
     m_groups.clear();
     LoadXml("./Data/XmlDebug/DebugCommandCustom.xml");
-    CString strPath = Unk_SocketFormat("{0}_{1}.xml", "./Data/XmlDebug/DebugCommand", FUN_140651350());
-    if (GetFileSystem()->FUN_1403987d0(std::string(strPath)) == 0)
+    CString strPath = Unk_SocketFormat("{0}_{1}.xml", "./Data/XmlDebug/DebugCommand", GetLanguageCode());
+    if (GetFileSystem()->FileExists(std::string(strPath)) == 0)
         strPath = FUN_1411c0aa0("./Data/XmlDebug/DebugCommand.xml");
     LoadXml(strPath);
     m_movie = FUN_1409b40c0(m_28, (*m_30).FUN_1422bb890());
@@ -256,13 +256,13 @@ void UIDebugGuideDialog::OnLoadInit()
             throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}", "SwfLoadError",
                                                       MS2_THIS_FILE, MS2_LINE(111), __FUNCTION__));
     } while (0);
-    FUN_141925fa0("m_dragBar");
-    FUN_141925ec0("m_closeButton");
-    reinterpret_cast<ASScrollingList*>(m_leftList.operator->())->FUN_1422e1890(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnSelectGroup));
-    reinterpret_cast<ASScrollingList*>(m_rightList.operator->())->FUN_1422e1890(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnSelectCommand));
+    BindDragBar("m_dragBar");
+    BindCloseButton("m_closeButton");
+    reinterpret_cast<ASScrollingList*>(m_leftList.operator->())->AddListIndexChangeListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnSelectGroup));
+    reinterpret_cast<ASScrollingList*>(m_rightList.operator->())->AddListIndexChangeListener(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnSelectCommand));
     m_executeButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnExecute), 0);
     m_multiExecuteButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnMultiExecute), 0);
-    reinterpret_cast<ASEventDispatcher*>(m_movie.operator->())->FUN_1422c3600("doubleClick", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnDoubleClick), 0, 0, 0, 0);
+    reinterpret_cast<ASEventDispatcher*>(m_movie.operator->())->AddEventListener("doubleClick", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugGuideDialog::OnDoubleClick), 0, 0, 0, 0);
     FillGroups();
 }
 
@@ -286,7 +286,7 @@ int UIDebugGuideDialog::vfunc_13()
     for (int i = 0; i < 10; i++)
     {
         int nKey = i + 0x3b;
-        if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d9c0(nKey, true, 0) && PrintCommand(i))
+        if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->WasKeyPressed(nKey, true, 0) && PrintCommand(i))
             return 1;
     }
     return 0;
@@ -345,7 +345,7 @@ void UIDebugGuideDialog::OnDoubleClick(const Scaleform::GFx::FunctionHandler::Pa
 void UIDebugGuideDialog::LoadXml(CString strPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 1, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 1, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

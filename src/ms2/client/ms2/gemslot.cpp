@@ -75,7 +75,7 @@ class Unk_ItemEquipData : public CItemData { };         // CItem::FUN_140527840'
 
 extern Unk_Inventory g_143ab2a90;
 
-bool FUN_140222e10(int nGemType);                       // the gem type is valid
+bool IsValidGemType(int nGemType);                       // the gem type is valid
 CString Name_140219b10(int nGemType);                   // the name of a gem type
 namespace NotifyContext { class BindData; }
 class MS2DragSlot;
@@ -135,7 +135,7 @@ int GemSlot::vfunc_18(void* p)
                         int nSlot = -1;
                         MS2Ptr<CItem> spWorn = (((class PCGemEquip *)((class PC*)((class PCGemEquip *)((class PC*)(pActor))))->GetGemEquip()))->GetItemByGemType(nType);
                         if (spWorn.get() != 0)
-                            nSlot = spWorn->FUN_140526b50();
+                            nSlot = spWorn->GetSlot();
                         EquipGem(spItem, nSlot, 0);
                     }
                 }
@@ -187,7 +187,7 @@ MS2Ptr<CItem> GemSlot::vfunc_25()
 {
     if (m_spPC == 0)
         return MS2Ptr<CItem>(0);
-    return m_spPC->FUN_140dba560(m_nGemType);
+    return m_spPC->FindItemByGemType(m_nGemType);
 }
 
 // @0x14126d880
@@ -231,7 +231,7 @@ int GemSlot::vfunc_0(void* p)
     Unk_GmActor* pActor = ((Unk_GmActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pActor == 0)
         return 0;
-    bool bInvalid = FUN_140222e10(m_nGemType) == false;
+    bool bInvalid = IsValidGemType(m_nGemType) == false;
     if (bInvalid)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
@@ -244,7 +244,7 @@ int GemSlot::vfunc_0(void* p)
         if (tip.FUN_1409e0d40(vfunc_25()))
         {
             tip.SetEnablePuton(vfunc_22());
-            *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+            *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
             return 1;
         }
     }
@@ -254,7 +254,7 @@ int GemSlot::vfunc_0(void* p)
         CStringW strTitle = StringFormat(L"$s_tooltip_myinfo_gem_{0}", Name_140219b10(m_nGemType));
         tip.ApplyTextTooltip(strTitle);
         tip.SetTooltipAlign(3);
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -269,14 +269,14 @@ int GemSlot::vfunc_8(void* p)
     if (pActor == 0)
         return 0;
     MS2Ptr<CItem> spItem = vfunc_25();
-    bool bLock = FUN_140222e10(m_nGemType) == false;
+    bool bLock = IsValidGemType(m_nGemType) == false;
     if (bLock == false && spItem == 0)
         return 0;
     int nFlags = 0x49;
     if (FUN_14126d950() != 0)
         nFlags |= 4;
     ASSlot slot(2);
-    slot.FUN_1407cbbe0("lock", bLock);
+    slot.SetBoolMember("lock", bLock);
     if (spItem ? true : false)
     {
         if (spItem->GetGem() != 0)
@@ -284,15 +284,15 @@ int GemSlot::vfunc_8(void* p)
             if (slot.FUN_1409c3860(vfunc_25(), pActor, nFlags))
             {
                 if (m_spPC->FUN_140dba1c0() != 0)
-                    slot.FUN_1407cbbe0("config", vfunc_25()->FUN_140527840()->GetSubtype() == 1);
+                    slot.SetBoolMember("config", vfunc_25()->FUN_140527840()->GetSubtype() == 1);
                 else
-                    slot.FUN_1407cbbe0("config", false);
+                    slot.SetBoolMember("config", false);
                 int nGemSystem = spItem->GetGem()->vfunc_1();
-                ((class AScript&)(slot)).FUN_1407cb9c0("gemSystem", nGemSystem);
+                ((class AScript&)(slot)).SetIntMember("gemSystem", nGemSystem);
             }
         }
     }
-    *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+    *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
     return 1;
 }
 
@@ -303,7 +303,7 @@ void GemSlot::vfunc_9()
     {
         ASObj obj(m_value18, 2);
         if (obj.IsUndefinedOrNull() == 0)
-            obj.FUN_1407cba60("m_strSlotType", Name_140219b10(m_nGemType));
+            obj.SetStringMember("m_strSlotType", Name_140219b10(m_nGemType));
     }
 }
 
@@ -315,18 +315,18 @@ void FUN_14126e2f0(const CString& strName, MS2Ptr<PCInfo> spPC)
     {
         int nCount = pBag->GetSlotCount();
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x14126e3f0
 void FUN_14126e3f0(const CString& strName)
 {
-    GemSlotBag* pBag = FUN_14126e9a0(Unk_NotifyContext::FUN_1422c8e90(strName));
+    GemSlotBag* pBag = FUN_14126e9a0(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -357,7 +357,7 @@ GemSlotBag::~GemSlotBag()
 CString GemSlotBag::vfunc_15(int nIndex)
 {
     CString str;
-    str.Format("%s.%d", (const char*)FUN_1422c89f0(), nIndex);
+    str.Format("%s.%d", (const char*)GetName(), nIndex);
     return str;
 }
 

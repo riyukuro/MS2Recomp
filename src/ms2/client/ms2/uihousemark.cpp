@@ -119,11 +119,11 @@ MS2_CHECK_OFFSET(Unk_HouseMarkCfg, m_4390, 0x4390);
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 class Unk_HouseMarkUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 float GetDistance(Vector3 a, Vector3 b);   // C3: actionkeyobject.cpp's definition (0x140966f00), the distance
 float FUN_14029d220(float f);                                       // fabs
@@ -145,7 +145,7 @@ bool FUN_14053f940(unsigned nItem);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 
-MS2Ptr<CMsgBoxData> FUN_140d74500(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> CreateMessageBoxWithCallback(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 bool FUN_141900c80(int nResult, const CMsgBoxData& box);
 
@@ -168,77 +168,77 @@ UIHouseMarkEntity::~UIHouseMarkEntity()
 }
 
 // @0x14198ae60
-void UIHouseMarkEntity::FUN_14198ae60(MS2Ptr<ASMovieClip> spClip)
+void UIHouseMarkEntity::AttachMovieClip(MS2Ptr<ASMovieClip> spClip)
 {
     m_clip = spClip;
     if (m_clip == NULL)
         return;
-    FUN_14198c0d0(false);
+    SetVisible(false);
     m_btn = m_clip->FUN_140acce30<ASButton>("m_btn");
     if (m_btn.get() != NULL)
     {
         m_btn->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::FUN_14198c670), 0);
-        reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_btn)->FUN_1422de800(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::FUN_14198c6a0), 0, 0);
-        reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_btn)->FUN_1422de880(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::FUN_14198c6d0), 0, 0);
+        reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_btn)->FUN_1422de800(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::OnRollOver), 0, 0);
+        reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_btn)->FUN_1422de880(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHouseMarkEntity::OnRollOut), 0, 0);
     }
 }
-MS2_REPLACE_METHOD(0x14198AE60, UIHouseMarkEntity, FUN_14198ae60, 659, 0x37455A51);
+MS2_REPLACE_METHOD(0x14198AE60, UIHouseMarkEntity, AttachMovieClip, 659, 0x37455A51);
 
 // @0x14198b100
-void UIHouseMarkEntity::FUN_14198b100()
+void UIHouseMarkEntity::Update()
 {
     if (m_clip == NULL)
         return;
     if (m_bReset)
     {
-        FUN_14198c610();
+        ShowAfterReset();
         return;
     }
     if (reinterpret_cast<Unk_IntervalTimer&>(m_timer).Check(500) == 0)
     {
         if (m_bVisible)
-            FUN_14198b340();
+            UpdateScreenPosition();
         return;
     }
     if (WorldService::GetInstance()->FUN_141bd3cd0() || WorldService::GetInstance()->FUN_141bd3d50() != 0)
     {
-        FUN_14198c0d0(false);
+        SetVisible(false);
         return;
     }
     PCBase* pPc = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPc != NULL && IsPopup() && reinterpret_cast<PC*>(pPc)->IsInCubeMode() != 0)
     {
         if ((unsigned)(m_nPopupTick + *reinterpret_cast<Common::Constants::Value<int>*>(&((struct Unk_HouseMarkCfg*)GetClientConstants())->m_4390)->Get()) < GetTickCountMs2())
-            FUN_14198b320();
+            ClosePopup();
     }
-    FUN_14198b340();
-    FUN_14198b5b0();
-    FUN_14198b7b0();
+    UpdateScreenPosition();
+    UpdateSaleState();
+    UpdateDebugText();
 }
-MS2_REPLACE_METHOD(0x14198B100, UIHouseMarkEntity, FUN_14198b100, 326, 0x2316292E);
+MS2_REPLACE_METHOD(0x14198B100, UIHouseMarkEntity, Update, 326, 0x2316292E);
 
 // @0x14198b250
-bool UIHouseMarkEntity::FUN_14198b250()
+bool UIHouseMarkEntity::IsClipMissing()
 {
     if (m_clip == NULL)
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x14198B250, UIHouseMarkEntity, FUN_14198b250, 46, 0x63D0871B);
+MS2_REPLACE_METHOD(0x14198B250, UIHouseMarkEntity, IsClipMissing, 46, 0x63D0871B);
 
 // @0x14198b290
-int UIHouseMarkEntity::FUN_14198b290()
+int UIHouseMarkEntity::GetId()
 {
     return m_nId;
 }
-MS2_REPLACE_METHOD(0x14198B290, UIHouseMarkEntity, FUN_14198b290, 14, 0x72E52537);
+MS2_REPLACE_METHOD(0x14198B290, UIHouseMarkEntity, GetId, 14, 0x72E52537);
 
 // @0x14198b2b0
-const NiPoint3& UIHouseMarkEntity::FUN_14198b2b0()
+const NiPoint3& UIHouseMarkEntity::GetPosition()
 {
     return m_pos;
 }
-MS2_REPLACE_METHOD(0x14198B2B0, UIHouseMarkEntity, FUN_14198b2b0, 15, 0x3F28D575);
+MS2_REPLACE_METHOD(0x14198B2B0, UIHouseMarkEntity, GetPosition, 15, 0x3F28D575);
 
 // @0x14198b2d0
 bool UIHouseMarkEntity::FUN_14198b2d0()
@@ -248,22 +248,22 @@ bool UIHouseMarkEntity::FUN_14198b2d0()
 MS2_REPLACE_METHOD(0x14198B2D0, UIHouseMarkEntity, FUN_14198b2d0, 15, 0x32C862F5);
 
 // @0x14198b2f0
-void UIHouseMarkEntity::FUN_14198b2f0()
+void UIHouseMarkEntity::OpenPopup()
 {
-    FUN_14198b970();
+    UpdateAddress();
     FUN_14198c140(true);
 }
-MS2_REPLACE_METHOD(0x14198B2F0, UIHouseMarkEntity, FUN_14198b2f0, 36, 0x555A1530);
+MS2_REPLACE_METHOD(0x14198B2F0, UIHouseMarkEntity, OpenPopup, 36, 0x555A1530);
 
 // @0x14198b320
-void UIHouseMarkEntity::FUN_14198b320()
+void UIHouseMarkEntity::ClosePopup()
 {
     FUN_14198c140(false);
 }
-MS2_REPLACE_METHOD(0x14198B320, UIHouseMarkEntity, FUN_14198b320, 26, 0x144835CC);
+MS2_REPLACE_METHOD(0x14198B320, UIHouseMarkEntity, ClosePopup, 26, 0x144835CC);
 
 // @0x14198b340
-void UIHouseMarkEntity::FUN_14198b340()
+void UIHouseMarkEntity::UpdateScreenPosition()
 {
     if (m_clip == NULL)
         return;
@@ -296,24 +296,24 @@ void UIHouseMarkEntity::FUN_14198b340()
         NiPoint3 ptScreen;
         if (reinterpret_cast<CameraMgr*>(TSingleton<CameraMgr>::GetInstance())->FUN_140af0700(m_pos, ptScreen))
         {
-            FUN_14198c0d0(true);
-            ptScreen *= ((class GFxManager*)(class Unk_HouseMarkUIScale*)(((class Unk_HouseMarkUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_clip->FUN_14198f250());
+            SetVisible(true);
+            ptScreen *= ((class GFxManager*)(class Unk_HouseMarkUIScale*)(((class Unk_HouseMarkUIScale*)GetGFxManager())))->GetMovieScale(m_clip->FUN_14198f250());
             m_clip->SetPositionFloat(ptScreen.x, ptScreen.y);
         }
         else
         {
-            FUN_14198c0d0(false);
+            SetVisible(false);
         }
     }
     else
     {
-        FUN_14198c0d0(false);
+        SetVisible(false);
     }
 }
-MS2_REPLACE_METHOD(0x14198B340, UIHouseMarkEntity, FUN_14198b340, 608, 0x1077E103);
+MS2_REPLACE_METHOD(0x14198B340, UIHouseMarkEntity, UpdateScreenPosition, 608, 0x1077E103);
 
 // @0x14198b5b0
-void UIHouseMarkEntity::FUN_14198b5b0()
+void UIHouseMarkEntity::UpdateSaleState()
 {
     efd::SmartPointer<CubeMapInformationService> spService(egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>());
     int nSub;
@@ -321,13 +321,13 @@ void UIHouseMarkEntity::FUN_14198b5b0()
     if (m_nIconType != nState)
     {
         m_nIconType = nState;
-        FUN_14198c210(m_nIconType);
+        SetIconType(m_nIconType);
     }
     if (m_n44 != nSub)
     {
         m_n44 = nSub;
         if (nState != 1)
-            FUN_14198c370(0);
+            SetWaitingProgress(0);
     }
     if (nState == 1)
     {
@@ -344,14 +344,14 @@ void UIHouseMarkEntity::FUN_14198b5b0()
             else
                 nProgress = (std::min)((std::max)(nRemain * 100 / nWaitTime, 1), 100);
             if (nProgress != m_nWaitingProgress)
-                FUN_14198c370(nProgress);
+                SetWaitingProgress(nProgress);
         }
     }
 }
-MS2_REPLACE_METHOD(0x14198B5B0, UIHouseMarkEntity, FUN_14198b5b0, 493, 0x7CB316C7);
+MS2_REPLACE_METHOD(0x14198B5B0, UIHouseMarkEntity, UpdateSaleState, 493, 0x7CB316C7);
 
 // @0x14198b7b0
-void UIHouseMarkEntity::FUN_14198b7b0()
+void UIHouseMarkEntity::UpdateDebugText()
 {
     if (m_clip == NULL)
         return;
@@ -371,10 +371,10 @@ void UIHouseMarkEntity::FUN_14198b7b0()
     if (m_debugText.get() != NULL)
         m_debugText->vfunc_4(bShow);
 }
-MS2_REPLACE_METHOD(0x14198B7B0, UIHouseMarkEntity, FUN_14198b7b0, 427, 0x14FE07E2);
+MS2_REPLACE_METHOD(0x14198B7B0, UIHouseMarkEntity, UpdateDebugText, 427, 0x14FE07E2);
 
 // @0x14198b970
-void UIHouseMarkEntity::FUN_14198b970()
+void UIHouseMarkEntity::UpdateAddress()
 {
     if (m_clip == NULL)
         return;
@@ -382,7 +382,7 @@ void UIHouseMarkEntity::FUN_14198b970()
     if (pPc == NULL)
         return;
     int nMapId = WorldService::GetInstance()->FUN_141bd3060();
-    int nGroup = FUN_14198b290();
+    int nGroup = GetId();
     Unk_UGCGroup group;
     if (FUN_1408a0d30(nGroup, group, nMapId) == 0)
         return;
@@ -435,17 +435,17 @@ void UIHouseMarkEntity::FUN_14198b970()
     CStringW strAddress = spService->FUN_1410c7ce0(nGroup, nBlock);
     m_clip->Invoke("setAddress", nState, strMap, strEmpty, strOwner, strPrice, strItem, strAddress);
 }
-MS2_REPLACE_METHOD(0x14198B970, UIHouseMarkEntity, FUN_14198b970, 1867, 0x84B18C82);
+MS2_REPLACE_METHOD(0x14198B970, UIHouseMarkEntity, UpdateAddress, 1867, 0x84B18C82);
 
 // @0x14198c0d0
-void UIHouseMarkEntity::FUN_14198c0d0(bool bVisible)
+void UIHouseMarkEntity::SetVisible(bool bVisible)
 {
     if (m_clip == NULL)
         return;
     m_bVisible = bVisible;
     m_clip->vfunc_4(m_bVisible);
 }
-MS2_REPLACE_METHOD(0x14198C0D0, UIHouseMarkEntity, FUN_14198c0d0, 106, 0xE3FF8BDF);
+MS2_REPLACE_METHOD(0x14198C0D0, UIHouseMarkEntity, SetVisible, 106, 0xE3FF8BDF);
 
 // @0x14198c140
 void UIHouseMarkEntity::FUN_14198c140(bool bPopup)
@@ -463,7 +463,7 @@ void UIHouseMarkEntity::FUN_14198c140(bool bPopup)
 MS2_REPLACE_METHOD(0x14198C140, UIHouseMarkEntity, FUN_14198c140, 198, 0xEE627117);
 
 // @0x14198c210
-void UIHouseMarkEntity::FUN_14198c210(int nIconType)
+void UIHouseMarkEntity::SetIconType(int nIconType)
 {
     if (m_clip == NULL)
         return;
@@ -488,17 +488,17 @@ void UIHouseMarkEntity::FUN_14198c210(int nIconType)
     }
     m_clip->Invoke("setIconType", strType);
 }
-MS2_REPLACE_METHOD(0x14198C210, UIHouseMarkEntity, FUN_14198c210, 334, 0x1EB4943A);
+MS2_REPLACE_METHOD(0x14198C210, UIHouseMarkEntity, SetIconType, 334, 0x1EB4943A);
 
 // @0x14198c370
-void UIHouseMarkEntity::FUN_14198c370(int nProgress)
+void UIHouseMarkEntity::SetWaitingProgress(int nProgress)
 {
     if (m_clip == NULL)
         return;
     m_nWaitingProgress = nProgress;
     m_clip->Invoke("setWaitingProgress", m_nWaitingProgress);
 }
-MS2_REPLACE_METHOD(0x14198C370, UIHouseMarkEntity, FUN_14198c370, 114, 0x007BAE6D);
+MS2_REPLACE_METHOD(0x14198C370, UIHouseMarkEntity, SetWaitingProgress, 114, 0x007BAE6D);
 
 // @0x14198c3f0
 bool UIHouseMarkEntity::IsPopup()
@@ -515,8 +515,8 @@ void UIHouseMarkEntity::FUN_14198c410()
         UIRealEstateDialog* pDlg = Unk_GetUI<UIRealEstateDialog>(0x4e76);
         if (pDlg != NULL && pDlg->FUN_141924630() == 0)
         {
-            MS2Ptr<CMsgBoxData> box = FUN_140d74500(CStringW(L"$s_msgbox_ugc_turms_content"), 0x1e,
-                                                    Delegate<bool(int, const CMsgBoxData&)>(this, &UIHouseMarkEntity::FUN_14198c700));
+            MS2Ptr<CMsgBoxData> box = CreateMessageBoxWithCallback(CStringW(L"$s_msgbox_ugc_turms_content"), 0x1e,
+                                                    Delegate<bool(int, const CMsgBoxData&)>(this, &UIHouseMarkEntity::OnTermsResult));
             if (box.get() != NULL)
             {
                 ((class CMsgBoxData*)(class CMsgBoxData*)(box.operator->()))->SetTitle(L"$s_msgbox_ugc_turms_title");
@@ -534,21 +534,21 @@ void UIHouseMarkEntity::FUN_14198c5a0()
 {
     UIRealEstateDialog* pDlg = Unk_GetUI<UIRealEstateDialog>(0x4e76);
     if (pDlg != NULL && pDlg->FUN_141924630() == 0)
-        pDlg->FUN_141ab4000(m_nId, WorldService::GetInstance()->FUN_141bd3060());
+        pDlg->SetGroupAndMapId(m_nId, WorldService::GetInstance()->FUN_141bd3060());
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->ToggleDialog((eUIClassID)(0x4e76)));
 }
 MS2_REPLACE_METHOD(0x14198C5A0, UIHouseMarkEntity, FUN_14198c5a0, 103, 0x92B76A5E);
 
 // @0x14198c610
-void UIHouseMarkEntity::FUN_14198c610()
+void UIHouseMarkEntity::ShowAfterReset()
 {
     if (m_clip == NULL)
         return;
-    FUN_14198c0d0(true);
+    SetVisible(true);
     m_bReset = false;
-    FUN_14198c210(m_nIconType);
+    SetIconType(m_nIconType);
 }
-MS2_REPLACE_METHOD(0x14198C610, UIHouseMarkEntity, FUN_14198c610, 81, 0x4755A41F);
+MS2_REPLACE_METHOD(0x14198C610, UIHouseMarkEntity, ShowAfterReset, 81, 0x4755A41F);
 
 // @0x14198c670
 void UIHouseMarkEntity::FUN_14198c670(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -558,28 +558,28 @@ void UIHouseMarkEntity::FUN_14198c670(const Scaleform::GFx::FunctionHandler::Par
 MS2_REPLACE_METHOD(0x14198C670, UIHouseMarkEntity, FUN_14198c670, 29, 0xA1216214);
 
 // @0x14198c6a0
-void UIHouseMarkEntity::FUN_14198c6a0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIHouseMarkEntity::OnRollOver(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_14198b2f0();
+    OpenPopup();
 }
-MS2_REPLACE_METHOD(0x14198C6A0, UIHouseMarkEntity, FUN_14198c6a0, 29, 0xC8242235);
+MS2_REPLACE_METHOD(0x14198C6A0, UIHouseMarkEntity, OnRollOver, 29, 0xC8242235);
 
 // @0x14198c6d0
-void UIHouseMarkEntity::FUN_14198c6d0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIHouseMarkEntity::OnRollOut(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    FUN_14198b320();
+    ClosePopup();
 }
-MS2_REPLACE_METHOD(0x14198C6D0, UIHouseMarkEntity, FUN_14198c6d0, 29, 0xC8242235);
+MS2_REPLACE_METHOD(0x14198C6D0, UIHouseMarkEntity, OnRollOut, 29, 0xC8242235);
 
 // @0x14198c700
-bool UIHouseMarkEntity::FUN_14198c700(int nResult, const CMsgBoxData& box)
+bool UIHouseMarkEntity::OnTermsResult(int nResult, const CMsgBoxData& box)
 {
     bool bResult = FUN_141900c80(nResult, box);
     if (nResult == 0)
         FUN_14198c5a0();
     return bResult;
 }
-MS2_REPLACE_METHOD(0x14198C700, UIHouseMarkEntity, FUN_14198c700, 63, 0xDBACE5FB);
+MS2_REPLACE_METHOD(0x14198C700, UIHouseMarkEntity, OnTermsResult, 63, 0xDBACE5FB);
 
 // ---- UIHouseMark ----
 
@@ -625,13 +625,13 @@ void UIHouseMark::vfunc_15()
             MS2Ptr<UIHouseMarkEntity> spEntity = it->second;
             if (spEntity == NULL)
                 continue;
-            spEntity->FUN_14198b100();
+            spEntity->Update();
         }
     }
     if (!m_pending.empty())
     {
         std::deque<MS2Ptr<UIHouseMarkEntity> >::iterator it = m_pending.begin();
-        FUN_14198cc20(*it);
+        CreateEntity(*it);
         m_pending.pop_front();
     }
 }
@@ -646,7 +646,7 @@ void UIHouseMark::OnLoadComplete()
 MS2_REPLACE_METHOD(0x14198CAC0, UIHouseMark, OnLoadComplete, 45, 0x863BF3A1);
 
 // @0x14198cb00
-void UIHouseMark::FUN_14198cb00(const Unk_HouseMarkInfo& info)
+void UIHouseMark::AddHouseMark(const Unk_HouseMarkInfo& info)
 {
     MS2Ptr<UIHouseMarkEntity> spEntity(new UIHouseMarkEntity(info));
     if (spEntity == NULL)
@@ -656,13 +656,13 @@ void UIHouseMark::FUN_14198cb00(const Unk_HouseMarkInfo& info)
         m_pending.push_back(spEntity);
         return;
     }
-    FUN_14198cc20(spEntity);
+    CreateEntity(spEntity);
 }
 // Not hooked: constructs UIHouseMarkEntity with the DLL's vftable.
 
 #ifndef MS2_HOOK_DLL
 // @0x14198cc20
-void UIHouseMark::FUN_14198cc20(MS2Ptr<UIHouseMarkEntity> spEntity)
+void UIHouseMark::CreateEntity(MS2Ptr<UIHouseMarkEntity> spEntity)
 {
     if (spEntity == NULL)
         return;
@@ -671,15 +671,15 @@ void UIHouseMark::FUN_14198cc20(MS2Ptr<UIHouseMarkEntity> spEntity)
     Scaleform::GFx::Value v = m_30->Invoke("createEntity");
     MS2Ptr<ASMovieClip> spClip(new ASMovieClip(v, FUN_1422db730()));
     if (spClip)
-        spEntity->FUN_14198ae60(spClip);
-    int nId = spEntity->FUN_14198b290();
+        spEntity->AttachMovieClip(spClip);
+    int nId = spEntity->GetId();
     m_entities.insert(std::make_pair(nId, spEntity));
 }
 #endif
 // Not hooked: constructs ASMovieClip with the DLL's vftable.
 
 // @0x14198ce50
-MS2Ptr<UIHouseMarkEntity> UIHouseMark::FUN_14198ce50(const int& nId) const
+MS2Ptr<UIHouseMarkEntity> UIHouseMark::FindEntity(const int& nId) const
 {
     if (m_entities.empty())
         return MS2Ptr<UIHouseMarkEntity>(0);
@@ -688,7 +688,7 @@ MS2Ptr<UIHouseMarkEntity> UIHouseMark::FUN_14198ce50(const int& nId) const
         return MS2Ptr<UIHouseMarkEntity>(0);
     return it->second;
 }
-MS2_REPLACE_METHOD(0x14198CE50, UIHouseMark, FUN_14198ce50, 231, 0x4883E45F);
+MS2_REPLACE_METHOD(0x14198CE50, UIHouseMark, FindEntity, 231, 0x4883E45F);
 
 // @0x14198cf40
 void UIHouseMark::FUN_14198cf40()

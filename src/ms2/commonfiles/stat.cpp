@@ -63,13 +63,13 @@
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); Unk_XmlNode* NextSibling(const char*); };   // C3: the element view (0x140165cf0 / 0x140168650)
 // C3 #8: dead FUN_140165cf0 / FUN_140168650 view removed (callers use Unk_XmlNode::FirstChild / NextSibling)
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14071ae20(const CString& strFile);                          // the string table directory
 int XmlGetAttr(class TiXmlElement*, char const*, int&);         // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);     // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement*, char const*, CString&);     // C3: was FUN_1408733e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);    // C3: was FUN_140873420
-CString FUN_14016a5c0(const char* pszName, int);                        // its readable form
+CString ToCString(const char* pszName, int);                        // its readable form
 struct Sd_143a65c80; extern Sd_143a65c80 DAT_143a65c80;                 // 0x143a65c80, ??_R0 type descriptor of CStat (data_data_game image)
 extern CStringA DAT_143aacc88;                                          // the empty name
 extern CStringW DAT_143aacc90;                                          // the text shown for an unknown id
@@ -153,7 +153,7 @@ int LoadStatNames(std::map<int, CStringW>& rNames)
 {
     CString strPath = FUN_14071ae20("stringStatName.xml");
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return 0;
     TiXmlElement* pRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -177,9 +177,9 @@ int LoadStatDefinitions()
     s_definitions.resize(0x23);
     std::map<int, CStringW> names;
     LoadStatNames(names);
-    CString strPath = FUN_14071a5b0("Table", "statStringTable.xml");
+    CString strPath = GetXmlPath("Table", "statStringTable.xml");
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return 0;
     TiXmlElement* pRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -220,9 +220,9 @@ int LoadUserStats(int nJob)
 {
     CStringA strFile;
     strFile.Format("userStat%d.xml", nJob);
-    CString strPath = FUN_14071a5b0("Table/Server", strFile);
+    CString strPath = GetXmlPath("Table/Server", strFile);
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false))
         return 0;
     TiXmlElement* pRoot = ((TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -354,7 +354,7 @@ void CheckValid()
     if (!s_valid)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(((const type_info*)(const void*)&DAT_143a65c80)->name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(((const type_info*)(const void*)&DAT_143a65c80)->name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

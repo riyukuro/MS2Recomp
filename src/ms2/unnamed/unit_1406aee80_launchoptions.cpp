@@ -22,9 +22,9 @@ public:
     bool IsDisableValidate();
     bool IsPreloadNoThread();
     bool FUN_1406af0a0();
-    bool FUN_1406af0c0();
-    void FUN_1406af0e0(bool b);
-    bool FUN_1406af100();
+    bool IsSkipLoadingUgcCube();
+    void SetSkipLoadingUgcCube(bool b);
+    bool IsOptimizeUserSync();
     void FUN_1406af130(bool b);
     void FUN_1406af150();
     bool IsSkipNpcLoading();
@@ -55,7 +55,7 @@ Unk_LaunchOptions::Unk_LaunchOptions()
 }
 
 // @0x1406aeee0
-Unk_LaunchOptions* FUN_1406aeee0()
+Unk_LaunchOptions* GetLaunchOptions()
 {
     static Unk_LaunchOptions s_options;
     return &s_options;
@@ -117,19 +117,19 @@ bool Unk_LaunchOptions::FUN_1406af0a0()
 }
 
 // @0x1406af0c0
-bool Unk_LaunchOptions::FUN_1406af0c0()
+bool Unk_LaunchOptions::IsSkipLoadingUgcCube()
 {
     return m_b3;
 }
 
 // @0x1406af0e0
-void Unk_LaunchOptions::FUN_1406af0e0(bool b)
+void Unk_LaunchOptions::SetSkipLoadingUgcCube(bool b)
 {
     m_b3 = b;
 }
 
 // @0x1406af100
-bool Unk_LaunchOptions::FUN_1406af100()
+bool Unk_LaunchOptions::IsOptimizeUserSync()
 {
     if (m_b4)
         return false;

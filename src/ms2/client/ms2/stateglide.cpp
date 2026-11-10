@@ -59,7 +59,7 @@ public:
 };
 bool FUN_14028d470(float a, float b);                      // approximately equal
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
-void FUN_1412751f0(const CStringW& str, int a, int b);     // 0x1412751f0 chat notice
+void ShowSystemNotice(const CStringW& str, int a, int b);     // 0x1412751f0 chat notice
 
 
 // The world service (0x1403ed2d0): the upper bound of the map.
@@ -125,9 +125,9 @@ void StateGlide::vfunc_4(StateData* pData)
     {
         m_bTooHigh = FUN_1417ca000() == 0;
         if (m_bTooHigh && m_pOwner->vfunc_108() != 0)
-            FUN_1412751f0(GetStringCommonByKey(L"s_err_skill_maximum_Height"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_err_skill_maximum_Height"), 1, 1);
     }
-    ((GameObjectController*)m_pOwner->GetPhysicsBody())->FUN_141240730();
+    ((GameObjectController*)m_pOwner->GetPhysicsBody())->StopJump();
     MyPC* pPC = FUN_1417b84b0();
     if (pPC != 0)
     {
@@ -159,10 +159,10 @@ void StateGlide::vfunc_3(double fTime)
 {
     State::vfunc_3(fTime);
     if (m_pOwner->GetPhysicsBody() != 0)
-        ((Unk_GlideHit*)(reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->FUN_141240f20()))->FUN_140cfaf30();
+        ((Unk_GlideHit*)(reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->GetHitReport()))->FUN_140cfaf30();
     if (m_spRow == 0)
         return;
-    FUN_1417c9880((float)fTime);
+    UpdateGlide((float)fTime);
     int bLand = 0;
     if (m_spRow->m_bOnGroundDisable)
     {
@@ -174,7 +174,7 @@ void StateGlide::vfunc_3(double fTime)
         {
             efd::Point3 kPos = reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_18();
             float fDist = 0.0f;
-            if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450(kPos, &fDist, 200.0f) != 0 && fDist < 100.0f)
+            if (((class CPhysXHelper*)GetPhysXHelper())->GetGroundDistance(kPos, &fDist, 200.0f) != 0 && fDist < 100.0f)
                 bLand = 1;
         }
     }
@@ -188,7 +188,7 @@ void StateGlide::vfunc_3(double fTime)
 void StateGlide::vfunc_5(int n)
 {
     StateMoveSkill::vfunc_5(n);
-    ((GameObjectController*)m_pOwner->GetPhysicsBody())->FUN_141240730();
+    ((GameObjectController*)m_pOwner->GetPhysicsBody())->StopJump();
     m_pOwner->FUN_141670330(0);
     m_pOwner->FUN_141670360(0);
     m_pOwner->vfunc_47(true);
@@ -283,7 +283,7 @@ int StateGlide::FUN_1417c9740()
 {
     if (m_spRow == 0)
         return 0;
-    return m_spRow->FUN_140802ab0();
+    return m_spRow->GetId();
 }
 
 // @0x1417c9790
@@ -301,11 +301,11 @@ bool StateGlide::vfunc_38(StateData* pData)
 }
 
 // @0x1417c9880
-void StateGlide::FUN_1417c9880(float fTime)
+void StateGlide::UpdateGlide(float fTime)
 {
     m_fTime += fTime;
-    efd::Point3 kMove = (FUN_1417c9c00() + FUN_1417c9ee0()) * fTime;
-    m_pOwner->FUN_141671960(FUN_1417c9b70());
+    efd::Point3 kMove = (GetVerticalMove() + FUN_1417c9ee0()) * fTime;
+    m_pOwner->FUN_141671960(GetHorizontalVelocity());
     reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->SetKVelocity(FUN_1417c9ee0());
     reinterpret_cast<Unk_GlOwnerSlots*>(m_pOwner)->vfunc_68(kMove, fTime, 0, 0x10, 1);
 }
@@ -323,7 +323,7 @@ float StateGlide::FUN_1417c99f0()
 }
 
 // @0x1417c9ad0
-float StateGlide::FUN_1417c9ad0()
+float StateGlide::GetVerticalVelocity()
 {
     float fBonus = 0.0f;
     PC* pActor = efd::DynamicCast<PC, PCBase>(m_pOwner);
@@ -335,7 +335,7 @@ float StateGlide::FUN_1417c9ad0()
 }
 
 // @0x1417c9b70
-float StateGlide::FUN_1417c9b70()
+float StateGlide::GetHorizontalVelocity()
 {
     return m_spRow->m_fHorizontalVelocity;
 }
@@ -347,7 +347,7 @@ efd::Point3 StateGlide::FUN_1417c9ba0()
 }
 
 // @0x1417c9c00
-efd::Point3 StateGlide::FUN_1417c9c00()
+efd::Point3 StateGlide::GetVerticalMove()
 {
     if (m_bTooHigh)
         return efd::Point3::ZERO;
@@ -355,12 +355,12 @@ efd::Point3 StateGlide::FUN_1417c9c00()
     float fFall = m_spRow->m_fVerticalAccelerate * m_fTime;
     if (!FUN_14028d470(m_spRow->m_fGlideVerticalAccelerateLimit, 0))
         fFall = fFall > m_spRow->m_fGlideVerticalAccelerateLimit ? m_spRow->m_fGlideVerticalAccelerateLimit : fFall;
-    float fTotal = FUN_1417c9ad0() + fFall;
+    float fTotal = GetVerticalVelocity() + fFall;
     if (!m_bHeightErr)
     {
         m_bHeightErr = FUN_1417ca000() == 0;
         if (m_bHeightErr == true && m_pOwner->vfunc_108() != 0)
-            FUN_1412751f0(GetStringCommonByKey(L"s_err_skill_maximum_Height"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_err_skill_maximum_Height"), 1, 1);
     }
     float fZ = m_bHeightErr ? fSway : (fTotal += fSway);
     if (!m_bHeightErr)
@@ -374,7 +374,7 @@ efd::Point3 StateGlide::FUN_1417c9ee0()
     float fForward = m_spRow->m_fHorizontalAccelerate * m_fTime;
     if (!FUN_14028d470(m_spRow->m_fGlideHorizontalAccelerateLimit, 0))
         fForward = fForward > m_spRow->m_fGlideHorizontalAccelerateLimit ? m_spRow->m_fGlideHorizontalAccelerateLimit : fForward;
-    float fSpeed = FUN_1417c9b70() + fForward;
+    float fSpeed = GetHorizontalVelocity() + fForward;
     if (20.0f < fSpeed)
         fSpeed = 20.0f;
     return FUN_1417c9ba0() * fSpeed;

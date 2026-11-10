@@ -27,7 +27,7 @@ public:
     void FUN_1407a8e00(COutputStream& out) const;
     void FUN_1407a90e0(CInputStream& in);
     void FUN_1407a9420(unsigned id, const CAdventureLevelMissionData& data);
-    void FUN_1407a95b0();                         // deletes every record, then clears the map
+    void ClearMissions();                         // deletes every record, then clears the map
     std::map<unsigned int, CAdventureLevelMissionData*>& GetMissions() { return m_missions; }   // inline (name invented; scenestategame.cpp 0x141748090)
     int m_kind;                                   // +0x08 (8 = none)
     int m_0c;

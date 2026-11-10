@@ -44,9 +44,9 @@ CLogString* GetLogString();
 template <class T> void Unk_FileLog(class CLogString*, int, int, const wchar_t*, const T&);   // 0x1403a1280 for T = const char*
 int FUN_1406516b0();                                // the server kind
 CString FUN_140188f50(const char* psz, int n);
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
-unsigned char* FUN_141771b40(const char* pSource, int nSourceSize, int* pnOut);
+unsigned char* InflateBuffer(const char* pSource, int nSourceSize, int* pnOut);
 
 // ---- CSoapClient ----
 
@@ -86,7 +86,7 @@ CString CSoapClient::GetError()
 }
 
 // @0x14176fe30
-void CSoapClient::FUN_14176fe30(CString strError)
+void CSoapClient::SetError(CString strError)
 {
     m_strError = strError;
     const char* pszError = strError;
@@ -96,7 +96,7 @@ void CSoapClient::FUN_14176fe30(CString strError)
 // Sends the upload and its image (the blueprint case) of the current UGC manager upload, file by file.
 // Every failure is caught here and reported to the UGC manager as the error code (3 for a COM error).
 // @0x14176feb0
-int CSoapClient::FUN_14176feb0()
+int CSoapClient::UploadPendingUgc()
 {
     MS2Ptr<CUgcUploadCtrl> spCtrl(0);
     ATL::CAtlArray<MS2Ptr<CUgcUploadCtrl> > arrUploads;
@@ -133,7 +133,7 @@ int CSoapClient::FUN_14176feb0()
             fread(pBuffer, 1, nSize, pFile);
             MS2Ptr<CSoapResult> spResult(0);
             if (m_nMode == 2)
-                spResult = FUN_141771040(spUpload, nSize, pBuffer);
+                spResult = UploadUgcFile(spUpload, nSize, pBuffer);
             else
                 throw Exception(CString("NoUploadWithSoap"), 1);
             strResult = spResult->m_strText;
@@ -150,7 +150,7 @@ int CSoapClient::FUN_14176feb0()
     catch (_com_error& e)
     {
         CString strError(e.ErrorMessage());
-        FUN_14176fe30(strError);
+        SetError(strError);
         nError = 3;
     }
     catch (Exception& e)
@@ -158,7 +158,7 @@ int CSoapClient::FUN_14176feb0()
         nError = e.GetCode();
         CString strError;
         strError.Format("[E] UgcUpload : msg = %s, err = %d", (const char*)e.GetText(), nError);
-        FUN_14176fe30(strError);
+        SetError(strError);
     }
     catch (CFileException* e)
     {
@@ -173,10 +173,10 @@ int CSoapClient::FUN_14176feb0()
 }
 
 // @0x141770670
-MS2Ptr<CGameRankingWebResult> CSoapClient::FUN_141770670(MS2Ptr<CGameRankingParam> spParam)
+MS2Ptr<CGameRankingWebResult> CSoapClient::RequestGameRanking(MS2Ptr<CGameRankingParam> spParam)
 {
     MS2Ptr<CGameRankingWebResult> spResult(new CGameRankingWebResult);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3f) == 0)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x3f) == 0)
     {
         spResult->m_result = 1;
         return spResult;
@@ -223,7 +223,7 @@ MS2Ptr<CGameRankingWebResult> CSoapClient::FUN_141770670(MS2Ptr<CGameRankingPara
     if (nError == 0)
     {
         int nOut = 0;
-        unsigned char* pData = FUN_141771b40(pBody, nBodySize, &nOut);
+        unsigned char* pData = InflateBuffer(pBody, nBodySize, &nOut);
         if (nOut == 0)
         {
             spResult->m_result = 0xc;
@@ -241,10 +241,10 @@ MS2Ptr<CGameRankingWebResult> CSoapClient::FUN_141770670(MS2Ptr<CGameRankingPara
 }
 
 // @0x141770be0
-MS2Ptr<CMenteeSearchWebResult> CSoapClient::FUN_141770be0(MS2Ptr<CMenteeSearchParam> spParam)
+MS2Ptr<CMenteeSearchWebResult> CSoapClient::RequestMenteeSearch(MS2Ptr<CMenteeSearchParam> spParam)
 {
     MS2Ptr<CMenteeSearchWebResult> spResult(new CMenteeSearchWebResult);
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x91) == 0)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x91) == 0)
     {
         spResult->m_nResult = 1;
         return spResult;
@@ -286,7 +286,7 @@ MS2Ptr<CMenteeSearchWebResult> CSoapClient::FUN_141770be0(MS2Ptr<CMenteeSearchPa
     if (nError == 0)
     {
         int nOut = 0;
-        unsigned char* pData = FUN_141771b40(pBody, nBodySize, &nOut);
+        unsigned char* pData = InflateBuffer(pBody, nBodySize, &nOut);
         spResult->m_buffer.WriteBytes(pData, nOut);
         spResult->m_buffer.SetOffset(0);
         if (pData != 0)
@@ -299,7 +299,7 @@ MS2Ptr<CMenteeSearchWebResult> CSoapClient::FUN_141770be0(MS2Ptr<CMenteeSearchPa
 }
 
 // @0x141771040
-MS2Ptr<CSoapResult> CSoapClient::FUN_141771040(MS2Ptr<CUgcUploadCtrl> spCtrl, int nSize, void* pData)
+MS2Ptr<CSoapResult> CSoapClient::UploadUgcFile(MS2Ptr<CUgcUploadCtrl> spCtrl, int nSize, void* pData)
 {
     if (spCtrl == 0)
         return MS2Ptr<CSoapResult>(new CSoapResult(0xd, ""));
@@ -342,7 +342,7 @@ MS2Ptr<CSoapResult> CSoapClient::FUN_141771040(MS2Ptr<CUgcUploadCtrl> spCtrl, in
             continue;
         }
         nCode = atoi(arrFields[0]);
-        strText = FUN_14016a5c0(arrFields[1], 0);
+        strText = ToCString(arrFields[1], 0);
         break;
     }
     MS2Ptr<CSoapResult> spResult(new CSoapResult);
@@ -352,22 +352,22 @@ MS2Ptr<CSoapResult> CSoapClient::FUN_141771040(MS2Ptr<CUgcUploadCtrl> spCtrl, in
 }
 
 // @0x141771600
-CString CSoapClient::FUN_141771600(ATL::CComVariant vValue)
+CString CSoapClient::VariantToString(ATL::CComVariant vValue)
 {
     CString strValue;
     switch (vValue.vt)
     {
     case VT_I2:
     case VT_UI1:
-        strValue = FUN_141771900(vValue.iVal);
+        strValue = IntToString(vValue.iVal);
         break;
     case VT_I4:
-        strValue = FUN_141771900(vValue.lVal);
+        strValue = IntToString(vValue.lVal);
         break;
     case VT_DECIMAL:
         if (vValue.decVal.sign != 0)
             vValue.decVal.Lo64 = -(__int64)vValue.decVal.Lo64;
-        strValue = FUN_1417719b0(vValue.decVal.Lo64);
+        strValue = Int64ToString(vValue.decVal.Lo64);
         break;
     case VT_DATE:
     {
@@ -390,7 +390,7 @@ CString CSoapClient::FUN_141771600(ATL::CComVariant vValue)
 }
 
 // @0x141771900
-CString CSoapClient::FUN_141771900(int nValue)
+CString CSoapClient::IntToString(int nValue)
 {
     CString strText;
     char szBuf[16];
@@ -400,7 +400,7 @@ CString CSoapClient::FUN_141771900(int nValue)
 }
 
 // @0x1417719b0
-CString CSoapClient::FUN_1417719b0(__int64 nValue)
+CString CSoapClient::Int64ToString(__int64 nValue)
 {
     CString strText;
     char szBuf[24];
@@ -434,7 +434,7 @@ void FUN_141771a60(char* pData, int nSize)
 
 // zlib's zpipe inf() over a memory block: returns the new[]'d result (doubling from 1 MB) or 0.
 // @0x141771b40
-unsigned char* FUN_141771b40(const char* pSource, int nSourceSize, int* pnOut)
+unsigned char* InflateBuffer(const char* pSource, int nSourceSize, int* pnOut)
 {
     *pnOut = 0;
     int ret;
@@ -514,7 +514,7 @@ unsigned char* FUN_141771b40(const char* pSource, int nSourceSize, int* pnOut)
 
 // Swaps the two halves of the bytes.
 // @0x141771e40
-void FUN_141771e40(char* pData, int nSize)
+void SwapBufferHalves(char* pData, int nSize)
 {
     int nHalf = nSize / 2;
     for (int i = 0; i < nHalf; ++i)

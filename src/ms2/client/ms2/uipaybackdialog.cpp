@@ -56,7 +56,7 @@ extern template class Delegate<bool(Scaleform::GFx::Value*, ASData&, MS2Ptr<TMar
 // 0x140bbef00 = the TooltipCallback (Delegate) ctor, a COMDAT of uiblueprintmarketdialog
 
 class Unk_140bccd50;
-Unk_140bccd50* FUN_140bccd50();
+Unk_140bccd50* GetPacketHandlerManager();
 
 // The status-listener registry.
 class Unk_PbStatusMgr;
@@ -72,9 +72,9 @@ Unk_MeratButtonHelper* GetPaybackManager();                             // the p
 UIMarketBillDialog* FindMarketBillDialog(int nUiId);                       // the bill dialog of a UI id
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);   // notice by string id
 void FUN_141275260(int nStringId, int nA, int nB);                  // notice by string id
-MS2Ptr<CItem> FUN_140ebc360(int nItemId, int nGrade);               // a preview item
+MS2Ptr<CItem> CreateItem(int nItemId, int nGrade);               // a preview item
 int FUN_14069c3e0(int nType);                                       // the bill currency of a pay currency
-int FUN_140291d90(float f);                                         // round a percent
+int RoundToInt(float f);                                         // round a percent
 CStringW FUN_1409404f0(__int64 nMoney);                             // money text
 CStringW FUN_140719900(CStringW str);
 CStringW FUN_14083cb20(const CStringW& str);
@@ -83,21 +83,21 @@ CStringW FUN_14083cb20(const CStringW& str);
 bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay);
 bool FUN_140ebef60(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay,
                    const CStringW& strTo, const CStringW& strMessage);
-bool FUN_140ebe990(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);
+bool GetBillTooltip(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);
 
 CStringW FUN_140e70010(CStringW str);
 
 // @0x140e6ec50
 UIPaybackDialog::UIPaybackDialog()
 {
-    FUN_141924170(1);
-    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPaybackDialog::FUN_140e6f7c0));
+    SetTweenEnabled(1);
+    reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->RegisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPaybackDialog::OnPaybackPacket));
 }
 
 // @0x140e6ed70
 UIPaybackDialog::~UIPaybackDialog()
 {
-    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPaybackDialog::FUN_140e6f7c0));
+    reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->UnregisterHandler(0x10b, Delegate<void(CInPacket&)>(this, &UIPaybackDialog::OnPaybackPacket));
 }
 
 // @0x140e6ee70
@@ -169,23 +169,23 @@ int UIPaybackDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         spParam->SetSourceKind(1);
         spParam->m_dgBuy = TMarketBillDataParam::BuyCallback(&FUN_140ebded0);
         spParam->m_dgGift = TMarketBillDataParam::GiftCallback(&FUN_140ebef60);
-        spParam->m_dgTooltip = TMarketBillDataParam::TooltipCallback(&FUN_140ebe990);
+        spParam->m_dgTooltip = TMarketBillDataParam::TooltipCallback(&GetBillTooltip);
         spParam->SetGift(false);
         {
-            MS2Ptr<CItem> spItem = FUN_140ebc360(spProduct->m_premium.m_nItemId, spProduct->m_premium.GetGrade());
+            MS2Ptr<CItem> spItem = CreateItem(spProduct->m_premium.m_nItemId, spProduct->m_premium.GetGrade());
             if (spItem == 0)
                 return 0;
             MS2Ptr<ASSlot> spSlot(new ASSlot(2));
             if (spSlot.get()->FUN_1409c3860(spItem.get(), pPlayer, 0x1c03f) == 0)
                 return 0;
             MS2Ptr<ASMeratMarketBuyBillData> spBill(new ASMeratMarketBuyBillData());
-            spBill->SetIconData(spSlot->FUN_1422bb870());
+            spBill->SetIconData(spSlot->GetValue());
             spBill->SetProductInfo(spProduct, 0, nCurrency);
-            spBill->FUN_1407cb9c0("serialID", spProduct->m_premium.m_nId);
+            spBill->SetIntMember("serialID", spProduct->m_premium.m_nId);
             MS2Ptr<ASBillData> spRow(spBill);
             spParam->m_bills.Add(spRow);
         }
-        pDialog->FUN_140ea7770(spParam.get());
+        pDialog->SetParam(spParam.get());
         reinterpret_cast<CUIService*>(reinterpret_cast<Unk_PbUiMgr*>(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)0x4f17);
         return 1;
     }
@@ -193,7 +193,7 @@ int UIPaybackDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 }
 
 // @0x140e6f7c0
-void UIPaybackDialog::FUN_140e6f7c0(CInPacket& packet)
+void UIPaybackDialog::OnPaybackPacket(CInPacket& packet)
 {
     if (FUN_141924630() == 0)
         return;
@@ -203,7 +203,7 @@ void UIPaybackDialog::FUN_140e6f7c0(CInPacket& packet)
 }
 
 // @0x140e6f820
-void UIPaybackDialog::FUN_140e6f820(int nOldLevel, unsigned nOldMerat)
+void UIPaybackDialog::OnPaybackChanged(int nOldLevel, unsigned nOldMerat)
 {
     if (vfunc_55())
         return;
@@ -214,7 +214,7 @@ void UIPaybackDialog::FUN_140e6f820(int nOldLevel, unsigned nOldMerat)
 }
 
 // @0x140e6f890
-int UIPaybackDialog::FUN_140e6f890()
+int UIPaybackDialog::IsPaybackAvailable()
 {
     return reinterpret_cast<PaybackManagerClient*>(GetPaybackManager())->IsAvailable(0);
 }
@@ -231,13 +231,13 @@ void UIPaybackDialog::FUN_140e6f8c0()
     {
         const PaybackTable::LevelEntry* pEntry = &*it;
         ASObj row(2);
-        row.FUN_1407cb9c0("index", nIndex++);
+        row.SetIntMember("index", nIndex++);
         row.SetMemberUInt("level", pEntry->m_nLevel);
-        row.FUN_1407cbb20("merat", FUN_140e70010(StringFormat(L"{0}", TSingleton<PaybackTable>::GetInstance()->GetLevelMerat(
+        row.SetWStringMember("merat", FUN_140e70010(StringFormat(L"{0}", TSingleton<PaybackTable>::GetInstance()->GetLevelMerat(
                                                      pEntry, reinterpret_cast<PaybackManagerClient*>(GetPaybackManager())->GetMerat(), nNow))));
-        row.FUN_1407cbb20("percent", StringFormat(L"{0}", FUN_140291d90(TSingleton<PaybackTable>::GetInstance()->GetLevelPercent(pEntry, nNow))));
+        row.SetWStringMember("percent", StringFormat(L"{0}", RoundToInt(TSingleton<PaybackTable>::GetInstance()->GetLevelPercent(pEntry, nNow))));
         row.SetMemberUInt("targetLevel", reinterpret_cast<PaybackManagerClient*>(GetPaybackManager())->FUN_140a8b320());
-        row.FUN_1407cbbe0("isRed", TSingleton<PaybackTable>::GetInstance()->IsLocaleEnabled());
+        row.SetBoolMember("isRed", TSingleton<PaybackTable>::GetInstance()->IsLocaleEnabled());
         m_30->Invoke("setEntity", row);
     }
 }

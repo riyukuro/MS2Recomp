@@ -7,7 +7,7 @@ public:
   UserPlayCommonInfoData();
   // @0x1408f26b0
   virtual ~UserPlayCommonInfoData() = default;
-  void FUN_1408e9610();
+  void Reset();
   void FUN_1408e97e0(COutputStream &);
   void FUN_1408e9b40(CInputStream &);
   int m_18;
@@ -52,7 +52,7 @@ public:
   CUserPlayInfoProxy();
   // @0x1408f2670
   virtual ~CUserPlayInfoProxy() = default;
-  void FUN_1408e9f20();
+  void Reset();
   void FUN_1408e9f60();
   void FUN_1408ea340();
   UserPlayCommonInfoData m_18, m_d8;

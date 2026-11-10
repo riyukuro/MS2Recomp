@@ -47,18 +47,18 @@ public:
 
     // 0x140710740: sets the flag/length/cursor fields; when bEncodeType and nType != 0x7fffffff writes the u16 type.
     void FUN_140710740(int nType, int nUnk, int bEncodeType);
-    CString FUN_140710c50() const;   // hex dump "%02x " of the buffer, @0x140710c50
+    CString ToHexString() const;   // hex dump "%02x " of the buffer, @0x140710c50
     // 0x14020b630: grows the buffer (doubling) so that `n` more bytes fit after m_nLength (inline in commonfiles/packet.h).
-    void FUN_14020b630(unsigned n);
+    void EnsureBufferCapacity(unsigned n);
     // 0x14020aa30: appends src's payload (from `offset`) through the virtual raw-bytes encoder (slot 9).
-    void FUN_14020aa30(const COutPacket& src, int offset);
+    void AppendPayload(const COutPacket& src, int offset);
     // Inline accessors of the exe (COMDATs in clientreconnectionstructs.cpp's range; names invented).
-    int  FUN_14020b9f0() const { return (int)m_nLength; }                          // @0x14020b9f0
-    unsigned FUN_14020ba00() const { return m_nSequence; }                        // @0x14020ba00
+    int  GetLength() const { return (int)m_nLength; }                          // @0x14020b9f0
+    unsigned GetSequence() const { return m_nSequence; }                        // @0x14020ba00
     int  FUN_14020ba10() const { return m_n14; }                              // @0x14020ba10
     unsigned short FUN_14020ba20() const { return *(unsigned short*)&m_aBuffer[0]; }   // @0x14020ba20 (packet type)
-    int  FUN_14020bc40() const { return m_nFlag; }                            // @0x14020bc40
-    void FUN_14020c070(int n) { m_nSequence = n; }                            // @0x14020c070
+    int  IsLoopback() const { return m_nFlag; }                            // @0x14020bc40
+    void SetSequence(int n) { m_nSequence = n; }                            // @0x14020c070
     void FUN_14020c090(int n) { m_n14 = n; }                                  // @0x14020c090
 
     // Public so that unit-local code (packet.cpp, clientreconnectionstructs.cpp) can reach them; layout from the exe.

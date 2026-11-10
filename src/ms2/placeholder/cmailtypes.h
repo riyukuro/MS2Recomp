@@ -57,8 +57,8 @@ public:
     CMailAttachItem(int index, MS2Ptr<CItem> item);           // 0x14068f630
     CMailAttachItem(CInPacket& packet);                       // 0x14068f740
     virtual ~CMailAttachItem();
-    void FUN_14068fac0();                                     // reset (drops the item, zeroes the fields)
-    int FUN_14068fb10();                                      // item id, -1 without an item
+    void Reset();                                     // reset (drops the item, zeroes the fields)
+    int GetItemId();                                      // item id, -1 without an item
     MS2_LAYOUT_FRIEND;
     __int64 m_nTime; int m_n20; int m_pad_24; __int64 m_n28;   // +0x18
     MS2Ptr<CItem> m_item;                                      // +0x30
@@ -70,7 +70,7 @@ class CMailAdItem : public CPtred {
 public:
     CMailAdItem();                                            // 0x140692a20
     // virtual ~CMailAdItem();                                // 0x140692c20 (implicit: the exe dtor stores no vptr)
-    void FUN_14068fb60(CInputStream* stream);                 // read from the packet stream
+    void Read(CInputStream* stream);                 // read from the packet stream
     MS2_LAYOUT_FRIEND;
     int m_n18; int m_n1c; int m_n20; int m_n24;                // +0x18
     __int64 m_n28; __int64 m_n30; __int64 m_n38;               // +0x28
@@ -107,10 +107,10 @@ MS2_CHECK_OFFSET(CMailSendKeep, m_item, 0x30);
 struct Unk_MailTimeRange {
     __int64 m_nBegin; __int64 m_nClaim;
     Unk_MailTimeRange();                                       // 0x140692840
-    bool FUN_1406936a0() const;                                // begin set, not claimed
-    bool FUN_1406936e0() const;
+    bool IsClaimed() const;                                // begin set, not claimed
+    bool IsUnclaimed() const;
     bool FUN_140693b00(__int64 claim);                         // claims once
-    void FUN_140693300(CInputStream* stream);                  // read both values
+    void Read(CInputStream* stream);                  // read both values
 };
 MS2_CHECK_SIZE(Unk_MailTimeRange, 0x10);
 
@@ -140,9 +140,9 @@ class CMailInfo : public CPtred {
 public:
     CMailInfo(int kind);                                       // 0x14068ff50
     virtual ~CMailInfo();
-    void FUN_140690330(__int64 id);
-    __int64 FUN_140690350();
-    int FUN_140690370();
+    void SetId(__int64 id);
+    __int64 GetId();
+    int GetKind();
     void SetSender(__int64 value, CStringW text);
     __int64 FUN_1406903f0();
     CStringW GetSenderName() const;
@@ -156,7 +156,7 @@ public:
     void SetAttachment(int slot, Unk_MailAttachPtr attach);
     void SetAttachmentReceiveTime(int slot, __int64 time);               // per-attachment receive time
     Unk_MailAttachPtr GetAttachment(int slot) const;
-    int FUN_140690840() const;                                 // attachments already received
+    int GetUnreceivedAttachmentCount() const;                                 // attachments already received
     __int64 GetAttachmentReceiveTime(int slot) const;
     int FUN_1406909b0() const;
     int FUN_140690b80() const;
@@ -170,19 +170,19 @@ public:
     void FUN_140690e80(__int64 time);
     __int64 FUN_140690ed0() const;
     __int64 FUN_140690ef0() const;
-    void FUN_140690f10(__int64 time);
+    void MarkBenefitsUsed(__int64 time);
     bool FindBenefit(int type, int sub, Unk_MailBenefit* out) const;
     void MarkRead();
-    void FUN_1406910e0(__int64 value);
-    __int64 FUN_140691110() const;
-    int FUN_140691130();
-    __int64 FUN_140691160() const;
+    void SetReadTime(__int64 value);
+    __int64 GetReadTime() const;
+    int IsRead();
+    __int64 GetExpireTime() const;
     int IsExpired() const;
     __int64 FUN_1406911c0() const;
-    void FUN_1406911e0(int state);
-    int FUN_140691200() const;
-    int FUN_140691220();
-    void FUN_1406913e0(CInPacket& packet);                    // read the mail body
+    void SetState(int state);
+    int GetState() const;
+    int HasAttachment();
+    void Read(CInPacket& packet);                    // read the mail body
     CStringW GetDateString() const;                            // formatted date
     void SetAd(int slot, MS2Ptr<CMailAdItem> ad);
     void FUN_140692420(__int64 time);
@@ -196,9 +196,9 @@ public:
     __int64 FUN_140692760() const;
     bool FUN_140690fa0(int type, int sub, Unk_CommonPriceRecord* out) const;   // 0x140690fa0 (the benefit as a price record)
     // @0x1419ea9a0
-    Unk_MailBenefitList& FUN_1419ea9a0() { return m_benefits; }   // inline COMDAT (uimaillistdialog.cpp)
+    Unk_MailBenefitList& GetBenefits() { return m_benefits; }   // inline COMDAT (uimaillistdialog.cpp)
     // @0x1419eab80
-    CStringW FUN_1419eab80() const { return m_str120; }            // inline COMDAT (uimaillistdialog.cpp): the ad product name
+    CStringW GetAdProductName() const { return m_str120; }            // inline COMDAT (uimaillistdialog.cpp): the ad product name
     CStringW FUN_141b8ecc0() const { return m_str68; }             // 0x141b8ecc0 inline COMDAT (weddingmanager.cpp): the wedding ticket's xml body
     MS2_LAYOUT_FRIEND;
     __int64 m_nId; int m_nKind; int m_n24; __int64 m_n28;      // +0x18

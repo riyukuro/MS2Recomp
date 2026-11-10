@@ -401,7 +401,7 @@ void Unk_WsInst2Real()
     COptimizer* pOptimizer = 0;
     TFunctor<void, EmptyParam> optimizerFunctor(pOptimizer, &COptimizer::WriteSystemInfoToCrashLog);
     WorldService* pService = 0;
-    TFunctor<void, EmptyParam> updateFunctor(pService, &WorldService::FUN_141bd7dd0);
+    TFunctor<void, EmptyParam> updateFunctor(pService, &WorldService::WriteCrashLog);
 
     // OnPreInit's dependencies
     efd::IDependencyRegistrar* pRegistrar = 0;

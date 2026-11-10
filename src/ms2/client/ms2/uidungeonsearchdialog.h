@@ -33,17 +33,17 @@ public:
     explicit UIDungeonSearchPage(int nPage);                                    // 0x140e186e0
     bool Init(MS2Ptr<ASMovieClip> root);                                        // 0x140e18790
     void ReleaseControls();                                                       // releases the bound clips
-    void FUN_140e18f90();                                                       // title and progress icon
-    void FUN_140e19220();                                                       // clears the room id list
+    void RefreshTitle();                                                       // title and progress icon
+    void ClearRooms();                                                       // clears the room id list
     void SetRooms(std::set<unsigned>& rooms);                              // swaps in the room id set
     bool OnNoMoreRewardConfirm(int nResult, const CMsgBoxData& data);                   // message box answer
     void OnClickFind(const Scaleform::GFx::FunctionHandler::Params& params);  // find button
     void SendPartyMode34(const Scaleform::GFx::FunctionHandler::Params& params);  // cancel button
     void FUN_140e19380(const Scaleform::GFx::FunctionHandler::Params& params);  // setting button
-    bool FUN_140e194f0();                                                       // checks before searching
+    bool CanStartSearch();                                                       // checks before searching
     void SendPartyMode32(bool bStart);                                            // sends the search packet
     void FUN_140e19770();                                                       // progress icon and buttons
-    void FUN_140e199b0(std::vector<MS2Ptr<Unk_DsRoom> >& out);                                    // room list of the page
+    void GetAvailableRooms(std::vector<MS2Ptr<Unk_DsRoom> >& out);                                    // room list of the page
 private:
     MS2_LAYOUT_FRIEND;
     int m_nPage;                                                                // +0x18 1 = custom, 2 = random
@@ -73,7 +73,7 @@ public:
     virtual int vfunc_48() { return 0x4f1c; }                                   // 48 UI type id (COMDAT 0x140e1f110)
 
     void FUN_140e1b640(CInPacket& packet);                                      // packet 0x53: refresh the pages
-    void FUN_140e1b6f0(CInPacket& packet);                                      // packet 0x1a: reward reset result
+    void OnRewardResetPacket(CInPacket& packet);                                      // packet 0x1a: reward reset result
     void OnUnitedRewardReset(CInPacket& packet);                                                     // united reward reset message
     void RefreshPages(NotifyObject* pNotify);                                  // NotifyGameStart: pages
     void FUN_140e1b850(const Scaleform::GFx::FunctionHandler::Params& params);  // opens the select dialog

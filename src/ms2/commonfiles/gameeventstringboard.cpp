@@ -21,24 +21,24 @@
 int FUN_140718200(const CStringW& text);
 // Stream helpers (CInputStream / COutputStream operator<< / >> overloads, packet.cpp).
 COutputStream & FUN_14070f9a0(COutputStream &, unsigned int);  // C3: the definition's signature
-COutputStream & FUN_14070fae0(COutputStream &, const CStringW &);  // C3: the definition's signature
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+COutputStream & WriteUnicodeString(COutputStream &, const CStringW &);  // C3: the definition's signature
+void* GetGameRule();   // C3: was GetGameRule
 
 // The factories of this unit (they are defined further down, in exe order).
-GameEvent* FUN_14041e930();
-GameEvent* FUN_14041eb80();
+GameEvent* CreateGameEventStringBoard();
+GameEvent* CreateGameEventStringBoardLink();
 
 // ---- dynamic initializers ----
 // The registration of the link event (GameEventStringBoard itself is registered by the neighbouring shut-down unit,
 // which holds 0x14041e930 as an out-of-unit factory).
 #ifndef MS2_HOOK_DLL
-static ClassObjectRegistrar s_regStringBoardLink(L"GameEventStringBoardLink", (ClassObjectCreateFn)FUN_14041eb80);   // 0x143aaeed3
+static ClassObjectRegistrar s_regStringBoardLink(L"GameEventStringBoardLink", (ClassObjectCreateFn)CreateGameEventStringBoardLink);   // 0x143aaeed3
 #endif
 
 // ---- GameEventStringBoard --------------------------------------------------------------------------------------------
 
 // @0x14041e930
-GameEvent* FUN_14041e930() { return new GameEventStringBoard; }
+GameEvent* CreateGameEventStringBoard() { return new GameEventStringBoard; }
 
 // @0x14041e990
 CStringW GameEventStringBoard::GetTypeName() { return CStringW(L"GameEventStringBoard"); }
@@ -46,8 +46,8 @@ CStringW GameEventStringBoard::GetTypeName() { return CStringW(L"GameEventString
 // @0x14041e9e0
 GameEventStringBoard::GameEventStringBoard() : m_nId(0)
 {
-    FUN_1402e3480(1);
-    FUN_1402e3480(3);
+    SetFlag(1);
+    SetFlag(3);
 }
 
 // The id is only derived when the xml field is set (an empty m_68 leaves m_nId at 0).
@@ -63,7 +63,7 @@ void GameEventStringBoard::vfunc_3(Unk_GEOut* out)
 {
     GameEvent::vfunc_3(out);
     FUN_14070f9a0(*(COutputStream *)out, m_nId);
-    FUN_14070fae0(*(COutputStream *)out, m_80);
+    WriteUnicodeString(*(COutputStream *)out, m_80);
 }
 
 // @0x14041eb00
@@ -83,7 +83,7 @@ void GameEventStringBoard::vfunc_6() {}
 // ---- GameEventStringBoardLink ----------------------------------------------------------------------------------------
 
 // @0x14041eb80
-GameEvent* FUN_14041eb80() { return new GameEventStringBoardLink; }
+GameEvent* CreateGameEventStringBoardLink() { return new GameEventStringBoardLink; }
 
 // @0x14041ebe0
 CStringW GameEventStringBoardLink::GetTypeName() { return CStringW(L"GameEventStringBoardLink"); }
@@ -91,8 +91,8 @@ CStringW GameEventStringBoardLink::GetTypeName() { return CStringW(L"GameEventSt
 // @0x14041ec30
 GameEventStringBoardLink::GameEventStringBoardLink()
 {
-    FUN_1402e3480(1);
-    FUN_1402e3480(3);
+    SetFlag(1);
+    SetFlag(3);
 }
 
 // @0x14041ec90
@@ -102,7 +102,7 @@ void GameEventStringBoardLink::vfunc_2() {}
 void GameEventStringBoardLink::vfunc_3(Unk_GEOut* out)
 {
     GameEvent::vfunc_3(out);
-    FUN_14070fae0(*(COutputStream *)out, m_68);
+    WriteUnicodeString(*(COutputStream *)out, m_68);
 }
 
 // @0x14041ece0
@@ -113,7 +113,7 @@ void GameEventStringBoardLink::vfunc_4(Unk_GEIn* in)
 }
 
 // @0x14041ed30
-void GameEventStringBoardLink::OnStart() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047dae0(m_68); }
+void GameEventStringBoardLink::OnStart() { ((class CGameRule*)GetGameRule())->FUN_14047dae0(m_68); }
 
 // @0x14041ed90
-void GameEventStringBoardLink::vfunc_6() { ((class CGameRule*)FUN_1401c0d90())->FUN_14047dae0(CStringW(L"")); }
+void GameEventStringBoardLink::vfunc_6() { ((class CGameRule*)GetGameRule())->FUN_14047dae0(CStringW(L"")); }

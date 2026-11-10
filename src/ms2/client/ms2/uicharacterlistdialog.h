@@ -108,10 +108,10 @@ public:
     virtual void vfunc_ugc_1(void* p, CString str);         // UGC 1 0x1418ed310
 
     // child lookup 0x140bb4b10 = UISwfEntity::GetChild<ASButton>
-    void FUN_1418ef700();                                   // 0x1418ef700 the burning level-up icons
-    void FUN_1418ef980(unsigned __int64 nId);               // 0x1418ef980 the burning level-up popup of a character
+    void AttachBurningLevelupIcons();                                   // 0x1418ef700 the burning level-up icons
+    void ShowBurningLevelupPopup(unsigned __int64 nId);               // 0x1418ef980 the burning level-up popup of a character
     void OnClickBurningLevelupDescBtn();                                   // 0x1418f0140 the burning level-up description
-    void FUN_1418f0400();                                   // 0x1418f0400 attach the burning level-up description button
+    void AttachBurningLevelupDescButton();                                   // 0x1418f0400 attach the burning level-up description button
     void AttachHealthGame();                                // 0x1418f0550
     CStringW GetCharacterName(unsigned __int64 nId);           // 0x1418f05b0 the name of a character, empty when unknown
     void RefreshLobby();                                    // 0x1418f0810
@@ -123,11 +123,11 @@ public:
     void FUN_1418f1790();                                   // 0x1418f1790
     void SendCharacterManagementMode2();                                   // 0x1418f1880 request the delete of the selected character
     int FUN_1418f1b90();                                    // 0x1418f1b90 the id of the selected character's map
-    int FUN_1418f1c20();                                    // 0x1418f1c20 the number of characters
+    int GetCharacterCount();                                    // 0x1418f1c20 the number of characters
     __int64 FUN_1418f1c50();                                // 0x1418f1c50
     int FUN_1418f1c70();                                    // 0x1418f1c70
-    void FUN_1418f1cb0();                                   // 0x1418f1cb0 preview the selected character
-    void FUN_1418f1e90();                                   // 0x1418f1e90
+    void PreviewSelectedCharacter();                                   // 0x1418f1cb0 preview the selected character
+    void QuitAndDisconnect();                                   // 0x1418f1e90
     void FUN_1418f1f10();                                   // 0x1418f1f10
     void FUN_1418f1fd0();                                   // 0x1418f1fd0
     void SendCharacterManagementMode5(unsigned __int64 nId, const CStringW& str); // 0x1418f2030 send the rename of a character
@@ -137,7 +137,7 @@ public:
     void SendDeleteAccountRequest(const CStringW& str1, const CStringW& str2, const CStringW& str3);   // 0x1418f2570
     bool FUN_1418f31a0(int nButton, const CMsgBoxData& box);   // 0x1418f31a0 delete account box result, steps 1..3
     bool FUN_1418f3bd0(int nButton, const CMsgBoxData& box);   // 0x1418f3bd0 delete account box result, steps 4, 5
-    CStringW FUN_1418f2960(int nError, unsigned __int64 nId);   // 0x1418f2960 the text of a delete account error
+    CStringW GetDeleteAccountErrorText(int nError, unsigned __int64 nId);   // 0x1418f2960 the text of a delete account error
     void FUN_1418f13f0();                                   // 0x1418f13f0 enter the game with the selected character
     void CancelDelete(CharPtr spCharacter);                 // 0x1418f1940
     void CheckDelete(unsigned __int64 nId);                 // 0x1418f1a00
@@ -153,15 +153,15 @@ public:
     bool SendEventReward(int nResult, const CMsgBoxData& box);   // 0x1418f00b0 event reward box result
     CharPtr GetCharacterAt(int nIndex);                      // 0x1418f0730 the character at the index
     static bool OrderCharacters(CharPtr spA, CharPtr spB);   // 0x1418f4ca0 sort predicate
-    void FUN_1418ed6b0(CInPacket& packet);                  // 0x1418ed6b0 the burning level-up reward was taken
+    void OnBurningLevelupRewardTaken(CInPacket& packet);                  // 0x1418ed6b0 the burning level-up reward was taken
     void FUN_1418ed860();                                   // 0x1418ed860
     void FUN_1418ed4e0(unsigned __int64 nId, CString str);  // 0x1418ed4e0 hand the text of a character to the ugc manager
-    void FUN_1418ed5a0(unsigned __int64 nId, CString str);  // 0x1418ed5a0 set the text of a character
-    bool FUN_1418ed650();                                   // 0x1418ed650 the burning level-up event is running
-    void FUN_1418ed880(CInPacket& packet);                  // 0xc the character list
-    void FUN_1418ee370();                                   // 0x1418ee370 forget the previewed character
-    void FUN_1418ee400(int nIndex);                         // 0x1418ee400 preview the character at the index
-    void FUN_1418ee470(CharPtr spCharacter);                // 0x1418ee470 preview a character
+    void SetCharacterText(unsigned __int64 nId, CString str);  // 0x1418ed5a0 set the text of a character
+    bool IsBurningLevelupEventRunning();                                   // 0x1418ed650 the burning level-up event is running
+    void OnCharacterListPacket(CInPacket& packet);                  // 0xc the character list
+    void ClearPreviewCharacter();                                   // 0x1418ee370 forget the previewed character
+    void PreviewCharacterAt(int nIndex);                         // 0x1418ee400 preview the character at the index
+    void PreviewCharacter(CharPtr spCharacter);                // 0x1418ee470 preview a character
     void FUN_1418ee5c0(const Unk_UserProxy* pState, unsigned nSlot);   // 0x1418ee5c0 build the preview PC
     void HidePopups();                                      // 0x1418ee700
     void ReadCharacters(int nCount, CInPacket& packet);     // 0x1418ee7b0

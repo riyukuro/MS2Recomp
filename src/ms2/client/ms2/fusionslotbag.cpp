@@ -39,11 +39,11 @@
 class UIItemMergeOptionDialog : public UIDialog
 {
 public:
-    int FUN_1419d27e0(ItemInfoSlot& slot);              // may the slot's tooltip be shown
+    int CanShowTooltip(ItemInfoSlot& slot);              // may the slot's tooltip be shown
 };
 
 // The enchant data object of an item (a CItemStatus).
-class CItemStatus { public: bool FUN_140630810(void); }; // C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
+class CItemStatus { public: bool HasGroup4Options(void); }; // C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 
 
 
@@ -78,18 +78,18 @@ void CreateSlotBag(const CString& strName, const ATL::CAtlArray<unsigned __int64
     {
         int nCount = (int)(ceil((float)items.GetCount() / 4.0f) * 4.0f);
         static_cast<DragSlotBag*>(pBag)->vfunc_10(nCount > 12 ? nCount : 12);
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x14123a190
 void FUN_14123a190(const CString& strName)
 {
-    FusionSlotBag* pBag = CastToSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
+    FusionSlotBag* pBag = CastToSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -122,7 +122,7 @@ DragSlot* FusionSlotBag::vfunc_16(int nIndex)
     UIItemMergeOptionDialog* pDlg = FUN_14123a9b0(0x4e68);
     if (pDlg)
     {
-        pSlot->SetCanFn(FusionCanFn(pDlg, &UIItemMergeOptionDialog::FUN_1419d27e0));
+        pSlot->SetCanFn(FusionCanFn(pDlg, &UIItemMergeOptionDialog::CanShowTooltip));
         pSlot->SetSlotFn(FusionSlotFn(this, &FusionSlotBag::FUN_14123a650));
     }
     return pSlot;
@@ -133,7 +133,7 @@ void FusionSlotBag::FUN_14123a650(ItemInfoSlot& slot, ASSlot& as)
 {
     MS2Ptr<CItem> spItem = slot.vfunc_25();
     if (spItem.get() != 0)
-        as.FUN_1407cbbe0("mergeStep", ((CItem*)spItem)->FUN_1405278a0()->FUN_140630810());
+        as.SetBoolMember("mergeStep", ((CItem*)spItem)->GetStatus()->HasGroup4Options());
 }
 
 // @0x14123a960

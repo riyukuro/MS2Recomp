@@ -19,6 +19,11 @@
 // MS2-PIN: ?_Myend@?$_Vector_alloc@U?$_Vec_base_types@IV?$allocator@I@std@@@std@@@std@@QEAAAEAPEAIXZ 0x1408abaa0 ; prop
 // MS2-PIN: ?_Mylast@?$_Vector_alloc@U?$_Vec_base_types@IV?$allocator@I@std@@@std@@@std@@QEBAAEBQEAIXZ 0x1408abb40 ; prop
 // MS2-PINS-END tplpin
+// Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$addressof@$$CBV?$vector@HV?$allocator@H@std@@@std@@@std@@YAPEBV?$vector@HV?$allocator@H@std@@@0@AEBV10@@Z 0x1408a7560
+// MS2-PIN: ??$addressof@PEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@PEAX@std@@@std@@YAPEAPEAU?$_Tree_node@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@PEAX@0@AEAPEAU10@@Z 0x1408a7580
+// MS2-PIN: ??$addressof@PEAU?$_Tree_node@U?$pair@$$CBHV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@@std@@PEAX@std@@@std@@YAPEAPEAU?$_Tree_node@U?$pair@$$CBHV?$map@HV?$Unk_PayloadPtr@VCubeOwner@@@@U?$less@H@std@@V?$allocator@U?$pair@$$CBHV?$Unk_PayloadPtr@VCubeOwner@@@@@std@@@3@@std@@@std@@PEAX@0@AEAPEAU10@@Z 0x1408a7590
 // MS2-PIN: ??B?$SmartPointer@VEntity@egf@@@efd@@QEBAPEAVEntity@egf@@XZ 0x1408a9090
 // MS2-PIN: ??4?$vector@HV?$allocator@H@std@@@std@@QEAAAEAV01@AEBV01@@Z 0x1408a8ac0
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\ugcmapdata.cpp"
@@ -46,7 +51,7 @@ class CubeMapInformationService;
 static CString s_sortNames[]={"None","Buy","Like","PriceLow","PriceHigh","Create","EnumEnd"};
 // Earlier objects own these shared bodies.
 template<> Unk_PayloadPtr<CUGCMapData>::Unk_PayloadPtr(const Unk_PayloadPtr&);
-void* FUN_1401c0d90();
+void* GetGameRule();
 class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
@@ -152,7 +157,7 @@ bool FUN_1408a06a0(int mapID,int group) {
 MS2_REPLACE(0x1408a06a0, FUN_1408a06a0, 257, 0x22A131A0);
 // @0x1408a07b0
 bool FUN_1408a07b0(int mapID,int blockID,__int64 ownerID) {
-    return reinterpret_cast<CGameRule*>(FUN_1401c0d90())->FUN_14047ddd0(mapID,blockID,ownerID);
+    return reinterpret_cast<CGameRule*>(GetGameRule())->FUN_14047ddd0(mapID,blockID,ownerID);
 }
 MS2_REPLACE(0x1408a07b0, FUN_1408a07b0, 49, 0x301F651E);
 // @0x1408a07f0
@@ -183,7 +188,7 @@ int FUN_1408a09d0(unsigned* item,__int64* price,int mapID,int group) {
             *item=p->groups[group].contractPriceItemCode;
             *price=p->groups[group].contractPrice;
             if(FUN_14053f8c0(*item) || FUN_14053f940(*item)) {
-                __int64 nDiscount=*price*(unsigned __int64)((class CGameRule*)(void*)(FUN_1401c0d90()))->GetUgcMapContractSaleRate();
+                __int64 nDiscount=*price*(unsigned __int64)((class CGameRule*)(void*)(GetGameRule()))->GetUgcMapContractSaleRate();
                 nDiscount/=10000;
                 *price=*price-nDiscount;
             }
@@ -203,7 +208,7 @@ int FUN_1408a0b80(unsigned* item,__int64* price,int mapID,int group) {
             *item=p->groups[group].extensionPriceItemCode;
             *price=p->groups[group].extensionPrice;
             if(FUN_14053f8c0(*item) || FUN_14053f940(*item)) {
-                __int64 nDiscount=*price*(unsigned __int64)((class CGameRule*)(void*)(FUN_1401c0d90()))->GetUgcMapExtensionSaleRate();
+                __int64 nDiscount=*price*(unsigned __int64)((class CGameRule*)(void*)(GetGameRule()))->GetUgcMapExtensionSaleRate();
                 nDiscount/=10000;
                 *price=*price-nDiscount;
             }

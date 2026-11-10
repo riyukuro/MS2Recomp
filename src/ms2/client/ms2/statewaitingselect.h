@@ -25,6 +25,6 @@ public:
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x1417ff470 (an animation ended: back to idle)
     virtual int vfunc_15();                                 // 15 0x1417ff6c0: m_n10 == 0x55
 
-    void FUN_1417ff590(int* pnSub, const CString& strAnim); // switch to a part-change animation of the model's own name
+    void PlayPartChangeAnimation(int* pnSub, const CString& strAnim); // switch to a part-change animation of the model's own name
 };
 MS2_CHECK_SIZE(StateWaitingSelect, 0x40);

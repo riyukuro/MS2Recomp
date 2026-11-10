@@ -21,7 +21,7 @@ public:
 class TiXmlElement;
 class TiXmlElement;
 class TiXmlNode { public: const TiXmlElement* FirstChildElement(const char* pszName) const; const TiXmlElement* NextSiblingElement(const char* pszName) const; };   // C3: member view
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, bool&);   // C3: was FUN_1408730a0
 template <class T> T Clamp(const T&, T, T);   // C3: was FUN_140315da0
@@ -53,9 +53,9 @@ bool MentoringDataTable::Init()
 // @0x14069bd90
 bool MentoringDataTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "MentoringConfig.xml");
+    CString strPath = GetXmlPath("Table", "MentoringConfig.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

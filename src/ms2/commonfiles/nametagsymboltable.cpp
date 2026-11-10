@@ -56,8 +56,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_14
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
+CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -88,11 +88,11 @@ template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& r
 extern ATL::CAtlArray<unsigned int> DAT_143ab3268;   // the owned titles (scenestategame.cpp)
 class Unk_IntTriple { public: int Sum(); };
 class Unk_NametagScore : public Unk_IntTriple {};    // the trophy points
-class Unk_NametagTrophy;   // = CAchieveManager: FUN_1406c7600 returns its singleton (l.446)
+class Unk_NametagTrophy;   // = CAchieveManager: GetAchieveManager returns its singleton (l.446)
 class CAchieveManager { public: struct Unk_AchieveTab* GetTally(); };   // C3: member view (achievemanager.h, 0x140938ad0), the trophy points
 struct Unk_NametagFlags { char m_pad[0x30]; unsigned char m_bEnabled; };
 class MentoringDataTable;
-Unk_NametagTrophy* FUN_1406c7600();
+Unk_NametagTrophy* GetAchieveManager();
 Unk_NametagFlags* FUN_1406c7610();
 
 // The character record of a character id (the trophy points sit at +0xd0).
@@ -130,9 +130,9 @@ CNametagSymbolTable::~CNametagSymbolTable()
 // @0x1406c54d0
 int CNametagSymbolTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "nametagSymbol.xml");
+    CString strPath = GetXmlPath("Table", "nametagSymbol.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = (TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)
@@ -247,7 +247,7 @@ unsigned int CNametagSymbolTable::CheckCondition(unsigned short nId)
         case NAMETAG_CONDITION_LEVEL:
             return pActor->vfunc_78() >= 50;
         case NAMETAG_CONDITION_TROPHY_POINT:
-            return reinterpret_cast<Unk_NametagScore*>(reinterpret_cast<CAchieveManager*>(FUN_1406c7600())->GetTally())->Sum() >= 1000;
+            return reinterpret_cast<Unk_NametagScore*>(reinterpret_cast<CAchieveManager*>(GetAchieveManager())->GetTally())->Sum() >= 1000;
         case NAMETAG_CONDITION_TITLE:
             return Unk_ArrayFind<unsigned>(DAT_143ab3268, reinterpret_cast<const unsigned&>(spData->m_nCode)) != -1;
         case NAMETAG_CONDITION_ENCHANT:
@@ -429,7 +429,7 @@ void CNametagSymbolTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CNametagSymbolTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CNametagSymbolTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -441,7 +441,7 @@ int Unk_NametagActor::GetGmGrade()
 }
 
 // @0x1406c7600
-Unk_NametagTrophy* FUN_1406c7600()
+Unk_NametagTrophy* GetAchieveManager()
 {
     return reinterpret_cast<Unk_NametagTrophy*>(TSingleton<CAchieveManager>::s_instance);
 }

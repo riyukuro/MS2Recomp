@@ -26,94 +26,94 @@ ASSlider::~ASSlider()
 }
 
 // @0x1422ce5f0
-void ASSlider::FUN_1422ce5f0(float f)
+void ASSlider::SetValue(float f)
 {
     SetMemberFloat("value", f);
 }
-MS2_REPLACE_METHOD(0x1422CE5F0, ASSlider, FUN_1422ce5f0, 43, 0xB02E9BC5);
+MS2_REPLACE_METHOD(0x1422CE5F0, ASSlider, SetValue, 43, 0xB02E9BC5);
 
 // @0x1422ce630
-float ASSlider::FUN_1422ce630()
+float ASSlider::GetValue()
 {
     return (float)GetMember("value").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422CE630, ASSlider, FUN_1422ce630, 96, 0xF625FCB4);
+MS2_REPLACE_METHOD(0x1422CE630, ASSlider, GetValue, 96, 0xF625FCB4);
 
 // @0x1422ce6a0
-void ASSlider::FUN_1422ce6a0(float f)
+void ASSlider::SetMaximum(float f)
 {
     SetMemberFloat("maximum", f);
 }
-MS2_REPLACE_METHOD(0x1422CE6A0, ASSlider, FUN_1422ce6a0, 43, 0xE93331B9);
+MS2_REPLACE_METHOD(0x1422CE6A0, ASSlider, SetMaximum, 43, 0xE93331B9);
 
 // @0x1422ce6e0
-float ASSlider::FUN_1422ce6e0()
+float ASSlider::GetMaximum()
 {
     return (float)GetMember("maximum").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422CE6E0, ASSlider, FUN_1422ce6e0, 96, 0x130F2EF2);
+MS2_REPLACE_METHOD(0x1422CE6E0, ASSlider, GetMaximum, 96, 0x130F2EF2);
 
 // @0x1422ce750
-void ASSlider::FUN_1422ce750(float f)
+void ASSlider::SetMinimum(float f)
 {
     SetMemberFloat("minimum", f);
 }
-MS2_REPLACE_METHOD(0x1422CE750, ASSlider, FUN_1422ce750, 43, 0x7FB2EF9D);
+MS2_REPLACE_METHOD(0x1422CE750, ASSlider, SetMinimum, 43, 0x7FB2EF9D);
 
 // @0x1422ce790
-float ASSlider::FUN_1422ce790()
+float ASSlider::GetMinimum()
 {
     return (float)GetMember("minimum").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422CE790, ASSlider, FUN_1422ce790, 96, 0x1E1CD5F1);
+MS2_REPLACE_METHOD(0x1422CE790, ASSlider, GetMinimum, 96, 0x1E1CD5F1);
 
 // @0x1422ce800
-void ASSlider::FUN_1422ce800(float f)
+void ASSlider::SetPosition(float f)
 {
     SetMemberFloat("position", f);
 }
-MS2_REPLACE_METHOD(0x1422CE800, ASSlider, FUN_1422ce800, 43, 0xF3A5660D);
+MS2_REPLACE_METHOD(0x1422CE800, ASSlider, SetPosition, 43, 0xF3A5660D);
 
 // @0x1422ce840
-float ASSlider::FUN_1422ce840()
+float ASSlider::GetPosition()
 {
     return (float)GetMember("position").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422CE840, ASSlider, FUN_1422ce840, 96, 0xE0F51450);
+MS2_REPLACE_METHOD(0x1422CE840, ASSlider, GetPosition, 96, 0xE0F51450);
 
 // @0x1422ce8b0
-void ASSlider::FUN_1422ce8b0(float f)
+void ASSlider::SetSnapInterval(float f)
 {
     SetMemberFloat("snapInterval", f);
 }
-MS2_REPLACE_METHOD(0x1422CE8B0, ASSlider, FUN_1422ce8b0, 43, 0x4CE96E19);
+MS2_REPLACE_METHOD(0x1422CE8B0, ASSlider, SetSnapInterval, 43, 0x4CE96E19);
 
 // @0x1422ce8f0
-float ASSlider::FUN_1422ce8f0()
+float ASSlider::GetSnapInterval()
 {
     return (float)GetMember("snapInterval").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422CE8F0, ASSlider, FUN_1422ce8f0, 96, 0xEDC75B72);
+MS2_REPLACE_METHOD(0x1422CE8F0, ASSlider, GetSnapInterval, 96, 0xEDC75B72);
 
 // @0x1422ce960
-void ASSlider::FUN_1422ce960()
+void ASSlider::InvalidateSettings()
 {
     Invoke("invalidateSettings");
 }
-MS2_REPLACE_METHOD(0x1422CE960, ASSlider, FUN_1422ce960, 46, 0x568A40D0);
+MS2_REPLACE_METHOD(0x1422CE960, ASSlider, InvalidateSettings, 46, 0x568A40D0);
 
 // @0x1422ce9a0
-void ASSlider::FUN_1422ce9a0(const ASCallback& onChange, void* pUser)
+void ASSlider::AddValueChangeListener(const ASCallback& onChange, void* pUser)
 {
-    FUN_1422c3600("valueChange", onChange, false, 0, 0, pUser);
+    AddEventListener("valueChange", onChange, false, 0, 0, pUser);
 }
-MS2_REPLACE_METHOD(0x1422CE9A0, ASSlider, FUN_1422ce9a0, 113, 0xC77D355E);
+MS2_REPLACE_METHOD(0x1422CE9A0, ASSlider, AddValueChangeListener, 113, 0xC77D355E);
 
 // @0x1422cea20
-void ASSlider::FUN_1422cea20(const ASCallback& onChange)
+void ASSlider::RemoveValueChangeListener(const ASCallback& onChange)
 {
-    FUN_1422c3820("valueChange", onChange, false);
+    RemoveEventListener("valueChange", onChange, false);
 }
-MS2_REPLACE_METHOD(0x1422CEA20, ASSlider, FUN_1422cea20, 82, 0xD35445FF);
+MS2_REPLACE_METHOD(0x1422CEA20, ASSlider, RemoveValueChangeListener, 82, 0xD35445FF);
 
 // MS2-PIN: ??_GASSlider@@UEAAPEAXI@Z 0x1422cea80

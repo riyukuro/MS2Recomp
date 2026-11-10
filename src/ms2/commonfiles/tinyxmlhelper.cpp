@@ -30,7 +30,7 @@ LONG64 Unk_InterlockedDecrement64(LONG64 volatile* pAddend);
 CStringW FUN_14016a730(const char* sz, int nCodePage);                          // multi-byte to wide
 CStringA FUN_140188f50(const char* psz, int nCodePage);                         // multi-byte copy
 CStringA FUN_140390ea0(const wchar_t* psz, int nCodePage);                      // wide to multi-byte
-ATL::CTimeSpan FUN_140718d00(const CString& str);                               // "d,h,m,s" span
+ATL::CTimeSpan ParseTimeSpan(const CString& str);                               // "d,h,m,s" span
 CMsTime FUN_140718950(const CString& str);                                      // date/time text
 int FUN_14028c3e0(const CString& str, ATL::CAtlArray<CString>& arr, const char* pszDelim, int nCount);   // split, exact count
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);  // xmlattr.h (0x140177e40 for CAtlArray<float>)
@@ -177,7 +177,7 @@ int XmlGetAttr(TiXmlElement* pElem, const char* pszName, ATL::CTimeSpan& out)
         return nResult;
     if (str.GetLength() < 1)
         return 3;
-    out = FUN_140718d00(str);
+    out = ParseTimeSpan(str);
     return nResult;
 }
 

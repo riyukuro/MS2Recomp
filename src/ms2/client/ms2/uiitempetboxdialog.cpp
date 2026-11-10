@@ -198,7 +198,7 @@ void UIItemPetBoxDialog::OnLoadComplete()
     m_multi = false;
     m_sent = false;
     UIDialog::OnLoadComplete();
-    FUN_141925ec0("m_closeButton");
+    BindCloseButton("m_closeButton");
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_singleOpenButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_singleOpen)).get())
         m_singleOpen->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemPetBoxDialog::FUN_140e4fa60), (void*)0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_multiOpenButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_multiOpen)).get())
@@ -213,8 +213,8 @@ void UIItemPetBoxDialog::OnLoadComplete()
     }
     reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_itemBox", m_itemBox);
     reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_resultItem", m_resultItem);
-    FUN_140e52700("m_isSkipEffect", m_skipEffect);
-    FUN_140e4fd60();
+    BindCheckBox("m_isSkipEffect", m_skipEffect);
+    InitItemData();
 }
 
 // @0x140e4ecb0
@@ -244,7 +244,7 @@ void UIItemPetBoxDialog::vfunc_79(void* p)
                     hasSpecial = true;
             }
             FUN_140e504e0();
-            FUN_140e511f0();
+            ShowPetCards();
             m_itemBox->vfunc_13("result");
             FUN_141276180(s_sndOpen, "");
             if (PETBOX_ITEMS.size() > 1)
@@ -269,7 +269,7 @@ int UIItemPetBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         return 1;
     if (_stricmp(szMethod, "onSendOpenBox") == 0) {
         if (FUN_140e51ca0() == 0)
-            FUN_140e52110();
+            SendOpenBox();
         else {
             m_resultItem->vfunc_4(false);
             m_itemBox->vfunc_15("idle");
@@ -427,7 +427,7 @@ bool UIItemPetBoxDialog::IsSpecialItem(const ItemEntity& e)
 }
 
 // @0x140e4fd60
-bool UIItemPetBoxDialog::FUN_140e4fd60()
+bool UIItemPetBoxDialog::InitItemData()
 {
     if (m_30 == 0)
         return false;
@@ -470,8 +470,8 @@ bool UIItemPetBoxDialog::FUN_140e4fd60()
     MS2Ptr<CItem> (*getter)(void*, int) = GetItemFromArray;
     CreateItemSlotBag(m_bagId, (unsigned)items.GetCount(), (void*)&items, getter, 0x415, 0x800);
     ASObj obj(2);
-    obj.FUN_1407cba60("bagId", m_bagId);
-    m_30->Invoke("initItemData", obj.FUN_1422bb870());
+    obj.SetStringMember("bagId", m_bagId);
+    m_30->Invoke("initItemData", obj.GetValue());
     return true;
 }
 
@@ -510,7 +510,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
         unsigned count = item->GetCount();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
         CreateItemInfoSlot(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
-        static_cast<Unk_PetBoxClip*>(slot.operator->())->FUN_1407cba60("binding", bagKey);
+        static_cast<Unk_PetBoxClip*>(slot.operator->())->SetStringMember("binding", bagKey);
         name->FUN_1422e4b80(txt);
         PETBOX_BINDS.push_back(bagKey);
         m_30->Invoke("SetMultiType", false);
@@ -546,7 +546,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
                     } else
                         unc->vfunc_4(false);
                 }
-                static_cast<Unk_PetBoxClip*>(slot.operator->())->FUN_1407cba60("binding", bagKey);
+                static_cast<Unk_PetBoxClip*>(slot.operator->())->SetStringMember("binding", bagKey);
             }
         }
         m_30->Invoke("SetMultiType", true);
@@ -554,7 +554,7 @@ void UIItemPetBoxDialog::FUN_140e504e0()
 }
 
 // @0x140e511f0
-void UIItemPetBoxDialog::FUN_140e511f0()
+void UIItemPetBoxDialog::ShowPetCards()
 {
     if (m_30 == 0)
         return;
@@ -567,7 +567,7 @@ void UIItemPetBoxDialog::FUN_140e511f0()
         MS2Ptr<ASMovieClip> card = m_previewSingle->FUN_1409b4560("m_petCard1");
         if (card == 0)
             return;
-        FUN_140e519b0(card, PETBOX_ITEMS[0]);
+        SetPetCardInfo(card, PETBOX_ITEMS[0]);
         MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS[0].m_itemId);
         if (idata.get() != 0) {
             if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsPetItem()) {
@@ -598,7 +598,7 @@ void UIItemPetBoxDialog::FUN_140e511f0()
             MS2Ptr<ASMovieClip> card = movie->FUN_1409b4560(nm);
             if (card == 0)
                 continue;
-            FUN_140e519b0(card, PETBOX_ITEMS[i]);
+            SetPetCardInfo(card, PETBOX_ITEMS[i]);
             MS2Ptr<CItemData> idata = FUN_14053f870(PETBOX_ITEMS[i].m_itemId);
             if (idata.get() != 0) {
                 if (static_cast<Unk_PetBoxData*>(idata.operator->())->IsPetItem()) {
@@ -617,7 +617,7 @@ void UIItemPetBoxDialog::FUN_140e511f0()
 }
 
 // @0x140e519b0
-void UIItemPetBoxDialog::FUN_140e519b0(MS2Ptr<ASMovieClip> clip, const ItemEntity& item)
+void UIItemPetBoxDialog::SetPetCardInfo(MS2Ptr<ASMovieClip> clip, const ItemEntity& item)
 {
     if (clip == 0)
         return;
@@ -671,8 +671,8 @@ void UIItemPetBoxDialog::FUN_140e51e40()
         return;
     }
     m_30->Invoke("enableComponent", false);
-    if (m_skipEffect->FUN_1422ce0e0()) {
-        FUN_140e52110();
+    if (m_skipEffect->IsSelected()) {
+        SendOpenBox();
         return;
     }
     m_resultItem->vfunc_4(false);
@@ -680,7 +680,7 @@ void UIItemPetBoxDialog::FUN_140e51e40()
 }
 
 // @0x140e52110
-void UIItemPetBoxDialog::FUN_140e52110()
+void UIItemPetBoxDialog::SendOpenBox()
 {
     if (m_sent == true)
         return;
@@ -716,7 +716,7 @@ template <> MS2Ptr<ASCheckBox> UISwfEntity::GetChild<ASCheckBox>(const CString& 
 }
 
 // @0x140e52700
-MS2Ptr<ASCheckBox> UIItemPetBoxDialog::FUN_140e52700(const CString& name, MS2Ptr<ASCheckBox>& member)
+MS2Ptr<ASCheckBox> UIItemPetBoxDialog::BindCheckBox(const CString& name, MS2Ptr<ASCheckBox>& member)
 {
     member = GetChild<ASCheckBox>(name);
     return member;
@@ -742,8 +742,8 @@ MS2_REPLACE_METHOD(0x140E4FB70, UIItemPetBoxDialog, OnClosePreview, 182, 0x99CD6
 MS2_REPLACE_METHOD(0x140E4FC30, UIItemPetBoxDialog, SetBoxItemId, 25, 0x9BF64FA6);
 MS2_REPLACE_METHOD(0x140E4FC50, UIItemPetBoxDialog, FUN_140e4fc50, 50, 0x3FD9DD97);
 MS2_REPLACE_METHOD(0x140E4FC90, UIItemPetBoxDialog, IsSpecialItem, 187, 0x768844F2);
-MS2_REPLACE_METHOD(0x140E519B0, UIItemPetBoxDialog, FUN_140e519b0, 734, 0x3387E636);
+MS2_REPLACE_METHOD(0x140E519B0, UIItemPetBoxDialog, SetPetCardInfo, 734, 0x3387E636);
 MS2_REPLACE_METHOD(0x140E51CA0, UIItemPetBoxDialog, FUN_140e51ca0, 401, 0x3F87147F);
 MS2_REPLACE_METHOD(0x140E52670, UISwfEntity, GetChild<ASCheckBox>, 139, 0x2C5278D7);
-MS2_REPLACE_METHOD(0x140E52700, UIItemPetBoxDialog, FUN_140e52700, 138, 0x48954D03);
+MS2_REPLACE_METHOD(0x140E52700, UIItemPetBoxDialog, BindCheckBox, 138, 0x48954D03);
 MS2_REPLACE_METHOD_VIA(0x140E4F610, UIItemPetBoxDialog, IUIAvatarEventListener, vfunc_o178_1, 178, 0xCEE1D1D9);

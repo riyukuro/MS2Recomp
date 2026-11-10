@@ -116,7 +116,7 @@ private:
     Unk_PmB m_infoB;
 };
 class UIPopUpMenu { public: void FUN_141a7f090(const Unk_PopupMenuInfo& info, const CStringW& strName, unsigned __int64 nSerial, void* p, int b, int c); };
-class Unk_PopupMenu* FUN_140c30140(int nId);                              // the open popup menu dialog
+class Unk_PopupMenu* FindPopupMenu(int nId);                              // the open popup menu dialog
 class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
 void FUN_140a30ad0(const BlockPtr& spBlock, int nAction, unsigned __int64 n);     // the "blocked" notice
 
@@ -133,18 +133,18 @@ CStringW FUN_14016a730(const char* psz, int n);                     // multibyte
 CStringW GetStringCommon(int nStrId);                                 // string table text by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text by key
 void FUN_14025a680(CStringW& text, ATL::CAtlArray<CStringW>& out, const wchar_t* pszSep);   // split
-void FUN_140d73aa0(CStringW text, int nType, void* pListener, CStringW tag);       // notice box
+void ShowMessageBox(CStringW text, int nType, void* pListener, CStringW tag);       // notice box
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW tag);          // notice box by string id
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* pListener, CStringW tag);      // create one by string id
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show it
 void FUN_141275260(int nStrId, int nA, int nB);                     // system notice
-float FUN_140bf4fd0(float f);                                       // ceil
+float Ceil(float f);                                       // ceil
 void RemoveMailItemSlot(const CStringA& strKey);                         // drop a registered item tooltip
 void CreateMailItemSlot(const CStringA& strKey, MS2Ptr<CItem> spItem, int nCount, int nSlot);   // register an item tooltip
 CStringW FUN_1409404f0(__int64 n);                                  // an amount as text
 CStringW FUN_1418fec00(int nPayType, __int64 nAmount, bool bIcon);  // a price as text
-int FUN_1403bae00(int nPriceType);                                  // price kind -> pay type
+int GetPayType(int nPriceType);                                  // price kind -> pay type
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                       // the item data of an id
 UIMarketBillDialog* FindMarketBillDialog(int nUiType);                     // the open dialog of a UI id
 class WorldService   // C3: member view for the former free stand-ins
@@ -179,31 +179,31 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 int FUN_1418fccc0(int nMsg, unsigned __int64 wParam, unsigned __int64 lParam, CStringW* pStr);   // the key edits the text
 CStringW FUN_1413fa9b0(const CStringW& str);                        // lower case
 CStringW XmlWide(const char* psz);                            // UTF-8 -> wide
-void FUN_1412751f0(const CStringW& text, int nA, int nB);           // system notice text
+void ShowSystemNotice(const CStringW& text, int nA, int nB);           // system notice text
 extern __int64 DAT_143ab2828;                                       // the own character id
 
 // The mail is an ad mail (kind 200).
 // @0x1419ead90
-int FUN_1419ead90(CMailInfo* pMail)
+int IsAdMail(CMailInfo* pMail)
 {
-    return pMail->FUN_140690370() == 200;
+    return pMail->GetKind() == 200;
 }
 
 // The ad mail is sold out.
 // @0x1419eadd0
-int FUN_1419eadd0(CMailInfo* pMail)
+int IsAdSoldOut(CMailInfo* pMail)
 {
     return pMail->m_n130;
 }
 
 // The text translator of the system mails (sender / title keys -> text).
-CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip);             // the "days left" text of a row
+CStringW GetDaysLeftString(CMailInfo* pMail, int bTooltip);             // the "days left" text of a row
 
 // @0x1419ea470: MS2Ptr<CMailInfo>::IsNull (usermail.h)
 
 // The meso of the mail (the plain sum while unclaimed plus the meso benefit).
 // @0x1419e9160
-__int64 FUN_1419e9160(CMailInfo* pMail)
+__int64 GetMesoAmount(CMailInfo* pMail)
 {
     __int64 nTotal = 0;
     if (pMail->FUN_140690db0() != 0 && pMail->FUN_140690dd0() == 0)
@@ -213,11 +213,11 @@ __int64 FUN_1419e9160(CMailInfo* pMail)
         nTotal = nTotal + rec.GetAvailableAmount();
     return nTotal;
 }
-MS2_REPLACE(0x1419E9160, FUN_1419e9160, 148, 0x1A71F3E1); // FUN_1419e9160
+MS2_REPLACE(0x1419E9160, GetMesoAmount, 148, 0x1A71F3E1); // GetMesoAmount
 
 // The merat of the mail (the four merat benefit kinds).
 // @0x1419e9200
-__int64 FUN_1419e9200(CMailInfo* pMail)
+__int64 GetMeratAmount(CMailInfo* pMail)
 {
     __int64 nTotal = 0;
     if (pMail->FUN_140690e40() != 0 && pMail->FUN_140690e60() == 0)
@@ -233,11 +233,11 @@ __int64 FUN_1419e9200(CMailInfo* pMail)
         nTotal = nTotal + rec.GetAvailableAmount();
     return nTotal;
 }
-MS2_REPLACE(0x1419E9200, FUN_1419e9200, 331, 0x58E184B6); // FUN_1419e9200
+MS2_REPLACE(0x1419E9200, GetMeratAmount, 331, 0x58E184B6); // GetMeratAmount
 
 // The red merat of the mail.
 // @0x1419e9360
-__int64 FUN_1419e9360(CMailInfo* pMail)
+__int64 GetMeratRedAmount(CMailInfo* pMail)
 {
     __int64 nTotal = 0;
     if (pMail->FUN_140690ed0() != 0 && pMail->FUN_140690ef0() == 0)
@@ -247,13 +247,13 @@ __int64 FUN_1419e9360(CMailInfo* pMail)
         nTotal = nTotal + rec.GetAvailableAmount();
     return nTotal;
 }
-MS2_REPLACE(0x1419E9360, FUN_1419e9360, 151, 0xE2DAA05F); // FUN_1419e9360
+MS2_REPLACE(0x1419E9360, GetMeratRedAmount, 151, 0xE2DAA05F); // GetMeratRedAmount
 
 // A benefit amount as price text.
 // @0x1419e9400
 CStringW FUN_1419e9400(int nPriceType, __int64 nAmount)
 {
-    int nPayType = FUN_1403bae00(nPriceType);
+    int nPayType = GetPayType(nPriceType);
     return FUN_1418fec00(nPayType, nAmount, false);
 }
 MS2_REPLACE(0x1419E9400, FUN_1419e9400, 82, 0xFF1E0FE6); // FUN_1419e9400
@@ -262,7 +262,7 @@ MS2_REPLACE(0x1419E9400, FUN_1419e9400, 82, 0xFF1E0FE6); // FUN_1419e9400
 // @0x1419e9460
 void FUN_1419e9460(CMailInfo* pMail, ASObj& info)
 {
-    Unk_MailBenefitList& list = pMail->FUN_1419ea9a0();
+    Unk_MailBenefitList& list = pMail->GetBenefits();
     int nCount = reinterpret_cast<Unk_CommonPriceRecordList&>(list).GetCount();
     if (0 < nCount)
     {
@@ -283,7 +283,7 @@ void FUN_1419e9460(CMailInfo* pMail, ASObj& info)
             CStringW strPrice = FUN_1419e9400(benefit.m_nType, nAmount);
             CStringA strKey = StringFormat("token{0}", nToken);
             nToken++;
-            info.FUN_1407cbb20(strKey, CStringW(strPrice));
+            info.SetWStringMember(strKey, CStringW(strPrice));
         }
     }
 }
@@ -291,10 +291,10 @@ MS2_REPLACE(0x1419E9460, FUN_1419e9460, 362, 0xB651066D); // FUN_1419e9460
 
 // The "days left" text of a row (bTooltip: the long form).
 // @0x1419e95d0
-CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip)
+CStringW GetDaysLeftString(CMailInfo* pMail, int bTooltip)
 {
     CMsTime now(GetServerTime());
-    CMsTime expire(pMail->FUN_140691160());
+    CMsTime expire(pMail->GetExpireTime());
     if (now > expire)
         return GetStringCommon(0x80b);
     ATL::CTimeSpan span = expire - now;
@@ -319,7 +319,7 @@ CStringW FUN_1419e95d0(CMailInfo* pMail, int bTooltip)
     }
     return str;
 }
-MS2_REPLACE(0x1419E95D0, FUN_1419e95d0, 624, 0x1F41E57F); // FUN_1419e95d0
+MS2_REPLACE(0x1419E95D0, GetDaysLeftString, 624, 0x1F41E57F); // GetDaysLeftString
 
 // ---- UIMailListDialog ----
 
@@ -327,7 +327,7 @@ MS2_REPLACE(0x1419E95D0, FUN_1419e95d0, 624, 0x1F41E57F); // FUN_1419e95d0
 UIMailListDialog::UIMailListDialog()
     : m_mapChecked(17, 0.75f, 0.25f, 2.25f, 10), m_bRefresh(false)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_nPage = 0;
 }
 
@@ -355,7 +355,7 @@ MS2_REPLACE_METHOD(0x1419E3680, UIMailListDialog, vfunc_65, 37, 0xFEA3F0C1); // 
 // @0x1419e36b0
 void UIMailListDialog::vfunc_67()
 {
-    FUN_1419e6b70();
+    ClearAttachmentTooltips();
     UIDialog::vfunc_67();
     m_bRefresh = false;
 }
@@ -367,7 +367,7 @@ void UIMailListDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     m_mapChecked.RemoveAll();
     m_nPage = 0;
-    FUN_1419e73f0();
+    UpdatePageText();
     SendMailMode0();
 }
 MS2_REPLACE_METHOD(0x1419E36F0, UIMailListDialog, OnLoadComplete, 78, 0x5B61BC99); // UIMailListDialog::OnLoadComplete
@@ -395,19 +395,19 @@ void UIMailListDialog::vfunc_15()
     if (DAT_143af37b0 != 0)
     {
         DAT_143af37b0 = 0;
-        FUN_1419e5190();
+        RefreshMailList();
         __int64 nOpen = FUN_1419e6c30();
         if (nOpen != 0)
-            FUN_1419e5a10(nOpen);
+            SetMailInfo(nOpen);
     }
     if (DAT_143af37b8 != 0)
     {
-        FUN_1419e5a10(DAT_143af37b8);
+        SetMailInfo(DAT_143af37b8);
         DAT_143af37b8 = 0;
     }
     if (DAT_143af37b4 != 0)
     {
-        FUN_1419e4f10();
+        OnMailRemoved();
         DAT_143af37b4 = 0;
         FUN_141275260(0x22a, 1, 1);
     }
@@ -424,50 +424,50 @@ void UIMailListDialog::FUN_1419e4ef0(void* p)
 MS2_REPLACE_METHOD(0x1419E4EF0, UIMailListDialog, FUN_1419e4ef0, 11, 0x02239C70); // FUN_1419e4ef0
 
 // @0x1419e4f10
-void UIMailListDialog::FUN_1419e4f10()
+void UIMailListDialog::OnMailRemoved()
 {
     ATL::CAtlList<CUserMail::MailPtr> mails(10);
-    FUN_1419e6d20(mails);
-    int nLast = (std::max)(1, (int)FUN_140bf4fd0((float)mails.GetCount() / 14.0f));
+    GetTabMails(mails);
+    int nLast = (std::max)(1, (int)Ceil((float)mails.GetCount() / 14.0f));
     if (m_nPage >= nLast)
     {
         m_nPage = nLast - 1;
-        FUN_1419e73f0();
+        UpdatePageText();
     }
-    FUN_1419e5190();
-    FUN_1419e5a10(0);
+    RefreshMailList();
+    SetMailInfo(0);
 }
-MS2_REPLACE_METHOD(0x1419E4F10, UIMailListDialog, FUN_1419e4f10, 227, 0x6B05EF4E); // FUN_1419e4f10
+MS2_REPLACE_METHOD(0x1419E4F10, UIMailListDialog, OnMailRemoved, 227, 0x6B05EF4E); // OnMailRemoved
 
 // @0x1419e5000
-void UIMailListDialog::FUN_1419e5000(__int64 nMailId)
+void UIMailListDialog::OnReadMail(__int64 nMailId)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg)
         static_cast<AScript*>(pDlg)->Invoke("readMail", FUN_141b71910(nMailId));
-    FUN_1419e5900();
+    UpdateMailCount();
 }
-MS2_REPLACE_METHOD(0x1419E5000, UIMailListDialog, FUN_1419e5000, 167, 0xCFAD7E71); // FUN_1419e5000
+MS2_REPLACE_METHOD(0x1419E5000, UIMailListDialog, OnReadMail, 167, 0xCFAD7E71); // OnReadMail
 
 // @0x1419e50b0
-void UIMailListDialog::FUN_1419e50b0(__int64 nMailId)
+void UIMailListDialog::OnReceiveMail(__int64 nMailId)
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg)
         static_cast<AScript*>(pDlg)->Invoke("receiveMail", FUN_141b71910(nMailId));
 }
-MS2_REPLACE_METHOD(0x1419E50B0, UIMailListDialog, FUN_1419e50b0, 154, 0x92C96AA2); // FUN_1419e50b0
+MS2_REPLACE_METHOD(0x1419E50B0, UIMailListDialog, OnReceiveMail, 154, 0x92C96AA2); // OnReceiveMail
 
 // @0x1419e5150
-void UIMailListDialog::FUN_1419e5150()
+void UIMailListDialog::RequestRefresh()
 {
     m_bRefresh = true;
     m_timer.Init();
 }
-MS2_REPLACE_METHOD(0x1419E5150, UIMailListDialog, FUN_1419e5150, 45, 0xA826AB8A); // FUN_1419e5150
+MS2_REPLACE_METHOD(0x1419E5150, UIMailListDialog, RequestRefresh, 45, 0xA826AB8A); // RequestRefresh
 
 // @0x1419e5900
-void UIMailListDialog::FUN_1419e5900()
+void UIMailListDialog::UpdateMailCount()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg)
@@ -481,12 +481,12 @@ void UIMailListDialog::FUN_1419e5900()
         pDlg->FUN_1409ba0d0("onMailCount", nUser, nSystem);
     }
 }
-MS2_REPLACE_METHOD(0x1419E5900, UIMailListDialog, FUN_1419e5900, 258, 0x4973165E); // FUN_1419e5900
+MS2_REPLACE_METHOD(0x1419E5900, UIMailListDialog, UpdateMailCount, 258, 0x4973165E); // UpdateMailCount
 
 // @0x1419e5a10
-void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
+void UIMailListDialog::SetMailInfo(__int64 nMailId)
 {
-    FUN_1419e6b70();
+    ClearAttachmentTooltips();
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg)
     {
@@ -498,7 +498,7 @@ void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
                 CStringW strSender = spMail->GetSenderName();
                 CStringW strTitle = spMail->GetTitle();
                 CStringW strContent = spMail->GetContent();
-                int nKind = spMail->FUN_140690370();
+                int nKind = spMail->GetKind();
                 if (nKind >= 100 && nKind < 0x71)
                 {
                     TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strSender);
@@ -511,37 +511,37 @@ void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
                     TSingleton<WeddingManager>::GetInstance()->ReadTicketMail(CUserMail::MailPtr(spMail), &wedding);
                     info.FUN_1409eb270("wedding", wedding);
                 }
-                info.FUN_1407cbb20("sender", CStringW(strSender));
-                info.FUN_1407cbb20("title", CStringW(strTitle));
-                info.FUN_1407cbb20("content", CStringW(strContent));
-                info.FUN_1407cb9c0("attachment", spMail->FUN_140691220());
-                info.FUN_1407cba60("state", FUN_1419e7260(CUserMail::MailPtr(spMail)));
-                info.FUN_1407cb9c0("binding", FUN_1419e67a0(spMail.get()));
-                info.FUN_1407cbb20("date", spMail->GetDateString());
-                __int64 nMeso = FUN_1419e9160(spMail.get());
-                __int64 nMerat = FUN_1419e9200(spMail.get());
-                __int64 nMeratRed = FUN_1419e9360(spMail.get());
+                info.SetWStringMember("sender", CStringW(strSender));
+                info.SetWStringMember("title", CStringW(strTitle));
+                info.SetWStringMember("content", CStringW(strContent));
+                info.SetIntMember("attachment", spMail->HasAttachment());
+                info.SetStringMember("state", GetMailStateName(CUserMail::MailPtr(spMail)));
+                info.SetIntMember("binding", BindAttachmentTooltips(spMail.get()));
+                info.SetWStringMember("date", spMail->GetDateString());
+                __int64 nMeso = GetMesoAmount(spMail.get());
+                __int64 nMerat = GetMeratAmount(spMail.get());
+                __int64 nMeratRed = GetMeratRedAmount(spMail.get());
                 if (0 < nMeso)
-                    info.FUN_1407cbb20("meso", FUN_1409404f0(nMeso));
+                    info.SetWStringMember("meso", FUN_1409404f0(nMeso));
                 if (0 < nMerat)
-                    info.FUN_1407cbb20("merat", FUN_1409404f0(nMerat));
+                    info.SetWStringMember("merat", FUN_1409404f0(nMerat));
                 if (0 < nMeratRed)
-                    info.FUN_1407cbb20("meratRed", FUN_1409404f0(nMeratRed));
+                    info.SetWStringMember("meratRed", FUN_1409404f0(nMeratRed));
                 FUN_1419e9460(spMail.get(), info);
-                switch (spMail->FUN_140690370())
+                switch (spMail->GetKind())
                 {
                 case 3:
-                    info.FUN_1407cbbe0("disableReply", true);
+                    info.SetBoolMember("disableReply", true);
                     break;
                 case 200:
-                    info.FUN_1407cbb20("productName", spMail->FUN_1419eab80());
-                    info.FUN_1407cba60("price", Unk_SocketFormat("{0}", spMail->FUN_140692510()));
-                    info.FUN_1407cba60("salePrice", Unk_SocketFormat("{0}", spMail->FUN_1406925a0()));
-                    info.FUN_1407cb9c0("expired", spMail->FUN_140692630());
+                    info.SetWStringMember("productName", spMail->GetAdProductName());
+                    info.SetStringMember("price", Unk_SocketFormat("{0}", spMail->FUN_140692510()));
+                    info.SetStringMember("salePrice", Unk_SocketFormat("{0}", spMail->FUN_1406925a0()));
+                    info.SetIntMember("expired", spMail->FUN_140692630());
                     break;
                 default:
-                    if (spMail->FUN_140690370() >= 1 && spMail->FUN_140690370() < 4)
-                        info.FUN_1407cbbe0("visibleUserMailIcon", true);
+                    if (spMail->GetKind() >= 1 && spMail->GetKind() < 4)
+                        info.SetBoolMember("visibleUserMailIcon", true);
                     break;
                 }
             }
@@ -549,7 +549,7 @@ void UIMailListDialog::FUN_1419e5a10(__int64 nMailId)
         m_30->Invoke("setMailInfo", info);
     }
 }
-MS2_REPLACE_METHOD(0x1419E5A10, UIMailListDialog, FUN_1419e5a10, 1959, 0xC519097B); // FUN_1419e5a10
+MS2_REPLACE_METHOD(0x1419E5A10, UIMailListDialog, SetMailInfo, 1959, 0xC519097B); // SetMailInfo
 
 // @0x1419e61c0
 void UIMailListDialog::SendMailMode2(__int64 nMailId)
@@ -557,11 +557,11 @@ void UIMailListDialog::SendMailMode2(__int64 nMailId)
     CMailInfo* pMail = g_143ab2ee0.FindMailById(nMailId).get();
     if (pMail == 0)
         return;
-    if (pMail->FUN_140691110() == 0)
+    if (pMail->GetReadTime() == 0)
     {
         COutPacket packet(static_cast<int>(SendOp::Mail), 0);
         packet.Encode1(2);
-        packet.Encode8(pMail->FUN_140690350());
+        packet.Encode8(pMail->GetId());
         FUN_140710590(packet);
     }
 }
@@ -577,31 +577,31 @@ void UIMailListDialog::SendMailMode11(__int64 nMailId)
         return;
     COutPacket packet(static_cast<int>(SendOp::Mail), 0);
     packet.Encode1(0xb);
-    packet.Encode8(pMail->FUN_140690350());
+    packet.Encode8(pMail->GetId());
     FUN_140710590(packet);
 }
 MS2_REPLACE_METHOD(0x1419E6290, UIMailListDialog, SendMailMode11, 200, 0x09F47CCF); // SendMailMode11
 
 // @0x1419e6360
-void UIMailListDialog::FUN_1419e6360(__int64 nMailId)
+void UIMailListDialog::ReplyToMail(__int64 nMailId)
 {
     CMailInfo* pMail = g_143ab2ee0.FindMailById(nMailId).get();
     if (pMail == 0)
         return;
     UIMailSendDialog* pSend = Unk_SSGGetDialog<UIMailSendDialog>(0x4e4a);
     if (pSend != 0)
-        pSend->FUN_1419ecbb0(pMail);
+        pSend->SetReplyMail(pMail);
     CUIService::GetInstance()->ToggleDialog((eUIClassID)0x4e4a);
 }
-MS2_REPLACE_METHOD(0x1419E6360, UIMailListDialog, FUN_1419e6360, 156, 0x946298AD); // FUN_1419e6360
+MS2_REPLACE_METHOD(0x1419E6360, UIMailListDialog, ReplyToMail, 156, 0x946298AD); // ReplyToMail
 
 // @0x1419e67a0
-unsigned UIMailListDialog::FUN_1419e67a0(CMailInfo* pMail)
+unsigned UIMailListDialog::BindAttachmentTooltips(CMailInfo* pMail)
 {
     if (pMail == 0)
         return 0;
     unsigned nCount = 0;
-    if (FUN_1419ead90(pMail) != 0)
+    if (IsAdMail(pMail) != 0)
     {
         for (int i = 0; i < 5; i++)
         {
@@ -636,10 +636,10 @@ unsigned UIMailListDialog::FUN_1419e67a0(CMailInfo* pMail)
     }
     return nCount;
 }
-MS2_REPLACE_METHOD(0x1419E67A0, UIMailListDialog, FUN_1419e67a0, 957, 0x72309694); // FUN_1419e67a0
+MS2_REPLACE_METHOD(0x1419E67A0, UIMailListDialog, BindAttachmentTooltips, 957, 0x72309694); // BindAttachmentTooltips
 
 // @0x1419e6b70
-void UIMailListDialog::FUN_1419e6b70()
+void UIMailListDialog::ClearAttachmentTooltips()
 {
     for (int i = 0; i < 5; i++)
     {
@@ -648,7 +648,7 @@ void UIMailListDialog::FUN_1419e6b70()
         RemoveMailItemSlot(strKey);
     }
 }
-MS2_REPLACE_METHOD(0x1419E6B70, UIMailListDialog, FUN_1419e6b70, 174, 0x75771166); // FUN_1419e6b70
+MS2_REPLACE_METHOD(0x1419E6B70, UIMailListDialog, ClearAttachmentTooltips, 174, 0x75771166); // ClearAttachmentTooltips
 
 // @0x1419e6c30
 __int64 UIMailListDialog::FUN_1419e6c30()
@@ -663,13 +663,13 @@ __int64 UIMailListDialog::FUN_1419e6c30()
 MS2_REPLACE_METHOD(0x1419E6C30, UIMailListDialog, FUN_1419e6c30, 234, 0x978463E6); // FUN_1419e6c30
 
 // @0x1419e6ec0
-int UIMailListDialog::FUN_1419e6ec0(MS2Ptr<CMailInfo> spMail)
+int UIMailListDialog::IsMailInCurrentTab(MS2Ptr<CMailInfo> spMail)
 {
-    if (FUN_1419e7fd0() == 1)
+    if (GetSelectedTab() == 1)
     {
         for (int nKind = 1; nKind < 4; nKind++)
         {
-            if (spMail->FUN_140690370() == nKind)
+            if (spMail->GetKind() == nKind)
                 return 1;
         }
     }
@@ -677,20 +677,20 @@ int UIMailListDialog::FUN_1419e6ec0(MS2Ptr<CMailInfo> spMail)
     {
         for (int nKind = 100; nKind < 0x71; nKind++)
         {
-            if (spMail->FUN_140690370() == nKind)
+            if (spMail->GetKind() == nKind)
                 return 1;
         }
-        if (FUN_1419ead90(spMail.get()) != 0)
+        if (IsAdMail(spMail.get()) != 0)
             return 1;
     }
     return 0;
 }
 
 // @0x1419e6fe0
-int UIMailListDialog::FUN_1419e6fe0(int nPage)
+int UIMailListDialog::IsPageValid(int nPage)
 {
     int nCount = 0;
-    if (FUN_1419e7fd0() == 1)
+    if (GetSelectedTab() == 1)
     {
         for (int nKind = 1; nKind < 4; nKind++)
             nCount += g_143ab2ee0.GetMailCountByKind(nKind);
@@ -700,12 +700,12 @@ int UIMailListDialog::FUN_1419e6fe0(int nPage)
         for (int nKind = 100; nKind < 0x71; nKind++)
             nCount += g_143ab2ee0.GetMailCountByKind(nKind);
     }
-    int nPages = (int)FUN_140bf4fd0((float)nCount / 14.0f);
+    int nPages = (int)Ceil((float)nCount / 14.0f);
     if (nPage < 0 || nPage >= nPages)
         return 0;
     return 1;
 }
-MS2_REPLACE_METHOD(0x1419E6FE0, UIMailListDialog, FUN_1419e6fe0, 210, 0xE322023D); // FUN_1419e6fe0
+MS2_REPLACE_METHOD(0x1419E6FE0, UIMailListDialog, IsPageValid, 210, 0xE322023D); // IsPageValid
 
 // @0x1419e70c0
 int UIMailListDialog::FUN_1419e70c0(CStringW strIds)
@@ -719,7 +719,7 @@ int UIMailListDialog::FUN_1419e70c0(CStringW strIds)
     {
         unsigned __int64 nId = FUN_140718370(aIds[i]);
         CUserMail::MailPtr spMail = g_143ab2ee0.FindMailById(nId);
-        if (spMail.get() != 0 && spMail->FUN_140691220() != 0)
+        if (spMail.get() != 0 && spMail->HasAttachment() != 0)
             return 1;
     }
     return 0;
@@ -727,26 +727,26 @@ int UIMailListDialog::FUN_1419e70c0(CStringW strIds)
 MS2_REPLACE_METHOD(0x1419E70C0, UIMailListDialog, FUN_1419e70c0, 395, 0xB40CDF74); // FUN_1419e70c0
 
 // @0x1419e7260
-CStringA UIMailListDialog::FUN_1419e7260(MS2Ptr<CMailInfo> spMail)
+CStringA UIMailListDialog::GetMailStateName(MS2Ptr<CMailInfo> spMail)
 {
-    if (FUN_1419ead90(spMail.operator->()) != 0)
+    if (IsAdMail(spMail.operator->()) != 0)
     {
-        if (FUN_1419eadd0(spMail.operator->()) != 0)
+        if (IsAdSoldOut(spMail.operator->()) != 0)
             return "ad";
         return "ad_attached";
     }
     else
     {
-        if (spMail->FUN_140690370() == 0x70)
+        if (spMail->GetKind() == 0x70)
             return "wedding_invitation";
-        if (spMail->FUN_140691220() != 0)
+        if (spMail->HasAttachment() != 0)
             return "attached";
         return "non_attached";
     }
 }
 
 // @0x1419e73f0
-void UIMailListDialog::FUN_1419e73f0()
+void UIMailListDialog::UpdatePageText()
 {
     if (MS2Ptr<ASTextField> spPage = GetChild<ASTextField>("m_page"))
     {
@@ -754,16 +754,16 @@ void UIMailListDialog::FUN_1419e73f0()
         spPage->SetTextW(StringFormat<int>(L"{0}", nShown));
     }
 }
-MS2_REPLACE_METHOD(0x1419E73F0, UIMailListDialog, FUN_1419e73f0, 225, 0x8A7532B9); // FUN_1419e73f0
+MS2_REPLACE_METHOD(0x1419E73F0, UIMailListDialog, UpdatePageText, 225, 0x8A7532B9); // UpdatePageText
 
 // @0x1419e7fd0
-int UIMailListDialog::FUN_1419e7fd0()
+int UIMailListDialog::GetSelectedTab()
 {
-    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar("m_tab"))
         return spTab.operator->()->GetSelectedIndex();
     return -1;
 }
-MS2_REPLACE_METHOD(0x1419E7FD0, UIMailListDialog, FUN_1419e7fd0, 166, 0x6BAF5A08); // FUN_1419e7fd0
+MS2_REPLACE_METHOD(0x1419E7FD0, UIMailListDialog, GetSelectedTab, 166, 0x6BAF5A08); // GetSelectedTab
 
 // @0x1419e8b70
 bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam)
@@ -784,7 +784,7 @@ bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& dat
     if (pMail == 0)
         return true;
     int nBillIndex = data.PopUInt();
-    MS2Ptr<ASBillData> spBill = spParam->FUN_140eaba00(nBillIndex);
+    MS2Ptr<ASBillData> spBill = spParam->GetBill(nBillIndex);
     if (spBill == 0)
         return false;
     MS2Ptr<ASMailAdBillData> spAdBill(dynamic_cast<ASMailAdBillData*>(spBill.get()));
@@ -796,7 +796,7 @@ bool UIMailListDialog::FUN_1419e8b70(Scaleform::GFx::Value* pRetVal, ASData& dat
     PCBase* pPlayer = ((class PCBase*)WorldService::GetInstance()->FUN_141bd0cc0());
     ASTooltip tip(pPlayer, 0x20, 2);
     if (tip.FUN_1409e1770(spAd->m_n18, spAd->m_n20) != 0)
-        *pRetVal = tip.FUN_1422bb870();
+        *pRetVal = tip.GetValue();
     return true;
 }
 
@@ -823,7 +823,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nMailId = atoi(data.FUN_1422b8d30());
-            FUN_1419e5a10(nMailId);
+            SetMailInfo(nMailId);
             SendMailMode2(nMailId);
         }
         return 1;
@@ -844,9 +844,9 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     else if (_stricmp("onSelectTab", szMethod) == 0)
     {
         m_nPage = 0;
-        FUN_1419e5190();
-        FUN_1419e5a10(0);
-        FUN_1419e73f0();
+        RefreshMailList();
+        SetMailInfo(0);
+        UpdatePageText();
         m_mapChecked.RemoveAll();
     }
     else if (_stricmp("onRecieveAll", szMethod) == 0)
@@ -864,7 +864,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nMailId = atoi(data.FUN_1422b8d30());
-            FUN_1419e6360(nMailId);
+            ReplyToMail(nMailId);
         }
     }
     else if (_stricmp("onRemove", szMethod) == 0)
@@ -878,26 +878,26 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("onPrevPage", szMethod) == 0)
     {
-        if (FUN_1419e6fe0(m_nPage - 1) != 0)
+        if (IsPageValid(m_nPage - 1) != 0)
         {
             m_nPage = m_nPage - 1;
-            FUN_1419e5190();
-            FUN_1419e73f0();
+            RefreshMailList();
+            UpdatePageText();
             m_mapChecked.RemoveAll();
             if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_checkAll"))
-                spCheck->FUN_1422ce090(0);
+                spCheck->SetSelected(0);
         }
     }
     else if (_stricmp("onNextPage", szMethod) == 0)
     {
-        if (FUN_1419e6fe0(m_nPage + 1) != 0)
+        if (IsPageValid(m_nPage + 1) != 0)
         {
             m_nPage = m_nPage + 1;
-            FUN_1419e5190();
-            FUN_1419e73f0();
+            RefreshMailList();
+            UpdatePageText();
             m_mapChecked.RemoveAll();
             if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_checkAll"))
-                spCheck->FUN_1422ce090(0);
+                spCheck->SetSelected(0);
         }
     }
     else if (_stricmp("onReadList", szMethod) == 0)
@@ -906,7 +906,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strIds = FUN_14016a730(data.FUN_1422b8d30(), 0);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22d), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommon(0x22d), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->AddStringArg(CStringW(strIds));
@@ -935,7 +935,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             }
             else
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22e), 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommon(0x22e), 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
                     spBox->AddStringArg(CStringW(strIds));
@@ -951,7 +951,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strIds = FUN_14016a730(data.FUN_1422b8d30(), 0);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0x22f), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommon(0x22f), 0, CStringW(L""));
             if (spBox.get() != 0)
             {
                 spBox->AddStringArg(CStringW(strIds));
@@ -984,9 +984,9 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
             CUserMail::MailPtr spMail = g_143ab2ee0.FindMailById(nMailId);
             if (spMail.IsNull())
                 break;
-            if (spMail->FUN_140690370() != 1)
+            if (spMail->GetKind() != 1)
                 break;
-            UIPopUpMenu* pMenu = (UIPopUpMenu*)FUN_140c30140(0x4e39);
+            UIPopUpMenu* pMenu = (UIPopUpMenu*)FindPopupMenu(0x4e39);
             if (pMenu == 0)
                 break;
             Unk_PopupMenuInfo info(fX, fY, 3, 0x50, 0, "", 0);
@@ -999,7 +999,7 @@ int UIMailListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             unsigned __int64 nMailId = FUN_140718370(data.FUN_1422b8f40());
-            FUN_1419e8080(nMailId);
+            OnBuyAd(nMailId);
         }
     }
     return 0;
@@ -1018,26 +1018,26 @@ void UIMailListDialog::FUN_1419e6410(__int64 nMailId)
     if (spMail == 0)
         return;
     int nStrId = 0x235;
-    if (FUN_1419ead90(spMail.operator->()) != 0)
+    if (IsAdMail(spMail.operator->()) != 0)
     {
         if (spMail->FUN_140692630() != 0)
         {
             COutPacket packet(static_cast<int>(SendOp::Mail), 0);
             packet.Encode1(0xd);
             packet.Encode4(1);
-            packet.Encode8(spMail->FUN_140690350());
+            packet.Encode8(spMail->GetId());
             FUN_140710590(packet);
             return;
         }
-        if (FUN_1419eadd0(spMail.operator->()) == 0)
+        if (IsAdSoldOut(spMail.operator->()) == 0)
             nStrId = 0x236;
     }
     else
     {
-        if (spMail->FUN_140691220() != 0)
+        if (spMail->HasAttachment() != 0)
             nStrId = 0x237;
     }
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(nStrId), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommon(nStrId), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         spBox->AddStringArg(FUN_141b71910(nMailId));
@@ -1048,16 +1048,16 @@ void UIMailListDialog::FUN_1419e6410(__int64 nMailId)
 MS2_REPLACE_METHOD(0x1419E6410, UIMailListDialog, FUN_1419e6410, 902, 0xCFF9DD01); // FUN_1419e6410
 
 // @0x1419e6d20
-void UIMailListDialog::FUN_1419e6d20(ATL::CAtlList<CUserMail::MailPtr>& out)
+void UIMailListDialog::GetTabMails(ATL::CAtlList<CUserMail::MailPtr>& out)
 {
     ATL::CRBMultiMap<__int64, CUserMail::MailPtr> byTime(10);
-    CUserMail::MailArray& mails = g_143ab2ee0.FUN_1408e3700();
+    CUserMail::MailArray& mails = g_143ab2ee0.GetMails();
     for (size_t i = 0; i < mails.GetCount(); i++)
     {
         CUserMail::MailPtr spMail = mails.GetAt(i);
-        if (FUN_1419e6ec0(CUserMail::MailPtr(spMail)) != 0)
+        if (IsMailInCurrentTab(CUserMail::MailPtr(spMail)) != 0)
         {
-            if (FUN_1419ead90(spMail.operator->()) != 0)
+            if (IsAdMail(spMail.operator->()) != 0)
                 out.AddTail(spMail);
             else
                 byTime.Insert(spMail->FUN_1406911c0(), spMail);
@@ -1069,10 +1069,10 @@ void UIMailListDialog::FUN_1419e6d20(ATL::CAtlList<CUserMail::MailPtr>& out)
         out.AddTail(spMail);
     }
 }
-MS2_REPLACE_METHOD(0x1419E6D20, UIMailListDialog, FUN_1419e6d20, 400, 0x6E86303A); // FUN_1419e6d20
+MS2_REPLACE_METHOD(0x1419E6D20, UIMailListDialog, GetTabMails, 400, 0x6E86303A); // GetTabMails
 
 // @0x1419e74e0
-int UIMailListDialog::FUN_1419e74e0(__int64 nMailId)
+int UIMailListDialog::HasLockedAttachment(__int64 nMailId)
 {
     CUserMail::MailPtr spMail = g_143ab2ee0.FindMailById(nMailId);
     if (spMail.get() != 0)
@@ -1091,7 +1091,7 @@ int UIMailListDialog::FUN_1419e74e0(__int64 nMailId)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1419E74E0, UIMailListDialog, FUN_1419e74e0, 335, 0xE1BB44D8); // FUN_1419e74e0
+MS2_REPLACE_METHOD(0x1419E74E0, UIMailListDialog, HasLockedAttachment, 335, 0xE1BB44D8); // HasLockedAttachment
 
 // @0x1419e7640
 bool UIMailListDialog::SendMailMode18(int nButton, const CMsgBoxData& data)
@@ -1100,7 +1100,7 @@ bool UIMailListDialog::SendMailMode18(int nButton, const CMsgBoxData& data)
         return true;
     CStringW strIds = data.FUN_141a02fd0(0, CStringW());
     ATL::CAtlArray<__int64> aIds;
-    FUN_1419e7ea0(CStringW(strIds), aIds, 0);
+    ParseMailIds(CStringW(strIds), aIds, 0);
     COutPacket packet(static_cast<int>(SendOp::Mail), 0);
     packet.Encode1(0x12);
     packet.Encode4((int)aIds.GetCount());
@@ -1118,7 +1118,7 @@ bool UIMailListDialog::SendMailMode19(int nButton, const CMsgBoxData& data)
         return true;
     CStringW strIds = data.FUN_141a02fd0(0, CStringW());
     ATL::CAtlArray<__int64> aIds;
-    FUN_1419e7ea0(CStringW(strIds), aIds, 0);
+    ParseMailIds(CStringW(strIds), aIds, 0);
     COutPacket packet(static_cast<int>(SendOp::Mail), 0);
     packet.Encode1(0x13);
     packet.Encode4((int)aIds.GetCount());
@@ -1138,12 +1138,12 @@ bool UIMailListDialog::FUN_1419e7940(int nButton, const CMsgBoxData& data)
     CStringW strInput = data.FUN_141a02d50();
     int bFound = strInput.Find(L"true", 0) != -1 ? 1 : 0;
     ATL::CAtlArray<__int64> aIds;
-    FUN_1419e7ea0(CStringW(strIds), aIds, bFound == 0 ? 1 : 0);
+    ParseMailIds(CStringW(strIds), aIds, bFound == 0 ? 1 : 0);
     for (size_t i = 0; i < aIds.GetCount(); i++)
     {
-        if (FUN_1419e74e0(aIds[i]) != 0)
+        if (HasLockedAttachment(aIds[i]) != 0)
         {
-            FUN_140d73aa0(GetStringCommonByKey(L"s_itemlock_mail_remove"), 0, 0, CStringW(L""));
+            ShowMessageBox(GetStringCommonByKey(L"s_itemlock_mail_remove"), 0, 0, CStringW(L""));
             return true;
         }
     }
@@ -1163,9 +1163,9 @@ bool UIMailListDialog::SendMailMode13(int nButton, const CMsgBoxData& data)
     if (nButton != 0)
         return true;
     __int64 nMailId = FUN_140718370(data.FUN_141a02fd0(0, CStringW()));
-    if (FUN_1419e74e0(nMailId) != 0)
+    if (HasLockedAttachment(nMailId) != 0)
     {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_itemlock_mail_remove"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_itemlock_mail_remove"), 0, 0, L"");
         return true;
     }
     if (CMailInfo* pMail = g_143ab2ee0.FindMailById(nMailId).get())
@@ -1173,7 +1173,7 @@ bool UIMailListDialog::SendMailMode13(int nButton, const CMsgBoxData& data)
         COutPacket packet(static_cast<int>(SendOp::Mail), 0);
         packet.Encode1(0xd);
         packet.Encode4(1);
-        packet.Encode8(pMail->FUN_140690350());
+        packet.Encode8(pMail->GetId());
         FUN_140710590(packet);
     }
     return true;
@@ -1181,7 +1181,7 @@ bool UIMailListDialog::SendMailMode13(int nButton, const CMsgBoxData& data)
 MS2_REPLACE_METHOD(0x1419E7C80, UIMailListDialog, SendMailMode13, 534, 0x573E56A5); // SendMailMode13
 
 // @0x1419e7ea0
-void UIMailListDialog::FUN_1419e7ea0(CStringW strIds, ATL::CAtlArray<__int64>& aIds, int bSkipAttached)
+void UIMailListDialog::ParseMailIds(CStringW strIds, ATL::CAtlArray<__int64>& aIds, int bSkipAttached)
 {
     ATL::CAtlArray<CStringW> aTexts;
     FUN_14025a680(strIds, aTexts, L",");
@@ -1191,16 +1191,16 @@ void UIMailListDialog::FUN_1419e7ea0(CStringW strIds, ATL::CAtlArray<__int64>& a
         CUserMail::MailPtr spMail = g_143ab2ee0.FindMailById(nMailId);
         if (spMail.get() != 0)
         {
-            if (spMail->FUN_140691220() != 0 && bSkipAttached != 0)
+            if (spMail->HasAttachment() != 0 && bSkipAttached != 0)
                 continue;
             aIds.Add(nMailId);
         }
     }
 }
-MS2_REPLACE_METHOD(0x1419E7EA0, UIMailListDialog, FUN_1419e7ea0, 291, 0x201EBD4F); // FUN_1419e7ea0
+MS2_REPLACE_METHOD(0x1419E7EA0, UIMailListDialog, ParseMailIds, 291, 0x201EBD4F); // ParseMailIds
 
 // @0x1419e5190
-void UIMailListDialog::FUN_1419e5190()
+void UIMailListDialog::RefreshMailList()
 {
     __int64 nOpen = FUN_1419e6c30();
     int nSelect = -1;
@@ -1208,7 +1208,7 @@ void UIMailListDialog::FUN_1419e5190()
     {
         spList->FUN_1422dd1d0();
         ATL::CAtlList<CUserMail::MailPtr> mails(10);
-        FUN_1419e6d20(mails);
+        GetTabMails(mails);
         int nIndex = -1;
         int nRow = 0;
         for (POSITION pos = mails.GetHeadPosition(); pos != 0; mails.GetNext(pos))
@@ -1222,47 +1222,47 @@ void UIMailListDialog::FUN_1419e5190()
             if (pMail->IsExpired() != 0)
                 continue;
             int bSelect = 0;
-            m_mapChecked.Lookup(pMail->FUN_140690350(), bSelect);
+            m_mapChecked.Lookup(pMail->GetId(), bSelect);
             CStringW strSender = pMail->GetSenderName();
             CStringW strTitle = pMail->GetTitle();
-            int nKind = pMail->FUN_140690370();
+            int nKind = pMail->GetKind();
             if (nKind >= 100 && nKind < 0x71)
             {
                 TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strSender);
                 TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strTitle);
             }
             ASObj row(2);
-            row.FUN_1407cbb20("mailSN", FUN_141b71910(pMail->FUN_140690350()));
-            row.FUN_1407cbb20("sender", CStringW(strSender));
-            row.FUN_1407cbb20("content", CStringW(strTitle));
-            row.FUN_1407cbb20("date", FUN_1419e95d0(pMail, 0));
-            row.FUN_1407cbb20("dateTooltip", FUN_1419e95d0(pMail, 1));
-            row.FUN_1407cb9c0("read", pMail->FUN_140691130());
-            row.FUN_1407cb9c0("attachment", pMail->FUN_140691220());
-            row.FUN_1407cb9c0("select", bSelect);
-            row.FUN_1407cb9c0("adMail", FUN_1419ead90(pMail));
-            row.FUN_1407cb9c0("adSoldout", FUN_1419eadd0(pMail));
-            row.FUN_1407cb9c0("adExpired", pMail->FUN_140692630());
+            row.SetWStringMember("mailSN", FUN_141b71910(pMail->GetId()));
+            row.SetWStringMember("sender", CStringW(strSender));
+            row.SetWStringMember("content", CStringW(strTitle));
+            row.SetWStringMember("date", GetDaysLeftString(pMail, 0));
+            row.SetWStringMember("dateTooltip", GetDaysLeftString(pMail, 1));
+            row.SetIntMember("read", pMail->IsRead());
+            row.SetIntMember("attachment", pMail->HasAttachment());
+            row.SetIntMember("select", bSelect);
+            row.SetIntMember("adMail", IsAdMail(pMail));
+            row.SetIntMember("adSoldout", IsAdSoldOut(pMail));
+            row.SetIntMember("adExpired", pMail->FUN_140692630());
             spList->AddItem(row);
-            if (pMail->FUN_140690350() == nOpen)
+            if (pMail->GetId() == nOpen)
                 nSelect = nRow;
             nRow++;
         }
         spList->vfunc_24(true);
         spList->SetSelectedIndex(nSelect);
     }
-    FUN_1419e5900();
+    UpdateMailCount();
     if (MS2Ptr<ASButton> spPrev = GetChild<ASButton>("m_prev"))
-        spPrev->FUN_1422c1fe0(FUN_1419e6fe0(m_nPage - 1));
+        spPrev->SetEnabled(IsPageValid(m_nPage - 1));
     if (MS2Ptr<ASButton> spNext = GetChild<ASButton>("m_next"))
-        spNext->FUN_1422c1fe0(FUN_1419e6fe0(m_nPage + 1));
+        spNext->SetEnabled(IsPageValid(m_nPage + 1));
     if (MS2Ptr<ASCheckBox> spCheck = GetChild<ASCheckBox>("m_checkAll"))
-        spCheck->FUN_1422ce090(0);
+        spCheck->SetSelected(0);
 }
-MS2_REPLACE_METHOD(0x1419E5190, UIMailListDialog, FUN_1419e5190, 1889, 0x75FE8B86); // FUN_1419e5190
+MS2_REPLACE_METHOD(0x1419E5190, UIMailListDialog, RefreshMailList, 1889, 0x75FE8B86); // RefreshMailList
 
 // @0x1419e8080
-bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
+bool UIMailListDialog::OnBuyAd(unsigned __int64 nMailId)
 {
     MS2Ptr<TMailAdBillDataParam> spParam = FUN_1419e8620("mailAd");
     if (spParam == 0)
@@ -1294,17 +1294,17 @@ bool UIMailListDialog::FUN_1419e8080(unsigned __int64 nMailId)
         spBill->SetItemName(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spAd->m_n18));
         spBill->SetSalePrice(FUN_1418fec00(nCurrency, spAd->m_n38, false), spAd->m_n38);
         spBill->SetPayType(nCurrency);
-        spBill->FUN_1419eb8f0((int)i);
+        spBill->SetSlot((int)i);
         bills.Add(spBill);
     }
     spParam->m_nMailId = nMailId;
-    spParam->FUN_140eab9a0(nPrice);
+    spParam->SetFixedPrice(nPrice);
     MS2Ptr<TMarketBillDataParam> spBase(spParam);
-    pBillDialog->FUN_140ea7770(spBase);
+    pBillDialog->SetParam(spBase);
     CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f17);
     return true;
 }
-MS2_REPLACE_METHOD(0x1419E8080, UIMailListDialog, FUN_1419e8080, 1421, 0x80A67988); // FUN_1419e8080
+MS2_REPLACE_METHOD(0x1419E8080, UIMailListDialog, OnBuyAd, 1421, 0x80A67988); // OnBuyAd
 
 // @0x1419e8620
 MS2Ptr<TMailAdBillDataParam> UIMailListDialog::FUN_1419e8620(const CStringA& strMovie)
@@ -1345,7 +1345,7 @@ bool UIMailListDialog::FUN_1419e88b0(MS2Ptr<TMarketBillDataParam> spParam, const
     }
     COutPacket packet(static_cast<int>(SendOp::Mail), 0);
     packet.Encode1(0xc);
-    packet.Encode8(pMail->FUN_140690350());
+    packet.Encode8(pMail->GetId());
     FUN_140710590(packet);
     return true;
 }
@@ -1406,12 +1406,12 @@ int UIMailSendDialog::vfunc_13()
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg)
     {
-        if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
+        if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
         {
             pDlg->Invoke("onEnterKey");
             return 1;
         }
-        else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
+        else if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0xf, 0, 0))
         {
             pDlg->Invoke("onTabKey");
             return 1;
@@ -1426,8 +1426,8 @@ void UIMailSendDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     g_143ab2ee0.ResetSendDraft(0);
-    g_143ab2ee0.FUN_1408e45e0();
-    FUN_1419ecbf0();
+    g_143ab2ee0.UpdateSendFee();
+    SetReplyData();
 }
 MS2_REPLACE_METHOD(0x1419ec570, UIMailSendDialog, OnLoadComplete, 60, 0x1D20BAF1); // UIMailSendDialog::OnLoadComplete
 
@@ -1506,7 +1506,7 @@ int UIMailSendDialog::vfunc_74(int nMsg, void* p2, void* p3)
             if (strName.Find(strLower, 0) != -1)
             {
                 ASObj row(2);
-                row.FUN_1407cbb20("label", CStringW(names.GetValueAt(pos)));
+                row.SetWStringMember("label", CStringW(names.GetValueAt(pos)));
                 candidates.PushObj(row);
             }
         }
@@ -1523,23 +1523,23 @@ void UIMailSendDialog::vfunc_15()
 MS2_REPLACE_METHOD(0x1419ECB70, UIMailSendDialog, vfunc_15, 6, 0xA9AF6E37); // UIMailSendDialog::vfunc_15
 
 // @0x1419ecb80
-void UIMailSendDialog::FUN_1419ecb80()
+void UIMailSendDialog::Close()
 {
     vfunc_67();
 }
-MS2_REPLACE_METHOD(0x1419ecb80, UIMailSendDialog, FUN_1419ecb80, 33, 0xC3D85B89); // FUN_1419ecb80
+MS2_REPLACE_METHOD(0x1419ecb80, UIMailSendDialog, Close, 33, 0xC3D85B89); // Close
 
 // @0x1419ecbb0
-void UIMailSendDialog::FUN_1419ecbb0(CMailInfo* pReplyTo)
+void UIMailSendDialog::SetReplyMail(CMailInfo* pReplyTo)
 {
     if (pReplyTo == 0)
         return;
     m_spReply.AssignRaw(pReplyTo);
 }
-MS2_REPLACE_METHOD(0x1419ecbb0, UIMailSendDialog, FUN_1419ecbb0, 53, 0x661A5E70); // FUN_1419ecbb0
+MS2_REPLACE_METHOD(0x1419ecbb0, UIMailSendDialog, SetReplyMail, 53, 0x661A5E70); // SetReplyMail
 
 // @0x1419ecbf0
-void UIMailSendDialog::FUN_1419ecbf0()
+void UIMailSendDialog::SetReplyData()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg)
@@ -1552,14 +1552,14 @@ void UIMailSendDialog::FUN_1419ecbf0()
                                         m_spReply->GetTitle(), m_spReply->GetContent());
             CStringW strTitle;
             strTitle = FormatStringId(0x805, m_spReply->GetTitle());
-            data.FUN_1407cbb20("receiver", m_spReply->GetSenderName());
-            data.FUN_1407cbb20("title", CStringW(strTitle));
-            data.FUN_1407cbb20("content", CStringW(strContent));
+            data.SetWStringMember("receiver", m_spReply->GetSenderName());
+            data.SetWStringMember("title", CStringW(strTitle));
+            data.SetWStringMember("content", CStringW(strContent));
         }
         pDlg->Invoke("setData", data);
     }
 }
-MS2_REPLACE_METHOD(0x1419ecbf0, UIMailSendDialog, FUN_1419ecbf0, 1036, 0x5596C3DA); // FUN_1419ecbf0
+MS2_REPLACE_METHOD(0x1419ecbf0, UIMailSendDialog, SetReplyData, 1036, 0x5596C3DA); // SetReplyData
 
 // @0x1419ed010
 void UIMailSendDialog::FUN_1419ed010()
@@ -1572,7 +1572,7 @@ void UIMailSendDialog::FUN_1419ed010()
         for (size_t i = 0; i < buddies.GetCount(); i++)
         {
             CBuddyManager::Ptr spBuddy = buddies[i];
-            spCombo->AddItemLabel(spBuddy->FUN_1401cc1c0());
+            spCombo->AddItemLabel(spBuddy->GetName());
         }
         spCombo->vfunc_24(true);
     }
@@ -1583,9 +1583,9 @@ MS2_REPLACE_METHOD(0x1419ed010, UIMailSendDialog, FUN_1419ed010, 411, 0x080B07AD
 void UIMailSendDialog::OnSend()
 {
     Unk_MailSendInfo info;
-    FUN_1419ed410(info.m_strReceiver);
-    FUN_1419ed4e0(info.m_strTitle);
-    FUN_1419ed6b0(info.m_strContent);
+    GetReceiverText(info.m_strReceiver);
+    GetTitleText(info.m_strTitle);
+    GetContentText(info.m_strContent);
     if (info.m_strTitle.GetLength() == 0)
     {
         FUN_141275260(0x247, 1, 1);
@@ -1612,7 +1612,7 @@ void UIMailSendDialog::OnSend()
         if (pChecker->CheckMailTitleText(info.m_strTitle, strMessage) != 0 ||
             pChecker->CheckContentText(info.m_strContent, strMessage) != 0)
         {
-            FUN_1412751f0(strMessage, 1, 1);
+            ShowSystemNotice(strMessage, 1, 1);
             return;
         }
     }
@@ -1624,15 +1624,15 @@ void UIMailSendDialog::OnSend()
 MS2_REPLACE_METHOD(0x1419ed1c0, UIMailSendDialog, OnSend, 577, 0x7046C796); // OnSend
 
 // @0x1419ed410
-void UIMailSendDialog::FUN_1419ed410(CStringW& strReceiver)
+void UIMailSendDialog::GetReceiverText(CStringW& strReceiver)
 {
     if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_receiver"))
         strReceiver = spInput->GetText();
 }
-MS2_REPLACE_METHOD(0x1419ed410, UIMailSendDialog, FUN_1419ed410, 201, 0xDBD71167); // FUN_1419ed410
+MS2_REPLACE_METHOD(0x1419ed410, UIMailSendDialog, GetReceiverText, 201, 0xDBD71167); // GetReceiverText
 
 // @0x1419ed4e0
-void UIMailSendDialog::FUN_1419ed4e0(CStringW& strTitle)
+void UIMailSendDialog::GetTitleText(CStringW& strTitle)
 {
     {
         if (MS2Ptr<ASTextInput> spInput = GetChild<ASTextInput>("m_title"))
@@ -1644,10 +1644,10 @@ void UIMailSendDialog::FUN_1419ed4e0(CStringW& strTitle)
     if (CBanTextChecker* pChecker = TSingleton<CommonString>::GetInstance()->GetChecker())
         pChecker->FilterReservedWords(strTitle);
 }
-MS2_REPLACE_METHOD(0x1419ed4e0, UIMailSendDialog, FUN_1419ed4e0, 456, 0x8C5487D1); // FUN_1419ed4e0
+MS2_REPLACE_METHOD(0x1419ed4e0, UIMailSendDialog, GetTitleText, 456, 0x8C5487D1); // GetTitleText
 
 // @0x1419ed6b0
-void UIMailSendDialog::FUN_1419ed6b0(CStringW& strContent)
+void UIMailSendDialog::GetContentText(CStringW& strContent)
 {
     if (m_30.IsNull())
         return;
@@ -1657,7 +1657,7 @@ void UIMailSendDialog::FUN_1419ed6b0(CStringW& strContent)
     if (pChecker != 0)
         pChecker->FilterReservedWords(strContent);
 }
-MS2_REPLACE_METHOD(0x1419ed6b0, UIMailSendDialog, FUN_1419ed6b0, 301, 0x8AB017F2); // FUN_1419ed6b0
+MS2_REPLACE_METHOD(0x1419ed6b0, UIMailSendDialog, GetContentText, 301, 0x8AB017F2); // GetContentText
 
 // @0x1419ed7f0
 void UIMailSendDialog::FUN_1419ed7f0(ATL::CAtlMap<unsigned __int64, CStringW>& names)
@@ -1665,13 +1665,13 @@ void UIMailSendDialog::FUN_1419ed7f0(ATL::CAtlMap<unsigned __int64, CStringW>& n
     ATL::CAtlArray<CBuddyManager::Ptr> buddies;
     CBuddyManager::GetInstance()->GetAllBuddies(buddies);
     for (size_t i = 0; i < buddies.GetCount(); i++)
-        names.SetAt(buddies[i]->FUN_1401cc230(), buddies[i]->FUN_1401cc1c0());
+        names.SetAt(buddies[i]->FUN_1401cc230(), buddies[i]->GetName());
     ATL::CAtlArray<MS2Ptr<CGuildMember> > members;
     CGuildManager::GetInstance()->FUN_1404d0420(&members);
     for (size_t i = 0; i < members.GetCount(); i++)
     {
         if (members[i]->data.f08 != DAT_143ab2828)
-            names.SetAt(members[i]->data.f08, members[i]->data.FUN_1404ca890());
+            names.SetAt(members[i]->data.f08, members[i]->data.GetName());
     }
 }
 MS2_REPLACE_METHOD(0x1419ed7f0, UIMailSendDialog, FUN_1419ed7f0, 497, 0x23AD5823); // FUN_1419ed7f0

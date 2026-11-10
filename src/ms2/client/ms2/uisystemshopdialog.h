@@ -35,9 +35,9 @@ public:
     void FUN_140fa64e0();                                           // 0x140fa64e0 instrument: fill the movie
     bool FUN_140fa67a0(int nButton, const CMsgBoxData& box);        // 0x140fa67a0 instrument extend box answered
     bool FUN_140fa6970(int nButton, const CMsgBoxData& box);        // 0x140fa6970 instrument cancel box answered
-    void FUN_140fa69b0(NotifyObject* pNotify);                      // 0x140fa69b0 "NotifyChangeBuff": refresh the mode
-    void FUN_140fa6ab0(ItemScrollSlot& slot);                       // 0x140fa6ab0 the bait was removed from the slot
-    void FUN_140fa6ae0(ItemScrollSlot& slot, DragSlot* pDrag);      // 0x140fa6ae0 a bait was dropped onto the slot
+    void OnNotifyChangeBuff(NotifyObject* pNotify);                      // 0x140fa69b0 "NotifyChangeBuff": refresh the mode
+    void OnBaitRemoved(ItemScrollSlot& slot);                       // 0x140fa6ab0 the bait was removed from the slot
+    void OnBaitDropped(ItemScrollSlot& slot, DragSlot* pDrag);      // 0x140fa6ae0 a bait was dropped onto the slot
 
 private:
     MS2_LAYOUT_FRIEND;

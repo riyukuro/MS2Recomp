@@ -30,10 +30,10 @@ public:
                                                                         // 28 0x1418b2860
     virtual int vfunc_48() { return 0x4e8f; }                           // 48 0x1418b5400 UI type id
 
-    void FUN_1418b2c20(const Scaleform::GFx::FunctionHandler::Params& params);   // context menu click
+    void OnContextMenuClick(const Scaleform::GFx::FunctionHandler::Params& params);   // context menu click
     void FUN_1418b2e80(const CString& strGroup, const CStringW& strSearch);      // refill "m_effects"
-    void FUN_1418b3620();                                               // fill "m_contextMenu"
-    unsigned FUN_1418b3ac0();                                           // the effect id of the selected row
+    void FillContextMenu();                                               // fill "m_contextMenu"
+    unsigned GetSelectedEffectId();                                           // the effect id of the selected row
 
     MS2Ptr<ASScrollingList> m_pList;                                         // +0x178 the context menu list
 };

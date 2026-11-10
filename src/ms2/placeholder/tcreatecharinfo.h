@@ -27,7 +27,7 @@ public:
     virtual ~TCreateCharInfo();                             // 0x14107ad50
 
     void FUN_14107ae00();                                   // fill with a random gender and the default appearance
-    int FUN_14107b440(PC* pPC);                           // apply to a pc
+    int ApplyToPC(PC* pPC);                           // apply to a pc
     int FUN_14107c3a0(PC* pPC);                           // apply to a pc and its default items
     void FUN_14107ad90();                                   // reset to the defaults
     void FUN_14107afa0();                                   // both equip records = the default appearance

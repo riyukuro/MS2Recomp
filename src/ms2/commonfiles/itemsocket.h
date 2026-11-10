@@ -31,13 +31,13 @@ class TSocketGemStoneLock : public CPtred
 {
 public:
     TSocketGemStoneLock() : m_nState(0), m_nExpireTime(0) {}   // 0x140623570
-    void FUN_14061f630(COutputStream& kOut);        // 0x14061f630 write
-    void FUN_14061f680(CInputStream& kIn);          // 0x14061f680 read
+    void WriteToStream(COutputStream& kOut);        // 0x14061f630 write
+    void ReadFromStream(CInputStream& kIn);          // 0x14061f680 read
     bool IsLocked();                           // 0x14061f6d0 is locked now
     bool FUN_14061f730();                           // 0x14061f730 state != 1
     bool FUN_14061f760();                           // 0x14061f760 state == 1
-    int FUN_140623e20() { return m_nState; }                // 0x140623e20
-    __int64 FUN_140623e10() { return m_nExpireTime; }       // 0x140623e10
+    int GetState() { return m_nState; }                // 0x140623e20
+    __int64 GetExpireTime() { return m_nExpireTime; }       // 0x140623e10
 
     int m_nState;                                   // +0x18
     __int64 m_nExpireTime;                          // +0x20
@@ -97,7 +97,7 @@ public:
     MS2Ptr<TSocketGemStoneInfo> GetGemInfo(unsigned nIndex);   // 0x140620b70
     Unk_SocketGemArray& GetGems();            // 0x140620c20
     MS2Ptr<TSocketGemStoneInfo> FindFirstBoundGem();    // 0x140620c40 the first bound gemstone
-    bool FUN_140620de0() const;                     // 0x140620de0
+    bool HasGemWithAdditionalEffect() const;                     // 0x140620de0
     bool HasGemId(int nGemId) const;           // 0x140620f40 has this gemstone
     bool IsSlotEmpty(unsigned nIndex);            // 0x140621020 the socket is open and empty
     bool HasAnyGem();                           // 0x1406210e0 has a gemstone
@@ -141,7 +141,7 @@ public:
 private:
     static int FUN_140622020(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo);
     static int FUN_1406220f0(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo);
-    static int FUN_1406221c0(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo);
+    static int IsGemTradeable(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo);
     static int FUN_1406222c0(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo);
     static int FUN_140622330(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo);
     static int IsGemMeratMarketRegistrable(CItemSocket*, CItemData* pGemData, MS2Ptr<TSocketGemStoneInfo> spInfo);
@@ -154,6 +154,6 @@ private:
     Unk_EnchantMap m_kStat;                         // +0x40 the summed stat options of the gemstones
     Unk_SocketSpecialMap m_kSpecial;                // +0x88 the summed special-stat options
     Unk_SocketGemArray m_aD0;                       // +0xd0
-    friend class ASTooltip;                         // astooltip.cpp 0x1409cc800 calls the gem filters FUN_1406221c0/IsGemShopSellable
+    friend class ASTooltip;                         // astooltip.cpp 0x1409cc800 calls the gem filters IsGemTradeable/IsGemShopSellable
 };
 MS2_CHECK_SIZE(CItemSocket, 0xf0);

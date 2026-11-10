@@ -40,16 +40,16 @@ public:
     virtual int vfunc_48() { return 0x4e6b; }                           // 48 (COMDAT 0x141b32480)
     virtual void vfunc_67();                                            // 67 0x141b2a0f0 close: tell the server (0x2e/7)
 
-    bool FUN_141b2b140(int nResult, const CMsgBoxData& data);          // 0x141b2b140 close answer
-    bool FUN_141b2b180(int nResult, const CMsgBoxData& data);          // 0x141b2b180 reset answer
-    bool FUN_141b2b200(int nResult, const CMsgBoxData& data);          // 0x141b2b200 apply answer
+    bool OnCloseAnswer(int nResult, const CMsgBoxData& data);          // 0x141b2b140 close answer
+    bool OnResetAnswer(int nResult, const CMsgBoxData& data);          // 0x141b2b180 reset answer
+    bool OnApplyAnswer(int nResult, const CMsgBoxData& data);          // 0x141b2b200 apply answer
     bool SendTriggerMode22(int nResult, const CMsgBoxData& data);          // 0x141b2b230 delete answer (0x2f/0x16)
-    bool FUN_141b2b2b0(int nResult, const CMsgBoxData& data);          // 0x141b2b2b0 remove state answer
-    void FUN_141b2b600();                                               // 0x141b2b600 "FoldDialog"
-    void FUN_141b2b6e0();                                               // 0x141b2b6e0 "UnfoldDialog"
-    int FUN_141b2b7e0(CFileSystem::BufferPtr spBuffer);                 // 0x141b2b7e0 the script downloaded
-    void FUN_141b2b930();                                               // 0x141b2b930 refresh the install list
-    void FUN_141b2b9a0(CString strCube, int nCubeId);                  // 0x141b2b9a0
+    bool OnRemoveStateAnswer(int nResult, const CMsgBoxData& data);          // 0x141b2b2b0 remove state answer
+    void FoldDialog();                                               // 0x141b2b600 "FoldDialog"
+    void UnfoldDialog();                                               // 0x141b2b6e0 "UnfoldDialog"
+    int LoadTriggerScript(CFileSystem::BufferPtr spBuffer);                 // 0x141b2b7e0 the script downloaded
+    void RefreshInstallList();                                               // 0x141b2b930 refresh the install list
+    void SetCube(CString strCube, int nCubeId);                  // 0x141b2b9a0
     void FUN_141b2ba00(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b2ba00 reset
     void FUN_141b2ba30(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b2ba30 ask to delete
     void FUN_141b2bb10(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b2bb10 ask to reset
@@ -58,9 +58,9 @@ public:
     int SaveTriggerFile();                                                // 0x141b2d0d0 save the script file
     void SendTriggerMode13();                                               // 0x141b2d340 send the script (0x2f/0xd)
     void FUN_141b2d570();                                               // 0x141b2d570 verify, then send
-    void FUN_141b2d870();                                               // 0x141b2d870 the install list
-    void FUN_141b2dd80();                                               // 0x141b2dd80 the states of the script
-    POINT FUN_141b2f430(int nX, int nY);                                // 0x141b2f430 keep a state inside the canvas
+    void RefreshInstallObjectList();                                               // 0x141b2d870 the install list
+    void RefreshStates();                                               // 0x141b2dd80 the states of the script
+    POINT ClampStatePosition(int nX, int nY);                                // 0x141b2f430 keep a state inside the canvas
     void FUN_141b2f140(const std::vector<Message>& messages);          // 0x141b2f140 the report
     void FUN_141b2f510();                                               // 0x141b2f510 new script
 

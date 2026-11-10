@@ -48,7 +48,7 @@ public:
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 // C3 #8: the cast-only Unk_140168650 view removed
 class CLogString* GetLogString();
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString Unk_ReadString(class Unk_XmlNode*, char const*, CString);   // C3: was FUN_14015f710
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177e10 (CAtlArray<unsigned>)
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
@@ -94,7 +94,7 @@ CUGCMapSetItemTable::~CUGCMapSetItemTable()
 }
 
 // @0x140b9df60
-UGCMapSetItemDataPtr CUGCMapSetItemTable::FUN_140b9df60(unsigned int nGroup)
+UGCMapSetItemDataPtr CUGCMapSetItemTable::GetUGCMapSetItem(unsigned int nGroup)
 {
     UGCMapSetItemDataPtr found(0);
     if (nGroup == 0)
@@ -109,7 +109,7 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::FUN_140b9df60(unsigned int nGroup)
 }
 
 // @0x140b9e0a0
-void CUGCMapSetItemTable::FUN_140b9e0a0()
+void CUGCMapSetItemTable::ClearCache()
 {
     if (Unk_LockGuard guard = m_lock) {}
     else
@@ -123,15 +123,15 @@ UGCMapSetItemDataPtr CUGCMapSetItemTable::LoadUGCMapSetItem(unsigned int nGroup)
     {
         CString strFile("UGCMapSetItem.xml");
         CString strDir("Table");
-        strPath = FUN_14071a5b0(strDir, strFile);
+        strPath = GetXmlPath(strDir, strFile);
     }
-    CCacheData::FUN_1401d1160(CString(strPath));
+    CCacheData::SetPath(CString(strPath));
     UGCMapSetItemDataPtr data(0);
     if (Unk_LockGuard guard = m_lock) {}
     else
         m_map.RemoveAll();
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, false, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, false, false) == 0)
         return UGCMapSetItemDataPtr(0);
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

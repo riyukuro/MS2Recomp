@@ -66,7 +66,7 @@ class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 CStringA FUN_14016a600(const wchar_t* psz, int n = 0);      // wide -> narrow
 CStringW FUN_14016a730(const char* psz, int n = 0);         // narrow -> wide
-CStringA FUN_14016a5c0(const char* psz, int n = 0);
+CStringA ToCString(const char* psz, int n = 0);
 CStringA FUN_140188f50(const char* psz, int n = 0);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 #include "ms2/ms2format.h"
@@ -195,7 +195,7 @@ void CNXMan::Logout()
 int CNXMan::FUN_14160dd50(CStringW& rResult)
 {
     CWinHttpClient kRequest(m_60);
-    if (kRequest.FUN_140920cf0(L"GET", false))
+    if (kRequest.SendRequest(L"GET", false))
     {
         if (kRequest.FUN_140922f20() != 0)
         {
@@ -368,7 +368,7 @@ CString CNXMan::ResolveHostIp(CString strHost)
 {
     WSADATA kData;
     WSAStartup(0x202, &kData);
-    hostent* pHost = gethostbyname(FUN_14016a5c0(strHost));
+    hostent* pHost = gethostbyname(ToCString(strHost));
     if (pHost == 0)
         return CString("");
     CString strIp = FUN_140188f50(inet_ntoa(*(in_addr*)pHost->h_addr_list[0]));

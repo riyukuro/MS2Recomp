@@ -140,7 +140,7 @@ template <> AvatarPC* DynamicCast<AvatarPC, GameObject>(GameObject* p);
 template <> MyPC* DynamicCast<MyPC, GameObject>(GameObject* p);
 }
 class CMainSystem { public: double GetGameTime(); };   // C3: member view
-class CStateService { public: int FUN_1417e2610(); };    // C3: member view
+class CStateService { public: int GetCurrentSceneId(); };    // C3: member view
 template<> CStateService* TSingleton<CStateService>::GetInstance();   // statemanager.cpp defines s_instance
 
 // the id holder returned by FUN_1411dc7a0 and its accessors
@@ -151,7 +151,7 @@ class CItemData   // C3: member view for the former free stand-ins
 {
 public:
 int GetEquipSubtype();
-bool FUN_14053ce80();
+bool IsBeautyItem();
     bool HasSkinType();
 bool FUN_14053cfd0();
 bool FUN_14053d2b0();
@@ -176,7 +176,7 @@ void* FUN_1412041d0(void* p); void* FUN_141204220(void* p); void* GetGraphicStat
 class ModelGroup   // C3: member view for the former free stand-ins
 {
 public:
-int FUN_1405451a0() const;
+int GetType() const;
 };
 int FUN_1405451c0(CString& s);
 // strings / names
@@ -184,7 +184,7 @@ void* FUN_1409989e0(void* out, const char* psz);
 
 char FUN_140184310(CString* a, void* psz);
 
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 // scene objects
 // Breadth-first walk over an object's subtree (0x30 bytes, like Unk_NodeWalker in uichaoslightdialog.h).
 class Unk_NodeQueue
@@ -612,7 +612,7 @@ void* GetOwnerPC(CEquipModel* self)
 // @0x141200850
 void* GetOwnerObject(CEquipModel* self)
 {
-    return ((void*)((class WorldService*)(void*)(WorldService::GetInstance()))->FindObjectById(((CEquipItem*)OWNER(self))->GetItem()->FUN_140526b10()));
+    return ((void*)((class WorldService*)(void*)(WorldService::GetInstance()))->FindObjectById(((CEquipItem*)OWNER(self))->GetItem()->GetObjectId()));
 }
 
 // @0x1412008e0
@@ -1024,7 +1024,7 @@ void FUN_141202480(CEquipModel* self, NiPoint3* pPos, float* pEuler, void* pLoca
 // @0x1412024f0
 void FUN_1412024f0(CEquipModel* self, NiPoint3* pPos, efd::Point3* pEuler, float* pScale, void* pLocal, void* pTrans, void* pRot)
 {
-    void* pEnt = ((void*)((class WorldService*)(void*)(WorldService::GetInstance()))->FindObjectById(((class CItem*)(void*)(static_cast<const MS2Ptr<CItem>&>(((class CEquipItem*)(void*)(OWNER(self)))->GetItem()).operator->()))->FUN_140526b10()));
+    void* pEnt = ((void*)((class WorldService*)(void*)(WorldService::GetInstance()))->FindObjectById(((class CItem*)(void*)(static_cast<const MS2Ptr<CItem>&>(((class CEquipItem*)(void*)(OWNER(self)))->GetItem()).operator->()))->GetObjectId()));
     if (pEnt == 0)
         return;
     void* pActor = reinterpret_cast<egmAnimation::AnimationService*>(reinterpret_cast<void*>(FUN_141b6f910()))->GetActorManager(((GameObject*)pEnt)->GetEntityID());
@@ -1076,7 +1076,7 @@ int FUN_141202940(CEquipModel* self)
             return ((class CItem*)(void*)(p))->FUN_140526c30();
         }
     }
-    return ((class ModelGroup*)(void*)(self->m_unk_18))->FUN_1405451a0();
+    return ((class ModelGroup*)(void*)(self->m_unk_18))->GetType();
 }
 
 // The part's name; the left/right counterpart is swapped in for the second hand's weapon.
@@ -1188,7 +1188,7 @@ void CreateAttachNode(CEquipModel* self, CString* pName)
         return;
     int nType = ((class CItem*)(void*)(kId.operator->()))->FUN_140526c30();
     if (nType != 4 && nType != 5) {
-        CString kTag = "Equip_Attach_Transform" + FUN_14016a5c0(*pName, 0);
+        CString kTag = "Equip_Attach_Transform" + ToCString(*pName, 0);
         void* pNew = new (efd::MemHint((efd::MemHint::Bits)0)) NiNode(0);
         {
             NiFixedString fs2(kTag);
@@ -1217,14 +1217,14 @@ void CreateAttachNode(CEquipModel* self, CString* pName)
 // @0x1412033e0
 int FUN_1412033e0(CEquipModel* self)
 {
-    if (((class CStateService*)TSingleton<CStateService>::GetInstance())->FUN_1417e2610() == 0x620000d)
+    if (((class CStateService*)TSingleton<CStateService>::GetInstance())->GetCurrentSceneId() == 0x620000d)
         return 1;
-    if (((class CStateService*)TSingleton<CStateService>::GetInstance())->FUN_1417e2610() == 0x6200018)
+    if (((class CStateService*)TSingleton<CStateService>::GetInstance())->GetCurrentSceneId() == 0x6200018)
         return 1;
     void* pLocal = ((class WorldService*)(void*)(WorldService::GetInstance()))->FUN_141bd0cc0();
     if (pLocal == 0)
         return 0;
-    return EQUIP(self->m_spOwner)->GetItem()->FUN_140526ad0() == (unsigned)((GameObject*)pLocal)->GetObjectId();
+    return EQUIP(self->m_spOwner)->GetItem()->GetCharacterId() == (unsigned)((GameObject*)pLocal)->GetObjectId();
 }
 
 // Releases every effect bound to a slot and empties the map.
@@ -1307,14 +1307,14 @@ CString CEquipModel::FUN_141203830()
                 if (!((class CItemData*)(void*)(pTpl2))->FUN_14053d2f0())
                     return CString("");
                 if (pTpl->m_nLevel >= 100) {
-                    return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529f60(((class CItemData*)(void*)(pTpl))->GetEquipSubtype(), ((class CItem*)(void*)(kId2.operator->()))->FUN_140526fc0(), ((class CItem*)(void*)(kId2.operator->()))->GetPlusLevel(), pTpl->m_nLevel);
+                    return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529f60(((class CItemData*)(void*)(pTpl))->GetEquipSubtype(), ((class CItem*)(void*)(kId2.operator->()))->GetEnchantLevel(), ((class CItem*)(void*)(kId2.operator->()))->GetPlusLevel(), pTpl->m_nLevel);
                 } else {
-                    return ((class CItem*)(void*)(kId2.operator->()))->FUN_140529eb0();
+                    return ((class CItem*)(void*)(kId2.operator->()))->GetEnchantNif();
                 }
             }
         }
     }
-    return ((class CItem*)(void*)(kId.operator->()))->FUN_140529eb0();
+    return ((class CItem*)(void*)(kId.operator->()))->GetEnchantNif();
 }
 
 // Whether effects may be created for pEnt: not for the owner's entity classes flagged off.
@@ -1328,7 +1328,7 @@ bool FUN_141203cf0(CEquipModel* self, void* pEnt)
         {
             MS2Ptr<CItemData> spData((CItemData*)GetItemData(self));
             if (spData.get() != 0)
-                return ((class CItemData*)(void*)(spData.operator->()))->FUN_14053ce80() ? true : false;
+                return ((class CItemData*)(void*)(spData.operator->()))->IsBeautyItem() ? true : false;
         }
         return false;
     }

@@ -69,7 +69,7 @@ public:
 };
 class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 
-// The texture swap table of the fitting doll (global config, FUN_1401d31f0): the file names of the textures to swap.
+// The texture swap table of the fitting doll (global config, GetCommonResource): the file names of the textures to swap.
 class Unk_FdTexConfig
 {
 public:
@@ -80,7 +80,7 @@ public:
     CString m_strGlossTo;                                   // +0x120
 };
 MS2_CHECK_OFFSET(Unk_FdTexConfig, m_strGlossTo, 0x120);
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // The texture loader (GetNifLoadingService).
 class Unk_ResourceMgr* GetNifLoadingService();   // C3: was GetNifLoadingService
@@ -114,7 +114,7 @@ NiColor FUN_141b6dea0(unsigned nIndex);                     // a skin colour of 
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_14123fbf0(unsigned short);
+    void SetCollisionGroup(unsigned short);
 };
 
 void FUN_141275260(int nStringId, int nA, int nB);          // notice by string id
@@ -181,7 +181,7 @@ FittingDollPC* GetOrCreateDoll(int nType, int nSourceId, int nItemId)
         MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
         if (!spItem)
             return 0;
-        MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->install.objCode);
+        MS2SvrPtr<CObjectData> spData = GetObjectData(spItem->install.objCode);
         if (!spData)
             return 0;
         pObject = new (efd::MemHint(efd::MemHint::NONE)) FittingDollPC();
@@ -267,7 +267,7 @@ int FittingDollPC::InitFromItem(int nItemId)
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (!spItem)
         return 0;
-    MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->install.objCode);
+    MS2SvrPtr<CObjectData> spData = GetObjectData(spItem->install.objCode);
     if (!spData)
         return 0;
     SetGender(spData->m_cube.m_fittingDoll.m_nGender);
@@ -295,7 +295,7 @@ int FittingDollPC::vfunc_10()
     if (PC::vfunc_10() == 0)
         return 0;
     if (type == 2)
-        ((class GameObjectController*)(class Unk_PCBaseBody*)(m_unk_150))->FUN_14123fbf0(4);
+        ((class GameObjectController*)(class Unk_PCBaseBody*)(m_unk_150))->SetCollisionGroup(4);
     return 1;
 }
 MS2_REPLACE_METHOD(0x14121bec0, FittingDollPC, vfunc_10, 72, 0x539D3CE8);
@@ -394,18 +394,18 @@ void FittingDollPC::vfunc_138(NiAVObject* pRoot, int nSlot, const Unk_CharEquip*
                     if (pBase != 0)
                     {
                         NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pBase->GetTexture());
-                        if (pSource != 0 && pSource->GetFilename() != (const char*)((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strBaseFrom)
+                        if (pSource != 0 && pSource->GetFilename() != (const char*)((class Unk_FdTexConfig*)GetCommonResource())->m_strBaseFrom)
                         {
-                            pBase->SetTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString(((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strBaseTo), 1));
+                            pBase->SetTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString(((class Unk_FdTexConfig*)GetCommonResource())->m_strBaseTo), 1));
                         }
                     }
                     NiTexturingProperty::Map* pGloss = pTexturing->GetGlossMap();
                     if (pGloss != 0)
                     {
                         NiSourceTexture* pSource = NiDynamicCast(NiSourceTexture, pGloss->GetTexture());
-                        if (pSource != 0 && pSource->GetFilename() != (const char*)((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strGlossFrom)
+                        if (pSource != 0 && pSource->GetFilename() != (const char*)((class Unk_FdTexConfig*)GetCommonResource())->m_strGlossFrom)
                         {
-                            pGloss->SetTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString(((class Unk_FdTexConfig*)FUN_1401d31f0())->m_strGlossTo), 1));
+                            pGloss->SetTexture(((class CNifLoadingService*)GetNifLoadingService())->GetTexture(CString(((class Unk_FdTexConfig*)GetCommonResource())->m_strGlossTo), 1));
                         }
                     }
                     if (((class COptimizer*)GetOptimizer())->FUN_14109a9d0() != 0)
@@ -452,7 +452,7 @@ int FittingDollPC::FUN_14121c710()
     MS2Ptr<CItemData> spItem = FUN_14053f870(unknown12e8);
     if (!spItem)
         return 0;
-    MS2SvrPtr<CObjectData> spData = FUN_140704ec0(spItem->install.objCode);
+    MS2SvrPtr<CObjectData> spData = GetObjectData(spItem->install.objCode);
     if (!spData)
         return 0;
     if (FUN_1407072e0(spItem->install.objCode) == 0)
@@ -493,7 +493,7 @@ int FittingDollPC::FUN_14121c910(CItem* pItem)
         return 0xc;
     if (pItem->HasSkin() != FUN_14121c710())
         return FUN_14121c710() ? 4 : 3;
-    if (pItem->FUN_1405267d0(GetGender()) == 0)
+    if (pItem->IsGenderAllowed(GetGender()) == 0)
         return GetGender() == 0 ? 7 : 8;
     return 0;
 }

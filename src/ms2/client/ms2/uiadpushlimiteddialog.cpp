@@ -84,11 +84,11 @@ UIAdPushDialog* FUN_140d61c00(int nClass);
 CAdBannerManagerCli* GetAdBannerManagerCli();
 struct Unk_TdXY { float x, y; };                                            // efd::Point2 (POD copy)
 int FUN_14069c3e0(int nType);                                               // currency type -> payment flag
-int FUN_140ebf520(MS2Ptr<CMeratMarketProduct> spItem, AScript* pBuyBtn);       // the price kind of a click
-void FUN_140ebf610(const CStringA& strMethod, MS2Ptr<CMeratMarketProduct> spItem, MS2Ptr<TMeratMarketBillDataParam> spParam, int nPriceKind);   // open the bill dialog
+int GetPriceType(MS2Ptr<CMeratMarketProduct> spItem, AScript* pBuyBtn);       // the price kind of a click
+void OpenBuyBill(const CStringA& strMethod, MS2Ptr<CMeratMarketProduct> spItem, MS2Ptr<TMeratMarketBillDataParam> spParam, int nPriceKind);   // open the bill dialog
 bool FUN_140ebcc20(ATL::CAtlArray<int>& arrIds);                            // check the sub items are available
 bool FUN_140ebded0(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay);   // the bill dialog's buy
-bool FUN_140ebe990(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);    // the bill dialog's tooltip
+bool GetBillTooltip(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);    // the bill dialog's tooltip
 
 // ---- UIAdPushLimitedDialog ----
 
@@ -101,7 +101,7 @@ UIAdPushLimitedDialog::UIAdPushLimitedDialog()
     m_7c = 1;
     m_80 = 0;
     FUN_1422dc3b0(1);
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_2c = 0x19;
     m_e0 = 4;
 }
@@ -131,7 +131,7 @@ void UIAdPushLimitedDialog::OnLoadComplete()
         {
             MS2Ptr<CMeratMarketProduct> spItem = m_spOwner->m_item;
             product.vfunc_1(reinterpret_cast<MS2Ptr<Unk_MeratEquipEntry>&>(spItem), 0);
-            product.FUN_1407cbbe0("minimize", bMinimize);
+            product.SetBoolMember("minimize", bMinimize);
             CStringW strTitle = spItem->m_premium.GetName();
             if (strTitle.IsEmpty())
             {
@@ -140,12 +140,12 @@ void UIAdPushLimitedDialog::OnLoadComplete()
                 else
                     strTitle = L"$s_adpush_title_default";
             }
-            product.FUN_1407cbb20("title", strTitle);
+            product.SetWStringMember("title", strTitle);
             m_spMaxComp = m_30->FUN_140accfb0<ASUIComponent>("m_maxComp");
             if (m_spMaxComp.get() != 0)
                 m_spRenderer = m_spMaxComp->FUN_140e159f0<ASItemRendererBase>("m_limitedRenderer");
         }
-        m_30->Invoke("initData", Scaleform::GFx::Value(product.FUN_1422bb870()));
+        m_30->Invoke("initData", Scaleform::GFx::Value(product.GetValue()));
         // slot 43 of the network platform (the call name is not recovered): the event 0xe with a 1000 ms delay
         Unk_NetworkCallbacks* pNet = FUN_140d86260();
         pNet->vfunc_43(0xe, 0, 1000);
@@ -171,7 +171,7 @@ void UIAdPushLimitedDialog::vfunc_77()
     {
         ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDlg)
-            pDlg->FUN_1422e5dd0();
+            pDlg->StopDrag();
         m_70 = 0;
         if (m_90)
         {
@@ -216,7 +216,7 @@ int UIAdPushLimitedDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_140e039c0(szMethod, data);
+            OnClickBuy(szMethod, data);
         return 1;
     }
     else if (_stricmp("onClickMinMax", szMethod) == 0)
@@ -299,7 +299,7 @@ void UIAdPushLimitedDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pAr
     ASTooltip tip(4, 2);
     bool bCompare = false;
     ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e3190((&spItem->m_premium), bCompare);
-    *pRetVal = tip.FUN_1422bb870();
+    *pRetVal = tip.GetValue();
 }
 
 // @0x140e02fc0
@@ -320,8 +320,8 @@ void UIAdPushLimitedDialog::vfunc_43()
         int bCheck = m_60 == 0 && m_78 != 0 && vfunc_52() != 0;
         if (bCheck)
         {
-            if (!((float)pDlg->FUN_1422c1500() >= pDlg->FUN_1422c10a0() && (float)static_cast<ASDisplayObject*>(pDlg)->FUN_1422c1530() >= pDlg->FUN_1422c1110()
-                  && pDlg->FUN_1422c10a0() >= 0.0f && pDlg->FUN_1422c1110() >= 0.0f))
+            if (!((float)pDlg->FUN_1422c1500() >= pDlg->GetX() && (float)static_cast<ASDisplayObject*>(pDlg)->FUN_1422c1530() >= pDlg->GetY()
+                  && pDlg->GetX() >= 0.0f && pDlg->GetY() >= 0.0f))
                 bOutside = true;
         }
         else
@@ -362,7 +362,7 @@ void UIAdPushLimitedDialog::vfunc_43()
 }
 
 // @0x140e03440
-void UIAdPushLimitedDialog::FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle> spOwner)
+void UIAdPushLimitedDialog::SetOwner(MS2Ptr<AdPushEntityLimitedBundle> spOwner)
 {
     if (m_30.get() != 0)
         return;
@@ -381,7 +381,7 @@ void UIAdPushLimitedDialog::FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle> spOw
             {
                 m_spBanner.AssignRaw(new ShopBannerInfo());
                 if (m_spBanner.get() != 0)
-                    m_spBanner->FUN_141347c30(spBanner, 0xcf, FUN_1422db6e0());
+                    m_spBanner->FUN_141347c30(spBanner, 0xcf, GetManagerKey());
                 if (m_spBanner->m_strImgPath.IsEmpty())
                     m_bBannerEmpty = true;
             }
@@ -408,12 +408,12 @@ void UIAdPushLimitedDialog::FUN_140e036e0(CStringA strA, CStringA strImgPath, bo
     {
         ASMeratMarketLimitedProduct product(FUN_1422db730());
         product.vfunc_3(reinterpret_cast<const MS2Ptr<Unk_MeratEquipEntry>&>(m_spOwner->m_item), strImgPath);
-        m_spRenderer->Invoke("updateData", Scaleform::GFx::Value(product.FUN_1422bb870()));
+        m_spRenderer->Invoke("updateData", Scaleform::GFx::Value(product.GetValue()));
     }
 }
 
 // @0x140e039c0
-void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& data)
+void UIAdPushLimitedDialog::OnClickBuy(const CStringA& strMethod, ASData& data)
 {
     if (m_spOwner == 0)
         return;
@@ -431,7 +431,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
     if (*reinterpret_cast<int*>(pInfo + 0x18) != oid.m_nPremiumId)
         spItem = ((class CMeratMarketMan*)GetMeratMarketMan())->FindAdProduct(reinterpret_cast<Unk_MeratProductKey&>(oid));
     AScript* pBuyBtn = out.FUN_140ec2a90();
-    int nPriceKind = FUN_140ebf520(spItem, pBuyBtn);
+    int nPriceKind = GetPriceType(spItem, pBuyBtn);
     if (*(pInfo + 0x108) != 0 && reinterpret_cast<CMeratMarketPremiumProduct*>(pInfo)->GetPriceOf(0) == 0)
     {
         ATL::CAtlArray<unsigned int> ids;
@@ -457,7 +457,7 @@ void UIAdPushLimitedDialog::FUN_140e039c0(const CStringA& strMethod, ASData& dat
     else
     {
         MS2Ptr<TMeratMarketBillDataParam> spParam = FUN_140e04070(strMethod, 3, 1);
-        FUN_140ebf610(strMethod, spItem, spParam, nPriceKind);
+        OpenBuyBill(strMethod, spItem, spParam, nPriceKind);
     }
 }
 
@@ -489,7 +489,7 @@ bool UIAdPushLimitedDialog::FUN_140e04350(MS2Ptr<TMarketBillDataParam> spParam, 
 // @0x140e043e0
 bool UIAdPushLimitedDialog::FUN_140e043e0(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam)
 {
-    return FUN_140ebe990(pRetVal, data, spParam);
+    return GetBillTooltip(pRetVal, data, spParam);
 }
 
 // @0x140e04460

@@ -14,13 +14,13 @@
 class COutputStream;
 
 // ---- unrecovered neighbours: the packet writer / reader primitives ---------------------------------------------------
-COutputStream & FUN_14070fa60(COutputStream &, float);  // C3: the definition's signature
+COutputStream & WriteFloat(COutputStream &, float);  // C3: the definition's signature
 COutputStream & FUN_14070f820(COutputStream &, bool);  // C3: the definition's signature
 COutputStream & FUN_14070f860(COutputStream &, unsigned char);  // C3: the definition's signature
-COutputStream & FUN_14070f9e0(COutputStream &, __int64);  // C3: the definition's signature
-COutputStream & FUN_14070f920(COutputStream &, int);  // C3: the definition's signature
+COutputStream & WriteInt64(COutputStream &, __int64);  // C3: the definition's signature
+COutputStream & WriteInt32(COutputStream &, int);  // C3: the definition's signature
 // (0x1406c3700 = Unk_Rgb3b::Unk_Rgb3b(), the default ctor of the member colours)
-COutputStream & FUN_14070fae0(COutputStream &, const CStringW &);  // C3: the definition's signature
+COutputStream & WriteUnicodeString(COutputStream &, const CStringW &);  // C3: the definition's signature
 COutputStream& operator<<(COutputStream& out, const Unk_Rgb3b& kColor);   // C3: write rgb (was the FUN_1406c38b0 stand-in)
 class Unk_OSInput   // C3: member view for the former free stand-ins
 {
@@ -59,7 +59,7 @@ FieldPropertyGravity::FieldPropertyGravity(float fGravity) { m_fGravity = fGravi
 void FieldPropertyGravity::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_14070fa60(*(COutputStream *)out, m_fGravity);
+    WriteFloat(*(COutputStream *)out, m_fGravity);
 }
 
 // @0x1403809b0
@@ -82,8 +82,8 @@ FieldPropertyMusicConcert::FieldPropertyMusicConcert(__int64 a, int b) { m_i64 =
 void FieldPropertyMusicConcert::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_14070f9e0(*(COutputStream *)out, m_i64);
-    FUN_14070f920(*(COutputStream *)out, m_n);
+    WriteInt64(*(COutputStream *)out, m_i64);
+    WriteInt32(*(COutputStream *)out, m_n);
 }
 
 // @0x140380b20
@@ -131,8 +131,8 @@ FieldPropertyUserTagSymbol::FieldPropertyUserTagSymbol(CStringW a, CStringW b) :
 void FieldPropertyUserTagSymbol::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_14070fae0(*(COutputStream *)out, m_strA);
-    FUN_14070fae0(*(COutputStream *)out, m_strB);
+    WriteUnicodeString(*(COutputStream *)out, m_strA);
+    WriteUnicodeString(*(COutputStream *)out, m_strB);
 }
 
 // @0x140380e70
@@ -186,10 +186,10 @@ FieldPropertySightRange::FieldPropertySightRange(float a, float b, float c, floa
 void FieldPropertySightRange::vfunc_1(Unk_PktOut* out)
 {
     FieldProperty::vfunc_1(out);
-    FUN_14070fa60(*(COutputStream *)out, m_f18);
-    FUN_14070fa60(*(COutputStream *)out, m_f1c);
-    FUN_14070fa60(*(COutputStream *)out, m_f20);
-    FUN_14070fa60(*(COutputStream *)out, m_f24);
+    WriteFloat(*(COutputStream *)out, m_f18);
+    WriteFloat(*(COutputStream *)out, m_f1c);
+    WriteFloat(*(COutputStream *)out, m_f20);
+    WriteFloat(*(COutputStream *)out, m_f24);
     FUN_14070f820(*(COutputStream *)out, (bool&)m_b28);
     FUN_14070f860(*(COutputStream *)out, m_b29);
     FUN_14070f820(*(COutputStream *)out, (bool&)m_b2a);
@@ -222,7 +222,7 @@ float FUN_140381300(FieldPropertySightRange* p) { return p->m_f24; }
 // @0x140381320
 unsigned char FUN_140381320(FieldPropertySightRange* p) { return p->m_b28; }
 // @0x140381340
-float FUN_140381340(FieldPropertySightRange* p) { return (float)p->m_b29 * 0.01f; }
+float GetAlpha(FieldPropertySightRange* p) { return (float)p->m_b29 * 0.01f; }
 // @0x140381370
 unsigned char FUN_140381370(FieldPropertySightRange* p) { return p->m_b2a; }
 
@@ -250,7 +250,7 @@ void FieldPropertyWeather::vfunc_2(Unk_PktIn* in)
 int FieldPropertyWeather::vfunc_3() { return 7; }
 
 // @0x1403814f0
-int FUN_1403814f0(FieldPropertyWeather* p) { return p->m_nWeather; }
+int GetWeather(FieldPropertyWeather* p) { return p->m_nWeather; }
 
 // @0x140381510
 FieldPropertyAmbientLight::FieldPropertyAmbientLight() { m_bFlag = false; m_fValue = 0; }
@@ -269,7 +269,7 @@ void FieldPropertyAmbientLight::vfunc_1(Unk_PktOut* out)
     FieldProperty::vfunc_1(out);
     *(COutputStream *)out << m_color;
     FUN_14070f820(*(COutputStream *)out, m_bFlag);
-    FUN_14070fa60(*(COutputStream *)out, m_fValue);
+    WriteFloat(*(COutputStream *)out, m_fValue);
 }
 
 // @0x140381670
@@ -309,7 +309,7 @@ void FieldPropertyDirectionalLight::vfunc_1(Unk_PktOut* out)
     *(COutputStream *)out << m_color1;
     *(COutputStream *)out << m_color2;
     FUN_14070f820(*(COutputStream *)out, m_bFlag);
-    FUN_14070fa60(*(COutputStream *)out, m_fValue);
+    WriteFloat(*(COutputStream *)out, m_fValue);
 }
 
 // @0x1403818e0
@@ -405,12 +405,12 @@ MS2_REPLACE(0x1403812c0, FUN_1403812c0, 16, 0x5463A882);
 MS2_REPLACE(0x1403812e0, FUN_1403812e0, 16, 0x4C93A5B6);
 MS2_REPLACE(0x140381300, FUN_140381300, 16, 0x649FEBDA);
 MS2_REPLACE(0x140381320, FUN_140381320, 15, 0x32C862F5);
-MS2_REPLACE(0x140381340, FUN_140381340, 27, 0x097A8DDD);
+MS2_REPLACE(0x140381340, GetAlpha, 27, 0x097A8DDD);
 MS2_REPLACE(0x140381370, FUN_140381370, 15, 0x7ACD517B);
 MS2_REPLACE_METHOD(0x140381420, FieldPropertyWeather, vfunc_1, 59, 0xA883D884);
 MS2_REPLACE_METHOD(0x140381470, FieldPropertyWeather, vfunc_2, 79, 0xDFE864B6);
 MS2_REPLACE_METHOD(0x1403814d0, FieldPropertyWeather, vfunc_3, 11, 0x41502B22);
-MS2_REPLACE(0x1403814f0, FUN_1403814f0, 14, 0x72E52537);
+MS2_REPLACE(0x1403814f0, GetWeather, 14, 0x72E52537);
 MS2_REPLACE_METHOD(0x140381600, FieldPropertyAmbientLight, vfunc_1, 95, 0x90E3C1EB);
 MS2_REPLACE_METHOD(0x140381670, FieldPropertyAmbientLight, vfunc_2, 112, 0x3CCD197C);
 MS2_REPLACE_METHOD(0x1403816f0, FieldPropertyAmbientLight, vfunc_3, 11, 0x2093C54B);

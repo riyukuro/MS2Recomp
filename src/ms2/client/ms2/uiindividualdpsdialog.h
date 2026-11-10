@@ -19,7 +19,7 @@ public:
     virtual void vfunc_72();                                                // 72 0x140f4b1b0
 
     void OnTextToggle();                                                   // 0x140f4acc0 title bar
-    void FUN_140f4ade0();                                                   // 0x140f4ade0 meter text and elapsed time
+    void UpdateMeterText();                                                   // 0x140f4ade0 meter text and elapsed time
 
     int m_unk_178;                                                          // +0x178 (untouched by the ctor)
     Unk_IntervalTimer m_tick;                                               // +0x17c

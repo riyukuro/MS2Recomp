@@ -73,11 +73,11 @@ public:
     bool FUN_14069ff50();
     int GetCurrencyItemId();                                // 0x14069ff80
     bool FUN_14069ffc0(std::vector<unsigned>& ids, const unsigned& nFlags);
-    bool FUN_1406a0090();
+    bool IsRandomSaleExpired();
     CStringW GetName();                                     // 0x1406a00e0
     CStringA GetIconPath();                                 // 0x1406a0160
     int FUN_1406a0230();
-    __int64 FUN_1406a0270();
+    __int64 GetPaybackPrice();
     CStringW GetSellDayText();                              // 0x1406a02c0
 
     int m_nId;                                              // +0x18 "sn"
@@ -189,12 +189,12 @@ public:
     CMsTime GetEndDate(int nSubId);                         // 0x1406a1a70
     __int64 GetSalePriceOf(int nSubId);                     // 0x1406a1b30
     __int64 GetPriceOf(int nSubId);                         // 0x1406a1be0
-    bool FUN_1406a1c70(int nSubId);
+    bool IsGiftable(int nSubId);
     BOOL HasSubProducts();                                  // 0x1406a1d60
     __int64 GetPointOf(int nSubId);                         // 0x1406a1da0
     CStringA GetCategory();                                 // 0x1406a1e50
     int FUN_1406a1ee0();
-    CStringA FUN_1406a1f00();
+    CStringA GetUrl();
     bool FUN_1406a1f50();
     void WriteSubProducts(COutputStream& stream);           // 0x1406a1f70
     void ReadSubProducts(CInPacket& packet);                // 0x1406a2090

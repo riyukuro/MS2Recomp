@@ -56,7 +56,7 @@ void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 
 class Unk_GpSettings;
 Unk_GpState* GetGamepadState(Unk_GpSettings* p);
-class CFeatureManager { public: bool FUN_14036d570(int n); };
+class CFeatureManager { public: bool IsFeatureEnabled(int n); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
@@ -94,8 +94,8 @@ UIFishingFloatDialog::UIFishingFloatDialog()
 {
     m_2c = 0x1a;
     m_80 = 0;
-    FUN_141924170(1);
-    FUN_141925e70(1, 1);
+    SetTweenEnabled(1);
+    SetFlag(1, 1);
     memset(m_180, 0, sizeof(m_180));
 }
 
@@ -128,9 +128,9 @@ void UIFishingFloatDialog::OnLoadComplete()
         reinterpret_cast<Unk_FishAS*>(m_30.operator->())->FUN_140f446c0("setFishSize", m_178);
         reinterpret_cast<Unk_PcComp*>(m_30.operator->())->FUN_140caf230("setFishRank", m_17c);
     }
-    FUN_140f44520(0);
+    StartSound(0);
     FUN_141276180(s_143aca6e8, "");
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xc3))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xc3))
     {
         if (GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))->m_bVibration)
             FUN_140a58540()->StartRumbleFor(1.7976931348623157e+308);
@@ -141,9 +141,9 @@ void UIFishingFloatDialog::OnLoadComplete()
 void UIFishingFloatDialog::vfunc_67()
 {
     UIDialog::vfunc_67();
-    FUN_140f44650(0);
-    FUN_140f44650(1);
-    FUN_140f44650(2);
+    StopSound(0);
+    StopSound(1);
+    StopSound(2);
     FUN_140a58540()->StopRumble(false);
 }
 
@@ -183,23 +183,23 @@ int UIFishingFloatDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
     {
         if (m_68 == 0)
         {
-            FUN_140f44650(2);
-            FUN_140f44520(1);
+            StopSound(2);
+            StartSound(1);
         }
     }
     else if (_stricmp(szMethod, "onFloatIn") == 0)
     {
         if (m_68 == 0)
         {
-            FUN_140f44650(1);
-            FUN_140f44520(2);
+            StopSound(1);
+            StartSound(2);
         }
     }
     return 0;
 }
 
 // @0x140f443d0
-void UIFishingFloatDialog::FUN_140f443d0(MS2Ptr<CFishCube> spInfo)
+void UIFishingFloatDialog::SetFishInfo(MS2Ptr<CFishCube> spInfo)
 {
     CFishCube* pInfo = spInfo.operator->();
     CFishDataPtr ref = TSingleton<CFishingTable>::GetInstance()->GetFish(pInfo->m_a);
@@ -207,12 +207,12 @@ void UIFishingFloatDialog::FUN_140f443d0(MS2Ptr<CFishCube> spInfo)
     {
         m_17c = spInfo.operator->()->m_d;
         CFishCube* pInfo2 = spInfo.operator->();
-        m_178 = ref.operator->()->FUN_1403b1520(pInfo2->m_b);
+        m_178 = ref.operator->()->GetSizeClass(pInfo2->m_b);
     }
 }
 
 // @0x140f44490
-int UIFishingFloatDialog::FUN_140f44490()
+int UIFishingFloatDialog::GetResult()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
@@ -220,10 +220,10 @@ int UIFishingFloatDialog::FUN_140f44490()
 }
 
 // @0x140f44520
-void UIFishingFloatDialog::FUN_140f44520(int nSound)
+void UIFishingFloatDialog::StartSound(int nSound)
 {
     if (m_180[nSound])
-        FUN_140f44650(nSound);
+        StopSound(nSound);
     Unk_SoundMgr* pOwner = ((class Unk_SoundMgr*)((class WorldService*)(class Unk_SoundOwner*)(reinterpret_cast<Unk_SoundOwner*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pOwner == 0)
         return;
@@ -240,7 +240,7 @@ void UIFishingFloatDialog::FUN_140f44520(int nSound)
 }
 
 // @0x140f44650
-void UIFishingFloatDialog::FUN_140f44650(int nSound)
+void UIFishingFloatDialog::StopSound(int nSound)
 {
     if (m_180[nSound])
     {

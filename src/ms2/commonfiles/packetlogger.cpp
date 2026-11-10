@@ -27,7 +27,7 @@ MS2_REPLACE_METHOD(0x140716BF0, CPacketLogger, Configure, 75, 0x7A2643E9);
 void CPacketLogger::LogSend(int opcode,const Unk_LogOutPacket& packet) {
     if(!m_enabled)return;
     {
-        if(m_receiveBytes<0x100000)m_receiveBytes+=reinterpret_cast<const COutPacket&>(packet).FUN_14020b9f0();
+        if(m_receiveBytes<0x100000)m_receiveBytes+=reinterpret_cast<const COutPacket&>(packet).GetLength();
         if(m_file.m_h && ShouldSend(opcode,packet)) {
             CString format=Timestamp(0);Write(format,DescribeSend(opcode,packet));m_lastSend=opcode;
         }
@@ -84,7 +84,7 @@ bool CPacketLogger::ShouldReceive(int opcode,const Unk_LogInPacket& packet) cons
 MS2_REPLACE_METHOD(0x140717250, CPacketLogger, ShouldReceive, 105, 0x3032FC2F);
 // @0x1407172d0
 bool CPacketLogger::ShouldSend(int opcode,const Unk_LogOutPacket& packet) const {
-    if(reinterpret_cast<const COutPacket&>(packet).FUN_14020bc40())return false;
+    if(reinterpret_cast<const COutPacket&>(packet).IsLoopback())return false;
     if(opcode==m_lastSend)return false;
     if(m_client)return AllowGame(opcode);else return AllowClient(opcode);
 }
@@ -115,9 +115,9 @@ CString CPacketLogger::DescribeReceive(int opcode,const Unk_LogInPacket& packet)
 MS2_REPLACE_METHOD(0x140717600, CPacketLogger, DescribeReceive, 289, 0x7E4E80BD);
 // @0x140717730
 CString CPacketLogger::DescribeSend(int opcode,const Unk_LogOutPacket& packet) const {
-    CString text;CString name;int code=opcode;int length=reinterpret_cast<const COutPacket&>(packet).FUN_14020b9f0();
+    CString text;CString name;int code=opcode;int length=reinterpret_cast<const COutPacket&>(packet).GetLength();
     if(!m_client){}else {if(!m_sendNames.Lookup(code,name))name="Undefined";}
-    text.Format("%s(%d)(size:%d)(seq:%d)",(const char*)name,code,length,reinterpret_cast<const COutPacket&>(packet).FUN_14020ba00());return text;
+    text.Format("%s(%d)(size:%d)(seq:%d)",(const char*)name,code,length,reinterpret_cast<const COutPacket&>(packet).GetSequence());return text;
 }
 MS2_REPLACE_METHOD(0x140717730, CPacketLogger, DescribeSend, 289, 0xAA1B9B85);
 // @0x140717860

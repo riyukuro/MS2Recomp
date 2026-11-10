@@ -58,9 +58,9 @@ public:
     virtual void vfunc_3(MS2Ptr<CProxyGameObject> spActor);   // UIEntityEventListener 3 0x141a6b1a0
 
     void ReadNpcFromFile();                               // read the npc ids of the xml files
-    CStringW FUN_141a6b6a0(int nType, int bFriendly);   // npc kind name
-    void FUN_141a6b800();                               // log + preload every npc
-    void FUN_141a6b8f0();                               // build m_entries
+    CStringW GetNpcKindName(int nType, int bFriendly);   // npc kind name
+    void ReadNpcAll();                               // log + preload every npc
+    void BuildEntries();                               // build m_entries
     void FUN_141a6be40(CStringW& strFilter);        // refill "m_npcList"
 
 private:

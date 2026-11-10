@@ -86,7 +86,7 @@ int FUN_141420b30(CItemData* pData, AvatarPC* pAvatar)
                 else if ((CEquipItem*)h4)
                 {
                     nResult = 5;
-                    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xda))
+                    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xda))
                     {
                         if (h5->GetItem()->FUN_140529070()
                             > h4->GetItem()->FUN_140529070())

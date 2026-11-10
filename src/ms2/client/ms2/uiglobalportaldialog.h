@@ -26,7 +26,7 @@ public:
     virtual void vfunc_72();                                    // 72 0x1412c2880 retry the delayed refresh
 
     void FUN_1412c2980();                                       // show the texts and the enter buttons
-    void FUN_1412c3020(CInPacket& packet);                      // the server packet
+    void OnGlobalPortalPacket(CInPacket& packet);                      // the server packet
     void SendGlobalPortal(const Scaleform::GFx::FunctionHandler::Params& params);   // an enter button was clicked
     void FUN_1412c3240(CInPacket& packet);                                    // the delayed refresh fired
     void FUN_1412c32a0(CInPacket& packet);                      // packet case 0: read the notice

@@ -99,8 +99,8 @@ void* FUN_141200ab0(CEquipModel* pModel);                       // m_unk_20
 void SetLocalTransform(CEquipModel* pModel, void* pXform);          // set the model transform
 void GetLocalTransform(CEquipModel* pModel, NiTransform* pXform);   // the model transform
 UICameraEditDialog* FindCameraEditDialog(eUIClassID nId);
-Unk_ServiceManager* FUN_1413f9850();                            // the framework's service manager
-ecrPhysX::PropService* FUN_1412938c0(struct Unk_DvCell* pFramework);
+Unk_ServiceManager* GetServiceManager();                            // the framework's service manager
+ecrPhysX::PropService* GetPropService(struct Unk_DvCell* pFramework);
 efd::utf8string FUN_1414d7990(const efd::utf8string& strName);  // the scene name of a PhysX scene key
 class CPhysXHelper
 {
@@ -141,7 +141,7 @@ MS2_REPLACE_METHOD(0x141981010, UIHairPhysxDialog, GetTypeName, 61, 0x89D6505E);
 // @0x141981060
 void UIHairPhysxDialog::FUN_141981060()
 {
-    int nMode = FUN_1419834a0();
+    int nMode = GetTransformMode();
     if (nMode == 0)
         return;
     Unk_HpxModel* pLeft = 0;
@@ -153,7 +153,7 @@ void UIHairPhysxDialog::FUN_141981060()
     {
         NiTransform kXform;
         GetLocalTransform(pModel, &kXform);
-        FUN_141985210(pModel, kXform);
+        SetModelTransform(pModel, kXform);
         NiPoint3 kValue(0.0f, 0.0f, 0.0f);
         if (nMode == 1)
             kValue = kXform.m_Translate;
@@ -178,7 +178,7 @@ void UIHairPhysxDialog::FUN_141981060()
             sp->SetTextA(str);
         }
     }
-    FUN_141984360();
+    UpdateTransformText();
 }
 MS2_REPLACE_METHOD(0x141981060, UIHairPhysxDialog, FUN_141981060, 1000, 0x6D0AE5BC);
 
@@ -186,9 +186,9 @@ MS2_REPLACE_METHOD(0x141981060, UIHairPhysxDialog, FUN_141981060, 1000, 0x6D0AE5
 void UIHairPhysxDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925fa0("m_dragBar");
-    FUN_141925ec0("m_closeButton");
-    FUN_1419264e0("m_reset", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::FUN_141982880));
+    BindDragBar("m_dragBar");
+    BindCloseButton("m_closeButton");
+    FUN_1419264e0("m_reset", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::ResetTransforms));
     FUN_1419264e0("m_mirror", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::FUN_141982940));
     FUN_1419264e0("m_save", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIHairPhysxDialog::FUN_141982860));
     PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -211,12 +211,12 @@ void UIHairPhysxDialog::OnLoadComplete()
         GetLocalTransform(pLeft, &m_190);
     if (pRight)
         GetLocalTransform(pRight, &m_1c4);
-    FUN_141983010();
-    FUN_141983f50();
-    FUN_141983730();
+    SaveJoints();
+    UpdateTransformInputs();
+    FillJointList();
     FUN_141983c60();
     FUN_141983af0();
-    FUN_141984360();
+    UpdateTransformText();
 }
 MS2_REPLACE_METHOD(0x141981450, UIHairPhysxDialog, OnLoadComplete, 1441, 0xDB01EB2F);
 
@@ -231,7 +231,7 @@ void UIHairPhysxDialog::vfunc_26()
         pPc->vfunc_59(1, 0, 0, 0);
         FUN_141901390(1, 0x3eb);
     }
-    ecrPhysX::PropService* pService = FUN_1412938c0((Unk_DvCell*)&egf::g_bapiContext);
+    ecrPhysX::PropService* pService = GetPropService((Unk_DvCell*)&egf::g_bapiContext);
     if (pService)
     {
         efd::utf8string strScene("PhysXItemSceneName");
@@ -293,20 +293,20 @@ int UIHairPhysxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             float fX = data.PopFloat();
             float fY = data.PopFloat();
             float fZ = data.PopFloat();
-            FUN_141982590(fX, fY, fZ);
+            SetPonyTailOffset(fX, fY, fZ);
         }
         return 1;
     }
     else if (_stricmp("eventPhysDebug", szMethod) == 0)
     {
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_1419821d0(data.PopInt());
+            SetPhysXDebugRender(data.PopInt());
         return 1;
     }
     else if (_stricmp("eventOnlyPonytail", szMethod) == 0)
     {
         if (data.SetArgsIfAny(pArgs, nArgs))
-            FUN_141982350(data.PopInt());
+            SetOnlyPonytail(data.PopInt());
         return 1;
     }
     else if (_stricmp("eventSelectTransform", szMethod) == 0)
@@ -332,28 +332,28 @@ MS2_REPLACE_METHOD(0x141981C90, UIHairPhysxDialog, vfunc_28, 1075, 0xAC3BAF19);
 // @0x1419820f0
 int UIHairPhysxDialog::vfunc_4(void* p1, void* p2)
 {
-    FUN_141983f50();
+    UpdateTransformInputs();
     FUN_141983c60();
     FUN_141983af0();
-    FUN_141984360();
+    UpdateTransformText();
     return 1;
 }
 
 // @0x141982160
 int UIHairPhysxDialog::vfunc_5(void* p1, void* p2)
 {
-    FUN_141983f50();
+    UpdateTransformInputs();
     FUN_141983c60();
     FUN_141983af0();
-    FUN_141984360();
+    UpdateTransformText();
     return 1;
 }
 
 // @0x1419821d0
-void UIHairPhysxDialog::FUN_1419821d0(int nDebug)
+void UIHairPhysxDialog::SetPhysXDebugRender(int nDebug)
 {
     bool bActive = nDebug ? true : false;
-    ecrPhysX::PropService* pService = FUN_1412938c0((Unk_DvCell*)&egf::g_bapiContext);
+    ecrPhysX::PropService* pService = GetPropService((Unk_DvCell*)&egf::g_bapiContext);
     if (pService)
     {
         efd::utf8string strScene("PhysXItemSceneName");
@@ -370,10 +370,10 @@ void UIHairPhysxDialog::FUN_1419821d0(int nDebug)
         ((class CPhysXHelper*)GetPhysXHelper())->Unlock();
     }
 }
-MS2_REPLACE_METHOD(0x1419821D0, UIHairPhysxDialog, FUN_1419821d0, 377, 0x16028B66);
+MS2_REPLACE_METHOD(0x1419821D0, UIHairPhysxDialog, SetPhysXDebugRender, 377, 0x16028B66);
 
 // @0x141982350
-void UIHairPhysxDialog::FUN_141982350(int nOnly)
+void UIHairPhysxDialog::SetOnlyPonytail(int nOnly)
 {
     PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!pPc)
@@ -383,24 +383,24 @@ void UIHairPhysxDialog::FUN_141982350(int nOnly)
     else
         ((class Unk_HpxEquipSet*)((class PC*)(class PCBase*)(pPc))->GetEquipment())->FUN_1411e9190(0);
 }
-MS2_REPLACE_METHOD(0x141982350, UIHairPhysxDialog, FUN_141982350, 98, 0xDC50BC62);
+MS2_REPLACE_METHOD(0x141982350, UIHairPhysxDialog, SetOnlyPonytail, 98, 0xDC50BC62);
 
 // @0x1419823c0
 void UIHairPhysxDialog::EventSelectModel()
 {
-    FUN_141983f50();
-    FUN_141983730();
+    UpdateTransformInputs();
+    FillJointList();
     FUN_141983c60();
     FUN_141983af0();
-    FUN_141984360();
+    UpdateTransformText();
 }
 MS2_REPLACE_METHOD(0x1419823C0, UIHairPhysxDialog, EventSelectModel, 64, 0x4014818E);
 
 // @0x141982410
 void UIHairPhysxDialog::EventSelectTransform()
 {
-    FUN_141983f50();
-    FUN_141984360();
+    UpdateTransformInputs();
+    UpdateTransformText();
 }
 MS2_REPLACE_METHOD(0x141982410, UIHairPhysxDialog, EventSelectTransform, 34, 0xF0C7D14D);
 
@@ -409,7 +409,7 @@ void UIHairPhysxDialog::FUN_141982440(const CString& strJoint)
 {
     FUN_141983c60();
     FUN_141983af0();
-    FUN_141984360();
+    UpdateTransformText();
 }
 MS2_REPLACE_METHOD(0x141982440, UIHairPhysxDialog, FUN_141982440, 49, 0x902484C5);
 
@@ -420,31 +420,31 @@ void UIHairPhysxDialog::FUN_141982480(float fSoft)
     Unk_HpxModel* pRight = 0;
     FUN_141984af0(FUN_1419833e0(), &pLeft, &pRight);
     if (pLeft)
-        pLeft->SetPonyTailDamping(FUN_141983600(), fSoft);
+        pLeft->SetPonyTailDamping(GetSelectedJoint(), fSoft);
     if (pRight)
-        pRight->SetPonyTailDamping(FUN_141983600(), fSoft);
-    FUN_141984360();
+        pRight->SetPonyTailDamping(GetSelectedJoint(), fSoft);
+    UpdateTransformText();
 }
 MS2_REPLACE_METHOD(0x141982480, UIHairPhysxDialog, FUN_141982480, 252, 0xAC6F6B42);
 
 // @0x141982590
-void UIHairPhysxDialog::FUN_141982590(float fX, float fY, float fZ)
+void UIHairPhysxDialog::SetPonyTailOffset(float fX, float fY, float fZ)
 {
     Unk_HpxModel* pLeft = 0;
     Unk_HpxModel* pRight = 0;
     FUN_141984af0(FUN_1419833e0(), &pLeft, &pRight);
     if (pLeft)
-        pLeft->SetPonyTailOffset(FUN_141983600(), fX, fY, fZ);
+        pLeft->SetPonyTailOffset(GetSelectedJoint(), fX, fY, fZ);
     if (pRight)
-        pRight->SetPonyTailOffset(FUN_141983600(), fX, fY, fZ);
-    FUN_141984360();
+        pRight->SetPonyTailOffset(GetSelectedJoint(), fX, fY, fZ);
+    UpdateTransformText();
 }
-MS2_REPLACE_METHOD(0x141982590, UIHairPhysxDialog, FUN_141982590, 318, 0x2ACD60EE);
+MS2_REPLACE_METHOD(0x141982590, UIHairPhysxDialog, SetPonyTailOffset, 318, 0x2ACD60EE);
 
 // @0x1419826e0
 void UIHairPhysxDialog::FUN_1419826e0(float fX, float fY, float fZ)
 {
-    int nMode = FUN_1419834a0();
+    int nMode = GetTransformMode();
     if (nMode == 0)
         return;
     Unk_HpxModel* pLeft = 0;
@@ -455,11 +455,11 @@ void UIHairPhysxDialog::FUN_1419826e0(float fX, float fY, float fZ)
     if (pModel)
     {
         if (nMode == 1)
-            FUN_141984e50(pModel, NiPoint3(fX, fY, fZ));
+            SetModelPosition(pModel, NiPoint3(fX, fY, fZ));
         else if (nMode == 2)
-            FUN_141985000(pModel, NiPoint3(fX, fY, fZ));
+            SetModelRotation(pModel, NiPoint3(fX, fY, fZ));
     }
-    FUN_141984360();
+    UpdateTransformText();
 }
 MS2_REPLACE_METHOD(0x1419826E0, UIHairPhysxDialog, FUN_1419826e0, 373, 0xC0C45CF2);
 
@@ -469,22 +469,22 @@ void UIHairPhysxDialog::FUN_141982860(const Scaleform::GFx::FunctionHandler::Par
 }
 
 // @0x141982880
-void UIHairPhysxDialog::FUN_141982880(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIHairPhysxDialog::ResetTransforms(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     Unk_HpxModel* pLeft = 0;
     Unk_HpxModel* pRight = 0;
     FUN_141984af0(0, &pLeft, &pRight);
     if (pLeft)
-        FUN_141985210(pLeft, m_190);
+        SetModelTransform(pLeft, m_190);
     if (pRight)
-        FUN_141985210(pRight, m_1c4);
-    FUN_141982dc0();
-    FUN_141983f50();
+        SetModelTransform(pRight, m_1c4);
+    RestoreJoints();
+    UpdateTransformInputs();
     FUN_141983c60();
     FUN_141983af0();
-    FUN_141984360();
+    UpdateTransformText();
 }
-MS2_REPLACE_METHOD(0x141982880, UIHairPhysxDialog, FUN_141982880, 183, 0xCBB2EE24);
+MS2_REPLACE_METHOD(0x141982880, UIHairPhysxDialog, ResetTransforms, 183, 0xCBB2EE24);
 
 // @0x141982940
 // "m_mirror": copies the joints of the edited side onto the other side, the axes mirrored through the median plane.
@@ -519,7 +519,7 @@ void UIHairPhysxDialog::FUN_141982940(const Scaleform::GFx::FunctionHandler::Par
         float fX = 0.0f;
         float fY = 0.0f;
         float fZ = 0.0f;
-        FUN_141984cd0(pSrc, strJoint, &fX, &fY, &fZ);
+        GetJointOffset(pSrc, strJoint, &fX, &fY, &fZ);
         NiMatrix3 kRot;
         kRot.FromEulerAnglesXYZ(fX * 3.1415927f / 180.0f, fY * 3.1415927f / 180.0f, fZ * 3.1415927f / 180.0f);
         NiMatrix3 kAxes = kMirror * kRot;
@@ -537,15 +537,15 @@ void UIHairPhysxDialog::FUN_141982940(const Scaleform::GFx::FunctionHandler::Par
         FUN_141984da0(kAxes, kEuler);
         pDst->SetPonyTailOffset(strJoint, kEuler.x, kEuler.y, kEuler.z);
     }
-    FUN_141983f50();
+    UpdateTransformInputs();
     FUN_141983c60();
     FUN_141983af0();
-    FUN_141984360();
+    UpdateTransformText();
 }
 MS2_REPLACE_METHOD(0x141982940, UIHairPhysxDialog, FUN_141982940, 1141, 0xDC0B463A);
 
 // @0x141982dc0
-void UIHairPhysxDialog::FUN_141982dc0()
+void UIHairPhysxDialog::RestoreJoints()
 {
     Unk_HpxModel* pLeft = 0;
     Unk_HpxModel* pRight = 0;
@@ -568,12 +568,12 @@ void UIHairPhysxDialog::FUN_141982dc0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141982DC0, UIHairPhysxDialog, FUN_141982dc0, 581, 0x6D16A6F2);
+MS2_REPLACE_METHOD(0x141982DC0, UIHairPhysxDialog, RestoreJoints, 581, 0x6D16A6F2);
 
 // @0x141983010
-void UIHairPhysxDialog::FUN_141983010()
+void UIHairPhysxDialog::SaveJoints()
 {
-    Unk_ServiceManager* pServices = FUN_1413f9850();
+    Unk_ServiceManager* pServices = GetServiceManager();
     ecrPhysX::PropService* pService;
     if (pServices == 0)
         return;
@@ -606,24 +606,24 @@ void UIHairPhysxDialog::FUN_141983010()
                 const CString& strJoint = CString(pJoint->getName());
                 NiPoint4 kLeft;
                 FUN_141984c30(pLeft, strJoint, &kLeft.m_afPt[0]);
-                FUN_141984cd0(pLeft, strJoint, &kLeft.m_afPt[1], &kLeft.m_afPt[2], &kLeft.m_afPt[3]);
+                GetJointOffset(pLeft, strJoint, &kLeft.m_afPt[1], &kLeft.m_afPt[2], &kLeft.m_afPt[3]);
                 m_1f8.SetAt(strJoint, kLeft);
                 NiPoint4 kRight;
                 FUN_141984c30(pRight, strJoint, &kRight.m_afPt[0]);
-                FUN_141984cd0(pRight, strJoint, &kRight.m_afPt[1], &kRight.m_afPt[2], &kRight.m_afPt[3]);
+                GetJointOffset(pRight, strJoint, &kRight.m_afPt[1], &kRight.m_afPt[2], &kRight.m_afPt[3]);
                 m_228.SetAt(strJoint, kRight);
             }
         }
     }
 }
-MS2_REPLACE_METHOD(0x141983010, UIHairPhysxDialog, FUN_141983010, 956, 0x2238A039);
+MS2_REPLACE_METHOD(0x141983010, UIHairPhysxDialog, SaveJoints, 956, 0x2238A039);
 
 // @0x1419833e0
 int UIHairPhysxDialog::FUN_1419833e0()
 {
     if (MS2Ptr<ASRadioButton> sp = GetChild<ASRadioButton>("m_left"))
     {
-        if (sp->FUN_1422ce0e0())
+        if (sp->IsSelected())
             return 2;
     }
     return 1;
@@ -631,36 +631,36 @@ int UIHairPhysxDialog::FUN_1419833e0()
 MS2_REPLACE_METHOD(0x1419833E0, UIHairPhysxDialog, FUN_1419833e0, 177, 0x46A0B2A6);
 
 // @0x1419834a0
-int UIHairPhysxDialog::FUN_1419834a0()
+int UIHairPhysxDialog::GetTransformMode()
 {
     if (MS2Ptr<ASRadioButton> sp = GetChild<ASRadioButton>("m_position"))
     {
-        if (sp->FUN_1422ce0e0())
+        if (sp->IsSelected())
             return 1;
     }
     if (MS2Ptr<ASRadioButton> sp = GetChild<ASRadioButton>("m_rotation"))
     {
-        if (sp->FUN_1422ce0e0())
+        if (sp->IsSelected())
             return 2;
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1419834A0, UIHairPhysxDialog, FUN_1419834a0, 344, 0xEAC2138C);
+MS2_REPLACE_METHOD(0x1419834A0, UIHairPhysxDialog, GetTransformMode, 344, 0xEAC2138C);
 
 // @0x141983600
 // MS2-FUNCTIONAL: CString returned by value from inside the scope of the combo handle
-CString UIHairPhysxDialog::FUN_141983600()
+CString UIHairPhysxDialog::GetSelectedJoint()
 {
     if (MS2Ptr<ASDropdownMenu> sp = GetChild<ASDropdownMenu>("m_joints"))
         return FUN_14016a600(sp->FUN_1422dfe00(), 0);
     return CString("");
 }
-MS2_REPLACE_METHOD(0x141983600, UIHairPhysxDialog, FUN_141983600, 296, 0xB2F98612);
+MS2_REPLACE_METHOD(0x141983600, UIHairPhysxDialog, GetSelectedJoint, 296, 0xB2F98612);
 
 // @0x141983730
-void UIHairPhysxDialog::FUN_141983730()
+void UIHairPhysxDialog::FillJointList()
 {
-    Unk_ServiceManager* pServices = FUN_1413f9850();
+    Unk_ServiceManager* pServices = GetServiceManager();
     ecrPhysX::PropService* pService;
     if (pServices == 0)
         return;
@@ -698,7 +698,7 @@ void UIHairPhysxDialog::FUN_141983730()
         sp->vfunc_24(true);
     }
 }
-MS2_REPLACE_METHOD(0x141983730, UIHairPhysxDialog, FUN_141983730, 947, 0xFE2C3C62);
+MS2_REPLACE_METHOD(0x141983730, UIHairPhysxDialog, FillJointList, 947, 0xFE2C3C62);
 
 // @0x141983af0
 void UIHairPhysxDialog::FUN_141983af0()
@@ -711,9 +711,9 @@ void UIHairPhysxDialog::FUN_141983af0()
     if (pModel)
     {
         float fSoft = 0;
-        FUN_141984c30(pModel, FUN_141983600(), &fSoft);
+        FUN_141984c30(pModel, GetSelectedJoint(), &fSoft);
         if (MS2Ptr<ASSlider> sp = GetChild<ASSlider>("m_softSlider"))
-            sp->FUN_1422ce5f0(fSoft);
+            sp->SetValue(fSoft);
     }
 }
 MS2_REPLACE_METHOD(0x141983AF0, UIHairPhysxDialog, FUN_141983af0, 362, 0x950C0FA3);
@@ -731,19 +731,19 @@ void UIHairPhysxDialog::FUN_141983c60()
         float fX = 0;
         float fY = 0;
         float fZ = 0;
-        FUN_141984cd0(pModel, FUN_141983600(), &fX, &fY, &fZ);
+        GetJointOffset(pModel, GetSelectedJoint(), &fX, &fY, &fZ);
         if (MS2Ptr<ASSlider> sp = GetChild<ASSlider>("m_xSlider"))
-            sp->FUN_1422ce5f0(fX);
+            sp->SetValue(fX);
         if (MS2Ptr<ASSlider> sp = GetChild<ASSlider>("m_ySlider"))
-            sp->FUN_1422ce5f0(fY);
+            sp->SetValue(fY);
         if (MS2Ptr<ASSlider> sp = GetChild<ASSlider>("m_zSlider"))
-            sp->FUN_1422ce5f0(fZ);
+            sp->SetValue(fZ);
     }
 }
 MS2_REPLACE_METHOD(0x141983C60, UIHairPhysxDialog, FUN_141983c60, 746, 0x967CAEDD);
 
 // @0x141983f50
-void UIHairPhysxDialog::FUN_141983f50()
+void UIHairPhysxDialog::UpdateTransformInputs()
 {
     PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     int nSide;
@@ -752,7 +752,7 @@ void UIHairPhysxDialog::FUN_141983f50()
         return;
     if ((nSide = FUN_1419833e0()) == 0)
         return;
-    if ((nMode = FUN_1419834a0()) == 0)
+    if ((nMode = GetTransformMode()) == 0)
         return;
     NiPoint3 kValue(0.0f, 0.0f, 0.0f);
     Unk_HpxModel* pLeft = 0;
@@ -788,19 +788,19 @@ void UIHairPhysxDialog::FUN_141983f50()
         sp->SetTextA(str);
     }
 }
-MS2_REPLACE_METHOD(0x141983F50, UIHairPhysxDialog, FUN_141983f50, 1023, 0xF0152227);
+MS2_REPLACE_METHOD(0x141983F50, UIHairPhysxDialog, UpdateTransformInputs, 1023, 0xF0152227);
 
 // @0x141984360
-void UIHairPhysxDialog::FUN_141984360()
+void UIHairPhysxDialog::UpdateTransformText()
 {
-    Unk_ServiceManager* pServices = FUN_1413f9850();
+    Unk_ServiceManager* pServices = GetServiceManager();
     ecrPhysX::PropService* pService;
     if (pServices == 0)
         return;
     if ((pService = pServices->GetSystemServiceAs<ecrPhysX::PropService>()) == 0)
         return;
     Unk_HpxModel* pModel = 0;
-    FUN_141984a10(FUN_1419833e0(), &pModel);
+    GetModelForSide(FUN_1419833e0(), &pModel);
     if (pModel == 0)
         return;
     NiPhysXProp* pProp = pService->GetPropAt(pModel->GetEntityID(), 0);
@@ -824,7 +824,7 @@ void UIHairPhysxDialog::FUN_141984360()
                 float fZ = 0.0f;
                 const CString& strJoint = CString(pJoint->getName());
                 FUN_141984c30(pModel, strJoint, &fSoft);
-                FUN_141984cd0(pModel, strJoint, &fX, &fY, &fZ);
+                GetJointOffset(pModel, strJoint, &fX, &fY, &fZ);
                 CString strLine;
                 strLine.Format("<jointangle name=\"%s\" soft=\"%0.2f\" posz=\"%0.2f\" zero=\"%0.2f\" negz=\"%0.2f\"/>",
                     (const char*)strJoint, fSoft, fX, fY, fZ);
@@ -848,10 +848,10 @@ void UIHairPhysxDialog::FUN_141984360()
         }
     }
 }
-MS2_REPLACE_METHOD(0x141984360, UIHairPhysxDialog, FUN_141984360, 1698, 0x448B5BB9);
+MS2_REPLACE_METHOD(0x141984360, UIHairPhysxDialog, UpdateTransformText, 1698, 0x448B5BB9);
 
 // @0x141984a10
-int UIHairPhysxDialog::FUN_141984a10(int nSide, Unk_HpxModel** ppModel)
+int UIHairPhysxDialog::GetModelForSide(int nSide, Unk_HpxModel** ppModel)
 {
     PCBase* pPc = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -877,7 +877,7 @@ int UIHairPhysxDialog::FUN_141984a10(int nSide, Unk_HpxModel** ppModel)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x141984A10, UIHairPhysxDialog, FUN_141984a10, 217, 0xD88E4BED);
+MS2_REPLACE_METHOD(0x141984A10, UIHairPhysxDialog, GetModelForSide, 217, 0xD88E4BED);
 
 // @0x141984af0
 int UIHairPhysxDialog::FUN_141984af0(int nSide, Unk_HpxModel** ppLeft, Unk_HpxModel** ppRight)
@@ -933,7 +933,7 @@ void UIHairPhysxDialog::FUN_141984c30(Unk_HpxModel* pModel, const CString& strJo
 MS2_REPLACE_METHOD(0x141984C30, UIHairPhysxDialog, FUN_141984c30, 145, 0xAF64A6AC);
 
 // @0x141984cd0
-void UIHairPhysxDialog::FUN_141984cd0(Unk_HpxModel* pModel, const CString& strJoint, float* pX, float* pY, float* pZ)
+void UIHairPhysxDialog::GetJointOffset(Unk_HpxModel* pModel, const CString& strJoint, float* pX, float* pY, float* pZ)
 {
     if (!pModel)
         return;
@@ -949,7 +949,7 @@ void UIHairPhysxDialog::FUN_141984cd0(Unk_HpxModel* pModel, const CString& strJo
         }
     }
 }
-MS2_REPLACE_METHOD(0x141984CD0, UIHairPhysxDialog, FUN_141984cd0, 189, 0x72DECEFB);
+MS2_REPLACE_METHOD(0x141984CD0, UIHairPhysxDialog, GetJointOffset, 189, 0x72DECEFB);
 
 // @0x141984da0
 void UIHairPhysxDialog::FUN_141984da0(const NiMatrix3& kRot, efd::Point3& kDeg)
@@ -962,7 +962,7 @@ void UIHairPhysxDialog::FUN_141984da0(const NiMatrix3& kRot, efd::Point3& kDeg)
 MS2_REPLACE_METHOD(0x141984DA0, UIHairPhysxDialog, FUN_141984da0, 169, 0x94E53925);
 
 // @0x141984e50
-void UIHairPhysxDialog::FUN_141984e50(Unk_HpxModel* pModel, NiPoint3 kPos)
+void UIHairPhysxDialog::SetModelPosition(Unk_HpxModel* pModel, NiPoint3 kPos)
 {
     if (!pModel)
         return;
@@ -980,10 +980,10 @@ void UIHairPhysxDialog::FUN_141984e50(Unk_HpxModel* pModel, NiPoint3 kPos)
             const_cast<const std::vector<MS2Ptr<ItemCustom> >&>(pConfig->m_customs)[nIndex]->unknown18 = kPos;
     }
 }
-MS2_REPLACE_METHOD(0x141984E50, UIHairPhysxDialog, FUN_141984e50, 423, 0x0E4E740D);
+MS2_REPLACE_METHOD(0x141984E50, UIHairPhysxDialog, SetModelPosition, 423, 0x0E4E740D);
 
 // @0x141985000
-void UIHairPhysxDialog::FUN_141985000(Unk_HpxModel* pModel, NiPoint3 kDeg)
+void UIHairPhysxDialog::SetModelRotation(Unk_HpxModel* pModel, NiPoint3 kDeg)
 {
     if (!pModel)
         return;
@@ -1001,10 +1001,10 @@ void UIHairPhysxDialog::FUN_141985000(Unk_HpxModel* pModel, NiPoint3 kDeg)
             const_cast<const std::vector<MS2Ptr<ItemCustom> >&>(pConfig->m_customs)[nIndex]->unknown24 = kDeg;
     }
 }
-MS2_REPLACE_METHOD(0x141985000, UIHairPhysxDialog, FUN_141985000, 522, 0x08D88F3F);
+MS2_REPLACE_METHOD(0x141985000, UIHairPhysxDialog, SetModelRotation, 522, 0x08D88F3F);
 
 // @0x141985210
-void UIHairPhysxDialog::FUN_141985210(Unk_HpxModel* pModel, const NiTransform& kXform)
+void UIHairPhysxDialog::SetModelTransform(Unk_HpxModel* pModel, const NiTransform& kXform)
 {
     if (!pModel)
         return;
@@ -1019,7 +1019,7 @@ void UIHairPhysxDialog::FUN_141985210(Unk_HpxModel* pModel, const NiTransform& k
         SetLocalTransform(pModel, (void*)&kXform);
     }
 }
-MS2_REPLACE_METHOD(0x141985210, UIHairPhysxDialog, FUN_141985210, 333, 0xCBB33673);
+MS2_REPLACE_METHOD(0x141985210, UIHairPhysxDialog, SetModelTransform, 333, 0xCBB33673);
 
 // The radio GetChild COMDAT (0x1419854a0; UISwfEntity::GetChild<T>, uiswfentity.inl).
 template <class T> MS2Ptr<T> UISwfEntity::GetChild(const CString& strName)

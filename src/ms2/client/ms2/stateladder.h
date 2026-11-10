@@ -52,7 +52,7 @@ public:
     virtual void vfunc_34();                                // 34 0x1417d9c50
 
     egf::Entity* FUN_1417d8b20(int nSide, unsigned int nKey);   // the ladder entity found next to the actor
-    float FUN_1417d8c00();                                  // phase update; returns the climb distance of this frame
+    float UpdateClimb();                                  // phase update; returns the climb distance of this frame
     void FUN_1417d9240(float fDist);                        // move the actor
     float FUN_1417d9880(egf::Entity* pLadder);              // height to hang at
     efd::Point3 FUN_1417d99e0();                            // the top of the ladder above the actor (zero when none)

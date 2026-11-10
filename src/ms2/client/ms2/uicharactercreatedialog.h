@@ -59,7 +59,7 @@ public:
     virtual int vfunc_3(void* p, float fValue);                 // 0x1418e36b0
 
     void Popdown();                                       // popdown
-    void FUN_1418e3980(CInPacket* pPacket);                     // the CreateCharacter answer
+    void OnCreateCharacterAnswer(CInPacket* pPacket);                     // the CreateCharacter answer
     int FUN_1418e3f50(const CStringW& strName);                 // send the create request
     void GetItemTabAndCategory(CItemData* pData, int* pnCategory, int* pnTab);
     int FUN_1418e4380(int nTab, int nCategory, MS2Ptr<CItemData> spData);
@@ -67,28 +67,28 @@ public:
     int FUN_1418e46c0(int nTab);                                // tab -> equip slot kind
     void FUN_1418e4750();                                       // reset the loaded flags and the item map
     void FUN_1418e47e0(int nTab, int nCategory);                // collect the list rows
-    void FUN_1418e4a80(int nTab, int nCategory);                // buildItems
-    void FUN_1418e4f50();                                       // buildCurrentItems
-    void FUN_1418e5580(MS2Ptr<CItemData> spData);               // buildColors
-    void FUN_1418e5a10(MS2Ptr<CItemData> spData);               // buildCustom
+    void BuildItems(int nTab, int nCategory);                // buildItems
+    void BuildCurrentItems();                                       // buildCurrentItems
+    void BuildColors(MS2Ptr<CItemData> spData);               // buildColors
+    void BuildCustom(MS2Ptr<CItemData> spData);               // buildCustom
     void OnSceneLobbySelect();                                       // OnSceneLobbySelect
     void OnCreate();                                       // OnCreate: ask for the name
     bool FUN_1418e6430(const CStringW& strName);                // validate the name and create
     void FUN_1418e6680(int nRandom);                            // OnRandom
-    void FUN_1418e6730(int nGender);                            // OnChangeGender
+    void OnChangeGender(int nGender);                            // OnChangeGender
     int FUN_1418e6950(int nItemId, int nTab, int nCategory);
-    int FUN_1418e6ab0(int nTab, int nCategory);                 // the category is loaded
+    int IsCategoryLoaded(int nTab, int nCategory);                 // the category is loaded
     void FUN_1418e6b10();                                       // empty
-    void FUN_1418e6b20(int nTab);                               // OnChangeTab
-    void FUN_1418e6bf0(int nTab, int nCategory);                // OnChangeCategory
-    void FUN_1418e6d80(int nItemId);                            // OnChangeItem
-    void FUN_1418e6fc0(int nColor);                             // OnChangeColor
-    void FUN_1418e7040(int nPos);                               // OnChangePosition
-    void FUN_1418e7110(int nIndex, float fSize);                // OnChangeSize
-    void FUN_1418e7260(float fDegree);                          // OnChangeDegree
+    void OnChangeTab(int nTab);                               // OnChangeTab
+    void OnChangeCategory(int nTab, int nCategory);                // OnChangeCategory
+    void OnChangeItem(int nItemId);                            // OnChangeItem
+    void OnChangeColor(int nColor);                             // OnChangeColor
+    void OnChangePosition(int nPos);                               // OnChangePosition
+    void OnChangeSize(int nIndex, float fSize);                // OnChangeSize
+    void OnChangeDegree(float fDegree);                          // OnChangeDegree
     void FUN_1418e7340(int, int, int);                                       // vfunc_55 through the vftable (result dropped)
     void FUN_1418e7380(int nItemId);                            // remember the worn item
-    void FUN_1418e74c0(MS2Ptr<CItemData> spData);               // updateCurrentItem
+    void UpdateCurrentItem(MS2Ptr<CItemData> spData);               // updateCurrentItem
     bool FUN_1418e7790(int nResult, const CMsgBoxData& data);   // the name input answer
 
     MS2_LAYOUT_FRIEND;

@@ -74,7 +74,7 @@ void HomeBlockManager::FUN_140a46c60(CInPacket& in) {
     unsigned __int64 count=(unsigned)in.ReadInt32();
     for(unsigned __int64 i=0;i<count;++i) {
         HomePtr p(new HomeBlockInfo);
-        p->FUN_1402706f0(in);
+        p->Read(in);
         m_byId.insert(std::make_pair(p->m_18,p));
         m_byAccount.insert(std::make_pair(p->m_28,p));
     }
@@ -101,7 +101,7 @@ MS2_REPLACE_METHOD(0x140a46f00, HomeBlockManager, FUN_140a46f00, 133, 0x708EE438
 // @0x140a46f90
 void HomeBlockManager::OnAdd(CInPacket& in) {
     HomePtr p(new HomeBlockInfo);
-    p->FUN_1402706f0(in);
+    p->Read(in);
     FUN_140a479a0(p);
 }
 MS2_REPLACE_METHOD(0x140a46f90, HomeBlockManager, OnAdd, 188, 0x29D623F7);

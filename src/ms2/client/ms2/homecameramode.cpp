@@ -31,7 +31,7 @@ class Unk_BuffContainer;
 class Unk_PCMove
 {
 public:
-    bool FUN_141682fe0(int nKey);
+    bool IsActionKeyDown(int nKey);
 };
 
 class PCBase { public: void * FUN_14166d240(void); }; class Unk_LocalPlayer : public PCBase {
@@ -68,7 +68,7 @@ struct Unk_ClientConfig
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
-// The scene camera (FUN_1413f9890()->GetActiveRenderSurface()->GetCamera()) and its frustum.
+// The scene camera (GetRenderService()->GetActiveRenderSurface()->GetCamera()) and its frustum.
 struct Unk_HomeFrustum
 {
     float m_0, m_4, m_8, m_c, m_10;                 // left, right, top, bottom, near
@@ -77,7 +77,7 @@ class Unk_NiCamera
 {
 public:
 };
-ecr::RenderService* FUN_1413f9890();   // C3: the render service (was Unk_SceneRoot*)
+ecr::RenderService* GetRenderService();   // C3: the render service (was Unk_SceneRoot*)
 
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: the physics service getter (real return type)
 // The collision world (0x143ab50b8).
@@ -318,9 +318,9 @@ void CHomeCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
     Unk_LocalPlayer* pPlayer = static_cast<Unk_LocalPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
-    if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300008))
+    if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->IsActionKeyDown(300008))
         ptMove.x = 1.0f;
-    else if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->FUN_141682fe0(300009))
+    else if (pPlayer && reinterpret_cast<Unk_PCMove*>(pPlayer->FUN_14166d240())->IsActionKeyDown(300009))
         ptMove.x = -1.0f;
     TSingleton<CameraMgr>::GetInstance()->FUN_140a38d90(ptMove);
 }
@@ -564,7 +564,7 @@ MS2_REPLACE_METHOD(0x140B66BC0, CHomeCameraMode, vfunc_37, 1489, 0x509869EC);
 // @0x140b671a0
 BOOL CHomeCameraMode::vfunc_38(Vector3 ptPos, Vector3 ptRot)
 {
-    ecr::RenderSurface* pSceneCamera = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pSceneCamera = GetRenderService()->GetActiveRenderSurface();
     if (pSceneCamera)
     {
         Unk_NiCamera* pCamera = (Unk_NiCamera*)pSceneCamera->GetCamera();

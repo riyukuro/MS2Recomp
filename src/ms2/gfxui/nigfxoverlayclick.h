@@ -68,7 +68,7 @@ public:
     explicit AtlasRecord(Unk_GfxImage* pImage);                     // 0x1423037d0
     // ~AtlasRecord() is implicit (COMDAT 0x142303890, scalar deleting 0x1423038c0)
 
-    Unk_GfxImage* FUN_142303840();                                  // 0x142303840 the image
+    Unk_GfxImage* GetImage();                                  // 0x142303840 the image
 
     Scaleform::Render::Rect<int> m_rect;                            // +0x10
     Unk_GfxRef m_spImage;                                           // +0x20 Scaleform::Ptr<Render::Image>

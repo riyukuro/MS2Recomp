@@ -56,24 +56,24 @@ public:
     virtual void vfunc_26(int nItemId);                         // o180 26 0x1419979e0 an item was used: play its pose
 
     // ---- non-virtual members, sorted by address ----
-    static void FUN_141999d20(int nMode);                       // the alignment mode (s_nAlignMode)
+    static void SetAlignMode(int nMode);                       // the alignment mode (s_nAlignMode)
     void FUN_141999d40(int nTab);                               // select a tab
-    int FUN_141999de0();                                        // the tab
+    int GetSelectedTab();                                        // the tab
     void FUN_141999e00();                                       // refresh everything
-    void FUN_141999e20();                                       // reset the tab
+    void ResetTab();                                       // reset the tab
     void PlayExpandEffect();                                       // the slots were expanded: play "m_expandEff"
     int GetScrollPosition();                                        // the bag's scroll position
-    void FUN_141999f60();                                       // the side buttons' state
-    void FUN_14199a3f0(__int64 nItemUid);                       // refresh the slot of an item
-    void FUN_14199a4b0(const Scaleform::GFx::FunctionHandler::Params& params);   // tab changed
-    void FUN_14199a620(const Scaleform::GFx::FunctionHandler::Params& params);   // search text changed: the candidates
+    void UpdateButtonState();                                       // the side buttons' state
+    void RefreshItemSlot(__int64 nItemUid);                       // refresh the slot of an item
+    void OnTabChanged(const Scaleform::GFx::FunctionHandler::Params& params);   // tab changed
+    void OnSearchTextChanged(const Scaleform::GFx::FunctionHandler::Params& params);   // search text changed: the candidates
     void OnClickOpenBank();                                       // open the bank
     void OnClickItemEnchant();                                       // toggle the enchant dialog
     MS2Ptr<ASButtonBar> GetTabBar();                        // the tab bar
     int FindTabIndexByName(CString strName);                         // the index of a tab name (-1: none)
     CStringW GetSearchText();                                   // the search text
     bool FUN_14199ac30(int nResult, const CMsgBoxData& box);    // couple effect: the receiver name was entered
-    bool FUN_14199b100(int nResult, const CMsgBoxData& box);    // couple effect: send or ask for the name
+    bool OnCoupleEffectSendConfirm(int nResult, const CMsgBoxData& box);    // couple effect: send or ask for the name
     bool OnSortConfirm(int nResult, const CMsgBoxData& box);    // sort confirmation
     bool FUN_14199b4e0(int nResult, const CMsgBoxData& box);    // rename an item
     void FUN_14199b800(CStringW strText);                       // ask the platform to accept the text, then search
@@ -86,17 +86,17 @@ public:
     void UpdateExpandLabel();                                       // refresh the "m_expand" text
     void SendRequestItemInventory(int nTab, bool bStack);                  // send the sort request
     void FUN_14199c2b0(CStringW strText);                       // scroll to the item matching the text
-    void FUN_14199c610(CStringW strSearch, ATL::CAtlList<CStringW>& names);   // the item names of the tab containing the text
-    bool FUN_14199c7b0(int nResult, const CMsgBoxData& box);    // "not found" box closed: focus the input
-    void FUN_14199c8a0(int* pWidth, int* pHeight);              // the panel size
+    void FindMatchingItemNames(CStringW strSearch, ATL::CAtlList<CStringW>& names);   // the item names of the tab containing the text
+    bool OnSearchNotFoundConfirm(int nResult, const CMsgBoxData& box);    // "not found" box closed: focus the input
+    void GetPanelSize(int* pWidth, int* pHeight);              // the panel size
     void FUN_14199ca90();                                       // bind and fill the tab bar
-    void FUN_14199d1c0();                                       // the tab list
-    int FUN_14199d840(int nTab);                                   // the stackable items of the tab
-    int FUN_14199d920(int nTab);                                // the button of a tab
-    int FUN_14199d980();                                        // the tab can be expanded
-    CStringW FUN_14199d9c0();                                   // the item break button tooltip
+    void BuildTabList();                                       // the tab list
+    int CountStackableItems(int nTab);                                   // the stackable items of the tab
+    int GetTabButtonIndex(int nTab);                                // the button of a tab
+    int CanExpandTab();                                        // the tab can be expanded
+    CStringW GetItemBreakTooltip();                                   // the item break button tooltip
     CStringW GetExpandTooltip();                                   // the slot expand tooltip
-    CStringW FUN_14199deb0(int bBank);                          // the open bank tooltip
+    CStringW GetOpenBankTooltip(int bBank);                          // the open bank tooltip
     void RequestExpandSlots();                                       // expand the slots (or tell why not)
 
     static int s_nAlignMode;                                    // 0x143af2f60

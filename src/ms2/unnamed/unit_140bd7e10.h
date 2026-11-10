@@ -25,7 +25,7 @@ public:
     virtual int vfunc_48();                                                 // 48 0x140bd8b70: 0x4f6b
 
     void FUN_140bd8040(int nJobCode);                                       // 0x140bd8040 "setData": show the job
-    int FUN_140bd88e0();                                                    // 0x140bd88e0 the player may change job now
+    int CanChangeJob();                                                    // 0x140bd88e0 the player may change job now
     void FUN_140bd89d0(int nJobCode);                                       // 0x140bd89d0 announce the new job
 
 private:

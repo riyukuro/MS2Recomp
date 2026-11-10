@@ -27,10 +27,10 @@ public:
     virtual void vfunc_67();                                    // 67 0x140f69620 close: hide the page
     virtual void vfunc_72();                                    // 72 0x140f695d0 tell the page
 
-    void FUN_140f699f0(const int& nTab);                        // 0x140f699f0 "changeTab"
+    void ChangeTab(const int& nTab);                        // 0x140f699f0 "changeTab"
     void FUN_140f69a60(int nTab);                               // 0x140f69a60 show the page of a tab
     void FUN_140f69b50(CInPacket& packet);                      // 0x140f69b50 packet 0xde: to the shown page
-    void FUN_140f69c10(const int& nTab);                        // 0x140f69c10 select a tab
+    void SelectTab(const int& nTab);                        // 0x140f69c10 select a tab
 
 private:
     MS2_LAYOUT_FRIEND;

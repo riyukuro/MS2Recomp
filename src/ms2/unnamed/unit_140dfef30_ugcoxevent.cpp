@@ -50,9 +50,9 @@ class CReservedWordTable;
 class UIOxQuizDialog : public UIDialog
 {
 public:
-    void FUN_140e6e6c0(float, float);   // C3: was free FUN_140e6e6c0
+    void SetQuizPromoteCooltime(float, float);   // C3: was free SetQuizPromoteCooltime
 public:
-    static void FUN_140e6e8b0(bool);   // C3: was free FUN_140e6e8b0
+    static void SetEnable(bool);   // C3: was free SetEnable
 };
 
 // A child of the movie (a button): handle at +8, the dtor sits at 0x140acd6e0.
@@ -83,10 +83,10 @@ class Unk_OxArgs : public ItemFunctionArgs
 {
 };
 
-class Unk_McEntityRules* FUN_140ad4b90();   // C3: was FUN_140ad4b90
+class Unk_McEntityRules* GetTriggerService();   // C3: was GetTriggerService
 CStringW FUN_140298ea0(CStringW strKey);                         // localized string
 CStringW GetStringCommonByKey(const CStringW& strKey);
-void FUN_1412751f0(const CStringW& text, int nA, int nB);
+void ShowSystemNotice(const CStringW& text, int nA, int nB);
 void FUN_140710590(COutPacket& packet);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_140719630(int n);
@@ -187,7 +187,7 @@ bool FUN_140dff210(int nResult, const CMsgBoxData& box)
     packet.WriteUInt8(10);
     packet.WriteUInt8(3);
     FUN_140710590(packet);
-    UIOxQuizDialog::FUN_140e6e8b0(false);
+    UIOxQuizDialog::SetEnable(false);
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f7d);
     return true;
 }
@@ -198,7 +198,7 @@ void FUN_140dff2b0()
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_OxConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x3d)) == 1)
     {
         CStringW strMsg = FUN_140298ea0(CStringW(L"s_ugcox_create_fail_shutdown"));
-        FUN_1412751f0(strMsg, 1, 1);
+        ShowSystemNotice(strMsg, 1, 1);
     }
     else
     {
@@ -290,7 +290,7 @@ bool FUN_140dff700(int nResult, const CMsgBoxData& box)
         if (DAT_143ab2898 < nFee)
         {
             CStringW strMsg = FUN_140298ea0(L"s_ugcox_enter_fail_entry_fee_lack");
-            FUN_1412751f0(strMsg, 1, 1);
+            ShowSystemNotice(strMsg, 1, 1);
             return true;
         }
         pMyPC->SendRequestMoveFieldMode0(nMapId, nPortalId, 0, 0, L"", L"");
@@ -354,7 +354,7 @@ void FUN_140dffb50(void* pListener)
     spBox->SetMsg(strMsg);
     spBox->FUN_141a01800(1);
     spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(FUN_140dffdf0));
-    spBox->FUN_141a02860(pListener);
+    spBox->SetListener(pListener);
     spBox->SetExtra(L"leaveInField");
     FUN_140d73c60(spBox);
 }
@@ -387,16 +387,16 @@ int FUN_140dffeb0(Unk_OxArgs* pArgs)
         int nObject = pArgs->FUN_1408d1f60(2, 0);
         if (0 < nObject)
         {
-            ((class CTriggerService*)FUN_140ad4b90())->FUN_1418631c0();
+            ((class CTriggerService*)GetTriggerService())->ClearCameraSteps();
             if (s_nCameraObject != nObject)
             {
                 s_nCameraObject = nObject;
-                ((class CTriggerService*)FUN_140ad4b90())->QueueCameraStep(nObject, 1);
+                ((class CTriggerService*)GetTriggerService())->QueueCameraStep(nObject, 1);
             }
             else
             {
                 s_nCameraObject = -1;
-                ((class CTriggerService*)FUN_140ad4b90())->QueueCameraStep(nObject, 0);
+                ((class CTriggerService*)GetTriggerService())->QueueCameraStep(nObject, 0);
             }
         }
     }
@@ -451,7 +451,7 @@ void FUN_140e00250(CInPacket& packet)
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_OxConfig*)FUN_14025e7b0())->m_8).Get((CContentShutdown::Content)(0x3d)) == 1)
     {
         CStringW strMsg = FUN_140298ea0(CStringW(L"s_ugcox_create_fail_shutdown"));
-        FUN_1412751f0(strMsg, 1, 1);
+        ShowSystemNotice(strMsg, 1, 1);
     }
     else
     {
@@ -471,7 +471,7 @@ void FUN_140e00250(CInPacket& packet)
 // @0x140e003b0
 void FUN_140e003b0(CInPacket& packet)
 {
-    UIOxQuizDialog::FUN_140e6e8b0(true);
+    UIOxQuizDialog::SetEnable(true);
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f7d)));
     TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f47);
     __int64 nFee = packet.ReadInt64();
@@ -481,7 +481,7 @@ void FUN_140e003b0(CInPacket& packet)
     unsigned nCooltime2 = packet.ReadInt32();
     CStringW strMsg = GetStringCommonByKey(L"s_ugcox_create_complete");
     strMsg.Replace(L"{eventFee}", (LPCWSTR)FUN_1409404f0(nFee));
-    FUN_1412751f0(strMsg, 3, 1);
+    ShowSystemNotice(strMsg, 3, 1);
     FUN_140e01480(nPromoted, nCooltime, nTotal, nCooltime2);
 }
 
@@ -542,23 +542,23 @@ void FUN_140e00b40(unsigned char nType, CInPacket& packet)
     {
         if (pPrize->FUN_141924630() == 0)
             pPrize->FUN_141924680();
-        FUN_140e78330(pPrize, nPrize1, nPrize2);
+        SetPrizeMoney(pPrize, nPrize1, nPrize2);
     }
     UIQuizHostDialog* pHost = FUN_140e01a70(0x4f44);
     if (pHost != 0)
-        FUN_140e7df20(pHost, nRound);
+        SetRound(pHost, nRound);
     s_bHost = nHostId == DAT_143ab2820;
     if (!s_bHost)
     {
         UIMassiveEvent* pEvent = FUN_140e01890(0x4e4c);
         if (pEvent != 0)
-            pEvent->FUN_1419f6df0(nRound, 10, 1, 0);
+            pEvent->SetStage(nRound, 10, 1, 0);
     }
     if (nType == 0xf)
     {
         if (s_bHost)
         {
-            if (reinterpret_cast<Unk_OxKeyBinds*>(FUN_1409331f0())->GetLocked() == 0)
+            if (reinterpret_cast<Unk_OxKeyBinds*>(GetKeyTable())->GetLocked() == 0)
                 FUN_140e00fd0();
         }
     }
@@ -585,7 +585,7 @@ void FUN_140e00d90(unsigned char nType, int nStep)
             if (pWelcome != 0)
             {
                 pWelcome->FUN_141924680();
-                FUN_140e7f110(pWelcome, true);
+                SetHost(pWelcome, true);
             }
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f44);
         }
@@ -601,7 +601,7 @@ void FUN_140e00d90(unsigned char nType, int nStep)
         {
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f48);
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f44);
-            reinterpret_cast<Unk_OxKeyBinds*>(FUN_1409331f0())->SendKeyTableMode7();
+            reinterpret_cast<Unk_OxKeyBinds*>(GetKeyTable())->SendKeyTableMode7();
         }
     }
     else if (nType == '\x0e')
@@ -618,7 +618,7 @@ void FUN_140e00d90(unsigned char nType, int nStep)
         {
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f48);
             TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f44);
-            reinterpret_cast<Unk_OxKeyBinds*>(FUN_1409331f0())->SendKeyTableMode7();
+            reinterpret_cast<Unk_OxKeyBinds*>(GetKeyTable())->SendKeyTableMode7();
         }
     }
 }
@@ -636,7 +636,7 @@ void FUN_140e00f00(unsigned char nType, int nStep)
             if (pWelcome != 0)
             {
                 pWelcome->FUN_141924680();
-                FUN_140e7f110(pWelcome, false);
+                SetHost(pWelcome, false);
             }
         }
         else if (nStep == 0xb)
@@ -670,7 +670,7 @@ void FUN_140e00fd0()
     aIds.Add(0x1c9c705);
     aIds.Add(0x1c9c706);
     aIds.Add(0x1c9c707);
-    reinterpret_cast<Unk_OxKeyBinds*>(FUN_1409331f0())->ApplyItemListToQuickSlots(aIds);
+    reinterpret_cast<Unk_OxKeyBinds*>(GetKeyTable())->ApplyItemListToQuickSlots(aIds);
 }
 
 // Sub 0xc: the host dialog's submit / finish buttons.
@@ -684,12 +684,12 @@ void FUN_140e010c0(CInPacket& packet)
     {
         if (nMode == 1)
         {
-            FUN_140e7e030(pHost, true);
-            FUN_140e7dfb0(pHost);
+            EnableSubmit(pHost, true);
+            ClearInput(pHost);
         }
         else
         {
-            FUN_140e7e030(pHost, false);
+            EnableSubmit(pHost, false);
         }
         FUN_140e7e0b0(pHost, nCount > 1);
     }
@@ -746,9 +746,9 @@ void FUN_140e01480(int nPromoted, unsigned nCooltime, int nTotal, unsigned nCool
             tip.SetOffDelay(5000);
             tip.SetTooltipAlign(5);
             reinterpret_cast<Unk_OxButton*>(hButton.operator->())->SetTooltipData(tip.FUN_1422bb890());
-            reinterpret_cast<Unk_OxButton*>(hButton.operator->())->FUN_1422c1fe0(nPromoted < nTotal);
+            reinterpret_cast<Unk_OxButton*>(hButton.operator->())->SetEnabled(nPromoted < nTotal);
             if (nPromoted < nTotal)
-                ((class UIOxQuizDialog*)(class UIOxQuizDialog*)(pQuiz))->FUN_140e6e6c0((float)nCooltime / 1000.0f, (float)s_nPromoteCooltime / 1000.0f);
+                ((class UIOxQuizDialog*)(class UIOxQuizDialog*)(pQuiz))->SetQuizPromoteCooltime((float)nCooltime / 1000.0f, (float)s_nPromoteCooltime / 1000.0f);
         }
     }
 }
@@ -846,7 +846,7 @@ bool CMsgBoxData::FUN_140e01c50(unsigned int nIndex, __int64& nOut) const
 MS2_EMIT_CRT_MEMMOVE_S();
 // "limited_<serial>": the market item's key in the limited offers table.
 // @0x140e01de0
-CString FUN_140e01de0(MS2Ptr<CMeratMarketProduct> item)
+CString GetLimitedBundleName(MS2Ptr<CMeratMarketProduct> item)
 {
     if (item.get() != 0)
         return StringFormat<CString>("limited_{0}", CString(item->m_key.GetKeyString()));
@@ -854,7 +854,7 @@ CString FUN_140e01de0(MS2Ptr<CMeratMarketProduct> item)
 }
 
 // @0x140e01ef0
-bool FUN_140e01ef0(TiXmlElement* pElem)
+bool IsValidElement(TiXmlElement* pElem)
 {
     if (pElem == 0)
         return false;

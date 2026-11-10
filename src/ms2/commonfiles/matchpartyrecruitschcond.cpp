@@ -3,7 +3,7 @@
 // (0x1401be4a0-0x1401bef60), which has the same layout, the same function set and the same bodies, so that class's
 // PDB names give the roles here: Reset, CopyFrom, IsEqual, Write, Read, WriteStream, ReadStream, GetLevelBand,
 // GetBandMin, GetBandMax, GetLimit. Only the three functions a done unit already calls out of line
-// (FUN_1406943b0 / FUN_140694630 / FUN_140695080) plus the member set of CMatchPartyRecruit keep a FUN_ name.
+// (FUN_1406943b0 / Write / FUN_140695080) plus the member set of CMatchPartyRecruit keep a FUN_ name.
 // MS2-UNIT: ?\matchpartyrecruitschcond.cpp
 // MS2-RANGE: 0x1406943b0-0x140695130 .text$mn
 // MS2-PIN: ??1CMatchPartyRecruitSchCond@@UEAA@XZ 0x140694410 ; empty user body
@@ -23,9 +23,9 @@
 #define KindOf(p) (*reinterpret_cast<int*>(const_cast<unsigned char*>(&(p)->kind)))
 
 // Defined further down, in exe order.
-void FUN_140694450(CMatchPartyRecruitSchCond* pThis);                                    // Reset
-void FUN_1406946b0(const CMatchPartyRecruitSchCond* pThis, COutputStream* out);          // WriteStream
-void FUN_140694770(CMatchPartyRecruitSchCond* pThis, CInputStream* in);                  // ReadStream
+void Reset(CMatchPartyRecruitSchCond* pThis);                                    // Reset
+void WriteStream(const CMatchPartyRecruitSchCond* pThis, COutputStream* out);          // WriteStream
+void ReadStream(CMatchPartyRecruitSchCond* pThis, CInputStream* in);                  // ReadStream
 void FUN_140694c60(const CMatchPartyRecruit* pThis, COutputStream* out);                 // WriteStream
 void FUN_140694dc0(CMatchPartyRecruit* pThis, CInputStream* in);                         // ReadStream
 
@@ -37,7 +37,7 @@ void FUN_140694dc0(CMatchPartyRecruit* pThis, CInputStream* in);                
 // @0x1406943b0
 CMatchPartyRecruitSchCond::CMatchPartyRecruitSchCond()
 {
-    FUN_140694450(this);
+    Reset(this);
 }
 
 // The exe's destructor stores the vftable before destroying the search text, so it is user-declared with an empty
@@ -48,7 +48,7 @@ CMatchPartyRecruitSchCond::~CMatchPartyRecruitSchCond()
 }
 
 // @0x140694450
-void FUN_140694450(CMatchPartyRecruitSchCond* pThis)
+void Reset(CMatchPartyRecruitSchCond* pThis)
 {
     pThis->fieldId = 0;
     pThis->category = 0;
@@ -59,9 +59,9 @@ void FUN_140694450(CMatchPartyRecruitSchCond* pThis)
 }
 
 // @0x1406944c0
-void FUN_1406944c0(CMatchPartyRecruitSchCond* pThis, const CMatchPartyRecruitSchCond* pOther)
+void CopyFrom(CMatchPartyRecruitSchCond* pThis, const CMatchPartyRecruitSchCond* pOther)
 {
-    FUN_140694450(pThis);
+    Reset(pThis);
     if (pOther == 0)
         return;
     pThis->fieldId = pOther->fieldId;
@@ -73,7 +73,7 @@ void FUN_1406944c0(CMatchPartyRecruitSchCond* pThis, const CMatchPartyRecruitSch
 }
 
 // @0x140694560  IsEqual
-int FUN_140694560(const CMatchPartyRecruitSchCond* pThis, const CMatchPartyRecruitSchCond* pOther)
+int IsEqual(const CMatchPartyRecruitSchCond* pThis, const CMatchPartyRecruitSchCond* pOther)
 {
     if (pOther == 0)
         return 0;
@@ -93,19 +93,19 @@ int FUN_140694560(const CMatchPartyRecruitSchCond* pThis, const CMatchPartyRecru
 }
 
 // @0x140694630  Write
-void FUN_140694630(const CMatchPartyRecruitSchCond* pThis, COutputStream& out)
+void Write(const CMatchPartyRecruitSchCond* pThis, COutputStream& out)
 {
-    FUN_1406946b0(pThis, &out);
+    WriteStream(pThis, &out);
 }
 
 // @0x140694660  Read: the packet's stream subobject is at +8.
-void FUN_140694660(CMatchPartyRecruitSchCond* pThis, CInPacket* pPacket)
+void Read(CMatchPartyRecruitSchCond* pThis, CInPacket* pPacket)
 {
-    FUN_140694770(pThis, pPacket);
+    ReadStream(pThis, pPacket);
 }
 
 // @0x1406946b0
-void FUN_1406946b0(const CMatchPartyRecruitSchCond* pThis, COutputStream* out)
+void WriteStream(const CMatchPartyRecruitSchCond* pThis, COutputStream* out)
 {
     out->WriteInt32(pThis->fieldId);
     out->WriteInt32(pThis->category);
@@ -116,7 +116,7 @@ void FUN_1406946b0(const CMatchPartyRecruitSchCond* pThis, COutputStream* out)
 }
 
 // @0x140694770
-void FUN_140694770(CMatchPartyRecruitSchCond* pThis, CInputStream* in)
+void ReadStream(CMatchPartyRecruitSchCond* pThis, CInputStream* in)
 {
     pThis->fieldId = in->ReadInt32();
     pThis->category = in->ReadInt32();
@@ -131,7 +131,7 @@ void FUN_140694770(CMatchPartyRecruitSchCond* pThis, CInputStream* in)
 // Every one of them keeps its page difference, its band and its entry count in named locals, which is what the exe's
 // spilled stack slots show.
 // @0x140694860  GetLevelBand
-int FUN_140694860(const CMatchPartyRecruitSchCond* pThis)
+int GetPageBand(const CMatchPartyRecruitSchCond* pThis)
 {
     if (pThis->page == 0)
         return -1;
@@ -141,9 +141,9 @@ int FUN_140694860(const CMatchPartyRecruitSchCond* pThis)
 }
 
 // @0x1406948b0  GetBandMin
-int FUN_1406948b0(const CMatchPartyRecruitSchCond* pThis)
+int GetBandMin(const CMatchPartyRecruitSchCond* pThis)
 {
-    int nBand = FUN_140694860(pThis);
+    int nBand = GetPageBand(pThis);
     if (nBand == -1)
         return 0;
     int nPerPage = 12;
@@ -153,9 +153,9 @@ int FUN_1406948b0(const CMatchPartyRecruitSchCond* pThis)
 }
 
 // @0x140694910  GetBandMax
-int FUN_140694910(const CMatchPartyRecruitSchCond* pThis)
+int GetBandMax(const CMatchPartyRecruitSchCond* pThis)
 {
-    int nBand = FUN_140694860(pThis);
+    int nBand = GetPageBand(pThis);
     if (nBand == -1)
         return 0;
     int nPerPage = 12;

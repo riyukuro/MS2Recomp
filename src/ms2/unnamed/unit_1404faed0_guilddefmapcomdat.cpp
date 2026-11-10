@@ -134,7 +134,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"   // C3: MS2Ptr<CGuildXmlData::Guild*> COMDATs
 #include <new>
 #include <typeinfo>
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 
 // This range holds no original (non-COMDAT) function: it is the sorted tail of the standard-library and ATL
 // instantiations of guilddef.cpp (tree and CAtlMap operations). The instances come from the code of the other

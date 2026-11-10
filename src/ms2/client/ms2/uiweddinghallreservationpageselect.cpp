@@ -34,8 +34,8 @@ int FUN_140fe2d20(UIDialog* pDialog);                                       // t
 class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140fdbf70();
-    void FUN_140fdc030();
+    void SelectPreviousTab();
+    void SelectNextTab();
     int GetHall();
     int GetMode();
     void SetHall(int);
@@ -43,7 +43,7 @@ public:
 };
 bool FUN_140900f30(__int64 nTime);                                          // the time is at night
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
-void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
+void ShowSystemNotice(const CStringW& strText, int a, int b);                  // notice
 CStringW FUN_1409404f0(__int64 n);                                          // number to text
 
 class UIWeddingHallReservationPageSelect : public UIWeddingHallReservationPage
@@ -97,7 +97,7 @@ bool UIWeddingHallReservationPageSelect::vfunc_1()
 {
     if (!UIWeddingHallReservationPage::vfunc_1())
         return false;
-    MS2Ptr<WeddingPackage> hall = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(FUN_140fe2d20(m_pDialog));
+    MS2Ptr<WeddingPackage> hall = TSingleton<WeddingTable>::GetInstance()->FindPackage(FUN_140fe2d20(m_pDialog));
     if (hall == 0)
         return false;
     MS2Ptr<ASScrollingList> list = m_pScript->FUN_140bc7280<ASScrollingList>("m_list");
@@ -107,7 +107,7 @@ bool UIWeddingHallReservationPageSelect::vfunc_1()
     if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetMode() == 1)
     {
         Unk_WeddingTicketView* pTicket = ((struct Unk_WeddingTicketView*)&TSingleton<WeddingManager>::GetInstance()->GetTicket());
-        nPackageSlot = TSingleton<WeddingTable>::GetInstance()->FUN_140909130(pTicket->m_nHallId, pTicket->m_nSlot);
+        nPackageSlot = TSingleton<WeddingTable>::GetInstance()->GetHallGrade(pTicket->m_nHallId, pTicket->m_nSlot);
     }
     list->FUN_1422dd1d0();
     bool bFlag = false;
@@ -125,9 +125,9 @@ bool UIWeddingHallReservationPageSelect::vfunc_1()
         if (nPackageSlot != -1)
             bEnabled = slot->m_nGrade >= nPackageSlot;
         ASObj row(2);
-        row.FUN_1407cb9c0("id", slot->m_nId);
-        row.FUN_1407cbb20("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, slot->FUN_140906e40(bFlag)));
-        row.FUN_1407cbbe0("enabled", bEnabled);
+        row.SetIntMember("id", slot->m_nId);
+        row.SetWStringMember("label", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, slot->GetFieldId(bFlag)));
+        row.SetBoolMember("enabled", bEnabled);
         list->AddItem(row);
         if (m_nSelectedSlot != 0)
         {
@@ -176,7 +176,7 @@ bool UIWeddingHallReservationPageSelect::vfunc_4(__int64 a1, __int64 a2, int a3)
 // @0x140fe4ca0
 void UIWeddingHallReservationPageSelect::vfunc_5()
 {
-    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdbf70();
+    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SelectPreviousTab();
 }
 
 // @0x140fe4cd0
@@ -185,11 +185,11 @@ void UIWeddingHallReservationPageSelect::vfunc_6()
     if (((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->GetHall() == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_hall");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
     else
     {
-        ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc030();
+        ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SelectNextTab();
     }
 }
 
@@ -246,10 +246,10 @@ void FUN_140fe4fb0(UIWeddingHallReservationPageSelect* pPage, int nSlotId)
     if ((*(const MS2Ptr<AScript>*)(&pPage->m_pScript) == 0))
         return;
     int nHallId = FUN_140fe2d20(pPage->m_pDialog);
-    MS2Ptr<WeddingPackage> hall = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(nHallId);
+    MS2Ptr<WeddingPackage> hall = TSingleton<WeddingTable>::GetInstance()->FindPackage(nHallId);
     if (hall == 0)
         return;
-    MS2Ptr<WeddingHallData> slot = hall->FUN_140907110(nSlotId);
+    MS2Ptr<WeddingHallData> slot = hall->FindHall(nSlotId);
     if (slot == 0)
         return;
     pPage->m_binder.FUN_140d43990();
@@ -258,18 +258,18 @@ void FUN_140fe4fb0(UIWeddingHallReservationPageSelect* pPage, int nSlotId)
     if (nTime != 0)
         bFlag = FUN_140900f30(nTime);
     ASObj data(2);
-    data.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, TSingleton<WeddingTable>::GetInstance()->FUN_140908d50(hall->m_nId, slot->m_nId, bFlag)));
-    data.FUN_1407cba60("video", CString(slot->m_strVideoPath));
-    data.FUN_1407cbb20("desc", GetStringCommonByKey(slot->m_strDesc));
-    data.FUN_1407cb9c0("grade", slot->m_nGrade);
+    data.SetWStringMember("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, TSingleton<WeddingTable>::GetInstance()->FUN_140908d50(hall->m_nId, slot->m_nId, bFlag)));
+    data.SetStringMember("video", CString(slot->m_strVideoPath));
+    data.SetWStringMember("desc", GetStringCommonByKey(slot->m_strDesc));
+    data.SetIntMember("grade", slot->m_nGrade);
     __int64 nPrice = FUN_140fe5520(pPage, nHallId, nSlotId);
     ASObj item(2);
-    item.FUN_1407cbb20("price", FormatStringId<CStringW>(0x987, FUN_1409404f0(nPrice)));
+    item.SetWStringMember("price", FormatStringId<CStringW>(0x987, FUN_1409404f0(nPrice)));
     unsigned __int64 nReward = 0;
     for (size_t i = 0; i < slot->m_items.size(); i++)
     {
         MS2Ptr<WeddingRewardItem> spReward = *FUN_140fe55d0(&slot->m_items, i);
-        item.FUN_1407cba60(StringFormat("reward{0}", nReward), pPage->m_binder.FUN_140d43510(static_cast<ItemAble*>(&spReward->m_item)));
+        item.SetStringMember(StringFormat("reward{0}", nReward), pPage->m_binder.FUN_140d43510(static_cast<ItemAble*>(&spReward->m_item)));
         nReward++;
     }
     data.FUN_1409eb270("item", item);

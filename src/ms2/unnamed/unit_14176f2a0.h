@@ -10,12 +10,12 @@ class CMeshUpdateGate
 {
 public:
     CMeshUpdateGate();                                          // 0x14176f2a0
-    void FUN_14176f390();                                       // release the update process
+    void ReleaseProcess();                                       // release the update process
     bool FUN_14176f410(egf::Entity* pEntity, float fInterval);  // toggle the entity's scene graph on a due tick
     bool FUN_14176f500(egf::Entity* pEntity, float fInterval, float fDuration);
     void FUN_14176f680(egf::Entity* pEntity);                   // end an active pass
     void FUN_14176f710();                                       // m_fLast = now
-    bool FUN_14176f740(float fInterval);                        // is the next pass due?
+    bool IsUpdateDue(float fInterval);                        // is the next pass due?
     float GetDuration() const;                                // m_fDuration
     bool IsActive() const;                                 // m_bActive
     void SetProcess(NiMeshUpdateProcess* pProcess);          // set the process

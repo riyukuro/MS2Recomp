@@ -38,11 +38,11 @@ public:
     UIChatBalloon();                                    // 0x1418fbc80
     virtual ~UIChatBalloon();                           //  0 0x1418fbcf0 (??_G 0x1418fc5f0)
     virtual CString GetTypeName();                          //  1 0x1418fbd30 "PopupImageBalloon"
-    virtual void OnLoadComplete();                      // 22 0x1418fbd80 UIObject::OnLoadComplete(); FUN_1418fbe70(m_68)
+    virtual void OnLoadComplete();                      // 22 0x1418fbd80 UIObject::OnLoadComplete(); CreateEntityCache(m_68)
     virtual int vfunc_48() { return 0x4e2e; }           // 48 0x1418fc630
 
-    void FUN_1418fbe70(unsigned int nCount);            // create the entity cache
-    Entity* FUN_1418fc050(int nActorId);                // the entity of the actor (created or recycled)
+    void CreateEntityCache(unsigned int nCount);            // create the entity cache
+    Entity* GetEntity(int nActorId);                // the entity of the actor (created or recycled)
 };
 MS2_CHECK_SIZE(UIChatBalloon::Entity, 0xb8);
 MS2_CHECK_OFFSET(UIChatBalloon::Entity, m_a0, 0xa0);

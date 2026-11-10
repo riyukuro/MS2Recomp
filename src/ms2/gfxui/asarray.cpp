@@ -6,7 +6,7 @@
 // class is declared in src/ms2/placeholder/asobj.h (Ghidra's FUN_<va> names are kept there): push / unshift for each
 // value type (each returns the new length), pop / shift, length, splice and the typed element readers. The COMDAT tail
 // is Value::ClearElements / RemoveElements / SetElement, the Invoke(method, Int, UInt) instance 0x1422bcb00 and the
-// ASArgList element setters FUN_1422bcc70..FUN_1422bcea0 (one per argument type; the Invoke COMDATs of other units
+// ASArgList element setters SetValue..FUN_1422bcea0 (one per argument type; the Invoke COMDATs of other units
 // declare them locally).
 #include "ms2/placeholder/ms2stdafx.h"
 
@@ -15,9 +15,9 @@
 
 #include "hook/ms2hook.h"
 
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);   // the movie of a movie id (ascript.cpp)
+Scaleform::GFx::Movie* GetMovie(int nMovieId);   // the movie of a movie id (ascript.cpp)
 
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcce0(Scaleform::GFx::Value* pValue, bool b);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
@@ -35,7 +35,7 @@ ASArray::ASArray(int nMovieId)
     : ASObj(nMovieId)
 {
     m_value.SetNull();
-    if (Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(m_nMovieId))
+    if (Scaleform::GFx::Movie* pMovie = GetMovie(m_nMovieId))
         pMovie->CreateArray(&m_value);
 }
 
@@ -88,7 +88,7 @@ MS2_REPLACE_METHOD(0x1422BBE20, ASArray, PushFloat, 100, 0x8AFCED16);
 // @0x1422bbe90
 unsigned int ASArray::PushDouble(double d)
 {
-    return FUN_140e06cc0("push", d).GetUInt();
+    return InvokeDouble("push", d).GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422BBE90, ASArray, PushDouble, 100, 0xE3E055D1);
 
@@ -158,7 +158,7 @@ MS2_REPLACE_METHOD(0x1422BC260, ASArray, UnshiftFloat, 100, 0xCD0930C1);
 // @0x1422bc2d0
 unsigned int ASArray::UnshiftDouble(double d)
 {
-    return FUN_140e06cc0("unshift", d).GetUInt();
+    return InvokeDouble("unshift", d).GetUInt();
 }
 MS2_REPLACE_METHOD(0x1422BC2D0, ASArray, UnshiftDouble, 100, 0x0BB5C641);
 
@@ -310,11 +310,11 @@ inline Scaleform::GFx::Value ASArray::FUN_1422bcb00(const char* szMethod, int a1
 }
 
 // @0x1422bcc70
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v)
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v)
 {
     *pValue = v;
 }
-MS2_REPLACE(0x1422BCC70, FUN_1422bcc70, 54, 0x0F9A74BE);
+MS2_REPLACE(0x1422BCC70, SetValue, 54, 0x0F9A74BE);
 
 // @0x1422bccb0
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n)
@@ -375,7 +375,7 @@ MS2_REPLACE_OVERLOAD(0x1422BCE00, void(Scaleform::GFx::Value*, unsigned __int64)
 // @0x1422bce40
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj)
 {
-    *pValue = const_cast<AScript&>(obj).FUN_1422bb870();
+    *pValue = const_cast<AScript&>(obj).GetValue();
 }
 MS2_REPLACE_OVERLOAD(0x1422BCE40, void(Scaleform::GFx::Value*, const AScript&), FUN_1422bce40, 42, 0xE1FF1C14);
 

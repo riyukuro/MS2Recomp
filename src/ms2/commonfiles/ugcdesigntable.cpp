@@ -67,10 +67,10 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
 int XmlGetAttr(class TiXmlElement *, char const *, class ATL::CStringT<wchar_t, class StrTraitMFC_DLL<wchar_t, class ATL::ChTraitsCRT<wchar_t>>> &);
-int FUN_14088da20(int nPriceType);                          // the xml priceType -> the runtime enum
+int ConvertPriceType(int nPriceType);                          // the xml priceType -> the runtime enum
 enum eShopSaleTag { eShopSaleTag_None = 0 }; template <class E> int XmlValue(TiXmlElement*, const char*, E&);   // "saleTag"
    // the feature/locale singleton
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
 class Unk_1401d3200;
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 __int64 FUN_1406a6d50(Common::Constants::Value<int>& value);   // the default market max price
@@ -98,7 +98,7 @@ bool CUGCDesignData::Parse(TiXmlElement* pElem, __int64 nDefaultMarketMaxPrice)
     XmlGetAttr((class TiXmlElement*)(pElem), "visible", m_bVisible);
     int nPriceType = 0;
     XmlGetAttr((class TiXmlElement*)(pElem), "priceType", nPriceType);
-    m_nPriceType = FUN_14088da20(nPriceType);
+    m_nPriceType = ConvertPriceType(nPriceType);
     XmlGetAttr((class TiXmlElement*)(pElem), "price", m_nPrice);
     XmlGetAttr((class TiXmlElement*)(pElem), "salePrice", m_nSalePrice);
     XmlGetAttr((class TiXmlElement*)(pElem), "marketMinPrice", m_nMarketMinPrice);
@@ -118,8 +118,8 @@ MS2_REPLACE_METHOD(0x14089E270, CUGCDesignData, Parse, 388, 0xC4EB28A7);
 CUGCDesignTable::CUGCDesignTable()
 {
     // The literals convert implicitly (the exe builds the file name first: MSVC evaluates the arguments right to left).
-    CString strPath = FUN_14071a5b0("Table", "UGCDesign.xml");
-    FUN_1401d1160(strPath);
+    CString strPath = GetXmlPath("Table", "UGCDesign.xml");
+    SetPath(strPath);
     Reload();
 }
 
@@ -137,7 +137,7 @@ bool CUGCDesignTable::Reload()
     {
         TiXmlDocument doc;
         // The exe converts the cache's CString to const char* inline (no named pointer local).
-        if (GetFileSystem()->FUN_1403974b0(&doc, *FUN_1401d1140(), 0, true, false) == 0)
+        if (GetFileSystem()->LoadXmlFile(&doc, *GetPath(), 0, true, false) == 0)
             return false;
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
         if (pRoot == 0)

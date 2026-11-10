@@ -2,7 +2,7 @@
 // UI manager. It owns the table of the open/registered dialogs (class id -> dialog, +0x88), the per-dialog help /
 // button state ("hot key" tables), the Scaleform movie background / damage overlay helpers and the per-scene
 // "which dialogs are open" bookkeeping (+0x138 / +0x180 map a scene id to a 0/1 flag; +0x1c8 / +0x1f8 are the lists
-// of the dialogs a scene opens / closes). The big registration function FUN_141adf580 creates every dialog.
+// of the dialogs a scene opens / closes). The big registration function CreateAllDialogs creates every dialog.
 // Member and helper names are invented from their use.
 // Owning unit: ?\uiservice.cpp (.text$di 0x14011d200-0x14011d540, .text$mn 0x141ad8bc0-0x141af2110).
 #pragma once
@@ -136,12 +136,12 @@ public:
     void ShowLackMesoMarketTokenAsk();                           // 0x141add390 "not enough meso market token" confirm box
     void FUN_141add520(CStringW strText, CStringW strArg);   // 0x141add520 market confirm box with one argument
     void FUN_141aec8f0(bool bOn, NiAVObject* pRoot);   // 0x141aec8f0 debug visualization click on / off
-    void FUN_141aebed0();                           // 0x141aebed0 register the camera dialog and the callbacks
-    static int FUN_141aed0a0(MS2Ptr<UIDialog> spDlg);   // 0x141aed0a0 log one dialog
-    void FUN_141aecd70();                           // 0x141aecd70 close-request every dialog that is open
-    void FUN_141aecc30();                           // 0x141aecc30 rebuilds the scene UI (field enter)
-    void FUN_141adafd0(int nScene);                 // 0x141adafd0 hide the world UI for a scene change
-    void FUN_141adb2a0(int nScene);                 // 0x141adb2a0 show it again (argument unused)
+    void RegisterCameraDialog();                           // 0x141aebed0 register the camera dialog and the callbacks
+    static int LogDialogState(MS2Ptr<UIDialog> spDlg);   // 0x141aed0a0 log one dialog
+    void RequestCloseAllDialogs();                           // 0x141aecd70 close-request every dialog that is open
+    void RebuildSceneUI();                           // 0x141aecc30 rebuilds the scene UI (field enter)
+    void HideWorldUI(int nScene);                 // 0x141adafd0 hide the world UI for a scene change
+    void ShowWorldUI(int nScene);                 // 0x141adb2a0 show it again (argument unused)
     void FUN_141adbbb0();                           // 0x141adbbb0
     int CloseAllDialogs();                            // 0x141adcd40 close the dialogs that can be closed
     int IsDialogClosable(MS2Ptr<UIDialog> spDlg);      // 0x141aec1f0 dialog may be closed in bulk
@@ -152,11 +152,11 @@ public:
     int FUN_141adbd80();                           // 0x141adbd80
     void FUN_141adbdc0(int n);                      // 0x141adbdc0
     unsigned FUN_141adbd10();                       // 0x141adbd10
-    void FUN_141adbea0();                           // 0x141adbea0
+    void HideLoadingProgress();                           // 0x141adbea0
     void FUN_141adbf00();                           // 0x141adbf00
     int FUN_141adcb40();                            // 0x141adcb40
     void FUN_141adcb60(int n);                      // 0x141adcb60
-    void FUN_141add1b0(int nSlot, bool bOn);        // 0x141add1b0 enable one hot key slot
+    void SetMovieLayerVisible(int nSlot, bool bOn);        // 0x141add1b0 enable one hot key slot
     void OpenDialog(eUIClassID nClass);          // 0x141adc530 open a dialog
     void FUN_141add040(eUIClassID nClass);          // 0x141add040 close a dialog
     void FUN_141aec3e0();                           // 0x141aec3e0 reset the saved UI layout
@@ -164,36 +164,36 @@ public:
     void FUN_141aec760(float fDelta);               // 0x141aec760
     void FUN_141aec9c0();                           // 0x141aec9c0
     void FUN_141aece70();                           // 0x141aece70 reset the input handlers
-    void FUN_141adf250();                           // 0x141adf250 create the click render steps
-    void FUN_141adf580();                           // 0x141adf580 create every dialog
-    static void FUN_141ade300(CString strText);     // 0x141ade300 movie log callback: logs strText
-    static bool FUN_141ade1f0(bool bFlag, void* p); // 0x141ade1f0
-    static bool FUN_141ade2d0(void* pContext);                  // 0x141ade2d0
+    void CreateClickRenderSteps();                           // 0x141adf250 create the click render steps
+    void CreateAllDialogs();                           // 0x141adf580 create every dialog
+    static void LogMovieMessage(CString strText);     // 0x141ade300 movie log callback: logs strText
+    static bool OnDeviceReset(bool bFlag, void* p); // 0x141ade1f0
+    static bool OnDeviceLost(void* pContext);                  // 0x141ade2d0
     static void FUN_141ade400();                    // 0x141ade400
-    static int FUN_141aecf60(MS2Ptr<UIDialog> spDlg);   // 0x141aecf60
-    static int FUN_141aed000(MS2Ptr<UIDialog> spDlg);   // 0x141aed000
+    static int LogLostDialog(MS2Ptr<UIDialog> spDlg);   // 0x141aecf60
+    static int LogResetDialog(MS2Ptr<UIDialog> spDlg);   // 0x141aed000
     int FUN_141adcbb0(int (*pfn)(MS2Ptr<UIDialog>));   // 0x141adcbb0
 
     // ---- generated member decls ----
-    void FUN_141adc050();                                                   // 0x141adc050 close the closable dialogs
-    void FUN_141aec8c0(int nMode);                                          // 0x141aec8c0
+    void CloseClosableDialogs();                                                   // 0x141adc050 close the closable dialogs
+    void SetMoviesVisibleStep(int nMode);                                          // 0x141aec8c0
     void ClearAllUI();                                              // 0x141ad9350
-    void FUN_141ad93b0();                                              // 0x141ad93b0 check / rewrite version.xml
-    void FUN_141ad9650();                                              // 0x141ad9650 field background movie
+    void CheckVersionFile();                                              // 0x141ad93b0 check / rewrite version.xml
+    void LoadBackgroundMovie();                                              // 0x141ad9650 field background movie
     void LoadStageBackground(char nStage);                                   // 0x141ad9980
     void LoadBackground(CStringA strBg);                                // 0x141ad9a60
-    void FUN_141ad9b30();                                              // 0x141ad9b30
+    void UnloadBackgroundMovie();                                              // 0x141ad9b30
     bool AddMovieDamage();                                              // 0x141ad9b60
-    void FUN_141ad9c10();                                              // 0x141ad9c10
+    void UnloadDamageTextMovie();                                              // 0x141ad9c10
     void FUN_141ad9c40(MS2Ptr<CGemBase> spGem);                        // 0x141ad9c40 damage overlay: gem effect on
     void FUN_141ad9d00(MS2Ptr<CGemBase> spGem);                        // 0x141ad9d00 damage overlay: gem effect off
     void FUN_141ad9dc0();                                              // 0x141ad9dc0
-    bool FUN_141ad9e20(HWND__* hWnd);                                  // 0x141ad9e20 window-proc style callback (argument unused)
-    void FUN_141adbca0(int n);                                         // 0x141adbca0
+    bool OnPostInitMovie(HWND__* hWnd);                                  // 0x141ad9e20 window-proc style callback (argument unused)
+    void SetMoviesVisible(int n);                                         // 0x141adbca0
     void FUN_141adbcd0(char b);                                        // 0x141adbcd0
     int FUN_141adbe00(float fValue, int bRaw);                           // 0x141adbe00
-    float FUN_141adbe70();                                             // 0x141adbe70 (the ui scale)
-    void FUN_141adbf30();                                              // 0x141adbf30
+    float GetUIScale();                                             // 0x141adbe70 (the ui scale)
+    void PlayCurrentCutScene();                                              // 0x141adbf30
     void FUN_141adbf70(int n);                                         // 0x141adbf70
     void RegisterObject(MS2Ptr<UIObject> spObj);                        // 0x141aebfa0 register an object (class id / name tables)
     void RegisterDialog(MS2Ptr<UIDialog> spDlg);                        // 0x141aec080 register a dialog
@@ -202,29 +202,29 @@ public:
     void FUN_141adb900(int n);                                         // 0x141adb900
     void FUN_141adb9c0(const CStringW& str, int a, int b);             // 0x141adb9c0
     void FUN_141adba40();                                              // 0x141adba40
-    int FUN_141adbb00();                                               // 0x141adbb00
+    int IsTextFieldFocused();                                               // 0x141adbb00
     void FUN_141adbfb0(void* p);                                       // 0x141adbfb0 vfunc_79 on every floating dialog
     void SetMode(int nMode);                                     // 0x141add6e0 set the mode (deferred while m_b120)
-    int FUN_141add730();                                               // 0x141add730
+    int GetValidMode();                                               // 0x141add730
     bool FUN_141add880(int nResult, const class CMsgBoxData& box);     // 0x141add880
     bool FUN_141add940(int nResult, const class CMsgBoxData& box);     // 0x141add940
     bool FUN_141add9b0(int nResult, const class CMsgBoxData& box);     // 0x141add9b0
     int FUN_141adf0f0(int nMsg, void* wParam, void* lParam);           // 0x141adf0f0 offer a window message to the dialogs
     int GetMode();                                               // 0x141add860 m_nMode
-    int FUN_141aec350();                                               // 0x141aec350 current field's name id
+    int GetFieldNameId();                                               // 0x141aec350 current field's name id
     void FUN_141adc170();                                              // 0x141adc170
     void FUN_141adc190();                                              // 0x141adc190
     void FUN_141adc2c0();                                              // 0x141adc2c0
     void FUN_141adc3d0();                                              // 0x141adc3d0
     void FUN_141adc400();                                              // 0x141adc400
     void CloseDialog(eUIClassID nClass);                                    // 0x141adc5d0 close a dialog (if open)
-    void FUN_141adc690(eUIClassID nClass);                                    // 0x141adc690 close-request a dialog (if open)
+    void RequestCloseDialog(eUIClassID nClass);                                    // 0x141adc690 close-request a dialog (if open)
     void ToggleDialog(eUIClassID nClass);                                    // 0x141adc750 toggle a dialog
     int FUN_141adc7f0(eUIClassID nClass);                              // 0x141adc7f0 dialog vfunc_73 (can open)
-    int FUN_141adc890(eUIClassID nClass);                              // 0x141adc890 dialog open
-    int FUN_141adc940(eUIClassID nClass);                              // 0x141adc940 dialog vfunc_55 (closed)
+    int IsDialogOpen(eUIClassID nClass);                              // 0x141adc890 dialog open
+    int IsDialogClosed(eUIClassID nClass);                              // 0x141adc940 dialog vfunc_55 (closed)
     int FUN_141adc9e0(eUIClassID nClass);                              // 0x141adc9e0
-    void FUN_141adca70();                                              // 0x141adca70 TooltipManager.dispatchRefreshTooltip
+    void RefreshTooltip();                                              // 0x141adca70 TooltipManager.dispatchRefreshTooltip
     MS2Ptr<UIDialog> FindDialog(eUIClassID nClass);                 // 0x141aec130 dialog by class id
     MS2Ptr<UIObject> FindObject(eUIClassID nClass);                 // 0x141adcea0 object by class id
     MS2Ptr<UIObject> FindObjectByName(const CStringA& strName);           // 0x141adcf50 object by name

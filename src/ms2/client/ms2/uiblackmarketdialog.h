@@ -39,18 +39,18 @@ public:
     virtual int vfunc_74(int nMsg, void* p2, void* p3);             // 74 0x1418cfa40
     virtual void vfunc_79(void* p);                                 // 79 0x1418cf920
 
-    void FUN_1418d0b60(int nA, int nB, void* p);                    // item search page: 0x140f0de60
-    bool FUN_1418d0be0();                                           // the register page is selected
+    void OnItemSearchNotice(int nA, int nB, void* p);                    // item search page: 0x140f0de60
+    bool IsRegisterPageSelected();                                           // the register page is selected
     void FUN_1418d0c20(int nIndex);                                 // select a tab
-    bool FUN_1418d0da0(BlackMarketPage* pPage);                     // pPage is the selected page
-    void FUN_1418d0de0(void* p);                                    // register page: "buildOwnerItemList"
+    bool IsCurrentPage(BlackMarketPage* pPage);                     // pPage is the selected page
+    void BuildOwnerItemList(void* p);                                    // register page: "buildOwnerItemList"
     void FUN_1418d0e40(MS2Ptr<Unk_BlackMarketEntry> spEntry);       // register page: 0x140f12d40
     void FUN_1418d0f00(MS2Ptr<Unk_BlackMarketEntry> spEntry, int n);   // register page: 0x140f13030
     void FUN_1418d0fc0(void* p2, void* p3);                         // register page (selected): 0x140f13420
     void FUN_1418d1080(MS2Ptr<Unk_BlackMarketEntry> spEntry, int n);   // item search page: show an entry
-    void FUN_1418d1330(int nA, int nB, void* p);                    // item search page: 0x140f0d990
+    void BuildItemList(int nA, int nB, void* p);                    // item search page: 0x140f0d990
     void FUN_1418d13a0(int nA, int nB, void* p);                    // register page (selected): 0x140f137a0
-    void FUN_1418d1430(const Scaleform::GFx::FunctionHandler::Params& params);   // detail button: open the market web page
+    void OnDetailButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);   // detail button: open the market web page
 
 private:
     MS2_LAYOUT_FRIEND;

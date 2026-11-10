@@ -85,7 +85,7 @@ typedef MS2Ptr<CMsgBoxData> Unk_MsgBoxPtr;
 
 void FUN_14151f150(Unk_MsgBoxPtr box);
 void FUN_140d73c60(Unk_MsgBoxPtr box);
-Unk_MsgBoxPtr FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
+Unk_MsgBoxPtr CreateMessageBox(int nType, CStringW strText, void* p, CStringW strTag);
 
 // UI manager and the club window lookup.
 class Unk_ClubUIManager
@@ -130,7 +130,7 @@ CStringW BlockFormat(int nId);
 #include "ms2/placeholder/blockformat.h"
 #include "ms2/placeholder/clientconstants.h"  // C3: Common::Constants::Value<int>::Get
 void FUN_1412751b0(const CStringW& str, int nChannel);
-void FUN_1412751f0(const CStringW& str, int a, int b);
+void ShowSystemNotice(const CStringW& str, int a, int b);
 void FUN_141275260(int nId, int a, int b);
 bool FUN_141b70f50(const CStringW& a, const CStringW& b);
 int FUN_141276c80(const CStringW& strName, bool bCheckSelf, CStringW& strError);
@@ -203,7 +203,7 @@ void CClubCli::FUN_140b12ad0(CInPacket& packet)
     CStringW strName = packet.ReadUnicodeString();
     if (nResult != 0)
     {
-        FUN_140b18470(FUN_14020f1a0(), CStringW(strName), nResult);
+        FUN_140b18470(GetName(), CStringW(strName), nResult);
         return;
     }
     SetState(2);
@@ -219,7 +219,7 @@ void CClubCli::FUN_140b12ad0(CInPacket& packet)
     UIClubDialog* pDialog = FindClubDialog(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
-    FUN_1412751b0(FormatStringId<CStringW>(0x344, FUN_14020f1a0()), 0xf);
+    FUN_1412751b0(FormatStringId<CStringW>(0x344, GetName()), 0xf);
 }
 
 // @0x140b12d70
@@ -231,12 +231,12 @@ void CClubCli::FUN_140b12d70(CInPacket& packet)
     MS2Ptr<CClubMember> spMember = FindMemberByName(member.m_info.GetName());
     if (spMember.get() != 0)
     {
-        spMember->FUN_14020e950(&member);
+        spMember->CopyFrom(&member);
     }
     else
     {
         spMember.AssignRaw(new CClubMember);
-        spMember->FUN_14020e950(&member);
+        spMember->CopyFrom(&member);
         vfunc_4(MS2Ptr<CClubMember>(spMember));
     }
     if (spMember->m_c8 == 2)
@@ -244,7 +244,7 @@ void CClubCli::FUN_140b12d70(CInPacket& packet)
         UIClubDialog* pDialog = FindClubDialog(0x4f25);
         if (pDialog != 0)
             pDialog->RefreshData();
-        FUN_1412751b0(BlockFormat<CStringW, CStringW, CStringW>(0x352, strActor, member.m_info.GetName(), FUN_14020f1a0()), 0xf);
+        FUN_1412751b0(BlockFormat<CStringW, CStringW, CStringW>(0x352, strActor, member.m_info.GetName(), GetName()), 0xf);
     }
 }
 
@@ -259,7 +259,7 @@ void CClubCli::FUN_140b13060(CInPacket& packet)
         UIClubDialog* pDialog = FindClubDialog(0x4f25);
         if (pDialog != 0)
             pDialog->RefreshData();
-        FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x351, strName, FUN_14020f1a0()), 0xf);
+        FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x351, strName, GetName()), 0xf);
     }
 }
 
@@ -280,7 +280,7 @@ void CClubCli::OnMemberLogin(CInPacket& packet)
     UIClubDialog* pDialog = FindClubDialog(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
-    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x353, FUN_14020f1a0(), strName), 0xf);
+    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x353, GetName(), strName), 0xf);
 }
 
 // @0x140b133c0
@@ -302,7 +302,7 @@ void CClubCli::OnMemberLogout(CInPacket& packet)
     UIClubDialog* pDialog = FindClubDialog(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
-    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x354, FUN_14020f1a0(), strName), 0xf);
+    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x354, GetName(), strName), 0xf);
 }
 
 // @0x140b135d0
@@ -326,11 +326,11 @@ void CClubCli::FUN_140b135d0(CInPacket& packet)
         if (pDialog != 0)
             pDialog->RefreshData();
         if (nFlag == 0)
-            FUN_1412751b0(FormatStringId<CStringW>(0x356, FUN_14020f1a0()), 0xf);
+            FUN_1412751b0(FormatStringId<CStringW>(0x356, GetName()), 0xf);
     }
     else
     {
-        FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x355, FUN_14020f1a0(), strSecond), 0xf);
+        FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x355, GetName(), strSecond), 0xf);
     }
 }
 
@@ -343,7 +343,7 @@ void CClubCli::OnPacketClubBuff(CInPacket& packet)
     UIClubDialog* pDialog = FindClubDialog(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
-    FUN_1412751b0(FormatStringId<CStringW>(0x357, FUN_14020f1a0()), 0xf);
+    FUN_1412751b0(FormatStringId<CStringW>(0x357, GetName()), 0xf);
 }
 
 // @0x140b13b50
@@ -368,7 +368,7 @@ void CClubCli::FUN_140b13c60(CInPacket& packet)
     MS2Ptr<CClubMember> spMember = FindMemberByName(CStringW(strName));
     if (spMember == 0)
         return;
-    spMember->m_info.FUN_14020e130(proxy);
+    spMember->m_info.CopyFrom(proxy);
     UIClubDialog* pDialog = FindClubDialog(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
@@ -393,9 +393,9 @@ void CClubCli::FUN_140b13dc0(CInPacket& packet)
 void CClubCli::OnPacketClubRename(CInPacket& packet)
 {
     CStringW strNewName = packet.ReadUnicodeString();
-    CStringW strOldName = FUN_14020f1a0();
+    CStringW strOldName = GetName();
     __int64 nTime = packet.ReadInt64();
-    FUN_14020f230(strNewName);
+    SetName(strNewName);
     SetNameChangeAvailableTime(nTime);
     UIClubDialog* pDialog = FindClubDialog(0x4f25);
     if (pDialog != 0)
@@ -454,7 +454,7 @@ bool CClubCli::FUN_140b14230(CStringW strName)
         return false;
     COutPacket pkt(static_cast<int>(SendOp::Club), 0);
     pkt.WriteUInt8(6);
-    pkt.WriteInt64(FUN_14020f0c0());
+    pkt.WriteInt64(GetClubId());
     pkt.WriteUnicodeString(strName);
     FUN_140710590(pkt);
     return true;
@@ -468,7 +468,7 @@ void CClubCli::SendClubMode10()
         return;
     COutPacket pkt(static_cast<int>(SendOp::Club), 0);
     pkt.WriteUInt8(10);
-    pkt.WriteInt64(FUN_14020f0c0());
+    pkt.WriteInt64(GetClubId());
     FUN_140710590(pkt);
 }
 
@@ -482,12 +482,12 @@ void CClubCli::SendClubMode12(CStringW strName)
         return;
     if (IsLeaderName(CStringW(strMe)) == 0)
     {
-        FUN_1412751f0(BlockFormat(0x37b), 1, 1);
+        ShowSystemNotice(BlockFormat(0x37b), 1, 1);
         return;
     }
     COutPacket pkt(static_cast<int>(SendOp::Club), 0);
     pkt.WriteUInt8(0xc);
-    pkt.WriteInt64(FUN_14020f0c0());
+    pkt.WriteInt64(GetClubId());
     pkt.WriteUnicodeString(strName);
     FUN_140710590(pkt);
 }
@@ -500,7 +500,7 @@ void CClubCli::FUN_140b146e0(int nBuffId, int nBuffLevel)
         return;
     if (IsLeaderName(CStringW(strMe)) == 0)
     {
-        FUN_1412751f0(BlockFormat(0x37b), 1, 1);
+        ShowSystemNotice(BlockFormat(0x37b), 1, 1);
         return;
     }
     if (GetBuffId() == nBuffId && GetBuffLevel() == (unsigned)nBuffLevel)
@@ -508,12 +508,12 @@ void CClubCli::FUN_140b146e0(int nBuffId, int nBuffLevel)
     int bClear = 0;
     if (nBuffId == 0 && nBuffLevel == 0)
         bClear = 1;
-    CClubDataTable::BuffPtr spBuff = GetClubDataTable()->FUN_140211760(nBuffId, nBuffLevel);
+    CClubDataTable::BuffPtr spBuff = GetClubDataTable()->FindBuffByEffect(nBuffId, nBuffLevel);
     if (spBuff == 0 && bClear == 0)
         return;
     COutPacket pkt(static_cast<int>(SendOp::Club), 0);
     pkt.WriteUInt8(0xd);
-    pkt.WriteInt64(FUN_14020f0c0());
+    pkt.WriteInt64(GetClubId());
     pkt.WriteInt32(nBuffId);
     pkt.WriteInt32(nBuffLevel);
     FUN_140710590(pkt);
@@ -534,17 +534,17 @@ void CClubCli::SendClubMode14(CStringW strNewName)
     }
     if (IsLeaderName(CStringW(strMe)) == 0)
     {
-        FUN_1412751f0(BlockFormat(0x37b), 1, 1);
+        ShowSystemNotice(BlockFormat(0x37b), 1, 1);
         return;
     }
     if (m_name.CompareNoCase(strNewName) == 0)
     {
-        FUN_1412751f0(BlockFormat(0x385), 1, 1);
+        ShowSystemNotice(BlockFormat(0x385), 1, 1);
         return;
     }
     COutPacket pkt(static_cast<int>(SendOp::Club), 0);
     pkt.WriteUInt8(0xe);
-    pkt.WriteInt64(FUN_14020f0c0());
+    pkt.WriteInt64(GetClubId());
     pkt.WriteUnicodeString(strNewName);
     FUN_140710590(pkt);
 }
@@ -639,9 +639,9 @@ __int64 CClubClientManager::GetClubIdByName(CStringW strName)
             MS2Ptr<CClubCli> spClub = m_clubs.GetValueAt(pos);
             if (spClub.get() != 0 && spClub->GetState() == 2)
             {
-                if (spClub->FUN_14020f1a0() == strName)
+                if (spClub->GetName() == strName)
                 {
-                    nClubId = spClub->FUN_14020f0c0();
+                    nClubId = spClub->GetClubId();
                     break;
                 }
             }
@@ -656,7 +656,7 @@ CStringW CClubClientManager::GetClubName(__int64 nClubId)
     MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return CStringW(L"");
-    return spClub->FUN_14020f1a0();
+    return spClub->GetName();
 }
 
 // @0x140b15210
@@ -714,7 +714,7 @@ void CClubClientManager::AddClub(MS2Ptr<CClubCli> spClub)
     }
     else
     {
-        m_clubs.SetAt(spClub->FUN_14020f0c0(), spClub);
+        m_clubs.SetAt(spClub->GetClubId(), spClub);
     }
 }
 
@@ -791,7 +791,7 @@ int CClubClientManager::FUN_140b15830(__int64 nClubId)
 // @0x140b158c0
 void CClubClientManager::OnClub(CInPacket& packet)
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x56))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x56))
         return;
     int nSubOpcode = packet.ReadUInt8();
     switch (nSubOpcode)
@@ -891,7 +891,7 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
 {
     if (IsClubLimitReached() == 1)
     {
-        FUN_1412751f0(BlockFormat<int>(0x381, 3), 1, 1);
+        ShowSystemNotice(BlockFormat<int>(0x381, 3), 1, 1);
         return false;
     }
     int nMinLength = *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_ClubConsts*)GetClientConstants())->m_nameMin)->Get();
@@ -916,9 +916,9 @@ bool CClubClientManager::FUN_140b15c10(CStringW strName)
     if (CBanTextChecker* pFilter = CommonString::GetInstance()->GetChecker())
     {
         CStringW strError;
-        if (pFilter->FUN_140226400(strName, strError) != 0)
+        if (pFilter->CheckClubName(strName, strError) != 0)
         {
-            FUN_1412751f0(strError, 1, 1);
+            ShowSystemNotice(strError, 1, 1);
             return false;
         }
     }
@@ -1020,7 +1020,7 @@ void CClubClientManager::OnClubAdded(CInPacket& packet)
         return;
     }
     MS2Ptr<CClubCli> spClub(new CClubCli);
-    spClub->FUN_14020fd80(packet);
+    spClub->Read(packet);
     AddClub(MS2Ptr<CClubCli>(spClub));
     UIClubDialog* pDialog = FindClubDialog(0x4f25);
     if (pDialog != 0)
@@ -1038,17 +1038,17 @@ void CClubClientManager::FUN_140b16650(CInPacket& packet)
 void CClubClientManager::FUN_140b166d0(CInPacket& packet)
 {
     MS2Ptr<CClubCli> spClub(new CClubCli);
-    spClub->FUN_14020fd80(packet);
+    spClub->Read(packet);
     AddClub(MS2Ptr<CClubCli>(spClub));
     if (spClub->GetLeaderName() == GetLocalPlayerName())
     {
-        SendClubMode3(spClub->FUN_14020f0c0(), 0);
+        SendClubMode3(spClub->GetClubId(), 0);
     }
     else
     {
         Unk_MsgBoxPtr box = FUN_140b191a0(
-            FormatStringId<CStringW, CStringW>(0x345, spClub->GetLeaderName(), spClub->FUN_14020f1a0()), 1,
-            Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18390), spClub->FUN_14020f0c0());
+            FormatStringId<CStringW, CStringW>(0x345, spClub->GetLeaderName(), spClub->GetName()), 1,
+            Delegate<bool(int, const CMsgBoxData&)>(this, &CClubClientManager::FUN_140b18390), spClub->GetClubId());
         box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
         box.operator->()->FUN_141a024a0(false);
         FUN_140d73c60(box);
@@ -1090,7 +1090,7 @@ void CClubClientManager::FUN_140b16bc0(CInPacket& packet)
     MS2Ptr<CClubCli> spClub = GetClub(nClubId);
     if (spClub == 0)
         return;
-    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x347, strName, spClub->FUN_14020f1a0()), 0x14);
+    FUN_1412751b0(FormatStringId<CStringW, CStringW>(0x347, strName, spClub->GetName()), 0x14);
 }
 
 // @0x140b16d20
@@ -1110,7 +1110,7 @@ void CClubClientManager::FUN_140b16d20(CInPacket& packet)
     }
     AddInvite(MS2Ptr<Club::PacketInvite>(spInvite));
     CStringW strText = FormatStringId<CStringW, CStringW>(0x348, spInvite->m_28, spInvite->m_20);
-    Unk_MsgBoxPtr box = FUN_140d73d20(1, CStringW(strText), 0, CStringW(L""));
+    Unk_MsgBoxPtr box = CreateMessageBox(1, CStringW(strText), 0, CStringW(L""));
     if (box.get() != 0)
     {
         box->SetTimer(0x14, 1, GetStringCommon(0x2b8));
@@ -1157,7 +1157,7 @@ void CClubClientManager::FUN_140b17210(CInPacket& packet)
     }
     else
     {
-        FUN_140b18580(spClub->FUN_14020f1a0(), CStringW(strName), nCode);
+        FUN_140b18580(spClub->GetName(), CStringW(strName), nCode);
     }
 }
 
@@ -1172,7 +1172,7 @@ void CClubClientManager::FUN_140b173f0(CInPacket& packet)
     UIClubDialog* pDialog = FindClubDialog(0x4f25);
     if (pDialog != 0)
         pDialog->RefreshData();
-    FUN_1412751b0(FormatStringId<CStringW>(0x350, spClub->FUN_14020f1a0()), 0xf);
+    FUN_1412751b0(FormatStringId<CStringW>(0x350, spClub->GetName()), 0xf);
 }
 
 // @0x140b17530
@@ -1218,9 +1218,9 @@ void CClubClientManager::FUN_140b17780(CInPacket& packet)
     if (nCode == 0xcf)
     {
         if (FUN_141b70f50(strName, GetLocalPlayerName()) == 1)
-            FUN_1412751b0(FormatStringId<CStringW>(0x346, spClub->FUN_14020f1a0()), 0xf);
+            FUN_1412751b0(FormatStringId<CStringW>(0x346, spClub->GetName()), 0xf);
         else
-            FUN_1412751b0(FormatStringId<CStringW>(0x346, spClub->FUN_14020f1a0()), 0xf);
+            FUN_1412751b0(FormatStringId<CStringW>(0x346, spClub->GetName()), 0xf);
     }
     RemoveClub(nClubId);
     UIClubDialog* pDialog = FindClubDialog(0x4f25);
@@ -1499,7 +1499,7 @@ void FUN_140b18700(int nKind, int nCode)
     default:
         strMessage = GetStringCommon(0x37e);
     }
-    FUN_1412751f0(strMessage, 1, 1);
+    ShowSystemNotice(strMessage, 1, 1);
 }
 
 // @0x140b18ef0

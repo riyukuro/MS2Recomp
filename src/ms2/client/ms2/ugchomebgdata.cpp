@@ -46,10 +46,10 @@ class Unk_UhFiles;
 class CFileSystem   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1403974b0(class TiXmlDocument*, char const*, int, bool, bool);
+    int LoadXmlFile(class TiXmlDocument*, char const*, int, bool, bool);
 };
 class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 
 extern Vector3 DAT_143a08d08;   // zero colour
 #define DAT_143b01a60 (*(Vector3*)&efd::Point3::ZERO)          // C3: was extern Vector3 DAT_143b01a60
@@ -176,7 +176,7 @@ void UgcHomeOptionData::ApplyCamera(unsigned char nType)
 void UgcHomeOptionData::LoadBg()
 {
     TiXmlDocument doc;
-    bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcBackground.xml"), 0, true, false) == 0;
+    bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->LoadXmlFile(&doc, GetXmlPath("Table", "ugcBackground.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
@@ -201,7 +201,7 @@ void UgcHomeOptionData::LoadBg()
 void UgcHomeOptionData::LoadLight()
 {
     TiXmlDocument doc;
-    bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcHousingLight.xml"), 0, true, false) == 0;
+    bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->LoadXmlFile(&doc, GetXmlPath("Table", "ugcHousingLight.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));
@@ -224,7 +224,7 @@ void UgcHomeOptionData::LoadLight()
 void UgcHomeOptionData::LoadCamera()
 {
     TiXmlDocument doc;
-    bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "ugcHousingCamera.xml"), 0, true, false) == 0;
+    bool bFailed = ((class CFileSystem*)(class Unk_UhFiles*)(((class Unk_UhFiles*)GetFileSystem())))->LoadXmlFile(&doc, GetXmlPath("Table", "ugcHousingCamera.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(&doc))->FirstChild("ms2"));

@@ -32,7 +32,7 @@ static CString s_complete = "quest_complete";
 static CString s_progress = "quest_progress";
 static CString s_reward = "quest_reward";
 
-MS2Ptr<CQuestData> FUN_14074bc40(int);
+MS2Ptr<CQuestData> GetQuestData(int);
 int FUN_14074b790(int);
 int IsConditionTypeCounted(int);
 __int64 GetServerTime();
@@ -40,8 +40,8 @@ bool FUN_140930b70();
 bool FUN_1409312f0();
 extern int DAT_143ab2880;
 int FUN_141276180(const CString&, const CString&);
-CStringW FUN_1416e4df0(int);
-void FUN_1412751f0(const CStringW&, int, int);
+CStringW GetQuestName(int);
+void ShowSystemNotice(const CStringW&, int, int);
 
 class WorldService   // C3: static member view for the former free stand-ins
 {
@@ -64,18 +64,18 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 
-CStringW FUN_1416e5350(int, int);
-CStringW FUN_1416e57d0(int, int);
+CStringW GetQuestSummary(int, int);
+CStringW GetQuestConditionText(int, int);
 void FUN_14083d2b0(CStringW&);
 void FUN_14025a680(CStringW&, ATL::CAtlArray<CStringW>&, const wchar_t*);
 extern const wchar_t DAT_142f5515c[];
-UIMainPlayerInfo* FUN_140931900(int);
+UIMainPlayerInfo* FindMainPlayerInfo(int);
 
 UIRewardNotify* FindRewardNotify(int);
-void* FUN_1401c0d90();
+void* GetGameRule();
 class CGameRule   // C3: member view for the former free stand-ins
 {
 public:
@@ -126,7 +126,7 @@ MS2_REPLACE_METHOD_VIA(0x1416C64B0, CQuest, CQuestCommon, IsRewarded, 58, 0x34FA
 // @0x1416c6510
 int CQuest::Init(int id, int state)
 {
-    m_data = FUN_14074bc40(id);
+    m_data = GetQuestData(id);
     if (((MS2Ptr<CQuestData>*)&(m_data))->IsNull()) return 0;
     m_68 = 0;
     m_completeTime = 0;
@@ -202,7 +202,7 @@ int CQuest::CheckUserFind(PCBase* actor)
 // @0x1416c6b70
 int CQuest::GetTrackingState()
 {
-    if (FUN_14074b790(FUN_140bfc580()) != 0) return 1;
+    if (FUN_14074b790(GetQuestId()) != 0) return 1;
     return m_trackingState;
 }
 MS2_REPLACE_METHOD(0x1416C6B70, CQuest, GetTrackingState, 50, 0x24E2DF98);
@@ -214,11 +214,11 @@ MS2_REPLACE_METHOD(0x1416C6BB0, CQuest, GetTrackedValue, 14, 0x81E2A10F);
 // @0x1416c6bf0
 void CQuest::RequestTrackingState(int state)
 {
-    if (FUN_14074b790(FUN_140bfc580()) != 0) return;
+    if (FUN_14074b790(GetQuestId()) != 0) return;
     if (GetTrackingState() == state) return;
     COutPacket packet(static_cast<int>(SendOp::Quest), 0);
     packet.COutPacket::WriteUInt8(9);
-    packet.COutPacket::WriteInt32(FUN_140bfc580());
+    packet.COutPacket::WriteInt32(GetQuestId());
     packet.COutPacket::WriteUInt8((unsigned char)state);
     FUN_140710590(packet);
 }
@@ -230,7 +230,7 @@ void CQuest::SetTrackedValue(int value) { m_trackedValue = value; }
 // @0x1416c6cc0
 int CQuest::HasMultiUserRoom(int field)
 {
-    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xdc)) return 0;
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xdc)) return 0;
     if (FUN_1407443e0(field) == 0) return 0;
     int roomId = m_data->m_30c.m_roomId;
     if (roomId == 0) return 0;
@@ -270,19 +270,19 @@ void CQuest::ShowProgress(int index)
     switch (GetQuestType()) {
     case 3:
         category = "guide";
-        text = FUN_1416e5350(FUN_140bfc580(), index);
+        text = GetQuestSummary(GetQuestId(), index);
         break;
     case 10:
         category = "wedding";
-        text = FUN_1416e5350(FUN_140bfc580(), index);
+        text = GetQuestSummary(GetQuestId(), index);
         break;
     default:
         category = "quest";
-        text = FUN_1416e57d0(FUN_140bfc580(), index);
+        text = GetQuestConditionText(GetQuestId(), index);
         break;
     }
     FUN_14083d2b0(text);
-    UIMainPlayerInfo* dialog = FUN_140931900(0x4e5f);
+    UIMainPlayerInfo* dialog = FindMainPlayerInfo(0x4e5f);
     if (dialog) {
         ATL::CAtlArray<CStringW> lines;
         FUN_14025a680(text, lines, DAT_142f5515c);
@@ -320,12 +320,12 @@ void CQuest::ShowRewards(int reward)
     PCBase* mine = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (!mine) return;
     if (((MS2Ptr<CQuestData>*)&(m_data))->IsNull()) return;
-    int id = FUN_140bfc580();
+    int id = GetQuestId();
     int type = FUN_14074b050(m_data.operator->());
     int subtype = FUN_14074b070(m_data.operator->());
     int eventBonus = 0;
     for (size_t i = 0; i < 8; ++i) {
-        if (((class CGameRule*)(void*)(FUN_1401c0d90()))->GetQuestAdditionalRewardRate(type, subtype, (int)i) != 0) {
+        if (((class CGameRule*)(void*)(GetGameRule()))->GetQuestAdditionalRewardRate(type, subtype, (int)i) != 0) {
             eventBonus = 1;
             break;
         }
@@ -337,11 +337,11 @@ void CQuest::ShowRewards(int reward)
         __int64 experience = FUN_140761ba0(id, reward);
         if (experience != 0) {
             float multiplier = 0.0f;
-            unsigned bonus = ((class CGameRule*)(void*)(FUN_1401c0d90()))->GetQuestAdditionalRewardRate(type, subtype, 0);
+            unsigned bonus = ((class CGameRule*)(void*)(GetGameRule()))->GetQuestAdditionalRewardRate(type, subtype, 0);
             if (bonus != 0) multiplier = (float)bonus / 10000.0f;
             __int64 extra = 0;
             if (useBonus) {
-                float rate = 1.0f + (float)((class CGameRule*)(void*)(FUN_1401c0d90()))->FUN_1404774a0(0x31, ((class PC*)(class PCBase*)(mine))->FUN_141658f30()) / 1000.0f;
+                float rate = 1.0f + (float)((class CGameRule*)(void*)(GetGameRule()))->FUN_1404774a0(0x31, ((class PC*)(class PCBase*)(mine))->FUN_141658f30()) / 1000.0f;
                 extra = (__int64)((float)experience * rate - (float)experience);
             }
             experience = (__int64)((float)experience * (1.0f + multiplier));
@@ -350,7 +350,7 @@ void CQuest::ShowRewards(int reward)
         __int64 money = FUN_140761cc0(id, reward);
         if (money != 0) {
             float multiplier = 0.0f;
-            unsigned bonus = ((class CGameRule*)(void*)(FUN_1401c0d90()))->GetQuestAdditionalRewardRate(type, subtype, 1);
+            unsigned bonus = ((class CGameRule*)(void*)(GetGameRule()))->GetQuestAdditionalRewardRate(type, subtype, 1);
             if (bonus != 0) multiplier = (float)bonus / 10000.0f;
             __int64 extra = 0;
             money = (__int64)((float)money * (1.0f + multiplier));
@@ -366,7 +366,7 @@ void CQuest::ShowRewards(int reward)
                             int itemId = m_data->m_complete.m_choiceRewards[i].m_itemId;
                             int count = m_data->m_complete.m_choiceRewards[i].m_count;
                             dialog->FUN_141abf6e0(itemId, count);
-                            if (((class CGameRule*)(void*)(FUN_1401c0d90()))->GetQuestAdditionalRewardItemRate(type, subtype, itemId) != 0) eventBonus = 1;
+                            if (((class CGameRule*)(void*)(GetGameRule()))->GetQuestAdditionalRewardItemRate(type, subtype, itemId) != 0) eventBonus = 1;
                         }
                     }
                 }
@@ -376,7 +376,7 @@ void CQuest::ShowRewards(int reward)
                 int item = m_data->m_rewards[i].m_itemId;
                 int count = m_data->m_rewards[i].m_count;
                 dialog->FUN_141abf6e0(item, count);
-                if (((class CGameRule*)(void*)(FUN_1401c0d90()))->GetQuestAdditionalRewardItemRate(type, subtype, item) != 0) eventBonus = 1;
+                if (((class CGameRule*)(void*)(GetGameRule()))->GetQuestAdditionalRewardItemRate(type, subtype, item) != 0) eventBonus = 1;
             }
         }
     }
@@ -428,7 +428,7 @@ MS2_REPLACE_METHOD(0x1416C7BD0, CQuest, Complete, 98, 0x87AAF937);
 // @0x1416c7c40
 void CQuest::ShowExpired()
 {
-    FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_quest_expired_auto_giveup", FUN_1416e4df0(FUN_140bfc580())), 1, 1);
+    ShowSystemNotice(FUN_14028dfa0<CStringW>(L"s_quest_expired_auto_giveup", GetQuestName(GetQuestId())), 1, 1);
 }
 MS2_REPLACE_METHOD(0x1416C7C40, CQuest, ShowExpired, 176, 0xBA04D5B7);
 

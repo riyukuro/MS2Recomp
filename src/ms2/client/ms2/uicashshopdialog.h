@@ -50,8 +50,8 @@ class ASCashShopBillData : public ASBillData
 public:
     ASCashShopBillData();                                           // 0x14103b620
     virtual ~ASCashShopBillData();                                  //  0 0x14103bcd0 (??_G 0x14103c260)
-    int FUN_14103d2b0() { return m_nProductId; }                    // 0x14103d2b0 the product id
-    void FUN_14103fba0(int nProductId) { m_nProductId = nProductId; }   // 0x14103fba0
+    int GetProductId() { return m_nProductId; }                    // 0x14103d2b0 the product id
+    void SetProductId(int nProductId) { m_nProductId = nProductId; }   // 0x14103fba0
     void FUN_1409ab990(MS2Ptr<CItemData> spItem, int nRank);        // 0x1409ab990 the item (icon slot) of the row
 
     int m_nProductId;                                               // +0x50
@@ -103,33 +103,33 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // IMessageListener 0 0x141033e40
 
     int GetCategory();                                            // 0x141034da0 the category page
-    int FUN_141034dc0(int nId);                                     // 0x141034dc0 is the product shown?
-    void FUN_141034e00(int nCash);                                  // 0x141034e00 the cash balance
-    void FUN_141034ef0(int n, CInPacket& rPacket);                  // 0x141034ef0 the buy result: drops the bought basket rows
+    int IsProductShown(int nId);                                     // 0x141034dc0 is the product shown?
+    void SetCash(int nCash);                                  // 0x141034e00 the cash balance
+    void OnBuyResult(int n, CInPacket& rPacket);                  // 0x141034ef0 the buy result: drops the bought basket rows
     void FUN_141035050();                                           // 0x141035050 products dirty
-    void FUN_141035080(int nCategory);                              // 0x141035080 switch the category
-    void FUN_1410350d0(MS2Ptr<CashBannerInfo> spBanner);            // 0x1410350d0 a banner was clicked
-    void FUN_141035260(ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> >& rRecords);   // 0x141035260 build the banner map
+    void SetCategory(int nCategory);                              // 0x141035080 switch the category
+    void OnBannerClick(MS2Ptr<CashBannerInfo> spBanner);            // 0x1410350d0 a banner was clicked
+    void BuildBanners(ATL::CAtlArray<MS2Ptr<Unk_CashBannerRecord> >& rRecords);   // 0x141035260 build the banner map
     void FUN_1410355e0(CString strSide, CString strPath);           // 0x1410355e0 a banner image arrived
     int FUN_1410356a0();                                            // 0x1410356a0 buy ids are waiting
     void FUN_1410356f0();                                           // 0x1410356f0 open the cash unlock web dialog
     void FUN_141035920(int n);                                      // 0x141035920
     void SetUnlockState(int nState);                                 // 0x141035970 unlock state
-    bool FUN_141035990(const CString& strName, ATL::CAtlArray<unsigned>& rIds, bool bBasket);   // 0x141035990 open the bill dialog for the products
+    bool OpenBillDialog(const CString& strName, ATL::CAtlArray<unsigned>& rIds, bool bBasket);   // 0x141035990 open the bill dialog for the products
     void FUN_141035e40();                                           // 0x141035e40 page buttons
     void FUN_1410360c0();                                           // 0x1410360c0 fill the sale list
     void FUN_141036ca0();                                           // 0x141036ca0 fill the basket list
     void FUN_141037360();                                           // 0x141037360 gift prompts of the cash inventory
     void OnChargeCash();                                           // 0x141037880 open the charge page
-    CString FUN_1410378d0();                                        // 0x1410378d0 the charge url
-    CString FUN_141037b70();                                        // 0x141037b70 the browser path
-    bool FUN_141037cd0(int nItemId, int* pnReason, int* pnTab);     // 0x141037cd0 can the item be received?
+    CString GetChargeUrl();                                        // 0x1410378d0 the charge url
+    CString GetBrowserPath();                                        // 0x141037b70 the browser path
+    bool CanReceiveItem(int nItemId, int* pnReason, int* pnTab);     // 0x141037cd0 can the item be received?
     int FUN_141037ea0(const PaymentMap& mapPay);                    // 0x141037ea0 the cash part of the payment
-    MS2Ptr<TCashShopBillDataParam> FUN_141037f40(const CString& strName, bool bGift);   // 0x141037f40 the bill parameter
-    bool FUN_1410382a0(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay);   // 0x1410382a0 buy callback
-    bool FUN_141038aa0(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay, const CStringW& strName, const CStringW& strText);   // 0x141038aa0 gift callback
+    MS2Ptr<TCashShopBillDataParam> CreateBillParam(const CString& strName, bool bGift);   // 0x141037f40 the bill parameter
+    bool OnBuy(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay);   // 0x1410382a0 buy callback
+    bool OnGift(MS2Ptr<TMarketBillDataParam> spParam, const PaymentMap& mapPay, const CStringW& strName, const CStringW& strText);   // 0x141038aa0 gift callback
     bool FUN_141039540(Scaleform::GFx::Value* pRetVal, ASData& rData, MS2Ptr<TMarketBillDataParam> spParam);   // 0x141039540 tooltip callback
-    void FUN_1410398f0(const CString& strSide);                     // 0x1410398f0 show a banner
+    void ShowBanner(const CString& strSide);                     // 0x1410398f0 show a banner
     void FUN_141039a90();                                           // 0x141039a90 ask for the cash charge
     bool FUN_141039bf0(int nButton, const CMsgBoxData& rData);      // 0x141039bf0 add the product to the basket
     bool FUN_141039ca0(int nButton, const CMsgBoxData& rData);      // 0x141039ca0 buy the product

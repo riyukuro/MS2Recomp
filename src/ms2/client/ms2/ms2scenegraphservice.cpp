@@ -316,7 +316,7 @@ void MS2SceneGraphService::UpdateDynamicEntities(bool advanceUpdateTime, bool pe
             UpdateBucket(0);
             UpdateBucket(4);
             UpdateBucket(5);
-            Unk_SgWorldObjects* pObjects = (Unk_SgWorldObjects*)WorldService::GetInstance()->FUN_141bd36b0();
+            Unk_SgWorldObjects* pObjects = (Unk_SgWorldObjects*)WorldService::GetInstance()->GetPlayerMap();
             for (POSITION pos = ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetHeadPosition(); pos != NULL; ((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetNext(pos))
             {
                 Unk_SgRider* pRider = static_cast<Unk_SgRider*>(((TPtr<PCBase>*)&((ATL::CRBTree<unsigned int, Unk_WsV118, ATL::CElementTraits<unsigned int>, ATL::CElementTraits<Unk_WsV118>>*)(class Unk_SgWorldObjects*)(pObjects))->GetValueAt(pos))->get());

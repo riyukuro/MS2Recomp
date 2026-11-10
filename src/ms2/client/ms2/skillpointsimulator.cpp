@@ -305,7 +305,7 @@ int CSkillPointSimulator::CheckRequirements(unsigned nSkillId, unsigned short nL
     }
     if (spData->m_requireQuestID != 0)
     {
-        if (!reinterpret_cast<CQuestManagerCommon*>(reinterpret_cast<char*>(reinterpret_cast<MyPC*>(pPlayer)->GetQuestManager()) + 0x10)->FUN_140745590(spData->m_requireQuestID))
+        if (!reinterpret_cast<CQuestManagerCommon*>(reinterpret_cast<char*>(reinterpret_cast<MyPC*>(pPlayer)->GetQuestManager()) + 0x10)->IsQuestRewarded(spData->m_requireQuestID))
             return 0;
     }
     return 1;

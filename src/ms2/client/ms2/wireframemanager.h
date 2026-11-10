@@ -39,11 +39,11 @@ public:
     virtual ~CWireframeManager();                               //  0 0x141b94030 (??_G 0x141b944d0)
     virtual const void* vfunc_2();                              //  2 0x141b947e0 the registrar object of the class
 
-    void FUN_141b94090();                                       // forget every entity
-    void FUN_141b940c0(egf::Entity* pEntity);                   // add an entity: give it a wireframe property
-    void FUN_141b941f0(egf::Entity* pEntity);                   // remove an entity
-    void FUN_141b94260(bool bWireframe);                        // switch every entity
-    void FUN_141b94370();                                       // flip the switch
+    void ClearEntities();                                       // forget every entity
+    void AddEntity(egf::Entity* pEntity);                   // add an entity: give it a wireframe property
+    void RemoveEntity(egf::Entity* pEntity);                   // remove an entity
+    void SetWireframe(bool bWireframe);                        // switch every entity
+    void ToggleWireframe();                                       // flip the switch
 
 private:
     MS2_LAYOUT_FRIEND;

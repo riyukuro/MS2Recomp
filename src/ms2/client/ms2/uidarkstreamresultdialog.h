@@ -29,8 +29,8 @@ public:
     virtual void vfunc_43();                                         // 43 0x140f34810
     virtual int vfunc_48();                                          // 48 0x140f35330: 0x4ee5
     virtual void vfunc_67();                                         // 67 0x140f348c0
-    void FUN_140f34ab0(CInPacket& packet);                           // 0x140f34ab0 read the result packet
-    void FUN_140f34cb0(bool bMode);                                  // 0x140f34cb0 swf "setMode"
+    void ReadResultPacket(CInPacket& packet);                           // 0x140f34ab0 read the result packet
+    void SetMode(bool bMode);                                  // 0x140f34cb0 swf "setMode"
     void FUN_140f34d50();                                            // 0x140f34d50 build the bag and send "setResult"
 private:
     MS2_LAYOUT_FRIEND;

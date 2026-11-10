@@ -92,7 +92,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, float&);   // C3: was FUN_14087
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 
 // Unrecovered helpers.
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Data/Xml/<dir>/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Data/Xml/<dir>/<file>
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
@@ -130,9 +130,9 @@ public:
     static unsigned short GetSkillMaxLevel(unsigned int);
 };
 
-// The skill flags of the additional effect table (FUN_140186320 is its accessor, inline in additionalactionadditional.cpp).
+// The skill flags of the additional effect table (GetStanceTable is its accessor, inline in additionalactionadditional.cpp).
 class Unk_SkillFlags : public StanceTable { };
-class Unk_AdditionalFlags* FUN_140186320();   // C3: was FUN_140186320
+class Unk_AdditionalFlags* GetStanceTable();   // C3: was GetStanceTable
 
 // Container comparisons (true = same; the templates of additionalactionadditional.cpp).
 template <class T> bool IsSameArray(const ATL::CAtlArray<T>& a, const ATL::CAtlArray<T>& b)
@@ -205,7 +205,7 @@ Unk_CompareStat::Unk_CompareStat()
 }
 
 // @0x1407e5e00
-bool Unk_CompareStat::FUN_1407e5e00(const Unk_CompareStat& o)
+bool Unk_CompareStat::IsDifferent(const Unk_CompareStat& o)
 {
     if (m_f0 != o.m_f0)
         return true;
@@ -217,10 +217,10 @@ bool Unk_CompareStat::FUN_1407e5e00(const Unk_CompareStat& o)
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x1407e5e00, Unk_CompareStat, FUN_1407e5e00, 102, 0x7B7D842B);
+MS2_REPLACE_METHOD(0x1407e5e00, Unk_CompareStat, IsDifferent, 102, 0x7B7D842B);
 
 // @0x1407e5e70
-int Unk_CompareStat::FUN_1407e5e70(TiXmlElement* pElem)
+int Unk_CompareStat::Load(TiXmlElement* pElem)
 {
     for (unsigned i = 0; i < 35; i++)
     {
@@ -232,7 +232,7 @@ int Unk_CompareStat::FUN_1407e5e70(TiXmlElement* pElem)
     XmlValue(pElem, "type", (Unk_CompareStatType&)m_nC);
     return 1;
 }
-MS2_REPLACE_METHOD(0x1407e5e70, Unk_CompareStat, FUN_1407e5e70, 219, 0x06E0CB88);
+MS2_REPLACE_METHOD(0x1407e5e70, Unk_CompareStat, Load, 219, 0x06E0CB88);
 
 // The writer of a compare stat (writes nothing).
 // @0x1407e5f60
@@ -254,7 +254,7 @@ Unk_SkillOverlapCondition::Unk_SkillOverlapCondition()
 }
 
 // @0x1407e5fe0
-bool Unk_SkillOverlapCondition::FUN_1407e5fe0(const Unk_SkillOverlapCondition& o)
+bool Unk_SkillOverlapCondition::IsDifferent(const Unk_SkillOverlapCondition& o)
 {
     if (m_b0 != o.m_b0)
         return true;
@@ -730,7 +730,7 @@ bool SkillData::operator!=(const SkillData& o)
         return true;
     if (m_nTooltip != o.m_nTooltip)
         return true;
-    if (m_spParamCastingBar.get()->FUN_14092c370(o.m_spParamCastingBar.get()))
+    if (m_spParamCastingBar.get()->IsDifferent(o.m_spParamCastingBar.get()))
         return true;
     if (m_bBattle != o.m_bBattle)
         return true;
@@ -768,17 +768,17 @@ bool SkillData::operator!=(const SkillData& o)
         return true;
     if (m_nSplashMaxCount != o.m_nSplashMaxCount)
         return true;
-    if (m_blockA4.FUN_140802e40(o.m_blockA4))
+    if (m_blockA4.IsDifferent(o.m_blockA4))
         return true;
-    if (m_blockB0.FUN_1408033b0(o.m_blockB0))
+    if (m_blockB0.IsDifferent(o.m_blockB0))
         return true;
-    if (m_block150.FUN_1408037e0(o.m_block150))
+    if (m_block150.IsDifferent(o.m_block150))
         return true;
-    if (m_block160.FUN_1408030c0(o.m_block160))
+    if (m_block160.IsDifferent(o.m_block160))
         return true;
-    if (m_block170.FUN_140802d00(o.m_block170))
+    if (m_block170.IsDifferent(o.m_block170))
         return true;
-    if (m_sensor.FUN_140801270(o.m_sensor))
+    if (m_sensor.IsDifferent(o.m_sensor))
         return true;
     if (m_condition != o.m_condition)
         return true;
@@ -794,7 +794,7 @@ bool SkillData::operator!=(const SkillData& o)
         MS2Ptr<SkillLevelData> spOther(0);
         if (!o.m_levels.Lookup(nLevel, spOther))
             return true;
-        if (spLevel.get()->FUN_140803b30(*spOther.get()))
+        if (spLevel.get()->IsDifferent(*spOther.get()))
             return true;
     }
     return false;
@@ -802,13 +802,13 @@ bool SkillData::operator!=(const SkillData& o)
 MS2_REPLACE_METHOD(0x1407e8790, SkillData, operator!=, 2304, 0x812F90A1);
 
 // @0x1407e90a0
-MS2Ptr<SkillLevelData> SkillData::FUN_1407e90a0(unsigned short nLevel)
+MS2Ptr<SkillLevelData> SkillData::GetLevelData(unsigned short nLevel)
 {
     MS2Ptr<SkillLevelData> spLevel;
     m_levels.Lookup(nLevel, spLevel);
     return spLevel;
 }
-MS2_REPLACE_METHOD(0x1407e90a0, SkillData, FUN_1407e90a0, 123, 0xC3C91360);
+MS2_REPLACE_METHOD(0x1407e90a0, SkillData, GetLevelData, 123, 0xC3C91360);
 
 // @0x1407e9130
 void SkillData::Load(TiXmlElement* pElem)
@@ -831,7 +831,7 @@ void SkillData::Load(TiXmlElement* pElem)
         XmlQuery((class TiXmlElement*)(pUi), "tooltip", *(unsigned int*)&static_cast<int&>(m_nTooltip));
         CStringW strParam;
         XmlQuery((class TiXmlElement*)(pUi), "paramCastingBar", strParam);
-        m_spParamCastingBar->FUN_14092c400(strParam);
+        m_spParamCastingBar->ParseValues(strParam);
     }
     TiXmlElement* pKinds = ((class TiXmlElement*)((class Unk_XmlNode*)(pBasic))->FirstChild("kinds"));
     if (pKinds != 0)
@@ -1139,24 +1139,24 @@ bool SkillData::HasOrigin()
 MS2_REPLACE_METHOD(0x1407e9fb0, SkillData, HasOrigin, 48, 0x5506A59A);
 
 // @0x1407e9ff0
-bool SkillData::FUN_1407e9ff0()
+bool SkillData::IsFinishSkill()
 {
     return m_b2a0;
 }
-MS2_REPLACE_METHOD(0x1407e9ff0, SkillData, FUN_1407e9ff0, 18, 0x93D7144B);
+MS2_REPLACE_METHOD(0x1407e9ff0, SkillData, IsFinishSkill, 18, 0x93D7144B);
 
 // @0x1407ea010
-void SkillData::FUN_1407ea010()
+void SkillData::SetFinishSkill()
 {
     m_b2a0 = true;
 }
-MS2_REPLACE_METHOD(0x1407ea010, SkillData, FUN_1407ea010, 18, 0xD2C19275);
+MS2_REPLACE_METHOD(0x1407ea010, SkillData, SetFinishSkill, 18, 0xD2C19275);
 
 // @0x1407ea030
 __int64 SkillData::FUN_1407ea030()
 {
     __int64 nKey = 0;
-    nKey += m_block160.FUN_140803210();
+    nKey += m_block160.GetKey();
     nKey += (unsigned __int64)m_nAutoTargetingType << 32;
     nKey += (__int64)m_nAutoTargeting << 34;
     nKey += (__int64)m_nMoveType << 35;
@@ -1202,7 +1202,7 @@ void SkillDataTable::LoadSkillData()
     for (const CString& strFile : vFiles)
     {
         MS2Ptr<CCacheData> spCache(new CCacheData);
-        spCache->FUN_1401d1160(strFile);
+        spCache->SetPath(strFile);
         m_skillCaches.push_back(spCache);
     }
     Concurrency::parallel_for_each(std::begin(vFiles), std::end(vFiles), [this](CString strFile) {
@@ -1220,7 +1220,7 @@ void SkillDataTable::LoadAdditional()
     for (const CString& strFile : vFiles)
     {
         MS2Ptr<CCacheData> spCache(new CCacheData);
-        spCache->FUN_1401d1160(strFile);
+        spCache->SetPath(strFile);
         m_additionalCaches.push_back(spCache);
     }
     Concurrency::parallel_for_each(std::begin(vFiles), std::end(vFiles), [this](CString strFile) {
@@ -1248,7 +1248,7 @@ MS2Ptr<SkillLevelData> SkillDataTable::GetSkillLevelData(unsigned nSkillId, unsi
     MS2Ptr<SkillData> spSkill = GetSkillData(nSkillId);
     if (!spSkill)
         return 0;
-    return spSkill->FUN_1407e90a0(nLevel);
+    return spSkill->GetLevelData(nLevel);
 }
 MS2_REPLACE_METHOD(0x1407ee2f0, SkillDataTable, GetSkillLevelData, 180, 0x950E1BFB);
 
@@ -1343,8 +1343,8 @@ void SkillDataTable::IndexSensors(MS2Ptr<SkillData> spSkill)
 // @0x1407eec60
 void SkillDataTable::FUN_1407eec60(MS2Ptr<SkillData> spSkill)
 {
-    if (((class Unk_SkillFlags*)FUN_140186320())->HasFinishSkill(spSkill->GetId()))
-        spSkill->FUN_1407ea010();
+    if (((class Unk_SkillFlags*)GetStanceTable())->HasFinishSkill(spSkill->GetId()))
+        spSkill->SetFinishSkill();
     return;
 }
 
@@ -1367,12 +1367,12 @@ bool SkillDataTable::Reload()
 {
     Concurrency::parallel_for_each(std::begin(m_skillCaches), std::end(m_skillCaches), [this](MS2Ptr<CCacheData> spCache) {
         if (FUN_1401d1320(spCache.get()))
-            LoadSkillFile(*spCache.get()->FUN_1401d1140());
+            LoadSkillFile(*spCache.get()->GetPath());
     });
     Concurrency::parallel_for_each(std::begin(m_additionalCaches), std::end(m_additionalCaches),
                                    [this](MS2Ptr<CCacheData> spCache) {
         if (FUN_1401d1320(spCache.get()))
-            LoadAdditionalFile(*spCache.get()->FUN_1401d1140());
+            LoadAdditionalFile(*spCache.get()->GetPath());
     });
     return true;
 }
@@ -1381,9 +1381,9 @@ MS2_REPLACE_METHOD(0x1407eee80, SkillDataTable, Reload, 232, 0xC515757D);
 // @0x1407eef70
 void SkillDataTable::LoadGlideData()
 {
-    CString strPath = FUN_14071a5b0("Table", "glideData.xml");
+    CString strPath = GetXmlPath("Table", "glideData.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1395,7 +1395,7 @@ void SkillDataTable::LoadGlideData()
     {
         MS2Ptr<SkillGlideData> spGlide(new SkillGlideData);
         spGlide->Load(pGlide);
-        int nId = spGlide->FUN_140802ab0();
+        int nId = spGlide->GetId();
         m_glides.insert(std::make_pair(nId, spGlide));
     }
 }
@@ -1404,7 +1404,7 @@ MS2_REPLACE_METHOD(0x1407eef70, SkillDataTable, LoadGlideData, 736, 0x25108745);
 // @0x1407ef260
 int LoadXml(TiXmlDocument& doc, const char* pszPath)
 {
-    return GetFileSystem()->FUN_1403974b0(&doc, pszPath, 0, true, false);
+    return GetFileSystem()->LoadXmlFile(&doc, pszPath, 0, true, false);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9c090-0x142c9c0d0 .text$yd

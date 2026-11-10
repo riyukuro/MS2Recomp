@@ -84,7 +84,7 @@ struct Unk_PgtConfig
     char m_pad_00[0xa0];
     CString m_strMarkServer;                                        // +0xa0 passed to the guild mark URL builder
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // C3: Unk_140acd6e0 (the button view) is ASButton itself.
 //
@@ -113,7 +113,7 @@ class UIPopUpMenu
 public:
     void FUN_141a7eb60(const Unk_PopupMenuInfo& info, MS2Ptr<CProxyGameObject> spProxy, int nType);
 };
-Unk_PopupMenu* FUN_140c30140(int nUiId);
+Unk_PopupMenu* FindPopupMenu(int nUiId);
 
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);   // set a text clip's text
 CStringW FUN_140719630(int n);                                      // the number as text
@@ -125,7 +125,7 @@ bool FUN_141b70f50(const CStringW& a, const CStringW& b);           // the names
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);
 CStringW FUN_14016a730(const char* sz, int nCodePage);
 CString FUN_141029590(unsigned __int64 nId, const CString& strKey, const CString& strName, CString strExtra);
-MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASDisplayObjectContainer> CreateDisplayObjectContainer(int nMovieId, const Scaleform::GFx::Value& v);
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, __int64 n);
@@ -134,7 +134,7 @@ void FUN_1422bcdd0(Scaleform::GFx::Value* pValue, __int64 n);
 class Unk_ASChildFinder : public ASDisplayObjectContainer
 {
 public:
-    template <class T> MS2Ptr<T> FUN_140d01c90(const CString& strName);
+    template <class T> MS2Ptr<T> FindButton(const CString& strName);
     template <class T> MS2Ptr<T> FUN_14133c5f0(const Scaleform::GFx::Value& v, const CString& strName);
 };
 
@@ -144,8 +144,8 @@ public:
 // @0x141339640
 UIPvPGuildTeamDialog::UIPvPGuildTeamDialog()
 {
-    FUN_141924170(0);
-    FUN_141925e70(0, 1);
+    SetTweenEnabled(0);
+    SetFlag(0, 1);
 }
 
 // @0x141339780
@@ -207,8 +207,8 @@ void UIPvPGuildTeamDialog::OnLoadComplete()
     if (m_info.m_nGuildIdA != 0)
         FUN_14133a4a0(m_info);
     if (m_round.m_nRound != 0) {
-        FUN_14133a7a0(m_round);
-        m_round.FUN_14133f100();
+        ShowRound(m_round);
+        m_round.Reset();
     }
 }
 MS2_REPLACE_METHOD(0x1413399A0, UIPvPGuildTeamDialog, OnLoadComplete, 673, 0x832E2D90);
@@ -248,7 +248,7 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
         info.m_scoreA.m_nScore = ((CInPacket*)pData)->ReadInt32();
         info.m_scoreB.m_nGuildId = ((CInPacket*)pData)->ReadInt64();
         info.m_scoreB.m_nScore = ((CInPacket*)pData)->ReadInt32();
-        FUN_14133a7a0(info);
+        ShowRound(info);
     }
     else if (nType == 't') {
         __int64 nWinner = ((CInPacket*)pData)->ReadInt64();
@@ -257,7 +257,7 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
             if (pDlg != 0)
                 ((class UIMassiveEvent*)(((class UIMassiveEvent*)(pDlg))))->FUN_1419f6a70(4, GetStringCommon(0x3fc), 4000);
         }
-        else if (nWinner == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0()) {
+        else if (nWinner == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.GetGuildId()) {
             Unk_RewardOtherDialog* pDlg = ((class Unk_RewardOtherDialog*)FUN_140e01890(0x4e4c));
             if (pDlg != 0) {
                 ((class UIMassiveEvent*)(((class UIMassiveEvent*)(pDlg))))->FUN_1419f6a70(2, GetStringCommon(0x3fd), 4000);
@@ -272,7 +272,7 @@ void UIPvPGuildTeamDialog::vfunc_79(void* pData)
                 FUN_141276180(s_strSemiLose, "");
             }
         }
-        FUN_14133bec0();
+        StopObserving();
     }
 }
 MS2_REPLACE_METHOD(0x141339D00, UIPvPGuildTeamDialog, vfunc_79, 1285, 0x3522EB7A);
@@ -295,7 +295,7 @@ MS2_REPLACE_METHOD(0x14133A210, UIPvPGuildTeamDialog, FUN_14133a210, 644, 0xF181
 // @0x14133a4a0
 void UIPvPGuildTeamDialog::FUN_14133a4a0(const Unk_PvPGuildTeamInfo& info)
 {
-    if (FUN_14133b8c0(info.m_nGuildIdA)) {
+    if (IsOwnGuildId(info.m_nGuildIdA)) {
         SetChildText(FUN_1422dbc00(), "m_leftGuildName", info.m_strNameA);
         SetChildText(FUN_1422dbc00(), "m_rightGuildName", info.m_strNameB);
     }
@@ -303,13 +303,13 @@ void UIPvPGuildTeamDialog::FUN_14133a4a0(const Unk_PvPGuildTeamInfo& info)
         SetChildText(FUN_1422dbc00(), "m_leftGuildName", info.m_strNameB);
         SetChildText(FUN_1422dbc00(), "m_rightGuildName", info.m_strNameA);
     }
-    FUN_14133b0f0(info.m_nGuildIdA, info.m_strMarkA);
-    FUN_14133b0f0(info.m_nGuildIdB, info.m_strMarkB);
+    SetGuildMark(info.m_nGuildIdA, info.m_strMarkA);
+    SetGuildMark(info.m_nGuildIdB, info.m_strMarkB);
 }
 MS2_REPLACE_METHOD(0x14133A4A0, UIPvPGuildTeamDialog, FUN_14133a4a0, 756, 0x0A595080);
 
 // @0x14133a7a0
-void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
+void UIPvPGuildTeamDialog::ShowRound(const Unk_PvPGuildRoundInfo& info)
 {
     if (m_30 == 0) {
         m_round = info;
@@ -343,16 +343,16 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
             PCBase* pPC = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(nCharId));
             if (pPC == 0)
                 continue;
-            if (FUN_14133b830(reinterpret_cast<PC*>(pPC)->GetGuildName())) {
+            if (IsOwnGuildName(reinterpret_cast<PC*>(pPC)->GetGuildName())) {
                 if (nLeft >= 3)
                     continue;
-                FUN_14133bab0(m_spLeftPlayers[nLeft], pPC, bPlaying);
+                FillPlayerSlot(m_spLeftPlayers[nLeft], pPC, bPlaying);
                 nLeft++;
             }
             else {
                 if (nRight >= 3)
                     continue;
-                FUN_14133bab0(m_spRightPlayers[nRight], pPC, bPlaying);
+                FillPlayerSlot(m_spRightPlayers[nRight], pPC, bPlaying);
                 nRight++;
             }
         }
@@ -360,7 +360,7 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
     else {
         m_spComponent->Invoke("clearTime");
     }
-    if (FUN_14133b8c0(info.m_scoreA.m_nGuildId)) {
+    if (IsOwnGuildId(info.m_scoreA.m_nGuildId)) {
         SetChildText(FUN_1422dbc00(), "m_leftGuildScore", FUN_140719630(info.m_scoreA.m_nScore));
         SetChildText(FUN_1422dbc00(), "m_rightGuildScore", FUN_140719630(info.m_scoreB.m_nScore));
     }
@@ -369,7 +369,7 @@ void UIPvPGuildTeamDialog::FUN_14133a7a0(const Unk_PvPGuildRoundInfo& info)
         SetChildText(FUN_1422dbc00(), "m_rightGuildScore", FUN_140719630(info.m_scoreA.m_nScore));
     }
 }
-MS2_REPLACE_METHOD(0x14133A7A0, UIPvPGuildTeamDialog, FUN_14133a7a0, 2054, 0x9313CBEC);
+MS2_REPLACE_METHOD(0x14133A7A0, UIPvPGuildTeamDialog, ShowRound, 2054, 0x9313CBEC);
 
 // @0x14133afb0
 void UIPvPGuildTeamDialog::FUN_14133afb0(unsigned __int64 nCharId, __int64 nHp, __int64 nMaxHp)
@@ -382,15 +382,15 @@ void UIPvPGuildTeamDialog::FUN_14133afb0(unsigned __int64 nCharId, __int64 nHp, 
 MS2_REPLACE_METHOD(0x14133AFB0, UIPvPGuildTeamDialog, FUN_14133afb0, 250, 0xC4868C3B);
 
 // @0x14133b0b0
-void UIPvPGuildTeamDialog::FUN_14133b0b0()
+void UIPvPGuildTeamDialog::ClearObservedPlayer()
 {
     m_strObserved = "";
-    FUN_14133bf60(0);
+    UpdateObserveButtons(0);
 }
-MS2_REPLACE_METHOD(0x14133B0B0, UIPvPGuildTeamDialog, FUN_14133b0b0, 53, 0x7C50C4B6);
+MS2_REPLACE_METHOD(0x14133B0B0, UIPvPGuildTeamDialog, ClearObservedPlayer, 53, 0x7C50C4B6);
 
 // @0x14133b0f0
-void UIPvPGuildTeamDialog::FUN_14133b0f0(__int64 nGuildId, const CStringW& strMark)
+void UIPvPGuildTeamDialog::SetGuildMark(__int64 nGuildId, const CStringW& strMark)
 {
     if (!m_30)
         return;
@@ -399,13 +399,13 @@ void UIPvPGuildTeamDialog::FUN_14133b0f0(__int64 nGuildId, const CStringW& strMa
     if (m_info.m_nGuildIdA != nGuildId && m_info.m_nGuildIdB != nGuildId)
         return;
     CStringW strUrl;
-    strUrl = FUN_14016a730(FUN_141029590(nGuildId, FUN_14016a600(strMark, 0), "", ((struct Unk_PgtConfig*)FUN_1401d31f0())->m_strMarkServer), 0);
-    if (FUN_14133b8c0(nGuildId))
+    strUrl = FUN_14016a730(FUN_141029590(nGuildId, FUN_14016a600(strMark, 0), "", ((struct Unk_PgtConfig*)GetCommonResource())->m_strMarkServer), 0);
+    if (IsOwnGuildId(nGuildId))
         m_spComponent->Invoke("setLeftGuildMark", strUrl);
     else
         m_spComponent->Invoke("setRightGuildMark", strUrl);
 }
-MS2_REPLACE_METHOD(0x14133B0F0, UIPvPGuildTeamDialog, FUN_14133b0f0, 755, 0x71123AE4);
+MS2_REPLACE_METHOD(0x14133B0F0, UIPvPGuildTeamDialog, SetGuildMark, 755, 0x71123AE4);
 
 // @0x14133b3f0
 int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
@@ -419,9 +419,9 @@ int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             CStringW strName = data.FUN_1422b8f40();
             if (FUN_141b70f50(strName, m_strObserved))
-                FUN_14133bec0();
+                StopObserving();
             else
-                FUN_14133bd80(strName);
+                ObservePlayer(strName);
             return 1;
         }
         return 1;
@@ -432,9 +432,9 @@ int UIPvPGuildTeamDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             float x = data.PopFloat();
             float y = data.PopFloat();
             CStringW strName = data.FUN_1422b8f40();
-            Unk_PopupMenu* pMenu = FUN_140c30140(0x4e39);
+            Unk_PopupMenu* pMenu = FindPopupMenu(0x4e39);
             if (pMenu != 0) {
-                MS2Ptr<CProxyGameObject> spTarget = WorldService::GetInstance()->FUN_141bc9d60(strName);
+                MS2Ptr<CProxyGameObject> spTarget = WorldService::GetInstance()->FindProxyObjectByName(strName);
                 if (spTarget.get() != 0) {
                     Unk_PopupMenuInfo info(x, y, 3, 0x3f3fe, 1, "", NULL);
                     reinterpret_cast<UIPopUpMenu*>(pMenu)->FUN_141a7eb60(info, spTarget, 0xb);
@@ -457,22 +457,22 @@ void UIPvPGuildTeamDialog::vfunc_43()
 }
 
 // @0x14133b830
-bool UIPvPGuildTeamDialog::FUN_14133b830(CStringW strGuildName)
+bool UIPvPGuildTeamDialog::IsOwnGuildName(CStringW strGuildName)
 {
-    if (strGuildName == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404cccb0())
+    if (strGuildName == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.GetGuildName())
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x14133B830, UIPvPGuildTeamDialog, FUN_14133b830, 138, 0x70BF04D1);
+MS2_REPLACE_METHOD(0x14133B830, UIPvPGuildTeamDialog, IsOwnGuildName, 138, 0x70BF04D1);
 
 // @0x14133b8c0
-bool UIPvPGuildTeamDialog::FUN_14133b8c0(__int64 nGuildId)
+bool UIPvPGuildTeamDialog::IsOwnGuildId(__int64 nGuildId)
 {
-    if (nGuildId == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.FUN_1404ccbd0())
+    if (nGuildId == reinterpret_cast<Unk_PgtGuildSvc*>(TSingleton<CGuildManager>::GetInstance())->m_info.GetGuildId())
         return true;
     return false;
 }
-MS2_REPLACE_METHOD(0x14133B8C0, UIPvPGuildTeamDialog, FUN_14133b8c0, 49, 0x684ADF7F);
+MS2_REPLACE_METHOD(0x14133B8C0, UIPvPGuildTeamDialog, IsOwnGuildId, 49, 0x684ADF7F);
 
 // @0x14133b900
 void UIPvPGuildTeamDialog::FUN_14133b900(unsigned nEndTime)
@@ -494,7 +494,7 @@ void UIPvPGuildTeamDialog::FUN_14133b900(unsigned nEndTime)
 MS2_REPLACE_METHOD(0x14133B900, UIPvPGuildTeamDialog, FUN_14133b900, 423, 0xE91E54AA);
 
 // @0x14133bab0
-void UIPvPGuildTeamDialog::FUN_14133bab0(MS2Ptr<ASUIComponent> spSlot, PCBase* pPC, bool bPlaying)
+void UIPvPGuildTeamDialog::FillPlayerSlot(MS2Ptr<ASUIComponent> spSlot, PCBase* pPC, bool bPlaying)
 {
     m_slots[((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80()] = spSlot;
     const CStringW& strName = pPC->vfunc_77();
@@ -509,17 +509,17 @@ void UIPvPGuildTeamDialog::FUN_14133bab0(MS2Ptr<ASUIComponent> spSlot, PCBase* p
     if (spButton == 0)
         return;
     if (bPlaying) {
-        reinterpret_cast<ASMovieClip*>(spButton.operator->())->FUN_1422c1fe0(0);
+        reinterpret_cast<ASMovieClip*>(spButton.operator->())->SetEnabled(0);
     }
     else {
-        reinterpret_cast<ASMovieClip*>(spButton.operator->())->FUN_1422c1fe0(1);
-        reinterpret_cast<ASButton*>(spButton.operator->())->FUN_1422ce090(bObserved);
+        reinterpret_cast<ASMovieClip*>(spButton.operator->())->SetEnabled(1);
+        reinterpret_cast<ASButton*>(spButton.operator->())->SetSelected(bObserved);
     }
 }
-MS2_REPLACE_METHOD(0x14133BAB0, UIPvPGuildTeamDialog, FUN_14133bab0, 710, 0x4FB65197);
+MS2_REPLACE_METHOD(0x14133BAB0, UIPvPGuildTeamDialog, FillPlayerSlot, 710, 0x4FB65197);
 
 // @0x14133bd80
-void UIPvPGuildTeamDialog::FUN_14133bd80(CStringW strName)
+void UIPvPGuildTeamDialog::ObservePlayer(CStringW strName)
 {
     efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (spPC == 0)
@@ -527,28 +527,28 @@ void UIPvPGuildTeamDialog::FUN_14133bd80(CStringW strName)
     m_strObserved = strName;
     PCBase* pTarget = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1420(m_strObserved));
     if (pTarget == 0) {
-        FUN_14133bec0();
+        StopObserving();
         return;
     }
     spPC->StartObserving(pTarget);
-    FUN_14133bf60(pTarget);
+    UpdateObserveButtons(pTarget);
 }
-MS2_REPLACE_METHOD(0x14133BD80, UIPvPGuildTeamDialog, FUN_14133bd80, 304, 0x8BA07BA2);
+MS2_REPLACE_METHOD(0x14133BD80, UIPvPGuildTeamDialog, ObservePlayer, 304, 0x8BA07BA2);
 
 // @0x14133bec0
-void UIPvPGuildTeamDialog::FUN_14133bec0()
+void UIPvPGuildTeamDialog::StopObserving()
 {
     efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (spPC == 0)
         return;
     m_strObserved = "";
     spPC->StopObserving();
-    FUN_14133bf60(0);
+    UpdateObserveButtons(0);
 }
-MS2_REPLACE_METHOD(0x14133BEC0, UIPvPGuildTeamDialog, FUN_14133bec0, 149, 0x63734D08);
+MS2_REPLACE_METHOD(0x14133BEC0, UIPvPGuildTeamDialog, StopObserving, 149, 0x63734D08);
 
 // @0x14133bf60
-void UIPvPGuildTeamDialog::FUN_14133bf60(PCBase* pTarget)
+void UIPvPGuildTeamDialog::UpdateObserveButtons(PCBase* pTarget)
 {
     std::map<unsigned __int64, MS2Ptr<ASUIComponent> >::iterator it = m_slots.begin();
     std::map<unsigned __int64, MS2Ptr<ASUIComponent> >::iterator itEnd = m_slots.end();
@@ -557,17 +557,17 @@ void UIPvPGuildTeamDialog::FUN_14133bf60(PCBase* pTarget)
         if (spButton == 0)
             continue;
         if (pTarget != 0 && it->first == ((class PCBase*)(class PCBase*)(pTarget))->FUN_141656a80())
-            reinterpret_cast<ASButton*>(spButton.operator->())->FUN_1422ce090(1);
+            reinterpret_cast<ASButton*>(spButton.operator->())->SetSelected(1);
         else
-            reinterpret_cast<ASButton*>(spButton.operator->())->FUN_1422ce090(0);
+            reinterpret_cast<ASButton*>(spButton.operator->())->SetSelected(0);
     }
 }
-MS2_REPLACE_METHOD(0x14133BF60, UIPvPGuildTeamDialog, FUN_14133bf60, 323, 0x506F141D);
+MS2_REPLACE_METHOD(0x14133BF60, UIPvPGuildTeamDialog, UpdateObserveButtons, 323, 0x506F141D);
 
 // ---- COMDATs ----
 
 // @0x14133c460
-template <class T> MS2Ptr<T> Unk_ASChildFinder::FUN_140d01c90(const CString& strName)
+template <class T> MS2Ptr<T> Unk_ASChildFinder::FindButton(const CString& strName)
 {
     return FUN_14133c5f0<T>(m_value, strName);
 }
@@ -582,23 +582,23 @@ template <class T> MS2Ptr<T> UIDialog::FUN_141926e30(const CString& strName)
         UIPVPGUILDTEAM_INL_ASSERT_0();
         return MS2Ptr<T>(0);
     }
-    return static_cast<Unk_ASChildFinder*>(spContainer.operator->())->FUN_140d01c90<T>(strName);
+    return static_cast<Unk_ASChildFinder*>(spContainer.operator->())->FindButton<T>(strName);
 }
 
 // @0x14133c5f0
 template <class T> MS2Ptr<T> Unk_ASChildFinder::FUN_14133c5f0(const Scaleform::GFx::Value& v, const CString& strName)
 {
-    MS2Ptr<ASDisplayObjectContainer> spObj = FUN_140bc5fc0(m_nMovieId, v);
+    MS2Ptr<ASDisplayObjectContainer> spObj = CreateDisplayObjectContainer(m_nMovieId, v);
     if (!spObj->HasMember("getChildByName"))
         return MS2Ptr<T>(0);
-    Scaleform::GFx::Value child = spObj->FUN_1422c6b00(strName);
+    Scaleform::GFx::Value child = spObj->GetChildByName(strName);
     if (child.IsObject())
         return Unk_ASCreate<T>(m_nMovieId, child);
     if (!spObj->HasMember("numChildren"))
         return MS2Ptr<T>(0);
-    int nCount = spObj->FUN_1422c6670();
+    int nCount = spObj->GetNumChildren();
     for (int i = 0; i < nCount; i++) {
-        Scaleform::GFx::Value sub = spObj->FUN_1422c6aa0(i);
+        Scaleform::GFx::Value sub = spObj->GetChildAt(i);
         if (!sub.IsObject())
             continue;
         MS2Ptr<T> spFound = FUN_14133c5f0<T>(sub, strName);

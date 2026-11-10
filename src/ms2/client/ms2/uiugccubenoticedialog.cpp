@@ -29,7 +29,7 @@ MS2Ptr<ASSlider> CreateSlider(int nId, const Scaleform::GFx::Value& v);
 extern template class MS2Ptr<ASSlider>;                              // instances owned by uiupperhuddialog.cpp
 
 void FUN_140710590(COutPacket& packet);
-void FUN_1412751f0(const CStringW& strMsg, int a, int b);           // show a notice message
+void ShowSystemNotice(const CStringW& strMsg, int a, int b);           // show a notice message
 
 #ifndef MS2_HOOK_DLL
 extern template class MS2Ptr<CBanTextChecker>;
@@ -70,8 +70,8 @@ MS2_REPLACE_METHOD(0x140FAF9F0, UIUGCCubeNoticeDialog, GetTypeName, 61, 0x169FEF
 void UIUGCCubeNoticeDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925fa0(CString("m_dragBar"));
-    FUN_141925ec0(CString("m_btnClose"));
+    BindDragBar(CString("m_dragBar"));
+    BindCloseButton(CString("m_btnClose"));
     m_30.operator->()->Invoke("setData", CStringW(m_strMessage), m_nDistance);
 }
 MS2_REPLACE_METHOD(0x140FAFA40, UIUGCCubeNoticeDialog, OnLoadComplete, 280, 0xC0C93711);
@@ -96,7 +96,7 @@ void UIUGCCubeNoticeDialog::OnApply()
     if (MS2Ptr<ASTextInput> spText = GetChild<ASTextInput>("m_textMessage"))
         m_strMessage = spText->GetText();
     if (MS2Ptr<ASSlider> spSlider = GetChild<ASSlider>("m_sliderDistance"))
-        m_nDistance = (int)spSlider->FUN_1422ce630();
+        m_nDistance = (int)spSlider->GetValue();
     CBanTextChecker* pChecker;
     CBanTextChecker* pDead = pChecker = TSingleton<CommonString>::GetInstance()->GetChecker();
     if (pChecker != 0)
@@ -104,7 +104,7 @@ void UIUGCCubeNoticeDialog::OnApply()
         CStringW strMessage;
         if (pChecker->FUN_1402266e0(m_strMessage, strMessage) != 0)
         {
-            FUN_1412751f0(strMessage, 1, 1);
+            ShowSystemNotice(strMessage, 1, 1);
             return;
         }
     }

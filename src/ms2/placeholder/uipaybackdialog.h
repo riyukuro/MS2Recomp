@@ -8,5 +8,5 @@
 class UIPaybackDialog : public UIDialog
 {
 public:
-    int FUN_140e6f890();                                    // 0x140e6f890 a payback reward can be claimed
+    int IsPaybackAvailable();                                    // 0x140e6f890 a payback reward can be claimed
 };

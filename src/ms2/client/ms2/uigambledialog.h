@@ -30,7 +30,7 @@ public:
     virtual void vfunc_67();                                               // 67 0x141935330
     virtual void vfunc_79(void* pPacket);                                  // 79 0x1419354f0
 
-    int FUN_141935710();                                                   // fill the result items into the movie
+    int SetResultItems();                                                   // fill the result items into the movie
 
 private:
     MS2_LAYOUT_FRIEND;

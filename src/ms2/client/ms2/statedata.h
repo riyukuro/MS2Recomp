@@ -280,21 +280,21 @@ public:
     virtual int vfunc_36();                                     // 36 0x1417bee30
 
     static int FUN_1417bc010();                                  // ray cast collision groups
-    int FUN_1417bcc80();                                        // a climbable wall is ahead (and high enough)
-    int FUN_1417bcf20();                                        // the wall is still in front
+    int HasClimbableWallAhead();                                        // a climbable wall is ahead (and high enough)
+    int IsWallInFront();                                        // the wall is still in front
     int FUN_1417bd030(int bLeft);                               // the wall continues sideways
     int FUN_1417bd310(efd::Point3 kPos);                        // re-attach to the wall at kPos
     int FUN_1417bd420(void* pWall);                             // the wall edges are far enough
     int FUN_1417bd6c0();                                        // the top / bottom is walkable ground
     int FUN_1417bda60();                                        // phase checks (top, ground, fall off)
-    int FUN_1417bdee0();                                        // pick the phase from the input
-    int FUN_1417be120(double fTime);                            // move by the phase
-    int FUN_1417be590(double fTime);                            // up
-    int FUN_1417be680(double fTime);                            // down
-    int FUN_1417be760(double fTime);                            // left
-    int FUN_1417be880(double fTime);                            // right
+    int UpdatePhaseFromInput();                                        // pick the phase from the input
+    int MoveByPhase(double fTime);                            // move by the phase
+    int MoveUp(double fTime);                            // up
+    int MoveDown(double fTime);                            // down
+    int MoveLeft(double fTime);                            // left
+    int MoveRight(double fTime);                            // right
     int FUN_1417be990(double fTime);                            // analog stick move
-    void FUN_1417beb40();                                       // climb over the top
+    void ClimbOverTop();                                       // climb over the top
 
     Timer m_timerHit;                                           // +0x78
     Timer m_timerHang;                                          // +0xb0
@@ -385,7 +385,7 @@ public:
     StateHoldData();                                            // 0x1417cb9c0 (skill 20000031 level 1)
     virtual void vfunc_1(Unk_StateDataArg* p);                  // 1 0x1417cba30
     virtual void vfunc_2(Unk_StateDataArg* p);                  // 2 0x1417cbaf0
-    MS2Ptr<class SkillData> FUN_1417cbb50();                    // the skill table row of m_nSkill
+    MS2Ptr<class SkillData> GetSkillData();                    // the skill table row of m_nSkill
 
     int m_nTargetId;                                            // +0x20
     int m_pad_24;

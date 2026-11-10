@@ -970,7 +970,7 @@ MS2_REPLACE_METHOD(0x1406CD310, CNpcData, GetRace, 14, 0x828204CF);
 class CLogString* GetLogString();
 class Unk_CommonLog { public: void Log(unsigned __int64 a, unsigned __int64 b, int flags, const wchar_t* message); };
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 int FUN_1408731e0(TiXmlElement*, const char*, int&);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 int FUN_140873420(TiXmlElement*, const char*, CStringW&);
@@ -1044,7 +1044,7 @@ MS2Ptr<CRegionSpawnProb> CRegionSpawnResult::Pick() const
 
 // @0x1406cd330
 Unk_NpcTableCli* FUN_1406d6e90();
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId)
+MS2Ptr<CNpcData> FindNpcData(int nNpcId)
 {
     if (nNpcId == 0)
         return MS2Ptr<CNpcData>(0);
@@ -1248,9 +1248,9 @@ void CNpcDataTable::LoadNpcCache()
 // @0x1406ce6d0
 void CNpcDataTable::LoadRegionSpawn()
 {
-    CString strPath = FUN_14071a5b0("Table", "NpcRegionSpawnData.xml");
+    CString strPath = GetXmlPath("Table", "NpcRegionSpawnData.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         reinterpret_cast<Unk_CommonLog*>(GetLogString())->Log(0, 0, 0xc, L"NpcDataTable.cpp:Init : File not found NpcRegionSpawnData.xml");
         return;
@@ -1404,9 +1404,9 @@ template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wch
 void Unk_CoupleEmotionSplit(CString& str, std::vector<CString>& vec, const char* pszDelim);
 template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C& out);   // C3: was FUN_1401788f0 (CAtlArray<CString>)
 template <> int XmlTokenList(TiXmlElement* pElem, const char* pszName, ATL::CAtlArray<CString>& out);   // 0x1401788f0 (xmlattr.h)
-int FUN_1403759c0(TiXmlElement*, const char*, std::vector<short>&);
+int XmlGetShortList(TiXmlElement*, const char*, std::vector<short>&);
 int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 
 // The web-finder dictionary: an entry lookup by (table, npc id), then a null test of the entry.
@@ -1469,7 +1469,7 @@ bool CNpcData::LoadXml(TiXmlElement* pElem)
     XmlGetAttr((class TiXmlElement*)(pElem), "extraCameraDistance", reinterpret_cast<float&>(m_fExtraCameraDistance));
     XmlGetAttr((class TiXmlElement*)(pElem), "bossSoundDistance", reinterpret_cast<float&>(m_fBossSoundDistance));
     XmlGetAttr((class TiXmlElement*)(pElem), "bossSoundEndDistance", reinterpret_cast<float&>(m_fBossSoundEndDistance));
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2f))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x2f))
     {
         if (FUN_140541580() != 0)
         {
@@ -1535,14 +1535,14 @@ bool CNpcData::LoadXml(TiXmlElement* pElem)
             if (!strName.IsEmpty())
                 XmlGetAttr((class TiXmlElement*)(pStat), strName, reinterpret_cast<__int64&>(m_stat.m_aBase[i]));
         }
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb2))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb2))
         {
             XmlGetAttr((class TiXmlElement*)(pStat), "scaleStatRate_2", reinterpret_cast<float&>(m_stat.m_fScaleStatRate));
             XmlGetAttr((class TiXmlElement*)(pStat), "scaleBaseTap_2", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseTap));
             XmlGetAttr((class TiXmlElement*)(pStat), "scaleBaseDef_2", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseDef));
             XmlGetAttr((class TiXmlElement*)(pStat), "scaleBaseSpaRate_2", reinterpret_cast<float&>(m_stat.m_fScaleBaseSpaRate));
         }
-        else if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb1))
+        else if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb1))
         {
             XmlGetAttr((class TiXmlElement*)(pStat), "scaleStatRate_1", reinterpret_cast<float&>(m_stat.m_fScaleStatRate));
             XmlGetAttr((class TiXmlElement*)(pStat), "scaleBaseTap_1", reinterpret_cast<__int64&>(m_stat.m_nScaleBaseTap));
@@ -1565,7 +1565,7 @@ bool CNpcData::LoadXml(TiXmlElement* pElem)
     if (pSkill)
     {
         XmlTokenList(pSkill, "ids", m_skill.m_aIds);
-        FUN_1403759c0(pSkill, "levels", reinterpret_cast<std::vector<short>&>(m_skill.m_aLevels));
+        XmlGetShortList(pSkill, "levels", reinterpret_cast<std::vector<short>&>(m_skill.m_aLevels));
         XmlTokenList(pSkill, "probs", m_skill.m_aProbs);
     }
     TiXmlElement* pAdditionalEffect = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("additionalEffect"));
@@ -1681,7 +1681,7 @@ bool CNpcData::LoadXml(TiXmlElement* pElem)
             probs.SetCount(actions.GetCount(), -1);
         }
         for (unsigned i = 0; i < actions.GetCount(); ++i)
-            m_normal.m_aActions.Add(std::make_pair(CStringA(FUN_14016a5c0(actions[i], 0)), static_cast<int&&>(probs[i])));
+            m_normal.m_aActions.Add(std::make_pair(CStringA(ToCString(actions[i], 0)), static_cast<int&&>(probs[i])));
         if (XmlGetAttr((class TiXmlElement*)(pNormal), "movearea", reinterpret_cast<int&>(m_normal.m_nMoveArea)) != 0)
             m_normal.m_nMoveArea = 200;
     }

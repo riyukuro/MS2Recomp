@@ -64,8 +64,8 @@ public:
     virtual CString vfunc_11();
     virtual void vfunc_12(__int64 itemUid);
 
-    int FUN_14189f730();                                    // the wearer's object id
-    void FUN_14189f750(int nObjectId);
+    int GetObjectId();                                    // the wearer's object id
+    void SetObjectId(int nObjectId);
     efd::SmartPointer<NiSourceTexture> FUN_14189f770();     // the preview texture
 
     CUgcItemPC m_item;                                      // +0x18
@@ -97,8 +97,8 @@ public:
     virtual CString vfunc_11();
     virtual void vfunc_12(__int64 itemUid);
 
-    egf::EntityID FUN_1418a0110();                          // the cube's entity id
-    void FUN_1418a0150(const egf::EntityID& id);
+    egf::EntityID GetEntityId();                          // the cube's entity id
+    void SetEntityId(const egf::EntityID& id);
 
     CUgcItemCube m_item;                                    // +0x18
     CUgcItemIconPC m_icon;                                  // +0x68
@@ -123,8 +123,8 @@ public:
     virtual CString vfunc_11();
     virtual void vfunc_12(__int64 itemUid);
 
-    egf::EntityID FUN_1418a2fc0();                          // the mount's entity id
-    void FUN_1418a3000(const egf::EntityID& id);
+    egf::EntityID GetEntityId();                          // the mount's entity id
+    void SetEntityId(const egf::EntityID& id);
 
     CUgcItemRidee m_item;                                   // +0x18
     CUgcItemIconPC m_icon;                                  // +0x68
@@ -268,14 +268,14 @@ class CUgcUploadCtrl : public CUgcUpload
 public:
     CUgcUploadCtrl();                                       // 0x1418a3620
     virtual ~CUgcUploadCtrl();                              // 0x1418a3740 (??_G 0x1418a6de0)
-    void FUN_1418a3840(int nType);                          // set the content kind
-    void FUN_1418a38a0();                                   // refresh the preview of the dialog
+    void SetKind(int nType);                          // set the content kind
+    void RefreshPreview();                                   // refresh the preview of the dialog
     void SetDialog(int nDialog);                        // set the dialog that shows the upload
     int GetDialog();                                    // the dialog that shows the upload
     void FUN_1418a3af0(int nResult);
-    int FUN_1418a3b80(__int64 uid);                         // prepare the upload (0 = ok)
+    int PrepareUpload(__int64 uid);                         // prepare the upload (0 = ok)
     CStringW GetResult();                               // the result text
-    int FUN_1418a3c20(__int64 uid);
+    int PrepareUploadByKind(__int64 uid);
     void FUN_1418a3db0();
     MS2Ptr<CUgcUploadCtrl> GetImage();
     void FUN_1418a4150();

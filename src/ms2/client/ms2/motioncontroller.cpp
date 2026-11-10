@@ -42,8 +42,8 @@ public:
 //
 bool FUN_14028d470(float a, float b);                               // nearly equal
 __int64 FUN_14028d260(float f);                                     // float -> fixed
-float FUN_141b71550(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd);   // bezier length
-efd::Point3 FUN_141b71390(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd, float t);   // bezier point
+float GetBezierLength(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd);   // bezier length
+efd::Point3 GetBezierPoint(Vector3 kStart, Vector3 kCtrl, Vector3 kEnd, float t);   // bezier point
 class CLogString* GetLogString();   // C3: was FUN_140166440
 int FUN_141489940(PCBase* p);
 void FUN_1414894f0(void* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
@@ -155,7 +155,7 @@ bool CMotionController::vfunc_5(double fTime)
         {
             efd::Point3 kAxis = reinterpret_cast<const efd::Point3&>(kDir).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
             kAxis.Unitize();
-            mxTilt.FUN_14107cc40(-fRad, reinterpret_cast<Vector3&>(kAxis));
+            mxTilt.MakeRotation(-fRad, reinterpret_cast<Vector3&>(kAxis));
             kDir = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxTilt) * reinterpret_cast<const efd::Point3&>(kDir)));
         }
     }
@@ -220,7 +220,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     {
         efd::Point3 kAxis = reinterpret_cast<const efd::Point3&>(kRot).Cross(reinterpret_cast<const efd::Point3&>(DAT_143a08cf8));
         kAxis.Unitize();
-        mxTilt.FUN_14107cc40(-fRad, reinterpret_cast<Vector3&>(kAxis));
+        mxTilt.MakeRotation(-fRad, reinterpret_cast<Vector3&>(kAxis));
         kRot = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(*reinterpret_cast<efd::Matrix3*>(&mxTilt) * reinterpret_cast<const efd::Point3&>(kRot)));
     }
     m_kDir = kRot;
@@ -232,7 +232,7 @@ int CArcMotionController::vfunc_2(Unk_MotionData* pData, PCBase* pTarget)
     m_kCtrlPos = reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(m_kStartPos) * m_fCtrlWeight + reinterpret_cast<const efd::Point3&>(m_kEndPos) * (1.0f - m_fCtrlWeight)));
     m_kCtrlPos.z = m_kCtrlPos.z + m_fCtrlHeight;
     m_kMove = reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(pTarget->vfunc_18()));
-    m_fSpeedLimit = FUN_141b71550(m_kStartPos, m_kCtrlPos, m_kEndPos);
+    m_fSpeedLimit = GetBezierLength(m_kStartPos, m_kCtrlPos, m_kEndPos);
     return 1;
 }
 
@@ -260,7 +260,7 @@ bool CArcMotionController::vfunc_5(double fTime)
         fT = 0.0f;
     if (1.0f < fT)
         fT = 1.0f;
-    efd::Point3 kPos = FUN_141b71390(m_kStartPos, m_kCtrlPos, m_kEndPos, fT);
+    efd::Point3 kPos = GetBezierPoint(m_kStartPos, m_kCtrlPos, m_kEndPos, fT);
     FUN_1414894f0(((void*)GetLogString()), 0xc, 0x13, L"{0} {1} {2} {3}", &fT, &kPos.x, &kPos.y, &kPos.z);
     m_kDir = (reinterpret_cast<Vector3&>(kPos) - m_kMove);
     m_kHeading = m_kDir;

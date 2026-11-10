@@ -126,7 +126,7 @@ static bool g_backgroundWarning=false;
 #include "ms2/client/ms2/entityworldmanager.h"
 #pragma pop_macro("max")
 #pragma pop_macro("min")
-void FUN_140de8bd0(egf::Entity*,unsigned,efd::AssetID*);
+void SetAssetIdProperty(egf::Entity*,unsigned,efd::AssetID*);
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 egf::g_bapiContext
@@ -162,7 +162,7 @@ MS2_CHECK_SIZE(egf::EntityFactoryRequest,0x80);
         m_entityIdToPendingDataMap[id]=data;
         egf::EntityPtr entity=TSingleton<EntityWorldManager>::GetInstance()->FactoryEntity(model,id,isMaster);
         if(initialProps)entity->ApplyProperties(initialProps);
-        FUN_140de8bd0(entity.operator->(),0x770e5fc6,&asset);   // through operator-> (0x1408a9280)
+        SetAssetIdProperty(entity.operator->(),0x770e5fc6,&asset);   // through operator-> (0x1408a9280)
         efd::SmartPointer<HardwareInstancingService> instancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
         if(instancing)instancing->FUN_1413d7d10(id);
         if(addToWorld)TSingleton<EntityWorldManager>::GetInstance()->AddLoadedEntity(id,entity);

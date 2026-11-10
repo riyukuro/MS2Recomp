@@ -30,7 +30,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x140c1a050
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x140c1a390 (UIDialog::OnMessage != 0)
 
-    void FUN_140c1a510(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_start" clicked: popdown
+    void OnStartClick(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_start" clicked: popdown
 
 private:
     MS2_LAYOUT_FRIEND;

@@ -67,7 +67,7 @@ void FUN_140a702f0(const CString& strName, const ATL::CAtlArray<MS2Ptr<CItem> >&
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->GetSlotCount());
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
@@ -78,18 +78,18 @@ LapenshardSlotBag* FUN_140a703d0(const CString& strName)
     if (!pBag)
         return 0;
     static_cast<DragSlotBag*>(pBag)->vfunc_10(pBag->GetSlotCount());
-    Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+    Unk_NotifyContext::RegisterBinding(strName, pBag);
     return pBag;
 }
 
 // @0x140a704a0
 void RemoveLapenshardSlotBag(const CString& strName)
 {
-    LapenshardSlotBag* pBag = FUN_140a70b70(Unk_NotifyContext::FUN_1422c8e90(strName));
+    LapenshardSlotBag* pBag = FUN_140a70b70(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -120,7 +120,7 @@ LapenshardSlotBag::~LapenshardSlotBag()
 CString LapenshardSlotBag::vfunc_15(int nIndex)
 {
     CString str;
-    str.Format("%s.%d", (const char*)FUN_1422c89f0(), (unsigned)nIndex);
+    str.Format("%s.%d", (const char*)GetName(), (unsigned)nIndex);
     return str;
 }
 
@@ -146,7 +146,7 @@ int LapenshardSlotBag::GetSlotCount()
 // @0x140a70a80
 void LapenshardSlotBag::vfunc_13(int nIndex)
 {
-    LapenshardSlot* pSlot = FUN_140a6fef0(FUN_1422cd070(nIndex));
+    LapenshardSlot* pSlot = FUN_140a6fef0(GetSlot(nIndex));
     if (pSlot != 0)
         pSlot->vfunc_11();
 }
@@ -154,7 +154,7 @@ void LapenshardSlotBag::vfunc_13(int nIndex)
 // @0x140a70ad0
 void LapenshardSlotBag::vfunc_14(int nIndex)
 {
-    LapenshardSlot* pSlot = FUN_140a6fef0(FUN_1422cd070(nIndex));
+    LapenshardSlot* pSlot = FUN_140a6fef0(GetSlot(nIndex));
     if (pSlot != 0)
         pSlot->vfunc_10();
 }

@@ -84,7 +84,7 @@ void* FUN_140764020();   // C3: was FUN_140764020
 //    int FUN_1416d12d0(int, struct Unk_QmNpcQuestState*, int);
 //};
 class Unk_Svc6c7600 { };
-class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
+class Unk_NametagTrophy* GetAchieveManager();   // C3: was GetAchieveManager
 class CAchieveManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -127,7 +127,7 @@ CProxyGameObject::~CProxyGameObject()
 }
 
 // @0x1416c1ff0
-int CProxyGameObject::FUN_1416c1ff0()
+int CProxyGameObject::IsSelf()
 {
     int r;
     if (m_40 != 0 && m_40 == DAT_143ab2828) {
@@ -137,7 +137,7 @@ int CProxyGameObject::FUN_1416c1ff0()
     }
     return r;
 }
-MS2_REPLACE_METHOD(0x1416C1FF0, CProxyGameObject, FUN_1416c1ff0, 63, 0x2E42A744);
+MS2_REPLACE_METHOD(0x1416C1FF0, CProxyGameObject, IsSelf, 63, 0x2E42A744);
 
 // @0x1416c2040
 int CProxyGameObject::IsOtherPlayer()
@@ -166,7 +166,7 @@ int CProxyGameObject::FUN_1416c2090()
 MS2_REPLACE_METHOD(0x1416C2090, CProxyGameObject, FUN_1416c2090, 58, 0xA0774B98);
 
 // @0x1416c20d0
-int CProxyGameObject::FUN_1416c20d0()
+int CProxyGameObject::HasPortal()
 {
     int r;
     if (((void*)m_18.get())) {
@@ -176,12 +176,12 @@ int CProxyGameObject::FUN_1416c20d0()
     }
     return r;
 }
-MS2_REPLACE_METHOD(0x1416C20D0, CProxyGameObject, FUN_1416c20d0, 58, 0x7AD39F1A);
+MS2_REPLACE_METHOD(0x1416C20D0, CProxyGameObject, HasPortal, 58, 0x7AD39F1A);
 
 // @0x1416c2110
 int CProxyGameObject::FUN_1416c2110()
 {
-    if (FUN_1416c20d0() == 0) {
+    if (HasPortal() == 0) {
         return 0;
     }
     Unk_Entity1411cf440* ent = ((class Unk_Entity1411cf440*)((class EntityWorldManager*)(class Unk_Mgr1409670f0*)(((class Unk_Mgr1409670f0*)TSingleton<EntityWorldManager>::GetInstance())))->FindEntity(*(class egf::EntityID const*)(&reinterpret_cast<Unk_ProxyTarget*>(m_18.operator->())->m_key)));
@@ -237,11 +237,11 @@ Vector3 CProxyGameObject::GetPosition()
 MS2_REPLACE_METHOD(0x1416C2270, CProxyGameObject, GetPosition, 114, 0x6DB7BE40);
 
 // @0x1416c22f0
-void* CProxyGameObject::FUN_1416c22f0()
+void* CProxyGameObject::GetCharacterId()
 {
     return reinterpret_cast<void*>(m_40);
 }
-MS2_REPLACE_METHOD(0x1416C22F0, CProxyGameObject, FUN_1416c22f0, 15, 0x8B0075C1);
+MS2_REPLACE_METHOD(0x1416C22F0, CProxyGameObject, GetCharacterId, 15, 0x8B0075C1);
 
 // @0x1416c2310
 void* CProxyGameObject::FUN_1416c2310()
@@ -251,18 +251,18 @@ void* CProxyGameObject::FUN_1416c2310()
 MS2_REPLACE_METHOD(0x1416C2310, CProxyGameObject, FUN_1416c2310, 15, 0x5AEB0F79);
 
 // @0x1416c2330
-unsigned short CProxyGameObject::FUN_1416c2330()
+unsigned short CProxyGameObject::GetLevel()
 {
     return m_a8;
 }
-MS2_REPLACE_METHOD(0x1416C2330, CProxyGameObject, FUN_1416c2330, 18, 0xCD1B1572);
+MS2_REPLACE_METHOD(0x1416C2330, CProxyGameObject, GetLevel, 18, 0xCD1B1572);
 
 // @0x1416c2350
-int CProxyGameObject::FUN_1416c2350()
+int CProxyGameObject::GetTemplateId()
 {
     return m_78;
 }
-MS2_REPLACE_METHOD(0x1416C2350, CProxyGameObject, FUN_1416c2350, 14, 0xB1F80757);
+MS2_REPLACE_METHOD(0x1416C2350, CProxyGameObject, GetTemplateId, 14, 0xB1F80757);
 
 // @0x1416c2370
 int CProxyGameObject::FUN_1416c2370()
@@ -272,11 +272,11 @@ int CProxyGameObject::FUN_1416c2370()
 MS2_REPLACE_METHOD(0x1416C2370, CProxyGameObject, FUN_1416c2370, 17, 0x84EDFDD7);
 
 // @0x1416c2390
-int CProxyGameObject::FUN_1416c2390()
+int CProxyGameObject::GetJobCode()
 {
     return m_b0;
 }
-MS2_REPLACE_METHOD(0x1416C2390, CProxyGameObject, FUN_1416c2390, 17, 0x1F8D7963);
+MS2_REPLACE_METHOD(0x1416C2390, CProxyGameObject, GetJobCode, 17, 0x1F8D7963);
 
 // @0x1416c23b0
 CStringW CProxyGameObject::GetName()
@@ -297,26 +297,26 @@ CStringW CProxyGameObject::GetName()
 MS2_REPLACE_METHOD(0x1416C23B0, CProxyGameObject, GetName, 352, 0xD3390841);
 
 // @0x1416c2520
-CString CProxyGameObject::FUN_1416c2520()
+CString CProxyGameObject::GetPortraitPath()
 {
     return m_50;
 }
-MS2_REPLACE_METHOD(0x1416C2520, CProxyGameObject, FUN_1416c2520, 66, 0x998DDC8A);
+MS2_REPLACE_METHOD(0x1416C2520, CProxyGameObject, GetPortraitPath, 66, 0x998DDC8A);
 
 // @0x1416c2570
-CStringW CProxyGameObject::FUN_1416c2570()
+CStringW CProxyGameObject::GetTodayMemo()
 {
-    if (FUN_1416c1ff0() != 0) {
+    if (IsSelf() != 0) {
         return reinterpret_cast<PC*>(WorldService::GetInstance()->FUN_141bd0cc0())->GetName();
     }
     return m_60;
 }
-MS2_REPLACE_METHOD(0x1416C2570, CProxyGameObject, FUN_1416c2570, 133, 0x325768ED);
+MS2_REPLACE_METHOD(0x1416C2570, CProxyGameObject, GetTodayMemo, 133, 0x325768ED);
 
 // @0x1416c2600
 CStringW CProxyGameObject::FUN_1416c2600()
 {
-    if (FUN_1416c1ff0() != 0) {
+    if (IsSelf() != 0) {
         return reinterpret_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0())->GetHomeAddress();
     } else {
         {
@@ -344,24 +344,24 @@ CStringW CProxyGameObject::FUN_1416c2600()
 MS2_REPLACE_METHOD(0x1416C2600, CProxyGameObject, FUN_1416c2600, 775, 0x4AA42C46);
 
 // @0x1416c2920
-int CProxyGameObject::FUN_1416c2920()
+int CProxyGameObject::GetTrophyTotal()
 {
     return reinterpret_cast<Unk_IntTriple&>(m_d0).Sum();
 }
-MS2_REPLACE_METHOD(0x1416C2920, CProxyGameObject, FUN_1416c2920, 33, 0x5153CC8C);
+MS2_REPLACE_METHOD(0x1416C2920, CProxyGameObject, GetTrophyTotal, 33, 0x5153CC8C);
 
 // @0x1416c2950
-Unk_ProxyValueD0* CProxyGameObject::FUN_1416c2950()
+Unk_ProxyValueD0* CProxyGameObject::GetTally()
 {
-    if (FUN_1416c1ff0() != 0) {
-        return ((Unk_ProxyValueD0*)((class CAchieveManager*)(class Unk_Svc6c7600*)(((class Unk_Svc6c7600*)FUN_1406c7600())))->GetTally());
+    if (IsSelf() != 0) {
+        return ((Unk_ProxyValueD0*)((class CAchieveManager*)(class Unk_Svc6c7600*)(((class Unk_Svc6c7600*)GetAchieveManager())))->GetTally());
     }
     return &m_d0;
 }
-MS2_REPLACE_METHOD(0x1416C2950, CProxyGameObject, FUN_1416c2950, 54, 0x83FAF988);
+MS2_REPLACE_METHOD(0x1416C2950, CProxyGameObject, GetTally, 54, 0x83FAF988);
 
 // @0x1416c2990
-int CProxyGameObject::FUN_1416c2990(int nTemplateId)
+int CProxyGameObject::SetTemplateId(int nTemplateId)
 {
     m_78 = nTemplateId;
     m_28 = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(m_78);
@@ -376,7 +376,7 @@ int CProxyGameObject::FUN_1416c2990(int nTemplateId)
     }
     return r;
 }
-MS2_REPLACE_METHOD(0x1416C2990, CProxyGameObject, FUN_1416c2990, 224, 0xA8CBDA0F);
+MS2_REPLACE_METHOD(0x1416C2990, CProxyGameObject, SetTemplateId, 224, 0xA8CBDA0F);
 
 // @0x1416c2a80
 void CProxyGameObject::UpdateQuestState()
@@ -396,11 +396,11 @@ void CProxyGameObject::UpdateQuestState()
 MS2_REPLACE_METHOD(0x1416C2A80, CProxyGameObject, UpdateQuestState, 157, 0x48E7C890);
 
 // @0x1416c2b30
-bool CProxyGameObject::FUN_1416c2b30()
+bool CProxyGameObject::IsVisibleOnMinimap()
 {
     return m_e4 == 1;
 }
-MS2_REPLACE_METHOD(0x1416C2B30, CProxyGameObject, FUN_1416c2b30, 48, 0x552AC3F2);
+MS2_REPLACE_METHOD(0x1416C2B30, CProxyGameObject, IsVisibleOnMinimap, 48, 0x552AC3F2);
 
 // @0x1416c2b70
 bool CProxyGameObject::FUN_1416c2b70()

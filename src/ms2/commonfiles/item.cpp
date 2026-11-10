@@ -74,13 +74,13 @@ extern __int64 GetServerTime();
 
 // w101 additions: unit-local record types for the table lookups CItem makes (names are descriptive, not original).
 class Unk_140166410* FUN_140166410();
-class CFeatureManager { public: bool FUN_14036d570(int nFeature); int FUN_14036dc40(); };   // C3: unit-local view
+class CFeatureManager { public: bool IsFeatureEnabled(int nFeature); int FUN_14036dc40(); };   // C3: unit-local view
 extern MS2Ptr<CItemData> FUN_14053f870(int);
 // 0x14052d230 TSingleton<ItemGachaBoxTable>::GetInstance (s_instance is the exe's DAT_143aaf1d0)
 // (C3: FUN_14052d230 = TSingleton<ItemGachaBoxTable>::GetInstance, itemgachaboxtable.h)
 //
 class Unk_SingletonObj {};
-// The return type of the FUN_14052d220 definition below (TSingleton<CUgcManager>::GetInstance; callers use the real one).
+// The return type of the GetUgcManager definition below (TSingleton<CUgcManager>::GetInstance; callers use the real one).
 class Unk_UgcRideeMgr : public Unk_SingletonObj
 {
 };
@@ -88,7 +88,7 @@ class Unk_MusicBookTable;
 class Unk_EnchantRates : public CItemEnchantUtil { };
 // The pet row table behind DAT_143aaf1c8 (tabcontentspetevolution.cpp declares the same lookup).
 class Unk_PetRowTable : public Unk_SingletonObj { };
-CStringW FUN_141277a90(CUgcItemLook* pLook, const CStringW& strFallback);   // the UGC item name (unit_141274d10_uihelpers)
+CStringW GetUgcItemName(CUgcItemLook* pLook, const CStringW& strFallback);   // the UGC item name (unit_141274d10_uihelpers)
 class CLogString* GetLogString();
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
 class CUgcManager;
@@ -123,32 +123,32 @@ void CItem::FUN_14052a130(int v)
 MS2_REPLACE_METHOD(0x14052A130, CItem, FUN_14052a130, 22, 0x5ED7A56F);
 
 // @0x1405268f0
-int CItem::FUN_1405268f0()
+int CItem::IsNew()
 {
     return m_2c;
 }
-MS2_REPLACE_METHOD(0x1405268F0, CItem, FUN_1405268f0, 14, 0x6A78E4AB);
+MS2_REPLACE_METHOD(0x1405268F0, CItem, IsNew, 14, 0x6A78E4AB);
 
 // @0x1405268d0
-void CItem::FUN_1405268d0(int v)
+void CItem::SetNew(int v)
 {
     m_2c = v;
 }
-MS2_REPLACE_METHOD(0x1405268D0, CItem, FUN_1405268d0, 22, 0x0EEC4237);
+MS2_REPLACE_METHOD(0x1405268D0, CItem, SetNew, 22, 0x0EEC4237);
 
 // @0x140526930
-unsigned char CItem::FUN_140526930()
+unsigned char CItem::IsEvent()
 {
     return m_30;
 }
-MS2_REPLACE_METHOD(0x140526930, CItem, FUN_140526930, 15, 0x228C1F9D);
+MS2_REPLACE_METHOD(0x140526930, CItem, IsEvent, 15, 0x228C1F9D);
 
 // @0x140526910
-void CItem::FUN_140526910(unsigned char v)
+void CItem::SetEvent(unsigned char v)
 {
     m_30 = v;
 }
-MS2_REPLACE_METHOD(0x140526910, CItem, FUN_140526910, 23, 0x09675A9D);
+MS2_REPLACE_METHOD(0x140526910, CItem, SetEvent, 23, 0x09675A9D);
 
 // @0x140526a10
 int CItem::FUN_140526a10()
@@ -214,11 +214,11 @@ void CItem::FUN_140526ab0(__int64 v)
 MS2_REPLACE_METHOD(0x140526AB0, CItem, FUN_140526ab0, 25, 0x4C00882B);
 
 // @0x140526ad0
-__int64 CItem::FUN_140526ad0()
+__int64 CItem::GetCharacterId()
 {
     return m_50;
 }
-MS2_REPLACE_METHOD(0x140526AD0, CItem, FUN_140526ad0, 15, 0x6B2752D1);
+MS2_REPLACE_METHOD(0x140526AD0, CItem, GetCharacterId, 15, 0x6B2752D1);
 
 // @0x140526af0
 void CItem::FUN_140526af0(__int64 v)
@@ -228,11 +228,11 @@ void CItem::FUN_140526af0(__int64 v)
 MS2_REPLACE_METHOD(0x140526AF0, CItem, FUN_140526af0, 25, 0x7C15EE73);
 
 // @0x140526b10
-int CItem::FUN_140526b10()
+int CItem::GetObjectId()
 {
     return m_58;
 }
-MS2_REPLACE_METHOD(0x140526B10, CItem, FUN_140526b10, 14, 0x7245C177);
+MS2_REPLACE_METHOD(0x140526B10, CItem, GetObjectId, 14, 0x7245C177);
 
 // @0x140526b30
 void CItem::SetObjectId(int v)
@@ -242,18 +242,18 @@ void CItem::SetObjectId(int v)
 MS2_REPLACE_METHOD(0x140526B30, CItem, SetObjectId, 22, 0x05E09DEB);
 
 // @0x140526b50
-int CItem::FUN_140526b50()
+int CItem::GetSlot()
 {
     return m_5c;
 }
-MS2_REPLACE_METHOD(0x140526B50, CItem, FUN_140526b50, 14, 0x8A52079B);
+MS2_REPLACE_METHOD(0x140526B50, CItem, GetSlot, 14, 0x8A52079B);
 
 // @0x140526b70
-void CItem::FUN_140526b70(int v)
+void CItem::SetSlot(int v)
 {
     m_5c = v;
 }
-MS2_REPLACE_METHOD(0x140526B70, CItem, FUN_140526b70, 22, 0x6DD84747);
+MS2_REPLACE_METHOD(0x140526B70, CItem, SetSlot, 22, 0x6DD84747);
 
 // @0x140526b90
 int CItem::FUN_140526b90()
@@ -354,18 +354,18 @@ int CItem::FUN_140529260()
 MS2_REPLACE_METHOD(0x140529260, CItem, FUN_140529260, 17, 0xA9AE535B);
 
 // @0x140527300
-int CItem::FUN_140527300()
+int CItem::GetRemakeCount()
 {
     return m_9c;
 }
-MS2_REPLACE_METHOD(0x140527300, CItem, FUN_140527300, 17, 0x444DCEE7);
+MS2_REPLACE_METHOD(0x140527300, CItem, GetRemakeCount, 17, 0x444DCEE7);
 
 // @0x1405272e0
-void CItem::FUN_1405272e0(int v)
+void CItem::SetRemakeCount(int v)
 {
     m_9c = v;
 }
-MS2_REPLACE_METHOD(0x1405272E0, CItem, FUN_1405272e0, 25, 0x79F379CB);
+MS2_REPLACE_METHOD(0x1405272E0, CItem, SetRemakeCount, 25, 0x79F379CB);
 
 // @0x140527340
 int CItem::FUN_140527340()
@@ -396,18 +396,18 @@ void CItem::FUN_140528c80(int v)
 MS2_REPLACE_METHOD(0x140528C80, CItem, FUN_140528c80, 25, 0x041453C3);
 
 // @0x140528e00
-__int64 CItem::FUN_140528e00()
+__int64 CItem::GetUnlockTime()
 {
     return m_a8;
 }
-MS2_REPLACE_METHOD(0x140528E00, CItem, FUN_140528e00, 18, 0x23C88FD9);
+MS2_REPLACE_METHOD(0x140528E00, CItem, GetUnlockTime, 18, 0x23C88FD9);
 
 // @0x140528dd0
-void CItem::FUN_140528dd0(__int64 v)
+void CItem::SetUnlockTime(__int64 v)
 {
     m_a8 = v;
 }
-MS2_REPLACE_METHOD(0x140528DD0, CItem, FUN_140528dd0, 28, 0x7D973C77);
+MS2_REPLACE_METHOD(0x140528DD0, CItem, SetUnlockTime, 28, 0x7D973C77);
 
 // @0x140529070
 int CItem::FUN_140529070()
@@ -424,25 +424,25 @@ int CItem::FUN_140529090()
 MS2_REPLACE_METHOD(0x140529090, CItem, FUN_140529090, 17, 0xBA29CEEF);
 
 // @0x140528b90
-__int64 CItem::FUN_140528b90()
+__int64 CItem::GetPetExp()
 {
     return m_c0;
 }
-MS2_REPLACE_METHOD(0x140528B90, CItem, FUN_140528b90, 18, 0xADEC8FD1);
+MS2_REPLACE_METHOD(0x140528B90, CItem, GetPetExp, 18, 0xADEC8FD1);
 
 // @0x140528b60
-void CItem::FUN_140528b60(__int64 v)
+void CItem::SetPetExp(__int64 v)
 {
     m_c0 = v;
 }
-MS2_REPLACE_METHOD(0x140528B60, CItem, FUN_140528b60, 28, 0xC9A2153F);
+MS2_REPLACE_METHOD(0x140528B60, CItem, SetPetExp, 28, 0xC9A2153F);
 
 // @0x140528bd0
-int CItem::FUN_140528bd0()
+int CItem::GetPetEvolutionPoint()
 {
     return m_c8;
 }
-MS2_REPLACE_METHOD(0x140528BD0, CItem, FUN_140528bd0, 17, 0x690E246B);
+MS2_REPLACE_METHOD(0x140528BD0, CItem, GetPetEvolutionPoint, 17, 0x690E246B);
 
 // @0x140528bb0
 void CItem::FUN_140528bb0(int v)
@@ -452,18 +452,18 @@ void CItem::FUN_140528bb0(int v)
 MS2_REPLACE_METHOD(0x140528BB0, CItem, FUN_140528bb0, 25, 0xA8D572C7);
 
 // @0x140528c20
-unsigned short CItem::FUN_140528c20()
+unsigned short CItem::GetPetLevel()
 {
     return m_cc;
 }
-MS2_REPLACE_METHOD(0x140528C20, CItem, FUN_140528c20, 18, 0xB3C569C6);
+MS2_REPLACE_METHOD(0x140528C20, CItem, GetPetLevel, 18, 0xB3C569C6);
 
 // @0x140528bf0
-void CItem::FUN_140528bf0(unsigned short v)
+void CItem::SetPetLevel(unsigned short v)
 {
     m_cc = v;
 }
-MS2_REPLACE_METHOD(0x140528BF0, CItem, FUN_140528bf0, 28, 0xF1E0B56E);
+MS2_REPLACE_METHOD(0x140528BF0, CItem, SetPetLevel, 28, 0xF1E0B56E);
 
 // @0x140528c60
 int CItem::FUN_140528c60()
@@ -487,18 +487,18 @@ unsigned char CItem::FUN_140529620()
 MS2_REPLACE_METHOD(0x140529620, CItem, FUN_140529620, 18, 0x9D8408D9);
 
 // @0x1405292a0
-int CItem::FUN_1405292a0()
+int CItem::GetExtractionCount()
 {
     return m_d8;
 }
-MS2_REPLACE_METHOD(0x1405292A0, CItem, FUN_1405292a0, 17, 0xD382A09B);
+MS2_REPLACE_METHOD(0x1405292A0, CItem, GetExtractionCount, 17, 0xD382A09B);
 
 // @0x140529280
-void CItem::FUN_140529280(int v)
+void CItem::SetExtractionCount(int v)
 {
     m_d8 = v;
 }
-MS2_REPLACE_METHOD(0x140529280, CItem, FUN_140529280, 25, 0x3E60F697);
+MS2_REPLACE_METHOD(0x140529280, CItem, SetExtractionCount, 25, 0x3E60F697);
 
 // @0x140529640
 int CItem::FUN_140529640()
@@ -529,11 +529,11 @@ void CItem::FUN_1405269d0(unsigned char v)
 MS2_REPLACE_METHOD(0x1405269D0, CItem, FUN_1405269d0, 26, 0x4FD40BDC);
 
 // @0x1405291f0
-int CItem::FUN_1405291f0()
+int CItem::IsEquipped()
 {
     return m_19c;
 }
-MS2_REPLACE_METHOD(0x1405291F0, CItem, FUN_1405291f0, 17, 0x1679479E);
+MS2_REPLACE_METHOD(0x1405291F0, CItem, IsEquipped, 17, 0x1679479E);
 
 // @0x140525640
 int CItem::IsPetItem()
@@ -551,13 +551,13 @@ MS2_REPLACE_METHOD(0x140525870, CItem, FUN_140525870, 44, 0x1B3AC98C);
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140525ca0
-int CItem::FUN_140525ca0()
+int CItem::IsPCBangItem()
 {
     if (m_spData.IsNull())
         return 0;
     return m_spData->IsPCBangItem();
 }
-MS2_REPLACE_METHOD(0x140525CA0, CItem, FUN_140525ca0, 74, 0x4FAA5D2F);
+MS2_REPLACE_METHOD(0x140525CA0, CItem, IsPCBangItem, 74, 0x4FAA5D2F);
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140525db0
@@ -571,13 +571,13 @@ MS2_REPLACE_METHOD(0x140525DB0, CItem, FUN_140525db0, 74, 0x1FA82CFB);
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140525e00
-int CItem::FUN_140525e00()
+int CItem::HasWeddingLimit()
 {
     if (m_spData.IsNull())
         return 0;
     return m_spData->HasWeddingLimit();
 }
-MS2_REPLACE_METHOD(0x140525E00, CItem, FUN_140525e00, 74, 0xAE2063CB);
+MS2_REPLACE_METHOD(0x140525E00, CItem, HasWeddingLimit, 74, 0xAE2063CB);
 
 // MS2-FUNCTIONAL: bytes differ from the exe (operand order / temporaries / SEH state layout); behaviour equivalent
 // @0x140525e50
@@ -643,11 +643,11 @@ int CItem::IsJobAllowed(int nJob)
 MS2_REPLACE_METHOD(0x140526790, CItem, IsJobAllowed, 49, 0xCA42CD40);
 
 // @0x1405267d0
-int CItem::FUN_1405267d0(int nGender)
+int CItem::IsGenderAllowed(int nGender)
 {
     return m_spData->IsGenderAllowed(nGender);
 }
-MS2_REPLACE_METHOD(0x1405267D0, CItem, FUN_1405267d0, 49, 0xC0D977A0);
+MS2_REPLACE_METHOD(0x1405267D0, CItem, IsGenderAllowed, 49, 0xC0D977A0);
 
 // @0x140526810
 int CItem::CanUseAtLevel(unsigned short nLevel)
@@ -661,18 +661,18 @@ MS2_REPLACE_METHOD(0x140526810, CItem, CanUseAtLevel, 51, 0xAFB2B386);
 // @0x14052c230
 Unk_MusicNoteBlock::Unk_MusicNoteBlock()
 {
-    FUN_14052d040();
+    Reset();
 }
 
 // @0x14052d040
-void Unk_MusicNoteBlock::FUN_14052d040()
+void Unk_MusicNoteBlock::Reset()
 {
     m_n00 = 0;
     m_n08 = 0;
     m_n10 = 0;
     m_str18.Empty();
 }
-MS2_REPLACE_METHOD(0x14052D040, Unk_MusicNoteBlock, FUN_14052d040, 69, 0x99410530);
+MS2_REPLACE_METHOD(0x14052D040, Unk_MusicNoteBlock, Reset, 69, 0x99410530);
 
 // @0x14052c0f0
 CItemTransfer::CItemBinding::CItemBinding() : m_n18(0)
@@ -684,17 +684,17 @@ CItemTransfer::CItemBinding::CItemBinding() : m_n18(0)
 // @0x14052c140
 CItemCoupleInfo::CItemCoupleInfo()
 {
-    FUN_14052d000();
+    Reset();
 }
 
 // @0x14052d000
-void CItemCoupleInfo::FUN_14052d000()
+void CItemCoupleInfo::Reset()
 {
     m_n18 = 0;
     m_str20 = L"";
     m_b28 = 0;
 }
-MS2_REPLACE_METHOD(0x14052D000, CItemCoupleInfo, FUN_14052d000, 61, 0xDD3E3735);
+MS2_REPLACE_METHOD(0x14052D000, CItemCoupleInfo, Reset, 61, 0xDD3E3735);
 
 // @0x14052c510: CItemCoupleInfo::~CItemCoupleInfo() is implicit (no vftable store in the exe)
 
@@ -854,23 +854,23 @@ int CItem::HasSkin()
 MS2_REPLACE_METHOD(0x1405258B0, CItem, HasSkin, 44, 0x1E0F1D2F);
 
 // @0x1405258f0
-int CItem::FUN_1405258f0()
+int CItem::IsMeso()
 {
-    return FUN_14053f8c0(FUN_1405276c0());
+    return FUN_14053f8c0(GetItemId());
 }
-MS2_REPLACE_METHOD(0x1405258F0, CItem, FUN_1405258f0, 34, 0xB579842C);
+MS2_REPLACE_METHOD(0x1405258F0, CItem, IsMeso, 34, 0xB579842C);
 
 // @0x140525920
-int CItem::FUN_140525920()
+int CItem::IsMerat()
 {
-    return FUN_14053f940(FUN_1405276c0());
+    return FUN_14053f940(GetItemId());
 }
-MS2_REPLACE_METHOD(0x140525920, CItem, FUN_140525920, 34, 0xA303E991);
+MS2_REPLACE_METHOD(0x140525920, CItem, IsMerat, 34, 0xA303E991);
 
 // @0x140525950
 int CItem::FUN_140525950()
 {
-    return FUN_14053f990(FUN_1405276c0());
+    return FUN_14053f990(GetItemId());
 }
 MS2_REPLACE_METHOD(0x140525950, CItem, FUN_140525950, 31, 0x537B6C6C);
 
@@ -880,7 +880,7 @@ int CItem::FUN_1405259e0()
 {
     if (m_spData.IsNull())
         return 0;
-    return m_spData->FUN_14053ce80();
+    return m_spData->IsBeautyItem();
 }
 MS2_REPLACE_METHOD(0x1405259E0, CItem, FUN_1405259e0, 74, 0xC931371A);
 
@@ -980,11 +980,11 @@ void CItem::FUN_14052a210(unsigned n)
 MS2_REPLACE_METHOD(0x14052A210, CItem, FUN_14052a210, 22, 0x26F5625B);
 
 // @0x14052a230
-void CItem::FUN_14052a230(unsigned n)
+void CItem::AddFlags(unsigned n)
 {
     m_28 = m_28 | n;
 }
-MS2_REPLACE_METHOD(0x14052A230, CItem, FUN_14052a230, 32, 0x19425900);
+MS2_REPLACE_METHOD(0x14052A230, CItem, AddFlags, 32, 0x19425900);
 
 // @0x14052a260
 void CItem::FUN_14052a260(unsigned n)
@@ -994,25 +994,25 @@ void CItem::FUN_14052a260(unsigned n)
 MS2_REPLACE_METHOD(0x14052A260, CItem, FUN_14052a260, 36, 0x2B91A089);
 
 // @0x14052a290
-bool CItem::FUN_14052a290(unsigned n)
+bool CItem::HasFlags(unsigned n)
 {
     return (m_28 & n) > 0;
 }
-MS2_REPLACE_METHOD(0x14052A290, CItem, FUN_14052a290, 56, 0x7063F737);
+MS2_REPLACE_METHOD(0x14052A290, CItem, HasFlags, 56, 0x7063F737);
 
 // @0x14052a2d0
 bool CItem::FUN_14052a2d0()
 {
-    if (FUN_14052a290(1))
+    if (HasFlags(1))
         return false;
-    return FUN_140525ca0() == 1;
+    return IsPCBangItem() == 1;
 }
 MS2_REPLACE_METHOD(0x14052A2D0, CItem, FUN_14052a2d0, 78, 0xF3A5AB3E);
 
 // @0x14052a330
 bool CItem::FUN_14052a330()
 {
-    if (FUN_14052a290(1))
+    if (HasFlags(1))
         return false;
     return FUN_140525db0() == 1;
 }
@@ -1021,9 +1021,9 @@ MS2_REPLACE_METHOD(0x14052A330, CItem, FUN_14052a330, 78, 0x28AA9D71);
 // @0x14052a390
 bool CItem::FUN_14052a390()
 {
-    if (FUN_14052a290(1))
+    if (HasFlags(1))
         return false;
-    return FUN_140525e00() == 1;
+    return HasWeddingLimit() == 1;
 }
 MS2_REPLACE_METHOD(0x14052A390, CItem, FUN_14052a390, 78, 0xE7EBFA56);
 
@@ -1036,30 +1036,30 @@ __int64 CItem::FUN_14052a480()
 MS2_REPLACE_METHOD(0x14052A480, CItem, FUN_14052a480, 93, 0xC2E28FA1);
 
 // @0x14052b340
-int CItem::FUN_14052b340(unsigned n)
+int CItem::SetCount(unsigned n)
 {
     m_6c = n;
     return 1;
 }
-MS2_REPLACE_METHOD(0x14052B340, CItem, FUN_14052b340, 27, 0xE2CA3F90);
+MS2_REPLACE_METHOD(0x14052B340, CItem, SetCount, 27, 0xE2CA3F90);
 
 // @0x14052b710
 bool CItem::FUN_14052b710(unsigned* pA, __int64* pB)
 {
     FUN_140528c80(*pA);
-    FUN_140528dd0(*pB);
+    SetUnlockTime(*pB);
     return true;
 }
 MS2_REPLACE_METHOD(0x14052B710, CItem, FUN_14052b710, 61, 0x8AB3CC15);
 
 // @0x14052b630
-unsigned char CItem::FUN_14052b630()
+unsigned char CItem::ClearBinding()
 {
-    if (FUN_140527930() == 0)
+    if (GetTransfer() == 0)
         return 1;
-    return reinterpret_cast<CItemTransfer*>(FUN_140527930())->ClearBinding();
+    return reinterpret_cast<CItemTransfer*>(GetTransfer())->ClearBinding();
 }
-MS2_REPLACE_METHOD(0x14052B630, CItem, FUN_14052b630, 51, 0xDD6A277F);
+MS2_REPLACE_METHOD(0x14052B630, CItem, ClearBinding, 51, 0xDD6A277F);
 
 // @0x14052cae0
 CItemCoupleInfo& CItemCoupleInfo::operator=(const CItemCoupleInfo& o)
@@ -1100,11 +1100,11 @@ Unk_UserProxyItemData* CItem::FUN_140527870()
 MS2_REPLACE_METHOD(0x140527870, CItem, FUN_140527870, 33, 0x82E03B80);
 
 // @0x1405278a0
-CItemStatus* CItem::FUN_1405278a0()
+CItemStatus* CItem::GetStatus()
 {
     return m_spStatus.get();
 }
-MS2_REPLACE_METHOD(0x1405278A0, CItem, FUN_1405278a0, 33, 0x1C66B116);
+MS2_REPLACE_METHOD(0x1405278A0, CItem, GetStatus, 33, 0x1C66B116);
 
 // @0x1405278d0
 Unk_ItemUgcInfo* CItem::GetUgcInfo()
@@ -1121,11 +1121,11 @@ CItemGem* CItem::GetGem()
 MS2_REPLACE_METHOD(0x140527900, CItem, GetGem, 33, 0xF400AA87);
 
 // @0x140527930
-Unk_ItemOwnerRef* CItem::FUN_140527930()
+Unk_ItemOwnerRef* CItem::GetTransfer()
 {
     return static_cast<Unk_ItemOwnerRef*>(m_spTransfer.get());
 }
-MS2_REPLACE_METHOD(0x140527930, CItem, FUN_140527930, 33, 0x70254757);
+MS2_REPLACE_METHOD(0x140527930, CItem, GetTransfer, 33, 0x70254757);
 
 // @0x140527960
 CItemCustomMusicScore* CItem::FUN_140527960()
@@ -1225,11 +1225,11 @@ int CItem::GetRemainingRePackingCount()
 MS2_REPLACE_METHOD(0x140527580, CItem, GetRemainingRePackingCount, 100, 0xDED28C8F);
 
 // @0x140527640
-__int64 CItem::FUN_140527640()
+__int64 CItem::GetTotalSellPrice()
 {
     return GetSellPrice() * (unsigned)m_6c;
 }
-MS2_REPLACE_METHOD(0x140527640, CItem, FUN_140527640, 36, 0x1268982F);
+MS2_REPLACE_METHOD(0x140527640, CItem, GetTotalSellPrice, 36, 0x1268982F);
 
 // @0x140527670
 __int64 CItem::GetSellPrice()
@@ -1239,13 +1239,13 @@ __int64 CItem::GetSellPrice()
 MS2_REPLACE_METHOD(0x140527670, CItem, GetSellPrice, 59, 0xD7F60E55);
 
 // @0x1405276c0
-int CItem::FUN_1405276c0()
+int CItem::GetItemId()
 {
     if (m_spData != NULL)
         return m_spData->GetItemId();
     return 0;
 }
-MS2_REPLACE_METHOD(0x1405276C0, CItem, FUN_1405276c0, 69, 0x027BAB5E);
+MS2_REPLACE_METHOD(0x1405276C0, CItem, GetItemId, 69, 0x027BAB5E);
 
 // @0x140527710
 unsigned CItem::GetRequiredLevel()
@@ -1279,7 +1279,7 @@ unsigned CItem::FUN_140527a20()
 {
     if (m_68 != 0 && m_spData->FUN_14053d510())
         return m_68;
-    return m_spData->GetModelOrEmpty()->FUN_14054b400();
+    return m_spData->GetModelOrEmpty()->GetFirstGroupType();
 }
 MS2_REPLACE_METHOD(0x140527A20, CItem, FUN_140527a20, 104, 0x946235F9);
 
@@ -1293,11 +1293,11 @@ unsigned CItem::GetSlotMax()
 MS2_REPLACE_METHOD(0x1405281E0, CItem, GetSlotMax, 71, 0xD8B41AF4);
 
 // @0x1405282d0
-unsigned short CItem::FUN_1405282d0()
+unsigned short CItem::GetLevelLimit()
 {
     return m_spData->limit.levelLimit;
 }
-MS2_REPLACE_METHOD(0x1405282D0, CItem, FUN_1405282d0, 40, 0x5F468EB9);
+MS2_REPLACE_METHOD(0x1405282D0, CItem, GetLevelLimit, 40, 0x5F468EB9);
 
 // @0x140528930
 bool CItem::IsExpired()
@@ -1339,7 +1339,7 @@ bool CItem::FUN_140528e20()
         return true;
     if (FUN_140528ca0() == 0)
     {
-        if (GetServerTime() < FUN_140528e00())
+        if (GetServerTime() < GetUnlockTime())
             return true;
     }
     return false;
@@ -1347,7 +1347,7 @@ bool CItem::FUN_140528e20()
 MS2_REPLACE_METHOD(0x140528E20, CItem, FUN_140528e20, 83, 0x1359AAF1);
 
 // @0x140525f60
-int CItem::FUN_140525f60()
+int CItem::HasUgcId()
 {
     if (m_spUgc == NULL)
         return 0;
@@ -1355,7 +1355,7 @@ int CItem::FUN_140525f60()
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x140525F60, CItem, FUN_140525f60, 87, 0x14B28FAE);
+MS2_REPLACE_METHOD(0x140525F60, CItem, HasUgcId, 87, 0x14B28FAE);
 
 // ---- w98 batch 1: table-row / UGC delegations
 extern int g_ItemFunctionFlags[4];   // 0x142d568c0
@@ -1377,7 +1377,7 @@ int CItem::HasAnyEquipSlotOf()
     int nCount = 4;
     for (int i = 0; i < nCount; i++)
     {
-        if (m_spData->GetModelOrEmpty()->FUN_14054b450(g_ItemFunctionFlags[i]))
+        if (m_spData->GetModelOrEmpty()->HasGroupType(g_ItemFunctionFlags[i]))
             return 1;
     }
     return 0;
@@ -1405,7 +1405,7 @@ MS2_REPLACE_METHOD(0x140525FC0, CItem, FUN_140525fc0, 73, 0xDD20CE3F);
 // @0x140526060
 int CItem::FUN_140526060(void* pArg)
 {
-    if (!HasCubeTextureMesh() || !FUN_140525f60())
+    if (!HasCubeTextureMesh() || !HasUgcId())
         return 0;
     CUgcItemLook* pItemLook = GetUgcLook();
     MS2_ASSERT_MSG_AT(0x296, L"pItemLook != NULL", pItemLook != NULL);
@@ -1428,7 +1428,7 @@ MS2_REPLACE_METHOD(0x140526850, CItem, FUN_140526850, 91, 0xCCCB08AA);
 class Unk_ItemPlusInfo : public UnlimitedEnchantInfo { };
 
 // @0x140526fc0
-int CItem::FUN_140526fc0()
+int CItem::GetEnchantLevel()
 {
     if (m_spStatus == NULL)
         return 0;
@@ -1437,7 +1437,7 @@ int CItem::FUN_140526fc0()
         return 0;
     return pInfo->GetLevel();
 }
-MS2_REPLACE_METHOD(0x140526FC0, CItem, FUN_140526fc0, 100, 0xC4F66D3A);
+MS2_REPLACE_METHOD(0x140526FC0, CItem, GetEnchantLevel, 100, 0xC4F66D3A);
 
 // @0x140527030
 int CItem::FUN_140527030()
@@ -1480,7 +1480,7 @@ int CItem::GetPlusLevel()
 {
     if (m_spStatus == NULL)
         return 0;
-    Unk_ItemPlusInfo* pInfo = m_spStatus->FUN_140630d90();
+    Unk_ItemPlusInfo* pInfo = m_spStatus->GetUnlimitedEnchantInfo();
     if (pInfo == 0)
         return 0;
     return pInfo->GetLevel();
@@ -1526,12 +1526,12 @@ int CItem::GetTransferMax()
 MS2_REPLACE_METHOD(0x140527440, CItem, GetTransferMax, 69, 0xFB6124AE);
 
 // @0x140527490
-void CItem::FUN_140527490(unsigned n)
+void CItem::SetTransferMax(unsigned n)
 {
     if (m_spTransfer.get() != 0)
         m_spTransfer->SetMax(n);
 }
-MS2_REPLACE_METHOD(0x140527490, CItem, FUN_140527490, 73, 0xB4A0DF13);
+MS2_REPLACE_METHOD(0x140527490, CItem, SetTransferMax, 73, 0xB4A0DF13);
 
 // @0x1405275f0
 void CItem::FUN_1405275f0()
@@ -1552,7 +1552,7 @@ void CItem::FUN_1405290b0()
     }
     int nA = GetRarity();
     int nB = FUN_140527840()->GetEquipSubtype();
-    int nLevel = FUN_140526fc0();
+    int nLevel = GetEnchantLevel();
     int nBase = FUN_140527840()->FUN_14053f0d0(nA);
     m_b4 = FUN_140527840()->FUN_14053f390(nBase, nLevel);
     int nPlus = GetPlusLevel();
@@ -1591,14 +1591,14 @@ bool CItem::SetEnchantLevel(int nLevel, bool bFlag)
 MS2_REPLACE_METHOD(0x140526E60, CItem, SetEnchantLevel, 229, 0x7BD37AA2);
 
 // @0x140527180
-bool CItem::FUN_140527180(int nLevel, bool bFlag)
+bool CItem::SetPlusLevel(int nLevel, bool bFlag)
 {
     if (m_spStatus == NULL)
     {
         MS2_ASSERT_MSG_AT(0xcf6, L"FALSE", false);
         return false;
     }
-    Unk_ItemPlusInfo* pInfo = m_spStatus->FUN_140630d90();
+    Unk_ItemPlusInfo* pInfo = m_spStatus->GetUnlimitedEnchantInfo();
     if (pInfo == 0)
     {
         MS2_ASSERT_MSG_AT(0xcfd, L"FALSE", false);
@@ -1612,14 +1612,14 @@ bool CItem::FUN_140527180(int nLevel, bool bFlag)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140527180, CItem, FUN_140527180, 229, 0x6E805001);
+MS2_REPLACE_METHOD(0x140527180, CItem, SetPlusLevel, 229, 0x6E805001);
 
 // @0x140526f50
 void CItem::FUN_140526f50(unsigned nLevel, bool bFlag)
 {
     if (!SetEnchantLevel(nLevel, bFlag))
         return;
-    CItemEnchantInfo* pInfo = FUN_1405278a0()->GetEnchant();
+    CItemEnchantInfo* pInfo = GetStatus()->GetEnchant();
     if (pInfo != 0)
         pInfo->ClearCharge();
 }
@@ -1642,7 +1642,7 @@ int CItem::FUN_14052a170()
 MS2_REPLACE_METHOD(0x14052A170, CItem, FUN_14052a170, 143, 0xF8F11542);
 
 // @0x14052a3f0
-bool FUN_14052a3f0(int nA, __int64 nB, int nC, int nD, int nE)
+bool IsExpiring(int nA, __int64 nB, int nC, int nD, int nE)
 {
     bool bResult = false;
     if (nA != 0 && nB > 0)
@@ -1691,11 +1691,11 @@ bool CItem::CanBeItemLocked()
 {
     if (FUN_140528ca0() == 1)
         return false;
-    if (FUN_140525ca0() == 1)
+    if (IsPCBangItem() == 1)
         return false;
     if (FUN_140525db0() == 1)
         return false;
-    if (FUN_140525e00() == 1)
+    if (HasWeddingLimit() == 1)
         return false;
     int nType = FUN_140527840()->GetType();
     switch (nType)
@@ -1743,17 +1743,17 @@ bool CItem::FUN_140525680()
 {
     if (!FUN_1405277b0()->FUN_14053cd10())
         return false;
-    MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(FUN_1405276c0());
+    MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(GetItemId());
     if (spIng == 0)
         return false;
-    return spIng->FUN_14054aca0();
+    return spIng->IsCustomNote();
 }
 MS2_REPLACE_METHOD(0x140525680, CItem, FUN_140525680, 170, 0x68FB8AA6);
 
 // @0x140525980
 int CItem::FUN_140525980()
 {
-    return FUN_1405258f0() || FUN_140525920() || FUN_140525950();
+    return IsMeso() || IsMerat() || FUN_140525950();
 }
 MS2_REPLACE_METHOD(0x140525980, CItem, FUN_140525980, 78, 0xEC17A787);
 
@@ -1765,7 +1765,7 @@ int CItem::FUN_140525a80()
     switch (m_spData->GetType())
     {
     case 1:
-        if (HasCubeTextureMesh() != 0 && FUN_140525f60() == 0)
+        if (HasCubeTextureMesh() != 0 && HasUgcId() == 0)
             return 1;
         break;
     case 2:
@@ -1816,7 +1816,7 @@ int CItem::FUN_140526390()
     if (m_spData->HasAdditionalEffect())
         return 1;
     CItemSocket* pSocket = GetSocket();
-    if (pSocket != 0 && pSocket->FUN_140620de0())
+    if (pSocket != 0 && pSocket->HasGemWithAdditionalEffect())
         return 1;
     if (m_spStatus.get() != 0)
     {
@@ -1918,37 +1918,37 @@ MS2_REPLACE_METHOD(0x140526670, CItem, FUN_140526670, 273, 0x5F65DE16);
 
 // The TSingleton<T>::GetInstance bodies this unit instantiates (the s_instance statics are the exe's own data).
 // @0x14052d1d0
-Unk_MusicBookTable* FUN_14052d1d0()
+Unk_MusicBookTable* GetInstrumentDataTable()
 {
     return reinterpret_cast<Unk_MusicBookTable*>(TSingleton<CInstrumentDataTable>::s_instance);
 }
 
 // @0x14052d1e0
-Unk_EnchantRates* FUN_14052d1e0()
+Unk_EnchantRates* GetItemEnchantUtil()
 {
     return static_cast<Unk_EnchantRates*>(TSingleton<CItemEnchantUtil>::s_instance);
 }
 
 // @0x14052d1f0
-void* FUN_14052d1f0()
+void* GetItemExtractionTable()
 {
     return TSingleton<CItemExtractionTable>::s_instance;
 }
 
 // @0x14052d200
-void* FUN_14052d200()
+void* GetItemSocketTable()
 {
     return TSingleton<CItemSocketTable>::s_instance;
 }
 
 // @0x14052d210
-Unk_PetRowTable* FUN_14052d210()
+Unk_PetRowTable* GetPetDataTable()
 {
     return reinterpret_cast<Unk_PetRowTable*>(TSingleton<CPetDataTable>::s_instance);
 }
 
 // @0x14052d220
-Unk_UgcRideeMgr* FUN_14052d220()
+Unk_UgcRideeMgr* GetUgcManager()
 {
     return reinterpret_cast<Unk_UgcRideeMgr*>(TSingleton<CUgcManager>::s_instance);
 }
@@ -1973,7 +1973,7 @@ unsigned CItem::GetEquipSlot(size_t nIndex)
 {
     if (m_68 != 0 && m_spData->FUN_14053d510())
         return m_68;
-    return m_spData->GetModelOrEmpty()->GetGroup(nIndex)->FUN_1405451a0();
+    return m_spData->GetModelOrEmpty()->GetGroup(nIndex)->GetType();
 }
 MS2_REPLACE_METHOD(0x140527A90, CItem, GetEquipSlot, 122, 0x4D291B02);
 
@@ -2032,7 +2032,7 @@ void CItem::SetBlueprintData(CBlueprintItemData* pLook)
         return;
     if (FUN_140526010() == 0)
         return;
-    if (FUN_1405276c0() != 35200000)
+    if (GetItemId() != 35200000)
         return;
     if (static_cast<CItemUgc*>(m_spUgc) != 0)
         m_spUgc.get()->SetBlueprint(pLook);
@@ -2058,7 +2058,7 @@ __int64 CItem::FUN_140528540()
 MS2_REPLACE_METHOD(0x140528540, CItem, FUN_140528540, 73, 0x78F83810);
 
 // ---- w101 batch 4: couple/gem/effect-name helpers
-class Unk_140166430* FUN_140166430();
+class Unk_140166430* GetItemOptionTable();
 extern int FUN_14088de00(MS2Ptr<CItemData>);
 
 // @0x140528840
@@ -2084,7 +2084,7 @@ MS2_REPLACE_METHOD(0x140529410, CItem, GetCoupleName, 132, 0x5F30A84A);
 // @0x140529560
 int CItem::FUN_140529560()
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x2e))
         return 0;
     if (FUN_140527840() == 0)
         return 0;
@@ -2110,11 +2110,11 @@ CStringW CItem::FUN_140529de0()
 MS2_REPLACE_METHOD(0x140529DE0, CItem, FUN_140529de0, 187, 0x2B386C86);
 
 // @0x140529eb0
-CString CItem::FUN_140529eb0()
+CString CItem::GetEnchantNif()
 {
-    return FUN_140529f60(m_spData->GetEquipSubtype(), FUN_140526fc0(), GetPlusLevel(), m_spData->effect.enchantShape);
+    return FUN_140529f60(m_spData->GetEquipSubtype(), GetEnchantLevel(), GetPlusLevel(), m_spData->effect.enchantShape);
 }
-MS2_REPLACE_METHOD(0x140529EB0, CItem, FUN_140529eb0, 168, 0xB191BA0F);
+MS2_REPLACE_METHOD(0x140529EB0, CItem, GetEnchantNif, 168, 0xB191BA0F);
 
 // @0x140529f60
 CString CItem::FUN_140529f60(int nA, int nB, int nC, unsigned nD)
@@ -2126,17 +2126,17 @@ MS2_REPLACE_METHOD(0x140529F60, CItem, FUN_140529f60, 97, 0xF4F758D0);
 // @0x14052a060
 int CItem::FUN_14052a060()
 {
-    MS2Ptr<ItemOptionRandom> spOption = reinterpret_cast<CItemOptionTable*>(FUN_140166430())->GetRandom(m_spData->FUN_14053eff0(GetRarity()));
+    MS2Ptr<ItemOptionRandom> spOption = reinterpret_cast<CItemOptionTable*>(GetItemOptionTable())->GetRandom(m_spData->FUN_14053eff0(GetRarity()));
     if (spOption == NULL)
         return 0;
-    return spOption->FUN_1405d5fe0(GetRarity());
+    return spOption->GetPickCount(GetRarity());
 }
 MS2_REPLACE_METHOD(0x14052A060, CItem, FUN_14052a060, 197, 0x509A0B26);
 
 // @0x14052b370
 void CItem::FUN_14052b370()
 {
-    int nMax = ((CItemSocketTable*)FUN_14052d200())->GetInitialSocketCount(m_spData->property.socketDataId, GetRarity(),
+    int nMax = ((CItemSocketTable*)GetItemSocketTable())->GetInitialSocketCount(m_spData->property.socketDataId, GetRarity(),
         MS2Ptr<CItemData>(FUN_140527840()));
     FUN_14052b420(nMax);
 }
@@ -2145,7 +2145,7 @@ MS2_REPLACE_METHOD(0x14052B370, CItem, FUN_14052b370, 162, 0x8FD3EAB9);
 // @0x14052b420
 int CItem::FUN_14052b420(unsigned nMax)
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x2e))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x2e))
         return 1;
     if (!FUN_140527840()->FUN_14053cbc0())
         return 1;
@@ -2153,7 +2153,7 @@ int CItem::FUN_14052b420(unsigned nMax)
         return 1;
     if (FUN_140525c60() != 0)
         return 1;
-    unsigned nCur = ((CItemSocketTable*)FUN_14052d200())->GetMaxSocketCount(m_spData->property.socketDataId, GetRarity(),
+    unsigned nCur = ((CItemSocketTable*)GetItemSocketTable())->GetMaxSocketCount(m_spData->property.socketDataId, GetRarity(),
         MS2Ptr<CItemData>(FUN_140527840()));
     unsigned nUse = nCur < nMax ? nCur : nMax;
     MS2Ptr<CItemSocket> spSocket = m_spSocket;
@@ -2197,14 +2197,14 @@ WC_WRAP(1)
 WC_WRAP(2)
 template CStringW FUN_14028dfa0<unsigned short, CStringW>(CStringW, const unsigned short&, const CStringW&);   // 0x14052b9d0
 
-extern int FUN_14052a7e0(MS2Ptr<CItem>, MS2Ptr<CItem>);
+extern int CompareItems(MS2Ptr<CItem>, MS2Ptr<CItem>);
 
 // @0x14052b5e0
 unsigned char CItem::BindToCharacter(const __int64& nCharId, const CStringW& strName)
 {
-    if (FUN_140527930() == 0)
+    if (GetTransfer() == 0)
         return 0;
-    return FUN_140527930()->SetBinding(nCharId, strName);
+    return GetTransfer()->SetBinding(nCharId, strName);
 }
 MS2_REPLACE_METHOD(0x14052B5E0, CItem, BindToCharacter, 71, 0x6D360F0B);
 
@@ -2213,7 +2213,7 @@ bool CItem::FUN_14052b670(MS2Ptr<CItem> spItem)
 {
     if (spItem == NULL)
         return false;
-    __int64 n64 = spItem->FUN_140528e00();
+    __int64 n64 = spItem->GetUnlockTime();
     unsigned n32 = spItem->FUN_140528ca0();
     FUN_14052b710(&n32, &n64);
     return true;
@@ -2239,17 +2239,17 @@ int FUN_14052b910(const MS2Ptr<CItem>& rFirst, const MS2Ptr<CItem>& rSecond)
 {
     MS2Ptr<CItem> spFirst = rFirst;
     MS2Ptr<CItem> spSecond = rSecond;
-    return FUN_14052a7e0(spFirst, spSecond);
+    return CompareItems(spFirst, spSecond);
 }
 
 // ---- w101 batch 6: UGC / gem display names
-extern CString FUN_14016a5c0(const char* psz, int n);
+extern CString ToCString(const char* psz, int n);
 extern CStringW FUN_14183e9c0(CStringW strName, int nRank);
 
 // @0x140528010
 CStringW CItem::GetDisplayName()
 {
-    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405276c0());
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, GetItemId());
     if (static_cast<CItemUgc*>(m_spUgc) != 0)
     {
         bool bNamed = m_spUgc->m_look.GetLocalPath().GetLength() > 0;
@@ -2263,10 +2263,10 @@ MS2_REPLACE_METHOD(0x140528010, CItem, GetDisplayName, 322, 0x89EAC3CB);
 // @0x140527b10
 CStringW CItem::FUN_140527b10()
 {
-    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405276c0());
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, GetItemId());
     if (static_cast<CItemUgc*>(m_spUgc) != 0)
     {
-        return FUN_141277a90(&m_spUgc->m_look, strName);
+        return GetUgcItemName(&m_spUgc->m_look, strName);
     }
     else if (FUN_140527840()->FUN_14053cd10())
     {
@@ -2276,7 +2276,7 @@ CStringW CItem::FUN_140527b10()
     {
         if (m_strB8.GetLength() > 0)
             strName = m_strB8;
-        MS2Ptr<CPetData> spRow = reinterpret_cast<CPetDataTable*>(FUN_14052d210())->Find((unsigned)FUN_140527840()->GetPetId());
+        MS2Ptr<CPetData> spRow = reinterpret_cast<CPetDataTable*>(GetPetDataTable())->Find((unsigned)FUN_140527840()->GetPetId());
         if (spRow.get() != 0)
         {
             if (spRow->m_nType == 1)
@@ -2296,10 +2296,10 @@ CStringW CItem::FUN_140527b10()
         if (!strGem.IsEmpty())
             return strName + strGem;
     }
-    unsigned short nUnlimited = FUN_1405278a0()->FUN_140630d90()->GetLevel();
+    unsigned short nUnlimited = GetStatus()->GetUnlimitedEnchantInfo()->GetLevel();
     if (nUnlimited > 0)
         return FUN_14028dfa0(CStringW(L"s_word_item_unlimited_enchant"), nUnlimited, strName);
-    unsigned short nEnchant = FUN_1405278a0()->GetEnchantLevel();
+    unsigned short nEnchant = GetStatus()->GetEnchantLevel();
     if (nEnchant > 0)
     {
         CStringW strFormatted;
@@ -2316,7 +2316,7 @@ CStringW CItem::FUN_140528160()
 }
 
 // @0x140528590
-CString CItem::FUN_140528590()
+CString CItem::GetIconPath()
 {
     if (m_strName.GetLength() > 0)
         return m_strName;
@@ -2324,15 +2324,15 @@ CString CItem::FUN_140528590()
     {
         if (m_spUgc->FUN_1406321a0() == 1)
             return m_spData->GetIconPath();
-        return FUN_14016a5c0(m_spUgc->GetLookLocalPath(), 0);
+        return ToCString(m_spUgc->GetLookLocalPath(), 0);
     }
     if (FUN_140527840()->FUN_14053cd10())
         return FUN_140529cb0();
     if ((static_cast<CItemGem*>(m_spGem) != 0 ? true : false) && m_spGem->FUN_1405a7c60() != 0)
-        return FUN_14016a5c0(m_spGem->FUN_1405a7cc0(), 0);
+        return ToCString(m_spGem->FUN_1405a7cc0(), 0);
     return m_spData->GetIconPath();
 }
-MS2_REPLACE_METHOD(0x140528590, CItem, FUN_140528590, 669, 0x0B183905);
+MS2_REPLACE_METHOD(0x140528590, CItem, GetIconPath, 669, 0x0B183905);
 
 // ---- w101 batch 7: enchant success rate, music/couple names, bind check
 // @0x140528e80
@@ -2342,17 +2342,17 @@ bool CItem::FUN_140528e80(int nType, __int64 nTime)
         return false;
     if (nType == 1)
     {
-        if (FUN_140528e00() == nTime)
+        if (GetUnlockTime() == nTime)
             return true;
     }
     else if (nType == 0)
     {
         __int64 nNow = GetServerTime();
-        bool bMine = FUN_140528e00() == 0 || nNow >= FUN_140528e00();
+        bool bMine = GetUnlockTime() == 0 || nNow >= GetUnlockTime();
         bool bOther = nTime == 0 || nNow >= nTime;
         if (bMine && bOther)
             return true;
-        if (FUN_140528e00() == nTime)
+        if (GetUnlockTime() == nTime)
             return true;
     }
     return false;
@@ -2362,7 +2362,7 @@ MS2_REPLACE_METHOD(0x140528E80, CItem, FUN_140528e80, 254, 0x4CEA5801);
 // @0x140528f90
 int CItem::FUN_140528f90()
 {
-    CItemStatus* pEnchant = FUN_1405278a0();
+    CItemStatus* pEnchant = GetStatus();
     if (pEnchant == 0)
         return 0;
     CItemEnchantInfo* pInfo = pEnchant->GetEnchant();
@@ -2375,16 +2375,16 @@ int CItem::FUN_140528f90()
         switch (pInfo->GetVersion())
         {
         case 0:
-            nRate = FUN_14052d1e0()->FUN_140594750(nLevel);
+            nRate = GetItemEnchantUtil()->GetEnchantRate(nLevel);
             break;
         case 1:
-            nRate = FUN_14052d1e0()->FUN_1405947c0(nLevel);
+            nRate = GetItemEnchantUtil()->FUN_1405947c0(nLevel);
             break;
         }
     }
     else
     {
-        nRate = FUN_14052d1e0()->FUN_140594720(nLevel);
+        nRate = GetItemEnchantUtil()->FUN_140594720(nLevel);
     }
     return nRate;
 }
@@ -2392,7 +2392,7 @@ int CItem::FUN_140528f90()
 // @0x1405296c0
 CStringW CItem::FUN_1405296c0()
 {
-    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, FUN_1405276c0());
+    CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, GetItemId());
     if (!FUN_140527840()->FUN_14053cd10())
         return strName;
     if (FUN_140525680() && (static_cast<CItemCustomMusicScore*>(m_spMusic) != 0 ? true : false))
@@ -2433,10 +2433,10 @@ int CItem::FUN_1405299a0()
             return 0;
         return m_spMusic->m_n18;
     }
-    MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(FUN_1405276c0());
+    MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(GetItemId());
     if (spIng == NULL)
         return 0;
-    return spIng->FUN_14054ace0();
+    return spIng->GetPlayTime();
 }
 MS2_REPLACE_METHOD(0x1405299A0, CItem, FUN_1405299a0, 250, 0xCFD163E1);
 
@@ -2447,7 +2447,7 @@ CString CItem::FUN_140529cb0()
     if (FUN_140525680() && (pScore = FUN_140527990()) != 0 && !pScore->FUN_140632780())
     {
         unsigned nBook = m_spMusic->m_n1c;
-        MS2Ptr<CInstrumentCategoryData> spInfo = reinterpret_cast<CInstrumentDataTable*>(FUN_14052d1d0())->GetCategory(nBook);
+        MS2Ptr<CInstrumentCategoryData> spInfo = reinterpret_cast<CInstrumentDataTable*>(GetInstrumentDataTable())->GetCategory(nBook);
         if (static_cast<CInstrumentCategoryData*>(spInfo) != 0)
             return spInfo->m_strIcon;
     }
@@ -2462,16 +2462,16 @@ int FUN_14052a620(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
     for (unsigned i = 0; i < 0x23; ++i)
     {
         unsigned nKey = i;
-        int nA = spFirst->FUN_1405278a0()->GetStatValue(nKey, 0, 5);
-        int nB = spSecond->FUN_1405278a0()->GetStatValue(nKey, 0, 5);
+        int nA = spFirst->GetStatus()->GetStatValue(nKey, 0, 5);
+        int nB = spSecond->GetStatus()->GetStatValue(nKey, 0, 5);
         if (nA - nB)
             return 0;
     }
     for (unsigned j = 1; j < 0xcf; ++j)
     {
         unsigned nKey = j;
-        int nA = spFirst->FUN_1405278a0()->FUN_140630290(nKey, 0, 5);
-        int nB = spSecond->FUN_1405278a0()->FUN_140630290(nKey, 0, 5);
+        int nA = spFirst->GetStatus()->GetSpecialValue(nKey, 0, 5);
+        int nB = spSecond->GetStatus()->GetSpecialValue(nKey, 0, 5);
         if (nA - nB)
             return 0;
     }
@@ -2480,7 +2480,7 @@ int FUN_14052a620(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
 
 // @0x14052a7e0
 // item ordering (inventory sort comparator): empty first, then category, equip level, enchant level, id, count
-int FUN_14052a7e0(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
+int CompareItems(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
 {
     if (spFirst == 0)
     {
@@ -2534,8 +2534,8 @@ int FUN_14052a7e0(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
             return 1;
     }
     unsigned nId[2];
-    nId[0] = spFirst->FUN_1405276c0();
-    nId[1] = spSecond->FUN_1405276c0();
+    nId[0] = spFirst->GetItemId();
+    nId[1] = spSecond->GetItemId();
     if (nId[0] < nId[1])
         return -1;
     else if (nId[0] > nId[1])
@@ -2551,8 +2551,8 @@ int FUN_14052a7e0(MS2Ptr<CItem> spFirst, MS2Ptr<CItem> spSecond)
             return 1;
     }
     unsigned __int64 nIdTie[2];
-    nIdTie[0] = (unsigned)spFirst->FUN_1405276c0();
-    nIdTie[1] = (unsigned)spSecond->FUN_1405276c0();
+    nIdTie[0] = (unsigned)spFirst->GetItemId();
+    nIdTie[1] = (unsigned)spSecond->GetItemId();
     if (nIdTie[0] < nIdTie[1])
         return -1;
     else
@@ -2568,12 +2568,12 @@ CStringW CItem::FUN_140529aa0()
     {
         if (m_spMusic == NULL)
             return CStringW(L"");
-        MS2Ptr<CInstrumentCategoryData> spInfo = reinterpret_cast<CInstrumentDataTable*>(FUN_14052d1d0())->GetCategory(m_spMusic->m_n1c);
+        MS2Ptr<CInstrumentCategoryData> spInfo = reinterpret_cast<CInstrumentDataTable*>(GetInstrumentDataTable())->GetCategory(m_spMusic->m_n1c);
         if (spInfo == NULL)
             return CStringW(L"");
         return spInfo->GetName();
     }
-    MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(FUN_1405276c0());
+    MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(GetItemId());
     if (spIng == NULL)
         return CStringW(L"");
     return spIng->FUN_14054ad20();
@@ -2614,10 +2614,10 @@ int CItem::FUN_14052b130(int nItemId, int nRarity, int nAmount)
     {
         MS2Ptr<ItemMusicScore> spIng = TSingleton<CItemDataTable>::GetInstance()->GetMusicScore(nItemId);
         if (static_cast<ItemMusicScore*>(spIng) != 0)
-            FUN_140527320(spIng->FUN_14054ad00());
+            FUN_140527320(spIng->GetPlayCount());
     }
     if (FUN_140525a30() != 0 && (static_cast<CItemGem*>(m_spGem) != 0 ? true : false))
-        m_spGem->CreateGem(m_spData->FUN_14053e900(), m_spData->FUN_14053c650());
+        m_spGem->CreateGem(m_spData->FUN_14053e900(), m_spData->GetParam1());
     return 1;
 }
 MS2_REPLACE_METHOD(0x14052B130, CItem, FUN_14052b130, 416, 0xB502F344);
@@ -2625,9 +2625,9 @@ MS2_REPLACE_METHOD(0x14052B130, CItem, FUN_14052b130, 416, 0xB502F344);
 // @0x14052b760
 bool CItem::FUN_14052b760(MS2Ptr<CItem> spItem)
 {
-    if (spItem == NULL || spItem->FUN_140527930() == 0)
+    if (spItem == NULL || spItem->GetTransfer() == 0)
         return false;
-    m_spTransfer = spItem->FUN_140527930()->Clone();
+    m_spTransfer = spItem->GetTransfer()->Clone();
     if (static_cast<CItemTransfer*>(m_spTransfer) != 0)
         m_spTransfer->SetItem(this);
     return true;
@@ -2652,7 +2652,7 @@ MS2_REPLACE_METHOD(0x14052B2E0, CItem, InitWithCount, 77, 0x982D1C2E);
 
 // @0x140524eb0
 // MS2-FUNCTIONAL: the UGC manager call's temporaries (null key, MS2Ptr<CItem>) are laid out differently (the exe hoists both temp addresses and uses an 8-byte-larger frame); behaviour identical
-void CItem::FUN_140524eb0(CInputStream& in)
+void CItem::ReadFromStream(CInputStream& in)
 {
     m_6c = in.ReadInt32();
     m_60 = in.ReadInt32();
@@ -2675,7 +2675,7 @@ void CItem::FUN_140524eb0(CInputStream& in)
         {
             if (m_spUgc->GetLookLocalPath().GetLength() > 0)
             {
-                TSingleton<CUgcManager>::GetInstance()->FUN_141883df0(this, egf::EntityID(0));
+                TSingleton<CUgcManager>::GetInstance()->DownloadItemLook(this, egf::EntityID(0));
             }
         }
         if (FUN_140526010() != 0)
@@ -2693,12 +2693,12 @@ void CItem::FUN_140524eb0(CInputStream& in)
         m_strB8 = in.ReadUnicodeString();
         m_c0 = in.ReadInt64();
         FUN_140528bb0(in.ReadInt32());
-        FUN_140528bf0(in.ReadInt32());
+        SetPetLevel(in.ReadInt32());
         m_d0 = in.ReadUInt8();
     }
     m_spTransfer->vfunc_2(in);
     m_spSocket->ReadFromStream(in);
-    m_spCouple->FUN_14052d090(in);
+    m_spCouple->ReadFromStream(in);
     m_spBinding->FUN_140634700(in);
     FUN_1405290b0();
 }
@@ -2709,7 +2709,7 @@ void CItem::FUN_140524eb0(CInputStream& in)
 MS2Ptr<CItem> CItem::Clone()
 {
     MS2Ptr<CItem> spNew(new CItem);
-    if (!spNew->FUN_140523c40(FUN_1405276c0(), GetRarity(), 0))
+    if (!spNew->FUN_140523c40(GetItemId(), GetRarity(), 0))
         return MS2Ptr<CItem>(0);
     spNew->m_48 = m_48;
     spNew->m_50 = m_50;
@@ -2787,7 +2787,7 @@ bool CItem::FUN_140523c40(int nItemId, int nRarity, int nStatusArg)
     m_spSocket.AssignRaw(new CItemSocket);
     m_spCouple.AssignRaw(new CItemCoupleInfo);
     FUN_1405290b0();
-    m_d8 = static_cast<CItemExtractionTable*>(FUN_14052d1f0())->HasRow(nItemId);
+    m_d8 = static_cast<CItemExtractionTable*>(GetItemExtractionTable())->HasRow(nItemId);
     m_spBinding.AssignRaw(new CItemTransfer::CItemBinding);
     vfunc_2();
     return true;
@@ -2796,7 +2796,7 @@ MS2_REPLACE_METHOD(0x140523C40, CItem, FUN_140523c40, 1529, 0x46F3A047);
 
 // ---- w101 batch 11: item write
 // @0x140524ad0
-void CItem::FUN_140524ad0(COutputStream& out)
+void CItem::WriteToStream(COutputStream& out)
 {
     out.WriteInt32(m_6c);
     out.WriteInt32(m_60);
@@ -2837,14 +2837,14 @@ void CItem::FUN_140524ad0(COutputStream& out)
     }
     m_spTransfer->vfunc_1(out);
     m_spSocket->WriteToStream(out);
-    m_spCouple->FUN_14052d130(out);
+    m_spCouple->WriteToStream(out);
     m_spBinding->FUN_1406346a0(out);
 }
-MS2_REPLACE_METHOD(0x140524AD0, CItem, FUN_140524ad0, 982, 0x8BA0884C);
+MS2_REPLACE_METHOD(0x140524AD0, CItem, WriteToStream, 982, 0x8BA0884C);
 
 // ---- w101 batch 11: couple info streams
 // @0x14052d090
-void CItemCoupleInfo::FUN_14052d090(CInputStream& in)
+void CItemCoupleInfo::ReadFromStream(CInputStream& in)
 {
     m_n18 = in.ReadInt64();
     if (m_n18 != 0)
@@ -2853,10 +2853,10 @@ void CItemCoupleInfo::FUN_14052d090(CInputStream& in)
         m_b28 = in.ReadBool();
     }
 }
-MS2_REPLACE_METHOD(0x14052D090, CItemCoupleInfo, FUN_14052d090, 159, 0x772E2F30);
+MS2_REPLACE_METHOD(0x14052D090, CItemCoupleInfo, ReadFromStream, 159, 0x772E2F30);
 
 // @0x14052d130
-void CItemCoupleInfo::FUN_14052d130(COutputStream& out)
+void CItemCoupleInfo::WriteToStream(COutputStream& out)
 {
     out.WriteInt64(m_n18);
     if (m_n18 != 0)
@@ -2865,7 +2865,7 @@ void CItemCoupleInfo::FUN_14052d130(COutputStream& out)
         out.WriteBool(m_b28);
     }
 }
-MS2_REPLACE_METHOD(0x14052D130, CItemCoupleInfo, FUN_14052d130, 118, 0xAC4AF148);
+MS2_REPLACE_METHOD(0x14052D130, CItemCoupleInfo, WriteToStream, 118, 0xAC4AF148);
 
 // Two copies of the market sort-key names (the exe emits both arrays in this unit's initializers; names are invented).
 static const CString s_sortNames[] = { "None", "Buy", "Like", "PriceLow", "PriceHigh", "Create", "EnumEnd" };
@@ -2875,7 +2875,7 @@ static const CString s_sortNamesCopy[] = { "None", "Buy", "Like", "PriceLow", "P
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class Unk_XmlNode { public: Unk_XmlNode* FirstChild(const char*); Unk_XmlNode* NextSibling(const char*); };
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, const char*, unsigned&);
 struct Unk_XmlElement;
 bool FUN_14028f710(Unk_XmlElement*);                                       // the element is usable
@@ -2916,11 +2916,11 @@ int CItemBreakIngredientTable::Reload()
 int CItemBreakIngredientTable::LoadBreakItems()
 {
     m_mapBreak.RemoveAll();
-    CString strPath = FUN_14071a5b0("Table", "itemBreakIngredient.xml");
+    CString strPath = GetXmlPath("Table", "itemBreakIngredient.xml");
     m_spCache.AssignRaw(new CCacheData);
-    m_spCache->FUN_1401d1160(strPath);
+    m_spCache->SetPath(strPath);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return 0;
     Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2");
     if (pRoot == 0)

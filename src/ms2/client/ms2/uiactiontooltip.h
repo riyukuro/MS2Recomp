@@ -31,12 +31,12 @@ public:
     ActionKeyObject* GetAction();                               // the action shown
     CStringW GetTitle();                                       // the title shown
     CStringW GetText();                                       // the text shown
-    ActionKeyObject* FUN_1418b1900();                               // the current action of the local player (NULL without)
+    ActionKeyObject* GetCurrentAction();                               // the current action of the local player (NULL without)
     int FUN_1418b1950();                                            // string table id of the key hint
-    CStringW FUN_1418b1990();                                       // the key hint text
+    CStringW GetKeyHintText();                                       // the key hint text
     CStringW FUN_1418b1a20();                                       // the current action's text ("" without)
     void FUN_1418b1ab0();                                           // take the current action and show it
-    void FUN_1418b1e60();                                           // forget the action and hide
+    void HideAction();                                           // forget the action and hide
     void FUN_1418b1ef0();                                           // place the movie at the target point
     int FUN_1418b2140();                                            // the tooltip must stay hidden now
     int FUN_1418b23a0();                                            // the current action's type (0x1e: none)

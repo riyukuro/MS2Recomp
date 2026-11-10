@@ -118,7 +118,7 @@ int CUgcHttpClient::Request(const char* pszUrl)
     char szPath[1024] = "";
     unsigned nRead = 0;
 
-    FUN_140dfaf10(pszUrl, szProtocol, szHost, &nPort, szPath);
+    ParseUrl(pszUrl, szProtocol, szHost, &nPort, szPath);
     if (Connect(szHost, "UgcHttp", nPort, 0, 0)) {
         if (!RequestEx(szPath)) {
             bOk = 0;
@@ -277,7 +277,7 @@ CString CUgcHttpClient::ErrorText()
 // COMDATs
 
 // @0x140dfaf10
-void CUgcHttpClient::FUN_140dfaf10(const char* pszUrl, char* pszProtocol, char* pszHost, long* pnPort, char* pszPath)
+void CUgcHttpClient::ParseUrl(const char* pszUrl, char* pszProtocol, char* pszHost, long* pnPort, char* pszPath)
 {
     int nPos = 0;
     int bFound = 0;
@@ -335,13 +335,13 @@ void CUgcHttpClient::FUN_140dfaf10(const char* pszUrl, char* pszProtocol, char* 
 }
 
 // @0x140dfb4f0
-static bool FUN_140dfb4f0(unsigned char ch)
+static bool IsBase64Char(unsigned char ch)
 {
     return isalnum(ch) || ch == 0x2b || ch == 0x2f;
 }
 
 // @0x140dfb540
-std::string FUN_140dfb540(const unsigned char* pData, int nLength)
+std::string Base64Encode(const unsigned char* pData, int nLength)
 {
     std::string strOut;
     int i = 0;
@@ -377,7 +377,7 @@ std::string FUN_140dfb540(const unsigned char* pData, int nLength)
 }
 
 // @0x140dfb8b0
-std::string FUN_140dfb8b0(const std::string& strText)
+std::string Base64Decode(const std::string& strText)
 {
     int nLength = (int)strText.size();
     int i = 0;
@@ -386,7 +386,7 @@ std::string FUN_140dfb8b0(const std::string& strText)
     unsigned char aQuad[4], aTriple[3];
     std::string strOut;
 
-    while (nLength-- && (strText[nPos] != '=') && FUN_140dfb4f0(strText[nPos])) {
+    while (nLength-- && (strText[nPos] != '=') && IsBase64Char(strText[nPos])) {
         aQuad[i++] = strText[nPos]; nPos++;
         if (i == 4) {
             for (i = 0; i < 4; i++)

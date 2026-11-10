@@ -21,25 +21,25 @@ TermTagContext::TermTagContext() : m_18(0), m_48(false)
 }
 
 // @0x140866670
-int TermTagContext::FUN_140866670()
+int TermTagContext::GetId()
 {
     return m_18;
 }
 
 // @0x140866690
-CStringW TermTagContext::FUN_140866690()
+CStringW TermTagContext::GetName()
 {
     return m_20;
 }
 
 // @0x1408666e0
-CMsTime TermTagContext::FUN_1408666e0()
+CMsTime TermTagContext::GetStartTime()
 {
     return m_28;
 }
 
 // @0x140866720
-CMsTime TermTagContext::FUN_140866720()
+CMsTime TermTagContext::GetEndTime()
 {
     return m_38;
 }
@@ -63,7 +63,7 @@ void TermTagContext::FUN_1408667e0()
 }
 
 // @0x140866820
-bool TermTagContext::FUN_140866820(const CMsTime& kTime)
+bool TermTagContext::IsActiveAt(const CMsTime& kTime)
 {
     if (m_28 <= kTime && kTime < m_38)
         return true;

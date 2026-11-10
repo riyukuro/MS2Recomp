@@ -38,12 +38,12 @@ public:
     virtual void vfunc_13(void* p);                                 // 13 0x1422f4c40 (empty)
     virtual Ni2DBuffer* vfunc_14();                                 // 14 0x1422f4c60 the render texture's buffer
 
-    int FUN_1422f4cc0();                                            // 0x1422f4cc0 builds the "ScaleformStep" render step
-    int FUN_1422f4f00();                                            // 0x1422f4f00 removes it
-    int FUN_1422f4fd0();                                            // 0x1422f4fd0 CreateRenderTexture(): back buffer sized texture
+    int CreateRenderStep();                                            // 0x1422f4cc0 builds the "ScaleformStep" render step
+    int RemoveRenderStep();                                            // 0x1422f4f00 removes it
+    int CreateRenderTexture();                                            // 0x1422f4fd0 CreateRenderTexture(): back buffer sized texture
     // 0x1422f50d0 pre-processing callback of the "ScaleformRC" click (pData = the renderer): copies the current back
     // buffer into the render texture
-    static bool FUN_1422f50d0(NiRenderClick* pClick, void* pData);
+    static bool CopyBackBufferToRenderTexture(NiRenderClick* pClick, void* pData);
 
 private:
     MS2_LAYOUT_FRIEND;

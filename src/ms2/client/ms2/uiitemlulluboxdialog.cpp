@@ -79,7 +79,7 @@ class UIItemTreasureMapDialog { public: MS2Ptr<ASMovieClip> FUN_140c57ce0(const 
 static CString s_sndOpen = "LulluOpenBox_Open";
 static CString s_sndSpecial = "LulluOpenBox_SpecialItem_Get";
 static CString s_snd10 = "LulluOpenBox_10Items_Open";
-class UIItemPetBoxDialog { public: MS2Ptr<ASCheckBox> FUN_140e52700(const CString& strName, MS2Ptr<ASCheckBox>& out); };   // C3: the check-box binder (0x140e52700, uiitempetboxdialog.cpp)
+class UIItemPetBoxDialog { public: MS2Ptr<ASCheckBox> BindCheckBox(const CString& strName, MS2Ptr<ASCheckBox>& out); };   // C3: the check-box binder (0x140e52700, uiitempetboxdialog.cpp)
 // ---- local stand-ins for classes whose units are not recovered yet ----
 class CMsgBoxData : public CPtred
 {
@@ -108,8 +108,8 @@ CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_140763e10(int);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW, int);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
-void FUN_140d73aa0(CStringW, int, void*, CStringW);
-void FUN_1412751f0(const CStringW&, int, int);
+void ShowMessageBox(CStringW, int, void*, CStringW);
+void ShowSystemNotice(const CStringW&, int, int);
 int FUN_1413499b0(int);   // C3: was FUN_1413499b0
 void FUN_140cff840(const Scaleform::GFx::Value&, CString, int);
 void SetChildText(const Scaleform::GFx::Value&, CString, CStringW);
@@ -171,7 +171,7 @@ void UIItemLulluBoxDialog::OnLoadComplete()
     m_multi = false;
     m_sent = false;
     m_simple = false;
-    FUN_141925ec0("m_closeButton");
+    BindCloseButton("m_closeButton");
     FUN_1419260d0("m_webGuideButton", 0);
     CString theme = LULLUBOX_ATTR(data)->GetString(L"boxTheme", "default");
     GetChildInto<ASTextField>("m_title", m_title);
@@ -191,15 +191,15 @@ void UIItemLulluBoxDialog::OnLoadComplete()
         m_30->Invoke("setBoxTheme", theme);
     }
     reinterpret_cast<UIItemTreasureMapDialog*>(this)->FUN_140c57ce0("m_resultItem", m_resultItem);
-    reinterpret_cast<UIItemPetBoxDialog*>(this)->FUN_140e52700("m_isSkipEffect", m_skipEffect);
-    reinterpret_cast<UIItemPetBoxDialog*>(this)->FUN_140e52700("m_autoPayBox", m_autoPay);
+    reinterpret_cast<UIItemPetBoxDialog*>(this)->BindCheckBox("m_isSkipEffect", m_skipEffect);
+    reinterpret_cast<UIItemPetBoxDialog*>(this)->BindCheckBox("m_autoPayBox", m_autoPay);
     if (data->function.name == L"OpenItemBoxLulluSimple")
         m_simple = true;
     UpdateTitle();
     if (m_simple)
-        FUN_140e9c550();
+        InitSimpleBox();
     else
-        FUN_140e9c3e0();
+        UpdateAutoPay();
 }
 
 // @0x140e9b670
@@ -267,14 +267,14 @@ void UIItemLulluBoxDialog::vfunc_45(Scaleform::GFx::Value* out, const CString& m
             ASTooltip tip(1, 2);
             tip.SetTooltipAlign(5);
             if (tip.ApplyTextTooltip(text))
-                *out = tip.FUN_1422bb870();
+                *out = tip.GetValue();
             return;
         } else if ((which == "m_multiOpenButton")) {
             CStringW text = FUN_14028dfa0(CStringW(L"s_lullu_key_multi_open_tooltip"), keyName, boxName);
             ASTooltip tip(1, 2);
             tip.SetTooltipAlign(5);
             if (tip.ApplyTextTooltip(text))
-                *out = tip.FUN_1422bb870();
+                *out = tip.GetValue();
             return;
         }
     }
@@ -287,7 +287,7 @@ int UIItemLulluBoxDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
         return 1;
     if (_stricmp(szMethod, "onSendOpenBox") == 0) {
         if (FUN_140e9e8f0() == 0)
-            FUN_140e9f540();
+            SendOpenBox();
         else {
             m_resultItem->vfunc_4(false);
             m_itemBox->vfunc_15("idle");
@@ -320,13 +320,13 @@ void UIItemLulluBoxDialog::OnSelectMode(const Scaleform::GFx::FunctionHandler::P
 }
 
 // @0x140e9c1e0
-void UIItemLulluBoxDialog::FUN_140e9c1e0(const Scaleform::GFx::FunctionHandler::Params&)
+void UIItemLulluBoxDialog::OnOpenItemBreak(const Scaleform::GFx::FunctionHandler::Params&)
 {
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e8d)));
 }
 
 // @0x140e9c210
-void UIItemLulluBoxDialog::FUN_140e9c210(const Scaleform::GFx::FunctionHandler::Params&)
+void UIItemLulluBoxDialog::OnOpenStyleShop(const Scaleform::GFx::FunctionHandler::Params&)
 {
     FUN_1413499b0(9);
 }
@@ -348,7 +348,7 @@ bool UIItemLulluBoxDialog::FUN_140e9c2a0(int result, const CMsgBoxData&)
     if (result == 0) {
         if (m_autoPay.get() ? true : false) {
             if (m_autoPay->GetVisible() == true)
-                m_autoPay->FUN_1422ce090(1);
+                m_autoPay->SetSelected(1);
         }
         FUN_140e9ece0();
     }
@@ -364,7 +364,7 @@ void UIItemLulluBoxDialog::UpdateTitle()
 }
 
 // @0x140e9c3e0
-void UIItemLulluBoxDialog::FUN_140e9c3e0()
+void UIItemLulluBoxDialog::UpdateAutoPay()
 {
     if (m_30 == 0)
         return;
@@ -382,7 +382,7 @@ void UIItemLulluBoxDialog::FUN_140e9c3e0()
 }
 
 // @0x140e9c550
-void UIItemLulluBoxDialog::FUN_140e9c550()
+void UIItemLulluBoxDialog::InitSimpleBox()
 {
     if (m_30 == 0)
         return;
@@ -395,21 +395,21 @@ void UIItemLulluBoxDialog::FUN_140e9c550()
     bool hasBreak = itemBreak && (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_openItemBreak", reinterpret_cast<MS2Ptr<ASButton>&>(m_itemBreak)).get() ? true : false);
     if (hasBreak) {
         m_itemBreak->vfunc_4(true);
-        m_itemBreak->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::FUN_140e9c1e0), 0);
+        m_itemBreak->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnOpenItemBreak), 0);
     }
     bool hasStyle = styleShop && (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_openStyleShop", reinterpret_cast<MS2Ptr<ASButton>&>(m_styleShop)).get() ? true : false);
     if (hasStyle) {
         m_styleShop->vfunc_4(true);
-        m_styleShop->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::FUN_140e9c210), 0);
+        m_styleShop->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemLulluBoxDialog::OnOpenStyleShop), 0);
     }
-    FUN_140cff840(FUN_1422dbb40(), "m_previewBagScroll", true);
-    if (LULLUBOX_ATTR(data)->FUN_14092c5f0(L"showWindowTitle")) {
+    FUN_140cff840(GetGFxValue(), "m_previewBagScroll", true);
+    if (LULLUBOX_ATTR(data)->HasKey(L"showWindowTitle")) {
         CStringW title = LULLUBOX_ATTR(data)->FUN_14042cad0(L"showWindowTitle", L"");
-        SetChildText(FUN_1422dbb40(), "m_showWindowTitle", GetStringCommonByKey(title));
+        SetChildText(GetGFxValue(), "m_showWindowTitle", GetStringCommonByKey(title));
     }
-    if (LULLUBOX_ATTR(data)->FUN_14092c5f0(L"showWindowDesc")) {
+    if (LULLUBOX_ATTR(data)->HasKey(L"showWindowDesc")) {
         CStringW desc = LULLUBOX_ATTR(data)->FUN_14042cad0(L"showWindowDesc", L"");
-        SetChildText(FUN_1422dbb40(), "m_showWindowDesc", GetStringCommonByKey(desc));
+        SetChildText(GetGFxValue(), "m_showWindowDesc", GetStringCommonByKey(desc));
     }
     FUN_140e9d2b0();
 }
@@ -436,17 +436,17 @@ void UIItemLulluBoxDialog::FUN_140e9cde0(int count)
     if (bag == 0)
         return;
     bag->SetHeightInt(h);
-    float y = bag->FUN_1422c1110() + (float)bag->GetHeightCeil() + 6.0f;
+    float y = bag->GetY() + (float)bag->GetHeightCeil() + 6.0f;
     m_skipEffect->SetYFloat(y);
     m_autoPay->SetYFloat(y);
-    float y2 = m_skipEffect->FUN_1422c1110() + (float)m_skipEffect->GetHeightCeil() + 10.0f;
+    float y2 = m_skipEffect->GetY() + (float)m_skipEffect->GetHeightCeil() + 10.0f;
     m_singleOpen->SetYFloat(y2);
     m_multiOpen->SetYFloat(y2);
-    FUN_140d00c80(FUN_1422dbb40(), "m_boxBG", h + 0x10d);
+    FUN_140d00c80(GetGFxValue(), "m_boxBG", h + 0x10d);
     if (tall)
-        bag->SetXFloat(bag->FUN_1422c10a0() - 6.0f);
+        bag->SetXFloat(bag->GetX() - 6.0f);
     if (rows > 2)
-        FUN_1422dba50()->SetYFloat(FUN_1422dba50()->FUN_1422c1110() - (float)(h - 0x8c));
+        FUN_1422dba50()->SetYFloat(FUN_1422dba50()->GetY() - (float)(h - 0x8c));
 }
 
 // @0x140e9d1e0
@@ -511,8 +511,8 @@ bool UIItemLulluBoxDialog::FUN_140e9d2b0()
     param->m_bEnabled = true;
     FUN_14141f860(m_bagId, (int)items.GetCount(), &items, param);
     ASObj obj(2);
-    obj.FUN_1407cba60("bagId", m_bagId);
-    m_30->Invoke("initItemData", obj.FUN_1422bb870());
+    obj.SetStringMember("bagId", m_bagId);
+    m_30->Invoke("initItemData", obj.GetValue());
     FUN_140e9cde0((int)items.GetCount());
     return true;
 }
@@ -552,7 +552,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
         unsigned count = item->GetCount();
         CStringW txt = StringFormat(L"{0} X {1}", item->FUN_140527b10(), count);
         CreateItemInfoSlot(bagKey, MS2Ptr<CItem>(item), 0, 0x415, 0x800);
-        slot->FUN_1407cba60("binding", bagKey);
+        slot->SetStringMember("binding", bagKey);
         name->FUN_1422e4b80(txt);
         m_slotBinds.push_back(bagKey);
         m_30->Invoke("SetMultiType", false);
@@ -586,7 +586,7 @@ void UIItemLulluBoxDialog::FUN_140e9dc30()
                         unc->vfunc_4(false);
                 }
             }
-            slot->FUN_1407cba60("binding", bagKey);
+            slot->SetStringMember("binding", bagKey);
         }
         m_30->Invoke("SetMultiType", true);
     }
@@ -616,7 +616,7 @@ int UIItemLulluBoxDialog::FUN_140e9e8f0()
             return 4;
         int haveBox = g_143ab2a90.FUN_140a5f7b0(boxId, 0);
         if (haveBox < need) {
-            if (m_autoPay->FUN_1422ce0e0() && price >= 0) {
+            if (m_autoPay->IsSelected() && price >= 0) {
                 int lack = need - haveBox;
                 int cost = price * lack;
                 if (DAT_143ab2898 < cost)
@@ -637,7 +637,7 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
     if (r == 4) {
         return;
     } else if (r == 1) {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_lullu_key_not_enough_money"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_lullu_key_not_enough_money"), 0, 0, L"");
         return;
     } else if (r == 3) {
         MS2Ptr<CItemData> data = FUN_14053f870(m_boxItemId);
@@ -680,8 +680,8 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
         return;
     }
     m_30->Invoke("enableComponent", false);
-    if (m_skipEffect->FUN_1422ce0e0())
-        FUN_140e9f540();
+    if (m_skipEffect->IsSelected())
+        SendOpenBox();
     else {
         m_resultItem->vfunc_4(false);
         m_itemBox->vfunc_13("open");
@@ -689,7 +689,7 @@ void UIItemLulluBoxDialog::FUN_140e9ece0()
 }
 
 // @0x140e9f540
-void UIItemLulluBoxDialog::FUN_140e9f540()
+void UIItemLulluBoxDialog::SendOpenBox()
 {
     if (m_sent == true)
         return;
@@ -704,7 +704,7 @@ void UIItemLulluBoxDialog::FUN_140e9f540()
     }
     if (m_simple == false) {
         if (m_autoPay->GetVisible()) {
-            if (m_autoPay->FUN_1422ce0e0())
+            if (m_autoPay->IsSelected())
                 mode += "autoPay";
         }
     }
@@ -740,7 +740,7 @@ void UIItemLulluBoxDialog::FUN_140e9f870(const CStringW& kind, unsigned itemId)
     } else {
         CStringW msg = FUN_14028dfa0(CStringW(L"s_lullu_key_not_enough_item"), itemId);
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(msg);
-        FUN_1412751f0(msg, 1, 1);
+        ShowSystemNotice(msg, 1, 1);
     }
 }
 
@@ -754,20 +754,20 @@ MS2_REPLACE_METHOD(0x140E9BB90, UIItemLulluBoxDialog, vfunc_45, 1065, 0xAE8ED887
 MS2_REPLACE_METHOD(0x140E9BFD0, UIItemLulluBoxDialog, vfunc_28, 248, 0x58FE172E);
 MS2_REPLACE_METHOD(0x140E9C0D0, UIItemLulluBoxDialog, ReleaseSlotBinds, 117, 0xF7E1737C);
 MS2_REPLACE_METHOD(0x140E9C150, UIItemLulluBoxDialog, OnSelectMode, 124, 0xDAAC0987);
-MS2_REPLACE_METHOD(0x140E9C1E0, UIItemLulluBoxDialog, FUN_140e9c1e0, 37, 0xA11D6E9E);
-MS2_REPLACE_METHOD(0x140E9C210, UIItemLulluBoxDialog, FUN_140e9c210, 29, 0xE16B80A7);
+MS2_REPLACE_METHOD(0x140E9C1E0, UIItemLulluBoxDialog, OnOpenItemBreak, 37, 0xA11D6E9E);
+MS2_REPLACE_METHOD(0x140E9C210, UIItemLulluBoxDialog, OnOpenStyleShop, 29, 0xE16B80A7);
 MS2_REPLACE_METHOD(0x140E9C240, UIItemLulluBoxDialog, SetBoxItemId, 25, 0x11D24FAE);
 MS2_REPLACE_METHOD(0x140E9C260, UIItemLulluBoxDialog, FUN_140e9c260, 50, 0x2930820F);
 MS2_REPLACE_METHOD(0x140E9C2A0, UIItemLulluBoxDialog, FUN_140e9c2a0, 154, 0x18EDC92E);
 MS2_REPLACE_METHOD(0x140E9C340, UIItemLulluBoxDialog, UpdateTitle, 146, 0xBDB0C44D);
-MS2_REPLACE_METHOD(0x140E9C3E0, UIItemLulluBoxDialog, FUN_140e9c3e0, 356, 0x9AB1CA20);
-MS2_REPLACE_METHOD(0x140E9C550, UIItemLulluBoxDialog, FUN_140e9c550, 2175, 0x2483E0C4);
+MS2_REPLACE_METHOD(0x140E9C3E0, UIItemLulluBoxDialog, UpdateAutoPay, 356, 0x9AB1CA20);
+MS2_REPLACE_METHOD(0x140E9C550, UIItemLulluBoxDialog, InitSimpleBox, 2175, 0x2483E0C4);
 MS2_REPLACE_METHOD(0x140E9CDE0, UIItemLulluBoxDialog, FUN_140e9cde0, 1012, 0x0092F9EC);
 MS2_REPLACE_METHOD(0x140E9D1E0, UIItemLulluBoxDialog, IsSpecialItem, 187, 0xB3A69575);
 MS2_REPLACE_METHOD(0x140E9D2B0, UIItemLulluBoxDialog, FUN_140e9d2b0, 2426, 0xCBB1588C);
 MS2_REPLACE_METHOD(0x140E9DC30, UIItemLulluBoxDialog, FUN_140e9dc30, 3250, 0x98E6378F);
 MS2_REPLACE_METHOD(0x140E9E8F0, UIItemLulluBoxDialog, FUN_140e9e8f0, 1002, 0x379EB03F);
 MS2_REPLACE_METHOD(0x140E9ECE0, UIItemLulluBoxDialog, FUN_140e9ece0, 2117, 0xB89114BB);
-MS2_REPLACE_METHOD(0x140E9F540, UIItemLulluBoxDialog, FUN_140e9f540, 797, 0xFE227FF2);
+MS2_REPLACE_METHOD(0x140E9F540, UIItemLulluBoxDialog, SendOpenBox, 797, 0xFE227FF2);
 MS2_REPLACE_METHOD(0x140E9F870, UIItemLulluBoxDialog, FUN_140e9f870, 787, 0xA921CE96);
 MS2_EMIT_CRT_MEMMOVE_S();

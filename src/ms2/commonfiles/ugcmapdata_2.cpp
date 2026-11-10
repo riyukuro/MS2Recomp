@@ -225,9 +225,9 @@ Unk_UGCMapPtr FUN_1408ad3f0(int mapId) {
 Unk_UGCMapPtr LoadUGCMap(unsigned mapId) {
     CString path;
     path.Format("./Data/Xml/UGCMap/%08d.xml",mapId);
-    if(GetFileSystem()->FUN_1403987d0(std::string(path))==0) return Unk_UGCMapPtr(0);
+    if(GetFileSystem()->FileExists(std::string(path))==0) return Unk_UGCMapPtr(0);
     TiXmlDocument document;
-    if(GetFileSystem()->FUN_1403974b0(&document,path,0,false,false)==0) return Unk_UGCMapPtr(0);
+    if(GetFileSystem()->LoadXmlFile(&document,path,0,false,false)==0) return Unk_UGCMapPtr(0);
     Unk_UGCMapPtr value(new CUGCMapData);
     class TiXmlElement* root=((class TiXmlElement*)((class Unk_XmlNode*)(void*)(&document))->FirstChild("ugcmap"));
     if(root==0) {

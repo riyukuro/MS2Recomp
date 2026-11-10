@@ -41,7 +41,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
 int XmlGetAttr(class TiXmlElement*, const char*, efd::Point3&);   // C3: was FUN_140874670 (0x140874670, xmlattr's Point3 reader)
@@ -68,10 +68,10 @@ CItemGemPropertyTable::~CItemGemPropertyTable()
 // @0x1405abe50
 bool CItemGemPropertyTable::Load()
 {
-    LoadGems<CGemTombStoneData>(FUN_14071a5b0("Table", "ItemGemProperty_tomb.xml"), "tomb");
-    LoadGems<CGemSwimData>(FUN_14071a5b0("Table", "ItemGemProperty_swim.xml"), "swim");
-    LoadGems<CGemCharEffectData>(FUN_14071a5b0("Table", "ItemGemProperty_charEffect.xml"), "charEffect");
-    LoadGems<CGemEffectData>(FUN_14071a5b0("Table", "ItemGemProperty_effect.xml"), "effect");
+    LoadGems<CGemTombStoneData>(GetXmlPath("Table", "ItemGemProperty_tomb.xml"), "tomb");
+    LoadGems<CGemSwimData>(GetXmlPath("Table", "ItemGemProperty_swim.xml"), "swim");
+    LoadGems<CGemCharEffectData>(GetXmlPath("Table", "ItemGemProperty_charEffect.xml"), "charEffect");
+    LoadGems<CGemEffectData>(GetXmlPath("Table", "ItemGemProperty_effect.xml"), "effect");
     SetInit(true);
     return true;
 }
@@ -79,7 +79,7 @@ bool CItemGemPropertyTable::Load()
 // @0x1405ac160
 MS2Ptr<CGemDataBase> CItemGemPropertyTable::FUN_1405ac160(int nGemId)
 {
-    FUN_1405a96f0()->FUN_1405ac260();
+    GetItemGemPropertyTable()->ReloadIfChanged();
     CheckInit();
     if (m_gems.IsEmpty())
         return MS2Ptr<CGemDataBase>(0);
@@ -96,7 +96,7 @@ MS2Ptr<CGemDataBase> CItemGemPropertyTable::FUN_1405ac160(int nGemId)
 }
 
 // @0x1405ac260
-bool CItemGemPropertyTable::FUN_1405ac260()
+bool CItemGemPropertyTable::ReloadIfChanged()
 {
     bool bResult = false;
     bool bChanged = false;
@@ -308,10 +308,10 @@ bool CItemGemPropertyTable::LoadGems(const CString& strFile, const CString& strT
     MS2Ptr<CCacheData> spCache(new CCacheData);
     if (spCache == 0)
         return false;
-    spCache->FUN_1401d1160(CString(strFile));
+    spCache->SetPath(CString(strFile));
     m_caches.Add(spCache);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strFile, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strFile, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)

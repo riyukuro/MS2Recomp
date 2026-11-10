@@ -1,6 +1,6 @@
 // uisurveydialog.h - UISurveyDialog (RTTI .?AVUISurveyDialog@@, 0x1b8 bytes, UIDialog, UI id 0x4f1a, swf
 // "SurveyDialog"): the player survey box. The server sends the survey (who started it, the title and the answer
-// texts); "OnVote" sends the chosen answer back. The packet handlers FUN_140eda1b0 dispatch on the first byte and
+// texts); "OnVote" sends the chosen answer back. The packet handlers HandlePacket dispatch on the first byte and
 // print the vote results to the chat. Owning unit: ?\uisurveydialog.cpp. Header name assumed from the unit path.
 #pragma once
 #include <afx.h>
@@ -22,8 +22,8 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x140edb160 "Close" box answer
     virtual int vfunc_48() { return 0x4f1a; }                   // 48 0x140edb240
 
-    void FUN_140eda1b0(CInPacket& packet);                      // packet dispatcher on the first byte
-    void FUN_140eda2b0(int nAnswer);                  // send the vote
+    void HandlePacket(CInPacket& packet);                      // packet dispatcher on the first byte
+    void SendVote(int nAnswer);                  // send the vote
     void FUN_140eda360(CInPacket& packet);                      // case 0
     void FUN_140eda3c0(CInPacket& packet);                      // case 2
     void FUN_140eda530(CInPacket& packet);                      // case 1

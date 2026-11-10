@@ -100,7 +100,7 @@ void UIObserveDialog::FUN_141a735c0()
 }
 
 // @0x141a735d0
-void UIObserveDialog::FUN_141a735d0(CStringW strName)
+void UIObserveDialog::SetPlayerName(CStringW strName)
 {
     m_strName = strName;
     m_bCenterCamera = false;
@@ -109,14 +109,14 @@ void UIObserveDialog::FUN_141a735d0(CStringW strName)
 }
 
 // @0x141a736c0
-void UIObserveDialog::FUN_141a736c0(bool bCenterCamera)
+void UIObserveDialog::SetCenterCamera(bool bCenterCamera)
 {
     m_strName = L"";
     m_bCenterCamera = bCenterCamera;
     if (m_30.get() != 0)
         m_30.operator->()->Invoke("SetCenterCamera", bCenterCamera);
 }
-MS2_REPLACE_METHOD(0x141A736C0, UIObserveDialog, FUN_141a736c0, 136, 0xB2A9C07A);
+MS2_REPLACE_METHOD(0x141A736C0, UIObserveDialog, SetCenterCamera, 136, 0xB2A9C07A);
 
 // @0x141a737c0
 int UIObserveDialog::vfunc_48()

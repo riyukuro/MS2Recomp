@@ -471,23 +471,23 @@ void WeddingGuest::Read(CInPacket& in)
 
 // ---- wedding rules -------------------------------------------------------------------------------------------------
 // @0x140900550
-bool FUN_140900550()
+bool IsWeddingEnabled()
 {
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x104) == false)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x104) == false)
         return false;
     return true;
 }
 // @0x140900580
 bool FUN_140900580(bool bFlag)
 {
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x106) != false && bFlag == false)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x106) != false && bFlag == false)
         return false;
     return true;
 }
 // @0x1409005c0
 bool FUN_1409005c0(unsigned char nGenderA, unsigned char nGenderB)
 {
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x105) != false && nGenderA == nGenderB)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x105) != false && nGenderA == nGenderB)
         return false;
     return true;
 }
@@ -530,7 +530,7 @@ int WeddingProxy::CheckProposeEnd()
 // @0x140900710
 int WeddingProxy::CheckBase()
 {
-    if (FUN_140900550() == false)
+    if (IsWeddingEnabled() == false)
         return 0x12;
     if (m_nState == 1) {
         __int64 nLimit = GetPromiseLimit();
@@ -588,8 +588,8 @@ int WeddingProxy::CheckReservationCancel(WeddingHallTicket& ticket, __int64 nCha
 // @0x140900990
 int WeddingProxy::CheckReservationChange(WeddingHallTicket& current, WeddingHallTicket& wanted, __int64 nCharacterId)
 {
-    int nCurrentGrade = TSingleton<WeddingTable>::GetInstance()->FUN_140909130(current.m_nPackageId, current.m_nHallId);
-    int nWantedGrade = TSingleton<WeddingTable>::GetInstance()->FUN_140909130(wanted.m_nPackageId, wanted.m_nHallId);
+    int nCurrentGrade = TSingleton<WeddingTable>::GetInstance()->GetHallGrade(current.m_nPackageId, current.m_nHallId);
+    int nWantedGrade = TSingleton<WeddingTable>::GetInstance()->GetHallGrade(wanted.m_nPackageId, wanted.m_nHallId);
     if (nCurrentGrade > nWantedGrade)
         return 0x24;
     if (current.m_nPackageId == wanted.m_nPackageId && current.m_nHallId == wanted.m_nHallId && current.m_nTime == wanted.m_nTime && current.m_bPublic == wanted.m_bPublic)
@@ -673,22 +673,22 @@ __int64 WeddingProxy::GetCoolingOffTime()
     return kTime.Get();
 }
 // @0x140900d40
-unsigned int FUN_140900d40()
+unsigned int GetWeddingProposeItemId()
 {
     return *TSingleton<Client::Constants>::GetInstance()->WeddingProposeItemID.Get();
 }
 // @0x140900d70
-unsigned int FUN_140900d70()
+unsigned int GetWeddingDivorceMeso()
 {
     return *TSingleton<Client::Constants>::GetInstance()->WeddingDivorceMeso.Get();
 }
 // @0x140900da0
-__int64 FUN_140900da0()
+__int64 GetWeddingInvitationMeso()
 {
     return *TSingleton<Client::Constants>::GetInstance()->WeddingInvitationMeso.Get();
 }
 // @0x140900dd0
-unsigned int FUN_140900dd0()
+unsigned int GetWeddingDivorceFieldId()
 {
     return *TSingleton<Client::Constants>::GetInstance()->WeddingDivorceFieldID.Get();
 }
@@ -712,7 +712,7 @@ __int64 WeddingProxy::GetExp()
     default:
         return 0;
     }
-    __int64 nExp = TSingleton<WeddingTable>::GetInstance()->FUN_140908e60(1, 0);
+    __int64 nExp = TSingleton<WeddingTable>::GetInstance()->GetRewardExp(1, 0);
     int nDays = GetDayNumberDifference(m_n30, GetServerTime());
     nExp = nExp * nDays;
     __int64 nTotal = nExp + GetMeso();
@@ -721,7 +721,7 @@ __int64 WeddingProxy::GetExp()
     return nTotal;
 }
 // @0x140900f00
-unsigned int FUN_140900f00()
+unsigned int GetWeddingInvitationMaxCount()
 {
     return *TSingleton<Client::Constants>::GetInstance()->WeddingInvitationMaxCount.Get();
 }
@@ -740,11 +740,11 @@ bool FUN_140900f30(__int64 nTime)
 // @0x140900f90
 bool FUN_140900f90(int nPackageId, WeddingHallTicket* pTicket)
 {
-    MS2Ptr<WeddingPackage> spPackage = TSingleton<WeddingTable>::GetInstance()->FUN_140908b80(nPackageId);
+    MS2Ptr<WeddingPackage> spPackage = TSingleton<WeddingTable>::GetInstance()->FindPackage(nPackageId);
     if (spPackage == 0) {
         return false;
     }
-    int nGrade = TSingleton<WeddingTable>::GetInstance()->FUN_140909130(pTicket->m_nPackageId, pTicket->m_nHallId);
+    int nGrade = TSingleton<WeddingTable>::GetInstance()->GetHallGrade(pTicket->m_nPackageId, pTicket->m_nHallId);
     std::map<int, MS2Ptr<WeddingHallData> >::iterator it = spPackage->m_halls.begin();
     std::map<int, MS2Ptr<WeddingHallData> >::iterator itEnd = spPackage->m_halls.end();
     for (; it != itEnd; ++it) {

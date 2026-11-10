@@ -6,7 +6,7 @@
     plainglue.py compile DIR [--cache DIR] [--tree CHECKOUT]
     plainglue.py tables DIR --cache DIR
     plainglue.py facts DIR [--link FILE] [--crtinit FILE] [--tree CHECKOUT]
-    plainglue.py derive DIR [--base GLUE] [--committed-tables]
+    plainglue.py derive DIR [--base GLUE] [--committed-tables] [--standalone]
   write   from a finished build (FULLEXE_DIR, its closed link link3.rsp; run at each merge, like symbols.tsv) -> DIR/:
             objs.txt   the link's objs in command-line order (plan order with the initorder --before moves applied), as
                        paths relative to the obj cache (--cache, default the first FULLEXE_OBJ_CACHES dir): obj/... gb/obj/...
@@ -24,6 +24,8 @@
           and removes a stale OBJ; cmake/fullexe-plain then links none.
   pack    DIR/order.txt -> DIR/order.tar.xz (about 1.7 MB; no timestamps or owners, so the same list packs to the same
           bytes): the committed form of order.txt, which cmake/fullexe-plain unpacks into its build dir at configure.
+          --standalone: packed without the ms2::hook::detail helper names (as derive --standalone); DIR/order.txt
+          is left as it is. glue-refresh.sh passes it.
   compile the cl command of every obj of DIR/objs.txt, as the finished build ran it (tools/progress.py game units with
           their MS2-FLAGS profile or MS2-TOOLSET cl, tools/gbprogress.py engine and library units), checked against the
           flags key that each obj's .deps recorded -> DIR/:
@@ -61,6 +63,8 @@
           /ignore:4037); stubs.obj is stubs.tsv's stubs as zero fill (the exe's .bss), not written (a stale one is
           removed) when stubs.tsv lists no stub.
           --base: the dir with link.tsv, before.tsv, alias.rsp, stubs.tsv (default data/fullexe/plain).
+          --standalone: order.txt without the ms2::hook::detail helper names (cmake/fullexe-plain passes it with
+          MS2_PLAIN_STANDALONE, where the game units hold no hook code).
           Engine and library units: one entry per unit (the facts' pick, else the first recipe:name) at the unit's lowest
           status.tsv VA, else its facts VA, else left out; the facts' closure objs last. before.tsv: initorder.py's ranking
           of the exe's .CRT$XC entries (data/fullexe/crtinit-exe.tsv, attributed as crtinit.py does: status.tsv row at
@@ -160,6 +164,10 @@ def pack(argv):
     import io, lzma, tarfile
     d = argv[0]
     data = open(os.path.join(d, "order.txt"), "rb").read()
+    if "--standalone" in argv:
+        # as derive --standalone: the archive is the no-exe build's list, where no obj defines the hook helpers
+        ns = HOOK_NS.encode()
+        data = b"".join(l for l in data.splitlines(True) if ns not in l)
     ti = tarfile.TarInfo("order.txt")
     ti.size, ti.mode = len(data), 0o644
     buf = io.BytesIO()
@@ -490,6 +498,9 @@ def facts(argv):
     return 0 if got == want and not bad else 3
 
 
+HOOK_NS = "@detail@hook@ms2@@"     # mangled scope of src/hook/ms2hook.h's helper templates
+
+
 def derive(argv):
     """the glue of this checkout from the repository alone -> DIR (see the module doc)"""
     import re, subprocess
@@ -589,7 +600,11 @@ def derive(argv):
     shutil.copyfile(os.path.join(base, "alias.rsp"), os.path.join(d, "alias.rsp"))
     shutil.copyfile(os.path.join(base, "stubs.tsv"), os.path.join(d, "stubs.tsv"))
     zero_stubs(os.path.join(base, "stubs.tsv"), os.path.join(d, "stubs.obj"))   # none: no stubs.obj
-    # order.txt: order.py without its defsyms filter (that needs the objs): a name no obj defines is LNK4037 only
+    # order.txt: order.py without its defsyms filter (that needs the objs): a name no obj defines is LNK4037 only.
+    # --standalone (the game units compile with /DMS2_STANDALONE): the ms2::hook::detail helpers of the registrations
+    # (FnToVoid, ArgPass::Get) are left out; no obj defines them there, and the symbol tables list them because a gate
+    # obj's copy has the bytes of an exe function
+    nohook = "--standalone" in argv
     fva = set()
     for l in open(ms2paths.FUNCTIONS_TSV):
         q = l.split("\t")
@@ -602,7 +617,7 @@ def derive(argv):
     for fn in SYMBOL_TABLES:
         for l in open(os.path.join(root, "progress", fn), encoding="latin1"):
             q = l.rstrip("\n").split("\t")
-            if l[0] != "#" and len(q) > 1 and q[0] not in va:
+            if l[0] != "#" and len(q) > 1 and q[0] not in va and not (nohook and HOOK_NS in q[0]):
                 try:
                     v = int(q[1], 16)
                 except ValueError:

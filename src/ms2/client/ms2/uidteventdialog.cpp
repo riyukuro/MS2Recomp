@@ -120,7 +120,7 @@ public:
 class Unk_DTSound : public UIAlignWidgetManager { };
 class Unk_140e45740* FUN_140e45740();   // C3: was FUN_140e45740
 
-class UIMinimapDialog* FUN_140c9b540(int);   // C3: was FUN_140c9b540
+class UIMinimapDialog* FindMinimapDialog(int);   // C3: was FindMinimapDialog
 
 
 // ---- the "{0:02}:{1:02}:{2:02}" formatter (0x140f38940): StringFormat's 3-argument variadic body, but with its own
@@ -182,7 +182,7 @@ UIDTEventDialog::UIDTEventDialog()
       m_binds(10)
 {
     m_2c = 0x19;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     m_timer.Init();
 }
 
@@ -228,7 +228,7 @@ void UIDTEventDialog::OnLoadComplete()
     ATL::CAtlArray<MS2Ptr<CommonUserEvent::DTRewardEventContext> > ctxs;
     TSingleton<CUserEventManager>::GetInstance()->GetAllDTReward(ctxs);
     for (unsigned int i = 0; i < ctxs.GetCount(); i++)
-        FUN_140f38430(ctxs[i]);
+        CreateRewardItem(ctxs[i]);
 }
 MS2_REPLACE_METHOD(0x140F35CC0, UIDTEventDialog, OnLoadComplete, 282, 0xFD2CF139);
 
@@ -249,14 +249,14 @@ void UIDTEventDialog::vfunc_43()
         bool bMove = false;
         int bIdle = m_60 == 0 && m_78 != 0 && vfunc_52() != 0;
         if (bIdle) {
-            if (!((float)dialog->FUN_1422c1500() >= dialog->FUN_1422c10a0() &&
-                  (float)dialog->FUN_1422c1530() >= dialog->FUN_1422c1110() &&
-                  dialog->FUN_1422c10a0() >= 0.0f && dialog->FUN_1422c1110() >= 0.0f))
+            if (!((float)dialog->FUN_1422c1500() >= dialog->GetX() &&
+                  (float)dialog->FUN_1422c1530() >= dialog->GetY() &&
+                  dialog->GetX() >= 0.0f && dialog->GetY() >= 0.0f))
                 bMove = true;
         } else
             bMove = true;
         UISwfEntity* pOwner;
-        if (bMove && (pOwner = ((class UISwfEntity*)FUN_140c9b540(0x4e29))) != NULL) {
+        if (bMove && (pOwner = ((class UISwfEntity*)FindMinimapDialog(0x4e29))) != NULL) {
             if (pOwner->FUN_1422dc430() == 0)
                 m_60 = 1;
             else {
@@ -264,8 +264,8 @@ void UIDTEventDialog::vfunc_43()
                 if (MS2Ptr<ASMovieClip> movie = dynamic_cast<ASMovieClip*>((AScript*)pOwner->FUN_1422dba00())) {
                     double fValue = 0.0;
                     double fExtra = 0.0;
-                    if (reinterpret_cast<Unk_DTMovie*>(movie.operator->())->FUN_1422c2510(&fValue, &fExtra))
-                        nRemain = (int)(fValue - (double)dialog->FUN_1422c1340());
+                    if (reinterpret_cast<Unk_DTMovie*>(movie.operator->())->LocalToGlobal(&fValue, &fExtra))
+                        nRemain = (int)(fValue - (double)dialog->GetWidthCeil());
                 }
                 dialog->SetPositionInt(nRemain > 0 ? nRemain : 0, 0x1c);
             }
@@ -282,7 +282,7 @@ void UIDTEventDialog::vfunc_72()
     if (m_30 == NULL) return;
     if (!m_timer.Check(1000)) return;
     {
-        FUN_140f38750();
+        ActivateWaitingContexts();
         ATL::CAtlArray<unsigned int> ids;
         for (POSITION pos = m_pending.GetStartPosition(); pos != NULL; m_pending.GetNext(pos)) {
             Unk_DTPtr<Unk_DTReward> pReward(m_pending.GetValueAt(pos));
@@ -351,7 +351,7 @@ int UIDTEventDialog::vfunc_84(Unk_DTPtr<RewardItem> pReward)
         remain = (unsigned int)pStep->b - pReward->m_elapsed;
     float fElapsed = (float)pReward->m_elapsed;
     int nGauge = (int)(fElapsed * (100.0f / (float)(unsigned int)pStep->b));
-    CStringW strRemain = FUN_140f388c0(&remain);
+    CStringW strRemain = FormatTimeSpan(&remain);
     int bVibrate = 0;
     if (remain.GetTotalSeconds() <= 10)
         bVibrate = 1;
@@ -365,13 +365,13 @@ int UIDTEventDialog::vfunc_84(Unk_DTPtr<RewardItem> pReward)
         m_binds.AddTail(strBindID);
     }
     obj.SetMemberUInt("eventID", pReward->m_ctx->m_id);
-    obj.FUN_1407cba60("bindID", strBindID);
+    obj.SetStringMember("bindID", strBindID);
     obj.SetMemberUInt("itemCount", pStep->e);
-    obj.FUN_1407cbb20("remainTime", strRemain);
-    obj.FUN_1407cb9c0("gaugeRate", nGauge);
-    obj.FUN_1407cb9c0("vibrate", bVibrate);
-    m_30->Invoke("addItem", obj.FUN_1422bb870());
-    ((class Unk_DTSound*)FUN_140e45740())->FUN_1422e6d00(0);
+    obj.SetWStringMember("remainTime", strRemain);
+    obj.SetIntMember("gaugeRate", nGauge);
+    obj.SetIntMember("vibrate", bVibrate);
+    m_30->Invoke("addItem", obj.GetValue());
+    ((class Unk_DTSound*)FUN_140e45740())->RequestLayout(0);
     return 1;
 }
 MS2_REPLACE_METHOD(0x140F36620, UIDTEventDialog, vfunc_84, 2429, 0x4EA48E5D);
@@ -415,13 +415,13 @@ int UIDTEventDialog::vfunc_85(Unk_DTPtr<RewardItem> pReward)
         bVibrate = 1;
     float fElapsed = (float)pReward->m_elapsed;
     int nGauge = (int)(fElapsed * (100.0f / (float)(unsigned int)pStep->b));
-    CStringW strRemain = FUN_140f388c0(&remain);
+    CStringW strRemain = FormatTimeSpan(&remain);
     ASObj obj(2);
     obj.SetMemberUInt("eventID", pReward->m_ctx->m_id);
-    obj.FUN_1407cbb20("remainTime", strRemain);
-    obj.FUN_1407cb9c0("gaugeRate", nGauge);
-    obj.FUN_1407cb9c0("vibrate", bVibrate);
-    m_30->Invoke("updateItem", obj.FUN_1422bb870());
+    obj.SetWStringMember("remainTime", strRemain);
+    obj.SetIntMember("gaugeRate", nGauge);
+    obj.SetIntMember("vibrate", bVibrate);
+    m_30->Invoke("updateItem", obj.GetValue());
     return 1;
 }
 MS2_REPLACE_METHOD(0x140F36FB0, UIDTEventDialog, vfunc_85, 1854, 0x3AA4CF0B);
@@ -435,7 +435,7 @@ int UIDTEventDialog::vfunc_86(Unk_DTPtr<RewardItem> pReward)
         return 0;
     ASObj obj(2);
     obj.SetMemberUInt("eventID", pReward->m_ctx->m_id);
-    m_30->Invoke("removeItem", obj.FUN_1422bb870());
+    m_30->Invoke("removeItem", obj.GetValue());
     return 1;
 }
 MS2_REPLACE_METHOD(0x140F37700, UIDTEventDialog, vfunc_86, 350, 0xAE829E19);
@@ -470,7 +470,7 @@ int UIDTEventDialog::vfunc_87(Unk_DTPtr<RewardItem> pReward, unsigned int nStep)
         remain = (unsigned int)pStep->b - pReward->m_elapsed;
     float fElapsed = (float)pReward->m_elapsed;
     int nGauge = (int)(fElapsed * (100.0f / (float)(unsigned int)pStep->b));
-    CStringW strRemain = FUN_140f388c0(&remain);
+    CStringW strRemain = FormatTimeSpan(&remain);
     int bVibrate = 0;
     if (remain.GetTotalSeconds() <= 1)
         bVibrate = 1;
@@ -483,14 +483,14 @@ int UIDTEventDialog::vfunc_87(Unk_DTPtr<RewardItem> pReward, unsigned int nStep)
         CreateItemInfoSlot(strBindID, item, 0, 0x415, 0);
         m_binds.AddTail(strBindID);
     }
-    obj.FUN_1407cb9c0("change", 1);
+    obj.SetIntMember("change", 1);
     obj.SetMemberUInt("eventID", pReward->m_ctx->m_id);
-    obj.FUN_1407cba60("bindID", strBindID);
+    obj.SetStringMember("bindID", strBindID);
     obj.SetMemberUInt("itemCount", pStep->e);
-    obj.FUN_1407cbb20("remainTime", strRemain);
-    obj.FUN_1407cb9c0("gaugeRate", nGauge);
-    obj.FUN_1407cb9c0("vibrate", bVibrate);
-    m_30->Invoke("updateItem", obj.FUN_1422bb870());
+    obj.SetWStringMember("remainTime", strRemain);
+    obj.SetIntMember("gaugeRate", nGauge);
+    obj.SetIntMember("vibrate", bVibrate);
+    m_30->Invoke("updateItem", obj.GetValue());
     return 1;
 }
 MS2_REPLACE_METHOD(0x140F37870, UIDTEventDialog, vfunc_87, 2268, 0x641A42AF);
@@ -514,7 +514,7 @@ void UIDTEventDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         item->SetCountClamped(pStep->e);
         ASTooltip tooltip(pPlayer, 0x20, 2);
         if (tooltip.FUN_1409e0d40(item.get())) {
-            *pRetVal = tooltip.FUN_1422bb870();
+            *pRetVal = tooltip.GetValue();
             return;
         }
     }
@@ -522,7 +522,7 @@ void UIDTEventDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
 MS2_REPLACE_METHOD(0x140F38160, UIDTEventDialog, vfunc_49, 700, 0x9E104B3A);
 
 // @0x140f38430
-void UIDTEventDialog::FUN_140f38430(MS2Ptr<CommonUserEvent::DTRewardEventContext> pCtx)
+void UIDTEventDialog::CreateRewardItem(MS2Ptr<CommonUserEvent::DTRewardEventContext> pCtx)
 {
     Unk_DTPtr<Unk_DTReward> pReward(new RewardItem);
     if (pReward == NULL)
@@ -538,10 +538,10 @@ void UIDTEventDialog::FUN_140f38430(MS2Ptr<CommonUserEvent::DTRewardEventContext
     vfunc_84(pReward);
     m_active.SetAt(pCtx->m_id, pReward);
 }
-MS2_REPLACE_METHOD(0x140F38430, UIDTEventDialog, FUN_140f38430, 493, 0xAD898361);
+MS2_REPLACE_METHOD(0x140F38430, UIDTEventDialog, CreateRewardItem, 493, 0xAD898361);
 
 // @0x140f38630
-void UIDTEventDialog::FUN_140f38630(unsigned int nID)
+void UIDTEventDialog::RemoveEvent(unsigned int nID)
 {
     Unk_DTPtr<Unk_DTReward> pReward(0);
     if (m_active.Lookup(nID, pReward)) {
@@ -553,10 +553,10 @@ void UIDTEventDialog::FUN_140f38630(unsigned int nID)
     if (m_ctx.Lookup(nID) == NULL)
         m_ctx.RemoveKey(nID);
 }
-MS2_REPLACE_METHOD(0x140F38630, UIDTEventDialog, FUN_140f38630, 272, 0x3FB9C696);
+MS2_REPLACE_METHOD(0x140F38630, UIDTEventDialog, RemoveEvent, 272, 0x3FB9C696);
 
 // @0x140f38750
-void UIDTEventDialog::FUN_140f38750()
+void UIDTEventDialog::ActivateWaitingContexts()
 {
     Unk_DTPlayer* pPlayer = reinterpret_cast<Unk_DTPlayer*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPlayer == NULL)
@@ -568,14 +568,14 @@ void UIDTEventDialog::FUN_140f38750()
         m_ctx.GetNext(pos);
         if (pPlayer->vfunc_78() >= pCtx->m_level) {
             m_ctx.RemoveKey(pCtx->m_id);
-            FUN_140f38430(pCtx);
+            CreateRewardItem(pCtx);
         }
     }
 }
-MS2_REPLACE_METHOD(0x140F38750, UIDTEventDialog, FUN_140f38750, 349, 0x8BF9775A);
+MS2_REPLACE_METHOD(0x140F38750, UIDTEventDialog, ActivateWaitingContexts, 349, 0x8BF9775A);
 
 // @0x140f388c0
-CStringW UIDTEventDialog::FUN_140f388c0(CTimeSpan* pSpan)
+CStringW UIDTEventDialog::FormatTimeSpan(CTimeSpan* pSpan)
 {
     long nHours = pSpan->GetHours();
     long nMinutes = pSpan->GetMinutes();
@@ -586,6 +586,6 @@ CStringW UIDTEventDialog::FUN_140f388c0(CTimeSpan* pSpan)
         return Unk_Fmt3(L"{0:02}:{1:02}:{2:02}", nHours, nMinutes, nSeconds);
 #endif
 }
-MS2_REPLACE_METHOD(0x140F388C0, UIDTEventDialog, FUN_140f388c0, 127, 0xA29015DF);
+MS2_REPLACE_METHOD(0x140F388C0, UIDTEventDialog, FormatTimeSpan, 127, 0xA29015DF);
 
 MS2_EMIT_CRT_MEMMOVE_S();

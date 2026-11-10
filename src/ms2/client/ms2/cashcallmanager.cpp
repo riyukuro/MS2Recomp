@@ -35,9 +35,9 @@ void FUN_140d73bc0(int nId, int a, void* b, CStringW strText);  // show a notice
 
 // the ids of the cash call items the player may use
 extern ATL::CAtlArray<unsigned int> DAT_143ab3058;
-class CFeatureManager { public: bool FUN_14036d570(int nFeature); bool IsRegionJP(); };   // C3: unit-local view
+class CFeatureManager { public: bool IsFeatureEnabled(int nFeature); bool IsRegionJP(); };   // C3: unit-local view
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-void* FUN_1401c0d90();   // C3: returns the game rule
+void* GetGameRule();   // C3: returns the game rule
 class CItem;
 class Unk_Inventory { public: int FUN_140a5f7b0(int nTag, int nRarity); MS2Ptr<CItem> FindItemByTag(int nSlot); };   // C3: member view (inventory.h)
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90)
@@ -46,7 +46,7 @@ class CItem : public CPtred   // C3: member view for the former free stand-ins
 public:
     __int64 GetItemUid();
 };
-__int64 FUN_140930240();
+__int64 GetMeratBalance();
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 bool FUN_140930b10();
 extern int DAT_1439f4a7c;
@@ -82,13 +82,13 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
     }
     __int64 nItemUid = 0;
     int nKind = 1;
-    if (((class PC*)(class MyPC*)(pPC))->IsVip() != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x57) != 0)
+    if (((class PC*)(class MyPC*)(pPC))->IsVip() != 0 && ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x57) != 0)
     {
         nKind = 2;
     }
     else if (bOwned)
     {
-        if (((CGameRule*)FUN_1401c0d90())->IsFreeAirTaxiActive() == 0)
+        if (((CGameRule*)GetGameRule())->IsFreeAirTaxiActive() == 0)
         {
             MS2Ptr<CItem> hItem = g_143ab2a90.FindItemByTag(10);
             if (hItem.operator==(0))
@@ -120,9 +120,9 @@ int CCashCallManager::FUN_140b030b0(int nCallType)
         }
         else
         {
-            if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x83) != 0)
+            if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x83) != 0)
             {
-                if (FUN_140930240() < *reinterpret_cast<Common::Constants::Value<__int64>*>(((char*)GetClientConstants()) + 0x8aa8)->Get())
+                if (GetMeratBalance() < *reinterpret_cast<Common::Constants::Value<__int64>*>(((char*)GetClientConstants()) + 0x8aa8)->Get())
                     return 0;
                 nKind = 3;
             }
@@ -202,7 +202,7 @@ int CCashCallManager::FUN_140b03590(__int64 nItemUid)
 // @0x140b03980
 int CCashCallManager::FUN_140b03980(__int64 nItemUid)
 {
-    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e97))) != 0)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4e97))) != 0)
     {
         FUN_140d73bc0(0x9c, 0, 0, CStringW(L""));
         return 0;
@@ -250,7 +250,7 @@ int CCashCallManager::FUN_140b03980(__int64 nItemUid)
 // @0x140b03d70
 int CCashCallManager::FUN_140b03d70(__int64 nItemUid)
 {
-    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e47))) != 0)
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4e47))) != 0)
     {
         FUN_140d73bc0(0x9e, 0, 0, CStringW(L""));
         return 0;

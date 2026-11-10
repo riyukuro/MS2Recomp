@@ -213,13 +213,13 @@ int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f
 struct Unk_XmlElement;
 void FUN_14028f5d0(Unk_XmlElement*, char const*, std::vector<Unk_XmlElement*, std::allocator<Unk_XmlElement*>>&);
 extern "C" double (__cdecl* __imp_floor)(double);
-class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
+class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
 CLogString* GetLogString();                            // the log
 // The log's two-argument call (FMT_VARIADIC instantiation outside this unit).
 template <class A, class B> void FUN_1401e0850(CLogString* pLog, int nLevel, int nCategory, const wchar_t* pszFormat,
                                                const A& first, const B& second);   // characterability.cpp's template
 int FUN_14081d650(MS2Ptr<CItemOption> spOption, int nGroup, unsigned nSpecial);   // the special stat is blocked
-int FUN_140768010(int nRange, int nBase);               // random number in [nBase, nBase + nRange)
+int GetRandomRange(int nRange, int nBase);               // random number in [nBase, nBase + nRange)
 // probability.cpp: the roll logs
 bool AppendItemOptionRandomStatLog(unsigned nProbVer, unsigned nStatId, int nValue, Unk_ProbabilityLog* pLogs);
 bool AppendItemOptionRandomOptionLog(unsigned nProbVer, int nCode, const Unk_ItemOptionValuePicker& picker,
@@ -343,28 +343,28 @@ int ItemOptionValueRef::FUN_1405ce670(unsigned nItemId, int nRank)
         return 0;
     if (m_nLuaIndex == 0)
         return 0;
-    int nLevel = spItem->FUN_14053f0a0();
+    int nLevel = spItem->GetOptionLevelFactor();
     int nStat = spItem->GetEquipSubtype();
-    int nJob = FUN_1405d2410(spItem);
+    int nJob = GetRecommendedJob(spItem);
     switch (GetStat())
     {
     case 0:
-        return FUN_1405cfd50(nStat, nJob, spItem->FUN_14053f080());
+        return FUN_1405cfd50(nStat, nJob, spItem->GetOptionLevel());
     case 1:
-        return FUN_1405cfec0(nStat, nJob, spItem->FUN_14053f080());
+        return FUN_1405cfec0(nStat, nJob, spItem->GetOptionLevel());
     case 2:
-        return FUN_1405d0030(nStat, nJob, spItem->FUN_14053f080(), spItem->limit.recommendJobs.size() > 1);
+        return FUN_1405d0030(nStat, nJob, spItem->GetOptionLevel(), spItem->limit.recommendJobs.size() > 1);
     case 3:
-        return FUN_1405d01e0(nStat, nJob, spItem->FUN_14053f080());
+        return FUN_1405d01e0(nStat, nJob, spItem->GetOptionLevel());
     case 0x11:
         return FUN_1405d0340(nStat, nRank);
     case 4:
         if (m_nLuaIndex == 1)
-            return FUN_1405cf6e0(nStat, nLevel, nRank, spItem->FUN_14053f080());
+            return FUN_1405cf6e0(nStat, nLevel, nRank, spItem->GetOptionLevel());
         else if (m_nLuaIndex == 3)
             return FUN_1405cfb10(nStat, nLevel);
         else if (m_nLuaIndex == 4)
-            return FUN_1405cf6e0(nStat, nLevel, nRank, spItem->FUN_14053f080()) + FUN_1405cfb10(nStat, nLevel);
+            return FUN_1405cf6e0(nStat, nLevel, nRank, spItem->GetOptionLevel()) + FUN_1405cfb10(nStat, nLevel);
         break;
     case 0x15:
         return FUN_1405cfd10(nLevel);
@@ -390,28 +390,28 @@ int ItemOptionValueRef::FUN_1405ce670(unsigned nItemId, int nRank)
         break;
     case 0x14:
         if (m_nLuaIndex == 1)
-            return FUN_1405d04a0(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080());
+            return FUN_1405d04a0(nStat, nJob, nLevel, nRank, spItem->GetOptionLevel());
         else if (m_nLuaIndex == 3)
-            return FUN_1405d0780(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080());
+            return FUN_1405d0780(nStat, nJob, nLevel, nRank, spItem->GetOptionLevel());
         else if (m_nLuaIndex == 4)
-            return FUN_1405d04a0(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080())
-                + FUN_1405d0780(nStat, nJob, nLevel, nRank, spItem->FUN_14053f080());
+            return FUN_1405d04a0(nStat, nJob, nLevel, nRank, spItem->GetOptionLevel())
+                + FUN_1405d0780(nStat, nJob, nLevel, nRank, spItem->GetOptionLevel());
         break;
     case 0x1b:
-        return FUN_1405d0c10(m_nLuaIndex, nStat, nLevel, nRank, spItem->FUN_14053f080(), true);
+        return FUN_1405d0c10(m_nLuaIndex, nStat, nLevel, nRank, spItem->GetOptionLevel(), true);
     case 0x1c:
         if (m_nLuaIndex == 1 || m_nLuaIndex == 2)
-            return FUN_1405d0c10(m_nLuaIndex, nStat, nLevel, nRank, spItem->FUN_14053f080(), false);
+            return FUN_1405d0c10(m_nLuaIndex, nStat, nLevel, nRank, spItem->GetOptionLevel(), false);
         else if (m_nLuaIndex == 4)
         {
-            int nBase = FUN_1405d0c10(1, nStat, nLevel, nRank, spItem->FUN_14053f080(), false);
-            int nAdd = FUN_1405d0dd0(m_nLuaIndex, nStat, nLevel, nRank, spItem->FUN_14053f080());
+            int nBase = FUN_1405d0c10(1, nStat, nLevel, nRank, spItem->GetOptionLevel(), false);
+            int nAdd = FUN_1405d0dd0(m_nLuaIndex, nStat, nLevel, nRank, spItem->GetOptionLevel());
             return nBase + nAdd;
         }
         else if (m_nLuaIndex == 5)
         {
-            int nBase = FUN_1405d0c10(2, nStat, nLevel, nRank, spItem->FUN_14053f080(), false);
-            int nAdd = FUN_1405d0dd0(m_nLuaIndex, nStat, nLevel, nRank, spItem->FUN_14053f080());
+            int nBase = FUN_1405d0c10(2, nStat, nLevel, nRank, spItem->GetOptionLevel(), false);
+            int nAdd = FUN_1405d0dd0(m_nLuaIndex, nStat, nLevel, nRank, spItem->GetOptionLevel());
             return nBase + nAdd;
         }
         break;
@@ -965,7 +965,7 @@ int ItemOptionValueRef::FUN_1405d0c10(unsigned nLuaIndex, int nStat, int nLevel,
         else
             dBase += i / 30.0 * 20.0 - 0.8;
     }
-    dBase = FUN_1405d23b0(dBase * FUN_1405d20f0(nStat));
+    dBase = RoundToTenth(dBase * FUN_1405d20f0(nStat));
     double dScale = FUN_1405d2250(nStat) * nLuaIndex;
     if (bNegate)
         dScale *= -1.0;
@@ -987,9 +987,9 @@ int ItemOptionValueRef::FUN_1405d0dd0(unsigned nLuaIndex, int nStat, int nLevel,
             dBase += i / 30.0 * 20.0 - 0.8;
     }
     if (nStat == 0x36)
-        dBase = FUN_1405d23b0(dBase * FUN_1405d20f0(0x34));
+        dBase = RoundToTenth(dBase * FUN_1405d20f0(0x34));
     else
-        dBase = FUN_1405d23b0(dBase * FUN_1405d20f0(nStat));
+        dBase = RoundToTenth(dBase * FUN_1405d20f0(nStat));
     double dScale = FUN_1405d2250(nStat);
     int nExtra = FUN_1405d1440(nLuaIndex, nStat, nLevel, nRank, nOptionLevel);
     int nMin = 2;
@@ -1040,7 +1040,7 @@ int ItemOptionValueRef::FUN_1405d0f90(unsigned nLuaIndex, int nStat, int nLevel,
         else
             dBase += i / 30.0 * 20.0 - 0.8;
     }
-    dBase = FUN_1405d23b0(dBase * FUN_1405d20f0(nStat));
+    dBase = RoundToTenth(dBase * FUN_1405d20f0(nStat));
     double dRankLow = round(dBase * FUN_1405d1aa0(nRank) * (1.0 - FUN_1405d2250(nStat) * nLuaIndex));
     double dRankHigh = round(dBase * FUN_1405d1aa0(nRank) * (1.0 + FUN_1405d2250(nStat) * nLuaIndex));
     double dRankAvg = (dRankLow + dRankHigh) / 2.0 * dRankScale;
@@ -1097,9 +1097,9 @@ int ItemOptionValueRef::FUN_1405d1440(unsigned nLuaIndex, int nStat, int nLevel,
             dBase += i / 30.0 * 20.0 - 0.8;
     }
     if (nStat == 0x36)
-        dBase = FUN_1405d23b0(dBase * FUN_1405d20f0(0x34));
+        dBase = RoundToTenth(dBase * FUN_1405d20f0(0x34));
     else
-        dBase = FUN_1405d23b0(dBase * FUN_1405d20f0(nStat));
+        dBase = RoundToTenth(dBase * FUN_1405d20f0(nStat));
     double dRankValue = dBase * FUN_1405d1b70(nRank) * (1.0 + FUN_1405d2250(nStat));
     double dBaseValue = dBase * FUN_1405d1b70(4) * (1.0 + FUN_1405d2250(nStat));
     if (nOptionLevel >= 50 && nRank >= 4)
@@ -1345,14 +1345,14 @@ double ItemOptionValueRef::FUN_1405d2250(int nStat)
 }
 
 // @0x1405d23b0
-double ItemOptionValueRef::FUN_1405d23b0(double dValue)
+double ItemOptionValueRef::RoundToTenth(double dValue)
 {
     const double dEpsilon = 1e-06;
     return __imp_floor(dValue * 10.0 + 0.5 + dEpsilon) / 10.0;
 }
 
 // @0x1405d2410
-int ItemOptionValueRef::FUN_1405d2410(MS2Ptr<CItemData> spItem)
+int ItemOptionValueRef::GetRecommendedJob(MS2Ptr<CItemData> spItem)
 {
     if (spItem == 0)
         return 0;
@@ -1375,7 +1375,7 @@ ItemOptionValueRandom::ItemOptionValueRandom()
 }
 
 // @0x1405d2590
-bool ItemOptionValueRandom::FUN_1405d2590(TiXmlElement* pElem)
+bool ItemOptionValueRandom::LoadFromXml(TiXmlElement* pElem)
 {
     CString strName;
     XmlGetAttr((class TiXmlElement*)(pElem), "name", strName);
@@ -1462,11 +1462,11 @@ int ItemOptionValueRandom::FUN_1405d28d0(MS2Ptr<ItemOptionRandomContext> spConte
     case 2:
         return spContext->FUN_1405d9bb0(m_nStatId);
     }
-    return spContext->FUN_1405d9b40(m_nStatId, pRandom);
+    return spContext->RollVariation(m_nStatId, pRandom);
 }
 
 // @0x1405d29b0
-bool ItemOptionValueRandom::FUN_1405d29b0()
+bool ItemOptionValueRandom::IsSpecialAbility()
 {
     return FUN_14081d830(m_nSpecial) ? true : false;
 }
@@ -1490,14 +1490,14 @@ int ItemOptionConstant::GetGrade()
 }
 
 // @0x1405d2a90
-bool ItemOptionConstant::FUN_1405d2a90(TiXmlElement* pElem)
+bool ItemOptionConstant::Load(TiXmlElement* pElem)
 {
     Unk_ReadRank((class Unk_XmlNode*)(pElem), "grade", &m_nGrade);
     int nCreateType = 0;
     XmlGetAttr((class TiXmlElement*)(pElem), "createType", reinterpret_cast<unsigned int&>(nCreateType));
     if (nCreateType == 3)
     {
-        FUN_1405d3490(pElem);
+        LoadLuaValues(pElem);
         return true;
     }
     std::vector<TiXmlElement*> arrChildren;
@@ -1562,7 +1562,7 @@ size_t ItemOptionConstant::FUN_1405d31f0()
 }
 
 // @0x1405d3220
-MS2Ptr<ItemOptionValue> ItemOptionConstant::FUN_1405d3220(int nStat)
+MS2Ptr<ItemOptionValue> ItemOptionConstant::FindValueByStat(int nStat)
 {
     for (size_t i = 0; i < m_vValues.size(); ++i)
     {
@@ -1573,7 +1573,7 @@ MS2Ptr<ItemOptionValue> ItemOptionConstant::FUN_1405d3220(int nStat)
 }
 
 // @0x1405d3300
-MS2Ptr<ItemOptionValue> ItemOptionConstant::FUN_1405d3300(unsigned nSpecial)
+MS2Ptr<ItemOptionValue> ItemOptionConstant::FindValueBySpecial(unsigned nSpecial)
 {
     for (size_t i = 0; i < m_vValues.size(); ++i)
     {
@@ -1584,14 +1584,14 @@ MS2Ptr<ItemOptionValue> ItemOptionConstant::FUN_1405d3300(unsigned nSpecial)
 }
 
 // @0x1405d33e0
-void ItemOptionConstant::FUN_1405d33e0(std::function<void(ItemOptionValue*)> fnVisit)
+void ItemOptionConstant::ForEachValue(std::function<void(ItemOptionValue*)> fnVisit)
 {
     for (auto spValue : m_vValues)
         fnVisit(spValue);
 }
 
 // @0x1405d3490
-void ItemOptionConstant::FUN_1405d3490(TiXmlElement* pElem)
+void ItemOptionConstant::LoadLuaValues(TiXmlElement* pElem)
 {
     std::vector<TiXmlElement*> arrChildren;
     FUN_14028f5d0(reinterpret_cast<Unk_XmlElement *>(pElem), "v", reinterpret_cast<std::vector<Unk_XmlElement *, std::allocator<Unk_XmlElement *>> &>(arrChildren));
@@ -1630,7 +1630,7 @@ ItemOptionVariationData::ItemOptionVariationData()
 }
 
 // @0x1405d3870
-void ItemOptionVariationData::FUN_1405d3870(TiXmlElement* pElem)
+void ItemOptionVariationData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "id", reinterpret_cast<unsigned int&>(m_nId));
     XmlGetAttr((class TiXmlElement*)(pElem), "probVer", reinterpret_cast<unsigned int&>(m_nProbVer));
@@ -1649,7 +1649,7 @@ void ItemOptionVariationData::FUN_1405d3870(TiXmlElement* pElem)
 }
 
 // @0x1405d3a20
-int ItemOptionVariationData::FUN_1405d3a20()
+int ItemOptionVariationData::GetId()
 {
     return m_nId;
 }
@@ -1673,7 +1673,7 @@ int ItemOptionVariationData::FUN_1405d3a90(Unk_Random* pRandom)
 }
 
 // @0x1405d3ae0
-int ItemOptionVariationData::FUN_1405d3ae0()
+int ItemOptionVariationData::GetFirstStat()
 {
     if (m_vStats.empty())
         return 0;
@@ -1681,7 +1681,7 @@ int ItemOptionVariationData::FUN_1405d3ae0()
 }
 
 // @0x1405d3b30
-int ItemOptionVariationData::FUN_1405d3b30() const
+int ItemOptionVariationData::GetLastStat() const
 {
     if (m_vStats.empty())
         return 0;
@@ -1749,7 +1749,7 @@ bool ItemOptionRandom::Load(TiXmlElement* pElem)
     for (auto& pChild : arrChildren)
     {
         MS2Ptr<ItemOptionValueRandom> spValue(new ItemOptionValueRandom);
-        if (!spValue->FUN_1405d2590(pChild))
+        if (!spValue->LoadFromXml(pChild))
             continue;
         m_vValues.push_back(spValue.get());
     }
@@ -1757,7 +1757,7 @@ bool ItemOptionRandom::Load(TiXmlElement* pElem)
 }
 
 // @0x1405d3f70
-void ItemOptionRandom::FUN_1405d3f70(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom)
+void ItemOptionRandom::RollOptions(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom)
 {
     MS2Ptr<ItemOptionRandomContext> spContext(
         new ItemOptionRandomContext(spOption, nRank, MS2Ptr<ItemOptionRandom>(this)));
@@ -1768,20 +1768,20 @@ void ItemOptionRandom::FUN_1405d3f70(MS2Ptr<CItemOption> spOption, int nRank, Un
         return;
     for (auto& pValue : vValues)
     {
-        spContext->FUN_1405d9ea0(MS2Ptr<ItemOptionValueRandom>(pValue), pRandom, &nCount, NULL);
+        spContext->AddRandomValue(MS2Ptr<ItemOptionValueRandom>(pValue), pRandom, &nCount, NULL);
         if (nCount <= 0)
             break;
     }
 }
 
 // @0x1405d4270
-bool ItemOptionRandom::FUN_1405d4270(MS2Ptr<Unk_ItemOptionPreset> spPreset, MS2Ptr<CItemOption> spOption, int nRank,
+bool ItemOptionRandom::RollPresetOptions(MS2Ptr<Unk_ItemOptionPreset> spPreset, MS2Ptr<CItemOption> spOption, int nRank,
                                      Unk_Random* pRandom)
 {
     MS2Ptr<ItemOptionRandomContext> spContext(
         new ItemOptionRandomContext(spOption, nRank, MS2Ptr<ItemOptionRandom>(this)));
     spContext->m_nType = spPreset->m_nType;
-    unsigned nCount = FUN_1405d5fe0(nRank);
+    unsigned nCount = GetPickCount(nRank);
     if (nCount == 0)
         return false;
     std::vector<ItemOptionValueRandom*> vValues;
@@ -1799,7 +1799,7 @@ bool ItemOptionRandom::FUN_1405d4270(MS2Ptr<Unk_ItemOptionPreset> spPreset, MS2P
                 continue;
             if (pValue->FUN_1405d26c0().CompareNoCase(strName) != 0)
                 continue;
-            spContext->FUN_1405d9ea0(MS2Ptr<ItemOptionValueRandom>(pValue), pRandom, &nCount, NULL);
+            spContext->AddRandomValue(MS2Ptr<ItemOptionValueRandom>(pValue), pRandom, &nCount, NULL);
             if (nCount <= 0)
                 return true;
             vValues.erase(it);
@@ -1808,7 +1808,7 @@ bool ItemOptionRandom::FUN_1405d4270(MS2Ptr<Unk_ItemOptionPreset> spPreset, MS2P
     }
     for (auto& pValue : vValues)
     {
-        spContext->FUN_1405d9ea0(MS2Ptr<ItemOptionValueRandom>(pValue), pRandom, &nCount, NULL);
+        spContext->AddRandomValue(MS2Ptr<ItemOptionValueRandom>(pValue), pRandom, &nCount, NULL);
         if (nCount <= 0)
             return true;
     }
@@ -1918,7 +1918,7 @@ bool ItemOptionRandom::FUN_1405d4bb0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
             if (nCount <= 0)
                 break;
         }
-        if (!spTarget->m_spSource->FUN_1405cc640(2, spTarget->m_spResult.get()))
+        if (!spTarget->m_spSource->HasSameGroupOptions(2, spTarget->m_spResult.get()))
             return true;
     }
     return false;
@@ -2018,7 +2018,7 @@ bool ItemOptionRandom::FUN_1405d55e0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random*
 }
 
 // @0x1405d5fe0
-int ItemOptionRandom::FUN_1405d5fe0(int nRank)
+int ItemOptionRandom::GetPickCount(int nRank)
 {
     if (m_bRarePickOne)
     {
@@ -2031,7 +2031,7 @@ int ItemOptionRandom::FUN_1405d5fe0(int nRank)
 }
 
 // @0x1405d6020
-bool ItemOptionRandom::FUN_1405d6020(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom)
+bool ItemOptionRandom::AddRandomOption(MS2Ptr<CItemOption> spOption, int nRank, Unk_Random* pRandom)
 {
     MS2Ptr<ItemOptionRandomContext> spContext(
         new ItemOptionRandomContext(spOption, nRank, MS2Ptr<ItemOptionRandom>(this)));
@@ -2057,7 +2057,7 @@ bool ItemOptionRandom::FUN_1405d6020(MS2Ptr<CItemOption> spOption, int nRank, Un
 
 // @0x1405d6560
 // The roll statistics of nTrials parallel rolls: one "Option name:count" line per row (also logged).
-void ItemOptionRandom::FUN_1405d6560(MS2Ptr<CItemOption> spOption, int nRank, unsigned nTrials,
+void ItemOptionRandom::SimulateOptions(MS2Ptr<CItemOption> spOption, int nRank, unsigned nTrials,
                                      const std::vector<std::pair<int, int> >& vLocked, std::vector<CStringW>* pOut)
 {
     CLockCriticalSection lock;
@@ -2092,7 +2092,7 @@ void ItemOptionRandom::FUN_1405d6560(MS2Ptr<CItemOption> spOption, int nRank, un
 void ItemOptionRandom::FUN_1405d68f0(unsigned nItemId, int nRank, unsigned& nPick, std::vector<CStringW>* pOut)
 {
     if (nPick == 0)
-        nPick = FUN_1405d5fe0(nRank);
+        nPick = GetPickCount(nRank);
     MS2Ptr<ItemOptionRandomContext> spContext(new ItemOptionRandomContext(
         MS2Ptr<CItemOption>(new CItemOption(nItemId)), nRank, MS2Ptr<ItemOptionRandom>(this)));
     unsigned nArmor = 0;
@@ -2110,8 +2110,8 @@ void ItemOptionRandom::FUN_1405d68f0(unsigned nItemId, int nRank, unsigned& nPic
         kInfo.first = nWeight;
         kInfo.second = spValue->GetStatId();
         vInfo.push_back(std::make_pair(strName, kInfo));
-        bool bArmor = spContext->FUN_1405d9e00() == 2 &&
-                      ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(spValue->FUN_1405d26c0()).get() != 0;
+        bool bArmor = spContext->GetStatGroup() == 2 &&
+                      ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(spValue->FUN_1405d26c0()).get() != 0;
         if (bArmor)
         {
             nArmor += nWeight;
@@ -2119,7 +2119,7 @@ void ItemOptionRandom::FUN_1405d68f0(unsigned nItemId, int nRank, unsigned& nPic
             vArmor.push_back(std::make_pair(
                 StringFormat(L"OptionName: {0}, Weight : {1}, statID: {2}", strName, nWeight, nStatId), nWeight));
         }
-        else if (spValue->FUN_1405d29b0())
+        else if (spValue->IsSpecialAbility())
         {
             nSpecial += nWeight;
             unsigned nStatId = spValue->GetStatId();
@@ -2300,13 +2300,13 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
             spValue = FindValueBySpecial(nKey);
         if (spValue == 0)
             continue;
-        if (spContext->FUN_1405d9e00() == 2 &&
-            ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(spValue->FUN_1405d26c0()).get() != 0)
+        if (spContext->GetStatGroup() == 2 &&
+            ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(spValue->FUN_1405d26c0()).get() != 0)
         {
             spLockedArmor = spValue;
             continue;
         }
-        if (spValue->FUN_1405d29b0())
+        if (spValue->IsSpecialAbility())
         {
             spLockedSpecial = spValue;
             continue;
@@ -2317,12 +2317,12 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
     {
         CString strName = spValue->FUN_1405d26c0();
         int nWeight = spValue->GetWeight();
-        if (spContext->FUN_1405d9e00() == 2 && ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(strName).get() != 0)
+        if (spContext->GetStatGroup() == 2 && ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(strName).get() != 0)
         {
             pickerArmor.Register(nWeight, spValue.get());
             continue;
         }
-        if (spValue->FUN_1405d29b0())
+        if (spValue->IsSpecialAbility())
         {
             pickerSpecial.Register(nWeight, spValue.get());
             continue;
@@ -2333,7 +2333,7 @@ bool ItemOptionRandom::FUN_1405d7bf0(std::vector<ItemOptionValueRandom*>& vOut, 
         picker.Register(nWeight, spValue.get());
     }
     if (!bFixedCount)
-        nCount = FUN_1405d5fe0(spContext->FUN_1405d9e30());
+        nCount = GetPickCount(spContext->GetRank());
     if (nCount == 0)
         return false;
     vOut.clear();
@@ -2395,12 +2395,12 @@ void ItemOptionRandom::FUN_1405d8880(MS2Ptr<Unk_ItemOptionPreset> spPreset, std:
     for (auto& spValue : m_vValues)
     {
         CString strName = spValue->FUN_1405d26c0();
-        if (spContext->FUN_1405d9e00() == 2 && ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(strName).get() != 0)
+        if (spContext->GetStatGroup() == 2 && ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(strName).get() != 0)
         {
             arrArmor.Add(spValue.get());
             continue;
         }
-        if (spValue->FUN_1405d29b0())
+        if (spValue->IsSpecialAbility())
         {
             arrSpecial.Add(spValue.get());
             continue;
@@ -2428,7 +2428,7 @@ void ItemOptionRandom::FUN_1405d8880(MS2Ptr<Unk_ItemOptionPreset> spPreset, std:
         }
         if (!bFound)
         {
-            unsigned nIndex = FUN_140768010((int)arrArmor.GetCount(), 0);
+            unsigned nIndex = GetRandomRange((int)arrArmor.GetCount(), 0);
             vOut.push_back(arrArmor[nIndex]);
         }
     }
@@ -2453,7 +2453,7 @@ void ItemOptionRandom::FUN_1405d8880(MS2Ptr<Unk_ItemOptionPreset> spPreset, std:
         }
         if (!bFound)
         {
-            unsigned nIndex = FUN_140768010((int)arrSpecial.GetCount(), 0);
+            unsigned nIndex = GetRandomRange((int)arrSpecial.GetCount(), 0);
             vOut.push_back(arrSpecial[nIndex]);
         }
     }
@@ -2478,12 +2478,12 @@ MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d8f30(MS2Ptr<ItemOptionR
         for (auto& pValue : vHeld)
         {
             CString strName = pValue->FUN_1405d26c0();
-            if (spContext->FUN_1405d9e00() == 2 && ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(strName).get() != 0)
+            if (spContext->GetStatGroup() == 2 && ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(strName).get() != 0)
             {
                 spHeldArmor.AssignRaw(pValue);
                 continue;
             }
-            if (pValue->FUN_1405d29b0())
+            if (pValue->IsSpecialAbility())
             {
                 spHeldSpecial.AssignRaw(pValue);
                 continue;
@@ -2496,12 +2496,12 @@ MS2Ptr<ItemOptionValueRandom> ItemOptionRandom::FUN_1405d8f30(MS2Ptr<ItemOptionR
         int nWeight = spValue->GetWeight();
         if (!vHeld.empty() && std::find(vHeld.begin(), vHeld.end(), spValue) != vHeld.end())
             continue;
-        if (spContext->FUN_1405d9e00() == 2 && ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(strName).get() != 0)
+        if (spContext->GetStatGroup() == 2 && ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(strName).get() != 0)
         {
             pickerArmor.Register(nWeight, spValue.get());
             continue;
         }
-        if (spValue->FUN_1405d29b0())
+        if (spValue->IsSpecialAbility())
         {
             pickerSpecial.Register(nWeight, spValue.get());
             continue;
@@ -2582,25 +2582,25 @@ ItemOptionRandomContext::ItemOptionRandomContext(MS2Ptr<CItemOption> spOption, i
 // @0x1405d9b10
 int ItemOptionRandomContext::FUN_1405d9b10(int nStatId)
 {
-    return ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6100(nStatId);
+    return ((class CItemOptionTable*)GetItemOptionTable())->FUN_1405f6100(nStatId);
 }
 
 // @0x1405d9b40
-int ItemOptionRandomContext::FUN_1405d9b40(int nStatId, Unk_Random* pRandom)
+int ItemOptionRandomContext::RollVariation(int nStatId, Unk_Random* pRandom)
 {
-    return ((class CItemOptionTable*)FUN_140166430())->RollVariation(nStatId, pRandom);
+    return ((class CItemOptionTable*)GetItemOptionTable())->RollVariation(nStatId, pRandom);
 }
 
 // @0x1405d9b80
 int ItemOptionRandomContext::FUN_1405d9b80(int nStatId)
 {
-    return ((class CItemOptionTable*)FUN_140166430())->FUN_1405f6230(nStatId);
+    return ((class CItemOptionTable*)GetItemOptionTable())->FUN_1405f6230(nStatId);
 }
 
 // @0x1405d9bb0
 int ItemOptionRandomContext::FUN_1405d9bb0(int nStatId)
 {
-    return ((class CItemOptionTable*)FUN_140166430())->FUN_1405f62c0(nStatId);
+    return ((class CItemOptionTable*)GetItemOptionTable())->FUN_1405f62c0(nStatId);
 }
 
 // @0x1405d9be0
@@ -2612,7 +2612,7 @@ void ItemOptionRandomContext::SetTarget(MS2Ptr<Unk_1405e74c0> spTarget)
 // @0x1405d9c30
 BOOL ItemOptionRandomContext::FUN_1405d9c30(CString strName)
 {
-    if (FUN_1405d9e00() == 2 && FUN_1405db0b0(m_spOption, strName))
+    if (GetStatGroup() == 2 && FUN_1405db0b0(m_spOption, strName))
         return 1;
     return 0;
 }
@@ -2620,19 +2620,19 @@ BOOL ItemOptionRandomContext::FUN_1405d9c30(CString strName)
 // @0x1405d9d10
 BOOL ItemOptionRandomContext::FUN_1405d9d10(CString strName)
 {
-    if (FUN_1405d9e00() == 2 && FUN_1405db0b0(m_spTarget->m_spResult, strName))
+    if (GetStatGroup() == 2 && FUN_1405db0b0(m_spTarget->m_spResult, strName))
         return 1;
     return 0;
 }
 
 // @0x1405d9e00
-ItemOptionStatGroup ItemOptionRandomContext::FUN_1405d9e00()
+ItemOptionStatGroup ItemOptionRandomContext::GetStatGroup()
 {
     return m_spRandom->GetStatGroup();
 }
 
 // @0x1405d9e30
-int ItemOptionRandomContext::FUN_1405d9e30()
+int ItemOptionRandomContext::GetRank()
 {
     return m_n50;
 }
@@ -2646,7 +2646,7 @@ MS2Ptr<CItemOption> ItemOptionRandomContext::GetOption()
 // @0x1405d9ea0
 // Adds a rolled row to the option (one of nCount); a special stat the option already has, or a second stat of an
 // exclusive group, is refused.
-int ItemOptionRandomContext::FUN_1405d9ea0(MS2Ptr<ItemOptionValueRandom> spValue, Unk_Random* pRandom, unsigned* pCount,
+int ItemOptionRandomContext::AddRandomValue(MS2Ptr<ItemOptionValueRandom> spValue, Unk_Random* pRandom, unsigned* pCount,
                                            Unk_ProbabilityLog* pLogs)
 {
     if (*pCount <= 0)
@@ -2784,7 +2784,7 @@ int ItemOptionRandomContext::FUN_1405daad0(MS2Ptr<ItemOptionValueRandom> spValue
 // The option holds a stat of the name's exclusive group.
 BOOL ItemOptionRandomContext::FUN_1405db0b0(MS2Ptr<CItemOption> spOption, CString strName)
 {
-    Unk_OptionNameListPtr spNames = ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(strName);
+    Unk_OptionNameListPtr spNames = ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(strName);
     if (spNames.get() != 0)
     {
         POSITION pos = spNames->GetHeadPosition();

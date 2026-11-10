@@ -40,10 +40,10 @@ public:
     virtual void vfunc_43();                                        // 43 0x141b1a2a0 stage size
     virtual int vfunc_48() { return 0x4e40; }                       // 48 0x141b1d840 UI type id
 
-    int FUN_141b1a8e0(const CStringW& strScript, const CString& strSound, const CString& strIllust);   // show a plain script page (the 'modifyScript' call)
-    void FUN_141b1ac40(Unk_TalkItemList& rItems, const CStringW& strTitle, unsigned nMeso, unsigned nExp, __int64 nMerat);   // reward page
-    void FUN_141b1b000(Unk_TalkItemList& rItems, const CStringW& strTitle, const CStringW& strMood, const CStringW& strAffinityExp, int nJackpot);   // maid reward page
-    int FUN_141b1b440(CCinematicContent* pContent, int bLast);                  // show a page (nonzero: shown)
+    int ModifyScript(const CStringW& strScript, const CString& strSound, const CString& strIllust);   // show a plain script page (the 'modifyScript' call)
+    void ShowRewardPage(Unk_TalkItemList& rItems, const CStringW& strTitle, unsigned nMeso, unsigned nExp, __int64 nMerat);   // reward page
+    void ShowMaidRewardPage(Unk_TalkItemList& rItems, const CStringW& strTitle, const CStringW& strMood, const CStringW& strAffinityExp, int nJackpot);   // maid reward page
+    int ShowPage(CCinematicContent* pContent, int bLast);                  // show a page (nonzero: shown)
     void FUN_141b1b8b0();                                           // clear the page and close the window
     void SkipTalk();                                           // the skip button
     void FocusUp();                                           // focus up
@@ -54,15 +54,15 @@ public:
     void AddImage(CString strImage);                           // remember a loaded reward image (by value: destroyed by the callee)
     void ClearImages();                                           // release the reward images
     void SetKeyGroup(unsigned nKeyGroup);                         // 0x141b1bf80
-    void FUN_141b1bfa0();                                           // 0x141b1bfa0 default key group
+    void SetDefaultKeyGroup();                                           // 0x141b1bfa0 default key group
     int GetLoaded();                                            // 0x141b1bfc0
     void FUN_141b1bfe0(ASObj& rPage, const CCinematicContent* pContent);   // fill the illustrations of the page
     void SetImagePlate(ASObj& rPage, const CCinematicContent* pContent);   // the image plate
-    int FUN_141b1c530();                                            // the next key was pressed
+    int IsNextKeyPressed();                                            // the next key was pressed
     CString GetNpcIllustPath(unsigned nNpcId);                         // illustration path of an npc
     CString GetIllustPath(const CString& strName);                  // illustration path ("empty" when missing)
     void FUN_141b1c720(ASObj& rPage, int nNpcTalk);                 // illustration of the other npc
-    MS2Ptr<CCinematicComponent> FUN_141b1c960(int nButtonSet);      // the component of a button set
+    MS2Ptr<CCinematicComponent> CreateComponent(int nButtonSet);      // the component of a button set
     int GetLowerCutGlobalY();                                            // lower cut line y
     int GetIllustGlobalX();                                            // illust x
 

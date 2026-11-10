@@ -55,7 +55,7 @@
 #include "ms2/client/ms2/windowservice.h"
 
 // ---- services reached through globals ----
-efd::MessageService* FUN_1413f9830();
+efd::MessageService* GetMessageService();
 // The scene service (slot 19 hands a scene graph to the world for a game object's key).
 class Unk_DecoSceneSvc
 {
@@ -67,7 +67,7 @@ public:
     virtual void vfunc_16();  virtual void vfunc_17();  virtual void vfunc_18();
     virtual void vfunc_19(NiNodePtr spNode, egf::EntityID kId);
 };
-void* FUN_1413f9870();   // C3: was FUN_1413f9870
+void* GetLightService();   // C3: was GetLightService
 class CMainSystem;
 class CMainSystem   // C3: member view for the former free stand-ins
 {
@@ -396,7 +396,7 @@ efd::AsyncResult DecoEditService::OnInit()
 {
     m_mapBrushes.SetAt(0, new PaintBrush);
     m_mapBrushes.SetAt(1, new NoiseBrush);
-    FUN_1413f9830()->Subscribe(this, s_cat, 0, false);
+    GetMessageService()->Subscribe(this, s_cat, 0, false);
     WorldService::GetInstance()->FUN_141bbae40(static_cast<IWorldServiceCallback*>(this));
     return efd::AsyncResult_Complete;
 }
@@ -521,7 +521,7 @@ void DecoItem::Refresh()
         pRoot->UpdateNodeBound();
         pRoot->UpdateProperties();
         pRoot->UpdateEffects();
-        ((class Unk_DecoSceneSvc*)FUN_1413f9870())->vfunc_19(NiNodePtr(pRoot), GetEntityID());
+        ((class Unk_DecoSceneSvc*)GetLightService())->vfunc_19(NiNodePtr(pRoot), GetEntityID());
     }
 }
 

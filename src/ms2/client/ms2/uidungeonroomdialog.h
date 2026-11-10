@@ -100,21 +100,21 @@ public:
     void Refresh();                                                 // 0x1412adb40 (the room changed)
     void RefreshSubTabVisibility();                                 // 0x1412adfc0 mission rank / season rank tabs
     void RefreshLimits();                                           // 0x1412ae2b0 the requirement texts
-    void FUN_1412b0110();                                           // 0x1412b0110
+    void RefreshFindHelper();                                           // 0x1412b0110
     void RefreshReward();                                           // 0x1412b0d30
     void RefreshNormalReward();                                     // 0x1412b0da0
     void RefreshRoundReward();                                      // 0x1412b1d50
-    void FUN_1412b2250();                                           // 0x1412b2250
-    void FUN_1412b2e70();                                           // 0x1412b2e70
+    void RefreshRewardPreview();                                           // 0x1412b2250
+    void RefreshMissionRank();                                           // 0x1412b2e70
     void RefreshEnterButtons();                                     // 0x1412b3120
-    void FUN_1412b3180();                                           // 0x1412b3180 not in a party
-    void FUN_1412b3430();                                           // 0x1412b3430 in a party
+    void RefreshSoloStatus();                                           // 0x1412b3180 not in a party
+    void RefreshPartyStatus();                                           // 0x1412b3430 in a party
     void RefreshResetButton();                                      // 0x1412b3720
     void RefreshHelper();                                           // 0x1412b3850
     void FUN_1412b3890();                                           // 0x1412b3890
-    void FUN_1412b3b40();                                           // 0x1412b3b40
-    void FUN_1412b3e90();                                           // 0x1412b3e90
-    void FUN_1412b3fe0();                                           // 0x1412b3fe0
+    void LayoutEnterButtons();                                           // 0x1412b3b40
+    void RefreshPartySearchButton();                                           // 0x1412b3e90
+    void RefreshSearchingIndicator();                                           // 0x1412b3fe0
     CStringW GetBanner();                                       // 0x1412b4100 the party status text (m_strBanner)
     void SetRoom(MS2Ptr<DungeonRoom> spRoom);                 // 0x1412b4150 set the room
     void OnEnterSolo(const ASParams& params);                       // 0x1412b41a0
@@ -146,7 +146,7 @@ public:
     int GetClearCount();                                            // 0x1412b6360
     int GetMemberClearCount(MS2Ptr<CPartyMember> spMember);         // 0x1412b63d0
     CString GetCountColor(int nState);                              // 0x1412b6480
-    CStringW FUN_1412b6530(int nState, CStringW strName);           // 0x1412b6530 a party member's status tooltip line
+    CStringW GetPartyStatusTooltip(int nState, CStringW strName);           // 0x1412b6530 a party member's status tooltip line
     int IsCooldown();                                               // 0x1412b6bb0
 
     UIDungeonRoomDialog* m_pOwner;                                  // +0x18
@@ -203,14 +203,14 @@ public:
     void OnPartyPacket(CInPacket& packet);                          // 0x1412b8ce0 packet 0x53 (while loaded): refresh
     void OnRoomPacket(CInPacket& packet);                           // 0x1412b8d60 packet 0x1a
     void OnRoomPacket53(CInPacket& packet);                         // 0x1412b8e30 packet 0x53: the search buttons
-    bool FUN_1412b8f00(int nId);                                    // 0x1412b8f00 open a dungeon (id <= 100000) or a room
-    bool FUN_1412b8ff0(int nRoomId);                                // 0x1412b8ff0 open a room
-    void FUN_1412b90d0(int nType);                                  // 0x1412b90d0 m_17c (the group type to open)
-    void FUN_1412b90f0(int n);                                      // 0x1412b90f0 m_178
+    bool OpenDungeonOrRoom(int nId);                                    // 0x1412b8f00 open a dungeon (id <= 100000) or a room
+    bool OpenRoom(int nRoomId);                                // 0x1412b8ff0 open a room
+    void SetGroupType(int nType);                                  // 0x1412b90d0 m_17c (the group type to open)
+    void SetPortalId(int n);                                      // 0x1412b90f0 m_178
     void FUN_1412b9110();                                           // 0x1412b9110 m_180 = 0
     void Refresh();                                                 // 0x1412b9130
     void RefreshSubTitle();                                         // 0x1412b91d0
-    void FUN_1412b9320();                                           // 0x1412b9320 refresh the reward texts
+    void RefreshReward();                                           // 0x1412b9320 refresh the reward texts
     void RefreshSeasonSummary();                                    // 0x1412b9370
     void FUN_1412b9460();                                           // 0x1412b9460 empty
     void OnGroupChanged(const ASParams& params);                    // 0x1412b9470 m_dungoenGroupCombo
@@ -218,7 +218,7 @@ public:
     void OnListItemData(const ASParams& params);                    // 0x1412b95e0 m_dungeonListItem rows
     void OnNotifyDebugMode(NotifyObject* pNotify);                  // 0x1412b97f0
     void OnNotifyEnterState(NotifyObject* pNotify);                 // 0x1412b9820
-    int FUN_1412b9850();                                            // 0x1412b9850 m_178
+    int GetPortalId();                                            // 0x1412b9850 m_178
     void ShowAchieveTooltip(Scaleform::GFx::Value* pRetVal);        // 0x1412ba100
     void ShowVipTooltip(Scaleform::GFx::Value* pRetVal);            // 0x1412ba290
     bool SelectGroup(int nGroup, unsigned nRoomId);                 // 0x1412ba3a0

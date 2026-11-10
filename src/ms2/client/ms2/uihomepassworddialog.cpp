@@ -37,7 +37,7 @@ template <class A, class B, class C, class D, class E> CStringW BlockFormat(int 
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 void FUN_140710590(COutPacket& packet);
 void FUN_140d73bc0(int nStringId, int a2, void* a3, CStringW strText);
-void FUN_140d73aa0(CStringW strText, int a2, void* pListener, CStringW strTag);
+void ShowMessageBox(CStringW strText, int a2, void* pListener, CStringW strTag);
 void FUN_14151f200();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,7 @@ void FUN_14151f200();
 // @0x1412c8bd0
 UIHomePasswordDialog::UIHomePasswordDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x1412c8c50
@@ -152,7 +152,7 @@ int UIHomePasswordDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                 unsigned nState = GetServerTime() < nExpire;
                 CMsTime time(nExpire);
                 if (nState != 0)
-                    FUN_140d73aa0(BlockFormat<int, int, int, int, int>(0xb06, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute()), 1, static_cast<IMessageListener*>(this), L"onStop");
+                    ShowMessageBox(BlockFormat<int, int, int, int, int>(0xb06, time.GetYear(), time.GetMonth(), time.GetDay(), time.GetHour(), time.GetMinute()), 1, static_cast<IMessageListener*>(this), L"onStop");
             }
         }
         return 1;
@@ -182,7 +182,7 @@ int UIHomePasswordDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
         if (nResult == 0)
         {
             if (operator==(strTag, L"onStop"))
-                FUN_1412c97c0();
+                ClearPassword();
             return 1;
         }
     }
@@ -190,7 +190,7 @@ int UIHomePasswordDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x1412c9680
-void UIHomePasswordDialog::FUN_1412c9680(CString strPassword)
+void UIHomePasswordDialog::SetPassword(CString strPassword)
 {
     m_178 = strPassword;
 }
@@ -214,7 +214,7 @@ void UIHomePasswordDialog::SendRequestCube(int nMode, CStringW strPassword, int 
 }
 
 // @0x1412c97c0
-void UIHomePasswordDialog::FUN_1412c97c0()
+void UIHomePasswordDialog::ClearPassword()
 {
     SendRequestCube(0, L"", 0);
 }

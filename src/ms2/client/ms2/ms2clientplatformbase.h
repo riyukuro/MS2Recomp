@@ -183,12 +183,12 @@ public:
     Unk_NexonAnalytics() : m_p(0) {}                            // @0x140c77070
     ~Unk_NexonAnalytics();                                      // @0x140c77260 -> 0x14092cbf0
     const char* GetModuleName() const;                          // @0x140c778f0 "NexonAnalytics64.dll"
-    bool FUN_14092d1f0(int nCode, const CStringA& strLog);
-    bool FUN_14092d280(int nCode, const CStringA& strLog);
+    bool EnqueueStageLog(int nCode, const CStringA& strLog);
+    bool EnqueueErrorLog(int nCode, const CStringA& strLog);
     bool FUN_14092ce80(const Unk_NxString& kVersion, const Unk_NxString* pHost);
-    bool FUN_14092cf80(const Unk_NxEvent* pEvent, const Unk_NxString* pHost, const Unk_NxNumber* pService);
-    void FUN_14092d070(bool bFlush);
-    void FUN_14092cbf0();
+    bool InitializeClientModule(const Unk_NxEvent* pEvent, const Unk_NxString* pHost, const Unk_NxNumber* pService);
+    void FinalizeModule(bool bFlush);
+    void UnloadModule();
     void* m_p;
 };
 

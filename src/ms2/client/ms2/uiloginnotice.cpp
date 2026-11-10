@@ -40,7 +40,7 @@ MS2_REPLACE_METHOD(0x140EA6180, UILoginNotice, GetTypeName, 61, 0xEBD8DB21);
 void UILoginNotice::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925ec0("m_closeButton");
+    BindCloseButton("m_closeButton");
     do {
         m_30->FUN_140bbe640("m_createButton", m_createButton);
         if (m_createButton == NULL)
@@ -48,7 +48,7 @@ void UILoginNotice::OnLoadComplete()
                                                       MS2_THIS_FILE, MS2_LINE(26), __FUNCTION__));
     } while (0);
     if (m_createButton.get())
-        m_createButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UILoginNotice::FUN_140ea6540), 0);
+        m_createButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UILoginNotice::OnClickCreateButton), 0);
     SendNoticeDialog();
 }
 MS2_REPLACE_METHOD(0x140EA61D0, UILoginNotice, OnLoadComplete, 701, 0x7ECEAA69);
@@ -70,11 +70,11 @@ void UILoginNotice::SendNoticeDialog()
 MS2_REPLACE_METHOD(0x140EA64E0, UILoginNotice, SendNoticeDialog, 75, 0x259671C9);
 
 // @0x140ea6540
-void UILoginNotice::FUN_140ea6540(const Scaleform::GFx::FunctionHandler::Params& params)
+void UILoginNotice::OnClickCreateButton(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4eea)));
     vfunc_67();
 }
-MS2_REPLACE_METHOD(0x140EA6540, UILoginNotice, FUN_140ea6540, 56, 0xEDADAC40);
+MS2_REPLACE_METHOD(0x140EA6540, UILoginNotice, OnClickCreateButton, 56, 0xEDADAC40);
 
 MS2_EMIT_CRT_MEMMOVE_S();

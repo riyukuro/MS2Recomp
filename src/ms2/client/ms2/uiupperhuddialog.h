@@ -63,7 +63,7 @@ public:
     void FUN_141357050(const Scaleform::GFx::FunctionHandler::Params& params);
     void OnPcBangNotify(NotifyObject* pObj);
     void OnTokenMoneyChanged(NotifyObject* pObj);
-    void FUN_141357300(NotifyObject* pObj);
+    void OnGameEventChanged(NotifyObject* pObj);
     void FUN_141357330(NotifyObject* pObj);
     void SetNoticeSpeed(float f);
     void SetNotice(CStringW strText);
@@ -71,15 +71,15 @@ public:
     void SetInputMode(int nMode);
     void FUN_141357640(__int64 tTime, __int64 nBonus);
     bool ToggleVersionText();
-    void FUN_141357ac0(CInPacket& packet);
+    void OnSearchDungeonPacket(CInPacket& packet);
     void ResetClock();
-    void FUN_141357b30();
-    void FUN_141357d90(int nQuiet);
+    void UpdateClock();
+    void UpdateMaidReadyCount(int nQuiet);
     void FUN_141358020(bool bForce);
     void FUN_1413581f0();
     void RefreshPcBang();
     void UpdateSearchDungeon();
-    void FUN_141358490();
+    void RefreshNotice();
     void FUN_1413586c0(Scaleform::GFx::Value* pRetVal);
     void FUN_141358b20(Scaleform::GFx::Value* pRetVal);
     void FUN_141358df0(Scaleform::GFx::Value* pRetVal);
@@ -153,7 +153,7 @@ public:
     void FUN_14135ec00(const CString& strUrl, bool bOnce);
     int IsVisible() const;
     void FUN_14135eda0(int nWidth, int nHeight);
-    void FUN_14135f7f0();
+    void CloseBrowser();
 
 protected:
     MS2_LAYOUT_FRIEND;
@@ -192,16 +192,16 @@ public:
     virtual int vfunc_48();                                                 // 48 0x14135dea0
 
     void SetShaderFloat(const NiFixedString& kName, float fValue);
-    void FUN_14135d310(bool bOn);
+    void SetBlackAndWhiteEnabled(bool bOn);
     void OnSelectRadioMotionBlurAll();
     void OnSelectRadioMotionBlurCharacter();
-    void FUN_14135d410(bool bOn);
-    void FUN_14135d440(bool bOn);
+    void SetRadialBlurEnabled(bool bOn);
+    void SetScreenMaskEnabled(bool bOn);
     void FUN_14135d490(bool bOn);
     void SetGlowEnabled(bool bOn);
     void SetGlowColor(float fRed, float fGreen, float fBlue);
     void FUN_14135d630(bool bOn);
-    void FUN_14135d660(float fValue);
+    void SetScreenRatio(float fValue);
     void SetNearFarRange(float fNear, float fFar);
     void FUN_14135d700(bool bOn);
     void FUN_14135d730(ASData& data);
@@ -222,8 +222,8 @@ public:
     virtual int vfunc_48();                                                 // 48 0x14135eab0
 
     CString FUN_14135e570();
-    void FUN_14135e660(ASData& data);
-    void FUN_14135e7a0(ASData& data);
+    void OnChangeSliderRotation(ASData& data);
+    void OnChangeSliderTranslation(ASData& data);
     void FUN_14135e880(const CString& strNode, const NiPoint3& kRot, const NiPoint3& kTrans);
 
 private:

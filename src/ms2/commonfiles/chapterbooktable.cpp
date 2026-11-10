@@ -61,7 +61,7 @@ public:
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -231,7 +231,7 @@ int FUN_1401d9a00(const CStringW& str)
 }
 
 // @0x1401d9a30
-void FUN_1401d9a30(CStringW& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszTokens)
+void ParseIntArray(CStringW& str, ATL::CAtlArray<int>& rOut, const wchar_t* pszTokens)
 {
     int nPos = 0;
     CStringW strToken = str.Tokenize(pszTokens, nPos);
@@ -301,7 +301,7 @@ int CChapterBookData::Read(TiXmlElement* pElem)
         else if (reward.m_nType == 3)
         {
             ATL::CAtlArray<int> values;
-            FUN_1401d9a30(strValue, values, L",");
+            ParseIntArray(strValue, values, L",");
             if (values.GetCount() > 0)
                 reward.m_nValue = values[0];
             if (values.GetCount() > 1)
@@ -334,9 +334,9 @@ CChapterBookTable::~CChapterBookTable()
 // @0x1401d8ff0
 int CChapterBookTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "chapterBook.xml");
+    CString strPath = GetXmlPath("Table", "chapterBook.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -411,7 +411,7 @@ CChapterBookTable::StatMap& CChapterBookTable::GetStatMap()
 // ---- hooks (functional, non-COMDAT, non-ctor bodies) ----------------------------------------------------------------
 MS2_REPLACE(0x1401D9640, FUN_1401d9640, 125, 0x1D3C518A);
 MS2_REPLACE(0x1401D9A00, FUN_1401d9a00, 34, 0x0C5C1F83);
-MS2_REPLACE(0x1401D9A30, FUN_1401d9a30, 190, 0x40305586);
+MS2_REPLACE(0x1401D9A30, ParseIntArray, 190, 0x40305586);
 MS2_REPLACE(0x1401D9B90, FUN_1401d9b90, 188, 0x8C49A94C);
 MS2_REPLACE_METHOD(0x1401D8BC0, CChapterBookData, Read, 753, 0x4358F232);
 MS2_REPLACE_METHOD(0x1401D8FF0, CChapterBookTable, Load, 1037, 0x990BD6AB);

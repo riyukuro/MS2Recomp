@@ -6,7 +6,7 @@
 //
 // The dialog is created and owned by an AdPushEntityLimitedBundle (m_owner is the back pointer). Its movie holds a product
 // clip ("m_limitedRenderer" inside "m_maxComp") that shows the offer; the buy button builds a purchase request through the
-// merat market (FUN_140e039c0), either a bill dialog (TMeratMarketBillDataParam) or a direct CMeratMarketBuy.
+// merat market (OnClickBuy), either a bill dialog (TMeratMarketBillDataParam) or a direct CMeratMarketBuy.
 #pragma once
 #include <afx.h>
 #include "ms2/ms2layout.h"
@@ -44,9 +44,9 @@ public:
     virtual void vfunc_77();                                        // 77 0x140e02620 end of the move: remember the position
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);       // IMessageListener 0 0x140e02a10 "setImgPath"
 
-    void FUN_140e03440(MS2Ptr<AdPushEntityLimitedBundle> spOwner);  // 0x140e03440 bind the owner, look up the banner (the callee releases spOwner)
+    void SetOwner(MS2Ptr<AdPushEntityLimitedBundle> spOwner);  // 0x140e03440 bind the owner, look up the banner (the callee releases spOwner)
     void FUN_140e036e0(CStringA strA, CStringA strImgPath, bool bUnused);   // 0x140e036e0 a banner image arrived (strings destroyed by the callee)
-    void FUN_140e039c0(const CStringA& strMethod, ASData& data);    // 0x140e039c0 the buy button
+    void OnClickBuy(const CStringA& strMethod, ASData& data);    // 0x140e039c0 the buy button
     MS2Ptr<TMeratMarketBillDataParam> FUN_140e04070(const CStringA& strMovie, int nType, int nSource);   // 0x140e04070 build the bill dialog's argument block
     bool FUN_140e04350(MS2Ptr<TMarketBillDataParam> spParam, const TMarketBillDataParam::PaymentMap& mapPay);   // 0x140e04350 buy callback
     bool FUN_140e043e0(Scaleform::GFx::Value* pRetVal, ASData& data, MS2Ptr<TMarketBillDataParam> spParam);     // 0x140e043e0 tooltip callback

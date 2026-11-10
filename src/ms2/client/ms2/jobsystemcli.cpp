@@ -67,7 +67,7 @@ MS2Ptr<SkillLevelData> JobSystemCli::vfunc_1(unsigned nSkillId)
             if (nLevel != 0)
                 return reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(nSkillId, nLevel);
         }
-        if (CFeatureManager::GetInstance()->FUN_14036d570(0xd3))
+        if (CFeatureManager::GetInstance()->IsFeatureEnabled(0xd3))
         {
             unsigned short nLevel = reinterpret_cast<MyPC*>(pPlayer)->GetLapenshardSkillLevel(nSkillId);
             if (nLevel != 0)
@@ -96,7 +96,7 @@ bool JobSystemCli::vfunc_2(unsigned nSkillId)
         }
         if (((CSkillTierOptionManager*)(Unk_PCSkillTree*)(reinterpret_cast<PC*>(pPlayer)->GetSkillTree()))->GetSkillLevel(nSkillId) > 0)
             return true;
-        if (CFeatureManager::GetInstance()->FUN_14036d570(0xd3) && reinterpret_cast<MyPC*>(pPlayer)->GetLapenshardSkillLevel(nSkillId) > 0)
+        if (CFeatureManager::GetInstance()->IsFeatureEnabled(0xd3) && reinterpret_cast<MyPC*>(pPlayer)->GetLapenshardSkillLevel(nSkillId) > 0)
             return true;
         JobData* pJobData = GetJobData().get();
         if (pJobData != 0)

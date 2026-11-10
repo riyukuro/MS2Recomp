@@ -28,11 +28,11 @@ class WeddingProxy   // C3: member view for the former free stand-ins
 public:
     int CheckReservationCancel(class WeddingHallTicket&, __int64);
 };
-void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
+void ShowSystemNotice(const CStringW& strText, int a, int b);                  // notice
 class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140fdc030();
+    void SelectNextTab();
 };
 int FUN_140fe2d20(UIDialog* pDialog);
 void* GetUITalkManager();
@@ -100,7 +100,7 @@ void UIWeddingHallReservationPageChange::vfunc_5()
     if (!FUN_140900f90(FUN_140fe2d20(m_pDialog), (class WeddingHallTicket*)(((struct Unk_WeddingTicketView*)&TSingleton<WeddingManager>::GetInstance()->GetTicket()))))
     {
         CStringW strKey(L"s_wedding_hall_reservation_paclkage_err");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         return;
     }
     int n = ((class WeddingProxy*)(void*)(((void*)TSingleton<WeddingManager>::GetInstance()->FUN_140d295d0())))->CheckReservationCancel(*(class WeddingHallTicket*)(((struct Unk_WeddingTicketView*)&TSingleton<WeddingManager>::GetInstance()->GetTicket())), DAT_143ab2828);
@@ -112,7 +112,7 @@ void UIWeddingHallReservationPageChange::vfunc_5()
     }
     else
     {
-        ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc030();
+        ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SelectNextTab();
     }
 }
 

@@ -37,19 +37,19 @@ public:
     virtual int vfunc_71();                                             // 71 0x140f22640 ask before closing
     virtual void vfunc_79(void* p);                                     // 79 0x140f21850 (CInPacket*)
 
-    bool FUN_140f22760(int nResult, const CMsgBoxData& box);            // close confirm callback
+    bool OnCloseConfirm(int nResult, const CMsgBoxData& box);            // close confirm callback
     void FUN_140f227a0(CInPacket& packet);                              // send the board cells ("setBoard")
     void FUN_140f22bb0(int nPosition);                                  // send the round rewards ("onReward")
     void FUN_140f22fe0(int nDice1, int nDice2, int nKind);              // "onDice": the roll result
     void FUN_140f23200(int nAction, int nArg, int nPrevPosition);       // "onActionNotify*" / walk / fly
     void FUN_140f23590(int nItemId, int nRarity, int nCount);           // "onRewardNotify"
     void FUN_140f237e0(int nPrevPosition, int nPosition);               // reward notify when a round is passed
-    void FUN_140f23940();                                               // "updateDiceButton"
-    void FUN_140f23b90();                                               // m_coinCount text
-    void FUN_140f23ca0();                                               // m_finishCount text
+    void UpdateDiceButton();                                               // "updateDiceButton"
+    void UpdateCoinCount();                                               // m_coinCount text
+    void UpdateFinishCount();                                               // m_finishCount text
     void FUN_140f23da0();                                               // "updateReward"
-    CString FUN_140f23f10(int nItemId, int nRarity, int nCount);        // bind a reward item, returns its bind id
-    void FUN_140f24140(int bEnabled);                                   // enable the m_dice button
+    CString BindRewardItem(int nItemId, int nRarity, int nCount);        // bind a reward item, returns its bind id
+    void SetDiceButtonEnabled(int bEnabled);                                   // enable the m_dice button
 
 private:
     ATL::CAtlArray<CString> m_boundIds;                                 // +0x178 bind ids of the reward items

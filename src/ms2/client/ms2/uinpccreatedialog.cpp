@@ -95,10 +95,10 @@ int FUN_141276f80(Unk_CommandChat*);   // C3: the chat-command sender, the defin
 CString FUN_1411c0aa0(const char* szText);                   // a text without arguments
 
 class Unk_NpcTableCli* FUN_1406d6e90();   // C3: was FUN_1406d6e90
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpc);   // the npc row; FUN_141a6b800 discards it
+MS2Ptr<CNpcData> FindNpcData(int nNpc);   // the npc row; ReadNpcAll discards it
 
 CStringW GetStringCommon(int nId);                        // string table text
-void FUN_1412751f0(const CStringW& strText, int a, int b);
+void ShowSystemNotice(const CStringW& strText, int a, int b);
 
 class Unk_UpperEvents { public: void FUN_1419308c0(UIEntityEventListener*); void FUN_141930950(UIEntityEventListener*); };
 class Unk_LsEntityEvents* FUN_140c607b0();   // C3: was FUN_140c607b0
@@ -112,7 +112,7 @@ class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class Unk_NcNode {};   // C3 #8: its dead FUN_140165cf0 / FUN_140168650 members removed
 class CLogString* GetLogString();   // C3: was FUN_140166440
 void Unk_AdditionalLog(class CLogString*, int, int, wchar_t const*);   // C3: was FUN_1401859c0
-void FUN_140399100(CString strPattern, CString strDir, CAtlArray<CString>& output, CString strExclude, bool bLocalOnly);
+void FindFiles(CString strPattern, CString strDir, CAtlArray<CString>& output, CString strExclude, bool bLocalOnly);
 CStringW FUN_1401bf530(TiXmlElement* pNode, const char* szAttr, CStringW strDefault);
 
 // @0x141a6c140
@@ -159,11 +159,11 @@ int UINpcCreateDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0)) {
+    if (((class Unk_14025e7c0*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0)) {
         if (m_30.get())
             m_30->Invoke("onEnterKey");
         return 1;
-    } else if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0)) {
+    } else if (((class Unk_14025e7c0*)FUN_14025e7c0())->WasKeyPressed(0xf, 0, 0)) {
         if (m_30.get())
             m_30->Invoke("onTabKey");
         return 1;
@@ -234,7 +234,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             unsigned nField;
             if (TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fb700(nNpc, &nField) != 0) {
                 if (reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bd3060() == nField) {
-                    MS2Ptr<CProxyGameObject> spObj = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bc9e70(nNpc);
+                    MS2Ptr<CProxyGameObject> spObj = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FindProxyObjectByKind(nNpc);
                     if (spObj.get() != 0) {
                         COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
                         pkt.WriteUInt8(2);
@@ -251,7 +251,7 @@ int UINpcCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
                     m_nPendingNpc = nNpc;
                 }
             } else {
-                FUN_1412751f0(GetStringCommon(0x578), 1, 1);
+                ShowSystemNotice(GetStringCommon(0x578), 1, 1);
             }
         }
         return 1;
@@ -269,7 +269,7 @@ void UINpcCreateDialog::vfunc_1(void* pEvt)
         if (efd::ClassInfo::IsKindOf(pActor != 0 ? pActor->vfunc_6() : 0, 0x6200004)) {
             if (m_nPendingNpc == 0)
                 return;
-            MS2Ptr<CProxyGameObject> spObj = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FUN_141bc9e70(m_nPendingNpc);
+            MS2Ptr<CProxyGameObject> spObj = reinterpret_cast<Unk_NcWorld*>(WorldService::GetInstance())->FindProxyObjectByKind(m_nPendingNpc);
             if (spObj.get() != 0) {
                 COutPacket pkt(static_cast<int>(SendOp::SetDebugMode), 0);
                 pkt.WriteUInt8(2);
@@ -293,7 +293,7 @@ void UINpcCreateDialog::vfunc_3(MS2Ptr<CProxyGameObject> spActor)
     if (spActor->FUN_1416c2090() == 0) {
         return;
     }
-    if (spActor->FUN_1416c2350() != m_nPendingNpc) {
+    if (spActor->GetTemplateId() != m_nPendingNpc) {
         return;
     }
     {
@@ -311,11 +311,11 @@ void UINpcCreateDialog::ReadNpcFromFile()
     Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"ReadNpcFromFile");
     m_files.clear();
     CAtlArray<CString> files;
-    FUN_140399100(CString(".xml"), CString("./Data/Xml/") + "NpcData/", files, CString(""), false);
+    FindFiles(CString(".xml"), CString("./Data/Xml/") + "NpcData/", files, CString(""), false);
     for (unsigned __int64 i = 0; i < files.GetCount(); i++) {
         CString strFile = files[i];
         TiXmlDocument doc;
-        if (GetFileSystem()->FUN_1403974b0(&doc, (const char*)strFile, 0, true, false) == 0)
+        if (GetFileSystem()->LoadXmlFile(&doc, (const char*)strFile, 0, true, false) == 0)
             continue;
         Unk_NcNode* pRoot = ((class Unk_NcNode*)((class Unk_XmlNode*)(((Unk_NcNode*)&doc)))->FirstChild("ms2"));
         for (Unk_NcNode* pNpc = ((class Unk_NcNode*)((class Unk_XmlNode*)(pRoot))->FirstChild("npc")); pNpc != 0; pNpc = ((class Unk_NcNode*)((class Unk_XmlNode*)(pNpc))->NextSibling("npc"))) {
@@ -328,11 +328,11 @@ void UINpcCreateDialog::ReadNpcFromFile()
     }
     m_bFilesRead = true;
     Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"End ReadNpcFromFile");
-    FUN_141a6b800();
+    ReadNpcAll();
 }
 
 // @0x141a6b6a0
-CStringW UINpcCreateDialog::FUN_141a6b6a0(int nType, int bFriendly)
+CStringW UINpcCreateDialog::GetNpcKindName(int nType, int bFriendly)
 {
     CStringW strKind;
     if (bFriendly != 0) {
@@ -351,19 +351,19 @@ CStringW UINpcCreateDialog::FUN_141a6b6a0(int nType, int bFriendly)
 }
 
 // @0x141a6b800
-void UINpcCreateDialog::FUN_141a6b800()
+void UINpcCreateDialog::ReadNpcAll()
 {
     Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"ReadNpcAll");
     for (unsigned __int64 i = 0; i < m_files.size(); i++) {
         CStringW strId = m_files[i];
         unsigned nNpc = FUN_140718200(strId);
-        FUN_1406cd330(nNpc);
+        FindNpcData(nNpc);
     }
     Unk_AdditionalLog((class CLogString*)(((void*)GetLogString())), 0xc, 0x13, L"End ReadNpcAll");
 }
 
 // @0x141a6b8f0
-void UINpcCreateDialog::FUN_141a6b8f0()
+void UINpcCreateDialog::BuildEntries()
 {
     m_entries.clear();
     m_entries.resize(m_files.size());
@@ -373,7 +373,7 @@ void UINpcCreateDialog::FUN_141a6b8f0()
         MS2Ptr<NpcDataCli> row = reinterpret_cast<NpcDataTableCli*>(FUN_1406d6e90())->Find(nNpc);
         if (row.IsNull())
             continue;
-        CStringW strKind = FUN_141a6b6a0(row->m_nClass, row->GetFriendly());
+        CStringW strKind = GetNpcKindName(row->m_nClass, row->GetFriendly());
         CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(10, nNpc);
         CStringW strNpc = FUN_1401aa6a0(nNpc);
         CStringW strEmpty(L"");
@@ -396,7 +396,7 @@ void UINpcCreateDialog::FUN_141a6b8f0()
 void UINpcCreateDialog::FUN_141a6be40(CStringW& strFilter)
 {
     if (!m_bEntriesBuilt)
-        FUN_141a6b8f0();
+        BuildEntries();
     FUN_140841420(strFilter);
     strFilter.Remove(L' ');
     MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_npcList");
@@ -412,8 +412,8 @@ void UINpcCreateDialog::FUN_141a6be40(CStringW& strFilter)
         if (!bEmpty && e.m_strSearch.Find(strFilter, 0) == -1 && e.m_strId.Find(strFilter, 0) == -1)
             continue;
         ASObj row(2);
-        row.FUN_1407cbb20("code", e.m_strId);
-        row.FUN_1407cbb20("field", e.m_strLine);
+        row.SetWStringMember("code", e.m_strId);
+        row.SetWStringMember("field", e.m_strLine);
         ((ASScrollingList*)list)->AddItem(row);
     }
     ((ASScrollingList*)list)->vfunc_24(true);

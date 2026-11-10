@@ -37,17 +37,17 @@ CWireframeManager::CWireframeManager()
 // @0x141b94030
 CWireframeManager::~CWireframeManager()
 {
-    FUN_141b94090();
+    ClearEntities();
 }
 
 // @0x141b94090
-void CWireframeManager::FUN_141b94090()
+void CWireframeManager::ClearEntities()
 {
     m_entities.RemoveAll();
 }
 
 // @0x141b940c0
-void CWireframeManager::FUN_141b940c0(egf::Entity* pEntity)
+void CWireframeManager::AddEntity(egf::Entity* pEntity)
 {
     NiAVObject* pObject = FUN_1413f98b0()->GetSceneGraphFromEntity(pEntity);
     if (pObject)
@@ -65,7 +65,7 @@ void CWireframeManager::FUN_141b940c0(egf::Entity* pEntity)
 }
 
 // @0x141b941f0
-void CWireframeManager::FUN_141b941f0(egf::Entity* pEntity)
+void CWireframeManager::RemoveEntity(egf::Entity* pEntity)
 {
     POSITION pos;
     {
@@ -77,7 +77,7 @@ void CWireframeManager::FUN_141b941f0(egf::Entity* pEntity)
 }
 
 // @0x141b94260
-void CWireframeManager::FUN_141b94260(bool bWireframe)
+void CWireframeManager::SetWireframe(bool bWireframe)
 {
     m_bWireframe = bWireframe;
     POSITION pos = m_entities.GetHeadPosition();
@@ -98,9 +98,9 @@ void CWireframeManager::FUN_141b94260(bool bWireframe)
 }
 
 // @0x141b94370
-void CWireframeManager::FUN_141b94370()
+void CWireframeManager::ToggleWireframe()
 {
-    FUN_141b94260(!m_bWireframe);
+    SetWireframe(!m_bWireframe);
 }
 
 // @0x141b947e0
@@ -131,7 +131,7 @@ int UIWorldMap::MapTile::FUN_141b94b90()
     }
     if (m_74 != 0)
     {
-        if (reinterpret_cast<CQuestManager*>(FUN_140764020())->FUN_140745590(m_74) == 0)
+        if (reinterpret_cast<CQuestManager*>(FUN_140764020())->IsQuestRewarded(m_74) == 0)
             return 0;
     }
     return 1;

@@ -35,7 +35,7 @@ public:
     virtual void vfunc_5(int nEvent) {}                 //  5 0x140b9aea0 react to a page event
     virtual void vfunc_6(MS2Ptr<CItem> cur, MS2Ptr<CItem> next) {}   //  6 0x140b9ae70 a remake result (both by value)
     virtual void vfunc_7(int nSelect) {}                //  7 0x140b9ae40 the result was applied
-    void FUN_140b9b080(MS2Ptr<ASUIComponent> ui);       // m_ui = ui (the argument is destroyed by the callee)
+    void SetUI(MS2Ptr<ASUIComponent> ui);       // m_ui = ui (the argument is destroyed by the callee)
 
     MS2Ptr<ASUIComponent> m_ui;                         // +0x18
 };
@@ -84,10 +84,10 @@ public:
 
     void FUN_140b92da0();                               // the pet card was selected
     void FUN_140b93460();                               // an ingredient was selected
-    int FUN_140b937c0(ASObj& obj, MS2Ptr<CItem> item);  // fill the ingredient list; 1 when everything is there
-    CString FUN_140b94260(CItem* pItem, CString strKey, ATL::CAtlArray<CString>& names);   // bind an item to a slot
+    int FillIngredientList(ASObj& obj, MS2Ptr<CItem> item);  // fill the ingredient list; 1 when everything is there
+    CString BindItemToSlot(CItem* pItem, CString strKey, ATL::CAtlArray<CString>& names);   // bind an item to a slot
     int FUN_140b94340(MS2Ptr<CItem> item);              // how many of the item the inventory holds
-    CString FUN_140b9ad20() { return m_strBag; }        // 0x140b9ad20 (inline) copy of m_strBag
+    CString GetBagName() { return m_strBag; }        // 0x140b9ad20 (inline) copy of m_strBag
 
     CString m_strBag;                                   // +0x28 "PetRemakeOptionBoardTarget"
     ATL::CAtlArray<CString> m_names;                    // +0x30 the ingredient slot names
@@ -116,37 +116,37 @@ public:
     MS2Ptr<CItem> GetPet();                      // copy of m_pet
     MS2Ptr<CItem> GetPetNext();                      // copy of m_petNext
     void FUN_140b95220(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_petCards
-    void FUN_140b95250(ATL::CAtlArray<IdCount>& out);   // copy of m_ingredients
+    void GetIngredients(ATL::CAtlArray<IdCount>& out);   // copy of m_ingredients
     void FUN_140b95280(int bUsePoint);                  // ask for / send the remake request
     void SendChangeAttributesMode7();                               // debug: remake on the server
     void FUN_140b95db0(ASData* pData);                  // debug: compare enchant
-    void FUN_140b95f90();                               // send the remake request
+    void SendRemakeRequest();                               // send the remake request
     bool FUN_140b964c0(int nResult, const CMsgBoxData& box);   // "have no lock" confirmation
     bool FUN_140b964f0(int nResult, const CMsgBoxData& box);   // "lock option" confirmation
-    void FUN_140b96520(int nState);                     // m_nState = nState, refresh the ingredient bag
+    void SetState(int nState);                     // m_nState = nState, refresh the ingredient bag
     void FUN_140b96560();                               // enable / disable the ingredient bag by state
     int GetState();                                // m_nState
     void FUN_140b967c0(int bEnable);                    // enable the pet system dialog's tabs
-    void FUN_140b96800(MS2Ptr<CItem> cur, MS2Ptr<CItem> next);   // hand a remake result to the sections
-    void FUN_140b96960(MS2Ptr<CItem> item);             // the remade item was applied
+    void NotifyRemakeResult(MS2Ptr<CItem> cur, MS2Ptr<CItem> next);   // hand a remake result to the sections
+    void ApplyRemadeItem(MS2Ptr<CItem> item);             // the remade item was applied
     void FUN_140b96b60(ATL::CAtlArray<int>& out);       // the locked option indices of the board
-    void FUN_140b96ca0();                               // rebuild the pet card list from the inventory
-    void FUN_140b96e60();                               // rebuild the ingredient list
+    void RebuildPetCards();                               // rebuild the pet card list from the inventory
+    void RebuildIngredients();                               // rebuild the ingredient list
     void FUN_140b97170(int nIndex);                     // a pet card was clicked
     void FUN_140b972f0(int nIndex);                     // an ingredient was clicked
-    void FUN_140b973b0(ASData* pData);                  // GetEnableLockOption
-    void FUN_140b97870(ASData* pData);                  // OnClickApply
+    void OnGetEnableLockOption(ASData* pData);                  // GetEnableLockOption
+    void OnClickApply(ASData* pData);                  // OnClickApply
     void OnClickRetry();                               // OnClickRetry
     int FUN_140b97b00(ATL::CAtlArray<unsigned __int64>& arr, unsigned __int64 id);   // arr holds id
     unsigned __int64 FUN_140b97b70(ATL::CAtlArray<unsigned __int64>& arr, int nIndex);   // uid at nIndex, 0 when out of range
     void FUN_140b97bf0(ATL::CAtlArray<unsigned __int64>& arr, unsigned __int64 id);   // remove id from arr
-    void FUN_140b97c90(CInPacket* pPacket);             // 6: the remake result
-    void FUN_140b98430(CInPacket* pPacket);             // 1: preview of the remade item
-    void FUN_140b98520(CInPacket* pPacket);             // 2: the remade item was applied
-    void FUN_140b98610(CInPacket* pPacket);             // 5: an error
+    void OnRemakeResult(CInPacket* pPacket);             // 6: the remake result
+    void OnRemakePreview(CInPacket* pPacket);             // 1: preview of the remade item
+    void OnRemakeApplied(CInPacket* pPacket);             // 2: the remade item was applied
+    void OnRemakeError(CInPacket* pPacket);             // 5: an error
     void FUN_140b988d0(unsigned __int64 uidIngredient); // the remade item arrived
     void FUN_140b98ad0(int nItemId);                    // "the previous option item does not exist"
-    int FUN_140b9ad70() { return m_nIngredientIndex; }  // 0x140b9ad70 (inline)
+    int GetIngredientIndex() { return m_nIngredientIndex; }  // 0x140b9ad70 (inline)
 
     unsigned __int64 m_uidPet;                          // +0x18 the selected pet card
     unsigned __int64 m_uidIngredient;                   // +0x20 the selected ingredient

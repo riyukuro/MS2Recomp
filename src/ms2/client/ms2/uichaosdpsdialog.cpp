@@ -70,7 +70,7 @@ public:
     __int64 FUN_141656a80();
 };
 
-// The AS root object of the dialog (its Invoke(number) is ASArray::FUN_140e06cc0, asobj.h).
+// The AS root object of the dialog (its Invoke(number) is ASArray::InvokeDouble, asobj.h).
 class Unk_ChaosAS : public AScript
 {
 };
@@ -95,7 +95,7 @@ UIChaosDPSDialog::UIChaosDPSDialog()
     m_2c = 0x11;
     m_nGroup = 2;
     m_nMode = 0;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x140e05510
@@ -118,12 +118,12 @@ int UIChaosDPSDialog::FUN_140e055b0(ASObj& obj, CPartyMember* pMember, unsigned 
     obj.SetMemberUInt("rank", nRank);
     obj.FUN_1409c48f0("level", user.m_34);
     ((ASObj*)(ASObj*)(&obj))->FUN_140bd0d90("job", user.m_40);
-    ((class AScript&)(obj)).FUN_1407cbb20("name", user.FUN_1408f19e0());
+    ((class AScript&)(obj)).SetWStringMember("name", user.GetName());
     double dMeter = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, pMember->FUN_141637bb0(), m_nMode));
     obj.FUN_140e06d60("meterValue", dMeter);
     {
         CStringW strMeter = CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, pMember->FUN_141637bb0(), m_nMode);
-        ((class AScript&)(obj)).FUN_1407cbb20("meterText", strMeter);
+        ((class AScript&)(obj)).SetWStringMember("meterText", strMeter);
     }
     return 1;
 }
@@ -165,7 +165,7 @@ void UIChaosDPSDialog::FUN_140e05950()
     if (spLast.get() != 0)
     {
         double dBottom = FUN_1407184e0(CBattleRecordManager::GetInstance()->GetRecordValueText(m_nGroup, spLast->FUN_141637bb0(), m_nMode));
-        static_cast<ASArray*>(m_30.operator->())->FUN_140e06cc0("setBottomMeterValue", dBottom);
+        static_cast<ASArray*>(m_30.operator->())->InvokeDouble("setBottomMeterValue", dBottom);
     }
     for (unsigned i = 0; i < m_members.size(); i++)
     {
@@ -174,7 +174,7 @@ void UIChaosDPSDialog::FUN_140e05950()
         {
             ASObj obj(2);
             if (FUN_140e055b0(obj, spMember.get(), i + 1))
-                m_30->Invoke("UpdateMember", Scaleform::GFx::Value(obj.FUN_1422bb870()));
+                m_30->Invoke("UpdateMember", Scaleform::GFx::Value(obj.GetValue()));
         }
         do
         {
@@ -186,14 +186,14 @@ void UIChaosDPSDialog::FUN_140e05950()
             ASObj objMy(2);
             if (!FUN_140e055b0(objMy, spMember.get(), i + 1))
                 break;
-            m_30->Invoke("SetMyRank", Scaleform::GFx::Value(objMy.FUN_1422bb870()));
+            m_30->Invoke("SetMyRank", Scaleform::GFx::Value(objMy.GetValue()));
         } while (0);
     }
 }
 #endif
 
 // @0x140e05f80
-void UIChaosDPSDialog::FUN_140e05f80()
+void UIChaosDPSDialog::RemoveMemberIfUnderLimit()
 {
     if (m_30.IsNull())
         return;
@@ -249,7 +249,7 @@ int UIChaosDPSDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
                 break;
             MS2Ptr<CPartyMember> spMember = m_members[i];
             CStringW strMeter = CBattleRecordManager::GetInstance()->FUN_140a04830(m_nGroup, spMember->FUN_141637bb0(), m_nMode);
-            strHistory.Append(StringFormat((const wchar_t*)strRow, i + 1, spMember->user.FUN_1408f19e0(), strMeter));
+            strHistory.Append(StringFormat((const wchar_t*)strRow, i + 1, spMember->user.GetName(), strMeter));
         }
         int nNow = GetTickCountMs2();
         int nTime = nNow - CBattleRecordManager::GetInstance()->GetGroupStartTick(m_nGroup);
@@ -278,7 +278,7 @@ void UIChaosDPSDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
     if (IsChaosDamageMeterOn(reinterpret_cast<const struct Unk_InterfaceState*>(reinterpret_cast<Unk_ChaosSettings*>(TSingleton<CGameOption>::GetInstance())->FUN_140e09150())) == 0 || TSingleton<CPartyManager>::GetInstance()->IsInParty() == 0
-        || ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbe) == 0)
+        || ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xbe) == 0)
         vfunc_67();
     else {
         if (!m_30)
@@ -304,7 +304,7 @@ bool FUN_140e066f0(MS2Ptr<CPartyMember> spA, MS2Ptr<CPartyMember> spB)
 #endif
 
 // @0x140e06cc0
-Scaleform::GFx::Value ASArray::FUN_140e06cc0(const char* szMethod, double d)
+Scaleform::GFx::Value ASArray::InvokeDouble(const char* szMethod, double d)
 {
     ASArgList args;
     args.resize(1);
@@ -330,6 +330,6 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 MS2_REPLACE_METHOD(0x140E055B0, UIChaosDPSDialog, FUN_140e055b0, 538, 0x93474119);
 MS2_REPLACE_METHOD(0x140E057D0, UIChaosDPSDialog, OnTextToggle, 374, 0xD3E773C1);
-MS2_REPLACE_METHOD(0x140E05F80, UIChaosDPSDialog, FUN_140e05f80, 111, 0x0AD55661);
+MS2_REPLACE_METHOD(0x140E05F80, UIChaosDPSDialog, RemoveMemberIfUnderLimit, 111, 0x0AD55661);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca6210-0x142ca62f0 .text$yd

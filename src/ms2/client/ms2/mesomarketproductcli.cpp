@@ -33,16 +33,16 @@ CStringW FUN_1409404f0(__int64 n);                      // number text, grouped
 CStringW FUN_140719a80(unsigned __int64 n);                      // number text
 CStringW FUN_1418fe870(int nCurrency, int* pnVSpace, unsigned nItemId);   // the "<img>" source of a token kind
 void FUN_141b70f90(const CMsTime& kTime, const CStringW& kFormat, CStringW& kOut);
-void FUN_1412751f0(const CStringW& strText, int nA, int nB);
+void ShowSystemNotice(const CStringW& strText, int nA, int nB);
 void FUN_140710590(COutPacket&);                        // send
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 Delegate<bool(int, const CMsgBoxData&)> FUN_140b240b0();
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW strText, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 class CUIService;
 
 // The penalty (block) record a result code asks for.
@@ -55,7 +55,7 @@ typedef __int64 i64;
 
 // A notice box with the text of a key.
 #define MESO_NOTICE(key) \
-    { FUN_140d74390(FUN_140298ea0(CStringW(key)), 0, FUN_140b240b0()); }
+    { ShowMessageBoxWithCallback(FUN_140298ea0(CStringW(key)), 0, FUN_140b240b0()); }
 
 CStringW GetCurrencyIconHtml(int nCurrency);
 i64 FUN_140d706c0(i64* pValue, i64 nMin, i64 nMax);
@@ -92,7 +92,7 @@ void CMesoMarketProductCli::FillOwnRow(ASObj& row)
             CStringW strKey(L"s_mesoMarket_endSellTime");
             FUN_141b70f90(CMsTime(m_40), GetStringCommonByKey(strKey), strTime);
         }
-        row.FUN_1407cbb20("subText", CStringW(strTime));
+        row.SetWStringMember("subText", CStringW(strTime));
         row.FUN_1409c0e60("buttonText", L"$s_mesoMarket_cancel_sale");
     }
 }
@@ -115,14 +115,14 @@ void CMesoMarketProductCli::FillCommonRow(ASObj& row)
     if (m_n20 > nBase)
         nUnit = nUnit / (m_n20 / nBase);
     CStringW strBase = FUN_1412757d0(nBase);
-    row.FUN_1407cbb20("marketSN", FUN_140719a80(m_n18));
-    row.FUN_1407cbb20("sellMeso", FUN_1409404f0(m_n20));
-    row.FUN_1407cbb20("buyMerat", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_mesoMarket_listItem_buyMerat"), FUN_1409404f0(m_n28),
+    row.SetWStringMember("marketSN", FUN_140719a80(m_n18));
+    row.SetWStringMember("sellMeso", FUN_1409404f0(m_n20));
+    row.SetWStringMember("buyMerat", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_mesoMarket_listItem_buyMerat"), FUN_1409404f0(m_n28),
                                                 GetCurrencyIconHtml(*reinterpret_cast<unsigned*>(reinterpret_cast<Common::Constants::Value<int>*>((char*)((class Unk_CMesoMarketConfig*)GetClientConstants()) + 0x6140)->Get()))));
-    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xf4))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xf4))
     {
-        row.FUN_1407cbb20("sellMesoText", FUN_14028dfa0<CStringW>(CStringW(L"s_mesoMarket_listItem_sellMesoText"), FUN_1412757d0(m_n20)));
-        row.FUN_1407cbb20("buyMeratPerUnit", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_mesoMarket_listItem_unitPrice"), strBase, FUN_1409404f0(nUnit)));
+        row.SetWStringMember("sellMesoText", FUN_14028dfa0<CStringW>(CStringW(L"s_mesoMarket_listItem_sellMesoText"), FUN_1412757d0(m_n20)));
+        row.SetWStringMember("buyMeratPerUnit", FUN_14028dfa0<CStringW, CStringW>(CStringW(L"s_mesoMarket_listItem_unitPrice"), strBase, FUN_1409404f0(nUnit)));
     }
 }
 
@@ -471,13 +471,13 @@ void CMesoMarketMan::ShowResultMessage(int nCode)
         break;
     case 0x10:
     {
-        FUN_140d74390(FUN_140d70320(CStringW(L"s_mesoMarket_error_invalidBuyMerat"), m_limits.m_fRateB * 100.0f,
+        ShowMessageBoxWithCallback(FUN_140d70320(CStringW(L"s_mesoMarket_error_invalidBuyMerat"), m_limits.m_fRateB * 100.0f,
                                     GetMinPrice(), GetMaxPrice()),
                       0, FUN_140b240b0());
         break;
     }
     case 0x11:
-        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_mesoMarket_error_alreadySoldProduct")), 1, 1);
+        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_mesoMarket_error_alreadySoldProduct")), 1, 1);
         break;
     case 0x12:
     case 0x13:
@@ -491,12 +491,12 @@ void CMesoMarketMan::ShowResultMessage(int nCode)
         break;      // the exe has a second jmp to the switch end here
     case 0x14:
     {
-        FUN_140d74390(GetStringCommon(0xd56), 0, FUN_140b240b0());
+        ShowMessageBoxWithCallback(GetStringCommon(0xd56), 0, FUN_140b240b0());
         break;
     }
     default:
     {
-        FUN_140d74390(FUN_14028dfa0<int>(CStringW(L"s_mesoMarket_error_unknown"), +nCode), 0, FUN_140b240b0());
+        ShowMessageBoxWithCallback(FUN_14028dfa0<int>(CStringW(L"s_mesoMarket_error_unknown"), +nCode), 0, FUN_140b240b0());
     }
     }
 }

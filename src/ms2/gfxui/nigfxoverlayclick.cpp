@@ -52,10 +52,10 @@ MS2_REPLACE_METHOD(0x142303500, NiGFxOverlayClick, GetNumObjectsDrawn, 11, 0x300
 // @0x142303520
 void NiGFxOverlayClick::PerformRendering(unsigned int uiFrameID)
 {
-    if (FUN_14025e7a0() != NULL)
+    if (GetGFxManager() != NULL)
     {
         float fStart = FUN_1416fa2f0();
-        FUN_14025e7a0()->Render();
+        GetGFxManager()->Render();
         m_fUIRenderTime = FUN_1416fa2f0() - fStart;
     }
 }
@@ -110,8 +110,8 @@ AtlasRecord::AtlasRecord(Unk_GfxImage* pImage)
 }
 
 // @0x142303840
-Unk_GfxImage* AtlasRecord::FUN_142303840()
+Unk_GfxImage* AtlasRecord::GetImage()
 {
     return m_spImage.get();
 }
-MS2_REPLACE_METHOD(0x142303840, AtlasRecord, FUN_142303840, 31, 0x8E35D2E7);
+MS2_REPLACE_METHOD(0x142303840, AtlasRecord, GetImage, 31, 0x8E35D2E7);

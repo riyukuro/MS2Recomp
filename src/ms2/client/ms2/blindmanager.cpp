@@ -29,10 +29,10 @@ public:
 };
 
 // Unrecovered helpers.
-CString FUN_141275640();                                                // the user data directory
+CString GetAccountFolder();                                                // the user data directory
 CString FUN_140cc2a00(const CString& strDir, const CString& strFile);   // dir + "\\" + file
 CString FUN_1409a2360(const char* psz, int n);                          // text conversion
-CString FUN_14016a5c0(const char* psz, int n);                          // path conversion
+CString ToCString(const char* psz, int n);                          // path conversion
 int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);
 CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);
 __int64 Unk_ExpGetInt64(TiXmlElement* pElem, const char* pszName, __int64 nDefault); // _time64 attribute
@@ -80,11 +80,11 @@ void BlindManager::Load()
 {
     ClearLists();
     CreateLists();
-    CString strPath = FUN_140cc2a00(FUN_141275640(), "BlindList.xml");
-    if (GetFileSystem()->FUN_1403987d0(std::string((const char*)strPath)) == 0)
+    CString strPath = FUN_140cc2a00(GetAccountFolder(), "BlindList.xml");
+    if (GetFileSystem()->FileExists(std::string((const char*)strPath)) == 0)
         return;
     TiXmlDocument document;
-    if (GetFileSystem()->FUN_1403974b0(&document, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&document, strPath, 0, true, false) == 0)
         return;
     Unk_XmlNode* pRoot = reinterpret_cast<Unk_XmlNode*>(&document)->FirstChild("ms2");
     for (TiXmlElement* pNode = ((class TiXmlElement*)(pRoot->FirstChild("blind"))); pNode != 0; pNode = ((class TiXmlElement*)((class Unk_XmlNode*)(pNode))->NextSibling("blind")))
@@ -130,8 +130,8 @@ void BlindManager::Save()
         }
     }
     ((void*)((class TiXmlNode*)(void*)(&document))->InsertEndChild(root));
-    CString strPath = FUN_140cc2a00(FUN_141275640(), "BlindList.xml");
-    document.SaveFile(FUN_14016a5c0(strPath, 0));
+    CString strPath = FUN_140cc2a00(GetAccountFolder(), "BlindList.xml");
+    document.SaveFile(ToCString(strPath, 0));
 }
 
 // @0x140a25730
@@ -145,7 +145,7 @@ bool BlindManager::Block(int nType, CStringW strKey)
     __time64_t nNow;
     _time64(&nNow);
     entry.m_expire = (std::numeric_limits<__int64>::max)();
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
+    if (((class CFeatureManager*)FUN_140166410())->IsRegionKR())
         entry.m_expire = nNow + 0x15180;
     (*pList)[strKey] = entry;
     Save();

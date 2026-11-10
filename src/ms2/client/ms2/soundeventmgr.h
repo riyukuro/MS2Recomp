@@ -81,8 +81,8 @@ public:
 
     bool FUN_1417760d0() const;                                       // the cooltime is over (or none)
     CString FUN_141776120(int nJob) const;                            // the event name for the job
-    const CString& FUN_141776260() const { return m_strGroup; }
-    const CString& FUN_141776280() const { return m_strParentNode; }
+    const CString& GetGroup() const { return m_strGroup; }
+    const CString& GetParentNode() const { return m_strParentNode; }
     float FUN_1417762a0(int nJob) const;                              // the start delay for the job
     void FUN_141776330(TiXmlElement* pNode);                   // "jobEvent"  = job:event,...
     void FUN_1417764c0(TiXmlElement* pNode);                   // "byJobStartDelay" = job:delay,...
@@ -125,9 +125,9 @@ public:
     virtual bool vfunc_9();                                     // 9 0x1417771a0 per-update
     virtual int vfunc_12();                                     // 12 0x141778980 effect type 2
 
-    CString& FUN_141777700() { return m_strExtra; }
+    CString& GetExtra() { return m_strExtra; }
     MS2Ptr<CSoundEvent> GetSound();                        // the playing sound
-    void FUN_141777770() { m_b2d = true; }                      // finished
+    void SetFinished() { m_b2d = true; }                      // finished
 
 public:
     MS2_LAYOUT_FRIEND;
@@ -222,33 +222,33 @@ public:
     MS2Ptr<CSoundEvent> FUN_14177b3d0(FMOD::EventGroup* pGroup, const char* pszName, float fPitch,
                                       FMOD_EVENT_PITCHUNITS eUnits);   // an event of the group with pitch
     MS2Ptr<CSoundEvent> FUN_14177b6a0(const char* pszName);     // the event by full name
-    void FUN_14177b900();                                       // fade the environment sounds in
-    void FUN_14177b940();                                       // fade them out, stop the environment sounds
-    void FUN_14177ba30();                                       // shut down
-    void FUN_14177bb70(float fDelta);                                     // per frame
-    void FUN_14177bbc0();                                       // advance the volume fades
+    void FadeInEnvironmentSounds();                                       // fade the environment sounds in
+    void FadeOutEnvironmentSounds();                                       // fade them out, stop the environment sounds
+    void Shutdown();                                       // shut down
+    void Update(float fDelta);                                     // per frame
+    void UpdateFades();                                       // advance the volume fades
     void OnLostSoundDevice();                                       // sound device lost
     void FUN_14177bf20();                                       // sound device restored
-    int FUN_14177c100(unsigned nMusicId, float fParam, unsigned nPriority, int bForce);   // play a music cue
-    int FUN_14177c420(unsigned nParamId, float fValue, unsigned nPriority, int bForce);   // set a music parameter
+    int PlayMusic(unsigned nMusicId, float fParam, unsigned nPriority, int bForce);   // play a music cue
+    int SetMusicParameter(unsigned nParamId, float fValue, unsigned nPriority, int bForce);   // set a music parameter
     int GetMusicParameter(unsigned nParamId, float* pfValue);       // get a music parameter
     int SetMusicPaused(bool bPaused);                            // pause the music
     void ResetMusic();                                       // reset the music system
-    void FUN_14177c8a0();                                       // reset the music state
+    void ResetMusicState();                                       // reset the music state
     void SetMusicMute(unsigned bMute);                         // mute the music
-    float FUN_14177c9e0();                                      // the music volume
-    void FUN_14177ca30(float fVolume);                          // set the music volume
+    float GetMusicVolume();                                      // the music volume
+    void SetMusicVolume(float fVolume);                          // set the music volume
     int GetCurrentMusicId();                                        // the current music cue id
-    MS2Ptr<CSoundEvent> FUN_14177cbe0(Unk_EntityPtr spEntity, const char* pszEvent);   // the entity's environment sound
+    MS2Ptr<CSoundEvent> CreateEnvironmentSound(Unk_EntityPtr spEntity, const char* pszEvent);   // the entity's environment sound
     void FUN_14177ce30(Unk_EntityPtr spEntity, int bOn);        // switch the entity's environment sound
-    void FUN_14177d230();                                       // start the environment sounds
+    void StartEnvironmentSounds();                                       // start the environment sounds
     void FUN_14177d380();                                       // stop and release the environment sounds
     void RemoveEnvironmentSound(Unk_EntityPtr spEntity);                 // remove an environment sound
     void ClearEnvironmentSounds();                                       // remove all environment sounds
     FMOD::EventGroup* GetEventGroup(const char* pszName, int bLoad);   // the (cached) event group
     void UnloadEventGroup(const char* pszName);                    // free an event group
     void GetEventNames(const char* pszGroup, std::vector<CString>& rNames);   // event names of a group
-    void FUN_14177da80(int nCategory, float fVolume);           // category volume
+    void SetCategoryVolume(int nCategory, float fVolume);           // category volume
     float GetCategoryVolume(int nCategory);
     void SetCategoryMute(int nCategory, unsigned bMute);          // mute a category
     void SetAllMute(unsigned bMute);                         // mute everything
@@ -256,8 +256,8 @@ public:
     int FUN_14177ddd0(void* pUnused, int nUnused1, int nUnused2);   // 1
     void StartFadeIn(int nCategory, int nMs);                 // start a fade in
     void StartFadeOut(int nCategory, int nMs);                 // start a fade out
-    void FUN_14177df50(int nCategory, float fVolume);           // finish a fade
-    CStringW FUN_14177e020();                                   // the music debug text
+    void FinishFade(int nCategory, float fVolume);           // finish a fade
+    CStringW GetMusicDebugText();                                   // the music debug text
     void FUN_14177e1c0();                                       // draw the attenuation shapes
     void FUN_14177e2e0(int bFlag);
 
@@ -295,4 +295,4 @@ MS2_CHECK_OFFSET(CSoundEventMgr, m_mapFades, 0x108);
 CSoundEventMgr* FUN_140d13c40();                                // TSingleton<CSoundEventMgr>::GetInstance
 
 // 0x141775980 (called from effectservice.cpp): builds a param for a one-shot event.
-MS2Ptr<CSoundEventEffectParam> FUN_141775980(CString strName, CString strCategory, float fVolume, CString strExtra);
+MS2Ptr<CSoundEventEffectParam> CreateSoundEventEffectParam(CString strName, CString strCategory, float fVolume, CString strExtra);

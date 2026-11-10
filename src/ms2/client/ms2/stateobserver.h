@@ -51,7 +51,7 @@ public:
     void FUN_140ac4c00();                                   // flush the pending target
     void FUN_140ac4c90(__int64 nTarget);                 // ask the server to observe nTarget (throttled)
     void FUN_140ac4dc0(NotifyObject* pNotice);              // NotifyKillPlayer
-    __int64 FUN_140ac5ea0();                                // the observed player's id
+    __int64 GetObservedTargetId();                                // the observed player's id
 
     MS2Ptr<StateObserverData> m_spObserve;                  // +0x40
     int m_nSwitchTick;                                      // +0x50

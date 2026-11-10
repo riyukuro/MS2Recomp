@@ -81,7 +81,7 @@ public:
 
 typedef Delegate<bool(int, const CMsgBoxData&)> HioAnswerDelegate;
 CStringW FUN_140298ea0(CStringW strKey);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_140710590(COutPacket& packet);                         // send the packet
 
@@ -89,7 +89,7 @@ void FUN_140710590(COutPacket& packet);                         // send the pack
 UIHomeInsideOptionDialog::UIHomeInsideOptionDialog()
 {
     m_80 = 0;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140c273b0
@@ -120,7 +120,7 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
                 if (spRow == 0)
                     continue;
                 ASObj item(2);
-                item.FUN_1407cbb20("label", spRow->m_strName);
+                item.SetWStringMember("label", spRow->m_strName);
                 spCombo.operator->()->AddItemRow(item);
             }
             spCombo.operator->()->SetSelectedIndex(static_cast<unsigned int>(setting.m_nBg));
@@ -140,7 +140,7 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
                 if (spRow == 0)
                     continue;
                 ASObj item(2);
-                item.FUN_1407cbb20("label", spRow->m_strName);
+                item.SetWStringMember("label", spRow->m_strName);
                 spCombo.operator->()->AddItemRow(item);
             }
             spCombo.operator->()->SetSelectedIndex(static_cast<unsigned int>(setting.m_nLight));
@@ -160,7 +160,7 @@ void UIHomeInsideOptionDialog::OnLoadComplete()
                 if (spRow == 0)
                     continue;
                 ASObj item(2);
-                item.FUN_1407cbb20("label", spRow->m_strName);
+                item.SetWStringMember("label", spRow->m_strName);
                 spCombo.operator->()->AddItemRow(item);
             }
             spCombo.operator->()->SetSelectedIndex(static_cast<unsigned int>(setting.m_nCamera));
@@ -176,7 +176,7 @@ int UIHomeInsideOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     UIDialog::vfunc_28(szMethod, pArgs, nArgs);
     if (_stricmp("OnApply", szMethod) == 0)
     {
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 0, CStringW(L""));
         if (box.get() != 0)
         {
             box.operator->()->SetCallback(HioAnswerDelegate(this, &UIHomeInsideOptionDialog::FUN_140c27fd0));
@@ -187,9 +187,9 @@ int UIHomeInsideOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GF
     {
         if (MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply"))
         {
-            if (spApply.operator->()->FUN_1422c2030() != 0)
+            if (spApply.operator->()->IsEnabled() != 0)
             {
-                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, FUN_140298ea0(CStringW(L"s_home_option_msg_confirm")), 0, CStringW(L""));
                 if (box.get() != 0)
                 {
                     box.operator->()->SetCallback(HioAnswerDelegate(this, &UIHomeInsideOptionDialog::FUN_140c28000));
@@ -220,7 +220,7 @@ bool UIHomeInsideOptionDialog::FUN_140c28000(int nResult, const CMsgBoxData& box
     {
         if (MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply"))
         {
-            if (spApply.operator->()->FUN_1422c2030() != 0)
+            if (spApply.operator->()->IsEnabled() != 0)
                 FUN_140c280d0();
             vfunc_67();
         }
@@ -256,7 +256,7 @@ void UIHomeInsideOptionDialog::FUN_140c280d0()
         FUN_140710590(packet);
     }
     if (MS2Ptr<ASButton> spApply = GetChild<ASButton>("m_apply"))
-        spApply.operator->()->FUN_1422c1fe0(0);
+        spApply.operator->()->SetEnabled(0);
 }
 
 // @0x140c28560

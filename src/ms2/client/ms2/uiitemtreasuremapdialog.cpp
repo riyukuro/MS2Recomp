@@ -51,7 +51,7 @@ class UITalkCinematic* FindTalkCinematic(int);   // C3: was FindTalkCinematic
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
 void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned bEnable);
 void SetChildHtmlText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
-void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
+void SetButtonText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 
 void DestroyItemSlotBag(const CString& strBag);                                  // drop an item bag
 void CreateItemSlotBag(const CString& strBag, int nSlots, void* pItems, MS2Ptr<CItem> (*pfnGetItem)(void*, int), int n1, int n2);   // C3: itemservice.cpp's definition (0x14141f770)
@@ -91,7 +91,7 @@ UIItemTreasureMapDialog::UIItemTreasureMapDialog()
     m_strBind = StringFormat<CString>("{0}.Select", GetTypeName());
     m_nTargetUid = 0;
     m_bFree = false;
-    FUN_140c57b50();
+    ClearChildren();
 }
 
 // @0x140c55140
@@ -134,14 +134,14 @@ void UIItemTreasureMapDialog::OnLoadComplete()
     MS2Ptr<ASMovieClip> spTargetItems = GetChild<ASMovieClip>("m_targetItems");
     if (spTargetItems.get() != 0)
         spTargetItems->FUN_140c57d70("m_itemBag", m_itemBag);
-    FUN_140c55ea0();
+    ShowSelectPage();
     if (m_itemBag.get() != 0)
         m_itemBag->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::SendTreasureMapMode2), 0);
     if (m_board.get() != 0)
     {
         m_submit = m_board->FUN_140acce30<ASButton>("m_submit");
         if (m_submit.get() != 0)
-            reinterpret_cast<ASMovieClip*>(m_submit.operator->())->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::FUN_140c55d20), (void*)0);
+            reinterpret_cast<ASMovieClip*>(m_submit.operator->())->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemTreasureMapDialog::OnSubmitClick), (void*)0);
         CStringW strDesc = GetStringCommonByKey(L"s_item_treasure_map_appraise_desc");
         if (m_bFree != 0)
             strDesc = GetStringCommonByKey(L"s_item_treasure_map_free_appraise_desc");
@@ -157,7 +157,7 @@ void UIItemTreasureMapDialog::vfunc_67()
     m_nState = 0;
     m_spTarget = 0;
     m_items.RemoveAll();
-    FUN_140c57b50();
+    ClearChildren();
     m_nTargetUid = 0;
     m_bFree = false;
     UIDialog::vfunc_67();
@@ -184,7 +184,7 @@ void UIItemTreasureMapDialog::vfunc_79(void* p)
         {
             __int64 nUid = TM_PKT->ReadInt64();
             __int64 nCost = TM_PKT->ReadInt64();
-            FUN_140c56a50(nUid, nCost);
+            OnAppraiseCost(nUid, nCost);
         }
         else if (nSub == 3)
         {
@@ -193,12 +193,12 @@ void UIItemTreasureMapDialog::vfunc_79(void* p)
             {
                 int nItemId = TM_PKT->ReadInt32();
                 int nRank = TM_PKT->ReadInt32();
-                FUN_140c57300(nItemId, nRank);
+                ShowAppraisedItem(nItemId, nRank);
             }
             else
             {
                 m_nState = 2;
-                FUN_140c56670();
+                ReturnToSelectPage();
             }
         }
     }
@@ -239,15 +239,15 @@ void UIItemTreasureMapDialog::SendTreasureMapMode2(const Scaleform::GFx::Functio
 
 // The m_submit button.
 // @0x140c55d20
-void UIItemTreasureMapDialog::FUN_140c55d20(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIItemTreasureMapDialog::OnSubmitClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_nState == 1)
         return;
     if (m_nState == 0)
-        FUN_140c563d0();
+        StartAppraise();
     else if (m_nState == 2)
     {
-        FUN_140c56670();
+        ReturnToSelectPage();
         if (m_nTargetUid > 0)
         {
             MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nTargetUid);
@@ -269,13 +269,13 @@ void UIItemTreasureMapDialog::FUN_140c55d20(const Scaleform::GFx::FunctionHandle
 
 // The select page: no map picked, the submit button asks for an appraise.
 // @0x140c55ea0
-void UIItemTreasureMapDialog::FUN_140c55ea0()
+void UIItemTreasureMapDialog::ShowSelectPage()
 {
     if (m_board == 0)
         return;
     m_nCost = 0;
-    FUN_140c560f0();
-    FUN_140cff4e0((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(L"s_item_treasure_map_button_appraise"));
+    RefreshTreasureMapBag();
+    SetButtonText((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(L"s_item_treasure_map_button_appraise"));
     FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 0);
     FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
     FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
@@ -283,7 +283,7 @@ void UIItemTreasureMapDialog::FUN_140c55ea0()
 
 // Collects the treasure maps of the inventory and hands them to the item bag.
 // @0x140c560f0
-void UIItemTreasureMapDialog::FUN_140c560f0()
+void UIItemTreasureMapDialog::RefreshTreasureMapBag()
 {
     m_items.RemoveAll();
     ATL::CAtlArray<unsigned __int64> uids;
@@ -293,7 +293,7 @@ void UIItemTreasureMapDialog::FUN_140c560f0()
         MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(uids[i]);
         if (spItem == 0)
             continue;
-        if (!FUN_140c57a70(MS2Ptr<CItem>(spItem)))
+        if (!IsTreasureMap(MS2Ptr<CItem>(spItem)))
             continue;
         m_items.Add(spItem);
     }
@@ -304,14 +304,14 @@ void UIItemTreasureMapDialog::FUN_140c560f0()
     {
         m_itemBag->SetSelectedIndex(-1);
         m_itemBag->FUN_1422dd1d0();
-        m_itemBag->FUN_1407cba60("bagId", m_strBag);
+        m_itemBag->SetStringMember("bagId", m_strBag);
         m_itemBag->vfunc_24(true);
     }
 }
 
 // Start the appraise of the picked map.
 // @0x140c563d0
-void UIItemTreasureMapDialog::FUN_140c563d0()
+void UIItemTreasureMapDialog::StartAppraise()
 {
     if (m_nState != 0)
         return;
@@ -339,7 +339,7 @@ void UIItemTreasureMapDialog::FUN_140c563d0()
 
 // Back to the select page.
 // @0x140c56670
-void UIItemTreasureMapDialog::FUN_140c56670()
+void UIItemTreasureMapDialog::ReturnToSelectPage()
 {
     if (m_nState != 2)
         return;
@@ -352,20 +352,20 @@ void UIItemTreasureMapDialog::FUN_140c56670()
     if (spSlot.get() != 0)
     {
         ASObj obj(2);
-        obj.FUN_1407cba60("binding", m_strBind);
-        spSlot->Invoke("setData", obj.FUN_1422bb870());
+        obj.SetStringMember("binding", m_strBind);
+        spSlot->Invoke("setData", obj.GetValue());
         FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 1);
         FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 1);
     }
     m_board->vfunc_13("wait");
     FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 0);
     FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc2", 0);
-    FUN_140c55ea0();
+    ShowSelectPage();
 }
 
 // The server's cost of the picked map: show the map and the cost.
 // @0x140c56a50
-void UIItemTreasureMapDialog::FUN_140c56a50(__int64 nUid, __int64 nCost)
+void UIItemTreasureMapDialog::OnAppraiseCost(__int64 nUid, __int64 nCost)
 {
     if (m_nState != 0)
         return;
@@ -375,7 +375,7 @@ void UIItemTreasureMapDialog::FUN_140c56a50(__int64 nUid, __int64 nCost)
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nUid);
     if (spItem == 0)
         return;
-    if (FUN_140c57a70(MS2Ptr<CItem>(spItem)) == 0)
+    if (IsTreasureMap(MS2Ptr<CItem>(spItem)) == 0)
         return;
     m_spTarget = spItem;
     DestroyItemInfoSlot(m_strBind);
@@ -384,9 +384,9 @@ void UIItemTreasureMapDialog::FUN_140c56a50(__int64 nUid, __int64 nCost)
     if (spSlot.get() != 0)
     {
         ASObj obj(2);
-        obj.FUN_1407cbb20((const char*)s_strItemName, m_spTarget->FUN_140528160());
-        obj.FUN_1407cba60("binding", m_strBind);
-        spSlot->Invoke("setData", obj.FUN_1422bb870());
+        obj.SetWStringMember((const char*)s_strItemName, m_spTarget->FUN_140528160());
+        obj.SetStringMember("binding", m_strBind);
+        spSlot->Invoke("setData", obj.GetValue());
         FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 1);
         FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 1);
     }
@@ -407,7 +407,7 @@ void UIItemTreasureMapDialog::FUN_140c56a50(__int64 nUid, __int64 nCost)
 
 // The appraised item: show it and the back button.
 // @0x140c57300
-void UIItemTreasureMapDialog::FUN_140c57300(int nItemId, int nRank)
+void UIItemTreasureMapDialog::ShowAppraisedItem(int nItemId, int nRank)
 {
     if (m_board == 0)
         return;
@@ -420,9 +420,9 @@ void UIItemTreasureMapDialog::FUN_140c57300(int nItemId, int nRank)
         if (spSlot.get() != 0)
         {
             ASObj obj(2);
-            obj.FUN_1407cbb20((const char*)s_strItemName, spItem->FUN_140528160());
-            obj.FUN_1407cba60("binding", m_strBind);
-            spSlot->Invoke("setData", obj.FUN_1422bb870());
+            obj.SetWStringMember((const char*)s_strItemName, spItem->FUN_140528160());
+            obj.SetStringMember("binding", m_strBind);
+            spSlot->Invoke("setData", obj.GetValue());
             FUN_140cff840((*spSlot).FUN_1422bb890(), "eff1", 0);
             FUN_140cff840((*spSlot).FUN_1422bb890(), "eff2", 0);
         }
@@ -434,15 +434,15 @@ void UIItemTreasureMapDialog::FUN_140c57300(int nItemId, int nRank)
     FUN_140cff840((*m_board).FUN_1422bb890(), "m_desc1", 1);
     SetChildHtmlText((*m_board).FUN_1422bb890(), "m_desc1", spItem->FUN_140528160());
     FUN_140cff950((*m_board).FUN_1422bb890(), "m_submit", 1);
-    FUN_140cff4e0((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(L"s_item_treasure_map_button_back"));
+    SetButtonText((*m_board).FUN_1422bb890(), "m_submit", GetStringCommonByKey(L"s_item_treasure_map_button_back"));
     FUN_141276180(s_sndStamp, "");
-    FUN_140c560f0();
+    RefreshTreasureMapBag();
     m_nState = 2;
 }
 
 // Is the item a treasure map?
 // @0x140c57a70
-bool UIItemTreasureMapDialog::FUN_140c57a70(MS2Ptr<CItem> spItem)
+bool UIItemTreasureMapDialog::IsTreasureMap(MS2Ptr<CItem> spItem)
 {
     if (spItem == 0)
         return false;
@@ -454,7 +454,7 @@ bool UIItemTreasureMapDialog::FUN_140c57a70(MS2Ptr<CItem> spItem)
 }
 
 // @0x140c57b50
-void UIItemTreasureMapDialog::FUN_140c57b50()
+void UIItemTreasureMapDialog::ClearChildren()
 {
     m_board = 0;
     m_submit = 0;

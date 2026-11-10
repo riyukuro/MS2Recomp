@@ -48,7 +48,7 @@ public:
 
     void OnProductSelected(MS2Ptr<CMeratMarketProduct> spProduct);  // 0x14130ea00
 };
-UIMeratMarketDialog* FUN_140bfed50(int nId);                        // find the dialog (dynamic_cast)
+UIMeratMarketDialog* FindMeratMarketDialog(int nId);                        // find the dialog (dynamic_cast)
 
 // The UI manager: the lookup of a dialog by its ui id.
 class Unk_RcUIManager { public: };
@@ -128,7 +128,7 @@ int UIRandomCoupon::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
         m_bButtonShown = 1;
         if (m_spProduct.get())
         {
-            UIMeratMarketDialog* pDlg = FUN_140bfed50(0x4ec1);
+            UIMeratMarketDialog* pDlg = FindMeratMarketDialog(0x4ec1);
             if (pDlg)
                 pDlg->OnProductSelected(m_spProduct);
         }
@@ -147,7 +147,7 @@ int UIRandomCoupon::vfunc_13()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return 0;
-    if (((class Unk_RcKeys*)FUN_14025e7c0())->FUN_14116d840() || ((class Unk_RcKeys*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class Unk_RcKeys*)FUN_14025e7c0())->FUN_14116d840() || ((class Unk_RcKeys*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
     {
         if (m_bButtonShown)
             m_30->Invoke("playClose");
@@ -167,7 +167,7 @@ void UIRandomCoupon::vfunc_43()
 void UIRandomCoupon::vfunc_2()
 {
     UIHeadUpDisplay::vfunc_2();
-    FUN_140bfec40();
+    PlayCouponSound();
     FUN_141901470(0, 0x4f99);
     GetUISwfEntityManager()->AddToLayer(this, 4);
 }
@@ -176,13 +176,13 @@ void UIRandomCoupon::vfunc_2()
 void UIRandomCoupon::vfunc_3()
 {
     UIHeadUpDisplay::vfunc_3();
-    FUN_140bfeae0();
+    ResetPick();
     FUN_141901470(1, 0x4f99);
     GetUISwfEntityManager()->RemoveFromLayer(this, 4);
 }
 
 // @0x140bfeae0
-void UIRandomCoupon::FUN_140bfeae0()
+void UIRandomCoupon::ResetPick()
 {
     m_nMode = 0;
     m_nA = 0;
@@ -193,7 +193,7 @@ void UIRandomCoupon::FUN_140bfeae0()
 }
 
 // @0x140bfeb50
-void UIRandomCoupon::FUN_140bfeb50(int nMode, int nA, int nB, CStringW strName)
+void UIRandomCoupon::SetPick(int nMode, int nA, int nB, CStringW strName)
 {
     if (nMode == 0)
         return;
@@ -212,7 +212,7 @@ void UIRandomCoupon::SetProduct(MS2Ptr<CMeratMarketProduct> spProduct)
 
 #ifndef MS2_HOOK_DLL
 // @0x140bfec40
-void UIRandomCoupon::FUN_140bfec40()
+void UIRandomCoupon::PlayCouponSound()
 {
     switch (m_nCoupon)
     {
@@ -233,7 +233,7 @@ void UIRandomCoupon::FUN_140bfec40()
 #endif
 
 // @0x140bfed50
-UIMeratMarketDialog* FUN_140bfed50(int nId)
+UIMeratMarketDialog* FindMeratMarketDialog(int nId)
 {
     if (reinterpret_cast<Unk_RcUIManager*>(TSingleton<CUIService>::GetInstance()))
     {

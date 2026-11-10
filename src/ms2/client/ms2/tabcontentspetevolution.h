@@ -26,7 +26,7 @@ public:
     virtual void vfunc_3() {}                           //  3 0x140acdf80 refresh the section's state
     virtual void vfunc_4() {}                           //  4 0x140acddc0 rebuild the section's bag
     virtual void vfunc_5(int nTab) {}                   //  5 0x140ace4e0 react to the tab changing
-    void FUN_140ace8a0(MS2Ptr<ASUIComponent> ui);       // m_ui = ui (the argument is destroyed by the callee)
+    void SetUI(MS2Ptr<ASUIComponent> ui);       // m_ui = ui (the argument is destroyed by the callee)
 
     MS2Ptr<ASUIComponent> m_ui;                         // +0x18
 };
@@ -77,8 +77,8 @@ public:
 
     void FUN_140ac8a00();                               // the pet card was selected
     void FUN_140ac9140();                               // an ingredient was selected
-    void FUN_140ac9520();                               // the evolution succeeded
-    void FUN_140ac9a60();                               // the evolution point went up
+    void OnEvolutionSuccess();                               // the evolution succeeded
+    void OnEvolutionPointUp();                               // the evolution point went up
     void FUN_140ac9e20(ASObj& obj);                     // preview item of the evolved pet
 };
 MS2_CHECK_SIZE(PetEvolutionPetEnchant, 0x48);
@@ -98,26 +98,26 @@ public:
     virtual int vfunc_8();                              //  8 0x140acae80 (4)
 
     unsigned __int64 GetUidPet();                   // the pet's item uid
-    void FUN_140acaec0(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_petCards
-    void FUN_140acaef0(ATL::CAtlArray<IdCount>& out);   // copy of m_pool
-    void FUN_140acaf20(ATL::CAtlArray<IdCount>& out);   // copy of m_selected
+    void GetPetCards(ATL::CAtlArray<unsigned __int64>& out);   // copy of m_petCards
+    void GetPool(ATL::CAtlArray<IdCount>& out);   // copy of m_pool
+    void GetSelected(ATL::CAtlArray<IdCount>& out);   // copy of m_selected
     void OnPetEnchant(int bUsePoint);                  // send the evolution request
     void FUN_140acb560(unsigned nPoint);                // debug: /petevolutionpoint
-    int FUN_140acb6f0();                                // number of selected ingredients (an empty count is 1)
+    int GetSelectedPointTotal();                                // number of selected ingredients (an empty count is 1)
     void SetState(int nState);
     int GetState();
-    void FUN_140acb850();                               // rebuild the pet card list from the inventory
-    void FUN_140acba80();                               // rebuild the ingredient pool
-    void FUN_140acbd40();                               // drop the selected ingredients
-    void FUN_140acbd70(int nIndex);                     // a pet card was clicked
+    void RebuildPetCards();                               // rebuild the pet card list from the inventory
+    void RebuildPool();                               // rebuild the ingredient pool
+    void ClearSelected();                               // drop the selected ingredients
+    void OnPetCardClicked(int nIndex);                     // a pet card was clicked
     void FUN_140acbe00(int nIndex);                     // an ingredient in the pool was clicked
     void FUN_140acc1d0(int nIndex);                     // an ingredient in the enchant bag was clicked
     int FUN_140acc280(ATL::CAtlArray<IdCount>& arr, unsigned __int64 id);   // index of id, -1 when absent
     unsigned __int64 FUN_140acc300(ATL::CAtlArray<IdCount>& arr, int nIndex);   // uid at nIndex, 0 when out of range
-    int FUN_140acc380(int nIndex);                      // selected -> pool
-    int FUN_140acc4e0(unsigned __int64 id);             // pool -> selected
-    int FUN_140acc650(unsigned __int64 id);             // how many of id can still be added
-    IdCount FUN_140acc7d0(unsigned __int64 id);         // (id, 1)
+    int MoveSelectedToPool(int nIndex);                      // selected -> pool
+    int MovePoolToSelected(unsigned __int64 id);             // pool -> selected
+    int GetAvailableCount(unsigned __int64 id);             // how many of id can still be added
+    IdCount MakeIdCount(unsigned __int64 id);         // (id, 1)
 
     int m_nState;                                       // +0x18
     unsigned __int64 m_uidPet;                          // +0x20

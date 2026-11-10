@@ -110,7 +110,7 @@ void PCInfo::ReadStats(CInPacket* pPacket)
 }
 
 // @0x140dba560
-MS2Ptr<CItem> PCInfo::FUN_140dba560(int nGemType)
+MS2Ptr<CItem> PCInfo::FindItemByGemType(int nGemType)
 {
     if (m_aItems.IsEmpty())
         return MS2Ptr<CItem>(0);

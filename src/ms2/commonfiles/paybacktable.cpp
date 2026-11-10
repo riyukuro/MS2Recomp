@@ -32,7 +32,7 @@ extern "C" double (__cdecl* __imp_floor)(double);            // the exe imports 
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 unsigned FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned nDefault);
 __int64 GetServerTime();                                    // the server clock
@@ -62,14 +62,14 @@ PaybackTable::PaybackTable()
 // @0x14071aff0
 bool PaybackTable::Load()
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x109))
     {
         SetInit(true);
         return true;
     }
-    CString strPath = FUN_14071a5b0("Table", "PaybackTable.xml");
+    CString strPath = GetXmlPath("Table", "PaybackTable.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -133,7 +133,7 @@ float PaybackTable::GetLevelPercent(const LevelEntry* pEntry, unsigned __int64 n
 // @0x14071b540
 float PaybackTable::GetPercentUpTo(unsigned nLevel, unsigned __int64 nContext)
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x109))
         return 0.0f;
     float fPercent = 0.0f;
     const std::vector<LevelEntry>& levels = GetLevels(nContext);
@@ -149,7 +149,7 @@ float PaybackTable::GetPercentUpTo(unsigned nLevel, unsigned __int64 nContext)
 // @0x14071b630
 __int64 PaybackTable::GetMeratUpTo(unsigned nLevel, __int64 nAmount, unsigned __int64 nContext)
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x109))
         return 0;
     __int64 nMerat = 0;
     const std::vector<LevelEntry>& levels = GetLevels(nContext);
@@ -166,7 +166,7 @@ __int64 PaybackTable::GetMeratUpTo(unsigned nLevel, __int64 nAmount, unsigned __
 // @0x14071b730
 __int64 PaybackTable::GetMeratTotal(__int64 nAmount, unsigned __int64 nContext)
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x109))
         return 0;
     const std::vector<LevelEntry>& levels = GetLevels(nContext);
     if (levels.empty())
@@ -177,7 +177,7 @@ __int64 PaybackTable::GetMeratTotal(__int64 nAmount, unsigned __int64 nContext)
 // @0x14071b7c0
 bool PaybackTable::InPeriod(__int64 nTime)
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x109))
         return false;
     if (m_nStart == 0)
         return false;
@@ -201,7 +201,7 @@ bool PaybackTable::IsPaybackDay(__int64 nTime)
 // @0x14071b8d0
 bool PaybackTable::InMonthPeriod(__int64 nTime)
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x109))
         return false;
     if (m_nStart == 0)
         return false;
@@ -217,7 +217,7 @@ bool PaybackTable::InMonthPeriod(__int64 nTime)
 // @0x14071b9c0
 bool PaybackTable::IsResetWindow()
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x109))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x109))
         return false;
     CMsTime now(GetServerTime());
     if (now.GetDay() != 1)

@@ -45,7 +45,7 @@ MS2_REPLACE_METHOD(0x1422DF620, ASDropdownMenu, GetMenuRowCount, 93, 0x40B7F249)
 // @0x1422df690
 void ASDropdownMenu::SetSelectedIndex(int nIndex)
 {
-    FUN_1407cb9c0("selectedIndex", nIndex);
+    SetIntMember("selectedIndex", nIndex);
 }
 MS2_REPLACE_METHOD(0x1422DF690, ASDropdownMenu, SetSelectedIndex, 40, 0x7A1DE66E);
 
@@ -73,7 +73,7 @@ MS2_REPLACE_METHOD(0x1422DF770, ASDropdownMenu, GetDataProvider, 102, 0xE0511B08
 // @0x1422df7e0
 void ASDropdownMenu::SetLabelField(const CStringW& strField)
 {
-    FUN_1407cbb20("labelField", strField);
+    SetWStringMember("labelField", strField);
 }
 MS2_REPLACE_METHOD(0x1422DF7E0, ASDropdownMenu, SetLabelField, 72, 0xE38F5BD2);
 
@@ -87,7 +87,7 @@ MS2_REPLACE_METHOD(0x1422DF830, ASDropdownMenu, GetLabelField, 123, 0x9014A7E4);
 // @0x1422df8c0
 void ASDropdownMenu::SetScrollBar(const CStringW& strScrollBar)
 {
-    FUN_1407cbb20("scrollBar", strScrollBar);
+    SetWStringMember("scrollBar", strScrollBar);
 }
 MS2_REPLACE_METHOD(0x1422DF8C0, ASDropdownMenu, SetScrollBar, 72, 0xF873AC3B);
 
@@ -101,21 +101,21 @@ MS2_REPLACE_METHOD(0x1422DF910, ASDropdownMenu, GetScrollBar, 123, 0x95D5B205);
 // @0x1422df9a0
 void ASDropdownMenu::AddListIndexChangeHandler(const ASCallback& cb, void* pUser)
 {
-    FUN_1422c3600("listIndexChange", cb, false, 0, 0, pUser);
+    AddEventListener("listIndexChange", cb, false, 0, 0, pUser);
 }
 MS2_REPLACE_METHOD(0x1422DF9A0, ASDropdownMenu, AddListIndexChangeHandler, 113, 0x34C5E2DF);
 
 // @0x1422dfa20
 void ASDropdownMenu::RemoveListIndexChangeHandler(const ASCallback& cb)
 {
-    FUN_1422c3820("listIndexChange", cb, false);
+    RemoveEventListener("listIndexChange", cb, false);
 }
 MS2_REPLACE_METHOD(0x1422DFA20, ASDropdownMenu, RemoveListIndexChangeHandler, 82, 0x9C5252F7);
 
 // @0x1422dfa80
 void ASDropdownMenu::SetTitle(const CStringW& strTitle)
 {
-    FUN_1407cbb20("title", strTitle);
+    SetWStringMember("title", strTitle);
 }
 MS2_REPLACE_METHOD(0x1422DFA80, ASDropdownMenu, SetTitle, 72, 0xBB1E7B75);
 
@@ -174,7 +174,7 @@ void ASDropdownMenu::AddItemLabel(const CStringW& strLabel)
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get()) {
         ASObj row(2);
-        row.FUN_1407cbb20("label", strLabel);
+        row.SetWStringMember("label", strLabel);
         spProvider->PushObj(row);
     }
 }
@@ -183,7 +183,7 @@ MS2_REPLACE_METHOD(0x1422DFCE0, ASDropdownMenu, AddItemLabel, 185, 0xB5C5021F);
 // @0x1422dfda0
 void ASDropdownMenu::SelectItemByLabel(const CStringW& strLabel)
 {
-    FUN_1422e0300("label", strLabel);
+    SelectByStringField("label", strLabel);
 }
 MS2_REPLACE_METHOD(0x1422DFDA0, ASDropdownMenu, SelectItemByLabel, 79, 0x37057D01);
 
@@ -214,7 +214,7 @@ void ASDropdownMenu::SelectByIntField(const CString& strField, int nValue)
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < GetItemCount(); ++i) {
             AScript row = spProvider->FUN_1422df140((unsigned)i);
-            if (row.FUN_1422bb870().IsObject()) {
+            if (row.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = row.GetMember(strField);
                 if (v.IsString() && nValue == v.GetInt()) {
                     SetSelectedIndex((int)i);
@@ -233,7 +233,7 @@ void ASDropdownMenu::SelectByUIntField(const CString& strField, unsigned nValue)
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < GetItemCount(); ++i) {
             AScript row = spProvider->FUN_1422df140((unsigned)i);
-            if (row.FUN_1422bb870().IsObject()) {
+            if (row.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = row.GetMember(strField);
                 if (v.IsString() && nValue == v.GetUInt()) {
                     SetSelectedIndex((int)i);
@@ -246,13 +246,13 @@ void ASDropdownMenu::SelectByUIntField(const CString& strField, unsigned nValue)
 MS2_REPLACE_METHOD(0x1422E01A0, ASDropdownMenu, SelectByUIntField, 342, 0xFF4CC8CB);
 
 // @0x1422e0300
-void ASDropdownMenu::FUN_1422e0300(const CString& strField, const CStringW& strValue)
+void ASDropdownMenu::SelectByStringField(const CString& strField, const CStringW& strValue)
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < GetItemCount(); ++i) {
             AScript row = spProvider->FUN_1422df140((unsigned)i);
-            if (row.FUN_1422bb870().IsObject()) {
+            if (row.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = row.GetMember(strField);
                 if (v.IsString()) {
                     if (strValue == XmlWide(v.GetString())) {
@@ -270,35 +270,35 @@ void ASDropdownMenu::FUN_1422e0300(const CString& strField, const CStringW& strV
         }
     }
 }
-MS2_REPLACE_METHOD(0x1422E0300, ASDropdownMenu, FUN_1422e0300, 520, 0xB3466B0E);
+MS2_REPLACE_METHOD(0x1422E0300, ASDropdownMenu, SelectByStringField, 520, 0xB3466B0E);
 
 // @0x1422e0510
-void ASDropdownMenu::FUN_1422e0510(int nIndex)
+void ASDropdownMenu::RemoveItemAt(int nIndex)
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get())
         spProvider->Splice(nIndex, 1);
 }
-MS2_REPLACE_METHOD(0x1422E0510, ASDropdownMenu, FUN_1422e0510, 97, 0x17543C3E);
+MS2_REPLACE_METHOD(0x1422E0510, ASDropdownMenu, RemoveItemAt, 97, 0x17543C3E);
 
 // @0x1422e0580
-void ASDropdownMenu::FUN_1422e0580(const CStringW& strLabel)
+void ASDropdownMenu::RemoveItemByLabel(const CStringW& strLabel)
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < GetItemCount(); ++i) {
             AScript row = spProvider->FUN_1422df140((unsigned)i);
-            if (row.FUN_1422bb870().IsObject()) {
+            if (row.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = row.GetMember("label");
                 if (v.IsString()) {
                     if (strLabel == XmlWide(v.GetString())) {
-                        FUN_1422e0510((int)i);
+                        RemoveItemAt((int)i);
                         return;
                     }
                 }
                 if (v.IsStringW()) {
                     if (strLabel == v.GetStringW()) {
-                        FUN_1422e0510((int)i);
+                        RemoveItemAt((int)i);
                         return;
                     }
                 }
@@ -306,6 +306,6 @@ void ASDropdownMenu::FUN_1422e0580(const CStringW& strLabel)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1422E0580, ASDropdownMenu, FUN_1422e0580, 505, 0xB5CB57B9);
+MS2_REPLACE_METHOD(0x1422E0580, ASDropdownMenu, RemoveItemByLabel, 505, 0xB5CB57B9);
 
 // MS2-PIN: ??_GASDropdownMenu@@UEAAPEAXI@Z 0x1422e0780

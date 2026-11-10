@@ -19,7 +19,7 @@ struct Unk_140694210
     int m_0c;
 };
 
-COutputStream& FUN_14070f960(COutputStream& out, long value);   // packet.cpp stream operators
+COutputStream& WriteLong(COutputStream& out, long value);   // packet.cpp stream operators
 #include "ms2/commonfiles/os.h"   // C3: Unk_OSInput::Read1/Read3/Read5 (0x14070f340/3c0/440)
 
 // @0x140693e60
@@ -40,7 +40,7 @@ CManufacture::~CManufacture()
 }
 
 // @0x140693fa0
-void FUN_140693fa0(CManufacture& v, COutputStream& out)
+void WriteManufacture(CManufacture& v, COutputStream& out)
 {
     out.WriteInt64(v.m_18);
     out.WriteInt64(v.m_20);
@@ -51,7 +51,7 @@ void FUN_140693fa0(CManufacture& v, COutputStream& out)
 }
 
 // @0x140694050
-void FUN_140694050(CManufacture& v, CByteBuffer& in)
+void ReadManufacture(CManufacture& v, CByteBuffer& in)
 {
     v.m_18 = in.ReadInt64();
     v.m_20 = in.ReadInt64();
@@ -95,7 +95,7 @@ void FUN_140694280(Unk_140694210& v, COutputStream& out)
 {
     out.WriteUnicodeString(v.m_00);
     out.WriteUInt8((unsigned char)v.m_08);
-    FUN_14070f960(out, v.m_0c);
+    WriteLong(out, v.m_0c);
 }
 
 // @0x1406942f0

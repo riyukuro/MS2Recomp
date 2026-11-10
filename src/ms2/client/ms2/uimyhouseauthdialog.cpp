@@ -24,7 +24,7 @@ void FUN_14151f200();                                                         //
 // @0x141a57b00
 UIMyHouseAuthDialog::UIMyHouseAuthDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x141a57b60

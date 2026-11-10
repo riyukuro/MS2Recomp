@@ -4,7 +4,7 @@
 //
 // The unit name and directory are assumed (the GFx UI library has no __FILE__ strings). Function names are Ghidra's
 // (FUN_<va>). Tail: MS2Ptr<ASTooltipManager> members (its operator-> 0x140ed3bc0 and dtor 0x140ed3780 are copies of an
-// earlier unit), the implicit ~ASTooltipManager and ??_G. FUN_1422c6240 and its two callers are not hooked: they
+// earlier unit), the implicit ~ASTooltipManager and ??_G. GetTooltipManager and its two callers are not hooked: they
 // construct an ASTooltipManager (the DLL copy would install the DLL's vftable).
 #include "ms2/placeholder/ms2stdafx.h"
 
@@ -23,42 +23,42 @@ ASTooltipManager::ASTooltipManager(Scaleform::GFx::Value v, int nMovieId)
 }
 
 // @0x1422c6160
-void ASTooltipManager::FUN_1422c6160(const Scaleform::GFx::Value& obj)
+void ASTooltipManager::RegisterMouseEvent(const Scaleform::GFx::Value& obj)
 {
     Invoke("registerMouseEvent", obj);
 }
-MS2_REPLACE_METHOD(0x1422C6160, ASTooltipManager, FUN_1422c6160, 92, 0x18941F28);
+MS2_REPLACE_METHOD(0x1422C6160, ASTooltipManager, RegisterMouseEvent, 92, 0x18941F28);
 
 // @0x1422c61d0
-void ASTooltipManager::FUN_1422c61d0(const Scaleform::GFx::Value& obj)
+void ASTooltipManager::UnregisterMouseEvent(const Scaleform::GFx::Value& obj)
 {
     Invoke("unregisterMouseEvent", obj);
 }
-MS2_REPLACE_METHOD(0x1422C61D0, ASTooltipManager, FUN_1422c61d0, 92, 0x03ECCAA6);
+MS2_REPLACE_METHOD(0x1422C61D0, ASTooltipManager, UnregisterMouseEvent, 92, 0x03ECCAA6);
 
 // @0x1422c6240
-MS2Ptr<ASTooltipManager> FUN_1422c6240(int nMovieId)
+MS2Ptr<ASTooltipManager> GetTooltipManager(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_14025e7a0()->FindMovie(nMovieId);
+    GFxMovie* pMovie = GetGFxManager()->FindMovie(nMovieId);
     if (pMovie != 0)
-        return MS2Ptr<ASTooltipManager>(new ASTooltipManager(pMovie->FUN_1422bd120("scaleform.ms2.manager.TooltipManager"), nMovieId));
+        return MS2Ptr<ASTooltipManager>(new ASTooltipManager(pMovie->GetDefinitionByName("scaleform.ms2.manager.TooltipManager"), nMovieId));
     return MS2Ptr<ASTooltipManager>(0);
 }
 
 // @0x1422c6380
 void FUN_1422c6380(Scaleform::GFx::Value& obj, int nMovieId)
 {
-    MS2Ptr<ASTooltipManager> spManager = FUN_1422c6240(nMovieId);
+    MS2Ptr<ASTooltipManager> spManager = GetTooltipManager(nMovieId);
     if (spManager.get() != 0)
-        spManager->FUN_1422c6160(obj);
+        spManager->RegisterMouseEvent(obj);
 }
 
 // @0x1422c63f0
 void FUN_1422c63f0(Scaleform::GFx::Value& obj, int nMovieId)
 {
-    MS2Ptr<ASTooltipManager> spManager = FUN_1422c6240(nMovieId);
+    MS2Ptr<ASTooltipManager> spManager = GetTooltipManager(nMovieId);
     if (spManager.get() != 0)
-        spManager->FUN_1422c61d0(obj);
+        spManager->UnregisterMouseEvent(obj);
 }
 
 // MS2-PIN: ??_GASTooltipManager@@UEAAPEAXI@Z 0x1422c64d0

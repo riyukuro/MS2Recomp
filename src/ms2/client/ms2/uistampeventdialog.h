@@ -27,17 +27,17 @@ public:
 
     void FUN_140ed7ea0();                                           // re-send stamps and rewards
     void FUN_140ed7f90(NotifyObject* pObj);                         // NotifyGameStart: open the board
-    int FUN_140ed8040();                                            // number of claimable rewards
-    void FUN_140ed81a0(MS2Ptr<StampEventContext> spContext);        // "addStamp" for every stamp
+    int GetClaimableRewardCount();                                            // number of claimable rewards
+    void AddStamps(MS2Ptr<StampEventContext> spContext);        // "addStamp" for every stamp
     void FUN_140ed8590(MS2Ptr<StampEventContext> spContext);        // fill "m_reward"
-    void FUN_140ed89f0(MS2Ptr<StampEventContext> spContext);        // "setCompleteReward"
-    void FUN_140ed8c20(unsigned nQuest);                            // "updateStamp"
+    void SetCompleteReward(MS2Ptr<StampEventContext> spContext);        // "setCompleteReward"
+    void UpdateStamp(unsigned nQuest);                            // "updateStamp"
     void FUN_140ed8c70();                                           // "m_count" text
     void SendEventRewardMode0(int nCount, int nSpecial);                   // request a reward (packet 0x97, 0)
     void SendEventRewardMode1();                                           // request the complete reward (packet 0x97, 1)
-    int FUN_140ed8fc0();                                            // the complete reward can be claimed
-    int FUN_140ed9180(int nCount, int nSpecial);                    // reward state: 0 locked, 1 claimable, 2 claimed
-    CString FUN_140ed9480(int nItemId);                             // item icon name
-    CString FUN_140ed9560();                                        // the event tag
+    int CanClaimCompleteReward();                                            // the complete reward can be claimed
+    int GetRewardState(int nCount, int nSpecial);                    // reward state: 0 locked, 1 claimable, 2 claimed
+    CString GetItemIconPath(int nItemId);                             // item icon name
+    CString GetEventTag();                                        // the event tag
 };
 MS2_CHECK_SIZE(UIStampEventDialog, 0x180);

@@ -139,7 +139,7 @@ extern int DAT_1439f4840;                       // default code page (localepath
 class CommonResource;
 CLogString* GetLogString();
 unsigned long GetTickCountMs();   // C3: was FUN_1408693e0
-Unk_SingletonObj* FUN_1401d31f0();
+Unk_SingletonObj* GetCommonResource();
 #define GetClientConstants() (reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))   // C3: was Unk_SingletonObj1* FUN_1401d3200()
 namespace Common { class Constants { public: void Reload(); }; }
 class CLua   // C3: member view for the former free stand-ins
@@ -167,7 +167,7 @@ CDirWatcher* TSingleton<CDirWatcher>::s_instance = 0;   // 0x143aac5b8
 static Unk_FileTimeMap s_map(10);               // 0x143aac580
 CLockCriticalSection g_cacheLock;               // 0x143aac550
 
-CDirWatcher* FUN_1401d31e0();
+CDirWatcher* GetDirWatcher();
 CString FUN_1401d4330(const wchar_t* psz, int nCodePage = 0);
 void FUN_1401d3700(CString& str);
 unsigned char FUN_1401d1730(CString strPath, FILETIME* pTime);
@@ -180,7 +180,7 @@ CCacheData::CCacheData()
 // @0x1401d1070
 CCacheData::CCacheData(CString strPath)
 {
-    FUN_1401d1160(strPath);
+    SetPath(strPath);
 }
 
 // @0x1401d1100
@@ -189,13 +189,13 @@ CCacheData::~CCacheData()
 }
 
 // @0x1401d1140
-CString* CCacheData::FUN_1401d1140()
+CString* CCacheData::GetPath()
 {
     return &m_strPath;
 }
 
 // @0x1401d1160
-bool CCacheData::FUN_1401d1160(CString strPath)
+bool CCacheData::SetPath(CString strPath)
 {
     FILETIME kTime;
     if (FUN_1401d17f0(strPath, &kTime) == 0)
@@ -236,10 +236,10 @@ unsigned char FUN_1401d1320(CCacheData* pData)
     }
 }
 
-void FUN_1401d1400(CString strPath);
+void OnFileChanged(CString strPath);
 #ifndef MS2_HOOK_DLL
 // @0x1401d1400
-void FUN_1401d1400(CString strPath)
+void OnFileChanged(CString strPath)
 {
     FUN_1401d3700(strPath);
     if (strPath.Find("shaders") != -1)
@@ -258,7 +258,7 @@ void FUN_1401d1400(CString strPath)
             break;
         }
         dwError = GetLastError();
-        if (FUN_1401d31e0()->FUN_1401d1d20())
+        if (GetDirWatcher()->FUN_1401d1d20())
             return;
         if (nTry > 20)
             return;
@@ -359,7 +359,7 @@ unsigned int CDirWatcher::vfunc_1(void*, Unk_140659080& kStart)
                 CString strName = FUN_1401d4330(awcName, 0);
                 strName.Replace("\\", "/");
                 strName = strRoot + strName;
-                FUN_1401d1400(strName);
+                OnFileChanged(strName);
                 if (pInfo->NextEntryOffset != 0)
                     pInfo = (FILE_NOTIFY_INFORMATION*)((char*)pInfo + pInfo->NextEntryOffset);
                 else
@@ -367,7 +367,7 @@ unsigned int CDirWatcher::vfunc_1(void*, Unk_140659080& kStart)
             }
             ((Common::Constants*)GetClientConstants())->Reload();
             ((class CLua*)(class Unk_MailService*)(((class Unk_MailService*)FUN_1401c0db0())))->Update();
-            ((class CommonResource*)(class Unk_SingletonObj*)(FUN_1401d31f0()))->CheckReload();
+            ((class CommonResource*)(class Unk_SingletonObj*)(GetCommonResource()))->CheckReload();
         }
         else
         {
@@ -401,7 +401,7 @@ Unk_CacheDataArray::Unk_CacheDataArray() {}
 void Unk_CacheDataArray::AddPath(CString strPath)
 {
     CCacheData kData;
-    kData.FUN_1401d1160(strPath);
+    kData.SetPath(strPath);
     m_array.Add(kData);
 }
 
@@ -455,13 +455,13 @@ void CThread::FUN_1401d2fa0()
 }
 
 // @0x1401d31e0
-CDirWatcher* FUN_1401d31e0()
+CDirWatcher* GetDirWatcher()
 {
     return TSingleton<CDirWatcher>::s_instance;
 }
 
 // @0x1401d31f0
-Unk_SingletonObj* FUN_1401d31f0()
+Unk_SingletonObj* GetCommonResource()
 {
     return reinterpret_cast<Unk_SingletonObj*>(TSingleton<CommonResource>::s_instance);
 }

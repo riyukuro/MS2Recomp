@@ -20,8 +20,8 @@ public:
     virtual int vfunc_48() { return 0x4ed4; }                               // 48 (COMDAT 0x141344fa0)
     virtual void vfunc_72();                                                // 72 0x141344ce0
 
-    void FUN_141344d50(int nIndex);                                         // set the red team gauge to nIndex + 1 percent
-    void FUN_141344f20();                                                   // hide
+    void SetRedTeamGaugePercent(int nIndex);                                         // set the red team gauge to nIndex + 1 percent
+    void Hide();                                                   // hide
 
     int m_nPercent;                                                         // +0x178 the gauge value to show (1..101)
     int m_nLastPercent;                                                     // +0x17c the value last sent (-1: none)

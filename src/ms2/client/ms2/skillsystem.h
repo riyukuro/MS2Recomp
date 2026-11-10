@@ -69,12 +69,12 @@ public:
     CSkillSystem();                                         // 0x1417646d0
     virtual ~CSkillSystem();                                // 0x141764900
     int Init(MyPC* pOwner);                        // init with the owner
-    void FUN_141766af0(float fDelta);                       // per-frame update
-    MS2Ptr<CSkillRecord> FUN_141765570(Unk_InventorySkillRequest& kReq);   // build the record of a request
-    void FUN_141767f80(int nSkillId);                       // add a temporary skill
-    void FUN_1417683d0();                                   // refresh the skill slots
+    void Update(float fDelta);                       // per-frame update
+    MS2Ptr<CSkillRecord> CreateSkillRecord(Unk_InventorySkillRequest& kReq);   // build the record of a request
+    void AddSkillSet(int nSkillId);                       // add a temporary skill
+    void ApplySkillSet();                                   // refresh the skill slots
     MS2Ptr<CSkillSet> GetSkillSet();               // the temporary (ridee) skill set, if any
-    void FUN_141768100(int nSkillId);                       // remove a temporary skill
+    void RemoveSkillSet(int nSkillId);                       // remove a temporary skill
     MS2Ptr<CSkillRecord> FUN_141764e30(Unk_InventorySkillRequest& kReq);   // cast a request
     // C3: the pointer overload stand-in (MS2Ptr<Unk_PCBaseComp_b18>) is gone: slot 104 returns MS2Ptr<CSkillRecord>
     int FUN_1417674a0(int n);                               // the pending skill id
@@ -82,7 +82,7 @@ public:
     int CanUseRechargeSkill(MS2Ptr<CSkillRecord> spRecord);       // the record may be cast during its cooldown
     void FUN_141766cc0(MS2Ptr<CSkillRecord> spRecord);
     void FUN_141767990(int nSkillId, unsigned short nLevel); // start the cooldown
-    int FUN_141768fb0(unsigned int nSkillId, unsigned short nLevel);   // the emotion is learned
+    int IsEmotionLearned(unsigned int nSkillId, unsigned short nLevel);   // the emotion is learned
     void FUN_1417664e0(unsigned nStart, int nSkillId, float fCool, float fCombo, int bCombo);   // start a cooldown
     void OnRechargeSkillUsed(MS2Ptr<CSkillRecord> spRecord);
     int GetRechargeRemainCount(class SkillData* pData);              // the skill's use-count condition
@@ -92,7 +92,7 @@ public:
     unsigned char FUN_141765a70(int nSkillId);              // the skill may be cast
 
     // not called outside the unit
-    int FUN_141764ad0(SkillData* pData);                    // the skill id to cast for a skill row
+    int GetCastSkillId(SkillData* pData);                    // the skill id to cast for a skill row
     int FUN_141764be0(int nSkillId);                        // the skill the equipped weapon swaps in
     MS2Ptr<SkillLevelData> FUN_141764c80(int nSkillId);     // the learned level of a skill
     bool FUN_141765b80(int nSkillId);                       // the skill may be cast (by a row of the table)
@@ -103,7 +103,7 @@ public:
     void FUN_141765f60(unsigned __int64 nKey);              // clear the cooldown of a key
     void FUN_141766900(unsigned __int64 nKey, unsigned nEnd);   // start a cooldown that ends at nEnd
     void FUN_1417669c0(int nStart, int nSkillId, float fDuration);   // start a cooldown of a duration
-    void FUN_141766d70();                                   // watch the ground state of the owner
+    void UpdateGroundState();                                   // watch the ground state of the owner
     void FUN_141766ec0(int bForce);                         // refresh the lapenshard and compact control skills
     void FUN_141767ae0(class CByteBuffer* pBuffer);           // read the compact control configs
     void SetCompactConfigs(ATL::CAtlList<MS2Ptr<CSkillCompactControlConfig> >* pList);   // replace the compact control configs
@@ -117,10 +117,10 @@ public:
     void FUN_1417687e0(Unk_SkillCooltime* pCool);           // an over cooldown restores a use
     void FUN_141768a50();                                   // restart the recharge of the skills with uses
     void FUN_141768d40(MS2Ptr<SkillData> spSkill);          // start the recharge tick
-    int FUN_141768dd0(MS2Ptr<SkillData> spSkill);           // the recharge tick
-    void FUN_141768e70(int nId, unsigned short nLevel, __int64 nStart, __int64 nEnd, bool bPermanent, bool bFavorite, int bNew);   // learn an emotion
-    void FUN_1417691a0(ATL::CAtlArray<MS2Ptr<stEmotion> >& arrOut);   // the emotions that are valid now
-    void FUN_141769250();                                   // forget the emotions
+    int GetRechargeTick(MS2Ptr<SkillData> spSkill);           // the recharge tick
+    void AddEmotion(int nId, unsigned short nLevel, __int64 nStart, __int64 nEnd, bool bPermanent, bool bFavorite, int bNew);   // learn an emotion
+    void GetValidEmotions(ATL::CAtlArray<MS2Ptr<stEmotion> >& arrOut);   // the emotions that are valid now
+    void ClearEmotions();                                   // forget the emotions
     void FUN_141769280();                                   // the emotions are not new
     static void FUN_141769440(int nError);                  // tell why a skill cannot be cast (static: the exe passes ecx only)
     int FUN_141769410(SkillData* pData, int nSkillId);      // the jump skill of a skill

@@ -111,7 +111,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned long&);   // C3: was F
 
 class CLogString* GetLogString();
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 
@@ -134,9 +134,9 @@ CooltimeManager::~CooltimeManager()
 void CooltimeManager::Load()
 {
     m_ticks.clear();
-    CString strPath = FUN_14071a5b0("Table", "CooltimeTable.xml");
+    CString strPath = GetXmlPath("Table", "CooltimeTable.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)

@@ -113,7 +113,7 @@ static CString s_strThrowSound("System_Fishing_Throw");
 // ---- unit-local placeholders ----
 using ATL::CAtlArray;
 
-// The global name table (effect / sound file names; FUN_1401d31f0).
+// The global name table (effect / sound file names; GetCommonResource).
 struct Unk_FmNames
 {
     char m_pad_00[0x3f8];
@@ -125,7 +125,7 @@ struct Unk_FmNames
     char m_pad_428[0x20];
     CString m_aStrSizeEffect[4];                            // +0x448 the effect of a caught size class
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // The cube map service (efd class id 0x06100017).
 class Cube;
@@ -176,16 +176,16 @@ class Unk_FmCastingBar : public UICastingBar
 {
 public:
 };
-class UICastingBar* FUN_140ac2270(int);   // C3: was FUN_140ac2270
-class UIFishingBookDialog : public UIDialog { public: void FUN_140f419e0(); };
-class UIFishingFloatDialog : public UIDialog { public: void FUN_140f443d0(MS2Ptr<CFishCube> cube); int FUN_140f44490(); };
+class UICastingBar* GetCastingBar(int);   // C3: was GetCastingBar
+class UIFishingBookDialog : public UIDialog { public: void RefreshCurrentTab(); };
+class UIFishingFloatDialog : public UIDialog { public: void SetFishInfo(MS2Ptr<CFishCube> cube); int GetResult(); };
 class Unk_FmFishGuide;
 class UIRewardNotify* FindRewardNotify(int);   // C3: was FindRewardNotify
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 
 // Notices.
 void FUN_141275260(int nMsgId, int a, int b);
-void FUN_1412751f0(const CStringW& strText, int a, int b);
+void ShowSystemNotice(const CStringW& strText, int a, int b);
 void FUN_1412751b0(const CStringW& strText, int nType);
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FUN_140298ea0(CStringW strKey);
@@ -194,7 +194,7 @@ CStringW FUN_140298ea0(CStringW strKey);
 class Unk_MData* FUN_1409670c0();   // C3: was FUN_1409670c0
 CStringW FUN_14016a730(const char* sz, int nCodePage);      // CString -> CStringW
 CString FUN_140390ea0(const wchar_t* sz, int nCodePage);    // CStringW -> CString
-int FUN_140768010(int, int);   // C3: was FUN_140768010
+int GetRandomRange(int, int);   // C3: was GetRandomRange
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
@@ -276,7 +276,7 @@ Unk_FishLine::~Unk_FishLine()
 // @0x140cd7eb0
 void Unk_FishLine::CreateGuide(int nKind, efd::Point3 kPos)
 {
-    CString strModel = nKind ? ((struct Unk_FmNames*)FUN_1401d31f0())->m_strLineGuide1 : ((struct Unk_FmNames*)FUN_1401d31f0())->m_strLineGuide0;
+    CString strModel = nKind ? ((struct Unk_FmNames*)GetCommonResource())->m_strLineGuide1 : ((struct Unk_FmNames*)GetCommonResource())->m_strLineGuide0;
     CNifCubeGuide* pGuide = new CNifCubeGuide();
     if (pGuide->LoadAsset(CString(strModel)) == 0)
         return;
@@ -289,7 +289,7 @@ void Unk_FishLine::CreateGuide(int nKind, efd::Point3 kPos)
     pGuide->vfunc_2(kAt);
     m_pGuide = pGuide;
     m_nKind = nKind;
-    m_waitTimer.FUN_140868750(1000);
+    m_waitTimer.Start(1000);
 }
 
 // @0x140cd8080
@@ -323,7 +323,7 @@ void Unk_FishLine::Update()
 {
     if (m_pGuide == 0 || m_pOwner == 0)
         return;
-    if (m_flyTimer.FUN_140868ba0() != 0 || m_flyTimer.FUN_140868c00() != 0)
+    if (m_flyTimer.IsRunning() != 0 || m_flyTimer.IsExpired() != 0)
     {
         Unk_EaseOut ease;
         float fEase = ease.Evaluate(m_flyTimer.FUN_140868940());
@@ -333,9 +333,9 @@ void Unk_FishLine::Update()
         efd::Point3 kNow = m_kTarget + kDelta * fEase * fLength;
         NiPoint3 kAt = *reinterpret_cast<const NiPoint3*>(&kNow);
         m_pGuide->vfunc_2(kAt);
-        if (m_flyTimer.FUN_140868c00() != 0)
+        if (m_flyTimer.IsExpired() != 0)
         {
-            m_flyTimer.FUN_1408687f0();
+            m_flyTimer.Reset();
             FUN_140cd8740(kNow);
             FUN_140cd89c0(kNow);
             MS2Ptr<CFishCube> cube = TSingleton<CFishingManager>::GetInstance()->FindCube(FUN_140cd85e0());
@@ -354,11 +354,11 @@ void Unk_FishLine::Update()
         spCubeMap->GetCellPosition(reinterpret_cast<Vector3&>(kHit), reinterpret_cast<Vector3*>(&kCell));
         if (kCell != static_cast<const efd::Point3&>(m_pGuide->vfunc_3()))
         {
-            m_flyTimer.FUN_140868750(200);
+            m_flyTimer.Start(200);
             m_kTarget = static_cast<const efd::Point3&>(m_pGuide->vfunc_3());
             m_kLanding = kCell;
             FUN_141276180(s_strCursorSound, "");
-            m_waitTimer.FUN_140868750(1000);
+            m_waitTimer.Start(1000);
         }
     }
 }
@@ -366,7 +366,7 @@ void Unk_FishLine::Update()
 // @0x140cd85b0
 int Unk_FishLine::IsWaitTimerExpired()
 {
-    return m_waitTimer.FUN_140868c00();
+    return m_waitTimer.IsExpired();
 }
 MS2_REPLACE_METHOD(0x140CD85B0, Unk_FishLine, IsWaitTimerExpired, 31, 0x3385E2D8);
 
@@ -410,11 +410,11 @@ void Unk_FishLine::FUN_140cd8740(efd::Point3 kPos)
         if (fish.IsNull())
             return;
         CFishCube* pCube2 = cube.operator->();
-        int nClass = (int)fish->FUN_1403b1520(pCube2->m_b);
+        int nClass = (int)fish->GetSizeClass(pCube2->m_b);
         if (nClass != 4)
         {
             NoticeMessage kTarget;
-            ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_FmNames*)FUN_1401d31f0())->m_aStrSizeEffect[nClass];
+            ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_FmNames*)GetCommonResource())->m_aStrSizeEffect[nClass];
             ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
             ((Unk_EffectTarget&)(kTarget)).m_unk_20 = &kXform;
             m_nEffect = TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411a49c0((Unk_EffectTarget&)(kTarget));
@@ -545,7 +545,7 @@ CFishingManager::~CFishingManager()
 // MS2-FUNCTIONAL: switch on the packet mode, temporaries
 void CFishingManager::FUN_140cd9840(CInPacket* pPacket)
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xb))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xb))
         return;
     int nMode = pPacket->ReadUInt8();
     if (nMode == 0)
@@ -717,7 +717,7 @@ void CFishingManager::SendFishingMode10()
     pkt.Encode1(10);
     FUN_140710590(pkt);
     FUN_140cdc9d0(0x76, 0x7a);
-    Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)FUN_140ac2270(0x4e72));
+    Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)GetCastingBar(0x4e72));
     if (pBar != 0)
         pBar->FUN_1418e1390();
     if (m_nReelSound != 0)
@@ -732,7 +732,7 @@ void CFishingManager::OnCastingFinished()
     UIFishingFloatDialog* pFloat = Unk_FmGetDialog<UIFishingFloatDialog>((eUIClassID)0x4ee7);
     if (pFloat != 0)
     {
-        int nResult = pFloat->FUN_140f44490();
+        int nResult = pFloat->GetResult();
         COutPacket pkt(static_cast<int>(SendOp::Fishing), 0);
         pkt.Encode1(8);
         pkt.Encode1(nResult);
@@ -796,7 +796,7 @@ void CFishingManager::FUN_140cdae30(MS2Ptr<CItem> rod)
         return;
     if (FUN_140954150() != 0)
         return;
-    if (m_startTimer.FUN_140868ba0() != 0)
+    if (m_startTimer.IsRunning() != 0)
         return;
     if (CFieldData::FUN_140374410(reinterpret_cast<Unk_FmWorld*>(WorldService::GetInstance())->FUN_141bd3060()))
     {
@@ -827,7 +827,7 @@ void CFishingManager::FUN_140cdae30(MS2Ptr<CItem> rod)
     pkt.Encode1(0);
     pkt.Encode8(rod->GetItemUid());
     FUN_140710590(pkt);
-    m_startTimer.FUN_140868750(1000);
+    m_startTimer.Start(1000);
 }
 MS2_REPLACE_METHOD(0x140CDAE30, CFishingManager, FUN_140cdae30, 604, 0x17346286);
 
@@ -871,7 +871,7 @@ int CFishingManager::FUN_140cdb250()
         return 0;
     if (cube->m_a == 0)
         return 0;
-    if (m_resultTimer.FUN_140868ba0() != 0)
+    if (m_resultTimer.IsRunning() != 0)
         return 0;
     if (m_nBiteEnd != 0)
         return 0;
@@ -938,10 +938,10 @@ void CFishingManager::Update()
             UIFishingFloatDialog* pFloat = Unk_FmGetDialog<UIFishingFloatDialog>((eUIClassID)0x4ee7);
             if (pFloat != 0)
             {
-                pFloat->FUN_140f443d0(MS2Ptr<CFishCube>(cube));
+                pFloat->SetFishInfo(MS2Ptr<CFishCube>(cube));
                 pFloat->FUN_141924680();
             }
-            Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)FUN_140ac2270(0x4e72));
+            Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)GetCastingBar(0x4e72));
             if (pBar != 0)
             {
                 CAtlArray<CString> texts;
@@ -964,7 +964,7 @@ void CFishingManager::Update()
         }
         else
         {
-            Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)FUN_140ac2270(0x4e72));
+            Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)GetCastingBar(0x4e72));
             if (pBar != 0)
                 pBar->FUN_1418e1390();
             COutPacket pkt(static_cast<int>(SendOp::Fishing), 0);
@@ -990,7 +990,7 @@ void CFishingManager::Update()
         {
             MS2Ptr<CItem> bait = g_143ab2a90.FUN_140a5e2e0(m_nBaitId);
             if ((bait.get() ? true : false) && CanUseBait(MS2Ptr<CItem>(bait)) != 0)
-                FUN_14092f4e0(reinterpret_cast<CItemData*>(bait->FUN_140527840())->FUN_14053dc20());
+                FUN_14092f4e0(reinterpret_cast<CItemData*>(bait->FUN_140527840())->GetSkillId());
         }
     }
 }
@@ -1037,11 +1037,11 @@ int CFishingManager::CanUseBait(MS2Ptr<CItem> rod)
         return 0;
     if (!((CItem*)rod)->FUN_140528980())
         return 0;
-    if (((CItem*)rod)->FUN_140525ca0() != 0 && pPC->FUN_141658f30() == 0)
+    if (((CItem*)rod)->IsPCBangItem() != 0 && pPC->FUN_141658f30() == 0)
         return 0;
     if (((CItem*)rod)->FUN_140525db0() != 0 && pPC->IsVip() == 0)
         return 0;
-    if (((CItem*)rod)->FUN_140525e00() != 0 && !pPC->vfunc_146())
+    if (((CItem*)rod)->HasWeddingLimit() != 0 && !pPC->vfunc_146())
         return 0;
 
     if (!((CItem*)rod)->CanUseAtLevel(pPC->vfunc_78()))
@@ -1090,7 +1090,7 @@ int CFishingManager::FUN_140cdbe80()
     MS2Ptr<CItemData> data = FUN_14053f870(m_nBaitId);
     if (!data)
         return 0;
-    MS2Ptr<SkillLevelData> add = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(data->FUN_14053dc20(), data->FUN_14053dc40());
+    MS2Ptr<SkillLevelData> add = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillLevelData(data->GetSkillId(), data->GetSkillLevel());
     if (add.IsNull())
         return 0;
     if (add->m_vAdditional.size() == 0)
@@ -1108,7 +1108,7 @@ CStringW CFishingManager::GetSpotDescription(unsigned nSpotId)
         for (size_t i = 0; i < spot->m_arrLiquid.GetCount(); i++)
         {
             int& nHabitat = spot->m_arrLiquid[i];
-            strHabitat += TSingleton<CFishingTable>::GetInstance()->FUN_1403b20b0(nHabitat);
+            strHabitat += TSingleton<CFishingTable>::GetInstance()->GetHabitatName(nHabitat);
             strHabitat += L", ";
         }
         strHabitat.TrimRight(L", ");
@@ -1134,7 +1134,7 @@ int CFishingManager::GetFishSizeGrade(unsigned nFishId)
     MS2Ptr<CFish> fish = FindFish(nFishId);
     if (fish.IsNull())
         return 0;
-    return data->FUN_1403b1590(fish->m_nSize);
+    return data->GetSizeGrade(fish->m_nSize);
 }
 MS2_REPLACE_METHOD(0x140CDC280, CFishingManager, GetFishSizeGrade, 238, 0xE86E14BC);
 
@@ -1262,7 +1262,7 @@ void CFishingManager::AddCubeMark(MS2Ptr<CFishCube> cube)
     NiPoint3 kTranslate(FUN_1408a15b0(FUN_1408a0400(cube->m_id), kOffset) + efd::Point3(0.0f, 0.0f, 149.0f));
     kXform.m_Translate = static_cast<NiPoint3&&>(kTranslate);
     NoticeMessage kTarget;
-    ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_FmNames*)FUN_1401d31f0())->m_strCubeMarkEffect;
+    ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_FmNames*)GetCommonResource())->m_strCubeMarkEffect;
     ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
     ((Unk_EffectTarget&)(kTarget)).m_unk_20 = &kXform;
     m_marks.Add(TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->FUN_1411a49c0((Unk_EffectTarget&)(kTarget)));
@@ -1281,7 +1281,7 @@ void CFishingManager::PlaySplashEffect()
     NiPoint3 kTranslate(kOffset);
     kXform.m_Translate = static_cast<NiPoint3&&>(kTranslate);
     NoticeMessage kTarget;
-    ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_FmNames*)FUN_1401d31f0())->m_strSplashEffect;
+    ((Unk_EffectTarget&)(kTarget)).m_strName = ((struct Unk_FmNames*)GetCommonResource())->m_strSplashEffect;
     ((Unk_EffectTarget&)(kTarget)).m_pXform = &kXform;
     ((Unk_EffectTarget&)(kTarget)).m_nKind = 0;
     TSingleton<CEffectService>::GetInstance()/*C3:TSingleton<CEffectService>::GetInstance*/->InsertEffect((Unk_EffectTarget&)(kTarget));
@@ -1303,7 +1303,7 @@ void CFishingManager::FUN_140cdce70(MS2Ptr<CItem> rod)
         return;
     Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0)
-        pPC->vfunc_59(0x2d, new StateFishingData(rod->FUN_1405276c0()), 0, 0);
+        pPC->vfunc_59(0x2d, new StateFishingData(rod->GetItemId()), 0, 0);
     m_bFishing = 1;
     m_nBiteEnd = 0;
     m_bGreat = 0;
@@ -1323,7 +1323,7 @@ void CFishingManager::FUN_140cdce70(MS2Ptr<CItem> rod)
 void CFishingManager::FUN_140cdd030()
 {
     if (0 < m_nAutoCount)
-        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_msg_autofishing_extend_cancel")), 1, 1);
+        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_msg_autofishing_extend_cancel")), 1, 1);
     m_nAutoCount = 0;
     m_bFishing = 0;
     m_nBiteEnd = 0;
@@ -1335,9 +1335,9 @@ void CFishingManager::FUN_140cdd030()
     Unk_FmPC* pPC = ((Unk_FmPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPC != 0 && pPC->GetCurStateId() == 0x2d)
         pPC->vfunc_59(1, 0, 0, 0);
-    if (TSingleton<CUIService>::GetInstance()->FUN_141adc890((eUIClassID)0x4f07) != 0)
+    if (TSingleton<CUIService>::GetInstance()->IsDialogOpen((eUIClassID)0x4f07) != 0)
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f07);
-    Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)FUN_140ac2270(0x4e72));
+    Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)GetCastingBar(0x4e72));
     if (pBar != 0)
         pBar->FUN_1418e1390();
 }
@@ -1350,7 +1350,7 @@ void CFishingManager::FUN_140cdd1f0()
     MS2Ptr<CFishCube> cube = FindCube(FUN_140cdc950());
     if (cube.IsNull())
         return;
-    Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)FUN_140ac2270(0x4e72));
+    Unk_FmCastingBar* pBar = ((class Unk_FmCastingBar*)GetCastingBar(0x4e72));
     if (pBar != 0)
     {
         CAtlArray<CString> texts;
@@ -1381,7 +1381,7 @@ void CFishingManager::FUN_140cdd1f0()
 // @0x140cdd540
 void CFishingManager::OnFishingResult(unsigned nFishId, unsigned nSize, int bSuccess)
 {
-    m_resultTimer.FUN_140868750(2000);
+    m_resultTimer.Start(2000);
     m_nBiteEnd = 0;
     m_bGreat = 0;
     FUN_140cdc9d0(0x79, 0x7c);
@@ -1395,7 +1395,7 @@ void CFishingManager::OnFishingResult(unsigned nFishId, unsigned nSize, int bSuc
         CFishDataPtr data = TSingleton<CFishingTable>::GetInstance()->GetFish(nFishId);
         if (data.get() != 0)
         {
-            if (data->FUN_1403b14d0(nSize) != 0)
+            if (data->IsLargestSizeClass(nSize) != 0)
             {
                 CString strEmpty("");
                 FUN_141276180(s_strGreatSuccessSound, strEmpty);
@@ -1417,7 +1417,7 @@ void CFishingManager::OnFishingResult(unsigned nFishId, unsigned nSize, int bSuc
     }
     UIFishingBookDialog* pBook = Unk_FmGetDialog<UIFishingBookDialog>((eUIClassID)0x4ee6);
     if (pBook != 0 && pBook->FUN_141924630() != 0)
-        pBook->FUN_140f419e0();
+        pBook->RefreshCurrentTab();
     PlaySplashEffect();
     m_record.AddAttempt(nFishId, bSuccess);
 }
@@ -1488,7 +1488,7 @@ CStringW CFishingManager::FUN_140cddc70(const ATL::CAtlArray<CString>& texts)
     int nCount = (int)texts.GetCount();
     if (nCount != 0)
     {
-        unsigned nIndex = FUN_140768010(nCount, 0);
+        unsigned nIndex = GetRandomRange(nCount, 0);
         return GetStringCommonByKey(FUN_14016a730(texts[nIndex], 0));
     }
     return CStringW(L"");

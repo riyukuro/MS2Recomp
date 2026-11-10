@@ -26,7 +26,7 @@ struct Unk_MaterialEntry
     bool IsActive() const { return m_nState - 1 <= 2; }
 };
 NiRenderer* GetNiRenderer();                                // NiRenderer::GetRenderer
-bool FUN_141568c90(NiRenderObject* pObject);
+bool IsUnlightable(NiRenderObject* pObject);
 
 // @0x1415156b0
 void FUN_1415156b0(MS2VelocityMaterialSwapProcessor* pProcessor, NiAVObject* pkObject)
@@ -71,7 +71,7 @@ void MS2VelocityMaterialSwapProcessor::PreRenderProcessList(const NiVisibleArray
                 FUN_1415156b0(this, pkObject);
                 continue;
             }
-            if (FUN_141568c90(pkObject))
+            if (IsUnlightable(pkObject))
                 continue;
             int nActive = 0;
             Unk_MaterialEntry* pkEntry = ((struct Unk_MaterialEntry*)NiMaterial::DynamicCast(&MS2StandardMaterial::ms_RTTI, ((class NiMaterial*)((class NiRenderObject*)(class NiRenderObject*)(pkObject))->GetActiveMaterial())));

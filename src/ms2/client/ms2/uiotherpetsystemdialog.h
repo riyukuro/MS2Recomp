@@ -22,7 +22,7 @@ public:
     virtual int vfunc_84();                                     // 84 0x140e6d650 returns 0 (no own pages)
     virtual MS2Ptr<CItem> vfunc_85();                           // 85 0x140e6d660 the shown pet item
 
-    static void FUN_140e6d4a0(int nOwnerId, MS2Ptr<CItem> spPet);    // show a player's pet (when the dialog exists)
+    static void ShowPet(int nOwnerId, MS2Ptr<CItem> spPet);    // show a player's pet (when the dialog exists)
     void FUN_140e6d5b0(int nOwnerId, MS2Ptr<CItem> spPet);      // set the pet and open (or refresh) the window
     void FUN_140e6d6b0();                                       // "m_title": "s_pet_owner" with the owner's name
 

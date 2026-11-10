@@ -32,14 +32,14 @@ public:
     MS2Ptr<ReactorStateData> GetStateData(int nIdx);       // state nIdx of the data (null when out of range)
     void GetReactorInfo(Unk_ReactorInfo* pOut);              // action string and react time of the current state
     void AddAnimation(const CString& strAni);              // queue an animation (empty ones are dropped)
-    bool FUN_140b78ef0(const CString& strEffect);           // show the connected effect (always true)
+    bool AddEffect(const CString& strEffect);           // show the connected effect (always true)
     bool RemoveEffect(const CString& strEffect);           // hide the connected effect (always true)
     void FUN_140b791a0();                                   // play the head of the animation queue
-    void FUN_140b79330();                                   // connect/disconnect the effect for the local player
+    void UpdateConnectedEffect();                                   // connect/disconnect the effect for the local player
     bool FUN_140b79490(CInPacket* pPacket);                 // field-add packet
     void SendStateReact();                                   // send the interact request (opcode 0xa9)
     void FUN_140b79a10(CInPacket* pPacket);                 // state-update packet
-    bool FUN_140b79c30();                                   // local player may use the reactor
+    bool CanUse();                                   // local player may use the reactor
     int FUN_140b79cc0(PCBase* pPc);                           // 1 = the state refuses this player
     int FUN_140b79ee0(PCBase* pPc);                           // 1 = the player lacks the required items
     // Accessors defined in the unit that follows the animation-queue helpers (actionkeyobject.cpp); both copy a member.
@@ -66,8 +66,8 @@ MS2_CHECK_OFFSET(CReactor, m_setPlayers, 0x1a0);
 MS2_CHECK_OFFSET(CReactor, m_mapEffects, 0x1b0);
 
 // Placement/creation checks of the local player (free functions; PC = the local PCBase).
-bool FUN_140b7a330(PCBase* pPc, int nReactorId);              // 0x140b7a330 true when the player may create the reactor (shows the failure)
-int FUN_140b7a3d0(PCBase* pPc, int nReactorId);               // 0x140b7a3d0 game-event/daily-count check, 0 = ok
+bool CanCreateReactor(PCBase* pPc, int nReactorId);              // 0x140b7a330 true when the player may create the reactor (shows the failure)
+int CheckReactorGameEvent(PCBase* pPc, int nReactorId);               // 0x140b7a3d0 game-event/daily-count check, 0 = ok
 int FUN_140b7a5e0(PCBase* pPc);                               // 0x140b7a5e0 player action check, 0 = ok
-int FUN_140b7a650(PCBase* pPc);                               // 0x140b7a650 placement check, 0 = ok
+int CheckReactorPlacement(PCBase* pPc);                               // 0x140b7a650 placement check, 0 = ok
 void FUN_140b7b7a0(int nError);                             // 0x140b7b7a0 shows the failure message

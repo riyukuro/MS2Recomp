@@ -51,22 +51,22 @@ class Unk_QuiLoader : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CString FUN_14071ae20(const CString& strFile);                          // the locale's string data path of <file>
-CString FUN_140651350();                                                // the locale code
+CString GetLanguageCode();                                                // the locale code
 CString FUN_14028d3c0(CString strPath);                                 // the file name of a path
 void FUN_1401d3700(CString& str);                                       // lower case
-void FUN_140399100(CString strExt, CString strDir, ATL::CAtlArray<CString>& arrFiles, CString strPrefix, bool bRecursive);
+void FindFiles(CString strExt, CString strDir, ATL::CAtlArray<CString>& arrFiles, CString strPrefix, bool bRecursive);
 bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int FUN_140197350(TiXmlElement* pElem, const char* pszName, int nDefault);   // int attribute with default
 CStringW FUN_1401bf530(TiXmlElement* pElem, const char* pszName, CStringW strDefault);   // wide string attribute
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& out, const wchar_t* pszDelim);
-void FUN_1401d9a30(CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
+void ParseIntArray(CStringW& str, ATL::CAtlArray<int>& out, const wchar_t* pszDelim);
 CStringW GetStringCommon(int nStringId);                                  // a common string by id
 CStringW GetStringCommonByKey(const CStringW& strKey);                         // a common string by key
 template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW FUN_1413fac10(CStringW strText, CStringW strWord);             // strText with the josa of strWord
 CStringW FUN_1401aa6a0(int nNpcId);                                     // the npc name
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);                         // the quest table row (null when none)
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);                         // the quest table row (null when none)
 int FUN_14074bc90(int nQuestId);                                        // the quest type
 int FUN_14074b050(CQuestData* pData);
 int FUN_14074b070(CQuestData* pData);                                   // the repeat kind (1 daily, 2 weekly, 3 week repeat)
@@ -117,7 +117,7 @@ void FUN_1416e4590(CString strPath);
 void FUN_1416e43d0();
 void LoadChapterDescriptions();
 void FUN_1416e7c00(CString strPath);
-CStringW FUN_1416e4df0(int nQuestId);
+CStringW GetQuestName(int nQuestId);
 
 // ---- CQuestUIData ---------------------------------------------------------------------------------------------------
 
@@ -177,7 +177,7 @@ void FUN_1416e43d0()
 void FUN_1416e4590(CString strPath)
 {
     TiXmlDocument doc;
-    if (((class Unk_QuiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_QuiLoader*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -186,7 +186,7 @@ void FUN_1416e4590(CString strPath)
         return;
     }
     MS2Ptr<CCacheData> spCache(new CCacheData);
-    spCache->FUN_1401d1160(strPath);
+    spCache->SetPath(strPath);
     for (TiXmlElement* pQuest = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("quest")); pQuest != 0; pQuest = ((class TiXmlElement*)((class Unk_XmlNode*)(pQuest))->NextSibling("quest")))
     {
         if (!FUN_14028f650((struct Unk_XmlElement*)(pQuest)))
@@ -204,7 +204,7 @@ void FUN_1416e4590(CString strPath)
         CStringW strManual = FUN_1401bf530(pQuest, "manual", CStringW(L""));
         CStringW strCount = FUN_1401bf530(pQuest, "count", CStringW(L""));
         FUN_14025a680(strManual, spData->m_manual, L"|");
-        FUN_1401d9a30(strCount, spData->m_counts, L"|");
+        ParseIntArray(strCount, spData->m_counts, L"|");
         for (size_t i = 0; i < spData->m_manual.GetCount(); i++)
             spData->m_manual[i].TrimRight();
         if (Unk_LockGuard guard = s_lock)
@@ -220,7 +220,7 @@ void FUN_1416e4590(CString strPath)
 
 // The quest's localized name: the description name, prefixed by the daily / weekly kind of a repeat quest.
 // @0x1416e4df0
-CStringW FUN_1416e4df0(int nQuestId)
+CStringW GetQuestName(int nQuestId)
 {
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
@@ -253,10 +253,10 @@ CStringW FUN_1416e4df0(int nQuestId)
 
 // The quest name formatted by a string-table key with the quest level ("s_quest_name_with_level").
 // @0x1416e5210
-CStringW FUN_1416e5210(int nQuestId, CStringW strKey)
+CStringW GetQuestNameWithLevel(int nQuestId, CStringW strKey)
 {
-    CStringW strName = FUN_1416e4df0(nQuestId);
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    CStringW strName = GetQuestName(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (spData.get() != 0)
         return FUN_14028dfa0<CStringW, int>(strKey, strName, spData->m_level);
     return strName;
@@ -264,7 +264,7 @@ CStringW FUN_1416e5210(int nQuestId, CStringW strKey)
 
 // The mission summary of a quest, with the progress count of condition nIndex.
 // @0x1416e5350
-CStringW FUN_1416e5350(int nQuestId, int nIndex)
+CStringW GetQuestSummary(int nQuestId, int nIndex)
 {
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
@@ -275,7 +275,7 @@ CStringW FUN_1416e5350(int nQuestId, int nIndex)
 }
 
 // @0x1416e5450
-CStringW FUN_1416e5450(int nQuestId)
+CStringW GetQuestDesc(int nQuestId)
 {
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
@@ -284,7 +284,7 @@ CStringW FUN_1416e5450(int nQuestId)
 }
 
 // @0x1416e5500
-CStringW FUN_1416e5500(int nQuestId)
+CStringW GetQuestDescFameUI(int nQuestId)
 {
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
@@ -293,7 +293,7 @@ CStringW FUN_1416e5500(int nQuestId)
 }
 
 // @0x1416e55b0
-CStringW FUN_1416e55b0(int nQuestId)
+CStringW GetQuestCompleteText(int nQuestId)
 {
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
@@ -301,13 +301,13 @@ CStringW FUN_1416e55b0(int nQuestId)
     return spUI->GetCompleteText();
 }
 
-CStringW FUN_1416e57d0(int nQuestId, int nIndex);
+CStringW GetQuestConditionText(int nQuestId, int nIndex);
 
 // Every condition text of a quest, one per line.
 // @0x1416e5660
 CStringW FUN_1416e5660(int nQuestId)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (!spData)
         return L"";
     CStringW strText;
@@ -315,13 +315,13 @@ CStringW FUN_1416e5660(int nQuestId)
     {
         if (strText.GetLength() != 0)
             strText += L"\n";
-        strText += FUN_1416e57d0(nQuestId, (int)i);
+        strText += GetQuestConditionText(nQuestId, (int)i);
     }
     return strText;
 }
 
 // @0x1416e57d0
-CStringW FUN_1416e57d0(int nQuestId, int nIndex)
+CStringW GetQuestConditionText(int nQuestId, int nIndex)
 {
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
@@ -330,7 +330,7 @@ CStringW FUN_1416e57d0(int nQuestId, int nIndex)
 }
 
 // @0x1416e5890
-void FUN_1416e5890(int nQuestId, ATL::CAtlArray<CStringW>& out)
+void GetQuestConditionTexts(int nQuestId, ATL::CAtlArray<CStringW>& out)
 {
     MS2Ptr<CQuestUIData> spUI = FUN_1416e5f60(nQuestId);
     if (!spUI)
@@ -340,7 +340,7 @@ void FUN_1416e5890(int nQuestId, ATL::CAtlArray<CStringW>& out)
 
 // The quest title "[type] name" (bLevel: the name with the quest level).
 // @0x1416e5900
-CStringW FUN_1416e5900(int nQuestId, bool bLevel)
+CStringW GetQuestTitle(int nQuestId, bool bLevel)
 {
     CStringW strType = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x50, nQuestId);
     if (strType.GetLength() == 0)
@@ -376,7 +376,7 @@ CStringW FUN_1416e5900(int nQuestId, bool bLevel)
             break;
         }
     }
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if ((spData.get() ? true : false))
     {
         if (FUN_14074b050(spData.operator->()) == 0 && spData->m_30 != 0)
@@ -384,9 +384,9 @@ CStringW FUN_1416e5900(int nQuestId, bool bLevel)
     }
     CStringW strTitle;
     if (bLevel)
-        strTitle.Format(L"[%s] %s", (const wchar_t*)strType, (const wchar_t*)FUN_1416e5210(nQuestId, CStringW(L"s_quest_name_with_level")));
+        strTitle.Format(L"[%s] %s", (const wchar_t*)strType, (const wchar_t*)GetQuestNameWithLevel(nQuestId, CStringW(L"s_quest_name_with_level")));
     else
-        strTitle.Format(L"[%s] %s", (const wchar_t*)strType, (const wchar_t*)FUN_1416e4df0(nQuestId));
+        strTitle.Format(L"[%s] %s", (const wchar_t*)strType, (const wchar_t*)GetQuestName(nQuestId));
     return strTitle;
 }
 
@@ -406,7 +406,7 @@ MS2Ptr<CQuestUIData> FUN_1416e5f60(int nQuestId)
         {
             if (FUN_1401d1320(spCache.operator->()))
             {
-                FUN_1416e4590(*spCache->FUN_1401d1140());
+                FUN_1416e4590(*spCache->GetPath());
                 FUN_1416e43d0();
                 s_quests.Lookup(nQuestId, spData);
             }
@@ -423,11 +423,11 @@ int FUN_1416e6100(int nQuestId, int bIgnoreNpc)
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer != 0)
     {
-        MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+        MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
         if (!spData)
             return 0;
-        int nNpcId = TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0();
-        if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuestId))
+        int nNpcId = TSingleton<UITalkManager>::GetInstance()->GetTalkNpcId();
+        if (((class CQuestManager*)FUN_140764020())->IsQuestRewarded(nQuestId))
         {
             return 0x5dc;
         }
@@ -472,7 +472,7 @@ MS2_REPLACE(0x1416E6100, FUN_1416e6100, 480, 0x5BCD3556);
 // @0x1416e6310
 CStringW CQuestUIData::GetConditionText(int nIndex)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(m_nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(m_nQuestId);
     if (!spData)
         return L"";
     if (nIndex >= (int)spData->m_conditions.GetCount())
@@ -495,7 +495,7 @@ CStringW CQuestUIData::GetConditionText(int nIndex)
 // @0x1416e6610
 void CQuestUIData::GetConditionTexts(ATL::CAtlArray<CStringW>& out)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(m_nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(m_nQuestId);
     if (!spData)
         return;
     for (size_t i = 0; i < spData->m_conditions.GetCount(); i++)
@@ -505,7 +505,7 @@ void CQuestUIData::GetConditionTexts(ATL::CAtlArray<CStringW>& out)
 // @0x1416e66f0
 CStringW CQuestUIData::GetCompleteText()
 {
-    CQuestData* pData = FUN_14074bc40(m_nQuestId).get();
+    CQuestData* pData = GetQuestData(m_nQuestId).get();
     if (pData == 0)
         return L"";
     if (m_strComplete.GetLength() != 0)
@@ -535,7 +535,7 @@ CStringW CQuestUIData::FUN_1416e6900(int nIndex, const CStringW& strText)
     CStringW strManual = GetManualText(nIndex);
     if (strManual.GetLength() != 0 && nCount == 0)
         return str;
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(m_nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(m_nQuestId);
     if (!spData)
         return str;
     if (nIndex >= (int)spData->m_conditions.GetCount())
@@ -667,7 +667,7 @@ CChapterUIData::~CChapterUIData()
 void LoadChapterDescriptions()
 {
     ATL::CAtlArray<CString> files;
-    FUN_140399100(CString("*.xml"), FUN_14071ae20(FUN_140651350()), files, CString(""), false);
+    FindFiles(CString("*.xml"), FUN_14071ae20(GetLanguageCode()), files, CString(""), false);
     for (size_t i = 0; i < files.GetCount(); i++)
     {
         CString strName = FUN_14028d3c0(files[i]);
@@ -683,7 +683,7 @@ void LoadChapterDescriptions()
 void FUN_1416e7c00(CString strPath)
 {
     TiXmlDocument doc;
-    if (((class Unk_QuiLoader*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_QuiLoader*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -718,7 +718,7 @@ MS2Ptr<CChapterUIData> FUN_1416e7f30(int nChapterId)
 
 // The chapter name.
 // @0x1416e7fb0
-CStringW FUN_1416e7fb0(int nChapterId)
+CStringW GetChapterName(int nChapterId)
 {
     MS2Ptr<CChapterUIData> spChapter = FUN_1416e7f30(nChapterId);
     if (spChapter.get() != 0)

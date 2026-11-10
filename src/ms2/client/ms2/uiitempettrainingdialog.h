@@ -28,7 +28,7 @@ public:
 
     void SetOwner(unsigned __int64 nOwner);                // 0x140e57c80 the uid of the training item
     void FUN_140e57cb0(CInPacket& packet);                      // 0x140e57cb0 packet 0xcc: training done
-    void FUN_140e57d60();                                       // 0x140e57d60 ask the server to train the pet
+    void SendTrainingRequest();                                       // 0x140e57d60 ask the server to train the pet
     ItemScrollSlot* FUN_140e57e50(CString strName);             // 0x140e57e50 the scroll slot of a name
     int FUN_140e57ed0(MS2Ptr<CItem> spPet, int bMessage);       // 0x140e57ed0 can this pet be trained
     void FUN_140e58280(ItemScrollSlot& slot);                  // 0x140e58280 the pet was removed from the slot

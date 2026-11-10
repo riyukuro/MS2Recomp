@@ -55,27 +55,27 @@ public:
     // UIUGCEventListener (+0x180)
     virtual void vfunc_ugc_4(int nDialog);                      // 4 0x141b35420 the upload moved to this dialog
 
-    void FUN_141b35480(int nResult);                            // the server answered the upload
+    void OnUploadResult(int nResult);                            // the server answered the upload
     int FUN_141b35540(MS2Ptr<CUgcPreReserve> spReserve);        // the reservations of the banner (0 = ok)
     int FUN_141b357e0();                                        // take the banner of the running upload
-    void FUN_141b358d0();                                       // rebuild the file list
-    void FUN_141b359b0();                                       // rebuild the 24 hour rows of the day
-    void FUN_141b35b80();                                       // tell the movie the upload directory
+    void RefreshFileList();                                       // rebuild the file list
+    void RefreshTimeReserve();                                       // rebuild the 24 hour rows of the day
+    void SetUploadFolder();                                       // tell the movie the upload directory
     void OnOpenFolder();                                       // open the upload directory
-    int FUN_141b35d00(int nIndex);                             // preview a file
-    int FUN_141b35e10(int nIndex);                             // upload a file
+    int PreviewFile(int nIndex);                             // preview a file
+    int UploadFile(int nIndex);                             // upload a file
     int OnNewDraw();                                       // OnNewDraw: clear the upload
     int OnAddImage();                                       // OnAddImage: pick an image file
     int FUN_141b36140(int nIndex);                              // scroll the list
-    int FUN_141b36230(int nHour, bool bPicked);                // pick / drop an hour
-    int FUN_141b362b0(int nOffset);                            // move the day
-    void FUN_141b363b0();                                       // update the thumbnail image
-    void FUN_141b364a0(int nIndex);                             // select the thumbnail
+    int SetHourPicked(int nHour, bool bPicked);                // pick / drop an hour
+    int MoveDay(int nOffset);                            // move the day
+    void UpdateThumbnailImage();                                       // update the thumbnail image
+    void SelectThumbnail(int nIndex);                             // select the thumbnail
     void FUN_141b365e0();                                       // show the date
     void FUN_141b366b0();                                       // show the price of the picked hours
-    void FUN_141b36750(__int64 nPrice);                         // set the price text
+    void SetPriceText(__int64 nPrice);                         // set the price text
     __int64 FUN_141b368b0();                                    // the price of the picked hours
-    void FUN_141b369d0();                                       // mark the reservation list dirty
+    void MarkReserveListDirty();                                       // mark the reservation list dirty
     int FUN_141b36a60();                                        // the pay type of the price
 
 private:
@@ -114,7 +114,7 @@ public:
     virtual void vfunc_79(void* p);                             // 79 0x141b38430
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141b38460
 
-    void FUN_141b386b0(int nX, int nY, int nWidth, int nHeight);   // save the snapshot of the rectangle
+    void SaveSnapshot(int nX, int nY, int nWidth, int nHeight);   // save the snapshot of the rectangle
 
 private:
     MS2_LAYOUT_FRIEND;

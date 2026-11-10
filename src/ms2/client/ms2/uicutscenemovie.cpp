@@ -84,7 +84,7 @@ int UICutSceneMovie::vfunc_52(const CString& strPath, float fVolume)
         return 0;
     RemoveTween();
     SetSoundFade(true);
-    FUN_14025e7a0()->FUN_1422ae920(1);
+    GetGFxManager()->FUN_1422ae920(1);
     GetUISwfEntityManager()->AddToLayer(this, 2);
     ChromaSDK::GetChromaManager()->SetState(11);
     if (m_4c != 0) {
@@ -96,7 +96,7 @@ int UICutSceneMovie::vfunc_52(const CString& strPath, float fVolume)
             return 1;
         }
     } else {
-        FUN_1422dbf00(m_2c, 0, 0);
+        LoadSwf(m_2c, 0, 0);
         return 1;
     }
 }
@@ -118,7 +118,7 @@ int UICutSceneMovie::vfunc_53()
         if (m_bIntroStory)
             p->FUN_141529a50(0);
     }
-    FUN_14025e7a0()->FUN_1422ae920(0);
+    GetGFxManager()->FUN_1422ae920(0);
     TSingleton<CAutoFindTaxiStation>::GetInstance()->Resume();
     m_nCutSceneId = 0;
     return 1;
@@ -260,7 +260,7 @@ void UICutSceneMovie::vfunc_15()
         return;
     if (m_bIntroStory && (m_pExit.get() ? true : false) && !reinterpret_cast<ASDisplayObject*>(m_pExit.operator->())->GetVisible()) {
         if (MS2Ptr<ASVideoPlayer> pPlayer = GetChild<ASVideoPlayer>("m_videoPlayer")) {
-            if (pPlayer->FUN_1422e9540() >= *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_1401d3200*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_3c00)->Get())
+            if (pPlayer->GetTime() >= *reinterpret_cast<Common::Constants::Value<float>*>(&((class Unk_1401d3200*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_3c00)->Get())
                 ShowSkipButton();
         }
     }
@@ -351,7 +351,7 @@ MS2_REPLACE_METHOD(0x14190FB40, UICutSceneMovie, vfunc_11, 153, 0x86F6B64B);
 bool UICutSceneMovie::vfunc_17()
 {
     if (MS2Ptr<ASVideoPlayer> pPlayer = GetChild<ASVideoPlayer>("m_videoPlayer"))
-        pPlayer->FUN_1422e9810(pPlayer->FUN_1422c1500(), pPlayer->FUN_1422c1530());
+        pPlayer->SetSize(pPlayer->FUN_1422c1500(), pPlayer->FUN_1422c1530());
     return true;
 }
 MS2_REPLACE_METHOD(0x14190FBE0, UICutSceneMovie, vfunc_17, 201, 0x5B881BB7);
@@ -366,7 +366,7 @@ void UICutSceneMovie::ShowSkipButton()
             CStringW strKey(L"$s_cutscene_skip_key");
             CStringW strText(L"$s_cutscene_skip");
             if (*reinterpret_cast<const bool*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))))
-                strKey = FUN_1409331f0()->GetActionKeyName(0x49409, 2);
+                strKey = GetKeyTable()->GetActionKeyName(0x49409, 2);
             m_30->Invoke("setSkipKey", strKey, strText);
         }
     }
@@ -394,9 +394,9 @@ bool UICutSceneMovie::PlayUsm()
     if (MS2Ptr<ASVideoPlayer> pPlayer = GetChild<ASVideoPlayer>("m_videoPlayer")) {
         Unk_SoundState* pSound = TSingleton<CGameOption>::GetInstance()->FUN_140d13c70();
         if (pSound)
-            pPlayer->FUN_1422e9490(pSound->m_b00 ? 0.0f : pSound->GetMovieVolume());
-        pPlayer->FUN_1422e95b0(m_strPath);
-        pPlayer->FUN_1422e9690(m_68);
+            pPlayer->SetVolume(pSound->m_b00 ? 0.0f : pSound->GetMovieVolume());
+        pPlayer->Play(m_strPath);
+        pPlayer->Seek(m_68);
         return true;
     }
     return false;
@@ -410,7 +410,7 @@ bool UICutSceneMovie::PlaySwf()
         return false;
     Unk_SoundState* pSound = TSingleton<CGameOption>::GetInstance()->FUN_140d13c70();
     if (pSound)
-        FUN_14025e7a0()->SetMasterVolume(pSound->m_b00 ? 0.0f : pSound->GetMovieVolume());
+        GetGFxManager()->SetMasterVolume(pSound->m_b00 ? 0.0f : pSound->GetMovieVolume());
     m_30->Invoke("playSwfMovie", m_strPath);
     return true;
 }
@@ -445,7 +445,7 @@ void UICutSceneMovie::PlayDefaultScene()
     int nScene = 0;
     Unk_1419e04b0* p = ((class Unk_1419e04b0*)FindUIObject(TSingleton<CUIService>::GetInstance()/*C3:TSingleton<CUIService>::GetInstance*/->GetMode()));
     if (p)
-        nScene = p->FUN_1419e04b0();
+        nScene = p->GetMapId();
     CString strPath = TSingleton<CLoadingImageTable>::GetInstance()->GetMovieFile(nId, nScene);
     if (strPath.GetLength()) {
         TSingleton<CAutoFindTaxiStation>::GetInstance()->Pause();

@@ -45,16 +45,16 @@ public:
 
     void CollectItemsAndFunctions();                                       // collect the items of the item table (once)
     void OnClearInven(const Scaleform::GFx::FunctionHandler::Params& params);   // "m_clearInven" click
-    void FUN_1419b4e30(const Scaleform::GFx::FunctionHandler::Params& params);   // context menu item click
-    int FUN_1419b5080();                                        // the item id of the selected list row
+    void OnContextMenuItemClick(const Scaleform::GFx::FunctionHandler::Params& params);   // context menu item click
+    int GetSelectedItemId();                                        // the item id of the selected list row
     int GetSelectedItemRank();                                        // the selected rank
     unsigned FUN_1419b5280(int nItemId, unsigned nLevel);       // the enchant level clamp of an item
     void SendRequestItemCreate(CCCreateItemPacket& packet);             // send "create item" (0x15)
-    void FUN_1419b53d0(CCCompareItemPacket& packet);            // send "compare item" (0x8f)
-    void FUN_1419b54a0(CCCompareItemPacket& packet);            // send "repeat item" (0x9a)
-    void FUN_1419b5560(int nItemId, int nRank);                 // the picked item changed
-    void FUN_1419b5730(const CString& strGroup, const CStringW& strSearch);   // fill the item list
-    void FUN_1419b6350();                                       // build the context menu
+    void SendRequestItemCompare(CCCompareItemPacket& packet);            // send "compare item" (0x8f)
+    void SendRequestItemRepeat(CCCompareItemPacket& packet);            // send "repeat item" (0x9a)
+    void OnItemChange(int nItemId, int nRank);                 // the picked item changed
+    void FillItemList(const CString& strGroup, const CStringW& strSearch);   // fill the item list
+    void BuildContextMenu();                                       // build the context menu
     void FillFunctionList();                                       // fill the function list
     // 0x140e52670 check box child lookup = UISwfEntity::GetChild<ASCheckBox> (uiitempetboxdialog.cpp)
 
@@ -79,13 +79,13 @@ class ItemOptionDebug : public CPtred
 {
 public:
     ItemOptionDebug();                                          // 0x1419b68e0 (implicit dtor 0x1419ba050, ??_G 0x1419ba280)
-    float FUN_1419b6940(int nGroup, int nStat);                 // smallest stat rate
+    float GetMinRate(int nGroup, int nStat);                 // smallest stat rate
     float GetMaxRate(int nGroup, int nStat);                 // largest stat rate
     void CountRates(int nGroup, int nStat, Unk_IcRateCounts& counts);
     __int64 GetMinValue(int nGroup, int nStat);               // smallest stat value
     __int64 GetMaxOptionValue(int nGroup, int nStat);               // largest stat value
     void CountValues(int nGroup, int nStat, Unk_IcValueCounts& counts);
-    float FUN_1419b7120(int nGroup, unsigned nSpecial);         // smallest special rate
+    float GetMinSpecialRate(int nGroup, unsigned nSpecial);         // smallest special rate
     float GetMaxSpecialRate(int nGroup, unsigned nSpecial);         // largest special rate
     void CountSpecialRates(int nGroup, unsigned nSpecial, Unk_IcRateCounts& counts);
     float GetMinSpecialValue(int nGroup, unsigned nSpecial);         // smallest special value
@@ -93,12 +93,12 @@ public:
     void CountSpecialValues(int nGroup, unsigned nSpecial, Unk_IcRateCounts& counts);
     int HasRate(int nGroup, int nStat);                   // a stat rate was rolled
     int HasValue(int nGroup, int nStat);                   // a stat value was rolled
-    int FUN_1419b7a10(int nGroup, unsigned nSpecial);           // a special rate was rolled
-    int FUN_1419b7a90(int nGroup, unsigned nSpecial);           // a special value was rolled
-    TiXmlElement* FUN_1419b7b10(int nGroup, int nStat);     // <rate name min max><output option count/>..
-    TiXmlElement* FUN_1419b7e00(int nGroup, int nStat);     // <value ...>
-    TiXmlElement* FUN_1419b80e0(int nGroup, unsigned nSpecial);
-    TiXmlElement* FUN_1419b83d0(int nGroup, unsigned nSpecial);
+    int HasSpecialRate(int nGroup, unsigned nSpecial);           // a special rate was rolled
+    int HasSpecialValue(int nGroup, unsigned nSpecial);           // a special value was rolled
+    TiXmlElement* CreateStatRateElement(int nGroup, int nStat);     // <rate name min max><output option count/>..
+    TiXmlElement* CreateStatValueElement(int nGroup, int nStat);     // <value ...>
+    TiXmlElement* CreateSpecialRateElement(int nGroup, unsigned nSpecial);
+    TiXmlElement* CreateSpecialValueElement(int nGroup, unsigned nSpecial);
 
     int m_nItemId;                                              // +0x18
     int m_nRank;                                                // +0x1c
@@ -112,8 +112,8 @@ public:
     Unk_ItemOptionSimulator();                                  // 0x1419b86c0
     void FUN_1419b8730();                                       // start ("Item Simulate Start")
     void FUN_1419b8810();                                       // finish (save the document)
-    void FUN_1419b9030(int nItemId, int nRank, MS2Ptr<CItemOption> spOption);   // add one rolled option
-    MS2Ptr<ItemOptionDebug> FUN_1419b91f0(int nItemId, int nRank);
+    void AddOption(int nItemId, int nRank, MS2Ptr<CItemOption> spOption);   // add one rolled option
+    MS2Ptr<ItemOptionDebug> FindItemOptionDebug(int nItemId, int nRank);
 
     CString m_strFile;                                          // +0x00
     TiXmlDocument m_doc;                                        // +0x08

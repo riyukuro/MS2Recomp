@@ -53,10 +53,10 @@ CString UISurveyDialog::GetTypeName()
 void UISurveyDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925fa0("m_dragBar");
-    FUN_141925ec0("m_closeButton");
+    BindDragBar("m_dragBar");
+    BindCloseButton("m_closeButton");
     CStringW strKind = GetStringCommon(m_188 != 0 ? 0xc8d : 0xc8e);
-    SetChildHtmlText(FUN_1422dbb40(), "m_textSurvey", L"[" + strKind + L"] " + m_190);
+    SetChildHtmlText(GetGFxValue(), "m_textSurvey", L"[" + strKind + L"] " + m_190);
     for (size_t i = 0; i < m_198.GetCount(); i++)
         m_30->Invoke("addItem", m_198[i]);
     m_30->Invoke("initDatas");
@@ -81,7 +81,7 @@ int UISurveyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
             int nAnswer = atoi(data.FUN_1422b8d30());
             if (nAnswer == -1)
                 return 1;
-            FUN_140eda2b0(nAnswer);
+            SendVote(nAnswer);
         }
         return 1;
     }
@@ -91,7 +91,7 @@ int UISurveyDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 }
 
 // @0x140eda1b0
-void UISurveyDialog::FUN_140eda1b0(CInPacket& packet)
+void UISurveyDialog::HandlePacket(CInPacket& packet)
 {
     unsigned char nType = packet.ReadUInt8();
     switch (nType)
@@ -120,7 +120,7 @@ void UISurveyDialog::FUN_140eda1b0(CInPacket& packet)
 }
 
 // @0x140eda2b0
-void UISurveyDialog::FUN_140eda2b0(int nAnswer)
+void UISurveyDialog::SendVote(int nAnswer)
 {
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
     packet.WriteUInt8(5);

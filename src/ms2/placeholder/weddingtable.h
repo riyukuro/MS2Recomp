@@ -91,18 +91,18 @@ public:
     bool LoadExp();                                         // 0x140908380
     bool LoadMaintenance();                                 // 0x140908660
     bool LoadSkill();                                       // 0x1409088e0
-    MS2Ptr<WeddingPackage> FUN_140908b80(int nPackageId);   // the package of an id (null: none)
+    MS2Ptr<WeddingPackage> FindPackage(int nPackageId);   // the package of an id (null: none)
     MS2Ptr<WeddingPackage> FindPackageByPlanner(int nPlanner);              // 0x140908c50
     unsigned int FUN_140908d50(int nPackageId, int nHallId, bool bNight);   // the hall's field id (night variant)
-    __int64 FUN_140908e60(int nType, __int64 nLastTime);    // the reward exp of a type (0 inside its limit period)
+    __int64 GetRewardExp(int nType, __int64 nLastTime);    // the reward exp of a type (0 inside its limit period)
     int GetGrade(__int64 nExp);                             // 0x140908f90
     __int64 GetExpValue(int nGrade);                        // 0x140909070
     int GetMaxGrade();                                      // 0x1409090f0
-    int FUN_140909130(int nPackageId, int nHallId);         // the grade of a hall
+    int GetHallGrade(int nPackageId, int nHallId);         // the grade of a hall
     __int64 FUN_140909220(int nPackageId, int nHallId);     // the price of a hall
     bool GetUpgradeItems(int nFromPackageId, int nFromHallId, int nToPackageId, int nToHallId,
                          std::vector<ItemEntity>& items);   // 0x140909310
-    bool FUN_140909870(int nWorld, const CMsTime& time);    // in a maintenance window
+    bool IsMaintenance(int nWorld, const CMsTime& time);    // in a maintenance window
     MS2Ptr<WeddingSkillData> FindSkill(int nId);            // 0x140909910
     void GetSkillsByGrade(int nGrade, std::vector<MS2Ptr<WeddingSkillData> >& skills);   // 0x1409099d0
     std::map<int, MS2Ptr<WeddingSkillData> >& GetSkills();  // 0x140909a80

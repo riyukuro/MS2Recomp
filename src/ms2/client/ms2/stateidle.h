@@ -37,19 +37,19 @@ public:
     virtual int vfunc_22(MS2Ptr<StateSyncObject> p);         // 22 0x1417ce680
     virtual void vfunc_29(MS2Ptr<Unk_StateArg29> p);        // 29 0x1417cf4f0
 
-    void FUN_1417ce6f0(unsigned nSeq);                      // stand animation (key 0 / 1 in the water)
+    void PlayStandAnimation(unsigned nSeq);                      // stand animation (key 0 / 1 in the water)
     void FUN_1417ce820(unsigned nSeq);                      // move variant animation (key 0x27 + sub state - 2)
     void FUN_1417ce970(unsigned nSeq);                      // rider: animation of key 0x49
     void FUN_1417ce9b0(unsigned nSeq);                      // rider: animation of key 0x49
     void FUN_1417ce9f0(unsigned nSeq);                      // animation of key 0x2e
-    void FUN_1417ceab0(unsigned nSeq);                      // bore wait animation (key 0x30, or the ridee's)
+    void PlayBoreWaitAnimation(unsigned nSeq);                      // bore wait animation (key 0x30, or the ridee's)
     void FUN_1417ceca0(unsigned nSeq);                      // animation of key 0x37
     void FUN_1417ced70(unsigned nSeq);                      // animation of key 0x36
     void FUN_1417cee40(unsigned nSeq);                      // rider: animation of key 0x49
     void FUN_1417cee90(unsigned nSeq);                      // animation of key 0x4a
-    void FUN_1417cef60();                                   // idle timers (leave to the stand state, bore sub states)
-    void FUN_1417cf210();                                   // stop the idle sound
-    void FUN_1417cf260();                                   // start the idle sound
+    void UpdateIdleTimers();                                   // idle timers (leave to the stand state, bore sub states)
+    void StopIdleSound();                                   // stop the idle sound
+    void StartIdleSound();                                   // start the idle sound
     void FUN_1417cf360();                                   // start the emotion idle sound
     void FUN_1417cf4a0();                                   // stop the emotion idle sound
 
@@ -72,7 +72,7 @@ public:
     virtual int vfunc_1();                                  // 1  0x1417d0a80: 1
     virtual void vfunc_4(StateData* pData);                 // 4  0x1417cf780
 
-    void FUN_1417cf860(unsigned nSeq);                      // stand animation
+    void PlayStandAnimation(unsigned nSeq);                      // stand animation
 };
 MS2_CHECK_SIZE(StateIdleNPC, 0x40);
 
@@ -94,9 +94,9 @@ public:
     void FUN_1417d0140(unsigned nSeq);                      // sub state 2..5 animation, pet voice 0x5c
     void FUN_1417d0210(unsigned nSeq);                      // sub state 0xf animation, pet voice 0x5d
     void FUN_1417d02e0(unsigned nSeq);                      // sub state 0x10 animation, pet voice 0x5e
-    void FUN_1417d03b0(unsigned nSeq);                      // sub state 0x11 (revive) animation, pet voice 0x60
+    void PlayReviveAnimation(unsigned nSeq);                      // sub state 0x11 (revive) animation, pet voice 0x60
     void FUN_1417d0470(unsigned nSeq);                      // sub state 0x13 animation, pet voice 0x61
-    void FUN_1417d0540(int nVoice);                         // the pet says nVoice once
+    void PlayPetVoice(int nVoice);                         // the pet says nVoice once
 
     int m_nVoiced;                                          // +0x40 a voice was said in this sub state
     int m_nTired;                                           // +0x44 the first-enter timers were armed

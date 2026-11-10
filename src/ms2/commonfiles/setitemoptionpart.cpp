@@ -79,13 +79,13 @@ unsigned SetItemOptionPart::GetCount()
 }
 
 // @0x1407bc9d0
-ATL::CAtlArray<int>& SetItemOptionPart::FUN_1407bc9d0()
+ATL::CAtlArray<int>& SetItemOptionPart::GetEffectIds()
 {
     return m_effectIds;
 }
 
 // @0x1407bc9f0
-ATL::CAtlArray<unsigned short>& SetItemOptionPart::FUN_1407bc9f0()
+ATL::CAtlArray<unsigned short>& SetItemOptionPart::GetEffectLevels()
 {
     return m_effectLevels;
 }
@@ -145,19 +145,19 @@ void SetItemOptionPart::FUN_1407bcdb0(std::function<void(const std::pair<Special
 }
 
 // @0x1407bce70
-CStringA& SetItemOptionPart::FUN_1407bce70()
+CStringA& SetItemOptionPart::GetAnimationPrefix()
 {
     return m_animationPrefix;
 }
 
 // @0x1407bce90
-CStringA& SetItemOptionPart::FUN_1407bce90()
+CStringA& SetItemOptionPart::GetSetEffect()
 {
     return m_setEffect;
 }
 
 // @0x1407bceb0
-CStringA& SetItemOptionPart::FUN_1407bceb0()
+CStringA& SetItemOptionPart::GetGroundAttribute()
 {
     return m_groundAttribute;
 }

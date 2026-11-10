@@ -160,7 +160,7 @@ __int64 GetServerTime();                                    // server time
 __int64 NextWeekdayStart(int nWeekday, __int64 tFrom);      // NextWeekdayStart
 int DaysToSeconds(int nDays);                               // DaysToSeconds
 __int64 GetWeekOfYear(int nYear, int nMonth, int nDay);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 class CLogString;
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 class CLogString* GetLogString();
@@ -180,7 +180,7 @@ private:
 // A scheduled game event (the <eventTag> lookup), handed out as an intrusive pointer.
 class Unk_EventEntry;
 class CGameRule { public: bool HasTermTag(const CStringW& name); MS2Ptr<TermTagContext> GetTermTag(const CStringW& name); };   // C3: member view (gamerule.h)
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 
 // One <questCondition> pair of the quest manager query (0x1407470f0): the quests whose state is checked.
 // C3: the Unk_E16 / Unk_Arr16 views are QuestMask::m_aRanges, a CAtlArray<Unk_Z16i> (GetCount 0x1402815b0, operator[] const 0x14027f040)
@@ -199,9 +199,9 @@ int FUN_140764480(MS2Ptr<CQuest> pQuest, int nState);
 
 bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 bool FUN_14074b090(CQuestData* pData);
-int FUN_14074b330(CQuestData* pData);
+int GetFirstFieldId(CQuestData* pData);
 int FUN_14074b030(CQuestData* pData);
 int FUN_14074b050(CQuestData* pData);
 int FUN_14074b070(CQuestData* pData);
@@ -209,7 +209,7 @@ class CGloabalFactor;
 class CGloabalFactor   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1404c1730(unsigned int, int);
+    float GetMesoRate(unsigned int, int);
     float FUN_1404c17a0(unsigned int, int);
 };
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
@@ -229,7 +229,7 @@ int CQuestCommon::FUN_140744670(int field)
         return 0;
     if (!IsActive())
         return 0;
-    int nField = FUN_14074b330(data.operator->());
+    int nField = GetFirstFieldId(data.operator->());
     if (nField == 0)
         return 0;
     if (nField == field)
@@ -238,19 +238,19 @@ int CQuestCommon::FUN_140744670(int field)
 }
 
 // @0x1407447c0
-int CQuestCommon::FUN_1407447c0()
+int CQuestCommon::IsExpired()
 {
     MS2Ptr<CQuestData> data = GetData();
     if (!data)
         return false;
     if (!FUN_14074b090(data.operator->()))
         return false;
-    __int64 tEnd = FUN_1407448a0();
+    __int64 tEnd = GetEndTime();
     return GetServerTime() >= tEnd;
 }
 
 // @0x1407448a0
-__int64 CQuestCommon::FUN_1407448a0()
+__int64 CQuestCommon::GetEndTime()
 {
     MS2Ptr<CQuestData> data = GetData();
     if (!data)
@@ -273,7 +273,7 @@ __int64 CQuestCommon::FUN_1407448a0()
     }
     if (data->m_schedule.GetLength() != 0)
     {
-        MS2Ptr<TermTagContext> event = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->GetTermTag(data->m_schedule);
+        MS2Ptr<TermTagContext> event = reinterpret_cast<CGameRule*>(GetGameRule())->GetTermTag(data->m_schedule);
         if (event == 0)
             return 0;
         __int64 tStart = GetStartTime();
@@ -282,13 +282,13 @@ __int64 CQuestCommon::FUN_1407448a0()
             if (!event.operator->()->FUN_140866880((__int64 const*)(&tStart)))
                 return 0;
         }
-        tEvent = event.operator->()->FUN_140866720().Get();
+        tEvent = event.operator->()->GetEndTime().Get();
     }
     if (tPeriod != 0 && tEvent != 0)
         return std::min<__int64>(tPeriod, tEvent);
     return tPeriod != 0 ? tPeriod : tEvent;
 }
-MS2_REPLACE_METHOD(0x1407448A0, CQuestCommon, FUN_1407448a0, 732, 0x32941A8A);
+MS2_REPLACE_METHOD(0x1407448A0, CQuestCommon, GetEndTime, 732, 0x32941A8A);
 
 // @0x140744b90
 int CQuestCommon::FUN_140744b90(int field)
@@ -322,9 +322,9 @@ int CQuestCommon::FUN_140744cd0(int field)
 // @0x140744d40
 int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
 {
-    if (FUN_140745820(questId, flag) == 0)
+    if (CanAcceptQuest(questId, flag) == 0)
         return 0;
-    MS2Ptr<CQuestData> data = FUN_14074bc40(questId);
+    MS2Ptr<CQuestData> data = GetQuestData(questId);
     if (data.operator==(0))
         return 0;
     if (npcId != 0 && data->m_2e8 != npcId)
@@ -355,14 +355,14 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
     }
     if (data->m_schedule.GetLength() != 0)
     {
-        MS2Ptr<TermTagContext> event = reinterpret_cast<CGameRule*>(FUN_1401c0d90())->GetTermTag(data->m_schedule);
+        MS2Ptr<TermTagContext> event = reinterpret_cast<CGameRule*>(GetGameRule())->GetTermTag(data->m_schedule);
         if (event.IsNull())
             return 0;
-        if (!event.operator->()->FUN_140866820(now))
+        if (!event.operator->()->IsActiveAt(now))
             return 0;
         if (event.operator->()->FUN_140866760())
         {
-            if (vfunc_o10_8() < event.operator->()->FUN_1408666e0().Get())
+            if (vfunc_o10_8() < event.operator->()->GetStartTime().Get())
                 return 0;
         }
         if (tStart != 0)
@@ -416,7 +416,7 @@ int CQuestManagerCommon::vfunc_o10_21(int questId, int npcId, int flag)
 MS2_REPLACE_METHOD(0x140744D40, CQuestManagerCommon, vfunc_o10_21, 2115, 0x2D2D1A6E);
 
 // @0x140745590
-int CQuestManagerCommon::FUN_140745590(int questId)
+int CQuestManagerCommon::IsQuestRewarded(int questId)
 {
     MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
@@ -443,19 +443,19 @@ int CQuestManagerCommon::IsQuestComplete(int questId)
 }
 
 // @0x140745770
-bool CQuestManagerCommon::FUN_140745770(int questId)
+bool CQuestManagerCommon::IsQuestExpired(int questId)
 {
     MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
         return false;
-    return (bool)quest->FUN_1407447c0();
+    return (bool)quest->IsExpired();
 }
 
 // MS2-FUNCTIONAL: statement order and result temporaries differ from the exe.
 // @0x140745820
-int CQuestManagerCommon::FUN_140745820(int questId, int flag)
+int CQuestManagerCommon::CanAcceptQuest(int questId, int flag)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(questId);
+    MS2Ptr<CQuestData> data = GetQuestData(questId);
     if (data.get() != 0)
     {
         if (data->m_30)
@@ -483,7 +483,7 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
         ATL::CAtlArray<unsigned>& quests = data->m_require.m_quest;
         for (size_t i = 0; i < quests.GetCount(); ++i)
         {
-            if (quests[i] != 0 && FUN_140745590(quests[i]) == 0)
+            if (quests[i] != 0 && IsQuestRewarded(quests[i]) == 0)
                 return 0;
         }
         ATL::CAtlArray<unsigned>& selectable = data->m_require.m_selectableQuest;
@@ -492,7 +492,7 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
             int bAny = 0;
             for (size_t i = 0; i < selectable.GetCount(); ++i)
             {
-                if (selectable[i] != 0 && FUN_140745590(selectable[i]) != 0)
+                if (selectable[i] != 0 && IsQuestRewarded(selectable[i]) != 0)
                     bAny = 1;
             }
             if (bAny == 0)
@@ -509,7 +509,7 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
         {
             if (unrequire[i] != 0)
             {
-                if (FUN_140745590(unrequire[i]) != 0)
+                if (IsQuestRewarded(unrequire[i]) != 0)
                     return 0;
                 if (IsQuestActive(unrequire[i]) != 0)
                     return 0;
@@ -527,7 +527,7 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
                 {
                     if (IsQuestActive(picked[j]) != 0)
                         return 0;
-                    if (FUN_140745590(picked[j]) != 0)
+                    if (IsQuestRewarded(picked[j]) != 0)
                     {
                         if (vfunc_o10_21(picked[j], 0, 1) == 0)
                             return 0;
@@ -618,7 +618,7 @@ int CQuestManagerCommon::FUN_140745820(int questId, int flag)
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x140745820, CQuestManagerCommon, FUN_140745820, 4129, 0xBBD4D435);
+MS2_REPLACE_METHOD(0x140745820, CQuestManagerCommon, CanAcceptQuest, 4129, 0xBBD4D435);
 
 // @0x140746850
 int CQuestManagerCommon::FUN_140746850(int questId, int npcId, int bStart)
@@ -628,7 +628,7 @@ int CQuestManagerCommon::FUN_140746850(int questId, int npcId, int bStart)
         return 0;
     if (!quest->GetData())
         return 0;
-    if (quest->FUN_1407447c0() != 0)
+    if (quest->IsExpired() != 0)
         return 0;
     if (quest->GetState() != 1)
         return 0;
@@ -655,7 +655,7 @@ int CQuestManagerCommon::FUN_140746ba0(int questId, int npcId, bool bSkip)
     MS2Ptr<CQuest> quest = vfunc_o10_3(questId);
     if (quest.IsNull())
         return 6;
-    if (bSkip == 0 && quest->FUN_1407447c0() != 0)
+    if (bSkip == 0 && quest->IsExpired() != 0)
         return 4;
     if (quest->GetData().operator==(0))
         return 6;
@@ -672,7 +672,7 @@ MS2_REPLACE_METHOD(0x140746BA0, CQuestManagerCommon, FUN_140746ba0, 694, 0x244F7
 // @0x140746e60
 int CQuestManagerCommon::FUN_140746e60(int questId)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(questId);
+    MS2Ptr<CQuestData> data = GetQuestData(questId);
     if (data.IsNull())
         return 0;
     if (!data->m_2d)
@@ -701,7 +701,7 @@ void FUN_140746fe0(CQuestManagerCommon* pMgr, int nSelector)
 // @0x140747000
 int CQuestManagerCommon::FUN_140747000(int questId)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(questId);
+    MS2Ptr<CQuestData> data = GetQuestData(questId);
     if (!data)
         return 0;
     int nSeed = 0;
@@ -723,7 +723,7 @@ int CQuestManagerCommon::FUN_140747000(int questId)
 // @0x1407470f0
 unsigned CQuestManagerCommon::vfunc_o10_23(const Unk_QuestCondition& condition)
 {
-    if (reinterpret_cast<const QuestMask&>(condition).FUN_140266970() == 0)
+    if (reinterpret_cast<const QuestMask&>(condition).IsSatisfied() == 0)
         return 1;
     for (unsigned __int64 i = 0; i < reinterpret_cast<const QuestMask&>(condition).m_aRanges.GetCount(); ++i)
     {
@@ -1270,7 +1270,7 @@ int FUN_140752570(TiXmlElement* pElem, const char* pszName, int* pOut);
 int FUN_140752630(TiXmlElement* pElem, const char* pszName, int* pOut);
 class Unk_FeatureFlags;
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
+class CFeatureManager { public: bool IsFeatureEnabled(int nFeature); };   // C3: unit-local view
 
 // @0x1407495d0
 bool CQuestData::Load(TiXmlElement* pElem)
@@ -1475,7 +1475,7 @@ bool CQuestData::Load(TiXmlElement* pElem)
         XmlGetAttr((class TiXmlElement*)(pDispatch), "portal", reinterpret_cast<int&>(m_2f0.m_8));
         XmlGetAttr((class TiXmlElement*)(pDispatch), "script", reinterpret_cast<int&>(m_2f0.m_c));
     }
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x42) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x42) == 1)
     {
         TiXmlElement* pGotoNpc = ((class TiXmlElement*)((class Unk_XmlNode*)(pElem))->FirstChild("gotoNpc"));
         if (pGotoNpc)
@@ -1582,7 +1582,7 @@ int FUN_14074b210(CQuestData* pData)
 {
     if (pData->m_schedule.GetLength() != 0)
     {
-        if (!((class CGameRule*)FUN_1401c0d90())->HasTermTag(pData->m_schedule))
+        if (!((class CGameRule*)GetGameRule())->HasTermTag(pData->m_schedule))
             return 0;
     }
     return 1;
@@ -1613,7 +1613,7 @@ int FUN_14074b2d0(CQuestData* pData)
 }
 
 // @0x14074b330
-int FUN_14074b330(CQuestData* pData)
+int GetFirstFieldId(CQuestData* pData)
 {
     if (pData->m_fields.GetCount() == 0)
         return 0;
@@ -1621,7 +1621,7 @@ int FUN_14074b330(CQuestData* pData)
 }
 
 // @0x14074b380
-Unk_SocketPtr<CQuestData::NavigationData> CQuestData::FUN_14074b380(int nKey)
+Unk_SocketPtr<CQuestData::NavigationData> CQuestData::GetNavigationData(int nKey)
 {
     Unk_SocketPtr<NavigationData> spNavi(0);
     m_navigation.Lookup(nKey, spNavi);
@@ -1631,7 +1631,7 @@ Unk_SocketPtr<CQuestData::NavigationData> CQuestData::FUN_14074b380(int nKey)
 // @0x14074b410
 int FUN_14074b410(int nQuestId)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> data = GetQuestData(nQuestId);
     if (data.IsNull())
         return 0;
     switch (FUN_14074b050(data.operator->()))
@@ -1656,7 +1656,7 @@ int FUN_14074b410(int nQuestId)
 // @0x14074b510
 int FUN_14074b510(int nQuestId)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> data = GetQuestData(nQuestId);
     if (data.IsNull())
         return 0;
     return FUN_14074b050(data.operator->()) == 3;
@@ -1665,7 +1665,7 @@ int FUN_14074b510(int nQuestId)
 // @0x14074b5b0
 int FUN_14074b5b0(int nQuestId)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> data = GetQuestData(nQuestId);
     if (data.IsNull())
         return 0;
     return FUN_14074b050(data.operator->()) == 4;
@@ -1674,7 +1674,7 @@ int FUN_14074b5b0(int nQuestId)
 // @0x14074b650
 int FUN_14074b650(int nQuestId)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> data = GetQuestData(nQuestId);
     if (data.IsNull())
         return 0;
     return FUN_14074b050(data.operator->()) == 8;
@@ -1683,7 +1683,7 @@ int FUN_14074b650(int nQuestId)
 // @0x14074b6f0
 int FUN_14074b6f0(int nQuestId)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> data = GetQuestData(nQuestId);
     if (data.IsNull())
         return 0;
     return FUN_14074b050(data.operator->()) == 9;
@@ -1692,7 +1692,7 @@ int FUN_14074b6f0(int nQuestId)
 // @0x14074b790
 int FUN_14074b790(int nQuestId)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> data = GetQuestData(nQuestId);
     if (data.IsNull())
         return 0;
     if (FUN_14074b050(data.operator->()) == 8)
@@ -1703,9 +1703,9 @@ int FUN_14074b790(int nQuestId)
 // @0x14074b840
 int FUN_14074b840(int nQuestId)
 {
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x6e))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x6e))
     {
-        MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
+        MS2Ptr<CQuestData> data = GetQuestData(nQuestId);
         if (data.IsNull())
             return 0;
         if (data->m_conditions.GetCount() != 0)
@@ -1720,15 +1720,15 @@ int FUN_14074b840(int nQuestId)
 // @0x14074b950
 int FUN_14074b950(int nQuestId)
 {
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x6e))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x6e))
     {
-        MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
+        MS2Ptr<CQuestData> data = GetQuestData(nQuestId);
         if (data.IsNull())
             return 0;
         if (data->m_require.m_followingQuests.GetCount() != 1)
             return 0;
         int nNext = data->m_require.m_followingQuests[0];
-        MS2Ptr<CQuestData> next = FUN_14074bc40(nNext);
+        MS2Ptr<CQuestData> next = GetQuestData(nNext);
         if (next.IsNull())
             return 0;
         if (next->m_2e8 != data->m_2ec)
@@ -1741,10 +1741,10 @@ int FUN_14074b950(int nQuestId)
 // @0x14074bae0
 int FUN_14074bae0(unsigned nQuestA, unsigned nQuestB)
 {
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x6e))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x6e))
     {
-        MS2Ptr<CQuestData> a = FUN_14074bc40(nQuestA);
-        MS2Ptr<CQuestData> b = FUN_14074bc40(nQuestB);
+        MS2Ptr<CQuestData> a = GetQuestData(nQuestA);
+        MS2Ptr<CQuestData> b = GetQuestData(nQuestB);
         if (a.IsNull() || b.IsNull())
             return 0;
         if (Unk_ArrayFind<unsigned>(b->m_require.m_quest, nQuestA) == -1)
@@ -1757,7 +1757,7 @@ int FUN_14074bae0(unsigned nQuestA, unsigned nQuestB)
 }
 
 // @0x14074bc40
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId)
+MS2Ptr<CQuestData> GetQuestData(int nQuestId)
 {
     return QuestDataTable::GetInstance()->GetQuestById(nQuestId);
 }
@@ -1765,16 +1765,16 @@ MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId)
 // @0x14074bc90
 int FUN_14074bc90(int nQuestId)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> data = GetQuestData(nQuestId);
     if (data.IsNull())
         return 11;
     return data->m_type;
 }
 
 // @0x14074bd10
-unsigned short FUN_14074bd10(int nQuestId)
+unsigned short GetQuestLevel(int nQuestId)
 {
-    MS2Ptr<CQuestData> data = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> data = GetQuestData(nQuestId);
     if (data.IsNull())
         return 0;
     return (unsigned short)data->m_level;
@@ -1797,9 +1797,9 @@ QuestDataTable::~QuestDataTable()
 void QuestDataTable::LoadQuestData()
 {
     Unk_CriticalSectionLock guard(m_lock, 1);
-    CString strPath = FUN_14071a5b0("QuestData", "QuestData.xml");
+    CString strPath = GetXmlPath("QuestData", "QuestData.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<class Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1819,7 +1819,7 @@ void QuestDataTable::LoadQuestData()
     FUN_14074f160();
     SetInit(true);
     FUN_1407503f0();
-    FUN_14074fee0();
+    BuildChapterFieldCodes();
     SortNpcQuestIds();
     FUN_140750f30();
     LoadQuestGroupTable();
@@ -2314,7 +2314,7 @@ MS2_REPLACE_METHOD(0x14074E560, QuestDataTable, FUN_14074e560, 346, 0x400E3FB6);
 // @0x14074eac0
 void QuestDataTable::CollectDependentQuests(int nQuestId, ATL::CAtlMap<unsigned, int>& visited)
 {
-    MS2Ptr<CQuestData> spData = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spData = GetQuestData(nQuestId);
     if (spData.IsNull())
         return;
     if (visited.Lookup(nQuestId) != 0)
@@ -2361,15 +2361,15 @@ void QuestDataTable::FUN_14074ee30()
         {
         case 0:
             fExp = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c17a0(spData->m_level, 5);
-            fMeso = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1730(spData->m_level, 0);
+            fMeso = TSingleton<CGloabalFactor>::GetInstance()->GetMesoRate(spData->m_level, 0);
             break;
         case 1:
             fExp = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c17a0(spData->m_level, 6);
-            fMeso = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1730(spData->m_level, 1);
+            fMeso = TSingleton<CGloabalFactor>::GetInstance()->GetMesoRate(spData->m_level, 1);
             break;
         case 3:
             fExp = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c17a0(spData->m_level, 7);
-            fMeso = TSingleton<CGloabalFactor>::GetInstance()->FUN_1404c1730(spData->m_level, 2);
+            fMeso = TSingleton<CGloabalFactor>::GetInstance()->GetMesoRate(spData->m_level, 2);
             break;
         }
         int* pExp = &spData->m_complete.m_exp;
@@ -2385,7 +2385,7 @@ MS2_REPLACE_METHOD(0x14074EE30, QuestDataTable, FUN_14074ee30, 806, 0x83205888);
 class CLogString* GetLogString();
 class Unk_NpcShopLog { public: template <class A, class B> void LogWarn(unsigned __int64 a, unsigned __int64 b, int nCategory, const wchar_t* format, const A& v0, const B& v1); };   // C3: member view (npcshopdata.cpp; was the free FUN_1406e7140)
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
-class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions* GetLaunchOptions();   // C3: was GetLaunchOptions
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
 public:
@@ -2475,7 +2475,7 @@ void QuestDataTable::FUN_14074f160()
 
         FUN_1407484a0(&spData->m_complete, FUN_14074b030(spData.operator->()));
 
-        if (spData->m_2e == 0 && !((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->IsDisableValidate())
+        if (spData->m_2e == 0 && !((class Unk_LaunchOptions*)(void*)(((void*)GetLaunchOptions())))->IsDisableValidate())
         {
             size_t nRewards = spData->m_rewards.size();
             for (size_t i = 0; i < nRewards; i++)
@@ -2507,7 +2507,7 @@ void QuestDataTable::FUN_14074f160()
 MS2_REPLACE_METHOD(0x14074F160, QuestDataTable, FUN_14074f160, 3448, 0xCBA25530);
 
 // @0x14074fee0
-void QuestDataTable::FUN_14074fee0()
+void QuestDataTable::BuildChapterFieldCodes()
 {
     Unk_CriticalSectionLock guard(m_lock, 1);
     for (POSITION pos = m_chapter.GetStartPosition(); pos != 0; m_chapter.GetNext(pos))
@@ -2516,7 +2516,7 @@ void QuestDataTable::FUN_14074fee0()
         IdsPtr spIds = m_chapter.GetValueAt(pos);
         if (spIds->GetCount() > 0)
         {
-            MS2Ptr<CQuestData> spData = FUN_14074bc40(spIds->GetAt(0));
+            MS2Ptr<CQuestData> spData = GetQuestData(spIds->GetAt(0));
             if (spData.IsNull())
                 continue;
             unsigned nFieldId;
@@ -2531,19 +2531,19 @@ void QuestDataTable::FUN_14074fee0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x14074FEE0, QuestDataTable, FUN_14074fee0, 557, 0xD7488436);
+MS2_REPLACE_METHOD(0x14074FEE0, QuestDataTable, BuildChapterFieldCodes, 557, 0xD7488436);
 
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int FUN_140752030(TiXmlElement* pElem, const char* pszName, int* pOut);
 // Loads the quest table.
 // @0x140750120
 void QuestDataTable::LoadQuestGroupTable()
 {
-    CString strPath = FUN_14071a5b0("Table", "QuestGroupTable.xml");
+    CString strPath = GetXmlPath("Table", "QuestGroupTable.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<class Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -2673,8 +2673,8 @@ struct Unk_QuestIdOrder : public Unk_BinaryFunction
         int nTypeB = FUN_14074bc90(nB);
         if (nTypeA == nTypeB)
         {
-            unsigned short nLevelA = FUN_14074bd10(nA);
-            unsigned short nLevelB = FUN_14074bd10(nB);
+            unsigned short nLevelA = GetQuestLevel(nA);
+            unsigned short nLevelB = GetQuestLevel(nB);
             return nLevelA < nLevelB;
         }
         return FUN_140751650(nTypeA) < FUN_140751650(nTypeB);
@@ -2697,12 +2697,12 @@ MS2_REPLACE_METHOD(0x140750D90, QuestDataTable, SortNpcQuestIds, 252, 0x26A038B0
 int __cdecl FUN_140751770(const void* pA, const void* pB);
 
 // @0x140750ea0
-void QuestDataTable::FUN_140750ea0()
+void QuestDataTable::SortQuestIdsByLevel()
 {
     Unk_CriticalSectionLock guard(m_lock, 1);
     qsort(m_1d8.GetData(), m_1d8.GetCount(), 4, FUN_140751770);
 }
-MS2_REPLACE_METHOD(0x140750EA0, QuestDataTable, FUN_140750ea0, 123, 0x5118FC0F);
+MS2_REPLACE_METHOD(0x140750EA0, QuestDataTable, SortQuestIdsByLevel, 123, 0x5118FC0F);
 
 // Marks the quests that must be finished before others unlock (m_2d0 cache).
 // @0x140750f30
@@ -2846,8 +2846,8 @@ int __cdecl FUN_140751690(const void* pA, const void* pB)
     int nTypeB = FUN_14074bc90(*pSecond);
     if (nTypeA == nTypeB)
     {
-        unsigned short nFirst = FUN_14074bd10(*pFirst);
-        unsigned short nSecond = FUN_14074bd10(*pSecond);
+        unsigned short nFirst = GetQuestLevel(*pFirst);
+        unsigned short nSecond = GetQuestLevel(*pSecond);
         return nFirst < nSecond ? -1 : 1;
     }
     return FUN_140751650(nTypeA) < FUN_140751650(nTypeB) ? -1 : 1;
@@ -2859,8 +2859,8 @@ int __cdecl FUN_140751770(const void* pA, const void* pB)
 {
     const int* pFirst = (const int*)pA;
     const int* pSecond = (const int*)pB;
-    unsigned short nFirst = FUN_14074bd10(*pFirst);
-    unsigned short nSecond = FUN_14074bd10(*pSecond);
+    unsigned short nFirst = GetQuestLevel(*pFirst);
+    unsigned short nSecond = GetQuestLevel(*pSecond);
     int nResult;
     if (nFirst < nSecond)
         nResult = -1;
@@ -3070,7 +3070,7 @@ int FUN_140752630(TiXmlElement* pElem, const char* pszName, int* pOut)
 }
 
 // @0x14075a3f0
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's flag (symbols.tsv)
 bool QuestDataTable::s_bInit;
 #endif
@@ -3079,7 +3079,7 @@ void QuestDataTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(QuestDataTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(QuestDataTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

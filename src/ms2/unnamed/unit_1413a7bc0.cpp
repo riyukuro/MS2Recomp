@@ -78,9 +78,9 @@ int CGuideConditionNext::vfunc_3()
         m_nStart = GetTickCountMs2();
     if (GetTickCountMs2() - m_nStart >= (unsigned)m_n20)
         return 1;
-    if (TSingleton<CUIService>::GetInstance()->FUN_141adbb00() != 0)
+    if (TSingleton<CUIService>::GetInstance()->IsTextFieldFocused() != 0)
         return 0;
-    if (((CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x493e2, false, 0))
+    if (((CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyDown(0x493e2, false, 0))
         return 1;
     return 0;
 }
@@ -142,7 +142,7 @@ MS2_REPLACE_METHOD(0x1413A7F10, CGuideConditionQuestComplete, vfunc_2, 46, 0xBB5
 // @0x1413a7f50
 int CGuideConditionQuestComplete::vfunc_3()
 {
-    return ApplyNot(((class CQuestManager*)FUN_140764020())->FUN_140745590(m_n20));
+    return ApplyNot(((class CQuestManager*)FUN_140764020())->IsQuestRewarded(m_n20));
 }
 MS2_REPLACE_METHOD(0x1413A7F50, CGuideConditionQuestComplete, vfunc_3, 51, 0x8AC757D6);
 

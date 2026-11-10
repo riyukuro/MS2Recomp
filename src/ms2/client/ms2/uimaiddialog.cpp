@@ -93,7 +93,7 @@ CStringW FUN_140763e10(int nNumber);                            // a number with
 int FUN_14053feb0(int nItemId);                                 // default rank of an item
 __int64 GetServerTime();                                        // the server time
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);   // pop the system message
-void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW strTag);     // pop the notice
+void ShowMessageBox(CStringW text, int nA, void* pListener, CStringW strTag);     // pop the notice
 int FUN_1418fc760(const char* szMethod, void* pArgs, int nArgs, void* p);
 void FUN_14151f200();
 void FUN_140710590(COutPacket& packet);                         // send
@@ -110,7 +110,7 @@ UIMaidDialog::UIMaidDialog()
 {
     m_2c = 0xc;
     FUN_1422dc3b0(1);
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x1412d7100
@@ -149,7 +149,7 @@ int UIMaidDialog::vfunc_13()
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog != 0)
     {
-        if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xf, 0, 0))
+        if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0xf, 0, 0))
         {
             pDialog->Invoke("onTabKey");
             return 1;
@@ -182,7 +182,7 @@ void UIMaidDialog::vfunc_43()
 void UIMaidDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_1412d7aa0();
+    SetData();
 }
 
 // @0x1412d7480
@@ -282,7 +282,7 @@ int UIMaidDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pA
 }
 
 // @0x1412d7aa0
-void UIMaidDialog::FUN_1412d7aa0()
+void UIMaidDialog::SetData()
 {
     void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -294,7 +294,7 @@ void UIMaidDialog::FUN_1412d7aa0()
     CNpc* pNpc = static_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
     if (pNpc == 0)
         return;
-    MS2Ptr<CMaid> spMaid = reinterpret_cast<CNpc*>(pNpc)->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = reinterpret_cast<CNpc*>(pNpc)->GetMaid();
     if (spMaid.IsNull())
         return;
     TPtrValue<MaidDesc> spDesc = TSingleton<CMaidDescTable>::GetInstance()->Find(spMaid->m_nMaidId);
@@ -310,66 +310,66 @@ void UIMaidDialog::FUN_1412d7aa0()
     {
         CString strFace = pNpc->GetNpcData()->m_strPortrait;
         if (strFace.GetLength() != 0)
-            obj.FUN_1407cba60("maidFace", CString(strFace));
+            obj.SetStringMember("maidFace", CString(strFace));
     }
-    obj.FUN_1407cbb20("specialty", CStringW(spDesc->specialty));
-    obj.FUN_1407cbb20("name", reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
-    obj.FUN_1407cbb20("title", reinterpret_cast<CNpc*>(pNpc)->FUN_141093980());
+    obj.SetWStringMember("specialty", CStringW(spDesc->specialty));
+    obj.SetWStringMember("name", reinterpret_cast<CNpc*>(pNpc)->FUN_141093310());
+    obj.SetWStringMember("title", reinterpret_cast<CNpc*>(pNpc)->FUN_141093980());
     obj.FUN_1409adc90("rank", FUN_14053feb0(spMaid->m_nItemId));
-    obj.FUN_1407cbb20("specialTitle", CStringW(m_strSpecialTitle));
-    obj.FUN_1407cb9c0("salaryType", spInfo->salaryType);
-    obj.FUN_1407cbb20("salary", StringFormat(L"{0} {1}", GetStringCommon(0x793), FUN_140763e10(spInfo->salary)));
-    obj.FUN_1407cbb20("endDate", FUN_1412da590());
+    obj.SetWStringMember("specialTitle", CStringW(m_strSpecialTitle));
+    obj.SetIntMember("salaryType", spInfo->salaryType);
+    obj.SetWStringMember("salary", StringFormat(L"{0} {1}", GetStringCommon(0x793), FUN_140763e10(spInfo->salary)));
+    obj.SetWStringMember("endDate", FUN_1412da590());
 
     int nMaxExp = (std::max<int>)(1, TSingleton<CMaidExpTable>::GetInstance()->GetExp(spMaid->m_nOrder));
     int nGauge = spMaid->m_nExp * 100 / nMaxExp;
     CStringW strLevel = BlockFormat<int>(0x79a, spMaid->m_nOrder);
     if (spMaid->IsAffinityLevelAtMax() != 0)
         strLevel = StringFormat(L"{0} {1}", strLevel, GetStringCommon(0x79b));
-    obj.FUN_1407cbb20("affinityLevel", CStringW(strLevel));
+    obj.SetWStringMember("affinityLevel", CStringW(strLevel));
     CStringW strTooltip = FormatStringId(0x79c, spMaid->m_nExp, nMaxExp);
     if (spMaid->IsAffinityLevelAtMax() != 0)
         strTooltip = GetStringCommon(0x79d);
-    obj.FUN_1407cbb20("affinityTooltip", CStringW(strTooltip));
-    obj.FUN_1407cb9c0("affinityGauge", nGauge);
-    obj.FUN_1407cb9c0("mood", spMaid->m_nMood);
+    obj.SetWStringMember("affinityTooltip", CStringW(strTooltip));
+    obj.SetIntMember("affinityGauge", nGauge);
+    obj.SetIntMember("mood", spMaid->m_nMood);
     CStringW strBackground(spDesc->background);
     TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strBackground);
-    obj.FUN_1407cbb20("background", CStringW(strBackground));
+    obj.SetWStringMember("background", CStringW(strBackground));
     unsigned nEditable = spMaid->FUN_1409eeda0().IsEmpty();
     if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
         nEditable = 1;
-    obj.FUN_1407cb9c0("editable", nEditable);
+    obj.SetIntMember("editable", nEditable);
     if (spMaid->FUN_1409eeda0().IsEmpty())
     {
-        obj.FUN_1407cbb20("title", CStringW(spDesc->title));
-        obj.FUN_1407cbb20("birth", CStringW(spDesc->birthDay));
-        obj.FUN_1407cbb20("constel", CStringW(spDesc->constellation));
-        obj.FUN_1407cbb20("height", CStringW(spDesc->height));
-        obj.FUN_1407cbb20("weight", CStringW(spDesc->weight));
-        obj.FUN_1407cbb20("special", CStringW(spDesc->specialDetail));
-        obj.FUN_1407cbb20("like", CStringW(spDesc->like));
-        obj.FUN_1407cbb20("hate", CStringW(spDesc->hate));
-        obj.FUN_1407cbb20("hobby", CStringW(spDesc->hobby));
-        obj.FUN_1407cbb20("ownername", CStringW(spDesc->ownerName));
-        obj.FUN_1407cbb20("belongto", CStringW(spDesc->belongTo));
+        obj.SetWStringMember("title", CStringW(spDesc->title));
+        obj.SetWStringMember("birth", CStringW(spDesc->birthDay));
+        obj.SetWStringMember("constel", CStringW(spDesc->constellation));
+        obj.SetWStringMember("height", CStringW(spDesc->height));
+        obj.SetWStringMember("weight", CStringW(spDesc->weight));
+        obj.SetWStringMember("special", CStringW(spDesc->specialDetail));
+        obj.SetWStringMember("like", CStringW(spDesc->like));
+        obj.SetWStringMember("hate", CStringW(spDesc->hate));
+        obj.SetWStringMember("hobby", CStringW(spDesc->hobby));
+        obj.SetWStringMember("ownername", CStringW(spDesc->ownerName));
+        obj.SetWStringMember("belongto", CStringW(spDesc->belongTo));
     }
     else
     {
-        obj.FUN_1407cbb20("title", CStringW(spMaid->m_profile.title));
-        obj.FUN_1407cbb20("birth", CStringW(spMaid->m_profile.birthDay));
-        obj.FUN_1407cbb20("constel", CStringW(spMaid->m_profile.constellation));
-        obj.FUN_1407cbb20("height", CStringW(spMaid->m_profile.height));
-        obj.FUN_1407cbb20("weight", CStringW(spMaid->m_profile.weight));
-        obj.FUN_1407cbb20("special", CStringW(spMaid->m_profile.specialDetail));
-        obj.FUN_1407cbb20("like", CStringW(spMaid->m_profile.like));
-        obj.FUN_1407cbb20("hate", CStringW(spMaid->m_profile.hate));
-        obj.FUN_1407cbb20("hobby", CStringW(spMaid->m_profile.hobby));
-        obj.FUN_1407cbb20("ownername", CStringW(spMaid->m_profile.ownerName));
-        obj.FUN_1407cbb20("belongto", CStringW(spMaid->m_profile.belongTo));
+        obj.SetWStringMember("title", CStringW(spMaid->m_profile.title));
+        obj.SetWStringMember("birth", CStringW(spMaid->m_profile.birthDay));
+        obj.SetWStringMember("constel", CStringW(spMaid->m_profile.constellation));
+        obj.SetWStringMember("height", CStringW(spMaid->m_profile.height));
+        obj.SetWStringMember("weight", CStringW(spMaid->m_profile.weight));
+        obj.SetWStringMember("special", CStringW(spMaid->m_profile.specialDetail));
+        obj.SetWStringMember("like", CStringW(spMaid->m_profile.like));
+        obj.SetWStringMember("hate", CStringW(spMaid->m_profile.hate));
+        obj.SetWStringMember("hobby", CStringW(spMaid->m_profile.hobby));
+        obj.SetWStringMember("ownername", CStringW(spMaid->m_profile.ownerName));
+        obj.SetWStringMember("belongto", CStringW(spMaid->m_profile.belongTo));
     }
-    obj.FUN_1407cb9c0("maxChars1", *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MaidConsts*)GetClientConstants())->m_maxChars1)->Get());
-    obj.FUN_1407cb9c0("maxChars2", *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MaidConsts*)GetClientConstants())->m_maxChars2)->Get());
+    obj.SetIntMember("maxChars1", *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MaidConsts*)GetClientConstants())->m_maxChars1)->Get());
+    obj.SetIntMember("maxChars2", *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_MaidConsts*)GetClientConstants())->m_maxChars2)->Get());
     m_30->Invoke("setData", obj);
     if (((class CInputKeyHandler*)FUN_14025e7c0())->IsDebugMode())
         m_30->Invoke("showDebugBtn", 1);           // an int, not a bool: the movie gets the Number 1
@@ -462,7 +462,7 @@ int UIMaidDialog::FUN_1412d8e10(int nField, CStringW strValue, MaidProfile* pPro
         {
             if (pCheck->CheckMaidProfileField(strValue, strBad) != 0)
             {
-                FUN_140d73aa0(StringFormat(L"[ {0} ] {1}", strName, strBad), 0, 0, CStringW(L""));
+                ShowMessageBox(StringFormat(L"[ {0} ] {1}", strName, strBad), 0, 0, CStringW(L""));
                 return 0;
             }
         }
@@ -470,7 +470,7 @@ int UIMaidDialog::FUN_1412d8e10(int nField, CStringW strValue, MaidProfile* pPro
         {
             if (pCheck->CheckMaidName(strValue, strBad) != 0)
             {
-                FUN_140d73aa0(StringFormat(L"[ {0} ] {1}", strName, strBad), 0, 0, CStringW(L""));
+                ShowMessageBox(StringFormat(L"[ {0} ] {1}", strName, strBad), 0, 0, CStringW(L""));
                 return 0;
             }
         }
@@ -480,14 +480,14 @@ int UIMaidDialog::FUN_1412d8e10(int nField, CStringW strValue, MaidProfile* pPro
 }
 
 // @0x1412d9640
-void UIMaidDialog::FUN_1412d9640(int nMaidId, unsigned __int64 nMaidUid)
+void UIMaidDialog::SetMaid(int nMaidId, unsigned __int64 nMaidUid)
 {
     m_nMaidId = nMaidId;
     m_nMaidUid = nMaidUid;
 }
 
 // @0x1412d9680
-void UIMaidDialog::FUN_1412d9680()
+void UIMaidDialog::UpdateStatus()
 {
     void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -499,7 +499,7 @@ void UIMaidDialog::FUN_1412d9680()
     CNpc* pView = reinterpret_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
     if (pView == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pView->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pView->GetMaid();
     if (spMaid.IsNull())
         return;
     TPtrValue<MaidDesc> spDesc = TSingleton<CMaidDescTable>::GetInstance()->Find(spMaid->m_nMaidId);
@@ -510,24 +510,24 @@ void UIMaidDialog::FUN_1412d9680()
         return;
 
     ASObj obj(2);
-    obj.FUN_1407cbb20("endDate", FUN_1412da590());
+    obj.SetWStringMember("endDate", FUN_1412da590());
     int nMaxExp = (std::max<int>)(1, TSingleton<CMaidExpTable>::GetInstance()->GetExp(spMaid->m_nOrder));
     int nGauge = spMaid->m_nExp * 100 / nMaxExp;
     CStringW strLevel = BlockFormat<int>(0x79a, spMaid->m_nOrder);
     if (spMaid->IsAffinityLevelAtMax() != 0)
         strLevel = StringFormat(L"{0} {1}", strLevel, GetStringCommon(0x79b));
-    obj.FUN_1407cbb20("affinityLevel", CStringW(strLevel));
+    obj.SetWStringMember("affinityLevel", CStringW(strLevel));
     CStringW strTooltip = FormatStringId(0x79c, spMaid->m_nExp, nMaxExp);
     if (spMaid->IsAffinityLevelAtMax() != 0)
         strTooltip = GetStringCommon(0x79d);
-    obj.FUN_1407cbb20("affinityTooltip", CStringW(strTooltip));
-    obj.FUN_1407cb9c0("affinityGauge", nGauge);
-    obj.FUN_1407cb9c0("mood", spMaid->m_nMood);
+    obj.SetWStringMember("affinityTooltip", CStringW(strTooltip));
+    obj.SetIntMember("affinityGauge", nGauge);
+    obj.SetIntMember("mood", spMaid->m_nMood);
     m_30->Invoke("updateStatus", obj);
 }
 
 // @0x1412d9b90
-void UIMaidDialog::FUN_1412d9b90()
+void UIMaidDialog::UpdateProperty()
 {
     void* pPlayer = reinterpret_cast<Unk_MaidWorld*>(WorldService::GetInstance())->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -539,7 +539,7 @@ void UIMaidDialog::FUN_1412d9b90()
     CNpc* pView = reinterpret_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
     if (pView == 0)
         return;
-    MS2Ptr<CMaid> spMaid = pView->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pView->GetMaid();
     if (spMaid.IsNull())
         return;
     TPtrValue<MaidDesc> spDesc = TSingleton<CMaidDescTable>::GetInstance()->Find(spMaid->m_nMaidId);
@@ -550,35 +550,35 @@ void UIMaidDialog::FUN_1412d9b90()
         return;
 
     ASObj obj(2);
-    obj.FUN_1407cbb20("name", pView->FUN_141093310());
-    obj.FUN_1407cbb20("title", pView->FUN_141093980());
+    obj.SetWStringMember("name", pView->FUN_141093310());
+    obj.SetWStringMember("title", pView->FUN_141093980());
     if (spMaid->FUN_1409eeda0().IsEmpty())
     {
-        obj.FUN_1407cbb20("title", CStringW(spDesc->title));
-        obj.FUN_1407cbb20("birth", CStringW(spDesc->birthDay));
-        obj.FUN_1407cbb20("constel", CStringW(spDesc->constellation));
-        obj.FUN_1407cbb20("height", CStringW(spDesc->height));
-        obj.FUN_1407cbb20("weight", CStringW(spDesc->weight));
-        obj.FUN_1407cbb20("special", CStringW(spDesc->specialDetail));
-        obj.FUN_1407cbb20("like", CStringW(spDesc->like));
-        obj.FUN_1407cbb20("hate", CStringW(spDesc->hate));
-        obj.FUN_1407cbb20("hobby", CStringW(spDesc->hobby));
-        obj.FUN_1407cbb20("ownername", CStringW(spDesc->ownerName));
-        obj.FUN_1407cbb20("belongto", CStringW(spDesc->belongTo));
+        obj.SetWStringMember("title", CStringW(spDesc->title));
+        obj.SetWStringMember("birth", CStringW(spDesc->birthDay));
+        obj.SetWStringMember("constel", CStringW(spDesc->constellation));
+        obj.SetWStringMember("height", CStringW(spDesc->height));
+        obj.SetWStringMember("weight", CStringW(spDesc->weight));
+        obj.SetWStringMember("special", CStringW(spDesc->specialDetail));
+        obj.SetWStringMember("like", CStringW(spDesc->like));
+        obj.SetWStringMember("hate", CStringW(spDesc->hate));
+        obj.SetWStringMember("hobby", CStringW(spDesc->hobby));
+        obj.SetWStringMember("ownername", CStringW(spDesc->ownerName));
+        obj.SetWStringMember("belongto", CStringW(spDesc->belongTo));
     }
     else
     {
-        obj.FUN_1407cbb20("title", CStringW(spMaid->m_profile.title));
-        obj.FUN_1407cbb20("birth", CStringW(spMaid->m_profile.birthDay));
-        obj.FUN_1407cbb20("constel", CStringW(spMaid->m_profile.constellation));
-        obj.FUN_1407cbb20("height", CStringW(spMaid->m_profile.height));
-        obj.FUN_1407cbb20("weight", CStringW(spMaid->m_profile.weight));
-        obj.FUN_1407cbb20("special", CStringW(spMaid->m_profile.specialDetail));
-        obj.FUN_1407cbb20("like", CStringW(spMaid->m_profile.like));
-        obj.FUN_1407cbb20("hate", CStringW(spMaid->m_profile.hate));
-        obj.FUN_1407cbb20("hobby", CStringW(spMaid->m_profile.hobby));
-        obj.FUN_1407cbb20("ownername", CStringW(spMaid->m_profile.ownerName));
-        obj.FUN_1407cbb20("belongto", CStringW(spMaid->m_profile.belongTo));
+        obj.SetWStringMember("title", CStringW(spMaid->m_profile.title));
+        obj.SetWStringMember("birth", CStringW(spMaid->m_profile.birthDay));
+        obj.SetWStringMember("constel", CStringW(spMaid->m_profile.constellation));
+        obj.SetWStringMember("height", CStringW(spMaid->m_profile.height));
+        obj.SetWStringMember("weight", CStringW(spMaid->m_profile.weight));
+        obj.SetWStringMember("special", CStringW(spMaid->m_profile.specialDetail));
+        obj.SetWStringMember("like", CStringW(spMaid->m_profile.like));
+        obj.SetWStringMember("hate", CStringW(spMaid->m_profile.hate));
+        obj.SetWStringMember("hobby", CStringW(spMaid->m_profile.hobby));
+        obj.SetWStringMember("ownername", CStringW(spMaid->m_profile.ownerName));
+        obj.SetWStringMember("belongto", CStringW(spMaid->m_profile.belongTo));
     }
     m_30->Invoke("updateProperty", obj);
 }
@@ -595,7 +595,7 @@ CStringW UIMaidDialog::FUN_1412da590()
     CNpc* pView = reinterpret_cast<CNpc*>(reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1320(m_nMaidId)));
     if (pView == 0)
         return strText;
-    MS2Ptr<CMaid> spMaid = pView->FUN_141093800();
+    MS2Ptr<CMaid> spMaid = pView->GetMaid();
     if (spMaid.IsNull())
         return strText;
     if (spMaid->m_nExpireTime <= GetServerTime())

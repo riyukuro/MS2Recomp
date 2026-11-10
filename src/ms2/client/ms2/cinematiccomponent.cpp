@@ -40,7 +40,7 @@ static CString s_sortNames[] = {"None", "Buy", "PriceLow", "PriceHigh", "Create"
 #include "ms2/commonfiles/npcdata.h"
 #include <efd/SmartPointer.h>   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
 class CubeMapInformationService;   // C3: efd::SmartPointer<CubeMapInformationService>::operator->
-class CUserMail { public: static __int64 FUN_1408e57f0(); };  // C3: member view (0x1408e57f0, the scene-service global)
+class CUserMail { public: static __int64 GetGFxSceneService(); };  // C3: member view (0x1408e57f0, the scene-service global)
 static UICommon::CMyPCKeyInputController s_keyInputController;
 static CString s_nextKey = "cinematic_nextkey";          // @0x1400e5330
 static CString s_getItem = "cinematic_getItem";          // @0x1400e5360
@@ -100,7 +100,7 @@ public:
     MyPC* FUN_141bd0cc0();                                      // local player
 };
 class UIJobChangeDialog : public UIObject { public: public:
-    int FUN_1419dc530();   // C3: was free FUN_1419dc530
+    int IsHardJob();   // C3: was free IsHardJob
 };
 int FUN_14151f6e0();
 void FUN_14151f200();
@@ -119,7 +119,7 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 int FUN_1408a0890(int, int, int*);
 
 // Quest helpers.
-MS2Ptr<CQuestData> FUN_14074bc40(int nQuestId);
+MS2Ptr<CQuestData> GetQuestData(int nQuestId);
 class Unk_CinQuestState { };
 class Unk_CinQuestGlobal { public: void* m_0; void* m_8; Unk_CinQuestState m_state; };
 void* FUN_140764020();   // C3: was FUN_140764020
@@ -143,14 +143,14 @@ CStringW GetStringCommon(int nStringId);
 CStringW FUN_1401aa6a0(int nId);
 CStringW GetStringCommonByKey(const CStringW&);
 CStringW FUN_1409404f0(__int64);
-CStringW FUN_1416e4df0(int nQuestId);
+CStringW GetQuestName(int nQuestId);
 int FUN_1416e6100(int nQuestId, int);
 void FUN_141275260(int, int, int);
 void AddTalkImage(const CString& key);
 int FUN_141276180(const CString&, const CString&);
 void FUN_140710590(COutPacket&);
 void CreateItemInfoSlot(const CString&, MS2Ptr<CItem>, int, int, int);
-void FUN_1401fdad0(unsigned char*, class COutputStream&);   // C3: was FUN_1401fdad0
+void WriteNpcId(unsigned char*, class COutputStream&);   // C3: was WriteNpcId
 void FUN_140d73bc0(int, int, void*, CStringW);
 
 class CMsgBoxData : public CPtred
@@ -164,7 +164,7 @@ public:
 };
 MS2_CHECK_SIZE(CMsgBoxData, 0x2a0);
 void FUN_140f73320(CMsgBoxData*, bool);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 
 // Talk scripts (FUN_140856c50(npc id, 0)). ctalkscript.h is a view: its page list is this array.
@@ -299,7 +299,7 @@ void CCinematicComponent::vfunc_5(ASObj& obj)
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc != 0) {
         CStringW name(m_spContent->m_name);
-        int nNpcId = TSingleton<UITalkManager>::GetInstance()->FUN_141b212f0();
+        int nNpcId = TSingleton<UITalkManager>::GetInstance()->GetTalkNpcId();
         CStringW text;
         if (m_spContent->m_speakerNpc != 0) {
             text = FUN_1401aa6a0(m_spContent->m_speakerNpc);
@@ -317,13 +317,13 @@ void CCinematicComponent::vfunc_5(ASObj& obj)
             }
         }
         reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->ReplaceValueWords(name);
-        obj.FUN_1407cbb20("npc", CStringW(text));
-        obj.FUN_1407cbb20("script", CStringW(name));
-        obj.FUN_1407cba60("movie", CString(m_spContent->m_movie));
+        obj.SetWStringMember("npc", CStringW(text));
+        obj.SetWStringMember("script", CStringW(name));
+        obj.SetStringMember("movie", CString(m_spContent->m_movie));
         if (m_spContent->m_screenEffectMovie.GetLength() != 0) {
             ASObj effect(2);
-            effect.FUN_1407cba60("movie", CString(m_spContent->m_screenEffectMovie));
-            effect.FUN_1407cba60("action", CString(m_spContent->m_screenEffectAction));
+            effect.SetStringMember("movie", CString(m_spContent->m_screenEffectMovie));
+            effect.SetStringMember("action", CString(m_spContent->m_screenEffectAction));
             effect.SetMemberUInt("value", m_spContent->m_screenEffectValue);
             obj.FUN_1409eb270("screenEffect", effect);
         }
@@ -345,7 +345,7 @@ void CCinematicComponent::FillRewardItems(const ATL::CAtlArray<CQuestData::Quest
             CString attr;
             attr.Format("reward%d", i + 1);
             AddTalkImage(key);
-            obj.FUN_1407cba60(attr, CString(key));
+            obj.SetStringMember(attr, CString(key));
         }
     }
 }
@@ -357,18 +357,18 @@ unsigned CCinematicComponent::FillTalkReward(ASObj& obj)
     {
         unsigned bAny = 0;
         ASObj reward(2);
-        reward.FUN_1407cbb20("title", GetStringCommon(0x94b));
+        reward.SetWStringMember("title", GetStringCommon(0x94b));
         UITalkManager::CTalkRewardData* pReward = TSingleton<UITalkManager>::GetInstance()->FUN_141082d60();
         if (pReward->m_nMerat != 0) {
             bAny = 1;
-            reward.FUN_1407cbb20("exp", FUN_1409404f0(pReward->m_nMerat));
+            reward.SetWStringMember("exp", FUN_1409404f0(pReward->m_nMerat));
         }
         if (pReward->m_nMeso != 0) {
             bAny = 1;
-            reward.FUN_1407cbb20("meso", FUN_1409404f0(pReward->m_nMeso));
+            reward.SetWStringMember("meso", FUN_1409404f0(pReward->m_nMeso));
         }
         if (pReward->m_nExp != 0) {
-            reward.FUN_1407cbb20("title", GetStringCommon(0x7c1));
+            reward.SetWStringMember("title", GetStringCommon(0x7c1));
             bAny = 1;
             CStringW mood(L"");
             if (pReward->m_nExp > 0) {
@@ -377,25 +377,25 @@ unsigned CCinematicComponent::FillTalkReward(ASObj& obj)
                 int nAbs = abs(pReward->m_nExp);
                 mood = FormatStringId<int>(0x7c5, nAbs);
             }
-            reward.FUN_1407cbb20("mood", CStringW(mood));
+            reward.SetWStringMember("mood", CStringW(mood));
         }
         if (pReward->m_nAffinity != 0) {
-            reward.FUN_1407cbb20("title", GetStringCommon(0x7c1));
+            reward.SetWStringMember("title", GetStringCommon(0x7c1));
             bAny = 1;
             CStringW affinity(L"");
             Unk_CinNpc* pNpc = (Unk_CinNpc*)TSingleton<UITalkManager>::GetInstance()->GetTalkNpc();
             if (pNpc != 0) {
-                CMaid* pAffinity = reinterpret_cast<CNpc*>(pNpc)->FUN_141093800().get();
+                CMaid* pAffinity = reinterpret_cast<CNpc*>(pNpc)->GetMaid().get();
                 if (pAffinity != 0) {
                     if (pReward->m_nJackpot != 0) {
                         affinity = StringFormat<CStringW, CStringW>(L"{0} {1}", FormatStringId<int>(0x7c2, pReward->m_nAffinity),
-                                                 FormatStringId<int>(0x7c3, reinterpret_cast<CNpc*>(pNpc)->FUN_141093800().operator->()->m_nOrder));
+                                                 FormatStringId<int>(0x7c3, reinterpret_cast<CNpc*>(pNpc)->GetMaid().operator->()->m_nOrder));
                     } else {
                         affinity = FormatStringId<int>(0x7c2, pReward->m_nAffinity);
                     }
                 }
             }
-            reward.FUN_1407cbb20("affinityExp", CStringW(affinity));
+            reward.SetWStringMember("affinityExp", CStringW(affinity));
         }
         for (size_t i = 0; i < pReward->m_items.GetCount(); i++) {
             bAny = 1;
@@ -405,7 +405,7 @@ unsigned CCinematicComponent::FillTalkReward(ASObj& obj)
             CreateItemInfoSlot(key, spItem, 0, 0x11, 0x800);
             CString attr;
             attr.Format("reward%d", i + 1);
-            reward.FUN_1407cba60(attr, CString(key));
+            reward.SetStringMember(attr, CString(key));
             AddTalkImage(key);
         }
         pReward->FUN_141b1dbd0();
@@ -419,12 +419,12 @@ CStringW CCinematicComponent::FUN_14107dfa0(int nStringId)
 {
     CStringW text = GetStringCommon(nStringId);
     reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->ReplaceValueWords(text);
-    CStringW keyConfirm = FUN_1409331f0()->GetKeyName(1);
-    CStringW keyNext = FUN_1409331f0()->GetKeyName(0x39);
+    CStringW keyConfirm = GetKeyTable()->GetKeyName(1);
+    CStringW keyNext = GetKeyTable()->GetKeyName(0x39);
     int nVariant = *reinterpret_cast<unsigned char*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))) != 0 ? 2 : 0;
     if (nVariant == 2)
-        text.Replace(keyConfirm, FUN_1409331f0()->GetActionKeyName(0x49409, nVariant));
-    text.Replace(keyNext, FUN_1409331f0()->GetActionKeyName(0x493e2, nVariant));
+        text.Replace(keyConfirm, GetKeyTable()->GetActionKeyName(0x49409, nVariant));
+    text.Replace(keyNext, GetKeyTable()->GetActionKeyName(0x493e2, nVariant));
     return text;
 }
 
@@ -454,7 +454,7 @@ void CNextCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
     m_nReward = FillTalkReward(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d5));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x5d5));
 }
 
 // ---- CCloseCinematicComponent ----
@@ -471,7 +471,7 @@ int CCloseCinematicComponent::vfunc_2(int nMsg)
         if (m_nReward != 0)
             FUN_141276180(s_getItem, "");
         if (TSingleton<UITalkManager>::GetInstance()->FUN_141b213c0() != 0)
-            TSingleton<UITalkManager>::GetInstance()->FUN_141b20210();
+            TSingleton<UITalkManager>::GetInstance()->ResetTalk();
         else
             TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode2(0);
         return 1;
@@ -485,7 +485,7 @@ void CCloseCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
     m_nReward = FillTalkReward(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d6));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x5d6));
 }
 
 // ---- CDistractorCinematicComponent ----
@@ -517,9 +517,9 @@ void CDistractorCinematicComponent::vfunc_6(const Unk_CinIconArray& icons, ASObj
         CStringW text(icons.GetAt(i).m_text);
         reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->FUN_1416fb400(text, (Unk_CinNpc*)TSingleton<UITalkManager>::GetInstance()->GetTalkNpc());
         reinterpret_cast<Unk_CinNameFilter*>(TSingleton<CReservedWordTable>::GetInstance())->ReplaceValueWords(text);
-        item.FUN_1407cba60("iconClass", CString(icons.GetAt(i).m_icon));
-        item.FUN_1407cbb20("text", CStringW(text));
-        distractors.PushValue(item.FUN_1422bb870());
+        item.SetStringMember("iconClass", CString(icons.GetAt(i).m_icon));
+        item.SetWStringMember("text", CStringW(text));
+        distractors.PushValue(item.GetValue());
     }
     obj.FUN_1409eb1d0("distractor", distractors);
 }
@@ -537,9 +537,9 @@ int CQuestAcceptCinematicComponent::vfunc_2(int nMsg)
     if (nMsg == 0x493e2) {
         if (((CQuestManagerCommon*)&((class Unk_CinQuestGlobal*)FUN_140764020())->m_state)->IsQuestActive(m_spContent->m_questId) != 0)
             return 1;
-        MS2Ptr<CQuestData> spQuest = FUN_14074bc40(m_spContent->m_questId);
+        MS2Ptr<CQuestData> spQuest = GetQuestData(m_spContent->m_questId);
         if (bool(spQuest.get() != 0) && spQuest->m_require.m_unrequireGroup.GetCount() > 0) {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_alliance_quest_unreq_group_warn"), 0, L"");
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_alliance_quest_unreq_group_warn"), 0, L"");
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CQuestAcceptCinematicComponent::OnMsgBoxResult));
             spBox->Append<unsigned>(m_spContent->m_questId);
             FUN_140f73320(spBox.operator->(), m_spContent->m_redirect != 0);
@@ -557,7 +557,7 @@ int CQuestAcceptCinematicComponent::vfunc_3() { return 6; }
 void CQuestAcceptCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d3));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x5d3));
 }
 // @0x14107ec40
 bool CQuestAcceptCinematicComponent::OnMsgBoxResult(int nButton, const CMsgBoxData& data)
@@ -606,7 +606,7 @@ int CQuestProgressCinematicComponent::vfunc_2(int nMsg)
     if (m_nStarted != 0)
         return 0;
     if (nMsg == 0x493e2) {
-        MS2Ptr<CQuestData> spQuest = FUN_14074bc40(m_spContent->m_questId);
+        MS2Ptr<CQuestData> spQuest = GetQuestData(m_spContent->m_questId);
         if (bool(spQuest.get() != 0) && spQuest->m_318.m_0 != 0) {
             COutPacket pkt(static_cast<int>(SendOp::Quest), 0);
             pkt.Encode1(0x12);
@@ -633,10 +633,10 @@ int CQuestCompleteCinematicComponent::vfunc_2(int nMsg)
         return 1;
     if (nMsg == 0x493e2) {
         int nQuestId = m_spContent->m_questId;
-        MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuestId);
+        MS2Ptr<CQuestData> spQuest = GetQuestData(nQuestId);
         if (!spQuest)
             return 1;
-        if (((CQuestManagerCommon*)&((class Unk_CinQuestGlobal*)FUN_140764020())->m_state)->FUN_140745590(m_spContent->m_questId) != 0)
+        if (((CQuestManagerCommon*)&((class Unk_CinQuestGlobal*)FUN_140764020())->m_state)->IsQuestRewarded(m_spContent->m_questId) != 0)
             return 1;
         int nChoice = 0;
         COutPacket pktComplete(static_cast<int>(SendOp::Quest), 0);
@@ -667,17 +667,17 @@ void CQuestCompleteCinematicComponent::vfunc_5(ASObj& obj)
     MyPC* pc = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pc == 0)
         return;
-    MS2Ptr<CQuestData> spQuest = FUN_14074bc40(m_spContent->m_questId);
+    MS2Ptr<CQuestData> spQuest = GetQuestData(m_spContent->m_questId);
     if (!spQuest)
         return;
     ASObj reward(2);
-    reward.FUN_1407cbb20("title", GetStringCommon(0x5d7));
+    reward.SetWStringMember("title", GetStringCommon(0x5d7));
     __int64 nExp = FUN_140761ba0(m_spContent->m_questId, 1);
     if (nExp != 0)
-        reward.FUN_1407cbb20("exp", FUN_1409404f0(nExp));
+        reward.SetWStringMember("exp", FUN_1409404f0(nExp));
     __int64 nMeso = FUN_140761cc0(m_spContent->m_questId, 1);
     if (nMeso != 0)
-        reward.FUN_1407cbb20("meso", FUN_1409404f0(nMeso));
+        reward.SetWStringMember("meso", FUN_1409404f0(nMeso));
     __int64 nKarma = FUN_140761d80(m_spContent->m_questId, 1);
     if (nKarma != 0)
         reward.FUN_1409c1180("karma", nKarma);
@@ -692,7 +692,7 @@ void CQuestCompleteCinematicComponent::vfunc_5(ASObj& obj)
         reward.FUN_1409c1180("guildFund", nGuildFund);
     int nFame = FUN_140761ea0(m_spContent->m_questId, 1);
     if (nFame != 0)
-        reward.FUN_1407cb9c0("famePoint", nFame);
+        reward.SetIntMember("famePoint", nFame);
     ATL::CAtlArray<CQuestData::QuestRewardItem> items;
     for (size_t i = 0; i < spQuest->m_complete.m_choiceRewards.GetCount(); i++) {
         CQuestData::QuestRewardItem& item = spQuest->m_complete.m_choiceRewards[i];
@@ -709,7 +709,7 @@ void CQuestCompleteCinematicComponent::vfunc_5(ASObj& obj)
     }
     FillRewardItems(items, reward);
     obj.FUN_1409eb270("reward", reward);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d4));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x5d4));
 }
 
 // ---- CSelectableDistractorCinematicComponent ----
@@ -738,9 +738,9 @@ void CSelectableDistractorCinematicComponent::vfunc_5(ASObj& obj)
     }
     vfunc_6(icons, obj);
     if (bAnyScript)
-        obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d5));
+        obj.SetWStringMember("button", FUN_14107dfa0(0x5d5));
     else
-        obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d6));
+        obj.SetWStringMember("button", FUN_14107dfa0(0x5d6));
 }
 
 // ---- CCustomSelectableDistractorCinematicComponent ----
@@ -829,7 +829,7 @@ CStringA SelectStringByQuestKind(MS2Ptr<CQuestData> spQuest, const CStringA& sNo
 // @0x141082090
 CStringA SelectStringByQuestId(int nQuestId, const CStringA& sNormal, const CStringA& sDefault, const CStringA& sAlt, const CStringA& sEpic)
 {
-    MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuestId);
+    MS2Ptr<CQuestData> spQuest = GetQuestData(nQuestId);
     return SelectStringByQuestKind(spQuest, sNormal, sDefault, sAlt, sEpic);
 }
 
@@ -860,7 +860,7 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
             int nFlags = TSingleton<UITalkManager>::GetInstance()->FUN_141082ec0();
             Unk_CinIconArray icons;
             if ((nFlags & 0x20) != 0) {
-                Unk_ScriptPtr<CTalkScript> spScript = FUN_140856c50(((class CNpc*)(class Unk_CinNpc*)(pNpc))->FUN_141092fa0(), 0);
+                Unk_ScriptPtr<CTalkScript> spScript = FUN_140856c50(((class CNpc*)(class Unk_CinNpc*)(pNpc))->GetNpcId(), 0);
                 if (bool(spScript.get() != 0)) {
                     if (reinterpret_cast<Unk_CinContentArray&>(spScript->m_contents).GetCount() > 0) {
                         CScriptContent* pEntry = reinterpret_cast<Unk_CinContentArray&>(spScript->m_contents)[0].operator->();
@@ -901,17 +901,17 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
                         icon.m_icon = "talk_icon_quest_progress";
                         break;
                     }
-                    MS2Ptr<CQuestData> spQuest = FUN_14074bc40(nQuestId);
+                    MS2Ptr<CQuestData> spQuest = GetQuestData(nQuestId);
                     if (spQuest.get() != 0) {
                         icon.m_icon += SelectStringByQuestId(nQuestId, "_epic", "", "_repeat", "_event");
-                        icon.m_text = FUN_14028dfa0(L"s_quest_distactor_quest_name", FUN_1416e4df0(nQuestId), GetStringCommon(nState), spQuest->m_level);
+                        icon.m_text = FUN_14028dfa0(L"s_quest_distactor_quest_name", GetQuestName(nQuestId), GetStringCommon(nState), spQuest->m_level);
                         icons.Add(icon);
                     }
                 }
             }
             if ((nFlags & 1) != 0) {
                 Unk_CinIcon icon;
-                CStringW sJob = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xe, ((class CNpc*)(class Unk_CinNpc*)(pNpc))->FUN_141092fa0());
+                CStringW sJob = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0xe, ((class CNpc*)(class Unk_CinNpc*)(pNpc))->GetNpcId());
                 if (sJob.GetLength() == 0)
                     sJob = GetStringCommon(0x62d);
                 icon.m_icon = "talk_icon_job";
@@ -925,7 +925,7 @@ void CSelectableTalkCinematicComponent::vfunc_5(ASObj& obj)
                 icons.Add(icon);
             }
             vfunc_6(icons, obj);
-            obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d5));
+            obj.SetWStringMember("button", FUN_14107dfa0(0x5d5));
         }
     }
 }
@@ -972,7 +972,7 @@ int CChangeJobComponent::vfunc_2(int nMsg)
         int nResult = 0;
         UIJobChangeDialog* pDlg = FindJobChangeDialog(0x4e7c);
         if (pDlg != 0)
-            nResult = ((class UIJobChangeDialog*)(pDlg))->FUN_1419dc530();
+            nResult = ((class UIJobChangeDialog*)(pDlg))->IsHardJob();
         if (FUN_14151f6e0() != 0)
             FUN_140d73bc0(nResult != 0 ? 0x75 : 0x7cb, 1, static_cast<IMessageListener*>(this), L"");
     }
@@ -992,7 +992,7 @@ int CChangeJobComponent::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                 npc.m_n = TSingleton<UITalkManager>::GetInstance()->GetNpcId();
                 COutPacket pkt(static_cast<int>(SendOp::Job), 0);
                 pkt.Encode1(2);
-                FUN_1401fdad0((unsigned char*)(&npc.m_n), *(class COutputStream*)&static_cast<class COutPacket&>(pkt));
+                WriteNpcId((unsigned char*)(&npc.m_n), *(class COutputStream*)&static_cast<class COutPacket&>(pkt));
                 FUN_140710590(pkt);
                 TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode0();
                 TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4e7c);
@@ -1005,7 +1005,7 @@ int CChangeJobComponent::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 void CChangeJobComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x668));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x668));
 }
 
 // ---- CUgcSignCinematicComponent ----
@@ -1056,7 +1056,7 @@ int CUgcSignCinematicComponent::vfunc_3() { return 6; }
 void CUgcSignCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x5d3));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x5d3));
 }
 
 // ---- CPaneltyResolveCinematicComponent ----
@@ -1075,7 +1075,7 @@ int CPaneltyResolveCinematicComponent::vfunc_2(int nMsg)
         return 0;
     if (nMsg == 0x493e2) {
         if (((PC*)pc)->FUN_141661aa0() != 0) {
-            bool bTooRich = DAT_143ab2898 < ((class CLua*)FUN_1401c0db0())->CalcResolvePaneltyPrice((unsigned short)pc->vfunc_78(), ((PC*)pc)->FUN_141661aa0(), ((class CFieldData*)(CFieldDataCli*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->FUN_1403754f0());
+            bool bTooRich = DAT_143ab2898 < ((class CLua*)FUN_1401c0db0())->CalcResolvePaneltyPrice((unsigned short)pc->vfunc_78(), ((PC*)pc)->FUN_141661aa0(), ((class CFieldData*)(CFieldDataCli*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->GetShadowContinent());
             if (bTooRich) {
                 FUN_141275260(0x34, 1, 1);
             } else {
@@ -1097,7 +1097,7 @@ int CPaneltyResolveCinematicComponent::vfunc_3() { return 0xd; }
 void CPaneltyResolveCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x66a));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x66a));
 }
 
 // ---- CHomeDoctorCinematicComponent ----
@@ -1116,7 +1116,7 @@ int CHomeDoctorCinematicComponent::vfunc_2(int nMsg)
         return 0;
     if (nMsg == 0x493e2) {
         if (((PC*)pc)->FUN_141661aa0() != 0) {
-            bool bTooRich = DAT_143ab2898 < ((class CLua*)FUN_1401c0db0())->CalcResolvePaneltyPrice((unsigned short)pc->vfunc_78(), ((PC*)pc)->FUN_141661aa0(), ((class CFieldData*)(CFieldDataCli*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->FUN_1403754f0());
+            bool bTooRich = DAT_143ab2898 < ((class CLua*)FUN_1401c0db0())->CalcResolvePaneltyPrice((unsigned short)pc->vfunc_78(), ((PC*)pc)->FUN_141661aa0(), ((class CFieldData*)(CFieldDataCli*)(WorldService::GetInstance()->FUN_141bd30a0().operator->()))->GetShadowContinent());
             if (bTooRich) {
                 FUN_141275260(0x34, 1, 1);
             } else {
@@ -1127,7 +1127,7 @@ int CHomeDoctorCinematicComponent::vfunc_2(int nMsg)
         } else {
             FUN_141275260(0x79, 1, 1);
         }
-        TSingleton<UITalkManager>::GetInstance()->FUN_141b20210();
+        TSingleton<UITalkManager>::GetInstance()->ResetTalk();
     }
     return 1;
 }
@@ -1137,7 +1137,7 @@ int CHomeDoctorCinematicComponent::vfunc_3() { return 0x12; }
 void CHomeDoctorCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x66a));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x66a));
 }
 
 // ---- CTakeBoatCinematicComponent ----
@@ -1154,7 +1154,7 @@ int CTakeBoatCinematicComponent::vfunc_2(int nMsg)
     if (pc == 0)
         return 0;
     if (nMsg == 0x493e2) {
-        ((GFxSceneService*)CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(0x620001d);
+        ((GFxSceneService*)CUserMail::GetGFxSceneService())->FUN_1422b9fd0(0x620001d);
         TSingleton<UITalkManager>::GetInstance()->SendNpcTalkMode2(0);
         COutPacket pkt(static_cast<int>(SendOp::TakeBoat), 0);
         pkt.Encode4(TSingleton<UITalkManager>::GetInstance()->GetNpcId());
@@ -1168,7 +1168,7 @@ int CTakeBoatCinematicComponent::vfunc_3() { return 0xe; }
 void CTakeBoatCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x669));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x669));
 }
 
 // ---- CSellUGCMapCinematicComponent ----
@@ -1199,7 +1199,7 @@ int CSellUGCMapCinematicComponent::vfunc_3() { return 0xf; }
 void CSellUGCMapCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x66b));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x66b));
 }
 
 // ---- CRouletteCinematicComponent ----
@@ -1227,7 +1227,7 @@ int CRouletteCinematicComponent::vfunc_3() { return 0x10; }
 void CRouletteCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x66c));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x66c));
 }
 
 // ---- CRouletteSkipCinematicComponent ----
@@ -1241,7 +1241,7 @@ int CRouletteSkipCinematicComponent::vfunc_3() { return 0x11; }
 void CRouletteSkipCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCloseCinematicComponent::vfunc_5(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x66d));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x66d));
 }
 
 // ---- CEmptyCinematicComponent ----
@@ -1274,7 +1274,7 @@ int CStopCinematicComponent::vfunc_3() { return 2; }
 void CStopCinematicComponent::vfunc_5(ASObj& obj)
 {
     CCinematicComponent::vfunc_5(obj);
-    obj.FUN_1407cbb20("button", FUN_14107dfa0(0x958));
+    obj.SetWStringMember("button", FUN_14107dfa0(0x958));
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cabb20-0x142cabc60 .text$yd

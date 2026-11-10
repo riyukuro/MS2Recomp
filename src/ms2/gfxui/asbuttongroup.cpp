@@ -15,10 +15,10 @@
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ASCallback;
 
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
+Scaleform::GFx::Movie* GetMovie(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
 // The typed Value setters of the Invoke argument lists (COMDATs of ASArray's obj).
 void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);
 
 // @0x1422e8920
 ASButtonGroup::ASButtonGroup(const Scaleform::GFx::Value& v, int nMovieId)
@@ -32,85 +32,85 @@ ASButtonGroup::~ASButtonGroup()
 }
 
 // @0x1422e89a0
-unsigned int ASButtonGroup::FUN_1422e89a0()
+unsigned int ASButtonGroup::GetLength()
 {
     return GetMember("length").GetUInt();
 }
-MS2_REPLACE_METHOD(0x1422E89A0, ASButtonGroup, FUN_1422e89a0, 88, 0x83EDF72E);
+MS2_REPLACE_METHOD(0x1422E89A0, ASButtonGroup, GetLength, 88, 0x83EDF72E);
 
 // @0x1422e8a00
-int ASButtonGroup::FUN_1422e8a00()
+int ASButtonGroup::GetSelectedIndex()
 {
     return GetMember("selectedIndex").GetInt();
 }
-MS2_REPLACE_METHOD(0x1422E8A00, ASButtonGroup, FUN_1422e8a00, 88, 0x3C039DF8);
+MS2_REPLACE_METHOD(0x1422E8A00, ASButtonGroup, GetSelectedIndex, 88, 0x3C039DF8);
 
 // Not hooked (8a60 / 8b20 / 8d60): the MS2Ptr argument is destroyed by the callee.
 // @0x1422e8a60
-void ASButtonGroup::FUN_1422e8a60(MS2Ptr<ASButton> spButton)
+void ASButtonGroup::AddButton(MS2Ptr<ASButton> spButton)
 {
     if (spButton == 0)
         return;
-    Invoke("addButton", spButton->FUN_1422bb870());
+    Invoke("addButton", spButton->GetValue());
 }
 
 // @0x1422e8b20
-void ASButtonGroup::FUN_1422e8b20(MS2Ptr<ASButton> spButton)
+void ASButtonGroup::RemoveButton(MS2Ptr<ASButton> spButton)
 {
     if (spButton == 0)
         return;
-    Invoke("removeButton", spButton->FUN_1422bb870());
+    Invoke("removeButton", spButton->GetValue());
 }
 
 // @0x1422e8be0
-MS2Ptr<ASButton> ASButtonGroup::FUN_1422e8be0(int nIndex)
+MS2Ptr<ASButton> ASButtonGroup::GetButtonAt(int nIndex)
 {
     Scaleform::GFx::Value v = Invoke("getButtonAt", nIndex);
     MS2Ptr<ASButton> spButton(new ASButton(v, FUN_14198f250()));
     return spButton;
 }
-MS2_REPLACE_METHOD(0x1422E8BE0, ASButtonGroup, FUN_1422e8be0, 235, 0x8CBC7520);
+MS2_REPLACE_METHOD(0x1422E8BE0, ASButtonGroup, GetButtonAt, 235, 0x8CBC7520);
 
 // @0x1422e8ce0
-bool ASButtonGroup::FUN_1422e8ce0(int nIndex, bool bForce)
+bool ASButtonGroup::SetSelectedButtonByIndex(int nIndex, bool bForce)
 {
     return FUN_140ed0fd0("setSelectedButtonByIndex", nIndex, bForce).GetBool();
 }
-MS2_REPLACE_METHOD(0x1422E8CE0, ASButtonGroup, FUN_1422e8ce0, 121, 0x5A61716E);
+MS2_REPLACE_METHOD(0x1422E8CE0, ASButtonGroup, SetSelectedButtonByIndex, 121, 0x5A61716E);
 
 // @0x1422e8d60
-bool ASButtonGroup::FUN_1422e8d60(MS2Ptr<ASButton> spButton)
+bool ASButtonGroup::HasButton(MS2Ptr<ASButton> spButton)
 {
     if (spButton == 0)
         return false;
-    return Invoke("hasButton", spButton->FUN_1422bb870()).GetBool();
+    return Invoke("hasButton", spButton->GetValue()).GetBool();
 }
 
 // @0x1422e8e50
 void ASButtonGroup::FUN_1422e8e50(const ASCallback& onClick, void* pUser)
 {
-    FUN_1422c3600("buttonClick", onClick, false, 0, 0, pUser);
+    AddEventListener("buttonClick", onClick, false, 0, 0, pUser);
 }
 MS2_REPLACE_METHOD(0x1422E8E50, ASButtonGroup, FUN_1422e8e50, 113, 0x873FD8B5);
 
 // @0x1422e8ed0
-void ASButtonGroup::FUN_1422e8ed0(const ASCallback& onChange, void* pUser)
+void ASButtonGroup::AddChangeHandler(const ASCallback& onChange, void* pUser)
 {
-    FUN_1422c3600("change", onChange, false, 0, 0, pUser);
+    AddEventListener("change", onChange, false, 0, 0, pUser);
 }
-MS2_REPLACE_METHOD(0x1422E8ED0, ASButtonGroup, FUN_1422e8ed0, 113, 0xD945B477);
+MS2_REPLACE_METHOD(0x1422E8ED0, ASButtonGroup, AddChangeHandler, 113, 0xD945B477);
 
 // @0x1422e8f50
 MS2Ptr<ASButtonGroup> ASButtonGroup::FUN_1422e8f50(const CStringW& strName, AScript* pScope)
 {
-    Scaleform::GFx::Movie* pMovie = FUN_1422bb8b0(pScope->FUN_14198f250());
+    Scaleform::GFx::Movie* pMovie = GetMovie(pScope->FUN_14198f250());
     if (pMovie == 0)
         return MS2Ptr<ASButtonGroup>(0);
     int nMovieId = pScope->FUN_14198f250();
     Scaleform::GFx::Value vClass;
     pMovie->CreateObject(&vClass, "scaleform.clik.controls.ButtonGroup");
     AScript groupClass(vClass, nMovieId);
-    Scaleform::GFx::Value vGroup = groupClass.FUN_1422e9170("getGroup", strName, pScope->FUN_1422bb870());
+    Scaleform::GFx::Value vGroup = groupClass.FUN_1422e9170("getGroup", strName, pScope->GetValue());
     MS2Ptr<ASButtonGroup> spGroup(new ASButtonGroup(vGroup, nMovieId));
     return spGroup;
 }
@@ -122,7 +122,7 @@ Scaleform::GFx::Value AScript::FUN_1422e9170(const char* szMethod, CStringW a1, 
     ASArgList args;
     args.resize(2);
     FUN_1422bcea0(&args[0], (const wchar_t*)a1);
-    FUN_1422bcc70(&args[1], a2);
+    SetValue(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }
 

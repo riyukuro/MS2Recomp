@@ -29,7 +29,7 @@ extern unsigned DAT_142e13290[256];
 extern unsigned char DAT_1439f5448[16];
 extern unsigned char DAT_1439f5458[16];
 
-CString FUN_140695240(const char* psz);                      // hash of a string (hkey)
+CString GetMd5HexString(const char* psz);                      // hash of a string (hkey)
 CString FUN_1409a2360(const char* psz, int nCodePage);       // CString from a narrow string (0 = default code page)
 std::string FUN_14083fa60(const unsigned char* pData, unsigned nLen); // string from a buffer
 __int64 GetServerTime();                                     // GetServerTime
@@ -394,7 +394,7 @@ CString FUN_140c85110()
 }
 
 // @0x140c85150 - "<nxid>@nx"
-CString FUN_140c85150(u64 nNxId)
+CString FormatNexonId(u64 nNxId)
 {
     return Unk_SocketFormat("{0}@nx", nNxId);
 }
@@ -416,17 +416,17 @@ CString FUN_140c851b0(const CString& strChannel, const CString& strNxId, CMsTime
     int nYear = time.GetYear();
     CString strDate = Unk_SocketFormat("{0:04d}{1:02d}{2:02d}{3:02d}", nYear, nMonth, nDay, nHour);
     CString strKey = strChannel + strNxId + strDate;
-    return FUN_140695240(strKey.GetBuffer());
+    return GetMd5HexString(strKey.GetBuffer());
 }
 
 CString FUN_140c85310(const CString& strPlain);
 
 // @0x140c84fc0 - the cash-shop pay URL for a Nexon id
-CString FUN_140c84fc0(u64 nNxId)
+CString GetCashShopPayUrl(u64 nNxId)
 {
     CMsTime time(GetServerTime());
     CString strChannel = FUN_140c85110();
-    CString strNxId = FUN_140c85150(nNxId);
+    CString strNxId = FormatNexonId(nNxId);
     int nType = FUN_140c851a0();
     CString strKey = FUN_140c851b0(strChannel, strNxId, time);
     CString strToken = Unk_SocketFormat("chid={0}&nxid={1}&ctype={2}&hkey={3}", strChannel, strNxId, nType, strKey);

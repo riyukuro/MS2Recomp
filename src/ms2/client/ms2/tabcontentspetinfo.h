@@ -58,7 +58,7 @@ public:
     virtual void vfunc_5(int nTab);                     //  5 0x140cbafa0
     virtual int vfunc_6(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs);   // 6 0x140cbafe0
 
-    void FUN_140cbb060(MS2Ptr<ASScrollingList> list);     // fill the scrolling list with the pet's skills
+    void FillSkillList(MS2Ptr<ASScrollingList> list);     // fill the scrolling list with the pet's skills
     void OnAutoItemUse();                               // open the auto use option dialog
     void OnAutoItemPick();                               // open the auto pick option dialog
 };
@@ -112,8 +112,8 @@ public:
     virtual void vfunc_7(void* a1, TPtr<Unk_UISwfEntity_25> a2, void* a3, void* a4);   // 7 0x140cbc010
     virtual int vfunc_o178_1(void* pAvatar);            // IUIAvatarEventListener slot 1, 0x140cbc2b0
 
-    void FUN_140cbc2f0();                               // load the render target
-    void FUN_140cbc3b0();                               // unload the render target
+    void LoadRenderTarget();                               // load the render target
+    void UnloadRenderTarget();                               // unload the render target
 
     MS2Ptr<UIAvatarPet> m_avatar;                                // +0x38
 };

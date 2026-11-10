@@ -27,11 +27,11 @@ public:
 
     int IsShown();                                            // m_bShown
     void FUN_140f9bb70();                                           // start showing (m_bShown = m_bPending = 1)
-    void FUN_140f9bba0();                                           // stop showing
-    void FUN_140f9bbd0();                                           // unregister the emoticon and stop showing
-    void FUN_140f9bc40(Vector3 ptWorld);                    // the portal's point (the bubble floats 150 above it)
+    void Hide();                                           // stop showing
+    void Unregister();                                           // unregister the emoticon and stop showing
+    void SetWorldPosition(Vector3 ptWorld);                    // the portal's point (the bubble floats 150 above it)
     void SetName(const CStringW& strName);                    // the emoticon name
-    void FUN_140f9bf70();                                           // project the world point and place the movie
+    void UpdateScreenPosition();                                           // project the world point and place the movie
 
 private:
     MS2_LAYOUT_FRIEND;

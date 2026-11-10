@@ -352,5 +352,5 @@ public:
 MS2_CHECK_SIZE(RideOffActionHideAndSeek, 0x28);
 
 // Factories: read the type byte, build the record, then decode its fields.
-MS2Ptr<RideOnAction> FUN_14077deb0(CInputStream* pStream);      // 0x14077deb0
-MS2Ptr<RideOffAction> FUN_14077e5b0(CInputStream* pStream);     // 0x14077e5b0
+MS2Ptr<RideOnAction> ReadRideOnAction(CInputStream* pStream);      // 0x14077deb0
+MS2Ptr<RideOffAction> ReadRideOffAction(CInputStream* pStream);     // 0x14077e5b0

@@ -34,8 +34,8 @@ public:
     void FUN_1402e12c0(const char* pszFormat, ...);
     unsigned GetFirstTick();
     CString FUN_1402e14e0();
-    unsigned FUN_1402e1570();
-    void FUN_1402e15b0(void* pCallback);
+    unsigned GetElapsedSeconds();
+    void SetCallback(void* pCallback);
 };
 MS2_CHECK_OFFSET(Unk_PerfLog, m_strLabel, 0x30);
 MS2_CHECK_OFFSET(Unk_PerfLog, m_strMessage, 0x38);
@@ -104,7 +104,7 @@ CString Unk_PerfLog::FUN_1402e14e0()
 }
 
 // @0x1402e1570
-unsigned Unk_PerfLog::FUN_1402e1570()
+unsigned Unk_PerfLog::GetElapsedSeconds()
 {
     if (m_nLastTick < m_nFirstTick)
         return 0;
@@ -112,7 +112,7 @@ unsigned Unk_PerfLog::FUN_1402e1570()
 }
 
 // @0x1402e15b0
-void Unk_PerfLog::FUN_1402e15b0(void* pCallback)
+void Unk_PerfLog::SetCallback(void* pCallback)
 {
     m_pCallback = (Unk_PerfLogCallback*)pCallback;
 }

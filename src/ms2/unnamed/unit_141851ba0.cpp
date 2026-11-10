@@ -79,7 +79,7 @@ int CMorphingAnimationData::FUN_141851c20(int nTime)
 MS2_REPLACE_METHOD(0x141851C20, CMorphingAnimationData, FUN_141851c20, 386, 0xD67399D0);
 
 // @0x141851db0
-void CMorphingAnimationData::FUN_141851db0(TiXmlElement* pElem)
+void CMorphingAnimationData::LoadFromXml(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "target", m_strNodeName);
     if (m_strNodeName.IsEmpty())
@@ -99,7 +99,7 @@ void CMorphingAnimationData::FUN_141851db0(TiXmlElement* pElem)
             m_nLoopStart = (int)(m_frameTimes.GetCount() - 1);
     }
 }
-MS2_REPLACE_METHOD(0x141851DB0, CMorphingAnimationData, FUN_141851db0, 322, 0xB4F3EA33);
+MS2_REPLACE_METHOD(0x141851DB0, CMorphingAnimationData, LoadFromXml, 322, 0xB4F3EA33);
 
 // The weight visitor the scene-graph walk takes: a float at +0x00.
 struct Unk_MorphWeightVisitor

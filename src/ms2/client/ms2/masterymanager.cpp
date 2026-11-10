@@ -62,7 +62,7 @@ public:
 void* FUN_140764020();   // C3: was FUN_140764020
 
 CStringW GetStringCommonByKey(const CStringW& str);
-void FUN_1412751f0(const CStringW& str, int nA, int nB);
+void ShowSystemNotice(const CStringW& str, int nA, int nB);
 
 // @0x140b6d070
 CMasteryManager::CMasteryManager()
@@ -164,7 +164,7 @@ Unk_MasteryResult CMasteryManager::FUN_140b6d470(int nStep)
             }
             else
             {
-                if (g_143ab2a90.FUN_140a5f180(spCost->FUN_14026b500(), 0) < spCost->m_c)
+                if (g_143ab2a90.FUN_140a5f180(spCost->GetItemId(), 0) < spCost->m_c)
                     return (Unk_MasteryResult)4;
             }
         }
@@ -200,7 +200,7 @@ void CMasteryManager::FUN_140b6d710(Unk_MasteryResult eResult)
         strText = Unk_MmFormat(L"s_mastery_error_unknown", eResult);
         break;
     }
-    FUN_1412751f0(strText, 1, 1);
+    ShowSystemNotice(strText, 1, 1);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

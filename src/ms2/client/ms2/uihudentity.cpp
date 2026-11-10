@@ -35,7 +35,7 @@ class Unk_HudSub { public: char m_pad[8]; };
 class Unk_HudFlags { public: char m_pad[8]; Unk_HudSub m_sub; };
 class Unk_GameContext { public: efd::ServiceManager* GetServiceManager(); };   // C3: unit-local view (def in camera)
 int FUN_141277f40();                                    // next UI layer
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
+MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);   // new ASGameEntity(v, n)
 
 // @0x140f48b40
 UIHudEntity::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nActorId)
@@ -46,7 +46,7 @@ UIHudEntity::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int n
     m_50 = 0;
     m_54 = 0;
     m_58 = 0;
-    m_38 = FUN_140ba77e0(nLayer, clip);
+    m_38 = CreateGameEntity(nLayer, clip);
     FUN_140f48dc0(0);
 }
 
@@ -259,7 +259,7 @@ PCBase* UIHudEntity::Entity::FUN_140f49330()
 UIHudEntity::TimerEntity::TimerEntity(int nLayer, const Scaleform::GFx::Value& clip, int nActorId)
     : Entity(nLayer, clip, nActorId), m_60(0), m_64(0)
 {
-    m_38 = FUN_140ba77e0(nLayer, clip);
+    m_38 = CreateGameEntity(nLayer, clip);
 }
 
 // @0x140f49430
@@ -277,7 +277,7 @@ void UIHudEntity::TimerEntity::FUN_140f49470()
 void UIHudEntity::TimerEntity::vfunc_2()
 {
     Entity::vfunc_2();
-    m_68.FUN_140868750(m_64);
+    m_68.Start(m_64);
 }
 
 // @0x140f494d0
@@ -291,7 +291,7 @@ void UIHudEntity::TimerEntity::vfunc_3()
 // @0x140f49540
 int UIHudEntity::TimerEntity::vfunc_8(int n)
 {
-    if (m_60 == 0 && m_68.FUN_140868ba0() == 0)
+    if (m_60 == 0 && m_68.IsRunning() == 0)
         return 1;
     return Entity::vfunc_8(n);
 }
@@ -315,7 +315,7 @@ CString UIHudEntity::GetTypeName()
 }
 
 // @0x140f49740
-void UIHudEntity::FUN_140f49740()
+void UIHudEntity::ClearEntities()
 {
     CAtlList<PCBase*> lstActors(10);
     for (POSITION pos = m_a8.GetStartPosition(); pos != 0; m_a8.GetNext(pos))
@@ -336,7 +336,7 @@ void UIHudEntity::FUN_140f49740()
 }
 
 // @0x140f49890
-int UIHudEntity::FUN_140f49890(int nActorId)
+int UIHudEntity::IsActorGone(int nActorId)
 {
     if (reinterpret_cast<Unk_GameContext*>(&reinterpret_cast<Unk_HudFlags*>(TSingleton<CMainSystem>::GetInstance())->m_sub)->GetServiceManager()->GetShutdown())
         return 1;
@@ -349,14 +349,14 @@ int UIHudEntity::FUN_140f49890(int nActorId)
 // @0x140f49900
 void UIHudEntity::vfunc_26()
 {
-    FUN_140f49740();
+    ClearEntities();
     UIObject::vfunc_26();
 }
 
 // @0x140f49930
 void UIHudEntity::vfunc_10()
 {
-    FUN_140f49740();
+    ClearEntities();
 }
 
 // @0x140f49950
@@ -402,7 +402,7 @@ void UIHudEntity::vfunc_15()
 }
 
 // @0x140f49c00
-void UIHudEntity::FUN_140f49c00(int nActorId)
+void UIHudEntity::ReleaseEntity(int nActorId)
 {
     MS2Ptr<Entity> spEntity(0);
     if (m_a8.Lookup(nActorId, spEntity))
@@ -436,7 +436,7 @@ void UIHudEntity::FUN_140f49d20()
 // @0x140f49de0
 void UIHudEntity::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 
 // @0x140f4a710
@@ -468,12 +468,12 @@ MS2_REPLACE_METHOD(0x140F49490, UIHudEntity::TimerEntity, vfunc_2, 49, 0xECE3B11
 MS2_REPLACE_METHOD(0x140F494D0, UIHudEntity::TimerEntity, vfunc_3, 53, 0x7A3F1DE3);
 MS2_REPLACE_METHOD(0x140F49540, UIHudEntity::TimerEntity, vfunc_8, 71, 0x85C8D817);
 MS2_REPLACE_METHOD(0x140F496F0, UIHudEntity, GetTypeName, 61, 0xC2A38782);
-MS2_REPLACE_METHOD(0x140F49740, UIHudEntity, FUN_140f49740, 330, 0xBEBB3CC4);
-MS2_REPLACE_METHOD(0x140F49890, UIHudEntity, FUN_140f49890, 96, 0x34967673);
+MS2_REPLACE_METHOD(0x140F49740, UIHudEntity, ClearEntities, 330, 0xBEBB3CC4);
+MS2_REPLACE_METHOD(0x140F49890, UIHudEntity, IsActorGone, 96, 0x34967673);
 MS2_REPLACE_METHOD(0x140F49900, UIHudEntity, vfunc_26, 34, 0x672D7B21);
 MS2_REPLACE_METHOD(0x140F49930, UIHudEntity, vfunc_10, 24, 0x9852ECEC);
 MS2_REPLACE_METHOD(0x140F49950, UIHudEntity, vfunc_15, 674, 0x94F669F7);
-MS2_REPLACE_METHOD(0x140F49C00, UIHudEntity, FUN_140f49c00, 162, 0x189FE50E);
+MS2_REPLACE_METHOD(0x140F49C00, UIHudEntity, ReleaseEntity, 162, 0x189FE50E);
 MS2_REPLACE_METHOD(0x140F49CB0, UIHudEntity, FUN_140f49cb0, 104, 0xEF230F17);
 MS2_REPLACE_METHOD(0x140F49D20, UIHudEntity, FUN_140f49d20, 184, 0xFAF64041);
 MS2_REPLACE_METHOD(0x140F49DE0, UIHudEntity, vfunc_41, 99, 0x358639C0);

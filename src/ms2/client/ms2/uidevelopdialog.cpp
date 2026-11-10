@@ -70,7 +70,7 @@ class Unk_DevBody;
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141240520(float, float);
+    void SetCapsuleSize(float, float);
 };
 
 class Unk_DevDebugInfo;
@@ -86,8 +86,8 @@ MS2Ptr<AScript> FUN_1409e7dc0(int nLayer, const Scaleform::GFx::Value& v);
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-class Unk_ServiceManager* FUN_1413f9850();
-struct Unk_DvCell { char m_00; };                                       // the cell FUN_1412938c0 reads
+class Unk_ServiceManager* GetServiceManager();
+struct Unk_DvCell { char m_00; };                                       // the cell GetPropService reads
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 void FUN_1413f9c40(bool b);
 class CMainSystem;
@@ -136,7 +136,7 @@ CString UIDevelopDialog::GetTypeName()
 
 // ---- PropService access (engine inline functions emitted here) ----
 // @0x1412938c0
-ecrPhysX::PropService* FUN_1412938c0(Unk_DvCell* pCell)
+ecrPhysX::PropService* GetPropService(Unk_DvCell* pCell)
 {
     return reinterpret_cast<Unk_ServiceManager*>(reinterpret_cast<efd::SmartPointer<efd::ServiceManager>*>(&pCell->m_00)->operator->())->GetSystemServiceAs<ecrPhysX::PropService>();
 }
@@ -151,13 +151,13 @@ inline efd::Bool ecrPhysX::PropService::GetDebugRender(const efd::utf8string& sc
 }
 
 // @0x1412938a0
-egmVisualizers::PropertyVisualizationService* FUN_1412938a0()
+egmVisualizers::PropertyVisualizationService* GetPropertyVisualizationService()
 {
-    return reinterpret_cast<efd::ServiceManager*>(FUN_1413f9850())->GetSystemServiceAs<egmVisualizers::PropertyVisualizationService>();
+    return reinterpret_cast<efd::ServiceManager*>(GetServiceManager())->GetSystemServiceAs<egmVisualizers::PropertyVisualizationService>();
 }
 
 // @0x141292ca0
-void UIDevelopDialog::FUN_141292ca0(const CString& strName, const CStringW& strText)
+void UIDevelopDialog::SetChildText(const CString& strName, const CStringW& strText)
 {
     MS2Ptr<ASTextField> spText = GetChild<ASTextField>(strName);
     if (spText.get())
@@ -170,31 +170,31 @@ void UIDevelopDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     ASObj obj(2);
     bool bPhysXDebug = false;
-    ecrPhysX::PropService* pProps = FUN_1412938c0(reinterpret_cast<Unk_DvCell*>(&DAT_143b059e8));
+    ecrPhysX::PropService* pProps = GetPropService(reinterpret_cast<Unk_DvCell*>(&DAT_143b059e8));
     if (pProps != 0)
     {
         efd::utf8string kName("PhysXDefaultSceneName");
         kName = FUN_1414d7990(kName);
         bPhysXDebug = pProps->GetDebugRender(kName);
     }
-    obj.FUN_1407cbbe0("physXDebugRender", bPhysXDebug);
-    obj.FUN_1407cbbe0("enableEffect", TSingleton<CEffectService>::GetInstance()->IsEnabled());
-    obj.FUN_1407cbbe0("showInstancing", m_bShowInstancing);
-    obj.FUN_1407cbbe0("reloadMagicData", false);
+    obj.SetBoolMember("physXDebugRender", bPhysXDebug);
+    obj.SetBoolMember("enableEffect", TSingleton<CEffectService>::GetInstance()->IsEnabled());
+    obj.SetBoolMember("showInstancing", m_bShowInstancing);
+    obj.SetBoolMember("reloadMagicData", false);
     obj.SetMemberFloat("gameSpeed", 1.0f);
-    obj.FUN_1407cbbe0("oneInstancing", m_bOneInstancing);
+    obj.SetBoolMember("oneInstancing", m_bOneInstancing);
     obj.SetMemberFloat("dropItemHeight", m_fDropItemHeight);
     obj.SetMemberFloat("dropItemPeriod", m_fDropItemPeriod);
-    obj.FUN_1407cbbe0("propertyVisualizer", m_bPropertyVisualizer);
+    obj.SetBoolMember("propertyVisualizer", m_bPropertyVisualizer);
     unsigned nInstancing = 1;
     {
         efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
         if ((HardwareInstancingService*)spInstancing != 0)
             nInstancing = spInstancing.operator->()->GetInstancingCount();
-        obj.FUN_1407cb9c0("instancingMax", nInstancing);
-        obj.FUN_1407cb9c0("instancing", nInstancing);
+        obj.SetIntMember("instancingMax", nInstancing);
+        obj.SetIntMember("instancing", nInstancing);
     }
-    m_30->Invoke("initData", obj.FUN_1422bb870());
+    m_30->Invoke("initData", obj.GetValue());
 }
 
 // @0x1412924f0
@@ -213,7 +213,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
     else if (_stricmp("onClickResetGameSpeed", szMethod) == 0) {
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
-            FUN_141292f50(data);
+            OnClickResetGameSpeed(data);
         }
         return 1;
     }
@@ -221,7 +221,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             bool bOn = data.PopBool();
-            FUN_141293010(bOn);
+            OnCheckPhysXDebugRender(bOn);
         }
         return 1;
     }
@@ -229,7 +229,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             bool bOn = data.PopBool();
-            FUN_141293150(bOn);
+            OnCheckEnableEffect(bOn);
         }
         return 1;
     }
@@ -240,7 +240,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             bool bOn = data.PopBool();
-            FUN_1412931c0(bOn);
+            OnCheckPropertyVisualizer(bOn);
         }
         return 1;
     }
@@ -248,7 +248,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             bool bOn = data.PopBool();
-            FUN_141293180(bOn);
+            OnCheckShowInstancing(bOn);
         }
         return 1;
     }
@@ -257,7 +257,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             bool bOn = data.PopBool();
             int nValue = data.PopInt();
-            FUN_141293210(bOn, nValue);
+            OnCheckOneInstancing(bOn, nValue);
         }
         return 1;
     }
@@ -265,7 +265,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             float fValue = data.PopFloat();
-            FUN_141293360(fValue);
+            OnChangeSliderGameSpeed(fValue);
         }
         return 1;
     }
@@ -273,7 +273,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             float fValue = data.PopFloat();
-            FUN_1412932a0(fValue);
+            OnChangeSliderDropItemScale(fValue);
         }
         return 1;
     }
@@ -281,7 +281,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             float fValue = data.PopFloat();
-            FUN_141293390(fValue);
+            OnChangeSliderCharacterScale(fValue);
         }
         return 1;
     }
@@ -289,7 +289,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             int nValue = data.PopInt();
-            FUN_1412933f0(nValue);
+            OnChangeSliderInstancing(nValue);
         }
         return 1;
     }
@@ -297,7 +297,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             float fValue = data.PopFloat();
-            FUN_141293680(fValue);
+            OnClickApplyDropItemHeight(fValue);
         }
         return 1;
     }
@@ -305,7 +305,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             float fValue = data.PopFloat();
-            FUN_141293730(fValue);
+            OnClickApplyDropItemPeriod(fValue);
         }
         return 1;
     }
@@ -316,7 +316,7 @@ int UIDevelopDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
 void UIDevelopDialog::OnClickReloadNpcExtent()
 {
     FUN_140a7cbe0(((void*)FUN_1406d6e90()));
-    Unk_DevNpcMap* pMap = reinterpret_cast<Unk_DevNpcMap*>(WorldService::GetInstance()->FUN_141bd36d0());
+    Unk_DevNpcMap* pMap = reinterpret_cast<Unk_DevNpcMap*>(WorldService::GetInstance()->GetNpcMap());
     for (POSITION pos = pMap->GetHeadPosition(); pos != 0; pMap->GetNext(pos))
     {
         CNpc* pNpc = pMap->GetValueAt(pos);
@@ -326,7 +326,7 @@ void UIDevelopDialog::OnClickReloadNpcExtent()
             if (kData == 0)
                 continue;
             pNpc->FUN_141670d50(efd::Point2(kData.operator->()->m_capsule.m_fRadius, kData.operator->()->m_capsule.m_fHeight));
-            ((class GameObjectController*)(class Unk_DevBody*)(((class Unk_DevBody*)((class PCBase*)(class PCBase*)(pNpc))->GetPhysicsBody())))->FUN_141240520(kData.operator->()->m_capsule.m_fRadius, kData.operator->()->m_capsule.m_fHeight);
+            ((class GameObjectController*)(class Unk_DevBody*)(((class Unk_DevBody*)((class PCBase*)(class PCBase*)(pNpc))->GetPhysicsBody())))->SetCapsuleSize(kData.operator->()->m_capsule.m_fRadius, kData.operator->()->m_capsule.m_fHeight);
             NiPoint3 kPos = pNpc->vfunc_18();
             kPos.z += kData.operator->()->m_capsule.m_fHeight;
             pNpc->vfunc_19(*reinterpret_cast<efd::Point3*>(&kPos));
@@ -335,7 +335,7 @@ void UIDevelopDialog::OnClickReloadNpcExtent()
 }
 
 // @0x141293c30
-Unk_DevDebugInfo* FUN_141293c30()
+Unk_DevDebugInfo* GetDebugHelper()
 {
     return reinterpret_cast<Unk_DevDebugInfo*>(TSingleton<CDebugHelper>::s_instance);
 }
@@ -343,11 +343,11 @@ Unk_DevDebugInfo* FUN_141293c30()
 // @0x141292f20
 void UIDevelopDialog::OnClickClearDebugInfo()
 {
-    ((class CDebugHelper*)(class Unk_DevDebugInfo*)(FUN_141293c30()))->ClearMeshes();
+    ((class CDebugHelper*)(class Unk_DevDebugInfo*)(GetDebugHelper()))->ClearMeshes();
 }
 
 // @0x141292f50
-void UIDevelopDialog::FUN_141292f50(ASData& data)
+void UIDevelopDialog::OnClickResetGameSpeed(ASData& data)
 {
     Scaleform::GFx::Value kValue = data.PopValue();
     MS2Ptr<AScript> spRoot = FUN_1409e7dc0(m_28, kValue);
@@ -358,9 +358,9 @@ void UIDevelopDialog::FUN_141292f50(ASData& data)
 }
 
 // @0x141293010
-void UIDevelopDialog::FUN_141293010(bool bOn)
+void UIDevelopDialog::OnCheckPhysXDebugRender(bool bOn)
 {
-    ecrPhysX::PropService* pProps = FUN_1412938c0(reinterpret_cast<Unk_DvCell*>(&DAT_143b059e8));
+    ecrPhysX::PropService* pProps = GetPropService(reinterpret_cast<Unk_DvCell*>(&DAT_143b059e8));
     if (pProps != 0)
     {
         efd::utf8string kName("PhysXDefaultSceneName");
@@ -373,22 +373,22 @@ void UIDevelopDialog::FUN_141293010(bool bOn)
 }
 
 // @0x141293150
-void UIDevelopDialog::FUN_141293150(bool bOn)
+void UIDevelopDialog::OnCheckEnableEffect(bool bOn)
 {
     TSingleton<CEffectService>::GetInstance()->SetEnabled(bOn);
 }
 
 // @0x141293180
-void UIDevelopDialog::FUN_141293180(bool bOn)
+void UIDevelopDialog::OnCheckShowInstancing(bool bOn)
 {
     m_bShowInstancing = bOn;
     FUN_1413f9c40(m_bShowInstancing);
 }
 
 // @0x1412931c0
-void UIDevelopDialog::FUN_1412931c0(bool bOn)
+void UIDevelopDialog::OnCheckPropertyVisualizer(bool bOn)
 {
-    egmVisualizers::PropertyVisualizationService* pService = FUN_1412938a0();
+    egmVisualizers::PropertyVisualizationService* pService = GetPropertyVisualizationService();
     if (pService != 0)
     {
         if (bOn)
@@ -399,7 +399,7 @@ void UIDevelopDialog::FUN_1412931c0(bool bOn)
 }
 
 // @0x141293210
-void UIDevelopDialog::FUN_141293210(bool bOn, int nIndex)
+void UIDevelopDialog::OnCheckOneInstancing(bool bOn, int nIndex)
 {
     m_bOneInstancing = bOn;
     efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
@@ -408,7 +408,7 @@ void UIDevelopDialog::FUN_141293210(bool bOn, int nIndex)
 }
 
 // @0x1412932a0
-void UIDevelopDialog::FUN_1412932a0(float fScale)
+void UIDevelopDialog::OnChangeSliderDropItemScale(float fScale)
 {
     Unk_DevList list(10);
     WorldService::GetInstance()->FUN_141bd2db0(reinterpret_cast<ATL::CAtlList<efd::SmartPointer<Unk_WsC_GameObj> >*>(&list), reinterpret_cast<int (*)(Unk_WsC_GameObj*)>(FUN_141274b80));
@@ -421,13 +421,13 @@ void UIDevelopDialog::FUN_1412932a0(float fScale)
 }
 
 // @0x141293360
-void UIDevelopDialog::FUN_141293360(float fSpeed)
+void UIDevelopDialog::OnChangeSliderGameSpeed(float fSpeed)
 {
     ((class CMainSystem*)(void*)((void*)TSingleton<CMainSystem>::GetInstance()))->SetTimeScale(fSpeed);
 }
 
 // @0x141293390
-void UIDevelopDialog::FUN_141293390(float fScale)
+void UIDevelopDialog::OnChangeSliderCharacterScale(float fScale)
 {
     PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer != 0)
@@ -438,7 +438,7 @@ void UIDevelopDialog::FUN_141293390(float fScale)
 }
 
 // @0x1412933f0
-void UIDevelopDialog::FUN_1412933f0(int nIndex)
+void UIDevelopDialog::OnChangeSliderInstancing(int nIndex)
 {
     efd::SmartPointer<HardwareInstancingService> spInstancing(((class HardwareInstancingService*)egf::g_bapiContext.GetSystemServiceAs<Unk_HwService>()));
     if ((HardwareInstancingService*)spInstancing != 0)
@@ -449,20 +449,20 @@ void UIDevelopDialog::FUN_1412933f0(int nIndex)
             int nCount = 0;
             if (pInstancing != 0)
                 nCount = pInstancing->GetVisibleInstanceCount();
-            FUN_141292ca0("m_modelName", FUN_14016a730(((efd::utf8string*)&static_cast<class efd::utf8string const&>(reinterpret_cast<MeshInstancing*>(pInstancing)->GetSourceName()))->c_str(), 0));
+            SetChildText("m_modelName", FUN_14016a730(((efd::utf8string*)&static_cast<class efd::utf8string const&>(reinterpret_cast<MeshInstancing*>(pInstancing)->GetSourceName()))->c_str(), 0));
             CStringW strCount = StringFormat<int>(L"{0}", nCount);
-            FUN_141292ca0("m_modelCount", strCount);
+            SetChildText("m_modelCount", strCount);
         }
         else
         {
-            FUN_141292ca0("m_modelName", L"none");
-            FUN_141292ca0("m_modelCount", L"0");
+            SetChildText("m_modelName", L"none");
+            SetChildText("m_modelCount", L"0");
         }
     }
 }
 
 // @0x141293680
-void UIDevelopDialog::FUN_141293680(float fHeight)
+void UIDevelopDialog::OnClickApplyDropItemHeight(float fHeight)
 {
     float fValue = fHeight;
     m_fDropItemHeight = fValue;
@@ -474,7 +474,7 @@ void UIDevelopDialog::FUN_141293680(float fHeight)
 }
 
 // @0x141293730
-void UIDevelopDialog::FUN_141293730(float fPeriod)
+void UIDevelopDialog::OnClickApplyDropItemPeriod(float fPeriod)
 {
     float fValue = fPeriod;
     m_fDropItemPeriod = fValue;
@@ -489,21 +489,21 @@ void UIDevelopDialog::FUN_141293730(float fPeriod)
 extern "C" errno_t Unk_DevMoveUser(void* d, size_t n, const void* s, size_t c) { return memmove_s(d, n, s, c); }
 
 MS2_REPLACE_METHOD(0x141292190, UIDevelopDialog, GetTypeName, 61, 0x4FD270B2);
-MS2_REPLACE_METHOD(0x141292CA0, UIDevelopDialog, FUN_141292ca0, 103, 0xBC29E5C6);
+MS2_REPLACE_METHOD(0x141292CA0, UIDevelopDialog, SetChildText, 103, 0xBC29E5C6);
 MS2_REPLACE_METHOD(0x1412921E0, UIDevelopDialog, OnLoadComplete, 766, 0xD1127567);
 MS2_REPLACE_METHOD(0x1412924F0, UIDevelopDialog, vfunc_28, 1880, 0x9BE36AD3);
 MS2_REPLACE_METHOD(0x141292D10, UIDevelopDialog, OnClickReloadNpcExtent, 516, 0x628568E3);
 MS2_REPLACE_METHOD(0x141292F20, UIDevelopDialog, OnClickClearDebugInfo, 27, 0x392AD279);
-MS2_REPLACE_METHOD(0x141292F50, UIDevelopDialog, FUN_141292f50, 177, 0xB6B56AC3);
-MS2_REPLACE_METHOD(0x141293010, UIDevelopDialog, FUN_141293010, 308, 0x29055F34);
-MS2_REPLACE_METHOD(0x141293150, UIDevelopDialog, FUN_141293150, 36, 0x43D1CDB9);
-MS2_REPLACE_METHOD(0x141293180, UIDevelopDialog, FUN_141293180, 51, 0x93D57A67);
-MS2_REPLACE_METHOD(0x1412931C0, UIDevelopDialog, FUN_1412931c0, 69, 0x3B519A77);
-MS2_REPLACE_METHOD(0x141293210, UIDevelopDialog, FUN_141293210, 135, 0x3B865883);
-MS2_REPLACE_METHOD(0x1412932A0, UIDevelopDialog, FUN_1412932a0, 177, 0xF15F58BE);
-MS2_REPLACE_METHOD(0x141293360, UIDevelopDialog, FUN_141293360, 39, 0xF7BF200F);
-MS2_REPLACE_METHOD(0x141293390, UIDevelopDialog, FUN_141293390, 78, 0x082773F1);
-MS2_REPLACE_METHOD(0x141293680, UIDevelopDialog, FUN_141293680, 159, 0xD7516B3E);
-MS2_REPLACE_METHOD(0x141293730, UIDevelopDialog, FUN_141293730, 159, 0x34F6DB2E);
+MS2_REPLACE_METHOD(0x141292F50, UIDevelopDialog, OnClickResetGameSpeed, 177, 0xB6B56AC3);
+MS2_REPLACE_METHOD(0x141293010, UIDevelopDialog, OnCheckPhysXDebugRender, 308, 0x29055F34);
+MS2_REPLACE_METHOD(0x141293150, UIDevelopDialog, OnCheckEnableEffect, 36, 0x43D1CDB9);
+MS2_REPLACE_METHOD(0x141293180, UIDevelopDialog, OnCheckShowInstancing, 51, 0x93D57A67);
+MS2_REPLACE_METHOD(0x1412931C0, UIDevelopDialog, OnCheckPropertyVisualizer, 69, 0x3B519A77);
+MS2_REPLACE_METHOD(0x141293210, UIDevelopDialog, OnCheckOneInstancing, 135, 0x3B865883);
+MS2_REPLACE_METHOD(0x1412932A0, UIDevelopDialog, OnChangeSliderDropItemScale, 177, 0xF15F58BE);
+MS2_REPLACE_METHOD(0x141293360, UIDevelopDialog, OnChangeSliderGameSpeed, 39, 0xF7BF200F);
+MS2_REPLACE_METHOD(0x141293390, UIDevelopDialog, OnChangeSliderCharacterScale, 78, 0x082773F1);
+MS2_REPLACE_METHOD(0x141293680, UIDevelopDialog, OnClickApplyDropItemHeight, 159, 0xD7516B3E);
+MS2_REPLACE_METHOD(0x141293730, UIDevelopDialog, OnClickApplyDropItemPeriod, 159, 0x34F6DB2E);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142caedd0-0x142caee90 .text$yd

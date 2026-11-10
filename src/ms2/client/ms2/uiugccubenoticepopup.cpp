@@ -34,7 +34,7 @@ static egf::EntityID s_pointer(0);
 template <> template <>
 MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEntity>&);
 
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
+MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
 
 #define DAT_143b01a60 (*(const Vector3*)&efd::Point3::ZERO)          // C3: was extern const Vector3 DAT_143b01a60
 
@@ -45,11 +45,11 @@ template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // C3: the real ac
 
 // The ui scale service: scale of a layer.
 class Unk_UnpScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +59,7 @@ UIUGCCubeNoticePopup::UIUGCCubeNoticePopup()
     : m_ptWorld(DAT_143b01a60), m_bShown(0), m_bPending(0), m_bVisible(0)
 {
     m_58 = 0;
-    FUN_1422dbf00(7, 0, 0);
+    LoadSwf(7, 0, 0);
 }
 
 // @0x140fb4aa0
@@ -77,7 +77,7 @@ CString UIUGCCubeNoticePopup::GetTypeName()
 void UIUGCCubeNoticePopup::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_140fb5080(1);
+    SetVisible(1);
 }
 
 // @0x140fb4b90
@@ -87,16 +87,16 @@ int UIUGCCubeNoticePopup::IsShown()
 }
 
 // @0x140fb4bb0
-void UIUGCCubeNoticePopup::FUN_140fb4bb0()
+void UIUGCCubeNoticePopup::StartShowing()
 {
     m_bPending = 1;
     m_bShown = 1;
 }
 
 // @0x140fb4be0
-void UIUGCCubeNoticePopup::FUN_140fb4be0()
+void UIUGCCubeNoticePopup::StopShowing()
 {
-    GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
+    GetUISwfEntityManager()->RemoveEntity(MS2Ptr<UISwfEntity>(this));
     m_bPending = 0;
     m_bShown = 0;
 }
@@ -114,7 +114,7 @@ void UIUGCCubeNoticePopup::SetIdEntity(const egf::EntityID& id)
 }
 
 // @0x140fb4cc0
-void UIUGCCubeNoticePopup::FUN_140fb4cc0(const CStringW& strTitle, const CStringW& strText)
+void UIUGCCubeNoticePopup::SetText(const CStringW& strTitle, const CStringW& strText)
 {
     m_strTitle = strTitle;
     m_strText = strText;
@@ -145,7 +145,7 @@ void UIUGCCubeNoticePopup::vfunc_15()
     if (m_bPending != 0)
         vfunc_52();
     if (IsShown() != 0)
-        FUN_140fb4eb0();
+        UpdateScreenPosition();
     else
         vfunc_8(0);
 }
@@ -159,7 +159,7 @@ int UIUGCCubeNoticePopup::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 }
 
 // @0x140fb4eb0
-void UIUGCCubeNoticePopup::FUN_140fb4eb0()
+void UIUGCCubeNoticePopup::UpdateScreenPosition()
 {
     void* pPlayer = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -173,8 +173,8 @@ void UIUGCCubeNoticePopup::FUN_140fb4eb0()
             if (spEntity.get() != 0)
             {
                 vfunc_8(1);
-                reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_UnpScale*)(((class Unk_UnpScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
-                spEntity->SetPositionFloat(ptScreen.x - (float)(spEntity->FUN_1422c1340() / 2), (ptScreen.y - (float)spEntity->GetHeightCeil()) - 15.0f);
+                reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_UnpScale*)(((class Unk_UnpScale*)GetGFxManager())))->GetMovieScale(m_28);
+                spEntity->SetPositionFloat(ptScreen.x - (float)(spEntity->GetWidthCeil() / 2), (ptScreen.y - (float)spEntity->GetHeightCeil()) - 15.0f);
             }
         }
         else
@@ -183,7 +183,7 @@ void UIUGCCubeNoticePopup::FUN_140fb4eb0()
 }
 
 // @0x140fb5080
-void UIUGCCubeNoticePopup::FUN_140fb5080(int bShow)
+void UIUGCCubeNoticePopup::SetVisible(int bShow)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
@@ -198,7 +198,7 @@ void UIUGCCubeNoticePopup::FUN_140fb5080(int bShow)
 // @0x140fb51f0
 void UIUGCCubeNoticePopup::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

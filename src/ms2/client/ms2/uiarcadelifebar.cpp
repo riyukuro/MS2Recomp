@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). UIArcadeLifeBar (class name "ArcadeLifeBar", UI type
 // 0x4efc, 0x190 bytes) is the arcade minigame's life counter. The game pushes the init / life / max-life values
-// (packet modes 5 and 6, or directly through FUN_140ef5320 / FUN_140ef5370) and the dialog forwards them to the swf
+// (packet modes 5 and 6, or directly through SetLife / FUN_140ef5370) and the dialog forwards them to the swf
 // ("init" once the movie has loaded, "setlife" while it is open).
 // MS2-UNIT: ?\uiarcadelifebar.cpp
 // MS2-RANGE: 0x140ef4f10-0x140ef5640 .text$mn
@@ -22,8 +22,8 @@ UIArcadeLifeBar::UIArcadeLifeBar() : m_nInit(0), m_nLife(0), m_nMaxLife(0)
 {
     m_pos.x = 0;
     m_pos.y = 0;
-    FUN_141924170(1);
-    FUN_141925e70(1, 1);
+    SetTweenEnabled(1);
+    SetFlag(1, 1);
 }
 
 // @0x140ef4ff0
@@ -61,7 +61,7 @@ void UIArcadeLifeBar::OnLoadComplete()
 MS2_REPLACE_METHOD(0x140EF5160, UIArcadeLifeBar, OnLoadComplete, 122, 0x803E7BC9);
 
 // @0x140ef51e0
-void UIArcadeLifeBar::FUN_140ef51e0(int nMode, CInPacket& packet)
+void UIArcadeLifeBar::OnLifePacket(int nMode, CInPacket& packet)
 {
     if (nMode == 5)
     {
@@ -80,16 +80,16 @@ void UIArcadeLifeBar::FUN_140ef51e0(int nMode, CInPacket& packet)
         FUN_140ef5430();
     }
 }
-MS2_REPLACE_METHOD(0x140EF51E0, UIArcadeLifeBar, FUN_140ef51e0, 314, 0x2F30AEE1);
+MS2_REPLACE_METHOD(0x140EF51E0, UIArcadeLifeBar, OnLifePacket, 314, 0x2F30AEE1);
 
 // @0x140ef5320
-void UIArcadeLifeBar::FUN_140ef5320(int nLife, int nMaxLife)
+void UIArcadeLifeBar::SetLife(int nLife, int nMaxLife)
 {
     m_nLife = nLife;
     m_nMaxLife = nMaxLife;
     FUN_140ef5430();
 }
-MS2_REPLACE_METHOD(0x140EF5320, UIArcadeLifeBar, FUN_140ef5320, 63, 0x72ACF90C);
+MS2_REPLACE_METHOD(0x140EF5320, UIArcadeLifeBar, SetLife, 63, 0x72ACF90C);
 
 // @0x140ef5370
 void UIArcadeLifeBar::FUN_140ef5370(int nInit, int nLife, int nMaxLife)
@@ -105,12 +105,12 @@ void UIArcadeLifeBar::FUN_140ef5370(int nInit, int nLife, int nMaxLife)
 MS2_REPLACE_METHOD(0x140EF5370, UIArcadeLifeBar, FUN_140ef5370, 109, 0xC40BB8C8);
 
 // @0x140ef53f0
-void UIArcadeLifeBar::FUN_140ef53f0(int nX, int nY)
+void UIArcadeLifeBar::SetPosition(int nX, int nY)
 {
     m_pos.x = (float)nX;
     m_pos.y = (float)nY;
 }
-MS2_REPLACE_METHOD(0x140EF53F0, UIArcadeLifeBar, FUN_140ef53f0, 53, 0x22091A77);
+MS2_REPLACE_METHOD(0x140EF53F0, UIArcadeLifeBar, SetPosition, 53, 0x22091A77);
 
 // Send the life values to the swf once it is up, then refresh the movie root (vfunc_43).
 // @0x140ef5430

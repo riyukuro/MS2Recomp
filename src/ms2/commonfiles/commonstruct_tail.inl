@@ -45,8 +45,10 @@ template class TPtrValue<CUserLimitGroup::HistoryList>;
 // ---- header inlines whose first copy is in this TU (referenced through selectany pointers, the
 // MS2_EMIT_CRT_MEMMOVE_S idiom, so the compiler emits them here) ----
 __declspec(selectany) extern void (CAdditionalEvent::* const ms2_pfnCsAdditionalEventAdd)(Unk_AdditionalEventValue) = &CAdditionalEvent::Add;
-__declspec(selectany) extern void (CLogString::* const ms2_pfnCsLogText)(unsigned __int64, unsigned __int64, int, const wchar_t*) =
-    &CLogString::FUN_1402804e0;
+// CLogString has two bases, so a CLogString member pointer is 16 bytes and cl fills it with a dynamic initializer the
+// exe does not have. Cast to the first base's member pointer it is 8 bytes of constant data.
+__declspec(selectany) extern void (CThread::* const ms2_pfnCsLogText)(unsigned __int64, unsigned __int64, int, const wchar_t*) =
+    static_cast<void (CThread::*)(unsigned __int64, unsigned __int64, int, const wchar_t*)>(&CLogString::FUN_1402804e0);
 __declspec(selectany) extern __time64_t (CMsTime::* const ms2_pfnCsMsTimeGet)() const = &CMsTime::Get;
 template CItemDataTable* TSingleton<CItemDataTable>::GetInstance();
 

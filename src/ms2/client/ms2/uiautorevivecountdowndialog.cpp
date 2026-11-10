@@ -21,7 +21,7 @@
 // @0x141284ac0
 UIAutoReviveCountDownDialog::UIAutoReviveCountDownDialog()
 {
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
 }
 
 // @0x141284b30

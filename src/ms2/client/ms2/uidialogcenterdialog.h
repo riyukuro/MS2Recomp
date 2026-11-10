@@ -3,7 +3,7 @@
 //
 // UIDialogCenterDialog ("DialogCenterDialog", UI type 0x4ea9, 0x240 bytes): the debug "center" menu. OnLoadComplete
 // builds a grid of buttons (column / row -> a "UIDialogCenterDialog_btn" clip) whose labels are "$s_debug_ui_center_menu_*"
-// keys; a button either opens the dialog stored in its "dialogID" member (FUN_141295930) or runs a delegate (the trigger
+// keys; a button either opens the dialog stored in its "dialogID" member (OnDialogButtonClick) or runs a delegate (the trigger
 // debug window, the blueprint dialog, the wedding hall reservation ...). Packet 0x87 kind 10 tells a trigger debug
 // window (by lower-cased xml path) which dialog id to show.
 #pragma once
@@ -30,19 +30,19 @@ public:
     virtual int vfunc_48() { return 0x4ea9; }           // 48 0x1412976f0 UI type id
     virtual void vfunc_79(void* p);                     // 79 0x141295770 packet 0x87
 
-    void FUN_141295930(const Scaleform::GFx::FunctionHandler::Params& params);  // a button: open its "dialogID" dialog
-    void FUN_141295a70(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: visual tracker
-    void FUN_141295ad0(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: log dialog
-    void FUN_141295b00(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: create blueprint
-    void FUN_141295b30(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: wedding hall reservation
-    void FUN_141295bb0(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: wedding hall change
-    void FUN_141295c30(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: wedding hall cancel
-    void FUN_141295cb0(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: trigger debug (pick an xml)
+    void OnDialogButtonClick(const Scaleform::GFx::FunctionHandler::Params& params);  // a button: open its "dialogID" dialog
+    void OnVisualTracker(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: visual tracker
+    void OnLogDialog(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: log dialog
+    void OnCreateBlueprint(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: create blueprint
+    void OnWeddingHallReservation(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: wedding hall reservation
+    void OnWeddingHallChange(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: wedding hall change
+    void OnWeddingHallCancel(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: wedding hall cancel
+    void OnTriggerDebug(const Scaleform::GFx::FunctionHandler::Params& params);  // menu: trigger debug (pick an xml)
     CString FUN_1412965f0(CString strInitialDir, const char* pszFilter);   // GetOpenFileName in a directory
     void SendSetDebugModeMode9(CString strPath);                // close the trigger debug window of a path
-    MS2Ptr<ASButton> FUN_141296150(int nRow, int nColumn, CStringW strLabel);   // create the button of a grid cell
-    void FUN_141296370(int nRow, int nColumn, CString strKey, int nDialogId);        // a button that opens a dialog
-    void FUN_141296500(int nRow, int nColumn, CString strKey, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // a button with a callback
+    MS2Ptr<ASButton> CreateGridButton(int nRow, int nColumn, CStringW strLabel);   // create the button of a grid cell
+    void AddDialogButton(int nRow, int nColumn, CString strKey, int nDialogId);        // a button that opens a dialog
+    void AddCallbackButton(int nRow, int nColumn, CString strKey, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);   // a button with a callback
 
 private:
     MS2_LAYOUT_FRIEND;

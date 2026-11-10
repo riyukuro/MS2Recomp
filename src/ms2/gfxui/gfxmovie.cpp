@@ -69,7 +69,7 @@ MS2_GFX_MOVIE* GFxMovie::FUN_1422bd0f0()
 }
 
 // @0x1422bd120
-Scaleform::GFx::Value GFxMovie::FUN_1422bd120(CString strClassName)
+Scaleform::GFx::Value GFxMovie::GetDefinitionByName(CString strClassName)
 {
     return FUN_1422be7f0("flash.utils.getDefinitionByName", strClassName);
 }
@@ -165,7 +165,7 @@ void GFxMovie::vfunc_8(float fTime)
 {
     if (!m_60)
         return;
-    if (FUN_14025e7a0()->FUN_1422ae940() != 0)
+    if (GetGFxManager()->FUN_1422ae940() != 0)
     {
         m_60->Advance(fTime, 0, true);
     }
@@ -209,7 +209,7 @@ void GFxMovie::vfunc_10(MS2_GFX_PTR(Unk_GFxUIHal) spHal, MS2_GFX_PTR(Unk_GFxUIRe
 void GFxMovie::vfunc_11()
 {
     if (m_40.get())
-        m_40->FUN_1422d0690();
+        m_40->Shutdown();
     m_20 = 0;
     m_30 = 0;
     m_40 = 0;
@@ -243,19 +243,19 @@ int GFxMovie::vfunc_15(void* hwnd, unsigned msg, unsigned __int64 wParam, __int6
 }
 
 // @0x1422bde30
-float GFxMovie::FUN_1422bde30()
+float GFxMovie::GetScale()
 {
     return m_14;
 }
 
 // @0x1422bde50
-void GFxMovie::FUN_1422bde50(float fScale)
+void GFxMovie::SetScale(float fScale)
 {
     m_14 = fScale;
 }
 
 // @0x1422bde80
-int GFxMovie::FUN_1422bde80(float fScale)
+int GFxMovie::SetViewportScale(float fScale)
 {
     int bChanged = m_14 != fScale;
     m_14 = fScale;
@@ -268,10 +268,10 @@ int GFxMovie::FUN_1422bde80(float fScale)
     }
     return bChanged;
 }
-MS2_REPLACE_METHOD(0x1422BDE80, GFxMovie, FUN_1422bde80, 221, 0x8D63D513);
+MS2_REPLACE_METHOD(0x1422BDE80, GFxMovie, SetViewportScale, 221, 0x8D63D513);
 
 // @0x1422bdf70
-int GFxMovie::FUN_1422bdf70()
+int GFxMovie::GetViewportWidth()
 {
     Scaleform::GFx::Viewport vp;
     m_60->GetViewport(&vp);
@@ -279,7 +279,7 @@ int GFxMovie::FUN_1422bdf70()
 }
 
 // @0x1422bdfc0
-int GFxMovie::FUN_1422bdfc0()
+int GFxMovie::GetViewportHeight()
 {
     Scaleform::GFx::Viewport vp;
     m_60->GetViewport(&vp);
@@ -287,7 +287,7 @@ int GFxMovie::FUN_1422bdfc0()
 }
 
 // @0x1422be010
-void GFxMovie::FUN_1422be010(int* pnWidth, int* pnHeight)
+void GFxMovie::GetViewportSize(int* pnWidth, int* pnHeight)
 {
     Scaleform::GFx::Viewport vp;
     m_60->GetViewport(&vp);
@@ -302,7 +302,7 @@ void GFxMovie::FUN_1422be080(int bPause)
 }
 
 // @0x1422be0e0
-void GFxMovie::FUN_1422be0e0(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&))
+void GFxMovie::SetFormatCallback(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&))
 {
     m_70 = pfn;
 }
@@ -318,14 +318,14 @@ void GFxMovie::FUN_1422be100(const Scaleform::GFx::FunctionHandler::Params& para
 // @0x1422be140
 void GFxMovie::FUN_1422be140()
 {
-    Scaleform::GFx::Value vCommon = FUN_1422bd120("scaleform.ms2.common.Common");
+    Scaleform::GFx::Value vCommon = GetDefinitionByName("scaleform.ms2.common.Common");
     AScript kCommon(vCommon, 2);
     Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> cb(this, &GFxMovie::FUN_1422be100);
-    kCommon.FUN_141b46a40("m_getFormatFunction", ASFunction(cb, 0, FUN_1422be400()));
+    kCommon.SetFunction("m_getFormatFunction", ASFunction(cb, 0, GetMovieId()));
 }
 
 // @0x1422be280
-void GFxMovie::FUN_1422be280(void (*pfn)(AScript& kCommon, int nMovieId))
+void GFxMovie::SetCommonCallback(void (*pfn)(AScript& kCommon, int nMovieId))
 {
     m_78 = pfn;
 }
@@ -335,9 +335,9 @@ void GFxMovie::FUN_1422be2a0()
 {
     if (m_78)
     {
-        Scaleform::GFx::Value vCommon = FUN_1422bd120("scaleform.ms2.common.Common");
+        Scaleform::GFx::Value vCommon = GetDefinitionByName("scaleform.ms2.common.Common");
         AScript kCommon(vCommon, 2);
-        m_78(kCommon, FUN_1422be400());
+        m_78(kCommon, GetMovieId());
     }
 }
 
@@ -356,7 +356,7 @@ void GFxMovie::FUN_1422be380(int n)
 // @0x1422be3a0
 int GFxMovie::FUN_1422be3a0(unsigned msg)
 {
-    if (FUN_1422be400() == 2)
+    if (GetMovieId() == 2)
     {
         switch (msg)
         {
@@ -375,43 +375,43 @@ int GFxMovie::FUN_1422be3a0(unsigned msg)
 }
 
 // @0x1422be400
-int GFxMovie::FUN_1422be400()
+int GFxMovie::GetMovieId()
 {
     return m_18;
 }
 
 // @0x1422be420
-MS2Ptr<ASStage> GFxMovie::FUN_1422be420()
+MS2Ptr<ASStage> GFxMovie::GetStage()
 {
     return m_20;
 }
 
 // @0x1422be470
-MS2Ptr<ASMouseCursor> GFxMovie::FUN_1422be470()
+MS2Ptr<ASMouseCursor> GFxMovie::GetMouseCursor()
 {
     return m_30;
 }
 
 // @0x1422be4c0
-MS2Ptr<ASMovieClipLoader> GFxMovie::FUN_1422be4c0()
+MS2Ptr<ASMovieClipLoader> GFxMovie::GetMovieClipLoader()
 {
     return m_40;
 }
 
 // @0x1422be510
-void GFxMovie::FUN_1422be510(MS2Ptr<ASStage> spStage)
+void GFxMovie::SetStage(MS2Ptr<ASStage> spStage)
 {
     m_20 = spStage;
 }
 
 // @0x1422be560
-void GFxMovie::FUN_1422be560(MS2Ptr<ASMouseCursor> spCursor)
+void GFxMovie::SetMouseCursor(MS2Ptr<ASMouseCursor> spCursor)
 {
     m_30 = spCursor;
 }
 
 // @0x1422be5b0
-void GFxMovie::FUN_1422be5b0(MS2Ptr<ASMovieClipLoader> spLoader)
+void GFxMovie::SetMovieClipLoader(MS2Ptr<ASMovieClipLoader> spLoader)
 {
     m_40 = spLoader;
 }

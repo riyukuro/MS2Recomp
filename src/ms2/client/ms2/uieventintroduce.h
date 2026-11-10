@@ -25,12 +25,12 @@ public:
     virtual void vfunc_43();                                        // 43 0x140f40e50 validate the movie's root entity
     virtual int vfunc_48() { return 0x4f06; }                       // 48 0x140f41240 UI type id
 
-    void FUN_140f40ef0(int n);                                      // 0x140f40ef0 the movie's "onWin" with the score
-    void FUN_140f40f60(int n);                                      // 0x140f40f60 "onLose"
-    void FUN_140f40fd0(int n);                                      // 0x140f40fd0 "onDraw"
-    void FUN_140f41040(int n);                                      // 0x140f41040 "onPerfect"
-    void FUN_140f410b0(int n);                                      // 0x140f410b0 "onFight"
-    void FUN_140f41120(int n);                                      // 0x140f41120 "onFinalRound"
-    void FUN_140f41190(int a1, int a2);                             // 0x140f41190 "onRound" (the round number and its goal)
+    void OnWin(int n);                                      // 0x140f40ef0 the movie's "onWin" with the score
+    void OnLose(int n);                                      // 0x140f40f60 "onLose"
+    void OnDraw(int n);                                      // 0x140f40fd0 "onDraw"
+    void OnPerfect(int n);                                      // 0x140f41040 "onPerfect"
+    void OnFight(int n);                                      // 0x140f410b0 "onFight"
+    void OnFinalRound(int n);                                      // 0x140f41120 "onFinalRound"
+    void OnRound(int a1, int a2);                             // 0x140f41190 "onRound" (the round number and its goal)
 };
 MS2_CHECK_SIZE(UIEventIntroduce, 0x70);

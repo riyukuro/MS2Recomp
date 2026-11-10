@@ -26,8 +26,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 // ---- unrecovered helpers (the tinyxml wrappers the other table units share) ----
 
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
+CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlQuery(class TiXmlElement*, char const*, int&);   // C3: was FUN_140873890
 
@@ -55,14 +55,14 @@ CJobConditionTable::~CJobConditionTable()
 // @0x140636000
 int CJobConditionTable::Load()
 {
-    return LoadFile(FUN_14071a5b0("Table", "jobConditionTable.xml"));
+    return LoadFile(GetXmlPath("Table", "jobConditionTable.xml"));
 }
 
 // @0x1406360a0
 int CJobConditionTable::LoadFile(const CString& strPath)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -131,7 +131,7 @@ void CJobConditionTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CJobConditionTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CJobConditionTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

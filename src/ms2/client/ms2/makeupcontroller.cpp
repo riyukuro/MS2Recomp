@@ -301,7 +301,7 @@ void CMakeupController::vfunc_9(int nIndex)
         CharacterDecalData* pOwner = m_spEquipItem->GetItemData()->GetModelOrEmpty()->FUN_14054b6b0();
         if (pOwner != 0)
         {
-            std::vector<MS2Ptr<ItemCustom> >* pList = pOwner->FUN_1401e41c0();
+            std::vector<MS2Ptr<ItemCustom> >* pList = pOwner->GetCustoms();
             if ((int)pList->size() > nIndex)
             {
                 const MS2Ptr<ItemCustom>* pPreset = &(*static_cast<const std::vector<MS2Ptr<ItemCustom> >*>(pList))[nIndex];
@@ -572,7 +572,7 @@ int GetPresetCount(MS2Ptr<CEquipItem> spItem)
         CharacterDecalData* pOwner = spItem->GetItemData()->GetModelOrEmpty()->FUN_14054b6b0();
         if (pOwner != 0)
         {
-            return (int)pOwner->FUN_1401e41c0()->size();
+            return (int)pOwner->GetCustoms()->size();
         }
     }
     return 0;

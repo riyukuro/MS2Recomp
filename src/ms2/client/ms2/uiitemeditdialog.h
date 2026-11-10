@@ -39,15 +39,15 @@ public:
     void FUN_1419bd530(NotifyObject* pNotify);                    // the active my-codi tab changed
     bool FUN_1419bd6d0(int nResult, const CMsgBoxData& data);
     bool FUN_1419bd710();
-    bool FUN_1419bd7a0();                                         // the worn costume is editable
+    bool IsWornCostumeEditable();                                         // the worn costume is editable
     BOOL FUN_1419bd860();                                         // leave the page (restore the worn item)
     void OnSave();                                         // save
     void OnReset();                                         // reset
-    void FUN_1419bd9f0();                                         // close: ask first when changed
-    void FUN_1419bdb50(int bEnable);                              // enable both buttons
-    int FUN_1419bdb90();                                          // the save button is enabled
-    void FUN_1419bdc40(int bEnable);                              // save button
-    void FUN_1419bdce0(int bEnable);                              // reset button
+    void RequestClose();                                         // close: ask first when changed
+    void SetButtonsEnabled(int bEnable);                              // enable both buttons
+    int IsSaveButtonEnabled();                                          // the save button is enabled
+    void SetSaveEnabled(int bEnable);                              // save button
+    void SetResetEnabled(int bEnable);                              // reset button
 
 private:
     MS2_LAYOUT_FRIEND;

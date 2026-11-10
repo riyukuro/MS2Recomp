@@ -57,7 +57,7 @@ Everything is looked up relative to the checkout. To keep a file elsewhere, set 
 `MS2_EXE`, `MS2_MAP_DIR`, `MS2_CLASSES_DIR`, `MS2_THIRD_PARTY`, `MS2_ENGINE_DIR`, `MS2_WINEPREFIX`
 (see `tools/ms2paths.py`).
 
-Host: Linux with Wine, CMake 3.20+, Ninja, clang-cl and LLVM tools (`llvm-undname`, `llvm-nm`) on PATH, Python 3 with
+Host: Linux with Wine, CMake 3.21+ (`CMakePresets.json` asks for it), Ninja, clang-cl and LLVM tools (`llvm-undname`, `llvm-nm`) on PATH, Python 3 with
 `pip install -r requirements.txt`. Put a virtualenv at `.venv/` (the scripts use `.venv/bin/python`). Or native Windows,
 next section.
 
@@ -74,7 +74,7 @@ needs bash or Wine (`tools/unit-check.sh`, `check-exe.sh`, `check-toolchain.sh` 
 | Visual Studio 2017 Build Tools **15.9** (cl 19.16.27054, toolset `14.16.27023`) | `vs_buildtools.exe` of the 15.9 channel (https://aka.ms/vs/15/release/vs_buildtools.exe) with the components `Microsoft.VisualStudio.Component.VC.Tools.x86.x64` (MSVC v141 x64/x86 build tools) and `Microsoft.VisualStudio.Component.VC.ATLMFC` (C++ ATL and MFC, includes the MBCS libraries: `mfc140.lib`, not `mfc140u.lib`). Command line: `vs_buildtools.exe --quiet --wait --norestart --nocache --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.VC.ATLMFC` |
 | Windows 10 SDK **10.0.19041.0** | VS component `Microsoft.VisualStudio.Component.Windows10SDK.19041` (VS 2019/2022 installer) or the standalone "Windows 10 SDK (10.0.19041.0)" installer; any other SDK version changes headers and is caught by `check_toolchain.py` |
 | Alternative: v141 inside VS 2019/2022 | components `Microsoft.VisualStudio.Component.VC.v141.x86.x64`, `Microsoft.VisualStudio.Component.VC.v141.ATL`, `Microsoft.VisualStudio.Component.VC.v141.MFC`. Allowed only if `check_toolchain.py` prints OK: that toolset has been patched separately by Microsoft |
-| Git, Python 3.10+, CMake 3.20+, Ninja, LLVM (clang-cl, lld-link, `llvm-nm`, `llvm-undname`) | `winget install Git.Git Python.Python.3.12 Kitware.CMake Ninja-build.Ninja LLVM.LLVM`; all on `PATH` |
+| Git, Python 3.10+, CMake 3.21+, Ninja, LLVM (clang-cl, lld-link, `llvm-nm`, `llvm-undname`) | `winget install Git.Git Python.Python.3.12 Kitware.CMake Ninja-build.Ninja LLVM.LLVM`; all on `PATH` |
 | DirectX SDK (June 2010), PhysX 2.8.4 | install them anywhere and link the folders to where the tools look: `mklink /J third_party\dxsdk\DXSDK "C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)"`, and `third_party\physx284\PFiles\NVIDIA Corporation\NVIDIA PhysX SDK\v2.8.4_win` to the extracted PhysX 2.8.4 SDK (create the parent folders first) |
 
 **2. Checkout and Python**

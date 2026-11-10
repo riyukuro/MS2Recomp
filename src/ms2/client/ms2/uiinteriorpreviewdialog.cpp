@@ -89,9 +89,9 @@ void UIInteriorPreviewDialog::FUN_140f4cd90(int nItemId)
         if (m_178 != nItemId)
         {
             m_178 = nItemId;
-            FUN_140f4d110();
+            SetData();
         }
-        FUN_1419235d0();
+        SetTopMostLayer();
     }
 }
 
@@ -115,7 +115,7 @@ void UIInteriorPreviewDialog::vfunc_67()
     m_17c = 0;
     m_180 = 0;
     m_184 = 0;
-    FUN_140f4dac0();
+    ReleaseBoundItems();
 }
 
 // @0x140f4cf60
@@ -129,7 +129,7 @@ void UIInteriorPreviewDialog::OnLoadComplete()
             pDialog->SetPositionFloat(m_180, m_184);
         m_17c = 0;
     }
-    FUN_140f4d110();
+    SetData();
 }
 
 // @0x140f4d010
@@ -144,13 +144,13 @@ void UIInteriorPreviewDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CSt
         int nRank = pArgs->PopUInt();
         ASTooltip tooltip(pActor, 8, m_28);
         if (tooltip.FUN_1409e1770(nItemId, nRank) != 0)
-            *pRetVal = tooltip.FUN_1422bb870();
+            *pRetVal = tooltip.GetValue();
     }
 }
 
 #ifndef MS2_HOOK_DLL
 // @0x140f4d110
-void UIInteriorPreviewDialog::FUN_140f4d110()
+void UIInteriorPreviewDialog::SetData()
 {
     MS2Ptr<CItemData> spData = FUN_14053f870(m_178);
     if (spData == (CItemData*)0)
@@ -186,10 +186,10 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
                     ++nBound;
                     strKey.Format("%s.%d", (const char*)GetTypeName(), nBound);
                     ASObj objItem(m_28);
-                    ((class AScript&)(objItem)).FUN_1407cbb20((const char*)s_strItemName, spItem->FUN_140527b10());
-                    objItem.FUN_1407cba60((const char*)s_strBinding, strKey);
+                    ((class AScript&)(objItem)).SetWStringMember((const char*)s_strItemName, spItem->FUN_140527b10());
+                    objItem.SetStringMember((const char*)s_strBinding, strKey);
                     CreateItemInfoSlot(strKey, MS2Ptr<CItem>(spItem), nBound, 0x415, 0x800);
-                    arrItems.PushValue(objItem.FUN_1422bb870());
+                    arrItems.PushValue(objItem.GetValue());
                     m_188.Add(strKey);
                     seen.AddTail(nCubeItemId);
                 }
@@ -203,15 +203,15 @@ void UIInteriorPreviewDialog::FUN_140f4d110()
             spSize->SetTextW(strSize);
         }
         ASObj objData(m_28);
-        objData.FUN_1409adbe0((const char*)s_strItemPackageList, arrItems.FUN_1422bb870());
-        objData.FUN_1407cba60((const char*)s_strItemMovie, spData->property.movie);
+        objData.FUN_1409adbe0((const char*)s_strItemPackageList, arrItems.GetValue());
+        objData.SetStringMember((const char*)s_strItemMovie, spData->property.movie);
         pDialog->FUN_140acd1f0("setData", objData);
     }
 }
 #endif
 
 // @0x140f4dac0
-void UIInteriorPreviewDialog::FUN_140f4dac0()
+void UIInteriorPreviewDialog::ReleaseBoundItems()
 {
     for (size_t i = 0; i < m_188.GetCount(); ++i)
         DestroyItemInfoSlot(m_188[i]);

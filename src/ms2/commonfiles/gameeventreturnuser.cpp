@@ -34,7 +34,7 @@ private:
 };
 
 // @0x14041cb50
-GameEvent* FUN_14041cb50() { return new GameEventReturnUser; }
+GameEvent* CreateGameEventReturnUser() { return new GameEventReturnUser; }
 
 // @0x14041cbb0
 CStringW GameEventReturnUser::GetTypeName() { return CStringW(L"GameEventReturnUser"); }
@@ -42,9 +42,9 @@ CStringW GameEventReturnUser::GetTypeName() { return CStringW(L"GameEventReturnU
 // @0x14041cc00
 GameEventReturnUser::GameEventReturnUser()
 {
-    FUN_1402e3480(2);
-    FUN_1402e3480(1);
-    FUN_1402e3480(3);
+    SetFlag(2);
+    SetFlag(1);
+    SetFlag(3);
     m_e0.AssignRaw(new MentoringContext);
 }
 
@@ -87,7 +87,7 @@ MentoringContext::MentoringContext() : m_18(0), m_20(0), m_28(0)
 // The factory GameEventShutdown registers: GameEventShutdown is not constructible from the registry, so it
 // returns NULL.
 // @0x14041d460
-GameEvent* FUN_14041d460()
+GameEvent* CreateGameEventShutdown()
 {
     return NULL;
 }

@@ -28,7 +28,7 @@
 // GFx UI render helpers (gfxrenderhelpers.h; inline COMDATs of ?\asmousecursor.cpp). That header's manager getter
 // conflicts with gfxmanager.h, so the two helpers are declared here.
 NiDX9Renderer* FUN_1422cf0a0();
-LPDIRECT3DDEVICE9 FUN_1422cf0d0();
+LPDIRECT3DDEVICE9 GetD3DDevice();
 
 // Scaleform::Render::Renderer2D / D3D9::HAL (render_renderer2d.h, d3d9_hal.h) as this unit sees them; the placeholder keeps
 // its own classes because the exe's HAL layout differs from the SDK's, so the members are reached through casts.
@@ -43,7 +43,7 @@ public:
 } }
 
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a service getter stand-in)
-void FUN_141aee8d0(NiRenderFrame* pFrame, NiRenderStep* pStep);     // NiRenderFrame::AppendRenderStep (uiservice.cpp copy)
+void AppendRenderStep(NiRenderFrame* pFrame, NiRenderStep* pStep);     // NiRenderFrame::AppendRenderStep (uiservice.cpp copy)
 
 // GFxMovie as vfunc_6 sees it: slot 9 takes the HAL and the Renderer2D by value (gfxmovie.h types both parameters with
 // Ptr<Unk_GFxUIHal>/Ptr<Unk_GFxUIRenderer2D>; the copies made here are this obj's Ptr<HAL>/Ptr<Renderer2D> COMDATs).
@@ -96,11 +96,11 @@ int GFxRenderSingleThread::vfunc_3()
     kGlyphParams.NumTextures = 32;
     reinterpret_cast<Scaleform::Render::Renderer2D*>(m_spRenderer2D.GetPtr())->GetGlyphCacheConfig()->SetParams(kGlyphParams);
 
-    if (FAILED(FUN_1422cf0d0()->CreateStateBlock(D3DSBT_ALL, &m_spStateBlock.GetRawRef())))
+    if (FAILED(GetD3DDevice()->CreateStateBlock(D3DSBT_ALL, &m_spStateBlock.GetRawRef())))
         return 0;
-    if (!m_renderHAL->InitHAL(Scaleform::Render::D3D9::HALInitParams(FUN_1422cf0d0(), kPresentParams, 1)))
+    if (!m_renderHAL->InitHAL(Scaleform::Render::D3D9::HALInitParams(GetD3DDevice(), kPresentParams, 1)))
         return 0;
-    if (!FUN_1422f4cc0())
+    if (!CreateRenderStep())
         return 0;
     return 1;
 }
@@ -172,7 +172,7 @@ MS2_REPLACE_METHOD(0x1422F4980, GFxRenderSingleThread, vfunc_9, 126, 0x5BD5AF48)
 // @0x1422f4a10
 void GFxRenderSingleThread::vfunc_10()
 {
-    FUN_1422f4f00();
+    RemoveRenderStep();
     if (m_renderHAL)
         m_renderHAL->ShutdownHAL();
 }
@@ -184,7 +184,7 @@ void GFxRenderSingleThread::vfunc_11()
     if (m_spStateBlock)
         m_spStateBlock = 0;
     m_renderHAL->PrepareForReset();
-    FUN_14025e7a0()->FUN_1422f58f0(0);
+    GetGFxManager()->FUN_1422f58f0(0);
 }
 MS2_REPLACE_METHOD(0x1422F4A70, GFxRenderSingleThread, vfunc_11, 111, 0xD05EBE8E);
 
@@ -193,22 +193,22 @@ bool GFxRenderSingleThread::vfunc_12()
 {
     if (m_renderHAL)
     {
-        if (FAILED(FUN_1422cf0d0()->CreateStateBlock(D3DSBT_ALL, &m_spStateBlock.GetRawRef())))
+        if (FAILED(GetD3DDevice()->CreateStateBlock(D3DSBT_ALL, &m_spStateBlock.GetRawRef())))
             return false;
         if (!m_renderHAL->RestoreAfterReset())
         {
-            FUN_14025e7a0()->FUN_1422f58f0(0);
-            FUN_14025e7a0()->FUN_1422b08f0("*** GFX :: !m_renderHAL->RestoreAfterReset()");
+            GetGFxManager()->FUN_1422f58f0(0);
+            GetGFxManager()->FUN_1422b08f0("*** GFX :: !m_renderHAL->RestoreAfterReset()");
             throw 0xd;
         }
     }
-    if (!FUN_1422f4fd0())
+    if (!CreateRenderTexture())
     {
-        FUN_14025e7a0()->FUN_1422f58f0(0);
-        FUN_14025e7a0()->FUN_1422b08f0("*** GFX :: !CreateRenderTexture()");
+        GetGFxManager()->FUN_1422f58f0(0);
+        GetGFxManager()->FUN_1422b08f0("*** GFX :: !CreateRenderTexture()");
         throw 0xd;
     }
-    FUN_14025e7a0()->FUN_1422f58f0(1);
+    GetGFxManager()->FUN_1422f58f0(1);
     return true;
 }
 MS2_REPLACE_METHOD(0x1422F4AF0, GFxRenderSingleThread, vfunc_12, 317, 0xFED07058);
@@ -229,9 +229,9 @@ Ni2DBuffer* GFxRenderSingleThread::vfunc_14()
 MS2_REPLACE_METHOD(0x1422F4C60, GFxRenderSingleThread, vfunc_14, 81, 0x43325BF2);
 
 // @0x1422f4cc0
-int GFxRenderSingleThread::FUN_1422f4cc0()
+int GFxRenderSingleThread::CreateRenderStep()
 {
-    FUN_1422f4f00();
+    RemoveRenderStep();
     ecr::RenderService* pService = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
     if (pService)
     {
@@ -240,24 +240,24 @@ int GFxRenderSingleThread::FUN_1422f4cc0()
         {
             m_spRenderStep = NiNew NiDefaultClickRenderStep();
             m_spRenderStep->SetName("ScaleformStep");
-            FUN_1422f4fd0();
+            CreateRenderTexture();
             NiGFxOverlayClick* pClick = NiNew NiGFxOverlayClick;
             if (pClick)
             {
                 pClick->SetName("ScaleformRC");
-                pClick->SetPreProcessingCallbackFunc(FUN_1422f50d0, this);
+                pClick->SetPreProcessingCallbackFunc(CopyBackBufferToRenderTexture, this);
                 m_spRenderStep->AppendRenderClick(pClick);
             }
-            FUN_141aee8d0(pFrame, m_spRenderStep);
+            AppendRenderStep(pFrame, m_spRenderStep);
             return 1;
         }
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422F4CC0, GFxRenderSingleThread, FUN_1422f4cc0, 565, 0x0148222D);
+MS2_REPLACE_METHOD(0x1422F4CC0, GFxRenderSingleThread, CreateRenderStep, 565, 0x0148222D);
 
 // @0x1422f4f00
-int GFxRenderSingleThread::FUN_1422f4f00()
+int GFxRenderSingleThread::RemoveRenderStep()
 {
     if (!m_spRenderStep)
         return 0;
@@ -275,10 +275,10 @@ int GFxRenderSingleThread::FUN_1422f4f00()
     }
     return 1;
 }
-MS2_REPLACE_METHOD(0x1422F4F00, GFxRenderSingleThread, FUN_1422f4f00, 197, 0x6A5C51E6);
+MS2_REPLACE_METHOD(0x1422F4F00, GFxRenderSingleThread, RemoveRenderStep, 197, 0x6A5C51E6);
 
 // @0x1422f4fd0
-int GFxRenderSingleThread::FUN_1422f4fd0()
+int GFxRenderSingleThread::CreateRenderTexture()
 {
     ecr::RenderService* pService = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
     if (pService)
@@ -295,10 +295,10 @@ int GFxRenderSingleThread::FUN_1422f4fd0()
     }
     return 0;
 }
-MS2_REPLACE_METHOD(0x1422F4FD0, GFxRenderSingleThread, FUN_1422f4fd0, 236, 0xFA4BBAFB);
+MS2_REPLACE_METHOD(0x1422F4FD0, GFxRenderSingleThread, CreateRenderTexture, 236, 0xFA4BBAFB);
 
 // @0x1422f50d0
-bool GFxRenderSingleThread::FUN_1422f50d0(NiRenderClick* pClick, void* pData)
+bool GFxRenderSingleThread::CopyBackBufferToRenderTexture(NiRenderClick* pClick, void* pData)
 {
     GFxRenderer* pRenderer = static_cast<GFxRenderer*>(pData);
     if (!pRenderer)
@@ -316,4 +316,4 @@ bool GFxRenderSingleThread::FUN_1422f50d0(NiRenderClick* pClick, void* pData)
         return true;
     return true;
 }
-MS2_REPLACE(0x1422F50D0, GFxRenderSingleThread::FUN_1422f50d0, 240, 0x59B3C7D8);
+MS2_REPLACE(0x1422F50D0, GFxRenderSingleThread::CopyBackBufferToRenderTexture, 240, 0x59B3C7D8);

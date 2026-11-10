@@ -31,7 +31,7 @@
 
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a service getter stand-in)
 int FUN_14151e740();                                            // GFx allocator bytes in use
-class GFxMovieEventHandler { public: static void FUN_1422d9020(bool bEnable); };   // gfxmovie.h; IME enable flag
+class GFxMovieEventHandler { public: static void SetImeEnabled(bool bEnable); };   // gfxmovie.h; IME enable flag
 CLogString* GetLogString();
 
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -61,7 +61,7 @@ GFxService::GFxService()
     UIAlignWidgetManager::CreateInstance();
     UISwfEntityManager::CreateInstance();
     GFxAtlasCache::CreateInstance();
-    UIAlignWidgetManager::GetInstance()->FUN_1422e6960();
+    UIAlignWidgetManager::GetInstance()->LoadWidgets();
 }
 
 // @0x1422e9b40
@@ -91,7 +91,7 @@ MS2_REPLACE_METHOD(0x1422E9C20, GFxService, GetDisplayName, 13, 0xA7E85B1C);
 void GFxService::vfunc_16()
 {
     if (GFxManager::GetInstance())
-        GFxManager::GetInstance()->FUN_1422ae590();
+        GFxManager::GetInstance()->OnDeviceLost();
     if (UISwfEntityManager::GetInstance())
         UISwfEntityManager::GetInstance()->vfunc_4();
 }
@@ -181,7 +181,7 @@ efd::AsyncResult GFxService::OnInit()
     NiDX9Renderer* pRenderer = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
     if (pRenderer)
     {
-        pRenderer->AddResetNotificationFunc(FUN_1422ea110, this);
+        pRenderer->AddResetNotificationFunc(OnRenderDeviceReset, this);
         pRenderer->AddLostDeviceNotificationFunc(FUN_1422ea1f0, this);
     }
     return efd::AsyncResult_Complete;
@@ -196,7 +196,7 @@ efd::AsyncResult GFxService::OnTick()
     if (UISwfEntityManager::GetInstance())
     {
         UISwfEntityManager::GetInstance()->FUN_1422d1c20();
-        UISwfEntityManager::GetInstance()->FUN_1422d2020();
+        UISwfEntityManager::GetInstance()->UpdateEntities();
     }
     return efd::AsyncResult_Pending;
 }
@@ -208,19 +208,19 @@ efd::AsyncResult GFxService::OnShutdown()
     NiDX9Renderer* pRenderer = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
     if (pRenderer)
     {
-        pRenderer->RemoveResetNotificationFunc(FUN_1422ea110);
+        pRenderer->RemoveResetNotificationFunc(OnRenderDeviceReset);
         pRenderer->RemoveLostDeviceNotificationFunc(FUN_1422ea1f0);
     }
     if (DAT_143b0d368)
         DAT_143b0d368();
-    UISwfEntityManager::GetInstance()->FUN_1422d1ba0();
-    GFxManager::GetInstance()->FUN_1422ae360();
+    UISwfEntityManager::GetInstance()->Shutdown();
+    GFxManager::GetInstance()->Shutdown();
     return efd::AsyncResult_Complete;
 }
 MS2_REPLACE_METHOD_VIA(0x1422EA080, GFxService, efd::ISystemService, OnShutdown, 128, 0x280C3BCA);
 
 // @0x1422ea110
-bool GFxService::FUN_1422ea110(bool bBeforeReset, void* pvData)
+bool GFxService::OnRenderDeviceReset(bool bBeforeReset, void* pvData)
 {
     GFxService* pService = (GFxService*)pvData;
     if (pService)
@@ -246,7 +246,7 @@ bool GFxService::FUN_1422ea110(bool bBeforeReset, void* pvData)
     }
     return true;
 }
-MS2_REPLACE(0x1422EA110, GFxService::FUN_1422ea110, 215, 0xE00B53F1);
+MS2_REPLACE(0x1422EA110, GFxService::OnRenderDeviceReset, 215, 0xE00B53F1);
 
 // @0x1422ea1f0
 bool GFxService::FUN_1422ea1f0(void* pvData)
@@ -257,11 +257,11 @@ bool GFxService::FUN_1422ea1f0(void* pvData)
 MS2_REPLACE(0x1422EA1F0, GFxService::FUN_1422ea1f0, 18, 0xC9D17E2C);
 
 // @0x1422ea210
-void GFxService::FUN_1422ea210(int nCaptureBlock)
+void GFxService::SetCaptureBlock(int nCaptureBlock)
 {
     s_nCaptureBlock = nCaptureBlock;
 }
-MS2_REPLACE(0x1422EA210, GFxService::FUN_1422ea210, 15, 0x2808E696);
+MS2_REPLACE(0x1422EA210, GFxService::SetCaptureBlock, 15, 0x2808E696);
 
 // @0x1422ea230
 void GFxService::SetFont(CString strFont)
@@ -271,11 +271,11 @@ void GFxService::SetFont(CString strFont)
 MS2_REPLACE_METHOD(0x1422EA230, GFxService, SetFont, 63, 0xB0476F43);
 
 // @0x1422ea280
-void GFxService::FUN_1422ea280(bool b)
+void GFxService::DisableIme(bool b)
 {
-    GFxMovieEventHandler::FUN_1422d9020(false);
+    GFxMovieEventHandler::SetImeEnabled(false);
 }
-MS2_REPLACE_METHOD(0x1422EA280, GFxService, FUN_1422ea280, 25, 0x285AC38D);
+MS2_REPLACE_METHOD(0x1422EA280, GFxService, DisableIme, 25, 0x285AC38D);
 
 // @0x1422ea2a0
 bool GFxService::FUN_1422ea2a0()

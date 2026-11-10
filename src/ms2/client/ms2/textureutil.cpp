@@ -45,7 +45,7 @@
 extern char DAT_143d6eb58;
 void* FUN_140aadf80();                                      // the application window object
 class Unk_14025e7a0;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -68,7 +68,7 @@ template <class A> CStringW FormatStringId(int nId, const A& a);      // localiz
 void FUN_1412751b0(const CStringW& kText, int nSeconds);    // on-screen notice
 Unk_MessageBoxPtr FUN_14151f820();                          // the message box currently shown
 void FUN_14151f200();                                       // close the current message box
-void FUN_140d73aa0(CStringW kText, int nType, void* pkOwner, CStringW kTag);   // show a message box
+void ShowMessageBox(CStringW kText, int nType, void* pkOwner, CStringW kTag);   // show a message box
 int FUN_1414a5a40(CStringW kPath);                          // create a directory (-1 on failure)
 std::string FUN_14083fa60(const unsigned char* pcData, unsigned int uiLength);   // encode a byte string
 
@@ -166,9 +166,9 @@ IDirect3DSurface9* CreateRenderTargetSurface(unsigned int uiWidth, unsigned int 
 }
 
 // ---- unit-local thread-local image converter (accessors defined later in the file) ----
-NiImageConverter* FUN_141851720();      // get (creating on first use) the calling thread's NiImageConverter
+NiImageConverter* GetImageConverter();      // get (creating on first use) the calling thread's NiImageConverter
 int CountMipLevels(int iWidth, int iHeight);   // defined below
-void FUN_141851840(NiDevImageConverter* pkConverter);   // defined below
+void SetImageConverter(NiDevImageConverter* pkConverter);   // defined below
 int SaveBufferToFileW(ATL::CSimpleStringT<wchar_t, 1>* pkPath, D3DXIMAGE_FILEFORMAT eFormat, int nTarget,
     NiRect<unsigned int> kRect, int bLogErrors);
 int SaveSurfaceToFileW(ATL::CSimpleStringT<wchar_t, 1>* pkPath, D3DXIMAGE_FILEFORMAT eFormat, IDirect3DSurface9* pkSurface,
@@ -241,7 +241,7 @@ NiSourceTexture* CopyTexturePixels(NiTexture* pkTexture, bool bMipmap, bool bSta
     pkSurfaceDest->UnlockRect();
     pkSurfaceDest->Release();
 
-    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, GetImageConverter());
     NiPointer<NiPixelData> spConverted = pkConverter->ConvertPixelData(*spPixels, DAT_1439fb040, NULL, bMipmap);
     kPrefs.m_eMipMapped = NiTexture::FormatPrefs::YES;
     NiSourceTexture* pkResult = NiSourceTexture::Create(spConverted, kPrefs, bStatic);
@@ -270,7 +270,7 @@ void BlitTexturePixels(NiSourceTexture* pkSource, NiPixelData* pkDest, const NiR
         return;
     }
 
-    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
+    NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, GetImageConverter());
     spSrcPixels = pkConverter->ConvertPixelData(*spSrcPixels, DAT_1439fb040, NULL, false);
 
     unsigned int uiStride = pkDest->GetPixelStride();
@@ -381,7 +381,7 @@ NiPixelData* ConvertToRGBA32(NiPixelData* pkPixels, unsigned int /*uiUnused1*/, 
 
     if (pkPixels->GetPixelFormat() != DAT_1439fb040)
     {
-        NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, FUN_141851720());
+        NiImageConverter* pkConverter = NiDynamicCast(NiDevImageConverter, GetImageConverter());
         pkPixels = pkConverter->ConvertPixelData(*pkPixels, DAT_1439fb040, NULL, false);
     }
     return pkPixels;
@@ -547,7 +547,7 @@ Ni2DBuffer* GetScreenshotBuffer(int nTarget)
 {
     if (nTarget != 0)
     {
-        return ((class GFxManager*)(class Unk_14025e7a0*)(((class Unk_14025e7a0*)FUN_14025e7a0())))->FUN_1422afcf0();
+        return ((class GFxManager*)(class Unk_14025e7a0*)(((class Unk_14025e7a0*)GetGFxManager())))->FUN_1422afcf0();
     }
     else
     {
@@ -892,7 +892,7 @@ int SaveRenderTargetToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILE
 int SaveDefaultTargetToFileA(ATL::CSimpleStringT<char, 1>* pkPath, D3DXIMAGE_FILEFORMAT eFormat, int /*nUnused*/,
     NiRect<unsigned int> kRect, float fScale)
 {
-    Ni2DBuffer* pkBuffer = ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->FUN_1416a3fb0()->GetBuffer(0);
+    Ni2DBuffer* pkBuffer = ((PostProcessingService*)Unk_AeFeatureMgr::FUN_1409a8b20())->GetOffscreenTarget()->GetBuffer(0);
     if (pkBuffer == NULL)
     {
         return 0;
@@ -957,7 +957,7 @@ CStringW GetTimestampFileName(int eFormat)
                 }                                                                                                       \
             }                                                                                                           \
         }                                                                                                               \
-        FUN_140d73aa0(CStringW(kText), 0, 0, CStringW(kTag));                                                           \
+        ShowMessageBox(CStringW(kText), 0, 0, CStringW(kTag));                                                           \
     }                                                                                                                   \
     else                                                                                                                \
     {                                                                                                                   \
@@ -1179,7 +1179,7 @@ std::string CaptureRegionJpg(int iX, int iY, int iWidth, int iHeight)
     kRegion.top = iY;
     kRegion.right = iX + iWidth;
     kRegion.bottom = iY + iHeight;
-    float fScale = 1.0f / TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
+    float fScale = 1.0f / TSingleton<CUIService>::GetInstance()->GetUIScale();
     kRegion.left = (int)((float)kRegion.left * fScale);
     kRegion.top = (int)((float)kRegion.top * fScale);
     kRegion.right = (int)((float)kRegion.right * fScale);
@@ -1262,14 +1262,14 @@ private:
     char m_pad[0xe0 - sizeof(NiImageReader)];
 };
 // @0x141851720
-NiImageConverter* FUN_141851720()
+NiImageConverter* GetImageConverter()
 {
     if (s_kConverterSlot.Get() == NULL)
     {
         NiDevImageConverter::MS2DisableNIFImageReader();
         NiDevImageConverter* pkConverter = new (efd::MemHint((efd::MemHint::Bits)0)) NiDevImageConverter;
         pkConverter->AddReader(new (efd::MemHint((efd::MemHint::Bits)0)) MS2PNGReader);
-        FUN_141851840(pkConverter);
+        SetImageConverter(pkConverter);
     }
     return (NiImageConverter*)s_kConverterSlot.Get();
 }
@@ -1278,7 +1278,7 @@ NiImageConverter* FUN_141851720()
 // Stores the converter in the thread's slot, destroying the one that was there.
 #ifndef MS2_HOOK_DLL
 // @0x141851840
-void FUN_141851840(NiDevImageConverter* pkConverter)
+void SetImageConverter(NiDevImageConverter* pkConverter)
 {
     if (s_kConverterSlot.Get() != NULL)
     {

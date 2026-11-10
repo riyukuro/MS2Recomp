@@ -41,7 +41,7 @@ int MailItemSlot::GetItemId()
 {
     if (m_spItem == 0)
         return 0;
-    return m_spItem->FUN_1405276c0();
+    return m_spItem->GetItemId();
 }
 
 // @0x141472490
@@ -92,7 +92,7 @@ int MailItemSlot::vfunc_0(void* p)
             CStringW strEmpty(L"");
             tip.SetEnablePuton(strEmpty);
         }
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -106,7 +106,7 @@ int MailItemSlot::vfunc_8(void* p)
     ASSlot slot(2);
     if (slot.FUN_1409c3860(m_spItem.get(), WorldService::GetInstance()->FUN_141bd0cc0(), 0x15))
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -117,15 +117,15 @@ void CreateMailItemSlot(const CString& strName, MS2Ptr<CItem> spItem, int nValue
 {
     MailItemSlot* pSlot = new (efd::MemHint(efd::MemHint::NONE)) MailItemSlot(strName, spItem, nValue, nIndex);
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f10(strName, pSlot);
+        Unk_NotifyContext::RegisterBinding(strName, pSlot);
 }
 
 // @0x1414728e0
 void RemoveMailItemSlot(const CString& strName)
 {
-    MailItemSlot* pSlot = FUN_1414729b0(Unk_NotifyContext::FUN_1422c8e90(strName));
+    MailItemSlot* pSlot = FUN_1414729b0(Unk_NotifyContext::FindBinding(strName));
     if (pSlot)
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
 }
 
 // @0x141472920

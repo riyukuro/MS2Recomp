@@ -78,7 +78,7 @@ public:
     FMOD::System* GetSystem();                              // m_pSystem
     FMOD::EventSystem* GetEventSystem();                         // m_pEventSystem
     FMOD::Sound* GetNetSound();                               // m_pNetSound
-    void FUN_1417ae760(float fVolume);                          // set the volume (also of the net stream)
+    void SetVolume(float fVolume);                          // set the volume (also of the net stream)
     int FUN_1417ae990();                                        // (re)acquire the system objects after a device change
     int FUN_1417aea70();                                       // init the event system for the client language
     int FUN_1417aeb40();                                       // create the event system and check the version
@@ -87,13 +87,13 @@ public:
     void FUN_1417af340();                                       // unload everything
     void FUN_1417af4f0(CStringA strUrl);                        // create the net stream sound
     void FUN_1417af600();                                       // drop the net stream sound
-    void FUN_1417afad0(CStringW strMessage);                    // queue a net stream status message
-    void FUN_1417afb50();                                       // build the tag table of the loaded banks
-    void FUN_1417aff20(CStringA strMediaPath);                  // open the voice streams of the language
-    bool FUN_1417b03d0(const CStringA& strName);                // is the name in the tag table
-    int FUN_1417b0440(const CStringA& strName, size_t* pBank);  // sub sound index of the name, -1 if absent
-    int FUN_1417b04d0(const CStringA& strName, size_t* pBank);  // length of the name, -1 if absent
-    void FUN_1417b0560(const CStringA& strName, FMOD::Sound** ppSound);   // the sub sound of the name
+    void AddMessage(CStringW strMessage);                    // queue a net stream status message
+    void BuildTagTable();                                       // build the tag table of the loaded banks
+    void OpenVoiceStreams(CStringA strMediaPath);                  // open the voice streams of the language
+    bool HasTag(const CStringA& strName);                // is the name in the tag table
+    int GetSubSoundIndex(const CStringA& strName, size_t* pBank);  // sub sound index of the name, -1 if absent
+    int GetSoundLength(const CStringA& strName, size_t* pBank);  // length of the name, -1 if absent
+    void GetSubSound(const CStringA& strName, FMOD::Sound** ppSound);   // the sub sound of the name
     void FUN_1417ae840(int nFlag);                              // set the channel volumes
     float GetVolume();                                      // m_fVolume
 

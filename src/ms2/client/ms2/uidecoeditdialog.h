@@ -26,15 +26,15 @@ public:
     virtual int vfunc_65();                                     // 65 0x14191b420
     virtual void vfunc_67();                                    // 67 0x14191b460
 
-    void FUN_14191bd30(CString strFile);                        // OnAssetChange: pick the model file of the layer
-    void FUN_14191c060(CString strName);                        // OnLayerInsert
-    void FUN_14191c0d0(CString strName);                        // OnLayerDelete
-    void FUN_14191c140(CString strName);                        // OnLayerChange
-    void FUN_14191c1b0(int nBrush);                             // OnBrushChange
-    void FUN_14191c1e0(float fRadius);                          // OnBrushRadiusChange
-    void FUN_14191c230(float fDensity);                         // OnBrushDensityChange
-    void FUN_14191c280(efd::Point2 vScale);                     // OnBrushScaleChange
-    void FUN_14191c2d0(efd::Point2 vRotation);                  // OnBrushRotationChange
+    void OnAssetChange(CString strFile);                        // OnAssetChange: pick the model file of the layer
+    void OnLayerInsert(CString strName);                        // OnLayerInsert
+    void OnLayerDelete(CString strName);                        // OnLayerDelete
+    void OnLayerChange(CString strName);                        // OnLayerChange
+    void OnBrushChange(int nBrush);                             // OnBrushChange
+    void OnBrushRadiusChange(float fRadius);                          // OnBrushRadiusChange
+    void OnBrushDensityChange(float fDensity);                         // OnBrushDensityChange
+    void OnBrushScaleChange(efd::Point2 vScale);                     // OnBrushScaleChange
+    void OnBrushRotationChange(efd::Point2 vRotation);                  // OnBrushRotationChange
 
 };
 MS2_CHECK_SIZE(UIDecoEditDialog, 0x178);

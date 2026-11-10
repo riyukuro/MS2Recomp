@@ -57,13 +57,13 @@ enum SAType;   // C3: the special ability type (commonfiles/additionalactionaddi
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
 
 // The trade slot bags (trademanagerex_2.cpp) and the registry of bound slot bags.
-void FUN_14185e850(const CString& strName, int nCount, bool bMine);
-void FUN_14185e920(const CString& strName);
-TradeSlotBag* FUN_14185edc0(NotifyContext::BindData* p);
+void CreateTradeSlotBag(const CString& strName, int nCount, bool bMine);
+void DestroyTradeSlotBag(const CString& strName);
+TradeSlotBag* GetTradeSlotBag(NotifyContext::BindData* p);
 
 // The meso limits and the trade checks.
-__int64 FUN_14087d0c0();                                       // the smallest meso offer
-__int64 FUN_14087d0f0();                                       // the largest meso offer
+__int64 GetMinMesoOffer();                                       // the smallest meso offer
+__int64 GetMaxMesoOffer();                                       // the largest meso offer
 bool FUN_14087d200(__int64 nMeso);                             // 0 or within the limits
 __int64 FUN_14087d150(__int64 nMeso, float fReduce);           // the fee of an offer
 CStringW FUN_141275860(__int64 nMeso);                         // the meso number text
@@ -74,7 +74,7 @@ CStringW FUN_14083cf10(const CStringW& str);                   // the digits of 
 __int64 FUN_140718320(const CStringW& str);                    // parse a number text
 #include "ms2/placeholder/wcformat.h"
 CStringW GetStringCommonByKey(const CStringW& strKey);                // string table text
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);   // message box
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);   // message box
 int FUN_141276180(const CString& strEvent, const CString& strArg);   // sound event
 
 // The local player.
@@ -91,7 +91,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 
 // The meso the player owns, the zero offset and the trade table.
@@ -121,7 +121,7 @@ UITradeDialogEx::UITradeDialogEx()
     , m_spTargetMeso(0)
     , m_nMyMeso(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_164 = 1;
     CString strName = GetTypeName();
     m_strMyBagId = strName + "_my";
@@ -159,7 +159,7 @@ void UITradeDialogEx::vfunc_67()
         if (pInv->vfunc_55() == 0)
             pInv->FUN_141999e00();
     }
-    FUN_141b27d50();
+    DestroySlotBags();
     vfunc_47(1);
     UIDialog::vfunc_67();
     m_spMyInput = 0;
@@ -212,31 +212,31 @@ void UITradeDialogEx::FUN_141b27580()
 {
     if (m_30 == (AScript*)0)
         return;
-    m_uidTarget = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c10();
-    m_strTargetName = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c20();
+    m_uidTarget = TSingleton<CTradeManagerEx>::GetInstance()->GetPartnerUid();
+    m_strTargetName = TSingleton<CTradeManagerEx>::GetInstance()->GetPartnerName();
     m_strTargetChar = TSingleton<CTradeManagerEx>::GetInstance()->FUN_141b29c70();
     PC* pPlayer = static_cast<PC*>(((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
     ASObj data(2);
-    data.FUN_1407cbb20("myName", pPlayer->vfunc_77());
-    data.FUN_1407cbb20("targetName", m_strTargetName);
+    data.SetWStringMember("myName", pPlayer->vfunc_77());
+    data.SetWStringMember("targetName", m_strTargetName);
     CString strMyProfile = FUN_141028be0(pPlayer->FUN_141656a80(), pPlayer->FUN_1416612e0(), 1, "");
     CString strTargetProfile = FUN_141028be0(m_uidTarget, m_strTargetChar, 1, "");
-    data.FUN_1407cba60("myProfile", strMyProfile);
-    data.FUN_1407cba60("targetProfile", strTargetProfile);
-    data.FUN_1407cb9c0("slotCount", 5);
-    data.FUN_1407cba60("mySlotBagId", m_strMyBagId);
-    data.FUN_1407cba60("targetSlotBagId", m_strTargetBagId);
-    m_30->Invoke("initData", data.FUN_1422bb870());
-    FUN_141b284b0();
+    data.SetStringMember("myProfile", strMyProfile);
+    data.SetStringMember("targetProfile", strTargetProfile);
+    data.SetIntMember("slotCount", 5);
+    data.SetStringMember("mySlotBagId", m_strMyBagId);
+    data.SetStringMember("targetSlotBagId", m_strTargetBagId);
+    m_30->Invoke("initData", data.GetValue());
+    BindControls();
 }
 
 // @0x141b27a60
 void UITradeDialogEx::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_141b27cf0();
+    CreateSlotBags();
     vfunc_47(0);
 }
 
@@ -263,7 +263,7 @@ int UITradeDialogEx::vfunc_28(const char* szMethod, const Scaleform::GFx::Value*
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             __int64 nMeso = FUN_1407182f0(data.FUN_1422b8d30());
-            if (FUN_141b295a0(nMeso))
+            if (ValidateMeso(nMeso))
                 TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode11();
         }
         return 1;
@@ -285,36 +285,36 @@ int UITradeDialogEx::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 }
 
 // @0x141b27cf0
-void UITradeDialogEx::FUN_141b27cf0()
+void UITradeDialogEx::CreateSlotBags()
 {
-    FUN_141b27d50();
-    FUN_14185e850(m_strMyBagId, 5, 1);
-    FUN_14185e850(m_strTargetBagId, 5, 0);
+    DestroySlotBags();
+    CreateTradeSlotBag(m_strMyBagId, 5, 1);
+    CreateTradeSlotBag(m_strTargetBagId, 5, 0);
 }
 
 // @0x141b27d50
-void UITradeDialogEx::FUN_141b27d50()
+void UITradeDialogEx::DestroySlotBags()
 {
-    FUN_14185e920(m_strMyBagId);
-    FUN_14185e920(m_strTargetBagId);
+    DestroyTradeSlotBag(m_strMyBagId);
+    DestroyTradeSlotBag(m_strTargetBagId);
 }
 
 // @0x141b27d90
-void UITradeDialogEx::FUN_141b27d90(__int64 nMeso)
+void UITradeDialogEx::SetMyMeso(__int64 nMeso)
 {
-    m_nMyMeso = std::min<__int64>(nMeso, FUN_14087d0f0());
+    m_nMyMeso = std::min<__int64>(nMeso, GetMaxMesoOffer());
 }
 
 // @0x141b27de0
-void UITradeDialogEx::FUN_141b27de0(int nSide, int nIndex, MS2Ptr<CItem> spItem)
+void UITradeDialogEx::SetTradeSlotItem(int nSide, int nIndex, MS2Ptr<CItem> spItem)
 {
     if (m_30 == (AScript*)0)
         return;
     CString strBagId = nSide ? m_strMyBagId : m_strTargetBagId;
-    TradeSlotBag* pBag = FUN_14185edc0(Unk_NotifyContext::FUN_1422c8e90(strBagId));
+    TradeSlotBag* pBag = GetTradeSlotBag(Unk_NotifyContext::FindBinding(strBagId));
     if (pBag != 0)
     {
-        efd::SmartPointer<TradeSlot> spSlot(efd::DynamicCast<TradeSlot>(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
+        efd::SmartPointer<TradeSlot> spSlot(efd::DynamicCast<TradeSlot>(((class DragSlotBag*)(class DragSlotBag*)(pBag))->GetSlot(nIndex)));
         if (spSlot == 0)
             return;
         spSlot->SetItem(spItem);
@@ -323,15 +323,15 @@ void UITradeDialogEx::FUN_141b27de0(int nSide, int nIndex, MS2Ptr<CItem> spItem)
 }
 
 // @0x141b27fa0
-void UITradeDialogEx::FUN_141b27fa0(int nSide, int nIndex)
+void UITradeDialogEx::ClearTradeSlot(int nSide, int nIndex)
 {
     if (m_30 == (AScript*)0)
         return;
     CString strBagId = nSide ? m_strMyBagId : m_strTargetBagId;
-    TradeSlotBag* pBag = FUN_14185edc0(Unk_NotifyContext::FUN_1422c8e90(strBagId));
+    TradeSlotBag* pBag = GetTradeSlotBag(Unk_NotifyContext::FindBinding(strBagId));
     if (pBag != 0)
     {
-        efd::SmartPointer<TradeSlot> spSlot(efd::DynamicCast<TradeSlot>(((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cd070(nIndex)));
+        efd::SmartPointer<TradeSlot> spSlot(efd::DynamicCast<TradeSlot>(((class DragSlotBag*)(class DragSlotBag*)(pBag))->GetSlot(nIndex)));
         if (spSlot == 0)
             return;
         spSlot->SetItem(MS2Ptr<CItem>(0));
@@ -340,7 +340,7 @@ void UITradeDialogEx::FUN_141b27fa0(int nSide, int nIndex)
 }
 
 // @0x141b28130
-void UITradeDialogEx::FUN_141b28130(int nSide, __int64 nMeso)
+void UITradeDialogEx::SetSideMeso(int nSide, __int64 nMeso)
 {
     if (m_30 == (AScript*)0)
         return;
@@ -349,7 +349,7 @@ void UITradeDialogEx::FUN_141b28130(int nSide, __int64 nMeso)
         return;
     spInput->SetTextW(FUN_1409404f0(nMeso));
     spInput->vfunc_24(1);
-    FUN_141b28f40(nMeso, nSide == 1);
+    UpdateFee(nMeso, nSide == 1);
 }
 
 // @0x141b28290
@@ -375,7 +375,7 @@ void UITradeDialogEx::FUN_141b28290(int nSlotIndex, int bLock)
 int UITradeDialogEx::FUN_141b283f0(int* pnSlot)
 {
     int nSlot = -1;
-    nSlot = DAT_143ab2e80.FUN_14185b5c0();
+    nSlot = DAT_143ab2e80.FindFreeSlot();
     if (nSlot < 0)
         return 0;
     *pnSlot = nSlot;
@@ -388,40 +388,40 @@ void UITradeDialogEx::vfunc_oa0_11(void* a1)
     if (m_30 == (AScript*)0)
         return;
     __int64 nMeso = TSingleton<CTradeManagerEx>::GetInstance()->GetUidLastSent() + DAT_143ab2898;
-    FUN_141b27d90(nMeso);
+    SetMyMeso(nMeso);
 }
 
 // @0x141b284b0
-void UITradeDialogEx::FUN_141b284b0()
+void UITradeDialogEx::BindControls()
 {
-    FUN_141b27d90(DAT_143ab2898);
+    SetMyMeso(DAT_143ab2898);
     if ((m_spMyInput = m_30.operator->()->FUN_140bbe880<ASTextInput>("m_myInputMeso")).get())
     {
-        m_spMyInput->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::FUN_141b291a0));
+        m_spMyInput->AddChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::OnMesoInputChanged));
         if ((m_spMyInputText = m_spMyInput->GetTextField()).get())
         {
-            __int64 nMax = FUN_14087d0f0();
+            __int64 nMax = GetMaxMesoOffer();
             int nMaxChars = FUN_1409404f0(nMax).GetLength();
             static_cast<ASTextField*>(m_spMyInputText.operator->())->SetMaxChars(nMaxChars);
-            reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_spMyInputText)->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::FUN_141b29330), 0, 0);
+            reinterpret_cast<MS2Ptr<ASInteractiveObject>&>(m_spMyInputText)->FUN_1422de780(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UITradeDialogEx::OnMesoInputFocusLost), 0, 0);
         }
     }
     m_spTargetInput = m_30.operator->()->FUN_140bbe880<ASTextInput>("m_targetInputMeso");
     m_spMyFee = m_30->FUN_1409b4620("m_myTradeFee");
     m_spTargetFee = m_30->FUN_1409b4620("m_targetTradeFee");
-    FUN_141b28e30(true, 0);
-    FUN_141b28e30(false, 0);
+    SetFeeText(true, 0);
+    SetFeeText(false, 0);
     m_spMyMeso = m_30->FUN_1409b4620("m_myMesoNumberString");
     m_spTargetMeso = m_30->FUN_1409b4620("m_targetMesoNumberString");
-    FUN_141b28d10(true, 0);
-    FUN_141b28d10(false, 0);
-    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xc5) == 0)
+    SetMesoText(true, 0);
+    SetMesoText(false, 0);
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xc5) == 0)
     {
         m_spMyMeso->vfunc_4(false);
-        float fMyY = m_spMyMeso->FUN_1422c1110();
+        float fMyY = m_spMyMeso->GetY();
         m_spMyFee->SetYFloat(fMyY);
         m_spTargetMeso->vfunc_4(false);
-        float fTargetY = m_spTargetMeso->FUN_1422c1110();
+        float fTargetY = m_spTargetMeso->GetY();
         m_spTargetFee->SetYFloat(fTargetY);
     }
     int nFeePercent = Client::Constants::GetInstance()->TradeFeePercent.Read();
@@ -431,12 +431,12 @@ void UITradeDialogEx::FUN_141b284b0()
 }
 
 // @0x141b28d10
-void UITradeDialogEx::FUN_141b28d10(bool bMine, __int64 nMeso)
+void UITradeDialogEx::SetMesoText(bool bMine, __int64 nMeso)
 {
     MS2Ptr<ASTextField> spText = bMine ? m_spMyMeso : m_spTargetMeso;
     if (spText == 0)
         return;
-    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0xc5))
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0xc5))
     {
         CStringW strMeso = FUN_141275860(nMeso);
         spText->SetTextHTMLW(strMeso);
@@ -448,7 +448,7 @@ void UITradeDialogEx::FUN_141b28d10(bool bMine, __int64 nMeso)
 }
 
 // @0x141b28e30
-void UITradeDialogEx::FUN_141b28e30(bool bMine, __int64 nFee)
+void UITradeDialogEx::SetFeeText(bool bMine, __int64 nFee)
 {
     CStringW strFee = FUN_14028dfa0<__int64>(CStringW(L"s_trade_fee"), nFee);
     MS2Ptr<ASTextField> spText = bMine ? m_spMyFee : m_spTargetFee;
@@ -458,7 +458,7 @@ void UITradeDialogEx::FUN_141b28e30(bool bMine, __int64 nFee)
 }
 
 // @0x141b28f40
-void UITradeDialogEx::FUN_141b28f40(__int64 nMeso, bool bMine)
+void UITradeDialogEx::UpdateFee(__int64 nMeso, bool bMine)
 {
     MS2Ptr<ASTextField> spText = bMine ? m_spMyFee : m_spTargetFee;
     if (spText == 0)
@@ -479,11 +479,11 @@ void UITradeDialogEx::FUN_141b28f40(__int64 nMeso, bool bMine)
     if (bVip)
         strFee += GetStringCommonByKey(L"s_vip_reduce_fee");
     spText->SetTextHTMLW(strFee);
-    FUN_141b28d10(bMine, nMeso);
+    SetMesoText(bMine, nMeso);
 }
 
 // @0x141b291a0
-void UITradeDialogEx::FUN_141b291a0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UITradeDialogEx::OnMesoInputChanged(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     AScript evt(params.pArgs[0], 2);
     Scaleform::GFx::Value target = evt.GetMember("target");
@@ -495,11 +495,11 @@ void UITradeDialogEx::FUN_141b291a0(const Scaleform::GFx::FunctionHandler::Param
         nMeso = m_nMyMeso;
         input.SetTextW(FUN_1409404f0(nMeso));
     }
-    FUN_141b28f40(nMeso, true);
+    UpdateFee(nMeso, true);
 }
 
 // @0x141b29330
-void UITradeDialogEx::FUN_141b29330(const Scaleform::GFx::FunctionHandler::Params& params)
+void UITradeDialogEx::OnMesoInputFocusLost(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_spMyInput == 0)
         return;
@@ -514,36 +514,36 @@ void UITradeDialogEx::FUN_141b29330(const Scaleform::GFx::FunctionHandler::Param
     if (nMeso > m_nMyMeso)
         nMeso = m_nMyMeso;
     if (nParsed != nMeso)
-        FUN_141b28f40(nMeso, true);
-    FUN_141b295a0(nMeso);
+        UpdateFee(nMeso, true);
+    ValidateMeso(nMeso);
 }
 
 // @0x141b294f0
-void UITradeDialogEx::FUN_141b294f0(__int64 nMeso)
+void UITradeDialogEx::SetMesoInput(__int64 nMeso)
 {
     m_spMyInput->SetTextW(FUN_1409404f0(nMeso));
     m_spMyInput->vfunc_24(1);
-    FUN_141b28f40(nMeso, true);
+    UpdateFee(nMeso, true);
 }
 
 // @0x141b295a0
-bool UITradeDialogEx::FUN_141b295a0(__int64 nMeso)
+bool UITradeDialogEx::ValidateMeso(__int64 nMeso)
 {
     bool bValid = true;
     if (!FUN_14087d200(nMeso))
     {
-        FUN_141b294f0(0);
+        SetMesoInput(0);
         nMeso = 0;
-        CStringW strMin = FUN_1409404f0(FUN_14087d0c0());
-        CStringW strMax = FUN_1409404f0(FUN_14087d0f0());
-        FUN_140d73aa0(FUN_14028dfa0<CStringW, CStringW>(L"s_trade_error_invalid_meso_range", strMin, strMax), 0, 0, L"");
+        CStringW strMin = FUN_1409404f0(GetMinMesoOffer());
+        CStringW strMax = FUN_1409404f0(GetMaxMesoOffer());
+        ShowMessageBox(FUN_14028dfa0<CStringW, CStringW>(L"s_trade_error_invalid_meso_range", strMin, strMax), 0, 0, L"");
         bValid = false;
     }
     if (m_nMyMeso < nMeso)
     {
-        FUN_141b294f0(0);
+        SetMesoInput(0);
         nMeso = 0;
-        FUN_140d73aa0(GetStringCommonByKey(L"s_trade_error_lack_meso_2"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_trade_error_lack_meso_2"), 0, 0, L"");
         bValid = false;
     }
     TSingleton<CTradeManagerEx>::GetInstance()->SendTradeMode10(nMeso);
@@ -556,7 +556,7 @@ void UITradeDialogEx::FUN_141b297e0(int nCode)
     if (m_30 == (AScript*)0)
         return;
     if (nCode == 0xe || nCode == 0xd || nCode == 0x11 || nCode == 0x12 || nCode == 0x13)
-        FUN_141b294f0(0);
+        SetMesoInput(0);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

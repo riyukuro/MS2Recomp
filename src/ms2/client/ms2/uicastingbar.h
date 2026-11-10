@@ -69,11 +69,11 @@ public:
     void OnCastingComplete();                                           // 0x1418e1a00 completed callback + reset
     void EndCasting();                                           // 0x1418e1a50 reset
     void ReleaseWidgets();                                           // 0x1418e1ab0 drop the text fields
-    void FUN_1418e1b20(bool bShowTime);                             // 0x1418e1b20 bind the text fields
+    void BindTextFields(bool bShowTime);                             // 0x1418e1b20 bind the text fields
     MS2Ptr<ASTextField> FUN_140bb4cf0(const CString& strName);      // 0x140bb4cf0 text field child lookup
-    ICastingEventListener* FUN_1417f5e90() { return m_pListener; }   // 0x1417f5e90 (COMDAT in stateskill.obj)
+    ICastingEventListener* GetListener() { return m_pListener; }   // 0x1417f5e90 (COMDAT in stateskill.obj)
     // @0x1417f5f90
-    int FUN_1417f5f90() { return m_timer.FUN_140868ba0(); }          // a cast is running (COMDAT in stateskill.obj)
+    int IsCasting() { return m_timer.IsRunning(); }          // a cast is running (COMDAT in stateskill.obj)
 
     ICastingEventListener* m_pListener;                               // +0x70 the caster
     MS2Ptr<ASTextField> m_spText1;                                  // +0x78 "m_text1"

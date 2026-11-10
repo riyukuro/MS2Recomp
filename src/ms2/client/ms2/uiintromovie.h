@@ -41,7 +41,7 @@ public:
 
     void LoadIntroMovie();                                           // load Table/introMovie.xml
     void FUN_141995cd0();                                           // advance the seek times of the current movie
-    void FUN_141995e70(int nUnused);                                // go to the next scene (the argument is ignored)
+    void GoToNextScene(int nUnused);                                // go to the next scene (the argument is ignored)
 
 private:
     MS2_LAYOUT_FRIEND;

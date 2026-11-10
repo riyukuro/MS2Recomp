@@ -41,12 +41,12 @@ public:
     virtual void vfunc_49(Scaleform::GFx::Value*, ASData*);
     // @0x140c3c760
     virtual int vfunc_48() { return 0x4f74; }
-    void FUN_140c3ad20();
+    void UpdateItemDisplay();
     void FUN_140c3af70();
     CStringW GetStringById(int);
     int GetDropCount();
     void OnClickDropOrTestButton(const Scaleform::GFx::FunctionHandler::Params&);
-    void FUN_140c3b7d0(int item, int box);
+    void SetItemAndBox(int item, int box);
     int GetItemId();
     template <class T> Unk_DropHandle<T> GetDropChild(const CString&);
 private:

@@ -10,7 +10,7 @@
 
 // ---- out-of-unit callees (the entity's banner component; names invented) ----
 int FUN_140b60d90(egf::Entity *);  // C3: the definition's signature
-bool FUN_140b60dd0(egf::Entity *);  // C3: the definition's signature
+bool IsVisible(egf::Entity *);  // C3: the definition's signature
 void FUN_140b60e10(egf::Entity *, bool);  // C3: the definition's signature
 void FUN_140b60e40(egf::Entity *, bool);  // C3: the definition's signature
 
@@ -62,7 +62,7 @@ void UgcBannerObject::Init()
     if (m_ent == 0)
         return;
     m_nBannerId = FUN_140b60d90((egf::Entity *)(m_ent.data()));
-    m_bVisible = FUN_140b60dd0((egf::Entity *)(m_ent.data()));
+    m_bVisible = IsVisible((egf::Entity *)(m_ent.data()));
     if (m_bVisible == 0)
         FUN_140b60e40((egf::Entity *)(m_ent.data()), (bool&)m_bVisible);
 }

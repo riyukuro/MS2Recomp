@@ -44,8 +44,8 @@ struct Unk_HrConfig { char m_pad[8]; Unk_HrBlockFlags m_flags; };
 struct Unk_BanConfig* FUN_14025e7b0();                                  // global client config
 
 class CAchieveManager { public: int IsGradeCleared(unsigned int nWidth, int nLength); };     // trophy requirement check
-class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
-CMasteryInteriorTable* FUN_140933200();
+class Unk_NametagTrophy* GetAchieveManager();   // C3: was GetAchieveManager
+CMasteryInteriorTable* GetMasteryInteriorTable();
 
 class Unk_HrWorld;
 class Unk_HrPc;
@@ -54,9 +54,9 @@ int FUN_1418dd100();
 CStringW FUN_1418fec00(int nType, __int64 nValue, bool);         // money text by pay type
 CStringW FUN_14093bad0(int nWidth, int nLength, CStringW strDefault);   // the trophy requirement text (empty: none)
 void FUN_141275260(int nStringId, int nA, int nB);
-void FUN_1412751f0(const CStringW& strText, int nA, int nB);
+void ShowSystemNotice(const CStringW& strText, int nA, int nB);
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table text
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& pkt);
 
@@ -70,7 +70,7 @@ UIHomeResizeDialog::UIHomeResizeDialog()
     m_80 = 1;
     m_88 = 1;
     m_58 = 1;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x140c2bce0
@@ -131,16 +131,16 @@ void UIHomeResizeDialog::OnShrinkArea()
     if (reinterpret_cast<CContentShutdown&>(((Unk_HrConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0) {
         FUN_141275260(0x2f7, 1, 1);
     } else {
-        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xe4)) {
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xe4)) {
             int nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470();
-            MS2Ptr<ExtendAreaInfo> spPrev = FUN_140933200()->GetPreviousArea(nArea);
+            MS2Ptr<ExtendAreaInfo> spPrev = GetMasteryInteriorTable()->GetPreviousArea(nArea);
             if (spPrev == 0) {
                 CStringW strKey(L"s_ugcmap_cant_shrink_area_level_anymore");
-                FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+                ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
                 return;
             }
             CStringW strMsg = FUN_14028dfa0<int, int>(CStringW(L"s_home_shrink_area_messagebox"), nArea, spPrev->m_nArea);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0) {
                 spBox->FUN_141a01800(1);
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode38));
@@ -156,16 +156,16 @@ void UIHomeResizeDialog::OnShrinkHeight()
     if (reinterpret_cast<CContentShutdown&>(((Unk_HrConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0) {
         FUN_141275260(0x2f7, 1, 1);
     } else {
-        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xe4)) {
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xe4)) {
             int nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0();
-            MS2Ptr<ExtendHeightInfo> spPrev = FUN_140933200()->GetPreviousHeight(nHeight);
+            MS2Ptr<ExtendHeightInfo> spPrev = GetMasteryInteriorTable()->GetPreviousHeight(nHeight);
             if (spPrev == 0) {
                 CStringW strKey(L"s_ugcmap_cant_shrink_height_level_anymore");
-                FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+                ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
                 return;
             }
             CStringW strMsg = FUN_14028dfa0<int, int>(CStringW(L"s_home_shrink_height_messagebox"), nHeight, spPrev->m_nHeight);
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
             if (spBox.get() != 0) {
                 spBox->FUN_141a01800(1);
                 spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode45));
@@ -179,7 +179,7 @@ void UIHomeResizeDialog::OnShrinkHeight()
 void UIHomeResizeDialog::OnExtensionArea()
 {
     int nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470();
-    MS2Ptr<ExtendAreaInfo> spNext = FUN_140933200()->GetNextArea(nArea);
+    MS2Ptr<ExtendAreaInfo> spNext = GetMasteryInteriorTable()->GetNextArea(nArea);
     if (spNext == 0) {
         FUN_141275260(0xcaa, 1, 1);
         return;
@@ -187,9 +187,9 @@ void UIHomeResizeDialog::OnExtensionArea()
     CStringW strPrice = FUN_1418fec00(1, spNext->m_nPrice, false);
     CStringW strTrophy = FUN_14093bad0(spNext->m_nWidth, spNext->m_nLength, CStringW(L""));
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_extension_area_trophy_messagebox"), nArea, spNext->m_nArea, strTrophy, strPrice);
-    if (strTrophy.IsEmpty() || ((class CAchieveManager*)FUN_1406c7600())->IsGradeCleared(spNext->m_nWidth, spNext->m_nLength) != 0)
+    if (strTrophy.IsEmpty() || ((class CAchieveManager*)GetAchieveManager())->IsGradeCleared(spNext->m_nWidth, spNext->m_nLength) != 0)
         strMsg = FUN_14028dfa0(CStringW(L"s_home_extension_area_messagebox"), nArea, spNext->m_nArea, strPrice);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0) {
         spBox->FUN_141a01800(1);
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode37));
@@ -201,14 +201,14 @@ void UIHomeResizeDialog::OnExtensionArea()
 void UIHomeResizeDialog::OnExtensionHeight()
 {
     int nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0();
-    MS2Ptr<ExtendHeightInfo> spNext = FUN_140933200()->GetNextHeight(nHeight);
+    MS2Ptr<ExtendHeightInfo> spNext = GetMasteryInteriorTable()->GetNextHeight(nHeight);
     if (spNext == 0) {
         FUN_141275260(0xcab, 1, 1);
         return;
     }
     CStringW strPrice = FUN_1418fec00(1, spNext->m_nPrice, false);
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_extension_height_messagebox"), nHeight, spNext->m_nHeight, strPrice);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0) {
         spBox->FUN_141a01800(1);
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeResizeDialog::SendRequestCubeMode44));
@@ -271,16 +271,16 @@ void UIHomeResizeDialog::vfunc_84()
         return;
     bool bShrink = true;
     bool bExtend = true;
-    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xe4))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xe4))
         bShrink = false;
     if (reinterpret_cast<CContentShutdown&>(((Unk_HrConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0)
         bShrink = false;
     ASObj obj(2);
     int nArea;
-    ((class AScript&)(obj)).FUN_1407cbb20("extensionArea", FUN_14028dfa0<int>(CStringW(L"s_home_info_area"), (nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470())));
+    ((class AScript&)(obj)).SetWStringMember("extensionArea", FUN_14028dfa0<int>(CStringW(L"s_home_info_area"), (nArea = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470())));
     int nHeight;
-    ((class AScript&)(obj)).FUN_1407cbb20("extensionHeight", FUN_14028dfa0<int>(CStringW(L"s_home_info_height"), (nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0())));
-    obj.FUN_1407cbbe0("shrinkEnable", bShrink);
-    obj.FUN_1407cbbe0("extensionEnable", bExtend);
+    ((class AScript&)(obj)).SetWStringMember("extensionHeight", FUN_14028dfa0<int>(CStringW(L"s_home_info_height"), (nHeight = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0())));
+    obj.SetBoolMember("shrinkEnable", bShrink);
+    obj.SetBoolMember("extensionEnable", bExtend);
     dialog->FUN_140acd1f0("buildInteriorExtension", obj);
 }

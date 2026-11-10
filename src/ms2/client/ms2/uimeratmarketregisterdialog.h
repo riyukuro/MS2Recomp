@@ -33,34 +33,34 @@ public:
     virtual int vfunc_65();                                             // 65 0x141317a10 open
     virtual void vfunc_67();                                            // 67 0x141317930 close
 
-    void FUN_141318a20(MS2Ptr<CMeratMarketProduct> spProduct);          // a product changed: the fee is stale
+    void OnProductChanged(MS2Ptr<CMeratMarketProduct> spProduct);          // a product changed: the fee is stale
     void FUN_141318aa0(MS2Ptr<CMeratMarketProduct> spProduct);          // a product was listed: move its item to the end
-    void FUN_141318cc0();                                               // clear the three tag inputs
-    void FUN_141318ef0(int nMaxChars);                                  // limit the three tag inputs
+    void ClearTagInputs();                                               // clear the three tag inputs
+    void SetTagInputMaxChars(int nMaxChars);                                  // limit the three tag inputs
     void SetModeAndResaleKey(int nMode, Unk_MeratProductKey key);             // set mode and the product to list again
     bool FUN_141319100(int nButton, const CMsgBoxData& data);           // answer of the "fee changed" box: send the product
     bool OnForceUpdateFeeMsgBox(int nButton, const CMsgBoxData& data);           // answer of the "fee changed" box: refresh the fee
     MS2Ptr<CItem> GetItemAt(int nIndex);                            // item of the list by index
-    bool FUN_1413192d0(__int64 nItemUid, MS2Ptr<CItem> spItem);         // the item can still be found
+    bool CanFindItem(__int64 nItemUid, MS2Ptr<CItem> spItem);         // the item can still be found
     int FindItemIndex(const CUgcMarketProduct* pProduct);               // list index of the product's item, -1 if none
-    void FUN_141319920(ItemArray& arrItems);                            // collect the items that can be listed
-    bool FUN_141319f10(MS2Ptr<CItem> spItem);                           // the item is already listed
+    void CollectListableItems(ItemArray& arrItems);                            // collect the items that can be listed
+    bool IsAlreadyListed(MS2Ptr<CItem> spItem);                           // the item is already listed
     bool FUN_14131a100(Unk_MeratProductKey key);                        // open the list-again form of a sold product
-    bool FUN_14131a880(CString& strItems, unsigned int nColumns, unsigned int nRows);     // build the item grid
-    void FUN_14131aa90(MS2Ptr<CMeratMarketPacket::UgcAddProductBase> spProduct);   // send the request
-    __int64 FUN_14131ac50();                                            // the base register fee
-    __int64 FUN_14131ac80(bool bAddBase, MS2Ptr<CItem> spItem, bool bRecalc);   // the register fee of an item
+    bool BuildItemGrid(CString& strItems, unsigned int nColumns, unsigned int nRows);     // build the item grid
+    void SendRegisterRequest(MS2Ptr<CMeratMarketPacket::UgcAddProductBase> spProduct);   // send the request
+    __int64 GetBaseRegisterFee();                                            // the base register fee
+    __int64 GetRegisterFee(bool bAddBase, MS2Ptr<CItem> spItem, bool bRecalc);   // the register fee of an item
     bool FUN_14131ae60(bool bAddBase, bool bCheckStale, __int64* pFee);   // the fee, checked against the stock
-    bool FUN_14131b0e0(const CStringW& strDescription, const CStringW& strName);   // validate the texts
+    bool ValidateTexts(const CStringW& strDescription, const CStringW& strName);   // validate the texts
     CStringW FormatPriceRangeText(__int64 nMin, __int64 nMax);                 // "price must be between"
-    void FUN_14131b4e0(ASObj& obj, bool bAddBase);             // put the fee texts into obj
-    void FUN_14131b7e0();                                               // forget the selected item
-    void FUN_14131b810(ASData& data);                                   // "OnClickRegister"
-    void FUN_14131c010(ASData& data);                                   // "OnClickReRegister"
-    void FUN_14131c4e0(ASData& data);                                   // "OnGetFee" / "OnGetTotalFee"
-    void FUN_14131c570(ASData& data);                                   // "OnChangeSelectedIndex"
+    void SetFeeTexts(ASObj& obj, bool bAddBase);             // put the fee texts into obj
+    void ClearSelectedItem();                                               // forget the selected item
+    void OnClickRegister(ASData& data);                                   // "OnClickRegister"
+    void OnClickReRegister(ASData& data);                                   // "OnClickReRegister"
+    void OnGetFee(ASData& data);                                   // "OnGetFee" / "OnGetTotalFee"
+    void OnChangeSelectedIndex(ASData& data);                                   // "OnChangeSelectedIndex"
     void OnGetAlreadyRegistIndex(ASData& data);                                   // "GetAlreadyRegistIndex"
-    int FUN_14131ca80();                                                // tag input limit
+    int GetTagInputLimit();                                                // tag input limit
 
 private:
     MS2_LAYOUT_FRIEND;

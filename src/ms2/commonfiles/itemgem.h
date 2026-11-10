@@ -119,7 +119,7 @@ MS2_CHECK_SIZE(CGemEffectData, 0x28);
 
 #include "ms2/placeholder/citemgempropertytable.h"
 typedef CItemGemPropertyTable Unk_GemTable;                        // the gem table (placeholder/citemgempropertytable.h)
-Unk_GemTable* FUN_1405a96f0();                                      // 0x1405a96f0 the table singleton (DAT_143aafd08)
+Unk_GemTable* GetItemGemPropertyTable();                                      // 0x1405a96f0 the table singleton (DAT_143aafd08)
 
 enum GemType
 {
@@ -220,7 +220,7 @@ public:
     virtual ~CGemTombStone();                                       //  0 0x1405a52d0 (??_G 0x1405a9220)
     virtual MS2Ptr<CGemBase> vfunc_4();                             //  4 0x1405a5310
     virtual void vfunc_8();                                         //  8 0x1405a54c0
-    MS2Ptr<CGemTombStoneData> FUN_1405a53c0();                      // 0x1405a53c0 the data row (loaded on demand)
+    MS2Ptr<CGemTombStoneData> GetData();                      // 0x1405a53c0 the data row (loaded on demand)
 
     int m_nDataId;                                                  // +0x20
     MS2Ptr<CGemTombStoneData> m_spData;                             // +0x28
@@ -235,7 +235,7 @@ public:
     virtual ~CGemSwim();                                            //  0 0x1405a5630 (??_G 0x1405a91e0)
     virtual MS2Ptr<CGemBase> vfunc_4();                             //  4 0x1405a5670
     virtual void vfunc_8();                                         //  8 0x1405a5820
-    MS2Ptr<CGemSwimData> FUN_1405a5720();                           // 0x1405a5720 the data row (loaded on demand)
+    MS2Ptr<CGemSwimData> GetData();                           // 0x1405a5720 the data row (loaded on demand)
 
     int m_nDataId;                                                  // +0x20
     MS2Ptr<CGemSwimData> m_spData;                                  // +0x28
@@ -276,7 +276,7 @@ public:
     virtual MS2Ptr<CGemBase> vfunc_4();                             //  4 0x1405a5d70
     virtual int vfunc_6(PC* pPC, MS2Ptr<CItem> spItem);             //  6 0x1405a5e20
     virtual int vfunc_7(PC* pPC, MS2Ptr<CItem> spItem);             //  7 0x1405a6080
-    MS2Ptr<CGemCharEffectData> FUN_1405a61f0();                     // 0x1405a61f0 the data row (loaded on demand)
+    MS2Ptr<CGemCharEffectData> GetData();                     // 0x1405a61f0 the data row (loaded on demand)
 
     int m_nDataId;                                                  // +0x20
     ATL::CAtlList<unsigned int> m_listEffects;                      // +0x28 the effects started on the actor
@@ -304,7 +304,7 @@ public:
     virtual MS2Ptr<CGemBase> vfunc_4();                             //  4 0x1405a65a0
     virtual int vfunc_6(PC* pPC, MS2Ptr<CItem> spItem);             //  6 0x1405a6650
     virtual int vfunc_7(PC* pPC, MS2Ptr<CItem> spItem);             //  7 0x1405a67e0
-    MS2Ptr<CGemEffectData> FUN_1405a68d0();                         // 0x1405a68d0 the data row (loaded on demand)
+    MS2Ptr<CGemEffectData> GetData();                         // 0x1405a68d0 the data row (loaded on demand)
 
     int m_nDataId;                                                  // +0x20
     MS2Ptr<CGemEffectData> m_spData;                                // +0x28

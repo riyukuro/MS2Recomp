@@ -22,8 +22,8 @@ public:
     virtual void vfunc_5();                                 // 5 0x141b38fc0
     virtual void vfunc_6();                                 // 6 0x141b39040
     virtual void vfunc_7(int n);                            // 7 0x141b390c0
-    void FUN_141b38be0(UIUGCEventListener* pListener);                    // add a listener unless it is registered
-    void FUN_141b38c70(UIUGCEventListener* pListener);                    // remove a listener
+    void AddListener(UIUGCEventListener* pListener);                    // add a listener unless it is registered
+    void RemoveListener(UIUGCEventListener* pListener);                    // remove a listener
 private:
     MS2_LAYOUT_FRIEND;
     // A typed element (not void*): ATL passes non-primitive elements to Add by const& (lea rdx), as the exe does.

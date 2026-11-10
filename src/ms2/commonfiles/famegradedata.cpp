@@ -152,8 +152,8 @@
 #include "hook/ms2hook.h"
 #include "ms2/commonfiles/filesystem.h"
 
-#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FUN_1406cd330)
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+#include "ms2/commonfiles/npcdata.h"  // C3: CNpcData (FindNpcData)
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 unsigned FUN_140767ff0();                                                             // random number
 
 #include <typeinfo>
@@ -168,7 +168,7 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 // Unrecovered helpers (the same xml loader helpers the other table units use).
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 struct Unk_XmlElementList* FUN_14028f8d0(struct Unk_XmlElement*);   // C3: was FUN_14028f8d0
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
@@ -180,7 +180,7 @@ template <class C> int XmlTokenList(TiXmlElement* pElem, const char* pszName, C&
 int Parse_14021a330(const CStringA& value);     // alliance name -> id (0 when unknown)
 int Parse_14021a480(const CStringA& value);     // season name -> id
 void FUN_1401d3700(CStringA& str);          // normalises the symbol name
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 
 // The type enum of a famePickMethod <method>.
 // @0x14035b710
@@ -493,9 +493,9 @@ int CFameTable::Load()
 // @0x1403598c0
 int CFameTable::LoadFame()
 {
-    CString strPath = FUN_14071a5b0("Table", "fame.xml");
+    CString strPath = GetXmlPath("Table", "fame.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -520,9 +520,9 @@ int CFameTable::LoadFame()
 // @0x140359bd0
 int CFameTable::LoadFameLog()
 {
-    CString strPath = FUN_14071a5b0("Table", "fameLog.xml");
+    CString strPath = GetXmlPath("Table", "fameLog.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -545,9 +545,9 @@ int CFameTable::LoadFameLog()
 // @0x140359e60
 int CFameTable::LoadFameLimit()
 {
-    CString strPath = FUN_14071a5b0("Table", "fameLimit.xml");
+    CString strPath = GetXmlPath("Table", "fameLimit.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -570,9 +570,9 @@ int CFameTable::LoadFameLimit()
 // @0x14035a0f0
 int CFameTable::LoadPickMethod()
 {
-    CString strPath = FUN_14071a5b0("Table", "famePickMethod.xml");
+    CString strPath = GetXmlPath("Table", "famePickMethod.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -605,9 +605,9 @@ int CFameTable::LoadPickMethod()
 // @0x14035a460
 int CFameTable::LoadFameDef()
 {
-    CString strPath = FUN_14071a5b0("Table", "fameDef.xml");
+    CString strPath = GetXmlPath("Table", "fameDef.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -830,7 +830,7 @@ CStringA CFameTable::GetSymbolByOfficerNpc(int nKind)
 Unk_FameAlliance CFameTable::GetAllianceByNpc(int nNpcId)
 {
     CheckInit();
-    MS2Ptr<CNpcData> spNpc = FUN_1406cd330(nNpcId);
+    MS2Ptr<CNpcData> spNpc = FindNpcData(nNpcId);
     if (!spNpc)
         return Unk_FameAlliance_None;
     for (POSITION pos = m_mapDef.GetStartPosition(); pos != 0; m_mapDef.GetNext(pos))
@@ -881,7 +881,7 @@ void CFameTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CFameTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CFameTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

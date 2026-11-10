@@ -26,8 +26,8 @@
 
 class Unk_PatchTextOwner { public: class Unk_PatchTextFilter* FUN_140a87690(); };   // C3: CServerString accessor view (onlinepatchmanagercli.cpp)
 
-class GFxManager { public: float FUN_1422afec0(int); }; class Unk_ExpUiScale : public GFxManager {};
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: the Unk_ExpUiScale (calls cast back)
+class GFxManager { public: float GetMovieScale(int); }; class Unk_ExpUiScale : public GFxManager {};
+class Unk_AltStringMgr* GetGFxManager();   // C3: the Unk_ExpUiScale (calls cast back)
 
 int FUN_1412755a0();
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
@@ -69,7 +69,7 @@ void UIMassiveEvent::vfunc_2()
 {
     if (FUN_1412755a0())
         return;
-    FUN_1422dbf00(0x1e, 0, 0);
+    LoadSwf(0x1e, 0, 0);
 }
 
 // @0x1419f57d0
@@ -95,7 +95,7 @@ void UIMassiveEvent::vfunc_43()
     if (spRoot.get())
     {
         spRoot->vfunc_2(5, 0, 0);
-        float fScale = reinterpret_cast<Unk_ExpUiScale*>(FUN_14025e7a0())->FUN_1422afec0(m_28);
+        float fScale = reinterpret_cast<Unk_ExpUiScale*>(GetGFxManager())->GetMovieScale(m_28);
         reinterpret_cast<AScript*>(spRoot.operator->())->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8, fScale);
         spRoot->vfunc_3(1);
     }
@@ -118,13 +118,13 @@ void UIMassiveEvent::vfunc_26()
 }
 
 // @0x1419f5ab0
-void UIMassiveEvent::FUN_1419f5ab0()
+void UIMassiveEvent::ClearStage()
 {
-    FUN_1419f6df0(0, 0, 0, 0);
+    SetStage(0, 0, 0, 0);
 }
 
 // @0x1419f5ae0
-void UIMassiveEvent::FUN_1419f5ae0(int nSeconds)
+void UIMassiveEvent::StartCountdown(int nSeconds)
 {
     m_nRemain = nSeconds;
     m_nDeadline = GetTickCountMs2() + m_nRemain * 1000;
@@ -141,11 +141,11 @@ void UIMassiveEvent::FUN_1419f5b30()
     FUN_140cffde0((*m_spTime).FUN_1422bb890(), "m_number", nDigit);
     FUN_140cffde0((*m_spTime).FUN_1422bb890(), "m_numberOutline", nDigit);
     m_spTime->vfunc_12(1);
-    FUN_1419f5c80();
+    PlayCountSound();
 }
 
 // @0x1419f5c80
-void UIMassiveEvent::FUN_1419f5c80()
+void UIMassiveEvent::PlayCountSound()
 {
     switch (m_nType)
     {
@@ -207,7 +207,7 @@ void UIMassiveEvent::FUN_1419f5e90(CInPacket* pPacket)
         FUN_1419f60a0(pPacket);
         break;
     case 2:
-        FUN_1419f66a0(pPacket);
+        OnTypedMessagePacket(pPacket);
         break;
     case 8:
         FUN_1419f6790(pPacket);
@@ -221,7 +221,7 @@ void UIMassiveEvent::FUN_1419f5fc0(CInPacket* pPacket)
     int nA = pPacket->ReadInt32();
     int nB = pPacket->ReadInt32();
     int nC = pPacket->ReadInt32();
-    FUN_1419f6df0(nStage, nA, nB, nC);
+    SetStage(nStage, nA, nB, nC);
 }
 
 // @0x1419f60a0
@@ -236,9 +236,9 @@ void UIMassiveEvent::FUN_1419f60a0(CInPacket* pPacket)
         if (pUI == 0)
             return;
         if (bFinal)
-            pUI->FUN_140f41120(nGoal);
+            pUI->OnFinalRound(nGoal);
         else
-            pUI->FUN_140f41190(nRound, nGoal);
+            pUI->OnRound(nRound, nGoal);
     }
 }
 
@@ -247,7 +247,7 @@ void UIMassiveEvent::FUN_1419f6180(CInPacket* pPacket)
 {
     CStringW strText = StringIdInterface(*pPacket).FUN_141024e60();
     int nDuration = pPacket->ReadInt32();
-    FUN_1419f6810(6, strText, nDuration);
+    ShowMessage(6, strText, nDuration);
 }
 
 // @0x1419f6240
@@ -258,7 +258,7 @@ void UIMassiveEvent::FUN_1419f6240(CInPacket* pPacket)
     int nStep = pPacket->ReadInt32();
     int nDuration = pPacket->ReadInt32();
     int nType = pPacket->ReadInt32();
-    FUN_1419f6bc0(CStringW(strText), nStep, nDuration, nType);
+    ShowStepMessage(CStringW(strText), nStep, nDuration, nType);
 }
 
 // @0x1419f63d0
@@ -268,7 +268,7 @@ void UIMassiveEvent::FUN_1419f63d0(CInPacket* pPacket)
     int nStep = pPacket->ReadInt32();
     int nDuration = pPacket->ReadInt32();
     int nType = pPacket->ReadInt32();
-    FUN_1419f6bc0(CStringW(strText), nStep, nDuration, nType);
+    ShowStepMessage(CStringW(strText), nStep, nDuration, nType);
 }
 
 // @0x1419f6520
@@ -276,7 +276,7 @@ void UIMassiveEvent::FUN_1419f6520(CInPacket* pPacket)
 {
     CStringW strText = StringIdInterface(*pPacket).FUN_141024e60();
     int nDuration = pPacket->ReadInt32();
-    FUN_1419f6810(2, strText, nDuration);
+    ShowMessage(2, strText, nDuration);
 }
 
 // @0x1419f65e0
@@ -284,28 +284,28 @@ void UIMassiveEvent::FUN_1419f65e0(CInPacket* pPacket)
 {
     CStringW strText = StringIdInterface(*pPacket).FUN_141024e60();
     int nDuration = pPacket->ReadInt32();
-    FUN_1419f6810(1, strText, nDuration);
+    ShowMessage(1, strText, nDuration);
 }
 
 // @0x1419f66a0
-void UIMassiveEvent::FUN_1419f66a0(CInPacket* pPacket)
+void UIMassiveEvent::OnTypedMessagePacket(CInPacket* pPacket)
 {
     int nSubType = pPacket->ReadUInt8();
     CStringW strRaw = pPacket->ReadUnicodeString();
     CStringW strText = reinterpret_cast<CServerStringGroup*>(reinterpret_cast<Unk_PatchTextOwner*>(TSingleton<CServerString>::GetInstance())->FUN_140a87690())->GetString(strRaw);
     int nDuration = pPacket->ReadInt32();
-    FUN_1419f6810(nSubType, strText, nDuration);
+    ShowMessage(nSubType, strText, nDuration);
 }
 
 // @0x1419f6790
 void UIMassiveEvent::FUN_1419f6790(CInPacket* pPacket)
 {
     int nDuration = pPacket->ReadInt32();
-    FUN_1419f6bc0(GetStringCommon(0x974), 0, nDuration, 2);
+    ShowStepMessage(GetStringCommon(0x974), 0, nDuration, 2);
 }
 
 // @0x1419f6810
-void UIMassiveEvent::FUN_1419f6810(int nSubType, CStringW& strText, int nDuration)
+void UIMassiveEvent::ShowMessage(int nSubType, CStringW& strText, int nDuration)
 {
     FUN_1419f6a70(nSubType, strText, nDuration);
     switch (nSubType)
@@ -343,32 +343,32 @@ void UIMassiveEvent::FUN_1419f6a70(int nSubType, CStringW strText, int nDuration
     if (m_30.get() != 0)
     {
         strText.Replace(L"\\n", L"\n");
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("m_subType", nSubType);
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cbb20("m_text", CStringW(strText));
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("m_duration", nDuration);
+        static_cast<ASObj*>(m_30.operator->())->SetIntMember("m_subType", nSubType);
+        static_cast<ASObj*>(m_30.operator->())->SetWStringMember("m_text", CStringW(strText));
+        static_cast<ASObj*>(m_30.operator->())->SetIntMember("m_duration", nDuration);
         m_30->Invoke("clearAndSetPanel");
     }
 }
 
 // @0x1419f6bc0
-void UIMassiveEvent::FUN_1419f6bc0(CStringW strText, int nStep, int nDuration, int nType)
+void UIMassiveEvent::ShowStepMessage(CStringW strText, int nStep, int nDuration, int nType)
 {
     if (m_30.get() != 0)
     {
         m_nType = nType;
         strText.Replace(L"\\n", L"\n");
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("m_subType", 8);
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cbb20("m_text", CStringW(strText));
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("m_stepNum", nStep);
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cbb20("m_strStepNum", FUN_14028dfa0<int>(CStringW(L"s_massive_event_message_start"), nStep));
-        static_cast<ASObj*>(m_30.operator->())->FUN_1407cbbe0("m_centerAlign", 0);
+        static_cast<ASObj*>(m_30.operator->())->SetIntMember("m_subType", 8);
+        static_cast<ASObj*>(m_30.operator->())->SetWStringMember("m_text", CStringW(strText));
+        static_cast<ASObj*>(m_30.operator->())->SetIntMember("m_stepNum", nStep);
+        static_cast<ASObj*>(m_30.operator->())->SetWStringMember("m_strStepNum", FUN_14028dfa0<int>(CStringW(L"s_massive_event_message_start"), nStep));
+        static_cast<ASObj*>(m_30.operator->())->SetBoolMember("m_centerAlign", 0);
         m_30->Invoke("clearAndSetPanel");
-        FUN_1419f5ae0(nDuration);
+        StartCountdown(nDuration);
     }
 }
 
 // @0x1419f6df0
-void UIMassiveEvent::FUN_1419f6df0(int nStage, int nA, int nB, int nC)
+void UIMassiveEvent::SetStage(int nStage, int nA, int nB, int nC)
 {
     if (m_30.get() != 0)
     {
@@ -381,7 +381,7 @@ void UIMassiveEvent::FUN_1419f6df0(int nStage, int nA, int nB, int nC)
 }
 
 // @0x1419f6eb0
-void UIMassiveEvent::FUN_1419f6eb0()
+void UIMassiveEvent::HidePanel()
 {
     if (m_30 == 0)
         return;
@@ -418,10 +418,10 @@ MS2_REPLACE_METHOD(0x1419F5800, UIMassiveEvent, OnLoadComplete, 273, 0x3A530998)
 MS2_REPLACE_METHOD(0x1419F5920, UIMassiveEvent, vfunc_43, 255, 0x17E9BEFD);
 MS2_REPLACE_METHOD(0x1419F5A30, UIMassiveEvent, vfunc_15, 40, 0xC6DDECC3);
 MS2_REPLACE_METHOD(0x1419F5A60, UIMassiveEvent, vfunc_26, 66, 0xD75ACC67);
-MS2_REPLACE_METHOD(0x1419F5AB0, UIMassiveEvent, FUN_1419f5ab0, 40, 0xA8D93C19);
-MS2_REPLACE_METHOD(0x1419F5AE0, UIMassiveEvent, FUN_1419f5ae0, 70, 0xB1D7DBC4);
+MS2_REPLACE_METHOD(0x1419F5AB0, UIMassiveEvent, ClearStage, 40, 0xA8D93C19);
+MS2_REPLACE_METHOD(0x1419F5AE0, UIMassiveEvent, StartCountdown, 70, 0xB1D7DBC4);
 MS2_REPLACE_METHOD(0x1419F5B30, UIMassiveEvent, FUN_1419f5b30, 325, 0x4BC9713D);
-MS2_REPLACE_METHOD(0x1419F5C80, UIMassiveEvent, FUN_1419f5c80, 322, 0x543AB753);
+MS2_REPLACE_METHOD(0x1419F5C80, UIMassiveEvent, PlayCountSound, 322, 0x543AB753);
 MS2_REPLACE_METHOD(0x1419F5DD0, UIMassiveEvent, FUN_1419f5dd0, 185, 0xDCE8A878);
 MS2_REPLACE_METHOD(0x1419F5E90, UIMassiveEvent, FUN_1419f5e90, 257, 0x75F5401D);
 MS2_REPLACE_METHOD(0x1419F5FC0, UIMassiveEvent, FUN_1419f5fc0, 203, 0xC4AEAB65);
@@ -431,10 +431,10 @@ MS2_REPLACE_METHOD(0x1419F6240, UIMassiveEvent, FUN_1419f6240, 383, 0xDC51C886);
 MS2_REPLACE_METHOD(0x1419F63D0, UIMassiveEvent, FUN_1419f63d0, 316, 0x7D568084);
 MS2_REPLACE_METHOD(0x1419F6520, UIMassiveEvent, FUN_1419f6520, 177, 0x3731680A);
 MS2_REPLACE_METHOD(0x1419F65E0, UIMassiveEvent, FUN_1419f65e0, 177, 0x961B55AD);
-MS2_REPLACE_METHOD(0x1419F66A0, UIMassiveEvent, FUN_1419f66a0, 227, 0x272030A4);
+MS2_REPLACE_METHOD(0x1419F66A0, UIMassiveEvent, OnTypedMessagePacket, 227, 0x272030A4);
 MS2_REPLACE_METHOD(0x1419F6790, UIMassiveEvent, FUN_1419f6790, 118, 0x2C000B7D);
-MS2_REPLACE_METHOD(0x1419F6810, UIMassiveEvent, FUN_1419f6810, 589, 0x04AE13FB);
+MS2_REPLACE_METHOD(0x1419F6810, UIMassiveEvent, ShowMessage, 589, 0x04AE13FB);
 MS2_REPLACE_METHOD(0x1419F6A70, UIMassiveEvent, FUN_1419f6a70, 330, 0x208418B6);
-MS2_REPLACE_METHOD(0x1419F6BC0, UIMassiveEvent, FUN_1419f6bc0, 539, 0x805B3EB9);
-MS2_REPLACE_METHOD(0x1419F6DF0, UIMassiveEvent, FUN_1419f6df0, 171, 0x4760258B);
-MS2_REPLACE_METHOD(0x1419F6EB0, UIMassiveEvent, FUN_1419f6eb0, 89, 0x288DD250);
+MS2_REPLACE_METHOD(0x1419F6BC0, UIMassiveEvent, ShowStepMessage, 539, 0x805B3EB9);
+MS2_REPLACE_METHOD(0x1419F6DF0, UIMassiveEvent, SetStage, 171, 0x4760258B);
+MS2_REPLACE_METHOD(0x1419F6EB0, UIMassiveEvent, HidePanel, 89, 0x288DD250);

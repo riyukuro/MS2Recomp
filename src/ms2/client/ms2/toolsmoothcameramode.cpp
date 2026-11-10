@@ -92,7 +92,7 @@ int LoadTestCamerValue();                                // reloads the camera x
 
 float FUN_14059d930(float f);                       // fabs
 bool FUN_14028d470(float a, float b);               // nearly equal
-void FUN_1412751f0(const CStringW& str, int a, int b);     // chat/debug log line
+void ShowSystemNotice(const CStringW& str, int a, int b);     // chat/debug log line
 #include "ms2/ms2format.h"
 template <class T> class TSingleton;
 class CameraMgr;
@@ -103,7 +103,7 @@ extern int DAT_143ab2914;
 
 // efd::Matrix3::GetCol (0x1418588c0, this obj's COMDAT)
 // @0x1418588c0
-void FUN_1418588c0(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, float* pOut)
+void GetMatrixColumn(const Unk_EfdMatrix3* pMatrix, unsigned int uiCol, float* pOut)
 {
     pOut[0] = pMatrix->m_afEntry[0][uiCol];
     pOut[1] = pMatrix->m_afEntry[1][uiCol];
@@ -135,28 +135,28 @@ void CToolSmoothCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
     m_148 = m_13c = m_130 = g_143b01a60;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x11, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x11, false, 0))
         m_130.x = m_154 * m_160;
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1f, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1f, false, 0))
         m_130.x = -m_154 * m_160;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1e, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1e, false, 0))
         m_130.y = m_154 * m_160;
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x20, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x20, false, 0))
         m_130.y = -m_154 * m_160;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x10, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x10, false, 0))
         ptMove.y = m_158 * m_160;
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x12, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x12, false, 0))
         ptMove.y = -m_158 * m_160;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x39, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x39, false, 0))
         m_148.z = m_154 * m_160 * 10.0f;
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x2e, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x2e, false, 0))
         m_148.z = -m_154 * m_160 * 10.0f;
-    unsigned int bLeft = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(0, false, 0);
-    unsigned int bRight = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0);
+    unsigned int bLeft = ((class CInputKeyHandler*)FUN_14025e7c0())->IsMouseButtonDown(0, false, 0);
+    unsigned int bRight = ((class CInputKeyHandler*)FUN_14025e7c0())->IsMouseButtonDown(1, false, 0);
     int nX;
     int nY;
     int nWheel;
-    unsigned int bMoved = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0);
+    unsigned int bMoved = ((class CInputKeyHandler*)FUN_14025e7c0())->GetMouseDelta(&nX, &nY, &nWheel, false, 0);
     if (bMoved != 0)
     {
         if (bRight != 0)
@@ -192,21 +192,21 @@ void CToolSmoothCameraMode::vfunc_8(double fTime)
         bEnabled = DAT_143ab2914 >= 0x34;
     if (bEnabled)
     {
-        if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1d, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x6b, true, 0))
+        if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1d, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x6b, true, 0))
         {
             float fOld = m_160;
-            if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x52, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xb, true, 0))
+            if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0x52, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0xb, true, 0))
                 m_160 = 1.0f;
-            else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x4e, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xd, true, 0))
+            else if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0x4e, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0xd, true, 0))
                 m_160 = m_160 + 0.05f;
-            else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0x4a, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d9c0(0xc, true, 0))
+            else if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0x4a, true, 0) || ((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyPressed(0xc, true, 0))
                 m_160 = m_160 - 0.05f;
             float fMax = 3.0f;
             m_160 = (std::min)(m_160, fMax);
             float fMin = 0.05f;
             m_160 = (std::max)(m_160, fMin);
             if (fOld != m_160)
-                FUN_1412751f0(StringFormat<float>(L"move accelerate rate:{0}", m_160), 1, 1);
+                ShowSystemNotice(StringFormat<float>(L"move accelerate rate:{0}", m_160), 1, 1);
         }
     }
     Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
@@ -313,8 +313,8 @@ void CToolSmoothCameraMode::vfunc_39(double fTime)
         reinterpret_cast<efd::Matrix3*>(&kWant)->FromEulerAnglesXYZ(ptWant.x, ptWant.y, ptWant.z);
         NiPoint3 ptColCur;
         NiPoint3 ptColWant;
-        FUN_1418588c0(&kCur, 0, &ptColCur.x);
-        FUN_1418588c0(&kWant, 0, &ptColWant.x);
+        GetMatrixColumn(&kCur, 0, &ptColCur.x);
+        GetMatrixColumn(&kWant, 0, &ptColWant.x);
         ptColCur.Unitize();
         ptColWant.Unitize();
         float fDot = ptColCur.Dot(ptColWant);
@@ -401,7 +401,7 @@ CRuntimeClass* FUN_141858980()
 // MS2-RANGE: 0x142cbbe70-0x142cbbf90 .text$yd
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
-MS2_REPLACE(0x1418588c0, FUN_1418588c0, 162, 0x1E8F04A1);
+MS2_REPLACE(0x1418588c0, GetMatrixColumn, 162, 0x1E8F04A1);
 MS2_REPLACE_METHOD(0x141857480, CToolSmoothCameraMode, vfunc_8, 2134, 0x211EFDDB);
 MS2_REPLACE(0x141858980, FUN_141858980, 14, 0xFC327C3B);
 

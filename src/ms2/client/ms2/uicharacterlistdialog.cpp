@@ -122,15 +122,15 @@ public:
     // void FUN_141880600(UICharacterListDialog::CharPtr spCharacter);   // C3: CUgcManager::FUN_141880600 (cugcmanager.h); upload a shot of a character as its profile image
 };
 CStringW GetStringCommonByKey(const CStringW& strKey);         // string table text
-void FUN_140d73aa0(CStringW strMsg, int nType, void* pTarget, CStringW strTag);
+void ShowMessageBox(CStringW strMsg, int nType, void* pTarget, CStringW strTag);
 // The generic reader of an item from a stream (the 0x141272280 object is an empty functor).
 struct Unk_PayloadItemWire   // C3: the item-wire reader (ctor in gemslot_2, readers in packetpayloadserializers); was Unk_ClItemReader
 {
 public:
     Unk_PayloadItemWire();                                 // 0x141272280
-    MS2Ptr<CItem> FUN_1401fce40(CInputStream& s);
+    MS2Ptr<CItem> ReadItem(CInputStream& s);
 }; typedef Unk_PayloadItemWire Unk_ClItemReader;
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_ClIdSet : public ATL::CAtlArray<unsigned __int64> { public: bool FUN_1418f5a10(unsigned __int64 nId, unsigned* pnIndex); };
 struct Unk_GsConnect                                    // CGameOption's connect block (the definer is gameoptionstruct.cpp)
 {
@@ -164,8 +164,8 @@ class Unk_ClMovie : public AScript {};
 class Unk_RsScript { public: Scaleform::GFx::Value FUN_14129cce0(const char* szMethod, int a1, CStringW a2); };   // C3: unit-local view (def in unit_14129ba60); Invoke(int, string)
 CString FUN_1412756c0(__int64 nBase, __int64 nId);         // the cache file name of a character
 struct Unk_ClPaths { char m_pad[0x60]; CString m_s60; };
-CString FUN_14016a5c0(const char* psz, int n);                         // normalized path copy
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+CString ToCString(const char* psz, int n);                         // normalized path copy
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 void FUN_141b70490(const CString& strFile);                         // delete the file
 extern __int64 DAT_143ab2820;                                       // the account id
 extern int DAT_1439f4a84;
@@ -209,12 +209,12 @@ unsigned __int64 FUN_140718350(const CString& str);
 class Unk_ClPlayer { public: virtual void v0(); };
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* szDelim);
-void FUN_140fa9c90(ASObj* pObj, const char* szName, unsigned char n);
+void SetMemberInt(ASObj* pObj, const char* szName, unsigned char n);
 CString FUN_141028be0(__int64 nId, const CString& strText, int n, CString strTag);
 CString FUN_140719530(unsigned __int64 nId);
 CStringW GetStringCommon(int nId);
 void FUN_1412761e0(MS2Ptr<AScript> spScript, int nFlag);            // lock the movie input
-CString FUN_141028a90(CString str, int nFlag);
+CString GetProfileImagePath(CString str, int nFlag);
 CStringW FUN_141b708a0(unsigned nSeconds, bool bShowSeconds);       // a time span as text
 void SetNestedChildText(const Scaleform::GFx::Value& root, CString strChild, CString strLabel, CStringW strText);   // set the label text of a child
 void FUN_140710590(COutPacket& packet);                 // send
@@ -234,7 +234,7 @@ class ASDialog : public ASDisplayObjectContainer { };
 template <> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString& strName);   // 0x140bb4b10
 bool FUN_141900750(ASObj* pObj);                        // fill the initData object
 extern int DAT_143ab0248;
-UIRegionListDialog* FUN_1418f6130(int nId);                         // the open region list dialog
+UIRegionListDialog* GetRegionListDialog(int nId);                         // the open region list dialog
 class CStateService   // C3: member view for the former free stand-ins
 {
 public:
@@ -246,7 +246,7 @@ public:
     static CStateService* s_instance;
     static CStateService* GetInstance() { return s_instance; }
 };
-CSceneStateMulti* FUN_140f30370();
+CSceneStateMulti* GetSceneStateMulti();
 class Unk_ClUIMgr { public: void FUN_141adc530(int nId); };
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 int FUN_1406516b0();                                    // the language id
@@ -282,7 +282,7 @@ void FUN_14151f200();
 int FUN_14028cb70(const CStringW& str, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* szDelim, int nExpected);   // split
 unsigned __int64 FUN_140718370(const CStringW& str);                         // parse an id
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+void* GetGameRule();   // C3: was GetGameRule
 // the GameEventUserValue readers of gamerule.cpp / uileveluppackagewidgetdialog.cpp (same view)
 class Unk_AttendTable
 {
@@ -301,14 +301,14 @@ int FUN_1418fc810();   // C3: was FUN_1418fc810
 void FUN_1418f4df0(MS2Ptr<BurningLevelupContext> spEvent, MS2Ptr<CMsgBoxData> spBox);   // attach the reward items to the box
 namespace efd { class Win32PlatformService { public: HWND GetWindowRef() const; }; }   // C3: member view
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
-class CUserMail { public: static __int64 FUN_1408e57f0(); };   // C3: member view (commonfiles/usermail.h)
+class CUserMail { public: static __int64 GetGFxSceneService(); };   // C3: member view (commonfiles/usermail.h)
 void* FUN_140876480(void* pkOut, int nCategory);        // returns the mem category
 void* FUN_14208a860(unsigned __int64 nSize, unsigned nCategory);
 int FUN_14107b7e0(unsigned int, class Unk_UserProxy const*, class PC*);   // C3: was FUN_14107b7e0
 void FUN_141b70290();
-class UIWebBrowser* FUN_140c43790(int);   // C3: was FUN_140c43790
+class UIWebBrowser* FindWebBrowser(int);   // C3: was FindWebBrowser
 class UIWebBrowserBase { public: void FUN_14135ec00(const CString& strUrl, bool bOnce); };   // C3: member view (uiupperhuddialog.h)
-class CNetworkService* FUN_140714f90();   // C3: was FUN_140714f90
+class CNetworkService* GetNetworkService();   // C3: was GetNetworkService
 class CNetworkService   // C3: member view for the former free stand-ins
 {
 public:
@@ -317,7 +317,7 @@ public:
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& value);
 CStringW FUN_14083bdc0(const CMsTime& time, bool bSeconds, CStringW strSep1, CStringW strSep2);
 CStringW FUN_14083bab0(const CMsTime& time, CStringW strSep);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pTarget, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pTarget, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 extern int DAT_143ab285c;
 extern int DAT_143ab2860;
@@ -359,7 +359,7 @@ void UICharacterListDialog::CCharacterInfo::Read(CInPacket& packet)
         if (!spItem->FUN_140523c40(nId, nAmount, 0))
             break;
         spItem->FUN_140526c10(nRank);
-        spItem->FUN_140524eb0(packet);
+        spItem->ReadFromStream(packet);
         spItem->SetItemUid(nUid);
         state.m_220.Add(spItem);
     }
@@ -367,7 +367,7 @@ void UICharacterListDialog::CCharacterInfo::Read(CInPacket& packet)
     Unk_ClItemReader reader;
     for (int i = 0; i < nCount; ++i)
     {
-        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_PayloadItemWire*>(&reader)->FUN_1401fce40(packet);
+        MS2Ptr<CItem> spItem = reinterpret_cast<Unk_PayloadItemWire*>(&reader)->ReadItem(packet);
         if (spItem == 0)
             continue;
         state.m_240.Add(spItem);
@@ -392,7 +392,7 @@ void UICharacterListDialog::CCharacterInfo::Read(CInPacket& packet)
                 if (!spItem->FUN_140523c40(nId, nAmount, 0))
                     return;
                 spItem->FUN_140526c10(nRank);
-                spItem->FUN_140524eb0(packet);
+                spItem->ReadFromStream(packet);
                 spItem->SetItemUid(nUid);
                 spItem->FUN_14052a130(2);
                 state.m_260.Add(spItem);
@@ -410,13 +410,13 @@ unsigned __int64 UICharacterListDialog::CCharacterInfo::FUN_1418e9cb0()
 // @0x1418e9cd0
 CStringW UICharacterListDialog::CCharacterInfo::FUN_1418e9cd0()
 {
-    return m_state.FUN_1408f19e0();
+    return m_state.GetName();
 }
 
 // @0x1418e9d20
 void UICharacterListDialog::CCharacterInfo::FUN_1418e9d20(const CStringW& strName)
 {
-    m_state.FUN_1408f07e0(strName);
+    m_state.SetName(strName);
 }
 
 // @0x1418e9d50
@@ -553,15 +553,15 @@ UICharacterListDialog::UICharacterListDialog()
     m_80 = 0;
     m_198 = reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_strCharName;
     m_1a0 = reinterpret_cast<Unk_GsConnect*>(TSingleton<CGameOption>::GetInstance()->FUN_140cfd260())->m_nCharSN;
-    FUN_141925e70(0, 1);
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xc, Delegate<void(CInPacket&)>(this, &UICharacterListDialog::FUN_1418ed880));
+    SetFlag(0, 1);
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0xc, Delegate<void(CInPacket&)>(this, &UICharacterListDialog::OnCharacterListPacket));
     s_reply = nullptr;
 }
 
 // @0x1418ea5d0
 UICharacterListDialog::~UICharacterListDialog()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xc, Delegate<void(CInPacket&)>(this, &UICharacterListDialog::FUN_1418ed880));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0xc, Delegate<void(CInPacket&)>(this, &UICharacterListDialog::OnCharacterListPacket));
 }
 
 // @0x1418ea740
@@ -576,7 +576,7 @@ int UICharacterListDialog::vfunc_65()
     if (DAT_143ab2946 != 0)
     {
         DAT_143ab2946 = 0;
-        FUN_140d73aa0(GetStringCommonByKey(L"s_delete_account_cancel_login_success"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_delete_account_cancel_login_success"), 0, 0, L"");
     }
     if (UIDialog::vfunc_65() == 0)
         return 0;
@@ -592,7 +592,7 @@ void UICharacterListDialog::vfunc_79(void* p)
     case 0xe:
     {
         Unk_NetworkTransfer info;
-        info.FUN_1407a4c60(&static_cast<CInputStream&>(*(CInPacket*)p));
+        info.ReadFrom(&static_cast<CInputStream&>(*(CInPacket*)p));
         if (info.result)
             ShowPopup();
         else
@@ -624,13 +624,13 @@ void UICharacterListDialog::vfunc_79(void* p)
                 }
                     break;
                 case 2:
-                    FUN_140d73aa0(FormatStringId<CStringW>(0x2a, strText), 0, 0, L"");
+                    ShowMessageBox(FormatStringId<CStringW>(0x2a, strText), 0, 0, L"");
                     break;
                 case 6:
-                    FUN_140d73aa0(FormatStringId<CStringW>(0x29, strText), 0, 0, L"");
+                    ShowMessageBox(FormatStringId<CStringW>(0x29, strText), 0, 0, L"");
                     break;
                 default:
-                    FUN_140d73aa0(FUN_14028dee0(0x2c, strText, reinterpret_cast<const Unk_ClCharError&>(nCode)), 0, 0, L"");
+                    ShowMessageBox(FUN_14028dee0(0x2c, strText, reinterpret_cast<const Unk_ClCharError&>(nCode)), 0, 0, L"");
                     break;
                 }
             }
@@ -665,7 +665,7 @@ void UICharacterListDialog::vfunc_15()
                 if (nLeft > 0)
                 {
                     CStringW strText = FormatStringId<CStringW>(3, FUN_141b708a0(nLeft, 0));
-                    SetNestedChildText(spMovie->FUN_1422bb870(), "m_delete", "m_label", strText);
+                    SetNestedChildText(spMovie->GetValue(), "m_delete", "m_label", strText);
                 }
                 else
                 {
@@ -697,23 +697,23 @@ void UICharacterListDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     ASObj initData(2);
     if (FUN_141900750(&initData))
-        m_30->Invoke("initData", initData.FUN_1422bb870());
+        m_30->Invoke("initData", initData.GetValue());
     RefreshLobby();
-    TSingleton<UIUGCEventDispatcher>::GetInstance()/*C3:TSingleton<UIUGCEventDispatcher>::GetInstance*/->FUN_141b38be0(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()/*C3:TSingleton<UIUGCEventDispatcher>::GetInstance*/->AddListener(this);
     if (DAT_143ab285c != 0 && DAT_143ab2860 == 3)
     {
-        CSceneStateMulti* pScene = FUN_140f30370();
+        CSceneStateMulti* pScene = GetSceneStateMulti();
         if (pScene != 0)
             pScene->FUN_14174f470();
     }
-    if (FUN_1418ed650())
+    if (IsBurningLevelupEventRunning())
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f2a)));
-    FUN_1418f0400();
+    AttachBurningLevelupDescButton();
     if (FUN_1406516b0() == 3)
         AttachHealthGame();
     if (MS2Ptr<ASButton> spDelete = GetChild<ASButton>("m_deleteAccount"))
     {
-        if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x112))
+        if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x112))
             spDelete->vfunc_4(0);
     }
     if (MS2Ptr<ASButton> spServer = GetChild<ASButton>("m_serverlist"))
@@ -722,7 +722,7 @@ void UICharacterListDialog::OnLoadComplete()
         ((class CFeatureManager*)FUN_140166410());
         if (CFeatureManager::IsTestServerType())
             nVisible = 1;
-        spServer->FUN_1422c1fe0(nVisible);
+        spServer->SetEnabled(nVisible);
         spServer->vfunc_3(nVisible);
     }
     ((class Unk_ClNet*)((void*)GetClientPlatform()))->vfunc_22(0x2be, "LoginStep2");
@@ -792,7 +792,7 @@ int UICharacterListDialog::vfunc_13()
         return 1;
     if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d890(false))
     {
-        if (m_90->FUN_1422c6740() != 0)
+        if (m_90->GetMouseChildren() != 0)
             m_90->Invoke("onEnterKey");
         return 1;
     }
@@ -802,8 +802,8 @@ int UICharacterListDialog::vfunc_13()
 // @0x1418ed080
 void UICharacterListDialog::vfunc_67()
 {
-    TSingleton<UIUGCEventDispatcher>::GetInstance()/*C3:TSingleton<UIUGCEventDispatcher>::GetInstance*/->FUN_141b38c70(this);
-    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4f2a))) != 0)
+    TSingleton<UIUGCEventDispatcher>::GetInstance()/*C3:TSingleton<UIUGCEventDispatcher>::GetInstance*/->RemoveListener(this);
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4f2a))) != 0)
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4f2a);
     UIDialog::vfunc_67();
     m_1dc = 0;
@@ -811,7 +811,7 @@ void UICharacterListDialog::vfunc_67()
     m_180 = 0;
     m_1d4 = 0;
     m_188 = 0;
-    FUN_1418ee370();
+    ClearPreviewCharacter();
     m_1f0.RemoveAll();
     CCharacterInfo::FUN_1418ea0a0();
     m_220 = 0;
@@ -856,7 +856,7 @@ void UICharacterListDialog::vfunc_ugc_1(void* p, CString str)
     if (spCharacter.get() != 0)
     {
         spCharacter->FUN_1418e9de0(str);
-        m_30->FUN_140e6b140("updateProfile", nIndex, FUN_141028a90(str, 1));
+        m_30->FUN_140e6b140("updateProfile", nIndex, GetProfileImagePath(str, 1));
     }
 }
 
@@ -869,7 +869,7 @@ void UICharacterListDialog::FUN_1418ed4e0(unsigned __int64 nId, CString str)
 }
 
 // @0x1418ed5a0
-void UICharacterListDialog::FUN_1418ed5a0(unsigned __int64 nId, CString str)
+void UICharacterListDialog::SetCharacterText(unsigned __int64 nId, CString str)
 {
     CharPtr spCharacter = FindCharacter(nId);
     if (spCharacter.get() != 0)
@@ -877,9 +877,9 @@ void UICharacterListDialog::FUN_1418ed5a0(unsigned __int64 nId, CString str)
 }
 
 // @0x1418ed650
-bool UICharacterListDialog::FUN_1418ed650()
+bool UICharacterListDialog::IsBurningLevelupEventRunning()
 {
-    if (!((class CGameRule*)FUN_1401c0d90())->FUN_14047bb90())
+    if (!((class CGameRule*)GetGameRule())->FUN_14047bb90())
         return false;
     bool bValue = false;
     if (reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).FUN_140482280(900, bValue))
@@ -891,7 +891,7 @@ MS2_CHECK_OFFSET(UICharacterListDialog, m_1e8, 0x1e8);
 MS2_CHECK_OFFSET(UICharacterListDialog, m_220, 0x220);
 
 // @0x1418ed880
-void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
+void UICharacterListDialog::OnCharacterListPacket(CInPacket& packet)
 {
     int nMode = 0;
     nMode = packet.ReadUInt8();
@@ -899,21 +899,21 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
     {
         DAT_143ab2a30.clear();
         m_1a8.clear();
-        FUN_1418ee370();
+        ClearPreviewCharacter();
     }
     else if (nMode == 4)
     {
         m_1e8 = packet.ReadBool();   // exe: byte [this+0x1e8], not m_220
         if (vfunc_55() == 0 && FUN_1422dc430() == 1)
             RefreshLobby();
-        else if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetPrevSceneId() == 0x620000c)
+        else if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetPrevSceneId() == 0x620000c)
             PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), 0x4c8, 0, 0);
     }
     else if (nMode == 0)
     {
         int nCount = packet.ReadUInt8();
         ReadCharacters(nCount, packet);
-        if (((GFxSceneService*)CUserMail::FUN_1408e57f0())->GetPrevSceneId() == 0x620000d)
+        if (((GFxSceneService*)CUserMail::GetGFxSceneService())->GetPrevSceneId() == 0x620000d)
             PostMessageA(((efd::Win32PlatformService*)FUN_140aadf80())->GetWindowRef(), 0x4c8, 0, 0);
         RefreshSelection();
     }
@@ -928,7 +928,7 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
             {
                 SelectCharacter(spCharacter->FUN_1418e9cb0());
                 m_1e0 = 1;
-                FUN_1418ef980(spCharacter->FUN_1418e9cb0());
+                ShowBurningLevelupPopup(spCharacter->FUN_1418e9cb0());
             }
             if (vfunc_55() == 0)
                 OpenSelectedCharacter();
@@ -992,7 +992,7 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
             {
                 CStringW strText = L"";
                 strText = FUN_14028dfa0<CStringW>(L"s_char_err_next_delete_char_date", FUN_14083bdc0(CMsTime(nDeleteTime), true, L"/", L":"));
-                FUN_140d73aa0(CStringW(strText), 0, 0, L"");
+                ShowMessageBox(CStringW(strText), 0, 0, L"");
             }
             else
                 ShowDeleteError(nError);
@@ -1019,7 +1019,7 @@ void UICharacterListDialog::FUN_1418ed880(CInPacket& packet)
 }
 
 // @0x1418ee370
-void UICharacterListDialog::FUN_1418ee370()
+void UICharacterListDialog::ClearPreviewCharacter()
 {
     if (m_1c0 != 0)
         WorldService::GetInstance()->FUN_141bbbc60(egf::EntityID(m_1c0), 0);
@@ -1029,14 +1029,14 @@ void UICharacterListDialog::FUN_1418ee370()
 }
 
 // @0x1418ee400
-void UICharacterListDialog::FUN_1418ee400(int nIndex)
+void UICharacterListDialog::PreviewCharacterAt(int nIndex)
 {
     CharPtr spCharacter = GetCharacterAt(nIndex);
-    FUN_1418ee470(spCharacter);
+    PreviewCharacter(spCharacter);
 }
 
 // @0x1418ee470
-void UICharacterListDialog::FUN_1418ee470(CharPtr spCharacter)
+void UICharacterListDialog::PreviewCharacter(CharPtr spCharacter)
 {
     m_180 = 0;
     CharPtr spPreview(spCharacter);
@@ -1048,11 +1048,11 @@ void UICharacterListDialog::FUN_1418ee470(CharPtr spCharacter)
         FUN_141b70290();
         TSingleton<CGameOption>::GetInstance()->LoadCharacterOption();
         SetGamepadEnabled(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance())), *reinterpret_cast<bool*>(GetGamepadState(reinterpret_cast<Unk_GpSettings*>(TSingleton<CGameOption>::GetInstance()))), false);
-        FUN_14125bd20(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0(), *reinterpret_cast<bool*>(TSingleton<CGameOption>::GetInstance()->FUN_140c58ac0()));
+        FUN_14125bd20(TSingleton<CGameOption>::GetInstance()->GetInterfaceChar(), *reinterpret_cast<bool*>(TSingleton<CGameOption>::GetInstance()->GetInterfaceChar()));
     }
     else
     {
-        FUN_1418ee370();
+        ClearPreviewCharacter();
         FUN_1418f1d00();
     }
 }
@@ -1060,7 +1060,7 @@ void UICharacterListDialog::FUN_1418ee470(CharPtr spCharacter)
 // @0x1418ee5c0
 void UICharacterListDialog::FUN_1418ee5c0(const Unk_UserProxy* pState, unsigned nSlot)
 {
-    FUN_1418ee370();
+    ClearPreviewCharacter();
     if (pState->m_8 != 0)
     {
         MyPC* pPC = EE_NEW MyPC;
@@ -1283,14 +1283,14 @@ void UICharacterListDialog::QuitGame()
 {
     if (!DAT_143ab2942)
         ((class Unk_ClNet*)((void*)GetClientPlatform()))->vfunc_22(0x3f2, "GameEnd");
-    ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->SendRequestQuitAndDisconnect();
+    ((class CNetworkService*)(void*)(((void*)GetNetworkService())))->SendRequestQuitAndDisconnect();
     PostQuitMessage(0);
 }
 
 // @0x1418ef690
 void UICharacterListDialog::OpenUrl(CString strUrl)
 {
-    void* pBrowser = ((void*)FUN_140c43790(0x4e6a));
+    void* pBrowser = ((void*)FindWebBrowser(0x4e6a));
     if (pBrowser == 0)
         return;
     ((UIWebBrowserBase*)pBrowser)->FUN_14135ec00(strUrl, false);
@@ -1349,7 +1349,7 @@ void UICharacterListDialog::RefreshLobby()
     SortCharacters();
     if (MS2Ptr<ASTileList> list = m_30->FUN_140accef0<ASTileList>("m_charlist"))
     {
-        reinterpret_cast<ASObj*>(list.operator->())->FUN_1407cb9c0("maxRow", DAT_1439f4a88);
+        reinterpret_cast<ASObj*>(list.operator->())->SetIntMember("maxRow", DAT_1439f4a88);
         int nSelect = 0;
         bool bName = !m_198.IsEmpty();
         ASArray arr(2);
@@ -1359,14 +1359,14 @@ void UICharacterListDialog::RefreshLobby()
             if (spCharacter.get())
             {
                 const Unk_UserProxy* pProxy = spCharacter->FUN_1418e9d70();
-                bool bMatch = bName && m_198 == const_cast<Unk_UserProxy*>(pProxy)->FUN_1408f19e0();
+                bool bMatch = bName && m_198 == const_cast<Unk_UserProxy*>(pProxy)->GetName();
                 if (bMatch)
                     nSelect = i;
                 else if (m_1a0 == (__int64)spCharacter->FUN_1418e9cb0())
                     nSelect = i;
                 ASObj obj(2);
                 FUN_1418f42c0(obj, spCharacter);
-                arr.PushValue(obj.FUN_1422bb870());
+                arr.PushValue(obj.GetValue());
             }
         }
         int nCount = arr.GetLength();
@@ -1392,7 +1392,7 @@ void UICharacterListDialog::RefreshLobby()
         }
         m_1dc = 1;
     }
-    FUN_1418ef700();
+    AttachBurningLevelupIcons();
 }
 
 // @0x1418f0e20
@@ -1404,12 +1404,12 @@ void UICharacterListDialog::CharacterRemoved(unsigned __int64 nId, int nIndex)
     FUN_1412761e0(m_30, 1);
     if (m_1a8.empty())
     {
-        FUN_1418ee370();
+        ClearPreviewCharacter();
         TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)0x4ef2);
     }
     CString strFile;
-    strFile.Format("%s%s", (const char*)FUN_14016a5c0(((struct Unk_ClPaths*)FUN_1401d31f0())->m_s60, 0), (const char*)FUN_1412756c0(DAT_143ab2820, nId));
-    if (efd::File::DirectoryExists(FUN_14016a5c0(strFile, 0)))
+    strFile.Format("%s%s", (const char*)ToCString(((struct Unk_ClPaths*)GetCommonResource())->m_s60, 0), (const char*)FUN_1412756c0(DAT_143ab2820, nId));
+    if (efd::File::DirectoryExists(ToCString(strFile, 0)))
         FUN_141b70490(strFile);
 }
 
@@ -1424,7 +1424,7 @@ void UICharacterListDialog::OpenSelectedCharacter()
     {
         ASObj obj(2);
         FUN_1418f42c0(obj, spCharacter.operator->());
-        static_cast<Unk_ClMovie*>(m_30.operator->())->Invoke("addCharacter", obj.FUN_1422bb870(), nLast);
+        static_cast<Unk_ClMovie*>(m_30.operator->())->Invoke("addCharacter", obj.GetValue(), nLast);
     }
 }
 
@@ -1446,15 +1446,15 @@ void UICharacterListDialog::OnCreatePC()
     if (reinterpret_cast<Unk_ClBurnMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->GetSub()->IsSet())
     {
         int nLimit = reinterpret_cast<Unk_ClBurnMgr*>(TSingleton<CGameEventValueManager>::GetInstance())->GetSub()->GetValue();
-        if (FUN_1418f1c20() >= nLimit)
+        if (GetCharacterCount() >= nLimit)
         {
-            FUN_140d73aa0(BlockFormat(10, nLimit), 0, 0, CStringW(L""));
+            ShowMessageBox(BlockFormat(10, nLimit), 0, 0, CStringW(L""));
             return;
         }
     }
-    if (FUN_1418f1c20() >= DAT_1439f4a84)
+    if (GetCharacterCount() >= DAT_1439f4a84)
     {
-        FUN_140d73aa0(BlockFormat(9, DAT_1439f4a84), 0, 0, CStringW(L""));
+        ShowMessageBox(BlockFormat(9, DAT_1439f4a84), 0, 0, CStringW(L""));
         return;
     }
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4eea)));
@@ -1481,7 +1481,7 @@ void UICharacterListDialog::FUN_1418f13f0()
                 bool bRename = pChecker->FUN_140225210(spCharacter->FUN_1418e9cd0(), strReason, 1) == 2;
                 if (bRename)
                 {
-                    if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(10, GetStringCommonByKey(L"s_char_rename_input"), 0, s_strChangeInvalidCharName))
+                    if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(10, GetStringCommonByKey(L"s_char_rename_input"), 0, s_strChangeInvalidCharName))
                     {
                         CStringW strDefault(L"");
                         spBox->Append<__int64>(spCharacter->FUN_1418e9cb0());
@@ -1498,18 +1498,18 @@ void UICharacterListDialog::FUN_1418f13f0()
     m_1d4 = 0x620000c;
 }
 
-void* FUN_14136f520(int nId);
+void* FindServerListDialog(int nId);
 
 // @0x1418f1790
 void UICharacterListDialog::FUN_1418f1790()
 {
-    UIServerListDialog* pList = static_cast<UIServerListDialog*>(FUN_14136f520(0x4ef0));
+    UIServerListDialog* pList = static_cast<UIServerListDialog*>(FindServerListDialog(0x4ef0));
     if (pList != 0)
     {
         CharPtr spCharacter(m_188);
         if (spCharacter.get() != 0)
         {
-            if (pList->FUN_141ad2c50(spCharacter->FUN_1418e9cb0(), (__int64)&static_cast<const CStringW&>(const_cast<Unk_UserProxy*>(spCharacter->FUN_1418e9d70())->FUN_1408f19e0())))   // the name goes by address (the callee ignores it)
+            if (pList->EnterGame(spCharacter->FUN_1418e9cb0(), (__int64)&static_cast<const CStringW&>(const_cast<Unk_UserProxy*>(spCharacter->FUN_1418e9d70())->GetName())))   // the name goes by address (the callee ignores it)
                 return;
         }
     }
@@ -1588,7 +1588,7 @@ int UICharacterListDialog::FUN_1418f1b90()
 }
 
 // @0x1418f1c20
-int UICharacterListDialog::FUN_1418f1c20()
+int UICharacterListDialog::GetCharacterCount()
 {
     return (int)m_1a8.size();
 }
@@ -1606,9 +1606,9 @@ int UICharacterListDialog::FUN_1418f1c70()
 }
 
 // @0x1418f1cb0
-void UICharacterListDialog::FUN_1418f1cb0()
+void UICharacterListDialog::PreviewSelectedCharacter()
 {
-    FUN_1418ee470(m_188);
+    PreviewCharacter(m_188);
 }
 
 // @0x1418f1d00
@@ -1636,7 +1636,7 @@ void UICharacterListDialog::OnEndPopdown()
 {
     if (m_1d4 > 0)
     {
-        CSceneStateMulti* pScene = FUN_140f30370();
+        CSceneStateMulti* pScene = GetSceneStateMulti();
         if (pScene != 0)
         {
             switch (m_1d4)
@@ -1645,7 +1645,7 @@ void UICharacterListDialog::OnEndPopdown()
                 {
                     COutPacket packet(static_cast<int>(SendOp::RequestServerList), 0);
                     FUN_140710590(packet);
-                    pScene->FUN_14174eb30();
+                    pScene->ExitToServerList();
                     break;
                 }
             case 0x620001c:
@@ -1655,7 +1655,7 @@ void UICharacterListDialog::OnEndPopdown()
                 FUN_1418f1790();
                 break;
             case 0x6200009:
-                FUN_1418f1e90();
+                QuitAndDisconnect();
                 break;
             }
             m_1d4 = 0;
@@ -1664,19 +1664,19 @@ void UICharacterListDialog::OnEndPopdown()
 }
 
 // @0x1418f1e90
-void UICharacterListDialog::FUN_1418f1e90()
+void UICharacterListDialog::QuitAndDisconnect()
 {
     if (DAT_143ab0248 == 2)
     {
-        UIRegionListDialog* pDialog = FUN_1418f6130(0x4eef);
+        UIRegionListDialog* pDialog = GetRegionListDialog(0x4eef);
         if (pDialog != 0)
             ((class UIRegionListDialog*)(class UIRegionListDialog*)(pDialog))->FUN_140e80740();
-        ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->SendRequestQuitAndDisconnect();
+        ((class CNetworkService*)(void*)(((void*)GetNetworkService())))->SendRequestQuitAndDisconnect();
         TSingleton<CStateService>::GetInstance()->FUN_1417e25a0(0x6200009);
     }
     else
     {
-        ((class CNetworkService*)(void*)(((void*)FUN_140714f90())))->SendRequestQuitAndDisconnect();
+        ((class CNetworkService*)(void*)(((void*)GetNetworkService())))->SendRequestQuitAndDisconnect();
         TSingleton<CStateService>::GetInstance()->FUN_1417e25a0(0x6200009);
     }
 }
@@ -1765,7 +1765,7 @@ void UICharacterListDialog::FUN_1418f2620(void* pPacket)
     if (nResult == 0)
         FUN_1418f2190();
     else
-        FUN_140d73aa0(FUN_1418f2960(nResult, nId), 0, 0, CStringW(L""));
+        ShowMessageBox(GetDeleteAccountErrorText(nResult, nId), 0, 0, CStringW(L""));
 }
 
 // @0x1418f2730
@@ -1775,7 +1775,7 @@ void UICharacterListDialog::HandleDeleteReply(unsigned char nResult, const CStri
     if (nResult == 1)
         SendDeleteAccountRequest(str1, str2, str3);
     else
-        FUN_140d73aa0(GetStringCommonByKey(L"s_delete_account_check_session_key_fail"), 0, 0, L"");
+        ShowMessageBox(GetStringCommonByKey(L"s_delete_account_check_session_key_fail"), 0, 0, L"");
 }
 
 // @0x1418f2820
@@ -1793,12 +1793,12 @@ void UICharacterListDialog::FUN_1418f2820(void* pPacket)
     else
     {
         m_224 = 4;
-        FUN_140d73aa0(FUN_1418f2960(nResult, 0), 0, 0, CStringW(L""));
+        ShowMessageBox(GetDeleteAccountErrorText(nResult, 0), 0, 0, CStringW(L""));
     }
 }
 
 // @0x1418f2960
-CStringW UICharacterListDialog::FUN_1418f2960(int nError, unsigned __int64 nId)
+CStringW UICharacterListDialog::GetDeleteAccountErrorText(int nError, unsigned __int64 nId)
 {
     if (nError == 0xb || nError == 0x17)
         return FUN_14028dfa0<CStringW>(CStringW(L"s_delete_account_result_check_fail_err_characterpending"), GetCharacterName(nId));
@@ -1862,7 +1862,7 @@ bool UICharacterListDialog::FUN_1418f31a0(int nButton, const CMsgBoxData& box)
     }
     else if (m_224 == 3)
     {
-        m_228 = FUN_140d73d20(0xf, FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4")), 0, CStringW(L""));
+        m_228 = CreateMessageBox(0xf, FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4")), 0, CStringW(L""));
         if (m_228.get() != 0)
         {
             m_228->AddStringArg(FUN_140298ea0(CStringW(L"s_delete_account_terms_step_4_label1")));
@@ -1908,7 +1908,7 @@ bool UICharacterListDialog::FUN_1418f3bd0(int nButton, const CMsgBoxData& box)
     }
     else if (m_224 == 5)
     {
-        m_228 = FUN_140d73d20(0x1b, FUN_140298ea0(L"s_delete_account_terms_step_end"), 0, L"");
+        m_228 = CreateMessageBox(0x1b, FUN_140298ea0(L"s_delete_account_terms_step_end"), 0, L"");
         if (m_228.get() != 0)
         {
             m_228->FUN_141a01800(3);
@@ -1933,16 +1933,16 @@ bool UICharacterListDialog::FUN_1418f3bd0(int nButton, const CMsgBoxData& box)
 void FUN_1418f42c0(ASObj& obj, UICharacterListDialog::CCharacterInfo* pInfo)
 {
     const Unk_UserProxy* pState = pInfo->FUN_1418e9d70();
-    obj.FUN_1407cbb20("charname", const_cast<Unk_UserProxy*>(pState)->FUN_1408f19e0());
-    FUN_140fa9c90(&obj, "gender", pState->m_14);
+    obj.SetWStringMember("charname", const_cast<Unk_UserProxy*>(pState)->GetName());
+    SetMemberInt(&obj, "gender", pState->m_14);
     obj.FUN_140bd0d90("jobcode", pState->m_40);
-    obj.FUN_1407cbb20("levelJob", FormatStringId(2, reinterpret_cast<const unsigned short&>(pState->m_34), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pState->m_40)));
+    obj.SetWStringMember("levelJob", FormatStringId(2, reinterpret_cast<const unsigned short&>(pState->m_34), TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, pState->m_40)));
     if (pInfo->FUN_1418ea020() > 0)
         obj.SetMemberUInt("waitDelTime", pInfo->FUN_1418e9f30());
-    obj.FUN_1407cba60("imgPath", FUN_141028be0(pState->m_8, pInfo->FUN_1418e9d90(), 1, CString("")));
+    obj.SetStringMember("imgPath", FUN_141028be0(pState->m_8, pInfo->FUN_1418e9d90(), 1, CString("")));
     CMsTime created(pState->m_70);
     CStringW strCreated = FUN_14083bab0(created, L"/");
-    obj.FUN_1407cbb20("createddate", strCreated);
+    obj.SetWStringMember("createddate", strCreated);
     CStringW strPos = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, pState->m_28);
     MS2Ptr<CFieldDataCli> spField = CFieldDataCli::Find(pState->m_28);
     if (spField && spField->m_nEnterReturnId != 0)
@@ -1951,8 +1951,8 @@ void FUN_1418f42c0(ASObj& obj, UICharacterListDialog::CCharacterInfo* pInfo)
         if (spField)
             strPos = TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, spField->m_nEnterReturnId);
     }
-    obj.FUN_1407cbb20("lastpos", strPos);
-    obj.FUN_1407cba60("charSN", FUN_140719530(pInfo->FUN_1418e9cb0()));
+    obj.SetWStringMember("lastpos", strPos);
+    obj.SetStringMember("charSN", FUN_140719530(pInfo->FUN_1418e9cb0()));
 }
 
 // @0x1418f47e0
@@ -1973,7 +1973,7 @@ void UICharacterListDialog::ShowDeleteError(int nError)
     case 11: strMsg = GetStringCommonByKey(L"s_char_err_wedding"); break;
     default: strMsg = BlockFormat(0x17, reinterpret_cast<const unsigned&>(nError)); break;
     }
-    FUN_140d73aa0(CStringW(strMsg), 0, 0, L"");
+    ShowMessageBox(CStringW(strMsg), 0, 0, L"");
 }
 
 // @0x1418f4da0
@@ -1988,7 +1988,7 @@ unsigned UICharacterListDialog::FindFreePreviewSlot()
 }
 
 // @0x1418ed6b0
-void UICharacterListDialog::FUN_1418ed6b0(CInPacket& packet)
+void UICharacterListDialog::OnBurningLevelupRewardTaken(CInPacket& packet)
 {
     __int64 nId = packet.ReadInt64();
     if (m_30 == 0)
@@ -2016,7 +2016,7 @@ void UICharacterListDialog::FUN_1418ed860()
 }
 
 // @0x1418ef700
-void UICharacterListDialog::FUN_1418ef700()
+void UICharacterListDialog::AttachBurningLevelupIcons()
 {
     BurnEvents events;
     reinterpret_cast<CGameEventValueBurningLevelup*>(TSingleton<CGameEventValueManager>::GetInstance()->GetBurningLevelup())->GetAll(events);
@@ -2038,7 +2038,7 @@ void UICharacterListDialog::FUN_1418ef700()
 }
 
 // @0x1418ef980
-void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
+void UICharacterListDialog::ShowBurningLevelupPopup(unsigned __int64 nId)
 {
     CharPtr spCharacter = FindCharacter(nId);
     if (spCharacter == 0)
@@ -2073,7 +2073,7 @@ void UICharacterListDialog::FUN_1418ef980(unsigned __int64 nId)
     if (spFound == 0)
         return;
     // the texts are {0} templates: the exe fills them with FUN_1401e8510, not CStringW::Format
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, StringFormat<CStringW>(GetStringCommonByKey(spFound->m_setCharacterPopupStringKey), spCharacter->FUN_1418e9cd0()), 0, L"");
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x2a, StringFormat<CStringW>(GetStringCommonByKey(spFound->m_setCharacterPopupStringKey), spCharacter->FUN_1418e9cd0()), 0, L"");
     if (spBox == 0)
         return;
     spBox->FUN_141a01800(2);
@@ -2112,7 +2112,7 @@ void UICharacterListDialog::OnClickBurningLevelupDescBtn()
     }
     if (spFound == 0)
         return;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x2a, GetStringCommonByKey(spFound->m_descPopupStringKey), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x2a, GetStringCommonByKey(spFound->m_descPopupStringKey), 0, CStringW(L""));
     if (spBox == 0)
         return;
     spBox->FUN_141a01800(3);
@@ -2121,7 +2121,7 @@ void UICharacterListDialog::OnClickBurningLevelupDescBtn()
 }
 
 // @0x1418f0400
-void UICharacterListDialog::FUN_1418f0400()
+void UICharacterListDialog::AttachBurningLevelupDescButton()
 {
     if (m_30 == 0)
         return;
@@ -2141,7 +2141,7 @@ void UICharacterListDialog::FUN_1418f0400()
 void UICharacterListDialog::FUN_1418f2190()
 {
     m_221 = 0;
-    m_228 = FUN_140d73d20(0x1b, FUN_140298ea0(CStringW(L"s_delete_account_terms_step_1")), 0, CStringW(L""));
+    m_228 = CreateMessageBox(0x1b, FUN_140298ea0(CStringW(L"s_delete_account_terms_step_1")), 0, CStringW(L""));
     if (m_228.get() != 0)
     {
         m_228->FUN_141a01800(2);
@@ -2175,7 +2175,7 @@ void FUN_1418f4df0(MS2Ptr<BurningLevelupContext> spEvent, MS2Ptr<CMsgBoxData> sp
         MS2Ptr<CItem> spItem(new CItem);
         spItem->FUN_140523c40((&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_spJumpingItem.operator->())->m_ref)->vfunc_0(), (&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_spJumpingItem.operator->())->m_ref)->vfunc_1(), 0);
         spItem->SetCountClamped((&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_spJumpingItem.operator->())->m_ref)->vfunc_2());
-        spFirst->FUN_141a06630(spItem->FUN_140527b10(), true, spItem->GetRarity());
+        spFirst->SetName(spItem->FUN_140527b10(), true, spItem->GetRarity());
         spFirst->m_spItem = spItem;
         spFirst->m_nCount = spItem->GetCount();
         spFirst->m_48 = 0x411;
@@ -2186,7 +2186,7 @@ void FUN_1418f4df0(MS2Ptr<BurningLevelupContext> spEvent, MS2Ptr<CMsgBoxData> sp
         MS2Ptr<CItem> spItem(new CItem);
         spItem->FUN_140523c40((&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_rewardItems.begin().operator->())->m_ref)->vfunc_0(), (&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_rewardItems.begin().operator->())->m_ref)->vfunc_1(), 0);
         spItem->SetCountClamped((&reinterpret_cast<Unk_ClRewardEntry*>(spEvent->m_rewardItems.begin().operator->())->m_ref)->vfunc_2());
-        spSecond->FUN_141a06630(spItem->FUN_140527b10(), true, spItem->GetRarity());
+        spSecond->SetName(spItem->FUN_140527b10(), true, spItem->GetRarity());
         spSecond->m_spItem = spItem;
         spSecond->m_nCount = spItem->GetCount();
         spSecond->m_48 = 0x411;
@@ -2236,7 +2236,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                 strMsg = FormatStringId<CStringW>(4, pPC->vfunc_77());
             if (!strMsg.IsEmpty())
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0xe, strMsg, static_cast<IMessageListener*>(this), L"deletePC");
+                MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0xe, strMsg, static_cast<IMessageListener*>(this), L"deletePC");
                 if (spBox.get() != 0)
                 {
                     spBox->SetInput(2, L"", 0, 0, 0);
@@ -2333,7 +2333,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                     CStringW strMsg = FormatStringId<CStringW>(8, spCharacter->FUN_1418e9cd0());
                     unsigned __int64 nCharId = spCharacter->FUN_1418e9cb0();
                     CStringW strTag = StringFormat(L"revivalChar,{0}", nCharId);
-                    FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), strTag);
+                    ShowMessageBox(strMsg, 1, static_cast<IMessageListener*>(this), strTag);
                 }
             }
             return 1;
@@ -2350,7 +2350,7 @@ int UICharacterListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
                     CStringW strMsg = FormatStringId<CStringW>(6, spCharacter->FUN_1418e9cd0());
                     unsigned __int64 nCharId = spCharacter->FUN_1418e9cb0();
                     CStringW strTag = StringFormat(L"finalDelete,{0}", nCharId);
-                    FUN_140d73aa0(strMsg, 1, static_cast<IMessageListener*>(this), strTag);
+                    ShowMessageBox(strMsg, 1, static_cast<IMessageListener*>(this), strTag);
                 }
             }
             return 1;
@@ -2454,7 +2454,7 @@ bool Unk_ClIdSet::FUN_1418f5a10(unsigned __int64 nId, unsigned* pnIndex)
 }
 
 // @0x1418f6130
-UIRegionListDialog* FUN_1418f6130(int nId)
+UIRegionListDialog* GetRegionListDialog(int nId)
 {
     if (reinterpret_cast<Unk_ClUIMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {

@@ -32,11 +32,11 @@ public:
     virtual void vfunc_79(void* p);                                         // 79 0x1412d7480
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);               // IMessageListener 0 0x1412d8c40
 
-    void FUN_1412d7aa0();                                                   // 0x1412d7aa0 "setData": the whole movie
+    void SetData();                                                   // 0x1412d7aa0 "setData": the whole movie
     int FUN_1412d8e10(int nField, CStringW strValue, MaidProfile* pProfile);   // 0x1412d8e10 check one edited text
-    void FUN_1412d9640(int nMaidId, unsigned __int64 nMaidUid);             // 0x1412d9640 show another maid
-    void FUN_1412d9680();                                                   // 0x1412d9680 "updateStatus"
-    void FUN_1412d9b90();                                                   // 0x1412d9b90 "updateProperty"
+    void SetMaid(int nMaidId, unsigned __int64 nMaidUid);             // 0x1412d9640 show another maid
+    void UpdateStatus();                                                   // 0x1412d9680 "updateStatus"
+    void UpdateProperty();                                                   // 0x1412d9b90 "updateProperty"
     CStringW FUN_1412da590();                                               // 0x1412da590 the contract end date text
 
 private:

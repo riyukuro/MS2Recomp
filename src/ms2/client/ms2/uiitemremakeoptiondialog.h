@@ -28,7 +28,7 @@ public:
     virtual void vfunc_67();                                    // 0x14129d870
     virtual void vfunc_79(void* pPacket);                       // 0x14129daa0 CInPacket opcode 200 (remake option)
 
-    void FUN_14129dc60(NotifyObject* pNotify);                  // 0x14129dc60 "NotifyGameEventChanged" (SaleRemake)
+    void OnGameEventChanged(NotifyObject* pNotify);                  // 0x14129dc60 "NotifyGameEventChanged" (SaleRemake)
     void FUN_14129dd50();                                       // 0x14129dd50 fill the item bag
     void FUN_14129e190(ASData* pData);                          // 0x14129e190 onClickForceRemake
     void FUN_14129e530(ASData* pData);                          // 0x14129e530 onClickCompareEnchant
@@ -54,7 +54,7 @@ public:
     int GetState();                                        // 0x1412a1c60
     int FUN_1412a1c80(MS2Ptr<CItem> item);                      // 0x1412a1c80 how many of the item the player owns
     void FUN_1412a1d40(unsigned __int64 uid, int nOption, bool bConfirm);   // 0x1412a1d40 start a remake (asks for high SA items)
-    void FUN_1412a2380(unsigned __int64 uid, int nOption, bool bConfirm);   // 0x1412a2380 send the remake request
+    void SendRemakeRequest(unsigned __int64 uid, int nOption, bool bConfirm);   // 0x1412a2380 send the remake request
     bool FUN_1412a2a50(int nResult, const CMsgBoxData& box);    // 0x1412a2a50
     void FUN_1412a2ac0();                                       // 0x1412a2ac0 reset the selection
     void FUN_1412a2b40(unsigned nItemId);                       // 0x1412a2b40 "previous option item does not exist" notice

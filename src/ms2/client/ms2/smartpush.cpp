@@ -134,14 +134,14 @@ template <class A> CStringW BlockFormat(int nId, const A& a);                   
 void FUN_140841420(CStringW& str);                                      // the mastery name of a row content
 int FUN_1407181a0(const CStringW& str);                                 // _wtoi of a CStringW
 int FUN_14053feb0(int nItemId);                                         // default rank of an item
-bool FUN_140811640(int nKind);                                          // the first use is paid with red merat
+bool IsFirstUseRedMerat(int nKind);                                          // the first use is paid with red merat
 class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);   // new message box data
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strTag);   // new message box data
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                         // show it
-void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);   // notice box
+void ShowMessageBox(CStringW strText, int nType, void* pListener, CStringW strTag);   // notice box
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);   // notice box of a system string
-void FUN_1412751f0(const CStringW& str, int nType, int nFlag);          // chat / center notice
+void ShowSystemNotice(const CStringW& str, int nType, int nFlag);          // chat / center notice
 
 
 // The local player's buffs (PCBase +0x748).
@@ -149,9 +149,9 @@ void FUN_1412751f0(const CStringW& str, int nType, int nFlag);          // chat 
 class Unk_PCBaseBuffs : public AdditionalCliList { };
 //
 
-// The safe riding map table (FUN_140ba4fa0).
+// The safe riding map table (GetAdventureLevelTableHelper).
 class CAdventureLevelTableHelper { public: bool IsReached(unsigned nLevel); };   // C3: member view (adventureleveltablehelper.h)
-class Unk_ALCurrent* FUN_140ba4fa0();   // C3: was FUN_140ba4fa0
+class Unk_ALCurrent* GetAdventureLevelTableHelper();   // C3: was GetAdventureLevelTableHelper
 
 // The play instrument manager (GetInstrumentManager).
 class Unk_SpInstrument : public CInstrumentManager
@@ -218,7 +218,7 @@ void Unk_SetBoxInt(CMsgBoxData* pBox, const char* szName, int n)
 void Unk_SetBoxUInt(CMsgBoxData* pBox, const char* szName, unsigned n)
 {
     ASData data;
-    data.FUN_1422b8030(n);
+    data.AddUInt(n);
     pBox->m_values.insert(std::make_pair(szName, data.PopValue()));
 }
 void Unk_SetBoxString(CMsgBoxData* pBox, const char* szName, CStringW str)
@@ -293,7 +293,7 @@ void CSmartPush::vfunc_3()
     else
     {
         CStringW strText = vfunc_9();
-        MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x20, strText, 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x20, strText, 0, CStringW(L""));
         if (spBox)
         {
             spBox->FUN_141a01800(1);
@@ -314,7 +314,7 @@ void CSmartPush::vfunc_4(int nValue)
     {
         CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_smartpush_active"),
                                         CStringTable::GetInstance()->FUN_141812290(m_data->m_nActionValue, 1, CString("name")));
-        FUN_1412751f0(strMsg, 1, 1);
+        ShowSystemNotice(strMsg, 1, 1);
     }
 }
 
@@ -428,17 +428,17 @@ void CSmartPushAutoFishing::vfunc_2()
             if (!pkg)
             {
                 CFishingManager::GetInstance()->SetAutoCount(0);
-                FUN_140d73aa0(GetStringCommonByKey(L"s_msg_autofishing_extend_merat_warn"), 0, 0, L"");
+                ShowMessageBox(GetStringCommonByKey(L"s_msg_autofishing_extend_merat_warn"), 0, 0, L"");
                 return;
             }
-            if (FUN_140dd07b0())
+            if (CanPayPackagePrice())
             {
                 --nCount;
                 CFishingManager::GetInstance()->SetAutoCount(nCount);
                 vfunc_5(true);
                 CStringW strTime = CSmartPushTable::GetInstance()->GetPackageDurationText(
                     CGameRule::GetInstance()->GetAutoFishingName(), m_n1c);
-                FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_msg_autofishing_extend_complete"), strTime), 1, 1);
+                ShowSystemNotice(FUN_14028dfa0<CStringW>(CStringW(L"s_msg_autofishing_extend_complete"), strTime), 1, 1);
             }
             else
             {
@@ -461,7 +461,7 @@ void CSmartPushAutoFishing::vfunc_3()
     unsigned nSale = CGameRule::GetInstance()->FUN_140479900();
     CStringW strText;
     CStringW strTitle;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x24, strText, 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x24, strText, 0, CStringW(L""));
     if (spBox)
     {
         spBox->FUN_141a01800(1);
@@ -480,7 +480,7 @@ void CSmartPushAutoFishing::vfunc_3()
             Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMerat{0}", i), pkg->m_nMerat);
             Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMeso{0}", i), pkg->m_nMeso);
         }
-        Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", FUN_140811640(1));
+        Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", IsFirstUseRedMerat(1));
         Unk_SetBoxString(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_fishing"));
         Unk_SetBoxUInt(spBox.operator->(), "saleRate", nSale);
         Unk_SetBoxInt(spBox.operator->(), "packageCount", nCount);
@@ -494,7 +494,7 @@ void CSmartPushAutoFishing::vfunc_4(int nValue)
     CSmartPush::vfunc_4(nValue);
     if (CFishingManager::GetInstance()->FUN_140954150() != 0 && CFishingManager::GetInstance()->FUN_140cdbb90() != 0)
         CFishingManager::GetInstance()->SendFishingMode9();
-    CGameOption::GetInstance()->FUN_140c9b8b0()->m_n2c = FUN_140dd06b0();
+    CGameOption::GetInstance()->GetEtc()->m_n2c = FUN_140dd06b0();
     CGameOption::GetInstance()->SaveCharacterSettings();
 }
 
@@ -556,7 +556,7 @@ int CSmartPushAutoFishing::FUN_140dd06b0()
 }
 
 // @0x140dd07b0
-bool CSmartPushAutoFishing::FUN_140dd07b0()
+bool CSmartPushAutoFishing::CanPayPackagePrice()
 {
     CSmartPushTable::PackagePtr pkg =
         CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoFishingName(), m_n1c);
@@ -569,7 +569,7 @@ bool CSmartPushAutoFishing::FUN_140dd07b0()
         nPrice = pkg->m_nMerat;
         if (nSale != 0)
             nPrice -= (__int64)(nPrice * (unsigned __int64)nSale) / 10000;
-        if (FUN_140811640(m_nId) && ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_41(nPrice) == true)
+        if (IsFirstUseRedMerat(m_nId) && ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_41(nPrice) == true)
             return true;
         return ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_40(nPrice);
     }
@@ -592,9 +592,9 @@ bool CSmartPushAutoFishing::FUN_140dd0a00(int nResult, const CMsgBoxData& data)
         CStringW strResult = data.FUN_141a02d50();
         bool bRedMerat = strResult.Tokenize(L",", nPos).CompareNoCase(L"true") == 0;
         m_n1c = _wtoi(strResult.Tokenize(L",", nPos)) - 1;
-        CGameOption::GetInstance()->FUN_140c9b8b0()->m_n24 = m_n1c;
+        CGameOption::GetInstance()->GetEtc()->m_n24 = m_n1c;
         CGameOption::GetInstance()->SaveCharacterSettings();
-        int nOk = FUN_140dd07b0();
+        int nOk = CanPayPackagePrice();
         if (nOk == 0)
         {
             if (FUN_140dd06b0() == 2)
@@ -658,13 +658,13 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
         nCount = ((class Unk_SpInstrument*)GetInstrumentManager())->GetVolume();
         if (nCount > 0)
         {
-            if (FUN_140dd1ba0())
+            if (CanPayPackagePrice())
             {
                 --nCount;
                 ((class Unk_SpInstrument*)GetInstrumentManager())->SetVolume(nCount);
                 vfunc_5(true);
                 CStringW strTime = CSmartPushTable::GetInstance()->GetPackageDurationText(m_data->m_strContent, m_n1c);
-                FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_msg_auto_play_instrument_extend_complete"), strTime), 1, 1);
+                ShowSystemNotice(FUN_14028dfa0<CStringW>(CStringW(L"s_msg_auto_play_instrument_extend_complete"), strTime), 1, 1);
             }
             else
             {
@@ -682,11 +682,11 @@ void CSmartPushAutoPlayInstrument::vfunc_2()
     }
     else if (m_bPlaying == 0 && nBlocked == 0)
     {
-        if (((class Unk_SpInstrument*)GetInstrumentManager())->GetVolume() == 0 && CUIService::GetInstance()->FUN_141adc890((eUIClassID)0x4f07) != 0)
+        if (((class Unk_SpInstrument*)GetInstrumentManager())->GetVolume() == 0 && CUIService::GetInstance()->IsDialogOpen((eUIClassID)0x4f07) != 0)
         {
             CUIService::GetInstance()->CloseDialog((eUIClassID)0x4f07);
             CStringW strKey(L"s_msg_auto_play_instrument_end");
-            FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
         }
     }
     else if (m_bPlaying != 0 && nBlocked != 0)
@@ -713,7 +713,7 @@ void CSmartPushAutoPlayInstrument::vfunc_3()
     unsigned nSale = CGameRule::GetInstance()->FUN_140479a20();
     CStringW strText;
     CStringW strTitle;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x24, strText, 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x24, strText, 0, CStringW(L""));
     if (spBox)
     {
         spBox->FUN_141a01800(1);
@@ -733,7 +733,7 @@ void CSmartPushAutoPlayInstrument::vfunc_3()
             Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMerat{0}", i), pkg->m_nMerat);
             Unk_SetBoxInt64(spBox.operator->(), StringFormat<int>("autoActionMeso{0}", i), pkg->m_nMeso);
         }
-        Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", FUN_140811640(4));
+        Unk_SetBoxBool(spBox.operator->(), "firstUseRedMerat", IsFirstUseRedMerat(4));
         Unk_SetBoxString(spBox.operator->(), "actionName", GetStringCommonByKey(L"s_auto_action_play_instrument"));
         Unk_SetBoxUInt(spBox.operator->(), "saleRate", nSale);
         Unk_SetBoxInt(spBox.operator->(), "packageCount", nCount);
@@ -809,7 +809,7 @@ int CSmartPushAutoPlayInstrument::FUN_140dd1aa0()
 }
 
 // @0x140dd1ba0
-bool CSmartPushAutoPlayInstrument::FUN_140dd1ba0()
+bool CSmartPushAutoPlayInstrument::CanPayPackagePrice()
 {
     CSmartPushTable::PackagePtr pkg =
         CSmartPushTable::GetInstance()->GetPackage(CGameRule::GetInstance()->GetAutoPlayInstrumentName(), m_n1c);
@@ -822,7 +822,7 @@ bool CSmartPushAutoPlayInstrument::FUN_140dd1ba0()
         nPrice = pkg->m_nMerat;
         if (nSale != 0)
             nPrice -= (__int64)(nPrice * (unsigned __int64)nSale) / 10000;
-        if (FUN_140811640(m_nId) && ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_41(nPrice) == true)
+        if (IsFirstUseRedMerat(m_nId) && ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_41(nPrice) == true)
             return true;
         return ((class IClientPlatform*)((void*)GetClientPlatform()))->vfunc_40(nPrice);
     }
@@ -845,9 +845,9 @@ bool CSmartPushAutoPlayInstrument::FUN_140dd1df0(int nResult, const CMsgBoxData&
         CStringW strResult = data.FUN_141a02d50();
         bool bRedMerat = strResult.Tokenize(L",", nPos).CompareNoCase(L"true") == 0;
         m_n1c = _wtoi(strResult.Tokenize(L",", nPos)) - 1;
-        CGameOption::GetInstance()->FUN_140c9b8b0()->m_n28 = m_n1c;
+        CGameOption::GetInstance()->GetEtc()->m_n28 = m_n1c;
         CGameOption::GetInstance()->SaveCharacterSettings();
-        int nOk = FUN_140dd1ba0();
+        int nOk = CanPayPackagePrice();
         if (nOk == 0)
         {
             if (FUN_140dd1aa0() == 2)
@@ -927,7 +927,7 @@ CStringW CSmartPushSafeRiding::vfunc_7()
 // @0x140dd2360
 CStringW CSmartPushSafeRiding::vfunc_9()
 {
-    if (FUN_140811640(2))
+    if (IsFirstUseRedMerat(2))
         return FUN_14028dfa0<__int64>(CStringW(L"s_smartpush_saferiding_rbmerat_desc"), m_data->m_nRequireMerat);
     return FUN_14028dfa0<__int64>(CStringW(L"s_smartpush_saferiding_desc"), m_data->m_nRequireMerat);
 }
@@ -938,7 +938,7 @@ bool CSmartPushSafeRiding::vfunc_12()
     MyPC* pMy = static_cast<MyPC*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pMy == 0)
         return false;
-    if (((class CAdventureLevelTableHelper*)FUN_140ba4fa0())->IsReached(pMy->vfunc_141()))
+    if (((class CAdventureLevelTableHelper*)GetAdventureLevelTableHelper())->IsReached(pMy->vfunc_141()))
         return true;
     return false;
 }
@@ -979,7 +979,7 @@ int CSmartPushSafeWaterRiding::vfunc_6()
         return 0;
     if (pMy->GetRidee()->GetData()->m_basic.m_nType == 2)
         return 0;
-    if (((class CAdventureLevelTableHelper*)FUN_140ba4fa0())->IsReached(pMy->vfunc_141()))
+    if (((class CAdventureLevelTableHelper*)GetAdventureLevelTableHelper())->IsReached(pMy->vfunc_141()))
         return 0;
     if (pMy->FUN_1416749a0()->HasEnabledWithEventBuffType(3))
         return 2;
@@ -1001,7 +1001,7 @@ CStringW CSmartPushSafeWaterRiding::vfunc_7()
 // @0x140dd2850
 CStringW CSmartPushSafeWaterRiding::vfunc_9()
 {
-    if (FUN_140811640(3))
+    if (IsFirstUseRedMerat(3))
         return FUN_14028dfa0<__int64>(CStringW(L"s_smartpush_saferiding_water_rbmerat_desc"), m_data->m_nRequireMerat);
     return FUN_14028dfa0<__int64>(CStringW(L"s_smartpush_saferiding_water_desc"), m_data->m_nRequireMerat);
 }
@@ -1060,7 +1060,7 @@ int CSmartPushSafeWaterRidingToggle::vfunc_6()
         return 0;
     if (pMy->GetRidee()->GetData()->m_basic.m_nType == 2)
         return 0;
-    if (!((class CAdventureLevelTableHelper*)FUN_140ba4fa0())->IsReached(pMy->vfunc_141()))
+    if (!((class CAdventureLevelTableHelper*)GetAdventureLevelTableHelper())->IsReached(pMy->vfunc_141()))
         return 0;
     if (pMy->FUN_1416749a0()->HasEnabledWithEventBuffType(3))
         return 2;
@@ -1098,7 +1098,7 @@ void CSmartPushAutoInteraction::vfunc_4(int nValue)
     CStringW strMastery = m_data->m_strContent;
     FUN_140841420(strMastery);
     int nRecipe = vfunc_14();
-    FUN_1412751f0(FUN_14028dfa0<int, CStringW>(CStringW(L"s_mastery_autointeraction_result"), nValue,
+    ShowSystemNotice(FUN_14028dfa0<int, CStringW>(CStringW(L"s_mastery_autointeraction_result"), nValue,
         CStringTable::GetInstance()->FUN_141811980(0x2f, nRecipe)), 3, 1);
     int nUsed = 0;
     reinterpret_cast<CGatherCountMap*>(&g_143ab3150)->Lookup(nRecipe, nUsed);
@@ -1124,7 +1124,7 @@ void CSmartPushAutoInteraction::vfunc_3()
     CStringW strBuff = StringFormat<CStringW>(L"s_mastery_{0}_msgbox_buff", strMastery);
     CStringW strText = FUN_14028dfa0<CStringW>(strMsg, CStringTable::GetInstance()->FUN_141811980(0x2f, vfunc_14()));
     int nRecipe = vfunc_14();
-    unsigned nItemId = m_data->m_requireItem.FUN_14026b500();
+    unsigned nItemId = m_data->m_requireItem.GetItemId();
     CStringW strDesc = FUN_14028dfa0(strBuff, nItemId, nRecipe);
     CReservedWordTable::GetInstance()->ReplaceObjectAndValueWords(strDesc);
     int nId = vfunc_14();
@@ -1137,27 +1137,27 @@ void CSmartPushAutoInteraction::vfunc_3()
     int nAvail = nMax - nUsed;
     if (nAvail == 0)
     {
-        FUN_1412751f0(FUN_140298ea0(L"s_mastery_autointeraction_none_available_count"), 1, 1);
+        ShowSystemNotice(FUN_140298ea0(L"s_mastery_autointeraction_none_available_count"), 1, 1);
         return;
     }
     int nHave = 0;
     if (m_data->m_requireItem.m_b != 0)
         nHave = reinterpret_cast<Unk_SpInventory&>(g_143ab2a90).GetItemCountByTag(m_data->m_requireItem.m_b, 0);
     else
-        nHave = reinterpret_cast<Unk_SpInventory&>(g_143ab2a90).FUN_140a5f180(m_data->m_requireItem.FUN_14026b500(), 0);
+        nHave = reinterpret_cast<Unk_SpInventory&>(g_143ab2a90).FUN_140a5f180(m_data->m_requireItem.GetItemId(), 0);
     if (nHave == 0)
     {
-        FUN_1412751f0(FUN_14028dfa0<CStringW>(L"s_mastery_autointeraction_lack_item",
-            CStringTable::GetInstance()->FUN_141811980(1, m_data->m_requireItem.FUN_14026b500())), 1, 1);
+        ShowSystemNotice(FUN_14028dfa0<CStringW>(L"s_mastery_autointeraction_lack_item",
+            CStringTable::GetInstance()->FUN_141811980(1, m_data->m_requireItem.GetItemId())), 1, 1);
         return;
     }
     int nUse = 0;
     nUse = std::min(nHave, nAvail);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x26, strText, 0, L"");
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x26, strText, 0, L"");
     if (spBox)
     {
         MS2Ptr<CItem> spItem(new CItem);
-        int nItem = m_data->m_requireItem.FUN_14026b500();
+        int nItem = m_data->m_requireItem.GetItemId();
         if (static_cast<CItem*>(spItem)->FUN_140523c40(nItem, FUN_14053feb0(nItem), 0))
         {
             static_cast<CItem*>(spItem)->SetCountClamped(m_data->m_requireItem.m_c);
@@ -1237,7 +1237,7 @@ CInteractGatheringObject* CSmartPushAutoInteractObject::FUN_140dd3dd0()
         return 0;
     int nKind = m_data->m_nActionValue;
     ATL::CAtlArray<MS2Ptr<CInteractObject> > objects;
-    WorldService::GetInstance()->FUN_141bc5fb0(&objects, 6);
+    WorldService::GetInstance()->GetInteractObjectsByCategory(&objects, 6);
     for (size_t i = 0; i < objects.GetCount(); i++)
     {
         CInteractObject* pObj = objects[i];
@@ -1288,7 +1288,7 @@ int CSmartPushAutoFunctionCubeObject::vfunc_14()
     CHomemadeCubeObject* pCube = FUN_140dd4230();
     if (pCube == 0)
         return 0;
-    return pCube->FUN_140ca6580()->m_n100;
+    return pCube->GetFunctionCubeData()->m_n100;
 }
 
 // @0x140dd4230
@@ -1380,14 +1380,14 @@ void CSmartPushAutoInteractObjectBuffItem::vfunc_3()
     if (nItemId == 0)
     {
         CStringW strButton = StringFormat<CStringW>(L"s_mastery_{0}_button", strMastery);
-        FUN_140d73aa0(FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_autointeraction_lack_buff_item"), GetStringCommonByKey(strButton)),
+        ShowMessageBox(FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_autointeraction_lack_buff_item"), GetStringCommonByKey(strButton)),
             0, 0, CStringW(L""));
         return;
     }
     CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_autointeraction_buff_use"),
         CStringTable::GetInstance()->FUN_141811980(1, nItemId));
     CReservedWordTable::GetInstance()->ReplaceObjectAndValueWords(strText);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strText, 0, CStringW(L""));
     if (spBox.get())
     {
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoInteractObjectBuffItem::FUN_140dd4b70));
@@ -1398,7 +1398,7 @@ void CSmartPushAutoInteractObjectBuffItem::vfunc_3()
 // @0x140dd4b40
 int CSmartPushAutoInteractObjectBuffItem::vfunc_14()
 {
-    return FUN_140dd5340(m_nAbility);
+    return FindBestBuffItemId(m_nAbility);
 }
 
 // @0x140dd4b70
@@ -1422,14 +1422,14 @@ void CSmartPushAutoFunctionCubeObjectBuffItem::vfunc_3()
     if (nItemId == 0)
     {
         CStringW strButton = StringFormat<CStringW>(L"s_mastery_{0}_button", strMastery);
-        FUN_140d73aa0(FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_autointeraction_lack_buff_item"), GetStringCommonByKey(strButton)),
+        ShowMessageBox(FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_autointeraction_lack_buff_item"), GetStringCommonByKey(strButton)),
             0, 0, CStringW(L""));
         return;
     }
     CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_mastery_autointeraction_buff_use"),
         CStringTable::GetInstance()->FUN_141811980(1, nItemId));
     CReservedWordTable::GetInstance()->ReplaceObjectAndValueWords(strText);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strText, 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strText, 0, CStringW(L""));
     if (spBox.get())
     {
         spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &CSmartPushAutoFunctionCubeObjectBuffItem::FUN_140dd4ff0));
@@ -1440,7 +1440,7 @@ void CSmartPushAutoFunctionCubeObjectBuffItem::vfunc_3()
 // @0x140dd4fc0
 int CSmartPushAutoFunctionCubeObjectBuffItem::vfunc_14()
 {
-    return FUN_140dd5340(m_nAbility);
+    return FindBestBuffItemId(m_nAbility);
 }
 
 // @0x140dd4ff0
@@ -1504,7 +1504,7 @@ CStringW CSmartPushAutoFarmingBuff::GetTypeName()
 }
 
 // @0x140dd5340
-int FUN_140dd5340(int nAbility)
+int FindBestBuffItemId(int nAbility)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > items;
     reinterpret_cast<Unk_SpInventory&>(g_143ab2a90).GetItemsInCategory(10, items);
@@ -1515,9 +1515,9 @@ int FUN_140dd5340(int nAbility)
         MS2Ptr<CItem> spItem = items[i];
         if (spItem == 0 || ((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840())) == 0)
             continue;
-        if (((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->FUN_14053dc20() == 0)
+        if (((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->GetSkillId() == 0)
             continue;
-        MS2Ptr<SkillLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillLevelData(((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->FUN_14053dc20(), ((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->FUN_14053dc40());
+        MS2Ptr<SkillLevelData> spSkill = TSingleton<SkillDataTableCli>::GetInstance()->GetSkillLevelData(((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->GetSkillId(), ((CItemData*)(static_cast<CItem*>(spItem)->FUN_140527840()))->GetSkillLevel());
         if (spSkill.get())
         {
             std::vector<MS2Ptr<SkillActionAdditional> >& effects = spSkill->m_vAdditional;
@@ -1529,7 +1529,7 @@ int FUN_140dd5340(int nAbility)
                     continue;
                 if (spBuff->HasSA((SAType)nAbility) && nBest < spBuff->m_nDurationTick)
                 {
-                    nItemId = static_cast<CItem*>(spItem)->FUN_1405276c0();
+                    nItemId = static_cast<CItem*>(spItem)->GetItemId();
                     nBest = spBuff->m_nDurationTick;
                     break;
                 }

@@ -32,11 +32,11 @@ class CFileSystem* GetFileSystem();   // C3: was FUN_140166420
 class CLogString* GetLogString();
 void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*);
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 CString FUN_140188f50(const char* psz, int n);
 void FUN_1412751b0(const CStringW&, int);                               // chat/system message
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
-int FUN_14088da20(int nPriceType);                                      // the blueprint cost type -> the runtime enum
+int ConvertPriceType(int nPriceType);                                      // the blueprint cost type -> the runtime enum
 
 // The ingredient's tag setter (an inline member of CIngredientInfo in the exe, first instantiated by itemgemstonedata.cpp).
 inline void Unk_GemIngredientTag(CIngredientInfo* pInfo, int nTag)
@@ -349,7 +349,7 @@ bool CLua::LoadScripts(lua_State* pLuaState)
     if (GetFileSystem()->FUN_140398190())
     {
         CString strPath("./data/lua/Precompiled/luapack64.o");
-        CString strName = FUN_14016a5c0(strPath, 0);
+        CString strName = ToCString(strPath, 0);
         void* pBuffer;
         unsigned __int64 nSize;
         if (GetFileSystem()->FUN_1403972f0(strPath, &pBuffer, &nSize, 0) != 0)
@@ -377,12 +377,12 @@ bool CLua::LoadScripts(lua_State* pLuaState)
         for (unsigned int i = 0; i < arrPaths.GetCount(); ++i)
         {
             CString strPath = arrPaths[i];
-            CString strFile = FUN_14016a5c0(strPath, 0);
+            CString strFile = ToCString(strPath, 0);
             {
                 MS2Ptr<CCacheData> spCache(new CCacheData);
                 if (spCache.get() != 0)
                 {
-                    spCache.operator->()->FUN_1401d1160(strPath);
+                    spCache.operator->()->SetPath(strPath);
                     m_scripts.Add(spCache);
                 }
             }
@@ -1459,7 +1459,7 @@ bool CLua::CalcBlueprintCreateCost(int* item,long long* price) {
     } else {
         context->Select("calc_blueprintCreateCost"); if(!context->Call()) return false;
         int nItem = (int)context->Integer(1);
-        *item = FUN_14088da20(nItem);
+        *item = ConvertPriceType(nItem);
         *price = context->Integer(2);
         return true;
     }

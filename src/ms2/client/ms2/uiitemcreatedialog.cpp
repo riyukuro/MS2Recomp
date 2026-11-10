@@ -8,10 +8,10 @@
 // MS2-PIN: ?vfunc_48@UIItemCreateDialog@@UEAAHXZ 0x1419baa80 ; unique
 // MS2-PIN: ?Lookup@?$CRBMap@_JHV?$CElementTraits@_J@ATL@@V?$CElementTraits@H@2@@ATL@@QEBA_N_JAEAH@Z 0x1419bb090 ; unique
 // MS2-PINS-END tplpin
-// MS2-PIN: ??1?$CRBMap@MHV?$CElementTraits@M@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA@XZ 0x1419b9f60 ; the counts of FUN_1419b7b10 / 80e0 / 83d0
+// MS2-PIN: ??1?$CRBMap@MHV?$CElementTraits@M@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA@XZ 0x1419b9f60 ; the counts of CreateStatRateElement / 80e0 / 83d0
 // MS2-PIN: ??1?$CRBTree@MHV?$CElementTraits@M@ATL@@V?$CElementTraits@H@2@@ATL@@QEAA@XZ 0x1419b9f80 ; called by 0x1419b9f60
-// MS2-PIN: ?IsEmpty@?$CRBTree@MHV?$CElementTraits@M@ATL@@V?$CElementTraits@H@2@@ATL@@QEBA_NXZ 0x1419bad80 ; called by FUN_1419b7b10
-// MS2-PIN: ?IsEmpty@?$CRBTree@_JHV?$CElementTraits@_J@ATL@@V?$CElementTraits@H@2@@ATL@@QEBA_NXZ 0x1419badb0 ; called by FUN_1419b7e00
+// MS2-PIN: ?IsEmpty@?$CRBTree@MHV?$CElementTraits@M@ATL@@V?$CElementTraits@H@2@@ATL@@QEBA_NXZ 0x1419bad80 ; called by CreateStatRateElement
+// MS2-PIN: ?IsEmpty@?$CRBTree@_JHV?$CElementTraits@_J@ATL@@V?$CElementTraits@H@2@@ATL@@QEBA_NXZ 0x1419badb0 ; called by CreateStatValueElement
 //
 // File name assumed (the class name; the exe has no assert path for it).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\uiitemcreatedialog.cpp"    // assumed
@@ -112,7 +112,7 @@ public:
 class Unk_IcDataProvider : public ASArray
 {
 public:
-    void FUN_1419b9900(int nIndex, const CString& strName, int& nOut);
+    void GetRowInt(int nIndex, const CString& strName, int& nOut);
 };
 class Unk_IcCombo : public Unk_IcControl
 {
@@ -142,11 +142,11 @@ void XmlSetAttr(TiXmlElement* pElem, const char* pszName, const CStringA& value)
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);            // the item row (NULL: no such item)
 int FUN_14053feb0(int nItemId);                             // the default rank of an item
-bool FUN_14053ff30(int nItemId, int nRank);                 // the item has the rank
+bool HasRank(int nItemId, int nRank);                 // the item has the rank
 int FUN_1405451c0(CString& strGroup);                       // the item group index of a group name
 int FUN_140718200(const CStringW& strText);      // text to number
 CStringW FUN_1407196b0(long n);                             // number to text
-CStringW FUN_14083f330(const CStringW& strText, wchar_t chBegin, wchar_t chEnd);  // the text between two characters
+CStringW GetTextBetween(const CStringW& strText, wchar_t chBegin, wchar_t chEnd);  // the text between two characters
 void FUN_140841420(CStringW& str);                          // lower case
 void FUN_14025a680(CStringW& strText, ATL::CAtlArray<CStringW>& tokens, const wchar_t* szSeparator);   // split
 bool FUN_14083d890(CStringW strText);                       // copy to the clipboard
@@ -154,7 +154,7 @@ void FUN_1412751b0(const CStringW& strText, int nType);     // system notice
 CStringW GetStatCommonText(unsigned nStat);                          // text of a stat
 CStringW FUN_140630e10(int nSpecial);                       // text of a special ability
 CString FUN_14016a600(const wchar_t* sz, int nCodePage);    // narrow a string
-CString FUN_14016a5c0(const char* sz, int nCodePage);       // copy a string
+CString ToCString(const char* sz, int nCodePage);       // copy a string
 CString FUN_140cc2a00(const CString& strDir, const CString& strFile);   // the path of a file in a directory
 void FUN_140710590(COutPacket& packet);                     // send
 void FUN_1418fc840(MS2Ptr<ASDropdownMenu> spCombo, int nItemId, int nRank);   // fill the rank combo of an item
@@ -195,7 +195,7 @@ void UIItemCreateDialog::OnLoadComplete()
     if ((ASButton*)(m_spClearInven = GetChild<ASButton>("m_clearInven"))) {
         m_spClearInven->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemCreateDialog::OnClearInven), 0);
     }
-    FUN_1419b6350();
+    BuildContextMenu();
     FillFunctionList();
 }
 MS2_REPLACE_METHOD(0x1419b3d60, UIItemCreateDialog, OnLoadComplete, 416, 0xA5A1CFB7);
@@ -214,16 +214,16 @@ int UIItemCreateDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (CInputKeyHandler::GetInstance()->FUN_14116d9c0(0x1c, 0, 0)) {
+    if (CInputKeyHandler::GetInstance()->WasKeyPressed(0x1c, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onEnterKey");
         return 1;
-    } else if (CInputKeyHandler::GetInstance()->FUN_14116d9c0(0xf, 0, 0)) {
+    } else if (CInputKeyHandler::GetInstance()->WasKeyPressed(0xf, 0, 0)) {
         if (m_30.get() != 0)
             m_30->Invoke("onTabKey");
         return 1;
-    } else if (CInputKeyHandler::GetInstance()->FUN_14116d950(0x1d, 0, 0) && CInputKeyHandler::GetInstance()->FUN_14116d9c0(0x2e, 0, 0)) {
-        CStringW strText = FUN_1407196b0(FUN_1419b5080());
+    } else if (CInputKeyHandler::GetInstance()->IsKeyDown(0x1d, 0, 0) && CInputKeyHandler::GetInstance()->WasKeyPressed(0x2e, 0, 0)) {
+        CStringW strText = FUN_1407196b0(GetSelectedItemId());
         FUN_14083d890(strText);
         return 1;
     }
@@ -240,17 +240,17 @@ int UIItemCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
             int nItemId = data.PopUInt();
             int nRank = data.PopUInt();
-            FUN_1419b5560(nItemId, nRank);
+            OnItemChange(nItemId, nRank);
         }
         return 1;
     } else if (_stricmp("OnGroupChange", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
-            FUN_1419b5730(data.FUN_1422b8d30(), L"");
+            FillItemList(data.FUN_1422b8d30(), L"");
         }
         return 1;
     } else if (_stricmp("OnFunctionChange", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
-            FUN_1419b5730("", data.FUN_1422b8f40());
+            FillItemList("", data.FUN_1422b8f40());
         }
         return 1;
     } else if (_stricmp("OnCreateItem", szMethod) == 0) {
@@ -300,7 +300,7 @@ int UIItemCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             packet.g = g;
             packet.h = h;
             packet.i = i;
-            FUN_1419b53d0(packet);
+            SendRequestItemCompare(packet);
         }
     } else if (_stricmp("OnRepeatItem", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
@@ -325,11 +325,11 @@ int UIItemCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             packet.h = h;
             packet.i = i;
             packet.compareValue = nRepeat;
-            FUN_1419b54a0(packet);
+            SendRequestItemRepeat(packet);
         }
     } else if (_stricmp("OnSearchItem", szMethod) == 0) {
         if (data.SetArgsIfAny(pArgs, nArgs) != 0) {
-            FUN_1419b5730("", data.FUN_1422b8f40());
+            FillItemList("", data.FUN_1422b8f40());
         }
         return 1;
     }
@@ -348,7 +348,7 @@ void UIItemCreateDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     if (nItemId == 0 || FUN_14053f870(nItemId) == 0)
         return;
     int nRank = pArgs->PopUInt();
-    if (!FUN_14053ff30(nItemId, nRank))
+    if (!HasRank(nItemId, nRank))
         nRank = FUN_14053feb0(nItemId);
     MS2Ptr<CItem> item(new CItem);
     if (item == 0)
@@ -358,7 +358,7 @@ void UIItemCreateDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
     item->FUN_14052b420(0);
     ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x20, 2);
     if (tooltip.FUN_1409e0d40(item))
-        *pRetVal = tooltip.FUN_1422bb870();
+        *pRetVal = tooltip.GetValue();
 }
 MS2_REPLACE_METHOD(0x1419b4a00, UIItemCreateDialog, vfunc_49, 603, 0xA49C1F61);
 
@@ -394,18 +394,18 @@ MS2_REPLACE_METHOD(0x1419b4dd0, UIItemCreateDialog, OnClearInven, 90, 0x17D725EF
 
 // The context menu click: "openDropInfo" opens the drop info of the selected box item.
 // @0x1419b4e30
-void UIItemCreateDialog::FUN_1419b4e30(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIItemCreateDialog::OnContextMenuItemClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_30 == 0 || m_spContextMenu == 0)
         return;
     ASListEvent evt(params);
-    ASObj row(evt.FUN_1422e2780(), 2);
+    ASObj row(evt.GetItemData(), 2);
     if (row.IsUndefinedOrNull())
         return;
     CStringW strFunc = row.GetWString("func");
     if (strFunc.IsEmpty())
         return;
-    int nItemId = FUN_1419b5080();
+    int nItemId = GetSelectedItemId();
     if (nItemId == 0)
         return;
     if (strFunc.CompareNoCase(L"openDropInfo") == 0) {
@@ -415,18 +415,18 @@ void UIItemCreateDialog::FUN_1419b4e30(const Scaleform::GFx::FunctionHandler::Pa
             if (nBox > 0) {
                 UIItemDropInfoDialog* pDialog = Unk_IcGetDialog<UIItemDropInfoDialog>(0x4f74);
                 if (pDialog) {
-                    pDialog->FUN_140c3b7d0(nItemId, nBox);
+                    pDialog->SetItemAndBox(nItemId, nBox);
                     CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f74);
                 }
             }
         }
     }
 }
-MS2_REPLACE_METHOD(0x1419b4e30, UIItemCreateDialog, FUN_1419b4e30, 584, 0x6CAD080F);
+MS2_REPLACE_METHOD(0x1419b4e30, UIItemCreateDialog, OnContextMenuItemClick, 584, 0x6CAD080F);
 
 // The item id of the selected row: the label starts with "[<id>]".
 // @0x1419b5080
-int UIItemCreateDialog::FUN_1419b5080()
+int UIItemCreateDialog::GetSelectedItemId()
 {
     MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_items");
     if (!list)
@@ -434,10 +434,10 @@ int UIItemCreateDialog::FUN_1419b5080()
     CStringW strLabel = list->GetSelectedLabelW();
     if (strLabel.IsEmpty())
         return 0;
-    CStringW strId = FUN_14083f330(strLabel, L'[', L']');
+    CStringW strId = GetTextBetween(strLabel, L'[', L']');
     return FUN_140718200(strId);
 }
-MS2_REPLACE_METHOD(0x1419b5080, UIItemCreateDialog, FUN_1419b5080, 274, 0xAE5E507B);
+MS2_REPLACE_METHOD(0x1419b5080, UIItemCreateDialog, GetSelectedItemId, 274, 0xAE5E507B);
 
 // @0x1419b51a0
 int UIItemCreateDialog::GetSelectedItemRank()
@@ -479,7 +479,7 @@ void UIItemCreateDialog::SendRequestItemCreate(CCCreateItemPacket& packet)
 MS2_REPLACE_METHOD(0x1419b5370, UIItemCreateDialog, SendRequestItemCreate, 88, 0xE0A3735C);
 
 // @0x1419b53d0
-void UIItemCreateDialog::FUN_1419b53d0(CCCompareItemPacket& packet)
+void UIItemCreateDialog::SendRequestItemCompare(CCCompareItemPacket& packet)
 {
     unsigned nItemId = packet.a;
     CItemData* pItem = FUN_14053f870(nItemId);
@@ -490,10 +490,10 @@ void UIItemCreateDialog::FUN_1419b53d0(CCCompareItemPacket& packet)
     packet.vfunc_0(out);
     FUN_140710590(out);
 }
-MS2_REPLACE_METHOD(0x1419b53d0, UIItemCreateDialog, FUN_1419b53d0, 194, 0xA5E307F0);
+MS2_REPLACE_METHOD(0x1419b53d0, UIItemCreateDialog, SendRequestItemCompare, 194, 0xA5E307F0);
 
 // @0x1419b54a0
-void UIItemCreateDialog::FUN_1419b54a0(CCCompareItemPacket& packet)
+void UIItemCreateDialog::SendRequestItemRepeat(CCCompareItemPacket& packet)
 {
     CItemData* pItem = FUN_14053f870(packet.a);
     if (pItem == 0)
@@ -503,11 +503,11 @@ void UIItemCreateDialog::FUN_1419b54a0(CCCompareItemPacket& packet)
     packet.vfunc_0(out);
     FUN_140710590(out);
 }
-MS2_REPLACE_METHOD(0x1419b54a0, UIItemCreateDialog, FUN_1419b54a0, 186, 0x285F60FD);
+MS2_REPLACE_METHOD(0x1419b54a0, UIItemCreateDialog, SendRequestItemRepeat, 186, 0x285F60FD);
 
 // The picked item changed: fill the rank combo and reset the period.
 // @0x1419b5560
-void UIItemCreateDialog::FUN_1419b5560(int nItemId, int nRank)
+void UIItemCreateDialog::OnItemChange(int nItemId, int nRank)
 {
     if (MS2Ptr<ASDropdownMenu> combo = GetChild<ASDropdownMenu>("m_itemGrade"))
         FUN_1418fc840(combo, nItemId, nRank);
@@ -515,16 +515,16 @@ void UIItemCreateDialog::FUN_1419b5560(int nItemId, int nRank)
     if ((CItemData*)item) {
         if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_periodInput")) {
             input.operator->()->SetTextW(L"0");
-            input.operator->()->FUN_1422c1fe0(1);
+            input.operator->()->SetEnabled(1);
         }
     }
 }
-MS2_REPLACE_METHOD(0x1419b5560, UIItemCreateDialog, FUN_1419b5560, 447, 0x9D254153);
+MS2_REPLACE_METHOD(0x1419b5560, UIItemCreateDialog, OnItemChange, 447, 0x9D254153);
 
 // Fill the item list: the items of a group (no search text) or the items matching the search text (words joined by
 // '&' must all match, words joined by '|' any of them; the label, the id and the function name are searched).
 // @0x1419b5730
-void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& strSearch)
+void UIItemCreateDialog::FillItemList(const CString& strGroup, const CStringW& strSearch)
 {
     PC* pPC = (PC*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPC == 0)
@@ -538,8 +538,8 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
     MS2Ptr<ASCheckBox> checkGender = GetChild<ASCheckBox>("m_checkGender");
     if (checkGender == 0)
         return;
-    bool bJob = checkJob->FUN_1422ce0e0();
-    bool bGender = checkGender->FUN_1422ce0e0();
+    bool bJob = checkJob->IsSelected();
+    bool bGender = checkGender->IsSelected();
     list->FUN_1422dd1d0();
     list->SetSelectedIndex(-1);
     CStringW strFind(strSearch);
@@ -556,7 +556,7 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
         CStringW strLabel;
         unsigned nLevel = item->limit.levelLimit;
         CStringW strType;
-        if (item->FUN_14053ce80())
+        if (item->IsBeautyItem())
             strType = L"BEAUTY";
         else if (item->FUN_14053d880())
             strType = L"COIN";
@@ -571,7 +571,7 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
         strLabel = StringFormat(L"[{0:08d}] [{1}] [Lv.{2}] {3}", nId, strType, nLevel,
                                          CStringTable::GetInstance()->FUN_141811980(1, nId));
         ASObj row(2);
-        row.FUN_1407cbb20("label", strLabel);
+        row.SetWStringMember("label", strLabel);
         row.SetMemberUInt("itemId", nId);
         FUN_140841420(strLabel);
         FUN_140841420(strFind);
@@ -597,11 +597,11 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
                 if (item->FUN_14053cb40())
                     list->AddItem(row);
             } else if (strGroup == "INSTALL") {
-                if (item->FUN_14053cb80())
+                if (item->IsInstallItem())
                     list->AddItem(row);
             } else {
-                if (item->GetModelOrEmpty()->FUN_14054b3d0() < 2) {
-                    if (item->GetModelOrEmpty()->FUN_14054b450(FUN_1405451c0(const_cast<CString&>(strGroup))))
+                if (item->GetModelOrEmpty()->GetGroupCount() < 2) {
+                    if (item->GetModelOrEmpty()->HasGroupType(FUN_1405451c0(const_cast<CString&>(strGroup))))
                         list->AddItem(row);
                 }
             }
@@ -643,11 +643,11 @@ void UIItemCreateDialog::FUN_1419b5730(const CString& strGroup, const CStringW& 
     list->SetSelectedIndex(0);
     list->vfunc_24(true);
 }
-MS2_REPLACE_METHOD(0x1419b5730, UIItemCreateDialog, FUN_1419b5730, 3090, 0xA1CFB757);
+MS2_REPLACE_METHOD(0x1419b5730, UIItemCreateDialog, FillItemList, 3090, 0xA1CFB757);
 
 // The context menu of the item list (only without the packed file system: "openDropInfo").
 // @0x1419b6350
-void UIItemCreateDialog::FUN_1419b6350()
+void UIItemCreateDialog::BuildContextMenu()
 {
     m_spContextMenu = GetChild<ASScrollingList>("m_contextMenu");
     if ((ASScrollingList*)m_spContextMenu) {
@@ -664,20 +664,20 @@ void UIItemCreateDialog::FUN_1419b6350()
                 if (item.first.IsEmpty())
                     continue;
                 ASObj row(2);
-                row.FUN_1407cbb20("label", item.first);
-                row.FUN_1407cbb20("func", item.second);
+                row.SetWStringMember("label", item.first);
+                row.SetWStringMember("func", item.second);
                 m_spContextMenu->AddItem(row);
                 nCount++;
             }
             m_spContextMenu->SetSizeInt(nWidth, m_spContextMenu->GetItemCount() * nRowHeight);
             m_spContextMenu->vfunc_24(true);
-            m_spContextMenu->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemCreateDialog::FUN_1419b4e30), 0);
+            m_spContextMenu->AddItemClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIItemCreateDialog::OnContextMenuItemClick), 0);
         } else {
             m_spContextMenu = 0;
         }
     }
 }
-MS2_REPLACE_METHOD(0x1419b6350, UIItemCreateDialog, FUN_1419b6350, 1078, 0x57B2A9BC);
+MS2_REPLACE_METHOD(0x1419b6350, UIItemCreateDialog, BuildContextMenu, 1078, 0x57B2A9BC);
 
 // Fill the function list with the item function names.
 // @0x1419b6790
@@ -701,7 +701,7 @@ ItemOptionDebug::ItemOptionDebug()
 }
 
 // @0x1419b6940
-float ItemOptionDebug::FUN_1419b6940(int nGroup, int nStat)
+float ItemOptionDebug::GetMinRate(int nGroup, int nStat)
 {
     float fMin = 0;
     POSITION pos = m_options.GetHeadPosition();
@@ -718,7 +718,7 @@ float ItemOptionDebug::FUN_1419b6940(int nGroup, int nStat)
     }
     return fMin;
 }
-MS2_REPLACE_METHOD(0x1419b6940, ItemOptionDebug, FUN_1419b6940, 320, 0x14B1D644);
+MS2_REPLACE_METHOD(0x1419b6940, ItemOptionDebug, GetMinRate, 320, 0x14B1D644);
 
 // @0x1419b6a90
 float ItemOptionDebug::GetMaxRate(int nGroup, int nStat)
@@ -821,7 +821,7 @@ void ItemOptionDebug::CountValues(int nGroup, int nStat, Unk_IcValueCounts& coun
 MS2_REPLACE_METHOD(0x1419b6fc0, ItemOptionDebug, CountValues, 336, 0x41AA412B);
 
 // @0x1419b7120
-float ItemOptionDebug::FUN_1419b7120(int nGroup, unsigned nSpecial)
+float ItemOptionDebug::GetMinSpecialRate(int nGroup, unsigned nSpecial)
 {
     float fMin = 0;
     POSITION pos = m_options.GetHeadPosition();
@@ -838,7 +838,7 @@ float ItemOptionDebug::FUN_1419b7120(int nGroup, unsigned nSpecial)
     }
     return fMin;
 }
-MS2_REPLACE_METHOD(0x1419b7120, ItemOptionDebug, FUN_1419b7120, 320, 0x391A1A06);
+MS2_REPLACE_METHOD(0x1419b7120, ItemOptionDebug, GetMinSpecialRate, 320, 0x391A1A06);
 
 // @0x1419b7270
 float ItemOptionDebug::GetMaxSpecialRate(int nGroup, unsigned nSpecial)
@@ -943,7 +943,7 @@ MS2_REPLACE_METHOD(0x1419b77c0, ItemOptionDebug, CountSpecialValues, 341, 0xF508
 // @0x1419b7920
 int ItemOptionDebug::HasRate(int nGroup, int nStat)
 {
-    float fMin = FUN_1419b6940(nGroup, nStat);
+    float fMin = GetMinRate(nGroup, nStat);
     float fMax = GetMaxRate(nGroup, nStat);
     if (fMin > 0)
         return 1;
@@ -967,9 +967,9 @@ int ItemOptionDebug::HasValue(int nGroup, int nStat)
 MS2_REPLACE_METHOD(0x1419b79a0, ItemOptionDebug, HasValue, 103, 0x97CF2668);
 
 // @0x1419b7a10
-int ItemOptionDebug::FUN_1419b7a10(int nGroup, unsigned nSpecial)
+int ItemOptionDebug::HasSpecialRate(int nGroup, unsigned nSpecial)
 {
-    float fMin = FUN_1419b7120(nGroup, nSpecial);
+    float fMin = GetMinSpecialRate(nGroup, nSpecial);
     float fMax = GetMaxSpecialRate(nGroup, nSpecial);
     if (fMin > 0)
         return 1;
@@ -977,10 +977,10 @@ int ItemOptionDebug::FUN_1419b7a10(int nGroup, unsigned nSpecial)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1419b7a10, ItemOptionDebug, FUN_1419b7a10, 119, 0xAD3F06E7);
+MS2_REPLACE_METHOD(0x1419b7a10, ItemOptionDebug, HasSpecialRate, 119, 0xAD3F06E7);
 
 // @0x1419b7a90
-int ItemOptionDebug::FUN_1419b7a90(int nGroup, unsigned nSpecial)
+int ItemOptionDebug::HasSpecialValue(int nGroup, unsigned nSpecial)
 {
     __int64 nMin = (__int64)GetMinSpecialValue(nGroup, nSpecial);
     __int64 nMax = (__int64)GetMaxSpecialValue(nGroup, nSpecial);
@@ -990,13 +990,13 @@ int ItemOptionDebug::FUN_1419b7a90(int nGroup, unsigned nSpecial)
         return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x1419b7a90, ItemOptionDebug, FUN_1419b7a90, 113, 0xAA8D7CF5);
+MS2_REPLACE_METHOD(0x1419b7a90, ItemOptionDebug, HasSpecialValue, 113, 0xAA8D7CF5);
 
 // <rate name="<stat>" minimum maximum><output option count/>..</rate>
 // @0x1419b7b10
-TiXmlElement* ItemOptionDebug::FUN_1419b7b10(int nGroup, int nStat)
+TiXmlElement* ItemOptionDebug::CreateStatRateElement(int nGroup, int nStat)
 {
-    float fMinimum = FUN_1419b6940(nGroup, nStat);
+    float fMinimum = GetMinRate(nGroup, nStat);
     float fMaximum = GetMaxRate(nGroup, nStat);
     TiXmlElement* pRate = new TiXmlElement("rate");
     XmlSetAttr(pRate, "name", FUN_14016a600(GetStatCommonText(nStat), 0));
@@ -1016,11 +1016,11 @@ TiXmlElement* ItemOptionDebug::FUN_1419b7b10(int nGroup, int nStat)
     }
     return pRate;
 }
-MS2_REPLACE_METHOD(0x1419b7b10, ItemOptionDebug, FUN_1419b7b10, 737, 0x51695B5A);
+MS2_REPLACE_METHOD(0x1419b7b10, ItemOptionDebug, CreateStatRateElement, 737, 0x51695B5A);
 
 // <value name="<stat>" minimum maximum><output option count/>..</value>
 // @0x1419b7e00
-TiXmlElement* ItemOptionDebug::FUN_1419b7e00(int nGroup, int nStat)
+TiXmlElement* ItemOptionDebug::CreateStatValueElement(int nGroup, int nStat)
 {
     int nMinimum = (int)GetMinValue(nGroup, nStat);
     int nMaximum = (int)GetMaxOptionValue(nGroup, nStat);
@@ -1042,12 +1042,12 @@ TiXmlElement* ItemOptionDebug::FUN_1419b7e00(int nGroup, int nStat)
     }
     return pValue;
 }
-MS2_REPLACE_METHOD(0x1419b7e00, ItemOptionDebug, FUN_1419b7e00, 726, 0x1DBE3E74);
+MS2_REPLACE_METHOD(0x1419b7e00, ItemOptionDebug, CreateStatValueElement, 726, 0x1DBE3E74);
 
 // @0x1419b80e0
-TiXmlElement* ItemOptionDebug::FUN_1419b80e0(int nGroup, unsigned nSpecial)
+TiXmlElement* ItemOptionDebug::CreateSpecialRateElement(int nGroup, unsigned nSpecial)
 {
-    float fMinimum = FUN_1419b7120(nGroup, nSpecial);
+    float fMinimum = GetMinSpecialRate(nGroup, nSpecial);
     float fMaximum = GetMaxSpecialRate(nGroup, nSpecial);
     TiXmlElement* pRate = new TiXmlElement("rate");
     XmlSetAttr(pRate, "name", FUN_14016a600(FUN_140630e10(nSpecial), 0));
@@ -1067,10 +1067,10 @@ TiXmlElement* ItemOptionDebug::FUN_1419b80e0(int nGroup, unsigned nSpecial)
     }
     return pRate;
 }
-MS2_REPLACE_METHOD(0x1419b80e0, ItemOptionDebug, FUN_1419b80e0, 737, 0x232FA530);
+MS2_REPLACE_METHOD(0x1419b80e0, ItemOptionDebug, CreateSpecialRateElement, 737, 0x232FA530);
 
 // @0x1419b83d0
-TiXmlElement* ItemOptionDebug::FUN_1419b83d0(int nGroup, unsigned nSpecial)
+TiXmlElement* ItemOptionDebug::CreateSpecialValueElement(int nGroup, unsigned nSpecial)
 {
     unsigned nMinimum = (unsigned)GetMinSpecialValue(nGroup, nSpecial);
     unsigned nMaximum = (unsigned)GetMaxSpecialValue(nGroup, nSpecial);
@@ -1092,7 +1092,7 @@ TiXmlElement* ItemOptionDebug::FUN_1419b83d0(int nGroup, unsigned nSpecial)
     }
     return pValue;
 }
-MS2_REPLACE_METHOD(0x1419b83d0, ItemOptionDebug, FUN_1419b83d0, 741, 0x8572E694);
+MS2_REPLACE_METHOD(0x1419b83d0, ItemOptionDebug, CreateSpecialValueElement, 741, 0x8572E694);
 
 // ---- Unk_ItemOptionSimulator ----
 
@@ -1143,16 +1143,16 @@ void Unk_ItemOptionSimulator::FUN_1419b8810()
             for (unsigned nStat = 0; nStat < 0x23; ++nStat) {
                 int nS = nStat;
                 if (debug->HasRate(nG, nS))
-                    ((TiXmlNode*)(void*)(pStat))->LinkEndChild((TiXmlNode*)(debug->FUN_1419b7b10(nG, nS)));
+                    ((TiXmlNode*)(void*)(pStat))->LinkEndChild((TiXmlNode*)(debug->CreateStatRateElement(nG, nS)));
                 if (debug->HasValue(nG, nS))
-                    ((TiXmlNode*)(void*)(pStat))->LinkEndChild((TiXmlNode*)(debug->FUN_1419b7e00(nG, nS)));
+                    ((TiXmlNode*)(void*)(pStat))->LinkEndChild((TiXmlNode*)(debug->CreateStatValueElement(nG, nS)));
             }
             for (unsigned nSpecial = 1; nSpecial < 0xcf; ++nSpecial) {
                 unsigned nSp = nSpecial;
-                if (debug->FUN_1419b7a10(nG, nSp))
-                    ((TiXmlNode*)(void*)(pSpecial))->LinkEndChild((TiXmlNode*)(debug->FUN_1419b80e0(nG, nSp)));
-                if (debug->FUN_1419b7a90(nG, nSp))
-                    ((TiXmlNode*)(void*)(pSpecial))->LinkEndChild((TiXmlNode*)(debug->FUN_1419b83d0(nG, nSp)));
+                if (debug->HasSpecialRate(nG, nSp))
+                    ((TiXmlNode*)(void*)(pSpecial))->LinkEndChild((TiXmlNode*)(debug->CreateSpecialRateElement(nG, nSp)));
+                if (debug->HasSpecialValue(nG, nSp))
+                    ((TiXmlNode*)(void*)(pSpecial))->LinkEndChild((TiXmlNode*)(debug->CreateSpecialValueElement(nG, nSp)));
             }
             ((TiXmlNode*)(void*)(pGroup))->LinkEndChild((TiXmlNode*)(pStat));
             ((TiXmlNode*)(void*)(pGroup))->LinkEndChild((TiXmlNode*)(pSpecial));
@@ -1161,7 +1161,7 @@ void Unk_ItemOptionSimulator::FUN_1419b8810()
         ((TiXmlNode*)(void*)(pRoot))->LinkEndChild((TiXmlNode*)(pItem));
     }
     CString strDir;
-    strDir.Format("%s%s", (const char*)FUN_14016a5c0(CommonResource::GetInstance()->m_strResourcePath, 0), "../Debug/");
+    strDir.Format("%s%s", (const char*)ToCString(CommonResource::GetInstance()->m_strResourcePath, 0), "../Debug/");
     if (!efd::File::DirectoryExists(strDir))
         _mkdir(strDir);
     m_doc.SaveFile(FUN_140cc2a00("../Debug/", m_strFile));
@@ -1169,10 +1169,10 @@ void Unk_ItemOptionSimulator::FUN_1419b8810()
 MS2_REPLACE_METHOD(0x1419b8810, Unk_ItemOptionSimulator, FUN_1419b8810, 2061, 0x9B8A55DF);
 
 // @0x1419b9030
-void Unk_ItemOptionSimulator::FUN_1419b9030(int nItemId, int nRank, MS2Ptr<CItemOption> spOption)
+void Unk_ItemOptionSimulator::AddOption(int nItemId, int nRank, MS2Ptr<CItemOption> spOption)
 {
     FUN_1412751b0(StringFormat(L"Item Simulate ItemName[{0}]", CStringTable::GetInstance()->FUN_141811980(1, nItemId)), 0x14);
-    MS2Ptr<ItemOptionDebug> debug = FUN_1419b91f0(nItemId, nRank);
+    MS2Ptr<ItemOptionDebug> debug = FindItemOptionDebug(nItemId, nRank);
     if (debug == 0) {
         debug.AssignRaw(new ItemOptionDebug);
         debug->m_nItemId = nItemId;
@@ -1182,10 +1182,10 @@ void Unk_ItemOptionSimulator::FUN_1419b9030(int nItemId, int nRank, MS2Ptr<CItem
     if (debug.get())
         debug->m_options.AddTail(spOption);
 }
-MS2_REPLACE_METHOD(0x1419b9030, Unk_ItemOptionSimulator, FUN_1419b9030, 440, 0x5EA07D29);
+MS2_REPLACE_METHOD(0x1419b9030, Unk_ItemOptionSimulator, AddOption, 440, 0x5EA07D29);
 
 // @0x1419b91f0
-MS2Ptr<ItemOptionDebug> Unk_ItemOptionSimulator::FUN_1419b91f0(int nItemId, int nRank)
+MS2Ptr<ItemOptionDebug> Unk_ItemOptionSimulator::FindItemOptionDebug(int nItemId, int nRank)
 {
     POSITION pos = m_mapItems.FindFirstWithKey(nItemId);
     while (pos) {
@@ -1198,12 +1198,12 @@ MS2Ptr<ItemOptionDebug> Unk_ItemOptionSimulator::FUN_1419b91f0(int nItemId, int 
     }
     return MS2Ptr<ItemOptionDebug>(0);
 }
-MS2_REPLACE_METHOD(0x1419b91f0, Unk_ItemOptionSimulator, FUN_1419b91f0, 258, 0x4430BD33);
+MS2_REPLACE_METHOD(0x1419b91f0, Unk_ItemOptionSimulator, FindItemOptionDebug, 258, 0x4430BD33);
 
 // ---- inline COMDATs ----
 
 // @0x1419b9900
-void Unk_IcDataProvider::FUN_1419b9900(int nIndex, const CString& strName, int& nOut)
+void Unk_IcDataProvider::GetRowInt(int nIndex, const CString& strName, int& nOut)
 {
     AScript row = reinterpret_cast<ASDataProvider*>(this)->FUN_1422df140(nIndex);
     if (row.IsUndefinedOrNull())
@@ -1222,7 +1222,7 @@ void Unk_IcCombo::FUN_1419b9990(const CString& strName, int& nOut)
         return;
     if ((unsigned)nSelected >= provider->GetLength())
         return;
-    reinterpret_cast<Unk_IcDataProvider*>(provider.operator->())->FUN_1419b9900(nSelected, strName, nOut);
+    reinterpret_cast<Unk_IcDataProvider*>(provider.operator->())->GetRowInt(nSelected, strName, nOut);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142cbed80-0x142cbeec0 .text$yd

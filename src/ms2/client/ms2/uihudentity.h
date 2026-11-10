@@ -10,7 +10,7 @@
 //   m_28 = FUN_141277f40() (next UI layer). dtor 0x140f49670. Size 0xf0: UIService FUN_141adf580 does
 //   operator new(0xf0) for UITamingBar, which adds no fields.
 //   m_78 = live entities (AddTail of MS2Ptr<Entity>, 0x140ba9ff0); m_a8 = actor id -> entity (Lookup 0x140baaa90,
-//   RemoveKey 0x140f4aa70; FUN_140f49740 iterates keys as int ids).
+//   RemoveKey 0x140f4aa70; ClearEntities iterates keys as int ids).
 // Entity: CPtred base (vftable 0x142e7a518, 11 slots, 6 and 7 pure). ctor 0x140f48b40 (int layer, const GFx::Value&
 //   cache clip, int actor id): m_38 = FUN_140ba77e0(layer, clip) (MS2Ptr<ASGameEntity>), m_28 = "Eff_UI" (the actor
 //   node the widget follows: FUN_141675150(actor, m_28) -> m_20, cached for actor m_30, see slot 10).
@@ -94,15 +94,15 @@ public:
     UIHudEntity();                                                  // 0x140f49590
     virtual ~UIHudEntity();                                         //  0 0x140f49670 (??_G 0x140f4a1b0)
     virtual CString GetTypeName();                                      //  1 0x140f496f0 "HudEntity"
-    virtual void vfunc_10();                                        // 10 0x140f49930 FUN_140f49740()
+    virtual void vfunc_10();                                        // 10 0x140f49930 ClearEntities()
     virtual void vfunc_15();                                        // 15 0x140f49950
-    virtual void vfunc_26();                                        // 26 0x140f49900 FUN_140f49740(); UIObject::vfunc_26()
+    virtual void vfunc_26();                                        // 26 0x140f49900 ClearEntities(); UIObject::vfunc_26()
     virtual void vfunc_41(const Scaleform::GFx::Value& root);       // 41 0x140f49de0
     virtual int vfunc_48();                                         // 48 0x140f4a710 0x4ee2
 
-    void FUN_140f49740();                       // drop every entity (m_78.RemoveAll, m_a8.RemoveAll)
-    int FUN_140f49890(int nActorId);            // 1 if the actor is gone (or a global flag is set)
-    void FUN_140f49c00(int nActorId);           // release the actor's entity back to m_78
+    void ClearEntities();                       // drop every entity (m_78.RemoveAll, m_a8.RemoveAll)
+    int IsActorGone(int nActorId);            // 1 if the actor is gone (or a global flag is set)
+    void ReleaseEntity(int nActorId);           // release the actor's entity back to m_78
     void FUN_140f49cb0(int nActorId);           // m_a8[id]->FUN_140f48d80()
     void FUN_140f49d20();                       // FUN_140f48d80() on every mapped entity
 

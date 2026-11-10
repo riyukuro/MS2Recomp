@@ -21,7 +21,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x140f4b520
 
     void FUN_140f4b4c0(__int64 nItemUid);                       // remember the item and open the dialog
-    void FUN_140f4b7d0();                                       // setData: the package texts
+    void SetData();                                       // setData: the package texts
     void OnUseItem();                                       // OnUseItem: check the home and send the answer
 
 private:

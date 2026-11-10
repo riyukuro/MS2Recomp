@@ -45,7 +45,7 @@ void FUN_141b6f000(class NiAVObject*, int, struct Unk_Colc const&);   // C3: was
 void* GetOwnerPC(class CEquipModel*);   // C3: was GetOwnerPC
 void* FUN_1412008e0(class CEquipModel*);   // C3: was FUN_1412008e0
 void GetPartName(void* self, CString* out);   void CreateAttachNode(class CEquipModel* self, CString* s);
-unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObjectPtr>* pSet);void FUN_141ab6e80(class NiAVObject*);   // C3: was FUN_141ab6e80
+unsigned FUN_141422110(NiNode* pRoot, const CString& strPrefix, std::set<NiAVObjectPtr>* pSet);void AddMeshExtraData(class NiAVObject*);   // C3: was AddMeshExtraData
 float GetPartScale(class CEquipModel*, int);   // C3: was GetPartScale
    void FUN_141167840(NiAVObject* o, const CString& s, float f);
 void FUN_140984450(void* out, const char* s);int FUN_141422f30(class NiAVObject*);   // C3: was FUN_141422f30
@@ -248,7 +248,7 @@ void CNifModel::vfunc_12()
                 NiNode* parent = MS2_NODEPTR(m_spNode).operator->();
                 parent->AttachChild(sp, true);
                 if (iv != 0)
-                    FUN_141ab6e80(sp);
+                    AddMeshExtraData(sp);
             }
         }
     }
@@ -282,7 +282,7 @@ void CNifModel::vfunc_13()
                 NiAVObjectPtr sp = *it;
                 pTarget->AttachChild(sp, true);
                 if (nDebugFlag != 0)
-                    FUN_141ab6e80(sp);
+                    AddMeshExtraData(sp);
             }
             FUN_141566b60(this);
         }

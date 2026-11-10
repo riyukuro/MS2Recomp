@@ -206,7 +206,7 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
             return false;
         }
     }
-    if (m_tmLookOut.FUN_140868ba0() != 0)
+    if (m_tmLookOut.IsRunning() != 0)
     {
         if (m_bHasValue == false)
             return false;
@@ -285,8 +285,8 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
                 fPitch = -0.5235988f;
             efd::Matrix3 kRot;
             kRot.FromEulerAnglesXYZ(fYaw, 0.0f, fPitch);
-            if (m_bSmooth != false && ((fYaw != m_fLastYaw || fPitch != m_fLastPitch) && m_tmAim.FUN_140868ba0() == 0))
-                m_tmAim.FUN_140868750(300);
+            if (m_bSmooth != false && ((fYaw != m_fLastYaw || fPitch != m_fLastPitch) && m_tmAim.IsRunning() == 0))
+                m_tmAim.Start(300);
             m_fLastYaw = fYaw;
             m_fLastPitch = fPitch;
             if (kLocal.m_Rotate != DAT_143a09600)
@@ -297,13 +297,13 @@ bool BoneRotateInterpolator::Update(float fTime, NiObjectNET* pkInterpTarget, Ni
                 kTarget.FromRotation(kMul);
                 efd::Quaternion kCurrent;
                 kCurrent.FromRotation(kLocal.m_Rotate);
-                if (m_tmLookIn.FUN_140868ba0() != 0)
+                if (m_tmLookIn.IsRunning() != 0)
                 {
                     float fT = m_tmLookIn.FUN_140868940();
                     fT = fT * fT;
                     efd::Quaternion::Slerp(fT, kCurrent, kTarget, &kBlend);
                 }
-                else if (m_tmAim.FUN_140868ba0() != 0)
+                else if (m_tmAim.IsRunning() != 0)
                 {
                     float fT = m_tmAim.FUN_140868940();
                     fT = fT * fT;
@@ -361,14 +361,14 @@ void BoneRotateInterpolator::SetActive(bool bActive, unsigned int uiBlendMs)
     if (m_bActive == true && bActive == false)
     {
         m_bHasValue = false;
-        m_tmLookIn.FUN_140868750(uiBlendMs);
-        m_tmLookOut.FUN_1408687f0();
+        m_tmLookIn.Start(uiBlendMs);
+        m_tmLookOut.Reset();
         FUN_140a33100();
     }
     else if (m_bActive == false && bActive == true)
     {
-        m_tmLookOut.FUN_140868750(uiBlendMs);
-        m_tmLookIn.FUN_1408687f0();
+        m_tmLookOut.Start(uiBlendMs);
+        m_tmLookIn.Reset();
         m_fPitchBias = 0;
         m_fYawBias = 0;
         FUN_140a33100();
@@ -443,16 +443,16 @@ CBoneRotateManager::CBoneRotateManager()
     : m_bEnabled(false), m_kLookPos(efd::Point3::ZERO), m_strBone("Bip01 Head"), m_fIdleMs(0), m_pInterp(0), m_pOwner(0),
       m_kTargetId(s_kNullId), m_pRootNode(0), m_actions(10)
 {
-    m_tmLook.FUN_1408687f0();
-    m_tmApply.FUN_1408687f0();
+    m_tmLook.Reset();
+    m_tmApply.Reset();
     m_fIdleMs = (float)FUN_140a35ca0(Client::Constants::GetInstance()->LookAtInterval.Get());
     m_fIdleMs = m_fIdleMs + (float)(rand() % 5);
     for (int i = 0; i < 2; i = i + 1)
     {
-        m_tmReserved1[i].FUN_140868750((int)m_fIdleMs);
-        m_tmReserved2[i].FUN_140868750((int)m_fIdleMs);
+        m_tmReserved1[i].Start((int)m_fIdleMs);
+        m_tmReserved2[i].Start((int)m_fIdleMs);
     }
-    m_tmIdle.FUN_140868750((int)m_fIdleMs);
+    m_tmIdle.Start((int)m_fIdleMs);
 }
 
 // @0x140a34a70
@@ -497,10 +497,10 @@ void CBoneRotateManager::LookAtPosition(const efd::Point3& kPos, int nStart, int
     if (nDuration == 0)
         m_tmLook.FUN_1408687c0();
     else
-        m_tmLook.FUN_140868750(nDuration);
+        m_tmLook.Start(nDuration);
     m_nStart = nStart;
     m_nEnd = nEnd;
-    m_tmApply.FUN_140868750(1);
+    m_tmApply.Start(1);
     m_pInterp->SetSmooth(true);
 }
 
@@ -515,19 +515,19 @@ void CBoneRotateManager::LookAtEntity(const egf::EntityID& kId, CString strBone,
     if (nDuration == 0)
         m_tmLook.FUN_1408687c0();
     else
-        m_tmLook.FUN_140868750(nDuration);
+        m_tmLook.Start(nDuration);
     m_nStart = nStart;
     m_nEnd = nEnd;
     m_strBone = strBone;
-    m_tmApply.FUN_140868750(1);
+    m_tmApply.Start(1);
     m_pInterp->SetSmooth(true);
 }
 
 // @0x140a34f00
 void CBoneRotateManager::StopLooking()
 {
-    m_tmLook.FUN_1408687f0();
-    m_tmApply.FUN_1408687f0();
+    m_tmLook.Reset();
+    m_tmApply.Reset();
     m_kTargetId = s_kNullId;
     if (m_pInterp == 0)
         return;
@@ -538,12 +538,12 @@ void CBoneRotateManager::StopLooking()
     {
         Unk_BrAction* pAction = spAction.operator->();
         pAction->vfunc_2();
-        m_tmIdle.FUN_140868750((int)m_fIdleMs);
+        m_tmIdle.Start((int)m_fIdleMs);
         m_nCurrent = Unk_BrMode_None;
     }
     else
     {
-        m_tmIdle.FUN_140868750((int)m_fIdleMs);
+        m_tmIdle.Start((int)m_fIdleMs);
     }
 }
 
@@ -552,9 +552,9 @@ void CBoneRotateManager::UpdateLookAt()
 {
     if (m_bEnabled == false)
         return;
-    if (m_tmLook.FUN_140868ba0() != 0)
+    if (m_tmLook.IsRunning() != 0)
     {
-        if (m_tmApply.FUN_140868c00() != 0)
+        if (m_tmApply.IsExpired() != 0)
         {
             m_pInterp->SetActive(false, m_nStart);
             efd::Point3 kBase = m_kLookPos;
@@ -596,10 +596,10 @@ void CBoneRotateManager::UpdateLookAt()
             efd::Point3 kRootPos = kRoot.m_Translate;
             m_pInterp->SetKBone(kRootPos);
             m_pInterp->SetKEuler(static_cast<const efd::Point3&>(m_pOwner->vfunc_20()));
-            m_tmApply.FUN_140868750(500);
+            m_tmApply.Start(500);
         }
     }
-    else if (m_tmLook.FUN_140868c00() != 0)
+    else if (m_tmLook.IsExpired() != 0)
         StopLooking();
 }
 
@@ -619,7 +619,7 @@ void CBoneRotateManager::FUN_140a35500(double dTime)
             UpdateLookAt();
         }
     }
-    if (m_tmIdle.FUN_140868c00() != 0 && m_nCurrent == 0)
+    if (m_tmIdle.IsExpired() != 0 && m_nCurrent == 0)
     {
         for (POSITION pos = m_actions.GetHeadPosition(); pos != 0; m_actions.GetNext(pos))
         {
@@ -650,7 +650,7 @@ int CBoneRotateManager::IsLooking()
 {
     if (m_bEnabled == false)
         return 0;
-    return m_tmLook.FUN_140868ba0();
+    return m_tmLook.IsRunning();
 }
 
 // @0x140a357c0

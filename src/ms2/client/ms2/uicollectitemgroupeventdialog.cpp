@@ -82,13 +82,13 @@ public:
 };
 
 // The game event hub: handlers per user value type.
-class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
+class Unk_BonusBar* GetGameEventUserValueManager();   // C3: was GetGameEventUserValueManager
 
 // The condition panel clip: its "m_slot" item slot child (COMDAT of uibingoeventdialog.cpp).
 class Unk_BingoClip : public ASMovieClip
 {
 public:
-    MS2Ptr<ASItemSlot> FUN_140bb4ba0(const CString& strName);
+    MS2Ptr<ASItemSlot> GetItemSlot(const CString& strName);
 };
 
 // The worn equipment of the player (PC::FUN_1416561a0) and the worn gems (PC::FUN_14165f460).
@@ -98,11 +98,11 @@ struct Unk_CigEquipSet : public Unk_PCEquipSet
 class Unk_MyPCEquip : public PCGemEquip {};
 
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int nVisible);   // show/hide a named child
-void* FUN_140bb9630(int n);                                                // int -> delegate user data
-int FUN_140bb9640(void* p);                                                // delegate user data -> int
-CStringW FUN_140b8e910(const CMsTime& time);                               // the date text of a time
+void* IntToUserData(int n);                                                // int -> delegate user data
+int UserDataToInt(void* p);                                                // delegate user data -> int
+CStringW FormatMonthDay(const CMsTime& time);                               // the date text of a time
 #include "ms2/placeholder/wcformat.h"
-bool FUN_1407105c0(COutPacket* packet, int key, int delay);                // send (rate limited)
+bool SendPacketThrottled(COutPacket* packet, int key, int delay);                // send (rate limited)
 __int64 FUN_140718320(const CStringW& value);                              // _wtoi64
 extern Unk_Inventory g_143ab2a90;
 
@@ -118,7 +118,7 @@ template <> inline __int64 GameEventVariable::GetValue<__int64>(const __int64& n
 // @0x140be6eb0
 UICollectItemGroupEventDialog::UICollectItemGroupEventDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_selected = -1;
 }
 
@@ -138,14 +138,14 @@ MS2_REPLACE_METHOD(0x140BE70E0, UICollectItemGroupEventDialog, GetTypeName, 61, 
 void UICollectItemGroupEventDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925ec0("m_closeButton");
-    FUN_141925fa0("m_dragBar");
+    BindCloseButton("m_closeButton");
+    BindDragBar("m_dragBar");
     m_selected = -1;
     for (int i = 0; i < 3; ++i)
     {
         CString strName = StringFormat("m_eventButton{0}", i);
         m_eventButtons[i] = GetChild<ASButton>(strName);
-        m_eventButtons[i]->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICollectItemGroupEventDialog::OnEventButton), FUN_140bb9630(i));
+        m_eventButtons[i]->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UICollectItemGroupEventDialog::OnEventButton), IntToUserData(i));
     }
     m_conditionItem = GetChild<ASMovieClip>("m_conditionItem");
     m_rewardPanel = GetChild<ASMovieClip>("m_rewardPanel");
@@ -154,7 +154,7 @@ void UICollectItemGroupEventDialog::OnLoadComplete()
     m_conditionItem->vfunc_4(false);
     RefreshEvents();
     SelectEvent(0);
-    ((class GameEventUserValueManager*)FUN_140933220())->RegisterListener(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
+    ((class GameEventUserValueManager*)GetGameEventUserValueManager())->RegisterListener(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
     ((class Unk_ItemEventSystem*)(class Unk_CigItemEvents*)(((class Unk_CigItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(this);
 }
 MS2_REPLACE_METHOD(0x140BE7130, UICollectItemGroupEventDialog, OnLoadComplete, 1413, 0xAF19A091);
@@ -171,7 +171,7 @@ void UICollectItemGroupEventDialog::vfunc_26()
     m_rewardPanel = 0;
     m_recieveItemButton = 0;
     ((class Unk_ItemEventSystem*)(class Unk_CigItemEvents*)(((class Unk_CigItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(this);
-    ((class GameEventUserValueManager*)FUN_140933220())->UnregisterListener(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
+    ((class GameEventUserValueManager*)GetGameEventUserValueManager())->UnregisterListener(0x898, Delegate<void(GameEventVariable*)>(this, &UICollectItemGroupEventDialog::OnGameEvent));
 }
 MS2_REPLACE_METHOD(0x140BE76C0, UICollectItemGroupEventDialog, vfunc_26, 410, 0x0B19841C);
 
@@ -196,8 +196,8 @@ void UICollectItemGroupEventDialog::RefreshEvents()
                 continue;
             CMsTime beginTime(spContext->m_beginTime);
             CMsTime endTime(spContext->m_endTime);
-            CStringW strBegin = FUN_140b8e910(beginTime);
-            CStringW strEnd = FUN_140b8e910(endTime);
+            CStringW strBegin = FormatMonthDay(beginTime);
+            CStringW strEnd = FormatMonthDay(endTime);
             CStringW strName = CServerString::GetInstance()->GetGameEvent()->GetString(spContext->m_name);
             m_eventButtons[i]->vfunc_4(true);
             m_eventButtons[i]->FUN_1422cdfb0(FUN_14028dfa0<CStringW, CStringW, CStringW>(L"s_attendGift_title_name", strBegin, strEnd, strName));
@@ -247,13 +247,13 @@ void UICollectItemGroupEventDialog::Refresh()
         else
             spSlotMovie->vfunc_15("normal");
         FUN_140cff840((*spSlotMovie).FUN_1422bb890(), "m_recivedMovie", bReceived);
-        MS2Ptr<ASItemSlot> spSlot = static_cast<Unk_BingoClip*>(spSlotMovie.operator->())->FUN_140bb4ba0("m_slot");
+        MS2Ptr<ASItemSlot> spSlot = static_cast<Unk_BingoClip*>(spSlotMovie.operator->())->GetItemSlot("m_slot");
         if (spSlot == 0)
             continue;
         m_slots.push_back(spSlot);
         spSlot->SetItem(item.vfunc_o18_0(), item.vfunc_o18_1(), item.vfunc_o18_2());
     }
-    MS2Ptr<ASItemSlot> spReward = static_cast<Unk_BingoClip*>(m_rewardPanel.operator->())->FUN_140bb4ba0("m_slot");
+    MS2Ptr<ASItemSlot> spReward = static_cast<Unk_BingoClip*>(m_rewardPanel.operator->())->GetItemSlot("m_slot");
     if (spReward.get() != 0)
     {
         m_slots.push_back(spReward);
@@ -269,7 +269,7 @@ void UICollectItemGroupEventDialog::Refresh()
     MS2Ptr<ASMovieClip> spEffect = m_rewardPanel->FUN_1409b4560("m_effect");
     if (spEffect.get() != 0)
         spEffect->vfunc_4(bEnable);
-    m_recieveItemButton->FUN_1422c1fe0(bEnable);
+    m_recieveItemButton->SetEnabled(bEnable);
 }
 MS2_REPLACE_METHOD(0x140BE7B60, UICollectItemGroupEventDialog, Refresh, 2683, 0xE0B5572C);
 
@@ -282,7 +282,7 @@ void UICollectItemGroupEventDialog::SelectEvent(int nIndex)
     for (int i = 0; i < 3; ++i)
     {
         bool bSelected = m_selected == i ? TRUE : FALSE;
-        m_eventButtons[i]->FUN_1422ce090(bSelected);
+        m_eventButtons[i]->SetSelected(bSelected);
     }
     Refresh();
 }
@@ -397,7 +397,7 @@ MS2_REPLACE_METHOD(0x140BE8B20, UICollectItemGroupEventDialog, OnGameEvent, 57, 
 // @0x140be8b60
 void UICollectItemGroupEventDialog::OnEventButton(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    int nIndex = FUN_140bb9640(params.pUserData);
+    int nIndex = UserDataToInt(params.pUserData);
     SelectEvent(nIndex);
 }
 MS2_REPLACE_METHOD(0x140BE8B60, UICollectItemGroupEventDialog, OnEventButton, 51, 0xAEF86B47);
@@ -415,6 +415,6 @@ void UICollectItemGroupEventDialog::OnReceive(const Scaleform::GFx::FunctionHand
     COutPacket packet(static_cast<int>(SendOp::EventReward), 0);
     packet.Encode1(0x13);
     packet.Encode4(spContext->m_eventId);
-    FUN_1407105c0(&packet, 0x13, 1000);
+    SendPacketThrottled(&packet, 0x13, 1000);
 }
 MS2_REPLACE_METHOD(0x140BE8BA0, UICollectItemGroupEventDialog, OnReceive, 300, 0x13C24159);

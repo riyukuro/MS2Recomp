@@ -35,32 +35,32 @@ void ASScrollingList::FUN_1422e17a0()
 MS2_REPLACE_METHOD(0x1422E17A0, ASScrollingList, FUN_1422e17a0, 66, 0x49B7C3FB);
 
 // @0x1422e17f0
-void ASScrollingList::FUN_1422e17f0(int nPosition)
+void ASScrollingList::SetScrollPosition(int nPosition)
 {
-    FUN_1407cb9c0("scrollPosition", nPosition);
+    SetIntMember("scrollPosition", nPosition);
 }
-MS2_REPLACE_METHOD(0x1422E17F0, ASScrollingList, FUN_1422e17f0, 40, 0x5680D819);
+MS2_REPLACE_METHOD(0x1422E17F0, ASScrollingList, SetScrollPosition, 40, 0x5680D819);
 
 // @0x1422e1820
-int ASScrollingList::FUN_1422e1820()
+int ASScrollingList::GetScrollPosition()
 {
     return (int)GetMember("scrollPosition").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422E1820, ASScrollingList, FUN_1422e1820, 92, 0x79FE17F6);
+MS2_REPLACE_METHOD(0x1422E1820, ASScrollingList, GetScrollPosition, 92, 0x79FE17F6);
 
 // @0x1422e1890
-void ASScrollingList::FUN_1422e1890(const ASCallback& onChange)
+void ASScrollingList::AddListIndexChangeListener(const ASCallback& onChange)
 {
-    FUN_1422c3600("listIndexChange", onChange, false, 0, 0, (void*)NULL);
+    AddEventListener("listIndexChange", onChange, false, 0, 0, (void*)NULL);
 }
-MS2_REPLACE_METHOD(0x1422E1890, ASScrollingList, FUN_1422e1890, 107, 0xE25DFB5F);
+MS2_REPLACE_METHOD(0x1422E1890, ASScrollingList, AddListIndexChangeListener, 107, 0xE25DFB5F);
 
 // @0x1422e1910
-void ASScrollingList::FUN_1422e1910(const ASCallback& onChange)
+void ASScrollingList::RemoveListIndexChangeListener(const ASCallback& onChange)
 {
-    FUN_1422c3820("listIndexChange", onChange, false);
+    RemoveEventListener("listIndexChange", onChange, false);
 }
-MS2_REPLACE_METHOD(0x1422E1910, ASScrollingList, FUN_1422e1910, 82, 0xDAF972B7);
+MS2_REPLACE_METHOD(0x1422E1910, ASScrollingList, RemoveListIndexChangeListener, 82, 0xDAF972B7);
 
 // @0x1422e1970
 void ASScrollingList::FUN_1422e1970(int nIndex, ASObj& row)
@@ -73,9 +73,9 @@ void ASScrollingList::FUN_1422e1970(int nIndex, ASObj& row)
 MS2_REPLACE_METHOD(0x1422E1970, ASScrollingList, FUN_1422e1970, 135, 0x4455B56B);
 
 // @0x1422e1a00
-void ASScrollingList::FUN_1422e1a00(int nIndex, ASObj& row)
+void ASScrollingList::SetRendererData(int nIndex, ASObj& row)
 {
-    int nRow = nIndex - FUN_1422e1820();
+    int nRow = nIndex - GetScrollPosition();
     Scaleform::GFx::Value renderer = Invoke("getRendererAt", nRow);
     if (renderer.IsDisplayObject()) {
         MS2Ptr<ASDisplayObject> spRenderer(new ASDisplayObject(renderer, m_nMovieId));
@@ -83,6 +83,6 @@ void ASScrollingList::FUN_1422e1a00(int nIndex, ASObj& row)
             spRenderer->FUN_140acd1f0("setData", row);
     }
 }
-MS2_REPLACE_METHOD(0x1422E1A00, ASScrollingList, FUN_1422e1a00, 345, 0x9E718522);
+MS2_REPLACE_METHOD(0x1422E1A00, ASScrollingList, SetRendererData, 345, 0x9E718522);
 
 // MS2-PIN: ??_GASScrollingList@@UEAAPEAXI@Z 0x1422e1b60

@@ -483,7 +483,7 @@ void Unk_WsInst3Handlers(void* p)
     new (p) efd::MessageHandlerImpl<WorldService, egf::EntityLoadResult>(&WorldService::FUN_141bc0a70);
     new (p) efd::MessageHandlerImpl<WorldService, ecr::SceneGraphAddedMessage>(&WorldService::FUN_141bbfe30);
     new (p) efd::MessageHandlerImpl<WorldService, ecr::SceneGraphRemovedMessage>(&WorldService::FUN_141bc0290);
-    new (p) efd::MessageSubclassHandler<WorldService, efd::AssetLoadResponse, egf::FlatModelFactoryResponse>(&WorldService::FUN_141bc0f50);
+    new (p) efd::MessageSubclassHandler<WorldService, efd::AssetLoadResponse, egf::FlatModelFactoryResponse>(&WorldService::OnFlatModelFactoryResponse);
     new (p) efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8196>(&WorldService::FUN_141bbfa50);
     new (p) efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8253>(&WorldService::FUN_141bbd640);
     new (p) efd::MessageWrapperSubclassHandler<WorldService, egf::EntityChangeMessage, egf::EntityChangeMessage, 8254>(&WorldService::FUN_141bbf2f0);

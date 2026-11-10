@@ -51,8 +51,8 @@ public:
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 
 // The actor's buff set: the knock-back direction.
-#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
+class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_FallBuff { public: };
 // PCBase vtable view: slot 22 takes the position by value (the exe copies it to a 16-aligned temp)
 class Unk_FallPointSlots
@@ -168,7 +168,7 @@ void StateFall::vfunc_8(double fTime)
         return;
     Unk_FallBuff* pBuff = (Unk_FallBuff*)m_pOwner->FUN_14166d240();
     reinterpret_cast<Unk_FallPointSlots*>(m_pOwner)->vfunc_22(
-        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+        reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection())));
     MS2Ptr<CSkillRecord> spRec = m_pOwner->vfunc_104(true, false, false);
     if (spRec.get() != 0)
     {

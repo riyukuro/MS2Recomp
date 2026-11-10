@@ -4,7 +4,7 @@
 // the first payback product. Vftables 0x142e53350 (84 slots) / 0x142e53608 (UIStatusEventListener, no overrides).
 // Ctor 0x140e6ec50, dtor 0x140e6ed70 (??_G 0x140e70450). Recovered with the queue unit ?\uiotherpetsystemdialog.cpp
 // (TU 0x140e6ec50-0x140e70a90); header name assumed. PaybackManagerClient (paybackmanagerclient.cpp) calls
-// FUN_140e6f820 when the level / merat changes; the game menu binds FUN_140e6f890.
+// OnPaybackChanged when the level / merat changes; the game menu binds IsPaybackAvailable.
 #pragma once
 
 #include <afx.h>
@@ -26,9 +26,9 @@ public:
     virtual int vfunc_48() { return 0x4f93; }                   // 48 0x140e70550
     virtual void vfunc_67();                                    // 67 0x140e6eec0 Close: stop listening
 
-    void FUN_140e6f7c0(CInPacket& packet);                      // the 0x10b packet: close in the monthly reset window
-    void FUN_140e6f820(int nOldLevel, unsigned nOldMerat);      // the level / merat changed: refresh the rows and the text
-    int FUN_140e6f890();                                        // the payback is open
+    void OnPaybackPacket(CInPacket& packet);                      // the 0x10b packet: close in the monthly reset window
+    void OnPaybackChanged(int nOldLevel, unsigned nOldMerat);      // the level / merat changed: refresh the rows and the text
+    int IsPaybackAvailable();                                        // the payback is open
     void FUN_140e6f8c0();                                       // "setEntity" per level
     void FUN_140e6fba0();                                       // "setPaybackMerat"
     void FUN_140e6fdf0();                                       // "setPeriod"

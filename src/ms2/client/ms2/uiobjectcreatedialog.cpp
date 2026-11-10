@@ -90,7 +90,7 @@ class WorldService   // C3: member view for the former free stand-ins
 {
 public:
     void* FUN_141bd0cc0();   // C3: the real member (0x141bd0cc0, the local player)
-    void FUN_141bc5f10(void* pOut);   // every interact object of the field (copied into *pOut)
+    void GetInteractObjects(void* pOut);   // every interact object of the field (copied into *pOut)
     static class WorldService* GetInstance();
 };
 
@@ -116,7 +116,7 @@ CString UIObjectCreateDialog::GetTypeName()
 void UIObjectCreateDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_14131ff70();
+    RefreshObjectList();
 }
 
 // @0x14131f780
@@ -130,8 +130,8 @@ int UIObjectCreateDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
-        FUN_14131ff70();
+    if (((class Unk_14025e7c0*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
+        RefreshObjectList();
     return 0;
 }
 
@@ -178,7 +178,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
             {
                 list->FUN_1422dd1d0();
                 ATL::CAtlArray<MS2Ptr<CInteractObject> > aObjects;
-                WorldService::GetInstance()->FUN_141bc5f10(&aObjects);
+                WorldService::GetInstance()->GetInteractObjects(&aObjects);
                 for (size_t i = 0; i < aObjects.GetCount(); i++)
                 {
                     MS2Ptr<CInteractObject> obj = aObjects[i];
@@ -189,7 +189,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
                         row.SetMemberFloat("xpos", kPoint.x);
                         row.SetMemberFloat("ypos", kPoint.y);
                         row.SetMemberFloat("zpos", kPoint.z);
-                        ((class AScript&)(row)).FUN_1407cbb20("label", StringFormat(L"{0}, {1}, {2}", (int)kPoint.x, (int)kPoint.y, (int)kPoint.z));
+                        ((class AScript&)(row)).SetWStringMember("label", StringFormat(L"{0}, {1}, {2}", (int)kPoint.x, (int)kPoint.y, (int)kPoint.z));
                         list->AddItem(row);
                     }
                 }
@@ -212,7 +212,7 @@ int UIObjectCreateDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 }
 
 // @0x14131ff70
-void UIObjectCreateDialog::FUN_14131ff70()
+void UIObjectCreateDialog::RefreshObjectList()
 {
     CStringW strSearch;
     if (MS2Ptr<ASTextInput> input = GetChild<ASTextInput>("m_search"))
@@ -233,7 +233,7 @@ void UIObjectCreateDialog::FUN_14131ff70()
                     continue;
             }
             ASObj row(2);
-            ((class AScript&)(row)).FUN_1407cbb20("label", StringFormat(L"{0} \t{1}", data->m_nId, strName));
+            ((class AScript&)(row)).SetWStringMember("label", StringFormat(L"{0} \t{1}", data->m_nId, strName));
             row.SetMemberUInt("code", data->m_nId);
             list->AddItem(row);
         }

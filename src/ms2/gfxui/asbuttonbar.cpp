@@ -20,7 +20,7 @@
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> ASCallback;
 
 CStringW XmlWide(const char* sz);                         // a UTF-8 text as a wide string
-void FUN_1422bcc70(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // Value = v (an ASArray COMDAT)
+void SetValue(Scaleform::GFx::Value* pValue, Scaleform::GFx::Value v);   // Value = v (an ASArray COMDAT)
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);           // Value = n (UInt)
 
 // @0x1422e2cd0
@@ -39,7 +39,7 @@ ASButtonBar::~ASButtonBar()
 void ASButtonBar::SetDataProviderPtr(MS2Ptr<ASDataProvider> spProvider)
 {
     if (spProvider.get())
-        SetDataProvider(spProvider->FUN_1422bb870());
+        SetDataProvider(spProvider->GetValue());
 }
 
 // Not hooked: v is copied into a by-value argument.
@@ -59,7 +59,7 @@ MS2_REPLACE_METHOD(0x1422E2E00, ASButtonBar, GetDataProvider, 102, 0x837D2527);
 // @0x1422e2e70
 void ASButtonBar::SetItemRendererName(const CString& strName)
 {
-    FUN_1407cba60("itemRendererName", strName);
+    SetStringMember("itemRendererName", strName);
 }
 MS2_REPLACE_METHOD(0x1422E2E70, ASButtonBar, SetItemRendererName, 72, 0x3FB735DA);
 
@@ -80,7 +80,7 @@ MS2_REPLACE_METHOD(0x1422E2F00, ASButtonBar, GetSpacing, 96, 0x57856D9E);
 // @0x1422e2f70
 void ASButtonBar::SetDirection(const CString& strDirection)
 {
-    FUN_1407cba60("direction", strDirection);
+    SetStringMember("direction", strDirection);
 }
 MS2_REPLACE_METHOD(0x1422E2F70, ASButtonBar, SetDirection, 72, 0xA35D62FF);
 
@@ -94,7 +94,7 @@ MS2_REPLACE_METHOD(0x1422E2FC0, ASButtonBar, GetDirection, 123, 0xE6340C39);
 // @0x1422e3050
 void ASButtonBar::SetAutoSize(const CString& strAutoSize)
 {
-    FUN_1407cba60("autoSize", strAutoSize);
+    SetStringMember("autoSize", strAutoSize);
 }
 MS2_REPLACE_METHOD(0x1422E3050, ASButtonBar, SetAutoSize, 72, 0x13410844);
 
@@ -122,7 +122,7 @@ MS2_REPLACE_METHOD(0x1422E3170, ASButtonBar, GetButtonWidth, 96, 0x094D4B6A);
 // @0x1422e31e0
 void ASButtonBar::SetSelectedIndex(int nIndex)
 {
-    FUN_1407cb9c0("selectedIndex", nIndex);
+    SetIntMember("selectedIndex", nIndex);
 }
 MS2_REPLACE_METHOD(0x1422E31E0, ASButtonBar, SetSelectedIndex, 40, 0x0E3A2053);
 
@@ -159,13 +159,13 @@ unsigned ASButtonBar::GetItemCount()
 MS2_REPLACE_METHOD(0x1422E3380, ASButtonBar, GetItemCount, 114, 0x9038E735);
 
 // @0x1422e3400
-void ASButtonBar::FUN_1422e3400()
+void ASButtonBar::ClearDataProvider()
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get())
         spProvider->FUN_1422df120();
 }
-MS2_REPLACE_METHOD(0x1422E3400, ASButtonBar, FUN_1422e3400, 83, 0x6E710504);
+MS2_REPLACE_METHOD(0x1422E3400, ASButtonBar, ClearDataProvider, 83, 0x6E710504);
 
 // @0x1422e3460
 void ASButtonBar::AddItem(const ASObj& item)
@@ -182,7 +182,7 @@ void ASButtonBar::AddLabelItem(const CStringW& strLabel)
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get()) {
         ASObj item(2);
-        item.FUN_1407cbb20("label", strLabel);
+        item.SetWStringMember("label", strLabel);
         spProvider->PushObj(item);
     }
 }
@@ -195,7 +195,7 @@ void ASButtonBar::FUN_1422e3590(const CStringW& strLabel)
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < GetItemCount(); ++i) {
             AScript row = spProvider->FUN_1422df140((unsigned)i);
-            if (row.FUN_1422bb870().IsObject()) {
+            if (row.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = row.GetMember("label");
                 if (v.IsString()) {
                     if (strLabel == XmlWide(v.GetString())) {
@@ -216,14 +216,14 @@ void ASButtonBar::FUN_1422e3590(const CStringW& strLabel)
 MS2_REPLACE_METHOD(0x1422E3590, ASButtonBar, FUN_1422e3590, 505, 0x92EB0A6F);
 
 // @0x1422e3790
-CStringW ASButtonBar::FUN_1422e3790()
+CStringW ASButtonBar::GetSelectedLabel()
 {
-    return FUN_1422e37e0(GetSelectedIndex());
+    return GetLabelAt(GetSelectedIndex());
 }
-MS2_REPLACE_METHOD(0x1422E3790, ASButtonBar, FUN_1422e3790, 71, 0x2A51A5A6);
+MS2_REPLACE_METHOD(0x1422E3790, ASButtonBar, GetSelectedLabel, 71, 0x2A51A5A6);
 
 // @0x1422e37e0
-CStringW ASButtonBar::FUN_1422e37e0(int nIndex)
+CStringW ASButtonBar::GetLabelAt(int nIndex)
 {
     if (nIndex < 0)
         return L"";
@@ -240,7 +240,7 @@ CStringW ASButtonBar::FUN_1422e37e0(int nIndex)
     }
     return L"";
 }
-MS2_REPLACE_METHOD(0x1422E37E0, ASButtonBar, FUN_1422e37e0, 529, 0x4CB6A1F5);
+MS2_REPLACE_METHOD(0x1422E37E0, ASButtonBar, GetLabelAt, 529, 0x4CB6A1F5);
 
 // @0x1422e3a00
 void ASButtonBar::RemoveItemAt(int nIndex)
@@ -252,13 +252,13 @@ void ASButtonBar::RemoveItemAt(int nIndex)
 MS2_REPLACE_METHOD(0x1422E3A00, ASButtonBar, RemoveItemAt, 97, 0xFB2142D9);
 
 // @0x1422e3a70
-void ASButtonBar::FUN_1422e3a70(const CStringW& strLabel)
+void ASButtonBar::RemoveItemByLabel(const CStringW& strLabel)
 {
     MS2Ptr<ASDataProvider> spProvider = GetDataProvider();
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < GetItemCount(); ++i) {
             AScript row = spProvider->FUN_1422df140((unsigned)i);
-            if (row.FUN_1422bb870().IsObject()) {
+            if (row.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = row.GetMember("label");
                 if (v.IsString()) {
                     if (strLabel == XmlWide(v.GetString())) {
@@ -276,7 +276,7 @@ void ASButtonBar::FUN_1422e3a70(const CStringW& strLabel)
         }
     }
 }
-MS2_REPLACE_METHOD(0x1422E3A70, ASButtonBar, FUN_1422e3a70, 505, 0x203DC3CE);
+MS2_REPLACE_METHOD(0x1422E3A70, ASButtonBar, RemoveItemByLabel, 505, 0x203DC3CE);
 
 // @0x1422e3c70
 void ASButtonBar::FUN_1422e3c70(const CStringW& strOld, const CStringW& strNew)
@@ -285,17 +285,17 @@ void ASButtonBar::FUN_1422e3c70(const CStringW& strOld, const CStringW& strNew)
     if (spProvider.get()) {
         for (unsigned __int64 i = 0; i < GetItemCount(); ++i) {
             AScript row = spProvider->FUN_1422df140((unsigned)i);
-            if (row.FUN_1422bb870().IsObject()) {
+            if (row.GetValue().IsObject()) {
                 Scaleform::GFx::Value v = row.GetMember("label");
                 if (v.IsString()) {
                     if (strOld == XmlWide(v.GetString())) {
-                        row.FUN_1407cbb20("label", strNew);
+                        row.SetWStringMember("label", strNew);
                         return;
                     }
                 }
                 if (v.IsStringW()) {
                     if (strOld == v.GetStringW()) {
-                        row.FUN_1407cbb20("label", strNew);
+                        row.SetWStringMember("label", strNew);
                         return;
                     }
                 }
@@ -331,45 +331,45 @@ void ASButtonBar::FUN_1422e4060(int nIndex)
     MS2Ptr<ASButton> spButton = GetButtonAt(nIndex);
     if (spButton == 0 || spButton->IsUndefinedOrNull())
         return;
-    FUN_1422e4350("updateRendererAt", spButton->FUN_1422bb870(), (unsigned)nIndex);
+    FUN_1422e4350("updateRendererAt", spButton->GetValue(), (unsigned)nIndex);
     spButton->vfunc_24(false);
 }
 MS2_REPLACE_METHOD(0x1422E4060, ASButtonBar, FUN_1422e4060, 293, 0x0444936C);
 
 // @0x1422e4190
-void ASButtonBar::FUN_1422e4190(const ASCallback& onChange, void* pUser)
+void ASButtonBar::AddIndexChangeHandler(const ASCallback& onChange, void* pUser)
 {
-    FUN_1422c3600("clikIndexChange", onChange, false, 0, 0, pUser);
+    AddEventListener("clikIndexChange", onChange, false, 0, 0, pUser);
 }
-MS2_REPLACE_METHOD(0x1422E4190, ASButtonBar, FUN_1422e4190, 113, 0xB9C8204A);
+MS2_REPLACE_METHOD(0x1422E4190, ASButtonBar, AddIndexChangeHandler, 113, 0xB9C8204A);
 
 // @0x1422e4210
-void ASButtonBar::FUN_1422e4210(const ASCallback& onChange)
+void ASButtonBar::RemoveIndexChangeHandler(const ASCallback& onChange)
 {
-    FUN_1422c3820("clikIndexChange", onChange, false);
+    RemoveEventListener("clikIndexChange", onChange, false);
 }
-MS2_REPLACE_METHOD(0x1422E4210, ASButtonBar, FUN_1422e4210, 82, 0x8837210A);
+MS2_REPLACE_METHOD(0x1422E4210, ASButtonBar, RemoveIndexChangeHandler, 82, 0x8837210A);
 
 // @0x1422e4270
-void ASButtonBar::FUN_1422e4270(const ASCallback& onMenu, void* pUser)
+void ASButtonBar::AddListIndexChangeHandler(const ASCallback& onMenu, void* pUser)
 {
-    FUN_1422c3600("listIndexChange", onMenu, false, 0, 0, pUser);
+    AddEventListener("listIndexChange", onMenu, false, 0, 0, pUser);
 }
-MS2_REPLACE_METHOD(0x1422E4270, ASButtonBar, FUN_1422e4270, 113, 0x24EA6C5E);
+MS2_REPLACE_METHOD(0x1422E4270, ASButtonBar, AddListIndexChangeHandler, 113, 0x24EA6C5E);
 
 // @0x1422e42f0
-void ASButtonBar::FUN_1422e42f0(const ASCallback& onMenu)
+void ASButtonBar::RemoveListIndexChangeHandler(const ASCallback& onMenu)
 {
-    FUN_1422c3820("listIndexChange", onMenu, false);
+    RemoveEventListener("listIndexChange", onMenu, false);
 }
-MS2_REPLACE_METHOD(0x1422E42F0, ASButtonBar, FUN_1422e42f0, 82, 0xFFCAAB47);
+MS2_REPLACE_METHOD(0x1422E42F0, ASButtonBar, RemoveListIndexChangeHandler, 82, 0xFFCAAB47);
 
 // @0x1422e4350
 Scaleform::GFx::Value AScript::FUN_1422e4350(const char* szMethod, Scaleform::GFx::Value a1, unsigned a2)
 {
     ASArgList args;
     args.resize(2);
-    FUN_1422bcc70(&args[0], a1);
+    SetValue(&args[0], a1);
     FUN_1422bcd10(&args[1], a2);
     return FUN_1422bb8f0(szMethod, args);
 }

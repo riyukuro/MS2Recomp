@@ -45,8 +45,8 @@ public:
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
 
 // Unrecovered helpers (same ones continentregiontable.cpp uses).
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
@@ -102,9 +102,9 @@ bool CArcadeDataTable::Load()
 // @0x1401a2e90
 bool CArcadeDataTable::LoadMain()
 {
-    CString strPath = FUN_14071a5b0("Table", "arcadeGame.xml");
+    CString strPath = GetXmlPath("Table", "arcadeGame.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -130,9 +130,9 @@ bool CArcadeDataTable::LoadMain()
 // @0x1401a31a0
 bool CArcadeDataTable::LoadReward()
 {
-    CString strPath = FUN_14071a5b0("Table/Server", "arcadeReward.xml");
+    CString strPath = GetXmlPath("Table/Server", "arcadeReward.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -169,9 +169,9 @@ bool CArcadeDataTable::LoadReward()
 // @0x1401a35d0
 bool CArcadeDataTable::LoadRecord()
 {
-    CString strPath = FUN_14071a5b0("Table", "arcadeGameRecord.xml");
+    CString strPath = GetXmlPath("Table", "arcadeGameRecord.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -268,7 +268,7 @@ void CArcadeDataTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CArcadeDataTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CArcadeDataTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

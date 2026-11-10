@@ -46,15 +46,15 @@ int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_14
 CLogString* GetLogString();                                        // the logger
 // The sound service (?\soundservice.cpp) and its FMOD event system.
 class CSoundService { public: FMOD::EventSystem* GetEventSystem(); };
-CSoundService* FUN_140c9cb10();
+CSoundService* GetSoundService();
 // The FMOD event manager (?\soundeventmgr.cpp): the music API.
 class CSoundEventMgr
 {
 public:
-    int FUN_14177c100(unsigned nMusicId, float fParam, unsigned nPriority, int bForce);   // play a music cue
-    int FUN_14177c420(unsigned nParamId, float fValue, unsigned nPriority, int bForce);   // set a music parameter
-    float FUN_14177c9e0();                                      // the music volume
-    void FUN_14177ca30(float fVolume);                          // set the music volume
+    int PlayMusic(unsigned nMusicId, float fParam, unsigned nPriority, int bForce);   // play a music cue
+    int SetMusicParameter(unsigned nParamId, float fValue, unsigned nPriority, int bForce);   // set a music parameter
+    float GetMusicVolume();                                      // the music volume
+    void SetMusicVolume(float fVolume);                          // set the music volume
     int FUN_14177ddd0(void* pUnused, int nUnused1, int nUnused2);   // the reverb string attribute
 };
 template <> class TSingleton<CSoundEventMgr> { public: static CSoundEventMgr* GetInstance(); };   // 0x140d13c40, as in soundeventmgr.h (C3: was FUN_140d13c40)
@@ -93,7 +93,7 @@ bool CSoundMusicEffectParam::vfunc_2()
     if (m_nCueID > 0)
     {
         FMOD::MusicSystem* pMusic;
-        if (FUN_140c9cb10()->GetEventSystem()->getMusicSystem(&pMusic) == FMOD_OK)
+        if (GetSoundService()->GetEventSystem()->getMusicSystem(&pMusic) == FMOD_OK)
         {
             FMOD::MusicPrompt* pPrompt;
             if (pMusic->prepareCue(m_nCueID, &pPrompt) != FMOD_OK)
@@ -124,7 +124,7 @@ CSoundMusicEffect::CSoundMusicEffect() : m_f30(1.0f), m_f38(0.0f)
 // @0x141790060
 CSoundMusicEffect::~CSoundMusicEffect()
 {
-    TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177ca30(GetCategoryVolume(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), 2));
+    TSingleton<CSoundEventMgr>::GetInstance()->SetMusicVolume(GetCategoryVolume(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), 2));
 }
 
 // Starts the music: the cue, the parameter, the reverb string, then the volume fade plan (the music volume is read
@@ -139,19 +139,19 @@ bool CSoundMusicEffect::vfunc_3(const CEffectParam* pParam, Unk_EffectTarget* pT
     if (m_unk_18 > 1)
         return false;
     if (pMusic->m_nCueID != -1)
-        TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c100(pMusic->m_nCueID, 0.0f, pMusic->m_nPriority, 0);
+        TSingleton<CSoundEventMgr>::GetInstance()->PlayMusic(pMusic->m_nCueID, 0.0f, pMusic->m_nPriority, 0);
     if (pMusic->m_nParamID != -1)
-        TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c420(pMusic->m_nParamID, pMusic->m_fParamValue, pMusic->m_nPriority, 0);
+        TSingleton<CSoundEventMgr>::GetInstance()->SetMusicParameter(pMusic->m_nParamID, pMusic->m_fParamValue, pMusic->m_nPriority, 0);
     if (!pMusic->m_strReverb.IsEmpty())
         TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177ddd0((void*)(LPCSTR)pMusic->m_strReverb, pMusic->m_nPriority, 0x80);
     if (pMusic->m_fVolume <= 0.0f || pMusic->m_fDuration == 0.0f)
         return false;
-    float fOld = TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c9e0();
+    float fOld = TSingleton<CSoundEventMgr>::GetInstance()->GetMusicVolume();
     float fNew = GetCategoryVolume(TSingleton<CGameOption>::GetInstance()->FUN_140d13c70(), 2) * pMusic->m_fVolume;
     fDelta = fNew - fOld;
     m_f38 = fDelta;
     m_f30 = fNew;
-    m_f34 = TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c9e0();
+    m_f34 = TSingleton<CSoundEventMgr>::GetInstance()->GetMusicVolume();
     return true;
 }
 
@@ -168,7 +168,7 @@ bool CSoundMusicEffect::vfunc_9()
             float fT = (float)(dNow - m_dStartTime) / m_fDuration;
             float fDelta = fT * m_f38;
             float fVolume = m_f34 + fDelta;
-            TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177ca30(fVolume);
+            TSingleton<CSoundEventMgr>::GetInstance()->SetMusicVolume(fVolume);
             return true;
         }
     }

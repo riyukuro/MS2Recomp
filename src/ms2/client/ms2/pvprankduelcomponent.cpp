@@ -71,15 +71,15 @@ MS2_EMIT_CRT_MEMMOVE_S();
 
 // ---- unrecovered helpers (declarations only; the addresses are in the names) ----
 // The record reader at 0x14026b250; its real name is the ingredient reader (commonstruct_wa.h).
-class CIngredientInfo { public: void FUN_14026b250(CInPacket&); };   // C3: was RankDuelStatisticalData::FUN_14026b250
+class CIngredientInfo { public: void Read(CInPacket&); };   // C3: was RankDuelStatisticalData::Read
 // The rank-duel lobby dialog (RTTI .?AVUIRankPvPDialog@@, ui id 0x4f04).
 class UIRankPvPDialog : public UIDialog
 {
 public:
     virtual ~UIRankPvPDialog();
-    void FUN_140f94390();                                           // the match state changed
-    void FUN_140f94490();                                           // the own record changed
-    void FUN_140f94840();                                           // the records changed
+    void UpdateRegisterButtons();                                           // the match state changed
+    void UpdateOwnRecord();                                           // the own record changed
+    void UpdateHistoryRows();                                           // the records changed
 };
 class Unk_RankUIService { public:    };
 class WorldService   // C3: static member view for the former free stand-ins
@@ -92,8 +92,8 @@ public:
 int FUN_141276180(const CString& strName, const CString& strExtra);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW GetStringCommon(int nId);
-void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW tag);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);   // the message box factory (0x140d73d20, unit_140d73aa0_messageboxfactory.cpp, the definer's signature)
+void ShowMessageBox(CStringW text, int nA, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* p, CStringW tag);   // the message box factory (0x140d73d20, unit_140d73aa0_messageboxfactory.cpp, the definer's signature)
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 void FUN_141275260(int nStringId, int nA, int nB);
 class Unk_RankClientState { public: };
@@ -112,7 +112,7 @@ class CRankingArenaDataTable   // C3: member view for the former free stand-ins
 public:
     class RankingArenaData* GetGradeOfRating(int);
 };
-bool FUN_1407105c0(COutPacket* packet, int key, int delay);
+bool SendPacketThrottled(COutPacket* packet, int key, int delay);
 struct Unk_RankVec3 { float x, y, z; };
 #define DAT_143b01a60 (*(Unk_RankVec3*)&efd::Point3::ZERO)          // C3: was extern Unk_RankVec3 DAT_143b01a60
 // The local player actor (COM-style: AddRef slot 1, Release slot 2).
@@ -238,7 +238,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         m_state = 1;
         UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
         if (pDialog)
-            pDialog->FUN_140f94390();
+            pDialog->UpdateRegisterButtons();
         RANK_SFX(DAT_143ac4828);
     }
     else if (nMessage == 0xf)
@@ -246,7 +246,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         m_state = 0;
         UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
         if (pDialog)
-            pDialog->FUN_140f94390();
+            pDialog->UpdateRegisterButtons();
     }
     else if (nMessage == 0x10)
     {
@@ -257,14 +257,14 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
             if (pDialog)
             {
-                pDialog->FUN_140f94390();
+                pDialog->UpdateRegisterButtons();
                 CStringW strText(GetStringCommonByKey(L"s_rank_duel_matching_complete"));
-                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0, strText, static_cast<IMessageListener*>(pDialog), DAT_143ac4878);
+                MS2Ptr<CMsgBoxData> box = CreateMessageBox(0, strText, static_cast<IMessageListener*>(pDialog), DAT_143ac4878);
                 if (box.get())
                 {
                     box->SetTimer(0xf, 1, GetStringCommon(0x2b8));
                     box->FUN_141a02460(1);
-                    box->FUN_141a02480(1);
+                    box->SetModaless(1);
                     box->FUN_141a024a0(0);
                     box->FUN_141a024c0();
                     box->SetButtonLabels(GetStringCommonByKey(L"s_rank_duel_immediately_join"), L"", L"");
@@ -278,8 +278,8 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
             m_state = 0;
             UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
             if (pDialog)
-                pDialog->FUN_140f94390();
-            FUN_140d73aa0(GetStringCommonByKey(L"s_rank_duel_matching_fail"), 0, 0, L"");
+                pDialog->UpdateRegisterButtons();
+            ShowMessageBox(GetStringCommonByKey(L"s_rank_duel_matching_fail"), 0, 0, L"");
             RANK_SFX(DAT_143ac4888);
         }
     }
@@ -291,7 +291,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         m_value28 = packet.ReadInt32();
         UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
         if (pDialog)
-            pDialog->FUN_140f94490();
+            pDialog->UpdateOwnRecord();
     }
     else if (nMessage == 0x17)
     {
@@ -302,7 +302,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         for (int i = 0; i < nCount; i++)
         {
             MS2Ptr<RankDuelStatisticalData> spRecord(new RankDuelStatisticalData);
-            reinterpret_cast<CIngredientInfo*>(spRecord.operator->())->FUN_14026b250(packet);
+            reinterpret_cast<CIngredientInfo*>(spRecord.operator->())->Read(packet);
             m_records[spRecord->m_key] = spRecord;
             m_total2c += spRecord->m_value1c;
             m_total30 += spRecord->m_value20;
@@ -310,26 +310,26 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
         if (pDialog)
         {
-            pDialog->FUN_140f94490();
-            pDialog->FUN_140f94840();
+            pDialog->UpdateOwnRecord();
+            pDialog->UpdateHistoryRows();
         }
     }
     else if (nMessage == 0x19)
     {
         if (m_state != 0)
             return;
-        if (((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_observer)
+        if (((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->GetEtc())->m_observer)
         {
             CStringW strText(GetStringCommonByKey(L"s_rank_duel_matching_complete_to_observe"));
             UIRankPvPDialog* pDialog = Unk_RankDialog<UIRankPvPDialog>(0x4f04);
             if (pDialog == 0)
                 return;
-            MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, strText, static_cast<IMessageListener*>(pDialog), DAT_143ac4890);
+            MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, strText, static_cast<IMessageListener*>(pDialog), DAT_143ac4890);
             if (box.get())
             {
                 box->SetTimer(0xf, 1, GetStringCommon(0x2b8));
                 box->FUN_141a02460(1);
-                box->FUN_141a02480(1);
+                box->SetModaless(1);
                 box->FUN_141a024a0(0);
                 FUN_140d73c60(box);
             }
@@ -337,7 +337,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
     }
     else if (nMessage == 0x12)
     {
-        if (((CUIService*)(Unk_RankUIService*)(reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())))->FUN_141adc940((eUIClassID)(0x4f05)))
+        if (((CUIService*)(Unk_RankUIService*)(reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())))->IsDialogClosed((eUIClassID)(0x4f05)))
             ((CUIService*)(Unk_RankUIService*)(reinterpret_cast<Unk_RankUIService*>(TSingleton<CUIService>::GetInstance())))->OpenDialog((eUIClassID)(0x4f05));
         UIPvPRankDuelResultDialog* pDialog = Unk_RankDialog<UIPvPRankDuelResultDialog>(0x4f05);
         if (pDialog)
@@ -366,7 +366,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
-        pIntro->FUN_140f41190(nTotal, nRound);
+        pIntro->OnRound(nTotal, nRound);
         RANK_SFX(DAT_143ac4898);
         RANK_SFX(DAT_143ac48a0);
     }
@@ -376,7 +376,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
-        pIntro->FUN_140f410b0(nValue);
+        pIntro->OnFight(nValue);
         RANK_SFX(DAT_143ac48a8);
         RANK_SFX(DAT_143ac48b0);
     }
@@ -386,7 +386,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
-        pIntro->FUN_140f40ef0(nValue);
+        pIntro->OnWin(nValue);
         RANK_SFX(DAT_143ac48b8);
         RANK_SFX(DAT_143ac48c0);
     }
@@ -396,7 +396,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
-        pIntro->FUN_140f40f60(nValue);
+        pIntro->OnLose(nValue);
         RANK_SFX(DAT_143ac48c8);
         RANK_SFX(DAT_143ac48d0);
     }
@@ -406,7 +406,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
-        pIntro->FUN_140f40fd0(nValue);
+        pIntro->OnDraw(nValue);
         RANK_SFX(DAT_143ac48d8);
         RANK_SFX(DAT_143ac48e0);
     }
@@ -416,7 +416,7 @@ void CPvpRankDuelComponent::OnMessage(int nMessage, CInPacket& packet)
         UIEventIntroduce* pIntro = Unk_RankDialog<UIEventIntroduce>(0x4f06);
         if (pIntro == 0)
             return;
-        pIntro->FUN_140f41040(nValue);
+        pIntro->OnPerfect(nValue);
         RANK_SFX(DAT_143ac48e8);
         RANK_SFX(DAT_143ac48f0);
     }
@@ -459,7 +459,7 @@ bool CPvpRankDuelComponent::RequestCancelMatch()
     }
     COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
     packet.WriteUInt8(0x10);
-    FUN_1407105c0(&packet, 0x10, 1000);
+    SendPacketThrottled(&packet, 0x10, 1000);
     return true;
 }
 

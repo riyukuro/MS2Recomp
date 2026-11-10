@@ -50,15 +50,15 @@ class Unk_EmoPlayer : public CNpc                                               
 {
 };
 class CFameTable { public: int IsOfficerNpc(int nKind); CString GetSymbolByOfficerNpc(int nKind); };   // famegradedata.h's fame table
-class Unk_EmoNpcTable* FUN_140764010();
+class Unk_EmoNpcTable* GetFameTable();
 CString SelectStringByQuestId(int nQuestId, const CString& a, const CString& b, const CString& c, const CString& d);
 UIQuestEventDispatcher* FUN_140bfc4b0();
 class Unk_EmoUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 float FUN_1412762d0(const NiPoint3& pt);
 class GFxSceneService   // C3: member view for the former free stand-ins
@@ -72,8 +72,8 @@ class Unk_EmoClip : public ASGameEntity { };   // C3: FUN_1422bb870 (AScript) an
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
+    Scaleform::GFx::Value CreateEntity(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 // ASUIComponent::vfunc_24(bool) (validateNow) is slot 24 of the clip's vftable; ASGameEntity declares only 6 slots.
 class Unk_EmoClipSlots
@@ -86,13 +86,13 @@ public:
     virtual void vfunc_24(bool b);                                          // MS2: slot 24
 };
 class Unk_EmoPopupMgr { public: };
-UIEmoticon* FUN_141930440(int nUiId);
-unsigned int FUN_14192fe00(Unk_EmoPlayer* pPlayer);
+UIEmoticon* GetEmoticon(int nUiId);
+unsigned int GetNpcId(Unk_EmoPlayer* pPlayer);
 
-int FUN_14192e8f0();
+int InitNpcMovieNames();
 #ifndef MS2_HOOK_DLL
 // @0x14192e8f0
-int FUN_14192e8f0()
+int InitNpcMovieNames()
 {
     if (s_npcMovieNames.IsEmpty())
     {
@@ -114,22 +114,22 @@ int FUN_14192e8f0()
 }
 #endif
 
-CString FUN_14192ebf0(unsigned int nNpcId);
+CString GetNpcMovieName(unsigned int nNpcId);
 #ifndef MS2_HOOK_DLL
 // @0x14192ebf0
-CString FUN_14192ebf0(unsigned int nNpcId)
+CString GetNpcMovieName(unsigned int nNpcId)
 {
     CString strName;
     if (s_npcMovieNames.Lookup(nNpcId, strName))
         return strName;
-    if (((class CFameTable*)FUN_140764010())->IsOfficerNpc(nNpcId) != 0)
-        return Unk_SocketFormat("emoticon_movie_npc_{0}", ((class CFameTable*)FUN_140764010())->GetSymbolByOfficerNpc(nNpcId));
+    if (((class CFameTable*)GetFameTable())->IsOfficerNpc(nNpcId) != 0)
+        return Unk_SocketFormat("emoticon_movie_npc_{0}", ((class CFameTable*)GetFameTable())->GetSymbolByOfficerNpc(nNpcId));
     return CString("");
 }
 #endif
 
 // @0x14192ed20
-CString FUN_14192ed20(unsigned int nQuestId, int nKind)
+CString GetQuestMovieName(unsigned int nQuestId, int nKind)
 {
     CString strName;
     switch (nKind)
@@ -159,7 +159,7 @@ UIEmoticon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nA
     float fDefault = 400.0f;
     m_c0 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)GetClientConstants())->m_218)->Get(fDefault);
     m_54 = reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)GetClientConstants())->m_2600)->Read();
-    FUN_140bfc4b0()->FUN_141aa87c0(static_cast<UIQuestEventListener*>(this));
+    FUN_140bfc4b0()->AddListener(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd00(static_cast<UIStatusEventListener*>(this));
     FUN_14192f910();
 }
@@ -167,7 +167,7 @@ UIEmoticon::Entity::Entity(int nLayer, const Scaleform::GFx::Value& clip, int nA
 // @0x14192f0f0
 UIEmoticon::Entity::~Entity()
 {
-    FUN_140bfc4b0()->FUN_141aa8850(static_cast<UIQuestEventListener*>(this));
+    FUN_140bfc4b0()->RemoveListener(static_cast<UIQuestEventListener*>(this));
     TSingleton<UIStatusEventDispatcher>::GetInstance()->FUN_141b0cd90(static_cast<UIStatusEventListener*>(this));
 }
 
@@ -213,7 +213,7 @@ void UIEmoticon::Entity::vfunc_6(NiPoint3* pPos)
         return;
     if (m_38.get())
     {
-        *pPos *= ((class GFxManager*)(class Unk_EmoUIScale*)(((class Unk_EmoUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
+        *pPos *= ((class GFxManager*)(class Unk_EmoUIScale*)(((class Unk_EmoUIScale*)GetGFxManager())))->GetMovieScale(m_18);
         if (reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(pActor)) != 0)
         {
             pPos->y = pPos->y + *reinterpret_cast<Common::Constants::Value<float>*>(&((struct Unk_EmoCfg*)GetClientConstants())->m_638)->Get();
@@ -254,7 +254,7 @@ int UIEmoticon::Entity::vfunc_8(int n)
     MS2Ptr<Unk_PCBaseComp_aa8> sp = pActor->vfunc_85();
     if ((bool)sp.get() && ((UIHudEntity::Entity*)(void*)sp.operator->())->FUN_140f48d40() != 0 && FUN_1419305c0() == 0 && !bKind3)
         return 1;
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->FUN_1422b9ea0() != 0 || ((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x6200031)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->FUN_1422b9ea0() != 0 || ((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x6200031)
     {
         if (m_b0 != 2)
             return 1;
@@ -331,7 +331,7 @@ void UIEmoticon::Entity::FUN_14192f910()
     Unk_EmoPlayer* pPlayer = reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(FUN_140f49330()));
     if (pPlayer != 0)
     {
-        int nType = pPlayer->FUN_141093c60();
+        int nType = pPlayer->GetQuestState();
         if (nType != 4)
         {
             FUN_14192f8b0(1);
@@ -372,7 +372,7 @@ CString UIEmoticon::Entity::FUN_14192fa50()
     {
         Unk_EmoPlayer* pPlayer = reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(FUN_140f49330()));
         if (pPlayer != 0)
-            return FUN_14192ed20(pPlayer->FUN_141093c20(), pPlayer->FUN_141093c60());
+            return GetQuestMovieName(pPlayer->GetQuestId(), pPlayer->GetQuestState());
     }
     if (!m_b8.IsEmpty())
         return m_b8;
@@ -381,7 +381,7 @@ CString UIEmoticon::Entity::FUN_14192fa50()
         Unk_EmoPlayer* pPlayer = reinterpret_cast<Unk_EmoPlayer*>(efd::DynamicCast<CNpc, PCBase>(FUN_140f49330()));
         if (pPlayer != 0)
         {
-            CString strName = FUN_14192ebf0(FUN_14192fe00(pPlayer));
+            CString strName = GetNpcMovieName(GetNpcId(pPlayer));
             return strName;
         }
     }
@@ -400,7 +400,7 @@ void UIEmoticon::Entity::FUN_14192fbd0()
 UIEmoticon::UIEmoticon()
 {
     m_70 = "emoticon_entity_body";
-    FUN_14192e8f0();
+    InitNpcMovieNames();
 }
 
 // @0x14192fc80
@@ -418,35 +418,35 @@ CString UIEmoticon::GetTypeName()
 void UIEmoticon::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_14192fe20(m_68);
+    CreateEntityCache(m_68);
 }
 
 // @0x14192fd40
-MS2Ptr<UIEmoticon::Entity> FUN_14192fd40(int nActorId)
+MS2Ptr<UIEmoticon::Entity> GetEmoticonEntity(int nActorId)
 {
-    UIEmoticon* pUi = FUN_141930440(0x4e2f);
+    UIEmoticon* pUi = GetEmoticon(0x4e2f);
     if (pUi != 0)
-        return MS2Ptr<UIEmoticon::Entity>(pUi->FUN_141930000(nActorId));
+        return MS2Ptr<UIEmoticon::Entity>(pUi->GetOrCreateEntity(nActorId));
     return MS2Ptr<UIEmoticon::Entity>(0);
 }
 
 // @0x14192fdc0
-void FUN_14192fdc0(int nActorId)
+void RemoveEmoticonEntity(int nActorId)
 {
-    UIEmoticon* pUi = FUN_141930440(0x4e2f);
+    UIEmoticon* pUi = GetEmoticon(0x4e2f);
     if (pUi)
-        pUi->FUN_140f49c00(nActorId);
+        pUi->ReleaseEntity(nActorId);
 }
 
 // @0x14192fe00
-unsigned int FUN_14192fe00(Unk_EmoPlayer* pPlayer)
+unsigned int GetNpcId(Unk_EmoPlayer* pPlayer)
 {
     unsigned int nNpcId = pPlayer->FUN_1410937b0();
     return nNpcId;
 }
 
 // @0x14192fe20
-void UIEmoticon::FUN_14192fe20(unsigned int nCount)
+void UIEmoticon::CreateEntityCache(unsigned int nCount)
 {
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
@@ -468,12 +468,12 @@ void UIEmoticon::FUN_14192fe20(unsigned int nCount)
 }
 
 // @0x141930000
-UIEmoticon::Entity* UIEmoticon::FUN_141930000(int nActorId)
+UIEmoticon::Entity* UIEmoticon::GetOrCreateEntity(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     {
-        FUN_140f49c00(nActorId);
+        ReleaseEntity(nActorId);
         MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pClip.get())
         {
@@ -481,7 +481,7 @@ UIEmoticon::Entity* UIEmoticon::FUN_141930000(int nActorId)
             {
                 bool bFlag = FUN_140930110(nActorId);
                 bFlag = false;
-                Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+                Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
                 if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
                 {
                     Entity* p = new Entity(m_28, v, nActorId);
@@ -508,7 +508,7 @@ UIEmoticon::Entity* UIEmoticon::FUN_141930000(int nActorId)
                         {
                             MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                             if (pOldClip.get())
-                                ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_EmoClip*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                                ((Unk_BannerClip*)pClip.operator->())->UpdateEntity("updateEntity", ((Unk_EmoClip*)pOldClip.operator->())->GetValue(), bNew);
                         }
                     }
                     pEntity->FUN_140f48ce0(nActorId);
@@ -522,7 +522,7 @@ UIEmoticon::Entity* UIEmoticon::FUN_141930000(int nActorId)
 }
 
 // @0x141930440
-UIEmoticon* FUN_141930440(int nUiId)
+UIEmoticon* GetEmoticon(int nUiId)
 {
     if (reinterpret_cast<Unk_EmoPopupMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -542,10 +542,10 @@ int UIEmoticon::Entity::FUN_1419305c0()
 // @0x1419305f0
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
-// Hooks. Not hooked: the ctors/dtors, FUN_14192e8f0/FUN_14192ebf0 (read the unit's mutable name table, which the exe fills),
-// everything that reaches FUN_14192ebf0 (vfunc_5, vfunc_8, FUN_14192f910/f9f0/fa50), and everything that constructs an
-// Entity (OnLoadComplete, FUN_14192fe20, FUN_141930000, FUN_14192fd40: the DLL would build it with its own vftables) or
-// dynamic_casts to UIEmoticon (FUN_141930440, FUN_14192fdc0). FUN_14192ed20 returns a CString by value (free-function thunk).
+// Hooks. Not hooked: the ctors/dtors, InitNpcMovieNames/GetNpcMovieName (read the unit's mutable name table, which the exe fills),
+// everything that reaches GetNpcMovieName (vfunc_5, vfunc_8, FUN_14192f910/f9f0/fa50), and everything that constructs an
+// Entity (OnLoadComplete, CreateEntityCache, GetOrCreateEntity, GetEmoticonEntity: the DLL would build it with its own vftables) or
+// dynamic_casts to UIEmoticon (GetEmoticon, RemoveEmoticonEntity). GetQuestMovieName returns a CString by value (free-function thunk).
 MS2_REPLACE_METHOD(0x14192F200, UIEmoticon::Entity, vfunc_2, 24, 0xADD81F8D);
 MS2_REPLACE_METHOD(0x14192F220, UIEmoticon::Entity, vfunc_3, 40, 0xFD9E64B7);
 MS2_REPLACE_METHOD(0x14192F250, UIEmoticon::Entity, vfunc_4, 66, 0xD138675A);
@@ -562,5 +562,5 @@ MS2_REPLACE_METHOD(0x14192F8B0, UIEmoticon::Entity, FUN_14192f8b0, 25, 0x343F531
 MS2_REPLACE_METHOD(0x14192F8D0, UIEmoticon::Entity, FUN_14192f8d0, 44, 0xEF7CAE5C);
 MS2_REPLACE_METHOD(0x14192FBD0, UIEmoticon::Entity, FUN_14192fbd0, 55, 0xB872E151);
 MS2_REPLACE_METHOD(0x14192FCC0, UIEmoticon, GetTypeName, 61, 0x7392FE94);
-MS2_REPLACE(0x14192FE00, FUN_14192fe00, 32, 0x18CD16A5);
+MS2_REPLACE(0x14192FE00, GetNpcId, 32, 0x18CD16A5);
 MS2_REPLACE_METHOD(0x1419305C0, UIEmoticon::Entity, FUN_1419305c0, 47, 0x1858A2DC);

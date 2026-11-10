@@ -15,7 +15,7 @@
 
 class CInPacket;
 class TiXmlElement;
-CString FUN_14016a5c0(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
 
 class CGloabalFactor : public TSingleton<CGloabalFactor>, public CValidData<CGloabalFactor>
 {
@@ -32,10 +32,10 @@ public:
     bool FUN_1404c12f0();                                    // 0x1404c12f0 every experience rate 1.0
     bool FUN_1404c1370();                                    // 0x1404c1370 every meso rate 1.0
     bool LoadMultiControl();                                   // 0x1404c1400 Table/multicontrol.xml
-    float FUN_1404c1730(unsigned int nLevel, int nKind);    // 0x1404c1730 meso rate (1.0 outside 1..max level)
+    float GetMesoRate(unsigned int nLevel, int nKind);    // 0x1404c1730 meso rate (1.0 outside 1..max level)
     float FUN_1404c17a0(unsigned int nLevel, int nKind);    // 0x1404c17a0 experience rate
-    float FUN_1404c1810(int nType, int nGroupId);           // 0x1404c1810 multi control factor of a group (1.0: none)
-    void FUN_1404c18c0(CInPacket& packet);                  // 0x1404c18c0 reads both rate tables from the server
+    float GetMultiControlFactor(int nType, int nGroupId);           // 0x1404c1810 multi control factor of a group (1.0: none)
+    void ReadRates(CInPacket& packet);                  // 0x1404c18c0 reads both rate tables from the server
 
     // @0x1404c3ed0
     static void CheckInit()
@@ -43,7 +43,7 @@ public:
         if (!s_bInit)
         {
             CString msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CGloabalFactor).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(CGloabalFactor).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }

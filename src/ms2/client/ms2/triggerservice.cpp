@@ -143,16 +143,16 @@ class UITypingGameDialog : public UIDialog
 {
 public:
     virtual void vfunc_84();
-    void FUN_140ee57b0(int nA, int nB);
+    void SetCountAndLimit(int nA, int nB);
 };
-class UITriggerEditorDialog { public: int FUN_141b2b7e0(MS2Ptr<CFileBuffer> spBuffer); };   // C3: member view (uitriggereditordialog.h); 0x141b2b7e0 shows a downloaded script
+class UITriggerEditorDialog { public: int LoadTriggerScript(MS2Ptr<CFileBuffer> spBuffer); };   // C3: member view (uitriggereditordialog.h); 0x141b2b7e0 shows a downloaded script
 template <class T> T* Unk_FcDialog(int nId);   // C3: the dialog of a UI id (functioncubeobject.cpp)
 class Unk_TrigHintUI : public UITriggerTimerDialog { };
 class UITriggerTimerDialog* FindTimerDialog(int);   // C3: was FUN_140ee6300
 class Unk_TrigTalkUI : public UISidePopupTalk { };
 template <class T> T* Unk_GaGetUI(int nId);
 class UICutSceneMovie* FindCutSceneMovie(int);
-void* FUN_14136f3e0(int);   // C3: was FUN_14136f3e0
+void* FindGuideEvent(int);   // C3: was FindGuideEvent
 
 // The pvp observer popup (id 0x4e96) takes one of two record blocks read from the packet.
 struct Unk_TrigPvpA
@@ -378,10 +378,10 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
         OnCameraObjects(pEvent);
         break;
     case 6:
-        FUN_141861c20(pEvent);
+        OnTargetLookCenterCamera(pEvent);
         break;
     case 7:
-        FUN_141861f30(pEvent);
+        OnCameraFadeOff(pEvent);
         break;
     case 0xc:
         OnTextPopup(pEvent);
@@ -405,7 +405,7 @@ void CTriggerService::FUN_141861840(CInPacket* pEvent)
         WorldService::GetInstance()->FUN_141bd4670(pEvent);
         break;
     case 0x13:
-        FUN_1418629b0(pEvent);
+        OnSidePopupTalk(pEvent);
         break;
     case 0x14:
         FUN_141862d30(pEvent);
@@ -444,11 +444,11 @@ void CTriggerService::OnCameraObjects(CInPacket* pEvent)
     for (int i = 0; i < nCount; i++)
         aObjects.Add(pEvent->ReadInt32());
     int bEnd = pEvent->ReadUInt8();
-    FUN_141863340(aObjects, bEnd);
+    QueueCameraSteps(aObjects, bEnd);
 }
 
 // @0x141861c20
-void CTriggerService::FUN_141861c20(CInPacket* pEvent)
+void CTriggerService::OnTargetLookCenterCamera(CInPacket* pEvent)
 {
     int nSub = pEvent->ReadUInt8();
     switch (nSub)
@@ -469,8 +469,8 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
         if (pMode == 0)
             break;
         pMode->FUN_140a4e0d0(ptCenter);
-        pMode->FUN_140a4e150(fOuter);
-        pMode->FUN_140a4e1d0(fInner);
+        pMode->SetOuterRadius(fOuter);
+        pMode->SetInnerRadius(fInner);
         break;
     }
     case 1:
@@ -492,14 +492,14 @@ void CTriggerService::FUN_141861c20(CInPacket* pEvent)
         if (pMode == 0)
             break;
         pMode->FUN_140a4e110(fAngle);
-        pMode->FUN_140a4e200(bFixed);
+        pMode->SetUseFixedYaw(bFixed);
         break;
     }
     }
 }
 
 // @0x141861f30
-void CTriggerService::FUN_141861f30(CInPacket*)
+void CTriggerService::OnCameraFadeOff(CInPacket*)
 {
     FUN_141863460(0.0f);
 }
@@ -520,7 +520,7 @@ void CTriggerService::OnTextPopup(CInPacket* pEvent)
     spBuffer->SetText(strWide);
     UITriggerEditorDialog* pUi = Unk_FcDialog<UITriggerEditorDialog>(0x4e6b);
     if (pUi != 0)
-        pUi->FUN_141b2b7e0(spBuffer);   // copy 0x1403a58f0
+        pUi->LoadTriggerScript(spBuffer);   // copy 0x1403a58f0
 }
 
 // @0x141862110
@@ -541,11 +541,11 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
             Unk_TrigHintUI* pUi = ((class Unk_TrigHintUI*)FindTimerDialog(0x4e95));
             if (pUi != 0)
             {
-                pUi->FUN_141b334d0(nD);
+                pUi->SetOffsetY(nD);
                 if (strCompare == "TR")
-                    pUi->FUN_141b33510(6);
+                    pUi->SetAlign(6);
                 else
-                    pUi->FUN_141b33510(1);
+                    pUi->SetAlign(1);
             }
         }
         else
@@ -566,11 +566,11 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         {
             if (kBlock.m_0 == 0 || kBlock.m_20 == 0)
             {
-                pUi->FUN_141a92c80();
+                pUi->StartClosingUI();
             }
             else
             {
-                pUi->FUN_141a91940(reinterpret_cast<const Unk_PvPObsInfo&>(kBlock));
+                pUi->SetNormalMatchInfo(reinterpret_cast<const Unk_PvPObsInfo&>(kBlock));
                 (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e96)));
             }
         }
@@ -588,11 +588,11 @@ void CTriggerService::FUN_141862110(CInPacket* pEvent)
         {
             if (kBlock.m_0 == 0 || kBlock.m_20 == 0)
             {
-                pUi->FUN_141a92c80();
+                pUi->StartClosingUI();
             }
             else
             {
-                pUi->FUN_141a91a30(reinterpret_cast<const Unk_PvPObsInfo&>(kBlock));
+                pUi->SetDuelMatchInfo(reinterpret_cast<const Unk_PvPObsInfo&>(kBlock));
                 (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e96)));
             }
         }
@@ -638,7 +638,7 @@ void CTriggerService::FUN_1418627c0(CInPacket* pEvent)
         FUN_141863b70(pEvent);
         break;
     case 5:
-        FUN_141863c50(pEvent);
+        StopCutScene(pEvent);
         break;
     case 2:
         FUN_141863cc0(pEvent);
@@ -647,7 +647,7 @@ void CTriggerService::FUN_1418627c0(CInPacket* pEvent)
         FUN_141863d80(pEvent);
         break;
     case 1:
-        FUN_141863df0(pEvent);
+        AddGuideTrigger(pEvent);
         break;
     case 7:
         FUN_141863e50(pEvent);
@@ -680,7 +680,7 @@ void CTriggerService::FUN_141862930(CInPacket* pEvent)
 
 // Side popup talk (UI 0x4f57).
 // @0x1418629b0
-void CTriggerService::FUN_1418629b0(CInPacket* pEvent)
+void CTriggerService::OnSidePopupTalk(CInPacket* pEvent)
 {
     unsigned nKind = pEvent->ReadUInt8();
     int nNpc = pEvent->ReadInt32();
@@ -700,7 +700,7 @@ void CTriggerService::FUN_1418629b0(CInPacket* pEvent)
         spParam->m_strText = ((class Unk_TextFilter*)((class Unk_PatchTextOwner*)(class Unk_TextFilter*)(reinterpret_cast<Unk_TextFilter*>(TSingleton<CServerString>::GetInstance())))->FUN_140a87690())->GetString(strText);
         spParam->m_strSound = strSound;
         spParam->m_strScript = strScript;
-        pUi->FUN_140e879a0(spParam);
+        pUi->ShowPopup(spParam);
     }
 }
 
@@ -752,9 +752,9 @@ void CTriggerService::FUN_141862ff0(int nType, CInPacket* pEvent)
     WorldService::GetInstance()->FUN_141bdad00(nType, reinterpret_cast<Unk_WsD_Msg*>(pEvent));
 }
 
-// The typing game dialog (UI 0x4f89); the exe's cast helper is FUN_1418644d0.
+// The typing game dialog (UI 0x4f89); the exe's cast helper is FindTypingGameDialog.
 // @0x1418644d0
-static UITypingGameDialog* FUN_1418644d0(int nId)
+static UITypingGameDialog* FindTypingGameDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance() != 0)
     {
@@ -770,12 +770,12 @@ void CTriggerService::OnTypingGame(CInPacket* pEvent)
 {
     int nA = pEvent->ReadInt32();
     int nB = pEvent->ReadInt32();
-    UITypingGameDialog* pDialog = FUN_1418644d0(0x4f89);
+    UITypingGameDialog* pDialog = FindTypingGameDialog(0x4f89);
     if (pDialog != 0)
     {
         if (pDialog->FUN_141924630() != 0)
             pDialog->vfunc_67();
-        pDialog->FUN_140ee57b0(nA, nB);
+        pDialog->SetCountAndLimit(nA, nB);
         pDialog->vfunc_84();
     }
 }
@@ -793,11 +793,11 @@ bool CTriggerService::ObjectContains(int nObject, const Vector3& pt)
 // @0x1418631a0
 void CTriggerService::FUN_1418631a0()
 {
-    FUN_141863260();
+    RunNextCameraStep();
 }
 
 // @0x1418631c0
-void CTriggerService::FUN_1418631c0()
+void CTriggerService::ClearCameraSteps()
 {
     m_listCamera.RemoveAll();
 }
@@ -810,12 +810,12 @@ void CTriggerService::QueueCameraStep(int nObject, int bStart)
     kStep.m_bStart = bStart;
     m_listCamera.AddTail(kStep);
     if (TSingleton<CameraMgr>::GetInstance()->GetModeType() != 3)
-        FUN_141863260();
+        RunNextCameraStep();
 }
 
 // Run the next queued camera step.
 // @0x141863260
-void CTriggerService::FUN_141863260()
+void CTriggerService::RunNextCameraStep()
 {
     if (m_listCamera.IsEmpty())
         return;
@@ -830,7 +830,7 @@ void CTriggerService::FUN_141863260()
 }
 
 // @0x141863340
-void CTriggerService::FUN_141863340(const ATL::CAtlArray<int>& aObjects, int bEnd)
+void CTriggerService::QueueCameraSteps(const ATL::CAtlArray<int>& aObjects, int bEnd)
 {
     m_listCamera.RemoveAll();
     if (aObjects.IsEmpty())
@@ -911,7 +911,7 @@ void CTriggerService::FUN_141863630(int nId, bool bAdd, CStringA strName)
 
 // Collect the ids of the objects whose FlatModel contains the model.
 // @0x1418637a0
-bool CTriggerService::FUN_1418637a0(const unsigned& rModel, std::vector<int>& rIds)
+bool CTriggerService::FindObjectsByModel(const unsigned& rModel, std::vector<int>& rIds)
 {
     rIds.clear();
     for (POSITION pos = m_mapObjects.GetHeadPosition(); pos; m_mapObjects.GetNext(pos))
@@ -975,7 +975,7 @@ void CTriggerService::FUN_141863b70(CInPacket* pEvent)
 }
 
 // @0x141863c50
-void CTriggerService::FUN_141863c50(CInPacket* pEvent)
+void CTriggerService::StopCutScene(CInPacket* pEvent)
 {
     int nCutScene = pEvent->ReadInt32();
     UICutSceneMovie* pMovie = ((class UICutSceneMovie*)FindCutSceneMovie(0x4e7e));
@@ -989,22 +989,22 @@ void CTriggerService::FUN_141863cc0(CInPacket* pEvent)
     unsigned nA = pEvent->ReadInt32();
     unsigned nB = pEvent->ReadInt32();
     int nC = pEvent->ReadInt32();
-    UIGuideEvent* pGuide = ((class UIGuideEvent*)FUN_14136f3e0(0x4e53));
+    UIGuideEvent* pGuide = ((class UIGuideEvent*)FindGuideEvent(0x4e53));
     if (pGuide != 0)
-        pGuide->FUN_14195ab40(nA, nB, nC);
+        pGuide->ShowSummary(nA, nB, nC);
 }
 
 // @0x141863d80
 void CTriggerService::FUN_141863d80(CInPacket* pEvent)
 {
     int nA = pEvent->ReadInt32();
-    UIGuideEvent* pGuide = ((class UIGuideEvent*)FUN_14136f3e0(0x4e53));
+    UIGuideEvent* pGuide = ((class UIGuideEvent*)FindGuideEvent(0x4e53));
     if (pGuide != 0)
         pGuide->HideSummary(nA);
 }
 
 // @0x141863df0
-void CTriggerService::FUN_141863df0(CInPacket* pEvent)
+void CTriggerService::AddGuideTrigger(CInPacket* pEvent)
 {
     int nId = pEvent->ReadInt32();
     ((CGuideManager*)FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0x15, nId, 0);

@@ -33,8 +33,8 @@ UIDarkStreamScoreDialog::UIDarkStreamScoreDialog()
     m_nOffsetY = 0;
     m_nAlign = 1;
     m_80 = 0;
-    FUN_141924170(1);
-    FUN_141925e70(1, 1);
+    SetTweenEnabled(1);
+    SetFlag(1, 1);
 }
 
 // @0x140f353f0
@@ -85,20 +85,20 @@ void UIDarkStreamScoreDialog::vfunc_85()
 MS2_REPLACE_METHOD(0x140F355D0, UIDarkStreamScoreDialog, vfunc_85, 134, 0xA0CA5A42);
 
 // @0x140f35660
-void UIDarkStreamScoreDialog::FUN_140f35660(int nOffsetY)
+void UIDarkStreamScoreDialog::SetOffsetY(int nOffsetY)
 {
     m_nOffsetY = nOffsetY;
     vfunc_43();
 }
-MS2_REPLACE_METHOD(0x140F35660, UIDarkStreamScoreDialog, FUN_140f35660, 52, 0x38C50FB3);
+MS2_REPLACE_METHOD(0x140F35660, UIDarkStreamScoreDialog, SetOffsetY, 52, 0x38C50FB3);
 
 // @0x140f356a0
-void UIDarkStreamScoreDialog::FUN_140f356a0(int nAlign)
+void UIDarkStreamScoreDialog::SetAlign(int nAlign)
 {
     m_nAlign = nAlign;
     vfunc_43();
 }
-MS2_REPLACE_METHOD(0x140F356A0, UIDarkStreamScoreDialog, FUN_140f356a0, 52, 0xAD6E7DF7);
+MS2_REPLACE_METHOD(0x140F356A0, UIDarkStreamScoreDialog, SetAlign, 52, 0xAD6E7DF7);
 
 // @0x140f356e0 Invoke(name, int, bool)
 Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, bool a2)

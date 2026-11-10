@@ -39,7 +39,7 @@ struct Unk_PartyBits : Unk_Bitset8 {
     bool FUN_140b912f0();
     bool FUN_140b91330();                   // none(): !FUN_140b912f0() (uipcbangdialog.cpp)
     unsigned FUN_140b91370();               // size(): 8 (unit_140b8e760)
-    Unk_PartyBits& FUN_140837500();         // reset (statesyncobject.cpp)
+    Unk_PartyBits& Reset();         // reset (statesyncobject.cpp)
     void FUN_1402e69d0(unsigned nBit, bool bSet);
 };
 MS2_CHECK_SIZE(Unk_PartyBits, 1);

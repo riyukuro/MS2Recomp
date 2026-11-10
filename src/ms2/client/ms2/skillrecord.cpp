@@ -25,7 +25,7 @@
 int GetServerTick();   // C3: was GetServerTick
 
 bool FUN_14028d470(float fValue, float fTolerance);         // commonutil: nearly equal
-float FUN_14028d3a0(float fPercent);                        // commonutil: percent to rate
+float FromPercent(float fPercent);                        // commonutil: percent to rate
 
 // A field object (FieldObject / Actor / PCBase; only the casts and the members below are used).
 class Unk_SrEntity;
@@ -65,14 +65,14 @@ struct Unk_SrBuffLevel
 // ---- SkillTargetRecord ----
 
 // @0x141758d70
-bool SkillTargetRecord::FUN_141758d70(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId,
+bool SkillTargetRecord::Init(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId,
     int nCasterId, int nSkillId, short nLevel, int nMotion, Vector3 ptDir, int n80, int n84,
     int nAttack, int n8c)
 {
     m_spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
     if (m_spSkill == 0)
         return false;
-    m_spLevel = m_spSkill->FUN_1407e90a0(nLevel);
+    m_spLevel = m_spSkill->GetLevelData(nLevel);
     if (m_spLevel == 0)
         return false;
     m_spLinked = 0;
@@ -94,13 +94,13 @@ bool SkillTargetRecord::FUN_141758d70(unsigned long long nTagId, unsigned long l
 // @0x141759010
 SkillMotionData* SkillTargetRecord::GetMotionData()
 {
-    return m_spLevel->FUN_140803f00(m_nMotion);
+    return m_spLevel->GetMotion(m_nMotion);
 }
 
 // @0x141759050
 SkillAttackData* SkillTargetRecord::GetAttackData()
 {
-    return m_spLevel->FUN_140803f60(m_nMotion, m_nAttack);
+    return m_spLevel->GetAttack(m_nMotion, m_nAttack);
 }
 
 // @0x141759090
@@ -110,7 +110,7 @@ int SkillTargetRecord::FUN_141759090()
 }
 
 // @0x1417590d0
-const CString& SkillTargetRecord::FUN_1417590d0()
+const CString& SkillTargetRecord::GetArrowEffect()
 {
     static CString s_strEmpty;
     SkillAttackData* pAttack = GetAttackData();
@@ -122,7 +122,7 @@ const CString& SkillTargetRecord::FUN_1417590d0()
 }
 
 // @0x141758fb0
-unsigned SkillTargetRecord::FUN_141758fb0()
+unsigned SkillTargetRecord::GetSkillId()
 {
     return m_spSkill->GetId();
 }
@@ -151,7 +151,7 @@ void SkillTargetRecord::FUN_1417591b0()
         if (nState == 0x10) {
             Unk_SrState* pState = reinterpret_cast<Unk_SrState*>(pMe->FUN_14166ccb0());
             if (pState != 0)
-                pState->FUN_1417ecc10(Unk_MagicTagPtr(reinterpret_cast<Unk_FcTag*>(this)));   // Unk_MagicTag is this class
+                pState->ArmPauseFromTag(Unk_MagicTagPtr(reinterpret_cast<Unk_FcTag*>(this)));   // Unk_MagicTag is this class
         }
     }
 }
@@ -177,7 +177,7 @@ bool CSkillRecord::Init(Unk_InventorySkillRequest& kReq)
     m_spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(kReq.m_nSkillId);
     if (m_spSkill == 0)
         return false;
-    m_spLevel = m_spSkill->FUN_1407e90a0(kReq.m_nLevel);
+    m_spLevel = m_spSkill->GetLevelData(kReq.m_nLevel);
     if (m_spLevel == 0)
         return false;
     m_nTick = kReq.m_nTick;
@@ -197,7 +197,7 @@ bool CSkillRecord::Init(Unk_InventorySkillRequest& kReq)
 // @0x141759830
 SkillMotionData* CSkillRecord::GetMotionData()
 {
-    return m_spLevel ? m_spLevel->FUN_140803f00(m_nMotion) : 0;
+    return m_spLevel ? m_spLevel->GetMotion(m_nMotion) : 0;
 }
 
 // @0x1417598a0
@@ -237,11 +237,11 @@ __int64 CSkillRecord::FUN_1417599c0()
 }
 
 // @0x1417599e0
-__int64 CSkillRecord::FUN_1417599e0()
+__int64 CSkillRecord::GetCooldownKey()
 {
     if (m_spLevel == 0)
         return 0;
-    return m_spLevel->FUN_140804c90(m_nMotion);
+    return m_spLevel->GetMotionKey(m_nMotion);
 }
 
 // @0x141759a50
@@ -249,7 +249,7 @@ bool CSkillRecord::FUN_141759a50()
 {
     if (m_spLevel == 0)
         return false;
-    SkillMotionData* pMotion = m_spLevel->FUN_140803f00(m_nMotion);
+    SkillMotionData* pMotion = m_spLevel->GetMotion(m_nMotion);
     if (pMotion == 0)
         return false;
     return pMotion->m_bA0;
@@ -280,7 +280,7 @@ float CSkillRecord::FUN_141759b60(double dDelta)
     float fResult = 0;
     float fRate = FUN_14028d470(pMotion->m_fB8, 0) ? pMotion->m_fAC : pMotion->m_fB8;
     fRate = FUN_14028d470(m_fCooldown, 0) ? fRate : m_fCooldown;
-    fRate = FUN_14028d3a0(fRate);
+    fRate = FromPercent(fRate);
     if (m_fDuration > 0 && m_fElapsed < m_fDuration) {
         float fStep = (float)dDelta;
         if (m_fElapsed + fStep > m_fDuration)
@@ -316,7 +316,7 @@ int CSkillRecord::FUN_141759e40()
 {
     if (m_bEnd)
         return 1;
-    if (m_nMotion + m_nAttack >= m_spLevel->FUN_140804270())
+    if (m_nMotion + m_nAttack >= m_spLevel->GetMotionCount())
         return 1;
     else
         return 0;
@@ -327,7 +327,7 @@ int CSkillRecord::IsEndedOrLastMotion()
 {
     if (m_bEnd)
         return 1;
-    if (m_nMotion + 1 >= m_spLevel->FUN_140804270())
+    if (m_nMotion + 1 >= m_spLevel->GetMotionCount())
         return 1;
     else
         return 0;
@@ -336,7 +336,7 @@ int CSkillRecord::IsEndedOrLastMotion()
 // @0x141759f20
 int CSkillRecord::IsLastMotion()
 {
-    if (m_nMotion + 1 >= m_spLevel->FUN_140804270())
+    if (m_nMotion + 1 >= m_spLevel->GetMotionCount())
         return 1;
     else
         return 0;
@@ -363,13 +363,13 @@ void CSkillRecord::FUN_141759fe0()
 // @0x14175a000
 SkillAttackData* CSkillRecord::GetCurrentAttackData()
 {
-    return m_spLevel->FUN_140803f60(m_nMotion, m_nAttackIndex);
+    return m_spLevel->GetAttack(m_nMotion, m_nAttackIndex);
 }
 
 // @0x14175a050
 SkillAttackData* CSkillRecord::GetAttackDataAt(int nAttack)
 {
-    return m_spLevel->FUN_140803f60(m_nMotion, nAttack);
+    return m_spLevel->GetAttack(m_nMotion, nAttack);
 }
 
 // @0x14175a0a0
@@ -474,7 +474,7 @@ int CDamageRecord::Init(unsigned long long nTagId, unsigned long long nTagSub, i
     m_nSkillId = nSkillId;
     m_nLevel = nLevel;
     m_spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
-    m_spLevel = m_spSkill->FUN_1407e90a0(nLevel);
+    m_spLevel = m_spSkill->GetLevelData(nLevel);
     m_nMotion = nMotion;
     m_nAttack = nAttack;
     m_ptPos = ptPos;
@@ -486,7 +486,7 @@ int CDamageRecord::Init(unsigned long long nTagId, unsigned long long nTagSub, i
 }
 
 // @0x14175a820
-SkillData* CDamageRecord::FUN_14175a820()
+SkillData* CDamageRecord::GetSkillData()
 {
     return m_spSkill.get();
 }
@@ -494,13 +494,13 @@ SkillData* CDamageRecord::FUN_14175a820()
 // @0x14175a850
 SkillMotionData* CDamageRecord::GetMotionData()
 {
-    return m_spLevel ? m_spLevel->FUN_140803f00(m_nMotion) : 0;
+    return m_spLevel ? m_spLevel->GetMotion(m_nMotion) : 0;
 }
 
 // @0x14175a8b0
 SkillAttackData* CDamageRecord::GetAttackData()
 {
-    return m_spLevel ? m_spLevel->FUN_140803f60(m_nMotion, m_nAttack) : 0;
+    return m_spLevel ? m_spLevel->GetAttack(m_nMotion, m_nAttack) : 0;
 }
 
 // @0x14175a920
@@ -577,7 +577,7 @@ int CDamageRecord::FUN_14175acc0()
 }
 
 // @0x14175ad50
-int CDamageRecord::FUN_14175ad50()
+int CDamageRecord::GetAttackMaterial()
 {
     int nMaterial = 1;
     Unk_SrEntity* pOwner = reinterpret_cast<Unk_SrEntity*>(WorldService::GetInstance()->FUN_141bd1200(m_nOwnerId));
@@ -602,7 +602,7 @@ int CDamageRecord::FUN_14175ad50()
 }
 
 // @0x14175aeb0
-unsigned __int64 CDamageRecord::FUN_14175aeb0()
+unsigned __int64 CDamageRecord::GetDamageCount()
 {
     return m_damages.GetCount();
 }
@@ -683,7 +683,7 @@ int CSplashDamageRecord::Init(int nCasterId, int nOwnerId, unsigned long long nT
     m_nSkillId = nSkillId;
     m_nLevel = nLevel;
     m_spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
-    m_spLevel = m_spSkill->FUN_1407e90a0(nLevel);
+    m_spLevel = m_spSkill->GetLevelData(nLevel);
     m_nMotion = nMotion;
     m_nAttack = nAttack;
     m_ptPos = ptPos;

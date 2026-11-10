@@ -27,15 +27,15 @@ class Unk_PopupEntity : public ASGameEntity
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9470(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
+    Scaleform::GFx::Value CreateEntity(const char* szMethod, int a1, CString a2, bool a3);      // "createEntity"
+    Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
 class Unk_PopupUIScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 float FUN_1412762d0(const NiPoint3& pt);
 class Unk_PopupActor : public PC
@@ -51,7 +51,7 @@ CStringW FUN_14016a730(const char* sz, int nFlags);                         // F
 bool FUN_140930110(int nActorId);
 class Unk_PopupUIMgr { public: };
 unsigned int FUN_140a35ca0(struct MS2Tick*);   // C3: was FUN_140a35ca0
-UIPopupProfileImage* FUN_141a90250(int nUiId);
+UIPopupProfileImage* GetPopupProfileImage(int nUiId);
 int FUN_141a8fc10(Common::Constants::Value<MS2Tick>* pCfg);
 
 // @0x141a8f3a0
@@ -100,8 +100,8 @@ void UIPopupProfileImage::Entity::vfunc_5()
     {
         AScript info(m_18);
         CString strPath = FUN_141028be0(((class PCBase*)(class PCBase*)(pPc))->FUN_141656a80(), ((Unk_PopupActor*)pPc)->FUN_1416612e0(), 1, CString(""));
-        info.FUN_1407cbb20("imgPath", FUN_14016a730((const char*)strPath, 0));
-        info.FUN_1407cb9c0("dead", ((Unk_PopupActor*)pPc)->IsDead());
+        info.SetWStringMember("imgPath", FUN_14016a730((const char*)strPath, 0));
+        info.SetIntMember("dead", ((Unk_PopupActor*)pPc)->IsDead());
         m_38->Invoke("open", info);
         float fScale = (float)*GetClientConstants()->PassengerProfileImageSize.Get();
         float fSize = (fScale / 64.0f) * 100.0f;
@@ -114,7 +114,7 @@ void UIPopupProfileImage::Entity::vfunc_6(NiPoint3* pPos)
 {
     if (m_38.get())
     {
-        *pPos *= ((class GFxManager*)(class Unk_PopupUIScale*)(((class Unk_PopupUIScale*)FUN_14025e7a0())))->FUN_1422afec0(m_18);
+        *pPos *= ((class GFxManager*)(class Unk_PopupUIScale*)(((class Unk_PopupUIScale*)GetGFxManager())))->GetMovieScale(m_18);
         pPos->y = pPos->y + vfunc_9();
         pPos->y = pPos->y + FUN_1412762d0(static_cast<const NiPoint3&>(vfunc_10()));
         ((Unk_PopupEntity*)m_38.operator->())->SetPositionFloat(pPos->x, pPos->y);
@@ -137,7 +137,7 @@ int UIPopupProfileImage::Entity::vfunc_8(int n)
     PCBase* pActor = (PCBase*)FUN_140f49330();
     if (pActor == 0)
         return 1;
-    if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001e)
+    if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x620001e)
         return 1;
     MS2Ptr<Unk_PCBaseComp_aa8> sp = pActor->vfunc_85();
     if ((bool)sp.get() && ((UIHudEntity::Entity*)(void*)sp.operator->())->FUN_140f48d40() != 0)
@@ -166,24 +166,24 @@ CString UIPopupProfileImage::GetTypeName()
 void UIPopupProfileImage::OnLoadComplete()
 {
     UIObject::OnLoadComplete();
-    FUN_141a8fc30(m_68);
+    CreateEntityCache(m_68);
 }
 
 // @0x141a8fb50
-MS2Ptr<UIPopupProfileImage::Entity> FUN_141a8fb50(int nActorId)
+MS2Ptr<UIPopupProfileImage::Entity> GetProfileImageEntity(int nActorId)
 {
-    UIPopupProfileImage* pBar = FUN_141a90250(0x4e57);
+    UIPopupProfileImage* pBar = GetPopupProfileImage(0x4e57);
     if (pBar != 0)
-        return MS2Ptr<UIPopupProfileImage::Entity>(pBar->FUN_141a8fe10(nActorId));
+        return MS2Ptr<UIPopupProfileImage::Entity>(pBar->GetEntity(nActorId));
     return MS2Ptr<UIPopupProfileImage::Entity>(0);
 }
 
 // @0x141a8fbd0
 void FUN_141a8fbd0(int nActorId)
 {
-    UIPopupProfileImage* pBar = FUN_141a90250(0x4e57);
+    UIPopupProfileImage* pBar = GetPopupProfileImage(0x4e57);
     if (pBar)
-        pBar->FUN_140f49c00(nActorId);
+        pBar->ReleaseEntity(nActorId);
 }
 
 // @0x141a8fc10
@@ -193,7 +193,7 @@ int FUN_141a8fc10(Common::Constants::Value<MS2Tick>* pCfg)
 }
 
 // @0x141a8fc30
-void UIPopupProfileImage::FUN_141a8fc30(unsigned int nCount)
+void UIPopupProfileImage::CreateEntityCache(unsigned int nCount)
 {
     MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
     if (pClip.get())
@@ -215,12 +215,12 @@ void UIPopupProfileImage::FUN_141a8fc30(unsigned int nCount)
 }
 
 // @0x141a8fe10
-UIPopupProfileImage::Entity* UIPopupProfileImage::FUN_141a8fe10(int nActorId)
+UIPopupProfileImage::Entity* UIPopupProfileImage::GetEntity(int nActorId)
 {
-    if (FUN_140f49890(nActorId) != 0)
+    if (IsActorGone(nActorId) != 0)
         return 0;
     {
-        FUN_140f49c00(nActorId);
+        ReleaseEntity(nActorId);
         MS2Ptr<ASGameEntity> pClip(dynamic_cast<ASGameEntity*>((AScript*)m_30));
         if (pClip.get())
         {
@@ -228,7 +228,7 @@ UIPopupProfileImage::Entity* UIPopupProfileImage::FUN_141a8fe10(int nActorId)
             {
                 bool bFlag = FUN_140930110(nActorId);
                 bFlag = false;
-                Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9470("createEntity", nActorId, m_70, bFlag);
+                Scaleform::GFx::Value v = ((Unk_BannerClip*)pClip.operator->())->CreateEntity("createEntity", nActorId, m_70, bFlag);
                 if (((Scaleform::GFx::Value*)(void*)(&v))->IsUndefined() == 0)
                 {
                     Entity* p = new Entity(m_28, v, nActorId);
@@ -255,7 +255,7 @@ UIPopupProfileImage::Entity* UIPopupProfileImage::FUN_141a8fe10(int nActorId)
                         {
                             MS2Ptr<ASGameEntity> pOldClip = pEntity->FUN_140f48ed0();
                             if (pOldClip.get())
-                                ((Unk_BannerClip*)pClip.operator->())->FUN_140ba9570("updateEntity", ((Unk_PopupEntity*)pOldClip.operator->())->FUN_1422bb870(), bNew);
+                                ((Unk_BannerClip*)pClip.operator->())->UpdateEntity("updateEntity", ((Unk_PopupEntity*)pOldClip.operator->())->GetValue(), bNew);
                         }
                     }
                     pEntity->FUN_140f48ce0(nActorId);
@@ -269,7 +269,7 @@ UIPopupProfileImage::Entity* UIPopupProfileImage::FUN_141a8fe10(int nActorId)
 }
 
 // @0x141a90250
-UIPopupProfileImage* FUN_141a90250(int nUiId)
+UIPopupProfileImage* GetPopupProfileImage(int nUiId)
 {
     if (reinterpret_cast<Unk_PopupUIMgr*>(TSingleton<CUIService>::GetInstance()))
     {
@@ -291,9 +291,9 @@ MS2_REPLACE_METHOD(0x141a8f920, UIPopupProfileImage::Entity, vfunc_8, 237, 0x9E4
 MS2_REPLACE_METHOD(0x141a8fad0, UIPopupProfileImage, GetTypeName, 61, 0x1BDBEEAF);
 MS2_REPLACE_METHOD(0x141a8fb20, UIPopupProfileImage, OnLoadComplete, 42, 0x847DFC92);
 MS2_REPLACE(0x141a8fbd0, FUN_141a8fbd0, 50, 0xAAA7E206);
-MS2_REPLACE_METHOD(0x141a8fc30, UIPopupProfileImage, FUN_141a8fc30, 465, 0x4AFBC44B);
-MS2_REPLACE_METHOD(0x141a8fe10, UIPopupProfileImage, FUN_141a8fe10, 1082, 0x94AFF1DF);
-MS2_REPLACE(0x141a90250, FUN_141a90250, 147, 0x93E5FB49);
+MS2_REPLACE_METHOD(0x141a8fc30, UIPopupProfileImage, CreateEntityCache, 465, 0x4AFBC44B);
+MS2_REPLACE_METHOD(0x141a8fe10, UIPopupProfileImage, GetEntity, 1082, 0x94AFF1DF);
+MS2_REPLACE(0x141a90250, GetPopupProfileImage, 147, 0x93E5FB49);
 
 // The UCRT's `static __inline memcpy_s` (corecrt_memcpy_s.h), emitted because the original TU kept an unreferenced copy.
 #pragma function(memcpy, memset)

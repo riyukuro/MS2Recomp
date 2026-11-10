@@ -100,7 +100,7 @@ public:
     ATL::CAtlArray<MS2Ptr<UGCMapBlueprintInfo> >* FUN_1410d4920();    // the blueprint slots (+0x3a8)
 };
 
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 #include "ms2/commonfiles/commonutil.h"
 CStringW FUN_14028dfa0(const CStringW& key, const fmt::ArgList& args);
@@ -140,7 +140,7 @@ inline Scaleform::GFx::Value AScript::Invoke(const char* szMethod, int a1, CStri
 // @0x140fa9eb0
 UIHomeSaveSlotDialog::UIHomeSaveSlotDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_saveMode = 1;
 }
 
@@ -160,8 +160,8 @@ MS2_REPLACE_METHOD(0x140FA9F60, UIHomeSaveSlotDialog, GetTypeName, 61, 0xE5D59A4
 void UIHomeSaveSlotDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("saveMode", m_saveMode);
-    FUN_140faa2d0();
+    static_cast<ASObj*>(m_30.operator->())->SetIntMember("saveMode", m_saveMode);
+    UpdateSlots();
 }
 MS2_REPLACE_METHOD(0x140FA9FB0, UIHomeSaveSlotDialog, OnLoadComplete, 78, 0xADF43989);
 
@@ -218,7 +218,7 @@ int UIHomeSaveSlotDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::V
 MS2_REPLACE_METHOD(0x140FAA070, UIHomeSaveSlotDialog, vfunc_28, 592, 0x024C5C3B);
 
 // @0x140faa2d0
-void UIHomeSaveSlotDialog::FUN_140faa2d0()
+void UIHomeSaveSlotDialog::UpdateSlots()
 {
     if (!m_30)
         return;
@@ -254,38 +254,38 @@ void UIHomeSaveSlotDialog::FUN_140faa2d0()
         }
     }
 }
-MS2_REPLACE_METHOD(0x140FAA2D0, UIHomeSaveSlotDialog, FUN_140faa2d0, 1017, 0xA6F64619);
+MS2_REPLACE_METHOD(0x140FAA2D0, UIHomeSaveSlotDialog, UpdateSlots, 1017, 0xA6F64619);
 
 // @0x140faa6d0
-void UIHomeSaveSlotDialog::FUN_140faa6d0()
+void UIHomeSaveSlotDialog::SetSaveMode()
 {
     m_saveMode = 1;
     if (FUN_141924630())
     {
         if ((AScript*)m_30 != 0)
-            static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("saveMode", m_saveMode);
+            static_cast<ASObj*>(m_30.operator->())->SetIntMember("saveMode", m_saveMode);
     }
     else
         FUN_141924680();
 }
-MS2_REPLACE_METHOD(0x140FAA6D0, UIHomeSaveSlotDialog, FUN_140faa6d0, 121, 0x4C398FF8);
+MS2_REPLACE_METHOD(0x140FAA6D0, UIHomeSaveSlotDialog, SetSaveMode, 121, 0x4C398FF8);
 
 // @0x140faa750
-void UIHomeSaveSlotDialog::FUN_140faa750()
+void UIHomeSaveSlotDialog::SetLoadMode()
 {
     m_saveMode = 0;
     if (FUN_141924630())
     {
         if ((AScript*)m_30 != 0)
-            static_cast<ASObj*>(m_30.operator->())->FUN_1407cb9c0("saveMode", m_saveMode);
+            static_cast<ASObj*>(m_30.operator->())->SetIntMember("saveMode", m_saveMode);
     }
     else
         FUN_141924680();
 }
-MS2_REPLACE_METHOD(0x140FAA750, UIHomeSaveSlotDialog, FUN_140faa750, 121, 0xDD1169D2);
+MS2_REPLACE_METHOD(0x140FAA750, UIHomeSaveSlotDialog, SetLoadMode, 121, 0xDD1169D2);
 
 // @0x140faa7d0
-bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
+bool UIHomeSaveSlotDialog::OnSaveNameEntered(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
@@ -301,7 +301,7 @@ bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
         MS2Ptr<UGCMapDesignInfo> spSlot = (*pSlots)[i];
         if (spSlot->m_nId == nSlot && spSlot->m_nTime != 0)
         {
-            if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
+            if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
             {
                 spBox->Append<int>(nSlot);
                 spBox->AddStringArg(CStringW(strName));
@@ -320,7 +320,7 @@ bool UIHomeSaveSlotDialog::FUN_140faa7d0(int nResult, const CMsgBoxData& data)
 }
 
 // @0x140faac30
-bool UIHomeSaveSlotDialog::FUN_140faac30(int nResult, const CMsgBoxData& data)
+bool UIHomeSaveSlotDialog::OnLoadConfirmed(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
@@ -349,7 +349,7 @@ bool UIHomeSaveSlotDialog::FUN_140faac30(int nResult, const CMsgBoxData& data)
     }
     return true;
 }
-MS2_REPLACE_METHOD(0x140FAAC30, UIHomeSaveSlotDialog, FUN_140faac30, 377, 0x4F722325);
+MS2_REPLACE_METHOD(0x140FAAC30, UIHomeSaveSlotDialog, OnLoadConfirmed, 377, 0x4F722325);
 
 // @0x140faadb0
 bool UIHomeSaveSlotDialog::SendRequestCubeMode46(int nResult, const CMsgBoxData& data)
@@ -368,7 +368,7 @@ bool UIHomeSaveSlotDialog::SendRequestCubeMode46(int nResult, const CMsgBoxData&
 MS2_REPLACE_METHOD(0x140FAADB0, UIHomeSaveSlotDialog, SendRequestCubeMode46, 235, 0x407FDCD3);
 
 // @0x140faaeb0
-bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
+bool UIHomeSaveSlotDialog::OnBlueprintSaveNameEntered(int nResult, const CMsgBoxData& data)
 {
     if (nResult != 0)
         return true;
@@ -384,7 +384,7 @@ bool UIHomeSaveSlotDialog::FUN_140faaeb0(int nResult, const CMsgBoxData& data)
         MS2Ptr<UGCMapBlueprintInfo> spSlot = (*pSlots)[i];
         if (spSlot->m_nId == nSlot && spSlot->m_nTime != 0)
         {
-            if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
+            if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_home_save_btn_overwrite"), 0, CStringW(L"")))
             {
                 spBox->Append<int>(nSlot);
                 spBox->AddStringArg(CStringW(strName));
@@ -445,13 +445,13 @@ void UIHomeSaveSlotDialog::FUN_140fab520(int nSlot)
         return;
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_save_messagebox"), nSlot);
     CStringW strTitle = GetStringCommonByKey(L"s_home_save_title_empty");
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(5, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         spBox->Append<int>(nSlot);
         spBox->SetButtonLabels(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
         spBox->SetInput(0, strTitle, 0x14, 1, 1);
-        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faa7d0));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::OnSaveNameEntered));
         FUN_140d73c60(spBox);
     }
 }
@@ -462,11 +462,11 @@ void UIHomeSaveSlotDialog::FUN_140fab8c0(int nSlot)
     if (nSlot < 0 || nSlot > 5)
         return;
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_load_messagebox"), nSlot);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         spBox->Append<int>(nSlot);
-        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faac30));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::OnLoadConfirmed));
         FUN_140d73c60(spBox);
     }
 }
@@ -478,13 +478,13 @@ void UIHomeSaveSlotDialog::FUN_140fabae0(int nSlot)
         return;
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_save_messagebox"), nSlot);
     CStringW strTitle = GetStringCommonByKey(L"s_home_save_title_empty");
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(5, CStringW(strMsg), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(5, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         spBox->Append<int>(nSlot);
         spBox->SetButtonLabels(GetStringCommonByKey(L"s_home_save_btn_text"), GetStringCommonByKey(L"s_word_cancel"), L"");
         spBox->SetInput(0, strTitle, 0x14, 1, 1);
-        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::FUN_140faaeb0));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeSaveSlotDialog::OnBlueprintSaveNameEntered));
         FUN_140d73c60(spBox);
     }
 }
@@ -495,7 +495,7 @@ void UIHomeSaveSlotDialog::FUN_140fabe80(int nSlot)
     if (nSlot < 0 || nSlot > 5)
         return;
     CStringW strMsg = FUN_14028dfa0(CStringW(L"s_home_blueprint_load_messagebox"), nSlot);
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(L""));
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
         spBox->Append<int>(nSlot);

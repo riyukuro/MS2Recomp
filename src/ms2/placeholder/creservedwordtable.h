@@ -34,11 +34,11 @@ public:
     void ReplaceTokensForGender(CStringW& str, int nGender);         // the same by a gender id
     void ReplaceBoldWords(CStringW& str);                      // the bold object words
     void ReplaceLevelToken(CStringW& str, unsigned short nLevel);   // $level$
-    CStringW FUN_1416fbfe0(unsigned int nMapId, CStringW strColor);   // a world map link of a map id
+    CStringW GetWorldMapLink(unsigned int nMapId, CStringW strColor);   // a world map link of a map id
     CStringW GetTokenName(CStringW str);                   // the part before ':' of a marker
     CStringW GetTokenArgument(CStringW str);                   // the part after ':' of a marker
     void FUN_1416fc320(CStringW& str, WordMap& map);        // expands the "$word:arg$" markers of str by map
-    void FUN_1416fc540(CStringW& str, TextMap& map);        // expands the "[tag ... ]" colour tags of str by map
+    void ReplaceColorTags(CStringW& str, TextMap& map);        // expands the "[tag ... ]" colour tags of str by map
     void FUN_1416fc6f0(CStringW& str);
     void FUN_1416fc710(CStringW& str, int nCount);          // picks "singular:.." or "plural:.." of the first marker by nCount
 

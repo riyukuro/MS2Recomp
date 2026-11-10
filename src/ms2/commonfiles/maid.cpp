@@ -48,9 +48,9 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 CString FUN_14071ae20(const CString& strFile);                          // the locale's string table path of <file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);                 // undecorated class name
+CString ToCString(const char* pszName, int nFlags);                 // undecorated class name
 __int64 GetServerTime();                                                // the server time
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);                           // the item data of an id
 
@@ -133,7 +133,7 @@ CMaid::CMaid(__int64 n18, unsigned __int64 nId, __int64 n28, int nItemId, __int6
     m_nOrder = 1;
     MS2Ptr<CItemData> spItem = FUN_14053f870(nItemId);
     if (spItem.get())
-        m_nMaidId = spItem->FUN_14053dd30();
+        m_nMaidId = spItem->GetMaidId();
 }
 
 // @0x14067d2a0
@@ -357,9 +357,9 @@ CMaidExpTable::~CMaidExpTable()
 // @0x14067eab0
 int CMaidExpTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "MaidExp.xml");
+    CString strPath = GetXmlPath("Table", "MaidExp.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -419,9 +419,9 @@ CMaidInfoTable::~CMaidInfoTable()
 // @0x14067ee90
 int CMaidInfoTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "MaidProperty.xml");
+    CString strPath = GetXmlPath("Table", "MaidProperty.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -471,7 +471,7 @@ int CMaidDescTable::Load()
 {
     CString strPath = FUN_14071ae20("MaidPropertyString.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -535,7 +535,7 @@ int CMaidManufactureMsgTable::Load()
 {
     CString strPath = FUN_14071ae20("MaidManufactureMessage.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -587,7 +587,7 @@ void CMaidDescTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CMaidDescTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CMaidDescTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -598,7 +598,7 @@ void CMaidExpTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CMaidExpTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CMaidExpTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -609,7 +609,7 @@ void CMaidInfoTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CMaidInfoTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CMaidInfoTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -620,7 +620,7 @@ void CMaidManufactureMsgTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CMaidManufactureMsgTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CMaidManufactureMsgTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

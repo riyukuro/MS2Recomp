@@ -38,7 +38,7 @@ struct Unk_LiftSoundReq
     void* m_unk[12];                                                // +0x10 node (assigned by SmartPointer<NiAVObject>::operator=, 0x1409fabf0) .. +0x68; 0x70 bytes (NoticeMessage)
 };
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                           // the scene-graph root of an entity
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 // The physics helper (singleton): collision group of the lifted prop.
 class CPhysXHelper;
@@ -106,10 +106,10 @@ int FUN_140764310(const CString& strA, const CString& strB, QuestMask* pMask);
 
 // The entity's collision / highlight components and their calls.
 float FUN_14028d280(unsigned nMs);                                  // milliseconds -> seconds
-void FUN_141b71e70(egf::EntityID kId, bool bOn, unsigned int nArg, bool bFlag);   // the id by value
+void SetEntityHighlight(egf::EntityID kId, bool bOn, unsigned int nArg, bool bFlag);   // the id by value
 void FUN_140ae1e80(NiAVObject* pComp, float fA, float fB, float fC, float fD, egf::EntityID kId);
 void SetNodeAlpha(NiAVObject* pComp, float fA, bool bB);
-void FUN_141567330(class NiAVObject*, bool);   // C3: was FUN_141567330
+void SetShadowCaster(class NiAVObject*, bool);   // C3: was SetShadowCaster
 int FUN_140ae1c10();
 class CGraphicOptionTable   // C3: member view for the former free stand-ins
 {
@@ -246,7 +246,7 @@ void CLiftableObject::SetEffectEnabled(bool bOn)
     if (bOn && m_nEffect == 0)
     {
         NoticeMessage kReq;   // C3: was Unk_LiftSoundReq
-        ((Unk_LiftSoundReq&)(kReq)).m_strName = *(CString*)((char*)((void*)FUN_1401d31f0()) + 0x350);
+        ((Unk_LiftSoundReq&)(kReq)).m_strName = *(CString*)((char*)((void*)GetCommonResource()) + 0x350);
         ((Unk_LiftSoundReq&)(kReq)).m_nType = 0;
         *reinterpret_cast<efd::SmartPointer<NiAVObject>*>(((Unk_LiftSoundReq&)(kReq)).m_unk) = (NiAVObject*)NiObject::DynamicCast(&NiNode::ms_RTTI, (class NiObject const*)(FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.data()))));
         m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0((Unk_EffectTarget&)(kReq));
@@ -312,9 +312,9 @@ void CLiftableObject::SetState(int nState)
 // @0x141447c10
 void CLiftableObject::FUN_141447c10()
 {
-    if (m_timer.FUN_140868c00() != 0)
+    if (m_timer.IsExpired() != 0)
     {
-        m_timer.FUN_1408687f0();
+        m_timer.Reset();
         bool bOff = false;
         SetCachedBoolProperty((class Unk_CachedEntity*)(m_ent.operator->()), 0xa0b6b179, *(bool const*)(&bOff));
     }
@@ -349,7 +349,7 @@ void CLiftableObject::SetHighlight(int nOn)
 {
     if (m_ent.data() == 0)
         return;
-    FUN_141b71e70(((egf::Entity*)(class Unk_Entity*)(m_ent.operator->()))->GetEntityID(), nOn ? true : false, 1, 0);
+    SetEntityHighlight(((egf::Entity*)(class Unk_Entity*)(m_ent.operator->()))->GetEntityID(), nOn ? true : false, 1, 0);
 }
 
 // @0x141447de0
@@ -390,7 +390,7 @@ void CLiftableObject::SetActive(bool bActive)
             if (pComp != 0)
                 FUN_140ae1e80((NiAVObject*)pComp, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), ((egf::Entity*)(class Unk_Entity*)(m_ent.operator->()))->GetEntityID());
         }
-        m_timer.FUN_140868750(500);
+        m_timer.Start(500);
     }
     FUN_141448050(bActive);
 }
@@ -406,13 +406,13 @@ void CLiftableObject::FUN_141448050(bool bActive)
         if (pComp != 0 && m_b108 != 0)
         {
             bool bOn = FUN_140ae1c10() >= ((class CGraphicOptionTable*)(void*)(((void*)TSingleton<CGraphicOptionTable>::GetInstance())))->GetShadowOption(5);
-            FUN_141567330((class NiAVObject*)(pComp), bOn);
+            SetShadowCaster((class NiAVObject*)(pComp), bOn);
         }
     }
     else
     {
         void* pComp = FUN_141b6efc0(reinterpret_cast<egf::Entity*>(m_ent.data()));
         if (pComp != 0)
-            FUN_141567330((class NiAVObject*)(pComp), false);
+            SetShadowCaster((class NiAVObject*)(pComp), false);
     }
 }

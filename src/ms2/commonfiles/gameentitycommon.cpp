@@ -158,12 +158,12 @@ MS2_REPLACE(0x1403BA790, FUN_1403ba790, 177, 0x87532FF8);
 int FUN_1403ba8c0(int id) {
     MS2Ptr<CItemData> item = FUN_14053f870(id);
     if (item == NULL) return 0;
-    return FUN_1403ba950(item);
+    return GetItemCategory(item);
 }
 MS2_REPLACE(0x1403BA8C0, FUN_1403ba8c0, 138, 0xA458837E);
 
 // @0x1403ba950
-int FUN_1403ba950(MS2Ptr<CItemData> item) {
+int GetItemCategory(MS2Ptr<CItemData> item) {
     if (item == NULL) return 0;
     int id = item->GetItemId();
     if (id == 0) return 0;
@@ -174,7 +174,7 @@ int FUN_1403ba950(MS2Ptr<CItemData> item) {
     }
     switch (type) {
     case 1:
-        if (item->FUN_14053ce80()) return 8;
+        if (item->IsBeautyItem()) return 8;
         else if (item->HasSkinType()) return 25;
         return 1;
     case 2:
@@ -212,7 +212,7 @@ int FUN_1403ba950(MS2Ptr<CItemData> item) {
     }
     return 4;
 }
-MS2_REPLACE(0x1403BA950, FUN_1403ba950, 866, 0x66FD1FFD);
+MS2_REPLACE(0x1403BA950, GetItemCategory, 866, 0x66FD1FFD);
 
 // @0x1403bad30
 int FUN_1403bad30(int value) {
@@ -232,7 +232,7 @@ bool FUN_1403badc0(int value) {
 MS2_REPLACE(0x1403BADC0, FUN_1403badc0, 47, 0x5F160D43);
 
 // @0x1403bae00
-int FUN_1403bae00(int value) {
+int GetPayType(int value) {
     switch (value) {
     case 0:
         return 1;
@@ -263,7 +263,7 @@ int FUN_1403bae00(int value) {
     default: return 17;
     }
 }
-MS2_REPLACE(0x1403BAE00, FUN_1403bae00, 145, 0x252D44B5);
+MS2_REPLACE(0x1403BAE00, GetPayType, 145, 0x252D44B5);
 
 // @0x1403baee0
 int FUN_1403baee0(int value) {
@@ -306,13 +306,13 @@ MS2_REPLACE(0x1403BAEE0, FUN_1403baee0, 163, 0x06096CF7);
 // @0x1403bafd0
 int FUN_1403bafd0(int id) {
     int currency = FUN_1403ba4f0(id);
-    if (currency != 14) return FUN_1403bae00(currency);
+    if (currency != 14) return GetPayType(currency);
     return 17;
 }
 MS2_REPLACE(0x1403BAFD0, FUN_1403bafd0, 49, 0x4B89AB50);
 
 // @0x1403bb010
-int FUN_1403bb010(int value, int color) {
+int GetCurrencyItemId(int value, int color) {
     switch (value) {
     case 0: return 90000001;
     case 2:
@@ -336,7 +336,7 @@ int FUN_1403bb010(int value, int color) {
     default: return 0;
     }
 }
-MS2_REPLACE(0x1403BB010, FUN_1403bb010, 204, 0xA58C2F85);
+MS2_REPLACE(0x1403BB010, GetCurrencyItemId, 204, 0xA58C2F85);
 
 // @0x1403bb120
 int FUN_1403bb120(int value) {

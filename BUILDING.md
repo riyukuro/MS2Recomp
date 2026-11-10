@@ -19,6 +19,9 @@ cmake --preset linux
 cmake --build --preset linux
 ```
 
+The `linux` preset's condition is "the host is not Windows", so cmake offers it on every other host as well; Linux is
+the only one described here.
+
 The result is `build/<preset>/out/MapleStory2.exe`, a copy of `fullexe-plain.exe` (its `.map` is beside it). A clean
 build has about 3,700 steps; the 2026-11-09 one took 16 minutes at `-j12` on Linux. Header dependencies are not
 tracked: after a header edit, rebuild from clean.
@@ -43,7 +46,8 @@ The exe-reading build that the maintainers check against the original exe is des
 
 - **Windows**: Visual Studio 2022 (Community is enough), see [Windows](#windows) for the components. CMake and Ninja
   come with it, and Python 3 (python.org; needed to make the engine trees and to derive the glue at configure).
-- **Linux**: Wine, CMake 3.21 or newer, Ninja, and MSVC 14.16 with the Windows SDK 10.0.19041 installed with
+- **Linux**: Wine, CMake 3.21 or newer (the version `CMakePresets.json` asks for), Ninja, and MSVC 14.16 with the
+  Windows SDK 10.0.19041 installed with
   [msvc-wine](https://github.com/mstorsjo/msvc-wine) into `third_party/msvc/`. The compilers run in the Wine prefix
   named by the `MS2_WINEPREFIX` environment variable (default `<checkout>/work/wineprefix-msvc`).
 - MSVC 14.16 cl/link and the Windows SDK 10.0.19041 (`tools/toolchain-manifest.tsv` pins them,
@@ -115,9 +119,11 @@ so the roots may live anywhere.
   is also the only reference to a function whose callers are not written yet, so ON links with `/opt:noref` to keep
   those functions; `/opt:noref` also keeps every other unreferenced function. Measured on 2026-11-09, ON against OFF:
   the exe is 55.7 MB against 51.8 MB (`.text` 38.9 against 33.9 MB, `.data` 1.4 against 2.7 MB), it places 221,275
-  of the original's functions against 195,981, and it has 36,432 static initializers against 71,873. Five of those
-  initializers are not in the OFF exe, because `/opt:ref` drops them as unreferenced: four ATL module objects and one
-  constant member pointer. Both exes reach the field the same way. Setting the option ON when configuring
+  of the original's functions against 195,981, and it has 36,432 static initializers against 71,873 (36,431 since
+  2026-11-10, when a constant member pointer of ours lost its initializer). Four of those initializers are not in the
+  OFF exe, because `/opt:ref` drops them as unreferenced: the ATL objects `_AtlComModule`, `_AtlWinModule`,
+  `InitializeCAtlStringMgr` and `InitializeCImage`. The original exe runs these four once each as well, later in its
+  table. Both exes reach the field the same way. Setting the option ON when configuring
   `cmake/fullexe-plain` directly has the same effect; there the default is OFF.
 - `MS2_PLAIN_DERIVE=AUTO|ON|OFF`: make the glue at configure (see below). `AUTO`, the default, falls back to the
   committed glue without a usable Python; `ON` stops instead; `OFF` always links the committed glue.
@@ -267,7 +273,8 @@ cache:
 - `compile.tsv`, `flags.tsv`, `tree.tsv`: as `plainglue.py compile` writes them (from `progress.py` and `gbtree.py`),
   without the `.deps` check;
 - `order.txt`: `order.py`'s list from `data/map/functions.tsv` and the symbol tables, not filtered to the names the objs
-  define, so the link adds `/ignore:4037`;
+  define, so the link adds `/ignore:4037`; with `MS2_PLAIN_STANDALONE` the `ms2::hook::detail` helper names are
+  left out (`derive --standalone`), since that exe holds no hook code;
 - `stubs.obj`: zero fill from `stubs.tsv`, none when it lists no stub; `alias.rsp` and `stubs.tsv` are copied.
 
 `linkfacts.tsv` is the only glue input taken from an exe-reading build (no exe bytes: names, VAs and paths). It holds
@@ -281,18 +288,30 @@ what the repository does not record:
 - `noinit`: a unit the exe's static-initializer table names that has no initializer of ours (its init comes from
   another obj in the link, such as `atlbase.obj`), so it gets no `before.tsv` rule; that takes the linked objs.
 
-A unit missing from `linkfacts.tsv` is placed by the default rules, so adding an engine, library or game unit needs no
-refresh: it derives at the next configure. A source added, renamed or removed at a later commit is picked up by the
-next build, which re-runs configure (an edit to an existing source's `MS2-UNIT` or `MS2-RANGE` line needs a
-re-configure by hand). A new closure obj, a new twin pick or a unit without `status.tsv` rows needs a refresh (or a
-hand-added `linkfacts.tsv` row). `progress/status.tsv` is not in the published repo; there, and with
-`--committed-tables`, derive reads the committed `link.tsv` and `before.tsv` instead. Checked on the 2026-11-08 glue:
+A new game unit needs no refresh, in the maintainer tree or in the published repo: it derives at the next configure,
+placed by its `MS2-NO-EXE` line, else its `status.tsv` rows, else its `MS2-RANGE`. A source added, renamed or removed
+at a later commit is picked up by the next build, which re-runs configure (an edit to an existing source's `MS2-UNIT`
+or `MS2-RANGE` line needs a re-configure by hand).
+
+A new engine or library unit (a new `units-gb.json` or `units-lib-*.json` entry) is different:
+
+- In the maintainer tree it is linked once `progress/status.tsv` has a row for it, or with a hand-added `va` row in
+  `linkfacts.tsv`. With neither, derive leaves it out without a message: configure passes, and the link fails only
+  if something refers to a symbol that unit alone defines.
+- `progress/status.tsv` is not in the published repo. There, and with `--committed-tables`, derive reads the
+  committed `link.tsv` and `before.tsv` and takes the engine and library objs from `link.tsv` alone. A new engine or
+  library unit is left out, again without a message, until a glue refresh (or a hand-added `link.tsv` row) names it.
+  A `linkfacts.tsv` row has no effect there.
+
+A new closure obj or a new twin pick also needs a refresh (or a hand-added `linkfacts.tsv` row). Checked on
+2026-11-10 in a scratch checkout with one new game source and one new `units-gb.json` entry, by running derive and
+the `linux` preset's configure; nothing was compiled or linked. Checked on the 2026-11-08 glue:
 derive gave the committed glue's `link.tsv`, `before.tsv`, `objs.txt`, `compile.tsv`, `flags.tsv`, `tree.tsv` and
 `stubs.obj` byte for byte, and its `order.txt` filtered to the reference names was the reference `order.txt`.
 
-So with Python, a commit after the last glue refresh builds too, unless it adds an engine or library unit that needs
-a new `linkfacts.tsv` row. With the committed glue alone (no Python, or `-DMS2_PLAIN_DERIVE=OFF`), only the commit the
-glue was made from builds: a renamed, added or removed unit breaks the compile or the link (LNK1120).
+So with Python, a commit after the last glue refresh builds too, unless it adds an engine or library unit whose
+symbols the link needs (see above). With the committed glue alone (no Python, or `-DMS2_PLAIN_DERIVE=OFF`), only the
+commit the glue was made from builds: a renamed, added or removed unit breaks the compile or the link (LNK1120).
 `data/fullexe/plain/commit` records the maintainer's build id only.
 
 ### Compile list
@@ -453,7 +472,8 @@ commit; the script stops once the checkout has moved on. It also stops when `stu
 original exe.
 
 Each published merge carries fresh glue: after the merge's `apply.sh` and before `tools/publish-github.sh`, run
-`MS2_AGENT=<name> tools/fullexe/glue-refresh.sh --commit`. It commits the glue for the newest smoke-passed
+`MS2_AGENT=<name> tools/fullexe/glue-refresh.sh --commit` (`MS2_AGENT` is any short name of your own: the tools keep
+their private cache under `build/progress-<name>/`). It commits the glue for the newest smoke-passed
 `fullexe-latest` build, which can be older than the merge. The published tip must be that build's own sources, so
 `glue-refresh.sh --side <branch> [--overlay <path>]...` makes a side commit: parent the build's commit, tree that commit
 with the refreshed glue (plus any `--overlay` path, such as this file, as master has it). `PUBLISH_REV=<branch>

@@ -28,25 +28,25 @@ struct Unk_WdUgcPaths
     unsigned char m_pad_00[0x90];
     CString m_strDefaultProfile;                            // +0x90
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);   // a UGC profile path
 bool FUN_140900f30(__int64 nTime);                                          // the time is at night (before 6 / after 17)
-CStringW FUN_140b8e850(const CMsTime& kTime);                               // the date text
+CStringW FormatYearMonthDayHour(const CMsTime& kTime);                               // the date text
 CStringW FUN_1409404f0(__int64 nMerat);                                     // the price text
 
 #include "ms2/placeholder/formatstringid.h"   // C3: FormatStringId<...> over FUN_14028dee0 by its real name (was FormatStringId(int, const ArgList&))
 
 // @0x140fdab30
 // The portrait icon of a partner: its UGC profile image when it is in the field, else the default portrait.
-CString FUN_140fdab30(const Unk_WeddingPartner* pPartner)
+CString GetPartnerProfileIconPath(const Unk_WeddingPartner* pPartner)
 {
     PC* pPC = ((class PC*)((class WorldService*)(class WorldService*)(WorldService::GetInstance()))->FUN_141bd1530(pPartner->m_nCharacterId));
     if (pPC == 0)
-        return ((struct Unk_WdUgcPaths*)FUN_1401d31f0())->m_strDefaultProfile;
+        return ((struct Unk_WdUgcPaths*)GetCommonResource())->m_strDefaultProfile;
     return FUN_141028be0(pPartner->m_nCharacterId, pPC->FUN_1416612e0(), 1, CString(""));
 }
-MS2_REPLACE(0x140FDAB30, FUN_140fdab30, 281, 0xC1D9E733);
+MS2_REPLACE(0x140FDAB30, GetPartnerProfileIconPath, 281, 0xC1D9E733);
 
 // @0x140fdac50
 // Fills the page data object from the package, hall, time and public flag.
@@ -54,24 +54,24 @@ MS2_REPLACE(0x140FDAB30, FUN_140fdab30, 281, 0xC1D9E733);
 void FUN_140fdac50(int nPackageId, int nHallId, __int64 nTime, bool bPublic, ASObj* pData)
 {
     WeddingProxy* pProxy = WeddingManager::GetInstance()->FUN_140d295d0();
-    MS2Ptr<WeddingPackage> spPackage = WeddingTable::GetInstance()->FUN_140908b80(nPackageId);
+    MS2Ptr<WeddingPackage> spPackage = WeddingTable::GetInstance()->FindPackage(nPackageId);
     if (spPackage == 0)
         return;
-    MS2Ptr<WeddingHallData> spHall = spPackage->FUN_140907110(nHallId);
+    MS2Ptr<WeddingHallData> spHall = spPackage->FindHall(nHallId);
     if (spHall == 0)
         return;
     ASObj kGroom(2);
-    kGroom.FUN_1407cbb20("name", pProxy->m_groom.m_strName);
-    kGroom.FUN_1407cba60("iconPath", FUN_140fdab30(&pProxy->m_groom));
+    kGroom.SetWStringMember("name", pProxy->m_groom.m_strName);
+    kGroom.SetStringMember("iconPath", GetPartnerProfileIconPath(&pProxy->m_groom));
     pData->FUN_1409eb270("groom", kGroom);
     ASObj kBride(2);
-    kBride.FUN_1407cbb20("name", pProxy->m_bride.m_strName);
-    kBride.FUN_1407cba60("iconPath", FUN_140fdab30(&pProxy->m_bride));
+    kBride.SetWStringMember("name", pProxy->m_bride.m_strName);
+    kBride.SetStringMember("iconPath", GetPartnerProfileIconPath(&pProxy->m_bride));
     pData->FUN_1409eb270("bride", kBride);
-    pData->FUN_1407cbb20("hall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,
+    pData->SetWStringMember("hall", TSingleton<CStringTable>::GetInstance()->FUN_141811980(3,
         WeddingTable::GetInstance()->FUN_140908d50(spPackage->m_nId, spHall->m_nId, FUN_140900f30(nTime))));
-    pData->FUN_1407cbb20("date", FUN_140b8e850(CMsTime(nTime)));
-    pData->FUN_1407cbbe0("isPublic", bPublic);
-    pData->FUN_1407cbb20("price", FormatStringId(0x987, FUN_1409404f0(spHall->m_nMerat)));
+    pData->SetWStringMember("date", FormatYearMonthDayHour(CMsTime(nTime)));
+    pData->SetBoolMember("isPublic", bPublic);
+    pData->SetWStringMember("price", FormatStringId(0x987, FUN_1409404f0(spHall->m_nMerat)));
 }
 MS2_REPLACE(0x140FDAC50, FUN_140fdac50, 1079, 0xF9348D26);

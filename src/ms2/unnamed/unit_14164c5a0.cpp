@@ -27,7 +27,7 @@ class cCoordinateMapping   // C3: member view for the former free stand-ins
 public:
     void applyTo(long*) const;
 };
-int FUN_140291d90(float);                         // float -> int
+int RoundToInt(float);                         // float -> int
 
 class NxVec3
 {
@@ -147,11 +147,11 @@ cPhysXTriangleMeshWrapper::cPhysXTriangleMeshWrapper(const NxTriangleMeshShape& 
         const char* cur = p;
         NxVec3 v;
         xf.multiply(*(NxVec3 const*)(cur), v);
-        long a = FUN_140291d90(v.x);
+        long a = RoundToInt(v.x);
         verts.push_back(static_cast<long&&>(a));
-        long b = FUN_140291d90(v.y);
+        long b = RoundToInt(v.y);
         verts.push_back(static_cast<long&&>(b));
-        long c = FUN_140291d90(v.z);
+        long c = RoundToInt(v.z);
         verts.push_back(static_cast<long&&>(c));
         p += d.vStride;
     }

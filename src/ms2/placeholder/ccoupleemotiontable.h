@@ -50,7 +50,7 @@ MS2_CHECK_SIZE(CCoupleEmotionData, 0x58);
 MS2_CHECK_OFFSET(CCoupleEmotionData, m_strTeleportEffect, 0x20);
 MS2_CHECK_OFFSET(CCoupleEmotionData, m_anis, 0x28);
 
-CString FUN_14016a5c0(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
+CString ToCString(const char* psz, int nCodePage);         // narrows a string (the RTTI name in CheckInit)
 
 // Bases: TSingleton<CCoupleEmotionTable> at +0x0 (s_instance DAT_143aad158), CValidData<CCoupleEmotionTable> at +0x8.
 class CCoupleEmotionTable : public TSingleton<CCoupleEmotionTable>, public CValidData<CCoupleEmotionTable>
@@ -70,7 +70,7 @@ public:
         if (!s_bInit)
         {
             CStringA msg;
-            msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CCoupleEmotionTable).name(), 0));
+            msg.Format("%s is not initialized", (const char*)ToCString(typeid(CCoupleEmotionTable).name(), 0));
             MessageBoxA(0, msg, "Error", 0);
         }
     }

@@ -78,8 +78,8 @@ class Unk_WbConsts { public:
     Unk_WbBool m_8780;
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
-int FUN_140bb9640(void* pUserData);                                         // the button kind stored with the click handler
-float FUN_14028aed0(float f);
+int UserDataToInt(void* pUserData);                                         // the button kind stored with the click handler
+float Floor(float f);
 float FUN_1422b93f0(const Scaleform::GFx::Value& v);                        // the number of a value (asdata.cpp)
 
 // @0x14011f460
@@ -94,16 +94,16 @@ UIWebBrowser::UIWebBrowser()
     m_nWidth = 0;
     m_nHeight = 0;
     m_bResizable = 1;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_c8 = s_strMaviewOpen;
     m_d0 = s_strMaviewClose;
-    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::FUN_141b50420));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::OnGameStart));
 }
 
 // @0x141b4f470
 UIWebBrowser::~UIWebBrowser()
 {
-    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::FUN_141b50420));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyGameStart", Delegate<void(NotifyObject*)>(this, &UIWebBrowser::OnGameStart));
 }
 
 // @0x141b4f620
@@ -141,7 +141,7 @@ void UIWebBrowser::OnLoadInit()
 void UIWebBrowser::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141b507b0(m_nWidth, m_nHeight);
+    SetBrowserSize(m_nWidth, m_nHeight);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_btnHome", reinterpret_cast<MS2Ptr<ASButton>&>(m_btnHome)).get())
         reinterpret_cast<MS2Ptr<ASButton>&>(m_btnHome)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50830), 0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_btnPrev", reinterpret_cast<MS2Ptr<ASButton>&>(m_btnPrev)).get())
@@ -154,8 +154,8 @@ void UIWebBrowser::OnLoadComplete()
         reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMinSize)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50890), 0);
     if (reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_btnMaxSize", reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMaxSize)).get())
         reinterpret_cast<MS2Ptr<ASButton>&>(m_btnMaxSize)->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIWebBrowser::FUN_141b50910), 0);
-    FUN_141b509b0();
-    float fScale = TSingleton<CUIService>::GetInstance()->FUN_141adbe70();
+    UpdateSizeButtons();
+    float fScale = TSingleton<CUIService>::GetInstance()->GetUIScale();
     unsigned nWidth = (unsigned)(m_nSmallSize / fScale);
     unsigned nHeight = (unsigned)(m_nSmallSize / fScale);
     FUN_14135eda0(nWidth, nHeight);
@@ -167,11 +167,11 @@ void UIWebBrowser::OnLoadComplete()
         float x = 0;
         float y = 0;
         pDlg->GetPosition(&x, &y);
-        x = FUN_14028aed0(x);
-        y = FUN_14028aed0(y);
+        x = Floor(x);
+        y = Floor(y);
         pDlg->SetPositionFloat(x, y);
     }
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x5c) == 0)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x5c) == 0)
     {
         if (m_strUrl.IsEmpty())
             m_strUrl = m_strStored;
@@ -200,7 +200,7 @@ void UIWebBrowser::vfunc_26()
 // @0x141b50380
 void UIWebBrowser::vfunc_43()
 {
-    FUN_141b507b0(m_nWidth, m_nHeight);
+    SetBrowserSize(m_nWidth, m_nHeight);
     UIDialog::vfunc_43();
 }
 
@@ -214,7 +214,7 @@ int UIWebBrowser::vfunc_88()
 }
 
 // @0x141b50420
-void UIWebBrowser::FUN_141b50420(NotifyObject*)
+void UIWebBrowser::OnGameStart(NotifyObject*)
 {
     m_strStored.Empty();
 }
@@ -275,7 +275,7 @@ void UIWebBrowser::vfunc_89(const CString& strUrl)
 }
 
 // @0x141b507b0
-void UIWebBrowser::FUN_141b507b0(int nWidth, int nHeight)
+void UIWebBrowser::SetBrowserSize(int nWidth, int nHeight)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;
@@ -286,15 +286,15 @@ void UIWebBrowser::FUN_141b507b0(int nWidth, int nHeight)
 void UIWebBrowser::FUN_141b50830(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     void* pUserData = params.pUserData;
-    int nKind = FUN_140bb9640(pUserData);
+    int nKind = UserDataToInt(pUserData);
     reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78760(m_nBrowserId, nKind);
 }
 
 // @0x141b50890
 void UIWebBrowser::FUN_141b50890(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    FUN_141b507b0(m_nMinWidth, m_nMinHeight);
-    FUN_141b509b0();
+    SetBrowserSize(m_nMinWidth, m_nMinHeight);
+    UpdateSizeButtons();
     reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->SetBrowserWindowType(m_nBrowserId, 2);
     reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78760(m_nBrowserId, 3);
 }
@@ -302,8 +302,8 @@ void UIWebBrowser::FUN_141b50890(const Scaleform::GFx::FunctionHandler::Params&)
 // @0x141b50910
 void UIWebBrowser::FUN_141b50910(const Scaleform::GFx::FunctionHandler::Params&)
 {
-    FUN_141b507b0(m_nMaxWidth, m_nMaxHeight);
-    FUN_141b509b0();
+    SetBrowserSize(m_nMaxWidth, m_nMaxHeight);
+    UpdateSizeButtons();
     reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->SetBrowserWindowType(m_nBrowserId, 1);
     reinterpret_cast<Unk_WbBrowserMgr*>(TSingleton<CWebBrowserService>::GetInstance())->FUN_141b78760(m_nBrowserId, 3);
 }
@@ -315,7 +315,7 @@ bool UIWebBrowser::vfunc_91()
 }
 
 // @0x141b509b0
-void UIWebBrowser::FUN_141b509b0()
+void UIWebBrowser::UpdateSizeButtons()
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0))
         return;

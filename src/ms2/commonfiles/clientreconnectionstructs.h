@@ -28,8 +28,8 @@ public:
     // @0x14020a6c0
     // ~ReconnectionOptions() is the implicit destructor at 0x14020a6c0
     ReconnectionOptions& FUN_140208460(const ReconnectionOptions& other);   // operator=
-    void FUN_1402084a0(COutputStream& out) const;               // 11 x Encode4
-    void FUN_140208500(CInputStream& in);                       // 11 x Decode4
+    void Write(COutputStream& out) const;               // 11 x Encode4
+    void Read(CInputStream& in);                       // 11 x Decode4
     Values m_values;
 };
 MS2_CHECK_SIZE(ReconnectionOptions, 0x48);
@@ -39,9 +39,9 @@ public:
     ReconnectionContext();                                      // 0x140208560
     // @0x14020a660
     // ~ReconnectionContext() is the implicit destructor at 0x14020a660
-    void FUN_1402085c0();                                       // Reset
-    void FUN_140208610(COutputStream& out) const;
-    void FUN_140208680(CInputStream& in);
+    void Reset();                                       // Reset
+    void Write(COutputStream& out) const;
+    void Read(CInputStream& in);
     int m_18;
     CString m_20;
     int m_28;
@@ -53,7 +53,7 @@ public:
     ReconnectionContextCli();                                   // 0x140208720
     // @0x14020a690
     // ~ReconnectionContextCli() is the implicit destructor at 0x14020a690
-    void FUN_140208780();                                       // Reset
+    void Reset();                                       // Reset
     int m_18, m_1c, m_20, m_24;
     bool m_28;
     int m_2c;
@@ -76,7 +76,7 @@ public:
     void DiscardAcked(unsigned ackSequence);                   // drop acknowledged packets
     void PushPendingPacket(COutPacket& packet);
     void SetLimit(unsigned limit);
-    unsigned FUN_140209360();                                   // sequence of the oldest captured packet
+    unsigned GetOldestCapturedSequence();                                   // sequence of the oldest captured packet
     int GetSequence();                                        // current sequence
     void SetCaptureEnabled(int enabled);
     int GetCaptureEnabled();

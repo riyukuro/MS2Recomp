@@ -46,7 +46,7 @@ public:
     virtual void* vfunc_2();                                        //  2 0x1422bf590 returns &DAT_143b0ae40 (a static descriptor)
     // 3 0x1422bd350 (empty): an AS call of the movie (method name, arguments); GFxMovieMouseCursor forwards three of them
     virtual void vfunc_3(const char* szEvent, const Scaleform::GFx::Value* pArgs, unsigned nArgs);
-    void FUN_1422be560(MS2Ptr<ASMouseCursor> spCursor);             // 0x1422be560 m_30 = spCursor (by value: the callee destroys it)
+    void SetMouseCursor(MS2Ptr<ASMouseCursor> spCursor);             // 0x1422be560 m_30 = spCursor (by value: the callee destroys it)
     virtual void vfunc_4(void*, const char*, const Scaleform::GFx::Value*, unsigned);   //  4 0x1422bd370 (empty)
     virtual void vfunc_5(bool);                                     //  5 0x1422bd390 movie slot +0x40(!b)
     // 6 0x1422bd3f0: stores the loader at +0x58, CreateMovie(path, flags) -> MovieDef (+0x68), CreateInstance -> Movie (+0x60);
@@ -64,37 +64,37 @@ public:
     static const NiRTTI ms_RTTI;                                    // 0x143b0ae40 ("GFxMovie", no parent; vfunc_2 returns it)
 
     // Non-virtual members called by the derived movies' "initializeClass" handlers (GFxMovieHeadUpDisplay/PostDisplay).
-    void FUN_1422be510(MS2Ptr<ASStage> spStage);                    // 0x1422be510 m_20 = spStage (by value: the callee destroys it)
-    void FUN_1422be5b0(MS2Ptr<ASMovieClipLoader> spLoader);         // 0x1422be5b0 m_40 = spLoader (by value)
+    void SetStage(MS2Ptr<ASStage> spStage);                    // 0x1422be510 m_20 = spStage (by value: the callee destroys it)
+    void SetMovieClipLoader(MS2Ptr<ASMovieClipLoader> spLoader);         // 0x1422be5b0 m_40 = spLoader (by value)
     void FUN_1422be140();                                           // 0x1422be140
     void FUN_1422be2a0();                                           // 0x1422be2a0 (uses m_78)
-    MS2Ptr<ASMovieClipLoader> FUN_1422be4c0();                      // 0x1422be4c0 returns m_40 (GFxMovieMain::vfunc_5)
+    MS2Ptr<ASMovieClipLoader> GetMovieClipLoader();                      // 0x1422be4c0 returns m_40 (GFxMovieMain::vfunc_5)
     void FUN_1422be380(int n);                                      // 0x1422be380 m_10 = n (GFxMovieDamage ctor: 0)
     MS2_GFX_MOVIE* FUN_1422bd0f0();                                 // 0x1422bd0f0 the GFx::Movie (m_60) or null (gfxmoviedamage.cpp)
     // The AS class object of a fully qualified class name ("scaleform.ms2.manager.TooltipManager"; the CString is taken by
     // value: the callee destroys it). astooltipmanager.cpp.
-    Scaleform::GFx::Value FUN_1422bd120(CString strClassName);      // 0x1422bd120
+    Scaleform::GFx::Value GetDefinitionByName(CString strClassName);      // 0x1422bd120
 
     // The rest of ?\gfxmovie.cpp (src/ms2/gfxui/gfxmovie.cpp).
     Scaleform::GFx::Value FUN_1422bd1b0(const char* szMethod);      // call an AS function of the root (no arguments)
     Scaleform::GFx::Value FUN_1422bd250(const char* szMethod, ASArgList& args);   // the same with arguments (undefined on failure)
     // FUN_1422bd250 with one string argument (inline COMDAT; the CString by value: the callee destroys it)
     Scaleform::GFx::Value FUN_1422be7f0(const char* szMethod, CString a1);
-    float FUN_1422bde30();                                          // m_14 (the viewport scale)
-    void FUN_1422bde50(float fScale);                               // m_14 = fScale
-    int FUN_1422bde80(float fScale);                                 // set m_14 and the viewport scale; true if it changed
-    int FUN_1422bdf70();                                            // the viewport width
-    int FUN_1422bdfc0();                                            // the viewport height
-    void FUN_1422be010(int* pnWidth, int* pnHeight);                // both
+    float GetScale();                                          // m_14 (the viewport scale)
+    void SetScale(float fScale);                               // m_14 = fScale
+    int SetViewportScale(float fScale);                                 // set m_14 and the viewport scale; true if it changed
+    int GetViewportWidth();                                            // the viewport width
+    int GetViewportHeight();                                            // the viewport height
+    void GetViewportSize(int* pnWidth, int* pnHeight);                // both
     void FUN_1422be080(int bPause);                                 // Movie::SetPause
-    void FUN_1422be0e0(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&));   // m_70 = pfn
+    void SetFormatCallback(void (*pfn)(const Scaleform::GFx::FunctionHandler::Params&));   // m_70 = pfn
     void FUN_1422be100(const Scaleform::GFx::FunctionHandler::Params& params);         // calls m_70 (Common.m_getFormatFunction)
-    void FUN_1422be280(void (*pfn)(AScript& kCommon, int nMovieId));                   // m_78 = pfn
+    void SetCommonCallback(void (*pfn)(AScript& kCommon, int nMovieId));                   // m_78 = pfn
     int FUN_1422be360();                                            // m_10
     int FUN_1422be3a0(unsigned msg);                                // m_10 for the mouse messages of movie 2, else 0
-    int FUN_1422be400();                                            // m_18 (the movie id)
-    MS2Ptr<ASStage> FUN_1422be420();                                // m_20
-    MS2Ptr<ASMouseCursor> FUN_1422be470();                          // m_30
+    int GetMovieId();                                            // m_18 (the movie id)
+    MS2Ptr<ASStage> GetStage();                                // m_20
+    MS2Ptr<ASMouseCursor> GetMouseCursor();                          // m_30
 
     // 0x10..0x80, ctor 0x1422bced0. The three 16-byte handles are MS2Ptr<T> (pointer at +8, intrusive CPtred count:
     // ctor FUN_1422b31e0/b31a0/b31c0 zero +8, dtors FUN_140b62a60/140a58400/140b62a30). The two Scaleform handles are
@@ -166,10 +166,10 @@ public:
     virtual void vfunc_39(int a, int b, int c, bool d, bool e);
 
     // The Win32 -> GFx input helpers (the Scaleform Platform_WinAPI.cpp AppImpl code). ?\gfxmovieeventhandler.cpp.
-    void FUN_1422d8f00(CStringW strText);                           // 0x1422d8f00 set the GFx text clipboard (by value)
+    void SetClipboardText(CStringW strText);                           // 0x1422d8f00 set the GFx text clipboard (by value)
     void FUN_1422d8f90(void* hwnd);                                 // 0x1422d8f90 ChangeClipboardChain (WM_DESTROY)
-    void FUN_1422d8fd0(const CStringW& strText);                    // 0x1422d8fd0 FUN_1422d8f00(copy)
-    static void FUN_1422d9020(bool bEnable);                        // 0x1422d9020 ms_bImeEnabled = bEnable
+    void FUN_1422d8fd0(const CStringW& strText);                    // 0x1422d8fd0 SetClipboardText(copy)
+    static void SetImeEnabled(bool bEnable);                        // 0x1422d9020 ms_bImeEnabled = bEnable
     void ProcessKey(unsigned vkCode, bool bDown, bool bExtendedKey);   // 0x1422dab20 processKey: VK -> Key::Code, OnKey
     void SendKeyEvent(int nKeyboard, int nKeyCode, unsigned nWchar, bool bDown,
                        Scaleform::KeyModifiers kMods);              // 0x1422dac60 sends the KeyEvent

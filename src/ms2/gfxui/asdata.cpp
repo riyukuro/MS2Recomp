@@ -46,13 +46,13 @@ void ASData::AddBool(bool b)
 MS2_REPLACE_METHOD(0x1422B7FD0, ASData, AddBool, 86, 0xD74909A1);
 
 // @0x1422b8030
-void ASData::FUN_1422b8030(unsigned int n)
+void ASData::AddUInt(unsigned int n)
 {
     Scaleform::GFx::Value v;
     v.SetUInt(n);
     m_args.AddTail(v);
 }
-MS2_REPLACE_METHOD(0x1422B8030, ASData, FUN_1422b8030, 85, 0xF7B8A73C);
+MS2_REPLACE_METHOD(0x1422B8030, ASData, AddUInt, 85, 0xF7B8A73C);
 
 // @0x1422b8090
 void ASData::AddULong(unsigned long n)
@@ -102,7 +102,7 @@ MS2_REPLACE_METHOD(0x1422B8230, ASData, AddArgsFrom, 49, 0x732ACD52);
 void ASData::AddObj(const AScript& obj)
 {
     if (&obj != NULL)
-        AddValue(const_cast<AScript&>(obj).FUN_1422bb870());
+        AddValue(const_cast<AScript&>(obj).GetValue());
 }
 MS2_REPLACE_METHOD(0x1422B8270, ASData, AddObj, 50, 0x247FE890);
 
@@ -351,11 +351,11 @@ Scaleform::GFx::Value ASData::PopValue()
 MS2_REPLACE_METHOD(0x1422B9260, ASData, PopValue, 191, 0x4EC70087);
 
 // @0x1422b9330
-bool ASData::FUN_1422b9330()
+bool ASData::IsEmpty()
 {
     return m_args.IsEmpty();
 }
-MS2_REPLACE_METHOD(0x1422B9330, ASData, FUN_1422b9330, 31, 0xB32D2D98);
+MS2_REPLACE_METHOD(0x1422B9330, ASData, IsEmpty, 31, 0xB32D2D98);
 
 // @0x1422b9360
 int ASData::FUN_1422b9360()

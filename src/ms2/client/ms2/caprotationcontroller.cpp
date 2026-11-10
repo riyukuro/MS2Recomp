@@ -123,7 +123,7 @@ struct Unk_CapCamera : public CameraMgr
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
 float Unk_Acos(float fCos);                                     // acos
-bool FUN_14147aa60(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3& kCenter,
+bool IntersectRaySphere(const NiPoint3& kOrigin, const NiPoint3& kDir, const NiPoint3& kCenter,
                    float fRadius, NiPoint3* pHit);      // ray / sphere hit
 void FUN_141422950(const NiMatrix3& kRot, Vector3* pEuler);   // rotation -> euler angles (degrees)
 // C3 #9: kOld.Inverse() * kNew (0x1420845e0, 0x140a33480) calls the real efd::Matrix3 members.
@@ -292,7 +292,7 @@ void CCapRotationController::vfunc_31()
             if (TSingleton<CameraMgr>::GetInstance()->ScreenToRay(reinterpret_cast<const NiPoint2&>(kCursor), kOrigin, kDir) != 0)
             {
                 NiPoint3 kHit;
-                FUN_14147aa60(kOrigin, kDir, reinterpret_cast<const NiPoint3&>(FUN_140947900(m_spMesh.operator->())), m_fRadius, &kHit);
+                IntersectRaySphere(kOrigin, kDir, reinterpret_cast<const NiPoint3&>(FUN_140947900(m_spMesh.operator->())), m_fRadius, &kHit);
                 Vector3 kDelta = (reinterpret_cast<const Vector3&>(kHit) - FUN_140947900(m_spMesh.operator->()));
                 kDelta.Unitize();
                 Unk_EfdMatrix3 kRotZ;
@@ -340,7 +340,7 @@ void CCapRotationController::vfunc_32(const NiPoint3& kHit, const NiPoint3& kNor
         return;
     if (pItem->FUN_14053ec70()->FUN_1405471b0() != 0)
     {
-        if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d950(0x1d, 0, 0) != 0)
+        if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsKeyDown(0x1d, 0, 0) != 0)
         {
             vfunc_31();
         }

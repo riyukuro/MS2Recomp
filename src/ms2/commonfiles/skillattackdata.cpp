@@ -523,7 +523,7 @@ bool SkillAttackData::operator!=(const SkillAttackData& o)
     if (m_compulsionType != o.m_compulsionType) return true;
     if (m_eUnrideOnHit != o.m_eUnrideOnHit) return true;
     if (m_nReleaseObjectWeaponOnHit != o.m_nReleaseObjectWeaponOnHit) return true;
-    if (m_range.FUN_140800920(o.m_range)) return true;
+    if (m_range.IsDifferent(o.m_range)) return true;
     if (m_arrow != o.m_arrow) return true;
     if (m_damage != o.m_damage) return true;
     if (m_vSkill.size() != o.m_vSkill.size()) return true;

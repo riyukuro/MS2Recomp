@@ -73,7 +73,7 @@ template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
 class Unk_McInventoryDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140c3fe30(unsigned int);
+    void AddFlags(unsigned int);
 };
 
 MS2Ptr<CItem> FUN_1419be700(unsigned __int64 nUid);              // the inventory item with this uid
@@ -86,8 +86,8 @@ unsigned __int64 FUN_140718370(const CStringW& str);             // text -> uid
 CStringW GetStringCommonByKey(const CStringW& strKey);                  // string table text
 CStringW FUN_14028dfa0(const CStringW& strKey, const fmt::ArgList& args);   // string table text, formatted
 FMT_VARIADIC_W(CStringW, FUN_14028dfa0, CStringW)
-void FUN_1412751f0(const CStringW& text, int nA, int nB);
-CStringW FUN_1419021b0(unsigned int, unsigned int);                    // "have/need"
+void ShowSystemNotice(const CStringW& text, int nA, int nB);
+CStringW GetIngredientCountText(unsigned int, unsigned int);                    // "have/need"
 CStringW FUN_1409404f0(__int64 nValue);                          // money text
 void* GetUITalkManager();
 class UITalkManager   // C3: member view for the former free stand-ins
@@ -117,7 +117,7 @@ UIUnlimitedEnchantDialog::UIUnlimitedEnchantDialog()
 {
     m_2c = 0x1b;
     FUN_1422dc3b0(1);
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140fb5d70
@@ -230,26 +230,26 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
         return;
     {
         MS2Ptr<CItem> spResult(new CItem());
-        if (!spResult->FUN_140523c40(spTarget->FUN_1405276c0(), spTarget->GetRarity(), 0))
+        if (!spResult->FUN_140523c40(spTarget->GetItemId(), spTarget->GetRarity(), 0))
             return;
         {
-            spResult->FUN_140524eb0(*pPacket);
+            spResult->ReadFromStream(*pPacket);
             int nFlags = 0x535;
             nFlags &= ~0x10;
             m_binder.FUN_140d43990();
             SetIconType(&m_binder, nFlags);
             SetFlags(&m_binder, 8);
             ASObj data(2);
-            data.FUN_1407cba60("targetBinding", m_binder.BindItem(spTarget.get()));
-            data.FUN_1407cba60("resultBinding", m_binder.BindItem(spResult.get()));
-            data.FUN_1407cbb20("targetItemName", spTarget->FUN_140527b10());
-            data.FUN_1407cbb20("resultItemName", spResult->FUN_140527b10());
+            data.SetStringMember("targetBinding", m_binder.BindItem(spTarget.get()));
+            data.SetStringMember("resultBinding", m_binder.BindItem(spResult.get()));
+            data.SetWStringMember("targetItemName", spTarget->FUN_140527b10());
+            data.SetWStringMember("resultItemName", spResult->FUN_140527b10());
             __int64 nFee = 0;
             ASArray list(2);
             for (size_t i = 0; i < ingredients.FUN_14026bee0(); ++i)
             {
                 Unk_IngRef ref = ingredients.FUN_14026bdc0(i);
-                const int& nIngredientId = ref->FUN_14026b500();
+                const int& nIngredientId = ref->GetItemId();
                 const int& nCount = +ref->m_c;
                 int nHave = g_143ab2a90.GetItemCountByTag(ref->m_b, 0);
                 int nIngredientRank = FUN_14053feb0(nIngredientId);
@@ -257,15 +257,15 @@ void UIUnlimitedEnchantDialog::FUN_140fb6310(CInPacket* pPacket)
                 if (pIngredient->InitWithCount(nIngredientId, nIngredientRank, 0, nCount) != 0)
                 {
                     ASObj entry(2);
-                    entry.FUN_1407cba60("binding", m_binder.BindItem(pIngredient));
-                    entry.FUN_1407cbb20("countText", FUN_1419021b0(nHave, nCount));
+                    entry.SetStringMember("binding", m_binder.BindItem(pIngredient));
+                    entry.SetWStringMember("countText", GetIngredientCountText(nHave, nCount));
                     list.PushObj(entry);
                 }
                 if (ref->m_b == 0x60 && nCount > nHave)
                     nFee = (__int64)((nCount - nHave) * 1000);
             }
             data.FUN_1409eb1d0("ingredient", list);
-            data.FUN_1407cbb20("fee", FUN_14028dfa0(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(nFee)));
+            data.SetWStringMember("fee", FUN_14028dfa0(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(nFee)));
             m_30->FUN_140acd1f0("setData", data);
         }
     }
@@ -279,11 +279,11 @@ void UIUnlimitedEnchantDialog::FUN_140fb6b00(CInPacket* pPacket)
     MS2Ptr<CItem> spItem = FUN_1419be700(nUid);
     if (spItem == 0)
         return;
-    spItem->FUN_140524eb0(*pPacket);
+    spItem->ReadFromStream(*pPacket);
     m_30->Invoke("onEnchant");
     UIInventoryDialog* pInventory = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInventory != 0)
-        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pInventory))->FUN_140c3fe30(7);
+        ((class Unk_McInventoryDialog*)(class UIInventoryDialog*)(pInventory))->AddFlags(7);
     FUN_140fb7690(nUid);
 }
 MS2_REPLACE_METHOD(0x140FB6B00, UIUnlimitedEnchantDialog, FUN_140fb6b00, 289, 0xA0816445);
@@ -294,19 +294,19 @@ void UIUnlimitedEnchantDialog::FUN_140fb6c30(Unk_UnlimitedEnchantError nError)
     switch (nError)
     {
     case 1:
-        FUN_1412751f0(GetStringCommonByKey(L"s_unlimited_enchant_err_invalid_item"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_unlimited_enchant_err_invalid_item"), 1, 1);
         break;
     case 2:
-        FUN_1412751f0(GetStringCommonByKey(L"s_unlimited_enchant_err_lack_ingredient"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_unlimited_enchant_err_lack_ingredient"), 1, 1);
         break;
     case 3:
-        FUN_1412751f0(GetStringCommonByKey(L"s_unlimited_enchant_err_lack_meso"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_unlimited_enchant_err_lack_meso"), 1, 1);
         break;
     case 5:
-        FUN_1412751f0(GetStringCommonByKey(L"s_unlimited_enchant_err_max_unlimited_grade"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_unlimited_enchant_err_max_unlimited_grade"), 1, 1);
         break;
     case 4:
-        FUN_1412751f0(FUN_14028dfa0(L"s_unlimited_enchant_err_system", nError), 1, 1);
+        ShowSystemNotice(FUN_14028dfa0(L"s_unlimited_enchant_err_system", nError), 1, 1);
         break;
     }
 }
@@ -352,7 +352,7 @@ void UIUnlimitedEnchantDialog::FUN_140fb6ed0()
         {
             reinterpret_cast<ASCoreList*>(spBag.operator->())->SetSelectedIndex(-1);
             reinterpret_cast<MS2Ptr<ASCoreList>&>(spBag)->FUN_1422dd1d0();
-            spBag->FUN_1407cba60("bagId", GetTypeName());
+            spBag->SetStringMember("bagId", GetTypeName());
             spBag->vfunc_24(true);
         }
     }

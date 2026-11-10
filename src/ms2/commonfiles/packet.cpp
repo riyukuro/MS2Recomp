@@ -20,7 +20,7 @@
 #include "ms2/placeholder/cpacketbuffer.h"
 #include "ms2/placeholder/exception.h"
 #include "ms2/commonfiles/os.h"
-#include "ms2/placeholder/mstime.h"   // C3: CMsTime::Get (FUN_14070fb70)
+#include "ms2/placeholder/mstime.h"   // C3: CMsTime::Get (WriteMsTime)
 #include "ms2/commonfiles/buffercryptmanager.h"
 #include "ms2/placeholder/cbuffercryptmanager.h"
 #include "ms2/ms2format.h"
@@ -39,7 +39,7 @@ int FUN_1406c3660(const ATL::CAtlArray<char>&);                       // element
 const unsigned char* FUN_1406c3630(const ATL::CAtlArray<char>&);      // data pointer (null when empty)
 class CBufferCryptManager;
 CBufferCryptManager* GetBufferCryptManager();
-CNetworkService* FUN_140714f90();
+CNetworkService* GetNetworkService();
 CPacketBuffer* FUN_1407138b0(unsigned, const Unk_SocketNew&);
 
 // _wassert with the original text/line where the source spelling differs from the printed text.
@@ -60,11 +60,11 @@ void FUN_140715250(ATL::CAtlArray<char>& array, __int64 count) { array.SetCount(
 // @0x140714db0
 unsigned char* FUN_140714db0(ATL::CAtlArray<char>& array) { if (array.IsEmpty()) return 0; return (unsigned char*)&array[0]; }
 // @0x140714fc0
-unsigned __int64 FUN_140714fc0(const ATL::CTime& id) { return *(const unsigned __int64*)&id; }   // the CTime's time value
+unsigned __int64 GetTimeValue(const ATL::CTime& id) { return *(const unsigned __int64*)&id; }   // the CTime's time value
 
 // ---- stream operators -------------------------------------------------------------------------------------------------
 // @0x14070f700
-CInputStream& FUN_14070f700(CInputStream& in, ATL::CAtlArray<char>& value)
+CInputStream& ReadByteArray(CInputStream& in, ATL::CAtlArray<char>& value)
 {
     int count = in.ReadInt32();
     FUN_140715250(value, count);
@@ -72,9 +72,9 @@ CInputStream& FUN_14070f700(CInputStream& in, ATL::CAtlArray<char>& value)
     return in;
 }
 // @0x14070f770
-CInputStream& FUN_14070f770(CInputStream& in, Unk_PktSerializable& item) { item.vfunc_1(in); return in; }
+CInputStream& ReadSerializable(CInputStream& in, Unk_PktSerializable& item) { item.vfunc_1(in); return in; }
 // @0x14070f7b0
-CInputStream& FUN_14070f7b0(CInputStream& in, CByteBuffer& value)
+CInputStream& ReadByteBuffer(CInputStream& in, CByteBuffer& value)
 {
     int count = in.ReadInt32();
     value.FUN_140715230(count);
@@ -86,40 +86,40 @@ COutputStream& FUN_14070f820(COutputStream& out, bool value) { out.WriteBool(val
 // @0x14070f860
 COutputStream& FUN_14070f860(COutputStream& out, unsigned char value) { out.WriteUInt8(value); return out; }
 // @0x14070f8a0
-COutputStream& FUN_14070f8a0(COutputStream& out, short value) { out.WriteInt16(value); return out; }
+COutputStream& WriteInt16(COutputStream& out, short value) { out.WriteInt16(value); return out; }
 // @0x14070f8e0
 COutputStream& FUN_14070f8e0(COutputStream& out, unsigned short value) { out.WriteInt16(value); return out; }
 // @0x14070f920
-COutputStream& FUN_14070f920(COutputStream& out, int value) { out.WriteInt32(value); return out; }
+COutputStream& WriteInt32(COutputStream& out, int value) { out.WriteInt32(value); return out; }
 // @0x14070f960
-COutputStream& FUN_14070f960(COutputStream& out, long value) { out.WriteInt32(value); return out; }
+COutputStream& WriteLong(COutputStream& out, long value) { out.WriteInt32(value); return out; }
 // @0x14070f9a0
 COutputStream& FUN_14070f9a0(COutputStream& out, unsigned int value) { out.WriteInt32(value); return out; }
 // @0x14070f9e0
-COutputStream& FUN_14070f9e0(COutputStream& out, __int64 value) { out.WriteInt64(value); return out; }
+COutputStream& WriteInt64(COutputStream& out, __int64 value) { out.WriteInt64(value); return out; }
 // @0x14070fa20
 COutputStream& FUN_14070fa20(COutputStream& out, unsigned __int64 value) { out.WriteInt64(value); return out; }
 // @0x14070fa60
-COutputStream& FUN_14070fa60(COutputStream& out, float value) { out.WriteFloat(value); return out; }
+COutputStream& WriteFloat(COutputStream& out, float value) { out.WriteFloat(value); return out; }
 // @0x14070faa0
-COutputStream& FUN_14070faa0(COutputStream& out, const CString& value) { out.WriteString(value); return out; }
+COutputStream& WriteString(COutputStream& out, const CString& value) { out.WriteString(value); return out; }
 // @0x14070fae0
-COutputStream& FUN_14070fae0(COutputStream& out, const CStringW& value) { out.WriteUnicodeString(value); return out; }
+COutputStream& WriteUnicodeString(COutputStream& out, const CStringW& value) { out.WriteUnicodeString(value); return out; }
 // @0x14070fb20
-COutputStream& FUN_14070fb20(COutputStream& out, const ATL::CTime& value) { out.WriteInt64(FUN_140714fc0(value)); return out; }
+COutputStream& WriteTime(COutputStream& out, const ATL::CTime& value) { out.WriteInt64(GetTimeValue(value)); return out; }
 // @0x14070fb70
-COutputStream& FUN_14070fb70(COutputStream& out, const Unk_OSNumber& value) { out.WriteInt64(reinterpret_cast<const CMsTime&>(value).Get()); return out; }
+COutputStream& WriteMsTime(COutputStream& out, const Unk_OSNumber& value) { out.WriteInt64(reinterpret_cast<const CMsTime&>(value).Get()); return out; }
 // @0x14070fbc0
-COutputStream& FUN_14070fbc0(COutputStream& out, const ATL::CAtlArray<char>& value)
+COutputStream& WriteByteArray(COutputStream& out, const ATL::CAtlArray<char>& value)
 {
     out.WriteInt32(FUN_1406c3660(value));
     out.WriteBytes(FUN_1406c3630(value), FUN_1406c3660(value));
     return out;
 }
 // @0x14070fc40
-COutputStream& FUN_14070fc40(COutputStream& out, const Unk_PktSerializable& item) { const_cast<Unk_PktSerializable&>(item).vfunc_0(out); return out; }
+COutputStream& WriteSerializable(COutputStream& out, const Unk_PktSerializable& item) { const_cast<Unk_PktSerializable&>(item).vfunc_0(out); return out; }
 // @0x14070fc80
-COutputStream& FUN_14070fc80(COutputStream& out, CByteBuffer& value)
+COutputStream& WriteByteBuffer(COutputStream& out, CByteBuffer& value)
 {
     out.WriteInt32(value.GetLength());
     out.WriteBytes(value.FUN_140204eb0(), value.GetLength());
@@ -150,7 +150,7 @@ bool CInPacket::ReadBool() { return ReadUInt8() ? true : false; }
 int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBefore, int hasSequence)
 {
     if (stateBefore != NULL) *stateBefore = m_nState;
-    char* data = (*buffer).get()->FUN_140713530();
+    char* data = (*buffer).get()->GetData();
     int remaining = (**buffer).GetSize();
     if (m_nState == RS_HEADER) {
         unsigned headerLen = 6;
@@ -184,7 +184,7 @@ int CInPacket::FUN_14070ff00(Unk_SocketPtr<CPacketBuffer>* buffer, int* stateBef
     if (remaining == 0) {
         rest = 0;
     } else {
-        rest = (**buffer).FUN_140715390((**buffer).GetSize() - remaining, remaining, Unk_SocketNew(0));
+        rest = (**buffer).CreateSlice((**buffer).GetSize() - remaining, remaining, Unk_SocketNew(0));
     }
     *buffer = rest;
     return m_nState;
@@ -220,7 +220,7 @@ void FUN_1407103f0(CInPacket* packet)
 }
 
 // ---- COutPacket -------------------------------------------------------------------------------------------------------
-// Rate limit of the packets sent through FUN_1407105c0: (type, key) -> earliest tick of the next send.
+// Rate limit of the packets sent through SendPacketThrottled: (type, key) -> earliest tick of the next send.
 std::map<std::pair<int, int>, unsigned> g_packetThrottle;     // 0x143ab0ab0
 
 // @0x140710500
@@ -232,10 +232,10 @@ COutPacket::COutPacket(int nType, int nUnk)
 // @0x140710590
 void FUN_140710590(COutPacket& packet)
 {
-    if (FUN_140714f90() != 0) FUN_140714f90()->SendPacket(packet);
+    if (GetNetworkService() != 0) GetNetworkService()->SendPacket(packet);
 }
 // @0x1407105c0
-bool FUN_1407105c0(COutPacket* packet, int key, int delay)
+bool SendPacketThrottled(COutPacket* packet, int key, int delay)
 {
     if (packet->m_aBuffer.GetCount() < 2) return false;
     unsigned now = GetTickCountMs2();
@@ -251,7 +251,7 @@ bool FUN_1407105c0(COutPacket* packet, int key, int delay)
     return true;
 }
 // @0x1407106d0
-void FUN_1407106d0(int type, int key)
+void ClearPacketThrottle(int type, int key)
 {
     std::pair<int, int> id(type, key);
     g_packetThrottle.erase(id);
@@ -288,8 +288,8 @@ void FUN_140710870(COutPacket* packet, ATL::CAtlList<Unk_SocketPtr<CPacketBuffer
     const char* source = &static_cast<const Unk_PodArray<char>&>(packet->m_aBuffer)[0];
     unsigned chunk = pkmin<unsigned>(total, 0x5b4);
     Unk_SocketPtr<CPacketBuffer> buffer(FUN_1407138b0(chunk, Unk_SocketNew(0)));
-    if (packet->FUN_14020bc40() != 0) (*buffer).FUN_140715360(buffer.operator->());
-    char* cursor = buffer.get()->FUN_140713530();
+    if (packet->IsLoopback() != 0) (*buffer).FUN_140715360(buffer.operator->());
+    char* cursor = buffer.get()->GetData();
     char* end = cursor + chunk;
     unsigned type;
     if (key != NULL) type = (unsigned short)sequence ^ (unsigned short)(*key >> 16 & 0xffff);
@@ -308,8 +308,8 @@ void FUN_140710870(COutPacket* packet, ATL::CAtlList<Unk_SocketPtr<CPacketBuffer
     while ((total -= chunk) > 0) {
         chunk = pkmin<unsigned>(total, 0x5b4);
         buffer = FUN_1407138b0(chunk, Unk_SocketNew(0));
-        if (packet->FUN_14020bc40() != 0) (*buffer).FUN_140715360(buffer.operator->());
-        cursor = buffer.get()->FUN_140713530();
+        if (packet->IsLoopback() != 0) (*buffer).FUN_140715360(buffer.operator->());
+        cursor = buffer.get()->GetData();
         end = cursor + chunk;
         memcpy(cursor, source, end - cursor);
         source += end - cursor;
@@ -329,7 +329,7 @@ void FUN_140710b90(COutPacket* packet, int state, unsigned* key)
     packet->m_n14 = state;
 }
 // @0x140710c50
-CString COutPacket::FUN_140710c50() const
+CString COutPacket::ToHexString() const
 {
     CString result;
     const unsigned char* data = (const unsigned char*)&m_aBuffer[0];
@@ -363,7 +363,7 @@ CPacketBuffer::~CPacketBuffer()
     }
 }
 // @0x140713530
-char* CPacketBuffer::FUN_140713530() { return m_data; }
+char* CPacketBuffer::GetData() { return m_data; }
 // @0x140714fa0
 int CPacketBuffer::GetSize() const { return m_size; }
 // @0x140715000
@@ -377,7 +377,7 @@ CPacketBuffer* CPacketBuffer::FUN_140715000(int size, char* data, CPacketBuffer*
 // @0x140715360
 void CPacketBuffer::FUN_140715360(void* value) { *FUN_140715db0() = value; }
 // @0x140715390
-CPacketBuffer* CPacketBuffer::FUN_140715390(unsigned offset, int size, const Unk_SocketNew&)
+CPacketBuffer* CPacketBuffer::CreateSlice(unsigned offset, int size, const Unk_SocketNew&)
 {
     CPacketBuffer* slice = new CPacketBuffer(size, m_data + offset, this);
     return slice;
@@ -394,7 +394,7 @@ CPacketBuffer* FUN_1407138b0(unsigned size, const Unk_SocketNew&)
 // @0x140714f80
 CBufferCryptManager* GetBufferCryptManager() { return TSingleton<CBufferCryptManager>::s_instance; }
 // @0x140714f90
-CNetworkService* FUN_140714f90() { return TSingleton<CNetworkService>::s_instance; }
+CNetworkService* GetNetworkService() { return TSingleton<CNetworkService>::s_instance; }
 
 // ---- Unk_CompressedStream constructor (inline in the exe) ---------------------------------------------------------------
 inline Unk_CompressedStream::Unk_CompressedStream(bool useCompression, unsigned threshold)
@@ -629,46 +629,46 @@ errno_t FUN_1407168f0(void* const dst, rsize_t const dstSize, void const* const 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
 MS2_REPLACE(0x140715250, FUN_140715250, 40, 0xC6E9AB8A);
 MS2_REPLACE(0x140714db0, FUN_140714db0, 47, 0x2C61C6EC);
-MS2_REPLACE(0x140714fc0, FUN_140714fc0, 14, 0x82C92E11);
-MS2_REPLACE(0x14070f700, FUN_14070f700, 106, 0x2863236A);
-MS2_REPLACE(0x14070f770, FUN_14070f770, 45, 0x16C8AB58);
-MS2_REPLACE(0x14070f7b0, FUN_14070f7b0, 102, 0x8ED70AC6);
+MS2_REPLACE(0x140714fc0, GetTimeValue, 14, 0x82C92E11);
+MS2_REPLACE(0x14070f700, ReadByteArray, 106, 0x2863236A);
+MS2_REPLACE(0x14070f770, ReadSerializable, 45, 0x16C8AB58);
+MS2_REPLACE(0x14070f7b0, ReadByteBuffer, 102, 0x8ED70AC6);
 MS2_REPLACE(0x14070f820, FUN_14070f820, 43, 0x5126B57B);
 MS2_REPLACE(0x14070f860, FUN_14070f860, 44, 0xDC797D93);
-MS2_REPLACE(0x14070f8a0, FUN_14070f8a0, 45, 0x5DEC3F43);
+MS2_REPLACE(0x14070f8a0, WriteInt16, 45, 0x5DEC3F43);
 MS2_REPLACE(0x14070f8e0, FUN_14070f8e0, 45, 0x5DEC3F43);
-MS2_REPLACE(0x14070f920, FUN_14070f920, 43, 0x31C95D8E);
-MS2_REPLACE(0x14070f960, FUN_14070f960, 43, 0x31C95D8E);
+MS2_REPLACE(0x14070f920, WriteInt32, 43, 0x31C95D8E);
+MS2_REPLACE(0x14070f960, WriteLong, 43, 0x31C95D8E);
 MS2_REPLACE(0x14070f9a0, FUN_14070f9a0, 43, 0x31C95D8E);
-MS2_REPLACE(0x14070f9e0, FUN_14070f9e0, 45, 0x3A4C0818);
+MS2_REPLACE(0x14070f9e0, WriteInt64, 45, 0x3A4C0818);
 MS2_REPLACE(0x14070fa20, FUN_14070fa20, 45, 0x3A4C0818);
-MS2_REPLACE(0x14070fa60, FUN_14070fa60, 47, 0xAB7F6DD9);
-MS2_REPLACE(0x14070faa0, FUN_14070faa0, 45, 0x9D1840A0);
-MS2_REPLACE(0x14070fae0, FUN_14070fae0, 45, 0xAA3A77F8);
-MS2_REPLACE(0x14070fb20, FUN_14070fb20, 63, 0x146858C6);
-MS2_REPLACE(0x14070fb70, FUN_14070fb70, 63, 0x808A85EC);
-MS2_REPLACE(0x14070fbc0, FUN_14070fbc0, 122, 0x62046D9B);
-MS2_REPLACE(0x14070fc40, FUN_14070fc40, 44, 0x85434CD2);
-MS2_REPLACE(0x14070fc80, FUN_14070fc80, 122, 0x93D8A2F2);
+MS2_REPLACE(0x14070fa60, WriteFloat, 47, 0xAB7F6DD9);
+MS2_REPLACE(0x14070faa0, WriteString, 45, 0x9D1840A0);
+MS2_REPLACE(0x14070fae0, WriteUnicodeString, 45, 0xAA3A77F8);
+MS2_REPLACE(0x14070fb20, WriteTime, 63, 0x146858C6);
+MS2_REPLACE(0x14070fb70, WriteMsTime, 63, 0x808A85EC);
+MS2_REPLACE(0x14070fbc0, WriteByteArray, 122, 0x62046D9B);
+MS2_REPLACE(0x14070fc40, WriteSerializable, 44, 0x85434CD2);
+MS2_REPLACE(0x14070fc80, WriteByteBuffer, 122, 0x93D8A2F2);
 MS2_REPLACE_METHOD(0x14070fe80, CInPacket, FUN_14070fe80, 42, 0xF20168B1);
 MS2_REPLACE_METHOD_VIA(0x14070feb0, CInPacket, CInputStream, ReadBool, 67, 0xE061F660);
 MS2_REPLACE_METHOD(0x14070ff00, CInPacket, FUN_14070ff00, 889, 0xCC51CDC9);
 MS2_REPLACE_METHOD(0x140710280, CInPacket, DecryptPayload, 120, 0xA9790E51);
 MS2_REPLACE(0x1407103f0, FUN_1407103f0, 262, 0x9CDB8DAB);
 MS2_REPLACE(0x140710590, FUN_140710590, 42, 0x7966F887);
-MS2_REPLACE(0x1407105c0, FUN_1407105c0, 259, 0x35988C99);
-MS2_REPLACE(0x1407106d0, FUN_1407106d0, 54, 0xD8D41D66);
+MS2_REPLACE(0x1407105c0, SendPacketThrottled, 259, 0x35988C99);
+MS2_REPLACE(0x1407106d0, ClearPacketThrottle, 54, 0xD8D41D66);
 MS2_REPLACE_METHOD(0x140710710, COutPacket, WriteBool, 39, 0x553FDBF2);
 MS2_REPLACE(0x140710870, FUN_140710870, 790, 0xF5FD8FA4);
 MS2_REPLACE(0x140710b90, FUN_140710b90, 181, 0xA1C676CB);
 MS2_REPLACE(0x140710d40, FUN_140710d40, 246, 0x9461C257);
-MS2_REPLACE_METHOD(0x140713530, CPacketBuffer, FUN_140713530, 15, 0xCBEE5D21);
+MS2_REPLACE_METHOD(0x140713530, CPacketBuffer, GetData, 15, 0xCBEE5D21);
 MS2_REPLACE_METHOD(0x140714fa0, CPacketBuffer, GetSize, 14, 0x72E52537);
 MS2_REPLACE_METHOD(0x140715000, CPacketBuffer, FUN_140715000, 81, 0x3433AD85);
 MS2_REPLACE_METHOD(0x140715360, CPacketBuffer, FUN_140715360, 37, 0xC8F82C49);
 MS2_REPLACE_METHOD(0x140715db0, CPacketBuffer, FUN_140715db0, 15, 0x770B1889);
 MS2_REPLACE(0x140714f80, GetBufferCryptManager, 8, 0xF2EA183E);
-MS2_REPLACE(0x140714f90, FUN_140714f90, 8, 0x0D8AB200);
+MS2_REPLACE(0x140714f90, GetNetworkService, 8, 0x0D8AB200);
 MS2_REPLACE_METHOD(0x140714de0, Unk_CompressedStream, FUN_140714de0, 11, 0x3BE09B6E);
 MS2_REPLACE_METHOD(0x140715230, CByteBuffer, FUN_140715230, 32, 0xD1D53A76);
 MS2_REPLACE_METHOD(0x140713970, CIOBuffer, Decode1, 218, 0xC179EE8E);

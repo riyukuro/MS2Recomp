@@ -166,7 +166,7 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 UIFittingDollDialog::UIFittingDollDialog()
     : m_nTransforming(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_164 = 1;
 }
 
@@ -189,7 +189,7 @@ void UIFittingDollDialog::SendFittingDoll()
     if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_transform"))
     {
         m_nTransforming = 1;
-        spButton->FUN_1422c1fe0(0);
+        spButton->SetEnabled(0);
     }
 }
 
@@ -198,7 +198,7 @@ int UIFittingDollDialog::vfunc_65()
 {
     if (UIDialog::vfunc_65() == 0)
         return 0;
-    ((class UIDialogEventDispatcher*)(class Unk_FdDlgEvents*)(reinterpret_cast<Unk_FdDlgEvents*>(TSingleton<UIDialogEventDispatcher>::GetInstance())))->FUN_141928050(static_cast<UIDialogEventListener*>(this));
+    ((class UIDialogEventDispatcher*)(class Unk_FdDlgEvents*)(reinterpret_cast<Unk_FdDlgEvents*>(TSingleton<UIDialogEventDispatcher>::GetInstance())))->AddListener(static_cast<UIDialogEventListener*>(this));
     return 1;
 }
 
@@ -208,7 +208,7 @@ void UIFittingDollDialog::vfunc_67()
     DAT_143af25f0 = 0;
     FUN_14121e760(GetTypeName());
     ((class Unk_ItemEventSystem*)(class Unk_FdItemEvents*)(((class Unk_FdItemEvents*)GetItemEventDispatcher())))->FUN_1419caeb0(static_cast<UIItemEventListener*>(this));
-    ((class UIDialogEventDispatcher*)(class Unk_FdDlgEvents*)(reinterpret_cast<Unk_FdDlgEvents*>(TSingleton<UIDialogEventDispatcher>::GetInstance())))->FUN_1419280e0(static_cast<UIDialogEventListener*>(this));
+    ((class UIDialogEventDispatcher*)(class Unk_FdDlgEvents*)(reinterpret_cast<Unk_FdDlgEvents*>(TSingleton<UIDialogEventDispatcher>::GetInstance())))->RemoveListener(static_cast<UIDialogEventListener*>(this));
     UIDialog::vfunc_67();
 }
 
@@ -272,9 +272,9 @@ void UIFittingDollDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     ((class Unk_ItemEventSystem*)(class Unk_FdItemEvents*)(((class Unk_FdItemEvents*)GetItemEventDispatcher())))->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    FUN_141933b00();
+    SetDollInfo();
     FUN_141934070();
-    if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e2d) != 0)
+    if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e2d) != 0)
     {
         (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e2d)));
     }
@@ -296,7 +296,7 @@ int UIFittingDollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         PC* pPlayer = reinterpret_cast<PC*>(reinterpret_cast<WorldService*>(WorldService::GetInstance())->FUN_141bd0cc0());
         if (pPlayer == 0)
             return 0;
-        int nResult = FUN_141934430();
+        int nResult = CanWearEquipment();
         if (nResult == 0)
             SendFittingDoll();
         else if (nResult != 0x16)
@@ -309,7 +309,7 @@ int UIFittingDollDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 // @0x141933a90
 void UIFittingDollDialog::vfunc_15()
 {
-    FUN_141934340();
+    EnableTransformButton();
     if (DAT_143af25f8 != 0)
     {
         FUN_141934070();
@@ -325,7 +325,7 @@ void UIFittingDollDialog::vfunc_33(int nClassId, int n)
 }
 
 // @0x141933b00
-void UIFittingDollDialog::FUN_141933b00()
+void UIFittingDollDialog::SetDollInfo()
 {
     FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<void*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
     if (pDoll == 0)
@@ -379,8 +379,8 @@ void UIFittingDollDialog::FUN_141934070()
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
-        pDlg->FUN_1407cba60("bagID", GetTypeName());
-        reinterpret_cast<AScript*>(pDlg)->FUN_1407cb9c0("owner", bOwner);
+        pDlg->SetStringMember("bagID", GetTypeName());
+        reinterpret_cast<AScript*>(pDlg)->SetIntMember("owner", bOwner);
     }
 }
 
@@ -391,7 +391,7 @@ void UIFittingDollDialog::FUN_1419342e0()
 }
 
 // @0x141934340
-void UIFittingDollDialog::FUN_141934340()
+void UIFittingDollDialog::EnableTransformButton()
 {
     if (m_nTransforming == 0)
         return;
@@ -403,12 +403,12 @@ void UIFittingDollDialog::FUN_141934340()
     if (MS2Ptr<ASButton> spButton = GetChild<ASButton>("m_transform"))
     {
         m_nTransforming = 0;
-        spButton->FUN_1422c1fe0(1);
+        spButton->SetEnabled(1);
     }
 }
 
 // @0x141934430
-int UIFittingDollDialog::FUN_141934430()
+int UIFittingDollDialog::CanWearEquipment()
 {
     FittingDollPC* pDoll = ((class FittingDollPC*)FUN_140884db0((class Unk_QueryObj*)(reinterpret_cast<void*>(WorldService::GetInstance()->FUN_141bd1530(DAT_143af25f0)))));
     if (pDoll == 0)
@@ -436,7 +436,7 @@ int UIFittingDollDialog::FUN_141934430()
         if (nResult != 0)
             return nResult;
         void* pTransfer;
-        void* pDead = pTransfer = spEquip->GetItem()->FUN_140527930();
+        void* pDead = pTransfer = spEquip->GetItem()->GetTransfer();
         if (pTransfer != 0 && ((class CItemTransfer*)(void*)(pTransfer))->HasBindingRule() != 0 && ((class CItemTransfer*)(void*)(pTransfer))->HasBinding() == 0)
             bBound = true;
     }
@@ -464,7 +464,7 @@ int UIFittingDollDialog::FUN_141934430()
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73e40(1, 0x303, 0, CStringW(L""));
             if (spBox.get() != 0)
             {
-                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIFittingDollDialog::FUN_141934c10));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIFittingDollDialog::OnConfirmTransform));
                 FUN_140d73c60(spBox);
             }
         }
@@ -474,7 +474,7 @@ int UIFittingDollDialog::FUN_141934430()
 }
 
 // @0x141934c10
-bool UIFittingDollDialog::FUN_141934c10(int nResult, const CMsgBoxData& box)
+bool UIFittingDollDialog::OnConfirmTransform(int nResult, const CMsgBoxData& box)
 {
     if (nResult == 0)
         SendFittingDoll();

@@ -40,7 +40,7 @@ public:
 class Unk_PvPRankEntry
 {
 public:
-    bool FUN_141343860();                                           // the player has a rank
+    bool HasRank();                                           // the player has a rank
 
     __int64 m_nCharId;                  // +0x00
     CStringW m_strName;                 // +0x08
@@ -56,8 +56,8 @@ class Unk_PvPRankTable { };                                         // the rank 
 class Unk_PvPRankService                                            // the game-mode service
 {
 public:
-    Unk_PvPRankEntry* FUN_141343810(int nRank);                     // the row of a rank
-    int FUN_141344a80() { return reinterpret_cast<Unk_PvpTimer*>(&m_table)->FUN_141017f80(); }         // 0x141344a80 the row count
+    Unk_PvPRankEntry* GetRankEntry(int nRank);                     // the row of a rank
+    int GetRankCount() { return reinterpret_cast<Unk_PvpTimer*>(&m_table)->GetRowCount(); }         // 0x141344a80 the row count
 private:
     void* m_pad_00;
     Unk_PvPRankTable m_table;
@@ -83,7 +83,7 @@ UIPvPResultDialog::UIPvPResultDialog()
     m_178 = 2;
     m_17c = 0x55d4a86;
     m_180 = -1;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x141343a30
@@ -141,18 +141,18 @@ void UIPvPResultDialog::FUN_141343c10(int nFrom, int nTo)
     int nLast = (std::max)(nFrom, nTo);
     for (int nRank = nFirst; nRank <= nLast; nRank++)
     {
-        Unk_PvPRankEntry* pEntry = (Unk_PvPRankEntry*)reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(nRank);
+        Unk_PvPRankEntry* pEntry = (Unk_PvPRankEntry*)reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->GetRankEntry(nRank);
         if (pEntry == 0)
             continue;
         ASObj obj(2);
         if (!FUN_141344210(&obj, nRank, pEntry))
             continue;
-        m_30->Invoke("AddOrUpdateMember", obj.FUN_1422bb870());
+        m_30->Invoke("AddOrUpdateMember", obj.GetValue());
     }
 }
 
 // @0x141343da0
-void UIPvPResultDialog::FUN_141343da0(int nRank)
+void UIPvPResultDialog::SetLastResult(int nRank)
 {
     m_180 = nRank;
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
@@ -194,29 +194,29 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PvPRankEntry* 
     MS2Ptr<CItemData> spItem = FUN_14053f870(m_17c);
     if ((CItemData*)spItem != 0)
         strIcon = reinterpret_cast<Unk_PrItemData*>(spItem.operator->())->GetIconPath();
-    pObj->FUN_1407cb9c0("rank", nRank);
+    pObj->SetIntMember("rank", nRank);
     {
         CStringW strRank(L"-");
-        if (pEntry->FUN_141343860() && pEntry->m_bOnline)
+        if (pEntry->HasRank() && pEntry->m_bOnline)
             strRank = StringFormat<int>(L"{0}", nRank);
-        pObj->FUN_1407cbb20("charName", pEntry->m_strName);
-        pObj->FUN_1407cbb20("rankText", strRank);
-        pObj->FUN_1407cb9c0("score", pEntry->m_nScore);
-        pObj->FUN_1407cb9c0("kill", pEntry->m_nKill);
-        pObj->FUN_1407cb9c0("death", pEntry->m_nDeath);
+        pObj->SetWStringMember("charName", pEntry->m_strName);
+        pObj->SetWStringMember("rankText", strRank);
+        pObj->SetIntMember("score", pEntry->m_nScore);
+        pObj->SetIntMember("kill", pEntry->m_nKill);
+        pObj->SetIntMember("death", pEntry->m_nDeath);
         pObj->FUN_1409c1180("damage", pEntry->m_nDamage);
-        pObj->FUN_1407cbbe0("isOffline", pEntry->m_bOnline == 0);
-        pObj->FUN_1407cbbe0("isMe", ((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == pEntry->m_nCharId);
+        pObj->SetBoolMember("isOffline", pEntry->m_bOnline == 0);
+        pObj->SetBoolMember("isMe", ((class PCBase*)(class PCBase*)(pPC))->FUN_141656a80() == pEntry->m_nCharId);
         if (pOther)
             pObj->FUN_140bd0d90("job", reinterpret_cast<PC*>(pOther)->GetSubJob());
         else
-            pObj->FUN_1407cb9c0("job", 0);
+            pObj->SetIntMember("job", 0);
         int nCount = 0;
         if (pEntry->m_bOnline == 0)
         {
             nCount = 0;
         }
-        else if (pEntry->FUN_141343860())
+        else if (pEntry->HasRank())
         {
             if (0 < nRank && nRank < 11)
             {
@@ -238,8 +238,8 @@ bool UIPvPResultDialog::FUN_141344210(ASObj* pObj, int nRank, Unk_PvPRankEntry* 
             else if (m_178 == 5)
                 nCount = *Client::Constants::GetInstance()->PvpOnePunchRewardCount[9].Get();
         }
-        pObj->FUN_1407cba60("rewardIcon", strIcon);
-        pObj->FUN_1407cb9c0("rewardCount", nCount);
+        pObj->SetStringMember("rewardIcon", strIcon);
+        pObj->SetIntMember("rewardCount", nCount);
     }
     return true;
 }
@@ -249,18 +249,18 @@ void UIPvPResultDialog::FUN_141344780(int nRank)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
-    int nCount = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141344a80();
+    int nCount = reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->GetRankCount();
     for (int n = 1; n <= nCount; n++)
     {
-        Unk_PvPRankEntry* pEntry = (Unk_PvPRankEntry*)reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->FUN_141343810(n);
+        Unk_PvPRankEntry* pEntry = (Unk_PvPRankEntry*)reinterpret_cast<Unk_PvPRankService*>(TSingleton<CPVPManager>::GetInstance())->GetRankEntry(n);
         if (pEntry == 0)
             continue;
         ASObj obj(2);
         if (!FUN_141344210(&obj, n, pEntry))
             continue;
-        m_30->Invoke("AddOrUpdateMember", obj.FUN_1422bb870());
+        m_30->Invoke("AddOrUpdateMember", obj.GetValue());
     }
-    FUN_141343da0(nRank);
+    SetLastResult(nRank);
 }
 
 // @0x1413448f0

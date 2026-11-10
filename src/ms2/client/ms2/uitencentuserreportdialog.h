@@ -52,9 +52,9 @@ public:
     virtual int vfunc_28(const char*, const Scaleform::GFx::Value*, unsigned int);
     bool FUN_140edbc00(int result, const CMsgBoxData& data);
     void FUN_140edbc60();
-    void FUN_140edbcf0();
-    void FUN_140edbdd0();
-    void FUN_140edbe30();
+    void BlockReportedItem();
+    void BlockReportedGuild();
+    void SendBuddyRequest();
     void FUN_140edbf80();
     void SendRequestReport();
     // @0x140ede800
@@ -70,21 +70,21 @@ public:
     UITencentUserReportPage(int type, MS2Ptr<ASGameEntity> entity);
     virtual ~UITencentUserReportPage();
     void FUN_140edc3b0();
-    void FUN_140edc590(int enabled);
+    void SetAllChecksEnabled(int enabled);
     void FUN_140edc650(int enabled, int count, ...);
-    void FUN_140edc7d0(int type);
+    void SelectReportType(int type);
     void FUN_140edc8c0();
     bool FUN_140edca20();
-    void FUN_140edcfd0(CStringW name);
-    void FUN_140edd150(CStringW name);
-    void FUN_140edd2d0(CStringW name);
-    void FUN_140edd450();
+    void SetTargetName(CStringW name);
+    void SetTargetItemName(CStringW name);
+    void SetTargetItemSellerName(CStringW name);
+    void SetWarningText();
     void FUN_140edd730();
-    bool FUN_140eddac0();
-    int FUN_140eddc40(int type);
-    int FUN_140eddc90();
-    int FUN_140eddd60(int index);
-    CStringW FUN_140edddd0();
+    bool IsBlockChecked();
+    int GetReportTypeIndex(int type);
+    int GetSelectedReportType();
+    int GetReportTypeAt(int index);
+    CStringW GetComment();
     int m_itemKind;
 private:
     MS2_LAYOUT_FRIEND;

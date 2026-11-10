@@ -29,13 +29,13 @@ public:
     virtual void vfunc_52();                                        // 52 0x140fb4d10 hide when the movie clip is up
 
     int IsShown();                                            // m_bShown
-    void FUN_140fb4bb0();                                           // start showing (m_bShown = m_bPending = 1)
-    void FUN_140fb4be0();                                           // unregister the popup and stop showing
+    void StartShowing();                                           // start showing (m_bShown = m_bPending = 1)
+    void StopShowing();                                           // unregister the popup and stop showing
     void SetPtWorld(Vector3 ptWorld);                    // the world point the popup floats at
     void SetIdEntity(const egf::EntityID& id);                    // the cube's entity
-    void FUN_140fb4cc0(const CStringW& strTitle, const CStringW& strText);   // the texts
-    void FUN_140fb4eb0();                                           // project the world point and place the movie
-    void FUN_140fb5080(int bShow);                                  // push the texts and the visibility to the movie
+    void SetText(const CStringW& strTitle, const CStringW& strText);   // the texts
+    void UpdateScreenPosition();                                           // project the world point and place the movie
+    void SetVisible(int bShow);                                  // push the texts and the visibility to the movie
 
 private:
     MS2_LAYOUT_FRIEND;

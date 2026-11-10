@@ -116,7 +116,7 @@ CString FUN_140cc2a00(const CString& strRoot, const CString& strFile);   // path
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
 CString FUN_14071ae20(const CString& strFile);                          // path of a Table file
 CStringW FUN_1401bf530(TiXmlElement*, const char*, CStringW strDefault);   // string attribute with default (callee destroys the default)
 unsigned FUN_14025ed00(const wchar_t* psz);                             // string hash
@@ -129,7 +129,7 @@ class CFeatureManager   // C3: member view for the former free stand-ins
 public:
     bool IsRegionNA();
 };
-bool FUN_14025fab0(CStringW& str);                                          // MakeLower
+bool MakeLower(CStringW& str);                                          // MakeLower
 extern int DAT_143ab2914;                                                   // client build / region level (below 50: checks active)
 extern int DAT_143ab0248;                                                   // client country (0..3)
 void FUN_14025a680(CStringW& src, ATL::CAtlArray<CStringW>& out, const wchar_t* pszSep);   // split into the pieces between separators
@@ -548,7 +548,7 @@ bool CBanTextChecker::FindReserveIdAll(const CStringW& str, CStringW& matched)
 {
     CheckInit();
     CStringW s(str);
-    FUN_14025fab0(s);
+    MakeLower(s);
     std::set<CStringW>::iterator it = m_setReserveIdAll.find(s);
     if (it != m_setReserveIdAll.end()) {
         matched = *it;
@@ -848,7 +848,7 @@ int CBanTextChecker::FUN_1402259b0(const CStringW& str, CStringW& message)
 }
 
 // @0x140225a70
-int CBanTextChecker::FUN_140225a70(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckMusicTitle(const CStringW& str, CStringW& message)
 {
     CheckerLimit limit(3, 0xe, true, false, false, false, false);
     MS2Ptr<CheckerErrStringPackage> pkg(new CheckerErrStringPackage);
@@ -899,7 +899,7 @@ int CBanTextChecker::FUN_140225f70(const CStringW& str, CStringW& message)
 }
 
 // @0x140226440
-int CBanTextChecker::FUN_140226440(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckBillboardTitle(const CStringW& str, CStringW& message)
 {
     MS2Ptr<CheckerErrStringPackage> pkg(new CheckerErrStringPackage);
     if (pkg.get()) {
@@ -910,7 +910,7 @@ int CBanTextChecker::FUN_140226440(const CStringW& str, CStringW& message)
 }
 
 // @0x140226590
-int CBanTextChecker::FUN_140226590(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckBillboardDescription(const CStringW& str, CStringW& message)
 {
     MS2Ptr<CheckerErrStringPackage> pkg(new CheckerErrStringPackage);
     if (pkg.get()) {
@@ -961,7 +961,7 @@ int CBanTextChecker::FUN_1402261e0(const CStringW& str, CStringW& message)
 }
 
 // @0x140226220
-int CBanTextChecker::FUN_140226220(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckBuddyMemo(const CStringW& str, CStringW& message)
 {
     return CheckTypes(str, 0xd8, true, message);
 }
@@ -985,7 +985,7 @@ int CBanTextChecker::FUN_1402262e0(const CStringW& str, CStringW& message)
 }
 
 // @0x140226400
-int CBanTextChecker::FUN_140226400(const CStringW& str, CStringW& message)
+int CBanTextChecker::CheckClubName(const CStringW& str, CStringW& message)
 {
     return CheckTypes(str, 0xd8, true, message);
 }
@@ -1035,7 +1035,7 @@ int CBanTextChecker::CheckTypes(const CStringW& str, unsigned nTypes, bool bFlag
 }
 
 // @0x14025a640
-CStringW FUN_14025a640(const CStringW& str)
+CStringW CopyString(const CStringW& str)
 {
     return str;
 }
@@ -1047,7 +1047,7 @@ void FUN_14025a680(CStringW& src, ATL::CAtlArray<CStringW>& out, const wchar_t* 
     CStringW tok = src.Tokenize(pszSep, iStart);
     while (!tok.IsEmpty())
     {
-        out.Add(FUN_14025a640(tok));
+        out.Add(CopyString(tok));
         tok = src.Tokenize(pszSep, iStart);
     }
 }
@@ -1056,7 +1056,7 @@ void FUN_14025a680(CStringW& src, ATL::CAtlArray<CStringW>& out, const wchar_t* 
 int CBanTextChecker::LoadWords(CString strPath, TextFilterUnit* pTrie)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         return 0;
     }
@@ -1071,7 +1071,7 @@ int CBanTextChecker::LoadWords(CString strPath, TextFilterUnit* pTrie)
         CStringW strName = FUN_1401bf530(pNode, "name", CStringW(L""));
         if (strName.IsEmpty())
             continue;
-        FUN_14025fab0(strName);
+        MakeLower(strName);
         ATL::CAtlArray<CStringW> parts;
         FUN_14025a680(strName, parts, L",");
         if (parts.GetCount() == 1)
@@ -1095,7 +1095,7 @@ int CBanTextChecker::LoadWords(CString strPath, TextFilterUnit* pTrie)
 int CBanTextChecker::LoadIdSet(CString strPath, std::set<CStringW>* pSet)
 {
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         return 0;
     }
@@ -1110,7 +1110,7 @@ int CBanTextChecker::LoadIdSet(CString strPath, std::set<CStringW>* pSet)
         CStringW strName = FUN_1401bf530(pNode, "name", CStringW(L""));
         if (strName.IsEmpty())
             continue;
-        FUN_14025fab0(strName);
+        MakeLower(strName);
         pSet->insert(strName);
     }
     return 1;
@@ -1120,7 +1120,7 @@ int CBanTextChecker::LoadIdSet(CString strPath, std::set<CStringW>* pSet)
 int CBanTextChecker::LoadTables()
 {
     ClearTries();
-    LoadWords(FUN_14071a5b0("Table", "banUrl.xml"), &m_trieBanUrl);
+    LoadWords(GetXmlPath("Table", "banUrl.xml"), &m_trieBanUrl);
     LoadWords(FUN_14071ae20("banWord.xml"), &m_trieBanWord);
     LoadWords(FUN_14071ae20("reserveWord.xml"), &m_trieReserveWord);
     LoadIdSet(FUN_14071ae20("reserveIDAll.xml"), &m_setReserveIdAll);
@@ -1314,14 +1314,14 @@ void CBanTextChecker::FilterBanWords(CStringW& str)
 }
 
 CString FUN_14016a600(const wchar_t* pwsz, int n);                              // wide -> narrow
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 CStringW FUN_14016a730(const char* psz, int n);                                 // narrow -> wide
 extern CStringW DAT_143aacc90;                                                  // the shared empty string
 class Unk_AltStringMgr;   // C3: the GFxManager singleton (calls cast to the GFxManager view)
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
 class CContentShutdownManager;
 class CInputKeyHandler;
-Unk_AltStringMgr* FUN_14025e7a0();
+Unk_AltStringMgr* GetGFxManager();
 void* FUN_14025e7c0();                                                          // the client's text-hook object
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's singleton and init flags (symbols.tsv); local copies stay false -> "is not initialized" box
@@ -1398,9 +1398,9 @@ CStringW CommonString::GetWideByKey(const CStringW& strKey)
         return DAT_143aacc90;
     if (FUN_14025e7c0() != 0)
     {
-        if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d950(0x2a, 1, 0))
+        if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsKeyDown(0x2a, 1, 0))
         {
-            if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->FUN_14116d950(0x1d, 1, 0))
+            if (reinterpret_cast<CInputKeyHandler*>(FUN_14025e7c0())->IsKeyDown(0x1d, 1, 0))
                 return strKey;
         }
     }
@@ -1412,7 +1412,7 @@ CStringW CommonString::GetWideByKey(const CStringW& strKey)
 // @0x140229940
 CStringW CommonString::FUN_140229940(const CString& strKey)
 {
-    return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize(strKey);
+    return reinterpret_cast<GFxManager*>(GetGFxManager())->Localize(strKey);
 }
 
 // @0x140229990
@@ -1504,7 +1504,7 @@ bool Unk_Vec7::operator!=(const Unk_Vec7& other) const
 }
 
 // @0x14025e7a0
-Unk_AltStringMgr* FUN_14025e7a0()
+Unk_AltStringMgr* GetGFxManager()
 {
     return reinterpret_cast<Unk_AltStringMgr*>(SingletonClass<GFxManager>::ms_pSingleton);
 }
@@ -1528,7 +1528,7 @@ CommonString* TSingleton<CommonString>::GetInstance()
 }
 
 // @0x14025fab0
-bool FUN_14025fab0(CStringW& str)
+bool MakeLower(CStringW& str)
 {
     try
     {
@@ -5039,7 +5039,7 @@ int CommonString::LoadCommon()
     TextMap& map = m_maps[0];
     CString strPath = FUN_14071ae20("stringCommon.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         return 0;
     }
@@ -5058,7 +5058,7 @@ int CommonString::LoadCommon()
         strValue.Replace(L"\\n", L"\n");
         map.SetAt(strId, strValue);
     }
-    FUN_1401d1160(CString(strPath));
+    SetPath(CString(strPath));
     return 1;
 }
 
@@ -5068,7 +5068,7 @@ bool CommonString::LoadDebug()
     TextMap& map = m_maps[0];
     CString strPath = FUN_140cc2a00("../XmlDebug", "stringDebug.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         return false;
     }
@@ -5134,7 +5134,7 @@ void CBanTextChecker::CheckInit()
     if (!s_bInit)
     {
         CStringA msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CBanTextChecker).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CBanTextChecker).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -5151,7 +5151,7 @@ void CommonString::CheckInit()
     if (!s_bInit)
     {
         CStringA msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CommonString).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CommonString).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -5186,22 +5186,22 @@ MS2_REPLACE_METHOD(0x140225720, CBanTextChecker, CheckGuildName, 224, 0x2840BD6F
 MS2_REPLACE_METHOD(0x140225810, CBanTextChecker, CheckGuildGradeName, 211, 0x36F09730);
 MS2_REPLACE_METHOD(0x1402258F0, CBanTextChecker, FUN_1402258f0, 176, 0x8AC2EC42);
 MS2_REPLACE_METHOD(0x1402259B0, CBanTextChecker, FUN_1402259b0, 176, 0xC7A7B0EF);
-MS2_REPLACE_METHOD(0x140225A70, CBanTextChecker, FUN_140225a70, 533, 0x4789474A);
+MS2_REPLACE_METHOD(0x140225A70, CBanTextChecker, CheckMusicTitle, 533, 0x4789474A);
 MS2_REPLACE_METHOD(0x140225C90, CBanTextChecker, CheckMailTitleText, 322, 0x5177F359);
 MS2_REPLACE_METHOD(0x140225DE0, CBanTextChecker, CheckContentText, 322, 0x416B8E3D);
 MS2_REPLACE_METHOD(0x140225F70, CBanTextChecker, FUN_140225f70, 322, 0x1BB88BF2);
-MS2_REPLACE_METHOD(0x140226440, CBanTextChecker, FUN_140226440, 322, 0xFE4EB06B);
-MS2_REPLACE_METHOD(0x140226590, CBanTextChecker, FUN_140226590, 322, 0x92FA53AE);
+MS2_REPLACE_METHOD(0x140226440, CBanTextChecker, CheckBillboardTitle, 322, 0xFE4EB06B);
+MS2_REPLACE_METHOD(0x140226590, CBanTextChecker, CheckBillboardDescription, 322, 0x92FA53AE);
 MS2_REPLACE_METHOD(0x1402266E0, CBanTextChecker, FUN_1402266e0, 322, 0x659E94EA);
 MS2_REPLACE_METHOD(0x140226830, CBanTextChecker, CheckAutoDistributeEntryName, 322, 0x83ADDA52);
 MS2_REPLACE_METHOD(0x140225F30, CBanTextChecker, FUN_140225f30, 58, 0xAF657D4B);
 MS2_REPLACE_METHOD(0x1402260C0, CBanTextChecker, FUN_1402260c0, 58, 0xBB338219);
 MS2_REPLACE_METHOD(0x1402261E0, CBanTextChecker, FUN_1402261e0, 58, 0xD69737A8);
-MS2_REPLACE_METHOD(0x140226220, CBanTextChecker, FUN_140226220, 58, 0x63305908);
+MS2_REPLACE_METHOD(0x140226220, CBanTextChecker, CheckBuddyMemo, 58, 0x63305908);
 MS2_REPLACE_METHOD(0x140226260, CBanTextChecker, FUN_140226260, 58, 0x75DD8167);
 MS2_REPLACE_METHOD(0x1402262A0, CBanTextChecker, FUN_1402262a0, 58, 0xA084B6AF);
 MS2_REPLACE_METHOD(0x1402262E0, CBanTextChecker, FUN_1402262e0, 58, 0x2D31E9E7);
-MS2_REPLACE_METHOD(0x140226400, CBanTextChecker, FUN_140226400, 58, 0xA1F0E4A6);
+MS2_REPLACE_METHOD(0x140226400, CBanTextChecker, CheckClubName, 58, 0xA1F0E4A6);
 MS2_REPLACE_METHOD(0x140226100, CBanTextChecker, CheckMarketDescription, 90, 0x0415F78B);
 MS2_REPLACE_METHOD(0x140226160, CBanTextChecker, CheckMarketProductName, 111, 0x679211E4);
 MS2_REPLACE_METHOD(0x140226320, CBanTextChecker, CheckPartySearchText, 204, 0x7A9039D6);

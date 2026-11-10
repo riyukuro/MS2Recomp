@@ -168,13 +168,13 @@ void CPCDataPack::Write(COutputStream& out)
     unsigned nSize = 0;
     nSize = m_bufRecord.GetLength();
     out.WriteInt32(nSize);
-    out.WriteBytes(m_bufRecord.FUN_14067c4c0(), nSize);
+    out.WriteBytes(m_bufRecord.GetData(), nSize);
     nSize = m_bufItems.GetLength();
     out.WriteInt32(nSize);
-    out.WriteBytes(m_bufItems.FUN_14067c4c0(), nSize);
+    out.WriteBytes(m_bufItems.GetData(), nSize);
     nSize = m_bufExtra.GetLength();
     out.WriteInt32(nSize);
-    out.WriteBytes(m_bufExtra.FUN_14067c4c0(), nSize);
+    out.WriteBytes(m_bufExtra.GetData(), nSize);
 }
 
 // @0x14071f710
@@ -218,11 +218,11 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
     m_bufItems.WriteUInt8((unsigned char)nEquip);
     for (int i = 0; i < nEquip; i++) {
         const MS2Ptr<CItem>& spItem = aEquip.GetAt(i);
-        m_bufItems.WriteInt32(spItem->FUN_1405276c0());
+        m_bufItems.WriteInt32(spItem->GetItemId());
         m_bufItems.WriteInt64(spItem->GetItemUid());
         m_bufItems.WriteUInt8(spItem->FUN_140526c30());
         m_bufItems.WriteInt32(spItem->GetRarity());
-        spItem->FUN_140524ad0(m_bufItems);
+        spItem->WriteToStream(m_bufItems);
     }
     bool bTimed = false;
     CMsTime tmNull(0);
@@ -237,21 +237,21 @@ void CPCDataPack::FUN_14071f950(const ItemArray& aEquip, const ItemArray& aExtra
     m_bufItems.WriteUInt8((unsigned char)nMore);
     for (int j = 0; j < nMore; j++) {
         const MS2Ptr<CItem>& spItem = aMore.GetAt(j);
-        m_bufItems.WriteInt32(spItem->FUN_1405276c0());
+        m_bufItems.WriteInt32(spItem->GetItemId());
         m_bufItems.WriteInt64(spItem->GetItemUid());
         m_bufItems.WriteUInt8(spItem->FUN_140526c30());
         m_bufItems.WriteInt32(spItem->GetRarity());
-        spItem->FUN_140524ad0(m_bufItems);
+        spItem->WriteToStream(m_bufItems);
     }
     int nExtra = (int)aExtra.GetCount();
     m_bufExtra.WriteUInt8((unsigned char)nExtra);
     for (int k = 0; k < nExtra; k++) {
         const MS2Ptr<CItem>& spItem = aExtra.GetAt(k);
-        m_bufExtra.WriteUInt8(spItem->FUN_140526b50());
-        m_bufExtra.WriteInt32(spItem->FUN_1405276c0());
+        m_bufExtra.WriteUInt8(spItem->GetSlot());
+        m_bufExtra.WriteInt32(spItem->GetItemId());
         m_bufExtra.WriteInt64(spItem->GetItemUid());
         m_bufExtra.WriteInt32(spItem->GetRarity());
-        spItem->FUN_140524ad0(m_bufExtra);
+        spItem->WriteToStream(m_bufExtra);
     }
 }
 
@@ -270,7 +270,7 @@ void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTim
             break;
         }
         spItem->FUN_140526c10(nRarity);
-        spItem->FUN_140524eb0(static_cast<CInputStream&>(m_bufItems));
+        spItem->ReadFromStream(static_cast<CInputStream&>(m_bufItems));
         spItem->SetItemUid(nUid);
         spItem->SetObjectId(0);
         aEquip.Add(spItem);
@@ -289,7 +289,7 @@ void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTim
             break;
         }
         spItem->FUN_140526c10(nRarity);
-        spItem->FUN_140524eb0(static_cast<CInputStream&>(m_bufItems));
+        spItem->ReadFromStream(static_cast<CInputStream&>(m_bufItems));
         spItem->SetItemUid(nUid);
         spItem->SetObjectId(0);
         spItem->FUN_14052a130(2);
@@ -305,7 +305,7 @@ void CPCDataPack::FUN_140720030(ItemArray& aEquip, ItemArray& aExtra, bool& bTim
         if (!spItem->FUN_140523c40(nId, nAmount, 0)) {
             return;
         }
-        spItem->FUN_140524eb0(static_cast<CInputStream&>(m_bufExtra));
+        spItem->ReadFromStream(static_cast<CInputStream&>(m_bufExtra));
         spItem->SetItemUid(nUid);
         spItem->SetObjectId(0);
         aExtra.Add(spItem);
@@ -321,11 +321,11 @@ int CPCDataPack::FUN_140720850()
     try {
         CryptoPP::CRC32 crc;
         int nOut;
-        crc.CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufRecord.FUN_14067c4c0(), m_bufRecord.GetLength());
+        crc.CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufRecord.GetData(), m_bufRecord.GetLength());
         nCrcRecord = nOut;
-        crc.CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufItems.FUN_14067c4c0(), m_bufItems.GetLength());
+        crc.CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufItems.GetData(), m_bufItems.GetLength());
         nCrcItems = nOut;
-        crc.CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufExtra.FUN_14067c4c0(), m_bufExtra.GetLength());
+        crc.CryptoPP::HashTransformation::CalculateDigest(reinterpret_cast<unsigned char*>(&nOut), m_bufExtra.GetData(), m_bufExtra.GetLength());
         nCrcExtra = nOut;
     } catch (CryptoPP::Exception&) {
         return 0;

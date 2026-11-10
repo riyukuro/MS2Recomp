@@ -26,7 +26,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x14199f870 close: forget the chat
 
     // ---- non-virtual members, sorted by address ----
-    void FUN_14199fcf0(unsigned nGroupId);                      // the chat to invite into
+    void SetGroupId(unsigned nGroupId);                      // the chat to invite into
     void FUN_14199fd10(int nGroupId, const CStringW& strName, const CStringW& strText);    // a member joined
     void FUN_14199fd60(int nGroupId, const CStringW& strName, const CStringW& strOther);   // a member was invited
     void FUN_14199fdb0(int nGroupId, const CStringW& strName);  // a member left
@@ -34,7 +34,7 @@ public:
     void FUN_14199fe30(int nGroupId, const CStringW& strName);  // a member went offline
     void FUN_14199fe70(unsigned nCount);                        // the selected count changed: the limit check
     void SetUserCount(unsigned nCount);                        // the "m_userCount" text
-    void FUN_1419a0240();                                       // rebuild the user list
+    void RefreshUserList();                                       // rebuild the user list
     void CollectPartyMembers(EntryList& entries);                     // add the friends
     void CollectGuildMembers(EntryList& entries);                     // add the guild members
     void AddBuddyEntries(EntryList& entries);                     // add the club members

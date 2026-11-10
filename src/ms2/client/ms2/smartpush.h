@@ -66,7 +66,7 @@ public:
     virtual CStringW vfunc_8();                                 // 0x140dd05a0
     virtual CStringW vfunc_10();                                // 0x140dd05f0
     int FUN_140dd06b0();                                        // the package is free (2) or costs meso (0)
-    bool FUN_140dd07b0();                                       // the package price can be paid
+    bool CanPayPackagePrice();                                       // the package price can be paid
     bool FUN_140dd0a00(int nResult, const CMsgBoxData& data);   // message box answer
 
     int m_bActive;                                              // +0x38 the auto fishing buff was on at the last poll
@@ -89,7 +89,7 @@ public:
     virtual CStringW vfunc_8();                                 // 0x140dd1990
     virtual CStringW vfunc_10();                                // 0x140dd19e0
     int FUN_140dd1aa0();
-    bool FUN_140dd1ba0();
+    bool CanPayPackagePrice();
     bool FUN_140dd1df0(int nResult, const CMsgBoxData& data);
 
     int m_bPlaying;                                             // +0x38 the auto play was on at the last poll
@@ -269,4 +269,4 @@ public:
 };
 
 // The id of the best (highest special ability value) buff item of the bag with special ability nAbility (0: none).
-int FUN_140dd5340(int nAbility);
+int FindBestBuffItemId(int nAbility);

@@ -33,7 +33,7 @@ UIIGuideMovieDialog::UIIGuideMovieDialog()
     m_58 = 0;
     m_7c = 1;
     m_80 = 0;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x1412c3b50
@@ -84,7 +84,7 @@ int UIIGuideMovieDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (reinterpret_cast<Unk_GmKeys*>(FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
+    if (reinterpret_cast<Unk_GmKeys*>(FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
         return 1;
     return 0;
 }

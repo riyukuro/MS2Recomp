@@ -27,7 +27,7 @@ public:
     int FUN_140f29e00();                                    // the points left
     unsigned FUN_140f29e40();                               // the points of the level
     ATL::CTimeSpan FUN_140f29ea0();                         // the time left until the next reset
-    int FUN_140f29f90(MS2Ptr<CCharacterAbility> ref);       // the ability can be learned now (by value: callee destroys)
+    int CanLearnAbility(MS2Ptr<CCharacterAbility> ref);       // the ability can be learned now (by value: callee destroys)
     int FUN_140f2a0b0(int nId);                             // learned
     int FUN_140f2a100(int nId);                             // the level is too low
     int FUN_140f2a210();                                    // something is learned

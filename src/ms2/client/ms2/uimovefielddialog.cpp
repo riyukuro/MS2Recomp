@@ -84,7 +84,7 @@ int UIMoveFieldDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0)) {
+    if (((class Unk_14025e7c0*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0)) {
         if (m_30.get())
             m_30->Invoke("onEnterKey");
         return 1;
@@ -142,7 +142,7 @@ int UIMoveFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
             CStringW strFilter = data.FUN_1422b8f40();
             FUN_140841420(strFilter);
             strFilter.Remove(L' ');
-            FUN_141a55e30(strFilter);
+            FillFieldList(strFilter);
         }
         return 1;
     }
@@ -153,17 +153,17 @@ int UIMoveFieldDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Valu
 void UIMoveFieldDialog::FUN_141a55de0()
 {
     CStringW strFilter(L"");
-    FUN_141a55e30(strFilter);
+    FillFieldList(strFilter);
 }
 
 // @0x141a55e30
-void UIMoveFieldDialog::FUN_141a55e30(const CStringW& strFilter)
+void UIMoveFieldDialog::FillFieldList(const CStringW& strFilter)
 {
     MS2Ptr<ASScrollingList> list = GetChild<ASScrollingList>("m_fieldList");
     if (list == 0)
         return;
     std::vector<MS2Ptr<CFieldData> > fields;
-    CFieldData::FUN_140374090(fields);
+    CFieldData::GetAllFields(fields);
     // The comparator (operator() @0x141a57960): by field id.
     std::sort(fields.begin(), fields.end(), [](MS2Ptr<CFieldData> a, MS2Ptr<CFieldData> b) { return (unsigned)a->m_nFieldID < (unsigned)b->m_nFieldID; });
     unsigned bFilter = !strFilter.IsEmpty();
@@ -185,8 +185,8 @@ void UIMoveFieldDialog::FUN_141a55e30(const CStringW& strFilter)
         }
         if (bMatch && strId.Find(L"_deco", 0) == -1 && strName.GetLength() != 0) {
             ASObj row(2);
-            row.FUN_1407cbb20("code", strId);
-            row.FUN_1407cbb20("field", strName);
+            row.SetWStringMember("code", strId);
+            row.SetWStringMember("field", strName);
             ((ASScrollingList*)list)->AddItem(row);
         }
     }

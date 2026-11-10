@@ -335,7 +335,7 @@ void CBattleRecordManager::RecordDamage(Unk_BattleDamage* damage) {
             group->RecordAmount(record,2,count);
             group->RecordAmount(record,0,std::abs(reinterpret_cast<CDamageRecord*>(damage)->GetTotalDamage()));
             CNpc* npc=reinterpret_cast<CNpc*>(WorldService::GetInstance()->FUN_141bd1320(damage->target));
-            if(npc && npc->FUN_1410934c0()==6) group->RecordAmount(record,7,std::abs(reinterpret_cast<CDamageRecord*>(damage)->GetTotalDamage()));
+            if(npc && npc->GetNpcClass()==6) group->RecordAmount(record,7,std::abs(reinterpret_cast<CDamageRecord*>(damage)->GetTotalDamage()));
             for(unsigned j=0;j<count;++j) {
                 int hit=damage->hitTypes[j]; switch(hit) {
                 case 0: group->RecordAmount(record,3,1); break;

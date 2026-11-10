@@ -52,7 +52,7 @@ public:
 class CGuildInfo   // C3: member view for the former free stand-ins
 {
 public:
-    __int64 FUN_1404ccbd0();
+    __int64 GetGuildId();
 };
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index of the value, -1 if absent (0x140408410)
 class CBigDataLogSystem;
@@ -162,7 +162,7 @@ bool CMS2JavascriptHandler::GetLoginUser(CefRefPtr<CefV8Value> object, const Cef
     retval->SetValue("world", CefV8Value::CreateInt(DAT_143ab2830), V8_PROPERTY_ATTRIBUTE_READONLY);
     if (((class CGuildManager*)(void*)(((void*)TSingleton<CGuildManager>::GetInstance())))->IsInGuild() != 0) {
         CStringA strGuild;
-        strGuild.Format("%lld", ((class CGuildInfo*)(void*)((char*)((void*)TSingleton<CGuildManager>::GetInstance()) + 8))->FUN_1404ccbd0());
+        strGuild.Format("%lld", ((class CGuildInfo*)(void*)((char*)((void*)TSingleton<CGuildManager>::GetInstance()) + 8))->GetGuildId());
         CefString csGuild((const char*)strGuild);
         CefString csGuildName((const wchar_t*)reinterpret_cast<PC*>(pPC)->GetGuildName());
         retval->SetValue("guild_sn", CefV8Value::CreateString(csGuild), V8_PROPERTY_ATTRIBUTE_READONLY);

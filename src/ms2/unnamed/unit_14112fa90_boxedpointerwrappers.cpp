@@ -24,7 +24,7 @@ void FUN_14112fb20(Unk_BoxedPointer* p);
 // (0x14112fb50 is Unk_PayloadPtr<NoticeCubeInfo>::AddRef, explicitly instantiated below)
 void FUN_14112fb80(Unk_BoxedPointer* p);
 void FUN_14112fbb0(Unk_BoxedPointer* p);
-void FUN_14112fbe0(void* p);
+void AddRef(void* p);
 void FUN_14112fc00(void* p);
 void FUN_14112fc20(void* p);
 void FUN_14112fc40(void* p);
@@ -99,7 +99,7 @@ void FUN_14112fbb0(Unk_BoxedPointer* p)
 }
 
 // @0x14112fbe0
-void FUN_14112fbe0(void* p)
+void AddRef(void* p)
 {
     CPtred::AddRefPtred((class CPtred*)(p));
 }
@@ -143,7 +143,7 @@ void FUN_14112fca0(void* p)
 // @0x14112fcc0
 void FUN_14112fcc0(Unk_BoxedPointer* p, void* pUnused)
 {
-    FUN_14112fbe0(p->m_pValue);
+    AddRef(p->m_pValue);
 }
 
 // @0x14112fcf0

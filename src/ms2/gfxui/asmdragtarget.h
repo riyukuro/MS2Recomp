@@ -13,6 +13,6 @@ class ASMDragTarget : public ASDragSlot
 public:
     ASMDragTarget(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422e47c0
     virtual ~ASMDragTarget();                                       // 0 0x1422e4810 (scalar deleting 0x1422e48c0)
-    void FUN_1422e4840(CString strBinding);                         // set the AS "binding" member (by value: the callee destroys it)
+    void SetBinding(CString strBinding);                         // set the AS "binding" member (by value: the callee destroys it)
 };
 MS2_CHECK_SIZE(ASMDragTarget, 0x88);

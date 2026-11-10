@@ -65,7 +65,7 @@ class CLogString* GetLogString();   // C3: was FUN_140166440
 class Unk_NpcFileSystem : public CFileSystem
 {
 };
-CStringA FUN_14071a5b0(const CStringA& strDir, const CStringA& strFile);
+CStringA GetXmlPath(const CStringA& strDir, const CStringA& strFile);
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_140513200
 
 // The default effect dummy table (reinterpret_cast<Unk_NpcEffectDummies*>(TSingleton<CommonEffectDummy>::GetInstance())): CommonEffectDummy, its row count and row getter.
@@ -310,9 +310,9 @@ void NpcDataTableCli::IndexAllRegions()
 // @0x140a7cd70
 void NpcDataTableCli::Load(int nFile)
 {
-    CStringA strPath = FUN_14071a5b0("NpcData", Unk_SocketFormat<unsigned int>("{0:03d}.xml", reinterpret_cast<const unsigned int&>(nFile)));
+    CStringA strPath = GetXmlPath("NpcData", Unk_SocketFormat<unsigned int>("{0:03d}.xml", reinterpret_cast<const unsigned int&>(nFile)));
     TiXmlDocument doc;
-    if (((class Unk_NpcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class Unk_NpcFileSystem*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"NpcDataTable ::ReadFromFile: File not found {0}", strPath);
         return;

@@ -44,7 +44,7 @@ namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 bool FUN_14028d470(float a, float b);                           // nearly equal
 NiNode* FUN_1413fa070(egf::EntityID id);                     // entity id -> scene root
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                // entity -> scene node
-void FUN_141567330(NiAVObject* pNode, bool b);                  // set the node's visibility flag
+void SetShadowCaster(NiAVObject* pNode, bool b);                  // set the node's visibility flag
 
 // Ease curves (empty functors called on temporaries).
 struct Unk_EaseOut { float Evaluate(float t); };
@@ -93,7 +93,7 @@ Unk_CmScale::Unk_CmScale(float fFrom, float fTo, unsigned nMs)
 {
     m_fFrom = fFrom;
     m_fTo = fTo;
-    m_timer.FUN_140868750(nMs);
+    m_timer.Start(nMs);
 }
 
 // @0x14115e2c0
@@ -101,7 +101,7 @@ Unk_CmRotate::Unk_CmRotate(float fFrom, float fTo, unsigned nMs)
 {
     m_fFrom = fFrom;
     m_fTo = fTo;
-    m_timer.FUN_140868750(nMs);
+    m_timer.Start(nMs);
     if (FUN_14028d470(m_fFrom, 0.0f) && 180.0f < m_fTo - m_fFrom)
         m_fFrom = 360.0f;
 }
@@ -111,8 +111,8 @@ Unk_CmBounce::Unk_CmBounce(float fFrom, float fTo, unsigned nUnused, unsigned nM
 {
     m_fFrom = fFrom;
     m_fTo = fTo;
-    m_timer.FUN_1408687f0();
-    m_timerDown.FUN_140868750(nMs);
+    m_timer.Reset();
+    m_timerDown.Start(nMs);
 }
 
 // @0x14115e8b0
@@ -150,7 +150,7 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
 {
     m_fFrom = fFrom;
     m_fTo = fTo;
-    m_timer.FUN_140868750(nMs);
+    m_timer.Start(nMs);
     m_bHide = bHide;
     m_id = id;
     egf::EntityPtr spEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id));
@@ -160,7 +160,7 @@ Unk_CmFade::Unk_CmFade(egf::EntityID id, float fFrom, float fTo, unsigned nMs, b
         NiAVObject* pNode = FUN_141b6efc0(spEntity);
         if (pNode != 0)
         {
-            FUN_141567330(pNode, bHide);
+            SetShadowCaster(pNode, bHide);
             pNode->UpdateEffects();
             pNode->UpdateProperties();
             pNode->Update(0.0, true);
@@ -304,7 +304,7 @@ void CCubeMotionManager::Update()
             continue;
         }
         Unk_CmRotate& rotate = m_rotate.GetValueAt(pos1);
-        if (rotate.m_timer.FUN_140868ba0() != 0 || rotate.m_timer.FUN_140868c00() != 0)
+        if (rotate.m_timer.IsRunning() != 0 || rotate.m_timer.IsExpired() != 0)
         {
             float fRatio = Unk_EaseOut().Evaluate(rotate.m_timer.FUN_140868940());
             float fValue = rotate.m_fFrom + (rotate.m_fTo - rotate.m_fFrom) * fRatio;
@@ -312,9 +312,9 @@ void CCubeMotionManager::Update()
             reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0x68c7c29d, (efd::Point3&)(pt));
             pt.z = fValue;
             reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->SetPropertyValue<efd::Point3>(0x68c7c29d, pt);
-            if (rotate.m_timer.FUN_140868c00() != 0)
+            if (rotate.m_timer.IsExpired() != 0)
             {
-                rotate.m_timer.FUN_1408687f0();
+                rotate.m_timer.Reset();
                 finished.AddTail(id);
             }
             if (spInstancing)
@@ -339,12 +339,12 @@ void CCubeMotionManager::Update()
             continue;
         }
         Unk_CmBounce& bounce = m_bounce.GetValueAt(pos3);
-        if (bounce.m_timerDown.FUN_140868c00() != 0)
+        if (bounce.m_timerDown.IsExpired() != 0)
         {
-            bounce.m_timer.FUN_140868750(200);
-            bounce.m_timerDown.FUN_1408687f0();
+            bounce.m_timer.Start(200);
+            bounce.m_timerDown.Reset();
         }
-        if (bounce.m_timer.FUN_140868ba0() != 0 || bounce.m_timer.FUN_140868c00() != 0)
+        if (bounce.m_timer.IsRunning() != 0 || bounce.m_timer.IsExpired() != 0)
         {
             if (bounce.m_timer.FUN_140868940() <= 0.5f)
             {
@@ -363,9 +363,9 @@ void CCubeMotionManager::Update()
                 reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(pt));
                 pt.z = fValue;
                 reinterpret_cast<egf::Entity*>(((Unk_CmEntity*)spEntity.operator->()))->SetPropertyValue<efd::Point3>(0xfd95ca52, pt);
-                if (bounce.m_timer.FUN_140868c00() != 0)
+                if (bounce.m_timer.IsExpired() != 0)
                 {
-                    bounce.m_timer.FUN_1408687f0();
+                    bounce.m_timer.Reset();
                     finished.AddTail(id);
                 }
             }
@@ -391,14 +391,14 @@ void CCubeMotionManager::Update()
             continue;
         }
         Unk_CmScale& scale = m_scale.GetValueAt(pos5);
-        if (scale.m_timer.FUN_140868ba0() != 0 || scale.m_timer.FUN_140868c00() != 0)
+        if (scale.m_timer.IsRunning() != 0 || scale.m_timer.IsExpired() != 0)
         {
             float fRatio = Unk_EaseOut().Evaluate(scale.m_timer.FUN_140868940());
             float fValue = scale.m_fFrom + (scale.m_fTo - scale.m_fFrom) * fRatio;
             reinterpret_cast<Unk_CachedEntity*>(((Unk_CmEntity*)spEntity.operator->()))->SetPropertyValue<float>(0x2d7cad2d, fValue);
-            if (scale.m_timer.FUN_140868c00() != 0)
+            if (scale.m_timer.IsExpired() != 0)
             {
-                scale.m_timer.FUN_1408687f0();
+                scale.m_timer.Reset();
                 finished.AddTail(id);
             }
             if (spInstancing)
@@ -423,7 +423,7 @@ void CCubeMotionManager::Update()
             continue;
         }
         Unk_CmFade& fade = m_fade.GetValueAt(pos7);
-        if (fade.m_timer.FUN_140868ba0() != 0 || fade.m_timer.FUN_140868c00() != 0)
+        if (fade.m_timer.IsRunning() != 0 || fade.m_timer.IsExpired() != 0)
         {
             float fRatio = Unk_EaseOut().Evaluate(fade.m_timer.FUN_140868940());
             float fAlpha = fade.m_fFrom + (fade.m_fTo - fade.m_fFrom) * fRatio;
@@ -435,7 +435,7 @@ void CCubeMotionManager::Update()
                 pMaterial->vfunc_4(fAlpha);
             }
         }
-        if (fade.m_timer.FUN_140868c00() != 0)
+        if (fade.m_timer.IsExpired() != 0)
         {
             Unk_CmMaterialList& rMaterials = fade.m_materials;
             Unk_CmMaterialList::const_iterator itEnd = rMaterials.end();
@@ -444,7 +444,7 @@ void CCubeMotionManager::Update()
                 TransparencyStandardMaterial* pMaterial = *it;
                 pMaterial->vfunc_4(fade.m_fTo);
             }
-            fade.m_timer.FUN_1408687f0();
+            fade.m_timer.Reset();
             SetCachedBoolProperty((class Unk_CachedEntity*)(((Unk_CmEntity*)spEntity.operator->())), 0xa0b6b179, fade.m_bHide);
             fade.FUN_141161600();
             finished.AddTail(id);

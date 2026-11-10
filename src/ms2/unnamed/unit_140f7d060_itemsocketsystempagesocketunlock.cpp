@@ -95,7 +95,7 @@ void DestroyItemInfoSlot(const CString& name);
 void DestroyItemSlotBag(const CString& name);
 void CreateItemInfoSlot(const CString& name, MS2Ptr<CItem> item, int a, int b, int c);
 void ResizeItemSlotBag(ItemSlotBag* bag, int count);
-NotifyContext::BindData* FUN_1422c8e90(const CString& name);
+NotifyContext::BindData* FindBinding(const CString& name);
 class Unk_TrDebug;
 void* FUN_14025e7c0();
 class CInputKeyHandler   // C3: member view for the former free stand-ins
@@ -103,21 +103,21 @@ class CInputKeyHandler   // C3: member view for the former free stand-ins
 public:
     bool IsDebugMode();
 };
-class Unk_GsClip { public: MS2Ptr<Unk_SocketPageBag> FUN_140c4bc60(const CString&); };   // C3: gemstoneswappage's Unk_GsClip (0x140c4bc60)
+class Unk_GsClip { public: MS2Ptr<Unk_SocketPageBag> GetItemBag(const CString&); };   // C3: gemstoneswappage's Unk_GsClip (0x140c4bc60)
 CStringW GetStringCommonByKey(const CStringW& key);
 CStringW FUN_1409404f0(__int64 v);
-CStringW FUN_1419021b0(unsigned a, unsigned b);
+CStringW GetIngredientCountText(unsigned a, unsigned b);
 CStringW FUN_140627390(unsigned id);
-CStringW FUN_14062ae60(int itemId);
+CStringW GetGemstoneOptionText(int itemId);
 CStringW FUN_14062b310(MS2Ptr<TSocketGemStoneInfo> info);
 int FUN_140628350();
 int FUN_140627ac0(int flag, unsigned* pRate, unsigned bonus);
 int FUN_140627b80(int count, unsigned rate);
 bool FUN_140627c10(MS2Ptr<CItem> item);
-void FUN_140628390(int level, unsigned short rate, int count, CIngredientContainer* cost);
+void GetSocketUnlockCost(int level, unsigned short rate, int count, CIngredientContainer* cost);
 void FUN_140710590(COutPacket&);
 void FUN_1409e4950(MS2Ptr<CItem>, CStringW&, bool*);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int type, CStringW text, void* pListener, CStringW b);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int type, CStringW text, void* pListener, CStringW b);
 MS2Ptr<CMsgBoxData> FUN_140d74090(Delegate<bool(int, const CMsgBoxData&)> cb, CStringW text);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 DragSlotBag* FUN_140c54570(const CString& name);
@@ -131,12 +131,12 @@ Unk_InventoryListener* GetItemEventDispatcher();
 
 // The ingredient control of the page: the multi select list (RTTI ASMultiSelectTileCacheList over ASItemBag).
 class ASItemBag : public Unk_SocketPageBag {public:
-    void FUN_1422cf860();   // C3: was free FUN_1422cf860
+    void Update();   // C3: was free Update
 };
 class ASMultiSelectTileCacheList : public ASItemBag {
 public:
-    unsigned FUN_1422cf920();                       // the selected count
-    void FUN_1422cf980(std::vector<unsigned>& indices);    // the selected row indices
+    unsigned GetSelectedCount();                       // the selected count
+    void GetSelectedList(std::vector<unsigned>& indices);    // the selected row indices
 };
 
 MS2_CHECK_SIZE(ASListItemRenderer, 0x88);
@@ -196,7 +196,7 @@ void FUN_140628f60(Unk_SockUidList&, const __int64&, const std::vector<__int64>&
 void FUN_140629140(Unk_SockItemMsg&, CInPacket&);
 void FUN_140629c50(struct Unk_SockMsgI64&, class COutputStream&);   // C3: was FUN_140629c50
 void FUN_140629d60(struct Unk_SockMsgF&, class CInPacket&);   // C3: was FUN_140629d60
-void FUN_140629de0(CCItemSocketSystemPacket::ForceFillIngredient&, COutputStream&);
+void WriteForceFillIngredient(CCItemSocketSystemPacket::ForceFillIngredient&, COutputStream&);
 
 // ASListEvent's implicit dtor 0x140f83bb0 is emitted here (asevent.h).
 
@@ -241,7 +241,7 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
     MS2Ptr<ASMovieClip> slots0 = m_root->FUN_1409b4560("m_slots0");
     {
         if (slots0.get() != 0) {
-            m_sourceControl = reinterpret_cast<Unk_GsClip*>(slots0.operator->())->FUN_140c4bc60("m_itemBag");
+            m_sourceControl = reinterpret_cast<Unk_GsClip*>(slots0.operator->())->GetItemBag("m_itemBag");
             if (m_sourceControl.get() != 0)
                 reinterpret_cast<ASCoreList*>(m_sourceControl.operator->())->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82d50), 0);
         }
@@ -252,7 +252,7 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
             m_ingredientControl = reinterpret_cast<AScript*>(slots1.operator->())->FUN_140e159f0<ASMultiSelectTileCacheList>("m_itemBag");
             if (m_ingredientControl.get() != 0) {
                 if (multi)
-                    reinterpret_cast<ASCoreList*>(m_ingredientControl.operator->())->FUN_1422de0e0(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82ba0), 0);
+                    reinterpret_cast<ASCoreList*>(m_ingredientControl.operator->())->AddItemClickHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82ba0), 0);
                 else
                     reinterpret_cast<ASCoreList*>(m_ingredientControl.operator->())->AddListIndexChangeHandler(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82e10), 0);
             }
@@ -260,7 +260,7 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
     }
     m_actionButton = reinterpret_cast<AScript*>(m_root.operator->())->FUN_140acce30<ASButton>("m_btnAction");
     if (m_actionButton.get() != 0)
-        m_actionButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f82d00), 0);
+        m_actionButton->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &ItemSocketSystemPageSocketUnlock::OnActionButtonClick), 0);
     bool isDebug = ((class CInputKeyHandler*)(class Unk_TrDebug*)(reinterpret_cast<Unk_TrDebug*>(FUN_14025e7c0())))->IsDebugMode();
     int debug = isDebug ? 1 : 0;
     m_debugButton = reinterpret_cast<AScript*>(m_root.operator->())->FUN_140acce30<ASButton>("m_debugBtnAction");
@@ -279,9 +279,9 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
     FUN_140f6d450(m_slots1Name, m_ingredientEquips, 0x415, 0x20);
     FUN_140f6d590(m_selectedName, m_selected, 0x405, 0x20);
     ASObj data(2);
-    data.FUN_1407cba60("bagId0", m_slots0Name);
-    data.FUN_1407cba60("bagId1", m_slots1Name);
-    data.FUN_1407cba60("selectedSlotId", m_selectedName);
+    data.SetStringMember("bagId0", m_slots0Name);
+    data.SetStringMember("bagId1", m_slots1Name);
+    data.SetStringMember("selectedSlotId", m_selectedName);
     {
         ASObj bag1(2);
         int maxCount = 1;
@@ -290,11 +290,11 @@ void ItemSocketSystemPageSocketUnlock::vfunc_7(MS2Ptr<AScript> root)
             maxCount = multiCount;
             toggle = true;
         }
-        bag1.FUN_1407cb9c0("maxSelectedCount", maxCount);
-        bag1.FUN_1407cbbe0("toggleRenderer", toggle);
-        data.FUN_1409adbe0("bag1Data", bag1.FUN_1422bb870());
+        bag1.SetIntMember("maxSelectedCount", maxCount);
+        bag1.SetBoolMember("toggleRenderer", toggle);
+        data.FUN_1409adbe0("bag1Data", bag1.GetValue());
     }
-    m_root->Invoke("initData", data.FUN_1422bb870());
+    m_root->Invoke("initData", data.GetValue());
     m_state = 0;
     reinterpret_cast<Unk_ItemEventSystem*>(GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
     ClearListSelection(m_sourceControl);
@@ -315,9 +315,9 @@ void ItemSocketSystemPageSocketUnlock::vfunc_5(CInPacket* packet)
     int operation = packet->ReadUInt8();
     FUN_140f6d620(1);
     if (operation == 1)
-        FUN_140f82340(packet);
+        OnUnlockResult(packet);
     else if (operation == 3)
-        FUN_140f81f00(packet);
+        OnSelectItemResult(packet);
     else if (operation == 16)
         FUN_140f826b0(packet);
     else if (operation == 18)
@@ -447,7 +447,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7ec20()
     if (bag != 0) {
         ResizeItemSlotBag(bag, (int)m_ingredientEquips.GetCount());
         if (m_ingredientControl.get() != 0)
-            ((class ASItemBag*)(class Unk_SocketPageBag*)(m_ingredientControl.operator->()))->FUN_1422cf860();
+            ((class ASItemBag*)(class Unk_SocketPageBag*)(m_ingredientControl.operator->()))->Update();
     }
 }
 
@@ -483,16 +483,16 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7ef70(MS2Ptr<CItem> item)
 // @0x140f7f210
 void ItemSocketSystemPageSocketUnlock::FUN_140f7f210(MS2Ptr<CItem> item)
 {
-    FUN_140f810b0();
+    ClearIngredients();
     if (item == 0)
         return;
     m_selected = item;
     SetInfoSlotItem(m_selectedName, m_selected);
     ASObj data(2);
-    data.FUN_1407cbb20("itemName", m_selected->FUN_140528160());
+    data.SetWStringMember("itemName", m_selected->FUN_140528160());
     data.FUN_1409c0e60("unlockAllNotice", L"$s_itemsocketsystem_socketunlock_msg_unlock_all");
     FUN_140f81a40(data, -1);
-    m_root->Invoke("playSelect", data.FUN_1422bb870());
+    m_root->Invoke("playSelect", data.GetValue());
     m_state = 1;
     m_selectedUid = m_selected->GetItemUid();
 }
@@ -524,10 +524,10 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7f420(MS2Ptr<CItem> item)
         text.Append(highSa);
         text.Append(L"\n");
         text.Append(ask);
-        MS2Ptr<CMsgBoxData> box = FUN_140d73d20(0x11, CStringW(text), 0, CStringW(L""));
+        MS2Ptr<CMsgBoxData> box = CreateMessageBox(0x11, CStringW(text), 0, CStringW(L""));
         if (box.get() != 0) {
             box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &ItemSocketSystemPageSocketUnlock::FUN_140f83560));
-            box->FUN_141a01600(item->GetItemUid());
+            box->SetItemUid(item->GetItemUid());
             box->FUN_141a01ee0(MS2Ptr<CItem>(item), item->FUN_140527b10(), 1, 0, -1, -1, 1);
             box->SetButtonLabelIds(0x475, 0x476, 0);
             FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
@@ -578,7 +578,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f7fa20(MS2Ptr<CItem> item)
     }
     SetInfoSlotItem(m_ingredientSlotName, item);
     m_root->Invoke("selectIngredientEquip");
-    FUN_140f83170();
+    UpdateIngredientEquipCount();
 }
 
 // @0x140f7ff50
@@ -626,7 +626,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
         MS2Ptr<ASMultiSelectTileCacheList> list(dynamic_cast<ASMultiSelectTileCacheList*>(static_cast<ASItemBag*>(m_ingredientControl.get())));
         if (list.get() != 0) {
             std::vector<unsigned> selected;
-            list->FUN_1422cf980(selected);
+            list->GetSelectedList(selected);
             if (selected.empty()) {
                 FUN_1412752d0(L"s_itemsocketsystem_error_invalid_target_ingredient_null", 1);
                 return;
@@ -656,7 +656,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
         bonus = (unsigned)(reinterpret_cast<CEquipment*>(((class Unk_TrInventory*)((class PC*)(class Unk_TrPlayer*)(player))->GetEquipment()))->GetAbilityRate((SAType)0xb3) * 10000.0f);
     int sale = FUN_140627ac0(flag, &rate, bonus);
     CIngredientContainer cost;
-    FUN_140628390(m_selected->GetRarity(), m_selected->GetRequiredLevel(), flag, &cost);
+    GetSocketUnlockCost(m_selected->GetRarity(), m_selected->GetRequiredLevel(), flag, &cost);
     const std::vector<MS2Ptr<CIngredientInfo> >* entries =
         reinterpret_cast<const std::vector<MS2Ptr<CIngredientInfo> >*>(cost.FUN_14026c230());
     size_t entryCount = entries->size();
@@ -700,7 +700,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80160()
         }
     }
     if (data->HasSkinType()) {
-        if (reinterpret_cast<CItemTransfer*>(m_selected->FUN_140527930())->HasBinding() == 0 && socket->GetOpenSlotCount() == 0) {
+        if (reinterpret_cast<CItemTransfer*>(m_selected->GetTransfer())->HasBinding() == 0 && socket->GetOpenSlotCount() == 0) {
             FUN_140f7ff50(L"s_itemsocketsystem_socketunlock_msg_ask_unlock_skin_first", &uid, ingredients);
             return;
         }
@@ -751,7 +751,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f80f30()
 }
 
 // @0x140f810b0
-void ItemSocketSystemPageSocketUnlock::FUN_140f810b0()
+void ItemSocketSystemPageSocketUnlock::ClearIngredients()
 {
     DestroyItemInfoSlot(m_ingredientSlotName);
     DestroyItemSlotBag(m_ingredientName);
@@ -761,7 +761,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f810b0()
 // @0x140f81100
 void ItemSocketSystemPageSocketUnlock::FUN_140f81100(ASObj& data)
 {
-    FUN_140f810b0();
+    ClearIngredients();
     if (m_selected == 0 || m_selected->FUN_140527840() == 0)
         return;
     CItemSocket* socket = m_selected->GetSocket();
@@ -770,7 +770,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81100(ASObj& data)
     MS2Ptr<CItemData> itemData(m_selected->FUN_140527840());
     CIngredientContainer cost;
     int flag = itemData->GetSkinType();
-    FUN_140628390(m_selected->GetRarity(), m_selected->GetRequiredLevel(), flag, &cost);
+    GetSocketUnlockCost(m_selected->GetRarity(), m_selected->GetRequiredLevel(), flag, &cost);
     MS2Ptr<SaleParam> sale(new SaleParam);
     if (sale.get() != 0) {
         unsigned bonus = 0;
@@ -782,7 +782,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81100(ASObj& data)
     __int64 fee = 0;
     FUN_140f6dc70(m_ingredientName, cost, data, m_ingredients, MS2Ptr<CItem>(m_selected), &fee, MS2Ptr<SaleParam>(sale));
     if (fee != 0)
-        data.FUN_1407cbb20("unlockFee", FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
+        data.SetWStringMember("unlockFee", FUN_14028dfa0<CStringW>(CStringW(L"s_itemenchant_fee"), FUN_1409404f0(fee)));
     int icon = 0x405;
     int flags = 0x20;
     MS2Ptr<CItem> equipItem(0);
@@ -793,19 +793,19 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81100(ASObj& data)
         icon = 0x415;
         flags = 0x6800;
         equipItem.AssignRaw(new CItem);
-        equipItem->FUN_14052b130(m_selected->FUN_1405276c0(), m_selected->GetRarity(), 0);
+        equipItem->FUN_14052b130(m_selected->GetItemId(), m_selected->GetRarity(), 0);
         CItemSocket* itemSocket = m_selected->GetSocket();
         if (itemSocket != 0)
             equipItem->FUN_14052b420(itemSocket->GetOpenSlotCount());
     }
     CreateItemInfoSlot(m_ingredientSlotName, MS2Ptr<CItem>(equipItem), 0, icon, flags);
-    data.FUN_1407cba60("ingredientEquipSlotId", m_ingredientSlotName);
-    data.FUN_1407cbbe0("showIngredientEquipSlotEffect", showEffect);
-    data.FUN_1407cb9c0("needIngredientEquipCount", needCount);
+    data.SetStringMember("ingredientEquipSlotId", m_ingredientSlotName);
+    data.SetBoolMember("showIngredientEquipSlotEffect", showEffect);
+    data.SetIntMember("needIngredientEquipCount", needCount);
     CStringW countText;
     if (1 < needCount)
-        countText = FUN_1419021b0(0, needCount);
-    data.FUN_1407cbb20("ingredientEquipCountText", countText);
+        countText = GetIngredientCountText(0, needCount);
+    data.SetWStringMember("ingredientEquipCountText", countText);
     CStringW saleDesc;
     if (sale.get() != 0) {
         if (sale->enabled == 1) {
@@ -816,7 +816,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81100(ASObj& data)
             saleDesc = FUN_14028dfa0<float>(CStringW(L"s_itemsocketsystem_gemstoneupgrade_sa_sale_desc"), percent);
         }
     }
-    data.FUN_1407cbb20("saleDesc", saleDesc);
+    data.SetWStringMember("saleDesc", saleDesc);
 }
 
 // @0x140f81a40
@@ -842,7 +842,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81a40(ASObj& data, int unlockInde
             text = emptyText;
         } else {
             int gemId = info->GetGemId();
-            CStringW name = FUN_14062ae60(gemId);
+            CStringW name = GetGemstoneOptionText(gemId);
             CStringW stat = FUN_14062b310(info);
             text = StringFormat<CStringW, CStringW, CStringW>(rowStat, FUN_140627390(gemId), name, stat);
         }
@@ -854,12 +854,12 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81a40(ASObj& data, int unlockInde
         for (unsigned i = 0; i < left; ++i)
             rows.PushWString(lockText);
     }
-    data.FUN_1409adbe0("arrSocket", rows.FUN_1422bb870());
-    data.FUN_1407cb9c0("unlockSocketIndex", unlockIndex);
+    data.FUN_1409adbe0("arrSocket", rows.GetValue());
+    data.SetIntMember("unlockSocketIndex", unlockIndex);
 }
 
 // @0x140f81f00
-void ItemSocketSystemPageSocketUnlock::FUN_140f81f00(CInPacket* packet)
+void ItemSocketSystemPageSocketUnlock::OnSelectItemResult(CInPacket* packet)
 {
     if (m_root == 0)
         return;
@@ -873,16 +873,16 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81f00(CInPacket* packet)
     }
     SetInfoSlotItem(m_selectedName, m_selected);
     ASObj data(2);
-    data.FUN_1407cbb20("itemName", m_selected->FUN_140528160());
+    data.SetWStringMember("itemName", m_selected->FUN_140528160());
     {
         CStringW prob = FUN_14028dfa0<float>(CStringW(L"s_itemsocketsystem_success_prob"), result.m_fProb);
-        data.FUN_1407cbb20("successProb", prob);
+        data.SetWStringMember("successProb", prob);
         bool enable = FUN_140627c10(MS2Ptr<CItem>(m_selected));
-        data.FUN_1407cbbe0("noSelect", !enable);
+        data.SetBoolMember("noSelect", !enable);
         FUN_140f81100(data);
         FUN_140f81a40(data, -1);
     }
-    m_root->Invoke("playSelect", data.FUN_1422bb870());
+    m_root->Invoke("playSelect", data.GetValue());
     m_state = 1;
     m_selectedUid = m_selected->GetItemUid();
     FUN_140f7ec20();
@@ -890,7 +890,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f81f00(CInPacket* packet)
 }
 
 // @0x140f82340
-void ItemSocketSystemPageSocketUnlock::FUN_140f82340(CInPacket* packet)
+void ItemSocketSystemPageSocketUnlock::OnUnlockResult(CInPacket* packet)
 {
     if (m_root == 0)
         return;
@@ -907,7 +907,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82340(CInPacket* packet)
     ASObj data(2);
     bool success = msg.m_bValid;
     int index = msg.m_nByte;
-    data.FUN_1407cb9c0("unlockSocketIndex", index);
+    data.SetIntMember("unlockSocketIndex", index);
     FUN_140f81a40(data, index);
     CString method;
     if (success) {
@@ -917,7 +917,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82340(CInPacket* packet)
         method = "playFail";
         highlight = 0;
     }
-    m_root->Invoke((const char*)method, data.FUN_1422bb870());
+    m_root->Invoke((const char*)method, data.GetValue());
     m_state = 2;
     ClearListSelection(m_ingredientControl);
     FUN_140f82f90();
@@ -945,7 +945,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f826b0(CInPacket*)
         sale->enabled = FUN_140627ac0(flag, reinterpret_cast<unsigned*>(&sale->rate), bonus);
     }
     __int64 price = 0;
-    FUN_140f6e250(m_ingredientName, m_ingredients, MS2Ptr<CItem>(m_selected), &price, MS2Ptr<SaleParam>(sale));
+    UpdateIngredientCounts(m_ingredientName, m_ingredients, MS2Ptr<CItem>(m_selected), &price, MS2Ptr<SaleParam>(sale));
 }
 
 // @0x140f82940
@@ -984,7 +984,7 @@ void ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode16(const Scalefor
     fill.m_nUid = m_selected->GetItemUid();
     COutPacket out(static_cast<int>(SendOp::ItemSocketSystem), 0);
     out.Encode1(0x10);
-    FUN_140629de0(fill, out);
+    WriteForceFillIngredient(fill, out);
     FUN_140710590(out);
 }
 
@@ -992,21 +992,21 @@ void ItemSocketSystemPageSocketUnlock::SendItemSocketSystemMode16(const Scalefor
 void ItemSocketSystemPageSocketUnlock::FUN_140f82ba0(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASListEvent evt(params);
-    Scaleform::GFx::Value row = evt.FUN_1422e27d0();
+    Scaleform::GFx::Value row = evt.GetItemRenderer();
     ASListItemRenderer renderer(row, 2);
     if (renderer.IsUndefinedOrNull())
         return;
-    unsigned index = evt.FUN_1422e2820();
-    if (reinterpret_cast<ASButton*>(&renderer)->FUN_1422ce0e0()) {
+    unsigned index = evt.GetIndex();
+    if (reinterpret_cast<ASButton*>(&renderer)->IsSelected()) {
         MS2Ptr<CItem> item = GetItemAt(m_ingredientEquips, index);
         FUN_140f7f420(item);
     } else {
-        FUN_140f83170();
+        UpdateIngredientEquipCount();
     }
 }
 
 // @0x140f82d00
-void ItemSocketSystemPageSocketUnlock::FUN_140f82d00(const Scaleform::GFx::FunctionHandler::Params&)
+void ItemSocketSystemPageSocketUnlock::OnActionButtonClick(const Scaleform::GFx::FunctionHandler::Params&)
 {
     if (m_state == 1)
         FUN_140f80160();
@@ -1018,7 +1018,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82d00(const Scaleform::GFx::Funct
 void ItemSocketSystemPageSocketUnlock::FUN_140f82d50(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASListEvent evt(params);
-    unsigned index = evt.FUN_1422e2820();
+    unsigned index = evt.GetIndex();
     MS2Ptr<CItem> item = GetItemAt(m_sourceItems, index);
     FUN_140f7ef70(item);
 }
@@ -1027,7 +1027,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f82d50(const Scaleform::GFx::Funct
 void ItemSocketSystemPageSocketUnlock::FUN_140f82e10(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     ASListEvent evt(params);
-    unsigned index = evt.FUN_1422e2820();
+    unsigned index = evt.GetIndex();
     MS2Ptr<CItem> item = GetItemAt(m_ingredientEquips, index);
     FUN_140f7f420(item);
 }
@@ -1078,7 +1078,7 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f83060(__int64 uid)
 }
 
 // @0x140f83170
-void ItemSocketSystemPageSocketUnlock::FUN_140f83170()
+void ItemSocketSystemPageSocketUnlock::UpdateIngredientEquipCount()
 {
     if (m_ingredientControl == 0)
         return;
@@ -1088,8 +1088,8 @@ void ItemSocketSystemPageSocketUnlock::FUN_140f83170()
     MS2Ptr<ASMultiSelectTileCacheList> list(dynamic_cast<ASMultiSelectTileCacheList*>(static_cast<ASItemBag*>(m_ingredientControl.get())));
     if (list == 0)
         return;
-    unsigned count = list->FUN_1422cf920();
-    CStringW text = FUN_1419021b0(count, need);
+    unsigned count = list->GetSelectedCount();
+    CStringW text = GetIngredientCountText(count, need);
     m_root->Invoke("updateIngredientEquipCount", count, need, CStringW(text));
 }
 
@@ -1149,14 +1149,14 @@ MS2_REPLACE_METHOD(0x140F7EC20, ItemSocketSystemPageSocketUnlock, FUN_140f7ec20,
 MS2_REPLACE_METHOD(0x140F7F210, ItemSocketSystemPageSocketUnlock, FUN_140f7f210, 520, 0x1249B769);
 MS2_REPLACE_METHOD(0x140F80D70, ItemSocketSystemPageSocketUnlock, FUN_140f80d70, 438, 0xECAEDA60);
 MS2_REPLACE_METHOD(0x140F80F30, ItemSocketSystemPageSocketUnlock, FUN_140f80f30, 373, 0x975064D0);
-MS2_REPLACE_METHOD(0x140F810B0, ItemSocketSystemPageSocketUnlock, FUN_140f810b0, 65, 0x5B596625);
+MS2_REPLACE_METHOD(0x140F810B0, ItemSocketSystemPageSocketUnlock, ClearIngredients, 65, 0x5B596625);
 MS2_REPLACE_METHOD(0x140F81100, ItemSocketSystemPageSocketUnlock, FUN_140f81100, 2362, 0x89F66170);
 MS2_REPLACE_METHOD(0x140F81A40, ItemSocketSystemPageSocketUnlock, FUN_140f81a40, 1200, 0x5B4E074A);
-MS2_REPLACE_METHOD(0x140F81F00, ItemSocketSystemPageSocketUnlock, FUN_140f81f00, 1074, 0x6C036DA4);
+MS2_REPLACE_METHOD(0x140F81F00, ItemSocketSystemPageSocketUnlock, OnSelectItemResult, 1074, 0x6C036DA4);
 MS2_REPLACE_METHOD(0x140F826B0, ItemSocketSystemPageSocketUnlock, FUN_140f826b0, 637, 0x4E69FD08);
 MS2_REPLACE_METHOD(0x140F82940, ItemSocketSystemPageSocketUnlock, SendItemSocketSystemMode14, 265, 0xD82C5B61);
 MS2_REPLACE_METHOD(0x140F82A50, ItemSocketSystemPageSocketUnlock, SendItemSocketSystemMode16, 316, 0xA5F94481);
-MS2_REPLACE_METHOD(0x140F82D00, ItemSocketSystemPageSocketUnlock, FUN_140f82d00, 63, 0xAB13AB14);
+MS2_REPLACE_METHOD(0x140F82D00, ItemSocketSystemPageSocketUnlock, OnActionButtonClick, 63, 0xAB13AB14);
 MS2_REPLACE_METHOD(0x140F82D50, ItemSocketSystemPageSocketUnlock, FUN_140f82d50, 178, 0x8CA9523E);
 MS2_REPLACE_METHOD(0x140F82E10, ItemSocketSystemPageSocketUnlock, FUN_140f82e10, 178, 0x89C8085C);
 MS2_REPLACE_METHOD(0x140F82ED0, ItemSocketSystemPageSocketUnlock, FUN_140f82ed0, 60, 0x0C919240);

@@ -36,39 +36,39 @@ ASSprite::~ASSprite()
 }
 
 // @0x1422e5c60
-MS2Ptr<ASGraphics> ASSprite::FUN_1422e5c60()
+MS2Ptr<ASGraphics> ASSprite::GetGraphics()
 {
     return FUN_140accef0<ASGraphics>("graphics");
 }
-MS2_REPLACE_METHOD(0x1422E5C60, ASSprite, FUN_1422e5c60, 102, 0x79337F97);
+MS2_REPLACE_METHOD(0x1422E5C60, ASSprite, GetGraphics, 102, 0x79337F97);
 
 // @0x1422e5cd0
-void ASSprite::FUN_1422e5cd0(int bUse)
+void ASSprite::SetUseHandCursor(int bUse)
 {
-    FUN_1407cbbe0("useHandCursor", bUse != 0);
+    SetBoolMember("useHandCursor", bUse != 0);
 }
-MS2_REPLACE_METHOD(0x1422E5CD0, ASSprite, FUN_1422e5cd0, 60, 0xCC6D1C81);
+MS2_REPLACE_METHOD(0x1422E5CD0, ASSprite, SetUseHandCursor, 60, 0xCC6D1C81);
 
 // @0x1422e5d20
-int ASSprite::FUN_1422e5d20()
+int ASSprite::GetUseHandCursor()
 {
     return GetMember("useHandCursor").GetBool();
 }
-MS2_REPLACE_METHOD(0x1422E5D20, ASSprite, FUN_1422e5d20, 91, 0xD750AEA7);
+MS2_REPLACE_METHOD(0x1422E5D20, ASSprite, GetUseHandCursor, 91, 0xD750AEA7);
 
 // @0x1422e5d90
-void ASSprite::FUN_1422e5d90(int bLockCenter)
+void ASSprite::StartDrag(int bLockCenter)
 {
     Invoke("startDrag", bLockCenter);
 }
-MS2_REPLACE_METHOD(0x1422E5D90, ASSprite, FUN_1422e5d90, 55, 0x35433689);
+MS2_REPLACE_METHOD(0x1422E5D90, ASSprite, StartDrag, 55, 0x35433689);
 
 // @0x1422e5dd0
-void ASSprite::FUN_1422e5dd0()
+void ASSprite::StopDrag()
 {
     Invoke("stopDrag");
 }
-MS2_REPLACE_METHOD(0x1422E5DD0, ASSprite, FUN_1422e5dd0, 46, 0x19CD2CE0);
+MS2_REPLACE_METHOD(0x1422E5DD0, ASSprite, StopDrag, 46, 0x19CD2CE0);
 
 // @0x1422e5eb0
 template <> MS2Ptr<ASGraphics> AScript::FUN_140accef0<ASGraphics>(const CString& strName)

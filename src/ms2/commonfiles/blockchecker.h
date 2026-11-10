@@ -61,5 +61,5 @@ private:
 };
 MS2_CHECK_SIZE(CBlockChecker,0x38);
 MS2_CHECK_OFFSET(CBlockChecker,m_records,0x18);
-CStringW FUN_1401ca400(const BlockPtr&,int);
+CStringW GetBlockActionMessage(const BlockPtr&,int);
 int FUN_1401ca560(int,int);

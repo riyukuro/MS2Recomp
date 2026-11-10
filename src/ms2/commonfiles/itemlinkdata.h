@@ -1,7 +1,7 @@
 // itemlinkdata.h - the hyperlink data of chat/mail text: CHyperLinkData (RTTI .?AVCHyperLinkData@@, 0x20 bytes: CPtred +
 // the link type at +0x18) and its subclasses, one per link type (RTTI names): CItemLinkData (+0x20 the owner id),
 // CLinkSerialID (1), CLinkItemID (2), CLinkItemGUID (3), CLinkAchieveID (4), CLinkCashSaleProduct (5),
-// CLinkBlackMarketSN (6) and CLinkMeratMarketProduct (7). Parsed from "<...>" tags by FUN_1405bd720. Recovered from
+// CLinkBlackMarketSN (6) and CLinkMeratMarketProduct (7). Parsed from "<...>" tags by ParseHyperLinks. Recovered from
 // MapleStory2.exe KMS2_DEV x64 (2022-04-13); unit ?\itemlinkdata.cpp (0x1405bd5b0-0x1405bea40, was ?\hyperlinkdata.cpp). The
 // header name is assumed; member names are invented from use.
 #pragma once
@@ -59,7 +59,7 @@ public:
     CLinkItemID(__int64 nOwnerId, int nItemId, int nRarity);    // 0x1405bd9c0
     virtual ~CLinkItemID() = default;                                     // 0x1405be250 (??_G 0x1405be4c0)
     int GetItemId() const;                                  // the item id
-    unsigned short FUN_1405bdb20() const;                       // the rarity
+    unsigned short GetRarity() const;                       // the rarity
 protected:
     int m_nItemId;                                              // +0x28
     int m_nRarity;                                              // +0x2c
@@ -114,4 +114,4 @@ protected:
 MS2_CHECK_SIZE(CLinkMeratMarketProduct, 0x38);
 
 // Parses the "<...>" tags of a text into link objects (0x1405bd720).
-void FUN_1405bd720(const CStringW& strText, ATL::CAtlArray<MS2Ptr<CHyperLinkData> >& arrOut);
+void ParseHyperLinks(const CStringW& strText, ATL::CAtlArray<MS2Ptr<CHyperLinkData> >& arrOut);

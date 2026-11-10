@@ -76,16 +76,16 @@ int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731
 bool FUN_14028f650(struct Unk_XmlElement*);   // C3: was FUN_14028f650
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
+CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& rValue);   // index or -1
 
 // CItem's records: the item data (CItem::FUN_140527840) and the enchant / option status (CItem::FUN_1405278a0).
 class Unk_ItemEquipData : public CItemData {};
 // C3: Unk_ItemEnchantData = CItemStatus (CItem::m_spStatus +0xf8)
 
-class Unk_140166430* FUN_140166430();   // C3: was FUN_140166430
-void* FUN_1401c0d90();   // C3: was FUN_1401c0d90
+class Unk_140166430* GetItemOptionTable();   // C3: was GetItemOptionTable
+void* GetGameRule();   // C3: was GetGameRule
 const CString& GetStatName(unsigned nStat);                 // the xml name of a stat
 const CString& FUN_14081d380(int nSpecial);                 // the xml name of a special stat
 int FindStatByName(const CStringA& strName);                // stat name -> id (-1 when none)
@@ -147,10 +147,10 @@ CItemRemakeScrollTable::~CItemRemakeScrollTable()
 // @0x140615700
 int CItemRemakeScrollTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "itemRemakeScroll.xml");
-    FUN_1401d1160(strPath);
+    CString strPath = GetXmlPath("Table", "itemRemakeScroll.xml");
+    SetPath(strPath);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 1;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
@@ -212,7 +212,7 @@ void CItemRemakeScrollTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CItemRemakeScrollTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CItemRemakeScrollTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -229,7 +229,7 @@ void CItemRemakeScrollTable::SetInit(bool b)
 // @0x140615ca0
 void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRemakeOptionUtil::TStatInfo> >& out)
 {
-    MS2Ptr<CItemOption> spOption(item->FUN_1405278a0()->m_spOption);
+    MS2Ptr<CItemOption> spOption(item->GetStatus()->m_spOption);
     if (spOption.get() != 0)
     {
         Unk_EnchantMap& stats = spOption->GetStatMap(nGroup);
@@ -242,7 +242,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
                 if (spBase == 0)
                     continue;
                 std::pair<int, int> range =
-                    ((class CItemOptionTable*)FUN_140166430())->GetRandomOptionRange(item->FUN_1405276c0(), item->GetRarity(), nStat);
+                    ((class CItemOptionTable*)GetItemOptionTable())->GetRandomOptionRange(item->GetItemId(), item->GetRarity(), nStat);
                 if (range.second == spBase->GetValue())
                 {
                     MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
@@ -263,7 +263,7 @@ void FUN_140615ca0(MS2Ptr<CItem> item, int nGroup, ATL::CAtlArray<MS2Ptr<CItemRe
                 if (spBase == 0)
                     continue;
                 std::pair<int, int> range =
-                    ((class CItemOptionTable*)FUN_140166430())->GetRandomSpecialOptionRange(item->FUN_1405276c0(), item->GetRarity(), nSpecial);
+                    ((class CItemOptionTable*)GetItemOptionTable())->GetRandomSpecialOptionRange(item->GetItemId(), item->GetRarity(), nSpecial);
                 if (range.second == spBase->GetValue())
                 {
                     MS2Ptr<CItemRemakeOptionUtil::TStatInfo> spInfo(new CItemRemakeOptionUtil::TStatInfo);
@@ -291,7 +291,7 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
         return 2;
     if (spData->property.remakeDisable)
         return 7;
-    MS2Ptr<CItemOption> spOption(item->FUN_1405278a0()->m_spOption);
+    MS2Ptr<CItemOption> spOption(item->GetStatus()->m_spOption);
     if (spOption == 0)
         return 3;
     if (!spScroll->m_arrItemTypes.IsEmpty())
@@ -318,7 +318,7 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
         return 0xb;
     int bExclusive = spData->FUN_14053d600();
     {
-        MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)FUN_140166430())->GetRandom(spData->FUN_14053eff0(item->GetRarity()));
+        MS2Ptr<ItemOptionRandom> spRandom = ((class CItemOptionTable*)GetItemOptionTable())->GetRandom(spData->FUN_14053eff0(item->GetRarity()));
         Unk_SocketSpecialMap& specials = spOption->GetSpecialMap(2);
         Unk_EnchantMap& stats = spOption->GetStatMap(2);
         if (specials.IsEmpty() && stats.IsEmpty())
@@ -332,7 +332,7 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
             if (bExclusive)
             {
                 CString strName(GetStatName(nStat));
-                bool bFound = ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(strName).get() != 0;
+                bool bFound = ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(strName).get() != 0;
                 if (bFound)
                     nExclusive++;
             }
@@ -345,7 +345,7 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
             if (bExclusive)
             {
                 CString strName(FUN_14081d380(nSpecial));
-                bool bFound = ((class CItemOptionTable*)FUN_140166430())->FindOptionNameList(strName).get() != 0;
+                bool bFound = ((class CItemOptionTable*)GetItemOptionTable())->FindOptionNameList(strName).get() != 0;
                 if (bFound)
                     nExclusive++;
             }
@@ -360,7 +360,7 @@ int FUN_140616170(MS2Ptr<CItem> item, MS2Ptr<CItemRemakeScrollData> spScroll)
 // @0x140616b60
 int FUN_140616b60(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned nRate)
 {
-    unsigned nSale = ((class CGameRule*)FUN_1401c0d90())->FUN_140478cd0(data);
+    unsigned nSale = ((class CGameRule*)GetGameRule())->FUN_140478cd0(data);
     unsigned nDiscount = nSale > nRate ? nSale : nRate;
     *pDiscount = nDiscount;
     int nRet = 0;
@@ -378,7 +378,7 @@ int FUN_140616b60(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned nRate)
 // @0x140616c50
 int FUN_140616c50(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned nRate)
 {
-    unsigned nSale = ((class CGameRule*)FUN_1401c0d90())->FUN_140478cd0(data);
+    unsigned nSale = ((class CGameRule*)GetGameRule())->FUN_140478cd0(data);
     unsigned nDiscount = nSale > nRate ? nSale : nRate;
     *pDiscount = nDiscount;
     int nRet = 0;
@@ -394,7 +394,7 @@ int FUN_140616c50(MS2Ptr<CItemData> data, unsigned* pDiscount, unsigned nRate)
 
 // The discounted ingredient count (the discount is capped by IngredientFeeReduceLimit; at least 1).
 // @0x140616d40
-int FUN_140616d40(int nCount, unsigned nDiscount)
+int GetDiscountedIngredientCount(int nCount, unsigned nDiscount)
 {
     nDiscount = nDiscount < (unsigned)FUN_1406198a0(10000, GetClientConstants()->IngredientFeeReduceLimit)
         ? nDiscount : FUN_1406198a0(10000, GetClientConstants()->IngredientFeeReduceLimit);
@@ -404,7 +404,7 @@ int FUN_140616d40(int nCount, unsigned nDiscount)
 
 // The lock item id of an item (0 = no lock possible).
 // @0x140616dd0
-int FUN_140616dd0(MS2Ptr<CItem> item)
+int GetLockItemId(MS2Ptr<CItem> item)
 {
     int nId = 0;
     if (item == 0 || item->FUN_140527840() == 0)
@@ -423,9 +423,9 @@ int FUN_140616dd0(MS2Ptr<CItem> item)
 
 // The lock item's level.
 // @0x140616f10
-unsigned FUN_140616f10(MS2Ptr<CItem> item)
+unsigned GetLockItemLevel(MS2Ptr<CItem> item)
 {
-    if (item == 0 || !TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa5))
+    if (item == 0 || !TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xa5))
         return 0;
     if (item->IsPetItem() != 0)
         return 0;
@@ -434,19 +434,19 @@ unsigned FUN_140616f10(MS2Ptr<CItem> item)
 
 // Whether the options of an item may be locked (per item kind feature).
 // @0x140616fd0
-bool FUN_140616fd0(MS2Ptr<CItem> item)
+bool CanLockOptions(MS2Ptr<CItem> item)
 {
     if (item == 0 || item->FUN_140527840() == 0)
         return false;
     MS2Ptr<CItemData> spData(item->FUN_140527840());
     if (spData->FUN_14053d600())
-        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8a);
+        return TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x8a);
     else if (spData->FUN_14053d2f0())
-        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x89);
+        return TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x89);
     else if (spData->FUN_14053d5c0())
-        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x8b);
+        return TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x8b);
     else if (spData->IsPetItem())
-        return TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x9b);
+        return TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x9b);
     return false;
 }
 
@@ -617,7 +617,7 @@ void ApplyOptionClient::vfunc_2(CInPacket& in)
 {
     ApplyOptionBase::vfunc_2(in);
     if (m_item.get() != 0)
-        m_item->FUN_140524eb0(in);
+        m_item->ReadFromStream(in);
 }
 
 }
@@ -697,18 +697,18 @@ Unk_RemakeStat::Unk_RemakeStat(unsigned nMode, MS2Ptr<CItem> item, bool bFinal)
 // @0x140617e50
 CStringW FUN_140617e50(const CStringW& strKey, Unk_RemakeStat& stat, unsigned* pCount)
 {
-    CStringW strNames = FUN_140617ef0(stat, pCount);
+    CStringW strNames = GetOptionText(stat, pCount);
     return FUN_14028dfa0<CStringW>(strKey, strNames);
 }
 
 // The option text of an item: one row per option (best values marked; with bFinal the stat range too).
 // @0x140617ef0
-CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
+CStringW GetOptionText(Unk_RemakeStat& stat, unsigned* pCount)
 {
     if (stat.m_item == 0)
         return CStringW(L"");
     MS2Ptr<CItem> item(stat.m_item);
-    MS2Ptr<CItemOption> spOption(item->FUN_1405278a0()->m_spOption);
+    MS2Ptr<CItemOption> spOption(item->GetStatus()->m_spOption);
     if (spOption == 0)
         return CStringW(L"");
     int nGroup = stat.m_nMode;
@@ -755,7 +755,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                 continue;
             CStringW strName = FUN_140631600(nStat, spBase.get());
             std::pair<int, int> range =
-                ((class CItemOptionTable*)FUN_140166430())->GetRandomOptionRange(item->FUN_1405276c0(), item->GetRarity(), nStat);
+                ((class CItemOptionTable*)GetItemOptionTable())->GetRandomOptionRange(item->GetItemId(), item->GetRarity(), nStat);
             bBest = range.second == spBase->GetValue();
             if (bBest)
                 strName = StringFormat<CStringW>(strBest, strName);
@@ -773,7 +773,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
             }
             else
                 strValue = strName;
-            if (bBest == true || ((class CItemOptionTable*)FUN_140166430())->IsHighRollValue(item, nStat, nGroup, spBase->GetValue()))
+            if (bBest == true || ((class CItemOptionTable*)GetItemOptionTable())->IsHighRollValue(item, nStat, nGroup, spBase->GetValue()))
                 strText.Append(StringFormat<CStringW>(strRowBest, strValue));
             else
                 strText.Append(StringFormat<CStringW>(strRow, strValue));
@@ -791,7 +791,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
                 continue;
             CStringW strName = FUN_140631830(nSpecial, spBase->GetValue(), item->FUN_140527840());
             std::pair<int, int> range =
-                ((class CItemOptionTable*)FUN_140166430())->GetRandomSpecialOptionRange(item->FUN_1405276c0(), item->GetRarity(), nSpecial);
+                ((class CItemOptionTable*)GetItemOptionTable())->GetRandomSpecialOptionRange(item->GetItemId(), item->GetRarity(), nSpecial);
             bBest = range.second == spBase->GetValue();
             if (bBest)
                 strName = StringFormat<CStringW>(strBest, strName);
@@ -809,7 +809,7 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
             }
             else
                 strValue = strName;
-            if (bBest == true || ((class CItemOptionTable*)FUN_140166430())->IsHighRollSpecialValue(item, nSpecial, nGroup, spBase->GetValue()))
+            if (bBest == true || ((class CItemOptionTable*)GetItemOptionTable())->IsHighRollSpecialValue(item, nSpecial, nGroup, spBase->GetValue()))
                 strText.Append(StringFormat<CStringW>(strRowBest, strValue));
             else
                 strText.Append(StringFormat<CStringW>(strRow, strValue));
@@ -824,10 +824,10 @@ CStringW FUN_140617ef0(Unk_RemakeStat& stat, unsigned* pCount)
 
 // The text of the locked options (the rows of the option text at the given indices).
 // @0x140619070
-CStringW FUN_140619070(Unk_RemakeStat& stat, const ATL::CAtlArray<int>& aLocked)
+CStringW GetLockedOptionText(Unk_RemakeStat& stat, const ATL::CAtlArray<int>& aLocked)
 {
     unsigned nCount = 0;
-    CStringW strOptions = FUN_140617ef0(stat, &nCount);
+    CStringW strOptions = GetOptionText(stat, &nCount);
     ATL::CAtlArray<CStringW> rows;
     FUN_14025a680(strOptions, rows, L"\n");
     CStringW strText;
@@ -841,11 +841,11 @@ CStringW FUN_140619070(Unk_RemakeStat& stat, const ATL::CAtlArray<int>& aLocked)
 
 // The number of options of an item.
 // @0x1406191e0
-unsigned FUN_1406191e0(unsigned nMode, MS2Ptr<CItem> item)
+unsigned GetOptionCount(unsigned nMode, MS2Ptr<CItem> item)
 {
     unsigned nCount = 0;
     Unk_RemakeStat stat(nMode, item, true);
-    FUN_140617ef0(stat, &nCount);
+    GetOptionText(stat, &nCount);
     return nCount;
 }
 
@@ -856,7 +856,7 @@ bool Unk_RemakeStat::FUN_140619290(int nOption, int& nIndex, int& nValue)
     if (m_item == 0)
         return false;
     MS2Ptr<CItem> item(m_item);
-    MS2Ptr<CItemOption> spOption(item->FUN_1405278a0()->m_spOption);
+    MS2Ptr<CItemOption> spOption(item->GetStatus()->m_spOption);
     if (spOption == 0)
         return false;
     if (nOption < 0)
@@ -922,7 +922,7 @@ CStringW FUN_140619760(int nItemId, unsigned nLevel)
         return CStringW(L"");
     unsigned nLockId = TSingleton<CItemDataTable>::GetInstance()->GetTagItemId((ItemTagKey)nItemId);
     nRank = nLevel;
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xa5))
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xa5))
         nRank = nLevel;
     if (nRank == 0)
         nRank = FUN_14053feb0(nLockId);

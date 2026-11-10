@@ -14,9 +14,9 @@ class ASTextArea : public ASTextInput
 public:
     ASTextArea(const Scaleform::GFx::Value& v, int nMovieId);           // 0x1422e4570
     virtual ~ASTextArea();
-    void FUN_1422e45f0(int nPosition);                                  // 0x1422e45f0 set "position"
-    int FUN_1422e4620();                                                // 0x1422e4620 "position"
+    void SetPosition(int nPosition);                                  // 0x1422e45f0 set "position"
+    int GetPosition();                                                // 0x1422e4620 "position"
     int FUN_1422e4680();                                                // 0x1422e4680 scrolled to the last line
-    void FUN_1422e4720();                                               // 0x1422e4720 scroll to the last line
+    void ScrollToEnd();                                               // 0x1422e4720 scroll to the last line
 };
 MS2_CHECK_SIZE(ASTextArea, 0x88);

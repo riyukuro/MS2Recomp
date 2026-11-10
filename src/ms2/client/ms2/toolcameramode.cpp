@@ -135,9 +135,9 @@ void CToolCameraMode::vfunc_8(double fTime)
         vfunc_24(TSingleton<CameraMgr>::GetInstance()->FUN_140a38d60(), m_8c);
     }
     Vector3 ptMove = TSingleton<CameraMgr>::GetInstance()->FUN_140a38d00();
-    unsigned int bShift = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x2a, false, 0);
-    unsigned int bLeft = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(0, false, 0);
-    unsigned int bRight = ((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116daa0(1, false, 0);
+    unsigned int bShift = ((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x2a, false, 0);
+    unsigned int bLeft = ((class CInputKeyHandler*)FUN_14025e7c0())->IsMouseButtonDown(0, false, 0);
+    unsigned int bRight = ((class CInputKeyHandler*)FUN_14025e7c0())->IsMouseButtonDown(1, false, 0);
     if (bLeft != 0 && bRight != 0)
     {
         efd::Point3 ptPos = FUN_1409f2540();
@@ -181,7 +181,7 @@ void CToolCameraMode::vfunc_9()
 {
     Vector3 ptMove = g_143b01a60;
     m_78 = g_143b01a60;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x11, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x11, false, 0))
     {
         if (FUN_140af8140())
         {
@@ -195,21 +195,21 @@ void CToolCameraMode::vfunc_9()
             m_78.x = 1.0f;
         }
     }
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1f, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1f, false, 0))
     {
         if (FUN_140af8140())
             m_70 = m_70 + 0.01f;
         else
             m_78.x = -1.0f;
     }
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x1e, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x1e, false, 0))
         m_78.y = 1.0f;
-    else if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116d950(0x20, false, 0))
+    else if (((class CInputKeyHandler*)FUN_14025e7c0())->IsKeyDown(0x20, false, 0))
         m_78.y = -1.0f;
     int nX;
     int nY;
     int nWheel;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dbf0(&nX, &nY, &nWheel, false, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->GetMouseDelta(&nX, &nY, &nWheel, false, 0))
     {
         ptMove.y = (float)nX;
         ptMove.z = (float)nY;

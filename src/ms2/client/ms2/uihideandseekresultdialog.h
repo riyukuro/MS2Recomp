@@ -32,12 +32,12 @@ public:
     virtual int vfunc_48() { return 0x4f92; }                       // 48 UI type id (COMDAT 0x140c20a70)
     virtual void vfunc_67();                                        // 67 Close: clears the result and the item icons
 
-    void FUN_140c1eac0(int nRound, int nItemId, int nUnused, int nCount);   // stores the result (+0x188..+0x194)
+    void SetResult(int nRound, int nItemId, int nUnused, int nCount);   // stores the result (+0x188..+0x194)
     void FUN_140c1eb20();                                           // build the rows and call "setData"
     void FUN_140c1eec0(AScript objMine, MS2Ptr<Unk_HsInfo> spInfo);  // the winner reward of my row
     void FUN_140c1f120(ASArray& rows, MS2Ptr<Unk_HsInfo> spInfo, PC* pPC, bool bMine);   // one player row
     CString FUN_140c1f300(unsigned int nItemId, int nCount);        // bind the reward item icon, returns its bind id
-    void FUN_140c1f590();                                           // release every bound item icon
+    void ReleaseBoundIcons();                                           // release every bound item icon
 
 private:
     MS2_LAYOUT_FRIEND;

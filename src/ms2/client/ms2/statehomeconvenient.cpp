@@ -65,14 +65,14 @@ struct Unk_HcCastInfo
 };
 MS2_CHECK_SIZE(Unk_HcCastInfo, 0x38);
 
-// The casting bar dialog (RTTI UICastingBar, found through FUN_140ac2270).
+// The casting bar dialog (RTTI UICastingBar, found through GetCastingBar).
 class UICastingBar : public UIObject
 {
 public:
     void StartCastingText(class ICastingEventListener* pListener, const CStringW& strLabel, int nMs, bool bA, bool bB, const CStringW& strExtra);   // show
     void FUN_1418e1390();                                                          // cancel
 };
-UICastingBar* FUN_140ac2270(int nId);
+UICastingBar* GetCastingBar(int nId);
 
 CStringW GetStringCommon(int nId);                         // string table text of an id
 __int64 FUN_14028d260(float fSeconds);                       // seconds -> ms  (C3: the definition's __int64 return, read as int)
@@ -81,7 +81,7 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 // The doctor NPC talk script (1 = a script page shown by the NPC dialog service). C3: the definers' types (talkscript.cpp).
 Unk_ScriptPtr<CTalkScript> FUN_140856820(int nNpcId, int nTalkId);   // by id and script (empty when unknown)
 Unk_ScriptPtr<CTalkScript> FUN_140856c50(int nNpcId, int nMode);
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_HcBuffMgr { public: };
 // the owner's vtable seen with the by-value point parameters of vfunc_22 and vfunc_68
 class Unk_HcSlots
@@ -193,7 +193,7 @@ void StateHomeConvenient::Finish(double fTime)
     case 2:
         if (FUN_1417b8560())
         {
-            UICastingBar* pBar = FUN_140ac2270(0x4e72);
+            UICastingBar* pBar = GetCastingBar(0x4e72);
             if (pBar)
                 pBar->FUN_1418e1390();
             COutPacket packet(static_cast<int>(SendOp::RequestHomeBank), 0);
@@ -208,20 +208,20 @@ void StateHomeConvenient::Finish(double fTime)
             MyPC* pRider = FUN_1417b84b0();
             if (pRider)
             {
-                UICastingBar* pBar = FUN_140ac2270(0x4e72);
+                UICastingBar* pBar = GetCastingBar(0x4e72);
                 if (pBar)
                     pBar->FUN_1418e1390();
                 unsigned nNpc = *static_cast<Client::Constants*>(GetClientConstants())->HomeDoctorNpcID.Get();
                 if (((class PC*)(class MyPC*)(pRider))->FUN_141661aa0() > 0)
                 {
                     if (CTalkScript* pScript = FUN_140856c50(nNpc, 1).get())
-                        TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nNpc, 1, 0x12);
+                        TSingleton<UITalkManager>::GetInstance()->BeginTalkWithoutNpc(MS2Ptr<CTalkScript>(pScript), nNpc, 1, 0x12);
                 }
                 else
                 {
                     int nScript = *static_cast<Client::Constants*>(GetClientConstants())->HomeDoctorScriptID1.Get();
                     if (CTalkScript* pScript = FUN_140856820(nNpc, nScript).get())
-                        TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nNpc, 2, 0);
+                        TSingleton<UITalkManager>::GetInstance()->BeginTalkWithoutNpc(MS2Ptr<CTalkScript>(pScript), nNpc, 2, 0);
                 }
                 m_n40 = 1;
             }
@@ -263,7 +263,7 @@ void StateHomeConvenient::vfunc_4(StateData* pData)
     }
     if (FUN_1417b8560())
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
         {
             CStringW strExtra(L"");
@@ -288,7 +288,7 @@ void StateHomeConvenient::vfunc_5(int n)
 {
     if (FUN_1417b8560())
     {
-        UICastingBar* pBar = FUN_140ac2270(0x4e72);
+        UICastingBar* pBar = GetCastingBar(0x4e72);
         if (pBar)
             pBar->FUN_1418e1390();
     }
@@ -331,7 +331,7 @@ void StateHomeConvenient::vfunc_8(double fTime)
     if (!pPC)
         return;
     Unk_HcBuffMgr* pMgr = ((class Unk_HcBuffMgr*)((class PCBase*)(class PCBase*)(pPC))->FUN_14166d240());
-    reinterpret_cast<Unk_HcSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->FUN_141683290())));
+    reinterpret_cast<Unk_HcSlots*>(pPC)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->GetMoveDirection())));
     if (((class PCBase*)(class PCBase*)(m_pOwner))->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
     else

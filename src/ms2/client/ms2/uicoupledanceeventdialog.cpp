@@ -167,7 +167,7 @@ bool FUN_140b884e0(Vector3&);   // C3: was FUN_140b884e0
 // Message boxes (CMsgBoxData, 0x2a0 bytes).
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strMessage, int nType);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-void FUN_140d73aa0(CStringW strMessage, int nType, void* pListener, CStringW strTag);
+void ShowMessageBox(CStringW strMessage, int nType, void* pListener, CStringW strTag);
 CStringW GetStringCommonByKey(const CStringW& strKey);     // translate
 CStringW FUN_140298ea0(CStringW strKey);            // translate (by value)
 void FUN_1412752d0(const CStringW& str, int n);     // system notice
@@ -184,7 +184,7 @@ template <class C> void XmlSplit(const CString& str, C& out, const char* pszDeli
 UICoupleDanceEventDialog::UICoupleDanceEventDialog()
     : m_178(false), m_180(GetTypeName()), m_1c0(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140bfcbb0
@@ -203,7 +203,7 @@ MS2_REPLACE_METHOD(0x140BFCC00, UICoupleDanceEventDialog, GetTypeName, 61, 0x351
 void UICoupleDanceEventDialog::vfunc_72()
 {
     UIDialog::vfunc_72();
-    FUN_140bfde00();
+    RefreshBannerButton();
 }
 MS2_REPLACE_METHOD(0x140BFCC50, UICoupleDanceEventDialog, vfunc_72, 34, 0x3E669171);
 
@@ -224,7 +224,7 @@ void UICoupleDanceEventDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     m_178 = false;
-    FUN_140bfd5e0();
+    RefreshRewardData();
 }
 MS2_REPLACE_METHOD(0x140BFCCF0, UICoupleDanceEventDialog, OnLoadComplete, 46, 0x80D1EE1D);
 
@@ -303,7 +303,7 @@ int UICoupleDanceEventDialog::vfunc_71()
         return 0;
     }
     if (reinterpret_cast<UIHudEntity::Entity*>(pParty.operator->())->FUN_140f48d40() == 1) {
-        FUN_140d73aa0(GetStringCommonByKey(L"s_microgame_couple_dance_event_ask_close"), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
+        ShowMessageBox(GetStringCommonByKey(L"s_microgame_couple_dance_event_ask_close"), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
         return 1;
     }
     return 0;
@@ -328,66 +328,66 @@ int UICoupleDanceEventDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 MS2_REPLACE_METHOD_VIA(0x140BFD4D0, UICoupleDanceEventDialog, IMessageListener, OnMessage, 255, 0x9620BC58);
 
 // @0x140bfd5e0
-void UICoupleDanceEventDialog::FUN_140bfd5e0()
+void UICoupleDanceEventDialog::RefreshRewardData()
 {
     MS2Ptr<CoupleDanceContext> pEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (pEvent == NULL)
         return;
-    FUN_140bfdc00();
+    RecountCompletedSteps();
     if (m_30 == NULL)
         return;
     CString strStates = DAT_143ab2fc0.GetValue<CString>(0x835, pEvent->m_eventId, "");
     std::vector<int> states;
     XmlSplit(strStates, states, ",");
     ASObj root(2);
-    root.FUN_1407cbbe0("isOpenBanner", m_178);
+    root.SetBoolMember("isOpenBanner", m_178);
     ASArray items(2);
     for (size_t i = 0; i < pEvent->m_dailyItems.size(); i++) {
         ASObj item(2);
-        item.FUN_1407cba60("binding", m_180.BindNewItem(pEvent->m_dailyItems[i].begin()->m_itemId, ((ItemAble&)*pEvent->m_dailyItems[i].begin().operator->()).vfunc_o18_1(),
+        item.SetStringMember("binding", m_180.BindNewItem(pEvent->m_dailyItems[i].begin()->m_itemId, ((ItemAble&)*pEvent->m_dailyItems[i].begin().operator->()).vfunc_o18_1(),
                                                           pEvent->m_dailyItems[i].begin()->m_count));
         if (i >= states.size()) {
-            item.FUN_1407cbbe0("received", false);
-            item.FUN_1407cbbe0("completed", false);
-            item.FUN_1407cbbe0("isBonus", false);
+            item.SetBoolMember("received", false);
+            item.SetBoolMember("completed", false);
+            item.SetBoolMember("isBonus", false);
         } else {
             switch (states[i]) {
             case 1:
-                item.FUN_1407cbbe0("received", false);
-                item.FUN_1407cbbe0("completed", true);
-                item.FUN_1407cbbe0("isBonus", false);
+                item.SetBoolMember("received", false);
+                item.SetBoolMember("completed", true);
+                item.SetBoolMember("isBonus", false);
                 break;
             case 2:
-                item.FUN_1407cbbe0("received", false);
-                item.FUN_1407cbbe0("completed", true);
-                item.FUN_1407cbbe0("isBonus", true);
+                item.SetBoolMember("received", false);
+                item.SetBoolMember("completed", true);
+                item.SetBoolMember("isBonus", true);
                 break;
             case 3:
-                item.FUN_1407cbbe0("received", true);
-                item.FUN_1407cbbe0("completed", true);
-                item.FUN_1407cbbe0("isBonus", false);
+                item.SetBoolMember("received", true);
+                item.SetBoolMember("completed", true);
+                item.SetBoolMember("isBonus", false);
                 break;
             case 4:
-                item.FUN_1407cbbe0("received", true);
-                item.FUN_1407cbbe0("completed", true);
-                item.FUN_1407cbbe0("isBonus", true);
+                item.SetBoolMember("received", true);
+                item.SetBoolMember("completed", true);
+                item.SetBoolMember("isBonus", true);
                 break;
             default:
-                item.FUN_1407cbbe0("received", false);
-                item.FUN_1407cbbe0("completed", false);
-                item.FUN_1407cbbe0("isBonus", false);
+                item.SetBoolMember("received", false);
+                item.SetBoolMember("completed", false);
+                item.SetBoolMember("isBonus", false);
                 break;
             }
         }
-        items.PushValue(item.FUN_1422bb870());
+        items.PushValue(item.GetValue());
     }
-    root.FUN_1409adbe0("rewardInfos", items.FUN_1422bb870());
-    m_30->Invoke("setData", root.FUN_1422bb870());
+    root.FUN_1409adbe0("rewardInfos", items.GetValue());
+    m_30->Invoke("setData", root.GetValue());
 }
-MS2_REPLACE_METHOD(0x140BFD5E0, UICoupleDanceEventDialog, FUN_140bfd5e0, 1554, 0xDF39C04A);
+MS2_REPLACE_METHOD(0x140BFD5E0, UICoupleDanceEventDialog, RefreshRewardData, 1554, 0xDF39C04A);
 
 // @0x140bfdc00
-void UICoupleDanceEventDialog::FUN_140bfdc00()
+void UICoupleDanceEventDialog::RecountCompletedSteps()
 {
     MS2Ptr<CoupleDanceContext> pEvent = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (pEvent == NULL)
@@ -413,10 +413,10 @@ void UICoupleDanceEventDialog::FUN_140bfdc00()
     if (pMenu)
         pMenu->FUN_141938ae0(0x4f71, 0);
 }
-MS2_REPLACE_METHOD(0x140BFDC00, UICoupleDanceEventDialog, FUN_140bfdc00, 504, 0xEF596F64);
+MS2_REPLACE_METHOD(0x140BFDC00, UICoupleDanceEventDialog, RecountCompletedSteps, 504, 0xEF596F64);
 
 // @0x140bfde00
-void UICoupleDanceEventDialog::FUN_140bfde00()
+void UICoupleDanceEventDialog::RefreshBannerButton()
 {
     if (m_30 == NULL)
         return;
@@ -434,7 +434,7 @@ void UICoupleDanceEventDialog::FUN_140bfde00()
     m_178 = bOpen;
     m_30->Invoke("refreshBannerButton", m_178);
 }
-MS2_REPLACE_METHOD(0x140BFDE00, UICoupleDanceEventDialog, FUN_140bfde00, 345, 0xDE3EC071);
+MS2_REPLACE_METHOD(0x140BFDE00, UICoupleDanceEventDialog, RefreshBannerButton, 345, 0xDE3EC071);
 
 // @0x140bfdf60
 void UICoupleDanceEventDialog::FUN_140bfdf60(int nStep)
@@ -470,9 +470,9 @@ MS2_REPLACE_METHOD(0x140BFE180, UICoupleDanceEventDialog, FUN_140bfe180, 17, 0x0
 void UICoupleDanceEventDialog::FUN_140bfe1a0(void*)
 {
     if (FUN_141924630())
-        FUN_140bfd5e0();
+        RefreshRewardData();
     else
-        FUN_140bfdc00();
+        RecountCompletedSteps();
 }
 MS2_REPLACE_METHOD(0x140BFE1A0, UICoupleDanceEventDialog, FUN_140bfe1a0, 55, 0xF5619877);
 

@@ -41,11 +41,11 @@ bool FUN_140718390(const CString& s);
 efd::Point3* FUN_140db9570(efd::Point3* out, const CString& s);
 int FUN_140718170(const CString& s);
 float FUN_140718450(const CString& s);
-unsigned* FUN_140718770(unsigned* out, const CString& s);
-unsigned* FUN_140718830(unsigned* out, const CString& s);
+unsigned* ParseHexColor(unsigned* out, const CString& s);
+unsigned* ParseTick(unsigned* out, const CString& s);
 CString* FUN_1407185b0(CString* out, const CString& s);
 CStringW* FUN_140718650(CStringW* out, const CString& s);
-MS2Colors FUN_1407186f0(const CString& s);
+MS2Colors ParseColors(const CString& s);
 void FUN_140178270(const CString& s, std::vector<int>* out, const char* sep);
 void FUN_1401782a0(const CString& s, std::vector<unsigned>* out, const char* sep);
 

@@ -49,8 +49,8 @@ public:
     virtual ~UIDungeonCategoryTable();                          // 0x140c08ad0
 
     void Load();                                                // 0x140c08b50
-    void FUN_140c08ec0(int nTab, ATL::CAtlArray<MS2Ptr<UIDungeonCategory> >& out);   // the sub tabs of a main tab
-    unsigned short FUN_140c08f50(int nTab);                     // the highest sub tab level
+    void GetSubTabs(int nTab, ATL::CAtlArray<MS2Ptr<UIDungeonCategory> >& out);   // the sub tabs of a main tab
+    unsigned short GetMaxSubTabLevel(int nTab);                     // the highest sub tab level
     int FUN_140c09030(int nTab, unsigned short nLevel);         // the sub tab of a level (else the last one)
 
     static void CheckInit();                                    // 0x140c09910
@@ -81,9 +81,9 @@ public:
     virtual int vfunc_54(void* pCfg);
     virtual int vfunc_48() { return 0x4f84; }
 
-    void FUN_140c0ba70(std::set<unsigned int>& ids);            // take the bookmarked dungeons (swap)
-    void FUN_140c0bab0();                                       // the weekly reward component
-    void FUN_140c0c430();                                       // the find component (match state)
+    void SetBookmarks(std::set<unsigned int>& ids);            // take the bookmarked dungeons (swap)
+    void UpdateWeeklyReward();                                       // the weekly reward component
+    void UpdateFindComponent();                                       // the find component (match state)
     void FUN_140c0c600(int nTab);                               // show a main tab
     void FUN_140c0c660(int bUpdate);                            // main tab 0: build or update the sub tab
     void FUN_140c0c8e0();                                       // main tab 1
@@ -93,14 +93,14 @@ public:
     void SendPartyMode34();                                       // cancel the party match
     void OnBookmark();                                       // bookmark list
     void OnPopupDetail();                                       // toggle the detail popup
-    void FUN_140c0cdb0(int nId);                                // bookmark a dungeon
+    void OpenDungeonRoomDialog(int nId);                                // bookmark a dungeon
     void SendRoomDungeon(int nGroupType);                         // enter a lobby
-    void FUN_140c0cea0(CInPacket& packet);                      // packet 0x53 (party match)
-    void FUN_140c0cf20(CInPacket& packet);                      // packet 0x1a (dungeon reward)
+    void OnPartyMatchPacket(CInPacket& packet);                      // packet 0x53 (party match)
+    void OnDungeonRewardPacket(CInPacket& packet);                      // packet 0x1a (dungeon reward)
     int FUN_140c0cf80(int nGroupType, const Unk_DcLevelRange& range, ASArray& out);
     void FUN_140c0d260(ASArray& out);                           // the recommended category
     void FUN_140c0d620(MS2Ptr<UIDungeonCategory> pCategory, ASArray& out);
-    void FUN_140c0d800(RoomVec& out);                           // up to four recommended rooms
+    void GetRecommendedRooms(RoomVec& out);                           // up to four recommended rooms
     void FUN_140c0dab0(RoomVec& out);                           // the enterable rooms
     int FUN_140c0dc60(int nGroupType);                          // the lobby of a group type (-1: none)
 

@@ -1,7 +1,7 @@
 // uipvpguildteamresultdialog.h - UIPvPGuildTeamResultDialog (RTTI .?AVUIPvPGuildTeamResultDialog@@, 0x210 bytes,
 // UIDialog, UI id 0x4ec7, swf "PvPGuildTeamResultDialog"): the result of a guild battle - the two guilds (name, mark,
 // score, result, time) and the reward text / icon. The server feeds it with a packet: mode 0 = the guild battle result
-// (FUN_141340d70), mode 1 = the vs-game result (FUN_141341220). Owning unit: ?\uipvpguildteamresultdialog.cpp. Header
+// (SetGuildBattleResult), mode 1 = the vs-game result (SetVsGameResult). Owning unit: ?\uipvpguildteamresultdialog.cpp. Header
 // name assumed from the unit path; member names are invented from use.
 #pragma once
 #include <afx.h>
@@ -41,14 +41,14 @@ public:
     virtual void vfunc_43();                                    // 43 0x141340cc0
     virtual int vfunc_48() { return 0x4ec7; }                   // 48 0x141342560
 
-    void FUN_141340d70(CInPacket* pIn);                         // the guild battle result packet
-    void FUN_141341220(CInPacket* pIn);                         // the vs-game result packet
-    void FUN_1413415e0(__int64 nGuildId, const CStringW& strMark);   // a guild's mark
+    void SetGuildBattleResult(CInPacket* pIn);                         // the guild battle result packet
+    void SetVsGameResult(CInPacket* pIn);                         // the vs-game result packet
+    void SetGuildMark(__int64 nGuildId, const CStringW& strMark);   // a guild's mark
     void FUN_1413418a0();                                       // push everything to the movie
-    void FUN_141341e70();                                       // play the result sounds
-    Unk_PgtrGuild* FUN_141342040(bool bLeft);                   // the guild shown on the left / right
+    void PlayResultSounds();                                       // play the result sounds
+    Unk_PgtrGuild* GetGuildBySide(bool bLeft);                   // the guild shown on the left / right
     Unk_PgtrGuild* FUN_1413420e0(__int64 nGuildId, bool bOther);   // the given guild, or the other one
-    void FUN_141342190();                                       // win / lose / draw from the scores
+    void SetResultFromScores();                                       // win / lose / draw from the scores
 
 private:
     MS2_LAYOUT_FRIEND;

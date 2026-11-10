@@ -251,7 +251,7 @@ BOOL CALLBACK FUN_1423ae840(HWND hWnd, LPARAM lParam)
 // The PC-bang code of this computer: the code of the first known cafe program with a matching window, 0 if none.
 // MS2-FUNCTIONAL: /O2 body, the exe inlines the window walk differently; the frame is not reproduced yet.
 // @0x1423ae960
-unsigned int FUN_1423ae960(CSystemInfo* pLocal)
+unsigned int GetPcBangCode(CSystemInfo* pLocal)
 {
     Unk_PcBangTable table;
     table.m_count = 0;

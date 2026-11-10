@@ -30,7 +30,7 @@ public:
     NiRenderObject* m_pGeometry;                                    // +0x10
     // The mesh's own render properties, swapped out while the mesh is faded (0x141860140) and put back (0x141860700).
     void FUN_141860140();                                           // detach the mesh's properties, attach fade clones
-    void FUN_141860700();                                           // restore the saved properties
+    void RestoreProperties();                                           // restore the saved properties
 
     efd::SmartPointer<NiAlphaProperty> m_spAlpha;                   // +0x18
     efd::SmartPointer<NiVertexColorProperty> m_spVertexColor;       // +0x20

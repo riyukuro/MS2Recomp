@@ -119,7 +119,7 @@ int ASEquipIcon::GetItemId()
 {
     int n;
     if (m_40.get() != 0)
-        n = ((CItem*)m_40)->FUN_1405276c0();
+        n = ((CItem*)m_40)->GetItemId();
     else
         n = 0;
     return n;

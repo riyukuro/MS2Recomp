@@ -46,10 +46,10 @@ public:
     int m_n2e8;                                                 // +0x2e8
 };
 MS2_CHECK_OFFSET(Unk_CjJobRow, m_n2e8, 0x2e8);
-MS2Ptr<CQuestData> FUN_14074bc40(int nJobCode);
+MS2Ptr<CQuestData> GetQuestData(int nJobCode);
 int FUN_14074b030(CQuestData* pData);
-Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int nId, int nRate);
-class UITalkManager { public: unsigned FUN_141b213f0(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound); };
+Unk_ScriptPtr<CTalkScript> FindQuestTalk(int nId, int nRate);
+class UITalkManager { public: unsigned BeginTalkWithoutNpc(MS2Ptr<CTalkScript> spScript, unsigned nSpecialNpc, unsigned nFlags, int nSound); };
 
 
 // ASObj / ASArray members used here only.
@@ -111,11 +111,11 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
 
     ASObj obj(2);
     obj.FUN_140bd0d90("jobcode", spData->m_nChangeSubJobCode);
-    obj.FUN_1407cbb20("jobName", CStringW(spData->m_strJobName));
-    obj.FUN_1407cbb20("desc", CStringW(spData->m_strDesc));
-    obj.FUN_1407cbb20("skilldesc1", CStringW(spData->m_strSkillDesc1));
-    obj.FUN_1407cbb20("skilldesc2", CStringW(spData->m_strSkillDesc2));
-    obj.FUN_1407cba60("moviepath", CString(spData->m_strMovie));
+    obj.SetWStringMember("jobName", CStringW(spData->m_strJobName));
+    obj.SetWStringMember("desc", CStringW(spData->m_strDesc));
+    obj.SetWStringMember("skilldesc1", CStringW(spData->m_strSkillDesc1));
+    obj.SetWStringMember("skilldesc2", CStringW(spData->m_strSkillDesc2));
+    obj.SetStringMember("moviepath", CString(spData->m_strMovie));
 
     ASArray skills1(2);
     ASArray skills2(2);
@@ -126,11 +126,11 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
             continue;
         ASObj skill(2);
         skill.SetMemberUInt("id", spData->m_skills1[i]);
-        skill.FUN_1407cba60("icon", CString(reinterpret_cast<Unk_CjSkillRow*>(spSkill.operator->())->m_strIcon));
+        skill.SetStringMember("icon", CString(reinterpret_cast<Unk_CjSkillRow*>(spSkill.operator->())->m_strIcon));
         ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
         if (tooltip.FUN_1409e1c50(spData->m_skills1[i], 1, 1) != 0)
-            skill.FUN_1409adbe0("tooltip", tooltip.FUN_1422bb870());
-        skills1.PushValue(skill.FUN_1422bb870());
+            skill.FUN_1409adbe0("tooltip", tooltip.GetValue());
+        skills1.PushValue(skill.GetValue());
     }
     for (size_t i = 0; i < spData->m_skills2.GetCount(); i++)
     {
@@ -139,19 +139,19 @@ void UIChangeJobDialog::FUN_140bd8040(int nJobCode)
             continue;
         ASObj skill(2);
         skill.SetMemberUInt("id", spData->m_skills2[i]);
-        skill.FUN_1407cba60("icon", CString(reinterpret_cast<Unk_CjSkillRow*>(spSkill.operator->())->m_strIcon));
+        skill.SetStringMember("icon", CString(reinterpret_cast<Unk_CjSkillRow*>(spSkill.operator->())->m_strIcon));
         ASTooltip tooltip(WorldService::GetInstance()->FUN_141bd0cc0(), 0x10, 2);
         if (tooltip.FUN_1409e1c50(spData->m_skills2[i], 1, 1) != 0)
-            skill.FUN_1409adbe0("tooltip", tooltip.FUN_1422bb870());
-        skills2.PushValue(skill.FUN_1422bb870());
+            skill.FUN_1409adbe0("tooltip", tooltip.GetValue());
+        skills2.PushValue(skill.GetValue());
     }
-    obj.FUN_1409adbe0("skills1", skills1.FUN_1422bb870());
-    obj.FUN_1409adbe0("skills2", skills2.FUN_1422bb870());
-    m_30->Invoke("setData", obj.FUN_1422bb870());
+    obj.FUN_1409adbe0("skills1", skills1.GetValue());
+    obj.FUN_1409adbe0("skills2", skills2.GetValue());
+    m_30->Invoke("setData", obj.GetValue());
 }
 
 // @0x140bd88e0
-int UIChangeJobDialog::FUN_140bd88e0()
+int UIChangeJobDialog::CanChangeJob()
 {
     PCBase* pPC = static_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd0cc0());
     if (pPC == 0)
@@ -168,13 +168,13 @@ int UIChangeJobDialog::FUN_140bd88e0()
 // @0x140bd89d0
 void UIChangeJobDialog::FUN_140bd89d0(int nJobCode)
 {
-    MS2Ptr<CQuestData> spJob = FUN_14074bc40(nJobCode);
+    MS2Ptr<CQuestData> spJob = GetQuestData(nJobCode);
     if (!spJob)
         return;
-    Unk_ScriptPtr<CTalkScript> kNotice = FUN_1408564b0(FUN_14074b030(spJob.operator->()), 100);
+    Unk_ScriptPtr<CTalkScript> kNotice = FindQuestTalk(FUN_14074b030(spJob.operator->()), 100);
     if (kNotice.IsNull())
         return;
-    TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(reinterpret_cast<const MS2Ptr<CTalkScript>&>(kNotice), reinterpret_cast<Unk_CjJobRow*>(spJob.operator->())->m_n2e8, 4, 0);
+    TSingleton<UITalkManager>::GetInstance()->BeginTalkWithoutNpc(reinterpret_cast<const MS2Ptr<CTalkScript>&>(kNotice), reinterpret_cast<Unk_CjJobRow*>(spJob.operator->())->m_n2e8, 4, 0);
 }
 
 // @0x140bd8af0

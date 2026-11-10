@@ -82,9 +82,9 @@ public:
 
    // the player's account/character name (PCBase member: this=rcx, hidden return=rdx)
 class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
-CStringW FUN_1401ca400(const BlockPtr& record, int action);
+CStringW GetBlockActionMessage(const BlockPtr& record, int action);
 Unk_MessageBoxPtr FUN_14151f820();
-Unk_MessageBoxPtr FUN_140d73d20(int, CStringW, void*, CStringW);
+Unk_MessageBoxPtr CreateMessageBox(int, CStringW, void*, CStringW);
 void FUN_140d73c60(Unk_MessageBoxPtr);
 class CMsgBoxData   // C3: unit-local view
 {
@@ -92,7 +92,7 @@ public:
     template <class T> void Append(T value);
     void SetTimer(int a, int b, const CStringW& str);
     void FUN_141a02460(int n);
-    void FUN_141a02480(int n);
+    void SetModaless(int n);
     void FUN_141a024a0(int n);
 };
 #define TM_BOX(p) reinterpret_cast<const MS2Ptr<CMsgBoxData>&>(p)   // C3: was a view of itembreakmanager.h's Unk_BreakPtr (same COMDATs 0x140534fc0 / 0x140534fe0)
@@ -103,7 +103,7 @@ template <class A> CStringW FormatStringId(int nId, const A& a);
 CStringW BlockFormat(int id);
 template <class A, class B> CStringW FUN_14028dee0(int nId, const A& a, const B& b);
 void FUN_1412751b0(const CStringW& text, int channel);
-void FUN_1412751f0(const CStringW& text, int a, int b);
+void ShowSystemNotice(const CStringW& text, int a, int b);
 void FUN_141275260(int stringId, int a, int b);
 int FUN_141276180(const CString& strSound, const CString& strArg);
 template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
@@ -133,15 +133,15 @@ Unk_TradeItemTable::Unk_TradeItemTable() {}
 Unk_TradeItemTable::~Unk_TradeItemTable() {}
 
 // @0x14185b1b0
-void Unk_TradeItemTable::FUN_14185b1b0()
+void Unk_TradeItemTable::Init()
 {
     m_nSlots = 5;
     m_bySlot.SetCount(m_nSlots);
-    FUN_14185b200();
+    Reset();
 }
 
 // @0x14185b200
-void Unk_TradeItemTable::FUN_14185b200()
+void Unk_TradeItemTable::Reset()
 {
     m_byUid.RemoveAll();
     m_bySlot.RemoveAll();
@@ -151,11 +151,11 @@ void Unk_TradeItemTable::FUN_14185b200()
 }
 
 // @0x14185b2a0
-int Unk_TradeItemTable::FUN_14185b2a0(CItem* pItem)
+int Unk_TradeItemTable::AddItem(CItem* pItem)
 {
     if (m_byUid.Lookup(pItem->GetItemUid()) != 0)
         return 0;
-    int nSlot = pItem->FUN_140526b50();
+    int nSlot = pItem->GetSlot();
     if (nSlot >= m_nSlots)
         return 0;
     if (nSlot != -1)
@@ -165,11 +165,11 @@ int Unk_TradeItemTable::FUN_14185b2a0(CItem* pItem)
     }
     else
     {
-        int nFree = FUN_14185b5c0();
+        int nFree = FindFreeSlot();
         if (nFree == -1)
             return 0;
         nSlot = nFree;
-        pItem->FUN_140526b70(nSlot);
+        pItem->SetSlot(nSlot);
     }
     {
         MS2Ptr<CItem> spItem(pItem);
@@ -180,7 +180,7 @@ int Unk_TradeItemTable::FUN_14185b2a0(CItem* pItem)
 }
 
 // @0x14185b3d0
-void Unk_TradeItemTable::FUN_14185b3d0(__int64 uid)
+void Unk_TradeItemTable::RemoveItem(__int64 uid)
 {
     MS2Ptr<CItem> spItem;
     if (m_byUid.Lookup(uid, spItem))
@@ -188,7 +188,7 @@ void Unk_TradeItemTable::FUN_14185b3d0(__int64 uid)
         m_byUid.RemoveKey(uid);
         if (spItem.get())
         {
-            int nSlot = spItem->FUN_140526b50();
+            int nSlot = spItem->GetSlot();
             if (nSlot >= m_nSlots)
                 return;
             m_bySlot[nSlot] = 0;
@@ -206,7 +206,7 @@ MS2Ptr<CItem> Unk_TradeItemTable::FUN_14185b4a0(__int64 uid)
 }
 
 // @0x14185b520
-void Unk_TradeItemTable::FUN_14185b520(ATL::CAtlArray<MS2Ptr<CItem> >& out)
+void Unk_TradeItemTable::GetAllItems(ATL::CAtlArray<MS2Ptr<CItem> >& out)
 {
     for (POSITION pos = m_byUid.GetHeadPosition(); pos != 0; m_byUid.GetNext(pos))
     {
@@ -216,7 +216,7 @@ void Unk_TradeItemTable::FUN_14185b520(ATL::CAtlArray<MS2Ptr<CItem> >& out)
 }
 
 // @0x14185b5c0
-int Unk_TradeItemTable::FUN_14185b5c0()
+int Unk_TradeItemTable::FindFreeSlot()
 {
     for (int i = 0; i < m_nSlots; i++)
     {
@@ -231,7 +231,7 @@ int Unk_TradeItemTable::FUN_14185b5c0()
 // @0x14185b780
 CTradeManagerEx::CTradeManagerEx() : m_bConfirmed(false), m_uidPartner(0)
 {
-    DAT_143ab2e80.FUN_14185b1b0();
+    DAT_143ab2e80.Init();
 }
 
 // @0x14185b810
@@ -339,34 +339,34 @@ void CTradeManagerEx::OnTrade(CInPacket& packet)
     switch (nCode)
     {
     case 0:
-        FUN_14185bec0(packet);
+        OnTradeRequest(packet);
         break;
     case 1:
-        FUN_14185c2a0(packet);
+        OnTradeRequestFailed(packet);
         break;
     case 2:
-        FUN_14185c230(packet);
+        OnTradeRequestSent(packet);
         break;
     case 4:
         FUN_14185cc60(packet);
         break;
     case 5:
-        FUN_14185cd10(packet);
+        OnTradeStarted(packet);
         break;
     case 6:
-        FUN_14185cee0(packet);
+        OnTradeFinished(packet);
         break;
     case 8:
-        FUN_14185d020(packet);
+        OnTradeItemAdded(packet);
         break;
     case 9:
-        FUN_14185d380(packet);
+        OnTradeItemRemoved(packet);
         break;
     case 10:
         FUN_14185d4f0(packet);
         break;
     case 11:
-        FUN_14185d590(packet);
+        OnTradeConfirm(packet);
         break;
     case 12:
         FUN_14185d610(packet);
@@ -381,7 +381,7 @@ void CTradeManagerEx::OnTrade(CInPacket& packet)
 }
 
 // @0x14185bec0
-void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
+void CTradeManagerEx::OnTradeRequest(CInPacket& packet)
 {
     CStringW strName = packet.ReadUnicodeString();
     __int64 uid = packet.ReadInt64();
@@ -395,7 +395,7 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
         if (blocked.get() != 0)
         {
             TSingleton<CTradeManagerEx>::GetInstance()->FUN_14185b8e0(uid, 0);
-            CStringW strMsg = FUN_1401ca400(blocked, 0x20);
+            CStringW strMsg = GetBlockActionMessage(blocked, 0x20);
             FUN_1412751b0(strMsg, 0x12);
             return;
         }
@@ -407,13 +407,13 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
     }
     else
     {
-        Unk_MessageBoxPtr box = FUN_140d73d20(1, FormatStringId<CStringW>(0x823, strName), 0, s_requestTradeEx);
+        Unk_MessageBoxPtr box = CreateMessageBox(1, FormatStringId<CStringW>(0x823, strName), 0, s_requestTradeEx);
         if (TM_BOX(box).operator CMsgBoxData*() != 0)
         {
             TM_BOX(box).operator->()->Append<__int64>(uid);
             TM_BOX(box).operator->()->SetTimer(FUN_14025a620((class Unk_ConstVal*)(reinterpret_cast<char*>(reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())) + 0x3788)), 1, GetStringCommon(0x2b8));
             TM_BOX(box).operator->()->FUN_141a02460(true);
-            TM_BOX(box).operator->()->FUN_141a02480(true);
+            TM_BOX(box).operator->()->SetModaless(true);
             TM_BOX(box).operator->()->FUN_141a024a0(false);
             FUN_140d73c60(box);
             SendTradeMode2(uid);
@@ -422,7 +422,7 @@ void CTradeManagerEx::FUN_14185bec0(CInPacket& packet)
 }
 
 // @0x14185c230
-void CTradeManagerEx::FUN_14185c230(CInPacket& packet)
+void CTradeManagerEx::OnTradeRequestSent(CInPacket& packet)
 {
     FUN_141275260(0x822, 1, 1);
     CString strArg("");
@@ -430,7 +430,7 @@ void CTradeManagerEx::FUN_14185c230(CInPacket& packet)
 }
 
 // @0x14185c2a0
-void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
+void CTradeManagerEx::OnTradeRequestFailed(CInPacket& packet)
 {
     Unk_TradeResult code = (Unk_TradeResult)packet.ReadUInt8();
     CStringW strName = packet.ReadUnicodeString();
@@ -508,7 +508,7 @@ void CTradeManagerEx::FUN_14185c2a0(CInPacket& packet)
     if (!strMsg.IsEmpty())
     {
         FUN_1412751b0(strMsg, 0x12);
-        FUN_1412751f0(strMsg, 1, 0);
+        ShowSystemNotice(strMsg, 1, 0);
     }
     Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
     if (pDlg != 0)
@@ -524,7 +524,7 @@ void CTradeManagerEx::FUN_14185cc60(CInPacket& packet)
 }
 
 // @0x14185cd10
-void CTradeManagerEx::FUN_14185cd10(CInPacket& packet)
+void CTradeManagerEx::OnTradeStarted(CInPacket& packet)
 {
     __int64 uid = packet.ReadInt64();
     PCBase* pPlayer = reinterpret_cast<PCBase*>(WorldService::GetInstance()->FUN_141bd1530(uid));
@@ -541,7 +541,7 @@ void CTradeManagerEx::FUN_14185cd10(CInPacket& packet)
 }
 
 // @0x14185cee0
-void CTradeManagerEx::FUN_14185cee0(CInPacket& packet)
+void CTradeManagerEx::OnTradeFinished(CInPacket& packet)
 {
     int bAccepted = packet.ReadUInt8();
     Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
@@ -558,7 +558,7 @@ void CTradeManagerEx::FUN_14185cee0(CInPacket& packet)
 }
 
 // @0x14185d020
-void CTradeManagerEx::FUN_14185d020(CInPacket& packet)
+void CTradeManagerEx::OnTradeItemAdded(CInPacket& packet)
 {
     Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
     if (pDlg == 0)
@@ -576,20 +576,20 @@ void CTradeManagerEx::FUN_14185d020(CInPacket& packet)
         pDlg->vfunc_67();
         return;
     }
-    spItem->FUN_140524eb0(packet);
+    spItem->ReadFromStream(packet);
     spItem->SetItemUid(uid);
     spItem->SetCountClamped(nSlotInItem);
-    spItem->FUN_140526b70(nCount);
+    spItem->SetSlot(nCount);
     if (bMine)
     {
         ((class Unk_TradeInventory*)GetItemEventDispatcher())->vfunc_17(spItem);
-        DAT_143ab2e80.FUN_14185b2a0(spItem);
+        DAT_143ab2e80.AddItem(spItem);
     }
-    reinterpret_cast<UITradeDialogEx*>(pDlg)->FUN_141b27de0(bMine, nSlot, spItem);
+    reinterpret_cast<UITradeDialogEx*>(pDlg)->SetTradeSlotItem(bMine, nSlot, spItem);
 }
 
 // @0x14185d380
-void CTradeManagerEx::FUN_14185d380(CInPacket& packet)
+void CTradeManagerEx::OnTradeItemRemoved(CInPacket& packet)
 {
     Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
     if (pDlg == 0)
@@ -603,9 +603,9 @@ void CTradeManagerEx::FUN_14185d380(CInPacket& packet)
         if (!spItem)
             return;
         ((class Unk_TradeInventory*)GetItemEventDispatcher())->vfunc_18(spItem);
-        DAT_143ab2e80.FUN_14185b3d0(uid);
+        DAT_143ab2e80.RemoveItem(uid);
     }
-    reinterpret_cast<UITradeDialogEx*>(pDlg)->FUN_141b27fa0(bMine, nSlot);
+    reinterpret_cast<UITradeDialogEx*>(pDlg)->ClearTradeSlot(bMine, nSlot);
 }
 
 // @0x14185d4f0
@@ -616,11 +616,11 @@ void CTradeManagerEx::FUN_14185d4f0(CInPacket& packet)
         return;
     int nSide = packet.ReadUInt8();
     __int64 nValue = packet.ReadInt64();
-    reinterpret_cast<UITradeDialogEx*>(pDlg)->FUN_141b28130(nSide, nValue);
+    reinterpret_cast<UITradeDialogEx*>(pDlg)->SetSideMeso(nSide, nValue);
 }
 
 // @0x14185d590
-void CTradeManagerEx::FUN_14185d590(CInPacket& packet)
+void CTradeManagerEx::OnTradeConfirm(CInPacket& packet)
 {
     Unk_TradeDialog* pDlg = reinterpret_cast<Unk_TradeDialog*>(Unk_InvGetDialogById<UITradeDialogEx>(0x4e83));
     if (pDlg == 0)
@@ -665,11 +665,11 @@ void CTradeManagerEx::FUN_14185d750(CInPacket& packet)
 // @0x14185d7b0
 void CTradeManagerEx::FUN_14185d7b0()
 {
-    DAT_143ab2e80.FUN_14185b200();
+    DAT_143ab2e80.Reset();
     m_uidPartner = 0;
     m_strName = L"";
     m_strChar = "";
-    FUN_14185dc90();
+    ClearConfirmed();
 }
 
 // @0x14185d820
@@ -682,9 +682,9 @@ void CTradeManagerEx::FUN_14185d820(__int64 uid, CStringW strName, CString strCh
 }
 
 // @0x14185d8b0
-int CTradeManagerEx::FUN_14185d8b0()
+int CTradeManagerEx::CanStartTrade()
 {
-    if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4e83) == 0)
+    if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4e83) == 0)
     {
         FUN_140f8ff40(0x841, 1, 1);
         return 0;
@@ -710,7 +710,7 @@ CStringW Unk_TradeDialog::GetPartner()
 }
 
 // @0x14185dc90
-void CTradeManagerEx::FUN_14185dc90()
+void CTradeManagerEx::ClearConfirmed()
 {
     m_bConfirmed = false;
 }

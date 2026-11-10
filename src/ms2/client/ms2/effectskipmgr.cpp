@@ -61,8 +61,8 @@ static egf::EntityID s_handle3(0);               // @0x1400e7e90
 class Unk_140166420 : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // returns its hidden pointer in rax
+CString ToCString(const char* psz, int n);
 int FUN_1408731e0(TiXmlElement*, const char*, int&);
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
 CString FUN_140188f50(const char* psz, int n);
@@ -182,8 +182,8 @@ bool EffectSkipMgr::LoadOption()
 {
     int nOption = *(int*)((Unk_AeGameOption*)reinterpret_cast<void*>(TSingleton<CGameOption>::GetInstance()))->GetGraphicOption();
     TiXmlDocument doc;
-    CString strPath = FUN_14071a5b0("Table", "effectOption.xml");
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    CString strPath = GetXmlPath("Table", "effectOption.xml");
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -213,10 +213,10 @@ bool EffectSkipMgr::LoadOption()
 bool EffectSkipMgr::LoadLimitCount()
 {
     TiXmlDocument doc;
-    CString strPath = FUN_14071a5b0("Table", "effectLimitCount.xml");
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    CString strPath = GetXmlPath("Table", "effectLimitCount.xml");
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
-    m_cache.FUN_1401d1160(strPath);
+    m_cache.SetPath(strPath);
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
@@ -363,8 +363,8 @@ void EffectSkipMgr::LoadBenchmark()
     if (m_nBaseFrame <= 0)
         return;
     TiXmlDocument doc;
-    CString strPath = FUN_14071a5b0("Table", "effect_benchmark.xml");
-    if (((class Unk_140166420*)GetFileSystem())->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    CString strPath = GetXmlPath("Table", "effect_benchmark.xml");
+    if (((class Unk_140166420*)GetFileSystem())->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -394,7 +394,7 @@ void EffectSkipMgr::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(EffectSkipMgr).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(EffectSkipMgr).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

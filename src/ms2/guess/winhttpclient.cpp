@@ -132,7 +132,7 @@ void CWinHttpClient::SetRequestURL(const wstring &url)
 }
 
 // @0x140920cf0
-bool CWinHttpClient::FUN_140920cf0(const wstring &httpVerb, bool disableAutoRedirect)
+bool CWinHttpClient::SendRequest(const wstring &httpVerb, bool disableAutoRedirect)
 {
     if (m_requestURL.size() <= 0)
     {
@@ -738,7 +738,7 @@ bool CWinHttpClient::SetAdditionalRequestCookies(const wstring &cookies)
 }
 
 // @0x140922b90
-bool CWinHttpClient::FUN_140922b90(const unsigned char *data, unsigned int dataSize)
+bool CWinHttpClient::SetAdditionalDataToSend(const unsigned char *data, unsigned int dataSize)
 {
     if (data == NULL || dataSize < 0)
     {
@@ -784,7 +784,7 @@ bool CWinHttpClient::ResetAdditionalDataToSend()
 }
 
 // @0x140922d20
-bool CWinHttpClient::FUN_140922d20(const wstring &additionalRequestHeaders)
+bool CWinHttpClient::SetAdditionalRequestHeaders(const wstring &additionalRequestHeaders)
 {
     m_additionalRequestHeaders = additionalRequestHeaders;
 
@@ -1479,7 +1479,7 @@ SpecialNPCInfo::SpecialNPCInfo()
 }
 
 // @0x14092c0f0
-void SpecialNPCInfo::FUN_14092c0f0(COutputStream& out)
+void SpecialNPCInfo::Write(COutputStream& out)
 {
     out.WriteInt32(m_nNpcId);
     out.WriteInt32(m_nFieldId);
@@ -1489,7 +1489,7 @@ void SpecialNPCInfo::FUN_14092c0f0(COutputStream& out)
 }
 
 // @0x14092c190
-void SpecialNPCInfo::FUN_14092c190(CInputStream& in)
+void SpecialNPCInfo::Read(CInputStream& in)
 {
     m_nNpcId = in.ReadInt32();
     m_nFieldId = in.ReadInt32();

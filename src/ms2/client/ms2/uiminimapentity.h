@@ -65,16 +65,16 @@ public:
     virtual int vfunc_4() { return 0; }                         // 4 0x141a4b200 kind
 
     void SetFromNpcData(NpcDataCli* pNpc);                       // InitializeNpc
-    void FUN_141a31270(ASObj& data, efd::SmartPointer<MinimapViewport> spViewport);   // BuildData
-    int FUN_141a316d0(const int& nField, bool& bSpecial, CString& strIcon, CString& strLayer);   // ResolvePortalNpc
-    CStringW FUN_141a319f0(NpcDataCli* pNpc, const CStringW& strName, bool b);          // NpcTooltip
-    bool FUN_141a31c80(const struct Unk_QmNpcQuestState* pGuide, CString& strIcon, CString& strLayer);      // ResolveQuestIcon
-    void FUN_141a32120(const Scaleform::GFx::FunctionHandler::Params& params);          // the AS "userFunction"
-    bool FUN_141a32260(ASObj& data);                            // BuildTooltip
+    void BuildData(ASObj& data, efd::SmartPointer<MinimapViewport> spViewport);   // BuildData
+    int FindPortalNpc(const int& nField, bool& bSpecial, CString& strIcon, CString& strLayer);   // ResolvePortalNpc
+    CStringW GetNpcTooltip(NpcDataCli* pNpc, const CStringW& strName, bool b);          // NpcTooltip
+    bool ResolveQuestIcon(const struct Unk_QmNpcQuestState* pGuide, CString& strIcon, CString& strLayer);      // ResolveQuestIcon
+    void OnUserFunction(const Scaleform::GFx::FunctionHandler::Params& params);          // the AS "userFunction"
+    bool BuildTooltip(ASObj& data);                            // BuildTooltip
     void SendSetDebugMode();                                       // OnClick
     void SetFromPortal(MS2Ptr<CPortal> spPortal);               // InitializePortal
     bool HasNpcMinimapInfo(CNpcData* pNpc);                         // NpcVisible
-    CString FUN_141a32750(NpcDataCli* pNpc);                    // NpcIcon
+    CString GetNpcIcon(NpcDataCli* pNpc);                    // NpcIcon
     CString GetStateForIcon(const CString& strIcon);              // NpcState
     CString GetLayerForNpc(NpcDataCli* pNpc, const CString& strIcon);   // NpcLayer
     CStringW GetFriendHomeTooltip(MS2Ptr<CBuddy> spBuddy);       // BuddyHomeText
@@ -108,7 +108,7 @@ public:
     virtual int vfunc_4();                                      // 4 0x141a33060 m_kind
     virtual void vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& strText, ASObj& data);   // 5 0x141a33080 ProxyText
 
-    MS2Ptr<CProxyGameObject> FUN_141a32da0();                   // GetProxy
+    MS2Ptr<CProxyGameObject> GetProxy();                   // GetProxy
 
     int m_kind;                                                 // +0x68
     int m_id;                                                   // +0x6c
@@ -122,13 +122,13 @@ public:
     explicit UIMinimapEntityProxyPortal(const int& nId);        // 0x141a335e0
     virtual void vfunc_5(MS2Ptr<CProxyGameObject> spProxy, CStringW& strText, ASObj& data);   // 5 0x141a33680
 
-    void FUN_141a33650();                                       // Reset
-    void FUN_141a33850(MS2Ptr<CPortal> spPortal, CStringW& strText);   // HousingText
-    void FUN_141a33e30(MS2Ptr<CPortal> spPortal, CStringW& strText);   // FieldText
+    void Reset();                                       // Reset
+    void BuildHousingText(MS2Ptr<CPortal> spPortal, CStringW& strText);   // HousingText
+    void BuildFieldText(MS2Ptr<CPortal> spPortal, CStringW& strText);   // FieldText
     int FUN_141a4b020() const { return m_state; }               // 0x141a4b020
-    void FUN_141a50bc0(const int& nField) { m_field = nField; } // 0x141a50bc0
-    void FUN_141a51030(bool b) { m_flag = b; }                  // 0x141a51030
-    void FUN_141a51050(int nState) { m_state = nState; }        // 0x141a51050
+    void SetField(const int& nField) { m_field = nField; } // 0x141a50bc0
+    void SetFlag(bool b) { m_flag = b; }                  // 0x141a51030
+    void SetState(int nState) { m_state = nState; }        // 0x141a51050
 
     int m_state;                                                // +0x70 (1 field, 2 housing)
     int m_field;                                                // +0x74
@@ -167,7 +167,7 @@ public:
     virtual void GetText(CStringW& strText, ASObj& data);       // 1 0x141a34c30
 
     void SetBest(bool bBest);                             // SetBest
-    void FUN_141a34890(const efd::Point3& kPos);                // Initialize
+    void Initialize(const efd::Point3& kPos);                // Initialize
 
     bool m_best;                                                // +0x68
 };
@@ -194,7 +194,7 @@ public:
     virtual void GetText(CStringW& strText, ASObj& data);       // 1 0x141a351e0
 
     void SetPing(const efd::Point3& kPos);                // Initialize
-    void FUN_141a35000(unsigned __int64 nId, int nColor, const efd::Point3& kPos, const CStringW& strName);   // Update
+    void UpdatePing(unsigned __int64 nId, int nColor, const efd::Point3& kPos, const CStringW& strName);   // Update
 };
 MS2_CHECK_SIZE(UIMinimapEntityPing, 0x68);
 
@@ -277,94 +277,94 @@ public:
     // UIServerEventListener (+0x1a0)
     virtual void Notify();                                      // 1 0x141a38b60
 
-    void FUN_141a391f0(MS2Ptr<CInteractObject> spObject);       // RefreshNamedObject
-    void FUN_141a39770(MS2Ptr<CInteractObject> spObject);       // AddNamed
-    void FUN_141a39bf0(MS2Ptr<CInteractObject> spObject);       // RemoveNamed
+    void RefreshNamedObject(MS2Ptr<CInteractObject> spObject);       // RefreshNamedObject
+    void AddNamedObject(MS2Ptr<CInteractObject> spObject);       // AddNamed
+    void RemoveNamedObject(MS2Ptr<CInteractObject> spObject);       // RemoveNamed
     void SetTriggerVisible(int nId, int bVisible);                  // SetTriggerVisible
     void FUN_141a39e40();                                       // CheckSuppression
     void FUN_141a39e60();                                       // RefreshHousing
     void FUN_141a3a200();                                       // RefreshTaxi
     void EnableTaxiFrame(int n);                                  // EnableTaxi
     void EnableTelescopeFrame();                                       // EnableTelescope
-    void FUN_141a3a9a0(bool b);                                 // UpdateReturn
+    void UpdateReturn(bool b);                                 // UpdateReturn
     void OnTabKeyUp();                                       // EndTabView
     void OnTabKeyDown();                                       // BeginTabView
     void FUN_141a3ad80(bool b);                                 // m_1fb
-    void FUN_141a3ada0();                                       // InvalidateEntities
-    void FUN_141a3add0();                                       // RefreshQuestIconChecks ("checkIcons")
-    void FUN_141a3b130(unsigned __int64 nId, int nColor, const efd::Point3& kPos);   // AddPing
-    void FUN_141a3b390(unsigned __int64 nId, int nColor, EntityPtr spEntity, const efd::Point3& kPos);   // UpdatePing
+    void InvalidateEntities();                                       // InvalidateEntities
+    void RefreshQuestIconChecks();                                       // RefreshQuestIconChecks ("checkIcons")
+    void AddPing(unsigned __int64 nId, int nColor, const efd::Point3& kPos);   // AddPing
+    void UpdatePing(unsigned __int64 nId, int nColor, EntityPtr spEntity, const efd::Point3& kPos);   // UpdatePing
     void FUN_141a3b4d0(unsigned int& nQuest, unsigned __int64& nId);   // PingSelection
     EntityPtr FindEntityByProxy(ProxyPtr spProxy);                  // FindProxyEntity
     HomeListPtr FindHomeList(const int& nField);               // PortalHomes
-    void FUN_141a3b6f0();                                       // BuildShowAttributes
-    bool FUN_141a3bda0(ASObj& data, ProxyPtr spProxy);          // BuildPlayerData
-    void FUN_141a3c150();                                       // BuildUIData
+    void BuildShowAttributes();                                       // BuildShowAttributes
+    bool BuildPlayerData(ASObj& data, ProxyPtr spProxy);          // BuildPlayerData
+    void BuildUIData();                                       // BuildUIData
     // C3: FUN_140ede180 = Unk_ReportDialogAccess::GetChild<ASGameEntity> (the .cpp calls it through a view)
-    void FUN_141a3ced0();                                       // BuildField
-    void FUN_141a3d080(ProxyPtr spProxy);                       // AddProxy
-    void FUN_141a3dbb0();                                       // BuildTaxi
-    void FUN_141a3dda0();                                       // BuildReturn
-    void FUN_141a3df40();                                       // BuildTelescope
-    void FUN_141a3e2d0(MS2Ptr<CBuddy> spBuddy);           // AddBuddyHome
-    void FUN_141a3e4e0(efd::SmartPointer<egf::Entity> spEntity);   // AddTrigger
+    void BuildField();                                       // BuildField
+    void AddProxy(ProxyPtr spProxy);                       // AddProxy
+    void BuildTaxi();                                       // BuildTaxi
+    void BuildReturn();                                       // BuildReturn
+    void BuildTelescope();                                       // BuildTelescope
+    void AddBuddyHome(MS2Ptr<CBuddy> spBuddy);           // AddBuddyHome
+    void AddTrigger(efd::SmartPointer<egf::Entity> spEntity);   // AddTrigger
     bool FUN_141a3e7d0(EntityPtr spEntity);                     // CreateEntity
-    void FUN_141a3ea10();                                       // BuildEntities
-    void FUN_141a3ed50();                                       // BuildBuddyHomes
-    void FUN_141a3eed0();                                       // BuildNamed
-    void FUN_141a3ef80();                                       // BuildTriggers
-    void FUN_141a3f1c0();                                       // BuildMapObjects
-    void FUN_141a3f570();                                       // RemoveField
-    void FUN_141a3f600(ProxyPtr spProxy);                       // RemoveProxy
+    void BuildEntities();                                       // BuildEntities
+    void BuildBuddyHomes();                                       // BuildBuddyHomes
+    void BuildNamed();                                       // BuildNamed
+    void BuildTriggers();                                       // BuildTriggers
+    void BuildMapObjects();                                       // BuildMapObjects
+    void RemoveField();                                       // RemoveField
+    void RemoveProxy(ProxyPtr spProxy);                       // RemoveProxy
     void FUN_141a3f730(MS2Ptr<ASMovieClip> spClip, ProxyPtr spProxy);   // RemoveClip
-    void FUN_141a3f930(EntityPtr spEntity);                     // RemoveEntity
-    void FUN_141a3f9f0(MS2Ptr<CBuddy> spBuddy);           // RemoveBuddyHome
-    void FUN_141a3fb10();                                       // RemoveAllEntities
-    void FUN_141a3fd20();                                       // ClearEntityContainers
-    void FUN_141a3fe10(ProxyPtr spProxy, EntityPtr spEntity, int n);   // RefreshProxy
-    void FUN_141a400d0(ProxyPtr spProxy, EntityPtr spEntity, int n);   // MoveProxy
-    void FUN_141a402b0(EntityPtr spEntity);                     // RefreshLocalPlayer
-    void FUN_141a407c0(ProxyPtr spProxy, EntityPtr spEntity);   // RefreshPortal
-    void FUN_141a40d90(ProxyPtr spProxy, EntityPtr spEntity);   // RefreshNpc
-    void FUN_141a41560(ProxyPtr spProxy, EntityPtr spEntity);   // RefreshOtherPlayer
-    void FUN_141a422c0(ProxyPtr spProxy, EntityPtr spEntity);   // RefreshPet
-    void FUN_141a42550();                                       // RefreshNamed
-    void FUN_141a42600(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity);   // UpdateNamedFrame
+    void RemoveEntity(EntityPtr spEntity);                     // RemoveEntity
+    void RemoveBuddyHome(MS2Ptr<CBuddy> spBuddy);           // RemoveBuddyHome
+    void RemoveAllEntities();                                       // RemoveAllEntities
+    void ClearEntityContainers();                                       // ClearEntityContainers
+    void RefreshProxy(ProxyPtr spProxy, EntityPtr spEntity, int n);   // RefreshProxy
+    void UpdateProxyPosition(ProxyPtr spProxy, EntityPtr spEntity, int n);   // MoveProxy
+    void RefreshLocalPlayer(EntityPtr spEntity);                     // RefreshLocalPlayer
+    void RefreshPortal(ProxyPtr spProxy, EntityPtr spEntity);   // RefreshPortal
+    void RefreshNpc(ProxyPtr spProxy, EntityPtr spEntity);   // RefreshNpc
+    void RefreshOtherPlayer(ProxyPtr spProxy, EntityPtr spEntity);   // RefreshOtherPlayer
+    void RefreshPet(ProxyPtr spProxy, EntityPtr spEntity);   // RefreshPet
+    void RefreshNamed();                                       // RefreshNamed
+    void UpdateNamedFrame(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity);   // UpdateNamedFrame
     void FUN_141a42800();                                       // UpdateServerData
-    void FUN_141a42a70();                                       // UpdatePlayerVisibility
+    void UpdatePlayerVisibility();                                       // UpdatePlayerVisibility
     void FUN_141a42bb0();                                       // RefreshMiscEntities
-    void FUN_141a42fe0(ATL::CAtlArray<EntityPtr>& entities);    // GatherOverlapEntities
-    void FUN_141a432a0(ProxyPtr spProxy, EntityPtr spEntity);   // UpdateOtherPlayer
-    void FUN_141a43680(ProxyPtr spProxy, EntityPtr spEntity);   // UpdateNpc
-    void FUN_141a43ac0(ProxyPtr spProxy, EntityPtr spEntity);   // UpdatePet
-    void FUN_141a43b80(ProxyPtr spProxy, EntityPtr spEntity, bool bInit);   // UpdatePortal
-    void FUN_141a44380(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity);   // UpdateNamed
-    bool FUN_141a44730(const efd::Point3& kPos, MS2Ptr<ASMovieClip> spClip);   // ProjectClip
+    void GatherOverlapEntities(ATL::CAtlArray<EntityPtr>& entities);    // GatherOverlapEntities
+    void UpdateOtherPlayer(ProxyPtr spProxy, EntityPtr spEntity);   // UpdateOtherPlayer
+    void UpdateNpc(ProxyPtr spProxy, EntityPtr spEntity);   // UpdateNpc
+    void UpdatePet(ProxyPtr spProxy, EntityPtr spEntity);   // UpdatePet
+    void UpdatePortal(ProxyPtr spProxy, EntityPtr spEntity, bool bInit);   // UpdatePortal
+    void UpdateNamed(MS2Ptr<CInteractObject> spObject, EntityPtr spEntity);   // UpdateNamed
+    bool ProjectClip(const efd::Point3& kPos, MS2Ptr<ASMovieClip> spClip);   // ProjectClip
     bool FUN_141a44850(EntityPtr spEntity, const int& nField, bool b);   // TryHousingPortal
     bool FUN_141a44c00(EntityPtr spEntity, const int& nField, bool b1, const CString& strIcon, const CString& strLayer, bool b2, bool b3);   // TryNpcPortal
     void ChangeStageSize();                                       // ChangeStageSize
     void ApplySelectedChannel();                                       // ResetSelectedChannel
-    void FUN_141a44f40();                                       // ApplyAlignment
+    void ApplyAlignment();                                       // ApplyAlignment
     void SendMinimapPing(int nColor, float x, float y);           // SendPing
-    bool FUN_141a451b0(bool bLocal, float x, float y, NiPoint3& kOut);   // PingPosition
-    void FUN_141a454d0(const int& nField, const unsigned __int64& nHome);   // AddPortalHome
-    void FUN_141a455e0(const int& nField, const unsigned __int64& nHome);   // RemovePortalHome
+    bool GetPingPosition(bool bLocal, float x, float y, NiPoint3& kOut);   // PingPosition
+    void AddPortalHome(const int& nField, const unsigned __int64& nHome);   // AddPortalHome
+    void RemovePortalHome(const int& nField, const unsigned __int64& nHome);   // RemovePortalHome
     void FUN_141a456c0(const Scaleform::GFx::FunctionHandler::Params& params);   // RedPing
     void FUN_141a45720(const Scaleform::GFx::FunctionHandler::Params& params);   // BluePing
-    void FUN_141a45790(float x, float y, unsigned __int64 nId); // ShowPlayerMenu
+    void ShowPlayerMenu(float x, float y, unsigned __int64 nId); // ShowPlayerMenu
     void FUN_141a458d0(bool b);                                 // SetInputMode
-    float FUN_141a45920(PCBase* pPC);                           // PlayerHeading
+    float GetPlayerHeading(PCBase* pPC);                           // PlayerHeading
     bool GetWindowSize(int& nWidth, int& nHeight);              // WindowSize
-    bool FUN_141a45b70(ProxyPtr spProxy);                       // ProxyVisible
+    bool IsProxyVisible(ProxyPtr spProxy);                       // ProxyVisible
     bool IsBossIcon(const CString& strIcon);                 // IsBossIcon
     bool IsPingAllowed();                                       // CanPing
-    CStringW FUN_141a45d50(const unsigned __int64& nId);        // PingText
-    CStringW FUN_141a45ed0(const int& nId, int nKind);          // QuestGuideText
-    void FUN_141a46c90(EntityMap& map);                         // RemoveEntities
-    void FUN_141a46dc0(NamedMap& map);
-    void FUN_141a46ef0(ProxyMap& map);
-    void FUN_141a47060(BuddyMap& map);
-    void FUN_141a47190(PingMap& map);
+    CStringW GetCharacterName(const unsigned __int64& nId);        // PingText
+    CStringW GetQuestGuideText(const int& nId, int nKind);          // QuestGuideText
+    void RemoveEntities(EntityMap& map);                         // RemoveEntities
+    void RemoveNamedEntities(NamedMap& map);
+    void RemoveProxyEntities(ProxyMap& map);
+    void RemoveBuddyEntities(BuddyMap& map);
+    void RemovePingEntities(PingMap& map);
 
     ShowAttrMap m_showAttrs;                                    // +0x1a8
     efd::SmartPointer<MinimapViewport> m_viewport;              // +0x1f0

@@ -119,7 +119,7 @@ unsigned long GetTickCountMs2();   // C3: was FUN_140869420
 // (0x140deec40 is efd::Point3::UnitizeVector(Point3&))
 bool Unk_IsFinite(const efd::Point3& kPoint);   // bonerotateinterpolator.cpp
 __declspec(noreturn) void FUN_140159b70(long hr);
-void FUN_14107b050(const Vector3& kDir);
+void SetSunDirection(const Vector3& kDir);
 void FUN_14107b2d0();
 //
 void FUN_14107cad0(NiFixedString* pName, void* pData, int n);
@@ -137,8 +137,8 @@ public:
     void* m_pad[5];
 };
 MS2_CHECK_SIZE(Unk_NodeQueue, 0x30);
-NiObject** FUN_14107cbe0(Unk_NodeQueue& rWalker);
-NiObject* FUN_14107cc90(Unk_NodeQueue& rWalker, bool bDescend);
+NiObject** GetCurrentNode(Unk_NodeQueue& rWalker);
+NiObject* GetNextNode(Unk_NodeQueue& rWalker, bool bDescend);
 
 
 // ---- dynamic initializers (.text$di) ----
@@ -165,19 +165,19 @@ static CString s_skill("skill");
 static CString s_stun("stun");
 
 #ifndef MS2_HOOK_DLL
-void FUN_142cabb00();
+void DestroyMarkerMap();
 struct Unk_RegMarker {};
 static char s_id[8];
 // @0x1400e5030
 static Unk_RegMarker s_initId = (reinterpret_cast<egf::EntityID*>(&s_id)->egf::EntityID::EntityID(0), Unk_RegMarker());
 static char s_marker[0x48];
 // @0x1400e5050
-static Unk_RegMarker s_initMarker = (reinterpret_cast<Unk_MarkerMap*>(&s_marker)->Unk_MarkerMap::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(FUN_142cabb00), Unk_RegMarker());
+static Unk_RegMarker s_initMarker = (reinterpret_cast<Unk_MarkerMap*>(&s_marker)->Unk_MarkerMap::CAtlMap(0x11, 0.75f, 0.25f, 2.25f, 10), atexit(DestroyMarkerMap), Unk_RegMarker());
 
 // The exe's atexit destructor of s_marker.
 // MS2-FUNCTIONAL: our build tail-calls the destructor; the exe's compiler-made atexit thunk keeps a frame.
 // @0x142cabb00
-void FUN_142cabb00() { reinterpret_cast<Unk_MarkerMap*>(s_marker)->Unk_MarkerMap::~Unk_MarkerMap(); }
+void DestroyMarkerMap() { reinterpret_cast<Unk_MarkerMap*>(s_marker)->Unk_MarkerMap::~Unk_MarkerMap(); }
 #endif
 
 // ---- the functions ----
@@ -254,14 +254,14 @@ void TCreateCharInfo::FUN_14107ae00()
 void FUN_14107b010()
 {
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140a18070() != 0)
-        FUN_14107b050(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af0250())));
+        SetSunDirection(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(TSingleton<CameraMgr>::GetInstance()->FUN_140af0250())));
     FUN_14107b2d0();
 }
 MS2_REPLACE(0x14107b010, FUN_14107b010, 57, 0x7150A5CF);
 
 // @0x14107b050
 // The rotated points reach NiPoint3's move assignment (0x14097faa0) through an implicit NiPoint3(const efd::Point3&) conversion (0x14027dcf0).
-void FUN_14107b050(const Vector3& kDir)
+void SetSunDirection(const Vector3& kDir)
 {
     Vector3 kRight = kDir;
     Vector3 kFlat = kDir;
@@ -270,7 +270,7 @@ void FUN_14107b050(const Vector3& kDir)
     Unk_NiMatrix3 matRot;
     NiPoint3 kAxis(0, 0, 1.0f);
     kAxis = static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kAxis).Cross(reinterpret_cast<const efd::Point3&>(kRight)));
-    matRot.FUN_14107cc40(-((Unk_RimLight::s_fPitch * 3.1415927f) / 180.0f), reinterpret_cast<Vector3&>(kAxis));
+    matRot.MakeRotation(-((Unk_RimLight::s_fPitch * 3.1415927f) / 180.0f), reinterpret_cast<Vector3&>(kAxis));
     *reinterpret_cast<NiPoint3*>(&kRight) = *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kRight);
     *reinterpret_cast<NiPoint3*>(&kFlat) = *reinterpret_cast<efd::Matrix3*>(&matRot) * reinterpret_cast<const efd::Point3&>(kFlat);
     reinterpret_cast<efd::Matrix3*>(&matRot)->MakeZRotation((Unk_RimLight::s_fYaw * 3.1415927f) / 180.0f);
@@ -321,7 +321,7 @@ CString FUN_14107b3d0(int nGender)
 MS2_REPLACE(0x14107b3d0, FUN_14107b3d0, 103, 0xAA813896);
 
 // @0x14107b440
-int TCreateCharInfo::FUN_14107b440(PC* pPC)
+int TCreateCharInfo::ApplyToPC(PC* pPC)
 {
     WorldService* pWorld = WorldService::GetInstance();
     Vector3 kDir;
@@ -375,7 +375,7 @@ int FUN_14107b7e0(unsigned nSlot, const Unk_UserProxy* pState, PC* pPC)
     pPC->vfunc_19(reinterpret_cast<efd::Point3&>(kPos));
     pPC->vfunc_21(reinterpret_cast<efd::Point3&>(kDir));
     pPC->vfunc_131(pState->m_34);
-    pPC->vfunc_76(const_cast<Unk_UserProxy*>(pState)->FUN_1408f19e0());
+    pPC->vfunc_76(const_cast<Unk_UserProxy*>(pState)->GetName());
     pPC->SetGender(pState->m_14);
     reinterpret_cast<JobSystem*>(pPC->GetJobSystem())->SetJob(pState->m_3c, pState->m_40, pState->m_34);
     pPC->AddStateFlags(4);
@@ -464,7 +464,7 @@ bool FUN_14107c030(int nId, MS2Ptr<Unk_PCArg125> spSrc, PC* pPC)
             }
         }
     }
-    return kInfo.FUN_14107b440(pPC) == 1;
+    return kInfo.ApplyToPC(pPC) == 1;
 }
 MS2_REPLACE(0x14107c030, FUN_14107c030, 602, 0x422EFE59);
 
@@ -491,7 +491,7 @@ MS2_REPLACE(0x14107c2d0, FUN_14107c2d0, 190, 0xB277E6A4);
 // @0x14107c3a0
 int TCreateCharInfo::FUN_14107c3a0(PC* pPC)
 {
-    if (FUN_14107b440(pPC) != 0)
+    if (ApplyToPC(pPC) != 0)
     {
         ATL::CAtlArray<int> aItems;
         CItemDefaultData::GetCreateItems(this, reinterpret_cast<ATL::CAtlArray<unsigned>&>(aItems));
@@ -508,7 +508,7 @@ int TCreateCharInfo::FUN_14107c3a0(PC* pPC)
                 if (reinterpret_cast<CItemData*>(spItem->FUN_140527840())->FUN_14053d2f0())
                     nSlot = 5;
                 else
-                    nSlot = reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetModelOrEmpty()->FUN_14054b400();
+                    nSlot = reinterpret_cast<CItemData*>(spItem->FUN_140527840())->GetModelOrEmpty()->GetFirstGroupType();
                 spItem->FUN_140526c10(nSlot);
                 spItem->SetItemUid(pPC->GenerateSerialId());
                 spItem->SetObjectId(m_nType);
@@ -562,7 +562,7 @@ NiObject* FUN_14107c930(NiObject* pRoot, const CString* pName)
     NiFixedString kRoot("Scene Root");
     NiFixedString kName((const char*)*pName);
     NiObject* pNode;
-    while ((pNode = FUN_14107cc90(kWalker, bDescend)) != 0)
+    while ((pNode = GetNextNode(kWalker, bDescend)) != 0)
     {
         if (NiObject::DynamicCast(&EffectNode::ms_RTTI, (class NiObject const*)(pNode)) != 0 || NiObject::DynamicCast(&NiPSParticleSystem::ms_RTTI, (class NiObject const*)(pNode)) != 0)
         {
@@ -606,7 +606,7 @@ bool FUN_14107cb00(NiFixedString* pName, void* pData, int n)
 MS2_REPLACE(0x14107cb00, FUN_14107cb00, 155, 0x76E1782A);
 
 // @0x14107cbe0
-NiObject** FUN_14107cbe0(Unk_NodeQueue& rWalker)
+NiObject** GetCurrentNode(Unk_NodeQueue& rWalker)
 {
     do
     {
@@ -619,13 +619,13 @@ NiObject** FUN_14107cbe0(Unk_NodeQueue& rWalker)
 }
 
 // @0x14107cc40
-void Unk_EfdMatrix3::FUN_14107cc40(float fAngle, const Vector3& kAxis)
+void Unk_EfdMatrix3::MakeRotation(float fAngle, const Vector3& kAxis)
 {
     reinterpret_cast<efd::Matrix3*>(this)->MakeRotation(fAngle, kAxis.x, kAxis.y, kAxis.z);
 }
 
 // @0x14107cc90 the queue helpers are handed the walker through its +0 list head
-NiObject* FUN_14107cc90(Unk_NodeQueue& rWalker, bool bDescend)
+NiObject* GetNextNode(Unk_NodeQueue& rWalker, bool bDescend)
 {
     if (((ATL::CAtlList<NiAVObject *, ATL::CElementTraits<NiAVObject *>>*)&static_cast<class Unk_NodeQueue&>(*(Unk_NodeQueue*)&rWalker.m_p0))->IsEmpty())
         return 0;
@@ -639,7 +639,7 @@ NiObject* FUN_14107cc90(Unk_NodeQueue& rWalker, bool bDescend)
     if (((ATL::CAtlList<NiAVObject *, ATL::CElementTraits<NiAVObject *>>*)&static_cast<class Unk_NodeQueue&>(*(Unk_NodeQueue*)&rWalker.m_p0))->IsEmpty())
         return 0;
     else
-        return *FUN_14107cbe0(*(Unk_NodeQueue*)&rWalker.m_p0);
+        return *GetCurrentNode(*(Unk_NodeQueue*)&rWalker.m_p0);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142caba10-0x142cabb20 .text$yd

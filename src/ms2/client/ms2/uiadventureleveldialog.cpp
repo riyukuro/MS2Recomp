@@ -129,7 +129,7 @@ public:
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 class Unk_ALIdentity { public: char m_pad_0[0x1d0]; CString m_1d0; };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 extern __int64 DAT_143ab2958;
 
 // The localized-string helpers.
@@ -164,7 +164,7 @@ void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);                 // V
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);      // Value = the object's value
 unsigned short FUN_140ba4b30(Unk_ALConstU16* p);
 float FUN_140ba4b50(Unk_ALConstU32* p);
-class Unk_ALCurrent* FUN_140ba4fa0();
+class Unk_ALCurrent* GetAdventureLevelTableHelper();
 
 // @0x1400c9750 @0x1400c9810 @0x1400c9840 @0x1400c9870
 // (the four initializers above are the statics of header_statics_a.h)
@@ -172,7 +172,7 @@ class Unk_ALCurrent* FUN_140ba4fa0();
 // @0x140ba2a80
 UIAdventureLevelDialog::UIAdventureLevelDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140ba2b20
@@ -211,10 +211,10 @@ void UIAdventureLevelDialog::OnLoadComplete()
     Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    FUN_140ba3330();
+    FillLevelGuide();
     FUN_140ba34b0();
-    FUN_140ba35a0();
-    FUN_140ba3a30();
+    FillAbilityList();
+    FillMissionList();
 }
 
 // @0x140ba2d70
@@ -226,7 +226,7 @@ int UIAdventureLevelDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             unsigned short nLevel = data.PopUInt();
-            FUN_140ba4960(nLevel);
+            ClaimLevelReward(nLevel);
         }
         return 1;
     }
@@ -234,7 +234,7 @@ int UIAdventureLevelDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         ASData data;
         if (data.SetArgsIfAny(pArgs, nArgs)) {
             unsigned int nMissionId = data.PopUInt();
-            FUN_140ba4a10(nMissionId);
+            ClaimMissionReward(nMissionId);
         }
         return 1;
     }
@@ -270,9 +270,9 @@ void UIAdventureLevelDialog::vfunc_oa0_30(int a1)
         return;
     if (m_30.IsNull())
         return;
-    FUN_140ba3330();
+    FillLevelGuide();
     FUN_140ba34b0();
-    FUN_140ba35a0();
+    FillAbilityList();
 }
 
 // @0x140ba3140
@@ -286,24 +286,24 @@ void UIAdventureLevelDialog::vfunc_oa0_31(void* a1)
 }
 
 // @0x140ba31c0
-void UIAdventureLevelDialog::FUN_140ba31c0()
+void UIAdventureLevelDialog::RefreshLevelGuide()
 {
     if (m_30.IsNull())
         return;
-    FUN_140ba3330();
+    FillLevelGuide();
 }
 
 // @0x140ba3200
-void UIAdventureLevelDialog::FUN_140ba3200()
+void UIAdventureLevelDialog::RefreshMissionList()
 {
     if (m_30.IsNull())
         return;
-    FUN_140ba3a30();
+    FillMissionList();
 }
 
 // The number of missions that are done but whose reward is not claimed yet.
 // @0x140ba3240
-int UIAdventureLevelDialog::FUN_140ba3240()
+int UIAdventureLevelDialog::GetClaimableMissionCount()
 {
     int nCount = 0;
     for (std::map<unsigned int, CAdventureLevelMissionData>::const_iterator it = DAT_143ab3318.begin(); it != DAT_143ab3318.end(); ++it) {
@@ -321,7 +321,7 @@ int UIAdventureLevelDialog::FUN_140ba3240()
 }
 
 // @0x140ba3330
-void UIAdventureLevelDialog::FUN_140ba3330()
+void UIAdventureLevelDialog::FillLevelGuide()
 {
     if (m_30.IsNull())
         return;
@@ -351,7 +351,7 @@ void UIAdventureLevelDialog::FUN_140ba34b0()
 }
 
 // @0x140ba35a0
-void UIAdventureLevelDialog::FUN_140ba35a0()
+void UIAdventureLevelDialog::FillAbilityList()
 {
     if (m_30.IsNull())
         return;
@@ -376,13 +376,13 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
         }
         bool bLock = pPlayer->vfunc_141() < pAbility->m_nRequireLevel;
         if (reinterpret_cast<AdditionalCliList*>(reinterpret_cast<PCBase*>(pPlayer)->FUN_1416749a0())->FUN_140970020(pAbility->m_nEffectId, nStep, 0, 1) == 0) {
-            if (pAbility->m_nEffectId != reinterpret_cast<CAdventureLevelTableHelper*>(FUN_140ba4fa0())->GetCurrent()->m_nEffectId)
+            if (pAbility->m_nEffectId != reinterpret_cast<CAdventureLevelTableHelper*>(GetAdventureLevelTableHelper())->GetCurrent()->m_nEffectId)
                 bLock = true;
         }
         ASObj obj(2);
         obj.SetMemberUInt("id", pAbility->m_nEffectId);
-        obj.FUN_1407cbbe0("isLock", bLock);
-        obj.FUN_1407cba60("imgPath", spAttr->GetIcon());
+        obj.SetBoolMember("isLock", bLock);
+        obj.SetStringMember("imgPath", spAttr->GetIcon());
         obj.SetMemberFloat("abilityStatus", pAbility->GetPercent(pPlayer->vfunc_141()));
         if (bLock)
             obj.SetMemberUInt("level", pAbility->m_nRequireLevel);
@@ -394,7 +394,7 @@ void UIAdventureLevelDialog::FUN_140ba35a0()
 }
 
 // @0x140ba3a30
-void UIAdventureLevelDialog::FUN_140ba3a30()
+void UIAdventureLevelDialog::FillMissionList()
 {
     if (m_30.IsNull())
         return;
@@ -414,9 +414,9 @@ void UIAdventureLevelDialog::FUN_140ba3a30()
         ASObj obj(2);
         obj.SetMemberUInt("id", it->first);
         FUN_140ba45c0(obj, it->first);
-        obj.FUN_1407cbb20("missionName", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_mission_NameKey"), reinterpret_cast<const unsigned int&>(pMission->m_nCount)));
-        obj.FUN_1407cbbe0("received", it->second.m_b1c);
-        obj.FUN_1407cbbe0("completed", (unsigned int)it->second.m_nId >= (unsigned int)pMission->m_nCount);
+        obj.SetWStringMember("missionName", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_mission_NameKey"), reinterpret_cast<const unsigned int&>(pMission->m_nCount)));
+        obj.SetBoolMember("received", it->second.m_b1c);
+        obj.SetBoolMember("completed", (unsigned int)it->second.m_nId >= (unsigned int)pMission->m_nCount);
         spList->AddItem(obj);
     }
     spList->vfunc_24(true);
@@ -436,10 +436,10 @@ int UIAdventureLevelDialog::FUN_140ba3d60(ASObj& obj, unsigned int nLevel)
     if (nLevel > pPlayer->vfunc_141())
         strState = "lock";
     obj.SetMemberUInt("id", nLevel);
-    obj.FUN_1407cba60("state", strState);
+    obj.SetStringMember("state", strState);
     unsigned int nOne = 1;
     obj.SetMemberUInt("level", (std::max)(nLevel, nOne));
-    obj.FUN_1407cbb20("levelStr", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_level"), nLevel));
+    obj.SetWStringMember("levelStr", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_level"), nLevel));
     return 1;
 }
 
@@ -462,7 +462,7 @@ int UIAdventureLevelDialog::FUN_140ba3f80(ASObj& obj, unsigned int nLevel)
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     CreateItemInfoSlot(strBindID, spItem, 0, nIconType, 0x800);
-    obj.FUN_1407cba60("binding", strBindID);
+    obj.SetStringMember("binding", strBindID);
     m_binds.Add(strBindID);
     return 1;
 }
@@ -483,7 +483,7 @@ int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
     if (pPlayer->vfunc_78() < FUN_140ba4b30(&((class Unk_ALConfig*)GetClientConstants())->m_stat))
         obj.FUN_1409c0dc0("state", "lock");
     ItemInfoSlot::CreateParam param;
-    param.m_strSlotText = ((class Unk_ALIdentity*)FUN_1401d31f0())->m_1d0;
+    param.m_strSlotText = ((class Unk_ALIdentity*)GetCommonResource())->m_1d0;
     param.m_strTip = FUN_14028dfa0<int>(CStringW(L"s_adventure_level_stat_reward"), pReward->m_nValue);
     param.m_nFlags = 1;
     param.m_nTipArg = 4;
@@ -491,7 +491,7 @@ int UIAdventureLevelDialog::FUN_140ba4250(ASObj& obj, unsigned int nLevel)
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     FUN_141415560(strBindID, &param);
-    obj.FUN_1407cba60("binding", strBindID);
+    obj.SetStringMember("binding", strBindID);
     m_binds.Add(strBindID);
     return 1;
 }
@@ -515,14 +515,14 @@ int UIAdventureLevelDialog::FUN_140ba45c0(ASObj& obj, unsigned int nMissionId)
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     CreateItemInfoSlot(strBindID, spItem, 0, nIconType, 0x800);
-    obj.FUN_1407cba60("binding", strBindID);
-    obj.FUN_1407cbb20("slotName", FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->FUN_1405276c0()), spItem->GetRarity()));
+    obj.SetStringMember("binding", strBindID);
+    obj.SetWStringMember("slotName", FUN_14183e9c0(TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, spItem->GetItemId()), spItem->GetRarity()));
     m_binds.Add(strBindID);
     return 1;
 }
 
 // @0x140ba4960
-void UIAdventureLevelDialog::FUN_140ba4960(unsigned int nLevel)
+void UIAdventureLevelDialog::ClaimLevelReward(unsigned int nLevel)
 {
     const CAdventureLevelReward* pReward = TSingleton<CAdventureLevelTable>::GetInstance()->GetReward(nLevel);
     if (FUN_1401958d0(const_cast<CAdventureLevelReward*>(pReward)))
@@ -538,7 +538,7 @@ void UIAdventureLevelDialog::FUN_140ba4960(unsigned int nLevel)
 }
 
 // @0x140ba4a10
-void UIAdventureLevelDialog::FUN_140ba4a10(unsigned int nMissionId)
+void UIAdventureLevelDialog::ClaimMissionReward(unsigned int nMissionId)
 {
     const CAdventureLevelMission* pMission = TSingleton<CAdventureLevelTable>::GetInstance()->GetMission(nMissionId);
     if (FUN_140195ae0(const_cast<CAdventureLevelMission*>(pMission)))
@@ -607,7 +607,7 @@ template <> inline bool MS2Ptr<ASTileList>::operator==(ASTileList* p) const
 // (the scalar deleting destructor of UIAdventureLevelDialog and its thunk at +0x178 are compiler generated)
 
 // @0x140ba4fa0
-Unk_ALCurrent* FUN_140ba4fa0()
+Unk_ALCurrent* GetAdventureLevelTableHelper()
 {
     return (Unk_ALCurrent*)reinterpret_cast<void*>(TSingleton<CAdventureLevelTableHelper>::s_instance);
 }
@@ -620,19 +620,19 @@ MS2_REPLACE_METHOD(0x140BA2D70, UIAdventureLevelDialog, vfunc_28, 356, 0x0AF980D
 MS2_REPLACE_METHOD(0x140BA2EE0, UIAdventureLevelDialog, vfunc_49, 432, 0xAA2C8A70);
 MS2_REPLACE_METHOD_VIA(0x140BA30A0, UIAdventureLevelDialog, UIStatusEventListener, vfunc_oa0_30, 151, 0xE776427B);
 MS2_REPLACE_METHOD_VIA(0x140BA3140, UIAdventureLevelDialog, UIStatusEventListener, vfunc_oa0_31, 114, 0x4817988E);
-MS2_REPLACE_METHOD(0x140BA31C0, UIAdventureLevelDialog, FUN_140ba31c0, 50, 0x5EF17F2E);
-MS2_REPLACE_METHOD(0x140BA3200, UIAdventureLevelDialog, FUN_140ba3200, 50, 0x303AA5F7);
-MS2_REPLACE_METHOD(0x140BA3240, UIAdventureLevelDialog, FUN_140ba3240, 221, 0x9FDDA703);
-MS2_REPLACE_METHOD(0x140BA3330, UIAdventureLevelDialog, FUN_140ba3330, 373, 0x4D04C112);
+MS2_REPLACE_METHOD(0x140BA31C0, UIAdventureLevelDialog, RefreshLevelGuide, 50, 0x5EF17F2E);
+MS2_REPLACE_METHOD(0x140BA3200, UIAdventureLevelDialog, RefreshMissionList, 50, 0x303AA5F7);
+MS2_REPLACE_METHOD(0x140BA3240, UIAdventureLevelDialog, GetClaimableMissionCount, 221, 0x9FDDA703);
+MS2_REPLACE_METHOD(0x140BA3330, UIAdventureLevelDialog, FillLevelGuide, 373, 0x4D04C112);
 MS2_REPLACE_METHOD(0x140BA34B0, UIAdventureLevelDialog, FUN_140ba34b0, 219, 0xC2D3C388);
-MS2_REPLACE_METHOD(0x140BA35A0, UIAdventureLevelDialog, FUN_140ba35a0, 1158, 0x69210AE4);
-MS2_REPLACE_METHOD(0x140BA3A30, UIAdventureLevelDialog, FUN_140ba3a30, 803, 0xDD70B4AB);
+MS2_REPLACE_METHOD(0x140BA35A0, UIAdventureLevelDialog, FillAbilityList, 1158, 0x69210AE4);
+MS2_REPLACE_METHOD(0x140BA3A30, UIAdventureLevelDialog, FillMissionList, 803, 0xDD70B4AB);
 MS2_REPLACE_METHOD(0x140BA3D60, UIAdventureLevelDialog, FUN_140ba3d60, 536, 0x9C7D0079);
 MS2_REPLACE_METHOD(0x140BA3F80, UIAdventureLevelDialog, FUN_140ba3f80, 704, 0xA601EF8C);
 MS2_REPLACE_METHOD(0x140BA4250, UIAdventureLevelDialog, FUN_140ba4250, 873, 0xD72347B1);
 MS2_REPLACE_METHOD(0x140BA45C0, UIAdventureLevelDialog, FUN_140ba45c0, 909, 0x796168A3);
-MS2_REPLACE_METHOD(0x140BA4960, UIAdventureLevelDialog, FUN_140ba4960, 167, 0x63E6C143);
-MS2_REPLACE_METHOD(0x140BA4A10, UIAdventureLevelDialog, FUN_140ba4a10, 283, 0x7655C1F1);
+MS2_REPLACE_METHOD(0x140BA4960, UIAdventureLevelDialog, ClaimLevelReward, 167, 0x63E6C143);
+MS2_REPLACE_METHOD(0x140BA4A10, UIAdventureLevelDialog, ClaimMissionReward, 283, 0x7655C1F1);
 
 MS2_EMIT_CRT_MEMMOVE_S();
 // Atexit thunks of this unit's statics (gap1 yd sweep).

@@ -94,7 +94,7 @@ bool FUN_1407cdfc0(PreminmMarketSaleEventContext* pContext, int nId, int nCurren
 }
 
 // @0x1407ce100
-int FUN_1407ce100(PreminmMarketSaleEventContext* pContext, int nPrice)
+int GetDiscountedPrice(PreminmMarketSaleEventContext* pContext, int nPrice)
 {
     const int nRateBase = 10000;
     float fPrice = __imp_ceilf((float)(nPrice * (nRateBase - pContext->m_18)) / 10000.0f);
@@ -114,7 +114,7 @@ CShopEventManager::~CShopEventManager()
 }
 
 // @0x1407ce240
-bool CShopEventManager::FUN_1407ce240()
+bool CShopEventManager::RemoveAllEvents()
 {
     Unk_CriticalSectionLock lock(&m_lock, 1);
     m_events.RemoveAll();
@@ -122,14 +122,14 @@ bool CShopEventManager::FUN_1407ce240()
 }
 
 // @0x1407ce2a0
-void CShopEventManager::FUN_1407ce2a0(int eventId, MS2Ptr<PreminmMarketSaleEventContext> spContext)
+void CShopEventManager::AddEvent(int eventId, MS2Ptr<PreminmMarketSaleEventContext> spContext)
 {
     Unk_CriticalSectionLock lock(&m_lock, 1);
     m_events.SetAt(eventId, spContext);
 }
 
 // @0x1407ce320
-void CShopEventManager::FUN_1407ce320(int eventId)
+void CShopEventManager::RemoveEvent(int eventId)
 {
     Unk_CriticalSectionLock lock(&m_lock, 1);
     m_events.RemoveKey(eventId);
@@ -138,7 +138,7 @@ void CShopEventManager::FUN_1407ce320(int eventId)
 struct Unk_MmSaleCtx : PreminmMarketSaleEventContext {};   // the pointee type of meratmarketbasketinfo.cpp's sale context arrays
 template <> void MS2Ptr<Unk_MmSaleCtx>::AddRef() const;   // 0x1406ae220 (meratmarketbasketinfo.cpp)
 template <> MS2Ptr<Unk_MmSaleCtx>::~MS2Ptr();              // 0x1406a8810 (meratmarketbasketinfo.cpp)
-// The converting copy FUN_1407ce380 adds each event through: the array's element built from the map's pointer via its getter.
+// The converting copy GetEventsByCurrency adds each event through: the array's element built from the map's pointer via its getter.
 // @0x1407ce9a0
 template <> template <> MS2Ptr<Unk_MmSaleCtx>::MS2Ptr(const MS2Ptr<PreminmMarketSaleEventContext>& spSrc)
 {
@@ -149,7 +149,7 @@ template <> template <> MS2Ptr<Unk_MmSaleCtx>::MS2Ptr(const MS2Ptr<PreminmMarket
 // @0x1407ce380
 // In the exe the array holds MS2Ptr<Unk_MmSaleCtx>, so Add (0x1407cecd0) gets an implicit converting temporary (0x1407ce9a0,
 // dtor 0x1406a8810). An explicit MS2Ptr<Unk_MmSaleCtx>(spContext) argument adds a dead rax chain.
-void CShopEventManager::FUN_1407ce380(ATL::CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> >& arr, const int& nCurrency)
+void CShopEventManager::GetEventsByCurrency(ATL::CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> >& arr, const int& nCurrency)
 {
     Unk_CriticalSectionLock lock(&m_lock, 1);
     for (POSITION pos = m_events.GetStartPosition(); pos != NULL; m_events.GetNext(pos))
@@ -163,7 +163,7 @@ void CShopEventManager::FUN_1407ce380(ATL::CAtlArray<MS2Ptr<PreminmMarketSaleEve
 }
 
 // @0x1407ce4b0
-MS2Ptr<PreminmMarketSaleEventContext> CShopEventManager::FUN_1407ce4b0(const int& nEventId)
+MS2Ptr<PreminmMarketSaleEventContext> CShopEventManager::GetEvent(const int& nEventId)
 {
     Unk_CriticalSectionLock lock(&m_lock, 1);
     MS2Ptr<PreminmMarketSaleEventContext> spContext(0);
@@ -207,7 +207,7 @@ bool CShopEventManager::FUN_1407ce7c0()
     Unk_CriticalSectionLock lock(&m_lock, 1);
     ATL::CAtlArray<MS2Ptr<PreminmMarketSaleEventContext> > arr;
     int nCurrency = 0x186a2;
-    TSingleton<CShopEventManager>::GetInstance()->FUN_1407ce380(arr, nCurrency);
+    TSingleton<CShopEventManager>::GetInstance()->GetEventsByCurrency(arr, nCurrency);
     return !arr.IsEmpty();
 }
 
@@ -279,7 +279,7 @@ void CShutdownEventInteractObject::FUN_1407d04c0(unsigned nFieldId, int nObjectI
 }
 
 // @0x1407d05e0
-bool CShutdownEventInteractObject::FUN_1407d05e0(unsigned nFieldId, int nObjectId)
+bool CShutdownEventInteractObject::IsShutdown(unsigned nFieldId, int nObjectId)
 {
     if (m_objects.empty())
         return false;
@@ -326,7 +326,7 @@ void CShutdownEventQuest::FUN_1407d08f0(Unk_ShutdownQuestKey eKey)
 }
 
 // @0x1407d0950
-int CShutdownEventQuest::FUN_1407d0950(int nQuestId)
+int CShutdownEventQuest::IsQuestShutdown(int nQuestId)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     int nCount = 0;
@@ -391,7 +391,7 @@ void CShutdownEventFunctionItem::FUN_1407d0cb0(unsigned long nItemId)
 }
 
 // @0x1407d0dc0
-bool CShutdownEventFunctionItem::FUN_1407d0dc0(unsigned long nItemId)
+bool CShutdownEventFunctionItem::IsShutdown(unsigned long nItemId)
 {
     if (m_items.empty())
         return false;

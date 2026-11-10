@@ -59,7 +59,7 @@ public:
     void FUN_141adc530(int nUiId);                              // close
 };
 
-class UIRealEstateDialog { public: void FUN_141ab4000(int, int); };
+class UIRealEstateDialog { public: void SetGroupAndMapId(int, int); };
 template <class T> T* Unk_GetUI(int nUiId);   // C3: was FUN_140961690 (<UIRealEstateDialog>, actionkeyobject.cpp)
 
 class UIUGCEventDispatcher;
@@ -82,7 +82,7 @@ void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 UIApartmentDialog::UIApartmentDialog()
     : m_nStyle(0), m_nA(0), m_nMapId(0), m_nGroup(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x1418b5930
@@ -125,14 +125,14 @@ void UIApartmentDialog::OnLoadComplete()
     ((class ASButton*)(m_contract))->FUN_1422ce240(AptClickDelegate(this, &UIApartmentDialog::FUN_1418b6d60), 0);
     vfunc_47(0);
     FUN_1418b6580();
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->AddListener(static_cast<UIUGCEventListener*>(this));
 }
 
 // @0x1418b62f0
 void UIApartmentDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(static_cast<UIUGCEventListener*>(this));
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->RemoveListener(static_cast<UIUGCEventListener*>(this));
     m_broker = 0;
     m_contract = 0;
     m_door0 = 0;
@@ -178,7 +178,7 @@ int UIApartmentDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
 void UIApartmentDialog::vfunc_ugc_5()
 {
     FUN_1418b6580();
-    FUN_1418b68c0();
+    ShowContractEffect();
 }
 
 // @0x1418b6550
@@ -195,7 +195,7 @@ void UIApartmentDialog::FUN_1418b6580()
     Unk_AptPlayer* pPlayer = ((Unk_AptPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    SetChildText(FUN_1422dbc00(), CString("m_title"), FUN_1418b6de0());
+    SetChildText(FUN_1422dbc00(), CString("m_title"), GetApartmentName());
     FUN_140cff840(FUN_1422dbc00(), CString("m_contractButton"), m_nRoom == 0);
     FUN_140cff840(FUN_1422dbc00(), CString("m_contractEffect"), 0);
     FUN_140cff840(FUN_1422dbc00(), CString("m_emblem_normal"), m_group.FUN_1408ad2f0() == 0);
@@ -212,7 +212,7 @@ void UIApartmentDialog::FUN_1418b6840(int nA, int nMapId, int nGroup)
 }
 
 // @0x1418b68c0
-void UIApartmentDialog::FUN_1418b68c0()
+void UIApartmentDialog::ShowContractEffect()
 {
     if (FUN_1422dc2d0() == 0)
         return;
@@ -240,13 +240,13 @@ bool UIApartmentDialog::FUN_1418b6ab0(int nMode)
     UIMessageBox* pBox = GetMessageBoxLayer();
     if (pBox == 0 || pBox->FUN_1419f8270() != 0)
         return false;
-    MS2Ptr<CMsgBoxData> spBox = pBox->FUN_1419f8470();
+    MS2Ptr<CMsgBoxData> spBox = pBox->GetCurrentBox();
     if (spBox == 0 || FUN_140e45240(spBox->GetExtra(), "roomNumber"))
         return false;
     switch (nMode)
     {
     case 1:
-        pBox->FUN_1419f82b0(GetStringCommon(0x9cc));
+        pBox->UpdateErrorMessage(GetStringCommon(0x9cc));
         return true;
     }
     return false;
@@ -285,16 +285,16 @@ void UIApartmentDialog::FUN_1418b6d40(const Scaleform::GFx::FunctionHandler::Par
 // @0x1418b6d60
 void UIApartmentDialog::FUN_1418b6d60(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e76))))
+    if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4e76))))
         return;
     UIRealEstateDialog* pDialog = Unk_GetUI<UIRealEstateDialog>(0x4e76);
     if (pDialog != 0)
-        pDialog->FUN_141ab4000(m_nGroup, (int)(WorldService::GetInstance()->FUN_141bd3060()));
+        pDialog->SetGroupAndMapId(m_nGroup, (int)(WorldService::GetInstance()->FUN_141bd3060()));
     (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e76)));
 }
 
 // @0x1418b6de0
-CStringW UIApartmentDialog::FUN_1418b6de0()
+CStringW UIApartmentDialog::GetApartmentName()
 {
     unsigned nMapId = WorldService::GetInstance()->FUN_141bd3060();
     Unk_UGCGroup group;

@@ -74,7 +74,7 @@ void CSetItemManager::AddItemCount(int nItemId, __int64 nUid, eSetItemLayer::T n
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (size_t i = 0; i < sets.size(); i++)
     {
-        LayerKey key(sets[i]->FUN_1407ad550(), nLayer);
+        LayerKey key(sets[i]->GetId(), nLayer);
         int nOne = 1;
         std::map<LayerKey, int>::iterator itCount = m_counts->find(key);
         if (itCount != m_counts->end())
@@ -111,7 +111,7 @@ void CSetItemManager::RemoveItem(int nItemId, __int64 nUid, eSetItemLayer::T nLa
     for (size_t i = 0; i < sets.size(); i++)
     {
         int nCount = 0;
-        LayerKey key(sets[i]->FUN_1407ad550(), nLayer);
+        LayerKey key(sets[i]->GetId(), nLayer);
         std::map<LayerKey, int>::iterator itCount = m_counts->find(key);
         if (itCount != m_counts->end())
         {
@@ -146,7 +146,7 @@ void CSetItemManager::AddItem(int nItemId, __int64 nUid, eSetItemLayer::T nLayer
     for (size_t i = 0; i < sets.size(); i++)
     {
         TPtrValue<UidList> spUids(0);
-        LayerKey key(sets[i]->FUN_1407ad550(), nLayer);
+        LayerKey key(sets[i]->GetId(), nLayer);
         std::map<LayerKey, TPtrValue<UidList> >::iterator itUids = m_uids->find(key);
         if (itUids == m_uids->end())
         {
@@ -196,7 +196,7 @@ void CSetItemManager::RemoveItemByUid(int nItemId, __int64 nUid, eSetItemLayer::
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (size_t i = 0; i < sets.size(); i++)
     {
-        int nSetId = sets[i]->FUN_1407ad550();
+        int nSetId = sets[i]->GetId();
         TPtrValue<UidList> spUids(0);
         LayerKey key(nSetId, nLayer);
         std::map<LayerKey, TPtrValue<UidList> >::iterator itUids = m_uids->find(key);
@@ -276,8 +276,8 @@ void CSetItemManager::Refresh()
                         m_specials[(const SAType&)entry.first] += entry.second->GetValue();
                 });
             }
-            ATL::CAtlArray<int>& effectIds = spPart->FUN_1407bc9d0();
-            ATL::CAtlArray<unsigned short>& effectLevels = spPart->FUN_1407bc9f0();
+            ATL::CAtlArray<int>& effectIds = spPart->GetEffectIds();
+            ATL::CAtlArray<unsigned short>& effectLevels = spPart->GetEffectLevels();
             if (!effectIds.IsEmpty() && bActive)
             {
                 for (unsigned k = 0; k < effectIds.GetCount(); k++)

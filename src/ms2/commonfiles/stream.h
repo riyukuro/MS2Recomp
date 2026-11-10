@@ -114,7 +114,7 @@ class CByteBuffer : public CIOBuffer, public CInputStream, public COutputStream 
     void FUN_140518490();
     unsigned GetLength() const;
     unsigned char* FUN_140204eb0();
-    const unsigned char* FUN_14067c4c0() const;
+    const unsigned char* GetData() const;
     CByteBuffer& FUN_140714de0();
     void AppendRemainingTo(CByteBuffer&);
     unsigned char& operator[](size_t index) { STREAM_ASSERT(669,index < m_uLength);return m_aByteBuff[index]; }

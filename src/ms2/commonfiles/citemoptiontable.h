@@ -50,8 +50,8 @@ public:
                        const CItemRemakeOptionIngredient& kIngredient);    // the remake cost of an item
     void CalcPetRemakeCost(int nLevel, int nRank, const CItemRemakeOptionIngredient& kIngredient);
     int GetRandomRank(int nItemId, int nGroup, unsigned short nLevel, int nSeed, bool bSecond) const;   // a random rank
-    MS2Ptr<CItemOption> FUN_1405f4ff0(MS2Ptr<CItemData> spItem, int nRank, Unk_Random* pRandom);
-    MS2Ptr<CItemOption> FUN_1405f5290(MS2Ptr<Unk_ItemOptionPreset> spPreset, Unk_Random* pRandom);
+    MS2Ptr<CItemOption> CreateOption(MS2Ptr<CItemData> spItem, int nRank, Unk_Random* pRandom);
+    MS2Ptr<CItemOption> CreatePresetOption(MS2Ptr<Unk_ItemOptionPreset> spPreset, Unk_Random* pRandom);
     bool RerollRandomOptions(MS2Ptr<CItemOption> spOption, int nItemId, int nRank);
     bool ApplyConstantOptions(MS2Ptr<CItemOption> spOption, int nItemId, int nRank);
     bool FUN_1405f59b0(MS2Ptr<Unk_1405e74c0> spTarget, Unk_Random* pRandom);

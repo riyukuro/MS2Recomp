@@ -36,13 +36,13 @@ class Unk_BlWorld { };
 bool FUN_1418fe060();
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& str);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 // @0x140f004b0
 UIBeautyListDialog::UIBeautyListDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140f00510
@@ -90,7 +90,7 @@ bool UIBeautyListDialog::SendBeautyMode10(int nResult, const CMsgBoxData& box)
 }
 
 // @0x140f006b0
-int UIBeautyListDialog::FUN_140f006b0(int nMapId)
+int UIBeautyListDialog::IsSalonMap(int nMapId)
 {
     if (nMapId == *reinterpret_cast<int*>(reinterpret_cast<Common::Constants::Value<unsigned int>*>(&reinterpret_cast<Unk_BlGlobals*>(GetClientConstants())->m_61f8)->Get()))
         return 1;
@@ -119,11 +119,11 @@ int UIBeautyListDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
         void* pPlayer = ((void*)((WorldService*)(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPlayer == 0)
             return 0;
-        int bSalon = FUN_140f006b0(((class WorldService*)(class Unk_BlWorld*)(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())))->FUN_141bd3060());
+        int bSalon = IsSalonMap(((class WorldService*)(class Unk_BlWorld*)(reinterpret_cast<Unk_BlWorld*>(WorldService::GetInstance())))->FUN_141bd3060());
         int bFlag = FUN_1418fe060();
         if (bFlag == 0 && bSalon == 0)
         {
-            if (MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, GetStringCommonByKey(L"s_beauty_goto_map_return_warn"), 0, L""))
+            if (MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, GetStringCommonByKey(L"s_beauty_goto_map_return_warn"), 0, L""))
             {
                 box->Append<int>(nType);
                 box->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIBeautyListDialog::SendBeautyMode10));
@@ -149,7 +149,7 @@ MS2_REPLACE_METHOD(0x140F005A0, UIBeautyListDialog, vfunc_65, 37, 0x08DECE9B);
 MS2_REPLACE_METHOD(0x140F005D0, UIBeautyListDialog, vfunc_67, 24, 0xCDB64A16);
 MS2_REPLACE_METHOD(0x140F005F0, UIBeautyListDialog, OnLoadComplete, 24, 0xF14792AA);
 MS2_REPLACE_METHOD(0x140F00610, UIBeautyListDialog, SendBeautyMode10, 144, 0x8984A75E);
-MS2_REPLACE_METHOD(0x140F006B0, UIBeautyListDialog, FUN_140f006b0, 122, 0x2A121F15);
+MS2_REPLACE_METHOD(0x140F006B0, UIBeautyListDialog, IsSalonMap, 122, 0x2A121F15);
 MS2_REPLACE_METHOD(0x140F00730, UIBeautyListDialog, vfunc_28, 986, 0xE0F5361C);
 
 // Shared header statics and class metadata of this TU (.text$di + atexit thunks; gap2 orphan di sweep).

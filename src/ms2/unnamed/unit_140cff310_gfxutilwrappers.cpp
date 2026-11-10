@@ -94,12 +94,12 @@ class Unk_CadNode : public ASDisplayObjectContainer { public:
 class Unk_Finder : public ASDisplayObjectContainer
 {
 public:
-    MS2Ptr<ASButton> FUN_140d01c90(const CString& strName);                    // child button
-    MS2Ptr<ASCheckBox> FUN_140d01ce0(const CString& strName);                      // child check box
-    MS2Ptr<ASDisplayObject> FUN_140d01d30(const CString& strName);                  // child display object
-    MS2Ptr<ASDisplayObjectContainer> FUN_140d01d80(const CString& strName);         // child container
-    MS2Ptr<ASLabel> FUN_140d01dd0(const CString& strName);                      // child title
-    MS2Ptr<ASTextField> FUN_140d01e20(const CString& strName);                      // child text field
+    MS2Ptr<ASButton> FindButton(const CString& strName);                    // child button
+    MS2Ptr<ASCheckBox> FindCheckBox(const CString& strName);                      // child check box
+    MS2Ptr<ASDisplayObject> FindDisplayObject(const CString& strName);                  // child display object
+    MS2Ptr<ASDisplayObjectContainer> FindDisplayObjectContainer(const CString& strName);         // child container
+    MS2Ptr<ASLabel> FindLabel(const CString& strName);                      // child title
+    MS2Ptr<ASTextField> FindTextField(const CString& strName);                      // child text field
 
     MS2Ptr<ASButton> FUN_140d01e70(const Scaleform::GFx::Value& root, const CString& strName);
     MS2Ptr<ASCheckBox> FUN_140d02140(const Scaleform::GFx::Value& root, const CString& strName);
@@ -123,10 +123,10 @@ MS2_CHECK_SIZE(ASDisplayObjectContainer, 0x80);
 
 // ---- out-of-unit callees ----
 
-MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASDisplayObjectContainer> CreateDisplayObjectContainer(int nMovieId, const Scaleform::GFx::Value& v);
 template <class T> MS2Ptr<T> Unk_ASCreate(int nMovieId, const Scaleform::GFx::Value& v);   // C3: was FUN_140acc910 (T = ASButton)
 MS2Ptr<ASCheckBox> CreateCheckBox(int nMovieId, const Scaleform::GFx::Value& v);
-MS2Ptr<ASLabel> FUN_140c43580(int nMovieId, const Scaleform::GFx::Value& v);
+MS2Ptr<ASLabel> CreateASLabel(int nMovieId, const Scaleform::GFx::Value& v);
 MS2Ptr<ASTextField> FUN_1409b41a0(int nMovieId, const Scaleform::GFx::Value& v);
 
 void FUN_1422c6380(Scaleform::GFx::Value& v, int n);
@@ -143,9 +143,9 @@ public:
 class Unk_BannerClip   // C3: unit-local view (defs in uibanner); the entity clip's create / update calls
 {
 public:
-    Scaleform::GFx::Value FUN_140ba9570(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
+    Scaleform::GFx::Value UpdateEntity(const char* szMethod, Scaleform::GFx::Value a1, bool a2); // "updateEntity"
 };
-UIWebBrowser* FUN_140c43790(int nUiId);
+UIWebBrowser* FindWebBrowser(int nUiId);
 
 // ---- .text$mn: the movie-child setters ----
 
@@ -155,33 +155,33 @@ void FUN_140cff310(const Scaleform::GFx::Value& root, CString strClip, CString s
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASDisplayObjectContainer> spClip = static_cast<Unk_Finder&>(node).FUN_140d01d80(strClip);
+    MS2Ptr<ASDisplayObjectContainer> spClip = static_cast<Unk_Finder&>(node).FindDisplayObjectContainer(strClip);
     if (spClip == 0)
         return;
-    MS2Ptr<ASDisplayObject> spText = ((Unk_Finder*)spClip.operator->())->FUN_140d01d30(strName);
+    MS2Ptr<ASDisplayObject> spText = ((Unk_Finder*)spClip.operator->())->FindDisplayObject(strName);
     if (spText.get() != 0)
-        static_cast<ASObj*>(static_cast<AScript*>(spText.operator->()))->FUN_1407cbb20("htmlText", strText);
+        static_cast<ASObj*>(static_cast<AScript*>(spText.operator->()))->SetWStringMember("htmlText", strText);
 }
 
 // @0x140cff4e0
-void FUN_140cff4e0(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
+void SetButtonText(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASButton> spChild = static_cast<Unk_Finder&>(node).FUN_140d01c90(strName);
+    MS2Ptr<ASButton> spChild = static_cast<Unk_Finder&>(node).FindButton(strName);
     if (spChild == 0)
         return;
     static_cast<ASButton*>(spChild.operator->())->FUN_1422cdfb0(strText);
 }
 
 // @0x140cff610
-void FUN_140cff610(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
+void SetLabelText(const Scaleform::GFx::Value& root, CString strName, CStringW strText)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASLabel> spChild = static_cast<Unk_Finder&>(node).FUN_140d01dd0(strName);
+    MS2Ptr<ASLabel> spChild = static_cast<Unk_Finder&>(node).FindLabel(strName);
     if (spChild == 0)
         return;
     reinterpret_cast<ASLabel*>(spChild.operator->())->FUN_1422e4a50(strText);
@@ -193,7 +193,7 @@ void FUN_140cff740(const Scaleform::GFx::Value& root, CString strName, unsigned 
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASTextField> spChild = static_cast<Unk_Finder&>(node).FUN_140d01e20(strName);
+    MS2Ptr<ASTextField> spChild = static_cast<Unk_Finder&>(node).FindTextField(strName);
     if (spChild == 0)
         return;
     ((class ASTextField*)(class ASTextField*)(spChild.operator->()))->SetTextColor(n);
@@ -220,7 +220,7 @@ void FUN_140cff950(const Scaleform::GFx::Value& root, CString strName, unsigned 
     MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
-    spClip.operator->()->FUN_1422c1fe0(n);
+    spClip.operator->()->SetEnabled(n);
 }
 
 // @0x140cffa50
@@ -296,10 +296,10 @@ void FUN_140d00050(const Scaleform::GFx::Value* pRoot, CString strLabel)
     clip.vfunc_13(strLabel);
     if (!clip.HasMember("numChildren") || !clip.HasMember("getChildAt"))
         return;
-    int nCount = clip.FUN_1422c6670();
+    int nCount = clip.GetNumChildren();
     for (int i = 0; i < nCount; i++)
     {
-        Scaleform::GFx::Value child = clip.FUN_1422c6aa0(i);
+        Scaleform::GFx::Value child = clip.GetChildAt(i);
         if (!((Scaleform::GFx::Value*)(void*)(&child))->IsDisplayObject())
             continue;
         FUN_140d00050(&child, CString(strLabel));
@@ -346,7 +346,7 @@ void FUN_140d00640(const Scaleform::GFx::Value& root, CString strName, int nId)
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, nId);
-    MS2Ptr<ASDisplayObject> spChild = static_cast<Unk_Finder&>(node).FUN_140d01d30(strName);
+    MS2Ptr<ASDisplayObject> spChild = static_cast<Unk_Finder&>(node).FindDisplayObject(strName);
     if (spChild == 0)
         return;
     FUN_1422c6380(spChild.operator->()->FUN_1422bb890(), nId);
@@ -358,7 +358,7 @@ void FUN_140d00750(const Scaleform::GFx::Value& root, CString strName, int nId)
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, nId);
-    MS2Ptr<ASDisplayObject> spChild = static_cast<Unk_Finder&>(node).FUN_140d01d30(strName);
+    MS2Ptr<ASDisplayObject> spChild = static_cast<Unk_Finder&>(node).FindDisplayObject(strName);
     if (spChild == 0)
         return;
     FUN_1422c63f0(spChild.operator->()->FUN_1422bb890(), nId);
@@ -370,10 +370,10 @@ void FUN_140d00860(const Scaleform::GFx::Value& root, CString strName, int n)
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASCheckBox> spChild = static_cast<Unk_Finder&>(node).FUN_140d01ce0(strName);
+    MS2Ptr<ASCheckBox> spChild = static_cast<Unk_Finder&>(node).FindCheckBox(strName);
     if (spChild == 0)
         return;
-    spChild->FUN_1422ce090(n);
+    spChild->SetSelected(n);
 }
 
 // @0x140d00960
@@ -382,10 +382,10 @@ void FUN_140d00960(const Scaleform::GFx::Value& root, CString strName, unsigned 
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASCheckBox> spChild = static_cast<Unk_Finder&>(node).FUN_140d01ce0(strName);
+    MS2Ptr<ASCheckBox> spChild = static_cast<Unk_Finder&>(node).FindCheckBox(strName);
     if (spChild == 0)
         return;
-    *pOut = spChild->FUN_1422ce0e0();
+    *pOut = spChild->IsSelected();
 }
 
 // @0x140d00a70
@@ -395,9 +395,9 @@ void FUN_140d00a70(const Scaleform::GFx::Value& target, const Scaleform::GFx::Va
         return;
     ASDisplayObject a(target, 2);
     ASDisplayObject b(anchor, 2);
-    float fLeft = b.FUN_1422c10a0();
-    float fX = fLeft + (float)b.FUN_1422c1340() + (float)nGap;
-    float fY = b.FUN_1422c1110();
+    float fLeft = b.GetX();
+    float fX = fLeft + (float)b.GetWidthCeil() + (float)nGap;
+    float fY = b.GetY();
     a.SetPositionFloat(fX, fY);
 }
 
@@ -426,7 +426,7 @@ void FUN_140d00c80(const Scaleform::GFx::Value& root, CString strName, int n)
 }
 
 // @0x140d00d80
-int FUN_140d00d80(const Scaleform::GFx::Value& root, CString strName)
+int GetChildWidth(const Scaleform::GFx::Value& root, CString strName)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return 0;
@@ -434,16 +434,16 @@ int FUN_140d00d80(const Scaleform::GFx::Value& root, CString strName)
     MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return 0;
-    return spClip.operator->()->FUN_1422c1340();
+    return spClip.operator->()->GetWidthCeil();
 }
 
 // @0x140d00e90
-int FUN_140d00e90(const Scaleform::GFx::Value& root, CString strName)
+int GetChildTextWidth(const Scaleform::GFx::Value& root, CString strName)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return 0;
     ASDisplayObjectContainer node(root, 2);
-    MS2Ptr<ASTextField> spChild = static_cast<Unk_Finder&>(node).FUN_140d01e20(strName);
+    MS2Ptr<ASTextField> spChild = static_cast<Unk_Finder&>(node).FindTextField(strName);
     if (spChild == 0)
         return 0;
     return (unsigned int)(__int64)((class ASTextField*)(class ASTextField*)(spChild.operator->()))->GetTextWidth();
@@ -455,7 +455,7 @@ void FUN_140d00fb0(Vector3 kWorld, efd::Point2* pScreen)
     NiPoint3 kPos;
     if (CameraMgr::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(kWorld), kPos))
     {
-        kPos *= FUN_14025e7a0()->FUN_1422afec0(2);
+        kPos *= GetGFxManager()->GetMovieScale(2);
         *pScreen = efd::Point2(kPos.x, kPos.y);
     }
 }
@@ -533,7 +533,7 @@ void FUN_140d01340(const Scaleform::GFx::Value& target, unsigned nParam, int nMo
 }
 
 // @0x140d013b0
-void FUN_140d013b0(const Scaleform::GFx::Value& target, int nMovieId)
+void SetTextAutoSize(const Scaleform::GFx::Value& target, int nMovieId)
 {
     Unk_TextFieldExPtr sp = FUN_140d01530(nMovieId);
     if (sp.get() != 0)
@@ -541,7 +541,7 @@ void FUN_140d013b0(const Scaleform::GFx::Value& target, int nMovieId)
 }
 
 // @0x140d01420
-void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int nMovieId)
+void SetChildTextAutoSize(const Scaleform::GFx::Value& root, CString strName, int nMovieId)
 {
     if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(root))->IsObject())
         return;
@@ -549,15 +549,15 @@ void FUN_140d01420(const Scaleform::GFx::Value& root, CString strName, int nMovi
     MS2Ptr<Unk_CadCheck> spClip = static_cast<Unk_CadNode&>(node).FUN_140bc7400<Unk_CadCheck>(strName);
     if (spClip == 0)
         return;
-    FUN_140d013b0((*spClip).FUN_1422bb890(), nMovieId);
+    SetTextAutoSize((*spClip).FUN_1422bb890(), nMovieId);
 }
 
 // @0x140d01530
 Unk_TextFieldExPtr FUN_140d01530(int nMovieId)
 {
-    GFxMovie* pMovie = FUN_14025e7a0()->FindMovie(nMovieId);
+    GFxMovie* pMovie = GetGFxManager()->FindMovie(nMovieId);
     if (pMovie != 0)
-        return Unk_TextFieldExPtr(reinterpret_cast<Unk_TextFieldEx*>(new ASTextFieldEx(((GFxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.TextFieldEx")), nMovieId)));
+        return Unk_TextFieldExPtr(reinterpret_cast<Unk_TextFieldEx*>(new ASTextFieldEx(((GFxMovie*)pMovie)->GetDefinitionByName(CString("scaleform.gfx.TextFieldEx")), nMovieId)));
     return Unk_TextFieldExPtr(0);
 }
 
@@ -578,20 +578,20 @@ void FUN_140d01670(const Scaleform::GFx::Value& root, CString strName, bool bDis
 // @0x140d01780
 void FUN_140d01780(const Scaleform::GFx::Value& target, bool bDisable)
 {
-    GFxMovie* pMovie = FUN_14025e7a0()->FindMovie(2);
+    GFxMovie* pMovie = GetGFxManager()->FindMovie(2);
     if (pMovie != 0)
     {
-        MS2Ptr<AScript> sp(new AScript(((GFxMovie*)pMovie)->FUN_1422bd120(CString("scaleform.gfx.InteractiveObjectEx")), 2));
+        MS2Ptr<AScript> sp(new AScript(((GFxMovie*)pMovie)->GetDefinitionByName(CString("scaleform.gfx.InteractiveObjectEx")), 2));
         if (sp->IsUndefinedOrNull())
             return;
-        ((Unk_BannerClip*)sp.operator->())->FUN_140ba9570("setHitTestDisable", Scaleform::GFx::Value(target), bDisable);
+        ((Unk_BannerClip*)sp.operator->())->UpdateEntity("setHitTestDisable", Scaleform::GFx::Value(target), bDisable);
     }
 }
 
 // @0x140d01960
 void FUN_140d01960(CString strKey)
 {
-    UIWebBrowser* pBrowser = FUN_140c43790(0x4e6a);
+    UIWebBrowser* pBrowser = FindWebBrowser(0x4e6a);
     if (pBrowser != 0)
         pBrowser->FUN_141b50490(strKey);
 }
@@ -617,44 +617,44 @@ MS2Ptr<ASDisplayObject> FUN_140d01be0(int nMovieId, const Scaleform::GFx::Value&
 }
 
 // @0x140d01c90
-MS2Ptr<ASButton> Unk_Finder::FUN_140d01c90(const CString& strName)
+MS2Ptr<ASButton> Unk_Finder::FindButton(const CString& strName)
 {
     return FUN_140d01e70(m_value, strName);
 }
 
 // @0x140d01ce0
-MS2Ptr<ASCheckBox> Unk_Finder::FUN_140d01ce0(const CString& strName)
+MS2Ptr<ASCheckBox> Unk_Finder::FindCheckBox(const CString& strName)
 {
     return FUN_140d02140(m_value, strName);
 }
 
 // @0x140d01d30
-MS2Ptr<ASDisplayObject> Unk_Finder::FUN_140d01d30(const CString& strName)
+MS2Ptr<ASDisplayObject> Unk_Finder::FindDisplayObject(const CString& strName)
 {
     return FUN_140d02410(m_value, strName);
 }
 
 // @0x140d01d80
-MS2Ptr<ASDisplayObjectContainer> Unk_Finder::FUN_140d01d80(const CString& strName)
+MS2Ptr<ASDisplayObjectContainer> Unk_Finder::FindDisplayObjectContainer(const CString& strName)
 {
     return FUN_140d026e0(m_value, strName);
 }
 
 // @0x140d01dd0
-MS2Ptr<ASLabel> Unk_Finder::FUN_140d01dd0(const CString& strName)
+MS2Ptr<ASLabel> Unk_Finder::FindLabel(const CString& strName)
 {
     return FUN_140d029b0(m_value, strName);
 }
 
 // @0x140d01e20
-MS2Ptr<ASTextField> Unk_Finder::FUN_140d01e20(const CString& strName)
+MS2Ptr<ASTextField> Unk_Finder::FindTextField(const CString& strName)
 {
     return FUN_140d02c80(m_value, strName);
 }
-// uicashshopdialog's Unk_CashChildFinder::FUN_140d01e20<ASUIComponent> (call at 0x14103a812) is this same body: the exe
+// uicashshopdialog's Unk_CashChildFinder::FindTextField<ASUIComponent> (call at 0x14103a812) is this same body: the exe
 // folds the getChildByName<T> instantiations into one copy, so its declared name is bound here.
 #ifndef MS2_HOOK_DLL
-#pragma comment(linker, "/alternatename:??$FUN_140d01e20@VASUIComponent@@@Unk_CashChildFinder@@QEAA?AV?$MS2Ptr@VASUIComponent@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z=?FUN_140d01e20@Unk_Finder@@QEAA?AV?$MS2Ptr@VASTextField@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z")
+#pragma comment(linker, "/alternatename:??$FindTextField@VASUIComponent@@@Unk_CashChildFinder@@QEAA?AV?$MS2Ptr@VASUIComponent@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z=?FindTextField@Unk_Finder@@QEAA?AV?$MS2Ptr@VASTextField@@@@AEBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@@Z")
 #endif
 
 // The six deep searches: getChildByName on the root, else the same search in each child.
@@ -662,18 +662,18 @@ MS2Ptr<ASTextField> Unk_Finder::FUN_140d01e20(const CString& strName)
     /* @0x ## VA */                                                                                              \
     MS2Ptr<T> Unk_Finder::NAME(const Scaleform::GFx::Value& root, const CString& strName)                           \
     {                                                                                                              \
-        MS2Ptr<ASDisplayObjectContainer> spCont = FUN_140bc5fc0(m_nMovieId, root);                                 \
+        MS2Ptr<ASDisplayObjectContainer> spCont = CreateDisplayObjectContainer(m_nMovieId, root);                                 \
         if (!spCont->HasMember("getChildByName"))                                                              \
             return MS2Ptr<T>(0);                                                                                   \
-        Scaleform::GFx::Value child = spCont->FUN_1422c6b00(strName);                                              \
+        Scaleform::GFx::Value child = spCont->GetChildByName(strName);                                              \
         if (((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(child))->IsObject())                                                                                  \
             return CREATE(m_nMovieId, child);                                                                      \
         if (!spCont->HasMember("numChildren"))                                                                 \
             return MS2Ptr<T>(0);                                                                                   \
-        int nCount = spCont->FUN_1422c6670();                                                                      \
+        int nCount = spCont->GetNumChildren();                                                                      \
         for (int i = 0; i < nCount; i++)                                                                           \
         {                                                                                                          \
-            Scaleform::GFx::Value sub = spCont->FUN_1422c6aa0(i);                                                  \
+            Scaleform::GFx::Value sub = spCont->GetChildAt(i);                                                  \
             if (!((Scaleform::GFx::Value*)&static_cast<class Scaleform::GFx::Value const&>(sub))->IsObject())                                                                               \
                 continue;                                                                                          \
             MS2Ptr<T> sp = NAME(sub, strName);                                                                     \
@@ -690,9 +690,9 @@ MS2_FINDER_DEEP(140d02140, FUN_140d02140, ASCheckBox, CreateCheckBox)
 // @0x140d02410
 MS2_FINDER_DEEP(140d02410, FUN_140d02410, ASDisplayObject, FUN_140d01be0)
 // @0x140d026e0
-MS2_FINDER_DEEP(140d026e0, FUN_140d026e0, ASDisplayObjectContainer, FUN_140bc5fc0)
+MS2_FINDER_DEEP(140d026e0, FUN_140d026e0, ASDisplayObjectContainer, CreateDisplayObjectContainer)
 // @0x140d029b0
-MS2_FINDER_DEEP(140d029b0, FUN_140d029b0, ASLabel, FUN_140c43580)
+MS2_FINDER_DEEP(140d029b0, FUN_140d029b0, ASLabel, CreateASLabel)
 // @0x140d02c80
 MS2_FINDER_DEEP(140d02c80, FUN_140d02c80, ASTextField, FUN_1409b41a0)
 

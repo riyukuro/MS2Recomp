@@ -27,7 +27,7 @@ MS2_CHECK_OFFSET(Unk_FileArchiveEntry, metadata, 8);
 class Unk_FileArchiveIndex {
 public:
     typedef std::map<std::string, Unk_FileArchiveEntry> Entries;
-    Entries& FUN_1403a9580();
+    Entries& GetEntries();
     Entries entries;
     // The original constructor initializes two further 16-byte maps.
     unsigned char otherMaps[0x20];
@@ -47,8 +47,8 @@ public:
     int FUN_1406b1460(std::string path);
     int FUN_1406b0e20(std::string path, void** data, unsigned __int64* size, bool stringResource);
     void FUN_1406b1830(std::list<std::string>& textures);
-    const std::string& FUN_1403a9490();
-    Unk_FileArchiveIndex& FUN_1403a93e0();
+    const std::string& GetPath();
+    Unk_FileArchiveIndex& GetIndex();
     std::string path;
     Unk_FileArchiveIndex index;
     unsigned char remaining[0xd8];
@@ -66,20 +66,20 @@ public:
     int FUN_140396770(unsigned char mode, int archiveMode);
     int FUN_140396d00(const char* directory);
     int FUN_1403972f0(const char* path, void** data, unsigned __int64* size, std::string* actualPath);
-    int FUN_1403974b0(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly);
+    int LoadXmlFile(TiXmlDocument* document, const char* path, int encoding, bool warn, bool localOnly);
     BufferPtr FUN_140397bc0(const char* path, int cacheMode, int flag);
     bool FUN_140398190();
-    bool FUN_1403981b0();
+    bool HasAlternatePaths();
     bool FUN_1403981d0();
     int LoadXmlFromBuffer(TiXmlDocument* document, BufferPtr buffer);
     int LoadXmlFromString(TiXmlDocument* document, const CStringW& xml);
-    bool FUN_140398200(std::string path);
+    bool DirectoryExists(std::string path);
     bool FUN_140398640(std::string path, bool checkFile);
-    int FUN_1403987d0(std::string path);
-    bool FUN_14039a160(const char* directory, const char* reference, char* result, unsigned capacity);
+    int FileExists(std::string path);
+    bool FindTexturePath(const char* directory, const char* reference, char* result, unsigned capacity);
     void FUN_14039a640();
     void MarkCharacterModelLoaded(CString path, void* pUnused);
-    unsigned FUN_14039a720();
+    unsigned GetCharacterMask();
     void ResetCharacterMask();
     unsigned long DecryptByMagic(unsigned long magic, unsigned char* data, unsigned long size,
                                 unsigned char** output, unsigned long capacity);
@@ -96,7 +96,7 @@ public:
     std::string FUN_14039bb50(std::string path);
     bool FUN_14039bf70();
     void TrimSpaces(std::string& path);
-    std::string FUN_14039c050(std::string path, bool checkFile);
+    std::string NormalizePath(std::string path, bool checkFile);
     BufferPtr FUN_14039c810(std::string path, int flag);
     BufferPtr FUN_14039cc50(std::string path, int flag);
     BufferPtr FUN_14039d190(std::string resolved, std::string original, int flag);
@@ -105,7 +105,7 @@ public:
     void FUN_14039deb0(const CString& pattern, const CString& directory, ATL::CAtlArray<CString>& output, const CString& exclude);
     void FUN_14039e460(const CString& pattern, const CString& directory, std::vector<CString>& output, const CString& exclude);
     CString FUN_14039ea10(const CString& filename, CString directory);
-    bool FUN_14039f3b0(CString path);
+    bool IsConfigPath(CString path);
     int FUN_14039f4b0(const char* path, void** data, unsigned __int64* size, bool warn);
     int FUN_14039faf0(std::string path);
     int FUN_1403a0320(const char* path, void** data, unsigned __int64* size, std::string* actualPath);
@@ -149,7 +149,7 @@ typedef unsigned long (CFileSystem::*Unk_FileTransformMethod)(unsigned long, uns
 typedef ClassFunHandler<Unk_FileTransform, CFileSystem*, Unk_FileTransformMethod> Unk_FileTransformHandler;
 MS2_CHECK_SIZE(Unk_FileTransformHandler, 0x18);
 CFileSystem* GetFileSystem();
-void FUN_140399100(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly = false);
+void FindFiles(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly = false);
 void FUN_1403992a0(CString pattern, CString directory, std::vector<CString>& output, CString exclude, bool localOnly = false);
 void FUN_140399620(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude, bool localOnly = false);
 void FUN_140399c50(CString pattern, CString directory, ATL::CAtlArray<CString>& output, CString exclude);

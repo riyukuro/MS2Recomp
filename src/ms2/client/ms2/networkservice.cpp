@@ -89,10 +89,10 @@
 #include "ms2/commonfiles/timeutil.h"   // C3: IsFutureTime
 #include "ms2/client/ms2/groupchatmanager.h"   // C3: CGroupChatManager::OnGroupChat
 #include "ms2/placeholder/cmanufacturemanager.h"   // C3: CManufactureManager::OnPacket
-class UIServerListDialog { public: void FUN_141ad3030(const ATL::CAtlArray<int>& channels); };   // C3: member view
+class UIServerListDialog { public: void SetChannels(const ATL::CAtlArray<int>& channels); };   // C3: member view
 struct Unk_LoginHello; struct Unk_LoginEnter;   // C3: payload structs of classobject.cpp
-void FUN_1401f8f10(Unk_LoginHello* p, COutputStream* out);
-void FUN_1401f9d20(Unk_LoginEnter* p, COutputStream* out);
+void WriteLoginHello(Unk_LoginHello* p, COutputStream* out);
+void WriteLoginEnter(Unk_LoginEnter* p, COutputStream* out);
 
 // m_socket.m_logger's null tests go through Unk_SocketPtr<CPacketLogger>'s operator T* (0x141541260, this unit's COMDAT),
 // the member calls through the operator-> gamesocket instantiates (0x1412691b0).
@@ -100,7 +100,7 @@ void FUN_141543190(void*,int);
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
  int FUN_1406516b0();
 extern int DAT_1439f4a84,DAT_1439f4a88;
-class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
+class CMyCharacter* GetMyCharacter();   // C3: was GetMyCharacter
 struct Unk_NetworkHello {
     Unk_NetworkHello() : version(0),locale(0) {}
     unsigned version,locale,build;
@@ -108,7 +108,7 @@ struct Unk_NetworkHello {
 MS2_CHECK_SIZE(Unk_NetworkHello,12);
 
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-int FUN_140768010(int, int);   // C3: was FUN_140768010
+int GetRandomRange(int, int);   // C3: was GetRandomRange
 CBufferCryptManager* GetOrCreateBufferCryptManager();
 void DestroyBufferCryptManager();
 CBufferCryptManager* GetBufferCryptManager();
@@ -229,9 +229,9 @@ MS2_CHECK_SIZE(Unk_NetworkSyncReply,8);
 MS2_CHECK_SIZE(Unk_NetworkSyncRequest,4);
 
 void* FUN_140764020();
-class Unk_NametagTrophy* FUN_1406c7600();   // C3: was FUN_1406c7600
+class Unk_NametagTrophy* GetAchieveManager();   // C3: was GetAchieveManager
 class Unk_SingletonObj* GetMeratMarketMan();   // C3: was GetMeratMarketMan
-class Unk_SoundSink* FUN_1409331f0();   // C3: was FUN_1409331f0
+class Unk_SoundSink* GetKeyTable();   // C3: was GetKeyTable
 class CKeyTable   // C3: member view for the former free stand-ins
 {
 public:
@@ -251,26 +251,26 @@ template<> CManufactureManager* TSingleton<CManufactureManager>::GetInstance();
 class CCashMarketMan;
 template<> CCashMarketMan* TSingleton<CCashMarketMan>::GetInstance();
 void FUN_140b06020(void*,CInPacket&);
-class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
-class Unk_ClubManager* FUN_140e0d900();   // C3: was FUN_140e0d900
+class Unk_BreakSelected* GetPetManager();   // C3: was GetPetManager
+class Unk_ClubManager* GetClubClientManager();   // C3: was GetClubClientManager
 class CMicroGameManagerCli;
 template<> CMicroGameManagerCli* TSingleton<CMicroGameManagerCli>::GetInstance();
 void OnMicrogamePacket(void*, class CInPacket&);   // C3: was OnMicrogamePacket
 class Unk_MeratButtonHelper* GetPaybackManager();   // C3: was GetPaybackManager
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 
 
 #include "ms2/placeholder/exception.h"
 #include "ms2/placeholder/reconnectionstructs.h"
 #include "ms2/placeholder/uidialog.h"
-CStringW FUN_140cc20a0(int);
-void FUN_140d73aa0(CStringW,int,void*,CStringW);
+CStringW GetFieldMoveErrorMessage(int);
+void ShowMessageBox(CStringW,int,void*,CStringW);
 void FUN_140d73bc0(int,int,void*,CStringW);
 CString FUN_14028bd10(int);
 extern int DAT_1439f4a78,DAT_143ab2874,DAT_143ab284c,DAT_143ab2850,DAT_143ab2890;
 extern __int64 DAT_143ab2820;
 extern ATL::CAtlArray<unsigned char> DAT_143ab2a58;
-void* FUN_140aadf70();class CMachineIDManager   // C3: member view for the former free stand-ins
+void* GetMachineIDManager();class CMachineIDManager   // C3: member view for the former free stand-ins
 {
 public:
     struct Unk_MachineID* GetID();
@@ -308,9 +308,9 @@ public:
     void SetPlayer(__int64);
     void FUN_140db9040(CStringW& strText);
 };
-void* FUN_14136f520(int);
+void* FindServerListDialog(int);
 class Unk_NetworkRefresh { public: virtual void vfunc_0();virtual void vfunc_1(); };
-class Unk_Hud* FUN_140933230();   // C3: was FUN_140933230
+class Unk_Hud* GetUIServerEventDispatcher();   // C3: was GetUIServerEventDispatcher
 extern int DAT_143add400[];
 
 #include "ms2/placeholder/uimessagebox.h"
@@ -319,7 +319,7 @@ extern int DAT_143add400[];
 #include "ms2/placeholder/mstime.h"
 #include "scenestatebase.h"
 #include <efd/SmartPointer.h>
-Unk_MessageBoxPtr FUN_140d73d20(int,CStringW,void*,CStringW);
+Unk_MessageBoxPtr CreateMessageBox(int,CStringW,void*,CStringW);
 Unk_MessageBoxPtr FUN_140d73e40(int,int,void*,CStringW);
 Unk_MessageBoxPtr FUN_140d73f20(CStringW,int);
 void FUN_140d73c60(Unk_MessageBoxPtr);
@@ -376,7 +376,7 @@ void FUN_14038bb30(const char*,const char*,std::list<CString>&);
 COnlinePatchFileBuffer* FUN_14038bf20(const char*,const char*);
 extern Unk_Inventory g_143ab2a90;   // C3: the real global (0x143ab2a90), was DAT_143ab2a90
 template <class T> void Unk_AkoMessage(int, int, int, const T&);   // C3: was FUN_140961010
-class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions* GetLaunchOptions();   // C3: was GetLaunchOptions
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
 public:
@@ -407,7 +407,7 @@ bool FUN_140b83ec0();
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 void FUN_140534050(void*,int);int FUN_14025a620(class Unk_ConstVal*);   // C3: was FUN_14025a620
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b); template <class A> CStringW FormatStringId(int nId, const A& a);
-void FUN_1412751f0(const CStringW&,int,int);void FUN_140b84010(int);   // C3: was FUN_140b84010
+void ShowSystemNotice(const CStringW&,int,int);void FUN_140b84010(int);   // C3: was FUN_140b84010
 void FUN_140b820d0(void*,const Vector3&);void FUN_140b82130(void*,const Vector3&);
 
 inline void CopyMap(ATL::CRBMap<unsigned,unsigned>&,const ATL::CRBMap<unsigned,unsigned>&);
@@ -493,7 +493,7 @@ BOOL CNetworkService::SendRetrieveFurnishingItem(CItem* item) {
     if(!IsFutureTime(item->FUN_140528a90())) return false;
     int type=reinterpret_cast<CItemData*>(((class CItem*)(class CItem*)(item))->FUN_140527840())->FUN_14053fd90();
     int slot=g_143ab2a90.FUN_140a612b0(type,MS2Ptr<CItem>(item),((class CItem*)(class CItem*)(item))->GetCount());
-    if(slot==-1) { Unk_AkoMessage<CStringW>(0x44,1,1,TSingleton<CStringTable>::GetInstance()->FUN_141813300(type));CString param("");FUN_141276180(s_warningBag,param); }
+    if(slot==-1) { Unk_AkoMessage<CStringW>(0x44,1,1,TSingleton<CStringTable>::GetInstance()->GetInventoryTabName(type));CString param("");FUN_141276180(s_warningBag,param); }
     else { { CString param("");FUN_141276180(s_storeItemOut,param); }COutPacket packet(static_cast<int>(SendOp::FurnishingStorage),0);packet.WriteUInt8(4);packet.WriteInt64(item->GetItemUid());packet.WriteInt16((short)slot);packet.WriteInt32(((class CItem*)(class CItem*)(item))->GetCount());FUN_140710590(packet); }
     return slot!=-1;
 }
@@ -533,7 +533,7 @@ void CNetworkService::SendResponseVersion() {
     FUN_141543190(((void*)TSingleton<COnlinePatchManagerCli>::GetInstance()),1);
     Unk_NetworkHello hello;
     hello.version=0x9dd;hello.locale=((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d8b0();hello.build=FUN_1406516b0();
-    COutPacket packet(static_cast<int>(SendOp::ResponseVersion),0);FUN_1401f8f10((Unk_LoginHello*)&hello,&packet);FUN_140710590(packet);
+    COutPacket packet(static_cast<int>(SendOp::ResponseVersion),0);WriteLoginHello((Unk_LoginHello*)&hello,&packet);FUN_140710590(packet);
 }
 // @0x141538d50
 bool CNetworkService::SendPatchFileList() {
@@ -646,7 +646,7 @@ void CNetworkService::QueueReceivedPacket(Unk_InPtr packet) {
     if(Unk_LockGuard guard=m_receiveLock) {} else {
         m_received.AddTail(packet);
         unsigned time=GetTickCountMs2();
-        if(m_receiveMax>m_receiveMin) time+=FUN_140768010(m_receiveMax-m_receiveMin, m_receiveMin);
+        if(m_receiveMax>m_receiveMin) time+=GetRandomRange(m_receiveMax-m_receiveMin, m_receiveMin);
         else if(m_receiveMax==m_receiveMin) time+=m_receiveMin;
         m_receiveTimes.AddTail(time);
     }
@@ -676,11 +676,11 @@ void CNetworkService::DispatchPacket(CInPacket& packet) {
     case static_cast<int>(RecvOp::WorldTimeSync): OnWorldTimeSync(packet); break;
     case static_cast<int>(RecvOp::Quest): ((class CQuestManager*)(void*)(FUN_140764020()))->OnQuest(packet); break;
     case static_cast<int>(RecvOp::Party): ((class CPartyManager*)(void*)(((void*)TSingleton<CPartyManager>::GetInstance())))->OnParty(packet); break;
-    case static_cast<int>(RecvOp::Achieve): ((class CAchieveManager*)(void*)(((void*)FUN_1406c7600())))->OnPacket(*(class CByteBuffer*)&(packet)); break;
+    case static_cast<int>(RecvOp::Achieve): ((class CAchieveManager*)(void*)(((void*)GetAchieveManager())))->OnPacket(*(class CByteBuffer*)&(packet)); break;
     case static_cast<int>(RecvOp::Ugc): TSingleton<CUgcManager>::GetInstance()->OnUgc(packet); break;
     case static_cast<int>(RecvOp::MeretMarket): ((class CMeratMarketMan*)(void*)(((void*)GetMeratMarketMan())))->OnMeretMarket(packet); break;
     case static_cast<int>(RecvOp::Gvg): OnGvg(packet); break;
-    case static_cast<int>(RecvOp::KeyTable): ((class CKeyTable*)(void*)(((void*)FUN_1409331f0())))->OnKeyTable(packet); break;
+    case static_cast<int>(RecvOp::KeyTable): ((class CKeyTable*)(void*)(((void*)GetKeyTable())))->OnKeyTable(packet); break;
     case static_cast<int>(RecvOp::RelocateWorld): OnRelocateWorld(packet); break;
     case static_cast<int>(RecvOp::Trade): ((class CTradeManagerEx*)(void*)(((void*)TSingleton<CTradeManagerEx>::GetInstance())))->OnTrade(packet); break;
     case static_cast<int>(RecvOp::Guild): ((class CGuildManager*)(void*)(((void*)TSingleton<CGuildManager>::GetInstance())))->FUN_1413b6370(packet); break;
@@ -702,8 +702,8 @@ void CNetworkService::DispatchPacket(CInPacket& packet) {
     case 0xd5: FUN_140d86260()->vfunc_25(packet); break;
     case static_cast<int>(RecvOp::SteamCashShop): FUN_140d86260()->vfunc_42(packet); break;
     case static_cast<int>(RecvOp::BannerList): ((class CAdBannerManagerCli*)(void*)(((void*)TSingleton<CAdBannerManagerCli>::GetInstance())))->OnBannerList(packet); break;
-    case static_cast<int>(RecvOp::Club): ((class CClubClientManager*)(void*)(((void*)FUN_140e0d900())))->OnClub(packet); break;
-    case static_cast<int>(RecvOp::ResponsePet): ((class CPetManager*)(void*)(((void*)FUN_140535320())))->OnResponsePet(packet); break;
+    case static_cast<int>(RecvOp::Club): ((class CClubClientManager*)(void*)(((void*)GetClubClientManager())))->OnClub(packet); break;
+    case static_cast<int>(RecvOp::ResponsePet): ((class CPetManager*)(void*)(((void*)GetPetManager())))->OnResponsePet(packet); break;
     case static_cast<int>(RecvOp::RoomStageDungeon): OnRoomStageDungeon(packet); break;
     case static_cast<int>(RecvOp::CharacterAbility): ((class CCharacterAbilityManager*)(void*)(((void*)TSingleton<CCharacterAbilityManager>::GetInstance())))->OnCharacterAbility(packet); break;
     case static_cast<int>(RecvOp::Mentor): ((class CMentoringManager*)(void*)(((void*)TSingleton<CMentoringManager>::GetInstance())))->OnPacket(packet); break;
@@ -718,16 +718,16 @@ void CNetworkService::DispatchPacket(CInPacket& packet) {
     }
     TSingleton<CStateService>::GetInstance()->FUN_1417e27d0(&packet);
     TSingleton<CUIService>::GetInstance()->FUN_141adbfb0(&packet);
-    ((class PacketHandlerManager*)(void*)(((void*)FUN_140bccd50())))->Dispatch(opcode, packet);
+    ((class PacketHandlerManager*)(void*)(((void*)GetPacketHandlerManager())))->Dispatch(opcode, packet);
 }
 // @0x14153a020
 void CNetworkService::SendPacket(COutPacket& input) {
     if(m_sendMin!=m_sendMax) {
         unsigned time=GetTickCountMs2();
         if(m_sendMin>=m_sendMax) time+=m_sendMin;
-        else time+=FUN_140768010(m_sendMax-m_sendMin, m_sendMin);
+        else time+=GetRandomRange(m_sendMax-m_sendMin, m_sendMin);
         COutPacket* packet=new COutPacket(input.FUN_14020ba20(),0);
-        ((class COutPacket*)(class COutPacket*)(packet))->FUN_14020aa30(input, 2);
+        ((class COutPacket*)(class COutPacket*)(packet))->AppendPayload(input, 2);
         if(!m_sends.empty()&&m_sends.back().first>time) time=m_sends.back().first;
         m_sends.push(std::make_pair(time,packet));
     }
@@ -790,7 +790,7 @@ void CNetworkService::OnTimeSyncResponse(CInPacket& input) {
 }
 // @0x14153a780
 void CNetworkService::OnRequestClientTickSync(CInPacket& input) {
-    Unk_NetworkSyncRequest request;reinterpret_cast<Unk_SPDJ*>(&request)->FUN_1407a4dc0(*(Unk_SPDReader*)&input);
+    Unk_NetworkSyncRequest request;reinterpret_cast<Unk_SPDJ*>(&request)->ReadFrom(*(Unk_SPDReader*)&input);
     Unk_NetworkSyncReply reply;
     reply.value=reinterpret_cast<Unk_NetworkClientInfo*>(TSingleton<CMainSystem>::GetInstance())->GetElapsedTime();reply.sequence=request.sequence;
     COutPacket packet(static_cast<int>(SendOp::ResponseClientTickSync),0);FUN_1401fa580((unsigned char*)&reply,packet);FUN_140710590(packet);
@@ -800,7 +800,7 @@ void CNetworkService::OnSyncNumber(CInPacket& input) {
     unsigned char value=input.ReadUInt8();
     DAT_143ab2856=value;
     Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
-    if(player) ((class StatePcGuideObjectController*)(void*)(((MyPC*)player)->GetStateController()))->FUN_1417b7450();
+    if(player) ((class StatePcGuideObjectController*)(void*)(((MyPC*)player)->GetStateController()))->ClearRecords();
 }
 // @0x14153a8a0
 void CNetworkService::OnWorldTimeSync(CInPacket& input) {
@@ -813,15 +813,15 @@ void CNetworkService::OnGvg(CInPacket& input) {
     for(unsigned i=0;i<count;++i) {
         int kind=input.ReadInt32();
         switch(kind) {
-        case 1: { bool flag=input.ReadBool();((class Unk_LaunchOptions*)(void*)(((void*)FUN_1406aeee0())))->FUN_1406af130(flag);break; }
+        case 1: { bool flag=input.ReadBool();((class Unk_LaunchOptions*)(void*)(((void*)GetLaunchOptions())))->FUN_1406af130(flag);break; }
         case 7: ((class CContentShutdownManager*)(void*)(((void*)FUN_14025e7b0())))->FUN_140cca720(*(class Unk_ShutdownInput*)&static_cast<class CInputStream&>(input));break;
         case 25: { Unk_SocketOptions options;((class Unk_CommonFourInts*)(struct Unk_SocketOptions*)(&options))->Read(input);m_socket.SetOptions(options);break; }
-        case 42: FUN_140931510()->GetRecord()->OnRates(input);break;
+        case 42: GetMyCharacter()->GetRecord()->OnRates(input);break;
         case 43: {
-            ReconnectionOptions options;options.FUN_140208500(input);
+            ReconnectionOptions options;options.Read(input);
             if(((void*)TSingleton<CReconnectionManagerCli>::GetInstance())!=0) {
-                ((CReconnectionManagerCli*)TSingleton<CReconnectionManagerCli>::GetInstance())->SetOptions(&options);int enabled=options.FUN_140aadf90(0)==1;
-                if(enabled) { int value=options.FUN_140aadf90(1); m_socket.m_out->SetLimit(value); }
+                ((CReconnectionManagerCli*)TSingleton<CReconnectionManagerCli>::GetInstance())->SetOptions(&options);int enabled=options.GetValue(0)==1;
+                if(enabled) { int value=options.GetValue(1); m_socket.m_out->SetLimit(value); }
                 m_socket.m_out->SetCaptureEnabled(enabled);
             }
         }
@@ -834,7 +834,7 @@ void CNetworkService::OnGvg(CInPacket& input) {
 // @0x14153ad10
 void CNetworkService::OnRequestVersion(CInPacket& input) {
     try {
-        Unk_NetworkHandshake handshake;reinterpret_cast<Unk_SPDC*>(&handshake)->FUN_1407a4420(&static_cast<CInputStream&>(input));
+        Unk_NetworkHandshake handshake;reinterpret_cast<Unk_SPDC*>(&handshake)->ReadFrom(&static_cast<CInputStream&>(input));
         if(handshake.version==0x9dd) {
             if(handshake.patch==1&&FUN_141541bc0(((void*)TSingleton<COnlinePatchManagerCli>::GetInstance()))==0) {
                 if(SendPatchFileList()==true) return;
@@ -842,7 +842,7 @@ void CNetworkService::OnRequestVersion(CInPacket& input) {
             } else if(handshake.patch==0) ((class COnlinePatchManagerCli*)(void*)(((void*)TSingleton<COnlinePatchManagerCli>::GetInstance())))->DeletePatchFiles("./DataPatch/");
             FUN_141543190(((void*)TSingleton<COnlinePatchManagerCli>::GetInstance()),1);
             Unk_NetworkHello hello;hello.version=0x9dd;hello.locale=((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d8b0();hello.build=FUN_1406516b0();
-            COutPacket packet(static_cast<int>(SendOp::ResponseVersion),0);FUN_1401f8f10((Unk_LoginHello*)&hello,&packet);FUN_140710590(packet);
+            COutPacket packet(static_cast<int>(SendOp::ResponseVersion),0);WriteLoginHello((Unk_LoginHello*)&hello,&packet);FUN_140710590(packet);
         } else {
             FUN_140d73bc0(0x214,0,0,s_forceLogin);FUN_140d86260()->vfunc_58(0x214,0);throw Exception(0);
         }
@@ -861,8 +861,8 @@ void CNetworkService::OnRequestKey(CInPacket&) {
     int count=(int)DAT_143ab2a58.GetCount();
     if(count==0) {
         Unk_NetworkAuth auth;auth.account=DAT_143ab2820;auth.token1=DAT_143ab284c;auth.token2=DAT_143ab2850;
-        ((void*)((class Unk_MachineId*)(void*)(auth.machineId))->FUN_14067c080((class Unk_MachineId const*)(((void*)((class CMachineIDManager*)(void*)(FUN_140aadf70()))->GetID()))));
-        COutPacket packet(static_cast<int>(SendOp::ResponseKey),0);FUN_1401f9d20((Unk_LoginEnter*)&auth,&packet);FUN_140710590(packet);m_socket.FUN_1412672d0();
+        ((void*)((class Unk_MachineId*)(void*)(auth.machineId))->FUN_14067c080((class Unk_MachineId const*)(((void*)((class CMachineIDManager*)(void*)(GetMachineIDManager()))->GetID()))));
+        COutPacket packet(static_cast<int>(SendOp::ResponseKey),0);WriteLoginEnter((Unk_LoginEnter*)&auth,&packet);FUN_140710590(packet);m_socket.FUN_1412672d0();
     } else {
         COutPacket packet(static_cast<int>(SendOp::RelocateWorld),0);packet.WriteUInt8(5);packet.WriteInt32(count);packet.WriteBytes(&DAT_143ab2a58[0],count);FUN_140710590(packet);DAT_143ab2a58.RemoveAll();
     }
@@ -902,27 +902,27 @@ void CNetworkService::OnMoveResult(CInPacket& input) {
         case 2: ((class CStateService*)(void*)(((void*)TSingleton<CStateService>::GetInstance())))->FUN_1417e25a0(0x620000c); break;
         }
         FUN_140d86260()->vfunc_8();
-    } else FUN_140d73aa0(FUN_140cc20a0(result),0,0,L"");
+    } else ShowMessageBox(GetFieldMoveErrorMessage(result),0,0,L"");
 }
 // @0x14153b570
 void CNetworkService::OnLoginToGame(CInPacket& input) {
-    Unk_NetworkTransfer result;result.FUN_1407a4c60(&static_cast<CInputStream&>(input));int code=result.result;
+    Unk_NetworkTransfer result;result.ReadFrom(&static_cast<CInputStream&>(input));int code=result.result;
     if(code==0) {
         FUN_140d86260()->vfunc_9();((class CUIService*)(void*)(((void*)TSingleton<CUIService>::GetInstance())))->SetMode(0x3ed);
         DAT_143ab2a48=FUN_14028bd10(result.ip);DAT_143ab2848=result.port;DAT_143ab284c=result.token1;DAT_143ab2850=result.token2;
         DAT_1439f4a78=2;DAT_143ab2874=0;((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bbc580(0, result.field);MyPC::FUN_1415308d0();
     } else if(code==0x31) {
-        if(Unk_MessageBoxPtr data=FUN_140d73d20(10,GetStringCommonByKey(L"s_char_rename_input"),0,s_changeInvalidCharName)) {
+        if(Unk_MessageBoxPtr data=CreateMessageBox(10,GetStringCommonByKey(L"s_char_rename_input"),0,s_changeInvalidCharName)) {
             CStringW empty=L"";MS2_BOX(data)->Append<__int64>(result.character);
             MS2_BOX(data)->SetInput(2,empty,12,0,0);FUN_140d73c60(data);
         }
     } else if(code==0x1a) {
         CStringW text=result.message;text.Replace(L"\\n",L"\n");
-        if(Unk_MessageBoxPtr data=FUN_140d73d20(0,text,0,s_maintenanceExit)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x8c6));FUN_140d73c60(data); }
+        if(Unk_MessageBoxPtr data=CreateMessageBox(0,text,0,s_maintenanceExit)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x8c6));FUN_140d73c60(data); }
     } else if(code==0x19) {
         CStringW text=result.message;text.Replace(L"\\n",L"\n");
-        if(Unk_MessageBoxPtr data=FUN_140d73d20(0,text,0,L"")) { MS2_BOX(data)->SetTitle(GetStringCommon(0x8c6));FUN_140d73c60(data); }
-    } else FUN_140d73aa0(FUN_140cc20a0(code),0,0,L"");
+        if(Unk_MessageBoxPtr data=CreateMessageBox(0,text,0,L"")) { MS2_BOX(data)->SetTitle(GetStringCommon(0x8c6));FUN_140d73c60(data); }
+    } else ShowMessageBox(GetFieldMoveErrorMessage(code),0,0,L"");
 }
 // @0x14153bc00
 void CNetworkService::OnGameToLogin(CInPacket& input) {
@@ -936,7 +936,7 @@ void CNetworkService::OnGameToLogin(CInPacket& input) {
         CString address=FUN_14028bd10(ip);DAT_143ab2a48=address;
         DAT_143ab2848=port;DAT_143ab284c=token1;DAT_143ab2850=token2;DAT_1439f4a78=1;
         MyPC::FUN_1415308d0();FUN_140d86260()->vfunc_10();
-    } else FUN_140d73aa0(FUN_140cc20a0(result),0,0,L"");
+    } else ShowMessageBox(GetFieldMoveErrorMessage(result),0,0,L"");
 }
 // @0x14153be30
 void CNetworkService::OnGameToGame(CInPacket& input) {
@@ -951,7 +951,7 @@ void CNetworkService::OnGameToGame(CInPacket& input) {
         CString address=FUN_14028bd10(ip);DAT_143ab2a48=address;
         DAT_143ab2848=port;DAT_143ab284c=token1;DAT_143ab2850=token2;DAT_1439f4a78=2;DAT_143ab2890=field;DAT_143ab284a=kind;
         ((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bbc580(0, field);((class CStateService*)(void*)(((void*)TSingleton<CStateService>::GetInstance())))->FUN_1417e25a0(0x620003b);MyPC::FUN_1415308d0();
-    } else FUN_140d73aa0(FUN_140cc20a0(result),0,0,L"");
+    } else ShowMessageBox(GetFieldMoveErrorMessage(result),0,0,L"");
 }
 // @0x14153c0c0
 void CNetworkService::OnRelocateWorld(CInPacket& input) {
@@ -967,7 +967,7 @@ void CNetworkService::OnRelocateWorld(CInPacket& input) {
             DAT_143ab2a58.RemoveAll();int size=input.ReadInt32();DAT_143ab2a58.SetCount(size,-1);
             input.ReadBytes(&DAT_143ab2a58[0],size);
             ((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bbc580(0, 0);((class CStateService*)(void*)(((void*)TSingleton<CStateService>::GetInstance())))->FUN_1417e25a0(0x6200042);
-        } else FUN_140d73aa0(BlockFormat<int>(0x227,result),0,0,L"");
+        } else ShowMessageBox(BlockFormat<int>(0x227,result),0,0,L"");
     } else if(kind==4) {
         CSceneStateBase* loading=FUN_1415401b0(reinterpret_cast<CStateService*>(((void*)TSingleton<CStateService>::GetInstance()))->GetCurrent()).Get();
         if(loading) ((class CSceneStateRelocateWorld*)(void*)(loading))->SetState(1);
@@ -980,16 +980,16 @@ void CNetworkService::OnDynamicChannel(CInPacket& input) {
         ATL::CAtlArray<int> tabs;
         int count=(unsigned short)input.ReadInt16();
         for(int i=0;i<count;++i) { int tab=(unsigned short)input.ReadInt16(); tabs.Add(tab); }
-        void* dialog=FUN_14136f520(0x4ef0);if(dialog) ((UIServerListDialog*)dialog)->FUN_141ad3030(tabs);
-        ((class Unk_NetworkRefresh*)FUN_140933230())->vfunc_1();
+        void* dialog=FindServerListDialog(0x4ef0);if(dialog) ((UIServerListDialog*)dialog)->SetChannels(tabs);
+        ((class Unk_NetworkRefresh*)GetUIServerEventDispatcher())->vfunc_1();
     } else if(kind==0) {
         for(int i=0;i<8;++i) DAT_143add400[i]=(unsigned short)input.ReadInt16();
-        ((class Unk_NetworkRefresh*)FUN_140933230())->vfunc_1();
+        ((class Unk_NetworkRefresh*)GetUIServerEventDispatcher())->vfunc_1();
     }
 }
 // @0x14153c670
 void CNetworkService::OnLoginResult(CInPacket& input) {
-    Unk_NetworkLoginResult reply;reinterpret_cast<Unk_SPDF*>(&reply)->FUN_1407a4740(&static_cast<CInputStream&>(input));int result=reply.result;int error=reply.error;
+    Unk_NetworkLoginResult reply;reinterpret_cast<Unk_SPDF*>(&reply)->ReadFrom(&static_cast<CInputStream&>(input));int result=reply.result;int error=reply.error;
     if(result!=0) {
     if(result==7) {
         CMsTime::SetTimeZone(reply.zone,reply.zoneFlag);
@@ -999,12 +999,12 @@ void CNetworkService::OnLoginResult(CInPacket& input) {
         int es=end.GetSecond(),em=end.GetMinute(),eh=end.GetHour(),ed=end.GetDay(),emon=end.GetMonth(),ey=end.GetYear();
         int ss=start.GetSecond(),sm=start.GetMinute(),sh=start.GetHour(),sd=start.GetDay(),smon=start.GetMonth(),sy=start.GetYear();
         CStringW text=BlockFormat<int, int, int, int, int, int, int, int, int, int, int, int, CStringW>(0x21a,sy,smon,sd,sh,sm,ss,ey,emon,ed,eh,em,es,reason);
-        Unk_MessageBoxPtr data=FUN_140d73d20(0x10,text,0,L"");
+        Unk_MessageBoxPtr data=CreateMessageBox(0x10,text,0,L"");
         if(data.operator CMsgBoxData*()) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==11||result==12) {
         CStringW text=reply.message;CStringW tag=result==12?s_maintenanceExit:CStringW(L"");text.Replace(L"\\n",L"\n");
         FUN_140d86260()->vfunc_23(0x38a,"AuthFailed_Maintenance");
-        Unk_MessageBoxPtr data=FUN_140d73d20(0,text,0,tag);
+        Unk_MessageBoxPtr data=CreateMessageBox(0,text,0,tag);
         if(data.operator CMsgBoxData*()) { MS2_BOX(data)->SetTitle(GetStringCommon(0x8c6));FUN_140d73c60(data); }
     } else if(result==0x18) {
         FUN_140d86260()->vfunc_23(0x38b,"AuthFailed_AdminIP");
@@ -1040,7 +1040,7 @@ void CNetworkService::OnLoginResult(CInPacket& input) {
         if(data.operator CMsgBoxData*()) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==0x19) {
         FUN_140d86260()->vfunc_23(0x393,"AuthFailed_Ticket");
-        if(Unk_MessageBoxPtr data=FUN_140d73d20(0,GetStringCommonByKey(L"s_login_err_nxa_ticket"),0,s_maintenanceExit)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
+        if(Unk_MessageBoxPtr data=CreateMessageBox(0,GetStringCommonByKey(L"s_login_err_nxa_ticket"),0,s_maintenanceExit)) { MS2_BOX(data)->SetTitle(GetStringCommon(0x219));FUN_140d73c60(data); }
     } else if(result==0x1a) {
         FUN_140d86260()->vfunc_23(0x394,"AuthFailed_CannotRpgFoundersPack");
         Unk_MessageBoxPtr data=FUN_140d73f20(GetStringCommonByKey(L"s_founderspack_need"),1);
@@ -1056,11 +1056,11 @@ void CNetworkService::OnLoginResult(CInPacket& input) {
             CStringW text=L"";
             if(((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionJP()&&error==0x4e2e) { RawString errors;text=errors.Get((ERawString)0x17); }
             if(text.IsEmpty()) text=BlockFormat<int>(message,error);
-            FUN_140d86260()->vfunc_58(0x218,0);FUN_140d73aa0(text,0,0,L"");
+            FUN_140d86260()->vfunc_58(0x218,0);ShowMessageBox(text,0,0,L"");
         } else { FUN_140d86260()->vfunc_59(result);FUN_140d73bc0(message,0,0,L""); }
     }
-    if(((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSceneId()==0x6200009) {
-        void* login=__RTDynamicCast(((void*)((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetScene()),0,&DAT_143a7b760,&DAT_143a7b788,0);
+    if(((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSceneId()==0x6200009) {
+        void* login=__RTDynamicCast(((void*)((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetScene()),0,&DAT_143a7b760,&DAT_143a7b788,0);
         if(login) ((class UISceneLogin*)(void*)(login))->FUN_141acf470();
     }
 } else { FUN_140d86260()->vfunc_11();DAT_143ab2860=reply.value; }
@@ -1073,7 +1073,7 @@ void CNetworkService::OnCharMaxCount(CInPacket& input) {
 }
 // @0x14153e0d0
 void CNetworkService::OnNpsInfo(CInPacket& input) {
-    Unk_NetworkNamedId value;reinterpret_cast<Unk_SPDH*>(&value)->FUN_1407a4ac0(&static_cast<CInputStream&>(input));
+    Unk_NetworkNamedId value;reinterpret_cast<Unk_SPDH*>(&value)->ReadFrom(&static_cast<CInputStream&>(input));
     ((class CNPSMan*)(void*)(((void*)TSingleton<CNPSMan>::GetInstance())))->SetPlayer(value.id);((class CNPSMan*)(void*)(((void*)TSingleton<CNPSMan>::GetInstance())))->FUN_140db9040(value.name);
 }
 // @0x14153e150
@@ -1086,10 +1086,10 @@ void CNetworkService::OnRoomStageDungeon(CInPacket& input) {
         int value=input.ReadInt32();
         int flag=input.ReadUInt8();
         bool enabled=input.ReadBool();
-        ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->CreateStage(value, flag, enabled);
+        ((class CMyCharacter*)(void*)(((void*)GetMyCharacter())))->CreateStage(value, flag, enabled);
         break;
     }
-    case 1: ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->ClearStage(); break;
+    case 1: ((class CMyCharacter*)(void*)(((void*)GetMyCharacter())))->ClearStage(); break;
     }
 }
 // @0x14153e280
@@ -1117,19 +1117,19 @@ void CNetworkService::OnBuddyEmote(CInPacket& input) {
         if(((class PC*)(class Unk_NetworkPlayer*)(player))->IsInCubeMode()==1) {
             COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(5);FUN_140710590(packet);FUN_141275260(0xcfa,1,1);break;
         }
-        if(((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId()==0x620001f) {
+        if(((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId()==0x620001f) {
             COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(2);packet.WriteInt64(targetId);packet.WriteUInt8(5);FUN_140710590(packet);FUN_141275260(0xcfa,1,1);break;
         }
-        Unk_MessageBoxPtr data=FUN_140d73d20(1,FormatStringId<CStringW, CStringW>(0xce5,targetName,TSingleton<CStringTable>::GetInstance()->FUN_141811980(4,emotion)),0,s_coupleEmotion);
+        Unk_MessageBoxPtr data=CreateMessageBox(1,FormatStringId<CStringW, CStringW>(0xce5,targetName,TSingleton<CStringTable>::GetInstance()->FUN_141811980(4,emotion)),0,s_coupleEmotion);
         if(((MS2Ptr<CMsgBoxData>*)&(data))->IsNull()) { MS2_ASSERT_AT(0x665,"pData" && 0);return; }
         MS2_BOX(data)->Append<unsigned int>(emotion);MS2_BOX(data)->Append<__int64>(targetId);MS2_BOX(data)->AddStringArg(targetName);
-        MS2_BOX(data)->SetTimer(FUN_14025a620((class Unk_ConstVal*)(reinterpret_cast<char*>(((void*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())))+0x3838)),1,GetStringCommon(0x2b8));MS2_BOX(data)->FUN_141a02460(1);MS2_BOX(data)->FUN_141a02480(1);MS2_BOX(data)->FUN_141a024a0(0);FUN_140d73c60(data);
+        MS2_BOX(data)->SetTimer(FUN_14025a620((class Unk_ConstVal*)(reinterpret_cast<char*>(((void*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance())))+0x3838)),1,GetStringCommon(0x2b8));MS2_BOX(data)->FUN_141a02460(1);MS2_BOX(data)->SetModaless(1);MS2_BOX(data)->FUN_141a024a0(0);FUN_140d73c60(data);
         COutPacket packet(static_cast<int>(SendOp::BuddyEmote),0);packet.WriteUInt8(1);packet.WriteInt64(targetId);FUN_140710590(packet);
     } break;
     case 1: {
         __int64 id=input.ReadInt64();Unk_NetworkPlayer* target=((class Unk_NetworkPlayer*)((class WorldService*)(class Unk_NetworkWorld*)(reinterpret_cast<Unk_NetworkWorld*>(WorldService::GetInstance())))->FUN_141bd1530(id));
         if(!target) { MS2_ASSERT_AT(0x67c,"pTargetPC" && 0);return; }
-        CStringW text=FormatStringId<CStringW>(0xce6,target->vfunc_77());FUN_1412751f0(text,1,1);
+        CStringW text=FormatStringId<CStringW>(0xce6,target->vfunc_77());ShowSystemNotice(text,1,1);
     } break;
     case 2: {
         unsigned result=input.ReadUInt8();Unk_NetworkPlayer* player=((Unk_NetworkPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -1157,7 +1157,7 @@ void CNetworkService::OnBuddyEmote(CInPacket& input) {
         void* state=((void*)((class PCBase*)(class Unk_NetworkPlayer*)(player))->FUN_14166ccb0());if(!state) { MS2_ASSERT_AT(0x6bf,"pStateCoupleState" && 0);return; }
         if(((class StateCoupleEmotion*)(void*)(state))->GetEmotionId()!=emotion) break;
         if(((class StateCoupleEmotion*)(void*)(state))->GetPartnerId()!=((class GameObject*)(class Unk_NetworkPlayer*)(target))->GetObjectId()) break;
-        player->vfunc_59(1,0,0,0);CStringW text=FormatStringId<CStringW>(0xce9,target->vfunc_77());FUN_1412751f0(text,1,1);
+        player->vfunc_59(1,0,0,0);CStringW text=FormatStringId<CStringW>(0xce9,target->vfunc_77());ShowSystemNotice(text,1,1);
     } break;
     case 5: {
         int emotion=input.ReadInt32();__int64 first=input.ReadInt64();__int64 second=input.ReadInt64();

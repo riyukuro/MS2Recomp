@@ -63,7 +63,7 @@ bool CSpecialEffectFunctionManager::Execute(CSpecialEffectCtx* pCtx)
 MS2_REPLACE_METHOD(0x140827970, CSpecialEffectFunctionManager, Execute, 167, 0x59DCB6FE);
 
 // @0x1408276a0
-float CXmlData::FUN_1408276a0(const CStringW& strName, float* pfDefault)
+float CXmlData::GetFloat(const CStringW& strName, float* pfDefault)
 {
     CStringW strValue;
     if (!reinterpret_cast<Values*>(m_unknown18)->Lookup(strName, strValue))

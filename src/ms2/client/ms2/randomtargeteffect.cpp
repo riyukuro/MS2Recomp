@@ -60,8 +60,8 @@ struct Unk_WsV148;
 class WorldService
 {
 public:
-    ATL::CRBMap<unsigned, Unk_WsV118>* FUN_141bd36b0();     // &m_118
-    ATL::CRBMap<unsigned, Unk_WsV148>* FUN_141bd36d0();     // &m_148
+    ATL::CRBMap<unsigned, Unk_WsV118>* GetPlayerMap();     // &m_118
+    ATL::CRBMap<unsigned, Unk_WsV148>* GetNpcMap();     // &m_148
     class Unk_WsC_GameObj* FindObjectById(int id);   // C3: the real member (0x141bd1180, an object by id)
 public:
     static class WorldService* GetInstance();   // C3: was free FUN_1403ed2d0
@@ -381,7 +381,7 @@ MS2Ptr<CRandomTargetEffect> CRandomTargetEffectController::FindByPlayerMap(unsig
 {
     MS2Ptr<CRandomTargetEffect> spResult(0);
     RtePlayerMap* pMap = reinterpret_cast<RtePlayerMap*>(
-        reinterpret_cast<WorldService*>(((class Unk_AttendAvatarMgr*)WorldService::GetInstance()))->FUN_141bd36b0());
+        reinterpret_cast<WorldService*>(((class Unk_AttendAvatarMgr*)WorldService::GetInstance()))->GetPlayerMap());
     ATL::CComPtr<Unk_RtePlayer> spObj(NULL);
     pMap->Lookup(nId, spObj);
     if (spObj)
@@ -394,7 +394,7 @@ MS2Ptr<CRandomTargetEffect> CRandomTargetEffectController::FindByNpcMap(unsigned
 {
     MS2Ptr<CRandomTargetEffect> spResult(0);
     RteNpcMap* pMap = reinterpret_cast<RteNpcMap*>(
-        reinterpret_cast<WorldService*>(((class Unk_AttendAvatarMgr*)WorldService::GetInstance()))->FUN_141bd36d0());
+        reinterpret_cast<WorldService*>(((class Unk_AttendAvatarMgr*)WorldService::GetInstance()))->GetNpcMap());
     ATL::CComPtr<Unk_UpperNpc> spObj(NULL);
     pMap->Lookup(nId, spObj);
     if (spObj)

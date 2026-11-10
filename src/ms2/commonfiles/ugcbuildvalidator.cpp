@@ -181,7 +181,7 @@ int CUGCBuildValidator::vfunc_1(int nMode, unsigned* pErr)
         *pErr = 0x2a;
         return 0;
     }
-    if (FUN_1408808d0() == 0)
+    if (LoadItemData() == 0)
     {
         *pErr = 3;
         return 0;
@@ -214,7 +214,7 @@ int CUGCBuildValidator::FUN_140880890()
 MS2_REPLACE_METHOD(0x140880890, CUGCBuildValidator, FUN_140880890, 56, 0x794A9579);
 
 // @0x1408808d0
-int CUGCBuildValidator::FUN_1408808d0()
+int CUGCBuildValidator::LoadItemData()
 {
     if (m_nMode == 4 || m_nMode == 5)
         return 1;
@@ -225,7 +225,7 @@ int CUGCBuildValidator::FUN_1408808d0()
         return 0;
     return 1;
 }
-MS2_REPLACE_METHOD(0x1408808d0, CUGCBuildValidator, FUN_1408808d0, 171, 0xD5C421FB);
+MS2_REPLACE_METHOD(0x1408808d0, CUGCBuildValidator, LoadItemData, 171, 0xD5C421FB);
 
 // @0x140880990
 int CUGCBuildValidator::FUN_140880990()
@@ -827,7 +827,7 @@ int CUGCBuildValidatorCli::vfunc_13(unsigned* pErr)
         MS2Ptr<Cube> spAbove(m_pCubeService->GetCubeAtCell((Unk_Int3&)above));
         if (spAbove.get() != 0)
         {
-            if ((((struct ItemInstallData*)(struct ItemInstallData*)(&m_itemData->install))->FUN_140548cb0() & spAbove->field44) == 0)
+            if ((((struct ItemInstallData*)(struct ItemInstallData*)(&m_itemData->install))->GetStackable() & spAbove->field44) == 0)
             {
                 *pErr = 0x1f;
                 return 0;
@@ -976,7 +976,7 @@ int CUGCBuildValidatorCli::vfunc_20(unsigned* pErr)
             MS2Ptr<CFieldDataCli> spField = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd30a0();
             if (!spField != 0)
                 return 0;
-            if (((struct ItemInstallData*)(struct ItemInstallData*)(&spData->install))->FUN_140548cb0() != 0)
+            if (((struct ItemInstallData*)(struct ItemInstallData*)(&spData->install))->GetStackable() != 0)
             {
                 if (m_pCubeService->FUN_1410d2f40(FUN_1408a03c0((Unk_Int3&)m_point)) == 0)
                 {
@@ -1072,7 +1072,7 @@ int CUGCBuildValidatorCli::vfunc_25(unsigned* pErr)
     MS2Ptr<CFieldDataCli> spField = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd30a0();
     if (!spField)
         return 0;
-    if (spField->FUN_140375130() == 0)
+    if (spField->IsIndoor() == 0)
         return 0;
     if (m_pItem == 0)
         return 0;
@@ -1118,7 +1118,7 @@ int CUGCBuildValidatorCli::vfunc_26(unsigned* pErr)
     MS2Ptr<CFieldDataCli> spField = ((class Unk_1403ed2d0*)WorldService::GetInstance())->FUN_141bd30a0();
     if (!spField)
         return 0;
-    if (spField->FUN_140375130() == 0)
+    if (spField->IsIndoor() == 0)
         return 0;
     if (m_pItem == 0)
         return 0;

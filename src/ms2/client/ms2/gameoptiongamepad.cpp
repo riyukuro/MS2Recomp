@@ -102,32 +102,32 @@ void CGameOptionGamePad::vfunc_6()
     {
         MS2Ptr<ASCheckBox> spUse = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bGamePadUse"), -1);
         if (static_cast<ASCheckBox*>(spUse) != 0)
-            reinterpret_cast<ASButton*>(spUse.operator->())->FUN_1422ce090(m_state.m_bUse);
+            reinterpret_cast<ASButton*>(spUse.operator->())->SetSelected(m_state.m_bUse);
     }
     {
         MS2Ptr<ASCheckBox> spSkill = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bShowSkillName"), -1);
         if (static_cast<ASCheckBox*>(spSkill) != 0)
-            reinterpret_cast<ASButton*>(spSkill.operator->())->FUN_1422ce090(m_state.m_bShowSkillName);
+            reinterpret_cast<ASButton*>(spSkill.operator->())->SetSelected(m_state.m_bShowSkillName);
     }
     {
         MS2Ptr<ASSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_gamePadLStickMoveSensitivity"), -1);
         if (static_cast<ASSlider*>(spStick) != 0)
-            reinterpret_cast<MS2Ptr<ASSlider>&>(spStick)->FUN_1422ce5f0((float)m_state.m_nLStickSensitivity);
+            reinterpret_cast<MS2Ptr<ASSlider>&>(spStick)->SetValue((float)m_state.m_nLStickSensitivity);
     }
     {
         MS2Ptr<ASCheckBox> spVibration = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bVibration"), -1);
         if (static_cast<ASCheckBox*>(spVibration) != 0)
-            reinterpret_cast<ASButton*>(spVibration.operator->())->FUN_1422ce090(m_state.m_bVibration);
+            reinterpret_cast<ASButton*>(spVibration.operator->())->SetSelected(m_state.m_bVibration);
     }
     {
         MS2Ptr<ASSlider> spH = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_sensitivityH"), -1);
         if (static_cast<ASSlider*>(spH) != 0)
-            reinterpret_cast<MS2Ptr<ASSlider>&>(spH)->FUN_1422ce5f0(m_state.m_fSensitivityH * 100.0f);
+            reinterpret_cast<MS2Ptr<ASSlider>&>(spH)->SetValue(m_state.m_fSensitivityH * 100.0f);
     }
     {
         MS2Ptr<ASSlider> spV = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_sensitivityV"), -1);
         if (static_cast<ASSlider*>(spV) != 0)
-            reinterpret_cast<MS2Ptr<ASSlider>&>(spV)->FUN_1422ce5f0(m_state.m_fSensitivityV * 100.0f);
+            reinterpret_cast<MS2Ptr<ASSlider>&>(spV)->SetValue(m_state.m_fSensitivityV * 100.0f);
     }
 }
 MS2_REPLACE_METHOD(0x140A572E0, CGameOptionGamePad, vfunc_6, 1098, 0x80A5AEFD);
@@ -138,19 +138,19 @@ void CGameOptionGamePad::vfunc_7()
     {
         MS2Ptr<ASCheckBox> spUse = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bGamePadUse"), -1);
         if (static_cast<ASCheckBox*>(spUse) != 0)
-            m_state.m_bUse = reinterpret_cast<ASButton*>(spUse.operator->())->FUN_1422ce0e0() ? true : false;
+            m_state.m_bUse = reinterpret_cast<ASButton*>(spUse.operator->())->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASCheckBox> spSkill = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bShowSkillName"), -1);
         if (static_cast<ASCheckBox*>(spSkill) != 0)
-            m_state.m_bShowSkillName = reinterpret_cast<ASButton*>(spSkill.operator->())->FUN_1422ce0e0() ? true : false;
+            m_state.m_bShowSkillName = reinterpret_cast<ASButton*>(spSkill.operator->())->IsSelected() ? true : false;
     }
     {
         MS2Ptr<ASSlider> spStick = ((Unk_GpDialog*)GetOptionDialog())->GetTabSlider(CString("m_gamePadLStickMoveSensitivity"), -1);
         if (static_cast<ASSlider*>(spStick) != 0)
         {
-            if (CFeatureManager::GetInstance()->FUN_14036d570(0xd6))
-                m_state.m_nLStickSensitivity = (int)reinterpret_cast<MS2Ptr<ASSlider>&>(spStick)->FUN_1422ce630();
+            if (CFeatureManager::GetInstance()->IsFeatureEnabled(0xd6))
+                m_state.m_nLStickSensitivity = (int)reinterpret_cast<MS2Ptr<ASSlider>&>(spStick)->GetValue();
             else
                 m_state.m_nLStickSensitivity = 0;
         }
@@ -159,8 +159,8 @@ void CGameOptionGamePad::vfunc_7()
         MS2Ptr<ASCheckBox> spVibration = ((Unk_GpDialog*)GetOptionDialog())->GetTabCheckBox(CString("m_bVibration"), -1);
         if (static_cast<ASCheckBox*>(spVibration) != 0)
         {
-            if (CFeatureManager::GetInstance()->FUN_14036d570(0xc3))
-                m_state.m_bVibration = reinterpret_cast<ASButton*>(spVibration.operator->())->FUN_1422ce0e0() ? true : false;
+            if (CFeatureManager::GetInstance()->IsFeatureEnabled(0xc3))
+                m_state.m_bVibration = reinterpret_cast<ASButton*>(spVibration.operator->())->IsSelected() ? true : false;
             else
                 m_state.m_bVibration = false;
         }
@@ -170,7 +170,7 @@ void CGameOptionGamePad::vfunc_7()
         if (static_cast<ASSlider*>(spH) != 0)
         {
             float fMin = 0.01f;
-            float fValue = reinterpret_cast<MS2Ptr<ASSlider>&>(spH)->FUN_1422ce630() / 100.0f;
+            float fValue = reinterpret_cast<MS2Ptr<ASSlider>&>(spH)->GetValue() / 100.0f;
             m_state.m_fSensitivityH = (std::max)(fValue, fMin);
         }
     }
@@ -179,7 +179,7 @@ void CGameOptionGamePad::vfunc_7()
         if (static_cast<ASSlider*>(spV) != 0)
         {
             float fMin = 0.01f;
-            float fValue = reinterpret_cast<MS2Ptr<ASSlider>&>(spV)->FUN_1422ce630() / 100.0f;
+            float fValue = reinterpret_cast<MS2Ptr<ASSlider>&>(spV)->GetValue() / 100.0f;
             m_state.m_fSensitivityV = (std::max)(fValue, fMin);
         }
     }
@@ -194,7 +194,7 @@ void CGameOptionGamePad::vfunc_10()
     SetGamepadEnabled(&m_state, m_state.m_bUse, true);
     if (FUN_140a58520(FUN_140a58540()) != 0)
     {
-        MS2Ptr<ASMouseCursor> spHud = FUN_14025e7a0()->GetMouseCursor(6);
+        MS2Ptr<ASMouseCursor> spHud = GetGFxManager()->GetMouseCursor(6);
         if (static_cast<ASMouseCursor*>(spHud) != 0)
         {
             spHud->FUN_1422cee00();

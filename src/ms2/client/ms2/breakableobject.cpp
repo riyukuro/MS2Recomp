@@ -56,13 +56,13 @@ extern int DAT_143ae2960;                   // shadow quality (forced)
 
 // ---- exe functions outside this unit ----
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
-Unk_ServiceManager * FUN_1413f9850(void);  // C3: the definition's signature
+Unk_ServiceManager * GetServiceManager(void);  // C3: the definition's signature
 ecr::SceneGraphService* GetSceneGraphService();                            // the scene graph service
 class MS2SceneGraphService { public: void MarkEntityDynamic(egf::Entity*); void RemoveEntityFromUpdate(egf::Entity*); };    // attach the entity's scene graph
 
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the entity's scene root
 void SetNodeAlpha(NiAVObject* pRoot, float fAlpha, bool bRecurse); // set the model alpha
-void FUN_141567330(NiAVObject* pRoot, bool bOn);                    // the model's shadow on / off
+void SetShadowCaster(NiAVObject* pRoot, bool bOn);                    // the model's shadow on / off
 void FUN_140997ab0(egf::EntityPtr spEntity, NiActorManager::CallbackObject* pCb);   // register the actor callback
 CString FUN_140188f50(const char* pszText, int nCodePage); // UTF-8 -> CString
 void FUN_1401d3700(CString& str);                                   // normalise an object name
@@ -84,7 +84,7 @@ bool Unk_IsFinite(const efd::Point3& pt);                           // all three
 // @0x140ae11e0
 inline egf::EntityManager* GetEntityManager()
 {
-    return FUN_1413f9850()->GetSystemServiceAs<egf::EntityManager>();
+    return GetServiceManager()->GetSystemServiceAs<egf::EntityManager>();
 }
 
 // The effective shadow quality.
@@ -139,8 +139,8 @@ CBreakableObject::CBreakableObject()
     m_nSyncC = 0;
     m_bTombEffects = false;
     m_bDetached = true;
-    m_kDetachTimer.FUN_1408687f0();
-    m_kStateTimer.FUN_1408687f0();
+    m_kDetachTimer.Reset();
+    m_kStateTimer.Reset();
 }
 
 // @0x140adda30
@@ -206,7 +206,7 @@ int CBreakableObject::FUN_140addea0()
 {
     if (!m_bHittable)
         return 0;
-    if (IsTombStone() == 0 && m_kHitTimer.FUN_140868ba0() != 0)
+    if (IsTombStone() == 0 && m_kHitTimer.IsRunning() != 0)
         return 0;
     return m_nState == 2;
 }
@@ -237,7 +237,7 @@ void CBreakableObject::FUN_140ade030(int nHitter, int nKind)
         : &static_cast<Client::Constants*>(GetClientConstants())->VolumePcToBreakableObject;
     float fVolume = pVolume->Read();
     TSingleton<CEffectService>::GetInstance()->PlayHitSound(nHitter, m_nHitSound, nKind, reinterpret_cast<NiPoint3&>(m_ptPos), fVolume);
-    m_kHitTimer.FUN_140868750(1000);
+    m_kHitTimer.Start(1000);
 }
 
 // @0x140ade120
@@ -270,9 +270,9 @@ int CBreakableObject::vfunc_1(egf::Entity* pEntity, int nState)
 void CBreakableObject::SetState(int nState, unsigned int nDelay)
 {
     m_nState = nState;
-    m_kStateTimer.FUN_1408687f0();
+    m_kStateTimer.Reset();
     if (nDelay > 0)
-        m_kStateTimer.FUN_140868750(nDelay);
+        m_kStateTimer.Start(nDelay);
     if (m_spEntity == 0)
         return;
     if (m_nState == 5)
@@ -362,14 +362,14 @@ void CBreakableObject::Update(int nNow)
     m_ptVelocity = efd::Point3::ZERO;
     if (static_cast<MS2EntityManagerService*>(GetEntityManager())->IsEntityDirty(m_spEntity))
         FUN_140adf9d0(m_spEntity);
-    if (m_kDetachTimer.FUN_140868c00())
+    if (m_kDetachTimer.IsExpired())
     {
-        m_kDetachTimer.FUN_1408687f0();
+        m_kDetachTimer.Reset();
         UnmarkDynamic(0);
     }
-    if (m_kStateTimer.FUN_140868c00())
+    if (m_kStateTimer.IsExpired())
     {
-        m_kStateTimer.FUN_1408687f0();
+        m_kStateTimer.Reset();
         FUN_140adf6e0();
     }
     if (0.0f < m_fMoveTime && m_fSpeed != 0.0f && (m_nState == 2 || m_nState == 5 || m_nState == 6))
@@ -426,9 +426,9 @@ void CBreakableObject::Update(int nNow)
         m_ptVelocity = GetPtPos() - ptOld;
         m_ptVelocity.Unitize();
     }
-    if (m_kFadeTimer.FUN_140868c00())
+    if (m_kFadeTimer.IsExpired())
     {
-        m_kFadeTimer.FUN_1408687f0();
+        m_kFadeTimer.Reset();
         bool bFade = false;
         m_spEntity->SetPropertyValue(0xa0b6b179, bFade);
     }
@@ -493,7 +493,7 @@ void CBreakableObject::FUN_140adf370(egf::Entity* pEntity, int nArg, MS2Ptr<CGem
         m_aRegenAnims.Add("Regen_A");
         m_aDamageAnims.Add("Damg_A");
         m_aReviveAnims.Add("Revive_A");
-        MS2Ptr<CGemTombStoneData> spData = spTomb->FUN_1405a53c0();
+        MS2Ptr<CGemTombStoneData> spData = spTomb->GetData();
         if (spData.get())
         {
             CGemTombStoneData::TModelAttr& kAttr = bDark ? spData->m_attrB : spData->m_attrA;
@@ -515,7 +515,7 @@ void CBreakableObject::FUN_140adf370(egf::Entity* pEntity, int nArg, MS2Ptr<CGem
 // @0x140adf6e0
 void CBreakableObject::FUN_140adf6e0()
 {
-    m_kStateTimer.FUN_1408687f0();
+    m_kStateTimer.Reset();
     if (IsTombStone() != 0)
     {
         switch (m_nState)
@@ -758,7 +758,7 @@ void CBreakableObject::FUN_140ae07d0(int bShow)
     {
         bool bFade = true;
         m_spEntity->SetPropertyValue(0xa0b6b179, bFade);
-        m_kFadeTimer.FUN_1408687f0();
+        m_kFadeTimer.Reset();
         TSingleton<CEffectService>::GetInstance()->RemoveTracked(m_spEntity->GetEntityID());
         NiAVObject* pRoot = FUN_141b6efc0(m_spEntity);
         if (pRoot != 0)
@@ -769,7 +769,7 @@ void CBreakableObject::FUN_140ae07d0(int bShow)
         NiAVObject* pRoot = FUN_141b6efc0(m_spEntity);
         if (pRoot != 0)
             FUN_140ae1e80(pRoot, 1.0f, 0.0f, 0.0f, FUN_14028d280(500), m_spEntity->GetEntityID());
-        m_kFadeTimer.FUN_140868750(500);
+        m_kFadeTimer.Start(500);
     }
     UpdateShadow(bShow);
 }
@@ -783,14 +783,14 @@ void CBreakableObject::UpdateShadow(int bShow)
         if (pRoot != 0 && m_bShadow && (IsTombStone() == 0 || m_nState != 5))
         {
             bool bShadow = FUN_140ae1c10() >= TSingleton<CGraphicOptionTable>::GetInstance()->GetShadowOption(5);
-            FUN_141567330(pRoot, bShadow);
+            SetShadowCaster(pRoot, bShadow);
         }
     }
     else
     {
         NiAVObject* pRoot = FUN_141b6efc0(m_spEntity);
         if (pRoot != 0)
-            FUN_141567330(pRoot, false);
+            SetShadowCaster(pRoot, false);
     }
 }
 
@@ -860,7 +860,7 @@ void CBreakableObject::UnmarkDynamic(int nDelay)
         return;
     if (nDelay != 0)
     {
-        m_kDetachTimer.FUN_140868750(nDelay);
+        m_kDetachTimer.Start(nDelay);
     }
     else
     {

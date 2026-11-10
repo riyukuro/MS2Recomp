@@ -24,7 +24,7 @@ struct Unk_FishRange
 {
     Unk_FishRange() : m_nMin(0), m_nMax(0) {}
     void FUN_140303060(unsigned nMin, unsigned nMax) { m_nMin = nMin; m_nMax = nMax; }
-    bool FUN_1403b4ef0(unsigned n) const;                           // 0x1403b4ef0 n is inside the range
+    bool IsInRange(unsigned n) const;                           // 0x1403b4ef0 n is inside the range
     unsigned m_nMin;
     unsigned m_nMax;
 };
@@ -53,12 +53,12 @@ public:
     CFishData();                                                    // 0x1403b1040
     // ~CFishData() is implicit (0x1403b39d0, no vftable store)
     int Load(TiXmlElement* pNode);                                 // 0x1403b1100 the row's attributes (0 when the size ranges are bad)
-    int FUN_1403b14d0(unsigned nSize) const;                        // the size is in the largest class
-    int FUN_1403b1520(unsigned nSize) const;                        // the size class (0..3, 4 = none)
-    int FUN_1403b1590(unsigned nSize) const;                        // the size class as a 0..3 grade
-    CStringW FUN_1403b1600() const;                                 // "./Data/Resource/Image/Fishing/<id>.png"
-    CStringW FUN_1403b1650() const;                                 // the name from the string table
-    CStringW FUN_1403b16b0(int bDetail) const;                      // tooltip text: habitat maps and the description
+    int IsLargestSizeClass(unsigned nSize) const;                        // the size is in the largest class
+    int GetSizeClass(unsigned nSize) const;                        // the size class (0..3, 4 = none)
+    int GetSizeGrade(unsigned nSize) const;                        // the size class as a 0..3 grade
+    CStringW GetIconPath() const;                                 // "./Data/Resource/Image/Fishing/<id>.png"
+    CStringW GetName() const;                                 // the name from the string table
+    CStringW GetDescription(int bDetail) const;                      // tooltip text: habitat maps and the description
 
     unsigned m_nId;                                                 // +0x18 "id"
     unsigned m_nMastery;                                                 // +0x1c "fishMastery"
@@ -124,7 +124,7 @@ public:
 
     int Load();                                                     // 0x1403b1f00 the four xml files (0 on the first failure)
     int FUN_1403b1f70(const CStringW& strHabitat);                  // habitat name -> id (8 = unknown)
-    CStringW FUN_1403b20b0(int nHabitat);                           // habitat id -> string table text
+    CStringW GetHabitatName(int nHabitat);                           // habitat id -> string table text
     CStringW FUN_1403b2240(int n);                                  // string table text 0xbba + n
     int LoadFish();                                                 // 0x1403b2540 fish.xml
     int LoadRods();                                                 // 0x1403b27e0 fishingRod.xml
@@ -134,7 +134,7 @@ public:
     CFishingRodDataPtr GetRod(int nId);                             // 0x1403b2dc0
     CFishingSpotDataPtr GetSpot(int nId);                           // 0x1403b2e50
     CStringW FUN_1403b2ee0(unsigned nFishId);                       // "$map:<id>$, ..." of the (up to three) maps of a fish
-    void FUN_1403b30b0(ATL::CAtlArray<unsigned int>* pOut, int nHabitat, int bBookOnly);   // fish ids of a habitat
+    void GetFishIdsByHabitat(ATL::CAtlArray<unsigned int>* pOut, int nHabitat, int bBookOnly);   // fish ids of a habitat
 
     static void CheckInit();                                        // 0x1403b3f70
     static void SetInit(bool b);                                    // 0x1403b6cf0

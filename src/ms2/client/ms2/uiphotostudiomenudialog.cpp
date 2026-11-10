@@ -42,7 +42,7 @@ UIPhotoStudioMenuDialog::UIPhotoStudioMenuDialog() : m_bFreeCamera(0)
     m_80 = 0;
     m_88 = 1;
     FUN_1422dc3b0(1);
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x140e75f40
@@ -100,18 +100,18 @@ void UIPhotoStudioMenuDialog::OnScreenshot()
 // @0x140e76170
 void UIPhotoStudioMenuDialog::OnFreeCamera()
 {
-    FUN_140e76270(m_bFreeCamera == 0);
+    SetFreeCamera(m_bFreeCamera == 0);
 }
 
 // @0x140e761b0
 void UIPhotoStudioMenuDialog::FUN_140e761b0()
 {
     if (MS2Ptr<ASButton> spCheck = GetChild<ASButton>("m_freeCamera"))
-        spCheck->FUN_1422ce090(TSingleton<CameraMgr>::GetInstance()->GetModeType() == 1);
+        spCheck->SetSelected(TSingleton<CameraMgr>::GetInstance()->GetModeType() == 1);
 }
 
 // @0x140e76270
-void UIPhotoStudioMenuDialog::FUN_140e76270(bool bFreeCamera)
+void UIPhotoStudioMenuDialog::SetFreeCamera(bool bFreeCamera)
 {
     m_bFreeCamera = bFreeCamera;
     if (m_bFreeCamera)

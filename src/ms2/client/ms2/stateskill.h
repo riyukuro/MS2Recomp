@@ -34,12 +34,12 @@ class Unk_SkillPauseEvent
 {
 public:
     Unk_SkillPauseEvent();                                              // 0x1417e47d0
-    void FUN_1417e4810(PCBase* pOwner, unsigned nSkillId, unsigned short nLevel, const CString& strPoint);
+    void ArmPause(PCBase* pOwner, unsigned nSkillId, unsigned short nLevel, const CString& strPoint);
                                                                         // arm with the attack of a cast point
-    void FUN_1417e4900(PCBase* pOwner, float fTime);                    // start the pause (or keep it pending)
-    void FUN_1417e4c50(PCBase* pOwner);                                 // stop and disarm
-    void FUN_1417e4cd0(PCBase* pOwner, CSkillRecord* pRecord);          // tick: end the pause when it is over
-    int FUN_1417e4e40();                                                // the pause is running
+    void StartPause(PCBase* pOwner, float fTime);                    // start the pause (or keep it pending)
+    void StopPause(PCBase* pOwner);                                 // stop and disarm
+    void UpdatePause(PCBase* pOwner, CSkillRecord* pRecord);          // tick: end the pause when it is over
+    int IsPauseRunning();                                                // the pause is running
 
     float m_fStart;                                                     // +0x00 the pause start time (0: off)
     float m_fPending;                                                   // +0x04 a start time before the arm
@@ -100,9 +100,9 @@ public:
     MS2Ptr<CSkillRecord> GetRecord();                               // the running cast
     void SetChargeRecord(MS2Ptr<CSkillRecord> spRecord);                  // set the charging cast
     MS2Ptr<CSkillRecord> GetCharge();                               // the charging cast
-    void FUN_1417ec2f0();                                               // send the charge / aim state
+    void SendChargeState();                                               // send the charge / aim state
     void FUN_1417ec630(bool bCharge, bool bStart);                      // charge input on/off
-    void FUN_1417ecc10(Unk_MagicTagPtr spTag);
+    void ArmPauseFromTag(Unk_MagicTagPtr spTag);
     void FUN_1417ed7f0();
     void FUN_1417edc20(double fTime);
     void FUN_1417ee120();
@@ -115,9 +115,9 @@ public:
     MS2Ptr<CSkillRecord> FUN_1417f0230();
     MS2Ptr<CSkillRecord> FUN_1417f0570(int nKind);
     void FUN_1417f0940();
-    void FUN_1417f0d60(unsigned nTick, const char* szPoint);                                 // fire the current attack
+    void FireCurrentAttack(unsigned nTick, const char* szPoint);                                 // fire the current attack
     float FUN_1417f0ec0();
-    void FUN_1417f0f10(unsigned nTick, const char* szPoint);              // fire the attack of a cast point
+    void FireAttacksAtPoint(unsigned nTick, const char* szPoint);              // fire the attack of a cast point
     void StopRecordEffects();
     void FUN_1417f11d0();
     void FUN_1417f16f0(MS2Ptr<CSkillRecord> spRecord);
@@ -129,8 +129,8 @@ public:
     void StopLoopEffect();
     void PlayLoopEndEffect();
     void FUN_1417f2150();
-    void FUN_1417f27d0();
-    void FUN_1417f2a90(bool bFinish);
+    void StartCastingBar();
+    void StopCastingBar(bool bFinish);
     float GetSpeed();                                              // the sequence frequency
     static int FUN_1417e93a0(PCBase* pOwner, MS2Ptr<SkillLevelData> spLevel, int n60, int nAttack);
                                                                         // pick per motion until one finds targets
@@ -143,18 +143,18 @@ public:
     void SendSkillMode4();
     void PlaySuperArmorEffect();                                               // start the super armor effect
     void StopSuperArmorEffect();                                               // stop it
-    bool FUN_1417f5060();                                               // the combo input may chain
+    bool CanChainCombo();                                               // the combo input may chain
     static void SetTargetStartTicks(MS2Ptr<CSkillRecord> spRecord);           // fire the due magic models of a cast
     static int FUN_1417ea570(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult);   // check a cast by kind
-    static void FUN_1417ea750(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord);   // the cast's start effect
-    static int FUN_1417ea920(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord);    // fire the cast's first attack
+    static void PlayCastStartEffect(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord);   // the cast's start effect
+    static int FireFirstAttack(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord);    // fire the cast's first attack
     static int FUN_1417eaa50(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult);
-    static int FUN_1417eb3a0(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult);
+    static int UseStateSkill(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult);
     static int FUN_1417ebc00(PCBase* pOwner, MS2Ptr<CSkillRecord> spRecord, int* pResult);
     static void FUN_1417ecce0(unsigned nTick, MS2Ptr<CSkillRecord> spRecord, int nAttack, PCBase* pOwner);
                                                                         // fire one attack (magic models + packet)
     static void FUN_1417f2cb0(float fTime, MS2Ptr<CSkillRecord> spRecord, int nAttack, PCBase* pOwner);   // the debug range
-    static void FUN_1417f3180(ATL::CAtlArray<Unk_MagicTagPtr>& aTags, const efd::Point3& kDir,
+    static void PickAttackTargets(ATL::CAtlArray<Unk_MagicTagPtr>& aTags, const efd::Point3& kDir,
         MS2Ptr<CSkillRecord> spRecord, int nAttack, PCBase* pOwner);   // pick the targets of an attack
     static void FUN_1417f3e80(int nBounce, ATL::CAtlList<Unk_MagicTagPtr>& lstChain, MS2Ptr<CSkillRecord> spRecord,
         int nAttack, PCBase* pOwner);   // chain a bounce from the last record

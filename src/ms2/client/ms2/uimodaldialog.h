@@ -21,6 +21,6 @@ MS2_CHECK_SIZE(UIModalDialog, 0x180);
 MS2_CHECK_OFFSET(UIModalDialog, m_178, 0x178);
 
 // The id of the shown modal dialog (0x143af4400) and its three accessors in uimodaldialog.cpp.
-int FUN_141a55620();
-void FUN_141a55650(int nId);
-void FUN_141a55670(int nId);
+int IsModalDialogShown();
+void SetModalDialogId(int nId);
+void ClearModalDialogId(int nId);

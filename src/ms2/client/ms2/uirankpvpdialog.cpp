@@ -54,7 +54,7 @@ class Unk_PCBaseBuffs : public AdditionalCliList {};
 class Unk_RankWorld { public: PCBase* FUN_141bd0cc0(); };          // the local player
 class Unk_RankUIService { public: void FUN_141adc530(int nUiId); }; // close
 UIGameRankingDialog* FUN_140b2d030(int nUiId);                      // GetDialog
-class UIWebBrowser* FUN_140c43790(int nUiId);                       // GetDialog
+class UIWebBrowser* FindWebBrowser(int nUiId);                       // GetDialog
 class Unk_RankClientState { public: };
 struct Unk_RankClientFlags { unsigned char m_0; unsigned char m_observer; };
 // C3: FUN_140c9b8b0 is CGameOption's (cgameoption.h); was the Unk_QnState view
@@ -76,21 +76,21 @@ template <class A> CString StringFormat(const char* szFormat, const A& a);
 enum Unk_ClosingJob { Unk_ClosingJob_None };   // uidungeonclosingphotodialog's job enum (StringFormat<Unk_ClosingJob> 0x140e10af0)
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cffca0(const Scaleform::GFx::Value& root, CString strName, CString strFrame);
-void FUN_140d73aa0(CStringW text, int nA, void* pListener, CStringW tag);     // toast
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);
+void ShowMessageBox(CStringW text, int nA, void* pListener, CStringW tag);     // toast
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                        // show the message box
-void FUN_1412751f0(const CStringW& text, int nA, int nB);           // notice
+void ShowSystemNotice(const CStringW& text, int nA, int nB);           // notice
 void FUN_14151f200();                                               // close the open modal box
 int FUN_1413499b0(int);   // C3: was FUN_1413499b0
-bool FUN_1407105c0(COutPacket* packet, int key, int delay);         // rate limited send
+bool SendPacketThrottled(COutPacket* packet, int key, int delay);         // rate limited send
 bool FUN_14028d780(unsigned char b);
-int FUN_140bb9640(void* p);                                         // the click's user data
+int UserDataToInt(void* p);                                         // the click's user data
 
 // @0x140f91d90
 UIRankPvPDialog::UIRankPvPDialog()
     : m_gaugeWidth(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140f91f40
@@ -116,7 +116,7 @@ MS2_REPLACE_METHOD(0x140F92100, UIRankPvPDialog, OnLoadInit, 24, 0x13CA9F3E);
 void UIRankPvPDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925ec0("m_closeButton");
+    BindCloseButton("m_closeButton");
     FUN_1419260d0("m_webGuideButton", 0);
     m_registMenu = GetChild<ASButton>("m_registMenu");
     m_statisticsMenu = GetChild<ASButton>("m_statisticsMenu");
@@ -138,12 +138,12 @@ void UIRankPvPDialog::OnLoadComplete()
         m_seasonBestRating = m_registerPage->FUN_1409b4620("m_seasonBestRating");
         m_rating = m_registerPage->FUN_1409b4620("m_rating");
         m_rankMark = m_registerPage->FUN_1409b4560("m_rankMark");
-        m_observeCheck->FUN_1422ce090(((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_observer);
+        m_observeCheck->SetSelected(((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->GetEtc())->m_observer);
         m_register->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95260), 0);
         m_unregister->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::SendPVPMode15), 0);
         m_showGrade->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95550), 0);
         m_observeCheck->FUN_1422ce240(RankClickDelegate(this, &UIRankPvPDialog::FUN_140f95630), 0);
-        m_gaugeWidth = m_gauge->FUN_1422c1340();
+        m_gaugeWidth = m_gauge->GetWidthCeil();
     }
     if (m_statisticsPage)
     {
@@ -163,24 +163,24 @@ void UIRankPvPDialog::OnLoadComplete()
         bool bHideFirst = ((class CFeatureManager*)FUN_140166410())->GetLocaleName() != "KR" && m_history[1] != 0;
         if (bHideFirst)
             m_history[1]->vfunc_4(false);
-        if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(8))
+        if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(8))
         {
             if (m_history[90])
                 m_history[90]->vfunc_4(false);
         }
-        if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x12))
+        if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x12))
         {
             if (m_history[100])
                 m_history[100]->vfunc_4(false);
         }
-        if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x25))
+        if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x25))
         {
             if (m_history[110])
                 m_history[110]->vfunc_4(false);
         }
         // Stack the visible rows.
-        int y = (int)m_history[1]->FUN_1422c1110();
-        int nStep = (int)(m_history[10]->FUN_1422c1110() - (float)y);
+        int y = (int)m_history[1]->GetY();
+        int nStep = (int)(m_history[10]->GetY() - (float)y);
         std::map<int, MS2Ptr<ASMovieClip> >::iterator it = m_history.begin();
         std::map<int, MS2Ptr<ASMovieClip> >::iterator itEnd = m_history.end();
         for (; it != itEnd; ++it)
@@ -194,13 +194,13 @@ void UIRankPvPDialog::OnLoadComplete()
         }
     }
     CPVPManager::GetInstance()->GetRankDuel()->RefreshLeague();
-    FUN_140f94390();
-    FUN_140f94490();
-    FUN_140f94840();
+    UpdateRegisterButtons();
+    UpdateOwnRecord();
+    UpdateHistoryRows();
     m_registerPage->vfunc_3(1);
     m_statisticsPage->vfunc_3(0);
-    m_registMenu->FUN_1422ce090(1);
-    m_statisticsMenu->FUN_1422ce090(0);
+    m_registMenu->SetSelected(1);
+    m_statisticsMenu->SetSelected(0);
 }
 MS2_REPLACE_METHOD(0x140F92120, UIRankPvPDialog, OnLoadComplete, 7204, 0xB09A3B85);
 
@@ -242,7 +242,7 @@ int UIRankPvPDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
             {
                 if (!CPVPManager::GetInstance()->GetRankDuel()->RequestCancelMatch())
                 {
-                    FUN_1412751f0(GetStringCommonByKey(L"s_rank_duel_ui_error_cant_move"), 1, 1);
+                    ShowSystemNotice(GetStringCommonByKey(L"s_rank_duel_ui_error_cant_move"), 1, 1);
                     return 0;
                 }
                 return 1;
@@ -284,16 +284,16 @@ void UIRankPvPDialog::vfunc_45(Scaleform::GFx::Value* pRetVal, const CString& st
                 CString strScoreKey = StringFormat<int>("score{0}", i);
                 CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x22, pGrade->m_nGrade);
                 CStringW strScore = BlockFormat<int>(0x3f7, pGrade->m_nGradeRating);
-                ((class AScript&)(tooltip)).FUN_1407cbb20(strNameKey, strName);
-                ((class AScript&)(tooltip)).FUN_1407cbb20(strScoreKey, strScore);
+                ((class AScript&)(tooltip)).SetWStringMember(strNameKey, strName);
+                ((class AScript&)(tooltip)).SetWStringMember(strScoreKey, strScore);
             }
-            *pRetVal = tooltip.FUN_1422bb870();
+            *pRetVal = tooltip.GetValue();
         }
     }
 }
 
 // @0x140f94390
-void UIRankPvPDialog::FUN_140f94390()
+void UIRankPvPDialog::UpdateRegisterButtons()
 {
     if (m_30 == 0)
         return;
@@ -309,10 +309,10 @@ void UIRankPvPDialog::FUN_140f94390()
         m_unregister->vfunc_3(0);
     }
 }
-MS2_REPLACE_METHOD(0x140F94390, UIRankPvPDialog, FUN_140f94390, 248, 0xD338B38A);
+MS2_REPLACE_METHOD(0x140F94390, UIRankPvPDialog, UpdateRegisterButtons, 248, 0xD338B38A);
 
 // @0x140f94490
-void UIRankPvPDialog::FUN_140f94490()
+void UIRankPvPDialog::UpdateOwnRecord()
 {
     if (m_30 == 0)
         return;
@@ -344,10 +344,10 @@ void UIRankPvPDialog::FUN_140f94490()
     CString strLabel = StringFormat<int>("_{0}", nGrade);
     m_rankMark->vfunc_15(strLabel);
 }
-MS2_REPLACE_METHOD(0x140F94490, UIRankPvPDialog, FUN_140f94490, 933, 0x64540A9E);
+MS2_REPLACE_METHOD(0x140F94490, UIRankPvPDialog, UpdateOwnRecord, 933, 0x64540A9E);
 
 // @0x140f94840
-void UIRankPvPDialog::FUN_140f94840()
+void UIRankPvPDialog::UpdateHistoryRows()
 {
     if (m_30 == 0)
         return;
@@ -399,27 +399,27 @@ void UIRankPvPDialog::FUN_140f94840()
         }
     }
 }
-MS2_REPLACE_METHOD(0x140F94840, UIRankPvPDialog, FUN_140f94840, 2121, 0xC35C2BBC);
+MS2_REPLACE_METHOD(0x140F94840, UIRankPvPDialog, UpdateHistoryRows, 2121, 0xC35C2BBC);
 
 // @0x140f95090
 void UIRankPvPDialog::FUN_140f95090(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_30 == 0)
         return;
-    int nTab = FUN_140bb9640(params.pUserData);
+    int nTab = UserDataToInt(params.pUserData);
     if (nTab == 0)
     {
         m_registerPage->vfunc_3(1);
         m_statisticsPage->vfunc_3(0);
-        m_registMenu->FUN_1422ce090(1);
-        m_statisticsMenu->FUN_1422ce090(0);
+        m_registMenu->SetSelected(1);
+        m_statisticsMenu->SetSelected(0);
     }
     else if (nTab == 1)
     {
         m_registerPage->vfunc_3(0);
         m_statisticsPage->vfunc_3(1);
-        m_registMenu->FUN_1422ce090(0);
-        m_statisticsMenu->FUN_1422ce090(1);
+        m_registMenu->SetSelected(0);
+        m_statisticsMenu->SetSelected(1);
     }
 }
 MS2_REPLACE_METHOD(0x140F95090, UIRankPvPDialog, FUN_140f95090, 391, 0x9CD5BE55);
@@ -438,15 +438,15 @@ void UIRankPvPDialog::FUN_140f95260(const Scaleform::GFx::FunctionHandler::Param
 {
     if (m_30 == 0)
         return;
-    unsigned char nObserver = ((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_observer;
+    unsigned char nObserver = ((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->GetEtc())->m_observer;
     if (nObserver == 1)
     {
         // Registering while observing: ask first (OnMessage "rankArenaRegister").
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_rank_duel_ui_regist_on_observe"), static_cast<IMessageListener*>(this),
+        if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_rank_duel_ui_regist_on_observe"), static_cast<IMessageListener*>(this),
                                                       s_strRankArenaRegister))
         {
             spBox->FUN_141a02460(1);
-            spBox->FUN_141a02480(1);
+            spBox->SetModaless(1);
             spBox->FUN_141a024a0(0);
             FUN_140d73c60(spBox);
         }
@@ -463,13 +463,13 @@ void UIRankPvPDialog::SendPVPMode15(const Scaleform::GFx::FunctionHandler::Param
     int nState = CPVPManager::GetInstance()->GetRankDuel()->m_state;
     if (nState != 1)
     {
-        FUN_140d73aa0(GetStringCommon(0x428), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommon(0x428), 0, 0, CStringW(L""));
     }
     else
     {
         COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
         packet.WriteUInt8(0xf);
-        FUN_1407105c0(&packet, 0xf, 1000);
+        SendPacketThrottled(&packet, 0xf, 1000);
     }
 }
 MS2_REPLACE_METHOD(0x140F95460, UIRankPvPDialog, SendPVPMode15, 219, 0x5F2723A2);
@@ -477,18 +477,18 @@ MS2_REPLACE_METHOD(0x140F95460, UIRankPvPDialog, SendPVPMode15, 219, 0x5F2723A2)
 // @0x140f95550
 void UIRankPvPDialog::FUN_140f95550(const Scaleform::GFx::FunctionHandler::Params& params)
 {
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3f) == 1)
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x3f) == 1)
     {
         UIGameRankingDialog* pDialog = FUN_140b2d030(0x4f24);
         if (pDialog)
         {
-            pDialog->FUN_140e2dfc0(4, 0);
+            pDialog->SelectCategory(4, 0);
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4f24)));
         }
     }
-    else if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3b) == 1)
+    else if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x3b) == 1)
     {
-        UIWebBrowserBase* pBrowser = reinterpret_cast<UIWebBrowserBase*>(FUN_140c43790(0x4e6a));
+        UIWebBrowserBase* pBrowser = reinterpret_cast<UIWebBrowserBase*>(FindWebBrowser(0x4e6a));
         if (pBrowser == 0)
             return;
         pBrowser->FUN_14135ec00("maview:/Rank/PVP", true);
@@ -501,11 +501,11 @@ void UIRankPvPDialog::FUN_140f95630(const Scaleform::GFx::FunctionHandler::Param
 {
     if (m_30 == 0)
         return;
-    bool bObserve = FUN_14028d780(m_observeCheck->FUN_1422ce0e0());
-    ((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->FUN_140c9b8b0())->m_observer = bObserve;
+    bool bObserve = FUN_14028d780(m_observeCheck->IsSelected());
+    ((struct Unk_RankClientFlags*)TSingleton<CGameOption>::GetInstance()->GetEtc())->m_observer = bObserve;
     ((class CGameOption*)(class Unk_RankClientState*)(reinterpret_cast<Unk_RankClientState*>(TSingleton<CGameOption>::GetInstance())))->SaveCharacterSettings();
     if (bObserve)
-        FUN_140d73aa0(GetStringCommonByKey(L"s_rank_duel_ui_observe_notify"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_rank_duel_ui_observe_notify"), 0, 0, CStringW(L""));
 }
 MS2_REPLACE_METHOD(0x140F95630, UIRankPvPDialog, FUN_140f95630, 271, 0x177668F5);
 
@@ -515,7 +515,7 @@ bool UIRankPvPDialog::FUN_140f95750()
     int nState = CPVPManager::GetInstance()->GetRankDuel()->m_state;
     if (nState != 0)
     {
-        FUN_140d73aa0(GetStringCommon(0x428), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommon(0x428), 0, 0, CStringW(L""));
         return false;
     }
     PCBase* pPlayer = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -523,17 +523,17 @@ bool UIRankPvPDialog::FUN_140f95750()
         return false;
     if (pPlayer->FUN_1416749a0()->FUN_140970020(0x5f5e107, 0, 0, 1) != 0)
     {
-        FUN_140d73aa0(GetStringCommon(0x429), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommon(0x429), 0, 0, CStringW(L""));
         return false;
     }
     if ((unsigned short)pPlayer->vfunc_78() < (unsigned short)((class CFeatureManager*)FUN_140166410())->FUN_14036dc20())
     {
-        FUN_140d73aa0(GetStringCommon(0x42a), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommon(0x42a), 0, 0, CStringW(L""));
         return false;
     }
     COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
     packet.WriteUInt8(0xe);
-    FUN_1407105c0(&packet, 0xe, 1000);
+    SendPacketThrottled(&packet, 0xe, 1000);
     return true;
 }
 MS2_REPLACE_METHOD(0x140F95750, UIRankPvPDialog, FUN_140f95750, 634, 0x2753D075);

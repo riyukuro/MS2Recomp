@@ -15,7 +15,7 @@ CStringW FUN_141026be0()
 }
 
 // @0x141026c50
-CStringW FUN_141026c50(const CStringW& strTitle)
+CStringW GetThumbnailFilePath(const CStringW& strTitle)
 {
     CStringW strPath;
     strPath.Format(L"%s/%s.png", (LPCWSTR)FUN_141026be0(), (LPCWSTR)strTitle);

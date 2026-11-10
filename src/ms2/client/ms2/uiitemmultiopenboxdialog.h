@@ -24,7 +24,7 @@ public:
     virtual void vfunc_67();                                    // 67 0x140c3f4c0 Close
 
     void FUN_140c3f9d0(int nBoxId, int nSlot, CStringW strKey, int nCount);   // set the box to open and the count
-    void FUN_140c3fa80(int nOpened, int nResult);               // an answer of the server: count down, report errors
+    void OnOpenResult(int nOpened, int nResult);               // an answer of the server: count down, report errors
     void FUN_140c3fca0();                                       // refresh the "m_count" text
 
 private:

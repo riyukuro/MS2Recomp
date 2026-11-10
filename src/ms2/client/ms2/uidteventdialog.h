@@ -84,10 +84,10 @@ public:
     virtual int vfunc_86(Unk_DTPtr<RewardItem> pReward);                                            // 86 0x140f37700 remove
     virtual int vfunc_87(Unk_DTPtr<RewardItem> pReward, unsigned int nStep);                        // 87 0x140f37870 change step
 
-    void FUN_140f38430(MS2Ptr<CommonUserEvent::DTRewardEventContext> pCtx);                         // create the RewardItem of a context
-    void FUN_140f38630(unsigned int nID);                                                           // remove everything of an event
-    void FUN_140f38750();                                                                           // activate the waiting contexts
-    CStringW FUN_140f388c0(CTimeSpan* pSpan);                                                       // "hh:mm:ss"
+    void CreateRewardItem(MS2Ptr<CommonUserEvent::DTRewardEventContext> pCtx);                         // create the RewardItem of a context
+    void RemoveEvent(unsigned int nID);                                                           // remove everything of an event
+    void ActivateWaitingContexts();                                                                           // activate the waiting contexts
+    CStringW FormatTimeSpan(CTimeSpan* pSpan);                                                       // "hh:mm:ss"
 
 private:
     MS2_LAYOUT_FRIEND;

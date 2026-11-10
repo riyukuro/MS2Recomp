@@ -27,7 +27,7 @@ struct Unk_PvPTeamScoreService;                                 // the game-mode
 class Unk_PtMgr   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141346600(int*, int*);
+    void GetTeamScores(int*, int*);
 };
 
 int FUN_1418fc760(char const*, void*, int, void*);   // C3: was FUN_1418fc760
@@ -40,7 +40,7 @@ struct Unk_ScoreDialogAS { char m_pad_00[0x30]; MS2Ptr<AScript> m_30; };
 // @0x1413466b0
 UIPvPTeamScoreDialog::UIPvPTeamScoreDialog()
 {
-    FUN_141925e70(1, 1);
+    SetFlag(1, 1);
 }
 
 // @0x141346720
@@ -98,7 +98,7 @@ void FUN_141346960(UIPvPTeamScoreDialog* pDialog)
         return;
     int nFirst = 0;
     int nSecond = 0;
-    ((class Unk_PtMgr*)(struct Unk_PvPTeamScoreService*)(reinterpret_cast<Unk_PvPTeamScoreService*>(TSingleton<CPVPManager>::GetInstance())))->FUN_141346600(&nFirst, &nSecond);
+    ((class Unk_PtMgr*)(struct Unk_PvPTeamScoreService*)(reinterpret_cast<Unk_PvPTeamScoreService*>(TSingleton<CPVPManager>::GetInstance())))->GetTeamScores(&nFirst, &nSecond);
     ((Unk_ScoreDialogAS*)pDialog)->m_30->FUN_1409ba0d0("updateScore", nFirst, nSecond);
 }
 MS2_REPLACE(0x141346960, FUN_141346960, 139, 0xF8C6A11B);

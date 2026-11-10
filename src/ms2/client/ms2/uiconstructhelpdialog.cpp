@@ -53,8 +53,8 @@ void FUN_14151f200();
 // @0x141905eb0
 UIConstructHelpDialog::UIConstructHelpDialog()
 {
-    FUN_141924170(1);
-    FUN_141925e70(0, 1);
+    SetTweenEnabled(1);
+    SetFlag(0, 1);
 }
 
 // @0x141905f20

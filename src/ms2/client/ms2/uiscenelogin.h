@@ -45,7 +45,7 @@ public:
     virtual int vfunc_63();
     virtual void vfunc_64();
 
-    int FUN_1422e7950();                                        // 0x1422e7950 the presentation ref has changed
+    int GetSceneId();                                        // 0x1422e7950 the presentation ref has changed
 
 public:
     char m_pad68[4];
@@ -74,15 +74,15 @@ public:
     void FUN_141acf420();                                       // show the login dialog / region list
     void FUN_141acf470();                                       // the connection failed
     void ShowTitle();                                       // start the title animation
-    void FUN_141acf700(unsigned int nBits);                     // add progress bits (under the lock)
+    void AddProgressBits(unsigned int nBits);                     // add progress bits (under the lock)
     void FUN_141acf7c0();                                       // the title is done
-    void FUN_141acf860(int nBits);                              // the preload progress callback
-    void FUN_141acf890();                                       // push the progress to the movie
-    void FUN_141acfa00();                                       // hide the dialogs
-    void FUN_141acfa70();                                       // the movie's "show"
+    void OnPreloadProgress(int nBits);                              // the preload progress callback
+    void UpdateProgressBar();                                       // push the progress to the movie
+    void OpenLoginDialogs();                                       // hide the dialogs
+    void HideMovie();                                       // the movie's "show"
     void FUN_141acfad0(__int64 nUnused);                                    // hide the title and the dialogs
-    bool FUN_141acfb40();                                       // the region list is used
-    void FUN_141acfba0(ASObj* pObj);                            // fill the button flags
+    bool IsRegionListUsed();                                       // the region list is used
+    void SetButtonFlags(ASObj* pObj);                            // fill the button flags
     void FUN_141acfc70();                                       // leave the pending state
     void OnEndPopdown();                                       // the end of the pop-down
 

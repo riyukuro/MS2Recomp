@@ -38,7 +38,7 @@ extern __int64 DAT_143ab28c8;
 extern __int64 DAT_143ab28d0;
 extern __int64 DAT_143ab28d8;
 extern __int64 DAT_143ab28e0;
-__int64 FUN_140930240();                                // the merat
+__int64 GetMeratBalance();                                // the merat
 
 struct Unk_G9Holder { void* m_p0; void* m_p8; };
 struct Unk_G9Rec { void* m_p[6]; unsigned __int64 m_nExpire; };
@@ -47,7 +47,7 @@ class MyPC   // C3: member view for the former free stand-ins
 public:
     class UserUGCMapInfo* GetUGCMapInfo();
     static class PCBase* FUN_141530930();
-    MS2Ptr<CStatPointManager> FUN_140c25130();          // the stat point manager
+    MS2Ptr<CStatPointManager> GetStatPointManager();          // the stat point manager
 };
 class PC { public: int GetJobGroupId(); int GetSubJob(); };   // C3: member views
 class UIGameMenuDialog { public: int IsMenuExpanded(CStringA strMenu); };   // C3: was FUN_141938a00
@@ -183,7 +183,7 @@ public:
 };
 
 template<class T> T* Unk_GaGetUIByName(const CStringA& strName);         // the dialog of a name
-class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
+class UIDialog* FindDialog(int);   // C3: was FindDialog
 struct Unk_G9Span { int m_n[7]; int m_nDays; };
 struct tm* FUN_1413a52a0(__int64 const*);   // C3: was FUN_1413a52a0
 class CubeMapInformationService   // C3: member view for the former free stand-ins
@@ -191,7 +191,7 @@ class CubeMapInformationService   // C3: member view for the former free stand-i
 public:
     int FUN_1410c3650();
 };
-class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
+class CMyCharacter* GetMyCharacter();   // C3: was GetMyCharacter
 class CMyCharacter   // C3: member view for the former free stand-ins
 {
 public:
@@ -232,7 +232,7 @@ int CGuideConditionHasMoney::vfunc_3()
     case 0:
         return ApplyNotBool(DAT_143ab2898 > m_n20);
     case 1:
-        return ApplyNotBool(FUN_140930240() > m_n20);
+        return ApplyNotBool(GetMeratBalance() > m_n20);
     case 2:
         return ApplyNotBool(DAT_143ab28b8 > m_n20);
     case 3:
@@ -294,7 +294,7 @@ CStringW CGuideConditionGuildPvpPeriod::GetTypeName()
 // @0x1413ad460
 int CGuideConditionGuildPvpPeriod::vfunc_3()
 {
-    return ApplyNot(((class Unk_GuildSeason*)(void*)(((void*)((class CGuildInfo*)(void*)(&reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())->m_p8))->FUN_1404d3180())))->FUN_1404c6160() ? 1 : 0);
+    return ApplyNot(((class Unk_GuildSeason*)(void*)(((void*)((class CGuildInfo*)(void*)(&reinterpret_cast<Unk_G9Holder*>(TSingleton<CGuildManager>::GetInstance())->m_p8))->GetSeason())))->FUN_1404c6160() ? 1 : 0);
 }
 
 // @0x1413ad4c0
@@ -391,7 +391,7 @@ int CGuideConditionJobCode::vfunc_8()
 }
 
 // @0x1413ad950
-ClassObject* FUN_1413ad950()
+ClassObject* CreateObject()
 {
     return new CGuideConditionSubJobCode;
 }
@@ -701,7 +701,7 @@ int CGuideConditionHasStatPoint::vfunc_3()
     void* pStat = MyPC::FUN_141530930();
     if (!pStat)
         return 0;
-    return ApplyNotBool(static_cast<unsigned>(static_cast<MyPC*>(pStat)->FUN_140c25130()->GetRemaining()) > 0);
+    return ApplyNotBool(static_cast<unsigned>(static_cast<MyPC*>(pStat)->GetStatPointManager()->GetRemaining()) > 0);
 }
 
 // @0x1413ae990
@@ -789,7 +789,7 @@ int CGuideConditionButtonSelected::vfunc_3()
                         return 0;
                     if (!leaf->GetVisible())
                         return 0;
-                    return leaf->FUN_1422ce0e0();
+                    return leaf->IsSelected();
                 } else {
                     root = root->FUN_140e159f0<ASDisplayObject>(m_children[i]);
                     if (root == 0)
@@ -853,7 +853,7 @@ int CGuideConditionContract::vfunc_3()
         return 0;
     void* pDlg = 0;
     if (m_nDialogId != 0)
-        pDlg = ((void*)FUN_140c300a0(m_nDialogId));
+        pDlg = ((void*)FindDialog(m_nDialogId));
     if (!pDlg)
         pDlg = Unk_GaGetUIByName<UIDialog>(m_strDialog);
     if (!pDlg)
@@ -953,7 +953,7 @@ void CGuideConditionEnterDungeon::vfunc_2(TiXmlElement* pElem)
 // @0x1413afab0
 int CGuideConditionEnterDungeon::vfunc_3()
 {
-    int nState = ((class CMyCharacter*)(void*)(((void*)FUN_140931510())))->GetDungeonEnterState(m_n20);
+    int nState = ((class CMyCharacter*)(void*)(((void*)GetMyCharacter())))->GetDungeonEnterState(m_n20);
     return ApplyNotBool(nState == 0 || nState == 1);
 }
 

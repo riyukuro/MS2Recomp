@@ -59,7 +59,7 @@ public:
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
 CString FUN_14071ae20(const CString& strFile);                           // the localised string table path
 void FUN_14028faa0(struct Unk_XmlElement*, char const*, char const*, std::vector<struct Unk_XmlElement*>&);   // C3: retyped to the commonutil def
 unsigned int FUN_140197390(TiXmlElement* pElem, const char* pszName, unsigned int nDefault);
@@ -122,9 +122,9 @@ MS2_REPLACE_METHOD(0x1401E5910, ChatEmoticonCachedData, Load, 91, 0xC6ED42C9);
 // @0x1401e5980
 int ChatEmoticonCachedData::LoadEmoticons()
 {
-    CString strPath = FUN_14071a5b0("Table", "chatEmoticon.xml");
+    CString strPath = GetXmlPath("Table", "chatEmoticon.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
@@ -151,7 +151,7 @@ int ChatEmoticonCachedData::LoadEmoticons()
         m_byGroup[spEmoticon->m_nGroupId].push_back(spEmoticon);
     }
     MS2Ptr<CCacheData> spCache(new CCacheData);
-    spCache->FUN_1401d1160(CString(strPath));
+    spCache->SetPath(CString(strPath));
     m_caches.push_back(spCache);
     return 1;
 }
@@ -162,7 +162,7 @@ int ChatEmoticonCachedData::LoadStrings()
 {
     CString strPath = FUN_14071ae20("stringChatEmoticon.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
@@ -192,7 +192,7 @@ int ChatEmoticonCachedData::LoadStrings()
         }
     }
     MS2Ptr<CCacheData> spCache(new CCacheData);
-    spCache->FUN_1401d1160(CString(strPath));
+    spCache->SetPath(CString(strPath));
     m_caches.push_back(spCache);
     return 1;
 }
@@ -201,9 +201,9 @@ MS2_REPLACE_METHOD(0x1401E5F70, ChatEmoticonCachedData, LoadStrings, 1517, 0x25B
 // @0x1401e6570
 int ChatEmoticonCachedData::LoadCategories()
 {
-    CString strPath = FUN_14071a5b0("Table", "chatEmoticonCategory.xml");
+    CString strPath = GetXmlPath("Table", "chatEmoticonCategory.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
@@ -224,7 +224,7 @@ int ChatEmoticonCachedData::LoadCategories()
         m_categories[spCategory->m_nId] = spCategory;
     }
     MS2Ptr<CCacheData> spCache(new CCacheData);
-    spCache->FUN_1401d1160(CString(strPath));
+    spCache->SetPath(CString(strPath));
     m_caches.push_back(spCache);
     return 1;
 }
@@ -316,7 +316,7 @@ int CChatEmoticonTable::Load()
 ChatEmoticonDataPtr CChatEmoticonTable::FUN_1401e7120(unsigned int nEmoticonId)
 {
     CheckInit();
-    ChatEmoticonCachedDataPtr spData = FUN_1401e76a0();
+    ChatEmoticonCachedDataPtr spData = GetCachedData();
     if (!spData)
         return 0;
     if (spData->m_emoticons.find(nEmoticonId) == spData->m_emoticons.end())
@@ -328,7 +328,7 @@ ChatEmoticonDataPtr CChatEmoticonTable::FUN_1401e7120(unsigned int nEmoticonId)
 ChatEmoticonCategoryDataPtr CChatEmoticonTable::FUN_1401e7270(int nCategoryId)
 {
     CheckInit();
-    ChatEmoticonCachedDataPtr spData = FUN_1401e76a0();
+    ChatEmoticonCachedDataPtr spData = GetCachedData();
     if (!spData)
         return 0;
     if (spData->m_categories.find(nCategoryId) == spData->m_categories.end())
@@ -339,7 +339,7 @@ ChatEmoticonCategoryDataPtr CChatEmoticonTable::FUN_1401e7270(int nCategoryId)
 // @0x1401e73c0
 void CChatEmoticonTable::FUN_1401e73c0(unsigned int nGroupId, std::list<ChatEmoticonDataPtr>* pOut)
 {
-    ChatEmoticonCachedDataPtr spData = FUN_1401e76a0();
+    ChatEmoticonCachedDataPtr spData = GetCachedData();
     if (!spData)
         return;
     if (spData->m_byGroup.find(nGroupId) == spData->m_byGroup.end())
@@ -349,21 +349,21 @@ void CChatEmoticonTable::FUN_1401e73c0(unsigned int nGroupId, std::list<ChatEmot
 MS2_REPLACE_METHOD(0x1401E73C0, CChatEmoticonTable, FUN_1401e73c0, 249, 0xB08A99AE);
 
 // @0x1401e74c0
-void CChatEmoticonTable::FUN_1401e74c0(const CStringW& strCommand, std::list<ChatEmoticonDataPtr>* pOut)
+void CChatEmoticonTable::GetEmoticonsByCommand(const CStringW& strCommand, std::list<ChatEmoticonDataPtr>* pOut)
 {
-    ChatEmoticonCachedDataPtr spData = FUN_1401e76a0();
+    ChatEmoticonCachedDataPtr spData = GetCachedData();
     if (!spData)
         return;
     if (spData->m_byCommand.find(strCommand) == spData->m_byCommand.end())
         return;
     *pOut = spData->m_byCommand[strCommand];
 }
-MS2_REPLACE_METHOD(0x1401E74C0, CChatEmoticonTable, FUN_1401e74c0, 231, 0x38BC3E73);
+MS2_REPLACE_METHOD(0x1401E74C0, CChatEmoticonTable, GetEmoticonsByCommand, 231, 0x38BC3E73);
 
 // @0x1401e75b0
 int CChatEmoticonTable::FUN_1401e75b0(unsigned int nGroupId)
 {
-    ChatEmoticonCachedDataPtr spData = FUN_1401e76a0();
+    ChatEmoticonCachedDataPtr spData = GetCachedData();
     if (!spData)
         return 0;
     if (spData->m_byGroup.find(nGroupId) == spData->m_byGroup.end())
@@ -373,7 +373,7 @@ int CChatEmoticonTable::FUN_1401e75b0(unsigned int nGroupId)
 MS2_REPLACE_METHOD(0x1401E75B0, CChatEmoticonTable, FUN_1401e75b0, 228, 0x9F2F41A5);
 
 // @0x1401e76a0
-ChatEmoticonCachedDataPtr CChatEmoticonTable::FUN_1401e76a0()
+ChatEmoticonCachedDataPtr CChatEmoticonTable::GetCachedData()
 {
     ChatEmoticonCachedDataPtr spData = m_spData;
     if (!spData)
@@ -393,7 +393,7 @@ ChatEmoticonCachedDataPtr CChatEmoticonTable::FUN_1401e76a0()
     }
     return m_spData;
 }
-MS2_REPLACE_METHOD(0x1401E76A0, CChatEmoticonTable, FUN_1401e76a0, 447, 0xDBE1928C);
+MS2_REPLACE_METHOD(0x1401E76A0, CChatEmoticonTable, GetCachedData, 447, 0xDBE1928C);
 
 // ---- inline instances first emitted by this unit (the COMDAT zone) ----
 

@@ -21,7 +21,7 @@ Unk_ItemPreview* GetItemPreviewMgr();
 class CInputKeyHandler   // C3: member view; was Unk_KeyState
 {
 public:
-    bool FUN_14116dcb0(int nKey, bool a, int b);
+    bool IsActionKeyDown(int nKey, bool a, int b);
 };
 void* FUN_14025e7c0();   // C3: was FUN_14025e7c0
 
@@ -61,7 +61,7 @@ int MS2DragSlot::vfunc_19()
 {
     if (!IsEnabled())
         return 0;
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116dcb0(0x49406, 0, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->IsActionKeyDown(0x49406, 0, 0))
         return 1;
     return 0;
 }

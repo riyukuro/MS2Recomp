@@ -29,7 +29,7 @@ public:
     struct IDirect3DBaseTexture9* GetD3DTexture() const;
 };
 extern NiFixedString DAT_143ae52f8;                             // the global shader constant name
-void FUN_141568d80(class NiAVObject*);   // C3: was FUN_141568d80
+void SetUnlightable(class NiAVObject*);   // C3: was SetUnlightable
 void FUN_141d18b90(NiNode* pRoot, const NiFixedString& kName);  // sets the node name
 bool FUN_141ab8060(NiRenderClick* pClick, void* pView);
 bool FUN_141ab80b0(NiRenderClick* pClick, void* pView);
@@ -108,7 +108,7 @@ int FUN_141ab7200(UIRenderView* pView, TPtr<Unk_UISwfEntity_25> spTarget, void* 
         return 0;
     if (pView->vfunc_16() == 0)
         return 0;
-    NiRenderedTexture* pTexture = pView->FUN_141ab73f0();
+    NiRenderedTexture* pTexture = pView->GetRenderedTexture();
     if (pTexture != 0)
     {
         void* pData = ((void*)((class NiTexture*)(class NiRenderedTexture*)(pTexture))->GetRendererData());
@@ -126,15 +126,15 @@ int FUN_141ab7200(UIRenderView* pView, TPtr<Unk_UISwfEntity_25> spTarget, void* 
 }
 
 // @0x141ab73f0
-NiRenderedTexture* UIRenderView::FUN_141ab73f0()
+NiRenderedTexture* UIRenderView::GetRenderedTexture()
 {
     if (m_spClick)
-        return m_spClick->FUN_1416f9ab0();
+        return m_spClick->GetRenderedTexture();
     return 0;
 }
 
 // @0x141ab7440
-NiRenderTargetGroup* UIRenderView::FUN_141ab7440()
+NiRenderTargetGroup* UIRenderView::GetRenderTargetGroup()
 {
     if (m_spClick)
         return m_spClick->GetRenderTargetGroup();
@@ -221,7 +221,7 @@ NiNode* UIRenderView::GetEffectRoot()
 }
 
 // @0x141ab76b0
-bool UIRenderView::FUN_141ab76b0(const efd::Point3& kWorld, Unk_ScreenPoint* pScreen)
+bool UIRenderView::WorldToScreen(const efd::Point3& kWorld, Unk_ScreenPoint* pScreen)
 {
     if (m_spCamera == 0 || m_spClick == 0)
         return false;
@@ -236,11 +236,11 @@ bool UIRenderView::FUN_141ab76b0(const efd::Point3& kWorld, Unk_ScreenPoint* pSc
 }
 
 // @0x141ab7870
-bool UIRenderView::FUN_141ab7870(CStringW strPath, int nFormat)
+bool UIRenderView::SaveTextureToFile(CStringW strPath, int nFormat)
 {
     if (m_uiWidth == 0 || m_uiHeight == 0)
         return false;
-    NiRenderTargetGroup* pGroup = FUN_141ab7440();
+    NiRenderTargetGroup* pGroup = GetRenderTargetGroup();
     if (pGroup != 0)
     {
         Ni2DBuffer* pBuffer = pGroup->GetBuffer(0);
@@ -306,7 +306,7 @@ int UIRenderView::vfunc_16()
         m_spEffectRoot->SetName(kRootName);
     }
     m_spClick->vfunc_12(m_spEffectRoot);
-    FUN_141568d80((class NiAVObject*)(m_spEffectRoot));
+    SetUnlightable((class NiAVObject*)(m_spEffectRoot));
     ecr::SceneGraphService* pSceneGraph = FUN_1413f98b0();
     if (pSceneGraph != 0)
     {
@@ -324,7 +324,7 @@ int UIRenderView::vfunc_16()
 void UIRenderView::OnSurfacePreDraw(ecr::RenderService*, ecr::RenderSurface* pSurface)
 {
     if (m_spClick)
-        m_spClick->FUN_1416f99d0(m_spCamera);
+        m_spClick->SetCamera(m_spCamera);
 }
 
 // @0x141ab8040
@@ -371,8 +371,8 @@ bool FUN_141ab80f0(NiFixedString* pName, void* pData, int nCount)
 MS2_EMIT_CRT_MEMMOVE_S_COPY(1);
 
 // hk1 2026-10-20: hooks for the remaining recovered functions (work/hk1/report.md)
-MS2_REPLACE_METHOD(0x141ab73f0, UIRenderView, FUN_141ab73f0, 65, 0x8C69B794);
-MS2_REPLACE_METHOD(0x141ab7440, UIRenderView, FUN_141ab7440, 65, 0xA3788857);
+MS2_REPLACE_METHOD(0x141ab73f0, UIRenderView, GetRenderedTexture, 65, 0x8C69B794);
+MS2_REPLACE_METHOD(0x141ab7440, UIRenderView, GetRenderTargetGroup, 65, 0xA3788857);
 MS2_REPLACE_METHOD(0x141ab7490, UIRenderView, vfunc_2, 6, 0xA9AF6E37);
 MS2_REPLACE_METHOD(0x141ab74a0, UIRenderView, vfunc_3, 18, 0xA1EAFB60);
 MS2_REPLACE_METHOD(0x141ab74c0, UIRenderView, vfunc_4, 74, 0x13076876);
@@ -386,7 +386,7 @@ MS2_REPLACE_METHOD(0x141ab7620, UIRenderView, vfunc_11, 11, 0x02239C70);
 MS2_REPLACE_METHOD(0x141ab7640, UIRenderView, vfunc_13, 16, 0x32804D89);
 MS2_REPLACE_METHOD(0x141ab7660, UIRenderView, GetDirty, 14, 0x921EE467);
 MS2_REPLACE_METHOD(0x141ab7680, UIRenderView, GetEffectRoot, 31, 0x52CE6B8B);
-MS2_REPLACE_METHOD(0x141ab76b0, UIRenderView, FUN_141ab76b0, 430, 0xC0327C64);
+MS2_REPLACE_METHOD(0x141ab76b0, UIRenderView, WorldToScreen, 430, 0xC0327C64);
 MS2_REPLACE_METHOD(0x141ab7b80, UIRenderView, FUN_141ab7b80, 41, 0x1026C096);
 MS2_REPLACE_METHOD(0x141ab7bb0, UIRenderView, vfunc_14, 8, 0x7F371472);
 MS2_REPLACE_METHOD(0x141ab7bc0, UIRenderView, vfunc_15, 8, 0x7F371472);

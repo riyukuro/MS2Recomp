@@ -37,17 +37,17 @@ public:
 };
 
 
-class Unk_EmoNpcTable* FUN_140764010();   // C3: was FUN_140764010
+class Unk_EmoNpcTable* GetFameTable();   // C3: was GetFameTable
 void* FUN_140764020();   // C3: was FUN_140764020
 class CReservedWordTable;
 __int64 GetServerTime();                                                // the server time
 // FUN_1406c47a0/4760 are CMsTime ctors (16 bytes: Init 0x1406c5270 stores the zone flag at +8); 8-byte ATL::CTime
 // locals had that byte written past them (rt1 stackovf.py).
-CStringW FUN_140762de0(int nAlliance);                                  // the alliance's name
-CString FUN_140762e90(int nAlliance);                                   // the alliance's symbol
+CStringW GetAllianceName(int nAlliance);                                  // the alliance's name
+CString GetAllianceSymbol(int nAlliance);                                   // the alliance's symbol
 CStringW FUN_140762ee0(int nAlliance, int nGrade);                      // the grade's name
-int FUN_140931210(Unk_FameAlliance nAlliance);                          // the player's fame points
-void FUN_140762fc0(int nAlliance, int* pnCurrent, int* pnMax, CStringW& strPoint);    // the fame points
+int GetFamePoints(Unk_FameAlliance nAlliance);                          // the player's fame points
+void GetFamePointProgress(int nAlliance, int* pnCurrent, int* pnMax, CStringW& strPoint);    // the fame points
 
 extern ATL::CRBMap<__int64, int> DAT_143ab31e8;                         // time -> fame log id
 
@@ -80,7 +80,7 @@ void UIFamePointBoardDialog::vfunc_67()
 void UIFamePointBoardDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140c15780();
+    RebuildTabs();
 }
 
 // @0x140c155b0
@@ -95,7 +95,7 @@ int UIFamePointBoardDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             int nAlliance = data.PopInt();
-            FUN_140c15a10(nAlliance);
+            SetAllianceData(nAlliance);
         }
         return 1;
     }
@@ -106,11 +106,11 @@ int UIFamePointBoardDialog::vfunc_28(const char* szMethod, const Scaleform::GFx:
 int UIFamePointBoardDialog::FUN_140c156d0()
 {
     int nResult = 0;
-    ATL::CAtlArray<Unk_FameAlliance>& ids = ((class CFameTable*)FUN_140764010())->GetAllianceIds();
+    ATL::CAtlArray<Unk_FameAlliance>& ids = ((class CFameTable*)GetFameTable())->GetAllianceIds();
     for (size_t i = 0; i < ids.GetCount(); i++)
     {
-        int nQuestId = ((class CFameTable*)FUN_140764010())->GetSeasonRequireQuest(ids[i]);
-        if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuestId) != 0)
+        int nQuestId = ((class CFameTable*)GetFameTable())->GetSeasonRequireQuest(ids[i]);
+        if (((class CQuestManager*)FUN_140764020())->IsQuestRewarded(nQuestId) != 0)
         {
             nResult = 1;
             break;
@@ -120,23 +120,23 @@ int UIFamePointBoardDialog::FUN_140c156d0()
 }
 
 // @0x140c15780
-void UIFamePointBoardDialog::FUN_140c15780()
+void UIFamePointBoardDialog::RebuildTabs()
 {
-    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870("m_tab"))
+    if (MS2Ptr<ASButtonBar> spTab = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar("m_tab"))
     {
-        spTab->FUN_1422e3400();
-        ATL::CAtlArray<Unk_FameAlliance>& ids = ((class CFameTable*)FUN_140764010())->GetAllianceIds();
+        spTab->ClearDataProvider();
+        ATL::CAtlArray<Unk_FameAlliance>& ids = ((class CFameTable*)GetFameTable())->GetAllianceIds();
         for (size_t i = 0; i < ids.GetCount(); i++)
         {
             Unk_FameAlliance nAlliance = ids[i];
-            int nQuestId = ((class CFameTable*)FUN_140764010())->GetSeasonRequireQuest(nAlliance);
-            if (((class CQuestManager*)FUN_140764020())->FUN_140745590(nQuestId) == 0)
+            int nQuestId = ((class CFameTable*)GetFameTable())->GetSeasonRequireQuest(nAlliance);
+            if (((class CQuestManager*)FUN_140764020())->IsQuestRewarded(nQuestId) == 0)
                 continue;
             ASObj row(2);
-            row.FUN_1407cbb20("label", FUN_140762de0(nAlliance));
-            row.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
-            row.FUN_1407cbb20("grade", FUN_140762ee0(nAlliance, FUN_140931210(nAlliance)));
-            row.FUN_1407cb9c0("allianceCode", nAlliance);
+            row.SetWStringMember("label", GetAllianceName(nAlliance));
+            row.SetStringMember("alliance", GetAllianceSymbol(nAlliance));
+            row.SetWStringMember("grade", FUN_140762ee0(nAlliance, GetFamePoints(nAlliance)));
+            row.SetIntMember("allianceCode", nAlliance);
             spTab->AddItem(row);
         }
         spTab->SetSelectedIndex(0);
@@ -145,26 +145,26 @@ void UIFamePointBoardDialog::FUN_140c15780()
 }
 
 // @0x140c15a10
-void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
+void UIFamePointBoardDialog::SetAllianceData(int nAlliance)
 {
     CStringW strPoint;
     int nCurrent;
     int nMax;
-    FUN_140762fc0(nAlliance, &nCurrent, &nMax, strPoint);
+    GetFamePointProgress(nAlliance, &nCurrent, &nMax, strPoint);
     ASObj data(2);
-    data.FUN_1407cbb20("allianceName", FUN_140762de0(nAlliance));
-    data.FUN_1407cbb20("allianceGrade", FUN_140762ee0(nAlliance, FUN_140931210((Unk_FameAlliance)nAlliance)));
-    data.FUN_1407cba60("alliance", FUN_140762e90(nAlliance));
-    data.FUN_1407cb9c0("currentFame", nCurrent);
-    data.FUN_1407cb9c0("maxFame", nMax);
-    data.FUN_1407cbb20("famePoint", strPoint);
+    data.SetWStringMember("allianceName", GetAllianceName(nAlliance));
+    data.SetWStringMember("allianceGrade", FUN_140762ee0(nAlliance, GetFamePoints((Unk_FameAlliance)nAlliance)));
+    data.SetStringMember("alliance", GetAllianceSymbol(nAlliance));
+    data.SetIntMember("currentFame", nCurrent);
+    data.SetIntMember("maxFame", nMax);
+    data.SetWStringMember("famePoint", strPoint);
     CMsTime timeNow(GetServerTime());
     ASArray logs(2);
     for (POSITION pos = DAT_143ab31e8.GetHeadPosition(); pos != 0; DAT_143ab31e8.GetNext(pos))
     {
         int nLogId = DAT_143ab31e8.GetValueAt(pos);
         __int64 nLogTime = DAT_143ab31e8.GetKeyAt(pos);
-        if (((class CFameTable*)FUN_140764010())->IsLogOfAlliance(nLogId, (Unk_FameAlliance)nAlliance) == 0)
+        if (((class CFameTable*)GetFameTable())->IsLogOfAlliance(nLogId, (Unk_FameAlliance)nAlliance) == 0)
             continue;
         CStringW strMsg = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x43, nLogId);
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectAndValueWords(strMsg);
@@ -190,8 +190,8 @@ void UIFamePointBoardDialog::FUN_140c15a10(int nAlliance)
             strDate = FUN_14028dfa0(CStringW(L"s_fame_point_board_time1"), nMinutes);
         }
         ASObj line(2);
-        line.FUN_1407cbb20("msg", strMsg);
-        line.FUN_1407cbb20("date", strDate);
+        line.SetWStringMember("msg", strMsg);
+        line.SetWStringMember("date", strDate);
         logs.PushObj(line);
     }
     data.FUN_140c16160("log", logs);

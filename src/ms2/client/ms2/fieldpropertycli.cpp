@@ -68,10 +68,10 @@ struct Unk_EntityAccess : egf::Entity {
 class WorldService   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_141bca3c0(float);
+    int SetGravity(float);
     void FUN_141bcabf0();
     void* FUN_141bd0cc0();
-    void FUN_141bcad60(void* p, int n);
+    void SetMusicConcert(void* p, int n);
     Unk_WsC_TagPtr FUN_141bd0420(unsigned key);   // the entities of a model
     static class WorldService* GetInstance();
 };
@@ -137,12 +137,12 @@ MS2Ptr<FieldProperty> CreateFieldProperty(int nType)
 
 // ---- Apply / Unapply ----
 // @0x140b27660
-void FieldPropertyGravityCli::vfunc_4() { ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bca3c0(m_fGravity); }
+void FieldPropertyGravityCli::vfunc_4() { ((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->SetGravity(m_fGravity); }
 
 // @0x140b27690
-void FieldPropertyMusicConcertCli::vfunc_4() { WorldService::GetInstance()->FUN_141bcad60((void*)m_i64, m_n); }
+void FieldPropertyMusicConcertCli::vfunc_4() { WorldService::GetInstance()->SetMusicConcert((void*)m_i64, m_n); }
 // @0x140b276d0
-void FieldPropertyMusicConcertCli::vfunc_5() { WorldService::GetInstance()->FUN_141bcad60(0, 0); }
+void FieldPropertyMusicConcertCli::vfunc_5() { WorldService::GetInstance()->SetMusicConcert(0, 0); }
 
 // @0x140b27700
 void FieldPropertyHideMyPCCli::vfunc_4()

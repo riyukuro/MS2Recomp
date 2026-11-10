@@ -31,8 +31,8 @@ MS2_CHECK_SIZE(Unk_GuildContribution,4);
 class CGuildPVPSeasonHistoryData:public CPtred {
 public:
     CGuildPVPSeasonHistoryData(); virtual ~CGuildPVPSeasonHistoryData();
-    void FUN_1404d4250(); void FUN_1404d4330(const CGuildPVPSeasonHistoryData*);
-    void FUN_1404d4460(COutPacket*); void FUN_1404d4490(CInPacket*);
+    void Reset(); void CopyFrom(const CGuildPVPSeasonHistoryData*);
+    void Write(COutPacket*); void Read(CInPacket*);
     void FUN_1404d44e0(COutputStream&); void FUN_1404d4680(CInputStream&);
     int f18; __int64 f20,f28; CStringW f30; int f38,f3c,f40; CString f48;
     int f50,f54,f58,f5c,f60,f64,f68;
@@ -141,13 +141,13 @@ public:
     float GetQuestRewardFactor(unsigned short,int); int GetContribution(int);
     MS2Ptr<GuildProperty> GetProperty(int);
     MS2Ptr<GuildSkill> GetSkill(int,int);
-    void FUN_1404d7630(std::vector<int>&); void FUN_1404d7730(std::vector<int>&);
+    void FUN_1404d7630(std::vector<int>&); void GetPersonalSkillIds(std::vector<int>&);
     MS2Ptr<GuildEvent> GetEvent(int); void GetEventIds(std::vector<int>&);
     MS2Ptr<GuildHouse> GetHouse(int,int); void GetHouseKeys(std::vector<std::pair<int,int>>&);
     MS2Ptr<GuildNpc> GetNpc(Unk_GuildNpcKind,int);
     void GetNpcKinds(std::set<Unk_GuildNpcKind>&);
     MS2Ptr<GuildRaid> GetRaid(unsigned); void GetRaidIds(std::vector<unsigned>&);
-    MS2Ptr<GuildRaidReward> FUN_1404d7e30(int);
+    MS2Ptr<GuildRaidReward> GetRaidReward(int);
     std::map<int,MS2Ptr<GuildProperty>> property;
     std::map<int,std::vector<MS2Ptr<GuildSkill>>> skill;
     std::map<int,MS2Ptr<GuildEvent>> event;

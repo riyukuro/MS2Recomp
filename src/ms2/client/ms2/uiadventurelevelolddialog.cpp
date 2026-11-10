@@ -144,7 +144,7 @@ public:
 };
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 class Unk_ALIdentity { public: char m_pad_0[0x1d0]; CString m_1d0; };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 extern __int64 DAT_143ab2958;
 
 // The localized-string helpers.
@@ -181,12 +181,12 @@ void FUN_1422bcd70(Scaleform::GFx::Value* pValue, float f);                 // V
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);      // Value = the object's value
 unsigned short FUN_140ba4b30(Unk_ALConstU16* p);
 float FUN_140ba4b50(Unk_ALConstU32* p);
-Unk_ALCurrent* FUN_140ba4fa0();
+Unk_ALCurrent* GetAdventureLevelTableHelper();
 
 // The helpers below are COMDATs of UIAdventureLevelDialog's unit (shared by identical code).
 unsigned short FUN_140ba4b30(Unk_ALConstU16* p);
 float FUN_140ba4b50(Unk_ALConstU32* p);
-Unk_ALCurrent* FUN_140ba4fa0();
+Unk_ALCurrent* GetAdventureLevelTableHelper();
 
 // @0x1400c98c0 @0x1400c9980 @0x1400c99b0 @0x1400c99e0
 // (the four initializers above are the statics of header_statics_a.h)
@@ -194,7 +194,7 @@ Unk_ALCurrent* FUN_140ba4fa0();
 // @0x140ba53b0
 UIAdventureLevelOldDialog::UIAdventureLevelOldDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140ba5460
@@ -233,9 +233,9 @@ void UIAdventureLevelOldDialog::OnLoadComplete()
     Unk_ALPlayer* pPlayer = ((Unk_ALPlayer*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (pPlayer == 0)
         return;
-    FUN_140ba5ab0();
+    FillLevelGuide();
     FUN_140ba5c30();
-    FUN_140ba5d20();
+    FillAbilityList();
 }
 
 // @0x140ba56b0
@@ -282,9 +282,9 @@ void UIAdventureLevelOldDialog::vfunc_oa0_30(int a1)
         return;
     if (m_30.IsNull())
         return;
-    FUN_140ba5ab0();
+    FillLevelGuide();
     FUN_140ba5c30();
-    FUN_140ba5d20();
+    FillAbilityList();
 }
 
 // @0x140ba59f0
@@ -298,15 +298,15 @@ void UIAdventureLevelOldDialog::vfunc_oa0_31(void* a1)
 }
 
 // @0x140ba5a70
-void UIAdventureLevelOldDialog::FUN_140ba5a70()
+void UIAdventureLevelOldDialog::RefreshLevelGuide()
 {
     if (m_30.IsNull())
         return;
-    FUN_140ba5ab0();
+    FillLevelGuide();
 }
 
 // @0x140ba5ab0
-void UIAdventureLevelOldDialog::FUN_140ba5ab0()
+void UIAdventureLevelOldDialog::FillLevelGuide()
 {
     if (m_30.IsNull())
         return;
@@ -336,7 +336,7 @@ void UIAdventureLevelOldDialog::FUN_140ba5c30()
 }
 
 // @0x140ba5d20
-void UIAdventureLevelOldDialog::FUN_140ba5d20()
+void UIAdventureLevelOldDialog::FillAbilityList()
 {
     if (m_30.IsNull())
         return;
@@ -361,13 +361,13 @@ void UIAdventureLevelOldDialog::FUN_140ba5d20()
         }
         bool bLock = pPlayer->vfunc_141() < pAbility->m_8;
         if (reinterpret_cast<Unk_ALAbilityMgr*>(reinterpret_cast<PCBase*>(pPlayer)->FUN_1416749a0())->FUN_140970020(pAbility->m_0, nStep, 0, 1) == 0) {
-            if (pAbility->m_0 != *reinterpret_cast<int*>(reinterpret_cast<CAdventureLevelTableHelper*>(FUN_140ba4fa0())->GetCurrent()))
+            if (pAbility->m_0 != *reinterpret_cast<int*>(reinterpret_cast<CAdventureLevelTableHelper*>(GetAdventureLevelTableHelper())->GetCurrent()))
                 bLock = true;
         }
         ASObj obj(2);
         obj.SetMemberUInt("id", pAbility->m_0);
-        obj.FUN_1407cbbe0("isLock", bLock);
-        obj.FUN_1407cba60("imgPath", spAttr->GetIcon());
+        obj.SetBoolMember("isLock", bLock);
+        obj.SetStringMember("imgPath", spAttr->GetIcon());
         obj.SetMemberFloat("abilityStatus", ((class CAdventureLevelAbility*)(pAbility))->GetPercent(pPlayer->vfunc_141()));
         if (bLock)
             obj.SetMemberUInt("level", pAbility->m_8);
@@ -392,10 +392,10 @@ int UIAdventureLevelOldDialog::FUN_140ba61b0(ASObj& obj, unsigned int nLevel)
     if (nLevel > pPlayer->vfunc_141())
         strState = "lock";
     obj.SetMemberUInt("id", nLevel);
-    obj.FUN_1407cba60("state", strState);
+    obj.SetStringMember("state", strState);
     unsigned int nOne = 1;
     obj.SetMemberUInt("level", (std::max)(nLevel, nOne));
-    ((class AScript&)(obj)).FUN_1407cbb20("levelStr", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_level"), nLevel));
+    ((class AScript&)(obj)).SetWStringMember("levelStr", FUN_14028dfa0<unsigned int>(CStringW(L"s_adventure_level_level"), nLevel));
     return 1;
 }
 
@@ -418,7 +418,7 @@ int UIAdventureLevelOldDialog::FUN_140ba63d0(ASObj& obj, unsigned int nLevel)
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     CreateItemInfoSlot(strBindID, spItem, 0, nIconType, 0x800);
-    obj.FUN_1407cba60("binding", strBindID);
+    obj.SetStringMember("binding", strBindID);
     m_binds.Add(strBindID);
     return 1;
 }
@@ -439,7 +439,7 @@ int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
     if ((int)pPlayer->vfunc_78() < (int)FUN_140ba4b30(&((class Unk_ALConfig*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_stat))
         obj.FUN_1409c0dc0("state", "lock");
     ItemInfoSlot::CreateParam param;
-    param.m_strSlotText = ((class Unk_ALIdentity*)FUN_1401d31f0())->m_1d0;
+    param.m_strSlotText = ((class Unk_ALIdentity*)GetCommonResource())->m_1d0;
     param.m_strTip = FUN_14028dfa0<int>(CStringW(L"s_adventure_level_stat_reward"), reinterpret_cast<const int&>(pReward->m_nValue));
     param.m_nFlags = 1;
     param.m_nTipArg = 4;
@@ -447,7 +447,7 @@ int UIAdventureLevelOldDialog::FUN_140ba66a0(ASObj& obj, unsigned int nLevel)
     CString strBindID;
     strBindID.Format("%s.%d", (LPCSTR)GetTypeName(), m_binds.GetCount() + 1);
     FUN_141415560(strBindID, &param);
-    obj.FUN_1407cba60("binding", strBindID);
+    obj.SetStringMember("binding", strBindID);
     m_binds.Add(strBindID);
     return 1;
 }

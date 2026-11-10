@@ -26,8 +26,8 @@ public:
     virtual void vfunc_0() override;                        // 0 0x1417b7b70 (state.cpp): send the current record
 
     void FUN_1417b7430(PCBase* pOwner);                     // init with the owner
-    void FUN_1417b7450();                                   // drop the records
-    int FUN_1417b7490();                                    // a record is due
+    void ClearRecords();                                   // drop the records
+    int IsRecordDue();                                    // a record is due
     MS2Ptr<StateSyncObject> FUN_1417b7620();                 // copy of the current record
     void FUN_1417b7670(StateSyncObject* pRec);               // set the current record
     void FUN_1417b76b0(float fTime);                        // advance with the game time
@@ -71,9 +71,9 @@ public:
     virtual const char* vfunc_123(int n);                   // 123 0x141705580
 
     int FUN_1417043a0(int nRideeId, int nObjectId, PCBase* pRider);  // bind the riding row
-    void FUN_1417058b0();                                   // detach the seat nodes from the rider
+    void DetachSeatNodes();                                   // detach the seat nodes from the rider
     void FUN_141705ac0(double fTime);                       // per-frame update of the run effects
-    void FUN_141705b60(double fTime);                       // run / stamina effects
+    void UpdateRunEffects(double fTime);                       // run / stamina effects
     bool FUN_1417060d0();                                   // the rider has the stamina to run
     void SetRider(PCBase* pRider);                     // set the rider
     PCBase* GetRider();                                // the rider
@@ -81,14 +81,14 @@ public:
     void FUN_141706590();                                   // flush the state controller
     void FUN_141706650(bool bForce);                        // send the state record when it changed
     float GetRideSpeed();                                  // speed with the rider's bonus
-    float FUN_1417071d0();                                  // run speed with the rider's bonus
-    void FUN_141707270();                                   // reset the state controller
+    float GetRunSpeed();                                  // run speed with the rider's bonus
+    void ResetStateController();                                   // reset the state controller
     void FUN_1417072b0();                                   // load the rider's ugc ridee texture
     MS2Ptr<Unk_PCBaseComp_b18> FUN_141707440();             // the rider's ugc ridee item
     void FUN_1417074c0();                                   // seat the rider
     int FUN_1417075e0();                                   // the rider may ride now
     MS2SvrPtr<CRideeData> GetData();                         // copy of m_spData
-    float FUN_141707960();                                  // +0x64 of the default model entry
+    float GetHpBarOffsetY();                                  // +0x64 of the default model entry
     void MakeNxBoxController();                             // 0x141707e60
     void FUN_1417082c0();                                   // release the PhysX box
     static void FUN_1417083a0(PCBase* pRider, efd::SmartPointer<NiAVObject> spSeat, Unk_RiderPtr spModel);

@@ -79,8 +79,12 @@ if(_derive)
     list(APPEND _denv "MS2_THIRD_PARTY=${MS2_MSVC_ROOT}")
   endif()
   list(APPEND _denv "MS2_ENGINE_DIR=${MS2_PLAIN_ENGINE}")
+  set(_dsa "")
+  if(MS2_PLAIN_STANDALONE)
+    set(_dsa --standalone)    # order.txt without the hook helpers' names: no obj defines them
+  endif()
   execute_process(COMMAND ${CMAKE_COMMAND} -E env ${_denv} "${MS2_PLAIN_PYTHON}" -P
-                          "${MS2_PLAIN_CHECKOUT}/tools/fullexe/plainglue.py" derive "${_dg}" --base "${MS2_PLAIN_GLUE}"
+                          "${MS2_PLAIN_CHECKOUT}/tools/fullexe/plainglue.py" derive "${_dg}" --base "${MS2_PLAIN_GLUE}" ${_dsa}
                   WORKING_DIRECTORY "${MS2_PLAIN_CHECKOUT}" RESULT_VARIABLE _rc OUTPUT_VARIABLE _out ERROR_VARIABLE _err)
   if(_rc EQUAL 0)
     message(STATUS "plainglue.py derive: ${_out}")

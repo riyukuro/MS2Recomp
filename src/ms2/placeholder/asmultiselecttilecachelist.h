@@ -22,9 +22,9 @@ public:
 #ifdef MS2_ASUICOMPONENT_SLOTS
     virtual void vfunc_25(const Scaleform::GFx::Value& data);           // 25 0x1422cf610 resetRenderer, then ASCoreList's
 #endif
-    void FUN_1422cf650(int nIndex, AScript& item);                      // addItemData(index, item)
-    void FUN_1422cf6e0(int nIndex);                                     // removeItemData(index)
-    void FUN_1422cf720();                                               // resetRenderer()
+    void AddItemData(int nIndex, AScript& item);                      // addItemData(index, item)
+    void RemoveItemData(int nIndex);                                     // removeItemData(index)
+    void ResetRenderer();                                               // resetRenderer()
 };
 MS2_CHECK_SIZE(ASTileCacheList, 0x88);
 
@@ -35,7 +35,7 @@ public:
     virtual ~ASItemBag();                                               // 0 0x1422cf7b0 (scalar deleting 0x1422cfbb0)
     void FUN_1422cf7e0(int nIndex);                                     // add(index)
     void FUN_1422cf820(int nIndex);                                     // remove(index)
-    void FUN_1422cf860();                                               // update()
+    void Update();                                               // update()
 };
 MS2_CHECK_SIZE(ASItemBag, 0x88);
 
@@ -56,8 +56,8 @@ public:
     virtual void vfunc_24(bool bValidate);                             // 24 0x1422c80c0 validateNow
     virtual void vfunc_25(const Scaleform::GFx::Value& data);          // 25 0x1422cf610 set the data provider
 #endif
-    unsigned FUN_1422cf920();                                          // getSelectedCount()
-    void FUN_1422cf980(std::vector<unsigned>& aSelected);              // getSelectedList() into a vector
+    unsigned GetSelectedCount();                                          // getSelectedCount()
+    void GetSelectedList(std::vector<unsigned>& aSelected);              // getSelectedList() into a vector
     void FUN_1422cfa30(ATL::CAtlArray<unsigned>& aSelected);           // getSelectedList() into an array
 };
 MS2_CHECK_SIZE(ASMultiSelectTileCacheList, 0x88);

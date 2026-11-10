@@ -54,7 +54,7 @@ Unk_140166410* FUN_140166410();
 class UIInventoryDialog : public UIDialog
 {
 public:
-    void FUN_141999f60();
+    void UpdateButtonState();
     void FUN_141999e00();
 };
 template<class T> T* Unk_BreakDialog(int);   // C3: was FUN_1405344f0
@@ -67,12 +67,12 @@ MS2DragSlot* AsDragSlot(NotifyContext::BindData* p);     // the item slot behind
 class InvenSlot { public: __int64 GetItemUid(); };          // its item uid
 int FUN_14053feb0(int nItemId);                             // the rarity of an item id
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);               // the item data of an item id
-void* FUN_14052d200();                                      // TSingleton<CItemSocketTable>::GetInstance
+void* GetItemSocketTable();                                      // TSingleton<CItemSocketTable>::GetInstance
 CStringW FUN_140298ea0(CStringW strKey);                    // string table text
 CStringW FUN_14183e9c0(CStringW strName, int nRank);        // item name coloured by rank
 extern template CStringW StringFormat<unsigned __int64>(const wchar_t*, const unsigned __int64&);
-void FUN_1412751f0(const CStringW& text, int nA, int nB);   // notice
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);   // create a message box
+void ShowSystemNotice(const CStringW& text, int nA, int nB);   // notice
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* p, CStringW tag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                // show it
 
 EE_IMPLEMENT_CONCRETE_CLASS_INFO(UIPetExtractionScrollDialog::Slot);
@@ -133,7 +133,7 @@ int UIPetExtractionScrollDialog::Slot::vfunc_0(void* p)
     ASTooltip tip(pPlayer, m_nFlags, 2);
     if (tip.FUN_1409e0d40(m_spItem.get()) != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = tip.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = tip.GetValue();
         return 1;
     }
     return 0;
@@ -149,7 +149,7 @@ int UIPetExtractionScrollDialog::Slot::vfunc_8(void* p)
         return 0;
     ASSlot slot(2);
     if (slot.FUN_1409c3860(m_spItem.get(), pPlayer, 0x415) != 0)
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
     return 1;
 }
 
@@ -161,18 +161,18 @@ void FUN_140e70e50(const CString& strName, const ATL::CAtlArray<MS2Ptr<CItem> >&
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10((int)items.GetCount());
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x140e70f20 destroy the registered bag
 void FUN_140e70f20(const CString& strName)
 {
-    UIPetExtractionScrollDialog::SlotBag* pBag = FUN_140e72d40(Unk_NotifyContext::FUN_1422c8e90(strName));
+    UIPetExtractionScrollDialog::SlotBag* pBag = FUN_140e72d40(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         pBag->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -202,7 +202,7 @@ DragSlot* UIPetExtractionScrollDialog::SlotBag::vfunc_16(int nIndex)
 UIPetExtractionScrollDialog::UIPetExtractionScrollDialog()
     : m_strBag(GetTypeName()), m_nScrollUid(0), m_nTargetUid(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_164 = 1;
 }
 
@@ -224,7 +224,7 @@ void UIPetExtractionScrollDialog::vfunc_67()
 void UIPetExtractionScrollDialog::vfunc_79(void* pPacket)
 {
     UIDialog::vfunc_79(pPacket);
-    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x6c))
+    if (!reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x6c))
         return;
     if (static_cast<CInPacket*>(pPacket)->FUN_14070fe80() != 0x108)
         return;
@@ -253,24 +253,24 @@ void UIPetExtractionScrollDialog::vfunc_79(void* pPacket)
         if (pSkin == 0)
             break;
         pSkin->vfunc_3(*static_cast<CInPacket*>(pPacket));
-        FUN_1412751f0(FUN_14028dfa0<CStringW>(CStringW(L"s_petextraction_success"), spResult->FUN_140527b10()), 1, 0);
+        ShowSystemNotice(FUN_14028dfa0<CStringW>(CStringW(L"s_petextraction_success"), spResult->FUN_140527b10()), 1, 0);
         break;
     }
     case 2:
-        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_petextraction_inventoryfull")), 1, 0);
+        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_petextraction_inventoryfull")), 1, 0);
         break;
     case 3:
-        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_petextraction_invalid")), 1, 0);
+        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_petextraction_invalid")), 1, 0);
         break;
     default:
-        FUN_1412751f0(FUN_140298ea0(CStringW(L"s_petextraction_invalid")), 1, 0);
+        ShowSystemNotice(FUN_140298ea0(CStringW(L"s_petextraction_invalid")), 1, 0);
         break;
     }
     vfunc_67();
 }
 
 // @0x140e71880
-bool UIPetExtractionScrollDialog::FUN_140e71880(int nResult, const CMsgBoxData& box)
+bool UIPetExtractionScrollDialog::OnConfirmUseScroll(int nResult, const CMsgBoxData& box)
 {
     if (nResult != 0)
         return true;
@@ -285,7 +285,7 @@ bool UIPetExtractionScrollDialog::FUN_140e71880(int nResult, const CMsgBoxData& 
 void UIPetExtractionScrollDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
-    FUN_140e728e0();
+    RefreshInventoryDialog();
 }
 
 // @0x140e719a0
@@ -293,18 +293,18 @@ void UIPetExtractionScrollDialog::vfunc_26()
 void UIPetExtractionScrollDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140e728e0();
+    RefreshInventoryDialog();
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
-        FUN_140e72b40(MS2Ptr<CItem>(0), MS2Ptr<CItem>(0));
+        RebuildSlotBag(MS2Ptr<CItem>(0), MS2Ptr<CItem>(0));
         ASArray items(2);
         ASObj objTarget(2);
-        objTarget.FUN_1407cba60("binding", m_strBag);
-        items.PushValue(objTarget.FUN_1422bb870());
+        objTarget.SetStringMember("binding", m_strBag);
+        items.PushValue(objTarget.GetValue());
         ASObj objResult(2);
-        objResult.FUN_1407cba60("binding", m_strBag);
-        items.PushValue(objResult.FUN_1422bb870());
+        objResult.SetStringMember("binding", m_strBag);
+        items.PushValue(objResult.GetValue());
         ASObj root(2);
         root.FUN_140c16160("array", ASArray(items));
         pDlg->FUN_140acd1f0("setData", AScript(root));
@@ -352,7 +352,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
     CItemGem* pGem = spResult->GetGem();
     if (pGem == 0)
         return;
-    pGem->CreateGem(spData->FUN_14053e900(), spData->FUN_14053c650());
+    pGem->CreateGem(spData->FUN_14053e900(), spData->GetParam1());
     MS2Ptr<CGemBase> spGem = pGem->GetGem();
     if (spGem.IsNull())
         return;
@@ -362,7 +362,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
     if (pSkin == 0)
         return;
     pSkin->m_nPetId = nPetId;
-    unsigned nSockets = reinterpret_cast<CItemSocketTable*>(FUN_14052d200())->GetMaxSocketCount(spData->property.socketDataId, spResult->GetRarity(), spResult->FUN_140527840());
+    unsigned nSockets = reinterpret_cast<CItemSocketTable*>(GetItemSocketTable())->GetMaxSocketCount(spData->property.socketDataId, spResult->GetRarity(), spResult->FUN_140527840());
     CItemSocket* pSocket = spResult->GetSocket();
     if (pSocket != 0)
         pSocket->InitSlots(nSockets, 0);
@@ -370,16 +370,16 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
-        FUN_140e72b40(spPet, spResult);
+        RebuildSlotBag(spPet, spResult);
         ASArray items(2);
         ASObj objTarget(2);
-        objTarget.FUN_1407cba60("binding", m_strBag);
-        objTarget.FUN_1407cbb20("name", FUN_14183e9c0(spPet->FUN_140527b10(), spPet->GetRarity()));
-        items.PushValue(objTarget.FUN_1422bb870());
+        objTarget.SetStringMember("binding", m_strBag);
+        objTarget.SetWStringMember("name", FUN_14183e9c0(spPet->FUN_140527b10(), spPet->GetRarity()));
+        items.PushValue(objTarget.GetValue());
         ASObj objResult(2);
-        objResult.FUN_1407cba60("binding", m_strBag);
-        objResult.FUN_1407cbb20("name", FUN_14183e9c0(spResult->FUN_140527b10(), spResult->GetRarity()));
-        items.PushValue(objResult.FUN_1422bb870());
+        objResult.SetStringMember("binding", m_strBag);
+        objResult.SetWStringMember("name", FUN_14183e9c0(spResult->FUN_140527b10(), spResult->GetRarity()));
+        items.PushValue(objResult.GetValue());
         ASObj root(2);
         root.FUN_140c16160("array", ASArray(items));
         pDlg->FUN_140acd1f0("setData", AScript(root));
@@ -387,7 +387,7 @@ void UIPetExtractionScrollDialog::FUN_140e71d40(__int64 nItemUid)
 }
 
 // @0x140e72860
-void UIPetExtractionScrollDialog::FUN_140e72860(__int64 nScrollUid)
+void UIPetExtractionScrollDialog::SetScrollUid(__int64 nScrollUid)
 {
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(nScrollUid);
     if (spItem == 0)
@@ -396,12 +396,12 @@ void UIPetExtractionScrollDialog::FUN_140e72860(__int64 nScrollUid)
 }
 
 // @0x140e728e0
-void UIPetExtractionScrollDialog::FUN_140e728e0()
+void UIPetExtractionScrollDialog::RefreshInventoryDialog()
 {
     UIInventoryDialog* pInv = Unk_BreakDialog<UIInventoryDialog>(0x4e2d);
     if (pInv != 0)
     {
-        pInv->FUN_141999f60();
+        pInv->UpdateButtonState();
         pInv->FUN_141999e00();
     }
 }
@@ -412,17 +412,17 @@ void UIPetExtractionScrollDialog::OnOk()
     MS2Ptr<CItem> spItem = g_143ab2a90.FindItemByUid(m_nTargetUid);
     if (spItem == 0)
         return;
-    MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(
+    MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(
         1, FUN_140298ea0(CStringW(L"s_petextraction_conform")), 0, CStringW(L""));
     if (spBox.get() != 0)
     {
-        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPetExtractionScrollDialog::FUN_140e71880));
+        spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPetExtractionScrollDialog::OnConfirmUseScroll));
         FUN_140d73c60(spBox);
     }
 }
 
 // @0x140e72b40
-void UIPetExtractionScrollDialog::FUN_140e72b40(MS2Ptr<CItem> spTarget, MS2Ptr<CItem> spResult)
+void UIPetExtractionScrollDialog::RebuildSlotBag(MS2Ptr<CItem> spTarget, MS2Ptr<CItem> spResult)
 {
     ATL::CAtlArray<MS2Ptr<CItem> > items;
     items.SetCount(2, -1);

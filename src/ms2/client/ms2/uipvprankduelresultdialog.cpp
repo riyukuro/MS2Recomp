@@ -75,8 +75,8 @@ void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* psz);
 UIPvPRankDuelResultDialog::UIPvPRankDuelResultDialog()
 {
     m_80 = 0;
-    FUN_141924170(1);
-    FUN_141925e70(1, 1);
+    SetTweenEnabled(1);
+    SetFlag(1, 1);
 }
 
 // @0x140f90820
@@ -167,7 +167,7 @@ void UIPvPRankDuelResultDialog::FUN_140f90b10(CInPacket* pIn)
 }
 
 // @0x140f90ec0
-void UIPvPRankDuelResultDialog::FUN_140f90ec0(__int64 nCharId, bool bLeft)
+void UIPvPRankDuelResultDialog::SetPlayerProfile(__int64 nCharId, bool bLeft)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
@@ -225,8 +225,8 @@ void UIPvPRankDuelResultDialog::FUN_140f91120(Unk_PrdResult* pResult)
         static_cast<Unk_PrdScript*>(m_30.operator->())->FUN_140f919d0("setRightData", bRightWins,
             ((class PCBase*)(class PCBase*)(pMe))->FUN_141656a80() == pResult->m_nCharIdR, pResult->m_nScoreR, pResult->m_strNameR, strTextR);
     }
-    FUN_140f90ec0(pResult->m_nCharIdL, true);
-    FUN_140f90ec0(pResult->m_nCharIdR, false);
+    SetPlayerProfile(pResult->m_nCharIdL, true);
+    SetPlayerProfile(pResult->m_nCharIdR, false);
     int nReward = 0;
     if (((class PCBase*)(class PCBase*)(pMe))->FUN_141656a80() == pResult->m_nCharIdL)
     {

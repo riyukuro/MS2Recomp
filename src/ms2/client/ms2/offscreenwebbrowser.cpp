@@ -77,10 +77,10 @@ void FUN_1418fe1c0(const CStringA& strUrl);     // open an url in the external b
 CStringW XmlWide(const char* pszUtf8);          // UTF-8 -> wide
 CStringA FUN_14016a600(const wchar_t* psz, int nCodePage);     // wide -> multi-byte
 unsigned int FUN_1407181d0(const CStringA& str);                        // string -> number (returns a 16-bit value in eax)
-int FUN_141349e30(const CStringA& strKind);     // banner link kind
+int GetBannerLinkKind(const CStringA& strKind);     // banner link kind
 template <class T> T* FindDTDialog(int nId);                   // the dialog of a class id (<UIAttendGiftDialog> 0x140c053e0)
-UIMeratMarketDialog* FUN_140bfed50(int nUIClassID);            // the dialog of a class id
-UIWebBrowser* FUN_140c43790(int nUIClassID);    // the dialog of a class id
+UIMeratMarketDialog* FindMeratMarketDialog(int nUIClassID);            // the dialog of a class id
+UIWebBrowser* FindWebBrowser(int nUIClassID);    // the dialog of a class id
 
 // UTF-8 -> multi-byte in the given code page (0: the game's). Header inline (COMDAT 0x14161a290).
 inline CStringA Utf8ToMultiByte(const std::string& str, int nCodePage)
@@ -348,7 +348,7 @@ void COffscreenWebBrowser::SetLoginInfo(const char* pszToken, int nWindowType)
         m_eJob = (Unk_JobCode)pPlayer->GetJobGroupId();
         m_nLevel = (unsigned short)pPlayer->vfunc_78();
         if (CGuildManager::GetInstance()->IsInGuild() != 0) {
-            m_nGuildId = CGuildManager::GetInstance()->FUN_1404ccbd0();
+            m_nGuildId = CGuildManager::GetInstance()->GetGuildId();
             m_strGuildName = pPlayer->GetGuildName();
         } else {
             m_nGuildId = 0;
@@ -820,8 +820,8 @@ bool COffscreenWebBrowser::OnProcessMessageReceived(CefRefPtr<CefBrowser> browse
             if (message->GetArgumentList()->GetSize() == 3) {
                 CStringA strKind(message->GetArgumentList()->GetString(1).c_str());
                 CStringA strTarget(message->GetArgumentList()->GetString(2).c_str());
-                int nKind = FUN_141349e30(strKind);
-                UIMeratMarketDialog* pDialog = FUN_140bfed50(0x4ec1);
+                int nKind = GetBannerLinkKind(strKind);
+                UIMeratMarketDialog* pDialog = FindMeratMarketDialog(0x4ec1);
                 if (pDialog != NULL) {
                     pDialog->OpenBanner(nKind, strTarget);
                 }
@@ -844,7 +844,7 @@ bool COffscreenWebBrowser::OnProcessMessageReceived(CefRefPtr<CefBrowser> browse
         FUN_1418fe1c0(strUrl.c_str());
     } else if (message->GetName() == g_szCefMessageOpenMaview) {
         std::string strUrl = message->GetArgumentList()->GetString(0).ToString();
-        UIWebBrowser* pBrowser = FUN_140c43790(0x4e6a);
+        UIWebBrowser* pBrowser = FindWebBrowser(0x4e6a);
         if (pBrowser != NULL) {
             pBrowser->FUN_14135ec00(strUrl.c_str(), true);
         }

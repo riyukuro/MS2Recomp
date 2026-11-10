@@ -40,7 +40,7 @@ public:
     virtual int vfunc_63();
     virtual void vfunc_64();
 
-    int FUN_1422e7950();                                        // 0x1422e7950 the presentation ref has changed
+    int GetSceneId();                                        // 0x1422e7950 the presentation ref has changed
 
 public:
     char m_pad68[4];

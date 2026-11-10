@@ -44,8 +44,8 @@ typedef MS2Ptr<CMsgBoxData> Unk_MsgBoxPtr;
 class Unk_PCBaseFlags
 {
 public:
-    Unk_PCBaseFlags& FUN_140d75120(unsigned nPos, bool bValue);   // set / clear one bit
-    bool FUN_140d75240(unsigned nPos) const;                // test one bit
+    Unk_PCBaseFlags& SetBit(unsigned nPos, bool bValue);   // set / clear one bit
+    bool IsBitSet(unsigned nPos) const;                // test one bit
     void FUN_140d752e0(unsigned char c);                             // fill both bytes
     void FUN_140d75340();                                   // trim the unused top bits
 
@@ -100,7 +100,7 @@ Unk_MsgBoxPtr FUN_140d74b20(int nBit, const CStringW& strA, const CStringW& strB
 // @0x140d74e50
 void FUN_140d74e50(int nBit)
 {
-    g_143ac2fb8.FUN_140d75120(nBit, 1);
+    g_143ac2fb8.SetBit(nBit, 1);
 }
 
 // @0x140d74e80
@@ -152,11 +152,11 @@ Unk_BitRef Unk_BitSet11::FUN_140d75090(unsigned nPos)
 // @0x140d750f0
 bool Unk_BitRef::FUN_140d750f0() const
 {
-    return m_pSet->FUN_140d75240(m_nPos);
+    return m_pSet->IsBitSet(m_nPos);
 }
 
 // @0x140d75120
-Unk_PCBaseFlags& Unk_PCBaseFlags::FUN_140d75120(unsigned nPos, bool bValue)
+Unk_PCBaseFlags& Unk_PCBaseFlags::SetBit(unsigned nPos, bool bValue)
 {
     if (nPos >= 11)
         MS2_ASSERT_AT(0xf3, 0);
@@ -168,7 +168,7 @@ Unk_PCBaseFlags& Unk_PCBaseFlags::FUN_140d75120(unsigned nPos, bool bValue)
 }
 
 // @0x140d75240
-bool Unk_PCBaseFlags::FUN_140d75240(unsigned nPos) const
+bool Unk_PCBaseFlags::IsBitSet(unsigned nPos) const
 {
     if (nPos >= 11)
     {

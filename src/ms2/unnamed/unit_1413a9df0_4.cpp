@@ -21,7 +21,7 @@
 class Unk_GcSmartRef
 {
 public:
-    // C3: 0x1413b40b0 is MS2Ptr<ASDisplayObject>::operator=, now Unk_MS2PtrAccess::FUN_1413b40b0 (below)
+    // C3: 0x1413b40b0 is MS2Ptr<ASDisplayObject>::operator=, now Unk_MS2PtrAccess::Assign (below)
     void* FUN_1413b4130() const;                            // 0x1413b4130 the held value
     // C3: FUN_140d03270 / FUN_140d03410 were MS2Ptr<ASDisplayObject>::AddRef / Release (private,
     // reached through the Unk_MS2PtrAccess friend)
@@ -29,7 +29,7 @@ public:
     void* m_p8;
 };
 MS2_CHECK_SIZE(Unk_GcSmartRef, 0x10);
-class ASDisplayObject; struct Unk_MS2PtrAccess { static MS2Ptr<ASDisplayObject>& FUN_1413b40b0(MS2Ptr<ASDisplayObject>& self, MS2Ptr<ASDisplayObject>& rhs); };
+class ASDisplayObject; struct Unk_MS2PtrAccess { static MS2Ptr<ASDisplayObject>& Assign(MS2Ptr<ASDisplayObject>& self, MS2Ptr<ASDisplayObject>& rhs); };
 
 // @0x1413b4010
 Unk_GcOptInt& Unk_GcOptInt::operator=(const int& nValue)
@@ -56,7 +56,7 @@ Unk_GcOptBool& Unk_GcOptBool::operator=(const bool& bValue)
 }
 
 // @0x1413b40b0
-MS2Ptr<ASDisplayObject>& Unk_MS2PtrAccess::FUN_1413b40b0(MS2Ptr<ASDisplayObject>& self, MS2Ptr<ASDisplayObject>& rhs)
+MS2Ptr<ASDisplayObject>& Unk_MS2PtrAccess::Assign(MS2Ptr<ASDisplayObject>& self, MS2Ptr<ASDisplayObject>& rhs)
 {
     rhs.AddRef();
     self.Release();

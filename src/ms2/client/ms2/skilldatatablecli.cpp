@@ -104,12 +104,12 @@ void SkillDataTableCli::PreloadSkill(unsigned nSkillId, unsigned short nLevel, i
     MS2Ptr<SkillData> spSkill = GetSkillData(nSkillId);
     if (spSkill.get() != 0)
     {
-        MS2Ptr<SkillLevelData> spLevel = spSkill->FUN_1407e90a0(nLevel);
+        MS2Ptr<SkillLevelData> spLevel = spSkill->GetLevelData(nLevel);
         if (spLevel)
         {
-            for (int nMotion = 0; nMotion < spLevel->FUN_140804270(); nMotion++)
+            for (int nMotion = 0; nMotion < spLevel->GetMotionCount(); nMotion++)
             {
-                SkillMotionData* pMotion = spLevel->FUN_140803f00(nMotion);
+                SkillMotionData* pMotion = spLevel->GetMotion(nMotion);
                 if (pMotion != 0)
                 {
                     if (!FUN_1411a4800(pMotion->m_strMotionEffect, nPriority))
@@ -138,9 +138,9 @@ void SkillDataTableCli::PreloadSkill(unsigned nSkillId, unsigned short nLevel, i
                                               L"Skill PreLoad Effect Failed (tag2Effects) ID:{0} Tag:{1}", spSkill->GetId(),
                                               pMotion->m_mapTagEffects.GetValueAt(pos));
                     }
-                    for (int nAttack = 0; pMotion->FUN_140807e20(nAttack) != 0; nAttack++)
+                    for (int nAttack = 0; pMotion->GetAttack(nAttack) != 0; nAttack++)
                     {
-                        const SkillAttackData* pAttack = pMotion->FUN_140807e20(nAttack);
+                        const SkillAttackData* pAttack = pMotion->GetAttack(nAttack);
                         const SkillArrow& arrow = pAttack->m_arrow;
                         if (!FUN_1411a4800(arrow.m_strEffect, nPriority))
                             Unk_SkillTableLog(GetLogString(), 2, 0x134,
@@ -240,10 +240,10 @@ bool SkillDataTableCli::CheckAdditionalChain(MS2Ptr<SkillLevelData> spLevel, uns
     if (nDepth == 0)
         return false;
     Unk_SkillTableLog(GetLogString(), 0xc, 0x13, L"LevelData = {0}, {1}, {2}",
-                      spLevel->FUN_140803dc0(), spLevel->GetLevel(), nDepth);
+                      spLevel->GetSkillId(), spLevel->GetLevel(), nDepth);
     for (const MS2Ptr<SkillActionAdditional>& spAdditional : spLevel->m_vAdditional)
     {
-        if (CheckSkillChain(spAdditional->m_nAdditionalID, spAdditional->m_nLevel, spLevel->FUN_140803dc0(),
+        if (CheckSkillChain(spAdditional->m_nAdditionalID, spAdditional->m_nLevel, spLevel->GetSkillId(),
                             spLevel->GetLevel(), nDepth) == 0)
             return false;
     }
@@ -293,7 +293,7 @@ void SkillDataTableCli::GetGlides(std::vector<MS2Ptr<SkillGlideData> >& out)
     std::transform(m_glides.begin(), m_glides.end(), std::back_inserter(out),
                    [](const std::pair<const int, MS2Ptr<SkillGlideData> >& entry) { return entry.second; });
     std::sort(out.begin(), out.end(), [](const MS2Ptr<SkillGlideData>& a, const MS2Ptr<SkillGlideData>& b) {
-        return (unsigned)a->FUN_140802ab0() < (unsigned)b->FUN_140802ab0();
+        return (unsigned)a->GetId() < (unsigned)b->GetId();
     });
 }
 MS2_REPLACE_METHOD(0x140aafc30, SkillDataTableCli, GetGlides, 298, 0x5ED668CE);

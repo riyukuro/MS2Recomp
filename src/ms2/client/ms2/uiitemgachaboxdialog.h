@@ -28,19 +28,19 @@ public:
     virtual int vfunc_48() { return 20363; }
     void FUN_140c40ad0();
     int FUN_140c41700();
-    void FUN_140c41900(int);
-    void FUN_140c41c30(int);
-    void FUN_140c41e10();
+    void ShowOpenBoxError(int);
+    void SetBoxItemId(int);
+    void SendOpenBox();
     void OnOpenCoinShop();
     void FUN_140c42050();
-    int FUN_140c420e0();
+    int GetIndividualDropBoxId();
     void FUN_140c42160();
-    bool FUN_140c42e70(const ItemEntity&);
-    void FUN_140c42ee0(CString);
+    bool IsSpecialItem(const ItemEntity&);
+    void OnChangeState(CString);
     bool FUN_140c42fd0(int, const CMsgBoxData&);
-    void FUN_140c43010();
-    void FUN_140c43090();
-    GachaBoxDataPtr FUN_140c43110();
+    void ReleaseSlotBinds();
+    void ReleaseBagBinds();
+    GachaBoxDataPtr GetGachaBoxData();
 private:
     MS2_LAYOUT_FRIEND;
     int m_boxItemId;                            // +0x178 item id of the box that is being opened

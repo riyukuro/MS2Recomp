@@ -80,34 +80,34 @@ public:
     void ReadTriggerEvents(CInPacket* pEvent);   // type 2: n objects
     void FUN_141861ad0(CInPacket* pEvent);   // type 3: one object
     void OnCameraObjects(CInPacket* pEvent);   // type 5: camera step list
-    void FUN_141861c20(CInPacket* pEvent);   // type 6: look-at-centre camera
-    void FUN_141861f30(CInPacket* pEvent);   // type 7: camera fade off
+    void OnTargetLookCenterCamera(CInPacket* pEvent);   // type 6: look-at-centre camera
+    void OnCameraFadeOff(CInPacket* pEvent);   // type 7: camera fade off
     void OnCameraInterpolation(CInPacket* pEvent);   // camera fade on
     void OnTextPopup(CInPacket* pEvent);   // type 0xc: show a text file
     void FUN_141862110(CInPacket* pEvent);   // type 0xf: UI popups
     void FUN_1418627c0(CInPacket* pEvent);   // type 9: sub-dispatcher (player/UI actions)
     void FUN_141862930(CInPacket* pEvent);   // type 0x16
-    void FUN_1418629b0(CInPacket* pEvent);   // type 0x13: side popup talk
+    void OnSidePopupTalk(CInPacket* pEvent);   // type 0x13: side popup talk
     void FUN_141862d30(CInPacket* pEvent);   // type 0x14: set the state of named UI objects
     void OnNpcDuelHpBar(CInPacket* pEvent);   // type 0x15
     void FUN_141862ff0(int nType, CInPacket* pEvent);    // types 0x17-0x19
     void OnTypingGame(CInPacket* pEvent);   // type 9 sub 0xc: typing game dialog
     bool ObjectContains(int nObject, const Vector3& pt); // is the point inside the object
     void FUN_1418631a0();
-    void FUN_1418631c0();                           // clear the camera step list
+    void ClearCameraSteps();                           // clear the camera step list
     void QueueCameraStep(int nObject, int bStart);    // queue a camera step
-    void FUN_141863260();                           // run the next camera step
-    void FUN_141863340(const ATL::CAtlArray<int>& aObjects, int bEnd);
+    void RunNextCameraStep();                           // run the next camera step
+    void QueueCameraSteps(const ATL::CAtlArray<int>& aObjects, int bEnd);
     void FUN_141863460(float fFade);
     void FUN_141863630(int nId, bool bAdd, CStringA strName);
-    bool FUN_1418637a0(const unsigned& rModel, std::vector<int>& rIds);
+    bool FindObjectsByModel(const unsigned& rModel, std::vector<int>& rIds);
     bool FUN_1418638d0(egf::Entity* pEntity);   // is the entity inside a mesh trigger object
     void FUN_141863a90(CInPacket* pEvent, bool bSkipFx);
     void FUN_141863b70(CInPacket* pEvent);
-    void FUN_141863c50(CInPacket* pEvent);
+    void StopCutScene(CInPacket* pEvent);
     void FUN_141863cc0(CInPacket* pEvent);
     void FUN_141863d80(CInPacket* pEvent);
-    void FUN_141863df0(CInPacket* pEvent);
+    void AddGuideTrigger(CInPacket* pEvent);
     void FUN_141863e50(CInPacket* pEvent);
     void FUN_141864010(CInPacket* pEvent);
     void FUN_1418641e0(CInPacket* pEvent);

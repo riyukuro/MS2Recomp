@@ -43,16 +43,16 @@ public:
     void FUN_140a4d5f0(double fTime);               // recompute the yaw and the eye from the centre point
     void FUN_140a4e0d0(const Vector3& ptCenter);    // set the look-at centre
     void FUN_140a4e110(float fAngle);               // fixed yaw
-    void FUN_140a4e150(float f);                    // outer radius
+    void SetOuterRadius(float f);                    // outer radius
     void FUN_140a4e180(bool b);                     // inner-radius check on/off
-    void FUN_140a4e1d0(float f);                    // inner radius
-    void FUN_140a4e200(bool b);                     // use the fixed yaw
+    void SetInnerRadius(float f);                    // inner radius
+    void SetUseFixedYaw(bool b);                     // use the fixed yaw
     bool FUN_140a4e220();
-    bool FUN_140a4e240();                           // inside the allowed ring?
-    bool FUN_140a4e370();                           // the yaw lock expired?
+    bool IsInsideAllowedRing();                           // inside the allowed ring?
+    bool IsYawLockExpired();                           // the yaw lock expired?
     void FUN_140a4e3b0();                           // restart the yaw lock timer
     bool FUN_140a4e3e0();                           // shortest turn is clockwise?
-    void FUN_140a4e490(float* pfAngle);             // wrap an angle into (0, 2pi]
+    void WrapAngle(float* pfAngle);             // wrap an angle into (0, 2pi]
 
     int m_108;                          // +0x108 (not written)
     float m_10c;                        // +0x10c rotation interpolate speed (ctor 100)

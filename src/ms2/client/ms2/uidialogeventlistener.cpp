@@ -42,7 +42,7 @@ UIDialogEventDispatcher::~UIDialogEventDispatcher()
 }
 
 // @0x141928050
-void UIDialogEventDispatcher::FUN_141928050(UIDialogEventListener* pListener)
+void UIDialogEventDispatcher::AddListener(UIDialogEventListener* pListener)
 {
     for (size_t i = 0; i < m_8.GetCount(); i++)
     {
@@ -53,7 +53,7 @@ void UIDialogEventDispatcher::FUN_141928050(UIDialogEventListener* pListener)
 }
 
 // @0x1419280e0
-void UIDialogEventDispatcher::FUN_1419280e0(UIDialogEventListener* pListener)
+void UIDialogEventDispatcher::RemoveListener(UIDialogEventListener* pListener)
 {
     for (size_t i = 0; i < m_8.GetCount(); i++)
     {

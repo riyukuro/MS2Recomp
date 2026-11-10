@@ -16,7 +16,7 @@
 // Free functions of other units.
 CStringW GetStringCommon(int nStringId);                              // a common string by id
 unsigned long GetTickCountMs2();   // C3: was FUN_140869420
-CString FUN_141a06ff0(int nSound);                                  // the sound event name (uimessageboxdata.cpp)
+CString GetSoundName(int nSound);                                  // the sound event name (uimessageboxdata.cpp)
 void DestroyItemInfoSlot(const CString& strName);                         // drops an item slot bind id
 template <class A, class B> CStringW FUN_14028dee0(int nId, const A& a, const B& b); // a string by id formatted with two arguments
 CString FUN_141028be0(__int64 nCharId, const CString& strKey, int nFlag, CString strEmpty);   // the profile image key
@@ -42,7 +42,7 @@ CMsgBoxData::CMsgBoxData(int nType)
       m_strAlign{"left", "center", "right", "justify"},
       m_nAlign(4)
 {
-    FUN_141a050b0();
+    SetLayoutAndSound();
 }
 
 // inline + noinline: COMDAT-any, so the token-identical copy client\ms2\uimessageboxdata.cpp needs (for the vftable and
@@ -102,11 +102,11 @@ void CMsgBoxData::SetTitle(const CStringW& str)
 MS2_REPLACE_METHOD(0x141A015D0, CMsgBoxData, SetTitle, 42, 0x90927BED);
 
 // @0x141a01600
-void CMsgBoxData::FUN_141a01600(__int64 n)
+void CMsgBoxData::SetItemUid(__int64 n)
 {
     m_30 = (void*)n;
 }
-MS2_REPLACE_METHOD(0x141A01600, CMsgBoxData, FUN_141a01600, 25, 0x3BC76AD3);
+MS2_REPLACE_METHOD(0x141A01600, CMsgBoxData, SetItemUid, 25, 0x3BC76AD3);
 
 // @0x141a01620
 void CMsgBoxData::FUN_141a01620(int n)
@@ -185,7 +185,7 @@ MS2_REPLACE_METHOD(0x141A01800, CMsgBoxData, FUN_141a01800, 941, 0x281846E7);
 // @0x141a01bc0
 void CMsgBoxData::FUN_141a01bc0(int nSound)
 {
-    m_strSound = FUN_141a06ff0(nSound);
+    m_strSound = GetSoundName(nSound);
 }
 MS2_REPLACE_METHOD(0x141A01BC0, CMsgBoxData, FUN_141a01bc0, 93, 0x9FD7ABA2);
 
@@ -248,7 +248,7 @@ void CMsgBoxData::FUN_141a01ee0(MS2Ptr<CItem> spItem, const CStringW& strName, i
         if (m_spItem == NULL)
             return;
         m_nFlags |= 1;
-        m_spItem->FUN_141a06630(strName, nColorMode == 1, spItem->GetRarity());
+        m_spItem->SetName(strName, nColorMode == 1, spItem->GetRarity());
         m_spItem->m_spItem = spItem;
         m_spItem->m_nCount = nCount;
         m_spItem->m_nMax = nMax;
@@ -295,11 +295,11 @@ void CMsgBoxData::FUN_141a02460(int)
 MS2_REPLACE_METHOD(0x141A02460, CMsgBoxData, FUN_141a02460, 22, 0xA2777C50);
 
 // @0x141a02480
-void CMsgBoxData::FUN_141a02480(int)
+void CMsgBoxData::SetModaless(int)
 {
     m_bModaless = true;
 }
-MS2_REPLACE_METHOD(0x141A02480, CMsgBoxData, FUN_141a02480, 22, 0x7365A7F5);
+MS2_REPLACE_METHOD(0x141A02480, CMsgBoxData, SetModaless, 22, 0x7365A7F5);
 
 // @0x141a024a0
 void CMsgBoxData::FUN_141a024a0(int)
@@ -389,18 +389,18 @@ void CMsgBoxData::SetCallback(Delegate<bool(int, const CMsgBoxData&)> cb)
 MS2_REPLACE_METHOD(0x141A027C0, CMsgBoxData, SetCallback, 63, 0xADB0997D);
 
 // @0x141a02810
-void CMsgBoxData::FUN_141a02810(CStringW strTag)
+void CMsgBoxData::SetClickedTag(CStringW strTag)
 {
     m_str218 = strTag;
 }
-MS2_REPLACE_METHOD(0x141A02810, CMsgBoxData, FUN_141a02810, 65, 0xAD380117);
+MS2_REPLACE_METHOD(0x141A02810, CMsgBoxData, SetClickedTag, 65, 0xAD380117);
 
 // @0x141a02860
-void CMsgBoxData::FUN_141a02860(void* p)
+void CMsgBoxData::SetListener(void* p)
 {
     m_18 = p;
 }
-MS2_REPLACE_METHOD(0x141A02860, CMsgBoxData, FUN_141a02860, 25, 0xAB8BF0FB);
+MS2_REPLACE_METHOD(0x141A02860, CMsgBoxData, SetListener, 25, 0xAB8BF0FB);
 
 // @0x141a02880
 void CMsgBoxData::SetBuff(int nBuffId, short nLevel, CStringW strExtra)
@@ -423,11 +423,11 @@ void CMsgBoxData::FUN_141a029b0(const Unk_MsgBoxBuff& buff)
 MS2_REPLACE_METHOD(0x141A029B0, CMsgBoxData, FUN_141a029b0, 118, 0x11EE05B1);
 
 // @0x141a02a30
-void CMsgBoxData::FUN_141a02a30(const ATL::CAtlArray<ItemEntity>& items)
+void CMsgBoxData::SetRequiredItems(const ATL::CAtlArray<ItemEntity>& items)
 {
     m_reqItems.m_items.Copy(items);
 }
-MS2_REPLACE_METHOD(0x141A02A30, CMsgBoxData, FUN_141a02a30, 43, 0x2983810C);
+MS2_REPLACE_METHOD(0x141A02A30, CMsgBoxData, SetRequiredItems, 43, 0x2983810C);
 
 // @0x141a02a70
 void CMsgBoxData::FUN_141a02a70(CStringW strTitle, CString strUrl)
@@ -462,11 +462,11 @@ const CString& CMsgBoxData::GetSound() const
 MS2_REPLACE_METHOD(0x141A02BE0, CMsgBoxData, GetSound, 17, 0x827BAE3D);
 
 // @0x141a02c00
-__int64 CMsgBoxData::FUN_141a02c00() const
+__int64 CMsgBoxData::GetItemUid() const
 {
     return (__int64)m_30;
 }
-MS2_REPLACE_METHOD(0x141A02C00, CMsgBoxData, FUN_141a02c00, 15, 0xAC153A31);
+MS2_REPLACE_METHOD(0x141A02C00, CMsgBoxData, GetItemUid, 15, 0xAC153A31);
 
 // @0x141a02c20
 __int64 CMsgBoxData::FUN_141a02c20() const
@@ -497,18 +497,18 @@ int CMsgBoxData::FUN_141a02c80() const
 MS2_REPLACE_METHOD(0x141A02C80, CMsgBoxData, FUN_141a02c80, 14, 0xBA6447E3);
 
 // @0x141a02ca0
-int CMsgBoxData::FUN_141a02ca0() const
+int CMsgBoxData::GetId() const
 {
     return m_nId;
 }
-MS2_REPLACE_METHOD(0x141A02CA0, CMsgBoxData, FUN_141a02ca0, 14, 0xD26D6807);
+MS2_REPLACE_METHOD(0x141A02CA0, CMsgBoxData, GetId, 14, 0xD26D6807);
 
 // @0x141a02cc0
-IMessageListener* CMsgBoxData::FUN_141a02cc0() const
+IMessageListener* CMsgBoxData::GetListener() const
 {
     return (IMessageListener*)m_18;
 }
-MS2_REPLACE_METHOD(0x141A02CC0, CMsgBoxData, FUN_141a02cc0, 15, 0xBBB219C9);
+MS2_REPLACE_METHOD(0x141A02CC0, CMsgBoxData, GetListener, 15, 0xBBB219C9);
 
 // @0x141a02ce0
 const CStringW& CMsgBoxData::GetExtra() const
@@ -662,18 +662,18 @@ void CMsgBoxData::FUN_141a03130(UIMessageBox* pBox, int nSec)
 MS2_REPLACE_METHOD(0x141A03130, CMsgBoxData, FUN_141a03130, 588, 0x51A7E58A);
 
 // @0x141a03390
-void CMsgBoxData::FUN_141a03390(UIMessageBox* pBox)
+void CMsgBoxData::OnPopupTimerComplete(UIMessageBox* pBox)
 {
     bool bShown = pBox != NULL && (pBox->FUN_1422dba00().get() ? true : false);
     if (bShown && (m_nFlags & 4) != 0)
         m_timer.m_nButton = 1;
 }
-MS2_REPLACE_METHOD(0x141A03390, CMsgBoxData, FUN_141a03390, 216, 0x62F41E31);
+MS2_REPLACE_METHOD(0x141A03390, CMsgBoxData, OnPopupTimerComplete, 216, 0x62F41E31);
 
 // @0x141a03470
 void CMsgBoxData::FUN_141a03470()
 {
     if ((m_nFlags & 4) != 0 && m_timer.m_nArmed > 0)
-        m_timer.m_timer.FUN_140868750(m_timer.m_nArmed * 1000);
+        m_timer.m_timer.Start(m_timer.m_nArmed * 1000);
 }
 MS2_REPLACE_METHOD(0x141A03470, CMsgBoxData, FUN_141a03470, 80, 0x15EDB00B);

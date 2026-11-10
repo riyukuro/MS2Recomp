@@ -57,7 +57,7 @@ errno_t FUN_140dcefa0(void* const dst, rsize_t const dstSize, void const* const 
       // the content switches
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 enum Unk_JobGroupID { Unk_JobGroupID_None = 0 }; template <class E> int XmlValue(TiXmlElement*, const char*, E&);
 int XmlGetAttr(class TiXmlElement*, char const*, __int64&);   // C3: was FUN_1408732e0
@@ -88,7 +88,7 @@ CSkillCompactControlTable::~CSkillCompactControlTable()
 // @0x140dca800
 int CSkillCompactControlTable::Load()
 {
-    if (!TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0x10))
+    if (!TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0x10))
         return 1;
     if (Unk_LockGuard guard = s_lock) { __assume(0); } else
     {
@@ -99,12 +99,12 @@ int CSkillCompactControlTable::Load()
     CString strPath;
     strPath.Format("./data/xml/table/SkillCompactControl.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
     {
         Unk_AchieveLog<CString>(GetLogString(), 1, 0x13, L"파일을 읽을 수 없습니다[{0}]", strPath);
         return 0;
     }
-    s_cache.FUN_1401d1160(strPath);
+    s_cache.SetPath(strPath);
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
     {
@@ -198,7 +198,7 @@ void CSkillCompactControlTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CSkillCompactControlTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CSkillCompactControlTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

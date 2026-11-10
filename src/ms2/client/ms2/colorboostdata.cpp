@@ -141,7 +141,7 @@ void UIColorBoostDialog::OnLoadComplete()
     obj.SetMemberFloat("pcColorScale", g_1439f702c);
     obj.SetMemberFloat("pcDuration", g_1439f7030);
     obj.SetMemberFloat("accumRatio", g_1439f7034);
-    m_30->Invoke("initData", obj.FUN_1422bb870());
+    m_30->Invoke("initData", obj.GetValue());
 }
 MS2_REPLACE_METHOD(0x14109b9e0, UIColorBoostDialog, OnLoadComplete, 307, 0x638D874A);
 

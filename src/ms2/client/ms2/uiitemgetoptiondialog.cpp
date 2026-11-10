@@ -41,7 +41,7 @@ struct Unk_GoPacket
     unsigned int m_nOther;
     int m_nGrade;
 };
-void FUN_1401ff810(unsigned char*, class COutputStream&);   // C3: was FUN_1401ff810
+void WritePetFlags(unsigned char*, class COutputStream&);   // C3: was WritePetFlags
 
 // The account settings (+0xb0.. the auto-loot flags the server sent).
 struct Unk_GoAutoCfg
@@ -80,10 +80,10 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
     bool IsRegionCN();
 };
-class Unk_BreakSelected* FUN_140535320();   // C3: was FUN_140535320
+class Unk_BreakSelected* GetPetManager();   // C3: was GetPetManager
 #define FUN_140c8b450(p) ((Unk_GoAutoCfg*)reinterpret_cast<CPetManager*>(p)->GetInfo())   // C3: CPetManager::GetInfo (cpetmanager.h)
 class CGameOption { public: void SaveCharacterSettings(); class TiXmlDocument* GetCharacterDoc(); Unk_GoAutoLoot* FUN_141533e20(); };   // C3: member view (gameoption.cpp)
 void FUN_140710590(COutPacket& packet);                         // send
@@ -93,7 +93,7 @@ UIItemGetOptionDialog::UIItemGetOptionDialog()
 {
     m_nMode = 1;
     reinterpret_cast<Unk_GoAutoLoot*>(&m_opt)->Unk_GoAutoLoot::Unk_GoAutoLoot();
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x1419d9640
@@ -111,7 +111,7 @@ CString UIItemGetOptionDialog::GetTypeName()
 void UIItemGetOptionDialog::OnLoadInit()
 {
     UIObject::OnLoadInit();
-    FUN_1419da8f0();
+    LoadOptions();
 }
 
 // @0x1419d9700
@@ -125,27 +125,27 @@ void UIItemGetOptionDialog::OnLoadComplete()
 {
     UIModalDialog::OnLoadComplete();
     if (MS2Ptr<ASCheckBox> hEquip = GetChild<ASCheckBox>("m_equip"))
-        hEquip.get()->FUN_1422ce090(m_opt.FUN_1419dae70());
+        hEquip.get()->SetSelected(m_opt.IsEquip());
     if (MS2Ptr<ASCheckBox> hConsume = GetChild<ASCheckBox>("m_consume"))
-        hConsume.get()->FUN_1422ce090(m_opt.FUN_1419dae50());
+        hConsume.get()->SetSelected(m_opt.IsConsume());
     if (MS2Ptr<ASCheckBox> hEtc = GetChild<ASCheckBox>("m_etc"))
-        hEtc.get()->FUN_1422ce090(m_opt.FUN_1419dae60());
+        hEtc.get()->SetSelected(m_opt.IsEtc());
     if (MS2Ptr<ASCheckBox> hMeso = GetChild<ASCheckBox>("m_meso"))
-        hMeso.get()->FUN_1422ce090(m_opt.FUN_1419daea0());
+        hMeso.get()->SetSelected(m_opt.IsMeso());
     if (MS2Ptr<ASCheckBox> hMerat = GetChild<ASCheckBox>("m_merat"))
-        hMerat.get()->FUN_1422ce090(m_opt.FUN_1419dae90());
+        hMerat.get()->SetSelected(m_opt.IsMerat());
     if (MS2Ptr<ASCheckBox> hToken = GetChild<ASCheckBox>("m_token"))
-        hToken.get()->FUN_1422ce090(m_opt.FUN_1419daed0());
+        hToken.get()->SetSelected(m_opt.IsToken());
     if (MS2Ptr<ASCheckBox> hOther = GetChild<ASCheckBox>("m_other"))
-        hOther.get()->FUN_1422ce090(m_opt.FUN_1419daeb0());
+        hOther.get()->SetSelected(m_opt.IsOther());
     if (MS2Ptr<ASCheckBox> hGem = GetChild<ASCheckBox>("m_gemstone"))
-        hGem.get()->FUN_1422ce090(m_opt.FUN_1419dae80());
+        hGem.get()->SetSelected(m_opt.IsGemstone());
     if (MS2Ptr<ASCheckBox> hPet = GetChild<ASCheckBox>("m_pet"))
-        hPet.get()->FUN_1422ce090(m_opt.FUN_1419daec0());
+        hPet.get()->SetSelected(m_opt.FUN_1419daec0());
     if (MS2Ptr<ASDropdownMenu> hRank = ((UISwfEntity*)this)->GetChild<ASDropdownMenu>("m_equipRank"))
     {
         int nSel = 0;
-        int nGrade = m_opt.FUN_1419dae30();
+        int nGrade = m_opt.GetGrade();
         if (nGrade == 1)
             nSel = 0;
         else if (nGrade == 2)
@@ -283,7 +283,7 @@ int UIItemGetOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::
     }
     else if (_stricmp("OnClickOk", szMethod) == 0)
     {
-        FUN_1419dabc0();
+        ApplyOptions();
         vfunc_67();
         return 1;
     }
@@ -299,16 +299,16 @@ void UIItemGetOptionDialog::SetMode(int nMode)
 // @0x1419da640
 int UIItemGetOptionDialog::vfunc_46()
 {
-    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8d))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x8d))
     {
         if (MS2Ptr<ASCheckBox> hPet = GetChild<ASCheckBox>("m_pet"))
         {
             ASCheckBox* pCheck = hPet.get();
             pCheck->vfunc_4(false);
-            hPet.get()->FUN_1422c1fe0(0);
+            hPet.get()->SetEnabled(0);
         }
     }
-    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e))
+    if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x2e))
     {
         if (MS2Ptr<ASCheckBox> hGem = GetChild<ASCheckBox>("m_gemstone"))
         {
@@ -330,7 +330,7 @@ int UIItemGetOptionDialog::vfunc_46()
 }
 
 // @0x1419da8f0
-void UIItemGetOptionDialog::FUN_1419da8f0()
+void UIItemGetOptionDialog::LoadOptions()
 {
     if (m_nMode != 0)
     {
@@ -339,24 +339,24 @@ void UIItemGetOptionDialog::FUN_1419da8f0()
     }
     else
     {
-        SetAutoLootMeso((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nMeso != 0);
+        SetAutoLootMeso((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)GetPetManager()))->m_nMeso != 0);
         if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN())
-            SetAutoLootMerat((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nMerat != 0);
-        SetAutoLootEtc((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nEtc != 0);
-        SetAutoLootToken((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nToken != 0);
-        SetAutoLootEquip((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nEquip != 0);
-        SetAutoLootConsume((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nConsume != 0);
-        SetAutoLootOther((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nOther != 0);
-        SetAutoLootEquipGrade((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nGrade);
-        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e) == true)
-            SetAutoLootGemStone((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nGemstone != 0);
-        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8c))
-            SetAutoLootPet((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)FUN_140535320()))->m_nPet != 0);
+            SetAutoLootMerat((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)GetPetManager()))->m_nMerat != 0);
+        SetAutoLootEtc((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)GetPetManager()))->m_nEtc != 0);
+        SetAutoLootToken((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)GetPetManager()))->m_nToken != 0);
+        SetAutoLootEquip((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)GetPetManager()))->m_nEquip != 0);
+        SetAutoLootConsume((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)GetPetManager()))->m_nConsume != 0);
+        SetAutoLootOther((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)GetPetManager()))->m_nOther != 0);
+        SetAutoLootEquipGrade((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)GetPetManager()))->m_nGrade);
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x2e) == true)
+            SetAutoLootGemStone((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)GetPetManager()))->m_nGemstone != 0);
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x8c))
+            SetAutoLootPet((Unk_GsAutoLoot*)&m_opt, FUN_140c8b450(((void*)GetPetManager()))->m_nPet != 0);
     }
 }
 
 // @0x1419dabc0
-void UIItemGetOptionDialog::FUN_1419dabc0()
+void UIItemGetOptionDialog::ApplyOptions()
 {
     if (m_nMode != 0)
     {
@@ -366,22 +366,22 @@ void UIItemGetOptionDialog::FUN_1419dabc0()
     else
     {
         Unk_PetFlags data;   // ccpetinfopacket.h's (ctor 0x1401ff780), the Unk_GoPacket layout: a..j = meso, merat, etc, token, equip, consume, gemstone, pet, other, grade
-        data.a = m_opt.FUN_1419daea0();
+        data.a = m_opt.IsMeso();
         if (!((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsRegionCN())
-            data.b = m_opt.FUN_1419dae90();
-        data.c = m_opt.FUN_1419dae60();
-        data.d = m_opt.FUN_1419daed0();
-        data.e = m_opt.FUN_1419dae70();
-        data.f = m_opt.FUN_1419dae50();
-        data.i = m_opt.FUN_1419daeb0();
-        data.j = m_opt.FUN_1419dae30();
-        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x2e) == true)
-            data.g = m_opt.FUN_1419dae80();
-        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(0x8c))
+            data.b = m_opt.IsMerat();
+        data.c = m_opt.IsEtc();
+        data.d = m_opt.IsToken();
+        data.e = m_opt.IsEquip();
+        data.f = m_opt.IsConsume();
+        data.i = m_opt.IsOther();
+        data.j = m_opt.GetGrade();
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x2e) == true)
+            data.g = m_opt.IsGemstone();
+        if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(0x8c))
             data.h = m_opt.FUN_1419daec0();
         COutPacket packet(static_cast<int>(SendOp::RequestPet), 0);
         packet.WriteUInt8(6);
-        FUN_1401ff810((unsigned char*)(&data), *(class COutputStream*)(&packet));
+        WritePetFlags((unsigned char*)(&data), *(class COutputStream*)(&packet));
         FUN_140710590(packet);
     }
 }

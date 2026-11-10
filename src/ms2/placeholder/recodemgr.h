@@ -18,9 +18,9 @@ public:
     virtual ~RecodeMgr();                                   // 0x140c9bac0 (deleting 0x140c9c160)
     void FUN_140c9bb20();                                   // stops the recording (also on device loss)
     int IsRecording();                                    // 1 while recording
-    int FUN_140c9bb60();                                    // start recording with the default text
+    int StartRecording();                                    // start recording with the default text
     int StopRecording();                                    // stop the recording
-    int FUN_140c9bc70(CString strText);                     // start recording with a text line (callee destroys it)
+    int StartRecordingWithText(CString strText);                     // start recording with a text line (callee destroys it)
     void FUN_140c9bda0();                                   // graphic option call (ignores this)
     void FUN_140c9bdd0();                                   // graphic option call (ignores this)
     int FUN_140c9be00();                                    // launch the MS2Media recorder once (a named mutex guards it)

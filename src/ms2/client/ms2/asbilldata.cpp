@@ -51,11 +51,11 @@ CStringW FUN_1418fec00(int nMoneyType, __int64 nAmount, bool bIcon);   // a mone
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // the string-table text of a key (commonutil.cpp)
 CStringW FUN_1409404f0(__int64 nValue);                         // a number with separators (achievemanager.cpp)
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);              // the item data of an id
-bool FUN_1406a5930();                                           // star points are enabled (meratmarketbasketinfo.cpp)
+bool IsStarPointEventActive();                                           // star points are enabled (meratmarketbasketinfo.cpp)
 CStringW FUN_140ebd020(bool bDay, CDBPremiumProduct* pProduct); // the option label (uimeratmarketcommon.cpp)
 CStringW FUN_140ebd520(CMeratMarketPremiumProduct* pProduct, int nSubId);   // the chosen option's text
 CStringW FUN_140ebd870(CMeratMarketPremiumProduct* pProduct);   // the option text of a UGC option
-CStringW FUN_140ec05f0(CMeratMarketPremiumProduct* pProduct);            // the star point text
+CStringW GetStarPointText(CMeratMarketPremiumProduct* pProduct);            // the star point text
 
 // defined below
 void SetStarPoint(ASObj& obj, const CStringW& strPoint, __int64 nPoint);   // "strStarPoint" / "starPoint"
@@ -143,39 +143,39 @@ void ASBillData::SetIconFromItem(MS2Ptr<CItemData> spItem, int nRank)
     if (spItem == 0)
         return;
     ASObj icon(2);
-    icon.FUN_1407cba60("iconPath", spItem->GetIconPath());
+    icon.SetStringMember("iconPath", spItem->GetIconPath());
     icon.FUN_1409adc90("itemGrade", nRank);
-    SetIconData(icon.FUN_1422bb870());
+    SetIconData(icon.GetValue());
 }
 MS2_REPLACE_METHOD(0x1409AB990, ASBillData, SetIconFromItem, 234, 0x5F038C27);
 
 // @0x1409aba80
 void ASBillData::SetItemName(const CStringW& strName)
 {
-    FUN_1407cbb20("itemName", strName);
+    SetWStringMember("itemName", strName);
 }
 MS2_REPLACE_METHOD(0x1409ABA80, ASBillData, SetItemName, 72, 0x1A28C6D2);
 
 // @0x1409abad0
 void ASBillData::SetSalePrice(const CStringW& strPrice, __int64 nPrice)
 {
-    FUN_1407cbb20("strSalePrice", strPrice);
-    FUN_1407cba60("salePrice", FUN_1407194b0(nPrice));
+    SetWStringMember("strSalePrice", strPrice);
+    SetStringMember("salePrice", FUN_1407194b0(nPrice));
 }
 MS2_REPLACE_METHOD(0x1409ABAD0, ASBillData, SetSalePrice, 129, 0x76980772);
 
 // @0x1409abb60
 void ASBillData::SetRandomPaybackPrice(const CStringW& strPrice, __int64 nPrice)
 {
-    FUN_1407cbb20("strRandomPaybackPrice", strPrice);
-    FUN_1407cba60("randomPaybackPrice", FUN_1407194b0(nPrice));
+    SetWStringMember("strRandomPaybackPrice", strPrice);
+    SetStringMember("randomPaybackPrice", FUN_1407194b0(nPrice));
 }
 MS2_REPLACE_METHOD(0x1409ABB60, ASBillData, SetRandomPaybackPrice, 129, 0x0E42B535);
 
 // @0x1409abbf0
 void ASBillData::SetSelectedOption(const CStringW& strExtra)
 {
-    FUN_1407cbb20("selectedOption", strExtra);
+    SetWStringMember("selectedOption", strExtra);
 }
 MS2_REPLACE_METHOD(0x1409ABBF0, ASBillData, SetSelectedOption, 72, 0x365E5D36);
 
@@ -190,7 +190,7 @@ MS2_REPLACE_METHOD(0x1409ABC40, ASBillData, SetOptionArray, 71, 0xC2269486);
 void ASBillData::SetEnableGift(bool b)
 {
     m_b40 = b;
-    FUN_1407cbbe0("enableGift", b);
+    SetBoolMember("enableGift", b);
 }
 MS2_REPLACE_METHOD(0x1409ABC90, ASBillData, SetEnableGift, 54, 0xB0F6926C);
 
@@ -204,7 +204,7 @@ MS2_REPLACE_METHOD(0x1409ABCD0, ASBillData, SetPayType, 22, 0x1DE9BE0F);
 // @0x1409abcf0
 void ASBillData::SetUseDropDown(bool b)
 {
-    FUN_1407cbbe0("useDropDown", b);
+    SetBoolMember("useDropDown", b);
 }
 MS2_REPLACE_METHOD(0x1409ABCF0, ASBillData, SetUseDropDown, 41, 0xFD21E71E);
 
@@ -371,7 +371,7 @@ void ASMeratMarketBuyBillData::SetProductInfo(MS2Ptr<CMeratMarketProduct> spProd
     SetProduct(spProduct);
     if (spProduct == 0)
         return;
-    FUN_1407cbb20("productOID", spProduct->m_key.GetKeyString());
+    SetWStringMember("productOID", spProduct->m_key.GetKeyString());
     if (spProduct->IsPremium())
     {
         FUN_1409ac6f0(&spProduct->m_premium, nOption, nCurrency);
@@ -415,29 +415,29 @@ void ASMeratMarketBuyBillData::FUN_1409ac6f0(CMeratMarketPremiumProduct* pProduc
     SetSalePrice(strPrice, nPrice);
     if (pProduct->m_nType == 7)
     {
-        __int64 nRandom = pProduct->FUN_1406a0270();
+        __int64 nRandom = pProduct->GetPaybackPrice();
         CStringW strRandom = FUN_1418fec00(nCurrency, nRandom, false);
         SetRandomPaybackPrice(strRandom, nRandom);
     }
     if (SetOptionDropDown(pProduct, nOption, nCurrency))
         SetUseDropDown(true);
-    bool bGift = pProduct->FUN_1406a1c70(0);
+    bool bGift = pProduct->IsGiftable(0);
     SetEnableGift(bGift);
     MS2Ptr<CItemData> spItem = FUN_14053f870(pProduct->m_nItemId);
     if (spItem.get() != 0)
     {
         CStringW strOption = FUN_140ebd520(pProduct, nOption);
-        FUN_1407cbb20("selectedOption", strOption);
+        SetWStringMember("selectedOption", strOption);
     }
     SetPayType(nCurrency);
     FUN_1409b0430(nOption);
-    bool bPoint = FUN_1406a5930() && pProduct->HasPointPrice();
+    bool bPoint = IsStarPointEventActive() && pProduct->HasPointPrice();
     if (bPoint)
     {
         FUN_1409b0450(true);
         FUN_1409abd40(0xf);
         __int64 nPoint = pProduct->GetPointOf(nOption);
-        CStringW strPoint = FUN_140ec05f0(pProduct);
+        CStringW strPoint = GetStarPointText(pProduct);
         SetStarPoint(*this, strPoint, nPoint);
     }
 }
@@ -449,7 +449,7 @@ void ASMeratMarketBuyBillData::SetPremiumOption(CMeratMarketPremiumProduct* pOpt
     SetProduct(spProduct);
     SetItemName(pOption->GetName());
     CStringW strOption = FUN_140ebd870(pOption);
-    FUN_1407cbb20("selectedOption", strOption);
+    SetWStringMember("selectedOption", strOption);
     {
         CStringW strEmpty(L"");
         SetSalePrice(strEmpty, 0);
@@ -563,8 +563,8 @@ bool ASBillData::SetOptionDropDown(CMeratMarketPremiumProduct* pProduct, int nOp
             nSelected = nIndex;
         AddOptionRow(arrOptions, nCurrency, spSub.get(), bDay, pBase);
     }
-    FUN_1407cb9c0("selectedOptionIndex", nSelected);
-    SetOptionArray(arrOptions.FUN_1422bb870());
+    SetIntMember("selectedOptionIndex", nSelected);
+    SetOptionArray(arrOptions.GetValue());
     return true;
 }
 MS2_REPLACE_METHOD(0x1409ACFE0, ASBillData, SetOptionDropDown, 876, 0x736BBBD2);
@@ -606,7 +606,7 @@ void ASBillData::AddOptionRow(ASArray& arr, int nCurrency, CDBPremiumProduct* pS
     }
     CStringW strSalePrice = FUN_1418fec00(nCurrency, nSalePrice, false);
     __int64 nPoint = pSub->GetPoint();
-    CStringW strPoint = FUN_140ec05f0(static_cast<CMeratMarketPremiumProduct*>(pSub));
+    CStringW strPoint = GetStarPointText(static_cast<CMeratMarketPremiumProduct*>(pSub));
     ASObj row(2);
     SetLabel(row, strLabel);
     SetSaleText(row, strSale);
@@ -617,47 +617,47 @@ void ASBillData::AddOptionRow(ASArray& arr, int nCurrency, CDBPremiumProduct* pS
     if (nBaseId != pSub->m_nId)
         nMarketSN = pSub->m_nId;
     SetMarketSN(row, nMarketSN);
-    arr.PushValue(row.FUN_1422bb870());
+    arr.PushValue(row.GetValue());
 }
 MS2_REPLACE_METHOD(0x1409AD420, ASBillData, AddOptionRow, 903, 0xADC38BEA);
 
 // @0x1409ad7b0
 static void SetSaleText(ASObj& obj, const CStringW& strSale)
 {
-    ((class AScript&)(obj)).FUN_1407cbb20("saleText", strSale);
+    ((class AScript&)(obj)).SetWStringMember("saleText", strSale);
 }
 
 // @0x1409ad800
 static void SetLabel(ASObj& obj, const CStringW& strLabel)
 {
-    ((class AScript&)(obj)).FUN_1407cbb20("label", strLabel);
+    ((class AScript&)(obj)).SetWStringMember("label", strLabel);
 }
 
 // @0x1409ad850
 static void FUN_1409ad850(ASObj& obj, const CStringW& strPrice, __int64 nPrice)
 {
-    ((class AScript&)(obj)).FUN_1407cbb20("strSalePrice", strPrice);
-    obj.FUN_1407cba60("salePrice", FUN_1407194b0(nPrice));
+    ((class AScript&)(obj)).SetWStringMember("strSalePrice", strPrice);
+    obj.SetStringMember("salePrice", FUN_1407194b0(nPrice));
 }
 
 // @0x1409ad8e0
 static void FUN_1409ad8e0(ASObj& obj, const CStringW& strPrice, __int64 nPrice)
 {
-    ((class AScript&)(obj)).FUN_1407cbb20("strPrice", strPrice);
-    obj.FUN_1407cba60("price", FUN_1407194b0(nPrice));
+    ((class AScript&)(obj)).SetWStringMember("strPrice", strPrice);
+    obj.SetStringMember("price", FUN_1407194b0(nPrice));
 }
 
 // @0x1409ad970
 static void SetMarketSN(ASObj& obj, const unsigned& nMarketSN)
 {
-    obj.FUN_1407cba60("marketSN", FUN_140719190(nMarketSN));
+    obj.SetStringMember("marketSN", FUN_140719190(nMarketSN));
 }
 
 // @0x1409ad9c0
 void SetStarPoint(ASObj& obj, const CStringW& strPoint, __int64 nPoint)
 {
-    ((class AScript&)(obj)).FUN_1407cbb20("strStarPoint", strPoint);
-    obj.FUN_1407cba60("starPoint", FUN_1407194b0(nPoint));
+    ((class AScript&)(obj)).SetWStringMember("strStarPoint", strPoint);
+    obj.SetStringMember("starPoint", FUN_1407194b0(nPoint));
 }
 MS2_REPLACE(0x1409AD9C0, SetStarPoint, 129, 0xE44F0A15);
 

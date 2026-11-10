@@ -32,10 +32,10 @@ CStringW GetStringCommon(int nId);                        // string table text b
 CStringW BlockFormat(int nId);
 #include "ms2/placeholder/blockformat.h"   // C3: BlockFormat<...> over FUN_14028dee0 by its real name (was BlockFormat(int, const ArgList&))
 void FUN_140d73bc0(int nTable, int nId, void* pListener, CStringW strExtra);
-void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strExtra);
+void ShowMessageBox(CStringW strText, int nType, void* pListener, CStringW strExtra);
 void FUN_141275260(int, int, int);
 void FUN_141275460(int, int, int, const fmt::ArgList& args);
-void FUN_1412751f0(const CStringW& strText, int, int);
+void ShowSystemNotice(const CStringW& strText, int, int);
 void FUN_1412751b0(const CStringW& strText, int);
 int FUN_141276180(const CString&, const CString&);
 void FUN_140710590(COutPacket& packet);                 // send the packet
@@ -142,7 +142,7 @@ void CBlackMarketMan::OnBlackMarket(CInPacket& packet)
     }
     else if (cSub == 9)
     {
-        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc890((eUIClassID)(0x4e97))) == 0)
+        if ((((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogOpen((eUIClassID)(0x4e97))) == 0)
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e97)));
     }
     else if (cSub == 8)
@@ -322,7 +322,7 @@ void CBlackMarketMan::OnOwnProductList(CInPacket& packet)
     }
     UIBlackMarketDialog* pDlg = FindBlackMarketDialog(0x4e97);
     if (pDlg != 0)
-        pDlg->FUN_1418d0de0(&m_mapOwn);
+        pDlg->BuildOwnerItemList(&m_mapOwn);
 }
 
 // @0x140a21340
@@ -379,7 +379,7 @@ void CBlackMarketMan::OnSearchResult(CInPacket& packet)
     UIBlackMarketDialog* pDlg = FindBlackMarketDialog(0x4e97);
     if (pDlg != 0)
     {
-        pDlg->FUN_1418d1330(nOld, (int)(m_listSearch.GetCount() - 1 < 0 ? 0 : m_listSearch.GetCount() - 1), posTail);
+        pDlg->BuildItemList(nOld, (int)(m_listSearch.GetCount() - 1 < 0 ? 0 : m_listSearch.GetCount() - 1), posTail);
     }
 }
 
@@ -403,7 +403,7 @@ void CBlackMarketMan::FUN_140a21930(CInPacket& packet)
     {
         int nOld = m_listSearch.GetCount();
         POSITION posTail = m_listSearch.GetTailPosition();
-        pDlg->FUN_1418d1330(nOld, (int)(m_listSearch.GetCount() - 1 < 0 ? 0 : m_listSearch.GetCount() - 1), posTail);
+        pDlg->BuildItemList(nOld, (int)(m_listSearch.GetCount() - 1 < 0 ? 0 : m_listSearch.GetCount() - 1), posTail);
         ((class UIBlackMarketDialog*)(class UIBlackMarketDialog*)(pDlg))->FUN_1418d1080(sp, nBought);
     }
 }
@@ -465,12 +465,12 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
         break;
     case 23:
         if (bType == 3)
-            FUN_1412751f0(GetStringCommonByKey(L"s_err_reserved_other"), 1, 1);
+            ShowSystemNotice(GetStringCommonByKey(L"s_err_reserved_other"), 1, 1);
         else
             FUN_141275260(0x87, 1, 1);
         break;
     case 21:
-        FUN_140d73aa0(BlockFormat<int>(0x933, 0x1c), 0, 0, CStringW(L""));
+        ShowMessageBox(BlockFormat<int>(0x933, 0x1c), 0, 0, CStringW(L""));
         break;
     case 5:
         FUN_140d73bc0(0x934, 0, 0, CStringW(L""));
@@ -487,31 +487,31 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
         FUN_140d73bc0(0x8b7, 0, 0, CStringW(L""));
         break;
     case 37:
-        FUN_140d73aa0(FUN_14028dee0(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_BmConstants*)GetClientConstants())->m_nRegisterFee)->Get(), BlockFormat(0x5a5)), 0, 0,
+        ShowMessageBox(FUN_14028dee0(0x688, *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_BmConstants*)GetClientConstants())->m_nRegisterFee)->Get(), BlockFormat(0x5a5)), 0, 0,
                       CStringW(L""));
         break;
     case 38:
         FUN_140d73bc0(0xc07, 0, 0, CStringW(L""));
         break;
     case 39:
-        FUN_1412751f0(GetStringCommonByKey(L"s_blackmarket_error_not_useable"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_blackmarket_error_not_useable"), 1, 1);
         break;
     case 40:
         break;
     case 27:
-        FUN_1412751f0(GetStringCommonByKey(L"s_blackmarket_error_buy_expired"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_blackmarket_error_buy_expired"), 1, 1);
         break;
     case 42:
-        FUN_140d73aa0(GetStringCommonByKey(L"s_blackmarket_error_cannot_buy_ownProduct"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_blackmarket_error_cannot_buy_ownProduct"), 0, 0, CStringW(L""));
         break;
     case 41:
-        FUN_140d73aa0(GetStringCommonByKey(L"s_blackmarket_error_purchase_count"), 0, 0, CStringW(L""));
+        ShowMessageBox(GetStringCommonByKey(L"s_blackmarket_error_purchase_count"), 0, 0, CStringW(L""));
         break;
     case 43:
-        FUN_140d73aa0(FUN_14028dee0(0x93d, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nA), nB), 0, 0, CStringW(L""));
+        ShowMessageBox(FUN_14028dee0(0x93d, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nA), nB), 0, 0, CStringW(L""));
         break;
     case 44:
-        FUN_140d73aa0(FUN_14028dee0(0x93e, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nA), nB), 0, 0, CStringW(L""));
+        ShowMessageBox(FUN_14028dee0(0x93e, TSingleton<CStringTable>::GetInstance()->FUN_141811980(1, nA), nB), 0, 0, CStringW(L""));
         break;
     default:
         Unk_BmMessage(0x92b, 1, 1, nResult);
@@ -519,7 +519,7 @@ void CBlackMarketMan::FUN_140a21ca0(CInPacket& packet)
     }
     UIBlackMarketDialog* pDlg = FindBlackMarketDialog(0x4e97);
     if (pDlg != 0)
-        pDlg->FUN_1418d0b60(bType, nResult, (void*)qw);
+        pDlg->OnItemSearchNotice(bType, nResult, (void*)qw);
 }
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142c9eee0-0x142c9ef00 .text$yd

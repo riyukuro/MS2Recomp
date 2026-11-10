@@ -56,7 +56,7 @@ class Unk_140166420 : public CFileSystem { };
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
 CStringA FUN_14071ae20(const CStringA& strFile);                         // the full path of a table file
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 CStringW FUN_1401bf530(TiXmlElement*, const char* pszName, CStringW strDefault);   // string attribute with default
 
@@ -129,7 +129,7 @@ int CAddressTable::LoadTable()
 {
     CStringA strPath = FUN_14071ae20("addressName.xml");
     TiXmlDocument doc;
-    if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420*)GetFileSystem())))->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -177,7 +177,7 @@ void CAddressTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CAddressTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CAddressTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

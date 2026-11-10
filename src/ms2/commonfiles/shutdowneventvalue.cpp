@@ -123,7 +123,7 @@ void CShutdownEventValue::FUN_1407d1160(unsigned long nId)
 }
 
 // @0x1407d1210
-bool CShutdownEventValue::FUN_1407d1210(unsigned long nId)
+bool CShutdownEventValue::IsShutdown(unsigned long nId)
 {
     if (m_ids.empty())
         return false;
@@ -148,7 +148,7 @@ CShutdownEventGroup::CShutdownEventGroup()
 }
 
 // @0x1407d1400
-CShutdownEventValue* CShutdownEventGroup::FUN_1407d1400(int nIndex)
+CShutdownEventValue* CShutdownEventGroup::GetValue(int nIndex)
 {
     if (nIndex <= 0 || nIndex >= 12)
         return m_values[0].get();
@@ -190,7 +190,7 @@ CShutdownEventKeySetA::CShutdownEventKeySetA()
 }
 
 // @0x1407d16a0 shut an id down
-bool FUN_1407d16a0(CShutdownEventKeySetA* pSet, unsigned nId)
+bool AddId(CShutdownEventKeySetA* pSet, unsigned nId)
 {
     Unk_CriticalSectionLock lock(pSet->m_lock, 1);
     pSet->m_ids.insert(nId);
@@ -198,7 +198,7 @@ bool FUN_1407d16a0(CShutdownEventKeySetA* pSet, unsigned nId)
 }
 
 // @0x1407d1710 undo it
-void FUN_1407d1710(CShutdownEventKeySetA* pSet, unsigned nId)
+void RemoveId(CShutdownEventKeySetA* pSet, unsigned nId)
 {
     Unk_CriticalSectionLock lock(pSet->m_lock, 1);
     pSet->m_ids.erase(nId);
@@ -368,7 +368,7 @@ bool FUN_1407d1ef0(CShutdownEventUGCUpload* pUpload, unsigned nEventId, const Un
 }
 
 // @0x1407d1f70
-void FUN_1407d1f70(CShutdownEventUGCUpload* pUpload, unsigned nEventId)
+void RemoveEvent(CShutdownEventUGCUpload* pUpload, unsigned nEventId)
 {
     Unk_CriticalSectionLock lock(pUpload->m_lock, 1);
     if (pUpload->m_events.find(nEventId) == pUpload->m_events.end())

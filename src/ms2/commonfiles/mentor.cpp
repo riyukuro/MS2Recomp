@@ -17,39 +17,39 @@
 class COutputStream;
 COutputStream& FUN_14070f820(COutputStream& stream, bool);
 COutputStream& FUN_14070f860(COutputStream& stream, unsigned char);
-COutputStream& FUN_14070f8a0(COutputStream& stream, short);
+COutputStream& WriteInt16(COutputStream& stream, short);
 COutputStream& FUN_14070f9a0(COutputStream& stream, unsigned int);
-COutputStream& FUN_14070f9e0(COutputStream& stream, __int64);
-COutputStream& FUN_14070fae0(COutputStream& stream, const CStringW&);
+COutputStream& WriteInt64(COutputStream& stream, __int64);
+COutputStream& WriteUnicodeString(COutputStream& stream, const CStringW&);
 // Exception RTTI name comes from the executable's throw metadata.
 class Exception { public: Exception(int); private: int code; CString message; };
 MS2_CHECK_SIZE(Exception,0x10);
 
 // @0x14069a0b0
-void Unk_MentorListPacket::FUN_14069a0b0(Unk_MentorReader& stream) {
+void Unk_MentorListPacket::ReadMentorList(Unk_MentorReader& stream) {
     reinterpret_cast<Unk_OSInput&>(stream).Read1(nProtocol);
     MS2_ASSERT_AT(35,nProtocol == PROTOCOL_MENTORING::MENTOR_LIST);
     unsigned int count=0; reinterpret_cast<Unk_OSInput&>(stream).Read6(reinterpret_cast<unsigned int&>(count));
     entries.SetCount(count);
-    for(unsigned int i=0;i<count;++i) { entries[i]=new CMentor; FUN_14070f770(reinterpret_cast<CInputStream&>(stream), reinterpret_cast<Unk_PktSerializable&>(static_cast<CInOutStreamInterface&>(*entries[i].operator->()))); }
+    for(unsigned int i=0;i<count;++i) { entries[i]=new CMentor; ReadSerializable(reinterpret_cast<CInputStream&>(stream), reinterpret_cast<Unk_PktSerializable&>(static_cast<CInOutStreamInterface&>(*entries[i].operator->()))); }
 }
 // Hook deferred: constructs persistent objects with DLL-local vftables/RTTI.
 
 // @0x14069a1f0
-void Unk_MentorListPacket::FUN_14069a1f0(Unk_MentorWriter& stream) {
+void Unk_MentorListPacket::WriteMentorList(Unk_MentorWriter& stream) {
     FUN_14070f860(reinterpret_cast<COutputStream&>(stream), nProtocol);
     unsigned int count=static_cast<unsigned int>(entries.GetCount()); FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), count);
-    for(unsigned int i=0;i<count;++i) FUN_14070fc40(reinterpret_cast<COutputStream&>(stream), reinterpret_cast<const Unk_PktSerializable&>(static_cast<const CInOutStreamInterface&>(*entries[i].operator->())));
+    for(unsigned int i=0;i<count;++i) WriteSerializable(reinterpret_cast<COutputStream&>(stream), reinterpret_cast<const Unk_PktSerializable&>(static_cast<const CInOutStreamInterface&>(*entries[i].operator->())));
 }
-MS2_REPLACE_METHOD(0x14069A1F0, Unk_MentorListPacket, FUN_14069a1f0, 149, 0x6BD3A5D2);
+MS2_REPLACE_METHOD(0x14069A1F0, Unk_MentorListPacket, WriteMentorList, 149, 0x6BD3A5D2);
 
 // @0x14069a290
-void Unk_MentorListPacket::FUN_14069a290(Unk_MentorReader& stream) {
+void Unk_MentorListPacket::ReadMenteeList(Unk_MentorReader& stream) {
     reinterpret_cast<Unk_OSInput&>(stream).Read1(nProtocol);
     MS2_ASSERT_AT(64,nProtocol == PROTOCOL_MENTORING::MENTEE_LIST);
     unsigned int count=0; reinterpret_cast<Unk_OSInput&>(stream).Read6(reinterpret_cast<unsigned int&>(count));
     entries.SetCount(count);
-    for(unsigned int i=0;i<count;++i) { entries[i]=new CMentor; FUN_14070f770(reinterpret_cast<CInputStream&>(stream), reinterpret_cast<Unk_PktSerializable&>(static_cast<CInOutStreamInterface&>(*entries[i].operator->()))); }
+    for(unsigned int i=0;i<count;++i) { entries[i]=new CMentor; ReadSerializable(reinterpret_cast<CInputStream&>(stream), reinterpret_cast<Unk_PktSerializable&>(static_cast<CInOutStreamInterface&>(*entries[i].operator->()))); }
 }
 // Hook deferred: constructs persistent objects with DLL-local vftables/RTTI.
 
@@ -91,7 +91,7 @@ MS2_REPLACE_METHOD(0x14069A510, Unk_MentorEmptyPacket, FUN_14069a510, 37, 0xF615
 
 // @0x14069a540
 void Unk_MentorNamePacket::FUN_14069a540(Unk_MentorWriter& stream) {
-    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); FUN_14070f9e0(reinterpret_cast<COutputStream&>(stream), id); FUN_14070fae0(reinterpret_cast<COutputStream&>(stream), name);
+    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); WriteInt64(reinterpret_cast<COutputStream&>(stream), id); WriteUnicodeString(reinterpret_cast<COutputStream&>(stream), name);
 }
 MS2_REPLACE_METHOD(0x14069A540, Unk_MentorNamePacket, FUN_14069a540, 78, 0xBE5919BF);
 
@@ -104,7 +104,7 @@ MS2_REPLACE_METHOD(0x14069A5A0, Unk_MentorNamePacket, FUN_14069a5a0, 136, 0x5FC2
 
 // @0x14069a630
 void Unk_MentorIdPacket::FUN_14069a630(Unk_MentorWriter& stream) {
-    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); FUN_14070f9e0(reinterpret_cast<COutputStream&>(stream), id);
+    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); WriteInt64(reinterpret_cast<COutputStream&>(stream), id);
 }
 MS2_REPLACE_METHOD(0x14069A630, Unk_MentorIdPacket, FUN_14069a630, 56, 0xCEBC7EBA);
 
@@ -116,7 +116,7 @@ MS2_REPLACE_METHOD(0x14069A670, Unk_MentorIdPacket, FUN_14069a670, 59, 0x7ACE07F
 
 // @0x14069a6c0
 void Unk_MentorIdPacket::FUN_14069a6c0(Unk_MentorWriter& stream) {
-    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); FUN_14070f9e0(reinterpret_cast<COutputStream&>(stream), id);
+    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); WriteInt64(reinterpret_cast<COutputStream&>(stream), id);
 }
 MS2_REPLACE_METHOD(0x14069A6C0, Unk_MentorIdPacket, FUN_14069a6c0, 56, 0x3B18C0CA);
 
@@ -131,13 +131,13 @@ Unk_MentorDetailPacket::Unk_MentorDetailPacket() : protocol(14), mentor(new CMen
 
 // @0x14069a7e0
 void Unk_MentorDetailPacket::FUN_14069a7e0(Unk_MentorWriter& stream) {
-    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); FUN_14070fae0(reinterpret_cast<COutputStream&>(stream), name); FUN_14070fc40(reinterpret_cast<COutputStream&>(stream), reinterpret_cast<const Unk_PktSerializable&>(static_cast<const CInOutStreamInterface&>(*mentor.operator->())));
+    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); WriteUnicodeString(reinterpret_cast<COutputStream&>(stream), name); WriteSerializable(reinterpret_cast<COutputStream&>(stream), reinterpret_cast<const Unk_PktSerializable&>(static_cast<const CInOutStreamInterface&>(*mentor.operator->())));
 }
 MS2_REPLACE_METHOD(0x14069A7E0, Unk_MentorDetailPacket, FUN_14069a7e0, 93, 0xD146895C);
 
 // @0x14069a850
 void Unk_MentorDetailPacket::FUN_14069a850(Unk_MentorReader& stream) {
-    reinterpret_cast<Unk_OSInput&>(stream).Read1(protocol); reinterpret_cast<Unk_OSInput&>(stream).Read11(name); FUN_14070f770(reinterpret_cast<CInputStream&>(stream), reinterpret_cast<Unk_PktSerializable&>(static_cast<CInOutStreamInterface&>(*mentor.operator->())));
+    reinterpret_cast<Unk_OSInput&>(stream).Read1(protocol); reinterpret_cast<Unk_OSInput&>(stream).Read11(name); ReadSerializable(reinterpret_cast<CInputStream&>(stream), reinterpret_cast<Unk_PktSerializable&>(static_cast<CInOutStreamInterface&>(*mentor.operator->())));
 }
 MS2_REPLACE_METHOD(0x14069A850, Unk_MentorDetailPacket, FUN_14069a850, 93, 0x19B07424);
 
@@ -155,7 +155,7 @@ MS2_REPLACE_METHOD(0x14069A910, Unk_MentorResultPacket, FUN_14069a910, 80, 0x7CD
 
 // @0x14069a970
 void Unk_MentorValuePacket::FUN_14069a970(Unk_MentorWriter& stream) {
-    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), value); FUN_14070f9e0(reinterpret_cast<COutputStream&>(stream), id);
+    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), value); WriteInt64(reinterpret_cast<COutputStream&>(stream), id);
 }
 MS2_REPLACE_METHOD(0x14069A970, Unk_MentorValuePacket, FUN_14069a970, 74, 0x79AB6852);
 
@@ -167,7 +167,7 @@ MS2_REPLACE_METHOD(0x14069A9C0, Unk_MentorValuePacket, FUN_14069a9c0, 81, 0xEB1D
 
 // @0x14069aa20
 void Unk_MentorTwoValuePacket::FUN_14069aa20(Unk_MentorWriter& stream) {
-    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), a); FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), b); FUN_14070f9e0(reinterpret_cast<COutputStream&>(stream), id);
+    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), a); FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), b); WriteInt64(reinterpret_cast<COutputStream&>(stream), id);
 }
 MS2_REPLACE_METHOD(0x14069AA20, Unk_MentorTwoValuePacket, FUN_14069aa20, 92, 0x22F457F4);
 
@@ -191,7 +191,7 @@ void CMentorPairModePacket::FUN_14069ab50(Unk_MentorReader& stream) {
 
 // @0x14069aba0
 void CMentorPairModePacket::CPairMode::FUN_14069aba0(Unk_MentorWriter& stream) {
-    FUN_14070f9e0(reinterpret_cast<COutputStream&>(stream), id); FUN_14070f820(reinterpret_cast<COutputStream&>(stream), enabled);
+    WriteInt64(reinterpret_cast<COutputStream&>(stream), id); FUN_14070f820(reinterpret_cast<COutputStream&>(stream), enabled);
 }
 MS2_REPLACE_METHOD(0x14069ABA0, CMentorPairModePacket::CPairMode, FUN_14069aba0, 57, 0x2F2F8D01);
 
@@ -202,16 +202,16 @@ void CMentorPairModePacket::CPairMode::FUN_14069abe0(Unk_MentorReader& stream) {
 MS2_REPLACE_METHOD(0x14069ABE0, CMentorPairModePacket::CPairMode, FUN_14069abe0, 63, 0x91ADF6CC);
 
 // @0x14069ac30
-void Unk_MentorTwoIdPacket::FUN_14069ac30(Unk_MentorWriter& stream) {
-    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); FUN_14070f9e0(reinterpret_cast<COutputStream&>(stream), a); FUN_14070f9e0(reinterpret_cast<COutputStream&>(stream), b);
+void Unk_MentorTwoIdPacket::Write(Unk_MentorWriter& stream) {
+    FUN_14070f860(reinterpret_cast<COutputStream&>(stream), protocol); WriteInt64(reinterpret_cast<COutputStream&>(stream), a); WriteInt64(reinterpret_cast<COutputStream&>(stream), b);
 }
-MS2_REPLACE_METHOD(0x14069AC30, Unk_MentorTwoIdPacket, FUN_14069ac30, 75, 0xEFF39371);
+MS2_REPLACE_METHOD(0x14069AC30, Unk_MentorTwoIdPacket, Write, 75, 0xEFF39371);
 
 // @0x14069ac90
-void Unk_MentorTwoIdPacket::FUN_14069ac90(Unk_MentorReader& stream) {
+void Unk_MentorTwoIdPacket::Read(Unk_MentorReader& stream) {
     reinterpret_cast<Unk_OSInput&>(stream).Read1(protocol); reinterpret_cast<Unk_OSInput&>(stream).Read7(a); reinterpret_cast<Unk_OSInput&>(stream).Read7(b);
 }
-MS2_REPLACE_METHOD(0x14069AC90, Unk_MentorTwoIdPacket, FUN_14069ac90, 81, 0xD117B05C);
+MS2_REPLACE_METHOD(0x14069AC90, Unk_MentorTwoIdPacket, Read, 81, 0xD117B05C);
 
 // @0x14069acf0
 CMentor::CMentor() : a(0),b(0),c(0),level(0),x(0),y(0),online(false) {}
@@ -219,27 +219,27 @@ CMentor::CMentor() : a(0),b(0),c(0),level(0),x(0),y(0),online(false) {}
 CMentor::~CMentor() {}
 
 // @0x14069ae30
-void CMentor::FUN_14069ae30(Unk_MentorWriter& stream) {
-    FUN_14070f9e0(reinterpret_cast<COutputStream&>(stream), a); FUN_14070f9e0(reinterpret_cast<COutputStream&>(stream), b); FUN_14070f9e0(reinterpret_cast<COutputStream&>(stream), c);
-    FUN_14070fae0(reinterpret_cast<COutputStream&>(stream), name); FUN_14070f8a0(reinterpret_cast<COutputStream&>(stream), (short)(level)); FUN_14070fae0(reinterpret_cast<COutputStream&>(stream), guild);
+void CMentor::Write(Unk_MentorWriter& stream) {
+    WriteInt64(reinterpret_cast<COutputStream&>(stream), a); WriteInt64(reinterpret_cast<COutputStream&>(stream), b); WriteInt64(reinterpret_cast<COutputStream&>(stream), c);
+    WriteUnicodeString(reinterpret_cast<COutputStream&>(stream), name); WriteInt16(reinterpret_cast<COutputStream&>(stream), (short)(level)); WriteUnicodeString(reinterpret_cast<COutputStream&>(stream), guild);
     FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), x); FUN_14070f820(reinterpret_cast<COutputStream&>(stream), online); FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), y);
 }
-MS2_REPLACE_METHOD(0x14069AE30, CMentor, FUN_14069ae30, 194, 0xCE861498);
+MS2_REPLACE_METHOD(0x14069AE30, CMentor, Write, 194, 0xCE861498);
 
 // @0x14069af00
-void CMentor::FUN_14069af00(Unk_MentorReader& stream) {
+void CMentor::Read(Unk_MentorReader& stream) {
     reinterpret_cast<Unk_OSInput&>(stream).Read7(a); reinterpret_cast<Unk_OSInput&>(stream).Read7(b); reinterpret_cast<Unk_OSInput&>(stream).Read7(c);
     reinterpret_cast<Unk_OSInput&>(stream).Read11(name); reinterpret_cast<Unk_OSInput&>(stream).Read2(reinterpret_cast<short&>(level)); reinterpret_cast<Unk_OSInput&>(stream).Read11(guild);
     reinterpret_cast<Unk_OSInput&>(stream).Read6(reinterpret_cast<unsigned int&>(x)); reinterpret_cast<Unk_OSInput&>(stream).Read0(online); reinterpret_cast<Unk_OSInput&>(stream).Read6(reinterpret_cast<unsigned int&>(y));
 }
-MS2_REPLACE_METHOD(0x14069AF00, CMentor, FUN_14069af00, 217, 0x42428FFF);
+MS2_REPLACE_METHOD(0x14069AF00, CMentor, Read, 217, 0x42428FFF);
 
-// The MENTOR_LIST writer, the twin of FUN_14069a1f0 (sits just before this TU's range start in the exe).
+// The MENTOR_LIST writer, the twin of WriteMentorList (sits just before this TU's range start in the exe).
 // MS2-RANGE: 0x14069a010-0x14069a0b0 .text$mn
 // @0x14069a010
-void Unk_MentorListPacket::FUN_14069a010(Unk_MentorWriter& stream) {
+void Unk_MentorListPacket::Write(Unk_MentorWriter& stream) {
     FUN_14070f860(reinterpret_cast<COutputStream&>(stream), nProtocol);
     unsigned int count=static_cast<unsigned int>(entries.GetCount()); FUN_14070f9a0(reinterpret_cast<COutputStream&>(stream), count);
-    for(unsigned int i=0;i<count;++i) FUN_14070fc40(reinterpret_cast<COutputStream&>(stream), reinterpret_cast<const Unk_PktSerializable&>(static_cast<const CInOutStreamInterface&>(*entries[i].operator->())));
+    for(unsigned int i=0;i<count;++i) WriteSerializable(reinterpret_cast<COutputStream&>(stream), reinterpret_cast<const Unk_PktSerializable&>(static_cast<const CInOutStreamInterface&>(*entries[i].operator->())));
 }
-MS2_REPLACE_METHOD(0x14069A010, Unk_MentorListPacket, FUN_14069a010, 149, 0xBE8887DB);
+MS2_REPLACE_METHOD(0x14069A010, Unk_MentorListPacket, Write, 149, 0xBE8887DB);

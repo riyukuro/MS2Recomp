@@ -23,7 +23,7 @@ public:
 };
 
 // @0x1409c4b40
-bool FUN_1409c4b40(LPCSTR pszKeyPath, LPCSTR pszExe, LPCSTR pszArgs, LPCSTR pszValue1, LPCSTR pszValue2,
+bool RegisterFileAssociation(LPCSTR pszKeyPath, LPCSTR pszExe, LPCSTR pszArgs, LPCSTR pszValue1, LPCSTR pszValue2,
                    LPCSTR pszValue3)
 {
     Unk_1409c4ef0 key1;

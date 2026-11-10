@@ -23,7 +23,7 @@
 template <> template <>
 MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEntity>&);
 
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
+MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
 
 // The camera (FUN_1409478c0): projects a world point to the screen.
 class NiPoint3;
@@ -32,11 +32,11 @@ template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();   // C3: the real ac
 
 // The ui scale service: scale of a layer.
 class Unk_PeScale;
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
-    float FUN_1422afec0(int);
+    float GetMovieScale(int);
 };
 
 // ASGameEntity's slots beyond ASDisplayObject's 0-5 (only slot 24, +0xc0, is used here).
@@ -62,7 +62,7 @@ UIPortalEmoticon::UIPortalEmoticon()
     m_28 = 0;
     m_2c = 4;
     m_58 = 0;
-    FUN_1422dbf00(m_2c, m_44, 0);
+    LoadSwf(m_2c, m_44, 0);
 }
 
 // @0x140f9baa0
@@ -90,22 +90,22 @@ void UIPortalEmoticon::FUN_140f9bb70()
 }
 
 // @0x140f9bba0
-void UIPortalEmoticon::FUN_140f9bba0()
+void UIPortalEmoticon::Hide()
 {
     m_bPending = 0;
     m_bShown = 0;
 }
 
 // @0x140f9bbd0
-void UIPortalEmoticon::FUN_140f9bbd0()
+void UIPortalEmoticon::Unregister()
 {
-    GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(this));
+    GetUISwfEntityManager()->RemoveEntity(MS2Ptr<UISwfEntity>(this));
     m_bPending = 0;
     m_bShown = 0;
 }
 
 // @0x140f9bc40
-void UIPortalEmoticon::FUN_140f9bc40(Vector3 ptWorld)
+void UIPortalEmoticon::SetWorldPosition(Vector3 ptWorld)
 {
     m_ptWorld = ptWorld;
     (m_ptWorld += Vector3(0.0f, 0.0f, 150.0f));
@@ -121,7 +121,7 @@ void UIPortalEmoticon::SetName(const CStringW& strName)
 void UIPortalEmoticon::vfunc_2()
 {
     UIObject::vfunc_2();
-    FUN_1422dbf00(m_2c, m_44, 0);
+    LoadSwf(m_2c, m_44, 0);
     FUN_140f9bb70();
 }
 
@@ -130,7 +130,7 @@ void UIPortalEmoticon::vfunc_3()
 {
     UIObject::vfunc_3();
     FUN_1422dc080();
-    FUN_140f9bba0();
+    Hide();
 }
 
 // @0x140f9bd70
@@ -158,13 +158,13 @@ void UIPortalEmoticon::vfunc_15()
     if (m_bPending != 0)
         vfunc_52();
     if (IsShown())
-        FUN_140f9bf70();
+        UpdateScreenPosition();
     else
         vfunc_8(0);
 }
 
 // @0x140f9bf70
-void UIPortalEmoticon::FUN_140f9bf70()
+void UIPortalEmoticon::UpdateScreenPosition()
 {
     Vector3 ptScreen;
     if (TSingleton<CameraMgr>::GetInstance()->FUN_140af0700(reinterpret_cast<const efd::Point3&>(m_ptWorld), reinterpret_cast<NiPoint3&>(ptScreen)))
@@ -173,7 +173,7 @@ void UIPortalEmoticon::FUN_140f9bf70()
             MS2Ptr<ASGameEntity> spEntity(dynamic_cast<ASGameEntity*>((AScript*)m_30));
             if (spEntity.get() != 0)
             {
-                reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_PeScale*)(((class Unk_PeScale*)FUN_14025e7a0())))->FUN_1422afec0(m_28);
+                reinterpret_cast<efd::Point3&>(ptScreen) *= ((class GFxManager*)(class Unk_PeScale*)(((class Unk_PeScale*)GetGFxManager())))->GetMovieScale(m_28);
                 spEntity->SetPositionFloat(ptScreen.x, ptScreen.y);
             }
         }
@@ -186,7 +186,7 @@ void UIPortalEmoticon::FUN_140f9bf70()
 // @0x140f9c090
 void UIPortalEmoticon::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 
 MS2_EMIT_CRT_MEMMOVE_S();

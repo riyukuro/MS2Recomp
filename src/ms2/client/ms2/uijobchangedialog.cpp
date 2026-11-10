@@ -56,7 +56,7 @@ class ASDialog : public ASDisplayObject
 // The xml reader of the exe (see achievemanager.cpp).
 class Unk_JcFileSystem : public CFileSystem { };
 CStringA FUN_14071ae20(const CStringA& strFile);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 CStringW FUN_1401bf530(TiXmlElement* pNode, const char* pszName, CStringW strDefault);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
@@ -70,7 +70,7 @@ UITalkCinematic* FindTalkCinematic(int nId);
 
 void FUN_1422bce00(Scaleform::GFx::Value* pValue, unsigned __int64 n);   // GallerySet: 64-bit value
 void FUN_1422bce40(Scaleform::GFx::Value* pValue, const AScript& obj);
-CString FUN_14016a5c0(const char* pszName, int nFlags);          // undecorated class name
+CString ToCString(const char* pszName, int nFlags);          // undecorated class name
 
 extern unsigned DAT_143af62d4;                                  // client area width
 extern unsigned DAT_143af62d8;                                  // client area height
@@ -100,7 +100,7 @@ void UIJobChangeDialog::FUN_1419dcf80()
     if (!s_bValid)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(UIJobChangeDialog).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(UIJobChangeDialog).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -111,8 +111,8 @@ UIJobChangeDialog::UIJobChangeDialog()
     : m_previews(17, 0.75f, 0.25f, 2.25f, 10), m_descs(17, 0.75f, 0.25f, 2.25f, 10)
 {
     m_2c = 0xc;
-    FUN_141924170(1);
-    FUN_1419db600();
+    SetTweenEnabled(1);
+    LoadTables();
 }
 
 // @0x1419db120
@@ -161,7 +161,7 @@ void UIJobChangeDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
         if (FUN_1409e1b80(&tip, spPreview->m_skills[nIndex], 0) != 0)
         {
             tip.SetEnablePuton(L"");
-            *pRetVal = tip.FUN_1422bb870();
+            *pRetVal = tip.GetValue();
         }
     }
 }
@@ -192,22 +192,22 @@ void UIJobChangeDialog::vfunc_43()
     }
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->get() != 0)
         reinterpret_cast<AScript*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_14190b490("setStageSize", DAT_143af62d4, DAT_143af62d8,
-                      FUN_14025e7a0()->FUN_1422afec0(m_28));
+                      GetGFxManager()->GetMovieScale(m_28));
 }
 
 // @0x1419db600
-void UIJobChangeDialog::FUN_1419db600()
+void UIJobChangeDialog::LoadTables()
 {
     LoadJobPreview();
     LoadJobDescription();
-    FUN_1419dec80(true);
+    SetValid(true);
 }
 
 // @0x1419db630
 void UIJobChangeDialog::LoadJobPreview()
 {
     TiXmlDocument doc;
-    bool bFailed = ((class Unk_JcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, FUN_14071a5b0("Table", "jobPreview.xml"), 0, true, false) == 0;
+    bool bFailed = ((class Unk_JcFileSystem*)GetFileSystem())->LoadXmlFile(&doc, GetXmlPath("Table", "jobPreview.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
     TiXmlElement* root = ((class TiXmlElement*)((class Unk_XmlNode*)(((TiXmlElement*)&doc)))->FirstChild("ms2"));
@@ -240,7 +240,7 @@ void UIJobChangeDialog::LoadJobPreview()
 void UIJobChangeDialog::LoadJobDescription()
 {
     TiXmlDocument doc;
-    bool bFailed = ((class Unk_JcFileSystem*)GetFileSystem())->FUN_1403974b0(&doc, FUN_14071ae20("korJobDescription.xml"), 0, true, false) == 0;
+    bool bFailed = ((class Unk_JcFileSystem*)GetFileSystem())->LoadXmlFile(&doc, FUN_14071ae20("korJobDescription.xml"), 0, true, false) == 0;
     if (bFailed)
         return;
     TiXmlElement* root = ((class TiXmlElement*)((class Unk_XmlNode*)(((TiXmlElement*)&doc)))->FirstChild("ms2"));
@@ -284,9 +284,9 @@ void UIJobChangeDialog::FUN_1419dbe30(int nJob)
                 CStringW strLevel;
                 strLevel = BlockFormat(0x582, nLevel);
                 ASObj obj(2);
-                obj.FUN_1407cbb20("skillName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nSkill));
-                obj.FUN_1407cbb20("skillLevel", strLevel);
-                obj.FUN_1407cba60("imgPath", reinterpret_cast<Unk_JcSkillRow*>(ref.operator->())->m_strIcon);
+                obj.SetWStringMember("skillName", TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, nSkill));
+                obj.SetWStringMember("skillLevel", strLevel);
+                obj.SetStringMember("imgPath", reinterpret_cast<Unk_JcSkillRow*>(ref.operator->())->m_strIcon);
                 reinterpret_cast<Unk_JcInvokeSkill*>(pDlg)->FUN_1419dc5e0("setSkill", i, obj);
             }
             reinterpret_cast<AScript*>(pDlg)->Invoke("setDifficulty", spPreview->m_nDifficulty);
@@ -317,7 +317,7 @@ void UIJobChangeDialog::FUN_1419dc1e0(int nJob)
 
 #ifndef MS2_HOOK_DLL
 // @0x1419dec80
-void UIJobChangeDialog::FUN_1419dec80(bool bValid)
+void UIJobChangeDialog::SetValid(bool bValid)
 {
     s_bValid = bValid;
 }
@@ -330,7 +330,7 @@ void UIJobChangeDialog::FUN_1419dc510(int nJob)
 }
 
 // @0x1419dc530
-int UIJobChangeDialog::FUN_1419dc530()
+int UIJobChangeDialog::IsHardJob()
 {
     FUN_1419dcf80();
     MS2Ptr<JobPreview> spPreview(0);

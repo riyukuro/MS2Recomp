@@ -45,14 +45,14 @@ class Unk_140166420 : public CFileSystem { };
 class CFileSystem * GetFileSystem(void);
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString* pLog, int nLevel, int nCategory, const wchar_t* szFormat, const T& arg);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement* pNode);   // the element is enabled (0x14028f710, commonutil.cpp, the definer's signature)
 int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FUN_140873220
-class Unk_DcXmlNode; int FUN_140c09130(Unk_DcXmlNode* pElem, const char* pszName, Unk_DcLevelRange& range);   // "low-high"
-CString FUN_14016a5c0(const char* pszName, int nFlags);                // undecorated class name
+class Unk_DcXmlNode; int GetLevelRangeAttr(Unk_DcXmlNode* pElem, const char* pszName, Unk_DcLevelRange& range);   // "low-high"
+CString ToCString(const char* pszName, int nFlags);                // undecorated class name
 CString FUN_14016a600(const wchar_t* psz, int nFlags);                  // wide -> multibyte
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 
 // ---- .text$mn ----
 
@@ -72,7 +72,7 @@ void RewardPreviewItem::Load(TiXmlElement* pElem)
     m_item.vfunc_2(pElem);
     XmlEnumName<RewardPreviewItemTag, ParseRewardPreviewItemTag>(pElem, "itemTag", m_itemTag);
     XmlTokenList(pElem, "reqJobs", m_reqJobs);
-    FUN_140c09130((Unk_DcXmlNode*)pElem, "reqLevel", m_reqLevel);
+    GetLevelRangeAttr((Unk_DcXmlNode*)pElem, "reqLevel", m_reqLevel);
 }
 MS2_REPLACE_METHOD(0x140DC2F80, RewardPreviewItem, Load, 145, 0x55730D5E);
 
@@ -276,7 +276,7 @@ bool CRewardPreviewTable::ValidateBoss()
     ATL::CAtlMap<unsigned, CString> errors;
     for (POSITION pos = m_boss.GetStartPosition(); pos != 0; m_boss.GetNext(pos))
     {
-        MS2Ptr<CNpcData> spNpc = FUN_1406cd330(m_boss.GetKeyAt(pos));
+        MS2Ptr<CNpcData> spNpc = FindNpcData(m_boss.GetKeyAt(pos));
         if (spNpc == 0)
             continue;
         MS2Ptr<RewardPreviewInfo> spInfo = m_boss.GetValueAt(pos);
@@ -385,9 +385,9 @@ MS2_REPLACE_METHOD(0x140DC43E0, CRewardPreviewTable, ValidateDungeon, 1528, 0x41
 // @0x140dc49e0
 bool CRewardPreviewTable::LoadBoss()
 {
-    CString strPath = FUN_14071a5b0("Table", "RewardPreview_boss.xml");
+    CString strPath = GetXmlPath("Table", "RewardPreview_boss.xml");
     TiXmlDocument doc;
-    if (((class CFileSystem*)(((class Unk_140166420 *)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420 *)GetFileSystem())))->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -411,9 +411,9 @@ MS2_REPLACE_METHOD(0x140DC49E0, CRewardPreviewTable, LoadBoss, 628, 0x37464587);
 // @0x140dc4c60
 bool CRewardPreviewTable::LoadDungeon()
 {
-    CString strPath = FUN_14071a5b0("Table", "RewardPreview_dungeon.xml");
+    CString strPath = GetXmlPath("Table", "RewardPreview_dungeon.xml");
     TiXmlDocument doc;
-    if (((class CFileSystem*)(((class Unk_140166420 *)GetFileSystem())))->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (((class CFileSystem*)(((class Unk_140166420 *)GetFileSystem())))->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -454,7 +454,7 @@ void CRewardPreviewTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CRewardPreviewTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CRewardPreviewTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

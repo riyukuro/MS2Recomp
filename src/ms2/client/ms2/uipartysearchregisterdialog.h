@@ -19,7 +19,7 @@ struct Unk_PsRegState
 {
     Unk_PsRegState();                   // 0x141322880 text empty, flag 1
     ~Unk_PsRegState();                  // 0x1413228d0
-    void FUN_141322970();               // reset: empty text, flag 1
+    void Reset();               // reset: empty text, flag 1
 
     CStringW m_text;                    // +0x00
     unsigned char m_flag;               // +0x08 allow auto join
@@ -42,11 +42,11 @@ public:
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141321b30 remove / modify answers
 
     void ApplyTitleAndAutoJoin(CStringW* pText, unsigned char nAutoJoin, Unk_PsRegState* pState);   // remember a registered title
-    void FUN_141321d30();                                       // forget the registered title (m_190)
-    void FUN_141321d60();                                       // fill the random title list (string ids 0xc48-0xc4c)
+    void ClearRegisteredTitle();                                       // forget the registered title (m_190)
+    void BuildRandomTitleList();                                       // fill the random title list (string ids 0xc48-0xc4c)
     CStringW GetRandomTitle(CStringW strArg, int nArg);          // a random title formatted with the argument
     int GetSelectedMaxUserCount();                                        // field id of the selected combo row (10 = default)
-    int FUN_1413220d0(Unk_PsRegState* pState, int bSilent);     // validate and send the registration; 1 = sent
+    int ValidateAndSendRegistration(Unk_PsRegState* pState, int bSilent);     // validate and send the registration; 1 = sent
     int FindMaxUserCountIndex(int nValue);                              // combo row of the value, -1 if absent
     void OnRegisterClicked(const Scaleform::GFx::FunctionHandler::Params&);   // register button
     void OnRemoveClicked(const Scaleform::GFx::FunctionHandler::Params&);   // remove button

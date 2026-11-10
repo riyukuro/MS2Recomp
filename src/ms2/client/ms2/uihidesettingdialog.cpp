@@ -73,9 +73,9 @@ SwfInfo::SwfInfo()
 // @0x141986df0
 void SwfInfo::FUN_141986df0(ASObj& obj, bool bSelected)
 {
-    obj.FUN_1407cbb20("name", m_strName);
-    obj.FUN_1407cbb20("label", m_strName);
-    obj.FUN_1407cbbe0("selected", bSelected);
+    obj.SetWStringMember("name", m_strName);
+    obj.SetWStringMember("label", m_strName);
+    obj.SetBoolMember("selected", bSelected);
 }
 MS2_REPLACE_METHOD(0x141986DF0, SwfInfo, FUN_141986df0, 167, 0xAFD655E5);
 
@@ -105,31 +105,31 @@ void UIHideSettingDialog::vfunc_10()
 }
 MS2_REPLACE_METHOD(0x141986FF0, UIHideSettingDialog, vfunc_10, 33, 0x8D2D82B0);
 
-// Not hooked: FUN_141987f50 creates SwfInfo objects (their vftable/RTTI would be the DLL's).
+// Not hooked: AddUI creates SwfInfo objects (their vftable/RTTI would be the DLL's).
 // @0x141987020
 void UIHideSettingDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     if (m_178.IsEmpty()) {
-        FUN_141987f50(0x4e51, L"");
-        FUN_141987f50(0x4e32, L"");
-        FUN_141987f50(0x4e3c, L"");
-        FUN_141987f50(0x4e3d, L"");
-        FUN_141987f50(0x4ebe, L"");
-        FUN_141987f50(0x4e41, L"");
-        FUN_141987f50(0x4e27, L"");
-        FUN_141987f50(0x4f66, L"");
-        FUN_141987f50(0x4e5d, L"");
-        FUN_141987f50(0x4e28, L"");
-        FUN_141987f50(0x4e5f, L"");
-        FUN_141987f50(0x4e61, L"");
-        FUN_141987f50(0x4e29, L"");
-        FUN_141987f50(0x4e45, L"");
-        FUN_141987f50(0x4f5e, L"");
-        FUN_141987f50(0x4f75, L"");
-        FUN_141987f50(0x4e43, L"");
+        AddUI(0x4e51, L"");
+        AddUI(0x4e32, L"");
+        AddUI(0x4e3c, L"");
+        AddUI(0x4e3d, L"");
+        AddUI(0x4ebe, L"");
+        AddUI(0x4e41, L"");
+        AddUI(0x4e27, L"");
+        AddUI(0x4f66, L"");
+        AddUI(0x4e5d, L"");
+        AddUI(0x4e28, L"");
+        AddUI(0x4e5f, L"");
+        AddUI(0x4e61, L"");
+        AddUI(0x4e29, L"");
+        AddUI(0x4e45, L"");
+        AddUI(0x4f5e, L"");
+        AddUI(0x4f75, L"");
+        AddUI(0x4e43, L"");
     }
-    FUN_141987990();
+    BuildList();
 }
 
 // @0x141987450
@@ -137,7 +137,7 @@ int UIHideSettingDialog::vfunc_13()
 {
     if (UIDialog::vfunc_13())
         return 1;
-    if (((class Unk_14025e7c0*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0)) {
+    if (((class Unk_14025e7c0*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0)) {
         if (m_30.get())
             m_30->Invoke("onEnterKey");
         return 1;
@@ -167,7 +167,7 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         UIHeadUpDisplay* pHud = FUN_GetUI<UIHeadUpDisplay>(info->m_nId);
                         if (pHud) {
                             if (bChecked) {
-                                GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pHud));
+                                GetUISwfEntityManager()->RemoveEntity(MS2Ptr<UISwfEntity>(pHud));
                                 pHud->vfunc_3();
                             } else {
                                 GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(pHud));
@@ -179,7 +179,7 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         UISwfEntity* pEntity = FUN_GetUI<UISwfEntity>(nId);
                         if (pEntity) {
                             if (bChecked) {
-                                GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pEntity));
+                                GetUISwfEntityManager()->RemoveEntity(MS2Ptr<UISwfEntity>(pEntity));
                                 TSingleton<CUIService>::GetInstance()->CloseDialog((eUIClassID)nId);
                             } else {
                                 GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(pEntity));
@@ -191,7 +191,7 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
                         UISwfEntity* pEntity = FUN_GetUI<UISwfEntity>(nId);
                         if (pEntity) {
                             if (bChecked)
-                                GetUISwfEntityManager()->FUN_1422d0dc0(MS2Ptr<UISwfEntity>(pEntity));
+                                GetUISwfEntityManager()->RemoveEntity(MS2Ptr<UISwfEntity>(pEntity));
                             else
                                 GetUISwfEntityManager()->AddEntity(MS2Ptr<UISwfEntity>(pEntity));
                         }
@@ -205,7 +205,7 @@ int UIHideSettingDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
 MS2_REPLACE_METHOD(0x1419874F0, UIHideSettingDialog, vfunc_28, 1160, 0xE5C8B991);
 
 // @0x141987990
-void UIHideSettingDialog::FUN_141987990()
+void UIHideSettingDialog::BuildList()
 {
     if (m_30.get()) {
         std::vector<MS2Ptr<AScript> > lists[3];
@@ -218,7 +218,7 @@ void UIHideSettingDialog::FUN_141987990()
                 continue;
             bool bSelected = false;
             if (info->m_nType == 1) {
-                if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)info->m_nId))
+                if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)info->m_nId))
                     bSelected = true;
             } else {
                 UISwfEntity* pEntity = FUN_GetUI<UISwfEntity>(info->m_nId);
@@ -231,23 +231,23 @@ void UIHideSettingDialog::FUN_141987990()
         ASArray all(2);
         for (int i = 0; i < 3; i++) {
             ASObj group(2);
-            group.FUN_1407cb9c0("type", i);
+            group.SetIntMember("type", i);
             {
                 ASArray list(2);
                 const std::vector<MS2Ptr<AScript> >& entries = lists[i];
                 for (size_t j = 0; j < entries.size(); j++)
-                    list.PushValue(entries[j]->FUN_1422bb870());
-                group.FUN_1409adbe0("list", list.FUN_1422bb870());
+                    list.PushValue(entries[j]->GetValue());
+                group.FUN_1409adbe0("list", list.GetValue());
             }
-            all.PushValue(group.FUN_1422bb870());
+            all.PushValue(group.GetValue());
         }
-        m_30->Invoke("buildList", all.FUN_1422bb870());
+        m_30->Invoke("buildList", all.GetValue());
     }
 }
-MS2_REPLACE_METHOD(0x141987990, UIHideSettingDialog, FUN_141987990, 1456, 0x4BE9B7A9);
+MS2_REPLACE_METHOD(0x141987990, UIHideSettingDialog, BuildList, 1456, 0x4BE9B7A9);
 
 // @0x141987f50
-void UIHideSettingDialog::FUN_141987f50(int nId, const CStringW& strLabel)
+void UIHideSettingDialog::AddUI(int nId, const CStringW& strLabel)
 {
     MS2Ptr<SwfInfo> info(new SwfInfo);
     if (info == 0)

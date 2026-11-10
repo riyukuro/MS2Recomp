@@ -78,7 +78,7 @@ private:
     char m_pad_34[0x58 - 0x34];
 };
 MS2_CHECK_SIZE(CObjectShadow, 0x58);
-void FUN_14160fe10(CObjectShadow* self, bool v);   // unit_14160fb10
+void SetEnabled(CObjectShadow* self, bool v);   // unit_14160fb10
 void FUN_14160fe50(CObjectShadow* self, bool v);
 void FUN_1416105c0(CObjectShadow* self);
 
@@ -128,13 +128,13 @@ public:
 };
 class MyPC; class PCBase;
 template <> MyPC* efd::DynamicCast<MyPC, PCBase>(PCBase* Source);
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
 // C3: the string getter 0x140298f80 is Common::Constants::Value<CString>::Get() (clientconstants.h)
 class Unk_InventoryStateManager* GetBlockManager();   // C3: was GetBlockManager
 extern Unk_Inventory g_143ab2a90;
-int FUN_140768010(int, int);   // C3: was FUN_140768010
+int GetRandomRange(int, int);   // C3: was GetRandomRange
 float GetDistance(Vector3 kA, Vector3 kB);        // the horizontal distance
-void FUN_14160feb0(CObjectShadow* pShadow, int nActive, const void* pPos, const void* pDir, float fTime, bool bForce);   // C3: the real free signature (unit_14160fb10)
+void UpdateShadow(CObjectShadow* pShadow, int nActive, const void* pPos, const void* pDir, float fTime, bool bForce);   // C3: the real free signature (unit_14160fb10)
 float GetDistance(Vector3 kA, efd::Point3 kB);    // the same, the second point sliced from an NiPoint3
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 bool FUN_14147a500(Vector3* pOut, Vector3 kStart, Vector3 kEnd, bool bProbe, float fProbeLen, const NxGroupsMask* pMask);
@@ -210,7 +210,7 @@ CDropItem::CDropItem(int nType, int nRarity)
 {
     m_unk_b0 = 1;
     m_str88 = "";
-    s_kPickTimer.FUN_140868750(10);
+    s_kPickTimer.Start(10);
     m_f218 = Client::Constants::GetInstance()->DropItemTargetZPos.Read();
     m_f21c = Client::Constants::GetInstance()->DropItemMaxLength.Read();
     m_f220 = Client::Constants::GetInstance()->DropMoneyMaxLength.Read();
@@ -370,7 +370,7 @@ void CDropItem::vfunc_32(bool bForce)
                     nHit = ((class CPhysXHelper*)GetPhysXHelper())->RayCastFixedDirection(reinterpret_cast<const Vector3&>(static_cast<const NiPoint3&>(vfunc_18())), kHit, &kInfo, 0.0f, &kNormal, 0);
                 }
             }
-            FUN_14160feb0(m_spShadow.operator->(), nHit, &kHit, &kNormal, kInfo.m_hitDist, bForce);
+            UpdateShadow(m_spShadow.operator->(), nHit, &kHit, &kNormal, kInfo.m_hitDist, bForce);
         }
     }
 }
@@ -395,10 +395,10 @@ void CDropItem::SetIconTexture(NiAVObject* pRoot)
                 NiTexturingProperty::Map* pMap = ((class NiTexturingProperty*)(pTexturing))->GetBaseMap();
                 if (pMap)
                 {
-                    CString strPath = m_spItem->FUN_140528590();
+                    CString strPath = m_spItem->GetIconPath();
                     if (m_spItem->HasCubeTextureMesh())
                     {
-                        if (m_spItem->FUN_140525f60())
+                        if (m_spItem->HasUgcId())
                         {
                             if (_access(strPath, 0) != 0)
                                 strPath = reinterpret_cast<CItemData*>(m_spItem->FUN_140527840())->GetIconPath();
@@ -440,7 +440,7 @@ void CDropItem::SetState(int nState)
         }
         if (m_nNpcType != 0)
         {
-            MS2Ptr<CNpcData> spNpc = FUN_1406cd330(m_nNpcType);
+            MS2Ptr<CNpcData> spNpc = FindNpcData(m_nNpcType);
             fDropHeight = spNpc->m_drop.m_fDropHeight;
             if (spNpc->m_drop.m_fDropDistanceBase != 0.0f)
                 fDropBase = spNpc->m_drop.m_fDropDistanceBase;
@@ -480,7 +480,7 @@ void CDropItem::SetState(int nState)
         }
         if (m_nFadeTime == 0 && (CObjectShadow*)m_spShadow != 0)
         {
-            FUN_14160fe10(m_spShadow.operator->(), true);
+            SetEnabled(m_spShadow.operator->(), true);
             vfunc_32(true);
         }
         vfunc_19(reinterpret_cast<efd::Point3&>(kSelf));
@@ -657,7 +657,7 @@ void CDropItem::SetState(int nState)
             kGoal.z += m_f218;
             unsigned nHalf = (unsigned)(__int64)m_f224;
             nHalf >>= 1;
-            m_f224 = (float)(FUN_140768010(nHalf, 0) + nHalf);
+            m_f224 = (float)(GetRandomRange(nHalf, 0) + nHalf);
             Vector3 kGoalCopy(reinterpret_cast<Vector3&>(kGoal));
 #ifdef __clang__
             NiPoint3 kStart = vfunc_18();
@@ -690,7 +690,7 @@ void CDropItem::SetState(int nState)
             {
                 UIDamageText* pDlg = Unk_DmgFindUI<UIDamageText>(0x4e32);
                 if (pDlg)
-                    pDlg->FUN_141913060(pOwner, m_spItem->GetCount(), m_spItem->FUN_140528590());
+                    pDlg->FUN_141913060(pOwner, m_spItem->GetCount(), m_spItem->GetIconPath());
             }
         }
         m_pfnState = &CDropItem::UpdatePickUpHoverState;
@@ -744,13 +744,13 @@ void CDropItem::FUN_14118fe80(int nValue) { m_n298 = nValue; }
 int CDropItem::IsMeso() { return 0 < m_n64Meso; }
 
 // @0x14118fee0
-int CDropItem::FUN_14118fee0() { return m_spItem->FUN_140525920(); }
+int CDropItem::FUN_14118fee0() { return m_spItem->IsMerat(); }
 
 // @0x14118ff10
-int CDropItem::FUN_14118ff10() { return m_spItem->FUN_1405276c0() == 0x55d4a8a; }
+int CDropItem::FUN_14118ff10() { return m_spItem->GetItemId() == 0x55d4a8a; }
 
 // @0x14118ff60
-int CDropItem::FUN_14118ff60() { return m_spItem->FUN_1405276c0() == 0x55d4a83; }
+int CDropItem::FUN_14118ff60() { return m_spItem->GetItemId() == 0x55d4a83; }
 
 // @0x14118ffb0
 int CDropItem::IsPetItem()
@@ -788,7 +788,7 @@ int CDropItem::FUN_1411900d0()
 // @0x141190120
 int CDropItem::FUN_141190120(Vector3 kPos, int nA, int nB)
 {
-    if (!s_kPickTimer.FUN_140868c00() && nA)
+    if (!s_kPickTimer.IsExpired() && nA)
         return 0;
     if (FUN_1411900d0() && nA)
         return 0;
@@ -843,7 +843,7 @@ int CDropItem::FUN_1411903c0(GameObject* pActor, float fRange, int nA, int nB)
 {
     if (!pActor)
         return 0;
-    if (!s_kPickTimer.FUN_140868c00() && nA)
+    if (!s_kPickTimer.IsExpired() && nA)
         return 0;
     if (FUN_1411900d0() && nA)
         return 0;
@@ -918,7 +918,7 @@ int CDropItem::CanStackIntoInventory()
         return 0;
     {
         ATL::CAtlList<MS2Ptr<CItem> > kHave(10);
-        g_143ab2a90.FUN_140a5e8d0(m_spItem->FUN_1405276c0(), kHave, 1);
+        g_143ab2a90.FUN_140a5e8d0(m_spItem->GetItemId(), kHave, 1);
         for (POSITION pos = kHave.GetHeadPosition(); pos; kHave.GetNext(pos))
         {
             MS2Ptr<CItem> spHave = kHave.GetAt(pos);
@@ -951,7 +951,7 @@ void CDropItem::FUN_141190900(int nPickerId)
 {
     if (FUN_1411900d0())
         return;
-    if (m_spItem->FUN_140525980() || FUN_14053f900(m_spItem->FUN_1405276c0()))
+    if (m_spItem->FUN_140525980() || FUN_14053f900(m_spItem->GetItemId()))
     {
         SendRequestItemPickup(nPickerId);
         return;
@@ -963,7 +963,7 @@ void CDropItem::FUN_141190900(int nPickerId)
             static Unk_IntervalTimer s_kNoticeTick;
             if (s_kNoticeTick.Check(5000) == 1)
             {
-                CStringW strNotice = FUN_1401ca400(spBlock, 0x20);
+                CStringW strNotice = GetBlockActionMessage(spBlock, 0x20);
                 FUN_1412751b0(strNotice, 0x14);
             }
             FUN_1411911a0();
@@ -1005,7 +1005,7 @@ void CDropItem::OnPickedUp(int nPickerId)
                     TSingleton<CEffectService>::GetInstance()->FUN_1411a5110(CString("ms2sound/sound/item"), CString(strSound), CString(""), 1, &kXform, 1.0f, 0);
                 if (m_spItem->GetRarity() >= 1)
                 {
-                    if (m_spItem->FUN_1405258f0() == 0)
+                    if (m_spItem->IsMeso() == 0)
                     {
                         if (m_spItem->FUN_140525950() == 0 && FUN_14118fee0() == 0)
                         {
@@ -1018,21 +1018,21 @@ void CDropItem::OnPickedUp(int nPickerId)
             }
         }
         if (m_spItem->FUN_140528980())
-            ((class Unk_DropGuideMgr*)FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0xc, m_spItem->FUN_1405276c0(), 0);
+            ((class Unk_DropGuideMgr*)FUN_1409331e0())->AddTrigger((CGuideManager::TriggerType)0xc, m_spItem->GetItemId(), 0);
     }
     if (m_nState == 6)
     {
         vfunc_23(0);
         if (m_spShadow)
         {
-            FUN_14160fe10(m_spShadow.operator->(), true);
+            SetEnabled(m_spShadow.operator->(), true);
             vfunc_32(true);
         }
     }
     if (m_nState == 0)
     {
         m_n188 = nPickerId;
-        s_kPickTimer.FUN_140868750(0x96);
+        s_kPickTimer.Start(0x96);
         SetState(2);
     }
 }
@@ -1118,7 +1118,7 @@ void CDropItem::vfunc_49()
     int nLodHi = pCfg->GetShadowOption(4);
     int nLodLo = pCfg->GetShadowOptionOffset(4);
     m_spShadow = NiNew CObjectShadow((void*)static_cast<GameObject*>(this), nLodHi, nLodLo, fScale, fBias);
-    FUN_14160fe10(m_spShadow.operator->(), false);
+    SetEnabled(m_spShadow.operator->(), false);
 }
 
 // @0x1411914d0
@@ -1130,7 +1130,7 @@ void CDropItem::vfunc_53(float fTime)
         vfunc_23(0);
         if (m_spShadow)
         {
-            FUN_14160fe10(m_spShadow.operator->(), true);
+            SetEnabled(m_spShadow.operator->(), true);
             vfunc_32(true);
         }
     }

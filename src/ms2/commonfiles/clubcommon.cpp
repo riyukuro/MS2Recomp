@@ -42,7 +42,7 @@ public:
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 
 // ---- Club::PacketInvite ----
@@ -88,8 +88,8 @@ void Club::PacketInvite::FUN_14020c580(CClub* pClub, CStringW strA, CStringW str
 {
     if (pClub == 0)
         return;
-    m_inviteId = pClub->FUN_14020f0c0();
-    m_20 = pClub->FUN_14020f1a0();
+    m_inviteId = pClub->GetClubId();
+    m_20 = pClub->GetName();
     m_28 = strA;
     m_30 = strB;
 }
@@ -341,13 +341,13 @@ void CClubMemberProxy::ReadMapId(CInPacket& packet)
 // @0x14020d610
 void CClubMemberProxy::FUN_14020d610(COutputStream& out)
 {
-    FUN_14020d9a0(out);
+    Write(out);
 }
 
 // @0x14020d640
 void CClubMemberProxy::FUN_14020d640(CInPacket* packet)
 {
-    FUN_14020db80(packet);
+    Read(packet);
 }
 
 // @0x14020d690
@@ -375,7 +375,7 @@ void CClubMemberProxy::FUN_14020d770(CInPacket& packet)
 }
 
 // @0x14020d9a0
-void CClubMemberProxy::FUN_14020d9a0(COutputStream& out)
+void CClubMemberProxy::Write(COutputStream& out)
 {
     out.WriteInt64(m_accountId);
     out.WriteInt64(m_characterId);
@@ -395,7 +395,7 @@ void CClubMemberProxy::FUN_14020d9a0(COutputStream& out)
 }
 
 // @0x14020db80
-void CClubMemberProxy::FUN_14020db80(CInputStream* in)
+void CClubMemberProxy::Read(CInputStream* in)
 {
     CStringW strName;
     CStringA strPicture;
@@ -443,7 +443,7 @@ void CClubMemberProxy::FUN_14020df70(CInputStream* in)
 }
 
 // @0x14020e130
-void CClubMemberProxy::FUN_14020e130(const CClubMemberProxy& o)
+void CClubMemberProxy::CopyFrom(const CClubMemberProxy& o)
 {
     CStringW strName;
     CStringA strPicture;
@@ -467,13 +467,13 @@ void CClubMemberProxy::FUN_14020e130(const CClubMemberProxy& o)
 }
 
 // @0x14020e350
-void CClubMemberProxy::FUN_14020e350(Unk_UserProxy* p)
+void CClubMemberProxy::SetFromUserProxy(Unk_UserProxy* p)
 {
     CStringW strName;
     CStringA strPicture;
     m_accountId = p->m_0;
     m_characterId = p->m_8;
-    strName = p->FUN_1408f19e0();
+    strName = p->GetName();
     m_gender = p->m_14;
     m_jobCode = p->m_3c;
     m_job = p->m_40;
@@ -548,12 +548,12 @@ void CClubMember::Reset()
 }
 
 // @0x14020e950
-void CClubMember::FUN_14020e950(CClubMember* o)
+void CClubMember::CopyFrom(CClubMember* o)
 {
     if (o == 0)
         return;
     m_18 = o->m_18;
-    m_info.FUN_14020e130(o->m_info);
+    m_info.CopyFrom(o->m_info);
     m_c8 = o->m_c8;
     m_cc = o->m_cc;
     m_d0 = o->m_d0;
@@ -580,7 +580,7 @@ void CClubMember::Write(COutputStream& out)
     if (m_c8 == 2)
     {
         out.WriteInt64(m_18);
-        m_info.FUN_14020d9a0(out);
+        m_info.Write(out);
         out.WriteInt64(m_d0);
         out.WriteInt64(m_d8);
         out.WriteUInt8((unsigned char)m_f0);
@@ -599,7 +599,7 @@ void CClubMember::Read(CInputStream* in)
     if (m_c8 == 2)
     {
         m_18 = in->ReadInt64();
-        m_info.FUN_14020db80(in);
+        m_info.Read(in);
         m_d0 = in->ReadInt64();
         m_d8 = in->ReadInt64();
         m_f0 = in->ReadUInt8();
@@ -624,12 +624,12 @@ int CClubMember::FUN_14020eca0(Club::SaveMember* pSave)
     pSave->m_mapId = m_info.m_mapId;
     pSave->m_picture = (const char*)m_info.GetPicture();
     pSave->m_d8 = m_d8;
-    FUN_14020edb0(0);
+    SetDirty(0);
     return 1;
 }
 
 // @0x14020edb0
-void CClubMember::FUN_14020edb0(int nDirty)
+void CClubMember::SetDirty(int nDirty)
 {
     m_f4 = nDirty;
 }
@@ -641,7 +641,7 @@ int CClubMember::FUN_14020edd0()
 }
 
 // @0x14020edf0
-Unk_IntTriple* CClubMember::FUN_14020edf0()
+Unk_IntTriple* CClubMember::GetTrophy()
 {
     return &m_info.m_trophy;
 }
@@ -688,7 +688,7 @@ void CClub::vfunc_0()
 }
 
 // @0x14020f0c0
-__int64 CClub::FUN_14020f0c0()
+__int64 CClub::GetClubId()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -715,7 +715,7 @@ void CClub::SetClubId(__int64 n)
 }
 
 // @0x14020f1a0
-CStringW CClub::FUN_14020f1a0()
+CStringW CClub::GetName()
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -729,7 +729,7 @@ CStringW CClub::FUN_14020f1a0()
 }
 
 // @0x14020f230
-void CClub::FUN_14020f230(const CStringW& strName)
+void CClub::SetName(const CStringW& strName)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -996,7 +996,7 @@ void CClub::FUN_14020fab0(__int64 n)
 }
 
 // @0x14020fb20
-void CClub::FUN_14020fb20(COutputStream& out)
+void CClub::Write(COutputStream& out)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1004,8 +1004,8 @@ void CClub::FUN_14020fb20(COutputStream& out)
     }
     else
     {
-        out.WriteInt64(FUN_14020f0c0());
-        out.WriteUnicodeString(FUN_14020f1a0());
+        out.WriteInt64(GetClubId());
+        out.WriteUnicodeString(GetName());
         out.WriteInt64(GetLeaderAccountId());
         out.WriteInt64(GetLeaderCharacterId());
         out.WriteUnicodeString(GetLeaderName());
@@ -1019,7 +1019,7 @@ void CClub::FUN_14020fb20(COutputStream& out)
 }
 
 // @0x14020fd80
-void CClub::FUN_14020fd80(CInPacket& packet)
+void CClub::Read(CInPacket& packet)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1039,7 +1039,7 @@ void CClub::FUN_14020fd80(CInPacket& packet)
         __int64 n90 = packet.ReadInt64();
         SetState(nState);
         SetClubId(nId);
-        FUN_14020f230(strName);
+        SetName(strName);
         SetLeaderInfo(nLeaderAccount, nLeaderCharacter, strLeader, 1);
         SetCreationTime(nCreated);
         SetBuff(nBuffId, nBuffLevel);
@@ -1416,9 +1416,9 @@ int CClubDataTable::FUN_1402113c0()
 // @0x1402113f0
 int CClubDataTable::LoadClubBuff()
 {
-    CString strPath = FUN_14071a5b0("Table", "clubBuff.xml");
+    CString strPath = GetXmlPath("Table", "clubBuff.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1443,7 +1443,7 @@ int CClubDataTable::LoadClubBuff()
 }
 
 // @0x1402116a0
-CClubDataTable::BuffPtr CClubDataTable::FUN_1402116a0(unsigned nId)
+CClubDataTable::BuffPtr CClubDataTable::FindBuffById(unsigned nId)
 {
     BuffPtr sp(0);
     if (Unk_LockGuard guard = m_lock)
@@ -1458,7 +1458,7 @@ CClubDataTable::BuffPtr CClubDataTable::FUN_1402116a0(unsigned nId)
 }
 
 // @0x140211760
-CClubDataTable::BuffPtr CClubDataTable::FUN_140211760(int nEffectId, int nEffectLevel)
+CClubDataTable::BuffPtr CClubDataTable::FindBuffByEffect(int nEffectId, int nEffectLevel)
 {
     BuffPtr spFound(0);
     if (Unk_LockGuard guard = m_lock)
@@ -1483,7 +1483,7 @@ CClubDataTable::BuffPtr CClubDataTable::FUN_140211760(int nEffectId, int nEffect
 }
 
 // @0x1402118e0
-void CClubDataTable::FUN_1402118e0(ATL::CAtlArray<unsigned>& ids)
+void CClubDataTable::GetBuffIds(ATL::CAtlArray<unsigned>& ids)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1497,7 +1497,7 @@ void CClubDataTable::FUN_1402118e0(ATL::CAtlArray<unsigned>& ids)
 }
 
 // @0x140211990
-void CClubDataTable::FUN_140211990(ATL::CAtlArray<BuffPtr>& buffs)
+void CClubDataTable::GetAllBuffs(ATL::CAtlArray<BuffPtr>& buffs)
 {
     if (Unk_LockGuard guard = m_lock)
     {
@@ -1513,7 +1513,7 @@ void CClubDataTable::FUN_140211990(ATL::CAtlArray<BuffPtr>& buffs)
 template <> MS2Ptr<CClubDataTable::ClubBuffData>::MS2Ptr(const Unk_BmNewTag&);
 
 // @0x140211a40
-CClubDataTable::BuffPtr CClubDataTable::FUN_140211a40()
+CClubDataTable::BuffPtr CClubDataTable::GetFirstBuff()
 {
     BuffPtr spFirst(Unk_BmNewTag(0));
     if (Unk_LockGuard guard = m_lock)
@@ -1671,31 +1671,31 @@ MS2_REPLACE_METHOD(0x14020d610, CClubMemberProxy, FUN_14020d610, 34, 0xEDF9DFF8)
 MS2_REPLACE_METHOD(0x14020d640, CClubMemberProxy, FUN_14020d640, 67, 0x531AF82C);
 MS2_REPLACE_METHOD(0x14020d690, CClubMemberProxy, FUN_14020d690, 204, 0x4CEE299F);
 MS2_REPLACE_METHOD(0x14020d770, CClubMemberProxy, FUN_14020d770, 549, 0xFB59E4E7);
-MS2_REPLACE_METHOD(0x14020d9a0, CClubMemberProxy, FUN_14020d9a0, 470, 0x35F96B66);
-MS2_REPLACE_METHOD(0x14020db80, CClubMemberProxy, FUN_14020db80, 760, 0x9BEF4172);
+MS2_REPLACE_METHOD(0x14020d9a0, CClubMemberProxy, Write, 470, 0x35F96B66);
+MS2_REPLACE_METHOD(0x14020db80, CClubMemberProxy, Read, 760, 0x9BEF4172);
 MS2_REPLACE_METHOD(0x14020de80, CClubMemberProxy, FUN_14020de80, 227, 0x5FE41701);
 MS2_REPLACE_METHOD(0x14020df70, CClubMemberProxy, FUN_14020df70, 429, 0xF2A1C911);
-MS2_REPLACE_METHOD(0x14020e130, CClubMemberProxy, FUN_14020e130, 535, 0x8241E2B1);
-MS2_REPLACE_METHOD(0x14020e350, CClubMemberProxy, FUN_14020e350, 629, 0x59329419);
+MS2_REPLACE_METHOD(0x14020e130, CClubMemberProxy, CopyFrom, 535, 0x8241E2B1);
+MS2_REPLACE_METHOD(0x14020e350, CClubMemberProxy, SetFromUserProxy, 629, 0x59329419);
 MS2_REPLACE_METHOD(0x14020e5d0, CClubMemberProxy, GetName, 116, 0xF3D7B713);
 MS2_REPLACE_METHOD(0x14020e650, CClubMemberProxy, SetName, 105, 0x9E780C65);
 MS2_REPLACE_METHOD(0x14020e6c0, CClubMemberProxy, GetPicture, 116, 0x033B5C7C);
 MS2_REPLACE_METHOD(0x14020e740, CClubMemberProxy, SetPicture, 105, 0xBD91D60C);
 MS2_REPLACE_METHOD(0x14020e890, CClubMember, Reset, 171, 0xB4B40855);
-MS2_REPLACE_METHOD(0x14020e950, CClubMember, FUN_14020e950, 190, 0xDDB0C5F0);
+MS2_REPLACE_METHOD(0x14020e950, CClubMember, CopyFrom, 190, 0xDDB0C5F0);
 MS2_REPLACE_METHOD(0x14020ea20, CClubMember, FUN_14020ea20, 34, 0x04FC75E7);
 MS2_REPLACE_METHOD(0x14020ea50, CClubMember, ReadPacket, 67, 0xD06EF7E8);
 MS2_REPLACE_METHOD(0x14020eaa0, CClubMember, Write, 245, 0xADC73256);
 MS2_REPLACE_METHOD(0x14020eba0, CClubMember, Read, 249, 0x5D098D43);
 MS2_REPLACE_METHOD(0x14020eca0, CClubMember, FUN_14020eca0, 265, 0xA7ED6637);
-MS2_REPLACE_METHOD(0x14020edb0, CClubMember, FUN_14020edb0, 25, 0xC37424D3);
+MS2_REPLACE_METHOD(0x14020edb0, CClubMember, SetDirty, 25, 0xC37424D3);
 MS2_REPLACE_METHOD(0x14020edd0, CClubMember, FUN_14020edd0, 17, 0xE3FAF62F);
-MS2_REPLACE_METHOD(0x14020edf0, CClubMember, FUN_14020edf0, 15, 0x680A76B1);
+MS2_REPLACE_METHOD(0x14020edf0, CClubMember, GetTrophy, 15, 0x680A76B1);
 MS2_REPLACE_METHOD(0x14020ee10, CClubMember, FUN_14020ee10, 31, 0x09CC4898);
-MS2_REPLACE_METHOD(0x14020f0c0, CClub, FUN_14020f0c0, 104, 0xDA5FFFAA);
+MS2_REPLACE_METHOD(0x14020f0c0, CClub, GetClubId, 104, 0xDA5FFFAA);
 MS2_REPLACE_METHOD(0x14020f130, CClub, SetClubId, 91, 0xC1D5427A);
-MS2_REPLACE_METHOD(0x14020f1a0, CClub, FUN_14020f1a0, 137, 0x7E65C264);
-MS2_REPLACE_METHOD(0x14020f230, CClub, FUN_14020f230, 101, 0x8FDA9E25);
+MS2_REPLACE_METHOD(0x14020f1a0, CClub, GetName, 137, 0x7E65C264);
+MS2_REPLACE_METHOD(0x14020f230, CClub, SetName, 101, 0x8FDA9E25);
 MS2_REPLACE_METHOD(0x14020f2a0, CClub, GetCreationTime, 104, 0x4EE10C12);
 MS2_REPLACE_METHOD(0x14020f310, CClub, SetCreationTime, 91, 0x921AF091);
 MS2_REPLACE_METHOD(0x14020f380, CClub, GetMaxMemberCount, 101, 0x9DF0D68C);
@@ -1714,8 +1714,8 @@ MS2_REPLACE_METHOD(0x14020f950, CClub, FUN_14020f950, 104, 0x5D02D2F3);
 MS2_REPLACE_METHOD(0x14020f9c0, CClub, FUN_14020f9c0, 91, 0x1E9456D4);
 MS2_REPLACE_METHOD(0x14020fa30, CClub, FUN_14020fa30, 107, 0x8E973528);
 MS2_REPLACE_METHOD(0x14020fab0, CClub, FUN_14020fab0, 94, 0xFAB60467);
-MS2_REPLACE_METHOD(0x14020fb20, CClub, FUN_14020fb20, 601, 0x8013A294);
-MS2_REPLACE_METHOD(0x14020fd80, CClub, FUN_14020fd80, 843, 0x27E47F04);
+MS2_REPLACE_METHOD(0x14020fb20, CClub, Write, 601, 0x8013A294);
+MS2_REPLACE_METHOD(0x14020fd80, CClub, Read, 843, 0x27E47F04);
 MS2_REPLACE_METHOD(0x1402100e0, CClub, WriteMembers, 247, 0xA33DCD1F);
 MS2_REPLACE_METHOD(0x1402101e0, CClub, ReadMembers, 344, 0xDDF15478);
 MS2_REPLACE_METHOD(0x140210560, CClub, FindMemberByName, 193, 0x4494E456);
@@ -1734,9 +1734,9 @@ MS2_REPLACE_METHOD(0x140211080, CClub, IsLeaderName, 356, 0x330D17F1);
 MS2_REPLACE_METHOD(0x140211280, CClubDataTable::ClubBuffData, FUN_140211280, 106, 0x47549914);
 MS2_REPLACE_METHOD(0x1402113c0, CClubDataTable, FUN_1402113c0, 37, 0x66A38C51);
 MS2_REPLACE_METHOD(0x1402113f0, CClubDataTable, LoadClubBuff, 672, 0x5962A366);
-MS2_REPLACE_METHOD(0x1402116a0, CClubDataTable, FUN_1402116a0, 171, 0x34AEE797);
-MS2_REPLACE_METHOD(0x140211760, CClubDataTable, FUN_140211760, 364, 0x07E0BEF5);
-MS2_REPLACE_METHOD(0x1402118e0, CClubDataTable, FUN_1402118e0, 167, 0x5FA7F1F0);
-MS2_REPLACE_METHOD(0x140211990, CClubDataTable, FUN_140211990, 168, 0xEA02FE78);
-MS2_REPLACE_METHOD(0x140211a40, CClubDataTable, FUN_140211a40, 210, 0xDE7E0A43);
+MS2_REPLACE_METHOD(0x1402116a0, CClubDataTable, FindBuffById, 171, 0x34AEE797);
+MS2_REPLACE_METHOD(0x140211760, CClubDataTable, FindBuffByEffect, 364, 0x07E0BEF5);
+MS2_REPLACE_METHOD(0x1402118e0, CClubDataTable, GetBuffIds, 167, 0x5FA7F1F0);
+MS2_REPLACE_METHOD(0x140211990, CClubDataTable, GetAllBuffs, 168, 0xEA02FE78);
+MS2_REPLACE_METHOD(0x140211a40, CClubDataTable, GetFirstBuff, 210, 0xDE7E0A43);
 // MS2-PIN: ?GetNext@?$CRBTree@_KV?$MS2Ptr@VNameInfo@Club@@@@V?$CElementTraits@_K@ATL@@V?$CElementTraits@V?$MS2Ptr@VNameInfo@Club@@@@@3@@ATL@@QEBAPEBVCPair@12@AEAPEAU__POSITION@@@Z 0x140213520 ; the const JoinMap GetNext (was the Unk_TreePostInc stand-in over the FUN_140217140 Successor wrapper)

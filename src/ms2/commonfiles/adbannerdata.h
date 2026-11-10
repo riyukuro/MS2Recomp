@@ -88,7 +88,7 @@ public:
     ~CAdBannerManager();                                        // 0x14016df30
 
     void FUN_14016df70();                                       // forget all banners
-    void FUN_14016dfa0(const ATL::CAtlArray<Unk_AdbPtr>& src);  // replace the banners
+    void SetBanners(const ATL::CAtlArray<Unk_AdbPtr>& src);  // replace the banners
     void FUN_14016dfd0(Unk_AbOut* pOut);                        // write the banner list
 
     Unk_AdbArray m_banners;                       // +0x00

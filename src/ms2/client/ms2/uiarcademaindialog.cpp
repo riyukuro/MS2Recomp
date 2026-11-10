@@ -135,10 +135,10 @@ CStringA FUN_140390ea0(const wchar_t* sz, int n);                           // w
 template <class T> CString Unk_SocketFormat(const char* szFormat, const T& n);   // C3: was FUN_1402bad60
 void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW strText);
 void FUN_140cff840(const Scaleform::GFx::Value& root, CString strName, int bOn);
-void* FUN_140bb9630(int n);                                                 // the callback data of a button index
+void* IntToUserData(int n);                                                 // the callback data of a button index
 int FUN_140bd09c0(void* pUserData);                                         // the button index of a callback
 
-class CArcadeDataTable* FUN_140e37aa0();
+class CArcadeDataTable* GetArcadeDataTable();
 
 class CGameEventValueManager;
 
@@ -147,9 +147,9 @@ bool FUN_1418fe060();                                                       // t
 void FUN_141275260(int nNotice, int nA, int nB);                            // error notice
 extern int DAT_143ab2870;                                                   // the current field id
 
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* pListener, CStringW tag);   // create a message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                                // show it
-bool FUN_1407105c0(COutPacket* packet, int nA, int nB);                     // send with a throttle
+bool SendPacketThrottled(COutPacket* packet, int nA, int nB);                     // send with a throttle
 
 class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
 class Unk_ArcConfig { public: int FUN_1402c4c90(int nFlag); };
@@ -212,12 +212,12 @@ UIArcadeMainDialog::UIArcadeMainDialog()
     m_enter = 0;
     m_results.clear();
     m_nSelected = -1;
-    FUN_140ef6920();
-    FUN_140ef7e70();
+    ClearScores();
+    ClearRanks();
     m_nRequestTick = 0;
     m_pWorker = 0;
-    FUN_141924170(1);
-    TSingleton<CWebBrowserService>::GetInstance()->FUN_141b794e0(m_strUrl, "api:/rank/arcade");
+    SetTweenEnabled(1);
+    TSingleton<CWebBrowserService>::GetInstance()->ExpandUrlPrefix(m_strUrl, "api:/rank/arcade");
 }
 
 // @0x140ef58d0
@@ -258,7 +258,7 @@ void UIArcadeMainDialog::OnLoadInit()
 void UIArcadeMainDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925ec0("m_closeButton");
+    BindCloseButton("m_closeButton");
     m_rankView = GetChild<ASMovieClip>("m_rankingInfo");
     m_emptyView = GetChild<ASMovieClip>("m_rankingEmpty");
     for (int i = 0; i < 9; i++)
@@ -267,13 +267,13 @@ void UIArcadeMainDialog::OnLoadComplete()
         CString strName = StringFormat<int>("m_game{0}", nNo);
         m_buttons[i] = GetChild<ASButton>(strName);
         if (m_buttons[i].get() != 0)
-            m_buttons[i]->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6960), FUN_140bb9630(i));
+            m_buttons[i]->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6960), IntToUserData(i));
     }
     m_enter = reinterpret_cast<AScript*>(m_rankView.operator->())->FUN_140acce30<ASButton>("m_enter");
     if (m_enter.get() != 0)
         m_enter->FUN_1422ce240(ArcClickDelegate(this, &UIArcadeMainDialog::FUN_140ef6a60), 0);
     std::vector<MS2SvrPtr<CArcadeMainData> > games;
-    FUN_140e37aa0()->GetMainDataList(games);
+    GetArcadeDataTable()->GetMainDataList(games);
     m_games.clear();
     m_games.reserve(games.size());
     int nButton = 0;
@@ -294,13 +294,13 @@ void UIArcadeMainDialog::OnLoadComplete()
         m_buttons[nButton]->Invoke("setImage", m_bannerPath, spGame->m_strArcadeBanner);
         FUN_140cff840((*m_buttons[nButton]).FUN_1422bb890(), "m_eventBand", spGame->m_bIsEventArcade);
         if (spGame->m_nTargetField == 0)
-            m_buttons[nButton]->FUN_1422c1fe0(0);
+            m_buttons[nButton]->SetEnabled(0);
         nButton++;
     }
     for (int i = nButton; i < 9; i++)
     {
         m_buttons[i]->FUN_1422cdfb0(GetStringCommonByKey(L"s_arcade_game_preparing"));
-        m_buttons[i]->FUN_1422c1fe0(0);
+        m_buttons[i]->SetEnabled(0);
         FUN_140cff840((*m_buttons[i]).FUN_1422bb890(), "m_eventBand", 0);
     }
     int nRegion = TSingleton<CSeasonDataTable>::GetInstance()->GetCurrentID((SeasonRankType)4);
@@ -310,7 +310,7 @@ void UIArcadeMainDialog::OnLoadComplete()
         packet.Encode4(9);
         FUN_140710590(packet);
     }
-    FUN_140ef7ea0();
+    RequestRanking();
 }
 
 // @0x140efd620
@@ -324,7 +324,7 @@ void UIArcadeMainDialog::vfunc_72()
 {
     if (m_pWorker == 0)
         return;
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x3f) == true)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x3f) == true)
     {
         FUN_140ef67f0();
     }
@@ -341,7 +341,7 @@ void UIArcadeMainDialog::vfunc_72()
             strResponse = m_strResponse;
             m_strResponse = L"";
         }
-        FUN_140ef80f0(strResponse);
+        ParseRankingXml(strResponse);
         m_pWorker = 0;
         FUN_140ef6dd0();
     }
@@ -378,7 +378,7 @@ void UIArcadeMainDialog::FUN_140ef67f0()
 }
 
 // @0x140ef6920
-void UIArcadeMainDialog::FUN_140ef6920()
+void UIArcadeMainDialog::ClearScores()
 {
     m_nRegion = 0;
     m_scores.clear();
@@ -393,8 +393,8 @@ void UIArcadeMainDialog::FUN_140ef6960(const Scaleform::GFx::FunctionHandler::Pa
     if (nIndex < 0 || nIndex >= 9)
         return;
     if (m_nSelected >= 0 && m_nSelected < 9)
-        m_buttons[m_nSelected]->FUN_1422ce090(0);
-    m_buttons[nIndex]->FUN_1422ce090(1);
+        m_buttons[m_nSelected]->SetSelected(0);
+    m_buttons[nIndex]->SetSelected(1);
     m_nSelected = nIndex;
     FUN_140ef6dd0();
 }
@@ -417,7 +417,7 @@ void UIArcadeMainDialog::FUN_140ef6a60(const Scaleform::GFx::FunctionHandler::Pa
             CStringW strMsg;
             if (!bMovable)
                 strMsg = GetStringCommonByKey(L"s_beauty_goto_map_return_warn");
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, strMsg, 0, L"");
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strMsg, 0, L"");
             if (spBox.get() != 0)
             {
                 spBox->Append<int>(spGame->m_nId);
@@ -448,7 +448,7 @@ void UIArcadeMainDialog::FUN_140ef6dd0()
     scratch.reserve(10);
     {
         std::vector<Unk_ArcadeRecord> records;
-        FUN_140e37aa0()->GetRecords(spGame->m_nId, records);
+        GetArcadeDataTable()->GetRecords(spGame->m_nId, records);
         if (!records.empty())
         {
             int nNpcScore = records.rbegin()->first;
@@ -535,7 +535,7 @@ bool UIArcadeMainDialog::FUN_140ef7ab0(int nResult, const CMsgBoxData& box)
 // @0x140ef7b00
 bool UIArcadeMainDialog::FUN_140ef7b00(int nArcadeId)
 {
-    MS2SvrPtr<CArcadeMainData> spGame = FUN_140e37aa0()->GetMainData(nArcadeId);
+    MS2SvrPtr<CArcadeMainData> spGame = GetArcadeDataTable()->GetMainData(nArcadeId);
     if (spGame == (CArcadeMainData*)0)
         return false;
     efd::SmartPointer<MyPC> spPC = ((MyPC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -559,7 +559,7 @@ bool UIArcadeMainDialog::FUN_140ef7b00(int nArcadeId)
     COutPacket packet(static_cast<int>(SendOp::PlayArcade), 0);
     packet.Encode1(10);
     packet.Encode4(nArcadeId);
-    FUN_1407105c0(&packet, 10, 1000);
+    SendPacketThrottled(&packet, 10, 1000);
     return true;
 }
 
@@ -584,13 +584,13 @@ void UIArcadeMainDialog::FUN_140ef7d30(int nMode, CInPacket& packet)
 }
 
 // @0x140ef7e70
-void UIArcadeMainDialog::FUN_140ef7e70()
+void UIArcadeMainDialog::ClearRanks()
 {
     m_ranks.clear();
 }
 
 // @0x140ef7ea0
-void UIArcadeMainDialog::FUN_140ef7ea0()
+void UIArcadeMainDialog::RequestRanking()
 {
     unsigned nNow = GetTickCountMs2();
     if (nNow < m_nRequestTick + 600000U)
@@ -600,13 +600,13 @@ void UIArcadeMainDialog::FUN_140ef7ea0()
     m_nRequestTick = GetTickCountMs2();
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_ArcConfigRoot*)FUN_14025e7b0())->m_config).Get((CContentShutdown::Content)(0x32)) == 0)
     {
-        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x3f) == true)
+        if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x3f) == true)
         {
             m_pWorker = AfxBeginThread(OnRequestRankingFromInGameRanking, this, 0, 0, 0, 0);
             return;
         }
     }
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036e4c0() != 0)
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsRegionKR() != 0)
         m_pWorker = AfxBeginThread(OnRequestRanking, this, 0, 0, 0, 0);
 }
 
@@ -618,21 +618,21 @@ void UIArcadeMainDialog::FUN_140ef7fc0(CStringW strResponse)
 }
 
 // @0x140ef8040
-void UIArcadeMainDialog::FUN_140ef8040(int nArcadeId, RankingList list)
+void UIArcadeMainDialog::AddRankingResult(int nArcadeId, RankingList list)
 {
     Unk_CriticalSectionLock lock(m_resultLock, 1);
     m_results.push_back(std::pair<int, RankingList>(nArcadeId, list));
 }
 
 // @0x140ef80f0
-void UIArcadeMainDialog::FUN_140ef80f0(CStringW strXml)
+void UIArcadeMainDialog::ParseRankingXml(CStringW strXml)
 {
     TiXmlElement root("ms2");
     CStringA strUtf8 = FUN_140390ea0(strXml, 0);
     void* pDoc = (void*)root.TiXmlElement::Parse(strUtf8, 0, TIXML_ENCODING_UTF8);
     if (pDoc == 0)
         return;
-    FUN_140ef7e70();
+    ClearRanks();
     for (void* pArcade = ((void*)((class Unk_XmlNode*)(void*)(&root))->FirstChild("arcade")); pArcade != 0; pArcade = ((void*)((class Unk_XmlNode*)(void*)(pArcade))->NextSibling("arcade")))
     {
         int nId = 0;
@@ -660,7 +660,7 @@ void UIArcadeMainDialog::FUN_140ef8380(RankingResults results)
 {
     if (results.empty())
         return;
-    FUN_140ef7e70();
+    ClearRanks();
     for (size_t i = 0; i < results.size(); i++)
     {
         int nId = results[i].first;
@@ -693,7 +693,7 @@ unsigned UIArcadeMainDialog::OnRequestRanking(void* pArg)
         return 0;
     CStringW strUrl = FUN_14016a730(pDialog->m_strUrl, 0);
     CWinHttpClient kRequest((const wchar_t*)strUrl);
-    if (kRequest.FUN_140920cf0(L"GET", false))
+    if (kRequest.SendRequest(L"GET", false))
     {
         if (kRequest.FUN_140922f20() == 0)
         {
@@ -758,7 +758,7 @@ unsigned UIArcadeMainDialog::OnRequestRankingFromInGameRanking(void* pArg)
     for (POSITION pos = completed.GetHeadPosition(); pos != 0; completed.GetNext(pos))
     {
         RankingList rows = completed.GetValueAt(pos);
-        pDialog->FUN_140ef8040(completed.GetKeyAt(pos), rows);
+        pDialog->AddRankingResult(completed.GetKeyAt(pos), rows);
     }
     return 0;
 }

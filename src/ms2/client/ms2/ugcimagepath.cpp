@@ -45,7 +45,7 @@ public:
 MS2_CHECK_OFFSET(Unk_SingletonObj, m_strNoProfile, 0x90);
 MS2_CHECK_OFFSET(Unk_SingletonObj, m_strNoGuild, 0x98);
 MS2_CHECK_OFFSET(Unk_SingletonObj, m_strBlockedProfile, 0xa8);
-Unk_SingletonObj* FUN_1401d31f0();
+Unk_SingletonObj* GetCommonResource();
 
 // The game rules: content kinds a rule set disables (rule 0xb: UGC).
 class Unk_UgcContentRule
@@ -59,22 +59,22 @@ class Unk_UgcGameRules
 // The client feature flags.
 class Unk_SettingsHolder;
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-class CFeatureManager { public: bool FUN_14036d570(int nFeature); };   // C3: unit-local view
+class CFeatureManager { public: bool IsFeatureEnabled(int nFeature); };   // C3: unit-local view
 
 CString FUN_141026d10(CString strPath);
 CString FUN_141026f00(CString strPath);
 CString FUN_141027490(CString strId);
 CString FUN_141027600(CString strId);
 CString FUN_141027770(CString strId);
-int FUN_141027bb0(CString strPath);
-int FUN_141027c70(CString strPath);
+int IsItemIconPath(CString strPath);
+int IsBlueprintIconPath(CString strPath);
 CString FUN_141027d30(int nKind);
-CString FUN_1410280d0(int nKind, CString strName);
-CString FUN_141028a90(CString strId, int bDefault);
-CString FUN_141029090(CString strId);
-CString FUN_141029440(CString strId, int bDefault);
-CString FUN_1410298b0(CString strId);
-int FUN_14102ac40(const CStringW& strPath, ATL::CAtlArray<CStringW>& parts);
+CString GetDownloadFilePath(int nKind, CString strName);
+CString GetProfileImagePath(CString strId, int bDefault);
+CString GetWeddingProfileImagePath(CString strId);
+CString GetGuildMarkPath(CString strId, int bDefault);
+CString GetGuildPosterPath(CString strId);
+int SplitPath(const CStringW& strPath, ATL::CAtlArray<CStringW>& parts);
 
 // ---- the enum names of the sort order (static init, atexit -> .text$yd) ---------------------------------------------
 
@@ -140,7 +140,7 @@ CString FUN_141026f00(CString strPath)
 }
 
 // @0x141027200
-CString FUN_141027200(CString strName)
+CString GetCacheKey(CString strName)
 {
     if (DAT_1439f6efc == 0)
         return FUN_141026d10(strName);
@@ -207,7 +207,7 @@ CString FUN_141027880(const CString& strPath)
 {
     if (strPath.GetLength() == 0)
         return CString("");
-    if (FUN_141027bb0(strPath) == 1)
+    if (IsItemIconPath(strPath) == 1)
         return CString(strPath);
     if (strPath.Find("item/", 0) == -1)
         return CString("");
@@ -224,7 +224,7 @@ CString FUN_141027a20(const CString& strPath)
 {
     if (strPath.GetLength() == 0)
         return CString("");
-    if (FUN_141027c70(strPath) == 1)
+    if (IsBlueprintIconPath(strPath) == 1)
         return CString(strPath);
     if (strPath.Find("blueprint/", 0) == -1)
         return CString("");
@@ -236,7 +236,7 @@ CString FUN_141027a20(const CString& strPath)
 }
 
 // @0x141027bb0
-int FUN_141027bb0(CString strPath)
+int IsItemIconPath(CString strPath)
 {
     if (strPath.GetLength() == 0)
         return 0;
@@ -248,7 +248,7 @@ int FUN_141027bb0(CString strPath)
 }
 
 // @0x141027c70
-int FUN_141027c70(CString strPath)
+int IsBlueprintIconPath(CString strPath)
 {
     if (strPath.GetLength() == 0)
         return 0;
@@ -299,7 +299,7 @@ CString FUN_141027d30(int nKind)
         strDir = ".\\Custom\\Download\\MeratMarket\\Banner";
         break;
     case 0xcf:
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x108) != 0)
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x108) != 0)
             strDir = ".\\Custom\\Download\\MeratMarket\\Special";
         else
             strDir = ".\\Custom\\Download\\MeratMarket\\Limited";
@@ -330,11 +330,11 @@ CString FUN_141027d30(int nKind)
 }
 
 // @0x1410280d0
-CString FUN_1410280d0(int nKind, CString strName)
+CString GetDownloadFilePath(int nKind, CString strName)
 {
     if (reinterpret_cast<Unk_UgcGameRules*>(TSingleton<CGameEventValueManager>::GetInstance()) != 0)
     {
-        if (TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(0xb)->FUN_1407d1210(nKind))
+        if (TSingleton<CGameEventValueManager>::GetInstance()->GetShutdownValue(0xb)->IsShutdown(nKind))
             return CString("");
     }
     CString strPath;
@@ -405,10 +405,10 @@ CStringW FUN_141028910(int nKind)
 }
 
 // @0x141028a90
-CString FUN_141028a90(CString strId, int bDefault)
+CString GetProfileImagePath(CString strId, int bDefault)
 {
     if (strId.IsEmpty() && bDefault == 1)
-        return CString(FUN_1401d31f0()->m_strNoProfile);
+        return CString(GetCommonResource()->m_strNoProfile);
     CString strPath;
     strPath.Format("%s/%s", "./Custom/Download/Profile", (const char*)FUN_141027490(strId));
     return CString(strPath);
@@ -422,32 +422,32 @@ CString FUN_141028be0(__int64 nId, const CString& strName, int bNoDownload, CStr
         if (spBuddy.get() != 0)
         {
             if (spBuddy->FUN_1401cc5b0() != 0)
-                return CString(FUN_1401d31f0()->m_strBlockedProfile);
+                return CString(GetCommonResource()->m_strBlockedProfile);
         }
     }
     if (!strName.IsEmpty())
     {
-        CString strFile = FUN_1410280d0(5, strName);
+        CString strFile = GetDownloadFilePath(5, strName);
         CString strResult("");
         if (_waccess(FUN_14016a730(strFile, 0), 4) != 0)
         {
             TSingleton<CUgcManager>::GetInstance()->FUN_141884e30(DAT_143ab2830, 0, nId, strName, strUrl);
-            strResult = (bNoDownload != 0) ? CString(FUN_1401d31f0()->m_strNoProfile) : FUN_141028a90(strName, 0);
+            strResult = (bNoDownload != 0) ? CString(GetCommonResource()->m_strNoProfile) : GetProfileImagePath(strName, 0);
         }
         else
         {
-            strResult = FUN_141028a90(strName, 0);
+            strResult = GetProfileImagePath(strName, 0);
         }
         return CString(strResult);
     }
-    return CString(FUN_1401d31f0()->m_strNoProfile);
+    return CString(GetCommonResource()->m_strNoProfile);
 }
 
 // @0x141029090
-CString FUN_141029090(CString strId)
+CString GetWeddingProfileImagePath(CString strId)
 {
     if (strId.IsEmpty())
-        return CString(FUN_1401d31f0()->m_strNoProfile);
+        return CString(GetCommonResource()->m_strNoProfile);
     CString strPath;
     strPath.Format("%s/%s", "./Custom/Download/WeddingProfile", (const char*)FUN_141027490(strId));
     return CString(strPath);
@@ -458,27 +458,27 @@ CString FUN_1410291d0(__int64 nId, const CString& strName)
 {
     if (!strName.IsEmpty())
     {
-        CString strFile = FUN_1410280d0(10, strName);
+        CString strFile = GetDownloadFilePath(10, strName);
         CString strResult("");
         if (_waccess(FUN_14016a730(strFile, 0), 4) != 0)
         {
             TSingleton<CUgcManager>::GetInstance()->FUN_141884fd0(DAT_143ab2830, 0, nId, strName);
-            strResult = FUN_1401d31f0()->m_strNoProfile;
+            strResult = GetCommonResource()->m_strNoProfile;
         }
         else
         {
-            strResult = FUN_141029090(strName);
+            strResult = GetWeddingProfileImagePath(strName);
         }
         return CString(strResult);
     }
-    return CString(FUN_1401d31f0()->m_strNoProfile);
+    return CString(GetCommonResource()->m_strNoProfile);
 }
 
 // @0x141029440
-CString FUN_141029440(CString strId, int bDefault)
+CString GetGuildMarkPath(CString strId, int bDefault)
 {
     if (strId.IsEmpty() && bDefault == 1)
-        return CString(FUN_1401d31f0()->m_strNoGuild);
+        return CString(GetCommonResource()->m_strNoGuild);
     CString strPath;
     strPath.Format("%s/%s", "./Custom/Download/Guild", (const char*)FUN_141027490(strId));
     return CString(strPath);
@@ -489,28 +489,28 @@ CString FUN_141029590(unsigned __int64 nGuildId, const CString& strName, const C
 {
     if (!strName.IsEmpty())
     {
-        CString strFile = FUN_1410280d0(6, strName);
+        CString strFile = GetDownloadFilePath(6, strName);
         if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
         {
             TSingleton<CUgcManager>::GetInstance()->DownloadGuildMark(nGuildId, strName, strUrl);
             if (strDefault.GetLength() > 0)
                 strFile = strDefault;
             else
-                strFile = FUN_1401d31f0()->m_strNoGuild;
+                strFile = GetCommonResource()->m_strNoGuild;
         }
         else
         {
-            strFile = FUN_141029440(strName, 0);
+            strFile = GetGuildMarkPath(strName, 0);
         }
         return CString(strFile);
     }
     if (strDefault.GetLength() > 0)
         return CString(strDefault);
-    return CString(FUN_1401d31f0()->m_strNoGuild);
+    return CString(GetCommonResource()->m_strNoGuild);
 }
 
 // @0x1410298b0
-CString FUN_1410298b0(CString strId)
+CString GetGuildPosterPath(CString strId)
 {
     if (strId.IsEmpty())
         return CString();
@@ -524,20 +524,20 @@ CString FUN_1410299f0(unsigned __int64 nGuildId, const CString& strName, int nIn
 {
     if (!strName.IsEmpty())
     {
-        CString strFile = FUN_1410280d0(8, strName);
+        CString strFile = GetDownloadFilePath(8, strName);
         if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
         {
             if (bDownload)
                 TSingleton<CUgcManager>::GetInstance()->DownloadGuildPoster(nGuildId, strName, nIndex, strUrl);
-            strFile = FUN_1401d31f0()->m_strNoGuild;
+            strFile = GetCommonResource()->m_strNoGuild;
         }
         else
         {
-            strFile = FUN_1410298b0(strName);
+            strFile = GetGuildPosterPath(strName);
         }
         return CString(strFile);
     }
-    return CString(FUN_1401d31f0()->m_strNoGuild);
+    return CString(GetCommonResource()->m_strNoGuild);
 }
 
 // @0x141029ca0
@@ -548,7 +548,7 @@ CString FUN_141029ca0(const CString& strUrl)
     CString strName = FUN_14028d990(strUrl);
     if (strName.IsEmpty())
         return CString();
-    CString strFile = FUN_1410280d0(0xca, strName);
+    CString strFile = GetDownloadFilePath(0xca, strName);
     if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
     {
         if (TSingleton<CUgcManager>::GetInstance() != 0)
@@ -569,7 +569,7 @@ CString FUN_141029ed0(int nKind, const CString& strUrl)
     CString strName = FUN_14028d990(strUrl);
     if (strName.IsEmpty())
         return CString();
-    CString strFile = FUN_1410280d0(nKind, strName);
+    CString strFile = GetDownloadFilePath(nKind, strName);
     if (_waccess(FUN_14016a730(strFile, 0), 0) == 0)
         return CString(strFile);
     return CString();
@@ -583,7 +583,7 @@ CString FUN_14102a0b0(int nKind, const CString& strKey, const CString& strUrl, C
     CString strName = FUN_14028d990(strUrl);
     if (strName.IsEmpty())
         return CString();
-    CString strFile = FUN_1410280d0(nKind, strName);
+    CString strFile = GetDownloadFilePath(nKind, strName);
     if (_waccess(FUN_14016a730(strFile, 0), 0) != 0)
     {
         if (TSingleton<CUgcManager>::GetInstance() != 0)
@@ -604,7 +604,7 @@ CString FUN_14102a0b0(int nKind, const CString& strKey, const CString& strUrl, C
 // ---- the paths of the image upload ------------------------------------------------------------------------------------
 
 // @0x14102a420
-CStringW FUN_14102a420(const CStringW& strSrc)
+CStringW GetUploadDdsPath(const CStringW& strSrc)
 {
     CStringW strPath;
     strPath.Format(L"%s\\upload.dds", (const wchar_t*)FUN_14016a730(".\\Custom\\Convert", 0));
@@ -612,7 +612,7 @@ CStringW FUN_14102a420(const CStringW& strSrc)
 }
 
 // @0x14102a4d0
-CStringW FUN_14102a4d0()
+CStringW GetUploadIconPath()
 {
     CStringW strPath;
     strPath.Format(L"%s\\%s", (const wchar_t*)FUN_14016a730(".\\Custom\\Convert", 0), (const wchar_t*)FUN_14016a730("upload_i.png", 0));
@@ -623,7 +623,7 @@ CStringW FUN_14102a4d0()
 CStringW FUN_14102a5d0(const CStringW& strPath)
 {
     ATL::CAtlArray<CStringW> parts;
-    int nError = FUN_14102ac40(strPath, parts);
+    int nError = SplitPath(strPath, parts);
     if (nError != 0)
         return CStringW(L"");
     CStringW strResult;
@@ -635,7 +635,7 @@ CStringW FUN_14102a5d0(const CStringW& strPath)
 CStringW FUN_14102a720(const CStringW& strPath)
 {
     ATL::CAtlArray<CStringW> parts;
-    int nError = FUN_14102ac40(strPath, parts);
+    int nError = SplitPath(strPath, parts);
     if (nError != 0)
         return CStringW(L"");
     CStringW strResult;
@@ -644,7 +644,7 @@ CStringW FUN_14102a720(const CStringW& strPath)
 }
 
 // @0x14102a870
-CStringW FUN_14102a870(const CStringW& strSrc)
+CStringW GetUploadM2uPath(const CStringW& strSrc)
 {
     CStringW strPath;
     strPath.Format(L"%s\\upload.m2u", (const wchar_t*)FUN_14016a730(".\\Custom\\Convert", 0));
@@ -652,10 +652,10 @@ CStringW FUN_14102a870(const CStringW& strSrc)
 }
 
 // @0x14102a920
-CStringW FUN_14102a920(const CStringW& strPath)
+CStringW GetConvertDdsPath(const CStringW& strPath)
 {
     ATL::CAtlArray<CStringW> parts;
-    FUN_14102ac40(strPath, parts);
+    SplitPath(strPath, parts);
     if (parts.GetCount() != 4)
         return CStringW(L"");
     CStringW strResult;
@@ -664,7 +664,7 @@ CStringW FUN_14102a920(const CStringW& strPath)
 }
 
 // @0x14102aa70
-CStringW FUN_14102aa70(const CStringW& strSrc)
+CStringW GetDecompressDdsPath(const CStringW& strSrc)
 {
     CStringW strPath;
     strPath.Format(L"%s\\decompress.dds", (const wchar_t*)FUN_14016a730(".\\Custom\\Convert", 0));
@@ -676,7 +676,7 @@ int FUN_14102ab20(const CString& strPath, ATL::CAtlArray<CString>& out)
 {
     CStringW strWide = FUN_14016a730(strPath, 0);
     ATL::CAtlArray<CStringW> parts;
-    int nResult = FUN_14102ac40(strWide, parts);
+    int nResult = SplitPath(strWide, parts);
     out.RemoveAll();
     for (unsigned i = 0; i < parts.GetCount(); i++)
         ((ATL::CAtlArray<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>, ATL::CElementTraits<ATL::CStringT<char, StrTraitMFC_DLL<char, ATL::ChTraitsCRT<char>>>>>*)&static_cast<class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>>&>(out))->Add(FUN_1401d4330(parts[i], 0));
@@ -684,7 +684,7 @@ int FUN_14102ab20(const CString& strPath, ATL::CAtlArray<CString>& out)
 }
 
 // @0x14102ac40
-int FUN_14102ac40(const CStringW& strPath, ATL::CAtlArray<CStringW>& parts)
+int SplitPath(const CStringW& strPath, ATL::CAtlArray<CStringW>& parts)
 {
     parts.RemoveAll();
     wchar_t szDir[256] = { 0 };

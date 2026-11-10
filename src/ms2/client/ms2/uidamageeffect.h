@@ -31,7 +31,7 @@ public:
     void FUN_141910700();                                           // enter the status listeners, push the HP now
     void FUN_141910ab0();                                           // read the threshold and the fade from the options
     static void FUN_141910b10(void*, void* a1);                     // empty (the first argument is unnamed)
-    void FUN_141910b30(float fAlpha);                               // "setAlpha" when the movie is up
+    void SetAlpha(float fAlpha);                               // "setAlpha" when the movie is up
 
 private:
     MS2_LAYOUT_FRIEND;

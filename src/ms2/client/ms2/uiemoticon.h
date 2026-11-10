@@ -52,11 +52,11 @@ public:
     UIEmoticon();                                           // 0x14192fc10
     virtual ~UIEmoticon();                                  //  0 0x14192fc80 (??_G 0x141930570)
     virtual CString GetTypeName();                              //  1 0x14192fcc0 "Emoticon"
-    virtual void OnLoadComplete();                          // 22 0x14192fd10 UIObject::OnLoadComplete(); FUN_14192fe20(m_68)
+    virtual void OnLoadComplete();                          // 22 0x14192fd10 UIObject::OnLoadComplete(); CreateEntityCache(m_68)
     virtual int vfunc_48() { return 0x4e2f; }               // 48 0x1419305b0
 
-    void FUN_14192fe20(unsigned int nCount);                // create the entity cache
-    Entity* FUN_141930000(int nActorId);                    // the entity of the actor (created or recycled)
+    void CreateEntityCache(unsigned int nCount);                // create the entity cache
+    Entity* GetOrCreateEntity(int nActorId);                    // the entity of the actor (created or recycled)
 };
 MS2_CHECK_SIZE(UIEmoticon::Entity, 0xc8);
 MS2_CHECK_OFFSET(UIEmoticon::Entity, m_b0, 0xb0);

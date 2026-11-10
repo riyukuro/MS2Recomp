@@ -32,8 +32,8 @@ public:
 };
 
 // The table file loader helpers.
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);    // Table/<file>
-CString FUN_14016a5c0(const char* psz, int n);
+CString GetXmlPath(const CString& strDir, const CString& strFile);    // Table/<file>
+CString ToCString(const char* psz, int n);
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's init flag (symbols-manual.tsv)
 bool CRankingArenaDataTable::s_bInit;
@@ -129,9 +129,9 @@ CRankingArenaDataTable::~CRankingArenaDataTable()
 // @0x140768c90
 bool CRankingArenaDataTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "pvpRankingDuelMode.xml");
+    CString strPath = GetXmlPath("Table", "pvpRankingDuelMode.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)reinterpret_cast<Unk_XmlNode*>(&doc)->FirstChild("ms2"));
     if (pRoot == 0)
@@ -195,7 +195,7 @@ void CRankingArenaDataTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CRankingArenaDataTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CRankingArenaDataTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }

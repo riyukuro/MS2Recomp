@@ -10,7 +10,7 @@
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 
-class Unk_ServiceManager* FUN_1413f9850();                                     // the game's service manager
+class Unk_ServiceManager* GetServiceManager();                                     // the game's service manager
 
 #ifndef MS2_HOOK_DLL   // the hook DLL binds the exe's counter (symbols-manual.tsv)
 unsigned OnceCallbackTimer::s_nextId = 1;
@@ -36,7 +36,7 @@ OnceCallbackTimer::~OnceCallbackTimer()
 // @0x140ca70d0
 void OnceCallbackTimer::FUN_140ca70d0()
 {
-    m_pClock = ((efd::ServiceManager*)FUN_1413f9850())->GetClock(0xe001001b);
+    m_pClock = ((efd::ServiceManager*)GetServiceManager())->GetClock(0xe001001b);
 }
 
 // @0x140ca7100

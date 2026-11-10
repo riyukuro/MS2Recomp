@@ -30,19 +30,19 @@ public:
     // IWorldServiceCallback slot 2 (the subobject is at +0x68): the map load failed
     virtual void vfunc_2(int nMap, CString strMessage);             //  o68 slot 2 0x1419e0180 "loadFail"
 
-    void FUN_1419dfa60(int nMap);                                   // start the progress bar (nMap: the target map, 0 = current)
-    void FUN_1419dfd90();                                           // stop the progress bar
+    void StartProgress(int nMap);                                   // start the progress bar (nMap: the target map, 0 = current)
+    void StopProgress();                                           // stop the progress bar
     int FUN_1419dfe70();                                            // the map has its own loading screen
-    void FUN_1419dff50(const CStringW& strMsg, int a, int b);       // "progress" text
-    void FUN_1419e0050(const CStringW& strMsg);                     // "setMoveChannelMessage"
-    int FUN_1419e04b0();                                            // the map id (0 on the scene 0x620000d)
-    int FUN_1419e04f0();                                            // the target map id
+    void SetProgress(const CStringW& strMsg, int a, int b);       // "progress" text
+    void SetMoveChannelMessage(const CStringW& strMsg);                     // "setMoveChannelMessage"
+    int GetMapId();                                            // the map id (0 on the scene 0x620000d)
+    int GetTargetMapId();                                            // the target map id
     int FUN_1419e0600();                                            // the world service's fade-out flag (+0x2a8)
     int FUN_1419e0630();                                            // m_74 != 0
-    CString FUN_1419e0650();                                        // the map's mask image path
-    CString FUN_1419e0710();                                        // the map's loading image path
+    CString GetMaskImagePath();                                        // the map's mask image path
+    CString GetLoadingImagePath();                                        // the map's loading image path
     void FUN_1419e07a0();                                           // draw the background texture into the back buffer
-    void FUN_1419e08b0(int nWidth, int nHeight);                    // create the background texture
+    void CreateBackgroundTexture(int nWidth, int nHeight);                    // create the background texture
 
 private:
     int m_70;                                                       // +0x70 the previous target map

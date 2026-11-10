@@ -41,20 +41,20 @@ public:
     void InvalidateSettings();                                               // invalidateSettings()
     MS2Ptr<ASButton> GetButtonAt(int nIndex);                         // the button of an entry (getButtonAt)
     unsigned GetItemCount();                                           // 0x1422e3380 the button count
-    void FUN_1422e3400();                                               // clear the data provider
+    void ClearDataProvider();                                               // clear the data provider
     void AddItem(const ASObj& item);                              // append a button (pushed to the data provider)
     void AddLabelItem(const CStringW& strLabel);                       // append a button { label }
     void FUN_1422e3590(const CStringW& strLabel);                       // 0x1422e3590 select the button of a label (uimessenger.cpp)
-    CStringW FUN_1422e3790();                                           // 0x1422e3790 the selected label
-    CStringW FUN_1422e37e0(int nIndex);                                 // 0x1422e37e0 the label of a button
+    CStringW GetSelectedLabel();                                           // 0x1422e3790 the selected label
+    CStringW GetLabelAt(int nIndex);                                 // 0x1422e37e0 the label of a button
     void RemoveItemAt(int nIndex);                                     // remove a button
-    void FUN_1422e3a70(const CStringW& strLabel);                       // 0x1422e3a70 remove the button of a label
+    void RemoveItemByLabel(const CStringW& strLabel);                       // 0x1422e3a70 remove the button of a label
     void FUN_1422e3c70(const CStringW& strOld, const CStringW& strNew); // 0x1422e3c70 relabel a button
     int FUN_1422e3ee0(const CString& strField, Scaleform::GFx::Value& vOut);   // a field of the selected entry (0: none / null)
     void FUN_1422e4060(int nIndex);                                     // refresh an entry's button from the data provider
-    void FUN_1422e4190(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);  // add "clikIndexChange"
-    void FUN_1422e4210(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);               // remove "clikIndexChange"
-    void FUN_1422e4270(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onMenu, void* pUser);    // add "listIndexChange"
-    void FUN_1422e42f0(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onMenu);                 // remove "listIndexChange"
+    void AddIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange, void* pUser);  // add "clikIndexChange"
+    void RemoveIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onChange);               // remove "clikIndexChange"
+    void AddListIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onMenu, void* pUser);    // add "listIndexChange"
+    void RemoveListIndexChangeHandler(const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& onMenu);                 // remove "listIndexChange"
 };
 MS2_CHECK_SIZE(ASButtonBar, 0x88);

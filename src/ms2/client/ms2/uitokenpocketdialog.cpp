@@ -28,7 +28,7 @@ class Unk_TpClip : public ASMovieClip { };
 class Unk_TpComp : public ASUIComponent { };   // set the tooltip
 
 class Unk_140166410* FUN_140166410();   // the CFeatureManager instance (0x140166410, the definer's signature)
-bool FUN_1406a5930();                                               // star point is enabled
+bool IsStarPointEventActive();                                               // star point is enabled
 class Unk_SingletonObj* FUN_140939a10();   // the NotifySystem instance (0x140939a10, the definer's signature)
 CStringW FUN_141900120(int nCurrency, bool bIcon, bool bNewline);   // the amount text of a token kind
 CStringW FUN_1418fe870(int nCurrency, int* pnVSpace, unsigned nItemId);   // the "<img>" source of a token kind
@@ -38,7 +38,7 @@ void SetChildText(const Scaleform::GFx::Value& root, CString strName, CStringW s
 // @0x1413518a0
 UITokenPocketDialog::UITokenPocketDialog()
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x1413519b0
@@ -56,34 +56,34 @@ CString UITokenPocketDialog::GetTypeName()
 void UITokenPocketDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925fa0("m_dragBar");
-    FUN_141925ec0("m_closeButton");
+    BindDragBar("m_dragBar");
+    BindCloseButton("m_closeButton");
     m_178 = 0x32;
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x11))
-        m_180 = FUN_141352cf0(4, L"$s_token_pocket_honor_tooltip");
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x2e))
-        m_190 = FUN_141352cf0(5, L"$s_token_pocket_karma_tooltip");
-    m_1a0 = FUN_141352cf0(6, L"$s_token_pocket_lu_tooltip");
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xc))
-        m_1b0 = FUN_141352cf0(7, L"$s_token_pocket_habi_tooltip");
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x76))
-        m_1c0 = FUN_141352cf0(0xc, L"$s_token_pocket_reverse_coin_tooltip");
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0x91))
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x11))
+        m_180 = AddTokenSlot(4, L"$s_token_pocket_honor_tooltip");
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x2e))
+        m_190 = AddTokenSlot(5, L"$s_token_pocket_karma_tooltip");
+    m_1a0 = AddTokenSlot(6, L"$s_token_pocket_lu_tooltip");
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xc))
+        m_1b0 = AddTokenSlot(7, L"$s_token_pocket_habi_tooltip");
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x76))
+        m_1c0 = AddTokenSlot(0xc, L"$s_token_pocket_reverse_coin_tooltip");
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0x91))
     {
-        m_1d0 = FUN_141352cf0(0xd, L"$s_token_pocket_mentor_token_tooltip");
-        m_1e0 = FUN_141352cf0(0xe, L"$s_token_pocket_mentee_token_tooltip");
+        m_1d0 = AddTokenSlot(0xd, L"$s_token_pocket_mentor_token_tooltip");
+        m_1e0 = AddTokenSlot(0xe, L"$s_token_pocket_mentee_token_tooltip");
     }
-    if (FUN_1406a5930())
-        m_1f0 = FUN_141352cf0(0xf, L"$s_token_pocket_star_point_tooltip");
-    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xf3))
-        m_200 = FUN_141352cf0(0x10, L"$s_token_pocket_meso_market_token_tooltip");
+    if (IsStarPointEventActive())
+        m_1f0 = AddTokenSlot(0xf, L"$s_token_pocket_star_point_tooltip");
+    if (reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xf3))
+        m_200 = AddTokenSlot(0x10, L"$s_token_pocket_meso_market_token_tooltip");
     MS2Ptr<ASMovieClip> spBgWhite = GetChild<ASMovieClip>("m_bgWhite");
     MS2Ptr<ASMovieClip> spBgBlack = GetChild<ASMovieClip>("m_bgBlack");
     int nBlackY = m_178 - 0x2c;
     int nWhiteY = nBlackY + 0x37;
     static_cast<Unk_TpClip*>(spBgWhite.get())->SetHeightInt(nWhiteY);
     static_cast<Unk_TpClip*>(spBgBlack.get())->SetHeightInt(nBlackY);
-    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UITokenPocketDialog::FUN_141352530));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->RegisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UITokenPocketDialog::OnChangedTokenMoney));
     FUN_141352560();
 }
 
@@ -100,7 +100,7 @@ void UITokenPocketDialog::vfunc_26()
     m_1e0 = 0;
     m_1f0 = 0;
     m_200 = 0;
-    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UITokenPocketDialog::FUN_141352530));
+    reinterpret_cast<NotifySystem*>(FUN_140939a10())->UnregisterNotify(L"NotifyChangedTokenMoney", Delegate<void(NotifyObject*)>(this, &UITokenPocketDialog::OnChangedTokenMoney));
 }
 
 // @0x1413524b0
@@ -112,7 +112,7 @@ void UITokenPocketDialog::vfunc_43()
 }
 
 // @0x141352530
-void UITokenPocketDialog::FUN_141352530(NotifyObject* pNotify)
+void UITokenPocketDialog::OnChangedTokenMoney(NotifyObject* pNotify)
 {
     FUN_141352560();
 }
@@ -144,7 +144,7 @@ void UITokenPocketDialog::FUN_141352560()
 }
 
 // @0x141352cf0
-MS2Ptr<ASUIComponent> UITokenPocketDialog::FUN_141352cf0(int nTokenKind, const CStringW& strTooltip)
+MS2Ptr<ASUIComponent> UITokenPocketDialog::AddTokenSlot(int nTokenKind, const CStringW& strTooltip)
 {
     MS2Ptr<ASUIComponent> spSlot(new ASUIComponent(CString("UITokenPocketDialog_slot"), 2));
     int nVSpace = -4;
@@ -152,10 +152,10 @@ MS2Ptr<ASUIComponent> UITokenPocketDialog::FUN_141352cf0(int nTokenKind, const C
     SetChildHtmlText(spSlot->FUN_1422bb890(), "icon", StringFormat<CStringW, int>(L"<img src='{0}' vspace='{1}'/>", strSrc, nVSpace));
     spSlot.get()->SetPositionInt(0xe, m_178);
     m_178 += 0x17;
-    m_90->FUN_1422c6900(spSlot->FUN_1422bb890());
+    m_90->AddChild(spSlot->FUN_1422bb890());
     ASTooltip tooltip(2);
     tooltip.ApplyTextTooltip(strTooltip);
     tooltip.SetTooltipAlign(5);
-    static_cast<Unk_TpComp*>(spSlot.get())->SetTooltipData(tooltip.FUN_1422bb870());
+    static_cast<Unk_TpComp*>(spSlot.get())->SetTooltipData(tooltip.GetValue());
     return spSlot;
 }

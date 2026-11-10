@@ -46,7 +46,7 @@ CString UIScreenMask::GetTypeName()
 // @0x141ad0740
 void UIScreenMask::vfunc_2()
 {
-    FUN_1422dbf00(10, 0, 0);
+    LoadSwf(10, 0, 0);
 }
 
 // @0x141ad0770
@@ -61,7 +61,7 @@ void UIScreenMask::OnLoadInit()
     UIObject::OnLoadInit();
     MS2Ptr<ASUIComponent> spComponent = dynamic_cast<ASUIComponent*>((AScript*)m_30);
     if (spComponent.get()) {
-        const CString& strName = FUN_141ad09e0();
+        const CString& strName = GetBgMask();
         if (!strName.IsEmpty())
             spComponent->Invoke("load", strName);
     }
@@ -79,7 +79,7 @@ void UIScreenMask::vfunc_43()
 }
 
 // @0x141ad09e0
-CString UIScreenMask::FUN_141ad09e0()
+CString UIScreenMask::GetBgMask()
 {
     MS2Ptr<CFieldDataCli> spField = WorldService::GetInstance()->FUN_141bd30a0();
     if (spField.get() != 0)

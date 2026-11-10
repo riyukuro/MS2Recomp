@@ -30,13 +30,13 @@ CWarehouseItem::~CWarehouseItem()
 }
 
 // @0x1408fb990
-int CWarehouseItem::FUN_1408fb990()
+int CWarehouseItem::GetItemId()
 {
-    return (CItem*)m_spItem != 0 ? m_spItem->FUN_1405276c0() : 0;
+    return (CItem*)m_spItem != 0 ? m_spItem->GetItemId() : 0;
 }
 
 // @0x1408fb9f0
-__int64 CWarehouseItem::FUN_1408fb9f0()
+__int64 CWarehouseItem::GetItemUid()
 {
     return (CItem*)m_spItem != 0 ? m_spItem->GetItemUid() : 0;
 }
@@ -69,7 +69,7 @@ int CWarehouseItemTable::Add(CItem* pItem)
     if (m_items.Lookup(pItem->GetItemUid()) != 0)
         return 0x11;
     MS2Ptr<CWarehouseItem> spEntry(new CWarehouseItem(MS2Ptr<CItem>(pItem)));
-    m_items.SetAt(spEntry->FUN_1408fb9f0(), spEntry);
+    m_items.SetAt(spEntry->GetItemUid(), spEntry);
     return 0;
 }
 
@@ -111,19 +111,19 @@ void CWarehouseItemTable::FUN_1408fbd30(void* pArg, ATL::CAtlArray<MS2Ptr<CItem>
 }
 
 // @0x1408fbe90
-MS2Ptr<CItem> CWarehouseItemTable::FUN_1408fbe90(int nItemId)
+MS2Ptr<CItem> CWarehouseItemTable::FindItemById(int nItemId)
 {
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
     {
         MS2Ptr<CWarehouseItem> spEntry = m_items.GetValueAt(pos);
-        if (spEntry->FUN_1408fb990() == nItemId)
+        if (spEntry->GetItemId() == nItemId)
             return spEntry->m_spItem;
     }
     return MS2Ptr<CItem>(0);
 }
 
 // @0x1408fbf90
-MS2Ptr<CItem> CWarehouseItemTable::FUN_1408fbf90(__int64 nItemUid)
+MS2Ptr<CItem> CWarehouseItemTable::FindItemByUid(__int64 nItemUid)
 {
     MS2Ptr<CWarehouseItem> spEntry;
     m_items.Lookup(nItemUid, spEntry);
@@ -142,7 +142,7 @@ MS2Ptr<CItem> CWarehouseItemTable::FUN_1408fc050(__int64 nItemUid)
 }
 
 // @0x1408fc110
-int CWarehouseItemTable::FUN_1408fc110()
+int CWarehouseItemTable::GetItemCount()
 {
     int nCount = 0;
     for (POSITION pos = m_items.GetHeadPosition(); pos != 0; m_items.GetNext(pos))
@@ -166,7 +166,7 @@ int CWarehouseItemTable::FUN_1408fc1b0(int nItemId)
         MS2Ptr<CItem> spItem = spEntry->m_spItem;
         if (spItem == 0)
             continue;
-        if (spItem->FUN_1405276c0() == nItemId)
+        if (spItem->GetItemId() == nItemId)
             nTotal += spItem->GetCount();
     }
     return nTotal;
@@ -184,7 +184,7 @@ int CWarehouseItemTable::FUN_1408fc2f0(int nItemId, unsigned __int64 nUgcUid)
         MS2Ptr<CItem> spItem = spEntry->m_spItem;
         if (spItem == 0)
             continue;
-        if (spItem->FUN_1405276c0() == nItemId && spItem->GetUgcUid() == nUgcUid)
+        if (spItem->GetItemId() == nItemId && spItem->GetUgcUid() == nUgcUid)
             nTotal += spItem->GetCount();
     }
     return nTotal;

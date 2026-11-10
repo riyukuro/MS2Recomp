@@ -56,8 +56,8 @@ public:
     char m_pad_00[0x40];
     char m_ids[1];                                                  // +0x40 the id list
 };
-Unk_NtMgr* FUN_14131e120();                                         // 0x14131e120 the manager
-char* FUN_14131e130(Unk_NtMgr* p);                                  // 0x14131e130 &m_ids
+Unk_NtMgr* GetNametagSymbolTable();                                         // 0x14131e120 the manager
+char* GetSymbolIds(Unk_NtMgr* p);                                  // 0x14131e130 &m_ids
 
 class WorldService   // C3: member view for the former free stand-ins
 {
@@ -82,7 +82,7 @@ inline bool FUN_14131e0b0(CNametagSymbolDataPtr* p)
 // @0x14131d910
 UINameTagSymbolSettingDialog::UINameTagSymbolSettingDialog()
 {
-    FUN_141924170(0);
+    SetTweenEnabled(0);
     m_88 = 1;
 }
 
@@ -111,27 +111,27 @@ void UINameTagSymbolSettingDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     Unk_NtPlayer* pPlayer = ((struct Unk_NtPlayer*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     size_t nSelected = 0;
-    if (MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02900("m_list"))
+    if (MS2Ptr<ASScrollingList> spList = reinterpret_cast<UIDailyMissionDialog*>(this)->GetScrollingList("m_list"))
     {
-        char* pIds = FUN_14131e130(FUN_14131e120());
+        char* pIds = GetSymbolIds(GetNametagSymbolTable());
         int nRow = 0;
         for (size_t i = 0; i < reinterpret_cast<const CAtlArray<unsigned short>&>(*pIds).GetCount(); ++i)
         {
             unsigned short nId = reinterpret_cast<const CAtlArray<unsigned short>&>(*pIds)[i];
-            CNametagSymbolDataPtr info = reinterpret_cast<CNametagSymbolTable*>(FUN_14131e120())->GetData(nId);
+            CNametagSymbolDataPtr info = reinterpret_cast<CNametagSymbolTable*>(GetNametagSymbolTable())->GetData(nId);
             if (FUN_14131e0b0(&info))
                 continue;
-            if (FUN_14131e120()->FUN_1406c5c80(nId) != 0)
+            if (GetNametagSymbolTable()->FUN_1406c5c80(nId) != 0)
                 continue;
             ASObj row(2);
             row.FUN_1409c48f0("id", nId);
-            row.FUN_1407cbb20("icon", FUN_14131e120()->FUN_1406c61a0(nId, pPlayer));
-            row.FUN_1407cbbe0("disabled", FUN_14131e120()->FUN_1406c5d60(nId) == 0);
-            row.FUN_1407cbb20("title", reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(0x27, nId));
-            row.FUN_1407cbb20("desc", reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(0x28, nId));
+            row.SetWStringMember("icon", GetNametagSymbolTable()->FUN_1406c61a0(nId, pPlayer));
+            row.SetBoolMember("disabled", GetNametagSymbolTable()->FUN_1406c5d60(nId) == 0);
+            row.SetWStringMember("title", reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(0x27, nId));
+            row.SetWStringMember("desc", reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance())->FUN_141811980(0x28, nId));
             if (info.operator->()->m_nBuffId != 0)
             {
-                row.FUN_1407cbb20("info", reinterpret_cast<CStringTable*>(reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance()))->FUN_141812290(info.operator->()->m_nBuffId,
+                row.SetWStringMember("info", reinterpret_cast<CStringTable*>(reinterpret_cast<Unk_NtStrings*>(TSingleton<CStringTable>::GetInstance()))->FUN_141812290(info.operator->()->m_nBuffId,
                                                                        (short)info.operator->()->m_nBuffLv,
                                                                        CString("tooltipDescription")));
             }
@@ -166,7 +166,7 @@ int UINameTagSymbolSettingDialog::vfunc_28(const char* szMethod, const Scaleform
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             short nId = data.PopInt();
-            if (FUN_14131e120()->FUN_1406c5a70(nId) != 0)
+            if (GetNametagSymbolTable()->FUN_1406c5a70(nId) != 0)
             {
                 COutPacket packet(static_cast<int>(SendOp::Insignia), 0);
                 packet.WriteInt16(nId);
@@ -189,13 +189,13 @@ int UINameTagSymbolSettingDialog::vfunc_28(const char* szMethod, const Scaleform
 MS2_REPLACE_METHOD(0x14131DF40, UINameTagSymbolSettingDialog, vfunc_28, 363, 0x33CFAF3D);
 
 // @0x14131e120
-Unk_NtMgr* FUN_14131e120()
+Unk_NtMgr* GetNametagSymbolTable()
 {
     return (Unk_NtMgr*)TSingleton<CNametagSymbolTable>::s_instance;
 }
 
 // @0x14131e130
-char* FUN_14131e130(Unk_NtMgr* p)
+char* GetSymbolIds(Unk_NtMgr* p)
 {
     return p->m_ids;
 }

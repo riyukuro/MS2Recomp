@@ -150,7 +150,7 @@ public:
 #include "ms2/placeholder/tixmlelement.h"   // C3 #12: was a local TiXml view
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: param was TiXmlElement*
 
 int FUN_1408731a0(TiXmlElement*, const char*, unsigned short*);
@@ -298,7 +298,7 @@ bool CAdventureLevelTable::LoadAll()
         return false;
     if (!LoadAbility())
         return false;
-    if (TSingleton<CFeatureManager>::GetInstance()->FUN_14036d570(0xfb) && !LoadMission())
+    if (TSingleton<CFeatureManager>::GetInstance()->IsFeatureEnabled(0xfb) && !LoadMission())
         return false;
     FUN_14019d470(true);
     return true;
@@ -411,9 +411,9 @@ static bool AbilityLess(const unsigned& a, const unsigned& b)
 // @0x1401961c0
 bool CAdventureLevelTable::LoadReward()
 {
-    CString strPath = FUN_14071a5b0("Table", "AdventureLevelReward.xml");
+    CString strPath = GetXmlPath("Table", "AdventureLevelReward.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -442,9 +442,9 @@ MS2_REPLACE_METHOD(0x1401961C0, CAdventureLevelTable, LoadReward, 901, 0xD3A2F41
 // @0x140196550
 bool CAdventureLevelTable::LoadAbility()
 {
-    CString strPath = FUN_14071a5b0("Table", "AdventureLevelAbility.xml");
+    CString strPath = GetXmlPath("Table", "AdventureLevelAbility.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -475,9 +475,9 @@ MS2_REPLACE_METHOD(0x140196550, CAdventureLevelTable, LoadAbility, 848, 0x6F52A1
 // @0x1401968b0
 bool CAdventureLevelTable::LoadMission()
 {
-    CString strPath = FUN_14071a5b0("Table", "AdventureLevelMission.xml");
+    CString strPath = GetXmlPath("Table", "AdventureLevelMission.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)

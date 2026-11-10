@@ -74,9 +74,9 @@ public:
     bool BeginWriteWithItem(MS2Ptr<CItem> spItem);                               // 0x140fef7b0 write a blank score
     bool FUN_140fef8f0(MS2Ptr<CItem> spItem);                               // 0x140fef8f0 view a written score
     void FUN_140fefd00(MS2Ptr<CItem> spItem);                               // 0x140fefd00 the score was made (server answer)
-    void FUN_140ff0090(int nResult);                                        // 0x140ff0090 the make request failed / ended
+    void OnMakeScoreResult(int nResult);                                        // 0x140ff0090 the make request failed / ended
     void ShowScoreText(unsigned __int64 nItemUid, const CString& strMml);            // 0x140ff0260 the score text arrived
-    void FUN_140ff03b0(ASData* pArgs);                                      // 0x140ff03b0 "onClickMake"
+    void OnClickMake(ASData* pArgs);                                      // 0x140ff03b0 "onClickMake"
     void OnClickPlayGoFirstAndPause();                                                   // 0x140ff12a0 rewind and pause
     void FUN_140ff12d0(ASData* pArgs);                                      // 0x140ff12d0 "onClickPlayStart"
     void StopPlayback();                                                   // 0x140ff1a20 stop
@@ -88,8 +88,8 @@ public:
     void FormatPlayBarTooltip(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x140ff23b0 the play bar tooltip
     void OpenScoreByUid(unsigned __int64 nItemUid);                                // 0x140ff2500 the score text (cache or request)
     void ImportMmlFile();                                                   // 0x140ff2600 the open file box
-    void FUN_140ff2700(const CStringW& strPath);                            // 0x140ff2700 load an .ms2mml file
-    void FUN_140ff2cf0(const CStringW& strPath);                            // 0x140ff2cf0 save an .ms2mml file
+    void LoadMmlFile(const CStringW& strPath);                            // 0x140ff2700 load an .ms2mml file
+    void SaveMmlFile(const CStringW& strPath);                            // 0x140ff2cf0 save an .ms2mml file
     bool FUN_140ff3230(TiXmlElement* pElem, int nMax, CString& strOut, int* pnTotal);   // 0x140ff3230 one tab of the file
     void SetPlayStartButtonVisible(bool bVisible);                                      // 0x140ff3350 "setPlayStartButtonVisible"
     bool IsMusicScoreDirty();                                                   // 0x140ff33c0 "m_dirtyMusicScore"
@@ -111,7 +111,7 @@ public:
     void FUN_140ff4a80();                                                   // 0x140ff4a80 draw the piano roll page
     void FUN_140ff57e0();                                                   // 0x140ff57e0 lock the roll controls
     void FUN_140ff59a0();                                                   // 0x140ff59a0 unlock the roll controls
-    CStringW FUN_140ff5be0(int nPitch, int nTab, unsigned long nColor);     // 0x140ff5be0 the note tooltip
+    CStringW GetNoteTooltip(int nPitch, int nTab, unsigned long nColor);     // 0x140ff5be0 the note tooltip
 
 
 private:

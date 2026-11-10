@@ -77,7 +77,7 @@ class MyPC   // C3: member view (the real header pulls in the PC tree)
 {
 public:
     MS2Ptr<CItem> FUN_14152e2f0(MS2Ptr<CItem> spItem);       // the worn item spItem would replace
-    int GetRemainingSkillPoints(int nId);   MS2Ptr<CStatPointManager> FUN_140c25130();   // free skill points of nId; copy of the stat point manager handle
+    int GetRemainingSkillPoints(int nId);   MS2Ptr<CStatPointManager> GetStatPointManager();   // free skill points of nId; copy of the stat point manager handle
 };
 
 class CItem;
@@ -115,7 +115,7 @@ public:
 class Unk_HlPc
 {
 public:
-    // FUN_140c25130 (the stat point manager handle) is MyPC's; it returns m_statRef below
+    // GetStatPointManager (the stat point manager handle) is MyPC's; it returns m_statRef below
     virtual void vfunc_0();
     virtual void vfunc_1();
     virtual void vfunc_2();
@@ -211,7 +211,7 @@ public:
     int m_nUiId;                                            // +0x68
 };
 struct Unk_HlMenuRef { void* m_unk_00; Unk_HlMenu* m_p; };
-class Unk_GpDb* FUN_140c1d2f0();   // C3: was FUN_140c1d2f0
+class Unk_GpDb* GetGameMenuTable();   // C3: was GetGameMenuTable
 void FUN_140cf7470(P pDb, Unk_HlMenuRef* pOut, CString strName);
 P FUN_140c1cd90(Unk_HlMenuRef* p);
 Unk_HlMenu* FUN_140c1cda0(Unk_HlMenuRef* p);
@@ -273,7 +273,7 @@ template <class T> int Unk_ArrayFind(const ATL::CAtlArray<T>& rArray, const T& v
 // ---- tiny in-unit helpers ---------------------------------------------------------------------------------------------
 
 // @0x140c24ef0
-P FUN_140c24ef0()
+P GetUIBottomCenterAlignManager()
 {
     return TSingleton<UIBottomCenterAlignManager>::s_instance;
 }
@@ -285,7 +285,7 @@ int FUN_140c25190()
 }
 
 // @0x140c25130
-MS2Ptr<CStatPointManager> MyPC::FUN_140c25130()
+MS2Ptr<CStatPointManager> MyPC::GetStatPointManager()
 {
     return reinterpret_cast<Unk_HlPc*>(this)->m_statRef;
 }
@@ -319,19 +319,19 @@ Unk_HlBitRef::Unk_HlBitRef(Unk_HlBits* pBits, int nPos)
 }
 
 // @0x140c24ac0
-bool Unk_HlBitRef::FUN_140c24ac0()
+bool Unk_HlBitRef::IsSet()
 {
-    return m_pBits->FUN_140c261e0(m_nPos);
+    return m_pBits->IsBitSet(m_nPos);
 }
 
 // @0x140c25f10
-Unk_HlBitRef Unk_HlBits::FUN_140c25f10(int nPos)
+Unk_HlBitRef Unk_HlBits::GetBitRef(int nPos)
 {
     return Unk_HlBitRef(this, nPos);
 }
 
 // @0x140c260a0
-Unk_HlBits& Unk_HlBits::FUN_140c260a0(int nPos, bool bSet)
+Unk_HlBits& Unk_HlBits::SetBit(int nPos, bool bSet)
 {
     if ((unsigned)nPos >= 1)
         (void)((!!0) || (HL_BITSET_ASSERT(0xf3), 0));
@@ -343,7 +343,7 @@ Unk_HlBits& Unk_HlBits::FUN_140c260a0(int nPos, bool bSet)
 }
 
 // @0x140c261e0
-bool Unk_HlBits::FUN_140c261e0(int nPos) const
+bool Unk_HlBits::IsBitSet(int nPos) const
 {
     if ((unsigned)nPos >= 1)
     {
@@ -354,7 +354,7 @@ bool Unk_HlBits::FUN_140c261e0(int nPos) const
 }
 
 // @0x140c262e0
-void Unk_HlBits::FUN_140c262e0()
+void Unk_HlBits::ClearUnusedBits()
 {
     if (0 != 1) {} else
         m_a[0] &= (1 << 1 % 8) - 1;
@@ -366,7 +366,7 @@ void Unk_HlBits::FUN_140c26280(unsigned char nFill)
     for (int i = 0; 0 <= i; --i)
         m_a[i] = nFill;
     if (nFill != 0)
-        FUN_140c262e0();
+        ClearUnusedBits();
 }
 
 // @0x140c24770
@@ -377,14 +377,14 @@ Unk_HlBits& Unk_HlBits::FUN_140c24770()
 }
 
 // @0x140c261c0
-Unk_HlBits& Unk_HlBits::FUN_140c261c0()
+Unk_HlBits& Unk_HlBits::SetAll()
 {
     FUN_140c26280((unsigned char)0xff);
     return *this;
 }
 
 // @0x140c26080
-Unk_HlBits& Unk_HlBits::FUN_140c26080()
+Unk_HlBits& Unk_HlBits::ClearAll()
 {
     FUN_140c26280(0);
     return *this;
@@ -404,14 +404,14 @@ UIHighlightGameMenu::UIHighlightGameMenu()
     m_bitsGem.FUN_140c24770();
     m_bitsSocket.FUN_140c24770();
     m_2c = 0xe;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     m_actions.SetAt("characterinfo", &UIHighlightGameMenu::FUN_140c236f0);
     m_actions.SetAt("skillbook", &UIHighlightGameMenu::FUN_140c234d0);
-    m_actions.SetAt("inven", &UIHighlightGameMenu::FUN_140c231b0);
+    m_actions.SetAt("inven", &UIHighlightGameMenu::HasBetterEquipmentInBag);
     m_actions.SetAt("mail", &UIHighlightGameMenu::FUN_140c235d0);
     if (((CFeatureManager*)FUN_140166410())->IsRegionNA())
         m_actions.SetAt("enchantscroll", &UIHighlightGameMenu::FUN_140c237a0);
-    m_actions.SetAt("gemstone", &UIHighlightGameMenu::FUN_140c23f10);
+    m_actions.SetAt("gemstone", &UIHighlightGameMenu::HasUsableGemStone);
     ((NotifySystem*)FUN_140939a10())->RegisterNotify(CStringW(L"NotifyGameStart"),
         Delegate<void(NotifyObject*)>(this, &UIHighlightGameMenu::FUN_140c24470));
 }
@@ -440,7 +440,7 @@ void UIHighlightGameMenu::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     ((class Unk_ItemEventSystem*)GetItemEventDispatcher())->FUN_1419cae20(static_cast<UIItemEventListener*>(this));
-    FUN_140c22f50();
+    UpdateMenu();
 }
 
 // @0x140c22760
@@ -481,18 +481,18 @@ int UIHighlightGameMenu::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
         if (pDlg != 0)
         {
             int nArg = 1;
-            ((class UIItemSocketSystemDialog*)(void*)(pDlg))->FUN_140f69c10(*(int const*)(&nArg));
+            ((class UIItemSocketSystemDialog*)(void*)(pDlg))->SelectTab(*(int const*)(&nArg));
         }
         return 1;
     }
     else
     {
-        MS2Ptr<CGameMenuDef> spMenu = ((class CGameMenuTable*)FUN_140c1d2f0())->FindByName(CString(szMethod));
+        MS2Ptr<CGameMenuDef> spMenu = ((class CGameMenuTable*)GetGameMenuTable())->FindByName(CString(szMethod));
         if (spMenu.get() != 0)
         {
             if (spMenu->m_nUiId == 0x4e2d)
             {
-                if (((CUIService*)(TSingleton<CUIService>::GetInstance()))->FUN_141adc940((eUIClassID)0x4e2d) != 0)
+                if (((CUIService*)(TSingleton<CUIService>::GetInstance()))->IsDialogClosed((eUIClassID)0x4e2d) != 0)
                 {
                     UIDialog* pInv = reinterpret_cast<UIDialog*>(Unk_BreakDialog<UIInventoryDialog>(0x4e2d));
                     if (pInv != 0)
@@ -514,7 +514,7 @@ void UIHighlightGameMenu::vfunc_72()
 {
     UIDialog::vfunc_72();
     if (m_timer.Check(1000) != 0)
-        FUN_140c22f50();
+        UpdateMenu();
 }
 
 // @0x140c22b30
@@ -528,7 +528,7 @@ void UIHighlightGameMenu::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs
         tip.SetTooltipAlign(1);
         tip.SetOnDelay(0);
         tip.SetOffDelay(0);
-        *pRetVal = tip.FUN_1422bb870();
+        *pRetVal = tip.GetValue();
     }
 }
 
@@ -545,7 +545,7 @@ void UIHighlightGameMenu::vfunc_5(void* pItem, int nCount)
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0) {} else
     {
         if (nCount == 0 || pItem == 0 || !((class CItemData*)(void*)(((void*)((class CItem*)(void*)(pItem))->FUN_140527840())))->FUN_14053d840()) {} else
-            m_bitsGem.FUN_140c260a0(0, true);
+            m_bitsGem.SetBit(0, true);
     }
 }
 
@@ -555,7 +555,7 @@ void UIHighlightGameMenu::vfunc_2(void* pItem)
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0) {} else
     {
         if (pItem == 0 || !((class CItemData*)(void*)(((void*)((class CItem*)(void*)(pItem))->FUN_140527840())))->FUN_14053d840()) {} else
-            m_bitsGem.FUN_140c260a0(0, true);
+            m_bitsGem.SetBit(0, true);
     }
 }
 
@@ -564,12 +564,12 @@ void UIHighlightGameMenu::vfunc_21(void* pItem)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0) {} else
     {
-        if (m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0() == true) {} else
+        if (m_bitsSocket.GetBitRef(0).IsSet() == true) {} else
         {
             if (pItem == 0 || ((void*)((class CItem*)(void*)(pItem))->GetSocket()) == 0) {} else
             {
                 if (!((class CItemSocket*)(void*)(((void*)((class CItem*)(void*)(pItem))->GetSocket())))->HasEmptyOpenSlot()) {} else
-                    m_bitsGem.FUN_140c260a0(0, true);
+                    m_bitsGem.SetBit(0, true);
             }
         }
     }
@@ -580,19 +580,19 @@ void UIHighlightGameMenu::vfunc_22(void* pItem)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0) {} else
     {
-        if (!m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0()) {} else
+        if (!m_bitsSocket.GetBitRef(0).IsSet()) {} else
         {
             if (pItem == 0 || ((void*)((class CItem*)(void*)(pItem))->GetSocket()) == 0) {} else
             {
                 if (!((class CItemSocket*)(void*)(((void*)((class CItem*)(void*)(pItem))->GetSocket())))->HasEmptyOpenSlot()) {} else
-                    m_bitsGem.FUN_140c260a0(0, true);
+                    m_bitsGem.SetBit(0, true);
             }
         }
     }
 }
 
 // @0x140c22f50
-void UIHighlightGameMenu::FUN_140c22f50()
+void UIHighlightGameMenu::UpdateMenu()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
@@ -602,7 +602,7 @@ void UIHighlightGameMenu::FUN_140c22f50()
     if (pPc->vfunc_78() < *reinterpret_cast<Common::Constants::Value<unsigned int>*>((char*)((void*)GetClientConstants()) + 0xe558)->Get())
         return;
     ASArray names(2);
-    if (*((unsigned char*)((void*)reinterpret_cast<CGameOption*>((TSingleton<CGameOption>::GetInstance()))->FUN_140b123b0()) + 0x15) == 0)
+    if (*((unsigned char*)((void*)reinterpret_cast<CGameOption*>((TSingleton<CGameOption>::GetInstance()))->GetStatus()) + 0x15) == 0)
     {
         for (POSITION pos = m_actions.GetStartPosition(); pos != 0; m_actions.GetNext(pos))
         {
@@ -616,14 +616,14 @@ void UIHighlightGameMenu::FUN_140c22f50()
     {
         m_nCount = nCount;
         m_bActive = m_nCount != 0;
-        if (FUN_140c24ef0() != 0)
-            ((class UIBottomCenterAlignManager*)(void*)(FUN_140c24ef0()))->FUN_140bc1730();
+        if (GetUIBottomCenterAlignManager() != 0)
+            ((class UIBottomCenterAlignManager*)(void*)(GetUIBottomCenterAlignManager()))->FUN_140bc1730();
     }
-    reinterpret_cast<Unk_HlAS*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->FUN_140bd2cb0("setMenu", names);
+    reinterpret_cast<Unk_HlAS*>(((MS2Ptr<AScript>*)(&m_30))->operator->())->InvokeWithArray("setMenu", names);
 }
 
 // @0x140c231b0
-int UIHighlightGameMenu::FUN_140c231b0()
+int UIHighlightGameMenu::HasBetterEquipmentInBag()
 {
     Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
@@ -683,12 +683,12 @@ int UIHighlightGameMenu::FUN_140c235d0()
         return true;
     if (g_143ab2ee0.FUN_1408e48b0() != 0)
     {
-        CUserMail::MailArray* pArr = &g_143ab2ee0.FUN_1408e3700();
+        CUserMail::MailArray* pArr = &g_143ab2ee0.GetMails();
         for (unsigned __int64 i = 0; i < pArr->GetCount(); ++i)
         {
             CUserMail::MailPtr kEntry(*(CUserMail::MailPtr*)FUN_140c24ea0((__int64*)pArr, i));
-            if (kEntry.operator->()->FUN_140690370() >= 100 && kEntry.operator->()->FUN_140690370() < 0x71
-                && kEntry.operator->()->FUN_140691130() == 0)
+            if (kEntry.operator->()->GetKind() >= 100 && kEntry.operator->()->GetKind() < 0x71
+                && kEntry.operator->()->IsRead() == 0)
                 return true;
         }
     }
@@ -701,7 +701,7 @@ int UIHighlightGameMenu::FUN_140c236f0()
     Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
-    bool bPoint = (unsigned)((MyPC*)pPc)->FUN_140c25130()->GetRemaining() > 0;
+    bool bPoint = (unsigned)((MyPC*)pPc)->GetStatPointManager()->GetRemaining() > 0;
     if (bPoint)
         return true;
     return false;
@@ -767,7 +767,7 @@ int UIHighlightGameMenu::FUN_140c237a0()
             continue;
         if (TSingleton<CItemEnchantLimitTable>::GetInstance()->FUN_14058df90(it.get()) == 0)
             continue;
-        int nGrade = it->FUN_140526fc0();
+        int nGrade = it->GetEnchantLevel();
         if (nGrade >= ench->m_nGrade)
             continue;
         if (it->FUN_140527030() != 0)
@@ -780,18 +780,18 @@ int UIHighlightGameMenu::FUN_140c237a0()
 }
 
 // @0x140c23f10
-int UIHighlightGameMenu::FUN_140c23f10()
+int UIHighlightGameMenu::HasUsableGemStone()
 {
-    if (!m_bitsGem.FUN_140c25f10(0).FUN_140c24ac0())
+    if (!m_bitsGem.GetBitRef(0).IsSet())
     {
-        bool bSocket = m_bitsSocket.FUN_140c25f10(0).FUN_140c24ac0();
+        bool bSocket = m_bitsSocket.GetBitRef(0).IsSet();
         if (!bSocket)
             return false;
     }
     Unk_HlPc* pPc = (Unk_HlPc*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPc == 0)
         return false;
-    m_bitsGem.FUN_140c260a0(0, false);
+    m_bitsGem.SetBit(0, false);
     ATL::CAtlList<MS2Ptr<CEquipItem> > list(10);
     ((CEquipment*)((PC*)pPc)->GetEquipment())->CollectShownItemsInLayer(list, 0);
     ((CEquipment*)((PC*)pPc)->GetEquipment())->CollectShownItemsInLayer(list, 1);
@@ -820,18 +820,18 @@ int UIHighlightGameMenu::FUN_140c23f10()
                 MS2Ptr<CItem> g = gems[k];
                 if (g == 0 || g->FUN_140527840() == 0 || ((CItemData*)g->FUN_140527840())->FUN_14053d840() == 0)
                     continue;
-                MS2Ptr<CItemGemStoneData> rec = TSingleton<CItemGemStoneUpgradeTable>::GetInstance()->FindData(g->FUN_1405276c0());
+                MS2Ptr<CItemGemStoneData> rec = TSingleton<CItemGemStoneUpgradeTable>::GetInstance()->FindData(g->GetItemId());
                 if (rec == 0)
                     continue;
                 if ((rec->m_nMask & nMask) > 0u)
                 {
-                    m_bitsSocket.FUN_140c260a0(0, true);
+                    m_bitsSocket.SetBit(0, true);
                     return true;
                 }
             }
         }
     }
-    m_bitsSocket.FUN_140c260a0(0, false);
+    m_bitsSocket.SetBit(0, false);
     return false;
 }
 
@@ -842,10 +842,10 @@ bool UIHighlightGameMenu::IsActive()
 }
 
 // @0x140c244b0
-void UIHighlightGameMenu::FUN_140c244b0(int* pPos, bool bSet)
+void UIHighlightGameMenu::SetSocketBit(int* pPos, bool bSet)
 {
     if ((*(const MS2Ptr<AScript>*)(&m_30) == 0) != 0) {} else
-        m_bitsSocket.FUN_140c260a0(*pPos, bSet);
+        m_bitsSocket.SetBit(*pPos, bSet);
 }
 
 // @0x140c26320
@@ -873,8 +873,8 @@ int FUN_140c26320(void* pDst, size_t nDstSize, const void* pSrc, size_t nCount)
 // @0x140c24470
 void UIHighlightGameMenu::FUN_140c24470(NotifyObject* pObj)
 {
-    m_bitsGem.FUN_140c261c0();
-    m_bitsSocket.FUN_140c26080();
+    m_bitsGem.SetAll();
+    m_bitsSocket.ClearAll();
 }
 
 // @0x140c24650
@@ -897,14 +897,14 @@ MS2_REPLACE_DTOR(0x140c24a50, MS2Ptr<CStatPointManager>, 34, 0x1248047C);
 MS2_REPLACE_IMPL(0x140c24920, static_cast<MS2Ptr<CStatPointManager>* (*)(MS2Ptr<CStatPointManager>*, const MS2Ptr<CStatPointManager>&)>([](MS2Ptr<CStatPointManager>* self, const MS2Ptr<CStatPointManager>& o) -> MS2Ptr<CStatPointManager>* { return ::new (static_cast<void*>(self)) MS2Ptr<CStatPointManager>(o); }), "MS2Ptr<CStatPointManager>::MS2Ptr", 52, 0x30756183);
 MS2_REPLACE(0x140c25330, FUN_140c25330, 46, 0xDB14FB29);
 MS2_REPLACE_IMPL(0x140c249d0, static_cast<Unk_HlBitRef* (*)(Unk_HlBitRef*, Unk_HlBits*, int)>([](Unk_HlBitRef* self, Unk_HlBits* pBits, int nPos) -> Unk_HlBitRef* { return ::new (static_cast<void*>(self)) Unk_HlBitRef(pBits, nPos); }), "Unk_HlBitRef::Unk_HlBitRef", 46, 0xDE5FA628);
-MS2_REPLACE_METHOD(0x140c24ac0, Unk_HlBitRef, FUN_140c24ac0, 35, 0x60FDC12E);
-MS2_REPLACE_METHOD(0x140c260a0, Unk_HlBits, FUN_140c260a0, 286, 0xA1414E44);
-MS2_REPLACE_METHOD(0x140c261e0, Unk_HlBits, FUN_140c261e0, 159, 0x5962585B);
-MS2_REPLACE_METHOD(0x140c262e0, Unk_HlBits, FUN_140c262e0, 53, 0xBAEEFFB1);
+MS2_REPLACE_METHOD(0x140c24ac0, Unk_HlBitRef, IsSet, 35, 0x60FDC12E);
+MS2_REPLACE_METHOD(0x140c260a0, Unk_HlBits, SetBit, 286, 0xA1414E44);
+MS2_REPLACE_METHOD(0x140c261e0, Unk_HlBits, IsBitSet, 159, 0x5962585B);
+MS2_REPLACE_METHOD(0x140c262e0, Unk_HlBits, ClearUnusedBits, 53, 0xBAEEFFB1);
 MS2_REPLACE_METHOD(0x140c26280, Unk_HlBits, FUN_140c26280, 84, 0x35672ED1);
 MS2_REPLACE_METHOD(0x140c24770, Unk_HlBits, FUN_140c24770, 31, 0x01E54B59);
-MS2_REPLACE_METHOD(0x140c261c0, Unk_HlBits, FUN_140c261c0, 31, 0x1E7F28C1);
-MS2_REPLACE_METHOD(0x140c26080, Unk_HlBits, FUN_140c26080, 31, 0x54C06974);
+MS2_REPLACE_METHOD(0x140c261c0, Unk_HlBits, SetAll, 31, 0x1E7F28C1);
+MS2_REPLACE_METHOD(0x140c26080, Unk_HlBits, ClearAll, 31, 0x54C06974);
 MS2_REPLACE_METHOD(0x140c226e0, UIHighlightGameMenu, vfunc_67, 24, 0x0801D545);
 MS2_REPLACE_METHOD(0x140c22700, UIHighlightGameMenu, OnLoadComplete, 87, 0xA3E8D7FA);
 MS2_REPLACE_METHOD(0x140c22760, UIHighlightGameMenu, vfunc_43, 144, 0xDB0C7874);
@@ -916,15 +916,15 @@ MS2_REPLACE_METHOD_VIA(0x140c22d00, UIHighlightGameMenu, UIItemEventListener, vf
 MS2_REPLACE_METHOD_VIA(0x140c22d80, UIHighlightGameMenu, UIItemEventListener, vfunc_2, 106, 0xB2FB668A);
 MS2_REPLACE_METHOD_VIA(0x140c22df0, UIHighlightGameMenu, UIItemEventListener, vfunc_21, 166, 0xE9BAE25E);
 MS2_REPLACE_METHOD_VIA(0x140c22ea0, UIHighlightGameMenu, UIItemEventListener, vfunc_22, 165, 0x2E310326);
-MS2_REPLACE_METHOD(0x140c22f50, UIHighlightGameMenu, FUN_140c22f50, 593, 0x120A94CB);
-MS2_REPLACE_METHOD(0x140c231b0, UIHighlightGameMenu, FUN_140c231b0, 790, 0xABA47B23);
+MS2_REPLACE_METHOD(0x140c22f50, UIHighlightGameMenu, UpdateMenu, 593, 0x120A94CB);
+MS2_REPLACE_METHOD(0x140c231b0, UIHighlightGameMenu, HasBetterEquipmentInBag, 790, 0xABA47B23);
 MS2_REPLACE_METHOD(0x140c234d0, UIHighlightGameMenu, FUN_140c234d0, 244, 0x8051E676);
 MS2_REPLACE_METHOD(0x140c235d0, UIHighlightGameMenu, FUN_140c235d0, 269, 0x2FC46449);
 MS2_REPLACE_METHOD(0x140c236f0, UIHighlightGameMenu, FUN_140c236f0, 160, 0x1F3D47B4);
 MS2_REPLACE_METHOD(0x140c237a0, UIHighlightGameMenu, FUN_140c237a0, 1887, 0xF7712921);
-MS2_REPLACE_METHOD(0x140c23f10, UIHighlightGameMenu, FUN_140c23f10, 1367, 0x34257BD0);
+MS2_REPLACE_METHOD(0x140c23f10, UIHighlightGameMenu, HasUsableGemStone, 1367, 0x34257BD0);
 MS2_REPLACE_METHOD(0x140c22ce0, UIHighlightGameMenu, IsActive, 18, 0xCD131F6C);
-MS2_REPLACE_METHOD(0x140c244b0, UIHighlightGameMenu, FUN_140c244b0, 84, 0xB08B121C);
+MS2_REPLACE_METHOD(0x140c244b0, UIHighlightGameMenu, SetSocketBit, 84, 0xB08B121C);
 MS2_REPLACE(0x140c26320, FUN_140c26320, 271, 0x90034658);
 MS2_REPLACE_METHOD(0x140c24470, UIHighlightGameMenu, FUN_140c24470, 57, 0xFC5E6E7C);
 

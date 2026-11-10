@@ -411,14 +411,14 @@ public:
 
 // The single-instance marker: a named auto-reset event "<base>_<n>" for the first n that does not exist yet. The index
 // numbers the log file ("MapleStory2_<n>.log"). Name invented (inline in the exe; dtor also folded into engine code).
-void FUN_1414a5a80(HANDLE* pEvent);                             // Close: CloseHandle, index 0
+void Close(HANDLE* pEvent);                             // Close: CloseHandle, index 0
 int FUN_1414a56b0(char* pEvent);                                // the index
 
 class Unk_InstanceEvent
 {
 public:
     explicit Unk_InstanceEvent(const efd::utf8string& strBase) : m_hEvent(0), m_nIndex(0) { Create(strBase); }
-    ~Unk_InstanceEvent() { FUN_1414a5a80((HANDLE*)this); }
+    ~Unk_InstanceEvent() { Close((HANDLE*)this); }
     bool Create(const efd::utf8string& strBase);
 
     HANDLE m_hEvent;
@@ -442,7 +442,7 @@ MS2_CHECK_SIZE(UISceneLogin, 0xf8);
 
 // Stand-ins for unrecovered singletons MS2 drives.
 void* FUN_140aadf80();   // C3: was FUN_140aadf80
-CNetworkService* FUN_140714f90();
+CNetworkService* GetNetworkService();
 class Unk_AvModeSvc* GetOptimizer();   // C3: was GetOptimizer
 int FUN_1414a5910(char* pOptimizer);   // C3: the frame time limit (COptimizer)
 class CLogString* GetLogString();   // C3: was TSingleton<CLogString>::GetInstance
@@ -452,17 +452,17 @@ inline CLogString* Unk_SingletonCreator<CLogString>::CreateInstance() { return T
 class Unk_Ms2PhysXHelper;
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 void FUN_1414a2a10();                                           // TSingleton delete of GetPhysXHelper()
-void FUN_1414a3f10();                                           // TSingleton delete of CrashManagerCli::GetInstance()
-void FUN_140cca840(int n);                                      // crash on purpose (the /crash command)
+void DestroyCrashManagerCli();                                           // TSingleton delete of CrashManagerCli::GetInstance()
+void TriggerCrash(int n);                                      // crash on purpose (the /crash command)
 class Unk_Ms2PrecacheOption;
-class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions* GetLaunchOptions();   // C3: was GetLaunchOptions
 class Unk_LaunchOptions   // C3: member view for the former free stand-ins
 {
 public:
     bool FUN_1406af0a0();
 };
-ecr::RenderService* FUN_1413f9890();
-class ShadowCullingProcess* FUN_141753990();                    // the shadow culling process factory (unit_141753550.cpp)
+ecr::RenderService* GetRenderService();
+class ShadowCullingProcess* CreateShadowCullingProcess();                    // the shadow culling process factory (unit_141753550.cpp)
 void MS2ExcludeFromShadows(NiAVObject* pkObject);               // excludes an object from the shadow casters
 extern void (*DAT_143afbfc8)(NiAVObject*);
 extern NiFixedString DAT_143ae5290, DAT_143ae5298, DAT_143ae52a0;   // the dir / point / spot shadow materials
@@ -493,13 +493,13 @@ class Unk_GFxManager
 public:
     void FUN_1414a61c0(Unk_GFxImageCallback fnCallback);        // the image creator callback (+0x138)
 };
-class Unk_AltStringMgr* FUN_14025e7a0();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
+class Unk_AltStringMgr* GetGFxManager();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
 class GFxManager { public: void FUN_1422af0b0(int bArchive, int bRelease); };   // loads ./Data/Resource/gfx/fontconfig.txt
 Scaleform::Render::Image* FUN_140a59830(const GFxImageLoader::Protocol& kProtocol,
     Scaleform::Render::TextureManager* pTextureManager);       // ?\asyncimageloader.cpp
 int FUN_1406516b0();                                            // the service locale: 1 jp, 2 en, 3 cn, else kr
 CString FUN_140652330(int nLocale);                             // the locale's UI font name
-void FUN_1414a6230(efd::IBase* (*pfnFactory)());                // the KFM cache factory of egmAnimation
+void SetKFMCacheFactory(efd::IBase* (*pfnFactory)());                // the KFM cache factory of egmAnimation
 efd::IBase* CreateKFMCache();                                    // creates an MS2KFMCache
 struct Unk_MCPPtr;
 Unk_MCPPtr FUN_140d96230(NiVisibleArray* pVisibleSet, NiSPWorkflowManager* pWorkflowManager);  // MS2MeshCullingProcess
@@ -623,7 +623,7 @@ MS2_REPLACE_METHOD(0x141489F20, MS2, Quit, 18, 0xE74CD770);
 void MS2::Tick()
 {
     m_uiLastTickTime = GetTickCountMs2();
-    FUN_140714f90()->ProcessReceivedPackets();
+    GetNetworkService()->ProcessReceivedPackets();
     if (m_spServiceManager)
         m_spServiceManager->RunOnce();
 }
@@ -643,7 +643,7 @@ MS2_REPLACE_METHOD(0x141489FD0, MS2, GetPhysXAllocator, 15, 0x5AEB0F79);
 // @0x141489ff0
 void MS2::SetBackgroundColor(NiColorA kColor)
 {
-    ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
     if (pSurface) {
         NiViewRenderClick* pkClick = pSurface->GetSceneRenderClick();
         if (pkClick)
@@ -654,7 +654,7 @@ MS2_REPLACE_METHOD(0x141489FF0, MS2, SetBackgroundColor, 83, 0x677C5834);
 // @0x14148a050
 NiColorA MS2::GetBackgroundColor()
 {
-    ecr::RenderSurface* pSurface = FUN_1413f9890()->GetActiveRenderSurface();
+    ecr::RenderSurface* pSurface = GetRenderService()->GetActiveRenderSurface();
     NiViewRenderClick* pkClick;
     if (pSurface != 0 && (pkClick = pSurface->GetSceneRenderClick()) != 0) {
         NiColorA kColor;
@@ -731,8 +731,8 @@ void MS2::MessageLoop()
     while (msg.message != WM_QUIT && !m_bQuit) {
         BOOL bMessage = PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE) != 0;
         if (bMessage) {
-            if (FUN_1414a56c0())
-                FUN_1414a56c0()->vfunc_19(msg.hwnd, msg.message, msg.wParam, msg.lParam);
+            if (GetGFxService())
+                GetGFxService()->vfunc_19(msg.hwnd, msg.message, msg.wParam, msg.lParam);
             if (!AfxPreTranslateMessage(&msg)) {
                 TranslateMessage(&msg);
                 DispatchMessageA(&msg);
@@ -899,9 +899,9 @@ void MS2::Shutdown()
         m_pPhysXOutput = 0;
     }
     if (m_bCrashOnShutdown)
-        FUN_140cca840(0);
+        TriggerCrash(0);
     if (CrashManagerCli::GetInstance())
-        FUN_1414a3f10();
+        DestroyCrashManagerCli();
 }
 // @0x14148b340
 bool MS2::OnLostDevice(void* pvData)
@@ -993,7 +993,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     m_spServiceManager->RegisterSystemService(spLight);
     efd::SmartPointer<ecr::TextureRapidIterationService> spTextureRapidIteration = EE_NEW ecr::TextureRapidIterationService;
     if (((class COptimizer*)GetOptimizer())->FUN_1414a5a30())
-        FUN_1414a6230(CreateKFMCache);
+        SetKFMCacheFactory(CreateKFMCache);
     efd::SmartPointer<egmAnimation::AnimationService> spAnimation = EE_NEW MS2AnimationService;
     m_spServiceManager->RegisterSystemService(spAnimation, 1785);
     efd::SmartPointer<ecr::CameraService> spCamera = EE_NEW MS2CameraService;
@@ -1060,7 +1060,7 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     m_spServiceManager->RegisterSystemService(EE_NEW GFxService, 1997);
     m_spServiceManager->RegisterSystemService(EE_NEW GFxSceneService, 1997);
     DAT_143b0d368 = CUIService::FUN_141ade400;
-    FUN_1414a56c0()->SetFont(FUN_140652330(DAT_143ab0248));
+    GetGFxService()->SetFont(FUN_140652330(DAT_143ab0248));
     efd::SmartPointer<CWebBrowserService> spWebBrowser = EE_NEW CWebBrowserService(hInstance);
     spWebBrowser->EnsureCefInitialized();
     m_spServiceManager->RegisterSystemService(spWebBrowser);
@@ -1068,8 +1068,8 @@ bool MS2::RegisterServices(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR l
     m_spServiceManager->RegisterSystemService(spPropertyVisualization);
 
     int n = 0;
-    reinterpret_cast<GFxManager*>(FUN_14025e7a0())->FUN_1422af0b0(GetFileSystem()->FUN_140398190(), n);
-    reinterpret_cast<Unk_GFxManager*>(FUN_14025e7a0())->FUN_1414a61c0(Unk_GFxImageCallback(FUN_140a59830));
+    reinterpret_cast<GFxManager*>(GetGFxManager())->FUN_1422af0b0(GetFileSystem()->FUN_140398190(), n);
+    reinterpret_cast<Unk_GFxManager*>(GetGFxManager())->FUN_1414a61c0(Unk_GFxImageCallback(FUN_140a59830));
     RegisterUIScenes();
     efd::SmartPointer<DecoEditService> spDecoEdit = EE_NEW DecoEditService;
     m_spServiceManager->RegisterSystemService(spDecoEdit, 0x6100014);
@@ -1143,7 +1143,7 @@ efd::AsyncResult MS2::OnInit()
     NiMaterial* pkDirMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae5290);
     NiMaterial* pkPointMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae5298);
     NiMaterial* pkSpotMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae52a0);
-    NiShadowManager::SetShadowRenderCullingProcessFactory((NiCullingProcess* (*)())FUN_141753990);
+    NiShadowManager::SetShadowRenderCullingProcessFactory((NiCullingProcess* (*)())CreateShadowCullingProcess);
     NiShadowManager::SetShadowVisitorFactory(MS2ShadowVisitor::CreateMS2ShadowVisitor);
     NiShadowManager::SetShadowRenderClickValidatorFactory(MS2ShadowClickValidator::CreateMS2ShadowClickValidator);
     DAT_143afbfc8 = MS2ExcludeFromShadows;
@@ -1169,7 +1169,7 @@ efd::AsyncResult MS2::OnInit()
     NiShadowManager::SetActiveShadowClickGenerator(spGenerator);
 
     efd::SmartPointer<ecr::RenderService> spRenderService = m_spServiceManager->GetSystemServiceAs<ecr::RenderService>();
-    if (((class Unk_LaunchOptions*)(class Unk_Ms2PrecacheOption*)(((class Unk_Ms2PrecacheOption*)FUN_1406aeee0())))->FUN_1406af0a0())
+    if (((class Unk_LaunchOptions*)(class Unk_Ms2PrecacheOption*)(((class Unk_Ms2PrecacheOption*)GetLaunchOptions())))->FUN_1406af0a0())
         Precache();
     CGameOption::GetInstance()->FUN_141243860();
     NiDX9Renderer* pkRenderer = NiDynamicCast(NiDX9Renderer, NiRenderer::GetRenderer());
@@ -1234,10 +1234,10 @@ void FUN_141b6de20();                                           // the out-of-me
 int FUN_141b6db40(size_t nSize);
 CString FUN_14028dbd0();                                        // the machine id text
 CStringW FUN_140719630(int n);                                  // int -> CStringW
-int FUN_1414a5690(CFileSystem* pFileSystem);                    // the ignore file mode of the file system
-void FUN_141851840(class NiDevImageConverter* pkConverter);
+int GetArchiveMode(CFileSystem* pFileSystem);                    // the ignore file mode of the file system
+void SetImageConverter(class NiDevImageConverter* pkConverter);
 class CChatEmoticonCli;
-class CMyCharacter* FUN_140931510();   // C3: was FUN_140931510
+class CMyCharacter* GetMyCharacter();   // C3: was GetMyCharacter
 class CMyCharacter   // C3: member view for the former free stand-ins
 {
 public:
@@ -1284,15 +1284,15 @@ void DestroyClientPlatform();
 class CDebugConsole   // C3: member view for the former free stand-ins
 {
 public:
-    static void FUN_141168710();
+    static void DestroyInstance();
 };
 void FUN_14145c4b0();
 void FUN_14149fec0();
-void FUN_14149fee0();
-void FUN_14149ff40();
-void FUN_14149ffa0();
-void FUN_1414a0000();
-void FUN_1414a0060();
+void DestroyAnimationCallbackManager();
+void DestroyApplyEffect();
+void DestroyAttendGiftDataTable();
+void DestroyBGTransparencyMgr();
+void DestroyBlindManager();
 void FUN_1414a00c0();
 void FUN_1414a0120();
 void FUN_1414a0180();
@@ -1300,72 +1300,72 @@ void FUN_1414a01e0();
 void FUN_1414a0240();
 void FUN_1414a02a0();
 void FUN_1414a0300();
-void FUN_1414a0360();
-void FUN_1414a03c0();
-void FUN_1414a0420();
-void FUN_1414a0480();
-void FUN_1414a04e0();
-void FUN_1414a0540();
-void FUN_1414a05a0();
-void FUN_1414a0600();
-void FUN_1414a0660();
-void FUN_1414a06c0();
-void FUN_1414a0720();
-void FUN_1414a0780();
-void FUN_1414a07e0();
-void FUN_1414a0840();
-void FUN_1414a08a0();
-void FUN_1414a0900();
-void FUN_1414a0960();
-void FUN_1414a09c0();
-void FUN_1414a0a20();
-void FUN_1414a0a80();
-void FUN_1414a0ae0();
-void FUN_1414a0b40();
-void FUN_1414a0ba0();
-void FUN_1414a0c00();
-void FUN_1414a0c60();
-void FUN_1414a0cc0();
-void FUN_1414a0d20();
-void FUN_1414a0d80();
-void FUN_1414a0de0();
-void FUN_1414a0e40();
-void FUN_1414a0ea0();
-void FUN_1414a0f00();
-void FUN_1414a0f60();
-void FUN_1414a0fc0();
-void FUN_1414a1020();
-void FUN_1414a1080();
-void FUN_1414a10e0();
-void FUN_1414a1140();
-void FUN_1414a11a0();
-void FUN_1414a1200();
-void FUN_1414a1260();
-void FUN_1414a12c0();
-void FUN_1414a1320();
-void FUN_1414a1380();
-void FUN_1414a13e0();
-void FUN_1414a1440();
-void FUN_1414a14a0();
-void FUN_1414a1510();
-void FUN_1414a1570();
-void FUN_1414a15d0();
-void FUN_1414a1630();
-void FUN_1414a1690();
-void FUN_1414a16f0();
-void FUN_1414a1750();
-void FUN_1414a17b0();
-void FUN_1414a1810();
-void FUN_1414a1870();
-void FUN_1414a18d0();
-void FUN_1414a1930();
-void FUN_1414a1990();
-void FUN_1414a19f0();
-void FUN_1414a1a50();
-void FUN_1414a1ab0();
-void FUN_1414a1b10();
-void FUN_1414a1b70();
-void FUN_1414a1bd0();
+void DestroyBankTable();
+void DestroyBattleRecordManager();
+void DestroyBigDataLogSystem();
+void DestroyBlackMarketMan();
+void DestroyBlackMarketTable();
+void DestroyBlockManager();
+void DestroyBuddyManager();
+void DestroyCashCallManager();
+void DestroyCashMarketMan();
+void DestroyChapterBookTable();
+void DestroyCharacterAbilityManager();
+void DestroyCharacterAbilityTable();
+void DestroyChatEmoticonTable();
+void DestroyClubClientManager();
+void DestroyClubDataTable();
+void DestroyContentShutdownManager();
+void DestroyContinentRegionTable();
+void DestroyCoupleEmotionTable();
+void DestroyDPSMeterSystem();
+void DestroyDirWatcher();
+void DestroyDynamicBanWordManager();
+void DestroyEnchantScrollTable();
+void DestroyExpTable();
+void DestroyFameTable();
+void DestroyFeatureManager();
+void DestroyFieldMaidManager();
+void DestroyFieldMetaTable();
+void DestroyFieldMissionTable();
+void DestroyFilePreload();
+void DestroyFileSystem();
+void DestroyFishingManager();
+void DestroyFishingTable();
+void DestroyGFxLanguage();
+void DestroyGameEventValueManager();
+void DestroyGameOption();
+void DestroyGameRankingCli();
+void DestroyGameRule();
+void DestroyGloabalFactor();
+void DestroyGraphicOptionTable();
+void DestroyGroupChatManager();
+void DestroyGuideManager();
+void DestroyGuildManager();
+void DestroyGuildXmlData();
+void DestroyIgnoreFile();
+void DestroyIndividualArenaDataTable();
+void DestroyInstrumentDataTable();
+void DestroyInstrumentManager();
+void DestroyItemBreakIngredientTable();
+void DestroyItemBreakManager();
+void DestroyItemDataTable();
+void DestroyItemEnchantLimitTable();
+void DestroyItemEnchantTransformTable();
+void DestroyItemEnchantUtil();
+void DestroyItemExchangeScrollTable();
+void DestroyItemExtractionTable();
+void DestroyItemGemPropertyTable();
+void DestroyItemGemStoneUpgradeTable();
+void DestroyItemLapenshardTable();
+void DestroyItemLoader();
+void DestroyItemLockManager();
+void DestroyItemMergeOptionTable();
+void DestroyItemOptionTable();
+void DestroyItemRePackingScrollTable();
+void DestroyItemRemakeScrollTable();
+void DestroyItemSocketScrollTable();
+void DestroyItemSocketTable();
 void FUN_1414a1c30();
 void FUN_1414a1c90();
 void FUN_1414a1cf0();
@@ -1450,69 +1450,69 @@ void FUN_1414a3a90();
 void FUN_1414a3af0();
 void FUN_1414a3b50();
 void FUN_1414a3bb0();
-void FUN_1414a3c10();
-void FUN_1414a3c70();
-void FUN_1414a3cd0();
-void FUN_1414a3d30();
-void FUN_1414a3d90();
+void DestroyCameraMgr();
+void DestroyClientLogManager();
+void DestroyCommonEffectDummy();
+void DestroyCommonResource();
+void DestroyCommonString();
 void FUN_1414a3df0();
-void FUN_1414a3e50();
-void FUN_1414a3eb0();
-void FUN_1414a3f70();
-void FUN_1414a3fd0();
-void FUN_1414a4030();
-void FUN_1414a4090();
-void FUN_1414a40f0();
-void FUN_1414a4150();
-void FUN_1414a41b0();
-void FUN_1414a4210();
-void FUN_1414a4270();
-void FUN_1414a42d0();
-void FUN_1414a4330();
-void FUN_1414a4390();
-void FUN_1414a43f0();
-void FUN_1414a4450();
-void FUN_1414a44b0();
-void FUN_1414a4510();
-void FUN_1414a4570();
-void FUN_1414a45d0();
-void FUN_1414a4630();
-void FUN_1414a4690();
-void FUN_1414a46f0();
-void FUN_1414a4750();
-void FUN_1414a47b0();
-void FUN_1414a4810();
-void FUN_1414a4870();
-void FUN_1414a48d0();
-void FUN_1414a4930();
-void FUN_1414a4990();
-void FUN_1414a49f0();
-void FUN_1414a4a50();
-void FUN_1414a4ab0();
-void FUN_1414a4b30();
-void FUN_1414a4b90();
-void FUN_1414a4bf0();
-void FUN_1414a4c50();
-void FUN_1414a4cb0();
-void FUN_1414a4d10();
-void FUN_1414a4d70();
-void FUN_1414a4dd0();
-void FUN_1414a4e30();
-void FUN_1414a4e90();
-void FUN_1414a4ef0();
-void FUN_1414a4f50();
-void FUN_1414a4fb0();
-void FUN_1414a5010();
-void FUN_1414a5070();
-void FUN_1414a50d0();
-void FUN_1414a5130();
-void FUN_1414a5190();
-void FUN_1414a51f0();
-void FUN_1414a5250();
-void FUN_1414a52d0();
-void FUN_1414a5330();
-void FUN_1414a5390();
-void FUN_1414a53f0();
+void DestroyCooltimeManager();
+void DestroyCostumeSetTable();
+void DestroyCubeHolderManager();
+void DestroyDungeonMissionDataTable();
+void DestroyDungeonRoomTable();
+void DestroyEffectDataManager();
+void DestroyEffectSkipMgr();
+void DestroyEngineLog();
+void DestroyFieldWarDataTable();
+void DestroyGPUManager();
+void DestroyGameDictionaryManager();
+void DestroyGameEventManagerCli();
+void DestroyGameEventUserValueManager();
+void DestroyHomeBlockManager();
+void DestroyItemDropTable();
+void DestroyItemGachaBoxTable();
+void DestroyItemPreviewMgr();
+void DestroyJobTable();
+void DestroyLoginBgBgmTable();
+void DestroyMentoringDataTable();
+void DestroyMultiSceneUpdater();
+void DestroyNotifySystem();
+void DestroyNpcDataTableCli();
+void DestroyOnceCallbackTimer();
+void DestroyPCActionDataTable();
+void DestroyPacketHandlerManager();
+void DestroyPaybackManagerClient();
+void DestroyPaybackTable();
+void DestroyQuestDataTable();
+void DestroyRecodeMgr();
+void DestroyRewardContentsTable();
+void DestroySetItemTable();
+void DestroySkillDataTableCli();
+void DestroySoundPropertyMgr();
+void DestroyStanceTable();
+void DestroyStateEffectMgr();
+void DestroyStringManager();
+void DestroyTermTagManagerCli();
+void DestroyUGCCubeCategoryTable();
+void DestroyUIBottomCenterAlignManager();
+void DestroyUIBuddyEventDispatcher();
+void DestroyUIDialogEventDispatcher();
+void DestroyUIDungeonCategoryTable();
+void DestroyUIEntityEventDispatcher();
+void DestroyUIItemEventDispatcher();
+void DestroyUIQuestEventDispatcher();
+void DestroyUIServerEventDispatcher();
+void DestroyUIStatusEventDispatcher();
+void DestroyUITalkManager();
+void DestroyUIUGCEventDispatcher();
+void DestroyUIWorldShareInfoEventDispatcher();
+void DestroyUgcHomeOptionData();
+void DestroyWebGuideTable();
+void DestroyWeddingEmotionTable();
+void DestroyWeddingManager();
+void DestroyWeddingTable();
+void DestroyWorldMapManager();
 void FUN_141627390();
 void FUN_1416275e0();
 void FUN_1416bb2e0();
@@ -1671,7 +1671,7 @@ BOOL CGameApp::InitInstance()
     GetComputerNameA(szComputerName, &dwSize);
     CString strMachine;
     strMachine.Format("ComputerName [%s] UserName [%s]", szComputerName, szUserName);
-    TSingleton<CrashManagerCli>::GetInstance()->FUN_1401ce270(strMachine);
+    TSingleton<CrashManagerCli>::GetInstance()->AddLogLine(strMachine);
     Unk_SingletonCreator<CNPSMan>::CreateInstance();
     MS2::SetWorkingDirectory(false);
     if (FUN_1406c34c0() == 1)
@@ -1739,10 +1739,10 @@ BOOL CGameApp::InitInstance()
         Unk_SingletonCreator<CIgnoreFile>::CreateInstance();
         if (FUN_1406516b0() == 3)
             TSingleton<CIgnoreFile>::GetInstance()->Load(std::string("./data/xmldebug/ignorepackfile_cn.xml"),
-                FUN_1414a5690(TSingleton<CFileSystem>::GetInstance()));
+                GetArchiveMode(TSingleton<CFileSystem>::GetInstance()));
         else
             TSingleton<CIgnoreFile>::GetInstance()->Load(std::string("./data/xmldebug/ignorepackfile.xml"),
-                FUN_1414a5690(TSingleton<CFileSystem>::GetInstance()));
+                GetArchiveMode(TSingleton<CFileSystem>::GetInstance()));
     }
     if (TSingleton<CFileSystem>::GetInstance()->FUN_140398190())
         FUN_1416275e0();
@@ -2006,7 +2006,7 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<CSmartPushTable>::CreateInstance();
     TSingleton<CSmartPushTable>::GetInstance()->Load();
     Unk_SingletonCreator<CSmartPushManager>::CreateInstance();
-    TSingleton<CSmartPushManager>::GetInstance()->FUN_140dd82b0();
+    TSingleton<CSmartPushManager>::GetInstance()->CreatePushes();
     ((class CItemRemakeScrollTable*)(class CItemRemakeScrollTable*)(Unk_SingletonCreator<CItemRemakeScrollTable>::CreateInstance()))->Load();
     Unk_SingletonCreator<CTrafficOptimizer>::CreateInstance();
     Unk_SingletonCreator<CItemSocketTable>::CreateInstance()->Load();
@@ -2084,13 +2084,13 @@ BOOL CGameApp::InitInstance()
     }
     spMS2->Shutdown();
     spMS2 = NULL;
-    FUN_1414a0a20();
+    DestroyDPSMeterSystem();
     if (DAT_143ae2b30 != 0)
     {
-        FUN_14149fee0();
-        FUN_1414a4630();
+        DestroyAnimationCallbackManager();
+        DestroyMultiSceneUpdater();
     }
-    ((class CMyCharacter*)(class CChatEmoticonCli*)(((class CChatEmoticonCli*)FUN_140931510())))->ClearDungeonState();
+    ((class CMyCharacter*)(class CChatEmoticonCli*)(((class CChatEmoticonCli*)GetMyCharacter())))->ClearDungeonState();
     if (TSingleton<CUgcDownloadDown>::GetInstance())
         ((class CUgcDownloadDown*)(class CUgcDownloadDown*)(TSingleton<CUgcDownloadDown>::GetInstance()))->Stop();
     if (TSingleton<CUgcDownloadLoad>::GetInstance())
@@ -2100,167 +2100,167 @@ BOOL CGameApp::InitInstance()
     FUN_14149fec0();
     FUN_1414a3430();
     FUN_1414a2590();
-    FUN_1414a1690();
-    FUN_1414a0c00();
+    DestroyItemEnchantTransformTable();
+    DestroyFameTable();
     FUN_1414a38b0();
-    FUN_1414a49f0();
-    FUN_1414a3eb0();
-    FUN_1414a19f0();
-    FUN_1414a4bf0();
-    FUN_1414a1810();
+    DestroyRewardContentsTable();
+    DestroyCostumeSetTable();
+    DestroyItemMergeOptionTable();
+    DestroyStateEffectMgr();
+    DestroyItemGemPropertyTable();
     FUN_1414a29b0();
     FUN_1414a2950();
-    FUN_1414a06c0();
+    DestroyChapterBookTable();
     FUN_1414a3730();
     FUN_1414a2bf0();
-    FUN_1414a5250();
-    FUN_1414a0b40();
+    DestroyWebGuideTable();
+    DestroyEnchantScrollTable();
     FUN_1414a0300();
-    FUN_1414a4750();
-    FUN_1414a51f0();
-    FUN_1414a03c0();
+    DestroyOnceCallbackTimer();
+    DestroyUgcHomeOptionData();
+    DestroyBattleRecordManager();
     FUN_1414a2e90();
     FUN_1414a1e10();
-    FUN_1414a4d10();
+    DestroyUGCCubeCategoryTable();
     FUN_1414a3850();
     FUN_1414a3bb0();
     FUN_1414a1db0();
-    FUN_1414a0d80();
+    DestroyFieldMissionTable();
     FUN_1414a3250();
     FUN_1414a2650();
-    FUN_1414a0720();
-    FUN_1414a0780();
+    DestroyCharacterAbilityManager();
+    DestroyCharacterAbilityTable();
     FUN_1414a3550();
-    FUN_1414a4c50();
+    DestroyStringManager();
     FUN_1414a31f0();
-    FUN_1414a1440();
-    FUN_1414a14a0();
-    FUN_1414a0ea0();
-    FUN_1414a0f00();
+    DestroyInstrumentDataTable();
+    DestroyInstrumentManager();
+    DestroyFishingManager();
+    DestroyFishingTable();
     FUN_1414a3a90();
-    FUN_1414a0fc0();
-    FUN_1414a10e0();
-    FUN_1414a44b0();
-    FUN_1414a0ba0();
+    DestroyGameEventValueManager();
+    DestroyGameRule();
+    DestroyItemPreviewMgr();
+    DestroyExpTable();
     FUN_1414a22f0();
     FUN_1414a2230();
     FUN_1414a2290();
-    FUN_1414a4510();
-    FUN_1414a4210();
+    DestroyJobTable();
+    DestroyGPUManager();
     FUN_1414a36d0();
-    FUN_1414a0000();
-    FUN_1414a0de0();
+    DestroyBGTransparencyMgr();
+    DestroyFilePreload();
     if (TSingleton<CDirWatcher>::GetInstance())
         TSingleton<CDirWatcher>::GetInstance()->FUN_1401d1cd0();
-    FUN_141851840(0);
-    FUN_1414a0ae0();
-    FUN_1414a1510();
-    FUN_1414a47b0();
-    FUN_14149ffa0();
+    SetImageConverter(0);
+    DestroyDynamicBanWordManager();
+    DestroyItemBreakIngredientTable();
+    DestroyPCActionDataTable();
+    DestroyAttendGiftDataTable();
     CFieldData::FUN_140373d30();
     FUN_1408b9c90();
     FUN_1414a3670();
     FUN_1414a2e30();
     FUN_1414a2530();
-    FUN_1414a45d0();
+    DestroyMentoringDataTable();
     FUN_1414a3010();
     FUN_1414a23b0();
-    FUN_1414a1080();
+    DestroyGameRankingCli();
     FUN_1414a2350();
-    FUN_1414a0420();
-    FUN_1414a3f70();
+    DestroyBigDataLogSystem();
+    DestroyCubeHolderManager();
     FUN_1414a3a30();
     FUN_1414a39d0();
     FUN_1414a2410();
     FUN_1414a24d0();
-    FUN_1414a0480();
-    FUN_1414a0660();
+    DestroyBlackMarketMan();
+    DestroyCashMarketMan();
     FUN_1414a2d70();
-    FUN_1414a0ba0();
+    DestroyExpTable();
     FUN_1414a28f0();
-    FUN_1414a05a0();
-    FUN_1414a4390();
+    DestroyBuddyManager();
+    DestroyHomeBlockManager();
     FUN_1414a2a70();
-    FUN_1414a0540();
+    DestroyBlockManager();
     FUN_1414a3790();
     FUN_1414a1c30();
-    FUN_1414a53f0();
-    FUN_1414a1260();
+    DestroyWorldMapManager();
+    DestroyGuideManager();
     FUN_1414a0120();
-    FUN_1414a42d0();
-    FUN_1414a4cb0();
+    DestroyGameEventManagerCli();
+    DestroyTermTagManagerCli();
     FUN_1414a3af0();
     FUN_1414a3190();
-    FUN_1414a0cc0();
+    DestroyFieldMaidManager();
     FUN_1414a3b50();
     FUN_1414a2890();
     FUN_1414a21d0();
     FUN_1414a3610();
-    FUN_1414a4ab0();
-    FUN_1414a4b90();
+    DestroySkillDataTableCli();
+    DestroyStanceTable();
     FUN_1414a1c90();
     FUN_1414a30d0();
-    FUN_1414a3d90();
-    FUN_14149ff40();
-    FUN_1414a1020();
+    DestroyCommonString();
+    DestroyApplyEffect();
+    DestroyGameOption();
     FUN_1414a26b0();
-    FUN_1414a11a0();
+    DestroyGraphicOptionTable();
     FUN_1414a3130();
     FUN_1414a3070();
     FUN_1414a2b30();
-    FUN_1414a46f0();
-    FUN_1414a15d0();
-    FUN_1414a4a50();
-    FUN_1414a16f0();
-    FUN_1414a43f0();
-    FUN_1414a0360();
+    DestroyNpcDataTableCli();
+    DestroyItemDataTable();
+    DestroySetItemTable();
+    DestroyItemEnchantUtil();
+    DestroyItemDropTable();
+    DestroyBankTable();
     FUN_1414a1ed0();
     FUN_1414a3df0();
-    FUN_1414a0e40();
-    FUN_1414a12c0();
-    FUN_1414a0840();
-    FUN_1414a1200();
-    FUN_1414a04e0();
+    DestroyFileSystem();
+    DestroyGuildManager();
+    DestroyClubClientManager();
+    DestroyGroupChatManager();
+    DestroyBlackMarketTable();
     FUN_1414a2c50();
     FUN_1414a2cb0();
     FUN_1414a2b90();
-    FUN_1414a4930();
+    DestroyQuestDataTable();
     FUN_1414a2fb0();
-    FUN_1414a4330();
-    FUN_1414a4810();
-    FUN_1414a4690();
-    FUN_1414a4f50();
-    FUN_1414a5070();
-    FUN_1414a4ef0();
-    FUN_1414a4fb0();
-    FUN_1414a4e30();
-    FUN_1414a5130();
-    FUN_1414a4dd0();
-    FUN_1414a5010();
-    FUN_1414a5190();
-    FUN_1414a4d70();
-    FUN_1414a3cd0();
+    DestroyGameEventUserValueManager();
+    DestroyPacketHandlerManager();
+    DestroyNotifySystem();
+    DestroyUIItemEventDispatcher();
+    DestroyUIStatusEventDispatcher();
+    DestroyUIEntityEventDispatcher();
+    DestroyUIQuestEventDispatcher();
+    DestroyUIDialogEventDispatcher();
+    DestroyUIUGCEventDispatcher();
+    DestroyUIBuddyEventDispatcher();
+    DestroyUIServerEventDispatcher();
+    DestroyUIWorldShareInfoEventDispatcher();
+    DestroyUIBottomCenterAlignManager();
+    DestroyCommonEffectDummy();
     FUN_1414a2830();
-    FUN_1414a3c10();
-    FUN_1414a4090();
-    FUN_1414a40f0();
-    FUN_1414a4b30();
+    DestroyCameraMgr();
+    DestroyEffectDataManager();
+    DestroyEffectSkipMgr();
+    DestroySoundPropertyMgr();
     FUN_1414a3490();
-    FUN_1414a1a50();
+    DestroyItemOptionTable();
     FUN_1414a0240();
     FUN_1414a34f0();
-    FUN_1414a1320();
-    FUN_1414a08a0();
+    DestroyGuildXmlData();
+    DestroyClubDataTable();
     FUN_1414a2f50();
-    FUN_1414a4270();
-    FUN_1414a50d0();
+    DestroyGameDictionaryManager();
+    DestroyUITalkManager();
     FUN_1414a2ef0();
-    FUN_1414a0ea0();
-    FUN_1414a0d20();
+    DestroyFishingManager();
+    DestroyFieldMetaTable();
     FUN_1414a2d10();
-    FUN_1414a0960();
-    FUN_1414a0a80();
-    FUN_1414a1930();
+    DestroyContinentRegionTable();
+    DestroyDirWatcher();
+    DestroyItemLoader();
     FUN_1414a33d0();
     FUN_1414a3910();
     FUN_1414a3970();
@@ -2269,8 +2269,8 @@ BOOL CGameApp::InitInstance()
     FUN_1414a00c0();
     ClearAddressTable();
     FUN_1414a1d50();
-    FUN_1414a1570();
-    FUN_1414a1630();
+    DestroyItemBreakManager();
+    DestroyItemEnchantLimitTable();
     FUN_1414a3370();
     FUN_1414a1ff0();
     FUN_1414a2050();
@@ -2278,70 +2278,70 @@ BOOL CGameApp::InitInstance()
     FUN_1414a20b0();
     FUN_1414a2170();
     FUN_1414a2110();
-    FUN_1414a0600();
-    FUN_1414a0900();
-    FUN_1414a3d30();
+    DestroyCashCallManager();
+    DestroyContentShutdownManager();
+    DestroyCommonResource();
     ResetDummyNames();
     ResetShaderConstantNames();
     FUN_1416bb5f0();
     ResetMaterialNames();
-    FUN_1414a1140();
-    FUN_1414a1990();
-    FUN_1414a09c0();
-    FUN_1414a52d0();
-    FUN_1414a4570();
+    DestroyGloabalFactor();
+    DestroyItemLockManager();
+    DestroyCoupleEmotionTable();
+    DestroyWeddingEmotionTable();
+    DestroyLoginBgBgmTable();
     FUN_1414a2ad0();
-    FUN_1414a4450();
-    FUN_1414a1380();
+    DestroyItemGachaBoxTable();
+    DestroyIgnoreFile();
     NiStaticDataManager::Shutdown(true);
     delete pInitOptions;
     GetClientPlatform()->vfunc_29();
     GetClientPlatform()->vfunc_15();
     GetClientPlatform()->vfunc_51();
-    CDebugConsole::FUN_141168710();
-    FUN_1414a3c70();
+    CDebugConsole::DestroyInstance();
+    DestroyClientLogManager();
     GetClientPlatform()->vfunc_69();
     GetClientPlatform()->vfunc_70();
     if (GetLogString())
         GetLogString()->StopThread();
     FUN_1414a1e70();
-    FUN_1414a48d0();
-    FUN_1414a4870();
-    FUN_1414a5390();
-    FUN_1414a5330();
+    DestroyPaybackTable();
+    DestroyPaybackManagerClient();
+    DestroyWeddingTable();
+    DestroyWeddingManager();
     FUN_1414a1f30();
     FUN_1414a2710();
     FUN_1414a27d0();
     FUN_1414a35b0();
-    FUN_1414a0060();
-    FUN_1414a4030();
-    FUN_1414a3fd0();
-    FUN_1414a4e90();
+    DestroyBlindManager();
+    DestroyDungeonRoomTable();
+    DestroyDungeonMissionDataTable();
+    DestroyUIDungeonCategoryTable();
     FUN_1414a2dd0();
-    FUN_1414a13e0();
-    FUN_1414a0f60();
-    FUN_1414a0c60();
+    DestroyIndividualArenaDataTable();
+    DestroyGFxLanguage();
+    DestroyFeatureManager();
     FUN_1414a3310();
     FUN_1414a32b0();
-    FUN_1414a1ab0();
-    FUN_1414a1b10();
+    DestroyItemRePackingScrollTable();
+    DestroyItemRemakeScrollTable();
     FUN_1414a37f0();
-    FUN_1414a1870();
-    FUN_1414a1b70();
-    FUN_1414a1bd0();
-    FUN_1414a4150();
-    FUN_1414a18d0();
-    FUN_1414a17b0();
-    FUN_1414a1750();
+    DestroyItemGemStoneUpgradeTable();
+    DestroyItemSocketScrollTable();
+    DestroyItemSocketTable();
+    DestroyEngineLog();
+    DestroyItemLapenshardTable();
+    DestroyItemExtractionTable();
+    DestroyItemExchangeScrollTable();
     FUN_1414a1cf0();
     FUN_1414a0180();
     FUN_1414a01e0();
-    FUN_1414a3e50();
-    FUN_1414a41b0();
-    FUN_1414a07e0();
+    DestroyCooltimeManager();
+    DestroyFieldWarDataTable();
+    DestroyChatEmoticonTable();
     DestroyClientPlatform();
     FUN_1414a2770();
-    FUN_1414a4990();
+    DestroyRecodeMgr();
     FUN_1414a25f0();
     return FALSE;
 }
@@ -2473,7 +2473,7 @@ MS2_REPLACE(0x141492410, MakeWindowTitle, 779, 0x9C281391);
 // @0x141498cb0
 inline bool Unk_InstanceEvent::Create(const efd::utf8string& strBase)
 {
-    FUN_1414a5a80((HANDLE*)this);
+    Close((HANDLE*)this);
     for (unsigned int n = 1; n != 0; n++) {
         m_strName.sprintf("%s_%d", strBase.c_str(), n);
         HANDLE hEvent = CreateEventA(NULL, FALSE, TRUE, m_strName.c_str());

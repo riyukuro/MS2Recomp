@@ -28,16 +28,16 @@ __int64 GetServerTime();                                                    // t
 class UIWeddingHallReservationDialog   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_140fdbf70();
-    void FUN_140fdc030();
+    void SelectPreviousTab();
+    void SelectNextTab();
     int GetHall();
     void SetNight(bool bNight);
     void SetTime(__int64);
     __int64 GetTime();
 };
-void FUN_1412751f0(const CStringW& strText, int a, int b);                  // notice
+void ShowSystemNotice(const CStringW& strText, int a, int b);                  // notice
 CStringW GetStringCommonByKey(const CStringW& strKey);                             // string table text
-CStringW FUN_140b8e910(const CMsTime& time);                                // date text
+CStringW FormatMonthDay(const CMsTime& time);                                // date text
 bool IsEarlierDay(CMsTime tmOld, CMsTime tmNew, int nBaseHour);   // C3: was FUN_14086ab70 (commonfiles/timeutil.cpp)
 void TruncateToDay(CMsTime& time);                                          // 0x14086a6c0 (commonfiles/timeutil.cpp)
 void AddDays(CMsTime& time, long days);                                     // 0x14086a7e0
@@ -66,7 +66,7 @@ class ASButtonGroup : public ASDisplayObject
 {
 public:
     ASButtonGroup(const Scaleform::GFx::Value& v, int nMovieId);   // 0x1422e8920
-    bool FUN_1422e8ce0(int nValue, bool bFlag);
+    bool SetSelectedButtonByIndex(int nValue, bool bFlag);
 };
 
 template <class T> MS2Ptr<T> FUN_140fe42c0(int nMovieId, const Scaleform::GFx::Value& v);
@@ -120,14 +120,14 @@ bool UIWeddingHallReservationPageSchedule::vfunc_1()
     }
     FUN_140fe3c40(this);
     if (MS2Ptr<ASButtonGroup> spPublic = m_pScript->FUN_140fe4370<ASButtonGroup>("m_publicGroup"))
-        spPublic.get()->FUN_1422e8ce0(m_bPrivate ? 0 : 1, true);
+        spPublic.get()->SetSelectedButtonByIndex(m_bPrivate ? 0 : 1, true);
     if (m_nTime != 0)
     {
         if (MS2Ptr<ASButtonGroup> spTime = m_pScript->FUN_140fe4370<ASButtonGroup>("m_timeGroup"))
         {
             CMsTime tTime(m_nTime);
             int nHour = tTime.GetHour();
-            spTime.get()->FUN_1422e8ce0(nHour, true);
+            spTime.get()->SetSelectedButtonByIndex(nHour, true);
         }
     }
     return true;
@@ -190,7 +190,7 @@ bool UIWeddingHallReservationPageSchedule::vfunc_4(__int64 a1, __int64 a2, int a
 // @0x140fe3950
 void UIWeddingHallReservationPageSchedule::vfunc_5()
 {
-    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdbf70();
+    ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SelectPreviousTab();
 }
 
 // @0x140fe3980
@@ -199,11 +199,11 @@ void UIWeddingHallReservationPageSchedule::vfunc_6()
     if (reinterpret_cast<UIWeddingHallReservationDialog*>(m_pDialog)->GetTime() == 0)
     {
         CStringW strKey(L"s_wedding_hall_reservation_select_time");
-        FUN_1412751f0(GetStringCommonByKey(strKey), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(strKey), 1, 1);
     }
     else
     {
-        ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->FUN_140fdc030();
+        ((class UIWeddingHallReservationDialog*)(class UIDialog*)(m_pDialog))->SelectNextTab();
     }
 }
 
@@ -283,15 +283,15 @@ void FUN_140fe3c40(UIWeddingHallReservationPageSchedule* pPage)
     {
         CMsTime tHour(pPage->m_date);
         AddHours(tHour, i);
-        if (reinterpret_cast<WeddingTable*>(TSingleton<WeddingTable>::GetInstance())->FUN_140909870(DAT_143ab2830, tHour) == 1)
+        if (reinterpret_cast<WeddingTable*>(TSingleton<WeddingTable>::GetInstance())->IsMaintenance(DAT_143ab2830, tHour) == 1)
             pPage->m_pScript->Invoke("setDisabledTime", i);
     }
     if (MS2Ptr<ASButton> spPrev = pPage->m_pScript->FUN_140acce30<ASButton>("m_prev"))
-        spPrev->FUN_1422c1fe0(nFrom == 0);
+        spPrev->SetEnabled(nFrom == 0);
     if (MS2Ptr<ASButton> spNext = pPage->m_pScript->FUN_140acce30<ASButton>("m_next"))
-        spNext->FUN_1422c1fe0(nTo == 0x18);
+        spNext->SetEnabled(nTo == 0x18);
     if (MS2Ptr<ASTextField> spDate = pPage->m_pScript->FUN_1409b4620("m_date"))
-        spDate->SetTextW(FUN_140b8e910(pPage->m_date));
+        spDate->SetTextW(FormatMonthDay(pPage->m_date));
 }
 
 // @0x140fe42c0

@@ -41,7 +41,7 @@ static CString s_strSkill = "skill";
 // Unk_CommandChat: placeholder/commandchat.h (the chat command record).
 
 MS2Ptr<ASMovieClip> FUN_1409b40c0(int nMovieId, const Scaleform::GFx::Value& rValue);
-int FUN_140768010(int nRange, int nBase);                       // a random number
+int GetRandomRange(int nRange, int nBase);                       // a random number
 void FUN_140710590(COutPacket& packet);                         // send
 template <class T> T Unk_StrToNum(const CStringW& str);         // text to number (unit_1406c3700)
 template <> unsigned char Unk_StrToNum<unsigned char>(const CStringW& str);
@@ -56,7 +56,7 @@ UIDebugPacketDialog::UIDebugPacketDialog()
     : m_packet(0, 0)
 {
     m_40 = 1;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     FUN_1422dc3b0(1);
     m_nId = 0;
     m_nRemain = 0;
@@ -131,13 +131,13 @@ void UIDebugPacketDialog::OnLoadInit()
     m_ignoreAdminPacket = GetChild<ASCheckBox>("m_ignoreAdminPacket");
     m_usePacketCount = GetChild<ASButton>("m_usePacketCount");
     m_usePostClose = GetChild<ASButton>("m_usePostClose");
-    FUN_141925fa0("m_dragBar");
-    FUN_141925ec0("m_close");
+    BindDragBar("m_dragBar");
+    BindCloseButton("m_close");
     m_execute->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnExecute), 0);
     m_executeRandom->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnExecuteRandom), 0);
     m_usePacketCount->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnPacketCount), (void*)0);
     m_usePostClose->FUN_1422c2a70(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnCloseFromPacket), (void*)0);
-    m_movie->FUN_1422c3600("doubleClick", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnDoubleClick), false, 0, 0, 0);
+    m_movie->AddEventListener("doubleClick", Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIDebugPacketDialog::OnDoubleClick), false, 0, 0, 0);
 }
 
 // @0x141290c90
@@ -179,7 +179,7 @@ void UIDebugPacketDialog::vfunc_72()
         while (m_nRemain > 0 && uNow > m_nNext)
         {
             COutPacket packet(m_nId, 0);
-            packet.FUN_14020aa30(m_packet, 2);
+            packet.AppendPayload(m_packet, 2);
             FUN_140710590(packet);
             m_nNext += m_nDelay;
             m_nRemain--;
@@ -189,7 +189,7 @@ void UIDebugPacketDialog::vfunc_72()
     {
         while (m_nRandomRemain > 0 && uNow > m_nRandomNext)
         {
-            int nId = reinterpret_cast<Unk_DpRange&>(m_range).FUN_141291f20();
+            int nId = reinterpret_cast<Unk_DpRange&>(m_range).GetRandomValue();
             if (((ASCheckBox*)m_ignoreAdminPacket ? true : false) && (nId == 0x50 || nId == 0x24 || nId == 0x15))
             {
                 // admin packets are skipped
@@ -200,28 +200,28 @@ void UIDebugPacketDialog::vfunc_72()
                 int nWritten = 0;
                 while (nWritten < m_nRandomLength)
                 {
-                    int nKind = FUN_140768010(4, 1);
+                    int nKind = GetRandomRange(4, 1);
                     if (nKind == 1)
                     {
-                        packet.WriteUInt8(FUN_140768010(0x100, 0));
+                        packet.WriteUInt8(GetRandomRange(0x100, 0));
                         nWritten += 1;
                     }
                     else if (nKind == 2)
                     {
-                        packet.WriteInt16(FUN_140768010(0xffff, 0));
+                        packet.WriteInt16(GetRandomRange(0xffff, 0));
                         nWritten += 2;
                     }
                     else if (nKind == 3)
                     {
-                        packet.WriteInt32(FUN_140768010(0x7fffffff, 0));
+                        packet.WriteInt32(GetRandomRange(0x7fffffff, 0));
                         nWritten += 4;
                     }
                     else if (nKind == 4)
                     {
                         __int64 n = 0;
-                        n = (unsigned)FUN_140768010(0x7fffffff, 0);
+                        n = (unsigned)GetRandomRange(0x7fffffff, 0);
                         n >>= 32;   // the exe shifts right, so the high half is always 0
-                        n += (unsigned)FUN_140768010(0x7fffffff, 0);
+                        n += (unsigned)GetRandomRange(0x7fffffff, 0);
                         packet.WriteInt64(n);
                         nWritten += 8;
                     }
@@ -337,7 +337,7 @@ bool UIDebugPacketDialog::FUN_141291850()
 }
 
 // @0x141291f20
-int Unk_DpRange::FUN_141291f20()
+int Unk_DpRange::GetRandomValue()
 {
     if (m_nMax > m_nMin)
         return rand() % (m_nMax - m_nMin + 1) + m_nMin;

@@ -45,7 +45,7 @@ public:
         NiControllerSequence* pkSeq, float fEventTime);     // 11 0x141284470
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x141284920: an empty StateUseFurnitureData
 
-    CString FUN_141284620();                                // the key of the furniture (empty without data)
+    CString GetFurnitureKey();                                // the key of the furniture (empty without data)
 
     MS2Ptr<CFunctionCubeObject> m_spCube;                   // +0x40
     MS2Ptr<StateUseFurnitureData> m_spFurniture;            // +0x50

@@ -56,7 +56,7 @@ public:
     virtual int vfunc_53(void* pCfg);                                       // 53 0x141923c90 save "transform" (x/y/width/height/rate/editAlign); returns 1
     virtual int vfunc_54(void* pCfg);                                       // 54 0x141923ed0 load "transform"; returns 1
     virtual int vfunc_55();                                                 // 55 0x1419247d0 m_68 && m_c0 == 2 (closed)
-    virtual int vfunc_56();                                                 // 56 0x141924810 FUN_1419244c0(0)
+    virtual int vfunc_56();                                                 // 56 0x141924810 IsFlagSet(0)
     virtual int vfunc_57();                                                 // 57 0x141924830 m_84
     virtual int vfunc_58();                                                 // 58 0x141924850 m_88
     virtual int vfunc_59();                                                 // 59 0x141924870 m_158
@@ -86,38 +86,38 @@ public:
     virtual void vfunc_83();                                                // 83 0x141925dc0 m_74 = 0
 
     // Non-virtual members (signatures from the prologues; this = UIDialog*).
-    void FUN_1419235d0();                                   // ASWindow "setTopMostLayer"
+    void SetTopMostLayer();                                   // ASWindow "setTopMostLayer"
     void FUN_141923680(int n);                              // ASWindow FUN_1422e61f0(n)
     void FUN_141923710(int n);                              // ASWindow FUN_1422e6230(n)
-    void FUN_141924170(int n);                              // m_c4 = n (open/close tweens)
+    void SetTweenEnabled(int n);                              // m_c4 = n (open/close tweens)
     void FUN_141924190();                                   // close part 1 (called by vfunc_67)
     void FUN_141924330(int n);                              // close part 2 (called by vfunc_67 with m_c4)
     int FUN_141924470();                                    // m_158 && m_160
-    int FUN_1419244c0(int nBit);                            // m_a0 flag test
+    int IsFlagSet(int nBit);                            // m_a0 flag test
     void FUN_141924510();                                   // stop "m_openTween"
     void FUN_141924680();
     void FUN_1419246f0();                                   // vfunc_55() ? vfunc_70() : FUN_141924680()
     int FUN_141924740();                                    // !m_68 && !m_c0
     void FUN_141925de0(const Scaleform::GFx::FunctionHandler::Params& params);   // close button callback: vfunc_70()
     void FUN_141925e10(const Scaleform::GFx::FunctionHandler::Params& params);   // web guide button callback
-    void FUN_141925e70(int nBit, int bSet);                 // m_a0 flag set
+    void SetFlag(int nBit, int bSet);                 // m_a0 flag set
     void FUN_1419264e0(CString strName, const Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>& cb);
                                                             // bind a button's click and keep it in m_a8
-    void FUN_141926180(MS2Ptr<AScript> spRoot, CString strName, int n);   // bind the web guide button
+    void BindWebGuideButton(MS2Ptr<AScript> spRoot, CString strName, int n);   // bind the web guide button
     NiPoint2* FUN_1419265c0();                              // &m_d8
     void FUN_1419265e0(const CString& str);                 // m_170 = str
     void FUN_141926620(int* pnAlign, float* pX, float* pY); // the screen quadrant of the dialog (5..8) and its anchor
     void FUN_141926880();                                   // empty (OnLoadComplete)
     void FUN_141926890();                                   // empty (close)
-    CString FUN_1419268a0(int n);                           // GetTypeName() + n ("{0}{1}"), GetTypeName() for 0
+    CString GetTypeNameWithIndex(int n);                           // GetTypeName() + n ("{0}{1}"), GetTypeName() for 0
     bool FUN_141926960();                                   // m_168
     void FUN_141926980(bool b);                             // m_168 = b
     template <class T> MS2Ptr<T> FUN_141926e30(const CString& strName);    // child by name through the container (uiswfentity.inl)
     // ---- agents: append further non-virtual UIDialog members below this line (sorted by address) ----
-    void FUN_141925ec0(CString strName);                     // bind close button (UILoginNotice)
-    void FUN_141925fa0(CString strName);                     // bind drag bar (UIDungeonPopupRewardDialog)
+    void BindCloseButton(CString strName);                     // bind close button (UILoginNotice)
+    void BindDragBar(CString strName);                     // bind drag bar (UIDungeonPopupRewardDialog)
     int FUN_141924630();                                    // vfunc_55() == 0 (UICoupleDanceEventDialog)
-    void FUN_141904ab0(const int* pnLayer) { m_e0 = *pnLayer; }    // 0x141904ab0 (inline, uicommon.cpp)
+    void SetLayer(const int* pnLayer) { m_e0 = *pnLayer; }    // 0x141904ab0 (inline, uicommon.cpp)
     void FUN_1419260d0(CString strName, int n);             // takes the child name by value (UIDungeonLobby: "m_webGuideButton", 0)
 
 protected:
@@ -133,10 +133,10 @@ protected:
     int m_88;                           // +0x88 vfunc_58
     int m_8c;                           // +0x8c 1; vfunc_61
     MS2Ptr<ASDialog> m_90;              // +0x90 the movie root as an ASDialog (vfunc_41; "m_openTween" lives here)
-    std::bitset<4> m_a0;                // +0xa0 flags (FUN_1419244c0 / FUN_141925e70)
-    std::vector<MS2Ptr<ASUIComponent> > m_a8;  // +0xa8 bound buttons (FUN_1419264e0 / FUN_141926180), cleaned in vfunc_26
+    std::bitset<4> m_a0;                // +0xa0 flags (IsFlagSet / SetFlag)
+    std::vector<MS2Ptr<ASUIComponent> > m_a8;  // +0xa8 bound buttons (FUN_1419264e0 / BindWebGuideButton), cleaned in vfunc_26
     int m_c0;                           // +0xc0 2; open state (0 open, 2 closed)
-    int m_c4;                           // +0xc4 open/close tweens enabled (FUN_141924170)
+    int m_c4;                           // +0xc4 open/close tweens enabled (SetTweenEnabled)
     CString m_c8;                       // +0xc8
     CString m_d0;                       // +0xd0
     NiPoint2 m_d8;                      // +0xd8 remembered position (vfunc_66; reset to efd::Point2 0x143b02320)

@@ -88,7 +88,7 @@ int BookSlot::vfunc_8(void* p)
     ASSlot slot(2);
     if (slot.FUN_1409c4360(reinterpret_cast<Unk_SlotSkillInfo*>(m_spSkill.get()), 0x401) != 0)
     {
-        *static_cast<Scaleform::GFx::Value*>(p) = slot.FUN_1422bb870();
+        *static_cast<Scaleform::GFx::Value*>(p) = slot.GetValue();
         return 1;
     }
     return 0;
@@ -101,18 +101,18 @@ void FUN_140a36c30(const CString& strName, std::vector<MS2Ptr<JobSkill> >& skill
     if (pBag)
     {
         static_cast<DragSlotBag*>(pBag)->vfunc_10((int)skills.size());
-        Unk_NotifyContext::FUN_1422c8f10(strName, pBag);
+        Unk_NotifyContext::RegisterBinding(strName, pBag);
     }
 }
 
 // @0x140a36d00
 void FUN_140a36d00(const CString& strName)
 {
-    BookSlotBag* pBag = CastToBookSlotBag(Unk_NotifyContext::FUN_1422c8e90(strName));
+    BookSlotBag* pBag = CastToBookSlotBag(Unk_NotifyContext::FindBinding(strName));
     if (pBag)
     {
         ((class DragSlotBag*)(class DragSlotBag*)(pBag))->FUN_1422cc9e0();
-        Unk_NotifyContext::FUN_1422c8f70(strName);
+        Unk_NotifyContext::UnregisterBinding(strName);
     }
 }
 
@@ -133,7 +133,7 @@ BookSlotBag::~BookSlotBag()
 CString BookSlotBag::vfunc_15(int nIndex)
 {
     CString str;
-    str.Format("%s.%d", (const char*)FUN_1422c89f0(), (unsigned)nIndex);
+    str.Format("%s.%d", (const char*)GetName(), (unsigned)nIndex);
     return str;
 }
 

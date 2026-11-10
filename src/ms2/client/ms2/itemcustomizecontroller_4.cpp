@@ -48,7 +48,7 @@ struct Unk_PickRenderer
 };
 class CEquipModel;
 void* GetOwnerObject(CEquipModel* self);   // C3: was the CEquipModel member view (equipmodel.cpp)
-class Ni3DRenderView* FUN_1413f9a70();   // C3: was FUN_1413f9a70
+class Ni3DRenderView* FindRenderView();   // C3: was FindRenderView
 class Ni3DRenderView   // C3: member view for the former free stand-ins
 {
 public:
@@ -93,7 +93,7 @@ CItemPickingHelper::~CItemPickingHelper()
 // @0x141418d60
 int CItemPickingHelper::CreatePicker()
 {
-    m_spPicker.FUN_1412861e0(new (efd::MemHint(efd::MemHint::NONE)) CMeshUVPicker);
+    m_spPicker.Reset(new (efd::MemHint(efd::MemHint::NONE)) CMeshUVPicker);
     return m_spPicker.FUN_141286290()->Init();
 }
 
@@ -131,7 +131,7 @@ int CItemPickingHelper::GetPickedIndex() const
 int CItemPickingHelper::Pick(efd::Point3* pHit, CAtlArray<CString>& parts)
 {
     // the exe calls its own CAtlArray<CString>::operator[] copy here (0x14134b380), not the 0x1401c0cc0 one
-    void* pCamMgr = ((void*)FUN_1413f9a70());
+    void* pCamMgr = ((void*)FindRenderView());
     NiPoint3 camPos = *((class NiPoint3 const*)&((class NiCamera*)(class NiCamera*)(((class Ni3DRenderView*)(void*)(pCamMgr))->GetCamera()))->GetWorldLocation());
     float fBest = FLT_MAX;
     m_nPicked = -1;
@@ -174,7 +174,7 @@ int CItemPickingHelper::Pick(efd::Point3* pHit, CAtlArray<CString>& parts)
 // @0x141419210
 void CItemPickingHelper::Reset()
 {
-    m_spPicker.FUN_1412861e0(0);
+    m_spPicker.Reset(0);
     m_spMesh.FUN_141418a00(0);
 }
 
@@ -190,7 +190,7 @@ int CItemPickingHelper::PickTarget(CEquipModel* pTarget, const CString* pPart, N
     void* pGame = WorldService::GetInstance()->FUN_141bd0cc0();
     if (pGame == 0)
         return 0;
-    NiAVObject* pMesh = pTarget->FUN_1411676d0(pPart);
+    NiAVObject* pMesh = pTarget->GetPartMesh(pPart);
     if (pMesh == 0)
         return 0;
     CAtlArray<NiRenderObject*> skins;
@@ -218,7 +218,7 @@ int CItemPickingHelper::PickMesh(NiAVObject* pMesh, CAtlArray<NiRenderObject*>& 
         return 0;
     if (pRenderer->IsFlag())
         return 0;
-    void* pCamMgr = ((void*)FUN_1413f9a70());
+    void* pCamMgr = ((void*)FindRenderView());
     efd::Point3 hit;
     efd::Point3 normal;
     NiPoint2 uv;

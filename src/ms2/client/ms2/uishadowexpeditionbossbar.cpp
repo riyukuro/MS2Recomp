@@ -51,7 +51,7 @@ public:
     void FUN_140da5180(int nOpcode, Delegate<void(CInPacket&)> handler);       // add
     void FUN_140da51e0(int nOpcode, Delegate<void(CInPacket&)> handler);       // remove
 };
-Unk_140bccd50* FUN_140bccd50();
+Unk_140bccd50* GetPacketHandlerManager();
 
 // The ui service: dialog lookup by id.
 class Unk_UiService { public: };
@@ -76,13 +76,13 @@ FieldGameScoreBoardCli::FieldGameScoreBoardCli()
 {
     m_nMode = 0;
     m_pDlg = 0;
-    ((class PacketHandlerManager*)FUN_140bccd50())->RegisterHandler(0xe1, Delegate<void(CInPacket&)>(this, &FieldGameScoreBoardCli::FUN_140f9c300));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->RegisterHandler(0xe1, Delegate<void(CInPacket&)>(this, &FieldGameScoreBoardCli::FUN_140f9c300));
 }
 
 // @0x140f9c280
 FieldGameScoreBoardCli::~FieldGameScoreBoardCli()
 {
-    ((class PacketHandlerManager*)FUN_140bccd50())->UnregisterHandler(0xe1, Delegate<void(CInPacket&)>(this, &FieldGameScoreBoardCli::FUN_140f9c300));
+    ((class PacketHandlerManager*)GetPacketHandlerManager())->UnregisterHandler(0xe1, Delegate<void(CInPacket&)>(this, &FieldGameScoreBoardCli::FUN_140f9c300));
 }
 
 // @0x140f9c300
@@ -140,7 +140,7 @@ MS2_REPLACE_METHOD(0x140F9C5B0, FieldGameScoreBoardCli, FUN_140f9c5b0, 89, 0x402
 
 // The open dialog of an id, cast to its class (one copy per class).
 // @0x140f9d8a0
-UIDarkStreamScoreDialog* FUN_140f9d8a0(int nId)
+UIDarkStreamScoreDialog* GetDarkStreamScoreDialog(int nId)
 {
     if (reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())) {
         MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
@@ -151,7 +151,7 @@ UIDarkStreamScoreDialog* FUN_140f9d8a0(int nId)
 }
 
 // @0x140f9d940
-UIShadowExpeditionBossBar* FUN_140f9d940(int nId)
+UIShadowExpeditionBossBar* GetShadowExpeditionBossBar(int nId)
 {
     if (reinterpret_cast<Unk_UiService*>(TSingleton<CUIService>::GetInstance())) {
         MS2Ptr<UIObject> p = TSingleton<CUIService>::GetInstance()->FindObject((eUIClassID)nId);
@@ -166,30 +166,30 @@ void FieldGameScoreBoardCli::FUN_140f9c610(CStringW strTitle, int nCur, int nMax
 {
     switch (m_nMode) {
     case 1: {
-        UIShadowExpeditionBossBar* pDlg = FUN_140f9d940(0x4f0e);
+        UIShadowExpeditionBossBar* pDlg = GetShadowExpeditionBossBar(0x4f0e);
         if (pDlg != 0) {
-            pDlg->FUN_140f9d1f0(nCur, nMax);
+            pDlg->SetCurMax(nCur, nMax);
             pDlg->SetTitle(strTitle);
             m_pDlg = pDlg;
         }
         break;
     }
     case 2: {
-        UIDarkStreamScoreDialog* pDlg = FUN_140f9d8a0(0x4ee4);
+        UIDarkStreamScoreDialog* pDlg = GetDarkStreamScoreDialog(0x4ee4);
         if (pDlg != 0) {
             pDlg->vfunc_84(nCur);
-            pDlg->FUN_140f35660(0);
-            pDlg->FUN_140f356a0(1);
+            pDlg->SetOffsetY(0);
+            pDlg->SetAlign(1);
             m_pDlg = pDlg;
         }
         break;
     }
     case 3: {
-        UIDarkStreamScoreDialog* pDlg = FUN_140f9d8a0(0x4ee4);
+        UIDarkStreamScoreDialog* pDlg = GetDarkStreamScoreDialog(0x4ee4);
         if (pDlg != 0) {
             pDlg->vfunc_84(nCur);
-            pDlg->FUN_140f35660(-80);
-            pDlg->FUN_140f356a0(6);
+            pDlg->SetOffsetY(-80);
+            pDlg->SetAlign(6);
             m_pDlg = pDlg;
         }
         break;
@@ -229,8 +229,8 @@ void ASScoreBoardGauge::FUN_140f9ca30(int nCur, int nMax, CStringW strTitle)
     int nClamped = FUN_140f1ffe0(nPercent, 0, 100);
     if (m_gauge.get() != 0)
         m_gauge->Invoke("setValue", nCur, nMax, true);
-    SetChildText(FUN_1422bb870(), "m_title", strTitle);
-    SetChildText(FUN_1422bb870(), "m_progressText", FormatStringId<CStringW>(0x98e, StringFormat<int>(L"{0}", nClamped)));
+    SetChildText(GetValue(), "m_title", strTitle);
+    SetChildText(GetValue(), "m_progressText", FormatStringId<CStringW>(0x98e, StringFormat<int>(L"{0}", nClamped)));
 }
 MS2_REPLACE_METHOD(0x140F9CA30, ASScoreBoardGauge, FUN_140f9ca30, 548, 0x79062904);
 
@@ -240,8 +240,8 @@ MS2_REPLACE_METHOD(0x140F9CA30, ASScoreBoardGauge, FUN_140f9ca30, 548, 0x7906290
 UIShadowExpeditionBossBar::UIShadowExpeditionBossBar()
     : m_nCur(0), m_nMax(0)
 {
-    FUN_141924170(1);
-    FUN_141925e70(1, 1);
+    SetTweenEnabled(1);
+    SetFlag(1, 1);
 }
 
 // @0x140f9cd30
@@ -273,7 +273,7 @@ void UIShadowExpeditionBossBar::OnLoadComplete()
     CString strType(m_strTitle.IsEmpty() ? "UIScoreGaugeTypeB" : "UIScoreGaugeTypeA");
     if (m_pGauge.AssignRaw(new ASScoreBoardGauge(strType)).get() != 0) {
         m_pGauge->Init();
-        m_90->FUN_1422c6900((*m_pGauge).FUN_1422bb890());
+        m_90->AddChild((*m_pGauge).FUN_1422bb890());
     }
     m_pGauge->FUN_140f9ca30(m_nCur, m_nMax, m_strTitle);
 }
@@ -284,7 +284,7 @@ void UIShadowExpeditionBossBar::vfunc_26()
 {
     UIDialog::vfunc_26();
     if (m_pGauge.get() != 0) {
-        m_90->FUN_1422c6b70((*m_pGauge).FUN_1422bb890());
+        m_90->RemoveChild((*m_pGauge).FUN_1422bb890());
         m_pGauge = 0;
     }
     m_strTitle = L"";
@@ -292,12 +292,12 @@ void UIShadowExpeditionBossBar::vfunc_26()
 MS2_REPLACE_METHOD(0x140F9D0F0, UIShadowExpeditionBossBar, vfunc_26, 246, 0xC85CF14F);
 
 // @0x140f9d1f0
-void UIShadowExpeditionBossBar::FUN_140f9d1f0(int nCur, int nMax)
+void UIShadowExpeditionBossBar::SetCurMax(int nCur, int nMax)
 {
     m_nCur = nCur;
     m_nMax = nMax;
 }
-MS2_REPLACE_METHOD(0x140F9D1F0, UIShadowExpeditionBossBar, FUN_140f9d1f0, 45, 0xB629382D);
+MS2_REPLACE_METHOD(0x140F9D1F0, UIShadowExpeditionBossBar, SetCurMax, 45, 0xB629382D);
 
 // @0x140f9d230
 void UIShadowExpeditionBossBar::SetTitle(CStringW strTitle)

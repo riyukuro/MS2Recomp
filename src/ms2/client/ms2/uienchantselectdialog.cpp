@@ -51,7 +51,7 @@ public:
 };
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 CStringW GetStringCommonByKey(const CStringW& str);
-void FUN_1412751f0(const CStringW& str, int a, int b);
+void ShowSystemNotice(const CStringW& str, int a, int b);
 
 // @0x140e291e0
 UIEnchantSelectDialog::UIEnchantSelectDialog()
@@ -90,16 +90,16 @@ void UIEnchantSelectDialog::vfunc_67()
 void UIEnchantSelectDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_141925ec0("m_close");
+    BindCloseButton("m_close");
     FUN_1419260d0("m_webGuideButton", 0);
     ASButton* pType1 = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_type1Button", reinterpret_cast<MS2Ptr<ASButton>&>(m_type1Button)).get());
     if (pType1 != 0)
-        m_type1Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::FUN_140e29860), (void*)1);
+        m_type1Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::OnTypeButtonClick), (void*)1);
     ASButton* pType2 = reinterpret_cast<ASButton*>(reinterpret_cast<UICashAttendDialog*>(this)->FUN_140bc6d10<ASButton>("m_type2Button", reinterpret_cast<MS2Ptr<ASButton>&>(m_type2Button)).get());
     if (pType2 != 0)
-        m_type2Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::FUN_140e29860), (void*)2);
+        m_type2Button->FUN_1422ce240(EsClickDelegate(this, &UIEnchantSelectDialog::OnTypeButtonClick), (void*)2);
     if (MS2Ptr<ASMovieClip> recommend = GetChild<ASMovieClip>("m_recommendType2"))
-        recommend->vfunc_4(reinterpret_cast<CFeatureManager*>(FUN_140166410())->FUN_14036d570(0xfc));
+        recommend->vfunc_4(reinterpret_cast<CFeatureManager*>(FUN_140166410())->IsFeatureEnabled(0xfc));
     {
         CString strArg("enchant");
         CString strEvent("dialog_open");
@@ -108,7 +108,7 @@ void UIEnchantSelectDialog::OnLoadComplete()
 }
 
 // @0x140e29860
-void UIEnchantSelectDialog::FUN_140e29860(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIEnchantSelectDialog::OnTypeButtonClick(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nButton = FUN_140bd09c0(((Unk_EsParams*)&params)->m_pButton);
     CString strMode;
@@ -126,14 +126,14 @@ void UIEnchantSelectDialog::FUN_140e29860(const Scaleform::GFx::FunctionHandler:
     PCBase* pPc = ((class PCBase*)((class WorldService*)(class Unk_EsWorld*)(((class Unk_EsWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc != 0 && pPc->vfunc_65() == 1)
     {
-        FUN_1412751f0(GetStringCommonByKey(L"s_error_talk_battle_state_force_talk"), 1, 1);
+        ShowSystemNotice(GetStringCommonByKey(L"s_error_talk_battle_state_force_talk"), 1, 1);
         return;
     }
     if (nNpcId > 0)
     {
         if (CTalkScript* pScript = FUN_140856820(nNpcId, *reinterpret_cast<Common::Constants::Value<int>*>(((char*)GetClientConstants()) + 0x69a0)->Get()).get())
         {
-            ((class Unk_MyPCSurvival*)TSingleton<UITalkManager>::GetInstance())->FUN_141b213f0(MS2Ptr<CTalkScript>(pScript), nNpcId, 2, 0);
+            ((class Unk_MyPCSurvival*)TSingleton<UITalkManager>::GetInstance())->BeginTalkWithoutNpc(MS2Ptr<CTalkScript>(pScript), nNpcId, 2, 0);
             ((class Unk_MyPCSurvival*)TSingleton<UITalkManager>::GetInstance())->FUN_141b1eb90(CStringA("ItemEnchantDialog"), CStringA(strMode));
         }
     }
@@ -141,4 +141,4 @@ void UIEnchantSelectDialog::FUN_140e29860(const Scaleform::GFx::FunctionHandler:
 }
 MS2_REPLACE_METHOD(0x140E29360, UIEnchantSelectDialog, vfunc_67, 160, 0x553DC0A2);
 MS2_REPLACE_METHOD(0x140E29410, UIEnchantSelectDialog, OnLoadComplete, 1090, 0x1F3883A7);
-MS2_REPLACE_METHOD(0x140E29860, UIEnchantSelectDialog, FUN_140e29860, 715, 0x841B273B);
+MS2_REPLACE_METHOD(0x140E29860, UIEnchantSelectDialog, OnTypeButtonClick, 715, 0x841B273B);

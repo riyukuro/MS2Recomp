@@ -13,7 +13,7 @@
 #include "hook/ms2hook.h"
 
 __int64 GetServerTime();                                            // the current server time
-__int64 FUN_14028d0e0();                                            // a new tab id
+__int64 GenerateUniqueId();                                            // a new tab id
 void FUN_140274fc0(CStringW& str, void* out, const wchar_t* pszSep);   // C3: the definer's signature (0x140274fc0, commonstruct_wc.cpp): a CAtlArray<unsigned>*
 
 // @0x14026a1b0
@@ -127,7 +127,7 @@ __int64 Unk_CommonPriceRecordList::GetUsedTime(int nIndex)
 CSkillCompactControlConfig::CSkillCompactControlConfig() : m_30(0) {}
 
 // @0x14026a640
-CSkillBookTreeTabConfig::CSkillBookTreeTabConfig() : m_nId(FUN_14028d0e0()), m_slots(17, 0.75f, 0.25f, 2.25f, 10) {}
+CSkillBookTreeTabConfig::CSkillBookTreeTabConfig() : m_nId(GenerateUniqueId()), m_slots(17, 0.75f, 0.25f, 2.25f, 10) {}
 
 // @0x14026a6e0
 void CSkillBookTreeTabConfig::Write(COutputStream* pOut)

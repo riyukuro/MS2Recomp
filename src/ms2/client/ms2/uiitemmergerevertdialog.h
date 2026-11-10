@@ -1,7 +1,7 @@
 // uiitemmergerevertdialog.h - UIItemMergeRevertDialog (RTTI .?AVUIItemMergeRevertDialog@@, 0x180 bytes, UIDialog, UI id
 // 0x4f3d, swf "ItemMergeRevertDialog"): the window that reverts the merged option of an item. It holds one item scroll
 // slot (registered under the dialog name), takes the item dragged from the inventory, checks it against the item merged
-// before (FUN_140e4d330 returns the error code) and sends packet 0x3f/6 on "onOk". Owning unit:
+// before (CheckItem returns the error code) and sends packet 0x3f/6 on "onOk". Owning unit:
 // ?\uiitemmergerevertdialog.cpp. Header name assumed from the unit path; member names are invented.
 #pragma once
 #include <afx.h>
@@ -28,13 +28,13 @@ public:
     virtual void vfunc_72();                                    // 72 0x140e4c1d0 vfunc_55()
 
     void FUN_140e4c440();                                       // register the empty slot, "setData" (not ready)
-    void FUN_140e4c7a0(CItem* pItem);                           // remember the uid of the item merged before
+    void SetItemUid(CItem* pItem);                           // remember the uid of the item merged before
     void FUN_140e4c7d0(CItem* pItem);                           // show the item in the slot, "setData" (ready)
     void FUN_140e4cda0(CItem* pItem);                           // ask for the revert (message), then close
-    void FUN_140e4ce70(ItemScrollSlot& slot);                   // the item was removed from the slot
-    void FUN_140e4cea0(ItemScrollSlot& slot, DragSlot* pDrag);  // an inventory item was dropped on the slot
-    void FUN_140e4d010(int nError);                             // show the message of an error code
-    int FUN_140e4d330(CItem* pItem);                            // check the item, 0 ok or an error code (3..8)
+    void OnItemRemoved(ItemScrollSlot& slot);                   // the item was removed from the slot
+    void OnItemDropped(ItemScrollSlot& slot, DragSlot* pDrag);  // an inventory item was dropped on the slot
+    void ShowErrorMessage(int nError);                             // show the message of an error code
+    int CheckItem(CItem* pItem);                            // check the item, 0 ok or an error code (3..8)
 
 private:
     MS2_LAYOUT_FRIEND;

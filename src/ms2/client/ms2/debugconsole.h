@@ -17,19 +17,19 @@ public:
     CDebugConsole();                                                // 0x141168140
     ~CDebugConsole();                                               // 0x1411681b0 (deleting dtor 0x14116a8e0)
 
-    static CDebugConsole* FUN_141168200();                          // the instance (created on first use)
-    static void FUN_141168710();                                    // delete the instance
+    static CDebugConsole* GetInstance();                          // the instance (created on first use)
+    static void DestroyInstance();                                    // delete the instance
 
-    bool FUN_141168270();                                           // open the console window; true when open
-    void FUN_1411682d0();                                           // close the console window
-    bool FUN_141168310();                                           // the console window is open
-    bool FUN_141168350();                                           // toggle the CSoundDlg tool dialog; true when shown
+    bool OpenConsole();                                           // open the console window; true when open
+    void CloseConsole();                                           // close the console window
+    bool IsConsoleOpen();                                           // the console window is open
+    bool ToggleSoundDlg();                                           // toggle the CSoundDlg tool dialog; true when shown
     void FUN_1411683e0(const char* szFormat, ...);                  // print one line (console and log file)
     void FUN_141168540();                                           // (empty)
-    void FUN_141168550(WORD wAttributes);                           // console text colour
-    void FUN_141168580(int bFileLog);                               // copy the lines into _DebugConsoleLog.txt
-    void FUN_1411685e0(std::string strName);                        // start the named timer
-    void FUN_141168630(std::string strName, float fLimit);          // stop it; print it when it took over fLimit s
+    void SetTextColor(WORD wAttributes);                           // console text colour
+    void SetFileLog(int bFileLog);                               // copy the lines into _DebugConsoleLog.txt
+    void StartTimer(std::string strName);                        // start the named timer
+    void StopTimer(std::string strName, float fLimit);          // stop it; print it when it took over fLimit s
 
 private:
     MS2_LAYOUT_FRIEND;

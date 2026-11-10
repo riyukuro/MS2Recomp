@@ -28,7 +28,7 @@ public:
         ChangeColors() {}
         // implicit (virtual) dtor: the exe ~ChangeColors stores no vftable
         void FUN_140200950(COutputStream& stream);                          // encode
-        void FUN_140200bc0(MS2Ptr<ChangeColorItem> spItem);         // add
+        void AddItem(MS2Ptr<ChangeColorItem> spItem);         // add
         ATL::CAtlArray<MS2Ptr<ChangeColorItem> > items;
     };
 };

@@ -22,8 +22,8 @@ public:
     void vfunc_7(MS2Ptr<AScript>) override;             // 0x140c50330
     void FUN_140c51050();                               // the inventory and equipped items that can be a source
     void FUN_140c51410();                               // the items the source can be transferred to
-    void FUN_140c51680(MS2Ptr<CItem>);                  // a source slot was picked
-    void FUN_140c51a60(MS2Ptr<CItem>);                  // a target slot was picked
+    void SelectSourceItem(MS2Ptr<CItem>);                  // a source slot was picked
+    void SelectTargetItem(MS2Ptr<CItem>);                  // a target slot was picked
     void FUN_140c51fa0();                               // the action button: ask the server to transfer
     void FUN_140c527d0();                               // back to the start
     void FUN_140c52930();                               // clear everything
@@ -31,7 +31,7 @@ public:
     void FUN_140c52ac0();
     void FUN_140c52b20(ASObj&);                         // ingredient part of the select data
     void FUN_140c52f10(MS2Ptr<CItem>, ASObj&, int);     // the socket rows of an item
-    void FUN_140c533f0(CInPacket*);                     // transfer result
+    void OnTransferResult(CInPacket*);                     // transfer result
     void FUN_140c53920(CInPacket* packet);
     void FUN_140c53a70(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: transfer
     void SendItemSocketSystemMode16(const Scaleform::GFx::FunctionHandler::Params&);   // debug button: fill ingredients

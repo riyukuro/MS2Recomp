@@ -69,8 +69,8 @@ public:
     void StartCasting(ICastingEventListener* pListener, const Unk_CastingParam* pInfo);   // show (0x1418e12b0)
     void FUN_1418e1390();                                                        // cancel
 };
-UICastingBar* FUN_140ac2270(int nId);
-class Unk_PCMove { public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+UICastingBar* GetCastingBar(int nId);
+class Unk_PCMove { public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_ReactBuffMgr { public: };
 // PCBase vtable view: slots 22 and 68 take the point by value (the exe copies it to a 16-aligned temp)
 class Unk_ReactSlots
@@ -162,7 +162,7 @@ void StateReact::vfunc_4(StateData* pData)
                     return;
                 }
                 kRef.operator->()->GetReactorInfo((struct Unk_ReactorInfo*)(&kInfo));
-                UICastingBar* pBar = FUN_140ac2270(0x4e72);
+                UICastingBar* pBar = GetCastingBar(0x4e72);
                 if (pBar == 0)
                     return;
                 pBar->StartCasting(this, (const Unk_CastingParam*)&kInfo);
@@ -200,7 +200,7 @@ void StateReact::vfunc_5(int n)
         break;
     case 0x9f:
         {
-            UICastingBar* pBar = FUN_140ac2270(0x4e72);
+            UICastingBar* pBar = GetCastingBar(0x4e72);
             if (pBar == 0)
                 return;
             pBar->FUN_1418e1390();
@@ -245,7 +245,7 @@ void StateReact::vfunc_8(double fTime)
         }
     }
     Unk_ReactBuffMgr* pMgr = ((Unk_ReactBuffMgr*)(reinterpret_cast<PCBase*>(pRider)->FUN_14166d240()));
-    reinterpret_cast<Unk_ReactSlots*>(pRider)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->FUN_141683290())));
+    reinterpret_cast<Unk_ReactSlots*>(pRider)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMgr)->GetMoveDirection())));
     if (reinterpret_cast<PCBase*>(m_pOwner)->FUN_1416749c0() != 0)
         pRider->vfunc_59(2, 0, 0, 0);
     else

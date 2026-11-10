@@ -113,7 +113,7 @@ public:
 };
 class Unk_1403ed2d0 { public: Unk_141bd0cc0* FUN_141bd0cc0(); };
 bool FUN_140b883c0();
-bool FUN_140b88470(Vector3 const&, Vector3 const&);   // C3: was FUN_140b88470
+bool IsWithinMicroGameDistance(Vector3 const&, Vector3 const&);   // C3: was FUN_140b88470
 bool FUN_140b884e0(Vector3&);   // C3: was FUN_140b884e0
 bool FUN_140b887b0(Unk_141bd0cc0* pPlayer);
 class StateMicroGameRps   // C3: member view for the former free stand-ins
@@ -189,7 +189,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     }
     Unk_Pos posPlayer = pPlayer->vfunc_18();
     Unk_Pos posTarget = pTarget->vfunc_18();
-    if (!FUN_140b88470(*(Vector3 const*)&static_cast<struct Unk_Pos&>(posPlayer), *(Vector3 const*)&static_cast<struct Unk_Pos&>(posTarget)))
+    if (!IsWithinMicroGameDistance(*(Vector3 const*)&static_cast<struct Unk_Pos&>(posPlayer), *(Vector3 const*)&static_cast<struct Unk_Pos&>(posTarget)))
     {
         FUN_141275260(0xd01, 1, 1);
         return;
@@ -211,7 +211,7 @@ void UIBannerEventListenerRpsGame::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
 }
 
 // @0x140bac700
-bool FUN_140bac700(int nResult, const CMsgBoxData& box)
+bool OnRpsWaitingBoxResult(int nResult, const CMsgBoxData& box)
 {
     if (box.GetTimer().m_nButton != 0)
         return true;
@@ -282,7 +282,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
     }
     Unk_Pos posPlayer = pPlayer->vfunc_18();
     Unk_Pos posTarget = pTarget->vfunc_18();
-    if (!FUN_140b88470(*(Vector3 const*)&static_cast<struct Unk_Pos&>(posPlayer), *(Vector3 const*)&static_cast<struct Unk_Pos&>(posTarget)))
+    if (!IsWithinMicroGameDistance(*(Vector3 const*)&static_cast<struct Unk_Pos&>(posPlayer), *(Vector3 const*)&static_cast<struct Unk_Pos&>(posTarget)))
     {
         FUN_1412752d0(L"s_microgame_couple_dance_request_failed_wrong_distance", 1);
         return;
@@ -305,7 +305,7 @@ void UIBannerEventListenerCoupleDance::vfunc_1(MS2Ptr<UIBanner::Entity> pEntity)
 }
 
 // @0x140bacda0
-bool FUN_140bacda0(int nResult, const CMsgBoxData& box)
+bool OnCoupleDanceWaitingBoxResult(int nResult, const CMsgBoxData& box)
 {
     if (box.GetTimer().m_nButton != 0)
         return true;

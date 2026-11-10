@@ -50,17 +50,17 @@ public:
     virtual void vfunc_67();                            // 67 0x141a6e150 close: drop the preview npc
     virtual int vfunc_48() { return 0x4e89; }           // 48 0x141a71e20 UI type id
 
-    int FUN_141a6e7e0(CStringW strFilter);              // refill "m_npcList" with the names matching the text / id
+    int FilterNpcList(CStringW strFilter);              // refill "m_npcList" with the names matching the text / id
     int LoadNpcName();                                // load npcName.xml into m_names
-    int FUN_141a6ee60(int nNpcId);                      // select an npc: build the rows
+    int SelectNpc(int nNpcId);                      // select an npc: build the rows
     int FUN_141a6fd90(int nRow);                        // show the scripts of a row in "m_output"
     void FUN_141a70b90(int nRow);                       // open the talk of a row in the talk window
-    void FUN_141a71050(int nRow);                       // play the animation of a row
+    void PlayRowAnimation(int nRow);                       // play the animation of a row
     int FUN_141a711b0();                                // the button bar is on its first tab
     efd::SmartPointer<CNpc> FUN_141a71280();            // the npc of the selected npc id in the field (null = none)
-    void FUN_141a713a0();                               // spawn the preview npc
-    void FUN_141a717c0();                               // remove the preview npc
-    int FUN_141a708e0(int nQuestId, int nTalkId, ATL::CAtlArray<int>& rOut);   // collect a quest talk and the talks it jumps to
+    void SpawnPreviewNpc();                               // spawn the preview npc
+    void RemovePreviewNpc();                               // remove the preview npc
+    int CollectTalkIds(int nQuestId, int nTalkId, ATL::CAtlArray<int>& rOut);   // collect a quest talk and the talks it jumps to
 
 private:
     MS2_LAYOUT_FRIEND;

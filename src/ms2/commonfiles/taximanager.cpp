@@ -123,20 +123,20 @@ bool CTaxiManager::FUN_14085f730(unsigned int nField)
 MS2_REPLACE_METHOD(0x14085f730, CTaxiManager, FUN_14085f730, 63, 0x613ACC7A);
 
 // @0x14085fcb0
-static Unk_TaxiKey FUN_14085fcb0(unsigned int nA, unsigned int nB)
+static Unk_TaxiKey MakeTaxiKey(unsigned int nA, unsigned int nB)
 {
     if (nA > nB)
         return std::make_pair(nB, nA);
     return std::make_pair(nA, nB);
 }
-MS2_REPLACE(0x14085fcb0, FUN_14085fcb0, 85, 0xD0072D33);
+MS2_REPLACE(0x14085fcb0, MakeTaxiKey, 85, 0xD0072D33);
 
 // @0x14085f780
 long long CTaxiManager::FUN_14085f780(int nFrom, int nTo, short sOption)
 {
     if (nFrom == nTo)
         return 0;
-    Unk_TaxiKey kKey = FUN_14085fcb0(nFrom, nTo);
+    Unk_TaxiKey kKey = MakeTaxiKey(nFrom, nTo);
     std::map<Unk_TaxiKey, int>::const_iterator itCached = m_mapRouteLength.find(kKey);
     if (itCached != m_mapRouteLength.end())
         return ((class CLua*)FUN_1401c0db0())->CalcTaxiCharge(itCached->second, sOption);
@@ -152,7 +152,7 @@ long long CTaxiManager::FUN_14085f780(int nFrom, int nTo, short sOption)
         int nHops = spCur->m_nHops + 1;
         if (nHops >= nBest && nBest >= 0)
             continue;
-        Unk_FieldIdListPtr spLinks = TSingleton<CFieldMetaTable>::GetInstance()->FUN_1406fbca0(spCur->m_nStation);
+        Unk_FieldIdListPtr spLinks = TSingleton<CFieldMetaTable>::GetInstance()->GetPortalTargets(spCur->m_nStation);
         if (spLinks == 0)
             continue;
         POSITION pos = spLinks->GetHeadPosition();

@@ -61,7 +61,7 @@
 #include "ms2/client/ms2/uishopdialog.h"
 #include "ms2/placeholder/wcformat.h"  // C3: FUN_14028dfa0 wrappers
 #include "ms2/client/ms2/equipment.h"
-class TShopPaymentAttr { public: class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const & GetIconTag(void) const; enum ePaymentType FUN_1406dc510(void) const; unsigned int GetItemId(void) const; };
+class TShopPaymentAttr { public: class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>> const & GetIconTag(void) const; enum ePaymentType GetPaymentType(void) const; unsigned int GetItemId(void) const; };
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> Unk_ClickDelegate;
 
 // C3: Unk_140acd6e0 (the button view) is ASButton itself.
@@ -71,7 +71,7 @@ CString FUN_14016a600(const wchar_t* psz, int n);                // wide -> narr
 CString FUN_14102a0b0(int nType, const CString& strName, const CString& strUrl, CString strKey);   // banner image path
 void FUN_1418fe1c0(const CString& strUrl);                       // open a url
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
-CNetworkService* FUN_140714f90();
+CNetworkService* GetNetworkService();
 template <class T> T* Unk_BreakDialog(int nId);   // C3: was FUN_140534780
 CStringW GetStringCommon(int nId);                                 // string table lookup
 CStringW GetStringCommonByKey(const CStringW& strKey);                 // string table lookup by key
@@ -79,9 +79,9 @@ int FUN_141276180(const CString& strSound, const CString& strArg);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show a message box
 CStringW FUN_1418fec90(int nCurrency, __int64 nAmount, int nArg);
 CStringW FUN_1418fee40(int nCurrency, __int64 nAmount, const CString& strArg, bool bAlt);
-bool FUN_1418ff1f0(int nCurrency, __int64 nAmount, int nItemId);
-__int64 FUN_1418ff5a0(int nCurrency, __int64 nAmount, int nItemId);
-void FUN_1418ff710(int nCurrency, __int64 nAmount, int nItemId, int nOpt);
+bool HasEnoughCurrency(int nCurrency, __int64 nAmount, int nItemId);
+__int64 GetCurrencyAmount(int nCurrency, __int64 nAmount, int nItemId);
+void ShowLackCurrencyMessage(int nCurrency, __int64 nAmount, int nItemId, int nOpt);
 int FUN_1403baee0(int value);
 void Unk_140657820();                                            // 'invalid call' of an empty Delegate
 
@@ -133,15 +133,15 @@ void ShopBannerInfo::FUN_141347c30(const Unk_AdbPtr& spBanner, int nType, CStrin
     CString strImg = FUN_14102a0b0(nType, m_strName, strUrl, strKey);
     if (strImg.GetLength() > 0)
         m_strImgPath = strImg;
-    m_nKind = FUN_141349e30(m_strName2);
+    m_nKind = GetBannerLinkKind(m_strName2);
 }
 MS2_REPLACE_METHOD(0x141347c30, ShopBannerInfo, FUN_141347c30, 408, 0x4A79F065);
 
 // @0x141347dd0
 void ShopBannerInfo::vfunc_1(AScript* pObj)
 {
-    static_cast<ASObj*>(pObj)->FUN_1407cba60("imgpath", m_strImgPath);
-    static_cast<ASObj*>(pObj)->FUN_1407cba60("name", m_strName);
+    static_cast<ASObj*>(pObj)->SetStringMember("imgpath", m_strImgPath);
+    static_cast<ASObj*>(pObj)->SetStringMember("name", m_strName);
 }
 MS2_REPLACE_METHOD(0x141347dd0, ShopBannerInfo, vfunc_1, 139, 0x3E389F5C);
 
@@ -154,13 +154,13 @@ MeratMarketShopBannerInfo::MeratMarketShopBannerInfo()
 // ---- ShopBanner ----
 
 // @0x141347ed0
-void ShopBanner::FUN_141347ed0(MS2Ptr<ShopBannerInfo> spInfo)
+void ShopBanner::AddBanner(MS2Ptr<ShopBannerInfo> spInfo)
 {
     if (spInfo == 0)
         return;
     m_banners.SetAt(spInfo->m_strName, spInfo);
 }
-MS2_REPLACE_METHOD(0x141347ed0, ShopBanner, FUN_141347ed0, 115, 0xDF5BF32C);
+MS2_REPLACE_METHOD(0x141347ed0, ShopBanner, AddBanner, 115, 0xDF5BF32C);
 
 // @0x141347f50
 MS2Ptr<ShopBannerInfo> ShopBanner::FUN_141347f50(const Unk_AdbPtr& spBanner, int nType)
@@ -176,24 +176,24 @@ MS2Ptr<ShopBannerInfo> ShopBanner::FUN_141347f50(const Unk_AdbPtr& spBanner, int
 MS2_REPLACE_METHOD(0x141347f50, ShopBanner, FUN_141347f50, 324, 0x8C051611);
 
 // @0x1413480a0
-MS2Ptr<ShopBannerInfo> ShopBanner::FUN_1413480a0(const CString& strName)
+MS2Ptr<ShopBannerInfo> ShopBanner::FindBanner(const CString& strName)
 {
     MS2Ptr<ShopBannerInfo> spInfo(0);
     if (m_banners.Lookup(strName, spInfo))
         return spInfo;
     return MS2Ptr<ShopBannerInfo>(0);
 }
-MS2_REPLACE_METHOD(0x1413480a0, ShopBanner, FUN_1413480a0, 175, 0x0287A2A3);
+MS2_REPLACE_METHOD(0x1413480a0, ShopBanner, FindBanner, 175, 0x0287A2A3);
 
 // @0x141348160
-void ShopBanner::FUN_141348160(const CString& strUrl)
+void ShopBanner::OpenBannerLink(const CString& strUrl)
 {
     FUN_1418fe1c0(strUrl);
 }
-MS2_REPLACE_METHOD(0x141348160, ShopBanner, FUN_141348160, 29, 0x6C2B4716);
+MS2_REPLACE_METHOD(0x141348160, ShopBanner, OpenBannerLink, 29, 0x6C2B4716);
 
 // @0x141348190
-void ShopBanner::FUN_141348190(ASArray& arr)
+void ShopBanner::WriteBanners(ASArray& arr)
 {
     if (m_banners.IsEmpty())
         return;
@@ -208,12 +208,12 @@ void ShopBanner::FUN_141348190(ASArray& arr)
         }
     }
 }
-MS2_REPLACE_METHOD(0x141348190, ShopBanner, FUN_141348190, 322, 0x553CA18E);
+MS2_REPLACE_METHOD(0x141348190, ShopBanner, WriteBanners, 322, 0x553CA18E);
 
 // ---- tab lists ----
 
 // @0x1413482e0
-int FUN_1413482e0(const Unk_ShopTabArray& arr, MS2Ptr<CShopCategoryTable::TabInfo> spTab)
+int FindTabIndex(const Unk_ShopTabArray& arr, MS2Ptr<CShopCategoryTable::TabInfo> spTab)
 {
     if (!arr.IsEmpty())
     {
@@ -226,7 +226,7 @@ int FUN_1413482e0(const Unk_ShopTabArray& arr, MS2Ptr<CShopCategoryTable::TabInf
     }
     return -1;
 }
-MS2_REPLACE(0x1413482e0, FUN_1413482e0, 213, 0x5B7DB259);
+MS2_REPLACE(0x1413482e0, FindTabIndex, 213, 0x5B7DB259);
 
 namespace efd { int Stricmp(const char* s1, const char* s2); }
 
@@ -252,7 +252,7 @@ int FUN_1413483c0(const CString& strCategory, const CString& strList)
 }
 
 // @0x141348530
-void FUN_141348530(int nShop, Unk_ShopTabArray& arr)
+void BuildShopTabs(int nShop, Unk_ShopTabArray& arr)
 {
     arr.RemoveAll();
     CShopCategoryTable::TabListPtr spTabs = TSingleton<CShopCategoryTable>::GetInstance()->GetTabs(nShop);
@@ -261,7 +261,7 @@ void FUN_141348530(int nShop, Unk_ShopTabArray& arr)
 }
 
 // @0x141348610
-void FUN_141348610(int nShop, Unk_ShopTabArray& arr, std::map<int, MS2Ptr<CNpcShopProductBase> >& products)
+void BuildShopTabsForProducts(int nShop, Unk_ShopTabArray& arr, std::map<int, MS2Ptr<CNpcShopProductBase> >& products)
 {
     arr.RemoveAll();
     CShopCategoryTable::TabListPtr spTabs = TSingleton<CShopCategoryTable>::GetInstance()->GetTabs(nShop);
@@ -311,7 +311,7 @@ void FUN_1413487e0(Unk_ShopTabArray& arr, CShopCategoryTable::TabList& list, MS2
         if (bAdd)
         {
             MS2Ptr<NpcShopTabInfo> spInfo(0);
-            int nIndex = FUN_1413482e0(arr, spTab);
+            int nIndex = FindTabIndex(arr, spTab);
             if (nIndex < 0)
             {
                 spInfo.AssignRaw(new NpcShopTabInfo(spTab));
@@ -332,7 +332,7 @@ void FUN_1413487e0(Unk_ShopTabArray& arr, CShopCategoryTable::TabList& list, MS2
 }
 
 // @0x141348cf0
-void FUN_141348cf0(const Unk_ShopTabArray& arr, MS2Ptr<AScript> spRoot, int nSale, Delegate<void(AScript&)>* pfnEach)
+void BuildCategoryList(const Unk_ShopTabArray& arr, MS2Ptr<AScript> spRoot, int nSale, Delegate<void(AScript&)>* pfnEach)
 {
     ASArray arrTabs(2);
     int nMaxDepth = 0;
@@ -340,7 +340,7 @@ void FUN_141348cf0(const Unk_ShopTabArray& arr, MS2Ptr<AScript> spRoot, int nSal
     if (spRoot.get())
         spRoot->Invoke("buildCategoryList", arrTabs, nMaxDepth);
 }
-MS2_REPLACE(0x141348cf0, FUN_141348cf0, 211, 0xEC8D684F);
+MS2_REPLACE(0x141348cf0, BuildCategoryList, 211, 0xEC8D684F);
 
 // @0x141348dd0
 void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, int nSale, Delegate<void(AScript&)>* pfnEach)
@@ -360,16 +360,16 @@ void FUN_141348dd0(const Unk_ShopTabArray& arr, ASArray& out, int* pMaxDepth, in
         ASObj obj(2);
         spTab->Write(reinterpret_cast<Unk_AsOut*>(&obj));
         int nDepth = spInfo->m_nDepth;
-        ((class AScript&)(obj)).FUN_1407cb9c0("depth", nDepth);
+        ((class AScript&)(obj)).SetIntMember("depth", nDepth);
         *pMaxDepth = (*pMaxDepth > nDepth) ? *pMaxDepth : nDepth;
         obj.FUN_140e846b0("tabindex", i);
         int nId = spTab->GetId();
         if ((unsigned)nSale > 0 && TSingleton<CShopEventManager>::GetInstance()->FUN_1407ce690(nId, nSale))
-            obj.FUN_1407cbbe0("saleTag", true);
-        ((class AScript&)(obj)).FUN_1407cb9c0("space", 1);
+            obj.SetBoolMember("saleTag", true);
+        ((class AScript&)(obj)).SetIntMember("space", 1);
         if (pfnEach != 0 && !pfnEach->IsNull())
             (*pfnEach)(obj);
-        out.PushValue(obj.FUN_1422bb870());
+        out.PushValue(obj.GetValue());
     }
 }
 
@@ -415,7 +415,7 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
         spEquipped = spEquip->GetItem();
     if (operator==(reinterpret_cast<CItemData*>(spItem->FUN_140527840())->function.name, L"ItemExchangeScroll"))
     {
-        MS2Ptr<CExchangeItemInfo> spInfo = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(spItem->FUN_1405276c0());
+        MS2Ptr<CExchangeItemInfo> spInfo = TSingleton<CItemExchangeScrollTable>::GetInstance()->GetData(spItem->GetItemId());
         if (spInfo.get())
         {
             MS2Ptr<CItem> spResult(new CItem);
@@ -440,7 +440,7 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
                         CStringW strEmpty(L"");
                         pTip->SetEnablePutonBoth(strEmpty, GetStringCommon(0x758));
                     }
-                    *pOut = pTip->FUN_1422bb870();
+                    *pOut = pTip->GetValue();
                 }
             }
         }
@@ -457,7 +457,7 @@ void FUN_141349210(MS2Ptr<CItem> spItem, Scaleform::GFx::Value* pOut, bool bCapt
                 CStringW strEmpty(L"");
                 tip.SetEnablePutonBoth(strEmpty, GetStringCommon(0x758));
             }
-            *pOut = tip.FUN_1422bb870();
+            *pOut = tip.GetValue();
         }
     }
 }
@@ -481,13 +481,13 @@ int FUN_1413499b0(int nTab)
             }
             else
             {
-                TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4e3b);
-                TSingleton<CUIService>::GetInstance()->FUN_141adc690((eUIClassID)0x4e2d);
+                TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4e3b);
+                TSingleton<CUIService>::GetInstance()->RequestCloseDialog((eUIClassID)0x4e2d);
             }
         }
         if (bOpen)
         {
-            FUN_140714f90()->SendSystemShop(nTab, 1);
+            GetNetworkService()->SendSystemShop(nTab, 1);
             FUN_141276180(s_strBuildOpenShop, "");
         }
         else
@@ -505,7 +505,7 @@ void FUN_141349ae0(MS2Ptr<CItem> spItem, int nStringId, const CString& strUrl)
 {
     if (spItem == 0)
         return;
-    FUN_141349ba0(spItem, GetStringCommon(nStringId), strUrl);
+    ShowItemMessageBox(spItem, GetStringCommon(nStringId), strUrl);
 }
 MS2_REPLACE(0x141349ae0, FUN_141349ae0, 181, 0x7FFCBB10);
 
@@ -517,7 +517,7 @@ static bool FUN_141349e10(int nResult, const CMsgBoxData& box)
 MS2_REPLACE(0x141349e10, FUN_141349e10, 12, 0x4A4C3EC5);
 
 // @0x141349ba0
-void FUN_141349ba0(MS2Ptr<CItem> spItem, CStringW strText, const CString& strUrl)
+void ShowItemMessageBox(MS2Ptr<CItem> spItem, CStringW strText, const CString& strUrl)
 {
     if (spItem == 0)
         return;
@@ -529,10 +529,10 @@ void FUN_141349ba0(MS2Ptr<CItem> spItem, CStringW strText, const CString& strUrl
     spBox->FUN_141a01ee0(spItem, spItem->FUN_140527b10(), 1, 0, -1, -1, 1);
     FUN_140d73c60(spBox);
 }
-MS2_REPLACE(0x141349ba0, FUN_141349ba0, 616, 0xA11CBD25);
+MS2_REPLACE(0x141349ba0, ShowItemMessageBox, 616, 0xA11CBD25);
 
 // @0x141349e30
-int FUN_141349e30(const CString& strKind)
+int GetBannerLinkKind(const CString& strKind)
 {
     int nKind = 0;
     if (strKind.CompareNoCase("link") == 0)
@@ -547,7 +547,7 @@ int FUN_141349e30(const CString& strKind)
         nKind = 5;
     return nKind;
 }
-MS2_REPLACE(0x141349e30, FUN_141349e30, 184, 0xBCF869E9);
+MS2_REPLACE(0x141349e30, GetBannerLinkKind, 184, 0xBCF869E9);
 
 // ---- currency helpers ----
 
@@ -555,7 +555,7 @@ MS2_REPLACE(0x141349e30, FUN_141349e30, 184, 0xBCF869E9);
 __int64 FUN_141349ef0(int nKind, int nItemId, unsigned int nAmount)
 {
     int nCurrency = FUN_14134a170(nKind);
-    return FUN_1418ff5a0(nCurrency, nAmount, nItemId);
+    return GetCurrencyAmount(nCurrency, nAmount, nItemId);
 }
 MS2_REPLACE(0x141349ef0, FUN_141349ef0, 55, 0xB69B65E2);
 
@@ -574,12 +574,12 @@ MS2_REPLACE(0x141349f30, FUN_141349f30, 237, 0xD66D1824);
 bool FUN_14134a030(int nKind, int nItemId, unsigned int nAmount)
 {
     int nCurrency = FUN_14134a170(nKind);
-    return FUN_1418ff1f0(nCurrency, nAmount, nItemId);
+    return HasEnoughCurrency(nCurrency, nAmount, nItemId);
 }
 MS2_REPLACE(0x14134a030, FUN_14134a030, 55, 0xDBE12B4E);
 
 // @0x14134a070
-CStringW FUN_14134a070(int nKind, int nArg, unsigned int nAmount)
+CStringW GetCurrencyText(int nKind, int nArg, unsigned int nAmount)
 {
     CStringW strText;
     {
@@ -588,13 +588,13 @@ CStringW FUN_14134a070(int nKind, int nArg, unsigned int nAmount)
     }
     return strText;
 }
-MS2_REPLACE(0x14134a070, FUN_14134a070, 165, 0x55430BE5);
+MS2_REPLACE(0x14134a070, GetCurrencyText, 165, 0x55430BE5);
 
 // @0x14134a120
 void FUN_14134a120(int nKind, int nItemId, unsigned int nAmount)
 {
     int nCurrency = FUN_14134a170(nKind);
-    FUN_1418ff710(nCurrency, nAmount, nItemId, 1);
+    ShowLackCurrencyMessage(nCurrency, nAmount, nItemId, 1);
 }
 MS2_REPLACE(0x14134a120, FUN_14134a120, 61, 0xEEEAD390);
 
@@ -608,22 +608,22 @@ MS2_REPLACE(0x14134a170, FUN_14134a170, 22, 0xFF2C17B2);
 // @0x14134a190
 __int64 FUN_14134a190(Unk_BSFee* pFee)
 {
-    return FUN_141349ef0((((int)((class TShopPaymentAttr*)(pFee))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), 0);
+    return FUN_141349ef0((((int)((class TShopPaymentAttr*)(pFee))->GetPaymentType())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), 0);
 }
 MS2_REPLACE(0x14134a190, FUN_14134a190, 54, 0xA554498C);
 
 // @0x14134a1d0
-bool FUN_14134a1d0(Unk_BSFee* pFee, const unsigned int* pPrice)
+bool CanPayFee(Unk_BSFee* pFee, const unsigned int* pPrice)
 {
-    return FUN_14134a030((((int)((class TShopPaymentAttr*)(pFee))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice);
+    return FUN_14134a030((((int)((class TShopPaymentAttr*)(pFee))->GetPaymentType())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice);
 }
-MS2_REPLACE(0x14134a1d0, FUN_14134a1d0, 64, 0xD9B549FA);
+MS2_REPLACE(0x14134a1d0, CanPayFee, 64, 0xD9B549FA);
 
 // @0x14134a220
 CStringW FUN_14134a220(Unk_BSFee* pFee, const unsigned int* pPrice)
 {
     CStringW strText;
-    FUN_141349f30(strText, (((int)((class TShopPaymentAttr*)(pFee))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice, ((class TShopPaymentAttr*)(pFee))->GetIconTag());
+    FUN_141349f30(strText, (((int)((class TShopPaymentAttr*)(pFee))->GetPaymentType())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), *pPrice, ((class TShopPaymentAttr*)(pFee))->GetIconTag());
     return strText;
 }
 MS2_REPLACE(0x14134a220, FUN_14134a220, 172, 0x6ECB716B);
@@ -631,13 +631,13 @@ MS2_REPLACE(0x14134a220, FUN_14134a220, 172, 0x6ECB716B);
 // @0x14134a2e0
 void FUN_14134a2e0(Unk_BSFee* pFee)
 {
-    FUN_14134a120((((int)((class TShopPaymentAttr*)(pFee))->FUN_1406dc510())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), 0);
+    FUN_14134a120((((int)((class TShopPaymentAttr*)(pFee))->GetPaymentType())), ((int)((class TShopPaymentAttr*)(pFee))->GetItemId()), 0);
 }
 MS2_REPLACE(0x14134a2e0, FUN_14134a2e0, 54, 0x2D3D1D1C);
 
 // @0x14134a320
 // The sale tag of a product: the tag kind and, for a discount (4), the "n% off" text.
-void FUN_14134a320(ASObj& obj, const int& nTag, const __int64& nSalePrice, const __int64& nPrice)
+void SetSaleTag(ASObj& obj, const int& nTag, const __int64& nSalePrice, const __int64& nPrice)
 {
     obj.FUN_140fbd930("saleTag", nTag);
     bool bSale = nPrice > nSalePrice;
@@ -647,11 +647,11 @@ void FUN_14134a320(ASObj& obj, const int& nTag, const __int64& nSalePrice, const
         if (nPercent > 0)
         {
             CStringW strText = FUN_14028dfa0<int>(CStringW(L"s_common_saletag_sale"), nPercent);
-            ((class AScript&)(obj)).FUN_1407cbb20("saleTagText", strText);
+            ((class AScript&)(obj)).SetWStringMember("saleTagText", strText);
         }
     }
 }
-MS2_REPLACE(0x14134a320, FUN_14134a320, 343, 0x7ADD3300);
+MS2_REPLACE(0x14134a320, SetSaleTag, 343, 0x7ADD3300);
 
 // @0x14134a5a0
 static void FUN_14134a5a0(const Scaleform::GFx::FunctionHandler::Params& params)
@@ -667,7 +667,7 @@ MS2_REPLACE(0x14134a5a0, FUN_14134a5a0, 112, 0x127C11A5);
 // Binds the probability info button (KR builds only) and opens ShopProbInfoUrl on click.
 void FUN_14134a480(AScript& root, const CString& strName, MS2Ptr<ASButton>* pButton)
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036e4c0())
+    if (!((class CFeatureManager*)FUN_140166410())->IsRegionKR())
         return;
     if (*pButton == 0)
         *pButton = root.FUN_140acce30<ASButton>(strName);

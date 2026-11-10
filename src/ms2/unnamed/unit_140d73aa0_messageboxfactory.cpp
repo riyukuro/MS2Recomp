@@ -21,7 +21,7 @@ class CMsgBoxData
 {
 public:
     CMsgBoxData(int nType);
-    void FUN_141a02860(void* p);
+    void SetListener(void* p);
     void SetExtra(const CStringW& str);
     void SetMsg(const CStringW& str);
     void SetCallback(Unk_MsgBoxCallback cb);
@@ -65,16 +65,16 @@ Unk_BitSet11 g_143ac2fb8;
 extern int g_1439f5a0c;
 
 void FUN_140d73c60(Unk_MsgBoxPtr box);
-Unk_MsgBoxPtr FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);
-Unk_MsgBoxPtr FUN_140d74390(CStringW text, int nType, Unk_MsgBoxCallback cb);
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
+Unk_MsgBoxPtr CreateMessageBox(int nType, CStringW text, void* p, CStringW tag);
+Unk_MsgBoxPtr ShowMessageBoxWithCallback(CStringW text, int nType, Unk_MsgBoxCallback cb);
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 
 // @0x140d73aa0
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag)
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
-    box->FUN_141a02860(p);
+    box->SetListener(p);
     box->SetExtra(tag);
     box->SetMsg(text);
     FUN_14151f150(box);
@@ -83,7 +83,7 @@ void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag)
 // @0x140d73bc0
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag)
 {
-    FUN_140d73aa0(GetStringCommon(nStrId), nType, p, tag);
+    ShowMessageBox(GetStringCommon(nStrId), nType, p, tag);
 }
 
 // @0x140d73c60
@@ -101,10 +101,10 @@ void FUN_140d73cd0()
 }
 
 // @0x140d73d20
-Unk_MsgBoxPtr FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag)
+Unk_MsgBoxPtr CreateMessageBox(int nType, CStringW text, void* p, CStringW tag)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
-    box->FUN_141a02860(p);
+    box->SetListener(p);
     box->SetExtra(tag);
     box->SetMsg(text);
     return box;
@@ -113,7 +113,7 @@ Unk_MsgBoxPtr FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag)
 // @0x140d73e40
 Unk_MsgBoxPtr FUN_140d73e40(int nType, int nStrId, void* p, CStringW tag)
 {
-    return FUN_140d73d20(nType, GetStringCommon(nStrId), p, tag);
+    return CreateMessageBox(nType, GetStringCommon(nStrId), p, tag);
 }
 
 // @0x140d73f20
@@ -127,7 +127,7 @@ Unk_MsgBoxPtr FUN_140d73f20(CStringW text, int nType)
 // @0x140d73ff0
 void FUN_140d73ff0(CStringW text)
 {
-    Unk_MsgBoxPtr box = FUN_140d74390(GetStringCommonByKey(text), 0, FUN_140b240b0());
+    Unk_MsgBoxPtr box = ShowMessageBoxWithCallback(GetStringCommonByKey(text), 0, FUN_140b240b0());
 }
 
 // @0x140d74090
@@ -141,7 +141,7 @@ Unk_MsgBoxPtr FUN_140d74090(Unk_MsgBoxCallback cb, CStringW text)
 }
 
 // @0x140d74230
-Unk_MsgBoxPtr FUN_140d74230(Unk_MsgBoxCallback cb, CStringW text)
+Unk_MsgBoxPtr ShowYesNoMessageBox(Unk_MsgBoxCallback cb, CStringW text)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(1));
     box->SetMsg(text);
@@ -151,7 +151,7 @@ Unk_MsgBoxPtr FUN_140d74230(Unk_MsgBoxCallback cb, CStringW text)
 }
 
 // @0x140d74390
-Unk_MsgBoxPtr FUN_140d74390(CStringW text, int nType, Unk_MsgBoxCallback cb)
+Unk_MsgBoxPtr ShowMessageBoxWithCallback(CStringW text, int nType, Unk_MsgBoxCallback cb)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
     box->SetMsg(text);
@@ -161,7 +161,7 @@ Unk_MsgBoxPtr FUN_140d74390(CStringW text, int nType, Unk_MsgBoxCallback cb)
 }
 
 // @0x140d74500
-Unk_MsgBoxPtr FUN_140d74500(CStringW text, int nType, Unk_MsgBoxCallback cb)
+Unk_MsgBoxPtr CreateMessageBoxWithCallback(CStringW text, int nType, Unk_MsgBoxCallback cb)
 {
     Unk_MsgBoxPtr box(new CMsgBoxData(nType));
     box->SetMsg(text);
@@ -169,18 +169,18 @@ Unk_MsgBoxPtr FUN_140d74500(CStringW text, int nType, Unk_MsgBoxCallback cb)
     return box;
 }
 
-void FUN_140d746e0(void* p, int nBit, const CStringW& strA, const CStringW& strB);
+void ShowTermsMessageBox(void* p, int nBit, const CStringW& strA, const CStringW& strB);
 
 // @0x140d74640
 void FUN_140d74640(void* p, int nBit, int nIdA, int nIdB)
 {
-    FUN_140d746e0(p, nBit, GetStringCommon(nIdA), GetStringCommon(nIdB));
+    ShowTermsMessageBox(p, nBit, GetStringCommon(nIdA), GetStringCommon(nIdB));
 }
 
 // @0x140d746e0
-void FUN_140d746e0(void* p, int nBit, const CStringW& strA, const CStringW& strB)
+void ShowTermsMessageBox(void* p, int nBit, const CStringW& strA, const CStringW& strB)
 {
-    Unk_MsgBoxPtr box = FUN_140d73d20(0x1b, CStringW(strB), p, CStringW(L"terms"));
+    Unk_MsgBoxPtr box = CreateMessageBox(0x1b, CStringW(strB), p, CStringW(L"terms"));
     if (box.get() != 0)
     {
         box->FUN_141a01800(1);
@@ -193,7 +193,7 @@ void FUN_140d746e0(void* p, int nBit, const CStringW& strA, const CStringW& strB
 }
 
 // @0x140d748b0
-Unk_MsgBoxPtr FUN_140d748b0(int nBit, const CStringW& strA, const CStringW& strB, Unk_MsgBoxCallback cb)
+Unk_MsgBoxPtr ShowTermsMessageBoxWithCallback(int nBit, const CStringW& strA, const CStringW& strB, Unk_MsgBoxCallback cb)
 {
     g_1439f5a0c = nBit;
     Unk_MsgBoxPtr box(new CMsgBoxData(0x1b));

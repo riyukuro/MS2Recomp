@@ -25,7 +25,7 @@ class UICashAttendGifList : public CPtred {
 public:
     UICashAttendGifList(UICashAttendDialog* pDialog, MS2Ptr<ASItemRendererBase> spClip);
     void FUN_140bc2620(const Scaleform::GFx::FunctionHandler::Params& params);   // row clicked: show the day's rewards
-    void FUN_140bc2b10();                                                        // clear the row
+    void ClearRow();                                                        // clear the row
 private:
     MS2_LAYOUT_FRIEND;
     MS2Ptr<ASItemRendererBase> m_clip;                  // +0x18
@@ -61,16 +61,16 @@ public:
     void FUN_140bc43d0(GameEventVariable* pVar);
     MS2Ptr<GameEventCashAttendCli> GetSelected();                 // the selected event
     void FUN_140bc4460();                                           // refresh
-    void FUN_140bc44b0();                                           // refresh the event buttons
+    void RefreshEventButtons();                                           // refresh the event buttons
     void FUN_140bc4980();                                           // refresh the gauge, list and period text
-    void FUN_140bc4d40();                                           // refresh the use-point button
+    void RefreshUsePointButton();                                           // refresh the use-point button
     void RebuildActiveEvents();                                           // rebuild the active events
     void ResolveSelectedEvent();                                           // pick the selected event
     void OnPacket(CInPacket& packet);
     void FUN_140bc5220(CInPacket& packet);
     void FUN_140bc5250(CInPacket& packet);
-    void FUN_140bc5280(CInPacket& packet);
-    void FUN_140bc5350(CInPacket& packet);
+    void OnSelectEventPacket(CInPacket& packet);
+    void OnPayAttendResult(CInPacket& packet);
     void FUN_140bc5640();
     void SendSelectedEventRequest();
     template<class T> MS2Ptr<T> FUN_140bc7070(const CString& strName, MS2Ptr<T>& out);

@@ -26,7 +26,7 @@ class Unk_Restrictions;
 
 // ---- unit-local views of the exe objects and unrecovered callees --------------------------------------------------------
 
-class UIDialog* FUN_140c300a0(int);   // C3: was FUN_140c300a0
+class UIDialog* FindDialog(int);   // C3: was FindDialog
 template <class T> T* Unk_GaGetUIByName(const CStringA& strName);   // the dialog of a name
 int ReadValueList(class TiXmlElement *, char const *, class ATL::CAtlArray<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>, class ATL::CElementTraits<class ATL::CStringT<char, class StrTraitMFC_DLL<char, class ATL::ChTraitsCRT<char>>>>> &);
 CStringW FUN_14016a730(const char* sz, int nFlags);         // FormatStringId(sz) without arguments
@@ -61,7 +61,7 @@ int CGuideConditionDialog::vfunc_3()
 {
     UIDialog* pDlg = 0;
     if (m_nDialogID != 0)
-        pDlg = FUN_140c300a0(m_nDialogID);
+        pDlg = FindDialog(m_nDialogID);
     if (pDlg == 0)
         pDlg = Unk_GaGetUIByName<UIDialog>(m_strDialog);
     if (pDlg == 0)

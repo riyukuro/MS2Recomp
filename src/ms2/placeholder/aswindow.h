@@ -13,10 +13,10 @@ class ASWindow : public ASGameEntity
 public:
     ASWindow(const Scaleform::GFx::Value& v, int nMovieId);        // 0x1422e6170
     virtual ~ASWindow();                                            // 0x1422e61c0
-    void FUN_1422e61f0(int bEnable);                                // "setTopMostEnable"
-    void FUN_1422e6230(int bCanDrag);                               // "setCanDrag"
-    int FUN_1422e6270();                                            // ceil("getWindowHeight"()), 0 if undefined / null
-    int FUN_1422e6310();                                            // ceil("getWindowWidth"()), 0 if undefined / null
+    void SetTopMostEnable(int bEnable);                                // "setTopMostEnable"
+    void SetCanDrag(int bCanDrag);                               // "setCanDrag"
+    int GetWindowHeight();                                            // ceil("getWindowHeight"()), 0 if undefined / null
+    int GetWindowWidth();                                            // ceil("getWindowWidth"()), 0 if undefined / null
 };
 MS2_CHECK_SIZE(ASWindow, 0x88);
 

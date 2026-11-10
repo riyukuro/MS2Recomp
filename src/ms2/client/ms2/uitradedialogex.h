@@ -35,22 +35,22 @@ public:
     virtual void vfunc_oa0_11(void* a1);                                // UIStatusEventListener 11 0x141b28440
 
     void FUN_141b27580();                                               // initData: names, profiles, bag ids; then bind the controls
-    void FUN_141b27cf0();                                               // create both slot bags
-    void FUN_141b27d50();                                               // destroy both slot bags
-    void FUN_141b27d90(__int64 nMeso);                                  // m_nMyMeso = min(nMeso, max trade meso)
-    void FUN_141b27de0(int nSide, int nIndex, MS2Ptr<CItem> spItem);    // put an item (or clear) into a trade slot
-    void FUN_141b27fa0(int nSide, int nIndex);                          // clear a trade slot
-    void FUN_141b28130(int nSide, __int64 nMeso);                       // show the meso of a side
+    void CreateSlotBags();                                               // create both slot bags
+    void DestroySlotBags();                                               // destroy both slot bags
+    void SetMyMeso(__int64 nMeso);                                  // m_nMyMeso = min(nMeso, max trade meso)
+    void SetTradeSlotItem(int nSide, int nIndex, MS2Ptr<CItem> spItem);    // put an item (or clear) into a trade slot
+    void ClearTradeSlot(int nSide, int nIndex);                          // clear a trade slot
+    void SetSideMeso(int nSide, __int64 nMeso);                       // show the meso of a side
     void FUN_141b28290(int nSlotIndex, int bLock);                      // latch / unlatch a side (sound + AS call)
     int FUN_141b283f0(int* pnSlot);                                     // the first free slot of the trade table (false: none)
-    void FUN_141b284b0();                                               // bind the inputs and texts of the movie
-    void FUN_141b28d10(bool bMine, __int64 nMeso);                      // show the meso number text
-    void FUN_141b28e30(bool bMine, __int64 nFee);                       // show the fee text
-    void FUN_141b28f40(__int64 nMeso, bool bMine);                      // compute and show the fee
-    void FUN_141b291a0(const Scaleform::GFx::FunctionHandler::Params& params);   // my meso input changed
-    void FUN_141b29330(const Scaleform::GFx::FunctionHandler::Params& params);   // focus left the meso input
-    void FUN_141b294f0(__int64 nMeso);                                  // set the meso input text
-    bool FUN_141b295a0(__int64 nMeso);                                  // validate the offered meso
+    void BindControls();                                               // bind the inputs and texts of the movie
+    void SetMesoText(bool bMine, __int64 nMeso);                      // show the meso number text
+    void SetFeeText(bool bMine, __int64 nFee);                       // show the fee text
+    void UpdateFee(__int64 nMeso, bool bMine);                      // compute and show the fee
+    void OnMesoInputChanged(const Scaleform::GFx::FunctionHandler::Params& params);   // my meso input changed
+    void OnMesoInputFocusLost(const Scaleform::GFx::FunctionHandler::Params& params);   // focus left the meso input
+    void SetMesoInput(__int64 nMeso);                                  // set the meso input text
+    bool ValidateMeso(__int64 nMeso);                                  // validate the offered meso
     void FUN_141b297e0(int nCode);                                      // reset the meso on some trade errors
 
 private:

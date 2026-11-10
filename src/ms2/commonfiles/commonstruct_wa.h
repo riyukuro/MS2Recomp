@@ -42,14 +42,14 @@ public:
     CIngredientInfo();                     // 0x14027d830
     CIngredientInfo(int a, int b, int c);  // 0x14027d7d0
     // ~CIngredientInfo (0x14027e620) is implicit.
-    void FUN_14026b1e0(COutputStream&);
-    void FUN_14026b250(CInPacket&);
+    void Write(COutputStream&);
+    void Read(CInPacket&);
     bool IsDifferent(CIngredientInfo*);
     bool IsEmpty();
     void FUN_14026b3a0(COutputStream&);
     void FUN_14026b410(CInPacket&);
     unsigned FUN_14026b4b0();
-    unsigned FUN_14026b500();
+    unsigned GetItemId();
     int m_a, m_b, m_c;
 };
 MS2_CHECK_SIZE(CIngredientInfo, 0x28);
@@ -64,7 +64,7 @@ public:
     Unk_StrVec();                          // 0x14027d6f0
     ~Unk_StrVec();                         // 0x14027e450
     size_t FUN_14028b4c0();
-    CString* FUN_14027f1c0(size_t);
+    CString* GetAt(size_t);
     void* m_begin; void* m_end; void* m_cap;
 };
 MS2_CHECK_SIZE(Unk_StrVec, 24);
@@ -84,14 +84,14 @@ public:
     Unk_IngRef FUN_14026be50(size_t index);
     size_t FUN_14026bee0();
     size_t FUN_14026bf10();
-    bool FUN_14026bf40();
+    bool IsEmpty();
     bool FUN_14026bf70();
-    void FUN_14026bfa0(size_t n);
+    void Reserve(size_t n);
     void Write(COutputStream& out);
     void Read(CInPacket& in);
     Unk_IngVec* FUN_14026c230();
     void FUN_14026c250(CIngredientContainer* other);
-    Unk_IngRef FUN_14026c450(unsigned key);
+    Unk_IngRef FindIngredient(unsigned key);
     Unk_IngVec m_items;
 };
 MS2_CHECK_SIZE(CIngredientContainer, 0x30);
@@ -144,15 +144,15 @@ class DungeonRewardInfo : public CPtred {
 public:
     DungeonRewardInfo();                   // 0x14026c5b0
     virtual ~DungeonRewardInfo();          // 0x14026c610
-    void FUN_14026c660(COutputStream& out);
-    void FUN_14026c900(CInPacket& in);
+    void Write(COutputStream& out);
+    void Read(CInPacket& in);
     __int64 FUN_14026cbf0();               // the exe callers read all of rax (signed compare)
     unsigned FUN_14026cc70();
     __int64 FUN_14026ccf0();               // the exe callers read all of rax (signed compare)
-    unsigned FUN_14026cd70(unsigned key);
+    unsigned GetReward(unsigned key);
     void Clear();
-    bool FUN_14026ce30();
-    void FUN_14026ce80(unsigned key, int delta);
+    bool HasRewards();
+    void AddReward(unsigned key, int delta);
     Unk_RewardMap m_rewards;
     Unk_ItemVec m_items;
 };
@@ -205,9 +205,9 @@ public:
     void Write(COutputStream& out);
     void Read(CInPacket& in);
     bool FUN_14026f000();
-    bool FUN_14026f040(const CMsTime& now);
+    bool IsVisible(const CMsTime& now);
     bool IsNotExpired(const CMsTime& now);
-    bool FUN_14026f0f0();
+    bool IsValid();
     __int64 FUN_14026f170();
     int m_type, m_value;
     CMsTime m_time;
@@ -222,7 +222,7 @@ public:
     // ~ItemDropItemLife (0x14027e8c0) is implicit: the exe dtor stores no vptr.
     bool FUN_14026f290(void* xml);
     __int64 FUN_14026f520();
-    bool FUN_14026f5d0();
+    bool IsValid();
     int m_type, m_value;
     CMsTime m_time;
 };
@@ -276,9 +276,9 @@ public:
     CChangeableHistoryInfo(int a, int b);  // 0x14026f9c0
     virtual ~CChangeableHistoryInfo();     // 0x14026fa50
     void FUN_14026fab0();
-    int FUN_14026fc00(int mode, __int64 id);
-    void FUN_14026fda0(Unk_HistRef entry);
-    bool FUN_14026fea0(__int64 id);
+    int GetTotal(int mode, __int64 id);
+    void AddHistory(Unk_HistRef entry);
+    bool RemoveHistory(__int64 id);
     Unk_HistRef FUN_14026ffd0();
     CLockCriticalSection m_lock;
     int m_48, m_4c, m_total;
@@ -316,8 +316,8 @@ public:
     HomeBlockInfo();                       // 0x1402704b0
     // ~HomeBlockInfo (0x14027e820) is implicit: the exe dtor stores no vptr.
     void FUN_140270530();
-    void FUN_1402705d0(COutputStream& out);
-    void FUN_1402706f0(CInPacket& in);
+    void Write(COutputStream& out);
+    void Read(CInPacket& in);
     __int64 m_18, m_20, m_28;
     CString m_30;
     unsigned short m_38;                   // home level (movzx in the exe readers)
@@ -364,5 +364,5 @@ __int64 FUN_14086ba60(const __int64&, int);
 // void FUN_14027f6b0(Unk_It*);  (no users)
 // void FUN_14027f550(Unk_It*);  (no users)
 // void FUN_14027f590(Unk_It*);  (no users)
-// FUN_14027bf30 (std::find_if with c450's [key] predicate): declared in CIngredientContainer::FUN_14026c450
+// FUN_14027bf30 (std::find_if with c450's [key] predicate): declared in CIngredientContainer::FindIngredient
 // (0x14027c480 = std::next<LHist::iterator>, commonstruct_2)

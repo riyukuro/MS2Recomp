@@ -53,20 +53,20 @@ static UICommon::CMyPCKeyInputController s_keyInput;
 
 // The TinyXML document loader of the file system singleton (as in datatable_impl.h).
 class Unk_CsLoader : public CFileSystem { };
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);   // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);   // Table/<file>
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 int XmlQuery(class TiXmlElement*, char const*, CString&);   // C3: was FUN_140873ad0
 int XmlQuery(class TiXmlElement*, char const*, CStringW&);   // C3: was FUN_140873b30
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 int FUN_1406516b0();                                                    // current language id
-int FUN_140768010(int, int);   // C3: was FUN_140768010
+int GetRandomRange(int, int);   // C3: was GetRandomRange
 bool FUN_141900c80(int nButton, const CMsgBoxData& box);
 #define DAT_143b01a60 (*(NiPoint3*)&efd::Point3::ZERO)          // C3: was extern NiPoint3 DAT_143b01a60
-MS2Ptr<CMsgBoxData> FUN_140d74500(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> CreateMessageBoxWithCallback(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 
 unsigned char FUN_1401d1320(CCacheData* p);                             // file changed since load
-inline CSceneStateMulti* FUN_140f30370();
+inline CSceneStateMulti* GetSceneStateMulti();
 
 // Is the value in the array.
 template <class C> bool Contains(C& arr, int nValue)
@@ -88,7 +88,7 @@ UICharacterCreateSelectDialog::UICharacterCreateSelectDialog()
     m_nBgm = 0;
     m_7c = 1;
     m_80 = 0;
-    FUN_141924170(0);
+    SetTweenEnabled(0);
     LoadCharacterCreateSelect();
 }
 
@@ -128,16 +128,16 @@ void UICharacterCreateSelectDialog::OnLoadComplete()
                 FUN_140f2ffb0(spJob.operator->()->m_nJobCode);
             }
             ASObj row(2);
-            row.FUN_1407cbb20("name", spJob.operator->()->m_strName);
-            row.FUN_1407cb9c0("jobCode", spJob.operator->()->m_nJobCode);
-            row.FUN_1407cbbe0("enabled", spJob.operator->()->m_bEnabled);
-            row.FUN_1407cbbe0("event", spJob.operator->()->m_bEvent);
-            tabs.PushValue(row.FUN_1422bb870());
+            row.SetWStringMember("name", spJob.operator->()->m_strName);
+            row.SetIntMember("jobCode", spJob.operator->()->m_nJobCode);
+            row.SetBoolMember("enabled", spJob.operator->()->m_bEnabled);
+            row.SetBoolMember("event", spJob.operator->()->m_bEvent);
+            tabs.PushValue(row.GetValue());
         }
-        root.FUN_1409adbe0("arrTab", tabs.FUN_1422bb870());
-        root.FUN_1407cb9c0("selectedTabIndex", nSelectedTab);
-        root.FUN_1409adbe0("selectedJobData", selected.FUN_1422bb870());
-        m_30.operator->()->Invoke("initData", root.FUN_1422bb870());
+        root.FUN_1409adbe0("arrTab", tabs.GetValue());
+        root.SetIntMember("selectedTabIndex", nSelectedTab);
+        root.FUN_1409adbe0("selectedJobData", selected.GetValue());
+        m_30.operator->()->Invoke("initData", root.GetValue());
     }
 }
 MS2_REPLACE_METHOD(0x140F2E6A0, UICharacterCreateSelectDialog, OnLoadComplete, 1036, 0xDFE5DF2A);
@@ -154,7 +154,7 @@ int UICharacterCreateSelectDialog::vfunc_28(const char* szMethod, const Scalefor
         {
             int nIndex = data.PopUInt();
             int nJobCode = data.PopInt();
-            FUN_140f2fba0(nIndex, nJobCode);
+            OnTabChanged(nIndex, nJobCode);
         }
         return 1;
     }
@@ -174,7 +174,7 @@ int UICharacterCreateSelectDialog::vfunc_28(const char* szMethod, const Scalefor
         {
             if (_stricmp("onClickPrev", szMethod) == 0)
             {
-                FUN_140f2fd50();
+                Popdown();
                 FUN_140f30110();
                 return 1;
             }
@@ -218,7 +218,7 @@ void UICharacterCreateSelectDialog::vfunc_69()
 {
     if (vfunc_71() == 0)
     {
-        FUN_140f2fd50();
+        Popdown();
         FUN_140f30110();
     }
 }
@@ -235,25 +235,25 @@ void UICharacterCreateSelectDialog::vfunc_40()
 // @0x140f2ee10
 void UICharacterCreateSelectDialog::TJobData::FUN_140f2ee10(ASObj* pObj)
 {
-    pObj->FUN_1407cbb20("name", m_strName);
-    pObj->FUN_1407cbb20("desc", m_strDesc);
-    pObj->FUN_1407cba60("movie", m_strMovie);
-    pObj->FUN_1407cb9c0("jobCode", m_nJobCode);
+    pObj->SetWStringMember("name", m_strName);
+    pObj->SetWStringMember("desc", m_strDesc);
+    pObj->SetStringMember("movie", m_strMovie);
+    pObj->SetIntMember("jobCode", m_nJobCode);
 }
 MS2_REPLACE_METHOD(0x140F2EE10, Unk_CsJobData, FUN_140f2ee10, 249, 0xD9C56FCA);
 
 // @0x140f2ef10
 void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
 {
-    CString strPath = FUN_14071a5b0("Table", "characterCreateSelect.xml");
+    CString strPath = GetXmlPath("Table", "characterCreateSelect.xml");
     if (m_spCache == 0)
     {
         m_spCache.AssignRaw(new CCacheData);
         if (m_spCache.get() != 0)
-            m_spCache.operator->()->FUN_1401d1160(CString(strPath));
+            m_spCache.operator->()->SetPath(CString(strPath));
     }
     TiXmlDocument doc;
-    if (((class Unk_CsLoader*)GetFileSystem())->FUN_1403974b0(&doc, (const char*)strPath, 0, true, false) == 0)
+    if (((class Unk_CsLoader*)GetFileSystem())->LoadXmlFile(&doc, (const char*)strPath, 0, true, false) == 0)
         return;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
@@ -366,7 +366,7 @@ void UICharacterCreateSelectDialog::LoadCharacterCreateSelect()
 // @0x140f2f9c0
 void UICharacterCreateSelectDialog::FUN_140f2f9c0(int nJobCode)
 {
-    FUN_140f2fd50();
+    Popdown();
     m_nPopupMsg = 0x620001c;
     m_nPopupJob = nJobCode;
 }
@@ -377,7 +377,7 @@ void UICharacterCreateSelectDialog::FUN_140f2fa00(int nJobCode)
 {
     if (FUN_1406516b0() == 1)
     {
-        MS2Ptr<CMsgBoxData> box = FUN_140d74500(CStringW(L"$s_msgbox_ugc_turms_content"), 0x1e,
+        MS2Ptr<CMsgBoxData> box = CreateMessageBoxWithCallback(CStringW(L"$s_msgbox_ugc_turms_content"), 0x1e,
             Delegate<bool(int, const CMsgBoxData&)>(this, &UICharacterCreateSelectDialog::FUN_140f301d0));
         if (box.get() != 0)
         {
@@ -393,7 +393,7 @@ void UICharacterCreateSelectDialog::FUN_140f2fa00(int nJobCode)
 }
 
 // @0x140f2fba0
-void UICharacterCreateSelectDialog::FUN_140f2fba0(int nIndex, int nJobCode)
+void UICharacterCreateSelectDialog::OnTabChanged(int nIndex, int nJobCode)
 {
     if (nIndex < 0 || nIndex >= (int)m_jobs.GetCount())
         return;
@@ -406,26 +406,26 @@ void UICharacterCreateSelectDialog::FUN_140f2fba0(int nIndex, int nJobCode)
             return;
         ASObj obj(2);
         spJob.operator->()->FUN_140f2ee10(&obj);
-        m_30.operator->()->Invoke("changeTab", obj.FUN_1422bb870());
+        m_30.operator->()->Invoke("changeTab", obj.GetValue());
         FUN_140f2ffb0(spJob.operator->()->m_nJobCode);
     }
 }
-MS2_REPLACE_METHOD(0x140F2FBA0, UICharacterCreateSelectDialog, FUN_140f2fba0, 421, 0x4D4E886C);
+MS2_REPLACE_METHOD(0x140F2FBA0, UICharacterCreateSelectDialog, OnTabChanged, 421, 0x4D4E886C);
 
 // @0x140f2fd50
-void UICharacterCreateSelectDialog::FUN_140f2fd50()
+void UICharacterCreateSelectDialog::Popdown()
 {
     if (m_30.get() != 0)
         m_30.operator->()->Invoke("popdown");
 }
-MS2_REPLACE_METHOD(0x140F2FD50, UICharacterCreateSelectDialog, FUN_140f2fd50, 83, 0x77B6ED2A);
+MS2_REPLACE_METHOD(0x140F2FD50, UICharacterCreateSelectDialog, Popdown, 83, 0x77B6ED2A);
 
 // @0x140f2fdb0
 void UICharacterCreateSelectDialog::OnEndPopdown()
 {
     if (0 < m_nPopupMsg)
     {
-        CSceneStateMulti* pScene = FUN_140f30370();
+        CSceneStateMulti* pScene = GetSceneStateMulti();
         if (pScene != 0 && m_nPopupMsg == 0x620001c)
             pScene->SelectCreateJob(m_nPopupJob);
     }
@@ -435,7 +435,7 @@ void UICharacterCreateSelectDialog::OnEndPopdown()
 MS2_REPLACE_METHOD(0x140F2FDB0, UICharacterCreateSelectDialog, OnEndPopdown, 118, 0x691E40AA);
 
 // @0x140f2fe30
-UICharacterCreateSelectDialog::JobPtr UICharacterCreateSelectDialog::FUN_140f2fe30(int nJobCode, int* pnIndex)
+UICharacterCreateSelectDialog::JobPtr UICharacterCreateSelectDialog::FindJob(int nJobCode, int* pnIndex)
 {
     *pnIndex = -1;
     if (m_jobs.IsEmpty())
@@ -454,7 +454,7 @@ UICharacterCreateSelectDialog::JobPtr UICharacterCreateSelectDialog::FUN_140f2fe
     }
     return JobPtr(0);
 }
-MS2_REPLACE_METHOD(0x140F2FE30, UICharacterCreateSelectDialog, FUN_140f2fe30, 365, 0x35D8F0A2);
+MS2_REPLACE_METHOD(0x140F2FE30, UICharacterCreateSelectDialog, FindJob, 365, 0x35D8F0A2);
 
 // @0x140f2ffb0
 void UICharacterCreateSelectDialog::FUN_140f2ffb0(int nJobCode)
@@ -464,7 +464,7 @@ void UICharacterCreateSelectDialog::FUN_140f2ffb0(int nJobCode)
         return;
     if (spJob.operator->()->GetCharacterBGM() != 0)
     {
-        TSingleton<CSoundEventMgr>::GetInstance()->FUN_14177c100(spJob.operator->()->GetCharacterBGM(), 0.0f, 0x80, 0);
+        TSingleton<CSoundEventMgr>::GetInstance()->PlayMusic(spJob.operator->()->GetCharacterBGM(), 0.0f, 0x80, 0);
         m_nBgm = 1;
     }
     if (spJob.operator->()->m_characterVoice.GetLength() > 0)
@@ -489,7 +489,7 @@ int UICharacterCreateSelectDialog::FUN_140f30150()
 {
     if (m_randomJobs.GetCount() == 0)
         return m_nSelectJob;
-    unsigned nIndex = FUN_140768010((unsigned)m_randomJobs.GetCount(), 0);
+    unsigned nIndex = GetRandomRange((unsigned)m_randomJobs.GetCount(), 0);
     return m_randomJobs[nIndex];
 }
 MS2_REPLACE_METHOD(0x140F30150, UICharacterCreateSelectDialog, FUN_140f30150, 108, 0xFE5794CA);
@@ -508,7 +508,7 @@ bool UICharacterCreateSelectDialog::FUN_140f301d0(int nButton, const CMsgBoxData
 MS2_REPLACE_METHOD(0x140F301D0, UICharacterCreateSelectDialog, FUN_140f301d0, 86, 0x85082A83);
 
 // @0x140f30370
-inline CSceneStateMulti* FUN_140f30370()
+inline CSceneStateMulti* GetSceneStateMulti()
 {
     CSceneStateMulti* pScene = static_cast<CSceneStateMulti*>(TSingleton<CStateService>::GetInstance()->GetCurrent().operator CSceneStateBase*());
     return pScene;

@@ -58,12 +58,12 @@ public:
     virtual void OnSurfacePreDraw(ecr::RenderService* pService, ecr::RenderSurface* pSurface);    // 0x141ab7fd0
     virtual void OnSurfacePostDraw(ecr::RenderService* pService, ecr::RenderSurface* pSurface);   // 0x141ab8040
 
-    NiRenderedTexture* FUN_141ab73f0();                     // the click's rendered texture (NULL without a click)
-    NiRenderTargetGroup* FUN_141ab7440();                   // the click's render target group (NULL without a click)
+    NiRenderedTexture* GetRenderedTexture();                     // the click's rendered texture (NULL without a click)
+    NiRenderTargetGroup* GetRenderTargetGroup();                   // the click's render target group (NULL without a click)
     int GetDirty();                                    // m_nDirty
     NiNode* GetEffectRoot();                                // the effect root
-    bool FUN_141ab76b0(const efd::Point3& kWorld, Unk_ScreenPoint* pScreen);   // world point -> pixels in the texture
-    bool FUN_141ab7870(CStringW strPath, int nFormat);       // saves the texture to a file
+    bool WorldToScreen(const efd::Point3& kWorld, Unk_ScreenPoint* pScreen);   // world point -> pixels in the texture
+    bool SaveTextureToFile(CStringW strPath, int nFormat);       // saves the texture to a file
     void FUN_141ab7b80(int nValue);                         // updates the global shader constant
 
 protected:

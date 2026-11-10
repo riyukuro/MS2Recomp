@@ -99,7 +99,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 class GFxSceneService   // C3: member view for the former free stand-ins
 {
@@ -110,18 +110,18 @@ int FUN_14074b030(CQuestData*);
 int FUN_14074b840(int);
 int FUN_14074b950(int);
 int FUN_1418fd280();
-CStringW FUN_1416e4df0(int);
-CStringW FUN_1416e7fb0(int);
-void FUN_1412751f0(const CStringW&, int, int);
+CStringW GetQuestName(int);
+CStringW GetChapterName(int);
+void ShowSystemNotice(const CStringW&, int, int);
 CStringW GetStringCommonByKey(const CStringW& str);
 void* FUN_140764020();   // C3: was FUN_140764020
 UIRewardNotify* FindRewardNotify(int);
-UIFameContentsNotify* FUN_140e77d80(int);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int, CStringW, void*, CStringW);
+UIFameContentsNotify* FindFameContentsNotify(int);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int, CStringW, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData>);
 
 class CTalkScript;
-Unk_ScriptPtr<CTalkScript> FUN_1408564b0(int questId, int n);
+Unk_ScriptPtr<CTalkScript> FindQuestTalk(int questId, int n);
 
 class UIMassiveEvent* FUN_140e01890(int);   // C3: was FUN_140e01890
 
@@ -135,7 +135,7 @@ public:
 };
 
 // @0x141810510
-UIAllianceQuestDialog* FUN_141810510(int nId)
+UIAllianceQuestDialog* GetAllianceQuestDialog(int nId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
@@ -147,7 +147,7 @@ UIAllianceQuestDialog* FUN_141810510(int nId)
 }
 
 // @0x1418105b0
-UIChapterBook* FUN_1418105b0(int nId)
+UIChapterBook* GetChapterBook(int nId)
 {
     if (TSingleton<CUIService>::GetInstance())
     {
@@ -173,25 +173,25 @@ CStoryQuest::~CStoryQuest()
 // @0x14180f0d0
 void CStoryQuest::DecodeStart(CInPacket& packet)
 {
-    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(100))
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(100))
     {
-        int nChapter = TSingleton<CChapterBookTable>::GetInstance()->FindIdByPrologue(FUN_140bfc580());
+        int nChapter = TSingleton<CChapterBookTable>::GetInstance()->FindIdByPrologue(GetQuestId());
         if (nChapter != 0)
         {
             UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
             if (pNotify)
-                pNotify->FUN_141abf1f0();
-            UIChapterBook* pBook = FUN_1418105b0(0x4f37);
+                pNotify->BlockToasts();
+            UIChapterBook* pBook = GetChapterBook(0x4f37);
             if (pBook)
                 pBook->FUN_140e0a850(nChapter);
         }
     }
-    if (FUN_14074b840(FUN_140bfc580()) != 0)
+    if (FUN_14074b840(GetQuestId()) != 0)
     {
-        if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x6200031)
+        if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x6200031)
         {
-            CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_quest_redirect_accept"), FUN_1416e4df0(FUN_140bfc580()));
-            FUN_1412751f0(strMsg, 3, 0);
+            CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_quest_redirect_accept"), GetQuestName(GetQuestId()));
+            ShowSystemNotice(strMsg, 3, 0);
         }
     }
     if (m_data->m_2f0.m_0 == 3)
@@ -213,29 +213,29 @@ void CStoryQuest::Complete(CInPacket& packet)
         UIMassiveEvent* pDlg = FUN_140e01890(0x4e4c);
         if (pDlg)
         {
-            CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_quest_complete_ui_effect"), FUN_1416e7fb0(m_data->m_28));
+            CStringW strText = FUN_14028dfa0<CStringW>(CStringW(L"s_quest_complete_ui_effect"), GetChapterName(m_data->m_28));
             pDlg->FUN_1419f6a70(m_data->m_2d0.m_id, strText, 3000);
         }
     }
-    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->FUN_14036d570(100))
+    if (((class CFeatureManager*)(void*)(((void*)FUN_140166410())))->IsFeatureEnabled(100))
     {
-        int nChapter = ((class CQuestManager*)FUN_140764020())->GetChapterBookIdByEpilogue(FUN_140bfc580());
+        int nChapter = ((class CQuestManager*)FUN_140764020())->GetChapterBookIdByEpilogue(GetQuestId());
         if (nChapter != 0)
         {
             UIRewardNotify* pNotify = FindRewardNotify(0x4e5d);
             if (pNotify)
-                pNotify->FUN_141abf1f0();
-            UIChapterBook* pBook = FUN_1418105b0(0x4f37);
+                pNotify->BlockToasts();
+            UIChapterBook* pBook = GetChapterBook(0x4f37);
             if (pBook)
                 pBook->FUN_140e0a890(nChapter);
         }
     }
-    if (FUN_14074b950(FUN_140bfc580()) != 0)
+    if (FUN_14074b950(GetQuestId()) != 0)
     {
-        if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x6200031)
+        if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x6200031)
         {
-            CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_quest_redirect_complete"), FUN_1416e4df0(FUN_140bfc580()));
-            FUN_1412751f0(strMsg, 3, 0);
+            CStringW strMsg = FUN_14028dfa0<CStringW>(CStringW(L"s_quest_redirect_complete"), GetQuestName(GetQuestId()));
+            ShowSystemNotice(strMsg, 3, 0);
         }
     }
     if (m_data->m_2f0.m_0 == 4)
@@ -250,13 +250,13 @@ void CStoryQuest::FUN_140d73960()
     CQuest::FUN_140d73960();
     if (m_7c != 0)
     {
-        if (((class GFxSceneService*)(void*)(((void*)CUserMail::FUN_1408e57f0())))->GetSubSceneId() == 0x620001d)
+        if (((class GFxSceneService*)(void*)(((void*)CUserMail::GetGFxSceneService())))->GetSubSceneId() == 0x620001d)
         {
             CStringW strWho = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x47, m_data->m_2f0.m_c);
             CStringW strText = StringFormat<CStringW>((const wchar_t*)strWho, TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_data->m_2f0.m_4));
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             {
-                MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x28, CStringW(strText), 0, CStringW(L""));
+                MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x28, CStringW(strText), 0, CStringW(L""));
                 if (spBox.get() != 0)
                 {
                     spBox->Append<unsigned>(FUN_14074b030(m_data.operator->()));
@@ -285,11 +285,11 @@ int CStoryQuest::FUN_140d73970()
         return 0;
     if (FUN_140d738c0() == 0)
         return 0;
-    Unk_ScriptPtr<CTalkScript> script = FUN_1408564b0(FUN_140bfc580(), 300);
+    Unk_ScriptPtr<CTalkScript> script = FindQuestTalk(GetQuestId(), 300);
     if (script.IsNull())
         return 0;
     m_78 = 0;
-    TSingleton<UITalkManager>::GetInstance()->FUN_141b213f0(reinterpret_cast<MS2Ptr<CTalkScript>&>(script), m_data->m_2ec, 4, 0);
+    TSingleton<UITalkManager>::GetInstance()->BeginTalkWithoutNpc(reinterpret_cast<MS2Ptr<CTalkScript>&>(script), m_data->m_2ec, 4, 0);
     return 1;
 }
 
@@ -390,9 +390,9 @@ unsigned char CFieldQuest::GetFlag()
 void CFieldQuest::Complete(CInPacket& packet)
 {
     CStoryQuest::Complete(packet);
-    UIFameContentsNotify* pNotify = FUN_140e77d80(0x4f5a);
+    UIFameContentsNotify* pNotify = FindFameContentsNotify(0x4f5a);
     if (pNotify)
-        pNotify->FUN_141ac26a0(FUN_140bfc580());
+        pNotify->QueueEndingBanner(GetQuestId());
 }
 
 // @0x1418101a0
@@ -409,13 +409,13 @@ int CFieldQuest::FUN_140d738d0()
 void CAllianceQuest::DecodeStart(CInPacket& packet)
 {
     CStoryQuest::DecodeStart(packet);
-    UIFameContentsNotify* pNotify = FUN_140e77d80(0x4f5a);
+    UIFameContentsNotify* pNotify = FindFameContentsNotify(0x4f5a);
     if (pNotify)
-        pNotify->FUN_141ac25b0(FUN_140bfc580());
-    UIAllianceQuestDialog* pDlg = FUN_141810510(0x4f50);
+        pNotify->QueueOpeningBanner(GetQuestId());
+    UIAllianceQuestDialog* pDlg = GetAllianceQuestDialog(0x4f50);
     if (pDlg)
     {
-        if (pDlg->FUN_140bf94e0(FUN_140bfc580()) != 0 && m_7c == 3)
+        if (pDlg->FUN_140bf94e0(GetQuestId()) != 0 && m_7c == 3)
             m_7c = 0;
     }
 }
@@ -424,13 +424,13 @@ void CAllianceQuest::DecodeStart(CInPacket& packet)
 void CAllianceQuest::Complete(CInPacket& packet)
 {
     CStoryQuest::Complete(packet);
-    UIFameContentsNotify* pNotify = FUN_140e77d80(0x4f5a);
+    UIFameContentsNotify* pNotify = FindFameContentsNotify(0x4f5a);
     if (pNotify)
-        pNotify->FUN_141ac26a0(FUN_140bfc580());
-    UIAllianceQuestDialog* pDlg = FUN_141810510(0x4f50);
+        pNotify->QueueEndingBanner(GetQuestId());
+    UIAllianceQuestDialog* pDlg = GetAllianceQuestDialog(0x4f50);
     if (pDlg)
     {
-        if (pDlg->FUN_140bf9530(FUN_140bfc580()) != 0 && m_7c == 4)
+        if (pDlg->FUN_140bf9530(GetQuestId()) != 0 && m_7c == 4)
             m_7c = 0;
     }
 }
@@ -470,9 +470,9 @@ extern int g_nDebugUI;                                           // debug switch
 // The xml helpers every table unit uses.
 class CLogString* GetLogString();   // C3: was FUN_140166440
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);   // C3: was FUN_14015eb90
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
 CString FUN_14071ae20(const CString& strFile);                      // path of a Table file
-CString FUN_14016a5c0(const char* psz, int n);
+CString ToCString(const char* psz, int n);
 unsigned FUN_14021c7c0(const CString& str);                         // the id of a string key
 int XmlGetAttr(class TiXmlElement*, char const*, int&);   // C3: was FUN_1408731e0
 int XmlGetAttr(class TiXmlElement*, char const*, CStringA&);   // C3: was FUN_1408733e0
@@ -483,7 +483,7 @@ void FUN_14028fd90(Unk_XmlElement*, const char*, const char*, const char*, std::
 unsigned char FUN_1401d1320(CCacheData*);
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);
 CStringW GetStringCommon(int nId);                                    // the text of a string id
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 class GFxManager   // C3: member view for the former free stand-ins
 {
 public:
@@ -496,7 +496,7 @@ void CStringTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CStringTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CStringTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -529,14 +529,14 @@ CGFxLanguage::CGFxLanguage()
 bool CGFxLanguage::LoadKorFlash(TiXmlDocument* pDoc)
 {
     CString strPath = FUN_14071ae20("korFlash.xml");
-    CCacheData::FUN_1401d1160(CString(strPath));
-    return GetFileSystem()->FUN_1403974b0(pDoc, strPath, 0, true, false) ? true : false;
+    CCacheData::SetPath(CString(strPath));
+    return GetFileSystem()->LoadXmlFile(pDoc, strPath, 0, true, false) ? true : false;
 }
 
 // @0x141815db0
 void FUN_141815db0(void* pThis)
 {
-    ((class GFxManager*)(void*)(((void*)FUN_14025e7a0())))->FUN_1422b09a0();
+    ((class GFxManager*)(void*)(((void*)GetGFxManager())))->FUN_1422b09a0();
 }
 
 // @0x1418176e0
@@ -544,7 +544,7 @@ void CStringTable::CStringCache::FUN_1418176e0(CString strFile)
 {
     CString strPath = FUN_14071ae20(strFile);
     MS2Ptr<CCacheData> spFile(new CCacheData);
-    if (!spFile->FUN_1401d1160(CString(strPath)))
+    if (!spFile->SetPath(CString(strPath)))
         return;
     m_files.AddTail(spFile);
 }
@@ -600,9 +600,9 @@ void CStringTable::CDesc::FUN_141813b80(const CString& strTag, const CStringW& s
 // @0x141810f70
 BOOL CStringTable::Load()
 {
-    CString strPath = FUN_14071a5b0("Table", "string.xml");
+    CString strPath = GetXmlPath("Table", "string.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return FALSE;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -652,7 +652,7 @@ BOOL CStringTable::Load()
     FUN_141814750(CString("korItemDescription.xml"), m_itemDescs, m_itemDescStamp);
     m_spAdditional.AssignRaw(new CStringCache);
     m_spAdditional->FUN_1418176e0(CString("stringAdditionalDescription.xml"));
-    FUN_141814cf0(m_levelDescs, CachePtr(m_spAdditional));
+    LoadLevelDescFiles(m_levelDescs, CachePtr(m_spAdditional));
     FUN_141814750(CString("stringSkillDescription.xml"), m_skillDescs, m_skillDescStamp);
     FUN_141814750(CString("SetItemName.xml"), m_setItemNames, m_setItemNameStamp);
     FUN_141814750(CString("UGCMapSetItemName.xml"), m_ugcSetItemNames, m_ugcSetItemNameStamp);
@@ -661,7 +661,7 @@ BOOL CStringTable::Load()
 }
 
 // @0x141811960
-BOOL CStringTable::FUN_141811960()
+BOOL CStringTable::Reload()
 {
     return Load();
 }
@@ -680,7 +680,7 @@ public:
 };
 
 // @0x141815ed0
-UIClosetDialog* FUN_141815ed0()
+UIClosetDialog* GetClosetDialog()
 {
     CUIService* pManager = TSingleton<CUIService>::GetInstance();
     if (pManager == 0)
@@ -760,7 +760,7 @@ CStringW CStringTable::GetSkillDescription(int nSkillId, unsigned short nLevel, 
         MS2Ptr<SkillData> spSkill = reinterpret_cast<SkillDataTable*>(TSingleton<SkillDataTableCli>::GetInstance())->GetSkillData(nSkillId);
         if (spSkill == 0)
             return CStringW(L"");
-        MS2Ptr<SkillLevelData> spLevel = spSkill->FUN_1407e90a0(nLevel);
+        MS2Ptr<SkillLevelData> spLevel = spSkill->GetLevelData(nLevel);
         if (spLevel == 0)
             return CStringW(L"");
         if (!spLevel->m_strStringParam.IsEmpty())
@@ -776,7 +776,7 @@ CStringW CStringTable::FUN_141812290(int nBuffId, unsigned short nLevel, CString
     if (m_spAdditional->FUN_141819280() != 0)
     {
         m_levelDescs.RemoveAll();
-        FUN_141814cf0(m_levelDescs, CachePtr(m_spAdditional));
+        LoadLevelDescFiles(m_levelDescs, CachePtr(m_spAdditional));
     }
     CStringW strText = FUN_141815160(m_levelDescs, &nBuffId, &nLevel, strTag);
     if (strTag.CompareNoCase("tooltipDescription") == 0)
@@ -815,7 +815,7 @@ CStringW CStringTable::FUN_1418125b0(int nId)
     else if (nId >= 0xdbba1 && nId <= 0xdbbaa)
     {
         CStringW strExtra;
-        UIClosetDialog* pCloset = FUN_141815ed0();
+        UIClosetDialog* pCloset = GetClosetDialog();
         if (pCloset != 0)
             strExtra = pCloset->TabName(nId);
         return StringFormat<CStringW>(FUN_141811980(5, nId), strExtra);
@@ -850,7 +850,7 @@ CStringW CStringTable::GetUGCMapSetItemName(int nSetId, CString strTag)
 }
 
 // @0x141812c40
-int CStringTable::FUN_141812c40(int nTable, const CStringW& strName)
+int CStringTable::FindIdByName(int nTable, const CStringW& strName)
 {
     CachePtr spCache(0);
     if (!m_caches.Lookup(nTable, spCache))
@@ -928,7 +928,7 @@ CStringW CStringTable::FUN_141813200(__int64 nItemUid)
 }
 
 // @0x141813300
-CStringW CStringTable::FUN_141813300(int nTab)
+CStringW CStringTable::GetInventoryTabName(int nTab)
 {
     switch (nTab)
     {
@@ -1003,19 +1003,19 @@ CStringW CStringTable::FUN_141813790(CStringW strFormat, CStringW strArgs)
 }
 
 // @0x141813970
-void CStringTable::FUN_141813970(TiXmlElement* pRoot)
+void CStringTable::LoadItemDescriptions(TiXmlElement* pRoot)
 {
     LoadDescEntries(m_itemDescs, pRoot);
 }
 
 // @0x1418139b0
-void CStringTable::FUN_1418139b0(TiXmlElement* pRoot)
+void CStringTable::LoadLevelDescriptions(TiXmlElement* pRoot)
 {
-    FUN_141815b30(m_levelDescs, pRoot);
+    LoadLevelDescEntries(m_levelDescs, pRoot);
 }
 
 // @0x1418139f0
-void CStringTable::FUN_1418139f0(TiXmlElement* pRoot)
+void CStringTable::LoadSkillDescriptions(TiXmlElement* pRoot)
 {
     LoadDescEntries(m_skillDescs, pRoot);
 }
@@ -1024,7 +1024,7 @@ void CStringTable::FUN_1418139f0(TiXmlElement* pRoot)
 int CStringTable::FUN_141813c80(CachePtr spCache, CString strParser, CString strParserValue)
 {
     if ((strParser == "raceName"))
-        return FUN_141813f10(CachePtr(spCache));
+        return LoadRaceNames(CachePtr(spCache));
     else if ((strParser == "customValue"))
         return FUN_141814310(CachePtr(spCache), CString(strParserValue));
     return LoadNames(CachePtr(spCache));
@@ -1037,7 +1037,7 @@ int CStringTable::LoadNames(CachePtr spCache)
 }
 
 // @0x141813f10
-int CStringTable::FUN_141813f10(CachePtr spCache)
+int CStringTable::LoadRaceNames(CachePtr spCache)
 {
     Unk_CriticalSectionLock lock(spCache->m_lock, 1);
     spCache->m_strings.RemoveAll();
@@ -1047,12 +1047,12 @@ int CStringTable::FUN_141813f10(CachePtr spCache)
         if (spFile == 0)
             continue;
         TiXmlDocument doc;
-        if (GetFileSystem()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
+        if (GetFileSystem()->LoadXmlFile(&doc, *spFile->GetPath(), 0, true, false) == 0)
             return 0;
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
         {
-            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
+            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->GetPath());
             return 0;
         }
         for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
@@ -1067,7 +1067,7 @@ int CStringTable::FUN_141813f10(CachePtr spCache)
             unsigned nId = FUN_14021c7c0(strId);
             spCache->m_strings.SetAt(nId, strText);
         }
-        spFile->FUN_1401d1160(CString(*spFile->FUN_1401d1140()));
+        spFile->SetPath(CString(*spFile->GetPath()));
     }
     return 1;
 }
@@ -1083,12 +1083,12 @@ int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
         if (spFile == 0)
             continue;
         TiXmlDocument doc;
-        if (GetFileSystem()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
+        if (GetFileSystem()->LoadXmlFile(&doc, *spFile->GetPath(), 0, true, false) == 0)
             return 0;
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
         {
-            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
+            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->GetPath());
             return 0;
         }
         for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
@@ -1104,7 +1104,7 @@ int CStringTable::FUN_141814310(CachePtr spCache, CString strAttr)
             strText.Replace(L"\\n", L"\n");
             spCache->m_strings.SetAt(nId, strText);
         }
-        spFile->FUN_1401d1160(CString(*spFile->FUN_1401d1140()));
+        spFile->SetPath(CString(*spFile->GetPath()));
     }
     return 1;
 }
@@ -1115,7 +1115,7 @@ int CStringTable::FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCac
     CString strPath = FUN_14071ae20(strFile);
     Unk_CriticalSectionLock lock(m_lock, 1);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1127,24 +1127,24 @@ int CStringTable::FUN_141814750(CString strFile, DescMap& rMap, CCacheData& rCac
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
-        DescPtr spDesc = FUN_1418154e0(pKey);
+        DescPtr spDesc = ParseItemDesc(pKey);
         if (spDesc == 0)
             continue;
         int nId = 0;
         XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
         rMap.SetAt(nId, spDesc);
     }
-    rCache.FUN_1401d1160(CString(strPath));
+    rCache.SetPath(CString(strPath));
     return 1;
 }
 
 // @0x141814a20
-int CStringTable::FUN_141814a20(CString strFile, DescMap& rMap, CCacheData& rCache, ATL::CAtlArray<CString>& rTags)
+int CStringTable::LoadDescFileWithTags(CString strFile, DescMap& rMap, CCacheData& rCache, ATL::CAtlArray<CString>& rTags)
 {
     CString strPath = FUN_14071ae20(strFile);
     Unk_CriticalSectionLock lock(m_lock, 1);
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -1163,12 +1163,12 @@ int CStringTable::FUN_141814a20(CString strFile, DescMap& rMap, CCacheData& rCac
         XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
         rMap.SetAt(nId, spDesc);
     }
-    rCache.FUN_1401d1160(CString(strPath));
+    rCache.SetPath(CString(strPath));
     return 1;
 }
 
 // @0x141814cf0
-int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
+int CStringTable::LoadLevelDescFiles(LevelDescMap& rMap, CachePtr spCache)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (POSITION pos = spCache->m_files.GetHeadPosition(); pos; spCache->m_files.GetNext(pos))
@@ -1177,12 +1177,12 @@ int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
         if (spFile == 0)
             continue;
         TiXmlDocument doc;
-        if (GetFileSystem()->FUN_1403974b0(&doc, *spFile->FUN_1401d1140(), 0, true, false) == 0)
+        if (GetFileSystem()->LoadXmlFile(&doc, *spFile->GetPath(), 0, true, false) == 0)
             continue;
         TiXmlElement* pRoot = ((class TiXmlElement*)((class Unk_XmlNode*)(reinterpret_cast<TiXmlElement*>(&doc)))->FirstChild("ms2"));
         if (pRoot == 0)
         {
-            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->FUN_1401d1140());
+            Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, MS2_XML_FORMAT_ERROR, *spFile->GetPath());
             continue;
         }
         std::vector<TiXmlElement*> aNodes;
@@ -1196,7 +1196,7 @@ int CStringTable::FUN_141814cf0(LevelDescMap& rMap, CachePtr spCache)
             XmlGetAttr((class TiXmlElement*)(pNode), "id", nId);
             int nLevel = 1;
             XmlGetAttr((class TiXmlElement*)(pNode), "level", nLevel);
-            DescPtr spDesc = FUN_1418158b0(pNode);
+            DescPtr spDesc = ParseSkillDesc(pNode);
             if (spDesc == 0)
             {
                 (void)((!!(0)) || (_wassert(L"FALSE", _CRT_WIDE(MS2_THIS_FILE), 0x327), 0));
@@ -1244,7 +1244,7 @@ CStringW CStringTable::FUN_141815330(LevelDescPtr& spLevels, unsigned short* pnL
 }
 
 // @0x1418154e0
-CStringTable::DescPtr CStringTable::FUN_1418154e0(TiXmlElement* pNode)
+CStringTable::DescPtr CStringTable::ParseItemDesc(TiXmlElement* pNode)
 {
     ATL::CAtlArray<CString> aTags;
     aTags.Add("mainDescription");
@@ -1286,7 +1286,7 @@ CStringTable::DescPtr CStringTable::FUN_141815650(TiXmlElement* pNode, ATL::CAtl
 }
 
 // @0x1418158b0
-CStringTable::DescPtr CStringTable::FUN_1418158b0(TiXmlElement* pNode)
+CStringTable::DescPtr CStringTable::ParseSkillDesc(TiXmlElement* pNode)
 {
     ATL::CAtlArray<CString> aTags;
     aTags.Add("uiDescription");
@@ -1305,7 +1305,7 @@ void CStringTable::LoadDescEntries(DescMap& rMap, TiXmlElement* pRoot)
     {
         if (!FUN_14028f710((struct Unk_XmlElement*)(pKey)))
             continue;
-        DescPtr spDesc = FUN_1418154e0(pKey);
+        DescPtr spDesc = ParseItemDesc(pKey);
         if (spDesc == 0)
             continue;
         int nId = 0;
@@ -1315,7 +1315,7 @@ void CStringTable::LoadDescEntries(DescMap& rMap, TiXmlElement* pRoot)
 }
 
 // @0x141815b30
-void CStringTable::FUN_141815b30(LevelDescMap& rMap, TiXmlElement* pRoot)
+void CStringTable::LoadLevelDescEntries(LevelDescMap& rMap, TiXmlElement* pRoot)
 {
     Unk_CriticalSectionLock lock(m_lock, 1);
     for (TiXmlElement* pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pRoot))->FirstChild("key")); pKey != 0; pKey = ((class TiXmlElement*)((class Unk_XmlNode*)(pKey))->NextSibling("key")))
@@ -1326,7 +1326,7 @@ void CStringTable::FUN_141815b30(LevelDescMap& rMap, TiXmlElement* pRoot)
         XmlGetAttr((class TiXmlElement*)(pKey), "id", nId);
         int nLevel = 1;
         XmlGetAttr((class TiXmlElement*)(pKey), "level", nLevel);
-        DescPtr spDesc = FUN_1418158b0(pKey);
+        DescPtr spDesc = ParseSkillDesc(pKey);
         if (spDesc == 0)
         {
             (void)((!!(0)) || (_wassert(L"FALSE", _CRT_WIDE(MS2_THIS_FILE), 0x298), 0));

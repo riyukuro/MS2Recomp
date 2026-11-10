@@ -44,7 +44,7 @@ class CWebBrowserService;
 class ASDialog : public ASDisplayObject
 {
 public:
-    void FUN_1407cbbe0(const char* szName, bool b);                         // set a bool member
+    void SetBoolMember(const char* szName, bool b);                         // set a bool member
 };
 
 void FUN_141901470(int n, int nTypeId);
@@ -54,7 +54,7 @@ void FUN_140d03450(Unk_AasImagePtr* p);                                     // p
 void FUN_140d03320(Unk_AasImage* p);                                        // add a reference
 // C3: FUN_140d03240 is MS2Ptr<ASLoader>::operator-> (ICF fold with MS2Ptr<ASURLRequest>::get)
 void FUN_1416a0e70();
-CNetworkService* FUN_140714f90();
+CNetworkService* GetNetworkService();
 
 // ---- Unk_AasImagePtr (inline COMDATs of this unit) ----
 
@@ -132,12 +132,12 @@ UITencentAas2Dialog::~UITencentAas2Dialog()
 }
 
 // @0x140e98a50
-void UITencentAas2Dialog::FUN_140e98a50(CStringW strUrl, int nExitOnClose)
+void UITencentAas2Dialog::SetPageUrl(CStringW strUrl, int nExitOnClose)
 {
     m_strPage = FUN_14016a600(strUrl, 0);
     m_nExitOnClose = nExitOnClose;
 }
-MS2_REPLACE_METHOD(0x140E98A50, UITencentAas2Dialog, FUN_140e98a50, 138, 0xE5652FDE);
+MS2_REPLACE_METHOD(0x140E98A50, UITencentAas2Dialog, SetPageUrl, 138, 0xE5652FDE);
 
 // @0x140e98ae0
 void UITencentAas2Dialog::vfunc_47(int n)
@@ -161,7 +161,7 @@ void UITencentAas2Dialog::vfunc_8(int nVisible)
     {
         vfunc_47(nVisible == 0);
         pDialog->vfunc_3(nVisible);
-        ((class AScript*)(pDialog))->FUN_1407cbbe0("visible", nVisible == 1);
+        ((class AScript*)(pDialog))->SetBoolMember("visible", nVisible == 1);
     }
 }
 MS2_REPLACE_METHOD(0x140E98B70, UITencentAas2Dialog, vfunc_8, 190, 0x8228A48D);
@@ -173,7 +173,7 @@ void UITencentAas2Dialog::vfunc_67()
     UIWebBrowserBase::vfunc_67();
     if (m_nExitOnClose == 1)
     {
-        FUN_140714f90()->SendRequestQuitAndDisconnect();
+        GetNetworkService()->SendRequestQuitAndDisconnect();
         FUN_1416a0e70();
         PostQuitMessage(0);
     }
@@ -221,10 +221,10 @@ void UITencentAas2Dialog::vfunc_85()
 {
     m_spImage.AssignRaw(reinterpret_cast<Unk_AasImage*>(new ASLoader(2)));
     ((MS2Ptr<ASLoader>*)(class Unk_AasImagePtr*)(&m_spImage))->operator->()->Load(MS2Ptr<ASURLRequest>(new ASURLRequest(StringFormat(L"img://{0}:webBrowser/{1}/{2}",
-        FUN_1422db6e0(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)GetClientConstants())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)GetClientConstants())->m_nHeight)->Get()), 2)));
+        GetManagerKey(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)GetClientConstants())->m_nWidth)->Get(), *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)GetClientConstants())->m_nHeight)->Get()), 2)));
     if (m_spTarget.get() != 0)
     {
-        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6900(m_spImage->FUN_1422bb890());
+        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->AddChild(m_spImage->FUN_1422bb890());
     }
 }
 MS2_REPLACE_METHOD(0x140E98F70, UITencentAas2Dialog, vfunc_85, 681, 0x07764DF1);
@@ -234,7 +234,7 @@ void UITencentAas2Dialog::vfunc_86()
 {
     if ((m_spTarget.get() ? true : false) && (m_spImage.get() ? true : false))
     {
-        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->FUN_1422c6b70(m_spImage->FUN_1422bb890());
+        static_cast<ASDisplayObjectContainer*>(m_spTarget.operator->())->RemoveChild(m_spImage->FUN_1422bb890());
     }
 }
 MS2_REPLACE_METHOD(0x140E99220, UITencentAas2Dialog, vfunc_86, 248, 0xED12BCA0);
@@ -253,12 +253,12 @@ bool UITencentAas2Dialog::vfunc_90(POINT* pPos)
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog == 0)
         return false;
-    pPos->x -= ((class ASDisplayObject*)(pDialog))->FUN_1422c10a0();
-    pPos->y -= ((class ASDisplayObject*)(pDialog))->FUN_1422c1110();
+    pPos->x -= ((class ASDisplayObject*)(pDialog))->GetX();
+    pPos->y -= ((class ASDisplayObject*)(pDialog))->GetY();
     if (m_spTarget == 0)
         return false;
-    pPos->x -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c10a0();
-    pPos->y -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->FUN_1422c1110();
+    pPos->x -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->GetX();
+    pPos->y -= static_cast<ASDialog*>(static_cast<ASDisplayObject*>(m_spTarget.operator->()))->GetY();
     if (!(pPos->x >= 0 && pPos->y >= 0 && !(pPos->x > *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)GetClientConstants())->m_nWidth)->Get()) && pPos->y <= *reinterpret_cast<Common::Constants::Value<int>*>(&((class Unk_AasConsts*)GetClientConstants())->m_nHeight)->Get()))
     {
         return false;

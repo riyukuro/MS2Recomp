@@ -297,31 +297,31 @@ void UIStatControlDialog::FUN_14134f150()
     if (!list)
         return;
     list->FUN_1422dd1d0();
-    FUN_14134f790(list, 4, 0);
-    FUN_14134f790(list, 7, 0);
-    FUN_14134f790(list, 10, 0);
-    FUN_14134f790(list, 0, 0);
-    FUN_14134f790(list, 1, 0);
-    FUN_14134f790(list, 2, 0);
-    FUN_14134f790(list, 3, 0);
-    FUN_14134f790(list, 14, 1);
-    FUN_14134f790(list, 23, 0);
-    FUN_14134f790(list, 24, 0);
-    FUN_14134f790(list, 15, 0);
-    FUN_14134f790(list, 17, 0);
-    FUN_14134f790(list, 18, 0);
-    FUN_14134f790(list, 13, 1);
-    FUN_14134f790(list, 20, 0);
-    FUN_14134f790(list, 25, 0);
-    FUN_14134f790(list, 26, 0);
-    FUN_14134f790(list, 16, 0);
-    FUN_14134f790(list, 19, 0);
-    FUN_14134f790(list, 22, 1);
+    AddStatRow(list, 4, 0);
+    AddStatRow(list, 7, 0);
+    AddStatRow(list, 10, 0);
+    AddStatRow(list, 0, 0);
+    AddStatRow(list, 1, 0);
+    AddStatRow(list, 2, 0);
+    AddStatRow(list, 3, 0);
+    AddStatRow(list, 14, 1);
+    AddStatRow(list, 23, 0);
+    AddStatRow(list, 24, 0);
+    AddStatRow(list, 15, 0);
+    AddStatRow(list, 17, 0);
+    AddStatRow(list, 18, 0);
+    AddStatRow(list, 13, 1);
+    AddStatRow(list, 20, 0);
+    AddStatRow(list, 25, 0);
+    AddStatRow(list, 26, 0);
+    AddStatRow(list, 16, 0);
+    AddStatRow(list, 19, 0);
+    AddStatRow(list, 22, 1);
     list->vfunc_24(true);
 }
 
 // @0x14134f790
-void UIStatControlDialog::FUN_14134f790(MS2Ptr<ASScrollingList> list, int nStat, int bFloat)
+void UIStatControlDialog::AddStatRow(MS2Ptr<ASScrollingList> list, int nStat, int bFloat)
 {
     ASObj row(2);
     Unk_StatActor* pActor = ((Unk_StatActor*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -358,7 +358,7 @@ void UIStatControlDialog::FUN_14134f790(MS2Ptr<ASScrollingList> list, int nStat,
     }
     CStringW strLabel;
     strLabel.Format(L"[ %s ] [ %s ]", (const wchar_t*)GetStatCommonText(nStat), (const wchar_t*)strValue);
-    row.FUN_1407cbb20("label", CStringW(strLabel));
+    row.SetWStringMember("label", CStringW(strLabel));
     row.SetMemberUInt("statIdx", nStat);
     list->AddItem(row);
 }

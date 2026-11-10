@@ -18,8 +18,8 @@ public:
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);   // 28 0x141946560 "OnOk"
     virtual int vfunc_48() { return 0x4e75; }                   // 48 0x141946c00
 
-    class CGemTransparency* FUN_1419469b0();                    // the worn transparency gem (null: none)
-    int FUN_141946a70(CString strName);                         // the check box value
-    void FUN_141946b10(CString strName, int nValue);            // set the check box value
+    class CGemTransparency* GetTransparencyGem();                    // the worn transparency gem (null: none)
+    int GetCheckBoxValue(CString strName);                         // the check box value
+    void SetCheckBoxValue(CString strName, int nValue);            // set the check box value
 };
 MS2_CHECK_SIZE(UIGemSettingDialog, 0x180);

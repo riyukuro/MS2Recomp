@@ -38,7 +38,7 @@ CKillCount::~CKillCount()
 }
 
 // @0x14064c5f0
-int CKillCount::FUN_14064c5f0(unsigned short a1, unsigned short a2)
+int CKillCount::RegisterKill(unsigned short a1, unsigned short a2)
 {
     int nShow = 0;
     int nNow = GetTickCountMs2();
@@ -52,7 +52,7 @@ int CKillCount::FUN_14064c5f0(unsigned short a1, unsigned short a2)
         else
             nLast = m_0c;
         m_0c = nLast;
-        m_08 = FUN_14064c8a0(a1, a2, nNow - m_0c);
+        m_08 = CalcKillCount(a1, a2, nNow - m_0c);
     }
     if (m_08 == 1 || m_08 != nOld) {
         nShow = 1;
@@ -93,7 +93,7 @@ int CKillCount::GetCount()
 }
 
 // @0x14064c820
-int CKillCount::FUN_14064c820()
+int CKillCount::GetLastKillTick()
 {
     return m_0c;
 }
@@ -107,7 +107,7 @@ int CKillCount::FUN_14064c840(int nTick)
 }
 
 // @0x14064c8a0
-unsigned int CKillCount::FUN_14064c8a0(unsigned short a1, unsigned short a2, int nDelta)
+unsigned int CKillCount::CalcKillCount(unsigned short a1, unsigned short a2, int nDelta)
 {
     return ((class CLua*)(class Unk_LuaState*)(((class Unk_LuaState*)FUN_1401c0db0())))->CalcKillCount(a1, a2, nDelta, m_08);
 }

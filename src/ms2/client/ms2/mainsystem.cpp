@@ -282,7 +282,7 @@ double CMainSystem::GetGameTime()
 // @0x1414732b0
 DWORD CMainSystem::GetObjectTime(GameObject* pObject)
 {
-    int nKind = WorldService::GetInstance()->FUN_141bd1a10(reinterpret_cast<class Unk_WsC_GameObj*>(pObject));
+    int nKind = WorldService::GetInstance()->GetObjectKind(reinterpret_cast<class Unk_WsC_GameObj*>(pObject));
     return GetTimeByKind(nKind);
 }
 

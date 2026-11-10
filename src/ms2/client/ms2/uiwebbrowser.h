@@ -29,14 +29,14 @@ public:
     virtual void vfunc_89(const CString& strUrl);               // 89 0x141b50680 navigate
     virtual bool vfunc_91();                                    // 91 0x141b50990 resizable
 
-    void FUN_141b50420(NotifyObject* pNotify);                  // 0x141b50420 "NotifyGameStart": forget the stored page
+    void OnGameStart(NotifyObject* pNotify);                  // 0x141b50420 "NotifyGameStart": forget the stored page
     void SetStored(const CString& strUrl);                  // 0x141b50450 browser callback: remember the page
     void FUN_141b50490(const CString& strKey);                  // 0x141b50490 navigate to the page stored under a key
-    void FUN_141b507b0(int nWidth, int nHeight);                // 0x141b507b0 "setBrowserSize"
+    void SetBrowserSize(int nWidth, int nHeight);                // 0x141b507b0 "setBrowserSize"
     void FUN_141b50830(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b50830 navigation button
     void FUN_141b50890(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b50890 "min size" button
     void FUN_141b50910(const Scaleform::GFx::FunctionHandler::Params& params);   // 0x141b50910 "max size" button
-    void FUN_141b509b0();                                       // 0x141b509b0 show the min / max size button that applies
+    void UpdateSizeButtons();                                       // 0x141b509b0 show the min / max size button that applies
 
 protected:
     MS2_LAYOUT_FRIEND;

@@ -20,11 +20,11 @@ void SetCachedBoolProperty(class Unk_CachedEntity*, unsigned int, bool const&); 
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
 #define DAT_143b059e8 (*(char*)&egf::g_bapiContext)          // C3: was extern char DAT_143b059e8
-efd::Color FUN_1413fa320(egf::Entity*);
-void FUN_141568ac0(egf::Entity*, const efd::Color&);
+efd::Color GetEntityColor(egf::Entity*);
+void SetEntityTint(egf::Entity*, const efd::Color&);
 bool FUN_1413fa390(egf::Entity*);
 void FUN_1413fa4c0(egf::Entity*);
-void FUN_141567330(NiAVObject*, bool);
+void SetShadowCaster(NiAVObject*, bool);
 void FUN_141851f90(void*, float);   // C3: was FUN_141851f90
 void FUN_1410865e0(NiObjectNET*, const NiFixedString&, bool);
 void FUN_1415690f0(class NiAVObject*);   // C3: was FUN_1415690f0
@@ -39,7 +39,7 @@ public:
 public:
     bool FUN_141bc7b20(unsigned __int64 const&);   // C3: was free FUN_141bc7b20
 };
-ecr::RenderService* FUN_1413f9890();
+ecr::RenderService* GetRenderService();
 class CameraMgr { public: bool IsSphereInFrustum(const efd::Point3& kPos, float fRadius); };   // C3: view of camera.h (was free FUN_140af0aa0)
 template<> CameraMgr* TSingleton<CameraMgr>::GetInstance();
 void CompactChildren(NiNode*, bool);
@@ -71,7 +71,7 @@ void MeshInstancing::Init(egf::Entity* entity, unsigned cap, unsigned count, NiT
         root->SetLocalTransform(identity);
         id18 = TSingleton<EntityWorldManager>::GetInstance()->FUN_1411ce760(FUN_14112e120(entity), config.asset, bFlag);
         source = TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id18);
-        FUN_141568ac0(source, FUN_1413fa320(entity));
+        SetEntityTint(source, GetEntityColor(entity));
         SetCachedBoolProperty((class Unk_CachedEntity*)(source.operator->()), 0x2a7fd9f4, flag2a);
         SetCachedBoolProperty((class Unk_CachedEntity*)(source.operator->()), 0xd89e9b12, config.flags30);
         SetCachedBoolProperty((class Unk_CachedEntity*)(source.operator->()), 0x90d6d437, config.flags31);
@@ -151,7 +151,7 @@ void MeshInstancing::SetSourceVisible(bool enabled) {
 MS2_REPLACE_METHOD(0x14147ca20, MeshInstancing, SetSourceVisible, 115, 0xCDBED009);
 // @0x14147caa0
 void MeshInstancing::FUN_14147caa0() {
-    ecr::RenderService* renderer = FUN_1413f9890();
+    ecr::RenderService* renderer = GetRenderService();
     for (std::map<egf::EntityID, Unk_MeshInstanceEntry>::iterator it = entries.begin(); it != entries.end(); ++it) {
         egf::Entity* entity = it->second.entity;
         if (entity != NULL) {
@@ -162,7 +162,7 @@ void MeshInstancing::FUN_14147caa0() {
 }
 // @0x14147cbc0
 void MeshInstancing::FUN_14147cbc0() {
-    ecr::RenderService* renderer = FUN_1413f9890();
+    ecr::RenderService* renderer = GetRenderService();
     for (std::map<egf::EntityID, Unk_MeshInstanceEntry>::iterator it = entries.begin(); it != entries.end(); ++it) {
         egf::Entity* entity = it->second.entity;
         if (entity != NULL) {
@@ -227,7 +227,7 @@ void MeshInstancing::FUN_14147d0c0(bool enabled) {
         SetCachedBoolProperty((class Unk_CachedEntity*)(source.operator->()), 0xd89e9b12, enabled);
         NiAVObject* object = FUN_141b6efc0(source);
         if (object != NULL) {
-            FUN_141567330(object, enabled);
+            SetShadowCaster(object, enabled);
             object->UpdateEffects();
             object->UpdateProperties();
             object->Update(0.0f, true);

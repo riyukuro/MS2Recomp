@@ -26,10 +26,10 @@ extern int DAT_143ae0fb4;                                   // 0x143ae0fb4
 class Unk_PCMove   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_1416830b0(int);
+    bool WasKeyPressed(int);
 };
 // Clamps the mode index to the table range.
-int FUN_140ad02c0(int nValue, int nMin);                    // 0x140ad02c0
+int Max(int nValue, int nMin);                    // 0x140ad02c0
 
 // ---- CGodModeInfo ----
 
@@ -59,8 +59,8 @@ void CGodModeInfo::FUN_141374b80(Vector3 kPos)
     m_spTooltip->FUN_14191aae0(kPos);
     CStringW strText;
     strText.Format(L"%d", m_n18);
-    m_spTooltip->FUN_14191ab10(strText);
-    m_spTooltip->FUN_14191aa10();
+    m_spTooltip->SetText(strText);
+    m_spTooltip->Show();
 }
 
 // @0x141374d10
@@ -93,13 +93,13 @@ void CGodModeInfo::FUN_141374dd0(void* pInput)
     if (DAT_143ae0fb4 != 0 && (bool)m_spTooltip.get())
     {
         int nValue = m_n18;
-        if (((class Unk_PCMove*)(void*)(pInput))->FUN_1416830b0(0x7d))
+        if (((class Unk_PCMove*)(void*)(pInput))->WasKeyPressed(0x7d))
             nValue--;
-        if (((class Unk_PCMove*)(void*)(pInput))->FUN_1416830b0(0x78))
+        if (((class Unk_PCMove*)(void*)(pInput))->WasKeyPressed(0x78))
             nValue++;
         if (nValue != m_n18)
         {
-            m_n18 = FUN_140ad02c0(nValue, 0);
+            m_n18 = Max(nValue, 0);
             SendRequestCube();
         }
     }
@@ -115,7 +115,7 @@ void CGodModeInfo::SendRequestCube()
         {
             CStringW strText;
             strText.Format(L"%d", m_n18);
-            m_spTooltip->FUN_14191ab10(strText);
+            m_spTooltip->SetText(strText);
         }
         COutPacket packet(static_cast<int>(SendOp::RequestCube), 0);
         packet.WriteUInt8(0x13);

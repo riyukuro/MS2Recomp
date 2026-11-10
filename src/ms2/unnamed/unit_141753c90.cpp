@@ -1,6 +1,6 @@
 // Recovered from MapleStory2.exe KMS2_DEV x64 (2022-04-13). A flat textured blob-shadow quad: FUN_141753e30 builds a centred
 // fSize x fSize screen-elements quad textured with strTexture (plus an optional detail map), alpha blended with emissive vertex
-// colours; FUN_141753c90 lays it flat (rotated -90 degrees about x) under a billboard node that turns about the up axis.
+// colours; CreateBillboardNode lays it flat (rotated -90 degrees about x) under a billboard node that turns about the up axis.
 // Follows shadowcullingprocess.cpp in the exe; no recovered callers yet.
 // MS2-UNIT: unit_141753c90
 // MS2-RANGE: 0x141753c90-0x141754490 .text$mn
@@ -57,7 +57,7 @@ efd::SmartPointer<NiMeshScreenElements> FUN_141753e30(const CString& strTexture,
 MS2_REPLACE(0x141753E30, FUN_141753e30, 1565, 0x98E5E3BE);
 
 // @0x141753c90
-efd::SmartPointer<NiBillboardNode> FUN_141753c90(const CString& strTexture, float fSize, const char* szDetail)
+efd::SmartPointer<NiBillboardNode> CreateBillboardNode(const CString& strTexture, float fSize, const char* szDetail)
 {
     efd::SmartPointer<NiBillboardNode> spNode = NiNew NiBillboardNode;
     spNode->SetMode(NiBillboardNode::ROTATE_ABOUT_UP);
@@ -65,6 +65,6 @@ efd::SmartPointer<NiBillboardNode> FUN_141753c90(const CString& strTexture, floa
     spNode->AttachChild(FUN_141753e30(strTexture, fSize, szDetail), false);
     return spNode;
 }
-MS2_REPLACE(0x141753C90, FUN_141753c90, 404, 0x7D2BE206);
+MS2_REPLACE(0x141753C90, CreateBillboardNode, 404, 0x7D2BE206);
 
-// 0x141754450 is efd::SmartPointer<NiBillboardNode>'s copy constructor (COMDAT, the return of FUN_141753c90).
+// 0x141754450 is efd::SmartPointer<NiBillboardNode>'s copy constructor (COMDAT, the return of CreateBillboardNode).

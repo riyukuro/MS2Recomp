@@ -45,7 +45,7 @@ public:
     void FUN_1416f6900();                                   // a tick hit
     void FUN_1416f6b90();                                   // reset
     int GetId();                                    // the id
-    void FUN_1416f6e40();                                   // end the region skill
+    void StopLoopEffects();                                   // end the region skill
     Vector3 FUN_1416f6ed0();                        // the first point
     void FUN_1416f6f50();                                   // per frame: respawn the culled effects
     void FUN_1416f7790();                                   // the late effect

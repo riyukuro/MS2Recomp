@@ -41,11 +41,11 @@ public:
     // 0x1412818f0 = the real CAtlMap<unsigned __int64, int>::SetOptimalLoad (the ctor calls it through the map view)
     // (was) FUN_14101af70 = CAtlMap<unsigned __int64, int>::UpdateRehashThresholds (private)
     // (was) FUN_14101a900 = CAtlMap<unsigned __int64, int>::PickSize (private)
-    void FUN_141017e80();                                               // clear
+    void Clear();                                               // clear
     int FUN_141017f40(__int64 nCharId);                                 // the rank of a character
-    int FUN_141017f80();                                                // the row count
+    int GetRowCount();                                                // the row count
     struct Unk_PvpTimerItem* FUN_141017fb0(int nRank);                  // the row of a rank
-    void FUN_141017950(int nMessage, CInPacket& packet);                // OnMessage
+    void OnMessage(int nMessage, CInPacket& packet);                // OnMessage
 
     MS2_LAYOUT_FRIEND;
     unsigned __int64 m_0;
@@ -100,10 +100,10 @@ MS2_CHECK_SIZE(Unk_PvpTimerBlock, 0x60);
 class Unk_PvpEntryTable
 {
 public:
-    Unk_PvpEntryTable() { FUN_14101ef40(); }                            // 0x141281490
+    Unk_PvpEntryTable() { Clear(); }                            // 0x141281490
     ~Unk_PvpEntryTable() {}                                             // 0x141281670
 
-    void FUN_14101ef40();                                               // clear
+    void Clear();                                               // clear
 
     MS2_LAYOUT_FRIEND;
     int m_0;
@@ -124,12 +124,12 @@ public:
 
     void FUN_14101b7f0();                                               // clear both tables
     void FUN_14101c0b0(void* pArgument);                                // forward: mark a character offline
-    void FUN_14101b830(int nMessage, CInPacket& packet);                // OnMessage
-    Unk_PvpEntryTable* FUN_14101c560(int nTeam);                        // the table of a team (0xc9 / 0xca)
-    std::vector<Unk_PvpEntryItem*>* FUN_14101c160(int nTeam);           // the rows of a team
-    void FUN_14101c1a0(int* pA, int* pB);                               // the two table values
-    void FUN_14101c470(int nA, int nB);                                 // set the two table values
-    void FUN_14101c4e0(int nTeam);                                      // sort the rows of a team
+    void OnMessage(int nMessage, CInPacket& packet);                // OnMessage
+    Unk_PvpEntryTable* GetTeamTable(int nTeam);                        // the table of a team (0xc9 / 0xca)
+    std::vector<Unk_PvpEntryItem*>* GetTeamRows(int nTeam);           // the rows of a team
+    void GetTeamScores(int* pA, int* pB);                               // the two table values
+    void SetTeamScores(int nA, int nB);                                 // set the two table values
+    void SortTeamRows(int nTeam);                                      // sort the rows of a team
     void FUN_14101c220(int nTeam, __int64 nCharId, int nWin, int nLose, int nKill);   // add / update a row
 
     MS2_LAYOUT_FRIEND;

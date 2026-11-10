@@ -50,34 +50,34 @@ public:
     void FUN_1422d0bf0(bool b);                                                                 // m_09 (no loads while set)
     int AddScene(MS2Ptr<UISceneEntity> p);                                                 // register a scene (UISceneEntity ctor)
     int AddEntity(MS2Ptr<UISwfEntity> p);                                                   // register (UISwfEntity ctor)
-    int FUN_1422d0dc0(MS2Ptr<UISwfEntity> p);                                                   // unregister (unloads it)
+    int RemoveEntity(MS2Ptr<UISwfEntity> p);                                                   // unregister (unloads it)
     void FUN_1422d0fb0();                                                                       // unload and drop everything
     void FUN_1422d1180();                                                                       // reload every entity (FUN_1422dc1e0)
     CString PreloadSwf(int nGroup, CString& strKey, const CString& strPath, int a1, int a2); // preload; the new key
-    CString FUN_1422d1320(int nGroup, CString& strKey, const CString& strPath, int a1, int a2, int a3,
+    CString LoadSwf(int nGroup, CString& strKey, const CString& strPath, int a1, int a2, int a3,
                           UISwfEntity* pEntity);                                                // load; the new key
-    CString FUN_1422d16c0(int nGroup, CString& strKey, const CString& strPath, int a1);         // preload + load
-    CString FUN_1422d17a0(int nGroup, CString strKey, int n);                                   // unload; the new key ("")
+    CString PreloadAndLoadSwf(int nGroup, CString& strKey, const CString& strPath, int a1);         // preload + load
+    CString UnloadSwf(int nGroup, CString strKey, int n);                                   // unload; the new key ("")
     void RemoveEntitiesByTypeName(const CString& strClass);                                                // unload the entities of a class name
     void FUN_1422d1b20(int nGroup, const CString& strKey, int n);                               // swap the depth layer
-    void FUN_1422d1ba0();                                                                       // shutdown (GFxService::OnShutdown)
+    void Shutdown();                                                                       // shutdown (GFxService::OnShutdown)
     int FUN_1422d1c20();                                                                        // per tick (GFxService::OnTick): input taken
-    void FUN_1422d2020();                                                                       //   then this
+    void UpdateEntities();                                                                       //   then this
     void FUN_1422d21b0();                                                                       // all entities: slot 19
     void FlushUnloading();                                                                       // drop the pending unloads
     UISwfEntity* FindSceneById(int nId);                                                        // the scene of a scene id
     MS2Ptr<UISwfEntity> GetUISwfEntity(const CString& strName);                                 // a movie by key (else by class name)
-    UISwfEntity* FUN_1422d4380(const CString& strName);                                         // an entity by class name (trimmed, no case)
-    MS2Ptr<UISwfEntity> FUN_1422d4580(const CString& strName);                                 // an entity by key (trimmed, no case)
+    UISwfEntity* FindEntityByTypeName(const CString& strName);                                         // an entity by class name (trimmed, no case)
+    MS2Ptr<UISwfEntity> FindEntityByKey(const CString& strName);                                 // an entity by key (trimmed, no case)
     void AddToLayer(UISwfEntity* p, int nLayer);                                             // add to a layer
     void RemoveFromLayer(UISwfEntity* p, int nLayer);                                             // remove from a layer (and layer 1)
     void BringToFront(UISwfEntity* p, int nLayer);                                             // bring to the top (uimessagebox.cpp)
     UISwfEntity* GetTopEntity(int nLayer);                                                     // the dialog on top of a layer
     void FUN_1422d49f0();                                                                       // toggle m_0a
     void FUN_1422d4a30(bool b);                                                                 // m_0a, forwarded to GFxManager
-    int FUN_1422d4a70(POSITION pos);                                                            // the movie is pending unload
-    UISwfEntity* FUN_1422d4af0(POSITION pos);                                                   // a loaded movie (not pending unload)
-    void FUN_1422d4b40(int (*pfn)());                                                           // the input-taken override of FUN_1422d1c20
+    int IsPendingUnload(POSITION pos);                                                            // the movie is pending unload
+    UISwfEntity* GetLoadedEntity(POSITION pos);                                                   // a loaded movie (not pending unload)
+    void SetInputTakenCallback(int (*pfn)());                                                           // the input-taken override of FUN_1422d1c20
     void FUN_1422d4b70(bool bShow);                                                             // m_09; set: FUN_1422d4bb0
     void FUN_1422d4bb0();                                                                       // unload every non-scene entity
     void FUN_1422d4d10();                                                                       // unload every scene

@@ -52,13 +52,13 @@ MS2_CHECK_OFFSET(Unk_InventorySkillRequest, m_n40, 0x40);
 class SkillTargetRecord : public CPtred
 {
 public:
-    bool FUN_141758d70(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId, int nCasterId, int nSkillId,
+    bool Init(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId, int nCasterId, int nSkillId,
         short nLevel, int nMotion, Vector3 ptDir, int n80, int n84, int nAttack, int n8c);   // fill in
     SkillMotionData* GetMotionData();                       // the motion
     SkillAttackData* GetAttackData();                       // the attack
     int FUN_141759090();                                    // whether the attack exists
-    const CString& FUN_1417590d0();                         // the arrow effect of an arrow attack
-    unsigned FUN_141758fb0();                               // the skill id
+    const CString& GetArrowEffect();                         // the arrow effect of an arrow attack
+    unsigned GetSkillId();                               // the skill id
     unsigned short FUN_141758fe0();                         // the skill level
     int GetStartTick();                                    // the start tick
     void FUN_1417591b0();                                   // hands the record to the attack state of the own player
@@ -101,7 +101,7 @@ public:
     unsigned GetSkillId();                                  // 0x141759960
     unsigned short GetLevel();                              // 0x141759990
     __int64 FUN_1417599c0();                                // the request's +0x40
-    __int64 FUN_1417599e0();                                // the cooldown key of the motion
+    __int64 GetCooldownKey();                                // the cooldown key of the motion
     bool FUN_141759a50();                                   // the motion's flag +0xa0
     float FUN_141759ad0();                                  // the default cooldown of a plain cast
     float FUN_141759b60(double dDelta);                     // the share of the cooldown of the elapsed duration
@@ -177,7 +177,7 @@ public:
     int Init(unsigned long long nTagId, unsigned long long nTagSub, int nOwnerId, int nCasterId, int nSkillId,
         short nLevel, int nMotion, int nAttack, Vector3 ptPos, Vector3 ptDir,
         Vector3 ptHit);                             // 0x14175a610
-    SkillData* FUN_14175a820();                             // the skill
+    SkillData* GetSkillData();                             // the skill
     SkillMotionData* GetMotionData();                       // the motion
     SkillAttackData* GetAttackData();                       // the attack
     int GetNameIndex();                                    // the attack's name index
@@ -188,8 +188,8 @@ public:
     void AddDamage(int nType, __int64 nDamage);         // adds one damage (type 8 is kept as 3)
     int FUN_14175acc0();                                    // whether the attack exists
     __int64 GetTotalDamage();                                // the total damage
-    unsigned __int64 FUN_14175aeb0();                       // the damage count
-    int FUN_14175ad50();                                    // the attack material (the weapon's, for a player)
+    unsigned __int64 GetDamageCount();                       // the damage count
+    int GetAttackMaterial();                                    // the attack material (the weapon's, for a player)
     int GetDamageType(int nIndex, int& nType);              // the type of one damage
 
     unsigned long long m_nTagId;                            // +0x18

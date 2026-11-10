@@ -38,16 +38,16 @@ public:
     virtual void vfunc_o178_2(void*);                           // UIQuestEventListener 2 0x140ea1da0
     virtual void vfunc_oa0_9(unsigned short a1);                // UIStatusEventListener 9 0x140ea1dd0
 
-    void FUN_140ea15d0(int bPickCategory);                      // 0x140ea15d0 send the selected quest's data to the movie
-    void FUN_140ea1c00(NotifyObject* pNotify);                  // 0x140ea1c00 "NotifyChangeServer": reload the seen lists
+    void SetQuestData(int bPickCategory);                      // 0x140ea15d0 send the selected quest's data to the movie
+    void OnChangeServer(NotifyObject* pNotify);                  // 0x140ea1c00 "NotifyChangeServer": reload the seen lists
     void FUN_140ea1c30(NotifyObject* pNotify);                  // 0x140ea1c30 "NotifyGameStart": which learning quests are open
     void FUN_140ea1d70(NotifyObject* pNotify);                  // 0x140ea1d70 "NotifyChangeMyPC": forget the open flags
     int FUN_140ea1e20(int bNew);                                // 0x140ea1e20 pick the first open learning quest
     void LoadLearningQuest();                                       // 0x140ea2120 read the seen lists from the xml files
     void SaveLearningQuest();                                       // 0x140ea26e0 write the seen lists
-    void FUN_140ea2e50(ASObj& rOut);                            // 0x140ea2e50 build the category / quest tree
-    void FUN_140ea3570(const CQuestData::CompleteReward& rReward, ASObj& rOut);   // 0x140ea3570 exp / meso text and reward items
-    void FUN_140ea3910();                                       // 0x140ea3910 mark dirty while the lobby scene is shown
+    void BuildQuestTree(ASObj& rOut);                            // 0x140ea2e50 build the category / quest tree
+    void BuildCompleteReward(const CQuestData::CompleteReward& rReward, ASObj& rOut);   // 0x140ea3570 exp / meso text and reward items
+    void MarkDirty();                                       // 0x140ea3910 mark dirty while the lobby scene is shown
 
 private:
     MS2_LAYOUT_FRIEND;

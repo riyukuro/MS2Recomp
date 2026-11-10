@@ -125,7 +125,7 @@ void UIGambleDialog::vfunc_79(void* pPacket)
         for (size_t i = 0; i < m_binds.GetCount(); i++)
             DestroyItemInfoSlot(m_binds[i]);
         m_binds.RemoveAll();
-        if (FUN_141935710() == 0)
+        if (SetResultItems() == 0)
             return;
         ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDlg != 0)
@@ -153,14 +153,14 @@ int UIGambleDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 }
 
 // @0x141935710
-int UIGambleDialog::FUN_141935710()
+int UIGambleDialog::SetResultItems()
 {
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0) {
         UITalkManager::CTalkRewardData* pReward = TSingleton<UITalkManager>::GetInstance()->FUN_141082d60();
         if (reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&pReward->m_items)->GetCount() <= 0)
             return 0;
-        reinterpret_cast<AScript*>(pDlg)->FUN_1407cb9c0("m_resultItemCount", reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&pReward->m_items)->GetCount());
+        reinterpret_cast<AScript*>(pDlg)->SetIntMember("m_resultItemCount", reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&pReward->m_items)->GetCount());
         for (unsigned i = 0; i < reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >*>(&pReward->m_items)->GetCount(); i++) {
             MS2Ptr<CItem> spItem = reinterpret_cast<ATL::CAtlArray<MS2Ptr<CItem> >&>(pReward->m_items)[i];
             if (spItem.IsNull())
@@ -171,13 +171,13 @@ int UIGambleDialog::FUN_141935710()
             CStringW strName = StringFormat<CStringW, unsigned int>(L"{0} X {1}", spItem->FUN_140527b10(), nCount);
             CreateItemInfoSlot(strBind, spItem, i, 0x415, 0);
             int nFlag = 1;
-            int nPayType = FUN_1403bafd0(spItem->FUN_1405276c0());
+            int nPayType = FUN_1403bafd0(spItem->GetItemId());
             if (nPayType != 0x11) {
                 strName = FUN_1418fec00(nPayType, (unsigned)spItem->GetCount(), (bool)0);
                 if (!strName.IsEmpty())
                     nFlag = 0;
             }
-            pDlg->FUN_141935bc0("bind", strBind, i + 1, strName, spItem->FUN_140528590(), nFlag);
+            pDlg->FUN_141935bc0("bind", strBind, i + 1, strName, spItem->GetIconPath(), nFlag);
             m_binds.Add(strBind);
         }
         reinterpret_cast<UITalkManager::CTalkRewardData*>(pReward)->FUN_141b1dbd0();

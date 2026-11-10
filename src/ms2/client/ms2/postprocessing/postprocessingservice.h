@@ -76,20 +76,20 @@ public:
     virtual void vfunc_4(int) {}                    // 0x1416b1dc0
 
     bool FUN_1416a35c0(bool bEnable);               // toggle the extra MRT targets (1..6)
-    bool FUN_1416a36f0(bool bEnable);               // toggle the 16-bit float target format
+    bool SetFloatTargetFormat(bool bEnable);               // toggle the 16-bit float target format
     bool FUN_1416a3760();
-    bool FUN_1416a3780();
+    bool IsFloatTargetFormat();
     bool ToggleStep(int nStep, bool bRelink);    // toggle a step's active flag; returns the new state
     bool SetStepActive(int nStep, bool bActive);    // set a step's active flag (toggles + relinks when it differs)
     bool IsStepActive(int nStep);                  // is the step active
     PostProcessEffect* GetStep(int nStep);
     static egf::IBuiltinModel* CreatePostProcessSetting();     // "PostProcessSetting" builtin model factory
-    void FUN_1416a3bb0();                           // create the off-screen target m_spTarget190
-    LPDIRECT3DSURFACE9 FUN_1416a3cd0(const NiPixelFormat* pkFormat, unsigned int uiWidth, unsigned int uiHeight);
+    void CreateOffscreenTarget();                           // create the off-screen target m_spTarget190
+    LPDIRECT3DSURFACE9 CreateRenderTargetSurface(const NiPixelFormat* pkFormat, unsigned int uiWidth, unsigned int uiHeight);
     PostProcessEffect* GetFirstActiveStep();             // first active step
-    efd::SmartPointer<NiRenderTargetGroup> FUN_1416a3fb0();
+    efd::SmartPointer<NiRenderTargetGroup> GetOffscreenTarget();
     static bool RepointMirroredViewCamera(NiRenderStep* pkStep, void* pvData);                    // re-point the mirrored view at the main camera
-    static bool FUN_1416a40c0(NiRenderStep* pkStep, void* pvData);                    // disable user clip planes
+    static bool DisableClipPlanes(NiRenderStep* pkStep, void* pvData);                    // disable user clip planes
     void OnSceneGraphAdded(const ecr::SceneGraphAddedMessage* pMessage, efd::Category targetChannel);
     void OnSceneGraphRemoved(const ecr::SceneGraphRemovedMessage* pMessage, efd::Category targetChannel);
     void FUN_1416a4350(const egf::EntityChangeMessage* pMessage, efd::Category targetChannel);   // 8196
@@ -104,8 +104,8 @@ public:
     void SetClickActive(int nClick, bool bActive);
     bool FUN_1416a66d0();                           // can the device do MRT
     bool FUN_1416a69a0();                           // can the device do float targets
-    void FUN_1416a6d90(int nStep, efd::SmartPointer<PostProcessEffect> spStep);   // insert a step
-    void FUN_1416a7570();                           // build the pre-process render step
+    void AddStep(int nStep, efd::SmartPointer<PostProcessEffect> spStep);   // insert a step
+    void BuildPreprocessRenderStep();                           // build the pre-process render step
     void FUN_1416a6fc0();                           // debug hot-key: Ctrl+S toggles the post-process debug view
     void PurgeTargetBuffer(NiRenderTargetGroup* pkTarget);  // release the D3D references of the target's colour buffer
     void ProcessQueuedStepEvents();                           // flush the queued click events
@@ -125,8 +125,8 @@ public:
     static bool FUN_1416ac2e0(NiRenderClick* pkClick, void* pvData);   // remember the view-projection matrix
     static void FUN_1416ac3b0(NiRenderTargetGroup* pkTarget);   // point the main scene clicks at a render target
     static egf::IBuiltinModel* CreatePlaneReflectionSetting();     // "PlaneReflectionSetting" builtin model factory
-    static bool FUN_1416abce0(bool bBeforeReset, void* pvData);   // device reset callback
-    bool FUN_1416abd20(bool bBeforeReset);
+    static bool OnDeviceReset(bool bBeforeReset, void* pvData);   // device reset callback
+    bool HandleDeviceReset(bool bBeforeReset);
     void QueueStepEvent(int nEvent);                 // queue an event (13 = fade-in finished)
     NiRenderedTexture* GetRenderedTexture(int nIndex);   // m_aspTextures[nIndex]
     void CreateRenderedTextures();                           // create the MRT targets
@@ -140,7 +140,7 @@ public:
     efd::SmartPointer<NiViewRenderClick> CreateOutlineClick();
     void LinkEffects();                           // link the active effects into the post-process render step
     bool FUN_1416ac060(PostProcessEffect* pkEffect);   // (re)create the effect's output over the shared textures
-    void FUN_1416abb30(NiTexture* pkTexture);       // copy the m_spTarget190 colour buffer into a texture
+    void CopyTargetToTexture(NiTexture* pkTexture);       // copy the m_spTarget190 colour buffer into a texture
     static bool FUN_1416abac0(NiRenderStep* pkStep, void* pvData);   // post-processing callback: copy into the step's texture
 
     efd::SmartPointer<NiMaterial> m_aspMaterials[7];            // +0x30

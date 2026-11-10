@@ -120,12 +120,12 @@ unsigned FUN_140767ff0();                                                       
 CFileSystem* GetFileSystem();
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);
-void FUN_140399100(CString strMask, CString strDir, ATL::CAtlArray<CString>& rOut, CString strExtra, bool bRecursive);
+CString GetXmlPath(const CString& strDir, const CString& strFile);
+void FindFiles(CString strMask, CString strDir, ATL::CAtlArray<CString>& rOut, CString strExtra, bool bRecursive);
 CString FUN_14028d3c0(CString strPath);                                             // file name of a path
 void FUN_1401d3700(CString& str);                                                   // lower-case
-MS2Ptr<CNpcData> FUN_1406cd330(int nNpcId);
-CString FUN_14016a5c0(const char* pszName, int);
+MS2Ptr<CNpcData> FindNpcData(int nNpcId);
+CString ToCString(const char* pszName, int);
 
 // The <script>/<select>/<job> children of a parent (24 bytes, a vector of element pointers) with index access.
 typedef std::vector<Unk_XmlNode*> Unk_ElemArray;   // ctor 0x140163e20, dtor 0x1401644e0, size 0x14016d900, [] 0x140164a30
@@ -136,8 +136,8 @@ void FUN_140858440(CStringA path);
 void FUN_140859160(Unk_ScriptXmlNode* pNode, TalkPtr script);
 void FUN_140859320(Unk_ScriptXmlNode* pNode, TalkPtr script);
 void FUN_1408559b0();
-TalkArrayPtr FUN_140857330(int nNpcId);
-TalkArrayPtr FUN_140857660(int nNpcId);
+TalkArrayPtr GetNpcTalks(int nNpcId);
+TalkArrayPtr GetNpcMonologues(int nNpcId);
 
 // ---- the script tables (static initializers in .text$di, in this order) ----
 
@@ -156,7 +156,7 @@ static void CheckValid()
     if (!s_valid)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CTalkScript).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CTalkScript).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
@@ -264,7 +264,7 @@ int FUN_140855cd0(unsigned char nFlags)
 }
 
 // @0x140857330
-TalkArrayPtr FUN_140857330(int nNpcId)
+TalkArrayPtr GetNpcTalks(int nNpcId)
 {
     CheckValid();
     TalkArrayPtr result(0);
@@ -285,7 +285,7 @@ TalkArrayPtr FUN_140857330(int nNpcId)
             {
                 ATL::CAtlArray<CString> paths;
                 for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
-                    paths.Add(*s_npcFiles[i]->FUN_1401d1140());
+                    paths.Add(*s_npcFiles[i]->GetPath());
                 s_npcFiles.RemoveAll();
                 s_npcTalks.RemoveAll();
                 s_npcAlt.RemoveAll();
@@ -303,7 +303,7 @@ TalkArrayPtr FUN_140857330(int nNpcId)
 }
 
 // @0x140857660
-TalkArrayPtr FUN_140857660(int nNpcId)
+TalkArrayPtr GetNpcMonologues(int nNpcId)
 {
     CheckValid();
     TalkArrayPtr result(0);
@@ -324,7 +324,7 @@ TalkArrayPtr FUN_140857660(int nNpcId)
             {
                 ATL::CAtlArray<CString> paths;
                 for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
-                    paths.Add(*s_npcFiles[i]->FUN_1401d1140());
+                    paths.Add(*s_npcFiles[i]->GetPath());
                 s_npcFiles.RemoveAll();
                 s_npcTalks.RemoveAll();
                 s_npcAlt.RemoveAll();
@@ -342,21 +342,21 @@ TalkArrayPtr FUN_140857660(int nNpcId)
 }
 
 // @0x140855d10
-int FUN_140855d10(int nNpcId)
+int HasNpcTalks(int nNpcId)
 {
-    return FUN_140857330(nNpcId).operator->() ? 1 : 0;
+    return GetNpcTalks(nNpcId).operator->() ? 1 : 0;
 }
 
 // @0x140855d80
-int FUN_140855d80(int nNpcId)
+int HasNpcMonologues(int nNpcId)
 {
-    return FUN_140857660(nNpcId).operator->() ? 1 : 0;
+    return GetNpcMonologues(nNpcId).operator->() ? 1 : 0;
 }
 
 // @0x140856820
 TalkPtr FUN_140856820(int nNpcId, int nTalkId)
 {
-    TalkArrayPtr list = FUN_140857330(nNpcId);
+    TalkArrayPtr list = GetNpcTalks(nNpcId);
     if (list == 0)
         return TalkPtr(0);
     for (size_t i = 0; i < (*list.operator->()).GetCount(); i++)
@@ -369,9 +369,9 @@ TalkPtr FUN_140856820(int nNpcId, int nTalkId)
 }
 
 // @0x140856980
-TalkPtr FUN_140856980(int nNpcId, const CStringW& strTag)
+TalkPtr FindNpcTalkByTag(int nNpcId, const CStringW& strTag)
 {
-    TalkArrayPtr list = FUN_140857330(nNpcId);
+    TalkArrayPtr list = GetNpcTalks(nNpcId);
     if (list == 0)
         return TalkPtr(0);
     for (size_t i = 0; i < (*list.operator->()).GetCount(); i++)
@@ -386,7 +386,7 @@ TalkPtr FUN_140856980(int nNpcId, const CStringW& strTag)
 // @0x140856af0
 TalkPtr FUN_140856af0(int nNpcId, int nTalkId)
 {
-    TalkArrayPtr list = FUN_140857660(nNpcId);
+    TalkArrayPtr list = GetNpcMonologues(nNpcId);
     if (list == 0)
         return TalkPtr(0);
     for (size_t i = 0; i < (*list.operator->()).GetCount(); i++)
@@ -420,7 +420,7 @@ TalkPtr FUN_140856c50(int nNpcId, int nKind)
             {
                 ATL::CAtlArray<CString> paths;
                 for (unsigned i = 0; i < s_npcFiles.GetCount(); i++)
-                    paths.Add(*s_npcFiles[i]->FUN_1401d1140());
+                    paths.Add(*s_npcFiles[i]->GetPath());
                 s_npcFiles.RemoveAll();
                 s_npcTalks.RemoveAll();
                 s_npcAlt.RemoveAll();
@@ -440,7 +440,7 @@ TalkPtr FUN_140856c50(int nNpcId, int nKind)
 // @0x140856fa0
 TalkPtr FUN_140856fa0(int nNpcId, int nState)
 {
-    TalkArrayPtr list = FUN_140857660(nNpcId);
+    TalkArrayPtr list = GetNpcMonologues(nNpcId);
     if (!list)
         return TalkPtr(0);
     int total = 0;
@@ -485,7 +485,7 @@ void FUN_1408572b0()
 }
 
 // @0x1408564b0
-TalkPtr FUN_1408564b0(int nQuestId, int nTalkId)
+TalkPtr FindQuestTalk(int nQuestId, int nTalkId)
 {
     CheckValid();
     TalkPtr result(0);
@@ -506,7 +506,7 @@ TalkPtr FUN_1408564b0(int nQuestId, int nTalkId)
         {
             ATL::CAtlArray<CString> paths;
             for (unsigned i = 0; i < s_questFiles.GetCount(); i++)
-                paths.Add(*s_questFiles[i]->FUN_1401d1140());
+                paths.Add(*s_questFiles[i]->GetPath());
             s_questFiles.RemoveAll();
             s_questTalks.RemoveAll();
             for (unsigned i = 0; i < paths.GetCount(); i++)
@@ -542,7 +542,7 @@ TalkPtr FUN_140855ed0(int nQuestId, int nTier, int nJob)
         {
             ATL::CAtlArray<CString> paths;
             for (unsigned i = 0; i < s_questFiles.GetCount(); i++)
-                paths.Add(*s_questFiles[i]->FUN_1401d1140());
+                paths.Add(*s_questFiles[i]->GetPath());
             s_questFiles.RemoveAll();
             s_questTalks.RemoveAll();
             for (unsigned i = 0; i < paths.GetCount(); i++)
@@ -619,10 +619,10 @@ void FUN_140859320(Unk_ScriptXmlNode* pNode, TalkPtr script)
 void FUN_140857f20(CStringA path)
 {
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, path, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, path, 0, true, false))
         return;
     CachePtr cache(new CCacheData());
-    cache->FUN_1401d1160(path);
+    cache->SetPath(path);
     s_questFiles.Add(cache);
     Unk_ScriptXmlNode* root = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (!root)
@@ -672,7 +672,7 @@ void FUN_140858440(CStringA path)
 {
     Unk_CriticalSectionLock lock(s_lock, 1);
     TiXmlDocument doc;
-    if (!GetFileSystem()->FUN_1403974b0(&doc, path, 0, true, false))
+    if (!GetFileSystem()->LoadXmlFile(&doc, path, 0, true, false))
         return;
     Unk_ScriptXmlNode* root = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(void*)(&doc))->FirstChild("ms2"));
     if (!root)
@@ -681,7 +681,7 @@ void FUN_140858440(CStringA path)
         return;
     }
     CachePtr cache(new CCacheData());
-    cache->FUN_1401d1160(path);
+    cache->SetPath(path);
     s_npcFiles.Add(cache);
     for (Unk_ScriptXmlNode* npc = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(void*)(root))->FirstChild("npc")); npc != 0; npc = ((class Unk_ScriptXmlNode*)((class Unk_XmlNode*)(class Unk_ScriptXmlNode*)(npc))->NextSibling("npc")))
     {
@@ -820,7 +820,7 @@ void LoadTalkScripts()
 {
     {
         ATL::CAtlArray<CString> files;
-        FUN_140399100("*.xml", FUN_14071a5b0("Script/Quest", ""), files, "", false);
+        FindFiles("*.xml", GetXmlPath("Script/Quest", ""), files, "", false);
         for (size_t i = 0; i < files.GetCount(); i++)
         {
             CString name = FUN_14028d3c0(files[i]);
@@ -831,7 +831,7 @@ void LoadTalkScripts()
     }
     {
         ATL::CAtlArray<CString> files;
-        FUN_140399100("*.xml", FUN_14071a5b0("Script/Npc", ""), files, "", false);
+        FindFiles("*.xml", GetXmlPath("Script/Npc", ""), files, "", false);
         for (size_t i = 0; i < files.GetCount(); i++)
         {
             CString name = FUN_14028d3c0(files[i]);
@@ -863,7 +863,7 @@ int FUN_140855df0(unsigned nNpcId, TalkPtr script)
 
 // The button set the talk window shows for a page.
 // @0x140857990
-int FUN_140857990(TalkPtr script, int nFlags, int nNpcId, int nPage)
+int GetTalkButtonSet(TalkPtr script, int nFlags, int nNpcId, int nPage)
 {
     if (script.IsNull())
         return 0;
@@ -879,11 +879,11 @@ int FUN_140857990(TalkPtr script, int nFlags, int nNpcId, int nPage)
         return 5;
     if (content->m_buttonSet != 0)
         return content->m_buttonSet;
-    MS2Ptr<CNpcData> npc = FUN_1406cd330(nNpcId);
+    MS2Ptr<CNpcData> npc = FindNpcData(nNpcId);
     if (!npc)
         return 0;
     int hasBit = (npc->GetNpcTypeGroup() != 3 && (nFlags & 1) != 0) ? 1 : 0;
-    if ((content->m_distractors.get() ? true : false) && content->m_distractors->FUN_14078d3d0() != 0 && hasBit == 0)
+    if ((content->m_distractors.get() ? true : false) && content->m_distractors->HasChoices() != 0 && hasBit == 0)
     {
         if (script->Is88())
             return 0x13;

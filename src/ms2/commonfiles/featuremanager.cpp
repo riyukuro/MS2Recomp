@@ -51,7 +51,7 @@ extern "C" int (__cdecl* __imp_wcscmp)(const wchar_t*, const wchar_t*);   // the
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
 #include <algorithm>
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);       // Table/<file>
+CString GetXmlPath(const CString& strDir, const CString& strFile);       // Table/<file>
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
 void Unk_AdditionalLog(CLogString* log, int level, int category, const wchar_t* format);
 CString FUN_140651390();                                                    // the locale name of the client
@@ -64,7 +64,7 @@ int Parse_140219a50(const CString& strType);                                // t
 void FUN_14025a680(CStringW& str, ATL::CAtlArray<CStringW>& rOut, const wchar_t* pszSep);   // split
 void FUN_140291e40(CStringW strName, char bOn, void* pszTag);
 class Unk_LaunchOptions { public: void FUN_1406af150(); };
-class Unk_LaunchOptions* FUN_1406aeee0();   // C3: was FUN_1406aeee0
+class Unk_LaunchOptions* GetLaunchOptions();   // C3: was GetLaunchOptions
 
 // The enum customization of the log formatter for the feature id: fmt's generic format_arg (fmt/format.h), the same
 // body as the eUIClassID copy in uiservice.
@@ -696,7 +696,7 @@ bool CFeatureTable::Init()
 #line 698
 
 // @0x14036b9e0
-void CFeatureTable::FUN_14036b9e0()
+void CFeatureTable::Clear()
 {
     m_map.RemoveAll();
 }
@@ -708,7 +708,7 @@ CFeatureTable* CFeatureTable::FUN_14036f550()
 }
 
 // @0x14036f750
-void CFeatureTable::FUN_14036f750()
+void CFeatureTable::DestroyInstance()
 {
     if (s_instance != 0)
     {
@@ -729,7 +729,7 @@ CFeatureManager::CFeatureManager()
 // @0x14036cbf0
 CFeatureManager::~CFeatureManager()
 {
-    CFeatureTable::FUN_14036f750();
+    CFeatureTable::DestroyInstance();
 }
 
 // @0x14036ccb0
@@ -742,13 +742,13 @@ bool CFeatureManager::Init()
     if (!LoadFeature())
         return false;
     SetInit(true);
-    if (FUN_14036d570(2))
-        FUN_1406aeee0()->FUN_1406af150();
+    if (IsFeatureEnabled(2))
+        GetLaunchOptions()->FUN_1406af150();
     return true;
 }
 
 // @0x14036cd30
-bool CFeatureManager::FUN_14036cd30()
+bool CFeatureManager::IsInitialized()
 {
     return GetInit();
 }
@@ -756,9 +756,9 @@ bool CFeatureManager::FUN_14036cd30()
 // @0x14036cd50
 bool CFeatureManager::LoadFeatureSetting()
 {
-    CString strPath = FUN_14071a5b0("Table", "feature_setting.xml");
+    CString strPath = GetXmlPath("Table", "feature_setting.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
@@ -773,7 +773,7 @@ bool CFeatureManager::LoadFeatureSetting()
         CString strType;
         int nLevel;
         XmlGetAttr((class TiXmlElement*)(pSetting), "type", strType);
-        XmlGetAttr((class TiXmlElement*)(pSetting), FUN_14016a5c0(FUN_140651390(), 0), nLevel);
+        XmlGetAttr((class TiXmlElement*)(pSetting), ToCString(FUN_140651390(), 0), nLevel);
         if (strType.CompareNoCase(m_strLocale) == 0)
         {
             m_nLevel = nLevel;
@@ -786,9 +786,9 @@ bool CFeatureManager::LoadFeatureSetting()
 // @0x14036d040
 bool CFeatureManager::LoadFeature()
 {
-    CString strPath = FUN_14071a5b0("Table", "feature.xml");
+    CString strPath = GetXmlPath("Table", "feature.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>(&doc)->FirstChildElement("ms2");
     if (pRoot == 0)
@@ -802,7 +802,7 @@ bool CFeatureManager::LoadFeature()
         CStringW strName;
         int nLevel = 0;
         XmlGetAttr((class TiXmlElement*)(pFeature), "name", strName);
-        XmlGetAttr((class TiXmlElement*)(pFeature), FUN_14016a5c0(FUN_140651390(), 0), nLevel);
+        XmlGetAttr((class TiXmlElement*)(pFeature), ToCString(FUN_140651390(), 0), nLevel);
         if (nLevel == 0)
             continue;
         m_nameLevels.SetAt(strName, nLevel);
@@ -842,7 +842,7 @@ bool CFeatureManager::IsFeatureEnabledByName(const CStringW& strName)
 }
 
 // @0x14036d570
-bool CFeatureManager::FUN_14036d570(int nFeature)
+bool CFeatureManager::IsFeatureEnabled(int nFeature)
 {
     CheckInit();
     if (nFeature == 0)
@@ -861,7 +861,7 @@ bool CFeatureManager::FUN_14036d570(int nFeature)
 // @0x14036d650
 bool CFeatureManager::FUN_14036d650()
 {
-    if (!GetInstance()->FUN_14036d570(0x43))
+    if (!GetInstance()->IsFeatureEnabled(0x43))
         return false;
     return true;
 }
@@ -871,13 +871,13 @@ bool CFeatureManager::IsRedMeratFeatureEnabled(int nFeature)
 {
     if (!FUN_14036d650())
         return false;
-    return GetInstance()->FUN_14036d570(nFeature);
+    return GetInstance()->IsFeatureEnabled(nFeature);
 }
 
 // @0x14036d6d0
 bool CFeatureManager::FUN_14036d6d0()
 {
-    if (!GetInstance()->FUN_14036d570(0x43))
+    if (!GetInstance()->IsFeatureEnabled(0x43))
         return false;
     return true;
 }
@@ -887,7 +887,7 @@ bool CFeatureManager::FUN_14036d710(int nFeature)
 {
     if (!FUN_14036d6d0())
         return false;
-    return GetInstance()->FUN_14036d570(nFeature);
+    return GetInstance()->IsFeatureEnabled(nFeature);
 }
 
 // @0x14036d750
@@ -915,7 +915,7 @@ int CFeatureManager::FUN_14036d8b0()
 // @0x14036d8e0
 CString CFeatureManager::GetLocaleName()
 {
-    return FUN_14016a5c0(FUN_140651390(), 0);
+    return ToCString(FUN_140651390(), 0);
 }
 
 // @0x14036d960
@@ -947,19 +947,19 @@ CStringW CFeatureManager::GetFeatureNameById(int nFeature)
 // @0x14036db20
 int CFeatureManager::GetLevelCap()
 {
-    if (FUN_14036d570(0x2c))
+    if (IsFeatureEnabled(0x2c))
         return 99;
-    else if (FUN_14036d570(0x2b))
+    else if (IsFeatureEnabled(0x2b))
         return 90;
-    else if (FUN_14036d570(0x2a))
+    else if (IsFeatureEnabled(0x2a))
         return 80;
-    else if (FUN_14036d570(0x29))
+    else if (IsFeatureEnabled(0x29))
         return 70;
-    else if (FUN_14036d570(0x28))
+    else if (IsFeatureEnabled(0x28))
         return 65;
-    else if (FUN_14036d570(0x27))
+    else if (IsFeatureEnabled(0x27))
         return 60;
-    else if (FUN_14036d570(0x26))
+    else if (IsFeatureEnabled(0x26))
         return 55;
     return 50;
 }
@@ -985,19 +985,19 @@ unsigned short CFeatureManager::FUN_14036dc60()
 // @0x14036dc80
 unsigned short CFeatureManager::GetLevelCapClamped()
 {
-    if (FUN_14036d570(0x2c))
+    if (IsFeatureEnabled(0x2c))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap99);
-    else if (FUN_14036d570(0x2b))
+    else if (IsFeatureEnabled(0x2b))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap90);
-    else if (FUN_14036d570(0x2a))
+    else if (IsFeatureEnabled(0x2a))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap80);
-    else if (FUN_14036d570(0x29))
+    else if (IsFeatureEnabled(0x29))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap70);
-    else if (FUN_14036d570(0x28))
+    else if (IsFeatureEnabled(0x28))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap65);
-    else if (FUN_14036d570(0x27))
+    else if (IsFeatureEnabled(0x27))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap60);
-    else if (FUN_14036d570(0x26))
+    else if (IsFeatureEnabled(0x26))
         return std::min<unsigned short>(s_nBaseLevelCap, s_nLevelCap55);
     return 0x32;
 }
@@ -1046,7 +1046,7 @@ CStringW CFeatureManager::FUN_14036dfa0(const CStringW& strA, const CStringW& st
 }
 
 // @0x14036e160
-TiXmlElement* CFeatureManager::FUN_14036e160(TiXmlElement* pA, TiXmlElement* pB)
+TiXmlElement* CFeatureManager::SelectFeatureElement(TiXmlElement* pA, TiXmlElement* pB)
 {
     CheckInit();
     if (pB == 0)
@@ -1083,7 +1083,7 @@ TiXmlElement* CFeatureManager::FUN_14036e160(TiXmlElement* pA, TiXmlElement* pB)
 }
 
 // @0x14036e4c0
-bool CFeatureManager::FUN_14036e4c0()
+bool CFeatureManager::IsRegionKR()
 {
     return (GetLocaleName() == "KR");
 }
@@ -1122,7 +1122,7 @@ void CFeatureManager::SetServerTypeName(CString strType)
 }
 
 // @0x14036e6b0
-int CFeatureManager::FUN_14036e6b0()
+int CFeatureManager::GetServerType()
 {
     return s_nServerType;
 }

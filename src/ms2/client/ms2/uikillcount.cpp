@@ -35,7 +35,7 @@ public:
     static class WorldService* GetInstance();
 };
 CStringW GetStringCommonByKey(const CStringW& strKey);                     // string table text
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int nUiId, const Scaleform::GFx::Value& root);
+MS2Ptr<ASGameEntity> CreateGameEntity(int nUiId, const Scaleform::GFx::Value& root);
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcda0(Scaleform::GFx::Value* pValue, double n);
 
@@ -92,7 +92,7 @@ void UIKillCount::vfunc_3()
 }
 
 // @0x1419df220
-void UIKillCount::FUN_1419df220()
+void UIKillCount::Hide()
 {
     if (m_nShown == 0)
         return;
@@ -102,7 +102,7 @@ void UIKillCount::FUN_1419df220()
 }
 
 // @0x1419df2a0
-void UIKillCount::FUN_1419df2a0(void* pKilled)
+void UIKillCount::OnNpcKilled(void* pKilled)
 {
     PCBase* pMob = efd::DynamicCast<CNpc, PCBase>(reinterpret_cast<PCBase*>(pKilled));
     if (pMob != 0)
@@ -116,8 +116,8 @@ void UIKillCount::FUN_1419df2a0(void* pKilled)
                 PCBase* pPlayer = ((class PCBase*)((class WorldService*)(class Unk_KcWorld*)(((class Unk_KcWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
                 if (pPlayer != 0)
                 {
-                    if (m_kill.FUN_14064c5f0(pPlayer->vfunc_78(), pMob->vfunc_78()) != 0)
-                        FUN_1419df580();
+                    if (m_kill.RegisterKill(pPlayer->vfunc_78(), pMob->vfunc_78()) != 0)
+                        ShowKillCount();
                 }
             }
         }
@@ -146,7 +146,7 @@ void UIKillCount::vfunc_15()
     if (static_cast<bool>(m_30.get()) && 0 < m_nShown)
     {
         if (m_kill.FUN_14064c840(GetTickCountMs2()) == 0)
-            FUN_1419df220();
+            Hide();
     }
     UISwfEntity::vfunc_15();
 }
@@ -154,29 +154,29 @@ void UIKillCount::vfunc_15()
 // @0x1419df510
 void UIKillCount::vfunc_41(const Scaleform::GFx::Value& root)
 {
-    m_30 = FUN_140ba77e0(m_28, root);
+    m_30 = CreateGameEntity(m_28, root);
 }
 
 // @0x1419df580
-void UIKillCount::FUN_1419df580()
+void UIKillCount::ShowKillCount()
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
     int nCount = m_kill.GetCount();
     if (0 < m_nShown && m_nShown > nCount)
     {
-        FUN_1419df220();
+        Hide();
         return;
     }
     if (nCount < m_nMinShow)
         return;
     m_nShown = nCount;
     static_cast<Unk_KcScript*>(m_30.operator->())->FUN_1419df740("show", m_kill.GetGrade(), nCount, m_kill.GetBonusExpRate());
-    FUN_1419df6a0();
+    ShowKillCountBalloon();
 }
 
 // @0x1419df6a0
-void UIKillCount::FUN_1419df6a0()
+void UIKillCount::ShowKillCountBalloon()
 {
     CStringW strKey = m_kill.GetKillCountMessage();
     if (!strKey.IsEmpty())
@@ -202,11 +202,11 @@ Scaleform::GFx::Value Unk_KcScript::FUN_1419df740(const char* szMethod, int a1, 
 MS2_REPLACE_METHOD(0x1419DF180, UIKillCount, GetTypeName, 61, 0xDD8FB31B);
 MS2_REPLACE_METHOD(0x1419DF1D0, UIKillCount, vfunc_2, 24, 0xB52C074C);
 MS2_REPLACE_METHOD(0x1419DF1F0, UIKillCount, vfunc_3, 39, 0x061EB3D3);
-MS2_REPLACE_METHOD(0x1419DF220, UIKillCount, FUN_1419df220, 114, 0xF6132C6B);
-MS2_REPLACE_METHOD(0x1419DF2A0, UIKillCount, FUN_1419df2a0, 243, 0xBE09A6B2);
+MS2_REPLACE_METHOD(0x1419DF220, UIKillCount, Hide, 114, 0xF6132C6B);
+MS2_REPLACE_METHOD(0x1419DF2A0, UIKillCount, OnNpcKilled, 243, 0xBE09A6B2);
 MS2_REPLACE_METHOD(0x1419DF3A0, UIKillCount, vfunc_43, 146, 0xFE5648CE);
 MS2_REPLACE_METHOD(0x1419DF440, UIKillCount, vfunc_28, 67, 0x50ABE63D);
 MS2_REPLACE_METHOD(0x1419DF490, UIKillCount, vfunc_15, 116, 0x0BC74B31);
 MS2_REPLACE_METHOD(0x1419DF510, UIKillCount, vfunc_41, 99, 0x18E52093);
-MS2_REPLACE_METHOD(0x1419DF580, UIKillCount, FUN_1419df580, 272, 0x416394CB);
-MS2_REPLACE_METHOD(0x1419DF6A0, UIKillCount, FUN_1419df6a0, 147, 0x9B449C28);
+MS2_REPLACE_METHOD(0x1419DF580, UIKillCount, ShowKillCount, 272, 0x416394CB);
+MS2_REPLACE_METHOD(0x1419DF6A0, UIKillCount, ShowKillCountBalloon, 147, 0x9B449C28);

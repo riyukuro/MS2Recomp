@@ -33,10 +33,10 @@ public:
     UIBuffBalloon();                                    // 0x14128ee40
     virtual ~UIBuffBalloon();                           //  0 0x14128eeb0 (??_G 0x14128f780)
     virtual CString GetTypeName();                          //  1 0x14128eef0 "BuffBalloon"
-    virtual void OnLoadComplete();                      // 22 0x14128ef40 UIObject::OnLoadComplete(); FUN_14128f030(m_68)
+    virtual void OnLoadComplete();                      // 22 0x14128ef40 UIObject::OnLoadComplete(); CreateEntityCache(m_68)
     virtual int vfunc_48() { return 0x4ea4; }           // 48 0x14128f7c0
 
-    void FUN_14128f030(unsigned int nCount);            // create the entity cache
+    void CreateEntityCache(unsigned int nCount);            // create the entity cache
     Entity* FUN_14128f210(int nActorId);                // the entity of the actor (created or recycled)
 };
 MS2_CHECK_SIZE(UIBuffBalloon::Entity, 0xb0);

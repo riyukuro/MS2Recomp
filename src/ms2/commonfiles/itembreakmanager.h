@@ -46,7 +46,7 @@ public:
     void RemoveMissingItems(); void RefreshActiveDialog(); void UpdateActiveDialogSlot(int); void ForwardPacketToDialog(Unk_BreakPacket&); void FUN_140532220();
     void OnItemDismantlePacket(Unk_BreakPacket&); int FUN_140532ab0(); int HasBreakItems(); int GetMaxItemRarity(); int SendItemDismantleMode3();
     int TryAddItem(ItemPtr,int); void SendItemDismantleMode1(__int64,int,int); void SendItemDismantleMode6(int,int); int RequestRemoveItem(ItemPtr);
-    void AddItemWithConfirm(ItemPtr,int); bool OnDismantleCountMsgBox(int,const CMsgBoxData&); bool OnConfirmMessageBoxResult(int,const CMsgBoxData&); unsigned FUN_140533e20();
+    void AddItemWithConfirm(ItemPtr,int); bool OnDismantleCountMsgBox(int,const CMsgBoxData&); bool OnConfirmMessageBoxResult(int,const CMsgBoxData&); unsigned GetLastItemIndex();
     ItemBreakCommon::Items items; ATL::CAtlArray<unsigned __int64> pending; int type;
 };
 MS2_CHECK_SIZE(CItemBreakManager,0x50);

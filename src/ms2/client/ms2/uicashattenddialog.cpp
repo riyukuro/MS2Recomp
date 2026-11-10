@@ -143,7 +143,7 @@ static CString s_shopSort[]={"None","Buy","Like","PriceLow","PriceHigh","Create"
 static UICommon::CMyPCKeyInputController s_keyController;
 
 class Unk_140bccd50;
-class Unk_BonusBar* FUN_140933220();   // C3: was FUN_140933220
+class Unk_BonusBar* GetGameEventUserValueManager();   // C3: was GetGameEventUserValueManager
 class Unk_CadReader { public:
     virtual ~Unk_CadReader();
     virtual unsigned char vfunc_1();
@@ -158,7 +158,7 @@ template<> Delegate<void(CInPacket&)>::DelegateImplBase::~DelegateImplBase();
 template<> Delegate<void(GameEventVariable*)>::DelegateImplBase::~DelegateImplBase();
 template<> Delegate<void(CInPacket&)>::~Delegate();
 template<> Delegate<void(GameEventVariable*)>::~Delegate();
-CMyCharacter* FUN_140931510();
+CMyCharacter* GetMyCharacter();
 class CMsgBoxData { public: bool IsCheckbox0Checked(); __int64 FUN_141a02f10(int,__int64) const; };
 class Unk_AttendTable { public:
     int GetValue(int nKind,unsigned nId,const int& nDefault);
@@ -192,7 +192,7 @@ class Unk_CadNode : public ASDisplayObjectContainer { public:
 };
 
 CStringW GetStringCommonByKey(const CStringW&);
-void FUN_1412751f0(const CStringW&,int,int);
+void ShowSystemNotice(const CStringW&,int,int);
 CStringW FUN_14083bdc0(const CMsTime& t,bool b,CStringW strSep,CStringW strSep2);
 void SetChildText(const Scaleform::GFx::Value&,CString,CStringW);
 void FUN_140cff840(const Scaleform::GFx::Value&,CString,int);
@@ -202,7 +202,7 @@ template<class T> MS2Ptr<T> Unk_ASCreate(int nMovieId,const Scaleform::GFx::Valu
 // The slot and movie clip creators are earlier COMDATs (0x140bb4a60, 0x1409b40c0).
 template<> MS2Ptr<ASItemSlot> Unk_ASCreate<ASItemSlot>(int,const Scaleform::GFx::Value&);
 template<> MS2Ptr<ASMovieClip> Unk_ASCreate<ASMovieClip>(int,const Scaleform::GFx::Value&);
-void FUN_140bc5f90(ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> >& dst,const ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> >& src);
+void CopyEvents(ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> >& dst,const ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> >& src);
 // The "m_check" marks: plain movie clips, but their vector glue is a second copy next to uidungeonhelper's
 // vector<MS2Ptr<ASMovieClip>>, so they get their own element type; the MS2Ptr glue itself is the shared ASMovieClip one.
 class Unk_CadCheck : public ASMovieClip {};
@@ -231,7 +231,7 @@ template<> MS2Ptr<ASButton> UISwfEntity::GetChild<ASButton>(const CString&);
 class Unk_CadScript : public AScript { public:
     template<class T> MS2Ptr<T> FUN_140bc6e60(const CString& strName,MS2Ptr<T>& outChild);
 };
-class Unk_BingoClip { public: MS2Ptr<ASItemSlot> FUN_140bb4ba0(const CString& strName); };
+class Unk_BingoClip { public: MS2Ptr<ASItemSlot> GetItemSlot(const CString& strName); };
 // gfxutil.h: binds strName0..strName{nCount-1} (from nStart) into out.
 template<class T> bool FUN_140bc7a40(const Scaleform::GFx::Value& root,CString strName,unsigned nCount,std::vector<MS2Ptr<T> >& out,unsigned nStart);
 
@@ -241,7 +241,7 @@ template<class T> bool FUN_140bc7a40(const Scaleform::GFx::Value& root,CString s
     (void)((!!(expression)) || (_wassert(_CRT_WIDE(#expression), L"e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\gfxutil.h", (unsigned)(line)), 0))
 
 // @0x140bccd50
-Unk_140bccd50* FUN_140bccd50() { return reinterpret_cast<Unk_140bccd50*>(TSingleton<PacketHandlerManager>::s_instance); }
+Unk_140bccd50* GetPacketHandlerManager() { return reinterpret_cast<Unk_140bccd50*>(TSingleton<PacketHandlerManager>::s_instance); }
 // @0x140bd09c0
 int FUN_140bd09c0(void* p) { return (int)(__int64)p; }
 // @0x140bd09d0
@@ -269,7 +269,7 @@ UICashAttendGifList::UICashAttendGifList(UICashAttendDialog* pDialog,MS2Ptr<ASIt
     std::vector<MS2Ptr<Unk_CadCheck> >::const_iterator itEnd=vChecks.end();
     for(std::vector<MS2Ptr<Unk_CadCheck> >::const_iterator it=vChecks.begin();it!=itEnd;++it) {
         MS2Ptr<Unk_CadCheck> spCheck=*it;
-        ((class ASInteractiveObject*)(class ASDisplayObjectContainer*)(spCheck.operator->()))->FUN_1422deb40(false);
+        ((class ASInteractiveObject*)(class ASDisplayObjectContainer*)(spCheck.operator->()))->SetMouseEnabled(false);
     }
     m_disabled->vfunc_4(false);
     FUN_140d01780((*m_disabled).FUN_1422bb890(),true);
@@ -284,9 +284,9 @@ void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::P
     m_bg1->vfunc_4(nDay%2==0);
     m_bg2->vfunc_4(nDay%2==1);
     AttendGiftDataGroupPtr spDay=spEvent->GetDayGroup(nDay);
-    if(spDay==NULL) { FUN_140bc2b10(); return; }
+    if(spDay==NULL) { ClearRow(); return; }
     bool bPassed=nDay<spEvent->GetAttendedDays();
-    ((class ASDisplayObjectContainer*)(class ASDisplayObjectContainer*)(m_clip.operator->()))->FUN_1422c6640(true);
+    ((class ASDisplayObjectContainer*)(class ASDisplayObjectContainer*)(m_clip.operator->()))->SetMouseChildren(true);
     m_disabled->vfunc_4(bPassed);
     SetChildText((*m_clip).FUN_1422bb890(),"m_title",FUN_14028dfa0<unsigned>(L"s_cashAttend_day_index",nDay+1));
     for(unsigned i=0;i<5;i++) {
@@ -303,7 +303,7 @@ void UICashAttendGifList::FUN_140bc2620(const Scaleform::GFx::FunctionHandler::P
 }
 
 // @0x140bc2b10
-void UICashAttendGifList::FUN_140bc2b10()
+void UICashAttendGifList::ClearRow()
 {
     m_disabled->vfunc_4(false);
     SetChildText((*m_clip).FUN_1422bb890(),"m_title",L"");
@@ -318,18 +318,18 @@ void UICashAttendGifList::FUN_140bc2b10()
 // @0x140bc2c70
 UICashAttendDialog::UICashAttendDialog() : m_eventId(0)
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_80=0;
-    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->RegisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::OnPacket));
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->RegisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
+    reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->RegisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::OnPacket));
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->RegisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->RegisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
 }
 // @0x140bc2f90
 UICashAttendDialog::~UICashAttendDialog()
 {
-    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->UnregisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::OnPacket));
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
-    reinterpret_cast<GameEventUserValueManager*>(FUN_140933220())->UnregisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
+    reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->UnregisterHandler(0xa4,Delegate<void(CInPacket&)>(this,&UICashAttendDialog::OnPacket));
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->UnregisterListener(0x69,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc43d0));
+    reinterpret_cast<GameEventUserValueManager*>(GetGameEventUserValueManager())->UnregisterListener(0x66,Delegate<void(GameEventVariable*)>(this,&UICashAttendDialog::FUN_140bc4390));
 }
 // @0x140bc3250
 CString UICashAttendDialog::GetTypeName() { return "CashAttendGiftDialog"; }
@@ -340,8 +340,8 @@ void UICashAttendDialog::OnLoadComplete()
     UIDialog::OnLoadComplete();
     RebuildActiveEvents();
     ResolveSelectedEvent();
-    FUN_141925ec0("m_closeButton");
-    FUN_141925fa0("m_dragBar");
+    BindCloseButton("m_closeButton");
+    BindDragBar("m_dragBar");
     do { m_30->FUN_140bbe640<ASButton>("m_usePointButton", reinterpret_cast<MS2Ptr<ASButton>&>(m_usePointButton));
     if(m_usePointButton==0) throw new GfxExceptionSwfLoad(StringFormat("GfxError:{0} {1}({2}) function:{3}","SwfLoadError",MS2_THIS_FILE,MS2_LINE(136),__FUNCTION__)); } while(0);
     do { m_30->FUN_140bc7340("m_giftLists",m_giftList);
@@ -393,7 +393,7 @@ void UICashAttendDialog::RemoveEvent(MS2Ptr<GameEventCashAttendCli> spEvent)
     if(FUN_141924630()) {
         if(m_activeEvents.IsEmpty()) { vfunc_67(); return; }
         if(m_selected==spEvent.get()) { m_selected=m_activeEvents[0]; FUN_140bc4460(); }
-        else FUN_140bc44b0();
+        else RefreshEventButtons();
     }
 }
 
@@ -450,7 +450,7 @@ void UICashAttendDialog::SetEventId(int nEventId)
 // @0x140bc4390
 void UICashAttendDialog::FUN_140bc4390(GameEventVariable*) { if(!FUN_1422dc2d0()) return; FUN_140bc4460(); }
 // @0x140bc43d0
-void UICashAttendDialog::FUN_140bc43d0(GameEventVariable*) { if(!FUN_1422dc2d0()) return; FUN_140bc4d40(); }
+void UICashAttendDialog::FUN_140bc43d0(GameEventVariable*) { if(!FUN_1422dc2d0()) return; RefreshUsePointButton(); }
 // @0x140bc4410
 MS2Ptr<GameEventCashAttendCli> UICashAttendDialog::GetSelected() { return m_selected; }
 
@@ -458,15 +458,15 @@ MS2Ptr<GameEventCashAttendCli> UICashAttendDialog::GetSelected() { return m_sele
 void UICashAttendDialog::FUN_140bc4460()
 {
     if(!FUN_1422dc2d0()) return;
-    FUN_140bc44b0(); FUN_140bc4980(); FUN_140bc4d40();
+    RefreshEventButtons(); FUN_140bc4980(); RefreshUsePointButton();
 }
 
 // @0x140bc44b0
-void UICashAttendDialog::FUN_140bc44b0()
+void UICashAttendDialog::RefreshEventButtons()
 {
     ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> > events;
     if(m_requested.get()) events.Add(m_requested);
-    else FUN_140bc5f90(events,m_activeEvents);
+    else CopyEvents(events,m_activeEvents);
     for(unsigned int i=0;i<7;i++) {
         if((size_t)i>=events.GetCount()) {
             m_eventButtons[i]->vfunc_3(0);
@@ -474,9 +474,9 @@ void UICashAttendDialog::FUN_140bc44b0()
         }
         m_eventButtons[i]->vfunc_3(1);
         m_eventButtons[i]->FUN_1422cdfb0(events[i]->GetEventName());
-        FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!FUN_140931510()->HasTime(events[i]->GetID()));
+        FUN_140cff840((*m_eventButtons[i]).FUN_1422bb890(),"m_lock",!GetMyCharacter()->HasTime(events[i]->GetID()));
         m_eventButtons[i]->SetTooltipText(events[i]->GetDesc());
-        m_eventButtons[i]->FUN_1422ce090(events[i]==m_selected.get());
+        m_eventButtons[i]->SetSelected(events[i]==m_selected.get());
         MS2Ptr<ASItemSlot> spSlot;
         if(m_eventButtons[i]->FUN_140bc7100("m_slot",spSlot).get()) {
             int nRarity=FUN_14053feb0(events[i]->FUN_1403fbdc0());
@@ -497,11 +497,11 @@ void UICashAttendDialog::FUN_140bc4980()
     CStringW strPeriod=FUN_14028dfa0<CStringW,CStringW>(L"s_attendGift_event_period",
         FUN_14083bdc0(m_selected->GetBeginTime(),true,L"/",L":"),
         FUN_14083bdc0(m_selected->GetEndTime(),true,L"/",L":"));
-    SetChildText(FUN_1422dbb40(),"m_eventPeriod",strPeriod);
+    SetChildText(GetGFxValue(),"m_eventPeriod",strPeriod);
 }
 
 // @0x140bc4d40
-void UICashAttendDialog::FUN_140bc4d40()
+void UICashAttendDialog::RefreshUsePointButton()
 {
     if(m_usePointButton==NULL) return;
     m_usePointButton->vfunc_4(false);
@@ -510,7 +510,7 @@ void UICashAttendDialog::FUN_140bc4d40()
     int nPoints=reinterpret_cast<Unk_AttendTable&>(DAT_143ab2fc0).GetValue(0x69,m_selected->GetID(),nDefault);
     m_usePointButton->vfunc_4(true);
     m_usePointButton->FUN_1422cdfb0(FUN_14028dfa0<unsigned>(L"s_attendGift_usePoint_button",(unsigned&)nPoints));
-    m_usePointButton->FUN_1422c1fe0((unsigned)nPoints>0);
+    m_usePointButton->SetEnabled((unsigned)nPoints>0);
 }
 
 // @0x140bc4f00
@@ -544,17 +544,17 @@ void UICashAttendDialog::OnPacket(CInPacket& packet)
     switch(kind) {
     case 5: FUN_140bc5220(packet); break;
     case 6: FUN_140bc5250(packet); break;
-    case 7: FUN_140bc5280(packet); break;
-    case 9: FUN_140bc5350(packet); break;
+    case 7: OnSelectEventPacket(packet); break;
+    case 9: OnPayAttendResult(packet); break;
     }
 }
 // @0x140bc5220
 void UICashAttendDialog::FUN_140bc5220(CInPacket&) { FUN_140bc4460(); }
 // @0x140bc5250
-void UICashAttendDialog::FUN_140bc5250(CInPacket& packet) { FUN_140931510()->FUN_140d9f1c0(packet); }
+void UICashAttendDialog::FUN_140bc5250(CInPacket& packet) { GetMyCharacter()->FUN_140d9f1c0(packet); }
 
 // @0x140bc5280
-void UICashAttendDialog::FUN_140bc5280(CInPacket& packet)
+void UICashAttendDialog::OnSelectEventPacket(CInPacket& packet)
 {
     unsigned long nEventId=reinterpret_cast<Unk_CadReader*>(&packet.m_stream)->vfunc_3();
     if(m_events.find(nEventId)==m_events.end()) return;
@@ -564,15 +564,15 @@ void UICashAttendDialog::FUN_140bc5280(CInPacket& packet)
 }
 
 // @0x140bc5350
-void UICashAttendDialog::FUN_140bc5350(CInPacket& packet)
+void UICashAttendDialog::OnPayAttendResult(CInPacket& packet)
 {
     int result=reinterpret_cast<Unk_CadReader*>(&packet.m_stream)->vfunc_1();
     switch(result) {
-    case 1: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMoney"),1,1); break;
-    case 2: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMerat"),1,1); break;
-    case 3: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_payAttend_result_hasNotCoupon"),1,1); break;
-    case 5: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_item_attend_already_used"),1,1); break;
-    case 6: FUN_1412751f0(GetStringCommonByKey(L"s_attendGift_item_attend_not_found_evnet"),1,1); break;
+    case 1: ShowSystemNotice(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMoney"),1,1); break;
+    case 2: ShowSystemNotice(GetStringCommonByKey(L"s_attendGift_payAttend_result_lackMerat"),1,1); break;
+    case 3: ShowSystemNotice(GetStringCommonByKey(L"s_attendGift_payAttend_result_hasNotCoupon"),1,1); break;
+    case 5: ShowSystemNotice(GetStringCommonByKey(L"s_attendGift_item_attend_already_used"),1,1); break;
+    case 6: ShowSystemNotice(GetStringCommonByKey(L"s_attendGift_item_attend_not_found_evnet"),1,1); break;
     default: MS2_ASSERT_AT(0x1f9,0); break;
     }
 }
@@ -595,10 +595,10 @@ void UICashAttendDialog::SendSelectedEventRequest()
 // ---- COMDATs ----
 
 // @0x140bc5f90
-void FUN_140bc5f90(ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> >& dst,const ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> >& src) { dst.Copy(src); }
+void CopyEvents(ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> >& dst,const ATL::CAtlArray<MS2Ptr<GameEventCashAttendCli> >& src) { dst.Copy(src); }
 
 // @0x140bc5fc0
-MS2Ptr<ASDisplayObjectContainer> FUN_140bc5fc0(int nMovieId,const Scaleform::GFx::Value& v)
+MS2Ptr<ASDisplayObjectContainer> CreateDisplayObjectContainer(int nMovieId,const Scaleform::GFx::Value& v)
 {
     MS2Ptr<ASDisplayObjectContainer> sp(new ASDisplayObjectContainer(v,nMovieId));
     return sp;
@@ -648,7 +648,7 @@ template<class T> MS2Ptr<T> UICashAttendDialog::FUN_140bc7070(const CString& str
 template<class T> MS2Ptr<T> AScript::FUN_140bc7100(const CString& strName,MS2Ptr<T>& outChild)
 {
     MS2_ASCRIPT_INL_ASSERT(0xd5,outChild == NULL);
-    outChild=reinterpret_cast<Unk_BingoClip*>(this)->FUN_140bb4ba0(strName);
+    outChild=reinterpret_cast<Unk_BingoClip*>(this)->GetItemSlot(strName);
     return outChild;
 }
 // @0x140bc71c0
@@ -675,17 +675,17 @@ template<class T> MS2Ptr<T> Unk_CadNode::FUN_140bc7400(const CString& strName)
 // @0x140bc74a0 (item slot; 0x140bc7770 movie clip): getChildByName, else a depth-first search of the children
 template<class T> MS2Ptr<T> Unk_CadNode::FUN_140bc74a0(const Scaleform::GFx::Value& v,const CString& strName)
 {
-    MS2Ptr<ASDisplayObjectContainer> spObj=FUN_140bc5fc0(m_nMovieId,v);
+    MS2Ptr<ASDisplayObjectContainer> spObj=CreateDisplayObjectContainer(m_nMovieId,v);
     if(!spObj->HasMember("getChildByName"))
         return MS2Ptr<T>(0);
-    Scaleform::GFx::Value child=spObj->FUN_1422c6b00(strName);
+    Scaleform::GFx::Value child=spObj->GetChildByName(strName);
     if(child.IsObject())
         return Unk_ASCreate<T>(m_nMovieId,child);
     if(!spObj->HasMember("numChildren"))
         return MS2Ptr<T>(0);
-    int nCount=spObj->FUN_1422c6670();
+    int nCount=spObj->GetNumChildren();
     for(int i=0;i<nCount;i++) {
-        Scaleform::GFx::Value sub=spObj->FUN_1422c6aa0(i);
+        Scaleform::GFx::Value sub=spObj->GetChildAt(i);
         if(!sub.IsObject())
             continue;
         MS2Ptr<T> spFound=FUN_140bc74a0<T>(sub,strName);

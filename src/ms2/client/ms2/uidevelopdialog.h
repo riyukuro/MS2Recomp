@@ -25,21 +25,21 @@ public:
                                                                                                     // 28 0x1412924f0
     virtual int vfunc_48() { return 0x4eb1; }                                                       // 48 (COMDAT 0x141293c90)
 
-    void FUN_141292ca0(const CString& strName, const CStringW& strText);    // set the text of a child text field
+    void SetChildText(const CString& strName, const CStringW& strText);    // set the text of a child text field
     void OnClickReloadNpcExtent();               // "onClickReloadNpcExtent": resize every npc to its data record extent
     void OnClickClearDebugInfo();               // "onClickClearDebugInfo"
-    void FUN_141292f50(ASData& data);   // "onClickResetGameSpeed": the AS side's defaultSpeed = 1
-    void FUN_141293010(bool bOn);       // "OnCheckPhysXDebugRender": both PhysX scenes
-    void FUN_141293150(bool bOn);       // "OnCheckEnableEffect"
-    void FUN_141293180(bool bOn);       // "OnCheckShowInstancing"
-    void FUN_1412931c0(bool bOn);       // "OnCheckPropertyVisualizer"
-    void FUN_141293210(bool bOn, int nIndex);   // "OnCheckOneInstancing"
-    void FUN_1412932a0(float fScale);   // "OnChangeSliderDropItemScale"
-    void FUN_141293360(float fSpeed);   // "OnChangeSliderGameSpeed"
-    void FUN_141293390(float fScale);   // "OnChangeSliderCharacterScale"
-    void FUN_1412933f0(int nIndex);     // "OnChangeSliderInstancing"
-    void FUN_141293680(float fHeight);  // "OnClickApplyDropItemHeight"
-    void FUN_141293730(float fPeriod);  // "OnClickApplyDropItemPeriod"
+    void OnClickResetGameSpeed(ASData& data);   // "onClickResetGameSpeed": the AS side's defaultSpeed = 1
+    void OnCheckPhysXDebugRender(bool bOn);       // "OnCheckPhysXDebugRender": both PhysX scenes
+    void OnCheckEnableEffect(bool bOn);       // "OnCheckEnableEffect"
+    void OnCheckShowInstancing(bool bOn);       // "OnCheckShowInstancing"
+    void OnCheckPropertyVisualizer(bool bOn);       // "OnCheckPropertyVisualizer"
+    void OnCheckOneInstancing(bool bOn, int nIndex);   // "OnCheckOneInstancing"
+    void OnChangeSliderDropItemScale(float fScale);   // "OnChangeSliderDropItemScale"
+    void OnChangeSliderGameSpeed(float fSpeed);   // "OnChangeSliderGameSpeed"
+    void OnChangeSliderCharacterScale(float fScale);   // "OnChangeSliderCharacterScale"
+    void OnChangeSliderInstancing(int nIndex);     // "OnChangeSliderInstancing"
+    void OnClickApplyDropItemHeight(float fHeight);  // "OnClickApplyDropItemHeight"
+    void OnClickApplyDropItemPeriod(float fPeriod);  // "OnClickApplyDropItemPeriod"
 
 private:
     MS2_LAYOUT_FRIEND;

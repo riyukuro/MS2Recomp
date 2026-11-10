@@ -60,7 +60,7 @@ public:
     Unk_NodeWalker(NiAVObject* pRoot);                              // 0x141043760
     ~Unk_NodeWalker();                                              // 0x1410439e0
     NiAVObject* FUN_1410446c0(bool bChildren);                      // 0x1410446c0 next node, NULL at the end
-    void FUN_141044210(NiNode* pNode);                              // 0x141044210 queue the children
+    void QueueChildren(NiNode* pNode);                              // 0x141044210 queue the children
 private:
     ATL::CAtlList<NiAVObject*> m_list;
 };
@@ -83,29 +83,29 @@ bool FUN_1409943d0(NiAVObject* pkObject);                                       
 class Unk_EffectNodeView   // C3: member view for the former free stand-ins
 {
 public:
-    int FUN_1410444a0();
+    int GetMode();
 };
 void FUN_1410865e0(class NiObjectNET*, class NiFixedString const&, bool);   // C3: was FUN_1410865e0
 void FUN_1410479a0(NiObjectNET* pkObject, const NiFixedString& kName, const NiColor& kColor);   // set colour extra data
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                                         // the entity's scene graph
 ecr::SceneGraphService* FUN_1413f98b0();                                                 // the scene graph service
-efd::Color FUN_1413fa320(egf::Entity* pEntity);                                          // the entity's tint
+efd::Color GetEntityColor(egf::Entity* pEntity);                                          // the entity's tint
 
 void FUN_1415672e0(NiAVObject* pRoot, bool bShadow);
-void FUN_141567330(NiAVObject* pRoot, bool bShadow);
+void SetShadowCaster(NiAVObject* pRoot, bool bShadow);
 void FUN_141567760(NiAVObject* pRoot);
 void FUN_141567b60(NiAVObject* pRoot);
 void FUN_1415681c0(NiAVObject* pRoot);
-void FUN_1415682b0(NiAVObject* pRoot);
-void FUN_141568650(NiAVObject* pRoot, CStringA strFrom, CStringA strTo);
-void FUN_141568ac0(egf::Entity* pEntity, const efd::Color& kTint);
+void SetShimmerFlag(NiAVObject* pRoot);
+void ReplaceMaterial(NiAVObject* pRoot, CStringA strFrom, CStringA strTo);
+void SetEntityTint(egf::Entity* pEntity, const efd::Color& kTint);
 unsigned int FUN_141568d50(NiAVObject* pkObject);
-unsigned int FUN_141569010(NiAVObject* pkObject);
+unsigned int IsShadowCaster(NiAVObject* pkObject);
 void FUN_141569040(NiAVObject* pkObject);
 void FUN_141569080(NiAVObject* pkObject);
-bool FUN_141569170(NiObjectNET* pkProperty);
+bool HasAlphaKeyAboveOne(NiObjectNET* pkProperty);
 void FUN_141569280(NiRenderObject* pkObject);
-int FUN_141569310(NiRenderObject* pkObject);
+int GetFacePartCode(NiRenderObject* pkObject);
 void FUN_141569620(NiAVObject* pRoot, NiProperty* pkProperty);
 
 // @0x141567000
@@ -174,7 +174,7 @@ void FUN_1415672e0(NiAVObject* pRoot, bool bShadow)
     if (pRoot)
     {
         FUN_141567b60(pRoot);
-        FUN_141567330(pRoot, bShadow);
+        SetShadowCaster(pRoot, bShadow);
         FUN_141567760(pRoot);
         FUN_1415681c0(pRoot);
     }
@@ -183,7 +183,7 @@ MS2_REPLACE(0x1415672E0, FUN_1415672e0, 71, 0x250EEDF7);
 
 // @0x141567330
 // Marks (or unmarks) the render objects of a subtree as shadow casters, skipping "NoShadow" tagged subtrees.
-void FUN_141567330(NiAVObject* pRoot, bool bShadow)
+void SetShadowCaster(NiAVObject* pRoot, bool bShadow)
 {
     if (pRoot == 0)
         return;
@@ -203,7 +203,7 @@ void FUN_141567330(NiAVObject* pRoot, bool bShadow)
             {
                 if (bShadow)
                 {
-                    if (FUN_141569010(pRender) == 0)
+                    if (IsShadowCaster(pRender) == 0)
                         FUN_141569040(pRender);
                 }
                 else
@@ -222,10 +222,10 @@ void FUN_141567330(NiAVObject* pRoot, bool bShadow)
             kWalker.AddChildren(pNode);
     }
 }
-MS2_REPLACE(0x141567330, FUN_141567330, 513, 0x2F0822AD);
+MS2_REPLACE(0x141567330, SetShadowCaster, 513, 0x2F0822AD);
 
 // @0x141567540
-// FUN_141567330 over a breadth-first walk that does not enter effect nodes of mode 1.
+// SetShadowCaster over a breadth-first walk that does not enter effect nodes of mode 1.
 void FUN_141567540(NiAVObject* pRoot, bool bShadow)
 {
     if (pRoot == 0)
@@ -244,7 +244,7 @@ void FUN_141567540(NiAVObject* pRoot, bool bShadow)
             {
                 if (bShadow)
                 {
-                    if (FUN_141569010(pRender) == 0)
+                    if (IsShadowCaster(pRender) == 0)
                         FUN_141569040(pRender);
                 }
                 else
@@ -261,9 +261,9 @@ void FUN_141567540(NiAVObject* pRoot, bool bShadow)
         NiNode* pNode = NiDynamicCast(NiNode, pObject);
         if (pNode)
         {
-            if (NiObject::DynamicCast(&EffectNode::ms_RTTI, pObject) && ((class Unk_EffectNodeView*)(class NiAVObject*)(pObject))->FUN_1410444a0() == 1)
+            if (NiObject::DynamicCast(&EffectNode::ms_RTTI, pObject) && ((class Unk_EffectNodeView*)(class NiAVObject*)(pObject))->GetMode() == 1)
                 continue;
-            kWalker.FUN_141044210(pNode);
+            kWalker.QueueChildren(pNode);
         }
     }
 }
@@ -396,7 +396,7 @@ void FUN_141567b60(NiAVObject* pRoot)
     {
         NiRenderObject* pRender = NiDynamicCast(NiRenderObject, pPart);
         int iCode;
-        if (pRender && (iCode = FUN_141569310(pRender)) != 0)
+        if (pRender && (iCode = GetFacePartCode(pRender)) != 0)
         {
             NiIntegerExtraData* pCode = NiDynamicCast(NiIntegerExtraData, pRender->GetExtraData(DAT_143ae50a0));
             if (pCode == 0)
@@ -434,7 +434,7 @@ void FUN_1415681c0(NiAVObject* pRoot)
         NiStringExtraData* pTag = NiDynamicCast(NiStringExtraData, pObject->GetExtraData(DAT_143ae51b8));
         if (pTag && pTag->GetValue().ContainsNoCase("shimmer"))
         {
-            FUN_1415682b0(pObject);
+            SetShimmerFlag(pObject);
             continue;
         }
         NiNode* pNode = NiDynamicCast(NiNode, pObject);
@@ -445,7 +445,7 @@ void FUN_1415681c0(NiAVObject* pRoot)
 MS2_REPLACE(0x1415681C0, FUN_1415681c0, 220, 0x21181327);
 
 // @0x1415682b0
-void FUN_1415682b0(NiAVObject* pRoot)
+void SetShimmerFlag(NiAVObject* pRoot)
 {
     Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
@@ -464,11 +464,11 @@ void FUN_1415682b0(NiAVObject* pRoot)
             FUN_1410865e0((class NiObjectNET*)(pObject), DAT_143ae51c8, true);
     }
 }
-MS2_REPLACE(0x1415682B0, FUN_1415682b0, 191, 0xB31DE793);
+MS2_REPLACE(0x1415682B0, SetShimmerFlag, 191, 0xB31DE793);
 
 // @0x141568380
 // Clears the shimmer marker of a subtree.
-void FUN_141568380(NiAVObject* pRoot)
+void ClearShimmerFlag(NiAVObject* pRoot)
 {
     Unk_SceneWalker kWalker((NiAVObject*)(pRoot));
     NiAVObject* pObject;
@@ -494,11 +494,11 @@ void FUN_141568380(NiAVObject* pRoot)
         }
     }
 }
-MS2_REPLACE(0x141568380, FUN_141568380, 233, 0x453C180A);
+MS2_REPLACE(0x141568380, ClearShimmerFlag, 233, 0x453C180A);
 
 // @0x141568470
 // Swaps the materials named strFrom (all if empty) of an entity's scene graphs to strTo.
-void FUN_141568470(egf::Entity* pEntity, CStringA strFrom, CStringA strTo)
+void ReplaceEntityMaterial(egf::Entity* pEntity, CStringA strFrom, CStringA strTo)
 {
     if (pEntity == 0)
         return;
@@ -506,15 +506,15 @@ void FUN_141568470(egf::Entity* pEntity, CStringA strFrom, CStringA strTo)
     if (pModel->ContainsModel(0xbd4f8e8e))
     {
         ecr::SceneGraphService* pService = FUN_1413f98b0();
-        FUN_141568650(pService->GetSceneGraphFromEntity(pEntity), strFrom, strTo);
+        ReplaceMaterial(pService->GetSceneGraphFromEntity(pEntity), strFrom, strTo);
     }
     if (pModel->ContainsModel(0x48ccc02d))
-        FUN_141568650(FUN_141b6efc0(pEntity), strFrom, strTo);
+        ReplaceMaterial(FUN_141b6efc0(pEntity), strFrom, strTo);
 }
-MS2_REPLACE(0x141568470, FUN_141568470, 466, 0xD30E4AFB);
+MS2_REPLACE(0x141568470, ReplaceEntityMaterial, 466, 0xD30E4AFB);
 
 // @0x141568650
-void FUN_141568650(NiAVObject* pRoot, CStringA strFrom, CStringA strTo)
+void ReplaceMaterial(NiAVObject* pRoot, CStringA strFrom, CStringA strTo)
 {
     if (pRoot)
     {
@@ -536,7 +536,7 @@ void FUN_141568650(NiAVObject* pRoot, CStringA strFrom, CStringA strTo)
         }
     }
 }
-MS2_REPLACE(0x141568650, FUN_141568650, 395, 0xD0697876);
+MS2_REPLACE(0x141568650, ReplaceMaterial, 395, 0xD0697876);
 
 // @0x1415687f0
 // Strips the fog properties of a subtree.
@@ -554,7 +554,7 @@ MS2_REPLACE(0x1415687F0, FUN_1415687f0, 137, 0x3C094854);
 
 // @0x141568880
 // Detaches the lights attached anywhere in a subtree.
-void FUN_141568880(NiAVObject* pRoot)
+void RemoveLights(NiAVObject* pRoot)
 {
     if (pRoot == 0)
         return;
@@ -580,7 +580,7 @@ void FUN_141568880(NiAVObject* pRoot)
     }
     pRoot->UpdateEffects();
 }
-MS2_REPLACE(0x141568880, FUN_141568880, 390, 0x9068B09E);
+MS2_REPLACE(0x141568880, RemoveLights, 390, 0x9068B09E);
 
 // @0x141568a10
 // Detaches all children of a node, last first.
@@ -599,13 +599,13 @@ MS2_REPLACE(0x141568A10, FUN_141568a10, 117, 0x35CD2DD1);
 // @0x141568a90
 void FUN_141568a90(egf::Entity* pEntity)
 {
-    FUN_141568ac0(pEntity, FUN_1413fa320(pEntity));
+    SetEntityTint(pEntity, GetEntityColor(pEntity));
 }
 MS2_REPLACE(0x141568A90, FUN_141568a90, 42, 0x731A1C00);
 
 // @0x141568ac0
 // Tints the materials of a tintable entity (any colour but the default grey 180/255).
-void FUN_141568ac0(egf::Entity* pEntity, const efd::Color& kTint)
+void SetEntityTint(egf::Entity* pEntity, const efd::Color& kTint)
 {
     if (pEntity == 0)
         return;
@@ -633,31 +633,31 @@ void FUN_141568ac0(egf::Entity* pEntity, const efd::Color& kTint)
         pScene->UpdateProperties();
     }
 }
-MS2_REPLACE(0x141568AC0, FUN_141568ac0, 346, 0x1A3C283F);
+MS2_REPLACE(0x141568AC0, SetEntityTint, 346, 0x1A3C283F);
 
 // @0x141568c20
 // The object has the shimmer marker.
-bool FUN_141568c20(NiRenderObject* pkObject)
+bool IsShimmer(NiRenderObject* pkObject)
 {
     if (DAT_143ae2b34)
         return (pkObject->GetMS2Flags() & 1) ? true : false;
     else
         return pkObject->GetExtraData(DAT_143ae51c8) != 0;
 }
-MS2_REPLACE(0x141568C20, FUN_141568c20, 104, 0xB83ECA4C);
+MS2_REPLACE(0x141568C20, IsShimmer, 104, 0xB83ECA4C);
 
 extern NiFixedString DAT_143ae51c0;             // marker key: outline
 
 // @0x141568c90
 // The object has the outline marker.
-bool FUN_141568c90(NiRenderObject* pkObject)
+bool IsUnlightable(NiRenderObject* pkObject)
 {
     if (DAT_143ae2b34)
         return (pkObject->GetMS2Flags() & 2) ? true : false;
     else
         return pkObject->GetExtraData(DAT_143ae51c0) != 0;
 }
-MS2_REPLACE(0x141568C90, FUN_141568c90, 104, 0xF9C879BB);
+MS2_REPLACE(0x141568C90, IsUnlightable, 104, 0xF9C879BB);
 
 // @0x141568d00
 bool FUN_141568d00(NiAVObject* pkObject)
@@ -676,7 +676,7 @@ unsigned int FUN_141568d50(NiAVObject* pkObject)
 MS2_REPLACE(0x141568D50, FUN_141568d50, 29, 0xC890DF37);
 
 // @0x141568d80
-void FUN_141568d80(NiAVObject* pkObject)
+void SetUnlightable(NiAVObject* pkObject)
 {
     if (pkObject)
     {
@@ -684,7 +684,7 @@ void FUN_141568d80(NiAVObject* pkObject)
         pkObject->SetMS2Flags(uiFlags);
     }
 }
-MS2_REPLACE(0x141568D80, FUN_141568d80, 53, 0x1FB57C3D);
+MS2_REPLACE(0x141568D80, SetUnlightable, 53, 0x1FB57C3D);
 
 // @0x141568dc0
 unsigned int FUN_141568dc0(NiAVObject* pkObject)
@@ -764,13 +764,13 @@ void FUN_141568fd0(NiAVObject* pkObject)
 MS2_REPLACE(0x141568FD0, FUN_141568fd0, 53, 0x804CC0F8);
 
 // @0x141569010
-unsigned int FUN_141569010(NiAVObject* pkObject)
+unsigned int IsShadowCaster(NiAVObject* pkObject)
 {
     if (pkObject)
         return pkObject->GetMS2Flags() & 0x20;
     return 0;
 }
-MS2_REPLACE(0x141569010, FUN_141569010, 39, 0x41AFDF71);
+MS2_REPLACE(0x141569010, IsShadowCaster, 39, 0x41AFDF71);
 
 // @0x141569040
 void FUN_141569040(NiAVObject* pkObject)
@@ -825,7 +825,7 @@ MS2_REPLACE(0x141569130, FUN_141569130, 53, 0x57932F35);
 
 // @0x141569170
 // The property has an alpha controller whose float keys go above 1.
-bool FUN_141569170(NiObjectNET* pkProperty)
+bool HasAlphaKeyAboveOne(NiObjectNET* pkProperty)
 {
     if (pkProperty == 0)
         return false;
@@ -846,7 +846,7 @@ bool FUN_141569170(NiObjectNET* pkProperty)
     }
     return false;
 }
-MS2_REPLACE(0x141569170, FUN_141569170, 263, 0x38826B16);
+MS2_REPLACE(0x141569170, HasAlphaKeyAboveOne, 263, 0x38826B16);
 
 // @0x141569280
 // Render objects with an over-bright (or animated over-bright) material alpha use the alpha-blended material.
@@ -857,7 +857,7 @@ void FUN_141569280(NiRenderObject* pkObject)
     NiMaterialProperty* pMaterial = (NiMaterialProperty*)pkObject->GetProperty(NiProperty::MATERIAL);
     if (pMaterial == 0)
         return;
-    if (pMaterial->GetAlpha() > 1.0f || FUN_141569170(pMaterial))
+    if (pMaterial->GetAlpha() > 1.0f || HasAlphaKeyAboveOne(pMaterial))
     {
         NiMaterial* pkMaterial = NiMaterialLibrary::CreateMaterial(DAT_143ae5230);
         pkObject->ApplyAndSetActiveMaterial(pkMaterial);
@@ -867,7 +867,7 @@ MS2_REPLACE(0x141569280, FUN_141569280, 128, 0xAA69ACAF);
 
 // @0x141569310
 // The face part code of a render object, from its name.
-int FUN_141569310(NiRenderObject* pkObject)
+int GetFacePartCode(NiRenderObject* pkObject)
 {
     if (pkObject)
     {
@@ -895,7 +895,7 @@ int FUN_141569310(NiRenderObject* pkObject)
     }
     return 0;
 }
-MS2_REPLACE(0x141569310, FUN_141569310, 371, 0x56AF6C66);
+MS2_REPLACE(0x141569310, GetFacePartCode, 371, 0x56AF6C66);
 
 // @0x141569620
 // Moves the properties of pkProperty's type out of a subtree onto its root.

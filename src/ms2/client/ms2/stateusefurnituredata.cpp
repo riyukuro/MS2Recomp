@@ -58,10 +58,10 @@ public:
 class CSkillRecord : public Unk_PCBaseComp_b18 {};
 
 // The buff set of the actor.
-#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
 #include <egmAnimation/AnimationService.h>
 #include <efd/Matrix3.h>
-class Unk_PCMove { public: Vector3 FUN_141683290(); bool FUN_141682fe0(int nId); bool FUN_141683100(int nId); };   // C3: view of the real class (unit_141682f80)
+class Unk_PCMove { public: Vector3 GetMoveDirection(); bool IsActionKeyDown(int nId); bool FUN_141683100(int nId); };   // C3: view of the real class (unit_141682f80)
 
 CFunctionCubeService* GetFunctionCubeService();
 
@@ -88,7 +88,7 @@ void FUN_1401fc610(unsigned char*, class COutputStream&);   // C3: was FUN_1401f
 
 // The scene graph of an entity and the NiNode helpers the exe calls out of line.
 NiAVObject* FUN_141b6efc0(egf::Entity* pEntity);                    // the scene root of an entity
-void FUN_140b86230(efd::Point3 const&, NiMatrix3&);   // matrix of euler angles (degrees)
+void EulerToMatrix(efd::Point3 const&, NiMatrix3&);   // matrix of euler angles (degrees)
 void FUN_140a0b1f0(const NiMatrix3& kRot, efd::Point3& kOut);   // C3: was (const Unk_NiMatrix3&, Vector3*)
 
 // Explicit views of the MS2Ptr members instantiated by earlier objs (FunctionCubeData / CFunctionCubeObject).
@@ -182,17 +182,17 @@ void StateUseFurniture::vfunc_4(StateData* pData)
     }
     if (m_spCube.get())
     {
-        bool bAction = !static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strB8.IsEmpty();
+        bool bAction = !static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_strB8.IsEmpty();
         if (bAction)
-            m_pOwner->FUN_14166ef10(static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strB8, 1, 0, false);
-        bool bModel = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel != "";
+            m_pOwner->FUN_14166ef10(static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_strB8, 1, 0, false);
+        bool bModel = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_strModel != "";
         if (bModel)
-            m_pOwner->PlayAnimation((const char*)static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel, 1.0f, false, false);
-        bool bEffect = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0 != "";
+            m_pOwner->PlayAnimation((const char*)static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_strModel, 1.0f, false, false);
+        bool bEffect = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_strC0 != "";
         if (bEffect)
         {
             Unk_EffectQuery kQuery;
-            kQuery.m_strName = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strC0;
+            kQuery.m_strName = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_strC0;
             kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
             kQuery.SetActor(m_pOwner->GetObjectId());
             m_nEffect = TSingleton<CEffectService>::GetInstance()->FUN_1411a49c0(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
@@ -211,7 +211,7 @@ void StateUseFurniture::vfunc_3(double fTime)
         return;
     if (m_n64 != 0)
     {
-        bool bModel = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strModel != "";
+        bool bModel = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_strModel != "";
         if (bModel)
         {
             NiActorManager* pMgr = reinterpret_cast<egmAnimation::AnimationService*>((FUN_141b6f910()))->GetActorManager(m_spCube->GetEntityId());
@@ -227,14 +227,14 @@ void StateUseFurniture::vfunc_3(double fTime)
             }
         }
     }
-    int nType = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_n90;
+    int nType = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_n90;
     if (nType != 0)
     {
         egf::EntityPtr kEnt = m_spCube->GetEnt();
         NiNode* pNode = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, FUN_141b6efc0(reinterpret_cast<egf::Entity*>(kEnt.data()))));
         if (pNode)
         {
-            NiNode* pChild = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, pNode->GetObjectByName((const char*)static_cast<CHomemadeCubeObject*>(m_spCube.get())->FUN_140ca6580()->m_strStr98)));
+            NiNode* pChild = static_cast<NiNode*>(NiObject::DynamicCast(&NiNode::ms_RTTI, pNode->GetObjectByName((const char*)static_cast<CHomemadeCubeObject*>(m_spCube.get())->GetFunctionCubeData()->m_strStr98)));
             if (pChild)
             {
                 NiTransform kXf = static_cast<NiAVObject*>(pChild)->GetLocalTransform();
@@ -247,11 +247,11 @@ void StateUseFurniture::vfunc_3(double fTime)
                 Unk_NiMatrix3 kRot = *reinterpret_cast<const Unk_NiMatrix3*>(&kXf.m_Rotate);
                 Vector3 kDir;
                 Vector3 kEuler = DAT_143b01a60;
-                kEuler = Vector3(static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.x,
-                    static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.y,
-                    static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vAC.z);
+                kEuler = Vector3(static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_vAC.x,
+                    static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_vAC.y,
+                    static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_vAC.z);
                 Unk_NiMatrix3 kAdd;
-                FUN_140b86230(reinterpret_cast<efd::Point3 const &>(kEuler), reinterpret_cast<NiMatrix3 &>(kAdd));
+                EulerToMatrix(reinterpret_cast<efd::Point3 const &>(kEuler), reinterpret_cast<NiMatrix3 &>(kAdd));
                 Unk_NiMatrix3 kProd(reinterpret_cast<const Unk_EfdMatrix3&>(static_cast<const efd::Matrix3&>(reinterpret_cast<const efd::Matrix3&>(kRot) * reinterpret_cast<const efd::Matrix3&>(kAdd))));
                 kRot = kProd;
                 FUN_140a0b1f0(reinterpret_cast<const NiMatrix3&>(kRot), reinterpret_cast<efd::Point3&>(kDir));
@@ -265,11 +265,11 @@ void StateUseFurniture::vfunc_3(double fTime)
                 reinterpret_cast<efd::Matrix3*>(&kRot)->GetCol(2, reinterpret_cast<efd::Point3&>(kCol2));
                 kCol2.Unitize();
                 reinterpret_cast<NiPoint3&>(kPos) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPos)
-                    + reinterpret_cast<const efd::Point3&>(kCol1) * (-static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.y)))));
+                    + reinterpret_cast<const efd::Point3&>(kCol1) * (-static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_vA0.y)))));
                 reinterpret_cast<NiPoint3&>(kPos) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPos)
-                    + reinterpret_cast<const efd::Point3&>(kCol0) * ((0, static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.x))))));
+                    + reinterpret_cast<const efd::Point3&>(kCol0) * ((0, static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_vA0.x))))));
                 reinterpret_cast<NiPoint3&>(kPos) = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kPos)
-                    + reinterpret_cast<const efd::Point3&>(kCol2) * ((0, static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_vA0.z))))));
+                    + reinterpret_cast<const efd::Point3&>(kCol2) * ((0, static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_vA0.z))))));
                 m_pOwner->vfunc_19(efd::Point3(reinterpret_cast<const Unk_UfDirRet&>(kPos)));
                 m_pOwner->vfunc_21(reinterpret_cast<const efd::Point3&>(kDir));
             }
@@ -277,7 +277,7 @@ void StateUseFurniture::vfunc_3(double fTime)
         else
         {
             NiPoint3 kPos = m_pOwner->vfunc_18();
-            kPos.z = kPos.z - static_cast<CHomemadeCubeObject*>(m_spCube.get())->FUN_140ca6580()->m_vA0.z;
+            kPos.z = kPos.z - static_cast<CHomemadeCubeObject*>(m_spCube.get())->GetFunctionCubeData()->m_vA0.z;
             m_pOwner->vfunc_59(1, 0, 0, 0);
         }
     }
@@ -291,16 +291,16 @@ void StateUseFurniture::vfunc_8(double fTime)
     if (pPC == 0)
         return;
     Unk_PCMove* pBuff = (Unk_PCMove*)pPC->FUN_14166d240();
-    pPC->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->FUN_141683290())));
+    pPC->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pBuff)->GetMoveDirection())));
     if (pBuff->FUN_141683100(0x30d41))
         pPC->TryUseChairOrBed(1, 0);
     else if (pBuff->FUN_141683100(0x30d42))
         pPC->TryUseChairOrBed(2, 0);
-    else if (pPC->FUN_141671a30() != 0 && pBuff->FUN_141682fe0(0x493e1))
+    else if (pPC->FUN_141671a30() != 0 && pBuff->IsActionKeyDown(0x493e1))
         pPC->vfunc_59(6, 0, 0x25, 0);
     else if (m_pOwner->FUN_1416749c0())
         pPC->vfunc_59(2, 0, 0, 0);
-    else if (pBuff->FUN_141682fe0(0x493e5))
+    else if (pBuff->IsActionKeyDown(0x493e5))
         pPC->vfunc_59(3, 0, 0, 0);
     else
     {
@@ -321,11 +321,11 @@ void StateUseFurniture::vfunc_5(int n)
     if (m_nEffect != 0)
         TSingleton<CEffectService>::GetInstance()->FUN_1411a6060(m_nEffect);
     bool bEffect = (m_spCube.get() != 0 ? true : false) &&
-        static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8 != "";
+        static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_strC8 != "";
     if (bEffect)
     {
         Unk_EffectQuery kQuery;
-        kQuery.m_strName = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->FUN_140ca6580()->m_strC8;
+        kQuery.m_strName = static_cast<CHomemadeCubeObject*>(m_spCube.operator->())->GetFunctionCubeData()->m_strC8;
         kQuery.m_nObject = (FUN_1417b8560() != 0) ? 1 : 3;
         kQuery.SetActor(m_pOwner->GetObjectId());
         TSingleton<CEffectService>::GetInstance()->InsertEffect(*reinterpret_cast<Unk_EffectTarget*>(&kQuery));
@@ -363,19 +363,19 @@ void StateUseFurniture::AnimActivated(NiActorManager* pkManager, unsigned int eS
 {
     if (m_spCube == 0)
         return;
-    bool bNone = (static_cast<CHomemadeCubeObject*>(m_spCube.get())->FUN_140ca6580() == 0);
+    bool bNone = (static_cast<CHomemadeCubeObject*>(m_spCube.get())->GetFunctionCubeData() == 0);
     if (bNone)
         return;
     if (m_n64 == 0)
     {
         efd::utf8string kName = reinterpret_cast<egmAnimation::AnimationService*>(FUN_141b6f910())->GetAnimationNameFromId(m_pOwner->GetEntityID(), eSequenceID);
-        if (UfEqual((const char*)static_cast<CHomemadeCubeObject*>(m_spCube.get())->FUN_140ca6580()->m_strModel, kName))
+        if (UfEqual((const char*)static_cast<CHomemadeCubeObject*>(m_spCube.get())->GetFunctionCubeData()->m_strModel, kName))
             m_n64 = 1;
     }
 }
 
 // @0x141284620
-CString StateUseFurniture::FUN_141284620()
+CString StateUseFurniture::GetFurnitureKey()
 {
     if (m_spFurniture.get() != 0)
         return m_spFurniture->m_strKey;

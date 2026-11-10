@@ -138,7 +138,7 @@ public:
     virtual ~CMentoringMission();           // 0x140d73490 (resets the vfptrs: user-declared)
     int GetQuestType() override;
     void ShowExpired() override;                        // 0x140d734d0
-    int FUN_1407447c0() override;                       // 0x140d734e0 (CQuestCommon slot 8)
+    int IsExpired() override;                       // 0x140d734e0 (CQuestCommon slot 8)
 };
 MS2_CHECK_SIZE(CMentoringMission, 0x78);
 

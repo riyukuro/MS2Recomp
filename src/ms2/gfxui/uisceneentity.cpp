@@ -61,18 +61,18 @@ int UISceneEntity::FUN_1422e7930()
 MS2_REPLACE_METHOD(0x1422e7930, UISceneEntity, FUN_1422e7930, 14, 0xD1D12A47);
 
 // @0x1422e7950
-int UISceneEntity::FUN_1422e7950()
+int UISceneEntity::GetSceneId()
 {
     return m_6c;
 }
-MS2_REPLACE_METHOD(0x1422e7950, UISceneEntity, FUN_1422e7950, 14, 0x69D980EB);
+MS2_REPLACE_METHOD(0x1422e7950, UISceneEntity, GetSceneId, 14, 0x69D980EB);
 
 // @0x1422e7970
-int UISceneEntity::FUN_1422e7970()
+int UISceneEntity::IsShown()
 {
     return m_70;
 }
-MS2_REPLACE_METHOD(0x1422e7970, UISceneEntity, FUN_1422e7970, 14, 0x81E2A10F);
+MS2_REPLACE_METHOD(0x1422e7970, UISceneEntity, IsShown, 14, 0x81E2A10F);
 
 // @0x1422e7990
 int UISceneEntity::FUN_1422e7990(int nSceneId)
@@ -82,7 +82,7 @@ int UISceneEntity::FUN_1422e7990(int nSceneId)
     for (POSITION pos = m_78.GetHeadPosition(); pos != NULL; m_78.GetNext(pos))
     {
         UISceneEntity* pScene = m_78.GetAt(pos).get();
-        if (pScene != NULL && pScene->FUN_1422e7950() == nSceneId)
+        if (pScene != NULL && pScene->GetSceneId() == nSceneId)
             return 1;
     }
     return 0;
@@ -90,11 +90,11 @@ int UISceneEntity::FUN_1422e7990(int nSceneId)
 MS2_REPLACE_METHOD(0x1422e7990, UISceneEntity, FUN_1422e7990, 170, 0xDE2075E7);
 
 // @0x1422e7a40
-void UISceneEntity::FUN_1422e7a40(int nSceneId)
+void UISceneEntity::SetSubSceneId(int nSceneId)
 {
-    reinterpret_cast<GFxSceneService*>(CUserMail::FUN_1408e57f0())->FUN_1422b9fd0(nSceneId);
+    reinterpret_cast<GFxSceneService*>(CUserMail::GetGFxSceneService())->FUN_1422b9fd0(nSceneId);
 }
-MS2_REPLACE_METHOD(0x1422e7a40, UISceneEntity, FUN_1422e7a40, 35, 0x8C34759F);
+MS2_REPLACE_METHOD(0x1422e7a40, UISceneEntity, SetSubSceneId, 35, 0x8C34759F);
 
 // @0x1422e7a70
 UISceneEntity* UISceneEntity::FUN_1422e7a70(int nSceneId)
@@ -104,7 +104,7 @@ UISceneEntity* UISceneEntity::FUN_1422e7a70(int nSceneId)
     for (POSITION pos = m_78.GetHeadPosition(); pos != NULL; m_78.GetNext(pos))
     {
         UISceneEntity* pScene = m_78.GetAt(pos).get();
-        if (pScene != NULL && pScene->FUN_1422e7950() == nSceneId)
+        if (pScene != NULL && pScene->GetSceneId() == nSceneId)
             return pScene;
     }
     return NULL;
@@ -117,7 +117,7 @@ int UISceneEntity::vfunc_48(int nPrevSceneId)
     m_68 = nPrevSceneId;
     m_70 = 1;
     if (vfunc_47())
-        FUN_1422dbf80(FUN_1422db790(), m_2c, 0, 0);
+        FUN_1422dbf80(GetSwfFileName(), m_2c, 0, 0);
     return m_6c;
 }
 MS2_REPLACE_METHOD(0x1422e7b20, UISceneEntity, vfunc_48, 162, 0x9BCF70F6);
@@ -134,7 +134,7 @@ int UISceneEntity::vfunc_49(int nNextSceneId)
         for (POSITION pos = m_78.GetHeadPosition(); pos != NULL; m_78.GetNext(pos))
         {
             UISceneEntity* pScene = m_78.GetAt(pos).get();
-            if (pScene != NULL && pScene->FUN_1422e7970())
+            if (pScene != NULL && pScene->IsShown())
             {
                 pScene->vfunc_49(0);
                 break;
@@ -178,7 +178,7 @@ MS2_REPLACE_METHOD(0x1422e7d90, UISceneEntity, OnLoadInit, 43, 0x25A79FDC);
     for (POSITION pos = m_78.GetHeadPosition(); pos != NULL; m_78.GetNext(pos))         \
     {                                                                                   \
         UISceneEntity* pScene = m_78.GetAt(pos).get();                                  \
-        if (pScene != NULL && pScene->FUN_1422e7970())                                  \
+        if (pScene != NULL && pScene->IsShown())                                  \
         {                                                                               \
             pScene->call;                                                               \
             return;                                                                     \

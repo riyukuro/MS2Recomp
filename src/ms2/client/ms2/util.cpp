@@ -236,7 +236,7 @@ void FUN_141b6de20()
 {
     AfxSetNewHandler(FUN_141b6fd90);
     if (TSingleton<CrashManagerCli>::GetInstance() != 0) {
-        TSingleton<CrashManagerCli>::GetInstance()->FUN_140a43750(GetCurrentThreadId(), CStringA(""));
+        TSingleton<CrashManagerCli>::GetInstance()->SetCrashLogEntry(GetCurrentThreadId(), CStringA(""));
     }
 }
 MS2_REPLACE(0x141b6de20, FUN_141b6de20, 118, 0x4043FAA8);
@@ -414,7 +414,7 @@ CStringA FUN_141b6e880(const CStringA& kInitialDir, LPCSTR pszFilter, const CStr
 MS2_REPLACE(0x141b6e880, FUN_141b6e880, 78, 0x33B131F5);
 
 // @0x141b6e990
-CStringW FUN_141b6e990(const CStringW& kStartPath)
+CStringW BrowseForFolder(const CStringW& kStartPath)
 {
     wchar_t szPath[MAX_PATH] = { 0 };
     BROWSEINFOW bi = { 0 };
@@ -438,7 +438,7 @@ CStringW FUN_141b6e990(const CStringW& kStartPath)
 CStringA FUN_141b6e8e0(const CStringA& kStartPath)
 {
     CStringW kWidePath = FUN_14016a730(kStartPath, 0);
-    return FUN_14016a600(FUN_141b6e990(kWidePath), 0);
+    return FUN_14016a600(BrowseForFolder(kWidePath), 0);
 }
 
 // @0x141b6eb40
@@ -472,7 +472,7 @@ CStringA FUN_141b6ed00(const CStringA& kPath)
 MS2_REPLACE(0x141b6ed00, FUN_141b6ed00, 58, 0xA43FC783);
 
 // @0x141b6ed40
-void FUN_141b6ed40(const CStringA& kText, Vector3* pOut)
+void ParseVector3(const CStringA& kText, Vector3* pOut)
 {
     CAtlArray<CStringA> arrParts;
     if (FUN_14028c3e0(kText, arrParts, ",", 3) == 0)
@@ -481,7 +481,7 @@ void FUN_141b6ed40(const CStringA& kText, Vector3* pOut)
     pOut->y = (float)atof(arrParts[(size_t)1]);
     pOut->z = (float)atof(arrParts[(size_t)2]);
 }
-MS2_REPLACE(0x141b6ed40, FUN_141b6ed40, 233, 0x97815FBE);
+MS2_REPLACE(0x141b6ed40, ParseVector3, 233, 0x97815FBE);
 
 // @0x141b6ee30
 CStringA FUN_141b6ee30(const Unk_UtilFloat3* pVec)
@@ -647,7 +647,7 @@ int FUN_141b6f440(NiAVObject* pRoot, int nSlot, Unk_UtilFloat3* pOut)
 }
 
 // @0x141b6f700
-float FUN_141b6f700(const egf::EntityID& rId)
+float GetEntityAlpha(const egf::EntityID& rId)
 {
     NiAVObject* pScene = FUN_141b6ef70(rId);
     float fAlpha = 0.0f;
@@ -661,7 +661,7 @@ float FUN_141b6f700(const egf::EntityID& rId)
     }
     return fAlpha;
 }
-MS2_REPLACE(0x141b6f700, FUN_141b6f700, 227, 0x4765F8EE);
+MS2_REPLACE(0x141b6f700, GetEntityAlpha, 227, 0x4765F8EE);
 
 // @0x141b6f7f0
 CStringW FUN_141b6f7f0(long long nValue)
@@ -694,24 +694,24 @@ egmAnimation::AnimationService* FUN_141b6f910()
 MS2_REPLACE(0x141b6f910, FUN_141b6f910, 31, 0x80477666);
 
 // @0x141b6f940
-Unk_Vec3Cli FUN_141b6f940(const Unk_UtilFloat3* pColor)
+Unk_Vec3Cli BrightenColor(const Unk_UtilFloat3* pColor)
 {
     return Unk_Vec3Cli(efd::Min<float>(pColor->x * 1.3f, 1.0f), efd::Min<float>(pColor->y * 1.3f, 1.0f), efd::Min<float>(pColor->z * 1.3f, 1.0f));
 }
 
 // @0x141b6fa10
-Unk_Vec3Cli FUN_141b6fa10(const Unk_UtilFloat3* pColor)
+Unk_Vec3Cli DarkenColor(const Unk_UtilFloat3* pColor)
 {
     return Unk_Vec3Cli(pColor->x * 0.7f, pColor->y * 0.7f, pColor->z * 0.7f);
 }
-MS2_REPLACE(0x141b6fa10, FUN_141b6fa10, 108, 0x2E8B2085);
+MS2_REPLACE(0x141b6fa10, DarkenColor, 108, 0x2E8B2085);
 
 // @0x141b6fa90
-bool FUN_141b6fa90(const egf::EntityID& id, const efd::utf8string& kName)
+bool HasAnimation(const egf::EntityID& id, const efd::utf8string& kName)
 {
     return FUN_141b6f910()->GetAnimationIdFromName(id, kName) != NiActorManager::INVALID_SEQUENCE_ID;
 }
-MS2_REPLACE(0x141b6fa90, FUN_141b6fa90, 73, 0x30A74C77);
+MS2_REPLACE(0x141b6fa90, HasAnimation, 73, 0x30A74C77);
 
 // @0x141b6fae0
 void FUN_141b6fae0(NiAVObject* pRoot, float fValue)
@@ -829,7 +829,7 @@ int FUN_141b6ffc0(NiSequenceData* pSeqData, const NiFixedString& kKey)
 MS2_REPLACE(0x141b6ffc0, FUN_141b6ffc0, 88, 0x5FA463E7);
 
 // @0x141b70020
-bool FUN_141b70020(egf::Entity* pEntity, Unk_UtilTransform* pOut)
+bool GetEntityTransform(egf::Entity* pEntity, Unk_UtilTransform* pOut)
 {
     Vector3 vTranslation;
     if (reinterpret_cast<egf::Entity*>(pEntity)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(vTranslation)) != 0)
@@ -893,16 +893,16 @@ struct Unk_UtilConfig
     char m_pad_00[0x60];
     CStringA m_kRoot;
 };
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
-CStringA FUN_1412755f0();
-CStringA FUN_141275640();
-CStringA FUN_14016a5c0(const char* psz, int n);
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
+CStringA GetCharacterFolder();
+CStringA GetAccountFolder();
+CStringA ToCString(const char* psz, int n);
 
 // @0x141b70290
 void FUN_141b70290()
 {
     CStringA kPath;
-    kPath.Format("%s%s", (LPCSTR)FUN_14016a5c0((LPCSTR)((struct Unk_UtilConfig*)FUN_1401d31f0())->m_kRoot, 0), (LPCSTR)FUN_1412755f0());
+    kPath.Format("%s%s", (LPCSTR)ToCString((LPCSTR)((struct Unk_UtilConfig*)GetCommonResource())->m_kRoot, 0), (LPCSTR)GetCharacterFolder());
     if (!efd::File::DirectoryExists((LPCSTR)kPath))
         _mkdir((LPCSTR)kPath);
 }
@@ -911,7 +911,7 @@ void FUN_141b70290()
 void FUN_141b70390()
 {
     CStringA kPath;
-    kPath.Format("%s%s", (LPCSTR)FUN_14016a5c0((LPCSTR)((struct Unk_UtilConfig*)FUN_1401d31f0())->m_kRoot, 0), (LPCSTR)FUN_141275640());
+    kPath.Format("%s%s", (LPCSTR)ToCString((LPCSTR)((struct Unk_UtilConfig*)GetCommonResource())->m_kRoot, 0), (LPCSTR)GetAccountFolder());
     if (!efd::File::DirectoryExists((LPCSTR)kPath))
         _mkdir((LPCSTR)kPath);
 }
@@ -1081,7 +1081,7 @@ CFileSystem* GetFileSystem();
 unsigned FUN_141b70ea0(const CStringA& kPath)
 {
     std::string kName((LPCSTR)kPath);
-    return GetFileSystem()->FUN_1403987d0(kName);
+    return GetFileSystem()->FileExists(kName);
 }
 MS2_REPLACE(0x141b70ea0, FUN_141b70ea0, 168, 0x8E07B1D5);
 
@@ -1159,44 +1159,44 @@ unsigned FUN_141b71120(Unk_UtilObjRef kRef)
 MS2_REPLACE(0x141b71120, FUN_141b71120, 290, 0x8ACF42B0);
 
 class GFxManager { public: MS2Ptr<ASMouseCursor> GetMouseCursor(int n); };
-class Unk_AltStringMgr* FUN_14025e7a0();   // C3: was FUN_14025e7a0
+class Unk_AltStringMgr* GetGFxManager();   // C3: was GetGFxManager
 
 // @0x141b71250
 void FUN_141b71250(int nValue)
 {
-    if (reinterpret_cast<GFxManager*>(FUN_14025e7a0()) != NULL) {
-        MS2Ptr<ASMouseCursor> kHud = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetMouseCursor(6);
+    if (reinterpret_cast<GFxManager*>(GetGFxManager()) != NULL) {
+        MS2Ptr<ASMouseCursor> kHud = reinterpret_cast<GFxManager*>(GetGFxManager())->GetMouseCursor(6);
         if (kHud.operator ASMouseCursor*() != NULL)
-            kHud.operator->()->FUN_1422cecb0(nValue != 0 ? 1 : 2);
+            kHud.operator->()->SetCursorMode(nValue != 0 ? 1 : 2);
     }
 }
 
 // @0x141b712e0
 int FUN_141b712e0()
 {
-    if (reinterpret_cast<GFxManager*>(FUN_14025e7a0()) == NULL)
+    if (reinterpret_cast<GFxManager*>(GetGFxManager()) == NULL)
         return 0;
-    MS2Ptr<ASMouseCursor> kHud = reinterpret_cast<GFxManager*>(FUN_14025e7a0())->GetMouseCursor(6);
+    MS2Ptr<ASMouseCursor> kHud = reinterpret_cast<GFxManager*>(GetGFxManager())->GetMouseCursor(6);
     if (kHud.operator==(0))
         return 0;
     return kHud.operator->()->GetVisible() != 0;
 }
 
 // ---- curve math ----
-float FUN_141b72560(float fBase, float fExp);
+float Pow(float fBase, float fExp);
 float FUN_141b72600(float fBase, float fExp);
-float FUN_141b725e0(float fValue);
+float Log(float fValue);
 
 // @0x141b71390
-efd::Point3 FUN_141b71390(Vector3 kStart, Vector3 kControl, Vector3 kEnd, float fT)
+efd::Point3 GetBezierPoint(Vector3 kStart, Vector3 kControl, Vector3 kEnd, float fT)
 {
     if (reinterpret_cast<const efd::Point3&>(kStart) == reinterpret_cast<const efd::Point3&>(kControl) || reinterpret_cast<const efd::Point3&>(kEnd) == reinterpret_cast<const efd::Point3&>(kControl)) {
         Vector3 kDelta = (kEnd - kStart);
         return reinterpret_cast<const efd::Point3&>(kStart) + reinterpret_cast<const efd::Point3&>(kDelta) * fT;
     } else {
         float fInverse = 1.0f - fT;
-        float fT2 = FUN_141b72560(fT, 2.0f);
-        float fS2 = FUN_141b72560(fInverse, 2.0f);
+        float fT2 = Pow(fT, 2.0f);
+        float fS2 = Pow(fInverse, 2.0f);
         efd::Point3 kResult = reinterpret_cast<const efd::Point3&>(kStart) * fS2;
         (reinterpret_cast<Vector3&>(kResult) += reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>((2.0f * kControl))) * fT * fInverse)));
         (reinterpret_cast<Vector3&>(kResult) += reinterpret_cast<const Vector3&>(static_cast<const efd::Point3&>(reinterpret_cast<const efd::Point3&>(kEnd) * fT2)));
@@ -1205,7 +1205,7 @@ efd::Point3 FUN_141b71390(Vector3 kStart, Vector3 kControl, Vector3 kEnd, float 
 }
 
 // @0x141b71550
-float FUN_141b71550(Vector3 kStart, Vector3 kControl, Vector3 kEnd)
+float GetBezierLength(Vector3 kStart, Vector3 kControl, Vector3 kEnd)
 {
     Vector3 kA;
     Vector3 kB;
@@ -1225,7 +1225,7 @@ float FUN_141b71550(Vector3 kStart, Vector3 kControl, Vector3 kEnd)
     float fSqrtC = 2.0f * sqrt(fC);
     float fBA = fB / fSqrtA;
     return (fTermA * fSqrtAll + fSqrtA * fB * (fSqrtAll - fSqrtC)
-        + (4.0f * fC * fA - fB * fB) * FUN_141b725e0((2.0f * fSqrtA + fBA + fSqrtAll) / (fBA + fSqrtC))) / (4.0f * fTermA);
+        + (4.0f * fC * fA - fB * fB) * Log((2.0f * fSqrtA + fBA + fSqrtAll) / (fBA + fSqrtC))) / (4.0f * fTermA);
 }
 
 // ---- number / colour helpers ----
@@ -1256,13 +1256,13 @@ CStringW FUN_141b71990(unsigned nValue)
 MS2_REPLACE(0x141b71990, FUN_141b71990, 113, 0x5B004633);
 
 // @0x141b71a10
-int FUN_141b71a10(const char* psz)
+int ParseInt(const char* psz)
 {
     if (psz != NULL)
         return atoi(psz);
     return 0;
 }
-MS2_REPLACE(0x141b71a10, FUN_141b71a10, 37, 0xDC1CD1D0);
+MS2_REPLACE(0x141b71a10, ParseInt, 37, 0xDC1CD1D0);
 
 // @0x141b71a40
 double FUN_141b71a40(int nValue)
@@ -1273,7 +1273,7 @@ MS2_REPLACE(0x141b71a40, FUN_141b71a40, 11, 0xFC13D90A);
 
 // @0x141b71a60
 // efd::Color::operator/(float) (0x141b723e0), then NiColor(const efd::Color&) (0x140a0a3a0) for the assignment
-void FUN_141b71a60(NiColor* pColor)
+void NormalizeColor(NiColor* pColor)
 {
     if (pColor->r > 1.0f || pColor->g > 1.0f || pColor->b > 1.0f)
         *pColor = *pColor / 255.0f;
@@ -1302,14 +1302,14 @@ NiObject* FUN_141b71b00()
 MS2_REPLACE(0x141b71b00, FUN_141b71b00, 160, 0x8C42B0E0);
 
 // @0x141b71bb0
-NiObject* FUN_141b71bb0()
+NiObject* GetPlayerSkinFloatsExtraData()
 {
     NiObject* pSkin = FUN_141b71b00();
     if (pSkin != NULL)
         return NiObject::DynamicCast(&NiFloatsExtraData::ms_RTTI, (class NiObject const*)(((class NiObject*)((class NiObjectNET*)(class NiObjectNET*)((NiObjectNET*)pSkin))->GetExtraData(DAT_143ae50f8))));
     return NULL;
 }
-MS2_REPLACE(0x141b71bb0, FUN_141b71bb0, 63, 0x4FF135C2);
+MS2_REPLACE(0x141b71bb0, GetPlayerSkinFloatsExtraData, 63, 0x4FF135C2);
 
 // ---- item / scene flag helpers ----
 struct Unk_ClientConfig;
@@ -1329,18 +1329,18 @@ MS2_REPLACE(0x141b71c00, FUN_141b71c00, 70, 0x478D9542);
 // A range tuning record: +0x144 / +0x148 are the two factors of the attack-range estimate.
 struct Unk_UtilRangeEntry { char m_pad_00[0x144]; float m_144; float m_148; };
 class Unk_UtilRangeOwner;
-ecr::RenderService * FUN_1413f9890(void);  // C3: the definition's signature
-ecr::CameraService* FUN_1413f9910();
+ecr::RenderService * GetRenderService(void);  // C3: the definition's signature
+ecr::CameraService* GetCameraService();
 float FUN_141b72510(const Unk_UtilRangeEntry* pInfo);
 float FUN_141b724f0(const Unk_UtilRangeEntry* pInfo);
 
 // @0x141b71c50
 float FUN_141b71c50()
 {
-    Unk_UtilRangeEntry* pEntry = ((struct Unk_UtilRangeEntry*)((ecr::RenderService*)(class Unk_UtilRangeOwner*)((Unk_UtilRangeOwner *)(FUN_1413f9890())))->GetActiveRenderSurface());
+    Unk_UtilRangeEntry* pEntry = ((struct Unk_UtilRangeEntry*)((ecr::RenderService*)(class Unk_UtilRangeOwner*)((Unk_UtilRangeOwner *)(GetRenderService())))->GetActiveRenderSurface());
     if (pEntry == NULL)
         return FLT_MAX;
-    Unk_UtilRangeEntry* pRange = reinterpret_cast<Unk_UtilRangeEntry*>(FUN_1413f9910()->GetActiveCamera(reinterpret_cast<ecr::RenderSurface*>(pEntry)));
+    Unk_UtilRangeEntry* pRange = reinterpret_cast<Unk_UtilRangeEntry*>(GetCameraService()->GetActiveCamera(reinterpret_cast<ecr::RenderSurface*>(pEntry)));
     if (pRange == NULL)
         return FLT_MAX;
     Unk_UtilRangeEntry* pSize = ((struct Unk_UtilRangeEntry*)((ecr::CameraData*)(struct Unk_UtilRangeEntry*)(pRange))->GetCamera());
@@ -1373,7 +1373,7 @@ void AddOutlineColor(void* pObj, void* pColor);
 void FUN_1414d37a0(void *, int);  // C3: the definition's signature
 
 // @0x141b71d10
-void FUN_141b71d10(NiAVObject* pRoot, bool bEnable, const Unk_Colc& kColor)
+void SetHighlight(NiAVObject* pRoot, bool bEnable, const Unk_Colc& kColor)
 {
     if (pRoot == NULL)
         return;
@@ -1423,7 +1423,7 @@ void FUN_141b71f20(NiAVObject* pRoot, bool bEnable, unsigned uColor, bool bSkipE
 }
 
 // @0x141b71e70
-void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot)
+void SetEntityHighlight(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEffectRoot)
 {
     egf::EntityPtr kEntity(TSingleton<EntityWorldManager>::GetInstance()->FindEntity(id));
     if (kEntity.operator==((egf::Entity*)0))
@@ -1432,7 +1432,7 @@ void FUN_141b71e70(egf::EntityID id, bool bEnable, unsigned uColor, bool bSkipEf
     if (pRoot != NULL)
         FUN_141b71f20(pRoot, bEnable, uColor, bSkipEffectRoot);
 }
-MS2_REPLACE(0x141b71e70, FUN_141b71e70, 168, 0xFEE15438);
+MS2_REPLACE(0x141b71e70, SetEntityHighlight, 168, 0xFEE15438);
 
 // ---- string table text ----
 // @0x141b720b0
@@ -1474,7 +1474,7 @@ Unk_UtilLogScope::Unk_UtilLogScope(CStringA kTag)
         return;
     m_dwThread = GetCurrentThreadId();
     m_kTag = kTag;
-    TSingleton<CrashManagerCli>::GetInstance()->FUN_140a43750(m_dwThread, m_kTag);
+    TSingleton<CrashManagerCli>::GetInstance()->SetCrashLogEntry(m_dwThread, m_kTag);
 }
 
 // @0x141b722b0
@@ -1482,7 +1482,7 @@ Unk_UtilLogScope::~Unk_UtilLogScope()
 {
     if (TSingleton<CrashManagerCli>::GetInstance() == NULL)
         return;
-    TSingleton<CrashManagerCli>::GetInstance()->FUN_140a437d0(m_dwThread);
+    TSingleton<CrashManagerCli>::GetInstance()->RemoveCrashLogEntry(m_dwThread);
 }
 
 // @0x141b72310
@@ -1548,11 +1548,11 @@ NiSequenceData* Unk_UtilSequence::FUN_141b72540() const
 MS2_REPLACE_METHOD(0x141b72540, Unk_UtilSequence, FUN_141b72540, 31, 0x4931477F);
 
 // @0x141b72560
-float FUN_141b72560(float fBase, float fExp)
+float Pow(float fBase, float fExp)
 {
     return FUN_141b72600(fBase, fExp);
 }
-MS2_REPLACE(0x141b72560, FUN_141b72560, 38, 0x09A6CEAF);
+MS2_REPLACE(0x141b72560, Pow, 38, 0x09A6CEAF);
 
 // @0x141b72590
 void Unk_UtilErrorDialog::SetKText(CStringA kText)
@@ -1562,11 +1562,11 @@ void Unk_UtilErrorDialog::SetKText(CStringA kText)
 MS2_REPLACE_METHOD(0x141b72590, Unk_UtilErrorDialog, SetKText, 65, 0xD5D7D3A4);
 
 // @0x141b725e0
-float FUN_141b725e0(float fValue)
+float Log(float fValue)
 {
     return __imp_logf(fValue);
 }
-MS2_REPLACE(0x141b725e0, FUN_141b725e0, 27, 0x3F5FEE04);
+MS2_REPLACE(0x141b725e0, Log, 27, 0x3F5FEE04);
 
 // @0x141b72600
 extern "C" float (__cdecl* __imp_powf)(float, float);

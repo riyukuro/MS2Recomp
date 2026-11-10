@@ -28,9 +28,9 @@ float FUN_14059d930(float f);                                                   
 class GameObjectController   // C3: member view for the former free stand-ins
 {
 public:
-    void FUN_141240730();
-    class GameObjectControllerHitReport* FUN_141240f20();
-    bool FUN_1412410c0(const efd::Point3& kPos, float fOffset);
+    void StopJump();
+    class GameObjectControllerHitReport* GetHitReport();
+    bool IsCapsuleOverlapping(const efd::Point3& kPos, float fOffset);
 };
 class GameObjectControllerHitReport   // C3: member view for the former free stand-ins
 {
@@ -60,7 +60,7 @@ class CPhysXHelper
 {
 public:
     bool CastRay(Unk_RayCastInfo* pInfo, const NxGroupsMask* pMask);
-    int FUN_14168a450(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
+    int GetGroundDistance(const efd::Point3& kPos, float* pfDist, float fMaxDist);     // ground below kPos
 };
 class Unk_AvPhysicsSvc* GetPhysXHelper();   // C3: was GetPhysXHelper
 void FUN_140291bc0(struct Unk_CommonVec3*);   // C3: was FUN_140291bc0
@@ -84,18 +84,18 @@ public:
     virtual void vfunc_22(efd::Point3 kDir);                                // 22 0x14123c3a0
 };
 // The actor's move-key state (PCBase::FUN_14166d240).
-#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::FUN_141683290
-class Unk_PCMove { public: bool FUN_141682fe0(int); bool FUN_141683100(int);  public: Vector3 FUN_141683290(); };   // C3: view of the real class (unit_141682f80)
+#include "ms2/placeholder/nipoint3.h"   // C3: Vector3, the return type of Unk_PCMove::GetMoveDirection
+class Unk_PCMove { public: bool IsActionKeyDown(int); bool FUN_141683100(int);  public: Vector3 GetMoveDirection(); };   // C3: view of the real class (unit_141682f80)
 class Unk_LadderMove : public Unk_PCMove {
 public:
-class Unk_PCMove { public: bool FUN_141682fe0(int); bool FUN_141683100(int); };
+class Unk_PCMove { public: bool IsActionKeyDown(int); bool FUN_141683100(int); };
 
 };
 
 // @0x1417d79e0
 void Unk_LadderStep::FUN_1417d79e0(efd::Point3 kA, efd::Point3 kB, efd::Point3 kC)
 {
-    m_timer.FUN_1408687f0();
+    m_timer.Reset();
     m_a = kA;
     m_b = kB;
     m_c = kC;
@@ -104,7 +104,7 @@ void Unk_LadderStep::FUN_1417d79e0(efd::Point3 kA, efd::Point3 kB, efd::Point3 k
 // @0x1417d7a60
 void Unk_LadderStep::FUN_1417d7a60()
 {
-    m_timer.FUN_1408687f0();
+    m_timer.Reset();
     m_a = efd::Point3::ZERO;
     m_b = efd::Point3::ZERO;
     m_c = efd::Point3::ZERO;
@@ -113,7 +113,7 @@ void Unk_LadderStep::FUN_1417d7a60()
 // @0x1417d7ad0
 void Unk_LadderStep::FUN_1417d7ad0(unsigned int ms)
 {
-    m_timer.FUN_140868750(ms);
+    m_timer.Start(ms);
 }
 
 // @0x1417d7b00
@@ -140,10 +140,10 @@ StateLadder::~StateLadder()
 void StateLadder::vfunc_4(StateData* pData)
 {
     State::vfunc_4(pData);
-    ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->GetPhysicsBody()))->FUN_141240730();
-    m_timerPos.FUN_140868750(100);
-    m_timerUp.FUN_1408687f0();
-    m_timerDown.FUN_1408687f0();
+    ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->GetPhysicsBody()))->StopJump();
+    m_timerPos.Start(100);
+    m_timerUp.Reset();
+    m_timerDown.Reset();
     m_step0.FUN_1417d7a60();
     m_step1.FUN_1417d7a60();
     m_step2.FUN_1417d7a60();
@@ -207,11 +207,11 @@ void StateLadder::vfunc_5(int n)
 {
     State::vfunc_5(n);
     m_pOwner->SetTargetYaw(m_pOwner->vfunc_20().z);
-    ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->GetPhysicsBody()))->FUN_141240730();
+    ((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->GetPhysicsBody()))->StopJump();
     m_pOwner->SetShadowVisible(true);
     m_n10 = 0x2a;
     if (m_pOwner->GetPhysicsBody() != 0)
-        ((class GameObjectControllerHitReport*)(void*)(((void*)((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->GetPhysicsBody()))->FUN_141240f20())))->FUN_140cfaf30();
+        ((class GameObjectControllerHitReport*)(void*)(((void*)((class GameObjectController*)(class Unk_PCBaseBody*)(m_pOwner->GetPhysicsBody()))->GetHitReport())))->FUN_140cfaf30();
     m_pLadder = 0;
 }
 
@@ -220,12 +220,12 @@ void StateLadder::vfunc_3(double fTime)
 {
     if (m_pLadder == 0)
         return;
-    if (m_n10 == 0x2b && m_timerUp.FUN_140868ba0() == 0)
+    if (m_n10 == 0x2b && m_timerUp.IsRunning() == 0)
     {
         FUN_1417d9240(0);
         m_n10 = 0x2a;
     }
-    if (m_n10 == 0x2c && m_timerDown.FUN_140868ba0() == 0)
+    if (m_n10 == 0x2c && m_timerDown.IsRunning() == 0)
     {
         FUN_1417d9240(0);
         m_n10 = 0x2a;
@@ -238,7 +238,7 @@ void StateLadder::vfunc_3(double fTime)
         else if (kVel.y < 0.0f)
             m_n10 = 0x2c;
     }
-    float fDist = FUN_1417d8c00();
+    float fDist = UpdateClimb();
     FUN_1417d9240(fDist);
 }
 
@@ -248,15 +248,15 @@ void StateLadder::vfunc_8(double fTime)
     State::vfunc_8(fTime);
     Unk_LadderMove* pMove = (Unk_LadderMove*)m_pOwner->FUN_14166d240();
     efd::Point3 kDir = efd::Point3::ZERO;
-    if (m_timerPos.FUN_140868c00() != 0)
-        kDir = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMove)->FUN_141683290()));
+    if (m_timerPos.IsExpired() != 0)
+        kDir = reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMove)->GetMoveDirection()));
     reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(kDir);
     if (((class Unk_PCMove*)(pMove))->FUN_141683100(0x493e1) || m_n28 != 0)
     {
         m_n28 = 0;
-        reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMove)->FUN_141683290())));
-        if (m_pOwner->FUN_1416749c0() && !((class Unk_PCMove*)(pMove))->FUN_141682fe0(0x30d43) && !((class Unk_PCMove*)(pMove))->FUN_141682fe0(0x30d44)
-            && ((class Unk_PCMove*)(pMove))->FUN_141682fe0(0x30d41))
+        reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(reinterpret_cast<const efd::Point3&>(static_cast<const Vector3&>(reinterpret_cast<Unk_PCMove*>(pMove)->GetMoveDirection())));
+        if (m_pOwner->FUN_1416749c0() && !((class Unk_PCMove*)(pMove))->IsActionKeyDown(0x30d43) && !((class Unk_PCMove*)(pMove))->IsActionKeyDown(0x30d44)
+            && ((class Unk_PCMove*)(pMove))->IsActionKeyDown(0x30d41))
             reinterpret_cast<Unk_LadderOwnerSlots*>(m_pOwner)->vfunc_22(efd::Point3::ZERO);
         m_pOwner->vfunc_59(6, 0, 0, 0);
     }
@@ -314,12 +314,12 @@ void StateLadder::TextKeyEvent(NiActorManager* pkManager, unsigned int eSequence
     if (m_pOwner->FUN_14166de90(0xd, eSequenceID) || m_pOwner->FUN_14166de90(0xe, eSequenceID))
     {
         if (kTextKey == "begin")
-            m_timerUp.FUN_140868750((int)(200.0f / m_pOwner->FUN_1416713c0()));
+            m_timerUp.Start((int)(200.0f / m_pOwner->FUN_1416713c0()));
     }
     else if (m_pOwner->FUN_14166de90(8, eSequenceID) || m_pOwner->FUN_14166de90(9, eSequenceID))
     {
         if (kTextKey == "begin")
-            m_timerDown.FUN_140868750((int)(200.0f / m_pOwner->FUN_1416713c0()));
+            m_timerDown.Start((int)(200.0f / m_pOwner->FUN_1416713c0()));
     }
 }
 
@@ -367,7 +367,7 @@ egf::Entity* StateLadder::FUN_1417d8b20(int nSide, unsigned int nKey)
 }
 
 // @0x1417d8c00
-float StateLadder::FUN_1417d8c00()
+float StateLadder::UpdateClimb()
 {
     bool bFlag = false;
     if (m_pLadder != 0)
@@ -380,7 +380,7 @@ float StateLadder::FUN_1417d8c00()
         {
             NiPoint3 kPos = pPC->vfunc_18();
             float fGround = 0.0f;
-            if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450(kPos, &fGround, 0.0f) != 0
+            if (((class CPhysXHelper*)GetPhysXHelper())->GetGroundDistance(kPos, &fGround, 0.0f) != 0
                 && fGround != FLT_MAX)
                 m_n10 = 0x32;
         }
@@ -407,7 +407,7 @@ float StateLadder::FUN_1417d8c00()
                     {
                         efd::Point3 kAt = kTop;                     // unused copy (the exe makes it)
                         efd::Point2 kSize = m_pOwner->FUN_141671390();
-                        if (reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->FUN_1412410c0(kTop, kSize.y * 0.5f) == 0)
+                        if (reinterpret_cast<GameObjectController*>(m_pOwner->GetPhysicsBody())->IsCapsuleOverlapping(kTop, kSize.y * 0.5f) == 0)
                         {
                             efd::Point3 kMid = kPos;
                             kMid.z = kTop.z;
@@ -436,7 +436,7 @@ float StateLadder::FUN_1417d8c00()
                 NiPoint3 kPos = pPC->vfunc_18();
                 efd::Point3 kProp = efd::Point3::ZERO;
                 float fGround = 0.0f;
-                if (((class CPhysXHelper*)GetPhysXHelper())->FUN_14168a450(kPos, &fGround, 0.0f) != 0)
+                if (((class CPhysXHelper*)GetPhysXHelper())->GetGroundDistance(kPos, &fGround, 0.0f) != 0)
                 {
                     float fHit = kPos.z - fGround;
                     reinterpret_cast<egf::Entity*>(m_pLadder)->GetPropertyValue<efd::Point3>(0xfd95ca52, (efd::Point3&)(kProp));

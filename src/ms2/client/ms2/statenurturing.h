@@ -33,10 +33,10 @@ public:
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x140ac12c0
     virtual void OnCastingFinished();                       // listener 0  0x140ac12a0: m_n48 = 1
 
-    unsigned FUN_140ac1370();                               // NurturingDuration
-    efd::utf8string FUN_140ac13a0();                        // the action animation of m_n10
-    void FUN_140ac1480(Unk_CastInfo* pInfo);                // fill the casting bar request
-    MS2Ptr<CNurturingCubeObject> FUN_140ac1650();           // nearest usable cube in reach (null when none)
+    unsigned GetNurturingDuration();                               // NurturingDuration
+    efd::utf8string GetActionAnimation();                        // the action animation of m_n10
+    void FillCastInfo(Unk_CastInfo* pInfo);                // fill the casting bar request
+    MS2Ptr<CNurturingCubeObject> FindNearestUsableCube();           // nearest usable cube in reach (null when none)
     void SendFunctionCubeMode4();                                   // send the used cubes (kind 4)
     void SendFunctionCubeMode5();                                   // send the cubes the player may use (kind 5)
 
@@ -59,7 +59,7 @@ public:
     virtual void vfunc_4(StateData* pData);                 // 4  0x140ac1ca0
     virtual void vfunc_5(int n);                            // 5  0x140ac1d40
 
-    CubeSpawnObject* FUN_140ac1de0();                       // the owner as a CubeSpawnObject
+    CubeSpawnObject* GetCubeSpawnObject();                       // the owner as a CubeSpawnObject
 };
 MS2_CHECK_SIZE(StateInterActionSpawnObject, 0x40);
 
@@ -77,7 +77,7 @@ public:
     virtual void EndOfSequence(NiActorManager* pkManager, unsigned int eSequenceID,
         NiControllerSequence* pkSeq, float fEventTime);     // 13 0x140ac21a0
 
-    CubeSpawnObject* FUN_140ac21e0();                       // the owner as a CubeSpawnObject
+    CubeSpawnObject* GetCubeSpawnObject();                       // the owner as a CubeSpawnObject
 
     Unk_IntervalTimer m_timer;                              // +0x40
 };

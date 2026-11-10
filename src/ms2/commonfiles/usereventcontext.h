@@ -54,9 +54,9 @@ template<> inline void Unk_EventPtr<Unk_EventPayload>::AddRefImpl(void*) const {
 class TiXmlElement;
 struct Unk_EventCore {
     void FUN_1408d5390(int);
-    bool FUN_1408d5040(TiXmlElement*);                 // load from a mail/event xml element (unit_1408d5040.cpp)
-    void FUN_1408d5320(const CMsTime&);                // set the end time (unit_1408d5040.cpp)
-    CMsTime FUN_1408d53f0() const;                      // the end time, or now + mode days (unit_1408d5040.cpp)
+    bool LoadFromXml(TiXmlElement*);                 // load from a mail/event xml element (unit_1408d5040.cpp)
+    void SetEndTime(const CMsTime&);                // set the end time (unit_1408d5040.cpp)
+    CMsTime GetEndTime() const;                      // the end time, or now + mode days (unit_1408d5040.cpp)
     int type,id; CStringW name,text,extra; CMsTime time;
     int mode; __int64 a,b,c;
 };
@@ -73,20 +73,20 @@ struct Unk_EventExtra {
 MS2_CHECK_SIZE(Unk_EventExtra, 0x10);
 class UserEventContext {
 public:
-    void FUN_1408d5470(const Unk_EventCore&);
-    bool FUN_1408d54a0(int,int,unsigned char,int,__int64);
-    bool FUN_1408d55e0(Unk_EventExtra);
-    bool FUN_1408d5630(const CStringW&);
-    bool FUN_1408d57c0(const CStringW&);
+    void SetData(const Unk_EventCore&);
+    bool AddItem(int,int,unsigned char,int,__int64);
+    bool AddExtra(Unk_EventExtra);
+    bool ParseItem(const CStringW&);
+    bool ParseItems(const CStringW&);
     void FUN_1408d58d0(int);
     void FUN_1408d5900(__int64);
     void FUN_1408d5920(__int64);
-    int FUN_1408d5940() const;
+    int GetId() const;
     __int64 FUN_1408d5960() const;
     __int64 FUN_1408d5980() const;
     __int64 FUN_1408d59a0() const;
-    size_t FUN_1408d59c0() const;
-    const ATL::CAtlArray<Unk_EventItem>& FUN_1408d59f0() const;
+    size_t GetItemCount() const;
+    const ATL::CAtlArray<Unk_EventItem>& GetItems() const;
     Unk_EventCore data;
     ATL::CAtlArray<Unk_EventItem> items;
     ATL::CAtlArray<Unk_EventExtra> extras;
@@ -110,7 +110,7 @@ public:
 };
 class Unk_EventRewardList {
 public:
-    void FUN_1408d5c30(const ATL::CAtlArray<unsigned int>&);
+    void AddReward(const ATL::CAtlArray<unsigned int>&);
     void* p0; void* p8; void* p10; void* p18; void* p20; void* p28; void* p30;
     // The reward-array and pointer accessors belong to different original classes.
     ATL::CAtlArray<MS2Ptr<EventStruct::DTReward> > rewards;   // DTRewardEventContext::m_rewards (+0x38)

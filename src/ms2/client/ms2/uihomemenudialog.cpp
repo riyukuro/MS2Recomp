@@ -120,7 +120,7 @@ class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class CFeatureManager   // C3: member view for the former free stand-ins
 {
 public:
-    bool FUN_14036d570(int);
+    bool IsFeatureEnabled(int);
 };
 
 // The game connection: slot 2 is the state, slot 54 sends the screenshot address.
@@ -186,8 +186,8 @@ class IClientPlatform* GetClientPlatform();   // C3: was void* FUN_140d86260()
 
 // The render service: each of its render contexts is drawn once with the current time (camera.h brings <ecr/RenderService.h>).
 class Unk_ServiceManager;
-Unk_ServiceManager*FUN_1413f9850();
-ecr::RenderService* FUN_1413f9890();
+Unk_ServiceManager*GetServiceManager();
+ecr::RenderService* GetRenderService();
 
 // A child of the movie (a button or a check box), held through MS2Ptr (dtor 0x140acd6e0).
 // C3: Unk_140acd6e0 (the button view) is ASButton itself.
@@ -198,7 +198,7 @@ public:
 };
 
 bool FUN_141902580(bool bMessage);
-bool FUN_1419025f0(bool bMessage);
+bool IsBlueprintShopAvailable(bool bMessage);
 unsigned char FUN_140930c50();
 int FUN_1418fd280();
 void FUN_141275260(int nId, int a, int b);
@@ -207,14 +207,14 @@ CStringW TakeScreenshotJpg(int a, int b);
 void FUN_140710590(COutPacket& packet);
 
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW strText, int nType);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* p, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* p, CStringW strTag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int nType, int nStrId, void* p, CStringW strTag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW GetStringCommonByKey(const CStringW& str);
 CStringW GetStringCommon(int nId);
 
-UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId);
+UIHomeSaveSlotDialog* GetHomeSaveSlotDialog(int nUiId);
 
 // @0x140c29160
 UIHomeMenuDialog::UIHomeMenuDialog() : m_bFreeCamera(0)
@@ -222,7 +222,7 @@ UIHomeMenuDialog::UIHomeMenuDialog() : m_bFreeCamera(0)
     m_80 = 0;
     m_88 = 1;
     FUN_1422dc3b0(1);
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
     m_screenshot.SetMode(0);
 }
 
@@ -248,7 +248,7 @@ void UIHomeMenuDialog::vfunc_67()
 void UIHomeMenuDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
-    FUN_140c29600(FUN_140c2af70());
+    Refresh(IsCraftMode());
 }
 
 // @0x140c2b8e0
@@ -269,12 +269,12 @@ int UIHomeMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
     }
     else if (_stricmp("ToggleDesignMode", szMethod) == 0)
     {
-        FUN_140c29710();
+        ToggleDesignMode();
         return 1;
     }
     else if (_stricmp("ToggleBlueprintMode", szMethod) == 0)
     {
-        FUN_140c29980();
+        ToggleBlueprintMode();
         return 1;
     }
     else if (_stricmp("OnScreenshot", szMethod) == 0)
@@ -336,13 +336,13 @@ int UIHomeMenuDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value
 }
 
 // @0x140c29600
-void UIHomeMenuDialog::FUN_140c29600(bool bCraft)
+void UIHomeMenuDialog::Refresh(bool bCraft)
 {
     ASDialog* pDialog = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDialog)
-        pDialog->Invoke("setState", FUN_140c2ad90());
+        pDialog->Invoke("setState", GetStateFrameName());
     if (bCraft)
-        FUN_140c2afd0(0);
+        SetFreeCamera(0);
     FUN_140c2a780();
     vfunc_43();
 }
@@ -350,11 +350,11 @@ void UIHomeMenuDialog::FUN_140c29600(bool bCraft)
 // @0x140c296e0
 void UIHomeMenuDialog::FUN_140c296e0(bool bCraft)
 {
-    FUN_140c29600(bCraft);
+    Refresh(bCraft);
 }
 
 // @0x140c29710
-void UIHomeMenuDialog::FUN_140c29710()
+void UIHomeMenuDialog::ToggleDesignMode()
 {
     Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -376,7 +376,7 @@ void UIHomeMenuDialog::FUN_140c29710()
                 MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_home_info_exit_messagebox_save"), 1);
                 reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
                 spBox->FUN_141a01800(1);
-                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b390));
+                spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::OnLeaveDesignResult));
                 FUN_140d73c60(spBox);
             }
             else
@@ -388,7 +388,7 @@ void UIHomeMenuDialog::FUN_140c29710()
 }
 
 // @0x140c29980
-void UIHomeMenuDialog::FUN_140c29980()
+void UIHomeMenuDialog::ToggleBlueprintMode()
 {
     if (!FUN_141902580(1))
         return;
@@ -402,7 +402,7 @@ void UIHomeMenuDialog::FUN_140c29980()
             MS2Ptr<CMsgBoxData> spBox = FUN_140d73f20(GetStringCommonByKey(L"s_home_info_exit_blueprint_messagebox_save"), 1);
             reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
             spBox->FUN_141a01800(1);
-            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b390));
+            spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::OnLeaveDesignResult));
             FUN_140d73c60(spBox);
         }
         else
@@ -429,7 +429,7 @@ void UIHomeMenuDialog::ToggleCraftMode()
     int nBlueprint = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3);
     if (nOwner != 0 || nDesign != 0 || nBlueprint != 0 || FUN_140930c50() != 0)
     {
-        if (FUN_140c2af70() != 0)
+        if (IsCraftMode() != 0)
             pPc->SendCraftModeOff();
         else
             pPc->FUN_14152feb0(1, 0);
@@ -443,7 +443,7 @@ void UIHomeMenuDialog::OnScreenshot()
 {
     if (((class Unk_HmNet*)((void*)GetClientPlatform()))->vfunc_2() == 1)
     {
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, CStringW(L"")))
+        if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_msg_ugc_home_upload_screenshot"), 0, CStringW(L"")))
         {
             reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b180));
@@ -452,26 +452,26 @@ void UIHomeMenuDialog::OnScreenshot()
     }
     else
     {
-        FUN_140c2b080();
+        TakeScreenshot();
     }
 }
 
 // @0x140c29eb0
 void UIHomeMenuDialog::OnFreeCamera()
 {
-    FUN_140c2afd0(m_bFreeCamera == 0);
+    SetFreeCamera(m_bFreeCamera == 0);
 }
 
 // @0x140c29ef0
 void UIHomeMenuDialog::OnDesignSave()
 {
-    UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
+    UIHomeSaveSlotDialog* pDialog = GetHomeSaveSlotDialog(0x4f27);
     if (pDialog == 0)
         return;
     unsigned nCount = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410ce310();
     if (nCount > 0)
     {
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L"")))
+        if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommon(0xbb1), 0, CStringW(L"")))
         {
             reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b0e0));
@@ -479,15 +479,15 @@ void UIHomeMenuDialog::OnDesignSave()
         }
     }
     else
-        pDialog->FUN_140faa6d0();
+        pDialog->SetSaveMode();
 }
 
 // @0x140c2a0e0
 void UIHomeMenuDialog::OnDesignLoad()
 {
-    UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
+    UIHomeSaveSlotDialog* pDialog = GetHomeSaveSlotDialog(0x4f27);
     if (pDialog != 0)
-        pDialog->FUN_140faa750();
+        pDialog->SetLoadMode();
 }
 
 // @0x140c2a120
@@ -495,13 +495,13 @@ void UIHomeMenuDialog::OnBlueprintSave()
 {
     if (!FUN_141902580(1))
         return;
-    UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
+    UIHomeSaveSlotDialog* pDialog = GetHomeSaveSlotDialog(0x4f27);
     if (pDialog == 0)
         return;
     unsigned nCount = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410ce310();
     if (nCount > 0)
     {
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommon(0xbb1), 0, CStringW(L"")))
+        if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommon(0xbb1), 0, CStringW(L"")))
         {
             reinterpret_cast<CMsgBoxData*>(spBox.operator->())->FUN_141a024a0(0);
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIHomeMenuDialog::FUN_140c2b130));
@@ -509,7 +509,7 @@ void UIHomeMenuDialog::OnBlueprintSave()
         }
     }
     else
-        pDialog->FUN_140faa6d0();
+        pDialog->SetSaveMode();
 }
 
 // @0x140c2a320
@@ -517,9 +517,9 @@ void UIHomeMenuDialog::OnBlueprintImport()
 {
     if (!FUN_141902580(1))
         return;
-    UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
+    UIHomeSaveSlotDialog* pDialog = GetHomeSaveSlotDialog(0x4f27);
     if (pDialog != 0)
-        pDialog->FUN_140faa750();
+        pDialog->SetLoadMode();
 }
 
 // @0x140c2a370
@@ -575,7 +575,7 @@ void UIHomeMenuDialog::OnBlueprintExport()
 // @0x140c2a720
 void UIHomeMenuDialog::OnBlueprintShop()
 {
-    if (!FUN_1419025f0(1))
+    if (!IsBlueprintShopAvailable(1))
         return;
     UIMeratMarketDialog* pMenu = ((class UIMeratMarketDialog*)FUN_140bd2c00());
     if (pMenu != 0)
@@ -589,52 +589,52 @@ void UIHomeMenuDialog::OnBlueprintShop()
 // @0x140c2a780
 void UIHomeMenuDialog::FUN_140c2a780()
 {
-    int bCraft = FUN_140c2af70();
+    int bCraft = IsCraftMode();
     int bDesign = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(1);
     int bBlueprint = ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3600(3);
     if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_craftMode"))
     {
-        sp->FUN_1422ce090(bCraft);
+        sp->SetSelected(bCraft);
     }
     if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_designMode"))
     {
-        sp->FUN_1422ce090(bDesign);
+        sp->SetSelected(bDesign);
         if (bBlueprint != 0)
-            reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(0);
+            reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->SetEnabled(0);
     }
     if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_blueprintMode"))
     {
-        sp->FUN_1422ce090(bBlueprint);
-        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
+        sp->SetSelected(bBlueprint);
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->SetEnabled(FUN_141902580(0));
         if (bDesign != 0)
-            reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(0);
+            reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->SetEnabled(0);
     }
     if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_freeCamera"))
     {
-        sp->FUN_1422ce090(TSingleton<CameraMgr>::GetInstance()->GetModeType() == 1);
+        sp->SetSelected(TSingleton<CameraMgr>::GetInstance()->GetModeType() == 1);
     }
     if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_blueprintSave"))
     {
-        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->SetEnabled(FUN_141902580(0));
     }
     if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_blueprintImport"))
     {
-        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->SetEnabled(FUN_141902580(0));
     }
     if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_blueprintExport"))
     {
-        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_141902580(0));
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->SetEnabled(FUN_141902580(0));
     }
     if (MS2Ptr<ASButton> sp = ((Unk_HmMovieEntity*)this)->GetChild<ASButton>("m_blueprintShop"))
     {
-        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->FUN_1422c1fe0(FUN_1419025f0(0));
+        reinterpret_cast<MS2Ptr<ASMovieClip>&>(sp)->SetEnabled(IsBlueprintShopAvailable(0));
     }
 }
 
 // @0x140c2ad90
-CString UIHomeMenuDialog::FUN_140c2ad90()
+CString UIHomeMenuDialog::GetStateFrameName()
 {
-    bool bCraft = FUN_140c2af70();
+    bool bCraft = IsCraftMode();
     if (FUN_1418fd280() == 0)
         return CString(bCraft ? "other_craft" : "other");
     switch (((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3650())
@@ -652,7 +652,7 @@ CString UIHomeMenuDialog::FUN_140c2ad90()
 }
 
 // @0x140c2af70
-bool UIHomeMenuDialog::FUN_140c2af70()
+bool UIHomeMenuDialog::IsCraftMode()
 {
     Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -666,7 +666,7 @@ bool UIHomeMenuDialog::FUN_140c2af70()
 }
 
 // @0x140c2afd0
-void UIHomeMenuDialog::FUN_140c2afd0(bool bFreeCamera)
+void UIHomeMenuDialog::SetFreeCamera(bool bFreeCamera)
 {
     m_bFreeCamera = bFreeCamera;
     if (m_bFreeCamera)
@@ -685,7 +685,7 @@ void UIHomeMenuDialog::FUN_140c2afd0(bool bFreeCamera)
 
 // @0x140c2b080
 // The exe widens the discarded BeginImage() flag (movzx) before the screenshot call: a ?: on it with empty arms.
-CStringW UIHomeMenuDialog::FUN_140c2b080()
+CStringW UIHomeMenuDialog::TakeScreenshot()
 {
     return TakeScreenshotJpg((m_screenshot.BeginImage() ? (void)0 : (void)0, 0), 1);
 }
@@ -696,9 +696,9 @@ bool UIHomeMenuDialog::FUN_140c2b0e0(int nResult, const CMsgBoxData& data)
     FUN_14151f200();
     if (nResult == 0)
     {
-        UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
+        UIHomeSaveSlotDialog* pDialog = GetHomeSaveSlotDialog(0x4f27);
         if (pDialog != 0)
-            pDialog->FUN_140faa6d0();
+            pDialog->SetSaveMode();
         return 1;
     }
     return 1;
@@ -710,9 +710,9 @@ bool UIHomeMenuDialog::FUN_140c2b130(int nResult, const CMsgBoxData& data)
     FUN_14151f200();
     if (nResult == 0)
     {
-        UIHomeSaveSlotDialog* pDialog = FUN_140c2b5c0(0x4f27);
+        UIHomeSaveSlotDialog* pDialog = GetHomeSaveSlotDialog(0x4f27);
         if (pDialog != 0)
-            pDialog->FUN_140faa6d0();
+            pDialog->SetSaveMode();
         return 1;
     }
     return 1;
@@ -721,10 +721,10 @@ bool UIHomeMenuDialog::FUN_140c2b130(int nResult, const CMsgBoxData& data)
 // @0x140c2b180
 bool UIHomeMenuDialog::FUN_140c2b180(int nResult, const CMsgBoxData& data)
 {
-    efd::ServiceManager* pServices = reinterpret_cast<efd::ServiceManager *>(FUN_1413f9850());
+    efd::ServiceManager* pServices = reinterpret_cast<efd::ServiceManager *>(GetServiceManager());
     if (pServices == 0)
         return 0;
-    ecr::RenderService* pRender = FUN_1413f9890();
+    ecr::RenderService* pRender = GetRenderService();
     if (pRender == 0)
         return 0;
     float fTime = (float)pServices->GetTime(0xe001001b);
@@ -735,7 +735,7 @@ bool UIHomeMenuDialog::FUN_140c2b180(int nResult, const CMsgBoxData& data)
             continue;
         pContext->Draw(fTime);
     }
-    CStringW strUrl = FUN_140c2b080();
+    CStringW strUrl = TakeScreenshot();
     if (nResult == 0 && !strUrl.IsEmpty())
     {
         if (((class Unk_HmNet*)((void*)GetClientPlatform()))->vfunc_54(((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c31d0(), ((CubeMapInformationService*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3260(), 0xd0, CStringW(strUrl)) == 1)
@@ -745,7 +745,7 @@ bool UIHomeMenuDialog::FUN_140c2b180(int nResult, const CMsgBoxData& data)
 }
 
 // @0x140c2b390
-bool UIHomeMenuDialog::FUN_140c2b390(int nResult, const CMsgBoxData& data)
+bool UIHomeMenuDialog::OnLeaveDesignResult(int nResult, const CMsgBoxData& data)
 {
     Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPc == 0)
@@ -760,7 +760,7 @@ bool UIHomeMenuDialog::SendRequestCube(int nResult, const CMsgBoxData& data)
 {
     if (nResult == 0)
     {
-        if (((class CFeatureManager*)(class Unk_HmOptions*)(((class Unk_HmOptions*)FUN_140166410())))->FUN_14036d570(0xd4))
+        if (((class CFeatureManager*)(class Unk_HmOptions*)(((class Unk_HmOptions*)FUN_140166410())))->IsFeatureEnabled(0xd4))
         {
             Unk_HmPc* pPc = ((class Unk_HmPc*)((class WorldService*)(class Unk_HmWorld*)(((class Unk_HmWorld*)WorldService::GetInstance())))->FUN_141bd0cc0());
             if (pPc != 0)
@@ -774,7 +774,7 @@ bool UIHomeMenuDialog::SendRequestCube(int nResult, const CMsgBoxData& data)
 }
 
 // @0x140c2b5c0
-UIHomeSaveSlotDialog* FUN_140c2b5c0(int nUiId)
+UIHomeSaveSlotDialog* GetHomeSaveSlotDialog(int nUiId)
 {
     if (reinterpret_cast<Unk_HmUiMgr*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
@@ -789,10 +789,10 @@ MS2_REPLACE_METHOD(0x140C29280, UIHomeMenuDialog, GetTypeName, 61, 0x70D7F679);
 MS2_REPLACE_METHOD(0x140C292D0, UIHomeMenuDialog, vfunc_67, 36, 0x14D88D62);
 MS2_REPLACE_METHOD(0x140C29300, UIHomeMenuDialog, OnLoadComplete, 47, 0xBCD25300);
 MS2_REPLACE_METHOD(0x140C29340, UIHomeMenuDialog, vfunc_28, 635, 0xD5372608);
-MS2_REPLACE_METHOD(0x140C29600, UIHomeMenuDialog, FUN_140c29600, 218, 0x305104E7);
+MS2_REPLACE_METHOD(0x140C29600, UIHomeMenuDialog, Refresh, 218, 0x305104E7);
 MS2_REPLACE_METHOD(0x140C296E0, UIHomeMenuDialog, FUN_140c296e0, 33, 0xE4BD1406);
-MS2_REPLACE_METHOD(0x140C29710, UIHomeMenuDialog, FUN_140c29710, 618, 0x8B85C660);
-MS2_REPLACE_METHOD(0x140C29980, UIHomeMenuDialog, FUN_140c29980, 488, 0x5ECA9653);
+MS2_REPLACE_METHOD(0x140C29710, UIHomeMenuDialog, ToggleDesignMode, 618, 0x8B85C660);
+MS2_REPLACE_METHOD(0x140C29980, UIHomeMenuDialog, ToggleBlueprintMode, 488, 0x5ECA9653);
 MS2_REPLACE_METHOD(0x140C29B70, UIHomeMenuDialog, FUN_140c29b70, 24, 0x413B21C4);
 MS2_REPLACE_METHOD(0x140C29B90, UIHomeMenuDialog, ToggleCraftMode, 218, 0xA1886146);
 MS2_REPLACE_METHOD(0x140C29C70, UIHomeMenuDialog, OnScreenshot, 556, 0x193700AE);
@@ -807,15 +807,15 @@ MS2_REPLACE_METHOD(0x140C2A4B0, UIHomeMenuDialog, OnHomeDemolish, 483, 0xA334487
 MS2_REPLACE_METHOD(0x140C2A6A0, UIHomeMenuDialog, OnBlueprintExport, 120, 0x5611FBB3);
 MS2_REPLACE_METHOD(0x140C2A720, UIHomeMenuDialog, OnBlueprintShop, 84, 0x8248B6DD);
 MS2_REPLACE_METHOD(0x140C2A780, UIHomeMenuDialog, FUN_140c2a780, 1536, 0xE9239341);
-MS2_REPLACE_METHOD(0x140C2AD90, UIHomeMenuDialog, FUN_140c2ad90, 463, 0x80C9D8EE);
-MS2_REPLACE_METHOD(0x140C2AF70, UIHomeMenuDialog, FUN_140c2af70, 75, 0xBA03C06A);
-MS2_REPLACE_METHOD(0x140C2AFD0, UIHomeMenuDialog, FUN_140c2afd0, 156, 0x306CA93D);
-MS2_REPLACE_METHOD(0x140C2B080, UIHomeMenuDialog, FUN_140c2b080, 83, 0xB948A457);
+MS2_REPLACE_METHOD(0x140C2AD90, UIHomeMenuDialog, GetStateFrameName, 463, 0x80C9D8EE);
+MS2_REPLACE_METHOD(0x140C2AF70, UIHomeMenuDialog, IsCraftMode, 75, 0xBA03C06A);
+MS2_REPLACE_METHOD(0x140C2AFD0, UIHomeMenuDialog, SetFreeCamera, 156, 0x306CA93D);
+MS2_REPLACE_METHOD(0x140C2B080, UIHomeMenuDialog, TakeScreenshot, 83, 0xB948A457);
 MS2_REPLACE_METHOD(0x140C2B0E0, UIHomeMenuDialog, FUN_140c2b0e0, 74, 0x0CFB8B11);
 MS2_REPLACE_METHOD(0x140C2B130, UIHomeMenuDialog, FUN_140c2b130, 74, 0xB6DDA79C);
 MS2_REPLACE_METHOD(0x140C2B180, UIHomeMenuDialog, FUN_140c2b180, 518, 0x78CE4CA7);
-MS2_REPLACE_METHOD(0x140C2B390, UIHomeMenuDialog, FUN_140c2b390, 72, 0xF9694F52);
+MS2_REPLACE_METHOD(0x140C2B390, UIHomeMenuDialog, OnLeaveDesignResult, 72, 0xF9694F52);
 MS2_REPLACE_METHOD(0x140C2B3E0, UIHomeMenuDialog, SendRequestCube, 157, 0x84739265);
-MS2_REPLACE(0x140C2B5C0, FUN_140c2b5c0, 147, 0xE2946EBD);
+MS2_REPLACE(0x140C2B5C0, GetHomeSaveSlotDialog, 147, 0xE2946EBD);
 // Atexit thunks of this unit's statics (gap1 yd sweep).
 // MS2-RANGE: 0x142ca27e0-0x142ca2950 .text$yd

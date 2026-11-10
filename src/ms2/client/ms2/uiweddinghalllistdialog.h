@@ -31,7 +31,7 @@ public:
     virtual void vfunc_72();                                    // 72 0x140fd8f50 refresh once when marked
 
     void FUN_140fd90f0(bool b);                                    // 0x140fd90f0 mark the lists for a refresh
-    void FUN_140fd9110();                                       // 0x140fd9110 fill the open and the progress list
+    void UpdateHallLists();                                       // 0x140fd9110 fill the open and the progress list
 
 private:
     MS2_LAYOUT_FRIEND;

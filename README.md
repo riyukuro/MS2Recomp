@@ -3,7 +3,8 @@
 A work-in-progress recompilation of the MapleStory2 client (KMS2 dev build, x64, April 2022).
 
 Functions recovered from the original executable are rewritten as C++ in `src/ms2/`, one file per original
-compilation unit, and compiled with the same compiler (MSVC 14.16). Most of them are a byte-for-byte match of the
+compilation unit, and compiled with the compiler that built the original (MSVC 14.16: cl 19.16.27054 of Visual Studio
+2017 15.9). Most of them are a byte-for-byte match of the
 original. Together with the patched Gamebryo engine and the statically linked libraries, they link into a complete
 replacement `MapleStory2.exe` (the "full executable", see [`BUILDING.md`](BUILDING.md)) that boots, logs in and plays
 on a server.
@@ -22,8 +23,10 @@ same as the original. The gaps:
   point and a trap that logs any function no object defines; crash and hang logging are an option). The exe holds
   none of the hook registrations the maintainers' builds compile in. It is linked with `/opt:noref`, so it also
   keeps functions that nothing calls yet.
-- Most of that glue is derived from the checkout at configure time, but one link table (`linkfacts.tsv`) still comes
-  from a maintainer's build that reads the exe, so a commit that adds an engine or library unit needs a refresh first.
+- Most of that glue is derived from the checkout at configure time, so a commit that adds a game source file builds
+  as it is. A new engine or library unit does not: this repository links it only after a maintainer's glue refresh
+  (a build that reads the exe) has added its row to the committed link table `link.tsv`
+  ([`BUILDING.md`](BUILDING.md#glue-derived-at-configure)).
 - Bugs the byte-match checks can't see still turn up (see [Recent fixes](#recent-fixes)), and not every gameplay flow
   has been tested on the full executable.
 - To play you still need the game's data files and a server.
@@ -81,14 +84,13 @@ Link aliases: 5 left: 0 `/alternatename` lines in `data/fullexe/plain/alias.rsp`
 
 Since the last publish:
 
-- Placeholder names: 1,422 game functions that were still called `FUN_<address>` now have descriptive names, and
-  three placeholder classes have real names. Two independent naming passes had to agree on each name, and a full
-  rebuild checked the result: no exact match was lost.
-- The default build needs no original executable, and this was checked end to end: a clean checkout, configured with
-  the stock `linux` preset and no options, built the whole client (3,734 steps, no unresolved symbol), and the result
-  ran into the game field. See [`BUILDING.md`](BUILDING.md).
-- Link aliases in the sources went from 9 to 5. The alias file of the no-exe build stays empty.
-- Five functions that the last publish counted as equivalent are byte matches again.
+- Placeholder names: 4,997 more game functions that were still called `FUN_<address>` now have descriptive names,
+  from three naming waves. Two independent naming passes had to agree on each name, and a full rebuild checked the
+  result: no function changed state and no exact match was lost.
+- 42 of the 45 small identity functions that the matcher had paired with hook-DLL helper names are now bound to the
+  standard-library names their callers use; 3 are left. The no-exe build's link order names no hook helper.
+- The default build was checked again from a clean checkout with the stock `linux` preset and no options (3,734
+  steps, no unresolved symbol), and the result ran into the game field. See [`BUILDING.md`](BUILDING.md).
 - No new bugs that the byte-match checks can't see were fixed in this round.
 
 Fixed in an earlier publish. The byte-match checks can't see any of these bugs. None was seen in the client; the

@@ -34,9 +34,9 @@ template <class T> class MS2Ptr;
 struct Unk_MasteryCraft
 {
     Unk_MasteryCraft();                 // 0x140eadd70
-    void FUN_140eadda0();               // reset: type 2, the rest 0
-    BOOL FUN_140eaddf0();               // type == 0
-    BOOL FUN_140eade30();               // type == 1
+    void Reset();               // reset: type 2, the rest 0
+    BOOL IsMagicScroll();               // type == 0
+    BOOL IsManufacturing();               // type == 1
     BOOL HasTotal();               // m_nTotal != 0
     int m_nType;
     int m_nTotal;
@@ -67,19 +67,19 @@ public:
 
     // ---- non-virtual members, sorted by address ----
     void SetMainTab(int nMainTab, int);  // 0x140eafdb0
-    void FUN_140eafde0();  // 0x140eafde0
+    void UpdateSubTabs();  // 0x140eafde0
     void FUN_140eb0540();  // 0x140eb0540
     void FUN_140eb05b0(int nType, bool bKeep);  // 0x140eb05b0
     void FUN_140eb0610(int nType, bool bKeep);  // 0x140eb0610
-    void FUN_140eb0bf0(int nType, int nIndex);  // 0x140eb0bf0
+    void AddLevelGuide(int nType, int nIndex);  // 0x140eb0bf0
     void FUN_140eb0da0(int nType, bool bKeep);  // 0x140eb0da0
-    void FUN_140eb1770(int nId, bool bKeep);  // 0x140eb1770
+    void UpdateRecipePage(int nId, bool bKeep);  // 0x140eb1770
     void FUN_140eb2460();  // 0x140eb2460
     void FUN_140eb24a0();  // 0x140eb24a0
-    void FUN_140eb2d10();  // 0x140eb2d10
+    void UpdateHousingList();  // 0x140eb2d10
     void FUN_140eb3010(int nId);  // 0x140eb3010
-    void FUN_140eb3460();  // 0x140eb3460
-    void FUN_140eb4210(int nId);  // 0x140eb4210
+    void UpdateMagicScrollList();  // 0x140eb3460
+    void UpdateMagicScrollPage(int nId);  // 0x140eb4210
     void FUN_140eb4ba0();  // 0x140eb4ba0
     void FUN_140eb4be0();  // 0x140eb4be0
     void FUN_140eb4c10(int nType, int bRefreshTabs);  // 0x140eb4c10
@@ -91,17 +91,17 @@ public:
     void SetPendingSub(int nType);  // 0x140eb5260
     void SetPendingList(int nType);  // 0x140eb52c0
     void OnDamagedMyPC(NotifyObject* pNotify);  // 0x140eb5320
-    void FUN_140eb53a0();  // 0x140eb53a0
-    void FUN_140eb5450(int nIndex);  // 0x140eb5450
+    void OnSelectMastery();  // 0x140eb53a0
+    void OnSelectList(int nIndex);  // 0x140eb5450
     void FUN_140eb55e0(int nId);  // 0x140eb55e0
     void FUN_140eb5e30(int nId);  // 0x140eb5e30
-    void FUN_140eb5e60(int nId);  // 0x140eb5e60
+    void CraftMagicScroll(int nId);  // 0x140eb5e60
     void FUN_140eb6660(void* pArg);  // 0x140eb6660
-    int FUN_140eb6870();  // 0x140eb6870
+    int GetDefaultWeaponSlot();  // 0x140eb6870
     void FUN_140eb6920(int nType, int nIndex, ASObj& obj);  // 0x140eb6920
     void CancelCraft();  // 0x140eb6c80
-    int FUN_140eb6d40(int nKind, int nId);  // 0x140eb6d40
-    CStringW FUN_140eb71a0(MS2Ptr<CMasteryReceipe> spRec);  // 0x140eb71a0
+    int GetMaxCraftCount(int nKind, int nId);  // 0x140eb6d40
+    CStringW GetRecipeStateText(MS2Ptr<CMasteryReceipe> spRec);  // 0x140eb71a0
     int CalcAdjustedItemCount(int nType, unsigned int nNeedMastery, ItemEntity* pEntry);  // 0x140eb79b0
     unsigned int CalcIngredientCount(int nType, int nNeedMastery, unsigned int nCount);  // 0x140eb7b40
     unsigned int GetMyMastery(int nType);  // 0x140eb7bb0
@@ -119,9 +119,9 @@ public:
     int GetTypeForSlot(int nSlot);  // 0x140eb89e0
     int FUN_140eb8a90();  // 0x140eb8a90
     int FUN_140eb8ac0();  // 0x140eb8ac0
-    void FUN_140eb8b20();  // 0x140eb8b20
-    static int FUN_140eb8f40(const void* pA, const void* pB);  // 0x140eb8f40
-    static int FUN_140eb9160(const void* pA, const void* pB);  // 0x140eb9160
+    void RestoreListSelection();  // 0x140eb8b20
+    static int CompareHousingItems(const void* pA, const void* pB);  // 0x140eb8f40
+    static int CompareEnchantScrollRecipes(const void* pA, const void* pB);  // 0x140eb9160
 
     // C3: the child lookup 0x140c02990 is UISwfEntity::GetChild<ASUIComponent> (uiswfentity.h)
     MS2Ptr<ASEventDispatcher> FindControl(const CString& strName);

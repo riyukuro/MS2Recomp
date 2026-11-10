@@ -48,7 +48,7 @@ void UIMicroGameCoupleDanceMessage::vfunc_2()
     if (FUN_1412755a0() != 0)
         return;
     UIHeadUpDisplay::vfunc_2();
-    FUN_1422dbf00(0x1e, 0, 0);
+    LoadSwf(0x1e, 0, 0);
 }
 
 // @0x140e65ac0
@@ -79,7 +79,7 @@ int UIMicroGameCoupleDanceMessage::vfunc_28(const char* szMethod, const Scalefor
 }
 
 // @0x140e65c00
-void UIMicroGameCoupleDanceMessage::FUN_140e65c00(CStringW strMessage, int nTime)
+void UIMicroGameCoupleDanceMessage::ShowMessage(CStringW strMessage, int nTime)
 {
     if (m_30.IsNull())
         return;
@@ -87,7 +87,7 @@ void UIMicroGameCoupleDanceMessage::FUN_140e65c00(CStringW strMessage, int nTime
 }
 
 // @0x140e65ce0
-void UIMicroGameCoupleDanceMessage::FUN_140e65ce0(int nType, CStringW strMessage, int nTime)
+void UIMicroGameCoupleDanceMessage::ShowStageMessage(int nType, CStringW strMessage, int nTime)
 {
     if (m_30.IsNull())
         return;

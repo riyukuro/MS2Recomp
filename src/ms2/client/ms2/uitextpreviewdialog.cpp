@@ -35,12 +35,12 @@ extern template class MS2Ptr<ASButtonBar>;                      // instances own
 class UIDailyMissionDialog
 {
 public:
-    MS2Ptr<ASButtonBar> FUN_140c02870(const CString& strName);
+    MS2Ptr<ASButtonBar> GetButtonBar(const CString& strName);
 };
 
 class CItemDataTable;
 
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);             // the movie of a UI layer
+Scaleform::GFx::Movie* GetMovie(int nMovieId);             // the movie of a UI layer
 // A GFx::Value that the string-value builder constructs itself (no ctor call); the dtor is Value's (0x140614800).
 void FUN_1422bccb0(Scaleform::GFx::Value* pValue, int n);
 void FUN_1422bcd10(Scaleform::GFx::Value* pValue, unsigned int n);
@@ -74,7 +74,7 @@ void UITextPreviewDialog::OnLoadComplete()
     }
     {
         CString strName("m_buttonBar");
-        m_198 = reinterpret_cast<UIDailyMissionDialog*>(this)->FUN_140c02870(strName);
+        m_198 = reinterpret_cast<UIDailyMissionDialog*>(this)->GetButtonBar(strName);
     }
 }
 
@@ -137,7 +137,7 @@ int UITextPreviewDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Va
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceColorWords(strText);
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strText);
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
-            FUN_1422bb8b0(m_28)->SetExternalInterfaceRetVal(Scaleform::GFx::Value((const wchar_t*)strText));
+            GetMovie(m_28)->SetExternalInterfaceRetVal(Scaleform::GFx::Value((const wchar_t*)strText));
         }
     }
     else if (_stricmp("OnDescriptionCheck", szMethod) == 0) {

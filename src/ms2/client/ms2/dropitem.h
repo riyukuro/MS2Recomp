@@ -80,7 +80,7 @@ public:
     void FUN_1411925e0(efd::Point3 kAxis, float fDegrees);           // spin the model
     void FUN_141192840(int nValue);                                         // 0x141192840 m_n294
 
-    CItem* FUN_140b12380();                                                 // the dropped item
+    CItem* GetItem();                                                 // the dropped item
 
 public:
     MS2_LAYOUT_FRIEND;

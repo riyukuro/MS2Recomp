@@ -7,17 +7,17 @@
 
 extern bool DAT_143ab1b14;
 
-void FUN_140827410(bool value);
+void SetGlobalFlag(bool value);
 
 // @0x1408273f0
 bool FUN_1408273f0(void* /*unused*/)
 {
-    FUN_140827410(true);
+    SetGlobalFlag(true);
     return true;
 }
 
 // @0x140827410
-void FUN_140827410(bool value)
+void SetGlobalFlag(bool value)
 {
     DAT_143ab1b14 = value;
 }

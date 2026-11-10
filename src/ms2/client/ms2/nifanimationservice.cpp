@@ -105,7 +105,7 @@ int CNifAnimationService::FUN_1415455a0(unsigned __int64 nKey, NiNode* pkNif, in
         }
         if (pInfo->m_fEndTime <= 0.0f)
             pInfo->m_fEndTime = 0.1f;
-        pInfo->m_timer.FUN_140868750((int)(pInfo->m_fEndTime * 1000.0f));
+        pInfo->m_timer.Start((int)(pInfo->m_fEndTime * 1000.0f));
         m_mapInfo.SetAt(nKey, pInfo);
         m_spView->AppendScene(pInfo->m_spClone);
     }
@@ -153,7 +153,7 @@ efd::AsyncResult CNifAnimationService::OnTick()
         NifAnimationInfo* pInfo = m_mapInfo.GetValueAt(pos);
         if (pInfo != 0)
         {
-            if (pInfo->m_timer.FUN_140868c00() != 0)
+            if (pInfo->m_timer.IsExpired() != 0)
             {
                 m_spView->RemoveScene(pInfo->m_spClone);
                 delete pInfo;

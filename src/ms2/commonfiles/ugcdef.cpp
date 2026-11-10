@@ -73,11 +73,11 @@ __int64 GetServerTime();
 unsigned char FUN_140898b80(CInPacket& packet, Unk_1402c45d0 checker);     // a byte that Unk_1402c45d0 accepts, else throws
 
 // The UGC manager singleton, TSingleton<CUgcManager> (only the "is the server a test server" query is used).
-CString FUN_1410280d0(int nKind, CString strName);                         // the local file of a ugc content kind
+CString GetDownloadFilePath(int nKind, CString strName);                         // the local file of a ugc content kind
 
 // The music book table of item.cpp (the title of a music book lives at +0x28).
 class Unk_MusicBookTable;
-Unk_MusicBookTable* FUN_14052d1d0();
+Unk_MusicBookTable* GetInstrumentDataTable();
 
 // The product id of the merat market (Unk_MeratProductKey, meratproductkey.h) is the key of the bookmark map.
 
@@ -143,10 +143,10 @@ static CStringA s_strTabIndex = "tabIndex";
 
 // Market lookups of the item and merat market units.
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-int FUN_1406a5390(int nItemId);
+int GetItemGrade(int nItemId);
 bool FUN_1406a5800();
 
-// The music record of a CItem as CUgcItemMusicNote::FUN_140893bb0 reads it.
+// The music record of a CItem as CUgcItemMusicNote::SetFromMusicRecord reads it.
 struct Unk_MusicSrcView
 {
     char m_pad_00[0x18];
@@ -304,7 +304,7 @@ CUgcItemProxy::CUgcItemProxy()
 // @0x14088ec50
 CUgcItemProxy::CUgcItemProxy(CItem* pItem)
 {
-    FUN_14088f100(pItem);
+    SetFromItem(pItem);
 }
 
 // @0x14088ecc0
@@ -367,12 +367,12 @@ void CUgcItemProxy::Read(CInPacket& packet)
 }
 
 // @0x14088f100
-void CUgcItemProxy::FUN_14088f100(CItem* pItem)
+void CUgcItemProxy::SetFromItem(CItem* pItem)
 {
-    if (pItem != 0 && pItem->HasCubeTextureMesh() != 0 && pItem->FUN_140525f60() != 0)
+    if (pItem != 0 && pItem->HasCubeTextureMesh() != 0 && pItem->HasUgcId() != 0)
     {
         m_itemUid = pItem->GetItemUid();
-        m_nItemId = pItem->FUN_1405276c0();
+        m_nItemId = pItem->GetItemId();
         m_nCount = 1;
         m_strName = reinterpret_cast<Unk_UgcItemInfoView*>(pItem->GetUgcInfo())->m_strName;
         m_nRarity = reinterpret_cast<Unk_UgcItemInfoView*>(pItem->GetUgcInfo())->m_nRarity;
@@ -1511,9 +1511,9 @@ CStringA CUgcItemLook::GetLocalPath() const
     if (m_n30 != 0)
     {
         if (m_strUrl.Find("item/", 0) >= 0)
-            strResult = FUN_1410280d0(0xc9, m_strUrl);
+            strResult = GetDownloadFilePath(0xc9, m_strUrl);
         else if (m_strUrl.Find("blueprint/", 0) >= 0)
-            strResult = FUN_1410280d0(0xd1, m_strUrl);
+            strResult = GetDownloadFilePath(0xd1, m_strUrl);
     }
     return strResult;
 }
@@ -1691,7 +1691,7 @@ void CUgcItemMusicNote::CopyFrom(const CUgcItemMusicNote* pOther)
 }
 
 // @0x140893bb0
-void CUgcItemMusicNote::FUN_140893bb0(const void* pSource, __int64 nId)
+void CUgcItemMusicNote::SetFromMusicRecord(const void* pSource, __int64 nId)
 {
     Clear();
     if (pSource == 0)
@@ -1742,7 +1742,7 @@ void CUgcItemMusicNote::Read(CInputStream& stream)
 // @0x140894060
 CStringA CUgcItemMusicNote::FUN_140894060() const
 {
-    CInstrumentDataTable::CategoryPtr spInfo = reinterpret_cast<CInstrumentDataTable*>(FUN_14052d1d0())->GetCategory(m_n24);
+    CInstrumentDataTable::CategoryPtr spInfo = reinterpret_cast<CInstrumentDataTable*>(GetInstrumentDataTable())->GetCategory(m_n24);
     if ((CInstrumentCategoryData*)spInfo != 0)
     {
         return CStringA(spInfo->m_strIcon);
@@ -2088,7 +2088,7 @@ void CUgcMarketProduct::Read(CInPacket& packet)
     m_music.Read(packet);
     m_blueprint.Read(packet);
     m_n1f4 = packet.ReadUInt8();
-    m_n1f8 = FUN_1406a5390(m_n2c);
+    m_n1f8 = GetItemGrade(m_n2c);
 }
 
 // @0x140895dd0

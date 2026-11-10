@@ -39,8 +39,8 @@ int XmlGetAttr(class TiXmlElement*, char const*, unsigned int&);   // C3: was FU
 bool FUN_14028f710(struct Unk_XmlElement*);   // C3: was FUN_14028f710
 class CLogString* GetLogString();
 template <class T> void Unk_AchieveLog(class CLogString*, int, int, const wchar_t*, const T&);
-CString FUN_14071a5b0(const CString& strDir, const CString& strFile);        // Table/<file>
-CString FUN_14016a5c0(const char* pszName, int nFlags);     // undecorated class name
+CString GetXmlPath(const CString& strDir, const CString& strFile);        // Table/<file>
+CString ToCString(const char* pszName, int nFlags);     // undecorated class name
 CStringW GetStringCommonByKey(const CStringW& strKey);             // string table text
 CStringW GetStringCommon(int nStringId);                      // string table text by id
 int Unk_ReadRank(class Unk_XmlNode*, char const*, int*);   // C3: was FUN_14015f500
@@ -130,26 +130,26 @@ int CFishData::Load(TiXmlElement* pNode)
 }
 
 // @0x1403b14d0
-int CFishData::FUN_1403b14d0(unsigned nSize) const
+int CFishData::IsLargestSizeClass(unsigned nSize) const
 {
     return m_aSize[3].m_nMin <= nSize;
 }
 
 // @0x1403b1520
-int CFishData::FUN_1403b1520(unsigned nSize) const
+int CFishData::GetSizeClass(unsigned nSize) const
 {
     for (unsigned __int64 i = 0; i < 4; i++)
     {
-        if (m_aSize[i].FUN_1403b4ef0(nSize))
+        if (m_aSize[i].IsInRange(nSize))
             return (int)i;
     }
     return 4;
 }
 
 // @0x1403b1590
-int CFishData::FUN_1403b1590(unsigned nSize) const
+int CFishData::GetSizeGrade(unsigned nSize) const
 {
-    int nClass = FUN_1403b1520(nSize);
+    int nClass = GetSizeClass(nSize);
     if (nClass == 0)
         return 1;
     else if (nClass == 1)
@@ -160,19 +160,19 @@ int CFishData::FUN_1403b1590(unsigned nSize) const
 }
 
 // @0x1403b1600
-CStringW CFishData::FUN_1403b1600() const
+CStringW CFishData::GetIconPath() const
 {
     return StringFormat(L"./Data/Resource/Image/Fishing/{0}.png", m_nId);
 }
 
 // @0x1403b1650
-CStringW CFishData::FUN_1403b1650() const
+CStringW CFishData::GetName() const
 {
     return TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x1d, m_nId);
 }
 
 // @0x1403b16b0
-CStringW CFishData::FUN_1403b16b0(int bDetail) const
+CStringW CFishData::GetDescription(int bDetail) const
 {
     CStringW str;
     if (m_nHabitat != 7)
@@ -298,7 +298,7 @@ int CFishingTable::FUN_1403b1f70(const CStringW& strHabitat)
 }
 
 // @0x1403b20b0
-CStringW CFishingTable::FUN_1403b20b0(int nHabitat)
+CStringW CFishingTable::GetHabitatName(int nHabitat)
 {
     switch (nHabitat)
     {
@@ -331,9 +331,9 @@ CStringW CFishingTable::FUN_1403b2240(int n)
 // @0x1403b22a0
 int CFishingTable::LoadSpots()
 {
-    CString strPath = FUN_14071a5b0("Table", "fishingSpot.xml");
+    CString strPath = GetXmlPath("Table", "fishingSpot.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -357,9 +357,9 @@ int CFishingTable::LoadSpots()
 // @0x1403b2540
 int CFishingTable::LoadFish()
 {
-    CString strPath = FUN_14071a5b0("Table", "fish.xml");
+    CString strPath = GetXmlPath("Table", "fish.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -383,9 +383,9 @@ int CFishingTable::LoadFish()
 // @0x1403b27e0
 int CFishingTable::LoadRods()
 {
-    CString strPath = FUN_14071a5b0("Table", "fishingRod.xml");
+    CString strPath = GetXmlPath("Table", "fishingRod.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -409,9 +409,9 @@ int CFishingTable::LoadRods()
 // @0x1403b2a80
 int CFishingTable::LoadHabitats()
 {
-    CString strPath = FUN_14071a5b0("Table", "fishHabitat.xml");
+    CString strPath = GetXmlPath("Table", "fishHabitat.xml");
     TiXmlDocument doc;
-    if (GetFileSystem()->FUN_1403974b0(&doc, strPath, 0, true, false) == 0)
+    if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return 0;
     TiXmlElement* pRoot = reinterpret_cast<TiXmlElement*>((class TiXmlElement *)((class Unk_XmlNode*)((&doc)))->FirstChild("ms2"));
     if (pRoot == 0)
@@ -490,7 +490,7 @@ CStringW CFishingTable::FUN_1403b2ee0(unsigned nFishId)
 }
 
 // @0x1403b30b0
-void CFishingTable::FUN_1403b30b0(ATL::CAtlArray<unsigned int>* pOut, int nHabitat, int bBookOnly)
+void CFishingTable::GetFishIdsByHabitat(ATL::CAtlArray<unsigned int>* pOut, int nHabitat, int bBookOnly)
 {
     CheckInit();
     for (POSITION pos = m_mapFish.GetStartPosition(); pos != 0; m_mapFish.GetNext(pos))
@@ -510,13 +510,13 @@ void CFishingTable::CheckInit()
     if (!s_bInit)
     {
         CString msg;
-        msg.Format("%s is not initialized", (const char*)FUN_14016a5c0(typeid(CFishingTable).name(), 0));
+        msg.Format("%s is not initialized", (const char*)ToCString(typeid(CFishingTable).name(), 0));
         MessageBoxA(0, msg, "Error", 0);
     }
 }
 
 // @0x1403b4ef0
-bool Unk_FishRange::FUN_1403b4ef0(unsigned n) const
+bool Unk_FishRange::IsInRange(unsigned n) const
 {
     if (m_nMin > n)
         return false;

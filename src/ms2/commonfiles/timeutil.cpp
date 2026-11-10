@@ -32,7 +32,7 @@ class CLogString* GetLogString();
 // Unrecovered helpers.
 void Unk_SplitA(CStringA&, ATL::CAtlArray<CStringA>*, const char*);   // C3: the achievedata def at 0x14015f050
 template <class C> void XmlSplit(const CString& str, C& out, const char* pszDelim);   // C3: was FUN_140177de0 (CAtlArray<int>)
-void FUN_1401d9a30(CStringW& text, ATL::CAtlArray<int>& out, const wchar_t* delimiter);
+void ParseIntArray(CStringW& text, ATL::CAtlArray<int>& out, const wchar_t* delimiter);
 #include "ms2/placeholder/formatstringid.h"
 
 // Statics (0x143ab1f40..0x143ab1fa8).
@@ -240,7 +240,7 @@ bool Unk_DayTime::Set(int hour, int minute, int second) {
 // @0x14086a350
 bool Unk_DayTime::Parse(const CStringW& text) {
     ATL::CAtlArray<int> parts;
-    FUN_1401d9a30(const_cast<CStringW&>(text), parts, L":");
+    ParseIntArray(const_cast<CStringW&>(text), parts, L":");
     if(parts.IsEmpty()) return false;
     int hour = parts.GetCount() >= 1 ? parts[0] : 0;
     int minute = parts.GetCount() >= 2 ? parts[1] : 0;

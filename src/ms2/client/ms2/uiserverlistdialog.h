@@ -69,25 +69,25 @@ public:
     virtual void ReceiveServerList(CInPacket& packet);          // 84 0x141ad1150 (new virtual; packet 11 handler)
     virtual int OnMessage(UISwfEntity* pSender, UIMsg* pMsg);   // IMessageListener 0 0x141ad1810
 
-    size_t FUN_141ad0f80();                                     // channel count of the chosen server
+    size_t GetChannelCount();                                     // channel count of the chosen server
     int GetServerId();                                        // m_nServerId
     CStringW GetServer();                                   // m_strServer
-    void FUN_141ad1d20();                                       // hand the server list to the movie
-    void FUN_141ad2380();                                       // connect to a random address of the chosen server
+    void BuildServerList();                                       // hand the server list to the movie
+    void ConnectToServer();                                       // connect to a random address of the chosen server
     void FUN_141ad2560(int nChannel);                           // pick the channel and connect
-    void FUN_141ad25a0(CStringW strServer);                     // the movie selected a server
-    void FUN_141ad28f0(void* pPacket);                        // login result handler (opcode 9)
-    void FUN_141ad2b50(CInPacket* pPacket);                       // login result handler (opcode 10)
-    int FUN_141ad2c50(__int64 nCharId, __int64 n3);                // enter the game with the chosen character
-    void FUN_141ad2ea0(int nChannel);                           // m_nChannel = n, stored in the settings
+    void OnSelectServer(CStringW strServer);                     // the movie selected a server
+    void SendLoginRequest(void* pPacket);                        // login result handler (opcode 9)
+    void OnLoginResult(CInPacket* pPacket);                       // login result handler (opcode 10)
+    int EnterGame(__int64 nCharId, __int64 n3);                // enter the game with the chosen character
+    void SetChannel(int nChannel);                           // m_nChannel = n, stored in the settings
     void FUN_141ad2ef0();                                       // the connect failed: "failConnect"
     void FUN_141ad2f60(ASArray& array, int* pnSelected, int nSelectedChannel);   // channel list of the chosen server
-    void FUN_141ad3030(const ATL::CAtlArray<int>& channels);    // replace the channel set of the chosen server
+    void SetChannels(const ATL::CAtlArray<int>& channels);    // replace the channel set of the chosen server
     int GetChannel();                                        // m_nChannel
     void OnEndPopdown();                                       // the pop-down ended
     bool FUN_141ad3260(int nButton, const CMsgBoxData& data);   // message box answer: cancel the login (packet 0x6d)
     void OnSceneLogin();                                       // "popdown"
-    void FUN_141ad3370(ASArray& array, int* pnSelected, int nSelectedChannel, MS2Ptr<CMultiServer> server);   // channels
+    void BuildChannelList(ASArray& array, int* pnSelected, int nSelectedChannel, MS2Ptr<CMultiServer> server);   // channels
 
 private:
     MS2_LAYOUT_FRIEND;

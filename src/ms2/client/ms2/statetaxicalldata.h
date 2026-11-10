@@ -48,9 +48,9 @@ public:
     virtual int vfunc_20();                                 // 20 0x1417fe2e0: 1
     virtual MS2Ptr<StateData> vfunc_27();                   // 27 0x1417fe260: a new StateTaxiCallData
 
-    int FUN_1417fdb70();                                    // the taxi id of the payload, 0 without one
+    int GetTaxiId();                                    // the taxi id of the payload, 0 without one
     void FUN_1417fdbc0(int nState, int nAdd);               // next phase, lengthen the state
-    void FUN_1417fdc00(const CString& strEffect);           // spawn the taxi effect next to the player
+    void SpawnTaxiEffect(const CString& strEffect);           // spawn the taxi effect next to the player
 
     unsigned int m_nStart;                                  // +0x40 clock at enter
     unsigned int m_nElapsed;                                // +0x44

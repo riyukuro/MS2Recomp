@@ -76,8 +76,8 @@ class Unk_LaunchOptions
 public:
     bool FUN_1406af020();
 };
-Unk_LaunchOptions* FUN_1406aeee0();
-float FUN_14028d3a0(float fValue);
+Unk_LaunchOptions* GetLaunchOptions();
+float FromPercent(float fValue);
 const float& FUN_140805fc0(const float&, const float&);                    // std::max
 class CLogString* GetLogString();
 template <class T> void Unk_AdditionalLog(class CLogString*, int, int, const wchar_t*, const T&);
@@ -164,9 +164,9 @@ Unk_SkillSensor::Unk_SkillSensor()
 }
 
 // @0x140801270
-bool Unk_SkillSensor::FUN_140801270(const Unk_SkillSensor& o)
+bool Unk_SkillSensor::IsDifferent(const Unk_SkillSensor& o)
 {
-    if (Unk_RangeShape(*this).FUN_1408002b0(Unk_RangeShape(o))) return true;
+    if (Unk_RangeShape(*this).IsDifferent(Unk_RangeShape(o))) return true;
     if (m_nSensorStartDelay != o.m_nSensorStartDelay) return true;
     if (m_nSensorSplashStartDelay != o.m_nSensorSplashStartDelay) return true;
     if (m_nSensorForceInvokeByInterval != o.m_nSensorForceInvokeByInterval) return true;
@@ -363,7 +363,7 @@ SkillGlideData::SkillGlideData()
 }
 
 // @0x140802640
-bool SkillGlideData::FUN_140802640(const SkillGlideData& o)
+bool SkillGlideData::IsDifferent(const SkillGlideData& o)
 {
     if (m_fGravity != o.m_fGravity) return 1;
     if (m_fHeightLimit != o.m_fHeightLimit) return 1;
@@ -422,7 +422,7 @@ int SkillGlideData::FUN_140802a90(void* pParent)
 }
 
 // @0x140802ab0
-int SkillGlideData::FUN_140802ab0()
+int SkillGlideData::GetId()
 {
     return m_nId;
 }
@@ -441,7 +441,7 @@ Unk_SkillBlock170::Unk_SkillBlock170()
 }
 
 // @0x140802d00
-bool Unk_SkillBlock170::FUN_140802d00(const Unk_SkillBlock170& o)
+bool Unk_SkillBlock170::IsDifferent(const Unk_SkillBlock170& o)
 {
     if (m_fUp != o.m_fUp) return true;
     if (m_fBack != o.m_fBack) return true;
@@ -478,7 +478,7 @@ Unk_SkillBlockA4::Unk_SkillBlockA4()
 }
 
 // @0x140802e40
-bool Unk_SkillBlockA4::FUN_140802e40(const Unk_SkillBlockA4& o)
+bool Unk_SkillBlockA4::IsDifferent(const Unk_SkillBlockA4& o)
 {
     if (m_nInputSkill != o.m_nInputSkill) return true;
     if (m_nOutputSkill != o.m_nOutputSkill) return true;
@@ -505,7 +505,7 @@ int Unk_SkillBlockA4::Load(TiXmlElement* pElem)
 }
 
 // @0x140802fc0
-int Unk_SkillBlockA4::FUN_140802fc0(int nSkill)
+int Unk_SkillBlockA4::GetOutputSkill(int nSkill)
 {
     if (nSkill == m_nInputSkill)
         return m_nOutputSkill;
@@ -513,7 +513,7 @@ int Unk_SkillBlockA4::FUN_140802fc0(int nSkill)
 }
 
 // @0x140802ff0
-int Unk_SkillBlockA4::FUN_140802ff0(int nSkill)
+int Unk_SkillBlockA4::IsOutputSkill(int nSkill)
 {
     if (m_nInputSkill == 0)
         return 0;
@@ -538,7 +538,7 @@ Unk_SkillBlock160::Unk_SkillBlock160()
 }
 
 // @0x1408030c0
-bool Unk_SkillBlock160::FUN_1408030c0(const Unk_SkillBlock160& o)
+bool Unk_SkillBlock160::IsDifferent(const Unk_SkillBlock160& o)
 {
     if (m_fMaxDegree != o.m_fMaxDegree) return true;
     if (m_fMaxDistance != o.m_fMaxDistance) return true;
@@ -568,7 +568,7 @@ int Unk_SkillBlock160::FUN_1408031f0(void* pParent)
 }
 
 // @0x140803210
-__int64 Unk_SkillBlock160::FUN_140803210()
+__int64 Unk_SkillBlock160::GetKey()
 {
     __int64 nKey = 0;
     nKey += m_nUseMove;
@@ -585,7 +585,7 @@ Unk_SkillBlockB0::Unk_SkillBlockB0()
 }
 
 // @0x1408033b0
-bool Unk_SkillBlockB0::FUN_1408033b0(const Unk_SkillBlockB0& o)
+bool Unk_SkillBlockB0::IsDifferent(const Unk_SkillBlockB0& o)
 {
     if (!IsSameArray(m_arrCheckEffectID, o.m_arrCheckEffectID)) return 1;
     if (!IsSameArray(m_arrCheckEffectLevel, o.m_arrCheckEffectLevel)) return 1;
@@ -640,7 +640,7 @@ Unk_SkillBlock150::Unk_SkillBlock150()
 }
 
 // @0x1408037e0
-bool Unk_SkillBlock150::FUN_1408037e0(const Unk_SkillBlock150& o)
+bool Unk_SkillBlock150::IsDifferent(const Unk_SkillBlock150& o)
 {
     if (m_eEnable != o.m_eEnable) return true;
     if (m_fMoveSpeed != o.m_fMoveSpeed) return true;
@@ -657,7 +657,7 @@ int Unk_SkillBlock150::Load(TiXmlElement* pElem)
     {
         XmlValue(pMagic, "enable", m_eEnable);
         XmlGetAttr((class TiXmlElement*)(pMagic), "moveSpeed", reinterpret_cast<float&>(m_fMoveSpeed));
-        m_fMoveSpeed = FUN_14028d3a0(m_fMoveSpeed);
+        m_fMoveSpeed = FromPercent(m_fMoveSpeed);
         XmlGetAttr((class TiXmlElement*)(pMagic), "duration", reinterpret_cast<float&>(m_fDuration));
         XmlGetAttr((class TiXmlElement*)(pMagic), "maxDistance", reinterpret_cast<float&>(m_fMaxDistance));
     }
@@ -687,7 +687,7 @@ SkillLevelData::SkillLevelData(SkillData* pSkill)
 }
 
 // @0x140803b30
-bool SkillLevelData::FUN_140803b30(const SkillLevelData& o)
+bool SkillLevelData::IsDifferent(const SkillLevelData& o)
 {
     if (m_nLevel != o.m_nLevel) return 1;
     if (m_nMeso != o.m_nMeso) return 1;
@@ -698,19 +698,19 @@ bool SkillLevelData::FUN_140803b30(const SkillLevelData& o)
     if (m_vMotion.size() != o.m_vMotion.size()) return 1;
     for (unsigned __int64 i = 0; i < m_vMotion.size(); i++)
     {
-        if (m_vMotion[i]->FUN_140807620(*o.m_vMotion[i])) return 1;
+        if (m_vMotion[i]->IsDifferent(*o.m_vMotion[i])) return 1;
     }
     if (m_vAdditional.size() != o.m_vAdditional.size()) return 1;
     for (unsigned __int64 i = 0; i < m_vAdditional.size(); i++)
     {
         if (*m_vAdditional[i] != *o.m_vAdditional[i]) return 1;
     }
-    if (m_detect.FUN_1408002b0(o.m_detect)) return 1;
+    if (m_detect.IsDifferent(o.m_detect)) return 1;
     return 0;
 }
 
 // @0x140803dc0
-unsigned SkillLevelData::FUN_140803dc0()
+unsigned SkillLevelData::GetSkillId()
 {
     return m_pSkill->GetId();
 }
@@ -728,7 +728,7 @@ SkillData* SkillLevelData::GetSkill()
 }
 
 // @0x140803e30
-SkillMotionData* SkillLevelData::FUN_140803e30(CString strSequence)
+SkillMotionData* SkillLevelData::FindMotionBySequenceName(CString strSequence)
 {
     for (SkillMotionData* pMotion : m_vMotion)
     {
@@ -739,7 +739,7 @@ SkillMotionData* SkillLevelData::FUN_140803e30(CString strSequence)
 }
 
 // @0x140803f00
-SkillMotionData* SkillLevelData::FUN_140803f00(int nMotion)
+SkillMotionData* SkillLevelData::GetMotion(int nMotion)
 {
     if (nMotion >= (int)m_vMotion.size())
         return 0;
@@ -747,21 +747,21 @@ SkillMotionData* SkillLevelData::FUN_140803f00(int nMotion)
 }
 
 // @0x140803f60
-SkillAttackData* SkillLevelData::FUN_140803f60(int nMotion, int nAttack)
+SkillAttackData* SkillLevelData::GetAttack(int nMotion, int nAttack)
 {
-    SkillMotionData* pMotion = FUN_140803f00(nMotion);
+    SkillMotionData* pMotion = GetMotion(nMotion);
     if (pMotion == 0)
         return 0;
-    return pMotion->FUN_140807e20(nAttack);
+    return pMotion->GetAttack(nAttack);
 }
 
 // @0x140803fb0
 SkillAttackData* SkillLevelData::FUN_140803fb0(int nMotion, CString strName)
 {
-    SkillMotionData* pMotion = FUN_140803f00(nMotion);
+    SkillMotionData* pMotion = GetMotion(nMotion);
     if (pMotion == 0)
         return 0;
-    return pMotion->FUN_140807e80(strName);
+    return pMotion->FindAttackByPoint(strName);
 }
 
 // @0x140804030
@@ -777,9 +777,9 @@ SkillAttackData* SkillLevelData::FUN_140804030(const CString& strPoint) const
 }
 
 // @0x1408040d0
-Unk_RangeProperty* SkillLevelData::FUN_1408040d0(int nMotion, int nAttack)
+Unk_RangeProperty* SkillLevelData::GetAttackRange(int nMotion, int nAttack)
 {
-    SkillAttackData* pAttack = FUN_140803f60(nMotion, nAttack);
+    SkillAttackData* pAttack = GetAttack(nMotion, nAttack);
     if (pAttack != 0)
         return &pAttack->m_range;
     return 0;
@@ -796,10 +796,10 @@ Unk_RangeShape* SkillLevelData::FUN_140804120()
 // @0x140804150
 float SkillLevelData::FUN_140804150(int nMotion, int nAttack)
 {
-    SkillMotionData* pMotion = FUN_140803f00(nMotion);
+    SkillMotionData* pMotion = GetMotion(nMotion);
     if (pMotion == 0)
         return 0;
-    SkillAttackData* pAttack = pMotion->FUN_140807e20(nAttack);
+    SkillAttackData* pAttack = pMotion->GetAttack(nAttack);
     if (pAttack == 0)
         return 0;
     const SkillDamage& damage = pAttack->m_damage;
@@ -809,10 +809,10 @@ float SkillLevelData::FUN_140804150(int nMotion, int nAttack)
 // @0x1408041d0
 __int64 SkillLevelData::FUN_1408041d0(int nMotion, int nAttack)
 {
-    SkillMotionData* pMotion = FUN_140803f00(nMotion);
+    SkillMotionData* pMotion = GetMotion(nMotion);
     if (pMotion == 0)
         return 0;
-    SkillAttackData* pAttack = pMotion->FUN_140807e20(nAttack);
+    SkillAttackData* pAttack = pMotion->GetAttack(nAttack);
     if (pAttack == 0)
         return 0;
     const SkillDamage& damage = pAttack->m_damage;
@@ -826,15 +826,15 @@ int SkillLevelData::GetStanceDamageRate()
 }
 
 // @0x140804270
-int SkillLevelData::FUN_140804270()
+int SkillLevelData::GetMotionCount()
 {
     return (int)m_vMotion.size();
 }
 
 // @0x1408042a0
-float SkillLevelData::FUN_1408042a0(int nMotion, int nAttack)
+float SkillLevelData::GetAttackRangeValue(int nMotion, int nAttack)
 {
-    Unk_RangeProperty* pRange = FUN_1408040d0(nMotion, nAttack);
+    Unk_RangeProperty* pRange = GetAttackRange(nMotion, nAttack);
     if (pRange == 0)
         return 0;
     if (pRange->m_nType == 4)
@@ -846,10 +846,10 @@ float SkillLevelData::FUN_1408042a0(int nMotion, int nAttack)
 float SkillLevelData::FUN_140804310()
 {
     float fMax = 0;
-    for (int nMotion = 0; nMotion < FUN_140804270(); nMotion++)
+    for (int nMotion = 0; nMotion < GetMotionCount(); nMotion++)
     {
         int nAttack = 0;
-        while (Unk_RangeProperty* pRange = FUN_1408040d0(nMotion, nAttack++))
+        while (Unk_RangeProperty* pRange = GetAttackRange(nMotion, nAttack++))
         {
             if (pRange->m_nType == 4)
                 fMax = (std::max)(fMax, pRange->m_f1c);
@@ -863,7 +863,7 @@ float SkillLevelData::FUN_140804310()
 // @0x1408043f0
 int SkillLevelData::FUN_1408043f0(int nMotion, int nAttack)
 {
-    SkillAttackData* pAttack = FUN_140803f60(nMotion, nAttack);
+    SkillAttackData* pAttack = GetAttack(nMotion, nAttack);
     if (pAttack != 0 && pAttack->GetAttackMethodType() == 1)
         return 1;
     return 0;
@@ -886,7 +886,7 @@ bool SkillLevelData::FUN_140804450()
 const CString& SkillLevelData::FUN_140804500(int nKind, int nMotion)
 {
     static CString s_strEmpty;
-    SkillMotionData* pMotion = FUN_140803f00(nMotion);
+    SkillMotionData* pMotion = GetMotion(nMotion);
     if (pMotion == 0)
         return s_strEmpty;
     switch (nKind)
@@ -904,17 +904,17 @@ const CString& SkillLevelData::FUN_140804500(int nKind, int nMotion)
 // @0x1408045f0
 int SkillLevelData::FUN_1408045f0(int nMotion, int nAttack)
 {
-    SkillMotionData* pMotion = FUN_140803f00(nMotion);
+    SkillMotionData* pMotion = GetMotion(nMotion);
     if (pMotion == 0)
         return 0;
-    SkillAttackData* pAttack = pMotion->FUN_140807e20(nAttack);
+    SkillAttackData* pAttack = pMotion->GetAttack(nAttack);
     if (pAttack == 0)
         return 0;
     return pAttack->m_nMagicPathID;
 }
 
 // @0x140804660
-float SkillLevelData::FUN_140804660()
+float SkillLevelData::GetCooldown()
 {
     return FUN_14028d280(m_nCooldown);
 }
@@ -934,7 +934,7 @@ int SkillLevelData::Load(TiXmlElement* pElem)
     m_nStanceDamageRate = (unsigned int)(fStanceDamageRate * 1000.0f);
     if (m_nLevel < 1)
     {
-        unsigned nSkillId = FUN_140803dc0();
+        unsigned nSkillId = GetSkillId();
         Unk_AdditionalLog<unsigned>(GetLogString(), 1, 0x13, L"스킬 레벨이 잘못되었습니다.[Skill Level Data - [{0}]]", nSkillId);
         return 0;
     }
@@ -959,7 +959,7 @@ int SkillLevelData::Load(TiXmlElement* pElem)
 }
 
 // @0x140804ae0
-int SkillLevelData::FUN_140804ae0(void* pParent)
+int SkillLevelData::Save(void* pParent)
 {
     TiXmlElement elem("level");
     XmlSetAttr((class TiXmlElement*)(&elem), "value", m_nLevel);
@@ -973,7 +973,7 @@ int SkillLevelData::FUN_140804ae0(void* pParent)
     }
     for (SkillMotionData* pMotion : m_vMotion)
     {
-        if (!pMotion->FUN_140808240(&elem))
+        if (!pMotion->Save(&elem))
             return 0;
     }
     ((TiXmlNode*)(pParent))->InsertEndChild(*(const TiXmlNode*)&elem);
@@ -981,7 +981,7 @@ int SkillLevelData::FUN_140804ae0(void* pParent)
 }
 
 // @0x140804c90
-__int64 SkillLevelData::FUN_140804c90(unsigned __int64 nMotion)
+__int64 SkillLevelData::GetMotionKey(unsigned __int64 nMotion)
 {
     if (m_pSkill == 0)
         return 0;
@@ -1024,7 +1024,7 @@ SkillMotionData::SkillMotionData()
 }
 
 // @0x140807620
-bool SkillMotionData::FUN_140807620(const SkillMotionData& o)
+bool SkillMotionData::IsDifferent(const SkillMotionData& o)
 {
     if (m_strSequenceName != o.m_strSequenceName) return 1;
     if (m_fSequenceSpeed != o.m_fSequenceSpeed) return 1;
@@ -1077,7 +1077,7 @@ bool SkillMotionData::FUN_140807620(const SkillMotionData& o)
 }
 
 // @0x140807e20
-SkillAttackData* SkillMotionData::FUN_140807e20(int nAttack)
+SkillAttackData* SkillMotionData::GetAttack(int nAttack)
 {
     if (nAttack >= (int)m_vAttack.size())
         return 0;
@@ -1085,7 +1085,7 @@ SkillAttackData* SkillMotionData::FUN_140807e20(int nAttack)
 }
 
 // @0x140807e80
-SkillAttackData* SkillMotionData::FUN_140807e80(const CString& strPoint)
+SkillAttackData* SkillMotionData::FindAttackByPoint(const CString& strPoint)
 {
     for (SkillAttackData* pAttack : m_vAttack)
     {
@@ -1109,7 +1109,7 @@ SkillAttackData* SkillMotionData::FUN_140807f20(const CString& strPoint)
 }
 
 // @0x140807fd0
-int SkillMotionData::FUN_140807fd0()
+int SkillMotionData::GetAttackCount()
 {
     return (int)m_vAttack.size();
 }
@@ -1142,7 +1142,7 @@ int SkillMotionData::FUN_1408080d0(TiXmlElement* pElem)
 }
 
 // @0x140808240
-int SkillMotionData::FUN_140808240(void* pParent)
+int SkillMotionData::Save(void* pParent)
 {
     TiXmlElement elem("motion");
     for (SkillAttackData* pAttack : m_vAttack)
@@ -1160,7 +1160,7 @@ void SkillMotionData::Load(TiXmlElement* pElem)
 {
     XmlGetAttr((class TiXmlElement*)(pElem), "sequenceName", m_strSequenceName);
     XmlGetAttr((class TiXmlElement*)(pElem), "sequenceSpeed", reinterpret_cast<float&>(m_fSequenceSpeed));
-    if (FUN_1406aeee0()->FUN_1406af020())
+    if (GetLaunchOptions()->FUN_1406af020())
     {
         XmlGetAttr((class TiXmlElement*)(pElem), "selfInputCombo", m_strSelfInputCombo);
         XmlGetAttr((class TiXmlElement*)(pElem), "motionEffect", m_strMotionEffect);

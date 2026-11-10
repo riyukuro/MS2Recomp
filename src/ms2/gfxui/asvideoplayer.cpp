@@ -25,18 +25,18 @@ ASVideoPlayer::~ASVideoPlayer()
 }
 
 // @0x1422e9360
-void ASVideoPlayer::FUN_1422e9360(const CString& strMode)
+void ASVideoPlayer::SetScaleMode(const CString& strMode)
 {
-    FUN_1407cba60("scaleMode", strMode);
+    SetStringMember("scaleMode", strMode);
 }
-MS2_REPLACE_METHOD(0x1422E9360, ASVideoPlayer, FUN_1422e9360, 72, 0x1D863DFF);
+MS2_REPLACE_METHOD(0x1422E9360, ASVideoPlayer, SetScaleMode, 72, 0x1D863DFF);
 
 // @0x1422e93b0
-CString ASVideoPlayer::FUN_1422e93b0()
+CString ASVideoPlayer::GetScaleMode()
 {
     return GetMember("scaleMode").GetString();
 }
-MS2_REPLACE_METHOD(0x1422E93B0, ASVideoPlayer, FUN_1422e93b0, 123, 0xFB2B0BF2);
+MS2_REPLACE_METHOD(0x1422E93B0, ASVideoPlayer, GetScaleMode, 123, 0xFB2B0BF2);
 
 // @0x1422e9440
 void ASVideoPlayer::FUN_1422e9440(int n)
@@ -61,32 +61,32 @@ float ASVideoPlayer::FUN_1422e9480()
 }
 
 // @0x1422e9490
-void ASVideoPlayer::FUN_1422e9490(float fVolume)
+void ASVideoPlayer::SetVolume(float fVolume)
 {
     SetMemberFloat("volume", fVolume);
 }
-MS2_REPLACE_METHOD(0x1422E9490, ASVideoPlayer, FUN_1422e9490, 43, 0x955DA732);
+MS2_REPLACE_METHOD(0x1422E9490, ASVideoPlayer, SetVolume, 43, 0x955DA732);
 
 // @0x1422e94d0
-float ASVideoPlayer::FUN_1422e94d0()
+float ASVideoPlayer::GetVolume()
 {
     return (float)GetMember("volume").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422E94D0, ASVideoPlayer, FUN_1422e94d0, 96, 0xFD47CBEC);
+MS2_REPLACE_METHOD(0x1422E94D0, ASVideoPlayer, GetVolume, 96, 0xFD47CBEC);
 
 // @0x1422e9540
-float ASVideoPlayer::FUN_1422e9540()
+float ASVideoPlayer::GetTime()
 {
     return (float)GetMember("time").GetNumber();
 }
-MS2_REPLACE_METHOD(0x1422E9540, ASVideoPlayer, FUN_1422e9540, 96, 0xB48BC3FE);
+MS2_REPLACE_METHOD(0x1422E9540, ASVideoPlayer, GetTime, 96, 0xB48BC3FE);
 
 // @0x1422e95b0
-void ASVideoPlayer::FUN_1422e95b0(const CString& strPath)
+void ASVideoPlayer::Play(const CString& strPath)
 {
     Invoke("play", strPath);
 }
-MS2_REPLACE_METHOD(0x1422E95B0, ASVideoPlayer, FUN_1422e95b0, 87, 0xAE7AB17C);
+MS2_REPLACE_METHOD(0x1422E95B0, ASVideoPlayer, Play, 87, 0xAE7AB17C);
 
 // @0x1422e9610
 void ASVideoPlayer::FUN_1422e9610()
@@ -96,53 +96,53 @@ void ASVideoPlayer::FUN_1422e9610()
 MS2_REPLACE_METHOD(0x1422E9610, ASVideoPlayer, FUN_1422e9610, 46, 0x9E0E218C);
 
 // @0x1422e9650
-void ASVideoPlayer::FUN_1422e9650()
+void ASVideoPlayer::Stop()
 {
     Invoke("stop");
 }
-MS2_REPLACE_METHOD(0x1422E9650, ASVideoPlayer, FUN_1422e9650, 46, 0x7E914F1C);
+MS2_REPLACE_METHOD(0x1422E9650, ASVideoPlayer, Stop, 46, 0x7E914F1C);
 
 // @0x1422e9690
-void ASVideoPlayer::FUN_1422e9690(float fTime)
+void ASVideoPlayer::Seek(float fTime)
 {
     Invoke("seek", fTime);
 }
-MS2_REPLACE_METHOD(0x1422E9690, ASVideoPlayer, FUN_1422e9690, 58, 0xA8F19610);
+MS2_REPLACE_METHOD(0x1422E9690, ASVideoPlayer, Seek, 58, 0xA8F19610);
 
 // @0x1422e96d0
-void ASVideoPlayer::FUN_1422e96d0()
+void ASVideoPlayer::Pause()
 {
     Invoke("pause");
 }
-MS2_REPLACE_METHOD(0x1422E96D0, ASVideoPlayer, FUN_1422e96d0, 46, 0x614CB80C);
+MS2_REPLACE_METHOD(0x1422E96D0, ASVideoPlayer, Pause, 46, 0x614CB80C);
 
 // @0x1422e9710
-int ASVideoPlayer::FUN_1422e9710()
+int ASVideoPlayer::IsPlaying()
 {
     return Invoke("isPlay").GetBool();
 }
-MS2_REPLACE_METHOD(0x1422E9710, ASVideoPlayer, FUN_1422e9710, 91, 0x47E6A167);
+MS2_REPLACE_METHOD(0x1422E9710, ASVideoPlayer, IsPlaying, 91, 0x47E6A167);
 
 // @0x1422e9780
-void ASVideoPlayer::FUN_1422e9780(int bLoop)
+void ASVideoPlayer::SetLoop(int bLoop)
 {
     Invoke("setLoop", bLoop);
 }
-MS2_REPLACE_METHOD(0x1422E9780, ASVideoPlayer, FUN_1422e9780, 55, 0x5B74F970);
+MS2_REPLACE_METHOD(0x1422E9780, ASVideoPlayer, SetLoop, 55, 0x5B74F970);
 
 // @0x1422e97c0
-void ASVideoPlayer::FUN_1422e97c0(int nWidth, int nHeight)
+void ASVideoPlayer::SetAspectRatio(int nWidth, int nHeight)
 {
     FUN_1409ba0d0("setAspectRatio", nWidth, nHeight);
 }
-MS2_REPLACE_METHOD(0x1422E97C0, ASVideoPlayer, FUN_1422e97c0, 68, 0x52E7E502);
+MS2_REPLACE_METHOD(0x1422E97C0, ASVideoPlayer, SetAspectRatio, 68, 0x52E7E502);
 
 // @0x1422e9810
-void ASVideoPlayer::FUN_1422e9810(int nWidth, int nHeight)
+void ASVideoPlayer::SetSize(int nWidth, int nHeight)
 {
     FUN_1409ba0d0("setSize", nWidth, nHeight);
 }
-MS2_REPLACE_METHOD(0x1422E9810, ASVideoPlayer, FUN_1422e9810, 68, 0x60807F15);
+MS2_REPLACE_METHOD(0x1422E9810, ASVideoPlayer, SetSize, 68, 0x60807F15);
 
 // @0x1422e9860
 void ASVideoPlayer::FUN_1422e9860(unsigned nWidth, unsigned nHeight)
@@ -159,11 +159,11 @@ void ASVideoPlayer::FUN_1422e98b0(float fWidth, float fHeight)
 MS2_REPLACE_METHOD(0x1422E98B0, ASVideoPlayer, FUN_1422e98b0, 76, 0xB8AD68EE);
 
 // @0x1422e9910
-void ASVideoPlayer::FUN_1422e9910(int nX, int nY)
+void ASVideoPlayer::SetScale(int nX, int nY)
 {
     FUN_1409ba0d0("setScale", nX, nY);
 }
-MS2_REPLACE_METHOD(0x1422E9910, ASVideoPlayer, FUN_1422e9910, 68, 0x094A7D9E);
+MS2_REPLACE_METHOD(0x1422E9910, ASVideoPlayer, SetScale, 68, 0x094A7D9E);
 
 // @0x1422e9960
 void ASVideoPlayer::FUN_1422e9960(unsigned nX, unsigned nY)

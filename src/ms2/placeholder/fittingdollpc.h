@@ -406,9 +406,9 @@ public:
     // @0x141c04f70
     unsigned char FUN_141c04f70() { return m_b1204; }       // faded out (?\worldservice.cpp#6)
     // @0x141bfaec0
-    void FUN_141bfaec0(bool bFaded) { m_b1204 = bFaded; }    // (COMDAT in worldservice.cpp)
+    void SetFaded(bool bFaded) { m_b1204 = bFaded; }    // (COMDAT in worldservice.cpp)
     // @0x141bfed80
-    int FUN_141bfed80() { return m_n1200; }                 // fade delay in ms (COMDAT in worldservice.cpp)
+    int GetFadeDelay() { return m_n1200; }                 // fade delay in ms (COMDAT in worldservice.cpp)
     // 0xd40..0x12e0, from the ctor 0x14164dfd0 / dtor 0x141650b10 member sequences (w539; v2525 PC.h agrees). The MS2Ptr
     // handle types are the exe's per-type instantiations (their COMDATs live in the PC unit's tail).
     bool m_bD40;                                            // +0xd40 (ctor: true)

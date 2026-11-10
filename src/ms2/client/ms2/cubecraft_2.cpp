@@ -73,7 +73,7 @@ public:
     CString m_strGuideInventory;    // +0x1f8
 };
 MS2_CHECK_OFFSET(Unk_C2Config, m_strGuideInventory, 0x1f8);
-class Unk_SingletonObj* FUN_1401d31f0();   // C3: was FUN_1401d31f0
+class Unk_SingletonObj* GetCommonResource();   // C3: was GetCommonResource
 
 #include "ms2/placeholder/scriptcontext.h"   // egf::ScriptContext g_bapiContext (was a local framework view)
 namespace egf { class ScriptContext; extern ScriptContext g_bapiContext; }
@@ -116,9 +116,9 @@ extern int DAT_143ae0fb4;
 // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance, GetClientConstants())
 
 Vector3 FUN_140a0b080(const Vector3& kFrom, const Vector3& kTo, const Vector3& kUp);   // C3: the definer's signature (0x140a0b080), look-at angles
-void FUN_140b86230(const efd::Point3& kDegrees, NiMatrix3& out);
+void EulerToMatrix(const efd::Point3& kDegrees, NiMatrix3& out);
 
-__int64 FUN_14028d0e0();
+__int64 GenerateUniqueId();
 // The feature-flag holder and the UI manager (a flag at +10 is the shift key state).
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_C2UiMgr
@@ -210,7 +210,7 @@ void FUN_1410a77e0(CGuideObject* pLift, float fStep);
 int HasLift(PC* pPC);
 
 void FUN_140710590(COutPacket&);
-CString FUN_1410280d0(int, CString);
+CString GetDownloadFilePath(int, CString);
 MS2Ptr<CItemData> FUN_14053f870(int);
 int FUN_1407072e0(int);
 
@@ -296,7 +296,7 @@ Unk_PCCubeCraft::Unk_PCCubeCraft(PC* pOwner, int nMode, CubeItemInfo* pInfo)
     m_fYaw = 0.0f;
     m_fRotFrom = 0.0f;
     m_fRotTo = 0.0f;
-    m_tRotate.FUN_1408687f0();
+    m_tRotate.Reset();
 }
 
 // @0x1410a8880
@@ -342,8 +342,8 @@ void Unk_PCCubeCraft::FUN_1410a8af0(bool bEnable)
     if (bEnable)
     {
         m_svc = egf::g_bapiContext.GetSystemServiceAs<CubeMapInformationService>();
-        m_tPulse.FUN_1408687f0();
-        m_tSlide.FUN_1408687f0();
+        m_tPulse.Reset();
+        m_tSlide.Reset();
         m_bFirstMove = false;
         PC* pPC = ((PC*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
         if (pPC != 0 && pPC == m_pOwner)
@@ -430,14 +430,14 @@ void Unk_PCCubeCraft::CreateGuide()
     if (m_nMode == 0 || m_nMode == 2)
     {
         if (m_nCheck != 0)
-            strAsset = ((class Unk_C2Config*)FUN_1401d31f0())->m_strGuideBuild;
+            strAsset = ((class Unk_C2Config*)GetCommonResource())->m_strGuideBuild;
         else
-            strAsset = ((class Unk_C2Config*)FUN_1401d31f0())->m_strGuideMove;
+            strAsset = ((class Unk_C2Config*)GetCommonResource())->m_strGuideMove;
     }
     else if (m_nMode == 1)
     {
         m_spItem->FUN_1408b3810();
-        strAsset = ((class Unk_C2Config*)FUN_1401d31f0())->m_strGuideInventory;
+        strAsset = ((class Unk_C2Config*)GetCommonResource())->m_strGuideInventory;
     }
     else
     {
@@ -509,10 +509,10 @@ void Unk_PCCubeCraft::FUN_1410a9630()
     if ((m_spGuide2.get() ? true : false) && m_spItem->FUN_1408b3860() == 1)
     {
         {
-            CString strLook = FUN_1410280d0(2, m_spItem->look->m_strUrl);
+            CString strLook = GetDownloadFilePath(2, m_spItem->look->m_strUrl);
             if (_access(strLook, 0) != 0)
             {
-                TSingleton<CUgcManager>::GetInstance()->FUN_1418845a0(m_spItem.get(), 0);
+                TSingleton<CUgcManager>::GetInstance()->DownloadCubeLook(m_spItem.get(), 0);
             }
             m_spGuide2->vfunc_15(m_spItem.get());
         }
@@ -700,7 +700,7 @@ MS2_REPLACE_METHOD(0x1410AA550, Unk_PCCubeCraft, SetMode, 43, 0x78B171A4);
 // @0x1410aa590
 void Unk_PCCubeCraft::FUN_1410aa590()
 {
-    m_tPulse.FUN_140868750(200);
+    m_tPulse.Start(200);
 }
 MS2_REPLACE_METHOD(0x1410AA590, Unk_PCCubeCraft, FUN_1410aa590, 36, 0x1378C28C);
 
@@ -798,7 +798,7 @@ void Unk_PCCubeCraft::UpdateGuide3Rotation()
 {
     Vector3 kAngles = FUN_140a0b080(m_ptOffset, m_ptCell, reinterpret_cast<const Vector3&>(efd::Point3::UNIT_Z));
     NiMatrix3 kRot;
-    FUN_140b86230(reinterpret_cast<efd::Point3&>(kAngles), kRot);
+    EulerToMatrix(reinterpret_cast<efd::Point3&>(kAngles), kRot);
     m_spGuide3->vfunc_4(kRot);
 }
 MS2_REPLACE_METHOD(0x1410AF140, Unk_PCCubeCraft, UpdateGuide3Rotation, 165, 0xDD10B97A);
@@ -834,7 +834,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
         return;
     }
     m_spEffectA->SetObjectId(m_pOwner->GetObjectId());
-    m_spEffectA->SetItemUid(FUN_14028d0e0());
+    m_spEffectA->SetItemUid(GenerateUniqueId());
     m_spEffectA->FUN_140526c10(6);
     m_spEffectA->FUN_14052a130(5);
     m_pOwner->vfunc_127(m_spEffectA.get(), 0);
@@ -847,7 +847,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
         return;
     }
     m_spEffectB->SetObjectId(m_pOwner->GetObjectId());
-    m_spEffectB->SetItemUid(FUN_14028d0e0());
+    m_spEffectB->SetItemUid(GenerateUniqueId());
     m_spEffectB->FUN_140526c10(4);
     m_spEffectB->FUN_14052a130(5);
     m_pOwner->vfunc_127(m_spEffectB.get(), 0);
@@ -858,7 +858,7 @@ void Unk_PCCubeCraft::FUN_1410ad780()
         return;
     }
     m_spEffectC->SetObjectId(m_pOwner->GetObjectId());
-    m_spEffectC->SetItemUid(FUN_14028d0e0());
+    m_spEffectC->SetItemUid(GenerateUniqueId());
     m_spEffectC->FUN_140526c10(5);
     m_spEffectC->FUN_14052a130(5);
     m_pOwner->vfunc_127(m_spEffectC.get(), 0);
@@ -924,7 +924,7 @@ void Unk_PCCubeCraft::FUN_1410aa6f0(Vector3 kPos, bool bNoUpdate)
     kAngles.z = (float)(int)((kAngles.z + 89.0f) / 90.0f) * 90.0f;
     kAngles.z += m_fYaw;
     NiMatrix3 kRot;
-    FUN_140b86230(kAngles, kRot);
+    EulerToMatrix(kAngles, kRot);
     m_spGuide->vfunc_4(kRot);
     if (m_spGuide3.get() != 0)
         UpdateGuide3Rotation();
@@ -1271,7 +1271,7 @@ void Unk_PCCubeCraft::FUN_1410ac540()
         return;
     if (FUN_140707bc0(spCube->fieldB4) == 0)
         return;
-    CObjectData* pRow = FUN_140704ec0(spCube->fieldB4).get();
+    CObjectData* pRow = GetObjectData(spCube->fieldB4).get();
     if (pRow == 0)
         return;
     COutPacket packet(static_cast<int>(SendOp::HomeAction), 0);
@@ -1515,7 +1515,7 @@ void Unk_PCCubeCraft::FUN_1410af1f0()
     if (nLiftId == 0)
         return;
     std::vector<MS2Ptr<Unk_AkoLiftTarget>> aLifts;
-    reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->FUN_141bc5980(&aLifts);
+    reinterpret_cast<Unk_C2World*>(WorldService::GetInstance())->GetLiftableTargetBoxes(&aLifts);
     for (size_t k = 0; k < aLifts.size(); ++k)
     {
         MS2Ptr<Unk_AkoLiftTarget> spLift = aLifts[k];
@@ -1577,7 +1577,7 @@ void Unk_PCCubeCraft::Update()
             Vector3 kOld = m_ptCell;
             m_ptLast = reinterpret_cast<Unk_C2GuideSlots*>(m_spGuide.operator->())->vfunc_3();
             m_ptCell = kDown;
-            m_tSlide.FUN_140868750(200);
+            m_tSlide.Start(200);
             bool bSameColumn = false;
             if (kOld.x == m_ptCell.x && kOld.y == m_ptCell.y && kOld.z != m_ptCell.z)
                 bSameColumn = true;
@@ -1588,7 +1588,7 @@ void Unk_PCCubeCraft::Update()
                 m_bFirstMove = 1;
         }
         if ((GetMode() == 0 || GetMode() == 2)
-            && (m_tRotate.FUN_140868ba0() != 0 || m_tRotate.FUN_140868c00() != 0))
+            && (m_tRotate.IsRunning() != 0 || m_tRotate.IsExpired() != 0))
         {
             float fEase = Unk_EaseOut().Evaluate(m_tRotate.FUN_140868940());
             float fYaw = m_fRotFrom + (m_fRotTo - m_fRotFrom) * fEase;
@@ -1599,12 +1599,12 @@ void Unk_PCCubeCraft::Update()
             kAngles.y = kAngles.y * -57.295776f;
             kAngles.z = fYaw;
             NiMatrix3 kRot;
-            FUN_140b86230((const efd::Point3&)kAngles, kRot);
+            EulerToMatrix((const efd::Point3&)kAngles, kRot);
             m_spGuide->vfunc_4(kRot);
-            if (m_tRotate.FUN_140868c00() != 0)
-                m_tRotate.FUN_1408687f0();
+            if (m_tRotate.IsExpired() != 0)
+                m_tRotate.Reset();
         }
-        if (m_tSlide.FUN_140868ba0() != 0 || m_tSlide.FUN_140868c00() != 0)
+        if (m_tSlide.IsRunning() != 0 || m_tSlide.IsExpired() != 0)
         {
             float fEase = Unk_EaseOut().Evaluate(m_tSlide.FUN_140868940());
             Vector3 kDelta = (m_ptCell - m_ptLast);
@@ -1618,10 +1618,10 @@ void Unk_PCCubeCraft::Update()
                 kUp.z = kUp.z + 150.0f;
                 reinterpret_cast<Unk_C2GuideSlots*>(m_spGuide3.operator->())->vfunc_2((const NiPoint3&)kUp);
             }
-            if (m_tSlide.FUN_140868c00() != 0)
-                m_tSlide.FUN_1408687f0();
+            if (m_tSlide.IsExpired() != 0)
+                m_tSlide.Reset();
         }
-        if (m_tPulse.FUN_140868ba0() != 0 || m_tPulse.FUN_140868c00() != 0)
+        if (m_tPulse.IsRunning() != 0 || m_tPulse.IsExpired() != 0)
         {
             if (m_tPulse.FUN_140868940() <= 0.5f)
             {
@@ -1634,8 +1634,8 @@ void Unk_PCCubeCraft::Update()
                 float fOut = Unk_C2Ease().FUN_1410af700((m_tPulse.FUN_140868940() - 0.5f) * 2.0f);
                 float fScale = 1.2f + -0.20000005f * fOut;
                 m_spGuide->vfunc_9(fScale);
-                if (m_tPulse.FUN_140868c00() != 0)
-                    m_tPulse.FUN_1408687f0();
+                if (m_tPulse.IsExpired() != 0)
+                    m_tPulse.Reset();
             }
         }
         if (m_spGod.get() != 0)

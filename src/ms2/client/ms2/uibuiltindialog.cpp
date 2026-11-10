@@ -21,7 +21,7 @@ UIBuiltInDialog::UIBuiltInDialog()
     m_2c = 14;
     m_80 = 0;
     m_88 = 1;
-    FUN_141925e70(0, 1);
+    SetFlag(0, 1);
 }
 
 // @0x1418dd000
@@ -64,7 +64,7 @@ int FUN_1418dd100()
 // @0x1418dd110
 int FUN_1418dd110()
 {
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbd))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xbd))
         return 0;
     return DAT_1439f8cd0 - 2;
 }

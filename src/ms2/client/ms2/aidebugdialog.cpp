@@ -32,7 +32,7 @@
 __int64 GetServerTime();                                // server time
 CStringW XmlWide(const char* pszUtf8);                   // utf8 -> wide
 CString FUN_1401d4330(const wchar_t* psz, int nFlag);   // wide -> narrow
-CStringW FUN_14025a640(const CStringW& str);            // copy
+CStringW CopyString(const CStringW& str);            // copy
 CFileSystem* GetFileSystem();                           // the file system singleton
 int FUN_140518af0(const CRect* pRect);                  // 0x140518af0 CRect::Height
 int FUN_140519850(const CRect* pRect);                  // 0x140519850 CRect::Width
@@ -282,7 +282,7 @@ void FUN_140988d60(CStringW& strSrc, std::vector<CStringW>& arrOut, const wchar_
     CStringW strToken = strSrc.Tokenize(pszSep, iStart);
     while (!strToken.IsEmpty())
     {
-        arrOut.push_back(FUN_14025a640(strToken));            // 0x14041ad70 push_back(CStringW&&)
+        arrOut.push_back(CopyString(strToken));            // 0x14041ad70 push_back(CStringW&&)
         strToken = strSrc.Tokenize(pszSep, iStart);
     }
 }

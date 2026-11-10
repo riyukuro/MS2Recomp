@@ -1406,7 +1406,7 @@ void ChromaManagerImpl::SetState(int nState)
     {
         if (nState == STATE_PLAYING)
         {
-            if (CStateService::GetInstance()->FUN_1417e2610() != 0x620000c)
+            if (CStateService::GetInstance()->GetCurrentSceneId() != 0x620000c)
                 nState = STATE_CHARACTER;
         }
         m_nPrevState = m_nState;
@@ -1573,7 +1573,7 @@ void ChromaManagerImpl::SetColorMode(int nMode)
     }
     else
     {
-        if (CUIService::GetInstance()->FUN_141adc890((eUIClassID)0x4eea) || CUIService::GetInstance()->FUN_141adc890((eUIClassID)0x4ef1))
+        if (CUIService::GetInstance()->IsDialogOpen((eUIClassID)0x4eea) || CUIService::GetInstance()->IsDialogOpen((eUIClassID)0x4ef1))
             SetState(STATE_CHARACTER);
     }
 }
@@ -2604,7 +2604,7 @@ ChromaManagerDummy::~ChromaManagerDummy()
 // @0x140aaa740
 bool ChromaManagerDummy::Initialize()
 {
-    if (CFeatureManager::GetInstance()->FUN_14036d570(0xd5))
+    if (CFeatureManager::GetInstance()->IsFeatureEnabled(0xd5))
     {
         if (CGameOption::GetInstance()->FUN_140aaaa90()->m_bDisable)
             return false;

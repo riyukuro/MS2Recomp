@@ -65,9 +65,9 @@ struct Unk_PCEquipSet;
 //
 //
 //
-void* FUN_1404a1bb0();   // C3: was FUN_1404a1bb0
-__int64 FUN_140930240();
-__int64 FUN_140930ae0();
+void* GetExpTable();   // C3: was GetExpTable
+__int64 GetMeratBalance();
+__int64 GetRedMeratBalance();
 extern __int64 DAT_143ab2898;                                               // max deposit
 extern __int64 DAT_143ab28a0;
 extern __int64 DAT_143ab28f8;                                               // the mesos in the bag
@@ -108,9 +108,9 @@ class ASDialog : public ASDisplayObject { };
 typedef UIMsg Unk_OsUIMsg;
 
 // The bound slot bag of a bag id and the control state it keeps.
-StoreSlotBag* FUN_14180b940(NotifyContext::BindData* p);
+StoreSlotBag* GetStoreSlotBag(NotifyContext::BindData* p);
 void FUN_14180b230(const CString& strBagId);                                        // drop the bag bound to the id
-void FUN_14180b170(const CString& strBagId, int nSlot, int nSize);                  // create the bag
+void CreateStoreSlotBag(const CString& strBagId, int nSlot, int nSize);                  // create the bag
 class Unk_StBagCtl
 {
 public:
@@ -162,11 +162,11 @@ CStringW FUN_1409404f0(__int64 n);                                          // a
 CStringW FUN_140763e10(int n);
 CStringW FUN_14028dee0(int nId, const fmt::ArgList& args);
 FMT_VARIADIC_W(CStringW, FUN_14028dee0, int)
-void FUN_140d73aa0(CStringW text, int nType, void* p, CStringW tag);
+void ShowMessageBox(CStringW text, int nType, void* p, CStringW tag);
 void FUN_140d73bc0(int nStrId, int nType, void* p, CStringW tag);
 MS2Ptr<CMsgBoxData> FUN_140d73e40(int, int, void*, CStringW);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
-MS2Ptr<CMsgBoxData> FUN_140d74390(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
+MS2Ptr<CMsgBoxData> ShowMessageBoxWithCallback(CStringW text, int nType, Delegate<bool(int, const CMsgBoxData&)> cb);
 void FUN_141275260(int nStringId, int nA, int nB);
 template <class A, class B> void Unk_InvNotice(int nStringId, int nA, int nB, const A& a, const B& b);
 template <class A> void Unk_AkoMessage(int nStringId, int nA, int nB, const A& x);
@@ -254,7 +254,7 @@ struct Unk_StActor { virtual void Unk_Slot0(); virtual void Unk_Slot1(); virtual
             if (pL->vfunc_oa0_1() != 0)
 
 // @0x141b0ce20
-void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
+void UIStatusEventDispatcher::NotifyStatusChanged(int nEvent, int nValue)
 {
     PCBase* pPlayer = (PCBase*)WorldService::GetInstance()->FUN_141bd0cc0();
     if (pPlayer == 0)
@@ -278,7 +278,7 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     else if (nEvent == 3)
     {
         ST_EACH_LISTENER(i3, pL)
-            pL->vfunc_oa0_6((void*)DAT_143ab28a0, (void*)((CExpTable*)FUN_1404a1bb0())->GetNextExp(reinterpret_cast<Unk_StActor*>(pPlayer)->vfunc_78()));
+            pL->vfunc_oa0_6((void*)DAT_143ab28a0, (void*)((CExpTable*)GetExpTable())->GetNextExp(reinterpret_cast<Unk_StActor*>(pPlayer)->vfunc_78()));
     }
     else if (nEvent == 4)
     {
@@ -330,7 +330,7 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     else if (nEvent == 0xb)
     {
         ST_EACH_LISTENER(i11, pL)
-            pL->vfunc_oa0_14(reinterpret_cast<void*>(FUN_140930240()), nValue);
+            pL->vfunc_oa0_14(reinterpret_cast<void*>(GetMeratBalance()), nValue);
     }
     else if (nEvent == 0xc)
     {
@@ -340,7 +340,7 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
     else if (nEvent == 0xd)
     {
         ST_EACH_LISTENER(i13, pL)
-            pL->vfunc_oa0_15(reinterpret_cast<void*>(FUN_140930ae0()), nValue);
+            pL->vfunc_oa0_15(reinterpret_cast<void*>(GetRedMeratBalance()), nValue);
     }
     else if (nEvent == 0xe)
     {
@@ -368,13 +368,13 @@ void UIStatusEventDispatcher::FUN_141b0ce20(int nEvent, int nValue)
             pL->vfunc_oa0_31((void*)DAT_143ab2958);
     }
 }
-MS2_REPLACE_METHOD(0x141B0CE20, UIStatusEventDispatcher, FUN_141b0ce20, 4567, 0x9388CDAB);
+MS2_REPLACE_METHOD(0x141B0CE20, UIStatusEventDispatcher, NotifyStatusChanged, 4567, 0x9388CDAB);
 
 // @0x141b0e000
 void UIStatusEventDispatcher::FUN_141b0e000()
 {
     for (size_t i = 0; i < 0x13; ++i)
-        FUN_141b0ce20((int)i, 0);
+        NotifyStatusChanged((int)i, 0);
 }
 MS2_REPLACE_METHOD(0x141B0E000, UIStatusEventDispatcher, FUN_141b0e000, 65, 0xC6427F57);
 
@@ -468,7 +468,7 @@ MS2_REPLACE_METHOD(0x141B0E380, UIStatusEventDispatcher, FUN_141b0e380, 139, 0xE
 UIStoreDialog::UIStoreDialog()
     : m_188(""), m_190(0), m_194(0), m_198(0), m_1a0(L"")
 {
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     m_164 = 1;
     m_5c = 1;
     m_c8 = s_strStoreDialogOpen;
@@ -565,7 +565,7 @@ int UIStoreDialog::vfunc_73()
         FUN_141275260(0x2f7, 1, 1);
         return 0;
     }
-    if (FUN_141b10af0() != 0)
+    if (CanUse() != 0)
     {
         FUN_140d73bc0(0x9e, 0, 0, CStringW(L""));
         return 0;
@@ -577,12 +577,12 @@ MS2_REPLACE_METHOD(0x141B0F210, UIStoreDialog, vfunc_73, 146, 0x7CAE19AE);
 // @0x141b0f2b0
 int UIStoreDialog::vfunc_71()
 {
-    if (FUN_141b10af0() != 0)
+    if (CanUse() != 0)
     {
         if (m_190 != 0)
-            FUN_140d73aa0(BlockFormat(0x2ae), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
+            ShowMessageBox(BlockFormat(0x2ae), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
         else
-            FUN_140d73aa0(BlockFormat(0x2ad), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
+            ShowMessageBox(BlockFormat(0x2ad), 1, static_cast<IMessageListener*>(this), CStringW(L"askClose"));
         return 1;
     }
     return 0;
@@ -611,7 +611,7 @@ void UIStoreDialog::OnLoadComplete()
         ASTextInput* pInput = m_30.operator->()->FUN_140bbe940<ASTextInput>("m_inputSearch", m_1a8).get();
         if (pInput != 0)
         {
-            m_1a8->AddChangeHandler(StoreDelegate(this, &UIStoreDialog::FUN_141b10bc0));
+            m_1a8->AddChangeHandler(StoreDelegate(this, &UIStoreDialog::UpdateSearchCandidates));
         }
         CStringW strMoney = FUN_140719a00(DAT_143ab28f8);
         m_30.operator->()->FUN_140c38f00("initData", m_188, CStringW(strMoney));
@@ -656,9 +656,9 @@ int UIStoreDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     {
                         __int64 nAmount = _wtoi64(strAmount);
                         if (operator==(strCmd, L"deposit"))
-                            nResult = FUN_141b11190(nAmount);
+                            nResult = DepositMesos(nAmount);
                         else if (operator==(strCmd, L"withdraw"))
-                            nResult = FUN_141b11350(nAmount);
+                            nResult = WithdrawMesos(nAmount);
                     }
                 }
             }
@@ -715,16 +715,16 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
     }
     else if (_stricmp("onClickExpandSlot", szMethod) == 0)
     {
-        if (FUN_141b114f0() != 0)
+        if (CanExpandSlots() != 0)
         {
             CStringW strQuestion = FUN_14028dee0(0x2a8, (__int64)DAT_143ab2d80.Value4500(), 6);
-            MS2Ptr<CMsgBoxData> box = FUN_140d74390(CStringW(strQuestion), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UIStoreDialog::FUN_141b11c90));
+            MS2Ptr<CMsgBoxData> box = ShowMessageBoxWithCallback(CStringW(strQuestion), 1, Delegate<bool(int, const CMsgBoxData&)>(this, &UIStoreDialog::OnExpandConfirmed));
         }
         else
         {
             unsigned nStep = DAT_143ab2d80.CurrentCapacity();
             CStringW strMsg = BlockFormat(0x2b0, nStep);
-            FUN_140d73aa0(strMsg, 0, 0, L"");
+            ShowMessageBox(strMsg, 0, 0, L"");
         }
         return 1;
     }
@@ -746,7 +746,7 @@ int UIStoreDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
         if (data.SetArgsIfAny(pArgs, nArgs) != 0)
         {
             CStringW strItem = FUN_1413fa9b0(data.FUN_1422b8f40());
-            FUN_141b116d0(strItem);
+            ScrollToItem(strItem);
         }
         return 1;
     }
@@ -765,7 +765,7 @@ void UIStoreDialog::vfunc_15()
         if ((m_198 & 4) != 0)
             FUN_141b110e0();
         if ((m_198 & 2) != 0)
-            FUN_141b11590();
+            UpdateExpandText();
     }
 }
 MS2_REPLACE_METHOD(0x141B10210, UIStoreDialog, vfunc_15, 119, 0xC8F4DB08);
@@ -777,7 +777,7 @@ int UIStoreDialog::vfunc_13()
         return 0;
     if (UIDialog::vfunc_13() != 0)
         return 1;
-    if (((class Unk_StInputState*)FUN_14025e7c0())->FUN_14116d9c0(0x1c, 0, 0))
+    if (((class Unk_StInputState*)FUN_14025e7c0())->WasKeyPressed(0x1c, 0, 0))
     {
         ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
         if (pDlg != 0)
@@ -819,12 +819,12 @@ void UIStoreDialog::vfunc_80(void* pRequest)
             if (value.m_nFlags == 0)
             {
                 CStringW strSearch = FUN_1413fa9b0(m_1a8->GetText());
-                FUN_141b116d0(strSearch);
+                ScrollToItem(strSearch);
             }
             else
             {
                 m_1a8->SetHtmlTextW(L"");
-                FUN_140d73aa0(BlockFormat(0x8b7), 0, 0, CStringW(L""));
+                ShowMessageBox(BlockFormat(0x8b7), 0, 0, CStringW(L""));
             }
         }
     }
@@ -847,7 +847,7 @@ void UIStoreDialog::vfunc_oa0_9(unsigned short a1)
 {
     if (FUN_1422dc390() != 0)
     {
-        StoreSlotBag* pBag = FUN_14180b940(Unk_NotifyContext::FUN_1422c8e90(m_188));
+        StoreSlotBag* pBag = GetStoreSlotBag(Unk_NotifyContext::FindBinding(m_188));
         if (pBag != 0)
             ((class DragSlotBag*)(class StoreSlotBag*)(pBag))->FUN_1422cca90();
     }
@@ -859,7 +859,7 @@ void UIStoreDialog::vfunc_oa0_7(int a1, CStringW s)
 {
     if (FUN_1422dc390() != 0)
     {
-        StoreSlotBag* pBag = FUN_14180b940(Unk_NotifyContext::FUN_1422c8e90(m_188));
+        StoreSlotBag* pBag = GetStoreSlotBag(Unk_NotifyContext::FindBinding(m_188));
         if (pBag != 0)
             ((class DragSlotBag*)(class StoreSlotBag*)(pBag))->FUN_1422cca90();
     }
@@ -869,7 +869,7 @@ MS2_REPLACE_METHOD_VIA(0x141B107E0, UIStoreDialog, UIStatusEventListener, vfunc_
 // @0x141b10860
 void UIStoreDialog::vfunc_oa0_25(void* a1)
 {
-    Unk_StBagCtl* pCtl = reinterpret_cast<Unk_StBagCtl*>(FUN_140c544d0(Unk_NotifyContext::FUN_1422c8e90(m_188)));
+    Unk_StBagCtl* pCtl = reinterpret_cast<Unk_StBagCtl*>(FUN_140c544d0(Unk_NotifyContext::FindBinding(m_188)));
     if (pCtl != 0)
         pCtl->vfunc_11(a1);
 }
@@ -878,7 +878,7 @@ MS2_REPLACE_METHOD_VIA(0x141B10860, UIStoreDialog, UIStatusEventListener, vfunc_
 // @0x141b108c0
 void UIStoreDialog::vfunc_oa0_26(void* a1)
 {
-    Unk_StBagCtl* pCtl = reinterpret_cast<Unk_StBagCtl*>(FUN_140c544d0(Unk_NotifyContext::FUN_1422c8e90(m_188)));
+    Unk_StBagCtl* pCtl = reinterpret_cast<Unk_StBagCtl*>(FUN_140c544d0(Unk_NotifyContext::FindBinding(m_188)));
     if (pCtl != 0)
         pCtl->vfunc_12(a1);
 }
@@ -921,18 +921,18 @@ void UIStoreDialog::FUN_141b109a0()
 MS2_REPLACE_METHOD(0x141B109A0, UIStoreDialog, FUN_141b109a0, 316, 0x290F2820);
 
 // @0x141b10af0
-int UIStoreDialog::FUN_141b10af0()
+int UIStoreDialog::CanUse()
 {
     return ((class UITalkManager*)(void*)(GetUITalkManager()))->GetTalking() == 0 && vfunc_55() == 0;
 }
-MS2_REPLACE_METHOD(0x141B10AF0, UIStoreDialog, FUN_141b10af0, 76, 0x899AED12);
+MS2_REPLACE_METHOD(0x141B10AF0, UIStoreDialog, CanUse, 76, 0x899AED12);
 
 // @0x141b10b50
-CStringW UIStoreDialog::FUN_141b10b50()
+CStringW UIStoreDialog::GetSearchText()
 {
     return m_1a0;
 }
-MS2_REPLACE_METHOD(0x141B10B50, UIStoreDialog, FUN_141b10b50, 68, 0x4659ED21);
+MS2_REPLACE_METHOD(0x141B10B50, UIStoreDialog, GetSearchText, 68, 0x4659ED21);
 
 // @0x141b10ba0
 void UIStoreDialog::FUN_141b10ba0(int n)
@@ -942,7 +942,7 @@ void UIStoreDialog::FUN_141b10ba0(int n)
 MS2_REPLACE_METHOD(0x141B10BA0, UIStoreDialog, FUN_141b10ba0, 25, 0xB1829CF6);
 
 // @0x141b10bc0
-void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIStoreDialog::UpdateSearchCandidates(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (!m_1a8)
         return;
@@ -962,15 +962,15 @@ void UIStoreDialog::FUN_141b10bc0(const Scaleform::GFx::FunctionHandler::Params&
         {
             CStringW strName = FUN_1413fa9b0(set.GetAt(pos));
             ASObj row(2);
-            row.FUN_1407cbb20("label", set.GetAt(pos));
+            row.SetWStringMember("label", set.GetAt(pos));
             aCandidates.PushObj(row);
         }
     }
     int nShown = aCandidates.GetLength() > 5 ? 5 : aCandidates.GetLength();
-    static_cast<ASObj*>(static_cast<AScript*>(m_1a8.operator->()))->FUN_1407cb9c0("m_rowCount", nShown);
+    static_cast<ASObj*>(static_cast<AScript*>(m_1a8.operator->()))->SetIntMember("m_rowCount", nShown);
     m_1a8->Invoke("setCandidates", aCandidates);
 }
-MS2_REPLACE_METHOD(0x141B10BC0, UIStoreDialog, FUN_141b10bc0, 743, 0xB9D72077);
+MS2_REPLACE_METHOD(0x141B10BC0, UIStoreDialog, UpdateSearchCandidates, 743, 0xB9D72077);
 
 // @0x141b10eb0
 void UIStoreDialog::FUN_141b10eb0()
@@ -984,7 +984,7 @@ void UIStoreDialog::FUN_141b10ed0(CStringW strText)
 {
     if (strText.IsEmpty() == true)
     {
-        FUN_141b116d0(CStringW(L""));
+        ScrollToItem(CStringW(L""));
         return;
     }
     Unk_BlockList request(0x4e47);
@@ -993,7 +993,7 @@ void UIStoreDialog::FUN_141b10ed0(CStringW strText)
     if (nResult == 1)
     {
         CStringW strSearch = FUN_1413fa9b0(strText);
-        FUN_141b116d0(strSearch);
+        ScrollToItem(strSearch);
         return;
     }
     else if (nResult == 2)
@@ -1011,7 +1011,7 @@ MS2_REPLACE_METHOD(0x141B10ED0, UIStoreDialog, FUN_141b10ed0, 490, 0xB3629071);
 void UIStoreDialog::FUN_141b110e0()
 {
     FUN_14180b230(m_188);
-    FUN_14180b170(m_188, 0, DAT_143ab2d80.Capacity());
+    CreateStoreSlotBag(m_188, 0, DAT_143ab2d80.Capacity());
     if (m_30.get() != 0)
         m_30->Invoke("updateBag");
     m_198 &= ~4;
@@ -1019,7 +1019,7 @@ void UIStoreDialog::FUN_141b110e0()
 MS2_REPLACE_METHOD(0x141B110E0, UIStoreDialog, FUN_141b110e0, 161, 0xFE12A06D);
 
 // @0x141b11190
-int UIStoreDialog::FUN_141b11190(const __int64& nAmount)
+int UIStoreDialog::DepositMesos(const __int64& nAmount)
 {
     if (DAT_143ab2898 < nAmount)
     {
@@ -1050,10 +1050,10 @@ int UIStoreDialog::FUN_141b11190(const __int64& nAmount)
     DAT_143ab2d80.RequestAction(1, nAmount);
     return 1;
 }
-MS2_REPLACE_METHOD(0x141B11190, UIStoreDialog, FUN_141b11190, 438, 0xAEFB6E3B);
+MS2_REPLACE_METHOD(0x141B11190, UIStoreDialog, DepositMesos, 438, 0xAEFB6E3B);
 
 // @0x141b11350
-int UIStoreDialog::FUN_141b11350(const __int64& nAmount)
+int UIStoreDialog::WithdrawMesos(const __int64& nAmount)
 {
     if (DAT_143ab28f8 < nAmount)
     {
@@ -1078,7 +1078,7 @@ int UIStoreDialog::FUN_141b11350(const __int64& nAmount)
     DAT_143ab2d80.RequestAction(0, nAmount);
     return 1;
 }
-MS2_REPLACE_METHOD(0x141B11350, UIStoreDialog, FUN_141b11350, 311, 0x41BAD15F);
+MS2_REPLACE_METHOD(0x141B11350, UIStoreDialog, WithdrawMesos, 311, 0x41BAD15F);
 
 // @0x141b11490
 int UIStoreDialog::FUN_141b11490()
@@ -1093,16 +1093,16 @@ int UIStoreDialog::FUN_141b11490()
 MS2_REPLACE_METHOD(0x141B11490, UIStoreDialog, FUN_141b11490, 84, 0x951EC76A);
 
 // @0x141b114f0
-int UIStoreDialog::FUN_141b114f0()
+int UIStoreDialog::CanExpandSlots()
 {
     if (DAT_143ab2d80.WithinCapacity() != 0)
         return 0;
     return 1;
 }
-MS2_REPLACE_METHOD(0x141B114F0, UIStoreDialog, FUN_141b114f0, 39, 0x9C32443A);
+MS2_REPLACE_METHOD(0x141B114F0, UIStoreDialog, CanExpandSlots, 39, 0x9C32443A);
 
 // @0x141b11520
-void UIStoreDialog::FUN_141b11520()
+void UIStoreDialog::ExpandSlots()
 {
     Unk_DictPlatform* pPlatform = ((class Unk_DictPlatform*)((void*)GetClientPlatform()));
     if (pPlatform->vfunc_40(DAT_143ab2d80.Value4500()) == 1)
@@ -1110,10 +1110,10 @@ void UIStoreDialog::FUN_141b11520()
     else
         ((class CUIService*)(class Unk_StUiSvc*)(reinterpret_cast<Unk_StUiSvc*>(TSingleton<CUIService>::GetInstance())))->FUN_141add1f0();
 }
-MS2_REPLACE_METHOD(0x141B11520, UIStoreDialog, FUN_141b11520, 103, 0x3BDCFA30);
+MS2_REPLACE_METHOD(0x141B11520, UIStoreDialog, ExpandSlots, 103, 0x3BDCFA30);
 
 // @0x141b11590
-void UIStoreDialog::FUN_141b11590()
+void UIStoreDialog::UpdateExpandText()
 {
     unsigned nSlots = DAT_143ab2d80.Count();
     unsigned nUsed = DAT_143ab2d80.Capacity();
@@ -1124,19 +1124,19 @@ void UIStoreDialog::FUN_141b11590()
     }
     m_198 &= ~2;
 }
-MS2_REPLACE_METHOD(0x141B11590, UIStoreDialog, FUN_141b11590, 309, 0x7FA1358F);
+MS2_REPLACE_METHOD(0x141B11590, UIStoreDialog, UpdateExpandText, 309, 0x7FA1358F);
 
 // @0x141b116d0
-void UIStoreDialog::FUN_141b116d0(CStringW strText)
+void UIStoreDialog::ScrollToItem(CStringW strText)
 {
     m_1a0 = strText;
     ASDialog* pDlg = dynamic_cast<ASDialog*>((AScript*)m_30);
     if (pDlg != 0)
     {
-        StoreSlotBag* pBag = FUN_14180b940(Unk_NotifyContext::FUN_1422c8e90(m_188));
+        StoreSlotBag* pBag = GetStoreSlotBag(Unk_NotifyContext::FindBinding(m_188));
         if (pBag != 0)
         {
-            int nIndex = pBag->FUN_14180b3e0(CStringW(strText));
+            int nIndex = pBag->FindSlotIndexByItemName(CStringW(strText));
             if (nIndex > -1)
                 reinterpret_cast<AScript*>(pDlg)->Invoke("moveScroll", nIndex);
             if (nIndex == -1)
@@ -1157,7 +1157,7 @@ void UIStoreDialog::FUN_141b116d0(CStringW strText)
         }
     }
 }
-MS2_REPLACE_METHOD(0x141B116D0, UIStoreDialog, FUN_141b116d0, 823, 0x91F98195);
+MS2_REPLACE_METHOD(0x141B116D0, UIStoreDialog, ScrollToItem, 823, 0x91F98195);
 
 // @0x141b11a10
 void UIStoreDialog::FUN_141b11a10(CStringW strText, UIStoreNameList* pOut)
@@ -1198,11 +1198,11 @@ bool UIStoreDialog::FUN_141b11ba0(int nButton, const CMsgBoxData& box)
 MS2_REPLACE_METHOD(0x141B11BA0, UIStoreDialog, FUN_141b11ba0, 233, 0xFB122B7D);
 
 // @0x141b11c90
-bool UIStoreDialog::FUN_141b11c90(int nButton, const CMsgBoxData& box)
+bool UIStoreDialog::OnExpandConfirmed(int nButton, const CMsgBoxData& box)
 {
     if (nButton != 0)
         return true;
-    FUN_141b11520();
+    ExpandSlots();
     return true;
 }
-MS2_REPLACE_METHOD(0x141B11C90, UIStoreDialog, FUN_141b11c90, 46, 0xE9C7C327);
+MS2_REPLACE_METHOD(0x141B11C90, UIStoreDialog, OnExpandConfirmed, 46, 0xE9C7C327);

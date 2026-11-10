@@ -99,7 +99,7 @@ public:
     void FUN_1419caeb0(class UIItemEventListener*);
 };
 
-CMasteryInteriorTable* FUN_140933200();
+CMasteryInteriorTable* GetMasteryInteriorTable();
 class Unk_Restrictions* FUN_1409331e0();   // C3: was FUN_1409331e0
 int FUN_1418fd280();
 bool FUN_1409301c0();
@@ -211,7 +211,7 @@ int UIUGCHousingPointDialog::vfunc_28(const char* szMethod, const Scaleform::GFx
         OnRewardItem();
         return 1;
     } else if (_stricmp("OnOpenLeisureGroup", szMethod) == 0) {
-        if (TSingleton<CUIService>::GetInstance()->FUN_141adc940((eUIClassID)0x4f1e)) {
+        if (TSingleton<CUIService>::GetInstance()->IsDialogClosed((eUIClassID)0x4f1e)) {
             UIMasteryDialog* pDialog = GetUIDialog<UIMasteryDialog>(0x4f1e);
             if (pDialog != 0)
                 reinterpret_cast<UIMasteryDialog*>(pDialog)->SetMainTab(2, 8);
@@ -238,7 +238,7 @@ int UIUGCHousingPointDialog::RefreshFoldButton()
     if (FUN_1418fd280() == 0)
         return 0;
     if (MS2Ptr<ASButton> spFold = GetChild<ASButton>("m_fold"))
-        spFold->FUN_1422ce090(IsInMyHome() ? false : true);
+        spFold->SetSelected(IsInMyHome() ? false : true);
     return 0;
 }
 MS2_REPLACE_METHOD(0x140FAE0F0, UIUGCHousingPointDialog, RefreshFoldButton, 204, 0xC53870EE);
@@ -254,22 +254,22 @@ void UIUGCHousingPointDialog::RefreshInfo()
     unsigned short nNext = nGrade + 1;
     __int64 nPoint = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d4fa0();
     __int64 nMaxPoint = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d50c0();
-    bool bMaster = FUN_140933200()->FUN_140ebb020() < nNext ? true : false;
+    bool bMaster = GetMasteryInteriorTable()->GetMaxGrade() < nNext ? true : false;
     ASObj obj(2);
     obj.FUN_1409c48f0("interiorLevel", nGrade);
-    obj.FUN_1407cbb20("interiorTitle", FormatStringId(0x6fe, nGrade));
+    obj.SetWStringMember("interiorTitle", FormatStringId(0x6fe, nGrade));
     obj.FUN_1409c1180("interiorExp", DAT_143ab2930);
     obj.FUN_1409c1180("interiorPoint", nPoint);
     obj.FUN_1409c1180("interiorMaxPoint", nMaxPoint);
-    obj.FUN_1407cbbe0("interiorMaster", bMaster);
-    obj.FUN_1407cbbe0("receiveItem", bReceive);
-    MS2Ptr<MasteryInteriorInfo> spNext = FUN_140933200()->GetMastery(nNext);
+    obj.SetBoolMember("interiorMaster", bMaster);
+    obj.SetBoolMember("receiveItem", bReceive);
+    MS2Ptr<MasteryInteriorInfo> spNext = GetMasteryInteriorTable()->GetMastery(nNext);
     if (spNext.get() != 0)
         obj.SetMemberUInt("interiorMaxExp", spNext->m_nValue);
-    MS2Ptr<InteriorPointReward> spReward = FUN_140933200()->GetPointReward(nPoint);
+    MS2Ptr<InteriorPointReward> spReward = GetMasteryInteriorTable()->GetPointReward(nPoint);
     if (spReward.get() != 0) {
-        obj.FUN_1407cbb20(s_strIconPath, FUN_14016a730(spReward->m_strIcon, 0));
-        obj.FUN_1407cbb20(s_strItemDesc, GetStringCommonByKey(FUN_14016a730(spReward->m_strKey, 0)));
+        obj.SetWStringMember(s_strIconPath, FUN_14016a730(spReward->m_strIcon, 0));
+        obj.SetWStringMember(s_strItemDesc, GetStringCommonByKey(FUN_14016a730(spReward->m_strKey, 0)));
     }
     dialog->FUN_140acd1f0("buildInteriorInfo", obj);
     if (bReceive)
@@ -299,14 +299,14 @@ void UIUGCHousingPointDialog::RefreshList()
         CStringW strCount;
         strCount.Format(L"%d/%d", nCount, nMax);
         ASObj item(2);
-        item.FUN_1407cbb20("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nCategory));
-        item.FUN_1407cbb20("count", strCount);
-        item.FUN_1407cbb20("point", strPoint);
-        item.FUN_1407cbbe0("active", nCount >= nMax);
-        list.PushValue(item.FUN_1422bb870());
+        item.SetWStringMember("name", TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x32, nCategory));
+        item.SetWStringMember("count", strCount);
+        item.SetWStringMember("point", strPoint);
+        item.SetBoolMember("active", nCount >= nMax);
+        list.PushValue(item.GetValue());
     }
     ASObj obj(2);
-    obj.FUN_1409adbe0("interiorList", list.FUN_1422bb870());
+    obj.FUN_1409adbe0("interiorList", list.GetValue());
     dialog->FUN_140acd1f0("buildInteriorList", obj);
 }
 MS2_REPLACE_METHOD(0x140FAE5D0, UIUGCHousingPointDialog, RefreshList, 1026, 0x64FB61EB);
@@ -328,7 +328,7 @@ void UIUGCHousingPointDialog::vfunc_84()
     int nInstallLimit = 0;
     bool bShrink = true;
     bool bExtend = true;
-    if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xe4))
+    if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xe4))
         bShrink = false;
     if (reinterpret_cast<CContentShutdown&>(((struct Unk_UhpConfig*)FUN_14025e7b0())->m_flags).Get((CContentShutdown::Content)(99)) != 0)
         bShrink = false;
@@ -340,13 +340,13 @@ void UIUGCHousingPointDialog::vfunc_84()
     strPlace.Append(Unk_UhpConcat(FormatStringId(0x702, nPortalCount, nPortalLimit), L"\n"));
     strPlace.Append(Unk_UhpConcat(FUN_14028dfa0(CStringW(L"s_mainplayinfo_installnpc_count"), nInstallCount, nInstallLimit), L"\n"));
     ASObj obj(2);
-    obj.FUN_1407cbb20("place", strPlace);
+    obj.SetWStringMember("place", strPlace);
     int nArea;
-    obj.FUN_1407cbb20("extensionArea", FUN_14028dfa0(CStringW(L"s_home_info_area"), nArea = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470()));
+    obj.SetWStringMember("extensionArea", FUN_14028dfa0(CStringW(L"s_home_info_area"), nArea = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c3470()));
     int nHeight;
-    obj.FUN_1407cbb20("extensionHeight", FUN_14028dfa0(CStringW(L"s_home_info_height"), nHeight = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0()));
-    obj.FUN_1407cbbe0("shrinkEnable", bShrink);
-    obj.FUN_1407cbbe0("extensionEnable", bExtend);
+    obj.SetWStringMember("extensionHeight", FUN_14028dfa0(CStringW(L"s_home_info_height"), nHeight = ((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c34b0()));
+    obj.SetBoolMember("shrinkEnable", bShrink);
+    obj.SetBoolMember("extensionEnable", bExtend);
     dialog->FUN_140acd1f0("buildInteriorExtension", obj);
 }
 MS2_REPLACE_METHOD(0x140FAE9E0, UIUGCHousingPointDialog, vfunc_84, 1519, 0x598EBA96);
@@ -381,7 +381,7 @@ bool UIUGCHousingPointDialog::CanReceiveReward()
     if (((class Unk_UhpHome*)Unk_AkoHouseSvc::GetInstance())->FUN_1410c35c0())
         return false;
     __int64 nPoint = reinterpret_cast<CubeMapInformationService*>(Unk_AkoHouseSvc::GetInstance())->FUN_1410d4fa0();
-    unsigned int nBox = FUN_140933200()->GetDropBox(nPoint);
+    unsigned int nBox = GetMasteryInteriorTable()->GetDropBox(nPoint);
     if (nBox > 0)
         return true;
     return false;

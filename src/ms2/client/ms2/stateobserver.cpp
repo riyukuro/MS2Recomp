@@ -114,7 +114,7 @@ public:
     void FUN_141910660();
     void FUN_141910700();
 };
-UIMainPlayerInfo* FUN_140931900(int nUiId);
+UIMainPlayerInfo* FindMainPlayerInfo(int nUiId);
 
 struct Unk_MiActionState* Unk_PlayerActionState(struct Unk_MiPlayer* pPlayer);   // the actor's action key set (mouseinteract.cpp)
 void FUN_141274f50();
@@ -132,7 +132,7 @@ void FUN_140710590(COutPacket& packet);                     // send
 
 // @0x140ac4f90
 // Wraps nIdx into [0, nCount).
-static int FUN_140ac4f90(int nCount, int nIdx)
+static int WrapIndex(int nCount, int nIdx)
 {
     if (nCount == 0)
         return -1;
@@ -144,7 +144,7 @@ static int FUN_140ac4f90(int nCount, int nIdx)
 
 // @0x140ac4fe0
 // Collects the ids of the observable players: valid proxies of kind 0 that are not observers (type 0x3f).
-static void FUN_140ac4fe0(std::vector<__int64>& ids)
+static void CollectObservableIds(std::vector<__int64>& ids)
 {
     ids.clear();
     Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
@@ -162,14 +162,14 @@ static void FUN_140ac4fe0(std::vector<__int64>& ids)
             continue;
         if (spProxy->m_cc == 0x3f)
             continue;
-        __int64 nId = (__int64)spProxy->FUN_1416c22f0();
+        __int64 nId = (__int64)spProxy->GetCharacterId();
         ids.push_back(nId);
     }
 }
 
 // @0x140ac5130
 // The observable player nearest to the local player that is not in excluded (0 when there is none).
-static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
+static unsigned __int64 FindNearestObservableId(std::set<unsigned __int64>& excluded)
 {
     Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
@@ -194,7 +194,7 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
             continue;
         if (spProxy->m_cc == 0x3f)
             continue;
-        unsigned __int64 nId = (unsigned __int64)spProxy->FUN_1416c22f0();
+        unsigned __int64 nId = (unsigned __int64)spProxy->GetCharacterId();
         bool bExcluded = excluded.find(nId) != excluded.end();
         if (bExcluded)
             continue;
@@ -207,11 +207,11 @@ static unsigned __int64 FUN_140ac5130(std::set<unsigned __int64>& excluded)
     }
     if (spBest.IsNull())
         return 0;
-    return (unsigned __int64)spBest->FUN_1416c22f0();
+    return (unsigned __int64)spBest->GetCharacterId();
 }
 
 // @0x140ac55a0
-UIDamageEffect* FUN_140ac55a0(int nUiId)
+UIDamageEffect* GetDamageEffect(int nUiId)
 {
     if (reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance()) != 0)
     {
@@ -318,7 +318,7 @@ void StateObserver::vfunc_3(double fTime)
 // @0x140ac3ff0
 void StateObserver::vfunc_8(double fTime)
 {
-    if (((class CInputKeyHandler*)FUN_14025e7c0())->FUN_14116da30(0x39, true, 0))
+    if (((class CInputKeyHandler*)FUN_14025e7c0())->WasKeyReleased(0x39, true, 0))
         ObserveNext();
 }
 
@@ -337,7 +337,7 @@ int StateObserver::vfunc_22(MS2Ptr<StateSyncObject> p)
 bool StateObserver::vfunc_28(MS2Ptr<StateSyncObject> p)
 {
     unsigned __int64 nTargetId = FUN_140718350(p->m_str70);
-    return FUN_140ac5ea0() != (__int64)nTargetId;
+    return GetObservedTargetId() != (__int64)nTargetId;
 }
 
 // @0x140ac4170
@@ -346,7 +346,7 @@ CStringW StateObserver::GetTargetName()
     Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return CStringW(L"");
-    MS2Ptr<CProxyGameObject> spProxy = reinterpret_cast<WorldService*>(pWorld)->FUN_141bc9c60((void*)m_spObserve->m_nTarget);
+    MS2Ptr<CProxyGameObject> spProxy = reinterpret_cast<WorldService*>(pWorld)->FindProxyObjectByOwner((void*)m_spObserve->m_nTarget);
     if (spProxy.IsNull())
         return CStringW(L"");
     return spProxy->GetName();
@@ -356,12 +356,12 @@ CStringW StateObserver::GetTargetName()
 void StateObserver::ObservePrevious()
 {
     std::vector<__int64> ids;
-    FUN_140ac4fe0(ids);
+    CollectObservableIds(ids);
     if (ids.empty())
         return;
     int nCount = (int)ids.size();
     int nPos = (int)(std::find(ids.begin(), ids.end(), m_spObserve->m_nTarget) - ids.begin());
-    int nIdx = FUN_140ac4f90(nCount, nPos - 1);
+    int nIdx = WrapIndex(nCount, nPos - 1);
     if ((nIdx >= 0 && nIdx <= nCount) == 0)
         return;
     FUN_140ac4c90(ids[nIdx]);
@@ -371,12 +371,12 @@ void StateObserver::ObservePrevious()
 void StateObserver::ObserveNext()
 {
     std::vector<__int64> ids;
-    FUN_140ac4fe0(ids);
+    CollectObservableIds(ids);
     if (ids.empty())
         return;
     int nCount = (int)ids.size();
     int nPos = (int)(std::find(ids.begin(), ids.end(), m_spObserve->m_nTarget) - ids.begin());
-    int nIdx = FUN_140ac4f90(nCount, nPos + 1);
+    int nIdx = WrapIndex(nCount, nPos + 1);
     if ((nIdx >= 0 && nIdx <= nCount) == 0)
         return;
     FUN_140ac4c90(ids[nIdx]);
@@ -387,7 +387,7 @@ void StateObserver::ObserveOther()
 {
     std::set<unsigned __int64> excluded;
     excluded.insert(reinterpret_cast<const unsigned __int64&>(m_spObserve->m_nTarget));
-    unsigned __int64 nId = FUN_140ac5130(excluded);
+    unsigned __int64 nId = FindNearestObservableId(excluded);
     if (nId == 0)
         return;
     FUN_140ac4c90(nId);
@@ -403,10 +403,10 @@ void StateObserver::FUN_140ac45e0()
         return;
     FUN_141274f50();
     reinterpret_cast<Unk_ActionKeyManager*>(Unk_PlayerActionState(reinterpret_cast<Unk_MiPlayer*>(pPC)))->SetEnabled(0);
-    UIDamageEffect* pDamage = FUN_140ac55a0(0x4e3c);
+    UIDamageEffect* pDamage = GetDamageEffect(0x4e3c);
     if (pDamage != 0)
         pDamage->FUN_141910660();
-    UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    UIMainPlayerInfo* pInfo = FindMainPlayerInfo(0x4e5f);
     if (pInfo != 0)
         pInfo->SetHideReason(8, false);
     reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add120((eUIClassID)0x4e43, 0);
@@ -423,10 +423,10 @@ void StateObserver::FUN_140ac4760()
     if (pPC == 0)
         return;
     reinterpret_cast<Unk_ActionKeyManager*>(Unk_PlayerActionState(reinterpret_cast<Unk_MiPlayer*>(pPC)))->SetEnabled(1);
-    UIDamageEffect* pDamage = FUN_140ac55a0(0x4e3c);
+    UIDamageEffect* pDamage = GetDamageEffect(0x4e3c);
     if (pDamage != 0)
         pDamage->FUN_141910700();
-    UIMainPlayerInfo* pInfo = FUN_140931900(0x4e5f);
+    UIMainPlayerInfo* pInfo = FindMainPlayerInfo(0x4e5f);
     if (pInfo != 0)
         pInfo->SetHideReason(8, true);
     reinterpret_cast<CUIService*>(TSingleton<CUIService>::GetInstance())->FUN_141add120((eUIClassID)0x4e43, 1);
@@ -443,7 +443,7 @@ void StateObserver::FUN_140ac48e0()
     if (pWorld == 0)
         return;
     Vector3 vTarget;
-    MS2Ptr<CProxyGameObject> spProxy = reinterpret_cast<WorldService*>(pWorld)->FUN_141bc9c60((void*)m_spObserve->m_nTarget);
+    MS2Ptr<CProxyGameObject> spProxy = reinterpret_cast<WorldService*>(pWorld)->FindProxyObjectByOwner((void*)m_spObserve->m_nTarget);
     if (spProxy.IsNull())
     {
         ObserveOther();
@@ -529,10 +529,10 @@ void StateObserver::FUN_140ac4dc0(NotifyObject* pNotice)
     Unk_ObsWorld* pWorld = reinterpret_cast<Unk_ObsWorld*>(WorldService::GetInstance());
     if (pWorld == 0)
         return;
-    MS2Ptr<CProxyGameObject> spVictim = pWorld->FUN_141bc9d60(strVictim);
+    MS2Ptr<CProxyGameObject> spVictim = pWorld->FindProxyObjectByName(strVictim);
     if (spVictim.IsNull())
         return;
-    if ((__int64)spVictim->FUN_1416c22f0() != m_spObserve->m_nTarget)
+    if ((__int64)spVictim->GetCharacterId() != m_spObserve->m_nTarget)
         return;
     if (strVictim == strKiller)
     {
@@ -542,9 +542,9 @@ void StateObserver::FUN_140ac4dc0(NotifyObject* pNotice)
     MS2Ptr<CFieldDataCli> spMap = reinterpret_cast<WorldService*>(pWorld)->FUN_141bd30a0();
     if (spMap.IsNull())
         return;
-    MS2Ptr<CProxyGameObject> spKiller = pWorld->FUN_141bc9d60(strKiller);
+    MS2Ptr<CProxyGameObject> spKiller = pWorld->FindProxyObjectByName(strKiller);
     if (spKiller.get() != 0)
-        FUN_140ac4c90((__int64)spKiller->FUN_1416c22f0());
+        FUN_140ac4c90((__int64)spKiller->GetCharacterId());
     else
         ObserveOther();
 }
@@ -562,7 +562,7 @@ int StateObserver::vfunc_1()
 }
 
 // @0x140ac5ea0
-__int64 StateObserver::FUN_140ac5ea0()
+__int64 StateObserver::GetObservedTargetId()
 {
     return m_spObserve->m_nTarget;
 }

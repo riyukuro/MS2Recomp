@@ -15,7 +15,7 @@
 #include <ecr/RenderSurface.h>
 #include "ms2/placeholder/gfxmovie.h"
 #include "ms2/placeholder/gfxmanager.h"
-#include "ms2/scaleform/include/gfx/gfx_textclipboard.h"   // TextClipboard::SetText (FUN_1422d8f00)
+#include "ms2/scaleform/include/gfx/gfx_textclipboard.h"   // TextClipboard::SetText (SetClipboardText)
 #include "hook/ms2hook.h"
 
 #pragma comment(lib, "imm32.lib")
@@ -105,13 +105,13 @@ int GFxMovieEventHandler::FUN_1422d8e80(void* hwnd)
 MS2_REPLACE_METHOD(0x1422D8E80, GFxMovieEventHandler, FUN_1422d8e80, 114, 0xA9C1F361);
 
 // @0x1422d8f00
-void GFxMovieEventHandler::FUN_1422d8f00(CStringW strText)
+void GFxMovieEventHandler::SetClipboardText(CStringW strText)
 {
     Scaleform::Ptr<Scaleform::GFx::TextClipboard> spClipboard = m_58->GetTextClipboard();
     if (spClipboard)
         spClipboard->SetText(strText);
 }
-MS2_REPLACE_METHOD(0x1422D8F00, GFxMovieEventHandler, FUN_1422d8f00, 135, 0x496A8081);
+MS2_REPLACE_METHOD(0x1422D8F00, GFxMovieEventHandler, SetClipboardText, 135, 0x496A8081);
 
 // @0x1422d8f90
 void GFxMovieEventHandler::FUN_1422d8f90(void* hwnd)
@@ -124,12 +124,12 @@ MS2_REPLACE_METHOD(0x1422D8F90, GFxMovieEventHandler, FUN_1422d8f90, 57, 0x21423
 // @0x1422d8fd0
 void GFxMovieEventHandler::FUN_1422d8fd0(const CStringW& strText)
 {
-    FUN_1422d8f00(strText);
+    SetClipboardText(strText);
 }
 MS2_REPLACE_METHOD(0x1422D8FD0, GFxMovieEventHandler, FUN_1422d8fd0, 65, 0x270113FE);
 
 // @0x1422d9020
-void GFxMovieEventHandler::FUN_1422d9020(bool bEnable)
+void GFxMovieEventHandler::SetImeEnabled(bool bEnable)
 {
     ms_bImeEnabled = bEnable;
 }
@@ -269,7 +269,7 @@ int GFxMovieEventHandler::vfunc_14(void* hwnd, unsigned msg, unsigned __int64 wP
             return 1;
         break;
     case WM_IME_COMPOSITION:
-        if (FUN_14025e7a0()->FUN_1422af390(m_18))
+        if (GetGFxManager()->FUN_1422af390(m_18))
             return 1;
         if (vfunc_37(hwnd, msg, (void*)wParam, (void*)lParam))
             return 1;
@@ -388,7 +388,7 @@ void GFxMovieEventHandler::vfunc_24(void* hwnd)
         const wchar_t* szText = (const wchar_t*)GlobalLock(hMem);
         if (szText != NULL)
         {
-            FUN_1422d8f00(CStringW(szText));
+            SetClipboardText(CStringW(szText));
             GlobalUnlock(hMem);
         }
     }
@@ -539,7 +539,7 @@ void GFxMovieEventHandler::vfunc_39(int a, int b, int c, bool d, bool e)
         return;
     if (b == 0 && c != 0)
     {
-        if (FUN_14025e7a0()->IsTextFieldFocused(m_18))
+        if (GetGFxManager()->IsTextFieldFocused(m_18))
         {
             Scaleform::GFx::CharEvent kEvent(c, 0);
             m_60->HandleEvent(kEvent);
@@ -593,7 +593,7 @@ void GFxMovieEventHandler::SendKeyEvent(int nKeyboard, int nKeyCode, unsigned nW
 {
     if (!m_60)
         return;
-    if (nKeyCode == Scaleform::Key::Insert && FUN_14025e7a0()->IsTextFieldFocused(m_18))
+    if (nKeyCode == Scaleform::Key::Insert && GetGFxManager()->IsTextFieldFocused(m_18))
         return;
     if (nKeyCode != 0)
     {

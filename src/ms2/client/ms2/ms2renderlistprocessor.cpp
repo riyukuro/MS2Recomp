@@ -88,8 +88,8 @@ extern NiFixedString DAT_143ae51d0;                         // alpha depth-bias 
 extern NiFixedString DAT_143ae52a8;                         // outline material name
 
 float FUN_141b71c50();                                      // depth bias of tagged alpha objects
-bool FUN_141568c20(NiRenderObject* pkObject);
-bool FUN_141568c90(NiRenderObject* pkObject);
+bool IsShimmer(NiRenderObject* pkObject);
+bool IsUnlightable(NiRenderObject* pkObject);
 unsigned int FUN_141568e90(class NiAVObject*);   // C3: was FUN_141568e90
 unsigned int FUN_1415690c0(class NiAVObject*);   // C3: was FUN_1415690c0
 bool FUN_14098dfc0(NiAVObject* pkObject);
@@ -195,9 +195,9 @@ void MS2RenderListProcessor::PreRenderProcessList(const NiVisibleArray* pkInput,
         NiPSMeshParticleSystem* pkParticles = NiDynamicCast(NiPSMeshParticleSystem, &kMesh);
         if (pkParticles)
             continue;
-        if (FUN_141568c20(&kMesh))
+        if (IsShimmer(&kMesh))
             continue;
-        if (FUN_141568c90(&kMesh))
+        if (IsUnlightable(&kMesh))
             continue;
 
         ApplyEffectMaterial(&kMesh, kSaved);
@@ -690,7 +690,7 @@ void MS2RenderViewRenderListProcessor::PreRenderProcessList(const NiVisibleArray
         NiPSMeshParticleSystem* pkParticles = NiDynamicCast(NiPSMeshParticleSystem, &kMesh);
         if (pkParticles)
             continue;
-        if (FUN_141568c20(&kMesh))
+        if (IsShimmer(&kMesh))
             continue;
 
         ApplyEffectMaterial(&kMesh, kSaved);

@@ -31,7 +31,7 @@ static CString s_clickSound("System_PinkBeans_Arcade_Click_01");
 template <> template <>
 MS2Ptr<AScript>& MS2Ptr<AScript>::operator=<ASGameEntity>(const MS2Ptr<ASGameEntity>&);
 
-MS2Ptr<ASGameEntity> FUN_140ba77e0(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
+MS2Ptr<ASGameEntity> CreateGameEntity(int n, const Scaleform::GFx::Value& v);    // new ASGameEntity(v, n)
 
 // Singleton at 0x1401d3200 (a huge manager); two members at +0xc768 / +0xc7c0 give the screen origin.
 class Unk_ConstVal;
@@ -854,7 +854,7 @@ MS2_CHECK_SIZE(Unk_1401d3200, 0xc7c8); // recovered prefix only
 class State { public: virtual ~State(); };
 class StateMicroGameCoupleDance : public State {
 public:
-    inline int FUN_140e65850() { return m_round; }
+    inline int GetRound() { return m_round; }
 private:
     MS2_LAYOUT_FRIEND;
     void* m_08; void* m_10; void* m_18; void* m_20; void* m_28; void* m_30; void* m_38;
@@ -869,7 +869,7 @@ struct Unk_CoupleEvent { void* m_00; void* m_data; };
 MS2_CHECK_OFFSET(Unk_CoupleEvent, m_data, 8);
 MS2_CHECK_SIZE(Unk_CoupleEvent, 0x10);
 int FUN_141277f40();
-int FUN_140768010(int, int);
+int GetRandomRange(int, int);
 int FUN_141276180(const CString&, const CString&);
 void FUN_1422bccb0(Scaleform::GFx::Value*, int);
 
@@ -885,7 +885,7 @@ CString UIMicroGameCoupleDance::GetTypeName() { return "MicroGameCoupleDance"; }
 MS2_REPLACE_METHOD(0x140E63F20, UIMicroGameCoupleDance, GetTypeName, 61, 0xBF427CC0);
 // @0x140e63f70
 void UIMicroGameCoupleDance::vfunc_15() {
-    if (FUN_140e64e80()) Hide();
+    if (ShouldHide()) Hide();
     else UpdatePosition();
 }
 MS2_REPLACE_METHOD(0x140E63F70, UIMicroGameCoupleDance, vfunc_15, 50, 0x2618509B);
@@ -905,12 +905,12 @@ int UIMicroGameCoupleDance::vfunc_28(const char* method, const Scaleform::GFx::V
         ASData data;
         if (!data.SetArgsIfAny(args,count)) { MS2_ASSERT_AT(200, 0); return 0; }
         int dance = data.PopUInt();
-        if (m_mode == 0) FUN_140e64a10(dance);
+        if (m_mode == 0) SelectDance(dance);
         else if (m_mode == 1) SendPlayArcade(dance);
         return 1;
     }
     if (_stricmp(method,"onSelectTimeUp") == 0) {
-        if (m_mode == 0) FUN_140e64c00();
+        if (m_mode == 0) SendDanceSelection();
         else if (m_mode == 1) FUN_140e64e70();
         return 1;
     }
@@ -939,7 +939,7 @@ void UIMicroGameCoupleDance::FUN_140e64270() {
         m_dances[i] = dances[i];
         if (m_dances[i] == m_previous) found = true;
     }
-    if (!found) m_dances[(unsigned)FUN_140768010((int)m_dances.size(), 0)] = m_previous;
+    if (!found) m_dances[(unsigned)GetRandomRange((int)m_dances.size(), 0)] = m_previous;
     m_30->Invoke("popUp", m_dances[0], m_dances[1], m_dances[2], 7);
     m_previous = 0;
 }
@@ -971,7 +971,7 @@ void UIMicroGameCoupleDance::OnCoupleEvent(int event, Unk_CoupleEvent* data) {
 }
 MS2_REPLACE_METHOD(0x140E647C0, UIMicroGameCoupleDance, OnCoupleEvent, 146, 0x658CFC17);
 // @0x140e64860
-void UIMicroGameCoupleDance::vfunc_41(const Scaleform::GFx::Value& root) { m_30 = FUN_140ba77e0(m_28, root); }
+void UIMicroGameCoupleDance::vfunc_41(const Scaleform::GFx::Value& root) { m_30 = CreateGameEntity(m_28, root); }
 MS2_REPLACE_METHOD(0x140E64860, UIMicroGameCoupleDance, vfunc_41, 99, 0x54B24861);
 // @0x140e648d0
 void UIMicroGameCoupleDance::UpdatePosition() {
@@ -985,12 +985,12 @@ void UIMicroGameCoupleDance::UpdatePosition() {
 }
 MS2_REPLACE_METHOD(0x140E648D0, UIMicroGameCoupleDance, UpdatePosition, 305, 0x58D9DEB6);
 // @0x140e64a10
-void UIMicroGameCoupleDance::FUN_140e64a10(int dance) {
+void UIMicroGameCoupleDance::SelectDance(int dance) {
     for (size_t i=0; i<m_dances.size(); ++i) {
         if (dance == m_dances[i]) { m_selected = dance; return; }
     }
 }
-MS2_REPLACE_METHOD(0x140E64A10, UIMicroGameCoupleDance, FUN_140e64a10, 112, 0x52698292);
+MS2_REPLACE_METHOD(0x140E64A10, UIMicroGameCoupleDance, SelectDance, 112, 0x52698292);
 // @0x140e64a90
 void UIMicroGameCoupleDance::SendPlayArcade(int dance) {
     int selected = -1;
@@ -1010,12 +1010,12 @@ void UIMicroGameCoupleDance::SendPlayArcade(int dance) {
 }
 MS2_REPLACE_METHOD(0x140E64A90, UIMicroGameCoupleDance, SendPlayArcade, 349, 0xADF227BA);
 // @0x140e64c00
-void UIMicroGameCoupleDance::FUN_140e64c00() {
+void UIMicroGameCoupleDance::SendDanceSelection() {
     if (m_30 == NULL) return;
     MS2Ptr<CoupleDanceContext> event = reinterpret_cast<CGameEventValueCoupleDance*>(TSingleton<CGameEventValueManager>::GetInstance()->GetCoupleDance())->Get();
     if (event == NULL) return;
     if (m_selected < 0 || m_selected >= (int)event->m_dances.size()) {
-        m_selected = m_dances[(unsigned)FUN_140768010((int)m_dances.size(),0)];
+        m_selected = m_dances[(unsigned)GetRandomRange((int)m_dances.size(),0)];
         m_30->Invoke("selectBtnByDanceIndex", m_selected);
     }
     PCBase* state = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
@@ -1026,22 +1026,22 @@ void UIMicroGameCoupleDance::FUN_140e64c00() {
     COutPacket packet(static_cast<int>(SendOp::Microgame),0);
     packet.Encode2(0x15);
     packet.Encode4(event->m_eventId);
-    packet.Encode1((unsigned char)dance->FUN_140e65850());
+    packet.Encode1((unsigned char)dance->GetRound());
     packet.Encode2((short)m_selected);
     FUN_140710590(packet);
 }
-MS2_REPLACE_METHOD(0x140E64C00, UIMicroGameCoupleDance, FUN_140e64c00, 618, 0xA77ED0A1);
+MS2_REPLACE_METHOD(0x140E64C00, UIMicroGameCoupleDance, SendDanceSelection, 618, 0xA77ED0A1);
 // @0x140e64e70
 void UIMicroGameCoupleDance::FUN_140e64e70() {}
 MS2_REPLACE_METHOD(0x140E64E70, UIMicroGameCoupleDance, FUN_140e64e70, 6, 0xA9AF6E37);
 // @0x140e64e80
-int UIMicroGameCoupleDance::FUN_140e64e80() {
+int UIMicroGameCoupleDance::ShouldHide() {
     PCBase* state = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->FUN_141bd0cc0());
     if (!state) return 1;
     if (m_mode == 0 && state->GetCurStateId() != 0x45) return 1;
     return 0;
 }
-MS2_REPLACE_METHOD(0x140E64E80, UIMicroGameCoupleDance, FUN_140e64e80, 85, 0xF496F339);
+MS2_REPLACE_METHOD(0x140E64E80, UIMicroGameCoupleDance, ShouldHide, 85, 0xF496F339);
 // @0x140e64f60
 inline Scaleform::GFx::Value AScript::Invoke(const char* method, int a, int b, int c, int d) {
     ASArgList args;

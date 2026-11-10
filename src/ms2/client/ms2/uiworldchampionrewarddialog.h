@@ -30,7 +30,7 @@ public:
     void OnNextPageClick(const Scaleform::GFx::FunctionHandler::Params&);
     void FUN_140fec310(const Scaleform::GFx::FunctionHandler::Params&);
     bool SendWorldChampionMode9(int, const CMsgBoxData&);
-    void FUN_140fec540(size_t);
+    void EnsureItemSlots(size_t);
 private:
     MS2_LAYOUT_FRIEND;
     unsigned m_season;

@@ -44,10 +44,10 @@ void FUN_1422bcea0(Scaleform::GFx::Value* pValue, const wchar_t* szText);
 
 class Unk_RsWorld : public WorldService { };
 template <class A, class B> CStringW FormatStringId(int nId, const A& a, const B& b);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);
 CStringW FUN_14183e930(const CStringW& str, unsigned nColor);
-void* FUN_140c24ef0();   // C3: was FUN_140c24ef0
+void* GetUIBottomCenterAlignManager();   // C3: was FUN_140c24ef0
 int FUN_1418dd0d0();
 __int64 GetServerTime();                                // the server time
 
@@ -159,13 +159,13 @@ int UIRecallScrollNotifyDialog::vfunc_28(const char* szMethod, const Scaleform::
             if (spSender == 0) return 0;
             CStringW strMsg = FormatStringId<CStringW, CStringW>(0xb62, m_names[nSlot], TSingleton<CStringTable>::GetInstance()->FUN_141811980(3, m_fields[nSlot]));
             {
-                MS2Ptr<CMsgBoxData> box = FUN_140d73d20(1, CStringW(strMsg), 0, CStringW(s_strRecallConfirm));
+                MS2Ptr<CMsgBoxData> box = CreateMessageBox(1, CStringW(strMsg), 0, CStringW(s_strRecallConfirm));
                 if (box.get() != 0) {
                     box->Append<int>(nSlot);
                     box->AddStringArg(CStringW(m_names[nSlot]));
                     box->Append<unsigned int>(m_fields[nSlot]);
                     box->FUN_141a02460(1);
-                    box->FUN_141a02480(1);
+                    box->SetModaless(1);
                     box->FUN_141a024a0(0);
                     box->SetButtonLabelIds(0x477, 0x478, 0);
                     FUN_140d73c60(MS2Ptr<CMsgBoxData>(box));
@@ -204,7 +204,7 @@ void UIRecallScrollNotifyDialog::vfunc_72()
         }
         if (m_nCount != nActive) {
             m_nCount = nActive;
-            FUN_14129cc60(m_nCount != 0);
+            SetActive(m_nCount != 0);
         }
     }
 }
@@ -216,7 +216,7 @@ void UIRecallScrollNotifyDialog::SetOffset(int nOffset) { m_nOffset = nOffset; }
 bool UIRecallScrollNotifyDialog::IsActive() { return m_bActive; }
 
 // @0x14129c920
-void UIRecallScrollNotifyDialog::FUN_14129c920(int nSlot, __time64_t nTime, const CStringW& strName, int nField)
+void UIRecallScrollNotifyDialog::OpenNotify(int nSlot, __time64_t nTime, const CStringW& strName, int nField)
 {
     m_times[nSlot] = nTime;
     m_names[nSlot] = strName;
@@ -226,11 +226,11 @@ void UIRecallScrollNotifyDialog::FUN_14129c920(int nSlot, __time64_t nTime, cons
     CMsTime now(GetServerTime());
     ATL::CTimeSpan span = m_times[nSlot] - now;
     reinterpret_cast<Unk_RsScript*>(m_30.operator->())->FUN_14129cce0("OpenNotify", nSlot, FUN_14129cb50(span));
-    FUN_14129cc60(true);
+    SetActive(true);
 }
 
 // @0x14129caa0
-void UIRecallScrollNotifyDialog::FUN_14129caa0(int nSlot)
+void UIRecallScrollNotifyDialog::CloseNotify(int nSlot)
 {
     m_times[nSlot] = 0;
     if (FUN_1422dc2d0() == 0)
@@ -254,11 +254,11 @@ CStringW UIRecallScrollNotifyDialog::FUN_14129cb50(ATL::CTimeSpan span)
 }
 
 // @0x14129cc60
-void UIRecallScrollNotifyDialog::FUN_14129cc60(bool bActive)
+void UIRecallScrollNotifyDialog::SetActive(bool bActive)
 {
     m_bActive = bActive;
-    if (((class UIBottomCenterAlignManager*)FUN_140c24ef0()) != 0)
-        ((class UIBottomCenterAlignManager*)FUN_140c24ef0())->FUN_140bc1730();
+    if (((class UIBottomCenterAlignManager*)GetUIBottomCenterAlignManager()) != 0)
+        ((class UIBottomCenterAlignManager*)GetUIBottomCenterAlignManager())->FUN_140bc1730();
 }
 
 // @0x14129cce0

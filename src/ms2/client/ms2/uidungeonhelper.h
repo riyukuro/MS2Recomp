@@ -15,8 +15,8 @@ public:
     ASWeeklyRewardItemSlot(const Scaleform::GFx::Value& v, int nMovieId);
     // ~ASWeeklyRewardItemSlot() is implicit (@0x140e16980)
     virtual void vfunc_25(Scaleform::GFx::Value** ppOut);
-    void FUN_140e12780(__int64 nMeso, __int64 nExp);
-    void FUN_140e12bf0();
+    void SetReward(__int64 nMeso, __int64 nExp);
+    void ApplyBoostRates();
 private:
     MS2_LAYOUT_FRIEND;
     __int64 m_nMeso;

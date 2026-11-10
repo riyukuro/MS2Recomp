@@ -132,11 +132,11 @@ public:
 #undef PCI_V
     virtual void vfunc_28(void* p1, TPtr<Unk_UISwfEntity_25> spTarget, void* pArg, void* pArg2);
 };
-class Unk_140bccd50* FUN_140bccd50();   // C3: was FUN_140bccd50
+class Unk_140bccd50* GetPacketHandlerManager();   // C3: was FUN_140bccd50
 class Unk_140166410* FUN_140166410();   // C3: was FUN_140166410
 class Unk_PciUIMgr { public: void FUN_141adc530(int nId); };
 
-class Unk_PciMyPC : public PC {};   class MyPC { public: MS2Ptr<CStatPointManager> FUN_140c25130(); };   // C3: member view (FUN_140c25130 is MyPC's)
+class Unk_PciMyPC : public PC {};   class MyPC { public: MS2Ptr<CStatPointManager> GetStatPointManager(); };   // C3: member view (GetStatPointManager is MyPC's)
 class Unk_PciFieldInfo : public CPtred
 {
 public:
@@ -168,10 +168,10 @@ struct Unk_PciConstants
 namespace Client { class Constants; } template<class T> class TSingleton; template<> class TSingleton<Client::Constants> { public: static Client::Constants* GetInstance(); }; class Unk_SingletonObj1;   // C3: was FUN_1401d3200 (= TSingleton<Client::Constants>::GetInstance)
 class Unk_BmPriceMgr* FUN_1401c0db0();   // C3: was FUN_1401c0db0
 
-class UIWebBrowser* FUN_140c43790(int nId);
+class UIWebBrowser* FindWebBrowser(int nId);
 
 class GFxManager { public: CStringW Localize(const CString& strKey); };   // C3: the real member (0x1422b0570, a $-key's localized string)
-class Unk_AltStringMgr* FUN_14025e7a0();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
+class Unk_AltStringMgr* GetGFxManager();   // the GFxManager singleton (0x14025e7a0, commonstringtable.cpp, the definer's signature)
 
 // The 8-byte min/max pair constructed (and unused) by the record builder.
 struct Unk_PciRange
@@ -186,9 +186,9 @@ struct Unk_PciStatBlock { __int64 m_a[0x23]; };
 
 int FUN_14028cb70(const CStringW& strText, ATL::CAtlArray<CStringW>& arrOut, const wchar_t* pszSep, int nExpected);
 void FUN_14151f200();
-void FUN_140d73aa0(CStringW strText, int nType, void* pListener, CStringW strTag);
+void ShowMessageBox(CStringW strText, int nType, void* pListener, CStringW strTag);
 void FUN_140d73bc0(int nStrId, int nType, void* pListener, CStringW strTag);
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW strText, void* pListener, CStringW strTag);
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW strText, void* pListener, CStringW strTag);
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);
 void FUN_140710590(COutPacket& packet);
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -201,12 +201,12 @@ CStringW FUN_14016a730(const char* sz, int n);
 CString FUN_141028be0(__int64 nCharacterId, const CString& strKey, int nKind, CString strExt);
 const CStringA& GetStatName(unsigned nStat);
 int FUN_140bd09c0(void* pUserData);
-void* FUN_140bb9630(int n);
+void* IntToUserData(int n);
 __int64 GetServerTime();
 int GetDayNumberDifference(__int64 nThen, __int64 nNow);
-CStringW FUN_140b8e850(const CMsTime& kTime);
+CStringW FormatYearMonthDayHour(const CMsTime& kTime);
 void AddDays(CMsTime& kTime, long nDays);
-void FUN_1408377d0(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> >& ids);
+void GetCostIds(ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> >& ids);
 void CreateEquipSlotBag(const CString& strName, MS2Ptr<PCInfo> spPC, int nKind, int nUnk);
 void DestroyEquipSlotBag(const CString& strName);
 void FUN_14126e2f0(const CString& strName, MS2Ptr<PCInfo> spPC);
@@ -215,11 +215,11 @@ void FUN_1418bee30(ASObj* pObj, int n);
 MS2Ptr<CItem> FUN_140ccac60(MS2Ptr<CItem> spItem);
 
 extern CString g_strMaviewURL;  // news page url (feature 0x5c)
-inline CString FUN_1413391a0()
+inline CString GetMaviewURL()
 {
     return g_strMaviewURL;
 }
-int FUN_141337900(const void* p1, const void* p2);
+int CompareTitleNames(const void* p1, const void* p2);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -234,16 +234,16 @@ UIPCInfoDialog::UIPCInfoDialog()
     m_88 = 1;
     m_strGemBag = "PcInfoDialog.Gem";
     m_strEquipBag = "PcInfoDialog.Equip";
-    FUN_141924170(1);
+    SetTweenEnabled(1);
     FUN_1422dc3b0(1);
     // the handler is the UIDialog packet slot (79), whose real parameter is CInPacket& (the vcall thunk 0x141339078)
-    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->RegisterHandler(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
+    reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->RegisterHandler(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
 }
 
 // @0x14132bea0
 UIPCInfoDialog::~UIPCInfoDialog()
 {
-    reinterpret_cast<PacketHandlerManager*>(FUN_140bccd50())->UnregisterHandler(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
+    reinterpret_cast<PacketHandlerManager*>(GetPacketHandlerManager())->UnregisterHandler(0x78, Delegate<void(CInPacket&)>(this, (void (UIPCInfoDialog::*)(CInPacket&))&UIPCInfoDialog::vfunc_79));
 }
 
 // @0x14132c030
@@ -268,7 +268,7 @@ int UIPCInfoDialog::TryBeginRequest(__int64 nCharacterId)
 MS2_REPLACE_METHOD(0x14132C080, UIPCInfoDialog, TryBeginRequest, 168, 0xDC1D34D4);
 
 // @0x14132c130
-void UIPCInfoDialog::FUN_14132c130(PC* pPC)
+void UIPCInfoDialog::ShowFieldPC(PC* pPC)
 {
     m_spInfo.AssignRaw(new PCInfo());
     pPC->vfunc_125(reinterpret_cast<MS2Ptr<Unk_PCArg125>&>(m_spInfo));
@@ -277,12 +277,12 @@ void UIPCInfoDialog::FUN_14132c130(PC* pPC)
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
     if (pAvatar)
     {
-        AvatarPC* pAvatarPC = pAvatar->FUN_1418bd1d0();
+        AvatarPC* pAvatarPC = pAvatar->GetAvatarPC();
         if (pAvatarPC)
             pAvatarPC->FUN_1410885b0(true);
     }
 }
-MS2_REPLACE_METHOD(0x14132C130, UIPCInfoDialog, FUN_14132c130, 498, 0x0DF6E9F0);
+MS2_REPLACE_METHOD(0x14132C130, UIPCInfoDialog, ShowFieldPC, 498, 0x0DF6E9F0);
 
 // MS2-FUNCTIONAL: record copy and item loops from the decompile; frame layout and temporaries differ
 // @0x14132c330
@@ -333,7 +333,7 @@ void UIPCInfoDialog::FUN_14132c330(CPCDataPack* pPack)
     m_spAvatar->vfunc_1(this);
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
     AvatarPC* pAvatarPC = 0;
-    if (pAvatar != 0 && (pAvatarPC = pAvatar->FUN_1418bd1d0()) != 0)
+    if (pAvatar != 0 && (pAvatarPC = pAvatar->GetAvatarPC()) != 0)
     {
         pAvatarPC->FUN_1410885b0(true);
         pAvatarPC->FUN_1416591e0(0, FUN_141b6dea0(data.m_an410[0]));
@@ -482,7 +482,7 @@ MS2_REPLACE_METHOD(0x14132D500, UIPCInfoDialog, vfunc_65, 37, 0x1E0CAD2E);
 // @0x14132d530
 void UIPCInfoDialog::vfunc_67()
 {
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38c70(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->RemoveListener(this);
     DestroyEquipSlotBag(m_strEquipBag);
     FUN_14126e3f0(m_strGemBag);
     m_spInfo = 0;
@@ -564,12 +564,12 @@ int UIPCInfoDialog::vfunc_46()
         return 0;
     if (MS2Ptr<ASButton> spNews = m_30->FUN_140acce30<ASButton>("m_myNews"))
     {
-        if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x3b))
+        if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x3b))
             spNews->vfunc_3(0);
     }
     if (MS2Ptr<ASUIComponent> spWedding = m_30->FUN_140accfb0<ASUIComponent>("m_wedding"))
     {
-        if (!((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x104))
+        if (!((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x104))
             spWedding->vfunc_3(0);
     }
     return 1;
@@ -582,9 +582,9 @@ void UIPCInfoDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
     UIAvatarPC* pAvatar = dynamic_cast<UIAvatarPC*>((UIAvatarBase*)m_spAvatar);
-    if (pAvatar != 0 && pAvatar->FUN_1418bd1d0() != 0)
-        pAvatar->FUN_1418bd1d0()->FUN_1410885b0(true);
-    bool bCodi = ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8e);
+    if (pAvatar != 0 && pAvatar->GetAvatarPC() != 0)
+        pAvatar->GetAvatarPC()->FUN_1410885b0(true);
+    bool bCodi = ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x8e);
     if (((PCInfo*)m_spInfo != 0 ? true : false) && m_spInfo->FUN_140dba1c0() == 0)
         bCodi = m_spInfo->m_508;
     if (m_30.get() != 0)
@@ -597,28 +597,28 @@ void UIPCInfoDialog::OnLoadComplete()
             if (bCodi)
                 FUN_141336e40(aTabs, 3, L"$s_myInfo_codi", L"equip", L"$s_tooltip_myinfo_tab_codi");
             FUN_141336e40(aTabs, 2, L"$s_myInfo_badge", L"gem", L"$s_tooltip_myinfo_tab_badge");
-            obj.FUN_1409adbe0("dpTab", aTabs.FUN_1422bb870());
+            obj.FUN_1409adbe0("dpTab", aTabs.GetValue());
         }
-        m_30->Invoke("initData", obj.FUN_1422bb870());
+        m_30->Invoke("initData", obj.GetValue());
     }
     vfunc_84();
     vfunc_85();
     vfunc_86();
     vfunc_88(m_nTab);
     vfunc_98(GetProfileImagePath());
-    TSingleton<UIUGCEventDispatcher>::GetInstance()->FUN_141b38be0(this);
+    TSingleton<UIUGCEventDispatcher>::GetInstance()->AddListener(this);
     m_spMyNews = GetChild<ASButton>("m_myNews");
-    m_spMyNews->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132ed50), 0);
+    m_spMyNews->FUN_1422ce240(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::OnClickMyNews), 0);
     if (MS2Ptr<ASButton> spScreenshot = GetChild<ASButton>("m_screenshot"))
     {
-        if (((PCInfo*)m_spInfo != 0 ? true : false) && m_spInfo->FUN_140dba1c0() != 0 && ((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xf7))
+        if (((PCInfo*)m_spInfo != 0 ? true : false) && m_spInfo->FUN_140dba1c0() != 0 && ((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xf7))
         {
-            ((Unk_PciComp*)spScreenshot.operator->())->FUN_1422c1fe0(1);
+            ((Unk_PciComp*)spScreenshot.operator->())->SetEnabled(1);
             spScreenshot->vfunc_3(1);
         }
         else
         {
-            ((Unk_PciComp*)spScreenshot.operator->())->FUN_1422c1fe0(0);
+            ((Unk_PciComp*)spScreenshot.operator->())->SetEnabled(0);
             spScreenshot->vfunc_3(0);
         }
     }
@@ -646,7 +646,7 @@ int UIPCInfoDialog::OnMessage(UISwfEntity* pSender, UIMsg* pMsg)
                     CStringW strMessage;
                     if (pFilter->FUN_1402260c0(strMemo, strMessage) != 0)
                     {
-                        FUN_140d73aa0(strMessage, 0, (IMessageListener*)this, L"");
+                        ShowMessageBox(strMessage, 0, (IMessageListener*)this, L"");
                         return 1;
                     }
                 }
@@ -707,7 +707,7 @@ int UIPCInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
     {
         if (vfunc_93() != 0)
         {
-            MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(1, GetStringCommonByKey(L"s_char_info_reset_stat_point"), 0, L"");
+            MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, GetStringCommonByKey(L"s_char_info_reset_stat_point"), 0, L"");
             spBox->SetCallback(Delegate<bool(int, const CMsgBoxData&)>(this, &UIPCInfoDialog::OnResetStatPointsAnswer));
             FUN_140d73c60(spBox);
         }
@@ -723,21 +723,21 @@ int UIPCInfoDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* 
 MS2_REPLACE_METHOD(0x14132E890, UIPCInfoDialog, vfunc_28, 1182, 0x2F990B68);
 
 // @0x14132ed50
-void UIPCInfoDialog::FUN_14132ed50(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIPCInfoDialog::OnClickMyNews(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     if (m_spInfo == 0)
         return;
-    UIWebBrowserBase* pBrowser = reinterpret_cast<UIWebBrowserBase*>(FUN_140c43790(0x4e6a));
+    UIWebBrowserBase* pBrowser = reinterpret_cast<UIWebBrowserBase*>(FindWebBrowser(0x4e6a));
     if (pBrowser == 0)
         return;
     CString strUrl;
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x5c) == true)
-        strUrl = FUN_1413391a0();
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x5c) == true)
+        strUrl = GetMaviewURL();
     else
         strUrl = StringFormat("maview:/Main/SearchNews?c={0}", reinterpret_cast<const unsigned __int64&>(m_spInfo->m_30));   // formatted unsigned
     pBrowser->FUN_14135ec00(strUrl, true);
 }
-MS2_REPLACE_METHOD(0x14132ED50, UIPCInfoDialog, FUN_14132ed50, 304, 0x65E39183);
+MS2_REPLACE_METHOD(0x14132ED50, UIPCInfoDialog, OnClickMyNews, 304, 0x65E39183);
 
 // @0x14132ee90
 bool UIPCInfoDialog::OnResetStatPointsAnswer(int nResult, const CMsgBoxData& data)
@@ -762,7 +762,7 @@ void UIPCInfoDialog::FUN_14132eed0(const Scaleform::GFx::FunctionHandler::Params
     tooltip.SetTooltipAlign(4);
     tooltip.SetText(GetStringCommonByKey(strKey));
     Scaleform::GFx::Value* pRetVal = params.pRetVal;
-    *pRetVal = tooltip.FUN_1422bb870();
+    *pRetVal = tooltip.GetValue();
 }
 MS2_REPLACE_METHOD(0x14132EED0, UIPCInfoDialog, FUN_14132eed0, 324, 0xD7BCCED3);
 
@@ -773,35 +773,35 @@ void UIPCInfoDialog::FUN_14132f020(const Scaleform::GFx::FunctionHandler::Params
     if (pPC == 0)
         return;
     CStringW strText;
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xbd))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xbd))
     {
         if ((unsigned short)pPC->vfunc_78() >= FUN_140ba4b30((class Unk_ALConstU16*)&((struct Unk_PciConstants*)reinterpret_cast<Unk_SingletonObj1*>(TSingleton<Client::Constants>::GetInstance()))->m_9298))
         {
             strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason_with_adventure_level"),
-                                    (unsigned int)((MyPC*)pPC)->FUN_140c25130()->GetTotal(),
-                                    ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
-                                    ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
-                                    ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3),
-                                    ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)4));
+                                    (unsigned int)((MyPC*)pPC)->GetStatPointManager()->GetTotal(),
+                                    ((MyPC*)pPC)->GetStatPointManager()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
+                                    ((MyPC*)pPC)->GetStatPointManager()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
+                                    ((MyPC*)pPC)->GetStatPointManager()->GetExtra((CStatPointManager::Unk_ExtraKey)3),
+                                    ((MyPC*)pPC)->GetStatPointManager()->GetExtra((CStatPointManager::Unk_ExtraKey)4));
             goto show;
         }
     }
-    strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason"), (unsigned int)((MyPC*)pPC)->FUN_140c25130()->GetTotal(),
-                            ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
-                            ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
-                            ((MyPC*)pPC)->FUN_140c25130()->GetExtra((CStatPointManager::Unk_ExtraKey)3));
+    strText = FUN_14028dfa0(CStringW(L"s_char_info_stat_point_by_reason"), (unsigned int)((MyPC*)pPC)->GetStatPointManager()->GetTotal(),
+                            ((MyPC*)pPC)->GetStatPointManager()->GetExtra((CStatPointManager::Unk_ExtraKey)2),
+                            ((MyPC*)pPC)->GetStatPointManager()->GetExtra((CStatPointManager::Unk_ExtraKey)1),
+                            ((MyPC*)pPC)->GetStatPointManager()->GetExtra((CStatPointManager::Unk_ExtraKey)3));
 show:
     ASTooltip tooltip((void*)pPC, 1, 2);
     tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
     tooltip.SetTooltipAlign(4);
     tooltip.SetText(strText);
     Scaleform::GFx::Value* pRetVal = params.pRetVal;
-    *pRetVal = tooltip.FUN_1422bb870();
+    *pRetVal = tooltip.GetValue();
 }
 MS2_REPLACE_METHOD(0x14132F020, UIPCInfoDialog, FUN_14132f020, 1446, 0x42E4BD98);
 
 // @0x14132f5d0
-void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params& params)
+void UIPCInfoDialog::GetWeddingTooltip(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC == 0)
@@ -816,7 +816,7 @@ void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params
         {
         case 1:
             AddDays(kTime, 7);
-            strText = FUN_14028dfa0(CStringW(L"s_wedding_state_promise"), strPartner, FUN_140b8e850(kTime));
+            strText = FUN_14028dfa0(CStringW(L"s_wedding_state_promise"), strPartner, FormatYearMonthDayHour(kTime));
             break;
         case 2:
         {
@@ -834,10 +834,10 @@ void UIPCInfoDialog::FUN_14132f5d0(const Scaleform::GFx::FunctionHandler::Params
         tooltip.SetTooltipAlign(4);
         tooltip.SetText(strText);
         Scaleform::GFx::Value* pRetVal = params.pRetVal;
-        *pRetVal = tooltip.FUN_1422bb870();
+        *pRetVal = tooltip.GetValue();
     }
 }
-MS2_REPLACE_METHOD(0x14132F5D0, UIPCInfoDialog, FUN_14132f5d0, 1144, 0xBA2C420E);
+MS2_REPLACE_METHOD(0x14132F5D0, UIPCInfoDialog, GetWeddingTooltip, 1144, 0xBA2C420E);
 
 // @0x14132fa50
 void UIPCInfoDialog::FUN_14132fa50(const CStringW& strAddress)
@@ -905,18 +905,18 @@ void UIPCInfoDialog::vfunc_86()
         CStringW strValue = StringFormat(L"{0}", reinterpret_cast<const unsigned int&>(m_spInfo->m_3cc));
         SetChildText((*spItemLevel).FUN_1422bb890(), "detail", strDetail);
         SetChildText((*spItemLevel).FUN_1422bb890(), "value", strValue);
-        spItemLevel->Invoke("changeTooltipText", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_tooltip_myinfo_stat_itemLevel_ohAdditional"));
+        spItemLevel->Invoke("changeTooltipText", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_tooltip_myinfo_stat_itemLevel_ohAdditional"));
     }
     if (MS2Ptr<ASLabel> spAttack = GetChild<ASLabel>("m_attackInfo"))
     {
         CStringW strDetail(L"");
-        __int64 nScore = FUN_141334890();
+        __int64 nScore = GetOffenseScore();
         CStringW strValue = StringFormat(L"{0}", nScore);
         SetChildText((*spAttack).FUN_1422bb890(), "detail", strDetail);
         SetChildText((*spAttack).FUN_1422bb890(), "value", strValue);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xdf))
         {
-            SetChildHtmlText((*spAttack).FUN_1422bb890(), "textField", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_label_attackScore"));
+            SetChildHtmlText((*spAttack).FUN_1422bb890(), "textField", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_myInfo_label_attackScore"));
             ASTooltip tooltip(2);
             tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
             tooltip.SetText(L"$s_tooltip_myinfo_stat_attackScore");
@@ -929,13 +929,13 @@ void UIPCInfoDialog::vfunc_86()
     if (MS2Ptr<ASLabel> spDefense = GetChild<ASLabel>("m_defenseInfo"))
     {
         CStringW strDetail(L"");
-        __int64 nScore = FUN_141335290();
+        __int64 nScore = GetDefenseScore();
         CStringW strValue = StringFormat(L"{0}", nScore);
         SetChildText((*spDefense).FUN_1422bb890(), "detail", strDetail);
         SetChildText((*spDefense).FUN_1422bb890(), "value", strValue);
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xdf))
         {
-            SetChildHtmlText((*spDefense).FUN_1422bb890(), "textField", reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_label_defenseScore"));
+            SetChildHtmlText((*spDefense).FUN_1422bb890(), "textField", reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_myInfo_label_defenseScore"));
             ASTooltip tooltip(2);
             tooltip.SetTooltipClass("export_common_tooltip_tooltipText");
             tooltip.SetText(L"$s_tooltip_myinfo_stat_defenseScore");
@@ -950,64 +950,64 @@ void UIPCInfoDialog::vfunc_86()
         ASArray aStats(2);
         int nIndex = 0;
         int nGroup = 0;
-        aStats.PushValue(FUN_141335e00(4, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(7, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(10, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(1, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(2, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(3, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0xe, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413369a0(nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(4, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(7, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(10, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(1, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(2, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(3, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0xe, nGroup, nIndex++));
+        aStats.PushValue(BuildShieldRow(nGroup, nIndex++));
         nIndex = 0;
         nGroup++;
-        aStats.PushValue(FUN_141335e00(0x1b, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0x1d, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0x17, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0x18, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0x1f, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x1a, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x1b, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0xf, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0x11, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0x12, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x18, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x19, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x13, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x12, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x17, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x16, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x14, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x15, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0xc, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(7, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x10, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0xce, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0xd, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x23, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x36, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x1b, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x1d, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x17, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x18, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x1f, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x1a, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x1b, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0xf, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x11, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x12, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x18, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x19, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x13, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x12, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x17, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x16, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x14, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x15, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0xc, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(7, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x10, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0xce, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0xd, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x23, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x36, nGroup, nIndex++));
         nIndex = 0;
         nGroup++;
-        aStats.PushValue(FUN_141335e00(0x14, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0x19, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0x1a, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0x10, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0x13, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x25, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x26, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x1d, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x1c, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x21, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x20, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x1e, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x1f, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(0x15, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0xcc, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x22, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x24, nGroup, nIndex++));
-        aStats.PushValue(FUN_141335e00(5, nGroup, nIndex++));
-        aStats.PushValue(FUN_1413363d0(0x37, nGroup, nIndex++));
-        spLabels->Invoke(s_strSetData, aStats.FUN_1422bb870());
+        aStats.PushValue(BuildBasicStatRow(0x14, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x19, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x1a, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x10, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x13, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x25, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x26, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x1d, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x1c, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x21, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x20, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x1e, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x1f, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(0x15, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0xcc, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x22, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x24, nGroup, nIndex++));
+        aStats.PushValue(BuildBasicStatRow(5, nGroup, nIndex++));
+        aStats.PushValue(BuildSpecialStatRow(0x37, nGroup, nIndex++));
+        spLabels->Invoke(s_strSetData, aStats.GetValue());
     }
     vfunc_87();
 }
@@ -1019,7 +1019,7 @@ void UIPCInfoDialog::vfunc_87()
     if (m_spInfo == 0)
         return;
     ATL::CAtlArray<int> aStats;
-    FUN_1408377d0((ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> >&)aStats);
+    GetCostIds((ATL::CAtlArray<int, ATL::CDefaultElementTraits<int> >&)aStats);
     unsigned int nRemaining = 0;
     unsigned int nUsed = 0;
     if (m_spInfo->m_3c0 != 0)
@@ -1027,8 +1027,8 @@ void UIPCInfoDialog::vfunc_87()
         Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
         if (pPC == 0)
             return;
-        nRemaining = ((MyPC*)pPC)->FUN_140c25130()->GetRemaining();
-        nUsed = ((MyPC*)pPC)->FUN_140c25130()->GetUsed();
+        nRemaining = ((MyPC*)pPC)->GetStatPointManager()->GetRemaining();
+        nUsed = ((MyPC*)pPC)->GetStatPointManager()->GetUsed();
     }
     for (unsigned int i = 0; i < aStats.GetCount(); i++)
     {
@@ -1051,7 +1051,7 @@ void UIPCInfoDialog::vfunc_87()
                 Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
                 if (pPC != 0)
                 {
-                    unsigned int nPoints = ((MyPC*)pPC)->FUN_140c25130()->GetStatPoints((CStatPointManager::Unk_StatKey)nStat);
+                    unsigned int nPoints = ((MyPC*)pPC)->GetStatPointManager()->GetStatPoints((CStatPointManager::Unk_StatKey)nStat);
                     if (nPoints > 0)
                         nColor = 0xffa200;
                 }
@@ -1060,16 +1060,16 @@ void UIPCInfoDialog::vfunc_87()
             if (MS2Ptr<ASButton> spPlus = spRow->FUN_140acce30<ASButton>("m_plus"))
             {
                 if (nRemaining <= 0)
-                    ((Unk_PciComp*)spPlus.operator->())->FUN_1422c1fe0(0);
-                else if (((Unk_PciComp*)spPlus.operator->())->FUN_1422c2030() == 0)
-                    ((Unk_PciComp*)spPlus.operator->())->FUN_1422c1fe0(1);
+                    ((Unk_PciComp*)spPlus.operator->())->SetEnabled(0);
+                else if (((Unk_PciComp*)spPlus.operator->())->IsEnabled() == 0)
+                    ((Unk_PciComp*)spPlus.operator->())->SetEnabled(1);
             }
-            ((Unk_PciComp*)spRow.operator->())->FUN_1422c2d10(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132eed0), FUN_140bb9630(nStat));
-            FUN_1422c6240(2)->FUN_1422c6160(spRow->FUN_1422bb870());
+            ((Unk_PciComp*)spRow.operator->())->SetExternalTooltipFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132eed0), IntToUserData(nStat));
+            GetTooltipManager(2)->RegisterMouseEvent(spRow->GetValue());
         }
     }
     if (MS2Ptr<ASButton> spReset = GetChild<ASButton>("m_resetStatPoint"))
-        ((Unk_PciComp*)spReset.operator->())->FUN_1422c1fe0(nUsed > 0);
+        ((Unk_PciComp*)spReset.operator->())->SetEnabled(nUsed > 0);
     if (MS2Ptr<ASMovieClip> spRemain = GetChild<ASMovieClip>("m_remainPoint"))
     {
         if (MS2Ptr<ASTextField> spText = spRemain->FUN_1409b4620("m_remainStatPoint"))
@@ -1091,8 +1091,8 @@ void UIPCInfoDialog::vfunc_87()
         }
         if (m_spInfo->m_3c0 != 0)
         {
-            ((Unk_PciComp*)spRemain.operator->())->FUN_1422c2d10(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132f020), 0);
-            FUN_1422c6240(2)->FUN_1422c6160(spRemain->FUN_1422bb870());
+            ((Unk_PciComp*)spRemain.operator->())->SetExternalTooltipFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132f020), 0);
+            GetTooltipManager(2)->RegisterMouseEvent(spRemain->GetValue());
         }
     }
 }
@@ -1118,7 +1118,7 @@ void UIPCInfoDialog::vfunc_88(int nTab)
         if (nKind != 6)
             CreateEquipSlotBag(strBag, m_spInfo, nKind, 0);
     }
-    static_cast<ASObj*>(m_30.operator->())->FUN_1407cba60("equipBagID", strBag);
+    static_cast<ASObj*>(m_30.operator->())->SetStringMember("equipBagID", strBag);
 }
 MS2_REPLACE_METHOD(0x141332E00, UIPCInfoDialog, vfunc_88, 433, 0xEC13BD1B);
 
@@ -1165,7 +1165,7 @@ void UIPCInfoDialog::ClearProfile()
     vfunc_97(L"");
     vfunc_104(0);
     if (MS2Ptr<ASDropdownMenu> spTitle = GetChild<ASDropdownMenu>("m_title"))
-        ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
+        ((Unk_PciComp*)spTitle.operator->())->SetEnabled(0);
 }
 MS2_REPLACE_METHOD(0x141333090, UIPCInfoDialog, ClearProfile, 220, 0x5680505A);
 
@@ -1190,7 +1190,7 @@ void UIPCInfoDialog::vfunc_95(const unsigned short& nLevel)
     {
         CString strLevel;
         strLevel.Format("%d", nLevel);
-        spLevel->FUN_1422e4a00(strLevel);
+        spLevel->SetText(strLevel);
     }
 }
 MS2_REPLACE_METHOD(0x141333340, UIPCInfoDialog, vfunc_95, 205, 0xB4F00A53);
@@ -1202,15 +1202,15 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
         return;
     ATL::CAtlArray<unsigned int> aSorted;
     aSorted.Copy(aTitles);
-    qsort(aSorted.GetData(), aSorted.GetCount(), 4, FUN_141337900);
+    qsort(aSorted.GetData(), aSorted.GetCount(), 4, CompareTitleNames);
     if (MS2Ptr<ASDropdownMenu> spTitle = GetChild<ASDropdownMenu>("m_title"))
     {
         spTitle->ClearItems();
         if (m_spInfo->FUN_140dba220() != 0)
         {
             ASObj none(2);
-            none.FUN_1407cbb20("label", FUN_141b720b0(0, 0));
-            none.FUN_1407cb9c0("id", 0);
+            none.SetWStringMember("label", FUN_141b720b0(0, 0));
+            none.SetIntMember("id", 0);
             spTitle->AddItemRow(none);
             int nSelected = 0;
             for (size_t i = 0; i < aSorted.GetCount(); i++)
@@ -1219,7 +1219,7 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
                 if (strLabel.IsEmpty())
                     continue;
                 ASObj item(2);
-                item.FUN_1407cbb20("label", strLabel);
+                item.SetWStringMember("label", strLabel);
                 item.SetMemberUInt("id", aSorted[i]);
                 spTitle->AddItemRow(item);
                 if (aSorted[i] == (unsigned int)nTitle)
@@ -1227,7 +1227,7 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
             }
             reinterpret_cast<ASDropdownMenu*>(spTitle.operator->())->SetSelectedIndex(nSelected);
             if (aSorted.IsEmpty())
-                ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
+                ((Unk_PciComp*)spTitle.operator->())->SetEnabled(0);
             size_t nRows;
             if (aSorted.GetCount() + 1 > 5)
                 nRows = 5;
@@ -1242,7 +1242,7 @@ void UIPCInfoDialog::vfunc_96(int nTitle, const ATL::CAtlArray<unsigned int>& aT
                 spTitle->AddItemLabel(FUN_141b72150(nTitle, m_spInfo->m_3c4));
                 reinterpret_cast<ASDropdownMenu*>(spTitle.operator->())->SetSelectedIndex(0);
             }
-            ((Unk_PciComp*)spTitle.operator->())->FUN_1422c1fe0(0);
+            ((Unk_PciComp*)spTitle.operator->())->SetEnabled(0);
         }
         ((Unk_PciComboSlots*)spTitle.get())->vfunc_24(true);
     }
@@ -1272,13 +1272,13 @@ void UIPCInfoDialog::vfunc_98(const CStringW& strProfile)
         {
             if (m_spInfo->FUN_140dba240() != 0)
             {
-                ((Unk_PciComp*)spProfile.operator->())->FUN_1422c1fe0(1);
-                ((Unk_PciComp*)spProfile.operator->())->FUN_1422cdf50("$s_myInfo_menu_select_profile_enable");
+                ((Unk_PciComp*)spProfile.operator->())->SetEnabled(1);
+                ((Unk_PciComp*)spProfile.operator->())->SetLabel("$s_myInfo_menu_select_profile_enable");
             }
             else
             {
-                ((Unk_PciComp*)spProfile.operator->())->FUN_1422c1fe0(0);
-                ((Unk_PciComp*)spProfile.operator->())->FUN_1422cdf50("$s_myInfo_menu_select_profile_disable");
+                ((Unk_PciComp*)spProfile.operator->())->SetEnabled(0);
+                ((Unk_PciComp*)spProfile.operator->())->SetLabel("$s_myInfo_menu_select_profile_disable");
             }
         }
     }
@@ -1315,7 +1315,7 @@ void UIPCInfoDialog::vfunc_101(const CStringW& strAddress)
         return;
     if (MS2Ptr<ASLabel> spAddress = GetChild<ASLabel>("m_address"))
     {
-        ((Unk_PciComp*)spAddress.operator->())->FUN_1422c1fe0(!strAddress.IsEmpty());
+        ((Unk_PciComp*)spAddress.operator->())->SetEnabled(!strAddress.IsEmpty());
         if (m_spInfo->FUN_140dba1c0() != 0)
             spAddress->FUN_1422e4a50(strAddress.IsEmpty() ? GetStringCommon(0x22) : CStringW(strAddress));
         else
@@ -1331,7 +1331,7 @@ void UIPCInfoDialog::vfunc_102(int nPoint, int nRank)
         return;
     if (MS2Ptr<ASLabel> spInterior = GetChild<ASLabel>("m_interior_point"))
     {
-        ((Unk_PciComp*)spInterior.operator->())->FUN_1422c1fe0(1);
+        ((Unk_PciComp*)spInterior.operator->())->SetEnabled(1);
         spInterior->FUN_1422e4a50(FormatStringId<int, int>(0x25, nRank, nPoint));
     }
 }
@@ -1354,7 +1354,7 @@ void UIPCInfoDialog::vfunc_103(const CStringW& strGuild, const CStringW& strRank
         {
             strText = FormatStringId<CStringW, CStringW>(0x24, strGuild, strRank);
         }
-        ((Unk_PciComp*)spGuild.operator->())->FUN_1422c1fe0(!strGuild.IsEmpty());
+        ((Unk_PciComp*)spGuild.operator->())->SetEnabled(!strGuild.IsEmpty());
         spGuild->FUN_1422e4a50(strText);
     }
 }
@@ -1377,7 +1377,7 @@ void UIPCInfoDialog::vfunc_105(const int& nLevel)
     {
         CString strLevel;
         strLevel.Format("%d", nLevel);
-        spLevel->FUN_1422e4a00(strLevel);
+        spLevel->SetText(strLevel);
         if (nLevel == 0)
             spLevel->vfunc_3(0);
         else
@@ -1416,8 +1416,8 @@ void UIPCInfoDialog::vfunc_106()
                 break;
             }
             spWedding->vfunc_3(1);
-            ((Unk_PciComp*)spWedding.operator->())->FUN_1422c2d10(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::FUN_14132f5d0), 0);
-            FUN_1422c6240(2)->FUN_1422c6160(spWedding->FUN_1422bb870());
+            ((Unk_PciComp*)spWedding.operator->())->SetExternalTooltipFunction(Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)>(this, &UIPCInfoDialog::GetWeddingTooltip), 0);
+            GetTooltipManager(2)->RegisterMouseEvent(spWedding->GetValue());
         }
         else
         {
@@ -1428,46 +1428,46 @@ void UIPCInfoDialog::vfunc_106()
 MS2_REPLACE_METHOD(0x141334550, UIPCInfoDialog, vfunc_106, 826, 0xB7E7E3E5);
 
 // @0x141334890
-__int64 UIPCInfoDialog::FUN_141334890()
+__int64 UIPCInfoDialog::GetOffenseScore()
 {
     if (m_spInfo == 0)
         return 0;
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xdf))
     {
         float fA = 0, fB = 0, fC = 0;
         Unk_OffenseScore score;
         score.m_00 = m_spInfo->m_1c;
         score.m_08 = m_spInfo->m_aStats0[7];
         score.m_10 = m_spInfo->m_aStats0[0xa];
-        score.m_18 = FUN_141335940(0xe, &fA, &fB, &fC);
+        score.m_18 = GetBasicStat(0xe, &fA, &fB, &fC);
         score.m_20 = GetAverageStat();
-        score.m_28 = (__int64)FUN_141335940(0x1d, &fA, &fB, &fC);
-        score.m_30 = (__int64)FUN_141335940(0x17, &fA, &fB, &fC);
-        score.m_38 = (__int64)FUN_141335940(0x18, &fA, &fB, &fC);
-        score.m_40 = FUN_141335940(0x1f, &fA, &fB, &fC);
-        score.m_44 = FUN_141335d20(0x1a, true, &fA, &fB, &fC);
-        score.m_48 = FUN_141335d20(0x1b, true, &fA, &fB, &fC);
-        score.m_50 = (__int64)FUN_141335940(0xf, &fA, &fB, &fC);
-        score.m_58 = (__int64)FUN_141335940(0x11, &fA, &fB, &fC);
-        score.m_60 = (__int64)FUN_141335940(0x12, &fA, &fB, &fC);
-        score.m_68 = FUN_141335d20(0x18, true, &fA, &fB, &fC);
-        score.m_6c = FUN_141335d20(0x19, true, &fA, &fB, &fC);
-        score.m_70 = FUN_141335d20(0x13, true, &fA, &fB, &fC);
-        score.m_74 = FUN_141335d20(0x12, true, &fA, &fB, &fC);
-        score.m_78 = FUN_141335d20(0x17, true, &fA, &fB, &fC);
-        score.m_7c = FUN_141335d20(0x16, true, &fA, &fB, &fC);
-        score.m_80 = FUN_141335d20(0x14, true, &fA, &fB, &fC);
-        score.m_84 = FUN_141335d20(0x15, true, &fA, &fB, &fC);
-        score.m_88 = FUN_141335d20(0xc, true, &fA, &fB, &fC);
-        score.m_8c = FUN_141335d20(7, true, &fA, &fB, &fC);
-        score.m_90 = FUN_141335d20(0x10, true, &fA, &fB, &fC);
-        score.m_94 = FUN_141335940(0xd, &fA, &fB, &fC);
-        score.m_98 = FUN_141335d20(0x23, true, &fA, &fB, &fC);
-        score.m_a0 = (__int64)FUN_141335d20(0x36, false, &fA, &fB, &fC);
+        score.m_28 = (__int64)GetBasicStat(0x1d, &fA, &fB, &fC);
+        score.m_30 = (__int64)GetBasicStat(0x17, &fA, &fB, &fC);
+        score.m_38 = (__int64)GetBasicStat(0x18, &fA, &fB, &fC);
+        score.m_40 = GetBasicStat(0x1f, &fA, &fB, &fC);
+        score.m_44 = GetSpecialStat(0x1a, true, &fA, &fB, &fC);
+        score.m_48 = GetSpecialStat(0x1b, true, &fA, &fB, &fC);
+        score.m_50 = (__int64)GetBasicStat(0xf, &fA, &fB, &fC);
+        score.m_58 = (__int64)GetBasicStat(0x11, &fA, &fB, &fC);
+        score.m_60 = (__int64)GetBasicStat(0x12, &fA, &fB, &fC);
+        score.m_68 = GetSpecialStat(0x18, true, &fA, &fB, &fC);
+        score.m_6c = GetSpecialStat(0x19, true, &fA, &fB, &fC);
+        score.m_70 = GetSpecialStat(0x13, true, &fA, &fB, &fC);
+        score.m_74 = GetSpecialStat(0x12, true, &fA, &fB, &fC);
+        score.m_78 = GetSpecialStat(0x17, true, &fA, &fB, &fC);
+        score.m_7c = GetSpecialStat(0x16, true, &fA, &fB, &fC);
+        score.m_80 = GetSpecialStat(0x14, true, &fA, &fB, &fC);
+        score.m_84 = GetSpecialStat(0x15, true, &fA, &fB, &fC);
+        score.m_88 = GetSpecialStat(0xc, true, &fA, &fB, &fC);
+        score.m_8c = GetSpecialStat(7, true, &fA, &fB, &fC);
+        score.m_90 = GetSpecialStat(0x10, true, &fA, &fB, &fC);
+        score.m_94 = GetBasicStat(0xd, &fA, &fB, &fC);
+        score.m_98 = GetSpecialStat(0x23, true, &fA, &fB, &fC);
+        score.m_a0 = (__int64)GetSpecialStat(0x36, false, &fA, &fB, &fC);
         score.m_a8 = m_spInfo->FUN_140dbaa10();
-        score.m_b0 = (__int64)FUN_141335940(0x1e, &fA, &fB, &fC);
-        score.m_b8 = FUN_141335d20(0xb1, true, &fA, &fB, &fC);
-        score.m_bc = FUN_141335d20(0xb2, true, &fA, &fB, &fC);
+        score.m_b0 = (__int64)GetBasicStat(0x1e, &fA, &fB, &fC);
+        score.m_b8 = GetSpecialStat(0xb1, true, &fA, &fB, &fC);
+        score.m_bc = GetSpecialStat(0xb2, true, &fA, &fB, &fC);
         return (int)((class CLua*)FUN_1401c0db0())->CalePcOffenseScore(&score);
     }
     int nFieldLevel = 0;
@@ -1478,57 +1478,57 @@ __int64 UIPCInfoDialog::FUN_141334890()
     __int64 nAttackMin = m_spInfo->m_aStats2[0x17];
     __int64 nAttackMax = m_spInfo->m_aStats2[0x18];
     float fA1, fB1, fC1;
-    __int64 nCritical = (__int64)FUN_141335d20(0xcb, false, &fA1, &fB1, &fC1);
+    __int64 nCritical = (__int64)GetSpecialStat(0xcb, false, &fA1, &fB1, &fC1);
     __int64 nPierce = m_spInfo->m_aStats2[0x12];
     float fCritRate = ((class CLua*)FUN_1401c0db0())->FUN_140674a70(nPierce, 0, nCritical);
     __int64 nDex = m_spInfo->m_aStats2[3];
     __int64 nLuk = m_spInfo->m_aStats2[0x11];
     __int64 nBase = 0x32;
     float fA2, fB2, fC2;
-    __int64 nAccuracy = (__int64)FUN_141335d20(0xca, false, &fA2, &fB2, &fC2);
+    __int64 nAccuracy = (__int64)GetSpecialStat(0xca, false, &fA2, &fB2, &fC2);
     float fA3, fB3, fC3;
-    __int64 nCritDamage = (__int64)FUN_141335d20(0xcd, false, &fA3, &fB3, &fC3);
+    __int64 nCritDamage = (__int64)GetSpecialStat(0xcd, false, &fA3, &fB3, &fC3);
     float fDamage = ((class CLua*)FUN_1401c0db0())->FUN_1406747a0(m_spInfo->m_1c, nDex, nLuk, nBase, nAccuracy, nCritDamage);
     __int64 nScore = ((class CLua*)FUN_1401c0db0())->CalcPcDamage(nMeanAttack, nAttackMin, nAttackMax, fCritRate, fDamage);
     return nScore;
 }
-MS2_REPLACE_METHOD(0x141334890, UIPCInfoDialog, FUN_141334890, 2554, 0xA471D6B9);
+MS2_REPLACE_METHOD(0x141334890, UIPCInfoDialog, GetOffenseScore, 2554, 0xA471D6B9);
 
 // @0x141335290
-__int64 UIPCInfoDialog::FUN_141335290()
+__int64 UIPCInfoDialog::GetDefenseScore()
 {
     if (m_spInfo == 0)
         return 0;
-    if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0xdf))
+    if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0xdf))
     {
         float fA = 0, fB = 0, fC = 0;
         Unk_DefenseScore score;
         score.m_00 = m_spInfo->m_1c;
         score.m_08 = m_spInfo->m_aStats0[4];
-        score.m_10 = (__int64)FUN_141335940(0x14, &fA, &fB, &fC);
-        score.m_18 = (__int64)FUN_141335940(0x19, &fA, &fB, &fC);
-        score.m_20 = (__int64)FUN_141335940(0x1a, &fA, &fB, &fC);
-        score.m_28 = (__int64)FUN_141335940(0x10, &fA, &fB, &fC);
-        score.m_30 = (__int64)FUN_141335940(0x13, &fA, &fB, &fC);
-        score.m_38 = FUN_141335d20(0x25, true, &fA, &fB, &fC);
-        score.m_3c = FUN_141335d20(0x26, true, &fA, &fB, &fC);
-        score.m_40 = FUN_141335d20(0x1d, true, &fA, &fB, &fC);
-        score.m_44 = FUN_141335d20(0x1c, true, &fA, &fB, &fC);
-        score.m_48 = FUN_141335d20(0x21, true, &fA, &fB, &fC);
-        score.m_4c = FUN_141335d20(0x20, true, &fA, &fB, &fC);
-        score.m_50 = FUN_141335d20(0x1e, true, &fA, &fB, &fC);
-        score.m_54 = FUN_141335d20(0x1f, true, &fA, &fB, &fC);
-        score.m_58 = FUN_141335940(0x15, &fA, &fB, &fC);
-        score.m_5c = FUN_141335d20(0xcc, true, &fA, &fB, &fC);
-        score.m_60 = FUN_141335d20(0x22, true, &fA, &fB, &fC);
-        score.m_64 = FUN_141335d20(0x24, true, &fA, &fB, &fC);
-        score.m_68 = (__int64)FUN_141335940(5, &fA, &fB, &fC);
-        score.m_70 = (__int64)FUN_141335d20(0x37, false, &fA, &fB, &fC);
+        score.m_10 = (__int64)GetBasicStat(0x14, &fA, &fB, &fC);
+        score.m_18 = (__int64)GetBasicStat(0x19, &fA, &fB, &fC);
+        score.m_20 = (__int64)GetBasicStat(0x1a, &fA, &fB, &fC);
+        score.m_28 = (__int64)GetBasicStat(0x10, &fA, &fB, &fC);
+        score.m_30 = (__int64)GetBasicStat(0x13, &fA, &fB, &fC);
+        score.m_38 = GetSpecialStat(0x25, true, &fA, &fB, &fC);
+        score.m_3c = GetSpecialStat(0x26, true, &fA, &fB, &fC);
+        score.m_40 = GetSpecialStat(0x1d, true, &fA, &fB, &fC);
+        score.m_44 = GetSpecialStat(0x1c, true, &fA, &fB, &fC);
+        score.m_48 = GetSpecialStat(0x21, true, &fA, &fB, &fC);
+        score.m_4c = GetSpecialStat(0x20, true, &fA, &fB, &fC);
+        score.m_50 = GetSpecialStat(0x1e, true, &fA, &fB, &fC);
+        score.m_54 = GetSpecialStat(0x1f, true, &fA, &fB, &fC);
+        score.m_58 = GetBasicStat(0x15, &fA, &fB, &fC);
+        score.m_5c = GetSpecialStat(0xcc, true, &fA, &fB, &fC);
+        score.m_60 = GetSpecialStat(0x22, true, &fA, &fB, &fC);
+        score.m_64 = GetSpecialStat(0x24, true, &fA, &fB, &fC);
+        score.m_68 = (__int64)GetBasicStat(5, &fA, &fB, &fC);
+        score.m_70 = (__int64)GetSpecialStat(0x37, false, &fA, &fB, &fC);
         return (int)((class CLua*)FUN_1401c0db0())->CalePcDefenseScore(&score);
     }
     return m_spInfo->m_aStats2[0x14];
 }
-MS2_REPLACE_METHOD(0x141335290, UIPCInfoDialog, FUN_141335290, 1251, 0x9126E927);
+MS2_REPLACE_METHOD(0x141335290, UIPCInfoDialog, GetDefenseScore, 1251, 0x9126E927);
 
 // @0x141335780
 __int64 UIPCInfoDialog::GetAverageStat()
@@ -1542,7 +1542,7 @@ __int64 UIPCInfoDialog::GetAverageStat()
 MS2_REPLACE_METHOD(0x141335780, UIPCInfoDialog, GetAverageStat, 162, 0x879E9A4F);
 
 // @0x141335830
-__int64 UIPCInfoDialog::FUN_141335830(int nStat)
+__int64 UIPCInfoDialog::GetStatBonus(int nStat)
 {
     if (m_spInfo == 0)
         return 0;
@@ -1557,10 +1557,10 @@ __int64 UIPCInfoDialog::FUN_141335830(int nStat)
     }
     return nBonus;
 }
-MS2_REPLACE_METHOD(0x141335830, UIPCInfoDialog, FUN_141335830, 261, 0xB140EADA);
+MS2_REPLACE_METHOD(0x141335830, UIPCInfoDialog, GetStatBonus, 261, 0xB140EADA);
 
 // @0x141335940
-float UIPCInfoDialog::FUN_141335940(int nStat, float* pfBase, float* pfBonus, float* pfTotal)
+float UIPCInfoDialog::GetBasicStat(int nStat, float* pfBase, float* pfBonus, float* pfTotal)
 {
     if (m_spInfo == 0)
         return 0.0f;
@@ -1586,7 +1586,7 @@ float UIPCInfoDialog::FUN_141335940(int nStat, float* pfBase, float* pfBonus, fl
     else if (nStat == 0x12)
     {
         float fA, fB, fC;
-        __int64 nCritical = (__int64)FUN_141335d20(0xcb, false, &fA, &fB, &fC);
+        __int64 nCritical = (__int64)GetSpecialStat(0xcb, false, &fA, &fB, &fC);
         float fZero = 0.0f;
         *pfBase = ((class CLua*)FUN_1401c0db0())->FUN_140674a70((__int64)*pfBase, fZero, 0) * 100.0f;
         *pfBonus = *pfBonus + (float)nCritical;
@@ -1596,16 +1596,16 @@ float UIPCInfoDialog::FUN_141335940(int nStat, float* pfBase, float* pfBonus, fl
     else if (nStat == 0x11)
     {
         float fA, fB, fC;
-        __int64 nAccuracy = (__int64)FUN_141335d20(0xca, false, &fA, &fB, &fC);
+        __int64 nAccuracy = (__int64)GetSpecialStat(0xca, false, &fA, &fB, &fC);
         *pfBonus = *pfBonus + (float)nAccuracy;
         *pfTotal = *pfTotal + (float)nAccuracy;
     }
     return *pfTotal;
 }
-MS2_REPLACE_METHOD(0x141335940, UIPCInfoDialog, FUN_141335940, 981, 0x24B9E42C);
+MS2_REPLACE_METHOD(0x141335940, UIPCInfoDialog, GetBasicStat, 981, 0x24B9E42C);
 
 // @0x141335d20
-float UIPCInfoDialog::FUN_141335d20(int nStat, bool bTenth, float* pfBase, float* pfBonus, float* pfTotal)
+float UIPCInfoDialog::GetSpecialStat(int nStat, bool bTenth, float* pfBase, float* pfBonus, float* pfTotal)
 {
     if (m_spInfo == 0)
         return 0.0f;
@@ -1620,18 +1620,18 @@ float UIPCInfoDialog::FUN_141335d20(int nStat, bool bTenth, float* pfBase, float
     *pfTotal = *pfBase + *pfBonus;
     return *pfTotal;
 }
-MS2_REPLACE_METHOD(0x141335D20, UIPCInfoDialog, FUN_141335d20, 214, 0x0D7C0D7A);
+MS2_REPLACE_METHOD(0x141335D20, UIPCInfoDialog, GetSpecialStat, 214, 0x0D7C0D7A);
 
 // @0x141335e00
-Scaleform::GFx::Value UIPCInfoDialog::FUN_141335e00(int nStat, int nContainer, int nLabel)
+Scaleform::GFx::Value UIPCInfoDialog::BuildBasicStatRow(int nStat, int nContainer, int nLabel)
 {
     ASObj row(2);
     if (m_spInfo == 0)
-        return row.FUN_1422bb870();
+        return row.GetValue();
     float fBase = 0.0f;
     float fBonus = 0.0f;
     float fTotal = 0.0f;
-    FUN_141335940(nStat, &fBase, &fBonus, &fTotal);
+    GetBasicStat(nStat, &fBase, &fBonus, &fTotal);
     bool bRate = false;
     switch (nStat)
     {
@@ -1674,19 +1674,19 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_141335e00(int nStat, int nContainer, i
     }
     row.SetMemberUInt("containerIndex", nContainer);
     row.SetMemberUInt("labelIndex", nLabel);
-    row.FUN_1407cbb20("name", GetStatCommonText(nStat));
-    row.FUN_1407cbb20("value", strValue);
-    row.FUN_1407cbb20("detail", strDetail);
-    return row.FUN_1422bb870();
+    row.SetWStringMember("name", GetStatCommonText(nStat));
+    row.SetWStringMember("value", strValue);
+    row.SetWStringMember("detail", strDetail);
+    return row.GetValue();
 }
-MS2_REPLACE_METHOD(0x141335E00, UIPCInfoDialog, FUN_141335e00, 1482, 0x18ADFFFD);
+MS2_REPLACE_METHOD(0x141335E00, UIPCInfoDialog, BuildBasicStatRow, 1482, 0x18ADFFFD);
 
 // @0x1413363d0
-Scaleform::GFx::Value UIPCInfoDialog::FUN_1413363d0(int nStat, int nContainer, int nLabel)
+Scaleform::GFx::Value UIPCInfoDialog::BuildSpecialStatRow(int nStat, int nContainer, int nLabel)
 {
     ASObj row(2);
     if (m_spInfo == 0)
-        return row.FUN_1422bb870();
+        return row.GetValue();
     bool bTenth = true;
     switch (nStat)
     {
@@ -1698,7 +1698,7 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413363d0(int nStat, int nContainer, i
     float fBase = 0.0f;
     float fBonus = 0.0f;
     float fTotal = 0.0f;
-    FUN_141335d20(nStat, bTenth, &fBase, &fBonus, &fTotal);
+    GetSpecialStat(nStat, bTenth, &fBase, &fBonus, &fTotal);
     CStringW strValue;
     if (bTenth)
     {
@@ -1730,19 +1730,19 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413363d0(int nStat, int nContainer, i
     }
     row.SetMemberUInt("containerIndex", nContainer);
     row.SetMemberUInt("labelIndex", nLabel);
-    row.FUN_1407cbb20("name", FUN_140630e10(nStat));
-    row.FUN_1407cbb20("value", strValue);
-    row.FUN_1407cbb20("detail", strDetail);
-    return row.FUN_1422bb870();
+    row.SetWStringMember("name", FUN_140630e10(nStat));
+    row.SetWStringMember("value", strValue);
+    row.SetWStringMember("detail", strDetail);
+    return row.GetValue();
 }
-MS2_REPLACE_METHOD(0x1413363D0, UIPCInfoDialog, FUN_1413363d0, 1477, 0x4F8FB42C);
+MS2_REPLACE_METHOD(0x1413363D0, UIPCInfoDialog, BuildSpecialStatRow, 1477, 0x4F8FB42C);
 
 // @0x1413369a0
-Scaleform::GFx::Value UIPCInfoDialog::FUN_1413369a0(unsigned int nContainer, int nLabel)
+Scaleform::GFx::Value UIPCInfoDialog::BuildShieldRow(unsigned int nContainer, int nLabel)
 {
     ASObj row(2);
     if (m_spInfo == 0)
-        return row.FUN_1422bb870();
+        return row.GetValue();
     __int64 nShield = 0;
     Unk_PciMyPC* pPC = ((class Unk_PciMyPC*)((class WorldService*)(class Unk_PciWorld*)(reinterpret_cast<Unk_PciWorld*>(WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPC != 0)
@@ -1754,12 +1754,12 @@ Scaleform::GFx::Value UIPCInfoDialog::FUN_1413369a0(unsigned int nContainer, int
     strValue = StringFormat(L"{0}", nShield);
     row.SetMemberUInt("containerIndex", nContainer);
     row.SetMemberUInt("labelIndex", nLabel);
-    row.FUN_1407cbb20("name", strName);
-    row.FUN_1407cbb20("value", strValue);
-    row.FUN_1407cbb20("detail", strDetail);
-    return row.FUN_1422bb870();
+    row.SetWStringMember("name", strName);
+    row.SetWStringMember("value", strValue);
+    row.SetWStringMember("detail", strDetail);
+    return row.GetValue();
 }
-MS2_REPLACE_METHOD(0x1413369A0, UIPCInfoDialog, FUN_1413369a0, 736, 0x224D2010);
+MS2_REPLACE_METHOD(0x1413369A0, UIPCInfoDialog, BuildShieldRow, 736, 0x224D2010);
 
 // @0x141336c90
 CStringW UIPCInfoDialog::GetProfileImagePath()
@@ -1791,17 +1791,17 @@ void UIPCInfoDialog::FUN_141336e40(ASArray& aTabs, int nTab, const CStringW& str
                                    const CStringW& strTooltip)
 {
     ASObj tab(2);
-    tab.FUN_1407cb9c0("tabIndex", nTab);
-    tab.FUN_1407cbb20("label", strLabel);
-    tab.FUN_1407cbb20("equipFrame", strFrame);
+    tab.SetIntMember("tabIndex", nTab);
+    tab.SetWStringMember("label", strLabel);
+    tab.SetWStringMember("equipFrame", strFrame);
     {
         ASObj tooltip(2);
         tooltip.FUN_1409c0dc0("className", "export_common_tooltip_tooltipText");
-        tooltip.FUN_1407cbb20("id", strTooltip);
+        tooltip.SetWStringMember("id", strTooltip);
         tooltip.FUN_1409c0dc0("align", "topLeft");
-        tab.FUN_1409adbe0("tooltipData", tooltip.FUN_1422bb870());
+        tab.FUN_1409adbe0("tooltipData", tooltip.GetValue());
     }
-    aTabs.PushValue(tab.FUN_1422bb870());
+    aTabs.PushValue(tab.GetValue());
 }
 MS2_REPLACE_METHOD(0x141336E40, UIPCInfoDialog, FUN_141336e40, 506, 0x74EC012D);
 
@@ -1859,10 +1859,10 @@ int UIPCInfoDialog::vfunc_o178_1(void* pAvatar)
     {
         if (pAvatarPC->GetType() == 1)
             FUN_1418bee30(&data, 10000);
-        data.FUN_1407cbbe0("showActionList", true);
+        data.SetBoolMember("showActionList", true);
     }
     if (m_30.get() != 0)
-        m_30->Invoke("initData", data.FUN_1422bb870());
+        m_30->Invoke("initData", data.GetValue());
     return 1;
 }
 MS2_REPLACE_METHOD_VIA(0x1413373F0, UIPCInfoDialog, IUIAvatarEventListener, vfunc_o178_1, 350, 0xB47FD197);
@@ -1898,17 +1898,17 @@ Scaleform::GFx::Value FUN_141337620(CString strName, int nContainer, int nLabel,
     ASObj row(2);
     row.SetMemberUInt("containerIndex", nContainer);
     row.SetMemberUInt("labelIndex", nLabel);
-    row.FUN_1407cbb20("name", FUN_14016a730(strName, 0));
-    row.FUN_1407cbb20("value", strValue);
-    row.FUN_1407cbb20("detail", strDetail);
-    return row.FUN_1422bb870();
+    row.SetWStringMember("name", FUN_14016a730(strName, 0));
+    row.SetWStringMember("value", strValue);
+    row.SetWStringMember("detail", strDetail);
+    return row.GetValue();
 }
 
 // the exe calls the ucrt wcscmp through its import slot here
 extern "C" int(__cdecl* __imp_wcscmp)(const wchar_t* psz1, const wchar_t* psz2);
 
 // @0x141337900
-int FUN_141337900(const void* p1, const void* p2)
+int CompareTitleNames(const void* p1, const void* p2)
 {
     const int* pn1 = (const int*)p1;
     const int* pn2 = (const int*)p2;
@@ -1916,24 +1916,24 @@ int FUN_141337900(const void* p1, const void* p2)
     CStringW str2 = FUN_141b720b0(*pn2, 0);
     return __imp_wcscmp(str1.GetBuffer(0), str2.GetBuffer(0));
 }
-MS2_REPLACE(0x141337900, FUN_141337900, 169, 0xE4127450);
+MS2_REPLACE(0x141337900, CompareTitleNames, 169, 0xE4127450);
 
 // The equip-layer tab name (also used by the closet dialog); sits just before this TU's .text$mn range in the exe.
 // MS2-RANGE: 0x14132ba90-0x14132bc00 .text$mn
 // @0x14132ba90
-CStringW FUN_14132ba90(const int& nLayer)
+CStringW GetEquipLayerName(const int& nLayer)
 {
     switch (nLayer)
     {
     case 0:
-        return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_game");
+        return reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_myInfo_game");
     case 1:
-        return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_skin");
+        return reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_myInfo_skin");
     case 2:
-        if (((class CFeatureManager*)FUN_140166410())->FUN_14036d570(0x8e))
-            return reinterpret_cast<GFxManager*>(FUN_14025e7a0())->Localize("$s_myInfo_codi");
+        if (((class CFeatureManager*)FUN_140166410())->IsFeatureEnabled(0x8e))
+            return reinterpret_cast<GFxManager*>(GetGFxManager())->Localize("$s_myInfo_codi");
         break;
     }
     return L"";
 }
-MS2_REPLACE(0x14132BA90, FUN_14132ba90, 355, 0xEDEB26E7);
+MS2_REPLACE(0x14132BA90, GetEquipLayerName, 355, 0xEDEB26E7);

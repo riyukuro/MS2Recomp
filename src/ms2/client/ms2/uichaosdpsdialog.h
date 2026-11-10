@@ -25,7 +25,7 @@ public:
     int FUN_140e055b0(ASObj& obj, CPartyMember* pMember, unsigned nRank);  // 0x140e055b0 fill one meter row
     void OnTextToggle();                                                   // 0x140e057d0 title bar and sort direction
     void FUN_140e05950();                                                   // 0x140e05950 rebuild the ranking
-    void FUN_140e05f80();                                                   // 0x140e05f80 RemoveMember
+    void RemoveMemberIfUnderLimit();                                                   // 0x140e05f80 RemoveMember
 
     Unk_IntervalTimer m_tick;                                               // +0x178
     std::vector<MS2Ptr<CPartyMember> > m_members;                           // +0x180 the ranking

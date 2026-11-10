@@ -16,13 +16,13 @@
 
 using Scaleform::GFx::Value;
 
-Scaleform::GFx::Movie* FUN_1422bb8b0(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
+Scaleform::GFx::Movie* GetMovie(int nMovieId);            // the GFx movie of a movie id (null if not loaded)
 extern Value DAT_143b0ae18;                                     // an undefined value (unit_140135ac0.cpp)
 void Unk_140657820();                                           // throws: a null delegate was called
 
 // Invoke argument setters (ascript.cpp's range).
 void FUN_1422bce70(Value* pValue, const char* sz);
-void FUN_1422bcc70(Value* pValue, Value v);
+void SetValue(Value* pValue, Value v);
 void FUN_1422bcce0(Value* pValue, bool b);
 void FUN_1422bcd70(Value* pValue, float f);
 void FUN_1422bce40(Value* pValue, const AScript& obj);
@@ -66,25 +66,25 @@ ASEventDispatcher::ASEventDispatcher(const Value& v, int nMovieId)
 // @0x1422c3100
 ASEventDispatcher::~ASEventDispatcher()
 {
-    FUN_1422c34f0();
-    FUN_1422c3940();
+    RemoveAllMemberCallbacks();
+    RemoveAllEventListeners();
 }
 
 // @0x1422c3180
-void ASEventDispatcher::FUN_1422c3180(CString strName, const Callback& cb)
+void ASEventDispatcher::AddMemberCallback(CString strName, const Callback& cb)
 {
     for (int i = 0; i < (int)m_members.GetCount(); i++) {
         if (m_members[i]->m_strType == strName)
             return;
     }
     Scaleform::Ptr<ASEventHandlerCtx> spCtx = *new ASEventHandlerCtx(strName, cb);
-    FUN_1422bb8b0(m_nMovieId)->CreateFunction(&spCtx->m_func, spCtx.GetPtr(), 0);
+    GetMovie(m_nMovieId)->CreateFunction(&spCtx->m_func, spCtx.GetPtr(), 0);
     m_members.Add(spCtx);
     FUN_1409adbe0(strName, spCtx->m_func);
 }
 
 // @0x1422c33c0
-void ASEventDispatcher::FUN_1422c33c0(CString strName)
+void ASEventDispatcher::RemoveMemberCallback(CString strName)
 {
     for (int i = 0; i < (int)m_members.GetCount(); i++) {
         if (m_members[i]->m_strType == strName) {
@@ -97,7 +97,7 @@ void ASEventDispatcher::FUN_1422c33c0(CString strName)
 }
 
 // @0x1422c34f0
-void ASEventDispatcher::FUN_1422c34f0()
+void ASEventDispatcher::RemoveAllMemberCallbacks()
 {
     for (int i = 0; i < (int)m_members.GetCount(); i++) {
         FUN_1409adbe0(m_members[i]->m_strType, DAT_143b0ae18);
@@ -107,7 +107,7 @@ void ASEventDispatcher::FUN_1422c34f0()
 }
 
 // @0x1422c3600
-void ASEventDispatcher::FUN_1422c3600(const CString& strEvent, const Callback& cb, bool bCapture, int nPriority, int a5,
+void ASEventDispatcher::AddEventListener(const CString& strEvent, const Callback& cb, bool bCapture, int nPriority, int a5,
                                       void* pUser)
 {
     for (int i = 0; i < (int)m_listeners.GetCount(); i++) {
@@ -115,13 +115,13 @@ void ASEventDispatcher::FUN_1422c3600(const CString& strEvent, const Callback& c
             return;
     }
     Scaleform::Ptr<ASEventHandlerCtx> spCtx = *new ASEventHandlerCtx(strEvent, cb);
-    FUN_1422bb8b0(m_nMovieId)->CreateFunction(&spCtx->m_func, spCtx.GetPtr(), pUser);
+    GetMovie(m_nMovieId)->CreateFunction(&spCtx->m_func, spCtx.GetPtr(), pUser);
     m_listeners.Add(spCtx);
     FUN_1422c3a30(strEvent, spCtx->m_func, bCapture, nPriority, a5);
 }
 
 // @0x1422c3820
-void ASEventDispatcher::FUN_1422c3820(const CString& strEvent, const Callback& cb, bool bCapture)
+void ASEventDispatcher::RemoveEventListener(const CString& strEvent, const Callback& cb, bool bCapture)
 {
     for (int i = 0; i < (int)m_listeners.GetCount(); i++) {
         if (m_listeners[i]->m_cb == cb) {
@@ -134,7 +134,7 @@ void ASEventDispatcher::FUN_1422c3820(const CString& strEvent, const Callback& c
 }
 
 // @0x1422c3940
-void ASEventDispatcher::FUN_1422c3940()
+void ASEventDispatcher::RemoveAllEventListeners()
 {
     for (int i = 0; i < (int)m_listeners.GetCount(); i++) {
         FUN_1422c3b30(m_listeners[i]->m_strType, m_listeners[i]->m_func, false);
@@ -157,19 +157,19 @@ void ASEventDispatcher::FUN_1422c3b30(const CString& strType, const Value& liste
 }
 
 // @0x1422c3bf0
-int ASEventDispatcher::FUN_1422c3bf0(const CString& strType)
+int ASEventDispatcher::HasEventListener(const CString& strType)
 {
     return Invoke("hasEventListener", strType).GetBool();
 }
 
 // @0x1422c3c90
-int ASEventDispatcher::FUN_1422c3c90(const CString& strType)
+int ASEventDispatcher::WillTrigger(const CString& strType)
 {
     return Invoke("willTrigger", strType).GetBool();
 }
 
 // @0x1422c3d30
-int ASEventDispatcher::FUN_1422c3d30(ASEvent& ev)
+int ASEventDispatcher::DispatchEvent(ASEvent& ev)
 {
     return Invoke("dispatchEvent", ev).GetBool();
 }
@@ -189,7 +189,7 @@ inline Value AScript::FUN_1422c3e40(const char* szMethod, CString a1, Value a2, 
     ASArgList args;
     args.resize(3);
     FUN_1422bce70(&args[0], a1);
-    FUN_1422bcc70(&args[1], a2);
+    SetValue(&args[1], a2);
     FUN_1422bcce0(&args[2], a3);
     return FUN_1422bb8f0(szMethod, args);
 }
@@ -200,7 +200,7 @@ inline Value AScript::Invoke(const char* szMethod, CString a1, Value a2, bool a3
     ASArgList args;
     args.resize(5);
     FUN_1422bce70(&args[0], a1);
-    FUN_1422bcc70(&args[1], a2);
+    SetValue(&args[1], a2);
     FUN_1422bcce0(&args[2], a3);
     FUN_1422bcd70(&args[3], a4);
     FUN_1422bcce0(&args[4], a5);
@@ -208,16 +208,16 @@ inline Value AScript::Invoke(const char* szMethod, CString a1, Value a2, bool a3
 }
 
 MS2_REPLACE_METHOD(0x1422C3060, ASEventHandlerCtx, Call, 41, 0x42C5CD5B);
-MS2_REPLACE_METHOD(0x1422C3180, ASEventDispatcher, FUN_1422c3180, 557, 0x6643482F);
-MS2_REPLACE_METHOD(0x1422C33C0, ASEventDispatcher, FUN_1422c33c0, 294, 0x876F7367);
-MS2_REPLACE_METHOD(0x1422C34F0, ASEventDispatcher, FUN_1422c34f0, 253, 0x7360C678);
-MS2_REPLACE_METHOD(0x1422C3600, ASEventDispatcher, FUN_1422c3600, 527, 0x6DB52C8F);
-MS2_REPLACE_METHOD(0x1422C3820, ASEventDispatcher, FUN_1422c3820, 269, 0xA7EBAB2E);
-MS2_REPLACE_METHOD(0x1422C3940, ASEventDispatcher, FUN_1422c3940, 232, 0x8C5AD1E9);
+MS2_REPLACE_METHOD(0x1422C3180, ASEventDispatcher, AddMemberCallback, 557, 0x6643482F);
+MS2_REPLACE_METHOD(0x1422C33C0, ASEventDispatcher, RemoveMemberCallback, 294, 0x876F7367);
+MS2_REPLACE_METHOD(0x1422C34F0, ASEventDispatcher, RemoveAllMemberCallbacks, 253, 0x7360C678);
+MS2_REPLACE_METHOD(0x1422C3600, ASEventDispatcher, AddEventListener, 527, 0x6DB52C8F);
+MS2_REPLACE_METHOD(0x1422C3820, ASEventDispatcher, RemoveEventListener, 269, 0xA7EBAB2E);
+MS2_REPLACE_METHOD(0x1422C3940, ASEventDispatcher, RemoveAllEventListeners, 232, 0x8C5AD1E9);
 MS2_REPLACE_METHOD(0x1422C3A30, ASEventDispatcher, FUN_1422c3a30, 250, 0x5501BD2E);
 MS2_REPLACE_METHOD(0x1422C3B30, ASEventDispatcher, FUN_1422c3b30, 186, 0x530C8285);
-MS2_REPLACE_METHOD(0x1422C3BF0, ASEventDispatcher, FUN_1422c3bf0, 144, 0x785A949C);
-MS2_REPLACE_METHOD(0x1422C3C90, ASEventDispatcher, FUN_1422c3c90, 144, 0xC3D67C53);
-MS2_REPLACE_METHOD(0x1422C3D30, ASEventDispatcher, FUN_1422c3d30, 101, 0xD43978BC);
+MS2_REPLACE_METHOD(0x1422C3BF0, ASEventDispatcher, HasEventListener, 144, 0x785A949C);
+MS2_REPLACE_METHOD(0x1422C3C90, ASEventDispatcher, WillTrigger, 144, 0xC3D67C53);
+MS2_REPLACE_METHOD(0x1422C3D30, ASEventDispatcher, DispatchEvent, 101, 0xD43978BC);
 
 // MS2-PIN: ??_G?$RefCountBase@VFunctionHandler@GFx@Scaleform@@$01@Scaleform@@UEAAPEAXI@Z 0x1422c4480

@@ -73,12 +73,12 @@ void FUN_140710590(COutPacket& packet);                         // send the pack
 
 CStringW GetStringCommonByKey(const CStringW& strKey);
 CStringW FormatTimeSpan(ATL::CTimeSpan span, bool bA, bool bB, bool bDays, bool bHours);  // format a time span
-MS2Ptr<CMsgBoxData> FUN_140d73d20(int nType, CStringW text, void* p, CStringW tag);   // the message box factory (0x140d73d20, unit_140d73aa0_messageboxfactory.cpp, the definer's signature)
+MS2Ptr<CMsgBoxData> CreateMessageBox(int nType, CStringW text, void* p, CStringW tag);   // the message box factory (0x140d73d20, unit_140d73aa0_messageboxfactory.cpp, the definer's signature)
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> spBox);                  // show
 int FUN_141276180(const CString& strSound, const CString& strArg);   // play a sound
 
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);
-int FUN_141275a10(CItem* pItem);                                // the item's lock kind
+int GetItemUsableState(CItem* pItem);                                // the item's lock kind
 
 // @0x140fb7dc0
 UIVIPDialog::UIVIPDialog()
@@ -86,7 +86,7 @@ UIVIPDialog::UIVIPDialog()
 {
     m_nVipEnd = 0;
     m_nVip = 0;
-    FUN_141924170(1);
+    SetTweenEnabled(1);
 }
 
 // @0x140fb7e70
@@ -123,7 +123,7 @@ void UIVIPDialog::vfunc_72()
     if (pPlayer == 0)
         return;
     if (m_nVipEnd != ((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90() || m_nVip != ((class PC*)(class PCBase*)(pPlayer))->IsVip()) {
-        FUN_140fb9150();
+        RefreshBenefitList();
         FUN_140fb8d10();
         m_nVipEnd = ((class PC*)(class PCBase*)(pPlayer))->FUN_141662e90();
         m_nVip = ((class PC*)(class PCBase*)(pPlayer))->IsVip();
@@ -187,8 +187,8 @@ void UIVIPDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
             ASTooltip tip(((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0()), 4, 2);
             if (((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409e13a0(spWorn.get(), spItem.get()) != 0) {
                 if (spBenefit->m_nItemPeriod > 0)
-                    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409d6a40(((class CItem*)(class CItem*)(spItem))->FUN_1405276c0(), spBenefit->m_nItemPeriod);
-                *pRetVal = tip.FUN_1422bb870();
+                    ((class ASTooltip*)(class ASTooltip*)(&tip))->FUN_1409d6a40(((class CItem*)(class CItem*)(spItem))->GetItemId(), spBenefit->m_nItemPeriod);
+                *pRetVal = tip.GetValue();
             }
         }
     } else if (operator==(strType, "effectIcon")) {
@@ -209,7 +209,7 @@ void UIVIPDialog::SendPremiumClubMode1()
 }
 
 // @0x140fb8680
-int UIVIPDialog::FUN_140fb8680()
+int UIVIPDialog::GetClaimableBenefitCount()
 {
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)
@@ -223,7 +223,7 @@ int UIVIPDialog::FUN_140fb8680()
         CVIPBenefitItemPtr spBenefit = items[i];
         if (spBenefit == 0)
             continue;
-        if (FUN_140fb9720(spBenefit->m_nId) == 0)
+        if (IsBenefitClaimable(spBenefit->m_nId) == 0)
             continue;
         nCount++;
     }
@@ -238,18 +238,18 @@ void UIVIPDialog::FUN_140fb87d0(CInPacket& packet, int nMode)
         unsigned nCount = packet.ReadInt32();
         for (unsigned i = 0; i < nCount; i++)
             m_claimedIds.AddTail(packet.ReadInt32());
-        FUN_140fb9150();
+        RefreshBenefitList();
         UIGameMenuDialog* pMenu = ((class UIGameMenuDialog*)FindGameMenuDialog(0x4e28));
         if (pMenu != 0)
             pMenu->FUN_141938ae0(0x4f1b, 0);
     } else if (nMode == 2) {
         unsigned nBenefitId = packet.ReadInt32();
         m_claimedIds.AddTail(nBenefitId);
-        FUN_140fb9150();
+        RefreshBenefitList();
         CVIPBenefitItemPtr spBenefit = FUN_140fb9980()->GetBenefitItem(nBenefitId);
         if (spBenefit == 0)
             return;
-        if (MS2Ptr<CMsgBoxData> spBox = FUN_140d73d20(0x11, GetStringCommonByKey(L"s_vip_dialog_get_benefit_item"), 0, L"")) {
+        if (MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0x11, GetStringCommonByKey(L"s_vip_dialog_get_benefit_item"), 0, L"")) {
             MS2Ptr<CItem> spItem(new CItem());
             if (!spItem->FUN_140523c40(spBenefit->m_nItemId, spBenefit->m_nItemRank, 0))
                 return;
@@ -289,13 +289,13 @@ void UIVIPDialog::FUN_140fb8d10()
     unsigned nTextWidth = spTime->GetTextWidth();
     float fX, fY;
     spTime->GetPosition(&fX, &fY);
-    fX = fX + (float)((spTime->FUN_1422c1340() - nTextWidth) - 0x1e);
+    fX = fX + (float)((spTime->GetWidthCeil() - nTextWidth) - 0x1e);
     if (MS2Ptr<ASMovieClip> spIcon = GetChild<ASMovieClip>("m_timerIcon"))
         spIcon->SetPositionFloat(fX, fY);
 }
 
 // @0x140fb9150
-void UIVIPDialog::FUN_140fb9150()
+void UIVIPDialog::RefreshBenefitList()
 {
     if (!m_30)
         return;
@@ -307,7 +307,7 @@ void UIVIPDialog::FUN_140fb9150()
         return;
     spList->Invoke("resetRenderer");
     reinterpret_cast<MS2Ptr<ASCoreList>&>(spList)->FUN_1422dd1d0();
-    reinterpret_cast<MS2Ptr<ASTileList>&>(spList)->FUN_1422cf4f0(0);
+    reinterpret_cast<MS2Ptr<ASTileList>&>(spList)->SetScrollPosition(0);
     ATL::CAtlArray<CVIPBenefitItemPtr> items;
     FUN_140fb9980()->GetBenefitItems(items);
     for (unsigned i = 0; i < items.GetCount(); i++) {
@@ -322,28 +322,28 @@ void UIVIPDialog::FUN_140fb9150()
             continue;
         ASObj row(2);
         row.SetMemberUInt("id", spBenefit->m_nId);
-        row.FUN_1407cbb20("label", ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spBenefit->m_nItemId));
+        row.SetWStringMember("label", ((class CStringTable*)TSingleton<CStringTable>::GetInstance())->FUN_141811980(1, spBenefit->m_nItemId));
         row.FUN_1409adc90("itemGrade", spBenefit->m_nItemRank);
         row.SetMemberUInt("itemCount", spBenefit->m_nItemCount);
-        row.FUN_1407cba60("iconPath", spData->GetIconPath());
-        row.FUN_1407cb9c0("itemPcBang", spItem->FUN_140525ca0());
-        row.FUN_1407cb9c0("itemVIP", spItem->FUN_140525db0());
-        int nLock = FUN_141275a10(spItem.get());
+        row.SetStringMember("iconPath", spData->GetIconPath());
+        row.SetIntMember("itemPcBang", spItem->IsPCBangItem());
+        row.SetIntMember("itemVIP", spItem->FUN_140525db0());
+        int nLock = GetItemUsableState(spItem.get());
         if (nLock == 2)
-            row.FUN_1407cb9c0("disable", 1);
+            row.SetIntMember("disable", 1);
         else if (nLock == 1)
-            row.FUN_1407cb9c0("itemLock", 1);
+            row.SetIntMember("itemLock", 1);
         else if (nLock == 3)
-            row.FUN_1407cb9c0("itemConditionLock", 1);
-        int bDisable = FUN_140fb9720(spBenefit->m_nId) == 0;
-        row.FUN_1407cb9c0("disableButton", bDisable);
+            row.SetIntMember("itemConditionLock", 1);
+        int bDisable = IsBenefitClaimable(spBenefit->m_nId) == 0;
+        row.SetIntMember("disableButton", bDisable);
         reinterpret_cast<MS2Ptr<ASCoreList>&>(spList)->AddItem(row);
     }
     spList->vfunc_24(true);
 }
 
 // @0x140fb9720
-int UIVIPDialog::FUN_140fb9720(unsigned nBenefitId)
+int UIVIPDialog::IsBenefitClaimable(unsigned nBenefitId)
 {
     PCBase* pPlayer = ((class PCBase*)((class WorldService*)(void*)(((void*)WorldService::GetInstance())))->FUN_141bd0cc0());
     if (pPlayer == 0)

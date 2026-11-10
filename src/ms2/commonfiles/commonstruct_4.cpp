@@ -204,10 +204,10 @@ template Unk_CsIngVector::iterator Unk_CsIngVector::_Mybase::_Make_iterator_offs
 // vector<__int64>::_Tidy, written over the exe's accessor instances (view structs; the callees auto-bind).
 void FUN_1402875b0(__int64, __int64, __int64);        // _Destroy
 struct Unk_CsI64Vec {
-    void FUN_140289670();
+    void Tidy();
 };
 // @0x140289670
-void Unk_CsI64Vec::FUN_140289670()
+void Unk_CsI64Vec::Tidy()
 {
     reinterpret_cast<Unk_CsXmlAlloc*>(this)->_Orphan_all();
     if (reinterpret_cast<Unk_CsRemakeAlloc*>(this)->_Myfirst() != 0) {
@@ -256,7 +256,7 @@ template Unk_CsHistList::reference Unk_CsHistList::front();
 // float floor(float): <cmath>'s inline, calling floorf through the exe's import slot.
 extern "C" float (__cdecl* __imp_floorf)(float);
 // @0x14028aed0
-float FUN_14028aed0(float f)
+float Floor(float f)
 {
     return __imp_floorf(f);
 }
