@@ -1351,8 +1351,8 @@ char* FUN_1414277a0(void* pNode)                // MS2-FUNCTIONAL: raw payload a
 
 // @0x141427780
 void FUN_141427780(void* pNode)                 // MS2-FUNCTIONAL: raw node release
-{
-    **(Unk_UmStrMapIt*)FUN_1414277a0(pNode);
+{   // exe: _Tree_iterator<map<CStringA, CStringA>>::operator-> = pointer_to(**this); callee 0x141428560 is pointer_to, its callee 0x141427200 addressof
+    std::pointer_traits<std::pair<const CStringA, CStringA>*>::pointer_to(*(std::pair<const CStringA, CStringA>*)FUN_1414277a0(pNode));
 }
 
 struct Unk_UmU16Array { unsigned short* m_aT; unsigned m_nAllocSize; unsigned m_nSize; };
@@ -1521,6 +1521,8 @@ MS2_REPLACE(0x1414218C0, FUN_1414218c0, 477, 0x1EC93043);
 // Caller-pinned: the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
 // names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
 // MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@@0@AEAV10@@Z 0x141427210
+// MS2-PIN: ??$addressof@U?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@YAPEAU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@0@AEAU10@@Z 0x141427200 ; exe caller 0x141428560 pointer_to (11-byte identity; was paired with a hook FnToVoid helper)
+// MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@std@@@std@@SAPEAU?$pair@$$CBV?$CStringT@DV?$StrTraitMFC_DLL@DV?$ChTraitsCRT@D@ATL@@@@@ATL@@V12@@2@AEAU32@@Z 0x141428560 ; exe caller 0x141427780 = _Tree_iterator::operator-> (pointer_to(**this)), sorts after lower_bound 0x141428500; was auto-paired with the 24-byte _Tree_iterator::operator*
 // sfr34: the bound-member DelegateImpl's clone (vfunc_1) and copy ctor replace the FUN_1414281e0 stand-in, which
 // copied from its second argument instead of this and called the copy ctor under a FUN_ twin.
 // MS2-PIN: ?vfunc_1@?$DelegateImpl@U?$pair@PEAVCItemExtraData@@P81@EAA_NAEBVItemColorEx@@V?$MS2Ptr@VCItemData@@@@@Z@std@@@?$Delegate@$$A6A_NAEBVItemColorEx@@V?$MS2Ptr@VCItemData@@@@@Z@@UEBAPEAVDelegateImplBase@2@XZ 0x1414281e0

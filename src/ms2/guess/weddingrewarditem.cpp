@@ -83,6 +83,12 @@
 // MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@@std@@@2@$00@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@PEAX@std@@@2@XZ 0x14091be00
 // MS2-PIN: ??_7WeddingTable@@6B?$TSingleton@VWeddingTable@@@@@ 0x142da97e0
 // MS2-PIN: ??_7WeddingTable@@6B?$CValidData@VWeddingTable@@@@@ 0x142da97f0
+// Caller-pinned (hp1): the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$addressof@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@@std@@YAPEAU?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@0@AEAU10@@Z 0x140913ba0
+// MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@@std@@@std@@@0@AEAV10@@Z 0x140914c70
+// MS2-PIN: ??$forward@AEBH@std@@YAAEBHAEBH@Z 0x140914ce0
+// MS2-PIN: ??$forward@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@@std@@@std@@@std@@@std@@YA$$QEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBHV?$MS2Ptr@VWeddingSkillData@@@@@std@@@std@@@std@@@0@AEAV10@@Z 0x140914d70
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\commonfiles\\weddingtable.cpp"   // no asserts of its own
 #include "ms2/placeholder/ms2stdafx.h"
 #include "ms2/placeholder/weddingtable.h"

@@ -13,7 +13,7 @@
 // MS2-PIN: ?Release@?$MS2Ptr@VCollectItemGroupContext@@@@AEAAXXZ 0x140465da0 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
 // MS2-PIN: ?Release@?$MS2Ptr@VItemBoxEventContext@@@@AEAAXXZ 0x140465de0 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
 // MS2-PIN: ?Release@?$MS2Ptr@VQuestAdditionalRewardContext@@@@AEAAXXZ 0x140465e20 ; look-alike: byte-identical to the exe copy, the symbols.tsv row is at another TU's copy
-// MS2-PIN: ??D?$_List_unchecked_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VBurningLevelupContext@@@@@std@@@std@@@std@@QEBAAEAV?$MS2Ptr@VBurningLevelupContext@@@@XZ 0x14046c3b0 ; look-alike: byte-identical to the exe copy and to its callee, the symbols.tsv row is at another TU's copy
+// MS2-PIN: ?pointer_to@?$pointer_traits@PEBU?$pair@$$CBIU?$Unk_Gev447V8@$09@@@std@@@std@@SAPEBU?$pair@$$CBIU?$Unk_Gev447V8@$09@@@2@AEBU32@@Z 0x14046c3b0 ; exe caller 0x140448270 (_Tree_const_iterator<V8<10>>::operator->, unit_140447ef0) calls it and it calls the 11-byte addressof 0x14043fd70; was pinned to the BurningLevelupContext list operator*, whose callee is 18 bytes
 // MS2-PINS-BEGIN tplpin
 // MS2-PIN: ?_Alloc_proxy@?$_Tree_comp_alloc@V?$_Tmap_traits@U?$pair@HK@std@@HU?$less@U?$pair@HK@std@@@2@V?$allocator@U?$pair@$$CBU?$pair@HK@std@@H@std@@@2@$0A@@std@@@std@@QEAAXXZ 0x14045b740 ; prop
 // MS2-PIN: ?_Buyheadnode@?$_Tree_comp_alloc@V?$_Tmap_traits@_KIU?$less@_K@std@@V?$allocator@U?$pair@$$CB_KI@std@@@2@$0A@@std@@@std@@QEAAPEAU?$_Tree_node@U?$pair@$$CB_KI@std@@PEAX@2@XZ 0x14045c100 ; unique
@@ -356,6 +356,7 @@
 #include "ms2/commonfiles/gameeventcontext.h"
 #include "ms2/commonfiles/fieldmetatable.h"
 #include "ms2/ms2recover.h"
+#include "ms2/unnamed/unit_140447ef0_standins.h"
 
 // ---- the event value containers (key -> context) -------------------------------------------------------------------
 // CGameEventValueManager::GetArcadeOpen(): arcade id (ArcadeOpenContext::m_arcadeId) -> context.
@@ -442,3 +443,7 @@ void Unk_GameEventValueIdSetRemove(std::set<unsigned>& ids, unsigned id)
 // MS2-PIN: ?_Myfirst@?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VCollectItemGroupContext@@@@V?$allocator@V?$MS2Ptr@VCollectItemGroupContext@@@@@std@@@std@@@std@@QEBAAEBQEAV?$MS2Ptr@VCollectItemGroupContext@@@@XZ 0x14046c3f0 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
 // MS2-PIN: ?push_back@?$vector@V?$MS2Ptr@VBurningLevelupContext@@@@V?$allocator@V?$MS2Ptr@VBurningLevelupContext@@@@@std@@@std@@QEAAXAEBV?$MS2Ptr@VBurningLevelupContext@@@@@Z 0x14046c4e0 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
 // MS2-PIN: ?pointer_to@?$pointer_traits@PEAU?$pair@$$CBHV?$MS2Ptr@VArcadeOpenContext@@@@@std@@@std@@SAPEAU?$pair@$$CBHV?$MS2Ptr@VArcadeOpenContext@@@@@2@AEAU32@@Z 0x14046c410 ; sfk: byte-identical COMDAT fold (was the look-alike guess)
+
+// pointer_traits<const pair<const unsigned, V8<10>>*>::pointer_to (0x14046c3b0), the const-pair pointer_to of
+// unit_140447ef0's V8<10> map; its COMDAT sorted into this range with the other pointer_to copies.
+template struct std::pointer_traits<const std::pair<const unsigned int, Unk_Gev447V8<10> >*>;

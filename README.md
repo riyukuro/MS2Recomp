@@ -84,13 +84,9 @@ Link aliases: 5 left: 0 `/alternatename` lines in `data/fullexe/plain/alias.rsp`
 
 Since the last publish:
 
-- Placeholder names: 1,439 more game functions that were still called `FUN_<address>` now have descriptive names,
-  from one more naming wave. Two independent naming passes had to agree on each name, and a full rebuild checked the
-  result: no function changed state and no exact match was lost. One proposed name was taken back because it clashed
-  with Lua binding helpers in the engine code.
-- A step back, not yet fixed: 10 small identity functions are now paired with hook-DLL helper names, against 3 at
-  the last publish. The 7 new ones came with this round's names and are still to be bound to the standard-library
-  names their callers use. The no-exe build's link order names no hook helper.
+- The 10 small identity functions that the last publish reported as paired with hook-DLL helper names are now
+  bound to the standard-library names their callers use. None is left in the status table, the symbol table or the
+  no-exe build's link order. A full rebuild checked the result: no function changed state and no exact match was lost.
 - The default build was checked again from a clean checkout with the stock `linux` preset and no options (3,734
   steps, no unresolved symbol), and the result ran into the game field. See [`BUILDING.md`](BUILDING.md).
 - No new bugs that the byte-match checks can't see were fixed in this round.

@@ -688,3 +688,6 @@ __declspec(selectany) extern errno_t(__cdecl* const ms2_logDialogMemmoveS)(void*
 // names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
 // MS2-PIN: ??$addressof@V?$_Vector_val@U?$_Simple_types@H@std@@@std@@@std@@YAPEAV?$_Vector_val@U?$_Simple_types@H@std@@@0@AEAV10@@Z 0x141455640
 // MS2-PIN: ??0?$_List_iterator@V?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VLogDialogCtx@@@@@std@@@std@@@std@@QEAA@PEAU?$_List_node@V?$MS2Ptr@VLogDialogCtx@@@@PEAX@1@PEBV?$_List_val@U?$_List_simple_types@V?$MS2Ptr@VLogDialogCtx@@@@@std@@@1@@Z 0x1414565a0 ; gp1: by its exe callers
+// Caller-pinned (hp1): the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@H@std@@V?$_Vector_val@U?$_Simple_types@H@std@@@2@$00@std@@QEAAAEAV?$_Vector_val@U?$_Simple_types@H@std@@@2@XZ 0x1414592a0

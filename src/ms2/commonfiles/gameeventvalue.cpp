@@ -47,6 +47,7 @@
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBII@std@@PEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBII@1@PEAU?$_Tree_node@U?$pair@$$CBII@std@@PEAX@1@@Z 0x14043af60 ; prop
 // MS2-PIN: ??$_Insert_nohint@AEAU?$pair@$$CBIV?$MS2Ptr@VEventShopNpcContext@@@@@std@@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventShopNpcContext@@@@@std@@PEAX@2@@?$_Tree@V?$_Tmap_traits@IV?$MS2Ptr@VEventShopNpcContext@@@@U?$less@I@std@@V?$allocator@U?$pair@$$CBIV?$MS2Ptr@VEventShopNpcContext@@@@@std@@@3@$0A@@std@@@std@@IEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VEventShopNpcContext@@@@@std@@@std@@@std@@@std@@_N@1@_NAEAU?$pair@$$CBIV?$MS2Ptr@VEventShopNpcContext@@@@@1@PEAU?$_Tree_node@U?$pair@$$CBIV?$MS2Ptr@VEventShopNpcContext@@@@@std@@PEAX@1@@Z 0x14043bb90 ; unique
 // MS2-PIN: ??$_Try_emplace@AEBI$$V@?$map@IIU?$less@I@std@@V?$allocator@U?$pair@$$CBII@std@@@2@@std@@QEAA?AU?$pair@V?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBII@std@@@std@@@std@@@std@@_N@1@AEBI@Z 0x14043eed0 ; unique
+// MS2-PIN: ??$addressof@$$CBU?$pair@$$CBIU?$Unk_Gev447V8@$09@@@std@@@std@@YAPEBU?$pair@$$CBIU?$Unk_Gev447V8@$09@@@0@AEBU10@@Z 0x14043fd70 ; exe caller 0x14046c3b0 = pointer_traits<const pair<V8<10>>*>::pointer_to (unit_14045b740), reached from unit_140447ef0's V8<10> operator->
 // MS2-PIN: ??$addressof@$$CBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VItemBoxEventContext@@@@@std@@@std@@@std@@@std@@YAPEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VItemBoxEventContext@@@@@std@@@std@@@0@AEBV10@@Z 0x14043fe10 ; prop
 // MS2-PIN: ??$addressof@$$CBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VLimitedQuantityContext@@@@@std@@@std@@@std@@@std@@YAPEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$MS2Ptr@VLimitedQuantityContext@@@@@std@@@std@@@0@AEBV10@@Z 0x14043fe20 ; prop
 // MS2-PIN: ??$addressof@U?$pair@$$CBIV?$MS2Ptr@VItemBoxEventContext@@@@@std@@@std@@YAPEAU?$pair@$$CBIV?$MS2Ptr@VItemBoxEventContext@@@@@0@AEAU10@@Z 0x14043ffa0 ; prop
@@ -293,6 +294,7 @@
 #include "ms2/placeholder/wcformat.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
+#include "ms2/unnamed/unit_140447ef0_standins.h"
 class Unk_XmlNode   // C3: member view for the former element stand-ins
 {
 public:
@@ -1935,3 +1937,7 @@ MS2_REPLACE_METHOD(0x14042A7D0, CGameEventValueEventShopNpc, Find, 396, 0x247BC1
 template ATL::CAtlList<MS2Ptr<Unk_DayItemContext> >::CNode::CNode(const MS2Ptr<Unk_DayItemContext>&);
 template ATL::CAtlList<MS2Ptr<Unk_FieldObjectDropListContext> >::CNode::CNode(const MS2Ptr<Unk_FieldObjectDropListContext>&);
 template ATL::CAtlList<MS2Ptr<Unk_FieldObjectDropContext> >::CNode::CNode(const MS2Ptr<Unk_FieldObjectDropContext>&);
+
+// addressof<const pair<const unsigned, V8<10>>> (0x14043fd70), called by the const-pair pointer_to 0x14046c3b0 of
+// unit_140447ef0's V8<10> map; the COMDAT sorted into this range with the other addressof copies.
+template const std::pair<const unsigned int, Unk_Gev447V8<10> >* std::addressof(const std::pair<const unsigned int, Unk_Gev447V8<10> >&) noexcept;

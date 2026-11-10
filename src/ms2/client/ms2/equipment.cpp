@@ -32,7 +32,7 @@
 // MS2-PIN: ??0?$_Vector_alloc@U?$_Vec_base_types@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@@std@@QEAA@XZ 0x1411f6ce0 ; prop
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@PEAX@std@@@std@@QEAA@XZ 0x1411f6d90 ; prop
 // MS2-PIN: ??0?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@QEAA@XZ 0x1411f6da0 ; prop
-// MS2-PIN: ??0?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@QEAA@XZ 0x1411f6db0 ; prop
+// MS2-PIN: ??0?$allocator@V?$MS2Ptr@VCEquipItem@@@@@std@@QEAA@XZ 0x1411f6db0 ; caller 0x1411f0010 (hp1; was the SetEffectInfo ctor, whose caller 0x1411f0040 calls 0x1411f6dc0)
 // MS2-PIN: ??0?$map@W4Unk_EquipAttrType@@HU?$less@W4Unk_EquipAttrType@@@std@@V?$allocator@U?$pair@$$CBW4Unk_EquipAttrType@@H@std@@@3@@std@@QEAA@XZ 0x1411f6e00 ; unique
 // MS2-PIN: ??0?$vector@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@V?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@@std@@QEAA@XZ 0x1411f6ee0 ; unique
 // MS2-PIN: ??1SetEffectInfo@Equipment@@UEAA@XZ 0x1411f77d0 ; unique
@@ -70,6 +70,19 @@
 // MS2-PIN: ?Test@Unk_LayerBits@@QEBA_NH@Z 0x1411ff380 ; unique
 // MS2-PINS-END tplpin
 // MS2-PIN: ??A?$map@W4SAType@@HU?$less@W4SAType@@@std@@V?$allocator@U?$pair@$$CBW4SAType@@H@std@@@3@@std@@QEAAAEAH$$QEAW4SAType@@@Z 0x1411f7cd0 ; manual: m_abilities[(SAType)k] of 0x1411e76c0 (calls at 0x1411e8346, 0x1411e83ab)
+// Caller-pinned (hp1): the exe callers of these 11-byte identity functions reference these names in our obj. Unpinned, the
+// names stayed bound to a byte-identical copy elsewhere and a hook helper with the same bytes was paired here.
+// MS2-PIN: ??$_Kfn@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@?$_Tmap_traits@IV?$vector@_JV?$allocator@_J@std@@@std@@U?$less@I@2@V?$allocator@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@2@$0A@@std@@SAAEBIAEBU?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@1@@Z 0x1411f44d0
+// MS2-PIN: ??$addressof@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@YAPEAU?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@0@AEAU10@@Z 0x1411f55f0
+// MS2-PIN: ??$addressof@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@YAPEAV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@0@AEAV10@@Z 0x1411f5610
+// MS2-PIN: ??$forward@AEAPEAU?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@YAAEAPEAU?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@0@AEAPEAU10@@Z 0x1411f5fa0
+// MS2-PIN: ??$forward@AEAU?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@YAAEAU?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@0@AEAU10@@Z 0x1411f5fc0
+// MS2-PIN: ??$forward@AEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@std@@@std@@YAAEAV?$_Tree_iterator@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@std@@@0@AEAV10@@Z 0x1411f5ff0
+// MS2-PIN: ??0?$allocator@V?$MS2Ptr@VSetEffectInfo@Equipment@@@@@std@@QEAA@XZ 0x1411f6dc0
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBU?$less@I@2@XZ 0x1411fce70
+// MS2-PIN: ?_Get_first@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@2@$00@std@@QEBAAEBV?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@2@XZ 0x1411fcec0
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@U?$less@I@std@@V?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@2@$00@2@$00@std@@QEBAAEBV?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@2@$00@2@XZ 0x1411fcf40
+// MS2-PIN: ?_Get_second@?$_Compressed_pair@V?$allocator@U?$_Tree_node@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@PEAX@std@@@std@@V?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@2@$00@std@@QEBAAEBV?$_Tree_val@U?$_Tree_simple_types@U?$pair@$$CBIV?$vector@_JV?$allocator@_J@std@@@std@@@std@@@std@@@2@XZ 0x1411fcf80
 // The queue row ?\equipitem.cpp also covers this TU (equipitem.cpp holds 0x1411dbc70-0x1411df580).
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\equipment.cpp"
 #include "ms2/placeholder/ms2stdafx.h"

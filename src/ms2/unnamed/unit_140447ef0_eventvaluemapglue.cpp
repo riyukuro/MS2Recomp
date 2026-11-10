@@ -67,7 +67,7 @@
 
 // Distinct stand-in element types: one per tree, the node layout is all the exe code shows.
 template <int N> struct Unk_Gev447V4 { int raw; };          // value type of alignment 4
-template <int N> struct Unk_Gev447V8 { void* raw; };        // value type of alignment 8
+#include "ms2/unnamed/unit_140447ef0_standins.h"   // Unk_Gev447V8: value type of alignment 8
 template <int N> struct Unk_Gev447P : CPtred { };           // pointee of an MS2Ptr stored in a tree
 
 // operator[] with an lvalue key, begin()->, cbegin()->
