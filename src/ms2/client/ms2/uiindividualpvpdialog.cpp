@@ -169,8 +169,10 @@ void UIIndividualPvPDialog::OnLoadComplete()
     }
     if (m_arenas.empty())
         return;
+#ifdef MS2_HOOK_DLL  // restore/arena: KMS greys arena 2 (Crimson Tear Mine); the restore build keeps it pickable
     if (m_nLastPage == 2)
         m_nLastPage = 1;
+#endif
     if (m_nLastPage < 4 && 1 < m_nLastPage)
     {
         m_arenas[m_nLastPage]->SetSelected(1);
@@ -182,8 +184,10 @@ void UIIndividualPvPDialog::OnLoadComplete()
         SelectArena(m_arenas.begin()->first);
     }
     UpdateWaitTimeLabels();
+#ifdef MS2_HOOK_DLL  // restore/arena: KMS greys arena 2 (Crimson Tear Mine); the restore build keeps it pickable
     m_arenas[2]->SetEnabled(0);
     reinterpret_cast<MS2Ptr<ASObj>&>(m_arenas[2])->FUN_1409c0e60("label2", L"\xac1c\xd3b8 \xc911\xc785\xb2c8\xb2e4.");  // "개편 중입니다." (under renovation)
+#endif
 }
 
 // @0x1412cab00
@@ -247,8 +251,10 @@ void UIIndividualPvPDialog::SelectArena(int nArena)
 {
     if (((MS2Ptr<AScript>*)(void*)(&m_30))->IsNull())
         return;
+#ifdef MS2_HOOK_DLL  // restore/arena: KMS greys arena 2 (Crimson Tear Mine); the restore build keeps it pickable
     if (nArena == 2)
         return;
+#endif
     CIndividualArenaDataTable::DataPtr spData = TSingleton<CIndividualArenaDataTable>::GetInstance()->GetData(nArena);
     if (spData == 0)
         return;
@@ -285,8 +291,10 @@ void UIIndividualPvPDialog::UpdateWaitTimeLabels()
         std::pair<int, int> count = counts[i];
         if (m_arenas.find(count.first) == m_arenas.end())
             continue;
+#ifdef MS2_HOOK_DLL  // restore/arena: KMS greys arena 2 (Crimson Tear Mine); the restore build keeps it pickable
         if (count.first == 2)
             continue;
+#endif
         int nMinutes = MsToMinutes(count.second);
         int nMax = 10;
         CStringW strText = BlockFormat<int>(0x426, nMinutes);
@@ -326,8 +334,10 @@ void UIIndividualPvPDialog::FUN_1412cb4e0(const Scaleform::GFx::FunctionHandler:
         ShowMessageBox(GetStringCommon(0x42a), 0, 0, L"");
         return;
     }
+#ifdef MS2_HOOK_DLL  // restore/arena: KMS greys arena 2 (Crimson Tear Mine); the restore build keeps it pickable
     if (m_nSelected == 2)
         return;
+#endif
     {
         COutPacket packet(static_cast<int>(SendOp::Pvp), 0);
         packet.Encode1(9);

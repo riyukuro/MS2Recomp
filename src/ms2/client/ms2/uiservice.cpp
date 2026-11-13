@@ -2317,6 +2317,10 @@ class UIWeddingAffinityDialog : public UIDialog { public: UIWeddingAffinityDialo
 class UIWeddingHallListDialog : public UIDialog { public: UIWeddingHallListDialog(); int vfunc_48(); char m_pad[0x180 - sizeof(UIDialog)]; };   // 140fd8df0
 class UIUnlimitedEnchantDialog : public UIDialog { public: UIUnlimitedEnchantDialog(); int vfunc_48(); char m_pad[0x1d8 - sizeof(UIDialog)]; };   // 140fb5ca0
 
+#ifndef MS2_HOOK_DLL
+void MushkingRegisterDialogs();   // MS2-RESTORE: mushking (maplesurvival.cpp)
+#endif
+
 // @0x141adf580
 void CUIService::CreateAllDialogs()
 {
@@ -2676,6 +2680,9 @@ void CUIService::CreateAllDialogs()
     RegisterDialog(MS2Ptr<UIDialog>(new UIWeddingAffinityDialog));
     RegisterDialog(MS2Ptr<UIDialog>(new UIWeddingHallListDialog));
     RegisterDialog(MS2Ptr<UIDialog>(new UIUnlimitedEnchantDialog));
+#ifndef MS2_HOOK_DLL
+    MushkingRegisterDialogs();   // MS2-RESTORE: mushking (the restored Maple Survival windows, maplesurvivalui.h)
+#endif
 }
 
 // @0x141aec8c0

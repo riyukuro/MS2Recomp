@@ -160,7 +160,7 @@ class NotifyOpenDialogByScene : public NotifyObject { public: virtual CStringW G
 
 class NotifyKillPlayer : public NotifyObject { public: virtual CStringW GetTypeName(); static ClassObject* CreateObject(); };   // 0x140db5220 / 0x140db5210
 
-class NotifySurvivalState : public NotifyObject { public: virtual CStringW GetTypeName(); static ClassObject* CreateObject(); };   // 0x140db5280 / 0x140db5270
+class NotifySurvivalState : public NotifyObject { public: NotifySurvivalState(); /* MS2-RESTORE: mushking; out of line in partymanager.cpp */ virtual CStringW GetTypeName(); static ClassObject* CreateObject(); };   // 0x140db5280 / 0x140db5270
 
 class NotifySurvivalGameStart : public NotifyObject { public: virtual CStringW GetTypeName(); static ClassObject* CreateObject(); };   // 0x140db52e0 / 0x140db52d0
 

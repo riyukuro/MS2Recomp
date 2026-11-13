@@ -68,6 +68,7 @@
 // MS2-PIN: ??_E?$SmartPointer@VNiAVObject@@@efd@@QEAAPEAXI@Z 0x141498210
 #define MS2_THIS_FILE "e:\\build\\kr\\22_04\\ms2code\\client\\ms2\\ms2.cpp"
 #include "ms2/placeholder/ms2stdafx.h"
+#include "ms2/client/ms2/maplesurvival.h"   // MS2-RESTORE: mushking
 #include "ms2.h"
 #include "ms2/ms2recover.h"
 #include "hook/ms2hook.h"
@@ -1943,6 +1944,9 @@ BOOL CGameApp::InitInstance()
     Unk_SingletonCreator<MentoringDataTable>::CreateInstance();
     ((class MentoringDataTable*)(class MentoringDataTable*)(TSingleton<MentoringDataTable>::GetInstance()))->Init();
     Unk_SingletonCreator<CMicroGameManagerCli>::CreateInstance();
+#ifndef MS2_HOOK_DLL   // MS2-RESTORE: mushking (client/ms2/maplesurvival.cpp; not exe code)
+    MushkingRestoreInit();
+#endif
     Unk_SingletonCreator<CReactorDataTable>::CreateInstance()->Reload();
     Unk_SingletonCreator<CTailEffectDataTable>::CreateInstance()->Reload();
     if (!TSingleton<CDirWatcher>::GetInstance()->Start(0, 0, 0, 0, 0))

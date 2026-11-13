@@ -405,6 +405,70 @@ int CGameMenuTable::Init()
         return 0;
     if (LoadXml() == 0)
         return 0;
+#ifndef MS2_HOOK_DLL
+    {   // MS2-RESTORE: mushking. table/gamemenu.xml has the SurvivalMap child (def 50, see RegisterDefs) only in
+        // GamePad_ContentsGroup, so the mouse menu had no lobby entry. Add child 50 to the game set's ContentsGroup
+        // (1002), after IndividualBattle (19), or at the group's end when that child was not loaded. Children draw as
+        // text, so no gfx frame is needed. The gamepad child stays as loaded.
+        ATL::CAtlArray<MS2Ptr<CGameMenuItem> >& items = m_sets[GAMEMENU_SET_GAME];
+        for (size_t i = 0; i < items.GetCount(); ++i)
+        {
+            if (items[i]->m_nId != 1002 || items[i]->HasId(50))
+                continue;
+            ATL::CAtlArray<MS2Ptr<CGameMenuItem> >& children = items[i]->m_children;
+            size_t nPos = children.GetCount();
+            for (size_t j = 0; j < children.GetCount(); ++j)
+            {
+                if (children[j]->m_nId == 19)
+                    nPos = j + 1;
+            }
+            MS2Ptr<CGameMenuItem> spItem(new CGameMenuItem());
+            spItem->m_nId = 50;
+            children.Add(spItem);
+            for (size_t k = children.GetCount() - 1; k > nPos; --k)
+                children[k] = children[k - 1];
+            children[nPos] = spItem;
+        }
+    }
+#endif
+#ifndef MS2_HOOK_DLL
+    {   // MS2-RESTORE: arena. The individual arena window (UIIndividualPvPDialog, ui 0x4ed1, Pvp 9-12) is registered
+        // but nothing in KMS opens it. Give it a game menu entry without a data edit: def 65 (the first free id;
+        // ids >= 0x41 skip the menu guide trigger) and a child placed after IndividualBattle (19) in ContentsGroup
+        // (1002) and GamePad_ContentsGroup (2002), or at the group's end when that child was not loaded. Children
+        // draw as text, so the name needs no gfx frame. No m_onClick, so a click toggles m_nUiId.
+        CGameMenuDef* pDef = new CGameMenuDef();
+        pDef->m_nId = 65;
+        pDef->m_strName = "individualpvp";
+        pDef->m_strLabel = "$s_individual_pvp_title";
+        pDef->m_nUiId = 0x4ed1;
+        m_defs.SetAt(pDef->m_nId, pDef);
+        static const struct { EGameMenuSet eSet; int nGroup; } s_groups[] = {
+            { GAMEMENU_SET_GAME, 1002 }, { GAMEMENU_SET_GAMEPAD, 2002 } };
+        for (size_t g = 0; g < sizeof(s_groups) / sizeof(s_groups[0]); ++g)
+        {
+            ATL::CAtlArray<MS2Ptr<CGameMenuItem> >& items = m_sets[s_groups[g].eSet];
+            for (size_t i = 0; i < items.GetCount(); ++i)
+            {
+                if (items[i]->m_nId != s_groups[g].nGroup || items[i]->HasId(65))
+                    continue;
+                ATL::CAtlArray<MS2Ptr<CGameMenuItem> >& children = items[i]->m_children;
+                size_t nPos = children.GetCount();
+                for (size_t j = 0; j < children.GetCount(); ++j)
+                {
+                    if (children[j]->m_nId == 19)
+                        nPos = j + 1;
+                }
+                MS2Ptr<CGameMenuItem> spItem(new CGameMenuItem());
+                spItem->m_nId = 65;
+                children.Add(spItem);
+                for (size_t k = children.GetCount() - 1; k > nPos; --k)
+                    children[k] = children[k - 1];
+                children[nPos] = spItem;
+            }
+        }
+    }
+#endif
     return 1;
 }
 
@@ -805,6 +869,20 @@ int CGameMenuTable::RegisterDefs()
         pDef->m_onClick.Bind(pGameMenu, &UIGameMenuDialog::FUN_14193c630);
         m_defs.SetAt(pDef->m_nId, pDef);
     }
+#ifndef MS2_HOOK_DLL
+    {   // MS2-RESTORE: mushking. The Mushking Royale lobby entry (GMS id 0x32, menu table loader 0x7e776d): the
+        // "SurvivalMap" child of table/gamemenu.xml (feature SurvivalContents01) had no def in KMS. No m_onClick, so a
+        // click toggles m_nUiId: UIMapleSurvivalDialog (MS2_UI_MAPLESURVIVAL, maplesurvivalui.h).
+        CGameMenuDef* pDef = new CGameMenuDef();
+        pDef->m_nId = 50;
+        pDef->m_strName = "survivalmap";
+        pDef->m_strLabel = "$s_maple_survival_title";
+        pDef->m_strTooltip = L"s_tooltip_gamemenu_survival";
+        pDef->m_nUiId = 0x4fc0;
+        m_defs.SetAt(pDef->m_nId, pDef);
+    }
+#endif
+
     if (CFeatureManager::GetInstance()->IsFeatureEnabled(140) == true)
     {
         CGameMenuDef* pDef = new CGameMenuDef();
