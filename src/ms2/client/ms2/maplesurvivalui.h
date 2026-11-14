@@ -65,6 +65,9 @@ bool IsMapleSurvivalShutdown(int kind);
 bool GetMapleSurvivalPassBundle(__int64& a, __int64& b, int& c);
 // The season reward info button (GMS 0x79c5a0 / 0x79fb40): opens MapleSurvivalSeasonRewardUrl from table/constants.xml.
 void OpenMapleSurvivalSeasonRewardUrl();
+// The season period text of the lobby (GMS 0x79d790) and the pass window (GMS 0x7a0990): start and end
+// ("2018-08-22-15-00") through the {n:fmt} format of s_maple_survival_ui_season_period.
+CStringW FormatMapleSurvivalSeasonPeriod(const CStringW& strStart, const CStringW& strEnd);
 
 // Called once from the end of CUIService::CreateAllDialogs (MS2-RESTORE: mushking): registers every window.
 void MushkingRegisterDialogs();

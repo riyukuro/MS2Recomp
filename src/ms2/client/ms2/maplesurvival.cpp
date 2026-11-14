@@ -146,10 +146,10 @@ CStringA AttrA(TiXmlElement* p, const char* name)
 }
 
 // Loads table/<na or root>/<file>; false (and no rows) when the pack lacks it.
-template <class F> bool ForEachRow(const char* file, const char* element, F fn)
+template <class F> bool ForEachRow(const char* file, const char* element, F fn, int iFirstDir = 0)
 {
     const char* dirs[] = { "Table/na", "Table" };
-    for (int i = 0; i < 2; i++)
+    for (int i = iFirstDir; i < 2; i++)
     {
         CString strPath = GetXmlPath(dirs[i], file);
         TiXmlDocument doc;
@@ -879,7 +879,7 @@ void OpenMapleSurvivalSeasonRewardUrl()
     ForEachRow("constants.xml", "v", [&strUrl](TiXmlElement* p) {
         if (AttrA(p, "key") == "MapleSurvivalSeasonRewardUrl" && strUrl.IsEmpty())
             strUrl = AttrA(p, "value");
-    });
+    }, 1);  // table/constants.xml only (no table/na copy)
     // Not GMS: GMS opens any value. Only an http:// or https:// address is handed to the shell here.
     CStringA strScheme = strUrl.Left(8);
     strScheme.MakeLower();

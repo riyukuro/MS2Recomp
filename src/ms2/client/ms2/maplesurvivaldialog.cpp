@@ -104,6 +104,16 @@ void Show(MS2Ptr<ASMovieClip>& sp, bool b)
 }
 }
 
+// GMS 0x79d790 / 0x7a0990: the localtime parts (year, month, day, hour, minute) of start and end, then the
+// {n:fmt} format of s_maple_survival_ui_season_period.
+CStringW FormatMapleSurvivalSeasonPeriod(const CStringW& strStart, const CStringW& strEnd)
+{
+    int v[10];
+    SplitTime(strStart, v);
+    SplitTime(strEnd, v + 5);
+    return FormatInts(Key(L"s_maple_survival_ui_season_period"), v, 10);
+}
+
 UIMapleSurvivalDialog::UIMapleSurvivalDialog() : m_gaugeWidth(0)
 {
 }
@@ -364,12 +374,7 @@ void UIMapleSurvivalDialog::UpdateSeason()
     else
     {
         strTitle = pMgr->m_season.name;
-        // GMS 0x79d790: the localtime parts (year, month, day, hour, minute) of start and end, then the
-        // {n:fmt} format of s_maple_survival_ui_season_period.
-        int v[10];
-        SplitTime(it->second.startTime, v);
-        SplitTime(it->second.endTime, v + 5);
-        strPeriod = FormatInts(Key(L"s_maple_survival_ui_season_period"), v, 10);
+        strPeriod = FormatMapleSurvivalSeasonPeriod(it->second.startTime, it->second.endTime);
     }
     MS2Ptr<ASTextField> spTitle = m_mainPage.operator->()->FUN_1409b4620("m_seasonTitle");
     MS2Ptr<ASTextField> spPeriod = m_mainPage.operator->()->FUN_1409b4620("m_seasonPeriod");

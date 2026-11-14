@@ -432,7 +432,7 @@ void UIMapleSurvivalPassDialog::RefreshSeason()
     else
     {
         strTitle = pMgr->m_season.name;
-        strPeriod = Arg(Arg(Key(L"s_maple_survival_ui_season_period"), 0, it->second.startTime), 1, it->second.endTime);
+        strPeriod = FormatMapleSurvivalSeasonPeriod(it->second.startTime, it->second.endTime);
     }
     SetText(Text(m_mainInfo, "m_seasonNameText"), strTitle);
     SetText(Text(m_mainInfo, "m_periodText"), strPeriod);
