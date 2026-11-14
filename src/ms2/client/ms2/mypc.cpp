@@ -1348,8 +1348,30 @@ int MyPC::vfunc_137()
         vfunc_59(0xc, 0, 0, 0);
         ChromaSDK::GetChromaManager()->SetState(7);
         reinterpret_cast<Unk_MyPCWidgets*>(FUN_1409331e0())->QueueOccurrence((CGuideManager::Occurrence)0xb, 0);
+#ifndef MS2_HOOK_DLL
+        // MS2-RESTORE: no revival window on a Mushking Royale field; the game's result window follows the death
+        // there. The global client skips the window when the field's mapType is 15 or 16 (GMS 0xb4d120 calls
+        // 0x4ab510, mapType +0x30 read at 0x4accc1) before its two auto-revival tests. The KMS2 field table gives
+        // its Mushking fields no mapType, so a field whose xblock is named "<id>_survival" counts as well.
+        bool bSurvivalField = false;
+        {
+            MS2Ptr<CFieldDataCli> spField = ((class Unk_MyPCWorld*)WorldService::GetInstance())->GetFieldData();
+            if (spField.get() != 0)
+            {
+                CFieldData* pField = spField.get();
+                int nMapType = pField->GetMapType();
+                CString strXBlock = pField->m_strXBlock;
+                strXBlock.MakeLower();
+                bSurvivalField = nMapType == 15 || nMapType == 16 || strXBlock.Right(9) == "_survival";
+            }
+        }
+        if (!bSurvivalField
+            && ((class Unk_MyPCWorld*)WorldService::GetInstance())->GetFieldData()->HasAutoRevivalType1() == 0
+            && ((class Unk_MyPCWorld*)WorldService::GetInstance())->GetFieldData()->HasAutoRevivalType2() == 0)
+#else
         if (((class Unk_MyPCWorld*)WorldService::GetInstance())->GetFieldData()->HasAutoRevivalType1() == 0
             && ((class Unk_MyPCWorld*)WorldService::GetInstance())->GetFieldData()->HasAutoRevivalType2() == 0)
+#endif
         {
             ClosePopupMenu();
             (((CUIService*)(TSingleton<CUIService>::GetInstance()))->OpenDialog((eUIClassID)(0x4e38)));
