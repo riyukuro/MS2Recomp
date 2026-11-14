@@ -33,6 +33,8 @@ public:
     virtual int vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs);
     virtual int vfunc_o178_1(void* pAvatar);        // listener slot 1 (GMS 0x7a64c0) the avatar model is loaded
     virtual int vfunc_48() { return 0x4fc3; }       // 48 MS2_UI_MAPLESURVIVAL_SKIN
+    // 49 (GMS 0x7a4bb0, its slot 50) a skin row's tooltip: name, description and expiry
+    virtual void vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs);
 
     void SetSlot(int nSlot);                        // the category (skin slot 0 tail, 1 riding, 2 gliding) to show
     void RefreshSkins();                            // GMS 0x7a5b90 (manager event MushkingUI::Skin_OnSkins)

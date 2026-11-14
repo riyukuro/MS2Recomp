@@ -29,6 +29,10 @@
 #include "ms2/client/ms2/uirenderview.h"
 #include "ms2/client/ms2/worldservice.h"
 #include "ms2/placeholder/citemdata.h"
+#include "ms2/placeholder/ascript.h"
+#include "ms2/placeholder/astooltip.h"
+#include "ms2/placeholder/cstringtable.h"
+#include "ms2/client/ms2/uiugcbannerdialog.h"   // Unk_DateParts
 
 CStringW GetStringCommonByKey(const CStringW& strKey);
 void ShowSystemNotice(const CStringW& strText, int nType, int nFlag);
@@ -37,6 +41,7 @@ __int64 GetServerTime();                                                // now
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> SkinClickDelegate;
 template <> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString& strName);   // 0x140c02870
 template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);   // 0x140ba7930
+Unk_DateParts* FUN_14088dfa0(Unk_DateParts* pOut, __int64 nTime, int nHourOffset);   // a time broken down
 MS2Ptr<CItemData> FUN_14053f870(int nItemId);   // the item data of an id
 
 namespace
@@ -104,7 +109,6 @@ void UIMapleSurvivalSkinDialog::OnLoadComplete()
     m_okButton = m_30->FUN_140acce30<ASButton>("m_okButton");
     m_cancelButton = m_30->FUN_140acce30<ASButton>("m_cancelButton");
     m_skinPreview = GetChild<ASMovieClip>("m_skinPreview");   // GMS 0x759cc0
-    // Not restored: the row tooltip (GMS 0x7a4bb0).
     if (m_items.get() != 0)
         m_items.operator->()->AddListIndexChangeHandler(
             SkinClickDelegate(this, &UIMapleSurvivalSkinDialog::OnItemSelect), 0);
@@ -274,6 +278,68 @@ void UIMapleSurvivalSkinDialog::OnItemSelect(const Scaleform::GFx::FunctionHandl
         m_avatar->FUN_1418bd050(spData, MS2Ptr<CItem>(0));   // GMS 0xca4e50
     else
         m_avatar->FUN_1418bcf60(spData->GetSkillId(), spData->GetSkillLevel());   // GMS 0xca44f0
+}
+
+// The skin name / description string tables (string.xml ids 81 mapleSurvivalSkinName, 82 ..Description).
+static const int kSkinNameTable = 0x51;
+static const int kSkinDescTable = 0x52;
+
+// "{0}"... in a string pack text filled in order ("{3:02d}" style widths are two-digit, zero-padded).
+static CStringW FillArgs(CStringW strText, const int* pArgs, int nArgs)
+{
+    strText.Replace(L"\\n", L"\n");
+    for (int i = 0; i < nArgs; ++i)
+    {
+        CStringW strKey, strWide, strValue, strWideValue;
+        strKey.Format(L"{%d}", i);
+        strWide.Format(L"{%d:02d}", i);
+        strValue.Format(L"%d", pArgs[i]);
+        strWideValue.Format(L"%02d", pArgs[i]);
+        strText.Replace(strKey, strValue);
+        strText.Replace(strWide, strWideValue);
+    }
+    return strText;
+}
+
+// GMS 0x7a4bb0: the row's tooltip. The row object carries "id" and "expireDate" (RefreshSkins); the text is
+// s_maple_survival_ui_skin_tooltip with the skin's name and description, then a line with s_item_end_time (or
+// s_item_end_time_expired once past) unless the skin never expires (INT64_MAX, GMS numeric_limits<__int64>::max).
+void UIMapleSurvivalSkinDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData* pArgs)
+{
+    Scaleform::GFx::Value arg = pArgs->PopValue();
+    AScript row((const Scaleform::GFx::Value&)arg, 2);
+    if (row.IsUndefinedOrNull())
+        return;
+    int nId = 0;
+    if (!row.TryGetInt("id", &nId))
+        return;
+    CString strExpire;
+    row.TryGetString("expireDate", strExpire);
+    __int64 nExpire = _atoi64(strExpire);
+    CStringTable* pStrings = TSingleton<CStringTable>::GetInstance();
+    CStringW strName = pStrings->FUN_141811980(kSkinNameTable, nId);
+    CStringW strDesc = pStrings->FUN_141811980(kSkinDescTable, nId);
+    CStringW strText = GetStringCommonByKey(L"s_maple_survival_ui_skin_tooltip");
+    strText.Replace(L"\\n", L"\n");
+    strText.Replace(L"{0}", strName);
+    strText.Replace(L"{1}", strDesc);
+    if (nExpire != _I64_MAX)
+    {
+        Unk_DateParts kDate;
+        FUN_14088dfa0(&kDate, nExpire, 0);
+        int args[5] = { kDate.m_year, kDate.m_month, kDate.m_day, kDate.m_hour2, kDate.m_minute };
+        strText += L"\n";
+        if (nExpire > GetServerTime())
+            strText += FillArgs(GetStringCommonByKey(L"s_item_end_time"), args, 5);
+        else
+            strText += FillArgs(GetStringCommonByKey(L"s_item_end_time_expired"), args, 5);
+    }
+    ASTooltip tip(1, 2);   // GMS 0x6a1e30(1, 2)
+    if (tip.ApplyTextTooltip(strText) != 0)
+    {
+        tip.SetTooltipAlign(5);   // GMS 0x6a5400(5): "tooltipAlign"
+        *pRetVal = tip.GetValue();
+    }
 }
 
 // The pass window's "+" buttons (GMS 0x7a1420) pick the category before opening / refreshing the window.

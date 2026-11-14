@@ -870,7 +870,7 @@ Unk_RestoreSink s_sink;
 
 bool IsMapleSurvivalShutdown(int kind) { return kind >= 0 && kind < 4 && !s_shutdown[kind].empty(); }
 
-// MS2-RESTORE: English fallback for the survival string keys the KMS2 string tables lack (55 keys: the survival
+// MS2-RESTORE: English fallback for the survival string keys the KMS2 string tables lack (56 keys: the survival
 // movies' "$s_..." labels and the keys this code and the exe's survival notices look up). Our own short wording, used
 // only on a miss: a client pack that has the key wins. Hooked in at the two lookups, CommonString::MapText
 // (commonstringtable.cpp, code keys) and FontTranslator::Translate (gfxui/fontconfig.cpp, movie "$" keys). "{0}" is
@@ -934,6 +934,7 @@ const RestoreString s_restoreStrings[] = {
     { "s_maple_survival_ui_skin_err_not_here", "You cannot change skins here." },
     { "s_maple_survival_ui_skin_err_not_puton", "That skin is not equipped." },
     { "s_maple_survival_ui_skin_title", "Skins" },
+    { "s_maple_survival_ui_skin_tooltip", "{0}\n{1}" },
 };
 }   // namespace
 
