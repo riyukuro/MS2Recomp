@@ -20,6 +20,15 @@
 #include "ms2/placeholder/asobj.h"
 #include "ms2/placeholder/delegate.h"
 #include "ms2/placeholder/ms2ptr_impl.h"
+#include "ms2/placeholder/pcgemequip.h"
+#include "ms2/client/ms2/additionalcli.h"
+#include "ms2/client/ms2/avatarpc.h"
+#include "ms2/client/ms2/gameobject.h"
+#include "ms2/client/ms2/uiavatarbase.h"
+#include "ms2/client/ms2/uimodelview.h"
+#include "ms2/client/ms2/uirenderview.h"
+#include "ms2/client/ms2/worldservice.h"
+#include "ms2/placeholder/citemdata.h"
 
 CStringW GetStringCommonByKey(const CStringW& strKey);
 void ShowSystemNotice(const CStringW& strText, int nType, int nFlag);
@@ -27,6 +36,8 @@ __int64 GetServerTime();                                                // now
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> SkinClickDelegate;
 template <> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString& strName);   // 0x140c02870
+template <> MS2Ptr<ASMovieClip> UISwfEntity::GetChild<ASMovieClip>(const CString& strName);   // 0x140ba7930
+MS2Ptr<CItemData> FUN_14053f870(int nItemId);   // the item data of an id
 
 namespace
 {
@@ -58,6 +69,11 @@ const std::pair<int, __int64>* FindOwned(const SurvivalSkinSlot& slot, int nId)
 }
 }
 
+// The Mushking shrink effect (additionaleffect 71000068, feature SurvivalContents02) that GMS 0x7a64c0 puts on the
+// preview avatar, so the preview looks like a match.
+static const int kSurvivalScaleEffect = 71000068;
+static const int kTailPreviewCount = 3;   // GMS 0x7a5440 passes 3 to the tail preview (0xca4540)
+
 UIMapleSurvivalSkinDialog::UIMapleSurvivalSkinDialog() : m_nSlot(0)
 {
 }
@@ -87,8 +103,11 @@ void UIMapleSurvivalSkinDialog::OnLoadComplete()
     m_category = GetChild<ASButtonBar>("m_category");
     m_okButton = m_30->FUN_140acce30<ASButton>("m_okButton");
     m_cancelButton = m_30->FUN_140acce30<ASButton>("m_cancelButton");
-    // Not restored: the m_skinPreview render target (loadRenderTarget / unloadRenderTarget, the 3D preview of the
-    // selected row, GMS 0x7a5440) and the row tooltip (0x7a4bb0).
+    m_skinPreview = GetChild<ASMovieClip>("m_skinPreview");   // GMS 0x759cc0
+    // Not restored: the row tooltip (GMS 0x7a4bb0).
+    if (m_items.get() != 0)
+        m_items.operator->()->AddListIndexChangeHandler(
+            SkinClickDelegate(this, &UIMapleSurvivalSkinDialog::OnItemSelect), 0);
     if (m_okButton.get() != 0)
         m_okButton.operator->()->AddClickHandler(SkinClickDelegate(this, &UIMapleSurvivalSkinDialog::OnOk), 0);
     if (m_cancelButton.get() != 0)
@@ -111,8 +130,10 @@ void UIMapleSurvivalSkinDialog::OnLoadComplete()
         m_category.operator->()->SetSelectedIndex(m_nSlot);
     }
     RefreshSkins();
+    CreateAvatar();
 }
 
+// GMS 0x7a5270
 void UIMapleSurvivalSkinDialog::vfunc_26()
 {
     UIDialog::vfunc_26();
@@ -121,6 +142,138 @@ void UIMapleSurvivalSkinDialog::vfunc_26()
     m_okButton = 0;
     m_cancelButton = 0;
     m_ids.clear();
+    UnloadRenderTarget();
+    m_skinPreview = 0;
+    m_avatar = 0;
+}
+
+// GMS 0x7a4b60
+void UIMapleSurvivalSkinDialog::vfunc_16()
+{
+    UISwfEntity::vfunc_16();
+    UnloadRenderTarget();
+}
+
+// GMS 0x7a64a0
+bool UIMapleSurvivalSkinDialog::vfunc_17()
+{
+    if (!UIDialog::vfunc_17())
+        return false;
+    LoadRenderTarget();
+    return true;
+}
+
+// GMS 0x7a48f0: the preview's mouse areas (rotate, zoom) go to the avatar.
+int UIMapleSurvivalSkinDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* pArgs, unsigned int nArgs)
+{
+    if (UIDialog::vfunc_28(szMethod, pArgs, nArgs))
+        return 1;
+    if (m_avatar.get() != 0 && m_avatar->vfunc_27(szMethod, pArgs, nArgs))
+        return 1;
+    return 0;
+}
+
+// GMS 0x7a4950: the render target is ready; frame the character camera on the avatar.
+void UIMapleSurvivalSkinDialog::vfunc_25(void* p1, TPtr<Unk_UISwfEntity_25> p2, void* p3, void* p4)
+{
+    if (m_avatar.get() == 0)
+        return;
+    GameObject* pActor = m_avatar->vfunc_24();
+    if (pActor == 0)
+        return;
+    m_avatar->vfunc_28(p1, p2, p3, p4);
+    Unk_ModelViewCamera kCamera;
+    kCamera.ApplyCharCamera();
+    kCamera.m_kTarget.z -= 30.0f;
+    kCamera.m_fMinDistance = 300.0f;
+    kCamera.m_kTarget += pActor->vfunc_18();
+    kCamera.m_kPosition += kCamera.m_kTarget;
+    m_avatar->GetView()->vfunc_13(kCamera);
+}
+
+// GMS 0x7a64c0: the avatar model is loaded; give it the Mushking shrink effect and show the render target.
+int UIMapleSurvivalSkinDialog::vfunc_o178_1(void* pAvatar)
+{
+    if (pAvatar == 0)
+        return 0;
+    AvatarPC* pPC = m_avatar.get() != 0 ? m_avatar->GetAvatarPC() : 0;
+    if (pPC != 0)
+    {
+        MS2Ptr<AdditionalCli> spEffect;
+        spEffect.AssignRaw(new AdditionalCli());
+        spEffect->InitLocal(pPC, kSurvivalScaleEffect, 1, 0);   // GMS 0x682030
+        pPC->AddAdditionalCli(spEffect);                         // GMS 0x9744a0
+    }
+    LoadRenderTarget();
+    return 1;
+}
+
+// GMS 0x7a5ac0: the preview avatar mirrors the local player.
+void UIMapleSurvivalSkinDialog::CreateAvatar()
+{
+    if (m_avatar.get() != 0)
+        return;
+    WorldService* pWorld = WorldService::GetInstance();
+    PC* pPlayer = pWorld != 0 ? reinterpret_cast<PC*>(pWorld->GetLocalPlayer()) : 0;
+    if (pPlayer == 0)
+        return;
+    UIAvatarPC* pAvatar = new UIAvatarPC(pPlayer, false);
+    m_avatar.AssignRaw(pAvatar);
+    AvatarPC* pPC = pAvatar->GetAvatarPC();
+    if (pPC != 0)
+    {
+        pPC->FUN_1410885b0(true);                                           // GMS 0x973620
+        reinterpret_cast<PCGemEquip*>(pPC->GetGemEquip())->FUN_141270610();   // GMS 0xb86a50, 0xa1ae50
+    }
+    m_avatar->vfunc_1(this);
+}
+
+// GMS 0x7a6450
+void UIMapleSurvivalSkinDialog::LoadRenderTarget()
+{
+    if (m_skinPreview.get() != 0)
+        m_skinPreview->Invoke("loadRenderTarget", CString(""));
+}
+
+// GMS 0x7a4b60, 0x7a5270
+void UIMapleSurvivalSkinDialog::UnloadRenderTarget()
+{
+    if (m_skinPreview.get() != 0)
+        m_skinPreview->Invoke("unloadRenderTarget");
+}
+
+// GMS 0x7a5440: show the selected row on the avatar: a tail effect, a mount or a glider.
+void UIMapleSurvivalSkinDialog::OnItemSelect(const Scaleform::GFx::FunctionHandler::Params&)
+{
+    if (m_30 == 0 || m_avatar.get() == 0 || m_items.get() == 0)
+        return;
+    int nCat = SelectedCategory();
+    int nRow = m_items.operator->()->GetSelectedIndex();
+    if (nCat < 0 || nRow < 0 || nRow >= (int)m_ids.size())
+        return;
+    int nId = m_ids[nRow];
+    if (nId == 0)
+        return;
+    AvatarPC* pPC = m_avatar->GetAvatarPC();
+    if (pPC != 0)
+        pPC->FUN_141663ea0();   // GMS 0xb87da0: stop the tail effect
+    CMapleSurvivalTable* pTab = &CMapleSurvivalTable::Get();
+    std::map<int, SurvivalSkinInfo>::const_iterator it = pTab->m_skins.find(nId);
+    if (it == pTab->m_skins.end())
+        return;
+    int nValue = it->second.value1;   // the tail id, the mount item or the glider item
+    if (nCat == 0)
+    {
+        m_avatar->FUN_1418bd150(kTailPreviewCount, nValue);   // GMS 0xca4540
+        return;
+    }
+    MS2Ptr<CItemData> spData = FUN_14053f870(nValue);   // GMS 0x52c3f0
+    if (spData.get() == 0)
+        return;
+    if (nCat == 1)
+        m_avatar->FUN_1418bd050(spData, MS2Ptr<CItem>(0));   // GMS 0xca4e50
+    else
+        m_avatar->FUN_1418bcf60(spData->GetSkillId(), spData->GetSkillLevel());   // GMS 0xca44f0
 }
 
 // The pass window's "+" buttons (GMS 0x7a1420) pick the category before opening / refreshing the window.
