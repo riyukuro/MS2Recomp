@@ -13,6 +13,7 @@
 #include "ms2/client/ms2/maplesurvivalui.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/client/ms2/worldservice.h"
+#include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/opcodes.h"
 #include "ms2/placeholder/asitemslot.h"
 #include "ms2/placeholder/asobj.h"
@@ -27,6 +28,14 @@ int FUN_1418fc760(const char* szMethod, void* pArgs, int nArgs, void* pDlg);   /
 
 namespace
 {
+// GMS 0x899b30: watching is allowed with feature 0xb2 (SurvivalObserver, KMS feature 162) on and not 0x6019b0 (a
+// flag at +0x38 of the object at +0xc20 of 0x1ad1848 and a value below 50). The observer content switch
+// (IsMapleSurvivalShutdown(3)) stands in for the second test.
+bool CanWatch()
+{
+    return CFeatureManager::GetInstance()->IsFeatureEnabled(162) && !IsMapleSurvivalShutdown(3);
+}
+
 // CMapleSurvivalManager::m_result.r[] index of each GMS dialog field. The mode 0x11 handler (GMS 0x6e3110) reads
 // 16 ints and passes them to the setter 0x89b290 as r0, r2, r3, r4, r5, r6..r11, r14, r15, r13, 0, 0, r12, 0, 0
 // (stored from +0x110 on); r1 is dropped.
@@ -105,8 +114,7 @@ CString UISurvivalGameResultDialog::GetTypeName()
 }
 
 // GMS 0x89af40: close button, the 5 reward slots, the kept result, then "initData" with an object of one member,
-// visibleWatchButton: feature 0xb2 on (0x4a9870) and not (a flag at +0x38 of the object at +0xc20 of 0x1ad1848 and a
-// value below 50, 0x6019b0). The observer feature check here is the one OnWatch uses; the second test is left out.
+// visibleWatchButton: feature 0xb2 on (0x4a9870) and not 0x6019b0, the same test as OnWatch (0x899b30, CanWatch).
 void UISurvivalGameResultDialog::OnLoadComplete()
 {
     UIDialog::OnLoadComplete();
@@ -129,7 +137,7 @@ void UISurvivalGameResultDialog::OnLoadComplete()
     for (int i = 0; i < 5; ++i)
         m_slot[i] = items.IsObject() ? BindSlot(items, i + 1, m_30->FUN_14198f250()) : MS2Ptr<ASItemSlot>(0);
     ASObj obj(2);
-    obj.SetBoolMember("visibleWatchButton", !IsMapleSurvivalShutdown(3));
+    obj.SetBoolMember("visibleWatchButton", CanWatch());
     m_30->Invoke("initData", obj.GetValue());
     if (m_bPending)
     {
@@ -162,7 +170,7 @@ int UISurvivalGameResultDialog::vfunc_28(const char* szMethod, const Scaleform::
     if (_stricmp("OnWatch", szMethod) != 0)
         return 0;
     // GMS 0x899b30 == 0 -> notice string 0x309 (the observer feature is off); the KMS string id is unknown.
-    if (IsMapleSurvivalShutdown(3))
+    if (!CanWatch())
         return 0;
     CMapleSurvivalManager* pMgr = CMapleSurvivalManager::GetInstance();
     WorldService* pWs = WorldService::GetInstance();

@@ -27,6 +27,7 @@
 #include "ms2/placeholder/stringxmlproc.h"
 #include "ms2/placeholder/tixmldocument.h"
 #include "ms2/placeholder/tixmlelement.h"
+#include "ms2/commonfiles/featuremanager.h"
 #include "ms2/commonfiles/filesystem.h"
 #include "ms2/commonfiles/gameevent.h"
 #include "ms2/client/ms2/uimessageboxdata.h"
@@ -167,6 +168,23 @@ template <class F> bool ForEachRow(const char* file, const char* element, F fn)
     return false;
 }
 
+// GMS feature 0xaf (SurvivalContents03, KMS feature 160) picks the client's mode: on, the pass dialog is the survival
+// window and the pass reward tables load; off, the lobby (UIMapleSurvivalDialog) and the level reward table.
+bool IsPassMode()
+{
+    return CFeatureManager::GetInstance()->IsFeatureEnabled(160);
+}
+
+// GMS 0x6e40de (modes 0x16 and 0x18): feature 0xaf on refreshes the pass dialog's season (0x7a0990), off the lobby's
+// (0x79d790, 0x79d320).
+void RefreshSeasonUI()
+{
+    if (IsPassMode())
+        MushkingUI::Pass_OnSeason();
+    else
+        MushkingUI::Lobby_OnSeason();
+}
+
 std::set<int> s_shutdown[4];   // GMS 0x602280.. sets: 0 survival, 1 squad, 2 pass, 3 observer
 struct { __int64 a, b; int c; bool on; } s_passBundle;   // GMS 0x4e76d0 global bundle info
 
@@ -193,18 +211,22 @@ void CMapleSurvivalTable::Load()
         d.grade = AttrInt(p, "grade");
         m_levels[d.level] = d;
     });
-    ForEachRow("survivalLevelReward.xml", "survivalLevelReward", [this](TiXmlElement* p) {
-        SurvivalLevelReward d;
-        d.level = AttrInt(p, "level");
-        char name[32];
-        for (int i = 0; i < 3; i++)
-        {
-            sprintf_s(name, "rewardItemID%d", i + 1);    d.itemId[i] = AttrInt(p, name);
-            sprintf_s(name, "rewardItemRank%d", i + 1);  d.itemRank[i] = AttrInt(p, name);
-            sprintf_s(name, "rewardItemCount%d", i + 1); d.itemCount[i] = AttrInt(p, name);
-        }
-        m_levelRewards[d.level] = d;
-    });
+    // GMS 0x628e40: feature 0xaf on loads the pass rewards (0x6286b0), off the level rewards (0x626d20).
+    if (!IsPassMode())
+    {
+        ForEachRow("survivalLevelReward.xml", "survivalLevelReward", [this](TiXmlElement* p) {
+            SurvivalLevelReward d;
+            d.level = AttrInt(p, "level");
+            char name[32];
+            for (int i = 0; i < 3; i++)
+            {
+                sprintf_s(name, "rewardItemID%d", i + 1);    d.itemId[i] = AttrInt(p, name);
+                sprintf_s(name, "rewardItemRank%d", i + 1);  d.itemRank[i] = AttrInt(p, name);
+                sprintf_s(name, "rewardItemCount%d", i + 1); d.itemCount[i] = AttrInt(p, name);
+            }
+            m_levelRewards[d.level] = d;
+        });
+    }
     struct PassLoader
     {
         std::map<int, SurvivalPassReward>* out;
@@ -226,8 +248,11 @@ void CMapleSurvivalTable::Load()
         }
     };
     PassLoader free_ = { &m_passRewards }, paid = { &m_passRewardsPaid };
-    ForEachRow("survivalPassReward.xml", "survivalPassReward", free_);
-    ForEachRow("survivalPassReward_paid.xml", "survivalPassReward", paid);
+    if (IsPassMode())
+    {
+        ForEachRow("survivalPassReward.xml", "survivalPassReward", free_);
+        ForEachRow("survivalPassReward_paid.xml", "survivalPassReward", paid);
+    }
     ForEachRow("mapleSurvivalOpenPeriod.xml", "period", [this](TiXmlElement* p) {
         SurvivalOpenPeriod d;
         d.id = AttrInt(p, "id");
@@ -279,8 +304,10 @@ CMapleSurvivalManager::CMapleSurvivalManager()
 void CMapleSurvivalManager::SetState(int nState)
 {
     m_state = nState;
-    MushkingUI::Lobby_OnState();   // GMS refreshes one of the two (0x79dac0, or 0x79f8e0 under feature 0xaf): both
-    MushkingUI::Pass_OnState();    // do nothing while closed
+    if (IsPassMode())                  // GMS 0x6e2ac7: feature 0xaf on refreshes the pass dialog (0x79f8e0),
+        MushkingUI::Pass_OnState();
+    else                               // off the lobby (0x79dac0)
+        MushkingUI::Lobby_OnState();
     PostNotify(new NotifySurvivalState);
 }
 
@@ -436,6 +463,9 @@ void CMapleSurvivalManager::OnPacket(CInPacket& packet)
     {
         __int64 charId = packet.ReadInt64();
         bool bShort = packet.ReadBool();
+        // GMS 0x6e31df: feature 0xaf on refreshes the pass dialog (0x79f8e0), off the lobby (0x79dac0), then shows the
+        // box. SetState already refreshes the window of the mode; the dialogs are registered at start-up, so GMS's
+        // "dialog exists" test before the box always holds here.
         SetState(2);
         ShowMatchBox(charId, bShort, false);
         Sound("guildBattle_MatchingSuccess");   // as the KMS rank-duel match
@@ -521,8 +551,7 @@ void CMapleSurvivalManager::OnPacket(CInPacket& packet)
             m_seasonValue = si.value;
             m_season = si;
         }
-        MushkingUI::Pass_OnSeason();   // GMS: the Pass dialog under feature 0xaf, else the lobby
-        MushkingUI::Lobby_OnSeason();
+        RefreshSeasonUI();
         break;
     }
     case 0x17:   // own record
@@ -538,8 +567,7 @@ void CMapleSurvivalManager::OnPacket(CInPacket& packet)
         break;
     case 0x18:
         SystemLine(Key(L"s_maple_survival_ui_refresh_season_record"));
-        MushkingUI::Pass_OnSeason();
-        MushkingUI::Lobby_OnSeason();
+        RefreshSeasonUI();
         break;
     case 0x19:   // kill feed
     {

@@ -409,9 +409,12 @@ int CGameMenuTable::Init()
     {   // MS2-RESTORE: mushking. table/gamemenu.xml has the SurvivalMap child (def 50, see RegisterDefs) only in
         // GamePad_ContentsGroup, so the mouse menu had no lobby entry. Add child 50 to the game set's ContentsGroup
         // (1002), after IndividualBattle (19), or at the group's end when that child was not loaded. Children draw as
-        // text, so no gfx frame is needed. The gamepad child stays as loaded.
+        // text, so no gfx frame is needed. The gamepad child stays as loaded. The xml SurvivalMap children carry
+        // feature="SurvivalContents01" (GMS 0xad; the loader drops them through IsElementAvailable, GMS 0x466c20),
+        // so the added child follows the same flag: SurvivalContents01 is KMS feature 158.
         ATL::CAtlArray<MS2Ptr<CGameMenuItem> >& items = m_sets[GAMEMENU_SET_GAME];
-        for (size_t i = 0; i < items.GetCount(); ++i)
+        size_t nItems = CFeatureManager::GetInstance()->IsFeatureEnabled(158) ? items.GetCount() : 0;
+        for (size_t i = 0; i < nItems; ++i)
         {
             if (items[i]->m_nId != 1002 || items[i]->HasId(50))
                 continue;
@@ -872,13 +875,15 @@ int CGameMenuTable::RegisterDefs()
 #ifndef MS2_HOOK_DLL
     {   // MS2-RESTORE: mushking. The Mushking Royale lobby entry (GMS id 0x32, menu table loader 0x7e776d): the
         // "SurvivalMap" child of table/gamemenu.xml (feature SurvivalContents01) had no def in KMS. No m_onClick, so a
-        // click toggles m_nUiId: UIMapleSurvivalDialog (MS2_UI_MAPLESURVIVAL, maplesurvivalui.h).
+        // click toggles m_nUiId. GMS's click (0xcdf950, test at 0xcdfb90) opens the pass dialog (0x4f7b) with feature
+        // 0xaf (SurvivalContents03, KMS feature 160) on, else the lobby (0x4f6d): here UIMapleSurvivalPassDialog
+        // (MS2_UI_MAPLESURVIVAL_PASS) or UIMapleSurvivalDialog (MS2_UI_MAPLESURVIVAL), maplesurvivalui.h.
         CGameMenuDef* pDef = new CGameMenuDef();
         pDef->m_nId = 50;
         pDef->m_strName = "survivalmap";
         pDef->m_strLabel = "$s_maple_survival_title";
         pDef->m_strTooltip = L"s_tooltip_gamemenu_survival";
-        pDef->m_nUiId = 0x4fc0;
+        pDef->m_nUiId = CFeatureManager::GetInstance()->IsFeatureEnabled(160) ? 0x4fc1 : 0x4fc0;
         m_defs.SetAt(pDef->m_nId, pDef);
     }
 #endif

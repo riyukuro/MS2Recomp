@@ -20,6 +20,13 @@ and the comments cite that exe's addresses as `GMS 0x...`. Do not read those as 
     constructor declaration for the survival state notice (`notifychangebuff.h`);
   - a lobby entry in the mouse game menu (`gameeventmanagercli.cpp`), since the KMS2 menu table lists it only in
     the gamepad set.
+
+  The survival code follows the client's feature switches (`feature.xml`), as the global client does:
+  - `SurvivalContents01`: the game menu entry (mouse and gamepad).
+  - `SurvivalContents03` picks the mode. When it is on, the menu entry opens the survival pass window and the pass
+    reward tables are loaded. When it is off, the entry opens the lobby and the level reward table is loaded. The
+    KMS2 data has it off.
+  - `SurvivalObserver`: the result window's watch button.
 - **Crimson Tear Mine arena row.** The individual arena window (`UIIndividualPvPDialog`) gets an entry in the game
   menu (`gameeventmanagercli.cpp`). The KMS2 exe greys out the window's second arena, Crimson Tear Mine; on this
   branch it can be picked (`uiindividualpvpdialog.cpp`).
