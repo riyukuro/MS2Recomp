@@ -175,6 +175,7 @@ void UIMapleSurvivalPassDialog::OnLoadComplete()
         vfunc_67();
         return;
     }
+    BindCloseButton(CString("m_closeButton"));     // GMS 0x7a33a0 -> 0xcd72b0, before the panels
     m_mainInfo = m_30->FUN_1409b4560("m_mainInfo");
     m_skinInfo = m_30->FUN_1409b4560("m_skinInfo");
     m_itemInfo = m_30->FUN_1409b4560("m_itemInfo");

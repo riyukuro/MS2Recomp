@@ -127,6 +127,7 @@ void UIMapleSurvivalDialog::OnLoadComplete()
         vfunc_67();
         return;
     }
+    BindCloseButton(CString("m_closeButton"));     // GMS 0x79dc50 -> 0xcd72b0, before m_mainPage
     // The KMS movie nests the fields (uimaplesurvivaldialog.gfx: root -> m_mainPage -> the texts, buttons and clips;
     // m_slot1-3, m_eff1-3 and m_levelRewardButton one level deeper in m_mainPage.m_rewardMovie), so they are bound
     // through those clips, as GMS does from m_mainPage. Without the page GMS closes the window.

@@ -70,6 +70,8 @@ void UIMapleSurvivalBuyBundleDialog::OnLoadComplete()
         vfunc_67();
         return;
     }
+    BindCloseButton(CString("m_closeButton"));     // GMS 0x79f200 -> 0xcd72b0, 0xcd71f0
+    BindDragBar(CString("m_dragBar"));
     m_bonusItemId = nItem;
 
     m_buyDefault = m_30->FUN_140acce30<ASButton>("m_buyDefault");
