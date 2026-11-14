@@ -691,6 +691,65 @@ UIClosetDialog* GetClosetDialog()
     return dynamic_cast<UIClosetDialog*>((UIObject*)p);
 }
 
+#ifndef MS2_HOOK_DLL
+// MS2-RESTORE: a row missing from the active locale's string table is read from the same table in String/en. The
+// global client has one locale and no fallback (its table lookup, GMS 0xc59020 as called by the achievement name
+// 0x66e7c0, returns an empty string), but the KMS2 tables lack rows of content the restore branch brings back, such
+// as the Mushking Royale trophies. The English tables are loaded once per table on the first miss; a table whose
+// English file does not exist stays empty. The pack keeps them as string/en/<name>.xml, which the file system finds
+// from ./Data/Xml/String/en/<name>.xml.
+extern std::string g_strLocaleDir2;
+namespace
+{
+typedef ATL::CAtlMap<int, CStringTable::CachePtr> RestoreEnCacheMap;
+RestoreEnCacheMap& RestoreEnCaches()
+{
+    static RestoreEnCacheMap s_map;
+    return s_map;
+}
+CLockCriticalSection& RestoreEnLock()
+{
+    static CLockCriticalSection s_lock;
+    return s_lock;
+}
+}
+
+static bool RestoreEnglishRow(CStringTable* pTable, int nTable, const CStringTable::CachePtr& spSrc, int nId,
+                              CStringW& strText)
+{
+    if (g_strLocaleDir2 == "en/" || spSrc == 0)
+        return false;
+    CStringTable::CachePtr spCache(0);
+    Unk_CriticalSectionLock lock(RestoreEnLock(), 1);
+    if (!RestoreEnCaches().Lookup(nTable, spCache))
+    {
+        spCache.AssignRaw(new CStringTable::CStringCache);
+        spCache->m_strParser = spSrc->m_strParser;
+        spCache->m_strParserValue = spSrc->m_strParserValue;
+        for (POSITION pos = spSrc->m_files.GetHeadPosition(); pos; spSrc->m_files.GetNext(pos))
+        {
+            MS2Ptr<CCacheData> spFile = spSrc->m_files.GetAt(pos);
+            if (spFile == 0)
+                continue;
+            CString strPath(*spFile->GetPath());
+            spCache->FUN_1418176e0(CString("en/") + strPath.Mid(strPath.ReverseFind('/') + 1));
+        }
+        if (!spCache->m_files.IsEmpty())
+            pTable->FUN_141813c80(CStringTable::CachePtr(spCache), CString(spCache->m_strParser),
+                                  CString(spCache->m_strParserValue));
+        RestoreEnCaches().SetAt(nTable, spCache);
+    }
+    {
+        Unk_CriticalSectionLock lockCache(spCache->m_lock, 1);
+        if (!spCache->m_strings.Lookup(nId, strText))
+            return false;
+    }
+    if (strText.Find(L"$", 0) != -1)
+        TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strText);
+    return true;
+}
+#endif
+
 // @0x141811980
 CStringW CStringTable::FUN_141811980(int nTable, int nId)
 {
@@ -701,6 +760,9 @@ CStringW CStringTable::FUN_141811980(int nTable, int nId)
         return CStringW(L"");
     }
     CStringW strText;
+#ifndef MS2_HOOK_DLL
+    bool bMissing = false;
+#endif
     {
         Unk_CriticalSectionLock lock(spCache->m_lock, 1);
         if (spCache->FUN_141819280() != 0)
@@ -708,8 +770,16 @@ CStringW CStringTable::FUN_141811980(int nTable, int nId)
             if (FUN_141813c80(CachePtr(spCache), CString(spCache->m_strParser), CString(spCache->m_strParserValue)) == 0)
                 return CStringW(L"");
         }
+#ifndef MS2_HOOK_DLL
+        bMissing = !spCache->m_strings.Lookup(nId, strText);
+#else
         spCache->m_strings.Lookup(nId, strText);
+#endif
     }
+#ifndef MS2_HOOK_DLL
+    if (bMissing)
+        RestoreEnglishRow(this, nTable, spCache, nId, strText);   // MS2-RESTORE: see RestoreEnglishRow
+#endif
     if (g_nDebugUI != 0)
     {
         switch (nTable)

@@ -30,6 +30,10 @@ and the comments cite that exe's addresses as `GMS 0x...`. Do not read those as 
 
   When the client's string tables lack a survival text key, the windows show a short English fallback instead of
   the raw key (`maplesurvival.cpp`); a client pack that has the key still wins.
+- **English rows for missing string table rows.** When a string table of the active locale has no row for an id,
+  the client reads the row from the same table under `String/en` (`stringtable.cpp`); the global client has no such
+  fallback and shows an empty string. Trophy names in chat links, such as the Mushking Royale trophy that the KMS2
+  table lacks, then show the English name. Rows present in the active locale are read as before.
 - **Web address guard.** The client opens a web page in the system browser or the in-game browser only when the
   address starts with `http://` or `https://`; any other address opens nothing (`uicommon.cpp`,
   `webbrowserservice.cpp`, `offscreenwebbrowser.cpp`).
