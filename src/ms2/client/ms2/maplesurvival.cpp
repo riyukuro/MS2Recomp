@@ -43,6 +43,7 @@ CStringW GetStringCommon(int nId);
 void ShowSystemNotice(const CStringW& strText, int nType, int nFlag);   // GMS 0xa1fd00 (text, 2, 1)
 int PlaySystemSound(const CString& strName, const CString& strExtra);
 void FUN_140710590(COutPacket& packet);                                  // send
+void FUN_1418fe1c0(const CString& strUrl);                               // open an url (ShellExecute)
 bool SendPacketThrottled(COutPacket* packet, int key, int delay);
 MS2Ptr<CMsgBoxData> FUN_140d73f20(CStringW text, int type);             // a new message box
 void FUN_140d73c60(MS2Ptr<CMsgBoxData> box);                            // show it
@@ -868,6 +869,20 @@ Unk_RestoreSink s_sink;
 }   // namespace
 
 bool IsMapleSurvivalShutdown(int kind) { return kind >= 0 && kind < 4 && !s_shutdown[kind].empty(); }
+
+// GMS 0x79c5a0 (lobby) and 0x79fb40 (pass): the season reward info button opens the url of the constant
+// MapleSurvivalSeasonRewardUrl (constants +0xb440) in the browser. The KMS constants table has no such member, so the
+// row is read from table/constants.xml here (locale filter as for the other rows); without the row nothing opens.
+void OpenMapleSurvivalSeasonRewardUrl()
+{
+    CStringA strUrl;
+    ForEachRow("constants.xml", "v", [&strUrl](TiXmlElement* p) {
+        if (AttrA(p, "key") == "MapleSurvivalSeasonRewardUrl" && strUrl.IsEmpty())
+            strUrl = AttrA(p, "value");
+    });
+    if (!strUrl.IsEmpty())
+        FUN_1418fe1c0(strUrl);
+}
 bool GetMapleSurvivalPassBundle(__int64& a, __int64& b, int& c)
 {
     a = s_passBundle.a;

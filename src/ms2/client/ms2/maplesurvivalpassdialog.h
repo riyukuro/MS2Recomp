@@ -40,6 +40,7 @@ public:
     void OnSkinPlus(const Scaleform::GFx::FunctionHandler::Params& params);      // GMS 0x7a1420 (user = skin slot)
     void OnBuyPaidPass(const Scaleform::GFx::FunctionHandler::Params& params);   // GMS 0x7a1460
     void OnReceive(const Scaleform::GFx::FunctionHandler::Params& params);       // GMS 0x7a0150
+    void OnSeasonRewardInfo(const Scaleform::GFx::FunctionHandler::Params& params);   // GMS 0x79fb40
     void OnPrevPage(const Scaleform::GFx::FunctionHandler::Params& params);      // GMS 0x7a32a0
     void OnNextPage(const Scaleform::GFx::FunctionHandler::Params& params);      // GMS 0x7a32d0
     bool OnBuyBox(int nResult, const CMsgBoxData& box);                          // GMS 0x7a03d0

@@ -63,6 +63,8 @@ namespace MushkingUI
 bool IsMapleSurvivalShutdown(int kind);
 // GameEventMapleSurvivalPassBundle while it runs (GMS 0x4e76d0): a, b = value1 / value2 (i64), c = value3. False if none.
 bool GetMapleSurvivalPassBundle(__int64& a, __int64& b, int& c);
+// The season reward info button (GMS 0x79c5a0 / 0x79fb40): opens MapleSurvivalSeasonRewardUrl from table/constants.xml.
+void OpenMapleSurvivalSeasonRewardUrl();
 
 // Called once from the end of CUIService::CreateAllDialogs (MS2-RESTORE: mushking): registers every window.
 void MushkingRegisterDialogs();

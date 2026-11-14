@@ -165,7 +165,10 @@ void UIMapleSurvivalDialog::OnLoadComplete()
         m_registerButton.operator->()->AddClickHandler(LobbyClickDelegate(this, &UIMapleSurvivalDialog::OnRegister), 0);
     if (m_unregisterButton.get() != 0)
         m_unregisterButton.operator->()->AddClickHandler(LobbyClickDelegate(this, &UIMapleSurvivalDialog::OnUnregister), 0);
-    // GMS 0x79c5a0 (season reward info) opens a web page from the constants table; not restored (no such constant).
+    // GMS 0x79c5a0: the season reward info button opens a web page from the constants table.
+    if (m_seasonRewardInfoButton.get() != 0)
+        m_seasonRewardInfoButton.operator->()->AddClickHandler(
+            LobbyClickDelegate(this, &UIMapleSurvivalDialog::OnSeasonRewardInfo), 0);
     // GMS wires the level reward button to 0x79c640 (the refresh request) and the grade button to 0x79d750, which
     // opens the grade window 0x4f28 (a KMS dialog with another meaning); that one is left unwired.
     if (m_levelRewardButton.get() != 0)
@@ -218,6 +221,12 @@ void UIMapleSurvivalDialog::OnRegister(const Scaleform::GFx::FunctionHandler::Pa
 void UIMapleSurvivalDialog::OnUnregister(const Scaleform::GFx::FunctionHandler::Params&)
 {
     CMapleSurvivalManager::GetInstance()->CancelMatch();
+}
+
+// GMS 0x79c5a0
+void UIMapleSurvivalDialog::OnSeasonRewardInfo(const Scaleform::GFx::FunctionHandler::Params&)
+{
+    OpenMapleSurvivalSeasonRewardUrl();
 }
 
 // GMS 0x79c640 (mode 0x12, throttled)

@@ -244,8 +244,8 @@ void UIMapleSurvivalPassDialog::OnLoadComplete()
     Click(m_prevPage, PassClickDelegate(this, &UIMapleSurvivalPassDialog::OnPrevPage), 0);
     Click(m_nextPage, PassClickDelegate(this, &UIMapleSurvivalPassDialog::OnNextPage), 0);
     Click(m_receiveButton, PassClickDelegate(this, &UIMapleSurvivalPassDialog::OnReceive), 0);
-    // Not restored: the season reward info button (GMS opens a web page from the constants table), the rank button
-    // and the static-text centering (0x7a0510).
+    Click(m_seasonRewardInfoButton, PassClickDelegate(this, &UIMapleSurvivalPassDialog::OnSeasonRewardInfo), 0);
+    // Not restored: the rank button and the static-text centering (0x7a0510).
 
     Show(m_modeSelector, false);
     {
@@ -329,6 +329,12 @@ void UIMapleSurvivalPassDialog::OnRegister(const Scaleform::GFx::FunctionHandler
         return;
     }
     pMgr->RequestMatch();
+}
+
+// GMS 0x79fb40: the season reward info page (as the lobby's 0x79c5a0).
+void UIMapleSurvivalPassDialog::OnSeasonRewardInfo(const Scaleform::GFx::FunctionHandler::Params&)
+{
+    OpenMapleSurvivalSeasonRewardUrl();
 }
 
 // GMS 0x79fb20
