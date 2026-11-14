@@ -706,7 +706,9 @@ bool UIMapleSurvivalPassDialog::OnBuyBox(int nResult, const CMsgBoxData& box)
     return true;
 }
 
-// GMS 0x7a1420: the skin window on the clicked slot (open it, or refresh it when it is open).
+// GMS 0x7a1420: the skin window on the clicked slot. GMS only opens it when it is closed and does nothing when it is
+// open; here an open window takes the clicked slot's category and is raised above the pass window (the KMS way to
+// raise an open window, as uicommon.cpp's SetTopMostLayer), since clicking the pass window put it behind.
 void UIMapleSurvivalPassDialog::OnSkinPlus(const Scaleform::GFx::FunctionHandler::Params& params)
 {
     int nSlot = UserInt(params);
@@ -721,7 +723,10 @@ void UIMapleSurvivalPassDialog::OnSkinPlus(const Scaleform::GFx::FunctionHandler
     if (!pUI->IsDialogOpen((eUIClassID)MS2_UI_MAPLESURVIVAL_SKIN))
         pUI->OpenDialog((eUIClassID)MS2_UI_MAPLESURVIVAL_SKIN);
     else
+    {
+        pSkin->SetTopMostLayer();
         pSkin->RefreshSkins();
+    }
 }
 
 // GMS 0x7a27e0 (+ 0x7a2600 per slot): the equipped skin icon of each slot (none when expired or unknown).
