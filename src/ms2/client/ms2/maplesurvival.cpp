@@ -870,6 +870,87 @@ Unk_RestoreSink s_sink;
 
 bool IsMapleSurvivalShutdown(int kind) { return kind >= 0 && kind < 4 && !s_shutdown[kind].empty(); }
 
+// MS2-RESTORE: English fallback for the survival string keys the KMS2 string tables lack (55 keys: the survival
+// movies' "$s_..." labels and the keys this code and the exe's survival notices look up). Our own short wording, used
+// only on a miss: a client pack that has the key wins. Hooked in at the two lookups, CommonString::MapText
+// (commonstringtable.cpp, code keys) and FontTranslator::Translate (gfxui/fontconfig.cpp, movie "$" keys). "{0}" is
+// filled as the callers fill the pack strings (Arg / the fmt formatter).
+namespace
+{
+struct RestoreString { const char* key; const char* text; };
+const RestoreString s_restoreStrings[] = {
+    { "s_maple_survival_active_paid_pass", "Activate Premium Pass" },
+    { "s_maple_survival_auto_item_tooltip", "Items used automatically during a match." },
+    { "s_maple_survival_buy_bundle_bundle_bonus_item", "Bonus Item" },
+    { "s_maple_survival_buy_bundle_bundle_desc", "The premium pass together with a bonus item." },
+    { "s_maple_survival_buy_bundle_bundle_title", "Pass Bundle" },
+    { "s_maple_survival_buy_bundle_default_title", "Premium Pass" },
+    { "s_maple_survival_buy_bundle_title", "Buy Premium Pass" },
+    { "s_maple_survival_champion_pass_tooltip", "Premium pass rewards" },
+    { "s_maple_survival_complete_free", "Claimed" },
+    { "s_maple_survival_complete_paid", "Claimed" },
+    { "s_maple_survival_error_not_here", "You cannot do that here." },
+    { "s_maple_survival_error_squad_register_only_party_chief", "Only the party leader can register a squad." },
+    { "s_maple_survival_error_squad_register_over_count", "Your party has too many members for a squad." },
+    { "s_maple_survival_event_buff_improve_kill_exp", "Event: kill EXP bonus {0}" },
+    { "s_maple_survival_event_buff_improve_time_exp", "Event: survival time EXP bonus {0}" },
+    { "s_maple_survival_learn_skin", "You learned a new skin." },
+    { "s_maple_survival_levelInfo_level_title", "Level" },
+    { "s_maple_survival_level_text", "Level" },
+    { "s_maple_survival_level_tooltip", "Your survival level. Play matches to earn EXP." },
+    { "s_maple_survival_mode_selector_solo_desc", "Every player for themselves." },
+    { "s_maple_survival_mode_selector_solo_title", "Solo" },
+    { "s_maple_survival_mode_selector_squad_desc", "Play as a team with your party." },
+    { "s_maple_survival_mode_selector_squad_title", "Squad" },
+    { "s_maple_survival_mode_selector_title", "Select Mode" },
+    { "s_maple_survival_pass_gain_normal", "You received a pass reward." },
+    { "s_maple_survival_pass_gain_nothing", "There is no reward to claim." },
+    { "s_maple_survival_pass_gain_paid", "You received a premium pass reward." },
+    { "s_maple_survival_receive_button", "Claim" },
+    { "s_maple_survival_reward_detail", "Reward Details" },
+    { "s_maple_survival_reward_info_title", "Rewards" },
+    { "s_maple_survival_season_text_tooltip", "Season period" },
+    { "s_maple_survival_skin_info_tooltip", "Skins shown during a match." },
+    { "s_maple_survival_skin_slot_name1", "Tail" },
+    { "s_maple_survival_skin_slot_name2", "Mount" },
+    { "s_maple_survival_skin_slot_name3", "Glider" },
+    { "s_maple_survival_skin_ui_putoff", "Unequip" },
+    { "s_maple_survival_skin_ui_puton", "Equip" },
+    { "s_maple_survival_skin_ui_title", "Skins" },
+    { "s_maple_survival_squad_finish_observer", "Your squad's match is over." },
+    { "s_maple_survival_squad_register_squad", "Your party registered for a squad match." },
+    { "s_maple_survival_squad_unregister_squad", "Your party's squad registration was cancelled." },
+    { "s_maple_survival_ui_auto_item_title", "Auto Items" },
+    { "s_maple_survival_ui_buy_paid_pass", "Buy the premium pass for {0}?" },
+    { "s_maple_survival_ui_info_mode_cant_in_party", "You cannot pick this mode while in a party." },
+    { "s_maple_survival_ui_info_mode_cant_registed", "You cannot change the mode while registered." },
+    { "s_maple_survival_ui_info_mode_solo", "Solo" },
+    { "s_maple_survival_ui_info_mode_squad", "Squad ({0})" },
+    { "s_maple_survival_ui_skin_category1", "Tail" },
+    { "s_maple_survival_ui_skin_category2", "Mount" },
+    { "s_maple_survival_ui_skin_category3", "Glider" },
+    { "s_maple_survival_ui_skin_err_already_puton", "That skin is already equipped." },
+    { "s_maple_survival_ui_skin_err_no_select_item", "Select a skin first." },
+    { "s_maple_survival_ui_skin_err_not_here", "You cannot change skins here." },
+    { "s_maple_survival_ui_skin_err_not_puton", "That skin is not equipped." },
+    { "s_maple_survival_ui_skin_title", "Skins" },
+};
+}   // namespace
+
+const char* RestoreStringFallback(const char* pszKey)
+{
+    if (pszKey == 0)
+        return 0;
+    if (*pszKey == '$')
+        ++pszKey;
+    if (strncmp(pszKey, "s_maple_survival_", 17) != 0)
+        return 0;
+    for (size_t i = 0; i < sizeof(s_restoreStrings) / sizeof(s_restoreStrings[0]); ++i)
+        if (strcmp(s_restoreStrings[i].key, pszKey) == 0)
+            return s_restoreStrings[i].text;
+    return 0;
+}
+
 // GMS 0x79c5a0 (lobby) and 0x79fb40 (pass): the season reward info button opens the url of the constant
 // MapleSurvivalSeasonRewardUrl (constants +0xb440) in the browser. The KMS constants table has no such member, so the
 // row is read from table/constants.xml here (locale filter as for the other rows); without the row nothing opens.

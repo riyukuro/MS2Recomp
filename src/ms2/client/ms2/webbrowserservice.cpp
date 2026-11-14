@@ -158,6 +158,10 @@ bool CWebBrowserService::MatchURL(const CStringA& strUrl, ATL::CAtlRegExp<>* pRe
 }
 MS2_REPLACE(0x141B78140, CWebBrowserService::MatchURL, 150, 0xB64F4F8B);
 
+#ifndef MS2_HOOK_DLL
+bool RestoreIsWebUrl(const char* pszUrl);   // MS2-RESTORE: uicommon.cpp
+#endif
+
 // @0x141b781e0
 void CWebBrowserService::OpenBrowser(int nIndex, const char* pszUrl, const char* pszUnk, int nUnk)
 {
@@ -172,6 +176,11 @@ void CWebBrowserService::OpenBrowser(int nIndex, const char* pszUrl, const char*
             // empty in the exe
         }
     }
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: web address guard (uicommon.cpp): a new browser starts blank instead; LoadUrl refuses the rest.
+    if (!RestoreIsWebUrl(strUrl))
+        strUrl = "about:blank";
+#endif
     CefRefPtr<COffscreenWebBrowser> browser(FindBrowser(nIndex));
     if (browser.get() == NULL) {
         CefWindowInfo windowInfo;

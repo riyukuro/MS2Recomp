@@ -311,6 +311,10 @@ void FontTranslator::AddMapping(const String& key, const String& value)
     Mappings.Set(key, value);
 }
 
+#ifndef MS2_HOOK_DLL
+const char* RestoreStringFallback(const char* pszKey);   // MS2-RESTORE: maplesurvival.cpp
+#endif
+
 // @0x1422f9d10
 void FontTranslator::Translate(TranslateInfo* ptranslateInfo)
 {
@@ -321,6 +325,13 @@ void FontTranslator::Translate(TranslateInfo* ptranslateInfo)
     String* pvalue = Mappings.Get(key);
     if (pvalue)
         ptranslateInfo->SetResultHtml(pvalue->ToCStr(), pvalue->GetSize());
+#ifndef MS2_HOOK_DLL
+    else if (const char* pszText = RestoreStringFallback(key.ToCStr()))
+    {
+        // MS2-RESTORE: survival string fallback (maplesurvival.cpp), only when the movie key has no mapping
+        ptranslateInfo->SetResultHtml(pszText, strlen(pszText));
+    }
+#endif
 }
 
 // @0x1422f9dd0

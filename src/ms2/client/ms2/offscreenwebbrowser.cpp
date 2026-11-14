@@ -214,12 +214,20 @@ void COffscreenWebBrowser::SetFocus(bool bShow)
 }
 MS2_REPLACE_METHOD(0x141611BE0, COffscreenWebBrowser, SetFocus, 158, 0);
 
+#ifndef MS2_HOOK_DLL
+bool RestoreIsWebUrl(const char* pszUrl);   // MS2-RESTORE: uicommon.cpp
+#endif
+
 // @0x141611c90
 void COffscreenWebBrowser::LoadUrl(const CStringA& strUrl)
 {
     if (m_browser.get() == NULL) {
         return;
     }
+#ifndef MS2_HOOK_DLL
+    if (!RestoreIsWebUrl(strUrl))   // MS2-RESTORE: web address guard (uicommon.cpp)
+        return;
+#endif
     CefRefPtr<CefFrame> frame = m_browser->GetMainFrame();
     frame->LoadURL((const char*)strUrl);
 }

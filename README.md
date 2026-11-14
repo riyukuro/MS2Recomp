@@ -27,12 +27,19 @@ and the comments cite that exe's addresses as `GMS 0x...`. Do not read those as 
     reward tables are loaded. When it is off, the entry opens the lobby and the level reward table is loaded. The
     KMS2 data has it off.
   - `SurvivalObserver`: the result window's watch button.
+
+  When the client's string tables lack a survival text key, the windows show a short English fallback instead of
+  the raw key (`maplesurvival.cpp`); a client pack that has the key still wins.
+- **Web address guard.** The client opens a web page in the system browser or the in-game browser only when the
+  address starts with `http://` or `https://`; any other address opens nothing (`uicommon.cpp`,
+  `webbrowserservice.cpp`, `offscreenwebbrowser.cpp`).
 - **Crimson Tear Mine arena row.** The individual arena window (`UIIndividualPvPDialog`) gets an entry in the game
   menu (`gameeventmanagercli.cpp`). The KMS2 exe greys out the window's second arena, Crimson Tear Mine; on this
   branch it can be picked (`uiindividualpvpdialog.cpp`).
 
-Every change is under `src/ms2/client/`. The changed behaviour is compiled only when `MS2_HOOK_DLL` is not defined,
-so it is in the default build and not in the maintainers' hook DLL.
+Every change is under `src/ms2/`: `client/`, plus the two string lookups in `commonfiles/commonstringtable.cpp` and
+`gfxui/fontconfig.cpp`. The changed behaviour is compiled only when `MS2_HOOK_DLL` is not defined, so it is in the
+default build and not in the maintainers' hook DLL.
 
 ## Building
 

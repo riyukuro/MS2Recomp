@@ -1353,6 +1353,10 @@ CommonString::~CommonString()
     m_spChecker = 0;
 }
 
+#ifndef MS2_HOOK_DLL
+const char* RestoreStringFallback(const char* pszKey);   // MS2-RESTORE: maplesurvival.cpp
+#endif
+
 // @0x1402294e0
 CStringW CommonString::MapText(int nMap, const CStringW& strKey)
 {
@@ -1360,7 +1364,17 @@ CStringW CommonString::MapText(int nMap, const CStringW& strKey)
     if (nMap < 0 || nMap >= 2)
         return CStringW(L"");
     CStringW strText;
+#ifndef MS2_HOOK_DLL
+    if (!m_maps[nMap].Lookup(strKey, strText))
+    {
+        // MS2-RESTORE: survival string fallback (maplesurvival.cpp), only when the tables lack the key
+        const char* pszText = RestoreStringFallback(CStringA(strKey));
+        if (pszText != 0)
+            strText = pszText;
+    }
+#else
     m_maps[nMap].Lookup(strKey, strText);
+#endif
     return strText;
 }
 

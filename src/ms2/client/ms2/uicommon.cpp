@@ -701,11 +701,24 @@ bool FUN_1418fe120()
 }
 MS2_REPLACE(0x1418fe120, FUN_1418fe120, 151, 0xF42737FD);
 
+#ifndef MS2_HOOK_DLL
+// MS2-RESTORE: web address guard (not exe code). The shell opener below and the in-game browser
+// (webbrowserservice.cpp OpenBrowser, offscreenwebbrowser.cpp LoadUrl) take only http:// and https:// addresses.
+bool RestoreIsWebUrl(const char* pszUrl)
+{
+    return pszUrl != 0 && (_strnicmp(pszUrl, "http://", 7) == 0 || _strnicmp(pszUrl, "https://", 8) == 0);
+}
+#endif
+
 // @0x1418fe1c0
 void FUN_1418fe1c0(const CString& strUrl)
 {
     if (strUrl.IsEmpty())
         return;
+#ifndef MS2_HOOK_DLL
+    if (!RestoreIsWebUrl(strUrl))   // MS2-RESTORE: web address guard
+        return;
+#endif
     ShellExecuteA(0, "open", strUrl, 0, 0, SW_SHOWNORMAL);
 }
 MS2_REPLACE(0x1418fe1c0, FUN_1418fe1c0, 83, 0xD59F7ECF);
