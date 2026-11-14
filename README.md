@@ -34,6 +34,9 @@ and the comments cite that exe's addresses as `GMS 0x...`. Do not read those as 
   the client reads the row from the same table under `String/en` (`stringtable.cpp`); the global client has no such
   fallback and shows an empty string. Trophy names in chat links, such as the Mushking Royale trophy that the KMS2
   table lacks, then show the English name. Rows present in the active locale are read as before.
+- **Live server type by default.** Started without `-env`, the client takes the Live server type, as the client
+  started by the Nexon launcher did, so it loads features and quests at the Live level the server uses (title
+  `S:78`); the KMS2 exe set Dev there (`unit_1414b1230.cpp`). `-env:Dev` still selects Dev.
 - **Web address guard.** The client opens a web page in the system browser or the in-game browser only when the
   address starts with `http://` or `https://`; any other address opens nothing (`uicommon.cpp`,
   `webbrowserservice.cpp`, `offscreenwebbrowser.cpp`).

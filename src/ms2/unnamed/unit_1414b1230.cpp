@@ -348,7 +348,16 @@ void FUN_1414b21d0()
     g_strSid = "";
     g_strServerAddr = "127.0.0.1";
     g_nPort = 0x4e21;
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: start at the Live server type when no "-env" is given ("-env" still overrides, so Dev stays
+    // reachable). The KMS2 exe sets Dev here, on the path taken when it is not started by the Nexon launcher; the
+    // launched client skipped this and kept the static default Live (CFeatureManager::s_strServerType). The global
+    // client has no Dev default at all: its server type is the static "Live" (GMS 0x168bf50) and only "-env"
+    // changes it (GMS 0xb258f0).
+    CFeatureManager::SetServerTypeName(CString("Live"));
+#else
     CFeatureManager::SetServerTypeName(CString("Dev"));
+#endif
 }
 
 // @0x1414b2250
