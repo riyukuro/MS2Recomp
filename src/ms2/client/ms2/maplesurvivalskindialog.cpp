@@ -13,6 +13,7 @@
 #include "ms2/client/ms2/maplesurvivalui.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/placeholder/asbutton.h"
+#include "ms2/placeholder/asbuttonbar.h"
 #include "ms2/placeholder/asdata.h"
 #include "ms2/placeholder/asdisplayobject.h"
 #include "ms2/placeholder/astextfield.h"
@@ -25,6 +26,7 @@ void ShowSystemNotice(const CStringW& strText, int nType, int nFlag);
 __int64 GetServerTime();                                                // now
 
 typedef Delegate<void(const Scaleform::GFx::FunctionHandler::Params&)> SkinClickDelegate;
+template <> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString& strName);   // 0x140c02870
 
 namespace
 {
@@ -82,7 +84,7 @@ void UIMapleSurvivalSkinDialog::OnLoadComplete()
     BindCloseButton(CString("m_closeButton"));
     BindDragBar(CString("m_dragBar"));
     m_items = BindList(m_30.operator->(), "m_items");
-    m_category = BindList(m_30.operator->(), "m_category");
+    m_category = GetChild<ASButtonBar>("m_category");
     m_okButton = m_30->FUN_140acce30<ASButton>("m_okButton");
     m_cancelButton = m_30->FUN_140acce30<ASButton>("m_cancelButton");
     // Not restored: the m_skinPreview render target (loadRenderTarget / unloadRenderTarget, the 3D preview of the
@@ -95,15 +97,18 @@ void UIMapleSurvivalSkinDialog::OnLoadComplete()
     {
         static const wchar_t* const kCategory[3] =
             { L"s_maple_survival_ui_skin_category1", L"s_maple_survival_ui_skin_category2", L"s_maple_survival_ui_skin_category3" };
-        m_category.operator->()->FUN_1422dd1d0();
+        // GMS 0x7a5eb0: the category bar's clikIndexChange (0x1177cf0), the three labels (0x11762f0), validateNow
+        // (vtable slot 24) and selectedIndex (0x1177df0).
+        m_category.operator->()->AddIndexChangeHandler(
+            SkinClickDelegate(this, &UIMapleSurvivalSkinDialog::OnCategoryChange), 0);
         for (int i = 0; i < 3; ++i)
         {
             ASObj obj(2);
             obj.SetWStringMember("label", Key(kCategory[i]));
             m_category.operator->()->AddItem(obj);
         }
+        m_category.operator->()->vfunc_24(true);
         m_category.operator->()->SetSelectedIndex(m_nSlot);
-        m_category.operator->()->AddListIndexChangeListener(SkinClickDelegate(this, &UIMapleSurvivalSkinDialog::OnCategoryChange));
     }
     RefreshSkins();
 }

@@ -12,6 +12,7 @@
 
 class ASButton;
 class ASScrollingList;
+class ASButtonBar;
 
 class UIMapleSurvivalSkinDialog : public UIDialog
 {
@@ -34,7 +35,7 @@ private:
     int SelectedCategory();
 
     MS2Ptr<ASScrollingList> m_items;
-    MS2Ptr<ASScrollingList> m_category;
+    MS2Ptr<ASButtonBar> m_category;         // a CLIK ButtonBar (GMS 0x779de0 -> ctor 0x1177cc0)
     MS2Ptr<ASButton> m_okButton;
     MS2Ptr<ASButton> m_cancelButton;
     std::vector<int> m_ids;                         // skin id of each m_items row
