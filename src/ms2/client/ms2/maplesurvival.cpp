@@ -880,7 +880,10 @@ void OpenMapleSurvivalSeasonRewardUrl()
         if (AttrA(p, "key") == "MapleSurvivalSeasonRewardUrl" && strUrl.IsEmpty())
             strUrl = AttrA(p, "value");
     });
-    if (!strUrl.IsEmpty())
+    // Not GMS: GMS opens any value. Only an http:// or https:// address is handed to the shell here.
+    CStringA strScheme = strUrl.Left(8);
+    strScheme.MakeLower();
+    if (strScheme.Left(7) == "http://" || strScheme == "https://")
         FUN_1418fe1c0(strUrl);
 }
 bool GetMapleSurvivalPassBundle(__int64& a, __int64& b, int& c)
