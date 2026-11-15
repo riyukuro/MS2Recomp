@@ -4,11 +4,16 @@
 //   m2d cat <archive.m2d> <entry>                       write one entry to stdout
 //   m2d info <archive.m2d>                              pack version / header info
 //   m2d repack <archive.m2d> <srcdir> <out.m2d|.m2h>    see Repack.cs
+//   m2d patch <KMS2 Data dir> [--gms <GMS Data dir>] <patch files...> --out <dir> [--repack]
+//                                                       see Patch.cs
+//   m2d hash <archive.m2d> <entry...>                   the pin of each entry (Patch.cs)
 using Maple2.File.IO;
 using Maple2.File.IO.Crypto.Common;
 
 static int Usage() {
-    Console.Error.WriteLine("usage: m2d list|info <m2d> | extract <m2d> <outdir> [prefix...] | cat <m2d> <entry> | repack <orig.m2d> <srcdir> <out.m2d>");
+    Console.Error.WriteLine("usage: m2d list|info <m2d> | extract <m2d> <outdir> [prefix...] | cat <m2d> <entry>"
+        + " | repack <orig.m2d> <srcdir> <out.m2d>"
+        + " | patch <KMS2 Data> [--gms <GMS Data>] <patch...> --out <dir> [--repack] | hash <m2d> <entry...>");
     return 2;
 }
 if (args.Length < 2) return Usage();
@@ -28,7 +33,7 @@ switch (args[0]) {
     case "cat": {
         if (args.Length < 3) return Usage();
         using var r = new M2dReader(args[1]);
-        var e = r.GetEntry(args[2]);
+        var e = r.Files.FirstOrDefault(f => string.Equals(f.Name, args[2], StringComparison.OrdinalIgnoreCase));
         if (e == null) { Console.Error.WriteLine("not found"); return 1; }
         using var o = Console.OpenStandardOutput();
         var b = r.GetBytes(e); o.Write(b, 0, b.Length);
@@ -53,5 +58,7 @@ switch (args[0]) {
         return bad == 0 ? 0 : 1;
     }
     case "repack": return Repack.Run(args);
+    case "patch": return Patch.Run(args);
+    case "hash": return Patch.Hash(args);
     default: return Usage();
 }

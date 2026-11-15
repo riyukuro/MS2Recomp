@@ -1,0 +1,90 @@
+patch survival-items
+made-for KMS2 KR Live client Data/Xml.m2d; global (GMS, Steam) client Data/Xml.m2d
+# The Mushking Royale skin items and the survival reward items the KMS2 data lacks, copied from the global
+# client: rows without feature switch (the global data gates them on SurvivalContents03, off in KMS2 Live).
+# Mount items link their riding id and glider items their glide id in property param1.
+need gms:Xml/item/2/00/20000994.xml 4c8b1babb23a09e7
+need gms:Xml/item/2/03/20301724.xml c26982dc2c6d0f0e
+need gms:Xml/item/2/03/20301748.xml d07439138977d43d
+need gms:Xml/item/2/03/20301749.xml ca244287920b636d
+need gms:Xml/item/2/09/20900001.xml e44b32ca85a093a0
+need gms:Xml/item/2/09/20900002.xml 767e832ef14d5d7a
+need gms:Xml/item/2/09/20900003.xml 1dcd150cd427cb26
+need gms:Xml/item/2/09/20900004.xml 5b1f6286266d4874
+need gms:Xml/item/2/09/20900005.xml c1341bc85d8e1b2e
+need gms:Xml/item/2/09/20900006.xml dd3f6cd427bdcaf2
+need gms:Xml/item/2/09/20900007.xml 6c222b34154fcd0b
+need gms:Xml/item/2/09/20900008.xml d1fcb85e9d234fc1
+need gms:Xml/item/2/09/20910001.xml 6423fe64ab855c44
+need gms:Xml/item/2/09/20910002.xml 30bf1cbf1de186e7
+need gms:Xml/item/2/09/20910003.xml 6c4dd6d0fea5b391
+need gms:Xml/item/2/09/20910004.xml 2b0d80c290f17152
+need gms:Xml/item/2/09/20910005.xml a8647ff69ffb606f
+need gms:Xml/item/2/09/20910006.xml d43f0f9c8eba132f
+need gms:Xml/item/2/09/20920001.xml 0789d980cce0d4e2
+need gms:Xml/item/2/09/20920002.xml 762c2b3ffd536add
+need gms:Xml/item/2/09/20920003.xml 878dd7d038fae6e8
+need gms:Xml/item/2/09/20920004.xml f4fa4b94848fffab
+need gms:Xml/item/4/04/40400083.xml d8aa3071c2564e06
+need gms:Xml/item/4/04/40400084.xml 4f91faf1d9ca122d
+need gms:Xml/item/4/04/40400085.xml 79984abb4fc22fe6
+need gms:Xml/item/4/04/40400091.xml bdf73752a9ce858b
+need gms:Xml/item/5/06/50600263.xml 316cbeb84d4d666a
+need gms:Xml/item/5/06/50600264.xml 5336f7f1ec11e1b2
+need gms:Xml/item/5/06/50600265.xml 2278e047338bcf53
+need gms:Xml/item/5/06/50600266.xml 484f75f977177a97
+need gms:Xml/item/5/06/50600272.xml 63b71467044bf6e2
+need gms:Xml/item/5/06/50600273.xml f0223d414d5ec155
+file Xml/itemdata/200.xml kms:Xml/itemdata/200.xml d85455c6ddc4cc2f
+copy-item 20000994
+file Xml/itemdata/203.xml kms:Xml/itemdata/203.xml ff7c1957f01464a2
+copy-item 20301724
+copy-item 20301748
+copy-item 20301749
+file Xml/itemdata/209.xml new
+copy-item 20900001
+copy-item 20900002
+copy-item 20900003
+copy-item 20900004
+copy-item 20900005
+copy-item 20900006
+copy-item 20900007
+copy-item 20900008
+copy-item 20910001
+copy-item 20910002
+copy-item 20910003
+copy-item 20910004
+copy-item 20910005
+copy-item 20910006
+copy-item 20920001
+copy-item 20920002
+copy-item 20920003
+copy-item 20920004
+file Xml/itemdata/404.xml kms:Xml/itemdata/404.xml 15c17e4e670e40fc
+copy-item 40400083
+set item[id=40400083]/environment/property param1 "80080001"
+copy-item 40400084
+set item[id=40400084]/environment/property param1 "80080002"
+copy-item 40400085
+set item[id=40400085]/environment/property param1 "80080003"
+copy-item 40400091
+set item[id=40400091]/environment/property param1 "80080005"
+file Xml/itemdata/506.xml kms:Xml/itemdata/506.xml 9f3c970481e7ed08
+copy-item 50600263
+set item[id=50600263]/environment/property param1 "20910001"
+copy-item 50600264
+set item[id=50600264]/environment/property param1 "20910002"
+copy-item 50600265
+set item[id=50600265]/environment/property param1 "20910003"
+copy-item 50600266
+set item[id=50600266]/environment/property param1 "20910004"
+copy-item 50600272
+set item[id=50600272]/environment/property param1 "20910005"
+copy-item 50600273
+set item[id=50600273]/environment/property param1 "20910006"
+file Xml/Table/na/mapleSurvivalSkinInfo.xml gms:Xml/table/maplesurvivalskininfo.xml 83320470d72a8185
+unset skinInfo feature
+file Xml/string/en/maplesurvivalskinname.xml gms:Xml/string/en/maplesurvivalskinname.xml 4d41a5e851aa57dc
+unset key feature
+file Xml/string/en/maplesurvivalskindescription.xml gms:Xml/string/en/maplesurvivalskindescription.xml 6dd45b9997dc094b
+unset key feature

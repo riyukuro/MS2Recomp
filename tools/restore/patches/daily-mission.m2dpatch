@@ -1,0 +1,17 @@
+patch daily-mission
+made-for KMS2 KR Live client Data/Xml.m2d
+# Optional, for servers that turn on the DailyMission feature: the game menu entry (mouse and gamepad menus)
+# and the window texts, the English rows of the same pack.
+file Xml/Table/gameMenu.xml kms:Xml/table/gamemenu.xml 2f55683426d6553a
+row menu[id=ContentsGroup]/child[id=DailyMission] after child[id=EpicRestart] \
+    <child id="DailyMission" feature="DailyMission" />
+row menu[id=GamePad_ContentsGroup]/child[id=DailyMission] after child[id=EpicRestart] \
+    <child id="DailyMission" feature="DailyMission" />
+file Xml/string/kr/korflash.xml kms:Xml/string/kr/korflash.xml 5a0c445adf501b2f
+need kms:Xml/string/en/korflash.xml 10206f689591a872
+copy-row key[id=$s_dailymission_point] kms:Xml/string/en/korflash.xml
+copy-row key[id=$s_dailymission_title] kms:Xml/string/en/korflash.xml
+copy-row key[id=$s_dailymission_start] kms:Xml/string/en/korflash.xml
+copy-row key[id=$s_dailymission_mp] kms:Xml/string/en/korflash.xml
+copy-row key[id=$s_dailymission_mp_start] kms:Xml/string/en/korflash.xml
+copy-row key[id=$s_dailymission_mp_info] kms:Xml/string/en/korflash.xml

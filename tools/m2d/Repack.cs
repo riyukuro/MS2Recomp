@@ -24,6 +24,18 @@ static class Repack {
         if (a.Length < 4) { Console.Error.WriteLine("usage: m2d repack <orig.m2d> <srcdir> <out.m2d> [--add] [--force-all]"); return 2; }
         string orig = a[1], srcdir = a[2], outm2d = a[3];
         bool add = a.Contains("--add"), forceAll = a.Contains("--force-all");
+        var files = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+        if (Directory.Exists(srcdir))
+            foreach (var f in Directory.EnumerateFiles(srcdir, "*", SearchOption.AllDirectories))
+                files[Path.GetRelativePath(srcdir, f).Replace('\\', '/')] = File.ReadAllBytes(f);
+        return Build(orig, outm2d, files, add, forceAll);
+    }
+
+    // Write <outm2d> + .m2h: every entry of <orig>, with the entries named in <files> replaced when their bytes
+    // differ; with <add>, the other names of <files> are added as new entries (lower-cased with <lowerNew>, as the
+    // packs name their entries).
+    public static int Build(string orig, string outm2d, IDictionary<string, byte[]> files, bool add,
+                            bool forceAll = false, bool lowerNew = false) {
         string outm2h = Path.ChangeExtension(outm2d, ".m2h");
         string origm2h = Path.ChangeExtension(orig, ".m2h");
 
@@ -35,12 +47,7 @@ static class Repack {
 
         var entries = reader.Files.OrderBy(e => e.Index).ToList();
         var known = new HashSet<string>(entries.Select(e => e.Name), StringComparer.OrdinalIgnoreCase);
-        var newFiles = new List<string>();
-        if (add && Directory.Exists(srcdir))
-            foreach (var f in Directory.EnumerateFiles(srcdir, "*", SearchOption.AllDirectories)) {
-                var rel = Path.GetRelativePath(srcdir, f).Replace('\\', '/');
-                if (!known.Contains(rel)) newFiles.Add(rel);
-            }
+        var newFiles = add ? files.Keys.Where(k => !known.Contains(k)).ToList() : new List<string>();
 
         var defaultFlag = entries.Count > 0 ? entries[0].FileHeader.BufferFlag : (Encryption.Aes | Encryption.Zlib);
         int replaced = 0, kept = 0, added = 0;
@@ -63,10 +70,8 @@ static class Repack {
 
         foreach (var e in entries) {
             var h = e.FileHeader;
-            string path = Path.Combine(srcdir, e.Name.Replace('/', Path.DirectorySeparatorChar));
-            bool replace = false; byte[] data = null;
-            if (File.Exists(path)) {
-                data = File.ReadAllBytes(path);
+            bool replace = false;
+            if (files.TryGetValue(e.Name, out var data)) {
                 replace = forceAll || !data.AsSpan().SequenceEqual(reader.GetBytes(e));
             }
             if (replace) {
@@ -82,9 +87,9 @@ static class Repack {
             }
         }
         foreach (var rel in newFiles) {
-            var data = File.ReadAllBytes(Path.Combine(srcdir, rel.Replace('/', Path.DirectorySeparatorChar)));
+            var data = files[rel];
             var enc = EncodeEntry(version, data, defaultFlag, out uint sz, out uint szc);
-            Emit(nextIndex, null, rel, defaultFlag, enc, sz, szc, null);
+            Emit(nextIndex, null, lowerNew ? rel.ToLowerInvariant() : rel, defaultFlag, enc, sz, szc, null);
             nextIndex++; added++;
         }
         outFs.Flush();

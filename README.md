@@ -77,23 +77,34 @@ Put them as loose files in `Data/Xml/Table/na/` under the client directory, the 
 `Data/Xml.m2d`. Create the directories if they do not exist. Loose files take precedence over the packed data. If a
 table is missing, the client logs that it cannot open it, and the window that needs it stays empty.
 
-The survival skins (tails, mounts and gliders) and some pass rewards also need item rows that the KMS2 pack lacks:
-it has no skin items, its survival mount and glider items are empty rows, a few reward items are missing, and its
-skin name and description tables are empty. The images, riding models, tail effects and glide rows are in the pack.
-`tools/restore/survival-items.py` takes the missing rows from the `Data/Xml.m2d` of a global (GMS) client you have
-and writes them as loose files:
+The other client data changes come as patch files in `tools/restore/patches/`, applied to your own client data with
+`m2d patch` (`tools/m2d`, needs the .NET 8 SDK). A patch names every entry it reads together with a hash of the
+bytes it was made for, and stops without writing anything when your pack differs. It holds no game data: rows from
+the client packs are copied by id from your copies, and the only text in it is English we wrote.
+
+- `survival-items.m2dpatch` (needs a global (GMS) client): the Mushking Royale skins (tails, mounts and gliders) and
+  the pass and level reward items the KMS2 pack lacks. It copies the item rows from the global client into
+  `itemdata/200`, `203`, `404`, `506` and the new `209`, links the mounts to their riding id and the gliders to their
+  glide id, and writes the skin table `Table/na/mapleSurvivalSkinInfo.xml` and the English skin names and
+  descriptions. The global data gates these rows on `SurvivalContents03`, which the KMS2 data leaves off at Live,
+  so the patch removes that switch from them; the survival windows still follow the feature.
+- `string-names.m2dpatch`: achievement names the KMS2 Korean table lacks (the pack's own English rows, and our
+  English for 15 achievements that have none), and NPC titles: Korean-only titles with no English row are
+  blanked, 5 take the pack's English title.
+- `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that
+  turns on the `DailyMission` feature in its own `feature.xml`. No patch changes `feature.xml`.
 
 ```
-python3 tools/restore/survival-items.py --gms <global client>/Data/Xml.m2d \
-    --kms <KMS2 client>/Data/Xml.m2d --out <KMS2 client>/Data/Xml
+dotnet run --project tools/m2d -- patch <KMS2 client>/Data --gms <global client>/Data \
+    tools/restore/patches/survival-items.m2dpatch tools/restore/patches/string-names.m2dpatch \
+    --out <KMS2 client>/Data
 ```
 
-It writes the KMS2 `itemdata/<group>.xml` files that gain rows (with your data: `200`, `203`, `404`, `506` and the
-new `209`), each the KMS2 file with the survival rows filled in, and `string/en/maplesurvivalskinname.xml` and
-`string/en/maplesurvivalskindescription.xml`, plus `Table/na/mapleSurvivalSkinInfo.xml` (so that one of the 6 tables
-comes from the same run). It needs the .NET 8 SDK, as it reads the packs with `tools/m2d`. The written rows (and the
-skin table's) have no feature switch: the global data gates them on `SurvivalContents03`, which the KMS2 feature
-table leaves off at Live, so the client would drop them. The survival windows still follow the feature.
+This writes the patched files as loose files under `--out` (`Xml/itemdata/209.xml`, `Xml/string/kr/...`), where
+the client reads them before its packs, so `--out` can be the client's `Data` directory. `--repack` writes patched
+copies of the packs (`Xml.m2d` and `Xml.m2h`) into `--out` instead; `--out` must then be another directory. The
+original packs are only read. A server that ingests the client data needs the same files (loose files or the
+repacked pack).
 
 The arena row needs no data.
 

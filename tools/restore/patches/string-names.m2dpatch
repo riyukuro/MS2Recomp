@@ -1,0 +1,226 @@
+patch string-names
+made-for KMS2 KR Live client Data/Xml.m2d
+# Achievement names the KMS2 Korean table lacks: the English rows of the same pack, and our own English for
+# the 15 achievements that have no English row. NPC titles with Korean text only and no English row are
+# blanked (137); 5 take the English title of the same pack.
+file Xml/string/kr/achievename.xml kms:Xml/string/kr/achievename.xml 316e2d4d69d78de0
+need kms:Xml/string/en/achievename.xml 2477a2bb82f24af0
+copy-row key[id=21300076] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300077] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300078] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300079] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300080] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300081] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300082] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300083] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300084] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300085] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300086] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300087] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300088] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300089] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300090] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300091] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300092] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300093] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300094] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300095] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300096] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300097] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300098] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300099] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300100] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300101] kms:Xml/string/en/achievename.xml
+copy-row key[id=21300102] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200440] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200441] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200442] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200443] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200444] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200445] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200446] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200447] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200448] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200449] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200450] kms:Xml/string/en/achievename.xml
+copy-row key[id=22200451] kms:Xml/string/en/achievename.xml
+copy-row key[id=22210018] kms:Xml/string/en/achievename.xml
+copy-row key[id=22210019] kms:Xml/string/en/achievename.xml
+copy-row key[id=22210020] kms:Xml/string/en/achievename.xml
+copy-row key[id=22210021] kms:Xml/string/en/achievename.xml
+copy-row key[id=22210022] kms:Xml/string/en/achievename.xml
+copy-row key[id=22210023] kms:Xml/string/en/achievename.xml
+copy-row key[id=22210024] kms:Xml/string/en/achievename.xml
+copy-row key[id=22210025] kms:Xml/string/en/achievename.xml
+copy-row key[id=22210026] kms:Xml/string/en/achievename.xml
+copy-row key[id=22210027] kms:Xml/string/en/achievename.xml
+copy-row key[id=22210028] kms:Xml/string/en/achievename.xml
+copy-row key[id=22500005] kms:Xml/string/en/achievename.xml
+copy-row key[id=22500006] kms:Xml/string/en/achievename.xml
+copy-row key[id=23100274] kms:Xml/string/en/achievename.xml
+copy-row key[id=23100275] kms:Xml/string/en/achievename.xml
+copy-row key[id=23100410] kms:Xml/string/en/achievename.xml
+copy-row key[id=23100411] kms:Xml/string/en/achievename.xml
+copy-row key[id=23100412] kms:Xml/string/en/achievename.xml
+copy-row key[id=23100413] kms:Xml/string/en/achievename.xml
+copy-row key[id=23200042] kms:Xml/string/en/achievename.xml
+row key[id=21300113] <key id="21300113" name="Get Off the Stage!" feature="DungeonOS04" />
+row key[id=21300114] <key id="21300114" name="I'm the Star!" feature="DungeonOS04" />
+row key[id=21300115] <key id="21300115" name="Born Drummer" feature="DungeonOS04" />
+row key[id=21300116] <key id="21300116" name="Easy Sparring Partner" feature="DungeonOS04" />
+row key[id=21300117] <key id="21300117" name="Voice Through the Roof" feature="DungeonOS04" />
+row key[id=92000158] \
+    <key id="92000158" name="Thanks for Celebrating Our 7th Anniversary!" feature="Event" locale="KR" />
+row key[id=92000159] <key id="92000159" name="Mind Reader" feature="Event" />
+row key[id=92000160] <key id="92000160" name="Kindred Spirit" feature="Event" />
+row key[id=92000161] <key id="92000161" name="Unafraid of Defeat" feature="Event" />
+row key[id=92000162] <key id="92000162" name="Seer of the Future" feature="Event" />
+row key[id=92000163] <key id="92000163" name="Perfect Partner" feature="Event" />
+row key[id=92000164] <key id="92000164" name="Here for the Fun" feature="Event" />
+row key[id=92000165] <key id="92000165" name="Back from the Future" feature="Event" />
+row key[id=92000166] <key id="92000166" name="Eagle Eyes" feature="Event" />
+row key[id=92000167] <key id="92000167" name="Loves to Lose" feature="Event" />
+file Xml/string/kr/npctitle.xml kms:Xml/string/kr/npctitle.xml 1f389cdc2b6c92b3
+need kms:Xml/string/en/npctitle.xml 3bb829595162ceb1
+set key[id=11000027] name ""
+set key[id=11000173] name ""
+set key[id=11000180] name ""
+set key[id=11000181] name ""
+set key[id=11000185] name ""
+set key[id=11000242] name ""
+set key[id=11000254] name ""
+set key[id=11000264] name ""
+set key[id=11000284] name ""
+set key[id=11000293] name ""
+set key[id=11000298] name ""
+set key[id=11000304] name ""
+set key[id=11000394] name ""
+set key[id=11000406] name ""
+set key[id=11000479] name ""
+set key[id=11000547] name ""
+set key[id=11000548] name ""
+set key[id=11000596] name ""
+set key[id=11000613] name ""
+set key[id=11000614] name ""
+set key[id=11000615] name ""
+set key[id=11000616] name ""
+set key[id=11000677] name ""
+set key[id=11000703] name ""
+set key[id=11000736] name ""
+set key[id=11000744] name ""
+set key[id=11000745] name ""
+set key[id=11000746] name ""
+set key[id=11000795] name ""
+set key[id=11000839] name ""
+set key[id=11000841] name ""
+set key[id=11000842] name ""
+set key[id=11000931] name ""
+set key[id=11000961] name ""
+set key[id=11000962] name ""
+set key[id=11000972] name ""
+set key[id=11000987] name ""
+copy-attr key[id=11001002] name kms:Xml/string/en/npctitle.xml
+set key[id=11001110] name ""
+set key[id=11001117] name ""
+set key[id=11001176] name ""
+set key[id=11001177] name ""
+set key[id=11001315] name ""
+set key[id=11001342] name ""
+set key[id=11001376] name ""
+set key[id=11001387] name ""
+set key[id=11001388] name ""
+set key[id=11001389] name ""
+set key[id=11001390] name ""
+set key[id=11001391] name ""
+set key[id=11001392] name ""
+set key[id=11001397] name ""
+set key[id=11001407] name ""
+set key[id=11001412] name ""
+set key[id=11001430] name ""
+set key[id=11001431] name ""
+set key[id=11001433] name ""
+set key[id=11001458] name ""
+set key[id=11001483] name ""
+set key[id=11001557] name ""
+set key[id=11001657] name ""
+set key[id=11001659] name ""
+set key[id=11001671] name ""
+set key[id=11001672] name ""
+copy-attr key[id=11001696] name kms:Xml/string/en/npctitle.xml
+copy-attr key[id=11001697] name kms:Xml/string/en/npctitle.xml
+set key[id=11001715] name ""
+set key[id=11001716] name ""
+set key[id=11001717] name ""
+set key[id=11001718] name ""
+set key[id=11001719] name ""
+set key[id=11001720] name ""
+set key[id=11001721] name ""
+set key[id=11001722] name ""
+set key[id=11001742] name ""
+set key[id=11001762] name ""
+set key[id=11001763] name ""
+set key[id=11001771] name ""
+set key[id=11001772] name ""
+set key[id=11001773] name ""
+set key[id=11001774] name ""
+set key[id=11001790] name ""
+set key[id=11001791] name ""
+set key[id=11001792] name ""
+set key[id=11001806] name ""
+set key[id=11001867] name ""
+set key[id=11001868] name ""
+set key[id=11001869] name ""
+set key[id=11002020] name ""
+set key[id=11002035] name ""
+set key[id=11002036] name ""
+set key[id=11002037] name ""
+set key[id=11002038] name ""
+set key[id=11003142] name ""
+set key[id=11003143] name ""
+set key[id=11003187] name ""
+set key[id=11003194] name ""
+set key[id=11003241] name ""
+set key[id=11003243] name ""
+set key[id=11003268] name ""
+set key[id=11003334] name ""
+set key[id=11004101] name ""
+set key[id=11004102] name ""
+set key[id=11004479] name ""
+set key[id=11004480] name ""
+set key[id=11004481] name ""
+set key[id=11004482] name ""
+set key[id=11004483] name ""
+set key[id=11004484] name ""
+copy-attr key[id=11004574] name kms:Xml/string/en/npctitle.xml
+copy-attr key[id=11004576] name kms:Xml/string/en/npctitle.xml
+set key[id=11004618] name ""
+set key[id=11004619] name ""
+set key[id=11004663] name ""
+set key[id=11004666] name ""
+set key[id=11004668] name ""
+set key[id=11004669] name ""
+set key[id=11004672] name ""
+set key[id=11004673] name ""
+set key[id=11004685] name ""
+set key[id=11004688] name ""
+set key[id=11004689] name ""
+set key[id=11004690] name ""
+set key[id=11004694] name ""
+set key[id=11004696] name ""
+set key[id=11004697] name ""
+set key[id=11004698] name ""
+set key[id=11004700] name ""
+set key[id=11004701] name ""
+set key[id=11004702] name ""
+set key[id=11004703] name ""
+set key[id=11004718] name ""
+set key[id=11004726] name ""
+set key[id=11004778] name ""
+set key[id=11004779] name ""
+set key[id=11004780] name ""
+set key[id=11004781] name ""
+set key[id=11004782] name ""
+set key[id=11004783] name ""
+set key[id=11004784] name ""
+set key[id=11004785] name ""
+set key[id=11004786] name ""
