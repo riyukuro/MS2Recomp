@@ -379,6 +379,7 @@ void UIMapleSurvivalSkinDialog::RefreshSkins()
 {
     if (m_30 == 0 || m_items.get() == 0)
         return;
+    m_items.operator->()->Invoke("resetRenderer");   // GMS 0x7a5bd9, before the list is cleared (0x1177eb0)
     m_items.operator->()->FUN_1422dd1d0();
     m_ids.clear();
     int nCat = SelectedCategory();
@@ -405,6 +406,7 @@ void UIMapleSurvivalSkinDialog::RefreshSkins()
         m_items.operator->()->AddItem(obj);
         m_ids.push_back(nId);
     }
+    m_items.operator->()->SetSelectedIndex(-1);   // GMS 0x7a5e5c: no row selected, and the list redraws
 }
 
 // GMS 0x7a5680: equip the selected skin.
