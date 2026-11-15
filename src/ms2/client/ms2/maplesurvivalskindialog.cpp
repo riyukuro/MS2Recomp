@@ -328,10 +328,13 @@ void UIMapleSurvivalSkinDialog::vfunc_49(Scaleform::GFx::Value* pRetVal, ASData*
     strText.Replace(L"\\n", L"\n");
     strText.Replace(L"{0}", strName);
     strText.Replace(L"{1}", strDesc);
+    Unk_DateParts kDate;
     if (nExpire != _I64_MAX)
-    {
-        Unk_DateParts kDate;
         FUN_14088dfa0(&kDate, nExpire, 0);
+    // Not GMS: a time the date conversion cannot break down (year 0; the server's 9999-12-31 for a permanent
+    // skin) is a skin that never expires too, so it gets no expiry line instead of "0/0/0 -1:-1".
+    if (nExpire != _I64_MAX && kDate.m_year > 0)
+    {
         int args[5] = { kDate.m_year, kDate.m_month, kDate.m_day, kDate.m_hour2, kDate.m_minute };
         strText += L"\n";
         if (nExpire > GetServerTime())
