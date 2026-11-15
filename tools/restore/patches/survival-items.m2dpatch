@@ -88,3 +88,14 @@ file Xml/string/en/maplesurvivalskinname.xml gms:Xml/string/en/maplesurvivalskin
 unset key feature
 file Xml/string/en/maplesurvivalskindescription.xml gms:Xml/string/en/maplesurvivalskindescription.xml 6dd45b9997dc094b
 unset key feature
+# The survival pass buffs (survival exp rates) are in the KMS2 pack's additionaleffect files but not in the client's
+# effect table, so the pass window and the buff bar have no icon for them.
+need kms:Xml/additionaleffect/70000181.xml f447e55189efbd0d
+need kms:Xml/additionaleffect/70000182.xml b772077c96dc00ef
+need kms:Xml/additionaleffect/70000187.xml 33a77be3cf6d9daa
+need kms:Xml/additionaleffect/70000189.xml 6a8db709446c9118
+file Xml/additional/700.xml kms:Xml/additional/700.xml a327adc6f93981fe
+copy-effect 70000181
+copy-effect 70000182
+copy-effect 70000187
+copy-effect 70000189

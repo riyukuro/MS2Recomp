@@ -87,7 +87,9 @@ the client packs are copied by id from your copies, and the only text in it is E
   `itemdata/200`, `203`, `404`, `506` and the new `209`, links the mounts to their riding id and the gliders to their
   glide id, and writes the skin table `Table/na/mapleSurvivalSkinInfo.xml` and the English skin names and
   descriptions. The global data gates these rows on `SurvivalContents03`, which the KMS2 data leaves off at Live,
-  so the patch removes that switch from them; the survival windows still follow the feature.
+  so the patch removes that switch from them; the survival windows still follow the feature. It also adds the 4
+  survival pass buffs, which the KMS2 pack has only as `additionaleffect` files, to the client's effect table
+  (`additional/700`), so the pass window and the buff bar show their icons.
 - `string-names.m2dpatch`: achievement names the KMS2 Korean table lacks (the pack's own English rows, and our
   English for 15 achievements that have none), and NPC titles: Korean-only titles with no English row are
   blanked, 5 take the pack's English title.

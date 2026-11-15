@@ -21,7 +21,7 @@ using Maple2.File.IO;
 //
 //   patch <name>                          the patch's name (first op)
 //   made-for <text>                       which client data the patch was made for (shown on a mismatch)
-//   need <source> <pin>                   pin an entry read by copy-row / copy-attr / copy-item
+//   need <source> <pin>                   pin an entry read by copy-row / copy-attr / copy-item / copy-effect
 //   file <path> <source> <pin>            start editing <path>, based on the source entry (the entry is pinned)
 //   file <path> new                       start a file the KMS2 pack lacks (an empty <ms2> root)
 //   set <sel> <attr> "<value>"            set an attribute of every matched element
@@ -34,6 +34,10 @@ using Maple2.File.IO;
 //   copy-item <id>                        the global client's item/<d>/<dd>/<id>.xml as a KMS2 itemdata row:
 //                                         its environments, without feature switch and empty locale, with
 //                                         option constant copied to property rank (where KMS2 reads the grade)
+//   copy-effect <id>                      the KMS2 pack's additionaleffect/<id>.xml as an <additional> row of the
+//                                         client's effect table (additional/*.xml): per level its Basic, UI and
+//                                         Condition attributes (icon, buff times), no stats; what the client needs
+//                                         to show the effect's icon and buff entry
 //
 // A selector is steps joined by '/': tag[attr=value][attr=value]. The first step matches at any depth, the
 // others match children. A step without a predicate matches every element of that tag. Values are plain text,
@@ -269,6 +273,17 @@ static class Patch {
                     changed++;
                     break;
                 }
+                case "copy-effect": {
+                    var id = t.Word();
+                    if (id.Length == 0 || !id.All(char.IsDigit)) throw new PatchError($"{where}: effect id {id}");
+                    var src = $"kms:Xml/additionaleffect/{id}.xml";
+                    if (!pins.ContainsKey(src))
+                        throw new PatchError($"{where}: {src} is not pinned (add: need {src} <pin>)");
+                    var row = EffectRow(id, Load(Source(src), src).X, where);
+                    Put(Cur().X.Root, Sel($"additional[id={id}]", where), null, row, where);
+                    changed++;
+                    break;
+                }
                 default: throw new PatchError($"{where}: unknown op {op}");
             }
             t.End();
@@ -296,6 +311,33 @@ static class Patch {
                 prop.Add(attrs);
             }
             row.Add(e);
+        }
+        return row;
+    }
+
+    // An additionaleffect file as a row of the client's effect table: BasicProperty becomes Basic (its level goes
+    // to the level element, buffType 2 to isDebuff, buffType / buffSubType dropped), UIProperty becomes UI and the
+    // attributes of beginCondition become Condition.
+    static XElement EffectRow(string id, XDocument src, string where) {
+        var levels = src.Root.Elements("level").ToList();
+        if (levels.Count == 0) throw new PatchError($"{where}: effect {id} has no level");
+        var row = new XElement("additional", new XAttribute("id", id));
+        foreach (var lv in levels) {
+            var basic = lv.Element("BasicProperty")
+                ?? throw new PatchError($"{where}: effect {id} has a level without BasicProperty");
+            var level = new XElement("level", new XAttribute("level", (string)basic.Attribute("level") ?? "1"));
+            if ((string)basic.Attribute("buffType") == "2" && row.Attribute("isDebuff") == null)
+                row.Add(new XAttribute("isDebuff", "1"));
+            var b = new XElement("Basic", basic.Attributes()
+                .Where(a => a.Name != "level" && a.Name != "buffType" && a.Name != "buffSubType")
+                .Select(a => new XAttribute(a)));
+            level.Add(b);
+            var ui = lv.Element("UIProperty");
+            if (ui != null) level.Add(new XElement("UI", ui.Attributes().Select(a => new XAttribute(a))));
+            var begin = lv.Element("beginCondition");
+            if (begin != null && begin.HasAttributes)
+                level.Add(new XElement("Condition", begin.Attributes().Select(a => new XAttribute(a))));
+            row.Add(level);
         }
         return row;
     }
