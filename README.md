@@ -125,3 +125,8 @@ section "Maple Survival (Mushking Royale)" describes it. The server needs:
 - `MS2_SURVIVAL_PLAYERS` (optional), the number of players in a match: 1 to 20, default 20. Set it lower to start a
   match with fewer players.
 - The same patched client data for the ingest, the 6 survival tables in `Table/na/` among it.
+
+The game menu's Maview window and the character info's My News open pages on the server's web server. The
+original pages were the publisher's own site and are not part of the server, so both windows show an empty white
+page unless the server operator puts their own `pages/maview.html` and `pages/news.html` in the web data
+directory. The guild and ranking boards opened from town objects are served and show content.
