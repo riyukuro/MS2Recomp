@@ -714,6 +714,30 @@ CLockCriticalSection& RestoreEnLock()
 }
 }
 
+// The English tables hold a placeholder key for many rows that were never translated, such as
+// "NPCTITLE_11004778_NAME:[F]EpicApocalypse01" or "QUESTDESCRIPTION_10001270_NAME": an upper-case table key, "_",
+// the row's own id (leading zeros allowed), "_", an upper-case field part (letters, digits, "_"), and an optional
+// tail starting with ":". Such a row counts as missing.
+static bool IsPlaceholderKey(const CStringW& strText, int nId)
+{
+    const wchar_t* p = strText;
+    const wchar_t* q = p;
+    while (*q >= L'A' && *q <= L'Z')
+        ++q;
+    if (q == p || *q != L'_')
+        return false;
+    p = ++q;
+    unsigned long long nValue = 0;
+    while (*q >= L'0' && *q <= L'9' && q - p < 10)
+        nValue = nValue * 10 + (unsigned)(*q++ - L'0');
+    if (q == p || *q != L'_' || nId < 0 || nValue != (unsigned long long)nId)
+        return false;
+    p = ++q;
+    while ((*q >= L'A' && *q <= L'Z') || (*q >= L'0' && *q <= L'9') || *q == L'_')
+        ++q;
+    return q != p && (*q == 0 || *q == L':');
+}
+
 static bool RestoreEnglishRow(CStringTable* pTable, int nTable, const CStringTable::CachePtr& spSrc, int nId,
                               CStringW& strText)
 {
@@ -743,6 +767,11 @@ static bool RestoreEnglishRow(CStringTable* pTable, int nTable, const CStringTab
         Unk_CriticalSectionLock lockCache(spCache->m_lock, 1);
         if (!spCache->m_strings.Lookup(nId, strText))
             return false;
+    }
+    if (IsPlaceholderKey(strText, nId))
+    {
+        strText.Empty();
+        return false;
     }
     if (strText.Find(L"$", 0) != -1)
         TSingleton<CReservedWordTable>::GetInstance()->ReplaceObjectWords(strText);
