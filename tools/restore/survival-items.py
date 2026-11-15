@@ -9,6 +9,7 @@ client's Xml.m2d and writes them as loose files that the client reads before the
 
   itemdata/<group>.xml                       every KMS2 item file that gains rows: the KMS2 file with its empty
                                              rows filled and the missing ones added (209.xml is new)
+  Table/na/mapleSurvivalSkinInfo.xml         the skin table (one of the survival tables of the README)
   string/en/maplesurvivalskinname.xml        skin names (read through the English row fallback)
   string/en/maplesurvivalskindescription.xml skin descriptions
 
@@ -18,9 +19,9 @@ that has data is kept.
 
 Mount and glider rows get the KMS2 link in property param1: a mount names its riding/<id>.xml (the skin id), a
 glider its table/glidedata.xml row (the GMS glide skill id, which KMS2 keeps as the glide id). The grade moves from
-option constant to property rank, where KMS2 reads it. The rows and skin strings lose their feature attribute: the
-global data gates them on SurvivalContents03, which the KMS2 feature table leaves off at Live, so both the client and
-a server ingest would drop them (the skin window itself still follows the feature).
+option constant to property rank, where KMS2 reads it. The rows, skin table and skin strings lose their feature
+attribute: the global data gates them on SurvivalContents03, which the KMS2 feature table leaves off at Live, so both
+the client and a server ingest would drop them (the skin window itself still follows the feature).
 
 Usage:
   survival-items.py --gms <GMS client>/Data/Xml.m2d --kms <KMS2 client>/Data/Xml.m2d --out <KMS2 client>/Data/Xml
@@ -40,6 +41,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 M2D_PROJECT = os.path.join(HERE, '..', 'm2d')
 
 SKIN_INFO = 'table/maplesurvivalskininfo.xml'
+SKIN_TABLE_OUT = 'Table/na/mapleSurvivalSkinInfo.xml'   # the name the client opens (Table/na first)
 STRINGS = ['string/en/maplesurvivalskinname.xml', 'string/en/maplesurvivalskindescription.xml']
 REWARDS = ['table/na/survivalpassreward.xml', 'table/na/survivalpassreward_paid.xml',
            'table/na/survivallevelreward.xml']
@@ -212,6 +214,9 @@ def main():
             text, count = drop_feature(read(os.path.join(g, *rel.split('/'))), 'key')
             write(a.out, rel, text)
             print('%s: feature removed from %d rows' % (rel, count))
+        text, count = drop_feature(info, 'skinInfo')
+        write(a.out, SKIN_TABLE_OUT, text)
+        print('%s: feature removed from %d rows' % (SKIN_TABLE_OUT, count))
     print('%d skins, %d reward items; %d item rows written' % (len(skins), len(rewards), added))
 
 
