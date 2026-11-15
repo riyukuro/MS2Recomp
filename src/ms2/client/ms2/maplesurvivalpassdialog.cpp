@@ -531,11 +531,14 @@ void UIMapleSurvivalPassDialog::RefreshPaidInfo()
 int UIMapleSurvivalPassDialog::MaxRewardLevel()
 {
     CMapleSurvivalTable* pTab = &CMapleSurvivalTable::Get();
+    int nSeason = CMapleSurvivalManager::GetInstance()->m_seasonId;
+    const std::map<int, SurvivalPassReward>& free_ = pTab->PassRewards(false, nSeason);
+    const std::map<int, SurvivalPassReward>& paid = pTab->PassRewards(true, nSeason);
     int nMax = 0;
-    if (!pTab->m_passRewards.empty())
-        nMax = pTab->m_passRewards.rbegin()->first;
-    if (!pTab->m_passRewardsPaid.empty() && pTab->m_passRewardsPaid.rbegin()->first > nMax)
-        nMax = pTab->m_passRewardsPaid.rbegin()->first;
+    if (!free_.empty())
+        nMax = free_.rbegin()->first;
+    if (!paid.empty() && paid.rbegin()->first > nMax)
+        nMax = paid.rbegin()->first;
     return nMax;
 }
 
@@ -587,13 +590,17 @@ void UIMapleSurvivalPassDialog::RefreshRewardPage()
     if (m_rewardInfo.get() == 0)
         return;
     CMapleSurvivalTable* pTab = &CMapleSurvivalTable::Get();
+    // the season's reward set (its period's survivalRewardID); the tables list every set
+    int nSeason = CMapleSurvivalManager::GetInstance()->m_seasonId;
+    const std::map<int, SurvivalPassReward>& freeSet = pTab->PassRewards(false, nSeason);
+    const std::map<int, SurvivalPassReward>& paidSet = pTab->PassRewards(true, nSeason);
     for (int i = 0; i < kRows; ++i)
     {
         if (m_row[i].get() == 0)
             continue;
         int nLevel = m_nPage + i;
-        const SurvivalPassReward* pFree = FindReward(pTab->m_passRewards, nLevel);
-        const SurvivalPassReward* pPaid = FindReward(pTab->m_passRewardsPaid, nLevel);
+        const SurvivalPassReward* pFree = FindReward(freeSet, nLevel);
+        const SurvivalPassReward* pPaid = FindReward(paidSet, nLevel);
         if (pFree == 0 && pPaid == 0)
         {
             m_row[i].operator->()->vfunc_4(false);

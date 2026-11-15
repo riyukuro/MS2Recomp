@@ -32,11 +32,14 @@ public:
     void Load();   // every file is optional: the KMS client pack has none of them (the server pack does)
     std::map<int, SurvivalLevelData> m_levels;
     std::map<int, SurvivalLevelReward> m_levelRewards;
-    std::map<int, SurvivalPassReward> m_passRewards;
-    std::map<int, SurvivalPassReward> m_passRewardsPaid;
+    // pass rewards by reward set (the row's id, a period's survivalRewardID), then by level
+    std::map<int, std::map<int, SurvivalPassReward> > m_passRewards;
+    std::map<int, std::map<int, SurvivalPassReward> > m_passRewardsPaid;
     std::map<int, SurvivalOpenPeriod> m_periods;
     std::map<int, SurvivalSkinInfo> m_skins;
     bool m_bLoaded;
+    // the free or paid rewards of the season's reward set, by level (empty when the season is not in the table)
+    const std::map<int, SurvivalPassReward>& PassRewards(bool bPaid, int nSeasonId) const;
 private:
     CMapleSurvivalTable() : m_bLoaded(false) {}
 };

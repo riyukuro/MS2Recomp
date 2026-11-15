@@ -234,7 +234,7 @@ void CMapleSurvivalTable::Load()
     }
     struct PassLoader
     {
-        std::map<int, SurvivalPassReward>* out;
+        std::map<int, std::map<int, SurvivalPassReward> >* out;
         void operator()(TiXmlElement* p) const
         {
             SurvivalPassReward d;
@@ -249,7 +249,7 @@ void CMapleSurvivalTable::Load()
                 sprintf_s(name, "value%d", i + 1); d.entry[i].value = AttrW(p, name);
                 sprintf_s(name, "count%d", i + 1); d.entry[i].count = AttrW(p, name);
             }
-            (*out)[d.level] = d;
+            (*out)[d.id][d.level] = d;   // the tables hold several reward sets; a season uses one
         }
     };
     PassLoader free_ = { &m_passRewards }, paid = { &m_passRewardsPaid };
@@ -279,6 +279,17 @@ void CMapleSurvivalTable::Load()
         d.effectLevel = AttrInt(p, "additionalEffectLevel");
         m_skins[d.id] = d;
     });
+}
+
+const std::map<int, SurvivalPassReward>& CMapleSurvivalTable::PassRewards(bool bPaid, int nSeasonId) const
+{
+    static const std::map<int, SurvivalPassReward> s_none;
+    std::map<int, SurvivalOpenPeriod>::const_iterator period = m_periods.find(nSeasonId);
+    if (period == m_periods.end())
+        return s_none;
+    const std::map<int, std::map<int, SurvivalPassReward> >& sets = bPaid ? m_passRewardsPaid : m_passRewards;
+    std::map<int, std::map<int, SurvivalPassReward> >::const_iterator it = sets.find(period->second.rewardId);
+    return it == sets.end() ? s_none : it->second;
 }
 
 // ================= the manager =================
