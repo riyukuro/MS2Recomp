@@ -99,3 +99,11 @@ copy-effect 70000181
 copy-effect 70000182
 copy-effect 70000187
 copy-effect 70000189
+# Their names and tooltips: the Korean effect string table lacks them, the pack's English table has them.
+file Xml/string/kr/stringadditionaldescription.xml kms:Xml/string/kr/stringadditionaldescription.xml \
+    ec029997c87b9b80
+need kms:Xml/string/en/koradditionaldescription.xml ca23575c0e9eb665
+copy-row key[id=70000181][level=1] kms:Xml/string/en/koradditionaldescription.xml
+copy-row key[id=70000182][level=1] kms:Xml/string/en/koradditionaldescription.xml
+copy-row key[id=70000187][level=1] kms:Xml/string/en/koradditionaldescription.xml
+copy-row key[id=70000189][level=1] kms:Xml/string/en/koradditionaldescription.xml
