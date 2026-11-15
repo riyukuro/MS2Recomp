@@ -82,10 +82,12 @@ tables from the client packs are copied by id from your copies, and the only tex
   client logs that it cannot open it, and the window that needs it stays empty.
 - `string-names.m2dpatch`: achievement names the KMS2 Korean table lacks (the pack's own English rows, and our
   English for 15 achievements that have none), and NPC titles: Korean-only titles with no English row are
-  blanked, 5 take the pack's English title. Guide tips (the TIP boxes, such as the one over the Mentoring window)
-  that the Korean table still has in Korean take the pack's English row (20), and one KR tip with no English row
-  gets our own English. Flash UI strings with no English row in either pack (option labels, a menu popup)
-  get our own English, as do the enchant window's two fee labels (the meso cost for missing Crystal Fragments);
+  blanked, 5 take the pack's English title. Where the English row of a blanked title holds only a placeholder key
+  (27), it is blanked too, since the client reads the English row for an empty one. Guide tips (the TIP boxes,
+  such as the one over the Mentoring window) that the Korean table still has in Korean take the pack's English
+  row (20), and one KR tip with no English row gets our own English. Flash UI strings with no English row in
+  either pack (option labels, a menu popup) get our own English, as do the enchant window's two fee labels (the
+  meso cost for missing Crystal Fragments);
   the enchant scroll's no-break line, missing from the Korean table, takes the pack's English row. The 6 default
   guild rank names get short English names (Leader, Officer, Member, Novice, Member2, Novice2): a KR client allows
   at most 7 characters in a rank name and refuses a rights change on a rank whose name is longer.
