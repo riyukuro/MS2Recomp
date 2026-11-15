@@ -277,7 +277,12 @@ void UIMapleSurvivalSkinDialog::OnItemSelect(const Scaleform::GFx::FunctionHandl
     if (nCat == 1)
         m_avatar->FUN_1418bd050(spData, MS2Ptr<CItem>(0));   // GMS 0xca4e50
     else
-        m_avatar->FUN_1418bcf60(spData->GetSkillId(), spData->GetSkillLevel());   // GMS 0xca44f0
+    {
+        // Not GMS: GMS plays the glider item's skill (0xca44f0). KMS has no glide skills: a glider item names its
+        // table/glidedata.xml row in param1, and the avatar glides through the item (the item preview's path,
+        // UIAvatarPC::FUN_1418bced0 -> AvatarPC::FUN_1409f42a0).
+        m_avatar->FUN_1418bced0(spData);
+    }
 }
 
 // The skin name / description string tables (string.xml ids 81 mapleSurvivalSkinName, 82 ..Description).

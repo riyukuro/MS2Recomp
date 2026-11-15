@@ -74,6 +74,22 @@ Put them as loose files in `Data/Xml/Table/na/` under the client directory, the 
 `Data/Xml.m2d`. Create the directories if they do not exist. Loose files take precedence over the packed data. If a
 table is missing, the client logs that it cannot open it, and the window that needs it stays empty.
 
+The survival skins (tails, mounts and gliders) and some pass rewards also need item rows that the KMS2 pack lacks:
+it has no skin items, its survival mount and glider items are empty rows, a few reward items are missing, and its
+skin name and description tables are empty. The images, riding models, tail effects and glide rows are in the pack.
+`tools/restore/survival-items.py` takes the missing rows from the `Data/Xml.m2d` of a global (GMS) client you have
+and writes them as loose files:
+
+```
+python3 tools/restore/survival-items.py --gms <global client>/Data/Xml.m2d \
+    --kms <KMS2 client>/Data/Xml.m2d --out <KMS2 client>/Data/Xml
+```
+
+It writes the KMS2 `itemdata/<group>.xml` files that gain rows (with your data: `200`, `203`, `404`, `506` and the
+new `209`), each the KMS2 file with the survival rows filled in, and `string/en/maplesurvivalskinname.xml` and
+`string/en/maplesurvivalskindescription.xml`. It needs the .NET 8 SDK, as it reads the packs with `tools/m2d`. The
+rows keep the feature switches of the global data (`SurvivalContents03` for the skins), like the survival tables.
+
 The arena row needs no data.
 
 ## Server
