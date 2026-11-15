@@ -82,7 +82,9 @@ tables from the client packs are copied by id from your copies, and the only tex
   client logs that it cannot open it, and the window that needs it stays empty.
 - `string-names.m2dpatch`: achievement names the KMS2 Korean table lacks (the pack's own English rows, and our
   English for 15 achievements that have none), and NPC titles: Korean-only titles with no English row are
-  blanked, 5 take the pack's English title.
+  blanked, 5 take the pack's English title. Guide tips (the TIP boxes, such as the one over the Mentoring window)
+  that the Korean table still has in Korean take the pack's English row (45), and one KR tip with no English row
+  gets our own English.
 - `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that
   turns on the `DailyMission` feature in its own `feature.xml`. No patch changes `feature.xml`.
 
