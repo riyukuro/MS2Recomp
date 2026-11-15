@@ -240,7 +240,11 @@ int UISceneLobby::vfunc_13()
         TakeScreenshotJpg(1, 0);
         return 1;
     }
+#if defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL)
+    if (false) {    // MS2-RESTORE: no debug-mode key in the retail build (README.md "Retail build")
+#else
     if (((class Unk_LsLogin*)FUN_14025e7c0())->IsActionKeyPressed(0x927c1, 0, 0)) {
+#endif
         FUN_140930150(0x32);
         ((class Unk_LsLogin*)FUN_14025e7c0())->SetDebugMode(((class Unk_LsLogin*)FUN_14025e7c0())->IsDebugMode() == 0);
     } else {

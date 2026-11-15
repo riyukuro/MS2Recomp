@@ -54,6 +54,9 @@ option(MS2_PLAIN_COMPILE "compile the objs here from MS2_PLAIN_GLUE/compile.tsv,
 # init). The define is added here only: the glue's flag sets, tools/progress.py, the gates' obj cache and the hook DLL
 # never see it (the DLL needs the registrations).
 option(MS2_PLAIN_STANDALONE "MS2_PLAIN_COMPILE: compile the game units with /DMS2_STANDALONE (no hook registrations in the exe)" OFF)
+# MS2-RESTORE: MS2_RETAIL: the game units (the same rows as MS2_PLAIN_STANDALONE) also get /DMS2_RETAIL /DNDEBUG: no
+# game asserts and none of the client's developer tools (README.md "Retail build"). Off: the build is unchanged.
+option(MS2_RETAIL "MS2_PLAIN_COMPILE: build the game units as a retail client (no asserts, no developer tools)" OFF)
 set(MS2_PLAIN_CHECKOUT "${MS2_ROOT}" CACHE PATH "MS2_PLAIN_COMPILE: the checkout whose sources compile.tsv names (\${ROOT})")
 set(MS2_PLAIN_ENGINE "${MS2_ROOT}/engine" CACHE PATH "MS2_PLAIN_COMPILE: the dir holding gamebryo/ and fmt-ms2/ (\${ENGINE}, MS2_GAMEBRYO_ROOT)")
 set(MS2_MSVC_ROOT "" CACHE PATH "third_party/-layout dir: msvc/ (MSVC 14.16 + Windows SDK, msvc-wine), dxsdk/, src/cryptopp562; empty = third_party")
@@ -465,14 +468,19 @@ if(MS2_PLAIN_COMPILE)
     get_filename_component(_d "${MS2_PLAIN_OBJ_ROOT}/${o}" DIRECTORY)
     file(MAKE_DIRECTORY "${_d}")
     set(_sa "")
-    if(MS2_PLAIN_STANDALONE)
+    if(MS2_PLAIN_STANDALONE OR MS2_RETAIL)
       set(_s "${src}")
       if(CMAKE_HOST_WIN32)    # a glue derived on Windows writes ${ROOT}\src\ms2\<dir>/<unit>.cpp
         string(REPLACE "\\" "/" _s "${_s}")
       endif()
       string(FIND "${_s}" "${MS2_PLAIN_CHECKOUT}/src/ms2/" _p)
       if(_p EQUAL 0)
-        set(_sa /DMS2_STANDALONE)
+        if(MS2_PLAIN_STANDALONE)
+          list(APPEND _sa /DMS2_STANDALONE)
+        endif()
+        if(MS2_RETAIL)
+          list(APPEND _sa /DMS2_RETAIL /DNDEBUG)
+        endif()
       endif()
     endif()
     add_custom_command(OUTPUT "${MS2_PLAIN_OBJ_ROOT}/${o}"

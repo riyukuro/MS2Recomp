@@ -1191,6 +1191,16 @@ void UISceneGamePlay::FUN_141aca840(int nUiId)
 }
 MS2_REPLACE_METHOD(0x141aca840, UISceneGamePlay, FUN_141aca840, 42, 0x89200DCD);
 
+#if defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL)
+// MS2-RESTORE: the retail build (README.md "Retail build") turns off the developer hotkeys below: wireframe, script,
+// data and texture reloads, the world map reveal, effect LOD, proxies, the forced device loss, the debug console, the
+// crash key, the debug-mode toggle and the debug guide, quest debug and research windows. The GM keys (chat commands
+// and GM windows, which the server gates) and the frame limit, DPS, hide and screenshot keys stay.
+#define MS2_DEV_KEY(pressed) (false && (pressed))
+#else
+#define MS2_DEV_KEY(pressed) (pressed)
+#endif
+
 // @0x141aca870
 int UISceneGamePlay::HandleDebugHotkeys()
 {
@@ -1201,16 +1211,18 @@ int UISceneGamePlay::HandleDebugHotkeys()
             SetFrameLimit(nMode);
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x21, 1, 0) != 0) {
+        else if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x21, 1, 0) != 0)) {
             WorldService::GetInstance()->FUN_141bd2fa0();
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->IsKeyDown(0x2a, 1, 0) != 0 && ((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x1e, 1, 0) != 0) {
+        else if (MS2_DEV_KEY(
+            ((Unk_GsLogin*)FUN_14025e7c0())->IsKeyDown(0x2a, 1, 0) != 0 &&
+            ((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x1e, 1, 0) != 0)) {
             ((class CScriptTable*)GetScriptTable())->Reload();
             FUN_1412751b0(StringFormat(L"Script reloaded"), 0x14);
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x1e, 1, 0) != 0) {
+        else if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x1e, 1, 0) != 0)) {
             if (DAT_143ab0248 == 2 && DAT_143ab2914 < 0x34) return 0;
             DAT_143ae0fb8 = (DAT_143ae0fb8 == 0);
             CStringW strMsg;
@@ -1250,7 +1262,7 @@ int UISceneGamePlay::HandleDebugHotkeys()
             FUN_141276f80(&cmd);
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x11, 1, 0) != 0) {
+        else if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x11, 1, 0) != 0)) {
             int nReload = ((class Unk_GsTexReload*)GetNifLoadingService())->GetTextureReload();
             nReload ^= 1;
             ((class Unk_GsTexReload*)GetNifLoadingService())->SetTextureReload(nReload);
@@ -1268,7 +1280,7 @@ int UISceneGamePlay::HandleDebugHotkeys()
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e50));
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x26, 1, 0) != 0) {
+        else if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x26, 1, 0) != 0)) {
             DAT_1439fa008 = DAT_1439fa008 - 1;
             if (DAT_1439fa008 == 0) DAT_1439fa008 = 3;
             CStringW strMsg;
@@ -1277,7 +1289,7 @@ int UISceneGamePlay::HandleDebugHotkeys()
             TSingleton<CEffectService>::GetInstance()->FUN_1411a8880(DAT_1439fa008);
             return 1;
         }
-        else if (((Unk_GsLogin*)FUN_14025e7c0())->IsActionKeyPressed(0x927c1, 1, 0) != 0) {
+        else if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->IsActionKeyPressed(0x927c1, 1, 0) != 0)) {
             TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4ea3));
             return 1;
         }
@@ -1317,16 +1329,16 @@ int UISceneGamePlay::HandleDebugHotkeys()
                 return 1;
             }
         } else {
-            if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x30, 1, 0) != 0) {
+            if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x30, 1, 0) != 0)) {
                 if (DAT_143ab0248 == 2 && DAT_143ab2914 < 0x34) return 0;
                 TSingleton<CUIService>::GetInstance()->ToggleDialog((eUIClassID)(0x4e4b));
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x24, 1, 0) != 0) {
+            else if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x24, 1, 0) != 0)) {
                 WorldService::GetInstance()->ShowResearchAndDevelopmentDialog();
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x3f, 1, 0) != 0) {
+            else if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x3f, 1, 0) != 0)) {
                 FUN_1412751b0(L"Reload sound resource & string & colorPalette", 0x14);
                 TSingleton<CStringTable>::GetInstance()->Reload();
                 GetSoundService();
@@ -1338,7 +1350,7 @@ int UISceneGamePlay::HandleDebugHotkeys()
                 FUN_141815db0((void*)GetGFxLanguage());
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x41, 1, 0) != 0) {
+            else if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x41, 1, 0) != 0)) {
                 int bShow = WorldService::GetInstance()->GetEnabledProxyCount() == 0;
                 WorldService::GetInstance()->SetProxyVisible(bShow);
                 CStringW strMsg;
@@ -1346,7 +1358,7 @@ int UISceneGamePlay::HandleDebugHotkeys()
                 FUN_1412751b0(strMsg, 0x14);
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x42, 1, 0) != 0) {
+            else if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x42, 1, 0) != 0)) {
                 void* pDevice = ((void*)NiRenderer::GetRenderer());
                 ((NiDX9Renderer*)pDevice)->SetDeviceLostHeld(reinterpret_cast<bool&>(DAT_1439fa00c));
                 if (((void*)GetGFxService()) != 0) {
@@ -1362,12 +1374,12 @@ int UISceneGamePlay::HandleDebugHotkeys()
                 FUN_1412751b0(L"SaveScreenShotToPNG", 0x14);
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x55, 1, 0) != 0) {
+            else if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x55, 1, 0) != 0)) {
                 if (((class Unk_GsDbgLog*)CDebugConsole::GetInstance())->IsConsoleOpen() != 0) ((class Unk_GsDbgLog*)CDebugConsole::GetInstance())->CloseConsole();
                 else ((CDebugConsole*)(Unk_GsDbgLog*)(((class Unk_GsDbgLog*)CDebugConsole::GetInstance())))->OpenConsole();
                 return 1;
             }
-            else if (((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x56, 1, 0) != 0) {
+            else if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->WasKeyPressed(0x56, 1, 0) != 0)) {
                 if (AfxMessageBox(DAT_142fdeb28, 1, 0) == 1) {
                     void* pNet = egf::g_bapiContext.GetSystemServiceAs<ecr::RenderService>();
                     if (pNet != 0) ((class MS2RenderService*)(void*)(pNet))->CheckRenderState();
@@ -1378,7 +1390,7 @@ int UISceneGamePlay::HandleDebugHotkeys()
         }
     }
 
-    if (((Unk_GsLogin*)FUN_14025e7c0())->IsActionKeyPressed(0x927c1, 0, 0)) {
+    if (MS2_DEV_KEY(((Unk_GsLogin*)FUN_14025e7c0())->IsActionKeyPressed(0x927c1, 0, 0))) {
         ((Unk_GsLogin*)FUN_14025e7c0())->SetDebugMode(!((Unk_GsLogin*)FUN_14025e7c0())->IsDebugMode());
         return 1;
     }

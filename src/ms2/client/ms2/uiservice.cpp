@@ -2399,13 +2399,17 @@ void CUIService::CreateAllDialogs()
     RegisterDialog(MS2Ptr<UIDialog>(new UIDecoEditDialog));
     RegisterDialog(MS2Ptr<UIDialog>(new UIMinimapEditDialog));
     RegisterDialog(MS2Ptr<UIDialog>(new UIGraphicOptionDialog));
+#if !defined(MS2_RETAIL) || defined(MS2_HOOK_DLL)   // MS2-RESTORE: no quest debug window in the retail build
     RegisterDialog(MS2Ptr<UIDialog>(new UIQuestDebugDialog));
+#endif
     RegisterDialog(MS2Ptr<UIDialog>(new UIHairPhysxDialog));
     RegisterDialog(MS2Ptr<UIDialog>(new UINpcControlDialog));
     RegisterDialog(MS2Ptr<UIDialog>(new UINpcPreviewDialog));
     RegisterDialog(MS2Ptr<UIDialog>(new UIAdditionalControlDialog));
     RegisterDialog(MS2Ptr<UIDialog>(new UIItemEnchantSimulateDialog));
+#if !defined(MS2_RETAIL) || defined(MS2_HOOK_DLL)   // MS2-RESTORE: no debug guide window in the retail build
     RegisterDialog(MS2Ptr<UIDialog>(new UIDebugGuideDialog));
+#endif
     RegisterDialog(MS2Ptr<UIDialog>(new UIDebugPacketDialog));
     RegisterDialog(MS2Ptr<UIDialog>(new UIStatControlDialog));
     RegisterDialog(MS2Ptr<UIDialog>(new UIDialogCenterDialog));
@@ -2892,8 +2896,10 @@ void CUIService::FUN_141aec690()
         ToggleDialog((eUIClassID)0x4e7d);
         return;
     }
+#if !defined(MS2_RETAIL) || defined(MS2_HOOK_DLL)   // MS2-RESTORE: no Ctrl+F1 debug dialog center in the retail build
     if (((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->WasKeyPressed(0x3b, 1, 0) && ((class CInputKeyHandler*)(void*)(FUN_14025e7c0()))->IsKeyDown(0x1d, 1, 0))
         ToggleDialog((eUIClassID)0x4ea9);
+#endif
 }
 
 // @0x141aec760

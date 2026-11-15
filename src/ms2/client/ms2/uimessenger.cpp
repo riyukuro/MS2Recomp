@@ -901,6 +901,11 @@ void UIMessenger::SetExtraComponentsVisible(bool bVisible)
 // @0x141a0d930
 bool UIMessenger::LoadDebugChatCommand()
 {
+#if defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL)
+    // MS2-RESTORE: the retail build loads no debug command list (DebugChatCommand.xml), so typing in chat shows no
+    // command suggestions (README.md "Retail build").
+    return false;
+#endif
     if (!s_debugCommands.empty())
         return true;
     TiXmlDocument doc;

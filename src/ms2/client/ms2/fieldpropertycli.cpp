@@ -27,7 +27,7 @@
 #include "ms2/placeholder/ms2ptr_impl.h"
 
 #include <cassert>
-#ifdef __clang__
+#if defined(__clang__) || (defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL))   // MS2-RESTORE: also the retail NDEBUG build
 extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const* _File, unsigned _Line);  // clang-cl: assert.h hides it under NDEBUG
 #endif
 #include <atlbase.h>

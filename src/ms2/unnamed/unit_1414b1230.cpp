@@ -277,6 +277,10 @@ void ParseLaunchArguments()
 // @0x1414b1c40
 int FUN_1414b1c40(CString strArg)
 {
+#if defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL)
+    // MS2-RESTORE: the retail build has no "/CRASHDUMP:<key>" test argument (it breaks into the debugger on purpose).
+    return 0;
+#endif
     char szTag[12] = { 0 };
     szTag[0] = '/';
     szTag[1] = 'C';
@@ -318,8 +322,13 @@ int FUN_1414b1c40(CString strArg)
 void FUN_1414b1f10()
 {
     CString strValue;
+#if defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL)
+    // MS2-RESTORE: the retail build ignores "-env": the client stays at the Live server type
+    // (README.md "Retail build").
+#else
     if (g_args.Lookup("-env", strValue))
         CFeatureManager::SetServerTypeName(CString(strValue));
+#endif
     if (g_args.Lookup("-locale", strValue))
         SetRegionByCode(CString(strValue));
     if (g_args.Lookup("-ip", strValue))

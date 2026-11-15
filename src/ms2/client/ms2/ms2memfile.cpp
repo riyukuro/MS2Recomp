@@ -566,6 +566,10 @@ bool LoadStringMovie(TiXmlDocument& doc)
 // @0x1416287c0
 bool LoadFlashDebug(TiXmlDocument& doc)
 {
+#if defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL)
+    // MS2-RESTORE: the retail build reads no flashDebug.xml (README.md "Retail build").
+    return false;
+#endif
     CString strPath = GetXmlDebugPath("flashDebug.xml");
     if (GetFileSystem()->LoadXmlFile(&doc, strPath, 0, true, false) == 0)
         return false;

@@ -63,6 +63,24 @@ default build and not in the maintainers' hook DLL.
 Build this branch the same way as `main`; see [`BUILDING.md`](BUILDING.md). New game source files are picked up at
 configure time. No extra option is needed.
 
+### Retail build
+
+The KMS2 exe is a developer build, and so is this branch by default. Configuring with `-DMS2_RETAIL=ON` (no-exe build
+only, e.g. `cmake --preset linux -B build-retail -DMS2_RETAIL=ON`) builds the game code as a player client instead:
+
+- **No asserts.** The game code builds with `NDEBUG` and its asserts compile to nothing, so a failed check no longer
+  stops the client with an assertion box. None of the removed checks does any work of its own. The engine, the
+  movie and audio libraries and Scaleform already build without asserts.
+- **No developer tools.** Left out: the chat box's debug command list (`DebugChatCommand.xml`) and the client-only
+  developer chat commands (camera modes, guide and NPC debugging, data and cache reloads, raw packets, packet delays,
+  local position, log and key dumps); `flashDebug.xml` and `stringDebug.xml`; the debug guide, quest debug and
+  research windows and the Ctrl+F1 debug window list; the developer hotkeys (data, script and texture reloads,
+  wireframe, world map reveal, effect level, proxies, forced device loss, debug console, visual tracker, debug mode
+  and the crash keys); the `/CRASHDUMP:` start argument.
+- **Always Live.** `-env` is ignored: the client stays at the Live server type.
+
+GM commands and GM windows, which the server gates, stay as they are. Without the option nothing changes.
+
 ## Client data you supply
 
 The client data changes come as patch files in `tools/restore/patches/`, applied to your own client data with

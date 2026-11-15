@@ -5079,6 +5079,10 @@ int CommonString::LoadCommon()
 // @0x140259640
 bool CommonString::LoadDebug()
 {
+#if defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL)
+    // MS2-RESTORE: the retail build reads no ../XmlDebug/stringDebug.xml (README.md "Retail build").
+    return false;
+#endif
     TextMap& map = m_maps[0];
     CString strPath = JoinPath("../XmlDebug", "stringDebug.xml");
     TiXmlDocument doc;

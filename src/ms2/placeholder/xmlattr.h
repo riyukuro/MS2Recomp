@@ -13,6 +13,10 @@
 #include <type_traits>
 #include <vector>
 #include "ms2/ms2layout.h"
+#if defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL)
+// MS2-RESTORE: the retail build has NDEBUG, so <assert.h> no longer declares _wassert, which the asserts below call.
+extern "C" _ACRTIMP void __cdecl _wassert(wchar_t const* _Message, wchar_t const* _File, unsigned _Line);
+#endif
 
 #include "ms2/placeholder/tixmlelement.h"   // TiXmlNode / TiXmlElement (the element type), Unk_TiXmlString
 // C3 #12: the element stand-in Unk_140165cf0 was TiXmlElement (work/ua11/tixml-proof.md): its

@@ -888,6 +888,48 @@ void CUserCommandCli::RegisterDebug() {
     Register(L"SetDisableClonePC",&CUserCommandCli::SetDisableClonePc);
     Register(L"ShowMyPCNodes",&CUserCommandCli::ShowMyPcNodes);
     Register(L"SkipLoadingUGCCube",&CUserCommandCli::SkipLoadingUgcCube);
+#if defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL)
+    // MS2-RESTORE: the retail build drops the developer commands of this list that work in the client alone (camera
+    // modes, guide and NPC debugging, data and cache reloads, raw packets, local position, packet delays, test
+    // loops, log and key dumps; README.md "Retail build"). They are matched by handler, so a command and its aliases
+    // go together. Commands that the server answers or gates by GM level stay.
+    static const Command s_devCommands[] = {
+        &CUserCommandCli::FUN_141365270, &CUserCommandCli::SetLocalCamera, &CUserCommandCli::SetTargetCamera,
+        &CUserCommandCli::ToggleUIDevMode, &CUserCommandCli::FUN_141365720, &CUserCommandCli::ShowGuideState,
+        &CUserCommandCli::ChangeGuideEntityState, &CUserCommandCli::ResetGuideClearState,
+        &CUserCommandCli::TestGuideCondition, &CUserCommandCli::TestGuideFunction, &CUserCommandCli::ClearAllGuides,
+        &CUserCommandCli::ReloadStrings, &CUserCommandCli::ReloadGuideString, &CUserCommandCli::ReloadScript,
+        &CUserCommandCli::SetNifLifetime, &CUserCommandCli::ClearNifCache, &CUserCommandCli::ClearTextureCache,
+        &CUserCommandCli::AddDevEffect, &CUserCommandCli::RemoveDevEffect, &CUserCommandCli::ExportUgcMap,
+        &CUserCommandCli::Optimize, &CUserCommandCli::SamplingFrame, &CUserCommandCli::SetForceGmId,
+        &CUserCommandCli::FindNpcGameOid, &CUserCommandCli::SetNpcDebugMode, &CUserCommandCli::SetNpcDebugModeById,
+        &CUserCommandCli::ControlCutScene, &CUserCommandCli::TogglePhysXItem, &CUserCommandCli::ShowNode,
+        &CUserCommandCli::CountUi, &CUserCommandCli::SetClientItemTransferType,
+        &CUserCommandCli::SetPacketSendDelay, &CUserCommandCli::SetPacketRecvDelay, &CUserCommandCli::ToggleDpsLog,
+        &CUserCommandCli::SetClientLogLevel, &CUserCommandCli::ExportDefaultKeyXml, &CUserCommandCli::CombineKey,
+        &CUserCommandCli::RecordFishing, &CUserCommandCli::ShowFishRecordReport,
+        &CUserCommandCli::ShowEffectAfterimage, &CUserCommandCli::TestDisconnect,
+        &CUserCommandCli::SetFieldFogEnabled, &CUserCommandCli::EnableEffectLimit,
+        &CUserCommandCli::GetDamageMovieCount, &CUserCommandCli::ToggleSkillSlotNotFind,
+        &CUserCommandCli::SetFishingCastingBarMode, &CUserCommandCli::ShowKey, &CUserCommandCli::SendRawPacket,
+        &CUserCommandCli::SetPosition, &CUserCommandCli::DumpChatLog, &CUserCommandCli::SetNoWaitRoomExit,
+        &CUserCommandCli::ToggleDamageUseOld, &CUserCommandCli::SetDamageTestLoop,
+        &CUserCommandCli::SetDisableClonePc, &CUserCommandCli::ShowMyPcNodes, &CUserCommandCli::SkipLoadingUgcCube,
+    };
+    ATL::CAtlArray<CStringW> devNames;
+    for (POSITION pos = commands.GetStartPosition(); pos != 0;) {
+        typedef ATL::CAtlMap<CStringW, Command, ATL::CStringElementTraitsI<CStringW>> CommandMap;
+        const CommandMap::CPair* pPair = commands.GetNext(pos);
+        for (size_t i = 0; i < sizeof(s_devCommands) / sizeof(s_devCommands[0]); ++i) {
+            if (pPair->m_value == s_devCommands[i]) {
+                devNames.Add(pPair->m_key);
+                break;
+            }
+        }
+    }
+    for (size_t i = 0; i < devNames.GetCount(); ++i)
+        commands.RemoveKey(devNames[i]);
+#endif
 }
 // @0x141364f70
 void CUserCommandCli::RegisterInternalCommands() {

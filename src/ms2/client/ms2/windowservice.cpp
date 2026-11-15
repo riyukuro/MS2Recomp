@@ -727,6 +727,11 @@ LRESULT CALLBACK Unk_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     case 0x281:
         return DefWindowProcA(hWnd, uMsg, wParam, 0);
     case 0x100:
+#if defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL)
+        // MS2-RESTORE: the retail build has neither developer key here: Ctrl+F12 (crash on purpose) and Ctrl+G
+        // (visual tracker overlay) (README.md "Retail build").
+        break;
+#endif
         if (wParam == 0x7b && (GetAsyncKeyState(0x11) & 0x8000) != 0 &&
             AfxMessageBox("Crash \xb8\xb8\xb5\xe9\xb1\xe2", 1, 0) == 1)
         {

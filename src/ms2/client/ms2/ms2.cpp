@@ -180,6 +180,17 @@
 #include "ms2/placeholder/gfximageloader.h"
 #include "ms2/placeholder/ms2propertyvisualizationservice.h"
 #include "ms2/placeholder/tfunctor2.h"
+#if defined(MS2_RETAIL) && !defined(MS2_HOOK_DLL)
+// MS2-RESTORE: retail build (README.md "Retail build"). MS2_ASSERT_AT and assert() compile to nothing there, but about
+// 160 asserts were recovered as the exe's inlined expression, `(void)((!!(e)) || (_wassert(...), 0))`, which NDEBUG
+// does not reach. Every call to the CRT's _wassert goes through its import slot __imp__wassert; this definition of
+// the slot takes the place of the CRT's, so those asserts still evaluate their expression but no longer stop the
+// client. Only this build defines it: elsewhere the slot is the CRT's.
+extern "C" {
+static void __cdecl ms2_RetailWAssert(wchar_t const*, wchar_t const*, unsigned) {}
+extern void(__cdecl* const __imp__wassert)(wchar_t const*, wchar_t const*, unsigned) = &ms2_RetailWAssert;
+}
+#endif
 // the manager singletons CGameApp::InitInstance creates
 #include "ms2/client/ms2/achievemanager.h"
 #include "ms2/client/ms2/animationcallbackmanager.h"
