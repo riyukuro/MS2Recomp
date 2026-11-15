@@ -356,7 +356,8 @@ static class Patch {
 
     // copy-text: every <tag> row of the file (KR rows) whose text attribute is Korean takes that attribute from
     // the row with the same key attributes (leading zeros of each ignored) in the sources, the first source that
-    // has it in English. A source row counts when its locale is the target row's or none; an unfilled key
+    // has it in English. A source row counts when its locale is the target row's or none; one with the target
+    // row's feature switch is tried first (a key can have a row per feature, with other fields); an unfilled key
     // (SCRIPTQUEST_..._NAME, also with a ":[F]<feature>" tail) does not count. Many of these texts are format
     // strings the client fills with numbered fields ({0}, {2:x}); a source text whose fields are not all in the
     // Korean text, or that has a stray brace, is not copied, since the client's formatter fails on a field it has
@@ -365,6 +366,7 @@ static class Patch {
         string Key(XElement e) => string.Join("|", keys.Select(k => ((string)e.Attribute(k) ?? "").TrimStart('0')));
         bool Keyed(XElement e) => keys.All(k => e.Attribute(k) != null);   // a row without its key matches nothing
         static string Loc(XElement e) => (string)e.Attribute("locale") ?? "";
+        static string Feat(XElement e) => (string)e.Attribute("feature") ?? "";
         static bool Unfilled(string v) {
             int f = v.IndexOf(":[F]", StringComparison.Ordinal);
             return (f < 0 ? v : v[..f]).All(c => char.IsUpper(c) || char.IsDigit(c) || c == '_');
@@ -382,18 +384,22 @@ static class Patch {
             var attr = spec.Split('=')[0];
             var from = spec.Contains('=') ? spec.Split('=')[1] : attr;   // name=uiDescription: another source attr
             var en = new Dictionary<(string, string), string>();
+            var enFeat = new Dictionary<(string, string, string), string>();   // a row of the same feature first
             foreach (var src in srcs)
                 foreach (var e in src.Descendants(tag)) {
                     var v = (string)e.Attribute(from);
                     if (!Keyed(e) || string.IsNullOrEmpty(v) || HasHangul(v) || Unfilled(v)) continue;
                     en.TryAdd((Key(e), Loc(e)), v);
+                    enFeat.TryAdd((Key(e), Loc(e), Feat(e)), v);
                 }
             foreach (var e in root.Descendants(tag)) {
                 if (!Keyed(e) || !HasHangul((string)e.Attribute(attr))) continue;
                 if (Loc(e).Length > 0 && !Loc(e).Split(',').Contains("KR")) continue;   // a row the KR client skips
                 var kr = (string)e.Attribute(attr);
                 bool Fits(string t) => !StrayBrace(t) && Fields(t).IsSubsetOf(Fields(kr));
-                if ((en.TryGetValue((Key(e), Loc(e)), out var v) && Fits(v)) || (en.TryGetValue((Key(e), ""), out v)
+                if ((enFeat.TryGetValue((Key(e), Loc(e), Feat(e)), out var v) && Fits(v))
+                    || (enFeat.TryGetValue((Key(e), "", Feat(e)), out v) && Fits(v))
+                    || (en.TryGetValue((Key(e), Loc(e)), out v) && Fits(v)) || (en.TryGetValue((Key(e), ""), out v)
                     && Fits(v))) {
                     e.SetAttributeValue(attr, v);
                     done++;
