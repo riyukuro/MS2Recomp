@@ -36,6 +36,10 @@
 #include "ms2/client/ms2/pcbase.h"
 #include "ms2/placeholder/fittingdollpc.h"
 #include "ms2/client/ms2/partymanager.h"
+#include "ms2/client/ms2/uigamerankingdialog.h"
+#include "ms2/client/ms2/uiservice.h"
+
+UIGameRankingDialog* FUN_140b2d030(int nUiId);  // the dialog of a UI id
 
 // ---- KMS helpers (declarations as their other callers have them) ----
 CStringW GetStringCommonByKey(const CStringW& strKey);
@@ -967,6 +971,20 @@ void OpenMapleSurvivalSeasonRewardUrl()
     strScheme.MakeLower();
     if (strScheme.Left(7) == "http://" || strScheme == "https://")
         FUN_1418fe1c0(strUrl);
+}
+// GMS 0x79d750 / 0x7a13c0: when the game ranking feature is on (GMS feature 0x4e, KMS 0x3f, the check of the PvP
+// rank button GMS 0x9231d0 / KMS UIRankPvPDialog 0x140f95550), select the board of ranking type 13 and open the
+// ranking window (GMS UI id 0x4f28 = KMS 0x4f24, UIGameRankingDialog). Without a type 13 row in
+// gameRankingCategory.xml the window opens on the board it last showed.
+void OpenMapleSurvivalRanking(int nSub)
+{
+    if (CFeatureManager::GetInstance()->IsFeatureEnabled(0x3f) != 1)
+        return;
+    UIGameRankingDialog* pDialog = FUN_140b2d030(0x4f24);
+    if (pDialog == 0)
+        return;
+    pDialog->SelectCategory(13, nSub);
+    CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f24);
 }
 bool GetMapleSurvivalPassBundle(__int64& a, __int64& b, int& c)
 {

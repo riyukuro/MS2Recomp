@@ -31,6 +31,7 @@ public:
     void OnUnregister(const Scaleform::GFx::FunctionHandler::Params& params);    // GMS 0x79c590
     void OnRefresh(const Scaleform::GFx::FunctionHandler::Params& params);       // GMS 0x79c640
     void OnSeasonRewardInfo(const Scaleform::GFx::FunctionHandler::Params& params);   // GMS 0x79c5a0
+    void OnShowGrade(const Scaleform::GFx::FunctionHandler::Params& params);     // GMS 0x79d750
 
 private:
     void UpdateLevel();         // GMS 0x79d120: level text, exp text, exp gauge

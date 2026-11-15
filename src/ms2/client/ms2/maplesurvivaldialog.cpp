@@ -181,9 +181,12 @@ void UIMapleSurvivalDialog::OnLoadComplete()
         m_seasonRewardInfoButton.operator->()->AddClickHandler(
             LobbyClickDelegate(this, &UIMapleSurvivalDialog::OnSeasonRewardInfo), 0);
     // GMS wires the level reward button to 0x79c640 (the refresh request) and the grade button to 0x79d750, which
-    // opens the grade window 0x4f28 (a KMS dialog with another meaning); that one is left unwired.
+    // opens the game ranking window (GMS UI id 0x4f28, KMS 0x4f24).
     if (m_levelRewardButton.get() != 0)
         m_levelRewardButton.operator->()->AddClickHandler(LobbyClickDelegate(this, &UIMapleSurvivalDialog::OnRefresh), 0);
+    if (m_showGradeButton.get() != 0)
+        m_showGradeButton.operator->()->AddClickHandler(
+            LobbyClickDelegate(this, &UIMapleSurvivalDialog::OnShowGrade), 0);
 
     if (m_gauge.get() != 0)
         m_gaugeWidth = m_gauge.operator->()->GetWidthCeil();
@@ -232,6 +235,12 @@ void UIMapleSurvivalDialog::OnRegister(const Scaleform::GFx::FunctionHandler::Pa
 void UIMapleSurvivalDialog::OnUnregister(const Scaleform::GFx::FunctionHandler::Params&)
 {
     CMapleSurvivalManager::GetInstance()->CancelMatch();
+}
+
+// GMS 0x79d750: the survival ranking, board sub 0.
+void UIMapleSurvivalDialog::OnShowGrade(const Scaleform::GFx::FunctionHandler::Params&)
+{
+    OpenMapleSurvivalRanking(0);
 }
 
 // GMS 0x79c5a0

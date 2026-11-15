@@ -277,7 +277,7 @@ void UIMapleSurvivalPassDialog::OnLoadComplete()
     }
     PlaceIconAfterText(m_skinInfo, "m_skinInfoTitle", "m_skinInfoButton");
     PlaceIconAfterText(m_itemInfo, "m_itemInfoTitle", "m_itemInfoButton");
-    // Not restored: the rank button.
+    Click(m_rankButton, PassClickDelegate(this, &UIMapleSurvivalPassDialog::OnRank), 0);   // GMS 0x7a3a5d
 
     Show(m_modeSelector, false);
     {
@@ -367,6 +367,12 @@ void UIMapleSurvivalPassDialog::OnRegister(const Scaleform::GFx::FunctionHandler
 void UIMapleSurvivalPassDialog::OnSeasonRewardInfo(const Scaleform::GFx::FunctionHandler::Params&)
 {
     OpenMapleSurvivalSeasonRewardUrl();
+}
+
+// GMS 0x7a13c0: the survival ranking, squad board (sub 4) in squad mode, else solo (sub 1).
+void UIMapleSurvivalPassDialog::OnRank(const Scaleform::GFx::FunctionHandler::Params&)
+{
+    OpenMapleSurvivalRanking(m_bSquad ? 4 : 1);
 }
 
 // GMS 0x79fb20
