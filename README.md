@@ -20,6 +20,10 @@ and the comments cite that exe's addresses as `GMS 0x...`. Do not read those as 
     constructor declaration for the survival state notice (`notifychangebuff.h`);
   - a lobby entry in the mouse game menu (`gameeventmanagercli.cpp`), since the KMS2 menu table lists it only in
     the gamepad set.
+  - the Mushking Royale board of the game ranking window (`gamerankingcli.cpp`, `uigamerankingdialog.cpp`): the
+    ranking requests and answers of the board, its Solo and Squad entries, the current season's tab and the row
+    tooltip. The KMS2 ranking table has no row for the board, so the client adds it when the table lacks one; the
+    pass window's rank button opens the window on it.
 
   The survival code follows the client's feature switches (`feature.xml`), as the global client does:
   - `SurvivalContents01`: the game menu entry (mouse and gamepad).
