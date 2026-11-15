@@ -44,6 +44,9 @@ using Maple2.File.IO;
 //                                         the file whose attribute is Korean (KR rows) takes it from the English
 //                                         row with the same <keys> (id or id,level) in the first source that
 //                                         has one; for string tables whose KR rows the pack left in Korean
+//   add-words <tag> <key> <attr> <source>   every <tag> of the file appends to its '|'-separated word list <attr>
+//                                         the words of the source row with the same <key> that the file does not
+//                                         have yet (chat command keywords: Korean and English both work)
 //
 // A selector is steps joined by '/': tag[attr=value][attr=value]. The first step matches at any depth, the
 // others match children. A step without a predicate matches every element of that tag. Values are plain text,
@@ -302,12 +305,49 @@ static class Patch {
                     changed += done;
                     break;
                 }
+                case "add-words": {
+                    var tag = t.Word();
+                    var key = t.Word();
+                    var attr = t.Word();
+                    var src = t.Word();
+                    var (rows, words) = AddWords(Cur().X.Root, tag, key, attr, Load(Source(src), src).X.Root);
+                    Console.WriteLine($"{where}: add-words {tag}: {words} words added to {rows} rows");
+                    changed += rows;
+                    break;
+                }
                 default: throw new PatchError($"{where}: unknown op {op}");
             }
             t.End();
         }
         if (pending != null) throw new PatchError($"{name}:{first}: the last line ends with '\\'");
         Console.WriteLine($"{name}: {changed} changes");
+    }
+
+    // add-words: every <tag> row of the file appends to its '|'-separated word list <attr> the words of the first
+    // source row with the same <key> (any locale), leaving its own words first. A word the file already has, in
+    // any row (case ignored), is not added, so no word ends up naming two rows.
+    static (int rows, int words) AddWords(XElement root, string tag, string key, string attr, XElement src) {
+        var from = new Dictionary<string, string>();
+        foreach (var e in src.Descendants(tag)) {
+            var k = (string)e.Attribute(key);
+            if (k != null && !from.ContainsKey(k)) from[k] = (string)e.Attribute(attr) ?? "";
+        }
+        static IEnumerable<string> Split(string v) => v.Split('|').Where(w => w.Length > 0);
+        var rowsOf = root.Descendants(tag).ToList();
+        var have = new HashSet<string>(rowsOf.SelectMany(e => Split((string)e.Attribute(attr) ?? "")),
+            StringComparer.OrdinalIgnoreCase);
+        int rows = 0, words = 0;
+        foreach (var e in rowsOf) {
+            var k = (string)e.Attribute(key);
+            if (k == null || !from.TryGetValue(k, out var v)) continue;
+            var add = Split(v).Where(w => !HasHangul(w) && have.Add(w)).ToList();
+            if (add.Count == 0) continue;
+            var own = (string)e.Attribute(attr) ?? "";
+            e.SetAttributeValue(attr, string.Join("|", Split(own).Concat(add)));
+            rows++;
+            words += add.Count;
+        }
+        return (rows, words);
     }
 
     static bool HasHangul(string s) =>
@@ -323,6 +363,7 @@ static class Patch {
     // no argument for. Returns the copied and the still Korean attribute counts.
     static (int, int) CopyText(XElement root, string tag, string[] keys, string[] attrs, List<XElement> srcs) {
         string Key(XElement e) => string.Join("|", keys.Select(k => ((string)e.Attribute(k) ?? "").TrimStart('0')));
+        bool Keyed(XElement e) => keys.All(k => e.Attribute(k) != null);   // a row without its key matches nothing
         static string Loc(XElement e) => (string)e.Attribute("locale") ?? "";
         static bool Unfilled(string v) {
             int f = v.IndexOf(":[F]", StringComparison.Ordinal);
@@ -334,6 +375,8 @@ static class Patch {
             var r = Regex.Replace(v.Replace("{{", "").Replace("}}", ""), @"\{[^{}]*\}", "");
             return r.Contains('{') || r.Contains('}');
         }
+        if (root.Descendants(tag).Any() && !root.Descendants(tag).Any(Keyed))
+            throw new PatchError($"copy-text {tag}: no row has the key {string.Join(",", keys)}");
         int done = 0, left = 0;
         foreach (var spec in attrs) {
             var attr = spec.Split('=')[0];
@@ -342,11 +385,11 @@ static class Patch {
             foreach (var src in srcs)
                 foreach (var e in src.Descendants(tag)) {
                     var v = (string)e.Attribute(from);
-                    if (string.IsNullOrEmpty(v) || HasHangul(v) || Unfilled(v)) continue;
+                    if (!Keyed(e) || string.IsNullOrEmpty(v) || HasHangul(v) || Unfilled(v)) continue;
                     en.TryAdd((Key(e), Loc(e)), v);
                 }
             foreach (var e in root.Descendants(tag)) {
-                if (!HasHangul((string)e.Attribute(attr))) continue;
+                if (!Keyed(e) || !HasHangul((string)e.Attribute(attr))) continue;
                 if (Loc(e).Length > 0 && !Loc(e).Split(',').Contains("KR")) continue;   // a row the KR client skips
                 var kr = (string)e.Attribute(attr);
                 bool Fits(string t) => !StrayBrace(t) && Fields(t).IsSubsetOf(Fields(kr));

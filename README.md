@@ -86,20 +86,24 @@ tables from the client packs are copied by id from your copies, and the only tex
   that the Korean table still has in Korean take the pack's English row (20), and one KR tip with no English row
   gets our own English. Flash UI strings with no English row in either pack (option labels, a menu popup)
   get our own English.
-- `strings/*.m2dpatch`: one patch per string table (32) whose Korean rows the KMS2 pack left in Korean. Each row
+- `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
   (`copy-text`); about 47,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,
   system mail and item names. Many texts are format strings the client fills in ({0}, {1}); an English text that
   uses a field the Korean one lacks is not copied, since the client stops on it with an assertion. About 37,000
   Korean texts have no usable English row in either pack and stay Korean.
   Apply them after `string-names.m2dpatch`.
+- `emote-commands.m2dpatch`: typed emote commands (`/bow`, `/greet`). The Korean emote table has Korean
+  keywords for 41 emotes, so their English commands were not recognised; each emote keeps its keywords and adds
+  the English keywords of the same emote from the pack's English table (`add-words`, matched by skill id).
 - `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that
   turns on the `DailyMission` feature in its own `feature.xml`. No patch changes `feature.xml`.
 
 ```
 dotnet run --project tools/m2d -- patch <KMS2 client>/Data --gms <global client>/Data \
     tools/restore/patches/survival-items.m2dpatch tools/restore/patches/string-names.m2dpatch \
-    tools/restore/patches/strings/*.m2dpatch --out <KMS2 client>/Data
+    tools/restore/patches/strings/*.m2dpatch tools/restore/patches/emote-commands.m2dpatch \
+    --out <KMS2 client>/Data
 ```
 
 This writes the patched files as loose files under `--out` (`Xml/itemdata/209.xml`, `Xml/string/kr/...`), where

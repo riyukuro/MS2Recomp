@@ -1,0 +1,8 @@
+patch emote-commands
+made-for KMS2 KR Live client Data/Xml.m2d
+# Typed emote commands (/bow, /greet): the chat box matches the keywords of string/<language>/kordynamicaction.xml,
+# and the Korean table has Korean keywords only. Each emote row keeps them and adds the English keywords of the
+# same emote from the pack's English table, so both work.
+file Xml/string/kr/kordynamicaction.xml kms:Xml/string/kr/kordynamicaction.xml 18f734b61a96ac06
+need kms:Xml/string/en/kordynamicaction.xml 95dc485edd3726a2
+add-words key skillID reserved kms:Xml/string/en/kordynamicaction.xml
