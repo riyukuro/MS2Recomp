@@ -981,8 +981,8 @@ void OpenMapleSurvivalSeasonRewardUrl()
 }
 // GMS 0x79d750 / 0x7a13c0: when the game ranking feature is on (GMS feature 0x4e, KMS 0x3f, the check of the PvP
 // rank button GMS 0x9231d0 / KMS UIRankPvPDialog 0x140f95550), select the board of ranking type 13 and open the
-// ranking window (GMS UI id 0x4f28 = KMS 0x4f24, UIGameRankingDialog). Without a type 13 row in
-// gameRankingCategory.xml the window opens on the board it last showed.
+// ranking window (GMS UI id 0x4f28 = KMS 0x4f24, UIGameRankingDialog). The type 13 board is built in when
+// gameRankingCategory.xml lacks it (uigamerankingdialog.cpp).
 void OpenMapleSurvivalRanking(int nSub)
 {
     if (CFeatureManager::GetInstance()->IsFeatureEnabled(0x3f) != 1)
@@ -990,7 +990,9 @@ void OpenMapleSurvivalRanking(int nSub)
     UIGameRankingDialog* pDialog = FUN_140b2d030(0x4f24);
     if (pDialog == 0)
         return;
-    pDialog->SelectCategory(13, nSub);
+    // Not GMS: GMS asks for sub 0 from the lobby, which no survival board has (the board is sub 1, its children
+    // 1 / 4), so the window kept its last board. Here sub 0 selects the board (or its Solo entry).
+    pDialog->SelectCategory(13, nSub == 0 ? 1 : nSub);
     CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f24);
 }
 // The one tab of the survival board. GMS lists the seasons of SeasonData_MapleSurvival.xml there (season kind 5,

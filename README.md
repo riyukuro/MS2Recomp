@@ -22,8 +22,9 @@ and the comments cite that exe's addresses as `GMS 0x...`. Do not read those as 
     the gamepad set.
   - the Mushking Royale board of the game ranking window (`gamerankingcli.cpp`, `uigamerankingdialog.cpp`): the
     ranking requests and answers of the board, its Solo and Squad entries, the current season's tab and the row
-    tooltip. The KMS2 ranking table has no row for the board, so the client adds it when the table lacks one; the
-    pass window's rank button opens the window on it.
+    tooltip. The KMS2 ranking table has no row for the board, so the client adds it when the table lacks one. The
+    lobby's grade button and the pass window's rank button open the window on it; the global client's grade button
+    left the window on its last board.
 
   The survival code follows the client's feature switches (`feature.xml`), as the global client does:
   - `SurvivalContents01`: the game menu entry (mouse and gamepad).
