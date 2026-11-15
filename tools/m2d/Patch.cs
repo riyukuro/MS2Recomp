@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Maple2.File.IO;
 
@@ -316,11 +317,23 @@ static class Patch {
     // copy-text: every <tag> row of the file (KR rows) whose text attribute is Korean takes that attribute from
     // the row with the same key attributes (leading zeros of each ignored) in the sources, the first source that
     // has it in English. A source row counts when its locale is the target row's or none; an unfilled key
-    // (SCRIPTQUEST_..._NAME) does not count. Returns the copied and the still Korean attribute counts.
+    // (SCRIPTQUEST_..._NAME, also with a ":[F]<feature>" tail) does not count. Many of these texts are format
+    // strings the client fills with numbered fields ({0}, {2:x}); a source text whose fields are not all in the
+    // Korean text, or that has a stray brace, is not copied, since the client's formatter fails on a field it has
+    // no argument for. Returns the copied and the still Korean attribute counts.
     static (int, int) CopyText(XElement root, string tag, string[] keys, string[] attrs, List<XElement> srcs) {
         string Key(XElement e) => string.Join("|", keys.Select(k => ((string)e.Attribute(k) ?? "").TrimStart('0')));
         static string Loc(XElement e) => (string)e.Attribute("locale") ?? "";
-        static bool Unfilled(string v) => v.All(c => char.IsUpper(c) || char.IsDigit(c) || c == '_');
+        static bool Unfilled(string v) {
+            int f = v.IndexOf(":[F]", StringComparison.Ordinal);
+            return (f < 0 ? v : v[..f]).All(c => char.IsUpper(c) || char.IsDigit(c) || c == '_');
+        }
+        static HashSet<string> Fields(string v) =>
+            Regex.Matches(v, @"\{[^{}]*\}").Select(m => m.Value).ToHashSet();
+        static bool StrayBrace(string v) {
+            var r = Regex.Replace(v.Replace("{{", "").Replace("}}", ""), @"\{[^{}]*\}", "");
+            return r.Contains('{') || r.Contains('}');
+        }
         int done = 0, left = 0;
         foreach (var spec in attrs) {
             var attr = spec.Split('=')[0];
@@ -335,7 +348,10 @@ static class Patch {
             foreach (var e in root.Descendants(tag)) {
                 if (!HasHangul((string)e.Attribute(attr))) continue;
                 if (Loc(e).Length > 0 && !Loc(e).Split(',').Contains("KR")) continue;   // a row the KR client skips
-                if (en.TryGetValue((Key(e), Loc(e)), out var v) || en.TryGetValue((Key(e), ""), out v)) {
+                var kr = (string)e.Attribute(attr);
+                bool Fits(string t) => !StrayBrace(t) && Fields(t).IsSubsetOf(Fields(kr));
+                if ((en.TryGetValue((Key(e), Loc(e)), out var v) && Fits(v)) || (en.TryGetValue((Key(e), ""), out v)
+                    && Fits(v))) {
                     e.SetAttributeValue(attr, v);
                     done++;
                 } else left++;

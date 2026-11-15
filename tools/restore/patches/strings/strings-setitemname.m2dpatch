@@ -1,7 +1,0 @@
-patch strings-setitemname
-made-for KMS2 KR Live client Data/Xml.m2d
-# string/kr/setitemname.xml: rows the pack left in Korean take the English text of the same row from the pack's own
-# English table(s); rows without an English row stay as they are.
-file Xml/string/kr/setitemname.xml kms:Xml/string/kr/setitemname.xml 9e8670115c48c86e
-need kms:Xml/string/en/setitemname.xml 44c0bb11280878d6
-copy-text key id name kms:Xml/string/en/setitemname.xml

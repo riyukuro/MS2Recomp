@@ -83,13 +83,15 @@ tables from the client packs are copied by id from your copies, and the only tex
 - `string-names.m2dpatch`: achievement names the KMS2 Korean table lacks (the pack's own English rows, and our
   English for 15 achievements that have none), and NPC titles: Korean-only titles with no English row are
   blanked, 5 take the pack's English title. Guide tips (the TIP boxes, such as the one over the Mentoring window)
-  that the Korean table still has in Korean take the pack's English row (45), and one KR tip with no English row
+  that the Korean table still has in Korean take the pack's English row (20), and one KR tip with no English row
   gets our own English. Flash UI strings with no English row in either pack (option labels, a menu popup)
   get our own English.
-- `strings/*.m2dpatch`: one patch per string table (39) whose Korean rows the KMS2 pack left in Korean. Each row
+- `strings/*.m2dpatch`: one patch per string table (32) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
-  (`copy-text`); about 53,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,
-  system mail and item names. About 31,000 Korean texts have no English row in either pack and stay Korean.
+  (`copy-text`); about 47,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,
+  system mail and item names. Many texts are format strings the client fills in ({0}, {1}); an English text that
+  uses a field the Korean one lacks is not copied, since the client stops on it with an assertion. About 37,000
+  Korean texts have no usable English row in either pack and stay Korean.
   Apply them after `string-names.m2dpatch`.
 - `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that
   turns on the `DailyMission` feature in its own `feature.xml`. No patch changes `feature.xml`.
