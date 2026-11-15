@@ -18,8 +18,9 @@ that has data is kept.
 
 Mount and glider rows get the KMS2 link in property param1: a mount names its riding/<id>.xml (the skin id), a
 glider its table/glidedata.xml row (the GMS glide skill id, which KMS2 keeps as the glide id). The grade moves from
-option constant to property rank, where KMS2 reads it. Every row keeps its GMS feature attribute (SurvivalContents03),
-as the skin table does.
+option constant to property rank, where KMS2 reads it. The rows and skin strings lose their feature attribute: the
+global data gates them on SurvivalContents03, which the KMS2 feature table leaves off at Live, so both the client and
+a server ingest would drop them (the skin window itself still follows the feature).
 
 Usage:
   survival-items.py --gms <GMS client>/Data/Xml.m2d --kms <KMS2 client>/Data/Xml.m2d --out <KMS2 client>/Data/Xml
@@ -74,8 +75,16 @@ def environments(text):
             if line.startswith(indent):
                 line = line[len(indent):]
             fixed.append('\t\t' + line)
-        out.append(set_rank('\n'.join(fixed)))
+        block = drop_feature('\n'.join(fixed), 'environment')[0]
+        block = re.sub(r'(<environment\b[^>]*?)\s+locale=""', r'\1', block, count=1)   # as the KMS2 rows
+        out.append(set_rank(block))
     return out
+
+
+def drop_feature(text, tag):
+    """Remove the feature attribute of every <tag> element. Returns (text, count)."""
+    pattern = re.compile(r'(<%s\b[^>]*?)\s+feature="[^"]*"' % tag)
+    return pattern.subn(r'\1', text)
 
 
 def set_rank(block):
@@ -200,7 +209,9 @@ def main():
                 write(a.out, rel, filled)
                 added += count
         for rel in STRINGS:
-            write(a.out, rel, read(os.path.join(g, *rel.split('/'))))
+            text, count = drop_feature(read(os.path.join(g, *rel.split('/'))), 'key')
+            write(a.out, rel, text)
+            print('%s: feature removed from %d rows' % (rel, count))
     print('%d skins, %d reward items; %d item rows written' % (len(skins), len(rewards), added))
 
 

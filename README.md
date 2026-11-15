@@ -88,7 +88,8 @@ python3 tools/restore/survival-items.py --gms <global client>/Data/Xml.m2d \
 It writes the KMS2 `itemdata/<group>.xml` files that gain rows (with your data: `200`, `203`, `404`, `506` and the
 new `209`), each the KMS2 file with the survival rows filled in, and `string/en/maplesurvivalskinname.xml` and
 `string/en/maplesurvivalskindescription.xml`. It needs the .NET 8 SDK, as it reads the packs with `tools/m2d`. The
-rows keep the feature switches of the global data (`SurvivalContents03` for the skins), like the survival tables.
+written rows have no feature switch: the global data gates them on `SurvivalContents03`, which the KMS2 feature
+table leaves off at Live, so the client would drop them. The survival windows still follow the feature.
 
 The arena row needs no data.
 
