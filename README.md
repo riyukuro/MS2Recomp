@@ -42,6 +42,9 @@ and the comments cite that exe's addresses as `GMS 0x...`. Do not read those as 
 - **Live server type by default.** Started without `-env`, the client takes the Live server type, as the client
   started by the Nexon launcher did, so it loads features and quests at the Live level the server uses (title
   `S:78`); the KMS2 exe set Dev there (`unit_1414b1230.cpp`). `-env:Dev` still selects Dev.
+- **Client log kept out of chat.** The KMS2 dev exe echoes every error and warning of its client log (sound, effect
+  and data messages) into chat; on this branch they go only to the log file and the log dialog (`ms2.cpp`).
+  Starting the client with `-logChat:1` brings the echo back.
 - **Web address guard.** The client opens a web page in the system browser or the in-game browser only when the
   address starts with `http://` or `https://`; any other address opens nothing (`uicommon.cpp`,
   `webbrowserservice.cpp`, `offscreenwebbrowser.cpp`).

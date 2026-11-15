@@ -1215,6 +1215,9 @@ extern CStringW g_143ac2fe8;                                    // the command l
 extern int DAT_143ac2fd4;                                       // the client requires a minimum OS (checked with FUN_1406c34b0)
 extern int DAT_143ac2fd0;                                       // the platform auth was cancelled
 extern int g_nLogLevel;                                         // the configured log level
+#ifndef MS2_HOOK_DLL
+extern bool g_bLogChat;                                         // MS2-RESTORE: "-logChat" (unit_1414b1230.cpp)
+#endif
 extern int g_nIgnorePack;                                       // the pack file mode (> 0: packed)
 extern int DAT_143ae2b30;                                       // the multi-scene updater is enabled
 extern int g_143af7d58;                                       // the loading dialog is up
@@ -1635,6 +1638,14 @@ BOOL CGameApp::InitInstance()
     if (!GetLogString()->Start(0, THREAD_PRIORITY_LOWEST, 0, 0, 0))
         throw Exception(CString("LogString thread failed"));
     Unk_SingletonCreator<ClientLogManager>::CreateInstance();
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: keep the client log's errors and warnings out of chat. ClientLogManager::Flush echoes every
+    // logged error and warning (sound, effect, data, ...) into chat as a system notice unless SetQuiet was called,
+    // and the KMS2 dev exe never calls it, so players saw lines such as "sound event ... RootNode NULL". The lines
+    // still go to the client log file and the log dialog. "-logChat:1" keeps the echo, as the dev exe had it.
+    if (!g_bLogChat)
+        TSingleton<ClientLogManager>::GetInstance()->SetQuiet();
+#endif
     reinterpret_cast<Unk_PerfLog&>(m_profiler).LogInterval("StartUp");
     SetThreadLocale(0x412);
     GetClientPlatform()->vfunc_28();

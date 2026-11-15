@@ -111,6 +111,9 @@ int g_nIgnorePack;
 char g_bLanguageSet;
 extern CString DAT_143af37a0;                                                     // set by "-id"
 extern int g_nLogLevel;                                                         // set by "-logLevel"
+#ifndef MS2_HOOK_DLL
+bool g_bLogChat = false;                                                        // MS2-RESTORE: set by "-logChat"
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -331,6 +334,11 @@ void FUN_1414b1f10()
         CFilePreload::FUN_141210ca0(FUN_140718390(strValue));
     if (g_args.Lookup("-logLevel", strValue))
         g_nLogLevel = FUN_140718170(strValue);
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: "-logChat:1" turns the chat echo of the client log back on (see ms2.cpp); off by default.
+    if (g_args.Lookup("-logChat", strValue))
+        g_bLogChat = FUN_140718170(strValue) != 0;
+#endif
     if (g_args.Lookup("-language", strValue))
     {
         SetLanguageByCode(CString(strValue));
