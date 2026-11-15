@@ -1,0 +1,9 @@
+patch strings-systemmailcontentkr
+made-for KMS2 KR Live client Data/Xml.m2d
+# string/kr/systemmailcontentkr.xml: rows the pack left in Korean take the English text of the same row from the
+# pack's own English table(s); rows without an English row stay as they are.
+file Xml/string/kr/systemmailcontentkr.xml kms:Xml/string/kr/systemmailcontentkr.xml de7a6c87e4d434b5
+need kms:Xml/string/en/systemmailcontentkr.xml 7fc168254ebd6698
+need kms:Xml/string/en/systemmailcontentna.xml b125598b56601f9c
+copy-text mail id content,sender,subject kms:Xml/string/en/systemmailcontentkr.xml \
+    kms:Xml/string/en/systemmailcontentna.xml

@@ -1,0 +1,25 @@
+patch strings-stringadditionaldescription
+made-for KMS2 KR Live client Data/Xml.m2d
+# string/kr/stringadditionaldescription.xml: rows the pack left in Korean take the English text of the same row from
+# the pack's own English table(s); rows without an English row stay as they are.
+file Xml/string/kr/stringadditionaldescription.xml kms:Xml/string/kr/stringadditionaldescription.xml ec029997c87b9b80
+need kms:Xml/string/en/koradditionaldescription.xml ca23575c0e9eb665
+need kms:Xml/string/en/koradditionaldescription_1.xml 672368af121df3b4
+need kms:Xml/string/en/koradditionaldescription_10.xml 559e8dc1bd376e81
+need kms:Xml/string/en/koradditionaldescription_100.xml eefae9cc72a05291
+need kms:Xml/string/en/koradditionaldescription_110.xml b50ba728405277e5
+need kms:Xml/string/en/koradditionaldescription_20.xml c2dfbf44745dd2ab
+need kms:Xml/string/en/koradditionaldescription_30.xml deeef4def54dd9db
+need kms:Xml/string/en/koradditionaldescription_40.xml 2e27f85fec1cad05
+need kms:Xml/string/en/koradditionaldescription_50.xml 93a32d8bf1d8728b
+need kms:Xml/string/en/koradditionaldescription_60.xml 811f58f2c8cdbab5
+need kms:Xml/string/en/koradditionaldescription_70.xml 133f11453e27a3c9
+need kms:Xml/string/en/koradditionaldescription_80.xml cf491b0b4a4d2513
+need kms:Xml/string/en/koradditionaldescription_90.xml 1213083f799f845e
+copy-text key id,level name,tooltipDescription kms:Xml/string/en/koradditionaldescription.xml \
+    kms:Xml/string/en/koradditionaldescription_1.xml kms:Xml/string/en/koradditionaldescription_10.xml \
+    kms:Xml/string/en/koradditionaldescription_100.xml kms:Xml/string/en/koradditionaldescription_110.xml \
+    kms:Xml/string/en/koradditionaldescription_20.xml kms:Xml/string/en/koradditionaldescription_30.xml \
+    kms:Xml/string/en/koradditionaldescription_40.xml kms:Xml/string/en/koradditionaldescription_50.xml \
+    kms:Xml/string/en/koradditionaldescription_60.xml kms:Xml/string/en/koradditionaldescription_70.xml \
+    kms:Xml/string/en/koradditionaldescription_80.xml kms:Xml/string/en/koradditionaldescription_90.xml

@@ -1,0 +1,8 @@
+patch strings-stringenchantscrollreceipename
+made-for KMS2 KR Live client Data/Xml.m2d
+# string/kr/stringenchantscrollreceipename.xml: rows the pack left in Korean take the English text of the same row
+# from the pack's own English table(s); rows without an English row stay as they are.
+file Xml/string/kr/stringenchantscrollreceipename.xml kms:Xml/string/kr/stringenchantscrollreceipename.xml \
+    64f04a64f105663c
+need kms:Xml/string/en/stringenchantscrollreceipename.xml 3d1f814ebd864bc2
+copy-text key id name kms:Xml/string/en/stringenchantscrollreceipename.xml

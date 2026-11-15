@@ -1,0 +1,7 @@
+patch strings-stringmasteryreceipename
+made-for KMS2 KR Live client Data/Xml.m2d
+# string/kr/stringmasteryreceipename.xml: rows the pack left in Korean take the English text of the same row from the
+# pack's own English table(s); rows without an English row stay as they are.
+file Xml/string/kr/stringmasteryreceipename.xml kms:Xml/string/kr/stringmasteryreceipename.xml 6fd191a1f8a983f1
+need kms:Xml/string/en/stringmasteryreceipename.xml 2a036158d8d9672f
+copy-text key id name kms:Xml/string/en/stringmasteryreceipename.xml

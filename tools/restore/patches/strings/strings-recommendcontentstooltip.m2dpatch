@@ -1,0 +1,7 @@
+patch strings-recommendcontentstooltip
+made-for KMS2 KR Live client Data/Xml.m2d
+# string/kr/recommendcontentstooltip.xml: rows the pack left in Korean take the English text of the same row from the
+# pack's own English table(s); rows without an English row stay as they are.
+file Xml/string/kr/recommendcontentstooltip.xml kms:Xml/string/kr/recommendcontentstooltip.xml 699f0ee7c1783466
+need kms:Xml/string/en/recommendcontentstooltip.xml 71f7684d41f9c00e
+copy-text key id name kms:Xml/string/en/recommendcontentstooltip.xml

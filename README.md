@@ -84,14 +84,20 @@ tables from the client packs are copied by id from your copies, and the only tex
   English for 15 achievements that have none), and NPC titles: Korean-only titles with no English row are
   blanked, 5 take the pack's English title. Guide tips (the TIP boxes, such as the one over the Mentoring window)
   that the Korean table still has in Korean take the pack's English row (45), and one KR tip with no English row
-  gets our own English.
+  gets our own English. Flash UI strings with no English row in either pack (option labels, a menu popup)
+  get our own English.
+- `strings/*.m2dpatch`: one patch per string table (39) whose Korean rows the KMS2 pack left in Korean. Each row
+  that the pack's own English tables have in English takes that English text, matched by id
+  (`copy-text`); about 53,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,
+  system mail and item names. About 31,000 Korean texts have no English row in either pack and stay Korean.
+  Apply them after `string-names.m2dpatch`.
 - `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that
   turns on the `DailyMission` feature in its own `feature.xml`. No patch changes `feature.xml`.
 
 ```
 dotnet run --project tools/m2d -- patch <KMS2 client>/Data --gms <global client>/Data \
     tools/restore/patches/survival-items.m2dpatch tools/restore/patches/string-names.m2dpatch \
-    --out <KMS2 client>/Data
+    tools/restore/patches/strings/*.m2dpatch --out <KMS2 client>/Data
 ```
 
 This writes the patched files as loose files under `--out` (`Xml/itemdata/209.xml`, `Xml/string/kr/...`), where

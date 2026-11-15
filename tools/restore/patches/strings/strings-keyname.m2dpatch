@@ -1,0 +1,7 @@
+patch strings-keyname
+made-for KMS2 KR Live client Data/Xml.m2d
+# string/kr/keyname.xml: rows the pack left in Korean take the English text of the same row from the pack's own
+# English table(s); rows without an English row stay as they are.
+file Xml/string/kr/keyname.xml kms:Xml/string/kr/keyname.xml 53a0cd4a02436c68
+need kms:Xml/string/en/keyname.xml e6bba14537ad9980
+copy-text key id name kms:Xml/string/en/keyname.xml

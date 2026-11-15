@@ -1,0 +1,26 @@
+patch strings-stringskilldescription
+made-for KMS2 KR Live client Data/Xml.m2d
+# string/kr/stringskilldescription.xml: rows the pack left in Korean take the English text of the same row from the
+# pack's own English table(s); rows without an English row stay as they are.
+file Xml/string/kr/stringskilldescription.xml kms:Xml/string/kr/stringskilldescription.xml 4368cceac90cbb3e
+need kms:Xml/string/en/korskilldescription.xml 6cf167a6622f449e
+need kms:Xml/string/en/korskilldescription_1.xml 9b374dbacccc1975
+need kms:Xml/string/en/korskilldescription_10.xml a4fbee4ef07c00c5
+need kms:Xml/string/en/korskilldescription_100.xml c15d419d7a3eefdb
+need kms:Xml/string/en/korskilldescription_110.xml 17d70cf6b3fb777f
+need kms:Xml/string/en/korskilldescription_20.xml e812915f8a8d6a24
+need kms:Xml/string/en/korskilldescription_30.xml e2b672c94e430671
+need kms:Xml/string/en/korskilldescription_40.xml e5f71f29969cbf03
+need kms:Xml/string/en/korskilldescription_50.xml 5c88eea07782c84b
+need kms:Xml/string/en/korskilldescription_60.xml fa80a58bb14c3fd9
+need kms:Xml/string/en/korskilldescription_70.xml 2e526ee194347e88
+need kms:Xml/string/en/korskilldescription_80.xml b11900941af4743b
+need kms:Xml/string/en/korskilldescription_90.xml d9600aecdbd5aecc
+copy-text key id name=uiDescription kms:Xml/string/en/korskilldescription.xml \
+    kms:Xml/string/en/korskilldescription_1.xml \
+    kms:Xml/string/en/korskilldescription_10.xml kms:Xml/string/en/korskilldescription_100.xml \
+    kms:Xml/string/en/korskilldescription_110.xml kms:Xml/string/en/korskilldescription_20.xml \
+    kms:Xml/string/en/korskilldescription_30.xml kms:Xml/string/en/korskilldescription_40.xml \
+    kms:Xml/string/en/korskilldescription_50.xml kms:Xml/string/en/korskilldescription_60.xml \
+    kms:Xml/string/en/korskilldescription_70.xml kms:Xml/string/en/korskilldescription_80.xml \
+    kms:Xml/string/en/korskilldescription_90.xml

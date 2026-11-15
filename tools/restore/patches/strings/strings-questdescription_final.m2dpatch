@@ -1,0 +1,31 @@
+patch strings-questdescription_final
+made-for KMS2 KR Live client Data/Xml.m2d
+# string/kr/questdescription_final.xml: rows the pack left in Korean take the English text of the same row from the
+# pack's own English table(s); rows without an English row stay as they are.
+file Xml/string/kr/questdescription_final.xml kms:Xml/string/kr/questdescription_final.xml 157fd88e98c59ac6
+need kms:Xml/string/en/questdescription_dailymission.xml 9bc090791604763e
+need kms:Xml/string/en/questdescription_epic.xml a74551a0370ea9bc
+need kms:Xml/string/en/questdescription_eventcn.xml 5cc8ad5320e08c60
+need kms:Xml/string/en/questdescription_eventcommon.xml 55e6cb759340d636
+need kms:Xml/string/en/questdescription_eventkr.xml deaaf5bed6c6176e
+need kms:Xml/string/en/questdescription_eventna.xml 70304f59e6c86e08
+need kms:Xml/string/en/questdescription_famecontents.xml 9904d5d0802bc211
+need kms:Xml/string/en/questdescription_famemission.xml d0c1ae1eca427f04
+need kms:Xml/string/en/questdescription_field.xml 20ac41d60b987de2
+need kms:Xml/string/en/questdescription_guide.xml 75ee70bc6a1d76be
+need kms:Xml/string/en/questdescription_guild.xml 4acb486af1f3ecc0
+need kms:Xml/string/en/questdescription_item.xml e1a7f6a6d4834c78
+need kms:Xml/string/en/questdescription_levelguide.xml 606b534b28e13a43
+need kms:Xml/string/en/questdescription_mentoring.xml af28aa91c7dac220
+need kms:Xml/string/en/questdescription_tutorial.xml b92226ff1e014e0e
+need kms:Xml/string/en/questdescription_wedding.xml 5270d295b11fb120
+need kms:Xml/string/en/questdescription_world.xml 5e0a65c382bc09c0
+copy-text quest questID complete,desc,descFameUI,manual,name kms:Xml/string/en/questdescription_dailymission.xml \
+    kms:Xml/string/en/questdescription_epic.xml kms:Xml/string/en/questdescription_eventcn.xml \
+    kms:Xml/string/en/questdescription_eventcommon.xml kms:Xml/string/en/questdescription_eventkr.xml \
+    kms:Xml/string/en/questdescription_eventna.xml kms:Xml/string/en/questdescription_famecontents.xml \
+    kms:Xml/string/en/questdescription_famemission.xml kms:Xml/string/en/questdescription_field.xml \
+    kms:Xml/string/en/questdescription_guide.xml kms:Xml/string/en/questdescription_guild.xml \
+    kms:Xml/string/en/questdescription_item.xml kms:Xml/string/en/questdescription_levelguide.xml \
+    kms:Xml/string/en/questdescription_mentoring.xml kms:Xml/string/en/questdescription_tutorial.xml \
+    kms:Xml/string/en/questdescription_wedding.xml kms:Xml/string/en/questdescription_world.xml

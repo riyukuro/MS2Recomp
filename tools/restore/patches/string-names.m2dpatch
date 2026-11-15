@@ -274,3 +274,21 @@ copy-attr key[id=29200007] name kms:Xml/string/en/stringguide.xml
 copy-attr key[id=29200008] name kms:Xml/string/en/stringguide.xml
 copy-attr key[id=91001010] name kms:Xml/string/en/stringguide.xml
 set key[id=81042][locale=KR] name "[[icon:fame_icon_darkwind]] Field missions of a faction: areas with its emblem."
+# Flash UI strings (options, menu popups) the Korean table has only in Korean and no English table has: our
+# own English; the count words after numbers are empty, as in the English table.
+file Xml/string/kr/korflash.xml kms:Xml/string/kr/korflash.xml 5a0c445adf501b2f
+set key[id=$s_gameoption_singleriding] value "Ride two-seat mounts alone"
+set key[id=$s_gameoption_charSoundStep] value "Character voice"
+set key[id=$s_gameoption_optimizer_show_physx] value "Hair physics on other characters"
+set key[id=$s_gameoption_agreement_personal_info] value "Personal data transfer abroad"
+set key[id=$s_gameoption_agreement_radio_agree] value "Allow"
+set key[id=$s_gameoption_agreement_radio_deny] value "Decline"
+set key[id=$s_gameoption_agreement_btn_detail] value "Details"
+set key[id=$s_gameoption_agreement_summary] value "Game logs may go, anonymized and encrypted, to the developer."
+set key[id=$s_gamemenu_popup_longtermattendgift] value "Golden\\nDuckyball"
+set key[id=$s_tooltip_gameoption_agreement] value "<FONT color='#FFD200' size='15' >Personal Data</FONT>\\n<FONT \
+    size='3'> </FONT>\\nPersonal data settings."
+set key[id=$s_msgbox_cnt] value ""
+set key[id=$s_smart_recommend_billing_price_num] value ""
+set key[id=$s_massiveevent_moviecounter_count] value ""
+set key[id=$s_bluemarble_tag_trap] value "Jail"

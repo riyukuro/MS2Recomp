@@ -1,0 +1,7 @@
+patch strings-stringrideename
+made-for KMS2 KR Live client Data/Xml.m2d
+# string/kr/stringrideename.xml: rows the pack left in Korean take the English text of the same row from the pack's
+# own English table(s); rows without an English row stay as they are.
+file Xml/string/kr/stringrideename.xml kms:Xml/string/kr/stringrideename.xml 8ad8399730b254b8
+need kms:Xml/string/en/stringrideename.xml ba980677f2165443
+copy-text key id name kms:Xml/string/en/stringrideename.xml

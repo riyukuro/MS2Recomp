@@ -1,0 +1,14 @@
+patch strings-scriptnpc
+made-for KMS2 KR Live client Data/Xml.m2d
+# string/kr/scriptnpc.xml: rows the pack left in Korean take the English text of the same row from the pack's own
+# English table(s); rows without an English row stay as they are.
+file Xml/string/kr/scriptnpc.xml kms:Xml/string/kr/scriptnpc.xml 7bb540a9c2239693
+need kms:Xml/string/en/scriptnpcfunction.xml 91d8b2df386fe7ea
+need kms:Xml/string/en/scriptnpcguide.xml 5bee7f0eb4a052c0
+need kms:Xml/string/en/scriptnpcmaid.xml 175dfb0616214cfd
+need kms:Xml/string/en/scriptnpcmob.xml a1b12a91d1340beb
+need kms:Xml/string/en/scriptnpcnam.xml bc7a687d18f876dc
+need kms:Xml/string/en/scriptnpcshop.xml 06e893d6844ccc62
+copy-text key id name kms:Xml/string/en/scriptnpcfunction.xml kms:Xml/string/en/scriptnpcguide.xml \
+    kms:Xml/string/en/scriptnpcmaid.xml kms:Xml/string/en/scriptnpcmob.xml kms:Xml/string/en/scriptnpcnam.xml \
+    kms:Xml/string/en/scriptnpcshop.xml

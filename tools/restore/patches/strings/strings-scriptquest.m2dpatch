@@ -1,0 +1,22 @@
+patch strings-scriptquest
+made-for KMS2 KR Live client Data/Xml.m2d
+# string/kr/scriptquest.xml: rows the pack left in Korean take the English text of the same row from the pack's own
+# English table(s); rows without an English row stay as they are.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+need kms:Xml/string/en/scriptquest_epic.xml be4ee136cf4063a1
+need kms:Xml/string/en/scriptquest_eventcommon.xml 7de5b84ab638eaf2
+need kms:Xml/string/en/scriptquest_eventna.xml f4f0c06f3ee0f8a1
+need kms:Xml/string/en/scriptquest_famecontents.xml 5cec352f19837bc6
+need kms:Xml/string/en/scriptquest_famefield.xml 4c2f95afccaaceb0
+need kms:Xml/string/en/scriptquest_famemission.xml ebe6ce23cb01c157
+need kms:Xml/string/en/scriptquest_guide.xml 2d14adb06f68a996
+need kms:Xml/string/en/scriptquest_guild.xml 608f14eb3c364667
+need kms:Xml/string/en/scriptquest_item.xml 719e4ea19d88481a
+need kms:Xml/string/en/scriptquest_tutorial.xml b716aaacf4633ba7
+need kms:Xml/string/en/scriptquest_world.xml 5eadc48743c3ce7b
+copy-text key id name kms:Xml/string/en/scriptquest_epic.xml kms:Xml/string/en/scriptquest_eventcommon.xml \
+    kms:Xml/string/en/scriptquest_eventna.xml kms:Xml/string/en/scriptquest_famecontents.xml \
+    kms:Xml/string/en/scriptquest_famefield.xml kms:Xml/string/en/scriptquest_famemission.xml \
+    kms:Xml/string/en/scriptquest_guide.xml kms:Xml/string/en/scriptquest_guild.xml \
+    kms:Xml/string/en/scriptquest_item.xml kms:Xml/string/en/scriptquest_tutorial.xml \
+    kms:Xml/string/en/scriptquest_world.xml

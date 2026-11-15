@@ -38,6 +38,11 @@ using Maple2.File.IO;
 //                                         client's effect table (additional/*.xml): per level its Basic, UI and
 //                                         Condition attributes (icon, buff times), no stats; what the client needs
 //                                         to show the effect's icon and buff entry
+//   copy-text <tag> <keys> <attrs> <source...>   for each text attribute in <attrs> (a,b,... or a=b: a from the
+//                                         source's b; the first source row of a key wins): every <tag> of
+//                                         the file whose attribute is Korean (KR rows) takes it from the English
+//                                         row with the same <keys> (id or id,level) in the first source that
+//                                         has one; for string tables whose KR rows the pack left in Korean
 //
 // A selector is steps joined by '/': tag[attr=value][attr=value]. The first step matches at any depth, the
 // others match children. A step without a predicate matches every element of that tag. Values are plain text,
@@ -284,12 +289,59 @@ static class Patch {
                     changed++;
                     break;
                 }
+                case "copy-text": {
+                    var tag = t.Word();
+                    var keys = t.Word().Split(',');
+                    var attrs = t.Word().Split(',');
+                    var srcs = new List<string>();
+                    do srcs.Add(t.Word()); while (t.More());
+                    var (done, left) = CopyText(Cur().X.Root, tag, keys, attrs,
+                        srcs.Select(s => Load(Source(s), s).X.Root).ToList());
+                    Console.WriteLine($"{where}: copy-text {tag}: {done} copied, {left} left in Korean");
+                    changed += done;
+                    break;
+                }
                 default: throw new PatchError($"{where}: unknown op {op}");
             }
             t.End();
         }
         if (pending != null) throw new PatchError($"{name}:{first}: the last line ends with '\\'");
         Console.WriteLine($"{name}: {changed} changes");
+    }
+
+    static bool HasHangul(string s) =>
+        s != null && s.Any(c => (c >= 0xAC00 && c <= 0xD7A3) || (c >= 0x1100 && c <= 0x11FF)
+            || (c >= 0x3130 && c <= 0x318F));
+
+    // copy-text: every <tag> row of the file (KR rows) whose text attribute is Korean takes that attribute from
+    // the row with the same key attributes (leading zeros of each ignored) in the sources, the first source that
+    // has it in English. A source row counts when its locale is the target row's or none; an unfilled key
+    // (SCRIPTQUEST_..._NAME) does not count. Returns the copied and the still Korean attribute counts.
+    static (int, int) CopyText(XElement root, string tag, string[] keys, string[] attrs, List<XElement> srcs) {
+        string Key(XElement e) => string.Join("|", keys.Select(k => ((string)e.Attribute(k) ?? "").TrimStart('0')));
+        static string Loc(XElement e) => (string)e.Attribute("locale") ?? "";
+        static bool Unfilled(string v) => v.All(c => char.IsUpper(c) || char.IsDigit(c) || c == '_');
+        int done = 0, left = 0;
+        foreach (var spec in attrs) {
+            var attr = spec.Split('=')[0];
+            var from = spec.Contains('=') ? spec.Split('=')[1] : attr;   // name=uiDescription: another source attr
+            var en = new Dictionary<(string, string), string>();
+            foreach (var src in srcs)
+                foreach (var e in src.Descendants(tag)) {
+                    var v = (string)e.Attribute(from);
+                    if (string.IsNullOrEmpty(v) || HasHangul(v) || Unfilled(v)) continue;
+                    en.TryAdd((Key(e), Loc(e)), v);
+                }
+            foreach (var e in root.Descendants(tag)) {
+                if (!HasHangul((string)e.Attribute(attr))) continue;
+                if (Loc(e).Length > 0 && !Loc(e).Split(',').Contains("KR")) continue;   // a row the KR client skips
+                if (en.TryGetValue((Key(e), Loc(e)), out var v) || en.TryGetValue((Key(e), ""), out v)) {
+                    e.SetAttributeValue(attr, v);
+                    done++;
+                } else left++;
+            }
+        }
+        return (done, left);
     }
 
     // A global client's item file as a KMS2 itemdata row.
@@ -506,6 +558,7 @@ static class Patch {
             i += 6;
             return Sel(Word(), w).Single();
         }
+        public bool More() { Skip(); return i < s.Length; }
         public void End() {
             Skip();
             if (i < s.Length) throw new PatchError($"{where}: extra text: {s[i..]}");
