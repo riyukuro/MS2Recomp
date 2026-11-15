@@ -226,6 +226,27 @@ MS2_REPLACE(0x140B8F730, FormatPosition, 94, 0x071B2F6A);
 CStringW FUN_140b8f7a0(const CStringW& strNumber)
 {
     int nGroup = GetDigitGroupSize(GetLanguage());
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: the Korean language groups four digits (man / eok / jo), but a KR table whose number strings are
+    // the English ones ({1}K, {2}M) wants thousands: 10,000,000 read "1,000K" and "1M" meant 10^8 (Meso Market).
+    // Group by three when the thousands text has no Hangul; a Korean table keeps its man units. The English texts
+    // write a lower group as its three digits ("1,005", not "1,5") and use {3} for billions, so groups below the top
+    // one keep their zeros and the fourth group is passed too (a missing {3} stops the client with an assertion).
+    bool bThousands = false;
+    if (nGroup == 4)
+    {
+        CStringW strUnit = GetStringCommonByKey(L"s_number_string_0010");
+        bool bHangul = false;
+        for (int c = 0; c < strUnit.GetLength(); c++)
+            if (strUnit[c] >= 0xac00 && strUnit[c] <= 0xd7a3)
+                bHangul = true;
+        if (!bHangul)
+        {
+            nGroup = 3;
+            bThousands = true;
+        }
+    }
+#endif
     int nLength = strNumber.GetLength();
     CStringW strRest(strNumber);
     if (nLength - nGroup <= 0)
@@ -247,11 +268,23 @@ CStringW FUN_140b8f7a0(const CStringW& strNumber)
         if (nValue != 0)
             nMask |= 1 << i;
         groups.SetAt(i, FUN_1409404f0(nValue));
+#ifndef MS2_HOOK_DLL
+        if (bThousands && i != nCount - 1 && strRest.GetLength() > nGroup)
+            groups.SetAt(i, strRest.Right(nGroup));
+#endif
         strRest = strRest.Left(strRest.GetLength() - nGroup);
         ++i;
     }
     CStringW strKey(L"s_number_string_");
     strKey += StringFormat(L"{0:04b}", nMask);
+#ifndef MS2_HOOK_DLL
+    // a number with non-zero units is written in full; the English text of mask 0101 drops a ",000" group
+    if (bThousands && (nMask & 1) != 0)
+        return FUN_14083cb20(strNumber);
+    if (bThousands)
+        return FUN_14028dfa0<CStringW, CStringW, CStringW, CStringW>(strKey, groups[0], groups[1], groups[2],
+            groups[3]);
+#endif
     return FUN_14028dfa0<CStringW, CStringW, CStringW>(strKey, groups[0], groups[1], groups[2]);
 }
 MS2_REPLACE(0x140B8F7A0, FUN_140b8f7a0, 1041, 0xFF75188D);
