@@ -85,7 +85,8 @@ tables from the client packs are copied by id from your copies, and the only tex
   blanked, 5 take the pack's English title. Guide tips (the TIP boxes, such as the one over the Mentoring window)
   that the Korean table still has in Korean take the pack's English row (20), and one KR tip with no English row
   gets our own English. Flash UI strings with no English row in either pack (option labels, a menu popup)
-  get our own English.
+  get our own English, as do the enchant window's two fee labels (the meso cost for missing Crystal Fragments);
+  the enchant scroll's no-break line, missing from the Korean table, takes the pack's English row.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
   (`copy-text`); about 47,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,

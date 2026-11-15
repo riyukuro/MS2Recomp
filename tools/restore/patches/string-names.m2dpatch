@@ -267,3 +267,12 @@ set key[id=$s_msgbox_cnt] value ""
 set key[id=$s_smart_recommend_billing_price_num] value ""
 set key[id=$s_massiveevent_moviecounter_count] value ""
 set key[id=$s_bluemarble_tag_trap] value "Jail"
+# Enchant window (Ophelia) texts: the meso fee for missing Crystal Fragments and the unlimited-enchant cost are
+# Korean only in every table, so they get our own English; the enchant scroll's no-break line, which the Korean
+# table lacks, takes the English row of the same pack.
+file Xml/string/kr/stringcommon.xml kms:Xml/string/kr/stringcommon.xml 1caa91b5294d03ed
+need kms:Xml/string/en/stringcommon.xml 6ff9ab3c0a059a75
+set key[id=s_itemenchant_fee] value "Crystal Fragment substitute cost {0}<Img Src='export_common_icon_meso' \
+    vspace='-4'></Img>"
+set key[id=s_unlimited_enchant_fee] value "Cost {0}<Img Src='export_common_icon_meso' vspace='-4'></Img>"
+copy-row key[id=s_enchantscroll_desc_disable_break] kms:Xml/string/en/stringcommon.xml
