@@ -116,8 +116,9 @@ tables from the client packs are copied by id from your copies, and the only tex
   (`copy-text`); about 47,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,
   system mail and item names. Many texts are format strings the client fills in ({0}, {1}); an English text that
   uses a field the Korean one lacks is not copied, since the client stops on it with an assertion. About 37,000
-  Korean texts have no usable English row in either pack and stay Korean.
-  Apply them after `string-names.m2dpatch`.
+  Korean texts have no usable English row in either pack and stay Korean. In the buff and effect descriptions
+  (`stringadditionaldescription`), 64 Korean rows carry a level that their English row lacks, so they are copied by
+  id instead (`copy-attr`), among them the Auto-Fishing buff text. Apply them after `string-names.m2dpatch`.
 - `emote-commands.m2dpatch`: typed emote commands (`/bow`, `/greet`). The Korean emote table has Korean
   keywords for 41 emotes, so their English commands were not recognised; each emote keeps its keywords and adds
   the English keywords of the same emote from the pack's English table (`add-words`, matched by skill id).
