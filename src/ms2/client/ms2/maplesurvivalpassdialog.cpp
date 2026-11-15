@@ -467,6 +467,8 @@ void UIMapleSurvivalPassDialog::RefreshSeason()
     }
     SetText(Text(m_mainInfo, "m_seasonNameText"), strTitle);
     SetText(Text(m_mainInfo, "m_periodText"), strPeriod);
+    // GMS 0x7a0990 tail: the season name info icon follows the new name (x = name.x + textWidth + 5).
+    PlaceIconAfterText(m_mainInfo, "m_seasonNameText", "m_seasonNameInfoButton");
 }
 
 // GMS 0x7a0da0 (level, exp, gauge, grade icon) + 0x7a1120 (pass ticket) + 0x7a3310(true) (reward page).
