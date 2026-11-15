@@ -63,24 +63,10 @@ configure time. No extra option is needed.
 
 ## Client data you supply
 
-The KMS2 client pack has no survival tables, and they are not part of this repository. Bring your own copies of these
-6 files from a client data pack that ships them:
-
-- `mapleSurvivalOpenPeriod.xml`
-- `mapleSurvivalSkinInfo.xml`
-- `survivalLevel.xml`
-- `survivalLevelReward.xml`
-- `survivalPassReward.xml`
-- `survivalPassReward_paid.xml`
-
-Put them as loose files in `Data/Xml/Table/na/` under the client directory, the directory the exe runs from, next to
-`Data/Xml.m2d`. Create the directories if they do not exist. Loose files take precedence over the packed data. If a
-table is missing, the client logs that it cannot open it, and the window that needs it stays empty.
-
-The other client data changes come as patch files in `tools/restore/patches/`, applied to your own client data with
+The client data changes come as patch files in `tools/restore/patches/`, applied to your own client data with
 `m2d patch` (`tools/m2d`, needs the .NET 8 SDK). A patch names every entry it reads together with a hash of the
-bytes it was made for, and stops without writing anything when your pack differs. It holds no game data: rows from
-the client packs are copied by id from your copies, and the only text in it is English we wrote.
+bytes it was made for, and stops without writing anything when your pack differs. It holds no game data: rows and
+tables from the client packs are copied by id from your copies, and the only text in it is English we wrote.
 
 - `survival-items.m2dpatch` (needs a global (GMS) client): the Mushking Royale skins (tails, mounts and gliders) and
   the pass and level reward items the KMS2 pack lacks. It copies the item rows from the global client into
@@ -89,7 +75,11 @@ the client packs are copied by id from your copies, and the only text in it is E
   descriptions. The global data gates these rows on `SurvivalContents03`, which the KMS2 data leaves off at Live,
   so the patch removes that switch from them; the survival windows still follow the feature. It also adds the 4
   survival pass buffs, which the KMS2 pack has only as `additionaleffect` files, to the client's effect table
-  (`additional/700`), so the pass window and the buff bar show their icons.
+  (`additional/700`), so the pass window and the buff bar show their icons. The KMS2 pack has no survival tables,
+  so the patch also writes the other 5 from the global client into `Table/na/` (`mapleSurvivalOpenPeriod.xml`,
+  `survivalLevel.xml`, `survivalLevelReward.xml`, `survivalPassReward.xml` and `survivalPassReward_paid.xml`),
+  without the feature switch, and moves the one season's end from 2018 to 2028. If a survival table is missing, the
+  client logs that it cannot open it, and the window that needs it stays empty.
 - `string-names.m2dpatch`: achievement names the KMS2 Korean table lacks (the pack's own English rows, and our
   English for 15 achievements that have none), and NPC titles: Korean-only titles with no English row are
   blanked, 5 take the pack's English title.
@@ -119,4 +109,4 @@ section "Maple Survival (Mushking Royale)" describes it. The server needs:
   client reads. A server for the stock KMS2 client, which does not read them, sets `MS2_SURVIVAL_CLIENT=0`.
 - `MS2_SURVIVAL_PLAYERS` (optional), the number of players in a match: 1 to 20, default 20. Set it lower to start a
   match with fewer players.
-- The same 6 tables, in the server data's `table/na`, for the ingest.
+- The same patched client data for the ingest, the 6 survival tables in `Table/na/` among it.

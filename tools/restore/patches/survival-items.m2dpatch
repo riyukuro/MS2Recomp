@@ -84,6 +84,20 @@ copy-item 50600273
 set item[id=50600273]/environment/property param1 "20910006"
 file Xml/Table/na/mapleSurvivalSkinInfo.xml gms:Xml/table/maplesurvivalskininfo.xml 83320470d72a8185
 unset skinInfo feature
+# The other survival tables (season, levels, level and pass rewards), whole from the global client, without the
+# feature switch like the skin table. The one season's end moves from 2018 to 2028, so the windows show an open
+# season period.
+file Xml/Table/na/mapleSurvivalOpenPeriod.xml gms:Xml/table/na/maplesurvivalopenperiod.xml e350a76d77dce725
+unset period feature
+set period[id=1] endTime "2028-10-01-15-00"
+file Xml/Table/na/survivalLevel.xml gms:Xml/table/na/survivallevel.xml 539976a2d22d5e36
+unset survivalLevelExp feature
+file Xml/Table/na/survivalLevelReward.xml gms:Xml/table/na/survivallevelreward.xml 5d17b556f6a6c719
+unset survivalLevelReward feature
+file Xml/Table/na/survivalPassReward.xml gms:Xml/table/na/survivalpassreward.xml 73c227088e0c698c
+unset survivalPassReward feature
+file Xml/Table/na/survivalPassReward_paid.xml gms:Xml/table/na/survivalpassreward_paid.xml 92c637469042013e
+unset survivalPassReward feature
 file Xml/string/en/maplesurvivalskinname.xml gms:Xml/string/en/maplesurvivalskinname.xml 4d41a5e851aa57dc
 unset key feature
 file Xml/string/en/maplesurvivalskindescription.xml gms:Xml/string/en/maplesurvivalskindescription.xml 6dd45b9997dc094b
