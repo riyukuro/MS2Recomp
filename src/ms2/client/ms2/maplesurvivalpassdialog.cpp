@@ -102,6 +102,29 @@ MS2Ptr<ASButton> Button(MS2Ptr<ASMovieClip>& sp, const char* name)
     return sp.operator->()->FUN_140acce30<ASButton>(name);
 }
 
+// GMS 0x7a0510: put the info icon right of a text centered in its field: x = width / 2 + textWidth / 2 + 5.
+void PlaceIconAfterCenteredText(MS2Ptr<ASMovieClip>& sp, const char* szText, const char* szIcon)
+{
+    MS2Ptr<ASTextField> spText = Text(sp, szText);
+    MS2Ptr<ASButton> spIcon = Button(sp, szIcon);
+    if (spText.get() == 0 || spIcon.get() == 0)
+        return;
+    int nHalfWidth = (int)spText.operator->()->GetWidth() / 2;
+    int nHalfText = (int)spText.operator->()->GetTextWidth() / 2;
+    spIcon.operator->()->SetXInt(nHalfText + nHalfWidth + 5);
+}
+
+// GMS 0x7a0510: put the info button right of a left-aligned title: x = title.x + textWidth + 5.
+void PlaceIconAfterText(MS2Ptr<ASMovieClip>& sp, const char* szText, const char* szIcon)
+{
+    MS2Ptr<ASButton> spIcon = Button(sp, szIcon);
+    MS2Ptr<ASTextField> spText = Text(sp, szText);
+    if (spText.get() == 0 || spIcon.get() == 0)
+        return;
+    double dX = (double)(int)spText.operator->()->GetX() + spText.operator->()->GetTextWidth() + 5.0;
+    spIcon.operator->()->SetXInt((int)dX);
+}
+
 template<class T> MS2Ptr<T> Bind(AScript* p, const char* name)
 {
     if (p == 0)
@@ -246,7 +269,15 @@ void UIMapleSurvivalPassDialog::OnLoadComplete()
     Click(m_nextPage, PassClickDelegate(this, &UIMapleSurvivalPassDialog::OnNextPage), 0);
     Click(m_receiveButton, PassClickDelegate(this, &UIMapleSurvivalPassDialog::OnReceive), 0);
     Click(m_seasonRewardInfoButton, PassClickDelegate(this, &UIMapleSurvivalPassDialog::OnSeasonRewardInfo), 0);
-    // Not restored: the rank button and the static-text centering (0x7a0510).
+    // GMS 0x7a33a0 -> 0x7a0510, before the season and mode refresh: move the info icons clear of their labels.
+    PlaceIconAfterCenteredText(m_rewardInfo, "m_championPassText", "m_championPassInfo");
+    {
+        MS2Ptr<ASMovieClip> spComplete = Clip(m_rewardInfo, "m_paidRewardComplete");
+        PlaceIconAfterCenteredText(spComplete, "m_rewardCompleteText", "m_passRewardInfo");
+    }
+    PlaceIconAfterText(m_skinInfo, "m_skinInfoTitle", "m_skinInfoButton");
+    PlaceIconAfterText(m_itemInfo, "m_itemInfoTitle", "m_itemInfoButton");
+    // Not restored: the rank button.
 
     Show(m_modeSelector, false);
     {
