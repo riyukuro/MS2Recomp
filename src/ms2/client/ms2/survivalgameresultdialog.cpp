@@ -336,6 +336,10 @@ void UISurvivalGameResultDialog::Populate()
 void UISurvivalGameResultDialog::OnShow()
 {
     CUIService* pUI = CUIService::GetInstance();
+    // Not in the global client: the result window ends the match, so a revival window (0x4e38) still open from a
+    // death on this field is closed; MyPC::vfunc_137 already skips it on a survival field.
+    if (pUI != 0 && pUI->IsDialogOpen((eUIClassID)0x4e38))
+        pUI->CloseDialog((eUIClassID)0x4e38);
     if (pUI != 0 && !pUI->IsDialogOpen((eUIClassID)MS2_UI_SURVIVAL_GAMERESULT))
         pUI->OpenDialog((eUIClassID)MS2_UI_SURVIVAL_GAMERESULT);
     WorldService* pWs = WorldService::GetInstance();

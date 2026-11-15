@@ -113,8 +113,8 @@ The arena row needs no data.
 The server side lives in [riyukuro/Maple2](https://github.com/riyukuro/Maple2), branch `kms2525`; its `FORK.md`
 section "Maple Survival (Mushking Royale)" describes it. The server needs:
 
-- `MS2_SURVIVAL_CLIENT=1`, so that it sends the survival lobby, season and queue state this client reads. The stock
-  KMS2 client does not read them, so the setting is off by default.
+- `MS2_SURVIVAL_CLIENT` left on (the default), so that it sends the survival lobby, season and queue state this
+  client reads. A server for the stock KMS2 client, which does not read them, sets `MS2_SURVIVAL_CLIENT=0`.
 - `MS2_SURVIVAL_PLAYERS` (optional), the number of players in a match: 1 to 20, default 20. Set it lower to start a
   match with fewer players.
 - The same 6 tables, in the server data's `table/na`, for the ingest.
