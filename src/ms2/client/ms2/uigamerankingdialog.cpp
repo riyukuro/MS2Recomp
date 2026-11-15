@@ -107,6 +107,9 @@
 #include "ms2/placeholder/cgameeventvaluemanager.h"
 #include "ms2/commonfiles/gameeventvalue.h"
 #include "ms2/commonfiles/gameeventcontext.h"
+#ifndef MS2_HOOK_DLL
+void GetMapleSurvivalRankingTab(CStringW& strLabel, CStringW& strTooltip, int& nSeason);   // MS2-RESTORE
+#endif
 
 template <> MS2Ptr<ASButtonBar> UISwfEntity::GetChild<ASButtonBar>(const CString& strName);   // 0x140c02870, owned by uiinventorydialog
 
@@ -503,8 +506,34 @@ void UIGameRankingDialog::LoadGameRankingCategory()
         Unk_AchieveLog<CString>((class CLogString*)GetLogString(), 1, 0x13, L"xml 형식이 잘못 되었습니다[<ms2> {0}]", strPath);
         return;
     }
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: the KMS table has no Mushking Royale row (type 13). Without one, the survival board (GMS row
+    // 13000, type 13) is added here, in id order, while SurvivalContents01 (KMS feature 158) is on.
+    bool bAddSurvival = CFeatureManager::GetInstance()->IsFeatureEnabled(158) == 1;
+    Unk_XmlNode* pRows = (Unk_XmlNode*)pRoot;
+    for (Unk_XmlNode* pNode = pRows->FirstChild("gameRankingCategory"); pNode != 0;
+         pNode = pNode->NextSibling("gameRankingCategory"))
+    {
+        int nRowType = 0;
+        XmlGetAttr((class TiXmlElement*)(pNode), "type", nRowType);
+        if (nRowType == 13)
+            bAddSurvival = false;
+    }
+#endif
     for (void* pNode = ((void*)((class Unk_XmlNode*)(void*)(pRoot))->FirstChild("gameRankingCategory")); pNode != 0; pNode = ((void*)((class Unk_XmlNode*)(void*)(pNode))->NextSibling("gameRankingCategory")))
     {
+#ifndef MS2_HOOK_DLL
+        if (bAddSurvival)
+        {
+            int nRowId = 0;
+            XmlGetAttr((class TiXmlElement*)(pNode), "categoryid", nRowId);
+            if (nRowId > 13000)
+            {
+                AddSurvivalCategory();
+                bAddSurvival = false;
+            }
+        }
+#endif
         CStringW strFeature;
         XmlGetAttr((class TiXmlElement*)(pNode), "feature", strFeature);
         if (!IsElementAvailable((struct Unk_XmlElement*)(pNode)))
@@ -517,7 +546,26 @@ void UIGameRankingDialog::LoadGameRankingCategory()
         spCategory->m_strLabel = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x34, spCategory->m_nType);
         AddCategory(spCategory);
     }
+#ifndef MS2_HOOK_DLL
+    if (bAddSurvival)
+        AddSurvivalCategory();
+#endif
 }
+
+#ifndef MS2_HOOK_DLL
+// MS2-RESTORE: the built-in Mushking Royale row (category 13000, type 13). The label is the type's name from
+// stringgamerankingcategory (KMS has "Mushking Royale" there), with that text as the fallback.
+void UIGameRankingDialog::AddSurvivalCategory()
+{
+    Unk_RankCatPtr spCategory((Unk_RankNewTag(0)));
+    spCategory->m_nId = 13000;
+    spCategory->m_nType = 13;
+    spCategory->m_strLabel = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x34, 13);
+    if (spCategory->m_strLabel.IsEmpty())
+        spCategory->m_strLabel = L"Mushking Royale";
+    AddCategory(spCategory);
+}
+#endif
 
 // @0x140e2e540
 void UIGameRankingDialog::SelectFirstCategory()
@@ -604,6 +652,11 @@ void UIGameRankingDialog::FUN_140e2e620()
     m_tabs.SetAt(0xe, spE);
     Unk_RankTabsPtr sp16((Unk_RankNewTag(0)));
     m_tabs.SetAt(0x10, sp16);
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: the survival board's tab list (GMS registers an empty m_tabs[0xd]; GetCategoryTabs fills it).
+    Unk_RankTabsPtr spD((Unk_RankNewTag(0)));
+    m_tabs.SetAt(0xd, spD);
+#endif
 }
 
 // @0x140e304c0
@@ -726,6 +779,32 @@ void UIGameRankingDialog::AddCategory(Unk_RankCatPtr spCategory)
             m_categories.AddTail(spSub);
         }
     }
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: Mushking Royale (GMS 0x86836a): the board is sub 1; with SurvivalContentsTeam (GMS 0xb0, KMS 161)
+    // it gets the solo (id + 10, sub 1) and squad (id + 20, sub 4) boards.
+    else if (nType == 0xd)
+    {
+        spCategory->m_nSub = 1;
+        m_categories.AddTail(spCategory);
+        if (CFeatureManager::GetInstance()->IsFeatureEnabled(161) == 1)
+        {
+            static const wchar_t* const s_keys[2] = { L"s_gameranking_tab_survival_solo",
+                                                      L"s_gameranking_tab_survival_squad" };
+            static const int s_subs[2] = { 1, 4 };
+            for (int i = 0; i < 2; i++)
+            {
+                Unk_RankCatPtr spSub((Unk_RankNewTag(0)));
+                spSub->m_nId = nId + (i + 1) * 10;
+                spSub->m_nSub = s_subs[i];
+                spSub->m_strLabel = GetStringByKey(CStringW(s_keys[i]));
+                spSub->m_strImage = L"";
+                spSub->m_nParent = nId;
+                spSub->m_nType = nType;
+                m_categories.AddTail(spSub);
+            }
+        }
+    }
+#endif
     else
     {
         m_categories.AddTail(spCategory);
@@ -1015,6 +1094,18 @@ Unk_RankTabsPtr UIGameRankingDialog::GetCategoryTabs(Unk_RankCatPtr spCategory)
     TSingleton<CSeasonDataTable>::GetInstance()->GetUpcoming((SeasonRankType)nKind, aSeasons);
     Unk_RankTabsPtr spTabs((Unk_RankNewTag(0)));
     m_tabs.Lookup(nType, spTabs);
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: the survival board has one tab, the current season (maplesurvival.cpp).
+    if (nType == 0xd)
+    {
+        CStringW strLabel, strTooltip;
+        int nSeason = 0;
+        GetMapleSurvivalRankingTab(strLabel, strTooltip, nSeason);
+        spTabs->RemoveAll();
+        spTabs->Add(CreateRankTab(strLabel, strTooltip, nSeason));
+        return spTabs;
+    }
+#endif
     if (nKind == -1)
         return spTabs;
     spTabs->RemoveAll();
@@ -1358,6 +1449,19 @@ void UIGameRankingDialog::FUN_140e355d0(Scaleform::GFx::Value* pRet, int nRow, i
     tooltip.SetTooltipAlign(3);
     tooltip.SetOffsetX(5);
     CStringW strText;
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: the survival row tooltip (GMS 0x864250): record title, time since the last match, wins.
+    if (nType == 0xd)
+    {
+        strText = GetStringByKey(CStringW(L"s_gameranking_survivalinfo"));
+        strText += FUN_14028dfa0(CStringW(L"s_gameranking_survivalinfo_recent_playtime"),
+                                 CStringW(m_rows[nRow].operator->()->m_60));
+        strText += FUN_14028dfa0(CStringW(L"s_gameranking_survivalinfo_win_count"), m_rows[nRow].operator->()->m_18);
+        tooltip.SetText(strText);
+        *pRet = tooltip.GetValue();
+        return;
+    }
+#endif
     switch (nType)
     {
     case 0xc:

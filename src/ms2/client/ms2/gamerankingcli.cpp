@@ -31,6 +31,9 @@
 #include "ms2/client/ms2/guildmanager.h"
 #include "ms2/client/ms2/uiservice.h"
 #include "ms2/commonfiles/contentshutdown.h"  // C3: CContentShutdown::Get
+#ifndef MS2_HOOK_DLL
+#include "ms2/commonfiles/commonutil.h"   // MS2-RESTORE: GetStringCommonByKey (survival board)
+#endif
 
 // ---- out-of-unit callees and data (bound to the exe by their FUN_<va> / DAT_<va> names) ----
 
@@ -275,6 +278,49 @@ void CGameRankingData::Convert(int nType, MS2Ptr<GameRankingItem::IRankItem> spI
             FUN_141028be0(p->m_id, FUN_14016a600(p->m_30, 0), 1, CString(""));
         }
     }
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: the Mushking Royale rows (GMS 0x72879d): grade, its name (string table 0x2d), wins and the time
+    // since the last match. GMS formats that time with its string ids 0x3e4-0x3e7; the KMS ids differ, so the same
+    // texts are taken by key (s_guild_ui_offline_time_*).
+    else if ((nType >= 0xab && nType <= 0xae) || (nType >= 0xbf && nType <= 0xc2)) {
+        if (GameRankingItem::Survival* p = static_cast<GameRankingItem::Survival*>(spItem.get())) {
+            m_rank = p->m_rank;
+            m_id = p->m_id;
+            m_40 = p->m_name;
+            m_point = (__int64)p->m_48;
+            m_14 = p->m_38;
+            m_70 = TSingleton<CStringTable>::GetInstance()->FUN_141811980(0x2d, p->m_38);
+            m_18 = p->m_50;
+            m_image = p->m_30;
+            FUN_141028be0(p->m_id, FUN_14016a600(p->m_30, 0), 1, CString(""));
+            __int64 nElapsed = GetServerTime() - p->m_time;
+            if (nElapsed < 0)
+                nElapsed = 0;
+            int nDays = (int)(nElapsed / 86400);
+            int nHours = (int)(nElapsed / 3600);
+            int nMinutes = (int)(nElapsed / 60);
+            CStringW strKey, strValue;
+            int nValue = 0;
+            if (nDays > 0) {
+                strKey = L"s_guild_ui_offline_time_day";
+                nValue = nDays;
+            }
+            else if (nHours > 0) {
+                strKey = L"s_guild_ui_offline_time_hour";
+                nValue = nHours;
+            }
+            else if (nMinutes > 0) {
+                strKey = L"s_guild_ui_offline_time_min";
+                nValue = nMinutes;
+            }
+            else
+                strKey = L"s_guild_ui_offline_time_sec";
+            m_60 = GetStringCommonByKey(strKey);
+            strValue.Format(L"%d", nValue);
+            m_60.Replace(L"{0}", strValue);
+        }
+    }
+#endif
 }
 MS2_REPLACE_METHOD(0x140b287b0, CGameRankingData, Convert, 7849, 0xB14681DC);
 
@@ -587,6 +633,18 @@ void CGameRankingCli::BuildKey(Key& key, int nBoard, int nSub, int nMode, int nD
             key.m_date = nDate;
         }
     }
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: the Mushking Royale board (GMS 0x727684): 0xad / 0xae solo (sub 1), 0xc1 / 0xc2 squad (sub 4),
+    // the first tab (mode 0) or a later one; the date is the season id.
+    else if (nBoard == 0xd) {
+        if (nSub == 4)
+            key.m_type = nMode == 0 ? 0xc1 : 0xc2;
+        else
+            key.m_type = nMode == 0 ? 0xad : 0xae;
+        key.m_sub = nSub;
+        key.m_date = nDate;
+    }
+#endif
 }
 MS2_REPLACE_METHOD(0x140b2b870, CGameRankingCli, BuildKey, 884, 0xF36DD656);
 
@@ -697,6 +755,17 @@ void CGameRankingCli::BuildMyRankKey(Key& key, int nBoard, int nSub, int nMode, 
             key.m_date = nDate;
         }
     }
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: the own Mushking Royale rank (GMS 0x72799e): 0xab / 0xac solo, 0xbf / 0xc0 squad.
+    else if (nBoard == 0xd) {
+        if (nSub == 4)
+            key.m_type = nMode == 0 ? 0xbf : 0xc0;
+        else
+            key.m_type = nMode == 0 ? 0xab : 0xac;
+        key.m_sub = nSub;
+        key.m_date = nDate;
+    }
+#endif
 }
 MS2_REPLACE_METHOD(0x140b2bbf0, CGameRankingCli, BuildMyRankKey, 822, 0xFEE617A6);
 
@@ -1581,7 +1650,11 @@ int GameRanking::IResponse::IsValid()
 {
     if (m_type == 0xd || m_type == 0x17 || m_type == 0x21 || m_type == 0x3f || m_type == 0x48 || m_type == 0x51 ||
         m_type == 0x5b || m_type == 0x67 || m_type == 0x70 || m_type == 0x79 || m_type == 0x84 || m_type == 0x8e ||
-        m_type == 0x97 || m_type == 0xa2 || m_type == 0xb7 || m_type == 0xcb || FUN_140b3e700(m_type) == 1) {
+        m_type == 0x97 || m_type == 0xa2 || m_type == 0xb7 || m_type == 0xcb || FUN_140b3e700(m_type) == 1
+#ifndef MS2_HOOK_DLL
+        || m_type == 0xad || m_type == 0xc1   // MS2-RESTORE: survival boards (GMS 0x72ca49)
+#endif
+        ) {
         __int64 nElapsed = GetServerTime() - m_time;
         if (nElapsed >= DAT_1439f4d94)
             return 0;
@@ -1650,6 +1723,15 @@ MS2Ptr<GameRanking::IResponse> FUN_140b35ad0(int nType)
     case 0xca: spResponse.AssignRaw(new GameRanking::MyRank(nType)); break;
     case 0xcb: spResponse.AssignRaw(new GameRanking::BossColosseum(nType)); break;
     case 0xcc: spResponse.AssignRaw(new GameRanking::BossColosseum(nType)); break;
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: the Mushking Royale answers (GMS 0x731875)
+    case 0xab: case 0xac: case 0xbf: case 0xc0:
+        spResponse.AssignRaw(new GameRanking::MyRankPercent(nType));
+        break;
+    case 0xad: case 0xae: case 0xc1: case 0xc2:
+        spResponse.AssignRaw(new GameRanking::Survival(nType));
+        break;
+#endif
     }
     return spResponse;
 }
@@ -2644,6 +2726,76 @@ void GameRanking::WorldChampion::Merge(CStringW strName, IResponse* pOther)
     }
 }
 
+#ifndef MS2_HOOK_DLL
+// MS2-RESTORE: GameRanking::Survival, the Mushking Royale list (GMS 0x731875 factory); the same bodies as
+// WorldChampion over GameRankingItem::Survival rows.
+GameRanking::Survival::Survival(unsigned int nType)
+    : IResponse(nType)
+{
+}
+
+int GameRanking::Survival::Read(CByteBuffer& s)
+{
+    try {
+        if (IResponse::Read(s) == 0)
+            return 0;
+        int nCount = s.ReadInt32();
+        for (int i = 0; i < nCount; i++) {
+            MS2Ptr<GameRankingItem::Survival> spItem(new GameRankingItem::Survival);
+            spItem->Read(s);
+            m_ranks.SetAt(spItem->m_rank, spItem);
+            m_names.SetAt(spItem->m_name, spItem);
+        }
+    }
+    catch (Exception&) {
+        return 0;
+    }
+    return 1;
+}
+
+MS2Ptr<GameRanking::Page> GameRanking::Survival::GetPage(int nPage)
+{
+    MS2Ptr<Page> spPage(new Page(m_type, nPage));
+    spPage->SetTotal((int)m_ranks.GetCount());
+    for (int i = spPage->First(); i <= spPage->Last(); i++) {
+        MS2Ptr<GameRankingItem::Survival> spItem(0);
+        m_ranks.Lookup(i, spItem);
+        if (spItem.get() != 0)
+            spPage->Add(i, spItem.get());
+    }
+    return spPage;
+}
+
+MS2Ptr<GameRanking::Page> GameRanking::Survival::Search(CStringW strName)
+{
+    MS2Ptr<Page> spPage(new Page(m_type, 1));
+    spPage->SetTotal(1);
+    MS2Ptr<GameRankingItem::Survival> spItem(0);
+    m_names.Lookup(strName, spItem);
+    if (spItem == 0)
+        return 0;
+    spPage->Add(spItem->m_rank, spItem);
+    return spPage;
+}
+
+void GameRanking::Survival::Merge(CStringW strName, IResponse* pOther)
+{
+    if (m_names.Lookup(strName) == NULL) {
+        Survival* pList = static_cast<Survival*>(pOther);
+        if (pList != NULL) {
+            if (pList->m_ranks.GetCount() == 0) {
+                MS2Ptr<GameRankingItem::Survival> spItem(new GameRankingItem::Survival);
+                m_names.SetAt(strName, spItem);
+            }
+            else {
+                for (POSITION pos = pList->m_ranks.GetHeadPosition(); pos != NULL; pList->m_ranks.GetNext(pos))
+                    m_names.SetAt(strName, pList->m_ranks.GetValueAt(pos));
+            }
+        }
+    }
+}
+#endif
+
 // @0x140b3d380
 GameRanking::BossColosseum::BossColosseum(unsigned int nType)
     : IResponse(nType)
@@ -2898,6 +3050,10 @@ int FUN_140b3e210(CGameRankingParam::Key key)
         return 0xe;
     else if (nType == 0xc9 || nType == 0xca || nType == 0xcb || nType == 0xcc)
         return 0x10;
+#ifndef MS2_HOOK_DLL
+    else if ((nType >= 0xab && nType <= 0xae) || (nType >= 0xbf && nType <= 0xc2))
+        return 0xd;   // MS2-RESTORE: Mushking Royale (GMS 0x72df26)
+#endif
     return 0;
 }
 
@@ -2910,6 +3066,10 @@ int FUN_140b3e700(int nType)
         nType == 0x47 || nType == 0x65 || nType == 0x66 || nType == 0x6f || nType == 0x83 || nType == 0x8d ||
         nType == 0xa1 || nType == 0xb5 || nType == 0xb6 || nType == 0xc9 || nType == 0xca)
         return 1;
+#ifndef MS2_HOOK_DLL
+    if (nType == 0xab || nType == 0xac || nType == 0xbf || nType == 0xc0)
+        return 1;   // MS2-RESTORE: own Mushking Royale rank (GMS 0x72c013)
+#endif
     return 0;
 }
 
@@ -2946,6 +3106,12 @@ MS2Ptr<GameRankingItem::IRankItem> CreateRankItem(int nType)
     case 0xb8: spItem.AssignRaw(new GameRankingItem::WorldChampion); break;
     case 0xcb: spItem.AssignRaw(new GameRankingItem::BossColosseum); break;
     case 0xcc: spItem.AssignRaw(new GameRankingItem::BossColosseum); break;
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: the Mushking Royale rows (GMS 0x72e170)
+    case 0xad: case 0xae: case 0xc1: case 0xc2:
+        spItem.AssignRaw(new GameRankingItem::Survival);
+        break;
+#endif
     }
     return spItem;
 }

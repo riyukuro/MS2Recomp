@@ -506,6 +506,12 @@ MS2_GAMERANKING_LIST(BossRumbleCount, ATL::CStringElementTraits<CStringW>);
 MS2_GAMERANKING_RECORD(BossRumbleRecord);
 MS2_GAMERANKING_LIST(WorldChampion, ATL::CStringElementTraits<CStringW>);
 MS2_GAMERANKING_LIST(BossColosseum, ATL::CStringElementTraits<CStringW>);
+#ifndef MS2_HOOK_DLL
+// MS2-RESTORE: the Mushking Royale board (ranking type 13, answer types 0xad / 0xae solo, 0xc1 / 0xc2 squad). KMS
+// kept the GameRankingItem::Survival row but dropped its answer class; GMS GameRanking::Survival (factory GMS 0x731875)
+// has the WorldChampion shape: rows keyed by m_rank and by m_name.
+MS2_GAMERANKING_LIST(Survival, ATL::CStringElementTraits<CStringW>);
+#endif
 
 #undef MS2_GAMERANKING_LIST
 #undef MS2_GAMERANKING_RECORD

@@ -68,6 +68,8 @@ void OpenMapleSurvivalSeasonRewardUrl();
 // The lobby grade button (GMS 0x79d750, sub 0) and the pass window rank button (GMS 0x7a13c0, sub 1 solo / 4 squad):
 // open the game ranking window on the survival board (ranking type 13).
 void OpenMapleSurvivalRanking(int nSub);
+// The tab of the ranking window's survival board (uigamerankingdialog.cpp): label, period tooltip, season id.
+void GetMapleSurvivalRankingTab(CStringW& strLabel, CStringW& strTooltip, int& nSeason);
 // The season period text of the lobby (GMS 0x79d790) and the pass window (GMS 0x7a0990): start and end
 // ("2018-08-22-15-00") through the {n:fmt} format of s_maple_survival_ui_season_period.
 CStringW FormatMapleSurvivalSeasonPeriod(const CStringW& strStart, const CStringW& strEnd);

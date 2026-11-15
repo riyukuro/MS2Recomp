@@ -939,6 +939,12 @@ const RestoreString s_restoreStrings[] = {
     { "s_maple_survival_ui_skin_err_not_puton", "That skin is not equipped." },
     { "s_maple_survival_ui_skin_title", "Skins" },
     { "s_maple_survival_ui_skin_tooltip", "{0}\n{1}" },
+    // the survival board of the game ranking window (feature SurvivalContents01 in the packs)
+    { "s_gameranking_tab_survival_solo", "Solo" },
+    { "s_gameranking_tab_survival_squad", "Squad" },
+    { "s_gameranking_survivalinfo", "<FONT color='#FFD200' size='15'>Royale Record</FONT>\n" },
+    { "s_gameranking_survivalinfo_recent_playtime", "\nLast Match: {0} ago" },
+    { "s_gameranking_survivalinfo_win_count", "\nWins: {0}" },
 };
 }   // namespace
 
@@ -948,7 +954,8 @@ const char* RestoreStringFallback(const char* pszKey)
         return 0;
     if (*pszKey == '$')
         ++pszKey;
-    if (strncmp(pszKey, "s_maple_survival_", 17) != 0)
+    if (strncmp(pszKey, "s_maple_survival_", 17) != 0 && strncmp(pszKey, "s_gameranking_tab_survival_", 27) != 0 &&
+        strncmp(pszKey, "s_gameranking_survivalinfo", 26) != 0)
         return 0;
     for (size_t i = 0; i < sizeof(s_restoreStrings) / sizeof(s_restoreStrings[0]); ++i)
         if (strcmp(s_restoreStrings[i].key, pszKey) == 0)
@@ -985,6 +992,24 @@ void OpenMapleSurvivalRanking(int nSub)
         return;
     pDialog->SelectCategory(13, nSub);
     CUIService::GetInstance()->OpenDialog((eUIClassID)0x4f24);
+}
+// The one tab of the survival board. GMS lists the seasons of SeasonData_MapleSurvival.xml there (season kind 5,
+// GMS 0x72c0d0); KMS dropped that kind and its file, so the tab is the season the server announced (mode 0x16):
+// "Season {0}" with its period as the tooltip, or the free-season texts without a season.
+void GetMapleSurvivalRankingTab(CStringW& strLabel, CStringW& strTooltip, int& nSeason)
+{
+    CMapleSurvivalManager* pMgr = CMapleSurvivalManager::GetInstance();
+    CMapleSurvivalTable* pTab = &CMapleSurvivalTable::Get();
+    nSeason = pMgr->m_seasonId;
+    std::map<int, SurvivalOpenPeriod>::const_iterator it = pTab->m_periods.find(nSeason);
+    if (nSeason == 0)
+        strLabel = Key(L"s_maple_survival_ui_free_season_title");
+    else
+        strLabel = FormatArg0(Key(L"s_gameranking_tab_season"), nSeason);
+    if (nSeason == 0 || it == pTab->m_periods.end())
+        strTooltip = Key(L"s_maple_survival_ui_free_season_period");
+    else
+        strTooltip = FormatMapleSurvivalSeasonPeriod(it->second.startTime, it->second.endTime);
 }
 bool GetMapleSurvivalPassBundle(__int64& a, __int64& b, int& c)
 {

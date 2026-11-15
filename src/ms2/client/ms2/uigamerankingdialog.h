@@ -236,6 +236,9 @@ public:
     void SelectCategory(int nType, int nSub);                                                        // select the board of (type, sub)
     void SelectCategoryByUrl(CString strUrl);                                                             // select the board of a web guide url
     void LoadGameRankingCategory();                                                                           // load gameRankingCategory.xml
+#ifndef MS2_HOOK_DLL
+    void AddSurvivalCategory();                             // MS2-RESTORE: built-in Mushking Royale row
+#endif
     void SelectFirstCategory();                                                                           // select the first category
     void FUN_140e2e620();                                                                           // build the season tabs of every board type
     Unk_RankTabPtr CreateRankTab(CStringW strLabel, CStringW strTooltip, int nSeason);             // new tab data
