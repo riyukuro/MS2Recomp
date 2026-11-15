@@ -276,3 +276,12 @@ set key[id=s_itemenchant_fee] value "Crystal Fragment substitute cost {0}<Img Sr
     vspace='-4'></Img>"
 set key[id=s_unlimited_enchant_fee] value "Cost {0}<Img Src='export_common_icon_meso' vspace='-4'></Img>"
 copy-row key[id=s_enchantscroll_desc_disable_break] kms:Xml/string/en/stringcommon.xml
+# Default guild rank names: on a KR client a rank name may have at most 7 characters, and the guild window checks
+# every rank a master changes, rights included. The English defaults are longer, so they get short English names.
+# Each passes the client's name rule and none is in the pack's ban or reserved name lists.
+set key[id=s_guild_grade_default_master] value "Leader"
+set key[id=s_guild_grade_default_group1] value "Officer"
+set key[id=s_guild_grade_default_group2] value "Member"
+set key[id=s_guild_grade_default_group3] value "Novice"
+set key[id=s_guild_grade_default_group4] value "Member2"
+set key[id=s_guild_grade_default_group5] value "Novice2"

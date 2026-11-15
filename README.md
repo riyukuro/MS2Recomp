@@ -86,7 +86,9 @@ tables from the client packs are copied by id from your copies, and the only tex
   that the Korean table still has in Korean take the pack's English row (20), and one KR tip with no English row
   gets our own English. Flash UI strings with no English row in either pack (option labels, a menu popup)
   get our own English, as do the enchant window's two fee labels (the meso cost for missing Crystal Fragments);
-  the enchant scroll's no-break line, missing from the Korean table, takes the pack's English row.
+  the enchant scroll's no-break line, missing from the Korean table, takes the pack's English row. The 6 default
+  guild rank names get short English names (Leader, Officer, Member, Novice, Member2, Novice2): a KR client allows
+  at most 7 characters in a rank name and refuses a rights change on a rank whose name is longer.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
   (`copy-text`); about 47,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,
