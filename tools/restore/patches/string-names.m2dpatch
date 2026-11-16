@@ -315,10 +315,8 @@ set key[id=s_guild_grade_default_group2] value "Member"
 set key[id=s_guild_grade_default_group3] value "Novice"
 set key[id=s_guild_grade_default_group4] value "Member2"
 set key[id=s_guild_grade_default_group5] value "Novice2"
-# The pack's Black Market cancel message has a typo ("Your have canceled"): our own corrected English, same
-# trailing line break.
-set key[id=s_msg_blackmarket_complete_remove] value "You have canceled your listing. Your items will be returned \
-    by mail.\\n"
+# The pack's Black Market cancel message has a typo: our own English instead, same trailing line break.
+set key[id=s_msg_blackmarket_complete_remove] value "Listing canceled. The items are sent back to you by mail.\\n"
 # KR-only event system mails with no English row in any pack (the elite weapon support level packages, 50000100-
 # 50000111 and 50001000-50001005, and the bingo play-time gifts 190411001-190411002): our own English for the
 # subject and text; the item links are the ones the rows have.
@@ -620,3 +618,86 @@ set key[id=728172802005675] name "If you really must go, you remember the $map:0
     color=\"#ffd200\">$npcName:11000251[gender:0]$</font> face to face."
 set key[id=728172802005676] name "Heh heh... So you've walked right into your own grave. Well... with your temper, I \
     figured you wouldn't keep running forever. Heh heh heh..."
+# Items whose English rows in the pack belong to other items with the same id (the strings patches keep those
+# rows): our own English name (where the Korean table's is Korean or another item's) and description, from
+# the KMS2 text; format fields and item links are the rows' own. Plurals follow from these names.
+file Xml/string/kr/itemname.xml kms:Xml/string/kr/itemname.xml 8c56a83382e644a3
+set key[id=11850044] name "Yellow Cat Tail (M)"
+set key[id=11850045] name "Yellow Cat Tail (F)"
+set key[id=20301868] name "Starlight Festival Special Firework"
+set key[id=50201049] name "Undersea Seahorse Ornament"
+set key[id=50201050] name "Undersea Sofa"
+set key[id=50201051] name "Undersea Fence"
+set key[id=50201052] name "Undersea Table"
+set key[id=50201053] name "Undersea Building Roof"
+set key[id=59200183] name "(PC Cafe) Wanderer's Training Outfit Package"
+set key[id=20302460] name "Twinkle Star Fancy Weapon Box"
+set key[id=20300320] name "Lotus Radio Package (250)"
+set key[id=20300321] name "Lotus Radio Package (500)"
+set key[id=20301431] name "Pumpkin Witch Weapon Skin Box"
+file Xml/string/kr/koritemdescription.xml kms:Xml/string/kr/koritemdescription.xml 669a7f4ea48c36b2
+set key[id=11150059] tooltipDescription "A men's eye patch made to look like the one Sigmund always wears."
+set key[id=11150059] guideDescription "A skin item you can wear together with your gear."
+set key[id=20000914] mainDescription "<font size='14'>20 Min Cooldown | 20 Min Duration</font>\\n<font \
+    size='24'>Physical/Magic Attack Up</font>"
+set key[id=20000914] tooltipDescription "A potion that boosts your attack.\\n<font color='#00aaef'>Increases \
+    physical and magic attack by 10% for 20 min.\\nCannot be used with other attack-boosting buff items. The effect \
+    stays even if you die.</font>"
+set key[id=20000915] tooltipDescription "A rusty cherry blossom box key.\\nCombine it with 45 Cherry Blossom \
+    Essences to make a Beginner Cherry Blossom Box Key."
+set key[id=20000915] guideDescription "Double-click it in your inventory to upgrade it to the next stage."
+set key[id=20000985] tooltipDescription "A key that opens the Master Cherry Blossom Box."
+set key[id=20300320] mainDescription "250 Lotus Radios\\n5,750 Bonus Merets"
+set key[id=20300320] tooltipDescription "A package of 250 single-use radios for calling Lotus Air's air taxi. Lotus \
+    Air gives merets as a free gift to everyone who buys a radio package."
+set key[id=20300320] guideDescription "Double-click it in your inventory to get the Lotus Radios and merets."
+set key[id=20300321] mainDescription "500 Lotus Radios\\n11,500 Bonus Merets"
+set key[id=20300321] tooltipDescription "A package of 500 single-use radios for calling Lotus Air's air taxi. Lotus \
+    Air gives merets as a free gift to everyone who buys a radio package."
+set key[id=20300321] guideDescription "Double-click it in your inventory to get the Lotus Radios and merets."
+set key[id=20301431] tooltipDescription "A box with a Halloween weapon skin that completes a Pumpkin Witch look."
+set key[id=20301431] guideDescription "Double-click it in your inventory to get a weapon skin for your job."
+set key[id=20301695] tooltipDescription "A shining stone of blessing. It binds unseen power into a Lumistone to make \
+    it grow even stronger."
+set key[id=20301695] guideDescription "A very rare and important material for upgrading a Lumistone from stage 4 to \
+    stage 5."
+set key[id=20301696] tooltipDescription "A box that lets you choose Tod's Whetstone (Epic) or Tod's Whetstone \
+    (Excellent)."
+set key[id=20301696] guideDescription "Double-click it in your inventory to choose 1 of the items inside.\\n<font \
+    color=\"#FFFFFF\">* Use it before it expires.</font>"
+set key[id=20301787] tooltipDescription "A regular firework handed out to celebrate the Starlight Festival.\\n<font \
+    color='#ffffff'>It can only be used in $map:63000094$, where the festival is held. Using it shoots starlight \
+    high into the sky and also gives you $item:30001276$.</font>"
+set key[id=20301787] guideDescription "Double-click it in your inventory to get the item."
+set key[id=20301788] tooltipDescription "Gives you a special title to celebrate your friendship with the cute Nao \
+    plush."
+set key[id=20301788] guideDescription "Double-click to get a special title."
+set key[id=20301789] tooltipDescription "Gives you a special title for the adventurer who won over the Nao cushion \
+    with one burst of charm."
+set key[id=20301789] guideDescription "Double-click to get a special title."
+set key[id=20301790] tooltipDescription "Gives you a special title for a dancer famous beyond Maple World, all the \
+    way to Erinn."
+set key[id=20301790] guideDescription "Double-click to get a special title."
+set key[id=20301963] tooltipDescription "A box with a Dark Neon weapon inside."
+set key[id=20301963] guideDescription "Double-click it in your inventory to get a weapon skin for your job."
+set key[id=20302460] tooltipDescription "A box with cute school-supply weapons inside."
+set key[id=20302460] guideDescription "Double-click it in your inventory to get a weapon skin for your job."
+set key[id=20302930] tooltipDescription "A box with a Stained Glass weapon inside."
+set key[id=20302930] guideDescription "Double-click it in your inventory to get a weapon for your job."
+set key[id=40400132] mainDescription "Summons the rain-calling frogs' song"
+set key[id=40400132] tooltipDescription "Ribbit ribbit, the frogs are singing! Ribbit ribbit, what lovely voices! \
+    Once aboard, you rise 1.2 m per sec, up to 12 m. Press a direction key while it is active to move 6.5 m forward. \
+    Cannot be used indoors or in some areas."
+set key[id=40400132] guideDescription "Double-click it in your inventory or put it in a quick slot to get on and \
+    off."
+set key[id=50600212] mainDescription "Runs very fast."
+set key[id=50600212] tooltipDescription "Ride on the shoulder of a robot piloted by an octopus couple who get along \
+    great. The Yellow Octo-Robo usually toddles along with cute little steps, but in a hurry it bounds along on its \
+    two arms."
+set key[id=50600212] guideDescription "Double-click it in your inventory or put it in a quick slot to get on and \
+    off. Once aboard, hold the basic attack key, or move while holding it, to use a special move."
+set key[id=70200050] mainDescription "Changes your chat bubble design"
+set key[id=70200050] tooltipDescription "A badge that changes your chat bubble design."
+set key[id=70200050] guideDescription "Drag it from your inventory to the Badge tab of the Character window, or \
+    right-click it, to equip it and change your character's chat bubble design. You can equip only one chat bubble \
+    badge."

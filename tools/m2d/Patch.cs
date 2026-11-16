@@ -47,6 +47,9 @@ using Maple2.File.IO;
 //   keep <tag> <key> <value,value,...>    the file's <tag> rows whose <key> is one of the values (leading zeros
 //                                         ignored) are left as they are by later copy-text ops: rows whose English
 //                                         source row (same id) is another item's text
+//   plural-of <tag> <key> <path>          every kept row of the file (keep) whose row with the same <key> in
+//                                         <path> (a file this run already edits, e.g. the item name table) has an
+//                                         English name gets the English plural of that name as its name
 //   add-words <tag> <key> <attr> <source>   every <tag> of the file appends to its '|'-separated word list <attr>
 //                                         the words of the source row with the same <key> that the file does not
 //                                         have yet (chat command keywords: Korean and English both work)
@@ -328,6 +331,27 @@ static class Patch {
                         throw new PatchError($"{where}: keep {tag}: no row with {key} {string.Join(",", none)}");
                     break;
                 }
+                case "plural-of": {
+                    var tag = t.Word();
+                    var key = t.Word();
+                    var path = t.Word();
+                    if (!docs.TryGetValue(path, out var from))
+                        throw new PatchError($"{where}: plural-of: {path} is not edited by an earlier file op");
+                    var names = new Dictionary<string, string>();
+                    foreach (var e in from.X.Root.Descendants(tag))
+                        names.TryAdd(((string)e.Attribute(key) ?? "").TrimStart('0'), (string)e.Attribute("name"));
+                    int done = 0, left = 0;
+                    foreach (var e in Cur().X.Root.Descendants(tag).Where(Cur().Kept.Contains)) {
+                        if (names.TryGetValue(((string)e.Attribute(key) ?? "").TrimStart('0'), out var nm)
+                            && !string.IsNullOrWhiteSpace(nm) && !HasHangul(nm)) {
+                            e.SetAttributeValue("name", Plural(nm.Trim()));
+                            done++;
+                        } else left++;
+                    }
+                    Console.WriteLine($"{where}: plural-of {tag}: {done} set, {left} without an English name");
+                    changed += done;
+                    break;
+                }
                 case "add-words": {
                     var tag = t.Word();
                     var key = t.Word();
@@ -344,6 +368,33 @@ static class Patch {
         }
         if (pending != null) throw new PatchError($"{name}:{first}: the last line ends with '\\'");
         Console.WriteLine($"{name}: {changed} changes");
+    }
+
+    // The English plural of an item name: the last word before any trailing "(...)" groups takes the plural;
+    // names of things worn in pairs get "pairs of"; words already plural or without a plural stay.
+    static readonly HashSet<string> PairWords = new(StringComparer.OrdinalIgnoreCase) {
+        "Pants", "Jeans", "Shorts", "Gloves", "Mittens", "Paws", "Earrings", "Sneakers", "Boots", "Shoes", "Socks",
+        "Ears", "Glasses", "Goggles", "Wings",
+    };
+    static readonly HashSet<string> SameWords = new(StringComparer.OrdinalIgnoreCase) {
+        "Fish", "Sunfish", "Deer", "Sheep", "Cream", "Won", "Equipment", "Furniture", "Meat", "Dust",
+    };
+    static string Plural(string name) {
+        var m = Regex.Match(name, @"^(.*?)((?:\s*\([^()]*\))*)$");
+        string head = m.Groups[1].Value, tail = m.Groups[2].Value;
+        int sp = head.LastIndexOf(' ');
+        string last = head[(sp + 1)..], pre = head[..(sp + 1)];
+        if (last.Length == 0) return name;
+        if (PairWords.Contains(last)) return "pairs of " + name;
+        if (SameWords.Contains(last) || !char.IsLetter(last[^1])) return name;
+        string pl;
+        if (last.EndsWith("ss") || last.EndsWith("x") || last.EndsWith("z") || last.EndsWith("ch")
+            || last.EndsWith("sh")) pl = last + "es";
+        else if (last.EndsWith("s")) pl = last;   // already plural (Frogs, Knuckles)
+        else if (last.Length > 1 && last[^1] == 'y' && !"aeiou".Contains(char.ToLowerInvariant(last[^2])))
+            pl = last[..^1] + "ies";
+        else pl = last + "s";
+        return pre + pl + tail;
     }
 
     // add-words: every <tag> row of the file appends to its '|'-separated word list <attr> the words of the first
