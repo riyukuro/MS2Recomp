@@ -154,6 +154,10 @@ tables from the client packs are copied by id from your copies, and the only tex
 - `emote-commands.m2dpatch`: typed emote commands (`/bow`, `/greet`). The Korean emote table has Korean
   keywords for 41 emotes, so their English commands were not recognised; each emote keeps its keywords and adds
   the English keywords of the same emote from the pack's English table (`add-words`, matched by skill id).
+- `triggers.m2dpatch`: our own English for 553 lines of map trigger text (cutscene talk, speech balloons,
+  objectives, captions) that 69 trigger files of the Kritias and Timaion quest dungeons have as inline Korean,
+  with no string id; the global pack has the same Korean lines. Rows are addressed by position (`[#=N]`); the
+  server reads triggers from the played client's pack at ingest, so it needs the patched pack too.
 - `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that
   turns on the `DailyMission` feature in its own `feature.xml`. No patch changes `feature.xml`.
 
@@ -161,7 +165,7 @@ tables from the client packs are copied by id from your copies, and the only tex
 dotnet run --project tools/m2d -- patch <KMS2 client>/Data --gms <global client>/Data \
     tools/restore/patches/survival-items.m2dpatch tools/restore/patches/string-names.m2dpatch \
     tools/restore/patches/strings/*.m2dpatch tools/restore/patches/emote-commands.m2dpatch \
-    --out <KMS2 client>/Data
+    tools/restore/patches/triggers.m2dpatch --out <KMS2 client>/Data
 ```
 
 This writes the patched files as loose files under `--out` (`Xml/itemdata/209.xml`, `Xml/string/kr/...`), where

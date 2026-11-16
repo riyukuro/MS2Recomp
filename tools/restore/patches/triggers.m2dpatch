@@ -1,0 +1,817 @@
+patch triggers
+made-for KMS2 KR Live client Data/Xml.m2d
+# Map triggers: the cutscene, speech balloon, objective and caption lines the pack has as inline Korean text
+# (no string id, and the GMS pack has the same Korean lines). Our own English; speaker ids, timing, align and
+# links stay. Rows are addressed by position ([#=N]), which the file pin keeps valid.
+file Xml/trigger/02000498_bf/main.xml kms:Xml/trigger/02000498_bf/main.xml eee9dbff94d83601
+set state[#=3]/onEnter[#=1]/action[#=3] arg2 "You have entered a new dimensional rift of Darkscream."
+set state[#=6]/onEnter[#=1]/action[#=3] arg2 "Move closer."
+file Xml/trigger/02000498_bf/stage_01.xml kms:Xml/trigger/02000498_bf/stage_01.xml 1b5b26ad5ac0276f
+set state[#=3]/onEnter[#=1]/action[#=1] arg2 "You will soon be guided to a new dimension."
+file Xml/trigger/02020015_bf/02020015_main.xml kms:Xml/trigger/02020015_bf/02020015_main.xml cea1d303b67ca70e
+set state[#=5]/onEnter[#=1]/action[#=1] arg2 "The platforms will vanish in 20 seconds."
+file Xml/trigger/52010068_qd/main.xml kms:Xml/trigger/52010068_qd/main.xml 8107e4d2ca340ce1
+set state[#=12]/onEnter[#=1]/action[#=2] arg2 "It cost us dearly, but we won our victory against \
+    $npc:11001698$.\\nWe made them pay for attacking Maple World."
+set state[#=14]/onEnter[#=1]/action[#=1] arg2 "$npc:11001698$ did escape unharmed, \\nbut she did not flee of her \
+    own will."
+set state[#=16]/onEnter[#=1]/action[#=1] arg2 "If anything, $npc:11001698$ lost her own fortress in this battle."
+set state[#=44]/onEnter[#=1]/action[#=1] arg2 "$npc:11001698$ took to the sky on her dragon.\\nAnd that was the \
+    end of Madrakan Fortress."
+set state[#=46]/onEnter[#=1]/action[#=1] arg2 "$npc:11001698$ will surely return.\\nAnd she may once again take \
+    from us what we hold dear."
+set state[#=48]/onEnter[#=1]/action[#=1] arg2 "Even so, if I can, I want to find a way that doesn't mean fighting \
+    $npc:11001698$.\\nA spiral of revenge would only end up destroying everything on both sides."
+set state[#=50]/onEnter[#=1]/action[#=1] arg2 "And I firmly believe the Terunkalibs are alive, somehow.\\nJust as \
+    they saved me, I want to believe they found a way to save themselves."
+set state[#=52]/onEnter[#=1]/action[#=1] arg2 "So I swore to do my very best searching the Black Shard's blast \
+    site, the 'Eye of Lapenta',\\nand investigating the Lapenshards."
+file Xml/trigger/52020001_qd/main.xml kms:Xml/trigger/52020001_qd/main.xml a06d43353a143874
+set state[#=9]/onEnter[#=1]/action[#=1] arg2 "There is little time.\\nDefeat the bombing Ego Weapons and \
+    infiltrate Kritias."
+set state[#=12]/onExit[#=1]/action[#=1] arg3 "I have to hurry!"
+set state[#=19]/onExit[#=1]/action[#=2] arg3 "Should I try that switch?"
+set state[#=36]/onEnter[#=1]/action[#=6] arg2 "Mission failed. Please try again."
+file Xml/trigger/52020001_qd/main_2.xml kms:Xml/trigger/52020001_qd/main_2.xml 4109d04fb44f6fa8
+set state[#=2]/onExit[#=1]/action[#=1] arg2 "The bombardment is getting heavier. Hurry and move!"
+set state[#=17]/onEnter[#=1]/action[#=6] arg2 "Mission failed. Please try again."
+file Xml/trigger/52020001_qd/main_3.xml kms:Xml/trigger/52020001_qd/main_3.xml 4b94881e3c6c1b9a
+set state[#=6]/onEnter[#=1]/action[#=5] arg2 "Arkeon has grown huge and is deflecting every attack."
+set state[#=16]/onEnter[#=1]/action[#=6] arg2 "Mission failed. Please try again."
+file Xml/trigger/52020001_qd/main_3_2.xml kms:Xml/trigger/52020001_qd/main_3_2.xml ca2c8e430ac4bf4b
+set state[#=2]/onEnter[#=1]/action[#=1] arg2 "You can't fight it any longer.\\nUse the turret to move elsewhere."
+set state[#=3]/onEnter[#=1]/action[#=1] arg2 "You can't fight it any longer.\\nUse the turret to move elsewhere."
+file Xml/trigger/52020001_qd/main_4.xml kms:Xml/trigger/52020001_qd/main_4.xml 3679c5233b9771a0
+set state[#=10]/onEnter[#=1]/action[#=1] arg3 "All right! I'll ride this thing and charge right in!!"
+set state[#=14]/onEnter[#=1]/action[#=1] arg2 "Not enough power to break into Kritias."
+set state[#=15]/onEnter[#=1]/action[#=1] arg2 "Defeat enemies to charge energy.\\nCharge to 100% within the time \
+    limit and break into Kritias!"
+set state[#=18]/onEnter[#=1]/action[#=7] arg2 "Mission failed. Please try again."
+file Xml/trigger/52020001_qd/main_5.xml kms:Xml/trigger/52020001_qd/main_5.xml 089e9737d2850c99
+set state[#=2]/onEnter[#=1]/action[#=1][name=ShadowExpedition] title "Output Energy"
+set state[#=4]/onEnter[#=1]/action[#=1] arg2 "Energy is 50% charged."
+set state[#=6]/onEnter[#=1]/action[#=1] arg2 "Energy is 100% charged."
+set state[#=7]/onEnter[#=1]/action[#=1] arg2 "Charging at full power shortly."
+set state[#=12]/onEnter[#=1]/action[#=1] arg3 "All set! Charge into Kritias!"
+file Xml/trigger/52020002_qd/main.xml kms:Xml/trigger/52020002_qd/main.xml 6e12dc7a0870d1a7
+set state[#=8]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Hello there! Here I am.\\nThis cutscene is \
+    still in production, so please wait."
+file Xml/trigger/52020003_qd/main.xml kms:Xml/trigger/52020003_qd/main.xml 491414f584748c10
+set state[#=6]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "It's bigger than I thought..."
+set state[#=8]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Wait... is someone there?"
+set state[#=9]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "Hahaha!"
+set state[#=10]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Not completely stupid, then.\\nYou noticed I \
+    was here."
+set state[#=11]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "The Black Star...? What are you doing here?"
+set state[#=12]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "None of your business. We're both busy, so \
+    let's not drag this out~\\nIf you found anything, hand it over nice and quiet."
+set state[#=13]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "I've got nothing like that... but I've got \
+    plenty I want to hear.\\nTell me what you were up to here."
+set state[#=14]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "No time for that. We're very busy.\\nBoys! \
+    Take 'em down!"
+set state[#=15]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "Prepare yourself!"
+set state[#=16]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "I'll teach you a lesson!"
+set state[#=26]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "I thought I heard a big racket..."
+set state[#=27]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Did something happen?"
+file Xml/trigger/52020004_qd/main.xml kms:Xml/trigger/52020004_qd/main.xml c49073e8e168fa52
+set state[#=15]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "This place... It's been quite a while since I \
+    was last here."
+set state[#=16]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "I see. ...I thought I'd never have reason to \
+    return."
+set state[#=17]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "What are your orders for me?"
+set state[#=18]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Wait for me."
+set state[#=19]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Huh..."
+set state[#=20]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "This cutscene will be improved, so please \
+    wait.\\nMore lines will be added here."
+set state[#=26]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "What on earth... is going on here?"
+set state[#=27]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "...You really have to ask?"
+set state[#=28]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "It's chaos, thanks to someone's \
+    carelessness."
+set state[#=29]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Get over here, now! Hurry!"
+set state[#=42]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Hmm..."
+set state[#=43]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Either there are no clues, or there are and \
+    we just can't see them.\\nSo frustrating."
+set state[#=44]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Then why don't we frustrated folks have a \
+    little talk?"
+set state[#=45]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "If we share what we know, we'll all reach our \
+    goal faster."
+set state[#=46]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "The royal family of Kritias.\\nTheir trail is \
+    what you're after, isn't it?"
+set state[#=47]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Everyone who came in here is probably looking \
+    for them.\\nThe Black Star Society too."
+set state[#=48]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Who will reach the goal first, I wonder... \
+    Aren't you curious?\\nOf course, I think I already know the answer."
+set state[#=49]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "(The Black Star Society... This is getting \
+    more complicated than I thought.)"
+set state[#=50]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Are you sure the answer you have in mind is \
+    the right one, old man?"
+set state[#=51]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "I bet it's wrong."
+set state[#=52]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "We worked hard to get this far too. We can't \
+    leave empty-handed."
+set state[#=53]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Our entrance was a bit plain, wasn't \
+    it?\\nWe'll get a cooler entrance later, so keep that in mind."
+set state[#=54]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "So many uninvited guests... It's getting \
+    noisy.\\nNoise just doesn't agree with me."
+set state[#=55]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "$npc:11003660$, clean this up."
+set state[#=56]/onEnter[#=1]/action[#=2][name=ShowCaption] desc "Black Star Society special forces leader, \
+    $npc:11003659$'s right hand"
+set state[#=57]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Yes, boss."
+set state[#=58]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Let's run."
+set state[#=59]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "What are you saying all of a sudden..."
+set state[#=59]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Now that $npcName:11003660$ has stepped in, \
+    this place will become an inferno.\\nNo time. Hurry."
+set state[#=60]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "That way. Hurry...!"
+set state[#=61]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "All talk, the lot of you. I'll wipe you out \
+    clean."
+set state[#=63]/onEnter[#=1]/action[#=1] arg2 "Just as Jaiden and I were escaping,\\nwe heard a tremendous noise."
+set state[#=64]/onEnter[#=1]/action[#=1] arg2 "The basement, surely built sturdy for royal \
+    emergencies,\\ncollapsed in an instant with a deafening roar."
+set state[#=65]/onEnter[#=1]/action[#=1] arg2 "I had to run.\\nThinking of nothing but staying alive."
+file Xml/trigger/52020005_qd/main.xml kms:Xml/trigger/52020005_qd/main.xml 9cbf888a544c9de3
+set state[#=13]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Hey. Open your eyes.\\nAre you awake?"
+set state[#=14]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Hmm, the wounds don't look serious."
+set state[#=15]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Then, to wake you up quickly...\\n(That \
+    ringing sound... is that a sword being drawn...?)"
+set state[#=16]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Stab them with that sword and they'll wake up \
+    in the next world."
+set state[#=17]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "If that is this one's fate, it must be \
+    accepted...\\nSuch is the beautiful order of the world."
+set state[#=18]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "(If I don't get up fast, my life may be in \
+    danger. Get up!)"
+set state[#=19]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "...You're awake."
+set state[#=24]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "This cutscene is under construction."
+set state[#=25]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Indeed. Under construction."
+set state[#=26]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Please wait."
+set state[#=27]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Indeed. Please wait a little."
+set state[#=28]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "It will be finished by January."
+file Xml/trigger/52020006_qd/main.xml kms:Xml/trigger/52020006_qd/main.xml e3b3ea834356e801
+set state[#=11]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Scene to be expanded"
+set state[#=12]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Please wait a little longer"
+set state[#=13]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Sorry"
+set state[#=20]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Then let's bet on who sweeps those things \
+    away first."
+set state[#=21]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "It's a placeholder scene, so the monsters \
+    will be weak."
+set state[#=22]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Here I go!"
+set state[#=30]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Looks like I win. Well, see you!"
+set state[#=31]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Now it's time to go beyond that..."
+set state[#=32]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "You're safe, $MyPCName$."
+file Xml/trigger/52020008_qd/52020008_main.xml kms:Xml/trigger/52020008_qd/52020008_main.xml dcb470eaa012cc13
+set state[#=3]/onEnter[#=1]/action[#=1] arg3 "I'll take good care of the princess, so why not surrender now?"
+set state[#=4]/onEnter[#=1]/action[#=2] arg3 "I have no wish to be served by someone so unlovely!!"
+set state[#=5]/onEnter[#=1]/action[#=2] arg3 "That one's a member of the Black Star Society! Be careful!"
+set state[#=6]/onEnter[#=1]/action[#=2] arg3 "Doesn't the Maple Alliance have dark motives too? \\nI won't let \
+    anyone use the power of Kritias!"
+set state[#=7]/onEnter[#=1]/action[#=2] arg3 "She's got a point, doesn't she?\\nThere's no true good or evil in \
+    this world~"
+set state[#=8]/onEnter[#=1]/action[#=2] arg3 "So what will you do now?"
+set state[#=9]/onEnter[#=1]/action[#=1] arg3 "Lady Eone, get ready!"
+set state[#=12]/onEnter[#=1]/action[#=2] arg3 "Oh my, is today the regular meetup?"
+set state[#=13]/onEnter[#=1]/action[#=7] arg3 "Ugh... what a pain."
+set state[#=14]/onEnter[#=1]/action[#=3] arg3 "Where'd the princess go now?! This is driving me crazy!!"
+set state[#=15]/onEnter[#=1]/action[#=6] arg3 "The princess is ours. Boys, take care of them!"
+set state[#=16]/onEnter[#=1]/action[#=4] arg3 "Let's move, quick!"
+set state[#=17]/onEnter[#=1]/action[#=2] arg3 "Did it shoot up into the sky?? I need to see what's on top of the \
+    tower!!"
+set state[#=19]/onEnter[#=1]/action[#=1] arg2 "Track down Seriha."
+file Xml/trigger/52020009_qd/event.xml kms:Xml/trigger/52020009_qd/event.xml 46710fafe1ac3556
+set state[#=4]/onEnter[#=1]/action[#=4][name=AddBalloonTalk] msg "My name... I can't remember my name..."
+set state[#=5]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Someone, please find my name!"
+set state[#=6]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "No! That's not the book with my name in it!"
+set state[#=7]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "That book is about the king's secret weapon!"
+set state[#=8]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "The giant weapon of $map:02020010$?"
+set state[#=9]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "My name wouldn't be written in a book like \
+    that!"
+set state[#=10]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "That book! It's my diary!"
+set state[#=11]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Yes... I remember now. My name..."
+set state[#=13]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "My name is $npcName:11003602$."
+set state[#=14]/onEnter[#=1]/action[#=4][name=AddBalloonTalk] msg "The Observer of Kritias."
+file Xml/trigger/52020010_qd/clock_a.xml kms:Xml/trigger/52020010_qd/clock_a.xml 308a5904183459a0
+set state[#=4]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Mom! Can I eat this bread?"
+set state[#=5]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "No! Dinner's almost ready."
+set state[#=6]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Aww... Dad, can't I have this?"
+set state[#=7]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Heh... you rascal. Just one, then?"
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Honey!"
+set state[#=8]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "More importantly, how's that work of yours \
+    going?"
+set state[#=8]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Yay! Hooray!"
+set state[#=9]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Of course! There's nothing the kingdom's finest \
+    engineer can't do!"
+set state[#=10]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "But you know, the closer it gets to done, the \
+    worse I feel."
+set state[#=11]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "What on earth is the king thinking..."
+file Xml/trigger/52020010_qd/clock_b.xml kms:Xml/trigger/52020010_qd/clock_b.xml 56ebd2a304bef15d
+set state[#=4]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "Wow! Boom boom!"
+set state[#=5]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Honey... What are we going to do?"
+set state[#=6]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "I never thought it would come to this..."
+set state[#=6]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "We can't get away, can we?"
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Boom! Boom!"
+set state[#=7]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "What was it all for..."
+set state[#=8]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Honey!"
+set state[#=9]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "My wife, my daughter... I'm sorry, all of \
+    you..."
+set state[#=10]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Honey..."
+file Xml/trigger/52020010_qd/clock_c.xml kms:Xml/trigger/52020010_qd/clock_c.xml c4d33de68068a971
+set state[#=4]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "Mommy, I'm scared..."
+set state[#=5]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Don't cry... It'll be all right soon..."
+set state[#=6]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Honey? Where did you go?!"
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Honey!!!"
+set state[#=7]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "Mommy... Daddy... I'm scared..."
+file Xml/trigger/52020010_qd/clock_d.xml kms:Xml/trigger/52020010_qd/clock_d.xml 59d6b7b350f407e8
+set state[#=4]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Where on earth is it?"
+set state[#=5]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "I'm sure there was a device somewhere in the \
+    bookshelves..."
+set state[#=6]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Why can't I remember at a time like this!!!"
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Was it here?"
+set state[#=8]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "No... Come to think of it, it's no use..."
+set state[#=9]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "It's a fate I can't escape anyway..."
+set state[#=13]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Where on earth is it?"
+set state[#=14]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "I'm sure there was a device somewhere in the \
+    bookshelves..."
+set state[#=15]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Why can't I remember at a time like this!!!"
+set state[#=16]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Was it here?"
+set state[#=17]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "No... Come to think of it, it's no use..."
+set state[#=18]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "It's a fate I can't escape anyway..."
+file Xml/trigger/52020010_qd/main_b.xml kms:Xml/trigger/52020010_qd/main_b.xml 3012d45c0384a3b2
+set state[#=5]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Why isn't anything happening?"
+set state[#=6]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Should I give it a whack?"
+set state[#=7]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Ugh.... So noisy!"
+set state[#=9]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Was it you?! Are you the one who woke me?!"
+set state[#=10]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "How dare you disturb my time! You won't get \
+    away with this!"
+set state[#=14]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Human! The fragment has returned! Come here, \
+    quickly!"
+file Xml/trigger/52020011_qd/main_a.xml kms:Xml/trigger/52020011_qd/main_a.xml 34678293ba121284
+set state[#=4]/onEnter[#=1]/action[#=4][name=ShowCaption] desc "$NpcName:11003599$'s temporary lodgings"
+set state[#=7]/onEnter[#=1]/action[#=1][name=ShowCaption] desc "Princess of Kritias"
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Yes, it's good to see you."
+file Xml/trigger/52020011_qd/main_b.xml kms:Xml/trigger/52020011_qd/main_b.xml 4eb91148c7101e25
+set state[#=4]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "In the name of $npcName:11003599$, I command \
+    you."
+set state[#=5]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "All you cursed beings of this land! Fall into \
+    the deep, dark places!"
+file Xml/trigger/52020014_qd/52020014_main.xml kms:Xml/trigger/52020014_qd/52020014_main.xml ed5e20114afeb4fd
+set state[#=11]/onEnter[#=1]/action[#=1] arg3 "So I just need to pull that lever...?"
+set state[#=12]/onEnter[#=1]/action[#=7] arg2 "Defeat all the Ego Weapons and pull the lever."
+set state[#=15]/onEnter[#=1]/action[#=8] arg3 "It worked!"
+file Xml/trigger/52020016_qd/main.xml kms:Xml/trigger/52020016_qd/main.xml 87d8258e12a3f05b
+set state[#=3]/onEnter[#=1]/action[#=1] arg3 "What is this place?!"
+set state[#=3]/onEnter[#=1]/action[#=2] arg3 "I can sense Michael's presence!\\nI have to hurry!!"
+set state[#=5]/onEnter[#=1]/action[#=3] arg3 "Shall I take a look?"
+set state[#=7]/onEnter[#=1]/action[#=2] arg3 "What?!\\nI can't see!!"
+set state[#=11]/onEnter[#=1]/action[#=1] arg3 "Oho... You made it this far... Impressive.."
+set state[#=11]/onEnter[#=1]/action[#=2] arg3 "Now... Shall we really start playing?"
+set state[#=13]/onExit[#=1]/action[#=4] arg3 "I'm trapped!"
+set state[#=14]/onExit[#=1]/action[#=1] arg2 "Defeat the marionettes controlled by Michael."
+set state[#=14]/onExit[#=1]/action[#=2][name=ShadowExpedition] title "Monster defeat goal reached"
+set state[#=19]/onEnter[#=1]/action[#=1] arg3 "Hmm... Better than I expected."
+set state[#=19]/onEnter[#=1]/action[#=2] arg3 "This time, these folks will play with you!!"
+set state[#=26]/onEnter[#=1]/action[#=1] arg3 "Ah! Oscar and Red Eye, Alon... and Lennon?"
+set state[#=32]/onEnter[#=1]/action[#=3] arg3 "Everyone... Where did you all go?"
+set state[#=33]/onExit[#=1]/action[#=1] arg3 "Now... Look forward to it!"
+set state[#=34]/onEnter[#=1]/action[#=3] arg3 "I can't fall here!"
+set state[#=37]/onEnter[#=1]/action[#=3] arg3 "What?! These guys??!!"
+file Xml/trigger/52020016_qd/monster_spawn_2_1.xml kms:Xml/trigger/52020016_qd/monster_spawn_2_1.xml a8db8fd8b8950aed
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "Just disappear already!!"
+file Xml/trigger/52020016_qd/monster_spawn_2_2.xml kms:Xml/trigger/52020016_qd/monster_spawn_2_2.xml b55f9ca62292b8e9
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "I'll kill you!!"
+file Xml/trigger/52020016_qd/monster_spawn_2_3.xml kms:Xml/trigger/52020016_qd/monster_spawn_2_3.xml 62799753f3da2541
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "I never liked you from the start!!"
+file Xml/trigger/52020016_qd/monster_spawn_2_4.xml kms:Xml/trigger/52020016_qd/monster_spawn_2_4.xml f2dfa6f0f9741c74
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "Hahahaha, go on, struggle all you like!!"
+file Xml/trigger/52020016_qd/monster_spawn_3_1.xml kms:Xml/trigger/52020016_qd/monster_spawn_3_1.xml 365a5454d5204e0b
+set state[#=4]/onEnter[#=1]/action[#=1] arg3 "Hahaha!! I'm back!"
+set state[#=5]/onEnter[#=1]/action[#=1] arg3 "K-Katvan? How?!"
+set state[#=6]/onEnter[#=1]/action[#=3] arg3 "Not bad! Then how about this?"
+set state[#=8]/onEnter[#=1]/action[#=2] arg3 "J-Jordy?!"
+set state[#=8]/onEnter[#=1]/action[#=3] arg3 "Jordy... you were alive?"
+set state[#=8]/onEnter[#=1]/action[#=4] arg3 "Hehe... It's been a while. I missed you."
+set state[#=8]/onEnter[#=1]/action[#=5] arg3 "But... why did you let me die?"
+set state[#=8]/onEnter[#=1]/action[#=6] arg3 "Th-that's not how it was!!"
+set state[#=8]/onEnter[#=1]/action[#=7] arg3 "I... curse you... I won't let you be!!"
+set state[#=8]/onEnter[#=1]/action[#=8] arg3 "N-no, stop it!! Jordy!!"
+set state[#=12]/onEnter[#=1]/action[#=4] arg3 "Jordy!! Please stop!!"
+set state[#=14]/onEnter[#=1]/action[#=4] arg3 "I can't... take any more...."
+set state[#=19]/onEnter[#=1]/action[#=1] arg3 "Hahahaha! Do you feel it? How far above you I stand!!"
+set state[#=19]/onEnter[#=1]/action[#=2] arg3 "Huff... Please stop!!"
+set state[#=19]/onEnter[#=1]/action[#=3] arg3 "On this stage of dreams, no one can defeat me!"
+set state[#=19]/onEnter[#=1]/action[#=4] arg3 "Now then, shall we finish this?"
+file Xml/trigger/52020016_qd/monster_spawn_4_1.xml kms:Xml/trigger/52020016_qd/monster_spawn_4_1.xml 163176cb8bea63fc
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "Bring me back to life!!"
+file Xml/trigger/52020016_qd/monster_spawn_4_10.xml kms:Xml/trigger/52020016_qd/monster_spawn_4_10.xml 979595f5ee098013
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "You really are persistent!"
+file Xml/trigger/52020016_qd/monster_spawn_4_2.xml kms:Xml/trigger/52020016_qd/monster_spawn_4_2.xml 643cabe70070477d
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "Why am I the only one who has to die?"
+file Xml/trigger/52020016_qd/monster_spawn_4_3.xml kms:Xml/trigger/52020016_qd/monster_spawn_4_3.xml ff1824db670d25d4
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "Because of you!! Because of you!!"
+file Xml/trigger/52020016_qd/monster_spawn_4_4.xml kms:Xml/trigger/52020016_qd/monster_spawn_4_4.xml 1f374e8ea3c47ae2
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "Please just die already!!"
+file Xml/trigger/52020016_qd/monster_spawn_4_5.xml kms:Xml/trigger/52020016_qd/monster_spawn_4_5.xml ded3875414dbfc96
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "Heheh.. Am I scary?!"
+file Xml/trigger/52020016_qd/monster_spawn_4_6.xml kms:Xml/trigger/52020016_qd/monster_spawn_4_6.xml 54490dcb614f7c6e
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "Let's play together!!"
+file Xml/trigger/52020016_qd/monster_spawn_4_7.xml kms:Xml/trigger/52020016_qd/monster_spawn_4_7.xml c830d57300f7c09b
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "Am I going to die again?..."
+file Xml/trigger/52020016_qd/monster_spawn_4_8.xml kms:Xml/trigger/52020016_qd/monster_spawn_4_8.xml ee43136854f8c206
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "I don't wanna die-ies!!"
+file Xml/trigger/52020016_qd/monster_spawn_4_9.xml kms:Xml/trigger/52020016_qd/monster_spawn_4_9.xml 6e6edb1ec4b82f8d
+set state[#=2]/onEnter[#=1]/action[#=2] arg3 "Now please just die!!"
+file Xml/trigger/52020017_qd/main.xml kms:Xml/trigger/52020017_qd/main.xml 2397d086bcafd6c5
+set state[#=4]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Ahh.... At last I've found the lead for my \
+    play."
+set state[#=6]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Yes. You. You're the lead."
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Oh, I haven't told you the lead's role."
+set state[#=8]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "The lead's role in this play is..."
+set state[#=9]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "to die right here."
+set state[#=10]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Now, shall we begin the play?"
+file Xml/trigger/52020018_qd/main.xml kms:Xml/trigger/52020018_qd/main.xml b1a573c090617c82
+set state[#=3]/onEnter[#=1]/action[#=1] arg2 "I didn't mean it......."
+set state[#=4]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Oho... Do you want to make excuses?"
+set state[#=5]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "I'm disappointed, $MyPCName$."
+set state[#=6]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "I trusted you and relied on you..."
+set state[#=7]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "You abandoned me, so I'll curse you forever, \
+    $MyPCName$."
+set state[#=8]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "No... That's not true..."
+set state[#=9]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "A curse! A curse!"
+set state[#=9]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "We'll curse you forever!"
+set state[#=9]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "Die."
+set state[#=9]/onEnter[#=1]/action[#=4][name=AddBalloonTalk] msg "Stay here with us forever."
+set state[#=9]/onEnter[#=1]/action[#=5][name=AddBalloonTalk] msg "This isn't real!!!"
+set state[#=12]/onEnter[#=1]/action[#=4] arg2 "Defeat the marionettes and get out of here."
+file Xml/trigger/52020019_qd/eone.xml kms:Xml/trigger/52020019_qd/eone.xml c45f670031635381
+set state[#=2]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "How insolent! Get away from me!"
+file Xml/trigger/52020019_qd/main.xml kms:Xml/trigger/52020019_qd/main.xml c4e1562da8231032
+set state[#=4]/onEnter[#=1]/action[#=1][name=ShowCaption] desc "$npcName:11003614$'s second trial ground."
+set state[#=6]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Now, begin."
+set state[#=8]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Oho.... You certainly know how to show some \
+    spirit."
+set state[#=9]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Then, before we begin...."
+set state[#=10]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Allow me to formally introduce myself."
+set state[#=11]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "My name is $npcName:11003598$."
+set state[#=12]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Third Knight of Kritias. $npcName:11003598$ \
+    of Dreams."
+set state[#=12]/onEnter[#=1]/action[#=2][name=ShowCaption] desc "Knight of Dreams"
+set state[#=15]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Now then, let's see what you're capable of."
+set state[#=19]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Stop!"
+set state[#=21]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "That's enough."
+set state[#=22]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Oh dear, just when things were getting \
+    interesting. What a shame."
+set state[#=23]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Well, there's always next time, so I'll stop \
+    here for now."
+set state[#=25]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Let's go back, $npcName:11003598$."
+set state[#=26]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Yes. As you command."
+file Xml/trigger/52020020_qd/main_a.xml kms:Xml/trigger/52020020_qd/main_a.xml 0ff41d721c75213d
+set state[#=3]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Ugh......."
+set state[#=4]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "What on earth happened?"
+set state[#=6]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Wait! This place is...?!"
+file Xml/trigger/52020020_qd/main_b.xml kms:Xml/trigger/52020020_qd/main_b.xml 53988a8298733ebb
+set state[#=3]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "The audience ceremony is about to begin?"
+set state[#=4]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Then this place is $map:02000001$?"
+set state[#=5]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "But the audience ceremony should have been \
+    canceled..."
+set state[#=8]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Oh! You're awake?"
+set state[#=9]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "No way...."
+set state[#=10]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "No way.... That can't be...."
+file Xml/trigger/52020020_qd/main_c.xml kms:Xml/trigger/52020020_qd/main_c.xml 16304406d1d715a8
+set state[#=2]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "I'll be waiting outside."
+file Xml/trigger/52020022_qd/main.xml kms:Xml/trigger/52020022_qd/main.xml e9ef45de344f2e54
+set state[#=8]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Is there really anything here?"
+set state[#=9]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Isn't that rumor about something here just \
+    false info?"
+set state[#=10]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "No. There is a cutscene, but it's getting \
+    expanded.\\nThey say it updates before the January deadline."
+set state[#=11]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "So please wait a little longer..."
+set state[#=20]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "A cutscene will be added."
+set state[#=26]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Cutscene to be expanded in January"
+set state[#=27]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Mostly dialogue to be expanded"
+file Xml/trigger/52020024_qd/52020024_main.xml kms:Xml/trigger/52020024_qd/52020024_main.xml 78d8b136c6cdab3f
+set state[#=3]/onEnter[#=1]/action[#=1] arg2 "Search the room."
+set state[#=4]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "I need to find the fragment fusion device's \
+    power"
+set state[#=5]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "Whoa... no way..."
+set state[#=7]/onEnter[#=1]/action[#=1][name=AddBalloonTalk] msg "Doesn't look like it's here"
+set state[#=11]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Let's go to the center!"
+set state[#=11]/onEnter[#=1]/action[#=3] arg2 "Fusion device power activated."
+set state[#=15]/onEnter[#=1]/action[#=1] arg3 "Very good!"
+set state[#=16]/onEnter[#=1]/action[#=2] arg3 "Fragments, blah blah~ yada yada~"
+set state[#=17]/onEnter[#=1]/action[#=2] arg3 "Wh-what's happening?"
+set state[#=18]/onEnter[#=1]/action[#=1] arg3 "Aaaargh!!!"
+file Xml/trigger/52020025_qd/52020025_main.xml kms:Xml/trigger/52020025_qd/52020025_main.xml b2b89a3bd07673be
+set state[#=2]/onEnter[#=1]/action[#=1] arg3 "Aaaaargh!!!"
+set state[#=4]/onEnter[#=1]/action[#=4] arg3 "Huh??"
+set state[#=5]/onEnter[#=1]/action[#=2] arg3 "Run!!"
+set state[#=7]/onEnter[#=1]/action[#=5] arg2 "Run from the terrifying monster"
+file Xml/trigger/52020026_qd/52020026_main.xml kms:Xml/trigger/52020026_qd/52020026_main.xml 2beaeba0bf7d9257
+set state[#=4]/onEnter[#=1]/action[#=1] arg2 "Pull the levers to complete the staircase."
+file Xml/trigger/52020027_qd/52020027_boss.xml kms:Xml/trigger/52020027_qd/52020027_boss.xml d3ebaba377674e52
+set state[#=4]/onEnter[#=1]/action[#=1] arg3 "You'd better be careful, hm?"
+file Xml/trigger/52020027_qd/52020027_main.xml kms:Xml/trigger/52020027_qd/52020027_main.xml 80e1df682d3d737f
+set state[#=4]/onEnter[#=1]/action[#=1] arg3 "Where on earth is it?"
+set state[#=5]/onEnter[#=1]/action[#=3] arg3 "You followed me all the way here?"
+set state[#=6]/onEnter[#=1]/action[#=1] arg3 "Let's settle this now!!"
+set state[#=9]/onEnter[#=1]/action[#=3] arg2 "Cutscene to be added"
+file Xml/trigger/52020028_qd/main30000328.xml kms:Xml/trigger/52020028_qd/main30000328.xml 92f0b678b5e43847
+set state[#=3]/onEnter[#=1]/action[#=2][name=ShowCaption] title "Acropolis"
+set state[#=3]/onEnter[#=1]/action[#=2][name=ShowCaption] desc "Resting place of the ancient knowledge of Kritias"
+set state[#=3]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "So this is the Acropolis..."
+set state[#=4]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Quieter than I expected."
+set state[#=4]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "No one can get in because of the guardian? \
+    Just how tough is this thing?"
+set state[#=4]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "I hope I won't have to fight it."
+set state[#=4]/onEnter[#=1]/action[#=6][name=AddCinematicTalk] msg "Anyway, it really looks like no one's here..."
+set state[#=5]/onEnter[#=1]/action[#=6][name=AddBalloonTalk] msg "Wh... what's this?"
+set state[#=6]/onEnter[#=1]/action[#=1] arg2 "Intruder detected. Verifying credentials."
+set state[#=7]/onEnter[#=1]/action[#=6][name=AddBalloonTalk] msg "Verifying credentials? Wait!!!"
+set state[#=8]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "No questions answered.\\nNone without the pure \
+    blood of Kritias may set foot here."
+set state[#=9]/onEnter[#=1]/action[#=2][name=AddBalloonTalk] msg "Just hear me out for a second!"
+set state[#=9]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Checking result."
+set state[#=9]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Result: unqualified.\\nCombat system online."
+set state[#=10]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "The unqualified will be eliminated at once."
+set state[#=11]/onEnter[#=1]/action[#=4][name=AddBalloonTalk] msg "Come on, there's no talking to it at all!"
+set state[#=13]/onEnter[#=1]/action[#=5][name=ShowCaption] title "Arkeon"
+set state[#=13]/onEnter[#=1]/action[#=5][name=ShowCaption] desc "Guardian of the Acropolis"
+set state[#=14]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "I knew it would come to this."
+set state[#=14]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "If it won't listen, there's no choice.\\nI \
+    can't waste time here.\\nLet's take it down quickly."
+set state[#=15]/onEnter[#=1]/action[#=6] arg2 "Defeat Arkeon, the guardian."
+set state[#=18]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Whew... that was a tough fight."
+set state[#=18]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Must be an important facility, if a monster \
+    like that is guarding it..."
+set state[#=19]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "That must be the Gate of Truth."
+set state[#=19]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "I should tell Armand. Back to the Alkeina \
+    Highlands."
+set state[#=22]/onEnter[#=1]/action[#=3][name=ShowCaption] title "Eone"
+set state[#=22]/onEnter[#=1]/action[#=3][name=ShowCaption] desc "Princess of Kritias"
+set state[#=22]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Thank you for all your hard work, Arkeon."
+set state[#=23]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Leave the rest to me, and rest easy."
+set state[#=23]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "From now on, so that no one can ever open the \
+    records here...\\nI, Eone, will take it upon myself to stop them."
+file Xml/trigger/52020029_qd/main30000329.xml kms:Xml/trigger/52020029_qd/main30000329.xml 2385bda47349b161
+set state[#=4]/onEnter[#=1]/action[#=6][name=AddCinematicTalk] msg "Whew. We're finally getting in here."
+set state[#=5]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "You've been a huge help."
+set state[#=6]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "That's..."
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Ah. Those two big screens. That is the Gate of \
+    Truth."
+set state[#=7]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "I hear it's a machine that can find any \
+    information in the world."
+set state[#=8]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Ah... To think I get to touch it myself. \
+    Wonderful!"
+set state[#=8]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Now, we're short on time. Let's search for \
+    what we need."
+file Xml/trigger/52020029_qd/main30000330.xml kms:Xml/trigger/52020029_qd/main30000330.xml 89c8bc3f66135967
+set state[#=4]/onEnter[#=1]/action[#=7][name=AddCinematicTalk] msg "Well? Can you use it?"
+set state[#=4]/onEnter[#=1]/action[#=8][name=AddCinematicTalk] msg "Don't underestimate me."
+set state[#=4]/onEnter[#=1]/action[#=9][name=AddCinematicTalk] msg "Then shall we search in order?"
+set state[#=5]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Please search for the Tears Core."
+set state[#=6]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "Data search complete."
+set state[#=6]/onEnter[#=1]/action[#=6][name=AddCinematicTalk] msg "It's in an ancient script, hard to read... but \
+    here's what it says."
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "The Tears Core is Timaion's energy source and \
+    holds powerful magic."
+set state[#=7]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "The Tears Core can be made from several \
+    ingredients, scattered all across Kritias."
+set state[#=7]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "The main ingredient, the Wings of Ruin, is an \
+    heirloom of the Kritias royal house. King Hekaton holds one, and the queen the other."
+set state[#=7]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "The queen's Wings of Ruin were passed on to \
+    her daughter, Eone."
+set state[#=8]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "The other ingredients are the Heart of the \
+    Sky, the Eye of God, the Orb of Souls, and the Ring of Wisdom."
+set state[#=8]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "The Heart of the Sky is kept in the Sky Tower \
+    in the Forest of Mana, and is the actual base material of the Tears Core."
+set state[#=8]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "The Eye of God is in Tiaman's time..."
+set state[#=9]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Huh!?"
+set state[#=10]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Hmm..."
+set state[#=11]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "What's wrong?"
+set state[#=12]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Suddenly... I can't see the information on \
+    the Tears Core anymore."
+set state[#=12]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Someone... is blocking access to the data."
+set state[#=13]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Hmm. Can you tell who's blocking it?"
+set state[#=13]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "I'll try, but it will take time."
+set state[#=13]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "I think I can search for the other \
+    information first."
+set state[#=14]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "In that case, I'll go find the Heart of the \
+    Sky first."
+set state[#=15]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "...That seems best."
+set state[#=16]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Aren't you coming with me?"
+set state[#=17]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "No. There's more information I want to \
+    find.\\nI'll see you later."
+set state[#=18]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "All right. Let me know if you learn anything \
+    more."
+set state[#=21]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "The nuisance is gone."
+set state[#=21]/onEnter[#=1]/action[#=6][name=AddCinematicTalk] msg "Heh heh. So what should I look for now?"
+set state[#=22]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Rare gems? King Hekaton's secrets?"
+set state[#=23]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Heh. What I'm looking for is something else."
+set state[#=25]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "The secret weapon project, Apocalypse...!"
+file Xml/trigger/52020030_qd/main30000332.xml kms:Xml/trigger/52020030_qd/main30000332.xml 875e10adca2ccf3b
+set state[#=3]/onEnter[#=1]/action[#=3][name=ShowCaption] title "Sky Tower"
+set state[#=3]/onEnter[#=1]/action[#=3][name=ShowCaption] desc "Kritias Magic Research Lab"
+file Xml/trigger/52020030_qd/main30000334.xml kms:Xml/trigger/52020030_qd/main30000334.xml d44c1cd68a2eb001
+set state[#=3]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Now that I have the Heart of the Sky, they \
+    won't be able to fully rebuild the Tears Core."
+set state[#=3]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "I wonder if the Guardians have arrived by \
+    now..."
+set state[#=3]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "I need to get back to Radin, fast."
+set state[#=6]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Whew... you just won't listen."
+set state[#=10]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "...I've gone easy on you long enough."
+set state[#=11]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Gahk!"
+set state[#=13]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Ugh... you..."
+set state[#=14]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "I told you to leave this place, and you just \
+    wouldn't listen, would you?"
+set state[#=15]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "I can't hand a precious treasure of Kritias \
+    like this to an outsider like you."
+set state[#=16]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Wait... this is a misunderstanding. I'm doing \
+    this for Princess Eone..."
+set state[#=17]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "...I'll be taking the Heart of the Sky."
+file Xml/trigger/52020030_qd/main30000335.xml kms:Xml/trigger/52020030_qd/main30000335.xml 95a4744d2778a9e4
+set state[#=4]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "So you got the Heart of the Sky."
+set state[#=5]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Bring it here, Kranz."
+set state[#=6]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Who are you to give me orders?"
+set state[#=6]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "The only one who may command me is Princess \
+    Eone."
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Kranz... do as this one says for now."
+set state[#=7]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "The Heart of the Sky, over here."
+set state[#=8]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "... Yes, Your Highness."
+set state[#=9]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Don't hand over the Heart of the Sky!\\nTurka \
+    will use it on Timaion!!!"
+set state[#=10]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "I have no choice.\\nAll for the princess..."
+set state[#=12]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "No!!!"
+set state[#=15]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Well done, Kranz."
+set state[#=15]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "If it's Your Highness's word..."
+set state[#=16]/onEnter[#=1]/action[#=6][name=AddCinematicTalk] msg "Now then, Eone.\\nResonate the Heart of the \
+    Sky with the Wings of Ruin."
+set state[#=17]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Understood.\\nI'll begin at once."
+set state[#=18]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Wings of Ruin, accept this magic power."
+set state[#=20]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Kuhaha."
+set state[#=20]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "All going according to plan."
+set state[#=20]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Now then... time to deal with the pest."
+set state[#=22]/onEnter[#=1]/action[#=7][name=AddCinematicTalk] msg "You're not worth my personal \
+    attention.\\nSleep here forever."
+set state[#=22]/onEnter[#=1]/action[#=8][name=AddCinematicTalk] msg "Come forth, shadows of darkness..."
+set state[#=25]/onEnter[#=1]/action[#=5] arg2 "Defeat Turka's minions."
+set state[#=27]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "The resonance is complete.\\nWe must move on \
+    to find the next material."
+set state[#=27]/onEnter[#=1]/action[#=6][name=AddCinematicTalk] msg "Heh. That was fast."
+set state[#=28]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Your Highness, are you all right?\\nYou \
+    didn't overexert yourself..."
+set state[#=29]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "I'm fine, Kranz."
+set state[#=29]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Turka, take us to the next material's \
+    location."
+set state[#=30]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Well then, let's move."
+set state[#=32]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "This can't be..."
+set state[#=32]/onEnter[#=1]/action[#=6][name=AddCinematicTalk] msg "Princess Eone has joined hands with Turka..."
+set state[#=33]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "You... you're safe...."
+file Xml/trigger/52020030_qd/main30000336.xml kms:Xml/trigger/52020030_qd/main30000336.xml e396707eac3177e2
+set state[#=3]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "...The plan went wrong."
+set state[#=4]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "... You've come.\\nThat was a foolish thing \
+    you did."
+set state[#=5]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "... I have nothing to say.\\nSo, what now?"
+set state[#=6]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Hmph. Foolish.\\nIt'll be hard for the Black \
+    Star Society to act now."
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "I'll need to prepare another plan."
+set state[#=8]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "You'll share that new plan with the Black Star \
+    too, of course?\\nI'll be counting on it."
+file Xml/trigger/52020031_qd/main30000332.xml kms:Xml/trigger/52020031_qd/main30000332.xml 789805aa61670d8d
+set state[#=4]/onEnter[#=1]/action[#=3][name=ShowCaption] title "Sky Altar"
+set state[#=4]/onEnter[#=1]/action[#=3][name=ShowCaption] desc "Vault of the Heart of the Sky"
+set state[#=5]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "So this is where the Heart of the Sky is \
+    kept."
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "It looked like someone had already been in \
+    here... Maybe it's just me..."
+set state[#=7]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "The Heart of the Sky must be kept in that \
+    device on the wall, right?"
+set state[#=8]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "...Huh? I don't see anything that looks like \
+    the Heart of the Sky..."
+set state[#=11]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Should I go closer..?"
+set state[#=13]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Oh my? Look who it is."
+set state[#=14]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "I wondered... and it really is you?"
+set state[#=16]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "You're quite late, aren't you?"
+set state[#=17]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Wait, you're...?"
+set state[#=18]/onEnter[#=1]/action[#=2][name=ShowCaption] title "Haren"
+set state[#=18]/onEnter[#=1]/action[#=2][name=ShowCaption] desc "Third Officer of the Black Star Society"
+set state[#=18]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "...What a coincidence, meeting like this."
+set state[#=18]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "Tough doing everything on your own, isn't it? \
+    Hehe."
+set state[#=20]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "How are you... here?"
+file Xml/trigger/52020031_qd/main30000333.xml kms:Xml/trigger/52020031_qd/main30000333.xml 52ec55bb60c6fb64
+set state[#=5]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Give back the Heart of the Sky."
+set state[#=7]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "You think you can just take it nicely?"
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "You do dream big... Hohoho"
+set state[#=11]/onEnter[#=1]/action[#=3] arg2 "Defeat Haren!"
+set state[#=11]/onEnter[#=1]/action[#=4][name=AddBalloonTalk] msg "I'll end you."
+file Xml/trigger/52020031_qd/main30000334.xml kms:Xml/trigger/52020031_qd/main30000334.xml 8041e12d32052931
+set state[#=5]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "I knew the Black Star Society couldn't be \
+    trusted.\\nI'm taking the Heart of the Sky."
+set state[#=6]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Ugh..."
+set state[#=8]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "I'll tell Radin what happened today, too."
+set state[#=8]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Our alliance with the Black Star ends here."
+file Xml/trigger/52020032_qd/main_b.xml kms:Xml/trigger/52020032_qd/main_b.xml c59bb515d26e2645
+set state[#=8]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Then may your death be peaceful."
+set state[#=11]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "$npcName:11003620$, you bastard!"
+set state[#=12]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "How dare you betray me!"
+set state[#=13]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "I'll make you pay dearly for this betrayal."
+set state[#=15]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Now that it's come to this, I'll have to \
+    speed up that plan."
+file Xml/trigger/52020033_qd/main.xml kms:Xml/trigger/52020033_qd/main.xml c8ca8963e4de2a01
+set state[#=11]/onEnter[#=1]/action[#=2][name=ShowCaption] desc "Supporting the Kritias scouting mission"
+set state[#=12]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "Hmm..."
+set state[#=12]/onEnter[#=1]/action[#=4][name=AddBalloonTalk] msg "...Yes, nothing unusual so far."
+set state[#=17]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "(A loud commotion rises from below the \
+    ship.\\nIt seems a battle has broken out with the barrier against intruders and its defenders.)"
+set state[#=18]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "...Yes, Captain.\\nUnderstood."
+set state[#=19]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "$MyPCName$. The captain has judged that we \
+    can't get any closer.\\nTo the Sky Fortress, that is."
+set state[#=20]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "But if you make an emergency escape, you \
+    should be able to enter Kritias.\\nIt could be dangerous, though..."
+set state[#=21]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "Somehow, I have to get there...\\nI'll try \
+    anything."
+set state[#=22]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "The hangar with the escape transports is \
+    under attack too...\\nRight now the only way is to parachute to a nearby island and find a route."
+set state[#=23]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "I'm sorry we can't support you to the end, \
+    $MyPCName$.\\nThen... good luck!"
+set state[#=25]/onEnter[#=1]/action[#=1] arg2 "Trusting my life to one small parachute,\\nI threw myself into the \
+    thick fog."
+set state[#=26]/onEnter[#=1]/action[#=1] arg2 "A strong wind pushed me back, as if refusing any outsider...\\nWhat \
+    is happening beyond this fog?"
+set state[#=27]/onEnter[#=1]/action[#=1] arg2 "Through the fog I can see torn land....\\nLet's go down there and \
+    find a way into Kritias!"
+file Xml/trigger/52020035_qd/main30000316.xml kms:Xml/trigger/52020035_qd/main30000316.xml f9730cd681d4e6c7
+set state[#=4]/onEnter[#=1]/action[#=3][name=ShowCaption] title "Radin's Barracks"
+set state[#=4]/onEnter[#=1]/action[#=3][name=ShowCaption] desc "Just after $MyPCName$ left"
+set state[#=5]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "...And that is what happened."
+set state[#=6]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Hmm... Kritias reappearing may have something \
+    to do with the forces of darkness..."
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Which means there must be something important \
+    here."
+set state[#=8]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Good work. Thanks to you, we have some \
+    important information."
+set state[#=8]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "It's all thanks to your orders, sir. You \
+    foresaw this."
+set state[#=9]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Gajil, it seems we'll have to deal with those \
+    people once more. Get in touch with them."
+set state[#=10]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Those people... You don't mean you plan to \
+    deal with the Black Star again?"
+set state[#=11]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "They can't be trusted, true, but they're \
+    still useful.\\nUntil we have what we want, we'll play along."
+set state[#=12]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "There's time enough to crush them after \
+    that."
+set state[#=12]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Yes, sir. As you command."
+set state[#=15]/onEnter[#=1]/action[#=1] arg2 "A little later, Radin's Barracks"
+set state[#=17]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Calling us all the way out here... I'm \
+    impressed, sir."
+set state[#=19]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "So this is Kritias, the place lost to \
+    history...\\nI can't wait to look around!"
+set state[#=21]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "We're not here to play.\\nAct like an officer \
+    of the Black Star Society."
+set state[#=23]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Brother... okay.\\nBut when the job's done, \
+    we're definitely..."
+set state[#=24]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Haha, who'd have thought the Black Star's \
+    pride, its genius strategist, was such a young boy.\\nNo wonder Wei Hong brags about him."
+set state[#=25]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Thank you for the compliment. So you are Lord \
+    Radin.\\nOnce called the Black Lion of Tria, first in line to the throne..."
+set state[#=26]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Min, don't rise to every provocation."
+set state[#=27]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "My, and Vasara Chen, the mightiest champion \
+    of the Rudeli Arena, too.\\nHad I known such honored guests were coming, I'd have prepared a better welcome."
+set state[#=28]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Sly as a snake, same as ever. Thanks to that, \
+    you stabbed us right in the back last time."
+set state[#=28]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "And now, how gracious of you, a sudden \
+    invitation...\\nNo telling what wonderful gift you'd have for us this time, so I called in all the Black Star \
+    officers."
+set state[#=28]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "Still, it seems I overrated you.\\nWho knew \
+    the great Radin Vidblaim would come crawling first with his tail between his legs."
+set state[#=29]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Just what are you scheming?"
+set state[#=30]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "I see there's no curing that flippant tongue \
+    of yours."
+set state[#=30]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "In any case, for the sake of greater things, \
+    one can be generous about small misunderstandings...\\nSo I'll quietly let the past go."
+set state[#=30]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "How about we join hands properly and work \
+    together, starting now?"
+set state[#=31]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "I've been in business more than once or \
+    twice. You think I'd fall for a line like that?\\nThis Wei Hong isn't fool enough to get burned twice."
+set state[#=32]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "You use your resources to support our \
+    researchers in gathering data and investigating safely."
+set state[#=32]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "In return, I obtain the lost technology of \
+    Kritias,\\nand you receive the cutting-edge equipment we develop."
+set state[#=32]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "That is how I remember our contract...\\nYet \
+    wasn't it you who broke it first and went after Princess Eone on your own?"
+set state[#=32]/onEnter[#=1]/action[#=6][name=AddCinematicTalk] msg "And thanks to that, $MyPCName$ made a mess of \
+    everything."
+set state[#=33]/onEnter[#=1]/action[#=3][name=AddBalloonTalk] msg "How arrogant.."
+set state[#=33]/onEnter[#=1]/action[#=4][name=AddBalloonTalk] msg "How dare you!"
+set state[#=33]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "Hmph, you think you're trustworthy \
+    enough\\nto keep your promise once you have the technology?"
+set state[#=33]/onEnter[#=1]/action[#=6][name=AddCinematicTalk] msg "Isn't it only natural that we'd want some \
+    insurance of our own?\\nBesides, there's no guarantee that woman really is the princess of Kritias, like you \
+    say."
+set state[#=34]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Heh, well, well. It seems I have no \
+    credibility at all."
+set state[#=34]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "I thought there was enough trust between \
+    us\\nfor me to share the vital fact that she is Princess Eone."
+set state[#=34]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "Besides, if I hadn't stepped in, this place \
+    would already be in the Guardians' hands.\\nI'd say that's reason enough to trust me. Wouldn't you?"
+set state[#=35]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Oho~ Is that so?"
+set state[#=35]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Because you couldn't stop one \
+    $MyPCName$,\\nwe can't use the game piece we worked so hard to raise."
+set state[#=36]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Calm down and think bigger.\\nIf we keep \
+    fighting each other like this, none of us will gain a thing."
+set state[#=36]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "I'm not asking you to trust me blindly.\\nI'm \
+    just saying we help each other get what we want."
+set state[#=36]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Didn't you and I join hands in the first \
+    place because we each want something here?"
+set state[#=37]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "An alliance of necessity, though either of us \
+    could backstab the other any time...\\nHeh heh. His royal lordship sure likes to take risks."
+set state[#=37]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Fine. Go on, tell me what you want."
+set state[#=38]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Heh, now we're finally talking."
+set state[#=38]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Then, let's discuss the plan..."
+file Xml/trigger/52020035_qd/main30000317.xml kms:Xml/trigger/52020035_qd/main30000317.xml f4b0d5b2a9eb0f64
+set state[#=4]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "As you know, the Guardians won't reach Kritias \
+    easily."
+set state[#=4]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Gathering reinforcements will take time,\\nand \
+    unless we repair the portal and disable the defense system,\\nmany more lives will be lost."
+set state[#=5]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Then we should step in and make sure the \
+    Guardians can come safely."
+set state[#=6]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Right. And we must quickly learn about this \
+    Tears Core you told me of,\\nand find out why the forces of darkness are after it."
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "So much to do... If only my Guardian comrades \
+    were here..."
+set state[#=8]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "That's why I contacted some people who could \
+    help us.\\nThey should be arriving soon..."
+set state[#=9]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Ah. Here they come now."
+set state[#=9]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "<font size='40'>!!! Those guys?</font>"
+set state[#=11]/onEnter[#=1]/action[#=8][name=AddCinematicTalk] msg "<font size='40'>The Black Star \
+    Society?!</font>"
+set state[#=12]/onEnter[#=1]/action[#=3][name=ShowCaption] title "Haren"
+set state[#=12]/onEnter[#=1]/action[#=3][name=ShowCaption] desc "Third Officer of the Black Star Society"
+set state[#=13]/onEnter[#=1]/action[#=3][name=ShowCaption] title "Kyle"
+set state[#=13]/onEnter[#=1]/action[#=3][name=ShowCaption] desc "Fourth Officer of the Black Star Society"
+set state[#=14]/onEnter[#=1]/action[#=3][name=ShowCaption] title "Breed Min"
+set state[#=14]/onEnter[#=1]/action[#=3][name=ShowCaption] desc "Fifth Officer of the Black Star Society"
+set state[#=15]/onEnter[#=1]/action[#=3][name=ShowCaption] title "Vasara Chen"
+set state[#=15]/onEnter[#=1]/action[#=3][name=ShowCaption] desc "Second Officer of the Black Star Society"
+set state[#=16]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Yo~ $MyPCName$, you managed to stay \
+    alive.\\nI really have to hand it to you for that stubborn will to live."
+set state[#=16]/onEnter[#=1]/action[#=4][name=ShowCaption] title "Wei Hong"
+set state[#=16]/onEnter[#=1]/action[#=4][name=ShowCaption] desc "Boss of the Black Star Society"
+set state[#=17]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Black Star scum! This time for sure...!"
+set state[#=18]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Calm down. They are the ones I asked for \
+    help."
+set state[#=19]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "<font size='40'>!!! What?</font>"
+set state[#=19]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Asking them for help? What on earth were you \
+    thinking!"
+set state[#=20]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Thought you were pretty sharp, but turns out \
+    your head doesn't work at all.\\nWhat a naive little brat."
+set state[#=21]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "$MyPCName$, I understand how you feel.\\nAs \
+    you say, the Black Star can't be trusted; they're as good as enemies."
+set state[#=21]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "But now is the time to think coolly.\\nWe're \
+    short on resources and can't get any support."
+set state[#=21]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "If someone's strength can get the Guardians \
+    safely to Kritias\\nand protect this place from the forces of darkness..."
+set state[#=21]/onEnter[#=1]/action[#=5][name=AddCinematicTalk] msg "Then shouldn't we join hands for now, even if \
+    it's the Black Star?"
+set state[#=22]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "......Yes, I understand."
+set state[#=22]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "But they could betray us at any moment.\\nWe \
+    must never let our guard down."
+set state[#=23]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Thank you for understanding.\\nNow, Wei Hong, \
+    did you bring the information you promised?"
+set state[#=24]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Well, looks like the whiny kid's been calmed \
+    down...\\nLet's get down to business."
+set state[#=24]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "I'm not one to pay up front, but as a favor \
+    I'll tell you first.\\nIt'll shut the suspicious one up, too. Heh heh."
+set state[#=24]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "According to what we've obtained, Kritias's \
+    defense system\\nis controlled from a place called the Tiaman Energy Port."
+set state[#=25]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "The Tiaman Energy Port...\\nIf I remember \
+    right, it was Kritias's advanced development zone\\nwhere the newest equipment was researched and produced."
+set state[#=25]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "I wanted to visit when I studied abroad, but \
+    it held the best of Kritias's technology,\\nso outsiders couldn't even get near it."
+set state[#=25]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "I'm not interested in His Royal Lordship's \
+    fancy study-abroad stories.\\nIf we don't take that place, the Guardians can forget their Kritias picnic."
+set state[#=26]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "No need to hear more.\\nLet's hurry to the \
+    Tiaman Energy Port and disable the defense system."
+set state[#=27]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Hey hey, greenhorn. Don't rush, all \
+    right?\\nThere's still one more important thing to discuss."
+set state[#=28]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "About the Tears Core?"
+set state[#=29]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Kritias's defense system, and info on this \
+    Tears Core thing.\\nThose were the terms of the deal, so of course I looked into it."
+set state[#=29]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "But that Tears Core thing...\\nI don't know \
+    exactly what it's for, but it's no ordinary item."
+set state[#=29]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "They say King Hekaton built the device \
+    himself... Timaion?\\nAnyway, it was used as the power source for some giant machine."
+set state[#=31]/onEnter[#=1]/action[#=1][name=AddCinematicTalk] msg "$MyPCName$... The situation may be worse than \
+    we thought..."
+set state[#=31]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Yes... If they're after the Tears Core \
+    because of Timaion..."
+set state[#=31]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Is that all you have on the Tears Core? Where \
+    it might be..."
+set state[#=32]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Look, Boss Radin, even this was really hard \
+    to get.\\nI'd say that more than holds up my end of the deal, no?"
+set state[#=33]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Very well. Please wait while I talk with \
+    $MyPCName$ for a moment."
+file Xml/trigger/52020035_qd/main30000318.xml kms:Xml/trigger/52020035_qd/main30000318.xml 3d12a86778ddd701
+set state[#=4]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Heh heh heh... Nice job playing the good guy, \
+    Radin."
+set state[#=6]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "Heh. That went better than I expected."
+set state[#=6]/onEnter[#=1]/action[#=4][name=AddCinematicTalk] msg "Tch, why make it complicated? Can't he just \
+    die?"
+set state[#=7]/onEnter[#=1]/action[#=2][name=AddCinematicTalk] msg "Haren. Shall we talk about our next operation, \
+    then?"
+set state[#=8]/onEnter[#=1]/action[#=3][name=AddCinematicTalk] msg "...Heh heh."
