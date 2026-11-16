@@ -22290,3 +22290,921 @@ set key[id=1229140214004563] name "Could you help MC Kay a little, $MyPCName$?\n
 set key[id=1229140214004564] name "Join an event and have a blast!"
 set key[id=1229140214004565] name "How was it? Did you have fun?\nThanks to you, $MyPCName$, MC Kay says she can \
     breathe easy for now."
+
+# Quest dialogue of the SoulBinder quests (feature SoulBinder) that no pack has in English: our own
+# English for the 450 scriptquest rows of locale KR (or no locale) whose quest a player can get (36 quests),
+# with each row's own format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=701161202005633] name "Hmm... what's going on... again... \nRumor has it that a secret gathering was \
+    held in $map:02000001$.\nGo find out what's going on."
+set key[id=701161202005634] name "Rumor has it that a secret gathering was held in $map:02000001$.\nGo find out \
+    what's going on."
+set key[id=701161202005635] name "Haa... is something big about to happen again... "
+set key[id=701161202005636] name "So, what brings you here?"
+set key[id=701161202005637] name "They say the entrance to the temple of <font \
+    color=\"#ffd200\">$npc:23000078$</font>, who sleeps guarding the Runicta,\nis somewhere in <font \
+    color=\"#ffd200\">$map:02000112$</font>."
+set key[id=701161202005638] name "You found the temple entrance that $npcName:11000119[gender:0]$ told you \
+    about.\nYou can feel some unknown powerful force. What could be happening inside...?"
+set key[id=712143202005655] name "(Ask what big thing is happening.)"
+set key[id=712143202005656] name "Ah...! You... how long have you been here...\nShowing up without a sound... \
+    phew... you startled me."
+set key[id=712143202005657] name "(Ask about the secret gathering.)"
+set key[id=712143202005658] name "Ah~ that... \nIt seems there's some trouble inside the <font \
+    color=\"#ffd200\">Rune Blader</font> order."
+set key[id=712143202005659] name "(Say I'd like to hear the details.)"
+set key[id=712143202005660] name "It seems there was a traitor in the Rune Blader order called <font \
+    color=\"#ffd200\">$npcName:11001231[gender:0]$</font>.\nThe Rune Blades chased the one who killed their leader \
+    and vanished, all the way here,\nand what that <font color=\"#ffd200\">$npcName:11001231[gender:0]$</font> was \
+    after was the <font color=\"#ffd200\">Runicta</font> hidden by the ancient rune sorcerers...? "
+set key[id=712143202005661] name "Anyway, they asked the Guardian Corps to join the <font \
+    color=\"#ffd200\">Starlight Expedition</font> to protect\nthe <font color=\"#ffd200\">Runicta</font> from \
+    <font color=\"#ffd200\">$npcName:11001231[gender:0]$</font> and lend a hand.\nWell... not everyone present \
+    welcomed it with open arms, but in the end everyone\ndecided together to take part in the <font \
+    color=\"#ffd200\">Starlight Expedition</font>."
+set key[id=712143202005662] name "Phew... well, with everyone lending a hand, things moved along quite fast.\nWe \
+    found out where <font color=\"#ffd200\">$npcName:11001231[gender:0]$</font> went chasing the <font \
+    color=\"#ffd200\">Runicta</font>."
+set key[id=712143202005663] name "(Ask where that is.)"
+set key[id=712143202005664] name "They say the entrance to the temple of <font \
+    color=\"#ffd200\">$npc:23000078$</font>, who sleeps guarding the Runicta,\nis somewhere in <font \
+    color=\"#ffd200\">$map:02000112$</font>.\nWill you go and see it?"
+set key[id=802233102005683] name "What I'm curious about is <font color=\"#ffd200\">why the audience ceremony was \
+    canceled</font>.\nThe earthquake was days ago, so why cancel the ceremony all of a sudden now?\nDoes that make \
+    sense? Ugh!! The more I think about it, the angrier I get."
+set key[id=802233102005684] name "There's definitely something fishy going on. I can smell it!\nI'm going to find \
+    out what they're hiding."
+set key[id=802233102005685] name "From now on I'll be asking around everywhere, so I'm going to be super busy.\nSo \
+    you ask around too, and if you find anything out,\nyou'd better tell me. Got it? Huh?"
+set key[id=802233102005686] name "(Ask who I should ask.)"
+set key[id=802233102005687] name "Huh? W-why are you asking me that?!\nIf you really don't know, start close \
+    by!\nGo grab that $npcTitle:11000169[gender:0]$ over there and ask."
+set key[id=802233102005688] name "They said I could meet $npc:11000492[gender:0]$ here, but the door is firmly \
+    locked.\nThere's no sign of anyone, so it seems nobody is inside the city hall.\nLet's ask the people around \
+    if anyone saw $npc:11000492[gender:0]$ leave the city hall. "
+set key[id=803181311003925] name "The <font color=\"#ffd200\">eagle beastfolk</font> and the <font \
+    color=\"#ffd200\">reindeer beastfolk</font> went up that road to the right\ninto a <font \
+    color=\"#ffd200\">cute wooden house</font>.\nIf you're looking for them, follow the road on my right all the \
+    way up."
+set key[id=803181311003926] name "The <font color=\"#ffd200\">eagle beastfolk</font> and the <font \
+    color=\"#ffd200\">reindeer beastfolk</font> went up that road to the right\ninto a <font \
+    color=\"#ffd200\">cute wooden house</font>.\nIf you're looking for them, follow the road on my right all the \
+    way up."
+set key[id=803181311003927] name "Ah...! $MyPCName$, you came!\nAre you all right?"
+set key[id=803181311003928] name "(Ask if $npc:11001716[gender:0]$ collapsed.)"
+set key[id=803181311003929] name "Yeah. As you can see, he looks pretty bad.\nEven if he used up a lot of energy, \
+    come on, what is this?\nHe's the chief disciple, is this okay? He needs to snap out of it quick.... "
+set key[id=803181311003930] name "(Ask what happened.)"
+set key[id=803181311003931] name "Quite a lot of people were chasing the cloud you rode, so while their attention \
+    was split,\nSenior Brother $npcName:11001716[gender:0]$ flew off carrying me dangling. Of course I was \
+    struggling to keep my stealth up, too.\nAnyway, you found us well! I thought you'd have a hard time."
+set key[id=803181311003932] name "(Say $npc:11001677[gender:0]$ told me.)"
+set key[id=803181311003933] name "I see. They say $map:02000001$ has the Royal Guard, so even if there's a sudden \
+    intrusion\nor commotion, it's relatively safe. Plus, all kinds of\npeople gather here, so nobody finds \
+    beastfolk like us strange or is shocked.	"
+set key[id=803181311003934] name "And... it's also a place where <font color=\"#ffd200\">a lot of varied \
+    information</font> gathers.\nNow then, shall we get to work? "
+set key[id=803181311003935] name "Work...? "
+set key[id=803181311003936] name "After I explained everything... did you forget? Did you hit your head when you \
+    fell?\nThat <font color=\"#ffd200\">$npc:23000082[gender:0]$</font> who raided Neoulbit Mountain tried to \
+    take\nGuidance's sacred treasure. We have to stop that from happening. "
+set key[id=803181311003937] name "First, we should stay here and quietly start <font color=\"#ffd200\">asking \
+    around</font>.\nOf course, Senior Brother's recovery comes first, though.... "
+set key[id=803181311003938] name "First we need to gather as much information as we can here.\nI think we should \
+    start by checking whether there are any traces that the old relic from Neoulbit Mountain was kept here.\nWill \
+    you take care of <font color=\"#ffd200\">gathering information</font>?"
+set key[id=803181311003939] name "(Ask what $npc:11001707[gender:1]$ will do.)"
+set key[id=803181311003940] name "I'll stay here and <font color=\"#ffd200\">nurse</font> <font \
+    color=\"#ffd200\">Senior Brother $npcName:11001716[gender:0]$</font>.\nBut if you'd like to make eye contact \
+    with Senior Brother $npcName:11001716[gender:0]$, put a hand on his forehead,\nand brush his feathers, you can \
+    take over nursing him."
+set key[id=803181311003941] name "(...Say I'll leave the nursing to $npcName:11001707[gender:1]$.)"
+set key[id=803181311003942] name "Yeah, yeah. Good choice.\nAlso, don't shy away from doing favors for humans or \
+    looking into their incidents.\nAnything we learn becomes our information.\nOf course, Senior Brother \
+    $npcName:11001716[gender:0]$ won't be thrilled about it."
+set key[id=803181311003943] name "On my way here I saw someone dressed like a <font color=\"#ffd200\">guide</font> \
+    near the palace.\nI think we should start by asking her. Okay, I'm counting on you!"
+set key[id=803181311003944] name "On my way here I saw someone dressed like a <font color=\"#ffd200\">guide</font> \
+    near the palace.\nI think we should start by asking her. Okay, I'm counting on you!"
+set key[id=803181311003945] name "Hello. Is there something you'd like to know?"
+set key[id=803181311003946] name "(Say I have a few questions.)"
+set key[id=803181311003947] name "I'll tell you anything I know.\nGo ahead."
+set key[id=803181311003948] name "Is this your first time in $map:02000001$? You seem like someone I haven't \
+    met.\nTell me what you'd like to ask."
+set key[id=803181311003949] name "(Ask if she's really never seen me.)"
+set key[id=803181311003950] name "What? Have we met before?\nSo many people are coming and going these days \
+    because of the <font color=\"#ffd200\">audience ceremony</font>\nthat even I can't remember everyone, ha ha \
+    ha. "
+set key[id=803181311003951] name "(Say I'm asking because I can't remember either.)"
+set key[id=803181311003952] name "Um... are you feeling unwell? Do you forget things a lot...\nLike forgetfulness? \
+    Or... <font color=\"#ffd200\">amnesia?</font>\nA lot of people are like that lately. Heartbroken over the \
+    <font color=\"#ffd200\">canceled audience ceremony</font>, denying reality...."
+set key[id=803181311003953] name "(Say I've lost my memories of recent times.)"
+set key[id=803181311003954] name "Oh my. I'm sorry. I said that like a <font color=\"#ffd200\">joke</font>, but \
+    you're <font color=\"#ffd200\">actually</font>...\nBut I don't think you and I, $MyPCName$, have met \
+    before.\nI'm sorry I couldn't help. Is there anything else you'd like to know?"
+set key[id=803181311003955] name "(Ask where relics are mostly kept.)"
+set key[id=803181311003956] name "The $map:02000001$ palace, where the Empress is, of course.\nBut there are so \
+    many that if you just say relics, it'll be harder to find them.\nCould you be more specific?"
+set key[id=803181311003957] name "(Say it probably has something to do with the <font \
+    color=\"#ffd200\">beastfolk</font>.)"
+set key[id=803181311003958] name "Hmm... I wonder. For a special relic like that, it'd be best to ask\nthe people \
+    who manage the palace's belongings. But right now, with the <font color=\"#ffd200\">canceled audience \
+    ceremony</font>,\neveryone's in a frenzy, so there probably isn't anyone who can answer."
+set key[id=803181311003959] name "<font color=\"#909090\">(All she talks about is the canceled audience \
+    ceremony...)</font>"
+set key[id=803181311003960] name "Besides the royal staff, someone who might know about beastfolk relics... \
+    hmm...\nOh! <font color=\"#ffd200\">$npc:11000003[gender:0]$</font>, who complains a lot but is so curious he \
+    tries to find out everything,\nmight know what you're wondering about, $MyPCName$.\nHe can't stand not knowing \
+    and just charges in... they say he's quietly a great source of information. "
+set key[id=803181311003961] name "<font color=\"#ffd200\">$npc:11000003[gender:0]$</font> is down those stairs, so \
+    go meet him.\nOh, but he seems to be in a bad mood right now, so keep that in mind."
+set key[id=803181311003962] name "<font color=\"#ffd200\">$npc:11000003[gender:0]$</font> is down those stairs, so \
+    go meet him.\nOh, but he seems to be in a bad mood right now, so keep that in mind."
+set key[id=803181311003963] name "What? And who are you? \nUgh... I'm already fuming and all sorts of weird humans \
+    keep showing up... "
+set key[id=803181311003964] name "(Ask if he's heard about beastfolk relics in $map:02000001$.)"
+set key[id=803181311003965] name "(Greet him cheerfully.)"
+set key[id=803181311003966] name "This $map:02000001$ is a palace. You think there's just one or two \
+    treasures?\nAnd besides, the greatest treasure of $map:02000001$ is Empress $npcName:11000075[gender:1]$.\nI \
+    came here all excited to see her at the audience ceremony... and what is this? Ugh!"
+set key[id=803181311003967] name "<font color=\"#909090\">(He doesn't seem to know anything. It's better to just \
+    leave.)</font>"
+set key[id=803181311003968] name "What? What a silly one... must be nice to be in such a good mood.\nSo you've got \
+    something to ask? Go on, say it."
+set key[id=803181311003969] name "(Ask if he knows anything about the beastfolk's treasure.)"
+set key[id=803181311003970] name "Hold on. Didn't you want to know something?\nIf you <font color=\"#ffd200\">find \
+    out what I'm curious about</font>, I'll tell you what I know.\nI can't remember right now, but who knows? If \
+    I'm in a better mood, it might come back."
+set key[id=803181311003971] name "<font color=\"#909090\">(It's best to do the favor first and get \
+    information.)</font>"
+set key[id=803181311003972] name "What? Are you going to do it or not?\nIf I get any angrier here I won't be able \
+    to think of anything, so answer quick!\nAh, forget it! If you don't want to, scram! Go away! "
+set key[id=803181311003973] name "(Say I'll find out what he's curious about.)"
+set key[id=803181311003974] name "Yeah, good thinking."
+set key[id=803181311003975] name "$MyPCName$! This is a message from someone called $npc:11001707[gender:1]$.\nShe \
+    says she has something to tell you and wants to meet at $map:52000041$."
+set key[id=803181311003976] name "$MyPCName$! This is a message from someone called $npc:11001707[gender:1]$.\nShe \
+    says she has something to tell you and wants to meet at $map:52000041$."
+set key[id=803181311003977] name "You're here! I've been waiting."
+set key[id=803181311003978] name "How was seeing the sights of $map:02000001$? Did you have fun?\nDid you gather \
+    any information here?"
+set key[id=803181311003979] name "(Say there's nothing helpful yet.)"
+set key[id=803181311003980] name "Aw~ I knew there wouldn't be any progress until I stepped in,\nso you should've \
+    just enjoyed $map:02000001$. You really did just gather information.\nBeing this boring, you two are exactly \
+    alike, exactly. <font color=\"#ffd200\">soulmates</font>~"
+set key[id=803181311003981] name "(Ask who I'm a soulmate with.)"
+set key[id=803181311003982] name "You really don't know? <font color=\"#ffd200\">Senior Brother \
+    $npcName:11001716[gender:0]$, the training maniac</font> and <font color=\"#ffd200\">the one whose hobby is \
+    fainting, you!</font>\nShort on words, no fun~ you're exactly the same. Heh.\nOh, and Senior Brother's \
+    condition has improved a lot. He just lay there mumbling for a while,\nbut now he gets up and walks around, \
+    and has even started saying he's going to train."
+set key[id=803181311003983] name "So now it's finally time for me to step in.\nI should use my informant who's \
+    settled here. Actually, he's also the owner of this house,\nbut I haven't seen him in ages! A <font \
+    color=\"#ffd200\">sturdy, agile body</font> and a <font color=\"#ffd200\">great, big-hearted guy</font>, he \
+    was~"
+set key[id=803181311003984] name "(Ask what she means, the owner of this house...)"
+set key[id=803181311003985] name "Oh, this house belongs to <font color=\"#ffd200\">Taig Furian</font>. He was a \
+    <font color=\"#ffd200\">tiger</font> beastfolk who trained with us at Guidance in the past.\nHe didn't get \
+    along well with Senior Brother $npcName:11001716[gender:0]$, so he said he'd train in the city and left.\nAnd \
+    not long ago he sent me a letter after ages,\nsaying he'd set up a small training ground in <font \
+    color=\"#ffd200\">$map:02000001$</font>."
+set key[id=803181311003986] name "He had a pretty great plan: to train the city way here and also watch the \
+    audience ceremony.\nI remember reading the letter and thinking how admirable he was~\nSo I came here to see \
+    him too. I wonder if he's doing well~"
+set key[id=803181311003987] name "(Say that means she's occupying someone else's house without permission.)"
+set key[id=803181311003988] name "Oh come on~ under the name of Guidance we're all brothers.\nIs visiting a <font \
+    color=\"#ffd200\">brother's house</font> called trespassing?\nHe'd definitely think so too! <font \
+    color=\"#ffd200\">What's good is good~</font>"
+set key[id=803181311003989] name "(Say we should meet him and apologize...)"
+set key[id=803181311003990] name "Not apologize, you should ask a <font color=\"#ffd200\">favor</font>. Ask him to \
+    gather information with us.\nHe respected $npc:11001661[gender:0]$, so he'll surely help.\nSo... shall we go \
+    <font color=\"#ffd200\">find him</font>? "
+set key[id=803181311003991] name "(Tell her to hurry and go.)"
+set key[id=803181311003992] name "Huh? Me? You're joking, right?\nSenior Brother <font \
+    color=\"#ffd200\">$npcName:11001716[gender:0]$</font> is still not in good shape and someone has to stay with \
+    him...\nOf course, if you stay beside him giving massages and singing songs, then I'll go."
+set key[id=803181311003993] name "(Say I'll go...)"
+set key[id=803181311003994] name "Heh heh. Then have a good trip~\nTaig Furian is a tiger beastfolk. He's agile \
+    and big-hearted,\nso if you see a <font color=\"#ffd200\">tiger</font> beastfolk, ask if they know <font \
+    color=\"#ffd200\">Taig Furian</font>~ They'll know right away! "
+set key[id=803181311003995] name "Heh heh. Then have a good trip~\nTaig Furian is a tiger beastfolk. He's agile \
+    and big-hearted,\nso if you see a <font color=\"#ffd200\">tiger</font> beastfolk, ask if they know <font \
+    color=\"#ffd200\">Taig Furian</font>~ They'll know right away! "
+set key[id=803181311003996] name "What, you? \nDid you find out why the audience ceremony was canceled? "
+set key[id=803181311003997] name "(Ask if he knows who Taig Furian is.)"
+set key[id=803181311003998] name "...What did you just say? Was that the name I heard?\nDon't tell me... where are \
+    you from? Who told you that name?"
+set key[id=803181311003999] name "(Say $npcName:11001707[gender:1]$ from Neoulbit Mountain told me.)"
+set key[id=803181311004000] name "......\n<font color=\"#909090\">(Roary stands there unable to say a \
+    word.)</font>"
+set key[id=803181311004001] name "(Say if he doesn't know, I'll go ask someone else.)"
+set key[id=803181311004002] name "W-wait. You came to the right place.\nThat's <font color=\"#ffd200\">my \
+    name</font>."
+set key[id=803181311004003] name "What's your relationship with <font \
+    color=\"#ffd200\">$npc:11001707[gender:1]$</font>?\nDid you two come here alone? Where's \
+    $npc:11001707[gender:1]$ now?"
+set key[id=803181311004004] name "(Say she's nursing $npcName:11001716[gender:0]$ at $map:52000041$.)"
+set key[id=803181311004005] name "Wh-what? <font color=\"#ffd200\">$npcName:11001716[gender:0]$</font>? What's he \
+    doing again?\nThat guy should be <font color=\"#ffd200\">busy training</font> holed up in the mountains, so \
+    who is he with and doing what here?\nD-did the Master kick him out? What on earth happened?"
+set key[id=803181311004006] name "<font color=\"#909090\">(They said he had a sturdy build and a big-hearted \
+    personality... I'm not sure this is the same guy.)</font> "
+set key[id=803181311004007] name "Ugh, this is frustrating! $MyPCName$, say something!\nWhat on earth \
+    happened?!\nAnd is the <font color=\"#ffd200\">Master</font> doing well?"
+set key[id=803181311004008] name "(Briefly tell him what has happened so far.)"
+set key[id=803181311004009] name "Such things happened... I'll help however I can. Leave it to me.\nBefore that, I \
+    need to go <font color=\"#ffd200\">home</font> and see <font \
+    color=\"#ffd200\">$npc:11001707[gender:1]$</font>.\nIt's been so long... she must still be smart, pretty, and \
+    lovely, hehe."
+set key[id=803181311004010] name "(Ask if it's okay since $npcName:11001707[gender:1]$ basically barged into his \
+    house without a word.)"
+set key[id=803181311004011] name "If it's <font color=\"#ffd200\">$npc:11001707[gender:1]$</font>, of course it's \
+    fine. It was worth saving up all those mesos\nto get a place in $map:02000001$. Eheheh.\nI'll comb my fur and \
+    be there, so see you at <font color=\"#ffd200\">$map:52000041$</font>. "
+set key[id=803181311004012] name "I'll comb my fur and be there, so see you at <font \
+    color=\"#ffd200\">$map:52000041$</font>.\n$npc:11001707[gender:1]$... wait for me...!"
+set key[id=803181311004013] name "Did you see what happens when you <font color=\"#ffd200\">slack on your \
+    training</font>?\nIt's not just the body that changes. The mind has gone slack too.\nStorming out like that, \
+    <font color=\"#ffd200\">so easily worked up</font>... tsk."
+set key[id=803181311004014] name "(Ask if training can control being easily worked up.)"
+set key[id=803181311004015] name "Of course. A <font color=\"#ffd200\">practitioner</font> can circulate their \
+    energy through training\nand temper body and mind. If you slack off, the energy scatters, and like that \
+    guy,\n<font color=\"#ffd200\">changes occur in both body and mind</font>. So you should be careful too."
+set key[id=803181311004016] name "(Say I understand why <font color=\"#ffd200\">Senior Brother \
+    $npcName:11001716[gender:0]$</font> needs <font color=\"#ffd200\">training</font>.)"
+set key[id=803181311004017] name "Training is <font color=\"#ffd200\">something everyone needs</font>.\nIf \
+    anything, you're the one who needs it more...?\nSearching for information on the sacred treasure is important, \
+    but don't neglect your training."
+set key[id=803181311004018] name "(Say I'm not easily worked up like Senior Brother \
+    $npcName:11001716[gender:0]$.)"
+set key[id=803181311004019] name "Y-you...!\n<font color=\"#909090\">(Senior Brother $npcName:11001716[gender:0]$ \
+    seems quite worked up but is holding it in well. Is that <font color=\"#ffd200\">the effect of \
+    training</font>...) </font>"
+set key[id=803181311004020] name "Heh heh. $MyPCName$, you really got <font color=\"#ffd200\">Senior Brother \
+    $npcName:11001716[gender:0]$</font> good.\nStill, he's calmed down a lot compared to before, so go easy on \
+    him.\nHe knows he's strict and worries about it a lot.\nTaig Furian also bolted because he rebelled against \
+    Senior Brother's way of teaching...."
+set key[id=803181311004021] name "Still, I support Senior Brother. Is there anyone else who tries that hard?\nThis \
+    time there was no brawling either... how gentlemanly. Right? "
+set key[id=803181311004022] name "(...Ask what we should do now.)"
+set key[id=803181311004023] name "Oh, I forgot to tell Taig Furian to <font color=\"#ffd200\">gather information \
+    together</font> with us.\nThe most important part and I forgot, silly me! Heh heh heh.\nI'd like to go tell \
+    him myself... but I can't. You'd better go."
+set key[id=803181311004024] name "(Ask why she can't go herself.)"
+set key[id=803181311004025] name "Don't you see Senior Brother $npcName:11001716[gender:0]$'s wings fluttering \
+    right now?\nI think <font color=\"#ffd200\">what you just said to Senior Brother \
+    $npcName:11001716[gender:0]$</font> was quite a shock to him.\nI think it's better if I stay by his side. \
+    Or... do you want to stay?"
+set key[id=803181311004026] name "(Say I'll go...)"
+set key[id=803181311004027] name "You're so smart. Have a good trip~\nWhile you're there, gather a bit more <font \
+    color=\"#ffd200\">information</font> too~!"
+set key[id=803181311004028] name "If <font color=\"#ffd200\">Taig Furian</font> helps us, it'll be a big boost to \
+    gathering information.\nSmart $MyPCName$, go to Taig Furian and\nask him nicely for me!"
+set key[id=803181311004029] name "<font color=\"#ffd200\">$npcName:11001716[gender:0]$...</font> I heard that name \
+    and still went there...\nI was such a fool... I showed my pathetic side in front of <font \
+    color=\"#ffd200\">$npc:11001707[gender:1]$</font> again...!"
+set key[id=803181311004030] name "(Call him Taig Furian.)"
+set key[id=803181311004031] name "Don't call me that. I'm just going to live as the <font \
+    color=\"#ffd200\">friendly $npc:11000003[gender:0]$</font>.\nI'll work hard making potions, cleaning... and \
+    saving up lots of mesos\nto live as the <font color=\"#ffd200\">cold city's \
+    $npcName:11000003[gender:0]$</font> who's curious about nothing. "
+set key[id=803181311004032] name "And then I'll appear before you looking cool, $npc:11001707[gender:1]$.\nI'll \
+    buy you lots of the books you like, go pick flowers together..."
+set key[id=803181311004033] name "(Say not to forget gathering information about <font \
+    color=\"#ffd200\">Guidance's sacred treasure</font>.)"
+set key[id=803181311004034] name "...$MyPCName$. Could you not ruin the mood?\nCan't you see I'm <font \
+    color=\"#ffd200\">very sad right now</font>? Huh? Don't talk to me."
+set key[id=803181311004035] name "(Ask if he's heard a rumor that the sacred treasure is in $map:02000001$.)"
+set key[id=803181311004036] name "Saying only what you want to say no matter what the other person says is just \
+    like that $npcName:11001716[gender:0]$...\nHey, $MyPCName$. I'm not in the mood to talk with you right \
+    now.\nLooking at you makes me <font color=\"#ffd200\">keep thinking of $npcName:11001716[gender:0]$</font> and \
+    I get even sadder."
+set key[id=803181311004037] name "As for a sacred treasure, it's a rare treasure, so wouldn't it be <font \
+    color=\"#ffd200\">somewhere in the royal palace</font>?\n<font \
+    color=\"#ffd200\">$npcName:11000492[gender:0]$</font> manages the royal household, so go to <font \
+    color=\"#ffd200\">$map:02000140$</font> and meet him. "
+set key[id=803181311004038] name "He was someone who could have told me about the royal family and the sacred \
+    treasure, and even the whole story of the armory theft...\nbut it seems I won't hear anything from him \
+    anymore.\n<font color=\"#ffd200\">Let's look around $npc:11000492[gender:0]$ to see if there's any \
+    clue.</font>"
+set key[id=803181311004039] name "He was someone who could have told me about the royal family and the sacred \
+    treasure, and even the whole story of the armory theft...\nbut it seems I won't hear anything from him \
+    anymore.\n<font color=\"#ffd200\">Let's look around $npc:11000492[gender:0]$ to see if there's any \
+    clue.</font>"
+set key[id=803181311004040] name "$MyPCName$!!\nJust before the Royal Guard investigation began, \
+    $npc:11000492[gender:0]$, no, $npc:11000492[gender:0]$ disappeared,\nand it's been chaos. Where have you been \
+    all this time?"
+set key[id=803181311004041] name "(Tell him what happened at $map:52000037$.)"
+set key[id=803181311004042] name "What? $npc:11000492[gender:0]$... that person is dead?\nAnd strange people \
+    showed up there too and you ran away?\n...Haa. I'm glad you made it back safely. Are you all right? "
+set key[id=803181311004043] name "(Say I'm fine and have a favor to ask.)"
+set key[id=803181311004044] name "Ah... yes. Go ahead.\nI don't know if I can help, though. "
+set key[id=803181311004045] name "(Say I'm wondering whether the royal family keeps any items related to \
+    beastfolk.)"
+set key[id=803181311004046] name "I'm just a regular guard, so it's hard for me to know such things.\nBut <font \
+    color=\"#ffd200\">$npc:11000119[gender:0]$</font>... he knows $npc:11000074[gender:0]$ too,\nso he might be \
+    able to ask for you. "
+set key[id=803181311004047] name "Why don't you report what you've investigated so far, $MyPCName$, directly to \
+    <font color=\"#ffd200\">$npc:11000119[gender:0]$</font>\nand ask him to look into what you're curious about?"
+set key[id=803181311004048] name "Please tell <font color=\"#ffd200\">$npc:11000119[gender:0]$</font> in detail \
+    about the investigation so far\nand <font color=\"#ffd200\">the notebook you found</font> yourself, \
+    $MyPCName$.\nPlease."
+set key[id=803181311004049] name "Did you leave something behind?"
+set key[id=803181311004050] name "(Say I left $item:30000023$ behind.)"
+set key[id=803181311004051] name "(Say I forgot what I was asked to do.)"
+set key[id=803181311004052] name "Ah, right. Here you go."
+set key[id=803181311004053] name "You looked like you were putting it in your bag just now...\nPlease check your \
+    bag again."
+set key[id=803181311004054] name "Your bag looks too heavy...\nWhy don't you tidy it up a bit?"
+set key[id=803181311004055] name "Please tell $npc:11000119[gender:0]$ in detail about the investigation so \
+    far\nand the notebook you found."
+set key[id=803181311004056] name "$MyPCName$?\nAh, so you're the one who investigated the armory theft\nat \
+    $npc:11000169[gender:0]$'s request."
+set key[id=803181311004057] name "We started investigating $npc:11000492[gender:0]$ right after \
+    $npc:11000169[gender:0]$'s tip,\nbut his whereabouts are unknown. He left nothing behind."
+set key[id=803181311004058] name "Let me tell you what's happened since."
+set key[id=803181311004059] name "What? Is that true? $npc:11000492[gender:0]$ is dead...\nBefore we could even \
+    uncover the truth of the armory theft... it never rains but it pours.\nWith no clues at all, this is \
+    troublesome...  "
+set key[id=803181311004060] name "(Hand over the notebook found in $npc:11000492[gender:0]$'s bag.)"
+set key[id=803181311004061] name "What's this...?\nHm? Wait... this looks like the notebook used by Barota Trading \
+    Company peddlers...\nWhere did you find it?"
+set key[id=803181311004062] name "(Say I found it among the clothes in $npc:11000492[gender:0]$'s bag.)"
+set key[id=803181311004063] name "Wait... clothes in $npc:11000492[gender:0]$'s luggage bag... hmm...\nWe found no \
+    sign at all of $npc:11000492[gender:0]$ packing his things at his home or city hall.\nEverything was left as \
+    it was.\nYet there were clothes in the bag found beside the dead $npc:11000492[gender:0]$... and this \
+    notebook... "
+set key[id=803181311004064] name "Perhaps that bag belonged to someone other than $npc:11000492[gender:0]$.\nWe \
+    can say there's still more to investigate....\n$MyPCName$, could you help investigate further? "
+set key[id=803181311004065] name "(Say I have something to ask first.)"
+set key[id=803181311004066] name "<font color=\"#ffd200\">A favor?</font> Of course, you helped us, so I'll help \
+    if I can.\nWhat is it?"
+set key[id=803181311004067] name "(Say I'm wondering whether the royal family keeps any items related to \
+    beastfolk.)"
+set key[id=803181311004068] name "Hmm... items related to beastfolk...\nThe prime minister once told me that to \
+    overcome the crisis facing the world,\n<font color=\"#ffd200\">various factions</font> gathered around the \
+    Empress placed <font color=\"#ffd200\">their symbolic figures</font>\nin $map:02000001$ to pool their strength \
+    and strengthen the alliance. "
+set key[id=803181311004069] name "The item you're talking about might be related to that.\nBut the prime minister \
+    said <font color=\"#ffd200\">the symbols of each faction should have\nmostly returned to their original places \
+    by now...</font>"
+set key[id=803181311004070] name "(Ask if he's ever heard the name <font color=\"#ffd200\">Guidance</font>.)"
+set key[id=803181311004071] name "<font color=\"#ffd200\">Guidance</font>... I'm not sure. I've never heard of \
+    it.\nIn any case, I've heard what you want to know,\nand if I get any information about it, I'll tell you \
+    right away."
+set key[id=803181311004072] name "(Say I'll cooperate with your work too, so ask me anytime.)"
+set key[id=803181311004073] name "Really? That would be good for both of us.\nThank you, $MyPCName$."
+set key[id=803181311004074] name "$MyPCName$! This is a message from <font \
+    color=\"#ffd200\">$npc:11001707[gender:1]$</font>.\nShe says she has something to tell you and wants to meet \
+    at <font color=\"#ffd200\">$map:52000041$</font>.\nAnd... P.S. <font color=\"#ffd200\">if you don't want to \
+    face Senior Brother $npcName:11001716[gender:0]$'s wrath</font>, run over quick?"
+set key[id=803181311004075] name "I don't know the details, but she seems urgent...\nYou should head over to <font \
+    color=\"#ffd200\">$map:52000041$</font>."
+set key[id=803181311004076] name "I don't know the details, but she seems quite urgent...\nYou should head over to \
+    <font color=\"#ffd200\">$map:52000041$</font>."
+set key[id=803181311004077] name "$MyPCName$! You came, you came.\nSenior Brother $npcName:11001716[gender:0]$ is \
+    waiting. Go talk to him."
+set key[id=803181311004078] name "$MyPCName$. I heard you've been gathering <font color=\"#ffd200\">information on \
+    the sacred treasure</font>.\nHave you found out anything so far?"
+set key[id=803181311004079] name "(Say I've inquired with the royal family and am waiting for a reply.)"
+set key[id=803181311004080] name "Only an inquiry? And you spent all this <font color=\"#ffd200\">long time</font> \
+    on that?\nYou received <font color=\"#ffd200\">the Master's Animar</font>, so while moving around here\nyou \
+    should have sensed some energy or sign... was there nothing at all?"
+set key[id=803181311004081] name "(Say there was nothing like that.)"
+set key[id=803181311004082] name "...How disappointing. I believed that investigating here would bring light\nto \
+    both your abilities and your lost memories... it seems that's still far off.\nOr... is it that you don't want \
+    to tell me?"
+set key[id=803181311004084] name "Enough. $MyPCName$, I suppose you have your own thoughts.\nJust don't neglect \
+    your <font color=\"#ffd200\">training</font>, and I hope you'll often ask <font \
+    color=\"#ffd200\">$npc:11001707[gender:1]$</font> for her opinion."
+set key[id=803181311004085] name "Enough. $MyPCName$, I suppose you have your own thoughts.\nJust don't neglect \
+    your <font color=\"#ffd200\">training</font>, and I hope you'll often ask <font \
+    color=\"#ffd200\">$npc:11001707[gender:1]$</font> for her opinion."
+set key[id=803181311004086] name "You're having a hard time in an unfamiliar place, $MyPCName$.\nI heard you \
+    talking to Senior Brother. Inquiring with the royal family, that's pretty good!\nThe royal family is more \
+    conservative than you'd think, so it's not easy to get connections."
+set key[id=803181311004087] name "(Tell her what happened at $map:52000037$.)"
+set key[id=803181311004088] name "A person died, and someone showed up at the scene and hurried away...\nThe dead \
+    person was a royal official linked to the armory theft?\n...Wow. What on earth is going on. The human world is \
+    complicated~"
+set key[id=803181311004089] name "So that's why you didn't tell Senior Brother $npcName:11001716[gender:0]$ the \
+    details.\n<font color=\"#ffd200\">Getting caught up in humans' incidents is one of the things Senior Brother \
+    $npcName:11001716[gender:0]$ hates most</font>.\n...Yeah, I get it. But you did your best in your situation."
+set key[id=803181311004090] name "In that case, Senior Brother $npcName:11001716[gender:0]$ will understand \
+    too,\nso from now on I think you should tell him without hesitating.\nSenior Brother may be prickly with \
+    humans, but it's not like he can't understand."
+set key[id=803181311004091] name "And I'm going to start searching for information on the sacred treasure in \
+    earnest.\nSenior Brother has regained some energy, so I'm going with the informants\nto investigate a wider \
+    area, even beyond $map:02000001$."
+set key[id=803181311004092] name "$MyPCName$, you keep investigating matters connected to the royal family\nand \
+    check whether anything unusual turns up. If I find something, I'll contact you!"
+set key[id=803181311004093] name "$MyPCName$! This is a message from someone called $npc:11001707[gender:1]$.\nShe \
+    says she has something to tell you and wants to meet at $map:52000041$."
+set key[id=803181311004094] name "$MyPCName$! This is a message from someone called $npc:11001707[gender:1]$.\nShe \
+    says she has something to tell you and wants to meet at $map:52000041$."
+set key[id=803181311004095] name "You came, $MyPCName$!\nI've been waiting."
+set key[id=803181311004096] name "Did the Royal Guard captain tell you anything?\nI mean that royal guard person \
+    you're helping with the investigation."
+set key[id=803181311004097] name "(Say there was nothing special.)"
+set key[id=803181311004098] name "Hmm... I see.\nBut don't be disappointed. I found out a few things!"
+set key[id=803181311004099] name "There were a few interesting facts from the investigation with the \
+    informants.\nTwo things stood out, and I was just wondering which to check first,\nbut this is perfect. \
+    $MyPCName$, you and I can each go to one place."
+set key[id=803181311004100] name "(Ask where to go.)"
+set key[id=803181311004101] name "<font color=\"#ffd200\">$map:02000216$.</font> A black market where all sorts of \
+    goods gather.\nBut aren't you curious what the information is? You ask where first.\nYou're quietly impatient. \
+    Heh heh."
+set key[id=803181311004102] name "According to word from $npc:11001730[gender:1]$, the Black Star Society that \
+    runs $map:02000216$\nlets especially good customers preview and buy goods in a <font \
+    color=\"#ffd200\">separate space</font>\nthey prepared, treating them as <font color=\"#ffd200\">VIP</font>s. \
+    Naturally,\nthere'd be records of those secret deals too."
+set key[id=803181311004103] name "These days there's a big-spending customer they're going out to make <font \
+    color=\"#ffd200\">house-call sales</font> to,\nso that special space is often empty and security is lax.\nI \
+    think we can take this chance to collect some clue there. "
+set key[id=803181311004104] name "Go meet <font color=\"#ffd200\">$npc:11001730[gender:1]$</font> at <font \
+    color=\"#ffd200\">$map:02000216$</font>.\nOh, and $npc:11001730[gender:1]$ likes this, so be sure to bring it \
+    along!"
+set key[id=803181311004105] name "What, is there a problem?"
+set key[id=803181311004106] name "(Say I lost <font color=\"#ffd200\">$item:30000563$</font>.)"
+set key[id=803181311004107] name "(Ask what she's thinking about.)"
+set key[id=803181311004108] name "Geez! Where is your head at? You left it here.\nHere you go. Keep good track of \
+    it this time~ "
+set key[id=803181311004109] name "Geez, $MyPCName$! Look in your bag, <font color=\"#ffd200\">you have \
+    it!</font>\nThat's enough, so hurry on your way~ "
+set key[id=803181311004110] name "If you walk around with your bag full, you can't carry anything.\nI'm lucky it's \
+    me, but if Senior Brother Junta catches you, you'll be in big trouble.\nTidy up your bag first and come back~ \
+    "
+set key[id=803181311004111] name "I'm thinking about what to eat tonight, why~\nI have things to do too, so hurry \
+    up and go."
+set key[id=803181311004112] name "Who goes there, mi? Say the password, yung!"
+set key[id=803181311004113] name "(Hand over $item:30000563$.)"
+set key[id=803181311004114] name "$MyPCName$...? I got word from $npc:11001707[gender:1]$, mi!\nI've been waiting \
+    for you, yung~"
+set key[id=803181311004115] name "Perfect timing, human! <font color=\"#ffd200\">$map:52000042$</font> is totally \
+    empty right now!\nThe staff all went out on a sales trip, and \nthe one guard left behind went to the \
+    restroom, you see! "
+set key[id=803181311004116] name "I broke the restroom door, so he won't be coming out anytime soon!\nThis is your \
+    chance to go investigate $map:52000042$~\nA special human with the power of Animar... \nYou'll find clues \
+    easily, right? I'm counting on you!"
+set key[id=803181311004117] name "Okay! Hurry into $map:52000042$ and bring back some clues!\nThe <font \
+    color=\"#ffd200\">entrance is on the first floor of the white building</font> just below here! Go on, get in \
+    there!\nIf you find anything, bring it straight to me and we'll look at it together!"
+set key[id=803181311004118] name "Okay! Hurry into $map:52000042$ and bring back some clues!\nThe <font \
+    color=\"#ffd200\">entrance is on the first floor of the white building</font> just below here! Go on, get in \
+    there!\nIf you find anything, bring it straight to me and we'll look at it together!"
+set key[id=803181311004119] name "$MyPCName$! That was close~ \nThe guard just smashed the restroom door and came \
+    out! \nDid you find anything?"
+set key[id=803181311004120] name "(Hand over $item:30000562$.)"
+set key[id=803181311004121] name "Ohh...? What's this...? \nLet me see that...."
+set key[id=803181311004122] name "Was that really the only thing that stood out in there...? \nNothing that \
+    reacted to Animar or anything like that? "
+set key[id=803181311004123] name "There was nothing like that."
+set key[id=803181311004124] name "Hmph... Then, human, take this back... \nI can't read this continent's letters, \
+    so I have no idea \nwhat it says here... Mewhuhu...!"
+set key[id=803181311004125] name "I'll read it out, so let's go over it together."
+set key[id=803181311004126] name "Oho~ Smart human, aren't you? Then read it out loud.\nI'll listen carefully and \
+    tell you everything I know right away!"
+set key[id=803181311004127] name "(Read the contents out loud.)"
+set key[id=803181311004128] name "Hmm... Just as I expected, <font \
+    color=\"#ffd200\">$npc:11000354[gender:0]$</font> was the biggest customer~\nBought loads of everything, no \
+    matter the kind. \n<font color=\"#ffd200\">$npc:11000244[gender:1]$</font>... is famous for just looking at \
+    goods and never buying, right?\nHehehe~ I knew it. Famous for being quite the miser~"
+set key[id=803181311004129] name "The name on the last page... did you say <font color=\"#ffd200\">Beyond \
+    Link</font>? \nHmm... Beyond Link is a <font color=\"#ffd200\">humanoid engineering research \
+    institute</font>.\nThey say they're based near <font color=\"#ffd200\">$map:02000270$</font>."
+set key[id=803181311004130] name "<font color=\"#909090\">(Beyond... Link...)</font>"
+set key[id=803181311004131] name "They get lots of investment from all over, but... I can't tell \nwhy they \
+    collect relics. And only junk, too. That's strange...!"
+set key[id=803181311004132] name "<font color=\"#909090\">(It feels familiar... I don't know why, but I feel \
+    uneasy.)</font>"
+set key[id=803181311004133] name "You'd better take this and look it over carefully <font \
+    color=\"#ffd200\">together with $npc:11001707[gender:1]$</font>.\nGood work, human!"
+set key[id=803181311004134] name "What is it?"
+set key[id=803181311004135] name "I lost <font color=\"#ffd200\">$item:30000562$</font>."
+set key[id=803181311004136] name "Don't you want to see your friends?"
+set key[id=803181311004137] name "I thought you were smart, human, but I'm disappointed. You dropped it \
+    here!\nHere, take it, and keep it safe~ "
+set key[id=803181311004138] name "Geez, $MyPCName$! Look in your bag, <font color=\"#ffd200\">you already have \
+    it!</font>\nOne is enough, so off you go~ "
+set key[id=803181311004139] name "If your bag is stuffed full, you can't take anything.\nSee? Human greed never \
+    ends, and you keep repeating the same mistake!\nMeerkats <font color=\"#ffd200\">empty their bags</font> at \
+    times like this. You should do the same."
+set key[id=803181311004140] name "Think I'll get homesick, being on a business trip this far away?\nAll meerkats \
+    have <font color=\"#ffd200\">a professional spirit</font>, so no such thing!\nDon't underestimate our meerkat \
+    scouts!"
+set key[id=803181311004141] name "$MyPCName$. Where have you been?"
+set key[id=803181311004142] name "I went and investigated the place $npc:11001707[gender:1]$ told me about."
+set key[id=803181311004143] name "I see. Did you <font color=\"#ffd200\">find</font> anything?"
+set key[id=803181311004144] name "(Hand over $item:30000562$.)"
+set key[id=803181311004145] name "$item:30000562$... Hmm. It records the people who bought up many relics in \
+    $map:02000216$\nin great detail. I once heard about this place from <font \
+    color=\"#ffd200\">$npc:11001707[gender:1]$</font>.\nDid you read all of this? Did anyone in it stand out?"
+set key[id=803181311004146] name "I'm not sure."
+set key[id=803181311004147] name "Investigating the incidents here is your job, yet you're not well-informed about \
+    rumors. \nHmm... This page was added recently. <font color=\"#ffd200\">Beyond Link</font>, is it..."
+set key[id=803181311004148] name "<font color=\"#909090\">(For some strange reason, that name feels \
+    familiar...)</font>"
+set key[id=803181311004149] name "Have you heard of this place? \nWhat did the informant you met say about \
+    it?\n<font color=\"#909090\">($npcName:11001716[gender:0]$'s gaze is sharp. I don't feel like talking at \
+    length.)</font>"
+set key[id=803181311004150] name "I haven't heard anything."
+set key[id=803181311004151] name "...Is that so? \n<font color=\"#909090\">(I'd better investigate a bit more and \
+    sort out my thoughts before I talk with my senior brothers.)</font>"
+set key[id=803181311004152] name "I'm not sure."
+set key[id=803181311004153] name "...Understood. \nGood work, $MyPCName$."
+set key[id=803181311004154] name "$MyPCName$! This is a message from someone called $npc:11001707[gender:1]$.\nShe \
+    says she has something to tell you and wants to meet at $map:52000041$."
+set key[id=803181311004155] name "$MyPCName$! This is a message from someone called $npc:11001707[gender:1]$.\nShe \
+    says she has something to tell you and wants to meet at $map:52000041$."
+set key[id=803181311004156] name "$MyPCName$! \nCome in, I've been waiting for you."
+set key[id=803181311004157] name "I got it from Senior $npcName:11001716[gender:0]$, the <font \
+    color=\"#ffd200\">$item:30000562$</font> you went and found.\nWhile checking what was written there against \
+    the recent flow of goods, \nI found <font color=\"#ffd200\">two suspicious points</font>. "
+set key[id=803181311004158] name "First, <font color=\"#ffd200\">$npc:11000252[gender:0]$</font>, who bought the \
+    most goods, is smuggling the relics \nhe bought off somewhere. Right after buying, he always shows them off at \
+    $map:02000189$ or\nsomewhere crowded, and soon after he locks them away, saying \nhe won't show them to \
+    anyone. That's suspicious."
+set key[id=803181311004159] name "Second, an institution called <font color=\"#ffd200\">Beyond Link</font> is \
+    collecting a huge number of relics, \nnot only from the Black Star Society but through other routes too. They \
+    say it's an <font color=\"#ffd200\">institution that researches engineering</font>,\nbut what they buy has \
+    nothing to do with their field, and it's far too large-scale. \nThey keep receiving investment too... This \
+    doesn't add up."
+set key[id=803181311004160] name "I'm keeping a close eye on $npc:11000252[gender:0]$, partly because of the sheer \
+    volume.\nSo I'd like you, $MyPCName$, to take on investigating <font color=\"#ffd200\">Beyond Link</font>. \
+    \nThink you can do it?"
+set key[id=803181311004161] name "No problem."
+set key[id=803181311004162] name "You answered faster than usual?\nGood, I'm counting on you then."
+set key[id=803181311004163] name "<font color=\"#909090\">(Beyond Link... There's a lot I want to know about them \
+    too.)</font>"
+set key[id=803181311004164] name "Now then, go meet $npc:11001731[gender:0]$ at \
+    $map:03000145$.\n$npc:11001731[gender:0]$ is a prickly guy, but give him this bread and he'll be in a better \
+    mood."
+set key[id=803181311004165] name "What, is there a problem?"
+set key[id=803181311004166] name "(Say I lost <font color=\"#ffd200\">$item:30000563$</font>.)"
+set key[id=803181311004167] name "(Ask what she's thinking about.)"
+set key[id=803181311004168] name "Geez! Where is your head at? You left it here.\nHere you go. Keep good track of \
+    it this time~ "
+set key[id=803181311004169] name "Geez, $MyPCName$! Look in your bag, <font color=\"#ffd200\">you have \
+    it!</font>\nThat's enough, so hurry on your way~ "
+set key[id=803181311004170] name "If you walk around with your bag full, you can't carry anything.\nI'm lucky it's \
+    me, but if Senior Brother Junta catches you, you'll be in big trouble.\nTidy up your bag first and come back~ \
+    "
+set key[id=803181311004171] name "I'm thinking about what to eat tonight, why~\nI have things to do too, so hurry \
+    up and go."
+set key[id=803181311004172] name "......\n<font color=\"#909090\">(He's hiding in the dark, pretending he can't \
+    speak human.)</font>"
+set key[id=803181311004173] name "(Hand over $item:30000563$.)"
+set key[id=803181311004174] name "Sniff... sniff. A human who brought $item:30000563$... \nI've been waiting for \
+    you. <font color=\"#ffd200\">$MyPCName$.</font> "
+set key[id=803181311004175] name "I heard from $npc:11001707[gender:1]$. You came to investigate <font \
+    color=\"#ffd200\">Beyond Link</font>, right? \nThe entrance to the building I've been watching is up there. \
+    \nUnfortunately, I haven't been able to get in yet."
+set key[id=803181311004176] name "I can enter anywhere using camouflage. So I've investigated every place \
+    connected to <font color=\"#ffd200\">Beyond Link</font>,\nbut that one place, there was just no way in. \
+    \nThere are no guards and it looks empty, but\nit's protected by a really powerful <font \
+    color=\"#ffd200\">unmanned security system</font>."
+set key[id=803181311004177] name "I tried slipping in during the brief gap when someone with clearance went \
+    through,\nbut I <font color=\"#ffd200\">failed</font> spectacularly. The <font color=\"#ffd200\">powerful \
+    electromagnetic waves</font> around it \nnearly roasted me golden brown."
+set key[id=803181311004178] name "But <font color=\"#ffd200\">$npc:11001707[gender:1]$</font> said you're a bit \
+    special.\nShe said you'd be different, having inherited a powerful <font color=\"#ffd200\">Animar</font>... \
+    \nWell, let's see if that's true."
+set key[id=803181311004179] name "Go inside, <font color=\"#ffd200\">go as far as you can and investigate \
+    everything in as much detail as possible</font>.\nThat is, <font color=\"#ffd200\">if you manage to get \
+    in</font>."
+set key[id=803181311004180] name "Go inside, <font color=\"#ffd200\">go as far as you can and investigate \
+    everything in as much detail as possible</font>.\nThat is, <font color=\"#ffd200\">if you manage to get \
+    in</font>."
+set key[id=803181311004181] name "Checking access rights to the Beyond Link database. \nMove your face close to \
+    the screen to begin <font color=\"#ffd200\">iris recognition</font>. "
+set key[id=803181311004182] name "(Bring my face close.)"
+set key[id=803181311004183] name "<font color=\"#ffd200\">Access confirmed: Lost Child</font>\nYou may view the \
+    <font color=\"#ffd200\">secret files</font>."
+set key[id=803181311004184] name "Select the information to view."
+set key[id=803181311004185] name "Secret File 0077. Munakra "
+set key[id=803181311004186] name "<font color=\"#ffd200\">Secret File 8824. Frozen Lava</font>"
+set key[id=803181311004187] name "Secret File 1411. $map:02000001$ Royal Storehouse"
+set key[id=803181311004188] name "Head of Guidance, the one who inherits the spirit of the great Spirit One.\n15th \
+    Munakra: <font color=\"#00a2ed\">$npc:11001556[gender:0]$</font>\n<font \
+    color=\"#909090\">($npc:11001556[gender:0]$'s name... is here.)</font>"
+set key[id=803181311004189] name "Return to the file list"
+set key[id=803181311004190] name "Below the volcano is a great cavity of lava, near where animals with the power \
+    of fire live.\nAmong the red cracks of the volcano, there is said to be <font color=\"#ffd200\">a fissure \
+    where a cold wind blows</font>.\nIf you go near and peer in, the hot steam will hurt your eyes."
+set key[id=803181311004191] name "Rumors of this place grew one after another, and many made reckless \
+    attempts,\nbut no one solved the secret tied to it.\nThey say only Baba the dog, who first found it, still \
+    uses it as a treasure vault\nfor burying the shiny things he finds."
+set key[id=803181311004192] name "Though he digs every day at a crack in a rock wall no tool could break,\nBaba's \
+    nose is said to remain moist and soft, without a single scratch."
+set key[id=803181311004193] name "<font color=\"#ffd200\">Secret File X. Code Zero, Code One, Code Two</font>"
+set key[id=803181311004194] name "Go back to the file list"
+set key[id=803181311004195] name "The $map:02000001$ Royal Storehouse keeps rare items from all over,\nstrictly \
+    guarded by the Royal Guard.\nBut while $npc:11000074[gender:0]$ and $npc:11000119[gender:0]$ were away,\nsome \
+    relics were reportedly stolen by a <font color=\"#ffd200\">phantom thief</font>."
+set key[id=803181311004196] name "The royal family has made no statement about this,\nbut tried to dismiss the \
+    rumor by publicly showing some major relics at an exhibition.\nOf course, the stored relics are so vast that \
+    the truth cannot be known."
+set key[id=803181311004197] name "Return to the file list"
+set key[id=803181311004198] name "Select the information to view."
+set key[id=803181311004199] name "Secret File 0014. Munakra "
+set key[id=803181311004200] name "<font color=\"#ffd200\">Secret File 8824. Frozen Lava</font>"
+set key[id=803181311004201] name "Secret File 8417. $map:02000001$ Royal Storehouse"
+set key[id=803181311004202] name "Code Zero\nHand Project: Summoning system organized, pocket-dimension \
+    implementation in progress"
+set key[id=803181311004203] name "View Code One"
+set key[id=803181311004204] name "Code One\nMantra Project: Narvashan refinement rate normal.\nChanges in mind and \
+    body detected during injection."
+set key[id=803181311004205] name "Next page"
+set key[id=803181311004206] name "Large amount of sample data required -\nOf the 100 subjects procured from \
+    Katramus through the Red Cloak,\nhalf can transition to Phase 2.\nTransition to Phase 3 requires restoring the \
+    missing prototype."
+set key[id=803181311004207] name "View Code Two"
+set key[id=803181311004208] name "Code Two\nKatramus Project: No need to link with data from $map:03000145$.\nCode \
+    One is top priority."
+set key[id=803181311004209] name "Next page"
+set key[id=803181311004210] name "Code Two may be discarded to support Code One.\n<font color=\"#ffd200\">A new \
+    project to improve the condition of the preserved prototype is also under consideration.</font>"
+set key[id=803181311004211] name "Next page"
+set key[id=803181311004212] name "Further information cannot be viewed. Transmitting all information viewed so \
+    far.\nRecipient: <font color=\"#ffd200\">Lost Child</font>"
+set key[id=803181311004213] name "<font color=\"#909090\">(Don't tell me... this is...)</font>"
+set key[id=803181311004214] name "Sending additional video data to awaken the target. \nData sent: <font \
+    color=\"#ffd200\">Mantra Project Laboratory Video Record #17510</font>\nRecipient: <font \
+    color=\"#ffd200\">Lost Child</font>"
+set key[id=803181311004215] name "System error. Data cannot be resent. \nPlease confirm access rights again \
+    through the <font color=\"#ffd200\">door</font>."
+set key[id=803181311004216] name "Access system. Checking access rights.\nMove your face close to the screen to \
+    begin iris recognition. "
+set key[id=803181311004217] name "(Bring my face close.)"
+set key[id=803181311004218] name "<font color=\"#ffd200\">Target confirmed: Lost Child</font>\nSystem command: \
+    <font color=\"#ffd200\">Absorbing</font> the target's energy."
+set key[id=803181311004219] name "We meet again. \nI hoped a moment like this would never come... "
+set key[id=803181311004220] name "Where is this place? Who are you?"
+set key[id=803181311004221] name "...No. Don't try to learn anything more.\nGo far away. And... forget everything. \
+    "
+set key[id=803181311004222] name "Beyond Link... Do I really know this place?"
+set key[id=803181311004223] name "Don't cling to that. Just leave on your own.\nThe most important thing is... to \
+    survive."
+set key[id=803181311004224] name "Tell me what you know about the video I saw before I came here."
+set key[id=803181311004225] name "Even if I knew, I couldn't tell you.\nIt's all... useless."
+set key[id=803181311004226] name "Does this have something to do with the Mantra Project, the experiment that \
+    makes clones?"
+set key[id=803181311004227] name "Forget that. You have to forget!!"
+set key[id=803181311004228] name "The Lost Child... Do you mean me?"
+set key[id=803181311004229] name "I hoped it wasn't so... Looks like your memories are starting to return. \nThe \
+    memories of <font color=\"#ffd200\">that day</font>, before you were rescued at Neoulbit Mountain..."
+set key[id=803181311004230] name "Go, go far away...!"
+set key[id=803181311004231] name "We meet again. \nThis time, don't run. We want you to tell us."
+set key[id=803181311004232] name "You've crossed paths with us at the <font color=\"#ffd200\">cave where venom \
+    flows</font>, haven't you?"
+set key[id=803181311004233] name "Yes, I admit it. But that has nothing to do with me, so don't get the wrong \
+    idea."
+set key[id=803181311004234] name "What is <font color=\"#ffd200\">your identity</font>?"
+set key[id=803181311004235] name "I'm a practitioner of a group called Guidance."
+set key[id=803181311004236] name "Fine. What is your <font color=\"#ffd200\">purpose</font> in coming here? "
+set key[id=803181311004237] name "Like you, I came here looking for information."
+set key[id=803181311004238] name "Do you know what the beings in the video we just watched are?"
+set key[id=803181311004239] name "They're clones made by Beyond Link. "
+set key[id=803181311004240] name "They look a lot like you. Are you one of them too? \nWhy are they making things \
+    like that? "
+set key[id=803181311004241] name "I don't know exactly myself, so I can't answer that."
+set key[id=803181311004242] name "What do you mean you don't know exactly?\n<font color=\"#909090\">(They're also \
+    tracing information, so the conversation keeps getting longer.)</font>"
+set key[id=803181311004243] name "I lost my memory, and I'm trying to recover it."
+set key[id=803181311004244] name "You lost your memory... Yet you came here, so you must be connected to Beyond \
+    Link. \nDid you learn anything by investigating this place? \n<font \
+    color=\"#909090\">($npcName:11001723[gender:0]$ said someone was chasing me... I should cut this short and get \
+    out of here.)</font>"
+set key[id=803181311004245] name "I'm being chased, so it's hard to explain in detail."
+set key[id=803181311004246] name "...I see. But we need <font color=\"#ffd200\">more detailed information</font> \
+    about this place. \nAnd I can't be sure your words can be trusted, either. "
+set key[id=803181311004247] name "Use the hub computer to view the information on Code Zero, One and Two. "
+set key[id=803181311004248] name "I see... Thank you for sharing the information. \nIt seems the misunderstanding \
+    is cleared up. You may go on your way."
+set key[id=803181311004249] name "I see... Thank you for sharing the information. \nIt seems the misunderstanding \
+    is cleared up. You may go on your way."
+set key[id=803181311004250] name "You're back, $MyPCName$.\nYou look quite worn out. Do you have something to tell \
+    me?"
+set key[id=803181311004251] name "I'll tell you what I found at Beyond Link."
+set key[id=803181311004252] name "Right. I'll hear the details together with $npc:11001707[gender:1]$.\nGood work. \
+    "
+set key[id=803181311004253] name "$MyPCName$, you're here. Good work.\n$npc:11001731[gender:0]$ sent word that you \
+    got into that building under <font color=\"#ffd200\">Beyond Link</font> \nsafely. Did you look around inside \
+    carefully?"
+set key[id=803181311004254] name "I didn't see any collected relics, but I saw the information they've gathered."
+set key[id=803181311004255] name "I haven't found a single thing on $npc:11000252[gender:0]$'s side, \nbut I'm \
+    glad $MyPCName$ seems to have found something! \nSo, what kind of information did you see?"
+set key[id=803181311004256] name "I'll tell you what the secret files said."
+set key[id=803181311004257] name "Frozen lava... the rumor of the royal storehouse theft... and then the \
+    Master.\nIf <font color=\"#ffd200\">Beyond Link</font> buying up relics means that what they're after \
+    is\nGuidance's Divine Relic, then..."
+set key[id=803181311004258] name "<font color=\"#909090\">($npc:11001707[gender:1]$'s face turns grave. She seems \
+    lost in thought.)</font>"
+set key[id=803181311004259] name "The scale and nature of the relics and information they've collected clearly \
+    point in <font color=\"#ffd200\">one direction</font>.\nAnd... even the same information \nvaries in value and \
+    use depending on who holds it.... "
+set key[id=803181311004260] name "What should I do next?"
+set key[id=803181311004261] name "From now on I'll focus on <font color=\"#ffd200\">analyzing the clues</font>. \
+    \nI'll call you if I find anything, and if something comes to mind, \ntell <font color=\"#ffd200\">Senior \
+    $npcName:11001716[gender:0]$ instead of me</font>."
+set key[id=803181311004262] name "From now on I'll focus on <font color=\"#ffd200\">analyzing the clues</font>. \
+    \nI'll call you if I find anything, and if something comes to mind, \ntell <font color=\"#ffd200\">Senior \
+    $npcName:11001716[gender:0]$ instead of me</font>."
+set key[id=803181311004263] name "You've found a lot of clues at <font color=\"#ffd200\">Beyond Link</font>. \nI \
+    suppose $npc:11001707[gender:1]$ guesses it too, but... to me as well, their aim\ndoesn't look like mere relic \
+    collecting. It feels like everything is aimed at\nour <font color=\"#ffd200\">Guidance</font>. "
+set key[id=803181311004264] name "<font color=\"#ffd200\">$npc:23000081[gender:0]$</font> who attacked Neoulbit \
+    Mountain...\nIf that one and <font color=\"#ffd200\">Beyond Link</font> are no different... if they're after \
+    the same thing....\n<font color=\"#909090\">($npcName:11001716[gender:0]$'s face darkens.)</font>"
+set key[id=803181311004265] name "$MyPCName$. By any chance... \nwas there anything in the files you saw other \
+    than the relics?"
+set key[id=803181311004266] name "<font color=\"#909090\">(Lost Child... the name Beyond Link's system called \
+    me...)</font>"
+set key[id=803181311004267] name "...If you can't recall, you may tell me next time.\nBut, $MyPCName$... \nthere \
+    is something I want to <font color=\"#ffd200\">ask</font> of you."
+set key[id=803181311004268] name "It's true that I'm not fond of you.\nBut we trained together under <font \
+    color=\"#ffd200\">$npc:11001661[gender:0]$</font>, and \nas your <font \
+    color=\"#ffd200\">$npcTitle:11001716[gender:0]$</font>, I believe I have a <font color=\"#ffd200\">duty</font> \
+    to look after and protect you."
+set key[id=803181311004269] name "If something happens to you... if it's hard to get through alone...\n<font \
+    color=\"#ffd200\">I want you to trust me, or $npc:11001707[gender:1]$, and tell us.</font>\nNo... I believe \
+    you must. Do not forget it."
+set key[id=803181311004270] name "I will surely uncover the truth hidden beyond.\nUntil then, I hope you'll stay \
+    with us. Please... "
+set key[id=803181311004271] name "$MyPCName$! This is a message from someone called $npc:11001707[gender:1]$.\nShe \
+    says she has something to tell you and wants to meet at $map:52000041$."
+set key[id=803181311004272] name "$MyPCName$! This is a message from someone called $npc:11001707[gender:1]$.\nShe \
+    says she has something to tell you and wants to meet at $map:52000041$."
+set key[id=803181311004273] name "It seems I've finally finished deciphering the clues. \nThe clues you brought \
+    from <font color=\"#ffd200\">Beyond Link</font>. "
+set key[id=803181311004274] name "<font color=\"#ffd200\">Frozen lava...!</font> Harmony within discord... there's \
+    something inside that space. \nOf course they couldn't find it, but we're different. \nWith the <font \
+    color=\"#ffd200\">power of Animar</font>, we can find that place and go inside."
+set key[id=803181311004275] name "Please explain in detail."
+set key[id=803181311004276] name "The first to discover that place was <font color=\"#ffd200\">an animal, not a \
+    human</font>. \nBut whenever humans tried to approach, hot steam came out and made it impossible. \nThat's a \
+    <font color=\"#ffd200\">safeguard</font> so humans can't get near by force."
+set key[id=803181311004277] name "And <font color=\"#ffd200\">two opposing energies coexist</font> there, ice and \
+    lava. \nHarmony within discord, the ultimate solution found by facing adversity... \nI once heard that \
+    creating <font color=\"#ffd200\">true harmony</font> is both Guidance's teaching and \nthe power the Divine \
+    Relic holds."
+set key[id=803181311004278] name "If you look closely at the records, it says this. \n<font \
+    color=\"#ffd200\">Below the volcano is a great cavity of lava, near where animals with the power of fire \
+    live.</font>\nI think it means <font color=\"#ffd200\">$map:02000039$</font>, where $map:02000052$ is."
+set key[id=803181311004279] name "Go to $map:02000039$, find the blocked entrance and break through with the power \
+    of Animar,\nand you should be able to reach the hidden sacred space. "
+set key[id=803181311004280] name "Then let's leave right away."
+set key[id=803181311004281] name "Oh, before you go, <font color=\"#ffd200\">Senior \
+    $npcName:11001716[gender:0]$</font> has something to tell you.\nGo see him first."
+set key[id=803181311004282] name "I was able to confirm it through the informants. \n$npc:23000081[gender:0]$... \
+    that one is indeed connected to <font color=\"#ffd200\">Beyond Link</font>.\nBeyond Link is an organization he \
+    leads, and everything that goes on there \nis said to be <font color=\"#ffd200\">carried out entirely at his \
+    will</font>."
+set key[id=803181311004283] name "Then, as I thought... our guess back then was not wrong. \nAnd perhaps we are \
+    <font color=\"#ffd200\">very close to our goal</font>. \n...Have you learned anything more since then?"
+set key[id=803181311004284] name "<font color=\"#909090\">(...Senior $npcName:11001716[gender:0]$ is looking at me \
+    with a sharp gaze.)</font>"
+set key[id=803181311004285] name "Or... has anything come to mind or been found since then? \nDo you have nothing \
+    to tell me?"
+set key[id=803181311004286] name "...Nothing."
+set key[id=803181311004287] name "...I see. Then make your preparations and come to the place \
+    $npcName:11001707[gender:1]$ mentioned.\nWe'll meet there."
+set key[id=803181311004288] name "...I see. Then make your preparations and come to the place \
+    $npcName:11001707[gender:1]$ mentioned.\nWe'll meet there."
+set key[id=803181311004289] name "$MyPCName$! You found your way. \nThis is truly a <font \
+    color=\"#ffd200\">mysterious place</font>. A thin layer of sleet covers the lava. Just like the record \
+    said..."
+set key[id=803181311004290] name "Looking at this reminds me of $map:63000025$... It makes me nostalgic. \nAnd... \
+    I'm sure of it. There must be something here."
+set key[id=803181311004291] name "Then let's investigate. First, go over there and start.\nTo save time, it'd be \
+    best to check area by area. \n<font color=\"#ffd200\">Come on, this way...!</font> Follow me."
+set key[id=803181311004292] name "Then let's investigate. First, go over there and start.\nTo save time, it'd be \
+    best to check area by area. \n<font color=\"#ffd200\">Come on, this way...!</font> Follow me."
+set key[id=803181311004293] name "You found something! \nWell done, $MyPCName$! "
+set key[id=803181311004294] name "Hmm... This... I've seen it before. That censer is called the <font \
+    color=\"#ffd200\">Light of Munakra</font>.\n$npc:11001661[gender:0]$ said it's <font color=\"#ffd200\">what \
+    guides you when you must find the light</font>.\nLike the Divine Relic, it's said to be passed down to the \
+    Munakra."
+set key[id=803181311004295] name "With $npcTitle:11001661[gender:0]$ gone now... I can't tell how the <font \
+    color=\"#ffd200\">Light of Munakra</font> came to be here,\nbut it seems an important clue for finding the \
+    Divine Relic. \nLet's light the <font color=\"#ffd200\">Light of Munakra</font> using $item:30000564$."
+set key[id=803181311004296] name "Is that possible without $npcTitle:11001661[gender:0]$?"
+set key[id=803181311004297] name "You have $npcTitle:11001661[gender:0]$'s Animar, <font \
+    color=\"#ffd200\">$MyPCName$.</font> You're right here.\nNow, go and light the <font color=\"#ffd200\">Light \
+    of Munakra</font>."
+set key[id=803181311004298] name "You have $npcTitle:11001661[gender:0]$'s Animar, <font \
+    color=\"#ffd200\">$MyPCName$.</font> You're right here.\nNow, go and light the <font color=\"#ffd200\">Light \
+    of Munakra</font>."
+set key[id=803181311004299] name "Explain yourself. \nYou don't look like someone who knows nothing."
+set key[id=803181311004300] name "I ask as a fellow disciple who trained together under $npc:11001661[gender:0]$. \
+    \nThat word, <font color=\"#ffd200\">return</font>, that word, <font color=\"#ffd200\">Lost Child</font>... \
+    are they meant for you?"
+set key[id=803181311004301] name "...I think so."
+set key[id=803181311004302] name "If so, then it is; if not, then it isn't.\nWhat do you mean, you think so!"
+set key[id=803181311004304] name "I see, so you won't speak for now. \nFine. Let's go back to our quarters and \
+    talk slowly."
+set key[id=803181311004305] name "Senior is... sharp. Don't mind it too much for now. \nHe did say to go back to \
+    $map:52000041$ and talk, right?"
+set key[id=803181311004307] name "$MyPCName$~ Snap out of it! Are you going to faint again?\nTake the <font \
+    color=\"#ffd200\">Light of Munakra</font> and go back to $map:52000041$, and let's think it over slowly."
+set key[id=803181311004308] name "$MyPCName$~ Snap out of it! Are you going to faint again?\nTake the <font \
+    color=\"#ffd200\">Light of Munakra</font> and go back to $map:52000041$, and let's think it over slowly."
+set key[id=803181311004309] name "...You're here, $MyPCName$.\nYou're pretty confused by <font \
+    color=\"#ffd200\">Senior $npcName:11001716[gender:0]$'s words</font>, aren't you? \nYou must be, but Senior \
+    must also have a lot to think about. "
+set key[id=803181311004310] name "(Nod.)"
+set key[id=803181311004311] name "As you heard, Senior... has a hard time accepting you."
+set key[id=803181311004312] name "Don't you doubt me, $npc:11001707[gender:1]$?"
+set key[id=803181311004313] name "I'd be lying if I said no. I'm confused too. \nBut... the <font \
+    color=\"#ffd200\">Master</font> told us that even if the truth is one, \nit can look different to each person \
+    depending on how they see it."
+set key[id=803181311004314] name "Rather than being swayed by something else, I want to believe <font \
+    color=\"#ffd200\">the truth I think is right</font>. \nSo... I won't turn my back on anyone, $MyPCName$.\nTo \
+    reach my own conclusion, I'll start my own investigation. "
+set key[id=803181311004315] name "If you're confused too... and feel you need to find something out, \nstart <font \
+    color=\"#ffd200\">your own investigation</font>. \nDon't waver... and don't forget <font color=\"#ffd200\">the \
+    Master's teachings</font>. "
+set key[id=803181311004316] name "Even if only one path appears before you, \nif your heart says it's not right, \
+    <font color=\"#ffd200\">listen to that voice to the end.</font> \nBecause <font color=\"#ffd200\">another path \
+    you hadn't noticed</font> may appear... "
+set key[id=803181311004317] name "Cheer up, $MyPCName$. You've worked hard so far.\nIf you need my help, come find \
+    me. I'll look for you too."
+set key[id=804000611004318] name "Either give a <font color=\"#ffd200\">convincing explanation</font>, or give us \
+    <font color=\"#ffd200\">information valuable enough</font> that it isn't needed...\nYou must do one of the \
+    two."
+set key[id=809131203002455] name "Sigh... what on earth is going on... "
+set key[id=809131203002456] name "(Ask if something's bothering them.)"
+set key[id=809131203002460] name "Ugh... something has been really bugging me lately.\nIt's so frustrating... just \
+    hear me out."
+set key[id=809131203002461] name "My girlfriend $npc:11000106[gender:1]$ hasn't been in touch at all \
+    lately...\n<font color=\"#ffd200\">'What are you doing.'</font>\n<font color=\"#ffd200\">'Why.'</font>\nShe \
+    used to send me at least texts like these regularly... "
+set key[id=809131203002462] name "Do you know I can't even sleep well lately?\nI can't go on like this!"
+set key[id=809131203002463] name "Could you go to <font color=\"#ffd200\">$map:02000162$</font> and get <font \
+    color=\"#ffd200\">$item:30000035$</font> from the monsters?\nI'm going to <font color=\"#ffd200\">hack</font> \
+    $npc:11000106[gender:1]$'s <font color=\"#ffd200\">text history</font> with it!"
+set key[id=809131203002464] name "Once you've collected <font color=\"#ffd200\">$item:30000035$</font>, bring them \
+    to Dr. <font color=\"#ffd200\">$npc:11000594[gender:0]$</font> there,\nand he'll tell you what to do!"
+set key[id=809151402005719] name "Oh! It's you, right? That person... don't you remember me?\nWe met in \
+    $map:63000001$... "
+set key[id=809151402005720] name "(Ask whether they know me.)"
+set key[id=809151402005721] name "What? You don't recognize me?\nIt's me, $npcName:11000097[gender:0]$! Surely on \
+    Maple Island, we...\n<font color=\"#909090\">($npcName:11000097[gender:0]$ stared at my face for a moment, \
+    then froze, and finally let out a big sigh.)</font>"
+set key[id=809151402005722] name "Haa... I must have mistaken you for someone else.\nYou're clearly a different \
+    person, so what made me think I knew you...\nSorry about that. It's nothing, please don't mind it."
+set key[id=809151402005723] name "I'd like to invite you in and talk more, but as you can see, I've got \
+    another\nunwelcome visitor at the moment and I'm in a bit of a bind...\nBy the way, what brings you here?"
+set key[id=809151402005724] name "(Hand over the notebook and ask whose it is.)"
+set key[id=809151402005725] name "Ah... this is <font color=\"#ffd200\">issued only to merchants of the Barota \
+    Trading Company</font>, but...\nI need to look at it more closely. Please give me some time."
+set key[id=809151402005726] name "Hm? You... who are you?\nDid you perhaps come looking for me?"
+set key[id=809151402005727] name "I see... can you tell me how you found your way here?"
+set key[id=809151402005728] name "(Say I'm chasing $npc:11000064[gender:0]$.)"
+set key[id=809151402005729] name "$npc:11000064[gender:0]$?\nYou, after $npc:11000064[gender:0]$...? Why...?"
+set key[id=809151402005730] name "(Tell him everything $npc:11000064[gender:0]$ is suspected of.)"
+set key[id=809151402005731] name "Oh dear... kidnapping...\nSo that's why $npc:11000064[gender:0]$, in a body that \
+    isn't even healed, went to rescue\n$npc:11000069[gender:1]$ who was dragged off to the Land of Darkness...!!"
+set key[id=809151402005732] name "(Ask him to explain what happened.)"
+set key[id=809151402005733] name "My first meeting with $npc:11000064[gender:0]$ was...\nnear $map:02000238$ at \
+    the end of the cliff at $map:02000117$."
+set key[id=809151402005734] name "He was covered in blood and lying unconscious, looking as if he'd die any \
+    moment.\nI couldn't just leave him like that...\n<font color=\"#909090\">(It's just like when Master and \
+    Senior Brother $npcName:11001557[gender:0]$ rescued me...)</font>"
+set key[id=809151402005735] name "For days on end... $npc:11000064[gender:0]$ didn't wake up.\nI don't know how \
+    much time passed... but eventually he came to... heh heh...\nI still can't forget the first words that fellow \
+    spoke."
+set key[id=809151402005736] name "(Ask what he said.)"
+set key[id=809151402005737] name "<font color=\"#ffd200\">I can't die like this... I won't die...</font>\nI could \
+    tell right away that he was someone who had to survive,\nsomeone with something he had to do while alive."
+set key[id=809151402005738] name "(Ask what $npc:11000064[gender:0]$ had to do.)"
+set key[id=809151402005739] name "<font color=\"#ffd200\">Clear his name and reveal the truth...!</font>\nHe said \
+    he couldn't say more than that.\nHe said that if I knew the whole truth, even I could be in danger... "
+set key[id=809151402005740] name "(Ask what happened to $npc:11000069[gender:1]$.)"
+set key[id=809151402005741] name "$npc:11000064[gender:0]$ said he had to let $npc:11000069[gender:1]$, at least, \
+    know that he was innocent.\nBut as a fugitive he couldn't just go and find $npc:11000069[gender:1]$...\nSo the \
+    idea he came up with... was to hide notes inside the books of $map:02000221$\nthat the two had visited \
+    together since childhood, and trade them that way."
+set key[id=809151402005742] name "Then $npc:11000069[gender:1]$ let him know that they wanted to help \
+    $npc:11000064[gender:0]$ in person...\nAfter all sorts of twists the two met again, and while they were \
+    looking\nfor evidence to clear his name at $map:02000229$...\nthe ones who had chased $npc:11000064[gender:0]$ \
+    from the Shadow World... sigh...\nHe was lucky to survive, but it seems those fellows took \
+    $npc:11000069[gender:1]$ away."
+set key[id=809151402005743] name "Last night, $npc:11000064[gender:0]$ left this one letter,\nasking me to pass it \
+    to a friend called $npc:11000529[gender:0]$, and then he went off.\nI never thought he'd recklessly go \
+    alone...\nHe'll need people who trust him and can back him up."
+set key[id=809151402005744] name "I'll look for other ways to help him, so could you deliver\nthis $item:30000340$ \
+    to the friend called $npc:11000529[gender:0]$?"
+set key[id=809151402005745] name "Hm... $MyPCName$, it's you.\nGood timing, there's some news I wanted to \
+    confirm.\nHave you met $npcName:11000064[gender:0]$ recently...?\nI've heard a <font color=\"#ffd200\">strange \
+    rumor</font>..."
+set key[id=809151402005746] name "(Ask what the rumor is.)"
+set key[id=809151402005747] name "Some time ago I met a wanderer who'd been to the Land of Darkness. He said...\na \
+    young man who looks like <font color=\"#ffd200\">$npcName:11000064[gender:0]$</font> was going around looking \
+    for <font color=\"#ffd200\">$npcName:11000044[gender:0]$</font> in $map:3000103$.\nJust in case, I sent \
+    someone to $map:2000228$ to find out how $npcName:11000064[gender:0]$ is doing... "
+set key[id=809151402005748] name "They said $npcName:11000064[gender:0]$ had stepped out, saying he had somewhere \
+    to go for a bit.\nI've got an <font color=\"#ffd200\">ominous feeling</font> about it...\nCould you go to \
+    <font color=\"#ffd200\">$map:3000103$</font> in the Land of Darkness and find out whether what that wanderer \
+    said is true?"
