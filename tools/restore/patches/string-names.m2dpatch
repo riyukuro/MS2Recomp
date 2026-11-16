@@ -14678,7 +14678,7 @@ set quest[questID=80000040] name "Royal Grandeur"
 set quest[questID=80000040] desc "Bobby's 'I Want to Go There' event! \nVisit $map:02000001$, the city of blessing \
     and glory."
 set quest[questID=80000040] complete "Talk to $npc:11001003$ in $map:02000064$ or $map:63000032$"
-set quest[questID=80000041] name "The Greenhood Hideout"
+set quest[questID=80000041] name "The Green Hood Hideout"
 set quest[questID=80000041] desc "Bobby's 'I Want to Go There' event! \nVisit $map:02000076$, the village of \
     beautiful archers."
 set quest[questID=80000041] complete "Talk to $npc:11001003$ in $map:02000064$ or $map:63000032$"
@@ -15579,7 +15579,7 @@ set quest[questID=80000331] desc "Defeat '$npc:23000020$' in $map:02000088$\nto 
     Immortal Aura!\n\nYou can take it on together with other adventurers, so be brave!"
 set quest[questID=80000331] manual "Defeat $npc:23000020$"
 set quest[questID=80000331] complete "Talk to $npc:11001003$ in $map:02000064$"
-set quest[questID=80000332] name "Defeat Bayar Gatekeeper!"
+set quest[questID=80000332] name "Defeat Vayar Gatekeeper!"
 set quest[questID=80000332] desc "Defeat '$npc:23000099$' in $map:02000021$\nto prove you are worthy of the \
     Immortal Aura!\n\nYou can take it on together with other adventurers, so be brave!"
 set quest[questID=80000332] manual "Defeat $npc:23000099$"
@@ -15681,7 +15681,7 @@ set quest[questID=80000350] desc "Defeat '$npc:23000020$' in $map:02000088$\nto 
     Immortal Aura!\n\nYou can take it on together with other adventurers, so be brave!"
 set quest[questID=80000350] manual "Defeat $npc:23000020$"
 set quest[questID=80000350] complete "Talk to $npc:11001003$ in $map:02000064$"
-set quest[questID=80000351] name "Defeat Bayar Gatekeeper!"
+set quest[questID=80000351] name "Defeat Vayar Gatekeeper!"
 set quest[questID=80000351] desc "Defeat '$npc:23000099$' in $map:02000021$\nto prove you are worthy of the \
     Immortal Aura!\n\nYou can take it on together with other adventurers, so be brave!"
 set quest[questID=80000351] manual "Defeat $npc:23000099$"
@@ -15822,7 +15822,7 @@ set quest[questID=80000396] desc "Defeat '$npc:23000020$' in $map:02000088$ to c
     mission!\n\nYou can take it on together with other adventurers, so be brave!"
 set quest[questID=80000396] manual "Defeat $npc:23000020$"
 set quest[questID=80000396] complete "Talk to $npc:11001002$ in $map:02000064$"
-set quest[questID=80000397] name "Daily Mission: Defeat Bayar Gatekeeper"
+set quest[questID=80000397] name "Daily Mission: Defeat Vayar Gatekeeper"
 set quest[questID=80000397] desc "Defeat '$npc:23000099$' in $map:02000021$ to complete Barbosa's daily \
     mission!\n\nYou can take it on together with other adventurers, so be brave!"
 set quest[questID=80000397] manual "Defeat $npc:23000099$"
@@ -16120,7 +16120,7 @@ set quest[questID=80000456] desc "Defeat '$npc:23000020$' in $map:02000088$ to c
     3rd Anniversary Coin!\n\nYou can take it on together with other adventurers, so be brave!"
 set quest[questID=80000456] manual "Defeat $npc:23000020$"
 set quest[questID=80000456] complete "Talk to $npc:11001002$ in $map:02000064$"
-set quest[questID=80000457] name "Daily Mission: Defeat Bayar Gatekeeper"
+set quest[questID=80000457] name "Daily Mission: Defeat Vayar Gatekeeper"
 set quest[questID=80000457] desc "Defeat '$npc:23000099$' in $map:02000021$ to complete today's mission and earn a \
     3rd Anniversary Coin!\n\nYou can take it on together with other adventurers, so be brave!"
 set quest[questID=80000457] manual "Defeat $npc:23000099$"
@@ -16411,7 +16411,7 @@ set quest[questID=80000535] desc "Defeat '$npc:23000020$' in $map:02000088$ to c
     Starlight Festival coin!\n\nIt can be beaten together with other adventurers, so take heart!"
 set quest[questID=80000535] manual "Defeat $npc:23000020$"
 set quest[questID=80000535] complete "Talk to $npc:11001002$ in $map:02000064$"
-set quest[questID=80000536] name "Daily Mission: Defeat Bayar Gatekeeper"
+set quest[questID=80000536] name "Daily Mission: Defeat Vayar Gatekeeper"
 set quest[questID=80000536] desc "Defeat '$npc:23000099$' in $map:02000021$ to complete today's mission and earn a \
     Starlight Festival coin!\n\nIt can be beaten together with other adventurers, so take heart!"
 set quest[questID=80000536] manual "Defeat $npc:23000099$"
@@ -19559,7 +19559,7 @@ set key[id=904141707015134] name "Welcome, $MyPCName$."
 set key[id=904141707015135] name "No darkness or fear can overcome the pure power of life and love.\nI hope you \
     will keep that beautiful power in your heart forever."
 set key[id=904141707015136] name "Welcome to $map:84000014$. $MyPCName$."
-set key[id=904141707015137] name "A love sworn beneath the sacred Bayar Mountains will shine harder and more \
+set key[id=904141707015137] name "A love sworn beneath the sacred Vayar Mountains will shine harder and more \
     beautifully than anything else."
 set key[id=904153507015138] name "Welcome, $MyPCName$.\nMake the brightest and most beautiful time in \
     $map:84000015$."
@@ -22317,10 +22317,10 @@ set key[id=712143202005660] name "It seems there was a traitor in the Rune Blade
     color=\"#ffd200\">$npcName:11001231[gender:0]$</font>.\nThe Rune Blades chased the one who killed their leader \
     and vanished, all the way here,\nand what that <font color=\"#ffd200\">$npcName:11001231[gender:0]$</font> was \
     after was the <font color=\"#ffd200\">Runicta</font> hidden by the ancient rune sorcerers...? "
-set key[id=712143202005661] name "Anyway, they asked the Guardian Corps to join the <font \
-    color=\"#ffd200\">Starlight Expedition</font> to protect\nthe <font color=\"#ffd200\">Runicta</font> from \
-    <font color=\"#ffd200\">$npcName:11001231[gender:0]$</font> and lend a hand.\nWell... not everyone present \
-    welcomed it with open arms, but in the end everyone\ndecided together to take part in the <font \
+set key[id=712143202005661] name "Anyway, they asked the Guardians to join the <font color=\"#ffd200\">Starlight \
+    Expedition</font> to protect\nthe <font color=\"#ffd200\">Runicta</font> from <font \
+    color=\"#ffd200\">$npcName:11001231[gender:0]$</font> and lend a hand.\nWell... not everyone present welcomed \
+    it with open arms, but in the end everyone\ndecided together to take part in the <font \
     color=\"#ffd200\">Starlight Expedition</font>."
 set key[id=712143202005662] name "Phew... well, with everyone lending a hand, things moved along quite fast.\nWe \
     found out where <font color=\"#ffd200\">$npcName:11001231[gender:0]$</font> went chasing the <font \
@@ -23280,15 +23280,15 @@ set key[id=701211005001511] name "I found that the Black Star Society is deeply 
 set key[id=701211005001512] name "<font color=\"#909090\">(Nodding)</font> Right, our Black Star Society is \
     involved in that... \nSo?"
 set key[id=701211005001513] name "I passed the findings on to $npcName:11000044[gender:0]$ as well."
-set key[id=701211005001514] name "It won't be surprising or new information for Darkwind either, will it?\nBefore \
+set key[id=701211005001514] name "It won't be surprising or new information for Dark Wind either, will it?\nBefore \
     the Black Star Society, other organizations also distributed $item:20000046$ and $item:20000015$.\nNow it's \
     the Black Star Society's monopoly, that's all."
 set key[id=701211005001515] name "$map:02000100$ is just that kind of place. Everyone knows and pretends not \
-    to!\nOnly Darkwind picks a fight over every little thing...\nPests like mosquitoes! Nobodies who are just a \
+    to!\nOnly Dark Wind picks a fight over every little thing...\nPests like mosquitoes! Nobodies who are just a \
     nuisance!"
 set key[id=701211005001516] name "Don't you agree, $npcName:11001674[gender:0]$?"
 set key[id=701211005001517] name "Ugh, those mosquito-like pests!"
-set key[id=701211005001518] name "Why even ask?\nBy the way, it seems you've gotten friendly with the Darkwind \
+set key[id=701211005001518] name "Why even ask?\nBy the way, it seems you've gotten friendly with the Dark Wind \
     side too, huh?\nYou didn't say anything else useless besides the $item:20000015$ stuff, did you?"
 set key[id=701211005001519] name "Don't worry, I won't make trouble for you."
 set key[id=701211005001520] name "Hey, I'm saying this for your sake.\nIf you slip up and tell them you're working \
@@ -23296,7 +23296,7 @@ set key[id=701211005001520] name "Hey, I'm saying this for your sake.\nIf you sl
 set key[id=701211005001521] name "Even inside the Black Star Society, few people know you're working with us.\nThe \
     Boss was just being considerate, in case your position gets awkward later\nbecause of working with us."
 set key[id=701211005001522] name "Hey, Ash Wolf!\nFrom now on, you act as our spy."
-set key[id=701211005001523] name "Darkwind keeps trying to mess with us lately, so\nkeep going in and out of \
+set key[id=701211005001523] name "Dark Wind keeps trying to mess with us lately, so\nkeep going in and out of \
     $map:02000153$ like you've been doing,\nand if they act suspicious, report to us right away!"
 set key[id=701211005001524] name "Being a spy doesn't suit my personality."
 set key[id=701211005001525] name "You think I work with that idiot $npcName:11001682[gender:0]$ because it suits \
@@ -23307,7 +23307,7 @@ set key[id=701211005001527] name "Hey, $npcName:11001674[gender:0]$! Why's my na
     I work with you because I want to?"
 set key[id=701211005001528] name "Ash Wolf! Don't listen to a guy like that!"
 set key[id=701211005001529] name "It's the Boss's order. Can I just ignore it?"
-set key[id=701211005001530] name "Ah, right. Damn.\nGo quickly and find out what Darkwind is up to!"
+set key[id=701211005001530] name "Ah, right. Damn.\nGo quickly and find out what Dark Wind is up to!"
 set key[id=701211005001531] name "<font color=\"#909090\">(Picks up the notebook lying on the desk.)</font>\nMy \
     boys brought me this.\nOpen it and see what's written."
 set key[id=701211005001532] name "What's wrong?"
@@ -23320,7 +23320,7 @@ set key[id=701211005001536] name "Your name vanished from around Kerning City lo
 set key[id=701211005001537] name "Don't be hurt. Heh."
 set key[id=701211005001538] name "Nice to see you here.\nIs a place like this unfamiliar to someone from the back \
     alleys like you?\nDon't be nervous. This is just a market where goods are bought and sold."
-set key[id=701211005001539] name "I heard the rumor that you investigated because Darkwind\nnamed the Humples as \
+set key[id=701211005001539] name "I heard the rumor that you investigated because Dark Wind\nnamed the Humples as \
     the culprits behind the audience goods theft."
 set key[id=701211005001540] name "So what was the conclusion?\nWere the Humples, or rather \
     $npcName:11000006[gender:0]$, the culprit?"
@@ -25000,7 +25000,7 @@ set key[id=130145621029718] name "The research team suggests finding an internal
 set key[id=130145621029722] name "We analyzed the combat data of $npcName:23001006$ you brought earlier, \
     but...\nwe never found a weak point that can be accessed from the outside."
 set key[id=130145621029723] name "It turns out to be a far more meticulously built mechanical beast than \
-    expected.\nBut the Greenhood is not about to give up!\nWe'll dig and dig until we find its flaw and turn it \
+    expected.\nBut the Green Hood is not about to give up!\nWe'll dig and dig until we find its flaw and turn it \
     into a heap of scrap!"
 set key[id=130145621029724] name "And from the last combat data we learned that $npcName:23001006$'s outer \
     skeleton is made of a special metal, so the last fight wasn't for nothing!"
@@ -25039,7 +25039,7 @@ set key[id=1220183321028099] name "Thanks to you, $MyPCName$, $npcName:23001006$
     a while, right?\nThe expedition members are sending messages of thanks, too!"
 set key[id=1220183321028115] name "Welcome, $MyPCName$.\nDid you know $npcName:23001006$ has been getting more \
     active lately?"
-set key[id=1220183321028116] name "The Greenhood has figured out whose purpose <font \
+set key[id=1220183321028116] name "The Green Hood has figured out whose purpose <font \
     color=\"#ffd200\">$npcName:23001006$</font> is moving for, and how."
 set key[id=1220183321028117] name "The only way to gather data is to run into it head-on!\nFighting it should be \
     the best way to get data on what patterns it moves in!"
@@ -25075,7 +25075,7 @@ set key[id=1220183321028214] name "$MyPCName$.\nFight <font color=\"#ffd200\">$n
     color=\"#ffd200\">$map:02020037$</font> and collect the impact sound waves of the special metal!"
 set key[id=1220183321028215] name "Fight <font color=\"#ffd200\">$npcName:23001006$</font> in <font \
     color=\"#ffd200\">$map:02020037$</font> and collect the impact sound waves of the special metal!"
-set key[id=1220183321028216] name "Good work!\nThe Greenhood research team will start analyzing the materials you \
+set key[id=1220183321028216] name "Good work!\nThe Green Hood research team will start analyzing the materials you \
     delivered."
 
 # Quest dialogue of the FameContents quests that no pack has in English (feature FameContents): our own English for
@@ -29156,7 +29156,7 @@ set key[id=831174302000977] name "<font color=\"#ffd200\">Yamarcha</font>...?\nI
     either... Is it some kind of spell...?\nThe Great Chief could tell you right away, if you asked... "
 set key[id=831174302000978] name "(Ask where the Great Chief is.)"
 set key[id=831174302000979] name "He's on his <font color=\"#ffd200\">warrior training</font> right now... a \
-    pilgrimage through the Bayar Mountains, away from the village.\nIt'll be a while before he's back... Would you \
+    pilgrimage through the Vayar Mountains, away from the village.\nIt'll be a while before he's back... Would you \
     wait for him?"
 set key[id=831174302000980] name "Got it."
 set key[id=831174302000981] name "Yes, then I'll let you know as soon as the Great Chief returns."
@@ -29384,7 +29384,7 @@ set key[id=831174302001235] name "How far had I gotten with <font color=\"#ffd20
 set key[id=831174302001236] name "(Say he was talking about the tribes of Perion.)"
 set key[id=831174302001237] name "Yes, to continue... Perion's hundreds of tribes kept uniting and \
     scattering,\nand now only the Murpagoth, Pigming, Kunkun, Koropu and Tumba tribes remain.\nThere are rumors \
-    that descendants of the Rganda, Foremagasi and Kaka tribes still live\nsomewhere in the Bayar Mountains... but \
+    that descendants of the Rganda, Foremagasi and Kaka tribes still live\nsomewhere in the Vayar Mountains... but \
     no one has ever confirmed it."
 set key[id=831174302001238] name "As far as I know, <font color=\"#ffd200\">Yamarcha</font> was one of Perion's \
     vanished tribes.\nThe story goes that the <font color=\"#ffd200\">Yamarcha</font> tribe, greedy to rule \
@@ -29996,7 +29996,7 @@ set key[id=831174302002509] name "(Explain how I learned of <font color=\"#ffd20
 set key[id=831174302002510] name "...... This man, $npc:11000522[gender:0]$...\nYou say he may be after \
     $map:02000229$...? "
 set key[id=831174302002511] name "$map:02000229$...\nThe scent of wolves' blood... still lingers there... "
-set key[id=831174302002512] name "The wolves of the Bayar Mountains... protect the tribes that worship the wolf \
+set key[id=831174302002512] name "The wolves of the Vayar Mountains... protect the tribes that worship the wolf \
     god.\nWe white wolves... the Murpagoth tribe. The red wolves... the Yamarcha tribe."
 set key[id=831174302002513] name "It happened in an instant... <font color=\"#ffd200\">Turka</font> taking command \
     of the Yamarcha tribe...\nAnd so we... had to fight the red wolves that guarded Yamarcha...\nto protect \
