@@ -159,6 +159,7 @@ static CStringW GetAttributeName(int nAttribute)
 {
     switch (nAttribute)
     {
+#ifdef MS2_HOOK_DLL
     case 0: return CStringW(L"무속성");
     case 1: return CStringW(L"화염속성");
     case 2: return CStringW(L"빙결속성");
@@ -167,6 +168,16 @@ static CStringW GetAttributeName(int nAttribute)
     case 5: return CStringW(L"암흑속성");
     case 6: return CStringW(L"독속성");
     case 7: return CStringW(L"물리속성");
+#else   // MS2-RESTORE: our own English for text a player sees; the hook DLL keeps the exe's text
+    case 0: return CStringW(L"Neutral");
+    case 1: return CStringW(L"Fire");
+    case 2: return CStringW(L"Ice");
+    case 3: return CStringW(L"Electric");
+    case 4: return CStringW(L"Holy");
+    case 5: return CStringW(L"Dark");
+    case 6: return CStringW(L"Poison");
+    case 7: return CStringW(L"Physical");
+#endif
     default: return CStringW(L"");
     }
 }
@@ -404,7 +415,12 @@ const CStringW& CMeterRecordData::Aggregation::GetSkillReport()
     }
     static CStringW s_strReport;
     s_strReport.Empty();
+#ifdef MS2_HOOK_DLL
     s_strReport.Format(L"아이디, 레벨, 이름, 사용횟수, 전체 대미지, 전체 일반 대미지, 전체 크리티컬 대미지, 일반 최대 대미지, 크리티컬 최대 대미지, 명중 횟수, 미스 횟수, 대미지 속성\r\n");
+#else
+    s_strReport.Format(L"ID, Level, Name, Uses, Total Damage, Total Normal Damage, Total Critical Damage, "
+        L"Max Normal Damage, Max Critical Damage, Hits, Misses, Damage Element\r\n");
+#endif
     for (POSITION pos = mapSkill.GetStartPosition(); pos != NULL; mapSkill.GetNext(pos))
     {
         MS2Ptr<CSkillMeterData> spSkill = mapSkill.GetValueAt(pos);
@@ -429,7 +445,12 @@ const CStringW& CMeterRecordData::Aggregation::GetDamageLog()
 {
     static CStringW s_strLog;
     s_strLog.Empty();
+#ifdef MS2_HOOK_DLL
     s_strLog.Format(L"시간, 공격자, 피해자, 스킬아이디, 스킬레벨, 스킬명, 대미지, 대미지 속성, 대미지 등급, 피해자 사망여부\r\n");
+#else
+    s_strLog.Format(L"Time, Attacker, Target, Skill ID, Skill Level, Skill Name, Damage, Damage Element, Damage Grade, "
+        L"Target Died\r\n");
+#endif
     for (POSITION pos = m_damages.GetHeadPosition(); pos != NULL; m_damages.GetNext(pos))
     {
         MS2Ptr<CDamageMeterData> spData = m_damages.GetAt(pos);
@@ -498,7 +519,12 @@ const CStringW& CMeterRecordData::Aggregation::GetDotReport()
     }
     static CStringW s_strReport;
     s_strReport.Empty();
+#ifdef MS2_HOOK_DLL
     s_strReport.Format(L"아이디, 레벨, 이름, 사용횟수, 전체 대미지, 전체 일반 대미지, 전체 크리티컬 대미지, 일반 최대 대미지, 크리티컬 최대 대미지, 명중 횟수, 미스 횟수, 대미지 속성\r\n");
+#else
+    s_strReport.Format(L"ID, Level, Name, Uses, Total Damage, Total Normal Damage, Total Critical Damage, "
+        L"Max Normal Damage, Max Critical Damage, Hits, Misses, Damage Element\r\n");
+#endif
     for (POSITION pos = mapSkill.GetStartPosition(); pos != NULL; mapSkill.GetNext(pos))
     {
         MS2Ptr<CSkillMeterData> spSkill = mapSkill.GetValueAt(pos);
@@ -524,7 +550,11 @@ const CStringW& CMeterRecordData::Aggregation::GetEffectLog()
 {
     static CStringW s_strLog;
     s_strLog.Empty();
+#ifdef MS2_HOOK_DLL
     s_strLog.Format(L"시간, 이벤트, 캐스터, 타겟, 이펙트아이디, 이펙트레벨, 이펙트이름\r\n");
+#else
+    s_strLog.Format(L"Time, Event, Caster, Target, Effect ID, Effect Level, Effect Name\r\n");
+#endif
     for (POSITION pos = m_effects.GetHeadPosition(); pos != NULL; m_effects.GetNext(pos))
     {
         MS2Ptr<CAdditionalEffectMeterData> spData = m_effects.GetAt(pos);
@@ -671,7 +701,11 @@ unsigned CDPSMeterSystem::ThreadProc()
             memset(szFile, 0, sizeof(szFile));
             {
                 __imp_wcscat(szFile, szDir);
+#ifdef MS2_HOOK_DLL
                 __imp_wcscat(szFile, L"\\0_캐릭터정보");
+#else
+                __imp_wcscat(szFile, L"\\0_Character_Info");
+#endif
                 __imp_wcscat(szFile, strName);
                 CFile file;
                 int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
@@ -685,7 +719,11 @@ unsigned CDPSMeterSystem::ThreadProc()
             }
             {
                 __imp_wcscat(szFile, szDir);
+#ifdef MS2_HOOK_DLL
                 __imp_wcscat(szFile, L"\\1_DPS_기본정보");
+#else
+                __imp_wcscat(szFile, L"\\1_DPS_Summary");
+#endif
                 __imp_wcscat(szFile, strName);
                 CFile file;
                 int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
@@ -699,7 +737,11 @@ unsigned CDPSMeterSystem::ThreadProc()
             }
             {
                 __imp_wcscat(szFile, szDir);
+#ifdef MS2_HOOK_DLL
                 __imp_wcscat(szFile, L"\\2_타격_스킬_상세정보");
+#else
+                __imp_wcscat(szFile, L"\\2_Dealt_Skill_Details");
+#endif
                 __imp_wcscat(szFile, strName);
                 CFile file;
                 int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
@@ -713,7 +755,11 @@ unsigned CDPSMeterSystem::ThreadProc()
             }
             {
                 __imp_wcscat(szFile, szDir);
+#ifdef MS2_HOOK_DLL
                 __imp_wcscat(szFile, L"\\3_타격_스킬_대미지_상세정보");
+#else
+                __imp_wcscat(szFile, L"\\3_Dealt_Skill_Damage_Details");
+#endif
                 __imp_wcscat(szFile, strName);
                 CFile file;
                 int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
@@ -727,7 +773,11 @@ unsigned CDPSMeterSystem::ThreadProc()
             }
             {
                 __imp_wcscat(szFile, szDir);
+#ifdef MS2_HOOK_DLL
                 __imp_wcscat(szFile, L"\\4_피격_스킬_상세정보");
+#else
+                __imp_wcscat(szFile, L"\\4_Taken_Skill_Details");
+#endif
                 __imp_wcscat(szFile, strName);
                 CFile file;
                 int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
@@ -741,7 +791,11 @@ unsigned CDPSMeterSystem::ThreadProc()
             }
             {
                 __imp_wcscat(szFile, szDir);
+#ifdef MS2_HOOK_DLL
                 __imp_wcscat(szFile, L"\\5_피격_스킬_대미지_상세정보");
+#else
+                __imp_wcscat(szFile, L"\\5_Taken_Skill_Damage_Details");
+#endif
                 __imp_wcscat(szFile, strName);
                 CFile file;
                 int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
@@ -755,7 +809,11 @@ unsigned CDPSMeterSystem::ThreadProc()
             }
             {
                 __imp_wcscat(szFile, szDir);
+#ifdef MS2_HOOK_DLL
                 __imp_wcscat(szFile, L"\\6_타격_Dot_상세정보");
+#else
+                __imp_wcscat(szFile, L"\\6_Dealt_Dot_Details");
+#endif
                 __imp_wcscat(szFile, strName);
                 CFile file;
                 int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
@@ -769,7 +827,11 @@ unsigned CDPSMeterSystem::ThreadProc()
             }
             {
                 __imp_wcscat(szFile, szDir);
+#ifdef MS2_HOOK_DLL
                 __imp_wcscat(szFile, L"\\7_피격_Dot_상세정보");
+#else
+                __imp_wcscat(szFile, L"\\7_Taken_Dot_Details");
+#endif
                 __imp_wcscat(szFile, strName);
                 CFile file;
                 int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
@@ -783,7 +845,11 @@ unsigned CDPSMeterSystem::ThreadProc()
             }
             {
                 __imp_wcscat(szFile, szDir);
+#ifdef MS2_HOOK_DLL
                 __imp_wcscat(szFile, L"\\8_플레이어_상세정보");
+#else
+                __imp_wcscat(szFile, L"\\8_Player_Details");
+#endif
                 __imp_wcscat(szFile, strCsv);
                 CFile file;
                 int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
@@ -797,7 +863,11 @@ unsigned CDPSMeterSystem::ThreadProc()
             }
             {
                 __imp_wcscat(szFile, szDir);
+#ifdef MS2_HOOK_DLL
                 __imp_wcscat(szFile, L"\\9_AdditionalEffect_캐스터로그");
+#else
+                __imp_wcscat(szFile, L"\\9_AdditionalEffect_Caster_Log");
+#endif
                 __imp_wcscat(szFile, strName);
                 CFile file;
                 int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
@@ -811,7 +881,11 @@ unsigned CDPSMeterSystem::ThreadProc()
             }
             {
                 __imp_wcscat(szFile, szDir);
+#ifdef MS2_HOOK_DLL
                 __imp_wcscat(szFile, L"\\10_AdditionalEffect_타겟로그");
+#else
+                __imp_wcscat(szFile, L"\\10_AdditionalEffect_Target_Log");
+#endif
                 __imp_wcscat(szFile, strName);
                 CFile file;
                 int bOpen = file.Open(FUN_1401d4330(szFile, 0), 0x5022, NULL);
@@ -1419,6 +1493,7 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
         PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (bCsv != 0 && pMe != 0)
         {
+#ifdef MS2_HOOK_DLL
             strCsv.Format(L"필드, 캐릭터명, 클래스, 레벨, HP, SP, EP, STR, DEX, INT, LUK, 이동속도, 물리 공격력, 마법 공격력, 무기 공격력");
             strCsv.AppendFormat(L", 명중, 크리티컬 명중, 크리티컬 피해, 공격속도, 방어력, 물리 저항력, 마법 저항력, 회피, 크리티컬 회피");
             strCsv.AppendFormat(L", 근접 피해 감소, 원거리 피해 감소, 행동 불가 시간 감소, 상태 이상 시간 감소, HP 재생력");
@@ -1432,6 +1507,34 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
             strCsv.AppendFormat(L", (T)무속성, (T)화염속성, (T)빙결속성, (T)전격속성, (T)신성속성, (T)암흑속성, (T)독속성, (T)물리속성, 스킬회복SP");
             strCsv.AppendFormat(L", 자연회복SP, 자연회복EP, 스킬로 받은 HP 회복량, 스킬로 받은 유효 HP 회복량, 스킬로 받은 오버 HP 회복량, 회복 시킨 HP 량");
             strCsv.AppendFormat(L", 회복 시킨 유효 HP 회복 량, 회복 시킨 오버 HP 량, HP 회복 시킨 개체 수, 스킬 소모 SP, 스킬 소모 EP");
+#else
+            strCsv.Format(L"Field, Character, Class, Level, HP, SP, EP, STR, DEX, INT, LUK, Movement Speed, "
+                L"Physical Attack, Magic Attack, Weapon Attack");
+            strCsv.AppendFormat(L", Accuracy, Critical Rate, Critical Damage, Attack Speed, Defense, "
+                L"Physical Resistance, Magic Resistance, Evasion, Critical Evasion");
+            strCsv.AppendFormat(L", Melee Damage Reduction, Ranged Damage Reduction, Stun Time Reduction, "
+                L"Debuff Time Reduction, HP Regen");
+            strCsv.AppendFormat(L", Defense Piercing, Healing Bonus, Skill Cooldown Reduction, Perfect Guard, "
+                L"Total Damage, Boss Damage Bonus");
+            strCsv.AppendFormat(L", Fire Skill Damage, Ice Skill Damage, Electric Skill Damage, Poison Skill Damage, "
+                L"Dark Skill Damage, Holy Skill Damage");
+            strCsv.AppendFormat(L", Recorded Time, Combat Time, Non-Combat Time, EXP Gained, EXP per Second, "
+                L"Mesos Gained, Mesos per Second");
+            strCsv.AppendFormat(L", (C)Skill Uses, (C)Total Damage, (C)Hit Rate, (C)Critical Rate, "
+                L"(C)Damage per Second, (C)Monster Kills, (C)Hits, (C)Misses");
+            strCsv.AppendFormat(L", (C)Criticals, (C)Total Critical Damage, (C)Total Dot Damage, "
+                L"(C)Total Physical Damage, (C)Total Magic Damage");
+            strCsv.AppendFormat(L", (C)Neutral, (C)Fire, (C)Ice, (C)Electric, (C)Holy, (C)Dark, (C)Poison, "
+                L"(C)Physical, (T)Total Damage");
+            strCsv.AppendFormat(L", (T)Evasion Rate, (T)Perfect Guards, (T)Deaths, (T)Hits Taken, (T)Evasions, "
+                L"(T)Total Critical Damage, (T)Total Dot Damage, (T)Total Physical Damage, (T)Total Magic Damage");
+            strCsv.AppendFormat(L", (T)Neutral, (T)Fire, (T)Ice, (T)Electric, (T)Holy, (T)Dark, (T)Poison, "
+                L"(T)Physical, Skill SP Recovery");
+            strCsv.AppendFormat(L", Natural SP Recovery, Natural EP Recovery, HP Healed by Skills, "
+                L"Effective HP Healed by Skills, Overheal by Skills, HP Healed on Others");
+            strCsv.AppendFormat(L", Effective HP Healed on Others, Overheal on Others, Targets Healed, Skill SP Spent, "
+                L"Skill EP Spent");
+#endif
             strCsv.AppendFormat(L"\n");
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)*((class Unk_DpsWorld*)WorldService::GetInstance())->FUN_141bd3080());
             strCsv.AppendFormat(L"%s, ", (const wchar_t*)pMe->vfunc_77());
@@ -1481,7 +1584,12 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
         if (m_bCombat != 0)
             nCombatTime += nNow - m_nCombatStart;
         unsigned nIdleTime = nRecordTime - nCombatTime;
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"기록시간 = %.2f Second\r\n전투시간 = %.2f Second\r\n비전투시간 = %.2f Second\r\n\r\n",
+#else
+        strText.AppendFormat(L"Recorded Time = %.2f Second\r\nCombat Time = %.2f Second\r\n"
+            L"Non-Combat Time = %.2f Second\r\n\r\n",
+#endif
             (float)nRecordTime / 1000.0f, (float)nCombatTime / 1000.0f, (float)nIdleTime / 1000.0f);
         if (bCsv != 0)
             strCsv.AppendFormat(L"%.2f, %.2f, %.2f, ", (float)nRecordTime / 1000.0f, (float)nCombatTime / 1000.0f,
@@ -1489,13 +1597,22 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
 
         float fExpPerSec = (spRecord->m_nExp != 0 && nRecordTime != 0) ? (float)spRecord->m_nExp / (float)(nRecordTime / 1000) : 0.0f;
         float fMesoPerSec = (spRecord->m_nMeso != 0 && nRecordTime != 0) ? (float)spRecord->m_nMeso / (float)(nRecordTime / 1000) : 0.0f;
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"획득 경험치 = %lld\r\n초당 획득 경험치 = %.2f\r\n\r\n획득 게임 머니 = %lld\r\n초당 획득 게임머니 = %.2f\r\n\r\n",
+#else
+        strText.AppendFormat(L"EXP Gained = %lld\r\nEXP per Second = %.2f\r\n\r\nMesos Gained = %lld\r\n"
+            L"Mesos per Second = %.2f\r\n\r\n",
+#endif
             spRecord->m_nExp, (double)fExpPerSec, spRecord->m_nMeso, (double)fMesoPerSec);
         if (bCsv != 0)
             strCsv.AppendFormat(L"%lld, %.2f, %lld, %.2f, ", spRecord->m_nExp, (double)fExpPerSec, spRecord->m_nMeso,
                 (double)fMesoPerSec);
 
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"======= 타격 계열 =======\r\n");
+#else
+        strText.AppendFormat(L"======= Damage Dealt =======\r\n");
+#endif
         unsigned nDamage = (unsigned)spRecord->m_attack.m_nTotal;
         unsigned nCount = spRecord->m_attack.m_nCount;
         unsigned nHit = spRecord->m_attack.m_nHit;
@@ -1505,15 +1622,31 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
         double dRate = spRecord->m_attack.m_dRate;
         double dRatePerSec = (!IsNearlyEqual((float)dRate, 0.0f) && nRecordTime != 0)
             ? dRate / (double)((float)nRecordTime / 1000.0f) : 0.0;
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"스킬 사용 횟수 = %d\r\n", spRecord->m_nSkillUse);
         strText.AppendFormat(L"대미지 총합 = %d\r\n누적 DamageRate = %.3f\r\n초당 DamageRate = %.3f\r\n명중률 = %.1f\r\n크리티컬률 = %.1f\r\n초당 대미지 = %.2lf\r\n몬스터 킬 수 = %d\r\n\r\n",
+#else
+        strText.AppendFormat(L"Skill Uses = %d\r\n", spRecord->m_nSkillUse);
+        strText.AppendFormat(L"Total Damage = %d\r\nTotal DamageRate = %.3f\r\nDamageRate per Second = %.3f\r\n"
+            L"Hit Rate = %.1f\r\nCritical Rate = %.1f\r\nDamage per Second = %.2lf\r\nMonster Kills = %d\r\n\r\n",
+#endif
             nDamage, dRate, dRatePerSec, (double)fHitRate, (double)fCriticalRate, dDps, spRecord->m_attack.m_nKill);
         if (bCsv != 0)
         {
+#ifdef MS2_HOOK_DLL
             strText.AppendFormat(L"타격 횟수 = %d\r\n빗맞힌 횟수 = %d\r\n크리티컬 횟수 = %d\r\n\r\n", nHit,
+#else
+            strText.AppendFormat(L"Hits = %d\r\nMisses = %d\r\nCriticals = %d\r\n\r\n", nHit,
+#endif
                 spRecord->m_attack.m_nMiss, spRecord->m_attack.m_nCriticalCount);
+#ifdef MS2_HOOK_DLL
             strText.AppendFormat(L"====== 타격별 대미지 총합 =======\r\n");
             strText.AppendFormat(L"크리티컬 대미지 총합 = %d\r\nDot 대미지 총합 = %d\r\n물리 대미지 총합 = %d\r\n마법 대미지 총합= %d\r\n\r\n",
+#else
+            strText.AppendFormat(L"====== Damage Dealt by Type =======\r\n");
+            strText.AppendFormat(L"Total Critical Damage = %d\r\nTotal Dot Damage = %d\r\n"
+                L"Total Physical Damage = %d\r\nTotal Magic Damage = %d\r\n\r\n",
+#endif
                 spRecord->m_attack.m_nCritical, spRecord->m_attack.m_nDot, spRecord->m_attack.m_nPhysical,
                 spRecord->m_attack.m_nMagic);
             for (unsigned i = 0; i < 8; i++)
@@ -1527,20 +1660,39 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
                 strCsv.AppendFormat(L"%d, ", spRecord->m_attack.m_attributes[i]);
         }
 
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"======= 피격 계열 =======\r\n");
+#else
+        strText.AppendFormat(L"======= Damage Taken =======\r\n");
+#endif
         unsigned nTaken = (unsigned)spRecord->m_defense.m_nTotal;
         unsigned nTakenCount = spRecord->m_defense.m_nCount;
         unsigned nEvade = spRecord->m_defense.m_nMiss;
         int nBlock = spRecord->m_defense.m_nBlock;
         float fEvadeRate = nTakenCount != 0 ? 100.0f / (float)nTakenCount * (float)nEvade : 0.0f;
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"대미지 총합 = %d\r\n회피율 = %.1f\r\n완전방어 = %d\r\n사망횟수 = %d\r\n\r\n", nTaken,
+#else
+        strText.AppendFormat(L"Total Damage = %d\r\nEvasion Rate = %.1f\r\nPerfect Guards = %d\r\nDeaths = %d\r\n\r\n",
+            nTaken,
+#endif
             (double)fEvadeRate, nBlock, spRecord->m_defense.m_nKill);
         if (bCsv != 0)
         {
+#ifdef MS2_HOOK_DLL
             strText.AppendFormat(L"피격 횟수 = %d\r\n회피 횟수 = %d\r\n\r\n", spRecord->m_defense.m_nHit,
+#else
+            strText.AppendFormat(L"Hits Taken = %d\r\nEvasions = %d\r\n\r\n", spRecord->m_defense.m_nHit,
+#endif
                 spRecord->m_defense.m_nMiss);
+#ifdef MS2_HOOK_DLL
             strText.AppendFormat(L"====== 피격별 대미지 총합 =======\r\n");
             strText.AppendFormat(L"크리티컬 대미지 총합 = %d\r\nDot 대미지 총합 = %d\r\n물리 대미지 총합 = %d\r\n마법 대미지 총합= %d\r\n\r\n",
+#else
+            strText.AppendFormat(L"====== Damage Taken by Type =======\r\n");
+            strText.AppendFormat(L"Total Critical Damage = %d\r\nTotal Dot Damage = %d\r\n"
+                L"Total Physical Damage = %d\r\nTotal Magic Damage = %d\r\n\r\n",
+#endif
                 spRecord->m_defense.m_nCritical, spRecord->m_defense.m_nDot, spRecord->m_defense.m_nPhysical,
                 spRecord->m_defense.m_nMagic);
             for (unsigned i = 0; i < 8; i++)
@@ -1554,30 +1706,60 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
                 strCsv.AppendFormat(L"%d, ", spRecord->m_defense.m_attributes[i]);
         }
 
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"======= 회복 계열 =======\r\n");
         strText.AppendFormat(L"스킬회복SP = %d\r\n자연회복SP = %d\r\n자연회복EP = %d\r\n\r\n", spRecord->m_nSkillSp,
+#else
+        strText.AppendFormat(L"======= Recovery =======\r\n");
+        strText.AppendFormat(L"Skill SP Recovery = %d\r\nNatural SP Recovery = %d\r\nNatural EP Recovery = %d\r\n\r\n",
+            spRecord->m_nSkillSp,
+#endif
             spRecord->m_nNaturalSp, spRecord->m_nNaturalEp);
         __int64 nHealedOver = spRecord->m_nHealed - spRecord->m_nHealedEffective;
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"스킬로 받은 HP 회복량 = %d\r\n스킬로 받은 유효 HP 회복량 = %d\r\n스킬로 받은 오버 HP 회복량 = %d\r\n",
+#else
+        strText.AppendFormat(L"HP Healed by Skills = %d\r\nEffective HP Healed by Skills = %d\r\n"
+            L"Overheal by Skills = %d\r\n",
+#endif
             spRecord->m_nHealed, spRecord->m_nHealedEffective, nHealedOver);
         __int64 nHealOver = spRecord->m_nHeal - spRecord->m_nHealEffective;
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"회복 시킨 HP 량 = %d\r\n회복 시킨 유효 HP 회복 량 = %d\r\n회복 시킨 오버 HP 량 = %d\r\n\r\n",
+#else
+        strText.AppendFormat(L"HP Healed on Others = %d\r\nEffective HP Healed on Others = %d\r\n"
+            L"Overheal on Others = %d\r\n\r\n",
+#endif
             spRecord->m_nHeal, spRecord->m_nHealEffective, nHealOver);
         if (bCsv != 0)
         {
+#ifdef MS2_HOOK_DLL
             strText.AppendFormat(L"HP 회복시킨 개체 수 = %d\r\n\r\n", spRecord->m_nHealTargets);
+#else
+            strText.AppendFormat(L"Targets Healed = %d\r\n\r\n", spRecord->m_nHealTargets);
+#endif
             strCsv.AppendFormat(L"%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, ", spRecord->m_nSkillSp, spRecord->m_nNaturalSp,
                 spRecord->m_nNaturalEp, spRecord->m_nHealed, spRecord->m_nHealedEffective,
                 spRecord->m_nHealed - spRecord->m_nHealedEffective, spRecord->m_nHeal, spRecord->m_nHealEffective,
                 spRecord->m_nHeal - spRecord->m_nHealEffective, spRecord->m_nHealTargets);
         }
 
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"======= 소모 계열 =======\r\n");
         strText.AppendFormat(L"스킬소모SP = %d\r\n스킬소모EP = %d\r\n\r\n", spRecord->m_nSpentSp, spRecord->m_nSpentEp);
+#else
+        strText.AppendFormat(L"======= Spent =======\r\n");
+        strText.AppendFormat(L"Skill SP Spent = %d\r\nSkill EP Spent = %d\r\n\r\n", spRecord->m_nSpentSp,
+            spRecord->m_nSpentEp);
+#endif
         if (bCsv != 0)
             strCsv.AppendFormat(L"%d, %d", spRecord->m_nSpentSp, spRecord->m_nSpentEp);
 
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"=== 대미지 스킬 정보 ===\r\n");
+#else
+        strText.AppendFormat(L"=== Damage by Skill ===\r\n");
+#endif
         for (std::pair<const unsigned, float> kv : spRecord->m_attack.m_skillRates)
         {
             CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141811980(4, kv.first);
@@ -1585,7 +1767,11 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
             if (bCsv != 0)
                 strCsv.AppendFormat(L"%s,%d,%.3f", (const wchar_t*)strName, kv.first, (double)kv.second);
         }
+#ifdef MS2_HOOK_DLL
         strText.AppendFormat(L"=== 대미지 애디셔널 정보 ===\r\n");
+#else
+        strText.AppendFormat(L"=== Damage by Additional Effect ===\r\n");
+#endif
         for (std::pair<const unsigned, float> kv : spRecord->m_attack.m_dotRates)
         {
             CStringW strName = TSingleton<CStringTable>::GetInstance()->FUN_141812290(kv.first, 1, "name");
@@ -1597,7 +1783,8 @@ void CDPSMeterSystem::FUN_14117ea90(unsigned nTime, int bCsv)
 }
 MS2_REPLACE_METHOD(0x14117EA90, CDPSMeterSystem, FUN_14117ea90, 10915, 0x1CF28555);
 
-// The character sheet of the own player (the "0_캐릭터정보" file): name, job, level and the worn items of both layers.
+// The character sheet of the own player (the "0_Character_Info" file): name, job, level and the worn items of
+// both layers.
 // @0x141181540
 const CStringW& CDPSMeterSystem::FUN_141181540()
 {
@@ -1608,11 +1795,22 @@ const CStringW& CDPSMeterSystem::FUN_141181540()
         PCBase* pMe = ((PCBase*)((WorldService*)(WorldService::GetInstance()))->GetLocalPlayer());
         if (pMe == 0)
             break;
+#ifdef MS2_HOOK_DLL
         s_str.AppendFormat(L"캐릭터명 : %s\r\n", (const wchar_t*)pMe->vfunc_77());
         s_str.AppendFormat(L"클래스 : %s\r\n", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6, ((class PC*)(class PCBase*)(pMe))->GetSubJob()));
         s_str.AppendFormat(L"레벨 : %d\r\n", (unsigned short)pMe->vfunc_78());
+#else
+        s_str.AppendFormat(L"Character : %s\r\n", (const wchar_t*)pMe->vfunc_77());
+        s_str.AppendFormat(L"Class : %s\r\n", (const wchar_t*)TSingleton<CStringTable>::GetInstance()->FUN_141811980(6,
+            ((class PC*)(class PCBase*)(pMe))->GetSubJob()));
+        s_str.AppendFormat(L"Level : %d\r\n", (unsigned short)pMe->vfunc_78());
+#endif
         s_str.AppendFormat(L"\r\n");
+#ifdef MS2_HOOK_DLL
         s_str.AppendFormat(L"--- 게임 레이어 장착 장비 목록 ---\r\n");
+#else
+        s_str.AppendFormat(L"--- Equipped Gear (Game Layer) ---\r\n");
+#endif
         {
             ATL::CAtlList<MS2Ptr<CEquipItem> > equips(10);
             reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->GetEquipment()))->CollectShownItemsInLayer(equips, 0);
@@ -1628,7 +1826,11 @@ const CStringW& CDPSMeterSystem::FUN_141181540()
             }
         }
         s_str.AppendFormat(L"\r\n");
+#ifdef MS2_HOOK_DLL
         s_str.AppendFormat(L"--- 스킨 레이어 장착 장비 목록 ---\r\n");
+#else
+        s_str.AppendFormat(L"--- Equipped Gear (Skin Layer) ---\r\n");
+#endif
         ATL::CAtlList<MS2Ptr<CEquipItem> > skins(10);
         reinterpret_cast<CEquipment*>(reinterpret_cast<Unk_DpsEquipSet*>(reinterpret_cast<PC*>(static_cast<Unk_DpsPC*>(pMe))->GetEquipment()))->CollectShownItemsInLayer(skins, 1);
         for (POSITION pos = skins.GetHeadPosition(); pos != NULL; skins.GetNext(pos))
