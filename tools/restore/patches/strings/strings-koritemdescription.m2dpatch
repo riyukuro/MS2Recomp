@@ -4,5 +4,13 @@ made-for KMS2 KR Live client Data/Xml.m2d
 # own English table(s); rows without an English row stay as they are.
 file Xml/string/kr/koritemdescription.xml kms:Xml/string/kr/koritemdescription.xml 669a7f4ea48c36b2
 need kms:Xml/string/en/koritemdescription.xml bcd9d9384bad0cc4
+# Rows whose English row in the pack belongs to another item with the same id (the global client reused it):
+# their English name shares fewer than half its words with the item's own name in the Korean table, or a
+# check by hand found another item. They keep the KMS2 item's own text.
+keep key id 11150059,11500808,11600981,20000914,20000915,20000985,20300320,20300321,20301695,20301696,20301787,\
+    20301788,20301789,20301790,20301963,20302460,20302930,30000923,30000924,30001353,30001357,30001359,30001368,\
+    33000313,33000314,33000315,33000316,37000013,37000014,37000016,37000017,37000018,37000033,37000035,37000036,\
+    37000037,37000038,37000040,37000041,37000043,37000045,37000047,37000048,37030006,37030016,37030018,40400132,\
+    50600212,61100111,61100120,61100121,61100130,61100131,70200050
 copy-text key id functionDescription,guideDescription,mainDescription,tooltipDescription \
     kms:Xml/string/en/koritemdescription.xml

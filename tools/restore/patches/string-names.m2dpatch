@@ -315,6 +315,10 @@ set key[id=s_guild_grade_default_group2] value "Member"
 set key[id=s_guild_grade_default_group3] value "Novice"
 set key[id=s_guild_grade_default_group4] value "Member2"
 set key[id=s_guild_grade_default_group5] value "Novice2"
+# The pack's Black Market cancel message has a typo ("Your have canceled"): our own corrected English, same
+# trailing line break.
+set key[id=s_msg_blackmarket_complete_remove] value "You have canceled your listing. Your items will be returned \
+    by mail.\\n"
 # KR-only event system mails with no English row in any pack (the elite weapon support level packages, 50000100-
 # 50000111 and 50001000-50001005, and the bingo play-time gifts 190411001-190411002): our own English for the
 # subject and text; the item links are the ones the rows have.

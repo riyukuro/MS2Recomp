@@ -44,6 +44,9 @@ using Maple2.File.IO;
 //                                         the file whose attribute is Korean (KR rows) takes it from the English
 //                                         row with the same <keys> (id or id,level) in the first source that
 //                                         has one; for string tables whose KR rows the pack left in Korean
+//   keep <tag> <key> <value,value,...>    the file's <tag> rows whose <key> is one of the values (leading zeros
+//                                         ignored) are left as they are by later copy-text ops: rows whose English
+//                                         source row (same id) is another item's text
 //   add-words <tag> <key> <attr> <source>   every <tag> of the file appends to its '|'-separated word list <attr>
 //                                         the words of the source row with the same <key> that the file does not
 //                                         have yet (chat command keywords: Korean and English both work)
@@ -60,7 +63,10 @@ static class Patch {
         public override string ToString() => Tag + string.Concat(Preds.Select(p => $"[{p.Item1}={p.Item2}]"));
     }
 
-    sealed class Doc { public XDocument X; public string Decl; public bool Bom; public string Source; }
+    sealed class Doc {
+        public XDocument X; public string Decl; public bool Bom; public string Source;
+        public readonly HashSet<XElement> Kept = new();   // rows copy-text leaves alone (keep)
+    }
 
     sealed class PatchError : Exception { public PatchError(string m) : base(m) { } }
 
@@ -299,10 +305,27 @@ static class Patch {
                     var attrs = t.Word().Split(',');
                     var srcs = new List<string>();
                     do srcs.Add(t.Word()); while (t.More());
-                    var (done, left) = CopyText(Cur().X.Root, tag, keys, attrs,
+                    var (done, left) = CopyText(Cur().X.Root, Cur().Kept, tag, keys, attrs,
                         srcs.Select(s => Load(Source(s), s).X.Root).ToList());
                     Console.WriteLine($"{where}: copy-text {tag}: {done} copied, {left} left in Korean");
                     changed += done;
+                    break;
+                }
+                case "keep": {
+                    var tag = t.Word();
+                    var key = t.Word();
+                    var want = new HashSet<string>();   // the list may go on over continued lines
+                    do foreach (var v in t.Word().Split(',', StringSplitOptions.RemoveEmptyEntries))
+                        want.Add(v.TrimStart('0'));
+                    while (t.More());
+                    var seen = new HashSet<string>();
+                    foreach (var e in Cur().X.Root.Descendants(tag)) {
+                        var v = ((string)e.Attribute(key) ?? "").TrimStart('0');
+                        if (want.Contains(v)) { Cur().Kept.Add(e); seen.Add(v); }
+                    }
+                    var none = want.Where(v => !seen.Contains(v)).ToList();
+                    if (none.Count > 0)
+                        throw new PatchError($"{where}: keep {tag}: no row with {key} {string.Join(",", none)}");
                     break;
                 }
                 case "add-words": {
@@ -362,7 +385,8 @@ static class Patch {
     // strings the client fills with numbered fields ({0}, {2:x}); a source text whose fields are not all in the
     // Korean text, or that has a stray brace, is not copied, since the client's formatter fails on a field it has
     // no argument for. Returns the copied and the still Korean attribute counts.
-    static (int, int) CopyText(XElement root, string tag, string[] keys, string[] attrs, List<XElement> srcs) {
+    static (int, int) CopyText(XElement root, HashSet<XElement> kept, string tag, string[] keys, string[] attrs,
+        List<XElement> srcs) {
         string Key(XElement e) => string.Join("|", keys.Select(k => ((string)e.Attribute(k) ?? "").TrimStart('0')));
         bool Keyed(XElement e) => keys.All(k => e.Attribute(k) != null);   // a row without its key matches nothing
         static string Loc(XElement e) => (string)e.Attribute("locale") ?? "";
@@ -393,7 +417,7 @@ static class Patch {
                     enFeat.TryAdd((Key(e), Loc(e), Feat(e)), v);
                 }
             foreach (var e in root.Descendants(tag)) {
-                if (!Keyed(e) || !HasHangul((string)e.Attribute(attr))) continue;
+                if (!Keyed(e) || kept.Contains(e) || !HasHangul((string)e.Attribute(attr))) continue;
                 if (Loc(e).Length > 0 && !Loc(e).Split(',').Contains("KR")) continue;   // a row the KR client skips
                 var kr = (string)e.Attribute(attr);
                 bool Fits(string t) => !StrayBrace(t) && Fields(t).IsSubsetOf(Fields(kr));

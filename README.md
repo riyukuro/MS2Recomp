@@ -98,8 +98,10 @@ tables from the client packs are copied by id from your copies, and the only tex
   (`additional/700`), so the pass window and the buff bar show their icons. The KMS2 pack has no survival tables,
   so the patch also writes the other 5 from the global client into `Table/na/` (`mapleSurvivalOpenPeriod.xml`,
   `survivalLevel.xml`, `survivalLevelReward.xml`, `survivalPassReward.xml` and `survivalPassReward_paid.xml`),
-  without the feature switch, and moves the one season's end from 2018 to 2028. If a survival table is missing, the
-  client logs that it cannot open it, and the window that needs it stays empty.
+  without the feature switch, and moves the one season's end from 2018 to 2028. The paid pass rewards that are
+  royale experience tonics 20301787-20301789 are dropped (11 slots): KMS2 has a firework and two titles at those
+  ids. If a survival table is missing, the client logs that it cannot open it, and the window that needs it stays
+  empty.
 - `string-names.m2dpatch`: achievement names the KMS2 Korean table lacks (the pack's own English rows, and our
   English for 15 achievements that have none), and NPC titles: Korean-only titles with no English row are
   blanked, 5 take the pack's English title. Where the English row of a blanked title holds only a placeholder key
@@ -114,7 +116,8 @@ tables from the client packs are copied by id from your copies, and the only tex
   system mails (the elite weapon support level packages, the bingo play-time gifts, the Race Against Time start
   mails and the rock-paper-scissors login gifts), which no pack has in English, get our own English subject and
   text, with the same item links. So do three KR-only epic quests (journal
-  texts and dialogue), one title and one potion (name, plural and tooltip) that no pack has in English.
+  texts and dialogue), one title and one potion (name, plural and tooltip) that no pack has in English. The
+  Black Market's cancel message gets its typo fixed ("You have canceled your listing").
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
   (`copy-text`); about 47,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,
@@ -122,7 +125,10 @@ tables from the client packs are copied by id from your copies, and the only tex
   uses a field the Korean one lacks is not copied, since the client stops on it with an assertion. About 37,000
   Korean texts have no usable English row in either pack and stay Korean. In the buff and effect descriptions
   (`stringadditionaldescription`), 64 Korean rows carry a level that their English row lacks, so they are copied by
-  id instead (`copy-attr`), among them the Auto-Fishing buff text. Apply them after `string-names.m2dpatch`.
+  id instead (`copy-attr`), among them the Auto-Fishing buff text. The item name, plural and description tables
+  skip 288 rows (`keep`) whose English row belongs to another item: the global client gave some ids KMS2 uses
+  to other items (KMS2's Dark Neon Weapon Box is a global royale experience tonic), so those keep the KMS2 text.
+  Apply them after `string-names.m2dpatch`.
 - `emote-commands.m2dpatch`: typed emote commands (`/bow`, `/greet`). The Korean emote table has Korean
   keywords for 41 emotes, so their English commands were not recognised; each emote keeps its keywords and adds
   the English keywords of the same emote from the pack's English table (`add-words`, matched by skill id).
