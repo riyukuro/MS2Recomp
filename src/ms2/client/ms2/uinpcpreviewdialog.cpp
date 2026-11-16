@@ -426,7 +426,11 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
                 continue;
             for (size_t j = 0; j < spTalk->m_contents.GetCount(); j++) {
                 CStringW strText = spTalk->m_contents[j]->m_text;
+#ifdef MS2_HOOK_DLL
                 strText.Replace(L"$MaidName$", L"메이드");
+#else   // MS2-RESTORE: our own English for text a player sees; the hook DLL keeps the exe's text
+                strText.Replace(L"$MaidName$", L"Maid");
+#endif
                 strText.Replace(L"$OwnerName$", GetStringCommon(0x787));
                 TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
                 strOut.AppendFormat(L"%d : %s\n\n", j, (const wchar_t*)strText);
@@ -441,7 +445,11 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
             return 0;
         for (size_t j = 0; j < spTalk->m_contents.GetCount(); j++) {
             CStringW strText = spTalk->m_contents[j]->m_text;
+#ifdef MS2_HOOK_DLL
             strText.Replace(L"$MaidName$", L"메이드");
+#else
+            strText.Replace(L"$MaidName$", L"Maid");
+#endif
             strText.Replace(L"$OwnerName$", GetStringCommon(0x787));
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             strOut.AppendFormat(L"%d : %s\n\n", j, (const wchar_t*)strText);
@@ -454,7 +462,11 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
             return 0;
         for (size_t j = 0; j < spTalk->m_contents.GetCount(); j++) {
             CStringW strText = spTalk->m_contents[j]->m_text;
+#ifdef MS2_HOOK_DLL
             strText.Replace(L"$MaidName$", L"메이드");
+#else
+            strText.Replace(L"$MaidName$", L"Maid");
+#endif
             strText.Replace(L"$OwnerName$", GetStringCommon(0x787));
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             strOut.AppendFormat(L"%d : %s\n\n", j, (const wchar_t*)strText);
@@ -467,7 +479,11 @@ int UINpcPreviewDialog::FUN_141a6fd90(int nRow)
             return 0;
         for (size_t j = 0; j < spTalk->m_contents.GetCount(); j++) {
             CStringW strText = spTalk->m_contents[j]->m_text;
+#ifdef MS2_HOOK_DLL
             strText.Replace(L"$MaidName$", L"메이드");
+#else
+            strText.Replace(L"$MaidName$", L"Maid");
+#endif
             strText.Replace(L"$OwnerName$", GetStringCommon(0x787));
             TSingleton<CReservedWordTable>::GetInstance()->ReplaceValueWords(strText);
             strOut.AppendFormat(L"%d : %s\n\n", j, (const wchar_t*)strText);
