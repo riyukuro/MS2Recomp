@@ -297,6 +297,9 @@ set key[id=$s_msgbox_cnt] value ""
 set key[id=$s_smart_recommend_billing_price_num] value ""
 set key[id=$s_massiveevent_moviecounter_count] value ""
 set key[id=$s_bluemarble_tag_trap] value "Jail"
+# The pack's Black Market search notice has a typo: our own English instead, same line breaks.
+set key[id=$s_blackmarket_notice_search] value "Search the Black Market for items to buy.\\nSet your search options, \
+    and the results show up here.\\n"
 # Enchant window (Ophelia) texts: the meso fee for missing Crystal Fragments and the unlimited-enchant cost are
 # Korean only in every table, so they get our own English; the enchant scroll's no-break line, which the Korean
 # table lacks, takes the English row of the same pack.
@@ -528,6 +531,18 @@ set key[id=20001786] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<f
 set key[id=20001786] tooltipDescription "A powerful potion made with a new technique. It goes down in one gulp, so \
     it works fast. Drinking it immediately <font color='#00aaef'>restores 3600 HP</font>. One drink fills you up, so \
     you can drink another after 5 sec."
+# The wedding Blessing Charm 20001703 is KR-only, with no English row in any pack: our own English, with the
+# row's own font tags.
+file Xml/string/kr/itemname.xml kms:Xml/string/kr/itemname.xml 8c56a83382e644a3
+set key[id=20001703] name "Blessing Charm"
+file Xml/string/kr/itemnameplural.xml kms:Xml/string/kr/itemnameplural.xml a4eb65ca9faa967f
+set key[id=20001703] name "Blessing Charms"
+file Xml/string/kr/koritemdescription.xml kms:Xml/string/kr/koritemdescription.xml 669a7f4ea48c36b2
+set key[id=20001703] mainDescription "<font size='14'>30 Day Cooldown</font>\\n<font size='24'>Intimacy Up</font>"
+set key[id=20001703] tooltipDescription "<font color='#00aaef'>A charm full of lovely golden energy that blesses \
+    a married couple's future. Use it to raise the couple's intimacy.</font>"
+set key[id=20001703] guideDescription "<font color='#6e6e6e'>Double-click it in your inventory to use it.\\nOnce \
+    used, it can be used again after 30 days.</font>"
 # KR-only event system mails with no English row in any pack (the Race Against Time start mails 170928001 and
 # 180524004, and the rock-paper-scissors login gifts 171228005 and 190214001): our own English; the item links are
 # the ones the rows have.
