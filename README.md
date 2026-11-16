@@ -126,7 +126,7 @@ tables from the client packs are copied by id from your copies, and the only tex
   of 184 KR-only trophies, the 184 field and dungeon messages (stringtrigger) and 999 NPC dialogue rows
   (scriptnpc, locale KR or none) still in Korean.
   Quest dialogue (scriptquest) of the quests a player can get is in our own English for these feature groups: Event,
-  SoulBinder, Striker (1,399 rows).
+  SoulBinder, Striker, KarkarIsland (1,559 rows).
   The Black Market's cancel and search messages, whose English rows have typos, get our own wording.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
