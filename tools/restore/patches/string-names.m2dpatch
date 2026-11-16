@@ -55050,3 +55050,16 @@ set key[id=8015] name "Traditional"
 set key[id=8016] name "Chess"
 set key[id=8098] name "Special"
 set key[id=8099] name "Misc."
+
+# Two Black Market seller mails carry typos in the pack ("Your have sold", "ofr all payments"): our own
+# English instead, with the same fields and line breaks.
+file Xml/string/kr/stringcommon.xml kms:Xml/string/kr/stringcommon.xml 1caa91b5294d03ed
+set key[id=s_blackmarket_mail_to_seller_content] value "You sold items on the Black Market. Your earnings are \
+    attached.\\n\\n[Item] {0} x{1}\\n[Sale Price] {2} mesos ({3} mesos per item)\\n[Fee] {4} mesos ({5} of the \
+    sale price)\\nYour deposit comes back once the whole listing has sold.\\n<img \
+    src='export_dotline_brown_f16_276'/>\\n[Earnings] {6} mesos"
+set key[id=s_blackmarket_mail_to_seller_content2] value "Your Black Market items have sold. To guard against trade \
+    fraud and other abuse, the Black Market holds every payment for {0} hours. When that time is up, your earnings \
+    arrive by mail (fees taken out).\\nIf you used 2-step verification when you listed the item, your payment is \
+    not held.\\n\\n[Item] {1}\\n[Sale Price] {2} mesos ({3} mesos per item)\\n[Fee] -{4} mesos ({5}% of the sale \
+    price)\\n----------------------------------------------\\n[Earnings] {6} mesos"
