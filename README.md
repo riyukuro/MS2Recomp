@@ -60,6 +60,10 @@ and the comments cite that exe's addresses as `GMS 0x...`. Do not read those as 
   window (`uinpcpreviewdialog.cpp`). The Korean chat commands for attendance, camera, smart recommend and map also
   answer to English names (`Attendance`, `Camera`, `SmartRecommend`, `Map`); the Korean names still work. Log and
   assert messages stay as they are.
+- **Home permissions save in every open type.** The exe asks for a 6-character passcode before it saves the home
+  settings, even for the Public and Private types, which have no passcode, so they could not be saved
+  (`uihomeoptiondialog.cpp`). On this branch only the Password type needs one. `gfx-code.m2dpatch` (below) fixes
+  the Apply button of the same dialog.
 
 Every change is under `src/ms2/`: `client/`, plus the two string lookups in `commonfiles/commonstringtable.cpp` and
 `gfxui/fontconfig.cpp`. The changed behaviour is compiled only when `MS2_HOOK_DLL` is not defined, so it is in the
@@ -191,6 +195,11 @@ tables from the client packs are copied by id from your copies, and the only tex
   symbols (it draws them from one image), copied from its `na/commonimage_i1.dds` (`dds`,
   `blit` from a pinned source), so it needs `--gms <global client>/Data`; the patch holds no pixels, and the rest
   of the atlas stays byte-identical. Apply it with `--repack` like the gfx patch.
+- `gfx-code.m2dpatch`: a fix in the AS3 code of a UI movie (`code`: a bytecode sequence replaced in one method,
+  pinned like the rest). In the home permissions dialog (`uihomeoptiondialog.gfx`) the Apply button turns on only
+  when a control it watches changes, and the movie watched only the dialog's direct children, not the 7 permission
+  rows (they sit in a child clip). Changing a row left Apply off, and OK closed the dialog without saving. The patch
+  makes it watch the rows too, but not the kick button beside them. Apply it with `--repack` like the gfx patch.
 - `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that
   turns on the `DailyMission` feature in its own `feature.xml`. No patch changes `feature.xml`.
 
@@ -205,7 +214,8 @@ The gfx patches, into another directory with `--repack` (add it to the list abov
 
 ```
 dotnet run --project tools/m2d -- patch <KMS2 client>/Data --gms <global client>/Data \
-    tools/restore/patches/gfx-text.m2dpatch tools/restore/patches/gfx-images.m2dpatch --out <dir> --repack
+    tools/restore/patches/gfx-text.m2dpatch tools/restore/patches/gfx-images.m2dpatch \
+    tools/restore/patches/gfx-code.m2dpatch --out <dir> --repack
 ```
 
 This writes the patched files as loose files under `--out` (`Xml/itemdata/209.xml`, `Xml/string/kr/...`), where

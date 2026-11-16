@@ -144,7 +144,11 @@ int UIHomeOptionDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Val
             unsigned char nOpenType = data.PopInt();
             CStringW strPassword = data.FUN_1422b8f40();
             strPassword.Trim();
+#ifdef MS2_HOOK_DLL
             if (strPassword.GetLength() != 6)
+#else   // MS2-RESTORE: the exe wants a 6-character passcode for every open type; only Password (1) uses one
+            if (nOpenType == 1 && strPassword.GetLength() != 6)
+#endif
             {
                 FUN_140d73bc0(0xb0a, 0, 0, CStringW(L""));
                 return 1;

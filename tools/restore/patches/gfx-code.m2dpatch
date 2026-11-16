@@ -1,0 +1,20 @@
+patch gfx-code
+made-for KMS2 KR Live client Resource/Gfx.m2d and GfxDebug.m2d (both patched)
+# Fixes in the AS3 bytecode of UI movies (code ops: the bytes are AS3 instructions; multiname and string indices
+# are this movie's).
+# - uihomeoptiondialog.gfx, HomeOptionDialog.setData: the Apply button turns itself on when a registered control
+#   changes, but the movie registers only the dialog's direct children, and the 7 permission dropdowns are children
+#   of m_contents. So changing a permission row never turned Apply on, and OK closed the dialog without saving.
+#   The last call of setData, m_apply.registerChildControl(this), becomes:
+#     m_apply.addExceptControl("m_kickUser")          (the kick button inside m_contents must not turn it on)
+#     m_apply.registerChildControl(this)
+#     m_apply.registerChildControl(m_contents)
+#   It ends the method, so no branch crosses it; the stack needs no more than the method's 2.
+
+gfx Resource/Gfx/uihomeoptiondialog.gfx kms: 91164ff34f4868da
+code d066d907d04fd2070147 \
+  d066d9072c80044fcc0701d066d907d04fd20701d066d907d066df074fd2070147
+
+gfx Resource/GfxDebug/uihomeoptiondialog.gfx kms: b1e51beb9f7bb372
+code d066d907d04fd2070147 \
+  d066d9072c80044fcc0701d066d907d04fd20701d066d907d066df074fd2070147
