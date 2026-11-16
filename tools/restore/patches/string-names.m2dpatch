@@ -526,3 +526,60 @@ set key[id=20001786] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<f
 set key[id=20001786] tooltipDescription "A powerful potion made with a new technique. It goes down in one gulp, so \
     it works fast. Drinking it immediately <font color='#00aaef'>restores 3600 HP</font>. One drink fills you up, so \
     you can drink another after 5 sec."
+# KR-only event system mails with no English row in any pack (the Race Against Time start mails 170928001 and
+# 180524004, and the rock-paper-scissors login gifts 171228005 and 190214001): our own English; the item links are
+# the ones the rows have.
+file Xml/string/kr/systemmailcontentkr.xml kms:Xml/string/kr/systemmailcontentkr.xml de7a6c87e4d434b5
+row mail[id=170928001] <mail id="170928001" sender="MapleStory 2 Team" subject="The Race Against Time event begins!" \
+    content="Hello, this is Ruby, your event helper!&#10;&#10;Remember the Race Against Time pre-opening event we \
+    ran from September 14 until the maintenance on the 28th?&#10;&#10;Well, the real event starts now!&#10;&#10;Just \
+    like the pre-opening event, this Race Against Time rewards you for clearing all kinds of missions over 7 \
+    days!&#10;&#10;The final reward is 1,000 Event Merets!&#10;The Gift Box of Time now gives 10 Shining Moon \
+    Fragments!&#10;You can trade Shining Moon Fragments for all kinds of items at the Moon Rabbit's shop and at \
+    Peddler Tenten's shop, both at the Stardust Fishing Spot!&#10;&#10;Race Against Time matters more than \
+    ever!&#10;Here is how to take part once more:&#10;&#10;1. On the character you want to race with, claim the \
+    Hourglass of Transcendence attached to this mail.&#10;Only the character that uses the hourglass can run the \
+    Race Against Time! Some quests along the way are tough, so think it over before you use it.&#10;&#10;2. Clear \
+    the missions and claim every reward before the 7 days that start when you use the hourglass run out!&#10;The \
+    event lasts until the maintenance on October 26, but once you use the hourglass, the 7 days cannot be \
+    stopped!&#10;TIP: use the hourglass when you can clear 7 days of missions within the event period!&#10;The event \
+    ends with the maintenance on October 26 even if you have missions left, so clear all 7 days of missions before \
+    then!&#10;&#10;3. Beat the clock to the finish line and claim the final reward of 1,000 Event Merets!&#10;&#10;* \
+    The Hourglass of Transcendence, the Gift Box of Time and the 1,000 Event Merets can be used until the regular \
+    maintenance on Thursday, October 26. Be sure to use them before then.&#10;&#10;We look forward to seeing you run \
+    again!&#10;Thank you." />
+row mail[id=180524004] <mail id="180524004" sender="MapleStory 2 Team" subject="The Race Against Time event begins!" \
+    content="Hello, this is Ruby, your event helper!&#10;&#10;Do you remember the Race Against Time?&#10;Racing to \
+    clear every mission in 7 days brings back such fond memories.&#10;&#10;So, shall we run once more?&#10;The final \
+    reward is an adorable Chow Chow pet.&#10;Don't miss the Rainbow Coins you get for each mission you \
+    clear.&#10;&#10;How to take part&#10;&#10;1. On the character you want to race with, claim the Hourglass of \
+    Transcendence attached to this mail.&#10;Note: the event runs on the character that uses the Hourglass of \
+    Transcendence.&#10;Think carefully about which character to race with and when it is best to use the Hourglass \
+    of Transcendence.&#10;&#10;2. Clear the missions and claim every reward before the 7 days that start when you \
+    use the hourglass run out.&#10;The event lasts until the maintenance on June 21, but once you use the hourglass, \
+    the 7 days cannot be stopped!&#10;TIP: use the hourglass when you can clear 7 days of missions within the event \
+    period!&#10;The event ends with the maintenance on June 21 even if you have missions left, so clear all 7 days \
+    of missions before then!&#10;&#10;3. Beat the clock to the finish line and claim the final reward!&#10;&#10;* \
+    The Hourglass of Transcendence and the Rainbow Coins can be used until the regular maintenance on Thursday, June \
+    21. Be sure to use them before then.&#10;&#10;We look forward to seeing you run again!&#10;Thank you." />
+row mail[id=171228005] <mail id="171228005" sender="MapleStory 2 Team" subject="[Rock-Paper-Scissors] Your login \
+    gift has arrived." content="Hello, this is MapleStory 2.&#10;&#10;A Rock-Paper-Scissors event has come to Maple \
+    World, where you can face off in exciting matches!&#10;As a login gift, we are sending you [15 \
+    Rock-Paper-Scissors Match Tickets].&#10;You need a Rock-Paper-Scissors Match Ticket for each match, so keep that \
+    in mind!&#10;&#10;Now, here is how to play Rock-Paper-Scissors!&#10;&#10;First, use the Rock-Paper-Scissors menu \
+    in the Adventure tab to post your own match and take on challengers,&#10;or second, walk up to another \
+    adventurer who is posting a match and challenge them.&#10;&#10;You get a gift every day after your 3rd, 6th and \
+    9th game,&#10;and a very, very special gift from the Fanfare Baby Angel awaits adventurers who keep \
+    playing!&#10;&#10;Enjoy the games, and be sure to collect your gifts!&#10;&#10;* Rock-Paper-Scissors Match \
+    Tickets can be used until the maintenance on Thursday, February 8, 2018. Be sure to use them before \
+    then.&#10;&#10;Thank you.&#10;" />
+row mail[id=190214001] <mail id="190214001" sender="MapleStory 2 Team" subject="[Rock-Paper-Scissors] Your login \
+    gift has arrived." content="Hello, this is MapleStory 2.&#10;&#10;Adventurers, are you making it through the \
+    cold winter?&#10;The Winter Rock-Paper-Scissors event is here, perfect for warming up frozen hands!&#10;As a \
+    login gift, we are sending you [$item:20302404$ x15].&#10;You need $item:20302404$ for each match, so keep that \
+    in mind!&#10;&#10;Now, here is how to play Rock-Paper-Scissors!&#10;&#10;First, use the Rock-Paper-Scissors menu \
+    in the Adventure tab to post your own match and take on challengers,&#10;or second, walk up to another \
+    adventurer who is posting a match and challenge them.&#10;&#10;You get a gift every day after your 3rd, 6th and \
+    9th game,&#10;and adventurers who keep playing even get a chance at $item:40400080$!&#10;&#10;Enjoy the games, \
+    and be sure to collect your gifts!&#10;&#10;* $item:20302404$ can be used until the maintenance on Thursday, \
+    March 14, 2019. Be sure to use it before then.&#10;&#10;Thank you." />
