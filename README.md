@@ -121,7 +121,8 @@ tables from the client packs are copied by id from your copies, and the only tex
   ItemKR, 1,056: PC Cafe gear, event boxes and tickets, enchant scrolls, set weapons and armor; Level70Item,
   267: PC Cafe and arena gear, level 70 boxes and scrolls), names and descriptions, and 440 more item names
   and 2,552 more item description rows (no feature tag) whose item a drop, shop, quest or set refers to, and the
-  KR-only quests (feature QuestKR, 810: titles, journal texts and objectives) and the 61 KR-only system mails
+  KR-only quests (feature QuestKR, 810: titles, journal texts and objectives) and the 690 other quests a player
+  can get whose title or texts no pack has in English, and the 61 KR-only system mails
   the server can send (housing, wedding, dungeon rank rewards, first login, returning player, world raid,
   nurturing; the other dated event mails stay as they are), and the goal and done texts
   of 184 KR-only trophies, the 184 field and dungeon messages (stringtrigger) and 999 NPC dialogue rows
