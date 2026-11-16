@@ -109,8 +109,8 @@ tables from the client packs are copied by id from your copies, and the only tex
   such as the one over the Mentoring window) that the Korean table still has in Korean take the pack's English
   row (20), and one KR tip with no English row gets our own English. Flash UI strings with no English row in
   either pack (option labels, a menu popup) get our own English, as do the enchant window's two fee labels (the
-  meso cost for missing Crystal Fragments) and 8 labels whose pack English is wider than its field (the six
-  guild window buttons, the house rental term, the apartment building field);
+  meso cost for missing Crystal Fragments) and 9 labels whose pack English is wider than its field (the six
+  guild window buttons, the guild championship rank label, the house rental term, the apartment building field);
   the enchant scroll's no-break line, missing from the Korean table, takes the pack's English row. The 6 default
   guild rank names get short English names (Leader, Officer, Member, Novice, Member2, Novice2): a KR client allows
   at most 7 characters in a rank name and refuses a rights change on a rank whose name is longer. 24 KR-only event
@@ -168,8 +168,8 @@ tables from the client packs are copied by id from your copies, and the only tex
   fixes for English text that is wider than its field (`field`): the Personal Arena list rows show the arena names
   at 20 px instead of 22 (they were cut at the row's edge), and the arena description wraps instead of showing one
   cut line. In 20 more movies, 32 fields get a smaller font (at least 11 px; guild invite button, inventory
-  sockets, boss bar, purchase complete, black market fee note, capsule and wedding texts, among others) and 4
-  get word wrap (guild championship tooltip, house passcode text, wedding notes); the apartment address box
+  sockets, boss bar, purchase complete, black market fee note, capsule and wedding texts, among others) and 3
+  get word wrap (house passcode text, wedding notes); the apartment address box
   labels are 14 px. No field is moved or resized; labels too long even at 11 px get shorter English in
   `string-names.m2dpatch`. The trophy tooltip lays out its labels at run time and needs no fix. Apply it with
   `--repack`; we have not checked whether the client reads loose gfx files.

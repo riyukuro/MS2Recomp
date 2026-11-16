@@ -64,8 +64,6 @@ text 4 "[Adventure] Casa de Luna: The Moon Shadow Returns"
 gfx Resource/Gfx/uiguilddialog.gfx kms: b8a8ca730ca2bf46
 field 686 size 14
 field 693 size 14
-field 636 wrap 1
-field 636 multiline 1
 gfx Resource/Gfx/uihomepassworddialog.gfx kms:Resource/Gfx/uihomepassworddialog.gfx 28c7310493f4aeb6
 field 1 size 14
 field 1 wrap 1
@@ -169,8 +167,6 @@ text 4 "[Adventure] Casa de Luna: The Moon Shadow Returns"
 gfx Resource/GfxDebug/uiguilddialog.gfx kms: c4af91a8014d6837
 field 686 size 14
 field 693 size 14
-field 636 wrap 1
-field 636 multiline 1
 gfx Resource/GfxDebug/uihomepassworddialog.gfx kms:Resource/GfxDebug/uihomepassworddialog.gfx 28c7310493f4aeb6
 field 1 size 14
 field 1 wrap 1
