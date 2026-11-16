@@ -293,13 +293,16 @@ set key[id=$s_gameoption_agreement_summary] value "Game logs may go, anonymized 
 set key[id=$s_gamemenu_popup_longtermattendgift] value "Golden\\nDuckyball"
 set key[id=$s_tooltip_gameoption_agreement] value "<FONT color='#FFD200' size='15' >Personal Data</FONT>\\n<FONT \
     size='3'> </FONT>\\nPersonal data settings."
-set key[id=$s_msgbox_cnt] value ""
-set key[id=$s_smart_recommend_billing_price_num] value ""
-set key[id=$s_massiveevent_moviecounter_count] value ""
 set key[id=$s_bluemarble_tag_trap] value "Jail"
-# The pack's Black Market search notice has a typo: our own English instead, same line breaks.
+# The Black Market search notice has a typo in this pack and in the global client: our own English instead, same
+# line breaks.
 set key[id=$s_blackmarket_notice_search] value "Search the Black Market for items to buy.\\nSet your search options, \
     and the results show up here.\\n"
+# Count words after numbers: the global client's English rows (empty).
+need gms:Xml/string/en/korflash.xml 41ae3cebc26645fb
+copy-row key[id=$s_msgbox_cnt] gms:Xml/string/en/korflash.xml
+copy-row key[id=$s_smart_recommend_billing_price_num] gms:Xml/string/en/korflash.xml
+copy-row key[id=$s_massiveevent_moviecounter_count] gms:Xml/string/en/korflash.xml
 # Enchant window (Ophelia) texts: the meso fee for missing Crystal Fragments and the unlimited-enchant cost are
 # Korean only in every table, so they get our own English; the enchant scroll's no-break line, which the Korean
 # table lacks, takes the English row of the same pack.
@@ -696,26 +699,28 @@ set key[id=20301790] guideDescription "Double-click to get a special title."
 set key[id=20301963] tooltipDescription "A box with a Dark Neon weapon inside."
 set key[id=20301963] guideDescription "Double-click it in your inventory to get a weapon skin for your job."
 set key[id=20302460] tooltipDescription "A box with cute school-supply weapons inside."
-set key[id=20302460] guideDescription "Double-click it in your inventory to get a weapon skin for your job."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20302460] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20302930] tooltipDescription "A box with a Stained Glass weapon inside."
 set key[id=20302930] guideDescription "Double-click it in your inventory to get a weapon for your job."
 set key[id=40400132] mainDescription "Summons the rain-calling frogs' song"
 set key[id=40400132] tooltipDescription "Ribbit ribbit, the frogs are singing! Ribbit ribbit, what lovely voices! \
     Once aboard, you rise 1.2 m per sec, up to 12 m. Press a direction key while it is active to move 6.5 m forward. \
     Cannot be used indoors or in some areas."
-set key[id=40400132] guideDescription "Double-click it in your inventory or put it in a quick slot to get on and \
-    off."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=40400132] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=50600212] mainDescription "Runs very fast."
 set key[id=50600212] tooltipDescription "Ride on the shoulder of a robot piloted by an octopus couple who get along \
     great. The Yellow Octo-Robo usually toddles along with cute little steps, but in a hurry it bounds along on its \
     two arms."
-set key[id=50600212] guideDescription "Double-click it in your inventory or put it in a quick slot to get on and \
-    off. Once aboard, hold the basic attack key, or move while holding it, to use a special move."
-set key[id=70200050] mainDescription "Changes your chat bubble design"
-set key[id=70200050] tooltipDescription "A badge that changes your chat bubble design."
-set key[id=70200050] guideDescription "Drag it from your inventory to the Badge tab of the Character window, or \
-    right-click it, to equip it and change your character's chat bubble design. You can equip only one chat bubble \
-    badge."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=50600212] guideDescription gms:Xml/string/en/koritemdescription.xml
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=70200050] mainDescription gms:Xml/string/en/koritemdescription.xml
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=70200050] tooltipDescription gms:Xml/string/en/koritemdescription.xml
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=70200050] guideDescription gms:Xml/string/en/koritemdescription.xml
 # Wedding items (feature Wedding) are KR-only, with no English row in any pack: our own English names and
 # descriptions from the KMS2 text, with each row's own format fields, font tags, line breaks and links. The
 # Korean particle fields ($pp) are left out. Plurals follow from these names (plural-of).
@@ -1323,7 +1328,8 @@ set key[id=20302408] name "Hearty Potion Box"
 set key[id=20302412] name "Wannabe Mark Choice Box"
 set key[id=20302416] name "LV70 Pet Choice Box"
 set key[id=20302419] name "Legion Battle Supplies"
-set key[id=20302420] name "Enamel Stripe Ribbon Piece"
+need gms:Xml/string/en/itemname.xml dca380a6fd670195
+copy-attr key[id=20302420] name gms:Xml/string/en/itemname.xml
 set key[id=20302442] name "Twinkle Star Fancy Weapon Box"
 set key[id=20302443] name "Return to Pink Bean"
 set key[id=20302550] name "Swim Ring Badge Paper Boat Choice Box"
@@ -5608,7 +5614,8 @@ set key[id=20302416] guideDescription "Double-click it in your inventory to choo
     $item:20301160$.</font>"
 set key[id=20302419] tooltipDescription "A supply box given out once each time you take part in a Legion Battle \
     during the event, up to 3 times a day."
-set key[id=20302420] tooltipDescription "A piece of an enamel stripe ribbon. "
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20302420] tooltipDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20302420] guideDescription "Double-click it to use it. Spend 14 to make an enamel stripe ribbon."
 set key[id=20302424] tooltipDescription "A ticket for playing a rock-paper-scissors match. 1 is used up when a \
     match is completed."
@@ -7971,10 +7978,12 @@ set key[id=15200325] name "Romantic Wedding Staff"
 set key[id=15300321] name "Romantic Wedding Cannon"
 set key[id=15400306] name "Romantic Wedding Blade"
 set key[id=20001150] name "Bittersweet Chocolate"
-set key[id=20001302] name "Bubble Bubble Heart Candy"
+need gms:Xml/string/en/itemname.xml dca380a6fd670195
+copy-attr key[id=20001302] name gms:Xml/string/en/itemname.xml
 set key[id=20001446] name "Title: Artificial Intelligence"
 set key[id=20001696] name "(PC Cafe) Enhanced Special Health Potion"
-set key[id=20001773] name "Pink Bean Steamed Bun"
+need gms:Xml/string/en/itemname.xml dca380a6fd670195
+copy-attr key[id=20001773] name gms:Xml/string/en/itemname.xml
 set key[id=20001882] name "Doll of Wisdom"
 set key[id=20001883] name "Doll of Agility"
 set key[id=20001884] name "Doll of Strength"
@@ -12187,7 +12196,8 @@ set key[id=20001136] tooltipDescription "A sweet hot chocolate that is nice to d
 set key[id=20001136] guideDescription "Drinking it restores 80 HP per second for 28 sec."
 set key[id=20001302] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<font size='24'>Restores 1200 \
     HP</font>"
-set key[id=20001302] tooltipDescription "A handmade candy carefully crafted in a pink heart shape."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20001302] tooltipDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20001302] guideDescription "Eating it restores 1200 HP.\\nAfter eating one, you can eat again after 5 \
     sec."
 set key[id=20001322] tooltipDescription "A potion brimming with the energy of growth."
@@ -12439,10 +12449,12 @@ set key[id=20301388] tooltipDescription "A choice box of retro-style interior it
 set key[id=20301388] guideDescription "Double-click it to choose 1 of the items inside the box."
 set key[id=20301434] tooltipDescription "A box that gives you the luxurious Imperial Gold weapon, with its \
     well-matched gold and red accents. "
-set key[id=20301434] guideDescription "Double-click it in your inventory to get a weapon skin for your job."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20301434] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20301435] tooltipDescription "A box that gives you the luxurious Imperial Gold weapon, with its \
     well-matched gold and red accents. "
-set key[id=20301435] guideDescription "Double-click it in your inventory to get a weapon skin for your job."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20301435] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20301436] mainDescription "<font size='14'>2 Min Cooldown</font>\\n<font size='24'>Removes Blue \
     Flame</font>"
 set key[id=20301436] tooltipDescription "A flower that grew in the chill of the Eternal Cave. Eating it lets its \
@@ -12491,7 +12503,8 @@ set key[id=20301868] tooltipDescription "A firework made for the starlight firew
     27, 2020, and only in $map:63000094$. Using it shoots starlight high into the sky and also gets you \
     $item:30001276$. If you take a screenshot of the moment you use the firework by Dec 27, you can enter the \
     Starry Christmas event on the homepage.</font>"
-set key[id=20301868] guideDescription "Double-click it in your inventory to get the item."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20301868] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20301869] tooltipDescription "A box that gives you all 12 beauty coupons for your gender. \\nIf you got \
     this box, you are one of the luckiest people in MapleStory 2 history. The beauty coupons inside are \
     untradable, so think carefully before opening it."
@@ -12539,7 +12552,8 @@ set key[id=20302275] tooltipDescription "A box holding weapon skins infused with
 set key[id=20302275] guideDescription "Double-click it in your inventory to get a weapon skin for your job."
 set key[id=20302316] tooltipDescription "A box holding weapon skins infused with the cautious charisma of the Dark \
     Wind."
-set key[id=20302316] guideDescription "Double-click it in your inventory to get a weapon skin for your job."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20302316] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20302379] tooltipDescription "A box containing $item:20302380$ and $item:20302381$, which instantly \
     give you a title and a mark. You cannot get a title you already own again, so choose carefully."
 set key[id=20302379] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
@@ -12615,19 +12629,23 @@ set key[id=20302747] guideDescription "\\nHow to get $item:20302626$<font color=
 set key[id=20302906] tooltipDescription "A box containing Epic grade $item:30001157$. $item:30001157$ gives the \
     same effect when used in place of gear needed for enchanting, and when used to enchant a dual-wield weapon, 1 \
     stone gives the effect of 2 pieces of gear."
-set key[id=20302906] guideDescription "Double-click it in your inventory to get the item."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20302906] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20302907] tooltipDescription "A box containing Epic grade $item:30001157$. $item:30001157$ gives the \
     same effect when used in place of gear needed for enchanting, and when used to enchant a dual-wield weapon, 1 \
     stone gives the effect of 2 pieces of gear."
-set key[id=20302907] guideDescription "Double-click it in your inventory to get the item."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20302907] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20302908] tooltipDescription "A box containing Epic grade $item:30001157$. $item:30001157$ gives the \
     same effect when used in place of gear needed for enchanting, and when used to enchant a dual-wield weapon, 1 \
     stone gives the effect of 2 pieces of gear."
-set key[id=20302908] guideDescription "Double-click it in your inventory to get the item."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20302908] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20302909] tooltipDescription "A box containing Epic grade $item:30001157$. $item:30001157$ gives the \
     same effect when used in place of gear needed for enchanting, and when used to enchant a dual-wield weapon, 1 \
     stone gives the effect of 2 pieces of gear."
-set key[id=20302909] guideDescription "Double-click it in your inventory to get the item."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20302909] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20302942] tooltipDescription "A box containing a Stained Glass weapon."
 set key[id=20302942] guideDescription "Double-click it in your inventory to get a weapon for your job."
 set key[id=20302956] tooltipDescription "A construction package that lets you decorate your house with a spooky \
@@ -12638,7 +12656,8 @@ set key[id=20303023] tooltipDescription "A construction package that lets you de
 set key[id=20303023] guideDescription "Double-click it in your inventory to get the item."
 set key[id=20303045] mainDescription "3 Guild Summon Scrolls"
 set key[id=20303045] tooltipDescription "Using it gives you 3 Guild Summon Scrolls."
-set key[id=20303045] guideDescription "Double-click it in your inventory to get the item."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20303045] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20303046] tooltipDescription "A box that gives you 3 kinds of marks."
 set key[id=20303048] mainDescription "10 Party Summon Scrolls"
 set key[id=20303048] tooltipDescription "Using it gives you 10 Party Summon Scrolls."
@@ -12648,10 +12667,12 @@ set key[id=20303049] tooltipDescription "Using it gives you 50 Magic Production 
 set key[id=20303049] guideDescription "Double-click it in your inventory to get the item."
 set key[id=20303051] mainDescription "3 Guild Summon Scrolls"
 set key[id=20303051] tooltipDescription "Using it gives you 3 Guild Summon Scrolls."
-set key[id=20303051] guideDescription "Double-click it in your inventory to get the item."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20303051] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20303052] mainDescription "10 Party Summon Scrolls"
 set key[id=20303052] tooltipDescription "Using it gives you 10 Party Summon Scrolls."
-set key[id=20303052] guideDescription "Double-click it in your inventory to get the item."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=20303052] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=20303053] mainDescription "50 Magic Production Coupons"
 set key[id=20303053] tooltipDescription "Using it gives you 50 Magic Production Coupons."
 set key[id=20303053] guideDescription "Double-click it in your inventory to get the item."
@@ -13424,13 +13445,12 @@ set key[id=30001190] guideDescription "\\nHow to get $item:30001190$<font color=
     Starlight Festival\\n- Open a Turnabout! Box to receive coins. \\n- Do Ruby's daily quest."
 set key[id=30001207] tooltipDescription "A diary written in crooked, pressed-down handwriting. Lines like 'I'm \
     hungry...', 'I'm cold...' and 'I miss Daddy' stand out. "
-set key[id=30001208] tooltipDescription "A license to practice as a lawyer in Maple World. Its field of specialty \
-    reads 'Drafting and Executing Wills'."
-set key[id=30001209] tooltipDescription "A transcribed copy made to back up the contents of a will. It says that \
-    all of Count Monchou's property, including his hotel, goes to his daughter, and that she will be placed in her \
-    adoptive father's care until she comes of age."
-set key[id=30001210] tooltipDescription "It states that Flutino is adopting Marianne, Count Monchou's only \
-    daughter, as his own. "
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=30001208] tooltipDescription gms:Xml/string/en/koritemdescription.xml
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=30001209] tooltipDescription gms:Xml/string/en/koritemdescription.xml
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=30001210] tooltipDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=30001211] tooltipDescription "A necklace that looks expensive. 'Mademoiselle Beaumarchais' is engraved \
     in tiny letters on the clasp."
 set key[id=30001213] tooltipDescription "A will bearing Count Monchou's handwritten signature and official seal. \
@@ -13442,8 +13462,8 @@ set key[id=30001215] tooltipDescription "A beautiful rainbow fragment in bright,
 set key[id=30001215] guideDescription "\\nHow to get $item:30001215$<font color='#FFFFFF'>\\n- In $map:63000060$, \
     fish with $item:20000964$</font>\\n\\nUse the event map shortcut button to get to $map:63000060$ quickly and \
     easily."
-set key[id=30001217] tooltipDescription "A coin modeled after fallen autumn maple leaves. \\nTake it to Bobby in \
-    Queens Town to exchange it for items."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=30001217] tooltipDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=30001217] guideDescription "\\nHow to get $item:30001217$<font color='#FFFFFF'>\\n- Carry the \
     $item:20302065$ you receive by mail each day and fertilize the maple tree in Queens Town to get it through \
     $item:20302067$ \\n- Attendance rewards from Nov 11</font>"
@@ -13459,15 +13479,15 @@ set key[id=30001284] tooltipDescription "A coin issued to celebrate spring.\\nUs
     in Queens Town and Babeni."
 set key[id=30001284] guideDescription "\\nHow to get $item:30001284$<font color='#FFFFFF'>\\n- Join the spring \
     events [Spring Seed Planting] and [Arwen's Glass Slippers]."
-set key[id=30001287] tooltipDescription "A box of chocolates prepared with a fluttering heart for someone special. \
-    \\nDouble-click it in Queens Town to set it up."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=30001287] tooltipDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=30001287] guideDescription "\\nHow to join the event<font color='#FFFFFF'>\\n- When you log in, you \
     receive a Valentine's Chocolate Box and Heart Sprinkles by mail.\\n- Double-click the chocolate box in Queens \
     Town to set it up.\\n- Another character decorates it with Heart Sprinkles. \\n- After 30 seconds the \
     chocolate is done, and you get 'Bittersweet Chocolate'.\\n- Get 30 during the event to earn the trophy and a \
     reward.</font>"
-set key[id=30001288] tooltipDescription "A decor item that lets you become a chocolatier of love and decorate \
-    chocolates.\\nWhen you find a Valentine's Chocolate Box in Queens Town, sprinkle it with decor."
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=30001288] tooltipDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=30001288] guideDescription "\\nHow to join the event<font color='#FFFFFF'>\\n- When you log in, you \
     receive a Valentine's Chocolate Box and Heart Sprinkles by mail.\\n- Double-click the chocolate box in Queens \
     Town to set it up.\\n- Another character decorates it with Heart Sprinkles. \\n- After 30 seconds the \
@@ -13673,8 +13693,8 @@ set key[id=40400078] guideDescription "Double-click it in your inventory or regi
 set key[id=40400080] mainDescription "Summons Spinning Whirlwind House"
 set key[id=40400080] tooltipDescription "You rise 0.5m per second, up to 4m, with the Spinning Whirlwind House. \
     While active, press a direction key to move forward 6.5m at a time.  Cannot be used indoors or in some areas."
-set key[id=40400080] guideDescription "\\nDouble-click it in your inventory or register it in a quick slot to get \
-    on and off.\n\\n * Where to get it<font color='#FFFFFF'>\\n- Winter Rock-Paper-Scissors event</font>"
+need gms:Xml/string/en/koritemdescription.xml 39a389d368923eb5
+copy-attr key[id=40400080] guideDescription gms:Xml/string/en/koritemdescription.xml
 set key[id=40400092] mainDescription "Summons Cherry Pink Plum Fan"
 set key[id=40400092] tooltipDescription "Fly through the sky on the Cherry Pink Plum Fan. On the plum fan you rise \
     0.5m per second, up to 4m. While active, press a direction key to move forward 7m at a time.  Cannot be used \
@@ -55067,15 +55087,15 @@ set key[id=s_blackmarket_mail_to_seller_content2] value "Your Black Market items
 # our own shorter English.
 file Xml/string/kr/korflash.xml kms:Xml/string/kr/korflash.xml 5a0c445adf501b2f
 set key[id=$s_itemsocketsystem_tab_socket_transfer] value "Socket Transfer"
-# Labels whose stock English is wider than their field: our own shorter English (guild window buttons, the house
-# rental term label, the apartment building field of the address box).
+# Labels whose English (the same in this pack and the global client) is wider than their field even at the
+# smallest readable font: our own shorter English (the house rental term label, the apartment building field of
+# the address box, the guild championship rank label), in the Korean and the English table, so the labels fit
+# whichever language the client is set to.
 file Xml/string/kr/korflash.xml kms:Xml/string/kr/korflash.xml 5a0c445adf501b2f
-set key[id=$s_guild_info_button_change_mark] value "Emblem"
-set key[id=$s_guild_info_button_break_guild] value "Disband"
-set key[id=$s_guild_manage_change_grade] value "Set Rank"
-set key[id=$s_guild_info_button_change_master] value "Notice"
-set key[id=$s_guild_info_button_leave_guild] value "Leave"
-set key[id=$s_guild_event_join] value "Enter"
+set key[id=$s_myInfo_home_term] value "Term"
+set key[id=$s_msgbox_apartment_subtext1] value "Block"
+set key[id=$s_guild_championship_grade_tooltip] value "Rank Rewards"
+file Xml/string/en/korflash.xml kms:Xml/string/en/korflash.xml 10206f689591a872
 set key[id=$s_myInfo_home_term] value "Term"
 set key[id=$s_msgbox_apartment_subtext1] value "Block"
 set key[id=$s_guild_championship_grade_tooltip] value "Rank Rewards"

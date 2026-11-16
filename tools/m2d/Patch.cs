@@ -59,6 +59,9 @@ using Maple2.File.IO;
 //                                         a bare kms: or gms: source means that pack's file at <path>
 //   blit <x> <y> <png>                    in a dds: write the pixels of <png> (8-bit RGBA or RGB, a path relative
 //                                         to the patch file) into the rectangle at <x>,<y> of the texture
+//   blit <x> <y> <source> <sx> <sy> <w> <h>
+//                                         in a dds: copy the <w>x<h> rectangle at <sx>,<sy> of another pinned
+//                                         texture (need <source> <pin> first) to <x>,<y>
 //   text <id> "<value>"                   in a gfx: the initial text of the DefineEditText with character id <id>
 //   field <id> <prop> <value>             in a gfx: a layout property of that DefineEditText: wrap 0|1 (word
 //                                         wrap), multiline 0|1, or size <px> (font height)
@@ -301,11 +304,26 @@ static class Patch {
                     var wx = t.Word(); var wy = t.Word();
                     if (!int.TryParse(wx, out var x) || !int.TryParse(wy, out var y))
                         throw new PatchError($"{where}: blit {wx} {wy}: expected pixel coordinates");
-                    var png = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(file)), t.Word());
-                    if (!File.Exists(png)) throw new PatchError($"{where}: {png}: no such file");
+                    var what = t.Word();
                     try {
-                        var (w, h, rgba) = Dds.ReadPng(File.ReadAllBytes(png));
-                        CurD().Blit(x, y, w, h, rgba);
+                        if (what.StartsWith("kms:") || what.StartsWith("gms:")) {
+                            var r = new int[4];
+                            for (int k = 0; k < 4; k++) {
+                                var wk = t.Word();
+                                if (!int.TryParse(wk, out r[k]))
+                                    throw new PatchError($"{where}: blit: {wk}: expected <sx> <sy> <w> <h>");
+                            }
+                            var from = new Dds(Source(what));
+                            if (r[0] < 0 || r[1] < 0 || r[2] <= 0 || r[3] <= 0 || r[0] + r[2] > from.Width
+                                || r[1] + r[3] > from.Height)
+                                throw new PatchError($"{where}: blit: the rectangle is outside {what}");
+                            CurD().Blit(x, y, r[2], r[3], from.Read(r[0], r[1], r[2], r[3]));
+                        } else {
+                            var png = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(file)), what);
+                            if (!File.Exists(png)) throw new PatchError($"{where}: {png}: no such file");
+                            var (w, h, rgba) = Dds.ReadPng(File.ReadAllBytes(png));
+                            CurD().Blit(x, y, w, h, rgba);
+                        }
                     }
                     catch (Exception ex) when (ex is InvalidDataException or ArgumentException) {
                         throw new PatchError($"{where}: {ex.Message}");

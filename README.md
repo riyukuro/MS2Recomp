@@ -109,8 +109,10 @@ tables from the client packs are copied by id from your copies, and the only tex
   such as the one over the Mentoring window) that the Korean table still has in Korean take the pack's English
   row (20), and one KR tip with no English row gets our own English. Flash UI strings with no English row in
   either pack (option labels, a menu popup) get our own English, as do the enchant window's two fee labels (the
-  meso cost for missing Crystal Fragments) and 9 labels whose pack English is wider than its field (the six
-  guild window buttons, the guild championship rank label, the house rental term, the apartment building field);
+  meso cost for missing Crystal Fragments) and 3 labels whose English (the same in the global client) is wider
+  than its field even at 11 px (the guild championship rank label, the house rental term, the apartment building
+  field), in both the Korean and the English table, so they fit whichever language the client is set to; three
+  count words after numbers take the global client's rows (empty);
   the enchant scroll's no-break line, missing from the Korean table, takes the pack's English row. The 6 default
   guild rank names get short English names (Leader, Officer, Member, Novice, Member2, Novice2): a KR client allows
   at most 7 characters in a rank name and refuses a rights change on a rank whose name is longer. 24 KR-only event
@@ -137,7 +139,10 @@ tables from the client packs are copied by id from your copies, and the only tex
   KR (or none), in the feature groups Event, SoulBinder, Striker, KarkarIsland, Season1, DoubleImpactStory,
   EpicApocalypse, Kritias_2018_12, FameContents, UnlimitedEnchant, ContentsGuide, ShadowExpedition, ItemMergeLV70_2,
   LapentaFrontierQuest, CharacterAbility and 22_04 and in the quests with no feature tag.
-  The Black Market's cancel and search messages, whose English rows have typos, get our own wording.
+  The Black Market's cancel and search messages, whose English rows have typos (in the global client too), get our
+  own wording. Where the global client has a matching English row for the same item, the item rows use it
+  (`copy-attr`, 29 names and descriptions); our own English is kept where it has none, only a placeholder, a row
+  for another item, or different numbers.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
   (`copy-text`); about 47,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,
@@ -173,12 +178,11 @@ tables from the client packs are copied by id from your copies, and the only tex
   labels are 14 px. No field is moved or resized; labels too long even at 11 px get shorter English in
   `string-names.m2dpatch`. The trophy tooltip lays out its labels at run time and needs no fix. Apply it with
   `--repack`; we have not checked whether the client reads loose gfx files.
-- `gfx-images.m2dpatch`: our own pixels for Korean text baked into a UI texture: the red "Equipped" tag on the
-  icons of equipped items (inventory, socket and enchant lists), two 40x13 sub-images of the common image atlas
-  `kr/commonimage_i1.dds`. The tag is drawn from scratch for this patch (`patches/images/equipped.png`, our own
-  red tag in Open Sans Condensed ExtraBold) and written into those rectangles (`dds`, `blit`); the rest of the
-  atlas stays byte-identical, and no pixel of the original is held here. Apply it with `--repack` like the gfx
-  patch.
+- `gfx-images.m2dpatch`: Korean text baked into a UI texture: the "Equipped" tag on the icons of equipped items
+  (inventory, socket and enchant lists), two 40x13 sub-images of the common image atlas `kr/commonimage_i1.dds`.
+  Both take the global client's own tag for the same symbol, copied from its `na/commonimage_i1.dds` (`dds`,
+  `blit` from a pinned source), so it needs `--gms <global client>/Data`; the patch holds no pixels, and the rest
+  of the atlas stays byte-identical. Apply it with `--repack` like the gfx patch.
 - `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that
   turns on the `DailyMission` feature in its own `feature.xml`. No patch changes `feature.xml`.
 
@@ -192,8 +196,8 @@ dotnet run --project tools/m2d -- patch <KMS2 client>/Data --gms <global client>
 The gfx patches, into another directory with `--repack` (add it to the list above to write all the packs at once):
 
 ```
-dotnet run --project tools/m2d -- patch <KMS2 client>/Data tools/restore/patches/gfx-text.m2dpatch \
-    tools/restore/patches/gfx-images.m2dpatch --out <dir> --repack
+dotnet run --project tools/m2d -- patch <KMS2 client>/Data --gms <global client>/Data \
+    tools/restore/patches/gfx-text.m2dpatch tools/restore/patches/gfx-images.m2dpatch --out <dir> --repack
 ```
 
 This writes the patched files as loose files under `--out` (`Xml/itemdata/209.xml`, `Xml/string/kr/...`), where

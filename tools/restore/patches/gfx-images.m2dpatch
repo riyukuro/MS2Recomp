@@ -1,14 +1,17 @@
 patch gfx-images
-made-for KMS2 KR Live client Data/Resource/Gfx.m2d and GfxDebug.m2d (byte-identical copies; both are patched)
-# Own pixels for Korean text baked into UI texture atlases. Each blit writes a PNG drawn for this patch (no pixels
-# of the original atlas are held here) into the sub-image rectangle the movie's DefineSubImage tag gives.
+made-for KMS2 KR Live client Resource/Gfx.m2d and GfxDebug.m2d (both patched); global client Resource/Gfx.m2d
+# Korean text baked into UI texture atlases, replaced by the global client's own image for the same symbol. Each
+# blit copies a rectangle of the global client's atlas into the sub-image rectangle the KMS2 movie's
+# DefineSubImage tag gives; the patch holds no pixels.
 # - kr/commonimage_i1.dds: the "equipped" tag on item icons (export_icon_equip and export_icon_equip2 in
-#   kr/commonimage.gfx; sub-images 85 and 88, 40x13 px each), shown in the inventory, socket and enchant lists.
+#   kr/commonimage.gfx, sub-images 85 and 88, 40x13 px each), shown in the inventory, socket and enchant lists.
+#   The global client's na/commonimage.gfx draws both symbols from one 40x13 sub-image of na/commonimage_i1.dds.
+need gms:Resource/Gfx/na/commonimage_i1.dds c9fad2a74f70e528
 
 dds Resource/Gfx/kr/commonimage_i1.dds kms: 8ebf466390a17022
-blit 957 634 images/equipped.png
-blit 957 649 images/equipped.png
+blit 957 634 gms:Resource/Gfx/na/commonimage_i1.dds 973 777 40 13
+blit 957 649 gms:Resource/Gfx/na/commonimage_i1.dds 973 777 40 13
 
 dds Resource/GfxDebug/kr/commonimage_i1.dds kms: 8ebf466390a17022
-blit 957 634 images/equipped.png
-blit 957 649 images/equipped.png
+blit 957 634 gms:Resource/Gfx/na/commonimage_i1.dds 973 777 40 13
+blit 957 649 gms:Resource/Gfx/na/commonimage_i1.dds 973 777 40 13
