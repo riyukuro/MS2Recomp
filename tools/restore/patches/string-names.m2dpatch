@@ -25584,3 +25584,18 @@ set key[id=621020511003035] name "Don't forget that upgrading your skills lets y
 set key[id=621020511003036] name "Here, take this. You'll need <font color=\"#ffd200\">$item:40100022$</font> to \
     upgrade skills to a higher level. \nI picked it up on my way here, so don't make a fuss about thanking me. \
     Just train hard."
+
+# Quest dialogue of the 22_04 quests that no pack has in English (feature 22_04): our own English for the 5
+# scriptquest rows of locale KR (or no locale) whose quest a player can get (1 quests), with each row's own format
+# fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=1026153614004511] name "Ugh, what on earth has Black Bean done this time?\nThe biggest troublemaker in \
+    Maple World these days is Black Bean.\nHe made balloons that look just like him and scattered them all over \
+    Maple World!"
+set key[id=1026153614004512] name "Plenty of people are frowning at the sight of them.\nThey've completely ruined \
+    the beautiful scenery of Maple World."
+set key[id=1026153614004513] name "Could you clear those balloons away for me, $MyPCName$?\nYou think Black Bean \
+    might feel hurt?\nHe's busy dreaming up his next prank. He won't care about a few balloons."
+set key[id=1026153614004514] name "Please get rid of the Black Bean lookalike balloons."
+set key[id=1026153614004515] name "There are so many, I clear them and clear them and there's no end.\nStill, \
+    thanks to you, $MyPCName$, Maple World is starting to look like itself again."
