@@ -24475,3 +24475,490 @@ set key[id=831204405001676] name "Someone very close, huh...\nSo you've been hur
     being with him?"
 set key[id=831210405001677] name "You dazed fool!\n<font color=\"#909090\">(Looks at you silently.)</font>"
 set key[id=831210905001678] name "It's a gift with their hearts in it, so don't refuse. Take it."
+
+# Quest dialogue of the EpicApocalypse quests that no pack has in English (feature EpicApocalypse01,
+# EpicApocalypse02, EpicApocalypse03, EpicApocalypse04): our own English for the 287 scriptquest rows of locale KR
+# (or no locale) whose quest a player can get (37 quests), with each row's own format fields, font tags and line
+# breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=107110822004167] name "Oh, you're here?"
+set key[id=107110822004168] name "What do you mean the rift's power has grown stronger?"
+set key[id=107110822004169] name "That's... ugh, that rift.\nIt won't even give us time to talk."
+set key[id=107110822004170] name "You'd better hear it from $npcName:11004783[gender:1]$ next to me."
+set key[id=107110822004171] name "What is this..."
+set key[id=107110822004172] name "$MyPCName$. \nYou may have caught a bit of it from $npcName:11004793$, \
+    but...\nthe <font color=\"#ffd200\">power of the rift</font> has grown stronger."
+set key[id=107110822004173] name "And... I can feel a <font color=\"#ffd200\">different power</font> inside the \
+    rift than before.\nSomething unusual seems to have happened."
+set key[id=107110822004174] name "Something unusual seems to have happened."
+set key[id=107110822004175] name "Recently, the rift suddenly started shaking unstably\nand grew slightly in \
+    scale."
+set key[id=107110822004176] name "After that, <font color=\"#ffd200\">strange laughter</font> could be heard,\nand \
+    an <font color=\"#ffd200\">unidentified orb</font> popped out too."
+set key[id=107110822004177] name "An unidentified... orb?"
+set key[id=107110822004178] name "Yes.\nIt was a dangerous-looking orb.\nWhile $npcName:11004793$ and I were \
+    deliberating... we sent it to <font color=\"#ffd200\">'that person'</font> at the Frontier Foundation.\nWe had \
+    no time to worry about it beyond that."
+set key[id=107110822004179] name "That person?\n...Who is that?"
+set key[id=107110822004180] name "Who else?!\n<font size='40'>It's none other than the great \
+    $npcName:11004828[gender:0]$!</font>"
+set key[id=107110822004182] name "Hmm~ why so startled?\nDid you do something bad?"
+set key[id=107110822004183] name "How long have you been there?!"
+set key[id=107110822004184] name "More importantly, now's not the time for that.\nThe great \
+    $npcName:11004828[gender:0]$ has been analyzing that orb."
+set key[id=107110822004185] name "!!!\nAmazing.\nWhat kind of object was it?"
+set key[id=107110822004186] name "I took it to the lab and ran all sorts of studies...\nit's definitely not a \
+    material from our world.\nWhat I did find out is that it's made of something similar to <font \
+    color=\"#ffd200\">'Prism Stone'</font>."
+set key[id=107110822004187] name "But the amazing part is yet to come. \nA researcher accidentally smashed that \
+    orb,\nand I nearly fainted."
+set key[id=107110822004188] name "<font size='40'>Who would have guessed there'd be <font color=\"#ffd200\">new \
+    gear</font> inside?!</font>"
+set key[id=107110822004189] name "Who would have guessed there'd be new gear inside?!"
+set key[id=107110822004190] name "New... gear?"
+set key[id=107110822004191] name "Yes.\nThe fact that it's scattering these things all over the \
+    outside,\nsomething inside must be <font color=\"#ffd200\">luring</font> us in."
+set key[id=107110822004192] name "I think we really do need to check inside.\nTo see what's going on."
+set key[id=107110822004193] name "That's a piece of cake, but...\nI only need to take a look and come back, \
+    right?"
+set key[id=107110822004194] name "That's our $MyPCName$! \nSo brave!"
+set key[id=107110822004195] name "Hm? This place is..."
+set key[id=107110822004196] name "It's definitely different from before.\nDid a new space form?"
+set key[id=107110822004197] name "I feel strange somehow..."
+set key[id=107110822004198] name "Hee hee hee..."
+set key[id=107110822004200] name "Hee hee hee..."
+set key[id=107110822004201] name "Hee hee..."
+set key[id=107110822004202] name "!!!\nWho's there!!!"
+set key[id=107110822004203] name "It's me, me~ $npcName:11004831$!\nYou look really funny!"
+set key[id=107110822004204] name "Black... what?"
+set key[id=107110822004205] name "Yeah, yeah. $npcName:11004831$!\nA human I've never seen? I saw the white bear \
+    and the lady outside the rift... hee hee.\nFunny, so funny!!!"
+set key[id=107110822004206] name "...I don't know whether you're $npcName:11004831$ or Blue Bean,\nbut stop \
+    stirring things up inside the rift."
+set key[id=107110822004207] name "Heh heh heh. You really do look fun.\nYou! If you play with me, I'll give you \
+    <font color=\"#ffd200\">something good</font>."
+set key[id=107110822004208] name "?!\nDon't say weird things!\nDon't make the rift unstable..."
+set key[id=107110822004209] name "I definitely told you!!!\n<font size='40'>Byeee~!!!</font>"
+set key[id=107110822004210] name "...What.\nHe just says his piece and leaves?"
+set key[id=107110822004211] name "Well... first.\nI'd better go see $npcName:11004816[gender:0]$."
+set key[id=107110822004212] name "Hm? You're back sooner than I expected?\nWhat happened..."
+set key[id=107110822004213] name "Something did happen, didn't it?"
+set key[id=107110822004214] name "I met a strange black lump.\nIt said its name is... $npcName:11004831$."
+set key[id=107110822004215] name "$npcName:11004831$...? That's a pretty cute name."
+set key[id=107110822004216] name "So, what did that black bean tell you?"
+set key[id=107110822004217] name "It said if I play with it, it'll give me <font color=\"#ffd200\">something \
+    good</font>, and then vanished.\nWith a strange laugh."
+set key[id=107110822004218] name "Something good? It said it would give you something good?!"
+set key[id=107110822004219] name "Hoh......"
+set key[id=107110822004220] name "All right.\nI've decided."
+set key[id=107110822004221] name "At times like this, it's only human to do what's asked.\n$MyPCName$! You."
+set key[id=107110822004222] name "Sigh... why are you like this too?"
+set key[id=107110822004223] name "It's only human to do what's asked.\n$MyPCName$! You.\n<font size='40'>Play with \
+    that $npcName:11004831$ regularly.</font>"
+set key[id=107110822004224] name "You fool! It's all for your sake!\nIsn't it obvious what the good thing is?"
+set key[id=107110822004225] name "<font size='40'>Something that can make you stronger.</font>"
+set key[id=107110822004226] name "It's the guy who scatters new gear all over the place.\nHe's bound to have even \
+    better stuff."
+set key[id=107110822004227] name "Heh heh heh...!\nIt'll make great new research material."
+set key[id=107110822004228] name "<font color=\"#909090\">Something that can make me... stronger.</font>"
+set key[id=107110822004229] name "<font color=\"#909090\">...</font>\n<font color=\"#909090\">To protect Empress \
+    $npcName:11004820$ and $map:02000001$, I need power.</font>"
+set key[id=107110822004230] name "<font color=\"#909090\">In that case...</font>"
+set key[id=107110822004231] name "All right.\nI'll go hang out with that black bean."
+set key[id=107110822004232] name "I knew you'd say that!\nHeh."
+set key[id=107110822004233] name "When you get something, give me a quiet heads-up.\nI'll head back to the \
+    lab.\nSee you again soon!"
+set key[id=107110822004234] name "$npcName:11001812[gender:0]$.\nWhy did you tell that youngster the whole truth?"
+set key[id=107110822004235] name "$npcName:11001812[gender:0]$.\nWhy did you tell that youngster the whole truth?"
+set key[id=107110822004236] name "$npcName:11001812[gender:0]$.\nWhy did you tell that youngster the whole truth?"
+set key[id=107110822004237] name "Heh heh heh...\nAll of this was foretold by Him."
+set key[id=107110822004238] name "Sealing the Empress... everything is His will.\nFor the plan to be complete, \
+    that youngster's complacency will be the final ingredient."
+set key[id=107110822004239] name "The unease that will take root as the Empress falls.\nThe seed of that unease \
+    will sprout before long, too."
+set key[id=107110822004240] name "How is the work of <font color=\"#ffd200\">scattering</font> the <font \
+    color=\"#ffd200\">dark matter</font> going?"
+set key[id=107110822004241] name "...Soon all of Maple World will be your domain.\n$npcName:11001812[gender:0]$."
+set key[id=107110822004242] name "Welcome news indeed."
+set key[id=107110822004243] name "Make your preparations.\nThe time will come soon."
+set key[id=107110822004244] name "From now on... things are going to get very interesting."
+set key[id=107141222004245] name "Then have a good trip!\nI won't go far~"
+set key[id=107141422004246] name "When you're ready, go in just ahead."
+set key[id=107142422004247] name "<font size='40'>From now on, play with that $npcName:11004831$ \
+    regularly.</font>"
+set key[id=107145422004248] name "You've come.\nMy old friend."
+set key[id=107145422004249] name "Soon everyone in this land will come to fear the Empress..."
+set key[id=107151122004250] name "...If that is His will... and yours, I will gladly follow."
+set key[id=107151122004251] name "I only hope the path is one I can accept."
+set key[id=107151122004252] name "No need to worry about that."
+set key[id=108094322004253] name "<font color=\"#909090\">Wh-what?! This black lump is...!</font>"
+set key[id=1209134222003780] name "...Well, I was wondering if I should meet the boss, but I don't think I \
+    should.\nI think it should be fine to tell you my concerns, if it's you, $MyPCName$."
+set key[id=1209134222003826] name "<font color=\"#909090\">While the black energy was fluctuating, a blue light \
+    was seen intermittently. This energy... is not unfamiliar.</font>\n<font color=\"#909090\">A familiar... \
+    energy.</font>"
+set key[id=1209134222003996] name "$npcName:11000074[gender:0]$ is the one who guarded the royal family in my \
+    place and protected the Alliance whenever I was in danger. Since this could overturn what he has said for so \
+    many years and the foundation on which he has protected the world, we need evidence. For you, and for me. "
+set key[id=1209134222004001] name "You're back, $MyPCName$.\nThe thing I asked for... is ready, I see. "
+set key[id=1209134222004002] name "<font size=\"40\">...!!</font>\nYou? Why are you here?"
+set key[id=1209134222004003] name "Your Majesty, this situation was created by my indecision in failing to cut off \
+    the seed of treachery at once. I apologize for that. \nBut please, do not waver. My choice has always been \
+    you, Your Majesty."
+set key[id=1209134222004004] name "$npcName:11000074[gender:0]$... you said the same thing when you reported \
+    $MyPCName$'s treason to me.\nI arranged this meeting because I do not want to doubt your loyalty."
+set key[id=1209134222004005] name "There is only one thing I want: the <font color=\"#ffd200\">truth</font>."
+set key[id=1209134222004006] name "$npcName:11000074[gender:0]$. It has been a long time since you and \
+    $npc:11004744[gender:0]$ last met, hasn't it? \nExchange greetings."
+set key[id=1209134222004007] name "It's been a while, $npcName:11000074[gender:0]$."
+set key[id=1209134222004008] name "...Why are you here? \n$MyPCName$... you must have been bewitched by that man \
+    and gone completely mad!\nHow dare you bring a man who tried to harm Her Majesty into Her Majesty's \
+    bedchamber?"
+set key[id=1209134222004009] name "Are you saying I bewitched that man? \nThat sounds more like your own story, \
+    $npcName:11000074[gender:0]$."
+set key[id=1209134222004010] name "You are before Her Majesty. Show some courtesy.\nStop blaming each other and \
+    answer what Her Majesty wishes to know."
+set key[id=1209134222004011] name "$npcName:11000074[gender:0]$, this is how I remember the day of the Lapenta \
+    sealing.\nI was ill, and you told me to focus on recovering because you would let me know at once if anything \
+    happened. I trusted you and left with the priests as you said."
+set key[id=1209134222004012] name "When I returned a few days later, you told me that $npc:11001812[gender:0]$ had \
+    given his life to complete the Lapenta sealing. And that $npcName:11004744[gender:0]$, tainted by darkness, \
+    had come to the royal family and tried to harm me.\nBut $npcName:11004744[gender:0]$ said that visit that day \
+    was to borrow my power. \nAnd that it was you, $npcName:11000074[gender:0]$, who blocked it."
+set key[id=1209134222004013] name "Do you have anything to say to me about this, $npcName:11000074[gender:0]$?\nIf \
+    there is anything you could not or did not tell me, I want you to say it all."
+set key[id=1209134222004014] name "I have done my best for the royal family all along.\nMy heart has always been \
+    true, and there were no lies."
+set key[id=1209134222004015] name "Do not call what you have made up and want to believe the truth.\nDon't try to \
+    cover the sky with the palm of your hand!"
+set key[id=1209134222004016] name "Coward. You survived alone thanks to $npc:11001812[gender:0]$'s sacrifice, and \
+    now you twist the truth.\nYour Majesty, do not be swayed by that man's slander. I..."
+set key[id=1209134222004017] name "$npc:11000074[gender:0]$. Must I read aloud what was just found in your house \
+    myself? \n$MyPCName$ found it with their own hands and brought it here."
+set key[id=1209134222004018] name "$npc:11000074[gender:0]$. Must I read aloud what was just found in your house \
+    myself? \n$MyPCName$ found it with their own hands and brought it here."
+set key[id=1209134222004020] name "Even after seeing this, do you intend to keep claiming your innocence?\nUnless \
+    you want me to doubt even your loyalty...\nspeak the truth now. I will not bear it any longer."
+set key[id=1209134222004021] name "...$npc:11001812[gender:0]$ was a great hero.\nI never doubted that he could \
+    have found a way somehow.\nThen there was no reason to put Your Majesty in danger, was there?"
+set key[id=1209134222004022] name "...Did you really ignore $npc:11001812[gender:0]$'s request for help?\nAnd you \
+    have hidden that all this time? How could you...!"
+set key[id=1209134222004023] name "It was a <font color=\"#ffd200\">choice for the greater good</font>.\nSo that \
+    Your Majesty would be safe, and this land could stay safe too..."
+set key[id=1209134222004024] name "Look at what that choice has produced!\nIs this really what you wanted? "
+set key[id=1209134222004025] name "There was always only one thing that mattered to me.\nProtecting the \
+    $map:02000001$ royal family. "
+set key[id=1209134222004026] name "Only if the royal family is protected can the world be protected.\nThreats have \
+    always existed, but thanks to the royal family and Her Majesty remaining strong, haven't we always overcome \
+    them?\nNo one can condemn my choice. They must not...!"
+set key[id=1209134222004027] name "...Is that what I am?"
+set key[id=1209134222004028] name "...Is that what I am?"
+set key[id=1209134222004029] name "...Creating sacrifices for someone and putting them in danger in the name of my \
+    safety.\nAnd new dangers arising from the army of darkness born of that."
+set key[id=1209134222004030] name "Your Majesty...!"
+set key[id=1209134222004031] name "So at the root of all this danger, I was there.\nAn ignorant me who knew \
+    nothing of the countless tragedies caused by a truth hidden one layer behind."
+set key[id=1209134222004032] name "Unable to know what other pain and tragedy I will cause, unable even to foresee \
+    and prepare for it.\nAm I that kind of helpless, useless being?"
+set key[id=1209134222004033] name "<font size=\"40\">If that is truly so, is there any reason for me to \
+    exist?</font>"
+set key[id=1209134222004036] name "(A huge rift has appeared in $map:52000197$.\nIt's as if space itself is \
+    twisted... everything is warped and shaking.)"
+set key[id=1209134222004037] name "(A strange and chilling aura...\nUnidentifiable laughter, wailing...)"
+set key[id=1209134222004038] name "What... is this?"
+set key[id=1209134222004042] name "...There is a way, $npcName:11004789[gender:0]$.\nEven if spacetime is \
+    scrambled, as long as the flow within the path stretched out stays constant, it should be possible to keep the \
+    way back open.\nIf you can hold on over here, purifying the power so the path can be maintained."
+set key[id=1211180122004109] name "Heh heh, I haven't told you something important. It's $map:02000487$. \nSince a \
+    completely new substance has appeared, we should entrust it to the place best able to investigate it."
+set key[id=1211180122004110] name "Heh heh, I haven't told you something important. It's $map:02000487$. \nSince a \
+    completely new substance has appeared, we should entrust it to the place best able to investigate it."
+set key[id=1211180122004111] name "You said the amount we sent might not be enough...\nHow convenient. This \
+    substance came from beyond the rift, so we could bring more if needed."
+set key[id=1211180122004112] name "This substance may become the key to the rift... and to getting the fallen \
+    Empress back on her feet."
+set key[id=1211180122004113] name "$MyPCName$, I know it's hard, but I'm counting on you. \nWe'll stay here and \
+    keep the passage to the rift open."
+set key[id=1211180122004114] name "Go see $npc:11003883[gender:0]$ at $map:02000487$.\nHe should be able to tell \
+    you more."
+set key[id=4540107025480155145] name "I've been waiting for you, my other half.\nThe reason I called you here is \
+    the rift in spacetime."
+set key[id=4559708775182761993] name "Ahem...!\nYou haven't forgotten already, have you?\nGo up the stairs on the \
+    right to reach $map:52000196$."
+set key[id=4559708775182761994] name "Since the last time the rift shook, the Frontier Foundation has kept \
+    investigating this phenomenon.\nRecently we discovered some suspicious movements."
+set key[id=4559708775182761995] name "Suspicious movements?"
+set key[id=4559708775182761996] name "Yes, a link to the dark matter found in $map:02000001$."
+set key[id=4559708775182761997] name "At a glance, the spacetime rift and the dark matter don't seem closely \
+    related...\nbut research results suggest the dark matter may speed up the rift's disruption of space."
+set key[id=4559708775182761998] name "By now the survey data should be somewhat complete.\nWould you like to meet \
+    $npcName:11004032[gender:0]$ at $map:52000196$?"
+set key[id=4559708775182761999] name "Hm? Research data?\nOh, the dark matter research data?"
+set key[id=4559708775182762000] name "You mean $npcName:11004032[gender:0]$'s research data, right?\nIf it's the \
+    dark matter survey, it should be here or on that shelf over there. One moment."
+set key[id=4559708775182762001] name "Ask that guy over there about the dark matter survey data.\nSee the details \
+    for yourself."
+set key[id=4559708775182762002] name "The dark matter is just as we expected.\nIt was full of shadow energy."
+set key[id=4559708775182762003] name "But here's the unusual part.\nWe could faintly sense the power of Blue \
+    Lapenta."
+set key[id=4559708775182762005] name "For the research data on the dark matter, why not look through that pile of \
+    books over there?\nOh, and please don't touch that bookshelf. I only just finished sorting it yesterday."
+set key[id=4559708775182762008] name "For the research data on the dark matter, why not look through that pile of \
+    books over there?\nOh, and please don't touch that bookshelf. I only just finished sorting it yesterday."
+set key[id=4559708775182762009] name "Did you check the research data?\nThere are still many questions, but our \
+    hypothesis is that the stronger Illusion monsters appearing, unlike at first, are related to this."
+set key[id=4559708775182762010] name "And one more thing: we believe someone is artificially combining the power \
+    of Blue Lapenta with the power of shadow to accelerate the rift's chaos."
+set key[id=4559708775182762011] name "$MyPCName$, if it's all right, would you pass this on to the two guarding \
+    the rift now?\nIt will help us find a clue to the rift."
+set key[id=4559708775182762012] name "Would you pass this on to the two guarding the rift right away?\nThis will \
+    help us find a clue to the rift."
+set key[id=4559708775182762013] name "Thank you for letting us know.\nArtificial Blue Lapenta power, huh...."
+set key[id=4559708775182762014] name "Who on earth is doing this?"
+set key[id=4559708775182762015] name "Who on earth is doing this?\nIf it's the power of Blue Lapenta, then \
+    already...."
+set key[id=4559708775182762016] name "Come to think of it, there is a place I suspect."
+set key[id=4559708775182762017] name "Ah, could it be...!"
+set key[id=4559708775182762018] name "That's right. You may have heard a story long ago that the power of Blue \
+    Lapenta was inherited."
+set key[id=4559708775182762019] name "A place where the power of Blue Lapenta remains... I see.\nThat makes \
+    perfect sense."
+set key[id=4559708775182762020] name "But as you know, the exact place where that power was inherited isn't \
+    known.\nEveryone is only guessing."
+set key[id=4559708775182762021] name "My other half, are you ready?"
+set key[id=4559708775182762022] name "Do you know there used to be a place called the Fortress of Souls?\nIt's \
+    deep within $map:02000192$ on Victoria Island."
+set key[id=4559708775182762023] name "You must have heard of $map:02000192$ on Victoria Island.\nThe energy at the \
+    place once called the Fortress of Souls has been unusual lately, so we've been keeping an eye on it."
+set key[id=4559708775182762024] name "....\n(The dark matter is here too. Why is it here...?)"
+set key[id=4559708775182762025] name "I see. \nA guardian golem already running amok... the situation may be more \
+    serious than I thought."
+set key[id=4559708775182762027] name "That's right. As expected, there's unusual energy there, which is why we've \
+    been watching it.\nPlease find out whether there's anything suspicious about that place."
+set key[id=4559708775182762031] name "$MyPCName$! You came at just the right time! The rift's power is getting \
+    stronger."
+set key[id=4559708775182762032] name "The rift's power is getting stronger?"
+set key[id=4559708775182762033] name "That's right. It's not only growing stronger, the distortion is getting \
+    worse too."
+set key[id=4576139967142559833] name "Oh, come to think of it, there is a suspicious location that was reported \
+    recently."
+set key[id=4576139967142559835] name "....\n(I can feel powerful energy behind the door. Let's go in and \
+    investigate.)"
+set key[id=4576139967142559836] name "....\n(I can feel powerful energy behind the door. Let's investigate the \
+    suspicious space.)"
+set key[id=4576139967142559837] name "A guardian golem already running amok... the situation may be more serious \
+    than I thought.\nWould you let the two holding back the rift know about this too?"
+set key[id=4576139967142559838] name "Oh, and $MyPCName$, would you let the two holding back the rift know about \
+    this too?"
+set key[id=8039079133340237833] name "I've been waiting for you, my servant.\nThere is something important I'd \
+    like to entrust to you."
+set key[id=8039079133340237834] name "The reason I called you this time is..."
+set key[id=8320447105235681289] name "Is it the rift in spacetime again?"
+set key[id=8320447105235681290] name "No, it's the <font color=\"#ffd200\">concert</font>."
+set key[id=8320447105235681291] name "...What?"
+set key[id=8320447105235681292] name "You may wonder what kind of concert at a time like this, \nbut at times like \
+    this, people need comfort even more. \nMusic is an art that soothes anxious hearts better than anything."
+set key[id=8320447105235681293] name "The Foundation will soon begin a concert it is hosting. Please help prepare \
+    for it.\n$npcName:11003884[gender:0]$ will give you the details."
+set key[id=8320447105235681294] name "Ask $npcName:11003884[gender:0]$ about anything concert-related."
+set key[id=8320447105235681295] name "Did the young lady explain everything to you?\nThis seems to be your first \
+    time doing this, so I have my doubts about whether you can manage."
+set key[id=8320447105235681306] name "Still not gone? Hurry to the meeting room."
+set key[id=8320447105235681315] name "(There's no one in the meeting room, only <font color=\"#ffd200\">dark \
+    matter</font>!)"
+set key[id=8320447105235681316] name "Then let me tell you about preparing the Frontier Foundation's <font \
+    color=\"#ffd200\">Maple World Concert</font>."
+set key[id=8320447105235681317] name "The orchestra is in its final rehearsal at $map:52100400$ right \
+    now.\nThey're artists, so they're all quite sensitive."
+set key[id=8320447105235681318] name "Go and check whether the members need anything,\ncheck the humidity, \
+    temperature, lighting and so on,\nwhether they want meals or tea, when to serve it, what kind, and so \
+    forth..."
+set key[id=8320447105235681319] name "($npcName:11003884[gender:0]$'s instructions went on for nearly thirty \
+    minutes...)"
+set key[id=8320447105235681320] name "...When rehearsal prep is done, please lead everyone to the stage here.\nAre \
+    you dozing off by any chance?"
+set key[id=8320447105235681321] name "N-no. But what does $npcName:11003884[gender:0]$ do?"
+set key[id=8320447105235681322] name "I do the most important job. Assisting the young lady.\nAny more questions?"
+set key[id=8320447105235681324] name "If there are no questions, please head to $map:52100400$ right away.\n<font \
+    color=\"#ffd200\">(Accepting the quest will take you to $map:52100400$.)</font>"
+set key[id=8320447105235681326] name "(In the blood-red darkness, music and a woman's aria can faintly be \
+    heard.\nAre the orchestra members inside? Let's investigate the aria's space.)\n \n<font size='35'>Accepting \
+    the quest will take you to $map:52100401$.<font size='35'>"
+set key[id=8320447105235681327] name "(In the blood-red darkness, music and a woman's aria can faintly be \
+    heard.\nAre the orchestra members inside? Let's investigate the aria's space.)"
+set key[id=8320447105235681328] name "Why did you come alone? Where are the orchestra members?"
+set key[id=8320447105235681329] name "What's going on? Where are the members? The concert is about to begin."
+set key[id=8320447105235681330] name "(Report the situation in the meeting room.)"
+set key[id=8320447105235681331] name "What? <font color=\"#ffd200\">Dark matter</font> in the middle of the \
+    Foundation!\nAnd you say the members were sucked into the spacetime rift and turned into monsters?\nWe have to \
+    get to the bottom of this quickly!"
+set key[id=8320447105235681332] name "$MyPCName$, please go right now to $npcName:11004802[gender:0]$ at \
+    $map:52000196$ and tell him about this. \nWe'll keep checking whether the members are anywhere else."
+set key[id=8320447105235681333] name "Please hurry to $map:52000196$. We'll keep searching for the members."
+set key[id=8320447105235681334] name "What did you say? Dark matter showed up right where the great \
+    $npcName:11004802[gender:0]$ is?!"
+set key[id=8320447105235681335] name "Well, well! The lamp's shadow is darkest underneath. How dare they make a \
+    fool of me! \nI'll go investigate right now. Did blue light leak out again, like last time?"
+set key[id=8320447105235681336] name "(Say that this time a red glow was floating around.)"
+set key[id=8320447105235681337] name "A red glow...? Don't tell me... the aura of <font color=\"#ffd200\">Red \
+    Lapenta</font>?!"
+set key[id=8320447105235681338] name "I must hurry to the meeting room. First I'll grab my research \
+    equipment.\nHey, ask $npcName:11003883[gender:0]$ to seal off the meeting room first!"
+set key[id=8320447105235681340] name "This, this... and this too...\nHm? What are you doing, why aren't you going? \
+    Every minute counts!"
+set key[id=8320447105235681341] name "My servant, this is serious!"
+set key[id=8320447105235681342] name "Reports have come in that orchestra members have vanished elsewhere \
+    too.\nLeave the meeting room incident to $npcName:11004802[gender:0]$ for now and go meet \
+    $npcName:11004876[gender:0]$ at $map:52100404$.\nThe situation is urgent, so I'll send you right away.\n<font \
+    color=\"#ffd200\">(Accepting the quest will take you to $map:52100404$.)</font>"
+set key[id=8320447105235681343] name "There's no time. Hurry and meet $npcName:11004876[gender:0]$."
+set key[id=8320447105235681344] name "Are you from the Foundation?\nAh... I don't know how this happened.\nPlease, \
+    save our members!"
+set key[id=8320447105235681345] name "Please seal off this place and keep people out. I'll report the situation to \
+    the Foundation."
+set key[id=8320447105235681356] name "Please! Contact the Foundation and be sure to save our members!"
+set key[id=8320447105235681357] name "How are things at $map:52100404$?"
+set key[id=8320447105235681358] name "I see. So every performer in Maple World is a target.\nDella Rosa... I know \
+    that prima donna well.\nTo think the woman we all thought dead is behind this..."
+set key[id=8320447105235681359] name "On top of that, $npcName:11004802[gender:0]$ analyzed the dark matter and \
+    says\nthe energy of the <font color=\"#ffd200\">Red Lapenta</font> can be sensed inside it.\nThere is no doubt \
+    that the <font color=\"#ffd200\">Legion of Darkness</font> is behind this."
+set key[id=8320447105235681360] name "Nobody but the Seven Heroes' $npcName:11000001[gender:0]$ knows where the \
+    Red Lapenta is hidden.\n$npcName:11000001[gender:0]$ is unconscious right now, so how did they find out and \
+    plan all this?"
+set key[id=8320447105235681361] name "I'll go to $map:52100402$."
+set key[id=8320447105235681362] name "Please do. When you come back, report straight to \
+    $npcName:11004802[gender:0]$.\n<font color=\"#ffd200\">(If you accept this quest, you will be moved to \
+    $map:52100402$.)</font>"
+set key[id=8320447105235681363] name "If you find a clue, report it to $npcName:11004802[gender:0]$."
+set key[id=8320447105235681364] name "...So you came. "
+set key[id=8320447105235681365] name "What brings you here?"
+set key[id=8320447105235681366] name "It seems you came for the same reason as I did.\nI felt that someone was \
+    trying to approach the <font color=\"#ffd200\">Red Lapenta</font>."
+set key[id=8320447105235681367] name "That you made it this far is the will of the Red Lapenta... There is no need \
+    to hide it any longer.\nI am, in truth, a guardian of the Red Lapenta. Strictly speaking, a <font \
+    color=\"#ffd200\">temporary guardian."
+set key[id=8320447105235681368] name "Before <font color=\"#ffd200\">Clark</font>, the guardian before me, passed \
+    away,\nhe asked me to take his place."
+set key[id=8320447105235681369] name "Who is Clark?"
+set key[id=8320447105235681370] name "The wife of Henesys Elder $npcName:11000001[gender:0]$... and the mother of \
+    $npcName:11004873[gender:0]$.\nUntil she left this world under unavoidable circumstances, she was <font \
+    color=\"#ffd200\">the one who lived guarding the Red Lapenta</font>."
+set key[id=8320447105235681371] name "The world believes the Seven Heroes' $npcName:11000001[gender:0]$ guarded \
+    the Red Lapenta,\nbut grief over losing his wife kept him from taking up that duty.\nClark foresaw it and \
+    entrusted the guardian's duty to me."
+set key[id=8320447105235681372] name "Search the room. See if there is a sheet of music or anything like that."
+set key[id=8320447105235681374] name "Is there anything unusual in the room? Please look around a bit more."
+set key[id=8320447105235681375] name "Would you let me see it? Let's see...\nThis is a letter Clark left for \
+    $npcName:11004873[gender:0]$."
+set key[id=8320447105235681384] name "I'll read it. 'To my beloved son, I'm leaving a few lines before it's too \
+    late. \nPlease understand why I was so harsh with you. It was all my fault. \nI wanted to make you the \
+    guardian of Lapenta who would follow me.'"
+set key[id=8320447105235681385] name "'I believe that one day you will be worthy. \nUntil then, Oscar will serve \
+    as guardian in your place. \nIn return, I'm passing on to you the score of the <font color=\"#ffd200\">Aria of \
+    Light and Darkness</font>.'"
+set key[id=8320447105235681386] name "'When the music of the score and a voice wishing to protect the world ring \
+    out together, \nthe hidden Lapenta of time will reveal itself.\nPlease carry on my mission. I'm counting on \
+    you.\nAnd please protect your father. Mom...'"
+set key[id=8320447105235681387] name "...That's all of it.\nSo $npcName:11004873[gender:0]$ has the score after \
+    all.\nIf the aria was heard in the rift and the energy of darkness and the Red Lapenta were found \
+    together,\nthe score has surely fallen into the hands of the <font color=\"#ffd200\">Legion of \
+    Darkness</font>."
+set key[id=8320447105235681388] name "What exactly is that score?"
+set key[id=8320447105235681389] name "The score... the <font color=\"#ffd200\">Aria for Light and Darkness</font> \
+    is...\nthe key to finding the Red Lapenta that Clark hid."
+set key[id=8320447105235681390] name "(A long explanation of the score's role followed.)"
+set key[id=8320447105235681391] name "I think that's all I can tell you. \nHurry to $map:52000196$ and let \
+    $npcName:11004032[gender:0]$ know about this."
+set key[id=8320447105235681392] name "Oh, you're here? Luckily, the member who turned into a monster is back to \
+    normal.\nThough it took some rather violent methods.\nThe dark matter vanished before long, too."
+set key[id=8320447105235681393] name "By the way, how did it go at $map:52100402$?"
+set key[id=8320447105235681394] name "(Tell them what Oscar told me about the score and the Red Lapenta.)"
+set key[id=8320447105235681395] name "Hmm, so to sum up,\nthe Red Lapenta is hidden in the axis of time running \
+    through past, present and future,\nand to make it exist in the present again,\nthe song on that score has to \
+    be performed."
+set key[id=8320447105235681396] name "Wow, that's something. Clark, being a time mage, hid the Red Lapenta inside \
+    time itself. No wonder nobody could find it. What a perfect safeguard!"
+set key[id=8320447105235681397] name "But since the Red Lapenta's energy is so faint,\nthe score must not be \
+    getting performed properly.\nStill, if that aria is combined with darkness and sung inside the rift,\nit will \
+    twist the axis of time along with space, and the rift will speed up."
+set key[id=8320447105235681398] name "Hurry and report to $npcName:11003883[gender:0]$!\nI'm going to dig into \
+    this principle a bit more and trace the space of the aria."
+set key[id=8320447105235681399] name "A particular wave of music reaching the axis of time... heh heh... this is \
+    getting interesting.\nHuh, why are you still here?"
+set key[id=8320447105235681400] name "My other half, have you found a lead?"
+set key[id=8320447105235681401] name "(Tell them everything I heard so far from $npcName:11004872[gender:1]$ and \
+    $npcName:11004802[gender:0]$.)"
+set key[id=8320447105235681402] name "I see. This is no longer just a matter of missing orchestra members. It \
+    concerns citizens' safety,\nthe rift in time and space, and the Red Lapenta. This is a grave situation."
+set key[id=8320447105235681403] name "We will look after the safety of the performers who love music.\n$MyPCName$, \
+    please stop the prima donna's performance from going ahead."
+set key[id=8320447105235681404] name "Please take this."
+set key[id=8320447105235681405] name "What's this instrument for?"
+set key[id=8320447105235681406] name "They say members who play instruments get abducted to that space,\nso if you \
+    play, you'll be able to get close to her easily, $MyPCName$."
+set key[id=8320447105235681407] name "You'll need good playing skills to be abducted, so practice hard."
+set key[id=8320447105235681408] name "Do your best. My follower."
+set key[id=8320447105235681410] name "(No matter how much I practice, I don't think I'll ever improve, so I \
+    returned the instrument...\nI'll have to find another way to approach the prima donna...)"
+set key[id=8562174148191715337] name "You must know that when the rift shook last time, a being called \
+    $npcName:11004831$ appeared.\nAfter that, it shook in a similar way about once more and grew slightly in \
+    scale."
+set key[id=8562174148191715338] name "Right, that wasn't a big problem.\nIt was more like $npcName:11004831$ \
+    calling in a friend."
+set key[id=8562174148191715339] name "We were outside the rift so we couldn't go in, but the pattern was similar \
+    to last time.\nBut recently the rift has started shaking in a different way."
+set key[id=8562174148191715340] name "To be precise, the distortion of the rift has gotten worse.\nAs if someone \
+    were shaking the rift artificially...."
+set key[id=8562174148191715341] name "And just then, word came from the Frontier Foundation.\nThat the traces of \
+    Blue Lapenta seem to be affected...."
+set key[id=8562174148191715342] name "Is there anything else that could be a clue?"
+set key[id=8562174148191715343] name "$MyPCName$, have you heard about Red Lapenta?"
+set key[id=8562174148191715344] name "To shake the power of spacetime this much, the power of Blue Lapenta, the \
+    Lapenta of space, wouldn't be enough. The power of Red Lapenta, the Lapenta of time, would be needed."
+set key[id=8562174148191715345] name "But for now, I can't think of any clue about Red Lapenta."
+set key[id=8630889815291723785] name "I was hoping the Prism Shard and Stone research might progress further, but \
+    no such luck.\nWhat a pity, what a pity."
+set key[id=8632753985717010441] name "Ask that guy over there about the dark matter survey data.\nSee the details \
+    for yourself."
+set key[id=8632753985717010445] name "Even so, it isn't as hard to hold as before.\nWould you hear the details \
+    from Luanna?"
+set key[id=8632753985717010446] name "$MyPCName$, for now keep dealing with the monsters coming out of the \
+    Illusion space as you have been.\nAnd if you notice any abnormal weather, tell me right away."
+set key[id=8947151523134046217] name "But they said that space could not be found...."
+set key[id=8947151523134046218] name "Is that so?\nAnd I think the Frontier Foundation might have found \
+    something."
+set key[id=8947151523134046219] name "Of course, there's no guarantee that it's the place.\nIt could be scattered \
+    across several places.\nBut right now we have to explore every possibility, so it's worth investigating."
+set key[id=8947151523134046220] name "$MyPCName$, talk to me again when you're ready."
+set key[id=8947151523134046221] name "Oh, and a detailed investigation isn't what we want right now.\nJust confirm \
+    what the situation is,\nand if you notice any danger signs, come straight back."
+set key[id=8947151523134046304] name "$MyPCName$, would you let the two holding back the rift know about this \
+    too?"
+set key[id=8947151523134046306] name "Hmm.... Give me a moment to think."
+set key[id=8947151523134046307] name "Oh, and the forgotten space, ah, did you say it's already covered in blue \
+    flames?\nIf you can spare the strength, go there and calm the enraged golem too."
+set key[id=8947151523134046308] name "That place had better be called $map:02200001$."
+set key[id=8967741987193094153] name "$MyPCName$, I know it's a bother, but could you go to the Frontier \
+    Foundation and pass this on?\nIt's hard for us to move, so we'd like you to deliver it for us."
+set key[id=8967741987193094154] name "$MyPCName$, my other half.\nA detailed investigation isn't what we want \
+    right now.\nJust confirm what the situation is,\nand if you notice any danger signs, come straight back."
+set key[id=9993880579822583817] name "Understood. Maple World is full of performers who love music.\nPlease keep \
+    them safe, along with our members!"
+set key[id=10540667729495457883] name "(Ask for details.)"
+set key[id=10540667729495457884] name "It's just as I said. We were practicing with the members...\nwhen that dark \
+    matter suddenly appeared and all the members disappeared into it!"
+set key[id=10540667729495457886] name "(Ask whether you can hear a woman's aria inside that red darkness.)"
+set key[id=10540667729495457887] name "Y-yes! That voice... was definitely that of the prima donna <font \
+    color=\"#ffd200\">Della Rosa</font>!"
+set key[id=10540667729495457888] name "(<font color=\"#ffd200\">Della Rosa</font>?)"
+set key[id=10540667729495457889] name "Yes, she was once the greatest prima donna in Maple World.\nEveryone loved \
+    and praised her, and she enjoyed it too.\nShe was so absorbed in her fans' reactions that she performed every \
+    day."
+set key[id=10540667729495457890] name "But she strained her voice too much, and in the end it was ruined.\nOnce \
+    she became a has-been singer no one sought out, she...\nburned down her Red Rose Theater and died along with \
+    it."
+set key[id=10540667729495457891] name "Yet, her voice is coming from the dark matter that swallowed the \
+    members...\nIt's just like the Phantom of the Opera... \nDid the dead woman really take our members...?"
+set key[id=11326111565968572503] name "...That's everything I know.\nPlease pass this on to the Foundation so they \
+    can come up with countermeasures."
