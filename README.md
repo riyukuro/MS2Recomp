@@ -119,7 +119,8 @@ tables from the client packs are copied by id from your copies, and the only tex
   texts and dialogue), one title and one potion (name, plural and tooltip) that no pack has in English, and the
   KR-only wedding items (163: outfits, tickets, titles, boxes, furniture) and the other KR-only items (feature
   ItemKR, 1,056: PC Cafe gear, event boxes and tickets, enchant scrolls, set weapons and armor; Level70Item,
-  267: PC Cafe and arena gear, level 70 boxes and scrolls), names and descriptions. The Black Market's
+  267: PC Cafe and arena gear, level 70 boxes and scrolls), names and descriptions, and 440 more item names
+  (no feature tag) that a drop, shop, quest or set refers to. The Black Market's
   cancel and search messages, whose English rows have typos, get our own wording.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
