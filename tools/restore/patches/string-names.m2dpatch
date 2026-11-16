@@ -14918,8 +14918,8 @@ set quest[questID=80000085] desc "If you help other adventurers who struggle wit
     and clear the dungeon, you can get $item:30000558$.\nThey say a hero who gets 4 $item:30000558$ receives a \
     gift, so give it a try."
 set quest[questID=80000085] manual "Collect 4 $item:30000558$"
-set quest[questID=80000086] name "Gift from the Arikari Trading Company"
-set quest[questID=80000086] desc "Answer the Arikari Trading Company's quiz correctly to win a special gift \
+set quest[questID=80000086] name "Gift from the Allicari Merchant Society"
+set quest[questID=80000086] desc "Answer the Allicari Merchant Society's quiz correctly to win a special gift \
     they've prepared. \nIt's said to be a very useful gift for hunting monsters, so give it a try! "
 set quest[questID=80000087] name "Maple Rice Cakes in Danger"
 set quest[questID=80000087] desc "In $map:02000280$, defeat $npcName:21090187$, $npcName:21090188$ and \
@@ -14991,8 +14991,8 @@ set quest[questID=80000100] desc "$npcName:11001003$'s recommended way to enjoy 
     best firework high into the sky!"
 set quest[questID=80000100] manual "Use $item:20000185$"
 set quest[questID=80000100] complete "Talk to $npc:11001003$ in $map:02000064$ or $map:63000037$"
-set quest[questID=80000101] name "The Arikari Trading Company's Gifts Are Always Right!"
-set quest[questID=80000101] desc "Answer the Arikari Trading Company's quiz correctly, \nand you can get \
+set quest[questID=80000101] name "The Allicari Merchant Society's Gifts Are Always Right!"
+set quest[questID=80000101] desc "Answer the Allicari Merchant Society's quiz correctly, \nand you can get \
     $item:20300508$.\n\nA chance to get a powerful weapon again! \nDon't forget to give it a try! "
 set quest[questID=80000102] name "A Lonely Challenge for Growth!"
 set quest[questID=80000102] desc "Bold Week 1 challenge!\n\nClear a solo dungeon,\nand you can get \
@@ -15124,8 +15124,8 @@ set quest[questID=80000126] desc "Investigate the Halloween pumpkins grinning mi
     World!\n\nWhen you finish, you can receive the \nHalloween gift that $npc:11001002$ prepared."
 set quest[questID=80000126] manual "Investigate Halloween pumpkins"
 set quest[questID=80000126] complete "Talk to $npc:11001002$ in $map:02000064$ or $map:63000043$"
-set quest[questID=80000127] name "Solid Support from the Arikari Trading Company"
-set quest[questID=80000127] desc "Answer the Arikari Trading Company's quiz correctly, \nand you can get \
+set quest[questID=80000127] name "Solid Support from the Allicari Merchant Society"
+set quest[questID=80000127] desc "Answer the Allicari Merchant Society's quiz correctly, \nand you can get \
     $item:20300508$.\n\nA chance to get a powerful weapon again! \nDon't forget to give it a try! "
 set quest[questID=80000128] name "Quick Warm-Up Mission!"
 set quest[questID=80000128] desc "Fantastic warm-up!\nLoosen up with a light run, then move on to the next \
@@ -33660,9 +33660,9 @@ set key[id=1020163002004184] name "Those strange people standing right in the mi
 set key[id=1020163002004185] name "Alalariyo~ You have a good face! Nice to meet you!\nThe people here all look \
     quite decent. I've got a good feeling~ "
 set key[id=1020163002004186] name "(Ask where he's from and who he is.)"
-set key[id=1020163002004187] name "Ah... We're the Chest of Wonders! We came from far beyond the sea.\nOn the way \
-    home we strayed off course and wandered, and somehow found this new land!\nThe moment I spotted $map:2000062$ \
-    over the bow, I cried out without thinking!\n<font color=\"#ffd200\">Horolai! Horolai!</font>\n"
+set key[id=1020163002004187] name "Ah... We're the Allicari Merchant Society! We came from far beyond the sea.\nOn \
+    the way home we strayed off course and wandered, and somehow found this new land!\nThe moment I spotted \
+    $map:2000062$ over the bow, I cried out without thinking!\n<font color=\"#ffd200\">Horolai! Horolai!</font>\n"
 set key[id=1020163002004188] name "(Ask what <font color=\"#ffd200\">Horolai</font> means.)"
 set key[id=1020163002004189] name "Oh, that's a word from our homeland. \nYou could call it a cheer of joy when \
     you discover a new place. \nI never thought there'd be a place like this beyond that vast sea... heh heh... "
@@ -34006,15 +34006,16 @@ set key[id=1127002502004450] name "Oho... so that's how it was?\nHmm... The seed
     found the right master... Heh heh heh... "
 set key[id=1208001202004451] name "<font color=\"#ffd200\">Bomar</font>... doesn't come... why...\nNoisy here... \
     Boom! Thud! Bang! Ba-da-da-bam! Hurts... ears...\nDifferent. <font color=\"#ffd200\">Carcar</font> is...!"
-set key[id=1208001202004452] name "<font color=\"#ffd200\">Chest of Wonders</font> friends know. Maybe so.\nThey \
-    find <font color=\"#ffd200\">Bomar</font> for <font color=\"#ffd200\">$npcName:11001274[gender:0]$</font>."
+set key[id=1208001202004452] name "<font color=\"#ffd200\">Allicari Merchant Society</font> friends know. Maybe \
+    so.\nThey find <font color=\"#ffd200\">Bomar</font> for <font \
+    color=\"#ffd200\">$npcName:11001274[gender:0]$</font>."
 set key[id=1208001202004453] name "Huh? Who?"
 set key[id=1208001202004454] name "Anyway, if you want to know more about <font color=\"#ffd200\">Bomar</font>, go \
     ask <font color=\"#ffd200\">$npcName:11001181[gender:0]$</font>.\nHe was the closest to <font \
-    color=\"#ffd200\">Bomar</font> in our Chest of Wonders, after all."
+    color=\"#ffd200\">Bomar</font> in our Allicari Merchant Society, after all."
 set key[id=1208001202004455] name "Anyway, if you want to know more about <font color=\"#ffd200\">Bomar</font>, go \
     ask <font color=\"#ffd200\">$npcName:11001181[gender:0]$</font>.\nHe was the closest to <font \
-    color=\"#ffd200\">Bomar</font> in our Chest of Wonders, after all."
+    color=\"#ffd200\">Bomar</font> in our Allicari Merchant Society, after all."
 set key[id=1208001202004456] name "Huh? <font color=\"#ffd200\">$npcName:11001274[gender:0]$</font> is looking for \
     <font color=\"#ffd200\">Bomar</font>?\nWhere is $npcName:11001274[gender:0]$ right now?"
 set key[id=1208001202004457] name "Actually, a few days ago I got a letter from <font \
@@ -34029,14 +34030,14 @@ set key[id=1209012002004460] name "(Ask who Bomar and Carcar are.)"
 set key[id=1209012002004461] name "Who... what...? Don't know...\n<font color=\"#ffd200\">Bomar</font> didn't \
     teach me. That word!\n<font color=\"#ffd200\">Bomar</font> went. Took a taxi... looking for a way. Said he's \
     going back to <font color=\"#ffd200\">Carcar</font>.  "
-set key[id=1209012002004462] name "But he doesn't come. Don't know. Where he is.\n<font color=\"#ffd200\">Chest of \
-    Wonders</font> friends know. Maybe so. \nThey find <font color=\"#ffd200\">Bomar</font> for <font \
+set key[id=1209012002004462] name "But he doesn't come. Don't know. Where he is.\n<font color=\"#ffd200\">Allicari \
+    Merchant Society</font> friends know. Maybe so. \nThey find <font color=\"#ffd200\">Bomar</font> for <font \
     color=\"#ffd200\">$npcName:11001274[gender:0]$</font>."
 set key[id=1209012002004463] name "(Ask whether he knows <font color=\"#ffd200\">Bomar</font>.)"
 set key[id=1209012002004464] name "Ah~ <font color=\"#ffd200\">Bomar</font>...!\nSure. <font \
-    color=\"#ffd200\">Bomar</font> is a <font color=\"#ffd200\">Chest of Wonders member</font> too. He came here \
-    with us... \nHe said he had to get back to <font color=\"#ffd200\">Carcar</font> fast and vanished, taking \
-    $npcName:11001274[gender:0]$ with him. "
+    color=\"#ffd200\">Bomar</font> is an <font color=\"#ffd200\">Allicari Merchant Society member</font> too. He \
+    came here with us... \nHe said he had to get back to <font color=\"#ffd200\">Carcar</font> fast and vanished, \
+    taking $npcName:11001274[gender:0]$ with him. "
 set key[id=1209012002004465] name "(Ask where <font color=\"#ffd200\">Carcar</font> is.)"
 set key[id=1209012002004466] name "Ah~ the place we used to live...\nIt's our original homeland, before we drifted \
     over the sea and reached here. \n<font color=\"#ffd200\">Carcar Island</font>... a desert wider than the sea, \
