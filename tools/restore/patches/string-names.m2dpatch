@@ -23883,3 +23883,365 @@ set key[id=1223031611001995] name "Not so, mi. Changing form and fleeing uses a 
     color=\"#ffd200\">power will run out and he will fall into a long sleep again</font>, yung."
 set key[id=1223031611001996] name "Human, good work, mi. \nIt's small, but it's my thanks, so please take it, \
     yung! "
+
+# Quest dialogue of the Season1 quests (feature Season1) that no pack has in English: our own
+# English for the 148 scriptquest rows of locale KR (or no locale) whose quest a player can get (12 quests),
+# with each row's own format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=324122711002970] name "Oh dear, this is bad. That woman's look is no joke...\nAnd my \
+    $npc:11000167[gender:0]$ is wrapped around his wife's finger, so no way... \n...Hm? You're... <font \
+    color=\"#ffd200\">$MyPCName$</font>? The adventurer with the good reputation, right? "
+set key[id=324122711002971] name "(Ask what's going on.)"
+set key[id=324122711002972] name "Yes, there is! There is! I'm in a real bind. \nA while ago I went to the \
+    merchants' association meeting in $map:02000036$ and \nbragged a bit about <font color=\"#ffd200\">my little \
+    brother</font>. About <font color=\"#ffd200\">$npc:11000167[gender:0]$</font>~ he runs a shop in \
+    $map:02000285$ now, \nbut in his day he was a truly skilled <font color=\"#ffd200\">hunter</font>. Bang! and \
+    the monster goes squawk! Just like that! "
+set key[id=324122711002973] name "Then suddenly <font color=\"#ffd200\">some woman</font> came up and asked if I \
+    was close to my brother.\nSo I answered that he's so kind he'd do anything I ask.\nAnd she said, <font \
+    color=\"#ffd200\">please ask him to defeat the monsters in $map:02000006$</font>. "
+set key[id=324122711002974] name "(Ask why not just ask him, if his hunting skills are good.)"
+set key[id=324122711002975] name "So I went to ask him... and my sister-in-law scolded me.\nShe said how many \
+    times he got hurt in his hunter days, and how dare I bring back a hunting request...\nHow silly of me, I plain \
+    forgot. \nThat my sister-in-law had banned him from hunting for his health and safety..."
+set key[id=324122711002976] name "So... I was going to tell the woman who asked that it's off, but \nthat frowning \
+    face keeps coming to mind... I keep remembering her desperate expression, \nand I can't bring myself to say it \
+    to her face... "
+set key[id=324122711002977] name "I hear you have a good reputation and are good at persuading, $MyPCName$. \
+    \nCould you go to that woman in my place and ask her to <font color=\"#ffd200\">call it off</font>? \nShe's \
+    <font color=\"#ffd200\">$npc:11000270[gender:1]$</font>, and she sells gardening goods at $map:02000286$ in \
+    $map:02000036$."
+set key[id=324122711002978] name "I hear you have a good reputation and are good at persuading, $MyPCName$. \
+    \nCould you go to that woman in my place and ask her to <font color=\"#ffd200\">call it off</font>? \nShe's \
+    <font color=\"#ffd200\">$npc:11000270[gender:1]$</font>, and she sells gardening goods at $map:02000286$ in \
+    $map:02000036$."
+set key[id=324122711002979] name "<font color=\"#909090\">(She has the frowning look $npc:11001536[gender:1]$ \
+    described. She looks stubborn.)</font>\nThe goods are all good. Don't touch them if you're not buying. "
+set key[id=324122711002980] name "(Explain $npc:11001536[gender:1]$'s situation on her behalf and ask her to call \
+    it off.)"
+set key[id=324122711002981] name "Ah... I see. That lady, after talking so big... \nWhat a mess. Looks like I \
+    won't get proper sleep today either... "
+set key[id=324122711002982] name "Honestly... my daughter can't sleep because of the <font \
+    color=\"#ffd200\">monster noises at night</font>.\nShe wakes up every night crying that she's scared... and we \
+    can't afford to move, so it's really a bind.\nI just wish she could get one good night's sleep, so I asked for \
+    help, but still... "
+set key[id=324122711002983] name "$MyPCName$, if you have some time, could you scare off the <font \
+    color=\"#ffd200\">$map:02000006$ monsters</font> for me?\nAbout <font color=\"#ffd200\">20 of them</font> \
+    should quiet things down...\nThere's a gift I was going to give that lady once she helped out,\nso if you \
+    defeat them, I'll give it to you instead."
+set key[id=324122711002984] name "$MyPCName$, if you have some time, could you scare off the <font \
+    color=\"#ffd200\">$map:02000006$ monsters</font> for me?\nAbout <font color=\"#ffd200\">20 of them</font> \
+    should quiet things down...\nThere's a gift I was going to give that lady once she helped out,\nso if you \
+    defeat them, I'll give it to you instead."
+set key[id=324122711002985] name "Great. Now my daughter and I might finally get some sleep tonight.\nThank you so \
+    much."
+set key[id=324122711002986] name "$MyPCName$, if you have a little time, could you help me out?\nIt's really \
+    important to me... but I'm only a part-timer, so I have no way to do it myself.\nIt might be able to cure \
+    <font color=\"#ffd200\">my sibling's illness</font>..."
+set key[id=324122711002987] name "Tell me what's going on."
+set key[id=324122711002988] name "I heard a strange story from some customers who came to the shop recently.\nNext \
+    door, somewhere in <font color=\"#ffd200\">$map:02000006$</font>, there's a place called <font \
+    color=\"#ffd200\">$map:02000074$</font>,\nand they say an <font color=\"#ffd200\">herb that cures every \
+    illness</font> grows there. "
+set key[id=324122711002989] name "It's a small cave that an eccentric wizard who studies herbs visits now and \
+    then.\nHe seems to be growing something there, but he won't tell anyone what it is.\nIf there really is a \
+    miraculous herb there... maybe my sibling could get better..."
+set key[id=324122711002990] name "My sibling has an incurable <font color=\"#ffd200\">illness</font> that's rare \
+    and no one knows the cause...\nIf there's even a small hope, I want to take the chance.\nCould you look for an \
+    <font color=\"#ffd200\">herb</font> or something like it in <font color=\"#ffd200\">$map:02000074$</font>? "
+set key[id=324122711002991] name "Could you look for an <font color=\"#ffd200\">herb</font> or something like it \
+    in <font color=\"#ffd200\">$map:02000074$</font>?\nIf there's even a small hope of curing my sibling's \
+    illness, I want to take the chance...."
+set key[id=324122711002992] name "Oh, $MyPCName$! You're back!\nSo? Did you find anything?"
+set key[id=324122711002993] name "(Hand over $item:30000534$.)"
+set key[id=324122711002994] name "Th... this is all there was?\nI heard that wizard hasn't been seen lately... did \
+    everything he was growing wither away...?\nStill... I should at least take it to a doctor. Thanks for trying \
+    so hard. "
+set key[id=1216171211001402] name "$MyPCName$! Have you seen a little child by any chance? \nBlond hair, about as \
+    tall as my waist... His name is <font color=\"#ffd200\">$npc:11001166[gender:0]$</font>. \nHe's my little \
+    brother... and I can't find him anywhere."
+set key[id=1216171211001403] name "He seemed to be gathering his friends... I'm worried \nthey all went into <font \
+    color=\"#ffd200\">$map:02000331$</font> together. \nI told him so firmly never to go in, and not even to try \
+    finding where it is...!"
+set key[id=1216171211001404] name "(Ask what kind of place <font color=\"#ffd200\">$map:02000331$</font> is that \
+    she's so worried.)"
+set key[id=1216171211001405] name "It's a very pretty forest path with lots of colorful flowering trees. \nBut \
+    it's also dangerous, so the adults blocked off the entrance and said no one should go in.\nA very prickly mage \
+    lives there, and they say he attacks anyone who enters the forest."
+set key[id=1216171211001406] name "(Ask why she thinks her brother went there.)"
+set key[id=1216171211001407] name "<font color=\"#ffd200\">$npc:11001166[gender:0]$</font> is a curious, lively \
+    child. \nHe has lots of friends and they all run around playing together in a crowd."
+set key[id=1216171211001408] name "A few days ago he asked me <font color=\"#ffd200\">if I knew where \
+    $map:02000331$ is</font>.\nIt sounded like he wanted to go in, so I scolded him hard and told him absolutely \
+    not. \nMaybe that's why he vanished without a word... I have to find that rascal <font \
+    color=\"#ffd200\">$npc:11001166[gender:0]$</font> fast."
+set key[id=1216171211001409] name "(Ask how you can help.)"
+set key[id=1216171211001410] name "(Scold her for not being stricter with him.)"
+set key[id=1216171211001411] name "I'll follow this road and search the north side of the village. \n$MyPCName$, \
+    could you search <font color=\"#ffd200\">the south side of the village</font>? \nHis friends are probably with \
+    him too... please talk them around and bring them somewhere safe. Please. "
+set key[id=1216171211001412] name "He's still young and doesn't know any better, so please understand. I'll talk \
+    to him properly once I find him. \n$MyPCName$, could you search <font color=\"#ffd200\">the south side of the \
+    village</font>? I'll go north.\nHis friends are probably with him too... please, I'm begging you. "
+set key[id=1216171211001413] name "$MyPCName$, if you see $npcName:11001166[gender:0]$, please bring him somewhere \
+    safe. \nI'll search the north side of the village, so please look around <font color=\"#ffd200\">the south \
+    side</font>. Please."
+set key[id=1216171211001414] name "Oh... yes. That's right, I'm <font \
+    color=\"#ffd200\">$npcName:11001166[gender:0]$</font>. \nHow did you know?"
+set key[id=1216171211001415] name "What? My big brother is looking for me? \nReally? "
+set key[id=1216171211001416] name "(Tell him he has to go back somewhere safe.)"
+set key[id=1216171211001417] name "No, I can't, I can't!\nMy <font color=\"#ffd200\">friends</font> are still \
+    inside... waaah..."
+set key[id=1216171211001418] name "(Soothe him and tell him not to cry and to explain slowly.)"
+set key[id=1216171211001419] name "We were just about to start <font color=\"#ffd200\">hide-and-seek</font> in \
+    <font color=\"#ffd200\">$map:02000331$</font> with my friends... sniff. \nThere was a loud noise like things \
+    popping and exploding, \nand it sounded like someone was moving around too...!"
+set key[id=1216171211001420] name "I thought the <font color=\"#ffd200\">prickly mage</font> that big brother \
+    $npc:11001167[gender:0]$ told us about\nhad seen us and was coming to catch us, and I got scared...!\nI just \
+    ran out. Waaah...!  "
+set key[id=1216171211001421] name "(Ask if his friends are still in the forest.)"
+set key[id=1216171211001422] name "Yes, that's right...! They must be hiding somewhere... \n$MyPCName$, please go \
+    into $map:02000331$ with me and save my friends...!\nYou can beat that scary mage, right, $MyPCName$? Please? \
+    "
+set key[id=1216171211001423] name "$MyPCName$, to get to $map:02000331$, \njust go in through this entrance. See \
+    you inside $map:02000331$!"
+set key[id=1216171211001424] name "Thanks to you, $MyPCName$, we all got out safely.\nMy friends say thank you \
+    too! You'll be blessed for this! "
+set key[id=1216171211001425] name "Wow! It's $MyPCName$!!\nCould you help me? Pleeease~!"
+set key[id=1216171211001426] name "The... the <font color=\"#ffd200\">prickly mage</font> caught us again! \
+    \nPlease go into <font color=\"#ffd200\">$map:02000331$</font> with me and help my friends...!\nWaaah... I \
+    don't know what to do... "
+set key[id=1216171211001427] name "(Scold him for going into such a dangerous place again.)"
+set key[id=1216171211001428] name "$map:02000331$ has lots of pretty flowering trees and nobody's around, \nso \
+    it's great for <font color=\"#ffd200\">hide-and-seek</font>.\nAll we have to do is not get caught by that \
+    <font color=\"#ffd200\">mage</font>... why does he only show up when I'm 'it'...!"
+set key[id=1216171211001429] name "<font color=\"#909090\">(I don't think that's the real problem here...)</font>"
+set key[id=1216171211001430] name "You're strong, $MyPCName$. So please help just one more time.  \nI'm begging \
+    you, okay? Pleeease~"
+set key[id=1216171211001431] name "You really are the best, $MyPCName$~! You'll help me again!!\nSee you inside \
+    $map:02000331$!"
+set key[id=1216171211001432] name "$MyPCName$, you were really, truly amazing this time too! \nThanks to you, \
+    everyone got out safely. Thank you so much!"
+set key[id=1216171211001433] name "Hello. \nAre you with <font color=\"#ffd200\">Maple TV</font> by any chance? "
+set key[id=1216171211001434] name "(Say yes.)"
+set key[id=1216171211001435] name "(Say no.)"
+set key[id=1216171211001436] name "Oh? I don't think I've seen you before... Are you a <font color=\"#ffd200\">new \
+    hire</font>? \nThen I need you to do <font color=\"#ffd200\">something I ask</font> from now on, junior. "
+set key[id=1216171211001437] name "(Honestly say you're not actually with Maple TV.)"
+set key[id=1216171211001438] name "(Say you'll do whatever she needs.)"
+set key[id=1216171211001439] name "Well, true... At this busiest hour, I must be the only one out here.\nI'm \
+    worried, but I can't go looking myself...\nI was so frustrated I stepped out to clear my head for a moment. I \
+    have to go back soon, though."
+set key[id=1216171211001440] name "(Ask if something is worrying her.)"
+set key[id=1216171211001441] name "My name is <font color=\"#ffd200\">$npc:11001191[gender:1]$</font>. We're \
+    preparing a documentary about abnormal ecosystem phenomena, \nbut <font color=\"#ffd200\">our staff who went \
+    to the filming sites</font> haven't come back.\nThey're people working so hard with too few hands and too \
+    little time... \nI'm worried <font color=\"#ffd200\">something might have happened to them</font>."
+set key[id=1216171211001442] name "The filming sites are <font color=\"#ffd200\">$map:2000045$, $map:2000003$, \
+    $map:2000010$,\n$map:2000255$ and $map:2000007$</font>. Five places in all. \nThe director wants to see \
+    footage, but we have far too little.\nAll we need is for even one person to <font color=\"#ffd200\">retrieve \
+    the cameras we set up</font>... "
+set key[id=1216171211001443] name "The pros like <font color=\"#ffd200\">$npc:11001193[gender:1]$ and \
+    $npc:11001194[gender:0]$</font> are probably fine, but... \nI'm a bit uneasy about the scatterbrained <font \
+    color=\"#ffd200\">$npc:11001192[gender:0]$</font> and the can't-be-bothered <font \
+    color=\"#ffd200\">$npc:11001196[gender:0]$</font>. "
+set key[id=1216171211001444] name "Especially <font color=\"#ffd200\">$npc:11001195[gender:0]$</font>. He isn't \
+    even on our team, but\nhe heard we were short-handed and offered to help, and left for <font \
+    color=\"#ffd200\">$map:2000045$</font>\na few days ago. There's still been no word from him at all. "
+set key[id=1216171211001445] name "(Say you'll help.)"
+set key[id=1216171211001446] name "Thank you so much. \nThen please go to <font \
+    color=\"#ffd200\">$map:2000045$</font> and meet <font color=\"#ffd200\">$npc:11001195[gender:0]$</font>.\nI \
+    need to know whether something has happened to him. "
+set key[id=1216171211001447] name "Actually, it's not just $npcName:11001195[gender:0]$ I'm worried about. The \
+    others too.\n<font color=\"#ffd200\">The five filming sites</font> are all spread out, so they can't help one \
+    another...\nAnd on top of that, <font color=\"#ffd200\">the director</font> keeps pressing me about when he \
+    can see the footage. \nWhat a mess."
+set key[id=1216171211001448] name "<font color=\"#ffd200\">$npc:11001195[gender:0]$</font>...? That's me. Why are \
+    you looking for me? \nAre you <font color=\"#ffd200\">from the station</font>?"
+set key[id=1216171211001449] name "(Tell him <font color=\"#ffd200\">$npc:11001191[gender:1]$</font> is looking \
+    for him.)"
+set key[id=1216171211001450] name "What! Oh dear. I've gone and worried my Dodo, <font \
+    color=\"#ffd200\">$npcName:11001191[gender:1]$</font>! \nAs you can see, my body is more or less fine. \nIt's \
+    just my heart, my soul, that's crying~"
+set key[id=1216171211001451] name "Still, I'm worried. I doubt it's only this place that's in an uproar....\nThe \
+    people at <font color=\"#ffd200\">the other filming sites</font> probably need some <font \
+    color=\"#ffd200\">h.e.l.p.</font> too! \nMy <font color=\"#ffd200\">exceptional intuition</font> tells me so!"
+set key[id=1216171211001452] name "Hey there, honey! You, gorgeous~ \nSince you're here anyway, lend me a hand, \
+    would you?"
+set key[id=1216171211001453] name "(Say that if he's going to talk like that, you're leaving.)"
+set key[id=1216171211001454] name "Oh my, darling! Don't misunderstand my sincerity! \nI'm only asking for <font \
+    color=\"#ffd200\">help</font> with a pure heart! \nPlease understand, it's so hot and dry here that my skin~ \
+    and my tone~ have gotten prickly.\nHonestly, this is an occupational hazard. Or 'occ-haz' for short!"
+set key[id=1216171211001455] name "<font color=\"#909090\">(He must really be hurting inside. Let's bear with \
+    him.)</font>"
+set key[id=1216171211001456] name "Mmm, the thing is. Could you <font color=\"#ffd200\">retrieve the filming \
+    tape</font> from in there?\nMy Dodo's team's camera is in there. When I tried to take the tape out,\nof all \
+    things, a <font color=\"#ffd200\">house-sized red lump</font> came wobbling out and threatened me!\nEek, what \
+    a scare. My poor heart. "
+set key[id=1216171211001457] name "Come to think of it, I think that was a <font \
+    color=\"#ffd200\">$npc:21000068$</font>. The monster that lives in dry places.\nBut it was red and huge. All \
+    that wiggling looked like it was dancing...\nHonestly, though, why would anyone film something like that? What \
+    a waste of film. \nIsn't there anything more fun, more unusual?"
+set key[id=1216171211001458] name "(Say that if its color and size are different from an ordinary Plaka, it does \
+    sound strange.)"
+set key[id=1216171211001459] name "Darling, are you kidding me!\nJust because it's a different color, does a <font \
+    color=\"#ffd200\">$npc:21000068$</font> become <font color=\"#ffd200\">plankton</font>? A <font \
+    color=\"#ffd200\">$npc:21000068$</font> is a <font color=\"#ffd200\">$npc:21000068$</font>!\nUnbelievable, \
+    really!"
+set key[id=1216171211001460] name "(Say you'll help, so calm down.)"
+set key[id=1216171211001461] name "Sob, I'm actually a gentle man, but the world won't leave me alone. \nSorry, \
+    darling. Then I'm counting on you."
+set key[id=1216171211001462] name "What are you doing, darling? Hurry in there and retrieve the filming \
+    tape.\nThat <font color=\"#ffd200\">red lump</font> means there's just no way I can go. \nI've been standing \
+    here for days because I can't face my lovely Dodo... sigh...!"
+set key[id=1216171211001463] name "Oh my. <font color=\"#ffd200\">$item:30000414$</font>...! Yes, this is it! \
+    \nThanks to you I'm safe, but I do worry about the others. \nEspecially <font \
+    color=\"#ffd200\">$npcName:11001194[gender:0]$</font>, who went to <font \
+    color=\"#ffd200\">$map:2000003$</font>. That boy is far too nice.\nAnyway, my Dodo will finally rest easy once \
+    she gets this tape."
+set key[id=1216171211001464] name "(Ask if by 'Dodo' he means $npc:11001191[gender:1]$.)"
+set key[id=1216171211001465] name "That's right. My beautiful muse brims with <font color=\"#ffd200\">dodo-like \
+    charm</font>. So, <font color=\"#ffd200\">Dodo</font>!\nAnyway, darling, thank you sooo much! You're the <font \
+    color=\"#ffd200\">savior of the Culture Department</font>!"
+set key[id=1216171211001466] name "Oh, who are you? I don't think we've met...\nAre you here from <font \
+    color=\"#ffd200\">Maple TV</font> as <font color=\"#ffd200\">field support</font>? "
+set key[id=1216171211001467] name "(Ask if he's on <font color=\"#ffd200\">$npc:11001191[gender:1]$</font>'s \
+    team.)"
+set key[id=1216171211001468] name "Yes, that's right. My name is <font \
+    color=\"#ffd200\">$npc:11001194[gender:0]$</font>. \nOr maybe soon I'll be jobless \
+    $npcName:11001194[gender:0]$. \nThe <font color=\"#ffd200\">deadline</font> is right around the corner and I \
+    couldn't even retrieve the <font color=\"#ffd200\">filming tape</font>... this is the worst...!"
+set key[id=1216171211001469] name "(Ask what happened at the site.)"
+set key[id=1216171211001470] name "The water here at <font color=\"#ffd200\">$map:2000003$</font> is hardening \
+    into ludibrium.\nThe exact cause hasn't been found, but we got tips that some strange noise\nhas been coming \
+    from somewhere here lately.\nSo we decided to <font color=\"#ffd200\">set up a camera</font> inside that cave \
+    and observe."
+set key[id=1216171211001471] name "And today... when I came to retrieve the tape, with a rattling sound\na <font \
+    color=\"#ffd200\">giant block golem</font> appeared.\nI only realized after I ran out that I hadn't brought \
+    the <font color=\"#ffd200\">filming tape</font> with me...."
+set key[id=1216171211001472] name "(Comfort $npcName:11001194[gender:0]$, saying a monster like that must have \
+    been dangerous.)"
+set key[id=1216171211001473] name "So, I'm sorry to ask, but could you <font color=\"#ffd200\">retrieve the \
+    filming tape</font> for me? \nCameras are all I know how to handle... I'm no match for monsters.\nActually I \
+    have an appointment with my <font color=\"#ffd200\">fiancee</font> today, and I can't <font \
+    color=\"#ffd200\">break my promise</font> even today. "
+set key[id=1216171211001474] name "I can only <font color=\"#ffd200\">leave work</font> once I <font \
+    color=\"#ffd200\">retrieve the filming tape</font> and bring it to the PD....\nIf I break the promise again \
+    today, I won't be able to face her...!\nI've been so busy that my <font color=\"#ffd200\">fiancee</font> is \
+    doing almost all the wedding preparations. \nI can't make her buy the furniture alone, too. We'll have to get \
+    a big TV."
+set key[id=1216171211001475] name "Oh...! $MyPCName$, you're back! \nAt last I can leave on time like <font \
+    color=\"#ffd200\">$npc:11001196[gender:0]$</font>. \nThough he seems to be out at <font \
+    color=\"#ffd200\">$map:2000010$</font> right now..."
+set key[id=1216171211001476] name "(Hand over <font color=\"#ffd200\">$item:30000415$</font>.)"
+set key[id=1216171211001477] name "<font color=\"#ffd200\">$item:30000415$</font>... yes, that's it!  \nThank you \
+    so much, $MyPCName$!  "
+set key[id=1216171211001478] name "Hm...? Aren't you... $MyPCName$...? \nWhat brings you out to a place like \
+    this?"
+set key[id=1216171211001479] name "(Ask how he knew your name.)"
+set key[id=1216171211001480] name "Hohoho, no need to be so surprised. $MyPCName$, your name has been spreading as \
+    a <font color=\"#ffd200\">capable adventurer</font>. \nI hear you've been helping many people? \nCould you \
+    perhaps <font color=\"#ffd200\">help me too</font>?"
+set key[id=1216171211001481] name "Tell me what's going on."
+set key[id=1216171211001482] name "I belong to the <font color=\"#ffd200\">Maple TV support team</font>. Which \
+    means I have absolutely no reason to be out in the field. \nBut the <font color=\"#ffd200\">powerful \
+    director</font> and the <font color=\"#ffd200\">merciless PD</font> pushed me out \nhere, and I'm standing \
+    here bitterly, clutching my aching back... "
+set key[id=1216171211001483] name "(Ask why he didn't just say he was too sick to come.)"
+set key[id=1216171211001484] name "Hohoho, you're still young and don't know the truths of the world. \nVery well, \
+    let me explain kindly. Think about it.\nWhen you work at a company, there are many times <font \
+    color=\"#ffd200\">your body hurts</font>.\nWhen your body hurts, you go to the hospital for treatment, right? \
+    "
+set key[id=1216171211001485] name "And for that you need <font color=\"#ffd200\">treatment money</font>. Mesos, \
+    that is.\nBut mesos don't appear by themselves. \nSo what should you do to <font color=\"#ffd200\">earn \
+    mesos</font>?"
+set key[id=1216171211001486] name "(Answer that you hunt to earn mesos.)"
+set key[id=1216171211001487] name "(Answer that you go to the company to earn mesos.)"
+set key[id=1216171211001488] name "Tsk! You mustn't tease your elders!\nDo you have any idea how painful a slipped \
+    disc is, to joke like that? \nSince you <font color=\"#ffd200\">teased your elder</font>, you'll pay for it! \
+    \n<font color=\"#ffd200\">Retrieve the filming tape</font> from the camera in that cave and bring it to me!"
+set key[id=1216171211001489] name "That's right, exactly. So even when it hurts, even when it's miserable, you go \
+    to the company. \nSo please help me, who has no choice but to follow <font color=\"#ffd200\">the company's \
+    orders</font>.\n<font color=\"#ffd200\">Retrieve the filming tape</font> from the camera set up in that cave \
+    and bring it to me."
+set key[id=1216171211001490] name "What are you doing...? \nThere's only one camera in that cave. \nIt's a simple \
+    job: inspect it and just <font color=\"#ffd200\">retrieve the filming tape</font>.\nBring it quickly, I'm so \
+    dizzy I can hardly stand...! "
+set key[id=1216171211001491] name "<font color=\"#ffd200\">$item:30000416$</font>... yes, yes, that's it! \
+    \n$MyPCName$, you're a truly thoughtful and wonderful young person! \nYou're nothing like that dim <font \
+    color=\"#ffd200\">Culture Department $npc:11001192[gender:0]$</font>. "
+set key[id=1216171211001492] name "That fellow is probably tearing up somewhere in <font \
+    color=\"#ffd200\">$map:2000255$</font> about now.... Heh heh. \nAnyway, good work. Keep it up from now on, \
+    too! "
+set key[id=1216171211001493] name "Who are you? \nAren't you looking at me with far too much pity? "
+set key[id=1216171211001494] name "(Say no.)"
+set key[id=1216171211001495] name "(Honestly say he looks exhausted.)"
+set key[id=1216171211001496] name "No? You're right, I am pitiful. I feel like a <font \
+    color=\"#ffd200\">slave</font>. \nMenial chores... errands... and at home I'm a <font \
+    color=\"#ffd200\">prince</font>, you know...! \nSigh... it's miserable. Maybe I should <font \
+    color=\"#ffd200\">quit the company before it's too late...</font> "
+set key[id=1216171211001497] name "(Comfort him, saying since he started it, he should hang in there.)"
+set key[id=1216171211001498] name "(Egg him on to just quit.)"
+set key[id=1216171211001499] name "Right. However much I dress up, the dark circles under my eyes make me look \
+    like a <font color=\"#ffd200\">wreck</font>.\nThey keep telling me to come up with <font color=\"#ffd200\">new \
+    ideas</font> while piling on menial chores... and errands... \nSigh... it's miserable. Maybe I should <font \
+    color=\"#ffd200\">quit the company before it's too late...</font> "
+set key[id=1216171211001500] name "(Comfort him, saying since he started it, he should hang in there.)"
+set key[id=1216171211001501] name "(Egg him on to just quit.)"
+set key[id=1216171211001502] name "Yes, you're right. I should. If I hang in there, things might change.\nBut... \
+    beating that horrible monster is impossible for me.\nAnd at a time like this, with <font \
+    color=\"#ffd200\">only a week until the deadline</font>..."
+set key[id=1216171211001503] name "(Ask if a monster appeared at the filming site.)"
+set key[id=1216171211001504] name "I know, right. The more I think about it, the more unfair it feels. \nWhy can't \
+    I go home on time but have to come in every single day? \nIs there any point grinding away my youth for a \
+    handful of mesos?\nAnd meeting such a <font color=\"#ffd200\">horrible monster</font> on top of it!! "
+set key[id=1216171211001505] name "(Ask if a monster appeared at the filming site.)"
+set key[id=1216171211001506] name "Yes. We got a tip that there's a <font color=\"#ffd200\">strange space that \
+    gives people a big scare</font> in these back alleys,\nso we set up an observation camera a few days ago. \nI \
+    came to retrieve it today, and scare? No... it was a <font color=\"#ffd200\">horrible experience</font>."
+set key[id=1216171211001507] name "When we set up the camera it was a dark empty lot,\nbut today I found <font \
+    color=\"#ffd200\">gift boxes</font> sitting among pretty toys.\nI was scared but gritted my teeth and \
+    approached... and suddenly a <font color=\"#ffd200\">monster</font> jumped out! \nUgh, it was so scary. I \
+    don't even want to think about it again."
+set key[id=1216171211001508] name "If I can't bring back the filming tape, my seniors will chew me out...\nI \
+    really don't have the guts to go back in there. It's too scary. \n$MyPCName$, could you retrieve the <font \
+    color=\"#ffd200\">filming tape</font> for me? \nIf a few adventurers go together, it would be over in no \
+    time..."
+set key[id=1216171211001509] name "Don't tell me... you're scared too, $MyPCName$? \nThen <font \
+    color=\"#ffd200\">recruiting party members</font> to go together is one way.\nAs for me... I still couldn't \
+    go, though. "
+set key[id=1216171211001510] name "Oh, $MyPCName$! I dozed off a bit while waiting. Haha....\nI dreamed I became a \
+    wonderful broadcaster like <font color=\"#ffd200\">Senior $npc:11001193[gender:1]$</font>.\nI hear she went to \
+    <font color=\"#ffd200\">$map:2000007$</font> to retrieve a camera, \nso I should try contacting her to see if \
+    she's still there. "
+set key[id=1216171211001511] name "(Hand over the filming tape and ask him to check it.)"
+set key[id=1216171211001512] name "<font color=\"#ffd200\">$item:30000417$</font>... yes, this is it!\n$MyPCName$, \
+    thank you so much! Thank you, thank you! "
+set key[id=1216171211001513] name "Oh my? Coming to such a remote place... \nAre you an adventurer? "
+set key[id=1216171211001514] name "(Ask if she knows <font color=\"#ffd200\">$npc:11001191[gender:1]$</font>.)"
+set key[id=1216171211001515] name "Yes. $npc:11001191[gender:1]$ and I joined the company together. We're \
+    preparing a program together. \nOh, is <font color=\"#ffd200\">$npcName:11001191[gender:1]$ looking for \
+    me?</font> "
+set key[id=1216171211001516] name "(Tell her someone has been wondering if something happened.)"
+set key[id=1216171211001517] name "Oh dear, I thought so.  \nYes, I almost got a tour of hell trying to <font \
+    color=\"#ffd200\">retrieve the filming camera</font>. Hohoho.\nWell, <font color=\"#ffd200\">this morning was \
+    hell too</font>, pretending to laugh sincerely at the director's jokes."
+set key[id=1216171211001518] name "What? Do I sound too sarcastic? \nBut if I don't comfort myself like this, I'm \
+    too sad to go on living. \nIn this world where everything goes up except my grades and my pay~ wow~ \
+    b.e.a.u.t.i.f.u.l~"
+set key[id=1216171211001519] name "<font color=\"#909090\">(She's definitely smiling, but she doesn't look the \
+    least bit happy.)</font>"
+set key[id=1216171211001520] name "If I'd been paid mesos for every hour I've worked, I'd have bought a <font \
+    color=\"#ffd200\">house in Tria</font> by now.\nBut the reality is I'm a <font color=\"#ffd200\">Woodbury \
+    cram-room resident</font>! That's how it is. Hohoho... \n...Oh, I got a bit worked up. Sorry. Back to the \
+    point."
+set key[id=1216171211001521] name "$MyPCName$, could you retrieve the <font color=\"#ffd200\">filming \
+    tape</font>\nfrom the camera set up in there? I couldn't get it because of a <font color=\"#ffd200\">violent \
+    creature</font>. \nBut $npcName:11001191[gender:1]$ is probably still waiting anxiously for me...."
+set key[id=1216171211001522] name "$MyPCName$, the monster that appears here is rather... loud and violent. \nIt \
+    might be safer to <font color=\"#ffd200\">recruit party members</font> and go together."
+set key[id=1216171211001523] name "<font color=\"#ffd200\">$item:30000418$</font>... perfect! Exactly right. \nSo \
+    the rumor that you're <font color=\"#ffd200\">our neighborhood fixer</font>, $MyPCName$, was true!"
+set key[id=1216171211001524] name "I'd better take this to <font \
+    color=\"#ffd200\">$npcName:11001191[gender:1]$</font> quickly and tell her we can start the edit.\nThanks to \
+    you, $MyPCName$, my colleague will get some strength back. Thank you! "
