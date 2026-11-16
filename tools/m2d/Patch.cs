@@ -55,6 +55,8 @@ using Maple2.File.IO;
 //                                         (or any such row, with *)
 //   gfx <path> <source> <pin>             start editing a Scaleform movie (Resource/Gfx/<name>.gfx, see Gfx.cs)
 //   text <id> "<value>"                   in a gfx: the initial text of the DefineEditText with character id <id>
+//   field <id> <prop> <value>             in a gfx: a layout property of that DefineEditText: wrap 0|1 (word
+//                                         wrap), multiline 0|1, or size <px> (font height)
 //   string <hash> "<value>"               a replacement for the movie text whose UTF-8 bytes hash to <hash> (the
 //                                         first 16 hex digits of their SHA-256), for this patch file's strings ops
 //   strings                               in a gfx: replace every DoABC constant-pool string and edit-text initial
@@ -133,7 +135,19 @@ static class Patch {
         foreach (var name in a.Skip(2)) {
             var e = r.Files.FirstOrDefault(f => string.Equals(f.Name, name, StringComparison.OrdinalIgnoreCase));
             if (e == null) { Console.WriteLine($"{name} -"); rc = 1; continue; }
-            Console.WriteLine($"{name} {Pin(r.GetBytes(e))}");
+            byte[] data;
+            try { data = r.GetBytes(e); }
+            catch (FormatException) {
+                // an entry the pack cannot decode (the stock packs hold a few): pin its stored bytes instead
+                var h = e.FileHeader;
+                using var fs = File.OpenRead(a[1]);
+                var raw = new byte[h.EncodedFileSize];
+                fs.Position = (long)h.Offset;
+                fs.ReadExactly(raw);
+                Console.WriteLine($"{name} raw:{Pin(raw)}");
+                continue;
+            }
+            Console.WriteLine($"{name} {Pin(data)}");
         }
         return rc;
     }
@@ -268,6 +282,21 @@ static class Patch {
                         throw new PatchError($"{where}: text {w}: expected a character id");
                     var v = t.Value();
                     int k = CurG().SetText(id, v);
+                    if (k == 0) throw new PatchError($"{where}: no edit text with id {id}");
+                    changed += k;
+                    break;
+                }
+                case "field": {
+                    var w = t.Word();
+                    if (!int.TryParse(w, out var id))
+                        throw new PatchError($"{where}: field {w}: expected a character id");
+                    var prop = t.Word();
+                    var v = t.Word();
+                    int k;
+                    try { k = CurG().SetField(id, prop, v); }
+                    catch (Exception ex) when (ex is ArgumentException or InvalidDataException) {
+                        throw new PatchError($"{where}: {ex.Message}");
+                    }
                     if (k == 0) throw new PatchError($"{where}: no edit text with id {id}");
                     changed += k;
                     break;

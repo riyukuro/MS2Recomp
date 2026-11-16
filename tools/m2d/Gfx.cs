@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
@@ -145,6 +146,57 @@ sealed class Gfx {
             n++;
         }
         return n;
+    }
+
+    // set a layout property of the edit texts with character id <id>: wrap 0|1 (word wrap), multiline 0|1, or
+    // size <px> (font height; the field must name a font); the number set
+    public int SetField(int id, string prop, string value) {
+        int n = 0;
+        foreach (var t in All(tags).Where(t => t.Code == 37)) {
+            var b = t.Body;
+            if (BitConverter.ToUInt16(b, 0) != id) continue;
+            int p = 2 + (5 + 4 * (b[2] >> 3) + 7) / 8;     // the flags after the bounds
+            switch (prop) {
+                case "wrap": case "multiline": {
+                    byte bit = prop == "wrap" ? (byte)0x40 : (byte)0x20;
+                    if (value != "0" && value != "1") throw new ArgumentException($"{prop} {value}: expected 0 or 1");
+                    b[p] = value == "1" ? (byte)(b[p] | bit) : (byte)(b[p] & ~bit);
+                    break;
+                }
+                case "size": {
+                    if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var px)
+                        || px <= 0 || px > 3000)
+                        throw new ArgumentException($"size {value}: expected a font height in px");
+                    bool hasFont = (b[p] & 1) != 0, hasFontClass = (b[p + 1] & 0x80) != 0;
+                    if (!hasFont && !hasFontClass) throw new InvalidDataException($"edit text {id} names no font");
+                    int q = p + 2 + (hasFont ? 2 : 0);
+                    if (hasFontClass) q = Array.IndexOf(b, (byte)0, q) + 1;
+                    BitConverter.GetBytes((ushort)Math.Round(px * 20)).CopyTo(b, q);   // twips
+                    break;
+                }
+                default: throw new ArgumentException($"field property {prop}: expected wrap, multiline or size");
+            }
+            n++;
+        }
+        return n;
+    }
+
+    // the flags and font height of an edit text (for tests): (wrap, multiline, height in twips or -1)
+    public (bool, bool, int) Field(int id) {
+        foreach (var t in All(tags).Where(t => t.Code == 37)) {
+            var b = t.Body;
+            if (BitConverter.ToUInt16(b, 0) != id) continue;
+            int p = 2 + (5 + 4 * (b[2] >> 3) + 7) / 8;
+            bool hasFont = (b[p] & 1) != 0, hasFontClass = (b[p + 1] & 0x80) != 0;
+            int h = -1;
+            if (hasFont || hasFontClass) {
+                int q = p + 2 + (hasFont ? 2 : 0);
+                if (hasFontClass) q = Array.IndexOf(b, (byte)0, q) + 1;
+                h = BitConverter.ToUInt16(b, q);
+            }
+            return ((b[p] & 0x40) != 0, (b[p] & 0x20) != 0, h);
+        }
+        return (false, false, -2);
     }
 
     // ---- DoABC constant pool ----
@@ -307,6 +359,13 @@ sealed class Gfx {
             var b = back.Bytes();
             Check($"length z={z}", BitConverter.ToInt32(b, 4).ToString(), (8 + new Gfx(b).BodyLength()).ToString());
             Check("missing id", g.SetText(7, "y").ToString(), "0");
+            Check($"field before z={z}", back.Field(1).ToString(), "(False, False, 300)");
+            back.SetField(1, "wrap", "1"); back.SetField(1, "multiline", "1"); back.SetField(2, "size", "12.5");
+            var f = new Gfx(back.Bytes());
+            Check($"field after z={z}", f.Field(1) + " " + f.Field(2), "(True, True, 300) (False, False, 250)");
+            Check($"field text kept z={z}", string.Join(",", f.Texts()), $"(1, TOP),(2, {new string('x', 80)})");
+            f.SetField(1, "wrap", "0");
+            Check($"field unset z={z}", f.Field(1).ToString(), "(False, True, 300)");
         }
         var want = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes("top")))[..16].ToLowerInvariant();
         Check("hash", Hash("top"), want);

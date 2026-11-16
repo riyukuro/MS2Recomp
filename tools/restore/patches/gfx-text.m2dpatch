@@ -7,6 +7,8 @@ made-for KMS2 KR Live client Data/Resource/Gfx.m2d and GfxDebug.m2d (byte-identi
 #   first 16 hex digits of the SHA-256 of the original UTF-8 string, so no original text is held here.
 # Not changed: UI layer names and shop tab samples (used as keys), the input restrict pattern, and sample data
 # behind CommonPath.flash (runs only in the Flash authoring tool).
+# - field <id>: layout fixes where English is longer: the Personal Arena list rows (arena names) at 20 px
+#   instead of 22, and the arena description word-wrapped over its lines instead of one cut line.
 
 string 2637feaf6f3a29de "Face Accessory"
 string 81ded3df0cf4b5cd "Eyewear"
@@ -52,6 +54,13 @@ gfx Resource/Gfx/uiindividualpvpdialog.gfx kms:Resource/Gfx/uiindividualpvpdialo
 text 95 "Red Arena"
 text 96 "Battlefield Info"
 text 97 "Line 1\rLine 2\rLine 3\rLine 4\r"
+field 4 size 20
+field 18 size 20
+field 23 size 20
+field 28 size 20
+field 30 size 20
+field 97 wrap 1
+field 97 multiline 1
 gfx Resource/Gfx/uiitemeventopenboxdialog.gfx kms:Resource/Gfx/uiitemeventopenboxdialog.gfx 9944200d2b0e89f5
 text 11 "Hongbao Event"
 text 12 "Event notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice"
@@ -93,6 +102,13 @@ gfx Resource/GfxDebug/uiindividualpvpdialog.gfx kms:Resource/GfxDebug/uiindividu
 text 95 "Red Arena"
 text 96 "Battlefield Info"
 text 97 "Line 1\rLine 2\rLine 3\rLine 4\r"
+field 4 size 20
+field 18 size 20
+field 23 size 20
+field 28 size 20
+field 30 size 20
+field 97 wrap 1
+field 97 multiline 1
 gfx Resource/GfxDebug/uiitemeventopenboxdialog.gfx kms:Resource/GfxDebug/uiitemeventopenboxdialog.gfx 9944200d2b0e89f5
 text 11 "Hongbao Event"
 text 12 "Event notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice"
