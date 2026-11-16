@@ -186,8 +186,9 @@ tables from the client packs are copied by id from your copies, and the only tex
   `string-names.m2dpatch`. The trophy tooltip lays out its labels at run time and needs no fix. Apply it with
   `--repack`; we have not checked whether the client reads loose gfx files.
 - `gfx-images.m2dpatch`: Korean text baked into a UI texture: the "Equipped" tag on the icons of equipped items
-  (inventory, socket and enchant lists), two 40x13 sub-images of the common image atlas `kr/commonimage_i1.dds`.
-  Both take the global client's own tag for the same symbol, copied from its `na/commonimage_i1.dds` (`dds`,
+  (inventory, socket and enchant lists) and the "Summoned" tag on summoned pets and mounts, three 40x13 sub-images
+  of the common image atlas `kr/commonimage_i1.dds`. All three take the global client's own tag for the same
+  symbols (it draws them from one image), copied from its `na/commonimage_i1.dds` (`dds`,
   `blit` from a pinned source), so it needs `--gms <global client>/Data`; the patch holds no pixels, and the rest
   of the atlas stays byte-identical. Apply it with `--repack` like the gfx patch.
 - `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that

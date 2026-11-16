@@ -6,12 +6,16 @@ made-for KMS2 KR Live client Resource/Gfx.m2d and GfxDebug.m2d (both patched); g
 # - kr/commonimage_i1.dds: the "equipped" tag on item icons (export_icon_equip and export_icon_equip2 in
 #   kr/commonimage.gfx, sub-images 85 and 88, 40x13 px each), shown in the inventory, socket and enchant lists.
 #   The global client's na/commonimage.gfx draws both symbols from one 40x13 sub-image of na/commonimage_i1.dds.
+# - kr/commonimage_i1.dds: the "summoned" tag on summoned pets and mounts (export_icon_summon, sub-image 74,
+#   40x13 px). The global client draws this symbol from the same sub-image as the equipped tag.
 need gms:Resource/Gfx/na/commonimage_i1.dds c9fad2a74f70e528
 
 dds Resource/Gfx/kr/commonimage_i1.dds kms: 8ebf466390a17022
 blit 957 634 gms:Resource/Gfx/na/commonimage_i1.dds 973 777 40 13
 blit 957 649 gms:Resource/Gfx/na/commonimage_i1.dds 973 777 40 13
+blit 957 619 gms:Resource/Gfx/na/commonimage_i1.dds 973 777 40 13
 
 dds Resource/GfxDebug/kr/commonimage_i1.dds kms: 8ebf466390a17022
 blit 957 634 gms:Resource/Gfx/na/commonimage_i1.dds 973 777 40 13
 blit 957 649 gms:Resource/Gfx/na/commonimage_i1.dds 973 777 40 13
+blit 957 619 gms:Resource/Gfx/na/commonimage_i1.dds 973 777 40 13
