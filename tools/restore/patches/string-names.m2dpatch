@@ -24245,3 +24245,233 @@ set key[id=1216171211001523] name "<font color=\"#ffd200\">$item:30000418$</font
 set key[id=1216171211001524] name "I'd better take this to <font \
     color=\"#ffd200\">$npcName:11001191[gender:1]$</font> quickly and tell her we can start the edit.\nThanks to \
     you, $MyPCName$, my colleague will get some strength back. Thank you! "
+
+# Quest dialogue of the DoubleImpactStory quests (feature DoubleImpactStory) that no pack has in English: our own
+# English for the 130 scriptquest rows of locale KR (or no locale) whose quest a player can get (20 quests),
+# with each row's own format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=728172802005665] name "It's been a while, $MyPCName$.\nI have something important to tell you... meet \
+    me separately at $map:52000044$ in $map:02000100$.\nThere are a lot of eyes around, so move carefully."
+set key[id=728172802005666] name "It's been a while, $MyPCName$.\nI have something important to tell you... meet \
+    me separately at $map:52000044$ in $map:02000100$.\nThere are a lot of eyes around, so move carefully."
+set key[id=728172802005667] name "Why are you so late?\nNobody followed you here, right?"
+set key[id=728172802005668] name "Don't get excited, and listen carefully to what I say."
+set key[id=728172802005669] name "Hm? \nShh!! Wait, what was that noise?"
+set key[id=728172802005670] name "$MyPCName$! Are you all right?\nIt seems someone was secretly tailing you. "
+set key[id=728172802005671] name "The members will be swarming back soon. We have to get out of here \
+    quickly.\nI've prepared a hiding place near $map:02000138$ where no one will notice you.\nTake this car and go \
+    there!"
+set key[id=728172802005672] name "What are they to you, that you'd risk your life like this... sigh... \nThere's a \
+    secret room beneath the Black Star Society headquarters.\nI once heard that the people you're looking for are \
+    locked up there."
+set key[id=728172802005673] name "$MyPCName$, how are you feeling?\nAre you all right? Do you... remember?"
+set key[id=728172802005677] name "There's no need for long words between us now... \n<font color=\"#ffd200\">Gray \
+    Wolf</font>... let this life end quietly here."
+set key[id=728172802005678] name "Well, they're people I have nothing to do with anyway... live or die, it's none \
+    of my business.\n<font color=\"#ffd200\">Gray Wolf</font>... unlike you... heh heh heh... "
+set key[id=728172802005680] name "What happened? Are you hurt anywhere?"
+set key[id=728172802005681] name "There's no sender's name... but it must be that person, right?\nThe one who \
+    saved you at $map:52000045$... \nShall we go find <font color=\"#ffd200\">$map:63000038$</font> right now?"
+set key[id=728172802005682] name "A mysterious, unidentified presence can be felt.\nCould the sender of the note \
+    have left it behind...?"
+set key[id=809112302005689] name "<font color=\"#ffd200\">$MyPCName$</font>!! It's been a while. \nSo, how are you \
+    holding up these days?"
+set key[id=809112302005690] name "<font color=\"#ffd200\">$MyPCName$</font>!! It's been a while. \nSo, how are you \
+    holding up these days?"
+set key[id=809112302005691] name "$npcName:11001558[gender:1]$ quietly passed on news of you...\nAs for \
+    $npcName:11001557[gender:0]$, that guy's temper... sigh... he's hopeless. That's just how he is, by \
+    nature.\nAhem... it doesn't really suit me to say this, but... \nhold your head high! Don't lose heart...! "
+set key[id=809112302005692] name "Agonizing alone like that won't solve anything.\nIt's obvious who you need \
+    answers from! They even told you to come back, didn't they?"
+set key[id=809112302005693] name "That place that threw you into confusion... <font color=\"#ffd200\">Beyond \
+    Link</font>.\nThere must be a way out of your confusion there!"
+set key[id=809112302005694] name "This place feels familiar... it's $map:02000138$!!\nI definitely went into \
+    $map:52000039$... did <font color=\"#ffd200\">that guy</font> bring me here...?"
+set key[id=809112302005695] name "<font color=\"#ffd200\">That guy</font>... must know something. \nWhatever the \
+    cost... I'll find out who I am... and what the secret of the\n<font color=\"#ffd200\">Lost Child</font> is!"
+set key[id=809112302005696] name "<font color=\"#ffd200\">That guy</font>... must know something. \nWhatever the \
+    cost... I'll find out who I am... and what the secret of the\n<font color=\"#ffd200\">Lost Child</font> is!"
+set key[id=809112302005697] name "The Master, who vanished into the capsule... \nCould the secret I'm looking for \
+    be inside?"
+set key[id=809112302005698] name "Let's step into the capsule and try to travel."
+set key[id=809112302005699] name "Let's step into the capsule and try to travel."
+set key[id=809112302005700] name "Are you all right...?"
+set key[id=809112302005701] name "First, come back with me to our new dwelling.\nFollow me."
+set key[id=809112302005702] name "First, come back with me to our new dwelling.\nFollow me."
+set key[id=809112302005703] name "Let me see. \nAre you hurt anywhere? Arms and legs fine? Eyes... nose... \
+    mouth... "
+set key[id=809112302005704] name "It's a bit... lacking compared to our old home at $map:52000041$, isn't it?\nHeh \
+    heh heh... but it's livable enough.\nYou'll get used to it soon."
+set key[id=809112302005705] name "It's a bit... lacking compared to our old home at $map:52000041$, isn't it?\nHeh \
+    heh heh... but it's livable enough.\nYou'll get used to it soon."
+set key[id=809112302005706] name "$map:02000192$... first, we should go there."
+set key[id=809112302005707] name "$MyPCName$, will you come with us?"
+set key[id=809112302005708] name "$MyPCName$! \nWhat are you spacing out thinking about now?\nShake off all other \
+    idle thoughts and think only of the <font color=\"#ffd200\">Divine Relic</font>...! Only the Divine \
+    Relic.\nCome, there's no time to dawdle. Let's go!"
+set key[id=809112302005709] name "You found the entrance to the final destination of the Munakra pilgrimage."
+set key[id=809112302005710] name "It sounds like $npcName:11001557[gender:0]$ and $npcName:11001558[gender:1]$ are \
+    talking inside.\nLet's go in."
+set key[id=809112302005711] name "It sounds like $npcName:11001557[gender:0]$ and $npcName:11001558[gender:1]$ are \
+    talking inside.\nLet's go in."
+set key[id=809112302005712] name "Oh no... in the end...!!\n$npcName:11001557[gender:0]$ and \
+    $npcName:11001558[gender:1]$ have used up all their strength... \n$MyPCName$, are you all right...?"
+set key[id=809112302005713] name "$MyPCName$, listen carefully to me.\nI'll send you to $map:52000050$ together \
+    with $npcName:11001557[gender:0]$ and $npcName:11001558[gender:1]$, so rest there first and\nrecover your \
+    strength."
+set key[id=809112302005714] name "Once you've recovered a bit, look for the <font color=\"#ffd200\">glowing \
+    stone</font> inside the training ground and examine it.\nYou'll learn what you need to do."
+set key[id=809112302005715] name "The dark memories shaking my heart... only I can cut this darkness out... \nI \
+    can't put Guidance in danger because of me any longer..."
+set key[id=809112302005716] name "The <font color=\"#ffd200\">revelation</font>... the people being dragged away \
+    in it... \nthey were the people I saw in the secret room with that guy. The ones he said would share my \
+    fate... \nI <font color=\"#ffd200\">have to tell</font> the <font color=\"#ffd200\">person</font> I met \
+    there..."
+set key[id=809112302005717] name "The <font color=\"#ffd200\">revelation</font>... the people being dragged away \
+    in it... \nthey were the people I saw in the secret room with that guy. The ones he said would share my \
+    fate... \nI <font color=\"#ffd200\">have to tell</font> the <font color=\"#ffd200\">person</font> I met \
+    there..."
+set key[id=809112302005718] name "I can sense an Animar stronger than ever before...\nIs it the Master's \
+    presence...? Or the power radiating from the <font color=\"#ffd200\">Divine Relic</font>...?"
+set key[id=812174702005749] name "Tell me what's going on."
+set key[id=812174702005750] name "$npcName:11000251[gender:0]$... that person is trying to get rid of you."
+set key[id=812174702005751] name "What are you talking about, all of a sudden?"
+set key[id=812174702005752] name "Well... I don't know why he suddenly changed his mind and wants to harm you \
+    either.\nI only happened to learn that Black Star Society members are secretly planning to hurt you\nand are \
+    on your trail... "
+set key[id=812174702005753] name "Why are you risking so much to tell me this?"
+set key[id=812174702005754] name "Ahem... well... that's... \nThe truth is, I... you... "
+set key[id=812174702005755] name "Hm? \nShh!! Wait, what was that noise?"
+set key[id=812174702005756] name "But first, I have to rescue the people from the back alleys that the Black Star \
+    Society took."
+set key[id=812174702005757] name "Your life is about to end, and you're worried about other people?\nJust go. Get \
+    out of here, hurry!"
+set key[id=812174702005758] name "I need to find where the back-alley people are being held."
+set key[id=812174702005759] name "What are they to you, that you'd risk your life like this... sigh... \nThere's a \
+    secret room beneath the Black Star Society headquarters.\nI once heard that the people you're looking for are \
+    locked up there."
+set key[id=812174702005760] name "What happened?"
+set key[id=812174702005761] name "After I sent you off, I explained the situation to $npcName:11001545[gender:0]$ \
+    and $npcName:11001546[gender:0]$ and\nasked them to help you. We've spent time together, after all... \nThey \
+    say that when they reached the underground secret room, <font color=\"#ffd200\">that person</font> they once \
+    ran into at <font color=\"#ffd200\">Beyond Link</font> \nwas there, holding you up as you lay unconscious."
+set key[id=812174702005762] name "That's all we know too. Before they could even ask what was going on, that \
+    person...\nsaid only to look after you, and vanished like the wind."
+set key[id=816135802005770] name "Where did you spirit the back-alley people away to?"
+set key[id=816135802005771] name "Heh heh... your own life is hanging by a thread, and you worry about others? \nI \
+    suppose you got this far because you're that foolish... \nThe people you're looking for, I didn't spirit them \
+    away. <font color=\"#ffd200\">Shadow monsters</font> swooped in\nand they all vanished... "
+set key[id=816135802005772] name "Well, they're people I have nothing to do with anyway... live or die, it's none \
+    of my business.\n<font color=\"#ffd200\">Gray Wolf</font>... unlike you... heh heh heh... "
+set key[id=816135802005773] name "(Tell her what happened at $map:63000016$.)"
+set key[id=816135802005774] name "Oh... I see.\n$npcName:11001740[gender:0]$'s competitive streak saved your life, \
+    then.\nSo, what will you do now? You're not planning to charge in recklessly again, are you?"
+set key[id=816135802005775] name "I'm thinking about it."
+set key[id=816135802005776] name "Stop with the pointless thoughts.\nWhether it's fate or a trap, I can't tell... \
+    but while you were away, a bird flew in through the window\nand dropped a note. This is what it said."
+set key[id=816135802005777] name "'Gray Wolf... the people you're looking for are probably held in the grip of \
+    <font color=\"#ffd200\">$npcName:11001559[gender:0]$</font>. \nLook for <font \
+    color=\"#ffd200\">$map:63000038$</font> in <font color=\"#ffd200\">$map:02000275$</font>.\nHurry, before they \
+    become $npcName:11001559[gender:0]$'s sacrifices.'"
+set key[id=816135802005778] name "There's no sender's name... but it must be that person, right?\nThe one who \
+    saved you at $map:52000045$... \nShall we go find <font color=\"#ffd200\">$map:63000038$</font> right now?"
+set key[id=817105702005779] name "I'm so confused I don't know what to do."
+set key[id=817105702005780] name "You... sigh... you're in worse shape than I thought... \nSnap out of it, \
+    $MyPCName$!!\nEven if I left Guidance and am now nothing but a fatso, as someone who once followed the \
+    Master\nand as an old schoolmate, let me give you some advice... "
+set key[id=817105702005781] name "Nothing about your past or what happened is certain yet.\nDon't let yourself be \
+    tossed around over something even you aren't sure of. \nRight and wrong in this world?\nNo one, human or \
+    beastkin, will ever know for certain~!"
+set key[id=817105702005782] name "You rolled around in Guidance once, and now look at you, wrapped up in hopeless \
+    worries and drooping around... \nI'm disappointed, you punk!"
+set key[id=817105702005783] name "I'm afraid of learning the truth."
+set key[id=817105702005784] name "So you'll just keep suffering inside for the rest of your life?\nA wound you \
+    cover up so it can't be seen will fester and burst in the end. \nYou have to look at it straight, drain the \
+    pus and cut away the rot before new flesh can grow, right?"
+set key[id=817105702005785] name "Even if it's painful and hard to face, it's something you have to go through \
+    once anyway. \nGo find those guys, open your eyes wide and look squarely at your past and present.\nOnly then \
+    can you decide your own future. "
+set key[id=817105702005786] name "That place that threw you into confusion... <font color=\"#ffd200\">Beyond \
+    Link</font>.\nThere must be a way out of your confusion there!"
+set key[id=817105702005787] name "(Nod.)"
+set key[id=817105702005788] name "Good... that's a relief... "
+set key[id=817105702005789] name "<font color=\"#909090\">(Full of self-blame)</font> It was all my fault."
+set key[id=817105702005790] name "Whether it was your will or not, bear the guilt of what your actions caused by \
+    yourself.\nIf you feel you owe us a debt of the heart, repay it by recovering the stolen Relic."
+set key[id=817105702005791] name "As a <font color=\"#ffd200\">member of Guidance</font>!"
+set key[id=818143502005792] name "Wooow... you're all fine... sob sob... \nI missed you, $MyPCName$! What on earth \
+    happened?"
+set key[id=818143502005793] name "Let me tell you what's happened since."
+set key[id=818143502005794] name "I see... \nYou must have been very upset with us...? Letting you leave all alone \
+    like that weighed on my heart... sigh... \nSenior $npcName:11001557[gender:0]$ didn't show it,\nbut he kept \
+    watching over you from afar, worried something might happen to you."
+set key[id=818143502005795] name "Anyway, I'm so glad you're back. \nI'm so happy!!"
+set key[id=818143502005796] name "Where is this place?"
+set key[id=818143502005797] name "Ah~ this place... it's a training ground where the Munakra have trained for \
+    generations.\nWe were following the Munakra training path in search of traces of the <font \
+    color=\"#ffd200\">Divine Relic</font>, and we've been staying here."
+set key[id=818143502005798] name "I'd do anything if it could ease my debt of the heart even a little."
+set key[id=818143502005799] name "All right... \nBut keep your wits about you so you don't make mistakes out of \
+    haste.\nYou haven't forgotten what the Master always told you on Mt. Neoulbit, have you?"
+set key[id=818143502005800] name "<font color=\"#909090\">(Recalling $npcName:11001556[gender:0]$ as I saw him at \
+    Beyond Link)</font> Master... "
+set key[id=818143502005801] name "$MyPCName$! \nWhat are you spacing out thinking about now?\nShake off all other \
+    idle thoughts and think only of the <font color=\"#ffd200\">Divine Relic</font>...! Only the Divine \
+    Relic.\nCome, there's no time to dawdle. Let's go!"
+set key[id=818143502005802] name "<font color=\"#909090\">(Nodding)</font> What happened?"
+set key[id=818143502005803] name "We'll talk about that in detail later. \nWhat matters is that we've met again \
+    here and now, isn't it?\nI'm grateful, and proud of you all, for holding on and making it this far... "
+set key[id=818143502005804] name "But still... $npcName:11001559[gender:0]$!! \nIn the end, the <font \
+    color=\"#ffd200\">Divine Relic</font> has fallen into that fiend's hands."
+set key[id=818143502005805] name "Once you've recovered a bit, look for the <font color=\"#ffd200\">glowing \
+    stone</font> inside the training ground and examine it.\nYou'll learn what you need to do."
+set key[id=822144305001643] name "There's a mark, so this must be the place.\nLet's hurry inside."
+set key[id=822144305001644] name "Let's hurry inside."
+set key[id=822144305001645] name "Phew... you managed to find this place."
+set key[id=822144305001646] name "The people you're looking for...\nyou'll find them if you go down to \
+    $map:63000039$."
+set key[id=822144305001647] name "Hurry."
+set key[id=822144305001648] name "Be quick."
+set key[id=822144305001649] name "I heard all the back-alley people came back safely.\nYou went through quite a \
+    commotion to save them."
+set key[id=822144305001650] name "I still can't understand the obsession you showed while searching for them.\nIt \
+    doesn't seem like you did it just to play the champion of justice."
+set key[id=822144305001651] name "That's none of your business."
+set key[id=822144305001652] name "An answer I expected, so I'm not even surprised.\nOh, right, the people you \
+    helped came looking for me.\nThey asked me to get a pair of knuckles for you."
+set key[id=822144305001653] name "The powerful energy radiating from the mark feels like it's pulling at my \
+    body.\nLet's hurry inside."
+set key[id=822144305001654] name "Let's hurry inside."
+set key[id=822144305001655] name "Huff... huff... why... did you have to come here at that moment?\nIf it weren't \
+    for you, I could have brought him down."
+set key[id=822144305001656] name "Ugh... I have to take that thing down..."
+set key[id=822144305001657] name "Let me pour my energy into you to heal your wounds."
+set key[id=822144305001658] name "Ugh..."
+set key[id=822144305001659] name "If you stay still for a while, the wound will close."
+set key[id=822144305001660] name "Got it... hold out until I get there!"
+set key[id=822144305001661] name "Don't let him beat you until I get there!"
+set key[id=822144305001662] name "Hmm..."
+set key[id=822144305001663] name "I think I failed."
+set key[id=822144305001664] name "He's definitely alive.\nWe haven't recovered the Divine Relic,\nbut for the \
+    Relic to shine, it needs a noble Animar."
+set key[id=822144305001665] name "A guy who abandoned Guidance and bowed to the darkness can't possibly have that \
+    ability,\nso the Relic must have lost its light again."
+set key[id=822144305001666] name "There's something you need to see.\nPut your worries about the Relic aside for a \
+    moment and come with me."
+set key[id=822144305001667] name "Let's go."
+set key[id=822144305001668] name "I found out about this by chance while investigating here.\nIt seems you weren't \
+    the only one who disappeared from this place."
+set key[id=822144305001669] name "<font color=\"#909090\">(Biting my lip)</font> I knew."
+set key[id=822144305001670] name "Stop suffering alone and share your pain!\nYou have people beside you as close \
+    as family."
+set key[id=822144305001671] name "(Look at him in bewilderment.)"
+set key[id=822144305001672] name "Look at us right in front of you.\nDamn it, do I really have to say it out loud \
+    for you to get it?"
+set key[id=822144305001673] name "You are... a disciple of Guidance.\nEven if we don't share blood, we are \
+    family."
+set key[id=831204405001674] name "And you knew who that person was?"
+set key[id=831204405001675] name "It seems he was someone very close to me."
+set key[id=831204405001676] name "Someone very close, huh...\nSo you've been hurting this whole time over not \
+    being with him?"
+set key[id=831210405001677] name "You dazed fool!\n<font color=\"#909090\">(Looks at you silently.)</font>"
+set key[id=831210905001678] name "It's a gift with their hearts in it, so don't refuse. Take it."
