@@ -59,7 +59,7 @@ using Maple2.File.IO;
 //
 // A selector is steps joined by '/': tag[attr=value][attr=value]. The first step matches at any depth, the
 // others match children. A step without a predicate matches every element of that tag. Values are plain text,
-// quoted with "..." (\" and \\ escapes); an <element> is written as XML.
+// quoted with "..." (\" and \\ escapes, \n and \r for line-break characters); an <element> is written as XML.
 static class Patch {
     sealed class Step {
         public string Tag;
@@ -710,7 +710,7 @@ static class Patch {
                 if (i >= s.Length) throw new PatchError($"{where}: unterminated value");
                 char c = s[i++];
                 if (c == '"') break;
-                if (c == '\\' && i < s.Length) c = s[i++];
+                if (c == '\\' && i < s.Length) { c = s[i++]; c = c == 'n' ? '\n' : c == 'r' ? '\r' : c; }   // \n, \r
                 sb.Append(c);
             }
             return sb.ToString();
