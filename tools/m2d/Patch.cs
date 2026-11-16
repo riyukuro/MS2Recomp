@@ -53,6 +53,13 @@ using Maple2.File.IO;
 //                                         English name gets the English plural of that name as its name; so do
 //                                         rows whose name is still Korean and that have one of the attr=values
 //                                         (or any such row, with *)
+//   gfx <path> <source> <pin>             start editing a Scaleform movie (Resource/Gfx/<name>.gfx, see Gfx.cs)
+//   text <id> "<value>"                   in a gfx: the initial text of the DefineEditText with character id <id>
+//   string <hash> "<value>"               a replacement for the movie text whose UTF-8 bytes hash to <hash> (the
+//                                         first 16 hex digits of their SHA-256), for this patch file's strings ops
+//   strings                               in a gfx: replace every DoABC constant-pool string and edit-text initial
+//                                         text that has a string entry (keyed by hash, so the patch holds no
+//                                         Korean)
 //   add-words <tag> <key> <attr> <source>   every <tag> of the file appends to its '|'-separated word list <attr>
 //                                         the words of the source row with the same <key> that the file does not
 //                                         have yet (chat command keywords: Korean and English both work)
@@ -75,6 +82,7 @@ static class Patch {
 
     sealed class Doc {
         public XDocument X; public string Decl; public bool Bom; public string Source;
+        public Gfx G;                                      // a movie (gfx op) instead of an XML document
         public readonly HashSet<XElement> Kept = new();   // rows copy-text leaves alone (keep)
     }
 
@@ -110,6 +118,11 @@ static class Patch {
     static (string, string) Split(string path) {
         int i = path.IndexOf('/');
         if (i <= 0) throw new PatchError($"path {path}: expected <pack>/<entry>");
+        if (path[..i] == "Resource") {   // Resource/Gfx/x.gfx = entry x.gfx of Data/Resource/Gfx.m2d
+            int j = path.IndexOf('/', i + 1);
+            if (j <= i + 1) throw new PatchError($"path {path}: expected Resource/<pack>/<entry>");
+            return (path[..j], path[(j + 1)..]);
+        }
         return (path[..i], path[(i + 1)..]);
     }
 
@@ -162,6 +175,7 @@ static class Patch {
 
     static void Apply(string file, Packs packs, Dictionary<string, Doc> docs, List<string> order) {
         var pins = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var strings = new Dictionary<string, string>();   // string ops: original-text hash -> replacement
         string name = Path.GetFileName(file), madeFor = "(not stated)";
         Doc cur = null;
         int n = 0, first = 0, changed = 0;
@@ -193,7 +207,9 @@ static class Patch {
                         + $"expected {pin}; made for: {madeFor}). Stopped, nothing written.");
                 return b;
             }
-            Doc Cur() => cur ?? throw new PatchError($"{where}: no file op before {op}");
+            Doc Cur() => cur == null ? throw new PatchError($"{where}: no file op before {op}")
+                : cur.G != null ? throw new PatchError($"{where}: {op} needs an XML file, not a gfx") : cur;
+            Gfx CurG() => cur?.G ?? throw new PatchError($"{where}: no gfx op before {op}");
             XElement Single(Doc from, List<Step> sel, string src) {
                 var hits = Find(from.X.Root, sel, where, false).ToList();
                 if (hits.Count != 1)
@@ -229,6 +245,44 @@ static class Patch {
                     }
                     if (docs.TryGetValue(path, out var have)) cur = have;   // an earlier patch file started it
                     else { cur = d; docs[path] = d; order.Add(path); }
+                    break;
+                }
+                case "gfx": {
+                    var path = t.Word();
+                    Split(path);
+                    var src = t.Word();
+                    pins[src] = t.Word().ToLowerInvariant();
+                    Gfx g;
+                    try { g = new Gfx(Source(src)); }
+                    catch (Exception ex) when (ex is InvalidDataException or IndexOutOfRangeException
+                        or ArgumentException) {
+                        throw new PatchError($"{where}: {src}: not a readable gfx: {ex.Message}");
+                    }
+                    if (docs.TryGetValue(path, out var have)) cur = have;
+                    else { cur = new Doc { G = g, Source = src }; docs[path] = cur; order.Add(path); }
+                    break;
+                }
+                case "text": {
+                    var w = t.Word();
+                    if (!int.TryParse(w, out var id))
+                        throw new PatchError($"{where}: text {w}: expected a character id");
+                    var v = t.Value();
+                    int k = CurG().SetText(id, v);
+                    if (k == 0) throw new PatchError($"{where}: no edit text with id {id}");
+                    changed += k;
+                    break;
+                }
+                case "string": {
+                    var h = t.Word().ToLowerInvariant();
+                    if (h.Length != 16 || !h.All(Uri.IsHexDigit))
+                        throw new PatchError($"{where}: string {h}: expected a hash");
+                    strings[h] = t.Value();
+                    break;
+                }
+                case "strings": {
+                    int k = CurG().ApplyTable(strings);
+                    if (k == 0) throw new PatchError($"{where}: strings: nothing in this gfx has a string entry");
+                    changed += k;
                     break;
                 }
                 case "set": {
@@ -586,8 +640,11 @@ static class Patch {
             var got = Run(sel);
             if (got != want) { Console.Error.WriteLine($"FAIL {sel}: got {got}, want {want}"); bad++; }
         }
-        Console.WriteLine($"selftest: {cases.Length - bad}/{cases.Length} ok");
-        return bad == 0 ? 0 : 1;
+        var gfx = Gfx.SelfTest();
+        foreach (var f in gfx) Console.Error.WriteLine("FAIL " + f);
+        Console.WriteLine($"selftest: {cases.Length - bad}/{cases.Length} selector cases ok, "
+            + $"gfx: {gfx.Count} failures");
+        return bad == 0 && gfx.Count == 0 ? 0 : 1;
     }
 
     static string Show(List<Step> sel) => string.Join("/", sel);
@@ -688,6 +745,7 @@ static class Patch {
     }
 
     static byte[] Serialize(Doc d) {
+        if (d.G != null) return d.G.Bytes();
         var sb = new StringBuilder();
         if (d.Decl != null) sb.Append(d.Decl);
         foreach (var node in d.X.Nodes()) {
@@ -709,8 +767,9 @@ static class Patch {
         foreach (var group in order.GroupBy(p => Split(p).Item1, StringComparer.OrdinalIgnoreCase)) {
             var files = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
             foreach (var p in group) files[Split(p).Item2] = Serialize(docs[p]);
-            Repack.Build(packs.KmsPack(group.Key), Path.Combine(outDir, group.Key + ".m2d"), files,
-                add: true, lowerNew: true);
+            var outm2d = Path.Combine(outDir, group.Key + ".m2d");
+            Directory.CreateDirectory(Path.GetDirectoryName(outm2d));   // Resource/<pack>.m2d sits one level down
+            Repack.Build(packs.KmsPack(group.Key), outm2d, files, add: true, lowerNew: true);
         }
     }
 

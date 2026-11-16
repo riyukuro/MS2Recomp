@@ -158,6 +158,13 @@ tables from the client packs are copied by id from your copies, and the only tex
   objectives, captions) that 69 trigger files of the Kritias and Timaion quest dungeons have as inline Korean,
   with no string id; the global pack has the same Korean lines. Rows are addressed by position (`[#=N]`); the
   server reads triggers from the played client's pack at ingest, so it needs the patched pack too.
+- `gfx-text.m2dpatch`: our own English for the Korean in 11 UI movies (`Resource/Gfx.m2d` and its copy
+  `GfxDebug.m2d`) that a player sees: 28 text field labels that no AS3 code overwrites (the battlefield info title,
+  pet draw, wedding and apartment labels) and the 24 slot names and buttons of the item option dialog, which the AS3
+  puts into a list or a label. Fields are addressed by character id and code strings by a hash of the original,
+  so the patch holds no Korean. Sample text the AS3 replaces before display, data behind `CommonPath.flash` (it
+  runs only in the authoring tool), UI layer names, and the input restrict pattern stay as they are. Apply it
+  with `--repack`; we have not checked whether the client reads loose gfx files.
 - `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that
   turns on the `DailyMission` feature in its own `feature.xml`. No patch changes `feature.xml`.
 
@@ -166,6 +173,13 @@ dotnet run --project tools/m2d -- patch <KMS2 client>/Data --gms <global client>
     tools/restore/patches/survival-items.m2dpatch tools/restore/patches/string-names.m2dpatch \
     tools/restore/patches/strings/*.m2dpatch tools/restore/patches/emote-commands.m2dpatch \
     tools/restore/patches/triggers.m2dpatch --out <KMS2 client>/Data
+```
+
+The gfx patch, into another directory with `--repack` (add it to the list above to write all the packs at once):
+
+```
+dotnet run --project tools/m2d -- patch <KMS2 client>/Data tools/restore/patches/gfx-text.m2dpatch \
+    --out <dir> --repack
 ```
 
 This writes the patched files as loose files under `--out` (`Xml/itemdata/209.xml`, `Xml/string/kr/...`), where

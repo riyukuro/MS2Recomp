@@ -1,0 +1,116 @@
+patch gfx-text
+made-for KMS2 KR Live client Data/Resource/Gfx.m2d and GfxDebug.m2d (byte-identical copies; both are patched)
+# Own English for Korean baked into UI gfx files, limited to what a player sees:
+# - text <id>: DefineEditText initial texts that are shown as authored (the field has no instance name, or no
+#   AS3 code writes its text); fields whose text the AS3 sets before display keep their sample text.
+# - string <hash>: constant-pool strings that the AS3 assigns to a text field or a list label; a hash is the
+#   first 16 hex digits of the SHA-256 of the original UTF-8 string, so no original text is held here.
+# Not changed: UI layer names and shop tab samples (used as keys), the input restrict pattern, and sample data
+# behind CommonPath.flash (runs only in the Flash authoring tool).
+
+string 2637feaf6f3a29de "Face Accessory"
+string 81ded3df0cf4b5cd "Eyewear"
+string 75ddf89b87d19dba "Earrings"
+string 4bf2a75000314226 "Hat"
+string 1c544f65165f7751 "Top"
+string 838e02a10db30562 "Bottom"
+string bb003394f5f694de "Gloves"
+string 514d3c6f08937125 "Shoes"
+string 800c253f9407de3e "Cape"
+string 1b565ae8e86d1ff1 "Necklace"
+string f1e02439b018ae91 "Ring"
+string e81ed49257b94b4e "Belt"
+string dcb89706c04bdd80 "Outfit"
+string 3e8c5f7fa68d11c1 "Main Hand"
+string a980a213b1d3c306 "Off Hand"
+string 405e07c1ddf05afa "Two-Handed"
+string 84aa75c8e4690275 "Consumable"
+string 2991f61ced07a61e "Misc"
+string d8359fe7998a8f0e "Mission"
+string 2a84c94ce3470ab2 "Skill"
+string 211966cafa483962 "Build"
+string f240acb95b81f166 "Create Item"
+string 167eff2736c371d0 "Create"
+string 4b8d541ebe6d9003 "Search"
+
+gfx Resource/Gfx/uiapartmentdialog.gfx kms:Resource/Gfx/uiapartmentdialog.gfx 4517d59789f60ae0
+text 138 "Lease My Home"
+text 143 "Click message"
+text 144 "Click message"
+text 146 "Evansville Luxury Apartment Model House"
+text 169 "Lease My Home"
+text 170 "Evansville Luxury Apartment Model House"
+gfx Resource/Gfx/uibluemarblegamedialog.gfx kms:Resource/Gfx/uibluemarblegamedialog.gfx e4409703737f7486
+text 78 "4 times"
+text 81 "x00"
+gfx Resource/Gfx/uidarkstreamresultdialog.gfx kms:Resource/Gfx/uidarkstreamresultdialog.gfx 2a460e3780ea804d
+text 33 "Not Used"
+gfx Resource/Gfx/uidungeonlobby.gfx kms:Resource/Gfx/uidungeonlobby.gfx 8b1371cea1984244
+text 3 "4 Players"
+text 4 "[Adventure] Casa del Luna: The Moon Shadow Returns"
+gfx Resource/Gfx/uiindividualpvpdialog.gfx kms:Resource/Gfx/uiindividualpvpdialog.gfx ad822d9d744b5545
+text 95 "Red Arena"
+text 96 "Battlefield Info"
+text 97 "Line 1\rLine 2\rLine 3\rLine 4\r"
+gfx Resource/Gfx/uiitemeventopenboxdialog.gfx kms:Resource/Gfx/uiitemeventopenboxdialog.gfx 9944200d2b0e89f5
+text 11 "Red Envelope Event"
+text 12 "Event notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice"
+gfx Resource/Gfx/uiitemoptioncreatedialog.gfx kms:Resource/Gfx/uiitemoptioncreatedialog.gfx 818a787f87ebfd92
+text 103 "Category"
+text 104 "Name"
+text 105 "Search:"
+text 106 "Qty:"
+text 107 "Tier:"
+strings
+gfx Resource/Gfx/uiitempetboxdialog.gfx kms:Resource/Gfx/uiitempetboxdialog.gfx b2e70e030d0dab38
+text 5 "Pet Name"
+text 88 "Pet Draw"
+text 91 "Pet Draw"
+gfx Resource/Gfx/uipvpguildteamdialog.gfx kms:Resource/Gfx/uipvpguildteamdialog.gfx 44e6e185c6c8cba7
+text 37 "Waiting to enter..."
+text 65 "Waiting to enter..."
+gfx Resource/Gfx/uiweddingguestdialog.gfx kms:Resource/Gfx/uiweddingguestdialog.gfx 4f6ed3b9d7975889
+text 36 "Selected: 3 / 50"
+gfx Resource/Gfx/uiweddinginvitationdialog.gfx kms:Resource/Gfx/uiweddinginvitationdialog.gfx 9fee62aaec6e7715
+text 25 "Invite by Character Name"
+
+gfx Resource/GfxDebug/uiapartmentdialog.gfx kms:Resource/GfxDebug/uiapartmentdialog.gfx 4517d59789f60ae0
+text 138 "Lease My Home"
+text 143 "Click message"
+text 144 "Click message"
+text 146 "Evansville Luxury Apartment Model House"
+text 169 "Lease My Home"
+text 170 "Evansville Luxury Apartment Model House"
+gfx Resource/GfxDebug/uibluemarblegamedialog.gfx kms:Resource/GfxDebug/uibluemarblegamedialog.gfx e4409703737f7486
+text 78 "4 times"
+text 81 "x00"
+gfx Resource/GfxDebug/uidarkstreamresultdialog.gfx kms:Resource/GfxDebug/uidarkstreamresultdialog.gfx 112af4601377b8a4
+text 33 "Not Used"
+gfx Resource/GfxDebug/uidungeonlobby.gfx kms:Resource/GfxDebug/uidungeonlobby.gfx 8b1371cea1984244
+text 3 "4 Players"
+text 4 "[Adventure] Casa del Luna: The Moon Shadow Returns"
+gfx Resource/GfxDebug/uiindividualpvpdialog.gfx kms:Resource/GfxDebug/uiindividualpvpdialog.gfx ad822d9d744b5545
+text 95 "Red Arena"
+text 96 "Battlefield Info"
+text 97 "Line 1\rLine 2\rLine 3\rLine 4\r"
+gfx Resource/GfxDebug/uiitemeventopenboxdialog.gfx kms:Resource/GfxDebug/uiitemeventopenboxdialog.gfx 9944200d2b0e89f5
+text 11 "Red Envelope Event"
+text 12 "Event notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice"
+gfx Resource/GfxDebug/uiitemoptioncreatedialog.gfx kms:Resource/GfxDebug/uiitemoptioncreatedialog.gfx 818a787f87ebfd92
+text 103 "Category"
+text 104 "Name"
+text 105 "Search:"
+text 106 "Qty:"
+text 107 "Tier:"
+strings
+gfx Resource/GfxDebug/uiitempetboxdialog.gfx kms:Resource/GfxDebug/uiitempetboxdialog.gfx b2e70e030d0dab38
+text 5 "Pet Name"
+text 88 "Pet Draw"
+text 91 "Pet Draw"
+gfx Resource/GfxDebug/uipvpguildteamdialog.gfx kms:Resource/GfxDebug/uipvpguildteamdialog.gfx 44e6e185c6c8cba7
+text 37 "Waiting to enter..."
+text 65 "Waiting to enter..."
+gfx Resource/GfxDebug/uiweddingguestdialog.gfx kms:Resource/GfxDebug/uiweddingguestdialog.gfx 4f6ed3b9d7975889
+text 36 "Selected: 3 / 50"
+gfx Resource/GfxDebug/uiweddinginvitationdialog.gfx kms:Resource/GfxDebug/uiweddinginvitationdialog.gfx 9fee62aaec6e7715
+text 25 "Invite by Character Name"
