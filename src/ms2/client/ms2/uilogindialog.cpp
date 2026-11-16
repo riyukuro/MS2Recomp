@@ -366,7 +366,12 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                     CMsTime now(GetServerTime());
                     if (now < deadline)
                     {
+#ifdef MS2_HOOK_DLL
                         CStringW strText(L"로케일 계정을 사용하지 않겠습니까? \n\n 2019년 2월7일부터는 로케일 계정만 사용 가능합니다.");
+#else   // MS2-RESTORE: our own English for text a player sees; the hook DLL keeps the exe's text
+                        CStringW strText(L"Don't use a locale account? \n\n "
+                            L"From February 7, 2019, only locale accounts can be used.");
+#endif
                         MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(1, strText, 0, L"");
                         if (spBox.get() != 0)
                         {
@@ -376,7 +381,11 @@ int UILoginDialog::vfunc_28(const char* szMethod, const Scaleform::GFx::Value* p
                     }
                     else
                     {
+#ifdef MS2_HOOK_DLL
                         CStringW strText(L"로케일 계정을 사용해야 합니다.");
+#else
+                        CStringW strText(L"You must use a locale account.");
+#endif
                         MS2Ptr<CMsgBoxData> spBox = CreateMessageBox(0, strText, 0, L"");
                         if (spBox.get() != 0)
                         {

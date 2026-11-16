@@ -53,6 +53,13 @@ and the comments cite that exe's addresses as `GMS 0x...`. Do not read those as 
 - **Crimson Tear Mine arena row.** The individual arena window (`UIIndividualPvPDialog`) gets an entry in the game
   menu (`gameeventmanagercli.cpp`). The KMS2 exe greys out the window's second arena, Crimson Tear Mine; on this
   branch it can be picked (`uiindividualpvpdialog.cpp`).
+- **English text in the client code.** Text that the client code writes itself, instead of reading it from a string
+  table, is in our own English: the DPS meter's report files (`dpsmetersystem.cpp`: file names, CSV headers, element
+  names; the `DPSLog` chat command turns it on), the login window's locale account messages (`uilogindialog.cpp`),
+  the enchant simulation result (`uiitemenchantsimulatedialog.cpp`) and the maid name placeholder of the NPC preview
+  window (`uinpcpreviewdialog.cpp`). The Korean chat commands for attendance, camera, smart recommend and map also
+  answer to English names (`Attendance`, `Camera`, `SmartRecommend`, `Map`); the Korean names still work. Log and
+  assert messages stay as they are.
 
 Every change is under `src/ms2/`: `client/`, plus the two string lookups in `commonfiles/commonstringtable.cpp` and
 `gfxui/fontconfig.cpp`. The changed behaviour is compiled only when `MS2_HOOK_DLL` is not defined, so it is in the

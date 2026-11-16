@@ -122,9 +122,15 @@ void UIItemEnchantSimulateDialog::vfunc_79(void* p)
             unsigned int nDown = static_cast<CInPacket*>(p)->ReadInt32();
             CStringW strIngredient = static_cast<CInPacket*>(p)->ReadUnicodeString();
             CStringW strReturn = static_cast<CInPacket*>(p)->ReadUnicodeString();
+#ifdef MS2_HOOK_DLL
             CStringW strResult = StringFormat(L"{0}번 성공\n{1}번 손상\n{2}번 하락\n", nSuccess, nBroken, nDown);
             strResult += StringFormat<CStringW>(L"총 재료 갯수 : {0}\n", strIngredient);
             strResult += StringFormat<CStringW>(L"총 위로금 갯수 : {0}\n", strReturn);
+#else   // MS2-RESTORE: our own English for text a player sees; the hook DLL keeps the exe's text
+            CStringW strResult = StringFormat(L"{0} succeeded\n{1} damaged\n{2} dropped\n", nSuccess, nBroken, nDown);
+            strResult += StringFormat<CStringW>(L"Total materials : {0}\n", strIngredient);
+            strResult += StringFormat<CStringW>(L"Total consolation : {0}\n", strReturn);
+#endif
             if (MS2Ptr<ASTextField> spText = GetChild<ASTextField>("m_result"))
                 spText->SetTextW(strResult);
         }
