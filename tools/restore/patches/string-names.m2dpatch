@@ -55067,3 +55067,14 @@ set key[id=s_blackmarket_mail_to_seller_content2] value "Your Black Market items
 # our own shorter English.
 file Xml/string/kr/korflash.xml kms:Xml/string/kr/korflash.xml 5a0c445adf501b2f
 set key[id=$s_itemsocketsystem_tab_socket_transfer] value "Socket Transfer"
+# Labels whose stock English is wider than their field: our own shorter English (guild window buttons, the house
+# rental term label, the apartment building field of the address box).
+file Xml/string/kr/korflash.xml kms:Xml/string/kr/korflash.xml 5a0c445adf501b2f
+set key[id=$s_guild_info_button_change_mark] value "Emblem"
+set key[id=$s_guild_info_button_break_guild] value "Disband"
+set key[id=$s_guild_manage_change_grade] value "Set Rank"
+set key[id=$s_guild_info_button_change_master] value "Notice"
+set key[id=$s_guild_info_button_leave_guild] value "Leave"
+set key[id=$s_guild_event_join] value "Enter"
+set key[id=$s_myInfo_home_term] value "Term"
+set key[id=$s_msgbox_apartment_subtext1] value "Block"
