@@ -55063,3 +55063,7 @@ set key[id=s_blackmarket_mail_to_seller_content2] value "Your Black Market items
     arrive by mail (fees taken out).\\nIf you used 2-step verification when you listed the item, your payment is \
     not held.\\n\\n[Item] {1}\\n[Sale Price] {2} mesos ({3} mesos per item)\\n[Fee] -{4} mesos ({5}% of the sale \
     price)\\n----------------------------------------------\\n[Earnings] {6} mesos"
+# The Sockets window's socket transfer tab label is misspelled in the pack ("Costum") and too long for its tab:
+# our own shorter English.
+file Xml/string/kr/korflash.xml kms:Xml/string/kr/korflash.xml 5a0c445adf501b2f
+set key[id=$s_itemsocketsystem_tab_socket_transfer] value "Socket Transfer"
