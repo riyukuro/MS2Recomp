@@ -128,8 +128,8 @@ tables from the client packs are copied by id from your copies, and the only tex
   (scriptnpc, locale KR or none) still in Korean.
   Quest dialogue (scriptquest) of the quests a player can get is in our own English for these feature groups: Event,
   SoulBinder, Striker, KarkarIsland, Season1, DoubleImpactStory, EpicApocalypse, Kritias_2018_12, FameContents,
-  UnlimitedEnchant, ContentsGuide, ShadowExpedition, ItemMergeLV70_2, LapentaFrontierQuest, CharacterAbility, 22_04
-  (2,397 rows).
+  UnlimitedEnchant, ContentsGuide, ShadowExpedition, ItemMergeLV70_2, LapentaFrontierQuest, CharacterAbility, 22_04,
+  no-feature chapters 1-6 (4,051 rows).
   The Black Market's cancel and search messages, whose English rows have typos, get our own wording.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
