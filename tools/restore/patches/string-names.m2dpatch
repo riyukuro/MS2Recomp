@@ -46345,3 +46345,1963 @@ set key[id=11325883748018290700] name "Honestly, how long is that prankster Blac
     up?\nPlease get rid of the balloons that look like him!"
 set key[id=11325883748018290701] name "Phew, it finally looks a bit cleaner!\nThanks to you, $MyPCName$, Maple \
     World is slowly getting back to normal!"
+
+# Quest dialogue of the remaining no-feature quests that no pack has in English (no feature tag): our own English
+# for the 908 scriptquest rows of locale KR (or no locale) whose quest a player can get (159 quests), with each
+# row's own format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=210014814002021] name "Hello~ $MyPCName$! The petals flutter~ spring has arrived.\nBut I hear that \
+    beings who envy spring are after the <font color=\"#ffd200\">$item:30000525$</font>!\nThey're the <font \
+    color=\"#ffd200\">elite monsters that appear all over the field</font>."
+set key[id=210014814002022] name "We'll only stop the cold from returning if we take back the stolen \
+    $item:30000525$...!\n$MyPCName$, could you defeat those wicked monsters and\ncollect <font \
+    color=\"#ffd200\">10</font> of <font color=\"#ffd200\">$item:30000525$</font> and bring them to me?"
+set key[id=210014814002023] name "Thank you, $MyPCName$! \nI was worried the cold would return... but a warm \
+    spring breeze is blowing now.\nAs thanks, please accept this <font color=\"#ffd200\">$item:20300167$</font>! "
+set key[id=212201214002128] name "Hello, $MyPCName$!\nHave you ever run while listening to maple leaves rustling \
+    in the wind?"
+set key[id=212201214002129] name "Feel the cool autumn wind and the crimson maple leaves, and <font \
+    color=\"#ffd200\">run to your heart's content!</font>\nIt doesn't get better than this!"
+set key[id=212201214002130] name "Feel the cool autumn wind and the crimson maple leaves, and <font \
+    color=\"#ffd200\">run to your heart's content!</font>\nIt doesn't get better than this!"
+set key[id=212201214002131] name "How was it?\nDon't your body and mind feel healthier?"
+set key[id=212201214002132] name "Hello, $MyPCName$!\nHere's one more way to enjoy the Maple Leaf Festival! "
+set key[id=212201214002133] name "<font color=\"#ffd200\">Jump</font> up toward that blue sky.\nIt'll feel so \
+    refreshing, like your chest has been opened wide!"
+set key[id=212201214002134] name "<font color=\"#ffd200\">Jump</font> up toward that blue sky.\nIt'll feel so \
+    refreshing, like your chest has been opened wide!"
+set key[id=212201214002135] name "How was it?\nDon't your body and mind feel healthier?"
+set key[id=212201214002136] name "Hello, $MyPCName$!\nThe Maple World has become even more beautiful for the Maple \
+    Leaf Festival!"
+set key[id=212201214002137] name "Hop on a <font color=\"#ffd200\">mount</font> and go sightseeing around the \
+    Maple World.\nThe beautiful scenery will lift your mood even more!"
+set key[id=212201214002138] name "Hop on a <font color=\"#ffd200\">mount</font> and go sightseeing around the \
+    Maple World.\nThe beautiful scenery will lift your mood even more!"
+set key[id=212201214002139] name "How was it?\nWasn't it beautiful?"
+set key[id=212201214002140] name "Hello, $MyPCName$!\nHere's one more way to enjoy the Maple Leaf Festival! "
+set key[id=212201214002141] name "<font color=\"#ffd200\">Float up</font> toward that blue sky!\nIt'll feel so \
+    refreshing, like your chest has been opened wide!"
+set key[id=212201214002142] name "<font color=\"#ffd200\">Float up</font> toward that blue sky!\nIt'll feel so \
+    refreshing, like your chest has been opened wide!"
+set key[id=212201214002143] name "How was it?\nWasn't it refreshing?"
+set key[id=212201214002144] name "Hello, $MyPCName$!\nWhen autumn comes, don't you somehow want to dive right into \
+    the blue sky?"
+set key[id=212201214002145] name "Ruby's recommended way to dive into the blue sky!\nSplash around and <font \
+    color=\"#ffd200\">swim</font> in water as blue as the sky!"
+set key[id=212201214002146] name "Ruby's recommended way to dive into the blue sky!\nSplash around and <font \
+    color=\"#ffd200\">swim</font> in water as blue as the sky!"
+set key[id=212201214002147] name "How was it?\nDon't your body and mind feel refreshed?"
+set key[id=213004414002395] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is the city of blessing and glory, home of \
+    $npc:11000075[gender:1]$,\n<font color=\"#ffd200\">$map:02000001$</font>."
+set key[id=213004414002396] name "What was <font color=\"#ffd200\">$map:02000001$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002397] name "Today's place of memories is the city of blessing and glory, home of \
+    $npc:11000075[gender:1]$,\n<font color=\"#ffd200\">$map:02000001$</font>.\nWhat was <font \
+    color=\"#ffd200\">$map:02000001$</font> like in $MyPCName$'s memories?\nCome back after visiting and tell me \
+    your story, too, $MyPCName$."
+set key[id=213004414002398] name "You're back!\nHow was $map:02000001$ this time?"
+set key[id=213004414002399] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is the beautiful archers' village, the hideout of the Green \
+    Hood,\n<font color=\"#ffd200\">$map:02000076$</font>."
+set key[id=213004414002400] name "What was <font color=\"#ffd200\">$map:02000076$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002401] name "Today's place of memories is the beautiful archers' village, the hideout of the \
+    Green Hood,\n<font color=\"#ffd200\">$map:02000076$</font>.\nWhat was <font \
+    color=\"#ffd200\">$map:02000076$</font> like in $MyPCName$'s memories?\nCome back after visiting and tell me \
+    your story, too, $MyPCName$."
+set key[id=213004414002402] name "You're back!\nIs $map:02000076$ still beautiful?"
+set key[id=213004414002403] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is a glittering city with a secret underside,\n<font \
+    color=\"#ffd200\">$map:02000100$</font>."
+set key[id=213004414002404] name "What was <font color=\"#ffd200\">$map:02000100$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002405] name "Today's place of memories is a glittering city with a secret underside,\n<font \
+    color=\"#ffd200\">$map:02000100$</font>.\nWhat was <font color=\"#ffd200\">$map:02000100$</font> like in \
+    $MyPCName$'s memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002406] name "You made it back safely.\nHow was your visit to $map:02000100$?"
+set key[id=213004414002407] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is the city of green fairies,\n<font \
+    color=\"#ffd200\">$map:02000023$</font>."
+set key[id=213004414002408] name "What was <font color=\"#ffd200\">$map:02000023$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002409] name "Today's place of memories is the city of green fairies,\n<font \
+    color=\"#ffd200\">$map:02000023$</font>.\nWhat was <font color=\"#ffd200\">$map:02000023$</font> like in \
+    $MyPCName$'s memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002410] name "You're back.\nIs $map:02000023$ still beautiful?"
+set key[id=213004414002411] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is the mountain where legends sleep, the warriors' \
+    village,\n<font color=\"#ffd200\">$map:02000051$</font>."
+set key[id=213004414002412] name "What was <font color=\"#ffd200\">$map:02000051$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002413] name "Today's place of memories is the mountain where legends sleep, the warriors' \
+    village,\n<font color=\"#ffd200\">$map:02000051$</font>.\nWhat was <font \
+    color=\"#ffd200\">$map:02000051$</font> like in $MyPCName$'s memories?\nCome back after visiting and tell me \
+    your story, too, $MyPCName$."
+set key[id=213004414002414] name "You're back.\nHow was your visit to $map:02000051$?"
+set key[id=213004414002415] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is the city of genius eccentrics,\n<font \
+    color=\"#ffd200\">$map:02000270$</font>."
+set key[id=213004414002416] name "What was <font color=\"#ffd200\">$map:02000270$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002417] name "Today's place of memories is the city of genius eccentrics,\n<font \
+    color=\"#ffd200\">$map:02000270$</font>.\nWhat was <font color=\"#ffd200\">$map:02000270$</font> like in \
+    $MyPCName$'s memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002418] name "You're back.\nIs $map:02000270$ the same as ever?"
+set key[id=213004414002419] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is the biggest central city on Carcar Island,\n<font \
+    color=\"#ffd200\">$map:02010002$</font>."
+set key[id=213004414002420] name "What was <font color=\"#ffd200\">$map:02010002$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002421] name "Today's place of memories is the biggest central city on Carcar Island,\n<font \
+    color=\"#ffd200\">$map:02010002$</font>.\nWhat was <font color=\"#ffd200\">$map:02010002$</font> like in \
+    $MyPCName$'s memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002422] name "You're back.\nIs $map:02010002$ still glamorous?"
+set key[id=213004414002423] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is a village in the desert,\n<font \
+    color=\"#ffd200\">$map:02010063$</font>."
+set key[id=213004414002424] name "What was <font color=\"#ffd200\">$map:02010063$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002425] name "Today's place of memories is a village in the desert,\n<font \
+    color=\"#ffd200\">$map:02010063$</font>.\nWhat was <font color=\"#ffd200\">$map:02010063$</font> like in \
+    $MyPCName$'s memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002426] name "You're back.\nHow was your visit to $map:02010063$?"
+set key[id=213004414002427] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is the entrance to Victoria Island,\n<font \
+    color=\"#ffd200\">$map:02000062$</font>."
+set key[id=213004414002428] name "What was <font color=\"#ffd200\">$map:02000062$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002429] name "Today's place of memories is the entrance to Victoria Island,\n<font \
+    color=\"#ffd200\">$map:02000062$</font>.\nWhat was <font color=\"#ffd200\">$map:02000062$</font> like in \
+    $MyPCName$'s memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002430] name "You're back.\nHow was your visit to $map:02000062$?"
+set key[id=213004414002431] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is the holy land of interior-design fans,\n<font \
+    color=\"#ffd200\">$map:02000036$</font>."
+set key[id=213004414002432] name "What was <font color=\"#ffd200\">$map:02000036$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002433] name "Today's place of memories is the holy land of interior-design fans,\n<font \
+    color=\"#ffd200\">$map:02000036$</font>.\nWhat was <font color=\"#ffd200\">$map:02000036$</font> like in \
+    $MyPCName$'s memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002434] name "You're back.\nHow was $map:02000036$? Were there new items?"
+set key[id=213004414002435] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is Beauty Avenue No. 1 of the Maple World!\n<font \
+    color=\"#ffd200\">$map:02000107$</font>."
+set key[id=213004414002436] name "What was <font color=\"#ffd200\">$map:02000107$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002437] name "Today's place of memories is Beauty Avenue No. 1 of the Maple World!\n<font \
+    color=\"#ffd200\">$map:02000107$</font>.\nWhat was <font color=\"#ffd200\">$map:02000107$</font> like in \
+    $MyPCName$'s memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002438] name "You're back.\nHow was $map:02000107$? Were there new styles?"
+set key[id=213004414002439] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is a place that makes adventurers' gear even \
+    stronger!\n<font color=\"#ffd200\">$map:02000203$</font>."
+set key[id=213004414002440] name "What was <font color=\"#ffd200\">$map:02000203$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002441] name "Today's place of memories is a place that makes adventurers' gear even \
+    stronger!\n<font color=\"#ffd200\">$map:02000203$</font>.\nWhat was <font \
+    color=\"#ffd200\">$map:02000203$</font> like in $MyPCName$'s memories?\nCome back after visiting and tell me \
+    your story, too, $MyPCName$."
+set key[id=213004414002442] name "You're back.\nIs it just my imagination, or do you seem stronger?"
+set key[id=213004414002443] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is a place with all kinds of fishing spots, like lava, venom \
+    and the sea,\na beautiful resort, <font color=\"#ffd200\">$map:02000377$</font>."
+set key[id=213004414002444] name "What was <font color=\"#ffd200\">$map:02000377$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002445] name "Today's place of memories is a place with all kinds of fishing spots, like lava, \
+    venom and the sea,\na beautiful resort, <font color=\"#ffd200\">$map:02000377$</font>.\nWhat was <font \
+    color=\"#ffd200\">$map:02000377$</font> like in $MyPCName$'s memories?\nCome back after visiting and tell me \
+    your story, too, $MyPCName$."
+set key[id=213004414002446] name "You're back.\nDid you get to enjoy some fishing?"
+set key[id=213004414002447] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is the place where the dark path opens!\n<font \
+    color=\"#ffd200\">$map:03000014$</font>."
+set key[id=213004414002448] name "What was <font color=\"#ffd200\">$map:03000014$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002449] name "Today's place of memories is the place where the dark path opens!\n<font \
+    color=\"#ffd200\">$map:03000014$</font>.\nWhat was <font color=\"#ffd200\">$map:03000014$</font> like in \
+    $MyPCName$'s memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002450] name "You made it back safely.\nHow's $map:03000014$ doing?"
+set key[id=213004414002451] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday's place of memories is the place where you can fly to Carcar Island\nwith \
+    Floaty! <font color=\"#ffd200\">$map:02000183$</font>."
+set key[id=213004414002452] name "What was <font color=\"#ffd200\">$map:02000183$</font> like in $MyPCName$'s \
+    memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002453] name "Today's place of memories is the place where you can fly to Carcar Island\nwith \
+    Floaty! <font color=\"#ffd200\">$map:02000183$</font>.\nWhat was <font color=\"#ffd200\">$map:02000183$</font> \
+    like in $MyPCName$'s memories?\nCome back after visiting and tell me your story, too, $MyPCName$."
+set key[id=213004414002454] name "You're back.\nIs Floaty still doing well?"
+set key[id=213004414002455] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, <font color=\"#ffd200\">run around Maple World with joy.</font>\nFind your own \
+    place of memories, $MyPCName$."
+set key[id=213004414002456] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, <font color=\"#ffd200\">run around Maple World with joy.</font> \nFind your own \
+    place of memories, $MyPCName$."
+set key[id=213004414002457] name "Wow, you're back fast!\nWhere is your own place of memories, $MyPCName$?"
+set key[id=213004414002458] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, shall we hop and <font color=\"#ffd200\">jump</font>?\nYou'll feel like you've \
+    met the high skies of Maple World."
+set key[id=213004414002459] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, shall we hop and <font color=\"#ffd200\">jump</font>?\nYou'll feel like you've \
+    met the high skies of Maple World."
+set key[id=213004414002460] name "$MyPCName$, your jumping skill is impressive!"
+set key[id=213004414002461] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, hop on a <font color=\"#ffd200\">mount</font> and see the sights around \
+    Maple.\nYou might discover a new place that gives you memories, $MyPCName$."
+set key[id=213004414002462] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, hop on a <font color=\"#ffd200\">mount</font> and see the sights around \
+    Maple.\nYou might discover a new place that gives you memories, $MyPCName$."
+set key[id=213004414002463] name "Wow, you're back fast!\nWhat wonderful places did you see?"
+set key[id=213004414002464] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, shall we try <font color=\"#ffd200\">crawling</font> carefully?\nLowering your \
+    eye level might give you a whole new experience up close."
+set key[id=213004414002465] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, shall we try <font color=\"#ffd200\">crawling</font> carefully?\nLowering your \
+    eye level might give you a whole new experience up close."
+set key[id=213004414002466] name "You're back?\nHow was the air down low?"
+set key[id=213004414002467] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, shall we head to the water?\nShow off your <font \
+    color=\"#ffd200\">swimming</font> skills and look around Maple World."
+set key[id=213004414002468] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, shall we head to the water?\nShow off your <font \
+    color=\"#ffd200\">swimming</font> skills and look around Maple World."
+set key[id=213004414002469] name "Wow, you're back fast!\nWhat wonderful places did you see?"
+set key[id=213004414002470] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, climb up a <font color=\"#ffd200\">ladder</font> and look over Maple \
+    World.\nHere in Maple World, even a slightly different eye level feels totally different."
+set key[id=213004414002471] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, climb up a <font color=\"#ffd200\">ladder</font> and look over Maple \
+    World.\nHere in Maple World, even a slightly different eye level feels totally different."
+set key[id=213004414002472] name "You're back.\nThe view from the top of a ladder isn't bad, is it?"
+set key[id=213004414002473] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, hang from a <font color=\"#ffd200\">rope</font> and look over Maple World.\nIt \
+    takes perseverance, but it's just as rewarding."
+set key[id=213004414002474] name "Hello, $MyPCName$!\nIt's the <font color=\"#ffd200\">'I Want to Go There'</font> \
+    event with me, Bobby! \nToday, hang from a <font color=\"#ffd200\">rope</font> and look over Maple World.\nIt \
+    takes perseverance, but it's just as rewarding."
+set key[id=213004414002475] name "You're back.\nYou didn't doze off while hanging there, did you?"
+set key[id=213004414002588] name "Hello, $MyPCName$! For the <font color=\"#ffd200\">Number One Festival</font>, \
+    the Maple Daily ran\nspecial articles on <font color=\"#ffd200\">the talk of the town</font> and the stories \
+    around them.\nI enjoyed reading them so much! \nWhy not join in on a <font color=\"#ffd200\">fun trip</font> \
+    too, $MyPCName$? "
+set key[id=213004414002589] name "I heard someone called <font color=\"#ffd200\">GM Chunbae</font> crying out loud \
+    the other day that\n<font color=\"#ffd200\">his real name wasn't Chunbae</font>. My brother says he's a \
+    pitiful man...\nIf you want to know his story, he says to see someone called <font \
+    color=\"#ffd200\">$npc:11000456[gender:0]$</font>.\nWould you go to <font \
+    color=\"#ffd200\">$map:02000070$</font> in <font color=\"#ffd200\">$map:02000062$</font> and find out what \
+    happened?"
+set key[id=213004414002590] name "I heard someone called <font color=\"#ffd200\">GM Chunbae</font> sniffling the \
+    other day that\n<font color=\"#ffd200\">his real name wasn't Chunbae</font>. My brother says he's a pitiful \
+    man...\nIf you want to know his story, he says to see someone called <font \
+    color=\"#ffd200\">$npc:11000456[gender:0]$</font>.\nWould you go to <font \
+    color=\"#ffd200\">$map:02000070$</font> in <font color=\"#ffd200\">$map:02000062$</font> and find out what \
+    happened?"
+set key[id=213004414002591] name "You're here, $MyPCName$!\nDid that person called <font \
+    color=\"#ffd200\">$npc:11000456[gender:0]$</font> tell you what happened?"
+set key[id=213004414002592] name "It was a story that's so Chunbae."
+set key[id=213004414002593] name "It was a story about everyone finding their own place."
+set key[id=213004414002594] name "A <font color=\"#ffd200\">story that's so Chunbae</font>...?\nI don't know what \
+    you mean, but somehow I feel like I understand...."
+set key[id=213004414002595] name "What on earth...? My brother and you, $MyPCName$, both say such strange things. \
+    \nI'll have to go ask in person next time. "
+set key[id=219110017003140] name "Welcome, $MyPCName$!\nMaple World is buzzing with the 'Solo VS Couple Squad \
+    Clash' event!"
+set key[id=219110017003141] name "If you <font color=\"#ffd200\">defeat the field bosses of the couple side</font> \
+    and prove you're worthy of the Solo Squad,\nI'll give you the Solo Squad commemorative T-shirt!"
+set key[id=219110017003142] name "If you <font color=\"#ffd200\">defeat the field bosses of the couple side</font> \
+    and prove you're worthy of the Solo Squad,\nI'll give you the Solo Squad commemorative T-shirt!"
+set key[id=219110017003143] name "Invincible solos, united as one, as always!"
+set key[id=219110017003144] name "Welcome, $MyPCName$!\nThe 'Solo VS Couple Squad Clash' event has Maple World \
+    buzzing!\nWon't you take part?"
+set key[id=219110017003145] name "If you <font color=\"#ffd200\">defeat the field bosses of the solo side</font> \
+    and prove you're worthy of the Couple Squad,\nI'll give you the Couple Squad commemorative T-shirt!"
+set key[id=219110017003146] name "If you <font color=\"#ffd200\">defeat the field bosses of the solo side</font> \
+    and prove you're worthy of the Couple Squad,\nI'll give you the Couple Squad commemorative T-shirt!"
+set key[id=219110017003147] name "Life is all about love-love and heart-heart, after all!"
+set key[id=315202702004925] name "Captain $npcName:11000044[gender:0]$ is looking for you.\nPlease go in."
+set key[id=315202702004926] name "Captain $npcName:11000044[gender:0]$ is looking for you.\nPlease go in."
+set key[id=315202702004927] name "Ah, you're here!"
+set key[id=315202702004928] name "Captain $npcName:11000044[gender:0]$ is looking for you.\nPlease go in."
+set key[id=315202702004929] name "Captain $npcName:11000044[gender:0]$ is looking for you.\nPlease go in."
+set key[id=315202702004930] name "Ah, you're here!"
+set key[id=316160602004934] name "Oh! $MyPCName$!\n$npc:11000119[gender:0]$ was looking for you... Go see him."
+set key[id=316160602004935] name "Oh! $MyPCName$!\n$npc:11000119[gender:0]$ was looking for you... Go see him."
+set key[id=316160602004936] name "Hm? You're here?"
+set key[id=316160602004943] name "Captain $npcName:11000044[gender:0]$ is looking for you.\nPlease go in."
+set key[id=316160602004944] name "Captain $npcName:11000044[gender:0]$ is looking for you.\nPlease go in."
+set key[id=316160602004945] name "Ah, you're here!"
+set key[id=316160602004952] name "Ah, $MyPCName$!\n$npc:11000076[gender:0]$ is waiting for you."
+set key[id=316160602004953] name "Ah, $MyPCName$!\n$npc:11000076[gender:0]$ is waiting for you."
+set key[id=316160602004954] name "Hm? You're here?"
+set key[id=316160602004964] name "Oh! The Captain of the Guard was looking for you!\nYou'd better go see him right \
+    away."
+set key[id=316160602004965] name "Oh! The Captain of the Guard was looking for you!\nYou'd better go see him right \
+    away."
+set key[id=316160602004966] name "Ah! You're here."
+set key[id=316160602004967] name "Oh! $MyPCName$!\n$npc:11000119[gender:0]$ was looking for you... Go see him."
+set key[id=316160602004968] name "Oh! $MyPCName$!\n$npc:11000119[gender:0]$ was looking for you... Go see him."
+set key[id=316160602004969] name "Hm? You're here?"
+set key[id=316160602004982] name "Hmm... Something seems to be going on at the Bidblaim manor... \nWould you go \
+    and take a look?"
+set key[id=316160602004983] name "Hmm... Something seems to be going on at the Bidblaim manor... \nWould you go \
+    and take a look?"
+set key[id=316160602004984] name "Haa... "
+set key[id=316160602004985] name "Oh! The Captain of the Guard was looking for you!\nYou'd better go see him right \
+    away."
+set key[id=316160602004986] name "Oh! The Captain of the Guard was looking for you!\nYou'd better go see him right \
+    away."
+set key[id=316160602004987] name "Ah! You're here."
+set key[id=316160602005003] name "The Empress is looking for you.\nGo into the palace and see her!"
+set key[id=316160602005004] name "The Empress is looking for you.\nGo into the palace and see her!"
+set key[id=316160602005005] name "Ah! You've come."
+set key[id=316160602005018] name "Hey. Head over to $map:02010053$.\nLooks like your friends are looking for you."
+set key[id=316160602005019] name "Hey. Head over to $map:02010053$.\nLooks like your friends are looking for you."
+set key[id=316160602005020] name "You made it?"
+set key[id=316194102005045] name "Head to $map:02000361$.\n$npcName:11001232[gender:1]$ was looking for you."
+set key[id=316194102005046] name "Head to $map:02000361$.\n$npcName:11001232[gender:1]$ was looking for you."
+set key[id=316194102005047] name "Wow... I did it!!"
+set key[id=316194102005048] name "Head to $map:02000361$.\n$npcName:11001232[gender:1]$ was looking for you."
+set key[id=316194102005049] name "Head to $map:02000361$.\n$npcName:11001232[gender:1]$ was looking for you."
+set key[id=316194102005050] name "Wow... I did it!!"
+set key[id=501052617003276] name "$MyPCName$, thank you so much for coming to help defeat <font \
+    color=\"#ffd200\">Mushking</font>!\nBy any chance, are you running low on <font \
+    color=\"#00a2ed\">$item:20301428$</font>?\nIf you do a few favors for me... I'll give you some."
+set key[id=501052617003277] name "I worked hard to get this <font color=\"#00a2ed\">$item:20301428$</font>, so \
+    just handing it over... feels a little wasteful."
+set key[id=501052617003278] name "Wow~ You did all my favors!!\nHere, your <font \
+    color=\"#00a2ed\">$item:20301428$</font>.\nIt's not much, but I'll also give you the <font \
+    color=\"#ffd200\">$item:30001124$</font> I've been collecting.\nPlease keep helping us defeat <font \
+    color=\"#ffd200\">Mushking</font>!"
+set key[id=501052617003279] name "$MyPCName$, have you heard of $map:02000423$?\n$map:02000423$ is the closest \
+    place to $map:82000012$, where <font color=\"#ffd200\">Mushking</font> rules.\nThat's why it keeps getting \
+    raided by Mushking.\n<font color=\"#ffd200\">Mushking</font> is a scary fellow who takes adventurers away and \
+    makes them fight each other.\n"
+set key[id=501052617003280] name "His <font color=\"#00a2ed\">spores</font> are so powerful that you can't even \
+    get near him \nwithout a special cream called <font color=\"#00a2ed\">Spore Block Cream</font>.\nOn top of \
+    that, even if you defeat him once, he comes back to life! Even stronger than before!\nMy request may be \
+    unreasonable, but... \nplease help us defeat <font color=\"#ffd200\">Mushking</font> for the peace of Maple \
+    World!"
+set key[id=501052617003282] name "Even a tiny bit of damage to <font color=\"#ffd200\">Mushking</font> would be a \
+    huge help.\nI'll say it once more: when he raids, before you go down the stairs, \nmake SURE!!!! you've put on \
+    <font color=\"#00a2ed\">Spore Block Cream</font>.\nIf you take <font color=\"#ffd200\">Mushking</font>'s <font \
+    color=\"#00a2ed\">spores</font> lightly, you'll learn the hard way."
+set key[id=501052617003283] name "As thanks, I'll reward you with <font \
+    color=\"#00a2ed\">$item:20301428$</font>.\nIf you bring me <font color=\"#ffd200\">$item:30001124$</font>,\nI \
+    can also <font color=\"#ffd200\">exchange</font> it for other useful things."
+set key[id=504234817003304] name "Welcome, $MyPCName$!\nYou've heard about the Mushking Championship, right? \
+    \nWhat are you waiting for? Let's go to the Primordial Mushroom Island, where the Mushking Championship is \
+    being held."
+set key[id=504234817003305] name "Here is today's mission. \nGo to Primordial Mushroom Island and jump 30 \
+    times!\nI hope you survive and complete the mission. "
+set key[id=504234817003306] name "Hurry to Primordial Mushroom Island!\nOff you go into the heated action of the \
+    Mushking Championship!"
+set key[id=504234817003307] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30001105$</font> I promised!\nTake the <font color=\"#ffd200\">$item:30001105$</font> \
+    to Ruby's Event Shop \nand you can buy some great reward items. "
+set key[id=504234817003308] name "Welcome, $MyPCName$!\nYou've heard about the Mushking Championship, right? \
+    \nWhat are you waiting for? Let's go to the Primordial Mushroom Island, where the Mushking Championship is \
+    being held."
+set key[id=504234817003309] name "Here is today's mission. \nGo to Primordial Mushroom Island and survive for 5 \
+    minutes or more!\nI hope you survive and complete the mission. "
+set key[id=504234817003310] name "Hurry to Primordial Mushroom Island!\nOff you go into the heated action of the \
+    Mushking Championship!"
+set key[id=504234817003311] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30001105$</font> I promised!\nTake the <font color=\"#ffd200\">$item:30001105$</font> \
+    to Ruby's Event Shop \nand you can buy some great reward items. "
+set key[id=504234817003312] name "Welcome, $MyPCName$!\nYou've heard about the Mushking Championship, right? \
+    \nWhat are you waiting for? Let's go to the Primordial Mushroom Island, where the Mushking Championship is \
+    being held."
+set key[id=504234817003313] name "Here is today's mission. \nToday's mission is very simple. Just arrive at \
+    Primordial Mushroom Island and the mission is complete!\nThis mission is a giveaway, and not one I hand out \
+    every day."
+set key[id=504234817003314] name "Hurry to Primordial Mushroom Island!\nOff you go into the heated action of the \
+    Mushking Championship!"
+set key[id=504234817003315] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30001105$</font> I promised!\nTake the <font color=\"#ffd200\">$item:30001105$</font> \
+    to Ruby's Event Shop \nand you can buy some great reward items. "
+set key[id=504234817003316] name "Welcome, $MyPCName$!\nYou've heard about the Mushking Championship, right? \
+    \nWhat are you waiting for? Let's go to the Primordial Mushroom Island, where the Mushking Championship is \
+    being held."
+set key[id=504234817003317] name "Here is today's mission. \nGo to Primordial Mushroom Island and use the Magic \
+    Boom skill 3 or more times.\nI hope you survive and complete the mission. "
+set key[id=504234817003318] name "Hurry to Primordial Mushroom Island!\nOff you go into the heated action of the \
+    Mushking Championship!"
+set key[id=504234817003319] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30001105$</font> I promised!\nTake the <font color=\"#ffd200\">$item:30001105$</font> \
+    to Ruby's Event Shop \nand you can buy some great reward items. "
+set key[id=519140202005437] name "Ah... Y... you are... who...? "
+set key[id=519140202005438] name "What happened here?"
+set key[id=519140202005439] name "Ugh... The pirates' surprise attack caught us off guard,\nand things are bad. \
+    With so many wounded, we can't fight the pirates any longer... *huff*..."
+set key[id=519140202005440] name "(Say you'll help.)"
+set key[id=519140202005441] name "Never mind me... please... help my comrades... "
+set key[id=519140202005442] name "Never mind me... please... help my comrades... "
+set key[id=519140202005468] name "Ah... Y... you are... who...? "
+set key[id=519140202005469] name "What happened here?"
+set key[id=519140202005470] name "Ugh... The pirates' surprise attack caught us off guard,\nand things are bad. \
+    With so many wounded, we can't fight the pirates any longer... *huff*..."
+set key[id=519140202005471] name "(Say you'll help.)"
+set key[id=519140202005472] name "Never mind me... please... help my comrades... "
+set key[id=519140202005473] name "Never mind me... please... help my comrades... "
+set key[id=519140202005474] name "Phew, any later and things could have gotten much worse...\nThank you for your \
+    help."
+set key[id=519140202005560] name "Ah... Y... you are..."
+set key[id=519140202005561] name "(Ask what's going on.)"
+set key[id=519140202005562] name "Ugh... The pirates' surprise attack caught us off guard,\nand things are bad. \
+    With so many wounded, we can't fight the pirates any longer... *huff*..."
+set key[id=519140202005563] name "(Say you'll help.)"
+set key[id=519140202005564] name "Never mind me... please... help my comrades... "
+set key[id=519140202005565] name "Never mind me... please... help my comrades... "
+set key[id=519140202005566] name "Phew, any later and things could have gotten much worse...\nThank you for your \
+    help."
+set key[id=726145417003773] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417003774] name "Go see <font color=\"#ffd200\">$npc:11000004[gender:0]$</font>, the weapon \
+    merchant in <font color=\"#ffd200\">$map:02000001$</font>.\nThey say he knows a sad and beautiful love story \
+    that tugs at the heart.\nOnce $MyPCName$ has heard the whole story, he'll give you <font \
+    color=\"#ffd200\">$item:30001182$</font>."
+set key[id=726145417003775] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you can buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003776] name "Go to <font color=\"#ffd200\">$npc:11000004[gender:0]$</font>, the weapon \
+    merchant in <font color=\"#ffd200\">$map:02000001$</font>, and ask him to tell you a <font \
+    color=\"#ffd200\">love story</font>.\nWhen you've heard the whole story, you'll receive <font \
+    color=\"#ffd200\">$item:30001182$</font>.\nCollect them and bring them to <font \
+    color=\"#ffd200\">$npc:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>\nand you can buy some \
+    fun items!"
+set key[id=726145417003777] name "Welcome, ya~\nLots of good stuff today. Take your time and pick, ya. "
+set key[id=726145417003778] name "I came because I want to hear a love story."
+set key[id=726145417003779] name "I don't know much about love, ya~ I like candy, though."
+set key[id=726145417003780] name "I want to hear the story of the sad and beautiful lovers."
+set key[id=726145417003781] name "Ah~ you mean that story, ya? \nThe sad tale of <font \
+    color=\"#ffd200\">lovers</font> frozen over like a cold snowfield... "
+set key[id=726145417003782] name "Those two were fated from birth, and loved each other more than anyone.\nBut the \
+    <font color=\"#ffd200\">darkness</font> that crept into the world turned that <font \
+    color=\"#ffd200\">love</font> into <font color=\"#ffd200\">tragedy</font>..."
+set key[id=726145417003783] name "<font color=\"#909090\">$npc:11000004[gender:0]$'s eyes seem to be getting \
+    misty. Or is it my imagination?</font>"
+set key[id=726145417003784] name "Sorry, $MyPCName$. I'll finish the story next time you visit.\nToday... I just \
+    want to rest. Take this as a gift instead, ya."
+set key[id=726145417003785] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417003786] name "They say <font color=\"#ffd200\">$npc:11000242[gender:1]$</font> of <font \
+    color=\"#ffd200\">$map:02000135$</font>, a hot dating spot these days,\nknows the secret to a successful \
+    proposal. Please go learn it\nfor the lovers of this world!"
+set key[id=726145417003787] name "Oh, and I hear she'll give you <font color=\"#ffd200\">$item:30001182$</font> as \
+    a gift too.\nCollect them and bring them to <font color=\"#ffd200\">$npc:11004101$</font> in <font \
+    color=\"#ffd200\">$map:63000062$</font>\nand you can buy some fun items! "
+set key[id=726145417003788] name "Ask <font color=\"#ffd200\">$npc:11000242[gender:1]$</font> of <font \
+    color=\"#ffd200\">$map:02000135$</font>, a hot dating spot these days,\nabout the secret to a successful \
+    proposal, and get <font color=\"#ffd200\">$item:30001182$</font>.\nCollect them and bring them to <font \
+    color=\"#ffd200\">$npc:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>\nand you can buy some \
+    fun items! "
+set key[id=726145417003789] name "Welcome~ What can I get you?"
+set key[id=726145417003790] name "I want to hear the secret to a successful proposal."
+set key[id=726145417003791] name "Oh my, I get asked that a lot lately~\nBut it's really nothing special. It's \
+    very simple."
+set key[id=726145417003792] name "Hurry up and tell me."
+set key[id=726145417003793] name "Tsk, for free? <font color=\"#ffd200\">Order</font> something first!"
+set key[id=726145417003794] name "(Order a hot tea.)"
+set key[id=726145417003795] name "(Order a sweet ice cream parfait.)"
+set key[id=726145417003796] name "Hohoho, an excellent choice. \nA warm tea puts your heart at ease.\nThat's the \
+    secret you were wondering about, $MyPCName$."
+set key[id=726145417003797] name "So what exactly is the secret?"
+set key[id=726145417003798] name "Hohoho, an excellent choice. \nSweet ice cream puts you in a great mood.\nThat's \
+    the secret you were wondering about, $MyPCName$."
+set key[id=726145417003799] name "So what exactly is the secret?"
+set key[id=726145417003800] name "Hohoho, so you're saying there's nothing you want to order?\nThen please leave \
+    now, customer."
+set key[id=726145417003801] name "(Order a hot tea.)"
+set key[id=726145417003802] name "(Order a sweet ice cream parfait.)"
+set key[id=726145417003803] name "The secret is our shop's <font color=\"#ffd200\">stunning view</font> and <font \
+    color=\"#ffd200\">delicious menu</font>!\nThey help you share your true feelings comfortably. \nWell, isn't \
+    that amazing? So please give us lots of love~"
+set key[id=726145417003804] name "<font color=\"#909090\">Looks like I fell for a sales pitch...</font>"
+set key[id=726145417003805] name "Here, have a gift too, and come again! \nWe love you, dear customer!"
+set key[id=726145417003806] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417003807] name "Why not express your love with a beautiful song?\nThey say <font \
+    color=\"#ffd200\">$npc:11000412[gender:0]$</font> of <font color=\"#ffd200\">$map:02000086$</font> is a \
+    lyricist on the rise... \nPlease commission a <font color=\"#ffd200\">love song</font> for the lovers of this \
+    world!"
+set key[id=726145417003808] name "Oh, and I hear <font color=\"#ffd200\">$npc:11000412[gender:0]$</font> gives \
+    <font color=\"#ffd200\">$item:30001182$</font> as a gift when you commission a song... \nCollect them and \
+    bring them to <font color=\"#ffd200\">$npc:11004101$</font> in <font \
+    color=\"#ffd200\">$map:63000062$</font>\nand you can buy some fun items! "
+set key[id=726145417003809] name "Please commission a <font color=\"#ffd200\">love song</font> from <font \
+    color=\"#ffd200\">$npc:11000412[gender:0]$</font> of <font color=\"#ffd200\">$map:02000086$</font>!\nOh, and I \
+    hear <font color=\"#ffd200\">$npc:11000412[gender:0]$</font> gives <font \
+    color=\"#ffd200\">$item:30001182$</font> as a gift when you commission a song... \nCollect them and bring them \
+    to <font color=\"#ffd200\">$npc:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>\nand you can \
+    buy some fun items! "
+set key[id=726145417003810] name "I'm a hipster walking the rhythm on the flow,\nyou came to find me, so you're a \
+    gangster who knows the show. \nAnything you want, I'll do it, say what you came to say, bro."
+set key[id=726145417003811] name "I want you to write a love song for lovers."
+set key[id=726145417003812] name "What? Love? What's that, bro. You playin' me?\nWake up, in this cold, harsh \
+    world, what's with the love talk!"
+set key[id=726145417003813] name "I've got the commission fee ready."
+set key[id=726145417003814] name "Then can I commission $npc:11000411[gender:0]$ instead?"
+set key[id=726145417003815] name "Hey. I'm a total love guy. I was waiting for you.\nYou came to me, so that's \
+    perfect. Wait there, it'll be done soon."
+set key[id=726145417003816] name "I'm looking forward to it."
+set key[id=726145417003817] name "Hey, you. Total zero. What are you gonna do going to that third-rate \
+    hack?\nWait. I'll finish it soon. "
+set key[id=726145417003818] name "I'm looking forward to it."
+set key[id=726145417003819] name "Yeah, it'll be done soon. Trust me, bro. \nI'm gonna make you a masterpiece, for \
+    real, seriously, awesome, wow, a total hit."
+set key[id=726145417003820] name "Okay, I'll wait."
+set key[id=726145417003821] name "Nope, don't wait. I'm a sensitive artist.\nI'll make it when inspiration hits. \
+    Right then, I'll call you, bro."
+set key[id=726145417003822] name "How am I supposed to believe that?"
+set key[id=726145417003823] name "Here, take this. An item with an artist's heart in it, for you, bro.\nA song \
+    that will soak into $MyPCName$'s heart, I'll finish it for sure someday."
+set key[id=726145417003824] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417003825] name "A brave confession of love can sometimes create a miracle.\nWhy don't you try \
+    being the star of that miracle, $MyPCName$?"
+set key[id=726145417003826] name "That's a great idea!"
+set key[id=726145417003827] name "No, thanks."
+set key[id=726145417003828] name "Great! Right now, go to <font color=\"#ffd200\">$map:02000137$</font> and tell \
+    <font color=\"#ffd200\">$npc:11000406[gender:0]$</font>\nhow you feel, and make a miracle happen.\nIf your \
+    hearts connect, <font color=\"#ffd200\">$item:30001182$</font> will appear as proof!"
+set key[id=726145417003829] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you can buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003830] name "I refuse your refusal! Right now, go to <font \
+    color=\"#ffd200\">$map:02000137$</font> and tell <font color=\"#ffd200\">$npc:11000406[gender:0]$</font>\nhow \
+    you feel, and make a miracle happen.\nIf your hearts connect, <font color=\"#ffd200\">$item:30001182$</font> \
+    will appear as proof!"
+set key[id=726145417003831] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you can buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003832] name "Tell <font color=\"#ffd200\">$npc:11000406[gender:0]$</font> in <font \
+    color=\"#ffd200\">$map:02000137$</font> how you feel.\nIf your hearts connect, <font \
+    color=\"#ffd200\">$item:30001182$</font> will appear as proof!\nTake $item:30001182$ to <font \
+    color=\"#ffd200\">$npcName:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>\nand you can buy \
+    some fun items. Good luck!"
+set key[id=726145417003833] name "I know you like me, but don't poke or touch me.\nMy skin is precious."
+set key[id=726145417003834] name "I'm your fan."
+set key[id=726145417003835] name "I'm an anti-fan."
+set key[id=726145417003836] name "I have a huge number of fans, but you're the first <font \
+    color=\"#ffd200\">enthusiastic fan</font> like this.\nHow did you get all the way up here without the \
+    bodyguards noticing?"
+set key[id=726145417003837] name "I climbed up here with the power of love."
+set key[id=726145417003838] name "Heh, you can't control your feelings when you see me, can you? \nThat's... \
+    because I'm just too beautiful. "
+set key[id=726145417003839] name "You're really, really handsome."
+set key[id=726145417003840] name "I don't think you're quite that handsome."
+set key[id=726145417003841] name "Heh, I know~\nCome see me a lot from now on, too!"
+set key[id=726145417003842] name "Got it."
+set key[id=726145417003843] name "How funny. Saying such a cute thing to get my attention.\nAll right, I'll give \
+    you one autograph."
+set key[id=726145417003844] name "You're really, really handsome."
+set key[id=726145417003845] name "I don't need one."
+set key[id=726145417003846] name "...Hm? What did you just say? \nI couldn't hear it well, can you say it again?"
+set key[id=726145417003847] name "I was joking, so please don't be mad."
+set key[id=726145417003848] name "Fine~ I'm so handsome, I'll just have to put up with it.\nDo that again and I'll \
+    hit you. With my lips."
+set key[id=726145417003849] name "Got it."
+set key[id=726145417003850] name "<font color=\"#ffd200\">$npc:11000406[gender:0]$</font> breaks into a confident \
+    smile.\nIt seems you've connected with him...!"
+set key[id=726145417003851] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417003852] name "A brave confession of love can sometimes create a miracle.\nWhy don't you try \
+    being the star of that miracle, $MyPCName$?"
+set key[id=726145417003853] name "That's a great idea!"
+set key[id=726145417003854] name "No, thanks."
+set key[id=726145417003855] name "Great! Right now, go to <font color=\"#ffd200\">$map:02010047$</font> and tell \
+    <font color=\"#ffd200\">$npc:11001430[gender:0]$</font>\nhow you feel, and make a miracle happen.\nIf your \
+    hearts connect, <font color=\"#ffd200\">$item:30001182$</font> will appear as proof!"
+set key[id=726145417003856] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003857] name "I refuse your refusal! Right now, go to <font \
+    color=\"#ffd200\">$map:02010047$</font> and tell <font color=\"#ffd200\">$npc:11001430[gender:0]$</font>\nhow \
+    you feel, and make a miracle happen.\nIf your hearts connect, <font color=\"#ffd200\">$item:30001182$</font> \
+    will appear as proof!"
+set key[id=726145417003858] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003859] name "Tell <font color=\"#ffd200\">$npc:11001430[gender:0]$</font> in <font \
+    color=\"#ffd200\">$map:02010047$</font> how you feel.\nIf your hearts connect, <font \
+    color=\"#ffd200\">$item:30001182$</font> will appear as proof!\nTake $item:30001182$ to <font \
+    color=\"#ffd200\">$npcName:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>\nand you can buy \
+    some fun items. Good luck!"
+set key[id=726145417003860] name "$MyPCName$...?  What brings you here?"
+set key[id=726145417003861] name "I love you."
+set key[id=726145417003862] name "Were you waiting for me?"
+set key[id=726145417003863] name "You really make me dizzy. I don't know who you made a bet with,\nbut stop using \
+    me for such a pointless prank."
+set key[id=726145417003864] name "It's a misunderstanding."
+set key[id=726145417003865] name "I want to make you dizzy."
+set key[id=726145417003866] name "Right, no matter how rude and self-centered you are,\nI didn't think you'd be \
+    that clueless.\nSo, what's the <font color=\"#ffd200\">real reason</font> you came to see me?"
+set key[id=726145417003867] name "Were you waiting for me?"
+set key[id=726145417003868] name "...Seriously, did you bet with someone on how I'd react\nwhen you said something \
+    like that? Is that it?\n<font color=\"#909090\">($npcName:11001430[gender:0]$'s gaze is so cold. One wrong \
+    answer and I'll freeze to death.)</font>"
+set key[id=726145417003869] name "It's a misunderstanding."
+set key[id=726145417003870] name "...What are you suddenly talking about, out of nowhere.\nYou're a funny one, \
+    really."
+set key[id=726145417003871] name "I missed you."
+set key[id=726145417003872] name "Let's get married."
+set key[id=726145417003873] name "Really... how strange.\nWhatever. Do as you like.\n<font \
+    color=\"#909090\">($npcName:11001430[gender:0]$ seems to smile faintly.)</font>"
+set key[id=726145417003874] name "You see a sparkling light behind <font \
+    color=\"#ffd200\">$npc:11001430[gender:0]$</font>, who has turned away.\nIt seems you've connected with \
+    him...!"
+set key[id=726145417003875] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417003876] name "A brave confession of love can sometimes create a miracle.\nWhy don't you try \
+    being the star of that miracle, $MyPCName$?"
+set key[id=726145417003877] name "That's a great idea!"
+set key[id=726145417003878] name "No, thanks."
+set key[id=726145417003879] name "Great! Right now, go to <font color=\"#ffd200\">$map:02000118$</font> and tell \
+    <font color=\"#ffd200\">$npc:11000617[gender:0]$</font>\nhow you feel, and make a miracle happen.\nIf your \
+    hearts connect, <font color=\"#ffd200\">$item:30001182$</font> will appear as proof!"
+set key[id=726145417003880] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003881] name "I refuse your refusal! Right now, go to <font \
+    color=\"#ffd200\">$map:02000118$</font> and tell <font color=\"#ffd200\">$npc:11000617[gender:0]$</font>\nhow \
+    you feel, and make a miracle happen.\nIf your hearts connect, <font color=\"#ffd200\">$item:30001182$</font> \
+    will appear as proof!"
+set key[id=726145417003882] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003883] name "Tell <font color=\"#ffd200\">$npc:11000617[gender:0]$</font> in <font \
+    color=\"#ffd200\">$map:02000118$</font> how you feel.\nIf your hearts connect, <font \
+    color=\"#ffd200\">$item:30001182$</font> will appear as proof!\nTake $item:30001182$ to <font \
+    color=\"#ffd200\">$npcName:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>\nand you can buy \
+    some fun items. Good luck!"
+set key[id=726145417003884] name "Huh...? Do you need something from me?"
+set key[id=726145417003885] name "I love you."
+set key[id=726145417003886] name "I lo... lo... lollipop you."
+set key[id=726145417003887] name "Ah, yes... I see. Thank you."
+set key[id=726145417003888] name "Sorry, I think I flustered you."
+set key[id=726145417003889] name "No, it's fine. I get a lot of those <font \
+    color=\"#ffd200\">letters</font>.\nStrangers send me things like <font color=\"#ffd200\">I love you, Mr. \
+    Soldier</font>...\nCome to think of it, I'm not even married yet, and they call me mister... how mean..."
+set key[id=726145417003890] name "It's as unfair as when someone asked if all Royal Guards are <font \
+    color=\"#ffd200\">twins</font>.\nI often hear ridiculous things like <font color=\"#ffd200\">you all look the \
+    same</font>.\nIf <font color=\"#ffd200\">$npcName:11003534[gender:0]$ $npcFunction:11003534[gender:0]$</font> \
+    had heard that, he would have scolded them... "
+set key[id=726145417003891] name "(Compliment $npcName:11000617[gender:0]$ on his really handsome eyebrows.)"
+set key[id=726145417003892] name "Really? Chief <font color=\"#ffd200\">$npcName:11003534[gender:0]$</font> \
+    praised them like that too...!\nI'm so glad to meet someone with an eye for beauty. I hope to see you again."
+set key[id=726145417003893] name "Me too."
+set key[id=726145417003894] name "<font color=\"#00a2ed\">$npc:11000617[gender:0]$ reporting! Nothing unusual at \
+    the post!!</font>\n...Ah, sorry. I thought Chief <font color=\"#ffd200\">$npcName:11003534[gender:0]$</font> \
+    had arrived.\nThat's a <font color=\"#ffd200\">joke</font> he often makes... \nWhen you hear it, you have to \
+    report right away, and then laugh loudly and say it's funny, or he's not happy."
+set key[id=726145417003895] name "That must be tiring with the Chief around."
+set key[id=726145417003896] name "Not at all, he has a warm heart, so I'm always grateful.\n...Please pass that on \
+    to the Chief. Understood?"
+set key[id=726145417003897] name "Got it."
+set key[id=726145417003898] name "<font color=\"#ffd200\">$npc:11000617[gender:0]$</font>'s expression has \
+    brightened.\nIt seems you've connected with him...!"
+set key[id=726145417003899] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417003900] name "A brave confession of love can sometimes create a miracle.\nWhy don't you try \
+    being the star of that miracle, $MyPCName$?"
+set key[id=726145417003901] name "That's a great idea!"
+set key[id=726145417003902] name "No, thanks."
+set key[id=726145417003903] name "Great! Right now, go to <font color=\"#ffd200\">$map:02000001$</font> and tell \
+    <font color=\"#ffd200\">$npc:11000119[gender:0]$</font>\nhow you feel, and make a miracle happen.\nIf your \
+    hearts connect, <font color=\"#ffd200\">$item:30001182$</font> will appear as proof!"
+set key[id=726145417003904] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003905] name "I refuse your refusal! Right now, go to <font \
+    color=\"#ffd200\">$map:02000001$</font> and tell <font color=\"#ffd200\">$npc:11000119[gender:0]$</font>\nhow \
+    you feel, and make a miracle happen.\nIf your hearts connect, <font color=\"#ffd200\">$item:30001182$</font> \
+    will appear as proof!"
+set key[id=726145417003906] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003907] name "Tell <font color=\"#ffd200\">$npc:11000119[gender:0]$</font> in <font \
+    color=\"#ffd200\">$map:02000001$</font> how you feel.\nIf your hearts connect, <font \
+    color=\"#ffd200\">$item:30001182$</font> will appear as proof!\nTake $item:30001182$ to <font \
+    color=\"#ffd200\">$npcName:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>\nand you can buy \
+    some fun items. Good luck!"
+set key[id=726145417003908] name "What is it?"
+set key[id=726145417003909] name "I love you."
+set key[id=726145417003910] name "(I can't bring myself to confess, so I talk about something else.)"
+set key[id=726145417003911] name "Haha, those words feel good to hear, but they're not easy to say.\nThank you for \
+    saying them to me."
+set key[id=726145417003912] name "Are you accepting my confession?"
+set key[id=726145417003913] name "Actually, I was lying."
+set key[id=726145417003914] name "In my heart... there is already <font color=\"#ffd200\">someone who has a place \
+    there</font>.\nI'll gladly accept your feelings, but I have nothing to give you.\nI'm sorry. "
+set key[id=726145417003915] name "Actually, I was lying."
+set key[id=726145417003916] name "Ha ha, all right. It's fine. Let's say that's the case.\nThank you anyway."
+set key[id=726145417003917] name "($npcName:11000119[gender:0]$... Kind of a cool guy.)"
+set key[id=726145417003918] name "It seems you have something else you want to say, young one.\nDon't hesitate, \
+    just say it. I'll listen."
+set key[id=726145417003919] name "This is embarrassing, but... I love you."
+set key[id=726145417003920] name "<font color=\"#ffd200\">$npc:11000119[gender:0]$</font> pounds his chest and \
+    laughs.\nIt seems you've connected with him...!"
+set key[id=726145417003921] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417003922] name "A brave confession of love can sometimes create a miracle.\nWhy don't you try \
+    being the star of that miracle, $MyPCName$?"
+set key[id=726145417003923] name "That's a great idea!"
+set key[id=726145417003924] name "No, thanks."
+set key[id=726145417003925] name "Great! Right now, go to <font color=\"#ffd200\">$map:02000100$</font> and tell \
+    <font color=\"#ffd200\">$npc:11000252[gender:0]$</font>\nhow you feel, and make a miracle happen.\nIf your \
+    hearts connect, <font color=\"#ffd200\">$item:30001182$</font> will appear as proof!"
+set key[id=726145417003926] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003927] name "I refuse your refusal! Right now, go to <font \
+    color=\"#ffd200\">$map:02000100$</font> and tell <font color=\"#ffd200\">$npc:11000252[gender:0]$</font>\nhow \
+    you feel, and make a miracle happen.\nIf your hearts connect, <font color=\"#ffd200\">$item:30001182$</font> \
+    will appear as proof!"
+set key[id=726145417003928] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003929] name "Tell <font color=\"#ffd200\">$npc:11000252[gender:0]$</font> in <font \
+    color=\"#ffd200\">$map:02000100$</font> how you feel.\nIf your hearts connect, <font \
+    color=\"#ffd200\">$item:30001182$</font> will appear as proof!\nTake $item:30001182$ to <font \
+    color=\"#ffd200\">$npcName:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>\nand you can buy \
+    some fun items. Good luck!"
+set key[id=726145417003930] name "Hm, a young one who came all the way here must have something important.\nWhat \
+    is it?"
+set key[id=726145417003931] name "I love you."
+set key[id=726145417003932] name "(I can't bring myself to confess, so I lie and say I came for an interview.)"
+set key[id=726145417003933] name "Nice words, but... what exactly do you love?\nMy money? My company? My honor? \
+    Which is it?"
+set key[id=726145417003934] name "I just like you, Chairman."
+set key[id=726145417003935] name "I want money."
+set key[id=726145417003936] name "You like me? Then you can do anything I tell you to, right? "
+set key[id=726145417003937] name "I'm confident."
+set key[id=726145417003938] name "Never mind. I'd like to cancel."
+set key[id=726145417003939] name "Good! Then sing this era's masterpiece, <font color=\"#ffd200\">Praise \
+    Goldus</font>. \nBig and strong!"
+set key[id=726145417003940] name "My love, your love, Goldus~"
+set key[id=726145417003941] name "Gol~ Gol~ Gol~dus"
+set key[id=726145417003942] name "Yes~ Keep singing!"
+set key[id=726145417003943] name "Don't spend your life sick and wheezing!"
+set key[id=726145417003944] name "Can't live without Goldus~ Really can't live~"
+set key[id=726145417003945] name "Good~ Good!"
+set key[id=726145417003946] name "Let's live for the mighty hospital!"
+set key[id=726145417003947] name "Let's live for mighty prosperity!"
+set key[id=726145417003948] name "Let's live for mighty woof woof!"
+set key[id=726145417003949] name "You've got the basics down. I like you, young one!"
+set key[id=726145417003950] name "(Thank you.)"
+set key[id=726145417003951] name "Showing up before me without knowing even one Praise Goldus!\nAre you out of \
+    your mind? Want a scolding? Huh!"
+set key[id=726145417003952] name "Please give me one more chance."
+set key[id=726145417003953] name "This is petty, so forget it."
+set key[id=726145417003954] name "At least you're honest. But you can't have money just because you want it. \nIf \
+    you want to learn how to earn money, I can help you.\nNow then, shall we test whether you're qualified?"
+set key[id=726145417003955] name "I'm confident."
+set key[id=726145417003956] name "Never mind. I'd like to cancel."
+set key[id=726145417003957] name "Then why on earth did you come here...?"
+set key[id=726145417003958] name "(No choice... I go back to basics and confess my love again.)"
+set key[id=726145417003959] name "<font color=\"#ffd200\">$npc:11000252[gender:0]$</font> pushes up his glasses \
+    and grins.\nIt seems you've connected with him...!"
+set key[id=726145417003960] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417003961] name "A brave confession of love can sometimes create a miracle.\nWhy don't you try \
+    being the star of that miracle, $MyPCName$?"
+set key[id=726145417003962] name "That's a great idea!"
+set key[id=726145417003963] name "No, thanks."
+set key[id=726145417003964] name "Great! Right now, go to <font color=\"#ffd200\">$map:02000001$</font> and tell \
+    <font color=\"#ffd200\">$npc:11000160[gender:1]$</font>\nhow you feel, and make a miracle happen.\nIf your \
+    hearts connect, <font color=\"#ffd200\">$item:30001182$</font> will appear as proof!"
+set key[id=726145417003965] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003966] name "I refuse your refusal! Right now, go to <font \
+    color=\"#ffd200\">$map:02000001$</font> and tell <font color=\"#ffd200\">$npc:11000160[gender:1]$</font>\nhow \
+    you feel, and make a miracle happen.\nIf your hearts connect, <font color=\"#ffd200\">$item:30001182$</font> \
+    will appear as proof!"
+set key[id=726145417003967] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003968] name "Tell <font color=\"#ffd200\">$npc:11000160[gender:1]$</font> in <font \
+    color=\"#ffd200\">$map:02000001$</font> how you feel.\nIf your hearts connect, <font \
+    color=\"#ffd200\">$item:30001182$</font> will appear as proof!\nTake $item:30001182$ to <font \
+    color=\"#ffd200\">$npcName:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>\nand you can buy \
+    some fun items. Good luck!"
+set key[id=726145417003969] name "Hello~ What can I do for you?"
+set key[id=726145417003970] name "I love you."
+set key[id=726145417003971] name "Oh my. Thank you for the confession, but I can't accept it.\nI'm just too busy \
+    to have time~"
+set key[id=726145417003972] name "I just meant that I like you."
+set key[id=726145417003973] name "(Look sad.)"
+set key[id=726145417003974] name "Hehe, all right. Let's greet each other warmly when we cross paths.\nI love \
+    everyone who comes to $map:02000001$, after all."
+set key[id=726145417003975] name "Something feels off, but okay."
+set key[id=726145417003976] name "Oh my... $MyPCName$, are you crying? \nCrying because you didn't get an answer \
+    you liked makes you a loser. "
+set key[id=726145417003977] name "I'm not a loser!"
+set key[id=726145417003978] name "Then accept my feelings!"
+set key[id=726145417003979] name "Come on~ You have to pick your battles.\nWhen something isn't going to work, \
+    it's best to give up quickly, $MyPCName$~"
+set key[id=726145417003980] name "(Stop making a fool of myself and back off.)"
+set key[id=726145417003981] name "(Cling on just one more time.)"
+set key[id=726145417003982] name "Hehe. All right.\nI love everyone who comes to $map:02000001$."
+set key[id=726145417003983] name "Got it."
+set key[id=726145417003984] name "<font color=\"#ffd200\">$npc:11000160[gender:1]$</font> gives a little wink and \
+    smiles.\nIt seems you've connected with her...!"
+set key[id=726145417003985] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417003986] name "A brave confession of love can sometimes create a miracle.\nWhy don't you try \
+    being the star of that miracle, $MyPCName$?"
+set key[id=726145417003987] name "That's a great idea!"
+set key[id=726145417003988] name "No, thanks."
+set key[id=726145417003989] name "Great! Right now, go to <font color=\"#ffd200\">$map:02000124$</font> and tell \
+    <font color=\"#ffd200\">$npc:11000514[gender:1]$</font>\nhow you feel, and make a miracle happen.\nIf your \
+    hearts connect, <font color=\"#ffd200\">$item:30001182$</font> will appear as proof!"
+set key[id=726145417003990] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you can buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003991] name "I refuse your refusal! Right now, go to <font \
+    color=\"#ffd200\">$map:02000124$</font> and tell <font color=\"#ffd200\">$npc:11000514[gender:1]$</font>\nhow \
+    you feel, and make a miracle happen.\nIf your hearts connect, <font color=\"#ffd200\">$item:30001182$</font> \
+    will appear as proof!"
+set key[id=726145417003992] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you can buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417003993] name "Tell <font color=\"#ffd200\">$npc:11000514[gender:1]$</font> in <font \
+    color=\"#ffd200\">$map:02000124$</font> how you feel.\nIf your hearts connect, <font \
+    color=\"#ffd200\">$item:30001182$</font> will appear as proof!\nTake $item:30001182$ to <font \
+    color=\"#ffd200\">$npcName:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>\nand you can buy \
+    some fun items. Good luck!"
+set key[id=726145417003994] name "What's this, a new prisoner?"
+set key[id=726145417003995] name "I'm scared, but... I love you."
+set key[id=726145417003996] name "Don't you smell something burning somewhere?"
+set key[id=726145417003997] name "You're pulling some really original tricks, aren't you? \nFor a prisoner... "
+set key[id=726145417003998] name "I'm not a prisoner."
+set key[id=726145417003999] name "Even prisoners can love!"
+set key[id=726145417004000] name "Oh? So you weren't a prisoner?\nBut be careful. Anyone can become a prisoner if \
+    they do wrong.\nIf you meet me as a prisoner... it'll be very tiring for you."
+set key[id=726145417004001] name "I'll keep that in mind."
+set key[id=726145417004002] name "Good. Anyone who can talk sense is welcome any time.\nFor sightseeing, or for \
+    imprisonment."
+set key[id=726145417004003] name "(Nod.)"
+set key[id=726145417004004] name "A burning smell...? Hey. What nonsense is that. \nWe don't run an incinerator. "
+set key[id=726145417004005] name "My heart is burning."
+set key[id=726145417004007] name "Hey, guard. Throw this one in solitary!\nPrisoner number 201507..."
+set key[id=726145417004008] name "That's unfair!"
+set key[id=726145417004009] name "Unfair? Un~fair~? You committed a crime, so you deserve to be locked up!\nIf \
+    recklessly punning in this sacred place of correction isn't a crime, what is?!"
+set key[id=726145417004010] name "I'm sorry."
+set key[id=726145417004011] name "Never talk such nonsense again. Understood?\nI can make you feel your bones and \
+    flesh burning away!"
+set key[id=726145417004012] name "I'll keep that in mind."
+set key[id=726145417004013] name "<font color=\"#ffd200\">$npc:11000514[gender:1]$</font> strokes the whip in her \
+    hand and smiles.\nIt seems you've connected with her...!"
+set key[id=726145417004014] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417004015] name "A brave confession of love can sometimes create a miracle.\nWhy don't you try \
+    being the star of that miracle, $MyPCName$?"
+set key[id=726145417004016] name "That's a great idea!"
+set key[id=726145417004017] name "No, thanks."
+set key[id=726145417004018] name "Great! Right now, go to <font color=\"#ffd200\">$map:02000216$</font> and tell \
+    <font color=\"#ffd200\">$npc:11000515[gender:1]$</font>\nhow you feel, and make a miracle happen.\nIf your \
+    hearts connect, <font color=\"#ffd200\">$item:30001182$</font> will appear as proof!"
+set key[id=726145417004019] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417004020] name "I refuse your refusal! Right now, go to <font \
+    color=\"#ffd200\">$map:02000216$</font> and tell <font color=\"#ffd200\">$npc:11000515[gender:1]$</font>\nhow \
+    you feel, and make a miracle happen.\nIf your hearts connect, <font color=\"#ffd200\">$item:30001182$</font> \
+    will appear as proof!"
+set key[id=726145417004021] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417004022] name "Tell <font color=\"#ffd200\">$npc:11000515[gender:1]$</font> in <font \
+    color=\"#ffd200\">$map:02000216$</font> how you feel.\nIf your hearts connect, <font \
+    color=\"#ffd200\">$item:30001182$</font> will appear as proof!\nTake $item:30001182$ to <font \
+    color=\"#ffd200\">$npcName:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>\nand you can buy \
+    some fun items. Good luck!"
+set key[id=726145417004023] name "Who are you?"
+set key[id=726145417004024] name "I love you."
+set key[id=726145417004025] name "Don't you smell something burning somewhere?"
+set key[id=726145417004026] name "Hehehe. What a romantic.\nBut there's no such thing as a free lunch. Especially \
+    here at the Black Market."
+set key[id=726145417004027] name "How much will it take?"
+set key[id=726145417004028] name "Love is eternal, wherever you are."
+set key[id=726145417004029] name "Hmm...? The most interesting thing you've said so far.\nDo you have some wealth \
+    put away? \nWith the mesos you're carrying now, it doesn't look possible."
+set key[id=726145417004030] name "I have a little."
+set key[id=726145417004031] name "(I see bodyguards. I'd better apologize and get out fast.)"
+set key[id=726145417004032] name "A little... is it. That's not enough. \nTo come on to me, <font \
+    color=\"#ffd200\">$npc:11000515[gender:1]$</font>, you'd have to be able to bring me a royal palace."
+set key[id=726145417004033] name "I'll work hard and earn more from now on."
+set key[id=726145417004034] name "(Apologize and hurry out.)"
+set key[id=726145417004035] name "Romance and spirit both. Good, that's what it takes.\nI, <font \
+    color=\"#ffd200\">$npc:11000515[gender:1]$</font>, really hate being looked down on.\nBut I have no need for \
+    your heart right now."
+set key[id=726145417004036] name "My heart is burning for you."
+set key[id=726145417004037] name "Oh dear. A burning heart is serious. Put it out quickly.\nOh, and if you need \
+    firefighters, just say so.\nThis is the Black Market, so as long as you have mesos, you can get anything \
+    done."
+set key[id=726145417004038] name "(...Scary. I apologize and hurry out.)"
+set key[id=726145417004039] name "Hehe, come back any time if you need something.\nA light heart and a heavy \
+    wallet."
+set key[id=726145417004040] name "(Nod.)"
+set key[id=726145417004041] name "<font color=\"#ffd200\">$npc:11000515[gender:1]$</font> curls her lips into a \
+    grin.\nHave you connected with her...?"
+set key[id=726145417004042] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417004043] name "A brave confession of love can sometimes create a miracle.\nWhy don't you try \
+    being the star of that miracle, $MyPCName$?"
+set key[id=726145417004044] name "That's a great idea!"
+set key[id=726145417004045] name "No, thanks."
+set key[id=726145417004046] name "Great! Right now, go tell <font \
+    color=\"#ffd200\">$npc:11000015[gender:1]$</font> in <font color=\"#ffd200\">$map:02000076$</font>\nhow you \
+    feel, and make a miracle happen.\nIf your hearts connect, you'll get <font \
+    color=\"#ffd200\">$item:30001182$</font> as proof!"
+set key[id=726145417004047] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417004048] name "I refuse your refusal! Right now, go tell <font \
+    color=\"#ffd200\">$npc:11000015[gender:1]$</font> in <font color=\"#ffd200\">$map:02000076$</font>\nhow you \
+    feel, and make a miracle happen.\nIf your hearts connect, you'll get <font \
+    color=\"#ffd200\">$item:30001182$</font> as proof!"
+set key[id=726145417004049] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417004050] name "Tell <font color=\"#ffd200\">$npc:11000015[gender:1]$</font> in <font \
+    color=\"#ffd200\">$map:02000076$</font> how you feel.\nIf your hearts connect, you'll get <font \
+    color=\"#ffd200\">$item:30001182$</font> as proof!\nIf you take $item:30001182$ to <font \
+    color=\"#ffd200\">$npcName:11004101$</font> in <font color=\"#ffd200\">$map:63000062$</font>,\nyou can buy \
+    some fun items. Good luck!"
+set key[id=726145417004051] name "Did you want to say something to me?"
+set key[id=726145417004052] name "I love you."
+set key[id=726145417004053] name "(Flatter him: so cool, so good with a bow, the strongest in the universe.)"
+set key[id=726145417004054] name "Oh, yes. Thank you."
+set key[id=726145417004055] name "(Flatter him: so cool, so good with a bow, the strongest in the universe.)"
+set key[id=726145417004056] name "Please accept my love."
+set key[id=726145417004057] name "That's... too kind of you. \nI'm only doing my <font \
+    color=\"#ffd200\">best</font> every day as a member of the <font color=\"#ffd200\">vigilantes</font>."
+set key[id=726145417004058] name "I'd like to join your fan club."
+set key[id=726145417004059] name "Ah, that's... it may be a bit of a hassle,\nbut please get <font \
+    color=\"#ffd200\">permission</font> from <font color=\"#ffd200\">$npcName:11000547[gender:1]$</font> first."
+set key[id=726145417004060] name "What on earth are you talking about?"
+set key[id=726145417004061] name "$npcName:11000547[gender:1]$ asked me, as a <font color=\"#ffd200\">heartfelt \
+    wish</font>, to hear her out for <font color=\"#ffd200\">one month</font>.\nIf anyone confesses to me this \
+    month or says they want to join my fan club,\nshe asked me to <font color=\"#ffd200\">send them to her \
+    first</font>. "
+set key[id=726145417004062] name "I made a <font color=\"#ffd200\">promise</font>... so I have to keep it. \nIt's \
+    a favor I'm able to grant. "
+set key[id=726145417004063] name "(It doesn't look like this month will work. Step back.)"
+set key[id=726145417004064] name "Yes, thank you for understanding."
+set key[id=726145417004065] name "Sure."
+set key[id=726145417004066] name "(<font color=\"#ffd200\">$npc:11000015[gender:1]$</font> smiles gently.\nHave we \
+    connected...?)"
+set key[id=726145417004067] name "Hello, $MyPCName$! \nHave you heard about the heartbreaking couple in \
+    $map:63000062$?\nThe only way for them to meet is to wait for the <font color=\"#ffd200\">seventh moonlit \
+    night</font>...\nTo make that amazing miracle happen, shall we fill this world with love?"
+set key[id=726145417004068] name "Love connections are felt even among many people... \nHow about looking for your \
+    destined one in a place full of people?\nJoin <font color=\"#ffd200\">the event hosted by \
+    $npc:11001899[gender:0]$</font> and come back, and I'll give you <font \
+    color=\"#ffd200\">$item:30001182$</font>."
+set key[id=726145417004069] name "Sure."
+set key[id=726145417004070] name "What's the event hosted by <font \
+    color=\"#ffd200\">$npc:11001899[gender:0]$</font>?"
+set key[id=726145417004071] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417004072] name "They're <font color=\"#ffd200\">$map:61000001$, $map:61000002$, $map:61000007$, \
+    $map:61000006$, \n$map:61000004$, $map:61000003$, $map:61000008$</font>!\n$npc:11001899[gender:0]$ works very \
+    hard on these events every day!\nWhen it's time, a join message will pop up at the bottom of the screen!"
+set key[id=726145417004073] name "Take <font color=\"#ffd200\">$item:30001182$</font> to $npc:11004101$ in \
+    $map:63000062$,\nand you should be able to buy some fun items.\nGood luck, $MyPCName$!"
+set key[id=726145417004074] name "How about looking for your destined one in a place full of people?\nJoin <font \
+    color=\"#ffd200\">the event hosted by $npc:11001899[gender:0]$</font> and I'll give you <font \
+    color=\"#ffd200\">$item:30001182$</font>.\nIf you take <font color=\"#ffd200\">$item:30001182$</font> to \
+    $npc:11004101$ in $map:63000062$,\nyou can buy some fun items!"
+set key[id=726145417004075] name "Thanks to you, $MyPCName$, it feels like there's a little more love in this \
+    world!\nGood work today, too!"
+set key[id=726145417004144] name "Greetings, $MyPCName$.\nI hear you're going to help $npc:11004099[gender:0]$ and \
+    $npc:11004100[gender:1]$? \nYou don't walk past other people's suffering. You really are a kind soul.\n"
+set key[id=726145417004145] name "Helping kind people is a trait of us magpies, you might say. Ahem.\nCarry out \
+    the task I give you and come back, and I'll give you <font color=\"#ffd200\">$item:30001182$</font>.\nI'll \
+    give you plenty of time, so enjoy the scenery of $map:63000062$ as you go."
+set key[id=726145417004146] name "This week's task is... \n<font color=\"#ffd200\">Complete the Love Dance Party \
+    10 times</font>.\nYou know how it's done, don't you? "
+set key[id=726145417004147] name "Yes, I know."
+set key[id=726145417004148] name "I don't. Could you explain it?"
+set key[id=726145417004149] name "The <font color=\"#ffd200\">'Love Dance Party'</font> can only be held right \
+    here in <font color=\"#ffd200\">$map:63000062$</font>,\nso don't go off anywhere else by mistake!\nYou have \
+    until the seventh moon rises, so take your time~"
+set key[id=726145417004150] name "Tap the <font color=\"#ffd200\">'Adventure'</font> icon at the bottom of the \
+    screen. The <font color=\"#ffd200\">'Love Dance Party'</font> menu is at the top.\nPress the <font \
+    color=\"#ffd200\">Request Couple Dance</font> button there and wait for a dance partner. \nWhen your partner \
+    arrives, just dance together. Pretty easy, huh?\n"
+set key[id=726145417004151] name "The <font color=\"#ffd200\">'Love Dance Party'</font> can only be held right \
+    here in <font color=\"#ffd200\">$map:63000062$</font>,\nso don't go off anywhere else.\nYou have until the \
+    seventh moon rises, so take your time~"
+set key[id=726145417004152] name "This week's task is <font color=\"#ffd200\">Complete the Love Dance Party 10 \
+    times</font>.\nThe <font color=\"#ffd200\">'Love Dance Party'</font> can only be held right here in <font \
+    color=\"#ffd200\">$map:63000062$</font>,\nso don't go off anywhere else, and be sure to do it right here~"
+set key[id=726145417004153] name "It was a joy to watch you dance so hard. Here, the gift I promised. \nLook \
+    forward to my task next week, too."
+set key[id=726145417004154] name "Greetings, $MyPCName$.\nI, the <font color=\"#ffd200\">kind magpie</font>, have \
+    prepared a <font color=\"#ffd200\">task</font> for kind people again this week.\nAre you ready for my gift \
+    again this week? \n"
+set key[id=726145417004155] name "<font color=\"#ffd200\">$map:63000062$</font> is a place where mysterious water \
+    flows, so it's wonderful for <font color=\"#ffd200\">fishing</font>.\nWhat's more, there are <font \
+    color=\"#ffd200\">extraordinary fish</font> that live only here.\nHow about enjoying some fishing here and \
+    having a special experience?"
+set key[id=726145417004156] name "This week's task is... \n<font color=\"#ffd200\">Reel in 7 Big Catches</font> in \
+    <font color=\"#ffd200\">$map:63000062$</font>, and catch\n<font color=\"#ffd200\">10 Zappy Heart Rays</font> \
+    and <font color=\"#ffd200\">3 Flowerpath Axolotls</font>."
+set key[id=726145417004157] name "Go <font color=\"#ffd200\">fishing</font> in <font \
+    color=\"#ffd200\">$map:63000062$</font> and meet some <font color=\"#ffd200\">special fish</font>, too.\nWhen \
+    you finish this task, I'll give you plenty of <font color=\"#ffd200\">$item:30001182$</font>.\nYou have until \
+    the seventh moon rises, so take your time~"
+set key[id=726145417004158] name "This week's task is to <font color=\"#ffd200\">Reel in 7 Big Catches</font> in \
+    <font color=\"#ffd200\">$map:63000062$</font>, and catch\n<font color=\"#ffd200\">10 Zappy Heart Rays</font> \
+    and <font color=\"#ffd200\">3 Flowerpath Axolotls</font>.\nDon't go off anywhere else, and be sure to do it \
+    right here~"
+set key[id=726145417004159] name "It was a joy to watch you fish so hard. Here, the gift I promised. \nLook \
+    forward to my task next week, too."
+set key[id=726145417004160] name "Greetings, $MyPCName$.\nI, the <font color=\"#ffd200\">kind magpie</font>, have \
+    prepared a <font color=\"#ffd200\">task</font> for kind people again this week.\nAre you ready for my gift \
+    again this week? \n"
+set key[id=726145417004161] name "$map:63000062$... isn't it truly beautiful? \nA beautiful place shines even \
+    brighter when there's beautiful music.\nWon't you fill this lovely place with the melody of love?"
+set key[id=726145417004162] name "This week's task is... \n<font color=\"#ffd200\">Perform for 30 minutes in \
+    $map:63000062$</font>, and\n<font color=\"#ffd200\">Play in an ensemble 7 times in $map:63000062$</font>."
+set key[id=726145417004163] name "Work together with others to keep music flowing in <font \
+    color=\"#ffd200\">$map:63000062$</font>.\nWhen you finish this task, I'll give you plenty of <font \
+    color=\"#ffd200\">$item:30001182$</font>.\nYou have until the seventh moon rises, so take your time~"
+set key[id=726145417004164] name "This week's task is <font color=\"#ffd200\">Perform for 30 minutes in \
+    $map:63000062$</font>, and\n<font color=\"#ffd200\">Play in an ensemble 7 times in \
+    $map:63000062$</font>.\nDon't go off anywhere else, and be sure to do it right here~"
+set key[id=726145417004165] name "You worked hard, and it was wonderful to see. Here is my last gift. \nAnything \
+    of mine that catches your eye, I'll trade for these <font color=\"#ffd200\">$item:30001182$</font>."
+set key[id=726145417004171] name "Hee hee~ $MyPCName$! We meet again!\nThanks to you, the bridge to the <font \
+    color=\"#ffd200\">Island of Love</font> is complete!\nI really praise your efforts!"
+set key[id=726145417004172] name "But this island can only be open for <font color=\"#ffd200\">just one \
+    day</font>.\nOf course I feel for $npcName:11004099[gender:0]$ and $npcName:11004100[gender:1]$, who'll be \
+    parted again tomorrow,\nbut <font color=\"#ffd200\">$MyPCName$</font>, who worked so hard to fill the world \
+    with love, must feel awful too..."
+set key[id=726145417004173] name "So I've prepared a little gift. Love doubles when you share it!\n<font \
+    color=\"#ffd200\">Complete</font> the <font color=\"#ffd200\">Love Dance Party 3 times</font> and come back to \
+    me. \nI'll be waiting with a <font color=\"#ffd200\">gift</font> that'll surprise you."
+set key[id=726145417004174] name "<font color=\"#ffd200\">Complete</font> the <font color=\"#ffd200\">Love Dance \
+    Party 3 times</font> and come back to me. \nI'll be waiting with a <font color=\"#ffd200\">gift</font> that'll \
+    surprise you."
+set key[id=726145417004175] name "This time I'll give you the headband $npcName:11004099[gender:0]$ and \
+    $npcName:11004100[gender:1]$ wore on their date.\nIf you wear it with someone precious, it'll make a lovely \
+    <font color=\"#ffd200\">couple item</font>!\nCome find me again <font color=\"#ffd200\">next week</font> when \
+    this place opens!"
+set key[id=726145417004176] name "Hee hee~ This week, too, the bridge to the <font color=\"#ffd200\">Island of \
+    Love</font> is complete!\nAnd thanks to you, some truly <font color=\"#ffd200\">amazing news</font> has come \
+    in!\nI'm so glad I get to be the one to tell you!"
+set key[id=726145417004177] name "The Island of Love isn't really a place that opens easily. \n$MyPCName$, you \
+    gathered the world's love here and made a <font color=\"#ffd200\">miracle</font>.\nOf course, \
+    $npcName:11004099[gender:0]$ and $npcName:11004100[gender:1]$'s <font color=\"#ffd200\">longing for each \
+    other</font> was very strong, too."
+set key[id=726145417004178] name "Anyway, the stars who saw this miracle decided to forgive \
+    $npcName:11004099[gender:0]$ and $npcName:11004100[gender:1]$.\nBut to keep the <font \
+    color=\"#ffd200\">moon</font> from growing too bright with the power of love, \nthey say this place will be \
+    <font color=\"#ffd200\">closed</font> so that no one can enter. "
+set key[id=726145417004179] name "So now we have to say goodbye to this place, too.\nWhile I wrap the last gift \
+    for you who made the miracle,\ncould you <font color=\"#ffd200\">complete</font> the <font \
+    color=\"#ffd200\">Love Dance Party 3 times</font>?\nI'll be waiting here."
+set key[id=726145417004180] name "While I wrap the last gift for you who made the miracle,\ncould you <font \
+    color=\"#ffd200\">complete</font> the <font color=\"#ffd200\">Love Dance Party 3 times</font>?\nI'll be \
+    waiting here."
+set key[id=726145417004181] name "Today is the <font color=\"#ffd200\">last</font> time I'll get to see you dance \
+    here.\nBut I'll be anywhere there's <font color=\"#ffd200\">love</font>,\nand if you're there, we'll meet \
+    again.\nBecause a <font color=\"#ffd200\">goodbye</font> isn't a farewell forever, it's a <font \
+    color=\"#ffd200\">promise to meet again</font>."
+set key[id=726145417004182] name "Here. It's a pretty <font color=\"#ffd200\">couple tee</font> that \
+    $npcName:11004099[gender:0]$ and $npcName:11004100[gender:1]$ designed themselves.\nTry wearing it with <font \
+    color=\"#ffd200\">your other half</font>, who'll share a love lovelier than $npcName:11004099[gender:0]$ and \
+    $npcName:11004100[gender:1]$!"
+set key[id=810164114002942] name "$MyPCName$! \nTake on the Barbosa weekly mission!\nThe Barbosa weekly mission \
+    can be completed only once a week, and when you finish it \nI'll give you 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> as a reward!"
+set key[id=810164114002943] name "The Barbosa weekly mission is\n<font color=\"#ffd200\">to defeat 5 field bosses \
+    or adventure dungeon bosses and complete today's mission 10 times</font>!\nComplete the mission and be sure to \
+    collect your <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=810164114002944] name "The Barbosa weekly mission is\n<font color=\"#ffd200\">to defeat 5 field bosses \
+    or adventure dungeon bosses and complete today's mission 10 times</font>!\nComplete the mission and be sure to \
+    collect your <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=810164114002945] name "You cleared this week's Barbosa weekly mission!\nHere are the 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised.\nA weekly mission that gives you 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> at once! \nIf you're aiming for a high-tier key, you can't afford to \
+    miss the weekly mission, right?"
+set key[id=810164114002946] name "$MyPCName$! \nTake on the Barbosa weekly mission!\nThe Barbosa weekly mission \
+    can be completed only once a week, and when you finish it \nI'll give you 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> as a reward!"
+set key[id=810164114002947] name "The Barbosa weekly mission is\n<font color=\"#ffd200\">to defeat 5 field bosses \
+    or adventure dungeon bosses and complete today's mission 10 times</font>!\nComplete the mission and be sure to \
+    collect your <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=810164114002948] name "The Barbosa weekly mission is\n<font color=\"#ffd200\">to defeat 5 field bosses \
+    or adventure dungeon bosses and complete today's mission 10 times</font>!\nComplete the mission and be sure to \
+    collect your <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=810164114002949] name "You cleared this week's Barbosa weekly mission!\nHere are the 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised.\nA weekly mission that gives you 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> at once! \nIf you're aiming for a high-tier key, you can't afford to \
+    miss the weekly mission, right?"
+set key[id=810164114002950] name "$MyPCName$! \nTake on the Barbosa weekly mission!\nThe Barbosa weekly mission \
+    can be completed only once a week, and when you finish it \nI'll give you 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> as a reward!"
+set key[id=810164114002951] name "The Barbosa weekly mission is\n<font color=\"#ffd200\">to defeat 5 field bosses \
+    or adventure dungeon bosses and complete today's mission 10 times</font>!\nComplete the mission and be sure to \
+    collect your <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=810164114002952] name "The Barbosa weekly mission is\n<font color=\"#ffd200\">to defeat 5 field bosses \
+    or adventure dungeon bosses and complete today's mission 10 times</font>!\nComplete the mission and be sure to \
+    collect your <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=810164114002953] name "You cleared this week's Barbosa weekly mission!\nHere are the 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised.\nA weekly mission that gives you 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> at once! \nIf you're aiming for a high-tier key, you can't afford to \
+    miss the weekly mission, right?"
+set key[id=816175514002874] name "$MyPCName$! \nTake on the Barbosa weekly mission!\nThe Barbosa weekly mission \
+    can be completed only once a week, and when you finish it \nI'll give you 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> as a reward!"
+set key[id=816175514002875] name "The Barbosa weekly mission is\n<font color=\"#ffd200\">to defeat 5 field bosses \
+    or adventure dungeon bosses and complete today's mission 10 times</font>!\nComplete the mission and be sure to \
+    collect your <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=816175514002876] name "The Barbosa weekly mission is\n<font color=\"#ffd200\">to defeat 5 field bosses \
+    or adventure dungeon bosses and complete today's mission 10 times</font>!\nComplete the mission and be sure to \
+    collect your <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=816175514002877] name "You cleared this week's Barbosa weekly mission!\nHere are the 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised.\nA weekly mission that gives you 30 <font \
+    color=\"#ffd200\">$item:30000881$</font> at once! \nIf you're aiming for a high-tier key, you can't afford to \
+    miss the weekly mission, right?"
+set key[id=1012144117004246] name "$MyPCName$, $MyPCName$!\nDo you know about a creature called $npc:50400309$? \
+    $npc:50400309$ is a little demon who loves pumpkins.\nThere's a rumor that a little demon who came to the \
+    human world to play tricks on Halloween loved pumpkins so much that it turned pumpkin-shaped!"
+set key[id=1012144117004247] name "A demon shaped like a pumpkin, does such a thing really exist, you ask?\nHee \
+    hee, actually I found a cute $npc:50400309$ not long ago, so if you're interested, how about taking it in and \
+    raising it, $MyPCName$?"
+set key[id=1012144117004248] name "They say $npc:50400309$ loves pumpkin pie made from moist, sweet \
+    pumpkins.\nDepending on how long you spend in Maple World, you can receive up to 5 $item:20302004$ every day, \
+    so it shouldn't be hard to get.\nAnd if you play with $npc:50400309$ at other people's homes, you can get up \
+    to 3 more $item:20302004$ every day."
+set key[id=1012144117004249] name "Here, I'll give you $item:50400309$, so please set it up in your home and raise \
+    $npc:50400309$. \nHee hee, it may look like a demon, but it's cute, so it won't do any harm.\nJust be aware \
+    that it's so~ cute that your heart might ache, $MyPCName$!"
+set key[id=1012144117004250] name "Now try setting up $item:50400309$ in your home.\nIt's a tiny little demon, but \
+    with your love, $MyPCName$, it might grow big and strong!"
+set key[id=1012144117004251] name "Hurry and set up $item:50400309$ in your home.\n$npc:50400309$ will welcome \
+    you, $MyPCName$."
+set key[id=1012144117004252] name "Here's some $item:20302004$ that $npc:50400309$ likes. Feed $npc:50400309$ and \
+    help it grow.\nAnd don't forget that you can get up to 3 more $item:20302004$ a day by playing with \
+    $npc:50400309$ at other people's homes, and up to 5 a day depending on your play time!"
+set key[id=1106130917004253] name "$MyPCName$, it's terrible! The turkeys who are fated to end up on adventurers' \
+    tables every Thanksgiving couldn't take it anymore, and they've raided Maple World to ruin Thanksgiving! An \
+    ordinary turkey is just a pretty little bird, but for some reason the $npc:27000051$ that showed up in \
+    $map:02000092$ is said to be enormous and violent!"
+set key[id=1106130917004254] name "Rumor has it that $npc:27000051$ appears in $map:02000092$ on the hour, every \
+    hour. Please defeat $npc:27000051$, $MyPCName$, so it can't hurt the residents of Maple World!"
+set key[id=1106130917004255] name "Rumor has it that $npc:27000051$ appears in $map:02000092$ on the hour, every \
+    hour. Please defeat $npc:27000051$, $MyPCName$, so it can't hurt the residents of Maple World!"
+set key[id=1106130917004256] name "$MyPCName$, you took care of $npc:27000051$! On behalf of the residents of \
+    Maple World, I'll give you a tasty $item:20001130$ as thanks!"
+set key[id=1106130917004257] name "Rumor has it that the $npc:27000051$ sighted day after day in $map:02000092$ is \
+    a delicacy beyond any ordinary turkey! Maybe that's why some people are even buying $npc:27000051$ in bulk to \
+    hold a grand Thanksgiving party."
+set key[id=1106130917004258] name "This Thanksgiving season, I'd like to serve my guests dishes made from \
+    $npc:27000051$ too, but as you know, I have so many guests that I don't think the party will be over in a \
+    single day! For a successful Thanksgiving party, could you catch fresh $npc:27000051$ for ten days, \
+    $MyPCName$?"
+set key[id=1106130917004259] name "This Thanksgiving season, I'd like to serve my guests dishes made from \
+    $npc:27000051$ too, but as you know, I have so many guests that I don't think the party will be over in a \
+    single day! For a successful Thanksgiving party, could you catch fresh $npc:27000051$ for ten days, \
+    $MyPCName$?"
+set key[id=1106130917004260] name "Thanks to you, $MyPCName$, I was able to prepare lots of delicious turkey \
+    dishes. This is a gift from me to thank you!"
+set key[id=1107202514001395] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107202514001396] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107202514001397] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107202514001398] name "How was it? Your body feels a lot more relaxed, doesn't it?"
+set key[id=1107202514001399] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107202514001400] name "Here's today's Fantastic Mission!\nTake on the various <font \
+    color=\"#ffd200\">solo dungeons</font> around Maple World!"
+set key[id=1107202514001401] name "Here's today's Fantastic Mission!\nTake on the various <font \
+    color=\"#ffd200\">solo dungeons</font> around Maple World!"
+set key[id=1107202514001402] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107202514001403] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107202514001404] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107202514001405] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107202514001406] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107202514001407] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001408] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001409] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107213414001410] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107213414001411] name "How was it? Your body feels a lot more relaxed, doesn't it?"
+set key[id=1107213414001412] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001413] name "Here's today's Fantastic Mission!\nJoin in the <font color=\"#ffd200\">various \
+    events MC Kay has prepared</font>!"
+set key[id=1107213414001414] name "Here's today's Fantastic Mission!\nJoin in the <font color=\"#ffd200\">various \
+    events MC Kay has prepared</font>!"
+set key[id=1107213414001415] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001416] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001417] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001418] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001419] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001420] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001421] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001422] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107213414001423] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107213414001424] name "How was it? Your body feels a lot more relaxed, doesn't it?"
+set key[id=1107213414001425] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001426] name "Here's today's Fantastic Mission!\nTake on the <font color=\"#ffd200\">field \
+    bosses of Maple World</font>!"
+set key[id=1107213414001427] name "The field bosses of Maple World are\n<font \
+    color=\"#ffd200\">$npcName:23000013[gender:0]$, $npcName:23000018$, $npcName:23000001[gender:0]$, \
+    $npcName:23000019[gender:0]$, $npcName:23000054$, $npcName:23000020[gender:1]$, $npcName:23000035$, \
+    \n$npcName:23000099$, $npcName:23000017$, $npcName:23000047$, $npcName:23000024[gender:1]$, \
+    $npcName:23000034$, $npcName:23000045$,\n$npcName:23000057[gender:1]$, $npcName:23000026[gender:1]$, \
+    $npcName:23000012$, $npcName:23000009[gender:0]$, $npcName:23000029$</font>!"
+set key[id=1107213414001428] name "Here's today's Fantastic Mission!\nTake on the <font color=\"#ffd200\">field \
+    bosses of Maple World</font>!"
+set key[id=1107213414001429] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001430] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001431] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001432] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001433] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001434] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001435] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001436] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001437] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001438] name "How was it? Your body feels a lot lighter, doesn't it?"
+set key[id=1107213414001439] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001440] name "Here's today's Fantastic Mission!\nTake on the various <font \
+    color=\"#ffd200\">solo dungeons</font> around Maple World!"
+set key[id=1107213414001441] name "Here's today's Fantastic Mission!\nTake on the various <font \
+    color=\"#ffd200\">solo dungeons</font> around Maple World!"
+set key[id=1107213414001442] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001443] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001444] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001445] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001446] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001447] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001448] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001449] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001450] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001451] name "How was it? Your body feels a lot lighter, doesn't it?"
+set key[id=1107213414001452] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001453] name "Here's today's Fantastic Mission!\nJoin in the <font color=\"#ffd200\">various \
+    events MC Kay has prepared</font>!"
+set key[id=1107213414001454] name "Here's today's Fantastic Mission!\nJoin in the <font color=\"#ffd200\">various \
+    events MC Kay has prepared</font>!"
+set key[id=1107213414001455] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001456] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001457] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001458] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001459] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001460] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001461] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001462] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001463] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001464] name "How was it? Your body feels a lot lighter, doesn't it?"
+set key[id=1107213414001465] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001466] name "Here's today's Fantastic Mission!\nTake on the <font color=\"#ffd200\">field \
+    bosses of Maple World</font>!"
+set key[id=1107213414001467] name "The field bosses of Maple World are\n<font \
+    color=\"#ffd200\">$npcName:23000013[gender:0]$, $npcName:23000018$, $npcName:23000001[gender:0]$, \
+    $npcName:23000019[gender:0]$, $npcName:23000054$, $npcName:23000020[gender:1]$, $npcName:23000035$, \
+    \n$npcName:23000099$, $npcName:23000017$, $npcName:23000047$, $npcName:23000024[gender:1]$, \
+    $npcName:23000034$, $npcName:23000045$,\n$npcName:23000057[gender:1]$, $npcName:23000026[gender:1]$, \
+    $npcName:23000012$, $npcName:23000009[gender:0]$, $npcName:23000029$</font>!"
+set key[id=1107213414001468] name "Here's today's Fantastic Mission!\nTake on the <font color=\"#ffd200\">field \
+    bosses of Maple World</font>!"
+set key[id=1107213414001469] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001470] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001471] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001472] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001473] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001474] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001475] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001476] name "Today's Fantastic Warm-Up Mission is <font color=\"#ffd200\">Using the \
+    $item:50400096$</font>.\nLimber up on the treadmill, then move on to the next mission!\nIf you don't have a \
+    $item:50400096$, visit another adventurer's home!\nIt'd be nice to leave a thank-you message after your visit, \
+    too, right?"
+set key[id=1107213414001477] name "Today's Fantastic Warm-Up Mission is <font color=\"#ffd200\">Using the \
+    $item:50400096$</font>.\nLimber up on the treadmill, then move on to the next mission!\nIf you don't have a \
+    $item:50400096$, visit another adventurer's home!\nIt'd be nice to leave a thank-you message after your visit, \
+    too, right?"
+set key[id=1107213414001478] name "How was it? You feel a lot better now, don't you?"
+set key[id=1107213414001479] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001480] name "Here's today's Fantastic Mission!\nTake on the various <font \
+    color=\"#ffd200\">solo dungeons</font> around Maple World!"
+set key[id=1107213414001481] name "Here's today's Fantastic Mission!\nTake on the various <font \
+    color=\"#ffd200\">solo dungeons</font> around Maple World!"
+set key[id=1107213414001482] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001483] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001484] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001485] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001486] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001487] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001488] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001489] name "Today's Fantastic Warm-Up Mission is <font color=\"#ffd200\">Using the \
+    $item:50400096$</font>.\nLimber up on the treadmill, then move on to the next mission!\nIf you don't have a \
+    $item:50400096$, visit another adventurer's home!\nIt'd be nice to leave a thank-you message after your visit, \
+    too, right?"
+set key[id=1107213414001490] name "Today's Fantastic Warm-Up Mission is <font color=\"#ffd200\">Using the \
+    $item:50400096$</font>.\nLimber up on the treadmill, then move on to the next mission!\nIf you don't have a \
+    $item:50400096$, visit another adventurer's home!\nIt'd be nice to leave a thank-you message after your visit, \
+    too, right?"
+set key[id=1107213414001491] name "How was it? You feel a lot better now, don't you?"
+set key[id=1107213414001492] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001493] name "Here's today's Fantastic Mission!\nJoin in the <font color=\"#ffd200\">various \
+    events MC Kay has prepared</font>!"
+set key[id=1107213414001494] name "Here's today's Fantastic Mission!\nJoin in the <font color=\"#ffd200\">various \
+    events MC Kay has prepared</font>!"
+set key[id=1107213414001495] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001496] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001497] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001498] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001499] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001500] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001501] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001502] name "Today's Fantastic Warm-Up Mission is <font color=\"#ffd200\">Using the \
+    $item:50400096$</font>.\nLimber up on the treadmill, then move on to the next mission!\nIf you don't have a \
+    $item:50400096$, visit another adventurer's home!\nIt'd be nice to leave a thank-you message after your visit, \
+    too, right?"
+set key[id=1107213414001503] name "Today's Fantastic Warm-Up Mission is <font color=\"#ffd200\">Using the \
+    $item:50400096$</font>.\nLimber up on the treadmill, then move on to the next mission!\nIf you don't have a \
+    $item:50400096$, visit another adventurer's home!\nIt'd be nice to leave a thank-you message after your visit, \
+    too, right?"
+set key[id=1107213414001504] name "How was it? You feel a lot better now, don't you?"
+set key[id=1107213414001505] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001506] name "Here's today's Fantastic Mission!\nTake on the <font color=\"#ffd200\">field \
+    bosses of Maple World</font>!"
+set key[id=1107213414001507] name "The field bosses of Maple World are\n<font \
+    color=\"#ffd200\">$npcName:23000013[gender:0]$, $npcName:23000018$, $npcName:23000001[gender:0]$, \
+    $npcName:23000019[gender:0]$, $npcName:23000054$, $npcName:23000020[gender:1]$, $npcName:23000035$, \
+    \n$npcName:23000099$, $npcName:23000017$, $npcName:23000047$, $npcName:23000024[gender:1]$, \
+    $npcName:23000034$, $npcName:23000045$,\n$npcName:23000057[gender:1]$, $npcName:23000026[gender:1]$, \
+    $npcName:23000012$, $npcName:23000009[gender:0]$, $npcName:23000029$</font>!"
+set key[id=1107213414001508] name "Here's today's Fantastic Mission!\nTake on the <font color=\"#ffd200\">field \
+    bosses of Maple World</font>!"
+set key[id=1107213414001509] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001510] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001511] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001512] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001513] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001514] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001515] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001516] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107213414001517] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107213414001518] name "How was it? Your body feels a lot more relaxed, doesn't it?"
+set key[id=1107213414001519] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001520] name "Here's today's Fantastic Mission!\nTake on the various <font \
+    color=\"#ffd200\">solo dungeons</font> around Maple World!"
+set key[id=1107213414001521] name "Here's today's Fantastic Mission!\nTake on the various <font \
+    color=\"#ffd200\">solo dungeons</font> around Maple World!"
+set key[id=1107213414001522] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001523] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001524] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001525] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001526] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001527] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001528] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001529] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107213414001530] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107213414001531] name "How was it? Your body feels a lot more relaxed, doesn't it?"
+set key[id=1107213414001532] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001533] name "Here's today's Fantastic Mission!\nJoin in the <font color=\"#ffd200\">various \
+    events MC Kay has prepared</font>!"
+set key[id=1107213414001534] name "Here's today's Fantastic Mission!\nJoin in the <font color=\"#ffd200\">various \
+    events MC Kay has prepared</font>!"
+set key[id=1107213414001535] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001536] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001537] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001538] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001539] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001540] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001541] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001542] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107213414001543] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Running</font>.\nLimber up with a light run, then move on to the next mission!"
+set key[id=1107213414001544] name "How was it? Your body feels a lot more relaxed, doesn't it?"
+set key[id=1107213414001545] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001546] name "Here's today's Fantastic Mission!\nTake on the <font color=\"#ffd200\">field \
+    bosses of Maple World</font>!"
+set key[id=1107213414001547] name "The field bosses of Maple World are\n<font \
+    color=\"#ffd200\">$npcName:23000013[gender:0]$, $npcName:23000018$, $npcName:23000001[gender:0]$, \
+    $npcName:23000019[gender:0]$, $npcName:23000054$, $npcName:23000020[gender:1]$, $npcName:23000035$, \
+    \n$npcName:23000099$, $npcName:23000017$, $npcName:23000047$, $npcName:23000024[gender:1]$, \
+    $npcName:23000034$, $npcName:23000045$,\n$npcName:23000057[gender:1]$, $npcName:23000026[gender:1]$, \
+    $npcName:23000012$, $npcName:23000009[gender:0]$, $npcName:23000029$</font>!"
+set key[id=1107213414001548] name "Here's today's Fantastic Mission!\nTake on the <font color=\"#ffd200\">field \
+    bosses of Maple World</font>!"
+set key[id=1107213414001549] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001550] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001551] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001552] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001553] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001554] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001555] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001556] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001557] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001558] name "How was it? Your body feels a lot lighter, doesn't it?"
+set key[id=1107213414001559] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001560] name "Here's today's Fantastic Mission!\nTake on the various <font \
+    color=\"#ffd200\">solo dungeons</font> around Maple World!"
+set key[id=1107213414001561] name "Here's today's Fantastic Mission!\nTake on the various <font \
+    color=\"#ffd200\">solo dungeons</font> around Maple World!"
+set key[id=1107213414001562] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001563] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001564] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001565] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001566] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001567] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001568] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001569] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001570] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001571] name "How was it? Your body feels a lot lighter, doesn't it?"
+set key[id=1107213414001572] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001573] name "Here's today's Fantastic Mission!\nJoin in the <font color=\"#ffd200\">various \
+    events MC Kay has prepared</font>!"
+set key[id=1107213414001574] name "Here's today's Fantastic Mission!\nJoin in the <font color=\"#ffd200\">various \
+    events MC Kay has prepared</font>!"
+set key[id=1107213414001575] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001576] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001577] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001578] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001579] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001580] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1107213414001581] name "Hello, I'm $npc:11001002[gender:1]$!\nI've prepared a special event to help you \
+    level up in a fantastic way!\nJust complete a few missions with me, Ruby, and the gifts will come pouring \
+    in!\nIf you're ready, shall we begin?"
+set key[id=1107213414001582] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001583] name "Today's Fantastic Warm-Up Mission is <font \
+    color=\"#ffd200\">Jumping</font>.\nLimber up with a few light jumps, then move on to the next mission!"
+set key[id=1107213414001584] name "How was it? Your body feels a lot lighter, doesn't it?"
+set key[id=1107213414001585] name "The warm-up is over, so shall we start the real missions?"
+set key[id=1107213414001586] name "Here's today's Fantastic Mission!\nTake on the <font color=\"#ffd200\">field \
+    bosses of Maple World</font>!"
+set key[id=1107213414001587] name "The field bosses of Maple World are\n<font \
+    color=\"#ffd200\">$npcName:23000013[gender:0]$, $npcName:23000018$, $npcName:23000001[gender:0]$, \
+    $npcName:23000019[gender:0]$, $npcName:23000054$, $npcName:23000020[gender:1]$, $npcName:23000035$, \
+    \n$npcName:23000099$, $npcName:23000017$, $npcName:23000047$, $npcName:23000024[gender:1]$, \
+    $npcName:23000034$, $npcName:23000045$,\n$npcName:23000057[gender:1]$, $npcName:23000026[gender:1]$, \
+    $npcName:23000012$, $npcName:23000009[gender:0]$, $npcName:23000029$</font>!"
+set key[id=1107213414001588] name "Here's today's Fantastic Mission!\nTake on the <font color=\"#ffd200\">field \
+    bosses of Maple World</font>!"
+set key[id=1107213414001589] name "I knew you could do it, $MyPCName$!\nCongratulations on clearing the Fantastic \
+    Mission!"
+set key[id=1107213414001590] name "A mission prepared for adventurers who cleared the Fantastic Missions with \
+    flying colors!\nThis one won't be easy at all.\nBut I've prepared a special gift to match the dangerous \
+    challenge, so give it a try!"
+set key[id=1107213414001591] name "There are powerful dungeons all over Maple World.\nAmong them, the Chaos \
+    Dungeons have a terrible reputation among adventurers!"
+set key[id=1107213414001592] name "This is the final Fantastic Mission.\nSucceed against the strengthened bosses \
+    of the <font color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in the Shadow Legion Altar, the \
+    Moonlight Captain's Fortress, and the Ludibrium Clock Tower."
+set key[id=1107213414001593] name "This is the final Fantastic Mission.\nSucceed against the bosses of the <font \
+    color=\"#ffd200\">Chaos Dungeons</font>! \nThe Chaos Dungeons are in <font color=\"#ffd200\">the Shadow Legion \
+    Altar, the Moonlight Captain's Fortress, and the Ludibrium Clock Tower</font>."
+set key[id=1107213414001594] name "You even cleared the Fantastic Special Mission!\nYou really are the best, \
+    $MyPCName$!"
+set key[id=1110104017002968] name "$MyPCName$! Shall I give you a riddle?\nWho is the kindest woman in \
+    $map:02000001$?\nFind her and say hello, and I'll give you a gift!"
+set key[id=1110104017002969] name "You need a hint?\nAw... it's too easy... think about it carefully!"
+set key[id=1110104017002970] name "That wasn't too hard, was it?\n$npc:11000160[gender:1]$ has a heart as lovely \
+    as her face!"
+set key[id=1110104017002971] name "$MyPCName$! Shall I give you a riddle?\nWho is the most hardworking man in \
+    $map:02000001$?\nFind him and say hello, and I'll give you a gift!"
+set key[id=1110104017002972] name "You need a hint?\nAw... it's too easy... think about it carefully!"
+set key[id=1110104017002973] name "That wasn't too hard, was it?\nMr. $npcName:11000012[gender:0]$ is great at \
+    working hard, but...\nhe has so much work that I worry he'll collapse."
+set key[id=1110104017002974] name "$MyPCName$! Shall I give you a riddle?\nWho is the most intellectual woman in \
+    $map:02000001$?\nFind her and say hello, and I'll give you a gift!"
+set key[id=1110104017002975] name "You need a hint?\nAw... it's too easy... think about it carefully!"
+set key[id=1110104017002976] name "That wasn't too hard, was it?\nThey say nobody can keep up with how much \
+    $npc:11000005[gender:1]$ reads."
+set key[id=1110104017002977] name "$MyPCName$! Shall I give you a riddle?\nWho is the most dependable man in \
+    $map:02000001$?\nFind him and say hello, and I'll give you a gift!"
+set key[id=1110104017002978] name "You need a hint?\nAw... it's too easy... think about it carefully!"
+set key[id=1110104017002979] name "That wasn't too hard, was it?\nThey say everyone can rest easy thanks to \
+    $npc:11000119[gender:0]$."
+set key[id=1110104017002983] name "$MyPCName$! Shall I give you a riddle?\nWho is the most diligent man in \
+    $map:02000064$?\nFind him and say hello, and I'll give you a gift!"
+set key[id=1110104017002984] name "You need a hint?\nAw... it's too easy... think about it carefully!"
+set key[id=1110104017002985] name "That wasn't too hard, was it?\nLet's all be people who quietly and diligently \
+    do our jobs, like $npc:11000172[gender:0]$."
+set key[id=1110104017002986] name "Hmm... I'm thinking of making a monster encyclopedia while I'm here.\nI'd love \
+    your help, $MyPCName$...\nCould you <font color=\"#ffd200\">defeat various plant-type monsters</font> across \
+    Maple World and bring back the information?"
+set key[id=1110104017002987] name "Hmm... I'm thinking of making a monster encyclopedia while I'm here.\nI'd love \
+    your help, $MyPCName$...\nCould you <font color=\"#ffd200\">defeat various plant-type monsters</font> across \
+    Maple World and bring back the information?"
+set key[id=1110104017002988] name "You brought back this much information!\nAs expected, $MyPCName$ is the best! "
+set key[id=1110104017002989] name "Hmm... I'm thinking of making a monster encyclopedia while I'm here.\nI'd love \
+    your help, $MyPCName$...\nCould you <font color=\"#ffd200\">defeat various beast-type monsters</font> across \
+    Maple World and bring back the information?"
+set key[id=1110104017002990] name "Hmm... I'm thinking of making a monster encyclopedia while I'm here.\nI'd love \
+    your help, $MyPCName$...\nCould you <font color=\"#ffd200\">defeat various beast-type monsters</font> across \
+    Maple World and bring back the information?"
+set key[id=1110104017002991] name "You brought back this much information!\nAs expected, $MyPCName$ is the best! "
+set key[id=1110104017002992] name "Hmm... I'm thinking of making a monster encyclopedia while I'm here.\nI'd love \
+    your help, $MyPCName$...\nCould you <font color=\"#ffd200\">defeat various fairy-type monsters</font> across \
+    Maple World and bring back the information?"
+set key[id=1110104017002993] name "Hmm... I'm thinking of making a monster encyclopedia while I'm here.\nI'd love \
+    your help, $MyPCName$...\nCould you <font color=\"#ffd200\">defeat various fairy-type monsters</font> across \
+    Maple World and bring back the information?"
+set key[id=1110104017002994] name "You brought back this much information!\nAs expected, $MyPCName$ is the best! "
+set key[id=1110104017002995] name "Hmm... I'm thinking of making a monster encyclopedia while I'm here.\nI'd love \
+    your help, $MyPCName$...\nCould you <font color=\"#ffd200\">defeat various human-type monsters</font> across \
+    Maple World and bring back the information?"
+set key[id=1110104017002996] name "Hmm... I'm thinking of making a monster encyclopedia while I'm here.\nI'd love \
+    your help, $MyPCName$...\nCould you <font color=\"#ffd200\">defeat various human-type monsters</font> across \
+    Maple World and bring back the information?"
+set key[id=1110104017002997] name "You brought back this much information!\nAs expected, $MyPCName$ is the best! "
+set key[id=1110104017002998] name "Hmm... I'm thinking of making a monster encyclopedia while I'm here.\nI'd love \
+    your help, $MyPCName$...\nCould you <font color=\"#ffd200\">defeat various spirit-type monsters</font> across \
+    Maple World and bring back the information?"
+set key[id=1110104017002999] name "Hmm... I'm thinking of making a monster encyclopedia while I'm here.\nI'd love \
+    your help, $MyPCName$...\nCould you <font color=\"#ffd200\">defeat various spirit-type monsters</font> across \
+    Maple World and bring back the information?"
+set key[id=1110104017003000] name "You brought back this much information!\nAs expected, $MyPCName$ is the best! "
+set key[id=1110104017003001] name "Hello, $MyPCName$!\nHave you ever run while listening to the wind brush past \
+    your ears?"
+set key[id=1110104017003002] name "Listen to the cool sound of the wind and <font color=\"#ffd200\">run to your \
+    heart's content!</font>\nNothing could be better!"
+set key[id=1110104017003003] name "How was it?\nDon't your body and mind feel healthier?"
+set key[id=1110104017003004] name "Hello, $MyPCName$!\nWhen you feel stuffy or down, try <font \
+    color=\"#ffd200\">jumping</font> toward that blue sky like I do.\nYou'll feel refreshed, as if your chest has \
+    opened up!"
+set key[id=1110104017003005] name "<font color=\"#ffd200\">Jump</font> up toward that blue sky.\nIt'll feel so \
+    refreshing, like your chest has been opened wide!"
+set key[id=1110104017003006] name "How was it?\nDon't your body and mind feel healthier?"
+set key[id=1110104017003007] name "Hello, $MyPCName$!\nHop on a <font color=\"#ffd200\">mount</font> and go \
+    sightseeing around Maple World.\nThe beautiful scenery of Maple World will lift your mood even more!"
+set key[id=1110104017003008] name "Hop on a <font color=\"#ffd200\">mount</font> and go sightseeing around the \
+    Maple World.\nThe beautiful scenery will lift your mood even more!"
+set key[id=1110104017003009] name "How was it?\nDon't your body and mind feel healthier?"
+set key[id=1113133602005871] name "Phew, any later and things could have gotten much worse...\nThank you for your \
+    help."
+set key[id=1115193211004938] name "$MyPCName$, it seems $npc:11000119[gender:0]$ is looking for you. \nPlease go \
+    see him."
+set key[id=1115193211004939] name "$MyPCName$, it seems $npc:11000119[gender:0]$ is looking for you. \nPlease go \
+    see him."
+set key[id=1115193211004940] name "Ah, you're here!"
+set key[id=1129204021022781] name "This is the quest start dialogue. (Work in progress)"
+set key[id=1129204021022782] name "Would you like to proceed with the quest? (Work in progress)"
+set key[id=1129204021022783] name "The quest starts.  (Work in progress)"
+set key[id=1129204021022784] name "Quest in progress... (Work in progress)"
+set key[id=1129204021022785] name "This is the quest completion dialogue. (Work in progress)"
+set key[id=1129204021022786] name "Good work."
+set key[id=1129204021022787] name "This is the quest start dialogue. (Work in progress)"
+set key[id=1129204021022788] name "Would you like to proceed with the quest? (Work in progress)"
+set key[id=1129204021022789] name "The quest starts.  (Work in progress)"
+set key[id=1129204021022790] name "Quest in progress... (Work in progress)"
+set key[id=1129204021022791] name "This is the quest completion dialogue. (Work in progress)"
+set key[id=1129204021022792] name "Good work."
+set key[id=1129204021022793] name "This is the quest start dialogue. (Work in progress)"
+set key[id=1129204021022794] name "Would you like to proceed with the quest? (Work in progress)"
+set key[id=1129204021022795] name "The quest starts.  (Work in progress)"
+set key[id=1129204021022796] name "Quest in progress... (Work in progress)"
+set key[id=1129204021022797] name "This is the quest completion dialogue. (Work in progress)"
+set key[id=1129204021022798] name "Good work."
+set key[id=1129204021022799] name "This is the quest start dialogue. (Work in progress)"
+set key[id=1129204021022800] name "Would you like to proceed with the quest? (Work in progress)"
+set key[id=1129204021022801] name "The quest starts.  (Work in progress)"
+set key[id=1129204021022802] name "Quest in progress... (Work in progress)"
+set key[id=1129204021022803] name "This is the quest completion dialogue. (Work in progress)"
+set key[id=1129204021022804] name "Good work."
+set key[id=1219125317003033] name "Merry Christmas, $MyPCName$!\nFor the merry Christmas season, they say Papa \
+    Santa has planted a special \nChristmas tree somewhere in Maple World."
+set key[id=1219125317003034] name "Where can I find the special Christmas tree?"
+set key[id=1219125317003035] name "Open the <font color=\"#ffd200\">Meret Market</font> and go to the <font \
+    color=\"#ffd200\">Special Sale</font> tab, and you can buy <font color=\"#ffd200\">Papa Santa's Christmas \
+    Tree</font> for free.\nUse that item and you can enter the place where <font \
+    color=\"#ffd200\">$map:80000011$</font> is!"
+set key[id=1219125317003036] name "Oops... In the <font color=\"#ffd200\">Special Sale</font> tab, you can buy the \
+    <font color=\"#ffd200\">Papa Santa's Christmas Tree</font> up to 3 times a day per account.\nAnd when other \
+    friends use their <font color=\"#ffd200\">Papa Santa's Christmas Tree</font> to move to where <font \
+    color=\"#ffd200\">$map:80000011$</font> is, you can come along with them too."
+set key[id=1219125317003037] name "Now enjoy a merry and happy Christmas season \nwith Papa Santa's special \
+    Christmas tree!"
+set key[id=1219125317003038] name "Open the <font color=\"#ffd200\">Meret Market</font> and go to the <font \
+    color=\"#ffd200\">Special Sale</font> tab, and you can buy <font color=\"#ffd200\">Papa Santa's Christmas \
+    Tree</font> for free.\nUse that item and you can enter the place where <font \
+    color=\"#ffd200\">$map:80000011$</font> is!"
+set key[id=1219125317003039] name "Oops... In the <font color=\"#ffd200\">Special Sale</font> tab, you can buy the \
+    <font color=\"#ffd200\">Papa Santa's Christmas Tree</font> up to 3 times a day per account.\nAnd when other \
+    friends use their <font color=\"#ffd200\">Papa Santa's Christmas Tree</font> to move to where <font \
+    color=\"#ffd200\">$map:80000011$</font> is, you can come along with them too."
+set key[id=1219125317003040] name "You found Papa Santa's special Christmas tree!\nUntil the Christmas season \
+    ends, diligently collect $item:20301210$ and get special Christmas gifts!"
+set key[id=1219205414002970] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414002971] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000054$'</font>!"
+set key[id=1219205414002972] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000054$'</font>!"
+set key[id=1219205414002973] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414002974] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414002975] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000020[gender:1]$'</font>!"
+set key[id=1219205414002976] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000020[gender:1]$'</font>!"
+set key[id=1219205414002977] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414002978] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414002979] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000099$'</font>!"
+set key[id=1219205414002980] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000099$'</font>!"
+set key[id=1219205414002981] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414002982] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414002983] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000047$'</font>!"
+set key[id=1219205414002984] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000047$'</font>!"
+set key[id=1219205414002985] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414002986] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414002987] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000024[gender:1]$'</font>!"
+set key[id=1219205414002988] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000024[gender:1]$'</font>!"
+set key[id=1219205414002989] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414002990] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414002991] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000045$'</font>!"
+set key[id=1219205414002992] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000045$'</font>!"
+set key[id=1219205414002993] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414002994] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414002995] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000026[gender:1]$'</font>!"
+set key[id=1219205414002996] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000026[gender:1]$'</font>!"
+set key[id=1219205414002997] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414002998] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414002999] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000012$'</font>!"
+set key[id=1219205414003000] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000012$'</font>!"
+set key[id=1219205414003001] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414003002] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414003003] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000001[gender:0]$'</font>!"
+set key[id=1219205414003004] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000001[gender:0]$'</font>!"
+set key[id=1219205414003005] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414003006] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414003007] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000019[gender:0]$'</font>!"
+set key[id=1219205414003008] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000019[gender:0]$'</font>!"
+set key[id=1219205414003009] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414003010] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414003011] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000035$'</font>!"
+set key[id=1219205414003012] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000035$'</font>!"
+set key[id=1219205414003013] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414003014] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414003015] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000017$'</font>!"
+set key[id=1219205414003016] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000017$'</font>!"
+set key[id=1219205414003017] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414003018] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414003019] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000034$'</font>!"
+set key[id=1219205414003020] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000034$'</font>!"
+set key[id=1219205414003021] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414003022] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414003023] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000009[gender:0]$'</font>!"
+set key[id=1219205414003024] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000009[gender:0]$'</font>!"
+set key[id=1219205414003025] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414003026] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414003027] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000029$'</font>!"
+set key[id=1219205414003028] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000029$'</font>!"
+set key[id=1219205414003029] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
+set key[id=1219205414003030] name "Welcome, $MyPCName$!\nHave you heard that a huge number of treasure chests were \
+    found on the shores of Barbosa, a land of mystery?\nYou can buy chests at a low price from my twin brother \
+    $npcName:11001003[gender:0]$ next to me.\nBut to open a Barbosa treasure chest you need a key of the same \
+    tier,\nand upgrading a key's tier takes <font color=\"#ffd200\">$item:30000881$</font>!"
+set key[id=1219205414003031] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000057[gender:1]$'</font>!"
+set key[id=1219205414003032] name "Complete Barbosa daily missions and collect <font \
+    color=\"#ffd200\">$item:30000881$</font>, \nthe material for upgrading a 'Barbosa Key'!\nToday's Barbosa daily \
+    mission is <font color=\"#ffd200\">'Defeat $npc:23000057[gender:1]$'</font>!"
+set key[id=1219205414003033] name "You cleared today's mission!\nHere's the <font \
+    color=\"#ffd200\">$item:30000881$</font> I promised!\nI hope you keep upgrading your Barbosa Key with <font \
+    color=\"#ffd200\">$item:30000881$</font> \nand take home great rewards from the higher tiers!"
