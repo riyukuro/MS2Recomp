@@ -19160,3 +19160,1587 @@ set key[id=52000200_QD__52000200__31] name "Good. I'll collect the promised item
 set key[id=52000202_QD__52000202__3] name "Why on earth did a place like this appear?"
 set key[id=52000202_QD__52000202__5] name "I sense some powerful force...!"
 set key[id=51000006_DG__51000006_MAIN__4] name "I won't lose to you!"
+
+# NPC dialogue that no pack has in English: our own English for the 999 scriptnpc rows of locale KR (or no
+# locale) still in Korean, with each row's own format fields, font tags and line breaks; the player's lines are
+# written as first-person choices. The npc speaker labels and the other locales' rows stay as they are.
+file Xml/string/kr/scriptnpc.xml kms:Xml/string/kr/scriptnpc.xml 7bb540a9c2239693
+set key[id=104184607012625] name "$MyPCName$! Do you need a <font color=\"#ffd200\">Valentine Chocolate Box</font> \
+    and <font color=\"#ffd200\">Heart Deco Sprinkles</font>?\nCome to me anytime and I'll hand them out \
+    again.\nKeep making sweet chocolates every day, and one day you'll get a <font color=\"#ffd200\">special \
+    gift</font>."
+set key[id=104184607012626] name "Could I have $item:30001287$ and $item:30001288$, please?"
+set key[id=104184607012627] name "Here you go~!\nDon't you want to hurry and make some chocolate and taste how it \
+    turns out?"
+set key[id=104184607012628] name "Oh! Your bag is full.\nPlease empty your bag and come get them again."
+set key[id=104184607012629] name "Have you tasted chocolate, the sweet love potion itself?\nSince you still have \
+    ingredients, it looks like you can make more chocolate.\nWhen you use them all up, I'll give you more, so go \
+    make some chocolate~!\nBut you can only get 3 <font color=\"#ffd200\">Bittersweet Chocolates</font> a day."
+set key[id=106135207015986] name "I'd like to cancel my wedding hall reservation."
+set key[id=106135207015988] name "I'd like to cancel my wedding hall reservation."
+set key[id=106135307015989] name "I'd like to cancel my wedding hall reservation."
+set key[id=128113607016016] name "What's the matter?"
+set key[id=128113607016017] name "Did you find my shoe, by any chance?"
+set key[id=128113607016018] name "(Hand over $item:30001099$.)"
+set key[id=128113607016019] name "Why are you doing that?"
+set key[id=128113607016020] name "Not yet, I haven't found it."
+set key[id=128113607016021] name "Thank you so much. I want to be of help to you someday, too."
+set key[id=128113607016022] name "It's no use showing interest like this. I'm a fairy, and you're a human."
+set key[id=128113607016023] name "If the left one comes back too, I'll definitely wear them this time. Please, \
+    come back to me."
+set key[id=128113607016024] name "Why is there only a right one?"
+set key[id=128113607016025] name "Um... What about the left one? Well, I'll gladly take it for now."
+set key[id=128113607016026] name "Wow, what a pretty shoe. Huh? Mine? Oh. Yes, it's mine. Thank you!"
+set key[id=128113607016027] name "The left shoe didn't get broken, did it?"
+set key[id=128113607016028] name "My foot... why. Won't it fit? It's mine! My foot is just swollen from crying so \
+    much!"
+set key[id=128113607016029] name "So you haven't found it yet. Please, I'm begging you. Please find it."
+set key[id=128141707016030] name "I lost my shoe again. Maybe I'm not the one who loses things, and somebody keeps \
+    stealing them? Please find my precious shoe."
+set key[id=128141707016031] name "So many guild members are helping me, so I feel relieved. When you find it, I'll \
+    definitely repay you!"
+set key[id=210154407015991] name "What flowers should I grow this time?"
+set key[id=210154407015992] name "I love spring! You get to see so many flowers, don't you?"
+set key[id=210154407015993] name "I want to rest..."
+set key[id=210154407015994] name "I want to take a nap under the cherry tree."
+set key[id=210154407015995] name "What comes to mind when you think of spring?"
+set key[id=210154407015996] name "I want to write a song about spring..."
+set key[id=210154407015997] name "I desperately need a love potion!"
+set key[id=210154407015998] name "I will make that potion a success, no matter what!"
+set key[id=502182807014669] name "For just <font color=\"#ffd200\">1 hour starting at 6 PM on May 25 and June \
+    8</font>,\nthe <font color=\"#ffd200\">Free Shop</font> event is running, where you can buy a <font \
+    color=\"#ffd200\">Nexon Cash Ticket Draw Box</font> for 0 merets.\nUse the box to get ticket items that can be \
+    exchanged for Nexon Cash.\nBring me a certain number of $item:30001369$ items and I'll exchange them for \
+    tickets."
+set key[id=502182807014670] name "Where can I get a Nexon Cash Ticket Draw Box?"
+set key[id=502182807014671] name "You can buy it from the Premium Shop menu's Consumables tab <font \
+    color=\"#ffd200\">from 6:00 PM to 6:59 PM on May 25 and June 8</font>.\nPlease remember that buying and using \
+    the item are both only possible during that time."
+set key[id=502182807014672] name "Then when will I get my Nexon Cash?"
+set key[id=502182807014673] name "Ahem... I'll sort it out and let you know through a notice after the June 20 \
+    maintenance. If you delete your Nexon Cash tickets before then, I won't be able to find them, so please keep \
+    them safe until they expire."
+set key[id=502182807014674] name "Is there anything else I should watch out for?"
+set key[id=502182807014675] name "Be sure to come to me and exchange your $item:30001369$ items for \
+    tickets!\nPlease don't forget. Good luck then~"
+set key[id=511193407006099] name "Hello, $MyPCName$! I'm <font \
+    color=\"#ffd200\">$npc:11001002[gender:1]$</font>~\nI'll tell you all about the fun~ e! ve! nts! What are you \
+    curious about? "
+set key[id=511193407006100] name "Who's the man dressed like <font \
+    color=\"#ffd200\">$npcName:11001002[gender:1]$</font>?"
+set key[id=511193407006101] name "He's my <font color=\"#ffd200\">twin brother</font>! We work together as \
+    $npcTitle:11001002[gender:1]$!\nIf you're curious about the <font color=\"#ffd200\">events in progress</font>, \
+    come find us anytime~\nMy brother <font color=\"#ffd200\">$npcName:11001003[gender:0]$</font> and I, <font \
+    color=\"#ffd200\">$npcName:11001002[gender:1]$</font>, will gladly tell you all about them!"
+set key[id=511193407006102] name "Hello, $MyPCName$~ I'm <font \
+    color=\"#ffd200\">$npc:11001003[gender:0]$</font>!\nWhich event are you curious about? "
+set key[id=511193407006103] name "Who's the woman dressed like <font \
+    color=\"#ffd200\">$npcName:11001003[gender:0]$</font>?"
+set key[id=511193407006104] name "She's my <font color=\"#ffd200\">twin sister</font>, Ruby! We work together as \
+    $npcTitle:11001002[gender:1]$!\nIf you're curious about the <font color=\"#ffd200\">events in progress</font>, \
+    come find us anytime~\nWe siblings, <font color=\"#ffd200\">$npcName:11001002[gender:1]$</font> and <font \
+    color=\"#ffd200\">$npcName:11001003[gender:0]$</font>, will gladly tell you all about them!"
+set key[id=517224006000735] name "Aren't you curious about the products that I, Kodia, recommend?"
+set key[id=517224006000736] name "A special product is waiting for you to pick it~"
+set key[id=601171006000994] name "Nice to meet you, $MyPCName$.\nI have a feeling that someday I'll need to ask \
+    you for help.\nMay Empress Ereb's blessing be with you...!"
+set key[id=603204607014946] name "What is it?"
+set key[id=603204607014947] name "I keep traveling through time, and things like this happen... "
+set key[id=603204607014948] name "The flow of time..."
+set key[id=603204607014949] name "Kong! Kongkong!\nExciting adventure! Thrilling treasure!"
+set key[id=603204607014951] name "I put in plenty of treasure! Thirty times a day!"
+set key[id=603204607014952] name "What is it?"
+set key[id=603204607014953] name "$MyPCName$, keep this in mind.\nOnce a bond is made, we are bound to meet again, \
+    round and round... Even in front of someone insignificant that you think you'll never see again,\nalways act \
+    with care."
+set key[id=603204607014954] name "Hmm..."
+set key[id=603204607014955] name "There is no end to training!"
+set key[id=603204607014956] name "...\n<font color=\"#909090\">(They are focused on training and don't seem to \
+    want to answer.)</font>"
+set key[id=603204607014957] name "Focus, focus..."
+set key[id=603204607014958] name "Foc... us. Focus... focus~"
+set key[id=603204607014959] name "...\n<font color=\"#909090\">(They don't seem to want to answer.)</font>"
+set key[id=603204607014960] name "Yaaawn... haaawn"
+set key[id=603204607014961] name "It must be here somewhere..."
+set key[id=603204607014962] name "All I met were people who didn't believe me... but now there's someone searching \
+    for the snow leopard's trail with me.\nBut I'm not entirely happy. ...$npcName:11004669[gender:0]$, I hope \
+    that child will be happy."
+set key[id=603204607014963] name "It must be there...!"
+set key[id=603204607014964] name "This place is... truly beautiful, too.\nAs deep and dark as the sandstorm... but \
+    still."
+set key[id=603204607014965] name "I won't back down anymore."
+set key[id=603204607014966] name "I will definitely find them.\nThe child who saved me in the sandstorm... now I \
+    want to save them."
+set key[id=603204607014967] name "What should I do about your wandering?"
+set key[id=603204607014969] name "Oh Lord, what should I do"
+set key[id=603204607014970] name "It hurts..."
+set key[id=603204607014971] name "My head... hurts"
+set key[id=603204607014972] name "A... zo... r"
+set key[id=603204607014973] name "There are many shiny things... but not all of them are real."
+set key[id=603204607014975] name "I want to go back, someday... "
+set key[id=603204607014976] name "Sigh... another empty-handed trip."
+set key[id=603204607014977] name "<font color=\"#909090\">($npc:11001431[gender:0]$ tilts their head.)</font>"
+set key[id=603204607014978] name "I'll be able to find it someday."
+set key[id=613033007014979] name "What's the dimensional gate?"
+set key[id=613033007014980] name "Tell me about $item:30001393$."
+set key[id=613033007014981] name "Ah, yes. The dimensional gate on the hill of $map:63000079$.\nI think it was \
+    created by the power of the meteor that fell a few days ago."
+set key[id=613033007014982] name "As you can see, I'm still traveling through time.\nBut I haven't been able to \
+    move the way I want. My machine keeps acting up.\nI always wrestle with it and end up dropping into a time and \
+    place I don't know."
+set key[id=613033007014983] name "A few days ago, I was repairing my machine in the ant tunnel and giving it a \
+    test run.\nThe moment I got out of the tunnel, a meteor shower poured down with a huge roar.\nI got caught up \
+    in it... and when I came to, I was in $map:02000064$."
+set key[id=613033007014984] name "My machine was stuck fast in $map:02000064$,\nand before I knew it, it had \
+    become a small dimensional gate moving toward somewhere.\nI followed the path across... and they called that \
+    place $map:63000079$."
+set key[id=613033007014985] name "A dimensional gate had appeared in $map:63000079$ too, and surprisingly, it \
+    seemed to be an effect of the meteor as well.\nBut the people of $map:63000079$ couldn't use the path I came \
+    through."
+set key[id=613033007014986] name "It seems these dimensional gates can't be used by anyone except those who were \
+    <font color=\"#ffd200\">on the side that opened first</font>.\nI found a new path... but it feels like I've \
+    run into another wall."
+set key[id=613033007014987] name "When I travel through time, I sometimes get this stone with a mysterious \
+    color.\nI don't know exactly what this stone is either. In fact, I gave it the name $item:30001393$ on my \
+    own.\nThe amazing thing is that this stone reacts with my machine and works as its power source."
+set key[id=613033007014988] name "I'm a time traveler, but I can't move the way I want.\nSo I'm always looking for \
+    a solution.\n$item:30001393$ is like a key that I absolutely need right now."
+set key[id=613033007014989] name "If you collect $item:30001393$ while traveling through time, bring it to me.\nI \
+    might give you something useful in return."
+set key[id=613033007014990] name "If you try to take it all, you're greedy!"
+set key[id=613033007014991] name "Thirty is enough! Kongkong!"
+set key[id=613033007014992] name "There is no end to training!"
+set key[id=613033007014993] name "Foc... us~"
+set key[id=613033007014994] name "...\n<font color=\"#909090\">(I can't tell if they're focusing on training or \
+    dozing off.)</font>"
+set key[id=613033007014995] name "I want to know more...!"
+set key[id=613033007014996] name "I want to know more...!"
+set key[id=613033007014997] name "What are you doing here?"
+set key[id=613033007014998] name "The sacred and secretive... snow leopard tribe.\nStudying them and searching for \
+    them... I can never stop. "
+set key[id=613033007014999] name "What's your relationship with $npcName:11004669[gender:0]$? "
+set key[id=613033007015000] name "They must be somewhere"
+set key[id=613033007015001] name "I won't forget you"
+set key[id=613033007015002] name "And I will definitely tell them.\nThat they're not alone. That I want to be by \
+    their side and give them strength. "
+set key[id=613033007015003] name "I hope you find them."
+set key[id=613033007015004] name "What's your relationship with $npcName:11004668[gender:0]$? "
+set key[id=613033007015005] name "Thank you. I will definitely find them.\nWait for me... \
+    $npcName:11004671[gender:1]$."
+set key[id=613033007015006] name "I know that Mr. $npcName:11004668[gender:0]$ is hiding something from \
+    me.\n...It's all right. It must be for my sake. So I can wait."
+set key[id=613033007015007] name "You... \nhave crossed over from another dimension."
+set key[id=613033007015008] name "Humans...\nYou are beings completely opposite to my people's beliefs and reason \
+    for existence."
+set key[id=613033007015009] name "Will we ever find a way, someday... "
+set key[id=613033007015010] name "Who are you.\nHow did you get in here?"
+set key[id=613033007015011] name "Were you the one calling me?\n...No, it wasn't you. That... guy. Ugh... "
+set key[id=613033007015012] name "Just leave me alone. Please..."
+set key[id=613033007015013] name "My very own flower, you... "
+set key[id=613033007015015] name "I'm looking for a path.\n...Heh heh, would you get it if I told you?"
+set key[id=613033007015017] name "I'm sorry."
+set key[id=613033007015018] name "Ahaha, how cute.\nWell then, good luck."
+set key[id=613033007015019] name "Heh heh, yeah.\nWell then, good luck."
+set key[id=613033007015020] name "Hmm..."
+set key[id=613033007015021] name "I heard you talking."
+set key[id=613033007015022] name "When did you see that?\n...You, you came over from a different time and space, \
+    didn't you?"
+set key[id=613033007015023] name "How did you know?"
+set key[id=613033007015024] name "Because I'm a thousand-year-old fox, that's how. What of it?"
+set key[id=613033007015025] name "Really?"
+set key[id=613033007015026] name "You believe that?\n...Heh heh. Never mind. I'll just fish a while and be on my \
+    way~"
+set key[id=613034407015027] name "Hello."
+set key[id=613034407015028] name "What are you doing here?"
+set key[id=613034407015029] name "I know what I'm doing!"
+set key[id=617094407015030] name "Welcome to the Mongchouchou Hotel!"
+set key[id=617094407015031] name "I'm sure the manager will do well."
+set key[id=617094407015032] name "Welcome to the Mongchouchou Hotel!"
+set key[id=617094407015033] name "Hello? Welcome to Bloody Mongchou... Oh, no.\nThank you for visiting the <font \
+    color=\"#ffd200\">Mongchouchou Hotel</font>."
+set key[id=617094407015034] name "Did the hotel's name change?"
+set key[id=617094407015035] name "That's right. The <font color=\"#ffd200\">owner</font>, \
+    $npcName:11004290[gender:0]$, suggested changing the hotel's name for a fresh start.\nAll the staff agreed, \
+    too."
+set key[id=617094407015036] name "Yes, they're the owner now, but they asked to still be called the <font \
+    color=\"#ffd200\">manager</font>. They said they'll stay close to the guests and keep their original \
+    spirit.\nThey also said that from now on, our hotel will work to create other famous attractions besides the \
+    Halloween festival."
+set key[id=617095907015038] name "$MyPCName$, please remember our <font color=\"#ffd200\">Mongchouchou \
+    Hotel</font> and come visit again! "
+set key[id=617095907015039] name "That person over there must be the <font color=\"#ffd200\">manager</font>, \
+    right?"
+set key[id=702163207010386] name "Ugh... the darkness is..."
+set key[id=702163207010387] name "Ugh... the darkness is..."
+set key[id=705145607010390] name "I only ever think of my love."
+set key[id=705145607010391] name "My love... $npcName:11004100[gender:1]$... "
+set key[id=705145607010392] name "That surging water, how I resent it... "
+set key[id=705145607010393] name "The <font color=\"#ffd200\">mysterious seventh moonlit night...</font> when the \
+    island of love opens.\nThat miracle is my only hope."
+set key[id=705145607010397] name "This place, <font color=\"#ffd200\">$map:63000062$</font>, is where the end of \
+    night meets the world...\nIt is a quiet river where the moon and stars rise and set.\nStars are small, but \
+    they shine on their own and make a path,\nwhile the moon lights the world with <font color=\"#ffd200\">the \
+    power of the love that fills this world</font>."
+set key[id=705145607010398] name "The beautiful hearts of those in love gather here and become light,\nand <font \
+    color=\"#ffd200\">once every 7 days</font>, the moon travels the world with that light and illuminates the \
+    dark night.\nThe miraculous night when <font color=\"#ffd200\">the moon holds the light</font> is the <font \
+    color=\"#ffd200\">seventh moonlit night</font>."
+set key[id=705145607010399] name "The more love fills the world, and the more brilliantly the light gathered here \
+    shines,\nthe brighter the moon will glow. And then the bridge to the <font color=\"#ffd200\">island of \
+    love</font> opens.\nIn that place, the only one the starlight doesn't reach, we can meet.\nThe <font \
+    color=\"#ffd200\">seventh moonlit night</font> is <font color=\"#ffd200\">our one and only hope</font>."
+set key[id=705145607010400] name "I haven't failed to think of that, but... there was a big problem.\nThe <font \
+    color=\"#ffd200\">water</font> here is very cold and deep. Especially when the moonlight is gone."
+set key[id=705145607010401] name "I think there are stepping stones over there."
+set key[id=705145607010402] name "I know that... I tried to cross them, too.\nBut when the bridge went up and \
+    down, I fell in the water and nearly died.\nIf it weren't for the <font color=\"#ffd200\">magpies</font> and \
+    <font color=\"#ffd200\">crows</font>, I wouldn't be in this world."
+set key[id=705145607010403] name "I only ever think of my love."
+set key[id=705145607010404] name "$npcName:11004099[gender:0]$... my love..."
+set key[id=705145607010405] name "Moon, please help me... "
+set key[id=705145607010406] name "$npcName:11004099[gender:0]$! I'm sorry... it seems I can't help it either."
+set key[id=705145607010407] name "Who is $npcName:11004099[gender:0]$?"
+set key[id=705145607010408] name "He's my <font color=\"#ffd200\">boyfriend</font>. He's on the other side of that \
+    river.\nWe can't meet right now, and all I can do is look at him from far away..."
+set key[id=705145607010409] name "How did you two end up apart?"
+set key[id=705145607010410] name "The crime of loving too much...?\nUm, well... we were so busy going on <font \
+    color=\"#ffd200\">dates</font>\nthat we couldn't make the instruments for the special performance\nplanned in \
+    $map:63000059$... so the performance was canceled."
+set key[id=705145607010411] name "So the stars punished us.\nThey said the two of us can't meet <font \
+    color=\"#ffd200\">under starlight</font>..."
+set key[id=705145607010412] name "Then why not just meet in the daytime?"
+set key[id=705145607010413] name "The stars are being too harsh, I think."
+set key[id=705145607010414] name "$npcName:11004099[gender:0]$ and I were born from the <font \
+    color=\"#ffd200\">stars</font>.\nChildren of the stars can only move along the paths that starlight points \
+    out.\nSo we can't go anywhere the stars aren't out."
+set key[id=705145607010415] name "But if <font color=\"#ffd200\">moonlight</font> fills this place, <font \
+    color=\"#ffd200\">$map:63000062$</font>...\nwe could slip away from the stars' eyes and be free, if only for a \
+    moment.\nThe <font color=\"#ffd200\">seventh moonlit night</font> is our only hope."
+set key[id=705145607010416] name "We did wrong, so I suppose we have to take the punishment.\nBut I'm upset that \
+    we haven't been able to meet for so long.\nI'm afraid I'll forget my handsome $npcName:11004099[gender:0]$'s \
+    face... "
+set key[id=705145607010417] name "Tell me about the seventh moonlit night."
+set key[id=705145607010418] name "This place, <font color=\"#ffd200\">$map:63000062$</font>, is where the end of \
+    night meets the world.\nThe beautiful hearts of those in love gather here and become light,\nand <font \
+    color=\"#ffd200\">once every 7 days</font>, the moon travels the world with that light and illuminates the \
+    dark night.\nThe miraculous night when <font color=\"#ffd200\">the moon holds the light</font> is the <font \
+    color=\"#ffd200\">seventh moonlit night</font>."
+set key[id=705145607010420] name "The more love fills the world, and the more brilliantly the light gathered here \
+    shines,\nthe brighter the moon will glow. And then the bridge to the <font color=\"#ffd200\">island of \
+    love</font> opens.\nIn that place, the only one the starlight doesn't reach, we can meet.\nThe <font \
+    color=\"#ffd200\">seventh moonlit night</font> is <font color=\"#ffd200\">our one and only hope</font>."
+set key[id=705145607010421] name "Caw-caw~ A good magpie likes a good human!"
+set key[id=705145607010422] name "Caw-caw~ Caaaw~"
+set key[id=705145607010423] name "Do you have <font color=\"#ffd200\">$item:30001182$</font>?\nThen I'll trade it \
+    for some fun things I have."
+set key[id=705145607010425] name "Caaaw~ Love is great!"
+set key[id=705145607010426] name "Caw-caw~ Caaaw~"
+set key[id=705145607010427] name "A miracle that happened once can happen again.\nI think the one who makes it \
+    happen is truly great."
+set key[id=705145607010428] name "$MyPCName$, you can do it, too.\nCheer up~ Caw!"
+set key[id=705154107010429] name "What about the seventh moonlit night?"
+set key[id=705154107010430] name "Gather your courage and cross the river."
+set key[id=718090407010432] name "My love... $npcName:11004100[gender:1]$...!"
+set key[id=718090407010433] name "A miracle has happened...!"
+set key[id=718090407010434] name "The <font color=\"#ffd200\">mysterious seventh moonlit night...</font> when the \
+    island of love opens.\nThank you for bringing about that miracle."
+set key[id=718090407010435] name "Congratulations! Only happy things lie ahead now."
+set key[id=718090407010436] name "Yes, I'll enjoy this happy day to the fullest.\nEven though we'll be parted \
+    again once this night passes...\nI'm happy just to have met a miraculous moment like this."
+set key[id=718090407010437] name "What do you mean?"
+set key[id=718090407010438] name "Ah... it's because the moon sets off on its journey again after tonight.\nWhen \
+    the starlight grows strong, we have to be apart again."
+set key[id=718090407010439] name "Cheer up!"
+set key[id=718090407010440] name "It's all right... I'm still happy that this moment of meeting exists.\nThank \
+    you, $MyPCName$. We will never forget this kindness."
+set key[id=718090407010442] name "$npcName:11004099[gender:0]$... my love..."
+set key[id=718090407010443] name "It's truly... like a dream"
+set key[id=718090407010444] name "$MyPCName$...! This isn't a <font color=\"#ffd200\">dream</font>, is \
+    it...?\nWould you pinch me, just once? "
+set key[id=718090407010445] name "(Pinch the back of $npcName:11004100[gender:1]$'s hand.)"
+set key[id=718090407010446] name "Ow...!\nIt really isn't a dream. I'm so happy."
+set key[id=718090407010447] name "Sorry if that hurt."
+set key[id=718090407010448] name "Oh, come on, no. I asked you to.\nIt's all thanks to you, $MyPCName$, that this \
+    <font color=\"#ffd200\">miracle</font> came about,\nso why are you saying sorry! "
+set key[id=718090407010449] name "Even though it's only for a day, I'm so happy that the <font \
+    color=\"#ffd200\">moment of meeting</font> has come.\nIt's all thanks to your hard work, $MyPCName$.\nOh, and \
+    it seems <font color=\"#ffd200\">$npcName:11004102$</font> has prepared a <font color=\"#ffd200\">special \
+    gift</font>, so be sure to receive it."
+set key[id=718090407010450] name "Thank you, $MyPCName$.\nBoth $npcName:11004099[gender:0]$ and I will never \
+    forget this kindness."
+set key[id=718090507010451] name "I only ever think of my love."
+set key[id=718090507010452] name "I only ever... think of my love... "
+set key[id=808172007010812] name "Hello, $MyPCName$!\nThe Tria royal family has prepared special supplies for \
+    adventurers.\nThey are <font color=\"#ffd200\">materials to upgrade</font> <font \
+    color=\"#ffd200\">Gemstones</font> and <font color=\"#ffd200\">Lumistones</font>."
+set key[id=808172007010813] name "If you use the special box the royal family unveiled, you can make upgrade \
+    materials for\nGemstones and Lumistones from the <font color=\"#ffd200\">materials you bring</font>!"
+set key[id=808172007010814] name "What materials should I prepare?"
+set key[id=808172007010815] name "I'm curious how such rare materials are made."
+set key[id=808172007010816] name "First, collect <font color=\"#ffd200\">$item:30001187$</font>, which you get by \
+    hunting monsters.\nPut them in <font color=\"#ffd200\">$npcName:11004215$</font> and <font \
+    color=\"#ffd200\">$npcName:11004216$</font> over there to convert the energy,\nand you can get upgrade \
+    materials for Gemstones and Lumistones."
+set key[id=808172007010817] name "And you need to prepare one more thing for the energy conversion to succeed.\nTo \
+    get <font color=\"#ffd200\">Gemstone</font> upgrade materials, you need <font \
+    color=\"#ffd200\">$item:30001188$</font>,\nand to get <font color=\"#ffd200\">Lumistone</font> upgrade \
+    materials, you need <font color=\"#ffd200\">$item:30001189$</font>."
+set key[id=808172007010818] name "Where can I get those?"
+set key[id=808172007010819] name "I <font color=\"#ffd200\">sell</font> them. The royal mages and guardian \
+    priests\nare making them with great care, so the supply isn't plentiful...\nPlease understand that purchases \
+    are limited so every adventurer can get some."
+set key[id=808172007010820] name "Following the orders of $npc:11000075[gender:1]$, $npcName:11000601[gender:1]$ \
+    devised a way to convert the energy of the world's monsters\nusing these <font color=\"#ffd200\">two \
+    boxes</font>, said to be a gift from a stranger from a faraway world,\nwhich had been sleeping in the royal \
+    treasury."
+set key[id=808172007010821] name "These two boxes, <font color=\"#ffd200\">$npc:11004215$</font> and <font \
+    color=\"#ffd200\">$npc:11004216$</font>,\nhave the special ability to convert the nature of the energy that \
+    matter holds.\n$npc:11000601[gender:1]$ focused on this point.\nCould the power of monsters be converted for \
+    adventurers to use?"
+set key[id=808172007010822] name "They concluded that it would be possible if there were no large loss during \
+    energy conversion,\nand decided to bind the <font color=\"#ffd200\">$item:30001187$</font> that hold monsters' \
+    energy into a certain structure.\nSince everyone had to be able to use the result, they agreed to make \
+    materials that add power to\nGemstones and Lumistones that can be worn on equipment."
+set key[id=808172007010823] name "<font color=\"#ffd200\">$item:30001188$</font> and <font \
+    color=\"#ffd200\">$item:30001189$</font> serve as structures that let the energy be converted\ninto a nature \
+    that fits Gemstones and Lumistones respectively.\nSo, do you understand a little better now?"
+set key[id=808172007010824] name "Tell me which materials to prepare."
+set key[id=808172007010864] name "This is $npcName:11004215$, which supplies Gemstone upgrade materials."
+set key[id=808172007010865] name "Would you like to make a <font color=\"#ffd200\">Lumistone upgrade material \
+    set</font> through energy conversion?"
+set key[id=808172007010866] name "Make 1 set."
+set key[id=808172007010867] name "Make 10 sets."
+set key[id=808172007010868] name "(I won't make any.)"
+set key[id=808172007010869] name "Using 10 $item:30001187$ and 1 $item:30001189$,\nit will make 50 <font \
+    color=\"#ffd200\">$item:40500003$</font>, 150 <font color=\"#ffd200\">$item:40500004$</font>,\nand 50 <font \
+    color=\"#ffd200\">$item:40100032$</font>."
+set key[id=808172007010870] name "(Take the converted items.)"
+set key[id=808172007010871] name "Complete. "
+set key[id=808172007010872] name "Using 100 $item:30001187$ and 10 $item:30001189$,\nit will make 500 <font \
+    color=\"#ffd200\">$item:40500003$</font>, 1500 <font color=\"#ffd200\">$item:40500004$</font>,\nand 500 <font \
+    color=\"#ffd200\">$item:40100032$</font>."
+set key[id=808172007010873] name "(Take the converted items.)"
+set key[id=808172007010874] name "Complete. "
+set key[id=808172007010875] name "Your bag is full. Please empty it and come back."
+set key[id=808172007010876] name "Not enough <font color=\"#ffd200\">materials</font>. Energy conversion \
+    requires\n10 $item:30001187$ and 1 $item:30001189$."
+set key[id=808172007010877] name "Please come back when you need me. Thank you."
+set key[id=809135407010883] name "Not enough <font color=\"#ffd200\">materials</font>. Energy conversion \
+    requires\n100 $item:30001187$ and 10 $item:30001189$."
+set key[id=818192907008878] name "Some time ago, I got hold of an old, worn-out book and read it.\nIt had an \
+    amazing fact written in it."
+set key[id=818192907008879] name "What was written there?"
+set key[id=818192907008880] name "It says that long ago, small, shiny fragments from the Land of Darkness\nclung \
+    to monsters' clothing and were carried to Maple World."
+set key[id=818192907008881] name "The monsters of Maple World coveted those shiny fragments greatly,\nand an evil \
+    power dwelled in them that made evil monsters even more evil."
+set key[id=818192907008882] name "There's even a record that a small, insignificant monster, after holding one of \
+    those fragments,\ntransformed into a giant beast that only dozens of people working together could take down."
+set key[id=818192907008883] name "The interesting part is that to a good person, that object is just a shiny \
+    fragment,\nand it doesn't create an evil heart that wasn't there."
+set key[id=818192907008884] name "And even more amazing, if you gather those fragments and make them into one,\nit \
+    becomes a mirror that reflects the past of the Land of Darkness."
+set key[id=818192907008885] name "Believe it or not, if what the book says is true..."
+set key[id=818192907008886] name "As long as those shiny fragments are in the monsters' hands,\nMaple World will \
+    keep suffering threats big and small... That's a serious problem."
+set key[id=818192907008887] name "Is there something you wanted to tell me...?"
+set key[id=818192907008888] name "I'll give you 1 $item:30000181$."
+set key[id=818192907008889] name "You found $item:30000181$...\nNot only did you protect the safety of Maple \
+    World,\nyou've also found a clue to uncover the secrets of the Land of Darkness!"
+set key[id=831180407001332] name "Do you know what? \nIn this world... nothing exists without a \
+    reason.\nEverything has its own story, you know."
+set key[id=904141707015130] name "$MyPCName$, welcome to $map:84000011$."
+set key[id=904141707015131] name "Empress $npcName:11000075[gender:1]$ will also pray that the couple's future is \
+    filled with happiness."
+set key[id=904141707015132] name "Good to see you, $MyPCName$!"
+set key[id=904141707015133] name "Even as darkness draws near, our lives and dreams go on. I'm glad to be a \
+    witness to a vow of love."
+set key[id=904141707015134] name "Welcome, $MyPCName$."
+set key[id=904141707015135] name "No darkness or fear can overcome the pure power of life and love.\nI hope you \
+    will keep that beautiful power in your heart forever."
+set key[id=904141707015136] name "Welcome to $map:84000014$. $MyPCName$."
+set key[id=904141707015137] name "A love sworn beneath the sacred Bayar Mountains will shine harder and more \
+    beautifully than anything else."
+set key[id=904153507015138] name "Welcome, $MyPCName$.\nMake the brightest and most beautiful time in \
+    $map:84000015$."
+set key[id=904153507015139] name "That sparkling light blesses you, $MyPCName$."
+set key[id=904153507015140] name "$MyPCName$, welcome aboard!\nToday, a grand and dazzling wedding like no other \
+    will be held right here! Look forward to everything that will happen on the ceremony deck!"
+set key[id=904153507015141] name "Greetings from the MC of $map:84000016$, $npc:11004711[gender:0]$! Do you need \
+    my help?"
+set key[id=904185307015142] name "Oh? Hello, $MyPCName$."
+set key[id=904185307015143] name "Is there something you'd like to know?\nFeel free to ask me."
+set key[id=904185307015144] name "Is it okay if I ask a personal question?"
+set key[id=904185307015145] name "...Hmm."
+set key[id=904185307015146] name "I'd have to hear the question before I can give you an answer.\nWhat do you want \
+    to know?"
+set key[id=904185307015147] name "So... what do you think of the guard, $npcName:11000169[gender:0]$?"
+set key[id=904185307015148] name "$npcName:11000169[gender:0]$?"
+set key[id=904185307015149] name "He's a truly wonderful person. Everyone likes him."
+set key[id=904185307015150] name "Oh... r-really? But I..."
+set key[id=904185307015151] name "A fine man and a fine woman belong together, of course! If \
+    $npcName:11000160[gender:1]$ is fine with it, I could set something up..."
+set key[id=904185307015152] name "W-<font size=\"40\">wait a moment!</font>\nPlease, just stop talking for a \
+    second."
+set key[id=904185307015153] name "First of all... who is $npcName:11000169[gender:0]$?"
+set key[id=904185307015155] name "I've never even heard that name...\nI'm sorry if I wasn't any help."
+set key[id=904185307015156] name "A guard, you say? Is he someone in Tria?\nI have no idea who that is..."
+set key[id=904185307015157] name "...Sorry for all the trouble. I'll be on my way."
+set key[id=904185307015158] name "Oh, are you sure?\nAll right."
+set key[id=904185307015159] name "Then I'll see you next time!"
+set key[id=904185307015160] name "Haaah..."
+set key[id=904185307015161] name "Hm? Waaah! You scared me!\nWho are you? How did you get up here?\nBodyguard!!!"
+set key[id=904185307015162] name "I came from the broadcasting station for an interview."
+set key[id=904185307015163] name "An interview, huh... I never heard about any such schedule."
+set key[id=904185307015164] name "<font size=\"35\">You're not a paparazzo, are you?</font>\nYou heard I fell out \
+    of Queen Bean Rumble and came to write a nasty article...!"
+set key[id=904185307015165] name "...Not at all."
+set key[id=904185307015166] name "...Huh?"
+set key[id=904185307015167] name "Ahem.\nThe reason I fell out of Queen Bean Rumble is that nobody recognized my \
+    true worth.\nIt's definitely not because I wasn't good enough."
+set key[id=904185307015168] name "Actually, I came to deliver the fans' feelings."
+set key[id=904185307015169] name "The fans' feelings?\nYou mean those girls over there?"
+set key[id=904185307015170] name "I don't need anyone to tell me that.\nThe love they have for me... I can feel it \
+    in my heart without hearing it."
+set key[id=904185307015171] name "And I'm sure my feelings are reaching my fans, too."
+set key[id=904185307015172] name "He's deeper than he looks."
+set key[id=904185307015173] name "...Heh.\nI was getting gloomy, which isn't like me at all."
+set key[id=904185307015174] name "That's right! What's so big about losing a silly event...\nI have my fans!"
+set key[id=904185307015175] name "Today, too, I'll send my feelings through song!\nThank you, everyone!"
+set key[id=904185307015176] name "<font color=\"#909090\">(This seems to be a diary the prisoner wrote on the \
+    morning of his escape.)</font>"
+set key[id=904185307015177] name "<font color=\"#909090\">Today I'm going to break out of prison without telling \
+    $npcName:11000514[gender:1]$.</font>"
+set key[id=904185307015178] name "<font color=\"#909090\">Leaving the one I love behind...</font>\n<font \
+    color=\"#909090\">was a really hard choice.</font>"
+set key[id=904185307015179] name "<font color=\"#909090\">A love between a warden and a prisoner.</font>\n<font \
+    color=\"#909090\">Would everyone just take it as a joke?</font>"
+set key[id=904185307015180] name "<font color=\"#909090\">I truly love $npcName:11000514[gender:1]$, but I can't \
+    spend the rest of my life pulling weeds.</font>\n<font color=\"#909090\">Even if it means betraying \
+    her.</font>"
+set key[id=904185307015181] name "<font color=\"#909090\">I'll escape for sure and meet a bright \
+    future.</font>\n<font color=\"#909090\">And then I'll show up in front of $npcName:11000514[gender:1]$ again, \
+    with my head held high.</font>"
+set key[id=904185307015182] name "<font color=\"#909090\">That's all I'll write in this diary.</font>\n<font \
+    color=\"#909090\">If anyone finds it, wish me luck.</font>"
+set key[id=904185307015183] name "Hm? What brings you to me, $MyPCName$?"
+set key[id=904185307015184] name "I think I saw you talking with $npcName:11000015[gender:1]$...\nIf I'd known, I \
+    would have gone over there myself."
+set key[id=904185307015185] name "I happen to have something to give to $npcName:11000015[gender:1]$, too."
+set key[id=904185307015186] name "Is that the bug repellent?"
+set key[id=904185307015187] name "<font size=\"40\">!!!</font>\nThat's right. How did you know?"
+set key[id=904185307015188] name "Only $npcName:11000015[gender:1]$ and I know that $npcName:11000015[gender:1]$ \
+    uses bug repellent..."
+set key[id=904185307015189] name "$npcName:11000015[gender:1]$ asked me for a favor, so I came to find you."
+set key[id=904185307015190] name "Oh... I see.\nAs expected of $MyPCName$, someone who can be trusted..."
+set key[id=904185307015191] name "Here you go."
+set key[id=904185307015192] name "So this is bug repellent..."
+set key[id=904185307015193] name "You're looking at it with great curiosity.\nI can't tell you the ingredients, \
+    but would you like to try some if you want?"
+set key[id=904185307015194] name "...No thanks, I'm fine."
+set key[id=904185307015195] name "I see.\nThen please hand it over to $npcName:11000015[gender:1]$."
+set key[id=904185307015196] name "Take care!"
+set key[id=904185307015197] name "Huh? $MyPCName$?"
+set key[id=904185307015198] name "What's this? You're actually talking to me!\nIs something wrong?"
+set key[id=904185307015199] name "Please give back $npcName:11000009[gender:0]$'s belongings."
+set key[id=904185307015200] name "...Huh?\nHow did you know about that..."
+set key[id=904185307015201] name "So $npcName:11000009[gender:0]$ is a scaredy-cat too, huh?\nFirst the wolf girl, \
+    and now even $MyPCName$ has come looking for me."
+set key[id=904185307015202] name "Ahem. Anyway!\nI took it for research purposes.\nIt's research we absolutely \
+    need!"
+set key[id=904185307015203] name "It's a very important item to $npcName:11000009[gender:0]$, too."
+set key[id=904185307015204] name "I know that, but..."
+set key[id=904185307015205] name "Hmmm..........."
+set key[id=904185307015206] name "Fine, got it. I'll give it back, okay?\nTsk... I finally had a chance to \
+    research dragon's breath."
+set key[id=904185307015207] name "Dragon's breath?"
+set key[id=904185307015208] name "Yes! You know research on dragons is important, right?\nThis is definitely flame \
+    breathed out by an ancient dragon!"
+set key[id=904185307015209] name "<font size=\"25\">Research for my own sake...</font> I mean, it might help \
+    Kritias research too!"
+set key[id=904185307015210] name "Isn't it just because $npcName:11000042[gender:1]$ is a dragon nerd?"
+set key[id=904185307015211] name "(Caught...)"
+set key[id=904185307015212] name "Anyway! I just have to give it back, right?\nHere! Take it."
+set key[id=904185507015213] name "Ahh... $npcName:11000160[gender:1]$ is dazzling again today..."
+set key[id=904185507015214] name "If I could just say one word to $npcName:11000160[gender:1]$, I'd have no \
+    regrets.\nBut... is that too big a dream?"
+set key[id=905092307015215] name "You've come for a wedding, $MyPCName$. Shall we begin the ceremony now?"
+set key[id=905092307015216] name "Very well. As soon as your partner agrees, we'll begin the wedding."
+set key[id=905092307015217] name "Very well. As soon as your partner agrees, I'll help you wrap up the wedding \
+    completely and say your farewells to the guests."
+set key[id=905135907011042] name "On the name of Full Moon Mill...!"
+set key[id=905135907011043] name "A moon rabbit always repays a kindness!"
+set key[id=905135907011044] name "Hello! Are you here for <font color=\"#ffd200\">songpyeon</font>?"
+set key[id=905135907011045] name "Yes."
+set key[id=905135907011046] name "No."
+set key[id=905135907011047] name "Oh my, sadly there's no songpyeon ready right now.\nBut don't be disappointed \
+    yet! If you bring the ingredients,\nI'll teach anyone how to make it!"
+set key[id=905135907011048] name "How do I get the ingredients?"
+set key[id=905135907011049] name "The ingredients for songpyeon are <font color=\"#ffd200\">$item:30001192$, \
+    $item:30001193$, and $item:30001194$</font>.\n$npc:11001002[gender:1]$, $npcName:11001003[gender:0]$, and I \
+    have a few requests for you, so\nif you follow along with them, you'll get them naturally. "
+set key[id=905135907011050] name "Because of <font color=\"#ffd200\">circumstances we can't avoid</font> at our \
+    mill, we can't make it for you ourselves,\nbut anytime, anywhere! We'll help you make <font \
+    color=\"#ffd200\">delicious songpyeon with a surprise hidden inside</font>.\nI know you're busy, but please \
+    help us out!"
+set key[id=905135907011051] name "Oh, I see!\nBy the way, have you tried the <font \
+    color=\"#ffd200\">songpyeon</font> from our Full Moon Mill?"
+set key[id=905135907011052] name "I've had it, and it was delicious!"
+set key[id=905135907011053] name "I've never tried it."
+set key[id=905135907011054] name "I knew it! The moon rabbits at our Full Moon Mill\nwork hard to make the best \
+    songpyeon and\nenrich the hearts of adventurers!"
+set key[id=905135907011055] name "But sadly, there's no songpyeon ready right now.\nOh, don't be disappointed yet! \
+    If you bring the ingredients,\nI'll teach anyone how to make it!"
+set key[id=905135907011056] name "How do I get the ingredients?"
+set key[id=905135907011057] name "Oh, I see! What a shame.\nBesides the taste, the amazing fun hidden inside when \
+    you eat it\nis what makes our Full Moon Mill songpyeon special... "
+set key[id=905135907011058] name "But sadly, there's no songpyeon ready right now.\nOh, don't be disappointed yet! \
+    If you bring the ingredients,\nI'll teach anyone how to make it!"
+set key[id=905135907011059] name "How do I get the ingredients?"
+set key[id=905152307015219] name "I'd like to end the wedding."
+set key[id=905152307015220] name "If you end the wedding, you, your spouse, and all the guests will leave the \
+    wedding hall.\nIf you haven't completed the ceremony or held the after-event, it's better not to request the \
+    end yet.\nOnce I end the wedding, it stays that way and can't be undone. "
+set key[id=905152307015221] name "If you really want to end it, I'll finish the wedding once your partner agrees. \
+    Do you want that?"
+set key[id=905152307015222] name "I'll end it."
+set key[id=905152307015223] name "I'll think about it."
+set key[id=905152307015224] name "I see. $map:84000013$ is a lovely place, isn't it?\nThen take your time and \
+    enjoy it. Come find me again when you need me."
+set key[id=905152307015225] name "I'd like to start the wedding."
+set key[id=911140307011155] name "Making <font color=\"#ffd200\">Gemstone upgrade materials</font> from \
+    $item:30001187$ and $item:30001188$\nis only available to <font color=\"#ffd200\">adventurers of level 50 or \
+    higher</font>.\nPlease come back after you've grown stronger."
+set key[id=911140307011158] name "Making <font color=\"#ffd200\">Lumestone upgrade materials</font> from \
+    $item:30001187$ and $item:30001189$\nis only available to <font color=\"#ffd200\">adventurers of level 50 or \
+    higher</font>.\nPlease come back after you've grown stronger."
+set key[id=911145207011161] name "The Tria royal family has prepared special supplies for adventurers.\nBut... it \
+    seems $MyPCName$ can't receive them yet.\nThis time, we're only supporting <font color=\"#ffd200\">adventurers \
+    of level 50 or higher</font>.\nI'm sorry, but please come back after you've grown a bit more."
+set key[id=928220507015999] name "I'd like to ask something else."
+set key[id=1003143806000928] name "You can get Shanghai coins by winning Shanghai Crazy Runners."
+set key[id=1005132607016004] name "Nice to see you, $MyPCName$!"
+set key[id=1005132607016005] name "Have a wonderful day today, too!"
+set key[id=1005132607016006] name "I've got event news for you~"
+set key[id=1005132607016007] name "Hello, $MyPCName$! I'm <font \
+    color=\"#ffd200\">$npc:11001002[gender:1]$</font>~\nI'll tell you all about the fun~ e! ve! nts! What are you \
+    curious about? "
+set key[id=1005132607016008] name "What events are running right now?"
+set key[id=1005132607016009] name "Right now the <font color=\"#ffd200\">Free Workshop Crafting Event</font> and \
+    the <font color=\"#ffd200\">90% Off Construction Materials Event</font> are running~!\nThe Free Workshop \
+    Crafting Event requires a <font color=\"#ffd200\">Free Design Crafting Coupon</font>!\nYou can buy coupons \
+    from my big brother, <font color=\"#ffd200\">$npc:11500002[gender:0]$</font>~!"
+set key[id=1005132907016010] name "Hello, $MyPCName$!"
+set key[id=1005132907016011] name "What should you do to have fun every single day?"
+set key[id=1005132907016012] name "Join the events!"
+set key[id=1005132907016013] name "Hello, $MyPCName$~ I'm <font \
+    color=\"#ffd200\">$npc:11001003[gender:0]$</font>!\nWhich event are you curious about? "
+set key[id=1005132907016014] name "What events are running right now?"
+set key[id=1005132907016015] name "Right now the <font color=\"#ffd200\">Free Workshop Crafting Event</font> and \
+    the <font color=\"#ffd200\">90% Off Construction Materials Event</font> are running~!\nThe Free Workshop \
+    Crafting Event requires a <font color=\"#ffd200\">Free Design Crafting Coupon</font>!\nYou can buy coupons \
+    from me, <font color=\"#ffd200\">$npc:11500002[gender:0]$</font>~!"
+set key[id=1019111306000948] name "Welcome, $MyPCName$!\nThis is the <font color=\"#ffd200\">Monday Shop</font>, \
+    open only on <font color=\"#ffd200\">Mondays</font>!\nAs long as you have <font \
+    color=\"#ffd200\">$item:30000750$</font>, you can buy anything you like!"
+set key[id=1019111306000949] name "Where can I get <font color=\"#ffd200\">$item:30000750$</font>?"
+set key[id=1019111306000951] name "If you log in on Saturday or Sunday, <font \
+    color=\"#ffd200\">$item:30000750$</font> is\n<font color=\"#ffd200\">sent by mail</font> to <font \
+    color=\"#ffd200\">adventurers of level 50 or higher</font> only.\nLog in diligently, collect <font \
+    color=\"#ffd200\">$item:30000750$</font>, and enjoy\nsome fun shopping at the Monday Shop!"
+set key[id=1022124907015275] name "Nice to see you, $MyPCName$!"
+set key[id=1022124907015276] name "Nice to see you, $MyPCName$. Do you need my help?"
+set key[id=1023132807015279] name "The after-party is in full swing,\nso let's talk in a bit!"
+set key[id=1023132807015280] name "Let's party!"
+set key[id=1023132807015281] name "It's showtime!"
+set key[id=1023132807015282] name "Enjoy this moment!"
+set key[id=1023132807015283] name "Everybody shout together! $npc:11004733[gender:0]$!"
+set key[id=1023151407015284] name "Whassup, man~ Let's enjoy the after-party!"
+set key[id=1023151407015285] name "Thrilling! Fun!"
+set key[id=1023151407015286] name "Drum-drum-boom-boom~"
+set key[id=1023151407015287] name "Check out the lights! You can dance!"
+set key[id=1023151407015288] name "Whassup, man~ I came to help MC Dayday!"
+set key[id=1023151407015289] name "Yo ma bro! Weddings are always beautiful!"
+set key[id=1023151407015290] name "Congratulations on the birth of the newlyweds!"
+set key[id=1023151407015291] name "Give yourself to the beat~!"
+set key[id=1023151407015292] name "Check out the lights! You can dance!"
+set key[id=1023151407015293] name "Yo ma bro! Weddings are always beautiful!"
+set key[id=1023151407015294] name "Feel it~ Enjoy it~ Move it~"
+set key[id=1023151407015295] name "Hey, you there! Move it, move it for the bride and groom!"
+set key[id=1023151407015296] name "Give yourself to the beat~!"
+set key[id=1023151407015297] name "Check out the lights! You can dance!"
+set key[id=1023151407015298] name "Hey, you there! Move it, move it for the bride and groom!"
+set key[id=1023151407015299] name "Dance, play games! Go all out and enjoy yourself at the wedding~"
+set key[id=1023151407015300] name "The end of a wedding is a dance party!"
+set key[id=1023151407015301] name "Dancing and games in the rhythm~ Fantastic!"
+set key[id=1023151407015302] name "Dance on the lights!"
+set key[id=1023151407015303] name "Dance, play games! Go all out and enjoy yourself at the wedding~"
+set key[id=1023183207015304] name "Welcome, $MyPCName$!"
+set key[id=1023183207015305] name "The party hall's atmosphere is great today! Have a wonderful time!"
+set key[id=1023183207015306] name "Welcome to the party hall, $MyPCName$! Would you like to start Dance Dance \
+    Stop?"
+set key[id=1023183207015307] name "I'd like to start Dance Dance Stop."
+set key[id=1023183207015308] name "Okay, we'll start as soon as your partner agrees!"
+set key[id=1023190707015309] name "The mood is the best! It makes me want to let my hair down, too~!"
+set key[id=1023190707015310] name "Dance dance, everyone~!"
+set key[id=1024135807015311] name "I'm $npcName:11004712[gender:1]$, a lawyer with $map:84000002$."
+set key[id=1024135807015312] name "I'm $npcName:11004712[gender:1]$, a lawyer at $map:84000002$. How may I help \
+    you?"
+set key[id=1024135807015313] name "I'm $npcName:11004713[gender:0]$, a lawyer at $map:84000002$. Do you need \
+    something from me?"
+set key[id=1024135807015314] name "I'm $npcName:11004713[gender:0]$, a lawyer at $map:84000002$. Do you need \
+    something from me?"
+set key[id=1024144007015315] name "Welcome to $map:84000002$."
+set key[id=1024144007015316] name "Still, it's a relief that there are few visitors today."
+set key[id=1024144007015317] name "A famous couple like this is splitting up... It'll be on the nine o'clock \
+    news."
+set key[id=1024144007015318] name "So you came here too, $MyPCName$."
+set key[id=1024144007015319] name "Am I really making the right choice?"
+set key[id=1024144007015320] name "We were so happy..."
+set key[id=1024144007015321] name "I tried to put up with it many times, but there's nothing I can do."
+set key[id=1024144007015322] name "To leave without a word."
+set key[id=1024144007015323] name "I'm heartbroken that it has come to this..."
+set key[id=1026195906001028] name "Nice to see you, $MyPCName$!"
+set key[id=1026195906001029] name "We have lots of rare goods, so take a look around!"
+set key[id=1029133507015326] name "It's me, $npcName:11004709[gender:0]$. I don't recommend just anything. Trust \
+    me~!"
+set key[id=1029133507015327] name "It's me, $npcName:11004709[gender:0]$. I don't recommend just anything. Please \
+    trust me~!"
+set key[id=1029182507015328] name "Nice to see you, $MyPCName$. Do you need my help?"
+set key[id=1029182507015329] name "I want to get married."
+set key[id=1029182507015330] name "How do I reserve a wedding hall?"
+set key[id=1029182507015331] name "That's right, it would be so happy to find your other half to share this \
+    beautiful world with.\nWhenever you have someone you've promised to marry, come to me. I'll help you reserve a \
+    wonderful wedding."
+set key[id=1029182507015332] name "How do I get married?"
+set key[id=1029182507015333] name "I want to marry you."
+set key[id=1029182507015334] name "To get married, you first have to propose to a friend and become engaged.\nThen \
+    meet a wedding planner, reserve a wedding hall, and hold the ceremony.\nBe careful, the engagement lasts only \
+    7 days, and if you don't hold the wedding by then, the engagement disappears."
+set key[id=1029182507015335] name "After the wedding, you become a married couple and can build up closeness.\nFor \
+    a long and happy life, being good companions to each other, sweet and fun together!"
+set key[id=1029182507015336] name "When you reserve a wedding hall and when you complete the wedding, I send a \
+    reservation gift and a wedding gift by mail.\nThese gifts differ depending on the wedding hall, so choose \
+    carefully when you reserve.\nIf you change your reservation, the matching reservation gift will be sent by \
+    mail, so don't worry~"
+set key[id=1029182507015337] name "Oh, this popularity of mine~ it just won't go away.\nHeh, I appreciate the \
+    feeling, but I can't accept.\nWhen you find someone wonderful who suits you, I'll help you have a wonderful \
+    wedding then. "
+set key[id=1029182507015338] name "You can reserve a wedding hall through the wedding planners.\nJust talk to a \
+    wedding planner, reserve a hall, and pay the reservation fee.\nIf you want details, why not try making a \
+    reservation yourself? "
+set key[id=1029182507015339] name "Oh, and each wedding planner has a slightly different specialty and different \
+    recommendations.\nIt's a good idea to consult the wedding planners before you make a reservation. "
+set key[id=1029182507015340] name "Could you recommend a wedding hall?"
+set key[id=1029182507015341] name "The wedding halls I recommend are the romantic Forest of Love, \
+    $map:84000013$,\nand the brave Wild Mountains, $map:84000014$. Those two.\nIf you'd like to see them in \
+    advance, come back after you're engaged.\nEngaged couples get a chance to take a preview tour. "
+set key[id=1029182507015342] name "Nice to see you, $MyPCName$. Do you need my help?"
+set key[id=1029182507015343] name "I'd like to reserve a wedding hall."
+set key[id=1029182507015344] name "I'd like to take the recommended wedding hall tour."
+set key[id=1029182507015345] name "I'm glad you came. I'll help you make a reservation right away."
+set key[id=1029182507015346] name "The recommended wedding hall tour is a service that shows you the halls the \
+    wedding planner recommends in advance.\nIt's only for getting a feel for them, so please note that you can \
+    only take a quick look around at a set spot~"
+set key[id=1029182507015347] name "The wedding halls I recommend are the romantic Forest of Love, \
+    $map:84000013$,\nand the brave Wild Mountains, $map:84000014$. Those two. "
+set key[id=1029182507015348] name "I'd like to visit $map:84000013$."
+set key[id=1029182507015349] name "I'd like to visit $map:84000014$."
+set key[id=1029182507015350] name "Understood.\nThey look different by day and night... Which would you like to \
+    visit? "
+set key[id=1029182507015351] name "I'd like to visit $map:84000013$ by day."
+set key[id=1029182507015352] name "I'd like to visit $map:84000013$ by night."
+set key[id=1029182507015353] name "Okay, I'll take you there now."
+set key[id=1029182507015354] name "Okay, I'll take you there now."
+set key[id=1029182507015355] name "Understood.\nThey look different by day and night... Which would you like to \
+    visit? "
+set key[id=1029182507015356] name "I'd like to visit $map:84000014$ by day."
+set key[id=1029182507015357] name "I'd like to visit $map:84000014$ by night."
+set key[id=1029182507015358] name "Okay, I'll take you there now."
+set key[id=1029182507015359] name "Okay, I'll take you there now."
+set key[id=1029182507015364] name "Nice to see you, $MyPCName$. Do you need my help?"
+set key[id=1029182507015365] name "I want to get married."
+set key[id=1029182507015366] name "Hmm... It seems you went through a divorce not long ago...\nI think it's still \
+    too early for a new marriage.\nLet's meet again when you find a new connection after some more time has \
+    passed."
+set key[id=1101145407015367] name "Tell me how to get a divorce."
+set key[id=1101145407015368] name "A divorce is the procedure for when the two people in a marriage want to end \
+    it.\nWhen you divorce, all rewards, including the closeness you built with your current spouse, will be \
+    deleted.\nAlso, for 48 hours after the divorce is complete, you can't propose or reserve a wedding."
+set key[id=1101145407015369] name "I'm $npcName:11004712[gender:1]$, a lawyer at $map:84000002$. How may I help \
+    you?"
+set key[id=1101145407015370] name "I want a mutual divorce."
+set key[id=1101145407015371] name "I want a forced divorce."
+set key[id=1101145407015372] name "Tell me how to get a divorce."
+set key[id=1101145407015373] name "A mutual divorce is a quick way for the two people in a marriage to divorce by \
+    agreement.\nA couple married for 31 days or more can apply by coming together to $map:84000002$."
+set key[id=1101145407015374] name "When you divorce, all rewards, including the closeness you built with your \
+    current spouse, will be deleted.\nAlso, for 48 hours after the divorce is complete, you can't propose to \
+    another character or reserve a wedding."
+set key[id=1101145407015375] name "Do you still want to go through with the divorce?"
+set key[id=1101145407015376] name "I understand the explanation about divorce, and I'd like a mutual divorce."
+set key[id=1101145407015377] name "I'll think about it again."
+set key[id=1101145407015378] name "Your answer is confirmed, and we'll accept your mutual divorce.\nIf the divorce \
+    completes normally, a confirmation mail will arrive, so please check it."
+set key[id=1101145407015379] name "Very well. Please think it over carefully, and come back anytime if you need \
+    help."
+set key[id=1101145407015380] name "If you want a forced divorce, which proceeds regardless of the other person's \
+    wishes, go to the lawyer in charge, $npcName:11004713[gender:0]$.\nJust cross over to the room on the right."
+set key[id=1101145407015381] name "I'm $npcName:11004712[gender:1]$, a lawyer at $map:84000002$. How may I help \
+    you?"
+set key[id=1101145407015382] name "I'm here to take care of a forced divorce matter."
+set key[id=1101145407015383] name "Forced divorces are handled by the lawyer $npcName:11004713[gender:0]$.\nYou \
+    can meet him by crossing over to the room on the right."
+set key[id=1101145407015384] name "I'm $npcName:11004712[gender:1]$, a lawyer at $map:84000002$. How may I help \
+    you?"
+set key[id=1101145407015385] name "I'm here to take care of a forced divorce matter."
+set key[id=1101145407015386] name "Forced divorces are handled by the lawyer $npcName:11004713[gender:0]$.\nYou \
+    can meet him by crossing over to the room on the right."
+set key[id=1101145407015387] name "I'm $npcName:11004712[gender:1]$, a lawyer at $map:84000002$. How may I help \
+    you?"
+set key[id=1101145407015388] name "When can I propose to someone else?"
+set key[id=1101145407015389] name "To propose to someone else, 48 hours must pass after the divorce is \
+    complete.\nI'd recommend taking that time to think it over more carefully."
+set key[id=1101145407015390] name "Tell me how to get a divorce."
+set key[id=1101145407015391] name "A divorce is the procedure for when the two people in a marriage want to end \
+    it.\nWhen you divorce, all rewards, including the closeness you built with your current spouse, will be \
+    deleted.\nAlso, for 48 hours after the divorce is complete, you can't propose or reserve a wedding."
+set key[id=1101145407015392] name "I'm $npcName:11004713[gender:0]$, a lawyer at $map:84000002$. Do you need \
+    something from me?"
+set key[id=1101145407015393] name "I want a forced divorce."
+set key[id=1101145407015394] name "I want a mutual divorce."
+set key[id=1101145407015395] name "Tell me how to get a divorce."
+set key[id=1101145407015396] name "A forced divorce is a method for when one person in a couple married for 31 \
+    days or more wants a divorce without the other's consent, and it involves a fee and a cooling-off \
+    period.\nI'll now explain the precautions for divorce. The fee is not refunded after you decide, so please be \
+    careful."
+set key[id=1101145407015397] name "When you divorce, all rewards, including the closeness you built with your \
+    current spouse, will be deleted.\nAlso, for 48 hours after the divorce is complete, you can't propose to \
+    another character or reserve a wedding."
+set key[id=1101145407015398] name "When a forced divorce application is accepted, the other person is \
+    notified.\nIf the other person agrees to the forced divorce during the 7-day cooling-off period, the fee \
+    $MyPCName$ paid is refunded, but if they don't agree, it is not refunded.\nWhen the cooling-off period ends, \
+    the divorce of the two is completed."
+set key[id=1101145407015399] name "Then, would you like to continue with the forced divorce? The forced divorce \
+    fee is 1,000,000 mesos."
+set key[id=1101145407015400] name "I understand the forced divorce details, and I want to continue."
+set key[id=1101145407015401] name "I'll think about it again."
+set key[id=1101145407015402] name "Your answer is confirmed, and we'll accept your forced divorce.\nIf the \
+    application is accepted normally, the other person will be notified, and a confirmation mail will be sent \
+    whenever the progress changes, so please check it."
+set key[id=1101145407015403] name "Very well. Please think it over carefully, and come see us if you need help."
+set key[id=1101145407015404] name "A mutual divorce, where you visit here together with your partner and divorce \
+    right away, is handled by the lawyer $npcName:11004712[gender:1]$.\nJust cross over to the room on the left."
+set key[id=1101145407015405] name "I'm $npcName:11004713[gender:0]$, a lawyer at $map:84000002$. Do you need \
+    something from me?"
+set key[id=1101145407015406] name "I received a forced divorce application, and I came to agree to it."
+set key[id=1101145407015407] name "If you agree to the forced divorce, the divorce is completed right away, and \
+    the fee the other person paid is refunded to them.\nThe divorce is processed immediately. You don't have to \
+    wait until the cooling-off period ends."
+set key[id=1101145407015408] name "I'd like to agree."
+set key[id=1101145407015409] name "I'll think about it again."
+set key[id=1101145407015410] name "Your answer is confirmed. We accept the two of you agreeing to the forced \
+    divorce.\nWhen the divorce is completed, a confirmation mail will arrive, so please check it."
+set key[id=1101145407015411] name "Very well. Please think it over carefully, and come back anytime if you need \
+    help."
+set key[id=1101145407015412] name "I'm $npcName:11004713[gender:0]$, a lawyer at $map:84000002$. Do you need \
+    something from me?"
+set key[id=1101145407015413] name "I received a forced divorce application, and I came to agree to it."
+set key[id=1101145407015414] name "If you agree to the forced divorce, the divorce is completed right away, and \
+    the fee the other person paid is refunded to them.\nThe divorce is processed immediately. You don't have to \
+    wait until the cooling-off period ends."
+set key[id=1101145407015415] name "I understand the forced divorce details, and I want to continue."
+set key[id=1101145407015416] name "I'll think about it again."
+set key[id=1101145407015417] name "Your answer is confirmed. We accept the two of you agreeing to the forced \
+    divorce.\nWhen the divorce is completed, a confirmation mail will arrive, so please check it."
+set key[id=1101145407015418] name "Very well. Please think it over carefully, and come back anytime if you need \
+    help."
+set key[id=1101162707015419] name "Nice to see you, $MyPCName$. Do you need help?"
+set key[id=1101162707015420] name "I'd like to change my wedding hall reservation."
+set key[id=1101162707015422] name "Understood.\nThen I'll help you change your reservation right away. "
+set key[id=1101162707015423] name "Okay, first check the reservation info and make your final decision.\nIf your \
+    partner agrees to cancel the reservation, we'll give you a <font color=\"#ffd200\">free reservation coupon for \
+    a wedding hall of the same grade</font> later. The coupon is valid for 30 days after you get it, so be sure to \
+    use it within that time.\nIf your partner doesn't agree, you won't receive the free reservation coupon."
+set key[id=1101162707015424] name "$MyPCName$~! Welcome. Do you need my help?"
+set key[id=1101162707015425] name "I want to get married."
+set key[id=1101162707015426] name "How do I reserve a wedding hall?"
+set key[id=1101162707015427] name "Yes! Wouldn't it be wonderful to find your other half to share this beautiful \
+    Maple World with?\nWhenever you have someone you've promised to marry, come on over. I'll prepare a wedding as \
+    wonderful as magic, as a miracle."
+set key[id=1101162707015428] name "How do I get married?"
+set key[id=1101162707015429] name "I want to marry you."
+set key[id=1101162707015430] name "So hasty! To get married, you need to get engaged first.\nIf you propose to the \
+    person you want to marry and they accept, you become engaged, okay?\nThen go to me or the other wedding \
+    planners, reserve a wedding hall, and hold the ceremony. Okay?"
+set key[id=1101162707015431] name "After the wedding, you become a married couple and can build up closeness.\nFor \
+    a long and happy life, sweet and fun together! Being good companions to each other!"
+set key[id=1101162707015432] name "When you reserve a wedding hall and when you complete the wedding, I send a \
+    reservation gift and a wedding gift by mail.\nThese gifts differ depending on the wedding hall, so choose \
+    c-a-r-e-f-u-l-l-y when you reserve.\nIf you change your reservation, the matching reservation gift will be \
+    sent by mail, so don't worry~"
+set key[id=1101162707015433] name "Who, me? Hahaha! Sadly, no. I'm a special being who must never marry \
+    anyone.\nBut I'll decorate your wedding more wonderfully than anyone's, so when you find someone to marry, be \
+    sure to come to me! "
+set key[id=1101162707015434] name "You can reserve a wedding hall through the wedding planners.\nJust talk to a \
+    wedding planner, reserve a hall, and pay the reservation fee.\nIf you want details, why not try making a \
+    reservation yourself? "
+set key[id=1101162707015435] name "Oh, and each wedding planner has a slightly different specialty and different \
+    recommendations,\nso it's a good idea to consult the wedding planners before you make a reservation~! "
+set key[id=1101162707015436] name "Could you recommend a wedding hall?"
+set key[id=1101162707015437] name "My recommended wedding halls are~ the paradise at the top of the building \
+    forest, $map:84000015$!\nAnd a very glamorous wedding on a ship, $map:84000016$! Those two, my friend~!\nIf \
+    you want to see them in advance, come find me again after you're engaged.\nBecause engaged couples get a \
+    chance to take a preview tour! "
+set key[id=1101162707015438] name "$MyPCName$~! Welcome. Do you need my help?"
+set key[id=1101162707015439] name "I'd like to reserve a wedding hall."
+set key[id=1101162707015440] name "I'd like to take the recommended wedding hall tour."
+set key[id=1101162707015441] name "An excellent choice. Let's start the reservation right now!"
+set key[id=1101162707015442] name "The recommended wedding hall tour. It's a service that shows you the halls the \
+    wedding planner recommends in advance.\nZip, off to a gorgeous wedding hall like magic, and snap, right back! \
+    It'll be a mysterious and fun experience!"
+set key[id=1101162707015443] name "My recommended wedding halls are~ the paradise at the top of the building \
+    forest, $map:84000015$!\nAnd a very glamorous wedding on a ship, $map:84000016$! Those two, my friend~! "
+set key[id=1101162707015444] name "I'd like to visit $map:84000015$."
+set key[id=1101162707015445] name "I'd like to visit $map:84000016$."
+set key[id=1101162707015446] name "Heh heh, a very good choice. You're looking forward to it too, right?\nThey \
+    look different by day and night... Which would you like to visit? "
+set key[id=1101162707015447] name "I'd like to visit $map:84000015$ by day."
+set key[id=1101162707015448] name "I'd like to visit $map:84000015$ by night."
+set key[id=1101162707015449] name "All right, off we go. Parapop!"
+set key[id=1101162707015450] name "All right, off we go. Doobiedoop!"
+set key[id=1101162707015451] name "Heh heh, a very good choice. You're looking forward to it too, right?\nThey \
+    look different by day and night... Which would you like to visit? "
+set key[id=1101162707015452] name "I'd like to visit $map:84000016$ by day."
+set key[id=1101162707015453] name "I'd like to visit $map:84000016$ by night."
+set key[id=1101162707015454] name "All right, off we go. Taratat!"
+set key[id=1101162707015455] name "All right, off we go. Shoobiboop!"
+set key[id=1101162707015456] name "$MyPCName$~! What a sweet fragrance you have.\nIt must be because married life \
+    is so, so happy!"
+set key[id=1101162707015457] name "I'm happy."
+set key[id=1101162707015459] name "An excellent choice. Let's start the reservation right now!"
+set key[id=1101162707015460] name "$MyPCName$~! Welcome. Do you need my help?"
+set key[id=1101162707015461] name "I want to get married."
+set key[id=1101162707015462] name "Dear... didn't you go through a divorce not long ago?\nI know a change of mood \
+    is important, but I think it's still too early to prepare for a new marriage.\nLet's meet again when you find \
+    a new connection after some more time has passed."
+set key[id=1101162707015463] name "$MyPCName$~! Welcome. Do you need my help?"
+set key[id=1101162707015464] name "I'd like to change my wedding hall reservation."
+set key[id=1101162707015466] name "Gooot it. I'll help you in no time! "
+set key[id=1104180407015468] name "What can I help you with, $MyPCName$?"
+set key[id=1104180407015469] name "I'm too heartbroken, so let's talk next time."
+set key[id=1104180407015470] name "Even you came here... Think it over carefully."
+set key[id=1105150207015471] name "Hmm hmm hmm~"
+set key[id=1105150207015472] name "I'm finally getting married to my $npcName:11004767[gender:0]$.\nBecoming one \
+    woman's man is really nerve-racking!"
+set key[id=1105150207015473] name "But with $npcName:11004767[gender:0]$, I have nothing to fear!\nI came out of \
+    my house just for today!\nEven though I hate getting a tan more than anything in the world."
+set key[id=1105150207015474] name "Cheer on our wedding!"
+set key[id=1105150207015475] name "I'm finally getting married too..."
+set key[id=1105150207015476] name "If $npcName:11004767[gender:0]$ is happy, I'm happy!"
+set key[id=1105150207015477] name "La la la~"
+set key[id=1105150207015478] name "Hehehe. I feel so good.\nThe weather is so nice! I hope it's this sunny on my \
+    wedding day, too."
+set key[id=1105150207015479] name "I want to be the most beautiful bride in the world.\nI've toured wedding halls \
+    a hundred times, and they're all so pretty that I still can't decide!"
+set key[id=1105150207015480] name "Even $npcName:11004766[gender:1]$, such a homebody, looks to be in a good mood \
+    today.\nI'm so happy!"
+set key[id=1105150207015481] name "$npcName:11004766[gender:1]$~ Which wedding hall would be good?"
+set key[id=1105150207015482] name "I'm so excited!"
+set key[id=1105150207015483] name "Meow... This is absurd, meow..."
+set key[id=1105150207015484] name "This is absurd, meow!\nHow can there be such a rule, meow!"
+set key[id=1105150207015485] name "Animals can't use the wedding hall to get married...\nThat's so unfair, meow!"
+set key[id=1105150207015486] name "It's so unfair, meow. Who do I even tell about this, meow..."
+set key[id=1105150207015487] name "This can't be, meow..."
+set key[id=1105150207015488] name "I want to marry $npcName:11004769[gender:0]$ too, meow!"
+set key[id=1105150207015489] name "Meooow..."
+set key[id=1105150207015490] name "$npcName:11004768[gender:1]$ and I have dreamed of getting married since we \
+    first met, meow.\nI thought that wish was finally coming true..."
+set key[id=1105150207015491] name "$npcName:11004768[gender:1]$ is even more disappointed than I am, so this is \
+    bad, meow.\nI'll comfort them and head back to $map:02000139$, meow..."
+set key[id=1105150207015492] name "There's nothing we can do, meow..."
+set key[id=1105150207015493] name "Let's hold a wedding just for the two of us, meow."
+set key[id=1105150207015494] name "Ohh..."
+set key[id=1105150207015495] name "So this is $map:84000001$.\nIt's near my home, so I came out to look around on \
+    a walk..."
+set key[id=1105150207015496] name "Couples here, couples there... Aaah!\nI'm getting goosebumps all over!"
+set key[id=1105150207015497] name "I'd better head home right away.\n...Though in a way, I'm a little jealous of \
+    the couples."
+set key[id=1105150207015498] name "A place packed with couples like this..."
+set key[id=1105150207015499] name "Haaah... Where is my other half?"
+set key[id=1105150207015500] name "Haaah..."
+set key[id=1105150207015501] name "This is such a beautiful place.\nThe couples all look happy, too."
+set key[id=1105150207015502] name "I hope that when I come back next time... I won't be alone.\nSuch a day will \
+    surely come, right?"
+set key[id=1105150207015503] name "Haaah... I'm so unsettled, so unsettled."
+set key[id=1105150207015504] name "I wish I had someone to lean on, too..."
+set key[id=1105150207015505] name "Becoming husband and wife is a beautiful thing."
+set key[id=1105173007015506] name "Ugh, honestly!"
+set key[id=1105173007015507] name "We just can't communicate!"
+set key[id=1105173007015508] name "That's why I'm saying let's think it over again!"
+set key[id=1105173007015509] name "This is why we ended up here!"
+set key[id=1105173007015510] name "I'm so frustrated!"
+set key[id=1105173007015511] name "I can't live with someone this frustrating anymore!"
+set key[id=1105173007015512] name "I'm done! See you in 4 weeks!"
+set key[id=1105173007015513] name "You should have been good when you had the chance! What's the use of doing this \
+    now?"
+set key[id=1106134307015514] name "Nice to see you, $MyPCName$. Do you need my help?"
+set key[id=1106134307015515] name "I'd like to renew our vows."
+set key[id=1106134307015516] name "$MyPCName$, you can only hold a vow renewal once at least 30 days have passed \
+    since your wedding.\nYou can't go ahead just yet, so please come back after a little more time has passed. "
+set key[id=1106134307015517] name "Nice to see you, $MyPCName$. Do you need help?"
+set key[id=1106134307015518] name "I'd like to change my wedding hall reservation."
+set key[id=1106134307015520] name "Understood. Then I'll help you change your reservation right away.\nYour \
+    partner has to come here and agree to it too before it can be changed, so be sure to call them over. "
+set key[id=1106134307015521] name "Okay, first check the reservation info and make your final decision.\nIf your \
+    partner agrees to cancel the reservation, we'll give you a <font color=\"#ffd200\">free reservation coupon for \
+    a wedding hall of the same grade</font> later. The coupon is valid for 30 days after you get it, so be sure to \
+    use it within that time.\nIf your partner doesn't agree, you won't receive the free reservation coupon."
+set key[id=1106143507015522] name "A great studio is what completes a joyful wedding!"
+set key[id=1106143507015524] name "Focusing on the one you love inside the viewfinder is like a tutorial in \
+    love~\nThe moment when you're beside me and I'm beside you... let's capture it in a photo."
+set key[id=1106143507015528] name "All right, then I'm closing the shooting set.\nGoodbye, everyone~!"
+set key[id=1106143507015529] name "A great studio is what completes a joyful wedding!"
+set key[id=1106143507015530] name "The land of fan-tasy, $map:84000004$~\nThe perfect place to finish off a happy \
+    wedding with photos, $map:84000004$!"
+set key[id=1106143507015531] name "Don't forget, a face with no frown shines brightest in the world.\nForget all \
+    your worries and I hope you have a wonderful time at $map:84000004$!"
+set key[id=1106143507015535] name "All right, then I'm closing the shooting set.\nGoodbye, everyone~!"
+set key[id=1106143507015536] name "A great studio is what completes a joyful wedding!"
+set key[id=1106143507015537] name "Take some magical photos underwater~\nIn $map:84000005$, everyone is the hero \
+    of a land of adventure and fantasy!"
+set key[id=1106143507015538] name "You can even fly here! Flying underwater feels sooo good!\nIt's a special day, \
+    so enjoy it to the fullest!"
+set key[id=1106143507015542] name "All right, then I'm closing the shooting set.\nGoodbye, everyone~!"
+set key[id=1106180307015546] name "You look happy, $MyPCName$.\nWhat do you plan to do now?"
+set key[id=1106192207015548] name "Thank you, $MyPCName$.\nYou look dazzlingly beautiful today, too. Let us \
+    celebrate this happy couple together."
+set key[id=1106192207015549] name "What a beautiful day, $MyPCName$. If you're ready, shall we begin the wedding?"
+set key[id=1106192207015550] name "I'd like to start the wedding."
+set key[id=1106192207015551] name "Very well. Once your partner agrees too, we'll begin the wedding right away."
+set key[id=1106192207015552] name "That was a wonderful wedding for a lovely couple, $MyPCName$.\nNow, what will \
+    you do? Let me know whether to end the wedding or enjoy the after-events a little longer."
+set key[id=1106192207015553] name "I'd like to end the wedding."
+set key[id=1106192207015554] name "We still have the commemorative photos and the after party."
+set key[id=1106192207015555] name "When the wedding ends, the couple and all the guests will leave the wedding \
+    hall.\nIf there are after-events you haven't done yet, or you'd like to enjoy the wedding a bit more, it would \
+    be best not to request the ending yet.\nOnce I end the wedding, it can't be undone."
+set key[id=1106192207015556] name "If you want to end it, I'll finish the wedding once your partner agrees."
+set key[id=1106192207015557] name "I'd like to end the wedding now."
+set key[id=1106192207015558] name "I'll think about it."
+set key[id=1106192207015559] name "Understood. Once your partner agrees, I'll help you end the wedding completely \
+    and say your farewells to the guests."
+set key[id=1106192207015560] name "Very well. I hope you enjoy your radiant time in the beautiful \
+    $map:84000015$.\nTime never comes back, so let's make the most of this moment.\nI'll be right here, so come \
+    find me again when you need me."
+set key[id=1106192207015561] name "What a wonderful ship!"
+set key[id=1106192207015562] name "$map:84000016$ is ready to shine for today's star couple!\nThe splendor of the \
+    wide open sea! A freedom nothing can match! Let's celebrate together and enjoy this time!"
+set key[id=1106192207015563] name "$MyPCName$! Are you ready to begin the wedding?"
+set key[id=1106192207015564] name "I'd like to start the wedding."
+set key[id=1106192207015565] name "Yes! Once your partner agrees, we'll begin the wedding right away."
+set key[id=1106192207015566] name "That was a truly wonderful wedding, $MyPCName$!\nDo you need my help with \
+    anything?"
+set key[id=1106192207015567] name "I'd like to end the wedding."
+set key[id=1106192207015568] name "We still have the commemorative photos and the after party."
+set key[id=1106192207015569] name "When you end the wedding, the couple and all the guests will leave the wedding \
+    hall.\nIf there are after-events you haven't done yet, or you'd like to enjoy the wedding a bit more, it's \
+    best not to request the ending yet.\nOnce I end the wedding, it can't be undone."
+set key[id=1106192207015570] name "If you still want to end it, I'll finish the wedding once your partner agrees!"
+set key[id=1106192207015571] name "I'd like to end the wedding now."
+set key[id=1106192207015572] name "I'll think about it."
+set key[id=1106192207015573] name "Yes. Once your partner agrees, I'll help you end the wedding completely and let \
+    the guests step off the ship."
+set key[id=1106192207015574] name "Is that what you'd like? I'd be even happier if you enjoyed $map:84000016$ a \
+    little longer.\nI'll be right here, so find me any time you need me!"
+set key[id=1106192207015575] name "$MyPCName$. Would you like to begin the wedding now?"
+set key[id=1106192207015576] name "I'd like to start the wedding."
+set key[id=1106192207015577] name "Very well. Once your partner agrees, we'll begin the wedding right away."
+set key[id=1106192207015578] name "It was a lovely wedding, $MyPCName$.\nDo you want to end the wedding now? Or \
+    are you thinking of enjoying the after-events a little more?"
+set key[id=1106192207015579] name "I'd like to end the wedding."
+set key[id=1106192207015580] name "We still have the commemorative photos and the after party."
+set key[id=1106192207015581] name "When you end the wedding, the couple and all the guests will leave the wedding \
+    hall.\nIf there are after-events you haven't done yet, or you'd like to enjoy the wedding a bit more, it would \
+    be best not to request the ending yet.\nOnce I end the wedding, it can't be undone."
+set key[id=1106192207015582] name "If you truly want to end it, I'll finish the wedding once your partner agrees. \
+    Is that what you want?"
+set key[id=1106192207015583] name "I'll end it."
+set key[id=1106192207015584] name "I'll think about it."
+set key[id=1106192207015585] name "Understood. Once your partner agrees, I'll help you end the wedding completely \
+    and say your farewells to the guests."
+set key[id=1106192207015586] name "All right.\nEnjoy the wedding a bit more, and come find me again when you need \
+    me."
+set key[id=1106192207015587] name "$MyPCName$. Shall we begin the wedding?"
+set key[id=1106192207015588] name "I'd like to start the wedding."
+set key[id=1106192207015589] name "Very well. As soon as your partner agrees, we'll begin the wedding."
+set key[id=1106192207015590] name "That was a fine wedding, $MyPCName$. What a good-looking pair!\nWhat do you \
+    plan to do from here? Tell me if you want to end the wedding."
+set key[id=1106192207015591] name "I'd like to end the wedding."
+set key[id=1106192207015592] name "We still have the commemorative photos and the after party."
+set key[id=1106192207015593] name "When you end the wedding, the couple and all the guests will leave the wedding \
+    hall.\nIf there are after-events you haven't done yet, or you'd like to enjoy the wedding a bit more, it's \
+    best not to request the ending yet.\nOnce I end the wedding, it can't be undone."
+set key[id=1106192207015594] name "Well, what will it be? Shall we end the wedding?"
+set key[id=1106192207015595] name "I'll end it."
+set key[id=1106192207015596] name "I'll think about it."
+set key[id=1106192207015597] name "Understood. Once your partner agrees, I'll end the wedding for you.\nNow, be \
+    happy!"
+set key[id=1106192207015598] name "Very well. Enjoy the wedding a bit more, and tell me when you need me."
+set key[id=1106192207015599] name "We still have the commemorative photos and the after party."
+set key[id=1106192207015600] name "$MyPCName$. Are you ready to begin the wedding?"
+set key[id=1106192207015601] name "I'd like to start the wedding."
+set key[id=1106192207015602] name "Understood. Once your partner agrees, we'll begin the wedding right away."
+set key[id=1106192207015603] name "That was a truly wonderful wedding, $MyPCName$. I bless you both, such \
+    beautiful people.\nDo you want to end the wedding? Or are you thinking of enjoying the after-events a little \
+    more?"
+set key[id=1106192207015604] name "I'd like to end the wedding."
+set key[id=1106192207015605] name "We still have the commemorative photos and the after party."
+set key[id=1106192207015606] name "When you end the wedding, the couple and all the guests will leave the wedding \
+    hall.\nIf there are after-events you haven't done yet, or you'd like to enjoy the wedding a bit more, it would \
+    be best not to request the ending yet.\nOnce I end the wedding, it can't be undone."
+set key[id=1106192207015607] name "If you truly want to end it, I'll finish the wedding once your partner agrees. \
+    Is that what you want?"
+set key[id=1106192207015608] name "I'll end it."
+set key[id=1106192207015609] name "I'll think about it."
+set key[id=1106192207015610] name "Understood. Once your partner agrees, I'll help you end the wedding completely \
+    and say your farewells to the guests."
+set key[id=1106192207015611] name "Very well. It's a good day, so soak up plenty of the sacred energy of \
+    $map:84000014$.\nTake your time and enjoy yourselves, and come find me again when you need me."
+set key[id=1106192207015612] name "It's truly beautiful."
+set key[id=1106201207015628] name "Nice to see you, $MyPCName$!"
+set key[id=1106201207015629] name "Nice to see you, $MyPCName$. Do you need my help?"
+set key[id=1106201207015630] name "Nice to see you, $MyPCName$. Do you need my help?"
+set key[id=1106201207015631] name "I want to get married."
+set key[id=1106201207015632] name "How do I reserve a wedding hall?"
+set key[id=1106201207015633] name "Yes, marriage is a good thing. You should do it!\nWhen you have someone you've \
+    promised to marry, I'll help you reserve a wonderful wedding."
+set key[id=1106201207015634] name "How do I get married?"
+set key[id=1106201207015635] name "I want to marry you."
+set key[id=1106201207015636] name "To get married, you first have to propose to a friend and become engaged.\nThen \
+    meet a Wedding Planner, reserve a wedding hall, and hold your wedding.\nAn engagement only lasts 7 days. If \
+    you don't hold the wedding within that time, the engagement disappears, so be careful."
+set key[id=1106201207015637] name "When you reserve a wedding hall, and again when you complete the wedding, we \
+    send a reservation gift and a wedding gift by mail.\nThese gifts differ depending on the wedding hall, so \
+    please choose carefully when you reserve."
+set key[id=1106201207015638] name "Huh? Wh... What??? M... Me???\nI... I can't. I have a lot of work to do... "
+set key[id=1106201207015639] name "I appreciate the thought, but I'll pretend I didn't hear that!\nWhen you find \
+    someone you truly want to marry, I'll work really hard to help with your wedding reservation! That I can \
+    promise! "
+set key[id=1106201207015640] name "You can reserve a wedding hall through the wedding planners.\nJust talk to a \
+    wedding planner, reserve a hall, and pay the reservation fee.\nIf you want details, why not try making a \
+    reservation yourself? "
+set key[id=1106201207015641] name "Oh, and each wedding planner has a slightly different specialty and different \
+    recommendations.\nIt's a good idea to consult the wedding planners before you make a reservation. "
+set key[id=1106201207015642] name "Could you recommend a wedding hall?"
+set key[id=1106201207015643] name "The wedding halls I recommend are two: $map:84000011$, loved by everyone,\nand \
+    the simple and beautiful $map:84000012$.\nIf you'd like to see them ahead of time, please come back after you \
+    get engaged.\nWe offer engaged couples a chance at a preview tour. "
+set key[id=1106201207015644] name "Nice to see you, $MyPCName$. Do you need my help?"
+set key[id=1106201207015645] name "I'd like to reserve a wedding hall."
+set key[id=1106201207015646] name "I'd like to take the recommended wedding hall tour."
+set key[id=1106201207015647] name "I'm glad you came. I'll help you make a reservation right away."
+set key[id=1106201207015648] name "The recommended wedding hall tour is a service that shows you the halls the \
+    wedding planner recommends in advance.\nIt's only for getting a feel for them, so please note that you can \
+    only take a quick look around at a set spot~"
+set key[id=1106201207015649] name "The wedding halls I recommend are two: $map:84000011$, loved by everyone,\nand \
+    the simple and beautiful $map:84000012$. "
+set key[id=1106201207015650] name "I'd like to go see $map:84000011$."
+set key[id=1106201207015651] name "I'd like to go see $map:84000012$."
+set key[id=1106201207015652] name "Understood.\nThey look different by day and night... Which would you like to \
+    visit? "
+set key[id=1106201207015653] name "I'd like to go see $map:84000011$ in the daytime."
+set key[id=1106201207015654] name "I'd like to go see $map:84000011$ at night."
+set key[id=1106201207015655] name "Okay, I'll take you there now."
+set key[id=1106201207015656] name "Okay, I'll take you there now."
+set key[id=1106201207015657] name "Understood.\nThey look different by day and night... Which would you like to \
+    visit? "
+set key[id=1106201207015658] name "I'd like to go see $map:84000012$ in the daytime."
+set key[id=1106201207015659] name "I'd like to go see $map:84000012$ at night."
+set key[id=1106201207015660] name "Okay, I'll take you there now."
+set key[id=1106201207015661] name "Okay, I'll take you there now."
+set key[id=1106201207015662] name "Nice to see you, $MyPCName$.\nAre you enjoying married life?"
+set key[id=1106201207015663] name "I'm happy."
+set key[id=1106201207015665] name "I'm glad you came. I'll help you make a reservation right away."
+set key[id=1106201207015666] name "Nice to see you, $MyPCName$. Do you need my help?"
+set key[id=1106201207015667] name "I'd like to renew our vows."
+set key[id=1106201207015668] name "$MyPCName$, you can only hold a vow renewal once at least 30 days have passed \
+    since your wedding.\nYou can't go ahead just yet, so please come back after a little more time has passed. "
+set key[id=1106201207015669] name "Nice to see you, $MyPCName$. Do you need help?"
+set key[id=1106201207015670] name "I'd like to change my wedding hall reservation."
+set key[id=1106201207015672] name "Understood. Then I'll help you change your reservation right away.\nYour \
+    partner has to come here and agree to it too before it can be changed, so be sure to call them over. "
+set key[id=1106201207015673] name "Okay, first check the reservation info and make your final decision.\nIf your \
+    partner agrees to cancel the reservation, we'll give you a <font color=\"#ffd200\">free reservation coupon for \
+    a wedding hall of the same grade</font> later. The coupon is valid for 30 days after you get it, so be sure to \
+    use it within that time.\nIf your partner doesn't agree, you won't receive the free reservation coupon."
+set key[id=1106201207015674] name "Nice to see you, $MyPCName$. Do you need my help?"
+set key[id=1106201207015675] name "I want to get married."
+set key[id=1106201207015676] name "Hmm... It looks like you went through a divorce not long ago...\nIt seems too \
+    early for you to marry again.\nLet's meet again after a bit more time has passed, when you've found someone \
+    new."
+set key[id=1106201207015677] name "Nice to see you, $MyPCName$. Do you need help?"
+set key[id=1106201207015678] name "I'd like to change my wedding hall reservation."
+set key[id=1106201207015680] name "Understood.\nThen I'll help you change your reservation right away. "
+set key[id=1106201207015681] name "Okay, first check the reservation info and make your final decision.\nIf your \
+    partner agrees to cancel the reservation, we'll give you a <font color=\"#ffd200\">free reservation coupon for \
+    a wedding hall of the same grade</font> later. The coupon is valid for 30 days after you get it, so be sure to \
+    use it within that time.\nIf your partner doesn't agree, you won't receive the free reservation coupon."
+set key[id=1106210607015682] name "If you've reserved a wedding hall, try sending out invitations! I'll help you! \
+    "
+set key[id=1106210607015683] name "Once you reserve a wedding hall, you can send invitations.\nThere is a fee of \
+    1,000 mesos per invitation sent.\nIt covers the cost of delivering your happy news, so please bear with us."
+set key[id=1106210807015682] name "So you've reserved a wedding. Would you like to send invitations?"
+set key[id=1106210807015683] name "I'll send out the invitations."
+set key[id=1106210807015684] name "There is a fee of 1,000 mesos per invitation sent, and even with an invitation, \
+    you can't enter if the wedding hall has reached its maximum capacity.\nChoose who will receive an invitation, \
+    then press Send."
+set key[id=1106210807015685] name "Having a wedding? Send out invitations!"
+set key[id=1106210807015686] name "Wedding news is best when it's shared! "
+set key[id=1106210807015687] name "Please send your invitations!"
+set key[id=1106210807015688] name "Once you've reserved a wedding hall, you can send invitations!\nJust use the \
+    red mailbox next to me!"
+set key[id=1106210807015689] name "Tell me more about sending invitations."
+set key[id=1106210807015690] name "There is a fee of 1,000 mesos per invitation sent.\nIt covers the cost of \
+    delivering your happy news, so please bear with us!"
+set key[id=1106210807015691] name "When you send invitations, the people around you will learn the date and place \
+    of your wedding.\nWhen it's time for the wedding, those who received an invitation get a wedding entry \
+    notice,\nand they can click it to enter the wedding hall with ease."
+set key[id=1106210807015692] name "But not everyone who gets an invitation can enter the wedding hall.\nIf the \
+    wedding hall's maximum capacity is exceeded, they won't be able to get in.\nPlease be sure to keep that in \
+    mind."
+set key[id=1106210807015693] name "But don't be disappointed. Once you've sent an invitation, we'll also send them \
+    a mail if the wedding reservation time is changed or canceled.\nIf you want a wedding shared with the people \
+    around you, make use of invitations! "
+set key[id=1108092907015695] name "An uncontested divorce can only be processed when a couple who have been \
+    married for 31 days or more come to $map:84000002$ together and both agree."
+set key[id=1108094307015696] name "To apply for a forced divorce, you must have been married for 31 days or more \
+    and pay the divorce fee of 1,000,000 mesos.\n$MyPCName$, you don't meet the conditions, so you can't apply for \
+    a forced divorce."
+set key[id=1108095607015697] name "I'm $npcName:11004713[gender:0]$, a lawyer at $map:84000002$. Do you need \
+    something from me?"
+set key[id=1108095607015698] name "I wonder how the forced divorce application is going."
+set key[id=1108095607015699] name "Your partner hasn't stated their wishes about the forced divorce \
+    application.\nThe divorce reconsideration period is still in progress, so please wait."
+set key[id=1108095807015700] name "I'm $npcName:11004713[gender:0]$, a lawyer at $map:84000002$. Do you need \
+    something from me?"
+set key[id=1108095807015701] name "I wonder how the forced divorce application is going."
+set key[id=1108195507015703] name "Would you perhaps like to cancel your forced divorce application?\nI can \
+    process that if you wish. However, the fee will not be refunded."
+set key[id=1108195507015704] name "I'd like to cancel the forced divorce application."
+set key[id=1108195507015705] name "I'll think about it again."
+set key[id=1108195507015706] name "Understood.\nOnce the cancellation is complete, a confirmation mail will \
+    arrive, so please check it."
+set key[id=1108203507015703] name "Now I'll explain the precautions that come with divorce.\nAn uncontested \
+    divorce can't be canceled once it goes through, so please decide carefully."
+set key[id=1108204107015705] name "Understood.\nOnce the cancellation is complete, a confirmation mail will \
+    arrive, so please check it."
+set key[id=1108204407015703] name "Your partner hasn't stated their wishes about the forced divorce \
+    application.\nThe divorce reconsideration period is still in progress, so please wait."
+set key[id=1108204407015704] name "I'd like to cancel the forced divorce application."
+set key[id=1108204407015705] name "I'll think about it again."
+set key[id=1111144407015703] name "Nice to see you, $MyPCName$. Do you need my help?"
+set key[id=1111144407015704] name "I'd like to renew our vows."
+set key[id=1111144407015705] name "$MyPCName$, you can only hold a vow renewal once at least 30 days have passed \
+    since your wedding.\nYou can't go ahead just yet, so please come back after a little more time has passed. "
+set key[id=1111144407015706] name "Nice to see you, $MyPCName$. Do you need help?"
+set key[id=1111144407015707] name "I'd like to change my wedding hall reservation."
+set key[id=1111144407015709] name "Understood. Then I'll help you change your reservation right away.\nYour \
+    partner has to come here and agree to it too before it can be changed, so be sure to call them over. "
+set key[id=1111144407015710] name "Yes, first check your reservation details and then make your final \
+    decision.\nIf your partner agrees to cancel the reservation, we'll give you a <font color=\"#ffd200\">free \
+    reservation coupon for a wedding hall of the same grade</font> later. The coupon is valid for 30 days after \
+    you get it, so be sure to use it within that time.\nIf your partner doesn't agree, no free reservation coupon \
+    will be given. "
+set key[id=1111205007015703] name "What perfect weather for a wedding today!"
+set key[id=1111205007015704] name "Good to see you, friends! Gave you a fright, didn't I?"
+set key[id=1111205007015705] name "What on earth are you doing here...?"
+set key[id=1111205007015706] name "Where is this place?"
+set key[id=1111205007015707] name "What am I doing? I'm in charge of the events at the after party, of course!"
+set key[id=1111205007015708] name "I squeeze in a little time here and there to dabble in the wedding business as \
+    a side job."
+set key[id=1111205007015709] name "What, do you want to work under me too? Hahaha!"
+set key[id=1111205007015710] name "This is the Ultra Sweet Banquet Hall."
+set key[id=1111205007015711] name "That's right. That Rainbow Pinata will play with you all."
+set key[id=1111205007015712] name "Good work, warriors!"
+set key[id=1111205007015713] name "Is the solution you brought a rainbow snail?"
+set key[id=1111205007015714] name "Who was that evil spirit just now?"
+set key[id=1111205007015715] name "Just a snail, he says! A true warrior doesn't blame his tools."
+set key[id=1111205007015716] name "Back in my day, I beat them all with nothing but a pot lid, hahaha!"
+set key[id=1111205007015717] name "Anyway, we won again today, so enjoy yourselves to the fullest!"
+set key[id=1111205007015718] name "Hah... That fellow... is the lingering spirit of a sailor who spent so long on \
+    ships that he missed his chance to marry."
+set key[id=1111205007015719] name "He usually lurks around Lith Harbor, going about ruining weddings."
+set key[id=1111205007015720] name "As you saw, he isn't such a bad fellow, so take pity on him."
+set key[id=1111210707015721] name "Take pictures with the pinata, and eat and drink all you like!"
+set key[id=1112095107015722] name "Now then, shall we really start the party!"
+set key[id=1112095107015723] name "Now then, enjoy the party to the fullest!"
+set key[id=1118161607015725] name "I'd like to go see $map:84000011$."
+set key[id=1118161607015726] name "I'd like to go see $map:84000012$."
+set key[id=1118161607015727] name "Ah~ I see. I'm glad you're happy. Happiness is a good thing.\nBy the way, is \
+    there anything I can help you with? "
+set key[id=1118161607015728] name "I'd like to take the recommended wedding hall tour."
+set key[id=1118161607015729] name "Hehe, it seems you want to relive the memories of your happy wedding~\nThen I \
+    should help you. Where would you like to go? "
+set key[id=1118161607015730] name "I'd like to visit $map:84000013$."
+set key[id=1118161607015731] name "I'd like to visit $map:84000014$."
+set key[id=1118162007015724] name "It seems you want to relive your beautiful wedding.\nOf course I should help. \
+    Where would you like to go? "
+set key[id=1118165507015761] name "Nice to see you, $MyPCName$. You look well.\nAre you enjoying married life?"
+set key[id=1118165507015762] name "I'm happy."
+set key[id=1118165507015763] name "Yes, happy days gather and pile up into beautiful memories.\nBe happy today, \
+    tomorrow, and always!"
+set key[id=1118165507015764] name "By the way, do you need anything? Is there something I can help with...? "
+set key[id=1118165507015765] name "I'd like to take the recommended wedding hall tour."
+set key[id=1118170207015832] name "Yes, happiness doubles when it's shared. May you be even happier from now \
+    on~!\nIs there anything I can help you with?"
+set key[id=1118172607015833] name "You want to look at the splendid wedding halls and recall the wonderful \
+    memories of your wedding day.\nThen I should help. Where would you like to go? "
+set key[id=1118172607015834] name "I'd like to visit $map:84000015$."
+set key[id=1118172607015835] name "I'd like to visit $map:84000016$."
+set key[id=1118172607015836] name "I'd like to take the recommended wedding hall tour."
+set key[id=1119180007015837] name "Congratulations on your wedding, $MyPCName$!"
+set key[id=1119180007015838] name "I'm so glad to be attending your wedding.\nI can't wait to see how happy \
+    today's wedding will be."
+set key[id=1119180007015839] name "$MyPCName$, how does it feel to be the star of the wedding? Are you very \
+    nervous?"
+set key[id=1119180007015840] name "What should I do from here?"
+set key[id=1119180007015841] name "I'm not nervous at all."
+set key[id=1119180007015842] name "Ah, don't worry. That's exactly why I came here, to tell you."
+set key[id=1119180007015843] name "How do I start the wedding?"
+set key[id=1119180007015844] name "When will we be recognized as a proper married couple?"
+set key[id=1119180007015845] name "How do I use the wedding hall reservation gift?"
+set key[id=1119180007015846] name "The wedding hall opens 5 minutes before your reserved wedding time and stays \
+    open until 30 minutes after.\nWithin that time, both the groom and the bride must enter the wedding hall and \
+    tell the <font color=\"#ffd200\">officiant</font> you <font color=\"#ffd200\">are ready to begin the \
+    wedding</font>.\nWhen the two of you agree, a wonderful wedding begins."
+set key[id=1119180007015847] name "One thing to note: if you don't tell the officiant you want to begin within 30 \
+    minutes after your reserved wedding time, the wedding hall closes and everyone who entered is forced out.\nSo \
+    both the groom and the bride must be in the wedding hall in time, and talk to the officiant to begin the \
+    wedding."
+set key[id=1119180007015848] name "Do you have any other questions?"
+set key[id=1119180007015849] name "When will we be recognized as a proper married couple?"
+set key[id=1119180007015850] name "How do I use the wedding hall reservation gift?"
+set key[id=1119180007015851] name "Once the wedding starts, follow the officiant's guidance, write your partner's \
+    name, and finish the wedding vows.\nThen the officiant will make the <font color=\"#ffd200\">declaration of \
+    marriage</font>, announcing that you two are now husband and wife."
+set key[id=1119180007015852] name "At that very moment, you two change from an engaged state to a <font \
+    color=\"#ffd200\">married state</font>.\nAnd the <font color=\"#ffd200\">wedding completion gift</font> \
+    prepared by the wedding hall is sent to the groom and bride by mail.\nFrom then on, you can open the <font \
+    color=\"#ffd200\">Marriage menu</font> to check your closeness and the messages you've written to each other."
+set key[id=1119180007015853] name "After that, you can hold the after-events.\nUse the gift you received when you \
+    reserved the wedding, the <font color=\"#ffd200\">Commemorative Photo Ticket</font>, to take <font \
+    color=\"#ffd200\">commemorative photos</font> with your guests!"
+set key[id=1119180007015854] name "Do you have any other questions?"
+set key[id=1119180007015855] name "How do I use the wedding hall reservation gift?"
+set key[id=1119180007015856] name "How do I start the wedding?"
+set key[id=1119180007015857] name "Once the officiant's <font color=\"#ffd200\">declaration of marriage</font> \
+    changes you from engaged to <font color=\"#ffd200\">married</font>, you can hold the after-events from then \
+    on.\nUse the gift you received when you reserved the wedding, the <font color=\"#ffd200\">Commemorative Photo \
+    Ticket</font>, to move to a place where you can take commemorative photos.\nThe transfer portal stays open for \
+    3 minutes, and the photo space stays open for 5 minutes, so please keep that in mind."
+set key[id=1119180007015858] name "There, you can freely change the angle as if you were at your own home while \
+    taking photos,\nso take <font color=\"#ffd200\">commemorative photos</font> freely with your guests!"
+set key[id=1119180007015859] name "Do you have any other questions?"
+set key[id=1119180007015860] name "How do I start the wedding?"
+set key[id=1119180007015861] name "When will we be recognized as a proper married couple?"
+set key[id=1119180007015862] name "Yes, then I'm glad.\nI hope your wedding will be remembered as a happy and \
+    joyful memory."
+set key[id=1119180007015863] name "Congratulations on your wedding, truly, $MyPCName$.\nBe happy!"
+set key[id=1119180007015864] name "Congratulations on your wedding, $MyPCName$!"
+set key[id=1119180007015865] name "I'm so glad to be attending your wedding.\nI can't wait to see how happy \
+    today's wedding will be."
+set key[id=1119180007015866] name "$MyPCName$, how does it feel to be the star of the wedding? Are you very \
+    nervous?"
+set key[id=1119180007015867] name "What should I do from here?"
+set key[id=1119180007015868] name "I'm not nervous at all."
+set key[id=1119180007015869] name "Ah, don't worry. That's exactly why I came here, to tell you."
+set key[id=1119180007015870] name "How do I start the wedding?"
+set key[id=1119180007015871] name "When will we be recognized as a proper married couple?"
+set key[id=1119180007015872] name "How do I use the wedding hall reservation gift?"
+set key[id=1119180007015873] name "The wedding hall opens 5 minutes before your reserved wedding time and stays \
+    open until 30 minutes after.\nWithin that time, both the groom and the bride must enter the wedding hall and \
+    tell the <font color=\"#ffd200\">officiant</font> you <font color=\"#ffd200\">are ready to begin the \
+    wedding</font>.\nWhen the two of you agree, a wonderful wedding begins."
+set key[id=1119180007015874] name "One thing to note: if you don't tell the officiant you want to begin within 30 \
+    minutes after your reserved wedding time, the wedding hall closes and everyone who entered is forced out.\nSo \
+    both the groom and the bride must be in the wedding hall in time, and talk to the officiant to begin the \
+    wedding."
+set key[id=1119180007015875] name "Do you have any other questions?"
+set key[id=1119180007015876] name "When will we be recognized as a proper married couple?"
+set key[id=1119180007015877] name "How do I use the wedding hall reservation gift?"
+set key[id=1119180007015878] name "Once the wedding starts, follow the officiant's guidance, write your partner's \
+    name, and finish the wedding vows.\nThen the officiant will make the <font color=\"#ffd200\">declaration of \
+    marriage</font>, announcing that you two are now husband and wife."
+set key[id=1119180007015879] name "At that very moment, you two change from an engaged state to a <font \
+    color=\"#ffd200\">married state</font>.\nAnd the <font color=\"#ffd200\">wedding completion gift</font> \
+    prepared by the wedding hall is sent to the groom and bride by mail.\nFrom then on, you can open the <font \
+    color=\"#ffd200\">Marriage menu</font> to check your closeness and the messages you've written to each other."
+set key[id=1119180007015880] name "After that, you can hold the after-events.\nUse the gifts you received when you \
+    reserved the wedding, the <font color=\"#ffd200\">Commemorative Photo Ticket</font> and the <font \
+    color=\"#ffd200\">After Party Ticket</font>, to hold <font color=\"#ffd200\">after-events</font> with your \
+    guests!"
+set key[id=1119180007015881] name "Do you have any other questions?"
+set key[id=1119180007015882] name "How do I use the wedding hall reservation gift?"
+set key[id=1119180007015883] name "How do I start the wedding?"
+set key[id=1119180007015884] name "Use the gift you received when you reserved the wedding, the <font \
+    color=\"#ffd200\">Commemorative Photo Ticket</font>, to move to a place where you can take commemorative \
+    photos,\nand use the <font color=\"#ffd200\">After Party Ticket</font> to move to a place where you can play \
+    little games with your guests.\nThe transfer portal stays open for 3 minutes, and the photo and after party \
+    spaces stay open for up to 5 minutes."
+set key[id=1119180007015885] name "There, you can freely change the angle as if you were at your own home while \
+    taking photos,\nso have a great time taking <font color=\"#ffd200\">commemorative photos</font> freely with \
+    your guests!"
+set key[id=1119180007015886] name "Do you have any other questions?"
+set key[id=1119180007015887] name "How do I start the wedding?"
+set key[id=1119180007015888] name "When will we be recognized as a proper married couple?"
+set key[id=1119180007015889] name "Hehe, really? From where I'm standing, your cheeks look rosy~ "
+set key[id=1119180007015890] name "I hope today's wedding will be remembered as a happy and joyful memory, \
+    $MyPCName$.\nCongratulations on your wedding!"
+set key[id=1119180007015891] name "Congratulations on your wedding, $MyPCName$!"
+set key[id=1119180007015892] name "I'm so happy to be at your wedding! Happy, so very happy!\nA happy, beautiful, \
+    magical wedding! Today is sure to be wonderful!"
+set key[id=1119180007015893] name "$MyPCName$, the day has finally come! Are you nervous? Star of the day?"
+set key[id=1119180007015894] name "What should I do from here?"
+set key[id=1119180007015895] name "I'm not nervous at all."
+set key[id=1119180007015896] name "No more worrying. That's exactly why I came here, to tell you~"
+set key[id=1119180007015897] name "How do I start the wedding?"
+set key[id=1119180007015898] name "When will we be recognized as a proper married couple?"
+set key[id=1119180007015899] name "How do I use the wedding hall reservation gift?"
+set key[id=1119180007015900] name "The wedding hall opens 5 minutes before your reserved wedding time and stays \
+    open until 30 minutes after.\nWithin that time, both the groom and the bride must enter the wedding hall and \
+    tell the <font color=\"#ffd200\">officiant</font> you <font color=\"#ffd200\">are ready to begin the \
+    wedding</font>.\nWhen the two of you agree, a wonderful wedding begins."
+set key[id=1119180007015901] name "Here's what to watch out for! If you don't tell the officiant you want to begin \
+    within 30 minutes after your reserved wedding time, the wedding hall closes and everyone who entered is forced \
+    out.\nSo both the groom and the bride must be in the wedding hall in time, and talk to the officiant to begin \
+    the wedding."
+set key[id=1119180007015902] name "Do you have any other questions~?"
+set key[id=1119180007015903] name "When will we be recognized as a proper married couple?"
+set key[id=1119180007015904] name "How do I use the wedding hall reservation gift?"
+set key[id=1119180007015905] name "Once the wedding starts, follow the officiant's guidance, write your partner's \
+    name, and finish the wedding vows.\nThen the officiant will make the <font color=\"#ffd200\">declaration of \
+    marriage</font>, announcing that you two are now husband and wife!"
+set key[id=1119180007015906] name "At that very moment, you two change from an engaged state to a <font \
+    color=\"#ffd200\">married state</font>.\nAnd the <font color=\"#ffd200\">wedding completion gift</font> \
+    prepared by the wedding hall is sent to the groom and bride by mail!\nFrom then on, you can open the <font \
+    color=\"#ffd200\">Marriage menu</font> to check your closeness and the messages you've written to each other."
+set key[id=1119180007015907] name "After that, you can hold the after-events.\nUse the gifts you received when you \
+    reserved the wedding, the <font color=\"#ffd200\">Commemorative Photo Ticket</font> and the <font \
+    color=\"#ffd200\">After Party Ticket</font>, to hold <font color=\"#ffd200\">after-events</font> with your \
+    guests!"
+set key[id=1119180007015908] name "Oh, right. You know that people who reserved a Luxury Wedding get a very \
+    special gift, don't you?\nAfter the officiant declares you married, be sure to take out $item:20302962$ from \
+    your mailbox and put it on!\nIf you wear it to the after-events, you'll sparkle and shine!"
+set key[id=1119180007015909] name "Do you have any other questions~?"
+set key[id=1119180007015910] name "How do I use the wedding hall reservation gift?"
+set key[id=1119180007015911] name "How do I start the wedding?"
+set key[id=1119180007015912] name "Use the gift you received when you reserved the wedding, the <font \
+    color=\"#ffd200\">Commemorative Photo Ticket</font>, to move to a place where you can take commemorative \
+    photos,\nand use the <font color=\"#ffd200\">After Party Ticket</font> to move to a place where you can play \
+    little games with your guests.\nThe transfer portal stays open for 3 minutes, and the photo and after party \
+    spaces stay open for up to 5 minutes."
+set key[id=1119180007015913] name "There, you can freely change the angle as if you were at your own home while \
+    taking photos,\nso have a great time taking <font color=\"#ffd200\">commemorative photos</font> freely with \
+    your guests!"
+set key[id=1119180007015914] name "Do you have any other questions~?"
+set key[id=1119180007015915] name "How do I start the wedding?"
+set key[id=1119180007015916] name "When will we be recognized as a proper married couple?"
+set key[id=1119180007015917] name "Of course! I just cast a spell on $MyPCName$.\nToday you'll shine brighter, \
+    look more wonderful and more beautiful than anyone.\nI guarantee it!"
+set key[id=1119180007015918] name "Congratulations on your wedding, $MyPCName$!\nMay your today, your tomorrow, \
+    and every day be beautiful!"
+set key[id=1119200707015919] name "There are two ways to get a divorce.\nAn <font color=\"#ffd200\">uncontested \
+    divorce</font>, where the two of you come to $map:84000002$ together and divorce quickly,\nand a <font \
+    color=\"#ffd200\">forced divorce</font>, which one spouse can file without the other's consent."
+set key[id=1119200707015920] name "An uncontested divorce can't be canceled once it's filed, and your partner's \
+    consent is required. There is no reconsideration period.\nA forced divorce doesn't need your partner's \
+    consent, but there is a 7-day reconsideration period and a fee paid by the one who files.\n"
+set key[id=1119200707015921] name "If you want an uncontested divorce, come to me together with your spouse,\nand \
+    if you want a forced divorce, go to $npcName:11004713[gender:0]$, the attorney in charge, in the room on the \
+    right."
+set key[id=1119200707015922] name "There are two ways to get a divorce.\nAn <font color=\"#ffd200\">uncontested \
+    divorce</font>, where the two of you come to $map:84000002$ together and divorce quickly,\nand a <font \
+    color=\"#ffd200\">forced divorce</font>, which one spouse can file without the other's consent."
+set key[id=1119200707015923] name "An uncontested divorce can't be canceled once it's filed, and your partner's \
+    consent is required. There is no reconsideration period.\nA forced divorce doesn't need your partner's \
+    consent, but there is a 7-day reconsideration period and a fee paid by the one who files.\n"
+set key[id=1119200707015924] name "The uncontested divorce is handled by $npcName:11004712[gender:1]$, the \
+    attorney in the room on the left,\nand I handle forced divorces, so come see me if you need one."
+set key[id=1120160807015925] name "$MyPCName$, you got through your wedding well. Congratulations."
+set key[id=1120160807015926] name "How do I hold the after-events?"
+set key[id=1120160807015927] name "How do I end the wedding completely?"
+set key[id=1120160807015928] name "Use the gift you received when you reserved the wedding, the <font \
+    color=\"#ffd200\">Commemorative Photo Ticket</font>, to move to a place where you can take commemorative \
+    photos.\nThe transfer portal stays open for 3 minutes, and the photo space stays open for 5 minutes, so please \
+    keep that in mind."
+set key[id=1120160807015929] name "Do you have any other questions?"
+set key[id=1120160807015930] name "How do I end the wedding completely?"
+set key[id=1120160807015931] name "After the officiant's <font color=\"#ffd200\">declaration of marriage</font>, \
+    you can talk to the officiant at any time and ask to end the wedding completely.\nOnce your partner agrees, \
+    the wedding hall will close shortly and everyone inside will be moved out automatically."
+set key[id=1120160807015932] name "Even if it isn't automatic, people can leave the wedding hall through the \
+    portal, so it's fine to leave it up to the guests."
+set key[id=1120160807015933] name "Do you have any other questions?"
+set key[id=1120160807015934] name "How do I hold the after-events?"
+set key[id=1120160807015935] name "Congratulations on your wedding, $MyPCName$! You were wonderful today."
+set key[id=1120160807015936] name "How do I hold the after-events?"
+set key[id=1120160807015937] name "How do I end the wedding completely?"
+set key[id=1120160807015938] name "Use the gift you received when you reserved the wedding, the <font \
+    color=\"#ffd200\">Commemorative Photo Ticket</font>, to move to a place where you can take commemorative \
+    photos,\nand use the <font color=\"#ffd200\">After Party Ticket</font> to move to a place where you can play \
+    little games with your guests.\nThe transfer portal stays open for 3 minutes, and the photo and after party \
+    spaces stay open for up to 5 minutes.\nThere, you can freely change the angle as if you were at your own home \
+    while taking photos,\nso have a great time taking <font color=\"#ffd200\">commemorative photos</font> freely \
+    with your guests!"
+set key[id=1120160807015939] name "There, you can freely change the angle as if you were at your own home while \
+    taking photos,\nso have a great time taking <font color=\"#ffd200\">commemorative photos</font> freely with \
+    your guests!"
+set key[id=1120160807015940] name "Do you have any other questions?"
+set key[id=1120160807015941] name "How do I end the wedding completely?"
+set key[id=1120160807015942] name "After the officiant's <font color=\"#ffd200\">declaration of marriage</font>, \
+    you can talk to the officiant at any time and ask to end the wedding completely.\nOnce your partner agrees, \
+    the wedding hall will close shortly and everyone inside will be moved out automatically."
+set key[id=1120160807015943] name "Even if it isn't automatic, people can leave the wedding hall through the \
+    portal, so it's fine to leave it up to the guests."
+set key[id=1120160807015944] name "Do you have any other questions?"
+set key[id=1120160807015945] name "How do I hold the after-events?"
+set key[id=1120160807015946] name "$MyPCName$, star of the day! You were perfect! I'll give you a round of \
+    applause, clap clap clap clap!"
+set key[id=1120160807015947] name "How do I hold the after-events?"
+set key[id=1120160807015948] name "How do I end the wedding completely?"
+set key[id=1120160807015949] name "Use the gift you received when you reserved the wedding, the <font \
+    color=\"#ffd200\">Commemorative Photo Ticket</font>, to move to a place where you can take commemorative \
+    photos,\nand use the <font color=\"#ffd200\">After Party Ticket</font> to move to a place where you can play \
+    little games with your guests.\nThe transfer portal stays open for 3 minutes, and the photo and after party \
+    spaces stay open for up to 5 minutes."
+set key[id=1120160807015950] name "There, you can freely change the angle as if you were at your own home while \
+    taking photos,\nso have a great time taking <font color=\"#ffd200\">commemorative photos</font> freely with \
+    your guests!"
+set key[id=1120160807015951] name "Oh, right. You know that people who reserved a Luxury Wedding get a very \
+    special gift, don't you?\nBe sure to take out $item:20302962$ from your mailbox and put it on!\nIf you wear it \
+    to the after-events, you'll sparkle and shine!"
+set key[id=1120160807015952] name "Do you have any other questions~?"
+set key[id=1120160807015953] name "How do I end the wedding completely?"
+set key[id=1120160807015954] name "After the officiant's <font color=\"#ffd200\">declaration of marriage</font>, \
+    you can talk to the officiant at any time and ask to end the wedding completely.\nOnce your partner agrees, \
+    the wedding hall will close shortly and everyone inside will be moved out automatically~"
+set key[id=1120160807015955] name "Even if it isn't automatic, people can leave the wedding hall through the \
+    portal. It should be fine to let the guests do as they like~"
+set key[id=1120160807015956] name "Do you have any other questions~?"
+set key[id=1120160807015957] name "How do I hold the after-events?"
+set key[id=1205093910002284] name "Heh heh, what an interesting power. Shall we turn a crisis into an opportunity? \
+    "
+set key[id=1205093910002285] name "The fact is, if you inject the power of the rift into a weapon, you can create \
+    infinite energy!\nShall we see if there's a weapon that can break its limit?"
+set key[id=1211152707015961] name "The unstable, surging power violently pushes me away."
+set key[id=1211205207015964] name "<font color=\"#909090\">(...Deep within a strong whirlpool of darkness, a faint \
+    blue light flickers.)</font>"
+set key[id=1212112607009630] name "Do you want an appraisal?\nShow me the $item:30001025$ you found and I can \
+    appraise it for you.\nI do charge a fee, so the results are guaranteed."
+set key[id=1212180407015977] name "Heh."
+set key[id=1212180407015978] name "Why are you here?\nDidn't you say you were going to confirm the truth?"
+set key[id=1212180407015979] name "If you haven't confirmed the truth, go back and do it again."
+set key[id=1212180407015980] name "I'll confirm the truth."
+set key[id=1212180407015981] name "Heh heh, that's the spirit!"
+set key[id=1216165507015983] name "...!!!\n$MyPCName$?!\nWhen did you escape?!!!"
+set key[id=1216165507015984] name "?! That's not..."
+set key[id=1216165507015985] name "Let's go back to solitary.\nI'll keep it a secret that you escaped."
+set key[id=1217160307011985] name "Hello, $MyPCName$!\nThe Tria royal family has prepared special supplies for \
+    adventurers.\nThey are <font color=\"#ffd200\">materials to upgrade</font> <font \
+    color=\"#ffd200\">Gemstones</font> and <font color=\"#ffd200\">Lumistones</font>."
+set key[id=1217160307011986] name "If you use the special box the royal family unveiled, you can make upgrade \
+    materials for\nGemstones and Lumistones from the <font color=\"#ffd200\">materials you bring</font>!"
+set key[id=1217160307011987] name "What materials should I prepare?"
+set key[id=1217160307011988] name "I'm curious how such rare materials are made."
+set key[id=1217160307011989] name "First, collect <font color=\"#ffd200\">$item:30001187$</font>, which you get by \
+    hunting monsters.\nPut them in <font color=\"#ffd200\">$npcName:11004215$</font> and <font \
+    color=\"#ffd200\">$npcName:11004216$</font> over there to convert the energy,\nand you can get upgrade \
+    materials for Gemstones and Lumistones."
+set key[id=1217160307011990] name "And you need to prepare one more thing for the energy conversion to \
+    succeed.\nTo get <font color=\"#ffd200\">Gemstone</font> upgrade materials, you need <font \
+    color=\"#ffd200\">$item:30001188$</font>,\nand to get <font color=\"#ffd200\">Lumistone</font> upgrade \
+    materials, you need <font color=\"#ffd200\">$item:30001189$</font>."
+set key[id=1217160307011991] name "Where can I get those?"
+set key[id=1217160307011992] name "I <font color=\"#ffd200\">sell</font> them. The royal mages and guardian \
+    priests\nare making them with great care, so the supply isn't plentiful...\nPlease understand that purchases \
+    are limited so every adventurer can get some."
+set key[id=1217160307011993] name "Following the orders of $npc:11000075[gender:1]$, $npcName:11000601[gender:1]$ \
+    devised a way to convert the energy of the world's monsters\nusing these <font color=\"#ffd200\">two \
+    boxes</font>, said to be a gift from a stranger from a faraway world,\nwhich had been sleeping in the royal \
+    treasury."
+set key[id=1217160307011994] name "These two boxes, <font color=\"#ffd200\">$npc:11004215$</font> and <font \
+    color=\"#ffd200\">$npc:11004216$</font>,\nhave the special ability to convert the nature of the energy that \
+    matter holds.\n$npc:11000601[gender:1]$ focused on this point.\nCould the power of monsters be converted for \
+    adventurers to use?"
+set key[id=1217160307011995] name "They concluded that it would be possible if there were no large loss during \
+    energy conversion,\nand decided to bind the <font color=\"#ffd200\">$item:30001187$</font> that hold monsters' \
+    energy into a certain structure.\nSince everyone had to be able to use the result, they agreed to make \
+    materials that add power to\nGemstones and Lumistones that can be worn on equipment."
+set key[id=1217160307011996] name "<font color=\"#ffd200\">$item:30001188$</font> and <font \
+    color=\"#ffd200\">$item:30001189$</font> serve as structures that let the energy be converted\ninto a nature \
+    that fits Gemstones and Lumistones respectively.\nSo, do you understand a little better now?"
+set key[id=1217160307011997] name "Tell me which materials to prepare."
+set key[id=1217160307012024] name "The Tria royal family has prepared special supplies for adventurers.\nBut... it \
+    seems $MyPCName$ can't receive them yet.\nThis time, we're only supporting <font color=\"#ffd200\">adventurers \
+    of level 50 or higher</font>.\nI'm sorry, but please come back after you've grown a bit more."
+set key[id=1218095907009740] name "What can I do for you?"
+set key[id=1218095907009741] name "Please appraise the $item:30001025$."
+set key[id=1218095907009742] name "Please appraise the $item:30001025$ for free."
+set key[id=1218095907009743] name "I have something to say."
+set key[id=1218095907009744] name "I only do free appraisals up to 10 times a day.\nShow me the $item:30001025$ \
+    you found and I'll appraise it.\nIf it's a useless key, I can give you scrap price for it."
+set key[id=1221144207012029] name "My heart races whenever I see an item with a story behind it."
+set key[id=1221144207012030] name "I read a book on the history of Kritias.\nIt said something astonishing."
+set key[id=1221144207012031] name "What was written there?"
+set key[id=1221144207012032] name "The truth about Kritias!\nIt's a new continent that appeared by traveling back \
+    through time.\nIsn't it amazing just to think about~?"
+set key[id=1221144207012033] name "They say Kritias has a new power called Ener!"
+set key[id=1221144207012034] name "Depending on how it's used, Ener can be warm life energy or cold destructive \
+    energy."
+set key[id=1221144207012035] name "What matters is the heart of the person using Ener. Whether that person's heart \
+    is good or evil decides whether Ener turns out to be helpful or not."
+set key[id=1221144207012036] name "They say this land is overflowing with Ener. I really hope that power doesn't \
+    fall into the hands of bad people."
+set key[id=1221144207012037] name "In short, the heart of the person is what matters."
+set key[id=1221144207012038] name "We have to protect this new power!"
+set key[id=1221144207012039] name "Do you need something from me?"
+set key[id=1221144207012040] name "My heart races whenever I see an item with a story behind it."
+set key[id=1221144207012043] name "What can I do for you?"
+set key[id=1221144207012044] name "Please appraise the $item:30001025$."
+set key[id=1221144207012045] name "Please appraise the $item:30001025$ for free."
+set key[id=1221144207012046] name "I have something to say."
+set key[id=856579378342002766] name "Says they'll hand over 10 $item:30000181$."
+set key[id=856579378342002767] name "Says they'll hand over 100 $item:30000181$."
+set key[id=856579378342002768] name "You found $item:30000181$...\nNot only did you protect the safety of Maple \
+    World,\nyou've also found a clue to uncover the secrets of the Land of Darkness!"
+set key[id=856579378342002769] name "You found $item:30000181$...\nNot only did you protect the safety of Maple \
+    World,\nyou've also found a clue to uncover the secrets of the Land of Darkness!"
+set key[id=856579378342002770] name "You don't have enough $item:30000181$."
+set key[id=4576139967142559831] name "Do you need my help?"
+set key[id=4576139967142559832] name "$npcName:11004802[gender:0]$'s research results are truly amazing.\nI wonder \
+    if I could be like that someday."
+set key[id=5891058498464120910] name "Oh, it's $MyPCName$!"
+set key[id=5891058498464120911] name "The Doll Mansion's operating hours?\nUnfortunately, it's still a trial \
+    version, so it only runs at set times.\nOn weekdays from 7 PM to 11 PM, and on weekends every day from 4 PM to \
+    11 PM, a notice appears at 15 and 45 minutes past the hour, so don't forget to join."
+set key[id=5891058498464120913] name "Oh... hello."
+set key[id=5891058498464120914] name "I want those dolls. What should I do to get them?"
+set key[id=5891058498464120915] name "Oh, it's $MyPCName$!"
+set key[id=5891058498464120916] name "The Doctor has given me way too many tasks. My vacation this month is \
+    ruined, too."
+set key[id=7163785165150355535] name "...\n(There's dark matter here too. Could it be connected to the rampaging \
+    golem...?\nLet's hurry back to $map:02000487$.)"
+set key[id=8803887082180182094] name "Ugh... What happened? I was definitely in the conference room preparing for \
+    the concert..."
+set key[id=8803887082180182095] name "Ugh... Uuugh...! Where on earth am I...?"
+set key[id=8803887082180182096] name "I... I have to perform... the aria of light and darkness... Heh, hehe..."
+set key[id=8921148038777405527] name "Where could it be..."
+set key[id=9935710710996664398] name "(Through the blood-red darkness, music and a woman's aria can faintly be \
+    heard.)"
+set key[id=10540667729495457895] name "(Through the blood-red darkness, music and a woman's aria can faintly be \
+    heard.)"
+set key[id=10540667729495457897] name "(Through the blood-red darkness, music and a woman's aria can faintly be \
+    heard.)"
+set key[id=10540667729495457899] name "Where could it be..."
+set key[id=15098353941853881629] name "I feel like I just woke from a dream..."

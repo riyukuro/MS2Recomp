@@ -123,8 +123,8 @@ tables from the client packs are copied by id from your copies, and the only tex
   and 2,552 more item description rows (no feature tag) whose item a drop, shop, quest or set refers to, and the
   KR-only quests (feature QuestKR, 810: titles, journal texts and objectives) and the 55 KR-only system mails
   (housing, wedding, dungeon rank rewards; the dated event mails stay as they are), and the goal and done texts
-  of 184 KR-only trophies, and the 184 field and dungeon messages (stringtrigger) still in Korean. The Black
-  Market's
+  of 184 KR-only trophies, the 184 field and dungeon messages (stringtrigger) and 999 NPC dialogue rows
+  (scriptnpc, locale KR or none) still in Korean. The Black Market's
   cancel and search messages, whose English rows have typos, get our own wording.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
