@@ -25545,3 +25545,25 @@ set key[id=1230215803002216] name "Just as $npcName:11003416[gender:0]$ said, yo
     them to others.\nIf you're interested, $MyPCName$, give it a try."
 set key[id=1230215803002217] name "Oh, and here's the key $npcName:11003416[gender:0]$ left with me.\nTell me if \
     you want to have the key appraised right away."
+
+# Quest dialogue of the LapentaFrontierQuest quests that no pack has in English (feature LapentaFrontierQuest): our
+# own English for the 13 scriptquest rows of locale KR (or no locale) whose quest a player can get (2 quests), with
+# each row's own format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=605145903006942] name "Quest link dummy."
+set key[id=605145903006943] name "Quest link dummy."
+set key[id=605145903006944] name "Quest link dummy."
+set key[id=625204011010855] name "Wait, $MyPCName$, look over there! Something's coming!"
+set key[id=625204011010856] name "(Say it looks like Madria's army is coming.)"
+set key[id=625204011010857] name "Now that the space has evened out, \nit seems they can see us too!"
+set key[id=625204011010858] name "Wh-what do we do? $MyPCName$?\nThe two of us alone can't possibly stand against \
+    an army..."
+set key[id=625204011010859] name "(Say you can't just leave Madria's army alone, though.)"
+set key[id=625204011010860] name "You're right about that...\nIf that army marches on the nearby towns and cities \
+    right now..."
+set key[id=625204011010861] name "(Say we have to hold them back as much as we can.)"
+set key[id=625204011010862] name "All right, let's do all we can.\nWhat's the big deal? I didn't become a mage for \
+    nothing, you know!"
+set key[id=625204011010863] name "All right, let's do all we can.\nWhat's the big deal? I didn't become a mage for \
+    nothing, you know!"
+set key[id=625204011010864] name "Huff... huff...\nThere's no end to these troops...!"
