@@ -52272,3 +52272,1228 @@ set key[id=23500198] name "Mushking"
 set key[id=23500199] name "Mushking"
 set key[id=27000116] name "Gold Pharaoh Meow Cat"
 set key[id=60000307] name "Petite Lukarax"
+
+# Item descriptions (feature-tagged items, locale KR or none) still in Korean whose item a drop, shop, quest, set or
+# another item refers to: our own English for the 317 items' Korean tooltip, guide and main lines (no pack has
+# English for them), with each row's own format fields and line breaks.
+file Xml/string/kr/koritemdescription.xml kms:Xml/string/kr/koritemdescription.xml 669a7f4ea48c36b2
+set key[id=11310001] tooltipDescription "Adorable white cat ears."
+set key[id=11600545] tooltipDescription "Gloves made for warriors who fight fiercely on the battlefield."
+set key[id=11600545] guideDescription "Additional skill effects do not apply in battlefields and arenas."
+set key[id=11700567] tooltipDescription "Shoes made for warriors who fight fiercely on the battlefield."
+set key[id=11700567] guideDescription "Additional skill effects do not apply in battlefields and arenas."
+set key[id=14000258] tooltipDescription "<font color='#ff8ae5' size='14'>[Body Reinforcement]\\nWhen you strike, \
+    there is a 10% chance to increase attack speed by 10% for 24 sec. This effect is only active when used \
+    together with Frontier Light Hall.\\n\\n[Specialization B]\\nIn Madracan Spire, the Body Reinforcement effect \
+    is tripled.\\n\\nThis effect does not apply in battlefields and arenas.</font>"
+set key[id=14000258] guideDescription "\\n<font color='#7A7A7A'>An armament set ordered as standard-issue gear for \
+    the Frontier Foundation. It was originally planned to be issued to the Foundation guards, the survey team, and \
+    every participating adventurer, but the whole shipment was ambushed and lost on its way to the Foundation. \
+    Since the price was far above that of ordinary standard-issue gear, no replacement was ever produced. Rumor \
+    has it the enormous price comes from anti-dragon metal, a special metal made for fighting dragons.</font>"
+set key[id=15500090] tooltipDescription "Knuckles made for warriors who fight fiercely on the battlefield."
+set key[id=15500090] guideDescription "Additional skill effects do not apply in battlefields and arenas."
+set key[id=15500208] guideDescription "A skin weapon item that can be used with knuckles."
+set key[id=15500216] guideDescription "A skin weapon item that can be used with knuckles."
+set key[id=15500526] guideDescription "A skin weapon item that can be used with knuckles."
+set key[id=15500539] guideDescription "A skin weapon item that can be used with knuckles."
+set key[id=15500542] guideDescription "A skin weapon item that can be used with knuckles."
+set key[id=15500544] guideDescription "A skin weapon item that can be used with knuckles."
+set key[id=15500545] guideDescription "A skin weapon item that can be used with knuckles."
+set key[id=15500546] guideDescription "A skin weapon item that can be used with knuckles."
+set key[id=15500547] guideDescription "A skin weapon item that can be used with knuckles."
+set key[id=15520505] guideDescription "A skin weapon item that can be used with knuckles."
+set key[id=15600090] tooltipDescription "An orb made for warriors who fight fiercely on the battlefield."
+set key[id=15600090] guideDescription "Additional skill effects do not apply in battlefields and arenas."
+set key[id=15600197] guideDescription "A skin weapon item that can be used with an orb."
+set key[id=15600200] guideDescription "A skin weapon item that can be used with an orb."
+set key[id=15600527] guideDescription "A skin weapon item that can be used with an orb."
+set key[id=15600541] guideDescription "A skin weapon item that can be used with an orb."
+set key[id=15600544] guideDescription "A skin weapon item that can be used with an orb."
+set key[id=15600546] guideDescription "A skin weapon item that can be used with an orb."
+set key[id=15600547] guideDescription "A skin weapon item that can be used with an orb."
+set key[id=15600548] guideDescription "A skin weapon item that can be used with an orb."
+set key[id=15600549] guideDescription "A skin weapon item that can be used with an orb."
+set key[id=15620501] guideDescription "A skin weapon item that can be used with an orb."
+set key[id=20001013] tooltipDescription "A special title you can get from a title box."
+set key[id=20001013] guideDescription "Double-click it to get a special title."
+set key[id=20001014] tooltipDescription "A special title you can get from a title box."
+set key[id=20001014] guideDescription "Double-click it to get a special title."
+set key[id=20001015] tooltipDescription "A special title you can get from a title box."
+set key[id=20001015] guideDescription "Double-click it to get a special title."
+set key[id=20001016] tooltipDescription "A special title you can get from a title box."
+set key[id=20001016] guideDescription "Double-click it to get a special title."
+set key[id=20001017] tooltipDescription "A special title you can get from a title box."
+set key[id=20001017] guideDescription "Double-click it to get a special title."
+set key[id=20001018] tooltipDescription "A special title you can get from a title box."
+set key[id=20001018] guideDescription "Double-click it to get a special title."
+set key[id=20001019] tooltipDescription "A special title you can get from a title box."
+set key[id=20001019] guideDescription "Double-click it to get a special title."
+set key[id=20001020] tooltipDescription "A special title you can get from a title box."
+set key[id=20001020] guideDescription "Double-click it to get a special title."
+set key[id=20001021] tooltipDescription "A special title you can get from a title box."
+set key[id=20001021] guideDescription "Double-click it to get a special title."
+set key[id=20001022] tooltipDescription "A special title you can get from a title box."
+set key[id=20001022] guideDescription "Double-click it to get a special title."
+set key[id=20001023] tooltipDescription "A special title you can get from a title box."
+set key[id=20001023] guideDescription "Double-click it to get a special title."
+set key[id=20001024] tooltipDescription "A special title you can get from a title box."
+set key[id=20001024] guideDescription "Double-click it to get a special title."
+set key[id=20001025] tooltipDescription "A special title you can get from a title box."
+set key[id=20001025] guideDescription "Double-click it to get a special title."
+set key[id=20001026] tooltipDescription "A special title you can get from a title box."
+set key[id=20001026] guideDescription "Double-click it to get a special title."
+set key[id=20001027] tooltipDescription "A special title you can get from a title box."
+set key[id=20001027] guideDescription "Double-click it to get a special title."
+set key[id=20001028] tooltipDescription "A special title you can get from a title box."
+set key[id=20001028] guideDescription "Double-click it to get a special title."
+set key[id=20001029] tooltipDescription "A special title you can get from a title box."
+set key[id=20001029] guideDescription "Double-click it to get a special title."
+set key[id=20001030] tooltipDescription "A special title you can get from a title box."
+set key[id=20001030] guideDescription "Double-click it to get a special title."
+set key[id=20001031] tooltipDescription "A special title you can get from a title box."
+set key[id=20001031] guideDescription "Double-click it to get a special title."
+set key[id=20001032] tooltipDescription "A special title you can get from a title box."
+set key[id=20001032] guideDescription "Double-click it to get a special title."
+set key[id=20001033] tooltipDescription "A poisonous mushroom grown by Mushking. It has a pretty color, but looks \
+    dangerous somehow. It doesn't seem to affect your stats."
+set key[id=20001033] guideDescription "Double-click it to use it. You will feel dizzy and be unable to move for a \
+    moment."
+set key[id=20001033] mainDescription "<font size='14'>20 Sec Cooldown</font>\\n<font size='24'>Eat Mushking's \
+    Poison Mushroom</font>"
+set key[id=20001694] tooltipDescription "An ancient potion said to have been drunk by the great warriors of \
+    $map:02000051$. These days it is also made by alchemy from a mix of herbs. Drinking it <font \
+    color='#00aaef'>increases Physical Attack by 4% for 60 min</font>. A special ingredient is added, so <font \
+    color='#00aaef'>the effect does not wear off when you die.</font>"
+set key[id=20001694] mainDescription "<font size='14'>1 Min Cooldown | Duration 60 Min</font>\\n<font \
+    size='24'>Physical Attack Up</font>"
+set key[id=20001695] tooltipDescription "A potion made by the mages of $map:02000023$ from refined herbs. These \
+    days it is also made by alchemy from a mix of herbs. Drinking it <font color='#00aaef'>increases Magic Attack \
+    by 4% for 60 min</font>. A special ingredient is added, so <font color='#00aaef'>the effect does not wear off \
+    when you die.</font>"
+set key[id=20001695] mainDescription "<font size='14'>1 Min Cooldown | Duration 60 Min</font>\\n<font \
+    size='24'>Magic Attack Up</font>"
+set key[id=20001759] tooltipDescription "A powerful potion made with new technology. You can drink it in one gulp, \
+    so it works well. Drinking it <font color='#00aaef'>restores HP by 1600 instantly</font>. After one drink you \
+    feel full, so you can drink again after 5 sec."
+set key[id=20001759] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<font size='24'>Restores 1600 \
+    HP</font>"
+set key[id=20001760] tooltipDescription "A powerful potion made with new technology. You can drink it in one gulp, \
+    so it works well. Drinking it <font color='#00aaef'>restores HP by 2400 instantly</font>. After one drink you \
+    feel full, so you can drink again after 5 sec."
+set key[id=20001760] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<font size='24'>Restores 2400 \
+    HP</font>"
+set key[id=20001761] tooltipDescription "A powerful potion made with new technology. You can drink it in one gulp, \
+    so it works well. Drinking it <font color='#00aaef'>restores HP by 3600 instantly</font>. After one drink you \
+    feel full, so you can drink again after 5 sec."
+set key[id=20001761] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<font size='24'>Restores 3600 \
+    HP</font>"
+set key[id=20001765] tooltipDescription "A powerful potion made with new technology. You can drink it in one gulp, \
+    so it works well. Drinking it <font color='#00aaef'>restores HP by 1600 instantly</font>. After one drink you \
+    feel full, so you can drink again after 5 sec."
+set key[id=20001765] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<font size='24'>Restores 1600 \
+    HP</font>"
+set key[id=20001766] tooltipDescription "A powerful potion made with new technology. You can drink it in one gulp, \
+    so it works well. Drinking it <font color='#00aaef'>restores HP by 2400 instantly</font>. After one drink you \
+    feel full, so you can drink again after 5 sec."
+set key[id=20001766] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<font size='24'>Restores 2400 \
+    HP</font>"
+set key[id=20001767] tooltipDescription "A powerful potion made with new technology. You can drink it in one gulp, \
+    so it works well. Drinking it <font color='#00aaef'>restores HP by 3600 instantly</font>. After one drink you \
+    feel full, so you can drink again after 5 sec."
+set key[id=20001767] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<font size='24'>Restores 3600 \
+    HP</font>"
+set key[id=20001779] tooltipDescription "A powerful potion made with new technology. You can drink it in one gulp, \
+    so it works well. Drinking it <font color='#00aaef'>restores HP by 1600 instantly</font>. After one drink you \
+    feel full, so you can drink again after 5 sec."
+set key[id=20001779] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<font size='24'>Restores 1600 \
+    HP</font>"
+set key[id=20001798] tooltipDescription "A special magnet lure that can only be used in $map:02000557$. If you \
+    fish in $map:02000557$, you have a set chance to get $item:30001515$."
+set key[id=20001798] guideDescription "\\n$item:20001798$ How to Get<font color='#FFFFFF'>\\n- Get it by mail when \
+    you log in during the event\\n- Buy it at Bax the Treasure Collector's shop in \
+    $map:02000557$</font>\\n\\n<font color=\"#FF5F5F\">You cannot use two or more lures at the same time. Using \
+    one removes the effect of the current lure.</font>\\n\\nUse the World Map or Event Map shortcut button to get \
+    to $map:02000557$ quickly and easily."
+set key[id=20001798] mainDescription "<font size='14'>Duration 30 Min</font>\\n<font size='20'>Gives a chance to \
+    hook items</font>"
+set key[id=20001800] tooltipDescription "A special magnet lure that can only be used in $map:02000557$. If you \
+    fish in $map:02000557$, you have a set chance to get $item:30001521$."
+set key[id=20001800] guideDescription "\\n$item:20001800$ How to Get<font color='#FFFFFF'>\\n- Get it by mail when \
+    you log in during the event\\n- Buy it at Bax the Treasure Collector's shop in \
+    $map:02000557$</font>\\n\\n<font color=\"#FF5F5F\">You cannot use two or more lures at the same time. Using \
+    one removes the effect of the current lure.</font>\\n\\nUse the World Map or Event Map shortcut button to get \
+    to $map:02000557$ quickly and easily."
+set key[id=20001800] mainDescription "<font size='14'>Duration 30 Min</font>\\n<font size='20'>Gives a chance to \
+    hook items</font>"
+set key[id=20200117] mainDescription "Learn the Mushking Palanquin Bearer Dance emote"
+set key[id=20201116] tooltipDescription "A pass that teaches you a dynamic emote when used."
+set key[id=20201116] guideDescription "Double-click it to learn a special emote."
+set key[id=20201116] mainDescription "Learn the Camping Mood: Lonesome emote"
+set key[id=20201117] tooltipDescription "A pass that teaches you a dynamic emote when used."
+set key[id=20201117] guideDescription "Double-click it to learn a special emote."
+set key[id=20201117] mainDescription "Learn the Camping Mood: Comfortable emote"
+set key[id=20201118] tooltipDescription "A pass that teaches you a dynamic emote when used."
+set key[id=20201118] guideDescription "Double-click it to learn a special emote."
+set key[id=20201118] mainDescription "Learn the Figure Skating Jump emote"
+set key[id=20201119] tooltipDescription "A pass that teaches you a dynamic emote when used."
+set key[id=20201119] guideDescription "Double-click it to learn a special emote."
+set key[id=20201119] mainDescription "Learn the Let's Fly emote"
+set key[id=20201120] tooltipDescription "A pass that teaches you a dynamic emote when used."
+set key[id=20201120] guideDescription "Double-click it to learn a special emote."
+set key[id=20201120] mainDescription "Learn the Makin' Pizza emote"
+set key[id=20201121] tooltipDescription "A pass that teaches you a dynamic emote when used."
+set key[id=20201121] guideDescription "Double-click it to learn a special emote."
+set key[id=20201121] mainDescription "Learn the Makin' Hamburgers emote"
+set key[id=20201122] tooltipDescription "A pass that teaches you a dynamic emote when used."
+set key[id=20201122] guideDescription "Double-click it to learn a special emote."
+set key[id=20201122] mainDescription "Learn the Toddler Dance emote"
+set key[id=20300871] tooltipDescription "A box that gives you 14 each of various kinds of Tier 3 Lumistones."
+set key[id=20300871] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20300900] tooltipDescription "A box that gives you various kinds of Tier 2 Lumistones. You can't tell \
+    which Lumistones are inside."
+set key[id=20300900] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20300901] tooltipDescription "A box that gives you various kinds of Tier 3 Lumistones. You get one of \
+    each kind."
+set key[id=20300901] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20301093] tooltipDescription "A ticket that lets you use the Outfit Item tab. When used, 30 days 00 \
+    hours 00 minutes are added to your usage period. If you are already using the Outfit Item tab, it is extended \
+    by 30 days 00 hours 00 minutes."
+set key[id=20301093] guideDescription "Double-click it in your inventory to use the Outfit Item tab."
+set key[id=20301094] tooltipDescription "A ticket that lets you use the Outfit Item tab. When used, 90 days 00 \
+    hours 00 minutes are added to your usage period. If you are already using the Outfit Item tab, it is extended \
+    by 90 days 00 hours 00 minutes."
+set key[id=20301094] guideDescription "Double-click it in your inventory to use the Outfit Item tab."
+set key[id=20301095] tooltipDescription "A ticket that lets you use the Outfit Item tab. When used, 180 days 00 \
+    hours 00 minutes are added to your usage period. If you are already using the Outfit Item tab, it is extended \
+    by 180 days 00 hours 00 minutes."
+set key[id=20301095] guideDescription "Double-click it in your inventory to use the Outfit Item tab."
+set key[id=20301368] tooltipDescription "A box you get when you reach Dungeon Rank C in World Invasion. "
+set key[id=20301651] tooltipDescription "A box that lets you choose an enchant rune for the part you want."
+set key[id=20301651] guideDescription "Double-click it in your inventory to choose 1 of the items inside. "
+set key[id=20301713] tooltipDescription "A box that lets you choose the kind of Tier 3 Lumistone (account-bound) \
+    you want."
+set key[id=20301713] guideDescription "Double-click it in your inventory to choose 1 of the items inside. "
+set key[id=20301714] tooltipDescription "A box that lets you choose the kind of Tier 2 Lumistone (character-bound) \
+    you want. "
+set key[id=20301714] guideDescription "Double-click it in your inventory to choose 1 of the items inside. "
+set key[id=20301721] tooltipDescription "A box containing Shining Stones of Blessing."
+set key[id=20301926] tooltipDescription "A box that gives you one of several special titles."
+set key[id=20301927] tooltipDescription "Mushking's 1st Anniversary cake box. Mokum seems to have eaten everything \
+    inside. The cake is gone, but there are signs that Mushking kept belongings in the pretty box that remained."
+set key[id=20301928] tooltipDescription "A piece of Mushking's 1st Anniversary Cake Box."
+set key[id=20301928] guideDescription "Double-click it in your inventory to use it. Spend 5 to get 1 'Mushking's \
+    1st Anniversary Cake Box'."
+set key[id=20301965] tooltipDescription "A box that gives you one of several colored crystals."
+set key[id=20301965] guideDescription "Double-click it in your inventory to get the item"
+set key[id=20302533] tooltipDescription "An item that lets you check the 'Today's Bingo Number' in the Check Check \
+    All-Bingo event. Checking 1 number uses up 1."
+set key[id=20302533] guideDescription "\\n$item:20302533$ How to Get<font color='#FFFFFF'>\\n- Mon-Thu: get 1 for \
+    30 min of play time\\n- Fri-Sun: get 1 for 30 min of play time and 1 for 60 min of play time</font>"
+set key[id=20302626] tooltipDescription "A Meta Badge only lets you bring out the power of the Meta Core. It is \
+    the Meta Core that gathers the magical energy scattered across the Maple World and turns it into stats."
+set key[id=20302626] guideDescription "\\nHow to Get<font color='#FFFFFF'>\\n- Get it at a set chance while \
+    defeating monsters, playing instruments, or fishing\\n- You can get up to 60 per day</font>"
+set key[id=20302911] tooltipDescription "A box that lets you choose the kind of Tier 2 Lumistone you want. "
+set key[id=20302911] guideDescription "Double-click it in your inventory to choose 1 of the items inside. "
+set key[id=20302929] tooltipDescription "A box that lets you choose the kind of Tier 3 Lumistone you want."
+set key[id=20302929] guideDescription "Double-click it in your inventory to choose 1 of the items inside. "
+set key[id=20302933] tooltipDescription "A box that lets you choose the kind of Tier 4 Lumistone you want."
+set key[id=20302933] guideDescription "Double-click it in your inventory to choose 1 of the items inside. "
+set key[id=20303140] tooltipDescription "A box you get when you reach Dungeon Rank C in Phantom Blue Shadow Cave. \
+    "
+set key[id=20303141] tooltipDescription "A box you get when you reach Dungeon Rank B in Phantom Blue Shadow Cave. \
+    "
+set key[id=20303142] tooltipDescription "A box you get when you reach Dungeon Rank A in Phantom Blue Shadow Cave. \
+    "
+set key[id=20303143] tooltipDescription "A box you get when you reach Dungeon Rank S in Phantom Blue Shadow Cave. \
+    "
+set key[id=20303144] tooltipDescription "A box you get when you reach Dungeon Rank S+ in Phantom Blue Shadow Cave. \
+    "
+set key[id=20303145] tooltipDescription "A box you get when you reach Dungeon Rank C in Phantom Horus's Nest. "
+set key[id=20303146] tooltipDescription "A box you get when you reach Dungeon Rank B in Phantom Horus's Nest. "
+set key[id=20303147] tooltipDescription "A box you get when you reach Dungeon Rank A in Phantom Horus's Nest. "
+set key[id=20303148] tooltipDescription "A box you get when you reach Dungeon Rank S in Phantom Horus's Nest. "
+set key[id=20303149] tooltipDescription "A box you get when you reach Dungeon Rank S+ in Phantom Horus's Nest. "
+set key[id=20303184] tooltipDescription "A box you get when you reach Dungeon Rank C in Rumbling Black Bean \
+    Playground. "
+set key[id=20303185] tooltipDescription "A box you get when you reach Dungeon Rank B in Rumbling Black Bean \
+    Playground. "
+set key[id=20303186] tooltipDescription "A box you get when you reach Dungeon Rank A in Rumbling Black Bean \
+    Playground. "
+set key[id=20303187] tooltipDescription "A box you get when you reach Dungeon Rank S in Rumbling Black Bean \
+    Playground. "
+set key[id=20303188] tooltipDescription "A box you get when you reach Dungeon Rank S+ in Rumbling Black Bean \
+    Playground. "
+set key[id=20303206] tooltipDescription "A box containing various items that help in battle."
+set key[id=20303207] tooltipDescription "A box that gives you a Lapenshard. You can choose one of a Red, Green, or \
+    class-matched Blue Lapenshard."
+set key[id=20303207] guideDescription "Double-click it in your inventory to choose 1 of the items \
+    inside.\\n\\n<font color=\"#FF5F5F\">* All items in this box are character-bound.</font>"
+set key[id=20303239] tooltipDescription "A Meta Badge only lets you bring out the power of the Meta Core. It is \
+    the Meta Core that gathers the magical energy scattered across the Maple World and turns it into stats."
+set key[id=20303239] guideDescription "\\n$item:20303224$ How to Get<font color='#FFFFFF'>\\n- Get it at a set \
+    chance while defeating monsters, playing instruments, or fishing\\n- You can get up to 100 per day</font>"
+set key[id=20303283] tooltipDescription "A Big Catch! A box holding a huge amount of $item:40100039$.\\nYou who \
+    got this box are already one of the luckiest ever!"
+set key[id=20303285] tooltipDescription "A jar holding red stars. Red stars are character-bound items, so think \
+    carefully before you open the jar."
+set key[id=20303286] tooltipDescription "A jar holding blue stars. Blue stars are character-bound items, so think \
+    carefully before you open the jar."
+set key[id=20303294] tooltipDescription "A box you get when you reach Dungeon Rank C in Phantom Shadow Altar. "
+set key[id=20303295] tooltipDescription "A box you get when you reach Dungeon Rank B in Phantom Shadow Altar. "
+set key[id=20303296] tooltipDescription "A box you get when you reach Dungeon Rank A in Phantom Shadow Altar. "
+set key[id=20303297] tooltipDescription "A box you get when you reach Dungeon Rank S in Phantom Shadow Altar. "
+set key[id=20303298] tooltipDescription "A box you get when you reach Dungeon Rank S+ in Phantom Shadow Altar. "
+set key[id=20303299] tooltipDescription "A Meta Badge only lets you bring out the power of the Meta Core. It is \
+    the Meta Core that gathers the magical energy scattered across the Maple World and turns it into stats."
+set key[id=20303299] guideDescription "\\n$item:20303224$ How to Get<font color='#FFFFFF'>\\n- Get it at a set \
+    chance while defeating monsters, playing instruments, or fishing\\n- You can get up to 100 per day</font>"
+set key[id=20303336] tooltipDescription "A Meta Badge only lets you bring out the power of the Meta Core. It is \
+    the Meta Core that gathers the magical energy scattered across the Maple World and turns it into stats."
+set key[id=20303336] guideDescription "\\n$item:20303224$ How to Get<font color='#FFFFFF'>\\n- Get it at a set \
+    chance while defeating monsters or clearing dungeons\\n- You can get up to 150 per day</font>"
+set key[id=20303338] tooltipDescription "A box you get when you reach Dungeon Rank C in Second Playground. "
+set key[id=20303338] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20303339] tooltipDescription "A box you get when you reach Dungeon Rank B in Second Playground. "
+set key[id=20303339] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20303340] tooltipDescription "A box you get when you reach Dungeon Rank A in Second Playground. "
+set key[id=20303340] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20303341] tooltipDescription "A box you get when you reach Dungeon Rank S in Second Playground. "
+set key[id=20303341] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20303342] tooltipDescription "A box you get when you reach Dungeon Rank S+ in Second Playground. "
+set key[id=20303342] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20303357] tooltipDescription "A box you get when you reach Dungeon Rank C in Blue Flame Chaos. "
+set key[id=20303357] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20303358] tooltipDescription "A box you get when you reach Dungeon Rank B in Blue Flame Chaos. "
+set key[id=20303358] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20303359] tooltipDescription "A box you get when you reach Dungeon Rank A in Blue Flame Chaos. "
+set key[id=20303359] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20303360] tooltipDescription "A box you get when you reach Dungeon Rank S in Blue Flame Chaos. "
+set key[id=20303360] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20303361] tooltipDescription "A box you get when you reach Dungeon Rank S+ in Blue Flame Chaos. "
+set key[id=20303361] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20303378] tooltipDescription "A Meta Badge only lets you bring out the power of the Meta Core. It is \
+    the Meta Core that gathers the magical energy scattered across the Maple World and turns it into stats."
+set key[id=20303378] guideDescription "\\n$item:20303378$ How to Get<font color='#FFFFFF'>\\n- Get it at a set \
+    chance while defeating monsters, playing instruments, or fishing\\n- You can get up to 100 per day</font>"
+set key[id=20801014] tooltipDescription "A Super World Chat coupon for livelier world chat. When used, it \
+    decorates your chat with a specially colored background and a cute icon."
+set key[id=20801014] guideDescription "Use it from the Super World Chat menu at the bottom left of the chat \
+    window, or double-click it. A coupon is used up automatically each time you chat. "
+set key[id=20801014] mainDescription "Use Super World Chat"
+set key[id=20802014] tooltipDescription "A bundle containing Super World Chat coupons for flashier world chat. \
+    Using the coupons inside decorates your chat with a specially colored background and cute icons."
+set key[id=20802014] mainDescription "Get 10 Super World Chats"
+set key[id=20802015] tooltipDescription "A bundle containing Super World Chat coupons for flashier world chat. \
+    Using the coupons inside decorates your chat with a specially colored background and cute icons."
+set key[id=20802015] mainDescription "Get 10 Super World Chats"
+set key[id=20802016] tooltipDescription "A bundle containing Super World Chat coupons for flashier world chat. \
+    Using the coupons inside decorates your chat with a specially colored background and cute icons."
+set key[id=20802016] mainDescription "Get 10 Super World Chats"
+set key[id=20802017] tooltipDescription "A bundle containing Super World Chat coupons for flashier world chat. \
+    Using the coupons inside decorates your chat with a specially colored background and cute icons."
+set key[id=20802017] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20802017] mainDescription "Get 10 Super World Chats"
+set key[id=20802018] tooltipDescription "A bundle containing Super World Chat coupons for flashier world chat. \
+    Using the coupons inside decorates your chat with a specially colored background and cute icons."
+set key[id=20802018] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20802018] mainDescription "Get 10 Super World Chats"
+set key[id=20802019] tooltipDescription "A bundle containing Super World Chat coupons for flashier world chat. \
+    Using the coupons inside decorates your chat with a specially colored background and cute icons."
+set key[id=20802019] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20802019] mainDescription "Get 10 Super World Chats"
+set key[id=20802020] tooltipDescription "A bundle containing Super World Chat coupons for flashier world chat. \
+    Using the coupons inside decorates your chat with a specially colored background and cute icons."
+set key[id=20802020] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20802020] mainDescription "Get 10 Super World Chats"
+set key[id=20802021] tooltipDescription "A bundle containing Super World Chat coupons for flashier world chat. \
+    Using the coupons inside decorates your chat with a specially colored background and cute icons."
+set key[id=20802021] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20802021] mainDescription "Get 10 Super World Chats"
+set key[id=20802022] tooltipDescription "A bundle containing Super World Chat coupons for flashier world chat. \
+    Using the coupons inside decorates your chat with a specially colored background and cute icons."
+set key[id=20802022] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20802022] mainDescription "Get 10 Super World Chats"
+set key[id=20802023] tooltipDescription "A bundle containing Super World Chat coupons for flashier world chat. \
+    Using the coupons inside decorates your chat with a specially colored background and cute icons."
+set key[id=20802023] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20802023] mainDescription "Get 10 Super World Chats"
+set key[id=20802024] tooltipDescription "A bundle containing Super World Chat coupons for flashier world chat. \
+    Using the coupons inside decorates your chat with a specially colored background and cute icons."
+set key[id=20802024] guideDescription "Double-click it in your inventory to get the items."
+set key[id=20802024] mainDescription "Get 10 Super World Chats"
+set key[id=22001038] tooltipDescription "A capsule with Ducky drawn on it. Use it to get one of the various skin \
+    items in the capsule machine."
+set key[id=22001038] guideDescription "Double-click the item in your inventory to use it.\\n\\n<font \
+    color='#FFFFFF'>Main Items You Can Get</font>\\n<font color='#FFFFFF'><font color='#C888FF'> - Dancing Grace \
+    Set</font>\\n<font color='#C888FF'> - Cunning Mail Carrier Set</font>\\n<font color='#C888FF'> - Pizza \
+    Delivery Motorcycle</font>\\n<font color='#C888FF'> - Egg Sushi</font>\\n<font color='#C888FF'> - Flower \
+    Wedding Carriage</font>\\n<font color='#C888FF'> - 2-Player Action Pass: Candy Love</font>\\n<font \
+    color='#45D1FF'> - Metonald's Set</font>\\n<font color='#45D1FF'> - Maple Quarterback Set</font>\\n<font \
+    color='#45D1FF'> - Baseball Set</font>\\n<font color='#45D1FF'> - Damage Font Badge: Clover</font>\\n<font \
+    color='#45D1FF'> - Tombstone Badge: Clover</font>\\n<font color='#45D1FF'> - Swim Tube Badge: Haughty \
+    Flamingo</font>\\n<font color='#45D1FF'> - Fishing Badge: Hot Dog</font>\\n<font color='#FFFFFF'> - Name Tag \
+    Badge: Lucky Clover</font>\\n<font color='#FFFFFF'> - Speech Bubble Badge: Lucky Clover</font>\\n<font \
+    color='#FFFFFF'> - Action Pass: Let's Fly</font>\\n<font color='#FFFFFF'> - Action Pass: Figure \
+    Jump</font>\\n<font color='#FFFFFF'> - Various other skins and cosmetic items</font>\\n<font \
+    color='#FF5F5F'>\\n* Main items may change later, so please open items as soon as you get them.</font>"
+set key[id=22001039] tooltipDescription "A capsule with Ducky drawn on it. Use it to get one of the various skin \
+    items in the capsule machine."
+set key[id=22001039] guideDescription "Double-click the item in your inventory to use it.\\n\\n<font \
+    color='#FFFFFF'>Main Items You Can Get</font>\\n<font color='#FFFFFF'><font color='#C888FF'> - Tria Royal Chef \
+    Set</font>\\n<font color='#C888FF'> - Kitten Maid Set</font>\\n<font color='#C888FF'> - Sweet Ice Cream \
+    Truck</font>\\n<font color='#C888FF'> - Potato Hot Dog</font>\\n<font color='#C888FF'> - Cute Shopping \
+    Cart</font>\\n<font color='#C888FF'> - 2-Player Action Pass: Sweet Candy</font>\\n<font color='#45D1FF'> - Sly \
+    Mouse Set</font>\\n<font color='#45D1FF'> - Sweet Cupcake Set</font>\\n<font color='#45D1FF'> - Marshmallow \
+    Set</font>\\n<font color='#45D1FF'> - Damage Font Badge: Very Berry Cream</font>\\n<font color='#45D1FF'> - \
+    Tombstone Badge: Carrot Carrot Cake</font>\\n<font color='#45D1FF'> - Swim Tube Badge: Red \
+    Loofah</font>\\n<font color='#45D1FF'> - Fishing Badge: French Fries</font>\\n<font color='#FFFFFF'> - Name \
+    Tag Badge: Very Berry Cream</font>\\n<font color='#FFFFFF'> - Speech Bubble Badge: Very Berry \
+    Cream</font>\\n<font color='#FFFFFF'> - Action Pass: Make a Hamburger</font>\\n<font color='#FFFFFF'> - Action \
+    Pass: Make a Pizza</font>\\n<font color='#FFFFFF'> - Various other skins and cosmetic items</font>\\n<font \
+    color='#FF5F5F'>\\n* Main items may change later, so please open items as soon as you get them.</font>"
+set key[id=22001040] tooltipDescription "A capsule with Ducky drawn on it. Use it to get one of the various skin \
+    items in the capsule machine."
+set key[id=22001040] guideDescription "Double-click the item in your inventory to use it.\\n\\n<font \
+    color='#FFFFFF'>Main Items You Can Get</font>\\n<font color='#FFFFFF'><font color='#C888FF'> - Cute Blossom \
+    Set</font>\\n<font color='#C888FF'> - Bunny Flower Set</font>\\n<font color='#C888FF'> - Roll Roll Dung \
+    Beetle</font>\\n<font color='#C888FF'> - Ah-choo, My Nose Tickles</font>\\n<font color='#C888FF'> - Round \
+    Round Jub</font>\\n<font color='#C888FF'> - 2-Seat Tricycle Scooter</font>\\n<font color='#C888FF'> - 2-Player \
+    Action Pass: Fist Greeting</font>\\n<font color='#45D1FF'> - Chubby Bunny Set</font>\\n<font color='#45D1FF'> \
+    - Coco Puppy Set</font>\\n<font color='#45D1FF'> - Damage Font Badge: Bright Cherry Blossoms</font>\\n<font \
+    color='#45D1FF'> - Tombstone Badge: Hologram</font>\\n<font color='#45D1FF'> - Swim Tube Badge: Chubby Duck \
+    Boat</font>\\n<font color='#45D1FF'> - Fishing Badge: Red Panda</font>\\n<font color='#FFFFFF'> - Name Tag \
+    Badge: Cherry Blossom</font>\\n<font color='#FFFFFF'> - Speech Bubble Badge: Cherry Blossom</font>\\n<font \
+    color='#FFFFFF'> - Action Pass: Toddler Dance</font>\\n<font color='#FFFFFF'> - Action Pass: Sentimental \
+    Camping, Lonely</font>\\n<font color='#FFFFFF'> - Action Pass: Sentimental Camping, Cozy</font>\\n<font \
+    color='#FFFFFF'> - Various other skins and cosmetic items</font>\\n<font color='#FF5F5F'>\\n* Main items may \
+    change later, so please open items as soon as you get them.</font>"
+set key[id=22201038] tooltipDescription "A coin with Ducky drawn on it. Use it to buy items at the coin shop that \
+    sells the skin capsule contents. The coin shop only accepts coins of the same round."
+set key[id=22201038] guideDescription "$item:22201038$ can be obtained by dismantling items from \
+    $item:22001038$.\\nDouble-click the item in your inventory to open the coin shop."
+set key[id=22201039] tooltipDescription "A coin with Ducky drawn on it. Use it to buy items at the coin shop that \
+    sells the skin capsule contents. The coin shop only accepts coins of the same round."
+set key[id=22201039] guideDescription "$item:22201039$ can be obtained by dismantling items from \
+    $item:22001039$.\\nDouble-click the item in your inventory to open the coin shop."
+set key[id=22201040] tooltipDescription "A coin with Ducky drawn on it. Use it to buy items at the coin shop that \
+    sells the skin capsule contents. The coin shop only accepts coins of the same round."
+set key[id=22201040] guideDescription "$item:22201040$ can be obtained by dismantling items from \
+    $item:22001040$.\\nDouble-click the item in your inventory to open the coin shop."
+set key[id=30001189] tooltipDescription "A glass bead with a Lumistone pattern, prepared by the Tria royal family \
+    for adventurers. It serves as the framework when converting Essence of Darkness into the properties that suit \
+    Lumistone energy."
+set key[id=30001189] guideDescription "Put it into the Lumina Cube in Tria together with Essence of Darkness to \
+    get the materials needed to upgrade Lumistones."
+set key[id=30001202] tooltipDescription "A whetstone once used by the legendary blacksmith Toad. It gives the same \
+    effect as enchanting when you need it for equipment. When used to enchant a dual-wield weapon, it gives the \
+    effect to both pieces of equipment."
+set key[id=30001203] tooltipDescription "A whetstone once used by the legendary blacksmith Toad. It gives the same \
+    effect as enchanting when you need it for equipment. When used to enchant a dual-wield weapon, it gives the \
+    effect to both pieces of equipment."
+set key[id=30001345] tooltipDescription "A rainbow candy made with a special recipe. It still looks colorful and \
+    tasty, but now it is even more special. If you lock a pet's bonus talents with the shiny rainbow candy, the \
+    locked talents keep their type and value even when you change the pet's bonus talents. Its shining power lets \
+    you lock up to 2 of the pet's talents."
+set key[id=30001345] guideDescription "It is used up when you lock bonus talents while changing pet talents. The \
+    type and value of the talents you select are locked with this item. You can lock up to 2 kinds of talents."
+set key[id=30001479] tooltipDescription "The key to the lowest-level prison cell of $map:52000189$. They say \
+    $npc:11003368$, one of the Seven Heroes, is held inside."
+set key[id=30001480] tooltipDescription "An urgent message that $npc:11001812$ sent through $npcName:11004744$, \
+    asking Empress $npcName:11004786$ for support to fully seal the Land of Darkness."
+set key[id=30001485] tooltipDescription "A symptom that goes hand in hand with the powerful, and it seems even \
+    $npc:11000074$ could not avoid it."
+set key[id=30001486] tooltipDescription "A diary that $npc:11000074$ has kept for a long time. It is like the \
+    history of the Vidblame family, and it is the thing $npc:11000074$ treasures most."
+set key[id=30001487] tooltipDescription "A toy teddy bear for a small child. It has been handled a lot and is worn \
+    in places. It looks old, so it seems to have no owner now."
+set key[id=30001488] tooltipDescription "A letter that $npc:11000074$ left half-written, crumpled up as if given \
+    up on sending. It speaks of missing someone, but the ink is smudged and the recipient cannot be made out."
+set key[id=30001514] tooltipDescription "A coin you can get from various events for the 5th anniversary."
+set key[id=30001514] guideDescription "Double-click to use the Mushking Shop right away."
+set key[id=30001521] tooltipDescription "A golden piece with a rainbow drawn on it. In $map:02000557$, you can \
+    exchange it for various items at the shop of the event merchant $npc:11004842$."
+set key[id=30001521] guideDescription "\\nHow to get $item:30001521$<font color='#FFFFFF'>\\n- Use a Baki Air Pump \
+    at the Baki Pool\\n- Fish in $map:02000557$ using $item:20001798$\\n- Get it as a reward for joining the Kay \
+    event</font>\\n\\nYou can visit $map:02000557$ with the world map or the event map shortcut button."
+set key[id=30001526] tooltipDescription "A coin used in Maple World events. You can exchange it for various items \
+    with Bobby, the event helper in Queenstown or Barbenie."
+set key[id=30001526] guideDescription "How to get\\n<font color='#FFFFFF'>- Joining the Me 22 Year attendance \
+    check event\\n<font color='#FFFFFF'>- Various in-game activities (fishing, adventure, and life content)"
+set key[id=30001527] tooltipDescription "A Maple coin used in Maple World events.\nYou can exchange it for various \
+    items with Bobby, the event helper in Queenstown or Barbenie."
+set key[id=30001527] guideDescription "\\nHow to get $item:30001527$<font color='#FFFFFF'>\\n - Joining events\\n \
+    - Various in-game activities"
+set key[id=30001528] tooltipDescription "A letter Clark left for his son $npcName:11004873$. It looks like someone \
+    has already read it."
+set key[id=30061169] tooltipDescription "A scroll that is used up when you lock an option while changing the bonus \
+    options of an Epic grade weapon. Once an option is locked, its type and value do not change even when you \
+    change the bonus options."
+set key[id=30061169] guideDescription "It is used up when you lock an option while changing bonus options."
+set key[id=31001051] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001051] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade one-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +10 enchant item."
+set key[id=31001052] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001052] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade dual-wield weapon equipment. Using \
+    it has a 100% chance to turn the item into a +10 enchant item."
+set key[id=31001053] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001053] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade two-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +10 enchant item."
+set key[id=31001054] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001054] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade hat equipment. Using it has a 100% \
+    chance to turn the item into a +10 enchant item."
+set key[id=31001055] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001055] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade top equipment. Using it has a 100% \
+    chance to turn the item into a +10 enchant item."
+set key[id=31001056] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001056] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade bottom equipment. Using it has a \
+    100% chance to turn the item into a +10 enchant item."
+set key[id=31001057] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001057] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade gloves equipment. Using it has a \
+    100% chance to turn the item into a +10 enchant item."
+set key[id=31001058] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001058] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade shoes equipment. Using it has a \
+    100% chance to turn the item into a +10 enchant item."
+set key[id=31001079] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001079] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade one-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +9 enchant item."
+set key[id=31001080] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001080] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade dual-wield weapon equipment. Using \
+    it has a 100% chance to turn the item into a +9 enchant item."
+set key[id=31001081] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001081] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade two-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +9 enchant item."
+set key[id=31001082] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001082] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade hat equipment. Using it has a 100% \
+    chance to turn the item into a +9 enchant item."
+set key[id=31001083] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001083] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade top equipment. Using it has a 100% \
+    chance to turn the item into a +9 enchant item."
+set key[id=31001084] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001084] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade bottom equipment. Using it has a \
+    100% chance to turn the item into a +9 enchant item."
+set key[id=31001085] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001085] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade gloves equipment. Using it has a \
+    100% chance to turn the item into a +9 enchant item."
+set key[id=31001086] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001086] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade shoes equipment. Using it has a \
+    100% chance to turn the item into a +9 enchant item."
+set key[id=31001105] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001105] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade one-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +10 enchant item."
+set key[id=31001106] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001106] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade dual-wield weapon equipment. Using \
+    it has a 100% chance to turn the item into a +10 enchant item."
+set key[id=31001107] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001107] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade two-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +10 enchant item."
+set key[id=31001108] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001108] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade hat equipment. Using it has a 100% \
+    chance to turn the item into a +10 enchant item."
+set key[id=31001109] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001109] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade top equipment. Using it has a 100% \
+    chance to turn the item into a +10 enchant item."
+set key[id=31001110] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001110] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade bottom equipment. Using it has a \
+    100% chance to turn the item into a +10 enchant item."
+set key[id=31001111] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001111] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade gloves equipment. Using it has a \
+    100% chance to turn the item into a +10 enchant item."
+set key[id=31001112] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001112] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade shoes equipment. Using it has a \
+    100% chance to turn the item into a +10 enchant item."
+set key[id=31001131] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001131] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade one-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +11 enchant item."
+set key[id=31001132] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001132] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade dual-wield weapon equipment. Using \
+    it has a 100% chance to turn the item into a +11 enchant item."
+set key[id=31001133] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001133] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade two-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +11 enchant item."
+set key[id=31001134] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001134] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade hat equipment. Using it has a 100% \
+    chance to turn the item into a +11 enchant item."
+set key[id=31001135] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001135] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade top equipment. Using it has a 100% \
+    chance to turn the item into a +11 enchant item."
+set key[id=31001136] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001136] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade bottom equipment. Using it has a \
+    100% chance to turn the item into a +11 enchant item."
+set key[id=31001137] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001137] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade gloves equipment. Using it has a \
+    100% chance to turn the item into a +11 enchant item."
+set key[id=31001138] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001138] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade shoes equipment. Using it has a \
+    100% chance to turn the item into a +11 enchant item."
+set key[id=31001337] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001337] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade one-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +9 enchant item."
+set key[id=31001338] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001338] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade dual-wield weapon equipment. Using \
+    it has a 100% chance to turn the item into a +9 enchant item."
+set key[id=31001339] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001339] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade two-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +9 enchant item."
+set key[id=31001340] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001340] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade hat equipment. Using it has a 100% \
+    chance to turn the item into a +9 enchant item."
+set key[id=31001341] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001341] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade top equipment. Using it has a 100% \
+    chance to turn the item into a +9 enchant item."
+set key[id=31001342] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001342] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade bottom equipment. Using it has a \
+    100% chance to turn the item into a +9 enchant item."
+set key[id=31001343] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001343] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade gloves equipment. Using it has a \
+    100% chance to turn the item into a +9 enchant item."
+set key[id=31001344] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001344] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade shoes equipment. Using it has a \
+    100% chance to turn the item into a +9 enchant item."
+set key[id=31001363] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001363] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade one-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +10 enchant item."
+set key[id=31001364] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001364] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade dual-wield weapon equipment. Using \
+    it has a 100% chance to turn the item into a +10 enchant item."
+set key[id=31001365] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001365] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade two-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +10 enchant item."
+set key[id=31001366] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001366] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade hat equipment. Using it has a 100% \
+    chance to turn the item into a +10 enchant item."
+set key[id=31001367] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001367] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade top equipment. Using it has a 100% \
+    chance to turn the item into a +10 enchant item."
+set key[id=31001368] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001368] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade bottom equipment. Using it has a \
+    100% chance to turn the item into a +10 enchant item."
+set key[id=31001369] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001369] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade gloves equipment. Using it has a \
+    100% chance to turn the item into a +10 enchant item."
+set key[id=31001370] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001370] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade shoes equipment. Using it has a \
+    100% chance to turn the item into a +10 enchant item."
+set key[id=31001389] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001389] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade one-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +11 enchant item."
+set key[id=31001390] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001390] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade dual-wield weapon equipment. Using \
+    it has a 100% chance to turn the item into a +11 enchant item."
+set key[id=31001391] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001391] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade two-handed weapon equipment. Using \
+    it has a 100% chance to turn the item into a +11 enchant item."
+set key[id=31001392] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001392] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade hat equipment. Using it has a 100% \
+    chance to turn the item into a +11 enchant item."
+set key[id=31001393] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001393] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade top equipment. Using it has a 100% \
+    chance to turn the item into a +11 enchant item."
+set key[id=31001394] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001394] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade bottom equipment. Using it has a \
+    100% chance to turn the item into a +11 enchant item."
+set key[id=31001395] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001395] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade gloves equipment. Using it has a \
+    100% chance to turn the item into a +11 enchant item."
+set key[id=31001396] tooltipDescription "A runestone with mysterious power that makes equipment stronger when \
+    used."
+set key[id=31001396] guideDescription "Double-click to use the runestone to enchant equipment.\\nCan only be used \
+    on enchantable Normal, Rare, Elite, Exceptional, Legendary, and Epic grade shoes equipment. Using it has a \
+    100% chance to turn the item into a +11 enchant item."
+set key[id=31001999] tooltipDescription "A re-roller that changes the stats of an item anew."
+set key[id=31001999] guideDescription "Double-click to use the re-roller.\\n\\n<font color=\"#FFFFFF\">Can only be \
+    used on Exceptional grade capes, belts, earrings, necklaces, and rings. Using it changes only the bonus option \
+    values.</font>\\n\\n<font color=\"#FF5F5F\">Changing options with a re-roller does not increase the bonus \
+    option change count.\\nIt cannot be used on items with no bonus options or items that do not show a bonus \
+    option change count.\\nChanging options with a re-roller can give the same values.</font>"
+set key[id=31002154] tooltipDescription "A re-roller that changes the stats of an item anew."
+set key[id=31002154] guideDescription "Double-click to use the re-roller.\\n\\n<font color=\"#FFFFFF\">Can only be \
+    used on Exceptional grade hats, tops, bottoms, outfits, gloves, and shoes of level 50 or higher. Using it \
+    changes the type and value of the bonus options.</font>\\n\\n<font color=\"#FF5F5F\">Changing options with a \
+    re-roller does not increase the bonus option change count.\\nIt cannot be used on items with no bonus \
+    options.\\nChanging options with a re-roller can give the same values.</font>"
+set key[id=37000053] tooltipDescription "An unknown transcendence crystal that can transcend armor. Bring it to \
+    the transcendence blacksmith Perfa to add even stronger power to your equipment through the power of \
+    transcendence."
+set key[id=37000053] guideDescription "Click the 'Transcend' button at the bottom of the inventory window to \
+    transcend. It can be used on hats, tops, bottoms, gloves, and shoes. It can only be used on armor with a \
+    required level of 50 to 71. The options granted may differ by armor part. Transcending needs additional \
+    materials, which you can check in the transcendence UI. The crystal is used up when you attempt transcendence. \
+    The higher the crystal's grade, the more likely higher values are to be added."
+set key[id=37000053] mainDescription "Unknown Transcendence available"
+set key[id=37000054] tooltipDescription "An unknown transcendence crystal that can transcend armor. Bring it to \
+    the transcendence blacksmith Perfa to add even stronger power to your equipment through the power of \
+    transcendence."
+set key[id=37000054] guideDescription "Click the 'Transcend' button at the bottom of the inventory window to \
+    transcend. It can be used on hats, tops, bottoms, gloves, and shoes. It can only be used on armor with a \
+    required level of 50 to 71. The options granted may differ by armor part. Transcending needs additional \
+    materials, which you can check in the transcendence UI. The crystal is used up when you attempt transcendence. \
+    The higher the crystal's grade, the more likely higher values are to be added."
+set key[id=37000054] mainDescription "Unknown Transcendence available"
+set key[id=37000055] tooltipDescription "An unknown transcendence crystal that can transcend armor. Bring it to \
+    the transcendence blacksmith Perfa to add even stronger power to your equipment through the power of \
+    transcendence."
+set key[id=37000055] guideDescription "Click the 'Transcend' button at the bottom of the inventory window to \
+    transcend. It can be used on hats, tops, bottoms, gloves, and shoes. It can only be used on armor with a \
+    required level of 50 to 71. The options granted may differ by armor part. Transcending needs additional \
+    materials, which you can check in the transcendence UI. The crystal is used up when you attempt transcendence. \
+    The higher the crystal's grade, the more likely higher values are to be added."
+set key[id=37000055] mainDescription "Unknown Transcendence available"
+set key[id=37000056] tooltipDescription "An unknown transcendence crystal that can transcend armor. Bring it to \
+    the transcendence blacksmith Perfa to add even stronger power to your equipment through the power of \
+    transcendence."
+set key[id=37000056] guideDescription "Click the 'Transcend' button at the bottom of the inventory window to \
+    transcend. It can be used on hats, tops, bottoms, gloves, and shoes. It can only be used on armor with a \
+    required level of 50 to 71. The options granted may differ by armor part. Transcending needs additional \
+    materials, which you can check in the transcendence UI. The crystal is used up when you attempt transcendence. \
+    The higher the crystal's grade, the more likely higher values are to be added."
+set key[id=37000056] mainDescription "Unknown Transcendence available"
+set key[id=37000057] tooltipDescription "An unknown transcendence crystal that can transcend armor. Bring it to \
+    the transcendence blacksmith Perfa to add even stronger power to your equipment through the power of \
+    transcendence."
+set key[id=37000057] guideDescription "Click the 'Transcend' button at the bottom of the inventory window to \
+    transcend. It can be used on hats, tops, bottoms, gloves, and shoes. It can only be used on armor with a \
+    required level of 50 to 71. The options granted may differ by armor part. Transcending needs additional \
+    materials, which you can check in the transcendence UI. The crystal is used up when you attempt transcendence. \
+    The higher the crystal's grade, the more likely higher values are to be added."
+set key[id=37000057] mainDescription "Unknown Transcendence available"
+set key[id=37000058] tooltipDescription "An unknown transcendence crystal that can transcend armor. Bring it to \
+    the transcendence blacksmith Perfa to add even stronger power to your equipment through the power of \
+    transcendence."
+set key[id=37000058] guideDescription "Click the 'Transcend' button at the bottom of the inventory window to \
+    transcend. It can be used on hats, tops, bottoms, gloves, and shoes. It can only be used on armor with a \
+    required level of 50 to 71. The options granted may differ by armor part. Transcending needs additional \
+    materials, which you can check in the transcendence UI. The crystal is used up when you attempt transcendence. \
+    The higher the crystal's grade, the more likely higher values are to be added."
+set key[id=37000058] mainDescription "Unknown Transcendence available"
+set key[id=37000059] tooltipDescription "An unknown transcendence crystal that can transcend armor. Bring it to \
+    the transcendence blacksmith Perfa to add even stronger power to your equipment through the power of \
+    transcendence."
+set key[id=37000059] guideDescription "Click the 'Transcend' button at the bottom of the inventory window to \
+    transcend. It can be used on hats, tops, bottoms, gloves, and shoes. It can only be used on armor with a \
+    required level of 50 to 71. The options granted may differ by armor part. Transcending needs additional \
+    materials, which you can check in the transcendence UI. The crystal is used up when you attempt transcendence. \
+    The higher the crystal's grade, the more likely higher values are to be added."
+set key[id=37000059] mainDescription "Unknown Transcendence available"
+set key[id=37000060] tooltipDescription "An unknown transcendence crystal that can transcend armor. Bring it to \
+    the transcendence blacksmith Perfa to add even stronger power to your equipment through the power of \
+    transcendence."
+set key[id=37000060] guideDescription "Click the 'Transcend' button at the bottom of the inventory window to \
+    transcend. It can be used on hats, tops, bottoms, gloves, and shoes. It can only be used on armor with a \
+    required level of 50 to 71. The options granted may differ by armor part. Transcending needs additional \
+    materials, which you can check in the transcendence UI. The crystal is used up when you attempt transcendence. \
+    The higher the crystal's grade, the more likely higher values are to be added."
+set key[id=37000060] mainDescription "Unknown Transcendence available"
+set key[id=40100058] tooltipDescription "A strange crystal found in the phantom space beyond the rift in \
+    space-time. It is a substance that first appeared in Maple World and holds strong energy from the rift's \
+    power. Applying it to a Fire Prism weapon from the Phantom Dungeon creates tremendous synergy."
+set key[id=40100058] guideDescription "A material needed for limit break. It lets you push past a weapon's limits \
+    and raise its performance."
+set key[id=40100059] tooltipDescription "A strange crystal found in the phantom space beyond the rift in \
+    space-time. It is a substance that first appeared in Maple World and holds strong energy from the rift's \
+    power. Applying it to a Fire Prism weapon from the Phantom Dungeon creates tremendous synergy."
+set key[id=40100059] guideDescription "A material needed for limit break. It lets you push past a weapon's limits \
+    and raise its performance."
+set key[id=40100060] tooltipDescription "A strange crystal found in the phantom space beyond the rift in \
+    space-time. It is a substance that first appeared in Maple World and holds strong energy from the rift's \
+    power. Applying it to a Fire Prism weapon from the Phantom Dungeon creates tremendous synergy."
+set key[id=40100060] guideDescription "A material needed for limit break. It lets you push past a weapon's limits \
+    and raise its performance."
+set key[id=40100061] tooltipDescription "A strange crystal found in the phantom space beyond the rift in \
+    space-time. It is a substance that first appeared in Maple World and holds strong energy from the rift's \
+    power. Applying it to a Fire Prism weapon from the Phantom Dungeon creates tremendous synergy."
+set key[id=40100061] guideDescription "A material needed for limit break. It lets you push past a weapon's limits \
+    and raise its performance."
+set key[id=40200205] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40200205] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40200206] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40200206] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40200207] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40200207] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40200208] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40200208] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40200209] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40200209] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40200210] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40200210] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40200211] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40200211] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40200212] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40200212] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40200213] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40200213] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201001] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201001] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201002] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201002] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201003] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201003] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201004] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201004] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201005] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201005] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201006] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201006] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201007] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201007] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201008] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201008] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201009] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201009] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201010] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201010] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201801] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within. It can be obtained in Adventure [Hard] dungeons and Chaos Raid dungeons."
+set key[id=40201801] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201802] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201802] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201803] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201803] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201804] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201804] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201805] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201805] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201806] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201806] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201807] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201807] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201808] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201808] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201809] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201809] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40201810] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40201810] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40202601] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40202601] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40202602] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40202602] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40202603] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40202603] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40202604] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40202604] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40202605] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40202605] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40202606] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40202606] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40202607] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40202607] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40202608] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40202608] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40202609] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40202609] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40202610] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40202610] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40203209] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40203209] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it does not give Jewel Dust."
+set key[id=40203210] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40203210] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it does not give Jewel Dust."
+set key[id=40250201] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40250201] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40250202] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40250202] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40250203] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40250203] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40250204] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40250204] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40250205] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40250205] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40250206] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40250206] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40250207] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40250207] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40250208] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40250208] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40250209] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40250209] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40250210] tooltipDescription "Only certain particles were extracted from a raw gemstone and refined, \
+    and refined power dwells within."
+set key[id=40250210] guideDescription "When equipped, the mysterious energy in the gemstone is granted to the \
+    equipment. Dismantling it gives Jewel Dust."
+set key[id=40410031] tooltipDescription "When you ride it, you rise 1.2m per second, up to 12m. Pressing a \
+    direction key while it is active moves you forward 6.5m at a time. It cannot be used indoors or in some \
+    areas."
+set key[id=40410031] guideDescription "Double-click it in your inventory or register it in a quick slot to mount \
+    and dismount."
+set key[id=40410031] mainDescription "Summon Potato Hot Dog"
+set key[id=40500005] tooltipDescription "Sparkling stardust you can get by dismantling Lumistones."
+set key[id=40500005] guideDescription "The mysterious power in each fine particle can upgrade Lumistones."
+set key[id=40500006] tooltipDescription "Sparkling stardust you can get by dismantling Lumistones."
+set key[id=40500006] guideDescription "The mysterious power in each fine particle can upgrade Lumistones."
+set key[id=50201154] tooltipDescription "A reward for completing a web event. A framed portrait of the Black Mage \
+    wearing a hood."
+set key[id=50201155] tooltipDescription "A reward for completing an epic quest. A framed portrait of the Black \
+    Mage with the hood off and red eyes glowing."
+set key[id=50600310] tooltipDescription "You can ride it comfortably as a pizza delivery motorcycle."
+set key[id=50600310] guideDescription "Double-click it in your inventory or register it in a quick slot to mount \
+    and dismount. After mounting, hold the basic attack key, or move while holding it, to use a special action."
+set key[id=50600310] mainDescription "You can run very fast."
+set key[id=50600311] tooltipDescription "Something smells around here. The faster you run, the worse it gets."
+set key[id=50600311] guideDescription "Double-click it in your inventory or register it in a quick slot to mount \
+    and dismount. After mounting, hold the basic attack key, or move while holding it, to use a special action."
+set key[id=50600311] mainDescription "You can run very fast."
+set key[id=50600335] tooltipDescription "A Glutton who believes it is a guardian of light. Watching the \
+    adventurers' deeds freed it from the rule of darkness, gave it a self, and set it on the path of light. As a \
+    first step, it offers its back so adventurers can travel the world in comfort."
+set key[id=50740048] tooltipDescription "A souvenir that only one who defeated $npc:23000101$ can have."
+set key[id=50770012] tooltipDescription "A special souvenir that only one who challenged $npc:44100001$ can get."
+set key[id=61020153] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020153] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020154] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020154] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020155] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020155] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020156] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020156] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020157] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020157] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020158] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020158] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020159] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020159] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020160] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020160] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020161] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020161] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020163] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020163] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020164] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020164] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020165] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020165] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020166] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020166] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020167] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020167] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020168] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020168] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020169] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020169] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61020170] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61020170] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=61100150] tooltipDescription "<font color='#9FC93C'>Convenience Features\\n - Auto Tombstone Revive\\n \
+    - Auto Potion Recovery\\n - Auto Item Pickup\\n<font size='3'> </font>\\n</font>An item that stores a pet's \
+    summon information. Normally it stays in another dimension in item form, and comes out when the character \
+    summons it. "
+set key[id=61100150] guideDescription "When you summon a pet, you receive the effects of its stats. However, pets \
+    cannot be summoned in some special areas."
+set key[id=63100502] tooltipDescription "<font color='#ffffff'>Capturable Pets\\n - Pets of required level 50 or \
+    higher can be captured \\n - High chance for Normal pets\\n - Average chance for Rare pets\\n - Very low \
+    chance for Elite and Exceptional pets</font>\\n\\n'A newly developed monster capture device. Throw it at a \
+    hungry monster to create a powerful electric field and capture it.</font>'"
+set key[id=63100502] guideDescription "<font color='#9FC93C'>Using the item throws it at a hungry or tame monster, \
+    and a hit gets you a pet card.\\nAlso, Lapis Capsules are only used up when you capture a pet, so you can use \
+    it without worry.</font>\\nUse the item on a hungry monster to get a pet."
+set key[id=63100502] mainDescription "<font color='#ffffff'>Pet Capture Tool\\n</font><font color='#909090'>For \
+    capturing monsters</font>"
+set key[id=70100008] tooltipDescription "While worn, it keeps producing in mining, gathering, ranching, and \
+    farming until there is no chance left."
+set key[id=70100008] guideDescription "Drag a badge from your inventory to the Badge tab of the character info \
+    window, or right-click it to equip it. Then auto-production works when you interact with mining, gathering, \
+    ranching, and farming objects."
+set key[id=70100008] mainDescription "Auto-production available"
+set key[id=70150002] tooltipDescription "<font color='#ffffff'>Fully Evolved Meta Badge\\n</font>"
+set key[id=70150002] guideDescription "\\nHow to get $item:20302626$<font color='#FFFFFF'>\\n- Obtained by chance \
+    while defeating monsters / playing instruments / fishing\\n- Up to 60 can be obtained per day</font>"
+set key[id=70150002] mainDescription "<font size='14'>Effect Activates When Worn</font>\\n<font \
+    size='24'>Physical/Magic Attack increased by 2%</font>"
+set key[id=70150020] tooltipDescription "<font color='#ffffff'>Evolvable Meta Badge\\n - Combine with 400 Meta \
+    Cores to evolve into a Silver Badge that increases Physical/Magic Attack by 3%\\n - Combine with 700 Meta \
+    Cores to evolve into a Gold Badge that increases Physical/Magic Attack by 5%\\n</font>"
+set key[id=70150020] guideDescription "\\nHow to get $item:20303139$<font color='#FFFFFF'>\\n- Obtained by chance \
+    while defeating monsters / playing instruments / fishing\\n- Up to 100 can be obtained per day</font>"
+set key[id=70150020] mainDescription "<font size='14'>A Meta Badge that has no effect yet</font>"
+set key[id=70300111] tooltipDescription "A functional fashion badge that makes your character's name stand out."
+set key[id=70300111] mainDescription "Decorate character name"
+set key[id=70300125] tooltipDescription "A functional fashion badge that makes your character's name stand out."
+set key[id=70300125] mainDescription "Decorate character name"
+set key[id=70601019] tooltipDescription "A functional badge that decorates your swim tube."
+set key[id=70601019] guideDescription "Drag a badge from your inventory to the Badge tab of the character info \
+    window, or right-click it to equip it, and you can decorate your character's swim tube. Only one swim tube \
+    badge can be equipped."
+set key[id=70601019] mainDescription "Decorate swim tube"
+set key[id=70711019] tooltipDescription "A functional badge that decorates your fishing rod and fishing chair."
+set key[id=70711019] guideDescription "Drag a badge from your inventory to the Badge tab of the character info \
+    window, or right-click it to equip it. Only one fishing badge can be equipped."
+set key[id=70711019] mainDescription "Decorate fishing rod and fishing chair"
+set key[id=70711020] tooltipDescription "A functional badge that decorates your fishing rod and fishing chair."
+set key[id=70711020] guideDescription "Drag a badge from your inventory to the Badge tab of the character info \
+    window, or right-click it to equip it. Only one fishing badge can be equipped."
+set key[id=70711020] mainDescription "Decorate fishing rod and fishing chair"
