@@ -47,13 +47,13 @@ gfx Resource/Gfx/uidarkstreamresultdialog.gfx kms:Resource/Gfx/uidarkstreamresul
 text 33 "Not Used"
 gfx Resource/Gfx/uidungeonlobby.gfx kms:Resource/Gfx/uidungeonlobby.gfx 8b1371cea1984244
 text 3 "4 Players"
-text 4 "[Adventure] Casa del Luna: The Moon Shadow Returns"
+text 4 "[Adventure] Casa de Luna: The Moon Shadow Returns"
 gfx Resource/Gfx/uiindividualpvpdialog.gfx kms:Resource/Gfx/uiindividualpvpdialog.gfx ad822d9d744b5545
 text 95 "Red Arena"
 text 96 "Battlefield Info"
 text 97 "Line 1\rLine 2\rLine 3\rLine 4\r"
 gfx Resource/Gfx/uiitemeventopenboxdialog.gfx kms:Resource/Gfx/uiitemeventopenboxdialog.gfx 9944200d2b0e89f5
-text 11 "Red Envelope Event"
+text 11 "Hongbao Event"
 text 12 "Event notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice"
 gfx Resource/Gfx/uiitemoptioncreatedialog.gfx kms:Resource/Gfx/uiitemoptioncreatedialog.gfx 818a787f87ebfd92
 text 103 "Category"
@@ -88,13 +88,13 @@ gfx Resource/GfxDebug/uidarkstreamresultdialog.gfx kms:Resource/GfxDebug/uidarks
 text 33 "Not Used"
 gfx Resource/GfxDebug/uidungeonlobby.gfx kms:Resource/GfxDebug/uidungeonlobby.gfx 8b1371cea1984244
 text 3 "4 Players"
-text 4 "[Adventure] Casa del Luna: The Moon Shadow Returns"
+text 4 "[Adventure] Casa de Luna: The Moon Shadow Returns"
 gfx Resource/GfxDebug/uiindividualpvpdialog.gfx kms:Resource/GfxDebug/uiindividualpvpdialog.gfx ad822d9d744b5545
 text 95 "Red Arena"
 text 96 "Battlefield Info"
 text 97 "Line 1\rLine 2\rLine 3\rLine 4\r"
 gfx Resource/GfxDebug/uiitemeventopenboxdialog.gfx kms:Resource/GfxDebug/uiitemeventopenboxdialog.gfx 9944200d2b0e89f5
-text 11 "Red Envelope Event"
+text 11 "Hongbao Event"
 text 12 "Event notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice"
 gfx Resource/GfxDebug/uiitemoptioncreatedialog.gfx kms:Resource/GfxDebug/uiitemoptioncreatedialog.gfx 818a787f87ebfd92
 text 103 "Category"
