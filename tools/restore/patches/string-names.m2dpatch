@@ -22628,8 +22628,8 @@ set key[id=803181311004059] name "What? Is that true? $npc:11000492[gender:0]$ i
     uncover the truth of the armory theft... it never rains but it pours.\nWith no clues at all, this is \
     troublesome...  "
 set key[id=803181311004060] name "(Hand over the notebook found in $npc:11000492[gender:0]$'s bag.)"
-set key[id=803181311004061] name "What's this...?\nHm? Wait... this looks like the notebook used by Barota Trading \
-    Company peddlers...\nWhere did you find it?"
+set key[id=803181311004061] name "What's this...?\nHm? Wait... this looks like the notebook used by Barota Company \
+    peddlers...\nWhere did you find it?"
 set key[id=803181311004062] name "(Say I found it among the clothes in $npc:11000492[gender:0]$'s bag.)"
 set key[id=803181311004063] name "Wait... clothes in $npc:11000492[gender:0]$'s luggage bag... hmm...\nWe found no \
     sign at all of $npc:11000492[gender:0]$ packing his things at his home or city hall.\nEverything was left as \
@@ -23158,7 +23158,7 @@ set key[id=809151402005723] name "I'd like to invite you in and talk more, but a
     another\nunwelcome visitor at the moment and I'm in a bit of a bind...\nBy the way, what brings you here?"
 set key[id=809151402005724] name "(Hand over the notebook and ask whose it is.)"
 set key[id=809151402005725] name "Ah... this is <font color=\"#ffd200\">issued only to merchants of the Barota \
-    Trading Company</font>, but...\nI need to look at it more closely. Please give me some time."
+    Company</font>, but...\nI need to look at it more closely. Please give me some time."
 set key[id=809151402005726] name "Hm? You... who are you?\nDid you perhaps come looking for me?"
 set key[id=809151402005727] name "I see... can you tell me how you found your way here?"
 set key[id=809151402005728] name "(Say I'm chasing $npc:11000064[gender:0]$.)"
@@ -23493,8 +23493,8 @@ set key[id=705202805001625] name "What? Is that true? $npc:11000492[gender:0]$ i
     uncover the truth of the armory theft... it never rains but it pours.\nWith no clues at all, this is \
     troublesome...  "
 set key[id=705202805001626] name "(Hand over the notebook found in $npc:11000492[gender:0]$'s bag.)"
-set key[id=705202805001627] name "What's this...?\nHm? Wait... this looks like the notebook used by Barota Trading \
-    Company peddlers...\nWhere did you find it?"
+set key[id=705202805001627] name "What's this...?\nHm? Wait... this looks like the notebook used by Barota Company \
+    peddlers...\nWhere did you find it?"
 set key[id=705202805001628] name "(Say I found it among the clothes in $npc:11000492[gender:0]$'s bag.)"
 set key[id=705202805001629] name "Wait... clothes in $npc:11000492[gender:0]$'s luggage bag... hmm...\nWe found no \
     sign at all of $npc:11000492[gender:0]$ packing his things at his home or city hall.\nEverything was left as \
@@ -26037,7 +26037,7 @@ set key[id=831174302000456] name "I'd like to invite you in and talk more, but a
     another\nunwelcome visitor at the moment and I'm in a bit of a bind...\nBy the way, what brings you here?"
 set key[id=831174302000457] name "(Hand over the notebook and ask whose it is.)"
 set key[id=831174302000458] name "Ah... this is <font color=\"#ffd200\">issued only to merchants of the Barota \
-    Trading Company</font>, but...\nI need to look at it more closely. Please give me some time."
+    Company</font>, but...\nI need to look at it more closely. Please give me some time."
 set key[id=831174302000459] name "Oh, I must have mistaken you for someone else. Heh heh.\nBut what brings you \
     here?"
 set key[id=831174302000460] name "(Hand over the notebook and ask whose it is.)"
@@ -27881,14 +27881,14 @@ set key[id=831174302003039] name "Did you forget how to get to $map:03009001$?\n
 set key[id=831174302003040] name "Welcome, $MyPCName$.\nI've been expecting you."
 set key[id=831174302003041] name "What happened?"
 set key[id=831174302003042] name "Do you remember <font color=\"#ffd200\">$item:20000046$</font>?\nThe one the \
-    head of the Barota Merchants secretly circulated along with $item:20000015$... "
+    head of the Barota Company secretly circulated along with $item:20000015$... "
 set key[id=831174302003043] name "(Say you remember.)"
 set key[id=831174302003044] name "I don't remember."
 set key[id=831174302003045] name "A while ago I caught $npcName:11000070[gender:0]$ over there selling \
     $item:20000046$ to patients\nat a steep price."
 set key[id=831174302003046] name "This might be our chance to uproot the illegally circulating $item:20000046$\nin \
     Victoria Island!"
-set key[id=831174302003047] name "I heard it was you who found the $item:20000046$ among the Barota Merchants' \
+set key[id=831174302003047] name "I heard it was you who found the $item:20000046$ among the Barota Company' \
     warehouse goods...?\nIs it too long ago for you to remember?\nOr is your memory... ahem. Anyway... "
 set key[id=831174302003048] name "A while ago I caught $npc:11000070[gender:0]$ over there selling $item:20000046$ \
     to patients\nat a steep price."
@@ -30205,7 +30205,7 @@ set key[id=831174302002621] name "Haa... I really thought I'd be caught by $npc:
     $npc:11000044[gender:0]$ too."
 set key[id=831174302002622] name "(Ask why $npc:11000044[gender:0]$ is chasing him.)"
 set key[id=831174302002623] name "W-well... because if I'm alive... the whole truth comes out...\nMy name is <font \
-    color=\"#ffd200\">$npc:11000526[gender:0]$</font>! I'm the head of the Barota Trading Company."
+    color=\"#ffd200\">$npc:11000526[gender:0]$</font>! I'm the head of the Barota Company."
 set key[id=831174302002624] name "(Say $npc:11000526[gender:0]$ is dead.)"
 set key[id=831174302002625] name "After $npc:11000492[gender:0]$ died, I tried to stow away to escape \
     $npc:11000044[gender:0]$,\nbut a pickpocket got me and I ended up penniless. That's when I became a back-alley \
@@ -30227,7 +30227,7 @@ set key[id=831174302002630] name "Anyway, I'll reveal the whole truth of everyth
 set key[id=831174302002631] name "(Say I'll go gather the Humblis agents outside the closed-off zone.)"
 set key[id=831174302002632] name "Come back quickly!! Before anything happens in the meantime...\nOh, and there's \
     a ledger recording every dealing I had with $npc:11000044[gender:0]$.\nI hid it behind the wall clock at \
-    $map:02000226$...\nin the Barota Trading Company headquarters."
+    $map:02000226$...\nin the Barota Company headquarters."
 set key[id=831174302002633] name "I doubt anyone has found it yet... Go find it quickly before someone destroys \
     it.\nIt's the decisive evidence that will prove $npc:11000044[gender:0]$'s true face!"
 set key[id=831174302002634] name "Oh, and there's a ledger recording every dealing I had with \
@@ -30290,7 +30290,7 @@ set key[id=831174302002668] name "The $npcTitle:11000075[gender:1]$ is also bewi
     $npc:11000526[gender:0]$.\nGo and report the situation to the $npcTitle:11000075[gender:1]$ in person."
 set key[id=831174302002669] name "The $npcTitle:11000075[gender:1]$ is also bewildered by the news of \
     $npc:11000526[gender:0]$.\nGo and report the situation to the $npcTitle:11000075[gender:1]$ in person."
-set key[id=831174302002670] name "The head of the Barota Trading Company has appeared... What happened?"
+set key[id=831174302002670] name "The head of the Barota Company has appeared... What happened?"
 set key[id=831174302002671] name "(Tell her everything from $npc:11000064[gender:0]$'s return up to now.)"
 set key[id=831174302002672] name "$npc:11000044[gender:0]$... it was all him...\nWhere is \
     $npc:11000064[gender:0]$? "
