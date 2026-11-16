@@ -315,3 +315,151 @@ set key[id=s_guild_grade_default_group2] value "Member"
 set key[id=s_guild_grade_default_group3] value "Novice"
 set key[id=s_guild_grade_default_group4] value "Member2"
 set key[id=s_guild_grade_default_group5] value "Novice2"
+# KR-only event system mails with no English row in any pack (the elite weapon support level packages, 50000100-
+# 50000111 and 50001000-50001005, and the bingo play-time gifts 190411001-190411002): our own English for the
+# subject and text; the item links are the ones the rows have.
+file Xml/string/kr/systemmailcontentkr.xml kms:Xml/string/kr/systemmailcontentkr.xml de7a6c87e4d434b5
+row mail[id=50000100] <mail id="50000100" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Job Change \
+    Gift: Lv. 10 Weapon Package" content="Congratulations on your job change!&#10;Here is the Lv. 10 weapon package \
+    for your new job.&#10;&#10;During the event, you get an Elite Weapon Package for your job every 5 levels from \
+    Lv. 1 to Lv. 50, even after a job change.&#10;We hope these weapons make your adventures in MapleStory 2 more \
+    fun.&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50000101] <mail id="50000101" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 1 Weapon \
+    Package" content="Welcome to MapleStory 2!&#10;We have sent you a Lv. 1 weapon package with an Elite Weapon in \
+    it.&#10;We hope this weapon makes MapleStory 2 more fun.&#10;&#10;During the event, you get an Elite Weapon \
+    Package every 5 levels from Lv. 1 to Lv. 50, so keep leveling up!&#10;&#10;Double-click the Elite Weapon Package \
+    attached to this mail to get an Elite Weapon you can use right away.&#10;The Elite Weapons stay usable after the \
+    event ends.&#10;&#10;(Note) Attached items are deleted with the mail if you do not move them to your inventory \
+    within 30 days, so claim them soon.&#10;The Elite Weapon Package and the items in it cannot be moved between \
+    characters." />
+row mail[id=50000102] <mail id="50000102" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 5 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 5 weapon package has arrived.&#10;&#10;During the event, you get \
+    an Elite Weapon Package every 5 levels from Lv. 1 to Lv. 50.&#10;Enjoy MapleStory 2 with your new \
+    weapon!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50000103] <mail id="50000103" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 10 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 10 weapon package has arrived.&#10;&#10;During the event, you \
+    get an Elite Weapon Package every 5 levels from Lv. 1 to Lv. 50.&#10;Enjoy MapleStory 2 with your new \
+    weapon!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50000104] <mail id="50000104" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 15 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 15 weapon package has arrived.&#10;&#10;During the event, you \
+    get an Elite Weapon Package every 5 levels from Lv. 1 to Lv. 50.&#10;Enjoy MapleStory 2 with your new \
+    weapon!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50000105] <mail id="50000105" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 20 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 20 weapon package has arrived.&#10;&#10;During the event, you \
+    get an Elite Weapon Package every 5 levels from Lv. 1 to Lv. 50.&#10;Enjoy MapleStory 2 with your new \
+    weapon!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50000106] <mail id="50000106" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 25 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 25 weapon package has arrived.&#10;&#10;During the event, you \
+    get an Elite Weapon Package every 5 levels from Lv. 1 to Lv. 50.&#10;Enjoy MapleStory 2 with your new \
+    weapon!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50000107] <mail id="50000107" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 30 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 30 weapon package has arrived.&#10;&#10;During the event, you \
+    get an Elite Weapon Package every 5 levels from Lv. 1 to Lv. 50.&#10;Enjoy MapleStory 2 with your new \
+    weapon!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50000108] <mail id="50000108" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 35 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 35 weapon package has arrived.&#10;&#10;During the event, you \
+    get an Elite Weapon Package every 5 levels from Lv. 1 to Lv. 50.&#10;Enjoy MapleStory 2 with your new \
+    weapon!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50000109] <mail id="50000109" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 40 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 40 weapon package has arrived.&#10;&#10;During the event, you \
+    get an Elite Weapon Package every 5 levels from Lv. 1 to Lv. 50.&#10;Enjoy MapleStory 2 with your new \
+    weapon!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50000110] <mail id="50000110" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 45 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 45 weapon package has arrived.&#10;&#10;During the event, you \
+    get an Elite Weapon Package every 5 levels from Lv. 1 to Lv. 50.&#10;Enjoy MapleStory 2 with your new \
+    weapon!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50000111] <mail id="50000111" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 50 Weapon \
+    Package" content="You have reached Lv. 50!&#10;As a congratulations gift, here is your Lv. 50 weapon \
+    package.&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50001000] <mail id="50001000" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Job Change \
+    Gift: Lv. 10 Weapon Package" content="Congratulations on your job change!&#10;Here is the Lv. 10 weapon box for \
+    your new job.&#10;&#10;During the event, you get an Elite Weapon Package for your job every 5 levels from Lv. 1 \
+    to Lv. 30, even after a job change.&#10;We hope these weapons make your adventures in MapleStory 2 more \
+    fun.&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50001001] <mail id="50001001" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 5 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 5 weapon box and design items have arrived.&#10;&#10;During the \
+    event, you get an Elite Weapon box and design items every 5 levels from Lv. 1 to Lv. 30.&#10;Enjoy MapleStory 2 \
+    with these items!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon \
+    you can use right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items \
+    are deleted with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The \
+    Elite Weapon Package and the items in it cannot be moved between characters." />
+row mail[id=50001002] <mail id="50001002" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 10 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 10 weapon box and design items have arrived.&#10;&#10;During the \
+    event, you get an Elite Weapon box and design items every 5 levels from Lv. 1 to Lv. 30.&#10;Enjoy MapleStory 2 \
+    with these items!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon \
+    you can use right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items \
+    are deleted with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The \
+    Elite Weapon Package and the items in it cannot be moved between characters." />
+row mail[id=50001003] <mail id="50001003" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 15 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 15 weapon box and design items have arrived.&#10;&#10;During the \
+    event, you get an Elite Weapon box and design items every 5 levels from Lv. 1 to Lv. 30.&#10;Enjoy MapleStory 2 \
+    with these items!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon \
+    you can use right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items \
+    are deleted with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The \
+    Elite Weapon Package and the items in it cannot be moved between characters." />
+row mail[id=50001004] <mail id="50001004" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 20 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 20 weapon box has arrived.&#10;&#10;During the event, you get an \
+    Elite Weapon Package every 5 levels from Lv. 1 to Lv. 30.&#10;Enjoy MapleStory 2 with these \
+    items!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon you can use \
+    right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items are deleted \
+    with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The Elite Weapon \
+    Package and the items in it cannot be moved between characters." />
+row mail[id=50001005] <mail id="50001005" sender="MapleStory 2 Team" subject="[Elite Weapon Support] Lv. 25 Weapon \
+    Package" content="Congratulations!&#10;Your Lv. 25 weapon box and design items have arrived.&#10;&#10;During the \
+    event, you get an Elite Weapon box and design items every 5 levels from Lv. 1 to Lv. 30.&#10;Enjoy MapleStory 2 \
+    with these items!&#10;&#10;Double-click the Elite Weapon Package attached to this mail to get an Elite Weapon \
+    you can use right away.&#10;The Elite Weapons stay usable after the event ends.&#10;&#10;(Note) Attached items \
+    are deleted with the mail if you do not move them to your inventory within 30 days, so claim them soon.&#10;The \
+    Elite Weapon Package and the items in it cannot be moved between characters." />
+row mail[id=190411001] <mail id="190411001" sender="MapleStory 2 Team" subject="[Check-Check Bingo] 30-Minute Login \
+    Gift: $item:20302533$" content="Your 30-minute login gift, [$item:20302533$], has arrived.&#10;&#10;Use \
+    $item:20302533$ to check off today's bingo number!&#10;You get one $item:20302533$ for 30 minutes online from \
+    Monday to Thursday,&#10;and one each for 30 and 60 minutes online on Friday, Saturday and Sunday.&#10;&#10;Want \
+    to check off a number of your choice?&#10;Try [$item:20302534$].&#10;You can also get $item:20302534$ from bingo \
+    rewards and the Meret Market.&#10;&#10;Every bingo line you complete brings a spring reward, so don't miss \
+    out!&#10;&#10;* [$item:20302533$] can be used until the maintenance on Thursday, May 16. Be sure to use it \
+    before then.&#10;&#10;Thank you." />
+row mail[id=190411002] <mail id="190411002" sender="MapleStory 2 Team" subject="[Check-Check Bingo] 60-Minute Login \
+    Gift: $item:20302533$" content="Your 60-minute login gift, [$item:20302533$], has arrived.&#10;&#10;Use \
+    $item:20302533$ to check off today's bingo number!&#10;You get one $item:20302533$ for 30 minutes online from \
+    Monday to Thursday,&#10;and one each for 30 and 60 minutes online on Friday, Saturday and Sunday.&#10;&#10;Want \
+    to check off a number of your choice?&#10;Try [$item:20302534$].&#10;You can also get $item:20302534$ from bingo \
+    rewards and the Meret Market.&#10;&#10;Every bingo line you complete brings a spring reward, so don't miss \
+    out!&#10;&#10;* [$item:20302533$] can be used until the maintenance on Thursday, May 16. Be sure to use it \
+    before then.&#10;&#10;Thank you." />

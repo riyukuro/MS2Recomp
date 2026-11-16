@@ -110,7 +110,9 @@ tables from the client packs are copied by id from your copies, and the only tex
   meso cost for missing Crystal Fragments);
   the enchant scroll's no-break line, missing from the Korean table, takes the pack's English row. The 6 default
   guild rank names get short English names (Leader, Officer, Member, Novice, Member2, Novice2): a KR client allows
-  at most 7 characters in a rank name and refuses a rights change on a rank whose name is longer.
+  at most 7 characters in a rank name and refuses a rights change on a rank whose name is longer. 20 KR-only event
+  system mails (the elite weapon support level packages and the bingo play-time gifts), which no pack has in
+  English, get our own English subject and text, with the same item links.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
   (`copy-text`); about 47,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,
