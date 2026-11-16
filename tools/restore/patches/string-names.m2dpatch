@@ -25077,3 +25077,120 @@ set key[id=1220183321028215] name "Fight <font color=\"#ffd200\">$npcName:230010
     color=\"#ffd200\">$map:02020037$</font> and collect the impact sound waves of the special metal!"
 set key[id=1220183321028216] name "Good work!\nThe Greenhood research team will start analyzing the materials you \
     delivered."
+
+# Quest dialogue of the FameContents quests that no pack has in English (feature FameContents): our own English for
+# the 50 scriptquest rows of locale KR (or no locale) whose quest a player can get (16 quests), with each row's own
+# format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=1122231920008145] name "$MyPCName$, come to $map:02000153$."
+set key[id=1122231920008146] name "$MyPCName$, come to $map:02000153$."
+set key[id=1122231920008147] name "You came, $MyPCName$."
+set key[id=1122231920008156] name "Cutie! I have a favor to ask.\nAn enormous number of <font \
+    color=\"#ffd200\">$npcName:21000015$</font> have shown up all over $map:02000147$ \nand taken over the roads \
+    and buildings!"
+set key[id=1122231920008157] name "The city's functions are completely paralyzed, and the residents have \nbeen \
+    evacuated.\nIf we leave it like this any longer, even we might not be able to do anything."
+set key[id=1122231920008158] name "We need our reliable cutie to step up!\nYou know what I mean, right?? Count on \
+    you!"
+set key[id=1122231920008159] name "An enormous number of <font color=\"#ffd200\">$npcName:21000015$</font> have \
+    shown up all over $map:02000147$ \nand taken over the roads and buildings! We need you to step up!"
+set key[id=1122231920008160] name "There are still some $npcName:21000015$ stragglers left, but thanks to my \
+    darling, \ntheir numbers have dropped a lot! Let's be happy with that for now, and when we meet again, \nI'll \
+    dote on you plenty~ See you next time, my cutie!"
+set key[id=1122231920008167] name "You're here? My cutie? Let's give today's mission our best again, shall we? \
+    \nToday's mission is about the sudden surge of <font color=\"#ffd200\">$npcName:21000015$</font>."
+set key[id=1122231920008168] name "When these guys get angry, their snorts are so powerful they even blow out the \
+    fires on the oil drilling towers, you know?"
+set key[id=1122231920008169] name "$npcName:21000015$ keep blowing out the oil drilling towers' fires, \nso \
+    drilling has stopped and it's chaos. \nLet's help drive off the $npcName:21000015$, my cutie~ okay?"
+set key[id=1122231920008170] name "Let's help drive off the $npcName:21000015$~ okay?"
+set key[id=1122231920008171] name "My cutie! You really get the job done!"
+set key[id=1122231920008185] name "Hi~ You look full of energy again today!\nThis mission is a little... messy, \
+    but I trust you'll do it well."
+set key[id=1122231920008186] name "<font color=\"#ffd200\">$npcName:21000024$</font> have flocked to \
+    $map:02000138$ and are burying stinky mines \nall over the place.\nIf there were only a few, it wouldn't be a \
+    big problem, but there are way too many."
+set key[id=1122231920008187] name "More residents are getting hurt slipping on them, and the smell \nattracts \
+    bugs... On top of that, the whole town's hygiene \nis a mess."
+set key[id=1122231920008188] name "Let's help clear <font color=\"#ffd200\">$npcName:21000024$</font> out of \
+    $map:02000138$ \nso the town can be clean again!"
+set key[id=1122231920008189] name "You really do get the job done, don't you? \nHey~ ever thought of joining my \
+    organization? I'll treat you well~"
+set key[id=1122231920008220] name "Hi! Cutie! I have a mission for you to take care of!\nA huge number of slimes \
+    in $map:02000084$ ate contaminated \ntoxic waste and spread out to other areas,"
+set key[id=1122231920008221] name "and now they're scattering toxic waste everywhere  \nI mean, really... why \
+    would they eat it? "
+set key[id=1122231920008222] name "Anyway.\nSlimes that ate the toxic waste mutate and turn ferocious."
+set key[id=1122231920008223] name "To stop the damage from spreading any further, defeat <font \
+    color=\"#ffd200\">$npcName:21000387$</font> and \n<font color=\"#ffd200\">$npcName:21000388$</font>!"
+set key[id=1122231920008224] name "Thanks, cutie, the numbers of $npcName:21000387$ and $npcName:21000388$ \
+    \ndropped a lot because of you! Good work!"
+set key[id=1122231920008251] name "Hi! Cutie! A new mission needs taking care of!\nSince the air raid on Tria, the \
+    $npcName:21000340$ seem to have been \naffected by the power of darkness."
+set key[id=1122231920008252] name "On top of that, they've been spreading malignant spores all around \
+    $map:02000135$, \nso even the $npcName:21000081$ and $npcName:21000082$ got infected with the spores and \
+    turned \nsavage."
+set key[id=1122231920008253] name "We can't let the damage from the malignant spores keep growing! \nLet's cut \
+    down the harm by defeating the <font color=\"#ffd200\">$npcName:21000340$</font> and the <font \
+    color=\"#ffd200\">$npcName:21000081$</font> \nand <font color=\"#ffd200\">$npcName:21000082$</font> that were \
+    infected by the spores and turned violent!"
+set key[id=1122231920008254] name "Well done! That should keep things quiet for a while, right? \nGood work!"
+set key[id=1122231920008448] name "$npcName:21000027$ are grinding their horns against the pillars of \
+    $map:02000044$ to sharpen them, causing a disaster as the canyon's pillars collapse.\n\nReduce the number of \
+    $npcName:21000027$ to protect $map:02000044$ from collapsing."
+set key[id=1122231920008449] name "Completion script (temporary)"
+set key[id=1122231920008450] name "The $npcName:21000066$ and $npcName:21000064$ that were tamed and used in \
+    battle escaped in large numbers after the air raid on Tria and are attacking adventurers visiting \
+    $map:02000171$.\n\nDrive out the $npcName:21000066$ and $npcName:21000064$ so the development of \
+    $map:02000171$ can continue."
+set key[id=1122231920008451] name "Completion script (temporary)"
+set key[id=1122231920008452] name "A man called $npcName:21000312$ appeared in $map:02000093$ and started picking \
+    fights with the residents, and before long the $npcName:21000311$ and $npcName:21000310$ multiplied and took \
+    over $map:02000093$.\n\nThey plan to extend their influence over all of Perion, and to expand further they are \
+    plundering the residents of $map:02000093$ and driving out adventurers.\n\nDefeat $npcName:21000312$ and stop \
+    the Red Dragon Jaw Fist Gang's attempt to expand."
+set key[id=1122231920008453] name "Completion script (temporary)"
+set key[id=1122231920008456] name "It has been quite a while since $npcName:21000066$, which used to scavenge \
+    through trash and eat corpses, began attacking adventurers, but the cause is unknown.\n\nIntelligence has \
+    revealed that $npcName:21000334$ recently tamed $npcName:21000066$ to be vicious and attack settlers in order \
+    to hinder the development of the region.\n\nSubdue the $npcName:21000334$ at $map:02000169$ and drive them \
+    out."
+set key[id=1122231920008457] name "Completion script (temporary)"
+set key[id=1122231920008458] name "$map:02000061$ is a clean source of drinking water and could become the center \
+    of Perion's development.\n\n$npcName:21000369$ uses hypnosis to make animals less intelligent than itself turn \
+    ferocious, hindering the region's development.\n\nSubdue $npcName:21000369$, the culprit hindering the \
+    development of $map:02000061$."
+set key[id=1122231920008459] name "Completion script (temporary)"
+set key[id=1122231920008460] name "$npcName:21000301$ has been steadily growing in number, holding the upper hand \
+    over other animals with its strong, sharp teeth.\n\nBecause of the growing numbers of $npcName:21000301$, \
+    adventurers are increasingly ambushed and fatally wounded.\n\nIn particular, $map:02000133$, Perion's holy \
+    ground, is visited by many adventurers and residents, so the number of people ambushed by $npcName:21000301$ \
+    is growing by the day.\n\nSubdue $npcName:21000301$ at $map:02000133$ to reduce the damage."
+set key[id=1122231920008461] name "Completion script (temporary)"
+set key[id=1122231920008462] name "A continuing dry season across Perion has been shrinking the water \
+    supply.\n\nIn this situation, the greedy $npcName:21000069$, which stores water in its body, has multiplied in \
+    large numbers and is sucking up even the groundwater of $map:02000049$ and storing it in its body.\n\nWhen \
+    developing a region, drinking water that can be supplied on the spot is the top priority.\n\nSubdue the \
+    $npcName:21000069$ that are monopolizing the water and stop the water shortage from getting worse."
+set key[id=1122231920008463] name "Completion script (temporary)"
+set key[id=1122231920008464] name "At $map:02000094$, $npcName:21000334$ approached the Jaw Fist Gang members who \
+    were studying martial arts and training their bodies and minds, corrupted their minds, and made them attack \
+    good people. Drive it out of $map:02000094$ and stop the damage from spreading any further."
+set key[id=1122231920008465] name "Completion script (temporary)"
+set key[id=1122231920008468] name "The bone bridges set up for the development of Perion kept getting broken, and \
+    on investigation it turned out that when the $npcName:21000267$ gets an itch on its hard body, it rolls \
+    against the bone bridges \nand they collapse.\n\nSubdue the $npcName:21000267$ that are disrupting \
+    construction at $map:02000045$."
+set key[id=1122231920008469] name "Completion script (temporary)"
+set key[id=1122231920008470] name "$map:02000046$, where extremely hot lava erupts, has a steady lava temperature, \
+    making it an ideal place to extract lava energy.\n\nTo develop the area for lava energy extraction, subduing \
+    the $npcName:21000299$ that hold the area through sheer numbers is essential.\n\nSubdue the $npcName:21000299$ \
+    so a lava energy extraction facility can be built at $map:02000046$. "
+set key[id=1122231920008471] name "Completion script (temporary)"
+set key[id=1127194820008681] name "Let's help clear <font color=\"#ffd200\">$npcName:21000024$</font> out of \
+    $map:02000138$ so the town \ncan be clean again!"
+set key[id=1127194820008688] name "To stop the damage from spreading any further, defeat <font \
+    color=\"#ffd200\">$npcName:21000387$</font> and \n<font color=\"#ffd200\">$npcName:21000388$</font>!"
+set key[id=1127194820008694] name "Let's cut down the harm by defeating the <font \
+    color=\"#ffd200\">$npcName:21000081$</font> \nand <font color=\"#ffd200\">$npcName:21000082$</font> that were \
+    infected by the spores of <font color=\"#ffd200\">$npcName:21000340$</font> and turned violent!"
