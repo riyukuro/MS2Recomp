@@ -7029,3 +7029,578 @@ set key[id=70300166] tooltipDescription "A functional fashion badge that makes y
 set key[id=70300185] mainDescription "Decorate character name"
 set key[id=70300185] tooltipDescription "A functional fashion badge given out to celebrate the 4th anniversary of \
     the MapleStory 2 launch."
+# KR-only level 70 items (feature Level70Item) whose names or descriptions have no English row in any pack:
+# our own English from the KMS2 text, with each row's own format fields, font tags, line breaks and links; names
+# follow the table's English names of the same sets. Plurals follow from the names (plural-of).
+file Xml/string/kr/itemname.xml kms:Xml/string/kr/itemname.xml 8c56a83382e644a3
+set key[id=11401208] name "(PC Cafe) Elite Adventurer Battle Coat (Knight)"
+set key[id=11401209] name "(PC Cafe) Elite Adventurer Battle Coat (Berserker)"
+set key[id=11401210] name "(PC Cafe) Elite Adventurer Battle Coat (Runeblade)"
+set key[id=11401211] name "(PC Cafe) Elite Adventurer Marshall Shirt (Striker)"
+set key[id=11401212] name "(PC Cafe) Elite Adventurer Marshall Shirt (Soul Binder)"
+set key[id=11401215] name "Old Arena Top"
+set key[id=11401216] name "Old Arena Top"
+set key[id=11401217] name "Old Arena Top"
+set key[id=11401218] name "Old Arena Top"
+set key[id=11401219] name "Old Arena Top"
+set key[id=11401220] name "Old Arena Top"
+set key[id=11401221] name "Old Arena Top"
+set key[id=11401222] name "Old Arena Top"
+set key[id=11401223] name "Old Arena Top"
+set key[id=11401224] name "Old Arena Top"
+set key[id=11401225] name "Old Arena Top"
+set key[id=11601378] name "Old Arena Gloves"
+set key[id=11601379] name "Old Arena Gloves"
+set key[id=11601380] name "Old Arena Gloves"
+set key[id=11601381] name "Old Arena Gloves"
+set key[id=11601382] name "Old Arena Gloves"
+set key[id=11601383] name "Old Arena Gloves"
+set key[id=11601384] name "Old Arena Gloves"
+set key[id=11601385] name "Old Arena Gloves"
+set key[id=11601386] name "Old Arena Gloves"
+set key[id=11601387] name "Old Arena Gloves"
+set key[id=11601388] name "Old Arena Gloves"
+set key[id=11701475] name "(PC Cafe) Elite Adventurer Battle Greaves (Knight)"
+set key[id=11701476] name "(PC Cafe) Elite Adventurer Battle Greaves (Berserker)"
+set key[id=11701477] name "(PC Cafe) Elite Adventurer Magic Shoes (Wizard)"
+set key[id=11701478] name "(PC Cafe) Elite Adventurer Magic Shoes (Priest)"
+set key[id=11701479] name "(PC Cafe) Elite Adventurer Scout Boots (Archer)"
+set key[id=11701480] name "(PC Cafe) Elite Adventurer Scout Boots (Heavy Gunner)"
+set key[id=11701481] name "(PC Cafe) Elite Adventurer Sneaking Shoes (Thief)"
+set key[id=11701482] name "(PC Cafe) Elite Adventurer Sneaking Shoes (Assassin)"
+set key[id=11701483] name "(PC Cafe) Elite Adventurer Battle Greaves (Runeblade)"
+set key[id=11701484] name "(PC Cafe) Elite Adventurer Marshall Shoes (Striker)"
+set key[id=11701485] name "(PC Cafe) Elite Adventurer Marshall Shoes (Soul Binder)"
+set key[id=11701492] name "Old Arena Shoes"
+set key[id=11701493] name "Old Arena Shoes"
+set key[id=11701494] name "Old Arena Shoes"
+set key[id=11701495] name "Old Arena Shoes"
+set key[id=11701496] name "Old Arena Shoes"
+set key[id=11701497] name "Old Arena Shoes"
+set key[id=11701498] name "Old Arena Shoes"
+set key[id=11701499] name "Old Arena Shoes"
+set key[id=11701500] name "Old Arena Shoes"
+set key[id=11701501] name "Old Arena Shoes"
+set key[id=11701502] name "Old Arena Shoes"
+set key[id=11800150] name "Old Arena Cape"
+set key[id=11900128] name "Old Arena Necklace"
+set key[id=12000117] name "Old Arena Ring"
+set key[id=12100118] name "Old Arena Belt"
+set key[id=12200717] name "(PC Cafe) Elite Adventurer Magic Cloth (Wizard)"
+set key[id=12200718] name "(PC Cafe) Elite Adventurer Magic Cloth (Priest)"
+set key[id=12200719] name "(PC Cafe) Elite Adventurer Scout Coat (Archer)"
+set key[id=12200720] name "(PC Cafe) Elite Adventurer Scout Coat (Heavy Gunner)"
+set key[id=12200721] name "(PC Cafe) Elite Adventurer Sneaking Suit (Thief)"
+set key[id=12200722] name "(PC Cafe) Elite Adventurer Sneaking Suit (Assassin)"
+set key[id=13100326] name "(PC Cafe) Elite Adventurer Knife"
+set key[id=13100328] name "Old Arena Dagger"
+set key[id=13200321] name "(PC Cafe) Elite Adventurer Longsword"
+set key[id=13200323] name "Old Arena Longsword"
+set key[id=13300320] name "(PC Cafe) Elite Adventurer Scepter"
+set key[id=13300322] name "Old Arena Scepter"
+set key[id=13400319] name "(PC Cafe) Elite Adventurer Throwing Star"
+set key[id=13400321] name "Old Arena Throwing Star"
+set key[id=14000282] name "(PC Cafe) Elite Adventurer Bible"
+set key[id=14000284] name "Old Arena Codex"
+set key[id=14100291] name "(PC Cafe) Elite Adventurer Shield"
+set key[id=14100293] name "Old Arena Shield"
+set key[id=15000325] name "(PC Cafe) Elite Adventurer Greatsword"
+set key[id=15000327] name "Old Arena Greatsword"
+set key[id=15100317] name "(PC Cafe) Elite Adventurer Bow"
+set key[id=15100319] name "Old Arena Bow"
+set key[id=15200324] name "(PC Cafe) Elite Adventurer Staff"
+set key[id=15200326] name "Old Arena Staff"
+set key[id=15300320] name "(PC Cafe) Elite Adventurer Cannon"
+set key[id=15300322] name "Old Arena Cannon"
+set key[id=15400305] name "(PC Cafe) Elite Adventurer Blade"
+set key[id=15400307] name "Old Arena Blade"
+set key[id=15500538] name "(PC Cafe) Elite Adventurer Knuckles"
+set key[id=15500540] name "Old Arena Knuckles"
+set key[id=15600540] name "(PC Cafe) Elite Adventurer Orb"
+set key[id=15600542] name "Old Arena Orb"
+set key[id=20302952] name "(PC Cafe) Elite Adventurer Gear Box"
+set key[id=20303181] name "Rift Orb"
+set key[id=20303189] name "Rift Orb"
+set key[id=20303242] name "Lv. 70 Legendary Accessory Box (Character-Bound)"
+set key[id=20303344] name "+12 Tairen Royal Armor Box"
+set key[id=20303345] name "+5 Fire Prism Weapon Box"
+set key[id=31001967] name "Exceptional Bonus Value Re-roller (Lv. 71/Accessory)"
+set key[id=31001998] name "Exceptional Bonus Value Re-roller (Lv. 71/Accessory)"
+set key[id=31002000] name "Exceptional Bonus Re-roller (Lv. 71/Accessory)"
+set key[id=31002001] name "Epic Bonus Re-roller (Lv. 80/Accessory)"
+set key[id=31002002] name "Epic Bonus Re-roller (Lv. 80/Accessory)"
+set key[id=31002003] name "Epic Bonus Re-roller (Lv. 80/Accessory)"
+set key[id=31002140] name "Epic +13 Enchant Scroll (Lv. 70/Dagger)"
+set key[id=31002141] name "Epic +13 Enchant Scroll (Lv. 70/Longsword)"
+set key[id=31002142] name "Epic +13 Enchant Scroll (Lv. 70/Scepter)"
+set key[id=31002143] name "Epic +13 Enchant Scroll (Lv. 70/Throwing Star)"
+set key[id=31002144] name "Epic +13 Enchant Scroll (Lv. 70/Greatsword)"
+set key[id=31002145] name "Epic +13 Enchant Scroll (Lv. 70/Bow)"
+set key[id=31002146] name "Epic +13 Enchant Scroll (Lv. 70/Staff)"
+set key[id=31002147] name "Epic +13 Enchant Scroll (Lv. 70/Cannon)"
+set key[id=31002148] name "Epic +13 Enchant Scroll (Lv. 70/Blade)"
+set key[id=31002149] name "Epic +13 Enchant Scroll (Lv. 70/Knuckles)"
+set key[id=31002150] name "Epic +13 Enchant Scroll (Lv. 70/Orb)"
+file Xml/string/kr/koritemdescription.xml kms:Xml/string/kr/koritemdescription.xml 669a7f4ea48c36b2
+set key[id=11200105] guideDescription "\\n<font color='#7A7A7A'>An accessory you can get in the Illusion Dungeons \
+    opened by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11301338] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11301339] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11301340] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11301341] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11301342] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11301343] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11301344] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11301345] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11301346] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11301347] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11301348] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11401141] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11401142] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11401143] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11401144] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11401145] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11401146] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11401147] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11401148] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11401149] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11401150] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11401151] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11501034] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11501035] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11501036] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11501037] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11501038] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11501039] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11501040] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11501041] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11501042] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11501043] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11501044] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11601222] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11601223] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11601224] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11601225] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11601226] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11601227] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11601228] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11601229] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11601230] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11601231] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11601232] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11701318] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11701319] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11701320] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11701321] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11701322] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11701323] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11701324] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11701325] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11701326] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11701327] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11701328] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11800149] guideDescription "\\n<font color='#7A7A7A'>An accessory you can get in the Illusion Dungeons \
+    opened by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=11900127] guideDescription "\\n<font color='#7A7A7A'>An accessory you can get in the Illusion Dungeons \
+    opened by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=12000116] guideDescription "\\n<font color='#7A7A7A'>An accessory you can get in the Illusion Dungeons \
+    opened by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=12100117] guideDescription "\\n<font color='#7A7A7A'>An accessory you can get in the Illusion Dungeons \
+    opened by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=13100328] tooltipDescription "<font color='#ff8ae5' size='14'>[Combat]\\nIncreases your gear score by \
+    30000 in battlegrounds and arenas. Takes effect only with a Old Arena Dagger in each hand.</font>"
+set key[id=13200323] tooltipDescription "<font color='#ff8ae5' size='14'>[Combat]\\nIncreases your gear score by \
+    30000 in battlegrounds and arenas. Takes effect only when worn with the Old Arena Shield.</font>"
+set key[id=13300322] tooltipDescription "<font color='#ff8ae5' size='14'>[Combat]\\nIncreases your gear score by \
+    30000 in battlegrounds and arenas. Takes effect only when worn with the Old Arena Codex.</font>"
+set key[id=13400321] tooltipDescription "<font color='#ff8ae5' size='14'>[Combat]\\nIncreases your gear score by \
+    30000 in battlegrounds and arenas. Takes effect only with a Old Arena Throwing Star in each hand.</font>"
+set key[id=14000267] guideDescription "\\n<font color='#7A7A7A'>Next-generation combat gear for the commanders of \
+    the Tairen Kingdom, built by the AI Jessica to win the fight against Georg. Some of it is said to have been \
+    stolen by an unknown group during prototype tests. This top-performance gear gets the most out of the ener \
+    flow between weapon and armor, with far more attack and defense than the soldiers' Warrior set.</font>"
+set key[id=14000268] guideDescription "\\n<font color='#7A7A7A'>Gear shaped after Infernog, made with the craft of \
+    ancient Kritias, the unknown continent. Why gear in Infernog's image exists there is still a mystery. There \
+    are only theories: that the ancients worshipped Infernog, or that they wanted to warn later ages of the \
+    evil... As the essence of ancient Kritias's civilization, it wields great, heavy power.</font>"
+set key[id=14000269] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=14100276] guideDescription "\\n<font color='#7A7A7A'>Next-generation combat gear for the commanders of \
+    the Tairen Kingdom, built by the AI Jessica to win the fight against Georg. Some of it is said to have been \
+    stolen by an unknown group during prototype tests. This top-performance gear gets the most out of the ener \
+    flow between weapon and armor, with far more attack and defense than the soldiers' Warrior set.</font>"
+set key[id=14100277] guideDescription "\\n<font color='#7A7A7A'>Gear shaped after Infernog, made with the craft of \
+    ancient Kritias, the unknown continent. Why gear in Infernog's image exists there is still a mystery. There \
+    are only theories: that the ancients worshipped Infernog, or that they wanted to warn later ages of the \
+    evil... As the essence of ancient Kritias's civilization, it wields great, heavy power.</font>"
+set key[id=14100278] guideDescription "\\n<font color='#7A7A7A'>Gear you can get in the Illusion Dungeons opened \
+    by rifts in time and space. A chaotic energy swirls around it as if the rift's power dwelt in it, and a \
+    dangerous, mighty aura pours out of it.</font>"
+set key[id=15000327] tooltipDescription "<font color='#ff8ae5' size='14'>[Combat]\\nIncreases your gear score by \
+    30000 in battlegrounds and arenas.</font>"
+set key[id=15100319] tooltipDescription "<font color='#ff8ae5' size='14'>[Combat]\\nIncreases your gear score by \
+    30000 in battlegrounds and arenas.</font>"
+set key[id=15200326] tooltipDescription "<font color='#ff8ae5' size='14'>[Combat]\\nIncreases your gear score by \
+    30000 in battlegrounds and arenas.</font>"
+set key[id=15300322] tooltipDescription "<font color='#ff8ae5' size='14'>[Combat]\\nIncreases your gear score by \
+    30000 in battlegrounds and arenas.</font>"
+set key[id=15400307] tooltipDescription "<font color='#ff8ae5' size='14'>[Combat]\\nIncreases your gear score by \
+    30000 in battlegrounds and arenas.</font>"
+set key[id=15500540] tooltipDescription "<font color='#ff8ae5' size='14'>[Combat]\\nIncreases your gear score by \
+    30000 in battlegrounds and arenas.</font>"
+set key[id=15600542] tooltipDescription "<font color='#ff8ae5' size='14'>[Combat]\\nIncreases your gear score by \
+    30000 in battlegrounds and arenas.</font>"
+set key[id=20302952] tooltipDescription "A reward box from the PC Cafe perks, with a weapon and armor for your job \
+    and shared accessories. Beginners get a job's weapon and armor at set odds instead, and cannot wear the \
+    armor."
+set key[id=20302952] guideDescription "Double-click it in your inventory to get the items. The items you get \
+    cannot be dismantled."
+set key[id=20303094] tooltipDescription "A box pouring out chaotic energy and a mighty aura.\\nUse it to get 1 \
+    Crystal Shine accessory."
+set key[id=20303094] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FF5F5F\">The gear you get is bound to your character, so use it with care.</font>"
+set key[id=20303097] tooltipDescription "A box with a weapon for your job."
+set key[id=20303097] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FF5F5F\">The gear you get is bound to your character, so use it with care.</font>"
+set key[id=20303098] tooltipDescription "A box that lets you choose a hat, gloves or shoes for your job."
+set key[id=20303098] guideDescription "Double-click it in your inventory to choose 1 of the items \
+    inside.\\n\\n<font color=\"#FF5F5F\">The gear you get is bound to your character, so use it with care.</font>"
+set key[id=20303181] tooltipDescription "An orb you get by defeating the monsters that appear where time and space \
+    are warped. It shimmers mysteriously, as if the rift's power were packed inside, and a dangerous aura hangs \
+    around it."
+set key[id=20303181] guideDescription "Double-click it in your inventory to get a boss's own gear at set odds."
+set key[id=20303189] tooltipDescription "An orb you get by defeating the monsters that appear where time and space \
+    are warped. It shimmers mysteriously, as if the rift's power were packed inside, and a dangerous aura hangs \
+    around it."
+set key[id=20303189] guideDescription "Double-click it in your inventory to get a boss's own gear at set odds."
+set key[id=20303235] tooltipDescription "A box with a +10 Fire Prism weapon for your job."
+set key[id=20303235] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FF5F5F\">* Everything in the box is bound to your character, and the gear's bonuses are rolled at set \
+    odds when you open the box.</font>"
+set key[id=20303236] tooltipDescription "A box of scrolls (weapon) with a mystic power that makes gear stronger."
+set key[id=20303236] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FF5F5F\">* Everything in the box is bound to your character, and the gear's bonuses are rolled at set \
+    odds when you open the box.</font>"
+set key[id=20303238] tooltipDescription "A package for Maple World heroes starting out, with a Fire Prism weapon, \
+    Tairen Royal armor, Georg Kai accessories and more. Besides adventuring gear, it has items to power up, such \
+    as pet fragments that make an Exceptional battle pet when combined and a mark choice box."
+set key[id=20303238] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FF5F5F\">* The gear, pet fragments and marks from the box are bound to your character, so use them \
+    with care.\\n* The bonuses of gear from gear boxes are rolled at set odds when you open the box.</font>"
+set key[id=20303242] tooltipDescription "A box of level 70 character-bound Georg Kai Legendary accessories. Use it \
+    to get the earrings, cape, necklace, ring and belt."
+set key[id=20303242] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FF5F5F\">* Everything in the box is bound to your character, and the gear's bonuses are rolled at set \
+    odds when you open the box.</font>"
+set key[id=20303243] tooltipDescription "A package for Maple World heroes starting out, with a Fire Prism weapon, \
+    Tairen Royal armor, Georg Kai accessories and more. Besides adventuring gear, it has items to power up, such \
+    as pet fragments that make an Exceptional battle pet when combined and a mark choice box."
+set key[id=20303243] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FF5F5F\">* The gear, pet fragments and marks from the package and its boxes are bound to your \
+    character, so use them with care.\\n* The bonuses of gear from gear boxes are rolled at set odds when you open \
+    the box.</font>"
+set key[id=20303263] tooltipDescription "A box with a hat for your job."
+set key[id=20303263] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303264] tooltipDescription "A box with a hat for your job."
+set key[id=20303264] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303265] tooltipDescription "A box with a hat for your job."
+set key[id=20303265] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303266] tooltipDescription "A box with a top for your job."
+set key[id=20303266] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303267] tooltipDescription "A box with a top for your job."
+set key[id=20303267] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303268] tooltipDescription "A box with a top for your job."
+set key[id=20303268] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303269] tooltipDescription "A box with a bottom for your job."
+set key[id=20303269] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303270] tooltipDescription "A box with a bottom for your job."
+set key[id=20303270] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303271] tooltipDescription "A box with a bottom for your job."
+set key[id=20303271] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303272] tooltipDescription "A box with gloves for your job."
+set key[id=20303272] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303273] tooltipDescription "A box with gloves for your job."
+set key[id=20303273] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303274] tooltipDescription "A box with gloves for your job."
+set key[id=20303274] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303275] tooltipDescription "A box with shoes for your job."
+set key[id=20303275] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303276] tooltipDescription "A box with shoes for your job."
+set key[id=20303276] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303277] tooltipDescription "A box with shoes for your job."
+set key[id=20303277] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303343] tooltipDescription "A box of level 70 character-bound Georg Kai Legendary accessories. Use it \
+    to get the earrings, cape, necklace, ring and belt."
+set key[id=20303343] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FF5F5F\">* Everything in the box is bound to your character, and the gear's bonuses are rolled at \
+    fixed odds when you open the box.</font>"
+set key[id=20303344] tooltipDescription "A box of scrolls (weapon) with a mystic power that makes gear stronger."
+set key[id=20303344] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FF5F5F\">* Everything in the box is bound to your character, and the gear's bonuses are rolled at \
+    fixed odds when you open the box.</font>"
+set key[id=20303346] tooltipDescription "A package for Maple World heroes starting out, with a Fire Prism weapon, \
+    Fire Prism armor, Georg Kai accessories and more. Besides adventuring gear, it has items to power up, such as \
+    a battle pet ready to use and a Cherry Blossom Song mark box."
+set key[id=20303346] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FF5F5F\">* The gear, battle pet and marks from the package and its boxes are bound to your character, \
+    so use them with care.\\n* The bonuses of gear from gear boxes are rolled at set odds when you open the \
+    box.</font>"
+set key[id=20303363] tooltipDescription "A box with a hat for your job."
+set key[id=20303363] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303364] tooltipDescription "A box with a top for your job."
+set key[id=20303364] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303365] tooltipDescription "A box with a bottom for your job."
+set key[id=20303365] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303366] tooltipDescription "A box with gloves for your job."
+set key[id=20303366] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303367] tooltipDescription "A box with shoes for your job."
+set key[id=20303367] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303368] tooltipDescription "A box with a hat for your job."
+set key[id=20303368] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303369] tooltipDescription "A box with a top for your job."
+set key[id=20303369] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303370] tooltipDescription "A box with a bottom for your job."
+set key[id=20303370] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303371] tooltipDescription "A box with gloves for your job."
+set key[id=20303371] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303372] tooltipDescription "A box with shoes for your job."
+set key[id=20303372] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303373] tooltipDescription "A box with a hat for your job."
+set key[id=20303373] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303374] tooltipDescription "A box with a top for your job."
+set key[id=20303374] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303375] tooltipDescription "A box with a bottom for your job."
+set key[id=20303375] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303376] tooltipDescription "A box with gloves for your job."
+set key[id=20303376] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=20303377] tooltipDescription "A box with shoes for your job."
+set key[id=20303377] guideDescription "Double-click it in your inventory to get the items.\\n\\n<font \
+    color=\"#FFFFFF\">The gear you get is bound to your character and cannot be dismantled.</font>"
+set key[id=31001966] tooltipDescription "A scroll with a mystic power that opens sockets in an item."
+set key[id=31001966] guideDescription "Double-click it to use the scroll.\\n\\n<font color=\"#FFFFFF\">The \
+    accessory then has 2 open sockets. Only for level 70 Epic earrings, necklaces and rings whose sockets are all \
+    locked or that have 1 socket opened. \\nNote: an item with opened sockets can no longer be traded, and this \
+    does not add sockets on top: the number of opened sockets becomes 2.</font>"
+set key[id=31001967] tooltipDescription "A bonus re-roller that gives an item new stats."
+set key[id=31001967] guideDescription "Double-click it to use the bonus re-roller.\\n\\n<font \
+    color=\"#FFFFFF\">Only for level 71 Exceptional capes, belts, earrings, necklaces and rings. It changes only \
+    the bonus values.</font>\\n\\n<font color=\"#FF5F5F\">Changing bonuses with a bonus re-roller does not add to \
+    the bonus change count.\\nIt cannot be used on items with no bonuses or no bonus change count shown.\\nA bonus \
+    re-roller can roll the same value again.</font>"
+set key[id=31001998] tooltipDescription "A bonus re-roller that gives an item new stats."
+set key[id=31001998] guideDescription "Double-click it to use the bonus re-roller.\\n\\n<font \
+    color=\"#FFFFFF\">Only for level 71 Exceptional capes, belts, earrings, necklaces and rings. It changes only \
+    the bonus values.</font>\\n\\n<font color=\"#FF5F5F\">Changing bonuses with a bonus re-roller does not add to \
+    the bonus change count.\\nIt cannot be used on items with no bonuses or no bonus change count shown.\\nA bonus \
+    re-roller can roll the same value again.</font>"
+set key[id=31002000] tooltipDescription "A bonus re-roller that gives an item new stats."
+set key[id=31002000] guideDescription "Double-click it to use the bonus re-roller.\\n\\n<font \
+    color=\"#FFFFFF\">Only for level 71 Exceptional capes, belts, earrings, necklaces and rings. It changes both \
+    the bonus types and values.</font>\\n\\n<font color=\"#FF5F5F\">Changing bonuses with a bonus re-roller does \
+    not add to the bonus change count.\\nIt cannot be used on items with no bonuses.\\nA bonus re-roller can roll \
+    the same value again.</font>"
+set key[id=31002001] tooltipDescription "A bonus re-roller that gives an item new stats."
+set key[id=31002001] guideDescription "Double-click it to use the bonus re-roller.\\n\\n<font \
+    color=\"#FFFFFF\">Only for level 80 Epic capes, belts, earrings, necklaces and rings. It changes both the \
+    bonus types and values.</font>\\n\\n<font color=\"#FF5F5F\">Changing bonuses with a bonus re-roller does not \
+    add to the bonus change count.\\nIt cannot be used on items with no bonuses.\\nA bonus re-roller can roll the \
+    same value again.</font>"
+set key[id=31002002] tooltipDescription "A bonus re-roller that gives an item new stats."
+set key[id=31002002] guideDescription "Double-click it to use the bonus re-roller.\\n\\n<font \
+    color=\"#FFFFFF\">Only for level 80 Epic capes, belts, earrings, necklaces and rings. It changes both the \
+    bonus types and values.</font>\\n\\n<font color=\"#FF5F5F\">Changing bonuses with a bonus re-roller does not \
+    add to the bonus change count.\\nIt cannot be used on items with no bonuses.\\nA bonus re-roller can roll the \
+    same value again.</font>"
+set key[id=31002003] tooltipDescription "A bonus re-roller that gives an item new stats."
+set key[id=31002003] guideDescription "Double-click it to use the bonus re-roller.\\n\\n<font \
+    color=\"#FFFFFF\">Only for level 80 Epic capes, belts, earrings, necklaces and rings. It changes both the \
+    bonus types and values.</font>\\n\\n<font color=\"#FF5F5F\">Changing bonuses with a bonus re-roller does not \
+    add to the bonus change count.\\nIt cannot be used on items with no bonuses.\\nA bonus re-roller can roll the \
+    same value again.</font>"
+set key[id=31002140] tooltipDescription "A scroll with a mystic power that makes gear stronger."
+set key[id=31002140] guideDescription "Double-click it to enchant gear with the scroll.\\nOnly for level 70 Epic \
+    daggers. The item becomes +13 with a 100% chance."
+set key[id=31002141] tooltipDescription "A scroll with a mystic power that makes gear stronger."
+set key[id=31002141] guideDescription "Double-click it to enchant gear with the scroll.\\nOnly for level 70 Epic \
+    longswords. The item becomes +13 with a 100% chance."
+set key[id=31002142] tooltipDescription "A scroll with a mystic power that makes gear stronger."
+set key[id=31002142] guideDescription "Double-click it to enchant gear with the scroll.\\nOnly for level 70 Epic \
+    scepters. The item becomes +13 with a 100% chance."
+set key[id=31002143] tooltipDescription "A scroll with a mystic power that makes gear stronger."
+set key[id=31002143] guideDescription "Double-click it to enchant gear with the scroll.\\nOnly for level 70 Epic \
+    throwing stars. The item becomes +13 with a 100% chance."
+set key[id=31002144] tooltipDescription "A scroll with a mystic power that makes gear stronger."
+set key[id=31002144] guideDescription "Double-click it to enchant gear with the scroll.\\nOnly for level 70 Epic \
+    greatswords. The item becomes +13 with a 100% chance."
+set key[id=31002145] tooltipDescription "A scroll with a mystic power that makes gear stronger."
+set key[id=31002145] guideDescription "Double-click it to enchant gear with the scroll.\\nOnly for level 70 Epic \
+    bows. The item becomes +13 with a 100% chance."
+set key[id=31002146] tooltipDescription "A scroll with a mystic power that makes gear stronger."
+set key[id=31002146] guideDescription "Double-click it to enchant gear with the scroll.\\nOnly for level 70 Epic \
+    staves. The item becomes +13 with a 100% chance."
+set key[id=31002147] tooltipDescription "A scroll with a mystic power that makes gear stronger."
+set key[id=31002147] guideDescription "Double-click it to enchant gear with the scroll.\\nOnly for level 70 Epic \
+    cannons. The item becomes +13 with a 100% chance."
+set key[id=31002148] tooltipDescription "A scroll with a mystic power that makes gear stronger."
+set key[id=31002148] guideDescription "Double-click it to enchant gear with the scroll.\\nOnly for level 70 Epic \
+    blades. The item becomes +13 with a 100% chance."
+set key[id=31002149] tooltipDescription "A scroll with a mystic power that makes gear stronger."
+set key[id=31002149] guideDescription "Double-click it to enchant gear with the scroll.\\nOnly for level 70 Epic \
+    knuckles. The item becomes +13 with a 100% chance."
+set key[id=31002150] tooltipDescription "A scroll with a mystic power that makes gear stronger."
+set key[id=31002150] guideDescription "Double-click it to enchant gear with the scroll.\\nOnly for level 70 Epic \
+    orbs. The item becomes +13 with a 100% chance."
+set key[id=36000606] tooltipDescription "A fragment of the battle pet $item:61100145$."
+set key[id=36000606] guideDescription "Double-click it to use 10 and get the character-bound battle pet \
+    $item:61100145$."
+set key[id=36000607] tooltipDescription "A fragment of the battle pet $item:61100146$."
+set key[id=36000607] guideDescription "Double-click it to use 10 and get the character-bound battle pet \
+    $item:61100146$."
+set key[id=36000615] tooltipDescription "A fragment of $item:20303094$, pouring out chaotic energy and a mighty \
+    aura."
+set key[id=36000615] guideDescription "Double-click it to use 16 and make $item:20303094$."
