@@ -53906,3 +53906,621 @@ set key[id=31000908] name "Epic Stabilization Rune (LV50/One-Handed)"
 set key[id=31000909] name "Epic Stabilization Rune (LV50/Dual-Wield)"
 set key[id=31000910] name "Epic Stabilization Rune (LV50/Two-Handed)"
 set key[id=31002154] name "Excellent Armor Option Change Ticket"
+
+# Names and texts still in Korean after the pack's English tables are applied, whose id the client data uses
+# (trophies, titles, gear sets, shop categories, dungeon missions and entry tips, skills, object actions, guide
+# messages, mounts, recipes, maps, NPC titles): our own English, with the rows' own format fields, tags and line
+# breaks. Ids that also have rows of other locales are keyed by locale.
+file Xml/string/kr/achievename.xml kms:Xml/string/kr/achievename.xml 316e2d4d69d78de0
+set key[id=21230173] name "(Account) Vroom Vroom Toot Toot! Black Bean"
+set key[id=21300103] name "Doll Mansion Participant"
+set key[id=21300104] name "Smash in One Go!"
+set key[id=21300105] name "(Account) Blue Rook Has Turned Gentle"
+set key[id=21300106] name "Even Putting Out the Blue Flames"
+set key[id=21300107] name "Together as One"
+set key[id=21300108] name "I Want to Be Alone."
+set key[id=21300109] name "(Account) Blue Rook Has Gone Quiet"
+set key[id=21300110] name "Check Even Dead Fires Again"
+set key[id=21300111] name "Ooh! It Is Getting Cooler."
+set key[id=22300147] name "What Is That Sound?"
+set key[id=22300148] name "Empress, Are You Okay?"
+set key[id=22300149] name "Wanderer in the Illusion"
+set key[id=22300150] name "To the Very Limit"
+set key[id=23100300] name "The More Lamps the Better!"
+set key[id=23100421] name "My Fiance"
+set key[id=23100422] name "I Wanted to Refuse the Refusal"
+set key[id=23100423] name "Do I Look Easy to You?"
+set key[id=23100424] name "Heart-Pounding Wedding Prep"
+set key[id=23100425] name "Choose the Wedding Hall Carefully"
+set key[id=23100426] name "Marimba Player"
+set key[id=23100427] name "Just Looking Around"
+set key[id=23100428] name "Happy Couple"
+set key[id=23100429] name "A Lovely Day in Tria"
+set key[id=23100430] name "A Lovely Night in Tria"
+set key[id=23100431] name "A Quiet Day in Henesys "
+set key[id=23100432] name "A Quiet Night in Henesys"
+set key[id=23100433] name "A Day of Chirping Birds in Ellinia"
+set key[id=23100434] name "A Starry Night in Ellinia"
+set key[id=23100435] name "A Scorching Day in Perion"
+set key[id=23100436] name "A Scorching Night in Perion"
+set key[id=23100437] name "Sending Blessings from the Shining Sun"
+set key[id=23100438] name "Sending Love from the Soft Moonlight"
+set key[id=23100439] name "Like Sunlight Breaking on the Waves "
+set key[id=23100440] name "Like Fireworks Blooming over the Ripples"
+set key[id=23100441] name "Click! A Moment in a Photo"
+set key[id=23100442] name "Click! Fantasy Land"
+set key[id=23100443] name "Click! Underwater World"
+set key[id=23100444] name "I Love Sweet Things Best"
+set key[id=23100445] name "Wedding Dancer"
+set key[id=23100446] name "Pro Guest"
+set key[id=23100447] name "Single Again"
+set key[id=23100448] name "Flute Player"
+set key[id=23400050][locale=KR] name "Chocolatier of Love"
+set key[id=23400056][locale=KR] name "Your Hair Is Showing!"
+set key[id=23400057][locale=KR] name "Hide-and-Seek Master"
+set key[id=23500006] name "(Account) Alchemy Basics"
+set key[id=23500013] name "(Account) My Maid Is an Alchemist"
+set key[id=23500026] name "(Account) The Rolling Scent of the Sea"
+set key[id=92000008] name "A Rich Person Is Born"
+set key[id=92000026] name "(Account) Too Many Arms!"
+set key[id=92000062] name "Heart-Pounding Valentine's First Gift"
+set key[id=92000063] name "Heart-Pounding Valentine's Second Gift"
+set key[id=92000080] name "White Day First Gift"
+set key[id=92000081] name "White Day Second Gift"
+set key[id=92000082] name "White Day Third Gift"
+set key[id=92000093] name "Fan Art Artist"
+set key[id=92000098] name "Happy 3rd Anniversary, MapleStory 2!"
+set key[id=92000104] name "September Bountiful Autumn Relay: 1st Package Buyer"
+set key[id=92000105] name "September Bountiful Autumn Relay: 2nd Package Buyer"
+set key[id=92000106] name "September Bountiful Autumn Relay: 3rd Package Buyer"
+set key[id=92000107] name "September Bountiful Autumn Relay: 4th Package Buyer"
+set key[id=92000112] name "October Bountiful Autumn Relay: 1st Package Buyer"
+set key[id=92000113] name "October Bountiful Autumn Relay: 2nd Package Buyer"
+set key[id=92000114] name "October Bountiful Autumn Relay: 3rd Package Buyer"
+set key[id=92000115] name "October Bountiful Autumn Relay: 4th Package Buyer"
+set key[id=92000138] name "In Search of My Partner!"
+set key[id=92000139] name "Destined Victor"
+set key[id=92000140] name "One Who Pierces the Heart"
+set key[id=92000142] name "One Who Enjoys a Duel"
+set key[id=92000145] name "Maple Newbie Who Shared the 4th Anniversary"
+set key[id=92000147][locale=KR] name "Do I Look Like Your Friend?"
+set key[id=92000148][locale=KR] name "No Fish, and I Will Vanish~"
+set key[id=92000149][locale=KR] name "Bubbling Cauldron~ Take This Pumpkin!"
+set key[id=92000151][locale=KR] name "(Account) All-in-One Package Buyer"
+file Xml/string/kr/categoryname.xml kms:Xml/string/kr/categoryname.xml a7094fba0e96c9a6
+set key[id=10102001] name "Pumpkin Hollow Skin"
+set key[id=10102002] name "Hallo Hallo Skin"
+set key[id=10102003] name "Naughty Little Imp Skin"
+set key[id=10102004] name "Sweet Dream Skin"
+set key[id=10102601] name "Operator Set"
+set key[id=10102602] name "Astronaut Set"
+set key[id=10102603] name "Charming Uniform Set"
+set key[id=10102701] name "Happy Melody Set"
+set key[id=10102702] name "Red Hood Set"
+set key[id=10102703] name "Tria Court Painter Set"
+set key[id=10102704] name "Street Hoop Set"
+set key[id=10102801] name "Cotton Candy Set"
+set key[id=10102802] name "Cutie Little Bear Set"
+set key[id=10102803] name "Sly Mouse Set"
+set key[id=10102804] name "Lovely Chuchu Set"
+set key[id=10103001] name "Fresh Summer Set"
+set key[id=10103003] name "Seaside Romance Set"
+set key[id=10103101] name "Fresh Summer Set"
+set key[id=10103103] name "Seaside Romance Set"
+set key[id=10103202] name "Dark Cat Funky Set"
+set key[id=10103203] name "Mischievous Fairy Set"
+set key[id=10103204] name "Twinkle Star Uniform Set"
+set key[id=10103301] name "Bloody Vampire Set"
+set key[id=10103302] name "Hallo Hallo Set"
+set key[id=10103303] name "Naughty Little Imp Set"
+set key[id=10460201] name "Royal Darkness Set"
+set key[id=10460202] name "Dark Moon Kitten Set"
+set key[id=10460203] name "Butterfly Lord Set"
+set key[id=10460204] name "Weapon Box"
+set key[id=10460205] name "Mounts"
+set key[id=10460206] name "Badges"
+set key[id=10460207] name "Action Course Pass"
+set key[id=10460208] name "Misc."
+set key[id=10460301] name "Romantic Wedding Set"
+set key[id=10460302] name "Royal Arabian Set"
+set key[id=10460303] name "Fluttering Butterfly Set"
+set key[id=10460304] name "Weapon Box"
+file Xml/string/kr/dungeonmissionname.xml kms:Xml/string/kr/dungeonmissionname.xml c3ebe20dd34eb3cc
+set key[id=23110004] name "Points deducted if hit by the two-handed slam"
+set key[id=23170000] name "(Party) Defeat $npc:23200009$"
+set key[id=23170001] name "(Party) Defeat $npc:23200009$ within 5 minutes"
+set key[id=23170002] name "(Party) Defeat $npc:23200009$ within 10 minutes"
+set key[id=23170003] name "Points deducted if crushed by a tablet"
+set key[id=23170004] name "Points deducted if hit by the SP Seal effect"
+set key[id=23170005] name "(Party) Defeat $npc:23200008$"
+set key[id=23170006] name "(Party) Defeat $npc:23200008$ within 5 minutes"
+set key[id=23170007] name "(Party) Defeat $npc:23200008$ within 10 minutes"
+set key[id=23170008] name "Points deducted if crushed by a tablet"
+set key[id=23170009] name "Points deducted if hit by the SP Seal effect"
+set key[id=23170010] name "Points deducted if hit by the Shadow Laser"
+set key[id=23200001] name "(Party) Defeat $npc:44100001$"
+set key[id=23200002] name "(Party) Defeat $npc:44100001$ within 5 minutes"
+set key[id=23200004] name "Points deducted if crushed by a tablet"
+set key[id=23200006] name "Points deducted if bound by the vines of $npc:44100001$"
+set key[id=23200007] name "Stand in the stage spotlight of $npc:44100001$"
+file Xml/string/kr/mapname.xml kms:Xml/string/kr/mapname.xml 7d2ebe10feb4a8d7
+set key[id=52100305] name "Suspicious Space"
+set key[id=52100400] name "Frontier Foundation Meeting Room"
+set key[id=52100401] name "Aria's Space"
+set key[id=52100402] name "Elder's House"
+set key[id=52100404] name "Queens Hall"
+file Xml/string/kr/npcfunctionname.xml kms:Xml/string/kr/npcfunctionname.xml b96d1ed2bd7b6c8e
+set key[id=11004876] name "Royal Music Academy Administrator"
+file Xml/string/kr/npctitle.xml kms:Xml/string/kr/npctitle.xml 1f389cdc2b6c92b3
+set key[id=11004845] name "Peddler"
+set key[id=11004846] name "In Need of Help"
+file Xml/string/kr/setitemname.xml kms:Xml/string/kr/setitemname.xml 9e8670115c48c86e
+set key[id=15123110] name "Shining Snowflake Set"
+set key[id=15123111] name "Shining Snowflake Set"
+set key[id=17062001] name "Diligent Adventurer's Set"
+set key[id=19061391] name "Over Winter Set"
+set key[id=19061392] name "Over Winter Set"
+set key[id=19102301] name "Special Wedding Set"
+set key[id=19102302] name "Special Wedding Set"
+set key[id=20032601] name "Worn Arena Armor Set"
+set key[id=20032602] name "Worn Arena Armor Set"
+set key[id=20032603] name "Worn Arena Armor Set"
+set key[id=20032604] name "Worn Arena Armor Set"
+set key[id=20032605] name "Worn Arena Armor Set"
+set key[id=20032606] name "Worn Arena Armor Set"
+set key[id=20032607] name "Worn Arena Armor Set"
+set key[id=20032608] name "Worn Arena Armor Set"
+set key[id=20032609] name "Worn Arena Armor Set"
+set key[id=20032610] name "Worn Arena Armor Set"
+set key[id=20032611] name "Worn Arena Armor Set"
+set key[id=20032612] name "Worn Arena Accessory Set"
+set key[id=21022501] name "Operator Set (Male)"
+set key[id=21022502] name "Operator Set (Female)"
+set key[id=21032401] name "Zesty Lemon Set (Male)"
+set key[id=21032402] name "Zesty Lemon Set (Female)"
+set key[id=21042701] name "Lovely Chuchu Set (Male)"
+set key[id=21042702] name "Lovely Chuchu Set (Female)"
+set key[id=21042703] name "Black Cat Set (Male)"
+set key[id=21042704] name "Black Cat Set (Female)"
+set key[id=90000119] name "Chubby Bunny Set"
+set key[id=90000120] name "Chubby Bunny Set"
+set key[id=90000261] name "Summer Rash Guard Set"
+set key[id=90000262] name "Summer Rash Guard Set"
+set key[id=90000265] name "Military Set"
+set key[id=90000296] name "Military Set"
+set key[id=90000303] name "Hallo Hallo Set"
+set key[id=90000304] name "Hallo Hallo Set"
+set key[id=90000309] name "Cozy Winter Set"
+set key[id=90000310] name "Cozy Winter Set"
+set key[id=90000349] name "Shining Marching Band Set"
+set key[id=90000350] name "Shining Marching Band Set"
+set key[id=90000369] name "Sirenes Set"
+set key[id=90000370] name "Sirenes Set"
+set key[id=90000373] name "Kerning City Station Attendant Set"
+set key[id=90000374] name "Kerning City Station Attendant Set"
+set key[id=90000375] name "Kumbawanka Set"
+set key[id=90000376] name "Kumbawanka Set"
+set key[id=90000377] name "Mischievous Fairy Set"
+set key[id=90000378] name "Mischievous Fairy Set"
+set key[id=90000381] name "Forest Spirit Set"
+set key[id=90000382] name "Forest Spirit Set"
+set key[id=90000393] name "Merry Spring Outing Set"
+set key[id=90000394] name "Merry Spring Outing Set"
+set key[id=90000395] name "Cozy Cotton Ball Set"
+set key[id=90000396] name "Cozy Cotton Ball Set"
+set key[id=90000397] name "Kerning Police Set"
+set key[id=90000398] name "Kerning Police Set"
+set key[id=90000399] name "Tick-Tock Clockwork Set"
+set key[id=90000400] name "Tick-Tock Clockwork Set"
+set key[id=90000415] name "Autumn Picnic Set"
+set key[id=90000416] name "Autumn Picnic Set"
+set key[id=90000417] name "Freestyle Anorak Set"
+set key[id=90000418] name "Freestyle Anorak Set"
+set key[id=90000429] name "Kerning Mail Carrier Set"
+set key[id=90000430] name "Kerning Mail Carrier Set"
+set key[id=90000431] name "Paul Rabbit Set"
+set key[id=90000432] name "Paul Rabbit Set"
+set key[id=90000449] name "Funky Neon Cat Option Look Set"
+set key[id=90000450] name "Funky Neon Cat Option Look Set"
+set key[id=90000459] name "Court Ceremonial Dress Set"
+set key[id=90000460] name "Court Ceremonial Dress Set"
+set key[id=90000461] name "Saekdong Hanbok Set"
+set key[id=90000462] name "Saekdong Hanbok Set"
+set key[id=90000463] name "Full Moon Hanbok Set"
+set key[id=90000464] name "Full Moon Hanbok Set"
+set key[id=90000469] name "Golden Thread Cloud Dragon Set"
+set key[id=90000470] name "Golden Thread Cloud Dragon Set"
+set key[id=90000471] name "Awakened Duckyball Set"
+file Xml/string/kr/shadowbuffstrdesc.xml kms:Xml/string/kr/shadowbuffstrdesc.xml a7020cbeddc21a86
+set key[id=21101001] name "Using any skill triggers the Endless Cycle effect: for 10 sec, Movement Speed rises by \
+    1% each stack and HP is restored by<font color='#00aaef'> 3</font> every second. Stacks up to 20 times, once \
+    every 3 sec."
+set key[id=21101002] name "Using any skill triggers the Endless Cycle effect: for 10 sec, Movement Speed rises by \
+    1% each stack and HP is restored by<font color='#00aaef'> 4</font> every second. Stacks up to 20 times, once \
+    every 3 sec."
+set key[id=21101003] name "Using any skill triggers the Endless Cycle effect: for 10 sec, Movement Speed rises by \
+    1% each stack and HP is restored by<font color='#00aaef'> 5</font> every second. Stacks up to 20 times, once \
+    every 3 sec."
+set key[id=21101004] name "Using any skill triggers the Endless Cycle effect: for 10 sec, Movement Speed rises by \
+    1% each stack and HP is restored by<font color='#00aaef'> 7</font> every second. Stacks up to 20 times, once \
+    every 3 sec."
+set key[id=21101005] name "Using any skill triggers the Endless Cycle effect: for 10 sec, Movement Speed rises by \
+    1% each stack and HP is restored by<font color='#00aaef'> 10</font> every second. Stacks up to 20 times, once \
+    every 3 sec."
+file Xml/string/kr/stringenchantscrollreceipename.xml kms:Xml/string/kr/stringenchantscrollreceipename.xml \
+    64f04a64f105663c
+set key[id=20996101] name "+10 Epic Enchant Rune (One-Handed)"
+set key[id=20996102] name "+10 Epic Enchant Rune (Dual-Wield)"
+set key[id=20996103] name "+10 Epic Enchant Rune (Two-Handed)"
+set key[id=20996104] name "+10 Epic Enchant Rune (Hat)"
+set key[id=20996105] name "+10 Epic Enchant Rune (Top)"
+set key[id=20996106] name "+10 Epic Enchant Rune (Bottoms)"
+set key[id=20996107] name "+10 Epic Enchant Rune (Gloves)"
+set key[id=20996108] name "+10 Epic Enchant Rune (Shoes)"
+file Xml/string/kr/stringfieldenterance.xml kms:Xml/string/kr/stringfieldenterance.xml 743455cd6c003c0e
+set key[id=23046003] uiDescription "<font color='#FFD400'>* <b>Gear Score Tips</b> *</font>\n<font \
+    color='#00aaef'>Weapon, Top (Suit), Bottoms</font> : Lv. 70 <font color='#c888ff'>Epic</font> +10 Elite \
+    Adventuring Gear\n<font color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 70 <font \
+    color='#c888ff'>Epic</font> +10\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : Lv. 60 \
+    <font color='#c888ff'>Epic</font> \n\\nStruck in the heart by a poisoned arrow, Shushu froze her heart with \
+    shards of ice to survive, and her nature turned cruel. She lured in her old partner, the giant Bubus, and the \
+    two went around committing merciless crimes. Infamous as outlaws of the snowfield, they now appear as \
+    illusions and begin to show off even greater power...\n<font color='#00aaef'>- You must equip the standard \
+    weapon type for your job to enter.</font>\n<font color='#00aaef'>- Safe revivals are limited in this \
+    challenge.</font>\n<font color='#FFD400'>- A 4-member party is recommended for this dungeon.</font>"
+set key[id=23047003] uiDescription "<font color='#FFD400'>* <b>Gear Score Tips</b> *</font>\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Ascendant</font> +15\n<font color='#00aaef'>Top \
+    (Suit), Bottoms</font> : Lv. 70 <font color='#ff8c37'>Ascendant</font> +14\n<font color='#00aaef'>Headgear, \
+    Gloves, Shoes</font> : Lv. 70 <font color='#ff8c37'>Ascendant Fire Prism</font> +12\n<font \
+    color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : Lv. 70 <font \
+    color='#ffd533'>Legendary</font>\n\\nStruck in the heart by a poisoned arrow, Shushu froze her heart with \
+    shards of ice to survive, and her nature turned cruel. She lured in her old partner, the giant Bubus, and the \
+    two went around committing merciless crimes. Infamous as outlaws of the snowfield, they now appear as \
+    illusions and begin to show off even greater power...\n<font color='#00aaef'>- You must equip the standard \
+    weapon type for your job to enter.</font>\n<font color='#00aaef'>- Safe revivals are limited in this \
+    challenge.</font>\n<font color='#FFD400'>- A 6-member party is recommended for this dungeon.</font>"
+set key[id=23048003] uiDescription "<font color='#FFD400'>* <b>Gear Score Tips</b> *</font>\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Ascendant Fire Prism</font> +5 Limit Break\n<font \
+    color='#00aaef'>Top (Suit), Bottoms</font> : Lv. 70 <font color='#ff8c37'>Ascendant</font> +13\n<font \
+    color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 70 <font color='#ff8c37'>Ascendant Fire Prism</font> \
+    +12\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : Lv. 70 <font \
+    color='#ffd533'>Legendary</font> \n\\nLong ago, the top of $map:02000009$ was a forest ringed by giant trees. \
+    Even there, a place thought safe, a human invaded and coveted the eggs, and Horus felt a tearing pain. Now an \
+    illusion, Horus burns with even fiercer rage... Will his wings be broken?\n<font color='#00aaef'>- You must \
+    equip the standard weapon type for your job to enter.</font>\n<font color='#00aaef'>- Safe revivals are \
+    limited in this challenge.</font>\n<font color='#FFD400'>- A 4-member party is recommended for this \
+    dungeon.</font>"
+set key[id=23049003] uiDescription "<font color='#FFD400'>* <b>Gear Score Tips</b> *</font>\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Ascendant Fire Prism</font> +8 Limit Break\n<font \
+    color='#00aaef'>Top (Suit), Bottoms</font> : Lv. 70 <font color='#ff8c37'>Ascendant</font> +14\n<font \
+    color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 70 <font color='#ff8c37'>Ascendant Fire Prism</font> \
+    +14\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : Lv. 70 <font \
+    color='#ffd533'>Legendary</font>\n\\nLong ago, the top of $map:02000009$ was a forest ringed by giant trees. \
+    Even there, a place thought safe, a human invaded and coveted the eggs, and Horus felt a tearing pain. Now an \
+    illusion, Horus burns with even fiercer rage... Will his wings be broken?\n<font color='#00aaef'>- You must \
+    equip the standard weapon type for your job to enter.</font>\n<font color='#00aaef'>- Safe revivals are \
+    limited in this challenge.</font>\n<font color='#FFD400'>- A 6-member party is recommended for this \
+    dungeon.</font>"
+set key[id=23050003] uiDescription "<font color='#FFD400'>* <b>Gear Score Tips</b> *</font>\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Ascendant Fire Prism</font> +13 Limit \
+    Break\n<font color='#00aaef'>Top (Suit), Bottoms</font> : Lv. 70 <font color='#ff8c37'>Ascendant Fire \
+    Prism</font> +13\n<font color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 70 <font \
+    color='#ff8c37'>Ascendant Fire Prism</font> +13\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, \
+    Belt</font> : Lv. 70 <font color='#ffd533'>Legendary</font>\n\\nThe mysterious black bean $npc:11004831$ \
+    drifts freely through space-time and stirs up the rifts even more! They say this black outlaw, bucking like a \
+    wild horse, even drags out the power of other worlds...? \nPlay hard with $npc:11004831$, who keeps hopping \
+    through the gaps in space-time looking for fun, and win some mysterious power!\n<font color='#00aaef'>- You \
+    must equip the standard weapon type for your job to enter.</font>\n<font color='#00aaef'>\n<font \
+    color='#00aaef'>The 'Illusory Space-Time Power' effect of Fire Prism weapons is doubled.</font>\n- Safe \
+    revivals are limited in this challenge.</font>\n<font color='#FFD400'>- A 4-member party is recommended for \
+    this dungeon.</font>"
+set key[id=23051003] uiDescription "<font color='#FFD400'>* <b>Gear Score Tips</b> *</font>\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Ascendant Fire Prism</font> +22 Limit \
+    Break\n<font color='#00aaef'>Top (Suit), Bottoms</font> : Lv. 70 <font color='#ff8c37'>Ascendant Fire \
+    Prism</font> +14\n<font color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 70 <font \
+    color='#ff8c37'>Ascendant Fire Prism</font> +14\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, \
+    Belt</font> : Lv. 70 <font color='#ffd533'>Legendary</font>\n\\nThe mysterious black bean $npc:11004831$ \
+    drifts freely through space-time and stirs up the rifts even more! They say this black outlaw, bucking like a \
+    wild horse, even drags out the power of other worlds...? \nPlay hard with $npc:11004831$, who keeps hopping \
+    through the gaps in space-time looking for fun, and win some mysterious power!\n\\n<font color='#00aaef'>- You \
+    must equip the standard weapon type for your job to enter.</font>\n<font color='#00aaef'>\n<font \
+    color='#00aaef'>The 'Illusory Space-Time Power' effect of Fire Prism weapons is doubled.</font>\n- Safe \
+    revivals are limited in this challenge.</font>\n<font color='#FFD400'>- A 10-member party is recommended for \
+    this dungeon.</font>"
+set key[id=23070003] uiDescription "<font color='#FFD400'>* Gear Score Tips</font>\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> gear Limit Break Lv. \
+    8\n<font color='#00aaef'>Top, Bottoms</font> : Lv. 70 <font color='#ff8c37'>Epic</font> grade Enchant Lv. \
+    14\n<font color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> \
+    gear Enchant Lv. 14\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : Lv. 70 <font \
+    color='#ffd533'>Legendary</font> grade\n\\n<font color='#00aaef'>$npc:23000007$</font> has begun summoning \
+    Shadow Legion troops again. Head to $map:02000326$ and stop <font \
+    color='#00aaef'>$npc:23200009$</font>.\n\\n<font color='#00aaef'>You must equip the standard weapon type for \
+    your job to enter.</font>\n<font color='#00aaef'>Safe revivals are limited in this challenge.</font>\n\\n<font \
+    color='#FFD400'>[A 4-member party is recommended for this dungeon.]</font>"
+set key[id=23071003] uiDescription "<font color='#FFD400'>* Gear Score Tips</font>\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> gear Limit Break Lv. \
+    22\n<font color='#00aaef'>Top, Bottoms</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> gear \
+    Enchant Lv. 14\n<font color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 70 <font color='#ff8c37'>Epic Fire \
+    Prism</font> gear Enchant Lv. 14\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : Lv. 70 \
+    <font color='#ffd533'>Legendary</font> grade\n\\n<font color='#00aaef'>$npc:23000007$</font> has begun \
+    summoning Shadow Legion troops again. Head to $map:02000326$ and stop <font \
+    color='#00aaef'>$npc:23200008$</font>.\n\\n<font color='#00aaef'>You must equip the standard weapon type for \
+    your job to enter.</font>\n<font color='#00aaef'>Safe revivals are limited in this challenge.</font>\n\\n<font \
+    color='#FFD400'>[This dungeon is extremely difficult. Top-tier gear is required.]</font>\n<font \
+    color='#FFD400'>[A 6-member party is recommended for this dungeon.]</font>"
+set key[id=23080003] uiDescription "<font color='#FFD400'>* Gear Score Tips</font>\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> gear Limit Break Lv. \
+    30\n<font color='#00aaef'>Top, Bottoms</font> : Lv. 70 <font color='#ff8c37'>Epic</font> grade Enchant Lv. \
+    15\n<font color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> \
+    gear Enchant Lv. 15\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : Lv. 70 <font \
+    color='#ffd533'>Legendary</font> grade\n\nThe mischievous Black Bean and Pink Bean, summoned from another \
+    world, have summoned the adventurers to their playground. Defeat Black Bean and Pink Bean and escape the \
+    playground of the other world.\n\n\\n<font color='#00aaef'>You must equip the standard weapon type for your \
+    job to enter.</font>\n<font color='#00aaef'>Safe revivals are limited in this challenge.</font>\n\\n<font \
+    color='#FFD400'>[A 4-member party is recommended for this dungeon.]</font>"
+set key[id=23081003] uiDescription "<font color='#FFD400'>* Gear Score Tips</font>\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> gear Limit Break Lv. \
+    60\n<font color='#00aaef'>Top, Bottoms</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> gear \
+    Enchant Lv. 15\n<font color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 70 <font color='#ff8c37'>Epic Fire \
+    Prism</font> gear Enchant Lv. 15\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : Lv. 70 \
+    <font color='#ffd533'>Legendary</font> grade\n\nThe mischievous Black Bean and Pink Bean, summoned from \
+    another world, have summoned the adventurers to their playground. Defeat Black Bean and Pink Bean and escape \
+    the playground of the other world.\n\n\\n<font color='#00aaef'>You must equip the standard weapon type for \
+    your job to enter.</font>\n<font color='#00aaef'>Safe revivals are limited in this challenge.</font>\n\\n<font \
+    color='#FFD400'>[This dungeon is extremely difficult. Top-tier gear is required.]</font>\n<font \
+    color='#FFD400'>[A 6-member party is recommended for this dungeon.]</font>"
+set key[id=23100001] uiDescription "<font color='#FFD400'>* Gear Score Tips</font>\\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> gear Limit Break Lv. \
+    80\\n<font color='#00aaef'>Top, Bottoms</font> : Lv. 71 <font color='#c888ff'>Excellent Crystal Shined</font> \
+    gear Enchant Lv. 15\\n<font color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 71 <font \
+    color='#c888ff'>Excellent Crystal Shined</font> gear Enchant Lv. 15\\n<font color='#00aaef'>Earrings, Cape, \
+    Necklace, Ring, Belt</font> : Lv. 70 <font color='#ffd533'>Legendary</font> grade\\n\\nDeep in the Cave of \
+    Eternity, in an area once called the Fortress of Souls, a suspicious space has been found. Wrapped in blue \
+    flames and radiating great power, only a giant golem remains here. What on earth happened? First, let us calm \
+    the golem that has gone on a rampage.\\n\\n<font color='#00aaef'>You must equip the standard weapon type for \
+    your job to enter.</font>\\n<font color='#00aaef'>Safe revivals are limited in this challenge.</font>\\n<font \
+    color='#FFD400'>[This dungeon is extremely difficult. Top-tier gear is required.]</font>\\n<font \
+    color='#FFD400'>[A 6-member party is recommended for this dungeon.]</font>"
+set key[id=23101001] uiDescription "<font color='#FFD400'>* Gear Score Tips</font>\\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> gear Limit Break Lv. \
+    90\\n<font color='#00aaef'>Top, Bottoms</font> : Lv. 71 <font color='#c888ff'>Excellent Crystal Shined</font> \
+    gear Enchant Lv. 15\\n<font color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 71 <font \
+    color='#c888ff'>Excellent Crystal Shined</font> gear Enchant Lv. 15\\n<font color='#00aaef'>Earrings, Cape, \
+    Necklace, Ring, Belt</font> : Lv. 70 <font color='#ff8c37'>Epic</font> grade\\n\\nDeep in the Cave of \
+    Eternity, in an area once called the Fortress of Souls, a suspicious space has been found. Wrapped in blue \
+    flames and radiating great power, only a giant golem remains here. What on earth happened? First, let us calm \
+    the golem that has gone on a rampage.\\n\\n<font color='#00aaef'>You must equip the standard weapon type for \
+    your job to enter.</font>\\n<font color='#00aaef'>Safe revivals are limited in this challenge.</font>\\n<font \
+    color='#FFD400'>[This dungeon is extremely difficult. Top-tier gear is required.]</font>\\n<font \
+    color='#FFD400'>[A 6-member party is recommended for this dungeon.]</font>"
+set key[id=23110001] uiDescription "<font color='#FFD400'>* Gear Score Tips</font>\n<font \
+    color='#00aaef'>Weapon</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> gear Limit Break Lv. \
+    50\n<font color='#00aaef'>Top, Bottoms</font> : Lv. 70 <font color='#ff8c37'>Epic Fire Prism</font> gear \
+    Enchant Lv. 15\n<font color='#00aaef'>Headgear, Gloves, Shoes</font> : Lv. 71 <font color='#c888ff'>Excellent \
+    Crystal Shined</font> gear Enchant Lv. 10\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : \
+    Lv. 70 <font color='#ffd533'>Legendary</font> grade\\n\\n$npcName:23000084$ is the deceitful director of a \
+    humanoid engineering project! His dangerous research is nearing its final stage, culminating in the birth of a \
+    new army to rival the Penumbran Host! Who will defeat $npcName:23000084$ and stop his research once and for \
+    all?\n\n<font color='#00aaef'>- Safe revivals are limited in this challenge.</font>\n<font color='#FFD400'>- A \
+    6-member party is recommended for this dungeon.</font>"
+set key[id=29007001] name "[Event] Katramus Lower Level"
+set key[id=29007001] uiDescription "<font color='#FFD400'>* Gear Score Tips</font>\n<font color='#00aaef'>Weapon, \
+    Headgear, Top, Bottoms, Gloves, Shoes</font> : Lv. 60 <font color='#c888ff'>Excellent</font> grade Elite \
+    Adventure gear Enchant Lv. 10\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : Lv. 50 \
+    <font color='#c888ff'>Excellent</font> grade Absolute Accessories\n\\nKnown as the <font color='#00aaef'>Tower \
+    of Slaves</font>, this is where residents kidnapped from the Maple World are enslaved to strengthen the forces \
+    of darkness!! They say the Lumina Liberation Army has a secret operation under way to rescue the residents \
+    held here as slaves and bring Katramus down...  \n\\n<font color='#00aaef'>Reward counts are shared with the \
+    $dungeonTitle:29007002$ dungeon.</font>\n\\n<font color='#FFD400'>[A 4-member party is recommended for this \
+    dungeon.]</font>"
+set key[id=29007002] name "[Event] Katramus Upper Level"
+set key[id=29007002] uiDescription "<font color='#FFD400'>* Gear Score Tips</font>\n<font color='#00aaef'>Weapon, \
+    Headgear, Top, Bottoms, Gloves, Shoes</font> : Lv. 70 <font color='#c888ff'>Excellent</font> grade Elite \
+    Adventure gear Enchant Lv. 10\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : Lv. 60 \
+    <font color='#c888ff'>Excellent</font> grade Wandering Adventurer's Legacy Accessories\n\\nKnown as the <font \
+    color='#00aaef'>Tower of Slaves</font>, this is where residents kidnapped from the Maple World are enslaved to \
+    strengthen the forces of darkness!! They say the Lumina Liberation Army has a secret operation under way to \
+    rescue the residents held here as slaves and bring Katramus down...  \n\\n<font color='#FFD400'>[Adventurer \
+    stats are boosted above monsters here.]</font>\n<font color='#FFD400'>[A 4-member party is recommended for \
+    this dungeon.]</font>"
+set key[id=29071001] uiDescription "<font color='#FFD400'>* Gear Score Tips</font>\n<font color='#00aaef'>Weapon, \
+    Headgear, Top, Bottoms, Gloves, Shoes</font> : Lv. 70 <font color='#c888ff'>Excellent</font> grade Elite \
+    Adventure gear Enchant Lv. 10\n<font color='#00aaef'>Earrings, Cape, Necklace, Ring, Belt</font> : Lv. 70 \
+    <font color='#ffd533'>Legendary</font> grade\n\\nAn unidentified underground temple, found in the Shadow World \
+    through the adventurers' endless exploration.\nThe screams of bound souls and unknown cries echo up from the \
+    depths.\nAt the entrance, an unknown figure in a black hood tells you of the absolute power of the ancient \
+    spring at the temple's deepest point.\nWhile the adventurers listen intently to the Black Hood's tale, the \
+    floor collapses and they plunge to the first floor...\nHaving faced the horror of the abyss, the adventurers \
+    are drawn deeper by an unknown force sealed at its edge...\n\\n<font color='#FFD400'>[Adventurer stats are \
+    greatly boosted above monsters here.]</font>\n\\n<font color='#FFD400'>[A 4-member party is recommended for \
+    this dungeon.]</font>"
+file Xml/string/kr/stringguide.xml kms:Xml/string/kr/stringguide.xml b677094c764c4d00
+set key[id=26300739] name "Defeat the <font color=\"#00a2ed\">$npcName:27000115$</font> guarding \
+    $npcName:11004827$!"
+set key[id=26300740] name "The door is open. Pick up $item:30001506$ at the exit, then head to the \
+    [[icon:portal]]<font color=\"#00a2ed\">portal</font>."
+set key[id=28400131] name "Waiting for both people getting married to enter."
+set key[id=28400132] name "The wedding hall rental time is over. Closing the hall."
+set key[id=28400133] name "The groom/bride can talk to the officiant to start the wedding."
+set key[id=28400134] name "The wedding begins right now."
+set key[id=28400135] name "Everyone, feel free to enjoy photos and the after-party."
+set key[id=28400136] name "To end the wedding, the groom/bride should talk to the officiant."
+set key[id=28400137] name "The wedding hall will close shortly. Everyone, please leave."
+set key[id=28400138] name "The photo studio will close shortly. Everyone, please leave."
+set key[id=28400140] name "The wedding has to be redone because of an unknown error."
+set key[id=28400703] name "[[icon:dance_light]] Dance away and open your <font color=\"#00a2ed\">Wedding Candy \
+    Box</font>!"
+set key[id=28500001] name "Starting shortly."
+set key[id=28500002] name "Please wait a moment until the other guests arrive."
+set key[id=28500010] name "Steal some party food and open your <font color=\"#00a2ed\">Wedding Candy Box</font>!"
+set key[id=29200007] name "<font color=\"#00a2ed\">Hang onto the car!</font>"
+set key[id=29200008] name "Your ally has been absorbed, so <font color=\"#00a2ed\">use the Black Bean Face \
+    Cushion!</font>"
+file Xml/string/kr/stringinteractobjectaction.xml kms:Xml/string/kr/stringinteractobjectaction.xml 5a2d653eda0d53df
+set key[id=10001437] name "Dance"
+set key[id=10001438] name "Dance"
+set key[id=10001439] name "Dance"
+set key[id=10001440] name "Dance"
+set key[id=10001441] name "Dance"
+set key[id=10001442] name "Steal Party Food"
+set key[id=10001443] name "Steal Party Food"
+set key[id=10001444] name "Steal Party Food"
+set key[id=10001445] name "Steal Party Food"
+set key[id=10001446] name "Steal Party Food"
+set key[id=10001447] name "Investigate Dark Matter"
+set key[id=10001448] name "Break Prison Door"
+set key[id=10001449] name "Pick Baron's Prison Lock"
+set key[id=10001450] name "Take Prison Key from Vase"
+set key[id=10001451] name "Find Kilian's Scorpion"
+set key[id=10001452] name "Move Armor Statue"
+set key[id=10001453] name "Put Out Fire"
+set key[id=10001454] name "Put Out Fire"
+set key[id=10001455] name "Put Out Fire"
+set key[id=10001456] name "Put Out Fire"
+set key[id=10003132] name "Investigate Data"
+set key[id=10003133] name "Investigate Data"
+set key[id=10003134] name "Investigate Data"
+set key[id=10003135] name "Investigate Data"
+set key[id=10003136] name "Move Chair"
+set key[id=10003137] name "Move Flowerpot"
+set key[id=10003144] name "Try Security Code"
+set key[id=10003145] name "Try Security Code"
+set key[id=10003146] name "Try Security Code"
+set key[id=10003147] name "Move Cabinet"
+set key[id=10003156] name "Cheshire's Secret Spot"
+set key[id=11000070] name "Investigate Sunshine Balloon"
+set key[id=11000095] name "Investigate Flower Balloon"
+set key[id=11000115] name "Open Treasure Chest"
+set key[id=11000116] name "Dig for Clams"
+set key[id=11000117] name "Steal Turtle Egg"
+set key[id=11000118] name "Get Golden Scroll"
+set key[id=11000124] name "Check Ongoing Wedding"
+set key[id=31000019] name "Roll It! Summer Marble!"
+file Xml/string/kr/stringmasteryreceipename.xml kms:Xml/string/kr/stringmasteryreceipename.xml 6fd191a1f8a983f1
+set key[id=70000040] name "Faintly Fierce Off-hand Weapon Box"
+set key[id=70000056] name "Unknown Transcendence Crystal (Lv. 71)"
+set key[id=70000062] name "Shining Unknown Transcendence Crystal (Lv. 71)"
+set key[id=70000063] name "Brilliant Unknown Transcendence Crystal (Lv. 71)"
+file Xml/string/kr/stringmasteryreceipenameplural.xml kms:Xml/string/kr/stringmasteryreceipenameplural.xml \
+    e45a22febde9d79c
+set key[id=70000040] name "Faintly Fierce Off-hand Weapon Boxes"
+set key[id=70000050] name "Lv. 1 Lumistone Gem Boxes"
+set key[id=70000056] name "Unknown Transcendence Crystals (Lv. 71)"
+set key[id=70000062] name "Shining Unknown Transcendence Crystals (Lv. 71)"
+set key[id=70000063] name "Brilliant Unknown Transcendence Crystals (Lv. 71)"
+set key[id=90000052] name "Shining Stones of Blessing"
+file Xml/string/kr/stringrideename.xml kms:Xml/string/kr/stringrideename.xml 8ad8399730b254b8
+set key[id=99910391] name "Arkeon Ver. 2"
+set key[id=99910392] name "Arkeon Ver. 3"
+set key[id=99910393] name "Arkeon Ver. 4"
+set key[id=99910394] name "Mass-Produced Arkeon"
+set key[id=99910395] name "Mass-Produced Arkeon"
+set key[id=99910401] name "Arkeon Booster"
+set key[id=99910402] name "Ereb"
+set key[id=99910403] name "Dark Lord"
+file Xml/string/kr/stringskilldescription.xml kms:Xml/string/kr/stringskilldescription.xml 4368cceac90cbb3e
+set key[id=10200230] name "Grants a passive that tracks the stacks of Whirlwind empowered by the Lord of \
+    Darkness."
+set key[id=10400243] name "Attune to the light within the world and awaken as the Judge of Life.\\nINT permanently \
+    increases by 40.\n\n<font color='#ffd400'>[Details]</font>\nHoly damage +{0}% and Critical damage +{1}% for 15 \
+    sec.\n\n"
+set key[id=90000949] name "A blessing firework to celebrate the wedding. Use it as much as you like during the \
+    after-party."
+set key[id=90000950] name "A pink petal firework to celebrate the wedding. Use it as much as you like during the \
+    after-party."
+set key[id=90000951] name "A heart firework to celebrate the wedding. Use it as much as you like during the \
+    after-party."
+set key[id=90000952] name "A sparkle firework to celebrate the wedding. Use it as much as you like during the \
+    after-party."
+set key[id=90001166] name "Throw a rainbow snail to defeat evil spirits."
+set key[id=90001179] name "Throw a rainbow snail to defeat evil spirits."
+set key[id=90001181] name "Throw a rainbow snail to defeat evil spirits."
+set key[id=90200096] name "Blow out the candles on the celebration cake."
+set key[id=90200146] name "Focus your mind and meditate."
+set key[id=90200147] name "Sit on a soft, squishy Black Bean."
+set key[id=90200148] name "Do a flapping dance."
+set key[id=90200158] name "Swim on bare ground."
+set key[id=90200159] name "Catch fish with a net."
+set key[id=90200160] name "Dance while jabbing a finger at the sky."
+set key[id=90200161] name "Lie down on your side."
+set key[id=90200164] name "Do a twisting, jabbing dance up and down."
+set key[id=90200165] name "Dance passionately with special hand moves."
+set key[id=90200166] name "Dance to a swaying rhythm like a pendulum."
+set key[id=90200167] name "Dance to a swaying rhythm like a pendulum."
+set key[id=90200168] name "Apologize with deep, repeated bows."
+set key[id=90200169] name "Rub your hands together and beg."
+set key[id=90200170] name "You built an igloo, but it collapses. Something seems off."
+set key[id=90200171] name "Stare blankly at the glow of a campfire."
+set key[id=90200172] name "Rub the lamp and a genie appears."
+set key[id=90200173] name "Rub the lamp and a sheep suddenly appears."
+set key[id=90200174] name "Sit and cry your heart out."
+set key[id=90200175] name "Dance excitedly with a pop-pop beat."
+set key[id=90200176] name "You have subdued the Blue Rook."
+set key[id=90200177] name "Play hopscotch."
+set key[id=90200178] name "Happily kick a jegi."
+set key[id=90200179] name "Spin a top."
+set key[id=90200181] name "Do a hopping dance."
+set key[id=90200182] name "Look around with a magnifying glass."
+set key[id=90200183] name "Camping Mood: feel lonely."
+set key[id=90200184] name "Camping Mood: feel cozy."
+set key[id=90200185] name "Do a figure skating jump."
+set key[id=90200186] name "Pose as if about to take flight."
+set key[id=90200187] name "Act out making a pizza."
+set key[id=90200188] name "Act out making a hamburger."
+set key[id=90200189] name "Do a toddling dance."
+set key[id=90220032] name "Do the We Got Married action with your spouse.\\n<font color='#7A7A7A'>Some moves may \
+    differ depending on the other character's gender.</font>"
+set key[id=90220036] name "Do the Travel Carrier action with your partner.\\n<font color='#7A7A7A'>Some moves may \
+    differ depending on the other character's gender.</font>"
+set key[id=90220037] name "Do the Barbecue for Two action with your partner.\\n<font color='#7A7A7A'>Some moves \
+    may differ depending on the other character's gender.</font>"
+set key[id=99910221] name "Gather all your strength, leap, roll once, and slam down on the target spot!"
+set key[id=99910224] name "Gather all your strength, leap, roll once, and slam down on the target spot!"
+file Xml/string/kr/titlename.xml kms:Xml/string/kr/titlename.xml 1714c546e1d2948c
+set key[id=10000475] name "Maple Newbie, Age 3"
+set key[id=10000476] name "Together for 3 Years"
+set key[id=10000477] name "Artist Who Lit Up Year 3"
+set key[id=10000501] name "Letter Collector"
+set key[id=10000502] name "Ahtt"
+set key[id=10000510] name "Messenger of Love"
+set key[id=10000544] name "Dazzlingly Sparkling"
+set key[id=10000545] name "Born to Eat"
+set key[id=10000546] name "On a Diet"
+set key[id=10000547] name "Sculpted"
+set key[id=10000548] name "Knows How to Have Fun"
+set key[id=10000549] name "Gloomy"
+set key[id=10000550] name "Cuddly as a Bear"
+set key[id=10000551] name "Cats Are the Best!"
+set key[id=10000552] name "Perfect"
+set key[id=10000553] name "Seven Rainbows"
+set key[id=10000554] name "Oddball"
+set key[id=10000555] name "Dance God, Dance King"
+set key[id=10000556] name "Cheerful"
+set key[id=10000557] name "Rich"
+set key[id=10000558] name "Of Victory"
+set key[id=10000559] name "Lonely"
+set key[id=10000560] name "Help Me!"
+set key[id=10000561] name "Excellent Clothes Hanger"
+set key[id=10000562] name "Fluffy"
+set key[id=10000563] name "Sickly"
+set key[id=10000642] name "Security Conscious"
+set key[id=10000689] name "New Continent Traveler"
+set key[id=10000732] name "Legit"
+set key[id=10000786] name "Artificial Intelligence"
+set key[id=10000824] name "Ten-Try"
+set key[id=10000831] name "Sweet Hunter"
+set key[id=10000838] name "Of Boundless Power"
+set key[id=10000844] name "Line Crosser"
+set key[id=10000862] name "Dong-Dodo-Dong"
+set key[id=10000863] name "Marimbist"
+set key[id=10000864] name "Clear and Bright"
+set key[id=10000865] name "Flutist"
+set key[id=10000866] name "Whisper of the Doll"
+set key[id=10000868] name "Chaser of the Doll"
+set key[id=10000875] name "Hotter Than Blue Flame"
+set key[id=10000876] name "Blue Furnace"
+set key[id=10000877] name "Blue Rook Expert"
+set key[id=10000878] name "Shaved Ice Fanatic"
+set key[id=10000879] name "Promised Victor"
+set key[id=10000880] name "Heart Piercer"
+set key[id=10000881] name "Loves a Showdown"
