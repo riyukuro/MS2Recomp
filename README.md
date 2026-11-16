@@ -126,7 +126,7 @@ tables from the client packs are copied by id from your copies, and the only tex
   the server can send (housing, wedding, dungeon rank rewards, first login, returning player, world raid,
   nurturing; the other dated event mails stay as they are), and the goal and done texts
   of 184 KR-only trophies, the 184 field and dungeon messages (stringtrigger) and 999 NPC dialogue rows
-  (scriptnpc, locale KR or none) still in Korean.
+  (scriptnpc, locale KR or none) still in Korean, and 164 NPC names whose NPC the client data uses.
   Quest dialogue (scriptquest) of the quests a player can get is in our own English: all 13,330 such rows of locale
   KR (or none), in the feature groups Event, SoulBinder, Striker, KarkarIsland, Season1, DoubleImpactStory,
   EpicApocalypse, Kritias_2018_12, FameContents, UnlimitedEnchant, ContentsGuide, ShadowExpedition, ItemMergeLV70_2,
@@ -143,8 +143,8 @@ tables from the client packs are copied by id from your copies, and the only tex
   skip 176 rows (`keep`) whose English row belongs to another item: the global client gave some ids KMS2 uses
   to other items (KMS2's Dark Neon Weapon Box is a global royale experience tonic). `string-names.m2dpatch` gives
   the ones players see our own English names and descriptions, and their plurals are formed from the item's
-  English name (`plural-of`), as are those of every
-  plural row still in Korean whose item has an English name.
+  English name (`plural-of`), as are those of every plural row still in Korean whose item has an English name;
+  the NPC plural table does the same from the NPC names.
   Apply them after `string-names.m2dpatch`.
 - `emote-commands.m2dpatch`: typed emote commands (`/bow`, `/greet`). The Korean emote table has Korean
   keywords for 41 emotes, so their English commands were not recognised; each emote keeps its keywords and adds

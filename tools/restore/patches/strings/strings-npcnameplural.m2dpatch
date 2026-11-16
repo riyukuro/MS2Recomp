@@ -5,3 +5,6 @@ made-for KMS2 KR Live client Data/Xml.m2d
 file Xml/string/kr/npcnameplural.xml kms:Xml/string/kr/npcnameplural.xml 163cbe620e0ff2a4
 need kms:Xml/string/en/npcnameplural.xml 33e8104083b91eaa
 copy-text key id name kms:Xml/string/en/npcnameplural.xml
+# Rows still in Korean get the English plural of the NPC's English name in the name table (rows whose NPC has no
+# English name stay as they are).
+plural-of key id Xml/string/kr/npcname.xml *
