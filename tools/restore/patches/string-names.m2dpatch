@@ -583,3 +583,36 @@ row mail[id=190214001] <mail id="190214001" sender="MapleStory 2 Team" subject="
     9th game,&#10;and adventurers who keep playing even get a chance at $item:40400080$!&#10;&#10;Enjoy the games, \
     and be sure to collect your gifts!&#10;&#10;* $item:20302404$ can be used until the maintenance on Thursday, \
     March 14, 2019. Be sure to use it before then.&#10;&#10;Thank you." />
+# Epic quest 10003043, which no pack has in English either (only placeholder keys): our own English for its
+# journal name, description and objective (its completion text is already English) and its dialogue lines, under
+# the same rules as the two epic quests above.
+file Xml/string/kr/questdescription_final.xml kms:Xml/string/kr/questdescription_final.xml 157fd88e98c59ac6
+set quest[questID=10003043] name "Unbreakable Will"
+set quest[questID=10003043] desc "With a worried look, $npcName:11000779$ tells you about a secret passage that \
+    leads straight into $map:52000047$. Look for the door to the secret passage near the entrance to $map:02000156$ \
+    in $map:02000138$!"
+set quest[questID=10003043] manual "Take the secret passage near the $map:02000156$ entrance in $map:02000138$ and \
+    find your way into $map:52000047$"
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=728172802005674] name "Right now $npcName:11000251[gender:0]$ has the gang out in every direction looking \
+    for you. Rest here, and as soon as you've recovered, you'd better move somewhere safer."
+set key[id=816135802005763] name "Say you can't leave until you've saved the people of the back alleys."
+set key[id=816135802005764] name "$MyPCName$! Have you lost your mind? Do you still not see the situation you're in? \
+    You've already nearly died twice. And you're still going on about those back-alley people?"
+set key[id=816135802005765] name "Promise you won't die before you've saved the back-alley people."
+set key[id=816135802005766] name "You really... Phew... Do you even have a plan?"
+set key[id=816135802005767] name "Say you'll face $npcName:11000251[gender:0]$ and break through head-on."
+set key[id=816135802005768] name "Honestly... you're hopeless, and reckless... Charge in without thinking like that, \
+    and you'll meet the Grim Reaper before you ever meet $npcName:11000251[gender:0]$. Even the great <font \
+    color=\"#ffd200\">Gray Wolf</font> can't take on a swarm of gang members alone. Especially in your state... \
+    Phew..."
+set key[id=816135802005769] name "If you really must go, you remember the $map:02000156$ entrance, right? Look \
+    carefully around it and you'll find a door to an underground secret passage. It leads straight into <font \
+    color=\"#ffd200\">$map:63000016$</font>, which connects to $map:63000015$, so at least you'll get to see <font \
+    color=\"#ffd200\">$npcName:11000251[gender:0]$</font> face to face."
+set key[id=728172802005675] name "If you really must go, you remember the $map:02000156$ entrance, right? Look \
+    carefully around it and you'll find a door to an underground secret passage. It leads straight into <font \
+    color=\"#ffd200\">$map:63000016$</font>, which connects to $map:63000015$, so at least you'll get to see <font \
+    color=\"#ffd200\">$npcName:11000251[gender:0]$</font> face to face."
+set key[id=728172802005676] name "Heh heh... So you've walked right into your own grave. Well... with your temper, I \
+    figured you wouldn't keep running forever. Heh heh heh..."

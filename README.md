@@ -113,7 +113,7 @@ tables from the client packs are copied by id from your copies, and the only tex
   at most 7 characters in a rank name and refuses a rights change on a rank whose name is longer. 24 KR-only event
   system mails (the elite weapon support level packages, the bingo play-time gifts, the Race Against Time start
   mails and the rock-paper-scissors login gifts), which no pack has in English, get our own English subject and
-  text, with the same item links. So do two KR-only epic quests (journal
+  text, with the same item links. So do three KR-only epic quests (journal
   texts and dialogue), one title and one potion (name, plural and tooltip) that no pack has in English.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
