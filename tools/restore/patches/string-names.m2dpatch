@@ -25503,3 +25503,45 @@ set key[id=714004211003258] name "Collect $item:90000018$ and learn the expediti
     that power even stronger."
 set key[id=714004211003259] name "Now only the real thing is left, $MyPCName$.\nUnder the name of the Shadow \
     Expedition, show us <font color=\"#ffd200\">your abilities</font>! "
+
+# Quest dialogue of the ItemMergeLV70_2 quests that no pack has in English (feature ItemMergeLV70_2): our own
+# English for the 18 scriptquest rows of locale KR (or no locale) whose quest a player can get (2 quests), with each
+# row's own format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=1230215803002200] name "Hey, $MyPCName$! Heard the news?\n$npcName:11003416[gender:0]$ found a material \
+    for making stronger gear and is looking for adventurers, but I'm busy, so if you're curious, go ask him \
+    yourself!"
+set key[id=1230215803002201] name "(Ask why he told me.)"
+set key[id=1230215803002202] name "W-well... it's because... you looked like you might be interested...\nIf you're \
+    not, forget it!"
+set key[id=1230215803002203] name "What? You still haven't gone?"
+set key[id=1230215803002204] name "Welcome! Did you hear about the newly discovered Meradium ore?\nI succeeded in \
+    drawing out even stronger transcendence power with this ore."
+set key[id=1230215803002205] name "I found out that if you use Meradium ore as a material when making a \
+    transcendence crystal, \nyou can get a transcendence crystal with more power than before."
+set key[id=1230215803002206] name "And it's not like you need a new method. It's the same as before, \nyou just \
+    add this Meradium ore."
+set key[id=1230215803002207] name "So can I get stronger transcendence crystals easily now?"
+set key[id=1230215803002208] name "Unfortunately, not yet. Meradium ore itself is a bit hard to come by.\nBut I \
+    found out that you can gather fragments of the ore instead and use them as materials \nto get the same \
+    effect."
+set key[id=1230215803002209] name "Where do I get Meradium ore fragments?"
+set key[id=1230215803002210] name "I hear $item:20001881$ is sometimes found on the 4th floor of the Abandoned \
+    Mine.\nThere aren't many, but just finding some is quite a haul."
+set key[id=1230215803002211] name "You need a special key to go to the 4th floor of the Abandoned Mine, \nand I \
+    left $item:30001025$ with $npcName:11000327[gender:1]$ last time, so pick it up and have it appraised.\nI \
+    already told $npcName:11000327[gender:1]$, so just say I sent you and they'll know right away."
+set key[id=1230215803002212] name "$npcName:11000327[gender:1]$ is right next to $map:52000117$, so you'll find \
+    them easily.\nIf we gather more of the Meradium ore's power, I think we could draw out even more, \nbut I'll \
+    need to research it more."
+set key[id=1230215803002213] name "Did you hear the rumors too, $MyPCName$?\nOh, you heard from \
+    $npcName:11003416[gender:0]$, I see."
+set key[id=1230215803002214] name "(Ask about the 4th floor of the Abandoned Mine and $item:20001881$.)"
+set key[id=1230215803002215] name "That's right. Where Meradium ore is mined still isn't properly known,\nbut I \
+    hear $item:20001881$ can sometimes be obtained in $map:80000015$.\nThanks to that, suddenly a lot more people \
+    are getting keys appraised."
+set key[id=1230215803002216] name "Just as $npcName:11003416[gender:0]$ said, you can collect $item:20001881$ even \
+    without the ore,\nso lots of people are flocking there.\nAnd even if you don't use the fragments, you can sell \
+    them to others.\nIf you're interested, $MyPCName$, give it a try."
+set key[id=1230215803002217] name "Oh, and here's the key $npcName:11003416[gender:0]$ left with me.\nTell me if \
+    you want to have the key appraised right away."
