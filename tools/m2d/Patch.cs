@@ -58,14 +58,15 @@ using Maple2.File.IO;
 //                                         have yet (chat command keywords: Korean and English both work)
 //
 // A selector is steps joined by '/': tag[attr=value][attr=value]. The first step matches at any depth, the
-// others match children. A step without a predicate matches every element of that tag. Values are plain text,
-// quoted with "..." (\" and \\ escapes, \n and \r for line-break characters); an <element> is written as XML.
+// others match children. A step without a predicate matches every element of that tag; [attr=] matches an element
+// without that attribute or with it empty. Values are plain text, quoted with "..." (\" and \\ escapes, \n and \r
+// for line-break characters); an <element> is written as XML.
 static class Patch {
     sealed class Step {
         public string Tag;
         public List<(string, string)> Preds = new();
         public bool Match(XElement e) =>
-            e.Name.LocalName == Tag && Preds.All(p => (string)e.Attribute(p.Item1) == p.Item2);
+            e.Name.LocalName == Tag && Preds.All(p => ((string)e.Attribute(p.Item1) ?? "") == p.Item2);
         public override string ToString() => Tag + string.Concat(Preds.Select(p => $"[{p.Item1}={p.Item2}]"));
     }
 

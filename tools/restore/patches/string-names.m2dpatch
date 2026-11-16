@@ -54524,3 +54524,305 @@ set key[id=10000878] name "Shaved Ice Fanatic"
 set key[id=10000879] name "Promised Victor"
 set key[id=10000880] name "Heart Piercer"
 set key[id=10000881] name "Loves a Showdown"
+
+# UI messages still in Korean after the pack's English tables are applied, whose id the client code uses (by name,
+# or by a prefix it completes with a number): our own English, with the rows' own format fields, tags and line
+# breaks. An id that also has a row of another locale is keyed by an empty locale.
+file Xml/string/kr/stringcommon.xml kms:Xml/string/kr/stringcommon.xml 1caa91b5294d03ed
+set key[id=s_action_banner_couple_dance] value "Join a Couple Dance"
+set key[id=s_action_questUserFind_80000422] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000423] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000424] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000425] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000426] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000427] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000428] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000429] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000430] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000431] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000432] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000433] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000434] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000435] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000436] value "Friend of the Day - {0}"
+set key[id=s_action_questUserFind_80000437] value "Friend of the Day - {0}"
+set key[id=s_admin_block_cash_out] value "Suspicious activity was detected, so gifting and item trading have been \
+    restricted.\\nThis is a temporary restriction to protect your Nexon ID (game ID).\\nYou can use gifting and \
+    item trading normally again after {0}."
+set key[id=s_admin_block_transfer_msgbox_content_kr] value "A 'trade restriction' has been applied to protect your \
+    account\\nfrom account theft and similar damage.\\n\\nYou can trade normally after identity verification.\\nIf \
+    verification is difficult, please contact Customer Support.\\nVerify your identity now?"
+set key[id=s_admin_block_transfer_msgbox_title_kr] value "Trade Restriction Notice"
+set key[id=s_beauty_msg_by_expired_codi] value "Your Fashion Tab time has expired."
+set key[id=s_beauty_msg_error_product_expired] value "The items for sale have changed.\\nPlease try again."
+set key[id=s_beauty_msg_exit_by_expired_codi] value "Your Fashion Tab time has expired, so editing will end."
+set key[id=s_beauty_msg_restart_by_expired_codi] value "Your Fashion Tab time has expired, so it will restart."
+set key[id=s_beauty_msg_wait_by_expired_codi] value "Please try again in a moment."
+set key[id=s_cashAttend_day_index] desc "Reward Day"
+set key[id=s_cashshop_gift_comfirm] value "Send a gift to <FONT color='#FFD200'>{0}</FONT>?"
+set key[id=s_char_info_changetab_not_active_codi_tab] value "The Fashion Item tab is not active."
+set key[id=s_char_info_codi_tab_expired] value "Time expired"
+set key[id=s_char_info_codi_tab_period_fmt] value "Time remaining: {0}"
+set key[id=s_delete_account_cancel_login_fail] value "Canceling the account closing failed because of an error."
+set key[id=s_delete_account_check_certid_fail_invalid_platformsn] value "Account closing request failed.\\nThe \
+    information to verify is not valid."
+set key[id=s_delete_account_check_certid_fail_invalid_skey] value "Account closing request failed.\\nThe session \
+    key is not valid."
+set key[id=s_delete_account_check_session_key_fail] value "Account closing request failed.\\nUnable to look up \
+    user information."
+set key[id=s_delete_account_check_user_cert_id_query_fail] value "Account closing request failed.\\nThe identity \
+    verification request failed. "
+set key[id=s_delete_account_check_user_cert_id_verify_fail] value "Account closing request failed.\\nThe identity \
+    verification result is not valid."
+set key[id=s_delete_account_result_check_fail_err_characterpending] value "Account closing request failed.\\n<FONT \
+    color='#FF5F5F'>{0}</FONT> is currently being deleted."
+set key[id=s_delete_account_result_check_fail_err_db_blcakmarket] value "Account closing request failed.\\n<FONT \
+    color='#FF5F5F'>{0}</FONT> has items registered on the Black Market."
+set key[id=s_delete_account_result_check_fail_err_db_guild] value "Account closing request failed.\\n<FONT \
+    color='#FF5F5F'>{0}</FONT> has joined a guild."
+set key[id=s_delete_account_result_check_fail_err_db_mail] value "Account closing request failed.\\n<FONT \
+    color='#FF5F5F'>{0}</FONT> has unread mail."
+set key[id=s_delete_account_result_check_fail_err_db_mesomarket] value "Account closing request failed.\\n<FONT \
+    color='#FF5F5F'>{0}</FONT> has mesos registered on the Black Market."
+set key[id=s_delete_account_result_check_fail_err_db_norow] value "Account closing request failed.\\nThe account \
+    to delete is not valid."
+set key[id=s_delete_account_result_check_fail_err_db_ugcmarket] value "Account closing request failed.\\n<FONT \
+    color='#FF5F5F'>{0}</FONT> has items registered in the Designer Shop."
+set key[id=s_delete_account_result_check_fail_err_db_wedding] value "Account closing request failed.\\n<FONT \
+    color='#FF5F5F'>{0}</FONT> is engaged, married, or in divorce mediation."
+set key[id=s_delete_account_result_check_fail_err_select_character] value "Account closing request failed.\\n<FONT \
+    color='#FF5F5F'>{0}</FONT> is currently selected."
+set key[id=s_delete_account_result_unknown] value "Account closing request failed.\\nAn unknown error occurred."
+set key[id=s_delete_account_terms_step_1] value "Dear Maplers, we are sorry to see you leave. For the safety of \
+    your account and your property, please make sure the following conditions are met before your request takes \
+    effect. The game team may also check your situation and verify it:\\n1. The account is secure and in normal \
+    use: In the 2 weeks before your request, there were no sensitive operations such as enabling 2-step password \
+    protection or removing security settings, and the account has not been in violation.\\n2. Game earnings have \
+    been settled or properly handled: This includes, but is not limited to, Blue Mushroom currency, Red Mushroom \
+    currency, gold, items, and membership benefits. Anything left unhandled will be treated as voluntarily \
+    abandoned by you.\\n3. No unfinished account matters: This includes Blue Chip top-ups, purchases, and items \
+    used in the shop.\\n4. No account disputes: This includes reports, complaints, arbitration, lawsuits, and \
+    other disputes"
+set key[id=s_delete_account_terms_step_2] value "Dear users, before you begin the game account closing process, \
+    please read the Game Account Closing Agreement (the 'Agreement' below) carefully and agree to it. If you start \
+    the closing process by following our closing procedure, or select this agreement and click Next, you are \
+    considered to have agreed to and to comply with all of its contents. We would like to draw your special \
+    attention to the following:\\nAfter this game account is closed, except as otherwise provided by laws and \
+    regulations and this Agreement, the personal information of your game account will be deleted or anonymized. \
+    You will no longer be able to search for, visit, obtain, keep using, or recover it. Personal information \
+    includes, but is not limited to, the nickname, equipment, achievements, currency and other virtual items, \
+    posts, and items of each character under the account, and you have no right to ask for your personal \
+    information back."
+set key[id=s_delete_account_terms_step_3] value "To prevent mistakes, please confirm once more whether you want to \
+    close the account, and check the effects after closing it. These effects are not limited to the following (see \
+    the Game Account Closing Agreement):\\n1. Once this account is closed, you cannot log in or use it, and it \
+    cannot be recovered. Except as provided by laws and regulations or the game account closing agreement, the \
+    personal information in your game account will be deleted or anonymized, and you will not be able to find your \
+    personal information or claim it from us.\\n2. This account's earnings and rights, whether generated during \
+    your use of the game or possible in the future, will all be extinguished. Therefore, before closing this game \
+    account, please make sure your game earnings and rights have been properly handled. Otherwise, after the \
+    account is closed, we have the right to remove all earnings and rights of this account, and you are \
+    responsible for any resulting consequences. The game earnings and rights mentioned above are not limited to \
+    all virtual items, virtual currency, other virtual goods, and value-added services remaining in the account."
+set key[id=s_delete_account_terms_step_4] value "Dear users, to keep your account safe, please provide your real \
+    information to confirm the account closing. This information is used only for this confirmation."
+set key[id=s_delete_account_terms_step_4_label1] value "Name"
+set key[id=s_delete_account_terms_step_4_label2] value "ID Number"
+set key[id=s_delete_account_terms_step_end] value "Please note that this account has a 60-day lock period. Except \
+    as provided by laws and the closing agreement, after the lock period expires we will complete the closing, \
+    deletion, or anonymization and process your personal information. During this period, do not log in or use \
+    this account so that the closing goes smoothly. Otherwise the closing will be considered canceled."
+set key[id=s_delete_account_terms_step_end_game_button] value "Exit Game"
+set key[id=s_delete_account_terms_step_end_title] value "Your account closing request has been received."
+set key[id=s_dungeonRoom_findHelper_button_tooltip] value "<FONT color='#FFD200' size='15' >Request \
+    Help</FONT>\\n<FONT size='3'> </FONT>\\nYou can ask a veteran adventurer who knows this dungeon well for \
+    help.\\nClick the button to find a veteran adventurer to play with!\\n\\n<FONT color='#FFD200' size='15' \
+    >Novice Adventurer</FONT>\\n<FONT size='3'> </FONT>\\nYou are not yet familiar with this dungeon.\\nAfter \
+    clearing the dungeon enough times, you become a veteran adventurer.\\n<FONT color='#00AAEF'>- {0} or more \
+    times\\n"
+set key[id=s_err_shop_expired] value "The shop has expired."
+set key[id=s_err_wedding_chat_cannot_use_common] value "Special World Chat : You cannot use the wedding item."
+set key[id=s_err_wedding_chat_cannot_use_complete] value "Special World Chat : You cannot use a wedding item after \
+    the wedding has ended."
+set key[id=s_err_wedding_chat_cannot_use_no_reservation] value "Special World Chat : You cannot use a wedding item \
+    without a wedding reservation."
+set key[id=s_guild_ui_event_skill_upgrade_popup] value "Use <FONT color='#FFA200'>{0}</FONT><Img \
+    Src='export_common_icon_item_90000026' vspace='-4'></Img> to\\nupgrade the <FONT color='#FFA200'>{1}</FONT> \
+    skill to\\n<FONT color='#FFA200'>Lv. {2}</FONT>?"
+set key[id=s_guild_ui_skill_use_skill_event] value "<p align='center'>Use <FONT color='#FFA200'>{0}</FONT><Img \
+    Src='export_common_icon_item_90000026' vspace='-4'></Img> to activate the <FONT color='#FFA200'>{1}</FONT> \
+    skill?\\n\\n* Please check the guild funds and the buff type first.</p>"
+set key[id=s_html_chat_world] value "<P><Img Src='{0}' vspace='-7' width='18' height='16'></Img><a href={1}><FONT \
+    color='#{2:x}' size='{3}'>[World][{4}] </FONT></a>{5}<a href={6}><Img Src='{7}' vspace='-7' width='18' \
+    height='16'></Img></a><FONT color='#{8:x}' size='{9}'>{10}</FONT></P>"
+set key[id=s_item_err_Invalid_slot_codi] value "Only skin items can be equipped as Fashion Items."
+set key[id=s_item_err_codi_slot] value "Please take off the skin weapon equipped\\nin the Fashion Tab and try \
+    again."
+set key[id=s_itemsocketsystem_error_swap_lack_price] value "Not enough <FONT color='#FFD200'>{0}</FONT>."
+set key[id=s_itemsocketsystem_socket_swap_confirm] value "Moving all of them requires <FONT \
+    color='#FFD200'>{0}</FONT>. Move them?"
+set key[id=s_itemsocketsystem_socket_swap_confirm_free] value "Move the gemstones?"
+set key[id=s_itemsocketsystem_socket_swap_price] value "{0} x{1}"
+set key[id=s_longtermattendgift_dialog_desc][locale=] value "Unplaced Duckyball : If you log in after 00:00 each \
+    day, you receive one Duckyball.\\nOpen Slot : Regardless of whether you log in, one more slot for a Duckyball \
+    opens each day from the event start until it ends.\\nPlace Duckyball : Click the button to use up 1 unplaced \
+    Duckyball and 1 open slot, and receive a reward based on the number of Duckyballs placed.\\n\\n<FONT \
+    color='#FFD200' >If open slots remain after placing all your Duckyballs, you can fill them by spending \
+    </FONT><FONT color='#1E90FF' size='15' >250 Meret</FONT><FONT color='#FFD200' >.</FONT><"
+set key[id=s_longtermattendgift_dialog_err_msg_attendance_full] value "There are no open slots.\\nIf you still \
+    have attendance days left, try again tomorrow."
+set key[id=s_longtermattendgift_dialog_err_msg_empty_point] value "There are no open slots.\\nIf you still have \
+    attendance days left, try again tomorrow. "
+set key[id=s_longtermattendgift_dialog_invalid_event] value "This event cannot be run."
+set key[id=s_longtermattendgift_dialog_use_merat] value "Spend {0}<Img Src='export_common_icon_merat' \
+    vspace='-4'></Img> to fill an open slot.\\nContinue?"
+set key[id=s_microgame_couple_dance_accept_failed_peer_wrong_state] value "The other player cannot join a Couple \
+    Dance right now."
+set key[id=s_microgame_couple_dance_banner_failed_blocked_in_this_field] value "You cannot do this on the current \
+    map."
+set key[id=s_microgame_couple_dance_close] value "Cancel your Couple Dance ad?"
+set key[id=s_microgame_couple_dance_event_ask_close] value "<FONT color='#FF5f5f'>Closing the window cancels your \
+    Couple Dance ad.</font>\\nClose the window anyway?"
+set key[id=s_microgame_couple_dance_event_invalid_event] value "This event cannot be run."
+set key[id=s_microgame_couple_dance_failed] value "Couple Dance Failed"
+set key[id=s_microgame_couple_dance_open_banner_failed_action_key] value "You cannot post a Couple Dance ad here."
+set key[id=s_microgame_couple_dance_open_banner_failed_wrong_state] value "You cannot do this in your current \
+    state."
+set key[id=s_microgame_couple_dance_request_cancel] value "The other player canceled the Couple Dance request."
+set key[id=s_microgame_couple_dance_request_failed_blocked_in_this_field] value "You cannot do this on the current \
+    map."
+set key[id=s_microgame_couple_dance_request_failed_blocked_user] value "You have blocked this user. Unblock them \
+    and try again."
+set key[id=s_microgame_couple_dance_request_failed_peer_wrong_state] value "The other player cannot play the \
+    Couple Dance game right now."
+set key[id=s_microgame_couple_dance_request_failed_wrong_distance] value "You are too far away."
+set key[id=s_microgame_couple_dance_request_failed_wrong_position] value "You cannot do this at your current \
+    location."
+set key[id=s_microgame_couple_dance_request_failed_wrong_state] value "You cannot do this in your current state."
+set key[id=s_microgame_couple_dance_request_recv] value "{0} sent you a Couple Dance request."
+set key[id=s_microgame_couple_dance_response_accept] value "Let's dance together!"
+set key[id=s_microgame_couple_dance_response_decline] value "{0} does not want a Couple Dance."
+set key[id=s_microgame_couple_dance_response_failed_blocked_user] value "A blocked user sent you a Couple Dance \
+    request."
+set key[id=s_microgame_couple_dance_waiting] value "Sending a Couple Dance request to the other player."
+set key[id=s_minimap_tooltip_quest_target_80000422] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000423] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000424] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000425] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000426] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000427] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000428] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000429] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000430] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000431] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000432] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000433] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000434] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000435] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000436] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_minimap_tooltip_quest_target_80000437] value "<FONT color='#8aff00'>Friend of the Day</FONT>"
+set key[id=s_msg_item_active_codi_tab_add_period] value "Add {0} days?"
+set key[id=s_msg_item_active_codi_tab_already_limitless] value "The Fashion Tab is already active."
+set key[id=s_msg_item_active_codi_tab_already_period_use_limitless] value "You still have time left on your \
+    Fashion Items. Use anyway?"
+set key[id=s_msg_item_active_codi_tab_complete_limitless] value "You can now use Fashion Items without a time \
+    limit."
+set key[id=s_msg_item_active_codi_tab_complete_period] value "Fashion Item usage time was extended by {0} days."
+set key[id=s_msg_item_active_codi_tab_limitless] value "You can use Fashion Items without a time limit.\\nUse this \
+    item?"
+set key[id=s_msg_item_active_codi_tab_max] value "You cannot use it for more than {0} days."
+set key[id=s_msg_item_active_codi_tab_period] value "You can use Fashion Items for {0} days.\\nUse this item?"
+set key[id=s_msg_item_open_massive_open_wedding] value "<FONT color='#FFD200' size='18' >[Wedding \
+    After-Party]</FONT>\\n<FONT size='3'> </FONT>\\n<p align='left'>Use the {0} item.\\n<FONT color='#5CD1E5' \
+    >When used, a portal opens at your current location and your character automatically enters the map where the \
+    after-party is held.</FONT>\\n\\n - After-party map: <FONT color='#FFD200' size='18' >{0}</FONT>\\n - Max \
+    players: <FONT color='#FFD200' size='18' >{1}</FONT></FONT> \\n - Entry portal duration: <FONT color='#FFD200' \
+    size='18' >{2}</FONT>\\n<FONT size='3'> </FONT>\\n - Set password<FONT color='#C9C9C9' >(Anyone can enter if \
+    left blank)</FONT></p>"
+set key[id=s_msg_rclick_puton_equip_to_coditab] value "<FONT color='#FFFFFF'>You can <FONT \
+    color='#FFD200'>right-click</FONT><FONT color='#FFFFFF'> an item to equip it to the Fashion Tab.</FONT>"
+set key[id=s_msg_rclick_puton_equip_to_skintab] value "<FONT color='#FFFFFF'>You can <FONT \
+    color='#FFD200'>right-click</FONT><FONT color='#FFFFFF'> an item to equip it to the Skin Tab.</FONT>"
+set key[id=s_msg_rclick_puton_equip_to_skintab_with_key] value "<FONT color='#FFD200'>[{0}] key</FONT> + <FONT \
+    color='#FFFFFF'>mouse <FONT color='#FFD200'>right-click</FONT> equips it to the Skin Tab.</FONT>"
+set key[id=s_payback_dialog_period] value "Period: {0}/{1}/{2} ~ {3}/{4}/{5}"
+set key[id=s_payback_error_uiopen_end_time] value "The Payback event has ended."
+set key[id=s_personal_infomaion_agreement_title] value "Notice"
+set key[id=s_personal_infomaion_agreement_visit_myhome_btn_password] value "Enter Password"
+set key[id=s_personal_infomaion_agreement_visit_myhome_btn_private] value "Private"
+set key[id=s_personal_infomaion_agreement_visit_myhome_btn_public] value "Public"
+set key[id=s_personal_infomaion_agreement_visit_myhome_content] value "For a better game experience, please choose \
+    whether to agree to share your personal information.\\n(You can also change this on the game settings \
+    page.)\\nUser Info - My Home Info\\nYou can set it to be visible to everyone, some people, or no one."
+set key[id=s_personal_infomaion_agreement_visit_myhome_input_password] value "Enter the home access \
+    password.\\n(Only 6 digits are allowed.)"
+set key[id=s_quest_start_err_completed] value "You have already completed this quest."
+set key[id=s_quest_start_err_invalid] value "You cannot accept this quest."
+set key[id=s_quest_start_err_level] value "Your level is too low to use this."
+set key[id=s_quest_start_msg] value "{0}\\nRegister this quest.\\n\\nA registered quest cannot be turned back into \
+    an item.\\n\\nRegister it?"
+set key[id=s_quest_start_title] value "Quest Start Item"
+set key[id=s_tooltip_gamemenu_longtermattendgift] value "<FONT color='#FFD200' size='15' >Awakened Golden \
+    Duckyball {0}</FONT>\\n<FONT size='3'> </FONT>\\nCheck the Golden Duckyball menu for your account."
+set key[id=s_tooltip_gamemenu_payback] value "<FONT color='#FFD200' size='15' >Payback{0}</FONT>\\n<FONT size='3'> \
+    </FONT>\\nYou can get a Payback of part of the Meret\\nspent on Orange Mushroom's Power-Up Gacha."
+set key[id=s_tooltip_itemoption_unlimited] value "<font color='#ffd200'>Limit Break Lv. {0}\\n{1}</font>"
+set key[id=s_wedding_dialog_anniversary] value "Anniversary : {0}"
+set key[id=s_wedding_dialog_counter] value "Married for {0} days"
+set key[id=s_wedding_dialog_couple_message_confirm] value "You can edit the message many times, but the intimacy \
+    for writing a couple message can only be earned once. Edit it?"
+set key[id=s_wedding_dialog_couple_name] value "The Wedding of {0} and {1}"
+set key[id=s_wedding_dialog_exp_1] value "[+{0} pts] {1} days of marriage"
+set key[id=s_wedding_dialog_exp_10] value "[+{0} pts] Bride used a Blessing Charm"
+set key[id=s_wedding_dialog_exp_11] value "[+{0} pts] Groom completed a wedding mission"
+set key[id=s_wedding_dialog_exp_12] value "[+{0} pts] Bride completed a wedding mission"
+set key[id=s_wedding_dialog_exp_2] value "[+{0} pts] Groom wrote a couple message"
+set key[id=s_wedding_dialog_exp_3] value "[+{0} pts] Bride wrote a couple message"
+set key[id=s_wedding_dialog_exp_4] value "[+{0} pts] Groom logged in"
+set key[id=s_wedding_dialog_exp_5] value "[+{0} pts] Bride logged in"
+set key[id=s_wedding_dialog_exp_6] value "[{0} pts] Groom did not log in"
+set key[id=s_wedding_dialog_exp_7] value "[{0} pts] Bride did not log in"
+set key[id=s_wedding_dialog_exp_8] value "[+{0} pts] Wedding"
+set key[id=s_wedding_dialog_exp_9] value "[+{0} pts] Groom used a Blessing Charm"
+set key[id=s_wedding_divorce_warn] value "The marriage remains in effect until {0}, the divorce cooling-off \
+    period, and the divorce fee paid by {1}, who requested the divorce, will not be refunded.\\n\\nDuring the \
+    cooling-off period, you can agree on the divorce through a lawyer."
+set key[id=s_wedding_enter_nickname] value "Would you like to marry <FONT color='#FFD200'>{0} </FONT>?\\nTo marry, \
+    check <FONT color='#FFD200'>the agreement</FONT> below and enter <FONT color='#FFD200'>your partner's \
+    character name</FONT> to take your wedding vows.\\nWhen the marriage ceremony is complete, you two will be \
+    officially wed."
+set key[id=s_wedding_guest_tab_stranger] value "Enter Manually"
+set key[id=s_wedding_hall_reservation_cancel_no_refund_decline] value "{0} did not agree to cancel the wedding \
+    reservation. In this case, you will not receive a free reservation coupon for a wedding hall of the same \
+    grade. \\nCancel the wedding reservation anyway?"
+set key[id=s_wedding_hall_reservation_cancel_no_refund_not_find_partner] value "{0} is not on the same map, so \
+    consent to cancel the wedding reservation cannot be obtained. In this case, you will not receive a free \
+    reservation coupon for a wedding hall of the same grade.\\nCancel the wedding reservation anyway?"
+set key[id=s_wedding_hall_reservation_cancel_request] value "{0} wants to cancel the wedding reservation.\\nIf you \
+    agree to cancel, you will receive a free reservation coupon for a wedding hall of the same grade later.\\nDo \
+    you agree to cancel the reservation?"
+set key[id=s_wedding_hall_reservation_paclkage_err] value "There is no wedding hall available for a reservation \
+    change. Meet another wedding planner, or check the time you reserved the wedding again."
+set key[id=s_wedding_invitation_error_max_user] value "You have exceeded the number of people you can invite at \
+    once."
+set key[id=s_wedding_invitation_error_user] value "This character cannot receive a wedding invitation."
+set key[id=s_wedding_invitation_message] value "We invite you to our wedding. \\nPlease join us and make the day \
+    special."
+set key[id=s_wedding_invitation_ok] value "The wedding invitation has been sent."
+set key[id=s_wedding_invitation_send] value "Sending wedding invitations to {0} people. {1} mesos will be \
+    deducted."
+set key[id=s_wedding_visit_confirm] value "<P><FONT color='#FFA200' size='20' >[{0}-{1}]</FONT></P><P>Would you \
+    like to attend the wedding?</P>"
+set key[id=s_wedding_visit_failed_common] value "You cannot enter the wedding right now."
+set key[id=s_wedding_visit_failed_user_self_link] value "Special World Chat : You cannot enter your own wedding \
+    through the invitation link of a wedding item."
+set key[id=s_world_champion_clear_title] value "All Mushking levels defeated"
+set key[id=s_world_champion_msg_current_field] value "You are already at the Mushking's spawn location."
+set key[id=s_world_champion_msg_move_field] value "Move to [{0}]?"
+set key[id=s_world_champion_msg_next_season] value "The next season starts on {0}."
+set key[id=s_world_champion_msg_not_found_season] value "There is no World Raid in progress.\\nPlease wait for the \
+    next World Raid!"
+set key[id=s_world_champion_reward_title] value "Cumulative Mushking kill rewards up to Lv. {0}"
+set key[id=s_world_champion_season_info] value "<FONT color='#ffd200'>Current Season</FONT>: Season {0} ({1} ~ \
+    {2})"
+set key[id=s_world_champion_step_button] value "Lv. {0}"

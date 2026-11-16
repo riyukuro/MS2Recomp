@@ -129,7 +129,8 @@ tables from the client packs are copied by id from your copies, and the only tex
   of 184 KR-only trophies, the 184 field and dungeon messages (stringtrigger) and 999 NPC dialogue rows
   (scriptnpc, locale KR or none) still in Korean, and 164 NPC names, 109 skill names, 96 buff names and tooltips
   71 item names and 410 other rows (trophies, titles, gear sets, shop categories, dungeon missions and entry tips,
-  object actions, guide messages, mounts, recipes, maps and NPC titles) that the client data uses.
+  object actions, guide messages, mounts, recipes, maps and NPC titles) that the client data uses, and 177 UI
+  messages (stringcommon) whose id the client code uses.
   Quest dialogue (scriptquest) of the quests a player can get is in our own English: all 13,330 such rows of locale
   KR (or none), in the feature groups Event, SoulBinder, Striker, KarkarIsland, Season1, DoubleImpactStory,
   EpicApocalypse, Kritias_2018_12, FameContents, UnlimitedEnchant, ContentsGuide, ShadowExpedition, ItemMergeLV70_2,
