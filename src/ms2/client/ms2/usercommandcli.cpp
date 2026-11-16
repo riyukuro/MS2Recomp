@@ -783,7 +783,15 @@ void CUserCommandCli::RegisterChat() {
 // @0x141363160
 void CUserCommandCli::RegisterDebug() {
     Register(L"출석",&CUserCommandCli::SendAttendance);
+#ifndef MS2_HOOK_DLL
+    // MS2-RESTORE: English names next to the Korean chat commands (attendance, camera, smart recommend, map);
+    // the Korean names keep working.
+    Register(L"Attendance",&CUserCommandCli::SendAttendance);
+#endif
     Register(L"카메라",&CUserCommandCli::FUN_141365270);
+#ifndef MS2_HOOK_DLL
+    Register(L"Camera",&CUserCommandCli::FUN_141365270);
+#endif
     Register(L"LocalCamera",&CUserCommandCli::SetLocalCamera);
     Register(L"TargetCamera",&CUserCommandCli::SetTargetCamera);
     Register(L"UiDev",&CUserCommandCli::ToggleUIDevMode);
@@ -803,6 +811,9 @@ void CUserCommandCli::RegisterDebug() {
     Register(L"ReloadString",&CUserCommandCli::ReloadStrings);
     Register(L"ReloadGuideString",&CUserCommandCli::ReloadGuideString);
     Register(L"스마트추천",&CUserCommandCli::ShowSmartRecommend);
+#ifndef MS2_HOOK_DLL
+    Register(L"SmartRecommend",&CUserCommandCli::ShowSmartRecommend);
+#endif
     Register(L"showcodename",&CUserCommandCli::ShowCodeName);
     Register(L"showupperversiontext",&CUserCommandCli::ToggleUpperVersionText);
     Register(L"CacheKeepTime",&CUserCommandCli::SetNifLifetime);
@@ -867,6 +878,9 @@ void CUserCommandCli::RegisterDebug() {
     Register(L"combinekey",&CUserCommandCli::CombineKey);
     Register(L"m",&CUserCommandCli::FUN_141368000);
     Register(L"맵",&CUserCommandCli::FUN_141368000);
+#ifndef MS2_HOOK_DLL
+    Register(L"Map",&CUserCommandCli::FUN_141368000);
+#endif
     Register(L"RecordFishing",&CUserCommandCli::RecordFishing);
     Register(L"ReportFishing",&CUserCommandCli::ShowFishRecordReport);
     Register(L"effect_afterimage",&CUserCommandCli::ShowEffectAfterimage);
