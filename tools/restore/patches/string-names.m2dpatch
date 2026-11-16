@@ -25599,3 +25599,43 @@ set key[id=1026153614004513] name "Could you clear those balloons away for me, $
 set key[id=1026153614004514] name "Please get rid of the Black Bean lookalike balloons."
 set key[id=1026153614004515] name "There are so many, I clear them and clear them and there's no end.\nStill, \
     thanks to you, $MyPCName$, Maple World is starting to look like itself again."
+
+# System mails the server sends (first login, returning player, world raid, nurturing): our own English for the
+# 6 such mails that are still in Korean, with each row's own format fields, links and line breaks.
+file Xml/string/kr/systemmailcontentkr.xml kms:Xml/string/kr/systemmailcontentkr.xml de7a6c87e4d434b5
+set mail[id=160331001] subject "(Important) How to grow fast~!"
+set mail[id=160331001] content "Hello! This is MapleStory 2. \n\nWelcome, adventurer!\nIs this your first time in \
+    MapleStory 2!? \n\nWhat jobs are there in Maple World?\nWhat kind of place is Maple World? \nWhere can you get \
+    what gear?\nWhat should you do right now? \n\nCurious about all of it?? \n\nRather than learning bit by \
+    bit!\n\nRight now! Right away!! ASAP!!!\nWe put this together for adventurers who want to know it all. \
+    \n\nFind the answers to your many questions \
+    here.\n\n$externalWeb:[Link],http://maplestory2.nexon.com/guidebook/beginner,1e90ff$\n\n\nThe more you know \
+    before you start, the faster you grow!\nRead up first, then set out on your adventure.\n\nGOOD LUCK!\n\nThank \
+    you."
+set mail[id=170531001] subject "A gift for our returning adventurer has arrived!"
+set mail[id=170531001] content "Hello, this is MapleStory 2.\nIt's been a while, adventurer!\n\nWe're so glad \
+    you're back that\nwe've prepared a [Returning Adventurer Welcome Box] for you.\n\nWe're sure it will help you \
+    on your adventures in Maple World~\n\nSee you around in MapleStory 2~!\n\nThank you."
+set mail[id=170531002] subject "[GM] All the ways to play, in one place."
+set mail[id=170531002] content "Hi! Back in Maple World after a long time? \nGood to see you. I'm Vanilla. You \
+    haven't forgotten me, have you? ^^\n\nYou must be wondering what has changed while you were away, \nand which \
+    content to try first. \nIf so, click the link below.\n\n$maview:[Go to the Play Guide! \
+    Click!],http://maview.nexon.com/News/ListSub?page=1&tp=guide,1e90ff$\n\nThe Play Guide board is full of useful \
+    play tips.\n\nSo whenever you have a question, \nfeel free to check the Play Guide board. \nI'll always keep \
+    it up to date! ^^\n\nSee you again, okay? Bye!"
+set mail[id=180510006] subject "[World Raid] Your Mushking defeat reward has arrived."
+set mail[id=180510006] content "Hello, this is MapleStory 2.\n\nYour reward for defeating Mushking has \
+    arrived.\n\n'Gold Mushking Coins' can be exchanged for a variety of items.\nVisit the 'Mushking Coin Shop' run \
+    by 'Guard Mim'.\n\n(Note) The attached items are deleted along with this mail if you do not\nmove them to your \
+    inventory within 30 days, so please collect them soon.\n\nThank you so much for helping defeat Mushking!"
+set mail[id=180510007] subject "[World Raid] Your Mushking defeat reward has arrived."
+set mail[id=180510007] content "Hello, this is MapleStory 2.\n\nYour reward for defeating Mushking has \
+    arrived.\n\n'5th Anniversary Mushking Coins' can be exchanged for a variety of items.\nDouble-click a coin or \
+    visit the 'Mushking Coin Shop' run by 'Ruby' to use the shop.\n\n(Note) The attached items are deleted along \
+    with this mail if you do not\nmove them to your inventory within 30 days, so please collect them \
+    soon.\n\nThank you for stopping Mushking's counterattack."
+set mail[id=180524005] subject "['Raise a Rainbow Slime?'] My Rainbow Slime grew!"
+set mail[id=180524005] content "A friend played with my Rainbow Slime, and it grew!\nTo celebrate, here are 2 \
+    Rainbow Coins as a gift.\n\nNotes)\n* You can play with the same Rainbow Slime once a day.\n* You can play \
+    with up to 2 Rainbow Slimes a day.\n* Any number of friends can play with your Rainbow Slime, but the growth \
+    it gets from friends playing with it is capped at 30 a day."
