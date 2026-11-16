@@ -716,3 +716,519 @@ set key[id=70200050] tooltipDescription "A badge that changes your chat bubble d
 set key[id=70200050] guideDescription "Drag it from your inventory to the Badge tab of the Character window, or \
     right-click it, to equip it and change your character's chat bubble design. You can equip only one chat bubble \
     badge."
+# Wedding items (feature Wedding) are KR-only, with no English row in any pack: our own English names and
+# descriptions from the KMS2 text, with each row's own format fields, font tags, line breaks and links. The
+# Korean particle fields ($pp) are left out. Plurals follow from these names (plural-of).
+file Xml/string/kr/itemname.xml kms:Xml/string/kr/itemname.xml 8c56a83382e644a3
+set key[id=11320365] name "Special Wedding Lovely Hat (M)"
+set key[id=11320366] name "Special Wedding Lovely Tiara (F)"
+set key[id=11710056] name "Special Wedding Tassel Loafers (M)"
+set key[id=11710057] name "Special Wedding Crystal Shoes (F)"
+set key[id=12200725] name "Special Wedding Boutonniere Suit (M)"
+set key[id=12200726] name "Special Wedding Shine Dress (F)"
+set key[id=20001697] name "Promise Maple Leaf"
+set key[id=20001698] name "Photo Ticket: Heart-Flutter Studio"
+set key[id=20001699] name "Photo Ticket: Fantasy Land"
+set key[id=20001700] name "Photo Ticket: Mystic Treasure Island"
+set key[id=20001701] name "After-Party Ticket: Pinata"
+set key[id=20001702] name "After-Party Ticket: Dance Dance Stop"
+set key[id=20001704] name "Title: Warm Groom"
+set key[id=20001705] name "Title: Warm Bride"
+set key[id=20001706] name "Title: Sweet Groom"
+set key[id=20001707] name "Title: Sweet Bride"
+set key[id=20001708] name "Orange Blossom"
+set key[id=20001709] name "Rainbow Soda Pop"
+set key[id=20001710] name "Title: Thoughtful Groom"
+set key[id=20001711] name "Title: Thoughtful Bride"
+set key[id=20001712] name "Title: Trusted Groom"
+set key[id=20001713] name "Title: Trusted Bride"
+set key[id=20001714] name "Title: Sunlit Groom"
+set key[id=20001715] name "Title: Sunlit Bride"
+set key[id=20001716] name "Title: Moonlit Groom"
+set key[id=20001717] name "Title: Moonlit Bride"
+set key[id=20001718] name "Title: Strong Groom"
+set key[id=20001719] name "Title: Strong Bride"
+set key[id=20001720] name "Title: Earnest Groom"
+set key[id=20001721] name "Title: Earnest Bride"
+set key[id=20001722] name "Title: Blessed Groom"
+set key[id=20001723] name "Title: Blessed Bride"
+set key[id=20001724] name "Title: Radiant Groom"
+set key[id=20001725] name "Title: Radiant Bride"
+set key[id=20001726] name "Title: Fresh Groom"
+set key[id=20001727] name "Title: Fresh Bride"
+set key[id=20001728] name "Title: Dazzling Groom"
+set key[id=20001729] name "Title: Dazzling Bride"
+set key[id=20001736] name "Spooky Wedding Candy"
+set key[id=20001737] name "Spooky Wedding Candy"
+set key[id=20001738] name "Spooky Wedding Candy"
+set key[id=20001739] name "Spooky Wedding Candy"
+set key[id=20001740] name "Spooky Wedding Candy"
+set key[id=20001741] name "Spooky Wedding Candy"
+set key[id=20001742] name "Spooky Wedding Candy"
+set key[id=20001743] name "Spooky Wedding Candy"
+set key[id=20001744] name "Spooky Wedding Candy"
+set key[id=20001745] name "Spooky Wedding Candy"
+set key[id=20302957] name "House Wedding Booking Gift"
+set key[id=20302958] name "Photo Ticket Choice Box"
+set key[id=20302959] name "Party Wedding Booking Gift"
+set key[id=20302960] name "After-Party Ticket Choice Box"
+set key[id=20302961] name "Luxury Wedding Booking Gift"
+set key[id=20302963] name "Luanna's Shining Gift"
+set key[id=20302964] name "Warm Couple Title Choice Box"
+set key[id=20302965] name "Amorang Love Interior Box"
+set key[id=20302966] name "Luanna's Gentle Gift"
+set key[id=20302967] name "Sweet Couple Title Choice Box"
+set key[id=20302968] name "Tria Bright Wedding Favor"
+set key[id=20302969] name "Tria Wedding Day Interior Box"
+set key[id=20302970] name "Tria Calm Wedding Favor"
+set key[id=20302971] name "Tria Wedding Night Interior Box"
+set key[id=20302972] name "Manovich's Shining Gift"
+set key[id=20302973] name "Thoughtful Couple Title Choice Box"
+set key[id=20302974] name "Harmony Glory Interior Box"
+set key[id=20302975] name "Manovich's Gentle Gift"
+set key[id=20302976] name "Trusting Couple Title Choice Box"
+set key[id=20302977] name "Henesys Bright Wedding Favor"
+set key[id=20302978] name "Henesys Wedding Day Interior Box"
+set key[id=20302979] name "Henesys Calm Wedding Favor"
+set key[id=20302980] name "Henesys Wedding Night Interior Box"
+set key[id=20302981] name "Asimov's Shining Gift"
+set key[id=20302982] name "Sunlit Couple Title Choice Box"
+set key[id=20302983] name "Ellinia Holy Wood Interior Box"
+set key[id=20302984] name "Asimov's Gentle Gift"
+set key[id=20302985] name "Moonlit Couple Title Choice Box"
+set key[id=20302986] name "Ellinia Mystic Wood Interior Box"
+set key[id=20302987] name "Ellinia Bright Wedding Favor"
+set key[id=20302988] name "Ellinia Love Day Interior Box"
+set key[id=20302989] name "Ellinia Calm Wedding Favor"
+set key[id=20302990] name "Ellinia Love Night Interior Box"
+set key[id=20302991] name "Namid's Shining Gift"
+set key[id=20302992] name "Strong Couple Title Choice Box"
+set key[id=20302993] name "Perion Special Sturdy Interior Box"
+set key[id=20302994] name "Namid's Gentle Gift"
+set key[id=20302995] name "Earnest Couple Title Choice Box"
+set key[id=20302996] name "Perion Special Solid Interior Box"
+set key[id=20302997] name "Perion Bright Wedding Favor"
+set key[id=20302998] name "Perion Love Day Interior Box"
+set key[id=20302999] name "Perion Calm Wedding Favor"
+set key[id=20303000] name "Perion Love Night Interior Box"
+set key[id=20303001] name "Chloris's Brilliant Gift"
+set key[id=20303002] name "Blessed Couple Title Choice Box"
+set key[id=20303003] name "Ludari Glossy Interior Box"
+set key[id=20303004] name "Chloris's Elegant Gift"
+set key[id=20303005] name "Radiant Couple Title Choice Box"
+set key[id=20303006] name "Ludari Chic Interior Box"
+set key[id=20303007] name "Sky Fortress Brilliant Wedding Favor"
+set key[id=20303008] name "Ludari Twinkle Interior Box"
+set key[id=20303009] name "Sky Fortress Elegant Wedding Favor"
+set key[id=20303010] name "Ludari Paradise Interior Box"
+set key[id=20303011] name "DayDay's Brilliant Gift"
+set key[id=20303012] name "Fresh Couple Title Choice Box"
+set key[id=20303013] name "Luxury Marine Interior Box"
+set key[id=20303014] name "DayDay's Elegant Gift"
+set key[id=20303015] name "Dazzling Couple Title Choice Box"
+set key[id=20303016] name "Cruise Special Interior Box"
+set key[id=20303017] name "Luxury Cruise Brilliant Wedding Favor"
+set key[id=20303018] name "Marina Blue Interior Box"
+set key[id=20303019] name "Luxury Cruise Elegant Wedding Favor"
+set key[id=20303020] name "Glory Blue Interior Box"
+set key[id=20303021] name "Amorang Hope Interior Box"
+set key[id=20303022] name "Harmony Blessing Interior Box"
+set key[id=20303110] name "Spooky Wedding Lucky Box"
+set key[id=50201124] name "Henesys Soft Ceiling Candelabra"
+set key[id=50201131] name "Ellinia Tweet Tweet Curtain"
+set key[id=50201146] name "Luxury Cruise Podium Flowers"
+file Xml/string/kr/koritemdescription.xml kms:Xml/string/kr/koritemdescription.xml 669a7f4ea48c36b2
+set key[id=11050067] tooltipDescription "A single rose that stands for pure love."
+set key[id=11050068] tooltipDescription "A single rose that stands for pure love."
+set key[id=11250210] tooltipDescription "Heart-shaped earrings that shine with a soft, bright glow."
+set key[id=11250211] tooltipDescription "Heart-shaped earrings that shine with a soft, bright glow."
+set key[id=11320365] tooltipDescription "A hat full of sparkling, shining love."
+set key[id=11320366] tooltipDescription "A tiara full of sparkling, shining love."
+set key[id=11610042] tooltipDescription "A silver ring with a simple, stylish design."
+set key[id=11610043] tooltipDescription "A bracelet with a lovely design that flows on from the wrist."
+set key[id=11710056] tooltipDescription "Neat, stylish loafers set off with tassels."
+set key[id=11710057] tooltipDescription "Crystal wedding shoes as clear as glass."
+set key[id=12200725] tooltipDescription "A special wedding suit with a romantic boutonniere."
+set key[id=12200726] tooltipDescription "A lovely special wedding dress with a pure, clear look."
+set key[id=20001697] mainDescription "<font size='18'>Engagement Item</font>"
+set key[id=20001697] tooltipDescription "You need this item to get <font color='#00aaef'>engaged</font>. Both the \
+    one who proposes and the one who is proposed to must have it."
+set key[id=20001697] guideDescription "<font color='#6e6e6e'>A golden maple leaf that holds the precious promise \
+    of two people who want to spend every day ahead together. You can propose when both you and a character on \
+    your friend list have one.\\nIf the proposal succeeds, you are engaged for 7 days. Finish a wedding within \
+    that time to become a married couple. \\nTo get married, visit $map:84000001$ and book a wedding hall with a \
+    wedding planner.</font>"
+set key[id=20001698] mainDescription "Opens a portal to a photo shoot map"
+set key[id=20001698] tooltipDescription "A photo shoot ticket the bride or groom can use in the wedding hall from \
+    the officiant's pronouncement until the hall closes. Using it opens an entrance portal where you stand on your \
+    channel, and anyone can go through it to the photo shoot map. Small print at the bottom reads \
+    'Congratulations! Snap this happy moment!' After the photos, the portal takes you back to the wedding hall."
+set key[id=20001698] guideDescription "Double-click it in your inventory to open a portal to the photo shoot map."
+set key[id=20001699] mainDescription "Opens a portal to a photo shoot map"
+set key[id=20001699] tooltipDescription "A photo shoot ticket the bride or groom can use in the wedding hall from \
+    the officiant's pronouncement until the hall closes. Using it opens an entrance portal where you stand on your \
+    channel, and anyone can go through it to the photo shoot map. Small print at the bottom reads \
+    'Congratulations! Snap this happy moment!' After the photos, the portal takes you back to the wedding hall."
+set key[id=20001699] guideDescription "Double-click it in your inventory to open a portal to the photo shoot map."
+set key[id=20001700] mainDescription "Opens a portal to a photo shoot map"
+set key[id=20001700] tooltipDescription "A photo shoot ticket the bride or groom can use in the wedding hall from \
+    the officiant's pronouncement until the hall closes. Using it opens an entrance portal where you stand on your \
+    channel, and anyone can go through it to the photo shoot map. Small print at the bottom reads \
+    'Congratulations! Snap this happy moment!' After the photos, the portal takes you back to the wedding hall."
+set key[id=20001700] guideDescription "Double-click it in your inventory to open a portal to the photo shoot map."
+set key[id=20001701] mainDescription "Opens a portal to an after-party map"
+set key[id=20001701] tooltipDescription "An after-party ticket the bride or groom can use in the wedding hall from \
+    the officiant's pronouncement until the hall closes. Using it opens an entrance portal where you stand on your \
+    channel, and anyone can go through it to the after-party map. Small print at the bottom reads \
+    'Congratulations! Have a great party with your guests!' After the party, the portal takes you back to the \
+    wedding hall."
+set key[id=20001701] guideDescription "Double-click it in your inventory to open a portal to the after-party map."
+set key[id=20001702] mainDescription "Opens a portal to an after-party map"
+set key[id=20001702] tooltipDescription "An after-party ticket the bride or groom can use in the wedding hall from \
+    the officiant's pronouncement until the hall closes. Using it opens an entrance portal where you stand on your \
+    channel, and anyone can go through it to the after-party map. Small print at the bottom reads \
+    'Congratulations! Enjoy a dance party with your guests!' After the party, the portal takes you back to the \
+    wedding hall."
+set key[id=20001702] guideDescription "Double-click it in your inventory to open a portal to the after-party map."
+set key[id=20001704] tooltipDescription "A special title that celebrates the wedding of a warm-hearted couple."
+set key[id=20001704] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001705] tooltipDescription "A special title that celebrates the wedding of a warm-hearted couple."
+set key[id=20001705] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001706] tooltipDescription "A special title that celebrates the wedding of the sweetest couple of \
+    all."
+set key[id=20001706] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001707] tooltipDescription "A special title that celebrates the wedding of the sweetest couple of \
+    all."
+set key[id=20001707] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001708] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<font size='24'>Restores 1200 \
+    HP</font>"
+set key[id=20001708] tooltipDescription "A refreshing cocktail of orange juice over ice."
+set key[id=20001708] guideDescription "Restores 1200 HP when you drink it.\\nYou can drink another after 5 sec."
+set key[id=20001709] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<font size='24'>Restores 1200 \
+    HP</font>"
+set key[id=20001709] tooltipDescription "A drink in lovely colors that bring to mind a blue sea and a sunset."
+set key[id=20001709] guideDescription "Restores 1200 HP when you drink it.\\nYou can drink another after 5 sec."
+set key[id=20001710] tooltipDescription "A special title that celebrates the wedding of a thoughtful couple."
+set key[id=20001710] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001711] tooltipDescription "A special title that celebrates the wedding of a thoughtful couple."
+set key[id=20001711] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001712] tooltipDescription "A special title that celebrates the wedding of a couple everyone trusts."
+set key[id=20001712] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001713] tooltipDescription "A special title that celebrates the wedding of a couple everyone trusts."
+set key[id=20001713] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001714] tooltipDescription "A special title that celebrates the wedding of a couple as fresh as the \
+    sunshine."
+set key[id=20001714] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001715] tooltipDescription "A special title that celebrates the wedding of a couple as fresh as the \
+    sunshine."
+set key[id=20001715] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001716] tooltipDescription "A special title for a couple married on a softly moonlit night."
+set key[id=20001716] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001717] tooltipDescription "A special title for a couple married on a softly moonlit night."
+set key[id=20001717] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001718] tooltipDescription "A special title that celebrates the wedding of the strongest couple of \
+    all."
+set key[id=20001718] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001719] tooltipDescription "A special title that celebrates the wedding of the strongest couple of \
+    all."
+set key[id=20001719] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001720] tooltipDescription "A special title that celebrates the wedding of a couple earnest with each \
+    other."
+set key[id=20001720] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001721] tooltipDescription "A special title that celebrates the wedding of a couple earnest with each \
+    other."
+set key[id=20001721] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001722] tooltipDescription "A special title that celebrates the wedding of a couple blessed by \
+    everyone."
+set key[id=20001722] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001723] tooltipDescription "A special title that celebrates the wedding of a couple blessed by \
+    everyone."
+set key[id=20001723] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001724] tooltipDescription "A special title that celebrates the wedding of a couple more radiant than \
+    ever."
+set key[id=20001724] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001725] tooltipDescription "A special title that celebrates the wedding of a couple more radiant than \
+    ever."
+set key[id=20001725] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001726] tooltipDescription "A special title that celebrates the wedding of a bright, fresh couple."
+set key[id=20001726] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001727] tooltipDescription "A special title that celebrates the wedding of a bright, fresh couple."
+set key[id=20001727] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001728] tooltipDescription "A special title that celebrates the wedding of the most dazzling couple \
+    of all."
+set key[id=20001728] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001729] tooltipDescription "A special title that celebrates the wedding of the most dazzling couple \
+    of all."
+set key[id=20001729] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001736] mainDescription "<font size='14'>3 Sec Cooldown</font>"
+set key[id=20001736] tooltipDescription "Candy to eat at the pinata reception. No one knows what happens when you \
+    eat it."
+set key[id=20001736] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001737] mainDescription "<font size='14'>3 Sec Cooldown</font>"
+set key[id=20001737] tooltipDescription "Candy to eat at the pinata reception. No one knows what happens when you \
+    eat it."
+set key[id=20001737] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001738] mainDescription "<font size='14'>3 Sec Cooldown</font>"
+set key[id=20001738] tooltipDescription "Candy to eat at the pinata reception. No one knows what happens when you \
+    eat it."
+set key[id=20001738] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001739] mainDescription "<font size='14'>3 Sec Cooldown</font>"
+set key[id=20001739] tooltipDescription "Candy to eat at the pinata reception. No one knows what happens when you \
+    eat it."
+set key[id=20001739] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001740] mainDescription "<font size='14'>3 Sec Cooldown</font>"
+set key[id=20001740] tooltipDescription "Candy to eat at the pinata reception. No one knows what happens when you \
+    eat it."
+set key[id=20001740] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001741] mainDescription "<font size='14'>3 Sec Cooldown</font>"
+set key[id=20001741] tooltipDescription "Candy to eat at the pinata reception. No one knows what happens when you \
+    eat it."
+set key[id=20001741] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001742] mainDescription "<font size='14'>3 Sec Cooldown</font>"
+set key[id=20001742] tooltipDescription "Candy to eat at the pinata reception. No one knows what happens when you \
+    eat it."
+set key[id=20001742] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001743] mainDescription "<font size='14'>3 Sec Cooldown</font>"
+set key[id=20001743] tooltipDescription "Candy to eat at the pinata reception. No one knows what happens when you \
+    eat it."
+set key[id=20001743] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001744] mainDescription "<font size='14'>3 Sec Cooldown</font>"
+set key[id=20001744] tooltipDescription "Candy to eat at the pinata reception. No one knows what happens when you \
+    eat it."
+set key[id=20001744] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20001745] mainDescription "<font size='14'>3 Sec Cooldown</font>"
+set key[id=20001745] tooltipDescription "Candy to eat at the pinata reception. No one knows what happens when you \
+    eat it."
+set key[id=20001745] guideDescription "Double-click it in your inventory to use it. "
+set key[id=20210047] mainDescription "Learn the We Got Married action"
+set key[id=20210047] tooltipDescription "A pass that teaches you a two-person dynamic action."
+set key[id=20210047] guideDescription "Double-click it to learn a special two-person action. Then right-click the \
+    character you want to do it with > click the buddy action button > pick the dynamic action to ask them. You \
+    can only ask characters within 3 m, and the action plays only if they accept. Once they accept, you move next \
+    to them and do the action.\\nSome actions differ by the other character's gender."
+set key[id=20302957] tooltipDescription "A box you get when you book a House Wedding."
+set key[id=20302958] tooltipDescription "A box of tickets for photo shoots against all kinds of backdrops."
+set key[id=20302958] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20302959] tooltipDescription "A box you get when you book a Party Wedding."
+set key[id=20302960] tooltipDescription "A box of tickets that let you choose an after-party."
+set key[id=20302961] tooltipDescription "A box you get when you book a Luxury Wedding."
+set key[id=20302962] tooltipDescription "A box of special outfits to make your wedding shine even brighter."
+set key[id=20302962] guideDescription "Double-click it in your inventory to get the item for your character's \
+    gender."
+set key[id=20302963] tooltipDescription "A gift from Luanna, full of warm wishes for your marriage."
+set key[id=20302964] tooltipDescription "A box that lets you choose 1 of the Warm Couple titles."
+set key[id=20302964] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20302965] tooltipDescription "An interior box the Tria wedding hall gives the couple. Decorate your new \
+    home with wedding props."
+set key[id=20302966] tooltipDescription "A gift from Luanna, full of warm wishes for your marriage."
+set key[id=20302967] tooltipDescription "A box that lets you choose 1 of the Sweet Couple titles."
+set key[id=20302967] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20302968] tooltipDescription "A Tria-style wedding favor given with thanks to everyone who came to the \
+    wedding."
+set key[id=20302969] tooltipDescription "A favor the Tria wedding hall gives the guests, with building materials \
+    in the local style."
+set key[id=20302969] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20302970] tooltipDescription "A Tria-style wedding favor given with thanks to everyone who came to the \
+    wedding."
+set key[id=20302971] tooltipDescription "A favor the Tria wedding hall gives the guests, with building materials \
+    in the local style."
+set key[id=20302971] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20302972] tooltipDescription "A gift from Manovich, full of warm wishes for your marriage."
+set key[id=20302973] tooltipDescription "A box that lets you choose 1 of the Thoughtful Couple titles."
+set key[id=20302973] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20302974] tooltipDescription "An interior box the Henesys wedding hall gives the couple. Decorate your \
+    new home with wedding props."
+set key[id=20302975] tooltipDescription "A gift from Manovich, full of warm wishes for your marriage."
+set key[id=20302976] tooltipDescription "A box that lets you choose 1 of the Trusting Couple titles."
+set key[id=20302976] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20302977] tooltipDescription "A Henesys-style wedding favor given with thanks to everyone who came to \
+    the wedding."
+set key[id=20302978] tooltipDescription "A favor the Henesys wedding hall gives the guests, with building \
+    materials in the local style."
+set key[id=20302978] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20302979] tooltipDescription "A Henesys-style wedding favor given with thanks to everyone who came to \
+    the wedding."
+set key[id=20302980] tooltipDescription "A favor the Henesys wedding hall gives the guests, with building \
+    materials in the local style."
+set key[id=20302980] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20302981] tooltipDescription "A gift from Asimov, full of warm wishes for your marriage."
+set key[id=20302982] tooltipDescription "A box that lets you choose 1 of the Sunlit Couple titles."
+set key[id=20302982] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20302983] tooltipDescription "An interior box the Ellinia wedding hall gives the couple. Decorate your \
+    new home with wedding props."
+set key[id=20302984] tooltipDescription "A gift from Asimov, full of warm wishes for your marriage."
+set key[id=20302985] tooltipDescription "A box that lets you choose 1 of the Moonlit Couple titles."
+set key[id=20302985] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20302986] tooltipDescription "An interior box the Ellinia wedding hall gives the couple. Decorate your \
+    new home with wedding props."
+set key[id=20302987] tooltipDescription "A Ellinia-style wedding favor given with thanks to everyone who came to \
+    the wedding."
+set key[id=20302988] tooltipDescription "A favor the Ellinia wedding hall gives the guests, with building \
+    materials in the local style."
+set key[id=20302988] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20302989] tooltipDescription "A Ellinia-style wedding favor given with thanks to everyone who came to \
+    the wedding."
+set key[id=20302990] tooltipDescription "A favor the Ellinia wedding hall gives the guests, with building \
+    materials in the local style."
+set key[id=20302990] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20302991] tooltipDescription "A gift from Namid, full of warm wishes for your marriage."
+set key[id=20302992] tooltipDescription "A box that lets you choose 1 of the Strong Couple titles."
+set key[id=20302992] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20302993] tooltipDescription "An interior box the Perion wedding hall gives the couple. Decorate your \
+    new home with wedding props."
+set key[id=20302994] tooltipDescription "A gift from Namid, full of warm wishes for your marriage."
+set key[id=20302995] tooltipDescription "A box that lets you choose 1 of the Earnest Couple titles."
+set key[id=20302995] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20302996] tooltipDescription "An interior box the Perion wedding hall gives the couple. Decorate your \
+    new home with wedding props."
+set key[id=20302997] tooltipDescription "A Perion-style wedding favor given with thanks to everyone who came to \
+    the wedding."
+set key[id=20302998] tooltipDescription "A favor the Perion wedding hall gives the guests, with building materials \
+    in the local style."
+set key[id=20302998] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20302999] tooltipDescription "A Perion-style wedding favor given with thanks to everyone who came to \
+    the wedding."
+set key[id=20303000] tooltipDescription "A favor the Perion wedding hall gives the guests, with building materials \
+    in the local style."
+set key[id=20303000] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20303001] tooltipDescription "A gift from Chloris, full of warm wishes for your marriage."
+set key[id=20303002] tooltipDescription "A box that lets you choose 1 of the Blessed Couple titles."
+set key[id=20303002] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20303003] tooltipDescription "An interior box the Ludari wedding hall gives the couple. Decorate your \
+    new home with wedding props."
+set key[id=20303004] tooltipDescription "A gift from Chloris, full of warm wishes for your marriage."
+set key[id=20303005] tooltipDescription "A box that lets you choose 1 of the Radiant Couple titles."
+set key[id=20303005] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20303006] tooltipDescription "An interior box the Ludari wedding hall gives the couple. Decorate your \
+    new home with wedding props."
+set key[id=20303007] tooltipDescription "A Sky Fortress-style wedding favor given with thanks to everyone who came \
+    to the wedding."
+set key[id=20303008] tooltipDescription "A favor the Ludari wedding hall gives the guests, with building materials \
+    in the local style."
+set key[id=20303008] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20303009] tooltipDescription "A Sky Fortress-style wedding favor given with thanks to everyone who came \
+    to the wedding."
+set key[id=20303010] tooltipDescription "A favor the Ludari wedding hall gives the guests, with building materials \
+    in the local style."
+set key[id=20303010] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20303011] tooltipDescription "A gift from DayDay, full of warm wishes for your marriage."
+set key[id=20303012] tooltipDescription "A box that lets you choose 1 of the Fresh Couple titles."
+set key[id=20303012] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20303013] tooltipDescription "An interior box the Luxury Cruise gives the couple. Decorate your new \
+    home with wedding props."
+set key[id=20303014] tooltipDescription "A gift from DayDay, full of warm wishes for your marriage."
+set key[id=20303015] tooltipDescription "A box that lets you choose 1 of the Dazzling Couple titles."
+set key[id=20303015] guideDescription "Double-click it in your inventory to choose 1 of the items inside."
+set key[id=20303016] tooltipDescription "An interior box the Luxury Cruise gives the couple. Decorate your new \
+    home with wedding props."
+set key[id=20303017] tooltipDescription "A Luxury Cruise-style wedding favor given with thanks to everyone who \
+    came to the wedding."
+set key[id=20303018] tooltipDescription "A favor the Luxury Cruise gives the guests, with cruise prop building \
+    materials."
+set key[id=20303018] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20303019] tooltipDescription "A Luxury Cruise-style wedding favor given with thanks to everyone who \
+    came to the wedding."
+set key[id=20303020] tooltipDescription "A favor the Luxury Cruise gives the guests, with cruise prop building \
+    materials."
+set key[id=20303020] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20303021] tooltipDescription "An interior box the Tria wedding hall gives the couple. Decorate your new \
+    home with wedding props."
+set key[id=20303022] tooltipDescription "An interior box the Henesys wedding hall gives the couple. Decorate your \
+    new home with wedding props."
+set key[id=20303110] tooltipDescription "A box stuffed with wedding candy. No one knows which candy you will get."
+set key[id=20303110] guideDescription "Double-click it in your inventory to get 1 of the items inside at the set \
+    odds."
+set key[id=20303165] mainDescription "<font size='14'>2 Min Cooldown</font>\\n<font size='24'>Summon \
+    Spouse</font>"
+set key[id=20303165] tooltipDescription "A scroll with mystic power. It opens a teleport gate that summons your \
+    spouse from far away."
+set key[id=20303165] guideDescription "Double-click it in your inventory to send your online spouse a summon \
+    request. Cannot be used in dungeons, event maps or houses."
+set key[id=20303166] mainDescription "Free wedding hall booking"
+set key[id=20303166] tooltipDescription "Use this coupon to book a House Wedding hall for free. It cannot be used \
+    to change a booking."
+set key[id=20303166] guideDescription "To book a wedding hall with $item:20303166$, keep it in your inventory and \
+    visit the wedding planner $npc:11004707$, $npc:11004708$ or $npc:11004709$ in $map:84000001$. You and your \
+    partner must both be on the same map to book.\\n\\n<font color='#FFFFFF'>Halls you can book\\n- \
+    $map:84000011$\\n- $map:84000012$</font>"
+set key[id=20303167] mainDescription "Free wedding hall booking"
+set key[id=20303167] tooltipDescription "Use this coupon to book a Party Wedding hall for free. It cannot be used \
+    to change a booking."
+set key[id=20303167] guideDescription "To book a wedding hall with $item:20303167$, keep it in your inventory and \
+    visit the wedding planner $npc:11004708$ or $npc:11004709$ in $map:84000001$. You and your partner must both \
+    be on the same map to book.\\n\\n<font color='#FFFFFF'>Halls you can book\\n- $map:84000013$\\n- \
+    $map:84000014$</font>"
+set key[id=20303168] mainDescription "Free wedding hall booking"
+set key[id=20303168] tooltipDescription "Use this coupon to book a Luxury Wedding hall for free. It cannot be used \
+    to change a booking."
+set key[id=20303168] guideDescription "To book a wedding hall with $item:20303168$, keep it in your inventory and \
+    visit the wedding planner $npc:11004709$ in $map:84000001$. You and your partner must both be on the same map \
+    to book.\\n\\n<font color='#FFFFFF'>Halls you can book\\n- $map:84000015$\\n- $map:84000016$</font>"
+set key[id=20303170] tooltipDescription "A box a married couple gets for clearing a mission together."
+set key[id=20303183] tooltipDescription "A box of special outfits to make your wedding shine even brighter."
+set key[id=20303183] guideDescription "Double-click it in your inventory to get the item for your character's \
+    gender. <font color='#FFFFFF'>\\n* You keep getting it while your intimacy stays at level 5.<font \
+    color='#FFFFFF'></font>"
+set key[id=20700015] tooltipDescription "Double-click the badge chest to enter the name of the character to share \
+    the couple effect badge with. The one who opens the chest finds a badge in their inventory, and the other gets \
+    theirs by mail. When both wear the badge within 1.5 m of each other, the effect appears."
+set key[id=20700015] guideDescription "The couple effect works only between the two characters who shared the \
+    badges. It lasts while you stay still and fades 5 sec after you move. The badges are bound to the character, \
+    so take care when you open the chest."
+set key[id=20800040] mainDescription "World chat to announce your wedding"
+set key[id=20800040] tooltipDescription "A special world chat coupon you can use once your wedding is booked. Chat \
+    with it to announce your wedding time in a special world chat message with a colored background and a cute \
+    icon. While the wedding is open, clicking your message takes players to the wedding. They cannot enter once \
+    the hall is full, and the bride and groom cannot enter the hall by clicking it. "
+set key[id=20800040] guideDescription "Use it from the super world chat menu at the bottom left of the chat \
+    window, or double-click it. Chatting uses up the coupon. "
+set key[id=50201118] tooltipDescription "A Tria-style officiant's podium, beautifully decorated with flowers."
+set key[id=50201119] tooltipDescription "A Tria-style wedding candlestick, both useful and lovely."
+set key[id=50201120] tooltipDescription "A Tria-style bench made with fine white silk."
+set key[id=50201121] tooltipDescription "A Tria garden piece: a flower arrangement in striking warm colors."
+set key[id=50201122] tooltipDescription "A Tria garden piece: flowers blooming in a large pot."
+set key[id=50201123] tooltipDescription "A Henesys-style officiant's podium of wood, decorated with flowers."
+set key[id=50201124] tooltipDescription "A Henesys-style ceiling candelabra whose candles glow softly."
+set key[id=50201125] tooltipDescription "A Henesys garden piece tied with a pretty ribbon."
+set key[id=50201126] tooltipDescription "A Henesys-style lantern made of fine solid wood."
+set key[id=50201127] tooltipDescription "A Henesys craft piece made of wood and flowers."
+set key[id=50201128] tooltipDescription "An Ellinia-style officiant's podium, cozily decorated with flowers and \
+    leaves."
+set key[id=50201129] tooltipDescription "An Ellinia-style light that gives off a warm pink glow."
+set key[id=50201130] tooltipDescription "An Ellinia garden piece made with the blue flowers that bloom on the \
+    hills."
+set key[id=50201131] tooltipDescription "An Ellinia craft piece: baby birds take turns holding up the curtain."
+set key[id=50201132] tooltipDescription "An Ellinia craft piece: a bench that shows off fine woodwork."
+set key[id=50201133] tooltipDescription "A Perion-style officiant's podium, draped with cloth of ritual meaning."
+set key[id=50201134] tooltipDescription "A Perion craft piece covered in pretty woven cloth, nice and cushioned."
+set key[id=50201135] tooltipDescription "A Perion garden piece decorated with flowers from the canyons."
+set key[id=50201136] tooltipDescription "A Perion-style light stand that glows from within."
+set key[id=50201137] tooltipDescription "A Perion craft piece that wards off nightmares. In Tria it is called a \
+    dreamcatcher."
+set key[id=50201138] tooltipDescription "A Ludari-style sofa, soft and splendid."
+set key[id=50201139] tooltipDescription "Sky Fortress flooring that gives off a soft light."
+set key[id=50201140] tooltipDescription "A Sky Fortress light whose stylish stand and soft glow go well together."
+set key[id=50201141] tooltipDescription "A Sky Fortress stand piece that blooms even at night and gives off a \
+    sweet scent."
+set key[id=50201142] tooltipDescription "A large Ludari-style parasol that keeps the sun off well."
+set key[id=50201143] tooltipDescription "A soft Luxury Cruise sun bed. Lie on it once and you will have to buy \
+    one."
+set key[id=50201144] tooltipDescription "A Luxury Cruise table parasol that keeps the sun off well."
+set key[id=50201145] tooltipDescription "A Luxury Cruise banquet table tied with a big silk ribbon."
+set key[id=50201146] tooltipDescription "A magic flower bed that lines the aisle of the Luxury Cruise banquet \
+    hall."
+set key[id=50201147] tooltipDescription "A small bouquet that lines the aisle of the Luxury Cruise banquet hall."
+set key[id=50201148] tooltipDescription "A vase-shaped device that scatters petals, used at weddings all over \
+    Maple World."

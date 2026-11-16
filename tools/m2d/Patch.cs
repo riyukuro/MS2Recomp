@@ -47,9 +47,11 @@ using Maple2.File.IO;
 //   keep <tag> <key> <value,value,...>    the file's <tag> rows whose <key> is one of the values (leading zeros
 //                                         ignored) are left as they are by later copy-text ops: rows whose English
 //                                         source row (same id) is another item's text
-//   plural-of <tag> <key> <path>          every kept row of the file (keep) whose row with the same <key> in
+//   plural-of <tag> <key> <path> [<attr>=<value> ...]
+//                                         every kept row of the file (keep) whose row with the same <key> in
 //                                         <path> (a file this run already edits, e.g. the item name table) has an
-//                                         English name gets the English plural of that name as its name
+//                                         English name gets the English plural of that name as its name; so do
+//                                         rows whose name is still Korean and that have one of the attr=values
 //   add-words <tag> <key> <attr> <source>   every <tag> of the file appends to its '|'-separated word list <attr>
 //                                         the words of the source row with the same <key> that the file does not
 //                                         have yet (chat command keywords: Korean and English both work)
@@ -335,13 +337,22 @@ static class Patch {
                     var tag = t.Word();
                     var key = t.Word();
                     var path = t.Word();
+                    var also = new List<(string, string)>();   // Korean rows with one of these attributes
+                    while (t.More()) {
+                        var w = t.Word();
+                        var at = w.IndexOf('=');
+                        if (at <= 0) throw new PatchError($"{where}: plural-of: '{w}' is not attr=value");
+                        also.Add((w[..at], w[(at + 1)..]));
+                    }
+                    bool Pick(XElement e) => Cur().Kept.Contains(e) || HasHangul((string)e.Attribute("name") ?? "")
+                        && also.Any(a => (string)e.Attribute(a.Item1) == a.Item2);
                     if (!docs.TryGetValue(path, out var from))
                         throw new PatchError($"{where}: plural-of: {path} is not edited by an earlier file op");
                     var names = new Dictionary<string, string>();
                     foreach (var e in from.X.Root.Descendants(tag))
                         names.TryAdd(((string)e.Attribute(key) ?? "").TrimStart('0'), (string)e.Attribute("name"));
                     int done = 0, left = 0;
-                    foreach (var e in Cur().X.Root.Descendants(tag).Where(Cur().Kept.Contains)) {
+                    foreach (var e in Cur().X.Root.Descendants(tag).Where(Pick)) {
                         if (names.TryGetValue(((string)e.Attribute(key) ?? "").TrimStart('0'), out var nm)
                             && !string.IsNullOrWhiteSpace(nm) && !HasHangul(nm)) {
                             e.SetAttributeValue("name", Plural(nm.Trim()));
@@ -380,6 +391,8 @@ static class Patch {
         "Fish", "Sunfish", "Deer", "Sheep", "Cream", "Won", "Equipment", "Furniture", "Meat", "Dust",
     };
     static string Plural(string name) {
+        var colon = name.IndexOf(": ");   // "Title: Warm Groom" -> "Titles: Warm Groom"
+        if (colon > 0) return Plural(name[..colon]) + name[colon..];
         var m = Regex.Match(name, @"^(.*?)((?:\s*\([^()]*\))*)$");
         string head = m.Groups[1].Value, tail = m.Groups[2].Value;
         int sp = head.LastIndexOf(' ');
@@ -390,6 +403,7 @@ static class Patch {
         string pl;
         if (last.EndsWith("ss") || last.EndsWith("x") || last.EndsWith("z") || last.EndsWith("ch")
             || last.EndsWith("sh")) pl = last + "es";
+        else if (last.EndsWith("eaf")) pl = last[..^1] + "ves";   // Leaf -> Leaves
         else if (last.EndsWith("s")) pl = last;   // already plural (Frogs, Knuckles)
         else if (last.Length > 1 && last[^1] == 'y' && !"aeiou".Contains(char.ToLowerInvariant(last[^2])))
             pl = last[..^1] + "ies";
