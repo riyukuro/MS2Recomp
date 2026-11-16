@@ -25439,3 +25439,67 @@ set key[id=1121210204001207] name "$item:33000026$ is widely used as a material 
     it."
 set key[id=1121210204001208] name "So, how is it? You've got a bit of a knack for gathering $item:33000026$ now, \
     right?\nNext, let's try something else!"
+
+# Quest dialogue of the ShadowExpedition quests that no pack has in English (feature ShadowExpedition): our own
+# English for the 20 scriptquest rows of locale KR (or no locale) whose quest a player can get (3 quests), with each
+# row's own format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=714004211003240] name "<font color=\"#ffd200\">$MyPCName$!</font>\n$npc:11000119[gender:0]$ is looking \
+    for you. There's something to tell you.\nPlease hurry over."
+set key[id=714004211003241] name "<font color=\"#ffd200\">$MyPCName$!</font>\n$npc:11000119[gender:0]$ is looking \
+    for you. There's something to tell you.\nPlease hurry over."
+set key[id=714004211003242] name "<font color=\"#ffd200\">$MyPCName$!</font>\nYou came. I've been waiting."
+set key[id=714004211003243] name "$MyPCName$, on your way through $map:02000118$,\ndid you see a <font \
+    color=\"#ffd200\">suspicious door</font> rise up from the broken ground?\nI called you here to ask you to \
+    investigate it. "
+set key[id=714004211003244] name "The first to find that door that suddenly appeared was one of our Royal Guard \
+    soldiers.\nThat suspicious door is a <font color=\"#ffd200\">twisted passage of darkness leading who knows \
+    where</font>,\nand they say powerful monsters poisoned by the deep shadow's darkness dwell inside. "
+set key[id=714004211003245] name "So the Royal Guard has sent sentries there to protect the public.\nIt's \
+    fortunate that not just anyone can get close,\nbut such a thing appearing right outside $map:02000001$ is \
+    certainly a great threat."
+set key[id=714004211003246] name "We still know far too little about that place,\nso we're asking <font \
+    color=\"#ffd200\">skilled adventurers</font> who can push through that thick shadow\nto take on the challenge, \
+    investigate it in more detail, and weaken the overflowing power of darkness.\nUnder the name <font \
+    color=\"#ffd200\">Shadow Expedition</font>.\n"
+set key[id=714004211003247] name "I trust you won't fear a new challenge, but it will surely be hard....\nTake a \
+    moment to think, and if you decide to set out there,\ncome talk to me again. "
+set key[id=714004211003248] name "I trust you won't fear a new challenge, but it will surely be hard....\nTake a \
+    moment to think, and if you decide to set out and take it on,\ncome talk to me again. "
+set key[id=714004211003249] name "From what I've seen of you so far, $MyPCName$, you've done admirably.\nI believe \
+    you're qualified, so I'd like to ask you to <font color=\"#ffd200\">join the Shadow Expedition</font>.\nCan \
+    you lend us your strength? "
+set key[id=714004211003250] name "Of course I can."
+set key[id=714004211003251] name "Good. That's the answer I was waiting for.\nBrave $MyPCName$, I hereby give you \
+    the mission of the <font color=\"#ffd200\">Shadow Expedition</font>."
+set key[id=714004211003252] name "Now, would you go to the site and make a name for yourself with the <font \
+    color=\"#ffd200\">Shadow Expedition</font>?\nGo to the broken ground at $map:02000118$ and hear the \
+    explanation from <font color=\"#ffd200\">$npc:11001700[gender:0]$</font>.\nYou can go straight there through \
+    the path that opened behind me."
+set key[id=714004211003253] name "Now, would you go to the site and make a name for yourself with the <font \
+    color=\"#ffd200\">Shadow Expedition</font>?\nGo to the broken ground at $map:02000118$ and hear the \
+    explanation from <font color=\"#ffd200\">$npc:11001700[gender:0]$</font>.\nYou can go straight there through \
+    the path that opened behind me."
+set key[id=714004211003254] name "Welcome. I heard from $npc:11000119[gender:0]$.\nYou've agreed to <font \
+    color=\"#ffd200\">join the Shadow Expedition</font>, I hear.\nIt isn't much, but $npcName:11000119[gender:0]$ \
+    ordered me to tell $MyPCName$\n<font color=\"#ffd200\">what we've learned about this place so far</font>."
+set key[id=714004211003255] name "This door is a twisted space. Once you go in, there's no telling where you'll \
+    end up.\nHowever, one unusual thing is that this place is like a training ground waiting for challengers,\nso \
+    you must choose <font color=\"#ffd200\">how deep a level of darkness</font> and <font color=\"#ffd200\">how \
+    many will enter</font>."
+set key[id=714004211003256] name "Perhaps it's a rule set by the master of this passage, but the strength of the \
+    enemies here\nchanges depending on the <font color=\"#ffd200\">level</font> and the <font \
+    color=\"#ffd200\">number of challengers</font> you choose.\nHowever, to challenge a deeper level of darkness, \
+    you must have chosen to <font color=\"#ffd200\">enter the previous level\nalone</font> and <font \
+    color=\"#ffd200\">succeeded</font> at that challenge. "
+set key[id=714004211003257] name "As you explore this darkness, you can get <font \
+    color=\"#ffd200\">$item:90000018$</font>,\nwhich is used to grow <font color=\"#ffd200\">expedition-only \
+    traits</font> that can only be used here.\n<font color=\"#ffd200\">Expedition-only traits</font> are \
+    mysterious powers that work only inside the space of darkness\nconnected to this passage. They're a special \
+    ability\nfor those who have challenged more and deeper darkness."
+set key[id=714004211003258] name "Collect $item:90000018$ and learn the expedition-only traits,\nthen <font \
+    color=\"#ffd200\">activate</font> them when you enter, and you'll be able to use those abilities.\nAlso, if \
+    you use $item:90000018$ to <font color=\"#ffd200\">upgrade</font> the expedition-only traits,\nyou can make \
+    that power even stronger."
+set key[id=714004211003259] name "Now only the real thing is left, $MyPCName$.\nUnder the name of the Shadow \
+    Expedition, show us <font color=\"#ffd200\">your abilities</font>! "
