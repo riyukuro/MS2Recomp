@@ -59,14 +59,17 @@ using Maple2.File.IO;
 //
 // A selector is steps joined by '/': tag[attr=value][attr=value]. The first step matches at any depth, the
 // others match children. A step without a predicate matches every element of that tag; [attr=] matches an element
-// without that attribute or with it empty. Values are plain text, quoted with "..." (\" and \\ escapes, \n and \r
-// for line-break characters); an <element> is written as XML.
+// without that attribute or with it empty; [#=N] matches the Nth element of its tag among its siblings (from 1),
+// for rows with no plain-text key (trigger states and actions). Values are plain text, quoted with "..."
+// (\" and \\ escapes, \n and \r for line-break characters); an <element> is written as XML.
 static class Patch {
     sealed class Step {
         public string Tag;
         public List<(string, string)> Preds = new();
         public bool Match(XElement e) =>
-            e.Name.LocalName == Tag && Preds.All(p => ((string)e.Attribute(p.Item1) ?? "") == p.Item2);
+            e.Name.LocalName == Tag && Preds.All(p => p.Item1 == "#"
+                ? (e.ElementsBeforeSelf(e.Name).Count() + 1).ToString() == p.Item2
+                : ((string)e.Attribute(p.Item1) ?? "") == p.Item2);
         public override string ToString() => Tag + string.Concat(Preds.Select(p => $"[{p.Item1}={p.Item2}]"));
     }
 
@@ -560,6 +563,33 @@ static class Patch {
 
     // ---- selectors ----
 
+    // m2d selftest: the selector rules on a small document; exit 1 on the first failure.
+    public static int SelfTest() {
+        var root = XElement.Parse("<ms2><state name=\"a\"><onEnter><action name=\"x\" msg=\"1\"/>"
+            + "<action name=\"y\"/><action name=\"x\" msg=\"2\"/></onEnter></state>"
+            + "<state name=\"b\"><onEnter><action name=\"x\" msg=\"3\"/></onEnter></state><key id=\"k\"/></ms2>");
+        string Run(string sel) {
+            try {
+                var hits = Find(root, Sel(sel, "t"), "t", false);
+                return string.Join(",", hits.Select(e => (string)e.Attribute("msg") ?? "-"));
+            }
+            catch (PatchError) { return "error"; }
+        }
+        var cases = new (string, string)[] {
+            ("action[name=x]", "1,2,3"), ("state[#=1]/onEnter/action[#=3]", "2"),
+            ("state[#=2]/onEnter/action[#=1][name=x]", "3"), ("state[#=1]/onEnter/action[#=2][name=x]", ""),
+            ("action[#=1]", "1,3"), ("state[#=3]", ""), ("key[#=1][name=]", "-"),
+            ("state[#=0]", "error"), ("state[#=01]", "error"), ("state[#=x]", "error"),
+        };
+        int bad = 0;
+        foreach (var (sel, want) in cases) {
+            var got = Run(sel);
+            if (got != want) { Console.Error.WriteLine($"FAIL {sel}: got {got}, want {want}"); bad++; }
+        }
+        Console.WriteLine($"selftest: {cases.Length - bad}/{cases.Length} ok");
+        return bad == 0 ? 0 : 1;
+    }
+
     static string Show(List<Step> sel) => string.Join("/", sel);
 
     static List<Step> Sel(string text, string where) {
@@ -575,6 +605,9 @@ static class Patch {
                 if (rest[0] != '[' || close < 0 || eq < 0 || eq > close)
                     throw new PatchError($"{where}: selector {text}");
                 s.Preds.Add((rest[1..eq], rest[(eq + 1)..close]));
+                if (s.Preds[^1].Item1 == "#" && !(int.TryParse(s.Preds[^1].Item2, out var n) && n > 0
+                        && n.ToString() == s.Preds[^1].Item2))
+                    throw new PatchError($"{where}: selector {text}: [#=] takes a position from 1");
                 rest = rest[(close + 1)..];
             }
             steps.Add(s);

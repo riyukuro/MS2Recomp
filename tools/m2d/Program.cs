@@ -7,6 +7,7 @@
 //   m2d patch <KMS2 Data dir> [--gms <GMS Data dir>] <patch files...> --out <dir> [--repack]
 //                                                       see Patch.cs
 //   m2d hash <archive.m2d> <entry...>                   the pin of each entry (Patch.cs)
+//   m2d selftest                                        check the patch selector rules (Patch.cs)
 using Maple2.File.IO;
 using Maple2.File.IO.Crypto.Common;
 
@@ -16,6 +17,7 @@ static int Usage() {
         + " | patch <KMS2 Data> [--gms <GMS Data>] <patch...> --out <dir> [--repack] | hash <m2d> <entry...>");
     return 2;
 }
+if (args.Length == 1 && args[0] == "selftest") return Patch.SelfTest();
 if (args.Length < 2) return Usage();
 switch (args[0]) {
     case "list": {
