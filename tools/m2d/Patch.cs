@@ -65,6 +65,10 @@ using Maple2.File.IO;
 //   text <id> "<value>"                   in a gfx: the initial text of the DefineEditText with character id <id>
 //   field <id> <prop> <value>             in a gfx: a layout property of that DefineEditText: wrap 0|1 (word
 //                                         wrap), multiline 0|1, or size <px> (font height)
+//   code <old> <new>                      in a gfx: replace the AS3 bytecode <old> (hex) with <new> in the one
+//                                         method body that holds it (it must occur once in the movie); the body's
+//                                         code length is rewritten, branch offsets are not: <old> must end the
+//                                         method or keep its length, and no branch may target its inside
 //   string <hash> "<value>"               a replacement for the movie text whose UTF-8 bytes hash to <hash> (the
 //                                         first 16 hex digits of their SHA-256), for this patch file's strings ops
 //   strings                               in a gfx: replace every DoABC constant-pool string and edit-text initial
@@ -354,6 +358,24 @@ static class Patch {
                     }
                     if (k == 0) throw new PatchError($"{where}: no edit text with id {id}");
                     changed += k;
+                    break;
+                }
+                case "code": {
+                    byte[] Hex(string w) {
+                        try { return Convert.FromHexString(w); }
+                        catch (FormatException) { throw new PatchError($"{where}: code: {w}: expected hex bytes"); }
+                    }
+                    var old = Hex(t.Word());
+                    var neu = Hex(t.Word());
+                    int k;
+                    try { k = CurG().ReplaceCode(old, neu); }
+                    catch (Exception ex) when (ex is InvalidDataException or IndexOutOfRangeException) {
+                        throw new PatchError($"{where}: code: the movie's abc data is not readable: {ex.Message}");
+                    }
+                    if (k != 1)
+                        throw new PatchError($"{where}: code: the sequence is in {k} places of the movie's code, "
+                            + "expected 1");
+                    changed++;
                     break;
                 }
                 case "string": {

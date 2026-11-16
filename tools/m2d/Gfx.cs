@@ -272,6 +272,101 @@ sealed class Gfx {
         return n;
     }
 
+    // ---- DoABC method bodies ----
+
+    // the code of each method body of a DoABC body: (offset of its code_length, offset of the code, code length)
+    static List<(int, int, int)> Bodies(byte[] b, int code) {
+        var (_, _, p) = Pool(b, code);
+        int U() { var (v, q) = U30(b, p); p = q; return v; }
+        int n = U();
+        for (int i = 1; i < n; i++) { p++; U(); }                          // namespaces
+        n = U();
+        for (int i = 1; i < n; i++) { int k = U(); for (int j = 0; j < k; j++) U(); }   // namespace sets
+        n = U();
+        for (int i = 1; i < n; i++) {                                      // multinames
+            int kind = b[p++];
+            switch (kind) {
+                case 0x07: case 0x0d: case 0x09: case 0x0e: U(); U(); break;
+                case 0x0f: case 0x10: case 0x1b: case 0x1c: U(); break;
+                case 0x11: case 0x12: break;
+                case 0x1d: { U(); int k = U(); for (int j = 0; j < k; j++) U(); break; }
+                default: throw new InvalidDataException($"abc: multiname kind {kind:x}");
+            }
+        }
+        n = U();
+        for (int i = 0; i < n; i++) {                                      // method signatures
+            int pc = U(); U();
+            for (int j = 0; j < pc; j++) U();
+            U();
+            int fl = b[p++];
+            if ((fl & 8) != 0) { int k = U(); for (int j = 0; j < k; j++) { U(); p++; } }
+            if ((fl & 0x80) != 0) for (int j = 0; j < pc; j++) U();
+        }
+        n = U();
+        for (int i = 0; i < n; i++) { U(); int k = U(); for (int j = 0; j < k; j++) { U(); U(); } }   // metadata
+        void Traits() {
+            int k = U();
+            for (int j = 0; j < k; j++) {
+                U();
+                int kind = b[p++];
+                switch (kind & 0xf) {
+                    case 0: case 6: U(); U(); if (U() != 0) p++; break;
+                    default: U(); U(); break;
+                }
+                if ((kind & 0x40) != 0) { int m = U(); for (int x = 0; x < m; x++) U(); }
+            }
+        }
+        int nc = U();
+        for (int i = 0; i < nc; i++) {                                     // instances
+            U(); U();
+            int fl = b[p++];
+            if ((fl & 8) != 0) U();
+            int k = U();
+            for (int j = 0; j < k; j++) U();
+            U();
+            Traits();
+        }
+        for (int i = 0; i < nc; i++) { U(); Traits(); }                    // classes
+        n = U();
+        for (int i = 0; i < n; i++) { U(); Traits(); }                     // scripts
+        n = U();
+        var list = new List<(int, int, int)>();
+        for (int i = 0; i < n; i++) {
+            U(); U(); U(); U(); U();
+            int lenAt = p, len = U();
+            list.Add((lenAt, p, len));
+            p += len;
+            int k = U();
+            for (int j = 0; j < k; j++) { U(); U(); U(); U(); U(); }
+            Traits();
+        }
+        return list;
+    }
+
+    // replace the code sequence <old> with <neu> in the one method body that holds it (it must occur exactly once
+    // in all the movie's DoABC code, and no branch may cross it: the caller picks a sequence that ends the method or
+    // has the same length); the body's code length is rewritten. Returns the number of matches (0 or 2+: nothing
+    // written)
+    public int ReplaceCode(byte[] old, byte[] neu) {
+        var hits = new List<(Tag, int, int, int, int)>();
+        foreach (var t in All(tags).Where(t => t.Code == 82 || t.Code == 72))
+            foreach (var (lenAt, st, len) in Bodies(t.Body, t.Code))
+                for (int i = st; i + old.Length <= st + len; i++)
+                    if (t.Body.AsSpan(i, old.Length).SequenceEqual(old)) hits.Add((t, lenAt, st, len, i));
+        if (hits.Count != 1) return hits.Count;
+        var (tag, at, start, n, pos) = hits[0];
+        var b = Splice(tag.Body, pos, pos + old.Length, neu);
+        using var m = new MemoryStream();
+        PutU30(m, n - old.Length + neu.Length);
+        tag.Body = Splice(b, at, start, m.ToArray());
+        return 1;
+    }
+
+    // the code of every method body, for the selftest
+    List<byte[]> Codes() =>
+        All(tags).Where(t => t.Code == 82 || t.Code == 72)
+            .SelectMany(t => Bodies(t.Body, t.Code).Select(x => t.Body[x.Item2..(x.Item2 + x.Item3)])).ToList();
+
     // the edit-text initial texts (id, text) and pool strings, for the selftest and for writing patches
     public List<(int, string)> Texts() =>
         All(tags).Where(t => t.Code == 37).Select(t => (t, EditText(t.Body)))
@@ -324,7 +419,11 @@ sealed class Gfx {
                 var u = Encoding.UTF8.GetBytes(s); PutU30(p, u.Length); p.Write(u);
             }
             a.Write(p.ToArray());
-            a.Write(new byte[] { 0xAB, 0xCD });                   // the rest of the abc data, copied as is
+            // no namespaces, sets, multinames; one method without params; no metadata, classes or scripts; its
+            // body: stack 1, 1 local, scopes 0..1, 124 nops and returnvoid, no exceptions, no traits
+            a.Write(new byte[] { 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 125 });
+            for (int i = 0; i < 124; i++) a.WriteByte(0x02);
+            a.Write(new byte[] { 0x47, 0, 0 });
             Tag(m, 82, a.ToArray());
         }
         Tag(m, 1, Array.Empty<byte>());
@@ -359,6 +458,15 @@ sealed class Gfx {
             var b = back.Bytes();
             Check($"length z={z}", BitConverter.ToInt32(b, 4).ToString(), (8 + new Gfx(b).BodyLength()).ToString());
             Check("missing id", g.SetText(7, "y").ToString(), "0");
+            Check($"code ambiguous z={z}", back.ReplaceCode(new byte[] { 2, 2 }, new byte[] { 3 }).ToString(), "123");
+            var tailOld = new byte[] { 2, 2, 0x47 };
+            var tailNew = new byte[] { 2, 2, 0xd0, 0x29, 2, 2, 2, 2, 2, 2, 2, 2, 0x47 };   // the length goes past 127
+            Check($"code z={z}", back.ReplaceCode(tailOld, tailNew).ToString(), "1");
+            var code = new Gfx(back.Bytes()).Codes();
+            Check($"code reread z={z}", code.Count + " " + code[0].Length + " " + Convert.ToHexString(code[0][^14..]),
+                "1 135 020202D029020202020202020247");
+            Check($"code strings kept z={z}", string.Join(",", new Gfx(back.Bytes()).Strings()),
+                "alpha,BETA longer,TOP");
             Check($"field before z={z}", back.Field(1).ToString(), "(False, False, 300)");
             back.SetField(1, "wrap", "1"); back.SetField(1, "multiline", "1"); back.SetField(2, "size", "12.5");
             var f = new Gfx(back.Bytes());
