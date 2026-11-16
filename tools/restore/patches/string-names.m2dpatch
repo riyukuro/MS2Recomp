@@ -18285,3 +18285,235 @@ set quest[questID=95000008] desc "Wear a full set of the Illusionist skin to com
     $item:12200536$"
 set quest[questID=95000008] manual "Wear every piece of the Illusionist skin"
 set quest[questID=95000008] complete "Talk to $npc:11001612$ in $map:02000001$ or $map:02010002$"
+
+# System mails that no pack has in English: our own English for the 55 mails that are not dated event
+# mails (housing, wedding, dungeon rank rewards and the like), with each row's own format fields and line breaks.
+file Xml/string/kr/systemmailcontentkr.xml kms:Xml/string/kr/systemmailcontentkr.xml de7a6c87e4d434b5
+set mail[id=30000001] sender "Property Manager"
+set mail[id=30000001] subject "Your recovered items have arrived."
+set mail[id=30000001] content "Your recovered items have arrived.\nPlease clear some inventory space and collect \
+    them."
+set mail[id=40000001] sender "Divorce Lawyer Haindeul"
+set mail[id=40000001] subject "Your divorce request has been submitted."
+set mail[id=40000001] content "You have filed for divorce from {0}. \nThe divorce cooling-off period lasts until \
+    {1}. If {0} agrees to the divorce within this period, the divorce fee will be refunded. \nIf the other party \
+    does not agree, the marriage stays in effect until the cooling-off period ends. \nWhen the cooling-off period \
+    ends, the divorce becomes final, and all couple benefits and activity records, including affinity, are reset. \
+    \nOnce the divorce is complete, you cannot propose or marry for 48 hours."
+set mail[id=40000002] sender "Divorce Lawyer Haindeul"
+set mail[id=40000002] subject "You have received a divorce request."
+set mail[id=40000002] content "{0} has filed for divorce. \nThe divorce cooling-off period lasts until {1}. If you \
+    agree to the divorce within this period, it becomes final at once and the divorce fee paid by {0} will be \
+    refunded. \nIf you do not agree, the marriage stays in effect until the cooling-off period ends. \nWhen the \
+    cooling-off period ends, the divorce becomes final, and all couple benefits and activity records, including \
+    affinity, are reset. \nOnce the divorce is complete, you cannot propose or marry for 48 hours."
+set mail[id=40000003] sender "Divorce Lawyer Haindeul"
+set mail[id=40000003] subject "Your divorce is complete."
+set mail[id=40000003] content "Your partner agreed to the divorce, and it is now complete. \nBecause your partner \
+    agreed, the divorce fee you paid will be refunded. \nYou cannot propose or marry for the next 48 hours."
+set mail[id=40000004] sender "Divorce Lawyer Haindeul"
+set mail[id=40000004] subject "Your divorce is complete."
+set mail[id=40000004] content "Your divorce is complete. \nYou cannot propose or marry for the next 48 hours."
+set mail[id=40000005] sender "Divorce Lawyer Haindeul"
+set mail[id=40000005] subject "The cooling-off period has ended and your divorce is complete."
+set mail[id=40000005] content "The divorce cooling-off period has ended, and your divorce is complete.\nYou cannot \
+    propose or marry for the next 48 hours."
+set mail[id=40000006] sender "System Administrator"
+set mail[id=40000006] subject "Your engagement has been canceled."
+set mail[id=40000006] content "Your engagement was canceled because no wedding was held within the engagement \
+    period.\nTo marry, you will need to propose to your partner again from the start.\nBuy [$item:20001697$] at \
+    [$map:84000001$], and you can propose while standing in the same map as your partner."
+set mail[id=40000007] sender "Divorce Lawyer Haindeul"
+set mail[id=40000007] subject "Your divorce request has been canceled."
+set mail[id=40000007] content "Your divorce request has been canceled.\nYour marriage remains in effect.\n\nThe \
+    fee {0} paid when filing for divorce will not be refunded."
+set mail[id=40000008] sender "Wedding Planner"
+set mail[id=40000008] subject "Your wedding hall has been reserved."
+set mail[id=40000008] content "Your wedding hall reservation is complete.\nWe are sending you a reservation bonus \
+    item, so please check the attachment.\n\nNow, go and plan a happy and beautiful wedding!"
+set mail[id=40000009] sender "Wedding Planner"
+set mail[id=40000009] subject "Your wedding hall reservation has been changed."
+set mail[id=40000009] content "We are writing to let you know that your wedding hall reservation has been \
+    changed.\nAs the reservation has changed, we are also upgrading your reservation bonus. \nPlease check the \
+    attached item.\n\nNow, go and plan a happy and beautiful wedding!\n\n(If you changed to a wedding hall of the \
+    same grade, no additional bonus will be given.)"
+set mail[id=40000010] sender "Wedding Planner"
+set mail[id=40000010] subject "Your wedding is complete."
+set mail[id=40000010] content "Your wedding is complete, and the wedding hall is sending you a wedding gift. \
+    \nPlease check the attached item.\n\nWe wish you both a happy married life. May your path be strewn with \
+    flowers!"
+set mail[id=40000011] sender "Divorce Lawyer Mia"
+set mail[id=40000011] subject "Your divorce is complete."
+set mail[id=40000011] content "Your amicable divorce is complete. \nYou cannot propose or marry for the next 48 \
+    hours."
+set mail[id=40000012] sender "System Administrator"
+set mail[id=40000012] subject "Your merets used for the wedding reservation have been returned."
+set mail[id=40000012] content "Your wedding could not be held properly at the hall you reserved, so it was \
+    canceled automatically.\nThe merets you used to reserve the wedding hall have been returned."
+set mail[id=40000013] sender "Wedding Planner"
+set mail[id=40000013] subject "Here is a coupon for a free wedding hall reservation."
+set mail[id=40000013] content "Your wedding hall reservation has been canceled as requested.\nBecause your partner \
+    agreed to the cancellation, we are sending you a coupon for a free reservation of a wedding hall of the same \
+    grade as the one you reserved.\nThe coupon is valid for 30 days after it is issued, so please be sure to make \
+    your reservation within that time."
+set mail[id=40000014] sender "System Administrator"
+set mail[id=40000014] subject "Here is a coupon for a free wedding hall reservation."
+set mail[id=40000014] content "Your wedding could not be held properly at the hall you reserved, so it was \
+    canceled automatically.\nWe are sending you a free reservation coupon for a wedding hall.\nCarry the coupon to \
+    the Wedding Planner and reserve a wedding hall of the same grade as the one you reserved, and you can pay with \
+    the coupon.\nThe coupon is valid for 30 days after it is issued, so please be sure to make your reservation \
+    within that time."
+set mail[id=50000011] subject "[Internet Cafe Time Event] 60-Minute Login Gift Arrived"
+set mail[id=50000011] content "Your Internet Cafe login time event gift has arrived.\nLog in from an Internet cafe \
+    every day and receive gifts!\n\n(Note) Items attached to this mail will be deleted along with the mail if you \
+    do not move them to your inventory within 30 days, so please collect them soon.\n\nCollected items can be \
+    moved freely to other characters on your account through the Vault NPC in major cities such as Tria.\n\nThank \
+    you."
+set mail[id=50000012] subject "[Internet Cafe Time Event] 90-Minute  Login Gift Arrived"
+set mail[id=50000012] content "Your Internet Cafe login time event gift has arrived.\nLog in from an Internet cafe \
+    every day and receive gifts!\n\n(Note) Items attached to this mail will be deleted along with the mail if you \
+    do not move them to your inventory within 30 days, so please collect them soon.\n\nCollected items can be \
+    moved freely to other characters on your account through the Vault NPC in major cities such as Tria.\n\nThank \
+    you."
+set mail[id=50000013] subject "[Internet Cafe Time Event] 120-Minute  Login Gift Arrived"
+set mail[id=50000013] content "Your Internet Cafe login time event gift has arrived.\nLog in from an Internet cafe \
+    every day and receive gifts!\n\n(Note) Items attached to this mail will be deleted along with the mail if you \
+    do not move them to your inventory within 30 days, so please collect them soon.\n\nCollected items can be \
+    moved freely to other characters on your account through the Vault NPC in major cities such as Tria.\n\nThank \
+    you."
+set mail[id=50000014] subject "[Internet Cafe Time Event] 150-Minute  Login Gift Arrived"
+set mail[id=50000014] content "Your Internet Cafe login time event gift has arrived.\nLog in from an Internet cafe \
+    every day and receive gifts!\n\n(Note) Items attached to this mail will be deleted along with the mail if you \
+    do not move them to your inventory within 30 days, so please collect them soon.\n\nCollected items can be \
+    moved freely to other characters on your account through the Vault NPC in major cities such as Tria.\n\nThank \
+    you."
+set mail[id=50000015] subject "[Internet Cafe Time Event] 180-Minute  Login Gift Arrived"
+set mail[id=50000015] content "Your Internet Cafe login time event gift has arrived.\nLog in from an Internet cafe \
+    every day and receive gifts!\n\n(Note) Items attached to this mail will be deleted along with the mail if you \
+    do not move them to your inventory within 30 days, so please collect them soon.\n\nCollected items can be \
+    moved freely to other characters on your account through the Vault NPC in major cities such as Tria.\n\nThank \
+    you."
+set mail[id=50000016] subject "[Internet Cafe Time Event] Login Gift Arrived"
+set mail[id=50000016] content "Your Internet Cafe login time event gift has arrived.\nLog in from an Internet cafe \
+    every day and receive gifts!\n\n(Note) Items attached to this mail will be deleted along with the mail if you \
+    do not move them to your inventory within 30 days, so please collect them soon.\n\nCollected items can be \
+    moved freely to other characters on your account through the Vault NPC in major cities such as Tria.\n\nThank \
+    you."
+set mail[id=50000017] subject "[Internet Cafe Time Event] 5-Minute  Login Gift Arrived"
+set mail[id=50000017] content "Your Internet Cafe login time event gift has arrived.\nLog in from an Internet cafe \
+    every day and receive gifts!\n\n(Note) Items attached to this mail will be deleted along with the mail if you \
+    do not move them to your inventory within 30 days, so please collect them soon.\n\nCollected items can be \
+    moved freely to other characters on your account through the Vault NPC in major cities such as Tria.\n\nThank \
+    you."
+set mail[id=50000018] subject "[Internet Cafe Time Event] 30-Minute  Login Gift Arrived"
+set mail[id=50000018] content "Your Internet Cafe login time event gift has arrived.\nLog in from an Internet cafe \
+    every day and receive gifts!\n\n(Note) Items attached to this mail will be deleted along with the mail if you \
+    do not move them to your inventory within 30 days, so please collect them soon.\n\nCollected items can be \
+    moved freely to other characters on your account through the Vault NPC in major cities such as Tria.\n\nThank \
+    you."
+set mail[id=50000019] subject "[Internet Cafe Time Event] 90-Minute  Login Gift Arrived"
+set mail[id=50000019] content "Your Internet Cafe login time event gift has arrived.\nLog in from an Internet cafe \
+    every day and receive gifts!\n\n(Note) Items attached to this mail will be deleted along with the mail if you \
+    do not move them to your inventory within 30 days, so please collect them soon.\n\nCollected items can be \
+    moved freely to other characters on your account through the Vault NPC in major cities such as Tria.\n\nThank \
+    you."
+set mail[id=50000020] subject "[Payback Event] Your payback reward for month {0} has been delivered."
+set mail[id=50000020] content "Your payback reward for month {0} of {1} merets has been delivered.\n\n[Details]\n- \
+    Total payback achievement rate: {2}%\n- Adventure level gained during the period: level {3}\n- Total merets \
+    spent on the Orange Mushroom's Power-Up Capsule: {4} merets"
+set mail[id=50001006] subject "[Exceptional Weapon Support] Level 30 Weapon Package Arrived"
+set mail[id=50001006] content "Congratulations.\nYour level 30 weapon box and design item have arrived.\n\nDuring \
+    the event, we are providing an Exceptional weapon package and a design item every 5 levels from level 1 to \
+    level 30. \nUse these items \nto enjoy MapleStory 2 even more!\n\nDouble-click the Exceptional weapon package \
+    attached to this mail, \nand you will receive an Exceptional weapon you can use right away.\nExceptional \
+    weapons you receive remain usable after the event ends.\n\n(Note) Items attached to this mail will be deleted \
+    along with the mail if you do not move them to your inventory within 30 days, so please collect them \
+    quickly.\nExceptional weapon boxes and the items inside them cannot be moved between characters."
+set mail[id=51000002] sender "Rabbit Girl Myowol"
+set mail[id=51000002] subject "[Harvest Festival Event] Bunny Bunny Candy Arrived!"
+set mail[id=51000002] content "Hello! This is Myowol, the rabbit girl!\n\nBring the Bunny Bunny Candy I just sent \
+    you, and you can join the Harvest Festival event in Queens Town.\nThis year I have prepared a Lucky Spin full \
+    of wonderful items.\n\nDuring the Harvest Festival event, you can receive up to 3 Bunny Bunny Candies per day \
+    depending on your login time. They cannot be used after the event ends, so don't hold back and give it a \
+    try!\n\nOh, and if you want to give some to another character, you can leave them in the vault and move them, \
+    so there is nothing to worry about~\n\nI'll be waiting for you in Queens Town!\nThe event ends after the \
+    maintenance on October 8, 2015, so be sure to come before it ends~\n"
+set mail[id=51000003] sender "Bunny Gal Happy"
+set mail[id=51000003] subject "[100 Days Event] 100 Days Commemorative Cake Arrived!"
+set mail[id=51000003] content "Hello! This is Happy, the bunny girl!\n\nBring the 100 Days Commemorative Cake I \
+    just sent you, and you can join the event in Queens Town.\nTo celebrate 100 days, I have prepared a Lucky Spin \
+    full of wonderful items.\n\nDuring the event, you can receive up to 9 Commemorative Cakes per day depending on \
+    your login time, and 1 more from the attendance check. The Lucky Spin cannot be used after the event ends, so \
+    don't hold back and give it a try!\n\nOh, and if you want to give some to another character, you can leave \
+    them in the vault and move them, so there is nothing to worry about~\n\nI'll be waiting for you in Queens \
+    Town!\nThe event ends after the maintenance on October 29, 2015, so be sure to come before it ends~\n"
+set mail[id=51000004] sender "Papa Santa"
+set mail[id=51000004] subject "[Christmas Event] Christmas Cookies Arrived!"
+set mail[id=51000004] content "Ho ho ho!! Greetings, adventurers. \n\nEvery 30 minutes, I, Papa Santa, will send \
+    you 5 piping hot cookies I baked myself. Gather the cookies and visit my dear friend 'Santa Rudolph' in Queens \
+    Town.\nI hear Rudolph has prepared all sorts of Christmas items, so go and have a look. Ho ho ho!!\nYou can \
+    also find Christmas cookies in the 'Christmas Tree' bonus map, so don't miss it when you see the red bonus \
+    hat!\n\nChristmas cookies can only be used until the maintenance on December 31, so be careful!\nMerry \
+    Christmas!"
+set mail[id=51000005] sender "Dangdang"
+set mail[id=51000005] subject "[New Continent Event] Karkar Commemorative Coin Arrived!"
+set mail[id=51000005] content "Greetings, human! \nI am Dangdang, a merchant who collects Karkar Commemorative \
+    Coins!\n\nI like humans! I will give you gifts!\nFrom December 31 to January 28, to everyone who logs in every \
+    day, \nI will give 4 Karkar Commemorative Coins every 30 minutes! \nGather the coins and come to me, and I \
+    will trade them for all sorts of items!\nUntil January 3, play for 2 hours and I will give you a special gift! \
+    It holds many good things, so be sure to take it!\n\nBesides the coins I send you for your login time, \nyou \
+    can also get extra Karkar Coins by doing various activities in the Karkar region!\nGather more coins in the \
+    Karkar region and bring them to me!\n\nI will be waiting in Queens Town or Ludeli City!\n\n"
+set mail[id=51000006] subject "Long-Time Maple Box Arrived!"
+set mail[id=51000006] content "Hello!\nThank you for playing MapleStory 2.\nWe have prepared a small gift for \
+    adventurers who play for a long time.\n\nFrom April 14 until the maintenance on May 12, we will give you 1 \
+    'Long-Time Maple Box' \nevery hour, up to 3 times a day.\n\nThe boxes hold items that should help you on your \
+    adventures, so come and collect your gift every day.\nHave a happy day today as well."
+set mail[id=53000000] subject "[Dungeon Rank Reward] Weekly Rank Achievement Gift Arrived!"
+set mail[id=53000000] content "Your weekly rank achievement gift has arrived."
+set mail[id=53000093] subject "[Dungeon Rank Reward] Illusory Horus's Nest Rank A Gift Arrived!"
+set mail[id=53000093] content "Your Rank A gift for Illusory Horus's Nest has arrived."
+set mail[id=53000094] subject "[Dungeon Rank Reward] Illusory Horus's Nest Rank S Gift Arrived!"
+set mail[id=53000094] content "Your Rank S gift for Illusory Horus's Nest has arrived."
+set mail[id=53000095] subject "[Dungeon Rank Reward] Illusory Horus's Nest Rank S+ Gift Arrived!"
+set mail[id=53000095] content "Your Rank S+ gift for Illusory Horus's Nest has arrived."
+set mail[id=53000096] subject "[Dungeon Rank Reward] Rumbling Black Bean Playground Rank C Gift Arrived!"
+set mail[id=53000096] content "Your Rank C gift for Rumbling Black Bean Playground has arrived."
+set mail[id=53000097] subject "[Dungeon Rank Reward] Rumbling Black Bean Playground Rank B Gift Arrived!"
+set mail[id=53000097] content "Your Rank B gift for Rumbling Black Bean Playground has arrived."
+set mail[id=53000098] subject "[Dungeon Rank Reward] Rumbling Black Bean Playground Rank A Gift Arrived!"
+set mail[id=53000098] content "Your Rank A gift for Rumbling Black Bean Playground has arrived."
+set mail[id=53000099] subject "[Dungeon Rank Reward] Rumbling Black Bean Playground Rank S Gift Arrived!"
+set mail[id=53000099] content "Your Rank S gift for Rumbling Black Bean Playground has arrived."
+set mail[id=53000100] subject "[Dungeon Rank Reward] Rumbling Black Bean Playground Rank S+ Gift Arrived!"
+set mail[id=53000100] content "Your Rank S+ gift for Rumbling Black Bean Playground has arrived."
+set mail[id=53000101] subject "[Dungeon Rank Reward] Illusory Shadow Altar Rank C Gift Arrived!"
+set mail[id=53000101] content "Your Rank C gift for Illusory Shadow Altar has arrived."
+set mail[id=53000102] subject "[Dungeon Rank Reward] Illusory Shadow Altar Rank B Gift Arrived!"
+set mail[id=53000102] content "Your Rank B gift for Illusory Shadow Altar has arrived."
+set mail[id=53000103] subject "[Dungeon Rank Reward] Illusory Shadow Altar Rank A Gift Arrived!"
+set mail[id=53000103] content "Your Rank A gift for Illusory Shadow Altar has arrived."
+set mail[id=53000104] subject "[Dungeon Rank Reward] Illusory Shadow Altar Rank S Gift Arrived!"
+set mail[id=53000104] content "Your Rank S gift for Illusory Shadow Altar has arrived."
+set mail[id=53000105] subject "[Dungeon Rank Reward] Illusory Shadow Altar Rank S+ Gift Arrived!"
+set mail[id=53000105] content "Your Rank S+ gift for Illusory Shadow Altar has arrived."
+set mail[id=53000106] subject "[Dungeon Rank Reward] Otherworld Playground Rank C Gift Arrived!"
+set mail[id=53000106] content "Your Rank C gift for Otherworld Playground has arrived."
+set mail[id=53000107] subject "[Dungeon Rank Reward] Otherworld Playground Rank B Gift Arrived!"
+set mail[id=53000107] content "Your Rank B gift for Otherworld Playground has arrived."
+set mail[id=53000108] subject "[Dungeon Rank Reward] Otherworld Playground Rank A Gift Arrived!"
+set mail[id=53000108] content "Your Rank A gift for Otherworld Playground has arrived."
+set mail[id=53000109] subject "[Dungeon Rank Reward] Otherworld Playground Rank S Gift Arrived!"
+set mail[id=53000109] content "Your Rank S gift for Otherworld Playground has arrived."
+set mail[id=53000110] subject "[Dungeon Rank Reward] Otherworld Playground Rank S+ Gift Arrived!"
+set mail[id=53000110] content "Your Rank S+ gift for Otherworld Playground has arrived."
+set mail[id=53000111] subject "[Dungeon Rank Reward] Chaos of Blue Flames Rank C Gift Arrived!"
+set mail[id=53000111] content "Your Rank C gift for Chaos of Blue Flames has arrived."
+set mail[id=53000112] subject "[Dungeon Rank Reward] Chaos of Blue Flames Rank B Gift Arrived!"
+set mail[id=53000112] content "Your Rank B gift for Chaos of Blue Flames has arrived."
+set mail[id=53000113] subject "[Dungeon Rank Reward] Chaos of Blue Flames Rank A Gift Arrived!"
+set mail[id=53000113] content "Your Rank A gift for Chaos of Blue Flames has arrived."
+set mail[id=53000114] subject "[Dungeon Rank Reward] Chaos of Blue Flames Rank S Gift Arrived!"
+set mail[id=53000114] content "Your Rank S gift for Chaos of Blue Flames has arrived."
+set mail[id=53000115] subject "[Dungeon Rank Reward] Chaos of Blue Flames Rank S+ Gift Arrived!"
+set mail[id=53000115] content "Your Rank S+ gift for Chaos of Blue Flames has arrived."
