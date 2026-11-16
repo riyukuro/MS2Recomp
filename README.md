@@ -173,6 +173,12 @@ tables from the client packs are copied by id from your copies, and the only tex
   labels are 14 px. No field is moved or resized; labels too long even at 11 px get shorter English in
   `string-names.m2dpatch`. The trophy tooltip lays out its labels at run time and needs no fix. Apply it with
   `--repack`; we have not checked whether the client reads loose gfx files.
+- `gfx-images.m2dpatch`: our own pixels for Korean text baked into a UI texture: the red "Equipped" tag on the
+  icons of equipped items (inventory, socket and enchant lists), two 40x13 sub-images of the common image atlas
+  `kr/commonimage_i1.dds`. The tag is drawn from scratch for this patch (`patches/images/equipped.png`, our own
+  red tag in Open Sans Condensed ExtraBold) and written into those rectangles (`dds`, `blit`); the rest of the
+  atlas stays byte-identical, and no pixel of the original is held here. Apply it with `--repack` like the gfx
+  patch.
 - `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that
   turns on the `DailyMission` feature in its own `feature.xml`. No patch changes `feature.xml`.
 
@@ -183,11 +189,11 @@ dotnet run --project tools/m2d -- patch <KMS2 client>/Data --gms <global client>
     tools/restore/patches/triggers.m2dpatch --out <KMS2 client>/Data
 ```
 
-The gfx patch, into another directory with `--repack` (add it to the list above to write all the packs at once):
+The gfx patches, into another directory with `--repack` (add it to the list above to write all the packs at once):
 
 ```
 dotnet run --project tools/m2d -- patch <KMS2 client>/Data tools/restore/patches/gfx-text.m2dpatch \
-    --out <dir> --repack
+    tools/restore/patches/gfx-images.m2dpatch --out <dir> --repack
 ```
 
 This writes the patched files as loose files under `--out` (`Xml/itemdata/209.xml`, `Xml/string/kr/...`), where

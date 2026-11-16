@@ -55,6 +55,10 @@ using Maple2.File.IO;
 //                                         (or any such row, with *)
 //   gfx <path> <source> <pin>             start editing a Scaleform movie (Resource/Gfx/<name>.gfx, see Gfx.cs);
 //                                         a bare kms: or gms: source means that pack's file at <path>
+//   dds <path> <source> <pin>             start editing an uncompressed 32-bit texture (a UI atlas, see Dds.cs);
+//                                         a bare kms: or gms: source means that pack's file at <path>
+//   blit <x> <y> <png>                    in a dds: write the pixels of <png> (8-bit RGBA or RGB, a path relative
+//                                         to the patch file) into the rectangle at <x>,<y> of the texture
 //   text <id> "<value>"                   in a gfx: the initial text of the DefineEditText with character id <id>
 //   field <id> <prop> <value>             in a gfx: a layout property of that DefineEditText: wrap 0|1 (word
 //                                         wrap), multiline 0|1, or size <px> (font height)
@@ -86,6 +90,7 @@ static class Patch {
     sealed class Doc {
         public XDocument X; public string Decl; public bool Bom; public string Source;
         public Gfx G;                                      // a movie (gfx op) instead of an XML document
+        public Dds D;                                      // a texture (dds op)
         public readonly HashSet<XElement> Kept = new();   // rows copy-text leaves alone (keep)
     }
 
@@ -223,8 +228,9 @@ static class Patch {
                 return b;
             }
             Doc Cur() => cur == null ? throw new PatchError($"{where}: no file op before {op}")
-                : cur.G != null ? throw new PatchError($"{where}: {op} needs an XML file, not a gfx") : cur;
+                : cur.G != null || cur.D != null ? throw new PatchError($"{where}: {op} needs an XML file") : cur;
             Gfx CurG() => cur?.G ?? throw new PatchError($"{where}: no gfx op before {op}");
+            Dds CurD() => cur?.D ?? throw new PatchError($"{where}: no dds op before {op}");
             XElement Single(Doc from, List<Step> sel, string src) {
                 var hits = Find(from.X.Root, sel, where, false).ToList();
                 if (hits.Count != 1)
@@ -276,6 +282,35 @@ static class Patch {
                     }
                     if (docs.TryGetValue(path, out var have)) cur = have;
                     else { cur = new Doc { G = g, Source = src }; docs[path] = cur; order.Add(path); }
+                    break;
+                }
+                case "dds": {
+                    var path = t.Word();
+                    Split(path);
+                    var src = t.Word();
+                    if (src == "kms:" || src == "gms:") src += path;
+                    pins[src] = t.Word().ToLowerInvariant();
+                    Dds dd;
+                    try { dd = new Dds(Source(src)); }
+                    catch (InvalidDataException ex) { throw new PatchError($"{where}: {src}: {ex.Message}"); }
+                    if (docs.TryGetValue(path, out var have)) cur = have;
+                    else { cur = new Doc { D = dd, Source = src }; docs[path] = cur; order.Add(path); }
+                    break;
+                }
+                case "blit": {
+                    var wx = t.Word(); var wy = t.Word();
+                    if (!int.TryParse(wx, out var x) || !int.TryParse(wy, out var y))
+                        throw new PatchError($"{where}: blit {wx} {wy}: expected pixel coordinates");
+                    var png = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(file)), t.Word());
+                    if (!File.Exists(png)) throw new PatchError($"{where}: {png}: no such file");
+                    try {
+                        var (w, h, rgba) = Dds.ReadPng(File.ReadAllBytes(png));
+                        CurD().Blit(x, y, w, h, rgba);
+                    }
+                    catch (Exception ex) when (ex is InvalidDataException or ArgumentException) {
+                        throw new PatchError($"{where}: {ex.Message}");
+                    }
+                    changed++;
                     break;
                 }
                 case "text": {
@@ -673,9 +708,11 @@ static class Patch {
         }
         var gfx = Gfx.SelfTest();
         foreach (var f in gfx) Console.Error.WriteLine("FAIL " + f);
+        var dds = Dds.SelfTest();
+        foreach (var f in dds) Console.Error.WriteLine("FAIL " + f);
         Console.WriteLine($"selftest: {cases.Length - bad}/{cases.Length} selector cases ok, "
-            + $"gfx: {gfx.Count} failures");
-        return bad == 0 && gfx.Count == 0 ? 0 : 1;
+            + $"gfx: {gfx.Count} failures, dds: {dds.Count} failures");
+        return bad == 0 && gfx.Count == 0 && dds.Count == 0 ? 0 : 1;
     }
 
     static string Show(List<Step> sel) => string.Join("/", sel);
@@ -777,6 +814,7 @@ static class Patch {
 
     static byte[] Serialize(Doc d) {
         if (d.G != null) return d.G.Bytes();
+        if (d.D != null) return d.D.Bytes();
         var sb = new StringBuilder();
         if (d.Decl != null) sb.Append(d.Decl);
         foreach (var node in d.X.Nodes()) {

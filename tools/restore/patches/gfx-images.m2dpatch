@@ -1,0 +1,14 @@
+patch gfx-images
+made-for KMS2 KR Live client Data/Resource/Gfx.m2d and GfxDebug.m2d (byte-identical copies; both are patched)
+# Own pixels for Korean text baked into UI texture atlases. Each blit writes a PNG drawn for this patch (no pixels
+# of the original atlas are held here) into the sub-image rectangle the movie's DefineSubImage tag gives.
+# - kr/commonimage_i1.dds: the "equipped" tag on item icons (export_icon_equip and export_icon_equip2 in
+#   kr/commonimage.gfx; sub-images 85 and 88, 40x13 px each), shown in the inventory, socket and enchant lists.
+
+dds Resource/Gfx/kr/commonimage_i1.dds kms: 8ebf466390a17022
+blit 957 634 images/equipped.png
+blit 957 649 images/equipped.png
+
+dds Resource/GfxDebug/kr/commonimage_i1.dds kms: 8ebf466390a17022
+blit 957 634 images/equipped.png
+blit 957 649 images/equipped.png
