@@ -389,10 +389,13 @@ static class Patch {
     };
     static readonly HashSet<string> SameWords = new(StringComparer.OrdinalIgnoreCase) {
         "Fish", "Sunfish", "Deer", "Sheep", "Cream", "Won", "Equipment", "Furniture", "Meat", "Dust",
+        "Headwear", "Armor", "Gear", "Clothing", "Jewelry",
     };
     static string Plural(string name) {
         var colon = name.IndexOf(": ");   // "Title: Warm Groom" -> "Titles: Warm Groom"
         if (colon > 0) return Plural(name[..colon]) + name[colon..];
+        var with = name.IndexOf(" with ");   // "T-Shirt with Scarf" -> "T-Shirts with Scarf"
+        if (with > 0) return Plural(name[..with]) + name[with..];
         var m = Regex.Match(name, @"^(.*?)((?:\s*\([^()]*\))*)$");
         string head = m.Groups[1].Value, tail = m.Groups[2].Value;
         int sp = head.LastIndexOf(' ');
@@ -404,6 +407,7 @@ static class Patch {
         if (last.EndsWith("ss") || last.EndsWith("x") || last.EndsWith("z") || last.EndsWith("ch")
             || last.EndsWith("sh")) pl = last + "es";
         else if (last.EndsWith("eaf")) pl = last[..^1] + "ves";   // Leaf -> Leaves
+        else if (last.EndsWith("ife")) pl = last[..^2] + "ves";   // Knife -> Knives
         else if (last.EndsWith("s")) pl = last;   // already plural (Frogs, Knuckles)
         else if (last.Length > 1 && last[^1] == 'y' && !"aeiou".Contains(char.ToLowerInvariant(last[^2])))
             pl = last[..^1] + "ies";

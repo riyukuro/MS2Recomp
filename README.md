@@ -117,8 +117,10 @@ tables from the client packs are copied by id from your copies, and the only tex
   mails and the rock-paper-scissors login gifts), which no pack has in English, get our own English subject and
   text, with the same item links. So do three KR-only epic quests (journal
   texts and dialogue), one title and one potion (name, plural and tooltip) that no pack has in English, and the
-  KR-only wedding items (163: outfits, tickets, titles, boxes, furniture; names and descriptions). The Black
-  Market's cancel and search messages, whose English rows have typos, get our own wording.
+  KR-only wedding items (163: outfits, tickets, titles, boxes, furniture) and the other KR-only items (feature
+  ItemKR, 1,056: PC Cafe gear, event boxes and tickets, enchant scrolls, set weapons and armor), names and
+  descriptions. The Black Market's cancel and search messages, whose English rows have typos, get our own
+  wording.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
   (`copy-text`); about 47,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,
@@ -130,7 +132,7 @@ tables from the client packs are copied by id from your copies, and the only tex
   skip 176 rows (`keep`) whose English row belongs to another item: the global client gave some ids KMS2 uses
   to other items (KMS2's Dark Neon Weapon Box is a global royale experience tonic). `string-names.m2dpatch` gives
   the ones players see our own English names and descriptions, and their plurals are formed from the item's
-  English name (`plural-of`), as are those of the KR-only wedding items.
+  English name (`plural-of`), as are those of the KR-only wedding and ItemKR items.
   Apply them after `string-names.m2dpatch`.
 - `emote-commands.m2dpatch`: typed emote commands (`/bow`, `/greet`). The Korean emote table has Korean
   keywords for 41 emotes, so their English commands were not recognised; each emote keeps its keywords and adds
