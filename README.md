@@ -212,7 +212,9 @@ This writes the patched files as loose files under `--out` (`Xml/itemdata/209.xm
 the client reads them before its packs, so `--out` can be the client's `Data` directory. `--repack` writes patched
 copies of the packs (`Xml.m2d` and `Xml.m2h`) into `--out` instead; `--out` must then be another directory. The
 original packs are only read. A server that ingests the client data needs the same files (loose files or the
-repacked pack).
+repacked pack). Since loose files win over the packs, any loose `Data/Xml` file left from an earlier run (or put
+there by hand) hides the same file in a newly patched pack: move an old loose `Data/Xml` aside when you switch to
+the repacked packs or patch again.
 
 The arena row needs no data.
 
