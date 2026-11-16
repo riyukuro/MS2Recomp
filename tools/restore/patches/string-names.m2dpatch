@@ -463,3 +463,66 @@ row mail[id=190411002] <mail id="190411002" sender="MapleStory 2 Team" subject="
     rewards and the Meret Market.&#10;&#10;Every bingo line you complete brings a spring reward, so don't miss \
     out!&#10;&#10;* [$item:20302533$] can be used until the maintenance on Thursday, May 16. Be sure to use it \
     before then.&#10;&#10;Thank you." />
+# KR-only texts players meet that no pack has in English (only placeholder keys): our own English for the epic
+# quests 10001270 and 10003062 (journal name, description, objective and completion text, and their dialogue
+# lines), title 10000867 and item 20001786 (name, plural, tooltip). Format fields and item links are the rows' own;
+# the particle fields ($pp) are Korean grammar and are left out. The dialogue table does not turn \n into a
+# line break, so the dialogue lines have none; the text box wraps them.
+file Xml/string/kr/questdescription_final.xml kms:Xml/string/kr/questdescription_final.xml 157fd88e98c59ac6
+set quest[questID=10001270] name "Unbreakable Will"
+set quest[questID=10001270] desc "Construction plans are vital to building Rockefeller Tower, the tallest skyscraper \
+    in Maple World. Defeat the monsters that raided $map:02000136$ and bring back the $item:30000043$."
+set quest[questID=10001270] manual "Defeat monsters in $map:02000136$ and find the $item:30000043$"
+set quest[questID=10001270] complete "Meet $npc:11000220$ in $map:02000136$"
+set quest[questID=10003062] name "Dealings in the Dark"
+set quest[questID=10003062] desc "$npc:11000623$, who runs a shop in $map:02000203$, says the trade in stolen goods \
+    running wild lately is ruining the market, and asked you to go to $dungeonTitle:21005001$, where stolen goods \
+    are said to change hands openly, and find out whether the rumor is true."
+set quest[questID=10003062] manual "Enter the $dungeonTitle:21005001$ dungeon and clear it up to floor 5"
+set quest[questID=10003062] complete "Talk to $npc:11000623$ in $map:02000203$"
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=831174302000654] name "No, it was right here, I'm sure of it... Where on earth did it go?! Did those \
+    creatures do it again...?"
+set key[id=831174302000655] name "Ask what happened."
+set key[id=831174302000656] name "Ah, well... Part of the <font color=\"#ffd200\">$item:30000043$</font> has gone \
+    missing again. The <font color=\"#ffd200\">Rockefeller Tower</font> we're building is huge and complex, so its \
+    plans run to hundreds of sheets. If even one is missing, the work can't go on..."
+set key[id=831174302000657] name "Monsters stormed the site once before, made a mess and even stole the <font \
+    color=\"#ffd200\">$item:30000043$</font>. We barely got it back... This has to be their doing again."
+set key[id=831174302000658] name "Will you <font color=\"#ffd200\">get the missing $item:30000043$ back from the \
+    monsters around here</font>?"
+set key[id=831174302000659] name "Will you <font color=\"#ffd200\">get the missing $item:30000043$ back from the \
+    monsters around here</font>?"
+set key[id=831174302000660] name "Ah, you found them! Thank you. The <font color=\"#ffd200\">Rockefeller \
+    Tower</font> will be the sturdiest and tallest building in Maple World. Just finishing these plans took... \
+    phew..."
+set key[id=831174302000661] name "I'll build the <font color=\"#ffd200\">Rockefeller Tower</font> exactly to these \
+    perfect plans. Just you watch!"
+set key[id=1005151102005812] name "Hmm... These days fences are running wild, and the equipment trade is dying \
+    because of it. They say stolen goods change hands openly in $dungeonTitle:21005001$ in $map:02000083$. Will you \
+    go and look into it?"
+set key[id=1005151102005813] name "Hmm... These days fences are running wild, and the equipment trade is dying \
+    because of it. They say stolen goods change hands openly in $dungeonTitle:21005001$ in $map:02000083$. Will you \
+    go and look into it?"
+set key[id=1005151102005814] name "Oh, <font color=\"#ffd200\">$MyPCName$</font>! You're back sooner than I thought. \
+    So, are stolen goods really changing hands in <font color=\"#ffd200\">$dungeonTitle:21005001$</font>, like the \
+    rumors say?"
+set key[id=1111143102005853] name "Say you saw no trading, but <font \
+    color=\"#ffd200\">$npcName:21000106[gender:0]$</font> was guarding the place."
+set key[id=1111143102005854] name "<font color=\"#ffd200\">$npcName:21000106[gender:0]$</font>?? Hmm... From what \
+    you say, that one doesn't sound like a fence... Someone the fences hired, maybe...? Hmm... There's no proof, but \
+    something shady does seem to be going on in $dungeonTitle:21005001$."
+set key[id=1111143102005855] name "Otherwise, why would every floor have devices to keep outsiders out? I'd better \
+    gather the merchants' guild and work out a proper plan!"
+file Xml/string/kr/titlename.xml kms:Xml/string/kr/titlename.xml 1714c546e1d2948c
+set key[id=10000867] name "Guest of the Dolls"
+file Xml/string/kr/itemname.xml kms:Xml/string/kr/itemname.xml 8c56a83382e644a3
+set key[id=20001786] name "(Premium) Hyper White Potion"
+file Xml/string/kr/itemnameplural.xml kms:Xml/string/kr/itemnameplural.xml a4eb65ca9faa967f
+set key[id=20001786] name "(Premium) Hyper White Potions"
+file Xml/string/kr/koritemdescription.xml kms:Xml/string/kr/koritemdescription.xml 669a7f4ea48c36b2
+set key[id=20001786] mainDescription "<font size='14'>5 Sec Cooldown</font>\\n<font size='24'>Restores 3600 \
+    HP</font>"
+set key[id=20001786] tooltipDescription "A powerful potion made with a new technique. It goes down in one gulp, so \
+    it works fast. Drinking it immediately <font color='#00aaef'>restores 3600 HP</font>. One drink fills you up, so \
+    you can drink another after 5 sec."

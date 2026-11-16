@@ -112,7 +112,8 @@ tables from the client packs are copied by id from your copies, and the only tex
   guild rank names get short English names (Leader, Officer, Member, Novice, Member2, Novice2): a KR client allows
   at most 7 characters in a rank name and refuses a rights change on a rank whose name is longer. 20 KR-only event
   system mails (the elite weapon support level packages and the bingo play-time gifts), which no pack has in
-  English, get our own English subject and text, with the same item links.
+  English, get our own English subject and text, with the same item links. So do two KR-only epic quests (journal
+  texts and dialogue), one title and one potion (name, plural and tooltip) that no pack has in English.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
   (`copy-text`); about 47,000 texts, among them quest and NPC dialogue, item, skill and buff descriptions,
