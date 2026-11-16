@@ -25299,3 +25299,143 @@ set key[id=1211201322004163] name "Third. \nTo gather Fire Prism equipment, $ite
     you have to take on the <font color=\"#ffd200\">Dungeon of Illusions</font> connected to \
     $map:02000554$.\nThey're illusions of monsters you've already met, but they're as strong as you've become."
 set key[id=1211201322004164] name "Understood."
+
+# Quest dialogue of the ContentsGuide quests that no pack has in English (feature ContentsGuide01, ContentsGuide02):
+# our own English for the 63 scriptquest rows of locale KR (or no locale) whose quest a player can get (15 quests),
+# with each row's own format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=223175804001247] name "Now it's time to tend to them with care. \nYou get hungry when it's time, right? \
+    These plants are the same. \nYou have to remember to give them fertilizer regularly so they grow strong."
+set key[id=223175804001248] name "Now it's time to tend to them with care. \nYou get hungry when it's time, right? \
+    These plants are the same. \nYou have to remember to give them fertilizer regularly so they grow strong."
+set key[id=223175804001249] name "Your touch is more delicate than it looks.\nEvery time your hands touch them, it \
+    feels like each and every leaf comes back to life."
+set key[id=223175804001253] name "$MyPCName$, why not grow even more rice with your delicate touch?\nThe more you \
+    connect with the rice, the deeper our friendship will grow. "
+set key[id=223175804001254] name "$MyPCName$, why not grow even more rice with your delicate touch?\nThe more you \
+    connect with the rice, the deeper our friendship will grow. "
+set key[id=223175804001255] name "$MyPCName$... \nTo commune with plants that can't say a word and care for them \
+    so sincerely... \nWith a warm heart like yours... I think we can truly be good friends."
+set key[id=308172604001266] name "The roots were in bad shape, so I worried whether I could grow anything from \
+    them... \nBut they're growing exactly as our ancestors described in their books. I'm so happy... ha ha \
+    ha.\nNow all that's left is to harvest these flower herbs and check whether their effects are the same."
+set key[id=308172604001267] name "Since you're here, $MyPCName$, could you help me with the harvest?\nThese rare \
+    flower herbs only grow here, so think of it as a nice experience~ heh heh."
+set key[id=308172604001268] name "I'm one of those alchemists. Heh heh."
+set key[id=308172604001269] name "You startled me! \nHmm... you're an alchemist? Hmm... I've never seen you \
+    before...?"
+set key[id=308172604001270] name "You must be a fairy who's short on information. \nI'm <font \
+    color=\"#ffd200\">$npc:11003143[gender:0]$</font>, a scientific alchemist doing research at \
+    $map:02000146$.\nWhether you know me or not doesn't matter.\nAll I need is to get some flower herbs."
+set key[id=308172604001271] name "Ahem. That's a rather rude way to introduce yourself to someone you've just met. \
+    \nWell... then I'll cut to the chase as well... what flower herbs do you need?"
+set key[id=308172604001272] name "<font color=\"#ffd200\">$item:33000166$</font>. \nI need quite a lot... hm~ \
+    looking around, there seems to be plenty.\nI'll pay a generous price, so hand it all over to me... "
+set key[id=308172604001273] name "Wait! The flower herbs from our garden are not sold for any price. \nHowever... \
+    you must first tell us what purpose and what alchemy you'll use the herbs for.\nAlchemy\nis a double-edged \
+    sword, after all... "
+set key[id=308172604001274] name "Heh. Short on information, yet as meticulous as you'd expect from a strategist \
+    the $map:02000023$ Archmage cherishes.\nYou needn't worry about what the herbs are for. \nI'll use them to \
+    make medicine for our guardians, who are fighting the darkness at $map:02000146$\nand hovering between life \
+    and death.\n\n"
+set key[id=308172604001275] name "If you put your mind to it, you can quickly check whether I'm telling the \
+    truth... \nI'll come back in three days.\nBy then, have as much $item:33000166$ ready as I need.\nWell, until \
+    then... \n"
+set key[id=308172604001276] name "A $npc:11003143[gender:0]$ from $map:02000146$... \nSpeaking so boldly, it \
+    doesn't seem to be a lie... but I should still verify it, right?\nAnyway, gathering the amount that person \
+    mentioned will be tight on time."
+set key[id=308172604001277] name "$MyPCName$! Could you help me again this time?\nPlease harvest the <font \
+    color=\"#ffd200\">$item:33000166$</font> that has grown ready for picking."
+set key[id=308172604001278] name "$MyPCName$. \nOn the way up the garden hill, you'll find some <font \
+    color=\"#ffd200\">ripe sweet persimmon trees</font>. \nPick a few <font \
+    color=\"#ffd200\">$item:33000169$</font> and bring them to Auntie $npcName:11003141[gender:1]$.\nShe'll make \
+    delicious $item:20000444$ out of them for you."
+set key[id=308172604001279] name "(Hold out the $item:33000169$ and pass on $npcName:11003140[gender:0]$'s \
+    request.)"
+set key[id=308172604001280] name "Oh... you want me to make $item:20000444$?\nHa ha ha ha... true, the sweet \
+    persimmons grown in this garden make you strong,\nso they say the fairies who gather flower herbs here feel a \
+    surge of strength when they eat it."
+set key[id=308172604001281] name "I made it myself."
+set key[id=308172604001282] name "Oh... impressive!\nYour skill is no ordinary one."
+set key[id=308172604001283] name "Try gathering after eating $item:20000444$ and you'll know for sure. \nYour body \
+    feels light and nimble, so you can gather more flower herbs in the same amount of time.\nSee it for yourself."
+set key[id=308172604001284] name "Anyway, you did a great job today. Thank you for helping me like this every \
+    time. \nMay a fairy's luck always be with you... "
+set key[id=308172604001290] name "Is it all right if I visit you every now and then?\nI want to tell you about \
+    myself and the star where I used to live."
+set key[id=308172604001292] name "$item:50400192$. \nOn the star where I lived, we would give $item:33000120$ \nto \
+    friends we wanted to share our hearts with."
+set key[id=308172604001293] name "But there are no fully grown $item:33000120$ here... \nWith your touch, I think \
+    you could grow $item:33000120$ big and strong.\nYou'll take good care of it, right?"
+set key[id=308172604001295] name "By the way... I saw a stranger in front of your house. \nThe feeling was just a \
+    bit... \nOh...!!"
+set key[id=308172604001296] name "Why so startled?\nI think we passed each other in front of the house earlier."
+set key[id=308172604001297] name "Hm? $MyPCName$?\nThe name sounds familiar... have we met before?\nWell... that's \
+    not important, so let's move on... "
+set key[id=308172604001300] name "You two seem awfully curious about why I'm here... \nNo need to be nervous. I \
+    won't hurt you... "
+set key[id=308172604001301] name "I'm $npc:11003143[gender:0]$!\nThese days I'm making new medicines using flower \
+    herbs as alchemy ingredients. \nI hear this golden-haired youngster beside you has a walking house\nwhere \
+    various plants are grown in fields."
+set key[id=308172604001302] name "I happened to have just developed a new alchemy recipe that helps people who \
+    farm at home.\nI came to find out\nhow effective a medicine made from that recipe is.\nWell? If I teach you \
+    the alchemy recipe, will you help me?"
+set key[id=308172604001306] name "$MyPCName$, are you really going to drink that?\nShouldn't you at least be \
+    suspicious? What if it's dangerous... "
+set key[id=308172604001307] name "Don't worry. The efficacy of the $item:33000099$ herb used as the ingredient has \
+    already been verified... \nIf anything happens, I'll take responsibility."
+set key[id=308172604001308] name "If anything happens to my friend... I won't forgive you.\n$MyPCName$. Be \
+    careful. "
+set key[id=308172604001310] name "Heh. What did I tell you? \nI said nothing would go wrong. \nAnyway, how is it? \
+    Can you feel the medicine working?"
+set key[id=308172604001313] name "You see how much alchemy can help in our daily lives, don't you?\nNow that I've \
+    confirmed there's no problem, I can safely spread the recipe\nto other people too. Thanks for the help."
+set key[id=308172604001314] name "You're going to visit my other friends too?\nHmm... I can't trust you. I won't \
+    tolerate my friends getting hurt. \nI'll need to keep an eye on you to make sure nothing happens..."
+set key[id=308172604001315] name "$MyPCName$, I have to follow that person before I lose him. \nWe'll be apart for \
+    a little while, but the fact that we're friends\nwon't change. I'll be back."
+set key[id=308172604001322] name "And... $MyPCName$. Don't just trust anyone. I worry about you.\nWhen we meet \
+    again, let's both be healthy and looking great. Promise."
+set key[id=1023200804000942] name "But all you've hooked so far are <font color=\"#ffd200\">Chorang fish</font>, \
+    huh.\nThis is... something I treasure... <font color=\"#ffd200\">$item:20000342$</font>... \nWith this, you \
+    can catch a <font color=\"#ffd200\">Starcandy Crab</font>!"
+set key[id=1023200804000943] name "What's wrong? Fish not biting?"
+set key[id=1023200804000944] name "The <font color=\"#ffd200\">Starcandy Crab</font> is a really rare one... heh \
+    heh heh. \nFor some reason it clamps right on whenever it sees <font \
+    color=\"#ffd200\">$item:20000342$</font>... Amazing."
+set key[id=1023200804000945] name "Oh, <font color=\"#ffd200\">$MyPCName$</font>! You came at just the right time. \
+    \nThe fish are really biting right now. \nCome on, grab a spot and fill up a whole bucket!"
+set key[id=1023200804000946] name "What's wrong? Fish not biting?"
+set key[id=1023200804000947] name "Mm~ you've gotten quite used to fishing by now. \nYou must have good hands!"
+set key[id=1023200804000948] name "You've got a good feel for it, great focus... you've got the makings of a \
+    natural angler.\nBut it seems your rod can't keep up with your skill. \nI'll give you a new rod, so try it \
+    out. You'll notice the fish bite the float much faster! "
+set key[id=1023200804000949] name "What's wrong? Fish not biting?"
+set key[id=1023200804000950] name "Well? It's clearly different from your old rod, isn't it? Heh heh heh... \nFrom \
+    now on, stop by the fishing shop now and then and buy a rod that suits your level."
+set key[id=1023200804001035] name "Hurry up and feed it... \nIt gets edgy when it's hungry..."
+set key[id=1023200804001036] name "Hurry up and feed it... \nIt gets edgy when it's hungry..."
+set key[id=1023200804001037] name "Looks like it's finally full. \nHeh heh... now that it's eaten well, you'll \
+    soon feel how worthwhile that hearty meal was!"
+set key[id=1115231204001095] name "Hm? Is that so? \nI don't dig money out of the ground either, so I can't give \
+    them away for free again... \nIf you need more, buy them from me at cost. Ha ha ha."
+set key[id=1115231204001096] name "Ah, I see. \nWell, there's no view quite like this one. Take your time and \
+    relax. Ha ha ha."
+set key[id=1115231204001099] name "Hm? Is that so? \nI don't dig money out of the ground either, so I can't give \
+    them away for free again... \nIf you need more, buy them from me at cost. Ha ha ha."
+set key[id=1115231204001100] name "Ah, I see. \nWell, there's no view quite like this one. Take your time and \
+    relax. Ha ha ha."
+set key[id=1115231204001103] name "Hm? Is that so? \nI don't dig money out of the ground either, so I can't give \
+    them away for free again... \nIf you need more, buy them from me at cost. Ha ha ha."
+set key[id=1115231204001104] name "Ah, I see. \nWell, there's no view quite like this one. Take your time and \
+    relax. Ha ha ha."
+set key[id=1121210204001206] name "$item:33000026$ is widely used as a material for making cloth.\nBut people who \
+    are clumsy at it often hurt the chickens when pulling out the $item:33000026$, or ruin the \
+    $item:33000026$.\nThat happens quite a bit.\nSo the only way is to keep practicing until you get the hang of \
+    it."
+set key[id=1121210204001207] name "$item:33000026$ is widely used as a material for making cloth.\nBut people who \
+    are clumsy at it often hurt the chickens when pulling out the $item:33000026$, or ruin the \
+    $item:33000026$.\nThat happens quite a bit.\nSo the only way is to keep practicing until you get the hang of \
+    it."
+set key[id=1121210204001208] name "So, how is it? You've got a bit of a knack for gathering $item:33000026$ now, \
+    right?\nNext, let's try something else!"
