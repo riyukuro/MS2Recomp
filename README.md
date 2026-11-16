@@ -130,7 +130,7 @@ tables from the client packs are copied by id from your copies, and the only tex
   SoulBinder, Striker, KarkarIsland, Season1, DoubleImpactStory, EpicApocalypse, Kritias_2018_12, FameContents,
   UnlimitedEnchant, ContentsGuide, ShadowExpedition, ItemMergeLV70_2, LapentaFrontierQuest, CharacterAbility, 22_04,
   no-feature chapters 1-6, no-feature chapters 6-184, no-feature chapters 185-1074, no-feature chapters 1074-3013,
-  no-feature chapters 3014-5011, no-feature chapters 5011-8128 (10,807 rows).
+  no-feature chapters 3014-5011, no-feature chapters 5011-8128, no-feature chapters 8129-10002 (11,833 rows).
   The Black Market's cancel and search messages, whose English rows have typos, get our own wording.
 - `strings/*.m2dpatch`: one patch per string table (30) whose Korean rows the KMS2 pack left in Korean. Each row
   that the pack's own English tables have in English takes that English text, matched by id
