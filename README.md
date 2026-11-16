@@ -163,10 +163,15 @@ tables from the client packs are copied by id from your copies, and the only tex
   pet draw, wedding and apartment labels) and the 24 slot names and buttons of the item option dialog, which the AS3
   puts into a list or a label. Fields are addressed by character id and code strings by a hash of the original,
   so the patch holds no Korean. Sample text the AS3 replaces before display, data behind `CommonPath.flash` (it
-  runs only in the authoring tool), UI layer names, and the input restrict pattern stay as they are. Two layout
-  fixes for longer English text (`field`): the Personal Arena list rows show the arena names at 20 px instead of
-  22 (they were cut at the row's edge), and the arena description wraps instead of showing one cut line. Apply it
-  with `--repack`; we have not checked whether the client reads loose gfx files.
+  runs only in the authoring tool), UI layer names, and the input restrict pattern stay as they are. Layout
+  fixes for English text that is wider than its field (`field`): the Personal Arena list rows show the arena names
+  at 20 px instead of 22 (they were cut at the row's edge), and the arena description wraps instead of showing one
+  cut line. In 19 more movies, 31 fields get a smaller font (at least 11 px; guild invite button, inventory
+  sockets, boss bar, purchase complete, black market fee note, capsule and wedding texts, among others) and 4
+  get word wrap (guild championship tooltip, house passcode text, wedding notes). No field is moved or resized,
+  so some labels are still cut: six guild window buttons (one shared label field, 64 px), the three trophy
+  tooltip labels, the house rental duration label and one message box subtext. Apply it with `--repack`; we have
+  not checked whether the client reads loose gfx files.
 - `daily-mission.m2dpatch` (optional): the Daily Missions game menu entries and window texts, for a server that
   turns on the `DailyMission` feature in its own `feature.xml`. No patch changes `feature.xml`.
 

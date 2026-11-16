@@ -8,7 +8,9 @@ made-for KMS2 KR Live client Data/Resource/Gfx.m2d and GfxDebug.m2d (byte-identi
 # Not changed: UI layer names and shop tab samples (used as keys), the input restrict pattern, and sample data
 # behind CommonPath.flash (runs only in the Flash authoring tool).
 # - field <id>: layout fixes where English is longer: the Personal Arena list rows (arena names) at 20 px
-#   instead of 22, and the arena description word-wrapped over its lines instead of one cut line.
+#   instead of 22, and the arena description word-wrapped over its lines instead of one cut line;
+#   elsewhere, a smaller font (11 px or more) where the English is wider than its box, and word wrap where the
+#   box is tall enough for two lines. No box is moved or resized.
 
 string 2637feaf6f3a29de "Face Accessory"
 string 81ded3df0cf4b5cd "Eyewear"
@@ -35,22 +37,42 @@ string f240acb95b81f166 "Create Item"
 string 167eff2736c371d0 "Create"
 string 4b8d541ebe6d9003 "Search"
 
-gfx Resource/Gfx/uiapartmentdialog.gfx kms:Resource/Gfx/uiapartmentdialog.gfx 4517d59789f60ae0
+gfx Resource/Gfx/uiadpushlimiteddialog.gfx kms: d4cf192d1c152a54
+field 52 size 21
+gfx Resource/Gfx/uiapartmentdialog.gfx kms: 4517d59789f60ae0
 text 138 "Lease My Home"
 text 143 "Click message"
 text 144 "Click message"
 text 146 "Evansville Luxury Apartment Model House"
 text 169 "Lease My Home"
 text 170 "Evansville Luxury Apartment Model House"
-gfx Resource/Gfx/uibluemarblegamedialog.gfx kms:Resource/Gfx/uibluemarblegamedialog.gfx e4409703737f7486
+field 139 size 14
+gfx Resource/Gfx/uiarcademaindialog.gfx kms: b006e80ac8322961
+field 23 size 14
+gfx Resource/Gfx/uiblackmarketdialog.gfx kms: 51d9240ddda8a09c
+field 64 size 11
+gfx Resource/Gfx/uibluemarblegamedialog.gfx kms: e4409703737f7486
 text 78 "4 times"
 text 81 "x00"
-gfx Resource/Gfx/uidarkstreamresultdialog.gfx kms:Resource/Gfx/uidarkstreamresultdialog.gfx 2a460e3780ea804d
+gfx Resource/Gfx/uiconstructhelpdialog.gfx kms: ec91a02636b25c69
+field 46 size 14
+gfx Resource/Gfx/uidarkstreamresultdialog.gfx kms: 2a460e3780ea804d
 text 33 "Not Used"
-gfx Resource/Gfx/uidungeonlobby.gfx kms:Resource/Gfx/uidungeonlobby.gfx 8b1371cea1984244
+gfx Resource/Gfx/uidungeonlobby.gfx kms: 8b1371cea1984244
 text 3 "4 Players"
 text 4 "[Adventure] Casa de Luna: The Moon Shadow Returns"
-gfx Resource/Gfx/uiindividualpvpdialog.gfx kms:Resource/Gfx/uiindividualpvpdialog.gfx ad822d9d744b5545
+gfx Resource/Gfx/uiguilddialog.gfx kms: b8a8ca730ca2bf46
+field 686 size 14
+field 693 size 14
+field 636 wrap 1
+field 636 multiline 1
+gfx Resource/Gfx/uihomepassworddialog.gfx kms:Resource/Gfx/uihomepassworddialog.gfx 28c7310493f4aeb6
+field 1 size 14
+field 1 wrap 1
+field 1 multiline 1
+gfx Resource/Gfx/uihomesummondialog.gfx kms: bbcebef35613129a
+field 1 size 12
+gfx Resource/Gfx/uiindividualpvpdialog.gfx kms: ad822d9d744b5545
 text 95 "Red Arena"
 text 96 "Battlefield Info"
 text 97 "Line 1\rLine 2\rLine 3\rLine 4\r"
@@ -61,44 +83,99 @@ field 28 size 20
 field 30 size 20
 field 97 wrap 1
 field 97 multiline 1
-gfx Resource/Gfx/uiitemeventopenboxdialog.gfx kms:Resource/Gfx/uiitemeventopenboxdialog.gfx 9944200d2b0e89f5
+gfx Resource/Gfx/uiinventorydialog.gfx kms: cb60c5cb0ddac2d5
+field 130 size 14
+field 137 size 14
+gfx Resource/Gfx/uiitemeventopenboxdialog.gfx kms: 9944200d2b0e89f5
 text 11 "Hongbao Event"
 text 12 "Event notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice"
-gfx Resource/Gfx/uiitemoptioncreatedialog.gfx kms:Resource/Gfx/uiitemoptioncreatedialog.gfx 818a787f87ebfd92
+gfx Resource/Gfx/uiitemlulluboxdialog.gfx kms: 092b16b206ffb721
+field 77 size 13
+gfx Resource/Gfx/uiitemoptioncreatedialog.gfx kms: 818a787f87ebfd92
 text 103 "Category"
 text 104 "Name"
 text 105 "Search:"
 text 106 "Qty:"
 text 107 "Tier:"
 strings
-gfx Resource/Gfx/uiitempetboxdialog.gfx kms:Resource/Gfx/uiitempetboxdialog.gfx b2e70e030d0dab38
+gfx Resource/Gfx/uiitempetboxdialog.gfx kms: b2e70e030d0dab38
 text 5 "Pet Name"
 text 88 "Pet Draw"
 text 91 "Pet Draw"
-gfx Resource/Gfx/uipvpguildteamdialog.gfx kms:Resource/Gfx/uipvpguildteamdialog.gfx 44e6e185c6c8cba7
+field 48 size 13
+gfx Resource/Gfx/uimeratmarketdialog.gfx kms: 55bbd0a0bcb8c0f0
+field 231 size 21
+field 358 size 21
+gfx Resource/Gfx/uipaybackdialog.gfx kms: 5b0e94f8f01043f5
+field 63 size 17
+field 69 size 23
+gfx Resource/Gfx/uipvpguildteamdialog.gfx kms: 44e6e185c6c8cba7
 text 37 "Waiting to enter..."
 text 65 "Waiting to enter..."
-gfx Resource/Gfx/uiweddingguestdialog.gfx kms:Resource/Gfx/uiweddingguestdialog.gfx 4f6ed3b9d7975889
+gfx Resource/Gfx/uiugcbannerdialog.gfx kms: 82a85ef9cb0d7eb0
+field 4 size 11
+field 5 size 11
+gfx Resource/Gfx/uiupperhpbar.gfx kms: c734f844d58d35b6
+field 65 size 12
+gfx Resource/Gfx/uivisitorsbookdialog.gfx kms: 51b28bfd902d5a3f
+field 8 size 13
+gfx Resource/Gfx/uiweddingaffinitydialog.gfx kms: 0998eed85257beed
+field 35 size 12
+field 36 size 12
+field 37 size 13
+field 38 size 13
+field 37 wrap 1
+field 37 multiline 1
+gfx Resource/Gfx/uiweddingguestdialog.gfx kms: 4f6ed3b9d7975889
 text 36 "Selected: 3 / 50"
-gfx Resource/Gfx/uiweddinginvitationdialog.gfx kms:Resource/Gfx/uiweddinginvitationdialog.gfx 9fee62aaec6e7715
+field 15 size 12
+gfx Resource/Gfx/uiweddinghallreservationdialog.gfx kms: e07300fcc01d6af3
+field 22 size 14
+field 75 size 13
+field 122 size 16
+field 131 size 16
+field 140 size 16
+field 74 wrap 1
+field 74 multiline 1
+gfx Resource/Gfx/uiweddinginvitationdialog.gfx kms: 9fee62aaec6e7715
 text 25 "Invite by Character Name"
 
-gfx Resource/GfxDebug/uiapartmentdialog.gfx kms:Resource/GfxDebug/uiapartmentdialog.gfx 4517d59789f60ae0
+gfx Resource/GfxDebug/uiadpushlimiteddialog.gfx kms: d4cf192d1c152a54
+field 52 size 21
+gfx Resource/GfxDebug/uiapartmentdialog.gfx kms: 4517d59789f60ae0
 text 138 "Lease My Home"
 text 143 "Click message"
 text 144 "Click message"
 text 146 "Evansville Luxury Apartment Model House"
 text 169 "Lease My Home"
 text 170 "Evansville Luxury Apartment Model House"
-gfx Resource/GfxDebug/uibluemarblegamedialog.gfx kms:Resource/GfxDebug/uibluemarblegamedialog.gfx e4409703737f7486
+field 139 size 14
+gfx Resource/GfxDebug/uiarcademaindialog.gfx kms: b006e80ac8322961
+field 23 size 14
+gfx Resource/GfxDebug/uiblackmarketdialog.gfx kms: 51d9240ddda8a09c
+field 64 size 11
+gfx Resource/GfxDebug/uibluemarblegamedialog.gfx kms: e4409703737f7486
 text 78 "4 times"
 text 81 "x00"
-gfx Resource/GfxDebug/uidarkstreamresultdialog.gfx kms:Resource/GfxDebug/uidarkstreamresultdialog.gfx 112af4601377b8a4
+gfx Resource/GfxDebug/uiconstructhelpdialog.gfx kms: ec91a02636b25c69
+field 46 size 14
+gfx Resource/GfxDebug/uidarkstreamresultdialog.gfx kms: 112af4601377b8a4
 text 33 "Not Used"
-gfx Resource/GfxDebug/uidungeonlobby.gfx kms:Resource/GfxDebug/uidungeonlobby.gfx 8b1371cea1984244
+gfx Resource/GfxDebug/uidungeonlobby.gfx kms: 8b1371cea1984244
 text 3 "4 Players"
 text 4 "[Adventure] Casa de Luna: The Moon Shadow Returns"
-gfx Resource/GfxDebug/uiindividualpvpdialog.gfx kms:Resource/GfxDebug/uiindividualpvpdialog.gfx ad822d9d744b5545
+gfx Resource/GfxDebug/uiguilddialog.gfx kms: c4af91a8014d6837
+field 686 size 14
+field 693 size 14
+field 636 wrap 1
+field 636 multiline 1
+gfx Resource/GfxDebug/uihomepassworddialog.gfx kms:Resource/GfxDebug/uihomepassworddialog.gfx 28c7310493f4aeb6
+field 1 size 14
+field 1 wrap 1
+field 1 multiline 1
+gfx Resource/GfxDebug/uihomesummondialog.gfx kms: bbcebef35613129a
+field 1 size 12
+gfx Resource/GfxDebug/uiindividualpvpdialog.gfx kms: ad822d9d744b5545
 text 95 "Red Arena"
 text 96 "Battlefield Info"
 text 97 "Line 1\rLine 2\rLine 3\rLine 4\r"
@@ -109,24 +186,59 @@ field 28 size 20
 field 30 size 20
 field 97 wrap 1
 field 97 multiline 1
-gfx Resource/GfxDebug/uiitemeventopenboxdialog.gfx kms:Resource/GfxDebug/uiitemeventopenboxdialog.gfx 9944200d2b0e89f5
+gfx Resource/GfxDebug/uiinventorydialog.gfx kms: cb60c5cb0ddac2d5
+field 130 size 14
+field 137 size 14
+gfx Resource/GfxDebug/uiitemeventopenboxdialog.gfx kms: 9944200d2b0e89f5
 text 11 "Hongbao Event"
 text 12 "Event notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice\rEvent notice"
-gfx Resource/GfxDebug/uiitemoptioncreatedialog.gfx kms:Resource/GfxDebug/uiitemoptioncreatedialog.gfx 818a787f87ebfd92
+gfx Resource/GfxDebug/uiitemlulluboxdialog.gfx kms: 092b16b206ffb721
+field 77 size 13
+gfx Resource/GfxDebug/uiitemoptioncreatedialog.gfx kms: 818a787f87ebfd92
 text 103 "Category"
 text 104 "Name"
 text 105 "Search:"
 text 106 "Qty:"
 text 107 "Tier:"
 strings
-gfx Resource/GfxDebug/uiitempetboxdialog.gfx kms:Resource/GfxDebug/uiitempetboxdialog.gfx b2e70e030d0dab38
+gfx Resource/GfxDebug/uiitempetboxdialog.gfx kms: b2e70e030d0dab38
 text 5 "Pet Name"
 text 88 "Pet Draw"
 text 91 "Pet Draw"
-gfx Resource/GfxDebug/uipvpguildteamdialog.gfx kms:Resource/GfxDebug/uipvpguildteamdialog.gfx 44e6e185c6c8cba7
+field 48 size 13
+gfx Resource/GfxDebug/uimeratmarketdialog.gfx kms: 55bbd0a0bcb8c0f0
+field 231 size 21
+field 358 size 21
+gfx Resource/GfxDebug/uipaybackdialog.gfx kms: 5b0e94f8f01043f5
+field 63 size 17
+field 69 size 23
+gfx Resource/GfxDebug/uipvpguildteamdialog.gfx kms: 44e6e185c6c8cba7
 text 37 "Waiting to enter..."
 text 65 "Waiting to enter..."
-gfx Resource/GfxDebug/uiweddingguestdialog.gfx kms:Resource/GfxDebug/uiweddingguestdialog.gfx 4f6ed3b9d7975889
+gfx Resource/GfxDebug/uiugcbannerdialog.gfx kms: 82a85ef9cb0d7eb0
+field 4 size 11
+field 5 size 11
+gfx Resource/GfxDebug/uiupperhpbar.gfx kms: c734f844d58d35b6
+field 65 size 12
+gfx Resource/GfxDebug/uivisitorsbookdialog.gfx kms: 51b28bfd902d5a3f
+field 8 size 13
+gfx Resource/GfxDebug/uiweddingaffinitydialog.gfx kms: 0998eed85257beed
+field 35 size 12
+field 36 size 12
+field 37 size 13
+field 38 size 13
+field 37 wrap 1
+field 37 multiline 1
+gfx Resource/GfxDebug/uiweddingguestdialog.gfx kms: 4f6ed3b9d7975889
 text 36 "Selected: 3 / 50"
-gfx Resource/GfxDebug/uiweddinginvitationdialog.gfx kms:Resource/GfxDebug/uiweddinginvitationdialog.gfx 9fee62aaec6e7715
+field 15 size 12
+gfx Resource/GfxDebug/uiweddinghallreservationdialog.gfx kms: e07300fcc01d6af3
+field 22 size 14
+field 75 size 13
+field 122 size 16
+field 131 size 16
+field 140 size 16
+field 74 wrap 1
+field 74 multiline 1
+gfx Resource/GfxDebug/uiweddinginvitationdialog.gfx kms: 9fee62aaec6e7715
 text 25 "Invite by Character Name"

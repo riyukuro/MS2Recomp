@@ -53,7 +53,8 @@ using Maple2.File.IO;
 //                                         English name gets the English plural of that name as its name; so do
 //                                         rows whose name is still Korean and that have one of the attr=values
 //                                         (or any such row, with *)
-//   gfx <path> <source> <pin>             start editing a Scaleform movie (Resource/Gfx/<name>.gfx, see Gfx.cs)
+//   gfx <path> <source> <pin>             start editing a Scaleform movie (Resource/Gfx/<name>.gfx, see Gfx.cs);
+//                                         a bare kms: or gms: source means that pack's file at <path>
 //   text <id> "<value>"                   in a gfx: the initial text of the DefineEditText with character id <id>
 //   field <id> <prop> <value>             in a gfx: a layout property of that DefineEditText: wrap 0|1 (word
 //                                         wrap), multiline 0|1, or size <px> (font height)
@@ -265,6 +266,7 @@ static class Patch {
                     var path = t.Word();
                     Split(path);
                     var src = t.Word();
+                    if (src == "kms:" || src == "gms:") src += path;
                     pins[src] = t.Word().ToLowerInvariant();
                     Gfx g;
                     try { g = new Gfx(Source(src)); }
