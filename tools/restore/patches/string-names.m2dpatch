@@ -25194,3 +25194,108 @@ set key[id=1127194820008688] name "To stop the damage from spreading any further
 set key[id=1127194820008694] name "Let's cut down the harm by defeating the <font \
     color=\"#ffd200\">$npcName:21000081$</font> \nand <font color=\"#ffd200\">$npcName:21000082$</font> that were \
     infected by the spores of <font color=\"#ffd200\">$npcName:21000340$</font> and turned violent!"
+
+# Quest dialogue of the UnlimitedEnchant quests that no pack has in English (feature UnlimitedEnchant): our own
+# English for the 45 scriptquest rows of locale KR (or no locale) whose quest a player can get (4 quests), with each
+# row's own format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=1211180122004115] name "$MyPCName$...!\nIt's been a while, my other half.\nHave you been well all this \
+    time?"
+set key[id=1211180122004116] name "Honestly, I'd like to keep you here and talk on and on... \nbut I know there's \
+    no time for that right now.\nI received a message from $npc:11004784[gender:1]$."
+set key[id=1211180122004117] name "It seems it's time to talk about the newly discovered material.\nI'll see you \
+    at $map:02000487$. "
+set key[id=1211180122004118] name "It seems it's time to talk about the newly discovered material.\nI'll see you \
+    at $map:02000487$. "
+set key[id=1211180122004119] name "To research the newly discovered material, our Frontier Foundation intends to \
+    do everything it can.\nAs part of that, we built a laboratory inside the mansion and invited a research \
+    expert."
+set key[id=1211180122004120] name "...Research... expert?"
+set key[id=1211180122004121] name "Yes, I think you may already know this person.\nIt's \
+    $npcName:11004802[gender:0]$."
+set key[id=1211180122004122] name "Ah, there is so much I'd like to say, but...\nfor the sake of your precious \
+    time, $MyPCName$, busy with research and investigation, I'll keep it short."
+set key[id=1211180122004123] name "Go up the right-hand stairs of $map:52000196$, and you can enter through the \
+    door you see by the space where the mages are.\nMeet $npcName:11004802[gender:0]$ there."
+set key[id=1211180122004124] name "Go up the right-hand stairs of $map:52000196$, and you can enter through the \
+    door you see by the space where the mages are.\nMeet $npcName:11004802[gender:0]$ there."
+set key[id=1211180122004125] name "Oh, who's this?\nGreat, the person I was waiting for has finally arrived!"
+set key[id=1211180122004126] name "The <font color=\"#ffd200\">$item:40100055$</font> you brought is far purer and \
+    more intense than the first one I got!\nWith this I can do the <font color=\"#ffd200\">final \
+    experiment</font>... I just need to verify one more thing."
+set key[id=1211180122004127] name "You. Go back there one more time.\n<font \
+    color=\"#ffd200\">$item:40100055$</font> - I need to find out just how far it can amplify power."
+set key[id=1211180122004128] name "What are you standing around for?\nGet to <font \
+    color=\"#ffd200\">$map:02000554$</font> and come back <font color=\"#ffd200\">soaked in its energy</font>!"
+set key[id=1211180122004130] name "What are you standing around for?\nGet to <font \
+    color=\"#ffd200\">$map:02000554$</font> and come back <font color=\"#ffd200\">soaked in its energy</font>!"
+set key[id=1211180122004131] name "Mmm~ This strange, unstable feeling. Perfect. Absolutely perfect. \nAll right, \
+    let's have a look."
+set key[id=1211180122004133] name "What was in the space connected to $map:02000554$ was, to be precise, an \
+    illusion.\nNot something real, but a kind of mirage made when energy reflects endlessly in warped space and \
+    time. That's why the beings you've met so far appear there too."
+set key[id=1211180122004134] name "Got it? That should be plenty of explanation, right?"
+set key[id=1211180122004135] name "Good, now it's time to act."
+set key[id=1211180122004136] name "Good, now it's time to act."
+set key[id=1211180122004137] name "Here, a <font color=\"#ffd200\">gift</font> I prepared to cheer on your growth \
+    from now on.\nKeep taking on the <font color=\"#ffd200\">Dungeon of Illusions</font> and run toward limitless \
+    power!"
+set key[id=1211201322004139] name "Now then, shall we hear more about that place where the new material was \
+    found?"
+set key[id=1211201322004140] name "Hmm~ hmmm~"
+set key[id=1211201322004141] name "($npc:11004802[gender:0]$'s eyes kept sparkling as I told the story of what I \
+    went through at $map:02000554$. Maybe it's my imagination, but the corners of the mouth kept rising until I \
+    thought they'd reach the ears.)"
+set key[id=1211201322004142] name "Perfect. Great, every one of my hypotheses was right.\nHa, at first I thought \
+    it was just something like $item:40100026$ and almost threw it away.\nI'd have beaten myself up with regret if \
+    I had."
+set key[id=1211201322004143] name "What do you mean by that?"
+set key[id=1211201322004144] name "If you run into monsters, the best thing is to fight them.\nIf you can't, \
+    then... well, soak yourself in it from head to toe so you take in plenty of energy.\nI need to see what gets \
+    stronger from this power, and by how much!"
+set key[id=1211201322004146] name "Yes. Just as I expected.\n$item:40100055$ is the real thing. It's the engine of \
+    endless growth!"
+set key[id=1211201322004147] name "What is it that has you so excited?"
+set key[id=1211201322004148] name "Now, the reason we call this substance $item:40100055$ is that it came out of \
+    the rift, and endless energy pours out of light refracted at countless angles. \nBut do you know what's even \
+    more amazing? \nThis energy looks like light, but it's actually full of the power of darkness! "
+set key[id=1211201322004149] name "In other words, two opposite natures exist side by side, constantly clashing \
+    and expanding. That is the very essence of the rift's power!\nPut simply, it means <font \
+    color=\"#ffd200\">endless growth is possible</font>."
+set key[id=1211201322004150] name "Surprised? Yeah~ I was too. Everything has the potential to grow, but there's \
+    always a limit. With <font color=\"#ffd200\">$item:40100055$</font> as the medium, forces of opposite natures \
+    at the two extremes keep pushing and pulling at each other and stretching the boundary. "
+set key[id=1211201322004151] name "Now, here's the question you should be asking. If it keeps expanding like this, \
+    will it hold up?\nWon't it crack apart? Won't it burst with a bang?"
+set key[id=1211201322004152] name "The answer is yes! And no at the same time!\nTo withstand the expanding force \
+    of $item:40100055$, you need a highly durable material that holds both extremes of power in the same way. \nIn \
+    other words, it won't work unless the equipment came from <font color=\"#ffd200\">a being born of the \
+    rift</font>. That's what I'm saying."
+set key[id=1211201322004153] name "...Hm, I've been talking to myself so much that you look lost.\nStill, this is \
+    important, so listen carefully."
+set key[id=1211201322004154] name "The stronger you get, the stronger the illusions get, but while you fight them, \
+    you can obtain even greater power, the key to endless growth. \nThat's <font \
+    color=\"#ffd200\">$item:40100055$</font> and <font color=\"#ffd200\">$item:40100056$</font>."
+set key[id=1211201322004155] name "But what you use them on has to be something that came from the rift too. Only \
+    then can it withstand that power. \nSo you need to keep fighting <font color=\"#ffd200\">the illusions in the \
+    place connected to the rift</font>.\nUse the <font color=\"#ffd200\">materials</font> and <font \
+    color=\"#ffd200\">equipment</font> you get there and you can get in-cred-i-bly strong."
+set key[id=1211201322004156] name "...Can you sum that up in 3 lines?"
+set key[id=1211201322004158] name "...Make it easy to follow. Sum it up for me... "
+set key[id=1211201322004159] name "Honestly, adventurers these days have no manners.\nImagine just gulping down \
+    what someone else worked so hard to figure out..."
+set key[id=1211201322004160] name "<font color=\"#909090\">What is this? This familiar feeling... It's just like \
+    $npcName:11003534[gender:0]$, my boss...?</font>"
+set key[id=1211201322004161] name "Well, 3 lines is hard, but I can boil it down to 3 points. Listen well.\nFirst. \
+    The <font color=\"#ffd200\">$item:40100055$</font> you can collect in the <font color=\"#ffd200\">Dungeon of \
+    Illusions</font> connected to $map:02000554$.\nUsing it lets you <font color=\"#ffd200\">break through the \
+    limits</font> of a material.\nThat means drawing out even stronger power than regular enchanting and achieving \
+    great growth.\n"
+set key[id=1211201322004162] name "Second. \nOnly equipment you collect in the <font color=\"#ffd200\">Dungeon of \
+    Illusions</font>,\nthe weapons we call <font color=\"#ffd200\">Fire Prisms</font>, can have its limits \
+    broken.\nIt needs strong durability, so it has to be enchanted to <font color=\"#ffd200\">level 15 or \
+    higher</font>."
+set key[id=1211201322004163] name "Third. \nTo gather Fire Prism equipment, $item:40100055$, and $item:40100056$, \
+    you have to take on the <font color=\"#ffd200\">Dungeon of Illusions</font> connected to \
+    $map:02000554$.\nThey're illusions of monsters you've already met, but they're as strong as you've become."
+set key[id=1211201322004164] name "Understood."
