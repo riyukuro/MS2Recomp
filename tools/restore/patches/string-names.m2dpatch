@@ -25778,7 +25778,7 @@ set key[id=831174302000083] name "Ah... I see...\nIf $npc:11000492[gender:0]$ sa
 set key[id=831174302000084] name "(Ask what's troubling him.)"
 set key[id=831174302000085] name "Oh, it's... a thief...!\nMmph... no, never mind, it's nothing.\nWhat am I doing \
     telling someone I barely know... "
-set key[id=831174302000086] name "Persuade him that you'll help if he tells you what's wrong."
+set key[id=831174302000086] name "(Persuade him that you'll help if he tells you what's wrong.)"
 set key[id=831174302000087] name "Well... you see... the truth is...\n<font color=\"#ffd200\">all the weapons have \
     vanished from the armory.</font>\nWith the Levee cancelled, we'd stored all the new weapons meant for \
     the\nevent in this armory, but... "
@@ -25798,13 +25798,14 @@ set key[id=831174302000094] name "What a terrible thing to say!\nI only sell wea
 set key[id=831174302000095] name "The only recent deal was buying <font color=\"#ffd200\">iron ore that \
     $npc:11000170[gender:0]$ was offering\nat a low price</font>. That's all."
 set key[id=831174302000096] name "Why do you keep bothering me?"
-set key[id=831174302000097] name "Press him on whether the iron ore sold to $npc:11000004[gender:0]$ was stolen."
+set key[id=831174302000097] name "(Press him on whether the iron ore sold to $npc:11000004[gender:0]$ was \
+    stolen.)"
 set key[id=831174302000098] name "S-stolen goods...? Don't go accusing innocent people.\nI just... heard someone \
     was selling iron ore cheap...\nAnyway, I bought the goods at a fair price and sold them to the merchants."
 set key[id=831174302000099] name "(Ask who he bought the iron ore from.)"
 set key[id=831174302000100] name "Um... that's...\nIt's a bit awkward to say..."
-set key[id=831174302000101] name "Persuade Leta to confess."
-set key[id=831174302000102] name "Threaten Leta into confessing."
+set key[id=831174302000101] name "(Persuade Leta to confess.)"
+set key[id=831174302000102] name "(Threaten Leta into confessing.)"
 set key[id=831174302000103] name "Sigh... the truth is...\nOn my way through $map:02000083$, I picked up a flyer \
     advertising a <font color=\"#ffd200\">rush sale of iron ore</font>.\nThat's all. "
 set key[id=831174302000104] name "I was already on my way to $map:02000001$, so it seemed perfect.\nIron ore is \
@@ -26584,7 +26585,7 @@ set key[id=831174302001402] name "Have you seen the <font color=\"#ffd200\">safe
     ore trade record you want should be among those documents."
 set key[id=831174302001403] name "Oh, you made it back safely.\nDid you find all the documents? Throw them all \
     down here."
-set key[id=831174302001404] name "Throw the documents into the sewer gap."
+set key[id=831174302001404] name "(Throw the documents into the sewer gap.)"
 set key[id=831174302001405] name "Hmm... yes, yes.\nYou've brought them just right! "
 set key[id=831174302001805] name "Why not go to $map:02000092$\nand look for $npc:11000170[gender:0]$'s \
     whereabouts?\nSince the address was written in the notebook, someone there must know him.\nWith luck, you may \
@@ -27082,7 +27083,7 @@ set key[id=831174302002101] name "The royal crest is carved on part of the broke
 set key[id=831174302002102] name "It seems worth a closer look."
 set key[id=831174302002103] name "You spot something glittering among the wreckage."
 set key[id=831174302002104] name "Something keeps glittering in the wreckage of the court goods."
-set key[id=831174302002105] name "Search for the $item:30000174$."
+set key[id=831174302002105] name "(Search for the $item:30000174$.)"
 set key[id=831174302002106] name "Just leave."
 set key[id=831174302002107] name "You found the $item:30000174$."
 set key[id=831174302002108] name "You can't find the $item:30000174$.\nYou should check your bag once more."
