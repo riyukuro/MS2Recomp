@@ -52,6 +52,7 @@ using Maple2.File.IO;
 //                                         <path> (a file this run already edits, e.g. the item name table) has an
 //                                         English name gets the English plural of that name as its name; so do
 //                                         rows whose name is still Korean and that have one of the attr=values
+//                                         (or any such row, with *)
 //   add-words <tag> <key> <attr> <source>   every <tag> of the file appends to its '|'-separated word list <attr>
 //                                         the words of the source row with the same <key> that the file does not
 //                                         have yet (chat command keywords: Korean and English both work)
@@ -338,14 +339,16 @@ static class Patch {
                     var key = t.Word();
                     var path = t.Word();
                     var also = new List<(string, string)>();   // Korean rows with one of these attributes
+                    var any = false;                          // '*': every row still in Korean
                     while (t.More()) {
                         var w = t.Word();
+                        if (w == "*") { any = true; continue; }
                         var at = w.IndexOf('=');
                         if (at <= 0) throw new PatchError($"{where}: plural-of: '{w}' is not attr=value");
                         also.Add((w[..at], w[(at + 1)..]));
                     }
                     bool Pick(XElement e) => Cur().Kept.Contains(e) || HasHangul((string)e.Attribute("name") ?? "")
-                        && also.Any(a => (string)e.Attribute(a.Item1) == a.Item2);
+                        && (any || also.Any(a => (string)e.Attribute(a.Item1) == a.Item2));
                     if (!docs.TryGetValue(path, out var from))
                         throw new PatchError($"{where}: plural-of: {path} is not edited by an earlier file op");
                     var names = new Dictionary<string, string>();
@@ -385,7 +388,7 @@ static class Patch {
     // names of things worn in pairs get "pairs of"; words already plural or without a plural stay.
     static readonly HashSet<string> PairWords = new(StringComparer.OrdinalIgnoreCase) {
         "Pants", "Jeans", "Shorts", "Gloves", "Mittens", "Paws", "Earrings", "Sneakers", "Boots", "Shoes", "Socks",
-        "Ears", "Glasses", "Goggles", "Wings",
+        "Ears", "Glasses", "Sunglasses", "Goggles", "Wings",
     };
     static readonly HashSet<string> SameWords = new(StringComparer.OrdinalIgnoreCase) {
         "Fish", "Sunfish", "Deer", "Sheep", "Cream", "Won", "Equipment", "Furniture", "Meat", "Dust",
@@ -394,8 +397,9 @@ static class Patch {
     static string Plural(string name) {
         var colon = name.IndexOf(": ");   // "Title: Warm Groom" -> "Titles: Warm Groom"
         if (colon > 0) return Plural(name[..colon]) + name[colon..];
-        var with = name.IndexOf(" with ");   // "T-Shirt with Scarf" -> "T-Shirts with Scarf"
-        if (with > 0) return Plural(name[..with]) + name[with..];
+        var with = name.IndexOf(" with ");   // "T-Shirt with Scarf" -> "T-Shirts with Scarf" (one-word tail only)
+        if (with > 0 && !Regex.Replace(name[(with + 6)..], @"\s*\([^()]*\)", "").Trim().Contains(' '))
+            return Plural(name[..with]) + name[with..];
         var m = Regex.Match(name, @"^(.*?)((?:\s*\([^()]*\))*)$");
         string head = m.Groups[1].Value, tail = m.Groups[2].Value;
         int sp = head.LastIndexOf(' ');
@@ -408,6 +412,7 @@ static class Patch {
             || last.EndsWith("sh")) pl = last + "es";
         else if (last.EndsWith("eaf")) pl = last[..^1] + "ves";   // Leaf -> Leaves
         else if (last.EndsWith("ife")) pl = last[..^2] + "ves";   // Knife -> Knives
+        else if (last.EndsWith("Staff")) pl = last[..^2] + "ves";   // Staff -> Staves
         else if (last.EndsWith("s")) pl = last;   // already plural (Frogs, Knuckles)
         else if (last.Length > 1 && last[^1] == 'y' && !"aeiou".Contains(char.ToLowerInvariant(last[^2])))
             pl = last[..^1] + "ies";

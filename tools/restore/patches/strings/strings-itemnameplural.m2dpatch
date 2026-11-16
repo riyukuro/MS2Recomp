@@ -21,6 +21,6 @@ keep key id 11050047,11150043,11150054,11150059,11300379,11300380,11300393,11300
     50600249,50600271,50600274,50600275,50600276,50600277,50600333,50600334,50610010,59200183,59200286,70200050,\
     70200093,70300078,70300082,70600024,70600025,70600026
 copy-text key id class,name kms:Xml/string/en/itemnameplural.xml
-# The kept rows, and the KR-only feature groups' rows still in Korean, get the English plural of the item's
-# English name in the name table.
-plural-of key id Xml/string/kr/itemname.xml feature=Wedding feature=ItemKR feature=Level70Item
+# The kept rows, and every row still in Korean, get the English plural of the item's English name in the name
+# table (rows whose item has no English name stay as they are).
+plural-of key id Xml/string/kr/itemname.xml *
