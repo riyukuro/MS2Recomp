@@ -24962,3 +24962,118 @@ set key[id=10540667729495457891] name "Yet, her voice is coming from the dark ma
     members...\nIt's just like the Phantom of the Opera... \nDid the dead woman really take our members...?"
 set key[id=11326111565968572503] name "...That's everything I know.\nPlease pass this on to the Foundation so they \
     can come up with countermeasures."
+
+# Quest dialogue of the Kritias_2018_12 quests that no pack has in English (feature Kritias_2018_12): our own
+# English for the 54 scriptquest rows of locale KR (or no locale) whose quest a player can get (7 quests), with each
+# row's own format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=116183821029360] name "With the giant mechanical beast <font \
+    color=\"#ffd200\">$npcName:23001006$</font> causing earthquakes and destruction all over, \nthe number of \
+    injured expedition members keeps growing, and so does the damaged \nSky Fortress equipment from the \
+    vibrations. It's a serious situation."
+set key[id=116183821029366] name "$MyPCName$! I've been waiting for you!"
+set key[id=130145621029615] name "Not only are expedition members getting hurt in the earthquakes, the Sky \
+    Fortress equipment is being damaged too.\nForget collecting $npcName:23001006$'s combat data, the whole \
+    Kritias expedition is about to be in trouble."
+set key[id=130145621029621] name "If we can work out what patterns it acts by, I think we can counter it.\nLike a \
+    weather forecast."
+set key[id=130145621029622] name "But it's so elusive and hard to predict.\nFirst of all, we have far too little \
+    data on it."
+set key[id=130145621029623] name "I know this is a hard and dangerous request, but...\nI can't think of anyone but \
+    you, $MyPCName$, who could finish this mission safely."
+set key[id=130145621029624] name "Please!\nFight <font color=\"#ffd200\">$npcName:23001006$</font> in <font \
+    color=\"#ffd200\">$map:02020051$</font> and gather as many behavior patterns as you can!"
+set key[id=130145621029679] name "Welcome, $MyPCName$.\nI compared the combat patterns of $npcName:23001006$ you \
+    sent last time with its recent ones, and found changes in many places."
+set key[id=130145621029680] name "(Ask if the last combat data wasn't enough.)"
+set key[id=130145621029681] name "The earlier combat data wasn't lacking.\nWe expect $npcName:23001006$ is adding \
+    combat patterns on its own to suit each opponent as it fights."
+set key[id=130145621029682] name "Please!\nAfter fighting <font color=\"#ffd200\">$npcName:23001006$</font> in \
+    <font color=\"#ffd200\">$map:02020051$</font>, gather as much combat data as you can."
+set key[id=130145621029683] name "Great work, truly!\nThis will help a lot in understanding $npcName:23001006$'s \
+    behavior!"
+set key[id=130145621029716] name "The analysis showed that its combat patterns change so randomly and so often \
+    that predicting them is difficult."
+set key[id=130145621029717] name "But don't be too discouraged.\nWe'll find the answer. We always have!"
+set key[id=130145621029718] name "The research team suggests finding an internal access vulnerability in <font \
+    color=\"#ffd200\">$npcName:23001006$</font> and hacking the AI itself."
+set key[id=130145621029722] name "We analyzed the combat data of $npcName:23001006$ you brought earlier, \
+    but...\nwe never found a weak point that can be accessed from the outside."
+set key[id=130145621029723] name "It turns out to be a far more meticulously built mechanical beast than \
+    expected.\nBut the Greenhood is not about to give up!\nWe'll dig and dig until we find its flaw and turn it \
+    into a heap of scrap!"
+set key[id=130145621029724] name "And from the last combat data we learned that $npcName:23001006$'s outer \
+    skeleton is made of a special metal, so the last fight wasn't for nothing!"
+set key[id=130145621029725] name "If we analyze this special metal, we could fire the Sky Fortress's atomic \
+    vibration cannon from the sky where $npcName:23001006$'s attacks can't reach, and crack the metal."
+set key[id=1220183321028012] name "You're here, $MyPCName$.\nI think this mission is going to be quite a tough \
+    one."
+set key[id=1220183321028013] name "On top of that, it's spreading pollutants at every new settlement, and the \
+    settlements are badly hit too.\nIf we leave it alone, the damage will become impossible to undo."
+set key[id=1220183321028014] name "Please go to <font color=\"#ffd200\">$map:02020051$</font>, the lair of <font \
+    color=\"#ffd200\">$npcName:23001006$</font>, and take that thing down."
+set key[id=1220183321028015] name " Please go to <font color=\"#ffd200\">$map:02020051$</font> and take down <font \
+    color=\"#ffd200\">$npcName:23001006$</font>."
+set key[id=1220183321028016] name "Thank you! \nNow the settlers and the members can finally breathe easy!"
+set key[id=1220183321028036] name "<font color=\"#ffd200\">$npcName:23001006$</font> has set off such powerful \
+    earthquakes that expedition members are hurt and even Sky Fortress equipment is wrecked. The damage is \
+    enormous."
+set key[id=1220183321028037] name "On top of that, it's spreading pollutants into the settlements where people \
+    live, and people are falling ill. Big problems are cropping up everywhere.\nIf we leave it alone, the damage \
+    will get truly serious."
+set key[id=1220183321028038] name "Please go to <font color=\"#ffd200\">$map:02020051$</font>, the lair of <font \
+    color=\"#ffd200\">$npcName:23001006$</font>, and take that thing down."
+set key[id=1220183321028039] name " Please go to <font color=\"#ffd200\">$map:02020051$</font> and take down <font \
+    color=\"#ffd200\">$npcName:23001006$</font>."
+set key[id=1220183321028040] name "\nGreat work, $MyPCName$!\nThanks to you, we can finally breathe easy."
+set key[id=1220183321028095] name "$MyPCName$! This is terrible!\nLately big and small earthquakes keep happening, \
+    and members are getting injured and equipment is breaking down one after another!"
+set key[id=1220183321028096] name "The cause was <font color=\"#ffd200\">$npcName:23001006$</font>!\nIt's been \
+    digging tunnels under our expedition camps and key outposts, and that's what's causing the earthquakes!"
+set key[id=1220183321028097] name "If we leave it alone, the damage will get truly serious.\nPlease go to <font \
+    color=\"#ffd200\">$map:02020051$</font>, the lair of <font color=\"#ffd200\">$npcName:23001006$</font>, and \
+    take that thing down."
+set key[id=1220183321028098] name " Please go to <font color=\"#ffd200\">$map:02020051$</font> and take down <font \
+    color=\"#ffd200\">$npcName:23001006$</font>."
+set key[id=1220183321028099] name "Thanks to you, $MyPCName$, $npcName:23001006$'s mischief should quiet down for \
+    a while, right?\nThe expedition members are sending messages of thanks, too!"
+set key[id=1220183321028115] name "Welcome, $MyPCName$.\nDid you know $npcName:23001006$ has been getting more \
+    active lately?"
+set key[id=1220183321028116] name "The Greenhood has figured out whose purpose <font \
+    color=\"#ffd200\">$npcName:23001006$</font> is moving for, and how."
+set key[id=1220183321028117] name "The only way to gather data is to run into it head-on!\nFighting it should be \
+    the best way to get data on what patterns it moves in!"
+set key[id=1220183321028118] name "Fight <font color=\"#ffd200\">$npcName:23001006$</font> in <font \
+    color=\"#ffd200\">$map:02020051$</font> and gather as many behavior patterns as you can!"
+set key[id=1220183321028119] name "Wow! What an enormous amount of data!\nThis will be a big help in researching \
+    <font color=\"#ffd200\">$npcName:23001006$</font>."
+set key[id=1220183321028169] name "It seems its neural circuitry is more complex than we thought."
+set key[id=1220183321028170] name "The research team believes that if we gather more of $npcName:23001006$'s \
+    attack patterns, Kate Seed could predict its next attack pattern."
+set key[id=1220183321028171] name "However I think about it, you are the only Sky Fortress member suited for this, \
+    $MyPCName$. "
+set key[id=1220183321028172] name "After fighting <font color=\"#ffd200\">$npcName:23001006$</font> in <font \
+    color=\"#ffd200\">$map:02020051$</font>, gather as much combat data as you can."
+set key[id=1220183321028173] name "Wow! What incredible data!\nFar more than last time.\nAnalyzing this will mean \
+    running Kate Seed at full power for days, won't it?"
+set key[id=1220183321028200] name "Welcome, $MyPCName$.\nThe analysis of the combat data from $npcName:23001006$ \
+    is complete!"
+set key[id=1220183321028201] name "The research team's view was that any machine must have some way to be accessed \
+    from outside.\nTo find it, we need to fight $npcName:23001006$ more and look for its weak points."
+set key[id=1220183321028202] name "Fight <font color=\"#ffd200\">$npcName:23001006$</font> in <font \
+    color=\"#ffd200\">$map:02020051$</font> and gather as much data as you can.\nWe'll use the combat data to look \
+    for an opening from the outside!"
+set key[id=1220183321028203] name "Fight <font color=\"#ffd200\">$npcName:23001006$</font> in <font \
+    color=\"#ffd200\">$map:02020051$</font> and gather as much data as you can.\nWe'll use the combat data to look \
+    for an opening from the outside!"
+set key[id=1220183321028204] name "Thank you so much! \nThis much data should be enough to find \
+    $npcName:23001006$'s weak points."
+set key[id=1220183321028212] name "Welcome, $MyPCName$!\nI was just looking for you!"
+set key[id=1220183321028213] name "To find out what special metal makes up its outer skeleton, \nthe research team \
+    thinks the best way is \nto fight it directly and analyze the impact sound waves of the metal."
+set key[id=1220183321028214] name "$MyPCName$.\nFight <font color=\"#ffd200\">$npcName:23001006$</font> in <font \
+    color=\"#ffd200\">$map:02020037$</font> and collect the impact sound waves of the special metal!"
+set key[id=1220183321028215] name "Fight <font color=\"#ffd200\">$npcName:23001006$</font> in <font \
+    color=\"#ffd200\">$map:02020037$</font> and collect the impact sound waves of the special metal!"
+set key[id=1220183321028216] name "Good work!\nThe Greenhood research team will start analyzing the materials you \
+    delivered."
