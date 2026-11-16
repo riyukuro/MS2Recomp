@@ -25567,3 +25567,20 @@ set key[id=625204011010862] name "All right, let's do all we can.\nWhat's the bi
 set key[id=625204011010863] name "All right, let's do all we can.\nWhat's the big deal? I didn't become a mage for \
     nothing, you know!"
 set key[id=625204011010864] name "Huff... huff...\nThere's no end to these troops...!"
+
+# Quest dialogue of the CharacterAbility quests that no pack has in English (feature CharacterAbility): our own
+# English for the 5 scriptquest rows of locale KR (or no locale) whose quest a player can get (1 quests), with each
+# row's own format fields, font tags and line breaks; the player's lines are first-person choices.
+file Xml/string/kr/scriptquest.xml kms:Xml/string/kr/scriptquest.xml 032f90f7273bbe7d
+set key[id=621020511003032] name "Now that the power of <font color=\"#ffd200\">traits</font> has opened up, \
+    you'll have more <font color=\"#ffd200\">choices</font> as you train\nand grow.\nAnd to know what path you \
+    truly want\nand choose it well, varied experience matters more than anything. "
+set key[id=621020511003033] name "So go and gain as much experience as you can.\nIf you're not sure what to do, \
+    try the <font color=\"#ffd200\">Maple Guide</font>.\nIt tells you what's worth doing at your current level."
+set key[id=621020511003034] name "Don't forget that upgrading your skills lets you fight far more \
+    efficiently.\nOh, and talk to me once more before you leave for training."
+set key[id=621020511003035] name "Don't forget that upgrading your skills lets you fight far more \
+    efficiently.\nOh, and talk to me once more before you leave for training."
+set key[id=621020511003036] name "Here, take this. You'll need <font color=\"#ffd200\">$item:40100022$</font> to \
+    upgrade skills to a higher level. \nI picked it up on my way here, so don't make a fuss about thanking me. \
+    Just train hard."
